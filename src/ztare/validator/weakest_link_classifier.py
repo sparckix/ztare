@@ -14,7 +14,7 @@ by autoresearch_loop.py for two opt-in behaviors:
 Design commitments:
   - Standard-library-only. No external deps. Cheap per-call.
   - Covers the subset of classes with actionable runtime implications.
-    Full 25+ class taxonomy lives in scripts/mine_weakest_link_taxonomy.py
+    Full 25+ class taxonomy lives in scripts/public/mine_weakest_link_taxonomy.py
     for mining purposes; this module is the runtime subset.
   - Patterns ordered by priority (most-specific first); first match wins.
   - Returns None when no class matches — caller treats as "unclassified,"
@@ -92,6 +92,24 @@ _RULES: list[tuple[str, list[str]]] = [
             r"no\s+falsifiers?",
             r"placeholder\s+(?:stub|thesis)",
             r"no\s+concrete\s+(?:failure\s+modes|gates|inversions|falsifiers)",
+        ],
+    ),
+    # Tier 1a': catastrophic_fit_failure — cross-LLM stable at 0.538 in the
+    # 2026-05-04 audit (highest among all classes); the only class greenlit for
+    # GP-214 I-5 Mode B auto-injection. MUST precede catastrophic_assumption since
+    # fit-failure phrasing often co-occurs with "load-bearing assumption" pinging.
+    (
+        "catastrophic_fit_failure",
+        [
+            r"(?:fit_quality_visible|structural\s+fit)\s*[:.]?\s*(?:the\s+)?(?:model|candidate|law)",
+            r"(?:fit_quality_visible|fit\s+quality)[^.]{0,40}(?:zero|no)\s+(?:observed|exact)\s+(?:matches|points)",
+            r"matches?\s+zero\s+of\s+the\s+(?:supplied|provided)\s+(?:data\s+points|evidence)",
+            r"reproduces?\s+(?:zero|none)\s+of\s+(?:the\s+)?evidence",
+            r"f\(\s*[a-z]\s*\)\s*=\s*0\s+for\s+all",
+            r"output\s+is\s+universally\s+incorrect",
+            r"fails?\s+to\s+reproduce\s+any\s+evidence",
+            r"falsified\s+immediately\s+and\s+decisive",
+            r"analytically\s+equivalent\s+to[^.]+matches?\s+zero",
         ],
     ),
     # Tier 1a: catastrophic (MUST precede unverified_bound / exhaustiveness since

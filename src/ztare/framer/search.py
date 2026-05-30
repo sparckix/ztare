@@ -7,7 +7,7 @@ coords and inverting the prediction:
     σ̂²_raw = Var( y - h_out⁻¹( f̂( h_in(x) ) ) )
 
 This is frame-invariant by construction (proof: spec v2.0 §3, backtest:
-scripts/framer/backtest_framer_mdl_v2_vs_v1.py).
+scripts/public/framer/backtest_framer_mdl_v2_vs_v1.py).
 
 No Jacobian. No σ_noise floor. No log-J clip. No ε-perturbation rank check.
 """

@@ -8,8 +8,8 @@ Compresses N-D datasets to 1D manifolds before synthesis via:
 No LLM involvement.  All gates evaluate the final assembled law
 in original N-D coordinates, not in compressed space.
 
-Spec: research_areas/private/specs/active/GP-097_nd_manifold_compressor_spec.md
-Seam: research_areas/private/seams/GP-097_nd_manifold_compressor_seam.md
+Spec: GP-097 (internal seam)
+Seam: GP-097 (internal seam)
 """
 
 from __future__ import annotations

@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import hashlib
 import concurrent.futures
+import sys
 from pathlib import Path
 from google.genai import types
 from src.ztare.common import utils
@@ -51,9 +52,17 @@ from src.ztare.validator.utilities.harness_failure_mode import (
     harness_defect_banner,
     sanitize_stderr_for_mutator,
 )
+from src.ztare.validator.core.meta_judge_schema import (
+    RAW_META_JUDGE_REQUIRED_FIELDS,
+    coerce_raw_meta_judge_score as _coerce_raw_meta_judge_score,
+    raw_meta_judge_shape_errors as _raw_meta_judge_shape_errors,
+)
 from src.ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
+)
+from src.ztare.validator.core.rubric_score_caps import (
+    apply_evidence_gap_score_caps,
 )
 from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
 from src.ztare.validator.utilities.v4_family import is_v4_family_project
@@ -104,6 +113,13 @@ parser.add_argument(
     default="eval_results.json",
     help="Path to write the final evaluation JSON. Defaults to eval_results.json in the current working directory.",
 )
+parser.add_argument(
+    "--thesis_path_override",
+    default=None,
+    help="If set, read thesis from this path instead of current_iteration.md. "
+         "Used by the post-run synthesizer to score candidate theses without "
+         "modifying the live working path.",
+)
 args = parser.parse_known_args()[0]
 if args.rubric is None:
     args.rubric = args.project
@@ -145,7 +161,11 @@ def _load_v4_stage_index() -> int | None:
     except Exception:
         return None
 PROJECT_DIR = str(PROJECTS_DIR / args.project)
-WORKING_PATH = f"{PROJECT_DIR}/current_iteration.md"
+WORKING_PATH = (
+    args.thesis_path_override
+    if getattr(args, "thesis_path_override", None)
+    else f"{PROJECT_DIR}/current_iteration.md"
+)
 EVIDENCE_PATH = f"{PROJECT_DIR}/evidence.txt"
 PROJECT_CHARTER_PATH = f"{PROJECT_DIR}/project_charter.md"
 WORKSPACE_DIR = f"{PROJECT_DIR}/workspace"
@@ -255,6 +275,70 @@ def _build_evidence_gap(
         "producer_rationale": producer_rationale,
         "fetch_query": (fetch_query or _infer_fetch_query(gap_type, target, description)).strip(),
         "adversarial_direction": bool(adversarial_direction),
+    }
+
+
+def _judge_format_error_evaluation(malformed_payload: object, errors: list[str]) -> dict:
+    gap_text = ""
+    evidence_gaps: list[dict] = []
+    if isinstance(malformed_payload, dict) and any(
+        field in malformed_payload for field in ("gap_type", "target", "description")
+    ):
+        gap_type = str(malformed_payload.get("gap_type", "other") or "other")
+        target = str(malformed_payload.get("target", "") or "malformed judge payload")
+        description = str(
+            malformed_payload.get("description", "")
+            or malformed_payload.get("producer_rationale", "")
+            or "Judge returned an evidence-gap object where a verdict object was required."
+        )
+        severity = str(malformed_payload.get("severity", "blocking") or "blocking")
+        producer = str(malformed_payload.get("producer", "meta_judge") or "meta_judge")
+        evidence_gaps.append(
+            _build_evidence_gap(
+                gap_type=gap_type,
+                target=target,
+                description=description,
+                severity=severity,
+                producer=producer,
+                producer_rationale=str(
+                    malformed_payload.get("producer_rationale", "") or description
+                ),
+                fetch_query=str(malformed_payload.get("fetch_query", "") or "") or None,
+                adversarial_direction=bool(
+                    malformed_payload.get("adversarial_direction", True)
+                ),
+            )
+        )
+        gap_text = f" Judge gap type: {gap_type} | target={target} | {description}"
+
+    return {
+        "score": 0,
+        "weakest_point": (
+            "JUDGE_FORMAT_ERROR: raw judge returned valid JSON with the wrong "
+            f"top-level schema after retry; defects={errors}.{gap_text}"
+        ),
+        "verified_axioms": [],
+        "retired_axioms_approved": [],
+        "evidence_gaps": evidence_gaps,
+        "derived_constraints": [],
+        "logic_gaps": [
+            "Judge returned valid JSON that was not a meta-judge verdict object."
+        ],
+        "debate_summary": (
+            "Judge-format failure. Treat this as an apparatus error, not a scientific "
+            "verdict or thesis demotion."
+        ),
+        "adversarial_alignment": "",
+        "friction_points": [],
+        "probability_dag": {
+            "outcome": {"label": "judge_format_error", "probability": 0.0},
+            "nodes": [],
+            "edges": [],
+        },
+        "judge_format_error": True,
+        "score_cap_reason": "judge_format_error_wrong_top_level_schema",
+        "judge_format_errors": list(errors),
+        "malformed_judge_payload": malformed_payload,
     }
 
 
@@ -586,7 +670,7 @@ def execute_python_code(code: str) -> str:
             "PYTHONNOUSERSITE": "1",
         }
         res = subprocess.run(
-            ["python", tmp_path],
+            [sys.executable, tmp_path],
             capture_output=True,
             text=True,
             timeout=10,
@@ -1397,6 +1481,46 @@ Required fields:
             lambda: safe_generate(prompt, config=None, model_id=JUDGE_MODEL_ID).text,
             call_site="run_meta_judge_unstructured",
         )
+        if not args.deterministic_score_gates and (
+            raw_shape_errors := _raw_meta_judge_shape_errors(evaluation)
+        ):
+            print(
+                "⚠️ Raw judge returned malformed verdict JSON "
+                f"({', '.join(raw_shape_errors)}) — retrying once with explicit schema reminder."
+            )
+            first_malformed_payload = evaluation
+            retry_prompt = (
+                prompt
+                + "\n\n[SYSTEM RETRY]: Your previous response was valid JSON but was NOT "
+                "the required meta-judge verdict schema. Do not return a single evidence-gap "
+                "object, score_contract object, or diagnostic object as the top-level JSON. "
+                "Return exactly the full verdict object with top-level fields: "
+                f"{', '.join(RAW_META_JUDGE_REQUIRED_FIELDS)}. "
+                "The `score` field is REQUIRED and must be an integer from 0 to 100. "
+                "`weakest_point` and `debate_summary` are REQUIRED strings. "
+                "Re-evaluate the thesis and respond only with the verdict JSON."
+            )
+            retry_eval = utils.parse_llm_json_with_retry(
+                lambda: safe_generate(
+                    retry_prompt, config=None, model_id=JUDGE_MODEL_ID
+                ).text,
+                call_site="run_meta_judge_unstructured_schema_retry",
+            )
+            retry_shape_errors = _raw_meta_judge_shape_errors(retry_eval)
+            if retry_shape_errors:
+                evaluation = _judge_format_error_evaluation(
+                    retry_eval, retry_shape_errors
+                )
+                evaluation["initial_malformed_judge_payload"] = first_malformed_payload
+                print(
+                    "🚫 Raw judge schema retry still malformed; recording explicit "
+                    "judge_format_error instead of silently treating the payload as a verdict."
+                )
+            else:
+                evaluation = _coerce_raw_meta_judge_score(retry_eval)
+                print("✅ Raw judge schema retry returned a valid verdict object.")
+        elif not args.deterministic_score_gates:
+            evaluation = _coerce_raw_meta_judge_score(evaluation)
         if crux_analysis:
             evaluation["crux_analysis"] = crux_analysis
         if routing_decision:
@@ -1666,6 +1790,29 @@ Required fields:
         lambda: safe_generate(prompt, config=config).text,
         call_site="run_meta_judge",
     )
+    # GP-210 fix: gpt-4.1 (and other non-Gemini judges) occasionally returns
+    # valid JSON that omits criteria_passed or returns an empty array, causing
+    # a spurious score-0 even when the thesis is substantive. This happens when
+    # the OpenAI structured-output adapter doesn't enforce the Gemini schema's
+    # required fields. Retry once with an explicit reminder injected.
+    if args.deterministic_score_gates and not evaluation.get("criteria_passed"):
+        print("⚠️ Judge returned empty criteria_passed — retrying once with explicit schema reminder.")
+        retry_prompt = (
+            prompt
+            + "\n\n[SYSTEM RETRY]: Your previous response omitted the `criteria_passed` field "
+            "or returned an empty array. You MUST populate `criteria_passed` with every rubric "
+            "criterion key that the thesis satisfies. This field is REQUIRED and must be a "
+            "non-empty array when the thesis has any merit. Re-evaluate and respond."
+        )
+        retry_eval = utils.parse_llm_json_with_retry(
+            lambda: safe_generate(retry_prompt, config=config).text,
+            call_site="run_meta_judge_retry",
+        )
+        if retry_eval.get("criteria_passed"):
+            evaluation = retry_eval
+        else:
+            evaluation["_judge_format_warning"] = "criteria_passed missing after retry"
+
     if crux_analysis:
         evaluation["crux_analysis"] = crux_analysis
     if routing_decision:
@@ -2292,7 +2439,37 @@ if __name__ == "__main__":
         test_result_summary = ""
         test_suite_status = "missing"
 
-        if os.path.exists(test_path):
+        # GP-211 substrate dispatch: when the rubric declares
+        # cage_meta.substrate_class == "lean_proof", the test_model.py path is
+        # NOT load-bearing — the actual falsifier is `lake build` against the
+        # mutator's ```lean fenced block in thesis.md. Closes the iter-1/iter-2
+        # fake-95 path where Lean-shaped prose + a Python tautology scored as
+        # "validated" because the judge can't run Lean.
+        from src.ztare.validator.lean_substrate_runner import (
+            is_lean_proof_substrate,
+            run_lean_substrate_iteration,
+        )
+        _lean_substrate = is_lean_proof_substrate(main_rubric)
+        if _lean_substrate:
+            print("🧮 Lean-proof substrate detected — dispatching to lake build harness")
+            _lean_iter = run_lean_substrate_iteration(
+                project_dir=Path(PROJECT_DIR),
+                rubric=main_rubric,
+                iteration=int(time.time()),
+            )
+            test_result_summary = _lean_iter["test_result_summary"]
+            test_suite_status = _lean_iter["test_suite_status"]
+            # Persist the gate dict alongside the project for audit / debugging.
+            try:
+                _lean_audit_path = Path(PROJECT_DIR) / "lean_proof_gate_result.json"
+                _lean_audit_path.write_text(
+                    json.dumps(_lean_iter["lean_proof_gate"], indent=2),
+                    encoding="utf-8",
+                )
+            except Exception as _exc:  # non-fatal
+                print(f"⚠️ could not persist lean_proof_gate_result.json: {_exc}")
+            print(f"   gate verdict: {test_suite_status}")
+        elif os.path.exists(test_path):
             try:
                 # Prefer a sibling `gate_harness.py` when present. The
                 # frozen harness sits outside the mutator's write-scope
@@ -2304,9 +2481,9 @@ if __name__ == "__main__":
                 # of the thesis still surfaces as fail_assert.
                 frozen_harness_path = os.path.join(PROJECT_DIR, "gate_harness.py")
                 if os.path.exists(frozen_harness_path):
-                    run_cmd = ["python", frozen_harness_path, "--run-visible-assertions"]
+                    run_cmd = [sys.executable, frozen_harness_path, "--run-visible-assertions"]
                 else:
-                    run_cmd = ["python", test_path]
+                    run_cmd = [sys.executable, test_path]
                 # GP-PATH-NORM (2026-04-24): mutator occasionally writes
                 # test_model.py with relative paths like 'projects/<other>/...'
                 # that assume CWD=repo_root. Since we run with cwd=PROJECT_DIR,
@@ -2390,6 +2567,23 @@ if __name__ == "__main__":
         evaluation = run_meta_judge(
             thesis, evidence, main_rubric, critiques_text, axioms
         )
+        # Lean-substrate hard ceiling on the judge's score: when the
+        # G-LEAN-PROOF gate failed (compile or axiom audit), the judge
+        # cannot return >10 regardless of prose-quality opinion. Closes
+        # the iter-4 fake-70 path where the judge hallucinated compile
+        # success in the same response that contained "compiled: False".
+        # The judge's rationale text is preserved (useful signal for the
+        # next iter's mutator); only the numeric score is clamped.
+        if _lean_substrate and not _lean_iter["lean_proof_gate"].get("gate_passed", False):
+            _judge_score = evaluation.get("score") or 0
+            if _judge_score > 10:
+                evaluation["lean_gate_clamp_applied"] = True
+                evaluation["lean_gate_clamp_original_judge_score"] = _judge_score
+                evaluation["score"] = 10
+                print(
+                    f"   🔒 Lean-gate clamp: judge score {_judge_score} → 10 "
+                    f"(gate_passed=False)"
+                )
         if args.deterministic_score_gates:
             evaluation = apply_semantic_gate_stabilization(evaluation)
             # P1 fix (deep audit, 2026-04-26): finalize_deterministic_score
@@ -2436,7 +2630,7 @@ if __name__ == "__main__":
                     # NO "harness_ok" or "gates" key → KeyError → "FIRED
                     # (exception)" every iter, zeroing valid proposals.
                     holdout_res = subprocess.run(
-                        ["python", holdout_harness_path, "--emit-deterministic-gates"],
+                        [sys.executable, holdout_harness_path, "--emit-deterministic-gates"],
                         capture_output=True, text=True, timeout=30,
                         cwd=PROJECT_DIR,
                     )
@@ -2673,6 +2867,7 @@ if __name__ == "__main__":
 
         evaluation = attach_evidence_gap_metadata(evaluation)
         evaluation = attach_constraint_proposal_metadata(evaluation)
+        evaluation = apply_evidence_gap_score_caps(evaluation, main_rubric)
         evaluation = attach_score_regime_metadata(evaluation, main_rubric, test_suite_status)
         persist_evidence_gap_artifact(evaluation)
         persist_constraint_proposal_artifact(evaluation)

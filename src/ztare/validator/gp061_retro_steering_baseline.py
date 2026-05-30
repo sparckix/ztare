@@ -40,9 +40,8 @@ from src.ztare.gates.negative_space_extractor import (
 
 
 def load_families(project: str) -> list[dict]:
-    path = Path(
-        f"/Users/daalami/figs_activist_loop/projects/{project}/workspace/structural_memory.json"
-    )
+    repo_root = Path(__file__).resolve().parents[3]
+    path = repo_root / "projects" / project / "workspace" / "structural_memory.json"
     d = json.loads(path.read_text())
     fams = d.get("families", []) if isinstance(d, dict) else d
     if isinstance(fams, dict):

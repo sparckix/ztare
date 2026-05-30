@@ -19,8 +19,8 @@ Integration points in autoresearch_loop.py:
 2. Start of each iteration: rubric_data, _ = apply_mform_pending(...)
 3. After PHASE_F: maybe_fire_mform_audit(...) -> bool; if True: _mform_audits_this_run += 1
 
-Seam: research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md
-Spec: research_areas/private/specs/active/GP-105_mform_alignment_audit_spec.md
+Seam: GP-105 (internal seam)
+Spec: GP-105 (internal seam)
 """
 
 from __future__ import annotations

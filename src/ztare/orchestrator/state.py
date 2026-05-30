@@ -157,6 +157,21 @@ def build_cage_runtime(
     except Exception:
         pass
 
+    # 2026-05-06 — register R8 + R9 substrate validator gates. Both
+    # were authored in v5.0 Phase 3a (gp154-grounded) but never wired
+    # — surfaced as dead code by today's cross-audit dashboard. Both
+    # opt-in via rubric flags (enable_r8_feature_coverage,
+    # enable_r9_target_convention_homogeneity) so registration is
+    # zero-risk on existing projects; rubric must explicitly opt in
+    # to engage them.
+    try:
+        from src.ztare.gates.r8_r9_substrate_validators import (
+            register_r8_r9_gates,
+        )
+        register_r8_r9_gates(instance)
+    except Exception:
+        pass
+
     # Substrate-view proxy. `meta` is the cage_meta dict the Cage
     # dispatcher reads. `rubric_flags` is the rubric so gates' can_handle
     # predicates can read framer_primary_feature_key, substrate_class_key,

@@ -1,6 +1,6 @@
 """Post-harness Cage gate dispatch — extracted from autoresearch_loop.
 
-Part of the Phase 4g Torvalds-style split (task #65). The autoresearch
+Part of the Phase 4g modular split (task #65). The autoresearch
 loop's job is to coordinate the iter; gate dispatch logic lives here so
 each new Cage-routed gate adds at most a registration line, not an
 inline if-block.
@@ -200,6 +200,153 @@ def dispatch_post_harness_cage(
         verdict.log_lines.append(
             f"🦴 R20-R23 dispatch error (non-fatal): {type(exc).__name__}: {exc}"
         )
+
+    # Solar-System PPN gates — Cassini + Mercury hard caps (2026-04-27).
+    # Score-cap gap fix: the v5 Cage already runs check_cassini_ppn and
+    # check_mercury_perihelion (registry.py:239-254) and produces pass/fail
+    # verdicts, but the verdicts were never wired to verdict.score_cap.
+    # Iter 2 of run_id 1777290591 exposed the gap: a bridge form with
+    # parameterized centers (R20-R23 clean) but NO high-x screen passed
+    # holdout MRE thresholds and earned raw 100, while structurally
+    # violating Mercury PPN strict 4e-10 by ~1750x. This block calls the
+    # PPN gates directly with the iter's form/params and applies a
+    # deterministic cap when either fails.
+    if rubric_data.get("enable_solar_system_ppn_gates"):
+        try:
+            import ast as _ppn_ast
+            from src.ztare.gates.gravity_ppn_gates import (
+                check_cassini_ppn,
+                check_mercury_perihelion,
+            )
+
+            tm_path = project_dir / "test_model.py"
+            if tm_path.exists():
+                tm_text = tm_path.read_text(encoding="utf-8", errors="replace")
+                # Parse PARAMETRIC_FORM and MODEL_PARAMS from the AST.
+                # Multi-line implicit string concat resolves correctly via
+                # ast.literal_eval; matches the pattern used by the
+                # forced_reframe extractor.
+                _form: Optional[str] = None
+                _params: Optional[dict] = None
+                try:
+                    _tree = _ppn_ast.parse(tm_text)
+                    for _node in _ppn_ast.walk(_tree):
+                        if not isinstance(_node, _ppn_ast.Assign):
+                            continue
+                        if len(_node.targets) != 1:
+                            continue
+                        _tgt = _node.targets[0]
+                        if not isinstance(_tgt, _ppn_ast.Name):
+                            continue
+                        try:
+                            _val = _ppn_ast.literal_eval(_node.value)
+                        except (ValueError, SyntaxError):
+                            continue
+                        if _tgt.id == "PARAMETRIC_FORM" and isinstance(_val, str):
+                            _form = _val
+                        elif _tgt.id == "MODEL_PARAMS" and isinstance(_val, dict):
+                            _params = _val
+                except SyntaxError:
+                    _form = None
+                    _params = None
+
+                if _form and isinstance(_params, dict):
+                    _ppn_context = {"rubric_data": rubric_data}
+                    _ppn_failed: list[tuple[str, float, float]] = []
+
+                    # 2026-04-27 hardening: defensive isinstance checks on every
+                    # .get() call. Observed iter-1 of run 1777299491: the gate
+                    # raised AttributeError "'float' object has no attribute
+                    # 'get'" — likely from an internal threshold lookup where
+                    # the gate's `actual` or `threshold` field came back as a
+                    # bare float on a particular form. Wrapping every nested
+                    # .get in isinstance(...,dict) makes the dispatch crash-
+                    # proof against gate-internal contract drift.
+                    def _safe_get(d, key, default=None):
+                        return d.get(key, default) if isinstance(d, dict) else default
+
+                    try:
+                        _cassini = check_cassini_ppn(_form, _params, context=_ppn_context)
+                        if isinstance(_cassini, dict) and not _safe_get(_cassini, "passed", True):
+                            _actual = _safe_get(_cassini, "actual") or {}
+                            _gamma = _safe_get(_actual, "gamma_minus_one")
+                            _threshold = _safe_get(_cassini, "threshold") or {}
+                            _bound = _safe_get(_threshold, "relative_bound_at_cassini")
+                            _ppn_failed.append(("G-CASSINI-PPN", _gamma, _bound))
+                            verdict.log_lines.append(
+                                f"🛰️ G-CASSINI-PPN FAILED: {str(_safe_get(_cassini, 'reason', ''))[:200]}"
+                            )
+                    except Exception as _cas_exc:
+                        verdict.log_lines.append(
+                            f"⚠️ Cassini PPN gate error (non-fatal): "
+                            f"{type(_cas_exc).__name__}: {str(_cas_exc)[:120]}"
+                        )
+
+                    try:
+                        _mercury = check_mercury_perihelion(_form, _params, context=_ppn_context)
+                        if isinstance(_mercury, dict) and not _safe_get(_mercury, "passed", True):
+                            _actual = _safe_get(_mercury, "actual") or {}
+                            _eps = _safe_get(_actual, "epsilon_at_mercury")
+                            _threshold = _safe_get(_mercury, "threshold") or {}
+                            _bound = _safe_get(_threshold, "relative_bound_at_mercury")
+                            _ppn_failed.append(("G-MERCURY-PRECESSION", _eps, _bound))
+                            verdict.log_lines.append(
+                                f"🛰️ G-MERCURY-PRECESSION FAILED: {str(_safe_get(_mercury, 'reason', ''))[:200]}"
+                            )
+                    except Exception as _mer_exc:
+                        verdict.log_lines.append(
+                            f"⚠️ Mercury PPN gate error (non-fatal): "
+                            f"{type(_mer_exc).__name__}: {str(_mer_exc)[:120]}"
+                        )
+
+                    if _ppn_failed:
+                        # Cap default 50; rubric override via
+                        # solar_system_ppn_score_cap. Stack with any
+                        # existing R20-R23 cap (take the lower).
+                        _ppn_cap = int(rubric_data.get("solar_system_ppn_score_cap", 50))
+                        _existing_cap = verdict.score_cap
+                        verdict.score_cap = (
+                            _ppn_cap if _existing_cap is None
+                            else min(_existing_cap, _ppn_cap)
+                        )
+                        _names = ", ".join(name for name, _, _ in _ppn_failed)
+                        _ppn_reason = (
+                            f"Solar-System PPN gate(s) FAILED: {_names}. "
+                            f"Apparatus-deterministic cap at {_ppn_cap} per "
+                            f"rubric.solar_system_ppn_score_cap. The candidate "
+                            f"form's deviation from Newton at Solar-System "
+                            f"accelerations exceeds the strict relative bound "
+                            f"required by Cassini |γ−1| < 2.3e-5 and/or Mercury "
+                            f"|y/g_bar−1| < 4e-10. Path-b candidates that derive "
+                            f"a screening mechanism from the Lagrangian (V(φ), "
+                            f"A(φ)) pass these gates by construction; "
+                            f"phenomenological forms without a high-x screen "
+                            f"will fail. See verified_axioms.json successor_lock."
+                        )
+                        if verdict.score_cap_reason:
+                            verdict.score_cap_reason = (
+                                f"{verdict.score_cap_reason}\n\n+ {_ppn_reason}"
+                            )
+                        else:
+                            verdict.score_cap_reason = _ppn_reason
+                        _ppn_addendum = (
+                            f"⚠️ PPN cap: {_names}. Score capped at "
+                            f"{verdict.score_cap} (apparatus-deterministic). "
+                            f"Cassini/Mercury Solar-System bounds are violated "
+                            f"by the proposed form at high g_bar."
+                        )
+                        existing_addendum = verdict.weakest_point_addendum or ""
+                        verdict.weakest_point_addendum = (
+                            f"{existing_addendum}\n\n{_ppn_addendum}"
+                            if existing_addendum
+                            else _ppn_addendum
+                        )
+        except ImportError:
+            pass
+        except Exception as exc:
+            verdict.log_lines.append(
+                f"⚠️ PPN gate dispatch error (non-fatal): {type(exc).__name__}: {exc}"
+            )
 
     return verdict
 

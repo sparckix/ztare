@@ -89,24 +89,30 @@ def _compute_residuals_for_topology(
     fit_result_json: dict,
     visible_data: list[tuple[dict, float]] | None,
     primary_feature_key: str,
-) -> tuple[list[float], list[float]]:
-    """Re-compute per-row residuals + primary-feature values from the
-    fit result. Returns ([], []) if any input is missing or compilation
-    fails — topology features are then omitted from the fingerprint.
+) -> tuple[list[float], list[float], list[dict]]:
+    """Re-compute per-row residuals + primary-feature values + the matched
+    feature dicts from the fit result. Returns ([], [], []) if any input
+    is missing or compilation fails — topology features are then omitted
+    from the fingerprint.
+
+    The third tuple element (per-row feature dicts aligned with residuals)
+    is used by `_multi_feature_correlations` and `_per_class_topology`
+    for richer fingerprint signals beyond primary-feature monotonicity.
     """
     if not visible_data:
-        return [], []
+        return [], [], []
     form = fit_result_json.get("form")
     fitted = fit_result_json.get("fitted_params") or {}
     if not form or not fitted:
-        return [], []
+        return [], [], []
     try:
         from src.ztare.fit.fit_primitive_features import _safe_compile_form
         fn = _safe_compile_form(form)
     except Exception:
-        return [], []
+        return [], [], []
     residuals: list[float] = []
     xs: list[float] = []
+    feats_aligned: list[dict] = []
     for feats, y_obs in visible_data:
         try:
             y_pred = fn(feats, fitted)
@@ -118,9 +124,266 @@ def _compute_residuals_for_topology(
                 xs.append(float(v))
             else:
                 xs.append(0.0)
+            feats_aligned.append(feats if isinstance(feats, dict) else {})
         except Exception:
             continue
-    return residuals, xs
+    return residuals, xs, feats_aligned
+
+
+# ── Multi-feature correlation scan (GP-164.1 fingerprint refit, 2026-04-27) ──
+#
+# The v2 topology computed monotonicity ONLY against the primary feature.
+# Surveying 22 ANALOGY fires across the gp163d run showed the LLM emitting
+# the same threshold-bump motif on every fire because the fingerprint
+# collapsed every substrate signal to "regime_break + weak primary
+# monotonicity" — meanwhile the substrate critic was finding strong
+# monotone correlations against secondary features (rho≈0.4) that the
+# fingerprint never surfaced.
+#
+# This helper computes |spearman_rho(residual, feat_i)| for every numeric
+# feature, returns the top-K by magnitude (anonymized as feat_idx). The
+# fingerprint surfaces these as "unreferenced_correlations" so the LLM
+# sees that the residual depends monotonically on a feature the form
+# doesn't use — pushing it toward "missing additive/multiplicative term"
+# rather than "threshold."
+
+
+def _multi_feature_correlations(
+    residuals: list[float],
+    feats_aligned: list[dict],
+    primary_feature_key: str,
+    *,
+    top_k: int = 5,
+) -> list[dict]:
+    """Spearman ρ(residual, feature_i) for every numeric feature except the
+    primary one. Returns the top-K by |ρ| with p<0.05. Anonymized.
+    """
+    if len(residuals) < 10 or not feats_aligned:
+        return []
+    try:
+        import numpy as np
+        from scipy.stats import spearmanr
+    except ImportError:
+        return []
+
+    res = np.asarray(residuals, dtype=float)
+    keys = [k for k in feats_aligned[0].keys() if k != primary_feature_key]
+    out: list[tuple[float, float, str, int]] = []
+    for idx, k in enumerate(keys):
+        vals = []
+        valid_mask = []
+        for f in feats_aligned:
+            v = f.get(k)
+            if isinstance(v, (int, float)) and not isinstance(v, bool):
+                vals.append(float(v))
+                valid_mask.append(True)
+            else:
+                vals.append(0.0)
+                valid_mask.append(False)
+        if sum(valid_mask) < 10:
+            continue
+        try:
+            arr = np.asarray(vals, dtype=float)
+            mask = np.asarray(valid_mask, dtype=bool)
+            if arr[mask].std() == 0:
+                continue
+            rho, p = spearmanr(arr[mask], res[mask])
+            if rho is None or math.isnan(rho):
+                continue
+            if p < 0.05 and abs(rho) > 0.15:
+                out.append((abs(float(rho)), float(rho), k, idx))
+        except Exception:
+            continue
+    out.sort(reverse=True)
+    return [
+        {
+            "feature_idx": idx,
+            "spearman_rho": round(rho, 3),
+            "abs_rho": round(abs_rho, 3),
+        }
+        for abs_rho, rho, _name, idx in out[:top_k]
+    ]
+
+
+# ── Per-class topology scan (GP-164.1, generalizable categorical detection) ──
+#
+# Many substrates carry a categorical feature (class label, region, regime)
+# that partitions the residual surface in a way the pooled topology can't
+# see. This helper auto-detects categorical-like features (string values
+# OR small enumerated integer set, ≤8 distinct values, ≥2) and computes
+# residual statistics per class. No substrate-specific naming.
+
+
+def _per_class_topology(
+    residuals: list[float],
+    feats_aligned: list[dict],
+    primary_feature_key: str,
+    *,
+    max_cardinality: int = 8,
+) -> dict:
+    """Detect categorical features and compute per-class residual stats.
+    Returns {} if no categorical-like feature found. Anonymized (cat_feat_0,
+    class_0, class_1, ...).
+    """
+    if len(residuals) < 20 or not feats_aligned:
+        return {}
+    try:
+        import numpy as np
+    except ImportError:
+        return {}
+    res = np.asarray(residuals, dtype=float)
+    keys = [k for k in feats_aligned[0].keys() if k != primary_feature_key]
+    out: dict = {}
+    cat_idx = 0
+    for k in keys:
+        vals = [f.get(k) for f in feats_aligned]
+        # categorical-like: strings, OR small distinct numeric set
+        is_string = all(isinstance(v, str) for v in vals if v is not None)
+        distinct = set(v for v in vals if v is not None)
+        is_low_card = (
+            2 <= len(distinct) <= max_cardinality
+            and (is_string or all(
+                isinstance(v, (int, float)) and not isinstance(v, bool)
+                for v in distinct
+            ))
+        )
+        if not is_low_card:
+            continue
+        per_class: dict = {}
+        for class_idx, dv in enumerate(sorted(distinct, key=str)):
+            mask = np.asarray(
+                [v == dv for v in vals], dtype=bool
+            )
+            if mask.sum() < 5:
+                continue
+            sub = res[mask]
+            per_class[f"class_{class_idx}"] = {
+                "n": int(mask.sum()),
+                "residual_mean": round(float(sub.mean()), 4),
+                "residual_std": round(float(sub.std()), 4),
+                "residual_sign": (
+                    "uniform_pos" if (sub > 0).all()
+                    else "uniform_neg" if (sub < 0).all()
+                    else "mixed"
+                ),
+            }
+        if len(per_class) >= 2:
+            out[f"cat_feature_{cat_idx}"] = per_class
+            cat_idx += 1
+        if cat_idx >= 3:
+            break
+    return out
+
+
+# ── Asymptotic regime profile (GP-164.1, scaling-aware fingerprint) ─────
+#
+# Bucket primary-feature values into low/mid/high decades, report
+# residual mean + y-magnitude per bucket. This is the signal that
+# distinguishes "form misses asymptotic scaling" (residual grows toward
+# one tail) from "form misses threshold" (residual flips sign at a
+# specific x). Same generalization applies to any substrate with a
+# numeric primary feature — the LLM gets to choose between
+# saturation-curve forms and threshold forms based on observed shape,
+# rather than collapsing to threshold by default.
+
+
+def _asymptotic_profile(
+    residuals: list[float],
+    xs: list[float],
+    visible_data: list[tuple[dict, float]] | None,
+) -> dict:
+    """Tertile-bucket profile of residual + y across the primary feature."""
+    if len(residuals) < 15 or len(residuals) != len(xs):
+        return {"available": False}
+    try:
+        import numpy as np
+    except ImportError:
+        return {"available": False}
+    x = np.asarray(xs, dtype=float)
+    r = np.asarray(residuals, dtype=float)
+    order = np.argsort(x)
+    x_s = x[order]; r_s = r[order]
+    n = len(x_s)
+    third = n // 3
+    if third < 3:
+        return {"available": False}
+    low = r_s[:third]; mid = r_s[third:2*third]; high = r_s[2*third:]
+    out = {
+        "available": True,
+        "x_range_decades": (
+            round(math.log10(max(abs(x_s[-1]), 1e-300) /
+                             max(abs(x_s[0]), 1e-300)), 2)
+            if x_s[0] != 0 and x_s[-1] != 0 else None
+        ),
+        "low_x_residual_mean": round(float(low.mean()), 4),
+        "mid_x_residual_mean": round(float(mid.mean()), 4),
+        "high_x_residual_mean": round(float(high.mean()), 4),
+        "low_x_residual_std": round(float(low.std()), 4),
+        "mid_x_residual_std": round(float(mid.std()), 4),
+        "high_x_residual_std": round(float(high.std()), 4),
+    }
+    # Detect asymptotic-scaling failure pattern: residuals grow toward
+    # one tail. This is the signal that pushes the LLM toward
+    # power-law / saturation forms vs threshold forms.
+    means = [out["low_x_residual_mean"], out["mid_x_residual_mean"], out["high_x_residual_mean"]]
+    if all(abs(m) > 1e-9 for m in means):
+        if abs(means[0]) > 2 * abs(means[2]) and abs(means[0]) > abs(means[1]):
+            out["asymptotic_failure"] = "low_tail_dominant"
+        elif abs(means[2]) > 2 * abs(means[0]) and abs(means[2]) > abs(means[1]):
+            out["asymptotic_failure"] = "high_tail_dominant"
+        elif abs(means[1]) > 2 * abs(means[0]) and abs(means[1]) > 2 * abs(means[2]):
+            out["asymptotic_failure"] = "mid_dominant_or_threshold"
+        else:
+            out["asymptotic_failure"] = "balanced"
+    return out
+
+
+# ── Repertoire-history dedup (GP-164.1, run-level collapse detector) ────
+#
+# When 3+ consecutive ANALOGY fires return the same form repertoire, the
+# fingerprint has stopped discriminating — further ACTIVE injection just
+# reinforces the LLM's prior. Read the prior analogy_log.jsonl, hash
+# candidate sets, surface `n_consecutive_same_repertoire`. The query
+# prompt branches on this to demand a different family.
+
+
+def _repertoire_history(workspace_dir: Optional[Path]) -> dict:
+    """Inspect prior analogy_log.jsonl for repertoire-level collapse.
+
+    Returns:
+        {"prior_fires": int, "n_consecutive_same": int, "last_hash": str}
+    """
+    out = {"prior_fires": 0, "n_consecutive_same": 0, "last_hash": ""}
+    if workspace_dir is None:
+        return out
+    log_path = Path(workspace_dir) / "analogy_log.jsonl"
+    if not log_path.exists():
+        return out
+    try:
+        records = [json.loads(l) for l in open(log_path) if l.strip()]
+    except Exception:
+        return out
+    if not records:
+        return out
+    out["prior_fires"] = len(records)
+    # Hash the candidate-form set per fire (token-shape only, not literal
+    # constants — strip whitespace and lowercase to ignore rendering noise)
+    def _hash_forms(forms: list) -> str:
+        norm = sorted({str(f).strip().lower().replace(" ", "")[:80] for f in (forms or [])})
+        import hashlib
+        return hashlib.md5("|".join(norm).encode()).hexdigest()[:12]
+    hashes = [_hash_forms(r.get("candidate_forms") or []) for r in records]
+    if not hashes:
+        return out
+    out["last_hash"] = hashes[-1]
+    consec = 1
+    for h in reversed(hashes[:-1]):
+        if h == hashes[-1] and h != "":
+            consec += 1
+        else:
+            break
+    out["n_consecutive_same"] = consec
+    return out
 
 
 def _residual_topology(
@@ -235,6 +498,7 @@ def build_residual_fingerprint(
     *,
     domain_hint: Optional[str] = None,
     primary_feature_key: str = "x",
+    workspace_dir: Optional[Path] = None,
 ) -> dict:
     """Build a STRUCTURAL fingerprint of the prior fit's residuals.
 
@@ -331,11 +595,49 @@ def build_residual_fingerprint(
     # has — is what the LLM needs to anchor cross-domain transfer.
     # Computed from per-row residuals re-evaluated against the fitted
     # form. Skipped silently if visible_data or fitted form unavailable.
-    residuals, xs = _compute_residuals_for_topology(
+    residuals, xs, feats_aligned = _compute_residuals_for_topology(
         fit_result_json, visible_data, primary_feature_key
     )
     if residuals:
         fp["residual_topology"] = _residual_topology(residuals, xs)
+
+        # GP-164.1 fingerprint refit (2026-04-27): three new generalizable
+        # signals — multi-feature correlations, per-class topology,
+        # asymptotic regime profile. Each is silent-skipped when the
+        # underlying data isn't there (no secondary features, no
+        # categorical, too few rows). All anonymized; no substrate
+        # naming leaks into the LLM prompt.
+        try:
+            unref = _multi_feature_correlations(
+                residuals, feats_aligned, primary_feature_key
+            )
+            if unref:
+                fp["unreferenced_correlations"] = unref
+        except Exception:
+            pass
+        try:
+            per_class = _per_class_topology(
+                residuals, feats_aligned, primary_feature_key
+            )
+            if per_class:
+                fp["residual_topology_by_class"] = per_class
+        except Exception:
+            pass
+        try:
+            asym = _asymptotic_profile(residuals, xs, visible_data)
+            if asym.get("available"):
+                fp["asymptotic_profile"] = asym
+        except Exception:
+            pass
+
+    # GP-164.1: run-level repertoire collapse detector. Reads prior
+    # analogy_log.jsonl for this workspace (silent-skip if absent).
+    try:
+        hist = _repertoire_history(workspace_dir)
+        if hist.get("prior_fires", 0) > 0:
+            fp["repertoire_history"] = hist
+    except Exception:
+        pass
 
     # GP-167 Turn 7: optional light semantic anchor. Operator-declared
     # broad field category. The LLM uses this to choose appropriate
@@ -380,24 +682,32 @@ class AnalogyResponse:
 # ── LLM query (single call, no retries) ────────────────────────────────
 
 
-def _build_query_prompt(fingerprint: dict) -> str:
+def _build_query_prompt(fingerprint: dict, *, structural_mode: bool = False) -> str:
     """Construct the LLM query prompt.
 
-    The prompt distinguishes three retrieval cases (per the 2026-04-25
-    night refinement of contamination posture) and explicitly asks for
-    case 1 — known FORMS that match the structural shape — while
-    forbidding case 2 (constants from training) and case 3 (specific
-    results from training).
+    Two modes:
 
-    When the fingerprint includes residual topology features, the prompt
-    surfaces them so the LLM can choose forms whose failure-shape
-    matches. When it includes a domain_hint (broad field category), the
-    prompt narrows the form-pool to that field's idioms — still without
-    naming the answer.
+    * Legacy (default, structural_mode=False) — asks for closed-form
+      expressions whose mathematical shape matches the residual surface.
+      Treats analogy as functional-form retrieval. This was the GP-164
+      contract.
+
+    * Structural (structural_mode=True, GP-179 / 2026-04-28) — asks for
+      a structural-physical correspondence first ("this regime is to
+      gravity what the Debye length is to plasma physics"), then an
+      action-term that encodes the analogous symmetry. The mathematical
+      form follows from the mechanism, not the residual shape.
+
+    Switch via rubric flag `analogy_structural_mode: true` (caller's
+    responsibility to pass it through).
     """
     fp_json = json.dumps(fingerprint, indent=2, sort_keys=True)
     domain_hint = fingerprint.get("domain_hint")
     topology = fingerprint.get("residual_topology") or {}
+    unref = fingerprint.get("unreferenced_correlations") or []
+    per_class = fingerprint.get("residual_topology_by_class") or {}
+    asym = fingerprint.get("asymptotic_profile") or {}
+    history = fingerprint.get("repertoire_history") or {}
 
     # Domain-hint clause — present only when operator declared a category
     if domain_hint:
@@ -443,6 +753,194 @@ def _build_query_prompt(fingerprint: dict) -> str:
             "on the summary statistics in the fingerprint alone.\n\n"
         )
 
+    # GP-164.1: unreferenced-correlations clause. When the fingerprint
+    # exposes secondary features that correlate strongly with the residual
+    # but the form doesn't use them, push the LLM toward
+    # missing-additive-or-multiplicative-term forms over threshold forms.
+    if unref:
+        rows = "\n".join(
+            f"  - feature_idx={u['feature_idx']}: spearman_rho={u['spearman_rho']}"
+            f" (|rho|={u['abs_rho']})"
+            for u in unref
+        )
+        unref_clause = (
+            "UNREFERENCED FEATURE CORRELATIONS (residual depends "
+            "monotonically on features the current form does NOT use):\n"
+            f"{rows}\n\n"
+            "Strong evidence of MISSING TERMS, not threshold or regime "
+            "break. Propose forms that introduce these features as "
+            "additive or multiplicative terms (e.g. y = current_form + "
+            "g(feature_idx_N), or y = current_form * h(feature_idx_M)). "
+            "Do NOT propose threshold forms when monotone unreferenced "
+            "correlations exceed |rho| > 0.25 — that is misdiagnosis.\n\n"
+        )
+    else:
+        unref_clause = ""
+
+    # GP-164.1: per-class topology clause. When categorical-like features
+    # split the residual surface into distinct sub-populations with
+    # different residual signs/magnitudes, the bridging problem is
+    # class-asymmetric. The LLM needs to know this so it doesn't propose
+    # one-size-fits-all forms.
+    if per_class:
+        class_summary = []
+        for cat_name, classes in per_class.items():
+            inner = "; ".join(
+                f"{cn}: n={c['n']}, residual_mean={c['residual_mean']}, "
+                f"sign={c['residual_sign']}"
+                for cn, c in classes.items()
+            )
+            class_summary.append(f"  {cat_name}: {inner}")
+        class_clause = (
+            "PER-CLASS RESIDUAL DECOMPOSITION (a categorical feature "
+            "splits the residual surface into distinct sub-populations):\n"
+            + "\n".join(class_summary) + "\n\n"
+            "When residual signs differ across classes (some uniform_pos, "
+            "others uniform_neg, or different magnitudes), the bridge is "
+            "class-asymmetric. Propose CLASS-CONDITIONAL forms (one "
+            "branch per class with shared parameters where possible) or "
+            "forms that explicitly multiply by a class-detector term.\n\n"
+        )
+    else:
+        class_clause = ""
+
+    # GP-164.1: asymptotic regime profile clause. Distinguishes
+    # tail-dominant misspecification (asymptotic-scaling forms needed)
+    # from threshold misspecification (regime-break forms needed).
+    if asym.get("available"):
+        af = asym.get("asymptotic_failure", "balanced")
+        asym_clause = (
+            "ASYMPTOTIC REGIME PROFILE (residual mean across primary "
+            "feature tertiles):\n"
+            f"  - low tertile: residual_mean={asym['low_x_residual_mean']}, "
+            f"std={asym['low_x_residual_std']}\n"
+            f"  - mid tertile: residual_mean={asym['mid_x_residual_mean']}, "
+            f"std={asym['mid_x_residual_std']}\n"
+            f"  - high tertile: residual_mean={asym['high_x_residual_mean']}, "
+            f"std={asym['high_x_residual_std']}\n"
+            f"  - asymptotic_failure: {af}\n\n"
+            "INTERPRETATION:\n"
+            "  - low_tail_dominant or high_tail_dominant → form is missing "
+            "an ASYMPTOTIC-SCALING term (power, ratio of polynomials, "
+            "saturation y = a + b·x^p / (1 + c·x^q)). Threshold forms "
+            "WILL NOT FIX this; do not propose them as primary candidates.\n"
+            "  - mid_dominant_or_threshold → form is missing a regime-break "
+            "or non-monotone bump near the middle of the range. Threshold "
+            "or sigmoid forms are appropriate.\n"
+            "  - balanced → low-amplitude misspecification spread evenly; "
+            "consider a small additive correction or noise-model change.\n\n"
+        )
+    else:
+        asym_clause = ""
+
+    # GP-164.1: repertoire-history clause. Run-level collapse detector.
+    # If 3+ consecutive prior fires returned the same form set, the
+    # current repertoire is exhausted — demand a different family.
+    n_consec = int(history.get("n_consecutive_same", 0) or 0)
+    if n_consec >= 2:
+        history_clause = (
+            "REPERTOIRE-COLLAPSE WARNING: the prior "
+            f"{n_consec} consecutive ANALOGY fires on this run returned "
+            "the SAME candidate-form repertoire. Continuing with the same "
+            "family will not help the apparatus. You MUST propose forms "
+            "from a DIFFERENT structural family this fire. Specifically:\n"
+            "  - If prior repertoires were threshold/sigmoid-dominated, "
+            "propose asymptotic-scaling or rational-function forms.\n"
+            "  - If prior repertoires were polynomial-dominated, propose "
+            "logarithmic/saturation or screened-power forms.\n"
+            "  - If prior repertoires were all single-variable, propose "
+            "multi-variable interactions.\n"
+            "  - If you cannot find a structurally different family that "
+            "matches the fingerprint, return candidate_forms: [] with "
+            "reasoning explaining the exhaustion.\n\n"
+        )
+    else:
+        history_clause = ""
+
+    if structural_mode:
+        # GP-179 (2026-04-28) — structural-isomorphism mode. Replaces the
+        # functional-form retrieval task with a mechanism-correspondence
+        # task. The LLM is asked to identify the STRUCTURAL ANALOGUE in a
+        # different physics domain first, then propose an action term
+        # that encodes the analogous symmetry. The closed-form is
+        # downstream of the mechanism, not the search target.
+        return (
+            "You are a structural physicist for a research apparatus "
+            "that hunts for INVARIANTS, not curves. A candidate form has "
+            "fitted poorly and the residual surface describes WHERE it "
+            "fails across regimes (low-tail / mid / high-tail across the "
+            "primary feature, plus per-class asymmetries).\n\n"
+            "Your task is to identify the STRUCTURAL ISOMORPHISM between "
+            "this regime structure and a known physics mechanism — NOT "
+            "to propose curve shapes. The framing is:\n"
+            "  - 'Solar System is to gravity what hydrogen atom is to "
+            "Coulomb force' — point-charge / Newtonian limit.\n"
+            "  - 'Galaxy is to gravity what plasma is to Coulomb force' — "
+            "screened / Debye-length-like screening at low acceleration.\n"
+            "  - 'Cluster is to gravity what gas at high pressure is to "
+            "ideal gas' — interaction terms dominate over single-particle.\n"
+            "  - 'Wide binary is to gravity what laminar flow is to "
+            "Navier-Stokes' — linear regime, no interaction-driven "
+            "anomaly.\n\n"
+            "PROCESS:\n"
+            "  1. Read the residual-failure-shape and per-class asymmetry "
+            "below.\n"
+            "  2. Name the STRUCTURAL CORRESPONDENCE (one or two short "
+            "sentences). What known physics mechanism — screening field, "
+            "phase transition, scale-breaking, conservation-law violation, "
+            "geometric symmetry — has the same regime structure?\n"
+            "  3. State the SYMMETRY GENERATING THE MECHANISM (e.g., "
+            "'spontaneous breaking of scale invariance at acceleration "
+            "scale a₀', 'thin-shell screening below density threshold ρ_*', "
+            "'conservation of dimensionless ratio Π = g_obs · r / "
+            "sqrt(G·M·a₀)').\n"
+            "  4. Propose the ACTION-TERM that encodes the symmetry. This "
+            "is a sympy-parseable expression in dynamical fields and "
+            "background features. NOT a closed-form prediction — a "
+            "Lagrangian fragment or invariant ansatz. The apparatus will "
+            "derive the closed form from your action term via "
+            "Euler-Lagrange.\n"
+            "  5. THEN, optionally, propose 1-2 closed-form expressions "
+            "that this action term would reduce to in steady state — but "
+            "the action term is the load-bearing output.\n\n"
+            "CONTAMINATION POSTURE:\n"
+            "  - Forbidden: name specific numerical constants from any "
+            "published theory ('a₀ = 1.2e-10' is forbidden; 'a single "
+            "acceleration scale a₀ that breaks scale invariance' is "
+            "permitted).\n"
+            "  - Forbidden: name specific theory results ('MOND' / 'TeVeS' "
+            "/ 'chameleon' are forbidden as labels; the structural "
+            "mechanism they share — scale-breaking / screening / field "
+            "coupling — is permitted).\n\n"
+            + domain_clause
+            + topology_clause
+            + unref_clause
+            + class_clause
+            + asym_clause
+            + history_clause +
+            "Output format (strict JSON, no markdown):\n"
+            "  {\n"
+            '    "structural_correspondence": "1-2 sentence isomorphism statement",\n'
+            '    "symmetry": "named symmetry or invariance principle",\n'
+            '    "action_term": "sympy expression in fields and features",\n'
+            '    "candidate_forms": ["closed-form fallback expr1", "expr2"],\n'
+            '    "structural_descriptors": ["what each candidate captures"],\n'
+            '    "reasoning": "<2-3 sentences>"\n'
+            "  }\n\n"
+            "Constraints:\n"
+            "  1. structural_correspondence and symmetry are REQUIRED.\n"
+            "  2. action_term is REQUIRED if you can name a symmetry. If "
+            "you cannot, set action_term: null and explain why.\n"
+            "  3. candidate_forms: 1-3 expressions consistent with the "
+            "action_term — these are FALLBACK shapes the apparatus can fit "
+            "if it cannot derive the closed form symbolically.\n"
+            "  4. Each form NON-TRIVIAL (not 'a' or 'a*x+b').\n"
+            "  5. If the regime structure is too sparse to identify a "
+            "mechanism, return all four fields as null with reasoning.\n\n"
+            "Residual fingerprint:\n"
+            f"{fp_json}\n"
+        )
+
     return (
         "You are a mathematical pattern matcher for a research "
         "apparatus that searches closed-form expressions. The "
@@ -460,7 +958,11 @@ def _build_query_prompt(fingerprint: dict) -> str:
         "the apparatus found it: forbidden. Do not name specific "
         "phenomena or theories.\n\n"
         + domain_clause
-        + topology_clause +
+        + topology_clause
+        + unref_clause
+        + class_clause
+        + asym_clause
+        + history_clause +
         "Output format (strict JSON, no markdown):\n"
         "  {\n"
         '    "candidate_forms": ["expr1", "expr2", "expr3"],\n'
@@ -491,6 +993,7 @@ def query_analogy(
     runtime: Any = None,
     observe_only: bool = True,
     timeout_seconds: int = 90,
+    structural_mode: bool = False,
 ) -> AnalogyResponse:
     """Single-call LLM query for cross-domain analogy candidates.
 
@@ -540,7 +1043,7 @@ def query_analogy(
         from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
         runtime = _LLMRuntime()
 
-    prompt = _build_query_prompt(fingerprint)
+    prompt = _build_query_prompt(fingerprint, structural_mode=structural_mode)
 
     try:
         response = runtime.call_text(
@@ -599,8 +1102,12 @@ def query_analogy(
     # an empty list with an explicit error tag so the caller can log
     # the collapse without injecting useless forms into the briefing.
     BASELINE_PATTERNS = [
-        # constant only
+        # bare numeric constant
+        r"^\s*[+\-]?\s*\d+(\.\d+)?\s*$",
+        # single-letter constant (a, C, etc.)
         r"^\s*[a-zA-Z]\s*$",
+        # multi-letter constant identifier (const, value, c1, etc.) — no operators
+        r"^\s*[a-zA-Z][a-zA-Z0-9_]*\s*$",
         # ax + b family
         r"^\s*[+\-]?\s*[a-zA-Z]\s*\*\s*[xyzXYZ]\s*([+\-]\s*[a-zA-Z])?\s*$",
         r"^\s*[a-zA-Z]\s*[+\-]\s*[a-zA-Z]\s*\*\s*[xyzXYZ]\s*$",
@@ -609,8 +1116,9 @@ def query_analogy(
         r"^\s*exp\s*\(\s*[+\-]?\s*[a-zA-Z]\s*\*\s*[xyzXYZ]\s*\)\s*$",
         # a*log(b*x) family
         r"^\s*[a-zA-Z]\s*\*\s*log\s*\(\s*[a-zA-Z]?\s*\*?\s*[xyzXYZ]\s*\)\s*$",
-        # a/x or a*x
+        # a/x or a*x or a/(b+x)
         r"^\s*[a-zA-Z]\s*[*/]\s*[xyzXYZ]\s*$",
+        r"^\s*[a-zA-Z]\s*/\s*\(\s*[a-zA-Z]\s*[+\-]\s*[xyzXYZ]\s*\)\s*$",
     ]
     import re as _re_baseline
     cleaned_forms = [str(c).strip() for c in candidate_forms if c]
@@ -618,7 +1126,19 @@ def query_analogy(
         is_baseline = lambda f: any(
             _re_baseline.match(p, f) for p in BASELINE_PATTERNS
         )
-        all_baseline = all(is_baseline(f) for f in cleaned_forms)
+        baseline_count = sum(1 for f in cleaned_forms if is_baseline(f))
+        # Drop individual baseline forms first (keep non-baseline ones)
+        non_baseline_forms = [f for f in cleaned_forms if not is_baseline(f)]
+        # If MAJORITY are baseline (>=50%) treat as collapse; otherwise
+        # filter the baseline ones out and keep the non-baseline survivors.
+        all_baseline = (
+            baseline_count == len(cleaned_forms)
+            or (baseline_count >= len(cleaned_forms) / 2 and not non_baseline_forms)
+        )
+        # Replace candidate_forms with only non-baseline survivors so they
+        # propagate cleanly through the parsed-output path below
+        if non_baseline_forms and not all_baseline:
+            candidate_forms = non_baseline_forms
         if all_baseline:
             return AnalogyResponse(
                 candidate_forms=[],
@@ -770,6 +1290,7 @@ def r15_run(substrate, candidate) -> dict:
             fit_json, visible,
             domain_hint=domain_hint,
             primary_feature_key=primary_key,
+            workspace_dir=workspace_dir,
         )
     except Exception as exc:
         return {
@@ -787,12 +1308,14 @@ def r15_run(substrate, candidate) -> dict:
         }
     observe_only = not bool(rubric.get("enable_analogy_active", False))
 
+    structural_mode = bool(rubric.get("analogy_structural_mode", False))
     try:
         response = query_analogy(
             fp,
             model_id=model_id,
             runtime=runtime,
             observe_only=observe_only,
+            structural_mode=structural_mode,
         )
         log_analogy(workspace_dir, fp, response, iter_index=iter_index)
     except Exception as exc:

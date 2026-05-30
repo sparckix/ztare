@@ -22,6 +22,7 @@ Usage (called automatically by autoresearch_loop):
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 
@@ -74,6 +75,8 @@ Output format (JSON):
       "procedure": "How to execute the test (concrete steps)",
       "pass_criterion": "If this result, the finding STANDS",
       "fail_criterion": "If this result, the finding is KILLED",
+      "required_artifacts": ["specific artifact path or field needed to interpret the test"],
+      "instrument_risk": "main way the proposed test could be uninterpretable",
       "auto_testable": true/false,
       "estimated_cost": "cheap | moderate | expensive"
     }
@@ -124,6 +127,104 @@ def _load_dag_weakest_node(project_dir: Path) -> str:
         return "\n".join(lines)
     except Exception:
         return ""
+
+
+def _strip_code_fences(text: str) -> str:
+    stripped = text.strip()
+    if "```json" in stripped:
+        return stripped.split("```json", 1)[1].split("```", 1)[0].strip()
+    if "```" in stripped:
+        return stripped.split("```", 1)[1].split("```", 1)[0].strip()
+    return stripped
+
+
+def _extract_first_brace_object(text: str) -> str | None:
+    start = text.find("{")
+    if start < 0:
+        return None
+    depth = 0
+    in_string = False
+    escape = False
+    for i, ch in enumerate(text[start:], start=start):
+        if in_string:
+            if escape:
+                escape = False
+            elif ch == "\\":
+                escape = True
+            elif ch == '"':
+                in_string = False
+            continue
+        if ch == '"':
+            in_string = True
+        elif ch == "{":
+            depth += 1
+        elif ch == "}":
+            depth -= 1
+            if depth == 0:
+                return text[start:i + 1]
+    return None
+
+
+def _salvage_inverter_tests(text: str) -> list[dict]:
+    tests: list[dict] = []
+    for category in ("measurement_artifact", "confound", "generalization"):
+        if category not in text:
+            continue
+        block_start = text.find(f'"category": "{category}"')
+        if block_start < 0:
+            continue
+        block = text[block_start:block_start + 1800]
+
+        def _grab(field: str) -> str:
+            m = re.search(rf'"{field}"\s*:\s*"([^"]*)"', block, flags=re.S)
+            return m.group(1).strip() if m else ""
+
+        tests.append(
+            {
+                "category": category,
+                "munger_inversion": _grab("munger_inversion"),
+                "popper_test": _grab("popper_test"),
+                "procedure": _grab("procedure"),
+                "pass_criterion": _grab("pass_criterion"),
+                "fail_criterion": _grab("fail_criterion"),
+                "required_artifacts": [],
+                "instrument_risk": _grab("instrument_risk"),
+                "auto_testable": False,
+                "estimated_cost": _grab("estimated_cost") or "unknown",
+                "salvaged_from_partial_json": True,
+            }
+        )
+    return tests
+
+
+def _parse_or_salvage_inverter_response(response_text: str) -> dict:
+    cleaned = _strip_code_fences(response_text)
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+
+    candidate = _extract_first_brace_object(cleaned)
+    if candidate:
+        try:
+            return json.loads(candidate)
+        except json.JSONDecodeError:
+            pass
+
+    salvaged_tests = _salvage_inverter_tests(cleaned)
+    if salvaged_tests:
+        return {
+            "tests": salvaged_tests,
+            "overall_assessment": (
+                "Inverter response was partial/truncated JSON; salvaged test proposals "
+                "from the structured prefix"
+            ),
+            "confidence_the_champion_survives": 0.5,
+            "partial_json_salvaged": True,
+            "raw_response": cleaned[:4000],
+        }
+
+    raise json.JSONDecodeError("Could not parse inverter JSON", cleaned, 0)
 
 
 def run_inverter(
@@ -193,23 +294,18 @@ Output valid JSON matching the schema in your system prompt.
         )
         response = llm_response.text if hasattr(llm_response, 'text') else str(llm_response)
 
-        # Parse the JSON response
+        # Parse the JSON response. Be robust to fenced JSON, trailing commentary,
+        # and partial/truncated structured outputs: salvage structured tests when
+        # possible rather than emitting an empty inverter review.
         response_text = response.strip()
-
-        # Handle markdown code blocks
-        if "```json" in response_text:
-            response_text = response_text.split("```json")[1].split("```")[0].strip()
-        elif "```" in response_text:
-            response_text = response_text.split("```")[1].split("```")[0].strip()
-
-        result = json.loads(response_text)
+        result = _parse_or_salvage_inverter_response(response_text)
 
     except json.JSONDecodeError:
         result = {
             "tests": [],
             "overall_assessment": "Inverter response was not valid JSON",
             "confidence_the_champion_survives": 0.5,
-            "raw_response": response_text[:500] if 'response_text' in dir() else "no response",
+            "raw_response": response_text[:4000] if 'response_text' in dir() else "no response",
         }
     except Exception as e:
         result = {
@@ -234,6 +330,33 @@ Output valid JSON matching the schema in your system prompt.
     out_path = project_dir / "workspace" / "inverter_review.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(result, indent=2, default=str))
+
+    # GP-190: persist the "what should we test next?" object as a typed
+    # queue artifact. The Inverter remains a proposal generator; this
+    # deterministic translator makes the proposal replayable and auditable.
+    try:
+        from src.ztare.orchestrator.discriminator_queue import (
+            append_discriminators,
+            proposals_from_inverter_result,
+        )
+
+        proposals = proposals_from_inverter_result(
+            project=project_dir.name,
+            trigger_artifact="workspace/inverter_review.json",
+            claim_under_pressure=(champion_thesis or "champion thesis")[:1200],
+            inverter_result=result,
+        )
+        if proposals:
+            q_path, q_count = append_discriminators(project_dir, proposals)
+            result["next_discriminator_queue_path"] = str(q_path)
+            result["next_discriminator_queue_count"] = q_count
+            # Keep inverter_review.json self-describing after queue write.
+            out_path.write_text(json.dumps(result, indent=2, default=str))
+            print(f"  🔬 GP-190 queue: {q_count} discriminator proposal(s) appended")
+    except Exception as exc:  # noqa: BLE001
+        result["next_discriminator_queue_error"] = str(exc)[:300]
+        out_path.write_text(json.dumps(result, indent=2, default=str))
+        print(f"  🔬 GP-190 queue: failed to append discriminator proposals: {exc}")
 
     # Print summary
     confidence = result.get("confidence_the_champion_survives", 0.5)

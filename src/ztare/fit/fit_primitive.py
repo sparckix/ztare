@@ -149,6 +149,7 @@ _ALLOWED_MATH_ATTRS = frozenset(
         "log",
         "log10",
         "log2",
+        "log1p",
         "sqrt",
         "sin",
         "cos",
@@ -174,8 +175,11 @@ _ALLOWED_DIRECT_CALLS = frozenset({
     "sin", "cos", "tan",
     "asin", "acos", "atan", "atan2",
     "sinh", "cosh", "tanh",
-    "exp", "log", "log10", "log2", "sqrt",
+    "exp", "log", "log10", "log2", "log1p", "sqrt",
     "floor", "ceil", "fabs", "abs", "round",
+    # Keep the older GP-035 fit_declaration path aligned with the newer
+    # feature-dict fitter. These are pure scalar helpers, not imports.
+    "sigmoid", "where", "erf", "Rational",
 })
 
 # Pure-constant math attributes permitted in ``eml_only`` fit expressions.
@@ -349,6 +353,54 @@ def _safe_is_coprime(a: int, b: int) -> bool:
     return _safe_gcd(a, b) == 1
 
 
+def _safe_sigmoid(x: float, center: float = 0.0, width: float = 1.0) -> float:
+    if width == 0.0:
+        return 1.0 if x > center else (0.0 if x < center else 0.5)
+    z = (x - center) / width
+    if z > 50:
+        return 1.0
+    if z < -50:
+        return 0.0
+    return 1.0 / (1.0 + math.exp(-z))
+
+
+def _safe_where(cond: bool, a: float, b: float) -> float:
+    return float(a) if bool(cond) else float(b)
+
+
+def _safe_rational(a: float, b: float = 1.0) -> float:
+    return float(a) / float(b)
+
+
+_DIRECT_CALL_NS = {
+    "sin": math.sin,
+    "cos": math.cos,
+    "tan": math.tan,
+    "asin": math.asin,
+    "acos": math.acos,
+    "atan": math.atan,
+    "atan2": math.atan2,
+    "sinh": math.sinh,
+    "cosh": math.cosh,
+    "tanh": math.tanh,
+    "exp": math.exp,
+    "log": math.log,
+    "log10": math.log10,
+    "log2": math.log2,
+    "log1p": math.log1p,
+    "sqrt": math.sqrt,
+    "floor": math.floor,
+    "ceil": math.ceil,
+    "fabs": math.fabs,
+    "abs": abs,
+    "round": round,
+    "sigmoid": _safe_sigmoid,
+    "where": _safe_where,
+    "erf": math.erf,
+    "Rational": _safe_rational,
+}
+
+
 _PY_EXEC_BUILTINS: dict = {
     "range": range, "sum": sum, "len": len, "int": int, "round": round,
     "all": all, "any": any, "abs": abs, "min": min, "max": max,
@@ -393,7 +445,7 @@ def _build_model_callable(
         # and private names). This closes the classic Python-sandbox escape
         # ().__class__.__base__.__subclasses__() which would otherwise reach
         # BuiltinImporter → arbitrary imports → arbitrary code execution.
-        # See research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md
+        # See GP-133 (internal seam)
         try:
             _ast_tree = ast.parse(declaration.expression, mode="eval")
         except SyntaxError as exc:
@@ -434,9 +486,10 @@ def _build_model_callable(
         frozenset(declaration.independent_vars)
         | frozenset(declaration.parameter_names)
         | frozenset({"math"})
+        | frozenset(_ALLOWED_DIRECT_CALLS)
     )
     allowed_math_attrs = _ALLOWED_MATH_ATTRS
-    allowed_direct_calls = frozenset()
+    allowed_direct_calls = _ALLOWED_DIRECT_CALLS
     if grammar == "eml_only":
         allowed_math_attrs = _EML_ONLY_CONSTANT_ATTRS
         allowed_direct_calls = _ALLOWED_DIRECT_CALLS
@@ -463,7 +516,7 @@ def _build_model_callable(
         n_pts = xdata.shape[1]
         out = np.empty(n_pts)
         for i in range(n_pts):
-            ns = {"math": math}
+            ns = {"math": math, **_DIRECT_CALL_NS}
             if grammar == "eml_only":
                 ns["eml"] = lambda x, y: math.exp(x) - math.log(y)
             for j, vname in enumerate(declaration.independent_vars):

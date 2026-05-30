@@ -91,6 +91,7 @@ class ColdLlmSeedBriefingProvider(BriefingProvider):
                 f"for this iter.\n\n"
             )
 
+        qualitative_mode = bool(seed.get("qualitative_mode"))
         candidates = seed.get("candidates") or []
         valid = [c for c in candidates if c.get("valid_python")]
 
@@ -149,21 +150,38 @@ class ColdLlmSeedBriefingProvider(BriefingProvider):
             form = cand.get("form", "")
             lines.append(f"#### Alternative {i}: {name}")
             lines.append(f"**Field of origin (cold-LLM tag, not validated):** {field}\n")
-            lines.append(f"**What this form captures:** {captures}\n")
-            lines.append("```python")
-            lines.append(form.strip())
-            lines.append("```\n")
+            lines.append(f"**What this captures:** {captures}\n")
+            if qualitative_mode:
+                # Argument structure rendered as prose block, not Python.
+                lines.append("**Core structural commitment:**")
+                lines.append(f"> {form.strip()}\n")
+            else:
+                lines.append("```python")
+                lines.append(form.strip())
+                lines.append("```\n")
         lines.append("### Adherence requirement\n")
-        lines.append(
-            "Iter-1 thesis prose MUST: (a) reference at least one of the three "
-            "candidates above by its structural shape (e.g. \"the logistic from "
-            "Alternative 1's RG-flow framing\"), AND (b) state whether the form "
-            "you submit is derived from that candidate, modifies it, or rejects "
-            "it with a stated reason. Iter-1 submissions that do not reference "
-            "any of the three candidates receive an R1 strike at apparatus "
-            "level. From iter 2 onward the candidates remain in your context "
-            "as alternative architectures; engagement is no longer mandatory.\n"
-        )
+        if qualitative_mode:
+            lines.append(
+                "Iter-1 thesis MUST: (a) reference at least one of the three "
+                "argument structures above by its structural commitment (e.g. "
+                "\"adopting the causal-identification move from Alternative 2\"), "
+                "AND (b) state whether your thesis derives from, modifies, or "
+                "explicitly rejects that structural family with a stated reason. "
+                "Submissions that ignore all three receive an R1 strike. "
+                "From iter 2 onward they remain as architectural alternatives; "
+                "engagement is no longer mandatory.\n"
+            )
+        else:
+            lines.append(
+                "Iter-1 thesis prose MUST: (a) reference at least one of the three "
+                "candidates above by its structural shape (e.g. \"the logistic from "
+                "Alternative 1's RG-flow framing\"), AND (b) state whether the form "
+                "you submit is derived from that candidate, modifies it, or rejects "
+                "it with a stated reason. Iter-1 submissions that do not reference "
+                "any of the three candidates receive an R1 strike at apparatus "
+                "level. From iter 2 onward the candidates remain in your context "
+                "as alternative architectures; engagement is no longer mandatory.\n"
+            )
         lines.append(
             "### Caveat (panel Blindspot 2 — forbid-clause is a negative "
             "instruction)\n"

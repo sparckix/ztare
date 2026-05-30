@@ -32,9 +32,12 @@ operator reads + decides.
 from __future__ import annotations
 
 import json
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -72,6 +75,8 @@ class EvidenceGapVerdict:
     tokens_out_total: int = 0
     error: Optional[str] = None
     artifact_path: Optional[str] = None
+    input_hash: Optional[str] = None
+    cache_hit: bool = False
 
     def to_dict(self) -> dict:
         return {
@@ -83,6 +88,8 @@ class EvidenceGapVerdict:
             "tokens_out_total": self.tokens_out_total,
             "error": self.error,
             "artifact_path": self.artifact_path,
+            "input_hash": self.input_hash,
+            "cache_hit": self.cache_hit,
         }
 
 
@@ -305,6 +312,64 @@ def propose_evidence_gap_enrichment(
         _persist_ege(workspace_dir, verdict)
         return verdict.to_dict()
 
+    # Cache check via the common LLMCallCache util (2026-04-28). EGE
+    # makes one reasoning-model call per (class, feature) collapse; on
+    # gp163d that is 6× gpt-5.5 calls @ ~$0.50-0.80 each, ~$3-5 every
+    # run. Identical inputs (substrate critique + rubric domain + model
+    # id) produce identical output, so cache by input hash. Operator
+    # bypasses with rubric.evidence_gap_force_refresh=true.
+    #
+    # Hash-key invariant (audit-fix 2026-04-28): always use the
+    # *resolved* model id in the cache key. The sentinel `@mutator`
+    # collapses to `mutator_model_id` here so backfill scripts and the
+    # live code agree on the same canonical form. The earlier version
+    # used the unresolved sentinel + `mutator_model_id` as separate
+    # fields, which produced different hashes for callers that handed
+    # the resolved id directly vs. via the sentinel.
+    from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+    raw_model_id = str(
+        enrichment_model_id
+        or rubric_data.get("evidence_gap_model_id")
+        or "@mutator"
+    ).strip()
+    _resolved_model_id = (
+        mutator_model_id if raw_model_id in ("@mutator", "mutator", "") else raw_model_id
+    )
+    _ege_cache = LLMCallCache(
+        callsite="evidence_gap_enrichment",
+        project_dir=project_dir,
+        prompt_template_version=1,
+        ttl_seconds=ttl_30_days,
+        force_refresh_flag="evidence_gap_force_refresh",
+    )
+    _cache_hash = _ege_cache.compute_key({
+        "critique_collapses": collapses,
+        "forbidden_domain": rubric_data.get("forbidden_domain"),
+        "substrate_class_key": rubric_data.get("substrate_class_key"),
+        "model_id": _resolved_model_id,
+    })
+    _hit = _ege_cache.lookup(_cache_hash, rubric_data=rubric_data)
+    if _hit is not None:
+        logger.info("EGE cache hit (hash=%s); %d LLM call(s) skipped",
+                    _cache_hash, len(collapses))
+        cached_verdict = EvidenceGapVerdict(attempted=True)
+        cached_verdict.n_gaps_seen = _hit.get("n_gaps_seen", len(collapses))
+        cached_verdict.proposals_by_gap = _hit.get("proposals_by_gap", [])
+        cached_verdict.model_id_used = _hit.get("model_id_used", raw_model_id)
+        cached_verdict.tokens_in_total = _hit.get("tokens_in_total", 0)
+        cached_verdict.tokens_out_total = _hit.get("tokens_out_total", 0)
+        cached_verdict.error = _hit.get("error")
+        cached_verdict.input_hash = _cache_hash
+        cached_verdict.cache_hit = True
+        # Persist the canonical proposals JSON for downstream readers
+        # so consumers don't have to know about the cache layer.
+        _persist_ege(workspace_dir, cached_verdict)
+        return cached_verdict.to_dict()
+
+    # Stamp the verdict with the input hash so the next run's cache
+    # lookup can match against this run's payload.
+    verdict.input_hash = _cache_hash
+
     # Resolve the enrichment model id.
     raw_id = (enrichment_model_id or rubric_data.get("evidence_gap_model_id") or "@mutator")
     raw_id = str(raw_id).strip()
@@ -420,6 +485,22 @@ def propose_evidence_gap_enrichment(
 
     verdict.proposals_by_gap = proposals_by_gap
     _persist_ege(workspace_dir, verdict)
+    # Cache the fresh result so the next identical-input run hits.
+    try:
+        _ege_cache.store(
+            _cache_hash,
+            payload={
+                "n_gaps_seen": verdict.n_gaps_seen,
+                "proposals_by_gap": verdict.proposals_by_gap,
+                "model_id_used": verdict.model_id_used,
+                "tokens_in_total": verdict.tokens_in_total,
+                "tokens_out_total": verdict.tokens_out_total,
+                "error": verdict.error,
+            },
+            model_id_used=verdict.model_id_used,
+        )
+    except Exception as exc:                                        # noqa: BLE001
+        logger.warning("EGE cache.store failed (non-fatal): %s", exc)
     return verdict.to_dict()
 
 
@@ -442,7 +523,7 @@ def _persist_ege(workspace_dir: Path, verdict: EvidenceGapVerdict) -> None:
 
 
 # ---------------------------------------------------------------------------
-# WAR-T6 (2026-04-27): per-iter EGE trigger.
+# Per-iter EGE trigger (2026-04-27).
 #
 # Pre-iter-1 EGE fires only when R26 surfaces withheld_class collapses on a
 # fresh substrate. After iter 1, EGE goes silent for the rest of the run.
@@ -481,7 +562,7 @@ def detect_per_iter_ege_trigger(
 
     eval_history: list of records as written to eval_history.jsonl (ordered
         oldest-first). Each record has keys including `score`, `raw_judge_score`
-        (post WAR-T2), and `gate_verdicts`.
+        (post champion-telemetry-persistence), and `gate_verdicts`.
     latest_eval: the just-completed iter's `new_eval` dict (with `score`,
         `score_cap_applied`, `score_contract`).
     """

@@ -1,4 +1,4 @@
-"""WAR-T5 (2026-04-27): Verified-Axiom briefing provider — Sacred DNA.
+"""Verified-Axiom briefing provider — Sacred DNA (2026-04-27).
 
 When a project's `verified_axioms.json` contains an axiom whose
 `status == "verified_axiom"` and `successor_lock.active == true`, this
@@ -112,7 +112,7 @@ class VerifiedAxiomsProvider(BriefingProvider):
                 parts.append("\n**Newton tasks (what the next iter should attempt)**:")
                 for s in next_steps[:6]:
                     parts.append(f"  - {s}")
-            # WAR-T6 follow-up: surface external consistency checks (e.g.
+            # External consistency surfacing: surface external consistency checks (e.g.
             # NFW degeneracy probe verdict) so the next iter knows the
             # bridge has been independently differentiated from competing
             # explanations. Otherwise the mutator is blind to where the

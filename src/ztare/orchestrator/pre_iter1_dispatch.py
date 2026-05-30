@@ -1,6 +1,6 @@
 """Pre-iter-1 Cage dispatch — extracted from autoresearch_loop.
 
-Part of the Phase 4g Torvalds-style split (task #65). Orchestrator
+Part of the Phase 4g modular split (task #65). Orchestrator
 holds the once-per-run pre-iter-1 hooks. Today: GP-169 cold-LLM Erdős
 seed. Future: any other once-before-iter-1 work that today lives
 inline in autoresearch_loop.
@@ -31,6 +31,7 @@ class PreIter1Verdict:
     cold_seed_n_valid_candidates: int = 0
     cold_seed_artifact_path: Optional[str] = None
     cold_seed_error: Optional[str] = None
+    cold_shot_policy_path: Optional[str] = None
     log_lines: list[str] = field(default_factory=list)
 
 
@@ -44,11 +45,38 @@ def _compute_anonymized_fingerprint(
     Returns a dict with the keys the cold_llm_erdos_seed module reads,
     AFTER applying the panel-Blindspot-1 quantization.
     """
+    # 2026-04-27 hotfix: qualitative-substrate fallback. Substrates declaring
+    # rubric.fit_score_mode='none' or rubric.enable_fit_primitive=false (e.g.
+    # gp168 org-topology) have no numerical features.py. Without this, Erdős
+    # silent-fails and iter 1 has no cold-domain seed candidates. Return a
+    # minimal fingerprint that signals "qualitative; substrate_domain=<X>"
+    # so cold_llm_erdos_seed can produce relevant cross-domain candidates.
+    is_qualitative = (
+        rubric_data.get("fit_score_mode") == "none"
+        or not bool(rubric_data.get("enable_fit_primitive", True))
+        or rubric_data.get("rubric_mode") == "kepler"
+    )
+    feat_path = project_dir / "features.py"
+    if is_qualitative and not feat_path.exists():
+        return {
+            "shape": "qualitative",
+            "monotonicity": 0.0,
+            "regime_break_count": 0,
+            "heavy_tail_flag": False,
+            "sign_pattern": "n_a",
+            "y_dynamic_range_decades": 0.0,
+            "n_visible_classes": 1,
+            "n_withheld_classes": 0,
+            "substrate_domain": rubric_data.get("substrate_domain", "qualitative"),
+            "_qualitative_substrate": True,
+        }
+
     try:
         import importlib.util as _ilu
         import sys as _sys
-        feat_path = project_dir / "features.py"
         if not feat_path.exists():
+            # qualitative fallback above didn't trip; numerical substrate
+            # missing features.py is genuinely broken.
             return None
         spec = _ilu.spec_from_file_location("_pre_iter1_features", str(feat_path))
         if spec is None or spec.loader is None:
@@ -58,6 +86,21 @@ def _compute_anonymized_fingerprint(
         feat_mod = _ilu.module_from_spec(spec)
         spec.loader.exec_module(feat_mod)
     except Exception:
+        # Last resort: if substrate is qualitative, return synthetic fingerprint
+        # so Erdős still fires with substrate_domain context.
+        if is_qualitative:
+            return {
+                "shape": "qualitative",
+                "monotonicity": 0.0,
+                "regime_break_count": 0,
+                "heavy_tail_flag": False,
+                "sign_pattern": "n_a",
+                "y_dynamic_range_decades": 0.0,
+                "n_visible_classes": 1,
+                "n_withheld_classes": 0,
+                "substrate_domain": rubric_data.get("substrate_domain", "qualitative"),
+                "_qualitative_substrate": True,
+            }
         return None
 
     try:
@@ -139,7 +182,77 @@ def dispatch_pre_iter1_cage(
     workspace_dir = workspace_dir or (project_dir / "workspace")
     workspace_dir.mkdir(parents=True, exist_ok=True)
 
-    if not bool(rubric_data.get("enable_cold_llm_erdos_seed", False)):
+    _policy = None
+    try:
+        from src.ztare.orchestrator.cold_shot_policy import (
+            route_cold_shot_families,
+            write_policy_artifacts,
+        )
+
+        _policy = route_cold_shot_families(
+            project=project_dir.name,
+            rubric_data=rubric_data,
+            lifecycle="pre_iter_1",
+        )
+        _policy_path = write_policy_artifacts(
+            workspace_dir=workspace_dir,
+            decision=_policy,
+            event="pre_iter_1_policy_decision",
+        )
+        verdict.cold_shot_policy_path = str(_policy_path)
+        verdict.log_lines.append(
+            "🧭 cold-shot policy: selected="
+            f"{_policy.selected_families or []} saved={_policy_path.name}"
+        )
+        _de_anchor_selected = _policy.family_selected("de_anchor_seed")
+    except Exception as exc:  # noqa: BLE001
+        # Policy observability must never block a run. Fall back to the
+        # legacy flag so old rubrics keep working if the router fails.
+        verdict.log_lines.append(f"🧭 cold-shot policy error (non-fatal): {exc}")
+        _de_anchor_selected = bool(rubric_data.get("enable_cold_llm_erdos_seed", False))
+
+    def _dispatch_evidence_cold_shot() -> None:
+        # Evidence-grounded cold shot (qualitative_evidence_seed family).
+        # Runs independently of the de-anchor seed; a disabled de-anchor route
+        # must not suppress other pre-iter-1 hooks selected by policy.
+        if _policy is not None:
+            _evidence_selected = _policy.family_selected("qualitative_evidence_seed")
+        else:
+            _evidence_selected = bool(
+                rubric_data.get("enable_qualitative_evidence_cold_shot", False)
+            )
+        if not _evidence_selected:
+            return
+        try:
+            from src.ztare.orchestrator.qualitative_evidence_cold_shot import (
+                run_qualitative_evidence_cold_shot,
+            )
+            ev_result = run_qualitative_evidence_cold_shot(
+                project_dir=project_dir,
+                rubric_data=rubric_data,
+                workspace_dir=workspace_dir,
+                mutator_model_id=mutator_model_id,
+                timeout_seconds=float(
+                    rubric_data.get("qualitative_evidence_cold_shot_timeout_seconds", 45.0)
+                ),
+            )
+            if ev_result.success:
+                verdict.log_lines.append(
+                    f"🔎 evidence cold shot: {len(ev_result.candidates)} thesis-family "
+                    f"candidates, saved to qualitative_evidence_cold_shot.json"
+                )
+            else:
+                verdict.log_lines.append(
+                    f"🔎 evidence cold shot: degraded — {ev_result.error}; "
+                    f"iter-1 proceeds without evidence seed"
+                )
+        except Exception as _ev_exc:
+            verdict.log_lines.append(
+                f"🔎 evidence cold shot: error (non-fatal) — {_ev_exc}"
+            )
+
+    if not _de_anchor_selected:
+        _dispatch_evidence_cold_shot()
         return verdict
 
     verdict.cold_seed_attempted = True
@@ -147,7 +260,8 @@ def dispatch_pre_iter1_cage(
     fingerprint = _compute_anonymized_fingerprint(project_dir, rubric_data)
     if fingerprint is None:
         verdict.cold_seed_error = "could not build anonymized fingerprint from features.py"
-        verdict.log_lines.append(f"🔎 GP-169 cold-seed: {verdict.cold_seed_error}")
+        verdict.log_lines.append(f"🔎 GP-169 de-anchor seed: {verdict.cold_seed_error}")
+        _dispatch_evidence_cold_shot()
         return verdict
 
     raw_model_id = str(rubric_data.get("cold_llm_seed_model_id") or "").strip()
@@ -161,11 +275,12 @@ def dispatch_pre_iter1_cage(
                 "mutator_model_id supplied at dispatch — autoresearch_loop "
                 "must pass MUTATOR_MODEL_ID through"
             )
-            verdict.log_lines.append(f"🔎 GP-169 cold-seed: {verdict.cold_seed_error}")
+            verdict.log_lines.append(f"🔎 GP-169 de-anchor seed: {verdict.cold_seed_error}")
+            _dispatch_evidence_cold_shot()
             return verdict
         model_id = str(mutator_model_id).strip()
         verdict.log_lines.append(
-            f"🔎 GP-169 cold-seed: using runtime mutator model '{model_id}' "
+            f"🔎 GP-169 de-anchor seed: using runtime mutator model '{model_id}' "
             f"(rubric set cold_llm_seed_model_id='@mutator' or blank)"
         )
     else:
@@ -182,7 +297,8 @@ def dispatch_pre_iter1_cage(
         )
     except ImportError as exc:
         verdict.cold_seed_error = f"cold_llm_erdos_seed module unavailable: {exc}"
-        verdict.log_lines.append(f"🔎 GP-169 cold-seed: {verdict.cold_seed_error}")
+        verdict.log_lines.append(f"🔎 GP-169 de-anchor seed: {verdict.cold_seed_error}")
+        _dispatch_evidence_cold_shot()
         return verdict
 
     response = query_cold_llm_erdos_seed(
@@ -191,6 +307,8 @@ def dispatch_pre_iter1_cage(
         forbidden_domain=forbidden_domain,
         k_law_budget=k_law_budget,
         timeout_seconds=timeout_s,
+        project_dir=project_dir,
+        rubric_data=rubric_data,
     )
 
     artifact_path = write_cold_seed_log(workspace_dir, response)
@@ -202,15 +320,28 @@ def dispatch_pre_iter1_cage(
     if response.error:
         verdict.cold_seed_error = response.error
         verdict.log_lines.append(
-            f"🔎 GP-169 cold-seed: error — {response.error}; iter-1 proceeds "
+            f"🔎 GP-169 de-anchor seed: error — {response.error}; iter-1 proceeds "
             f"with standard briefing (degraded-mode contract)."
         )
+        _dispatch_evidence_cold_shot()
         return verdict
 
     verdict.cold_seed_succeeded = n_valid >= 2
-    verdict.log_lines.append(
-        f"🔎 GP-169 cold-seed: {len(response.candidates)} candidates, "
-        f"{n_valid} valid Python forms, fields={[c.field_of_origin for c in response.candidates]}, "
-        f"saved to {artifact_path.name}"
-    )
+    qual_mode = getattr(response, "qualitative_mode", False)
+    if qual_mode:
+        verdict.log_lines.append(
+            f"🔎 GP-169 de-anchor seed (qualitative): {len(response.candidates)} "
+            f"argument-structure candidates, fields="
+            f"{[c.field_of_origin for c in response.candidates]}, "
+            f"saved to {artifact_path.name}"
+        )
+    else:
+        verdict.log_lines.append(
+            f"🔎 GP-169 de-anchor seed: {len(response.candidates)} candidates, "
+            f"{n_valid} valid Python forms, fields={[c.field_of_origin for c in response.candidates]}, "
+            f"saved to {artifact_path.name}"
+        )
+
+    _dispatch_evidence_cold_shot()
+
     return verdict

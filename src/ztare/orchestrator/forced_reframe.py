@@ -140,6 +140,9 @@ def detect_forced_reframe_trigger(
     stagnation_threshold: int = 3,
     ast_bucket_threshold: int = 5,
     max_consecutive_fires: int = 2,
+    enable_qualitative_stagnation: bool = False,
+    qualitative_stagnation_threshold: int = 3,
+    qualitative_plateau_threshold: int = 5,
 ) -> ForcedReframeDecision:
     """Inspect iter_history and decide whether to force REFRAME on the
     next iter.
@@ -192,7 +195,17 @@ def detect_forced_reframe_trigger(
             parametric_form_ast_bucket(e.get("parametric_form", ""))
             for e in iter_history[-ast_bucket_threshold:]
         ]
-        if recent_buckets and all(b == recent_buckets[0] for b in recent_buckets):
+        # Guard (2026-05-02 pm): "empty" and "syntax_error" buckets must
+        # NOT trip Trigger 2. Qualitative substrates (no PARAMETRIC_FORM)
+        # would otherwise auto-fire Trigger 2 with bucket="empty" after
+        # ast_bucket_threshold iters, even when no real architectural
+        # stagnation has occurred. Mirrors the guard in
+        # cold_llm_seed_requery.detect_stagnation. This is a regression
+        # fix — was not present originally. No effect on numerical
+        # substrates (their buckets are real AST hashes, never "empty").
+        if (recent_buckets
+                and recent_buckets[0] not in ("empty", "syntax_error")
+                and all(b == recent_buckets[0] for b in recent_buckets)):
             decision.should_force = True
             decision.banned_ast_bucket = recent_buckets[0]
             decision.trigger_reason = (
@@ -206,7 +219,248 @@ def detect_forced_reframe_trigger(
             )
             return decision
 
+    # Trigger 3 — capped-stagnation detection (2026-04-27): consecutive iters
+    # where the apparatus capped the judge's raw score (raw > capped) with
+    # identical capped value. Catches gp163d's path-a-stuck-at-cap pattern:
+    # bridge skeleton variants score raw 100 but get capped to 50 by
+    # R20+R21+R24+R22. Pure zero-score and same-AST-bucket detectors miss
+    # this because (a) capped score is never 0 and (b) different bridge
+    # variants (with/without screening, hardcoded vs fitted sigmoid centers)
+    # produce different AST buckets despite all being path-a.
+    if len(iter_history) >= stagnation_threshold:
+        recent = iter_history[-stagnation_threshold:]
+        capped_streak = 0
+        for e in recent:
+            s = e.get("score")
+            r = e.get("raw_judge_score")
+            if (
+                s is not None and r is not None
+                and isinstance(s, (int, float)) and isinstance(r, (int, float))
+                and r > s
+                and s == recent[-1].get("score")
+            ):
+                capped_streak += 1
+        if capped_streak >= stagnation_threshold:
+            decision.should_force = True
+            last_form = iter_history[-1].get("parametric_form", "")
+            decision.banned_ast_bucket = parametric_form_ast_bucket(last_form)
+            decision.trigger_reason = (
+                f"capped_stagnation: {stagnation_threshold} consecutive iters "
+                f"capped at score={recent[-1].get('score')} by structural detectors "
+                f"(raw_judge_score > capped, indicating path-a parameter laundering)"
+            )
+            decision.banned_family_description = (
+                f"the path-a parametric family that the apparatus has capped at "
+                f"score={recent[-1].get('score')} for {stagnation_threshold} consecutive iters. "
+                f"R20/R21/R24/R22 detected hardcoded structural constants masquerading "
+                f"as fitted parameters. Submit a Lagrangian-derived form (chameleon, AQUAL, "
+                f"MOG, f(R)) per evidence Set I — not another bridge skeleton variant."
+            )
+            return decision
+
+    # Trigger 4 — qualitative-substrate stagnation (2026-05-02). Triggers 1-3
+    # all assume a numerical substrate: score==0 hard-rejects, PARAMETRIC_FORM
+    # AST drift, or capped-stagnation with raw_judge_score. None of those
+    # apply to qualitative_thesis substrates (gp168 v3, gp169) where the
+    # judge produces nonzero prose-thesis scores and there is no
+    # PARAMETRIC_FORM. The qualitative trigger uses (a) repeated weakest_point
+    # gate-name fingerprints across consecutive iters AND (b) sub-baseline
+    # score drift — exactly the gp168 v3 pattern (6 iters scored 13-71,
+    # all citing the same v3 hard-gate failures, never below the iter-0
+    # baseline of 93 from the inherited v2 champion).
+    #
+    # OPT-IN: only fires when rubric sets enable_qualitative_stagnation_detection=true.
+    # Numerical substrates do NOT set this flag, so Trigger 4 never reaches
+    # them — no regression risk for the science branch (gp163d, gp161, etc.).
+    if not enable_qualitative_stagnation:
+        return decision
+    qual_thresh = qualitative_stagnation_threshold
+    if len(iter_history) >= qual_thresh:
+        recent = iter_history[-qual_thresh:]
+        gate_buckets = [_weakest_point_gate_bucket(e) for e in recent]
+        if gate_buckets and all(b is not None and b == gate_buckets[0]
+                                for b in gate_buckets):
+            # All three iters cite the same hard-gate failure.
+            # Sub-baseline drift check: are recent scores below iter-0?
+            iter_0 = next((e.get("score") for e in iter_history
+                           if e.get("iter_index") in (0, "0")), None)
+            if iter_0 is None:
+                iter_0 = iter_history[0].get("score")
+            recent_scores_qual = [e.get("score", 0) for e in recent]
+            sub_baseline = (
+                iter_0 is not None
+                and all(isinstance(s, (int, float)) and s < iter_0
+                        for s in recent_scores_qual)
+            )
+            if sub_baseline:
+                decision.should_force = True
+                decision.banned_ast_bucket = f"qual_gate:{gate_buckets[0]}"
+                decision.trigger_reason = (
+                    f"qualitative_gate_lock: {qual_thresh} consecutive iters "
+                    f"failing the same weakest-point gate ('{gate_buckets[0]}') "
+                    f"with all scores below iter-0 baseline ({iter_0})"
+                )
+                decision.banned_family_description = (
+                    f"the thesis-axis that has been failing gate '{gate_buckets[0]}' "
+                    f"for {qual_thresh} consecutive iters. The mutator is iterating "
+                    f"on the wrong axis — propose a structurally disjoint thesis "
+                    f"family per the charter's mandatory hypothesis space, not "
+                    f"another refinement of the failing axis."
+                )
+                return decision
+
+    # Trigger 5 — flat-plateau qualitative stagnation (2026-05-02 pm).
+    # Trigger 4 catches sub-baseline drift (gp168 v3 pattern: 93→71→26
+    # below baseline). Trigger 5 catches the OPPOSITE flat-plateau
+    # pattern (gp169 v2: 70→98→91→94→67 — high but no improvement past
+    # the iter-1 champion). The mutator can't beat its own champion;
+    # without intervention it will keep refining the wrong axis or
+    # produce over-extensions like iter-4=67. Same reframe target —
+    # propose a structurally disjoint thesis spine — but the trigger
+    # condition is "no champion improvement over N iters" rather than
+    # "scores below baseline."
+    #
+    # Fires when: (a) qualitative-stagnation enabled (same opt-in as T4)
+    # AND (b) ≥ qual_thresh iters AFTER the current champion AND
+    # (c) none of those iters beat the champion's score AND
+    # (d) the recent iter weakest-points share a gate bucket.
+    plateau_thresh = qualitative_plateau_threshold
+    if len(iter_history) >= plateau_thresh + 1:
+        scores = [e.get("score") for e in iter_history
+                  if isinstance(e.get("score"), (int, float))]
+        if scores:
+            champ_score = max(scores)
+            champ_idx = scores.index(champ_score)
+            iters_after_champ = iter_history[champ_idx + 1:]
+            if len(iters_after_champ) >= plateau_thresh:
+                recent_after_champ = iters_after_champ[-plateau_thresh:]
+                no_new_champ = all(
+                    isinstance(e.get("score"), (int, float))
+                    and e.get("score") < champ_score
+                    for e in recent_after_champ
+                )
+                gate_buckets_pl = [_weakest_point_gate_bucket(e)
+                                   for e in recent_after_champ]
+                # Trigger 5 looseness (2026-05-02 pm): fire on plateau alone,
+                # WITHOUT requiring same gate. The same-gate constraint was
+                # too strict — gp169 v2 plateau iters cited different gates
+                # (certificate_partition then fail_closed_blindness) which IS
+                # stagnation from the user's perspective even though the
+                # apparatus thinks it's exploring different angles.
+                # Same-gate is now a *bonus signal* for the trigger reason
+                # text but no longer required for firing.
+                same_gate = (
+                    gate_buckets_pl
+                    and all(b is not None and b == gate_buckets_pl[0]
+                            for b in gate_buckets_pl)
+                )
+                if no_new_champ:
+                    decision.should_force = True
+                    bucket_label = gate_buckets_pl[0] if same_gate else "varied"
+                    decision.banned_ast_bucket = f"qual_plateau:{bucket_label}"
+                    same_gate_note = (
+                        f" AND all citing the same gate ('{gate_buckets_pl[0]}')"
+                        if same_gate else
+                        f" (gates varied: {gate_buckets_pl} — apparatus "
+                        f"explored different angles but none beat the champion)"
+                    )
+                    decision.trigger_reason = (
+                        f"qualitative_flat_plateau: {plateau_thresh} consecutive "
+                        f"post-champion iters all below champion score "
+                        f"({champ_score}){same_gate_note}. The mutator cannot "
+                        f"beat its own champion."
+                    )
+                    decision.banned_family_description = (
+                        f"the thesis-axis around the iter-{champ_idx} champion "
+                        f"(score {champ_score}). {plateau_thresh} subsequent iters "
+                        f"failed to improve while citing the same weakest-point "
+                        f"gate ('{gate_buckets_pl[0]}'). Propose a structurally "
+                        f"disjoint thesis spine, not another refinement of the "
+                        f"champion."
+                    )
+                    return decision
+
     return decision
+
+
+def _weakest_point_gate_bucket(entry: dict) -> Optional[str]:
+    """Extract a stable gate-name fingerprint from an iter entry's
+    weakest_point critique. Two iters that fail the same gate produce the
+    same bucket; this is the qualitative analog of parametric_form_ast_bucket.
+
+    Heuristic: scan the weakest_point text for known v3 gate phrases (≥3
+    disjoint families, substrate-prior diversity, substrate-paraphrase,
+    no-tautology, exogenous-pressure, second-order adaptation, asymmetry
+    stress test). Returns the matched gate label, or a fallback hash of
+    the first 80 chars if no known phrase matches. Returns None if the
+    entry has no weakest_point string.
+    """
+    wp = entry.get("weakest_point") or entry.get("weakest_point_text") or ""
+    if not isinstance(wp, str) or not wp.strip():
+        return None
+    wp_lower = wp.lower()
+    # Ordered known gates — first match wins.
+    known_gates = [
+        # gp168 v3 (org topology) gate phrases
+        ("disjoint_families",
+         ["disjoint construct famil", "three disjoint famil", "≥3 disjoint",
+          "comparative evaluation of at least three", "minimum disjoint famil",
+          "multi-family hypothesis"]),
+        ("substrate_prior_diversity",
+         ["substrate prior", "substrate-prior", "substrate priors",
+          "marine/ecological", "intellectual tradition"]),
+        ("substrate_paraphrase",
+         ["paraphrase", "substrate-paraphrase", "substrate-leak",
+          "substrate leak"]),
+        ("no_tautology",
+         ["tautolog", "circular", "defines its own success",
+          "vacuous", "unfalsifiable"]),
+        ("exogenous_pressure",
+         ["exogenous pressure", "exogenous resource", "closure clock",
+          "exogenous-pressure"]),
+        ("second_order_adaptation",
+         ["second-order", "covert fusion", "biosocial", "co-evolution",
+          "ecological adaptation", "jacobi inversion"]),
+        ("asymmetry_stress_test",
+         ["asymmetry", "edge case", "dementia", "philosophizing llm",
+          "locked-in", "anesthet"]),
+        ("compensation_axis",
+         ["compensation", "compensatory", "weakest-link", "convex compensat",
+          "hard ceiling"]),
+        ("worked_mechanism",
+         ["worked mechanism", "by mechanism", "not by assertion",
+          "mechanism vs assertion"]),
+        # gp169 v2 (consciousness audit) gate phrases — added 2026-05-02 pm.
+        # Without these, gp169-v2-shaped weakest_points fall through to the
+        # prose-hash fallback and same-gate detection misses the actual
+        # repeated failure mode.
+        ("alien_statability",
+         ["alien-statable", "alien-statability", "first-person presupposition",
+          "first-person anchor", "anthropic leakage", "anthropic-leak",
+          "non-anthropic"]),
+        ("no_citation_recapitulation",
+         ["no-citation", "school recovery", "training-corpus consensus",
+          "recapitulat", "thesaurus substitut"]),
+        ("endogenous_closure",
+         ["endogenous closure", "endogenous-closure", "internal coherence",
+          "fixed point under substrate-paraphrase"]),
+        ("certificate_partition",
+         ["translation-admissibility", "tau(d)", "τ(d)", "certificate",
+          "preserved-analog", "severed-analog", "partition not crisp",
+          "partition operator"]),
+        ("fail_closed_blindness",
+         ["fail-closed", "structural blindness", "structural blind spot",
+          "positive recognition blocked", "pyrrhic", "absence of evidence",
+          "systematic blindness", "blocked selector"]),
+        ("non_applicability_admission",
+         ["non-applicability", "bounded domain", "universal-applicability"]),
+    ]
+    for label, phrases in known_gates:
+        if any(p in wp_lower for p in phrases):
+            return label
+    # Fallback: hash first 80 chars so prose-distinct critiques don't
+    # collide on the same bucket.
+    return f"prose:{hashlib.sha1(wp_lower[:80].encode()).hexdigest()[:8]}"
 
 
 def build_forced_reframe_briefing_block(

@@ -64,6 +64,7 @@ class ColdSeedResponse:
     error: Optional[str] = None
     forbidden_domain: Optional[str] = None
     fingerprint_signature: str = ""
+    qualitative_mode: bool = False
 
     def to_dict(self) -> dict:
         return {
@@ -75,6 +76,7 @@ class ColdSeedResponse:
             "error": self.error,
             "forbidden_domain": self.forbidden_domain,
             "fingerprint_signature": self.fingerprint_signature,
+            "qualitative_mode": self.qualitative_mode,
         }
 
 
@@ -169,12 +171,70 @@ _FORBIDDEN_CONTROL_FLOW_RE = re.compile(
 )
 
 
+def _build_qualitative_cold_seed_prompt(
+    substrate_domain: str,
+    forbidden_domain: Optional[str],
+) -> str:
+    """Prompt for qualitative substrates: returns thesis argument structures,
+    NOT Python expressions. The JSON schema uses `argument_structure` instead
+    of `form` so the briefing provider can render prose, not code blocks."""
+    forbid_clause = ""
+    if forbidden_domain:
+        forbid_clause = (
+            f"\nFORBIDDEN FIELDS: do NOT draw argument structures from "
+            f"{forbidden_domain} or directly adjacent fields. "
+            f"The goal is cross-domain structural novelty — argument forms "
+            f"the home field would NOT propose on its own.\n"
+        )
+    return (
+        "You are a structural philosopher of science with cross-disciplinary "
+        "fluency in causal inference, formal epistemology, measurement theory, "
+        "decision theory, topology, information theory, and game theory. "
+        "You are given a qualitative reasoning problem and asked to propose "
+        "argument structures that could make the problem tractable.\n\n"
+        f"The substrate domain is: {substrate_domain}\n"
+        f"{forbid_clause}\n"
+        "Propose 3 structurally distinct argument families, each from a "
+        "DIFFERENT field. Each must specify a NON-TRIVIAL STRUCTURAL COMMITMENT "
+        "— a formal move that transforms the problem, not a vague analogy.\n\n"
+        "Output MUST be a JSON object with this exact schema "
+        "(no markdown, no prose outside JSON):\n"
+        "{\n"
+        '  "qualitative_mode": true,\n'
+        '  "candidates": [\n'
+        "    {\n"
+        '      "name": "short identifier",\n'
+        '      "argument_structure": "the core formal move (2-4 sentences, '
+        'precise — what object does it introduce, what does it prove or '
+        'rule out, what condition makes it applicable)",\n'
+        '      "field_of_origin": "the cross-domain field this comes from",\n'
+        '      "what_it_captures": "what aspect of the problem this resolves"\n'
+        "    },\n"
+        '    ... (exactly 3 candidates) ...\n'
+        "  ]\n"
+        "}\n\n"
+        "Return ONLY the JSON object."
+    )
+
+
 def _build_cold_seed_prompt(
     fingerprint: dict,
     forbidden_domain: Optional[str],
     k_law_budget: int,
 ) -> str:
-    """Render the strictly-anonymized prompt for the cold LLM call."""
+    """Render the strictly-anonymized prompt for the cold LLM call.
+
+    Routes to `_build_qualitative_cold_seed_prompt` for qualitative substrates
+    (no Python expressions; returns thesis argument structures instead).
+    """
+    if fingerprint.get("_qualitative_substrate"):
+        return _build_qualitative_cold_seed_prompt(
+            substrate_domain=str(
+                fingerprint.get("substrate_domain") or "qualitative reasoning"
+            ),
+            forbidden_domain=forbidden_domain,
+        )
+
     fp_dict = {
         k: v for k, v in fingerprint.items()
         if k in {
@@ -302,6 +362,8 @@ def query_cold_llm_erdos_seed(
     forbidden_domain: Optional[str] = None,
     k_law_budget: int = 7,
     timeout_seconds: float = 120.0,
+    project_dir: Optional[Any] = None,
+    rubric_data: Optional[dict] = None,
 ) -> ColdSeedResponse:
     """Run the cold-LLM Erdős seed query.
 
@@ -338,6 +400,45 @@ def query_cold_llm_erdos_seed(
         {k: v for k, v in fingerprint.items() if not isinstance(v, (dict, list))},
         sort_keys=True,
     )[:200]
+
+    # LLMCallCache lookup (2026-04-28). Same fingerprint + forbidden
+    # domain + k_law budget + model id ⇒ same response. Activates only
+    # when a project_dir is provided (legacy callers without it skip
+    # caching). Operator override: rubric.cold_llm_seed_force_refresh.
+    _cache = None
+    _cache_key = None
+    if project_dir is not None:
+        try:
+            from pathlib import Path as _Path
+            from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+            _cache = LLMCallCache(
+                callsite="cold_llm_erdos_seed",
+                project_dir=_Path(project_dir),
+                prompt_template_version=1,
+                ttl_seconds=ttl_30_days,
+                force_refresh_flag="cold_llm_seed_force_refresh",
+            )
+            _cache_key = _cache.compute_key({
+                "fingerprint_signature": fp_signature,
+                "forbidden_domain": forbidden_domain,
+                "k_law_budget": k_law_budget,
+                "model_id": model_id,
+            })
+            _hit = _cache.lookup(_cache_key, rubric_data=rubric_data)
+            if _hit is not None:
+                # Reconstruct ColdSeedResponse from cached payload.
+                cached_candidates = [
+                    ColdSeedCandidate(**c) for c in _hit.get("candidates", [])
+                ]
+                return ColdSeedResponse(
+                    candidates=cached_candidates,
+                    error=_hit.get("error"),
+                    model_id_used=_hit.get("model_id_used", model_id),
+                    forbidden_domain=forbidden_domain,
+                    fingerprint_signature=fp_signature,
+                )
+        except Exception:                                              # noqa: BLE001
+            _cache = None  # cache failure must never break the call
 
     prompt = _build_cold_seed_prompt(fingerprint, forbidden_domain, k_law_budget)
 
@@ -382,20 +483,60 @@ def query_cold_llm_erdos_seed(
         out.error = "cold_llm_response_missing_candidates_list"
         return out
 
+    is_qualitative = bool(
+        fingerprint.get("_qualitative_substrate")
+        or parsed.get("qualitative_mode")
+    )
+    out.qualitative_mode = is_qualitative
+
     for cand in raw_candidates[:3]:  # cap at 3 even if model returns more
+        # Qualitative candidates use `argument_structure`; numerical use `form`.
+        form_or_structure = str(
+            cand.get("argument_structure") or cand.get("form", "")
+        )[:1000]
         c = ColdSeedCandidate(
             name=str(cand.get("name", ""))[:80],
-            form=str(cand.get("form", ""))[:1000],
+            form=form_or_structure,
             field_of_origin=str(cand.get("field_of_origin", ""))[:80],
             what_it_captures=str(cand.get("what_it_captures", ""))[:300],
         )
-        ok, err = _validate_candidate_form(c.form)
-        c.valid_python = ok
-        c.validation_error = err
+        if is_qualitative:
+            # Argument structures are prose — Python validation doesn't apply.
+            # Mark valid=True so the briefing provider surfaces them.
+            c.valid_python = True
+            c.validation_error = None
+        else:
+            ok, err = _validate_candidate_form(c.form)
+            c.valid_python = ok
+            c.validation_error = err
         out.candidates.append(c)
 
     if not any(c.valid_python for c in out.candidates):
         out.error = "all_candidates_failed_validation"
+
+    # Cache the fresh response so the next identical-input run hits.
+    if _cache is not None and _cache_key is not None:
+        try:
+            _cache.store(
+                _cache_key,
+                payload={
+                    "candidates": [
+                        {
+                            "name": c.name,
+                            "form": c.form,
+                            "field_of_origin": c.field_of_origin,
+                            "what_it_captures": c.what_it_captures,
+                            "valid_python": c.valid_python,
+                            "validation_error": c.validation_error,
+                        } for c in out.candidates
+                    ],
+                    "error": out.error,
+                    "model_id_used": out.model_id_used,
+                },
+                model_id_used=out.model_id_used,
+            )
+        except Exception:                                              # noqa: BLE001
+            pass  # cache write failure must not break the return
 
     return out
 

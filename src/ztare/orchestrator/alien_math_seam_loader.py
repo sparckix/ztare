@@ -1,6 +1,6 @@
 """GP-168 alien-math seam loader.
 
-Parses the alien-math framings out of `research_areas/private/seams/engine/
+Parses the alien-math framings out of `[internal-ref]
 GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md` (Appendix:
 Alien-Math Panel Framings). Returns a list of dicts in the shape that
 `build_forced_reframe_briefing_block` consumes:
@@ -182,7 +182,7 @@ def _candidate_seam_paths(project_dir: Optional[Path]) -> list[Path]:
     """
     paths: list[Path] = []
     if project_dir is not None:
-        # Walk up looking for a sibling research_areas/private/seams tree
+        # Walk up looking for a sibling [internal-ref] tree
         cur = project_dir.resolve()
         for _ in range(6):
             seam_root = cur / "research_areas" / "private" / "seams" / "engine"
@@ -206,11 +206,28 @@ def _candidate_seam_paths(project_dir: Optional[Path]) -> list[Path]:
     return paths
 
 
-# Section header for the appendix that holds the framings
+# Section header for the default appendix
 _APPENDIX_RE = re.compile(
     r"##\s+Appendix:\s+Alien-Math Panel Framings",
     re.IGNORECASE,
 )
+
+# Domain → appendix header mapping. Substrates declare `substrate_domain`
+# in their rubric; the loader maps that to the appropriate appendix in
+# the seam file. Adding a new domain = adding one entry here + one
+# appendix in the seam markdown. No more hardcoded Python lists per domain.
+_DOMAIN_APPENDIX_HEADERS = {
+    "modified_gravity": "Modified-Gravity Lagrangians",
+    "org_topology": "Organizational Topology Alternatives",
+}
+
+
+def _appendix_re_for_header(header_text: str) -> "re.Pattern[str]":
+    """Build a regex matching `## Appendix: <header_text>` (case-insensitive)."""
+    return re.compile(
+        r"##\s+Appendix:\s+" + re.escape(header_text),
+        re.IGNORECASE,
+    )
 # Per-framing header: "### Framing F1 — <name>" (em dash or hyphen)
 _FRAMING_RE = re.compile(
     r"^###\s+Framing\s+(F\d+)\s+[—\-]\s+(.+?)\s*$",
@@ -294,17 +311,34 @@ def _infer_field(framing_name: str) -> str:
     return "uncategorized cross-domain framing"
 
 
-def _parse_seam_file(seam_path: Path) -> Optional[list[dict]]:
+def _parse_seam_file(
+    seam_path: Path,
+    appendix_re: "Optional[re.Pattern[str]]" = None,
+) -> Optional[list[dict]]:
     """Parse one seam file. Returns None on parse failure (caller
-    should fall back)."""
+    should fall back).
+
+    `appendix_re` overrides the default appendix header — used by
+    domain-keyed dispatch. When None, the original Alien-Math
+    appendix is parsed (backward-compatible behaviour).
+    """
+    re_to_use = appendix_re if appendix_re is not None else _APPENDIX_RE
     try:
         text = seam_path.read_text(encoding="utf-8", errors="replace")
     except Exception:
         return None
-    m = _APPENDIX_RE.search(text)
+    m = re_to_use.search(text)
     if not m:
         return None
-    body = text[m.end():]
+    # Body covers from the matched appendix heading up to the next
+    # `## Appendix:` heading or EOF. Without this stop, multiple
+    # appendices in the same seam file bleed into each other.
+    body_start = m.end()
+    next_appendix = re.search(r"^##\s+Appendix:\s+", text[body_start:], re.MULTILINE)
+    if next_appendix:
+        body = text[body_start: body_start + next_appendix.start()]
+    else:
+        body = text[body_start:]
     framings = _split_framings(body)
     if not framings:
         return None
@@ -361,12 +395,29 @@ def load_alien_math_alternatives(
     if domain and str(domain).strip().lower() in _modified_gravity_aliases:
         return list(_MODIFIED_GRAVITY_LAGRANGIANS)
 
+    # Domain-keyed appendix dispatch. If `substrate_domain` maps to a
+    # named appendix in _DOMAIN_APPENDIX_HEADERS, walk the seam paths
+    # parsing that appendix specifically. Falls through to default
+    # Alien-Math appendix when the domain-specific appendix is missing
+    # or empty (resilient to an under-populated seam file).
+    paths = _candidate_seam_paths(project_dir)
+    domain_key = (str(domain).strip().lower() if domain else None)
+    if domain_key and domain_key in _DOMAIN_APPENDIX_HEADERS:
+        header = _DOMAIN_APPENDIX_HEADERS[domain_key]
+        appendix_re = _appendix_re_for_header(header)
+        for p in paths:
+            parsed = _parse_seam_file(p, appendix_re=appendix_re)
+            if parsed and len(parsed) >= 2:
+                # Domain-specific match — do NOT cache (cache key is
+                # domain-naive; mixing domains across calls would poison it).
+                return list(parsed)
+        # Domain-specific appendix not found — log-and-fall-through to default.
+
     global _CACHED
     if use_cache:
         with _CACHE_LOCK:
             if _CACHED is not None:
                 return list(_CACHED)
-    paths = _candidate_seam_paths(project_dir)
     parsed: Optional[list[dict]] = None
     for p in paths:
         parsed = _parse_seam_file(p)

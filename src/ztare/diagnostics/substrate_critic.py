@@ -102,7 +102,7 @@ class SubstrateCritique:
     # invisible to the apparatus. This list flags those + the joint
     # condition where ≥2 withheld classes each have a different
     # collapsed feature (the gp163d failure mode that capped the run
-    # at MRE 0.5 cross-class — see scripts/backtest_rar_extended.py).
+    # at MRE 0.5 cross-class — see projects/gp163d_unified_accel/scripts/backtest_rar_extended.py).
     withheld_class_feature_collapses: list[dict] = field(default_factory=list)
     cross_class_joint_form_blockers: list[dict] = field(default_factory=list)
     regime_breaks_in_data: list[dict] = field(default_factory=list)

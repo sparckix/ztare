@@ -101,7 +101,7 @@ class IterTrajectoryProvider(BriefingProvider):
         ]
         for i, e in enumerate(recent):
             score = e.get("score", "?")
-            # WAR-T5 (2026-04-27): surface raw judge score when it differs
+            # 2026-04-27: surface raw judge score when it differs
             # from the capped score. Without this annotation, a capped
             # breakthrough (raw 100 → capped 50) is indistinguishable from
             # a true plateau iter at score 50. The next iter's mutator

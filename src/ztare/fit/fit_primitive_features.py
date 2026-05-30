@@ -33,7 +33,7 @@ Scope (v1):
   - Multi-start (default 3 starts, escalates to 5 on stagnation)
   - K_law budget enforced via parameter_names length
 
-Validated 2026-04-25 by scripts/gp156_integration_smoke_test.py:
+Validated 2026-04-25 by scripts/public/audits/gp156_integration_smoke_test.py:
   * On gp155 ground-truth law (5 params, 72 visible rows): all params
     recovered within 0.3 of truth, max residual 0.048
   * AST safety: 4/4 injection attempts blocked
@@ -198,6 +198,17 @@ _SAFE_NS_BASE = {
     # without nested ternaries.
     "where": _where,
     "erf": math.erf,
+    # 2026-04-27 (gp163d iter 2 v3.4): gate-harness PPN gates crashed on
+    # NameError(`tanh`) when the form used tanh; tanh was in fit-time NS
+    # but missing from gate-time injection. Gate-time list extended below;
+    # mirror the additional hyperbolic / inverse-trig / numerically-safe
+    # primitives here so fit-time and gate-time namespaces stay aligned.
+    "sinh": math.sinh,
+    "cosh": math.cosh,
+    "atan": math.atan,
+    "atan2": math.atan2,
+    "log1p": math.log1p,
+    "expm1": math.expm1,
 }
 
 
@@ -249,6 +260,13 @@ def where(cond, a, b):
 
 
 erf = _ztare_math.erf
+tanh = _ztare_math.tanh
+sinh = _ztare_math.sinh
+cosh = _ztare_math.cosh
+atan = _ztare_math.atan
+atan2 = _ztare_math.atan2
+log1p = _ztare_math.log1p
+expm1 = _ztare_math.expm1
 # === end ZTARE-GP157-Bug37 gate-time primitives ===
 
 '''
@@ -841,6 +859,10 @@ def fit_features(
     relative_residuals: bool = False,
     weighted_residuals: bool = False,
     sigma_key: str = "sigma",
+    anchors: Optional[list[dict]] = None,
+    anchor_penalty_lambda: float = 100.0,
+    noether_invariants: Optional[list[str]] = None,
+    noether_variance_lambda: float = 0.0,
 ) -> FeatureFitResult:
     """Fit free parameters of `parametric_form` to (features_dict, y_obs) pairs.
 
@@ -916,6 +938,29 @@ def fit_features(
         fn = _safe_compile_form(parametric_form)
     except ValueError as exc:
         return FeatureFitResult(success=False, error_message=str(exc))
+
+    # GP-180 Noether-variance loss (2026-04-28). Each invariant string is
+    # compiled identically to a parametric form. At fit time we evaluate
+    # each invariant on every row and add λ · CV²(Π) to the objective.
+    # CV² = Var(Π) / max(⟨|Π|⟩, ε)² is dimensionless and is zero when Π is
+    # constant across rows — a real conservation law. λ defaults to 0
+    # (off) so legacy fits are unchanged. Compile failure or a NaN-only
+    # row set silently disables that one invariant; we never let a Noether
+    # bug kill an otherwise valid fit.
+    _noether_fns: list[tuple[str, callable]] = []
+    if noether_invariants and noether_variance_lambda > 0:
+        for inv_str in noether_invariants:
+            if not isinstance(inv_str, str) or not inv_str.strip():
+                continue
+            # Steady-state Noether may contain `q_dot` (multiplied by 0)
+            # or the steady-state symbol; replace q_dot → 0 syntactically
+            # so the compiled form does not require a `q_dot` variable.
+            sanitized = inv_str.replace("q_dot", "0")
+            try:
+                _inv_fn = _safe_compile_form(sanitized)
+                _noether_fns.append((inv_str, _inv_fn))
+            except (ValueError, SyntaxError):
+                continue  # silently skip uncompilable invariants
 
     visible_list = list(visible_data)
     if not visible_list:
@@ -1051,6 +1096,67 @@ def fit_features(
         # Partial failure: penalize but keep gradient signal from successful rows
         if n_row_exc > 0:
             sse += PENALTY * (n_row_exc / n_rows)
+        # Frame Adjudicator v2 — Component 2: anchor-augmented loss.
+        # Anchors are absolute-y constraints the law must satisfy at named
+        # asymptotic points (Solar System, deep-MOND galaxy, cluster, binary).
+        # Penalty is hinge-loss in dex: only points beyond tolerance contribute.
+        # λ scales the dex² penalty against the SSE; default 100 means a
+        # 0.5-dex anchor violation costs ~25 (vs typical SSE ~1e-20 for raw
+        # residuals → use weighted_residuals OR relative_residuals to make
+        # the loss dimensionless before turning anchors on).
+        if anchors:
+            anchor_pen = 0.0
+            for a in anchors:
+                try:
+                    afeat = a.get("features") or {}
+                    yexp = float(a.get("y_expected") or a.get("y") or 0.0)
+                    tol = float(a.get("tolerance_dex", 0.13))
+                    if yexp <= 0:
+                        continue
+                    ypred = fn(afeat, params)
+                    if ypred is None or not math.isfinite(ypred) or ypred <= 0:
+                        anchor_pen += 1.0  # hard miss — predict-impossible
+                        continue
+                    delta_dex = math.log10(ypred / yexp)
+                    excess = abs(delta_dex) - tol
+                    if excess > 0:
+                        anchor_pen += excess ** 2
+                except (ZeroDivisionError, ValueError, OverflowError, KeyError, TypeError):
+                    anchor_pen += 1.0
+            sse += anchor_penalty_lambda * anchor_pen
+        # GP-180 Noether-variance loss (2026-04-28). For each compiled
+        # invariant Π, evaluate on every row, then add λ · Var(Π)/⟨|Π|⟩²
+        # (squared coefficient of variation, dimensionless). A real
+        # conservation law has CV ≈ 0 and contributes nothing; a fake
+        # invariant scattered across regimes pushes the optimizer away.
+        if _noether_fns:
+            for _inv_str, _inv_fn in _noether_fns:
+                _vals: list[float] = []
+                for feats, _ in visible_list:
+                    try:
+                        v = _inv_fn(feats, params)
+                    except (ZeroDivisionError, ValueError, OverflowError, KeyError, TypeError):
+                        continue
+                    if v is None:
+                        continue
+                    try:
+                        vf = float(v)
+                    except (TypeError, ValueError):
+                        continue
+                    if math.isnan(vf) or math.isinf(vf):
+                        continue
+                    _vals.append(vf)
+                if len(_vals) < 3:
+                    continue
+                _mu = sum(_vals) / len(_vals)
+                _abs_mu = abs(_mu)
+                if _abs_mu < 1e-300:
+                    # Degenerate: all-zero invariant. Skip rather than
+                    # divide-by-zero. CV is undefined here.
+                    continue
+                _var = sum((v - _mu) ** 2 for v in _vals) / len(_vals)
+                _cv2 = _var / (_abs_mu * _abs_mu)
+                sse += noether_variance_lambda * _cv2
         return sse
 
     # GP-156 Bug #5 fix (2026-04-25): per-parameter init_range for
@@ -1311,11 +1417,95 @@ def fit_features(
                 return True
         return False
 
+    # Pathology audit fix (2026-04-27 night): a parameter whose every
+    # occurrence sits inside a saturating wrapper (sigmoid / tanh / erf
+    # / `1/(1+exp(-name))`) is bounded ∈ (-1, +1) or (0, 1) regardless
+    # of magnitude — past the saturation knee, the value is irrelevant.
+    # Iter 5's `raw_eta=-152` was the canonical false positive: lived
+    # only inside `1/(1+exp(-raw_eta))`, so |raw_eta|=152 vs |raw_eta|=10
+    # produces identical predictions. The linear-magnitude check fired
+    # anyway and clamped to 0, which DOES change the form (sigmoid(0)=0.5).
+    # AST-walk: param is "saturation-only" iff EVERY `params['name']`
+    # subscript node has, somewhere on its ancestor chain up to the
+    # nearest call boundary, a Call to one of the saturating functions.
+    _SATURATING_FUNCS = frozenset({"sigmoid", "tanh", "erf", "atan", "arctan"})
+
+    def _param_only_in_saturating_context(form_str: str, name: str) -> bool:
+        if not form_str:
+            return False
+        try:
+            tree = ast.parse(form_str, mode="eval")
+        except SyntaxError:
+            return False
+        # Find every `params['name']` subscript usage and walk parents.
+        # Need parent links — build them.
+        parents: dict[int, ast.AST] = {}
+        for parent in ast.walk(tree):
+            for child in ast.iter_child_nodes(parent):
+                parents[id(child)] = parent
+
+        def _has_saturating_ancestor(node: ast.AST) -> bool:
+            cur = node
+            while True:
+                par = parents.get(id(cur))
+                if par is None:
+                    break
+                # Hit a Call to a saturating func → saturation context.
+                if isinstance(par, ast.Call):
+                    fn_name = None
+                    if isinstance(par.func, ast.Name):
+                        fn_name = par.func.id
+                    elif isinstance(par.func, ast.Attribute):
+                        fn_name = par.func.attr
+                    if fn_name and fn_name.lower() in _SATURATING_FUNCS:
+                        return True
+                # Hit `1 / (1 + exp(-...))` pattern: the unrolled sigmoid.
+                # Detect: ancestor is a Call to exp whose arg is a UnaryOp(USub).
+                if (
+                    isinstance(par, ast.Call)
+                    and isinstance(par.func, (ast.Name, ast.Attribute))
+                ):
+                    fn_name = (
+                        par.func.id
+                        if isinstance(par.func, ast.Name)
+                        else par.func.attr
+                    )
+                    if fn_name == "exp" and len(par.args) == 1:
+                        arg = par.args[0]
+                        if isinstance(arg, ast.UnaryOp) and isinstance(
+                            arg.op, ast.USub
+                        ):
+                            # exp(-X) — Python idiom for sigmoid argument
+                            return True
+                cur = par
+            return False
+
+        found_any = False
+        for node in ast.walk(tree):
+            if isinstance(node, ast.Subscript):
+                # `params['name']` shape
+                value = node.value
+                if isinstance(value, ast.Name) and value.id == "params":
+                    sl = node.slice
+                    if isinstance(sl, ast.Constant) and sl.value == name:
+                        found_any = True
+                        if not _has_saturating_ancestor(node):
+                            return False
+        return found_any  # only True if found AND every occurrence saturated
+
     y_max = max((abs(y) for _, y in visible_list), default=1.0)
     linear_threshold = max(10.0 * y_max, 10.0)  # default threshold for linear params
     extreme: dict[str, float] = {}
     extreme_reasons: dict[str, str] = {}
     for pname, pval in fitted.items():
+        # Pathology audit fix (2026-04-27): saturation-context exemption.
+        # If every occurrence of `params[pname]` is inside a saturating
+        # wrapper (sigmoid/tanh/erf/exp(-)), the magnitude is irrelevant
+        # past the knee — skip the linear-magnitude check entirely.
+        # This prevents the iter-5 case (raw_eta=-152 inside 1/(1+exp(-x)))
+        # from being clamped to 0, which would actively change the form.
+        if _param_only_in_saturating_context(parametric_form, pname):
+            continue
         if _is_log_space_param(pname):
             # Log-space param: check against init_range with 2x widening
             r = (

@@ -47,6 +47,12 @@ class StagnationSignal:
     reason: Optional[str] = None
     consecutive_zero_iters: int = 0
     consecutive_same_ast_iters: int = 0
+    # 2026-04-27 capped-stagnation streak detection: detects the
+    # path-a-stuck-at-cap pattern: consecutive iters where the apparatus
+    # capped the judge raw score (raw > capped) with identical capped value.
+    # gp163d's path-a regression hits this every iter; the pure zero-score
+    # streak detector misses it because the capped score is never 0.
+    consecutive_capped_iters: int = 0
     last_form: Optional[str] = None
 
 
@@ -75,12 +81,22 @@ def detect_stagnation(
     *,
     stagnation_threshold: int = 2,
     ast_bucket_threshold: int = 3,
+    enable_qualitative_stagnation: bool = False,
+    qualitative_stagnation_threshold: int = 3,
+    qualitative_plateau_threshold: int = 5,
 ) -> StagnationSignal:
     """Decide whether to re-query the cold LLM.
 
     Two independent triggers (re-query fires on either):
       A. ``stagnation_threshold`` consecutive iters at score 0
       B. ``ast_bucket_threshold`` consecutive iters with the same AST bucket
+
+    Optional qualitative-substrate trigger (2026-05-02, opt-in via rubric flag
+    ``enable_qualitative_stagnation_detection``):
+      C. ``qualitative_stagnation_threshold`` consecutive iters with the same
+         weakest_point gate-name fingerprint AND all scores below iter-0
+         baseline. Numerical substrates do NOT set this flag, so the
+         qualitative branch is never reached — no regression risk.
     """
     sig = StagnationSignal()
     if not eval_history:
@@ -134,15 +150,189 @@ def detect_stagnation(
     else:
         sig.consecutive_same_ast_iters = 0
 
+    # 2026-04-27 capped-stagnation detection: also detect consecutive
+    # iters where capped score is identical AND raw_judge_score >= cap+1
+    # (i.e., the apparatus capped repeatedly because of structural detectors,
+    # not because the form is bad). gp163d's path-a-stuck-at-50 is this
+    # exact pattern: every iter caps at 50 from R20+R21+R24+R22 firing on
+    # the bridge skeleton variants. Pure zero-score streak detector misses
+    # this because the capped score is never 0.
+    capped_stagnation_streak = 0
+    if iter_entries:
+        max_iter = max(iter_entries.keys())
+        last_entry = iter_entries[max_iter]
+        last_score = last_entry.get("score")
+        last_raw = last_entry.get("raw_judge_score")
+        # Only consider if last iter shows a cap (raw > capped)
+        if (
+            last_score is not None
+            and last_raw is not None
+            and isinstance(last_score, (int, float))
+            and isinstance(last_raw, (int, float))
+            and last_raw > last_score
+        ):
+            capped_stagnation_streak = 1
+            for iter_num in range(max_iter - 1, 0, -1):
+                if iter_num in iter_entries:
+                    e = iter_entries[iter_num]
+                    s, r = e.get("score"), e.get("raw_judge_score")
+                    if (
+                        s == last_score
+                        and r is not None
+                        and isinstance(r, (int, float))
+                        and r > s
+                    ):
+                        capped_stagnation_streak += 1
+                    else:
+                        break
+                else:
+                    break
+    sig.consecutive_capped_iters = capped_stagnation_streak  # type: ignore[attr-defined]
+
     if zero_streak >= stagnation_threshold:
         sig.is_stagnant = True
         sig.reason = f"score_streak: {zero_streak} consecutive zero-score iters"
+    elif capped_stagnation_streak >= stagnation_threshold:
+        # 2026-04-27 (cap-kind generalized fix): only treat capped-streak
+        # as stagnation when the most recent cap is a GAMING cap (R20-R24).
+        # Honest caps (PPN, generalization gap, holdout miss) do NOT mean
+        # the mutator is stuck in the same architectural family — they
+        # mean the form is engaging path-b correctly and needs refinement.
+        # Triggering Erdős re-query / forced REFRAME on those caps wastes
+        # budget pivoting away from a viable scaffold.
+        try:
+            from src.ztare.orchestrator.cap_kind import classify_cap_kind
+            _last_iter = max(iter_entries.keys())
+            _last_reason = iter_entries[_last_iter].get("score_cap_reason") or ""
+            _last_kind = classify_cap_kind(_last_reason)
+        except ImportError:
+            _last_kind = "unknown"
+
+        if _last_kind == "gaming":
+            sig.is_stagnant = True
+            sig.reason = (
+                f"capped_streak: {capped_stagnation_streak} consecutive iters "
+                f"capped by gaming detectors (R20-R24); cap_kind=gaming. "
+                f"Erdős re-query fires to escape architectural attractor."
+            )
+        else:
+            # Honest-cap streak — DO NOT trigger Erdős. The forced_reframe
+            # provider's "Refine Prior Winner" block handles this.
+            sig.is_stagnant = False
+            sig.reason = (
+                f"capped_streak={capped_stagnation_streak} but cap_kind="
+                f"{_last_kind} (honest); Erdős re-query suppressed — "
+                f"the form is engaging path-b correctly. forced_reframe "
+                f"will render REFINE PRIOR WINNER instead of pivoting."
+            )
     elif sig.consecutive_same_ast_iters >= ast_bucket_threshold:
         sig.is_stagnant = True
         sig.reason = (
             f"ast_bucket_streak: {sig.consecutive_same_ast_iters} consecutive iters "
             f"with the same PARAMETRIC_FORM AST bucket"
         )
+    elif enable_qualitative_stagnation:
+        # Trigger 4 — qualitative-substrate stagnation (2026-05-02, OPT-IN).
+        # Numerical triggers (zero-streak, capped-streak, AST-bucket-streak)
+        # silently fail on qualitative_thesis substrates because (a) the
+        # judge produces nonzero prose-thesis scores, and (b) there is no
+        # PARAMETRIC_FORM. The qualitative trigger uses repeated
+        # weakest_point gate-name fingerprints + sub-baseline drift. Same
+        # logic as forced_reframe.detect_forced_reframe_trigger Trigger 4;
+        # firing both together gives stagnation handler + alternative
+        # seeder simultaneously.
+        #
+        # GATED on enable_qualitative_stagnation rubric flag; numerical
+        # rubrics never reach this branch.
+        qual_thresh = qualitative_stagnation_threshold
+        if iter_entries and len(iter_entries) >= qual_thresh:
+            sorted_iters = sorted(iter_entries.keys())
+            recent_iters = sorted_iters[-qual_thresh:]
+            recent = [iter_entries[i] for i in recent_iters]
+            try:
+                from src.ztare.orchestrator.forced_reframe import (
+                    _weakest_point_gate_bucket,
+                )
+                gate_buckets = [_weakest_point_gate_bucket(e) for e in recent]
+            except ImportError:
+                gate_buckets = []
+            iter_0 = iter_entries.get(0, {}).get("score")
+            if iter_0 is None and sorted_iters:
+                iter_0 = iter_entries[sorted_iters[0]].get("score")
+            recent_scores = [e.get("score", 0) for e in recent]
+            sub_baseline = (
+                iter_0 is not None
+                and all(isinstance(s, (int, float)) and s < iter_0
+                        for s in recent_scores)
+            )
+            if (gate_buckets
+                    and all(b is not None and b == gate_buckets[0]
+                            for b in gate_buckets)
+                    and sub_baseline):
+                sig.is_stagnant = True
+                sig.reason = (
+                    f"qualitative_gate_lock: {qual_thresh} consecutive iters "
+                    f"failing the same weakest-point gate "
+                    f"('{gate_buckets[0]}') with all scores below iter-0 "
+                    f"baseline ({iter_0}). Erdős re-query fires to seed "
+                    f"alternative thesis families from cross-domain analogues."
+                )
+                return sig
+
+            # Trigger 5 — flat-plateau qualitative stagnation (2026-05-02 pm).
+            # Mirror of forced_reframe.py Trigger 5: fires on "no champion
+            # improvement over N iters" even when scores are above iter-0
+            # baseline. The gp169 v2 pattern (70→98→91→94→67) — champion
+            # at iter-1, no improvement, mutator can't beat itself.
+            plateau_thresh = qualitative_plateau_threshold
+            if iter_entries and len(iter_entries) >= plateau_thresh + 1:
+                sorted_iters = sorted(iter_entries.keys())
+                # Find champion (highest score across all iters)
+                scored_iters = [(i, iter_entries[i].get("score"))
+                                for i in sorted_iters
+                                if isinstance(iter_entries[i].get("score"),
+                                              (int, float))]
+                if scored_iters:
+                    champ_idx, champ_score = max(scored_iters,
+                                                  key=lambda t: t[1])
+                    iters_after = [iter_entries[i] for i in sorted_iters
+                                   if i > champ_idx]
+                    if len(iters_after) >= plateau_thresh:
+                        recent_after = iters_after[-plateau_thresh:]
+                        no_improve = all(
+                            isinstance(e.get("score"), (int, float))
+                            and e.get("score") < champ_score
+                            for e in recent_after
+                        )
+                        try:
+                            from src.ztare.orchestrator.forced_reframe import (
+                                _weakest_point_gate_bucket,
+                            )
+                            gate_buckets_pl = [_weakest_point_gate_bucket(e)
+                                               for e in recent_after]
+                        except ImportError:
+                            gate_buckets_pl = []
+                        same_gate_pl = (
+                            gate_buckets_pl
+                            and all(b is not None and b == gate_buckets_pl[0]
+                                    for b in gate_buckets_pl)
+                        )
+                        # Loosened 2026-05-02 pm: fire on plateau alone, no
+                        # same-gate requirement (mirrors forced_reframe.py).
+                        if no_improve:
+                            sig.is_stagnant = True
+                            same_gate_note = (
+                                f" all citing gate '{gate_buckets_pl[0]}'"
+                                if same_gate_pl else
+                                f" with varied gates: {gate_buckets_pl}"
+                            )
+                            sig.reason = (
+                                f"qualitative_flat_plateau: {plateau_thresh} "
+                                f"post-champion iters all below champion "
+                                f"({champ_score}, iter-{champ_idx}),"
+                                f"{same_gate_note}. Erdős re-query fires to "
+                                f"seed structurally disjoint thesis spine."
+                            )
     return sig
 
 
@@ -315,11 +505,17 @@ def maybe_requery_cold_seed(
     stag_thresh = int(rubric_data.get("erdos_requery_stagnation_threshold", 2))
     ast_thresh = int(rubric_data.get("erdos_requery_ast_bucket_threshold", 3))
     max_per_run = int(rubric_data.get("erdos_requery_max_per_run", 3))
+    enable_qual = bool(rubric_data.get("enable_qualitative_stagnation_detection", False))
+    qual_thresh = int(rubric_data.get("qualitative_stagnation_threshold", 3))
+    plateau_thresh = int(rubric_data.get("qualitative_plateau_threshold", 5))
 
     sig = detect_stagnation(
         eval_history,
         stagnation_threshold=stag_thresh,
         ast_bucket_threshold=ast_thresh,
+        enable_qualitative_stagnation=enable_qual,
+        qualitative_stagnation_threshold=qual_thresh,
+        qualitative_plateau_threshold=plateau_thresh,
     )
     if not sig.is_stagnant:
         return verdict
@@ -423,7 +619,7 @@ def maybe_requery_cold_seed(
 
     verdict.log_lines.append(
         f"🔎 GP-169 re-query: stagnation detected ({sig.reason}); "
-        f"refreshed cold-seed candidates (valid={n_valid}); written to {out_path.name}."
+        f"refreshed de-anchor seed candidates (valid={n_valid}); written to {out_path.name}."
     )
     return verdict
 

@@ -45,8 +45,32 @@ class FramerRecommendationProvider(BriefingProvider):
         h_in = report.get("h_in") or "identity"
         h_out = report.get("h_out") or "identity"
         mdl_gain = report.get("MDL_gain_bits", 0.0)
+        mdl_gain_balanced = report.get("MDL_gain_bits_balanced", None)
         primary = report.get("primary_feature_key")
         shape = report.get("shape", "1d")
+
+        try:
+            mdl_gain_f = float(mdl_gain)
+        except (TypeError, ValueError):
+            mdl_gain_f = 0.0
+
+        # Frame Adjudicator v2 threshold: bits at which framer signal is
+        # treated as "decisive" (Kass-Raftery decisive ≈ 7 bits; we use
+        # 20 as ~3× decisive). Below threshold, observe-only recommendation
+        # (legacy mode). Above threshold AND class-balanced MDL also clears,
+        # switch to mechanism-generative prompt.
+        threshold_bits = float(
+            ctx.rubric.get("frame_adjudicator_threshold_bits", 20.0)
+        )
+        balanced_clear = True
+        if mdl_gain_balanced is not None:
+            try:
+                balanced_clear = float(mdl_gain_balanced) >= max(
+                    10.0, threshold_bits * 0.5
+                )
+            except (TypeError, ValueError):
+                balanced_clear = True
+        decisive = mdl_gain_f >= threshold_bits and balanced_clear
 
         lines = [
             "\n    ### GP-152 FRAMER RECOMMENDATION (deterministic coordinate-transform search)\n",
@@ -64,31 +88,79 @@ class FramerRecommendationProvider(BriefingProvider):
             )
         lines.append(f"      - h_in (transform on independent variable): {h_in}")
         lines.append(f"      - h_out (transform on observable):         {h_out}")
-        try:
-            lines.append(f"      - MDL gain vs raw frame: {float(mdl_gain):.2f} bits")
-        except (TypeError, ValueError):
-            lines.append(f"      - MDL gain vs raw frame: {mdl_gain}")
-        if shape == "n_d" and primary:
-            lines.append(
-                f"\n    USAGE: consider applying h_in to `features['{primary}']` and "
-                f"\n    h_out to your predicted y *inside* PARAMETRIC_FORM. Example "
-                f"\n    skeleton (substitute the actual h_in/h_out shapes named above):\n\n"
-                f"      PARAMETRIC_FORM = (\n"
-                f"          \"<inverse_h_out>(\"\n"
-                f"          \"  params['a'] + params['b'] * <h_in>(features['{primary}'])\"\n"
-                f"          \")\"\n"
-                f"      )\n"
+        lines.append(f"      - MDL gain vs raw frame: {mdl_gain_f:.2f} bits")
+        if mdl_gain_balanced is not None:
+            try:
+                lines.append(
+                    f"      - MDL gain (class-balanced recompute): "
+                    f"{float(mdl_gain_balanced):.2f} bits"
+                )
+            except (TypeError, ValueError):
+                pass
+
+        if decisive:
+            primary_str = (
+                f"`features['{primary}']`"
+                if (shape == "n_d" and primary)
+                else "the independent variable"
             )
+            lines.append(
+                f"\n    🚨 MDL gain {mdl_gain_f:.1f} bits is DECISIVE evidence (Kass-Raftery "
+                f"decisive ≈ 7 bits; threshold here is {threshold_bits:.0f}). The data is "
+                f"telling you that {primary_str} is structurally important and that the "
+                f"transform `{h_in}` compresses the relationship. Class-balanced MDL recompute "
+                f"{'CONFIRMED' if balanced_clear else 'DID NOT CONFIRM'} — the signal is "
+                f"{'substrate-wide, not row-imbalance artifact' if balanced_clear else 'likely a row-imbalance artifact (one class dominates).'}."
+            )
+            if balanced_clear:
+                lines.append(
+                    f"\n    PROMPT TO YOU (this is not a substitution rule — it is a question):"
+                )
+                lines.append(
+                    f"      The framer found that `{h_in}({primary_str})` compresses the data "
+                    f"by {mdl_gain_f:.1f} bits over raw coordinates. **What physical mechanism "
+                    f"would produce this preference?** Propose 2-3 candidate mechanisms — "
+                    f"symmetries, conservation laws, scaling regimes, screening fields, or "
+                    f"geometric structures — that would naturally generate `{h_in}` shape "
+                    f"in {primary_str}. List each as a short hypothesis (one sentence each), "
+                    f"then encode the strongest as PARAMETRIC_FORM."
+                )
+                lines.append(
+                    f"\n    CRITICAL CONSTRAINT — anchor preservation:"
+                )
+                lines.append(
+                    f"      Do NOT apply the transform as a free additive corrector. Sim has "
+                    f"shown naïve corrector forms break Solar-System / asymptotic anchors by "
+                    f"~0.5 dex (the optimizer cheats any soft screen). Your form must encode "
+                    f"the mechanism in a way that vanishes in regimes where the anchors live. "
+                    f"If you cannot propose such a mechanism, return to the previous form — "
+                    f"the framer signal is not yet usable."
+                )
+            else:
+                lines.append(
+                    f"\n    Because class-balanced MDL did NOT confirm, treat the {h_in} "
+                    f"signal as a coverage artifact and prefer forms that respect the "
+                    f"non-dominant classes (anchors). Do not adopt the transform until the "
+                    f"balanced signal exceeds 10 bits."
+                )
         else:
-            lines.append(
-                "\n    USAGE: consider applying h_in / h_out inside your PARAMETRIC_FORM "
-                "to fit the framed data instead of raw data."
-            )
+            # Below threshold OR balanced-not-confirmed → legacy observe-only
+            if shape == "n_d" and primary:
+                lines.append(
+                    f"\n    USAGE: consider applying h_in to `features['{primary}']` and "
+                    f"\n    h_out to your predicted y *inside* PARAMETRIC_FORM. Below the "
+                    f"\n    decisive threshold ({threshold_bits:.0f} bits), this is suggestive, "
+                    f"\n    not directive — only adopt if you can argue a physical reason."
+                )
+            else:
+                lines.append(
+                    "\n    USAGE: consider applying h_in / h_out inside your PARAMETRIC_FORM "
+                    "to fit the framed data instead of raw data. Suggestive, not directive."
+                )
+
         lines.append(
             "\n    The framer is OBSERVE-only at the apparatus layer — it does NOT modify\n"
-            "    the data flowing into the fit primitive. If you adopt the recommendation,\n"
-            "    encode it in PARAMETRIC_FORM yourself. The holdout gate validates the\n"
-            "    result. If the framer's frame is structurally correct for your problem,\n"
-            "    the form should be simpler under it (smaller K, lower BIC)."
+            "    the data flowing into the fit primitive. The holdout gate + R11 per-class\n"
+            "    MRE + anchor checks adjudicate the result."
         )
         return "\n".join(lines) + "\n"

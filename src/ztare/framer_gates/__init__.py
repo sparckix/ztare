@@ -6,7 +6,7 @@ Three runtime gates + one canary:
   - G-SYM-FN          SymmetryScanner false-negative rate on canary substrates
   - framer_helped_canary  iatrogenesis detector (run inside frame())
 
-Spec: research_areas/private/specs/active/GP-152_framer_architecture_spec_v2.md §4.
+Spec: GP-152 (internal seam) §4.
 """
 from .library_coverage_gate import run_library_coverage_gate
 from .filter_independence_gate import run_filter_independence_gate

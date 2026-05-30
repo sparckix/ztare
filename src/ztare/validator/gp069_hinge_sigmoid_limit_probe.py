@@ -31,7 +31,7 @@ Run:
     python3 -m src.ztare.validator.gp069_hinge_sigmoid_limit_probe
 
 Canonical result (2026-04-15, before first run) will be written to
-research_areas/private/seams/GP-069_nesting_cleared_target_construction_seam.md
+GP-069 (internal seam)
 § sigmoid-limit audit.
 """
 from __future__ import annotations

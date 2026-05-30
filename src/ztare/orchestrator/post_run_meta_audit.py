@@ -489,6 +489,23 @@ def run_post_run_meta_audit(
         }
     verdict.succeeded = True
     _persist_artifacts(workspace_dir, project, run_id, verdict, eval_summary)
+    try:
+        from src.ztare.orchestrator.discriminator_queue import (
+            append_discriminators,
+            proposals_from_meta_audit,
+        )
+
+        proposals = proposals_from_meta_audit(
+            project=project,
+            trigger_artifact="workspace/post_run_meta_audit.json",
+            audit_verdict=verdict.to_dict(),
+        )
+        if proposals:
+            append_discriminators(project_dir, proposals)
+    except Exception:
+        # The meta-audit artifact is primary. Queue emission is a
+        # best-effort GP-190 sidecar and must not fail run closure.
+        pass
     return verdict.to_dict()
 
 

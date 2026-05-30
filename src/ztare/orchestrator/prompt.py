@@ -52,6 +52,8 @@ contains the conditional logic + tests.
 
 from __future__ import annotations
 
+import json
+import re
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
@@ -330,6 +332,534 @@ def active_contract_label(
             "test_model.py shape implied elsewhere in this prompt."
         )
     return ""
+
+
+# ────────────────────────────────────────────────────────────────────
+# PARAMETRIC_FORM theorem-packet (2026-05-06)
+# ────────────────────────────────────────────────────────────────────
+# Borrows from Codex NS Track B Phase 5CV+ theorem-packet pattern:
+# pre-declare the grammar BEFORE the mutator generates content. Reduces
+# R1 compiler-bounce noise (PARAMETRIC_FORM AST whitelist failures) by
+# making the whitelist visible at top of prompt + showing class-specific
+# valid stubs.
+#
+# Opt-in via rubric flag `enable_parametric_form_theorem_packet: true`.
+# Default off — preserves existing behavior. Operator enables per
+# substrate (qualitative substrates that don't actually fit benefit
+# most; numeric substrates already do fine without it).
+
+_PARAMETRIC_FORM_ALLOWED_NAMES = (
+    # Arithmetic operators are AST-level, not function calls — implicit.
+    # Function calls allowed:
+    "abs", "bool", "cos", "erf", "exp", "float", "int", "len",
+    "log", "log10", "max", "min", "pow", "sigmoid", "sin", "sqrt",
+    "str", "tan", "tanh", "where",
+)
+
+_PARAMETRIC_FORM_FORBIDDEN_COMMON_FAILS = (
+    # Names mutators frequently try that get R1-bounced. Listing
+    # them explicitly with "DO NOT use" is more effective than
+    # listing only the allowed set, per Codex NS theorem-packet
+    # observation.
+    "isinstance", "sum", "is_significant", "any", "all", "round",
+    "type", "hasattr", "getattr", "callable", "format", "print",
+    "input", "open", "eval", "exec", "compile", "globals", "locals",
+)
+
+# Per-substrate-class ceremonial-stub examples. For substrates where
+# PARAMETRIC_FORM doesn't actually fit (qualitative / audit / proof_target),
+# the form is just a syntactic placeholder; these stubs are valid + cheap.
+_PARAMETRIC_FORM_STUB_EXAMPLES_BY_CLASS: dict[str, list[str]] = {
+    "audit": [
+        "1 if rival_active == 0 and loop_revived == 1 and patches_delta >= 2 else 0",
+        "int(score >= threshold) if features.get('eligible', False) else 0",
+        "params['a'] * (1 if features.get('flag') == 'on' else 0)",
+    ],
+    "literature": [
+        "1 if features.get('citation_count', 0) >= params['threshold'] else 0",
+    ],
+    "proof_target": [
+        "int(features.get('proven', False))",
+        "1 if features.get('lemma_count', 0) >= params['n_min'] else 0",
+    ],
+    # Numeric classes — full expressivity assumed; example shows the
+    # non-trivial form pattern.
+    "1d": [
+        "params['a'] * features['x'] + params['b']",
+        "params['a'] * exp(-params['k'] * features['t']) + params['c']",
+    ],
+    "nd_features": [
+        "params['a'] * features['x'] + params['b'] * features['y'] + params['c']",
+    ],
+}
+_PARAMETRIC_FORM_STUB_EXAMPLES_DEFAULT = _PARAMETRIC_FORM_STUB_EXAMPLES_BY_CLASS["audit"]
+
+
+def parametric_form_theorem_packet(rubric_data: Mapping[str, Any]) -> str:
+    """Return a typed theorem-packet block listing the AST whitelist
+    explicitly + class-specific stub examples + common-fail blacklist.
+
+    Returns "" when the rubric does not opt in via
+    ``enable_parametric_form_theorem_packet: true``.
+
+    Pattern: Codex NS Track B Phase 5CV theorem-packet — pre-declare
+    grammar before mutator generates content. Reduces R1 bounce noise.
+    """
+    if not bool(rubric_data.get("enable_parametric_form_theorem_packet", False)):
+        return ""
+    cage_meta = rubric_data.get("cage_meta") or {}
+    class_name = str(cage_meta.get("class") or "").strip().lower() or "unknown"
+    examples = _PARAMETRIC_FORM_STUB_EXAMPLES_BY_CLASS.get(
+        class_name, _PARAMETRIC_FORM_STUB_EXAMPLES_DEFAULT
+    )
+    allowed = ", ".join(sorted(_PARAMETRIC_FORM_ALLOWED_NAMES))
+    forbidden = ", ".join(sorted(_PARAMETRIC_FORM_FORBIDDEN_COMMON_FAILS))
+    examples_block = "\n".join(f"      {e}" for e in examples)
+    return (
+        "\n"
+        "    ── PARAMETRIC_FORM theorem packet (R1 pre-flight) ──\n"
+        "\n"
+        "    ALLOWED FUNCTION NAMES (anything else is rejected by R1 AST whitelist):\n"
+        f"      {allowed}\n"
+        "\n"
+        "    FORBIDDEN COMMON-FAILS (do NOT use these — they will R1-bounce):\n"
+        f"      {forbidden}\n"
+        "\n"
+        f"    VALID STUB EXAMPLES for your substrate class ({class_name!r}):\n"
+        f"{examples_block}\n"
+        "\n"
+        "    NOTES:\n"
+        "      - Arithmetic operators (+ - * / ** % //) are AST-level, no function-call.\n"
+        "      - Subscript ONLY on `features` (e.g. features['x']) and `params`.\n"
+        "      - For conditional logic use `a if cond else b`, NOT isinstance/type checks.\n"
+        "      - For collection logic use direct comparisons, NOT sum/any/all.\n"
+        "      - Arithmetic: x**y not pow(x,y); bare exp() not np.exp() or math.exp().\n"
+    )
+
+
+# ────────────────────────────────────────────────────────────────────
+# Primitive-class rotation discipline (2026-05-06 PM, post-run-4)
+# ────────────────────────────────────────────────────────────────────
+# Run 4 of ztare_on_ztare_v2_expanded_scope produced ACRR primitive at
+# iter 4 then anchored — iters 5+ refined ACRR instead of proposing
+# alternative primitive classes. Rotation discipline tracks which
+# classes have been explored in workspace/explored_primitive_classes.jsonl
+# and injects the list into next iter's mutator prompt so the mutator
+# knows what it has already tried.
+#
+# Opt-in via rubric flag `enable_primitive_class_rotation: true`.
+# Default off — preserves existing behavior. Operator enables per
+# substrate (substrates that have a primitive-class lane benefit;
+# substrates that don't are unaffected).
+
+
+def _read_explored_classes(project_dir: Optional[Path]) -> list[dict]:
+    """Read workspace/explored_primitive_classes.jsonl if present."""
+    if project_dir is None:
+        return []
+    path = Path(project_dir) / "workspace" / "explored_primitive_classes.jsonl"
+    if not path.exists():
+        return []
+    out: list[dict] = []
+    try:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                continue
+    except Exception:  # noqa: BLE001
+        return []
+    return out
+
+
+def _read_cross_substrate_classes(project_dir: Optional[Path]) -> list[dict]:
+    """Read analytics/public/queries/rd/cross_substrate_explored_classes.jsonl.
+
+    Cross-substrate ledger contains primitive classes proposed by ALL
+    substrates that have rotation discipline enabled. Lets a NEW
+    substrate's mutator see what other substrates have already
+    proposed and avoid re-discovering them.
+    """
+    if project_dir is None:
+        return []
+    ledger = (
+        Path(project_dir).parent.parent
+        / "analytics" / "queries" / "cross_substrate_explored_classes.jsonl"
+    )
+    if not ledger.exists():
+        return []
+    out = []
+    try:
+        for line in ledger.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                out.append(json.loads(line))
+            except Exception:  # noqa: BLE001
+                continue
+    except Exception:  # noqa: BLE001
+        return []
+    return out
+
+
+def primitive_class_history_packet(
+    rubric_data: Mapping[str, Any],
+    project_dir: Optional[Path] = None,
+) -> str:
+    """Inject the primitive-class history into the mutator prompt.
+
+    Returns "" when the rubric does not opt in via
+    ``enable_primitive_class_rotation: true``.
+
+    The packet:
+      1. Lists all primitive classes already proposed in this run
+      2. Per class, shows the score it received and the iter count
+      3. Tells the mutator which classes are at-or-near the per-class
+         ceiling cap (so refining further is dominated by rotation)
+      4. (v0.5) When enable_cross_substrate_exclusion: true, ALSO lists
+         primitive classes proposed by OTHER substrates so the mutator
+         doesn't re-discover them
+    """
+    if not bool(rubric_data.get("enable_primitive_class_rotation", False)):
+        return ""
+    history = _read_explored_classes(project_dir)
+    cross_history = (
+        _read_cross_substrate_classes(project_dir)
+        if bool(rubric_data.get("enable_cross_substrate_exclusion", False))
+        else []
+    )
+    # Filter cross_history to OTHER substrates (not this one)
+    project_slug = Path(project_dir).name if project_dir else ""
+    cross_other = [
+        e for e in cross_history if e.get("project_slug") != project_slug
+    ]
+    if not history and not cross_other:
+        return (
+            "\n"
+            "    ── PRIMITIVE-CLASS ROTATION (no classes explored yet) ──\n"
+            "\n"
+            "    No primitive classes have been proposed in this run yet. If you\n"
+            "    propose a candidate with mechanism = propose_new_primitive_class,\n"
+            "    you have full ceiling 95 available. Subsequent iters that propose\n"
+            "    THE SAME CLASS will be capped at 80 (2nd iter), 65 (3rd), 50 (4th+).\n"
+            "    Plan accordingly: a single refinement pass is allowed, but anchoring\n"
+            "    on one class for many iters will be score-dominated by class rotation.\n"
+        )
+    # Aggregate per class: best score, iter count
+    per_class: dict[str, dict] = {}
+    for entry in history:
+        cls = str(entry.get("class_name") or "unknown_primitive")
+        score = entry.get("score") or 0
+        if cls not in per_class:
+            per_class[cls] = {"count": 0, "best_score": 0, "iters": []}
+        per_class[cls]["count"] += 1
+        per_class[cls]["best_score"] = max(per_class[cls]["best_score"], score)
+        per_class[cls]["iters"].append(entry.get("iter"))
+    lines = ["    ── PRIMITIVE-CLASS ROTATION HISTORY (this run) ──", ""]
+    lines.append("    Classes already proposed this run (per-class score cap applies):")
+    for cls, info in sorted(per_class.items(), key=lambda kv: -kv[1]["best_score"]):
+        n = info["count"]
+        if n >= 4:
+            cap = 50
+        elif n == 3:
+            cap = 65
+        elif n == 2:
+            cap = 80
+        else:
+            cap = 95
+        next_cap = max(50, cap - 15)
+        lines.append(
+            f"      - {cls!r}: proposed {n}× (best score {info['best_score']}, "
+            f"current ceiling {cap}, next-iter ceiling if refined again: {next_cap})"
+        )
+    lines.append("")
+    lines.append(
+        "    DISCIPLINE: propose a class NOT in the list above. If you must refine\n"
+        "    an existing class, justify explicitly why the new iter adds substantive\n"
+        "    mechanism (not just deeper detail of the same mechanism); be aware the\n"
+        "    judge will apply the per-class cap regardless of refinement quality."
+    )
+    # v0.5: cross-substrate exclusion list (if enabled)
+    if cross_other:
+        cross_per_class: dict[str, dict] = {}
+        for entry in cross_other:
+            cls = str(entry.get("class_name") or "unknown")
+            slug = str(entry.get("project_slug") or "?")
+            if cls not in cross_per_class:
+                cross_per_class[cls] = {
+                    "best_score": 0,
+                    "substrates": set(),
+                }
+            cross_per_class[cls]["substrates"].add(slug)
+            s = entry.get("score") or 0
+            if s > cross_per_class[cls]["best_score"]:
+                cross_per_class[cls]["best_score"] = s
+        lines.append("")
+        lines.append(
+            "    ── CROSS-SUBSTRATE EXCLUSION (v0.5) ──"
+        )
+        lines.append(
+            "    Other ZTARE-on-ZTARE substrates have proposed these primitive classes;\n"
+            "    re-proposing one is a known-redundancy and capped at score 50:"
+        )
+        for cls, info in sorted(
+            cross_per_class.items(), key=lambda kv: -kv[1]["best_score"]
+        ):
+            substrates_list = ", ".join(sorted(info["substrates"]))[:120]
+            lines.append(
+                f"      - {cls!r}: best score {info['best_score']} (from: {substrates_list})"
+            )
+    return "\n" + "\n".join(lines) + "\n"
+
+
+def append_explored_primitive_class(
+    project_dir: Path, run_id: str, iter_index: int, class_name: str, score: float
+) -> None:
+    """Append one record to workspace/explored_primitive_classes.jsonl.
+
+    Also appends to a CROSS-SUBSTRATE ledger at
+    analytics/public/queries/rd/cross_substrate_explored_classes.jsonl so future
+    substrates can see what other substrates have proposed (cross-
+    pollination via exclusion list). v0.5 addition (2026-05-07).
+    """
+    import datetime as _dt
+    workspace = Path(project_dir) / "workspace"
+    workspace.mkdir(parents=True, exist_ok=True)
+    out_path = workspace / "explored_primitive_classes.jsonl"
+    project_slug = Path(project_dir).name
+    record = {
+        "run_id": str(run_id),
+        "iter": int(iter_index),
+        "class_name": str(class_name),
+        "score": float(score) if score is not None else None,
+        "ts_utc": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+    }
+    with out_path.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(record) + "\n")
+
+    # Cross-substrate ledger — read by primitive_class_history_packet
+    # when rubric flag enable_cross_substrate_exclusion is true.
+    cross_ledger = (
+        Path(project_dir).parent.parent
+        / "analytics" / "queries" / "cross_substrate_explored_classes.jsonl"
+    )
+    cross_ledger.parent.mkdir(parents=True, exist_ok=True)
+    cross_record = {**record, "project_slug": project_slug}
+    with cross_ledger.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(cross_record) + "\n")
+
+
+def _extract_class_audit(thesis_text: str) -> Optional[str]:
+    """Extractor for cage_meta.class = 'audit' (meta-apparatus substrates).
+
+    Looks for v2 candidate-form's `target_entity.path_or_name` field,
+    then primitive/structural-mutation heading, then capitalized acronym
+    in the thesis preamble (ACRR, pMDL, etc.).
+    """
+    m = re.search(
+        r"target_entity[^:]*:\s*[\"']?([A-Z][A-Za-z0-9_\- ]{3,80})[\"']?",
+        thesis_text,
+    )
+    if m:
+        return m.group(1).strip().rstrip("\"',.").strip()
+    m = re.search(
+        r"^##+\s*(?:Primitive|Structural Mutation|Architectural Primitive)[:\s\-—]+(.+?)$",
+        thesis_text[:4000],
+        flags=re.MULTILINE,
+    )
+    if m:
+        return m.group(1).strip().strip("\"'").strip()[:80]
+    m = re.search(r"\b([A-Z]{2,8}[a-z]?(?:[A-Z][A-Za-z]+)*)\b", thesis_text[:800])
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def _extract_class_proof_target(thesis_text: str) -> Optional[str]:
+    """Extractor for cage_meta.class = 'proof_target' (Codex NS, formal proof).
+
+    Looks for proof-tactic / lemma-family / kernel-choice patterns.
+    NS proposals typically name the bridge / kernel / resource packet
+    explicitly.
+    """
+    # Pattern: "Phase 5XX_<name>_..." or "ns_<concept>_lemma" or
+    # "Lemma <Name>" / "Theorem <Name>"
+    m = re.search(
+        r"^##+\s*(?:Lemma|Theorem|Bridge|Kernel|Tactic|Phase \d[A-Z]+)\s*[:\s\-—]+(.+?)$",
+        thesis_text[:4000],
+        flags=re.MULTILINE,
+    )
+    if m:
+        return m.group(1).strip().strip("\"'").strip()[:80]
+    # Fallback: phase-style identifier
+    m = re.search(
+        r"\b(phase5[a-z]+_[a-z_]+|ns_[a-z_]+_(?:lemma|bridge|theorem|gate))\b",
+        thesis_text[:2000],
+    )
+    if m:
+        return m.group(1).strip()
+    # Final fallback: capitalized acronym
+    m = re.search(r"\b([A-Z]{2,8}[a-z]?)\b", thesis_text[:800])
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+def _extract_class_nd_features(thesis_text: str) -> Optional[str]:
+    """Extractor for cage_meta.class = 'nd_features' (multi-feature substrates).
+
+    Looks for feature-decomposition / scaling-law / regime pattern.
+    Examples from the apparatus history: 'Predictive-MDL Sequential Gate',
+    'Topological Coordinate Descent', 'Frame-Invariant MDL'.
+    """
+    m = re.search(
+        r"^##+\s*(?:Primitive|Gate|Decomposition|Scaling Law)[:\s\-—]+(.+?)$",
+        thesis_text[:4000],
+        flags=re.MULTILINE,
+    )
+    if m:
+        return m.group(1).strip().strip("\"'").strip()[:80]
+    # Fallback to common patterns
+    m = re.search(
+        r"\b((?:[A-Z][a-z]+(?:[- ][A-Z][a-z]+)*)\s+(?:Gate|Primitive|Decomposition))\b",
+        thesis_text[:2000],
+    )
+    if m:
+        return m.group(1).strip()
+    m = re.search(r"\b([A-Z]{2,8}[a-z]?)\b", thesis_text[:800])
+    if m:
+        return m.group(1).strip()
+    return None
+
+
+# Substrate-class → regex extractor fallback. Used when LLM extraction
+# is unavailable or fails. Per-substrate patterns reduce false positives
+# vs. the generic audit extractor.
+_PROPOSAL_CLASS_REGEX_EXTRACTORS: dict[str, Any] = {
+    "audit": _extract_class_audit,
+    "proof_target": _extract_class_proof_target,
+    "nd_features": _extract_class_nd_features,
+}
+
+
+# Cache for LLM extraction — keyed by sha1(thesis_text[:2000]) so we
+# don't re-call the LLM on the same content. Run-scoped (cleared on
+# fresh process). Substantial cost saver when iter loops re-evaluate
+# the same proposal text (e.g., R1 retry with same thesis).
+_PROPOSAL_CLASS_LLM_CACHE: dict[str, str] = {}
+
+
+def _extract_class_via_llm(
+    thesis_text: str, substrate_class: Optional[str] = None
+) -> Optional[str]:
+    """LLM-based proposal-class extractor with @cheap model.
+
+    Returns a canonical class name (≤30 chars, normalized casing).
+    Returns None if LLM unavailable or call fails — caller falls back
+    to regex extractor.
+
+    Cached per content-hash for cost discipline.
+    """
+    import hashlib
+    cache_key = hashlib.sha1(thesis_text[:2000].encode("utf-8")).hexdigest()[:16]
+    if cache_key in _PROPOSAL_CLASS_LLM_CACHE:
+        return _PROPOSAL_CLASS_LLM_CACHE[cache_key]
+    try:
+        from src.ztare.common.llm_runtime import (
+            LLMRuntime, pick_default_model_id_for_scripts,
+        )
+    except Exception:  # noqa: BLE001
+        return None
+    model_id = pick_default_model_id_for_scripts()
+    if model_id is None:
+        return None
+    prompt = (
+        "Classify the following research-apparatus proposal into a single "
+        "canonical class name. The class name must be:\n"
+        "  - ≤30 characters\n"
+        "  - A short identifier — either an acronym (e.g. ACRR, pMDL, MDL) or "
+        "a snake_case or PascalCase name describing the proposal's structural "
+        "category (NOT a verbose phrase)\n"
+        "  - Substrate-class context: " + (substrate_class or "unknown") + "\n\n"
+        "Return ONLY the class name on a single line, no prose, no quotes, no "
+        "explanation. Examples of good outputs: 'ACRR', 'PredictiveMDLGate', "
+        "'cycle_bridge_discriminator', 'feature_bump_pattern'.\n\n"
+        "Two distinct proposals describing variants of the same primitive "
+        "should produce the SAME canonical name (e.g. 'ACRR with recall "
+        "cross-check' and 'ACRR with operator log' both → 'ACRR').\n\n"
+        "Proposal text:\n"
+        "---\n"
+        + thesis_text[:3500]
+        + "\n---\n\nClass name:"
+    )
+    try:
+        runtime = LLMRuntime()
+        # Use @cheap alias — cost discipline ~$0.001-0.005 per call
+        resp = runtime.call_text(
+            prompt, model_id=model_id, max_tokens=40,
+            request_label="proposal_class_extraction",
+        )
+        text = (resp.text or "").strip()
+    except Exception:  # noqa: BLE001
+        return None
+    if not text:
+        return None
+    # Take first line, strip quotes/punctuation, cap at 30 chars
+    first_line = text.splitlines()[0].strip().strip("\"'.,;:`")
+    if not first_line or len(first_line) > 50:
+        # Likely model produced prose; reject
+        return None
+    canonical = first_line[:30]
+    _PROPOSAL_CLASS_LLM_CACHE[cache_key] = canonical
+    return canonical
+
+
+def extract_proposal_class_name(
+    thesis_text: str,
+    substrate_class: Optional[str] = None,
+    *,
+    use_llm: bool = True,
+) -> Optional[str]:
+    """Best-effort: pull a proposal class name from candidate text.
+
+    Strategy:
+      1. (Primary) cheap-LLM call for canonical-name extraction with
+         per-content-hash caching. Generalizes across substrates and
+         normalizes variants of the same primitive to one key.
+      2. (Fallback) substrate-class-dispatched regex extractor when
+         LLM is unavailable, errors, or returns implausible output.
+
+    The LLM-primary strategy is what generalizes this discipline cleanly
+    across substrates: Codex's NS (proof_target), the audit substrate,
+    nd_features all use the same extractor; no per-substrate regex
+    needed. Cost per iter: ~$0.001-0.005 via @cheap alias, cached per
+    content-hash so repeated calls on same text are free.
+
+    Returns None if neither path produces a name; caller stores
+    "unknown_proposal_<iter>" in that case to prevent cap-bypass via
+    name omission.
+    """
+    if not thesis_text:
+        return None
+    # Primary: cheap-LLM
+    if use_llm:
+        name = _extract_class_via_llm(thesis_text, substrate_class)
+        if name:
+            return name
+    # Fallback: substrate-dispatched regex
+    extractor = _PROPOSAL_CLASS_REGEX_EXTRACTORS.get(
+        (substrate_class or "").strip().lower(),
+        _extract_class_audit,
+    )
+    return extractor(thesis_text)
+
+
+# Backward-compat alias for callers that imported the old name.
+extract_primitive_class_name = extract_proposal_class_name
 
 
 def verify_convention_bridge_in_form(

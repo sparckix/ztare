@@ -61,6 +61,8 @@ def _ast_check_params_contract(python_code: str) -> Optional[str]:
         return None
     has_form = False
     has_names = False
+    has_lagrangian = False
+    has_prediction = False
     has_nonempty_model_params = False
     for stmt in tree.body:
         if isinstance(stmt, ast.Assign):
@@ -70,25 +72,41 @@ def _ast_check_params_contract(python_code: str) -> Optional[str]:
                         has_form = True
                     elif tgt.id == "PARAMETER_NAMES":
                         has_names = True
+                    elif tgt.id == "LAGRANGIAN":
+                        has_lagrangian = True
+                    elif tgt.id == "PREDICTION":
+                        has_prediction = True
                     elif tgt.id == "MODEL_PARAMS":
                         if isinstance(stmt.value, ast.Dict) and len(stmt.value.keys) > 0:
                             has_nonempty_model_params = True
-    if (has_form and has_names) or has_nonempty_model_params:
+    # Three valid contracts:
+    #   Path A (legacy): PARAMETRIC_FORM + PARAMETER_NAMES
+    #   Path B (Newton-mode / GP-180): LAGRANGIAN + PREDICTION + PARAMETER_NAMES
+    #     (lagrangian_derivation auto-derives the apparatus-ready PARAMETRIC_FORM)
+    #   Path H (hardcoded, theory-pinned): MODEL_PARAMS non-empty
+    path_a_ok = has_form and has_names
+    path_b_ok = has_lagrangian and has_prediction and has_names
+    path_h_ok = has_nonempty_model_params
+    if path_a_ok or path_b_ok or path_h_ok:
         return None
     return (
         "Contract violation: I_model body references `params[...]` but "
-        "neither (a) PARAMETRIC_FORM + PARAMETER_NAMES were declared at "
-        "module level (so the apparatus could scipy-fit the constants) "
-        "nor (b) MODEL_PARAMS was hardcoded as a non-empty dict. At gate "
+        "none of the three valid contract paths is satisfied. At gate "
         "time MODEL_PARAMS={} so I_model will KeyError on the first "
         "`params['x']` access. Choose ONE:\n"
-        "  Option A — let the apparatus fit (preferred for unknown constants):\n"
+        "  Path A — apparatus scipy-fits PARAMETRIC_FORM (most common):\n"
         "      PARAMETRIC_FORM = \"params['a'] * features['x'] + params['b']\"\n"
         "      PARAMETER_NAMES = ['a', 'b']\n"
         "      MODEL_PARAMS = {}      # apparatus fills with fitted values\n"
-        "  Option B — hardcode (only when constants are pinned by theory):\n"
+        "  Path B — Newton-mode / GP-180 lagrangian_derivation auto-derives:\n"
+        "      LAGRANGIAN = \"q_dot**2/2 - 0.5*m2*q**2 - 0.25*lam*q**4 + q*(J0/log_d)\"\n"
+        "      PREDICTION = \"q\"\n"
+        "      PARAMETER_NAMES = ['m2', 'lam', 'J0']\n"
+        "      Q_VARIABLES = ['q'];  BACKGROUND = ['log_d']\n"
+        "      MODEL_PARAMS = {}      # GP-180 + apparatus fill via sympy + scipy\n"
+        "  Path H — hardcode (only when constants are pinned by theory):\n"
         "      MODEL_PARAMS = {'a': 0.5, 'b': 1.0}\n"
-        "Reference: GP-156 Proposal 3 (apparatus_hardening_proposal.md)."
+        "Reference: GP-156 Proposal 3 + GP-180 Lagrangian primitive."
     )
 
 
@@ -164,20 +182,136 @@ def _ast_check_no_module_level_i_model_call(python_code: str) -> Optional[str]:
     line_numbers = ", ".join(f"line {ln}" for ln, _ in violations)
     return (
         f"Module-level I_model(...) call detected at {line_numbers}. "
-        f"At module-load time MODEL_PARAMS is the empty dict {{}}, so "
-        f"any module-level call to I_model with params dependence will "
-        f"raise KeyError before scipy fits the constants. "
-        f"REMOVE every module-level I_model(...) call from your test_model.py. "
-        f"Do NOT hide them in a `_post_fit_sanity()` or any other private "
-        f"helper — the apparatus does not invoke such helpers, so doing so "
-        f"leaves I_model untested and the apparatus's own gate harness will "
-        f"score zero. The gate harness already runs assertions for you: it "
-        f"calls I_model on every VISIBLE_SET row and checks finite-float + "
-        f"MRE. You only need to provide `def I_model(d, params=None):` with "
-        f"`p.get(name, default)` for every param read so it works in BOTH "
-        f"the empty (MODEL_PARAMS={{}}) and post-fit states. "
-        f"If you want a debug print, put it inside "
-        f"`if __name__ == \"__main__\":` (the apparatus does not run that block)."
+        f"POLICY: no I_model(...) calls at module scope are permitted, "
+        f"regardless of what params dict you pass to them. This rule "
+        f"applies even if you build a complete probe dict (e.g., "
+        f"`I_model(_row, _probe_params)`) — the call is rejected on "
+        f"grammar, not on whether it would happen to succeed at import. "
+        f"Reasons: (1) module-level calls slow import; (2) the apparatus's "
+        f"gate harness already calls I_model on every VISIBLE_SET row and "
+        f"checks finite-float + MRE, so any module-level sanity assert is "
+        f"redundant; (3) when MODEL_PARAMS={{}} (the pre-fit state), "
+        f"calls reading `params['key']` directly raise KeyError and break "
+        f"module import entirely. "
+        f"FIX: move every I_model(...) call into the `if __name__ == "
+        f"\"__main__\":` block (the apparatus does not run that block, "
+        f"so it cannot break import). For the I_model definition itself, "
+        f"make import-safety OUTSIDE PARAMETRIC_FORM: build a local dict "
+        f"`p = dict(DEFAULT_PARAMS); p.update(params or {{}})` and then "
+        f"evaluate/calculate with `p`. PARAMETRIC_FORM should reference "
+        f"`params['key']` only. Do NOT write numeric defaults inside "
+        f"PARAMETRIC_FORM as `params.get('key', 0.34)`: those defaults "
+        f"become hidden load-bearing constants and trigger R20/R21 "
+        f"effective-K laundering. "
+        f"Do NOT hide module-level calls in private helpers like "
+        f"`_post_fit_sanity()` — the apparatus does not invoke them, so "
+        f"that path leaves I_model untested AND triggers this same R1 "
+        f"strike at the helper's call site."
+    )
+
+
+def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
+    """GP-180 Path B asymptotic-divergence guard (2026-05-02).
+
+    For substrates with the inversion-limit axiom (α(d → ∞) → 0), a Lagrangian
+    whose source J contains divergent-with-d terms — e.g. `log_d`, `log(d)`,
+    `log10_d`, or polynomials in d — produces a steady-state q that grows
+    without bound, violating the ambient gate by construction. The mutator's
+    iter-1 quartic-Lagrangian failure (J ∝ β·log_d → q diverges → α=0.49 at
+    d=1e6 vs observed 0.0015, 326× violation) is the canonical case.
+
+    This guard scans the LAGRANGIAN string for forbidden source-divergence
+    patterns when Path B is detected. Returns None if Path B is not used or
+    the source is asymptotically clean; returns diagnostic string if a
+    forbidden pattern is found.
+
+    Forbidden patterns (in the LAGRANGIAN expression):
+      - log_d, log10_d, ln_d (raw-name references to log-of-d features)
+      - log(d), log10(d), ln(d) (function-call form)
+      - d**k or d^k for positive k (polynomial-in-d divergence)
+      - explicit d * (anything) at top level of source coupling
+
+    Returns: None if guard is satisfied or Path B not used; diagnostic str
+    if a forbidden divergent term is found.
+    """
+    import re
+    try:
+        tree = ast.parse(python_code)
+    except SyntaxError:
+        return None  # let other checks handle syntax
+
+    lagrangian_str: Optional[str] = None
+    has_prediction = False
+    for stmt in tree.body:
+        if isinstance(stmt, ast.Assign):
+            for tgt in stmt.targets:
+                if isinstance(tgt, ast.Name) and tgt.id == "LAGRANGIAN":
+                    if isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str):
+                        lagrangian_str = stmt.value.value
+                    elif isinstance(stmt.value, ast.JoinedStr):
+                        # f-string: concatenate the constant parts
+                        parts = []
+                        for v in stmt.value.values:
+                            if isinstance(v, ast.Constant):
+                                parts.append(str(v.value))
+                        lagrangian_str = "".join(parts) if parts else None
+                elif isinstance(tgt, ast.Name) and tgt.id == "PREDICTION":
+                    has_prediction = True
+
+    if lagrangian_str is None or not has_prediction:
+        return None  # not Path B; defer to other guards
+
+    # Forbidden patterns in the LAGRANGIAN string. We're looking for these
+    # appearing as identifiers or function calls in the action expression.
+    forbidden = []
+    L = lagrangian_str
+    # log-of-d feature references (bare identifier names)
+    for pat in (r"\blog_d\b", r"\blog10_d\b", r"\bln_d\b"):
+        if re.search(pat, L):
+            forbidden.append(re.search(pat, L).group(0))
+    # log-call form: log(d), log10(d), ln(d) where d is the bare arg
+    for pat in (r"\blog\s*\(\s*d\s*\)", r"\blog10\s*\(\s*d\s*\)",
+                r"\bln\s*\(\s*d\s*\)"):
+        m = re.search(pat, L)
+        if m:
+            forbidden.append(m.group(0))
+    # Polynomial-in-d: d**k or d^k for positive k. Detect d** with positive
+    # numeric exponent. Also bare `d` multiplied by params at top level.
+    for m in re.finditer(r"\bd\s*\*\*\s*([0-9.]+)", L):
+        try:
+            k = float(m.group(1))
+            if k > 0:
+                forbidden.append(f"d**{k}")
+        except ValueError:
+            pass
+    # bare 'd*' (not 'd**' or '_d') at start of a multiplicative chunk
+    # — this catches J ∝ d * something. Conservative: only flag if 'd' appears
+    # as a TERM in the source-coupling part (after the q* sign).
+    # Heuristic: look for ' d *' or ' d+' etc. as a standalone term.
+    # We skip this heuristic for false-positive risk; the named-feature checks
+    # above cover the most common substrate shapes.
+
+    if not forbidden:
+        return None
+
+    forbidden_uniq = sorted(set(forbidden))
+    return (
+        f"LAGRANGIAN asymptotic-divergence guard (Path B): the LAGRANGIAN "
+        f"expression contains divergent-with-d term(s) {forbidden_uniq}. "
+        f"Per evidence.txt 'HARD STRUCTURAL CONSTRAINT 2 — Asymptotic "
+        f"inversion limit', any candidate must satisfy α(d → ∞) → 0. A "
+        f"Lagrangian source J that grows with d (log d, d^k for k > 0) "
+        f"forces the steady-state field q to grow with d, violating the "
+        f"ambient-gate axiom by construction.\n\n"
+        f"FIX: replace the divergent term in the source J. Allowed examples:\n"
+        f"  J ∝ 1/d, 1/d^k for k > 0, 1/log(d), exp(-β·d), q/d, q·d^(-k)\n"
+        f"Forbidden (auto-rejected): log(d), log_d, log10_d, d^k for k > 0, "
+        f"polynomials in d.\n"
+        f"This guard fires before scipy.optimize burns compute on a form "
+        f"that cannot pass the d=1e6 ambient gate. Reference: substrate "
+        f"evidence.txt HARD STRUCTURAL CONSTRAINT 2 + iter-1 quartic-"
+        f"Lagrangian failure (predicted q=0.49 at d=1e6 vs observed 0.0015, "
+        f"326× ambient-gate violation)."
     )
 
 
@@ -188,6 +322,7 @@ def validate_python_suite_imports(
     timeout_seconds: float = 5.0,
     require_i_model: bool = True,
     require_parametric_form: bool = False,
+    rubric_data: Optional[dict] = None,
 ) -> None:
     """Dry-run module-level execution to catch import-time crashes.
 
@@ -237,6 +372,21 @@ def validate_python_suite_imports(
     if _violation_params is not None:
         raise ValueError(_violation_params)
 
+    # Stage 1c.5: GP-180 Path B asymptotic-divergence guard (2026-05-02).
+    # Catches LAGRANGIAN whose source J contains divergent-with-d terms
+    # (log_d, polynomials in d) that violate the inversion-limit axiom by
+    # construction. RUBRIC-GATED: only enabled when the substrate's rubric
+    # opts in via `enable_lagrangian_inversion_limit_guard: true`. This
+    # avoids overfitting the apparatus to substrates that require α(d → ∞)
+    # → 0 (gp154-style); substrates with growing-with-d forms (or no
+    # asymptotic-axiom requirement) keep the legacy path. Default OFF.
+    if rubric_data is not None and bool(
+        rubric_data.get("enable_lagrangian_inversion_limit_guard", False)
+    ):
+        _violation_lag = _ast_check_lagrangian_source_asymptote(code)
+        if _violation_lag is not None:
+            raise ValueError(_violation_lag)
+
     # Stage 1d: GP-156 force-opt-in (2026-04-25). When the rubric flag
     # `enable_fit_primitive_features=true`, the substrate was explicitly
     # designed for the apparatus to fit constants — opting out by writing
@@ -250,6 +400,14 @@ def validate_python_suite_imports(
             _tree_pf = None
         _has_form = False
         _has_names = False
+        # GP-180 Path B (2026-05-02): the mutator may submit
+        #   LAGRANGIAN + PREDICTION + Q_VARIABLES + BACKGROUND
+        # instead of PARAMETRIC_FORM. The lagrangian_derivation primitive
+        # solves Euler-Lagrange via sympy and emits PARAMETRIC_FORM
+        # automatically downstream. Accept this contract here so the guard
+        # does not auto-reject Path B before the apparatus can derive.
+        _has_lagrangian = False
+        _has_prediction = False
         if _tree_pf is not None:
             for stmt in _tree_pf.body:
                 if isinstance(stmt, ast.Assign):
@@ -259,19 +417,30 @@ def validate_python_suite_imports(
                                 _has_form = True
                             elif tgt.id == "PARAMETER_NAMES":
                                 _has_names = True
-        if not (_has_form and _has_names):
+                            elif tgt.id == "LAGRANGIAN":
+                                _has_lagrangian = True
+                            elif tgt.id == "PREDICTION":
+                                _has_prediction = True
+        # Path A satisfied: PARAMETRIC_FORM + PARAMETER_NAMES at module scope.
+        # Path B satisfied: LAGRANGIAN + PREDICTION + PARAMETER_NAMES at module scope.
+        path_a_ok = _has_form and _has_names
+        path_b_ok = _has_lagrangian and _has_prediction and _has_names
+        if not (path_a_ok or path_b_ok):
             raise ValueError(
                 "Force-opt-in (rubric flag enable_fit_primitive_features=true): "
                 "this substrate was designed for the apparatus to fit "
-                "constants via scipy.optimize. You MUST declare "
-                "PARAMETRIC_FORM (str) AND PARAMETER_NAMES (list[str]) "
-                "at module level so the apparatus can engage. Hardcoded "
-                "constants will reliably miss the holdout gate; opting "
-                "out is not a valid escape from the K_law budget. If "
-                "K_law was tight, simplify the form (find structural "
-                "compression — e.g., one parameter per modality-class "
-                "instead of per modality) rather than removing the "
-                "contract."
+                "constants via scipy.optimize. You MUST declare ONE OF the "
+                "following two contracts at module level:\n\n"
+                "  PATH A (legacy): PARAMETRIC_FORM (str) AND PARAMETER_NAMES (list[str]).\n"
+                "  PATH B (Newton-mode / GP-180): LAGRANGIAN (str) AND PREDICTION (str) "
+                "AND PARAMETER_NAMES (list[str]); Q_VARIABLES + BACKGROUND are recommended. "
+                "GP-180 lagrangian_derivation will compute Euler-Lagrange via sympy and "
+                "emit the apparatus-ready PARAMETRIC_FORM for you.\n\n"
+                "Hardcoded constants will reliably miss the holdout gate; opting "
+                "out is not a valid escape from the K_law budget. If K_law was "
+                "tight, simplify the form (find structural compression — e.g., one "
+                "parameter per modality-class instead of per modality) rather than "
+                "removing the contract."
             )
 
     # Stage 2: sandboxed exec
