@@ -1,7 +1,7 @@
-# org_schema_v1 — frozen snapshot
+# org_schema_v1, frozen snapshot
 
 This fixture captures the v1 org/ schema as it existed on 2026-04-23.
-It is NOT the live org — do not edit these files to reflect operational
+It is NOT the live org, do not edit these files to reflect operational
 changes. It is the load-test for schema evolution: when the loader
 gains a v2 feature, this fixture must still parse without error (or
 the loader is a breaking change and must be flagged as such).

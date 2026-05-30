@@ -105,6 +105,7 @@ def test_claim_nonexistent_returns_none(tmp_goals: Path):
 def test_double_claim_fails_via_membrane(tmp_goals: Path, tmp_path: Path, monkeypatch):
     from src.ztare.sessions import claims as claims_mod
     monkeypatch.setattr(claims_mod, "CLAIMS_DIR", tmp_path / "_claims")
+    monkeypatch.setattr(claims_mod.damage, "emit", lambda **kwargs: None)
 
     _write_goal(tmp_goals, "gy")
     first = gi.claim_goal(
