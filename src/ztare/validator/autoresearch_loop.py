@@ -19,6 +19,7 @@ from src.ztare.common import utils
 from src.ztare.common.llm_runtime import (
     LLMRuntime,
     PRODUCTION_CALL_RETRIES,
+    drain_failed_retry_tracker,
     resolve_model_id,
     resolve_director_model_id,
     pricing_model_name,
@@ -68,6 +69,10 @@ from src.ztare.fit.mutation_suite_guard import (
     validate_python_suite_candidate,
     validate_python_suite_imports,
     attest_visible_mre,
+)
+from src.ztare.orchestrator.submission_path_helpers import (
+    detect_submission_path,
+    format_r1_retry_skeleton,
 )
 from src.ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
@@ -154,6 +159,27 @@ SESSION_MUTATOR_USAGE = {
 }
 SESSION_MUTATOR_MODELS_USED: set[str] = set()
 SESSION_MUTATOR_FALLBACK_EVENTS: list[dict[str, str]] = []
+
+# WAR Guard C (2026-04-27): rail-off pattern detection. Consecutive iters
+# where R1 exhausted all 3 strikes indicate the mutator has gone off-rails
+# (typically: pseudo-code essays, mid-submission truncation, contract
+# violations on every retry). After this many consecutive exhaustions the
+# loop logs a clear warning so the operator can stop the run instead of
+# burning tokens on a model that won't recover. Reset on any successful
+# R1 pass.
+# Threshold lives in `src/ztare/orchestrator/r1_retry` per Phase 4g extraction
+# (2026-05-06); the session counter is still kept here because it's
+# loop-iteration state, not retry mechanics.
+from src.ztare.orchestrator.r1_retry import (
+    R1_EXHAUSTION_WARN_THRESHOLD as SESSION_R1_EXHAUSTION_WARN_THRESHOLD,
+    R1ExhaustionTracker,
+    log_r1_attempt as _log_r1_attempt_impl,
+)
+session_r1_tracker = R1ExhaustionTracker()
+# Backwards-compat alias for any external import; reads through to the
+# tracker's count. Existing module-internal call sites use the tracker
+# directly via .reset() / .record_exhaustion() per Phase 4g extraction.
+SESSION_CONSECUTIVE_R1_EXHAUSTIONS = 0
 SESSION_JUDGE_USAGE = {
     "input_tokens": 0,
     "output_tokens": 0,
@@ -189,7 +215,7 @@ parser.add_argument(
         "post-eval hook entirely. Used during cold-harvest runs where Component B output "
         "must not contaminate derived_constraints.json while a corpus of failed families "
         "is being gathered for a separate cold test. See "
-        "research_areas/private/specs/active/GP-061_component_b_generalization_target_spec.md."
+        "GP-061 (internal seam)"
     ),
 )
 parser.add_argument(
@@ -333,16 +359,20 @@ RUNTIME = LLMRuntime()
 client = RUNTIME.require_gemini_client()
 
 
+# Phase 4g extraction (2026-05-06 PM): startup recovery hooks
+# (load_v4_stage_index / axiom_restore_from_bak /
+# baseline_restore_and_champion_archive) live in
+# src/ztare/orchestrator/startup_recovery. Wrappers fill in
+# project name + paths.
+from src.ztare.orchestrator.startup_recovery import (
+    load_v4_stage_index as _load_v4_stage_index_impl,
+    axiom_restore_from_bak as _axiom_restore_from_bak_impl,
+    baseline_restore_and_champion_archive as _baseline_restore_impl,
+)
+
+
 def _load_v4_stage_index() -> int | None:
-    if not is_v4_family_project(args.project):
-        return None
-    state_path = Path("projects") / args.project / "meta_runner_state.json"
-    if not state_path.exists():
-        return None
-    try:
-        return json.loads(state_path.read_text()).get("current_stage")
-    except Exception:
-        return None
+    return _load_v4_stage_index_impl(args.project)
 
 ITERATIONS = args.iters
 
@@ -375,6 +405,18 @@ THESIS_PATH = f"{PROJECT_DIR}/thesis.md"
 WORKING_PATH = f"{PROJECT_DIR}/current_iteration.md"
 EVIDENCE_PATH = f"{PROJECT_DIR}/evidence.txt"
 AXIOM_PATH = f"{PROJECT_DIR}/verified_axioms.json"
+# 2026-04-27 startup defense-in-depth — restore axioms from .bak
+# if the live file is missing or empty (squashed to [] / {} by a prior run
+# that crashed between emergency-pivot delete and merge restore). With T14b
+# + T17 in place, mid-iter wipes are caught; this hook covers the case where
+# a hard crash leaves the file gone but .bak populated.
+# Run the two extracted startup-recovery hooks immediately. Defense-
+# in-depth at module load: restore axioms from .bak when the live
+# file is empty/missing AND the .bak is populated (post-crash
+# recovery); restore test_model from baseline + archive prior champion
+# files when the substrate has opted in via test_model_baseline.py.
+_axiom_restore_from_bak_impl(AXIOM_PATH)
+_baseline_restore_impl(PROJECT_DIR)
 PROJECT_CHARTER_PATH = f"{PROJECT_DIR}/project_charter.md"
 LATEST_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/latest_eval_results.json"
 CHAMPION_EVAL_RESULTS_PATH = f"{PROJECT_DIR}/champion_eval_results.json"
@@ -389,238 +431,61 @@ MAIN_RUBRIC_PATH = RUBRICS_DIR / f"{args.rubric}.json"
 BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
 
-def read_file(filepath):
-    with open(filepath, "r") as f:
-        return f.read()
+# Phase 4g extraction (2026-05-06): the five file-IO primitives live
+# in src/ztare/common/file_io. Re-aliased here so existing call sites
+# (51 across this file alone) need no change. Importing here also
+# means sibling orchestrator modules can use the same helpers via
+# `from src.ztare.common.file_io import append_jsonl` without a
+# circular dependency back through autoresearch_loop.
+from src.ztare.common.file_io import (
+    read_file,
+    write_file,
+    read_json,
+    write_json,
+    append_jsonl,
+)
 
 
-def write_file(filepath, content):
-    with open(filepath, "w") as f:
-        f.write(content)
+# Phase 4g extraction (2026-05-06 PM): _pop_seed_queue body lives in
+# src/ztare/orchestrator/composition_seed. Re-aliased; pure helper,
+# no wrapper needed.
+from src.ztare.orchestrator.composition_seed import (
+    pop_seed_queue as _pop_seed_queue,
+)
 
 
-def read_json(filepath: str) -> dict | None:
-    path = Path(filepath)
-    if not path.exists():
-        return None
-    try:
-        return json.loads(path.read_text())
-    except Exception:
-        return None
+# Phase 4g extraction (2026-05-06): _format_sweep_context lives in
+# src/ztare/orchestrator/divergence_sweep_context. Re-aliased so
+# existing call sites are unchanged.
+from src.ztare.orchestrator.divergence_sweep_context import (
+    format_sweep_context as _format_sweep_context,
+)
 
 
-def write_json(filepath: str, payload: dict) -> None:
-    path = Path(filepath)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+# Phase 4g extraction (2026-05-06): the iteration-telemetry helpers
+# previously defined inline at this location now live in
+# src/ztare/orchestrator/iteration_telemetry.py. Behaviour preserved
+# verbatim; the extracted module is unit-testable in isolation. The
+# import block re-aliases the public names back to the private ones
+# autoresearch_loop's call sites use, so no call-site change is needed.
+from src.ztare.orchestrator.iteration_telemetry import (
+    utc_now_iso as _utc_now_iso,
+    usage_bucket_snapshot as _usage_bucket_snapshot,
+    usage_delta as _usage_delta,
+    combined_iteration_cost_usd as _combined_iteration_cost_usd,
+    extract_iteration_gate_metrics as _extract_iteration_gate_metrics,
+    extract_iteration_escalation_flags as _extract_iteration_escalation_flags,
+    fallback_weakest_point_from_eval as _fallback_weakest_point_from_eval,
+    normalize_eval_payload as _normalize_eval_payload,
+    append_run_boundary_telemetry as _append_run_boundary_telemetry,
+    append_iteration_telemetry as _append_iteration_telemetry_impl,
+)
 
 
-def append_jsonl(filepath: str, payload: dict) -> None:
-    path = Path(filepath)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
-
-
-def _pop_seed_queue(workspace_dir: Path, injected: bool) -> None:
-    """Pop the front of the Component D seed queue after a failed iteration.
-
-    Called from every early-exit path (R1 exception, R1 mismatch, R3 rejection,
-    subprocess crash) to prevent infinite retry of a crashing candidate.
-    On success the queue is cleared entirely (handled separately).
-    """
-    if not injected:
-        return
-    _seed_file = workspace_dir / "composition_seed.json"
-    if not _seed_file.exists():
-        return
-    try:
-        _q = json.loads(_seed_file.read_text())
-        if isinstance(_q, list) and len(_q) > 1:
-            _q.pop(0)
-            _seed_file.write_text(json.dumps(_q, indent=2) + "\n")
-            print(f"    🧬 Seed queue: popped failed candidate, {len(_q)} remaining")
-        else:
-            _seed_file.unlink()
-            print("    🧬 Seed queue exhausted (all candidates tested)")
-    except Exception:
-        _seed_file.unlink()
-
-
-def _format_sweep_context(sweep_state: dict) -> str:
-    """Format GP-076 sweep state for mutator prompt injection."""
-    if not sweep_state:
-        return ""
-    parts: list[str] = []
-    if sweep_state.get("library_exhausted"):
-        parts.append(
-            "GP-076 DIVERGENCE SWEEP — LIBRARY EXHAUSTED:\n"
-            "The deterministic corrector library has been fully searched. "
-            "No library form survived the holdout gate. You must propose a "
-            "NOVEL functional form for the corrector — do not reuse any "
-            "standard form (step, heaviside, round, floor, ceil, etc.).\n"
-        )
-    query_history = sweep_state.get("query_history", [])
-    if query_history:
-        parts.append("GP-076 DIVERGENCE QUERY OBSERVATIONS (verified data points):")
-        # Accumulate surviving forms across all queries (intersection)
-        all_surviving: list[str] | None = None
-        for q in query_history:
-            surviving = q.get("surviving_forms", [])
-            k_vals = q.get("surviving_k_values", {})
-            k_str = ""
-            if k_vals:
-                k_str = "  fitted k: " + ", ".join(
-                    f"{form}→k={k:.4f}" for form, k in k_vals.items()
-                )
-            parts.append(
-                f"  corrector(v={q['query_v']}) = {q['observed']}  "
-                f"[eliminated {len(q.get('eliminated', []))} candidates, "
-                f"{q.get('survivors_after', '?')} remain: {surviving}]{k_str}"
-            )
-            if all_surviving is None:
-                all_surviving = list(surviving)
-            else:
-                all_surviving = [s for s in all_surviving if s in surviving]
-        parts.append(
-            "These observations are confirmed experimental results. "
-            "Your proposed corrector MUST match these values exactly.\n"
-        )
-        if all_surviving:
-            parts.append(
-                "SURVIVING LIBRARY FORMS (consistent with all query observations):\n"
-                + "\n".join(f"  - {f}" for f in all_surviving)
-                + "\n\nDIRECT INSTRUCTION: Fit the surviving form(s) above to the visible "
-                "corrector data to find the best free parameter k. Do NOT invent a new "
-                "topology — use one of the surviving forms exactly. Show your derivation "
-                "of k from visible (v, corrector) pairs and verify it matches all query "
-                "observations before writing the final expression.\n"
-            )
-    return "\n".join(parts)
-
-
-def _utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
-
-
-def _usage_bucket_snapshot(bucket: dict) -> dict:
-    return {
-        "input_tokens": int(bucket.get("input_tokens", 0) or 0),
-        "output_tokens": int(bucket.get("output_tokens", 0) or 0),
-        "cache_creation_input_tokens": int(bucket.get("cache_creation_input_tokens", 0) or 0),
-        "cache_read_input_tokens": int(bucket.get("cache_read_input_tokens", 0) or 0),
-        "thinking_tokens": int(bucket.get("thinking_tokens", 0) or 0),
-        "estimated_cost_usd": float(bucket.get("estimated_cost_usd", 0.0) or 0.0),
-        "cost_known": bool(bucket.get("cost_known", False)),
-    }
-
-
-def _usage_delta(before: dict, after: dict) -> dict:
-    input_tokens = max(0, int(after["input_tokens"]) - int(before["input_tokens"]))
-    output_tokens = max(0, int(after["output_tokens"]) - int(before["output_tokens"]))
-    cache_read_tokens = max(
-        0,
-        int(after["cache_read_input_tokens"]) - int(before["cache_read_input_tokens"]),
-    )
-    cache_write_tokens = max(
-        0,
-        int(after["cache_creation_input_tokens"]) - int(before["cache_creation_input_tokens"]),
-    )
-    thinking_tokens = max(
-        0,
-        int(after.get("thinking_tokens", 0)) - int(before.get("thinking_tokens", 0)),
-    )
-    has_usage = any(
-        value > 0
-        for value in (
-            input_tokens,
-            output_tokens,
-            cache_read_tokens,
-            cache_write_tokens,
-            thinking_tokens,
-        )
-    )
-    cost_known = True if not has_usage else bool(after.get("cost_known", False))
-    estimated_cost_usd = (
-        round(
-            max(
-                0.0,
-                float(after["estimated_cost_usd"]) - float(before["estimated_cost_usd"]),
-            ),
-            6,
-        )
-        if has_usage and cost_known
-        else 0.0 if not has_usage else None
-    )
-    return {
-        "input_tokens": input_tokens,
-        "output_tokens": output_tokens,
-        "cache_read_tokens": cache_read_tokens,
-        "cache_write_tokens": cache_write_tokens,
-        "thinking_tokens": thinking_tokens,
-        "estimated_cost_usd": estimated_cost_usd,
-        "cost_known": cost_known,
-        "has_usage": has_usage,
-    }
-
-
-def _combined_iteration_cost_usd(mutator_usage: dict, judge_usage: dict) -> float | None:
-    total = 0.0
-    for usage in (mutator_usage, judge_usage):
-        if not usage.get("has_usage", False):
-            continue
-        if not usage.get("cost_known", False):
-            return None
-        total += float(usage.get("estimated_cost_usd", 0.0) or 0.0)
-    return round(total, 6)
-
-
-def _extract_iteration_gate_metrics(evaluation: dict | None) -> tuple[bool, int, list[str]]:
-    if not isinstance(evaluation, dict):
-        return False, 0, []
-    score_contract = evaluation.get("score_contract")
-    if not isinstance(score_contract, dict):
-        score_contract = {}
-    payload = score_contract.get("deterministic_charter_gates", evaluation.get("deterministic_charter_gates"))
-    if not isinstance(payload, dict):
-        return False, 0, []
-
-    declared = payload.get("declared", [])
-    results = payload.get("results", [])
-    gate_engagement = bool(payload.get("harness_invoked", False)) or bool(declared)
-    failed_gate_ids: list[str] = []
-    if isinstance(results, list):
-        for item in results:
-            if isinstance(item, dict) and not bool(item.get("passed", False)):
-                name = item.get("name")
-                if isinstance(name, str) and name:
-                    failed_gate_ids.append(name)
-    failure_count = int(payload.get("failure_count", len(failed_gate_ids)) or 0)
-    if failed_gate_ids:
-        failure_count = len(failed_gate_ids)
-    return gate_engagement, failure_count, failed_gate_ids
-
-
-def _extract_iteration_escalation_flags(evaluation: dict | None) -> dict:
-    if not isinstance(evaluation, dict):
-        return {"self_reference": False, "semantic_escalation": False}
-    score_contract = evaluation.get("score_contract")
-    if not isinstance(score_contract, dict):
-        score_contract = {}
-    rule = str(
-        evaluation.get("self_reference_rule_fired")
-        or score_contract.get("self_reference_rule_fired")
-        or ""
-    )
-    unresolved_diagnosis = str(evaluation.get("semantic_gate_unresolved_diagnosis") or "")
-    return {
-        "self_reference": "self_reference" in rule,
-        "semantic_escalation": (
-            rule == "claim_test_mismatch_escalation" or bool(unresolved_diagnosis)
-        ),
-    }
-
-
+# `_current_loop_control_action` stays inline: it consumes
+# LoopControlAction + resolve_stagnation_pivot_state from the validator
+# stage (not telemetry-shaped). A future Phase 4g extraction may move
+# it to an `orchestrator/loop_control.py` module; out of scope today.
 def _current_loop_control_action(
     *,
     pending_loop_action,
@@ -645,13 +510,6 @@ def _current_loop_control_action(
     ).loop_control_action
 
 
-def _append_run_boundary_telemetry(
-    workspace_dir: Path,
-    payload: dict,
-) -> None:
-    append_jsonl(str(workspace_dir / "iteration_telemetry.jsonl"), payload)
-
-
 def _append_iteration_telemetry(
     workspace_dir: Path,
     *,
@@ -674,182 +532,97 @@ def _append_iteration_telemetry(
     pending_loop_action: str,
     raw_judge_score: int | None = None,
     score_cap_reason: str | None = None,
+    gp180_telemetry: dict | None = None,
 ) -> None:
-    iteration_end_utc = _utc_now_iso()
-    payload = {
-        "record_type": "iteration",
-        "run_id": RUN_ID,
-        "iteration_index": iteration_index,
-        "iteration_start_utc": iteration_start_utc,
-        "iteration_end_utc": iteration_end_utc,
-        "wall_clock_seconds": round(
-            max(
-                0.0,
-                datetime.fromisoformat(iteration_end_utc).timestamp()
-                - datetime.fromisoformat(iteration_start_utc).timestamp(),
-            ),
-            6,
-        ),
-        "loop_control_action": loop_control_action,
-        "score": score,
-        "raw_judge_score": raw_judge_score,
-        "score_cap_reason": score_cap_reason,
-        "score_improved": score_improved,
-        "champion_promoted": champion_promoted,
-        "stagnation_count": stagnation_count,
-        "gate_engagement": gate_engagement,
-        "gate_failure_count": gate_failure_count,
-        "failed_gate_ids": failed_gate_ids,
-        "escalation_flags": escalation_flags,
-        "falsification_mode": falsification_mode,
-        "mutator_model_id": mutator_model_id,
-        "judge_model_id": judge_model_id,
-        "mutator_usage": {
-            "input_tokens": mutator_usage["input_tokens"],
-            "output_tokens": mutator_usage["output_tokens"],
-            "cache_read_tokens": mutator_usage["cache_read_tokens"],
-            "cache_write_tokens": mutator_usage["cache_write_tokens"],
-            "thinking_tokens": mutator_usage.get("thinking_tokens", 0),
-        },
-        "judge_usage": {
-            "input_tokens": judge_usage["input_tokens"],
-            "output_tokens": judge_usage["output_tokens"],
-            "cache_read_tokens": judge_usage["cache_read_tokens"],
-            "cache_write_tokens": judge_usage["cache_write_tokens"],
-            "thinking_tokens": judge_usage.get("thinking_tokens", 0),
-        },
-        "estimated_cost_usd": _combined_iteration_cost_usd(mutator_usage, judge_usage),
-        "pending_loop_action": pending_loop_action,
-    }
-    append_jsonl(str(workspace_dir / "iteration_telemetry.jsonl"), payload)
+    """Project-scoped wrapper that fills in RUN_ID for the extracted helper.
+
+    The body lives in `orchestrator/iteration_telemetry.py` per Phase
+    4g extraction. RUN_ID is read from this module's global state
+    (set at line ~4146 inside the `if __name__ == "__main__":` block)
+    and forwarded as an explicit kwarg.
+    """
+    _append_iteration_telemetry_impl(
+        workspace_dir,
+        run_id=RUN_ID,
+        iteration_index=iteration_index,
+        iteration_start_utc=iteration_start_utc,
+        loop_control_action=loop_control_action,
+        score=score,
+        score_improved=score_improved,
+        champion_promoted=champion_promoted,
+        stagnation_count=stagnation_count,
+        gate_engagement=gate_engagement,
+        gate_failure_count=gate_failure_count,
+        failed_gate_ids=failed_gate_ids,
+        escalation_flags=escalation_flags,
+        falsification_mode=falsification_mode,
+        mutator_model_id=mutator_model_id,
+        judge_model_id=judge_model_id,
+        mutator_usage=mutator_usage,
+        judge_usage=judge_usage,
+        pending_loop_action=pending_loop_action,
+        raw_judge_score=raw_judge_score,
+        score_cap_reason=score_cap_reason,
+        gp180_telemetry=gp180_telemetry,
+    )
 
 
-def _strip_best_iteration_marker(text: str) -> str:
-    cleaned = re.sub(r"\n\n<!--\s*best_iteration:\s*[A-Za-z0-9_.-]+\s*-->\s*$", "", text)
-    return cleaned.rstrip()
+# Phase 4g extraction (2026-05-06): the saved-best read accessors live
+# in src/ztare/orchestrator/best_state_persistence. The thin wrappers
+# below fill in THESIS_PATH / HISTORY_DIR / BEST_ITERATION_RE /
+# HISTORY_SCORE_RE so existing call sites are unchanged. The write
+# side (`_persist_best_candidate`) stays inline for now — it touches
+# more apparatus state.
+from src.ztare.orchestrator.best_state_persistence import (
+    strip_best_iteration_marker as _strip_best_iteration_marker,
+    score_regime_fingerprint_from_score_contract as _score_regime_fingerprint_from_score_contract,
+    score_regime_fingerprint_from_meta as _score_regime_fingerprint_from_meta,
+    current_saved_best_stem as _current_saved_best_stem_impl,
+    current_saved_best_score as _current_saved_best_score_impl,
+    current_saved_best_meta as _current_saved_best_meta_impl,
+    saved_best_comparison_anchor as _saved_best_comparison_anchor_impl,
+)
 
 
 def _current_saved_best_stem() -> str | None:
-    if not os.path.exists(THESIS_PATH):
-        return None
-    match = BEST_ITERATION_RE.search(read_file(THESIS_PATH))
-    if not match:
-        return None
-    return match.group(1)
+    return _current_saved_best_stem_impl(
+        THESIS_PATH, best_iteration_re=BEST_ITERATION_RE
+    )
 
 
 def _current_saved_best_score() -> int | None:
-    history_stem = _current_saved_best_stem()
-    if not history_stem:
-        return None
-    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
-    if meta_path.exists():
-        try:
-            meta = json.loads(read_file(str(meta_path)))
-            score = meta.get("score")
-            return int(score) if score is not None else None
-        except Exception:
-            pass
-    match = HISTORY_SCORE_RE.search(history_stem)
-    if not match:
-        return None
-    return int(match.group(1))
+    return _current_saved_best_score_impl(
+        THESIS_PATH,
+        HISTORY_DIR,
+        best_iteration_re=BEST_ITERATION_RE,
+        history_score_re=HISTORY_SCORE_RE,
+    )
 
 
 def _current_saved_best_meta() -> dict | None:
-    history_stem = _current_saved_best_stem()
-    if not history_stem:
-        return None
-    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
-    if not meta_path.exists():
-        return None
-    try:
-        payload = json.loads(read_file(str(meta_path)))
-    except Exception:
-        return None
-    return payload if isinstance(payload, dict) else None
-
-
-def _score_regime_fingerprint_from_score_contract(score_contract) -> str | None:
-    if not isinstance(score_contract, dict):
-        return None
-    fingerprint = score_contract.get("regime_fingerprint")
-    if isinstance(fingerprint, str) and fingerprint.strip():
-        return fingerprint.strip()
-    return None
-
-
-def _score_regime_fingerprint_from_meta(meta: dict | None) -> str | None:
-    if not isinstance(meta, dict):
-        return None
-    fingerprint = meta.get("score_regime_fingerprint")
-    if isinstance(fingerprint, str) and fingerprint.strip():
-        return fingerprint.strip()
-    score_contract = meta.get("score_contract")
-    return _score_regime_fingerprint_from_score_contract(score_contract)
+    return _current_saved_best_meta_impl(
+        THESIS_PATH, HISTORY_DIR, best_iteration_re=BEST_ITERATION_RE
+    )
 
 
 def _saved_best_comparison_anchor(current_eval: dict) -> dict:
-    raw_saved_score = _current_saved_best_score()
-    if raw_saved_score is None:
-        return {
-            "compare_score": None,
-            "raw_saved_score": None,
-            "status": "none",
-            "label": "none",
-        }
-
-    current_fingerprint = _score_regime_fingerprint_from_score_contract(
-        current_eval.get("score_contract")
+    return _saved_best_comparison_anchor_impl(
+        current_eval,
+        thesis_path=THESIS_PATH,
+        history_dir=HISTORY_DIR,
+        best_iteration_re=BEST_ITERATION_RE,
+        history_score_re=HISTORY_SCORE_RE,
     )
-    if current_fingerprint is None:
-        return {
-            "compare_score": raw_saved_score,
-            "raw_saved_score": raw_saved_score,
-            "status": "current_regime_unknown",
-            "label": str(raw_saved_score),
-        }
 
-    saved_meta = _current_saved_best_meta()
-    if saved_meta is None:
-        return {
-            "compare_score": None,
-            "raw_saved_score": raw_saved_score,
-            "status": "legacy_missing_meta",
-            "label": f"legacy_missing_meta:{raw_saved_score}",
-        }
 
-    saved_fingerprint = _score_regime_fingerprint_from_meta(saved_meta)
-    if saved_fingerprint is None:
-        return {
-            "compare_score": None,
-            "raw_saved_score": raw_saved_score,
-            "status": "legacy_missing_regime",
-            "label": f"legacy_missing_regime:{raw_saved_score}",
-        }
-
-    if saved_fingerprint != current_fingerprint:
-        # GP-167 fix (2026-04-25 night, panel-revealed): previous behavior
-        # returned compare_score=None, which made the caller treat the saved
-        # baseline as if it never existed and silently promote any new
-        # score (even 0) over a previously-saved 50. That destroyed the
-        # operator's accumulated work whenever the rubric was edited mid-run.
-        # Now: keep the raw saved score as the comparison anchor so the new
-        # candidate must actually beat it; flag status as "regime_mismatch"
-        # so the caller can choose to demote rather than discard.
-        return {
-            "compare_score": raw_saved_score,
-            "raw_saved_score": raw_saved_score,
-            "status": "regime_mismatch",
-            "label": f"regime_mismatch:{raw_saved_score}",
-        }
-
-    return {
-        "compare_score": raw_saved_score,
-        "raw_saved_score": raw_saved_score,
-        "status": "compatible",
-        "label": str(raw_saved_score),
-    }
+# Phase 4g extraction (2026-05-06 PM): _persist_best_candidate body
+# now lives in src/ztare/orchestrator/best_state_persistence — same
+# module as the read accessors. The wrapper fills in the module-level
+# globals (HISTORY_DIR / THESIS_PATH / WORKING_PATH /
+# LATEST_PROBABILITY_DAG_PATH / SESSION_*) and forwards the rest.
+from src.ztare.orchestrator.best_state_persistence import (
+    persist_best_candidate as _persist_best_candidate_impl,
+)
 
 
 def _persist_best_candidate(
@@ -863,439 +636,201 @@ def _persist_best_candidate(
     judge_model_id: str,
     score_contract: dict | None = None,
 ) -> str:
-    clean_content = _strip_best_iteration_marker(thesis_content)
-    history_stem = f"{run_id}_iter{iteration}_score_{score}_{args.rubric}"
-    write_file(f"{HISTORY_DIR}/{history_stem}.md", clean_content)
-    thesis_with_marker = clean_content + f"\n\n<!-- best_iteration: {history_stem} -->"
-    write_file(THESIS_PATH, thesis_with_marker)
-    write_file(WORKING_PATH, thesis_with_marker)
-
-    meta = {
-        "run_id": run_id,
-        "iteration": iteration,
-        "score": score,
-        "rubric": args.rubric,
-        "dynamic": args.dynamic,
-        "mutator_model": mutator_model_id,
-        "judge_model": judge_model_id,
-        "effective_mutator_models": sorted(SESSION_MUTATOR_MODELS_USED) or [mutator_model_id],
-        "mutator_fallback_used": bool(SESSION_MUTATOR_FALLBACK_EVENTS),
-        "effective_judge_models": list((score_contract or {}).get("effective_judge_models", [judge_model_id])),
-        "judge_fallback_used": bool((score_contract or {}).get("judge_fallback_used", False)),
-        "weakest_point": weakest_point,
-        "timestamp": datetime.now().isoformat(),
-        "score_contract": score_contract or {},
-        "score_regime_fingerprint": _score_regime_fingerprint_from_score_contract(score_contract),
-    }
-    write_file(
-        f"{HISTORY_DIR}/{history_stem}_meta.json",
-        json.dumps(meta, indent=2),
+    return _persist_best_candidate_impl(
+        thesis_content,
+        score=score,
+        weakest_point=weakest_point,
+        iteration=iteration,
+        run_id=run_id,
+        rubric_name=args.rubric,
+        mutator_model_id=mutator_model_id,
+        judge_model_id=judge_model_id,
+        score_contract=score_contract,
+        thesis_path=THESIS_PATH,
+        working_path=WORKING_PATH,
+        history_dir=HISTORY_DIR,
+        latest_probability_dag_path=LATEST_PROBABILITY_DAG_PATH,
+        session_mutator_models_used=SESSION_MUTATOR_MODELS_USED,
+        session_mutator_fallback_events=SESSION_MUTATOR_FALLBACK_EVENTS,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        extra_meta={"dynamic": args.dynamic},
     )
 
-    dag_src = LATEST_PROBABILITY_DAG_PATH
-    if os.path.exists(dag_src):
-        shutil.copy(dag_src, f"{HISTORY_DIR}/{history_stem}_dag.json")
 
-    return history_stem
+# Phase 4g extraction (2026-05-06 PM): _project_state_paths body
+# lives in src/ztare/orchestrator/project_state_snapshot. Wrapped to
+# fill in THESIS_PATH / WORKING_PATH / EVIDENCE_PATH / AXIOM_PATH.
+from src.ztare.orchestrator.project_state_snapshot import (
+    project_state_paths as _project_state_paths_impl,
+)
 
 
 def _project_state_paths(project_dir: str) -> tuple[str, ...]:
-    return (
-        THESIS_PATH,
-        WORKING_PATH,
-        f"{project_dir}/test_model.py",
-        EVIDENCE_PATH,
-        f"{project_dir}/workspace/fit_result.json",
-        # 2026-04-27 hotfix (WAR-T17): AXIOM_PATH was missing from this tuple,
-        # which meant `_capture_project_state(...)` snapshots never included
-        # verified_axioms.json. Subsequent `_restore_project_state(snapshot)`
-        # calls (on iter rollback / failed promotion) couldn't restore it,
-        # leaving the file at whatever the merge code wrote (often `[]`).
-        # Including it here ensures operator-curated bridge axioms +
-        # successor_lock survive iter rollbacks.
-        AXIOM_PATH,
+    return _project_state_paths_impl(
+        project_dir,
+        thesis_path=THESIS_PATH,
+        working_path=WORKING_PATH,
+        evidence_path=EVIDENCE_PATH,
+        axiom_path=AXIOM_PATH,
     )
 
 
-def _capture_project_state(paths: tuple[str, ...]) -> dict[str, str | None]:
-    snapshot: dict[str, str | None] = {}
-    for path in paths:
-        snapshot[path] = read_file(path) if os.path.exists(path) else None
-    return snapshot
-
-
-def _restore_project_state(snapshot: dict[str, str | None]) -> None:
-    for path, content in snapshot.items():
-        if content is None:
-            if os.path.exists(path):
-                os.remove(path)
-            continue
-        write_file(path, content)
-
-
-def _latest_debate_log_text(project_dir: str) -> str:
-    project_path = Path(project_dir)
-    candidates = sorted(project_path.glob("debate_log_iter_*.md"), key=lambda p: p.stat().st_mtime)
-    if not candidates:
-        return ""
-    return candidates[-1].read_text()
+# Phase 4g extraction (2026-05-06): project-state snapshot trio lives
+# in src/ztare/orchestrator/project_state_snapshot. Re-aliased here
+# so existing call sites are unchanged. _project_state_paths above
+# stays inline — it depends on module-globals (THESIS_PATH, etc.)
+# and is the appropriate boundary between "where paths come from"
+# (autoresearch_loop) and "what we do with them" (the extracted module).
+from src.ztare.orchestrator.project_state_snapshot import (
+    capture_project_state as _capture_project_state,
+    restore_project_state as _restore_project_state,
+    latest_debate_log_text as _latest_debate_log_text,
+)
 
 
 def _champion_eval_payload() -> dict | None:
     return read_json(CHAMPION_EVAL_RESULTS_PATH)
 
 
+# Phase 4g extraction (2026-05-06 PM): _saved_best_history_payload
+# body lives in src/ztare/orchestrator/best_state_persistence as
+# `saved_best_history_payload`. Wrapped to fill in module globals.
+from src.ztare.orchestrator.best_state_persistence import (
+    saved_best_history_payload as _saved_best_history_payload_impl,
+)
+
+
 def _saved_best_history_payload() -> tuple[str | None, dict | None]:
-    history_stem = _current_saved_best_stem()
-    if not history_stem:
-        return None, None
-    meta_path = Path(HISTORY_DIR) / f"{history_stem}_meta.json"
-    if not meta_path.exists():
-        return history_stem, None
-    return history_stem, read_json(str(meta_path))
+    return _saved_best_history_payload_impl(
+        THESIS_PATH, HISTORY_DIR, best_iteration_re=BEST_ITERATION_RE
+    )
+
+
+# Phase 4g extraction (2026-05-06 PM): champion artifact sync trio
+# (reconstruct/out_of_sync/promote_latest) lives in
+# src/ztare/orchestrator/champion_artifact_sync. Wrappers fill in the
+# module-level paths + args.* + MODEL_ID globals.
+from src.ztare.orchestrator.champion_artifact_sync import (
+    reconstruct_champion_artifacts_from_saved_best as _reconstruct_champion_impl,
+    champion_artifacts_out_of_sync as _champion_out_of_sync_impl,
+    promote_latest_artifacts_to_champion as _promote_latest_impl,
+)
 
 
 def _reconstruct_champion_artifacts_from_saved_best() -> dict:
-    history_stem, meta = _saved_best_history_payload()
-    if not history_stem or not isinstance(meta, dict):
-        return {
-            "reconstructed": False,
-            "reason": "saved_best_missing",
-            "regime_fingerprint": None,
-        }
-
-    champion_eval = build_champion_eval_from_saved_best(
-        meta,
-        history_stem,
+    return _reconstruct_champion_impl(
+        saved_best_history=_saved_best_history_payload(),
         project_rubric=args.rubric,
         project_dynamic=args.dynamic,
-        project_mutator_model_id=MUTATOR_MODEL_ID,
-        project_judge_model_id=JUDGE_MODEL_ID,
-        score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
-        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
-    )
-    write_json(CHAMPION_EVAL_RESULTS_PATH, champion_eval)
-
-    history_dag_path = Path(HISTORY_DIR) / f"{history_stem}_dag.json"
-    if history_dag_path.exists():
-        shutil.copy(history_dag_path, CHAMPION_PROBABILITY_DAG_PATH)
-
-    champion_gap_payload = build_champion_gap_payload_from_saved_best(
-        meta,
         project_name=args.project,
+        mutator_model_id=MUTATOR_MODEL_ID,
+        judge_model_id=JUDGE_MODEL_ID,
+        history_dir=HISTORY_DIR,
+        champion_eval_path=CHAMPION_EVAL_RESULTS_PATH,
+        champion_evidence_gaps_path=CHAMPION_EVIDENCE_GAPS_PATH,
+        champion_probability_dag_path=CHAMPION_PROBABILITY_DAG_PATH,
         score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
         score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
     )
-    write_json(CHAMPION_EVIDENCE_GAPS_PATH, champion_gap_payload)
-
-    return {
-        "reconstructed": True,
-        "reason": "saved_best_history",
-        "regime_fingerprint": artifact_regime_fingerprint(
-            champion_eval,
-            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
-        ),
-    }
 
 
 def _champion_artifacts_out_of_sync_with_saved_best() -> bool:
-    champion_eval = _champion_eval_payload()
-    history_stem, saved_meta = _saved_best_history_payload()
-    return champion_artifacts_out_of_sync_with_saved_best(
-        champion_eval,
-        history_stem=history_stem,
-        saved_meta=saved_meta,
+    return _champion_out_of_sync_impl(
+        champion_eval_path=CHAMPION_EVAL_RESULTS_PATH,
+        saved_best_history=_saved_best_history_payload(),
         score_regime_fingerprint_from_meta=_score_regime_fingerprint_from_meta,
         score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
     )
 
 
 def _promote_latest_artifacts_to_champion() -> dict:
-    latest_eval = read_json(LATEST_EVAL_RESULTS_PATH)
-    champion_eval = None
-    regime_fingerprint = None
-    if latest_eval is not None:
-        champion_eval = set_artifact_role(
-            latest_eval,
-            "champion",
-            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
-        )
-        write_json(CHAMPION_EVAL_RESULTS_PATH, champion_eval)
-        regime_fingerprint = artifact_regime_fingerprint(
-            champion_eval,
-            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
-        )
-
-    if os.path.exists(LATEST_PROBABILITY_DAG_PATH):
-        shutil.copy(LATEST_PROBABILITY_DAG_PATH, CHAMPION_PROBABILITY_DAG_PATH)
-
-    latest_gaps = read_json(LATEST_EVIDENCE_GAPS_PATH)
-    if latest_gaps is not None:
-        champion_gaps = set_artifact_role(
-            latest_gaps,
-            "champion",
-            score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
-        )
-        write_json(CHAMPION_EVIDENCE_GAPS_PATH, champion_gaps)
-
-    return {
-        "regime_fingerprint": regime_fingerprint,
-        "champion_eval_written": champion_eval is not None,
-        "champion_gap_written": latest_gaps is not None,
-        "champion_dag_written": os.path.exists(CHAMPION_PROBABILITY_DAG_PATH),
-    }
+    return _promote_latest_impl(
+        latest_eval_path=LATEST_EVAL_RESULTS_PATH,
+        latest_evidence_gaps_path=LATEST_EVIDENCE_GAPS_PATH,
+        latest_probability_dag_path=LATEST_PROBABILITY_DAG_PATH,
+        champion_eval_path=CHAMPION_EVAL_RESULTS_PATH,
+        champion_evidence_gaps_path=CHAMPION_EVIDENCE_GAPS_PATH,
+        champion_probability_dag_path=CHAMPION_PROBABILITY_DAG_PATH,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+    )
 
 
-def _format_gate_surface_for_prompt(eval_payload: dict) -> str:
-    """Format latest gate surface for cold successor prompting."""
-    score_contract = eval_payload.get("score_contract", {}) if isinstance(eval_payload, dict) else {}
-    det = score_contract.get("deterministic_charter_gates", {})
-    results = det.get("results", [])
-    lines = ["LATEST GATE SURFACE:"]
-    if results:
-        for item in results:
-            name = item.get("name", "unknown")
-            passed = bool(item.get("passed", False))
-            status = "PASS" if passed else "FAIL"
-            lines.append(f"  - {name}: {status}")
-            reason = str(item.get("reason", "") or "")
-            if reason:
-                lines.append(f"    reason: {reason}")
-    else:
-        hard_fail_reasons = score_contract.get("hard_fail_reasons", [])
-        soft_caps = score_contract.get("soft_score_caps", [])
-        if hard_fail_reasons:
-            lines.append("  Hard fail reasons:")
-            for reason in hard_fail_reasons:
-                lines.append(f"    - {reason}")
-        if soft_caps:
-            lines.append("  Soft caps:")
-            for cap in soft_caps:
-                lines.append(f"    - cap={cap.get('cap')}: {cap.get('reason', '')}")
-    return "\n".join(lines)
+# Phase 4g extraction (2026-05-06 PM): _format_gate_surface_for_prompt
+# body lives in src/ztare/orchestrator/gate_surface_format. Pure
+# helper, direct re-alias.
+from src.ztare.orchestrator.gate_surface_format import (
+    format_gate_surface_for_prompt as _format_gate_surface_for_prompt,
+)
 
 
 # ---------------------------------------------------------------------------
 # GP-087 Slim: Residual-driven primitive injection
 # ---------------------------------------------------------------------------
 
-# Primitives that produce a correction term decaying toward zero at large u.
-# These are candidates when the farther-tail gate fails because the model
-# overshoots or undershoots the true asymptote.
-# Parameter prefix "tail_" avoids collision with Component D's "d2_" prefix.
-# The champion expression may already contain d2_a, d2_b, d2_c from a prior
-# depth-2 composition — reusing those names would create duplicate assignments
-# in test_model.py and break the fit.
-_GP087_TAIL_CORRECTION_PRIMITIVES: list[tuple[str, str, list[str]]] = [
-    ("reciprocal",      "tail_a / {var} + tail_b",                       ["tail_a", "tail_b"]),
-    ("harmonic",        "tail_a / {var} + tail_b / {var}**2 + tail_c",   ["tail_a", "tail_b", "tail_c"]),
-    ("log_reciprocal",  "tail_a * math.log({var}) / {var} + tail_b",     ["tail_a", "tail_b"]),
-    ("sqrt_reciprocal", "tail_a / math.sqrt({var}) + tail_b",            ["tail_a", "tail_b"]),
-    ("exp_decay",       "tail_a * math.exp(-tail_b * {var}) + tail_c",   ["tail_a", "tail_b", "tail_c"]),
-]
+# Phase 4g extraction (2026-05-06 PM): GP-087 tail-correction body
+# + the 5-primitive library live in
+# src/ztare/orchestrator/gp087_tail_correction. Pure helper, direct
+# re-alias. The function takes all its inputs as args (eval_results,
+# workspace_dir, rubric_data, iteration_index, stagnation_count) so
+# no wrapper is needed.
+from src.ztare.orchestrator.gp087_tail_correction import (
+    propose_tail_correction_seeds as _gp087_propose_tail_correction_seeds,
+    GP087_TAIL_CORRECTION_PRIMITIVES as _GP087_TAIL_CORRECTION_PRIMITIVES,
+)
 
 
-def _gp087_propose_tail_correction_seeds(
-    eval_results: dict,
-    workspace_dir: Path,
-    rubric_data: dict,
-    iteration_index: int,
-    stagnation_count: int = 0,
-) -> list[dict] | None:
-    """GP-087 Slim: when farther-tail gate fails, propose composition seeds
-    from the tail-correction primitive library.
-
-    Returns a list of seed candidates (same format as composition_seed.json)
-    or None if GP-087 does not fire.
-
-    Information boundary: emits only primitive names + expressions.
-    No farther-tail residual values leak into the seed.
-
-    Two firing modes:
-    1. Gate mode: a deterministic_charter_gates result with "farther_tail" in
-       its name is present and failed. This is the standard path for rubrics
-       with explicit farther-tail hard gates.
-    2. Contract-stagnation mode: rubric declares farther_tail_contract: True
-       (no explicit gate) and the eval score is < 100 and stagnation_count >= 1.
-       This covers rubrics that use gp048_farther_tail_veto_mode (prompt-level)
-       instead of a deterministic gate — the judge's weakest_point reflects the
-       farther-tail failure but it never appears in deterministic_charter_gates.
-    """
-    score_contract = eval_results.get("score_contract", {})
-    if not isinstance(score_contract, dict):
-        return None
-
-    det = score_contract.get("deterministic_charter_gates", {})
-    if not isinstance(det, dict):
-        return None
-
-    results = det.get("results", [])
-    if not isinstance(results, list):
-        return None
-
-    # Mode 1: Check if any farther-tail gate explicitly failed
-    farther_tail_failed = False
-    for item in results:
-        name = str(item.get("name", ""))
-        if "farther_tail" in name and not bool(item.get("passed", False)):
-            farther_tail_failed = True
-            break
-
-    # Mode 2: Contract-stagnation fallback — fires when the rubric declares a
-    # farther_tail_contract but has NO explicit farther-tail gate (veto-mode
-    # rubrics where the judge's weakest_point is the only signal).
-    # Must NOT fire when an explicit farther_tail gate already exists in
-    # deterministic_charter_gates — Mode 1 is the authoritative path for those.
-    if not farther_tail_failed and rubric_data.get("farther_tail_contract"):
-        explicit_tail_gate_exists = any(
-            "farther_tail" in str(item.get("name", ""))
-            for item in results
-        )
-        if not explicit_tail_gate_exists:
-            current_score = eval_results.get("score", 100)
-            if (
-                isinstance(current_score, (int, float))
-                and current_score < 100
-                and stagnation_count >= 1
-            ):
-                farther_tail_failed = True
-                print(
-                    f"    >> GP-087: farther_tail_contract active, score={current_score}, "
-                    f"stagnation={stagnation_count} — contract-stagnation mode"
-                )
-
-    if not farther_tail_failed:
-        return None
-
-    # Read the current best expression from fit_result.json
-    fit_result_path = workspace_dir / "fit_result.json"
-    if not fit_result_path.exists():
-        return None
-
-    try:
-        fit_result = json.loads(fit_result_path.read_text())
-    except (json.JSONDecodeError, OSError):
-        return None
-
-    champion_expr = fit_result.get("expression", "")
-    champion_params = list(fit_result.get("fitted_params", {}).keys())
-    if not champion_expr:
-        return None
-
-    # Build the variable name from rubric
-    ind_vars: list[str] = rubric_data.get("fit_required_vars", ["n"])
-    var_name: str = ind_vars[0] if ind_vars else "n"
-
-    # Grammar filter
-    grammar = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
-    forbidden_re = None
-    if grammar == "math_exp_only":
-        forbidden_re = re.compile(
-            r"math\.(sin|cos|tan|sinh|cosh|tanh|asin|acos|atan)"
-        )
-
-    # Compose each tail-correction primitive with the champion expression
-    seeds: list[dict] = []
-    for prim_name, prim_template, prim_params in _GP087_TAIL_CORRECTION_PRIMITIVES:
-        correction_expr = prim_template.format(var=var_name)
-
-        # Grammar check
-        if forbidden_re and forbidden_re.search(correction_expr):
-            continue
-
-        # Skip if the correction primitive's params are already present in the
-        # champion expression — prevents double-composition when GP-087 runs
-        # against a champion that was itself a prior GP-087 tail-corrected seed.
-        if any(p in champion_params for p in prim_params):
-            continue
-
-        composed_expr = f"({champion_expr}) + ({correction_expr})"
-        all_params = champion_params + prim_params
-
-        seeds.append({
-            "source": "gp087_residual_driven",
-            "expression": composed_expr,
-            "independent_vars": ind_vars,
-            "parameter_names": all_params,
-            "correction_primitive": prim_name,
-            "iteration_synthesized": iteration_index,
-            "round": f"gp087_tail_correction/{prim_name}/+",
-        })
-
-    return seeds if seeds else None
+# Phase 4g extraction (2026-05-06 PM): the three iter-status print
+# helpers + is_catastrophic_failure live in
+# src/ztare/orchestrator/iter_status_print. The latest-artifact
+# wrapper threads the score_regime_fingerprint callable through;
+# the other two are direct re-aliases.
+from src.ztare.orchestrator.iter_status_print import (
+    print_champion_artifact_status as _print_champion_artifact_status,
+    print_champion_reconstruction_status as _print_champion_reconstruction_status,
+    is_catastrophic_failure as _is_catastrophic_failure_impl,
+    print_latest_artifact_status as _print_latest_artifact_status_impl,
+)
 
 
-def _print_latest_artifact_status(payload: dict, previous_champion_fingerprint: str | None) -> None:
-    latest_fingerprint = artifact_regime_fingerprint(
+def _print_latest_artifact_status(
+    payload: dict, previous_champion_fingerprint: str | None
+) -> None:
+    """Project-scoped wrapper that fills in the score_regime_fingerprint
+    callable for the extracted helper."""
+    _print_latest_artifact_status_impl(
         payload,
+        previous_champion_fingerprint,
         score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
     )
-    shifted = (
-        latest_fingerprint is not None
-        and previous_champion_fingerprint is not None
-        and latest_fingerprint != previous_champion_fingerprint
-    )
-    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
-    fingerprint_label = latest_fingerprint or "unknown"
-    print(
-        f"🧾 LATEST artifacts updated: latest_eval_results / latest_probability_dag / latest_evidence_gaps "
-        f"(regime fingerprint: {fingerprint_label}; shifted vs champion: {shifted_label})"
-    )
 
 
-def _print_champion_artifact_status(previous_champion_fingerprint: str | None, new_champion_fingerprint: str | None) -> None:
-    shifted = (
-        new_champion_fingerprint is not None
-        and previous_champion_fingerprint is not None
-        and new_champion_fingerprint != previous_champion_fingerprint
-    )
-    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
-    fingerprint_label = new_champion_fingerprint or "unknown"
-    print(
-        f"🏆 CHAMPION artifacts updated: champion_eval_results / champion_probability_dag / champion_evidence_gaps "
-        f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
+# Phase 4g extraction (2026-05-06 PM): _refresh_latest_evidence_gaps_from_eval
+# body lives in src/ztare/orchestrator/evidence_gap_persistence; wrapped
+# to fill in args.project, LATEST_EVIDENCE_GAPS_PATH, score_regime callable.
+from src.ztare.orchestrator.evidence_gap_persistence import (
+    refresh_latest_evidence_gaps_from_eval as _refresh_latest_evidence_gaps_impl,
+)
+
+
+def _refresh_latest_evidence_gaps_from_eval(
+    evaluation: dict, artifact_role: str = "latest"
+) -> None:
+    _refresh_latest_evidence_gaps_impl(
+        evaluation,
+        project=args.project,
+        output_path=LATEST_EVIDENCE_GAPS_PATH,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        artifact_role=artifact_role,
     )
 
 
-def _print_champion_reconstruction_status(previous_champion_fingerprint: str | None, new_champion_fingerprint: str | None) -> None:
-    shifted = (
-        new_champion_fingerprint is not None
-        and previous_champion_fingerprint is not None
-        and new_champion_fingerprint != previous_champion_fingerprint
-    )
-    shifted_label = "n/a" if previous_champion_fingerprint is None else ("yes" if shifted else "no")
-    fingerprint_label = new_champion_fingerprint or "unknown"
-    print(
-        f"🛠️ CHAMPION artifacts reconstructed from saved best history "
-        f"(regime fingerprint: {fingerprint_label}; shifted vs previous champion: {shifted_label})"
-    )
-
-
-def _refresh_latest_evidence_gaps_from_eval(evaluation: dict, artifact_role: str = "latest") -> None:
-    """Write evidence gaps from the current eval result to latest_evidence_gaps.json.
-
-    Fixes: LATEST_EVIDENCE_GAPS_PATH was never written by the loop — only by rubric-review.
-    This meant evidence-fetch always saw stale gaps from the last manual rubric-review run.
-    """
-    gaps = evaluation.get("evidence_gaps")
-    if not gaps:
-        return
-    score_contract = evaluation.get("score_contract") or {}
-    payload = {
-        "project": args.project,
-        "judge_model": score_contract.get("judge_model", ""),
-        "generated_on": time.strftime("%Y-%m-%dT%H:%M:%S", time.gmtime()),
-        "artifact_role": artifact_role,
-        "describes_baseline": artifact_role,
-        "score": evaluation.get("score"),
-        "weakest_point": evaluation.get("weakest_point", ""),
-        "evidence_boundary_ceiling_detected": score_contract.get("evidence_boundary_ceiling_detected", False),
-        "cap_reason": score_contract.get("evidence_boundary_detail", ""),
-        "cap_reason_detail": "",
-        "score_regime_fingerprint": _score_regime_fingerprint_from_score_contract(evaluation.get("score_contract")),
-        "evidence_gaps": gaps,
-    }
-    write_json(LATEST_EVIDENCE_GAPS_PATH, payload)
+# Phase 4g extraction (2026-05-06 PM): _refresh_derived_constraints_from_eval
+# body lives in src/ztare/orchestrator/derived_constraints_refresh. Coordinates
+# 4 sub-extractors (judge / GP-061 / GP-062 / GP-061.B) over the same
+# ledger. Wrapped to fill in module globals + the score-regime callable.
+from src.ztare.orchestrator.derived_constraints_refresh import (
+    refresh_derived_constraints_from_eval as _refresh_derived_constraints_impl,
+)
 
 
 def _refresh_derived_constraints_from_eval(
@@ -1305,236 +840,83 @@ def _refresh_derived_constraints_from_eval(
     iteration_index: int,
     artifact_role: str = "latest",
 ) -> None:
-    proposals = sanitize_constraint_proposals(evaluation.get("derived_constraints"))
-    confirmation_threshold = int(rubric_data.get("confirmation_threshold_runs", 2) or 2)
-    ledger = update_derived_constraints_ledger(
-        project=args.project,
-        ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
-        proposals=proposals,
+    confirmation_threshold = int(
+        rubric_data.get("confirmation_threshold_runs", 2) or 2
+    )
+    _refresh_derived_constraints_impl(
+        evaluation,
         run_id=run_id,
         iteration_index=iteration_index,
-        source_score=evaluation.get("score"),
-        weakest_point=str(evaluation.get("weakest_point", "") or ""),
-        score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
-            evaluation.get("score_contract")
+        project_name=args.project,
+        project_dir=PROJECT_DIR,
+        ledger_path=DERIVED_CONSTRAINTS_PATH,
+        brief_path=DERIVED_CONSTRAINTS_BRIEF_PATH,
+        confirmation_threshold_runs=confirmation_threshold,
+        score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
+        disable_negative_space_extractor=getattr(
+            args, "disable_negative_space_extractor", False
         ),
         artifact_role=artifact_role,
-        confirmation_threshold_runs=confirmation_threshold,
-    )
-    write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
-    print(
-        "🧷 Derived constraints updated: "
-        f"{ledger.get('confirmed_constraint_count', 0)} confirmed / "
-        f"{ledger.get('provisional_constraint_count', 0)} provisional"
     )
 
-    # GP-061 Component A: structural constraint extractor.
-    # Reads workspace/structural_memory.json, looks for a skeleton shared by
-    # all failed families, emits a have-to-believe constraint into the ledger.
-    try:
-        _, _, structural_proposal = run_structural_extractor(
-            project_dir=Path(PROJECT_DIR),
-            run_id=run_id,
-            iteration_index=iteration_index,
-        )
-    except Exception as exc:  # pragma: no cover - extractor is best-effort
-        print(f"⚠️  structural_extractor skipped: {exc}")
-        structural_proposal = None
 
-    if structural_proposal is not None:
-        ledger = update_derived_constraints_ledger(
-            project=args.project,
-            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
-            proposals=[structural_proposal],
-            run_id=run_id,
-            iteration_index=iteration_index,
-            source_score=evaluation.get("score"),
-            weakest_point="structural_extractor: cross-family invariant in structural_memory",
-            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
-                evaluation.get("score_contract")
-            ),
-            artifact_role=artifact_role,
-        )
-        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
-        print(
-            "🧭 structural_extractor emitted have-to-believe constraint "
-            f"(coupling={structural_proposal.get('failure_family','?')})"
-        )
-
-    # GP-062: trajectory thrash detector. Reads latent_distance.jsonl +
-    # structural_memory.json for the same-run trajectory signal and emits a
-    # constraint naming preserved skeleton features when the mutator rewrites
-    # semantic surface while keeping the outer skeleton. Same provisional gate
-    # as GP-061 — two distinct runs required before confirmed injection.
-    try:
-        _, thrash_proposal = run_trajectory_thrash_detector(
-            project_dir=Path(PROJECT_DIR),
-        )
-    except Exception as exc:  # pragma: no cover - detector is best-effort
-        print(f"⚠️  trajectory_thrash_detector skipped: {exc}")
-        thrash_proposal = None
-
-    if thrash_proposal is not None:
-        ledger = update_derived_constraints_ledger(
-            project=args.project,
-            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
-            proposals=[thrash_proposal],
-            run_id=run_id,
-            iteration_index=iteration_index,
-            source_score=evaluation.get("score"),
-            weakest_point="trajectory_extractor: semantic-high / structural-zero thrash across iterations",
-            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
-                evaluation.get("score_contract")
-            ),
-            artifact_role=artifact_role,
-        )
-        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
-        print(
-            "🧭 trajectory_extractor emitted thrash constraint "
-            f"(preserved_features_count={len(thrash_proposal.get('constraint','').split(':')[-1].split(','))})"
-        )
-
-    # GP-061.B: negative-space extractor. Reads structural_memory.json via the
-    # generalized AST feature matrix and emits a constraint listing (function
-    # × arg_pos × operator) slots that every failed family left empty. Same
-    # provisional gate as Component A — stays in the provisional bucket until
-    # a second distinct run confirms the surfaced voids.
-    if getattr(args, "disable_negative_space_extractor", False):
-        print(
-            "🚫 negative_space_extractor disabled via --disable-negative-space-extractor "
-            "(GP-061.B cold-harvest discipline)"
-        )
-        void_proposal = None
-    else:
-        try:
-            _, void_proposal = run_negative_space_extractor(
-                project_dir=Path(PROJECT_DIR),
-            )
-        except Exception as exc:  # pragma: no cover - detector is best-effort
-            print(f"⚠️  negative_space_extractor skipped: {exc}")
-            void_proposal = None
-
-    if void_proposal is not None:
-        ledger = update_derived_constraints_ledger(
-            project=args.project,
-            ledger_path=Path(DERIVED_CONSTRAINTS_PATH),
-            proposals=[void_proposal],
-            run_id=run_id,
-            iteration_index=iteration_index,
-            source_score=evaluation.get("score"),
-            weakest_point="negative_space_extractor: unexplored structural slots across failed families",
-            score_regime_fingerprint=_score_regime_fingerprint_from_score_contract(
-                evaluation.get("score_contract")
-            ),
-            artifact_role=artifact_role,
-        )
-        write_derived_constraints_brief(ledger, Path(DERIVED_CONSTRAINTS_BRIEF_PATH))
-        print(
-            "🧭 negative_space_extractor emitted void constraint "
-            f"(void_count={void_proposal.get('constraint','').count(chr(10) + '  - ')})"
-        )
+# Phase 4g extraction (2026-05-06 PM): dynamic-rubric helpers live in
+# src/ztare/orchestrator/dynamic_rubric. Wrapped to fill in RUBRICS_DIR.
+from src.ztare.orchestrator.dynamic_rubric import (
+    dynamic_rubric_path as _dynamic_rubric_path_impl,
+    load_current_committee_digest as _load_current_committee_digest_impl,
+)
 
 
 def _dynamic_rubric_path(project: str) -> Path:
-    return RUBRICS_DIR / f"dynamic_{project}.json"
+    return _dynamic_rubric_path_impl(project, RUBRICS_DIR)
 
 
 def _load_current_committee_digest(project: str) -> str:
-    rubric_path = _dynamic_rubric_path(project)
-    if not rubric_path.exists():
-        return ""
-    try:
-        payload = json.loads(rubric_path.read_text())
-    except Exception:
-        return ""
-    metadata = payload.get("metadata", {})
-    instantiation_record = metadata.get("instantiation_record", {})
-    digest = instantiation_record.get("committee_digest", "")
-    return digest if isinstance(digest, str) else ""
+    return _load_current_committee_digest_impl(project, RUBRICS_DIR)
 
 
-def _is_catastrophic_failure(candidate_score: int, best_score_before: int) -> bool:
-    if candidate_score <= 0:
-        return True
-    if best_score_before > 0 and candidate_score < (best_score_before * 0.5):
-        return True
-    return False
+# Phase 4g extraction (2026-05-06 PM): _is_catastrophic_failure body
+# lives in src/ztare/orchestrator/iter_status_print. Re-aliased so
+# existing call sites are unchanged.
+_is_catastrophic_failure = _is_catastrophic_failure_impl
 
 
-def _write_latest_information_yield(
-    workspace_dir: Path,
-    *,
-    signal: IterationSignal,
-    decision,
-    latent_motion_summary: dict | None = None,
-) -> None:
-    payload = {
-        "signal": {
-            "iteration_index": signal.iteration_index,
-            "score": signal.score,
-            "weakest_point": signal.weakest_point,
-            "score_improved": signal.score_improved,
-            "runtime_failure": signal.runtime_failure,
-            "catastrophic_failure": signal.catastrophic_failure,
-            "novel_attack_ids": list(signal.novel_attack_ids),
-            "novel_hinge_ids": list(signal.novel_hinge_ids),
-            "novel_primitive_ids": list(signal.novel_primitive_ids),
-            "verified_axioms_added": signal.verified_axioms_added,
-            "falsification_mode": signal.falsification_mode,
-            "mutation_r1_mismatch": signal.mutation_r1_mismatch,
-            "claim_delta_type": signal.claim_delta_type,
-            "committee_digest": signal.committee_digest,
-            "prior_committee_digest": signal.prior_committee_digest,
-        },
-        "decision": {
-            "action": decision.action.value,
-            "stagnant_window": decision.stagnant_window,
-            "rationale": decision.rationale,
-        },
-    }
-    if latent_motion_summary is not None:
-        payload["latent_motion_summary"] = latent_motion_summary
-    write_file(
-        str(workspace_dir / "latest_information_yield.json"),
-        json.dumps(
-            payload,
-            indent=2,
-        ),
-    )
+# Phase 4g extraction (2026-05-06 PM): _write_latest_information_yield
+# body lives in src/ztare/orchestrator/post_eval_loop_control. Pure
+# helper, direct re-alias.
+from src.ztare.orchestrator.post_eval_loop_control import (
+    write_latest_information_yield as _write_latest_information_yield,
+)
+
+
+# Phase 4g extraction (2026-05-06 PM): _stagnation_trigger_mode body
+# lives in src/ztare/orchestrator/iter_signal_helpers; wrapped to fill
+# in module-level rubric_data.
+from src.ztare.orchestrator.iter_signal_helpers import (
+    stagnation_trigger_mode as _stagnation_trigger_mode_impl,
+)
 
 
 def _stagnation_trigger_mode() -> str:
-    """Task 12 rubric flag: 'score' (legacy) | 'new_class' (Gemini Inversion #3).
-
-    When 'new_class', evaluate_information_yield resets stagnation when the
-    iteration's weakest-link class has not been seen earlier in the session.
-    Champion persistence profile (GP-148) shows 28 iters / 10 distinct classes;
-    score-only stagnation prematurely kills class-cycling. Default 'score'.
-    """
-    try:
-        return str(rubric_data.get("stagnation_trigger_mode") or "score").strip().lower()
-    except Exception:
-        return "score"
+    return _stagnation_trigger_mode_impl(rubric_data)
 
 
-def _populate_weakest_class(signal: IterationSignal) -> IterationSignal:
-    """Enrich signal.weakest_class via runtime classifier (cheap regex).
+# Phase 4g extraction (2026-05-06 PM): _populate_weakest_class lives
+# in src/ztare/orchestrator/iter_signal_helpers. Pure helper, direct
+# re-alias.
+from src.ztare.orchestrator.iter_signal_helpers import (
+    populate_weakest_class as _populate_weakest_class,
+)
 
-    Returns the input unchanged when already populated, classification fails,
-    or the weakest_point string is empty. Uses dataclasses.replace since
-    IterationSignal is frozen.
-    """
-    if signal.weakest_class or not signal.weakest_point:
-        return signal
-    try:
-        from src.ztare.validator.weakest_link_classifier import classify_weakest_point
-        cls = classify_weakest_point(signal.weakest_point)
-    except Exception:
-        return signal
-    if not cls:
-        return signal
-    import dataclasses as _dc
-    return _dc.replace(signal, weakest_class=cls)
+
+# Phase 4g extraction (2026-05-06 PM): _evaluate_post_eval_loop_control
+# body lives in src/ztare/orchestrator/post_eval_loop_control. Wrapped
+# to fill in the module-level iteration_history list, args.underidentified_after,
+# PROJECT_DIR, and the four imported helper callables.
+from src.ztare.orchestrator.post_eval_loop_control import (
+    evaluate_post_eval_loop_control as _evaluate_post_eval_loop_control_impl,
+)
 
 
 def _evaluate_post_eval_loop_control(
@@ -1542,47 +924,29 @@ def _evaluate_post_eval_loop_control(
     *,
     signal: IterationSignal,
 ) -> tuple[object, dict | None]:
-    # Task 12: enrich the freshly-appended signal with weakest_class before yield eval.
-    if iteration_history and iteration_history[-1] is signal:
-        enriched = _populate_weakest_class(signal)
-        if enriched is not signal:
-            iteration_history[-1] = enriched
-            signal = enriched
-    _class_mode = _stagnation_trigger_mode() == "new_class"
-    raw_decision = evaluate_information_yield(
-        iteration_history,
-        underidentified_after=args.underidentified_after,
-        class_novelty_mode=_class_mode,
-    )
-    latent_motion_payload: dict | None = None
-    final_decision = raw_decision
-    if (signal.falsification_mode or "").strip().lower() == "bounded_discriminator":
-        latent_motion = summarize_recent_latent_motion(project_dir=Path(PROJECT_DIR))
-        if latent_motion is not None:
-            final_decision = apply_latent_motion_veto(
-                raw_decision,
-                records_considered=latent_motion.records_considered,
-                mean_max_set_distance=latent_motion.mean_max_set_distance,
-                threshold=latent_motion.threshold,
-            )
-            latent_motion_payload = {
-                "records_considered": latent_motion.records_considered,
-                "window_size": latent_motion.window_size,
-                "mean_max_set_distance": latent_motion.mean_max_set_distance,
-                "structural_move_count": latent_motion.structural_move_count,
-                "motion_classes": list(latent_motion.motion_classes),
-                "threshold": latent_motion.threshold,
-                "veto_applied": final_decision.action != raw_decision.action,
-                "base_action": raw_decision.action.value,
-                "final_action": final_decision.action.value,
-            }
-    _write_latest_information_yield(
+    return _evaluate_post_eval_loop_control_impl(
         workspace_dir,
         signal=signal,
-        decision=final_decision,
-        latent_motion_summary=latent_motion_payload,
+        iteration_history=iteration_history,
+        project_dir=PROJECT_DIR,
+        underidentified_after=args.underidentified_after,
+        populate_weakest_class=_populate_weakest_class,
+        stagnation_trigger_mode=_stagnation_trigger_mode,
+        evaluate_information_yield=evaluate_information_yield,
+        summarize_recent_latent_motion=summarize_recent_latent_motion,
+        apply_latent_motion_veto=apply_latent_motion_veto,
     )
-    return final_decision, latent_motion_payload
+
+
+# Phase 4g extraction (2026-05-06 PM): _record_loop_event +
+# _latest_low_yield_tail bodies live in
+# src/ztare/orchestrator/loop_event_recorder. The recorder takes
+# RUN_ID + project name as explicit args (was reading module globals);
+# the wrapper fills them in.
+from src.ztare.orchestrator.loop_event_recorder import (
+    record_loop_event as _record_loop_event_impl,
+    latest_low_yield_tail as _latest_low_yield_tail,
+)
 
 
 def _record_loop_event(
@@ -1598,35 +962,20 @@ def _record_loop_event(
     mutator_model_id: str,
     judge_model_id: str,
 ) -> None:
-    profile_name = pivot_profile.name if pivot_profile else None
-    profile_modules = list(pivot_profile.modules) if pivot_profile else []
-    payload = {
-        "run_id": RUN_ID,
-        "timestamp": datetime.now().isoformat(),
-        "event_type": event_type,
-        "project": args.project,
-        "iteration_index": iteration_index,
-        "stagnation_count": stagnation_count,
-        "falsification_mode": falsification_mode,
-        "is_v4_project": is_v4_project,
-        "pivot_profile": profile_name,
-        "pivot_modules": profile_modules,
-        "pending_loop_action": pending_loop_action,
-        "mutator_model_id": mutator_model_id,
-        "judge_model_id": judge_model_id,
-    }
-    write_json(str(workspace_dir / "latest_loop_event.json"), payload)
-    append_jsonl(str(workspace_dir / "loop_events.jsonl"), payload)
-
-
-def _latest_low_yield_tail(history: list[IterationSignal]) -> list[IterationSignal]:
-    tail: list[IterationSignal] = []
-    for item in reversed(history):
-        if item.score_improved or item.has_novelty():
-            break
-        tail.append(item)
-    tail.reverse()
-    return tail
+    _record_loop_event_impl(
+        workspace_dir,
+        event_type=event_type,
+        iteration_index=iteration_index,
+        stagnation_count=stagnation_count,
+        falsification_mode=falsification_mode,
+        is_v4_project=is_v4_project,
+        pivot_profile=pivot_profile,
+        pending_loop_action=pending_loop_action,
+        mutator_model_id=mutator_model_id,
+        judge_model_id=judge_model_id,
+        run_id=RUN_ID,
+        project_name=args.project,
+    )
 
 
 def _write_underidentification_verdict(
@@ -1756,6 +1105,11 @@ def _prepare_mutation_candidate(
     runner_allowed_imports: tuple[str, ...] | None = None,
     project_dir: str | None = None,
 ):
+    from src.ztare.validator.candidate_extraction import (
+        extract_best_python_candidate,
+        preserve_theorem_packet_source,
+    )
+
     declaration = None
     working_text = raw_text
     if args.runner_r1_contract:
@@ -1763,13 +1117,24 @@ def _prepare_mutation_candidate(
         if declaration is None:
             raise ValueError("Missing required `MutationDeclaration` JSON header.")
 
-    code_match = re.search(r"```python\n(.*?)\n```", working_text, re.DOTALL)
-    python_code = code_match.group(1) if code_match else None
-    clean_thesis = (
-        working_text.replace(code_match.group(0), "").strip()
-        if code_match
-        else working_text.strip()
-    )
+    extraction = extract_best_python_candidate(working_text, rubric_data)
+    python_code = extraction.python_code
+    clean_thesis = extraction.clean_thesis
+    clean_thesis = preserve_theorem_packet_source(clean_thesis, python_code, rubric_data)
+    if extraction.auto_repaired:
+        try:
+            _r1_debug_dir = Path(PROJECT_DIR) / "workspace" / "r1_debug"
+            _r1_debug_dir.mkdir(parents=True, exist_ok=True)
+            with open(_r1_debug_dir / "candidate_extraction.jsonl", "a", encoding="utf-8") as _ef:
+                _ef.write(json.dumps({
+                    "selected_block_index": extraction.selected_block_index,
+                    "selected_score": extraction.selected_score,
+                    "num_python_blocks": extraction.num_python_blocks,
+                    "num_fenced_blocks": extraction.num_fenced_blocks,
+                    "auto_repaired": extraction.auto_repaired,
+                }) + "\n")
+        except Exception:
+            pass
 
     validate_python_suite_candidate(python_code)
 
@@ -1811,6 +1176,7 @@ def _prepare_mutation_candidate(
             project_dir=_r1_project_dir,
             require_i_model=_require_i_model,
             require_parametric_form=_require_pform,
+            rubric_data=rubric_data,
         )
 
         # GP-156 Proposal 2 (2026-04-25): visible-MRE attestation.
@@ -1900,22 +1266,51 @@ def _format_cost_label(bucket) -> str:
     return "unavailable (pricing disabled or unknown model)"
 
 
-def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
+def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID, max_tokens=16000):
     with open(f"{PROJECT_DIR}/last_prompt_debug.txt", "w") as f:
         f.write(f"MODEL USED: {model_id}\n")
         f.write("=" * 30 + "\n")
         f.write(prompt)
-    response = RUNTIME.call_text(
-        prompt,
-        model_id=model_id,
-        config=config,
-        retries=PRODUCTION_CALL_RETRIES,
-        timeout_seconds=600,
-        request_label="Mutator request",
-        progress_printer=print,
-        transient_wait_seconds=20,
-        timeout_wait_seconds=15,
-    )
+    # Pre-drain: discard any failed-retry state leaked from prior call_text
+    # invocations (judge, ANALOGY, inverter, etc) that share the module-
+    # level tracker. We can't attribute those to mutator_usage so we drop
+    # them; the post-drain below captures only the failures during THIS
+    # safe_mutate call.
+    drain_failed_retry_tracker()
+    try:
+        response = RUNTIME.call_text(
+            prompt,
+            model_id=model_id,
+            config=config,
+            max_tokens=max_tokens,
+            retries=PRODUCTION_CALL_RETRIES,
+            timeout_seconds=600,
+            request_label="Mutator request",
+            progress_printer=print,
+            transient_wait_seconds=20,
+            timeout_wait_seconds=15,
+        )
+    finally:
+        # Post-drain: accrue the failed-retry input-token estimate from
+        # this mutator call against SESSION_MUTATOR_USAGE so OpenAI's
+        # mid-stream billing on connection-storm retries is visible in
+        # the apparatus telemetry. (2026-04-27 audit fix.)
+        _failed = drain_failed_retry_tracker()
+        if _failed.get("attempts", 0) > 0:
+            _accumulate_usage(
+                SESSION_MUTATOR_USAGE,
+                model_name=_failed.get("model_name") or model_id,
+                input_tokens=int(_failed.get("input_tokens", 0)),
+                output_tokens=0,
+                cache_creation_input_tokens=0,
+                cache_read_input_tokens=0,
+                thinking_tokens=0,
+            )
+            print(
+                f"💸 Stealth-bill accrual: {_failed['attempts']} failed retry attempt(s) "
+                f"× ~{_failed['input_tokens']:,} input tokens charged by provider but "
+                "not returned in usage. Logged to mutator_usage."
+            )
     effective_model_name = response.usage.model_name or response.effective_model_id or model_id
     canonical_effective_model = pricing_model_name(effective_model_name) or effective_model_name
     SESSION_MUTATOR_MODELS_USED.add(canonical_effective_model)
@@ -1942,6 +1337,33 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID):
             f"{response.fallback_from_model_id} -> {canonical_effective_model}"
         )
     return response.text
+
+
+def _log_r1_attempt(
+    iter_index: int,
+    strike_num: int,
+    error_text: str,
+    content: str,
+    *,
+    exhausted: bool = False,
+    mutator_model: str = "",
+) -> None:
+    """Project-scoped wrapper around r1_retry.log_r1_attempt.
+
+    Phase 4g (2026-05-06): the body now lives in
+    src/ztare/orchestrator/r1_retry.py. This wrapper preserves the
+    existing call sites in autoresearch_loop (which assume PROJECT_DIR
+    is the current run's project root) and forwards everything else.
+    """
+    _log_r1_attempt_impl(
+        iter_index=iter_index,
+        strike_num=strike_num,
+        error_text=error_text,
+        content=content,
+        project_dir=PROJECT_DIR,
+        exhausted=exhausted,
+        mutator_model=mutator_model,
+    )
 
 
 # --- CHANGED: Added model_id to the signature ---
@@ -2146,6 +1568,27 @@ def mutate_thesis(
         rubric_stagnation_override=int(_rubric_stag) if _rubric_stag is not None else None,
     )
     pivot_profile = pivot_state.profile
+    pivot_profile_instruction = pivot_profile.instruction if pivot_profile else ""
+    if pivot_profile and not is_v4_project:
+        # GP-216: enrich stagnation/emergency pivot profiles with an advisory
+        # universal operation class inferred from the latest weakest-point text.
+        # This does not alter pivot control flow; it only sharpens the prompt.
+        try:
+            from src.ztare.validator.utilities.gap_to_op_class_integration import (
+                enrich_pivot_instruction_with_op_class,
+            )
+
+            pivot_profile_instruction = enrich_pivot_instruction_with_op_class(
+                base_instruction=pivot_profile.instruction,
+                iteration_history=[],
+                judge_verdict={
+                    "text": weakest_point or "",
+                    "critique": failure_log or "",
+                },
+                rubric_data=rubric_data,
+            )
+        except Exception as _op_class_err:  # noqa: BLE001
+            print(f"  ⚠️  GP-216 op-class pivot enrichment failed: {_op_class_err}")
     style_guide = ""
     output_requirements = ""
     grounding_heading = "GROUNDING DATA (IMMUTABLE CONSTANTS):"
@@ -2239,6 +1682,37 @@ def mutate_thesis(
         except Exception as _cat_err:
             print(f"  ⚠️  GP-149 I-1: anti-pattern catalog injection failed: {_cat_err}")
 
+    # GP-214 I-5: pattern-bank kernel injection (Mode A manual + Mode B
+    # auto on catastrophic_fit_failure only). Reads rubric.inject_pattern_bank.
+    # Mode A: operator names the class. Mode B: auto-fires when the previous
+    # iteration's weakest_point classifies as catastrophic_fit_failure (the only
+    # class with cross-LLM stability >= 0.50 in the GP-149 §10 audit).
+    try:
+        from src.ztare.research_director.pattern_bank_injector import evaluate_injection
+        from src.ztare.validator.weakest_link_classifier import classify_weakest_point
+
+        _last_weakest_class = (
+            classify_weakest_point(weakest_point) if weakest_point else None
+        )
+        _i5 = evaluate_injection(
+            rubric=rubric_data,
+            last_weakest_class=_last_weakest_class,
+            project=getattr(args, "project", None),
+            iteration=None,  # iteration_index is not threaded into mutate_thesis;
+                              # the override log can be cross-referenced by timestamp.
+        )
+        if _i5["fired"]:
+            grounding_payload = (
+                grounding_payload + "\n\n---\n\n" + _i5["header"] + _i5["body"]
+            )
+            print(
+                f"  📋 GP-214 I-5: pattern-bank entry injected "
+                f"(class={_i5['class']}, source={_i5.get('log_record', {}).get('source')}, "
+                f"path={_i5['source_path']})"
+            )
+    except Exception as _i5_err:
+        print(f"  ⚠️  GP-214 I-5: pattern-bank injection failed: {_i5_err}")
+
     # --- DYNAMIC CONTEXT MANAGEMENT ---
     if is_v4_project:
         document_context = f"### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)\n{current_content}"
@@ -2275,7 +1749,7 @@ def mutate_thesis(
         - If the current mechanism fails, mutate the gate contract, not the ontology of the whole project.
         """
             if pivot_profile:
-                pivot_instruction += "\n" + pivot_profile.instruction
+                pivot_instruction += "\n" + pivot_profile_instruction
         else:
             task_header = "TASK: Resolve the following Systemic Inconsistency:"
 
@@ -2330,7 +1804,7 @@ def mutate_thesis(
         - Any upstream-stage weakness must be labeled `OUT-OF-SCOPE DEBT` and must not be the main thesis target.
         """
     elif pivot_state.loop_control_action == "emergency_pivot":
-        print("🚨 EMERGENCY MANDATE: EXECUTING TOPOLOGICAL PIVOT 🚨")
+        print("🚨 emergency mandate: executing topological pivot")
         if pivot_profile:
             profile_summary = ", ".join(pivot_profile.modules)
             print(
@@ -2361,13 +1835,52 @@ def mutate_thesis(
         )
 
     if not is_v4_project and pivot_profile:
-        pivot_instruction = pivot_profile.instruction
+        pivot_instruction = pivot_profile_instruction
     if not is_v4_project:
         # GP-003: branch on falsification_mode from rubric.
         # Absent or "numerical_proof" -> legacy behavior unchanged (Paper 1 safe).
         # "bounded_discriminator" -> discriminator-mode prompt for causal/historical theses.
         _fmode = (falsification_mode or "numerical_proof").strip().lower()
-        if _fmode == "bounded_discriminator":
+        _theorem_packet_required = list(
+            ((rubric_data.get("theorem_packet_contract") or {}).get(
+                "required_top_level_functions"
+            ))
+            or []
+        )
+        if (
+            _theorem_packet_required
+            and not bool(rubric_data.get("require_i_model_in_submission", True))
+        ):
+            _fn_list = "\n".join(
+                f"          - def {name}(): ..."
+                for name in _theorem_packet_required
+            )
+            style_guide = f"""
+    STYLE GUIDE — THEOREM PACKET MODE:
+        - This is not a scalar fit, PARAMETRIC_FORM task, or Lagrangian task.
+        - The proof packet is evaluated through required module-scope functions:
+{_fn_list}
+        - Each required function must return a concrete Python object that encodes
+          the theorem packet or proof-closure candidate requested by the charter.
+        - I_model, PARAMETRIC_FORM, LAGRANGIAN, MODEL_PARAMS, and fit constants
+          are optional compatibility only. Do not use them as the main result.
+        - No module-level execution, network calls, file mutation, or heavy imports.
+        - Keep the science object source-anchored and falsifiable; do not satisfy
+          the packet contract with placeholders, tautologies, or generic prose.
+        """
+            output_requirements = """
+    CRITICAL OUTPUT REQUIREMENT (THEOREM PACKET):
+        - You must provide exactly one Python code block (```python).
+        - That code block must define every required top-level function named above.
+        - Do NOT include PARAMETRIC_FORM, LAGRANGIAN, or I_model unless the charter
+          explicitly asks for compatibility glue. The deterministic packet gate,
+          not scalar fitting, is the verifier.
+        - The returned packet must be concrete enough for the project-local
+          deterministic gate to evaluate without asking the judge to infer fields.
+        - Include no placeholder values such as TODO, unknown, not_yet_derived,
+          pass, return ..., or ellipses.
+        """
+        elif _fmode == "bounded_discriminator":
             style_guide = """
     STYLE GUIDE — BOUNDED DISCRIMINATOR MODE:
         - CAUSAL MECHANISM (MANDATORY): State the core claim as a conditional:
@@ -2414,6 +1927,19 @@ def mutate_thesis(
 
     FORMATTING:
         - MANDATORY: You must provide exactly one Python code block (```python) for `test_model.py`.
+        - SUBMISSION FORM (the test_model.py block): you have two equally-valid paths.
+          PATH A (legacy / direct closed-form):
+              declare PARAMETRIC_FORM = "<closed expression in features+params>" together with
+              MODEL_PARAMS, PARAMETER_NAMES, INIT_RANGE, and an I_model(features, params=None) callable.
+          PATH B (Newton-mode / Lagrangian, used when the physics is cleaner as an action principle):
+              declare LAGRANGIAN = "<sympy expression in q, q_dot, background, params>" together with
+              Q_VARIABLES = [...], BACKGROUND = [...], PARAMETER_NAMES = [...], and
+              PREDICTION = "<closed-form g_obs in q + features + params>".
+              The GP-180 lagrangian_derivation primitive will compute Euler-Lagrange equations,
+              solve for the steady-state field q in terms of the background features, substitute
+              into PREDICTION, and emit the apparatus-ready PARAMETRIC_FORM automatically. You DO
+              NOT need to manually invert E-L. State whether you are submitting Path A or Path B
+              in the thesis prose for clarity.
         - DISCRIMINATOR TEST (MANDATORY): The Python block must assert the discriminator structure —
           e.g., that rival predictions diverge from your thesis predictions under specified conditions,
           or that your named observable holds in the cited evidence range.
@@ -2423,6 +1949,9 @@ def mutate_thesis(
         - Each FORWARD OBSERVABLE must have a corresponding assert in `test_model.py` encoding
           the LOGICAL STRUCTURE of the prediction: assert that if antecedent X holds, the thesis
           predicts Y and the rival predicts Z (use conditional logic, not current data resolution).
+        - R1 IMPORT-SAFETY (MANDATORY): asserts are allowed, but any assert or helper that calls
+          `I_model(...)` MUST live under `if __name__ == "__main__":`. Never call `I_model(...)`
+          at module scope. Module-scope asserts may inspect strings/lists/constants only.
         - `UNRESOLVED:` declarations must appear as comments only, never as asserts.
         - PORTABILITY REQUIREMENT (MANDATORY): `test_model.py` must be standalone and use
           standard-library-only Python. Do NOT import `pytest`, `numpy`, `pandas`, `scipy`,
@@ -2431,15 +1960,13 @@ def mutate_thesis(
           are available in the runner env and MAY be imported (e.g., for number-theoretic
           substrates `sympy` is commonly declared so the discriminator suite can use
           `sympy.isprime`, `sympy.factorint`, `sympy.primefactors`, `sympy.divisors`).
-          EXCEPTION 2 (GP-166, 2026-04-25 night): if the project directory contains
-          `features.py` (the canonical N-D substrate adapter), `from features import …`
-          is allowed. Use it to access real visible / holdout / farther-tail rows in your
-          falsification suite — e.g.,
-              `from features import visible_rows`
-              `for row_id, y, feat in visible_rows()[:5]: ...`
-          This eliminates the need to inline data via dict/list literals and avoids the
-          R1 ↔ "module-level I_model call" double bind. Do NOT import any other
-          project-local module — only `features.py` is auto-allowed.
+          EXCEPTION 2 (GP-166, 2026-04-25 night): if the project evidence explicitly
+          allows importing `features.py`, `from features import ...` is allowed for
+          the named helpers only. Project evidence and source gates override this
+          generic exception. If the evidence forbids row accessors such as
+          `visible_rows()` / `holdout_rows()`, do not import them; construct small
+          hand-written feature dicts for discriminator asserts instead. Do NOT import
+          any other project-local module.
         - UNRESOLVED BOUNDARY (MANDATORY): Include a clearly labeled section titled
           "WHAT THIS THESIS DOES NOT CURRENTLY PROVE" listing at least one open causal question
           your discriminator cannot resolve with current evidence. Forward observables (B) are
@@ -2617,11 +2144,24 @@ def mutate_thesis(
                 rubric=rubric_data,
                 workspace_dir=Path(PROJECT_DIR) / "workspace",
                 mutator_model_id=MUTATOR_MODEL_ID,
+                stagnation_count=int(stagnation_count),
             )
             _briefing_obj = default_briefing()
             _briefing_block = _briefing_obj.render(_briefing_ctx)
-            _active = [p.name for p in sorted(_briefing_obj.providers, key=lambda p: (p.priority, p.name)) if p.applies(_briefing_ctx)]
-            print(f"📋 MutatorBriefing: {len(_active)} providers active ({', '.join(_active) if _active else 'none'}) | {len(_briefing_block)} chars injected")
+            _active = [
+                p.name for p in sorted(_briefing_obj.providers, key=lambda p: (p.priority, p.name))
+                if p.passes_tier_gate(_briefing_ctx) and p.applies(_briefing_ctx)
+            ]
+            _diag = getattr(_briefing_obj, "_last_render_diagnostics", {}) or {}
+            _gated = _diag.get("tier_gated", [])
+            _trimmed = _diag.get("budget_trimmed", [])
+            print(
+                f"📋 MutatorBriefing: {len(_active)} providers active "
+                f"({', '.join(_active) if _active else 'none'}) | "
+                f"{len(_briefing_block)} chars / {_diag.get('budget_chars', '?')} budget "
+                f"| stagnation={int(stagnation_count)} "
+                f"| tier_gated={len(_gated)} budget_trimmed={len(_trimmed)}"
+            )
         except Exception as _briefing_exc:
             print(f"⚠️ MutatorBriefing render failed: {_briefing_exc} (using legacy inline fallback)")
             _briefing_block = ""
@@ -2826,11 +2366,11 @@ def mutate_thesis(
 
     **REQUIRED — declare these at module level in test_model.py:**
 
-        # CRITICAL: include this import if you reference `features` outside
-        # I_model's body (e.g. to inspect feature keys at module load).
-        # The substrate's features.py is on sys.path and exports FEATURES,
-        # feature_keys(), get_features(id), visible_rows(), etc.
-        from features import FEATURES, feature_keys
+        # CRITICAL: only include this import if the project evidence allows it.
+        # Some feature-dict substrates treat row helpers as evaluation-only.
+        # If imports are forbidden, write literal PARAMETER_NAMES / PARAMETRIC_FORM
+        # and let the harness pass one row's feature dict into I_model.
+        from features import feature_keys
 
         PARAMETRIC_FORM = "<your closed-form expression as a Python string>"
         PARAMETER_NAMES = ["a", "b", ...]    # the free parameters
@@ -2862,6 +2402,8 @@ def mutate_thesis(
     2. Calling I_model at module level (e.g. for test asserts):
         ❌ WRONG:  test_val = I_model({{}})            # empty dict → KeyError
         ❌ WRONG:  assert I_model({{'x': 1}}) > 0       # KeyError on missing keys
+        ❌ WRONG:  assert I_model(high_step) > I_model(low_step)
+                   unless this line is inside `if __name__ == "__main__":`
         ✅ RIGHT:  Don't call I_model at module level. The harness calls it
                    AFTER your apparatus-fitted MODEL_PARAMS substitution. Module-
                    level calls run with MODEL_PARAMS={{}} (empty) and crash.
@@ -2870,8 +2412,11 @@ def mutate_thesis(
         ❌ WRONG:  PARAMETRIC_FORM = "params['m'] * features['x']"  # 'm' not in PARAMETER_NAMES
         ✅ RIGHT:  Every `params[X]` key must be in PARAMETER_NAMES list.
                    Every `features[X]` key must exist in features.py for ALL rows.
-                   Run `python -c "from features import FEATURES; print(list(FEATURES.values())[0].keys())"`
-                   in the substrate dir to see valid feature keys.
+                   If project evidence allows `feature_keys`, run
+                   `python -c "from features import feature_keys; print(feature_keys())"`
+                   in the substrate dir to see valid feature keys. If imports
+                   are forbidden, rely on evidence-listed keys and hand-built
+                   discriminator feature dicts.
 
     4. Importing `features` (or any non-stdlib module) inside the
        FALSIFICATION SUITE (the `if __name__ == "__main__":` block):
@@ -3047,12 +2592,11 @@ def mutate_thesis(
         assert len(PARAMETER_NAMES) == len(set(PARAMETER_NAMES)), "duplicate parameters"
         assert all(isinstance(n, str) and n.isidentifier() for n in PARAMETER_NAMES)
 
-        # 2) Feature-key existence checks (apparatus-fits-time invariants)
-        from features import FEATURES, feature_keys
+        # 2) Feature-key existence checks when project evidence allows them
+        from features import feature_keys
         assert all(k in feature_keys() for k in ['intrinsic_dim_d', 'log10_N_params'])
-        assert len(FEATURES) >= 50, f"too few rows: {{len(FEATURES)}}"
 
-        # 3) Math-identity asserts on pure helpers (no params dependence)
+        # 3) Math-identity asserts on pure helpers (no I_model call)
         import math
         assert abs(1.0 / (1.0 + math.exp(0)) - 0.5) < 1e-9, "sigmoid(0) must equal 0.5"
 
@@ -3064,9 +2608,10 @@ def mutate_thesis(
             f"PARAMETRIC_FORM references undeclared params: {{_ref_params - set(PARAMETER_NAMES)}}"
 
     These satisfy G-FALSIFY (numeric thresholds, would-fail-on-violation)
-    AND R1 (no module-level I_model call). DO NOT write asserts that
-    depend on `params` values being present — those will KeyError at
-    import time before scipy runs.
+    AND R1 (no module-level I_model call). Any discriminator assert that
+    actually calls I_model belongs under `if __name__ == "__main__":`.
+    DO NOT write asserts that depend on `params` values being present —
+    those will KeyError at import time before scipy runs.
     """
         # GP-162 R9: convention-homogeneity prompt injection
         # 2026-04-27 fix: read from cage_meta.target_convention_homogeneity first
@@ -3303,9 +2848,27 @@ def mutate_thesis(
         active_contract_label as _active_contract_label,
         select_substrate_contract_hint as _select_substrate_contract_hint,
     )
+    from src.ztare.orchestrator.prompt import (
+        parametric_form_theorem_packet as _parametric_form_theorem_packet,
+        primitive_class_history_packet as _primitive_class_history_packet,
+    )
     substrate_contract_hint = _select_substrate_contract_hint(
         rubric_data,
         project_dir=Path(PROJECT_DIR),
+    )
+    # 2026-05-06: opt-in PARAMETRIC_FORM theorem packet — pre-declares
+    # AST whitelist + class-specific stubs to reduce R1 compiler-bounce
+    # noise on qualitative substrates. Default off; enable via rubric
+    # `enable_parametric_form_theorem_packet: true`.
+    parametric_form_packet = _parametric_form_theorem_packet(rubric_data)
+    # 2026-05-06 PM: opt-in primitive-class rotation packet — reads
+    # workspace/explored_primitive_classes.jsonl + injects "classes
+    # already explored" list with per-class score-cap status. Forces
+    # mutator to rotate primitive classes instead of anchoring on the
+    # first one it scores well on. Default off; enable via rubric
+    # `enable_primitive_class_rotation: true`.
+    primitive_class_history = _primitive_class_history_packet(
+        rubric_data, project_dir=Path(PROJECT_DIR),
     )
     # Prompt-engineer panel recommendation (2026-04-25 night): LLMs anchor
     # on first + last sections; surface the active contract at BOTH ends.
@@ -3357,6 +2920,8 @@ def mutate_thesis(
     {divergence_sweep_context}
     {style_guide}
     {substrate_contract_hint}
+    {parametric_form_packet}
+    {primitive_class_history}
     {output_requirements}
     {pivot_instruction}
     {fit_declaration_reminder}
@@ -3488,7 +3053,7 @@ def evolve_rubric(current_rubric_data, winning_thesis):
     )
 
     print("\n" + "·" * 40)
-    print("🧠 DIRECTOR (PRO): EVOLVING RUBRIC...")
+    print(f"🧠 director ({DIRECTOR_MODEL_ID}): evolving rubric")
     response_text = safe_mutate(prompt, config=config, model_id=DIRECTOR_MODEL_ID)
     print("·" * 40 + "\n")
     return utils.parse_llm_json(response_text)
@@ -3719,6 +3284,18 @@ if __name__ == "__main__":
     with open(MAIN_RUBRIC_PATH, "r") as f:
         rubric_data = json.load(f)
 
+    # GP-180/GP-181 rubric-mode resolution (2026-04-28). Maps `rubric_mode`
+    # to flag defaults (e.g. invariant_search → Lagrangian + Buckingham π +
+    # Noether + DAG steering). Operator-set flags win. Owns the mapping in
+    # one file (rubric_mode_resolver) so autoresearch doesn't grow new
+    # branches per mode.
+    from src.ztare.validator.rubric_mode_resolver import (
+        apply_rubric_mode_defaults,
+        describe_rubric_mode,
+    )
+    apply_rubric_mode_defaults(rubric_data)
+    print(f"📋 {describe_rubric_mode(rubric_data)}")
+
     # GP-158 fix (2026-04-25 evening): rubric-level override for
     # --underidentified_after. Audit substrates (gp156, gp158) need a
     # longer stagnation window because score swings 0↔70+ as the auditor
@@ -3771,7 +3348,7 @@ if __name__ == "__main__":
     # Any rubric declaring fit_expression_grammar: "py_exec" MUST also
     # declare py_exec_authorized_by (provenance) and expression_byte_budget
     # (anti-lookup-table defense). Autoresearch loop refuses to launch
-    # otherwise. See research_areas/private/seams/mission/GP-133...seam.md#round-4.
+    # otherwise. See GP-133 (internal seam)#round-4.
     _fit_grammar_check = str(rubric_data.get("fit_expression_grammar", "") or "").strip().lower()
     if _fit_grammar_check == "py_exec":
         _authz = rubric_data.get("py_exec_authorized_by")
@@ -3900,6 +3477,48 @@ if __name__ == "__main__":
             raise SystemExit(rubric_review_code)
 
     evidence_text = read_file(EVIDENCE_PATH) if os.path.exists(EVIDENCE_PATH) else ""
+
+    # GP-226 L2+L3 briefing compression (2026-05-06). Opt-in via rubric
+    # flag `enable_briefing_compression: true`. Suppresses expired and
+    # superseded REFRAME PRESSURE blocks from the mutator-visible view;
+    # injects an active-pressures summary header. Non-destructive —
+    # disk artifacts unchanged. Default off → legacy behavior.
+    if bool(rubric_data.get("enable_briefing_compression", False)):
+        try:
+            from src.ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
+            _ev_compressed, _charter_compressed, _comp_telemetry = _compress_briefing(
+                evidence_text=evidence_text,
+                charter_text=project_charter if 'project_charter' in dir() else "",
+                project_dir=Path(PROJECT_DIR),
+                rubric_data=rubric_data,
+            )
+            evidence_text = _ev_compressed
+            if 'project_charter' in dir():
+                project_charter = _charter_compressed
+            saved = _comp_telemetry.get("bytes_saved", 0)
+            sup_e = _comp_telemetry.get("suppressed_expired", 0)
+            sup_s = _comp_telemetry.get("suppressed_superseded", 0)
+            if saved > 0 or sup_e + sup_s > 0:
+                print(
+                    f"📦 briefing compression: {sup_e} expired + {sup_s} superseded "
+                    f"REFRAME PRESSURE block(s) suppressed; saved {saved:,} bytes"
+                )
+        except Exception as _comp_exc:  # noqa: BLE001
+            print(f"📦 briefing compression error (non-fatal): {_comp_exc}")
+
+    # GP-182 evidence-reload-per-iter (2026-04-28). Opt-in via rubric flag
+    # `evidence_reload_per_iter: true`. When active, the main loop re-reads
+    # `evidence.txt` at the top of each iteration and logs the SHA so the
+    # audit trail captures any mid-run operator edits. Default off → the
+    # closure-captured `evidence_text` is unchanged behavior.
+    _evidence_reload_per_iter = bool(rubric_data.get("evidence_reload_per_iter", False))
+    import hashlib as _hashlib
+    _evidence_initial_sha = (
+        _hashlib.sha256(evidence_text.encode("utf-8")).hexdigest()[:12]
+        if evidence_text else "empty"
+    )
+    if _evidence_reload_per_iter:
+        print(f"📄 evidence_reload_per_iter=True; initial SHA={_evidence_initial_sha}")
     shutil.copy(THESIS_PATH, WORKING_PATH)
     baseline_test_model_path = f"{PROJECT_DIR}/test_model.py"
     if not os.path.exists(baseline_test_model_path):
@@ -3960,7 +3579,10 @@ if args.dynamic:
     )
 subprocess.run(test_cmd, check=True)
 with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
-    res = json.load(f)
+    res = _normalize_eval_payload(
+        json.load(f),
+        context_label="baseline latest_eval_results.json",
+    )
 previous_champion_fingerprint = artifact_regime_fingerprint(
     _champion_eval_payload(),
     score_regime_fingerprint_from_score_contract=_score_regime_fingerprint_from_score_contract,
@@ -3998,7 +3620,7 @@ if isinstance(judge_usage, dict):
 
 best_score = res["score"]
 best_weakest_point = res["weakest_point"]
-# WAR-T3 (2026-04-27): Two-tier champion promotion. The capped score
+# Two-tier champion promotion (2026-04-27). The capped score
 # alone collapses iter-8 raw=100 down to 50 alongside iter-5 raw=50,
 # so champion logic cannot tell breakthrough from plateau and the iter-8
 # Galaxy-Cluster Bridge form was lost in run_id 1777250273. Track raw
@@ -4011,7 +3633,7 @@ if best_raw_score is None:
 _best_gv = ((res.get("score_contract") or {})
             .get("deterministic_charter_gates", {})
             .get("results", {})) or {}
-# WAR-T3 hotfix: `results` can be dict OR list shape — handle both.
+# Two-tier promotion hotfix: `results` can be dict OR list shape — handle both.
 if isinstance(_best_gv, dict):
     best_gate_failure_count = sum(
         1 for _g, _r in _best_gv.items()
@@ -4055,7 +3677,7 @@ if saved_best_score is None or res["score"] > saved_best_score:
         previous_champion_fingerprint,
         champion_artifacts.get("regime_fingerprint"),
     )
-    print(f"💾 BASELINE PROMOTED: {previous_label} -> {res['score']}")
+    print(f"💾 baseline promoted: {previous_label} → {res['score']}")
 
     # GP-119: Post-champion Inverter review (Munger inversion + Popper tests)
     if res["score"] >= 50:
@@ -4540,7 +4162,7 @@ except Exception as _pre_exc:
     # Preflight gates are diagnostic; never fail the run.
     print(f"🦴 preflight Cage dispatch error (non-fatal): {_pre_exc}")
 
-# GP-169 pre-iter-1 cold-LLM Erdős seed dispatch (Phase 4g Torvalds split).
+# GP-169 pre-iter-1 cold-LLM Erdős seed dispatch (Phase 4g modular split).
 # Runs ONCE before the iter loop starts. Reads rubric flag
 # enable_cold_llm_erdos_seed; computes anonymized fingerprint; calls cold
 # LLM with explicit forbidden-domain; persists to workspace; the iter-1+
@@ -4583,10 +4205,94 @@ if bool(rubric_data.get("enable_evidence_gap_enrichment_proposals", False)):
     except Exception as _ege_exc:  # noqa: BLE001
         print(f"🧪 EGE pre-iter-1 error (non-fatal): {_ege_exc}")
 
+# GP-184 cold-shot structural-seed (2026-04-28). Single LLM call with
+# full substrate context + falsification gates as constraints. Output:
+# a structurally-honest Lagrangian declaration the iterative apparatus
+# can fit. Routed through the typed cold-shot portfolio so this physics/
+# Lagrangian family does not silently fire on substrates where it is the
+# wrong instrument. Cached via LLMCallCache (paper 7 §11.14, GP-184).
+_physics_cold_shot_selected = bool(rubric_data.get("enable_cold_shot_seed", False))
+try:
+    from src.ztare.orchestrator.cold_shot_policy import family_selected as _cold_family_selected
+
+    _physics_cold_shot_selected = _cold_family_selected(
+        family_id="physics_lagrangian_seed",
+        project=str(args.project),
+        rubric_data=rubric_data,
+        lifecycle="pre_iter_1",
+        workspace_dir=workspace_dir,
+    )
+except Exception as _csp_exc:  # noqa: BLE001
+    print(f"🧭 cold-shot policy guard error (non-fatal): {_csp_exc}")
+
+if _physics_cold_shot_selected:
+    try:
+        from src.ztare.orchestrator.cold_shot_seed import fire_cold_shot_seed
+        _css_verdict = fire_cold_shot_seed(
+            project_dir=Path(PROJECT_DIR),
+            rubric_data=rubric_data,
+            mutator_model_id=MUTATOR_MODEL_ID,
+        )
+        _css_status = (
+            "✅ success" if _css_verdict.get("success")
+            else f"❌ {_css_verdict.get('error', 'unknown error')[:80]}"
+        )
+        _css_cache = "(cache hit)" if _css_verdict.get("cache_hit") else "(fresh call)"
+        print(
+            f"🌌 GP-184 cold-shot seed: {_css_status} {_css_cache} "
+            f"hash={_css_verdict.get('input_hash')} "
+            f"model={_css_verdict.get('model_id_used')}"
+        )
+        if _css_verdict.get("success"):
+            print(f"   proposed Lagrangian: {(_css_verdict.get('proposed_lagrangian') or '')[:100]}…")
+            print(f"   proposed PARAMETRIC_FORM: {(_css_verdict.get('proposed_parametric_form') or '')[:100]}…")
+    except Exception as _css_exc:  # noqa: BLE001
+        print(f"🌌 GP-184 cold-shot seed error (non-fatal): {_css_exc}")
+elif bool(rubric_data.get("enable_cold_shot_seed", False)):
+    print("🌌 GP-184 cold-shot seed: skipped by typed cold-shot policy")
+
 for i in range(ITERATIONS):
     print(
         f"\n--- Iteration {i + 1} (Score: {best_score} | Stagnation: {stagnation_count}) ---"
     )
+    # GP-182 evidence-reload-per-iter (2026-04-28). When the operator
+    # updates `evidence.txt` mid-run (long runs benefit from corrective
+    # injections), the closure-captured `evidence_text` would otherwise
+    # stay stale. Re-read here when the rubric flag is set; log SHA so
+    # any change is captured in the iter's audit trail. Default off →
+    # legacy behavior (single read at run start) is unchanged.
+    if _evidence_reload_per_iter and os.path.exists(EVIDENCE_PATH):
+        _new_evidence_text = read_file(EVIDENCE_PATH)
+        _new_sha = _hashlib.sha256(_new_evidence_text.encode("utf-8")).hexdigest()[:12]
+        _prior_sha = _hashlib.sha256(evidence_text.encode("utf-8")).hexdigest()[:12]
+        if _new_sha != _prior_sha:
+            print(f"📄 evidence.txt changed mid-run: SHA {_prior_sha} → {_new_sha}")
+            try:
+                from src.ztare.signals.damage import emit as _emit_damage
+                _emit_damage(
+                    source="autoresearch.evidence_reload",
+                    kind="evidence_changed_mid_run",
+                    detail=f"iter {i + 1}: evidence.txt SHA {_prior_sha} → {_new_sha}",
+                    severity="info",
+                )
+            except Exception:                                           # noqa: BLE001
+                pass
+            evidence_text = _new_evidence_text
+            # GP-226 L2+L3: re-apply briefing compression to the freshly-
+            # reloaded evidence so mid-run edits also benefit from
+            # suppression of expired/superseded blocks.
+            if bool(rubric_data.get("enable_briefing_compression", False)):
+                try:
+                    from src.ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
+                    _ev_recomp, _, _ = _compress_briefing(
+                        evidence_text=evidence_text,
+                        charter_text="",
+                        project_dir=Path(PROJECT_DIR),
+                        rubric_data=rubric_data,
+                    )
+                    evidence_text = _ev_recomp
+                except Exception:                                       # noqa: BLE001
+                    pass
     iteration_start_utc = _utc_now_iso()
     iteration_mutator_usage_before = _usage_bucket_snapshot(SESSION_MUTATOR_USAGE)
     iteration_judge_usage_before = _usage_bucket_snapshot(SESSION_JUDGE_USAGE)
@@ -4792,7 +4498,7 @@ for i in range(ITERATIONS):
     except Exception as _gp149_err:
         print(f"  ⚠️  GP-149 observability error (non-fatal): {_gp149_err}")
     if pending_loop_action == LoopControlAction.UNDERIDENTIFIED:
-        print("🛑 R4 ACTION UNDERIDENTIFIED: bounded-discriminator search exhausted.")
+        print("🛑 R4 action underidentified: bounded-discriminator search exhausted.")
         run_exit_reason = "underidentified"
         _write_underidentification_verdict(
             workspace_dir,
@@ -5099,29 +4805,121 @@ for i in range(ITERATIONS):
             except Exception as _seed_exc:
                 print(f"🧬 Component D seed: error — {_seed_exc}")
 
-        if not _comp_seed_injected:
-            new_content = mutate_thesis(
-                current_thesis,
-                current_test_model,
-                current_target_weakest_point,  # GP-002: use current evaluated target, not best-state memory
-                evidence_text,
-                rubric_data["persona"],
-                stagnation_count,
-                model_id=current_mutator,
-                failure_log=last_failure_reason,
-                falsification_mode=rubric_falsification_mode,  # GP-003: pass rubric mode
-                fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
-                fit_primitive_features_enabled=rubric_data.get("enable_fit_primitive_features", False),
-                fit_primitive_features_k_max=int(rubric_data.get("fit_primitive_features_k_max", 8)),
-                fit_context=_fit_ctx,
-                structural_memory_context=_structural_memory_ctx,
-                cold_residual_mode=_cold_residual_mode,
-                residual_mode_context=_residual_mode_ctx,
-                gp048_cohort_context=_gp048_cohort_ctx,
-                farther_tail_veto_context=_farther_tail_veto_ctx,
-                component_c_context=_component_c_ctx,
-                divergence_sweep_context=_divergence_sweep_ctx,
+        # GP-184 cold-shot direct injection on iter 1 (paper 7 §11.15
+        # briefing-density fix). When the cold-shot fired successfully
+        # FRESH (not cache hit) on this run AND the rubric flag is set
+        # AND we're on iter 1, skip the mutator entirely and use the
+        # cold-shot's own LAGRANGIAN/PARAMETRIC_FORM as the iter-1
+        # winner. The mutator on iter 1 was demonstrated to drown the
+        # cold-shot's structural prior in 28k chars of apparatus context
+        # (run 1777403089 audit) — direct injection sidesteps the
+        # routing failure entirely on the first iteration. Iters 2+
+        # use the normal mutator dispatch which now sees the cold-shot
+        # in the briefing at priority 145 (T1).
+        _cold_shot_used_directly = False
+        if (
+            not _comp_seed_injected
+            and i == 0
+            and bool(rubric_data.get("cold_shot_iter1_direct_inject", False))
+        ):
+            try:
+                _css_path = Path(PROJECT_DIR) / "workspace" / "cold_shot_seed.json"
+                if _css_path.exists():
+                    import json as _json
+                    _seed = _json.loads(_css_path.read_text(encoding="utf-8"))
+                    _ok = (
+                        bool(_seed.get("success"))
+                        and not bool(_seed.get("cache_hit"))  # only on FRESH calls
+                        and bool((_seed.get("proposed_parametric_form") or "").strip())
+                        and bool((_seed.get("proposed_lagrangian") or "").strip())
+                        and bool(_seed.get("proposed_parameter_names"))
+                    )
+                    if _ok:
+                        from src.ztare.orchestrator.cold_shot_seed import (
+                            synthesize_thesis_from_seed as _synthesize_seed_thesis,
+                        )
+                        new_content = _synthesize_seed_thesis(_seed)
+                        _cold_shot_used_directly = True
+                        print(
+                            "🌌 GP-184 cold-shot DIRECT INJECTION on iter 1 — "
+                            "skipping mutator. Cold-shot Lagrangian + "
+                            "PARAMETRIC_FORM used as iter-1 candidate. "
+                            f"({len(new_content)} chars synthesized)"
+                        )
+            except Exception as _cssdi_exc:
+                print(
+                    f"🌌 GP-184 cold-shot direct injection failed (non-fatal): "
+                    f"{type(_cssdi_exc).__name__}: {_cssdi_exc} — falling back to mutator."
+                )
+
+        if not _comp_seed_injected and not _cold_shot_used_directly:
+            # GP-157 Phase 4e + GP-174 Phase 1 — mutator-blitz dispatch.
+            # All blitz/recombination/tournament logic lives in
+            # src/ztare/orchestrator/blitz_dispatch.py to keep this loop
+            # readable. K=1 default (single mutate) — K=K only when
+            # rubric flag set AND stagnation/force trigger fires.
+            from src.ztare.orchestrator.blitz_dispatch import (
+                BlitzDispatchInputs, dispatch_mutator_blitz,
             )
+
+            def _single_mutate(persona_extra: str = ""):
+                _persona = rubric_data["persona"]
+                if persona_extra:
+                    # GP-174 Munger Lollapalooza A breaker — persona-private
+                    # bias suffix. Each parallel worker reads the SAME
+                    # MutatorBriefing (failure_log, analogy, prior champion)
+                    # so persona divergence has nowhere to come from
+                    # without a per-worker prompt addition. The suffix
+                    # bank lives in blitz_dispatch.PERSONA_PRIVATE_SUFFIX.
+                    try:
+                        from src.ztare.orchestrator.blitz_dispatch import PERSONA_PRIVATE_SUFFIX
+                        _bias = PERSONA_PRIVATE_SUFFIX.get(persona_extra, "")
+                    except Exception:
+                        _bias = ""
+                    if _bias:
+                        _persona = (
+                            f"{_persona} [worker_persona={persona_extra}] "
+                            f"PERSONA_PRIVATE_BIAS: {_bias}"
+                        )
+                    else:
+                        _persona = f"{_persona} [worker_persona={persona_extra}]"
+                return mutate_thesis(
+                    current_thesis,
+                    current_test_model,
+                    current_target_weakest_point,
+                    evidence_text,
+                    _persona,
+                    stagnation_count,
+                    model_id=current_mutator,
+                    failure_log=last_failure_reason,
+                    falsification_mode=rubric_falsification_mode,
+                    fit_primitive_enabled=rubric_data.get("enable_fit_primitive", False),
+                    fit_primitive_features_enabled=rubric_data.get("enable_fit_primitive_features", False),
+                    fit_primitive_features_k_max=int(rubric_data.get("fit_primitive_features_k_max", 8)),
+                    fit_context=_fit_ctx,
+                    structural_memory_context=_structural_memory_ctx,
+                    cold_residual_mode=_cold_residual_mode,
+                    residual_mode_context=_residual_mode_ctx,
+                    gp048_cohort_context=_gp048_cohort_ctx,
+                    farther_tail_veto_context=_farther_tail_veto_ctx,
+                    component_c_context=_component_c_ctx,
+                    divergence_sweep_context=_divergence_sweep_ctx,
+                )
+
+            try:
+                _blitz_result = dispatch_mutator_blitz(BlitzDispatchInputs(
+                    stagnation_count=stagnation_count,
+                    iter_idx=i + 1,
+                    rubric_data=rubric_data,
+                    workspace_dir=workspace_dir,
+                    current_thesis=current_thesis or "",
+                    current_mutator=current_mutator,
+                    single_mutate=_single_mutate,
+                ))
+                new_content = _blitz_result.winner_text or _single_mutate("")
+            except Exception as _bl_exc:
+                print(f"⚔️  Blitz dispatch error (non-fatal): {_bl_exc}; falling back to single mutate")
+                new_content = _single_mutate("")
         _runner_allowed_raw = rubric_data.get("runner_allowed_imports", ()) or ()
         _runner_allowed = tuple(
             str(x).strip() for x in _runner_allowed_raw if isinstance(x, str) and x.strip()
@@ -5175,6 +4973,20 @@ for i in range(ITERATIONS):
                         "runtime_import_failure",
                         "runtime_imodel_raises",
                     }
+                    # 2026-04-27 hotfix: adherence checker must honor rubric.
+                    # require_i_model_in_submission=false. Qualitative substrates
+                    # (gp168 org-topology, etc.) submit a stub test_model.py and
+                    # carry the load in thesis.md prose; without this gate, the
+                    # adherence checker blocks every iter's stub with
+                    # missing_imodel_def even though the rubric explicitly
+                    # opts out.
+                    if not bool(rubric_data.get("require_i_model_in_submission", True)):
+                        _adherence_blocking = _adherence_blocking - {
+                            "missing_imodel_def",
+                            "nan_return_literal",
+                            "runtime_nan_return",
+                            "runtime_imodel_raises",
+                        }
                     # Static check on python_code (pre-write).
                     _static_violations = _adherence_check(
                         python_code or "",
@@ -5308,6 +5120,20 @@ for i in range(ITERATIONS):
                     except Exception:
                         pass  # never let denylist scanning break the apparatus
 
+                # 2026-05-05: theorem-packet substrates are proof packets, not
+                # scalar-fit submissions.  If a model includes a legacy
+                # PARAMETRIC_FORM compatibility string, do not route the retry
+                # prompt through scalar-form grammar; that teaches the wrong
+                # contract and causes repeated false R1 bounces.  The
+                # project-local theorem-packet harness will evaluate the
+                # required top-level functions instead.
+                _skip_parametric_form_r1_for_theorem_packet = (
+                    bool((rubric_data.get("theorem_packet_contract") or {}).get(
+                        "required_top_level_functions"
+                    ))
+                    and not bool(rubric_data.get("require_i_model_in_submission", True))
+                )
+
                 # 2026-04-27: pre-flight AST + whitelist validation on
                 # PARAMETRIC_FORM. The mutator has been writing forms like
                 # `PARAMETRIC_FORM = 'I_model(features, params)'` (self-reference)
@@ -5321,7 +5147,11 @@ for i in range(ITERATIONS):
                         extract_form_declaration as _ffp_extract_form,
                         _safe_compile_form as _ffp_safe_compile,
                     )
-                    _r1_form_decl = _ffp_extract_form(python_code or "")
+                    _r1_form_decl = (
+                        None
+                        if _skip_parametric_form_r1_for_theorem_packet
+                        else _ffp_extract_form(python_code or "")
+                    )
                     if _r1_form_decl is not None:
                         _r1_form_str, _r1_pnames, _ = _r1_form_decl
                         if _r1_form_str:
@@ -5332,6 +5162,42 @@ for i in range(ITERATIONS):
                                     f"PARAMETRIC_FORM AST/whitelist pre-flight FAILED: "
                                     f"{str(_r1_form_exc)[:1200]}"
                                 ) from _r1_form_exc
+                    else:
+                        # 2026-04-27 hotfix: when rubric requires fit primitive
+                        # (enable_fit_primitive_features=true) but the submission
+                        # didn't declare BOTH PARAMETRIC_FORM (str) AND
+                        # PARAMETER_NAMES (list) at module scope, fit dispatch
+                        # silently SKIPs and MODEL_PARAMS stays at the mutator's
+                        # hand-set values, which usually fail L3 asserts. Promote
+                        # this to an R1 strike so the mutator gets prompted to
+                        # add the declarations on a free retry.
+                        #
+                        # GP-180 Path B (2026-05-02): accept a valid Path B
+                        # submission (LAGRANGIAN + PREDICTION + PARAMETER_NAMES)
+                        # in lieu of PARAMETRIC_FORM. GP-180 lagrangian_derivation
+                        # auto-derives the apparatus-ready PARAMETRIC_FORM via
+                        # sympy downstream. Without this gate, the briefing tells
+                        # the mutator to submit Path B but this guard rejects it.
+                        if bool(rubric_data.get("enable_fit_primitive_features", False)):
+                            # GP-180 Path B is a valid alternative to Path A when
+                            # the mutator submits LAGRANGIAN+PREDICTION+PARAMETER_NAMES.
+                            # detect_submission_path() lives in submission_path_helpers.
+                            _path_info = detect_submission_path(python_code or "")
+                            _has_path_b = _path_info["path"] in ("B", "A+B")
+                            if not _has_path_b:
+                                raise ValueError(
+                                    "Submission missing required module-level "
+                                    "declarations. The apparatus accepts ONE OF:\n"
+                                    "  PATH A: PARAMETRIC_FORM (str) + PARAMETER_NAMES (list)\n"
+                                    "  PATH B: LAGRANGIAN (str) + PREDICTION (str) + PARAMETER_NAMES (list)\n"
+                                    "Your submission has neither. The apparatus uses these for "
+                                    "scipy.optimize fitting (Path A) or GP-180 sympy auto-derivation "
+                                    "(Path B); without them, MODEL_PARAMS stays at your hand-set "
+                                    "values and L3 falsification asserts will fail. Defining "
+                                    "I_model alone is insufficient when "
+                                    "rubric.enable_fit_primitive_features=true. See the briefing's "
+                                    "PATH A / PATH B skeletons."
+                                )
                 except ImportError:
                     pass  # fit primitive unavailable — degrade gracefully
                 except ValueError:
@@ -5339,17 +5205,61 @@ for i in range(ITERATIONS):
 
                 if _r1_strike > 0:
                     print(f"🔁 R1 compiler-bounce: RECOVERED after {_r1_strike} strike(s)")
+                # WAR Guard C: any successful R1 pass resets the rail-off counter.
+                # Tracker state lives in src/ztare/orchestrator/r1_retry per
+                # Phase 4g extraction (2026-05-06).
+                session_r1_tracker.reset()
                 break
             except ValueError as _r1_exc:
                 _r1_strike += 1
                 _r1_last_error = str(_r1_exc)
                 if _r1_strike > _MAX_R1_RETRIES:
+                    # Persist the final exhausted attempt for postmortem
+                    # debugging — see workspace/r1_debug/iter_NNN_r1_attempts.md.
+                    _log_r1_attempt(
+                        iter_index=i + 1,
+                        strike_num=_r1_strike,
+                        error_text=_r1_last_error,
+                        content=new_content or "",
+                        exhausted=True,
+                        mutator_model=current_mutator,
+                    )
                     print(
                         f"🚫 R1 compiler-bounce: {_MAX_R1_RETRIES}/{_MAX_R1_RETRIES} "
                         f"strikes exhausted; consuming iteration. Final error: "
                         f"{_r1_last_error[:160]}"
                     )
+                    print(
+                        f"📝 Failed-attempt content saved to "
+                        f"workspace/r1_debug/iter_{i+1:03d}_r1_attempts.md"
+                    )
+                    # WAR Guard C: track consecutive R1 exhaustions and warn
+                    # the operator when the mutator appears stuck in a
+                    # rail-off pattern (pseudo-code essays, contract
+                    # violations on every retry). Tracker state lives in
+                    # src/ztare/orchestrator/r1_retry.
+                    if session_r1_tracker.record_exhaustion():
+                        print(
+                            f"⚠️  RAIL-OFF PATTERN: {session_r1_tracker.consecutive_count} "
+                            f"consecutive iter(s) consumed by R1 strike-exhaustion. "
+                            f"The mutator is producing structurally non-conforming "
+                            f"submissions (pseudo-code, prose, contract violations) "
+                            f"that the apparatus cannot rescue across {_MAX_R1_RETRIES} "
+                            f"retries each. Token-burn rate ~3x normal with no score "
+                            f"signal. Recommend stopping the run and either (a) "
+                            f"switching MUTATOR_MODEL or (b) reducing briefing size."
+                        )
                     raise
+                # Persist this attempt's content + rejection reason for
+                # postmortem debugging — see workspace/r1_debug/.
+                _log_r1_attempt(
+                    iter_index=i + 1,
+                    strike_num=_r1_strike,
+                    error_text=_r1_last_error,
+                    content=new_content or "",
+                    exhausted=False,
+                    mutator_model=current_mutator,
+                )
                 print(
                     f"🔁 R1 compiler-bounce strike {_r1_strike}/{_MAX_R1_RETRIES} "
                     f"(free retry; iter NOT consumed): {_r1_last_error[:160]}"
@@ -5357,19 +5267,42 @@ for i in range(ITERATIONS):
                 # Build a focused retry prompt — short, points at the
                 # specific R1 violation, includes the prior submission
                 # so the mutator can correct in-place.
-                _retry_prompt = (
-                    "Your prior submission was rejected by the R1 lint check (NOT a "
-                    "scientific failure — just a contract violation). Specific error:\n\n"
-                    f"  {_r1_last_error}\n\n"
-                    "Fix this exact issue and resubmit your thesis + Python suite. "
-                    "Preserve the rest of your prior submission. The iteration counter "
-                    "has NOT advanced; this is a free retry. Do NOT change your thesis "
-                    "or scientific approach — only fix the contract violation.\n\n"
-                    "Your prior submission was:\n"
-                    f"```\n{(new_content or '')[:6000]}\n```\n"
+                # 2026-04-27 hotfix: explicit MANDATORY thesis+suite blocks
+                # (gp168 iter 2 produced a stub-only retry, judge saw "no
+                # thesis text" → score 0). Truncation bumped to 12000 (was
+                # 6000) so the prior submission's full thesis prose is in
+                # the retry context, not just its python_code prefix.
+                # GP-180 Path A / Path B retry skeleton + hedge detection are
+                # encapsulated in src/ztare/orchestrator/submission_path_helpers.py.
+                # That module owns:
+                #   - detect_submission_path() — AST inspection of test_model.py
+                #     reporting which contract path the mutator satisfied
+                #   - format_r1_retry_skeleton() — assembles the retry prompt
+                #     with PATH A / PATH B skeletons + hedge-detection advice
+                # Keeping them out of autoresearch_loop avoids the spaghetti
+                # accretion observed during the GP-180 Path B briefing rollout
+                # (2026-05-02 multi-fix session).
+                _retry_prompt = format_r1_retry_skeleton(
+                    r1_error=_r1_last_error,
+                    prior_content=new_content or "",
+                    max_prior_chars=12000,
+                    rubric_data=rubric_data,
                 )
+                # WAR Guard A (2026-04-27, v2): cap retry output at 10000
+                # tokens. v1 cap of 6000 was too tight — a complete
+                # test_model.py submission with thesis + suite is 6-8k
+                # tokens, so 6k caused mid-submission truncation
+                # (observed: strike "doesn't define I_model" pattern,
+                # strike "params[] without PARAMETRIC_FORM" pattern).
+                # First attempt stays at default 16k; retries get 10k —
+                # enough headroom for a complete submission while still
+                # bounding the 26k-token pseudo-code rail-off case.
                 try:
-                    new_content = safe_mutate(_retry_prompt, model_id=current_mutator)
+                    new_content = safe_mutate(
+                        _retry_prompt,
+                        model_id=current_mutator,
+                        max_tokens=10000,
+                    )
                 except Exception as _retry_call_exc:
                     print(
                         f"🚫 R1 compiler-bounce: retry mutator call failed "
@@ -5649,7 +5582,177 @@ for i in range(ITERATIONS):
                             print(f"🧮   INIT_RANGE (mutator-declared) = {_init_range}")
                         else:
                             print(f"🧮   INIT_RANGE = default (-2.0, 2.0); auto-escalation enabled")
-                        _vis, _vis_err = _ffp_load_visible(PROJECT_DIR)
+                        # GP-180 Lagrangian Derivation Primitive (2026-04-28).
+                        # All inline logic was extracted to
+                        # `orchestrator/gp180_dispatch.py` per modular
+                        # module discipline. The dispatch handles: sympy
+                        # derivation, non-degeneracy gating, Lagrangian-path
+                        # telemetry, gaming-streak detection, and PARAMETRIC_FORM
+                        # substitution. Falls back transparently if derivation
+                        # fails (no LAGRANGIAN declared, sympy timeout, etc.).
+                        from src.ztare.orchestrator.gp180_dispatch import (
+                            dispatch_gp180_lagrangian,
+                        )
+                        _gp180_result = dispatch_gp180_lagrangian(
+                            python_code=python_code,
+                            parameter_names=_names,
+                            workspace_dir=workspace_dir,
+                            iter_index_one_based=i + 1,
+                            rubric_data=rubric_data,
+                        )
+                        _gp180_noether = _gp180_result.noether_kept
+                        if _gp180_result.substituted_form is not None:
+                            _form = _gp180_result.substituted_form
+                        if _gp180_result.substituted_python_code is not None:
+                            python_code = _gp180_result.substituted_python_code
+                        # GP-179 Buckingham π gate (2026-04-28): reject transcendentals
+                        # with raw dimensional arguments. Apparatus-general; rubric
+                        # flag `enable_buckingham_pi_gate` activates (default OFF —
+                        # opt-in per substrate). Violations are surfaced to the
+                        # mutator briefing as structural feedback; only treated as
+                        # a hard skip when `buckingham_strict=true`.
+                        _bk_blocked = False
+                        if bool(rubric_data.get("enable_buckingham_pi_gate", False)):
+                            try:
+                                from src.ztare.gates.buckingham_pi_gate import (
+                                    run_buckingham_pi_gate,
+                                )
+                                _bk_result = run_buckingham_pi_gate(_form, rubric_data=rubric_data)
+                                if _bk_result["passed"]:
+                                    print(f"🧮   ✓ Buckingham π gate: passed "
+                                          f"({_bk_result['scanned_calls']} transcendental calls scanned)")
+                                else:
+                                    print(f"🧮   🛑 Buckingham π gate: FAIL "
+                                          f"({len(_bk_result['violations'])} violations)")
+                                    for _bv in _bk_result["violations"][:3]:
+                                        print(f"      → {_bv['function']}({_bv['arg'][:80]})")
+                                    (workspace_dir / "buckingham_pi_violations.json").write_text(
+                                        json.dumps(_bk_result, indent=2)
+                                    )
+                                    if bool(rubric_data.get("buckingham_strict", False)):
+                                        print(f"🧮   buckingham_strict=true: skipping fit; "
+                                              f"R1-style structural feedback will be surfaced")
+                                        _bk_blocked = True
+                            except ImportError:
+                                pass
+                            except Exception as _bk_err:                       # noqa: BLE001
+                                print(f"🧮   Buckingham gate dispatch error (non-fatal): {_bk_err}")
+                        # GP-188 π-group forcing gate (2026-05-16): for each
+                        # rubric-declared dimensional target {quantity_dim,
+                        # subset_dims}, decide forced-monomial vs
+                        # needs-independent-constant vs free-π-group. Anti-
+                        # laundering advisory (never blocks fit); opt-in via
+                        # `enable_pi_group_forcing` + `pi_group_targets`
+                        # (default OFF — inert per substrate). Orthogonal to
+                        # the Buckingham gate above. §6n in/out-of-loop parity
+                        # with the RD-tick / external-prover §5.2 path.
+                        if bool(rubric_data.get("enable_pi_group_forcing", False)):
+                            try:
+                                from src.ztare.gates.pi_group_forcing import (
+                                    run_pi_group_forcing,
+                                )
+                                _pg_targets = rubric_data.get("pi_group_targets") or []
+                                _pg_out = []
+                                for _pgt in _pg_targets:
+                                    _pg_res = run_pi_group_forcing(
+                                        _pgt.get("quantity_dim") or {},
+                                        _pgt.get("subset_dims") or {},
+                                    )
+                                    _pg_res["label"] = _pgt.get("label", "")
+                                    _pg_out.append(_pg_res)
+                                    _verdict = (
+                                        "FORCED" if _pg_res["forced"]
+                                        else "NEEDS-INDEP-CONST"
+                                        if _pg_res["needs_independent_constant"]
+                                        else "AMBIGUOUS-π-GROUP"
+                                    )
+                                    print(f"🧮   π-group [{_pg_res['label']}]: "
+                                          f"{_verdict}"
+                                          + (f" → {_pg_res['monomial']}"
+                                             if _pg_res["forced"] else ""))
+                                if _pg_out:
+                                    (workspace_dir / "pi_group_forcing.json").write_text(
+                                        json.dumps(_pg_out, indent=2)
+                                    )
+                            except ImportError:
+                                pass
+                            except Exception as _pg_err:                       # noqa: BLE001
+                                print(f"🧮   π-group gate dispatch error (non-fatal): {_pg_err}")
+                        _linear_obs_blocked = False
+                        # Linear observable coercivity gate (2026-05-23):
+                        # dimensional compatibility does not imply that a
+                        # scalar/rank-deficient observation can recover or
+                        # dominate a higher-dimensional target structure.
+                        # Default-off; strict mode skips fit on violation.
+                        if bool(rubric_data.get("enable_linear_observable_coercivity_gate", False)):
+                            try:
+                                from src.ztare.gates.linear_observable_coercivity_gate import (
+                                    format_report as _format_linear_obs_report,
+                                    run_gate as _run_linear_obs_gate,
+                                )
+                                _loc_targets = rubric_data.get(
+                                    "linear_observable_coercivity_targets"
+                                ) or []
+                                _loc_out = []
+                                for _loc in _loc_targets:
+                                    _loc_res = _run_linear_obs_gate(
+                                        target_dimension=_loc.get("target_dimension", 0),
+                                        observable_rank=_loc.get("observable_rank", 0),
+                                        full_reconstruction_receipt=bool(
+                                            _loc.get("full_reconstruction_receipt", False)
+                                        ),
+                                        coercivity_receipt=bool(
+                                            _loc.get("coercivity_receipt", False)
+                                        ),
+                                        kernel_quotient_dimension=(
+                                            _loc.get("kernel_quotient_dimension")
+                                        ),
+                                        kernel_quotient_receipt=bool(
+                                            _loc.get("kernel_quotient_receipt", False)
+                                        ),
+                                        kernel_witness_present=bool(
+                                            _loc.get("kernel_witness_present", False)
+                                        ),
+                                        dimensionally_compatible=(
+                                            _loc.get("dimensionally_compatible")
+                                        ),
+                                        labels=_loc.get("labels") or {},
+                                    )
+                                    _loc_res["label"] = _loc.get("label", "")
+                                    _loc_out.append(_loc_res)
+                                    print(
+                                        f"🧮   linear-observable [{_loc_res['label']}]: "
+                                        f"{_format_linear_obs_report(_loc_res)}"
+                                    )
+                                if _loc_out:
+                                    (workspace_dir / "linear_observable_coercivity.json").write_text(
+                                        json.dumps(_loc_out, indent=2)
+                                    )
+                                if (
+                                    bool(rubric_data.get(
+                                        "linear_observable_coercivity_strict", False
+                                    ))
+                                    and any(not item.get("passed") for item in _loc_out)
+                                ):
+                                    print(
+                                        "🧮   linear_observable_coercivity_strict=true: "
+                                        "skipping fit; rank/coercivity feedback will be surfaced"
+                                    )
+                                    _linear_obs_blocked = True
+                            except ImportError:
+                                pass
+                            except Exception as _loc_err:                     # noqa: BLE001
+                                print(
+                                    "🧮   linear observable coercivity gate dispatch "
+                                    f"error (non-fatal): {_loc_err}"
+                                )
+                        if _bk_blocked or _linear_obs_blocked:
+                            _vis, _vis_err = None, (
+                                "blocked_linear_observable_coercivity_strict"
+                                if _linear_obs_blocked else "blocked_buckingham_strict"
+                            )
+                        else:
+                            _vis, _vis_err = _ffp_load_visible(PROJECT_DIR)
                         print(f"🧮   load_visible_from_substrate: "
                               f"{'OK ' + str(len(_vis)) + ' rows' if _vis else 'FAILED — ' + str(_vis_err)}")
                         if not _vis:
@@ -5683,6 +5786,39 @@ for i in range(ITERATIONS):
                                     f"🧮   weighted χ² ENABLED: σ key='{_ffp_sigma_key}' "
                                     f"(BIC = χ² + K·log N; σ=1 fallback per-row when key missing)"
                                 )
+                            # Frame Adjudicator v2 — Component 2: anchor-augmented loss.
+                            # When rubric.fit_anchors is provided, the fit objective
+                            # adds a hinge-loss penalty for predictions outside the
+                            # named asymptotic anchors' tolerance (in dex). This
+                            # closes the "optimizer cheats the screen" failure mode
+                            # by making anchor preservation a first-class loss term
+                            # rather than a post-hoc gate. Format:
+                            #   [{"name": "solar", "features": {...},
+                            #     "y_expected": 5.93e-3, "tolerance_dex": 0.13}, ...]
+                            _ffp_anchors = rubric_data.get("fit_anchors") or None
+                            _ffp_anchor_lambda = float(
+                                rubric_data.get("fit_anchor_penalty_lambda", 100.0)
+                            )
+                            if _ffp_anchors:
+                                print(
+                                    f"🧮   ANCHOR-AUGMENTED LOSS: {len(_ffp_anchors)} anchor(s) "
+                                    f"with λ={_ffp_anchor_lambda:.1f} (Frame Adjudicator v2)"
+                                )
+                            # GP-180 Noether-variance loss (2026-04-28). When
+                            # the mutator declared a LAGRANGIAN and GP-180
+                            # successfully extracted Noether invariants, pass
+                            # them through with weight λ_noether so the fit
+                            # penalizes inconstancy across rows. λ defaults
+                            # to 0 (off) so legacy fits are unchanged.
+                            _ffp_noether = list(_gp180_noether.values()) if _gp180_noether else None
+                            _ffp_noether_lambda = float(
+                                rubric_data.get("noether_variance_weight", 0.0)
+                            )
+                            if _ffp_noether and _ffp_noether_lambda > 0:
+                                print(
+                                    f"🧮   NOETHER-VARIANCE LOSS: {len(_ffp_noether)} invariant(s) "
+                                    f"with λ={_ffp_noether_lambda:.3f} (Hamilton-Noether dovetail)"
+                                )
                             _ffp_result = _ffp_fit(
                                 _form, _names, _vis,
                                 n_starts=_ffp_n_starts,
@@ -5693,6 +5829,10 @@ for i in range(ITERATIONS):
                                 relative_residuals=_ffp_relative,
                                 weighted_residuals=_ffp_weighted,
                                 sigma_key=_ffp_sigma_key,
+                                anchors=_ffp_anchors,
+                                anchor_penalty_lambda=_ffp_anchor_lambda,
+                                noether_invariants=_ffp_noether,
+                                noether_variance_lambda=_ffp_noether_lambda,
                             )
                             if _ffp_result.success:
                                 # P3 fix (deep audit, 2026-04-25): use %g
@@ -6419,15 +6559,19 @@ for i in range(ITERATIONS):
     # postmortem. Snapshot the python_code + clean_thesis to
     # workspace/submissions/iter_<N>_<utc>.{py,md} so failed iters are
     # always inspectable. No-op when MUTATOR_SUBMISSION_SNAPSHOT=0.
+    _submission_snapshot_py_path = None
     if os.environ.get("MUTATOR_SUBMISSION_SNAPSHOT", "1") != "0":
         try:
             _submissions_dir = workspace_dir / "submissions"
             _submissions_dir.mkdir(parents=True, exist_ok=True)
             _snap_stem = f"iter_{i + 1:03d}_{iteration_start_utc.replace(':', '').replace('-', '')}"
-            (_submissions_dir / f"{_snap_stem}.py").write_text(
-                _ensure_canonical_model_aliases(python_code or ""),
-                encoding="utf-8",
+            _submission_snapshot_py_path = _submissions_dir / f"{_snap_stem}.py"
+            _snapshot_code = (
+                Path(test_model_path).read_text(encoding="utf-8", errors="ignore")
+                if Path(test_model_path).exists()
+                else _ensure_canonical_model_aliases(python_code or "")
             )
+            _submission_snapshot_py_path.write_text(_snapshot_code, encoding="utf-8")
             if clean_thesis:
                 (_submissions_dir / f"{_snap_stem}.md").write_text(clean_thesis, encoding="utf-8")
         except Exception as _snap_err:  # noqa: BLE001
@@ -6454,10 +6598,30 @@ for i in range(ITERATIONS):
     except Exception as _adherence_err:  # noqa: BLE001
         print(f"📋 contract-adherence telemetry error (non-fatal): {_adherence_err}")
 
+    iteration_test_cmd = list(test_cmd)
+
+    if rubric_data.get("pre_judge_gate_harness"):
+        from src.ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
+
+        pre_judge_gate_result = run_pre_judge_gate_harness(
+            enabled=True,
+            project_dir=PROJECT_DIR,
+            latest_eval_results_path=LATEST_EVAL_RESULTS_PATH,
+            python_executable=sys.executable,
+            candidate_path=_submission_snapshot_py_path,
+        )
+        if pre_judge_gate_result.message:
+            print(pre_judge_gate_result.message)
+        if pre_judge_gate_result.should_skip_judge:
+            iteration_test_cmd = [sys.executable, "-c", "pass"]
+
     try:
-        subprocess.run(test_cmd, check=True)
+        subprocess.run(iteration_test_cmd, check=True)
         with open(LATEST_EVAL_RESULTS_PATH, "r") as f:
-            new_eval = json.load(f)
+            new_eval = _normalize_eval_payload(
+                json.load(f),
+                context_label=f"iteration {i + 1} latest_eval_results.json",
+            )
         # GP-086 — engine-level behavioral gates (evidence_fit + uniqueness_gap +
         # parsimony_violation + named_import_check + extrapolation_gap).
         # These fire on every iteration regardless of substrate; per-project
@@ -6505,7 +6669,7 @@ for i in range(ITERATIONS):
                     f"penalty={_penalty}"
                 )
 
-            # GP-157 Cage post-harness dispatch (Phase 4g Torvalds split — task #65).
+            # GP-157 Cage post-harness dispatch (Phase 4g modular split — task #65).
             # All Cage-routed post-harness gates (R10, R11 today; GP-170 symbolic
             # logic cage and GP-168 forced-reframe when implemented) dispatch
             # through a single entry point in the orchestrator. New gates register
@@ -6558,6 +6722,8 @@ for i in range(ITERATIONS):
                 direct_cost_usd=judge_usage.get("estimated_cost_usd") if judge_usage.get("cost_known") else None,
             )
 
+        _raw_candidate_score = new_eval.get("score")
+
         # Bug #48 (2026-04-25 night, gp160 cross-family run hit this):
         # if the judge response is malformed (e.g., evidence_gap fields
         # leaked to top-level instead of nested under evidence_gaps[]),
@@ -6566,7 +6732,7 @@ for i in range(ITERATIONS):
         # entire run. The FINAL VERDICT print line is unaffected; this
         # only protects the candidate-selection path.
         _candidate_score = new_eval.get("score")
-        if _candidate_score is None:
+        if _raw_candidate_score is None:
             print(
                 "⚠️ Judge response missing 'score' field (likely malformed "
                 "judge JSON). Treating as score=0 for candidate selection. "
@@ -6604,7 +6770,7 @@ for i in range(ITERATIONS):
 
         # GP-102 — persist slim eval record for Kaizen cron audit.
         # Append-only; never read by score path or loop control.
-        # 2026-04-27 (WAR-T2): persist parametric_form, raw_judge_score,
+        # Champion telemetry persistence (2026-04-27): persist parametric_form, raw_judge_score,
         # score_cap_applied at write time so briefing providers do not have
         # to backfill via lossy regex from submission files. The backfill
         # path was the load-bearing bug behind the gp163d v3 phantom-REFRAME
@@ -6656,7 +6822,7 @@ for i in range(ITERATIONS):
             print(f"⚠️ Runner R3 rejection: {selection_record.rationale}")
             signal = IterationSignal(
                 iteration_index=i + 1,
-                score=new_eval["score"],
+                score=new_eval.get("score", 0),
                 weakest_point=f"Runner R3 rejection: {selection_record.rationale}",
                 falsification_mode=rubric_falsification_mode,
                 claim_delta_type=mutation_declaration.claim_delta_type.value if mutation_declaration is not None else "",
@@ -6676,7 +6842,7 @@ for i in range(ITERATIONS):
                 iteration_index=i + 1,
                 iteration_start_utc=iteration_start_utc,
                 loop_control_action=current_loop_control_action,
-                score=new_eval["score"],
+                score=new_eval.get("score", 0),
                 score_improved=False,
                 champion_promoted=False,
                 stagnation_count=stagnation_count,
@@ -6703,7 +6869,7 @@ for i in range(ITERATIONS):
             time.sleep(1)
             continue
 
-        # WAR-T3 (2026-04-27): Two-tier promotion. Capped score collapses
+        # Two-tier promotion (2026-04-27). Capped score collapses
         # raw=100 down to 50, hiding breakthrough behind plateau. Promote on:
         #   (a) capped strict improvement (existing behavior), OR
         #   (b) capped equal AND raw judge score strictly improves AND
@@ -6715,11 +6881,15 @@ for i in range(ITERATIONS):
             if isinstance(_new_cap_meta, dict) else None
         )
         if _new_raw_score is None:
-            _new_raw_score = new_eval["score"]
+            # 2026-05-02 hotfix: judge JSON sometimes lacks 'score'
+            # (logged a few lines above as a warning). Fall back to 0
+            # rather than KeyError-crashing the loop. The malformed-judge
+            # payload is preserved at latest_eval_results.json for review.
+            _new_raw_score = new_eval.get("score", 0)
         _new_gv = ((new_eval.get("score_contract") or {})
                    .get("deterministic_charter_gates", {})
                    .get("results", {})) or {}
-        # WAR-T3 hotfix (2026-04-27): `results` can be a dict {gate_id: {...}}
+        # Two-tier promotion hotfix (2026-04-27): `results` can be a dict {gate_id: {...}}
         # OR a list [{name, passed, ...}, ...] depending on substrate. Handle
         # both shapes; fall through to 0 for any other type.
         if isinstance(_new_gv, dict):
@@ -6734,26 +6904,26 @@ for i in range(ITERATIONS):
             )
         else:
             _new_gate_failure_count = 0
-        _capped_strict = new_eval["score"] > best_score
+        _capped_strict = new_eval.get("score", 0) > best_score
         _capped_equal_raw_better = (
-            new_eval["score"] == best_score
+            new_eval.get("score", 0) == best_score
             and _new_raw_score > best_raw_score
             and _new_gate_failure_count <= best_gate_failure_count
         )
         _candidate_improved = _capped_strict or _capped_equal_raw_better
         if _capped_equal_raw_better and not _capped_strict:
             print(
-                f"🎯 LATENT-GRADIENT promotion: capped {best_score}→{new_eval['score']} "
+                f"🎯 LATENT-GRADIENT promotion: capped {best_score}→{new_eval.get('score', 0)} "
                 f"(unchanged) but raw {best_raw_score}→{_new_raw_score} (+{_new_raw_score - best_raw_score}) "
                 f"with gate failures {best_gate_failure_count}→{_new_gate_failure_count}. "
                 f"Champion promoted on the raw-score signal hidden behind the per-class cap."
             )
         signal = IterationSignal(
             iteration_index=i + 1,
-            score=new_eval["score"],
+            score=new_eval.get("score", 0),
             weakest_point=new_eval["weakest_point"],
             score_improved=_candidate_improved,
-            catastrophic_failure=_is_catastrophic_failure(new_eval["score"], best_score),
+            catastrophic_failure=_is_catastrophic_failure(new_eval.get("score", 0), best_score),
             falsification_mode=rubric_falsification_mode,
             claim_delta_type=mutation_declaration.claim_delta_type.value if mutation_declaration is not None else "",
             committee_digest=current_committee_digest,
@@ -6772,13 +6942,46 @@ for i in range(ITERATIONS):
         if _candidate_improved:
             print(f"✅ IMPROVEMENT: {best_score} -> {new_eval['score']}")
             print(f"Targeting New Weakest Link: {new_eval['weakest_point']}")
+            # Outcome-driven cache invalidation (2026-04-28). Reset
+            # consumption counters on every active LLM cache: the
+            # cached payload contributed to a successful iter.
+            try:
+                from src.ztare.common.llm_cache import update_caches_post_iter
+                _cache_updates = update_caches_post_iter(
+                    Path(PROJECT_DIR), iter_index=i,
+                    champion_improved=True,
+                )
+                if _cache_updates:
+                    print(f"📦 cache update (improvement): "
+                          f"{', '.join(f'{k}=reset' for k in _cache_updates)}")
+            except Exception as _cache_exc:                            # noqa: BLE001
+                print(f"📦 cache update error (non-fatal): {_cache_exc}")
+            # Auto-fire Epistemic Coherence Audit on every champion
+            # promotion. Deterministic structural grader — alien-grade
+            # signal alongside the Research Director triangulation.
+            # Library-call form (no argv hack); the audit's CLI wraps
+            # this same function.
+            try:
+                from src.ztare.validator.epistemic_coherence_audit import (
+                    run_audit as _run_eca, _print_summary as _eca_print,
+                )
+                _eca_report = _run_eca(
+                    project=Path(PROJECT_DIR).name, run_id=RUN_ID,
+                )
+                if "error" not in _eca_report:
+                    print(f"🧭 epistemic-coherence audit:")
+                    _eca_print(_eca_report)
+                else:
+                    print(f"🧭 epistemic-coherence audit skipped: {_eca_report['error']}")
+            except Exception as _eca_exc:                              # noqa: BLE001
+                print(f"🧭 epistemic-coherence audit error (non-fatal): {_eca_exc}")
             if rubric_data.get("enable_component_c", False):
                 try:
                     reset_stagnation_on_holdout_pass(workspace_dir)
                 except Exception as _cc_exc:
                     print(f"🔧 GP-074 Component C reset: error — {_cc_exc}")
             best_score = new_eval["score"]
-            # WAR-T3: track raw + gate-failure across champions so the
+            # Two-tier promotion: track raw + gate-failure across champions so the
             # latent-gradient promotion check has live state to compare.
             best_raw_score = _new_raw_score
             best_gate_failure_count = _new_gate_failure_count
@@ -6803,6 +7006,55 @@ for i in range(ITERATIONS):
                 champion_fingerprint_before_iteration,
                 champion_artifacts.get("regime_fingerprint"),
             )
+
+            # 2026-05-06 PM: primitive-class rotation tracking. After
+            # each iter, if the proposal used mechanism =
+            # propose_new_primitive_class, extract the class name and
+            # append to workspace/explored_primitive_classes.jsonl.
+            # The next iter's mutator prompt reads this file via
+            # primitive_class_history_packet().
+            try:
+                if bool(rubric_data.get("enable_primitive_class_rotation", False)):
+                    from src.ztare.orchestrator.prompt import (
+                        extract_proposal_class_name as _extract_class,
+                        append_explored_primitive_class as _append_class,
+                    )
+                    # Only record if the proposal explicitly mentions
+                    # propose_new_primitive_class mechanism (or the
+                    # thesis structure indicates a primitive-class
+                    # proposal). This avoids polluting the history with
+                    # tactical-patch iters.
+                    is_primitive_class_iter = (
+                        "propose_new_primitive_class" in (new_content or "")
+                        or "STRUCTURAL PIVOT" in (new_content or "").upper()
+                        or "STRUCTURAL MUTATION" in (new_content or "").upper()
+                        or "CATEGORY SWITCH" in (new_content or "").upper()
+                    )
+                    if is_primitive_class_iter:
+                        substrate_class = (
+                            (rubric_data.get("cage_meta") or {})
+                            .get("class") or ""
+                        )
+                        class_name = _extract_class(
+                            new_content or "",
+                            substrate_class=str(substrate_class),
+                        )
+                        if not class_name:
+                            class_name = f"unknown_proposal_iter_{i + 1}"
+                        _append_class(
+                            project_dir=Path(PROJECT_DIR),
+                            run_id=str(RUN_ID),
+                            iter_index=i + 1,
+                            class_name=class_name,
+                            score=float(best_score) if best_score is not None else 0.0,
+                        )
+                        print(
+                            f"🔁 primitive-class rotation: tracked '{class_name}' "
+                            f"(iter {i + 1}, score {best_score})"
+                        )
+            except Exception as _rot_exc:  # noqa: BLE001
+                # Tracking is best-effort. Don't break the iter loop.
+                print(f"🔁 primitive-class rotation tracking error (non-fatal): {_rot_exc}")
 
             # GP-119: Post-champion Inverter (in-loop promotion path)
             if best_score >= 50:
@@ -6837,6 +7089,39 @@ for i in range(ITERATIONS):
 
             new_axioms = new_eval.get("verified_axioms", [])
             approved_retirements = new_eval.get("retired_axioms_approved", [])
+            # 2026-04-27 axiom leak filter: filter out file-structure-leakage entries
+            # that occasionally appear when the judge or eval pipeline serializes
+            # the entire verified_axioms.json wrapper instead of extracting
+            # axiom claims. These leaked dict keys ("schema_version", "substrate",
+            # "axioms", etc.) get appended as "new axioms" and corrupt the file.
+            # Real axiom claims are sentences (>= 20 chars with spaces); structural
+            # keys are short identifiers. Filter both string-shape and dict-shape.
+            _STRUCTURAL_KEYS = {
+                "schema_version", "substrate", "substrate_version",
+                "axioms", "axiom_id", "name", "status", "scope",
+                "claim", "form_human_readable", "parametric_form",
+                "parameters", "parameter_count", "evidence",
+                "successor_lock", "external_consistency_checks",
+                "data_convention_notes", "caveats", "next_steps",
+                "related_artifacts", "provenance",
+            }
+            def _is_structural_leak(a):
+                if isinstance(a, str):
+                    s = a.strip()
+                    if s in _STRUCTURAL_KEYS:
+                        return True
+                    # Real axiom claims are sentences; short ID-shaped strings are leaks
+                    if len(s) < 20 and " " not in s:
+                        return True
+                return False
+            _filtered_new = [a for a in (new_axioms or []) if not _is_structural_leak(a)]
+            if len(_filtered_new) != len(new_axioms or []):
+                _dropped = [a for a in (new_axioms or []) if _is_structural_leak(a)]
+                print(
+                    f"🛡️  axiom leak filter: dropped "
+                    f"{len(_dropped)} structural-key entries from new_axioms: {_dropped}"
+                )
+            new_axioms = _filtered_new
             if os.path.exists(AXIOM_PATH):
                 with open(AXIOM_PATH, "r") as f:
                     _raw_axioms = json.load(f)
@@ -6997,7 +7282,7 @@ for i in range(ITERATIONS):
                 iteration_index=i + 1,
                 iteration_start_utc=iteration_start_utc,
                 loop_control_action=current_loop_control_action,
-                score=new_eval["score"],
+                score=new_eval.get("score", 0),
                 raw_judge_score=_new_raw_score,
                 score_cap_reason=(
                     _new_cap_meta.get("reason") if isinstance(_new_cap_meta, dict) else None
@@ -7024,7 +7309,7 @@ for i in range(ITERATIONS):
             )
             last_completed_iteration = i + 1
 
-            # WAR-T6 (2026-04-27): per-iter EGE trigger. Pre-iter-1 EGE
+            # Per-iter EGE trigger (2026-04-27). Pre-iter-1 EGE
             # only fires once on a fresh substrate; live-loop knowledge
             # ("class C keeps failing in this specific way") never re-
             # triggered. Now: when a champion promotes near the Newton-
@@ -7142,6 +7427,26 @@ for i in range(ITERATIONS):
                 pass
             print(f"❌ REVERTED: {new_eval['score']} <= {best_score}")
             print(f"Failed to Resolve: {new_eval['weakest_point']}")
+            # Outcome-driven cache invalidation: the iter consumed
+            # cached payloads but did not improve the champion. Strike
+            # every active cache; after max_unsuccessful_consumptions
+            # strikes, lookups will miss and force a fresh LLM call.
+            try:
+                from src.ztare.common.llm_cache import update_caches_post_iter
+                _cache_updates = update_caches_post_iter(
+                    Path(PROJECT_DIR), iter_index=i,
+                    champion_improved=False,
+                    callsites=[
+                        "cold_llm_erdos_seed",
+                        "evidence_gap_enrichment",
+                        "cold_shot_seed",
+                    ],
+                )
+                if _cache_updates:
+                    print(f"📦 cache update (no improvement): "
+                          f"{', '.join(f'{k}={v}/3' for k, v in _cache_updates.items())}")
+            except Exception as _cache_exc:                            # noqa: BLE001
+                print(f"📦 cache update error (non-fatal): {_cache_exc}")
             stagnation_count = yield_decision.stagnant_window
             last_failure_reason = new_eval["weakest_point"]
             current_target_weakest_point = new_eval["weakest_point"]  # GP-002: update targeting even on non-improving iterations
@@ -7151,7 +7456,7 @@ for i in range(ITERATIONS):
                 iteration_index=i + 1,
                 iteration_start_utc=iteration_start_utc,
                 loop_control_action=current_loop_control_action,
-                score=new_eval["score"],
+                score=new_eval.get("score", 0),
                 score_improved=False,
                 champion_promoted=False,
                 stagnation_count=stagnation_count,
@@ -7818,27 +8123,24 @@ for i in range(ITERATIONS):
 # End of loop
 _finalize_run_telemetry_once()
 
-# META-GATE 2C post-run meta-audit (opt-in via rubric.enable_post_run_meta_audit).
-# Reads workspace trace + critique, calls a cross-family LLM, writes
-# workspace/post_run_meta_audit.{json,md}. Fail-graceful — never fails the run.
-if bool(rubric_data.get("enable_post_run_meta_audit", False)):
-    try:
-        from src.ztare.orchestrator.post_run_meta_audit import run_post_run_meta_audit as _run_meta_audit
-        _audit_model_id = str(rubric_data.get("meta_audit_model_id") or "claude-haiku-4-5")
-        _audit_verdict = _run_meta_audit(
-            project_dir=Path(PROJECT_DIR),
-            run_id=str(RUN_ID),
-            mutator_model_id=MUTATOR_MODEL_ID,
-            judge_model_id=JUDGE_MODEL_ID,
-            audit_model_id=_audit_model_id,
-        )
-        print(
-            f"🧭 post-run meta-audit: succeeded={_audit_verdict.get('succeeded')} "
-            f"model={_audit_verdict.get('model_id_used')} "
-            f"artifact={_audit_verdict.get('artifact_path_md')}"
-        )
-    except Exception as _audit_exc:  # noqa: BLE001
-        print(f"🧭 post-run meta-audit error (non-fatal): {_audit_exc}")
+# Phase 4g extraction (2026-05-06 PM): the three opt-in post-loop
+# analyses (META-GATE 2C meta-audit / GP-190 discriminator replay /
+# GP-193 thesis synthesis) live in
+# src/ztare/orchestrator/post_loop_analyses. All three are
+# rubric-gated + fail-graceful; none can abort the run.
+from src.ztare.orchestrator.post_loop_analyses import run_post_loop_analyses
+
+run_post_loop_analyses(
+    rubric_data=rubric_data,
+    project_dir=PROJECT_DIR,
+    project_name=args.project,
+    rubric_name=args.rubric,
+    judge_model_arg=args.judge_model,
+    mutator_model_arg=args.mutator_model,
+    run_id=RUN_ID,
+    mutator_model_id=MUTATOR_MODEL_ID,
+    judge_model_id=JUDGE_MODEL_ID,
+)
 
 print("\n" + "=" * 50)
 print("🏁 OPTIMIZATION LOOP COMPLETE")
