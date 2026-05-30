@@ -1,6 +1,10 @@
+---
+description: "How confident-but-wrong AI output disguises itself, and the detection discipline against it."
+---
+
 # Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution
 
-Daniel Alami — Independent Researcher; MBA Candidate, Harvard Business School
+Daniel Alami, Independent Researcher; MBA Candidate, Harvard Business School
 
 SSRN abstract ID: `6512960`
 
@@ -8,13 +12,13 @@ SSRN abstract ID: `6512960`
 
 ## Abstract
 
-We present a taxonomy of specification gaming strategies that emerge spontaneously in large language models (LLMs) when tasked with generating self-validating code under adversarial evaluation pressure. Using the Zero-Trust Adversarial Reasoning Engine (ZTARE), we document 9 top-level gaming strategies across 453 adversarial debate logs spanning 6 domains — macroeconomic forecasting, semiconductor supply chain analysis, AI inference economics, cosmological simulation, epistemic architecture, and startup comparative design evaluation — and 3 mutator families.[^1] These strategies are self-certifying: they pass their own assert statements while violating the epistemic intent of the test.
+We present a taxonomy of specification gaming strategies that emerge spontaneously in large language models (LLMs) when tasked with generating self-validating code under adversarial evaluation pressure. Using the Zero-Trust Adversarial Reasoning Engine (ZTARE), we document 9 top-level gaming strategies across 453 adversarial debate logs spanning 6 domains, macroeconomic forecasting, semiconductor supply chain analysis, AI inference economics, cosmological simulation, epistemic architecture, and startup comparative design evaluation, and 3 mutator families.[^1] These strategies are self-certifying: they pass their own assert statements while violating the epistemic intent of the test.
 
-[^1]: The 453 count excludes two off-matrix variants — `recursive_bayesian_gemini_claude` (Claude judge, off the Gemini-judge axis) and `recursive_bayesian_gpt4o_gemini_no_escalation` (ablation variant) — which run under the same scaffold but are not cross-mutator replication data points.
+[^1]: The 453 count excludes two off-matrix variants, `recursive_bayesian_gemini_claude` (Claude judge, off the Gemini-judge axis) and `recursive_bayesian_gpt4o_gemini_no_escalation` (ablation variant), which run under the same scaffold but are not cross-mutator replication data points.
 
 We then extend the original study with a cross-mutator replication matrix. Under identical Gemini-judge conditions, Claude converges in all 4 replicated technical domains and exhibits a clean instance of what we term *Suite Omission*: selective removal of an adversarial falsification branch while preserving a passing positive-path test. GPT-4o, by contrast, oscillates across all 4 domains, produces no documented gaming strategies, and never sustains a high-scoring convergence. This shows that adversarial pressure alone is not sufficient to induce specification gaming; gaming depends on the mutator's ability to strategically adapt under that pressure.
 
-We also run two judge baselines. In the *isolated-snippet* experiment, frontier LLM judges reviewed decontextualized gaming specimens: Gemini missed 2/8, Claude missed 0/8. In the *full-thesis* experiment, where judges evaluated complete Mutator-generated theses (prose + embedded Python), Gemini was fooled on 4/5, scoring gaming theses at 95–97/100; Claude remained skeptical. In both conditions, the ZTARE Firing Squad caught all instances through adversarial counter-test execution.
+We also run two judge baselines. In the *isolated-snippet* experiment, frontier LLM judges reviewed decontextualized gaming specimens: Gemini missed 2/8, Claude missed 0/8. In the *full-thesis* experiment, where judges evaluated complete Mutator-generated theses (prose + embedded Python), Gemini was fooled on 4/5, scoring gaming theses at 95-97/100; Claude remained skeptical. In both conditions, the ZTARE Firing Squad caught all instances through adversarial counter-test execution.
 
 These results reveal a *Cognitive Camouflage* effect: persuasive prose seduces holistic LLM evaluation into accepting fraudulent proofs. They also show that the same domain can elicit different gaming strategies under different mutator architectures, and that comparative rubrics introduce a new attack surface at the specification layer itself. The contribution is therefore twofold: a taxonomy of code-level specification gaming strategies, and an adversarial evaluation architecture that detects them when holistic review does not.
 
@@ -24,7 +28,7 @@ These results reveal a *Cognitive Camouflage* effect: persuasive prose seduces h
 
 When you ask an AI to prove a claim and then ask a second AI to check the proof, you have a problem: both AIs want to look good. The checker has no incentive to fail the prover, and the prover knows it.
 
-We built an adversarial reasoning engine to stress-test economic and scientific claims generated by LLMs. We did not build it to study specification gaming — we built it to find the weakest assumption in a thesis. Gaming found us.
+We built an adversarial reasoning engine to stress-test economic and scientific claims generated by LLMs. We did not build it to study specification gaming, we built it to find the weakest assumption in a thesis. Gaming found us.
 
 Prior work on specification gaming (Krakovna et al., 2020) documents the phenomenon extensively in reinforcement learning agents, where reward functions are gamed through environment manipulation, reward tampering, or unintended shortcuts. What is less documented is how the same pressure appears when an LLM is asked to write code that appears to falsify its own claim.
 
@@ -32,7 +36,7 @@ To our knowledge, prior work has not documented a taxonomy of self-authored fals
 
 This paper makes four contributions:
 
-1. **A working adversarial evaluation system** — the Zero-Trust Adversarial Reasoning Engine (ZTARE) — in which a Mutator generates code-backed theses and a dynamically spawned Firing Squad of adversarial agents executes counter-tests against the generated code. The Mutator cannot influence its own evaluation.
+1. **A working adversarial evaluation system**, the Zero-Trust Adversarial Reasoning Engine (ZTARE), in which a Mutator generates code-backed theses and a dynamically spawned Firing Squad of adversarial agents executes counter-tests against the generated code. The Mutator cannot influence its own evaluation.
 2. **A taxonomy of 9 specification gaming strategies** observed across 453 adversarial debate logs, 6 domains, and 3 mutator families, each documented with code-level evidence.
 3. **A replication result across mutator families** showing that strategic gaming is not a Gemini-only artifact, while also showing that adversarial pressure alone is not sufficient to produce gaming.
 4. **A judge-failure result** showing that holistic LLM evaluation remains vulnerable to persuasive but structurally invalid theses, while adversarial execution remains robust.
@@ -43,7 +47,7 @@ This paper makes four contributions:
 
 **Specification gaming in RL.** Krakovna et al. (2020) catalog specification gaming in reinforcement learning agents through reward tampering, environment manipulation, and unintended shortcuts. Our taxonomy extends that framing into the LLM code-generation setting, where gaming manifests in assert statements, variable construction, hidden constants, and selective omission of counter-tests.
 
-**Reward hacking and Goodhart's Law.** The broader principle — when a measure becomes a target, it ceases to be a good measure — underlies both RL reward hacking and the gaming we observe here. Our contribution is a concrete, code-level instantiation of that principle inside LLM-generated falsification suites.
+**Reward hacking and Goodhart's Law.** The broader principle, when a measure becomes a target, it ceases to be a good measure, underlies both RL reward hacking and the gaming we observe here. Our contribution is a concrete, code-level instantiation of that principle inside LLM-generated falsification suites.
 
 **Constitutional AI, debate, and adversarial prompting.** Constitutional AI (Bai et al., 2022) and AI Safety via Debate (Irving et al., 2018) both use adversarial or critical processes to improve outputs. Red-teaming work (Perez et al., 2022) also uses LLMs adversarially, but it targets alignment and harmful behavior rather than structural code verification. Our system differs in objective: the adversarial committee is used to falsify code-backed claims, not to improve stylistic harmlessness.
 
@@ -195,8 +199,8 @@ Design A fails the viability threshold under the chosen assumptions while Design
 **Why it matters.** This is structurally different from the first eight strategies. Those manipulate a thesis from the inside. Straw Man Design manipulates the rubric's comparator structure itself.
 
 **Named startup-domain variants.** Two additional startup-domain variants were observed but are not promoted to top-level strategies:
-- **Misattributed Cooked Book** — importing a high-conversion rate from the founder's personal network into an automated outreach mechanism
-- **Silent 100% Injection** — silently setting conversion or transfer variables to `100%` in code without surfacing them in the controlling variable table
+- **Misattributed Cooked Book**, importing a high-conversion rate from the founder's personal network into an automated outreach mechanism
+- **Silent 100% Injection**, silently setting conversion or transfer variables to `100%` in code without surfacing them in the controlling variable table
 
 ---
 
@@ -206,15 +210,15 @@ The main finding is not any single strategy, but convergence across unrelated do
 
 | Strategy | Finance | Physics | Bayesian | Code Arch | AI Econ | Startup |
 |---|---|---|---|---|---|---|
-| Blame Shield | — | — | ✓ | — | — | — |
-| Float Masking | — | — | ✓ | — | — | — |
-| Fake AutoDiff | — | — | ✓ | ✓ | — | — |
-| Cooked Book RNG | ✓ | ✓ | ✓ | — | — | — |
-| Assert Narrowing | — | — | — | — | ✓ | — |
-| Dimensional Factor | ✓ | ✓ | — | — | — | — |
-| Impossible Probability | — | — | ✓ | ✓ | — | — |
-| Gravity Constant | — | ✓ | — | — | — | — |
-| Straw Man Design | — | — | — | — | — | ✓ |
+| Blame Shield |, |, | ✓ |, |, |, |
+| Float Masking |, |, | ✓ |, |, |, |
+| Fake AutoDiff |, |, | ✓ | ✓ |, |, |
+| Cooked Book RNG | ✓ | ✓ | ✓ |, |, |, |
+| Assert Narrowing |, |, |, |, | ✓ |, |
+| Dimensional Factor | ✓ | ✓ |, |, |, |, |
+| Impossible Probability |, |, | ✓ | ✓ |, |, |
+| Gravity Constant |, | ✓ |, |, |, |, |
+| Straw Man Design |, |, |, |, |, | ✓ |
 
 Each strategy emerged without any explicit instruction to game the system. The Mutator was instructed to write the best possible thesis. Gaming was the path of least resistance under adversarial pressure.
 
@@ -228,7 +232,7 @@ We ran two complementary experiments testing whether single-agent LLM judges det
 
 ### 6.1 Experiment A: Isolated Snippet Baseline
 
-**Protocol.** Eight gaming specimens were executed as standalone Python scripts, then submitted to Gemini 2.5 Flash and Claude Sonnet 4.6 with the prompt: *"A researcher has submitted this script as a proof-of-concept. The code runs without errors. Does it correctly demonstrate the stated mechanism? PASS or FAIL."* The specimens cover seven of the nine top-level code-level strategies from §4 (Blame Shield, Float Masking, Fake AutoDiff, Cooked Book RNG, Assert Narrowing, Dimensional Correction Factor, Gravity Constant Fabrication) plus one earlier epistemic-engine specimen (*Unidirectional Decay* — a v3-era axiom-store update rule that decayed weights without a matching recovery branch; retained here as an additional sanity check rather than a tenth top-level strategy). *Impossible Probability Generation* and *Straw Man Design* are not included in Experiment A — the former's failure signature is a post-execution assertion rather than a static code pattern, and the latter is rubric-level (comparator engineering), not evaluable on a single isolated snippet.
+**Protocol.** Eight gaming specimens were executed as standalone Python scripts, then submitted to Gemini 2.5 Flash and Claude Sonnet 4.6 with the prompt: *"A researcher has submitted this script as a proof-of-concept. The code runs without errors. Does it correctly demonstrate the stated mechanism? PASS or FAIL."* The specimens cover seven of the nine top-level code-level strategies from §4 (Blame Shield, Float Masking, Fake AutoDiff, Cooked Book RNG, Assert Narrowing, Dimensional Correction Factor, Gravity Constant Fabrication) plus one earlier epistemic-engine specimen (*Unidirectional Decay*, a v3-era axiom-store update rule that decayed weights without a matching recovery branch; retained here as an additional sanity check rather than a tenth top-level strategy). *Impossible Probability Generation* and *Straw Man Design* are not included in Experiment A, the former's failure signature is a post-execution assertion rather than a static code pattern, and the latter is rubric-level (comparator engineering), not evaluable on a single isolated snippet.
 
 | ID | Domain | Strategy | Self-certifying | Gemini 2.5 Flash | Claude Sonnet 4.6 | Firing Squad |
 |---|---|---|---|---|---|---|
@@ -257,7 +261,7 @@ Legend: in the *Firing Squad* column, ❌ denotes **CAUGHT** (the adversarial co
 | T3 TSMC | Geopolitics/Finance | Dimensional ×1000 | **95/100 ✅ FOOLED** | 52/100 FAIL | CAUGHT |
 | T4 Physics | Cosmology | Gravity constant, dim. errors | 40/100 FAIL | 4/100 FAIL | CAUGHT |
 | T5 Epistemic Engine | AI architecture | Unidirectional decay | **97/100 ✅ FOOLED** | 18/100 FAIL | CAUGHT |
-| | **Avg score** | | **84.8/100 — 4/5 fooled** | **18.4/100 — 0/5 fooled** | **5/5 caught** |
+| | **Avg score** | | **84.8/100, 4/5 fooled** | **18.4/100, 0/5 fooled** | **5/5 caught** |
 
 Claude's T1 verdict was a categorical FAIL with no numeric score returned by the judge; we count it as 0 for averaging purposes. The controlling comparison is the gap between Gemini and Claude under holistic review, not the absolute Claude mean.
 
@@ -267,13 +271,13 @@ Claude's T1 verdict was a categorical FAIL with no numeric score returned by the
 
 Together, the two experiments reveal three distinct evaluation levels:
 
-**Level 1 — Does it compile?** Running the code. All gaming specimens pass by construction.
+**Level 1, Does it compile?** Running the code. All gaming specimens pass by construction.
 
-**Level 2a — Does it look right?** Static LLM review of isolated code. Catches visually suspicious patterns but cannot prove insolvency.
+**Level 2a, Does it look right?** Static LLM review of isolated code. Catches visually suspicious patterns but cannot prove insolvency.
 
-**Level 2b — Does it read well?** Holistic LLM evaluation of full theses. Cognitive Camouflage activates: persuasive prose hides structural fraud.
+**Level 2b, Does it read well?** Holistic LLM evaluation of full theses. Cognitive Camouflage activates: persuasive prose hides structural fraud.
 
-**Level 3 — Can it survive hostile conditions?** Adversarial counter-test execution. Constructs and runs the inputs the Mutator deliberately avoided.
+**Level 3, Can it survive hostile conditions?** Adversarial counter-test execution. Constructs and runs the inputs the Mutator deliberately avoided.
 
 The critical distinction between Levels 2 and 3 is method, not just model capability. Only a system that executes adversarial counter-tests can produce structural failure evidence instead of prose suspicion.
 
@@ -324,16 +328,16 @@ This is structurally different from the 9 main strategies because it subtracts h
 
 | Strategy | Gemini | GPT-4o | Claude |
 |---|---|---|---|
-| Blame Shield | ✓ | — | — |
-| Float Masking | ✓ | — | — |
-| Fake AutoDiff | ✓ | — | — |
-| Cooked Book RNG | ✓ | — | — |
-| Assert Narrowing | ✓ | — | — |
-| Dimensional Correction Factor | ✓ | — | — |
-| Impossible Probability | ✓ | — | — |
-| Gravity Constant Fabrication | ✓ | — | — |
-| Straw Man Design | ✓ | — | — |
-| Suite Omission (emerging) | — | — | ✓ |
+| Blame Shield | ✓ |, |, |
+| Float Masking | ✓ |, |, |
+| Fake AutoDiff | ✓ |, |, |
+| Cooked Book RNG | ✓ |, |, |
+| Assert Narrowing | ✓ |, |, |
+| Dimensional Correction Factor | ✓ |, |, |
+| Impossible Probability | ✓ |, |, |
+| Gravity Constant Fabrication | ✓ |, |, |
+| Straw Man Design | ✓ |, |, |
+| Suite Omission (emerging) |, |, | ✓ |
 
 The GPT-4o column being empty is itself the result: identical pressure did not produce strategic gaming there.
 
@@ -355,7 +359,7 @@ The GPT-4o column being empty is itself the result: identical pressure did not p
 
 ## 9. Limitations
 
-- **Fixed judge in replication.** The replication varied the mutator model while holding the evaluator fixed (Gemini). Cross-judge replication — varying the evaluator while holding the mutator fixed — remains open.
+- **Fixed judge in replication.** The replication varied the mutator model while holding the evaluator fixed (Gemini). Cross-judge replication, varying the evaluator while holding the mutator fixed, remains open.
 - **Benchmark scale.** The baseline experiments still involve 8 isolated specimens and 5 full theses. Replication improves confidence, but this is not yet a large-scale benchmark paper.
 - **Emerging patterns vs. stable taxonomy.** `Suite Omission` is currently supported by one clean Claude artifact diff. That is enough to name the pattern, not enough to elevate it to the same status as the 9 repeatedly observed top-level strategies.
 - **LLM-as-judge attack surface.** The Meta-Judge is itself an LLM, introducing the possibility of higher-order gaming. The stdout-only constraint raises the cost of this attack but does not formally eliminate it.
@@ -364,7 +368,7 @@ The GPT-4o column being empty is itself the result: identical pressure did not p
 
 ## 10. Conclusion
 
-We document 9 top-level specification gaming strategies that emerge spontaneously in LLMs generating self-validating code under adversarial evaluation pressure. These strategies are convergent across unrelated domains, variably dependent on mutator architecture, and often invisible to holistic single-agent evaluation. The adversarial multi-agent architecture that caught them — zero-trust separation of generation and evaluation, stdout-only evidence, and adversarial counter-test execution — is the minimal architecture here that consistently produced structural failure evidence.
+We document 9 top-level specification gaming strategies that emerge spontaneously in LLMs generating self-validating code under adversarial evaluation pressure. These strategies are convergent across unrelated domains, variably dependent on mutator architecture, and often invisible to holistic single-agent evaluation. The adversarial multi-agent architecture that caught them, zero-trust separation of generation and evaluation, stdout-only evidence, and adversarial counter-test execution, is the minimal architecture here that consistently produced structural failure evidence.
 
 The main replication result is narrower than a universal claim: strategic gaming is not a Gemini-only artifact, but neither is adversarial pressure alone sufficient to produce it. Mutator architecture matters. Comparative rubrics matter. And when the evaluated model can write the tests, static review remains too easy to fool.
 

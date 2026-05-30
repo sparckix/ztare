@@ -1,12 +1,17 @@
-# Chaos-Substrate Primitives — Apparatus-Wide Canonical Principles
+---
+description: "Apparatus-wide canonical primitives for chaotic/dynamical substrates."
+---
+# Chaos-Substrate Primitives, Apparatus-Wide Canonical Principles
+
+> **Up:** [Documentation map](../README.md)
 
 **Audience:** any agent (human or LLM) authoring a charter, rubric, or implementation for a continuous-chaotic substrate (positive Lyapunov exponent, strange attractor, dissipative flow).
 
-**Purpose:** document load-bearing principles that prevent common failure modes when the mutator reasons about chaotic systems. These principles are ENFORCED at rubric/charter layer via mutator-visible evidence + GATE layer via deterministic checks when the gates are built (per GP-144 seam).
+**Purpose:** document controlling principles that prevent common failure modes when the mutator reasons about chaotic systems. These principles are ENFORCED at rubric/charter layer via mutator-visible evidence + GATE layer via deterministic checks when the gates are built (per GP-144 seam).
 
 ---
 
-## Principle 1 — Never fit chaos via trajectory-level RMS over long windows
+## Principle 1, Never fit chaos via trajectory-level RMS over long windows
 
 **Mathematical reality.** In a system with positive leading Lyapunov exponent λ, two copies of the same attractor started from initial conditions differing by ε diverge as δ(t) = ε·e^(λt). Even ε = 10⁻¹⁶ (float-precision limit) becomes e^(λT) after time T. For Lorenz at standard parameters (λ ≈ 0.9): T=20 → 7·10⁷ amplification; T=50 → 5·10¹⁹.
 
@@ -23,11 +28,11 @@
 - **Attractor-geometry metric**: Wasserstein-1 on persistence diagrams, Kaplan-Yorke dimension, Lyapunov spectrum. Coordinate-invariant; measures attractor SHAPE not trajectory.
 - **Poincaré-section invariants**: cross-section first-return-map statistics.
 
-**Origin:** gp140_ztare_discovery iter 10 (score 87) — mutator proposed "trajectory-level RMS-error fit over a 50-unit window" as Class-A fitness for a perturbed Lorenz-Rössler hybrid (λ_max ≈ 0.9); judge correctly flagged as self-falsifying. Gemini-Pro adversarial analysis 2026-04-24 confirmed this as a general trap.
+**Origin:** gp140_ztare_discovery iter 10 (score 87), mutator proposed "trajectory-level RMS-error fit over a 50-unit window" as Class-A fitness for a perturbed Lorenz-Rössler hybrid (λ_max ≈ 0.9); judge correctly flagged as self-falsifying. Gemini-Pro adversarial analysis 2026-04-24 confirmed this as a general trap.
 
 ---
 
-## Principle 2 — Autocorrelation time, not FFT peak, for chaotic timescales
+## Principle 2, Autocorrelation time, not FFT peak, for chaotic timescales
 
 **Mathematical reality.** Strange attractors have BROADBAND continuous power spectra. FFT peaks are sampling-frequency aliases or noise, not physical characteristic frequencies.
 
@@ -38,13 +43,13 @@
 - **Autocorrelation decorrelation time** τ_decorr = first Δt where normalized autocorrelation C(Δt) drops below 1/e.
 - **Lyapunov time** λ_max⁻¹.
 
-**Exception:** substrates with provably discrete spectra (limit cycle, quasi-periodic, steady-state) may use FFT peaks — declare the regime and cite evidence (autocorrelation doesn't decay, or no positive Lyapunov exponent).
+**Exception:** substrates with provably discrete spectra (limit cycle, quasi-periodic, steady-state) may use FFT peaks, declare the regime and cite evidence (autocorrelation doesn't decay, or no positive Lyapunov exponent).
 
 **Origin:** gp140 v2.7 charter correction, 2026-04-24.
 
 ---
 
-## Principle 3 — Coordinate-invariance for Method-B priors
+## Principle 3, Coordinate-invariance for Method-B priors
 
 **Mathematical reality.** A Method-B compressibility prior that rejects candidates must be invariant under the diffeomorphism class the substrate admits. A prior that depends on a specific coordinate frame can be defeated by an adversarial C¹ diffeomorphism that preserves the physics but breaks the prior.
 
@@ -64,9 +69,9 @@
 
 ---
 
-## Principle 4 — Wasserstein / Bottleneck over exact Betti integers under noise
+## Principle 4, Wasserstein / Bottleneck over exact Betti integers under noise
 
-**Mathematical reality.** Under finite-sample noise and finite Vietoris-Rips filtration scale, topological persistence diagrams gain and lose spurious features. Exact integer Betti equality (β₀ = β₀_true, β₁ = β₁_true) is brittle — the true generator can fail by coincidence at a single filtration scale.
+**Mathematical reality.** Under finite-sample noise and finite Vietoris-Rips filtration scale, topological persistence diagrams gain and lose spurious features. Exact integer Betti equality (β₀ = β₀_true, β₁ = β₁_true) is brittle, the true generator can fail by coincidence at a single filtration scale.
 
 **Banned for chaotic substrates with observation noise:**
 - Exact-integer topological gates (`β_cand == β_obs`) at a single filtration scale.
@@ -80,7 +85,7 @@
 
 ---
 
-## Principle 5 — Input-contract / filter compatibility audit
+## Principle 5, Input-contract / filter compatibility audit
 
 **Mathematical reality.** A Method A input transformation (Takens delay embedding, scalar-observable reconstruction, non-affine coordinate warp) injects correction terms into the reconstructed system (e.g. d/dt log|det J_φ|) that a Method B filter may then fail to accommodate. The TRUE generator, after the input transformation, may violate the filter's strict assumption by construction.
 

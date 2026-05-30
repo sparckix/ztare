@@ -1,6 +1,10 @@
+---
+description: "How prior adversarial catches are stored and replayed so the apparatus cannot relapse into a refuted move."
+---
+
 # Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints
 
-Daniel Alami — Independent Researcher; MBA Candidate, Harvard Business School
+Daniel Alami, Independent Researcher; MBA Candidate, Harvard Business School
 
 SSRN abstract ID: `6525598`
 
@@ -272,6 +276,6 @@ Only frozen full 10-specimen main-suite runs are included.
 **Footnote.** Earlier `N=9` runs are retained as design history and pre-freeze ablation context, but they are excluded from this appendix because the frozen main benchmark now includes `t6_ai_inference_internal_price_floor` and is therefore a distinct evaluation regime.
 
 ## Figure Assets
-- `paper2_figure1.svg` — primitive-schema figure
-- `paper2_figure2.svg` — recursive-loop flowchart
-- `paper2_figure_specs.md` — source-of-truth layout and caption spec
+- `paper2_figure1.svg`, primitive-schema figure
+- `paper2_figure2.svg`, recursive-loop flowchart
+- `paper2_figure_specs.md`, source-of-truth layout and caption spec

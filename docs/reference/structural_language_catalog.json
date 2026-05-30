@@ -1,0 +1,1074 @@
+{
+  "claim_guardrails": [
+    "not a complete ontology",
+    "not autonomous theory generation",
+    "not expert validation",
+    "not medicine/law/biology coverage",
+    "not a license to promote OOD residuals without audit"
+  ],
+  "consumer_feedback_contract": {
+    "allowed_residual_classes": [
+      "none_closed",
+      "theorem_or_domain_gap",
+      "gate_contract_not_crisp",
+      "vocabulary_gap",
+      "new_channel_or_residual_measure_needed",
+      "apparatus_or_source_mismatch"
+    ],
+    "minimum_fields": [
+      "residual_class",
+      "residual_summary",
+      "did_language_change_next_action",
+      "evidence_pointer",
+      "next_lever"
+    ],
+    "rule": "Use universal language to route. Use math/PDE language to act. Use gates only when the local contract is crisp. Use residuals to decide whether the language must extend."
+  },
+  "generated_date": "2026-05-23",
+  "heuristic_classifier": {
+    "op_keywords": {
+      "broad_01": [
+        "iterate",
+        "iteration",
+        "increment",
+        "monotone",
+        "potential function",
+        "tower of twos",
+        "energy increment",
+        "density increment",
+        "refine",
+        "fixed point",
+        "converge",
+        "bound chain",
+        "estimate chain"
+      ],
+      "broad_02": [
+        "recursion",
+        "recursive",
+        "base case",
+        "induction on",
+        "self-similar",
+        "structural rank",
+        "complexity measure",
+        "divide and conquer"
+      ],
+      "broad_03": [
+        "duality",
+        "dual",
+        "primal-dual",
+        "dual problem",
+        "min-max",
+        "minimax",
+        "LP duality",
+        "game",
+        "adversarial"
+      ],
+      "broad_04": [
+        "approximation",
+        "convergence",
+        "limit of",
+        "sequence of",
+        "successive",
+        "layered",
+        "staged",
+        "asymptotic"
+      ],
+      "broad_05": [
+        "extremal",
+        "minimal counterexample",
+        "maximal",
+        "worst case",
+        "tight bound",
+        "tight example",
+        "extremal configuration",
+        "minimal",
+        "maximal element",
+        "special case",
+        "decisive case"
+      ],
+      "broad_06": [
+        "probabilistic method",
+        "random construction",
+        "exists with positive probability",
+        "expectation argument",
+        "first moment",
+        "second moment",
+        "stochastic"
+      ],
+      "broad_07": [
+        "lift to higher dimension",
+        "dimensional shift",
+        "Z^d",
+        "lift problem",
+        "higher-dimensional",
+        "structural lifting"
+      ],
+      "broad_08": [
+        "force the form",
+        "covarianc",
+        "conserv",
+        "field equation",
+        "axiom",
+        "constraint",
+        "must satisfy",
+        "structural constraint"
+      ],
+      "core_01": [
+        "reformulat",
+        "reduce to",
+        "reduction",
+        "surrogate",
+        "sufficient condition",
+        "equivalent problem",
+        "logically connected",
+        "hardness transfer",
+        "tractable"
+      ],
+      "core_02": [
+        "generaliz",
+        "abstraction",
+        "broaden",
+        "relax constraint",
+        "unify cases",
+        "framework",
+        "scheme",
+        "topos",
+        "categorif",
+        "object class",
+        "axiomatiz"
+      ],
+      "core_03": [
+        "decompose",
+        "decomposition",
+        "partition",
+        "split into",
+        "structured + pseudorandom",
+        "regularity",
+        "tree-decomposit",
+        "split branch",
+        "branch coverage",
+        "case decomposition",
+        "reassemble"
+      ],
+      "core_04": [
+        "local to global",
+        "patch together",
+        "gluing",
+        "sheaf",
+        "stalk",
+        "covering",
+        "local data",
+        "globaliz",
+        "sheaf-theoret",
+        "local proof",
+        "Mayer-Vietoris",
+        "assemble"
+      ],
+      "core_05": [
+        "canonical",
+        "normal form",
+        "invariant",
+        "equivalence class",
+        "unique representative",
+        "quotient",
+        "coordinate-free",
+        "gauge",
+        "stable property",
+        "remove redundancy"
+      ],
+      "core_06": [
+        "translate",
+        "translation",
+        "transfer",
+        "correspondence",
+        "equivalent form",
+        "via modul",
+        "embedding into",
+        "transport",
+        "isomorph",
+        "ergodic correspondence",
+        "functor",
+        "bridge domains"
+      ],
+      "spec_01": [
+        "excluded minor",
+        "forbidden subgraph",
+        "minor-closed",
+        "obstruction",
+        "forbidden structure"
+      ],
+      "spec_02": [
+        "diagonal",
+        "self-referen",
+        "fixed point",
+        "godel",
+        "g\u00f6del",
+        "kleene",
+        "halt",
+        "internaliz",
+        "system itself"
+      ],
+      "spec_03": [
+        "foundational repair",
+        "ground rules",
+        "axiom",
+        "paradox",
+        "consistency",
+        "monster-bar",
+        "lemma incorpor",
+        "exception bar"
+      ],
+      "spec_04": [
+        "forcing",
+        "independent proposition",
+        "universe extension",
+        "Cohen",
+        "Solovay",
+        "controlled extension"
+      ]
+    },
+    "op_tier": {
+      "broad_01": "broadly_shared",
+      "broad_02": "broadly_shared",
+      "broad_03": "broadly_shared",
+      "broad_04": "broadly_shared",
+      "broad_05": "broadly_shared",
+      "broad_06": "broadly_shared",
+      "broad_07": "broadly_shared",
+      "broad_08": "broadly_shared",
+      "core_01": "shared_core",
+      "core_02": "shared_core",
+      "core_03": "shared_core",
+      "core_04": "shared_core",
+      "core_05": "shared_core",
+      "core_06": "shared_core",
+      "spec_01": "subfield_specific",
+      "spec_02": "subfield_specific",
+      "spec_03": "subfield_specific",
+      "spec_04": "subfield_specific"
+    },
+    "warning": "keyword routing surface only; not paper-grade tagging"
+  },
+  "meta_meta_ops": [
+    {
+      "adjacent_lower_tier_ops": [
+        "core_02",
+        "ec_04",
+        "ec_02",
+        "core_06"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Admissible-Criteria Rebaselining (ACR)",
+      "ns_substrate_projection": "Three live decisive instantiations on NS-Track-B: (i) Defect-calculus pivot (RD-BL): \u03bc[u] := w*-lim \u03a0_\u2113[u] is an ACR move BY CONSTRUCTION \u2014 the defect measure is being elevated to a primary obstruction-to-regularity object, not treated as a technical limit-passage artifact. C-98 (Duchon-Robert echo) is what happens when the apparatus mislabels this as ec_04. (ii) Lorentz Strip re-charter (post-C-96): Lorentz-space membership L^{p,q} redefines what 'integrability' counts as for the smallness-class. Without ACR labeling the apparatus drifts into ec_02 regime-scoping framing and misses the admissibility-criterion shift. (iii) Bochner-Fej\u00e9r extension of trilinear NS form (RD-AJ): the almost-periodic projector defines a new admissibility-class for the trilinear form on which stationary NS dynamics reduce. Partial ACR; full ACR on stationary 3D NS still open.",
+      "op_id": "mm_01",
+      "paper_claim_status": "pre_warrant_do_not_use_as_validated_paper_claim",
+      "proposed_at": "2026-05-09",
+      "proposed_by": "PL-105",
+      "structural_mechanism": "Redraw what counts as a legitimate object/solution/proof. The shift is at the membership boundary of the game itself: the new criterion is formalized as an interface (quantifier alternation, weak/test-function action, equivalence-class identification), the class is closed under a specified limit/completion, and the completions are elevated to PRIMARY objects of study, not auxiliary technical artifacts. Distinct from `core_02 Generalization & Abstraction` \u2014 that extends a family within a fixed admissibility; ACR redraws admissibility itself.",
+      "tier": "meta_meta",
+      "validation_status": "PRE-WARRANT",
+      "worked_examples": [
+        "Cantor 1874-1891: a 'completed infinite set' becomes an admissible mathematical object. Before Cantor: infinity is potential, sets are finite. After: completed infinities are primary, with cardinal arithmetic on them.",
+        "Weierstrass 1860s-1880s: a 'proof of convergence' is regimented as an explicit \u03b5-\u03b4 quantifier-alternation witness. Before: geometric/infinitesimal intuition counted. After: only quantifier-certified arguments do.",
+        "Schwartz 1940s (Heaviside seed 1880s): a 'function' is admissible as a continuous linear functional on test-function space; derivatives are weak (action-on-tests) operations. The Dirac \u03b4, previously a heuristic, becomes a primary object.",
+        "Caffarelli-Kohn-Nirenberg 1982 (NS-relevant): 'suitable weak solution' is the admissibility criterion that powers partial regularity. The interface is a local-energy inequality + div-free + L\u00b2_t-H\u00b9_x; SWS-class is the primary solution-class for 3D NS regularity questions.",
+        "Boltzmann/Gibbs 1877-1902: a 'physical state' is admissible as a probability measure on phase space. State-space is reset from points to measures."
+      ]
+    },
+    {
+      "adjacent_lower_tier_ops": [
+        "broad_05",
+        "broad_07",
+        "ec_07",
+        "core_06"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Structural-Semantics Pluralization (SSP)",
+      "ns_substrate_projection": "Two live but weaker instantiations on NS-Track-B: (i) Galilean / scaling invariance as game-semantics: solutions u(x,t) and \u03bbu(\u03bbx,\u03bb\u00b2t) ARE the same solution. Apparatus currently treats scaling as ec_02 regime-scoping; SSP labeling aligns with how 2026 PDE literature actually frames critical / sub-critical regimes (the equivalence-class is the object, scaling-orbit membership IS the regime). (ii) Transport Gap / Lord Kelvin falsifier (RD-BJ, C-92): tests whether apparatus-outputs are stable under the operator-scaffold transformation group \u2014 i.e., whether the apparatus has a scaffold-invariant identity. With SSP vocabulary, RD-BJ becomes literally an SSP-stability test on the apparatus itself, not a vague 'is the apparatus over-fit to scaffolds' question. Effectivity blind-spot (M11) is genuinely outside Clay attack \u2014 do NOT retrofit SSP there.",
+      "op_id": "mm_02",
+      "paper_claim_status": "pre_warrant_do_not_use_as_validated_paper_claim",
+      "proposed_at": "2026-05-09",
+      "proposed_by": "PL-105",
+      "structural_mechanism": "Shift identity/truth from intended-content semantics to invariance under a specified transformation/morphism class. Redundant representational scaffolding (gauge, coordinates, frames, intended interpretations) is QUOTIENTED OUT of ontology; equivalence-classes ARE the objects. Multiple models are licensed simultaneously. Distinct from `broad_05 Forcing via Constraint` \u2014 broad_05 narrows an admissible class within a fixed semantics; SSP rebases what semantics counts. Distinct from `ec_07 Representation` \u2014 that rewrites in better coordinates; SSP demotes coordinates to representation.",
+      "tier": "meta_meta",
+      "validation_status": "PRE-WARRANT",
+      "worked_examples": [
+        "Beltrami-Klein 1868-1872: 'geometry' is identified with the consistency of an axiom system + a model; Euclidean is no longer uniquely compulsory. Multiple consistent geometries are simultaneously legitimate.",
+        "Klein Erlangen 1872: a geometry IS its invariants under a transformation group. Coordinates and metrics are demoted to representational scaffolding; the group + invariants ARE the geometric content.",
+        "Maxwell-Hertz 1880s + SR/GR 1905-1915: physical states are equivalence classes under gauge / inertial-frame transformations. The ether (a privileged absolute frame) is removed not because it was empirically refuted, but because the SSP move quotienting out absolute frames removes its ontological role.",
+        "Hilbert axiomatic method 1899: 'meaning' of a theory is any structure satisfying its axioms; truth is invariance across all models (isomorphism-invariant validity).",
+        "Topology-first identity 1880s-1895: 'same space' means homeomorphic; metric structure is representational, topological invariants are constitutive."
+      ]
+    },
+    {
+      "adjacent_lower_tier_ops": [
+        "core_02",
+        "broad_07",
+        "core_03",
+        "spec_01"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Ontological Promotion",
+      "ns_substrate_projection": "For NS Track B, OP is the disciplined version of promoting a budget, defect, skeleton, invoice, or capacity object to a primary PDE carrier only when it has autonomous laws. TICK651's fresh-radius invoice target is OP-adjacent: a capacity budget cannot be promoted unless it becomes a descendant-exclusive payment object with its own non-reuse law.",
+      "op_id": "mm_03",
+      "paper_claim_status": "warranted_narrow_model_mediated_human_audit_owed",
+      "proposed_at": "2026-05-18",
+      "proposed_by": "J4_two_family_blind_meta_pass",
+      "structural_mechanism": "Reconstitute an instrumental, auxiliary, or bookkeeping construct as an autonomous primary object. Prior uses are then recovered as derived cases of the promoted object. Distinct from `core_02` Generalization and `broad_07` Structural Lifting: OP changes the role of the construct from tool/substrate to object-of-study, not just its scope or dimension.",
+      "tier": "meta_meta",
+      "validation_status": "WARRANTED_NARROW",
+      "worked_examples": [
+        "Distribution theory after Schwartz: generalized functions and the Dirac delta move from calculation aids to primary objects with their own topology and operations.",
+        "Scheme theory: prime ideals / functor-of-points machinery promote solution sets and nilpotent structure from auxiliary algebraic data to the geometric object itself.",
+        "Defect-measure analysis: a limit defect first introduced to account for lost compactness becomes a primary carrier whose geometry and transport properties are studied directly.",
+        "ZTARE GP-216 meta arc, J4 2026-05-18: the two-family blind pass kept Ontological Promotion distinct from Generalization/Lifting because the move is role inversion, not scope extension."
+      ]
+    }
+  ],
+  "meta_meta_pre_warrant_ops": [
+    {
+      "adjacent_lower_tier_ops": [
+        "core_02",
+        "ec_04",
+        "ec_02",
+        "core_06"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Admissible-Criteria Rebaselining (ACR)",
+      "ns_substrate_projection": "Three live decisive instantiations on NS-Track-B: (i) Defect-calculus pivot (RD-BL): \u03bc[u] := w*-lim \u03a0_\u2113[u] is an ACR move BY CONSTRUCTION \u2014 the defect measure is being elevated to a primary obstruction-to-regularity object, not treated as a technical limit-passage artifact. C-98 (Duchon-Robert echo) is what happens when the apparatus mislabels this as ec_04. (ii) Lorentz Strip re-charter (post-C-96): Lorentz-space membership L^{p,q} redefines what 'integrability' counts as for the smallness-class. Without ACR labeling the apparatus drifts into ec_02 regime-scoping framing and misses the admissibility-criterion shift. (iii) Bochner-Fej\u00e9r extension of trilinear NS form (RD-AJ): the almost-periodic projector defines a new admissibility-class for the trilinear form on which stationary NS dynamics reduce. Partial ACR; full ACR on stationary 3D NS still open.",
+      "op_id": "mm_01",
+      "paper_claim_status": "pre_warrant_do_not_use_as_validated_paper_claim",
+      "proposed_at": "2026-05-09",
+      "proposed_by": "PL-105",
+      "structural_mechanism": "Redraw what counts as a legitimate object/solution/proof. The shift is at the membership boundary of the game itself: the new criterion is formalized as an interface (quantifier alternation, weak/test-function action, equivalence-class identification), the class is closed under a specified limit/completion, and the completions are elevated to PRIMARY objects of study, not auxiliary technical artifacts. Distinct from `core_02 Generalization & Abstraction` \u2014 that extends a family within a fixed admissibility; ACR redraws admissibility itself.",
+      "tier": "meta_meta",
+      "validation_status": "PRE-WARRANT",
+      "worked_examples": [
+        "Cantor 1874-1891: a 'completed infinite set' becomes an admissible mathematical object. Before Cantor: infinity is potential, sets are finite. After: completed infinities are primary, with cardinal arithmetic on them.",
+        "Weierstrass 1860s-1880s: a 'proof of convergence' is regimented as an explicit \u03b5-\u03b4 quantifier-alternation witness. Before: geometric/infinitesimal intuition counted. After: only quantifier-certified arguments do.",
+        "Schwartz 1940s (Heaviside seed 1880s): a 'function' is admissible as a continuous linear functional on test-function space; derivatives are weak (action-on-tests) operations. The Dirac \u03b4, previously a heuristic, becomes a primary object.",
+        "Caffarelli-Kohn-Nirenberg 1982 (NS-relevant): 'suitable weak solution' is the admissibility criterion that powers partial regularity. The interface is a local-energy inequality + div-free + L\u00b2_t-H\u00b9_x; SWS-class is the primary solution-class for 3D NS regularity questions.",
+        "Boltzmann/Gibbs 1877-1902: a 'physical state' is admissible as a probability measure on phase space. State-space is reset from points to measures."
+      ]
+    },
+    {
+      "adjacent_lower_tier_ops": [
+        "broad_05",
+        "broad_07",
+        "ec_07",
+        "core_06"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Structural-Semantics Pluralization (SSP)",
+      "ns_substrate_projection": "Two live but weaker instantiations on NS-Track-B: (i) Galilean / scaling invariance as game-semantics: solutions u(x,t) and \u03bbu(\u03bbx,\u03bb\u00b2t) ARE the same solution. Apparatus currently treats scaling as ec_02 regime-scoping; SSP labeling aligns with how 2026 PDE literature actually frames critical / sub-critical regimes (the equivalence-class is the object, scaling-orbit membership IS the regime). (ii) Transport Gap / Lord Kelvin falsifier (RD-BJ, C-92): tests whether apparatus-outputs are stable under the operator-scaffold transformation group \u2014 i.e., whether the apparatus has a scaffold-invariant identity. With SSP vocabulary, RD-BJ becomes literally an SSP-stability test on the apparatus itself, not a vague 'is the apparatus over-fit to scaffolds' question. Effectivity blind-spot (M11) is genuinely outside Clay attack \u2014 do NOT retrofit SSP there.",
+      "op_id": "mm_02",
+      "paper_claim_status": "pre_warrant_do_not_use_as_validated_paper_claim",
+      "proposed_at": "2026-05-09",
+      "proposed_by": "PL-105",
+      "structural_mechanism": "Shift identity/truth from intended-content semantics to invariance under a specified transformation/morphism class. Redundant representational scaffolding (gauge, coordinates, frames, intended interpretations) is QUOTIENTED OUT of ontology; equivalence-classes ARE the objects. Multiple models are licensed simultaneously. Distinct from `broad_05 Forcing via Constraint` \u2014 broad_05 narrows an admissible class within a fixed semantics; SSP rebases what semantics counts. Distinct from `ec_07 Representation` \u2014 that rewrites in better coordinates; SSP demotes coordinates to representation.",
+      "tier": "meta_meta",
+      "validation_status": "PRE-WARRANT",
+      "worked_examples": [
+        "Beltrami-Klein 1868-1872: 'geometry' is identified with the consistency of an axiom system + a model; Euclidean is no longer uniquely compulsory. Multiple consistent geometries are simultaneously legitimate.",
+        "Klein Erlangen 1872: a geometry IS its invariants under a transformation group. Coordinates and metrics are demoted to representational scaffolding; the group + invariants ARE the geometric content.",
+        "Maxwell-Hertz 1880s + SR/GR 1905-1915: physical states are equivalence classes under gauge / inertial-frame transformations. The ether (a privileged absolute frame) is removed not because it was empirically refuted, but because the SSP move quotienting out absolute frames removes its ontological role.",
+        "Hilbert axiomatic method 1899: 'meaning' of a theory is any structure satisfying its axioms; truth is invariance across all models (isomorphism-invariant validity).",
+        "Topology-first identity 1880s-1895: 'same space' means homeomorphic; metric structure is representational, topological invariants are constitutive."
+      ]
+    },
+    {
+      "adjacent_lower_tier_ops": [
+        "core_02",
+        "broad_07",
+        "core_03",
+        "spec_01"
+      ],
+      "family": "gp216_meta_meta_game_layer",
+      "name": "Ontological Promotion",
+      "ns_substrate_projection": "For NS Track B, OP is the disciplined version of promoting a budget, defect, skeleton, invoice, or capacity object to a primary PDE carrier only when it has autonomous laws. TICK651's fresh-radius invoice target is OP-adjacent: a capacity budget cannot be promoted unless it becomes a descendant-exclusive payment object with its own non-reuse law.",
+      "op_id": "mm_03",
+      "paper_claim_status": "warranted_narrow_model_mediated_human_audit_owed",
+      "proposed_at": "2026-05-18",
+      "proposed_by": "J4_two_family_blind_meta_pass",
+      "structural_mechanism": "Reconstitute an instrumental, auxiliary, or bookkeeping construct as an autonomous primary object. Prior uses are then recovered as derived cases of the promoted object. Distinct from `core_02` Generalization and `broad_07` Structural Lifting: OP changes the role of the construct from tool/substrate to object-of-study, not just its scope or dimension.",
+      "tier": "meta_meta",
+      "validation_status": "WARRANTED_NARROW",
+      "worked_examples": [
+        "Distribution theory after Schwartz: generalized functions and the Dirac delta move from calculation aids to primary objects with their own topology and operations.",
+        "Scheme theory: prime ideals / functor-of-points machinery promote solution sets and nilpotent structure from auxiliary algebraic data to the geometric object itself.",
+        "Defect-measure analysis: a limit defect first introduced to account for lost compactness becomes a primary carrier whose geometry and transport properties are studied directly.",
+        "ZTARE GP-216 meta arc, J4 2026-05-18: the two-family blind pass kept Ontological Promotion distinct from Generalization/Lifting because the move is role inversion, not scope extension."
+      ]
+    }
+  ],
+  "pde_estimate_craft_ops": [
+    {
+      "boundary_collapse_risk": "overlap with pec_e (sharpness witness IS an auxiliary object)",
+      "distinct_from_v5_because": "v5 has no op for ad-hoc auxiliary-object construction; canonical_decomposition decomposes an existing object into known parts, while this op fabricates a new object from scratch with engineered properties.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": "src/ztare/gates/auxiliary_object_declaration_gate.py",
+      "instantiation_examples": [
+        "analysis_pde Lemma 2.14: cosh-based exponential majorant",
+        "NS PHASE5ET: charged pressure-aware matrix intertwiners",
+        "NS PHASE5GDGE-STATEPRICE-SOS: explicit SOS/PSD certificate"
+      ],
+      "name": "Auxiliary Comparison Object Construction",
+      "op_id": "pec_a",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "portable_candidate",
+      "portable_receipt_fields": [
+        "target_problem",
+        "engineered_auxiliary_object",
+        "known_properties",
+        "comparison_map",
+        "transfer_condition",
+        "failure_condition"
+      ],
+      "provisional": false,
+      "structural_mechanism": "Build an explicit, hand-tailored auxiliary object (barrier, intertwiner, certificate, test function, charged observable) whose role is to be compared against the unknown solution to extract a specific bound or rule out a specific behavior. The object is engineered to have known analytic properties (decay rate, sign, PSD-ness) the original problem lacks, deployed locally so its properties transfer to the target via comparison.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": null,
+      "distinct_from_v5_because": "v5's extremal_case_analysis picks worst/limiting cases inside a fixed problem; this op modifies the problem itself by carving out a sub-regime in which the rest of the analysis is valid.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "analysis_pde move #1: NLS family scoped to bounded Morse + \u03bb_n\u2192\u221e",
+        "NS PHASE5ET: scoping to scalar-only Track B",
+        "NS PHASE5FM-BRANCHGRID: Track B as fixed seven-branch grid"
+      ],
+      "name": "Regime / Class Scoping",
+      "op_id": "pec_b",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "portable_candidate",
+      "portable_receipt_fields": [
+        "original_problem",
+        "scoped_regime_or_class",
+        "included_cases",
+        "excluded_or_deferred_cases",
+        "lemmas_enabled_by_scope",
+        "scope_breaker"
+      ],
+      "provisional": false,
+      "structural_mechanism": "Restrict attention to a parameterized sub-regime of the original problem (bounded Morse index + \u03bb \u2192 \u221e, scalar-only Track B, fixed observable class, fixed topology) and explicitly declare the questions deferred outside that regime. Not a simplification by symmetry but a deliberate scope contract that determines which lemmas apply and which counterexamples are out of bounds.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": null,
+      "distinct_from_v5_because": "v5's local_to_global_inference pieces local facts into a global conclusion additively; this op produces a forced binary at the local level that prunes the search space.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": "src/ztare/gates/threshold_dichotomy_branch_coverage_gate.py",
+      "instantiation_examples": [
+        "analysis_pde Lemma 3.1: local max \u2265 height OR vanishing-on-edges",
+        "NS PHASE5EYEZ-STATEPRICE: exceed wall OR collapse to null",
+        "NS PHASE5GB-LOWHIGH-KINEMATIC: zero-deformation OR priced"
+      ],
+      "name": "Quantitative Threshold Dichotomy",
+      "op_id": "pec_c",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Prove that some local quantity must either exceed a fixed positive threshold OR force a strong degeneracy on a structural neighborhood (vanishing on whole edges, collapse to null route, payoff dilution). Converts a continuous unknown into a binary alternative driving downstream blow-up alternatives or no-survivor verdicts.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": null,
+      "distinct_from_v5_because": "v5's iterative_refinement_loop describes successive improvement of a candidate; this op specifically transfers established finite-stage properties across a limit-taking boundary, with the limit-passage hypothesis named as the open obligation.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": "src/ztare/gates/limit_passage_inheritance_lemma_gate.py",
+      "instantiation_examples": [
+        "analysis_pde Cor 2.10: limit profile inherits frequency bound",
+        "NS PHASE5FDFE-LIMITPASS: blocked on profile-limit theorem",
+        "NS PHASE5FZ-PROFILE-LIPSCHITZ-CLOSURE: Clay closure via two limit-passage theorems"
+      ],
+      "name": "Limit-Passage Property Inheritance",
+      "op_id": "pec_d",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Take a sequence (of solutions, profiles, finite prefixes, finite packets) for which uniform bounds and structural properties have been proven, and transfer those properties to the limit object via a named lower-semicontinuity / approximation / inheritance lemma. Makes the gap between 'true on every finite member' and 'true on the infinite limit' the explicit theorem to be paid.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "overlap with pec_a (witness IS an auxiliary object; distinction is purpose)",
+      "distinct_from_v5_because": "v5's probabilistic_existence requires probabilistic / random construction; this op is deterministic engineering of either a sharpness-saturating example or a stress-test adversary, and the theorem-class includes 'no such object exists' as a valid outcome.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "analysis_pde move #16: four-star example sharpening",
+        "NS PHASE5FJ-PREFIXAUDIT: dyadic finite-prefix profile stacking",
+        "NS PHASE5GB-LOWHIGH-KINEMATIC: kinematic falsifier candidate"
+      ],
+      "name": "Sharpness / Failure-Witness Construction",
+      "op_id": "pec_e",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "portable_candidate",
+      "portable_receipt_fields": [
+        "claim_under_stress",
+        "hostile_or_sharpness_object",
+        "saturating_or_failing_feature",
+        "stress_result",
+        "claim_boundary_update",
+        "next_falsifier"
+      ],
+      "provisional": false,
+      "structural_mechanism": "Build a concrete object (counterexample graph, tadpole construction, candidate adversary, hostile packet class) whose role is to either witness sharpness of a stated bound OR demonstrate that a specific class of escapes does NOT exist after stress-testing. The object is engineered against the theorem statement; whether it succeeds or fails sharpens the scope of the claim.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "DEMOTED 2026-05-06 \u2014 NS-substrate-specific per Phase 3; treat as substrate-management metadata, not generic PDE op",
+      "distinct_from_v5_because": "[DEMOTED] Original distinction from canonical_decomposition stands at the NS-substrate level but doesn't generalize across PDE subfields. Cross-paper test failed.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "NS PHASE5FQ-PROFILE-SPINE: Track B \u2192 single profile-decomposition obligation",
+        "NS PHASE5FT-CLAY-CLOSURE / 5FZ / 5GA: successive top-level obligation list compressions"
+      ],
+      "name": "Proof-Surface Compression",
+      "op_id": "pec_f",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": true,
+      "structural_mechanism": "After accumulated local results, restate the remaining open problem as a small fixed list of named analytic obligations. [DEMOTED 2026-05-06 per GP-219 Phase 3 cross-walk: appears in 0 of 3 fresh PDE papers (quasilinear elliptic, kinetic Boltzmann, dispersive Ricci soliton). Confirmed NS-substrate-specific or research-management move; not generic PDE estimate-craft. Use pec_b (Regime/Class Scoping) for the scoping-flavored aspect or treat as substrate-management metadata rather than mathematical operation.]",
+      "tier": "proto_demoted"
+    },
+    {
+      "boundary_collapse_risk": "overlaps with pec_e when the tail upgrade is killed by a spike witness; keep pec_h for the positive theorem obligation and pec_e for the hostile witness",
+      "distinct_from_v5_because": "v5 has no primitive for the PDE-specific promotion from mean/integral control to distribution-function control. This is not just threshold dichotomy (pec_c), because it must quantify the whole tail/level-set law; not just sharpness witness (pec_e), because the positive route is a theorem producing weak-L^q or reverse Holder control.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "NS TICK664: anti-twist signed-average control would need a local weak-L^q tail for the unshadowed Duhamel positive part",
+        "De Giorgi production coefficient: q > 5/2 reverse Holder gives beta-positive level-set recursion",
+        "CV/SQG-style drift closures: BMO or distribution-function control rather than scalar energy bookkeeping",
+        "NS TICK668: annular Duhamel renewal needs a same-carrier critical source-square Carleson budget, not only Leray energy dissipation"
+      ],
+      "name": "Distribution / Tail Upgrade",
+      "op_id": "pec_h",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Upgrade signed, averaged, integral, or quadratic-energy control into a local distribution estimate: weak-L^q tail, reverse Holder gain, level-set decay exponent, or anti-concentration bound on a specified positive part. Also covers the closely related upgrade from energy/dissipation currency to a critical same-carrier nonlinear source-square or source-Carleson budget. This names the theorem that prevents concentrated spikes from preserving the weaker average or moment while destroying the stronger production estimate.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "overlaps with pec_b when the selection is described as a regime; use pec_i only when the theorem must prove nonanticipative source selection or no post-hoc carrier tuning",
+      "distinct_from_v5_because": "v5 has routing language for anti-leakage and canonical forms, but no PDE-native primitive for proving that an analytic source selection is nonanticipative. This differs from pec_b because it does not merely scope a regime; it proves the selected objects are admissible before the estimate consumes them. It differs from pec_d because the issue is selection timing, not limit passage.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "NS TICK668: C7 route active tail/event schedule must be fixed before event payoff and not defined from realized radius sums",
+        "Calderon-Zygmund pressure windows: gauge/window fixed before fresh-region pressure visibility is scored",
+        "Stopping-time corona estimates: children/fresh regions selected before local defect or critical-increment accounting"
+      ],
+      "name": "Nonadaptive Source-Selection Receipt",
+      "op_id": "pec_i",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Prove that the source objects, event indices, stopping regions, gauges, windows, or schedules used by an estimate are selected from data available before the payoff/failure quantity is known. This is a filtration/stopping-time style receipt: the theorem must display fixed-before-payoff selection, no post-hoc tuning from the target sum, and compatibility with the carrier used by the later inequality.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "overlaps with the single-spend audit when used as a checklist; use pec_j only when the theorem must prove the same-carrier packing/no-reuse injection or monotone reserve drop",
+      "distinct_from_v5_because": "v5 has single-spend and anti-leakage routing language, but not the PDE-native theorem shape that converts local bad-scale payments into a fresh same-carrier packing budget. This differs from pec_i because selection timing can be nonadaptive while the capacity packet is still reused; pec_j proves the no-reuse packing/injection itself.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "NS TICK668: selected C7 bad nodes need fresh annular capacity assigned on the same residual-fresh carrier, with no descendant capacity rebilling",
+        "Corona decompositions: stopping children must charge disjoint or bounded-overlap tents rather than one ancestor packet",
+        "Carleson packing estimates: local lower payments inject into a finite measure/budget without reusing the same tile mass"
+      ],
+      "name": "Same-Carrier Packing / No-Reuse Injection Receipt",
+      "op_id": "pec_j",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Prove that local lower payments are injected into a fresh carrier budget on the same analytic object, with disjointness or bounded overlap strong enough to prevent the same capacity packet from being billed repeatedly. The receipt must display the source carrier, target payments, assignment/injection or monotone reserve map, overlap bound, and finite prefix/global budget.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "collapses to pec_j if the owner map is already implicit in the packing theorem; use pec_k when pointwise ownership and finite atom budget are present but owner-preimage multiplicity or factor-vs-output-packet eligibility is the actual missing estimate",
+      "distinct_from_v5_because": "v5 can route source selection and no-reuse language, but not the PDE/microlocal theorem shape that an event owns a specific packet/tile/tube and that owner multiplicity is numerically controlled. This differs from pec_i because timing can be valid while the same packet is reused; it differs from pec_j because same-carrier packing may be true only after a separate phase-space owner map and preimage bound are proved.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": "src/ztare/gates/owner_preimage_prefix_gate.py",
+      "instantiation_examples": [
+        "NS TICK668: selected residual-fresh C7 events need pre-payoff annular corona-Duhamel owner atoms with a global selected-tree multiplicity/prefix receipt",
+        "Paraproduct estimates: bad events own Littlewood-Paley/Bony tiles whose preimages satisfy a Carleson embedding",
+        "Lagrangian/material arguments: events own transported tubes with finite overlap before the downstream energy budget is spent"
+      ],
+      "name": "Phase-Space Packet Ownership Receipt",
+      "op_id": "pec_k",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "Prove that selected events are assigned to concrete phase-space or material packets by a pre-payoff owner map, and that the owner preimages have a numerical packing/multiplicity bound strong enough to turn pointwise event payments into finite prefix budgets. The receipt must display event-to-packet ownership, support/band/material compatibility, full output-scale packet eligibility rather than reusable factor/catalyst ownership, pointwise payment, bounded global selected-tree preimage or equivalent prefix inequality, finite atom budget, and inherited-or-fresh routing for descendants.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": "overlaps with cand_g when a representation change exposes the symbol; keep pec_l for the audit that the cancellation actually pays the positive/coercive target",
+      "distinct_from_v5_because": "v5 can route invariance or representation changes, but not the PDE/harmonic-analysis theorem shape that a signed cancellation or symbol identity yields coercive control of a positive target. This differs from pec_h because tail/source upgrades may be purely measure-theoretic; pec_l is about whether the claimed symbolic cancellation applies to the target norm after squaring, projection, localization, or packet selection.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "NS TICK668: energy skew-symmetry after testing against velocity does not control the positive source square of P_N div(u_N tensor u_N)",
+        "Null-form estimates: high-high interactions must have genuine symbol vanishing or angular gain before an L2 source estimate is claimed",
+        "Commutator methods: a signed commutator identity cannot be used as a positive Carleson measure without a coercive remainder theorem"
+      ],
+      "name": "Symbol / Cancellation Coercivity Audit",
+      "op_id": "pec_l",
+      "paper_claim_status": "companion_boundary_language",
+      "portability_status": "pde_origin",
+      "portable_receipt_fields": [],
+      "provisional": false,
+      "structural_mechanism": "When an argument invokes skew-symmetry, null-form structure, projection cancellation, commutator cancellation, or oscillatory sign cancellation, prove that the cancellation survives in the exact positive/coercive quantity being estimated. The receipt must display the bilinear/multilinear symbol or tested identity, the positive target norm or measure, the dangerous interactions where the symbol must vanish or gain, and the signed-to-positive exchange theorem if the target is not signed.",
+      "tier": "proto"
+    },
+    {
+      "boundary_collapse_risk": null,
+      "distinct_from_v5_because": "Distinct from core_01 (no domain crossing \u2014 same problem different frame) and from proto-op pec_a (no new object created \u2014 existing problem re-expressed). Likely v5-tier (universal across PDE + NT + combinatorics per 14 instances across 7 papers, GP-219 Phase 2 cross-walk 2026-05-05). Recommended for paper-5b post-publication addition as `core_08` in universal_research_ops.py.",
+      "family": "gp219_pde_estimate_craft",
+      "gate_mechanization": null,
+      "instantiation_examples": [
+        "GP-219 Phase 2 g_validation/2605.01646.json (PDE)",
+        "GP-219 Phase 2 g_validation/2605.02540.json (NT)",
+        "GP-219 Phase 2 g_validation/2605.02612.json (combinatorics)"
+      ],
+      "name": "Representation / Coordinate Reformulation",
+      "op_id": "cand_g",
+      "paper_claim_status": "candidate_do_not_promote_without_validation",
+      "portability_status": "v5_candidate_portable",
+      "portable_receipt_fields": [
+        "original_representation",
+        "new_representation",
+        "invariant_content",
+        "translation_rule",
+        "disagreement_witness",
+        "decision_consequence"
+      ],
+      "provisional": false,
+      "structural_mechanism": "Reformulate the same problem in a conjugate / rescaled / principal-object-swapped frame WITHOUT crossing formal-system boundary. Includes coordinate change, conjugation by a well-chosen invertible operator, dimensionalization swap, or change of unknown.",
+      "tier": "v5_candidate"
+    }
+  ],
+  "schema_version": "gp216_structural_language_catalog_v2",
+  "source_modules": {
+    "fingerprint_surface": "src/ztare/research_director/structural_fingerprint.py",
+    "heuristic_classifier": "src/ztare/research_director/universal_classifier.py",
+    "pde_estimate_craft": "src/ztare/research_director/pde_estimate_craft_ops.py",
+    "two_cultures": "src/ztare/research_director/two_cultures.py",
+    "universal_v5": "src/ztare/research_director/universal_research_ops.py"
+  },
+  "two_cultures_cross_cultural_pairs": [
+    {
+      "description": "Cross-Domain Unification \u2194 Formal Equivalence Transfer (strongest)",
+      "ps_op": "ps_03",
+      "tb_op": "tb_02"
+    },
+    {
+      "description": "Tacit Pattern Formalization \u2194 Structural Partitioning (related)",
+      "ps_op": "ps_01",
+      "tb_op": "tb_06"
+    },
+    {
+      "description": "Surrogate Problem Substitution \u2194 Black-Box Theorem Application (leverage moves)",
+      "ps_op": "ps_04",
+      "tb_op": "tb_03"
+    },
+    {
+      "description": "Strategic Specialization \u2194 Black-Box Theorem Application (special-case leverage)",
+      "ps_op": "ps_04",
+      "tb_op": "tb_NEW_POLYA"
+    }
+  ],
+  "two_cultures_empirical_table": {
+    "ps_vocab": {
+      "own_advantage_pp": 46.8,
+      "ps_corpus_pct": 65.9,
+      "tb_corpus_pct": 19.1
+    },
+    "tb_vocab": {
+      "own_advantage_pp": 37.4,
+      "ps_corpus_pct": 20.7,
+      "tb_corpus_pct": 58.1
+    }
+  },
+  "two_cultures_op_tiers": {
+    "ps_01": "shared-core",
+    "ps_02": "PS-specific",
+    "ps_03": "shared-core",
+    "ps_04": "shared-core",
+    "ps_05": "PS-specific",
+    "ps_06": "PS-specific",
+    "tb_01": "TB-mostly",
+    "tb_02": "TB-mostly",
+    "tb_03": "shared-core",
+    "tb_04": "TB-specific",
+    "tb_06": "shared-core",
+    "tb_08": "TB-specific",
+    "tb_09": "TB-specific",
+    "tb_11": "TB-specific",
+    "tb_LAK1": "TB-specific",
+    "tb_LAK2": "TB-specific",
+    "tb_NEW_HOF": "TB-specific",
+    "tb_NEW_POLYA": "TB-specific"
+  },
+  "universal_v5_ops": [
+    {
+      "aliases_collapsed": [
+        "tb_03 Surrogate Problem Substitution",
+        "ps_03 Formal Equivalence Transfer"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 8,
+      "name": "Problem Reformulation & Reduction",
+      "op_id": "core_01",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Replacing a problem with a structurally equivalent or logically connected surrogate to make it more tractable or to transfer properties like computational hardness.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_01 Foundational Object Redefinition",
+        "tb_09 Systematic Vocabulary Lifting"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 8,
+      "name": "Generalization & Abstraction",
+      "op_id": "core_02",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Replacing a class of objects or a specific structure with a more encompassing one that relaxes constraints, thereby unifying disparate cases under a single framework.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "ps_01 Structural Partitioning",
+        "tb_08 Parameter Space Internalization"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 8,
+      "name": "Decomposition & Recomposition",
+      "op_id": "core_03",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Breaking a complex object or problem into simpler, manageable components, analyzing or solving them independently, and then reassembling the results.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 8,
+      "name": "Local-to-Global Assembly",
+      "op_id": "core_04",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Constructing a global object or proving a global property by specifying local pieces and rules for how they cohere, often through gluing or integration.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 7,
+      "name": "Canonical Form & Invariance",
+      "op_id": "core_05",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Identifying stable properties or unique representatives within equivalence classes to simplify analysis by eliminating redundant or superficial complexity.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_02 Cross-Domain Unification"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 7,
+      "name": "Cross-Domain Translation",
+      "op_id": "core_06",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Establishing a formal correspondence between two distinct conceptual domains, allowing methods and insights from one to be applied to the other.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "geometric_flow_pde",
+        "logic_set_theory",
+        "algebraic_topology"
+      ],
+      "tier": "shared_core",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "ps_02 Governed Iterative Refinement",
+        "ps_06 Proof by Estimate Chaining"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 5,
+      "name": "Iterative Refinement",
+      "op_id": "broad_01",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Progressively improving a solution or approximation through repeated application of a procedure that guarantees monotonic improvement of a key metric.",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "geometric_flow_pde",
+        "applied_math",
+        "theory_building"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "ps_05 Induction on Structural Rank"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 5,
+      "name": "Recursive Decomposition",
+      "op_id": "broad_02",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Solving a problem by repeatedly breaking it down into smaller, self-similar instances of the same problem until a trivial base case is reached.",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "logic_set_theory",
+        "applied_math"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 5,
+      "name": "Duality & Adversarial Framing",
+      "op_id": "broad_03",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Reframing a problem by constructing a corresponding dual problem or a strategic game whose solution provides insight into the original.",
+      "subfield_spread": [
+        "graph_theory",
+        "complexity_theory",
+        "additive_combinatorics",
+        "algebraic_topology",
+        "applied_math"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 4,
+      "name": "Layered Approximation & Convergence",
+      "op_id": "broad_04",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Constructing a solution as the limit of a sequence of simpler, staged approximations whose properties are analyzed at each step.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "geometric_flow_pde",
+        "algebraic_topology"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_NEW_POLYA Strategic Specialization"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 4,
+      "name": "Extremal Method",
+      "op_id": "broad_05",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Analyzing boundary, worst-case, or optimal examples to deduce properties that must hold for all instances within a class.",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "geometric_flow_pde",
+        "theory_building"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 4,
+      "name": "Probabilistic & Stochastic Methods",
+      "op_id": "broad_06",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Using randomness, sampling, and expectation as computational tools to solve deterministic problems or to prove existence.",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "graph_theory",
+        "complexity_theory",
+        "applied_math"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 4,
+      "name": "Dimensional & Structural Lifting",
+      "op_id": "broad_07",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Embedding a problem into a higher-dimensional or more abstract space where constraints are relaxed or new geometric or algebraic tools become available.",
+      "subfield_spread": [
+        "additive_combinatorics",
+        "complexity_theory",
+        "algebraic_topology",
+        "theory_building"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_04 Constraint-Driven Solution Forcing"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 4,
+      "name": "Constraint Imposition & Propagation",
+      "op_id": "broad_08",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Establishing a set of required conditions and deriving the necessary consequences, often forcing a unique structure or revealing a contradiction.",
+      "subfield_spread": [
+        "theory_building",
+        "additive_combinatorics",
+        "geometric_flow_pde",
+        "logic_set_theory"
+      ],
+      "tier": "broadly_shared",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 1,
+      "name": "Characterization by Obstruction",
+      "op_id": "spec_01",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Defining a class of objects not by its internal properties but by the absence of a finite set of forbidden substructures or configurations.",
+      "subfield_spread": [
+        "graph_theory"
+      ],
+      "tier": "subfield_specific",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_NEW_HOF Diagonal Self-Application",
+        "tb_11 Limitative Theorem Construction"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 2,
+      "name": "Internalization & Self-Reference",
+      "op_id": "spec_02",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Encoding a system's own structure or meta-properties within the system itself to construct statements about its own limits or behavior.",
+      "subfield_spread": [
+        "logic_set_theory",
+        "complexity_theory"
+      ],
+      "tier": "subfield_specific",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [
+        "tb_LAK1 Refutation-Driven Concept Revision",
+        "tb_LAK2 Proof-Analysis Under Counter-Example"
+      ],
+      "family": "gp216_structural_v5",
+      "n_subfields": 2,
+      "name": "Axiomatization & Foundational Repair",
+      "op_id": "spec_03",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Establishing or fixing the ground rules of a formal system by explicitly enumerating a minimal set of generative principles to resolve paradoxes and ensure consistency.",
+      "subfield_spread": [
+        "theory_building",
+        "logic_set_theory"
+      ],
+      "tier": "subfield_specific",
+      "validation_status": "saved_output_verified"
+    },
+    {
+      "aliases_collapsed": [],
+      "family": "gp216_structural_v5",
+      "n_subfields": 1,
+      "name": "Controlled Universe Extension",
+      "op_id": "spec_04",
+      "paper_claim_status": "portable_system_bound_structural_language",
+      "structural_mechanism": "Augmenting a logical or algebraic universe with new elements in a way that preserves existing axioms while forcing a specific independent proposition to be true or false.",
+      "subfield_spread": [
+        "logic_set_theory"
+      ],
+      "tier": "subfield_specific",
+      "validation_status": "saved_output_verified"
+    }
+  ],
+  "usage_rule": "Use GP-216 v5 to route structural research moves; use GP-219 only when PDE/estimate-craft is substantively in scope; use meta_meta ops as game-layer/frame/object primitives with their per-op validation_status; log residuals instead of stretching labels."
+}

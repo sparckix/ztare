@@ -1,4 +1,12 @@
+---
+description: "How optimization pressure corrupts measurement at each architectural layer, and the counters."
+---
+
 # Goodhart at Every Layer
+
+> **Up:** [Documentation map](../README.md)
+
+> **Role among the concept docs.** This doc owns the *per-layer manifestation map*: where the same optimization-pressure gradient shows up at each level of a verification stack. It is one of three non-overlapping facets of the failure axis: the canonical *structural law* of why the gradient exists is [epistemic_principles.md](epistemic_principles.md) Part I; the canonical *operational field guide* of catalogued instances is [anti_pattern_catalog.md](anti_pattern_catalog.md); this doc is the per-layer where-it-recurs map. It does not restate the law or the instance catalogue.
 
 A catalog of how optimization pressure corrupts measurement at each
 level of a verification stack, what ZTARE has caught, and what it
@@ -182,7 +190,7 @@ The philosophical limit: the scanner cannot scan itself. Recursive
 self-improvement of the scanner requires operator intervention, by
 design (constraint 5 in the GP-105b seam: no recursive depth > 1).
 Somewhere in the stack, a human must be the final verifier. Paper 5
-calls this the Peircean Residual. It is the only load-bearing claim
+calls this the Peircean Residual. It is the only central claim
 about what stays human permanently.
 
 ---
@@ -221,13 +229,13 @@ Useful. Important, maybe. A breakthrough, not yet.
 
 ## 6. How to read the repo with this framing
 
-- `docs/FOR_RESEARCHERS.md` — the discipline
-- `papers/paper1/draft.md` — the gaming taxonomy (thesis-layer Goodhart)
-- `papers/paper5/draft.md` — the principles (all-layer Goodhart theory)
-- `papers/case_studies/rank_deficient_bootstrap.md` — evidence-layer lesson
-- `research_areas/EXPERIMENT_TRACK_RECORD.md` — receipts for every claim
-- `research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md` — rubric-layer Goodhart
-- `docs/internal/information_yield_architectural_map.md` — apparatus-layer: signal flow and bug history
-- `AGENTS.md` — standing operator discipline
+- `docs/FOR_RESEARCHERS.md`, the discipline
+- `papers/paper1/draft.md`, the gaming taxonomy (thesis-layer Goodhart)
+- `papers/paper5/draft.md`, the principles (all-layer Goodhart theory)
+- `docs/concepts/evaluation_failure_cases.md`, evidence-layer lesson
+- `research_areas/EXPERIMENT_TRACK_RECORD.md`, receipts for every claim
+- `GP-105 (internal seam)`, rubric-layer Goodhart
+- `docs/internal/architectural_maps/information_yield_architectural_map.md`, apparatus-layer: signal flow and bug history
+- `AGENTS.md`, standing operator discipline
 
-*— Daniel, 2026-04-20. Rewritten from is_this_a_breakthrough.md (2026-04-15).*
+*, Daniel, 2026-04-20. Rewritten from is_this_a_breakthrough.md (2026-04-15).*

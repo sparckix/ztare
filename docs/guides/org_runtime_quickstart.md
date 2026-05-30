@@ -1,13 +1,25 @@
+---
+description: "Quickstart for the autonomous org runtime."
+---
+
 # Org Runtime Quickstart
+
+> **Up:** [Documentation map](../README.md)
 
 **Audience:** operators or enterprise engineers who want persistent AI roles,
 not just one-off chat sessions.
 
 **Status:** productization path for the *Cognitive Firm* organizational primitives.
-The scientific engine is MIT-licensed; the governance kernel is BSL/commercial.
-See `README.md` §License and
+All code in this repo is MIT-licensed. See `README.md` §License and
 `docs/concepts/ztare_research_company_architecture.md` for the 24×7 unattended
 architecture.
+
+The reusable kernel is the separate public repo
+[`sparckix/cognitive-firm`](https://github.com/sparckix/cognitive-firm).
+`org/` in ZTARE is the tenant overlay and compatibility surface for this
+research company: local role files, mandates, gates, channels, and runtime
+projection docs. Generic primitives should move upstream only when they are not
+ZTARE-specific policy.
 
 ---
 
@@ -15,7 +27,7 @@ architecture.
 
 Live co-drive is **standard operating mode** for the Research Director.
 The daemon runs the full detection → policy → execution chain on every
-tick — there is no opt-in flag.
+tick, there is no opt-in flag.
 
 The chain:
 
@@ -59,8 +71,8 @@ agent_utilization:
 ```
 
 Tracked daily totals live at `ztare_workspace/agent_utilization/<date>.json`.
-Warn-threshold trips emit a Telegram push **and** a damage signal at
-`org/signals/damage/` (idempotent — one alert per role/cli/dim/UTC-day).
+Warn-threshold trips emit a notification-provider message **and** a damage
+signal at `org/signals/damage/` (idempotent, one alert per role/cli/dim/UTC-day).
 
 **Warn-threshold jitter (gp168 v3 run-2 finding F2, 2026-05-02).** The
 effective warn-threshold is jittered by ±10% per `(role, agent_cli,
@@ -75,8 +87,8 @@ in the rubric to disable for deterministic operation.
 principal extends a cap, postpones a closure, delays an approval,
 skips an audit, or raises the absolute ceiling, the event is recorded
 to `ztare_workspace/agent_utilization/overrides/<date>.jsonl` AND
-appended to `transitions.jsonl` as `event: override_event` AND pushed
-to Telegram (friction-of-being-watched defense). Every principal-side
+appended to `transitions.jsonl` as `event: override_event` AND pushed through
+the configured notification provider. Every principal-side
 subversion of the exogenous-pressure clock is now a first-class audit
 artifact rather than a silent action. API:
 `record_override_event(kind, role_id, actor, old_value, new_value,
@@ -84,7 +96,7 @@ target, reason)` from `src.ztare.supervisor.agent_utilization_tracker`.
 
 Configure caps from Orbit by clicking ⚙ **Settings** in the top bar.
 
-### Agent-CLI rotation (optional — gp168 v3 run-2 finding F3, 2026-05-02)
+### Agent-CLI rotation (optional, gp168 v3 run-2 finding F3, 2026-05-02)
 
 A role yaml may carry an `agent_rotation` block to rotate the role's
 primary member across multiple CLIs (Claude / Codex / Gemini) on a
@@ -106,7 +118,7 @@ at daemon tick time. Members whose CLI is unavailable on the host
 
 ### Anti-debrief autonomy directive
 
-`AGENTS.md §4z` ("Maximal autonomy — keep pushing; don't debrief between
+`AGENTS.md §4z` ("Maximal autonomy, keep pushing; don't debrief between
 sub-tasks") instructs every agent to keep working until one of four
 real stop conditions: information gap, budget trip, damage signal, or
 forbidden path. The daemon enforces the same contract by adding
@@ -177,8 +189,8 @@ daemon and runs no work-discovery loop.
 Run the productized first-run check before starting any daemon:
 
 ```bash
-python scripts/org_first_run_setup.py --init-private --skip-smoke
-python scripts/org_first_run_setup.py --member-id codex --agent-cli codex --agent-adapter codex_exec
+python scripts/public/control/org_first_run_setup.py --init-private --skip-smoke
+python scripts/public/control/org_first_run_setup.py --member-id codex --agent-cli codex --agent-adapter codex_exec
 ```
 
 The first command creates missing local private bootstrap files from public
@@ -194,9 +206,9 @@ without executing work.
 The lower-level checks are:
 
 ```bash
-python scripts/org_role_preflight.py --role research_director
-python scripts/org_role_preflight.py --role manager
-python scripts/org_runtime_smoke.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec
+python scripts/public/control/org_role_preflight.py --role research_director
+python scripts/public/control/org_role_preflight.py --role manager
+python scripts/public/control/org_runtime_smoke.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec
 ```
 
 What this checks:
@@ -214,7 +226,7 @@ What this checks:
 If you want preflight to fail when the configured agent runtime is missing:
 
 ```bash
-python scripts/org_role_preflight.py --role research_director --require-agent --agent-cli claude
+python scripts/public/control/org_role_preflight.py --role research_director --require-agent --agent-cli claude
 ```
 
 ---
@@ -232,27 +244,27 @@ docker version
 Validate the Research Director service without executing work:
 
 ```bash
-docker compose --profile daemons run --rm research-director-daemon \
-  python scripts/org_role_preflight.py --role research_director
+docker compose --env-file .env --profile daemons run --rm research-director-daemon \
+  python scripts/public/control/org_role_preflight.py --role research_director
 ```
 
 Run one discovery tick without executing work:
 
 ```bash
-docker compose --profile daemons run --rm research-director-daemon \
-  python scripts/agent_daemon.py --role research_director --tick-once --dry-run
+docker compose --env-file .env --profile daemons run --rm research-director-daemon \
+  python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
 ```
 
 Run continuously:
 
 ```bash
-docker compose --profile daemons up research-director-daemon
+docker compose --env-file .env --profile daemons up research-director-daemon
 ```
 
 Run the operational manager instead:
 
 ```bash
-docker compose --profile daemons up manager-daemon
+docker compose --env-file .env --profile daemons up manager-daemon
 ```
 
 The container is a process wrapper. Full execution requires the chosen agent
@@ -265,7 +277,7 @@ Runtime identity is configurable:
 
 ```bash
 ZTARE_MEMBER_ID=codex ZTARE_AGENT_CLI=claude \
-docker compose --profile daemons up research-director-daemon
+docker compose --env-file .env --profile daemons up research-director-daemon
 ```
 
 `ZTARE_MEMBER_ID` is the accountable runtime/member recorded in sessions.
@@ -279,19 +291,19 @@ Codex example:
 
 ```bash
 ZTARE_MEMBER_ID=codex ZTARE_AGENT_CLI=codex ZTARE_AGENT_ADAPTER=codex_exec \
-python scripts/agent_daemon.py --role research_director --tick-once --dry-run
+python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
 ```
 
 ## Bootstrap Contract: What The Agent Reads
 
 Every Docker/daemon role run has three layers of instruction:
 
-1. `AGENTS.md` — repo-wide constitution. It covers closure discipline,
+1. `AGENTS.md`, repo-wide constitution. It covers closure discipline,
    public/private artifact rules, experiment recording, CLI discipline,
    inversion reflexes, and the operating philosophy.
-2. `org/roles/<role>.yaml` — durable role contract. It defines identity,
+2. `org/roles/<role>.yaml`, durable role contract. It defines identity,
    allowed/forbidden paths, budget, delegation, escalation, and mandate path.
-3. `org/mandates/<role>_mandate.md` — role-specific operating authority. It
+3. `org/mandates/<role>_mandate.md`, role-specific operating authority. It
    defines what the role may do, what it must escalate, and current standing
    context.
 
@@ -303,20 +315,20 @@ mandate, the agent must obey the stricter constraint and escalate the conflict.
 The bootstrap proof is:
 
 ```bash
-python scripts/org_role_preflight.py --role research_director --agent-cli claude --json
-python scripts/agent_daemon.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec --tick-once --dry-run
+python scripts/public/control/org_role_preflight.py --role research_director --agent-cli claude --json
+python scripts/public/control/agent_daemon.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec --tick-once --dry-run
 ```
 
 The first command proves the documents/runtime are reachable. The second proves
 the role can open a session, read durable state, discover work, and stop before
 mutation.
 
-By default, a daemon with Telegram configured asks for approval before
-executing, and a daemon without Telegram refuses to execute. For an explicit
+By default, a daemon with an approval rail configured asks for approval before
+executing, and a daemon without one refuses to execute. For an explicit
 24×7 unattended run where in-scope tasks execute without approval, set:
 
 ```bash
-ZTARE_UNATTENDED=1 docker compose --profile daemons up research-director-daemon
+ZTARE_UNATTENDED=1 docker compose --env-file .env --profile daemons up research-director-daemon
 ```
 
 Use this only after `org/roles/<role>.yaml`, `org/mandates/<role>_mandate.md`,
@@ -345,18 +357,18 @@ autonomous_scope_ok: true
 Then run a dry tick:
 
 ```bash
-python scripts/agent_daemon.py --role research_director --tick-once --dry-run
+python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
 ```
 
-For real execution, remove `--dry-run`. If Telegram is configured, the daemon
-proposes the task and waits for approval. If Telegram is not configured, the
-daemon refuses to execute unless `--unattended` is explicitly passed, so use
+For real execution, remove `--dry-run`. If a notification or approval provider
+is configured, the daemon proposes the task and waits for approval. Without one,
+the daemon refuses to execute unless `--unattended` is explicitly passed, so use
 `--dry-run` until you are sure the mandate is correct.
 
-The intended human interaction is natural language through Orbit/Telegram,
-not Python commands. Commands are the bootstrap/debug surface. The daily
-experience should be: a role proposes a decision card, explains trade-offs and
-artifacts, and the principal replies approve/skip/ask/stop.
+The intended human interaction is natural language through Orbit or a tenant
+notification provider, not Python commands. Commands are the bootstrap/debug
+surface. The daily experience should be: a role proposes a decision card,
+explains trade-offs and artifacts, and the principal replies approve/skip/ask/stop.
 
 ---
 
@@ -368,18 +380,19 @@ The product surface is split deliberately:
   shows roles, active sessions, task pressure, damage signals, pending gates,
   and agent-channel messages, then writes gate resolutions back to the
   filesystem backend.
-- **Telegram** is the mobile approval and notification rail. It watches the
-  same executive inbox, pushes compact decision cards, accepts fixed approval
-  verbs, and records the resolution in `ztare_workspace/gates/resolved/`.
+- **Notification providers** are optional tenant rails. The public checkout
+  defaults to a filesystem outbox; a tenant may add Telegram, Slack, email, or
+  another provider that watches the same executive inbox and records
+  resolutions in `ztare_workspace/gates/resolved/`.
 - **A2A channels** under `org/channels/` are role-to-role communication. They
   are durable handoff envelopes for agents, not a substitute for human approval.
 - **CLI commands** are setup and debugging tools. They are not the desired
   everyday interface.
 
 The current gap is free-form natural-language routing. Today, Orbit and
-Telegram can resolve structured gates; they do not yet parse arbitrary human
-messages into typed directives/tasks/gates. That parser should sit in front of
-the same backend, not create a second chat-owned source of truth.
+Notification providers can resolve structured gates; they do not yet parse
+arbitrary human messages into typed directives/tasks/gates. That parser should
+sit in front of the same backend, not create a second chat-owned source of truth.
 
 See the standalone concept page:
 
@@ -418,7 +431,7 @@ For frontier projects, build or refresh the queue from durable artifacts:
 python -m src.ztare.orchestrator.operator_replay_audit \
   --project <project_slug> \
   research_areas/EXPERIMENT_TRACK_RECORD.md \
-  research_areas/private/insights_ledger.md
+  <private_research_notes_or_catalog>
 ```
 
 Then run the taste ranker on the generated queue. A high taste score routes
@@ -483,7 +496,7 @@ database":
 - **Executive inbox:** `ztare_workspace/gates/pending/`, resolved into
   `ztare_workspace/gates/resolved/`.
 - **Append-only audit:** `ztare_workspace/transitions.jsonl` plus git history.
-- **Interface projections:** Orbit and Telegram read/write through the backend
+- **Interface projections:** Orbit and notification providers read/write through the backend
   paths above; they do not own independent state.
 - **Git's role:** versioning, audit, rollback, and sync. It is not the
   low-latency coordination primitive.
@@ -498,7 +511,7 @@ The enterprise value is the governance layer:
 - Research Director separates taste/routing from proof/validation
 - ZTARE keeps formal experiment execution behind gates and ledgers
 
-Near-term gaps before this is turnkey enterprise software:
+Near-term gaps before this is packaged enterprise software:
 
 - packaged agent runtime inside the Docker image
 - first-run setup command for credentials and notification channels

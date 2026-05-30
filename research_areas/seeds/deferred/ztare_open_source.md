@@ -22,7 +22,7 @@ The key differentiator is not "three adversarial agents" — it is the **stage-g
 Run ZTARE-Check on any PR where the mutator is an LLM (Copilot, Cursor, Claude Code, etc.). The firing squad attacks the logic of the change, not the syntax. Surfaces: scope overclaims, self-referential falsification, missing falsification suites, unidirectional decay.
 
 ### 2. Agentic architectural decisions
-Multi-agent systems making load-bearing architectural choices (infra changes, schema migrations, API contracts) run the decision through a ZTARE firing squad before committing. Output: typed verdict with attributed failure mode or clean promotion.
+Multi-agent systems making central architectural choices (infra changes, schema migrations, API contracts) run the decision through a ZTARE firing squad before committing. Output: typed verdict with attributed failure mode or clean promotion.
 
 ---
 

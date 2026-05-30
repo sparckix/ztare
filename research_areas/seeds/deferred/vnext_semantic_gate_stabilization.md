@@ -83,7 +83,7 @@ Examples:
 Keep the LLM, but only for evidence extraction.
 
 Examples:
-- self-reference in the load-bearing sense
+- self-reference in the central sense
 - claim-test mismatch
 - domain leakage
 - transfer validity across domains
@@ -119,7 +119,7 @@ With a structured record like:
 - `asserted_variable_origin`: whether the decisive tested variable came from the thesis itself or independent grounding
 - `independent_grounding_present`: whether the decisive variable was externally validated
 - `test_recomputes_thesis_authored_target`: whether the code is effectively re-deriving its own target
-- `causal_variable_perturbed`: whether the test actually intervenes on the load-bearing causal mechanism
+- `causal_variable_perturbed`: whether the test actually intervenes on the central causal mechanism
 - `load_bearing_claim_directly_tested`: whether the code attacks the crux rather than a proxy
 
 ## Python-Derived Gate Logic

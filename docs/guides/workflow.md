@@ -1,56 +1,92 @@
+---
+description: "The day-to-day guide for running ZTARE on a real project."
+---
+
 # ZTARE Workflow
 
-The day-to-day guide for running ZTARE on a real project. The basic loop:
+> **Up:** [Documentation map](../README.md)
+
+The day-to-day guide for running ZTARE on a real project. The old basic loop
+still exists, but it is only one operating flavor:
 
 ```
 Gather sources -> Build workspace -> Extract evidence -> Run adversarial loop -> Generate report
+```
+
+The current default is:
+
+```text
+choose work object -> choose route -> use the workbench or validator -> write outcome -> feed reflexive intelligence
 ```
 
 For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). This is the operator-facing reference. It does **not** replace `README.md`.
 
 ---
 
-## 0. Two Workflows Now Exist
+## 0. Route Before You Run
 
-There are now two different workflows in this repo:
+ZTARE has two mature workflows and one developer workflow. Pick the workflow
+before launching a loop.
 
-1. general project workflow
-   - `raw -> workspace -> evidence -> validator -> synthesis`
-2. program hardening workflow
-   - `seed spec -> genesis -> supervisor-routed debate/build/verify loop`
+1. **Workbench workflow**
+   - Use when a Research Director, operator, or agent needs to do research
+     work: read sources, split a proof, write a probe, mine a trajectory, ask
+     another agent, prepare a synthesis, or route a human bottleneck.
+   - ZTARE is the bench of callable primitives. Agents and humans use those
+     primitives; they are not forced through one validator loop.
 
-The second workflow is the modern replacement for ad hoc `ur turn` routing.
+2. **Substrate-prober workflow**
+   - Use when the question is: what can this body of evidence, data, or
+     decision process actually answer?
+   - This is the original autoresearch path:
+     `raw -> workspace -> evidence -> validator -> synthesis`.
+   - It is strongest for bounded claims, empirical-law searches, evidence
+     ceilings, and adversarial falsification of a declared thesis.
 
-## 0a. Choose The Right Mode
+3. **Program hardening workflow**
+   - Use when the object is the apparatus itself: kernel behavior, source
+     connectors, ledgers, gates, control-plane code, or public docs.
+   - The path is `seed spec -> genesis -> debate/build/verify -> gates`.
 
-There are now three practical operating modes:
+This routing reflects the repo's substrate-prober thesis and the later
+workbench reframe. The substrate prober tells a researcher what a substrate can
+and cannot answer before the researcher commits to a theory. The workbench lets
+agents and humans use ZTARE's primitives outside a single iteration loop when
+the next move is proof work, coding, source acquisition, panel review, or
+human-agent co-work.
 
-1. artisanal / manual
-   - use for exploratory work, fuzzy architecture, or one-off prompting
-2. program hardening
-   - use for bounded kernel or infrastructure improvements where provenance matters
-3. domain validation
-   - use for the original ZTARE workspace -> evidence -> validator -> synthesis path
+## 0a. Routing Table
 
-Rule:
+| If the work object is... | Use... | Durable output |
+| --- | --- | --- |
+| A claim against a bounded evidence packet | substrate-prober workflow | `evidence.txt`, validator outputs, synthesis |
+| A data or decision substrate whose limits are unknown | substrate-prober workflow | gates, ceilings, demotions, allowed claims |
+| A proof branch, Lean packet, theorem split, or symbolic calculation | workbench workflow | proof files, proof notes, residual state |
+| A frontier research question where the next move is unclear | workbench workflow | brief, plan, probes, decision rows, synthesis |
+| A human task blocking agent work | workbench workflow | handoff artifact, attestation, delegated subtask |
+| A code, kernel, or docs improvement | program hardening workflow | seam/spec if needed, patch, tests, docs |
+| A metric-bearing operational decision | workbench workflow plus reflexive ledgers | forecast, action-impact row, outcome row |
+| A tiny one-off check | manual workflow | short note only if it should become durable memory |
 
-- do not force everything through the supervisor
-- do not keep high-rigor kernel work in untracked chat-only routing once the packet is stable
+Rules:
 
-The supervisor is for bounded programs, not for every thought.
+- do not force everything through the supervisor;
+- do not force every research move through the old validator;
+- do not leave high-rigor kernel work in chat-only routing once the packet is stable.
 
 ## 0b. Two Audiences
 
 This repo now serves two distinct readers. If you can identify which one you are, you can skip most of the document.
 
 1. **General-purpose engine users**: you want to test a thesis or a claim on a domain (startup, activist target, strategy question, research area). You do not care about kernel internals, benchmarks, or the supervisor.
-   - Read: §1 (When to use), §2 (Mental model), §3 (Standard loop), §3a (Rerun cadence), §4 commands for `workspace-update` / `evidence-compile` / `loop` / `synth`, §5 (Human role), and whichever of §6–§8 matches your project type.
-   - Skip: §0a modes 1 and 2, §15 (Program hardening), the supervisor-specific command blocks.
-   - Your entire loop is: `raw -> workspace -> evidence -> validator -> synthesis`. Nothing else should be load-bearing for you.
+   - Read: section 0 routing, section 1 (When to use), section 2 (Mental model), section 3 (Operating loops), section 3a (Rerun cadence), section 4 commands for `workspace-update` / `evidence-compile` / `loop` / `synth`, section 5 (Human role), and whichever of sections 6-8 matches your project type.
+   - Skip: section 15 (Program hardening), the supervisor-specific command blocks.
+   - If your work is a bounded claim test, your loop is: `raw -> workspace -> evidence -> validator -> synthesis`.
+   - If your work is exploratory frontier research, use the workbench loop first and invoke the validator only when a bounded evidence packet exists.
 
 2. **Developers / researchers playing with the engine**: you are modifying the validator, the workspace compiler, the V4 kernel, primitives, or the supervisor control plane.
-   - Read everything, but pay special attention to §0a (mode choice), §14 (primitive workflow), §15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/ARCHITECTURE.md` and `supervisor/USER_MANUAL.md`.
-   - The V4 six-stage kernel hardening path and supervisor-routed programs are for you, not for the general-purpose user.
+   - Read everything, but pay special attention to section 0 routing, section 14 (primitive workflow), section 15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/concepts/architecture.md`.
+   - The hardening path and supervisor-routed programs are for you, not for the general-purpose user.
 
 If you are not sure which you are: start as a general-purpose engine user. You almost certainly do not need the hardening machinery on day one.
 
@@ -68,17 +104,33 @@ Inside the supervisor path:
 - cross-model `A1/A2` debate and optional manual ZTARE passes remain outside the runtime for now
 - active runs should live under `supervisor/active_runs/<run_id>/` rather than `/tmp/` so wrapper sandboxes can access staging files reliably
 
-## 0c. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
+## 0c. Workbench Discipline
+
+The workbench workflow is not lower rigor. It means the unit of work is not
+always a validator iteration. A serious workbench run still needs:
+
+- a named object of work;
+- a current residual or bottleneck;
+- the primitive, script, proof tool, panel, or agent being used;
+- a written outcome;
+- a next decision or kill condition;
+- a durable ledger row when the result changes routing.
+
+The public sprint narrative in [../sprint_60day_journey.md](../sprint_60day_journey.md)
+explains the shift from "ZTARE versus agents" to "ZTARE as workbench, agents
+and humans as workforce." This guide uses that frame.
+
+## 0d. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
 
 If you are running ZTARE as an experiment (not just pressure-testing a domain thesis), three rules govern whether the run is diagnostic. Full version in [`docs/guides/for_researchers.md`](for_researchers.md).
 
-1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the sealed pre-reg under `research_areas/private/seams/`. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14. Two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
+1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the private sealed pre-reg area. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14. Two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
 
-2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts (pre-regs, GT derivations, blind oracle details) stay in `research_areas/private/seams/` until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md` §4a.
+2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts (pre-regs, GT derivations, blind oracle details) stay in the private sealed area until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md`.
 
 3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a free bug report: it names something the factory gate battery missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to factory scores.
 
-If you are a general-purpose engine user (§0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
+If you are a general-purpose engine user (section 0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
 
 ---
 
@@ -181,7 +233,7 @@ make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
 
 `make experiment-loop` is a wrapper around `make loop` that adds two layers of safety:
 
-1. **Always** passes `--disable_attacker_tools` (closes the attacker-exfil class — any live run, blind or not, wants this default).
+1. **Always** passes `--disable_attacker_tools` (closes the attacker-exfil class, any live run, blind or not, wants this default).
 2. **Iff** the rubric declares `holdout_hard_gate: true`, it also verifies `gate_harness.py` and `evidence_holdout.txt` exist, pre-flights that the harness produces valid JSON, and auto-sets `--underidentified_after=$(ITERS)` to prevent the underidentified-kill bug on hard-gate runs.
 
 Decision tree:
@@ -199,7 +251,7 @@ Choose make loop ONLY when:
 
 In practice: **`make experiment-loop` is the correct default for any live run, including qualitative / exploratory / no-ground-truth projects.** The "experiment" prefix is about pre-registered safety, not about requiring a hidden GT. The hard-gate-specific hardening only activates when the rubric asks for it.
 
-Pre-registered falsification runs (blind law recovery with sealed GT) additionally require `make seal` before launch — see `docs/guides/experiment_cookbook.md`. That discipline is separate from the loop vs experiment-loop choice.
+Pre-registered falsification runs (blind law recovery with sealed GT) additionally require `make seal` before launch, see `docs/guides/experiment_cookbook.md`. That discipline is separate from the loop vs experiment-loop choice.
 
 Supervisor commands:
 
@@ -583,7 +635,7 @@ Loop:
 
 What the human is actually doing:
 
-- deciding what strategic question is load-bearing
+- deciding which strategic question is decisive
 - ensuring the evidence base is not missing the obvious blockers
 
 ---
@@ -708,7 +760,8 @@ Produces GT-aware artifacts only:
 - `.denylist` file (GT-specific patterns for the leak sentinel)
 - Pre-registration document (private, names GT, seals protocol)
 
-Division A artifacts live in `research_areas/private/` or the project directory (never in mutator-visible files).
+Division A artifacts live in the private sealed area or the project directory
+only when the file is never mutator-visible.
 
 ### Division B (Principal Investigator, GT-blind)
 
@@ -736,7 +789,7 @@ When using Claude Code, spawn Division A and Division B as **separate agents** w
 - Division B agent: briefed with only the abstract problem description, produces mutator-visible artifacts
 - Run the leak sentinel after both agents finish
 
-See `research_areas/private/seams/GP-072_role_separation_sandbox_construction_seam.md` for the full protocol and lessons learned.
+See `GP-072 (internal seam)` for the full protocol and lessons learned.
 
 ## 13. Current Limitations
 
@@ -946,11 +999,12 @@ For discrete 1-variable substrates, `evidence_grid()` / `holdout_grid()` are opt
 **2. Generate substrate artifacts**
 
 ```bash
-make generate-substrate \
-    SLUG=<slug> \
-    GT_SCRIPT=src/ztare/substrates/<slug>_gt.py \
-    VARIABLES=x1,x2 \
-    PROBLEM_BRIEF="Find a mathematical law governing z as a continuous function of two inputs x1 and x2."
+# Substrate scaffolding is a script, not a make target. See its arguments:
+python -m src.ztare.scaffold.generate_substrate --help
+# Provide the slug, the GT script (src/ztare/substrates/<slug>_gt.py),
+# the input variables, and the problem brief per --help, following the
+# GP-072 sandbox-construction discipline (AGENTS.md §"Don't hand-build
+# sandboxes").
 ```
 
 This writes Division B artifacts (rubric, gate_harness.py, test_model.py, evidence files, charter) and an opaque re-export stub at `src/ztare/substrates/<slug>_gt.py`. The rubric field `component_c_gt_module` points to the stub, not the Division A script.

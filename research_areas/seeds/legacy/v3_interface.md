@@ -120,7 +120,7 @@ Required semantics:
 - `failure_log.md`: what broke, why, and under which test
 - `counterevidence.md`: strongest surviving objections
 - `validated_subclaims.json`: structured claims that survived with confidence labels
-- `unresolved_assumptions.md`: what remains load-bearing but unproven
+- `unresolved_assumptions.md`: what remains central but unproven
 - `execution_artifacts/`: reproducibility and audit trail
 
 ## Lifecycle

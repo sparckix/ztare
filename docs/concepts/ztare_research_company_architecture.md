@@ -1,7 +1,21 @@
+---
+description: "How ZTARE instantiates cognitive-firm primitives as a research company."
+---
 # ZTARE Research Company Architecture
 
-**Status:** north-star reference architecture for a 24×7 virtual research org.
-**Last revised:** 2026-05-01 00:03:00
+> **Up:** [Documentation map](../README.md)
+
+**Status:** ZTARE tenant reference architecture over the reusable cognitive-firm kernel.
+**Last revised:** 2026-05-20
+
+> **How this relates to the sibling org docs.** This doc owns the ZTARE-specific
+> research-company architecture: how the generic cognitive-firm primitives are
+> instantiated around scientific work, evidence, gates, forecasts, action
+> impact, and human-agent collaboration. The code primitives it uses are
+> summarized in [organizational_primitives.md](organizational_primitives.md);
+> the runnable org tree (roles, mandates, tasks, gates as files) is
+> [org/README.md](../../org/README.md). This doc is the applied architecture,
+> not the generic kernel reference or the runtime layout.
 
 ---
 
@@ -15,7 +29,8 @@ then let persistent AI roles work 24x7 on current problems while the principal
 intervenes only at key decision points?
 ```
 
-If not, the governance kernel is not ready for external organizations.
+If not, the ZTARE overlay is not using the cognitive-firm kernel cleanly enough
+to be a credible research-company deployment.
 
 ---
 
@@ -37,19 +52,19 @@ The difference is the control plane. A research company cannot treat chat as
 state. It needs mandates, claims, gates, budgets, damage signals, and experiment
 closure.
 
-The goal is not to imitate consumer automation. The goal is to productize a
-new organizational primitive: **self-governing research execution under
-falsification discipline**. The easy surface matters because adoption matters,
-but the core asset is the governance kernel: a role-bound system that decides
-what can act, when evidence licenses promotion, when a claim must be blocked,
-and when the principal must intervene.
+The goal is not to imitate consumer automation. The goal is to make research
+execution governable: roles decide what can act, gates decide when evidence
+licenses promotion, ledgers preserve what happened, and the principal
+intervenes where authority, taste, or non-digitized work is required. The easy
+surface matters because adoption matters; the durable asset is the control
+plane behind it.
 
 There are two easy surfaces, not one:
 
 | Surface | Command | Use case |
 |---|---|---|
-| Operator console | `scripts/operator_console.sh claude` | Principal-operated interactive Claude/Codex session. No daemon, no work discovery, no validator loop. |
-| Role daemon | `docker compose --profile daemons up research-director-daemon` | Persistent role-bound background work with gates, claims, transition logs, and closure. |
+| Operator console | `scripts/public/control/operator_console.sh claude` | Principal-operated interactive Claude/Codex session. No daemon, no work discovery, no validator loop. |
+| Role daemon | `docker compose --env-file .env --profile daemons up research-director-daemon` | Persistent role-bound background work with gates, claims, transition logs, and closure. |
 
 This split is intentional. The product should not force a principal to boot the
 whole governance machine just to talk to a Claude Code instance. Direct
@@ -70,7 +85,7 @@ Do not conflate backend, audit, and interface.
 | `projects/` + `research_areas/` | Research artifacts, experiment ledgers, substrate workspaces, evidence. |
 | Git | Audit, versioning, rollback, sync. Not the low-latency coordination backend. |
 | Orbit | Primary governance UI projection over the backend. |
-| Telegram / phone channel | Push/digest/ack channel, not the system of record. |
+| Notification / phone channel | Push/digest/ack channel, not the system of record. Tenant overlays may use Telegram, Slack, email, or another provider. |
 
 The backend is filesystem-first at solo/small-team scale because it is
 inspectable, git-friendly, and easy to recover. At enterprise scale, the same
@@ -116,7 +131,7 @@ Runtime services:
 - **Role daemon(s):** one process per role or role pool.
 - **Worker runners:** constrained execution containers/worktrees.
 - **Orbit:** browser UI for governance and executive inbox.
-- **Push channel:** Telegram/Slack/email/Teams digest and urgent ack.
+- **Push channel:** configured notification provider for digest and urgent ack.
 - **Git mirror:** commits state snapshots and artifacts for audit/rollback.
 
 Each division gets its own namespace. Cross-division work happens through
@@ -150,8 +165,9 @@ one transition log
 many projections
 ```
 
-Orbit is the rich projection. Telegram is the constrained pager. CLI is the
-low-friction path. Daemons are workers. None owns independent state.
+Orbit is the rich projection. The notification provider is the constrained
+pager. CLI is the low-friction path. Daemons are workers. None owns
+independent state.
 
 ---
 
@@ -170,7 +186,7 @@ prove the runtime can see the instruction stack:
 
 The daemon prompt explicitly tells the spawned agent to read `AGENTS.md`,
 the role YAML, the role mandate, and the principal preferences before acting.
-`scripts/org_role_preflight.py` checks these documents before boot. This is
+`scripts/public/control/org_role_preflight.py` checks these documents before boot. This is
 necessary because some agent hosts auto-load `AGENTS.md` when opened in a repo,
 but a Dockerized subprocess may not. The product cannot rely on host-specific
 autodiscovery for constitutional instructions.
@@ -233,7 +249,7 @@ Local implementation:
 - `org/channels/<role>/sent/*.json` is the sender mirror.
 - `src/ztare/orchestration/agent_channels.py` writes and reads typed
   messages.
-- `scripts/agent_channel.py` is a dev/debug CLI projection.
+- `scripts/public/control/agent_channel.py` is a dev/debug CLI projection.
 - `src/ztare/orchestration/work_discovery.py` surfaces open role messages as
   daemon candidates.
 - Every send/status mutation appends `agent.message.*` to
@@ -242,7 +258,7 @@ Local implementation:
 Current inbox status:
 
 - Gate inbox: `ztare_workspace/gates/pending/` is the executive decision
-  inbox. Orbit and Telegram are projections over it.
+  inbox. Orbit and notification providers are projections over it.
 - Agent inbox: `org/channels/<role>/inbox/` is the persistent role-office
   message inbox. It creates obligations, not execution authority.
 - Task inbox: `org/tasks/pending/` contains assignable work. Work becomes
@@ -353,16 +369,16 @@ Approval cards must surface enough context to avoid rubber-stamping:
 - what evidence/artifact will be produced
 
 The principal should answer in natural language where possible. Orbit should
-render this as cards. Telegram/phone should render the same decision in a
-compact form. CLI/Python commands remain implementation and debugging tools,
-not the intended governance experience.
+render this as cards. Notification/phone providers should render the same
+decision in a compact form. CLI/Python commands remain implementation and
+debugging tools, not the intended governance experience.
 
 ---
 
 ## What Is Productized Now
 
 - Generic principal preference file: `org/preferences/principal.yaml`.
-- First-run setup check: `scripts/org_first_run_setup.py` validates role
+- First-run setup check: `scripts/public/control/org_first_run_setup.py` validates role
   preflight, inboxes, A2A cards, and daemon dry-run without executing work.
 - Role daemon can run as Manager or Research Director.
 - Docker Compose profiles exist for role daemons.
@@ -401,9 +417,9 @@ not the intended governance experience.
 - Stale-claim recovery / heartbeats / idempotency keys for multi-server leases.
 - Authenticated Orbit mutation endpoints and safe bind address.
 - Single approval path hardening: atomic pending-to-resolved transition with
-  idempotency and gate-id validation across Orbit and Telegram.
-- Event-log unification: daemon, Orbit, Telegram, closure daemon, channels,
-  and workers should emit the same event schema.
+  idempotency and gate-id validation across Orbit and notification providers.
+- Event-log unification: daemon, Orbit, notification providers, closure daemon,
+  channels, and workers should emit the same event schema.
 - Postgres-backed control-plane service for multi-server / multi-division
   deployments; filesystem remains a materialized projection.
 - A2A/ACP adapters for external agent interop at the control-plane boundary.
@@ -426,7 +442,7 @@ Changes made during the productization session:
   `org/preferences/principal.yaml`.
 - Added `org/members/principal.yaml`.
 - Added `org/tasks/templates/research_director_candidate_review.md`.
-- Patched the role daemon for explicit unattended mode, authorized Telegram
+- Patched the role daemon for explicit unattended mode, authorized notification
   control filtering, task claim/closure, real duration logging, and refusal of
   principal tasks with `autonomous_scope_ok=false`.
 - Patched the task inbox and role preflight to work in bare Python without
@@ -451,7 +467,7 @@ Changes made after the persistent-agent ontology review:
 - Added the persistent role office vs transient invocation distinction.
 - Added local typed agent-to-agent channel implementation:
   `src/ztare/orchestration/agent_channels.py`.
-- Added `scripts/agent_channel.py` for development/debug use.
+- Added `scripts/public/control/agent_channel.py` for development/debug use.
 - Patched work discovery to surface open `org/channels/<role>/inbox/`
   messages as candidates for the owning role daemon.
 - Registered the external-protocol stance: MCP for tools/context, A2A/ACP for
@@ -488,44 +504,44 @@ Changes made after independent review:
 
 Verification:
 
-- `python3 -m py_compile src/ztare/orchestration/agent_channels.py src/ztare/orchestration/work_discovery.py src/ztare/orchestration/task_authorization.py scripts/agent_daemon.py scripts/agent_channel.py`
+- `python3 -m py_compile src/ztare/orchestration/agent_channels.py src/ztare/orchestration/work_discovery.py src/ztare/orchestration/task_authorization.py scripts/public/control/agent_daemon.py scripts/public/control/agent_channel.py`
 - `venv/bin/pytest tests/test_agent_channels.py tests/test_work_discovery.py tests/test_goals_inbox.py` (`18 passed`)
 - `cd orbit && npm run build`
-- `python3 scripts/agent_daemon.py --role research_director --tick-once --dry-run`
+- `python3 scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run`
 
 ### 2026-04-30 17:57:47
 
 Changes made after validating the runtime identity boundary:
 
-- `scripts/agent_daemon.py` now accepts `--member-id` and `--agent-cli`, with
+- `scripts/public/control/agent_daemon.py` now accepts `--member-id` and `--agent-cli`, with
   `ZTARE_MEMBER_ID` / `ZTARE_AGENT_CLI` environment defaults.
-- `scripts/org_role_preflight.py` now checks the configured agent CLI instead
+- `scripts/public/control/org_role_preflight.py` now checks the configured agent CLI instead
   of hardcoding `claude`.
 - Docker daemon services pass the configured member/runtime through to the
   daemon.
 
 Verification:
 
-- `python3 -m py_compile scripts/org_role_preflight.py scripts/agent_daemon.py`
-- `python3 scripts/org_role_preflight.py --role research_director --agent-cli claude --json`
-- `python3 scripts/agent_daemon.py --role research_director --member-id codex --agent-cli claude --tick-once --dry-run`
+- `python3 -m py_compile scripts/public/control/org_role_preflight.py scripts/public/control/agent_daemon.py`
+- `python3 scripts/public/control/org_role_preflight.py --role research_director --agent-cli claude --json`
+- `python3 scripts/public/control/agent_daemon.py --role research_director --member-id codex --agent-cli claude --tick-once --dry-run`
 
 ### 2026-04-30 18:03:00
 
 Changes made after bootstrap review:
 
-- Added `AGENTS.md` to `scripts/org_role_preflight.py` as a required boot
+- Added `AGENTS.md` to `scripts/public/control/org_role_preflight.py` as a required boot
   document.
 - Added `docs/guides/org_runtime_quickstart.md` and the Research Director task
   template to preflight checks.
-- Patched `scripts/agent_daemon.py` so spawned agents are explicitly instructed
+- Patched `scripts/public/control/agent_daemon.py` so spawned agents are explicitly instructed
   to read `AGENTS.md`, role YAML, mandate, quickstart, and principal
   preferences before acting.
 - Added noninteractive runtime adapter selection: `claude_print` for
   `claude --print -p`, `codex_exec` for `codex exec --cd <repo> --sandbox
   workspace-write --ask-for-approval never`, and `auto` inference from the
   executable name.
-- Added `scripts/org_runtime_smoke.py` as the one-command product smoke:
+- Added `scripts/public/control/org_runtime_smoke.py` as the one-command product smoke:
   preflight plus daemon dry-run, no work execution.
 - Documented the instruction hierarchy: `AGENTS.md` is the repo constitution;
   role YAML is the durable contract; mandate is role-specific operating
@@ -533,27 +549,27 @@ Changes made after bootstrap review:
 - Fixed the agent-channel closure path so daemon-executed channel candidates
   close or acknowledge the underlying message instead of hitting an out-of-scope
   `role_id`.
-- Hardened gate resolution: Telegram/daemon path now validates gate IDs,
+- Hardened gate resolution: notification/daemon path now validates gate IDs,
   writes resolved gates atomically, preserves pending-gate contents in the
   resolved artifact, and marks pending gates handled. Orbit now validates gate
   IDs and treats already-resolved gates idempotently.
 - Added local A2A-style agent-card projection:
-  `scripts/export_a2a_agent_cards.py` writes role-office cards to
+  `scripts/public/control/export_a2a_agent_cards.py` writes role-office cards to
   `ztare_workspace/a2a/agent_cards/` without making A2A the authority layer.
-- Added `scripts/org_inbox_status.py` to make the three inboxes explicit:
+- Added `scripts/public/control/org_inbox_status.py` to make the three inboxes explicit:
   executive gates, assignable tasks, and role-to-role obligations.
 - Hardened minimal-environment role parsing so Docker/no-PyYAML exports keep
   block-scalar descriptions and null mandate fields sane.
 
 Verification:
 
-- `python3 -m py_compile src/ztare/orchestration/a2a_projection.py scripts/export_a2a_agent_cards.py scripts/org_inbox_status.py scripts/org_runtime_smoke.py scripts/agent_daemon.py scripts/org_role_preflight.py`
+- `python3 -m py_compile src/ztare/orchestration/a2a_projection.py scripts/public/control/export_a2a_agent_cards.py scripts/public/control/org_inbox_status.py scripts/public/control/org_runtime_smoke.py scripts/public/control/agent_daemon.py scripts/public/control/org_role_preflight.py`
 - `venv/bin/pytest tests/test_a2a_projection.py tests/test_agent_channels.py tests/test_work_discovery.py tests/test_goals_inbox.py` (`22 passed`)
 - `npm --prefix orbit run build`
-- `python3 scripts/agent_daemon.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec --tick-once --dry-run`
-- `python3 scripts/org_runtime_smoke.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec`
-- `python3 scripts/export_a2a_agent_cards.py`
-- `python3 scripts/org_inbox_status.py`
+- `python3 scripts/public/control/agent_daemon.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec --tick-once --dry-run`
+- `python3 scripts/public/control/org_runtime_smoke.py --role research_director --member-id codex --agent-cli codex --agent-adapter codex_exec`
+- `python3 scripts/public/control/export_a2a_agent_cards.py`
+- `python3 scripts/public/control/org_inbox_status.py`
 
 ### 2026-04-30 19:28:09
 
@@ -565,9 +581,9 @@ Changes made after GPU-run and early org-runtime failures:
 - Patched the gp163d GPU runner to send remote-side ntfy start and
   interrupted notifications, and to terminate child solves on ordinary
   stop/hangup signals.
-- Added `scripts/external_run_monitor.py` as the reusable remote-side watchdog
+- Added `scripts/public/control/external_run_monitor.py` as the reusable remote-side watchdog
   for PID/result/progress/log monitoring.
-- Added `scripts/org_first_run_setup.py` as the low-friction first-run boot
+- Added `scripts/public/control/org_first_run_setup.py` as the low-friction first-run boot
   check for the research-company runtime.
 - Documented that missing external-run telemetry is instrument debt, not an
   acceptable shortcut.
@@ -575,4 +591,4 @@ Changes made after GPU-run and early org-runtime failures:
 Verification:
 
 - `python3 -m py_compile projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/run_gpu_domain_validation.py`
-- `python3 -m py_compile scripts/org_first_run_setup.py scripts/external_run_monitor.py`
+- `python3 -m py_compile scripts/public/control/org_first_run_setup.py scripts/public/control/external_run_monitor.py`

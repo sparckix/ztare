@@ -1,8 +1,14 @@
+---
+description: "Recipes for running experiments; run make seal before make experiment-loop."
+---
+
 # Experiment Cookbook
 
-**Provenance:** Distilled from `research_areas/private/philosophy/operational_manual_substrate_construction.md` and `docs/PRE_RUN_CHECKLIST.md`. See `MIRROR.md` for the sync relationship.
+> **Up:** [Documentation map](../README.md)
+
+**Provenance:** Distilled from the private sealed pre-registration discipline and AGENTS.md sealed-pre-registration rules.
 **Canonical for:** pre-run procedure, `make seal` workflow, Division A/B protocol.
-**Supersedes:** manual pre-run steps described in `docs/PRE_RUN_CHECKLIST.md` §1–§6 (those sections are now implementation detail; this cookbook is the entry point).
+**Supersedes:** the older manual pre-run checklist; this cookbook is the entry point.
 
 ---
 
@@ -16,21 +22,21 @@
 
 | Track | When | Entry |
 |---|---|---|
-| **New substrate** | New GT, new domain | Start at §1 (Division A/B) |
-| **Grammar extension or rubric variant on existing substrate** | Same GT, different grammar/rubric | Skip to §2 (Scaffold Division B) |
-| **Re-run / replication** | Same GT, same rubric, different model pair | Skip to §4 (Seal) |
-| **Qualitative thesis (policy, philosophy, social science)** | Text evidence, no GT | See §0A below, then skip to §4 |
+| **New substrate** | New GT, new domain | Start at Division A/B |
+| **Grammar extension or rubric variant on existing substrate** | Same GT, different grammar/rubric | Skip to scaffold Division B |
+| **Re-run / replication** | Same GT, same rubric, different model pair | Skip to seal |
+| **Qualitative thesis (policy, philosophy, social science)** | Text evidence, no GT | See qualitative projects, then seal |
 
 ---
 
-## 0A. Qualitative Projects — `make generate-gp` (GP-104)
+## 0A. Qualitative Projects, `make generate-gp` (GP-104)
 
 For qualitative projects (text evidence, no numerical GT), use `generate-gp` instead of the Division A/B substrate pipeline. The generator scaffolds the project with correct gate configuration and an LLM-drafted adversarial rubric.
 
 ```bash
 make generate-gp \
     PROJECT=<slug> \
-    BRIEF="One-paragraph thesis question — be specific about domain and claim direction" \
+    BRIEF="One-paragraph thesis question, be specific about domain and claim direction" \
     JUDGE_MODEL=gpt4.1
 ```
 
@@ -38,8 +44,8 @@ make generate-gp \
 
 | Artifact | Purpose |
 |---|---|
-| `projects/<slug>/evidence.txt` | Blank evidence file — edit directly (Path A) |
-| `projects/<slug>/raw/` | Drop source documents here for `make evidence-compile` (Path B) |
+| `projects/<slug>/evidence.txt` | Blank evidence file, edit directly for a curated-evidence project |
+| `projects/<slug>/raw/` | Drop source documents here for `make evidence-compile` in a source-ingest project |
 | `projects/<slug>/raw/source_type_map.json` | Type map for evidence compiler |
 | `projects/<slug>/thesis.md` | Neutral seed thesis template |
 | `projects/<slug>/project_charter.md` | Auto-drafted from your brief |
@@ -62,14 +68,14 @@ Qualitative projects require three non-obvious configuration keys that must be p
 
 **Evidence: two paths:**
 
-- **Path A** (small projects, curated evidence): edit `evidence.txt` directly, one observation per line.
-- **Path B** (large projects, many source documents): drop PDFs/markdown into `raw/`, optionally type them via `raw/source_type_map.json`, then `make evidence-compile PROJECT=<slug> MODEL=gpt4.1`.
+- **Curated-evidence route** (small projects): edit `evidence.txt` directly, one observation per line.
+- **Source-ingest route** (large projects, many source documents): drop PDFs/markdown into `raw/`, optionally type them via `raw/source_type_map.json`, then `make evidence-compile PROJECT=<slug> MODEL=gpt4.1`.
 
 **After generating:**
 
-1. Review and edit `rubrics/<slug>.json` — the LLM draft is a starting point. Verify the persona is genuinely adversarial for your domain.
-2. Add evidence (Path A or B above).
-3. Proceed to §4 (Seal) — no smoke gate needed for qualitative projects (no numerical gate harness).
+1. Review and edit `rubrics/<slug>.json`, the LLM draft is a starting point. Verify the persona is genuinely adversarial for your domain.
+2. Add evidence using the curated-evidence or source-ingest route above.
+3. Proceed to §4 (Seal), no smoke gate needed for qualitative projects (no numerical gate harness).
 
 ```bash
 make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
@@ -79,7 +85,7 @@ make loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 \
 
 ---
 
-## 1. Division A — GT selection and sealed artifacts
+## 1. Division A, GT selection and sealed artifacts
 
 > Division A knows the GT. Division A must not write files the mutator sees.
 
@@ -88,12 +94,12 @@ make loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 \
 | Artifact | Location | Mutator-visible? |
 |---|---|---|
 | GT module (`gp0NN_*_gt.py`) | `src/ztare/substrates/` | No |
-| `evidence.txt` | `projects/<slug>/` | Yes — no GT names |
-| `evidence_holdout.txt` | `projects/<slug>/` | Yes — no GT names |
-| `evidence_farther_tail.txt` | `projects/<slug>/` | Yes — no GT names |
+| `evidence.txt` | `projects/<slug>/` | Yes, no GT names |
+| `evidence_holdout.txt` | `projects/<slug>/` | Yes, no GT names |
+| `evidence_farther_tail.txt` | `projects/<slug>/` | Yes, no GT names |
 | `.denylist` | `projects/<slug>/` | No (read by sentinel only) |
 | `sealed_assertions.py` | `projects/<slug>/` | No (black-box import by harness) |
-| Pre-registration | `research_areas/private/seams/` | No |
+| Pre-registration | private sealed area | No |
 
 **Use the substrate generator, not manual Python:**
 
@@ -105,14 +111,14 @@ python generate_substrate.py --project <slug> --gt-module <module>
 python -m src.ztare.substrates.render_evidence --project <slug> --gt-class <class>
 ```
 
-Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the GP-072 Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence — do not bypass with one-off scripts.
+Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the GP-072 Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence, do not bypass with one-off scripts.
 
 **Custom substrate triumvirate (gp159/160/161 lessons, 2026-04-25):**
 
-When building a custom substrate (not using `generate_substrate.py`), enforce the triumvirate alignment — evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
+When building a custom substrate (not using `generate_substrate.py`), enforce the triumvirate alignment, evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
 
-1. **gate_harness.py** is the authority — contains GT, holdout splits, gate logic. It dynamically imports test_model.py and calls `I_model(d)`.
-2. **test_model.py** is the mutator's submission — starts as a NaN-returning stub. The mutator overwrites it. **Must NOT be a copy of gate_harness.py** (causes infinite import recursion).
+1. **gate_harness.py** is the authority, contains GT, holdout splits, gate logic. It dynamically imports test_model.py and calls `I_model(d)`.
+2. **test_model.py** is the mutator's submission, starts as a NaN-returning stub. The mutator overwrites it. **Must NOT be a copy of gate_harness.py** (causes infinite import recursion).
 3. **evidence.txt** must have data inline (not "run this command"), a Python code template with a WRONG example form (not GT-leaking), and the same `I_model` signature as gate_harness expects.
 4. **cage_meta.class** in rubric must match the actual substrate type (`1d` for scalar substrates, `nd_features` for feature-dict substrates). Mismatch injects the wrong prompt contract.
 5. Run `python scripts/validate_evidence.py <slug>` to check evidence quality before sealing.
@@ -120,16 +126,16 @@ When building a custom substrate (not using `generate_substrate.py`), enforce th
 
 **Identifiability protocol (required before sealing):**
 
-1. Multi-start fit — ≥20 random seeds in the plausible parameter box. All convergence paths must recover GT to pre-reg tolerance.
-2. Pairwise bowl check — fix each pair at GT, sweep the third. Loss must be convex-down with a unique minimum.
-3. Jacobian column-rank — equals parameter count at GT. Catches α/β collapse (sandbox_06 incident).
-4. Bootstrap — ≥200 resamples; 95% CIs for each parameter must not overlap a neighbor's GT value.
+1. Multi-start fit, ≥20 random seeds in the plausible parameter box. All convergence paths must recover GT to pre-reg tolerance.
+2. Pairwise bowl check, fix each pair at GT, sweep the third. Loss must be convex-down with a unique minimum.
+3. Jacobian column-rank, equals parameter count at GT. Catches α/β collapse (sandbox_06 incident).
+4. Bootstrap, ≥200 resamples; 95% CIs for each parameter must not overlap a neighbor's GT value.
 
 Paste results into the pre-registration before sealing it. A pre-reg without identifiability results is not sealed.
 
 ---
 
-## 2. Division B — charter, rubric, seed model
+## 2. Division B, charter, rubric, seed model
 
 > Division B is GT-blind. Division B produces everything the mutator reads.
 
@@ -147,7 +153,7 @@ Paste results into the pre-registration before sealing it. A pre-reg without ide
 
 - Describes *that* the target exists and *how* grading works. Never *what* the target is.
 - No GT functional form, no parameter names, no domain nouns that name the law class.
-- Grammar extensions (e.g. `UNIVERSAL_DENOMINATOR`) must be named in the charter as structural options — not as hints that the answer belongs to that class.
+- Grammar extensions (e.g. `UNIVERSAL_DENOMINATOR`) must be named in the charter as structural options, not as hints that the answer belongs to that class.
 - Strip test (Mungerian inversion): remove proper nouns and concrete mechanisms from every sentence. If the sentence collapses to "the answer has property X," it was a leak.
 
 **Rubric rules:**
@@ -182,9 +188,9 @@ make seal PROJECT=<slug> RUBRIC=rubrics/<slug>_01.json
 
 `make seal` runs in sequence:
 
-1. **Sentinel** — scans all mutator-visible files (`project_charter.md`, `thesis.md`, `test_model.py`, `evidence.txt`, `evidence_holdout.txt`, `evidence_farther_tail.txt`, rubric) against `.denylist`. Exit 1 = contamination. Fix the file with the match, then re-run seal.
-2. **Integration test** — runs `gate_harness.py --run-smoke-test` and verifies RMSE is finite, harness_ok=true.
-3. **Writes `sandbox_seal.json`** — records sentinel result + smoke test result. This file is the proof of seal. Do not proceed to `make experiment-loop` without it.
+1. **Sentinel**, scans all mutator-visible files (`project_charter.md`, `thesis.md`, `test_model.py`, `evidence.txt`, `evidence_holdout.txt`, `evidence_farther_tail.txt`, rubric) against `.denylist`. Exit 1 = contamination. Fix the file with the match, then re-run seal.
+2. **Integration test**, runs `gate_harness.py --run-smoke-test` and verifies RMSE is finite, harness_ok=true.
+3. **Writes `sandbox_seal.json`**, records sentinel result + smoke test result. This file is the proof of seal. Do not proceed to `make experiment-loop` without it.
 
 **Seal is not manual.** Do not run the sentinel and smoke gate separately and declare the sandbox sealed. `make seal` is the canonical gate; `sandbox_seal.json` is the evidence. A sandbox without `sandbox_seal.json` is not sealed.
 
@@ -194,12 +200,12 @@ make seal PROJECT=<slug> RUBRIC=rubrics/<slug>_01.json
 
 Before the first `make experiment-loop`:
 
-1. **Write the pre-registration** at `research_areas/private/seams/<slug>_pre_registration.md`:
-   - `§Leak Audit` — paste sentinel output from `sandbox_seal.json`
-   - `§Identifiability` — paste multi-start fit results
-   - `§Smoke Gate` — paste harness smoke gate output
-   - `§Charter Fingerprint` — `sha256sum projects/<slug>/project_charter.md`
-   - `§Sealed Expected Slots` — GT form, expected champion form, discriminator thresholds (private, never in charter)
+1. **Write the pre-registration** in the private sealed area:
+   - `Leak Audit`, paste sentinel output from `sandbox_seal.json`
+   - `Identifiability`, paste multi-start fit results
+   - `Smoke Gate`, paste harness smoke gate output
+   - `Charter Fingerprint`, `sha256sum projects/<slug>/project_charter.md`
+   - `Sealed Expected Slots`, GT form, expected champion form, discriminator thresholds (private, never in charter)
 
 2. **Dry-run the sealed command:**
    ```bash
@@ -229,7 +235,7 @@ Model labels (not raw API IDs): `gemini`, `gemini-lite`, `gemini-pro`, `claude`,
 
 **Branch audit before every launch:**
 
-For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, grammar variant, `enable_*`), verify that prompt contracts, gate harnesses, and deterministic checks cover the flag's **actual value** in this rubric — not the default. The GP-080 incident burned three iterations because `def f()` contract existed for `discrete_exact` but not for `continuous_rmse`.
+For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, grammar variant, `enable_*`), verify that prompt contracts, gate harnesses, and deterministic checks cover the flag's **actual value** in this rubric, not the default. The GP-080 incident burned three iterations because `def f()` contract existed for `discrete_exact` but not for `continuous_rmse`.
 
 ---
 
@@ -279,10 +285,10 @@ make experiment-loop PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json IT
 
 ## Cross-references
 
-- Full leak taxonomy: `docs/PRE_RUN_CHECKLIST.md` §1 (generic + target-specific denylist construction)
-- Strip test procedure: `docs/PRE_RUN_CHECKLIST.md` §2
-- Identifiability protocol: `docs/PRE_RUN_CHECKLIST.md` §3
-- GP-072 full 7-phase spec: `research_areas/private/specs/active/GP-072_role_separation_sandbox_construction_spec.md`
-- Operational manual (philosophy): `research_areas/private/philosophy/operational_manual_substrate_construction.md`
-- Three Legs (why this architecture): `research_areas/private/philosophy/three_legs_of_ztare.md`
-- Enforcement principles (P13, P14): `docs/epistemic_supervision_principles.md`
+- Full leak taxonomy + denylist construction: `docs/guides/for_researchers.md` §2 (charter contamination) and AGENTS.md §7
+- Strip test procedure: `docs/guides/for_researchers.md` §2
+- Identifiability + pre-registration protocol: `docs/guides/for_researchers.md` §4 and AGENTS.md §7
+- GP-072 full 7-phase spec: `GP-072 (internal seam)`
+- Operational philosophy: `docs/concepts/epistemic_principles.md`
+- Three-leg/reflexive framing: `docs/concepts/reflexive_engineering.md`
+- Enforcement principles (P13, P14): `docs/concepts/epistemic_principles.md`

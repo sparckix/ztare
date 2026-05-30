@@ -1,3 +1,7 @@
+---
+description: "The core epistemic-verification framework, inversion, compression, adversarial disagreement."
+---
+
 # The Principles of Epistemic Verification
 ## *How Judgment Decomposes, and What Does Not*
 

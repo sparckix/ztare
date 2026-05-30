@@ -1,3 +1,7 @@
+---
+description: "Short letter on the experimental-mathematics results produced by the apparatus."
+---
+
 # Automated Asymptotic Recovery with Provable False-Positive Rejection
 
 ## Abstract
@@ -8,7 +12,7 @@ We present results from an automated epistemic verification engine (ZTARE) that 
 
 2. **Rejection (incompressible targets):** Correctly returned null on Mertens function $M(n)/\sqrt{n}$ (oscillatory, no smooth compression), normalized prime gaps $g(n)/\log p_n$ (spiky, no smooth compression), and Ulam density $U(n)/n$ (41 templates tested, none pass holdout). False-positive rate: 0 across all incompressible substrates.
 
-3. **Methodological findings:** (a) An automated observable-rotation step discovered that while $U(n)/n$ resists compression, the reciprocal $n/U(n)$ compresses to $a \cdot \ln n + b/n + c$ with all gates passing — the representation, not the data, was the bottleneck. (b) The grammar ceiling theorem: additional compute iterations cannot break structural ceilings imposed by the expression grammar; only grammar expansion (adding new primitives) enables structural class transitions. This was demonstrated empirically on a four-run chain where 63 iterations in a restricted grammar could not reach a form that one grammar expansion achieved in 6 iterations.
+3. **Methodological findings:** (a) An automated observable-rotation step discovered that while $U(n)/n$ resists compression, the reciprocal $n/U(n)$ compresses to $a \cdot \ln n + b/n + c$ with all gates passing, the representation, not the data, was the bottleneck. (b) The grammar ceiling theorem: additional compute iterations cannot break structural ceilings imposed by the expression grammar; only grammar expansion (adding new primitives) enables structural class transitions. This was demonstrated empirically on a four-run chain where 63 iterations in a restricted grammar could not reach a form that one grammar expansion achieved in 6 iterations.
 
 All results were obtained with the engine operating blind: cold variable names, no domain labels, no named mathematical constants, and no access to OEIS or any reference database. The code, data, and gate harnesses are publicly available.
 
@@ -32,7 +36,7 @@ All phases are deterministic except the LLM's text generation. The holdout data 
 
 ## 2. Results
 
-### 2.1 Lucky Numbers (A000959) — Density Measurement
+### 2.1 Lucky Numbers (A000959), Density Measurement
 
 The Lucky number density ratio $L(n)/n$ was presented as an unlabeled observable over $n = 500$ to $5{,}000$ (visible), with holdout at $n = 5{,}001$ to $20{,}000$ and farther-tail at $n = 20{,}001$ to $50{,}000$. The engine found at iteration 1:
 
@@ -40,19 +44,19 @@ $$\frac{L(n)}{n} \approx 1.200 \cdot \ln n - \frac{4.697}{n} + 0.511$$
 
 All four gates pass: holdout global residual $0.021 < 0.05$, farther-tail global residual $0.026 < 0.08$. Eight templates passed all gates, with the simplest ($a \cdot \ln n + b$, $k = 2$) confirming the logarithmic structure. The coefficient $a = 1.200$ is consistent with the conjectured analogy to the Prime Number Theorem, which predicts $L(n) \sim C \cdot n \ln n$ for some constant $C$. We note that the LLM may have encountered this relationship in training data; the contribution is the certified measurement under blinded, gate-verified conditions, not the conjecture itself.
 
-### 2.2 Hardy-Ramanujan Recovery (A000041) — Calibration
+### 2.2 Hardy-Ramanujan Recovery (A000041), Calibration
 
 The logarithm of the partition function was presented as 30 blinded data points. The compression primitive found $f(n) = 2.631\sqrt{n} - 1.172 \ln n - 1.445/n - 1.744$, matching the Hardy-Ramanujan asymptotic ($a_{\text{theory}} = \pi\sqrt{2/3} = 2.565$, $b_{\text{theory}} = -1$). All gates pass. The PSLQ bridge identified the leading coefficient as $\pi\sqrt{2/3}$.
 
-### 2.3 Partitions into Squares (A001156) — Topology Identification
+### 2.3 Partitions into Squares (A001156), Topology Identification
 
 The compression found $a \cdot n^{0.335} + c \cdot \ln n + d$ (exponent within $0.5\%$ of the Meinardus-predicted $1/3$). Holdout gates rejected the form due to accumulated exponent bias at large $n$. With normalized (scale-invariant) residuals, the form passes at $0.16\%$ relative error.
 
-### 2.4 Partitions Excluding 1 (A002865) — Topology Identification
+### 2.4 Partitions Excluding 1 (A002865), Topology Identification
 
 The compression found $a\sqrt{n} + b\ln n + c/n + d$ with $a = 2.562$ (theoretical $\pi\sqrt{2/3} = 2.565$). Same pattern as §2.2: correct topology, holdout rejected due to absolute gate thresholds on a large-scale observable. Normalized residual: $0.04\%$.
 
-### 2.5 Ulam Numbers (A002858) — Observable Rotation
+### 2.5 Ulam Numbers (A002858), Observable Rotation
 
 No closed-form model of $U(n)/n$ passed holdout gates across 41 templates. However, the automated observable-rotation step (Phase 2.5) discovered that the reciprocal representation $n/U(n)$ compresses cleanly:
 
@@ -62,7 +66,7 @@ All gates pass at $n = 500{,}000$ with max residual $0.0015$ ($33\times$ below t
 
 Additionally, the density ratio $U(n)/n$ was computed to $n = 1{,}000{,}000$ ($U(10^6) = 13{,}509{,}072$). The inverse density converged to $13.506 \pm 0.003$ across the final $400{,}000$ values, consistent with prior measurements. Spectral analysis detected a dominant period near $19.3$ (Lomb-Scargle, FAP $< 6.5 \times 10^{-5}$), which differs from the period $\sim 21.3$ reported in Steinerberger (2017); we attribute the discrepancy to detrending sensitivity (spectral slope ranges from $-0.05$ to $-1.34$ across window widths $W = 11$ to $W = 101$).
 
-### 2.6 Prime Partitions (A000607) — Compositional Discovery
+### 2.6 Prime Partitions (A000607), Compositional Discovery
 
 Stage 1 templates failed. Stage 2 (depth-1 compositional) found $a\sqrt{n/\ln n} + b\ln n + c$, consistent with Vaughan's theorem. All four tight gates pass. This was the first activation of the compositional compression layer.
 
@@ -76,7 +80,7 @@ To test whether the engine can discover genuinely unknown asymptotics (rather th
 | S2 (normalized sum, oscillating) | max res 0.48 | N/A | Correct null |
 | S3 (normalized gaps, spiky) | max res 2.39 | N/A | Correct null |
 
-S2 and S3 were correctly identified as incompressible (the true structure lives in fluctuations, not trends). S1 achieved tight visible-window fit but the compression form diverged on extrapolation to $10\times$ the training range, confirming window fitting rather than structural discovery. The hit rate on genuinely unknown substrates was 0/3. The false-positive rate was also 0/3 — the engine did not claim structure where none exists.
+S2 and S3 were correctly identified as incompressible (the true structure lives in fluctuations, not trends). S1 achieved tight visible-window fit but the compression form diverged on extrapolation to $10\times$ the training range, confirming window fitting rather than structural discovery. The hit rate on genuinely unknown substrates was 0/3. The false-positive rate was also 0/3, the engine did not claim structure where none exists.
 
 ### 2.7.1 PySR baseline comparison
 
@@ -104,9 +108,9 @@ The comparison was run with PySR 1.5.10, 40 iterations, complexity limit 20, ope
 
 The grammar ceiling theorem (§3) states that additional compute cannot break structural ceilings imposed by the expression grammar; grammar expansion is required. Applying that framework to the §2.7 null result exposes a second ceiling the engine had not previously isolated.
 
-On discrete number-theoretic substrates — here sopfr (A001414 sum of prime factors with multiplicity) tested blind under `py_exec` grammar with `isprime`, `factorint`, `primefactors`, `divisors`, `gcd` as primitives — the mutator fails to recover the law despite the grammar admitting it syntactically. The data reveals the target with high clarity: the value $z(8) = z(9) = 6$ is a collision identity ($2+2+2 = 3+3$) that uniquely distinguishes sopfr from all other standard arithmetic functions of $n$; 22 primes in the visible range map to themselves ($z(p) = p$); prime-power values follow $z(p^k) = k \cdot p$ exactly. None of these three signals are read by the LLM mutator under repeated iteration with pivot escalation.
+On discrete number-theoretic substrates, here sopfr (A001414 sum of prime factors with multiplicity) tested blind under `py_exec` grammar with `isprime`, `factorint`, `primefactors`, `divisors`, `gcd` as primitives, the mutator fails to recover the law despite the grammar admitting it syntactically. The data reveals the target with high clarity: the value $z(8) = z(9) = 6$ is a collision identity ($2+2+2 = 3+3$) that uniquely distinguishes sopfr from all other standard arithmetic functions of $n$; 22 primes in the visible range map to themselves ($z(p) = p$); prime-power values follow $z(p^k) = k \cdot p$ exactly. None of these three signals are read by the LLM mutator under repeated iteration with pivot escalation.
 
-The failure is not in the grammar — `sum(p \cdot v \text{ for } p, v \text{ in factorint}(n).\text{items}())$ is expressible — but in the *mathematical category* the mutator searches within. The LLM reaches for polynomial, rational, and logarithmic combinations (smooth function-space) because those dominate symbolic-regression corpora in its pre-training. Crossing from function-space (functions of a continuous index) to prime-space (functions on the lattice of primes under unique factorization) requires an ontological shift the LLM does not make unprompted, even with the prime-factorization primitives directly available in the expression sandbox.
+The failure is not in the grammar, `sum(p \cdot v \text{ for } p, v \text{ in factorint}(n).\text{items}())$ is expressible, but in the *mathematical category* the mutator searches within. The LLM reaches for polynomial, rational, and logarithmic combinations (smooth function-space) because those dominate symbolic-regression corpora in its pre-training. Crossing from function-space (functions of a continuous index) to prime-space (functions on the lattice of primes under unique factorization) requires an ontological shift the LLM does not make unprompted, even with the prime-factorization primitives directly available in the expression sandbox.
 
 We therefore distinguish two ceilings:
 
@@ -115,15 +119,15 @@ We therefore distinguish two ceilings:
 | Grammar | Expression language admits the form syntactically | Can the answer be written in the grammar? | Grammar expansion (e.g., `py_exec` + primitives) |
 | Space | Mathematical category the mutator searches within | Does the mutator reach for the correct category of object? | Explicit category-switch intervention, or reasoning-class model |
 
-Grammar expansion is necessary but not sufficient. The space ceiling is an additional, orthogonal bound. This reframes the scope of the discovery claim: the apparatus recovers targets whose correct form lives in the LLM's *statistically dominant* category (smooth asymptotic — §2.1-§2.6), and fails on targets requiring category-switch to less frequent categories (discrete algebraic — §2.7) regardless of whether the grammar admits the answer.
+Grammar expansion is necessary but not sufficient. The space ceiling is an additional, orthogonal bound. This reframes the scope of the discovery claim: the apparatus recovers targets whose correct form lives in the LLM's *statistically dominant* category (smooth asymptotic, §2.1-§2.6), and fails on targets requiring category-switch to less frequent categories (discrete algebraic, §2.7) regardless of whether the grammar admits the answer.
 
-### 2.7.3 Open methodological questions — state-reset primitives
+### 2.7.3 Open methodological questions, state-reset primitives
 
 The apparatus's pivot mechanism (GP-021) currently succeeds by disrupting the mutator's state accumulation via heuristic modules (inversion, coordinate compression, category switch). Three candidate state-reset primitives emerge from this work but have not been evaluated here:
 
 - **Persona rotation:** cycle the mutator persona every $k$ iterations (contrarian empiricist → topology-first pattern matcher → adversarial symmetrist), breaking the drift of any single anchor.
 - **Thesis amnesia:** clear the best-thesis memory on stagnation, forcing the mutator to propose from cold rather than iterate on a locally-optimal but globally-wrong form.
-- **Judge rotation:** swap the judge model (e.g., gpt-4.1 → claude → gemini-pro) on stagnation to break judge-side calibration drift, which we observed as a score oscillation of 0–76 on identical-quality proposals (§2.7.1 footnote).
+- **Judge rotation:** swap the judge model (e.g., gpt-4.1 → claude → gemini-pro) on stagnation to break judge-side calibration drift, which we observed as a score oscillation of 0-76 on identical-quality proposals (§2.7.1 footnote).
 
 All three are low-cost, high-leverage candidates that deserve controlled evaluation. We defer their analysis to a dedicated methodology paper and flag them here as open directions for the symbolic-regression-with-LLM community.
 
@@ -158,17 +162,17 @@ The 28 generators separate into two phases with an empty gap:
 
 No generator achieves both low loss and target-range spacing variance. The gap is structural: three independent grammar classes (polynomial-only, sparse arithmetic off-diagonal, dense Hankel/Toeplitz arithmetic) all reproduce it. Spectral form factor (SFF-L1) is uniformly wrong across all 28 families (0.82--1.13 vs target 0).
 
-The bimodal gap is a distinct structural finding. It means the operator space has a phase transition between polynomial-dominated and arithmetic-dominated spectral statistics. A critical-point generator — sitting at the phase boundary — would require deliberate physics-informed design, not gradient descent from random initialization. This extends the grammar ceiling from "which mathematical primitives the engine can compose" to "which spectral statistics an operator class can produce."
+The bimodal gap is a distinct structural finding. It means the operator space has a phase transition between polynomial-dominated and arithmetic-dominated spectral statistics. A critical-point generator, sitting at the phase boundary, would require deliberate physics-informed design, not gradient descent from random initialization. This extends the grammar ceiling from "which mathematical primitives the engine can compose" to "which spectral statistics an operator class can produce."
 
 ### 3.2 Architecture-translation experiment: Navier-Stokes counter-example hunt
 
-A separate experiment tests whether the apparatus's substrate-bottleneck-diagnosis methodology — empirically validated on continuous-gradient physics substrates in a parallel project (Alami 2026, paper 7) — translates to a mathematical-substrate Millennium target. The Navier-Stokes Millennium question (whether smooth divergence-free finite-energy 3D incompressible initial conditions on T³ can produce finite-time singularities) admits a continuous-gradient surrogate that the apparatus can in principle navigate: the Beale-Kato-Majda integral $\int_0^T \|\nabla u(\cdot, t)\|_\infty \, dt$ remains continuous in initial-condition parameters, even though the singularity-or-not question itself is binary.
+A separate experiment tests whether the apparatus's substrate-bottleneck-diagnosis methodology, empirically validated on continuous-gradient physics substrates in a parallel project (Alami 2026, paper 7), translates to a mathematical-substrate Millennium target. The Navier-Stokes Millennium question (whether smooth divergence-free finite-energy 3D incompressible initial conditions on T³ can produce finite-time singularities) admits a continuous-gradient surrogate that the apparatus can in principle navigate: the Beale-Kato-Majda integral $\int_0^T \|\nabla u(\cdot, t)\|_\infty \, dt$ remains continuous in initial-condition parameters, even though the singularity-or-not question itself is binary.
 
 The architecture-translation maps the four ZTARE components to their NS-counterexample-hunt analogues. The Architect (LLM cold-shot) proposes initial-condition velocity-field families $u_0(x; \theta)$ rather than Lagrangians. The Mechanic (numerical solver) replaces scipy.optimize with a JAX-based pseudo-spectral 3D incompressible Navier-Stokes integrator: vorticity formulation with 2/3 dealiasing, RK4 time stepping, periodic boundary conditions on $T^3 = [0, 2\pi]^3$, scaling from $N = 64$ local CPU prototyping to $N = 256$-$512$ on rented GPU. The Falsifier (loss landscape) maximizes $\sup_t \|\nabla u(\cdot, t)\|_\infty$ subject to finite-energy and divergence-free constraints, equivalent to maximizing the BKM integrand. The pre-registered Phase 0 acceptance gate is reproducing the published Taylor-Green vortex kinetic-energy decay curve at $\nu = 10^{-3}$, $N \geq 64$, $t \in [0, 5]$, within 1% of the literature benchmark; the pre-registered Phase 1 gate is replicating the Hou-Luo 2014 axisymmetric blow-up vorticity growth signature at the same resolution before any new ansatz hunt begins.
 
 This experiment is scoped at five phases: solver scaffolding (Phase 0, in flight as of the present draft, scaffold $\sim 250$ lines, FFT round-trip clean at $10^{-13}$ tolerance, vorticity-magnitude diagnostic normalization currently being debugged), Hou-Luo replication (Phase 1, target $\sim 1$ day after Phase 0 acceptance), parallel cold-shot ansatz generation (Phase 2, runs in parallel with Phase 0/1 since it requires only LLM compute), parameter-sweep search (Phase 3, GPU-rental at H100 scale), resolution-convergence audit at progressively finer mesh (Phase 4, the controlling test that distinguishes a genuine blow-up from a numerical artifact), domain-expert routing for any Phase 4 survivor (Phase 5, since Clay-acceptable Navier-Stokes counter-examples require both numerical evidence and an analytical self-similar/Leray-type mathematical argument that the apparatus cannot generate).
 
-The experiment's claim is methodological, not theorematic. The realistic outcome distribution is: most cold-shot ansatz families produce smooth (non-blowup) solutions, the Hou-Luo replication validates the solver, and any candidate showing super-exponential vorticity growth gets routed to Phase 4 for resolution-convergence audit. The experiment is not claiming the architecture will produce a Clay-acceptable counter-example in any specific timescale; it is claiming the architecture-translation question — whether the substrate-bottleneck-diagnosis methodology that worked on the physics substrate works on a mathematical substrate when a continuous-gradient surrogate is available — is itself a falsifiable methodological question worth posing. A null result (no candidate survives Phase 4) is equally publishable as a positive result, since the null bounds the methodology's reach in exactly the same epistemic-discipline pattern that paper 7's PN-elliptical FAIL bounded the PMOND v5 universality claim.
+The experiment's claim is methodological, not theorematic. The realistic outcome distribution is: most cold-shot ansatz families produce smooth (non-blowup) solutions, the Hou-Luo replication validates the solver, and any candidate showing super-exponential vorticity growth gets routed to Phase 4 for resolution-convergence audit. The experiment is not claiming the architecture will produce a Clay-acceptable counter-example in any specific timescale; it is claiming the architecture-translation question, whether the substrate-bottleneck-diagnosis methodology that worked on the physics substrate works on a mathematical substrate when a continuous-gradient surrogate is available, is itself a falsifiable methodological question worth posing. A null result (no candidate survives Phase 4) is equally publishable as a positive result, since the null bounds the methodology's reach in exactly the same epistemic-discipline pattern that paper 7's PN-elliptical FAIL bounded the PMOND v5 universality claim.
 
 The experiment also responds to a structural critique raised during the architecture-translation design: the apparatus's strength on physics substrates depended on continuous gradients (per-class MRE responding smoothly to parameter perturbations), and pure mathematical proof problems (Lean-verifiable theorem proofs) lack such gradients because Lean's "unsolved goals" returns no partial-credit signal. The Navier-Stokes counter-example hunt is the unique Millennium target where the question's structure admits a continuous-gradient surrogate without requiring a Lean/SMT theorem-prover refactor. It is the architecture-translation experiment that the architecture's existing strengths can in fact attempt; broader Lean-based proof-generation experiments would require a separate apparatus (Architect proposing lemmas, Mechanic running SMT/Vampire, Falsifier running Lean kernel) outside the scope of the present apparatus and outside the scope of this paper.
 
@@ -184,7 +188,7 @@ Three contributions emerge:
 
 **Provable false-positive rejection.** Across all incompressible substrates (Mertens, prime gaps, Ulam direct, DFDO), the engine returned null rather than claiming spurious structure. The deterministic holdout gates are the mechanism: any form that fits the visible window but diverges on held-out data is rejected regardless of how the LLM scored it.
 
-**The grammar ceiling.** The engine's structural reach is bounded by its expression grammar, not by compute. This finding — demonstrated on a four-run controlled chain and independently confirmed on a 28-family operator search for Riemann zero spacing statistics — suggests that future automated discovery systems should invest in grammar expansion (adding new mathematical primitives or operator classes) rather than additional LLM iterations or optimization restarts within a fixed grammar.
+**The grammar ceiling.** The engine's structural reach is bounded by its expression grammar, not by compute. This finding, demonstrated on a four-run controlled chain and independently confirmed on a 28-family operator search for Riemann zero spacing statistics, suggests that future automated discovery systems should invest in grammar expansion (adding new mathematical primitives or operator classes) rather than additional LLM iterations or optimization restarts within a fixed grammar.
 
 The Lucky number coefficient $a = 1.200$ and the Ulam reciprocal compression are the strongest individual results, but we emphasize that the engine has not yet discovered an asymptotic form that was not already conjectured or known. The survey on unknown substrates (§2.7) returned 0/3 genuine discoveries. The engine is currently a recovery and certification instrument, not a discovery engine. Crossing that boundary likely requires either hybrid symbolic search (beyond LLM proposals) or substrates that sit within the LLM's grammar but outside its training data.
 

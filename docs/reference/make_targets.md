@@ -1,3 +1,6 @@
+---
+description: "Reference of ZTARE make commands."
+---
 ZTARE commands
 
 Variables:
@@ -5,8 +8,8 @@ Variables:
   MODE=factory|honeypot  (default: factory; honeypot sets ITERS=50 and skips pre-run pipeline)
 
 Run modes:
-  factory  — tight rubric, GP-054 pre-run, 5-10 iters, synthesis output (default)
-  honeypot — loose rubric, no pre-run, 50 iters, debate log is the output
+  factory, tight rubric, GP-054 pre-run, 5-10 iters, synthesis output (default)
+  honeypot, loose rubric, no pre-run, 50 iters, debate log is the output
 
 Targets:
   make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # factory pre-run: fetch→compile→review→pause
@@ -87,3 +90,11 @@ Targets:
   make v4-debate-init RUN_ID=<run_id>
   make v4-debate-show TASK_ID=<task_id>
   make v4-debate-merge TASK_ID=<task_id>
+  make benchmark-evidence                   # model-free public benchmark-evidence check
+  make demo                                 # small model-free demo; no live model calls
+  make demo-current                         # current-engine claim-discipline demo; no live model calls
+  make smoke-public                         # first-run public smoke; no live model calls
+  make public-adversarial-smoke             # maintainer publish-readiness canary
+  make smoke-docker                         # maintainer Docker smoke for clean-machine checks
+  make docs-check                           # maintainer doc index and local-link check
+  make gates                                # maintainer aggregate gate before publish/commit

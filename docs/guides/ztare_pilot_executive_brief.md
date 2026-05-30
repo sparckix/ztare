@@ -1,4 +1,9 @@
-# ZTARE Epistemic Verification — Pilot Brief
+---
+description: "One-page pilot brief: the cost of confidently-wrong AI analysis."
+---
+# ZTARE Epistemic Verification, Pilot Brief
+
+> **Up:** [Documentation map](../README.md)
 
 ## The Problem
 
@@ -14,7 +19,7 @@ ZTARE is a verification engine for AI-augmented knowledge work. It runs a
 structured loop: an AI generates a thesis, a second AI and a battery of
 deterministic gates verify it, failures are recorded as constraints, and the
 next iteration must respect every prior failure. The output is a thesis that
-has survived adversarial scrutiny under pre-registered criteria — or an honest
+has survived adversarial scrutiny under pre-registered criteria, or an honest
 declaration that the evidence is insufficient.
 
 ZTARE is not a model. It is a discipline imposed on models.
@@ -49,7 +54,7 @@ battery that catches structural errors (missing counterfactual, unsupported
 causal claim, contradicted by withheld data) that human review routinely misses
 under time pressure.
 
-## The Seven Principles (from Paper 5)
+## The Seven Principles (from Epistemic Verification)
 
 1. **Separation**: The person who writes the thesis does not grade it
 2. **Statelessness**: The reviewer sees only the current memo and rubric, no anchoring to prior work
@@ -76,4 +81,4 @@ a well-documented negative result and we stop.
 
 ## Contact
 
-Daniel Alami — daniel@figs.com
+Commercial licensing contact: see `README.md` §License.

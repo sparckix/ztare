@@ -1,3 +1,6 @@
+---
+description: "Checklist to run before trusting any new benchmark result."
+---
 # Benchmark Checklist
 
 Use this checklist before trusting a new benchmark result.

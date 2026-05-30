@@ -1,4 +1,10 @@
-# MLH Family Protocol — Pre-Registered Cross-Substrate Prediction
+---
+description: "Pre-registered cross-substrate protocol for the formula-recovery track."
+---
+
+# MLH Family Protocol, Pre-Registered Cross-Substrate Prediction
+
+> **Up:** [Documentation map](../README.md)
 
 **Status:** Active (GP-135). Primary scientific object of the discovery track.
 **Supersedes:** Per-substrate single-recovery claims as the unit of science.
@@ -13,7 +19,7 @@ The MLH protocol replaces that unit. The new unit is:
 
 > *Across a family of related substrates {S₁, …, S₅}, the engine proposes a cross-substrate invariant I (a structural predicate or functional identity holding on all five). Given I, the engine pre-registers a prediction for a sealed holdout substrate S₆ before S₆'s evidence is revealed. S₆ is then unlocked; the prediction is scored against ground truth.*
 
-A family-level correct prediction is harder to contaminate than a single-substrate recovery. Accidental contamination would have to span the training family and the holdout consistently — a much tighter condition on the apparatus than any one prompt example.
+A family-level correct prediction is harder to contaminate than a single-substrate recovery. Accidental contamination would have to span the training family and the holdout consistently, a much tighter condition on the apparatus than any one prompt example.
 
 ---
 
@@ -30,13 +36,13 @@ Five open substrates plus one sealed holdout. All six are integer-valued functio
 | F5   | `mlh_f5`     | Open | 79             | 40             |
 | F6   | `mlh_f6`     | **SEALED HOLDOUT** | sealed | sealed |
 
-F6's evidence is moved to `projects/mlh_f6/_holdout_locked/` at scaffolding time. A placeholder lives at `projects/mlh_f6/evidence.txt` and `projects/mlh_f6/evidence_holdout.txt`. The sealed SHA-256 hash is committed to `research_areas/private/mlh_family_manifest.json`. No live run may touch F6 until the prediction has been sealed (below).
+F6's evidence is moved to `projects/mlh_f6/_holdout_locked/` at scaffolding time. A placeholder lives at `projects/mlh_f6/evidence.txt` and `projects/mlh_f6/evidence_holdout.txt`. The sealed SHA-256 hash is recorded in the private sealed pre-registration area. No live run may touch F6 until the prediction has been sealed (below).
 
 ---
 
 ## The prediction
 
-After running the engine against any subset of {F1, F2, F3, F4, F5}, the principal authors a prediction artifact at `research_areas/private/mlh_predictions/YYYY-MM-DD_<tag>.json` with the following required fields:
+After running the engine against any subset of {F1, F2, F3, F4, F5}, the principal authors a private sealed prediction artifact with the following required fields:
 
 ```json
 {
@@ -84,10 +90,10 @@ The Newton-gate pass condition is: composition-class accuracy = 1, point-predict
 
 ## What is NOT allowed
 
-Per the reviewer recommendations at `research_areas/private/seams/apparatus/instrumentation/GP-134_prompt_layer_contamination_incident_seam.md`:
+Per the reviewer recommendations at `GP-134 (internal seam)`:
 
 - **No concrete composition examples in the live mutator prompt.** Tier-2 ceiling (names + signatures + one-line semantic glosses) is the hard upper bound for primitive documentation in live prompts. Workshop-style composition teaching happens on retired substrates only, before the family program starts.
-- **No cross-reference between live prompts and any OEIS identifier** for F1–F6. The shared denylist lists the six target identifiers and common paraphrases.
+- **No cross-reference between live prompts and any OEIS identifier** for F1-F6. The shared denylist lists the six target identifiers and common paraphrases.
 - **No Phase C (unknown-substrate) runs** until the family-level protocol produces one clean gate pass. A failed family prediction unblocks the Phase C decision only after a post-mortem names what specifically failed.
 
 ---
@@ -100,7 +106,7 @@ One clean family-level Newton-gate pass earns the right to author a paper claim 
 
 This is a genuinely Newton-class claim because the secondary observable (the prediction on F6) is authored before F6 is observed. It is not a fit. It is not a recovery. It is a derived prediction on a substrate the engine has never seen, scored against sealed truth.
 
-A failed first attempt is also informative. It tells us the apparatus recognizes family structure but cannot generalize across that structure to a novel member — which is what the space-ceiling finding would predict, and which settles whether category-switch + primitives + reasoning model is sufficient to lift that ceiling.
+A failed first attempt is also informative. It tells us the apparatus recognizes family structure but cannot generalize across that structure to a novel member, which is what the space-ceiling finding would predict, and which settles whether category-switch + primitives + reasoning model is sufficient to lift that ceiling.
 
 ---
 

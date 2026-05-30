@@ -1,34 +1,42 @@
-# Anti-Pattern Catalog — Mining-Derived Epistemic Discipline
+---
+description: "Mining-derived catalogue of epistemic failure modes with cross-LLM validation."
+---
 
-> ⚠ **2026-04-24 CROSS-LLM VALIDATION UPDATE** — cross-provider classifier audit (100-record sample, 3 providers: gpt-4.1-mini / claude-haiku-4.5 / gemini-3.1-flash-lite) produced **48% three-way agreement** (pairwise κ 0.56–0.58). Verdict: **FAILS cross-LLM validation (<0.60 threshold)**.
+# Anti-Pattern Catalog, Mining-Derived Epistemic Discipline
+
+> **Up:** [Documentation map](../README.md)
+
+> **Role among the concept docs.** This is the canonical *operational field guide* to epistemic failure modes: the catalogued instances. The canonical *structural* statement of why they occur is [epistemic_principles.md](epistemic_principles.md) Part I. [cognitive_gym.md](cognitive_gym.md) and [agentic_engineering_patterns.md](agentic_engineering_patterns.md) point here rather than re-deriving the catalogue.
+
+> ⚠ **2026-04-24 CROSS-LLM VALIDATION UPDATE**, cross-provider classifier audit (100-record sample, 3 providers: gpt-4.1-mini / claude-haiku-4.5 / gemini-3.1-flash-lite) produced **48% three-way agreement** (pairwise κ 0.56-0.58). Verdict: **FAILS cross-LLM validation (<0.60 threshold)**.
 >
 > **What this means in practice:**
-> - **PART 1 (Structural Blockers) REMAIN VALID** — they come from a DETERMINISTIC regex taxonomy, not the LLM classifier. Cross-LLM disagreement does not apply.
-> - **PART 2 (Ceiling-Breakers) ARE DISPUTED** — the class labels (`missing_counterfactual`, `overclaimed_scope`, `parameter_sensitivity`, etc.) come from the LLM classifier. Three LLMs disagree on them significantly. Example per-class three-way stability: `missing_counterfactual` 9.5%, `overclaimed_scope` 25%, `missing_mechanism` 40%, `parameter_sensitivity` 34.8%, `unfalsifiable_claim` 20%.
+> - **PART 1 (Structural Blockers) REMAIN VALID**, they come from a DETERMINISTIC regex taxonomy, not the LLM classifier. Cross-LLM disagreement does not apply.
+> - **PART 2 (Ceiling-Breakers) ARE DISPUTED**, the class labels (`missing_counterfactual`, `overclaimed_scope`, `parameter_sensitivity`, etc.) come from the LLM classifier. Three LLMs disagree on them significantly. Example per-class three-way stability: `missing_counterfactual` 9.5%, `overclaimed_scope` 25%, `missing_mechanism` 40%, `parameter_sensitivity` 34.8%, `unfalsifiable_claim` 20%.
 >
-> **Load-bearing implication:** the `"ceilingbreaker"` and `"both"` modes of `inject_antipattern_catalog` inject class-labels that different LLMs would assign differently. Operators should treat those modes as EXPERIMENTAL, not validated. Use `"hardkill"` mode by default. Full audit: `analytics/queries/cross_provider_classifier_agreement_2026-04-24.json`.
+> **Key implication:** the `"ceilingbreaker"` and `"both"` modes of `inject_antipattern_catalog` inject class-labels that different LLMs would assign differently. Operators should treat those modes as EXPERIMENTAL, not validated. Use `"hardkill"` mode by default. Full audit: `analytics/queries/cross_provider_classifier_agreement_2026-04-24.json`.
 >
-> **2026-04-24 SUPER-CLASS COLLAPSE TEST (GP-151 §5.4):** same 100-record sample, labels collapsed from 15 classes to 3 super-classes (`structural_blocker` / `ceiling_breaker` / `other`). Three-way agreement jumps 48% → 75% (below the 90% gate for Path A adoption). Per-super-class stability: `ceiling_breaker` 72.2%, `structural_blocker` 28.6%. **Verdict: PATH_C_ONLY — do not adopt live super-class routing; keep runtime classifier observability-only.** Task 12 stagnation-reset on fine-grained regex labels remains live because regex is deterministic within-session. See `research_areas/private/seams/engine/GP-151_classifier_telemetry_downgrade_seam.md` §8.
+> **2026-04-24 SUPER-CLASS COLLAPSE TEST (GP-151 §5.4):** same 100-record sample, labels collapsed from 15 classes to 3 super-classes (`structural_blocker` / `ceiling_breaker` / `other`). Three-way agreement jumps 48% → 75% (below the 90% gate for live adoption). Per-super-class stability: `ceiling_breaker` 72.2%, `structural_blocker` 28.6%. **Verdict: observability-only, do not adopt live super-class routing.** Task 12 stagnation-reset on fine-grained regex labels remains live because regex is deterministic within-session. See `GP-151 (internal seam)` §8.
 
 
-**Source:** first mining pass over the enriched trajectory archive (1825 records, 84 projects, 2026-04-24). Findings reported in `research_areas/private/seams/engine/GP-149_mining_findings_and_interventions_seam.md` §2.
+**Source:** first mining pass over the enriched trajectory archive (1825 records, 84 projects, 2026-04-24). Findings reported in `GP-149 (internal seam)` §2.
 
 **Purpose:** two distinct lists of failure patterns observed in 65%+ of the corpus. Injected into Newton-mode substrate theses (when rubric `inject_antipattern_catalog: true`) so the mutator sees them before writing, not only after the judge flags them.
 
-**How these two lists differ (load-bearing distinction):**
+**How these two lists differ (the distinction that matters):**
 
 The mining data splits failure classes into two causal categories based on frequency lift (freq in high-score iters / freq in low-score iters):
 
 - **Structural blockers**: lift < 1. When these appear, the thesis cannot score high. Avoidance is a precondition for ≥85.
-- **Ceiling-breakers**: lift > 1. Appear MORE frequently as weakest-link in high-score iters (10–15% each at ≥85). At high scores, these are the "best-available residual critique" the judge finds. Engaging head-on, not avoiding, is what pushes past 85.
+- **Ceiling-breakers**: lift > 1. Appear MORE frequently as weakest-link in high-score iters (10-15% each at ≥85). At high scores, these are the "best-available residual critique" the judge finds. Engaging head-on, not avoiding, is what pushes past 85.
 
-Confusing these two and treating everything as "avoid" would reduce thesis quality — the ceiling-breaker classes require structural engagement, not avoidance.
+Confusing these two and treating everything as "avoid" would reduce thesis quality, the ceiling-breaker classes require structural engagement, not avoidance.
 
 ---
 
-## PART 1 — Structural Blockers (AVOID these; they kill any thesis)
+## PART 1, Structural Blockers (AVOID these; they kill any thesis)
 
-These classes appear in 0–7% of ≥85-score iterations and 2–22% of <60-score iterations. Their presence is a strong negative signal.
+These classes appear in 0-7% of ≥85-score iterations and 2-22% of <60-score iterations. Their presence is a strong negative signal.
 
 ### SB-1: Circularity / Self-reference
 
@@ -51,7 +59,7 @@ Empirical signature (weakest-point text): contains `HARNESS DEFECT`, `test_model
 
 Observed corpus rate: 1.4% in ≥85 iters; **21.8%** in <60 iters (lift 0.06).
 
-Avoidance protocol: standard-library-only Python (unless rubric declares `runner_allowed_imports`). Absolute file paths via `Path(__file__).resolve().parents[N]` — never bare relative. All data embedded in the test or loaded from a deterministic absolute location. Every variable defined before use.
+Avoidance protocol: standard-library-only Python (unless rubric declares `runner_allowed_imports`). Absolute file paths via `Path(__file__).resolve().parents[N]`, never bare relative. All data embedded in the test or loaded from a deterministic absolute location. Every variable defined before use.
 
 ### SB-3: Unfalsifiable claim
 
@@ -61,13 +69,13 @@ Empirical signature: contains `unfalsifiable`, `no operational test`, `not testa
 
 Observed corpus rate: 1.4% in ≥85 iters; 2.7% in <60 iters (lift 0.51).
 
-Avoidance protocol: every load-bearing claim must be accompanied by a CONCRETE OBSERVABLE whose value would falsify it. Name the observable, name the value-threshold, name the mechanism to measure it.
+Avoidance protocol: every claim the result rests on must be accompanied by a CONCRETE OBSERVABLE whose value would falsify it. Name the observable, name the value-threshold, name the mechanism to measure it.
 
 ---
 
-## PART 2 — Ceiling-Breakers (ENGAGE these head-on; the judge WILL flag them at high scores)
+## PART 2, Ceiling-Breakers (ENGAGE these head-on; the judge WILL flag them at high scores)
 
-These classes appear in 6–16% of ≥85-score iterations. They are the TOP-OF-DISTRIBUTION residual critiques — at high scores, the judge has nothing lower-severity to flag, so finds these. Theses that engage these classes score high; theses that ignore them cap at 70–85.
+These classes appear in 6-16% of ≥85-score iterations. They are the TOP-OF-DISTRIBUTION residual critiques, at high scores, the judge has nothing lower-severity to flag, so finds these. Theses that engage these classes score high; theses that ignore them cap at 70-85.
 
 ### CB-1: Overclaimed scope
 
@@ -101,21 +109,21 @@ LLM-classified: 89 records, 36 projects. Novel class (regex taxonomy had no equi
 
 Empirical signature: `no rival considered`, `no counterfactual`, `alternative explanations not addressed`, `rule out other causes`.
 
-High-score frequency: 9.5% (lift 2.41 — the HIGHEST lift ceiling-breaker).
+High-score frequency: 9.5% (lift 2.41, the HIGHEST lift ceiling-breaker).
 
 Engagement protocol: explicitly name ≥2 rival hypotheses that fit the same evidence. For each, explain why it fails where the thesis succeeds. Name the ONE specific observation that would distinguish the winner.
 
-### CB-4: Catastrophic / load-bearing assumption
+### CB-4: Catastrophic / critical assumption
 
 Pattern: an assumption so central that its failure invalidates the entire thesis, stated without justification or risk analysis.
 
 Regex occurrences: 157 records.
 
-Empirical signature: `catastrophic assumption`, `fatal if`, `load-bearing premise not justified`, `hinges on unproved`, `entire guarantee depends on`.
+Empirical signature: `catastrophic assumption`, `fatal if`, `central premise not justified`, `hinges on unproved`, `entire guarantee depends on`.
 
 High-score frequency: 10.9%.
 
-Engagement protocol: identify the ONE most load-bearing assumption. State it as a falsifier. State what observation would kill it. State a fallback (narrower scope) that would still be load-bearing if the assumption fails.
+Engagement protocol: identify the ONE most critical assumption. State it as a falsifier. State what observation would kill it. State a fallback (narrower scope) that would still support the conclusion if the assumption fails.
 
 ### CB-5: Parameter sensitivity / unverified bound
 
@@ -125,7 +133,7 @@ LLM classification: 81 records (parameter_sensitivity) across 30 projects. Regex
 
 Empirical signature: `empirically observed`, `tuned threshold`, `no derivation`, `κ ≤`, `bound < 10^`, `chosen to`, `without proof that`, `assumed upper-bound`.
 
-High-score frequency: 6.1–6.8%.
+High-score frequency: 6.1-6.8%.
 
 Engagement protocol: either derive the bound from a theorem OR declare it as a stipulated assumption (with a SHA-256 commitment BEFORE the evaluation) OR narrow scope so the bound is provable by construction. The gp140→CW-PT transition (Chebyshev basis → provable condition-number bound) is the canonical example.
 
@@ -155,7 +163,7 @@ Engagement protocol: declare the evidence envelope explicitly. Declare the asymp
 
 ---
 
-## PART 3 — Usage
+## PART 3, Usage
 
 ### Rubric-gated injection (UPDATED 2026-04-24 per stratified mining)
 
@@ -177,7 +185,7 @@ Engagement protocol: declare the evidence envelope explicitly. Declare the asymp
 
 Default: false. Opt-in per project rubric. Existing projects unaffected.
 
-**Why this split matters (data):** stratified analysis across 4 judge families shows that all 7 structural-blocker classes have lift=0.00 across every tested judge (universally bad). But `missing_mechanism` has lift 0.84 under gpt-4.1 (negative signal) vs. 2.43 under o3 (positive signal) — direction flips. Injecting a universal ceiling-breaker catalog would give the o3-mutator+gpt-4.1-judge pipeline MISALIGNED guidance on those classes. Only Part 1 is safe to inject regardless of judge choice.
+**Why this split matters (data):** stratified analysis across 4 judge families shows that all 7 structural-blocker classes have lift=0.00 across every tested judge (universally bad). But `missing_mechanism` has lift 0.84 under gpt-4.1 (negative signal) vs. 2.43 under o3 (positive signal), direction flips. Injecting a universal ceiling-breaker catalog would give the o3-mutator+gpt-4.1-judge pipeline MISALIGNED guidance on those classes. Only Part 1 is safe to inject regardless of judge choice.
 
 ### Validation plan (Popper pre-registration, per GP-149 §9)
 
@@ -194,7 +202,7 @@ This catalog is PROMPT-CONTEXT guidance for the mutator. The rubric's dimensions
 
 ---
 
-## PART 4 — Post-Completion Rubric Heuristics (gp145b + gp150, 2026-04-24)
+## PART 4, Post-Completion Rubric Heuristics (gp145b + gp150, 2026-04-24)
 
 **Source:** post-completion mining of gp145b_saw_narrow_null (44 iters, champion 66, final 48) and gp150_epistemic_boundary_audit (23 iters, champion 71, final 38). Both runs completed under o3 judge.
 
@@ -204,7 +212,7 @@ These heuristics are extracted from runtime trajectories, not the initial corpus
 
 **Pattern:** Thesis invokes a theorem with hidden constants (Bailey-Ferguson, condition-number bounds, approximation error bounds) but never exhibits the constant numerically or derives its value from first principles.
 
-**Source:** gp145b — 12+ judge attacks on "hidden constant c in FBA Theorem 2." Champion capped at 48 because c(x,3) ≤ 2^363 was hand-patched with ad-hoc κ_safety=2^10, not rigorously derived. Score range when this pattern present: 15–66.
+**Source:** gp145b, 12+ judge attacks on "hidden constant c in FBA Theorem 2." Champion capped at 48 because c(x,3) ≤ 2^363 was hand-patched with ad-hoc κ_safety=2^10, not rigorously derived. Score range when this pattern present: 15-66.
 
 **Avoidance:** When invoking any theorem with named constants, compute and present the constant's numerical value. Derive it from the theorem's preconditions applied to the specific inputs. If the constant cannot be derived, state that as a limitation rather than asserting a heuristic bound.
 
@@ -214,27 +222,27 @@ These heuristics are extracted from runtime trajectories, not the initial corpus
 
 **Pattern:** Forward recovery theorems (e.g., "IF a relation exists, PSLQ will find it") used contrapositively ("PSLQ found nothing → no relation exists") without independent verification of the contrapositive's numerical preconditions.
 
-**Source:** gp145b — iter 25 judge provided π−355/113 counter-example showing 100-bit margin insufficient when κ₂ large. Same directional confusion appeared in 10+ iterations. Score collapse: 66→25 when judge exposed the conflation.
+**Source:** gp145b, iter 25 judge provided π−355/113 counter-example showing 100-bit margin insufficient when κ₂ large. Same directional confusion appeared in 10+ iterations. Score collapse: 66→25 when judge exposed the conflation.
 
 **Avoidance:** Explicitly label whether theorem use is FORWARD (recovery guarantee) or CONTRAPOSITIVE (non-existence proof). For contrapositive use, prove independently that all numerical stability preconditions hold throughout the algorithm's execution, not just at initialization.
 
-**Failure family:** `theorem_application_fidelity` (new — maps to CB-4 catastrophic assumption).
+**Failure family:** `theorem_application_fidelity` (new, maps to CB-4 catastrophic assumption).
 
 ### RH-3: Condition Number Propagation
 
 **Pattern:** Thesis bounds κ of an initial matrix/operator and assumes the bound propagates through iterative algorithm steps (PSLQ unimodular updates, Krylov subspace expansions, etc.) without proving propagation.
 
-**Source:** gp145b — iter 24 judge (Gemini-Pro): "Cauchy interlacing is inapplicable to PSLQ's congruence transforms H_k = U_k G U_k^T; κ₂(H_k) can grow arbitrarily." Score range when this pattern present: 12–32.
+**Source:** gp145b, iter 24 judge (Gemini-Pro): "Cauchy interlacing is inapplicable to PSLQ's congruence transforms H_k = U_k G U_k^T; κ₂(H_k) can grow arbitrarily." Score range when this pattern present: 12-32.
 
 **Avoidance:** If the thesis bounds κ of an initial configuration, it must also bound κ of ALL intermediate configurations the algorithm visits. Principal-submatrix bounds (Cauchy interlacing) do NOT apply to congruence transforms. State the transform class and prove κ-stability under it, or treat κ as unbounded.
 
-**Failure family:** `condition_number_control` (new — maps to CB-5 unverified bound).
+**Failure family:** `condition_number_control` (new, maps to CB-5 unverified bound).
 
 ### RH-4: Finite-Domain Operationalization Mandate
 
 **Pattern:** Thesis claims a structural gap or non-approximability result that holds only asymptotically (as t→∞, |x|→∞, m→∞) without demonstrating it on a finite, experimentally relevant domain.
 
-**Source:** gp150 — judge repeatedly attacked Caputo/time-fractional theses with "Stone-Weierstrass on finite intervals applies; your discriminator requires t→∞." Score range for infinite-horizon arguments: 6–38. Champion (71) succeeded by shifting to a FINITE-domain discriminator (M₄ divergence observable on bounded spatial windows).
+**Source:** gp150, judge repeatedly attacked Caputo/time-fractional theses with "Stone-Weierstrass on finite intervals applies; your discriminator requires t→∞." Score range for infinite-horizon arguments: 6-38. Champion (71) succeeded by shifting to a FINITE-domain discriminator (M₄ divergence observable on bounded spatial windows).
 
 **Avoidance:** Every non-approximability claim must include a concrete finite-domain test case with explicit domain size. If the gap evaporates on bounded windows, it is unfalsifiable and scores <50. The gp150 champion's pivot from "infinite-horizon Caputo memory" to "finite-domain M₄ divergence" is the canonical fix.
 
@@ -244,7 +252,7 @@ These heuristics are extracted from runtime trajectories, not the initial corpus
 
 **Pattern:** Thesis claims a solver gap but fails to block standard escape routes: (a) adaptive parameter growth, (b) phase-space augmentation / ODE embedding, (c) rational/neural surrogates, (d) compositional chaining of existing solvers.
 
-**Source:** gp150 — delay-equation theses (iters 6–12) systematically demolished via "linear-chain trick embeds this into high-dimensional ODE" and "Prony approximation on finite windows covers this." Score range: 28–62. Champion survived because M₄ divergence resists all four escape routes.
+**Source:** gp150, delay-equation theses (iters 6-12) systematically demolished via "linear-chain trick embeds this into high-dimensional ODE" and "Prony approximation on finite windows covers this." Score range: 28-62. Champion survived because M₄ divergence resists all four escape routes.
 
 **Avoidance:** For any claimed solver-class gap, explicitly enumerate the four standard escape routes and prove the gap resists each. If any route absorbs the gap, the gap is an implementation backlog, not a structural boundary.
 
@@ -254,31 +262,31 @@ These heuristics are extracted from runtime trajectories, not the initial corpus
 
 **Pattern:** Loop control kills a productive run via stagnation counter when the mutator is actually exploring distinct critique classes, not repeating itself.
 
-**Source:** gp150 — run-1 killed at iter 8 (stagnation_count 4) because `underidentified_after` defaulted to 3 in the generated rubric. But GP-148 corpus mining shows champions typically need 20+ iterations of grinding through different critique classes. The loop control contradicted the chassis's own mining findings.
+**Source:** gp150, run-1 killed at iter 8 (stagnation_count 4) because `underidentified_after` defaulted to 3 in the generated rubric. But GP-148 corpus mining shows champions typically need 20+ iterations of grinding through different critique classes. The loop control contradicted the chassis's own mining findings.
 
 **Avoidance:** Track "number of distinct critique classes encountered" separately from "number of iterations without score improvement." A run cycling through 3 critique classes for 10 iterations (true stagnation) is worse than one bouncing through 7 distinct classes in 8 iterations (healthy exploration). Rubric should set `underidentified_after` to at least 6 for self-auditing substrates.
 
-**Failure family:** `apparatus_self_consistency` (new — meta-level).
+**Failure family:** `apparatus_self_consistency` (new, meta-level).
 
 ### RH-7: Evidence-Injection Plateau
 
 **Pattern:** Injecting new evidence mid-run produces a temporary score spike followed by regression as the judge attacks the new evidence's own weaknesses.
 
-**Source:** gp145b — Evidence Set H injected after iter 16 (score 18). Iter 17 peaked at 66 (the champion). Subsequent 25 iterations regressed to 12–48 band. The evidence supplied the missing Bailey-Ferguson constant c but the constant itself was heuristic, so the judge attacked the heuristic.
+**Source:** gp145b, Evidence Set H injected after iter 16 (score 18). Iter 17 peaked at 66 (the champion). Subsequent 25 iterations regressed to 12-48 band. The evidence supplied the missing Bailey-Ferguson constant c but the constant itself was heuristic, so the judge attacked the heuristic.
 
 **Avoidance:** Evidence injections should supply PROVEN facts (derived constants, certified bounds, published theorems with page citations), not conjectured bounds or heuristic estimates. If the evidence itself contains an unproven claim, the judge will attack it and the thesis will regress past the pre-injection baseline.
 
-**Failure family:** `proof_obligation_deferral` (new — maps to CB-4).
+**Failure family:** `proof_obligation_deferral` (new, maps to CB-4).
 
 ### RH-8: Cyclic Error Non-Learning
 
 **Pattern:** The same algebraic or logical error (sign reversal, inequality direction, binary/decimal precision confusion) re-emerges across iterations despite being flagged by the judge.
 
-**Source:** gp145b — inequality direction error in iter 6 repeated the same flaw from run-1 iter 5. Numeric constant off by 52 orders in iter 21. Binary/decimal precision conversion reversed in multiple iters. The mutator does not retain corrections across iterations.
+**Source:** gp145b, inequality direction error in iter 6 repeated the same flaw from run-1 iter 5. Numeric constant off by 52 orders in iter 21. Binary/decimal precision conversion reversed in multiple iters. The mutator does not retain corrections across iterations.
 
 **Avoidance:** When the judge flags an algebraic error, inject it as a derived constraint with `failure_family: "algebraic_sign_error"` so the mutator sees it in subsequent iterations. Current derived_constraints mechanism supports this but the mutator must be prompted to check constraints before writing equations.
 
-**Failure family:** `harness_defect` (SB-2 variant — the thesis's own math is the broken harness).
+**Failure family:** `harness_defect` (SB-2 variant, the thesis's own math is the broken harness).
 
 ### RH-10: Self-Refuting Audit Pattern
 
@@ -292,7 +300,7 @@ Both substantive-looking flaws DIED on second-pass re-implementation. Two patch 
 
 **Avoidance:** Do not write a v2.x patch from a single iter's claim until the next iter has independently reproduced the failure rate at the asserted magnitude. Treat first-iter claims as hypotheses; require ≥1 independent reproduction before patching the spec.
 
-**Failure family:** `unsupported_assumption` (CB-3 refinement — the "rival" is the audit's own next iteration).
+**Failure family:** `unsupported_assumption` (CB-3 refinement, the "rival" is the audit's own next iteration).
 
 ### RH-11: Apparatus-Proposed Fix Sign Errors
 
@@ -308,57 +316,57 @@ Four sequential apparatus-proposed formulas, four math errors. Pattern is recurr
 
 **Avoidance:** Treat any apparatus-proposed FIX FORMULA as a hypothesis to verify against likelihood-axiom derivation, not as a fix to copy. If the apparatus says "MDL should be X," derive X from a stated likelihood and check the derivation matches before implementing.
 
-**Failure family:** `missing_derivation` (CB / new — the apparatus's formula isn't grounded).
+**Failure family:** `missing_derivation` (CB / new, the apparatus's formula isn't grounded).
 
 ### RH-12: Magic-Number Recursion in Apparatus-Proposed Patches
 
-**Pattern:** An apparatus-proposed threshold (e.g., "10× variance-spread", "50-bit MDL gain", "0.3 correlation cutoff") is itself ad-hoc — it repeats the same magic-number anti-pattern the spec was originally trying to escape. The apparatus copies the spec's threshold style without deriving the new threshold.
+**Pattern:** An apparatus-proposed threshold (e.g., "10× variance-spread", "50-bit MDL gain", "0.3 correlation cutoff") is itself ad-hoc, it repeats the same magic-number anti-pattern the spec was originally trying to escape. The apparatus copies the spec's threshold style without deriving the new threshold.
 
 **Source:** gp153 iter 11 (50): "Patch proposal (σ_i² weighting + G-HETERO-VAR) uses an ad-hoc 10× variance-spread threshold and lacks a proof it will not itself introduce instability or over-penalise truly homoscedastic data."
 
 The 10× threshold has no derivation; it's a round number chosen to look approximately right.
 
-**Avoidance:** Any threshold the apparatus proposes must trace to a stated principle (Wilson interval at given confidence, Heisenberg estimator's noise floor, Chebyshev / quantile bound) — not a round number. If the apparatus cannot derive a threshold, the operator should derive it before implementing.
+**Avoidance:** Any threshold the apparatus proposes must trace to a stated principle (Wilson interval at given confidence, Heisenberg estimator's noise floor, Chebyshev / quantile bound), not a round number. If the apparatus cannot derive a threshold, the operator should derive it before implementing.
 
-**Failure family:** `parameter_sensitivity` (CB-5 refinement — recursive within the apparatus's own self-corrections).
+**Failure family:** `parameter_sensitivity` (CB-5 refinement, recursive within the apparatus's own self-corrections).
 
 ### RH-9: Operational Materiality Gap
 
 **Pattern:** A technically sound thesis (high probability on logical premise nodes A, B) has low outcome probability because the judge doubts the gap's practical consequence (low probability on "materiality" node C).
 
-**Source:** gp150 — champion DAG: Node A (mixtures impose exponential tails) = 0.80, Node B (fractional-Laplacian needs power-law tail) = 0.75, Node C (divergent M₄ materially affects observable) = 0.35. Outcome = 0.58 despite strong premises. The judge's "engineer's veto": real but operationally immaterial.
+**Source:** gp150, champion DAG: Node A (mixtures impose exponential tails) = 0.80, Node B (fractional-Laplacian needs power-law tail) = 0.75, Node C (divergent M₄ materially affects observable) = 0.35. Outcome = 0.58 despite strong premises. The judge's "engineer's veto": real but operationally immaterial.
 
-**Resolution:** The user's FOM validation (M₄_FOM grows 28× as domain quadruples; M₄_MIX stays flat at ~35) is the canonical answer — supply the finite-domain benchmark that demonstrates operational materiality. Feed back as evidence to push Node C from 0.35 toward 0.80+.
+**Resolution:** The user's FOM validation (M₄_FOM grows 28× as domain quadruples; M₄_MIX stays flat at ~35) is the canonical answer, supply the finite-domain benchmark that demonstrates operational materiality. Feed back as evidence to push Node C from 0.35 toward 0.80+.
 
-**Failure family:** `missing_counterfactual` (CB-3 refinement — the counterfactual is "what task actually fails without this?").
+**Failure family:** `missing_counterfactual` (CB-3 refinement, the counterfactual is "what task actually fails without this?").
 
 ### RH-13: Categorical-as-Continuous Smuggle
 
-**Pattern:** When the substrate exposes a categorical predictor (modality, architecture, study, fit-convention), the mutator hashes the string to an integer and applies continuous math (log, division, polynomial) to that integer. The distance between hash("L") and hash("V") has no physical meaning — the geometry of the input manifold is destroyed before the solver boots.
+**Pattern:** When the substrate exposes a categorical predictor (modality, architecture, study, fit-convention), the mutator hashes the string to an integer and applies continuous math (log, division, polynomial) to that integer. The distance between hash("L") and hash("V") has no physical meaning, the geometry of the input manifold is destroyed before the solver boots.
 
 **Source:** gp154 iters 5, 8, 11, 12, 13 (2026-04-24). Across multiple iters the o3 mutator wrote `numeric_code(d)` helpers that mapped {"L", "V", "M", ...} to {0, 1, 2, ...}, then applied `log(d)` and `1/d`. The judge correctly identified this every time as "a fundamental data-type error... mapping categorical variables to a continuous integer index, and then applying continuous mathematical functions". Harness then crashed with IndexError / ZeroDivisionError because the hashing was uneven. Score 0 every iter.
 
 **Avoidance for substrate authors:** Expose categoricals as Python strings AND provide explicit feature-vector schema. Either provide one-hot indicator columns or document that the mutator must use indicator functions (`1 if features['modality'] == 'language' else 0`). Never let a substrate force the mutator to choose between hashing and giving up.
 
-**Avoidance for the mutator:** When `features['modality']` is a string, you have three legitimate moves: (a) one-hot encoding to a vector of indicator columns; (b) regime selectors / case dispatch (`if modality == 'language': ...`); (c) propose a hand-crafted ordinal mapping (e.g., "complexity rank") — but only if you can justify the ordering from physics, not from alphabetical accident.
+**Avoidance for the mutator:** When `features['modality']` is a string, you have three legitimate moves: (a) one-hot encoding to a vector of indicator columns; (b) regime selectors / case dispatch (`if modality == 'language': ...`); (c) propose a hand-crafted ordinal mapping (e.g., "complexity rank"), but only if you can justify the ordering from physics, not from alphabetical accident.
 
-**Failure family:** `category_error` (NEW — distinct from `unit_error` because the smuggling happens at the type-system layer before any operation runs).
+**Failure family:** `category_error` (NEW, distinct from `unit_error` because the smuggling happens at the type-system layer before any operation runs).
 
 ### RH-14: Vacuous Null via Excluded Vocabulary
 
 **Pattern:** A thesis declares "no closed-form law exists at dimension ≤ K" after exhaustively testing a discrete dictionary Σ that excludes the very functional forms the literature uses for the target phenomenon. Scaling laws ARE power laws; a null over a Σ that excludes `power_k` is vacuously empty and proves nothing.
 
-**Source:** gp154 iters 4, 7, 10, 12, 13 (2026-04-24). The mutator's null-result theses tested dictionaries like {d, a, log d, 1/d, d·a, d/a} — all linear or pre-linear — without including `d^(-1/2)`, `d^(-1)` as standalone power-law forms with arbitrary exponent k. The judge: "the thesis arbitrarily excluded continuous power-law exponents — the literal standard functional form for empirical scaling laws... the null hypothesis wins vacuously due to an invalid metric space."
+**Source:** gp154 iters 4, 7, 10, 12, 13 (2026-04-24). The mutator's null-result theses tested dictionaries like {d, a, log d, 1/d, d·a, d/a}, all linear or pre-linear, without including `d^(-1/2)`, `d^(-1)` as standalone power-law forms with arbitrary exponent k. The judge: "the thesis arbitrarily excluded continuous power-law exponents, the literal standard functional form for empirical scaling laws... the null hypothesis wins vacuously due to an invalid metric space."
 
 **Avoidance:** Any null-result thesis MUST include in its Σ at minimum:
-- `power_k(x)` for k in {1, 2, -1, -1/2, 1/2} — covers Sharma α=2/d, Cagnetta α_D, Hoffmann
-- `log(x)`, `exp(x)` — covers logarithmic regimes
-- conditional / regime selector — covers two-regime models (variance vs resolution-limited)
+- `power_k(x)` for k in {1, 2, -1, -1/2, 1/2}, covers Sharma α=2/d, Cagnetta α_D, Hoffmann
+- `log(x)`, `exp(x)`, covers logarithmic regimes
+- conditional / regime selector, covers two-regime models (variance vs resolution-limited)
 - multiplicative composition `f(x) * g(y)` and additive `f(x) + g(y)` at depth ≤ 2
 
-A null over a smaller Σ is reported as "no law at this restricted vocabulary" with explicit acknowledgment that the literature standard form is excluded — not as "no law exists".
+A null over a smaller Σ is reported as "no law at this restricted vocabulary" with explicit acknowledgment that the literature standard form is excluded, not as "no law exists".
 
-**Failure family:** `vacuous_null` (NEW — refinement of CB-2 "missing-discriminator" applied to null results).
+**Failure family:** `vacuous_null` (NEW, refinement of CB-2 "missing-discriminator" applied to null results).
 
 ### RH-15: MRE Aggregation Fallacy
 
@@ -372,11 +380,11 @@ A null over a smaller Σ is reported as "no law at this restricted vocabulary" w
 - Distinguish: "no single-row prediction can be off by more than X" (max-relative-error gate, NOT what we use) vs "the AVERAGE relative error must be below τ" (MRE gate)
 - Test the claim with arithmetic before submitting
 
-**Failure family:** `arithmetic_error` (CB-1 refinement — the elementary-math error happens inside a thesis's own logical proof, not in the numerical fit).
+**Failure family:** `arithmetic_error` (CB-1 refinement, the elementary-math error happens inside a thesis's own logical proof, not in the numerical fit).
 
 ### RH-17: Lookup-Table Fallacy (Hardcoded-Constants-as-Law)
 
-**Pattern:** A thesis presents an `if/else` decision tree of hardcoded empirical constants and human-labeled categorical selectors as a "zero-parameter physical law." The function appears parameter-free (no `params` dict, no fit) because the parameters are baked into the conditional branches. Each branch outputs a known answer for a known input — i.e., the function is a memorized lookup table dressed up as a closed-form predictor.
+**Pattern:** A thesis presents an `if/else` decision tree of hardcoded empirical constants and human-labeled categorical selectors as a "zero-parameter physical law." The function appears parameter-free (no `params` dict, no fit) because the parameters are baked into the conditional branches. Each branch outputs a known answer for a known input, i.e., the function is a memorized lookup table dressed up as a closed-form predictor.
 
 **Source:** gp154 iter 2 (2026-04-25). The o3 mutator wrote `I_model(feat)` with branches like:
 - `if regime_hint == "variance_limited": return 1.0` (Bahri α=1)
@@ -388,26 +396,26 @@ A null over a smaller Σ is reported as "no law at this restricted vocabulary" w
 
 The judge: "The Lookup Table Fallacy: The thesis attempts to pass off an if/else decision tree of hardcoded empirical constants and human-labeled categorical selectors (oracle leakage) as a zero-parameter predictive physical law... Furthermore, the quantitative test suite explicitly failed to run, rendering all claims of 'Holdout MRE' entirely fictitious. The proposed 'law' reduces to an arbitrary script outputting known answers."
 
-The mutator's intuition is partly right — the Sharma branch (`α = 2/d`) IS a physical law and the variance-limited branch (`α = 1`) IS a regime claim. But the Cerebras / Bansal / Hoffmann branches are pure memorization: they hardcode the very values the holdout would test. There's no generative content; the function is a dictionary.
+The mutator's intuition is partly right, the Sharma branch (`α = 2/d`) IS a physical law and the variance-limited branch (`α = 1`) IS a regime claim. But the Cerebras / Bansal / Hoffmann branches are pure memorization: they hardcode the very values the holdout would test. There's no generative content; the function is a dictionary.
 
 **Distinguishing real-law-piecewise from lookup-table:**
-- A real piecewise law has a **generative formula in each branch** that takes continuous predictors as input. `α = 2/d` is law-like because if you give it a new d=8, it predicts α=0.25 — without ever having seen d=8.
+- A real piecewise law has a **generative formula in each branch** that takes continuous predictors as input. `α = 2/d` is law-like because if you give it a new d=8, it predicts α=0.25, without ever having seen d=8.
 - A lookup-table branch has the **answer hardcoded for each categorical case**. `if data_quality == "target_noise": return 2.772` predicts nothing for an unseen data_quality value; it's just rote.
 
-The honest test: if you remove a categorical branch and ask the model to predict a row in that category, can it produce ANY answer better than chance? If no — that branch was a lookup, not a law.
+The honest test: if you remove a categorical branch and ask the model to predict a row in that category, can it produce ANY answer better than chance? If no, that branch was a lookup, not a law.
 
 **Avoidance for the mutator:**
-- For each piecewise branch, write the GENERATIVE rule first, then the parameters that instantiate it. `α = 2/d` is the rule; d is the parameter. `α = 2.772 if target_noise` has no rule, just a constant — that's a lookup.
+- For each piecewise branch, write the GENERATIVE rule first, then the parameters that instantiate it. `α = 2/d` is the rule; d is the parameter. `α = 2.772 if target_noise` has no rule, just a constant, that's a lookup.
 - For categoricals where you genuinely have no generative theory, declare them as **honest free parameters** (e.g., `α_target_noise: float = 2.772 # fitted to row 104`). This makes the parameter count explicit so the K_law budget catches the memorization.
 - Better still: propose a relationship between the categorical and a continuous derived feature. E.g., "data_quality maps to noise_entropy_bits via [hypothesis]; α = f(noise_entropy_bits)". This converts a lookup into a falsifiable hypothesis.
 
-**Failure family:** `lookup_table_dressed_as_law` (NEW — extension of CB-1 "memorization" applied to piecewise functions where each branch hides a constant in plain sight).
+**Failure family:** `lookup_table_dressed_as_law` (NEW, extension of CB-1 "memorization" applied to piecewise functions where each branch hides a constant in plain sight).
 
 ### RH-18: Kernel-Camouflage Lookup Table (Smooth-Function Disguise)
 
-**Pattern:** A thesis presents a continuous closed-form function (Gaussian, sigmoid, lognormal, etc.) whose hardcoded centers, widths, and amplitudes are positioned exactly at the withheld-class feature values that the substrate critic exposed in the briefing. The form looks structurally like a smooth scaling rule but is functionally equivalent to RH-17's class-conditional lookup table. Only ONE constant is fitted; the structurally load-bearing centers/widths/amplitudes are mutator-chosen literals matching the briefing's exposed cross-class values.
+**Pattern:** A thesis presents a continuous closed-form function (Gaussian, sigmoid, lognormal, etc.) whose hardcoded centers, widths, and amplitudes are positioned exactly at the withheld-class feature values that the substrate critic exposed in the briefing. The form looks structurally like a smooth scaling rule but is functionally equivalent to RH-17's class-conditional lookup table. Only ONE constant is fitted; the structurally essential centers/widths/amplitudes are mutator-chosen literals matching the briefing's exposed cross-class values.
 
-**Source:** gp163d_unified_accel iter 5 (2026-04-26, post-Class-A SPARC-mass enrichment). The gpt-5.5 mutator wrote a McGaugh-form interpolation with `c(M) = c0 · [1 + 14·exp(-((M-14.5)/1.228)²)] · exp(-5·sigmoid((M-22.795)/2.07375))`. The Gaussian boost peaks at M=14.5 — the substrate's collapsed Class B (cluster) mass value, exposed verbatim in the iter-2 mutator briefing as `withheld ['14.5', '31.09']`. The sigmoid suppression activates above M≈22.8 — the midpoint between Class B (14.5) and Class C (binary, raw kg-units value 30) so it suppresses Class C only. Six structurally load-bearing constants (two centers, two widths, two amplitudes), all chosen by the mutator, none fitted. Only `c0` was declared in PARAMETER_NAMES. The form's `test_model.py` even includes structural-contract assertions hardcoding `_REF_B_MASS = 14.5` and `_REF_C_MASS = 31.09`.
+**Source:** gp163d_unified_accel iter 5 (2026-04-26, post-Class-A SPARC-mass enrichment). The gpt-5.5 mutator wrote a McGaugh-form interpolation with `c(M) = c0 · [1 + 14·exp(-((M-14.5)/1.228)²)] · exp(-5·sigmoid((M-22.795)/2.07375))`. The Gaussian boost peaks at M=14.5, the substrate's collapsed Class B (cluster) mass value, exposed verbatim in the iter-2 mutator briefing as `withheld ['14.5', '31.09']`. The sigmoid suppression activates above M≈22.8, the midpoint between Class B (14.5) and Class C (binary, raw kg-units value 30) so it suppresses Class C only. Six structurally essential constants (two centers, two widths, two amplitudes), all chosen by the mutator, none fitted. Only `c0` was declared in PARAMETER_NAMES. The form's `test_model.py` even includes structural-contract assertions hardcoding `_REF_B_MASS = 14.5` and `_REF_C_MASS = 31.09`.
 
 The judge scored the form 100 because it passed every gate in the existing stack: single Python expression, continuous primitives (exp, sigmoid, sqrt), one fitted parameter, holdout passed, combined-class farther-tail passed (Class B's 84 rows masked Class C's MRE=1.95 in the unweighted average).
 
@@ -431,10 +439,10 @@ The honest test: if you remove the suspect constant from PARAMETRIC_FORM, declar
 **Failure family:** `kernel_camouflage_of_class_label` (extension of RH-17 lookup-table-dressed-as-law to the continuous-function disguise. Same Goodhart pattern, different detector signature.)
 
 
-**Pattern:** A thesis defends a null result by excluding from scope the very phenomenon that would refute it. The author writes "we exclude compute-optimal scaling from this analysis" — and then claims "no law exists for the remaining phenomena" — but the excluded class was the only collision the null relied on as evidence.
+**Pattern:** A thesis defends a null result by excluding from scope the very phenomenon that would refute it. The author writes "we exclude compute-optimal scaling from this analysis", and then claims "no law exists for the remaining phenomena", but the excluded class was the only collision the null relied on as evidence.
 
 **Source:** gp154 iter 12 (2026-04-24). Author's null thesis depended on collisions between Kaplan-style and Chinchilla-style fits, then excluded compute-optimal scaling from scope, removing all such collisions. Judge: "the only valid collision is between Kaplan and Chinchilla, which the author inexplicably self-invalidated by explicitly excluding compute-optimal scaling from their scope."
 
 **Avoidance:** Before excluding any feature subset from scope, ask: "Does my null/positive proof depend on data points that fall in this excluded subset?" If yes, the exclusion either (a) breaks the proof or (b) renders the proof trivially true on a degenerate subset. Either way, expose the dependency explicitly.
 
-**Failure family:** `scope_circularity` (CB-7 refinement — the scope decision is itself the load-bearing assumption).
+**Failure family:** `scope_circularity` (CB-7 refinement, the scope decision is itself the critical assumption).

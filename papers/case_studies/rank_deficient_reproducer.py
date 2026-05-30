@@ -3,23 +3,23 @@
 Self-contained. No external framework. Requires numpy + scipy.
 
 What this script demonstrates
------------------------------
+------------------------------
 A six-parameter nonlinear regression target was declared as ground truth.
 The declared target contains two parameters that enter only through a
 single ratio, so the declared family has rank 5, not 6. The two
 unidentifiable parameters can jointly rescale by any positive constant
 without changing the curve at any input point.
 
-A popular pre-commit identifiability check — "fit the clean target,
+A popular pre-commit identifiability check -- "fit the clean target,
 then bootstrap under small Gaussian noise, and assert the recovered
-parameters are stable across noise realizations" — passes this rank-5
+parameters are stable across noise realizations" -- passes this rank-5
 family cleanly. The check passes because the optimizer falls into the
 same basin every time, which a rank-deficient family with a strong
 default basin will do.
 
-A second check — "fit the clean target from multiple adversarial
+A second check -- "fit the clean target from multiple adversarial
 starting points, and assert the recovered parameters agree across
-starts" — catches the degeneracy immediately. The two unidentifiable
+starts" -- catches the degeneracy immediately. The two unidentifiable
 parameters disagree by >50% across starts while their ratio agrees to
 machine precision.
 
@@ -69,7 +69,7 @@ def model(phi, psi, A, p, alpha, beta, q, offset):
 
     Note that (alpha, beta) enter only through the ratio (alpha / beta)
     inside `ratio`. The declared six-parameter family is therefore
-    rank five — this is the degeneracy the case study is about.
+    rank five -- this is the degeneracy the case study is about.
     """
     ratio = (alpha * phi) / (beta * psi)
     denom = np.exp(ratio ** q) - 1.0
@@ -116,7 +116,7 @@ def check1_bootstrap_under_noise(n_boot=30, sigma=0.0005, seed=0):
     """
     rng = np.random.default_rng(seed)
     phis, psis, y_clean = synth_clean()
-    default_start = GT_VEC.copy()  # fixed default seed — this is the problem
+    default_start = GT_VEC.copy()  # fixed default seed -- this is the problem
     recovered = []
     for _ in range(n_boot):
         noise = rng.normal(0.0, sigma, size=y_clean.shape)
@@ -187,7 +187,7 @@ def check2_adversarial_multistart(n_starts=5, seed=1):
 
 def main():
     print("=" * 70)
-    print("RANK-DEFICIENT PRE-COMMIT IDENTIFIABILITY CHECK — REPRODUCER")
+    print("RANK-DEFICIENT PRE-COMMIT IDENTIFIABILITY CHECK -- REPRODUCER")
     print("=" * 70)
     print()
     print("Declared ground truth (6 parameters):")
@@ -202,7 +202,7 @@ def main():
     print("declared six-parameter family is therefore rank five.")
     print()
     print("-" * 70)
-    print("Check 1 — bootstrap under noise (the check that passes)")
+    print("Check 1 -- bootstrap under noise (the check that passes)")
     print("-" * 70)
     p1, spreads, _ = check1_bootstrap_under_noise()
     for name in GT_NAMES:
@@ -210,7 +210,7 @@ def main():
     print(f"  VERDICT: {'PASSED' if p1 else 'FAILED'}")
     print()
     print("-" * 70)
-    print("Check 2 — adversarial multi-start (the check that catches)")
+    print("Check 2 -- adversarial multi-start (the check that catches)")
     print("-" * 70)
     p2, per_param, ratio_spread, losses = check2_adversarial_multistart()
     for name in GT_NAMES:

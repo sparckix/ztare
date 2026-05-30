@@ -3,7 +3,7 @@
 Self-contained. No external framework. Requires numpy + scipy.
 
 What this script demonstrates
------------------------------
+------------------------------
 Two successive symbolic regression experiments recover a two-variable law.
 
 Experiment 1 (24 visible points): finds a Wien form that fails a farther-tail gate.
@@ -22,11 +22,11 @@ Run
     python evidence_enrichment_saturation_reproducer.py
 
 Expected output (approximate)
-------------------------------
+-------------------------------
 === VISIBLE DATA FIT (24 points) ===
 Wien   RMSE: 0.021  [PASS, threshold 0.15]
 Weibull RMSE: 0.042  [PASS, threshold 0.15]
-Planck  RMSE: 0.000  [PASS — exact generating law]
+Planck  RMSE: 0.000  [PASS -- exact generating law]
 
 === FARTHER-TAIL GATE (x1 in {10,12,15}, x2 in {0.5,1.0}) ===
   x1    x2    GT         Wien       Wien-err  Weibull    Weib-err
@@ -37,9 +37,9 @@ Planck  RMSE: 0.000  [PASS — exact generating law]
   12.0  1.0   1.06e-02   2.99e-02   182%      7.91e-03   26%
   15.0  1.0   1.03e-03   8.26e-03   701%      5.26e-04   49%       Wien FAILS
 
-Gate verdict — Wien:    FAIL (4 probe points exceed 200%)
-Gate verdict — Weibull: PASS (all probe points below 200%)
-Gate verdict — Planck:  PASS (exact law, ~0% error)
+Gate verdict -- Wien:    FAIL (4 probe points exceed 200%)
+Gate verdict -- Weibull: PASS (all probe points below 200%)
+Gate verdict -- Planck:  PASS (exact law, ~0% error)
 
 === BUT WEIBULL != PLANCK: log-slope comparison ===
 At x2=1.0, the log-derivative d(log z)/d(x1) reveals structural difference:
@@ -202,14 +202,14 @@ def main():
     for name, fn in [("Wien   ", wien), ("Planck ", planck)]:
         r = rmse(fn, grid_1)
         status = "PASS" if r < 0.15 else "FAIL"
-        note = "— exact generating law" if name.strip() == "Planck" else ""
+        note = "-- exact generating law" if name.strip() == "Planck" else ""
         print(f"  {name} RMSE: {r:.3f}  [{status}, threshold 0.15] {note}")
     print()
-    print("Experiment 2 (33 visible points — enriched):")
+    print("Experiment 2 (33 visible points -- enriched):")
     for name, fn in [("Wien   ", wien), ("Weibull", weibull_form), ("Planck ", planck)]:
         r = rmse(fn, grid_2)
         status = "PASS" if r < 0.15 else "FAIL"
-        note = "— exact generating law" if name.strip() == "Planck" else ""
+        note = "-- exact generating law" if name.strip() == "Planck" else ""
         print(f"  {name} RMSE: {r:.3f}  [{status}, threshold 0.15] {note}")
 
     print()
@@ -238,9 +238,9 @@ def main():
     print()
     w_verdict  = "FAIL" if wien_fails  > 0 else "PASS"
     wb_verdict = "FAIL" if weib_fails  > 0 else "PASS"
-    print(f"Gate verdict — Wien:    {w_verdict} ({wien_fails} probe points exceed 200%)")
-    print(f"Gate verdict — Weibull: {wb_verdict} (all probe points below 200%)")
-    print(f"Gate verdict — Planck:  PASS (exact law, ~0% error)")
+    print(f"Gate verdict -- Wien:    {w_verdict} ({wien_fails} probe points exceed 200%)")
+    print(f"Gate verdict -- Weibull: {wb_verdict} (all probe points below 200%)")
+    print(f"Gate verdict -- Planck:  PASS (exact law, ~0% error)")
 
     print()
     print("=" * 66)

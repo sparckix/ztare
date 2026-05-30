@@ -1,4 +1,4 @@
-# Stage 2 Derivation Seam Hardening — Run 009 Telemetry
+# Stage 2 Derivation Seam Hardening, Run 009 Telemetry
 
 Frozen copy of the supervisor telemetry cited in `papers/paper4/draft.md`
 Section 5.6 ("Build Pipeline Evidence"). The original run files live
@@ -16,14 +16,14 @@ the durable audit trail.
 
 ## Files in this directory
 
-- `status.json` — final supervisor status at closure (revision 5, state D,
+- `status.json`, final supervisor status at closure (revision 5, state D,
   `status_reason: program_closed`, `human_gate_resolved: true`).
   Contains the implementation_snapshot with sha256 fingerprints for the
   four authorized artifacts and the complete cost ledger.
-- `events.jsonl` — full event stream for the closing revision: spec agent
+- `events.jsonl`, full event stream for the closing revision: spec agent
   registration, implementation agent verification, deterministic verifier
   pass, and human gate resolution.
-- `verification_report.txt` — the verifier's own output from the closure
+- `verification_report.txt`, the verifier's own output from the closure
   run, one line per fixture case. 23/23 deterministic cases pass:
   4/4 Stage 2 derivation + 8/8 Stage 2→4 bridge + 3/3 live stage-2 gate
   smoke tests + 8/8 Stage 4.
@@ -69,6 +69,17 @@ The packet manifest declares four authorized artifacts:
 
 The run's `implementation_snapshot` in `status.json` records sha256
 fingerprints for exactly these four paths and no others. The authorized
-set and the modified set match exactly — this is the hard-gated write-
+set and the modified set match exactly, this is the hard-gated write-
 scope enforcement Section 5.1 claims for the M-Form's governance layer,
 captured as file-level evidence rather than a narrative assertion.
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+
+## Index
+
+**Documents**
+
+- [status.json](status.json)
+
+<sub>0 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

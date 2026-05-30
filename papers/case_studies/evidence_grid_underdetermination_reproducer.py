@@ -3,7 +3,7 @@
 Self-contained. No external framework. Requires numpy + scipy.
 
 What this script demonstrates
------------------------------
+------------------------------
 Two structurally distinct two-variable functions are indistinguishable
 on a bounded evidence grid:
 
@@ -41,7 +41,7 @@ from scipy.optimize import least_squares
 
 
 # ---------------------------------------------------------------------------
-# Ground truth (Planck form — no free parameters)
+# Ground truth (Planck form -- no free parameters)
 # ---------------------------------------------------------------------------
 
 def planck(x1: float, x2: float) -> float:
@@ -180,7 +180,7 @@ def check2_farther_tail(wien_params):
 
 def main():
     print("=" * 72)
-    print("EVIDENCE GRID UNDERDETERMINATION — REPRODUCER")
+    print("EVIDENCE GRID UNDERDETERMINATION -- REPRODUCER")
     print("=" * 72)
     print()
     print("Ground truth (Form B, Planck):  z = x1^3 / (exp(x1/x2) - 1)")
@@ -197,7 +197,7 @@ def main():
 
     # Check 1
     print("-" * 72)
-    print("Check 1 — visible RMSE + holdout hard gate (the check that passes)")
+    print("Check 1 -- visible RMSE + holdout hard gate (the check that passes)")
     print("-" * 72)
     c1 = check1_visible_and_holdout(wien_params)
     for label, r in c1.items():
@@ -210,7 +210,7 @@ def main():
 
     # Check 2
     print("-" * 72)
-    print("Check 2 — farther-tail discriminator (the check that catches)")
+    print("Check 2 -- farther-tail discriminator (the check that catches)")
     print("-" * 72)
     c2 = check2_farther_tail(wien_params)
     for label, r in c2.items():
@@ -250,9 +250,9 @@ def main():
         print("regime is where the competing structural classes disagree most,")
         print("not where you happened to measure.")
     else:
-        print(f"Check 1 — Form A: {'PASS' if c1_a else 'FAIL'}  "
+        print(f"Check 1 -- Form A: {'PASS' if c1_a else 'FAIL'}  "
               f"Form B: {'PASS' if c1_b else 'FAIL'}")
-        print(f"Check 2 — Form A: {'PASS' if c2_a else 'FAIL'}  "
+        print(f"Check 2 -- Form A: {'PASS' if c2_a else 'FAIL'}  "
               f"Form B: {'PASS' if c2_b else 'FAIL'}")
 
 

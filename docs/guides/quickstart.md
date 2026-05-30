@@ -1,48 +1,83 @@
+---
+description: "Two-page orientation for a new operator."
+---
+
 # ZTARE Quickstart
 
-Two-page orientation for a new operator. Assumes you have API keys for at least one LLM (Claude, Gemini, GPT-4). Full reference: `docs/guides/workflow.md` and `docs/concepts/glossary.md`.
+> **Up:** [Documentation map](../README.md)
+
+Two-page orientation for a new operator. Start with
+[first-30-minutes.md](first-30-minutes.md) if this is your first time in the
+repo. This page is the fast path for running ZTARE after you know which route
+you want. Full reference: `docs/guides/workflow.md` and
+`docs/concepts/glossary.md`.
 
 ---
 
-## What ZTARE Does in One Sentence
+## What ZTARE Does In One Sentence
 
-ZTARE runs an LLM inside a constrained validation loop. The LLM proposes hypotheses, deterministic gates accept or reject them, and failure signals drive the next proposal. The LLM never touches arithmetic or geometric characterization; the cage handles those.
+ZTARE is a filesystem-first socio-technical research stack: it can run a
+bounded adversarial validator, support out-of-loop human-agent research work,
+and feed ledgers back into forecasts, action intelligence, and future routing
+decisions.
 
 ---
 
-## Two Ways to Use It
+## Three Ways To Use It
 
-### A. Test a thesis or claim (domain project)
+### A. Test a thesis or claim (substrate-prober path)
 
 You have a question ("Is this startup overvalued?", "What drives EU stability?"). ZTARE runs an adversarial loop that forces the LLM to propose, test, and revise a thesis under gate pressure.
 
 ```bash
 # 1. Put your evidence in projects/<project>/evidence.txt
 # 2. Write or generate a rubric
-# 3. Run
-make loop PROJECT=<project> RUBRIC=rubrics/<rubric>.json ITERS=10 \
+# 3. Run the guarded project loop
+make experiment-loop PROJECT=<project> RUBRIC=rubrics/<rubric>.json ITERS=10 \
     MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1
 ```
 
-### B. Recover a mathematical law from data (science experiment)
+### B. Probe a science/data substrate (legacy experimental path)
 
-You have input-output data. ZTARE tries to find the closed-form law that generated it. Two options:
+You have input-output data. ZTARE searches for candidate forms or justified
+nulls under gates. It does not promote a closed-form law without separate
+source-readiness, non-claim, and falsifier discipline. Two options:
 
-**Fully autonomous (recommended for OEIS and 1D sequences):**
+**Guarded end-to-end path (legacy/demo path for OEIS and 1D sequences):**
 
 ```bash
 make discover PROJECT=<slug> RUBRIC=<slug> ITERS=15
 ```
 
-This runs Phase 1 (hypothesis loop), Phase 2 (template compression), and Phase 3 (Lean stubs) end to end.
+This runs Phase 1 (hypothesis loop), Phase 2 (template compression), and Phase
+3 (Lean gate artifacts) end to end. Treat the output as candidate evidence, not
+autonomous discovery.
 
 **Manual control (for multi-variable or custom substrates):**
 
 ```bash
-# See §§ below for full command sequence
-make loop PROJECT=<slug> RUBRIC=<slug> ITERS=10 \
+# See the manual-control sequence below for the full command path
+make experiment-loop PROJECT=<slug> RUBRIC=<slug> ITERS=10 \
     MUTATOR_MODEL=gpt4.1 JUDGE_MODEL=gpt4.1
 ```
+
+### C. Use the workbench or org runtime
+
+Not every serious task should start with `make experiment-loop`. If the work is
+frontier research, proof splitting, evidence acquisition, trajectory mining,
+human-agent co-work, or a role-daemon task, route it first:
+
+```bash
+make demo
+make smoke-public
+```
+
+Then read:
+
+- [workflow.md](workflow.md), especially section 0 route choice;
+- [org_runtime_quickstart.md](org_runtime_quickstart.md), for role-daemon and
+  executive-inbox work;
+- [agent-prompts.md](agent-prompts.md), for paste-ready Codex/Claude prompts.
 
 ---
 
@@ -51,6 +86,12 @@ make loop PROJECT=<slug> RUBRIC=<slug> ITERS=10 \
 ### Prerequisites
 
 ```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+make demo
+make smoke-public
+
 export GEMINI_API_KEY=...
 export OPENAI_API_KEY=...    # for gpt4.1 judge
 export ANTHROPIC_API_KEY=... # for claude judge (optional)
@@ -91,11 +132,14 @@ def holdout_grid() -> list[tuple[float, float]]:
 ### Step 2: Generate substrate
 
 ```bash
-make generate-substrate \
-    SLUG=exp01 \
-    GT_SCRIPT=src/ztare/substrates/my_experiment_gt.py \
-    VARIABLES=x1,x2 \
-    PROBLEM_BRIEF="Find a mathematical law governing z as a continuous function of two inputs x1 and x2."
+# Substrate scaffolding is a script, not a make target. See its arguments:
+python -m src.ztare.scaffold.generate_substrate --help
+# Provide the slug, the GT script, the input variables, and the problem
+# brief per --help, following the GP-072 sandbox-construction discipline
+# (AGENTS.md "Don't hand-build sandboxes" discipline).
+#
+# For the factory pre-run on an existing project:
+make setup-project PROJECT=<project> RUBRIC=<rubric>
 ```
 
 This creates:
@@ -142,7 +186,7 @@ Use `generate-gp` to scaffold a qualitative project with correct gate configurat
 ```bash
 make generate-gp \
     PROJECT=my_project \
-    BRIEF="Your one-paragraph thesis question here — be specific about domain and claim direction" \
+    BRIEF="Your one-paragraph thesis question here, be specific about domain and claim direction" \
     JUDGE_MODEL=gpt4.1
 ```
 
@@ -153,7 +197,7 @@ This creates:
 - `projects/my_project/project_charter.md`: auto-drafted from your brief
 - `rubrics/my_project.json`: LLM-drafted adversarial persona + criteria, with all qualitative gate opt-outs pre-filled
 
-**Important:** Review and edit `rubrics/my_project.json` before sealing — the LLM draft is a starting point, not a final rubric. Check that the persona is genuinely adversarial for your domain.
+**Important:** Review and edit `rubrics/my_project.json` before sealing, the LLM draft is a starting point, not a final rubric. Check that the persona is genuinely adversarial for your domain.
 
 ```bash
 # Option A: Add evidence directly
@@ -165,7 +209,7 @@ make evidence-compile PROJECT=my_project MODEL=gpt4.1
 
 # Then seal and run
 make seal PROJECT=my_project RUBRIC=rubrics/my_project.json
-make loop PROJECT=my_project RUBRIC=rubrics/my_project.json ITERS=10 \
+make experiment-loop PROJECT=my_project RUBRIC=rubrics/my_project.json ITERS=10 \
     MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1
 ```
 
@@ -207,7 +251,7 @@ Key signals:
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `No module named 'src.ztare.substrates.<slug>_gt'` | GT stub not created | Run `make generate-substrate` again; stub now auto-created |
+| `No module named 'src.ztare.substrates.<slug>_gt'` | GT stub not created | Re-run `python -m src.ztare.scaffold.generate_substrate`; the GT stub is auto-created |
 | `harness_ok=True` on blank model | RMSE threshold too loose | Tighten `_RMSE_THRESHOLD` in gate_harness.py and rubric |
 | `--reviewer-domains` crash | Passed to loop instead of findings runner | Remove from `make experiment-loop`; routing is automatic via `latent_distance.jsonl` |
 | Score 0 every iteration | Hard gate too tight OR zero model passes | Check gate calibration; check evidence float parsing |
@@ -221,7 +265,7 @@ Key signals:
 projects/<slug>/          ← per-run artifacts (evidence, gate harness, test_model)
 rubrics/<slug>.json       ← scoring rubric (GT-blind)
 src/ztare/substrates/     ← GT scripts (Division A, private)
-research_areas/private/   ← seams, specs, boards (private)
+research_areas/            ← public seams, specs, boards, and experiment records
 docs/                     ← operator docs (this file)
 config/prompts/           ← reviewer domain personas
 ```
@@ -230,11 +274,12 @@ config/prompts/           ← reviewer domain personas
 
 ## Next Steps
 
-- Full workflow reference: `docs/guides/workflow.md` §16
-- Division A/B protocol deep-dive: `docs/guides/workflow.md` §12
+- First-run orientation: `docs/guides/first-30-minutes.md`
+- Full workflow reference: `docs/guides/workflow.md`
+- Experiment procedure: `docs/guides/experiment_cookbook.md`
 - Architecture overview: `docs/concepts/architecture.md`
+- Cognitive Gym, why the validator works: `docs/concepts/cognitive_gym.md`
+- Epistemic principles: `docs/concepts/epistemic_principles.md`
+- Reflexive engineering: `docs/concepts/reflexive_engineering.md`
 - Glossary: `docs/concepts/glossary.md`
-- Cognitive Gym (why the cage works): `research_areas/private/philosophy/cognitive_gym.md`
-- Three Legs of ZTARE (core philosophy): `research_areas/private/philosophy/three_legs_of_ztare.md`
-- Operational Manual: `research_areas/private/philosophy/operational_manual_substrate_construction.md`
 - Experiment track record: `research_areas/EXPERIMENT_TRACK_RECORD.md`

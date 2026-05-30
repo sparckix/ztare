@@ -42,7 +42,7 @@ Borrowing from Alfred Chandler's history of Managerial Capitalism, this architec
 
 ### C. Where Reasonable Minds Disagree
 * **The Counter-Argument:** Proponents of unconstrained self-improvement argue that hard-coding Python supervisors creates a "complexity ceiling"—that human-coded governance will eventually bottleneck superintelligent agents.
-* **Our Rebuttal:** A system that cannot audit its own provenance will collapse into noise before it reaches superintelligence. The "bottleneck" is actually a load-bearing foundation. Furthermore, the Supervisor is "Self-Hosting"—the agents can write code to improve the Supervisor (e.g., building the `attended_autoloop`), provided they pass the Principal's Contract Promotion gate.
+* **Our Rebuttal:** A system that cannot audit its own provenance will collapse into noise before it reaches superintelligence. The "bottleneck" is actually a central foundation. Furthermore, the Supervisor is "Self-Hosting"—the agents can write code to improve the Supervisor (e.g., building the `attended_autoloop`), provided they pass the Principal's Contract Promotion gate.
 
 ## 5. Empirical Requirements for the Paper
 To prove this thesis, the paper must demonstrate:

@@ -1,12 +1,34 @@
+---
+description: "The core thesis: a constrained validation loop makes an LLM produce better science."
+---
+
 # The Cognitive Gym
 
-**Status:** public / load-bearing
-**Paper parent:** *The Principles of Epistemic Verification* (Paper 5) — ten operations that decompose "judgment"
-**Architectural counterpart:** [docs/concepts/architecture.md](architecture.md) §6 (Layer 3: ZTARE Core Validator)
-**Sibling docs:** [organizational_primitives.md](organizational_primitives.md) (Paper 4 in code), [reflexive_engineering.md](reflexive_engineering.md) (self-improvement primitives)
-**Operational counterpart:** `research_areas/private/philosophy/operational_manual_substrate_construction.md`
+> **Up:** [Documentation map](../README.md)
 
-An LLM inside a constrained validation loop produces better science than an unconstrained LLM, for the same reason a weightlifter inside a squat rack lifts more than one without. The architecture enforces epistemic discipline — removing the failure modes that prevent ambitious work. ZTARE trusts the LLM to do what it does well (pattern recognition, structural analogy, topological search) while handing what it does poorly (arithmetic, gradient sensitivity, self-consistency under pressure) to deterministic machinery.
+**Status:** public / core
+**Paper parent:** *The Principles of Epistemic Verification* (Paper 5), ten operations that decompose "judgment"
+**Architectural counterpart:** [docs/concepts/architecture.md](architecture.md), especially "Layer 2: The In-Loop Validator"
+**Sibling docs:** [organizational_primitives.md](organizational_primitives.md) (Paper 4 in code), [reflexive_engineering.md](reflexive_engineering.md) (self-improvement primitives)
+**Operational counterpart:** public seams/specs under [research_areas/](../../research_areas/), plus project-specific ledgers when a run is tied to a concrete substrate.
+
+> **How this relates to the sibling concept docs.** This doc owns the *thesis and constraint architecture*: why a constrained loop produces better science. The transferable laws extracted from the papers are [epistemic_principles.md](epistemic_principles.md); the standard software-engineering patterns for LLM pipelines are [agentic_engineering_patterns.md](agentic_engineering_patterns.md); the apparatus applying its own scientific legs to itself is [reflexive_engineering.md](reflexive_engineering.md). The failure catalogue in Part 3 is illustrative for the constraint stack only; the canonical failure taxonomy is owned by [epistemic_principles.md](epistemic_principles.md) Part I (structural) and [anti_pattern_catalog.md](anti_pattern_catalog.md) (operational field guide).
+
+An LLM inside a constrained validation loop produces better science than an
+unconstrained LLM, for the same reason a weightlifter inside a squat rack lifts
+more than one without. The architecture enforces epistemic discipline, removing
+the failure modes that prevent ambitious work. ZTARE trusts the LLM to do what
+it does well (pattern recognition, structural analogy, topological search)
+while handing what it does poorly (arithmetic, gradient sensitivity,
+self-consistency under pressure) to deterministic machinery.
+
+This is the model-environment thesis in operational form. Model capability is
+the talent; the cognitive gym is the environment that lets the talent express
+itself without letting it certify itself. The point is not that scaffolding is
+more important than model intelligence. The point is that intelligence without
+a good environment produces unstable research artifacts: plausible proofs,
+uncited rediscoveries, premature closure, and persuasive overclaims. The
+constraint stack is how capability becomes evidence.
 
 This document explains the constraint architecture: what it is, why it works, how it fails, and what it proves.
 
@@ -78,7 +100,7 @@ This document explains the constraint architecture: what it is, why it works, ho
 
 The Cage Orchestrator sits above the layers as a router; the Framer sits below
 Layer 5 as a canonical-form classifier. Both are additive to the
-1–5 stack, not replacements for it.
+1-5 stack, not replacements for it.
 
 ### Separation of Concerns
 
@@ -116,7 +138,7 @@ Each layer was added because the previous configuration hit a specific failure m
 | Topology induction failure | Single-regime families never composed additively | Additive regime compositor | Single-regime fixation |
 | Apparatus capability tax | Each new gate cost ~5 places to update; 13 gates were "shipped but not wired" by 2026-04-25 | Cage Orchestrator (GP-157, dispatcher above all layers) | Rubric-flag-as-config, per-substrate hand-wiring |
 | Rediscovery confused with new physics | A canonical-family fit looked like a novel law to the judge | Canonical-Form Framer (Layer 6, GP-152) | Treating curve-fit residual as a sufficient measure of novelty |
-| N-D fit silently nested under 1D flag | Bug #11 (2026-04-25): substrates opting only for `enable_fit_primitive_features` ran 30+ iters with zero N-D engagement | Sibling-block invariant (architecture.md §6a) | Nesting one fit primitive's wire-in under another's rubric flag |
+| N-D fit silently nested under 1D flag | Bug #11 (2026-04-25): substrates opting only for `enable_fit_primitive_features` ran 30+ iters with zero N-D engagement | Sibling-block invariant in the in-loop validator wiring | Nesting one fit primitive's wire-in under another's rubric flag |
 | Visible-MRE fabrication / import-crash burn | Mutator shipped prose claims that the harness contradicted, or crashed at import | GP-156 apparatus hardening (Proposals 1+2+3, K_law BIC amendment) | R1 trusting prose over executed-code attestation |
 
 ---
@@ -167,7 +189,7 @@ layer, not separate code modules. Both look at the same fitted
   in Layer 3) plus the holdout / farther-tail gate. A pass means the
   form is empirically adequate over the visible window.
 - **Newton step.** Does the form predict secondary observables it was
-  NOT fit against — derived quantities, conservation invariants,
+  NOT fit against, derived quantities, conservation invariants,
   asymptotic regimes? Owned by Newton-mode rubric scoring
   (`rubric_mode='newton'`), the Generative Yield rubric dimension, and
   optionally Layer 6's canonical-family match (a known canonical family
@@ -176,7 +198,7 @@ layer, not separate code modules. Both look at the same fitted
 
 These two observables map onto two failure modes. Kepler-passing,
 Newton-failing forms are curve-fit surrogates. Newton-passing,
-Kepler-failing forms do not exist in this apparatus by construction —
+Kepler-failing forms do not exist in this apparatus by construction, 
 nothing reaches the Newton step without first surviving the Kepler
 gate. The asymmetry is the point: empirical adequacy is necessary
 but not sufficient for predictive content, and the rubric is the
@@ -184,7 +206,7 @@ place where the difference is named and scored.
 
 The vocabulary borrows the historical roles, not their physics.
 "Kepler" labels the empirical fit; "Newton" labels the predictive
-yield. The actual mechanism is unrelated to celestial mechanics —
+yield. The actual mechanism is unrelated to celestial mechanics, 
 Generative Yield against a held-out invariant is what the rubric
 checks, not gravity.
 
@@ -203,6 +225,8 @@ The hard zero is valid only if the denylist bans the target (function name, sequ
 ## Part 3: Failure Catalogue
 
 Each entry names a failure mode, explains why it survived, and describes the fix. The failures are ordered by the architectural layer they exposed.
+
+> **Canonical taxonomy lives elsewhere.** This catalogue keeps only the failures that explain the constraint stack. The canonical structural failure dynamics are [epistemic_principles.md](epistemic_principles.md) Part I; the canonical operational field guide is [anti_pattern_catalog.md](anti_pattern_catalog.md). Read those for the full taxonomy; this section does not re-derive it.
 
 ### The Padé Trap
 
@@ -337,7 +361,7 @@ mutator families."
 | `gp159_retrieval_trap` (gemini-pro) | gemini-pro | 93 (latest archive) | Cross-family matched pair: same charter, same rubric, different mutator family. Both arms find the structure. |
 | `gp159_retrieval_trap` (claude-opus) | claude-opus | 90 (current main) | Cross-family matched pair, second arm. The 3-point gap is below the noise floor of the rubric persona. |
 | `gp161_mdl_anti_goodhart` | gemini-pro | 88 (frozen + archive) | MDL-as-rubric anti-Goodhart probe: does scoring on raw-coord MDL change the gaming surface vs. residual-based scoring? |
-| `gp154_scaling_law_exponents` | claude-opus | 0 (run pending) | Form-class-robust bounded null. Scaffolded via `gp154h` script. The current 0 reflects pre-run state, not a refusal verdict. |
+| `gp154_scaling_law_exponents` | claude-opus | 0 (run pending) | Form-class-invariant bounded null. Scaffolded via `gp154h` script. The current 0 reflects pre-run state, not a refusal verdict. |
 
 The matched-pair design (gp159) is the apparatus equivalent of the
 cross-family separation requirement in `require_cross_family`: if a
@@ -350,7 +374,7 @@ families on a non-mathematical substrate.
 MDL as the rubric metric. If MDL scoring is itself gameable (i.e.,
 Goodhart's law applied at the metric layer), the apparatus has merely
 moved the gaming surface, not closed it. The 88 verdict is a
-provisional "metric is robust enough for now"; the real test is when
+provisional "metric is good enough for now"; the real test is when
 a future mutator gets long enough to attack it.
 
 
@@ -360,41 +384,43 @@ a future mutator gets long enough to attack it.
 
 A persistent confusion in talking about ZTARE-on-real-data runs is whether the result counts as "science." The confusion has two failure modes that mirror each other. The first is false confidence: a run reproduces a canonical structure, the operator calls it discovery, and the apparatus's contamination defenses (which the LLM may have evaded by recalling published work from training) get celebrated as blind abduction. The second is false despair: the operator notices that the LLM had priors, concludes that no run on a substrate the LLM "knows" can be real science, and walks away from the apparatus's actual contribution.
 
-Both miss the same point. All science has priors. Newton knew Galileo and Kepler. Kepler knew Tycho. Einstein knew Maxwell. The constraint that distinguishes science from recital is not "the scientist had no priors" — it is "the prior was disciplined by the data." That is what the apparatus tests.
+Both miss the same point. All science has priors. Newton knew Galileo and Kepler. Kepler knew Tycho. Einstein knew Maxwell. The constraint that distinguishes science from recital is not "the scientist had no priors", it is "the prior was disciplined by the data." That is what the apparatus tests.
 
 ### Two roles for substrates
 
 Substrates fall into two epistemic roles, and conflating them is the source of the confusion above.
 
-A **calibration substrate** has a known canonical answer in the published literature. The LLM has the answer somewhere in training data. The apparatus, not the science, is on trial. What you want from a calibration run is that the mutator can articulate the canonical structure, the gates correctly admit it (or reject it for sound structural reasons), the Newton-step verdict matches the published verdict on the same data, and the discipline mechanisms — the denylist, the contamination-defense briefing, pathology enforcement, the per-class breakdown — work as designed. A run that ceilings at 100 on a calibration substrate is the apparatus failing silently: its gates are not catching the over-aspirational pre-commits and minor structural gaps that any real fit shows. A floor at 0 means the apparatus is broken. The right band is 60-80, where the canonical structure is recovered, the discriminators correctly fire on the parts of the form that do not fit the data perfectly, and the score reflects the honest gap between the canonical form and the actual residuals.
+A **calibration substrate** has a known canonical answer in the published literature. The LLM has the answer somewhere in training data. The apparatus, not the science, is on trial. What you want from a calibration run is that the mutator can articulate the canonical structure, the gates correctly admit it (or reject it for sound structural reasons), the Newton-step verdict matches the published verdict on the same data, and the discipline mechanisms, the denylist, the contamination-defense briefing, pathology enforcement, the per-class breakdown, work as designed. A run that ceilings at 100 on a calibration substrate is the apparatus failing silently: its gates are not catching the over-aspirational pre-commits and minor structural gaps that any real fit shows. A floor at 0 means the apparatus is broken. The right band is 60-80, where the canonical structure is recovered, the discriminators correctly fire on the parts of the form that do not fit the data perfectly, and the score reflects the honest gap between the canonical form and the actual residuals.
 
 A **discovery substrate** has a genuinely open or unpublished answer. OEIS dark sequences. Novel mathematical conjecture refinement. Unsolved CS problems. Multi-class unification questions where each class has been studied separately but never together under principled weighting. On these, the apparatus is doing new work, and you only trust its output if you have already calibrated the apparatus on at least one calibration substrate. Skipping calibration is the mistake that produced the paper-1 overreach.
 
 ### The U-vs-S diagnostic
 
-The gp163d session surfaced a specific structural pattern that appears whenever a multi-class substrate has a published constant fitted on one class and asks whether that constant extrapolates to other classes. The pattern is to pre-commit a constant on visible class A, then run the Newton-step on withheld classes B and C without re-fitting. Three verdicts are possible. If U holds, universality is validated empirically across classes — the constant is genuinely universal in the data. If U fails, universality is refuted under the apparatus's principled weighting, and the mutator should pivot to Hypothesis S, expressing the constant as a function of features. The third verdict is the most interesting: U fails and the mutator cannot articulate S either. The apparatus has detected a real structural gap that no parameterization in the current grammar fills. The Newton-step dimension scores low; the failure itself is the finding.
+The gp163d session surfaced a specific structural pattern that appears whenever a multi-class substrate has a published constant fitted on one class and asks whether that constant extrapolates to other classes. The pattern is to pre-commit a constant on visible class A, then run the Newton-step on withheld classes B and C without re-fitting. Three verdicts are possible. If U holds, universality is validated empirically across classes, the constant is genuinely universal in the data. If U fails, universality is refuted under the apparatus's principled weighting, and the mutator should pivot to Hypothesis S, expressing the constant as a function of features. The third verdict is the most interesting: U fails and the mutator cannot articulate S either. The apparatus has detected a real structural gap that no parameterization in the current grammar fills. The Newton-step dimension scores low; the failure itself is the finding.
 
-This third mode — failure-as-finding — requires three apparatus-level conditions. The per-class breakdown must reach the mutator separately rather than as an aggregate, or the mutator sees only that the form fails somewhere and has no signal about which class carries the failure. The harness must distinguish between mutator-side discriminator assertions (real falsifications) and apparatus-side runtime errors (tooling failures), or genuine refutations get scored as broken plumbing and the failure-as-finding signal is lost in the noise. And the fitter must reject degenerate solutions where slack absorbs into parameters the visible data cannot constrain, or the form passes the visible gate while encoding nothing the held-out classes can refute.
+This third mode, failure-as-finding, requires three apparatus-level conditions. The per-class breakdown must reach the mutator separately rather than as an aggregate, or the mutator sees only that the form fails somewhere and has no signal about which class carries the failure. The harness must distinguish between mutator-side discriminator assertions (real falsifications) and apparatus-side runtime errors (tooling failures), or genuine refutations get scored as broken plumbing and the failure-as-finding signal is lost in the noise. And the fitter must reject degenerate solutions where slack absorbs into parameters the visible data cannot constrain, or the form passes the visible gate while encoding nothing the held-out classes can refute.
 
 ### What ZTARE actually tests
 
-ZTARE does not test whether the LLM had no priors. That bar is unattainable and was always wrong. What it tests is whether the prior is disciplined by the data. Does the form survive farther-tail extrapolation under principled weighting? Does the discriminator correctly fire on over-aspirational pre-commits — when the mutator pre-commits "S means greater than ten-fold variation across radii" but the fitted parameters give one-and-a-half-fold variation, that is a real falsification, not a tooling failure. Does the apparatus refuse degenerate fits — when scipy moves slack into a parameter that visible-class data cannot constrain, does the pathology detector catch it before propagation?
+ZTARE does not test whether the LLM had no priors. That bar is unattainable and was always wrong. What it tests is whether the prior is disciplined by the data. Does the form survive farther-tail extrapolation under principled weighting? Does the discriminator correctly fire on over-aspirational pre-commits, when the mutator pre-commits "S means greater than ten-fold variation across radii" but the fitted parameters give one-and-a-half-fold variation, that is a real falsification, not a tooling failure. Does the apparatus refuse degenerate fits, when scipy moves slack into a parameter that visible-class data cannot constrain, does the pathology detector catch it before propagation?
 
 A 70 on a calibration substrate under these conditions is the apparatus working. A 100 is it failing silently. A 25 with a sharp weakest-point note ("form ignores `mass_log10`, blind to its effect on B and C") is the apparatus pushing the mutator toward a more general form. The score is the diagnostic. The apparatus is the science.
 
+This is the substrate-layer instance of a limit stated generally in `epistemic_principles.md` P16: a fully green score is not evidence of discovery, because no in-loop mechanism can diff a formal result against the informal question it is meant to answer. Part 6 is what that limit looks like when the gate is a regression score; P16 is what it looks like when the gate is a proof-closure membrane. The discipline is the same in both registers, spend effort shrinking and making legible the ungated residual, not on a gate that claims to certify significance.
+
 ---
 
-## Part 7: The Anchoring Thesis — What ZTARE Is For
+## Part 7: The Anchoring Thesis, What ZTARE Is For
 
-Most of what the apparatus does, when traced back to a single value proposition, is one thing: **mechanize anchor escape.** Human researchers carry priors from their training, their literature exposure, their field's conventional decompositions. Those priors are productive most of the time — they are what makes a researcher fluent — but they also form anchors that the same researcher cannot easily step outside of. The 23-year-old who solves a long-standing Erdős problem solves it precisely because they have not yet acquired the anchors the field has converged on; they reach for a decomposition the field's senior figures have implicitly ruled out. The same psychological mechanism that makes domain expertise productive also makes domain experts anchor-bound.
+Most of what the apparatus does, when traced back to a single value proposition, is one thing: **mechanize anchor escape.** Human researchers carry priors from their training, their literature exposure, their field's conventional decompositions. Those priors are productive most of the time, they are what makes a researcher fluent, but they also form anchors that the same researcher cannot easily step outside of. The 23-year-old who solves a long-standing Erdős problem solves it precisely because they have not yet acquired the anchors the field has converged on; they reach for a decomposition the field's senior figures have implicitly ruled out. The same psychological mechanism that makes domain expertise productive also makes domain experts anchor-bound.
 
-ZTARE's two non-grammar primitives — REFRAME and ANALOGY — exist to do mechanically what the field's anchor-bound researchers cannot do reliably for themselves. REFRAME enumerates coordinate transforms (h_in, h_out) the human prior would not try, ranks them by MDL on the actual data, and tells the apparatus which frame the data prefers. ANALOGY queries an LLM for cross-domain forms whose structural shape matches the failure surface, breaking out of the home discipline's repertoire of templates. Both are explicitly anti-anchor. Both succeed only when they propose something the operator's prior would have suppressed.
+ZTARE's two non-grammar primitives, REFRAME and ANALOGY, exist to do mechanically what the field's anchor-bound researchers cannot do reliably for themselves. REFRAME enumerates coordinate transforms (h_in, h_out) the human prior would not try, ranks them by MDL on the actual data, and tells the apparatus which frame the data prefers. ANALOGY queries an LLM for cross-domain forms whose structural shape matches the failure surface, breaking out of the home discipline's repertoire of templates. Both are explicitly anti-anchor. Both succeed only when they propose something the operator's prior would have suppressed.
 
-This framing reorganizes the apparatus's failure modes. The gp165 audit's central finding — that ANALOGY under aggressive structural anonymization produced only vanilla baselines (`a`, `a*x+b`, `c*exp(d*x)`) — is the worst possible failure for an anchor-escape primitive: it collapsed back to the safest baseline prior. Without a residual-topology anchor or a domain-category hint, the LLM had no signal that distinguished the substrate from any other, and so reverted to the most generic forms in its repertoire. The fix that restores ANALOGY's purpose surfaces residual-shape topology (the structural form of where the current candidate fails) and an optional broad-category hint (the field, not the answer), giving the LLM enough to reach for non-generic forms without compromising the contamination posture.
+This framing reorganizes the apparatus's failure modes. The gp165 audit's central finding, that ANALOGY under aggressive structural anonymization produced only vanilla baselines (`a`, `a*x+b`, `c*exp(d*x)`), is the worst possible failure for an anchor-escape primitive: it collapsed back to the safest baseline prior. Without a residual-topology anchor or a domain-category hint, the LLM had no signal that distinguished the substrate from any other, and so reverted to the most generic forms in its repertoire. The fix that restores ANALOGY's purpose surfaces residual-shape topology (the structural form of where the current candidate fails) and an optional broad-category hint (the field, not the answer), giving the LLM enough to reach for non-generic forms without compromising the contamination posture.
 
-The contamination posture itself sharpens under this lens. Three retrieval cases sit on different sides of the anchor-escape line. Retrieving a known FORM and fitting new constants from data is anchor-escape working as intended — the apparatus benefits from the LLM's full repertoire of mathematical templates. Retrieving known CONSTANTS from training and claiming they came from data is fake discovery, defended by the anti-retrieval gate. Retrieving a known RESULT from training and claiming the apparatus found it is also fake discovery, defended by cold variable names. The contamination defense should be tight on cases two and three and relaxed on case one. Earlier configurations of the apparatus had it inverted, treating any domain-language emission as contamination, which forced the mutator into vocabulary so generic that anchor escape became impossible.
+The contamination posture itself sharpens under this lens. Three retrieval cases sit on different sides of the anchor-escape line. Retrieving a known FORM and fitting new constants from data is anchor-escape working as intended, the apparatus benefits from the LLM's full repertoire of mathematical templates. Retrieving known CONSTANTS from training and claiming they came from data is fake discovery, defended by the anti-retrieval gate. Retrieving a known RESULT from training and claiming the apparatus found it is also fake discovery, defended by cold variable names. The contamination defense should be tight on cases two and three and relaxed on case one. Earlier configurations of the apparatus had it inverted, treating any domain-language emission as contamination, which forced the mutator into vocabulary so generic that anchor escape became impossible.
 
-If this thesis is correct, the apparatus's ultimate test is not whether it can recover canonical forms on calibration substrates — those are the cases where the human anchor is the right anchor. The test is whether it can produce a form on a discovery substrate that the field's experts would not have proposed, because their priors would have ruled it out, and whether that form survives farther-tail. A win in that band is a major one. ZTARE is not yet there, but the architecture is finally pointed in that direction.
+If this thesis is correct, the apparatus's ultimate test is not whether it can recover canonical forms on calibration substrates, those are the cases where the human anchor is the right anchor. The test is whether it can produce a form on a discovery substrate that the field's experts would not have proposed, because their priors would have ruled it out, and whether that form survives farther-tail. A win in that band is a major one. ZTARE is not yet there, but the architecture is finally pointed in that direction.
 
 ---
 

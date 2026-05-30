@@ -1,48 +1,88 @@
 # ZTARE Documentation Map
 
+> **Up:** [Repository root](../README.md) · **Tooling:** [scripts/](../scripts/README.md) · [analytics/](../analytics/README.md)
+
 This is the canonical public map for the docs tree. The root `README.md` is
 the entry point; this file explains which layer each document belongs to and
-which documents are canonical versus supporting context.
+which documents are canonical versus supporting context. Every doc carries an
+`> **Up:**` breadcrumb back to this map, so the tree is walkable in both
+directions and in an Obsidian vault as well as on GitHub.
 
 ## Layer Map
 
 | Layer | Canonical docs | Maturity | Purpose |
 |---|---|---:|---|
-| ZTARE kernel | `docs/concepts/architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Evidence snapshots, adversarial validation, deterministic gates, synthesis, and the project workflow. |
+| ZTARE architecture | `docs/concepts/architecture.md`, `docs/concepts/leanmill_architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Current map of in-loop validation, out-of-loop research operations, LeanMill station-factory flow, reflexive intelligence, and the project workflow. |
+| Capabilities surface | `docs/concepts/capabilities.md` | canonical / public | A two-minute "what the apparatus actually has" page — deterministic gates, adversarial library, sealed-result discipline, reflexive primitives, vocabulary escape, cross-tool triangulation, grammar-vs-space diagnosis, Lean bridge, substrate probing — each linking to the deeper doc. |
+| System position and module map | `docs/concepts/system_position_and_module_map.md` | canonical / public | How ZTARE positions itself as a socio-technical research system, how related systems such as AI Co-Mathematician and LeanMill fit as orientation points, and how the validator, proof-search, GNN, forecast, workbench, org-runtime, and claim layers compose. |
+| Proof/governance/residual loop | `docs/concepts/closure_claim_governance.md` | canonical / public | Human-facing map of Proof Execution, Governance Gate, and Residual Compiler, plus the closure-claim governance contract. |
 | Cognitive gym / recursive primitives | `docs/concepts/cognitive_gym.md`, `docs/concepts/epistemic_principles.md`, `docs/concepts/reflexive_engineering.md` | conceptual / partially mechanized | The constraint stack and epistemic operations that make the validator more than a chat loop. |
+| Reflexive mining methodology | `docs/concepts/reflexive_mining_methodology.md` | authoritative / canonical | Weekly mining + taste-rating procedure, RCA from the 2026-05-16 procedure-inversion incident, gap register, and pre-cycle prevention checklist. Read before running `scripts/public/mining/run_reflexive_mine.py`. |
 | Agentic engineering patterns | `docs/concepts/agentic_engineering_patterns.md`, `docs/guides/reflexive_audit_workflow.md` | public / reusable | General LLM-pipeline engineering patterns extracted from building ZTARE. |
-| Agentic Organization Runtime | `org/README.md`, `docs/concepts/organizational_primitives.md`, `docs/guides/org_runtime_quickstart.md` | working prototype | Reusable organization primitives: persistent roles, mandates, tasks, gates, preferences, transition logs, damage signals, Orbit, Telegram, and role-bound execution. |
-| ZTARE Research Co | `docs/concepts/ztare_research_company_architecture.md`, `research_areas/ZTARE_BOARD.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md` | dogfood / active | The repo operating as its own research company: the org runtime instantiated around ZTARE research programs and closure discipline. |
+| Forecast pool / decision market | `research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md`, `research_areas/seams/protocol/GP-230_forecast_pool_decision_market_seam.md`, `scripts/public/control/forecast/pool.py` | active / mechanized | Sealed forecast contracts for macro/meso/micro branch choices, swarm gates, effort estimates, and externality audits. |
+| Primitive classification criteria | `docs/concepts/primitive_classification_criteria.md` | canonical / public | Deterministic checklist for "should this be in the reflexive-primitives or agentic-patterns catalog?" Replaces argument-by-anecdote with a six-criteria test per class. |
+| Universal research language | `docs/concepts/universal_research_language.md`, `docs/concepts/structural_language_catalog.md` | public / generated from registries | Plain-English explainer plus the full generated catalogue for universal research operations, meta-language moves, and PDE estimate-craft handles. |
+| Org runtime tenant overlay | `org/README.md`, `docs/concepts/organizational_primitives.md`, `docs/guides/org_runtime_quickstart.md` | working prototype | ZTARE's applied instance of cognitive-firm primitives: persistent roles, mandates, tasks, gates, preferences, transition logs, damage signals, Orbit, optional notification providers, and role-bound execution. |
+| ZTARE Research Co | `docs/concepts/ztare_research_company_architecture.md`, `priority_roadmap.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md` | dogfood / active | The repo operating as its own research company: hard-problem campaigns, recursive self-improvement, organizational learning, and closure discipline. |
 | Operator surfaces | `docs/guides/operator_console.md`, `docs/guides/runtime_smoke_test.md`, `docs/guides/org_runtime_docker_deploy.md` | working / local-first | How a principal operates the repo locally or through daemonized roles. |
-| Scientific case studies and papers | `papers/README.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md`, `research_areas/ZTARE_BOARD.md` | mixed; status-labeled | Public manuscripts and durable experiment/findings records for gravity, neural scaling, Navier-Stokes, transformer-successor, and other bounded campaigns. |
-| Formal proofs | `ztare_proofs/README.md`, `ztare_proofs/ZtareProofs.lean`, `ztare_proofs/ZtareProofs/` | experimental / public source | Lean proof sources and formalization experiments. Generated `.lake/` build state is not source. |
-| Internal architecture maps | `docs/internal/` | internal / audit support | Detailed maps, audits, and implementation notes for maintainers. Not the first-read path. |
-| Demos | `docs/demos/` | prototype UI artifacts | Static visual demos for governance and org-runtime concepts. |
+| `ztare` CLI | `docs/guides/cli.md` | usable | The single command entry point for the engine's operator surface — `ztare forecast`, `ztare leanmill`, `ztare bundle`, etc. — wrapping the underlying control scripts. Engine-only by design; governance / org-side belongs to `cognitive-firm`. |
+| First-run path | `docs/guides/first-30-minutes.md` | public / usable | The fastest verified route through the Obsidian vault map, public smoke target, and track selection. |
+| Agent prompt sheets | `docs/guides/agent-prompts.md` | public / usable | Paste-ready prompts for using Codex or Claude to learn the repo, inspect projects, audit GP-230/GP-243, and stay inside membrane/observer boundaries. |
+| Scientific case studies and papers | `docs/public_claim_register.md`, `papers/README.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md`, `priority_roadmap.md` | mixed; status-labeled | Conservative public claims, manuscripts, and durable experiment/findings records for gravity, neural scaling, Navier-Stokes, transformer-successor, and other bounded campaigns. |
+| Benchmark evidence | `benchmarks/benchmark_evidence.md`, `benchmarks/constraint_memory/README.md`, `papers/experimental_math_letter/pysr_baseline_full.json` | bounded / public | Conservative comparison evidence for false-positive suppression, null-returning gates, and evaluator hardening. Not a public ranking claim. |
+| Formal artifacts | `ztare_proofs/README.md`, `ztare_proofs/ZtareProofs.lean`, `ztare_proofs/ZtareProofs/` | experimental / public source | Lean gate artifacts, proof sources, and formalization experiments. Generated `.lake/` build state is not source. |
+| Tooling & data map | `scripts/README.md`, `analytics/README.md` | hand-authored / per-file | The operational toolchain and the analytics/ledger tree. Each sub-folder README names every script and states in one line what it does, so an agent or reader can navigate the code surface without opening source. |
+| Failure & governance discipline | `docs/concepts/epistemic_principles.md`, `docs/concepts/anti_pattern_catalog.md`, `docs/concepts/goodhart_at_every_layer.md`, `docs/concepts/closure_claim_governance.md`, `docs/concepts/problem_class_taxonomy.md` | canonical / public | The failure axis, deconflicted: the structural law (`epistemic_principles` Part I), the operational field guide (`anti_pattern_catalog`), the per-layer manifestation map (`goodhart_at_every_layer`), plus closure-claim and problem-class discipline. |
+| Specifications & substrate contracts | `docs/concepts/rubric_specification.md`, `docs/concepts/harness_specification.md`, `docs/concepts/mlh_family_protocol.md`, `docs/concepts/chaos_substrate_primitives.md` | canonical / public | The formats and contracts a substrate, rubric, or harness must satisfy. |
+| Reusable patterns | `docs/concepts/prediction_ledger_pattern.md`, `docs/concepts/graph_diagnostic_belief_update_pattern.md`, `docs/concepts/cross_scale_fractal_map.md`, `docs/concepts/agent_agnostic_recursive_gain.md` | public / reusable | Self-contained patterns extracted from the work, usable without the rest of ZTARE. |
+| Concept-level workflows | `docs/concepts/closed_loop_theorem_writer_workflow.md`, `docs/concepts/closure_utility_test_workflow.md` | public / procedural | Procedures that are concept-level rather than operator guides. |
+| Glossary & reference | `docs/concepts/glossary.md`, `docs/reference/` | reference | Plain-language term definitions and supporting reference material. |
+| Internal boundary | `docs/internal/` | internal / not public evidence | Maintainer audit support. Listed only to mark the boundary; not a first-read path or public evidence source. |
+| Landings | `docs/landings/` | prototype UI artifacts | Static visual demos for governance and org-runtime concepts. |
 
 ## Recommended Paths
+
+## Cognitive-Firm Boundary
+
+The reusable org kernel lives in
+[`sparckix/cognitive-firm`](https://github.com/sparckix/cognitive-firm).
+The `org/` tree in this repo is the ZTARE overlay and compatibility surface:
+role templates, local gates, channels, runtime docs, and tenant-specific
+symlinks where a live deployment has them. Public ZTARE should not treat a
+tenant notification provider as part of the generic kernel.
 
 ### New Reader
 
 1. `README.md`
-2. `docs/guides/quickstart.md`
-3. `docs/guides/workflow.md`
-4. `docs/concepts/architecture.md`
+2. `docs/concepts/system_position_and_module_map.md`
+3. `docs/concepts/glossary.md` — GP-NNN tracking IDs (e.g. GP-225 LeanMill,
+   GP-230 forecast pool, GP-243 action intelligence) and other recurring terms
+4. `docs/concepts/capabilities.md` — what the apparatus actually has
+5. `docs/public_claim_register.md`
+6. `docs/guides/quickstart.md`
+7. `docs/guides/workflow.md`
+8. `docs/concepts/architecture.md`
+9. `priority_roadmap.md` — what is next
 
 ### Researcher Evaluating Claims
 
 1. `README.md`
-2. `papers/README.md`
-3. `research_areas/EXPERIMENT_TRACK_RECORD.md`
-4. Relevant project artifacts under `projects/` when intentionally public
+2. `docs/public_claim_register.md`
+3. `docs/concepts/system_position_and_module_map.md`
+4. `docs/concepts/closure_claim_governance.md`
+5. `benchmarks/benchmark_evidence.md`
+6. `papers/README.md`
+7. `research_areas/EXPERIMENT_TRACK_RECORD.md`
+8. Relevant project artifacts under `projects/` when intentionally public
 
 ### Builder Integrating The Kernel
 
 1. `docs/concepts/architecture.md`
 2. `docs/guides/workflow.md`
 3. `docs/concepts/cognitive_gym.md`
-4. `supervisor/USER_MANUAL.md`
+4. `docs/concepts/organizational_primitives.md` if you need role/gate/runtime integration
 
-### Builder Interested In Agentic Organization Runtime
+### Builder Interested In The Org Runtime Overlay
 
 1. `org/README.md`
 2. `docs/concepts/organizational_primitives.md`
@@ -54,6 +94,13 @@ which documents are canonical versus supporting context.
 1. `docs/concepts/agentic_engineering_patterns.md`
 2. `docs/concepts/reflexive_engineering.md`
 3. `docs/guides/reflexive_audit_workflow.md`
+
+### Agent Or Contributor Navigating The Code
+
+1. `scripts/README.md` (every tool, grouped, one line each)
+2. `analytics/README.md` (ledgers, queries, the data tree)
+3. `docs/guides/agent-prompts.md`
+4. `docs/concepts/architecture.md`
 
 ## Status Vocabulary
 
@@ -71,3 +118,24 @@ which documents are canonical versus supporting context.
 - Do not infer that a high-scoring experiment is a scientific discovery unless
   the experiment ledger and paper layer say so.
 - Do not treat private mirror paths as public source material.
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`concepts/`](concepts/) - 30 file(s)
+- [`guides/`](guides/) - 14 file(s)
+- [`landings/`](landings/) - 1 file(s)
+- [`reference/`](reference/) - 4 file(s)
+
+**Documents**
+
+- [9 Ways LLMs Cheat Their Own Evaluations](cheating_catalog.md)
+- [Multi-Substrate Validation — Companion to JOURNEY.md](multi_substrate_validation.md) - Companion evidence to the journey: how the same epistemic discipline held across the NS, Planck, consciousness and gravity substrates.
+- [Public Claim Register](public_claim_register.md) - Conservative public claim register for the rowdy ZTARE campaigns.
+- [A 60-Day Sprint, Six Architectural Phases](sprint_60day_journey.md) - First-person build narrative, the 60-day arc that produced ZTARE across six architectural phases, including honest failures and reflexive self-audit.
+
+<sub>4 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

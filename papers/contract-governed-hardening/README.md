@@ -8,7 +8,18 @@ Published version:
 Clean public source bundle for the paper.
 
 Files:
-- `draft.md` — canonical markdown draft
-- `main.tex` — current LaTeX submission source
-- `refs.bib` — bibliography
-- `main.pdf` — public mirror PDF
+- `draft.md`, canonical markdown draft
+- `main.tex`, current LaTeX submission source
+- `refs.bib`, bibliography
+- `main.pdf`, public mirror PDF
+
+<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+
+## Index
+
+**Documents**
+
+- [Contract-Governed Adversarial Evaluator Hardening: Stage-Gated Recursive Improvement with Typed Promotion Contracts](draft.md), Hardening research claims by binding them to machine-checkable contracts.
+
+<sub>0 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

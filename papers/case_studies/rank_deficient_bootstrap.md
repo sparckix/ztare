@@ -5,7 +5,7 @@
 *Origin: this failure was first observed when designing a ground-truth
 substrate for a law-recovery experiment. A six-parameter family was
 declared as ground truth, but two of the parameters were unidentifiable
-— a pre-commit check that should have caught this did not. The finding
+, a pre-commit check that should have caught this did not. The finding
 prompted a change to adversarial multi-start as the standard
 identifiability check for all subsequent experiment design.*
 
@@ -15,11 +15,11 @@ identifiability check for all subsequent experiment design.*
 
 We exhibit a six-parameter nonlinear regression target whose declared family
 is secretly rank five: two of the parameters enter only through a single
-ratio. A common pre-commit identifiability check — *fit the clean target,
+ratio. A common pre-commit identifiability check, *fit the clean target,
 perturb it with small Gaussian noise, bootstrap, assert the recovered
-parameters are stable* — passes the degenerate family cleanly. A different
-check — *fit the clean target from multiple adversarial starting points,
-assert the recovered parameters agree across starts* — catches the
+parameters are stable*, passes the degenerate family cleanly. A different
+check, *fit the clean target from multiple adversarial starting points,
+assert the recovered parameters agree across starts*, catches the
 degeneracy immediately: the two unidentifiable parameters disagree by
 **>150% across starts** while their ratio agrees to **machine precision**.
 
@@ -45,17 +45,17 @@ with six declared parameters: `A, p, alpha, beta, q, offset`.
 Ground-truth values: `A=0.95, p=2.30, alpha=0.72, beta=1.00, q=1.30,
 offset=0.06`.
 
-Evaluation grid: `phi ∈ geomspace(0.1, 15, 50)` at three values of
-`psi ∈ {0.60, 1.00, 1.80}`, giving 150 points.
+Evaluation grid: `phi in geomspace(0.1, 15, 50)` at three values of
+`psi in {0.60, 1.00, 1.80}`, giving 150 points.
 
 Fit is by least squares with physically plausible box bounds. No tuning,
 no regularizer.
 
 **The hidden structure.** Inside the exponential, `alpha` and `beta` appear
-only as the ratio `alpha/beta`. Any joint rescaling `(alpha, beta) →
-(c·alpha, c·beta)` for `c > 0` leaves the curve unchanged at every point
+only as the ratio `alpha/beta`. Any joint rescaling `(alpha, beta) ->
+(c*alpha, c*beta)` for `c > 0` leaves the curve unchanged at every point
 in the input domain. The declared six-parameter family is therefore
-rank five on this input grid — and on *any* input grid, because the
+rank five on this input grid, and on *any* input grid, because the
 degeneracy is algebraic, not numerical.
 
 ---
@@ -89,7 +89,7 @@ three decimals across noise replicates. The test passes.
 **Why it passes.** The optimizer's default start is the ground truth
 itself. Small noise perturbs the landscape slightly but not enough to
 push the optimizer out of the starting basin. The fit falls back into
-the same local point each replicate — *which is a basin stability
+the same local point each replicate, *which is a basin stability
 property, not an identifiability property*. A rank-deficient family
 with a strong default basin satisfies bootstrap-under-noise trivially,
 because the check never actually explores the flat direction.
@@ -130,8 +130,8 @@ Result:
   cross-start fit losses: ~1e-20 to 1e-29  (all starts converge to machine zero)
 ```
 
-Every start converges to the same curve — the fit losses are at
-machine precision — but `alpha` and `beta` individually disagree by
+Every start converges to the same curve, the fit losses are at
+machine precision, but `alpha` and `beta` individually disagree by
 >150% across starts, while their ratio agrees to ~8e-11. Four
 parameters recover exactly; two wander freely along a one-dimensional
 flat direction whose shadow is the identifiable combination `alpha/beta`.
@@ -154,7 +154,7 @@ form*. They disagree because they probe different properties:
 
 A rank-deficient family has flat directions in parameter space. Those
 flat directions are invisible to the first check if the fixed start
-already sits on one of them — the optimizer has no reason to move.
+already sits on one of them, the optimizer has no reason to move.
 They are impossible to hide from the second check because the starts
 are, by construction, on different points of the flat direction, and
 the optimizer's box bounds are the only thing stopping them from
@@ -174,12 +174,12 @@ in the model."
 **Identifiability is a property of the functional form relative to
 the evidence surface.** It is not a property of the optimizer's
 trajectory. A test that only perturbs the evidence around a fixed
-optimum is asking "is this optimum stable?" — which is worth knowing,
+optimum is asking "is this optimum stable?", which is worth knowing,
 but is not a test of identifiability.
 
 A test that perturbs the *starting point* while holding the evidence
 fixed is directly asking "do different approaches to this evidence
-surface land on the same parameters?" — which is the identifiability
+surface land on the same parameters?", which is the identifiability
 question verbatim.
 
 The two kinds of perturbation are complementary. A clean pre-commit
@@ -188,13 +188,13 @@ Calling the first one "the identifiability check" is the failure
 mode on display.
 
 **A one-line rule.** *If your identifiability check does not vary the
-starting point, it is not an identifiability check — it is a basin
+starting point, it is not an identifiability check, it is a basin
 stability check wearing the wrong label.*
 
 A corollary: the symptom of rank deficiency under the multi-start
 check is very specific and worth recognizing. You get *individual*
 parameters with huge cross-start disagreement, but some *combination*
-of those parameters — a ratio, a sum, a product — that agrees to
+of those parameters, a ratio, a sum, a product, that agrees to
 machine precision. That combination is the identifiable direction;
 the disagreement axes are flat directions. Reparameterize: replace the
 disagreeing parameters with the agreeing combination, delete the
@@ -222,13 +222,13 @@ fitter sees is now fully identifiable. Both checks pass.
 ## 6. Scope and caveats
 
 - This is a single worked example. The claim is not "bootstrap-under-noise
-  is useless" — it is a legitimate stability check. The claim is
+  is useless", it is a legitimate stability check. The claim is
   "bootstrap-under-noise labeled as an identifiability check is a
   category error, and multi-start on clean data catches what it misses."
 - The rank deficiency here is exact and algebraic. Numerically near-rank-
   deficient families (ill-conditioned but formally full-rank) will show
-  the same qualitative pattern under multi-start — large cross-start
-  disagreement on some parameters, tight agreement on combinations —
+  the same qualitative pattern under multi-start, large cross-start
+  disagreement on some parameters, tight agreement on combinations,
   but the combinations will be approximate rather than exact.
 - The multi-start check requires genuinely varied starts. Starts that
   all sit in the same basin as the default will miss flat directions
@@ -237,7 +237,7 @@ fitter sees is now fully identifiable. Both checks pass.
 - The check is not a substitute for analytic rank analysis when you
   can do it. If you can take the Jacobian of your model with respect
   to its parameters on a representative grid and inspect its rank
-  symbolically or numerically, do that first — it is cheaper and
+  symbolically or numerically, do that first, it is cheaper and
   definitive. The multi-start check is the tool for when you cannot.
 
 ---

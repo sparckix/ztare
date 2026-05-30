@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Org Runtime — operating system for an AI-native organization</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #18211b;
+      --muted: #5d6b61;
+      --paper: #f5f0e6;
+      --paper-2: #e8dcc9;
+      --panel: rgba(255, 251, 240, 0.78);
+      --line: rgba(24, 33, 27, 0.16);
+      --field: #d7e8cd;
+      --moss: #365b3d;
+      --copper: #b85f30;
+      --blueprint: #223f5e;
+      --shadow: 0 28px 80px rgba(27, 38, 31, 0.18);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(184, 95, 48, 0.20), transparent 24rem),
+        radial-gradient(circle at 84% 18%, rgba(54, 91, 61, 0.20), transparent 25rem),
+        linear-gradient(135deg, var(--paper) 0%, #fbf7ed 48%, var(--paper-2) 100%);
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(24, 33, 27, 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(24, 33, 27, 0.045) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,0.72), rgba(0,0,0,0.04));
+    }
+
+    a { color: inherit; }
+
+    .shell { width: min(1180px, calc(100vw - 40px)); margin: 0 auto; }
+
+    .nav {
+      position: sticky; top: 0; z-index: 10;
+      backdrop-filter: blur(18px);
+      background: rgba(245, 240, 230, 0.72);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      min-height: 70px; gap: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: -0.03em; }
+    .brand-mark {
+      width: 32px; height: 32px;
+      border: 1px solid var(--ink); border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--field); box-shadow: 6px 6px 0 var(--ink);
+      font-family: "IBM Plex Mono", monospace; font-size: 13px;
+    }
+    .nav-links { display: flex; gap: 18px; color: var(--muted); font-size: 14px; align-items: center; }
+    .nav-links a { text-decoration: none; border-bottom: 1px solid transparent; }
+    .nav-links a:hover { color: var(--ink); border-color: var(--ink); }
+    .pill {
+      border: 1px solid var(--ink); border-radius: 999px;
+      padding: 10px 14px; text-decoration: none;
+      background: #fff8df; box-shadow: 4px 4px 0 var(--ink);
+      color: var(--ink) !important; font-weight: 600;
+    }
+
+    .hero {
+      padding: 86px 0 54px;
+      display: grid; grid-template-columns: 1.05fr 0.95fr;
+      gap: 54px; align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex; gap: 8px; align-items: center;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.45);
+      border-radius: 999px; padding: 8px 12px;
+      font-family: "IBM Plex Mono", monospace; font-size: 12px;
+      color: var(--moss); margin-bottom: 22px;
+    }
+    .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--copper); }
+
+    h1 {
+      margin: 0; font-size: clamp(48px, 8vw, 104px);
+      line-height: 0.88; letter-spacing: -0.075em; max-width: 760px;
+    }
+    .hero p {
+      font-size: clamp(18px, 2vw, 23px);
+      line-height: 1.38; color: var(--muted);
+      max-width: 690px; margin: 28px 0 0;
+    }
+    .hero-actions { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 14px; }
+
+    .button {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--ink); border-radius: 16px;
+      padding: 14px 18px; text-decoration: none; font-weight: 700;
+      box-shadow: 5px 5px 0 var(--ink);
+      transition: transform 120ms ease, box-shadow 120ms ease;
+    }
+    .button:hover { transform: translate(2px, 2px); box-shadow: 3px 3px 0 var(--ink); }
+    .button.primary { background: var(--copper); color: #fff8ef; }
+    .button.secondary { background: rgba(255,255,255,0.54); }
+
+    .console {
+      position: relative; border: 1px solid var(--ink); border-radius: 28px;
+      background: var(--panel);
+      box-shadow: var(--shadow), 9px 9px 0 var(--ink);
+      padding: 22px; overflow: hidden; transform: rotate(1deg);
+    }
+    .console::after {
+      content: ""; position: absolute; inset: auto -20% -20% 20%;
+      height: 150px;
+      background: radial-gradient(circle, rgba(54,91,61,0.24), transparent 68%);
+    }
+    .card {
+      position: relative; border: 1px solid var(--line);
+      border-radius: 20px; background: rgba(255, 253, 247, 0.86);
+      padding: 18px; margin-bottom: 14px;
+    }
+    .card:last-child { margin-bottom: 0; }
+    .label {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 11px; color: var(--blueprint);
+      text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;
+    }
+    .decision-title { font-size: 20px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 10px; }
+    .meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+    .meta {
+      border-radius: 14px;
+      background: rgba(215, 232, 205, 0.48);
+      padding: 10px;
+      font-family: "IBM Plex Mono", monospace; font-size: 12px;
+    }
+    .choices { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 16px; }
+    .choice {
+      border: 1px solid var(--line); border-radius: 12px;
+      padding: 10px 8px; text-align: center; font-size: 12px;
+      background: rgba(255,255,255,0.42);
+    }
+    .choice.rec { background: var(--ink); color: var(--paper); }
+
+    section { padding: 54px 0; }
+    .section-head {
+      display: flex; justify-content: space-between; gap: 24px;
+      align-items: end; margin-bottom: 26px;
+    }
+    h2 { font-size: clamp(34px, 5vw, 62px); line-height: 0.95; letter-spacing: -0.06em; margin: 0; max-width: 780px; }
+    .section-head p { max-width: 390px; color: var(--muted); line-height: 1.5; margin: 0; }
+
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .tile {
+      min-height: 250px; border: 1px solid var(--line); border-radius: 24px;
+      padding: 22px; background: rgba(255, 253, 247, 0.62);
+      box-shadow: 0 18px 50px rgba(27, 38, 31, 0.07);
+    }
+    .tile strong { display: block; font-size: 22px; letter-spacing: -0.04em; margin-bottom: 14px; }
+    .tile p { color: var(--muted); line-height: 1.48; margin: 0; }
+    .tile .num {
+      display: inline-grid; place-items: center; width: 34px; height: 34px;
+      border-radius: 50%; border: 1px solid var(--ink);
+      background: var(--field);
+      font-family: "IBM Plex Mono", monospace; margin-bottom: 38px;
+    }
+
+    .flow {
+      border: 1px solid var(--ink); border-radius: 30px;
+      background: rgba(34, 63, 94, 0.08);
+      padding: 26px; box-shadow: 8px 8px 0 var(--ink);
+    }
+    .flow-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: stretch; }
+    .step {
+      background: rgba(255, 253, 247, 0.72);
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 16px; min-height: 138px;
+    }
+    .step span { display: block; font-family: "IBM Plex Mono", monospace; color: var(--copper); font-size: 12px; margin-bottom: 16px; }
+    .step b { display: block; font-size: 18px; letter-spacing: -0.04em; margin-bottom: 8px; }
+    .step small { color: var(--muted); line-height: 1.35; display: block; }
+
+    .split { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 24px; align-items: start; }
+    .stack { display: grid; gap: 12px; }
+    .row-card {
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 16px; background: rgba(255, 253, 247, 0.7);
+      display: grid; grid-template-columns: 140px 1fr;
+      gap: 16px; align-items: start;
+    }
+    .row-card b {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--blueprint); font-size: 12px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .row-card p { margin: 0; color: var(--muted); line-height: 1.46; }
+
+    .status { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .status .tile { min-height: auto; }
+
+    .footer { padding: 48px 0 70px; color: var(--muted); font-size: 14px; }
+
+    code {
+      font-family: "IBM Plex Mono", monospace;
+      background: rgba(24,33,27,0.08);
+      padding: 2px 5px; border-radius: 6px; color: var(--ink);
+    }
+
+    .compare {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    }
+    .compare .col {
+      border: 1px solid var(--line); border-radius: 18px;
+      padding: 18px; background: rgba(255,253,247,0.6);
+    }
+    .compare .col.right { background: rgba(54,91,61,0.10); border-color: var(--moss); }
+    .compare h3 {
+      margin: 0 0 12px;
+      font-size: 18px; letter-spacing: -0.03em;
+      font-family: "Space Grotesk", sans-serif;
+    }
+    .compare ul { margin: 0; padding-left: 20px; line-height: 1.55; color: var(--muted); }
+    .compare li { margin-bottom: 6px; }
+
+    @media (max-width: 900px) {
+      .hero, .split, .flow-row, .grid-3, .status, .compare { grid-template-columns: 1fr; }
+      .nav-inner { align-items: flex-start; padding: 16px 0; flex-direction: column; }
+      .nav-links { flex-wrap: wrap; }
+      .console { transform: none; }
+      .section-head { display: block; }
+      .section-head p { margin-top: 14px; }
+      .choices, .meta-grid { grid-template-columns: 1fr 1fr; }
+      .row-card { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="shell nav-inner">
+      <div class="brand"><div class="brand-mark">org</div><span>Org Runtime — an operating system for AI-native orgs</span></div>
+      <div class="nav-links">
+        <a href="#why">Why a runtime</a>
+        <a href="#primitives">What you get</a>
+        <a href="#rails">Three rails</a>
+        <a href="#adopt">Adopt it</a>
+        <a class="pill" href="../guides/org_runtime_quickstart.md">Run it</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <header class="shell hero">
+      <div>
+        <div class="eyebrow">An operating system for an AI-native organization</div>
+        <h1>Hire AI agents. Run them like a real company.</h1>
+        <p>
+          AI agents are getting good enough to do real work. The hard part is
+          not getting them to act — it is keeping track of what they did, what
+          they were allowed to do, and who said yes. This is the operating
+          system underneath an AI-native organization: roles with clear
+          boundaries, an approval queue you can drive from your phone, a
+          decision log you can read months later, and a paper trail every
+          regulator and investor will recognize.
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="../guides/org_runtime_quickstart.md">Bring it up</a>
+          <a class="button secondary" href="../concepts/organizational_primitives.md">How it works</a>
+        </div>
+      </div>
+
+      <div class="console" aria-label="Example approval card">
+        <div class="card">
+          <div class="label">Approval needed · in your inbox</div>
+          <div class="decision-title">Your research manager wants to launch a $40 experiment.</div>
+          <p style="color:var(--muted); margin: 0 0 8px;">
+            The agent has prepared a plan, listed how it will know whether it worked,
+            and named what it will not touch. Approve, send back for revision,
+            escalate, or defer.
+          </p>
+          <div class="meta-grid">
+            <div class="meta">role: research manager</div>
+            <div class="meta">decide by: 2 hours</div>
+            <div class="meta">spend: $40 / $200 day cap</div>
+            <div class="meta">trail: signed, replayable</div>
+          </div>
+          <div class="choices">
+            <div class="choice rec">approve</div>
+            <div class="choice">escalate</div>
+            <div class="choice">revise</div>
+            <div class="choice">defer</div>
+          </div>
+          <p style="color:var(--muted); margin: 12px 0 0; font-size: 13px;">
+            ✎ optional reason — saved with the decision so anyone reviewing later can see why.
+          </p>
+        </div>
+      </div>
+    </header>
+
+    <section id="why" class="shell">
+      <div class="section-head">
+        <h2>Agent demos make agents act. Real organizations make them accountable.</h2>
+        <p>
+          A chat agent works fine while you are watching it. The trouble starts
+          when you stop watching: it spent more than expected, it edited the
+          wrong file, it told you the job was done when it was not. By then
+          there is no record of who said yes.
+        </p>
+      </div>
+
+      <div class="compare">
+        <div class="col">
+          <h3>The chat-agent default</h3>
+          <ul>
+            <li>You type, it acts. Memory is the chat scrollback.</li>
+            <li>Permission is whatever the underlying tool happens to allow.</li>
+            <li>Approvals are pop-ups. Once dismissed they are gone.</li>
+            <li>Two agents working together share nothing but text.</li>
+            <li>"What did the agent do last Tuesday?" is unanswerable.</li>
+          </ul>
+        </div>
+        <div class="col right">
+          <h3>An organization runtime</h3>
+          <ul>
+            <li>Each role has explicit limits — what it can spend, what files
+              it can touch, what it must escalate.</li>
+            <li>Approvals queue up like an inbox. They survive restarts and
+              are visible to anyone you give access to.</li>
+            <li>Agents can hand work to each other through durable, typed
+              messages — not by guessing in chat.</li>
+            <li>Every decision the org makes is recorded as one line in a
+              tamper-evident log you can replay later.</li>
+            <li>You can drive the whole thing from a dashboard, your phone,
+              or a plain folder of files — they all show the same thing.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="primitives" class="shell">
+      <div class="section-head">
+        <h2>What you get out of the box.</h2>
+        <p>
+          Six building blocks. They work for any kind of work — research,
+          operations, legal review, customer support, anything where you
+          need agents to act with boundaries.
+        </p>
+      </div>
+      <div class="grid-3">
+        <div class="tile"><span class="num">1</span><strong>Roles with limits</strong>
+          <p>Every agent has a written job description, a daily spend cap,
+            a list of files it may touch, a list it cannot, and a list of
+            decisions it must escalate. Tested against a contract before any
+            agent boots, so a misconfigured role cannot ship work.</p>
+        </div>
+        <div class="tile"><span class="num">2</span><strong>Mandates in plain language</strong>
+          <p>The contract says what an agent <em>can</em> do; the mandate says
+            what it <em>must</em> do — written in prose, version-controlled.
+            When the contract and the mandate disagree, a published rule
+            decides which wins. No surprises.</p>
+        </div>
+        <div class="tile"><span class="num">3</span><strong>An approval queue</strong>
+          <p>One inbox of pending approvals. Each card carries a subject,
+            choices, a deadline, what happens if you do nothing, and who else
+            needs to sign. Resolve from anywhere; the answer lands as a record
+            you can audit later.</p>
+        </div>
+        <div class="tile"><span class="num">4</span><strong>Internal mail</strong>
+          <p>Agents can ask each other for help, hand off a piece of work,
+            request clarification, or post a status — through durable typed
+            envelopes, not lost chat messages. A request creates an obligation;
+            an obligation gets resolved.</p>
+        </div>
+        <div class="tile"><span class="num">5</span><strong>Deadline pressure</strong>
+          <p>Tasks carry deadlines and budget caps. The system raises pressure
+            on items that are running long or running hot, and surfaces a
+            warning before something silently overruns. No more "we forgot
+            about that one."</p>
+        </div>
+        <div class="tile"><span class="num">6</span><strong>A replayable audit trail</strong>
+          <p>Every decision the org makes — every approval, directive, and
+            control action — lands as one timestamped row in an append-only
+            log. Walk it forward, walk it back, hand it to an auditor.
+            Designed to add tamper-evidence as you scale.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="rails" class="shell">
+      <div class="section-head">
+        <h2>Three ways to drive it. One source of truth.</h2>
+        <p>
+          Pick whichever surface fits the moment. They are all reading and
+          writing the same underlying records, so a decision you make in one
+          shows up everywhere within seconds.
+        </p>
+      </div>
+
+      <div class="split">
+        <div class="tile">
+          <strong>The records are the system.</strong>
+          <p>
+            Approvals, role contracts, mandates, internal messages, and the
+            decision log all live as plain files you can read, version, and
+            back up. The dashboard and the phone app are projections — if
+            they break, your data is intact.
+          </p>
+        </div>
+        <div class="stack">
+          <div class="row-card">
+            <b>Dashboard</b>
+            <p>A browser view of pending approvals with free-text reasons,
+              an OKR tree, and a control panel for sending instructions and
+              pausing or resuming any role. Use this when you want to think
+              through a decision.</p>
+          </div>
+          <div class="row-card">
+            <b>Phone</b>
+            <p>Push notifications when something needs you. Tap-to-approve,
+              quick digests of what is pending, urgent items only. Locked to
+              your account so nobody else can drive your org. Use this when
+              you are not at the desk.</p>
+          </div>
+          <div class="row-card">
+            <b>Files</b>
+            <p>The plain folder underneath. Good for automation, scripts, and
+              backup. Anything you can do with a button you can do with a
+              file edit, which means the system never has a "you must use the
+              app" moment.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="adopt" class="shell">
+      <div class="section-head">
+        <h2>Make it yours in five steps.</h2>
+        <p>
+          You do not write code to adopt this. You edit role descriptions,
+          set your preferences, and the same runtime drives your org — research,
+          operations, legal, growth, anything.
+        </p>
+      </div>
+
+      <div class="flow">
+        <div class="flow-row">
+          <div class="step">
+            <span>step 1</span><b>Clone &amp; check</b>
+            <small>Pull the repo and run the included verification script.
+              It tells you in five seconds whether your machine is set up
+              correctly. No agents started yet.</small>
+          </div>
+          <div class="step">
+            <span>step 2</span><b>Define your roles</b>
+            <small>Replace the example roles with yours: a researcher, a
+              compliance officer, an operations lead, whatever your team
+              needs. Each role gets a written boundary and a spend cap.</small>
+          </div>
+          <div class="step">
+            <span>step 3</span><b>Set your priorities</b>
+            <small>Tell the system what you care about: which work matters
+              most, what counts as urgent, where you want to be the one
+              deciding versus where you want the agents to act on their own.</small>
+          </div>
+          <div class="step">
+            <span>step 4</span><b>Turn on the rails</b>
+            <small>One command starts the agents and the phone bot; one
+              starts the dashboard. The setup guide shows the exact commands
+              and what to expect.</small>
+          </div>
+          <div class="step">
+            <span>step 5</span><b>Hand it your first task</b>
+            <small>Drop a task into the system. An agent picks it up, works
+              on it, and asks you when it needs human authority. From there
+              it is just running an organization.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="status" class="shell">
+      <div class="section-head">
+        <h2>Working today. Hardening tomorrow.</h2>
+        <p>
+          The single-team loop runs end to end right now. The features that
+          come next — multi-team auth, a tamper-evident decision log, full
+          external messaging, multi-host operation — are designed and
+          staged, with clear triggers for when each one ships.
+        </p>
+      </div>
+
+      <div class="status">
+        <div class="tile">
+          <strong>Live today</strong>
+          <p>
+            Roles with limits, written mandates, the approval queue, internal
+            mail between agents, three driving surfaces (dashboard, phone,
+            files), the replayable decision log, deadline pressure, and a
+            published tiebreak rule for when contracts disagree.
+          </p>
+        </div>
+        <div class="tile">
+          <strong>Designed, shipping when needed</strong>
+          <p>
+            Multi-team identity (single sign-on, role-based access),
+            tamper-evident decision log, reliable delivery of decisions to
+            external systems, multi-host operation, a tested recovery
+            runbook, structured observability. Each is named, scoped, and
+            ready to ship the first time the trigger fires.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell">
+      <div class="section-head">
+        <h2>Why does this exist?</h2>
+        <p>
+          Because the last century spent fifty years inventing the
+          accountability infrastructure for human organizations — roles,
+          ledgers, charters, sign-offs, audit trails — and AI-native
+          organizations should not have to reinvent every piece of it from
+          scratch. This is a head start.
+        </p>
+      </div>
+      <div class="grid-3">
+        <div class="tile"><strong>Built from things that went wrong.</strong>
+          <p>Every primitive here exists because something failed without it:
+            an approval that nobody remembered making, an agent that quietly
+            ran past its budget, a decision log nobody could explain. The
+            building blocks are the ones we wished we had.</p></div>
+        <div class="tile"><strong>Plain files, by design.</strong>
+          <p>The records are on disk. You can read them, search them, back
+            them up, and recover them without restoring a database. The
+            machinery only gets heavier when your scale forces it to —
+            never before.</p></div>
+        <div class="tile"><strong>Works for any kind of work.</strong>
+          <p>The system does not assume what your team does. Scientific
+            research is one example; your operations, legal, growth, or
+            customer-support team is another. You change the role
+            descriptions, not the underlying machinery, and the same
+            governance applies.</p></div>
+      </div>
+    </section>
+
+    <footer class="shell footer">
+      <p>
+        This is the operating system underneath an AI-native organization.
+        The same engine that runs a research team can run any team that
+        needs agents to work with real boundaries and a real record. Read
+        <a href="../concepts/organizational_primitives.md">how it works</a>,
+        the <a href="../concepts/ztare_research_company_architecture.md">architecture</a>,
+        or the
+        <a href="../guides/org_runtime_quickstart.md">quickstart</a> to begin.
+      </p>
+    </footer>
+  </main>
+</body>
+</html>
