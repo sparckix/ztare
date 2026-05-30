@@ -33,7 +33,7 @@ def test_full_cycle() -> bool:
 
     # 1. Validate config
     print("1. Validating synthetic_test config...")
-    result = run_cli("validate", "research_areas/private/goal_types/synthetic_test.yaml")
+    result = run_cli("validate", "[internal-ref]")
     if not result.get("valid"):
         print(f"   FAIL: {result.get('errors')}")
         return False

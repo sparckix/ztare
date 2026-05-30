@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Local A2A-style projection for persistent role offices.
 
 This is deliberately a projection, not the authority layer. Role YAML,

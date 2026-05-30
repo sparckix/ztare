@@ -1,0 +1,121 @@
+{
+  "name": "ns_track_b_paraproduct_2026-05-04",
+  "description": "Four-branch paraproduct grid extracted from advisor_channel Turn 17 and the Phase 5FS/5FT Lean bridge. Each branch is a falsification target for the Track B Clay closure: produce either a Lean charging estimate under a fixed LP/Besov/Sobolev topology or a deterministic Python audit exhibiting a paraproduct-class failure.",
+  "source": "projects/ns_millennium_hunt/workspace/advisor_channel.md",
+  "lean_targets": [
+    "ztare_proofs/ZtareProofs/ns_littlewood_paley_paraproduct_bridge.lean",
+    "ztare_proofs/ZtareProofs/ns_clay_closure_bridge.lean",
+    "ztare_proofs/ZtareProofs/ns_low_high_catalyst_charging_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_low_high_kinematic_dichotomy.lean",
+    "ztare_proofs/ZtareProofs/ns_low_frequency_lipschitz_control_bridge.lean",
+    "ztare_proofs/ZtareProofs/ns_high_low_transport_charging_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_high_high_self_tax_charging_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_same_shell_remainder_charging_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_profile_lipschitz_clay_bridge.lean",
+    "ztare_proofs/ZtareProofs/ns_leray_gain_tax_trackb_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_matrix_block_ledger_charging_obligation.lean",
+    "ztare_proofs/ZtareProofs/ns_universal_state_pricing_split.lean",
+    "ztare_proofs/ZtareProofs/ns_trackb_sos_pricing_kernel_receipt.lean",
+    "ztare_proofs/ZtareProofs/ns_trackb_finite_falsifier_spine.lean"
+  ],
+  "cross_cutting_obligations": [
+    {
+      "id": "ns-tb-finite-falsifier-spine",
+      "name": "finite branch falsifier surface",
+      "obligation": "Every Track B branch must either instantiate its predeclared analytic receipt under the fixed Leray/Sobolev/LP topology or produce a finite witness matching the checked falsifier spine: low/high leakage shortfall, high-high receipt shortfall, residual charge shortfall, profile arbitrage, countable-limit price drop, low-frequency reserve underpricing, null-profile arbitrage, or matrix negative threshold-root gap",
+      "evidence_anchors": [
+        "Phase 5GV finite falsifier spine",
+        "Phase 5GW saved-artifact finite falsifier replay",
+        "ns_trackb_finite_falsifier_spine.lean",
+        "phase5gv_trackb_finite_falsifier_spine.md"
+      ]
+    },
+    {
+      "id": "ns-tb-observable-matrix-block-gate",
+      "name": "matrix-block observable admissibility and ledger charging",
+      "obligation": "W-independent off-diagonal matrix blocks are excluded only by translation covariance; any W-coupled/global matrix block kept in scope must predeclare the observable and charge PSD ballast, damping, independent normalization, and cross terms before payoff is scored",
+      "evidence_anchors": [
+        "Phase 5ET matrix-intertwiner full-ledger audit",
+        "Phase 5EW translation-covariance audit",
+        "Phase 5EX W-coupled shift-matrix audit",
+        "Phase 5FA/5FB finite PSD and lifted quartic certificates",
+        "phase5gc_matrix_block_ledger_charging_obligation.md",
+        "ns_matrix_block_ledger_charging_obligation.lean"
+      ]
+    },
+    {
+      "id": "ns-tb-universal-state-pricing-split",
+      "name": "universal state-pricing null/interacting split",
+      "obligation": "Before global Track B closure is claimed, fix the state space, observable class, price terms, normalization, and matrix-block policy; prove either the null-route cap gamma <= 2/3 or exact quartic root coercivity for interacting above-wall routes, with cross terms and matrix blocks charged by the same ledger",
+      "evidence_anchors": [
+        "Phase 5EY/5EZ state-pricing collapse audits",
+        "Phase 5FA/5FB finite PSD and lifted quartic certificates",
+        "Phase 5GC matrix-block admissibility gate",
+        "phase5gd_universal_state_pricing_split.md",
+        "ns_universal_state_pricing_split.lean"
+      ]
+    },
+    {
+      "id": "ns-tb-sos-pricing-kernel-receipt",
+      "name": "exact PSD/SOS receipt for the threshold-root ledger",
+      "obligation": "A claimed universal kernel must provide a lossless identity writing the exact threshold defect gap at t=sqrt((2/3)/gamma) as nonnegative slack plus sum-of-squares terms; Lean verifies the receipt and routes it into the universal state-pricing split",
+      "evidence_anchors": [
+        "Phase 5FA/5FB finite PSD and lifted quartic certificates",
+        "Phase 5GD universal state-pricing split",
+        "phase5ge_trackb_sos_pricing_kernel_receipt.md",
+        "ns_trackb_sos_pricing_kernel_receipt.lean"
+      ]
+    }
+  ],
+  "branches": [
+    {
+      "id": "ns-tb-pp-low-high",
+      "name": "low-high catalyst charging",
+      "obligation": "low-frequency catalyst terms must be charged by the declared Leray/paraproduct price before they can stretch high-frequency modes",
+      "evidence_anchors": [
+        "advisor_channel.md Turn 17",
+        "Phase 5EQ sparse/catalyst audit",
+        "ns_littlewood_paley_paraproduct_bridge.lean",
+        "ns_low_high_catalyst_charging_obligation.lean",
+        "ns_low_high_kinematic_dichotomy.lean",
+        "ns_low_frequency_lipschitz_control_bridge.lean",
+        "ns_profile_lipschitz_clay_bridge.lean"
+      ]
+    },
+    {
+      "id": "ns-tb-pp-high-low",
+      "name": "high-low transport charging",
+      "obligation": "high-frequency transport against low-frequency structure must be priced without changing the observable class after payoff is seen",
+      "evidence_anchors": [
+        "advisor_channel.md Turn 17",
+        "ns_littlewood_paley_paraproduct_bridge.lean",
+        "ns_high_low_transport_charging_obligation.lean"
+      ]
+    },
+    {
+      "id": "ns-tb-pp-high-high",
+      "name": "high-high self-tax charging",
+      "obligation": "high-high cascade payoff cannot survive while Leray-projected self-tax cancels below the exact quartic survival allowance",
+      "evidence_anchors": [
+        "Phase 5EH/5EJ high-high tax reconstruction",
+        "Phase 5EL exact quartic survival polynomial",
+        "advisor_channel.md Turn 17",
+        "ns_high_high_self_tax_charging_obligation.lean"
+      ]
+    },
+    {
+      "id": "ns-tb-pp-remainder-limit",
+      "name": "same-shell remainder and countable-limit charging",
+      "obligation": "same-shell/remainder/cross payoff must be charged before the countable limit; limiting payoff must be finite-prefix visible and price lower-semicontinuous; no-survivor prefixes must control the low-frequency Lipschitz continuation quantity",
+      "evidence_anchors": [
+        "Phase 5FI countable limit bridge",
+        "Phase 5FJ/FK finite-prefix audits",
+        "Phase 5FR shell bridge",
+        "Phase 5FS paraproduct bridge",
+        "Phase 5GA same-shell/remainder charging adapter",
+        "Phase 5FV low-high PDE estimate reality check",
+        "Phase 5FZ profile-pricing to Lipschitz-control Clay bridge"
+      ]
+    }
+  ]
+}

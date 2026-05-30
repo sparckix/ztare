@@ -1,0 +1,54 @@
+{
+  "name": "ns_track_b_2026-05-04",
+  "description": "Seven-branch grid extracted from advisor_channel Turns 7-9 (2026-05-04). Five profile-decomposition branches plus two countable-limit obligations. Each branch is a falsification target: produce either a Lean closure or a deterministic Python audit that exhibits the analytic failure inside the branch.",
+  "source": "projects/ns_millennium_hunt/workspace/advisor_channel.md",
+  "lean_targets": [
+    "ztare_proofs/ZtareProofs/ns_pricing_kernel_limit_passage.lean",
+    "ztare_proofs/ZtareProofs/ns_pricing_kernel_countable_limit.lean",
+    "ztare_proofs/ZtareProofs/ns_leray_gain_tax_trackb_obligation.lean"
+  ],
+  "branches": [
+    {
+      "id": "ns-tb-concentration",
+      "name": "concentration impact coercivity",
+      "obligation": "block execution must pay superlinear impact in the declared Leray ledger",
+      "evidence_anchors": ["advisor_channel.md Turn 7", "Turn 8 obligation 2"]
+    },
+    {
+      "id": "ns-tb-dichotomy",
+      "name": "dichotomy price subadditivity",
+      "obligation": "fragmented execution cannot reduce total price under the declared kernel",
+      "evidence_anchors": ["advisor_channel.md Turn 7"]
+    },
+    {
+      "id": "ns-tb-cross-profile",
+      "name": "cross-profile recombination charging",
+      "obligation": "hedge cancellation must leak into the residual ledger; no free recombination across profiles",
+      "evidence_anchors": ["Phase 5FE profile-decoupling pricing audit", "Turn 7"]
+    },
+    {
+      "id": "ns-tb-vanishing",
+      "name": "vanishing profiles cap",
+      "obligation": "undeployed capital cannot generate above-wall nonlinear payoff",
+      "evidence_anchors": ["Turn 7"]
+    },
+    {
+      "id": "ns-tb-null-cap",
+      "name": "null-profile cap",
+      "obligation": "low/self-tax routes stay below the 2/3 wall",
+      "evidence_anchors": ["Turn 7", "Phase 5EQ/5ER null routes"]
+    },
+    {
+      "id": "ns-tb-finite-prefix-approx",
+      "name": "finite-prefix payoff approximation",
+      "obligation": "limiting Leray observable payoff is approximated from finite prefixes",
+      "evidence_anchors": ["Turn 8", "Phase 5FJ countable_prefix_pricing_audit"]
+    },
+    {
+      "id": "ns-tb-price-lsc",
+      "name": "price lower-semicontinuity",
+      "obligation": "limiting price dominates every finite-prefix price for the declared defect/self-tax kernel",
+      "evidence_anchors": ["Turn 8", "Phase 5FJ"]
+    }
+  ]
+}

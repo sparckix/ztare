@@ -1,14 +1,14 @@
-"""GP-132 — Principal-Goals Inbox.
+"""GP-132 — Principal Tasks Inbox.
 
-Markdown-first goal artifacts under `org/goals/{pending,active,done}/`.
-The principal writes a goal file; any agent session picks it up on
+Markdown-first task artifacts under `org/tasks/{pending,active,done}/`.
+The principal writes a task file; any agent session picks it up on
 next wake. No Python invocation required from the principal.
 
 This module is the agent-side reader + lifecycle manager. See
-`org/goals/README.md` for the file schema and agent contract.
+`org/tasks/README.md` for the file schema and agent contract.
 
 Lifecycle: pending → active (claimed by session) → done.
-On block, a goal stays in active/ with a ## Blocked section appended.
+On block, a task stays in active/ with a ## Blocked section appended.
 """
 
 from __future__ import annotations
@@ -20,19 +20,81 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-import yaml
+try:
+    import yaml
+except ModuleNotFoundError:  # pragma: no cover - bare Python / product smoke path.
+    yaml = None
 
 from src.ztare.common.paths import REPO_ROOT
 
 log = logging.getLogger(__name__)
 
-GOALS_ROOT = REPO_ROOT / "org" / "goals"
+TASKS_ROOT = REPO_ROOT / "org" / "tasks"
+LEGACY_GOALS_ROOT = REPO_ROOT / "org" / "goals"
+GOALS_ROOT = TASKS_ROOT if TASKS_ROOT.exists() else LEGACY_GOALS_ROOT
 PENDING_DIR = GOALS_ROOT / "pending"
 ACTIVE_DIR = GOALS_ROOT / "active"
 DONE_DIR = GOALS_ROOT / "done"
 
 
 PRIORITY_RANK = {"urgent": 0, "high": 1, "medium": 2, "low": 3}
+
+
+def _coerce_scalar(value: str) -> Any:
+    text = value.strip()
+    if not text:
+        return {}
+    if (text.startswith('"') and text.endswith('"')) or (
+        text.startswith("'") and text.endswith("'")
+    ):
+        return text[1:-1]
+    lowered = text.lower()
+    if lowered == "true":
+        return True
+    if lowered == "false":
+        return False
+    if lowered == "null":
+        return None
+    try:
+        if "." in text:
+            return float(text)
+        return int(text)
+    except ValueError:
+        return text
+
+
+def _minimal_yaml_load(text: str) -> dict[str, Any]:
+    root: dict[str, Any] = {}
+    stack: list[tuple[int, dict[str, Any]]] = [(-1, root)]
+    for raw in text.splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#"):
+            continue
+        if raw.lstrip().startswith("- "):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        line = raw.strip()
+        if ":" not in line:
+            continue
+        key, value = line.split(":", 1)
+        while stack and indent <= stack[-1][0]:
+            stack.pop()
+        parent = stack[-1][1]
+        parsed = _coerce_scalar(value)
+        parent[key.strip()] = parsed
+        if isinstance(parsed, dict):
+            stack.append((indent, parsed))
+    return root
+
+
+def _load_frontmatter(block: str) -> dict[str, Any]:
+    if yaml is not None:
+        try:
+            data = yaml.safe_load(block) or {}
+            return data if isinstance(data, dict) else {}
+        except Exception as exc:  # noqa: BLE001
+            log.warning("goal frontmatter parse failed: %s", exc)
+            return {}
+    return _minimal_yaml_load(block)
 
 
 @dataclass(frozen=True)
@@ -68,13 +130,7 @@ def _split_frontmatter(text: str) -> tuple[dict, str]:
     if end == -1:
         return {}, text
     block = text[4:end]
-    try:
-        data = yaml.safe_load(block) or {}
-        if not isinstance(data, dict):
-            data = {}
-    except yaml.YAMLError as exc:
-        log.warning("goal frontmatter parse failed: %s", exc)
-        data = {}
+    data = _load_frontmatter(block)
     body = text[end + 4:].lstrip("\n")
     return data, body
 

@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Typed local agent-to-agent channel for persistent role offices.
 
 This is not an MCP replacement. MCP exposes tools/context to an LLM host.

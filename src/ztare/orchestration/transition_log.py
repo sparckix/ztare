@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Canonical local transition log writer for the org runtime.
 
 This is the solo/local projection of the enterprise event outbox. Every

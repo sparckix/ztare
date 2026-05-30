@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """Pre-dispatch authorization gate for role-daemon tasks.
 
 This is deliberately conservative and local. It does not sandbox execution;
@@ -28,7 +28,7 @@ ROLE_PATH_PREFIXES = (
     "research_areas/",
     "docs/",
     "src/",
-    "scripts/",
+    "scripts/public/",
     "papers/",
     "ztare_workspace/",
     "rubrics/",
@@ -186,6 +186,18 @@ def authorize_dispatch(
             allowed=False,
             reason="principal task has autonomous_scope_ok=false",
             required_approval="principal",
+            terminal=False,
+        )
+
+    # Resolved-pending-execution gates carry the principal's prior approval.
+    # The original action is already authorized; we are dispatching the
+    # already-approved intent. Do NOT open another approval gate — that
+    # creates the recursive meta-approval loop the principal saw 2026-05-07.
+    if candidate_source == "resolved-pending-execution":
+        return AuthorizationDecision(
+            allowed=True,
+            reason="downstream of already-approved gate; principal authorized upstream",
+            required_approval=None,
             terminal=False,
         )
 

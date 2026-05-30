@@ -20,7 +20,7 @@ from typing import Any, Optional
 
 from src.ztare.orchestration.core import GoalState, GoalStatus
 
-GOALS_ROOT = Path("research_areas/private/goals")
+GOALS_ROOT = Path("[internal-ref]")
 
 
 def goal_dir(slug: str) -> Path:
