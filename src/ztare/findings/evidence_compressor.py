@@ -9,8 +9,8 @@ Each transform has a domain guard; transforms that violate the guard are
 skipped (not shifted).  The holdout adjudicates which transform produces
 the best candidate in *original* coordinates.
 
-Spec: research_areas/private/specs/active/GP-098_evidence_compressor_spec.md
-Seam: research_areas/private/seams/GP-098_evidence_compressor_seam.md
+Spec: GP-098 (internal seam)
+Seam: GP-098 (internal seam)
 """
 
 from __future__ import annotations

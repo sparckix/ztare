@@ -128,7 +128,7 @@ def _extract_related_seam_paths(seam_text: str, self_path: Path) -> list[Path]:
     """Pull seam-file references out of the seam text.
 
     Matches anything of the form ``research_areas/seams/...md`` or
-    ``research_areas/private/seams/...md``, excluding the seam file
+    ``[internal-ref]``, excluding the seam file
     itself. Order is preserved and duplicates are removed."""
 
     seen: set[str] = set()
@@ -157,7 +157,7 @@ def _extract_related_spec_paths(seam_text: str) -> list[Path]:
     """Pull spec-file references out of the seam text.
 
     Matches ``research_areas/specs/active/...md`` or
-    ``research_areas/private/specs/active/...md``. Order preserved,
+    ``[internal-ref]``. Order preserved,
     duplicates removed. Specs are the distillation layer the seam
     feeds; when the seam cites a spec the debate agents need the
     current spec content to reason about 'does this turn change what
