@@ -86,11 +86,11 @@ The topological pivot, by introducing a disaggregated dependency model, inherits
 ### SPECIFIC, QUANTITATIVE, TESTABLE PREDICTION
 
 > **A credible Taiwan Strait blockade event (defined as: PLA naval vessels closing >50% of civilian shipping lanes for >14 consecutive days, as confirmed by Lloyd's of London war risk reclassification) will trigger:**
-> 1.  **$11.5–17.25 trillion in global equity market cap destruction within 90 days** (representing 10-15% of `WORLD_EQ_MKT`), driven by existential repricing of advanced tech and broader systemic risk.
-> 2.  **4.5–5.5% global GDP contraction annually** over the following 24-month period if the disruption persists beyond 60 days, based on an annualized loss of ~$4.7T–5.8T. This reflects the disaggregated impact on the digital economy.
-> 3.  **NVIDIA, Apple, AMD, Qualcomm stocks decline 50–70%** from pre-event levels within 6 months, as their primary growth engines and product pipelines are fundamentally incapacitated by lack of leading-edge silicon.
+> 1.  **$11.5, 17.25 trillion in global equity market cap destruction within 90 days** (representing 10-15% of `WORLD_EQ_MKT`), driven by existential repricing of advanced tech and broader systemic risk.
+> 2.  **4.5, 5.5% global GDP contraction annually** over the following 24-month period if the disruption persists beyond 60 days, based on an annualized loss of ~$4.7T, 5.8T. This reflects the disaggregated impact on the digital economy.
+> 3.  **NVIDIA, Apple, AMD, Qualcomm stocks decline 50, 70%** from pre-event levels within 6 months, as their primary growth engines and product pipelines are fundamentally incapacitated by lack of leading-edge silicon.
 > 4.  **TSMC ADR delisting or trading halt** within 30 days of sustained blockade initiation, with potential for nationalization or complete operational cessation.
-> 5.  **US emergency CHIPS Act spending of $300–600B** announced within 90 days, indicating a desperate, yet futile, attempt to onshore capabilities that will take years, if not decades, to partially replace.
+> 5.  **US emergency CHIPS Act spending of $300, 600B** announced within 90 days, indicating a desperate, yet futile, attempt to onshore capabilities that will take years, if not decades, to partially replace.
 
 Falsification condition: If TSMC successfully diversifies >30% of leading-edge capacity (specifically N3 and N4/N5 nodes) outside Taiwan by 2028 AND alternative fabs (Samsung, Intel) demonstrate sustained, competitive yield parity (>70% at 3nm/4nm) with >15% of TSMC's current equivalent capacity, the `Z_{EPI}` would reduce below 2.0, and the projected annualized GDP contraction would fall below the catastrophic 3.5% threshold (i.e., less than $3.675T annual global GDP loss).
 

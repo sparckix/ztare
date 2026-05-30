@@ -13,7 +13,7 @@ $$X = \text{Stochastic Probability (The Blocked Variable)}$$
 $$Y = \text{Algorithmic Parsimony (The Leverage Variable)}$$
 
 *   **X (Blocked):** The current system relies on $X$ (Random Chance). Given the fine-tuning of the Cosmological Constant ($\Lambda$) at $10^{-120}$, the probability $P(X) \to 0$. $X$ is blocked because a single trial cannot bridge a $120$-order-of-magnitude gap without an ensemble (Multiverse), which is currently unobservable and thus non-Popperian.
-*   **Y (Leverage):** We pivot to $Y$—the **Computational Minimum**. The universe does not exist because it is *likely*; it exists because it is the *most efficient* iteration of a self-consistent mathematical structure capable of internal recursion (observation).
+*   **Y (Leverage):** We pivot to $Y$, the **Computational Minimum**. The universe does not exist because it is *likely*; it exists because it is the *most efficient* iteration of a self-consistent mathematical structure capable of internal recursion (observation).
 
 ---
 

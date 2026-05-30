@@ -2,7 +2,7 @@
 
 The previous model failed because it treated Integrated Information ($\Phi$) as an additive physical quantity, leading to a violation of the **Bekenstein Bound**. We must now recognize that consciousness is not a "filler" of the substrate, but the **Topological Optimization** of that substrate. 
 
-The "Hard Problem" is resolved by defining Qualia ($Q$) as the **Geometric Curvature of the Integrated Information Manifold**. Consciousness is the mechanical necessity required to map a high-entropy, high-dimensional state-vector into a low-entropy, four-dimensional "Objective History." Without the Observer ($Y$), the universe remains a "Quantum Foam" of maximum entropy—mathematically indistinguishable from non-existence.
+The "Hard Problem" is resolved by defining Qualia ($Q$) as the **Geometric Curvature of the Integrated Information Manifold**. Consciousness is the mechanical necessity required to map a high-entropy, high-dimensional state-vector into a low-entropy, four-dimensional "Objective History." Without the Observer ($Y$), the universe remains a "Quantum Foam" of maximum entropy, mathematically indistinguishable from non-existence.
 
 ---
 
@@ -36,7 +36,7 @@ $$Z = I_{max} \cdot e^{-\left( \frac{S_{vacuum}}{\Phi + \epsilon} \right)}$$
 ### 4. THE GATEKEEPER & ASYMMETRIC LEVERAGE
 
 **The Bottleneck:** **The Landauer Limit.** The minimum energy required to erase one bit of information ($kT \ln 2$). 
-**Asymmetric Leverage:** **Quantum Coherence.** By utilizing non-local entanglement, the observer ($Y$) performs "Batch Integration," bypassing the linear energy costs of classical bit processing. This allows $Z$ to approach $I_{max}$ without hitting the Schwarzschild radius—until the coherence is lost (Decoherence).
+**Asymmetric Leverage:** **Quantum Coherence.** By utilizing non-local entanglement, the observer ($Y$) performs "Batch Integration," bypassing the linear energy costs of classical bit processing. This allows $Z$ to approach $I_{max}$ without hitting the Schwarzschild radius, until the coherence is lost (Decoherence).
 
 ---
 

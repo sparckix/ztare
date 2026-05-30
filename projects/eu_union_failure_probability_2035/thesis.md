@@ -485,6 +485,6 @@ def test_multistate_breakdown_threshold_grounding():
     *   The rival hypothesis (that `sustained_multistate_breakdown_of_core_obligations` is unquantifiable or arbitrarily defined) is ruled out because a specific, evidence-constrained numerical threshold and conditions are explicitly defined for its operationalization, grounded in distinguishing a high-severity legal breakdown marker from localized legal challenges within the EU.
 
 7.  **[Conclusion: Better-defined boundary component, not yet earned P(material_union_failure)]**
-    *   This thesis makes one key component of the target event—`sustained_multistate_breakdown_of_core_obligations`—more disciplined, observable, and less arbitrary. It therefore improves the event ontology and the forecast watchlist. It does **not** by itself fully earn `P(material_union_failure by 2035-01-01)`.
+    *   This thesis makes one key component of the target event, `sustained_multistate_breakdown_of_core_obligations`, more disciplined, observable, and less arbitrary. It therefore improves the event ontology and the forecast watchlist. It does **not** by itself fully earn `P(material_union_failure by 2035-01-01)`.
 
 <!-- best_iteration: 1775934626_iter2_score_50_eu_union_failure_probability_2035 -->

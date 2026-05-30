@@ -36,7 +36,7 @@ The core issue was `Q_tokens_lifetime`. The previous thesis's stated `500T` toke
 | GPT-4o output price (late 2024) | `GPT4O_OUTPUT_PRICE` | 10.00 | `GPT4O_PRICE_1` from grounding data |
 | Assumed input token weight for blended price | `IO_RATIO_INPUT_WEIGHT` | 1.0 | Assumed typical usage (1:4 input:output ratio) |
 | Assumed output token weight for blended price | `IO_RATIO_OUTPUT_WEIGHT` | 4.0 | Assumed typical usage (1:4 input:output ratio) |
-| Groq Llama 3.1 70B inference price (effective avg) | `OSS_FLOOR_PRICE` | 0.07 | Midpoint of `GROQ_LLAMA70` range (`$0.059–$0.079`) |
+| Groq Llama 3.1 70B inference price (effective avg) | `OSS_FLOOR_PRICE` | 0.07 | Midpoint of `GROQ_LLAMA70` range (`$0.059, $0.079`) |
 | Predicted future effective average price (Q1 2026) | `PREDICTED_FUTURE_PRICE` | 0.50 | Thesis prediction target for price collapse |
 | Burn/Revenue ratio falsification threshold | `OAI_BURN_REV_TARGET` | 1.5 | Thesis falsification condition |
 
@@ -84,7 +84,7 @@ The core structural arbitrage is the **fundamental mismatch between the increasi
 > **By Q1 2026:**
 > 1.  OpenAI's effective average inference revenue price (`P_avg_revenue`) will drop below **$0.50/1M tokens** across its core `/v1/chat/completions` offerings. This represents a 94% collapse from its current effective average price of $8.50/1M.
 > 2.  At this price point, OpenAI's `Z` solvency ratio (as defined `Z = (X / P_inference_effective) * Y`, using the derived `X = $0.1531/1M tokens` and `Y = 0.8513`) will exceed **0.25**. This signals accelerated capital burn, indicating imminent financial distress and unsustainable unit economics.
-> 3.  The board of OpenAI will be forced to either **raise a distressed funding round at a valuation 50-70% below the $157B October 2024 valuation** (implied floor: $47B–$78.5B) or announce a major strategic pivot away from pay-per-token inference revenue by Q3 2026.
+> 3.  The board of OpenAI will be forced to either **raise a distressed funding round at a valuation 50-70% below the $157B October 2024 valuation** (implied floor: $47B, $78.5B) or announce a major strategic pivot away from pay-per-token inference revenue by Q3 2026.
 > 4.  Anthropic will publicly announce a **delay of its next-generation frontier model (Claude 4/5 equivalent) by at least 12 months** from its original roadmap, citing "strategic recalibration" but implicitly indicating a retreat from the unrecoverable training cost race.
 
 **Falsification Condition:**

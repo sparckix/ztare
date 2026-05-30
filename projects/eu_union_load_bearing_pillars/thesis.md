@@ -50,25 +50,25 @@ When major cross-member stress appears, are core preservation tasks carried main
 
 ### CURRENT OBSERVABLES
 
-#### PROXY 1 — LEGAL SUPREMACY IS DOCTRINAL BUT CONTESTED (VS. EXPLICIT TREATY ENTRENCHMENT)
+#### PROXY 1, LEGAL SUPREMACY IS DOCTRINAL BUT CONTESTED (VS. EXPLICIT TREATY ENTRENCHMENT)
 **WHAT:** The pattern of Court of Justice EU-law primacy doctrine vs. contested enforcement in member-state constitutional courts, contrasted with explicit constitutional entrenchment in established federations.
 **VALUE/PATTERN:** EU-law primacy is jurisprudential but faces recurrent, material contestation in member-state constitutional courts, prompting official recommendations for explicit treaty entrenchment (S005). This contrasts with the explicit, founding-level legal supremacy clause binding on state judges in the US Constitution (S004), which serves as the Mode DE legal scope benchmark.
 **CONFIRMS:** Thesis. This pattern falls short of the Mode DE legal scope benchmark, thus the legal pillar's `stress_response_governance_mode` remains Mode FI.
 *   *Assert in `test_model.py`: `axiom_legal_primacy_contested is True` and `US_CONSTITUTION_SUPREMACY_CLAUSE_EXPLICIT_ENTRENCHMENT is True` (derived from S004), demonstrating the gap.*
 
-#### PROXY 2 — CRISIS PRESERVATION REMAINS DISCRETIONARY (VS. STANDING AUTOMATIC MECHANISMS)
+#### PROXY 2, CRISIS PRESERVATION REMAINS DISCRETIONARY (VS. STANDING AUTOMATIC MECHANISMS)
 **WHAT:** The nature of major EU/Eurozone crisis instruments (EFSF, ESM, OMT, RRF) and their contrast with automatic fiscal mechanisms in established federations.
 **VALUE/PATTERN:** These instruments are crisis-driven, discretionary, temporary, or treaty-adjacent, not standing, formula-triggered automatic fiscal mechanisms (Axiom). This contrasts with the significantly higher degree of automatic stabilization seen in established federations, exemplified by the US smoothing roughly three-quarters of idiosyncratic shocks compared to the Euro Area's approximately 20% (S002).
 **CONFIRMS:** Thesis. This is direct evidence that the fiscal pillar's `stress_response_governance_mode` is Mode FI, not Mode DE, requiring ad hoc political bargaining and falling short of the Mode DE fiscal scale benchmark for shock smoothing.
 *   *Assert in `test_model.py`: `axiom_discretionary_crisis_instruments is True` and `US_SHOCK_SMOOTHING_PERCENT` (derived from S002) is significantly higher than `EURO_AREA_SHOCK_SMOOTHING_PERCENT` (derived from S002), demonstrating the gap.*
 
-#### PROXY 3 — NO STANDING FEDERAL STABILIZER OF MATERIAL SIZE (VS. IMF BASELINE)
+#### PROXY 3, NO STANDING FEDERAL STABILIZER OF MATERIAL SIZE (VS. IMF BASELINE)
 **WHAT:** Official characterization of EMU's central fiscal capacity against IMF's quantitative benchmarks for 'materially meaningful' stabilization.
 **VALUE/PATTERN:** EMU lacks a sizeable federal budget by official Commission characterization (Axiom). The IMF baseline for a 'materially stabilizing' central fund annual contribution is 0.35% of GDP, with peak transfers around 1.1% of GDP, and considers anything below 0.1% of GDP as 'too small' (S002). The current EU fiscal capacity clearly falls short of the IMF's Mode DE fiscal scale benchmark.
 **CONFIRMS:** Thesis. This means major burden-sharing still lacks a standing automatic carrier of sufficient scale, which is a key component for shifting `stress_response_governance_mode` from Mode FI to Mode DE for fiscal policy, as defined by external benchmarks.
 *   *Assert in `test_model.py`: `axiom_emu_lacks_sizeable_federal_budget is True` and that current EU fiscal capacity (implicitly ~0% based on 'lacks sizeable federal budget') is less than `IMF_FISCAL_CONTRIBUTION_BASELINE_GDP_PERCENT` (0.35%) and greater than `IMF_FISCAL_TOO_SMALL_THRESHOLD_GDP_PERCENT` (0.1%), using the axiom to represent the lack of a standing *sizeable* fund, thus implicitly falling below the IMF baseline.*
 
-#### PROXY 4 — REPEATED SURVIVAL SHOULD NOT BE READ AS DURABLE EQUILIBRIUM
+#### PROXY 4, REPEATED SURVIVAL SHOULD NOT BE READ AS DURABLE EQUILIBRIUM
 **WHAT:** The project's inherited finding on interpreting repeated crisis survival.
 **VALUE/PATTERN:** Repeated EU crisis survival is not automatically treated as proof of durable equilibrium; it may signal durable fragility (Axiom).
 **CONFIRMS:** Thesis. This axiom explicitly mandates the analytical distinction central to the thesis, supporting the classification of Mode FI preservation as `fragile_but_intact` rather than `durable_equilibrium`, especially when external benchmarks for DE are not met.
@@ -76,13 +76,13 @@ When major cross-member stress appears, are core preservation tasks carried main
 
 ### FORWARD OBSERVABLES
 
-#### PROXY 5 — NEXT MAJOR CRISIS RESPONSE
+#### PROXY 5, NEXT MAJOR CRISIS RESPONSE
 **WHAT will be measured:** The primary `stress_response_governance_mode` (Mode DE or Mode FI) of the EU's response to the next major asymmetric economic or geopolitical shock impacting multiple major member states.
 **WHEN it will be evaluable:** At the point of resolution or significant operationalization of the EU's primary response mechanism, expected to occur during the next major crisis (e.g., severe economic downturn, significant geopolitical disruption requiring common fiscal/security response) before January 1, 2035.
 **DIRECTION:** If the primary response relies mainly on new ad hoc discretionary political bargains, temporary facilities, or treaty-adjacent fixes (Mode FI), this strengthens the thesis. If a standing, preauthorized, materially meaningful legal-fiscal or security mechanism (e.g., a new, permanent, formula-triggered stabilization fund meeting IMF fiscal scale benchmarks or an explicitly entrenched legal supremacy mechanism meeting US legal scope benchmarks) carries the response without requiring *new* ad hoc political bargaining for its activation or scope (Mode DE), this weakens the thesis and strengthens the rival.
 *   *Assert in `test_model.py`: Conditional logic for `forecast_tilt_is_event_driven` implicitly covers this as `material_failure_event_occurs` or not, where `material_failure_event_occurs` implies failure of Mode FI to cope.*
 
-#### PROXY 6 — CONSOLIDATION BEFORE 2035
+#### PROXY 6, CONSOLIDATION BEFORE 2035
 **WHAT will be measured:** Material consolidation of either a standing burden-sharing mechanism or a clearer and more enforceable pattern of legal supremacy in transferred domains with reduced recurring constitutional contestation, explicitly meeting the Mode DE fiscal and legal benchmarks. This would manifest as a formal treaty revision (e.g., establishing a permanent EU fiscal transfer capacity meeting IMF baselines or explicit, unquestioned legal supremacy analogous to US Article VI) or a de facto shift in member-state constitutional court practice ending recurrent contestation.
 **WHEN it will be evaluable:** Before January 1, 2035, through observable treaty revisions or consistent shifts in legal/institutional practice.
 **DIRECTION:** The thesis weakens if the EU materially consolidates one or both missing pillars, shifting its `stress_response_governance_mode` towards Mode DE by meeting the defined external benchmarks. The thesis strengthens if such consolidation does not occur (persistent Mode FI).
