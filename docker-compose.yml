@@ -1,12 +1,84 @@
-version: "3.8"
-
 services:
   ztare:
     build: .
     volumes:
       - ./projects:/app/projects
       - ./rubrics:/app/rubrics
+      - ./research_areas:/app/research_areas
+      - ./org:/app/org
+      - ./ztare_workspace:/app/ztare_workspace
+
+  operator-claude:
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.operator
+    profiles: ["console"]
+    working_dir: /app
+    command: /bin/bash -lc "python scripts/public/control/org_role_preflight.py --role manager --agent-cli claude || true; exec claude"
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - ${HOME}/.claude:/root/.claude
+
+  manager-daemon:
+    build:
+      context: .
+      args:
+        INSTALL_AGENT_CLI: "1"
+    profiles: ["daemons"]
+    command: /bin/sh -lc "python scripts/public/control/org_role_preflight.py --role manager --agent-cli $${ZTARE_AGENT_CLI:-claude} && python scripts/public/control/agent_daemon.py --role manager --member-id $${ZTARE_MEMBER_ID:-claude} --agent-cli $${ZTARE_AGENT_CLI:-claude} --agent-adapter $${ZTARE_AGENT_ADAPTER:-auto} --interval $${MANAGER_DAEMON_INTERVAL:-600} $${ZTARE_UNATTENDED:+--unattended}"
+    volumes:
+      - .:/app
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - GEMINI_API_KEY=${GEMINI_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - ZTARE_UNATTENDED=${ZTARE_UNATTENDED:-}
+      - ZTARE_MEMBER_ID=${ZTARE_MEMBER_ID:-claude}
+      - ZTARE_AGENT_CLI=${ZTARE_AGENT_CLI:-claude}
+      - ZTARE_AGENT_ADAPTER=${ZTARE_AGENT_ADAPTER:-auto}
+    restart: unless-stopped
+
+  research-director-daemon:
+    build:
+      context: .
+      args:
+        INSTALL_AGENT_CLI: "1"
+    profiles: ["daemons"]
+    command: /bin/sh -lc "python scripts/public/control/org_role_preflight.py --role research_director --agent-cli $${ZTARE_AGENT_CLI:-claude} && python scripts/public/control/agent_daemon.py --role research_director --member-id $${ZTARE_MEMBER_ID:-claude} --agent-cli $${ZTARE_AGENT_CLI:-claude} --agent-adapter $${ZTARE_AGENT_ADAPTER:-auto} --interval $${RESEARCH_DIRECTOR_INTERVAL:-600} $${ZTARE_UNATTENDED:+--unattended}"
+    volumes:
+      - .:/app
+    environment:
+      - ZTARE_UNATTENDED=${ZTARE_UNATTENDED:-}
+      - ZTARE_MEMBER_ID=${ZTARE_MEMBER_ID:-claude}
+      - ZTARE_AGENT_CLI=${ZTARE_AGENT_CLI:-claude}
+      - ZTARE_AGENT_ADAPTER=${ZTARE_AGENT_ADAPTER:-auto}
+    restart: unless-stopped
+
+  closure-daemon:
+    build: .
+    profiles: ["daemons"]
+    command: python scripts/public/control/closure_daemon.py --poll-seconds ${CLOSURE_DAEMON_INTERVAL:-30}
+    volumes:
+      - .:/app
+    restart: unless-stopped
+
+  telegram-bot:
+    build:
+      context: .
+      args:
+        INSTALL_AGENT_CLI: "1"
+    profiles: ["daemons"]
+    # Long-poll listener for the principal's @ztareeng_bot (or whichever
+    # bot TELEGRAM_BOT_TOKEN points to). Watches ztare_workspace/gates/pending/
+    # and pushes typed gates as inline-button cards. See
+    # docs/internal/deploy_ops/telegram_bot_setup_2026-04-30.md for env-var setup.
+    command: /bin/sh -lc "tsx orbit/src/server/telegram-bot.ts"
+    volumes:
+      - .:/app
+    environment:
+      - ORG_ROOT=${ORG_ROOT:-./org}
+      - GATES_DIR=${GATES_DIR:-./ztare_workspace/gates/pending}
+      - GATES_RESOLVED_DIR=${GATES_RESOLVED_DIR:-./ztare_workspace/gates/resolved}
+      - TRANSITIONS_LOG=${TRANSITIONS_LOG:-./ztare_workspace/transitions.jsonl}
+      - POLL_SECONDS=${TELEGRAM_POLL_SECONDS:-30}
+      - LONG_POLL_TIMEOUT=${TELEGRAM_LONG_POLL_TIMEOUT:-25}
+    restart: unless-stopped

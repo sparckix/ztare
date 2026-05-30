@@ -1,0 +1,62 @@
+.git
+.DS_Store
+.claude
+.pytest_cache
+__pycache__
+*.pyc
+
+# Secrets — never let .env enter the Docker build context.
+.env
+.env.*
+!.env.example
+*.env
+org/preferences/principal.yaml
+org/mandates/.telegram_creds
+org/mandates/.telegram_offset
+org/mandates/.contact_email
+org/mandates/.ntfy_topic
+org/mandates/manager_mandate.md
+org/mandates/product_manager_mandate.md
+org/roles/research_director.yaml
+org/roles/product_manager.yaml
+org/roles/debate_runner.yaml
+
+# Local environments and package caches
+venv
+.venv
+node_modules
+orbit/node_modules
+orbit/dist
+
+# Generated/runtime state mounted at runtime when needed
+ztare_workspace
+logs
+outputs
+tmp
+workspace
+projects
+ztare_proofs
+vendor
+**/.lake
+**/.pytest_cache
+**/dist
+**/build
+analytics/public/leanmill/external_benchmarks/sandboxes
+analytics/public/leanmill/external_benchmarks/repos
+analytics/public/gnn
+analytics/public/index
+analytics/private
+ztare_proofs/.lake
+
+# Large local artifacts that must never enter Docker build context
+nohup.out
+*.pdf
+*.zip
+*.tar
+*.tgz
+*.gz
+
+# OS/editor noise
+*.swp
+*.swo
+*~

@@ -1,0 +1,71 @@
+cff-version: 1.2.0
+title: "ZTARE: A filesystem-first socio-technical research system for testing claims, surfacing failure modes, and governing AI-assisted research"
+message: >-
+  If you use this work, please cite the specific paper or artifact you are
+  using rather than the repository as a monolith. The README's Citation
+  section enumerates the per-paper BibTeX entries. The repository-level
+  citation below is provided for tooling that requires a single `CITATION.cff`
+  (for example GitHub's "Cite this repository" widget and Zenodo's DOI
+  minting).
+type: software
+authors:
+  - family-names: Alami
+    given-names: Daniel
+repository-code: "https://github.com/sparckix/ztare"
+url: "https://github.com/sparckix/ztare"
+license: MIT
+license-url: "https://github.com/sparckix/ztare/blob/main/LICENSES.md"
+keywords:
+  - adversarial validation
+  - reflexive engineering
+  - agentic engineering patterns
+  - LLM-assisted research
+  - research integrity
+  - epistemic discipline
+  - governance gates
+preferred-citation:
+  type: generic
+  title: "ZTARE: per-artifact citations"
+  authors:
+    - family-names: Alami
+      given-names: Daniel
+  year: 2026
+  notes: >-
+    The repository is a portfolio of distinct research artifacts. Cite the
+    specific paper or artifact you are using (Cognitive Camouflage,
+    Adversarial Precedent Memory, Contract-Governed Adversarial Evaluator
+    Hardening, The Cognitive Firm). The BibTeX entries are listed in the
+    Citation section of the repository README.
+references:
+  - type: article
+    title: "Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution"
+    authors:
+      - family-names: Alami
+        given-names: Daniel
+    year: 2026
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960"
+    notes: "SSRN preprint 6512960"
+  - type: article
+    title: "Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints"
+    authors:
+      - family-names: Alami
+        given-names: Daniel
+    year: 2026
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6525598"
+    notes: "SSRN preprint 6525598"
+  - type: article
+    title: "Contract-Governed Adversarial Evaluator Hardening: Stage-Gated Recursive Improvement with Typed Promotion Contracts"
+    authors:
+      - family-names: Alami
+        given-names: Daniel
+    year: 2026
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6542998"
+    notes: "SSRN preprint 6542998"
+  - type: article
+    title: "The Cognitive Firm: Managerial Capitalism for Artificial Intelligence"
+    authors:
+      - family-names: Alami
+        given-names: Daniel
+    year: 2026
+    url: "https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019"
+    notes: "SSRN preprint 6543019"
