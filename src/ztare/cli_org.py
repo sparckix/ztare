@@ -1,4 +1,4 @@
-# Licensed under Business Source License 1.1 — see LICENSE-BSL
+# SPDX-License-Identifier: MIT
 """`ztare org` CLI — inspect org/ primitives.
 
 Run as:  python -m src.ztare.cli_org <subcommand>

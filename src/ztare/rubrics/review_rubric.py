@@ -5,8 +5,8 @@ Runs a pre-flight rubric review against a project's current charter, compiled
 workspace summary, and rubric JSON. Writes a durable review artifact and an
 optional patch proposal artifact.
 
-Spec: research_areas/private/specs/active/GP-054_rubric_quality_and_generation_spec.md
-Seam: research_areas/private/seams/GP-054_rubric_quality_and_generation_seam.md
+Spec: GP-054 (internal seam)
+Seam: GP-054 (internal seam)
 """
 
 from __future__ import annotations
