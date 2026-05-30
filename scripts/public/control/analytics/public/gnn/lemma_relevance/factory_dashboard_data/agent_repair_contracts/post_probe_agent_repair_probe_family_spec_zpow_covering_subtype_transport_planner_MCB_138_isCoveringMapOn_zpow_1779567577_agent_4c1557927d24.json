@@ -1,0 +1,130 @@
+{
+  "payload": {
+    "agent_id": "leanmill_codex_post_probe_repair",
+    "allowed_paths": [
+      "analytics/public/leanmill",
+      "scripts/public/control",
+      "/tmp/rung1"
+    ],
+    "context": {
+      "exit_contract": {
+        "pair_count": 1,
+        "pairs": [
+          {
+            "closure_validity": "requires_matched_negative_control_expected_failure",
+            "paired_negative_packet_id": "zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:zpow_covering_missing_subtype_transport_negative_v1",
+            "positive_packet_id": "zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:zpow_covering_on_from_subtype_positive_v1",
+            "unexpected_negative_control_pass_blocks_credit": true
+          }
+        ],
+        "proof_credit_authority": "governance_gate",
+        "schema": "leanmill-probe-exit-contract-v1"
+      },
+      "governance_summary": {
+        "closed_candidate_count": 0,
+        "examples": [],
+        "governance_reason_counts": {},
+        "missing_governance_count": 0,
+        "ratified_count": 0
+      },
+      "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577.json",
+      "probe_lane": "family_spec",
+      "probe_work_id": "probe:family_spec:zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:1779567577",
+      "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577",
+      "scoreboard": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577/scoreboard.json",
+      "scoreboard_summary": {
+        "backend_artifact_reclassified_count": 0,
+        "cache_hit_count": 1,
+        "compile_candidate_count": 0,
+        "completed": 2,
+        "exact_gap_candidate_count": 0,
+        "negative_control_fail_count": 1,
+        "negative_control_unexpected_pass_count": 0,
+        "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577.json",
+        "ratified_closure_count": 0,
+        "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577",
+        "schema": "leanmill-repair-canary-scoreboard-v1",
+        "science_rule": "Only ratified closures score; compile-only goes to governance; negative-control pass is a failure.",
+        "score": 0,
+        "skipped": 0,
+        "tests_total": 2,
+        "warm_repl_inline": true
+      }
+    },
+    "expected_exit": "repaired_canary",
+    "family": "zpow_covering_subtype_transport_planner",
+    "max_iterations": 3,
+    "max_wall_time_s": 1200,
+    "negative_control": "Reuse or strengthen the probe exit_contract paired negative controls; a repair without a matched failing negative control is invalid.",
+    "proof_affecting": true,
+    "requires_negative_control": true,
+    "runtime": "codex",
+    "station": "proof_execution",
+    "task": "A family-spec proof probe finished with matched negative controls but no positive closure. Diagnose why the positive templates failed and emit one bounded next artifact: repaired_canary, exact_gap_candidate, valid_falsifier, or retired. Do not update scoreboards, registries, research logs, or governance receipts. Preserve the paired negative-control requirement; any repaired positive must still have a matched negative control that fails.",
+    "work_id": "post_probe_agent_repair:probe:family_spec:zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:1779567577"
+  },
+  "validation": {
+    "agent_launched": true,
+    "api_llm_call": false,
+    "failure_count": 0,
+    "failures": [],
+    "non_allowed_repo_mutation_count": 0,
+    "non_allowed_repo_mutations": [],
+    "operator_contract_lane": false,
+    "output_path": "analytics/public/leanmill/dashboard_data/agent_repair_outputs/post_probe_agent_repair_probe_family_spec_zpow_covering_subtype_transport_planner_MCB_138_isCoveringMapOn_zpow_1779567577_codex_4c1557927d24.txt",
+    "returncode": 1,
+    "runtime": "codex",
+    "runtime_health": {
+      "operator_action": "codex_login_required_on_worker_host",
+      "reason": "codex_auth_token_invalidated",
+      "runtime": "codex",
+      "schema": "leanmill-subscription-runtime-health-v1",
+      "status": "unavailable"
+    },
+    "schema": "leanmill-agent-repair-task-contract-v1",
+    "session_id": "019e7038-c239-7bc1-9a05-cd677f2d55c5",
+    "session_state_path": "analytics/public/leanmill/dashboard_data/subscription_agent_sessions/codex_leanmill_codex_post_probe_repair.json",
+    "status": "fail",
+    "subscription_mode": true,
+    "usage_estimate": {
+      "agent_id": "leanmill_codex_post_probe_repair",
+      "api_llm_call": false,
+      "claim_kinds": [
+        "agent_repair_task"
+      ],
+      "cost_usd": 0.0,
+      "estimated_output_tokens": 1516,
+      "estimated_prompt_tokens": 903,
+      "estimated_total_tokens": 2419,
+      "expected_exit": "repaired_canary",
+      "family": "zpow_covering_subtype_transport_planner",
+      "final_session_id": "019e7038-c239-7bc1-9a05-cd677f2d55c5",
+      "finished_at_epoch": 1779999246,
+      "initial_session_id": "",
+      "model": "gpt-5.4-mini",
+      "note": "Character-based estimate for subscription CLI health across warm-agent lanes; provider usage accounting is not available through this worker.",
+      "output_chars": 6064,
+      "payload_requested_timeout_s": 1200,
+      "payload_timeout_downgrade_ignored": true,
+      "prompt_chars": 3612,
+      "runtime": "codex",
+      "schema": "leanmill-subscription-agent-usage-estimate-v2",
+      "source_scout_mode": false,
+      "started_at_epoch": 1779999227,
+      "station": "proof_execution",
+      "stderr_chars": 6064,
+      "stdout_chars": 0,
+      "subscription_mode": true,
+      "task_kind": "agent_repair_task",
+      "timeout_s": 1800,
+      "wall_time_s": 19,
+      "warm_session_requested": true,
+      "warm_session_reused": false,
+      "work_id": "post_probe_agent_repair:probe:family_spec:zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:1779567577",
+      "worker_id": "continue_validation_codex_2026_05_28b",
+      "worker_policy_timeout_s": 1800
+    },
+    "warm_session_used": false
+  },
+  "work_id": "post_probe_agent_repair:probe:family_spec:zpow_covering_subtype_transport_planner:MCB_138_isCoveringMapOn_zpow:1779567577"
+}

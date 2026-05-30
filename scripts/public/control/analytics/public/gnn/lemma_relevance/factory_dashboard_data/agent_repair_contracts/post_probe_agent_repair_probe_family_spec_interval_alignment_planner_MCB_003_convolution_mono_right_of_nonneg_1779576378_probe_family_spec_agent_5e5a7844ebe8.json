@@ -1,0 +1,131 @@
+{
+  "payload": {
+    "_retarget_reason": "codex_logged_out_2026_05_28_validation_batch",
+    "_runtime_retargeted_from": "codex",
+    "agent_id": "leanmill_codex_post_probe_repair",
+    "allowed_paths": [
+      "analytics/public/leanmill",
+      "scripts/public/control",
+      "/tmp/rung1"
+    ],
+    "context": {
+      "exit_contract": {
+        "pair_count": 1,
+        "pairs": [
+          {
+            "closure_validity": "requires_matched_negative_control_expected_failure",
+            "paired_negative_packet_id": "interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:convolution_mono_right_of_nonneg_MCB003_missing_rhs_nonneg_negative_v1",
+            "positive_packet_id": "interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:convolution_mono_right_of_nonneg_MCB003_positive_v1",
+            "unexpected_negative_control_pass_blocks_credit": true
+          }
+        ],
+        "proof_credit_authority": "governance_gate",
+        "schema": "leanmill-probe-exit-contract-v1"
+      },
+      "governance_summary": {
+        "closed_candidate_count": 0,
+        "examples": [],
+        "governance_reason_counts": {},
+        "missing_governance_count": 0,
+        "ratified_count": 0
+      },
+      "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec.json",
+      "probe_lane": "family_spec",
+      "probe_work_id": "probe:family_spec:interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:1779576378_probe_family_spec",
+      "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec",
+      "scoreboard": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec/scoreboard.json",
+      "scoreboard_summary": {
+        "backend_artifact_reclassified_count": 0,
+        "cache_hit_count": 0,
+        "compile_candidate_count": 0,
+        "completed": 2,
+        "exact_gap_candidate_count": 0,
+        "negative_control_fail_count": 1,
+        "negative_control_unexpected_pass_count": 0,
+        "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec.json",
+        "ratified_closure_count": 0,
+        "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec",
+        "schema": "leanmill-repair-canary-scoreboard-v1",
+        "science_rule": "Only ratified closures score; compile-only goes to governance; negative-control pass is a failure.",
+        "score": 0,
+        "skipped": 0,
+        "tests_total": 2,
+        "warm_repl_inline": true
+      }
+    },
+    "expected_exit": "repaired_canary",
+    "family": "interval_alignment_planner",
+    "max_iterations": 3,
+    "max_wall_time_s": 1200,
+    "negative_control": "Reuse or strengthen the probe exit_contract paired negative controls; a repair without a matched failing negative control is invalid.",
+    "proof_affecting": true,
+    "requires_negative_control": true,
+    "runtime": "claude",
+    "station": "proof_execution",
+    "task": "A family-spec proof probe finished with matched negative controls but no positive closure. Diagnose why the positive templates failed and emit one bounded next artifact: repaired_canary, exact_gap_candidate, valid_falsifier, or retired. Do not update scoreboards, registries, research logs, or governance receipts. Preserve the paired negative-control requirement; any repaired positive must still have a matched negative control that fails.",
+    "work_id": "post_probe_agent_repair:probe:family_spec:interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:1779576378_probe_family_spec"
+  },
+  "validation": {
+    "agent_launched": true,
+    "agent_output_lint": {
+      "failure_count": 0,
+      "failures": [],
+      "schema": "leanmill-agent-output-lint-v1",
+      "status": "pass"
+    },
+    "api_llm_call": false,
+    "failure_count": 0,
+    "failures": [],
+    "non_allowed_repo_mutation_count": 0,
+    "non_allowed_repo_mutations": [],
+    "operator_contract_lane": false,
+    "output_path": "analytics/public/leanmill/dashboard_data/agent_repair_outputs/post_probe_agent_repair_probe_family_spec_interval_alignment_planner_MCB_003_convolution_mono_right_of_nonneg_1779576378_probe_family_spec_claude_5e5a7844ebe8.txt",
+    "returncode": 0,
+    "runtime": "claude",
+    "schema": "leanmill-agent-repair-task-contract-v1",
+    "session_id": "814b674d-503e-4222-a834-4cd701f10162",
+    "session_state_path": "analytics/public/leanmill/dashboard_data/subscription_agent_sessions/claude_leanmill_codex_post_probe_repair.json",
+    "status": "pass",
+    "subscription_mode": true,
+    "usage_estimate": {
+      "agent_id": "leanmill_codex_post_probe_repair",
+      "api_llm_call": false,
+      "claim_kinds": [
+        "agent_repair_task"
+      ],
+      "cost_usd": 0.0,
+      "estimated_output_tokens": 911,
+      "estimated_prompt_tokens": 900,
+      "estimated_total_tokens": 1811,
+      "expected_exit": "repaired_canary",
+      "family": "interval_alignment_planner",
+      "final_session_id": "814b674d-503e-4222-a834-4cd701f10162",
+      "finished_at_epoch": 1779999677,
+      "initial_session_id": "814b674d-503e-4222-a834-4cd701f10162",
+      "model": "claude_subscription_cli",
+      "note": "Character-based estimate for subscription CLI health across warm-agent lanes; provider usage accounting is not available through this worker.",
+      "output_chars": 3643,
+      "payload_requested_timeout_s": 1200,
+      "payload_timeout_downgrade_ignored": true,
+      "prompt_chars": 3599,
+      "runtime": "claude",
+      "schema": "leanmill-subscription-agent-usage-estimate-v2",
+      "source_scout_mode": false,
+      "started_at_epoch": 1779999545,
+      "station": "proof_execution",
+      "stderr_chars": 0,
+      "stdout_chars": 3643,
+      "subscription_mode": true,
+      "task_kind": "agent_repair_task",
+      "timeout_s": 1800,
+      "wall_time_s": 132,
+      "warm_session_requested": true,
+      "warm_session_reused": false,
+      "work_id": "post_probe_agent_repair:probe:family_spec:interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:1779576378_probe_family_spec",
+      "worker_id": "continue_claude_drain_2026_05_28",
+      "worker_policy_timeout_s": 1800
+    },
+    "warm_session_used": false
+  },
+  "work_id": "post_probe_agent_repair:probe:family_spec:interval_alignment_planner:MCB_003_convolution_mono_right_of_nonneg:1779576378_probe_family_spec"
+}

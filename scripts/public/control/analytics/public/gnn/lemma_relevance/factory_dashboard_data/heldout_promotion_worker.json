@@ -1,0 +1,9 @@
+{
+  "action_count": 0,
+  "actions": [],
+  "generated_at_epoch": 1779999010,
+  "receipt_actions": [],
+  "schema": "leanmill-heldout-promotion-worker-v1",
+  "science_rule": "This worker only creates bounded heldout work or receipt candidates; registry promotion still depends on heldout receipt validation.",
+  "scout": "analytics/public/leanmill/dashboard_data/heldout_independence_scout.json"
+}

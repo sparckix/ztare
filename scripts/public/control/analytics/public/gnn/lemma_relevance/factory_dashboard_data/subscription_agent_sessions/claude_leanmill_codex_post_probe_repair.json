@@ -1,0 +1,11 @@
+{
+  "agent_id": "leanmill_codex_post_probe_repair",
+  "is_new": false,
+  "last_used_at_epoch": 1779999677,
+  "policy": "session_warm_resume_if_supported",
+  "runtime": "claude",
+  "schema": "leanmill-subscription-agent-session-v1",
+  "session_id": "814b674d-503e-4222-a834-4cd701f10162",
+  "started_at_epoch": 1779999545,
+  "tick_count": 1
+}

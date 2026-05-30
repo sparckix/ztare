@@ -1,0 +1,13 @@
+{
+  "name": "minimal_dimensional_test",
+  "target": "test_substrate_agnostic_wiring",
+  "parametric_form": "c0 * exp(c1 * x_dimensionless)",
+  "init_ranges": {"c0": [0.1, 10], "c1": [-2, 2]},
+  "feature_dimensions": {"x_dimensionless": "dimensionless"},
+  "algebraic_constraints": [
+    {"kind": "domain", "expr": "c0 > 0", "free_symbols": ["c0"]}
+  ],
+  "pre_translation_expression": "c0 * exp(c1 * x)",
+  "post_translation_lean_statement": "c0 * Real.exp (c1 * x)",
+  "simulation": null
+}

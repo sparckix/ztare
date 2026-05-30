@@ -1,0 +1,128 @@
+{
+  "payload": {
+    "agent_id": "leanmill_claude_external_source_scout",
+    "allowed_paths": [
+      "analytics/public/leanmill",
+      "analytics/public/queries/lean/mathlib_lemma_index.json",
+      "scripts/public/control",
+      "src/ztare/common",
+      "/tmp/rung1"
+    ],
+    "credit_boundary": {
+      "proof_credit_authority": "governance_gate",
+      "source_search_has_no_proof_credit": true,
+      "worker_can_self_ratify": false
+    },
+    "expected_exit": "source_request",
+    "family": "zpow_covering_subtype_transport_planner",
+    "max_iterations": 3,
+    "max_wall_time_s": 1200,
+    "proof_affecting": false,
+    "requires_negative_control": false,
+    "runtime": "claude",
+    "source_scout_mode": "subscription_public_external",
+    "station": "source_qualification",
+    "target_rows": [
+      {
+        "corpus_path": "analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json",
+        "goal": "theorem hofer {X : Type*} [MetricSpace X] [CompleteSpace X] (x : X) (\u03b5 : \u211d) (\u03b5_pos : 0 < \u03b5) {\u03d5 : X \u2192 \u211d} (cont : Continuous \u03d5) (nonneg : \u2200 y, 0 \u2264 \u03d5 y) : \u2203 \u03b5' > 0, \u2203 x' : X, \u03b5' \u2264 \u03b5 \u2227 d x' x \u2264 2 * \u03b5 \u2227 \u03b5 * \u03d5 x \u2264 \u03b5' * \u03d5 x' \u2227 \u2200 y, d x' y \u2264 \u03b5' \u2192 \u03d5 y \u2264 2 * \u03d5 x' := by",
+        "row_id": "MCB_000_hofer",
+        "source": "active_corpus_family_hint",
+        "source_file": "/tmp/rung1/mcb_expand100/files/mcb_0_hofer.lean"
+      },
+      {
+        "corpus_path": "analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json",
+        "goal": "theorem areaForm_to_volumeForm (x y : E) : \u03c9 x y = o.volumeForm ![x, y] := by simp [areaForm]",
+        "row_id": "MCB_070_areaForm_comp_linearIsometryEq",
+        "source": "active_corpus_family_hint",
+        "source_file": "/tmp/rung1/mcb_expand100/files/mcb_70_areaForm_comp_linearIsometryEq.lean"
+      },
+      {
+        "corpus_path": "analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json",
+        "goal": "theorem MellinConvergent.const_smul {f : \u211d \u2192 E} {s : \u2102} (hf : MellinConvergent f s) {\ud835\udd5c : Type*} [NormedAddCommGroup \ud835\udd5c] [SMulZeroClass \ud835\udd5c E] [IsBoundedSMul \ud835\udd5c E] [SMulCommClass \u2102 \ud835\udd5c E] (c : \ud835\udd5c) : MellinConvergent (fun t => c \u2022 f t) s := by",
+        "row_id": "MCB_008_mellin_comp_mul_left",
+        "source": "active_corpus_family_hint",
+        "source_file": "/tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_mul_left.lean"
+      },
+      {
+        "corpus_path": "analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json",
+        "goal": "theorem MellinConvergent.const_smul {f : \u211d \u2192 E} {s : \u2102} (hf : MellinConvergent f s) {\ud835\udd5c : Type*} [NormedAddCommGroup \ud835\udd5c] [SMulZeroClass \ud835\udd5c E] [IsBoundedSMul \ud835\udd5c E] [SMulCommClass \u2102 \ud835\udd5c E] (c : \ud835\udd5c) : MellinConvergent (fun t => c \u2022 f t) s := by",
+        "row_id": "MCB_008_mellin_comp_rpow",
+        "source": "active_corpus_family_hint",
+        "source_file": "/tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_rpow.lean"
+      },
+      {
+        "corpus_path": "analytics/public/leanmill/leansearch/LEANSEARCH_MCB_REMAINING_QUEUE.json",
+        "goal": "integral_convolution Type uE' NormedAddCommGroup RCLike NormedSpace MeasurableSpace Measure \u2192L[\ud835\udd5c CompleteSpace AddGroup SFinite \u03bc.IsAddRightInvariant MeasurableAdd\u2082 MeasurableNeg Comple",
+        "row_id": "MCB_006_integral_convolution",
+        "source": "active_corpus_family_hint",
+        "source_file": "Mathlib/Analysis/Convolution.lean"
+      }
+    ],
+    "task": "You are a LeanMill public-source scout for one repair family.\n\nUse the local mathlib lemma index if useful\n(`analytics/public/queries/lean/mathlib_lemma_index.json`), public Lean/mathlib\nknowledge, and external lookup if your CLI runtime supports it (mathlib docs,\nLeanSearch-style declaration names, GitHub mathlib source, public theorem names).\nDo not rely on private files or unavailable proof bodies. Do not claim proof value.\n\nReturn exactly one JSON object. Prefer this shape:\n{\n  \"family\": \"zpow_covering_subtype_transport_planner\",\n  \"proposal_type\": \"source_request\",\n  \"hypothesis\": \"... why these declarations/source shapes fit the target rows ...\",\n  \"credit_type\": \"none\",\n  \"expected_outcome\": \"source_request\",\n  \"source_query\": [\n    {\"schema\":\"leanmill-source-query-contract-v1\",\"kind\":\"declaration_ref\",\"decl_name\":\"Namespace.decl_name\",\"rationale\":\"...\"},\n    {\"schema\":\"leanmill-source-query-contract-v1\",\"kind\":\"theorem_shape\",\"query\":\"lemma ... : ...\",\"rationale\":\"...\"}\n  ],\n  \"target_row_ids\": [\"...\"],\n  \"sibling_or_heldout_constraints\": [\"...\"],\n  \"source_order_risks\": [\"...\"],\n  \"target_context_risks\": [\"...\"],\n  \"negative_control_ideas\": [\"...\"]\n}\n\nHard rules:\n- Emit 5-8 `source_query` entries so downstream pruning can still leave enough usable leads.\n- Use theorem/declaration names or compact Lean theorem shapes, not broad topics.\n- For `kind:\"declaration_ref\"`, `decl_name` must be namespaced and contain a dot\n  such as `ENNReal.tsum_eq_iSup_sum`, `MeasureTheory.MeasurePreserving.lintegral_comp`,\n  or `Filter.Tendsto.comp`. Unqualified names like `HasSum` or `tsum_eq` are rejected.\n- For `kind:\"theorem_shape\"`, include structural Lean signals: constants, binders,\n  theorem head, carrier type, or target relation. Do not emit one-word topics.\n- `target_row_ids` must be copied exactly from the active target rows below.\n- Do not use row IDs from memory, older benchmark prep, source-plan hints, or query text unless that row ID is listed below.\n- If no safe public-source route exists, emit `proposal_type:\"decomposition\"`,\n  `expected_outcome:\"hold\"` or `\"retire\"`, and a concrete blocked edge.\n- This is source inventory only. Governance Gate is the only proof-credit authority.\n- Do not edit registries, scoreboards, governance receipts, or research logs.\n\nRuntime: claude\nFamily: zpow_covering_subtype_transport_planner\nFamily hints: [\"zpow\", \"comp\", \"covering\", \"subtype\", \"image\", \"injective\", \"coercion\", \"transport\", \"superpolynomialDecay\", \"superpolynomialDecay_iff_zpow_tendsto_zero\", \"sameRay\", \"sameRay_iff_arg_div_eq_zero\", \"analyticAt\", \"differentiableOn\", \"differentiableAt\", \"eventually_analyticAt\"]\nAllocator record:\n{\n  \"base_yield_score\": 284.0,\n  \"family\": \"zpow_covering_subtype_transport_planner\",\n  \"median_drain_time_s\": 11.704,\n  \"negative_control_pass_rate\": 0.0,\n  \"next_required_evidence\": \"none\",\n  \"recommended_action\": \"review\",\n  \"source_loss_pressure\": 3.0,\n  \"source_quality\": {\n    \"agent_task_failed\": 0,\n    \"counts\": {\n      \"source_binding_rejected\": 1\n    },\n    \"failure_classes\": {\n      \"attempt_0_missing_candidate_names\": 1\n    },\n    \"family\": \"zpow_covering_subtype_transport_planner\",\n    \"hard_hold_no_value_source_attempts\": 3,\n    \"hold_source_binding\": false,\n    \"in_flight_source_binding_spend\": 0,\n    \"max_inflight_source_binding_before_throttle\": 3,\n    \"pending_pressure\": false,\n    \"proposal_rejected\": 0,\n    \"recommended_source_action\": \"continue_or_watch\",\n    \"source_attempts\": 1,\n    \"source_binding_conversion_rate\": null,\n    \"source_binding_negative_control_fail\": 0,\n    \"source_binding_probe_done\": 0,\n    \"source_binding_probe_enqueued\": 0,\n    \"source_binding_probe_pending\": 0,\n    \"source_binding_probe_retired_before_execution\": 0,\n    \"source_binding_rejected\": 1,\n    \"source_binding_spend\": 0,\n    \"source_binding_tested_no_positive_signal\": 0,\n    \"source_binding_unexpected_negative_pass\": 0,\n    \"source_binding_value_exits\": 0,\n    \"source_loss_pressure\": 3,\n    \"source_search_canary_ready_total\": 0,\n    \"source_search_failed_or_rejected\": 0,\n    \"source_strategy_repair_done\": 0,\n    \"terminal_source_binding_spend\": 0,\n    \"throttle_source_binding\": false\n  },\n  \"status\": \"validated_family_requires_true_holdout_check\",\n  \"yield_score\": 281.0\n}\nTarget rows:\n[\n  {\n    \"corpus_path\": \"analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json\",\n    \"goal\": \"theorem hofer {X : Type*} [MetricSpace X] [CompleteSpace X] (x : X) (\\u03b5 : \\u211d) (\\u03b5_pos : 0 < \\u03b5) {\\u03d5 : X \\u2192 \\u211d} (cont : Continuous \\u03d5) (nonneg : \\u2200 y, 0 \\u2264 \\u03d5 y) : \\u2203 \\u03b5' > 0, \\u2203 x' : X, \\u03b5' \\u2264 \\u03b5 \\u2227 d x' x \\u2264 2 * \\u03b5 \\u2227 \\u03b5 * \\u03d5 x \\u2264 \\u03b5' * \\u03d5 x' \\u2227 \\u2200 y, d x' y \\u2264 \\u03b5' \\u2192 \\u03d5 y \\u2264 2 * \\u03d5 x' := by\",\n    \"row_id\": \"MCB_000_hofer\",\n    \"source\": \"active_corpus_family_hint\",\n    \"source_file\": \"/tmp/rung1/mcb_expand100/files/mcb_0_hofer.lean\"\n  },\n  {\n    \"corpus_path\": \"analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json\",\n    \"goal\": \"theorem areaForm_to_volumeForm (x y : E) : \\u03c9 x y = o.volumeForm ![x, y] := by simp [areaForm]\",\n    \"row_id\": \"MCB_070_areaForm_comp_linearIsometryEq\",\n    \"source\": \"active_corpus_family_hint\",\n    \"source_file\": \"/tmp/rung1/mcb_expand100/files/mcb_70_areaForm_comp_linearIsometryEq.lean\"\n  },\n  {\n    \"corpus_path\": \"analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json\",\n    \"goal\": \"theorem MellinConvergent.const_smul {f : \\u211d \\u2192 E} {s : \\u2102} (hf : MellinConvergent f s) {\\ud835\\udd5c : Type*} [NormedAddCommGroup \\ud835\\udd5c] [SMulZeroClass \\ud835\\udd5c E] [IsBoundedSMul \\ud835\\udd5c E] [SMulCommClass \\u2102 \\ud835\\udd5c E] (c : \\ud835\\udd5c) : MellinConvergent (fun t => c \\u2022 f t) s := by\",\n    \"row_id\": \"MCB_008_mellin_comp_mul_left\",\n    \"source\": \"active_corpus_family_hint\",\n    \"source_file\": \"/tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_mul_left.lean\"\n  },\n  {\n    \"corpus_path\": \"analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json\",\n    \"goal\": \"theorem MellinConvergent.const_smul {f : \\u211d \\u2192 E} {s : \\u2102} (hf : MellinConvergent f s) {\\ud835\\udd5c : Type*} [NormedAddCommGroup \\ud835\\udd5c] [SMulZeroClass \\ud835\\udd5c E] [IsBoundedSMul \\ud835\\udd5c E] [SMulCommClass \\u2102 \\ud835\\udd5c E] (c : \\ud835\\udd5c) : MellinConvergent (fun t => c \\u2022 f t) s := by\",\n    \"row_id\": \"MCB_008_mellin_comp_rpow\",\n    \"source\": \"active_corpus_family_hint\",\n    \"source_file\": \"/tmp/rung1/mcb_expand100/files/mcb_8_mellin_comp_rpow.lean\"\n  },\n  {\n    \"corpus_path\": \"analytics/public/leanmill/leansearch/LEANSEARCH_MCB_REMAINING_QUEUE.json\",\n    \"goal\": \"integral_convolution Type uE' NormedAddCommGroup RCLike NormedSpace MeasurableSpace Measure \\u2192L[\\ud835\\udd5c CompleteSpace AddGroup SFinite \\u03bc.IsAddRightInvariant MeasurableAdd\\u2082 MeasurableNeg Comple\",\n    \"row_id\": \"MCB_006_integral_convolution\",\n    \"source\": \"active_corpus_family_hint\",\n    \"source_file\": \"Mathlib/Analysis/Convolution.lean\"\n  }\n]\n",
+    "work_id": "external_source_scout:zpow_covering_subtype_transport_planner:claude:claude_spectral_sourcing_2026_05_28"
+  },
+  "validation": {
+    "agent_launched": true,
+    "agent_output_lint": {
+      "failure_count": 0,
+      "failures": [],
+      "schema": "leanmill-agent-output-lint-v1",
+      "status": "pass"
+    },
+    "api_llm_call": false,
+    "failure_count": 0,
+    "failures": [],
+    "non_allowed_repo_mutation_count": 0,
+    "non_allowed_repo_mutations": [],
+    "operator_contract_lane": false,
+    "output_path": "analytics/public/leanmill/dashboard_data/agent_repair_outputs/external_source_scout_zpow_covering_subtype_transport_planner_claude_claude_spectral_sourcing_2026_05_28_claude_92939b3d5a68.txt",
+    "returncode": 0,
+    "runtime": "claude",
+    "schema": "leanmill-agent-repair-task-contract-v1",
+    "session_id": "77cc5381-4692-4f99-92c6-a3bd2962ebc5",
+    "session_state_path": "analytics/public/leanmill/dashboard_data/subscription_agent_sessions/claude_leanmill_claude_external_source_scout.json",
+    "status": "pass",
+    "subscription_mode": true,
+    "usage_estimate": {
+      "agent_id": "leanmill_claude_external_source_scout",
+      "api_llm_call": false,
+      "claim_kinds": [
+        "source_scout_task"
+      ],
+      "cost_usd": 0.0,
+      "estimated_output_tokens": 1713,
+      "estimated_prompt_tokens": 2697,
+      "estimated_total_tokens": 4410,
+      "expected_exit": "source_request",
+      "family": "zpow_covering_subtype_transport_planner",
+      "final_session_id": "77cc5381-4692-4f99-92c6-a3bd2962ebc5",
+      "finished_at_epoch": 1780004268,
+      "initial_session_id": "77cc5381-4692-4f99-92c6-a3bd2962ebc5",
+      "model": "claude_subscription_cli",
+      "note": "Character-based estimate for subscription CLI health across warm-agent lanes; provider usage accounting is not available through this worker.",
+      "output_chars": 6849,
+      "payload_requested_timeout_s": 1200,
+      "payload_timeout_downgrade_ignored": true,
+      "prompt_chars": 10787,
+      "runtime": "claude",
+      "schema": "leanmill-subscription-agent-usage-estimate-v2",
+      "source_scout_mode": true,
+      "started_at_epoch": 1780004182,
+      "station": "source_qualification",
+      "stderr_chars": 0,
+      "stdout_chars": 6849,
+      "subscription_mode": true,
+      "task_kind": "source_scout_task",
+      "timeout_s": 1800,
+      "wall_time_s": 86,
+      "warm_session_requested": true,
+      "warm_session_reused": false,
+      "work_id": "external_source_scout:zpow_covering_subtype_transport_planner:claude:claude_spectral_sourcing_2026_05_28",
+      "worker_id": "claude_spectral_scout_drain_2026_05_28",
+      "worker_policy_timeout_s": 1800
+    },
+    "warm_session_used": false
+  },
+  "work_id": "external_source_scout:zpow_covering_subtype_transport_planner:claude:claude_spectral_sourcing_2026_05_28"
+}

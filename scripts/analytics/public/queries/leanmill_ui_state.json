@@ -1,0 +1,21 @@
+{
+  "schema": "leanmill-ui-state-v1",
+  "generated_at": "2026-05-29T16:47:16.118032+00:00",
+  "lane_b": {
+    "available": false
+  },
+  "solver_lane": {
+    "available": false
+  },
+  "solver_attempts": {
+    "total_attempts": 0,
+    "distinct_rows": 0,
+    "closures": 0,
+    "by_provider": [],
+    "recent": []
+  },
+  "corpus_mandates": {
+    "available": false
+  },
+  "carrier_receipt_ledger_recent": []
+}

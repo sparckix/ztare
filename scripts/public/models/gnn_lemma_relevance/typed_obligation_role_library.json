@@ -1,0 +1,115 @@
+{
+  "version": "gnn_lemma_relevance_typed_obligation_role_library_2026_05_11",
+  "purpose": "General-purpose role algebra for theorem-workstation GNNs. Substrates instantiate this library with local vocabulary and obligation graphs; the ranker consumes typed obligations, not domain-specific endpoint names.",
+  "core_roles": {
+    "carrier": {
+      "definition": "The ambient mathematical object that must stay fixed or be transported explicitly.",
+      "generic_examples": ["type", "space", "measure", "manifold", "group", "module", "probability_space", "feasible_set"],
+      "ns_instance": ["spacetime carrier", "function space", "localized cylinder", "bad-center tree carrier"]
+    },
+    "index_or_scale": {
+      "definition": "The parameter controlling localization, truncation, filtration, degree, frequency, or iteration.",
+      "generic_examples": ["scale", "filtration_time", "degree", "dimension", "truncation_level", "regularization_parameter"],
+      "ns_instance": ["parabolic radius", "dyadic scale", "frequency lambda", "tree prefix"]
+    },
+    "incidence": {
+      "definition": "The relation saying two objects live in the same tree, diagram, sigma-algebra, support, or parent-child structure.",
+      "generic_examples": ["same diagram", "same sigma algebra", "same support", "same parent", "same face", "same chain"],
+      "ns_instance": ["same-tree event incidence", "bad node to Duhamel event incidence", "ancestor/child relation"]
+    },
+    "budget": {
+      "definition": "A finite resource that is consumed, dropped, charged, or preserved.",
+      "generic_examples": ["entropy", "norm bound", "moment", "measure loss", "rank", "descent amount", "multiplicity"],
+      "ns_instance": ["beta-square radius budget", "Duhamel event budget", "enstrophy reserve", "no-log-reuse ledger"]
+    },
+    "lock": {
+      "definition": "A same-carrier or same-context constraint preventing a proof object from silently moving to a different space.",
+      "generic_examples": ["same measure", "same chart", "same filtration", "same basis", "same support", "same domain codomain"],
+      "ns_instance": ["pressure/Duhamel same-carrier lock", "same event stream", "same bad-center tree"]
+    },
+    "freshness": {
+      "definition": "A condition that a resource/event/object is new rather than inherited or reused.",
+      "generic_examples": ["fresh witness", "new support", "unspent budget", "new scale", "new generator"],
+      "ns_instance": ["fresh frequency packet", "fresh Duhamel event", "non-inherited badness"]
+    },
+    "adapter": {
+      "definition": "A transport, coercion, restriction, projection, lifting, or constructor that repairs one obligation without asserting the endpoint.",
+      "generic_examples": ["transport", "restriction", "embedding", "projection", "localization", "monotonicity", "functoriality"],
+      "ns_instance": ["pressure-lock adapter", "bounded-fanout adapter", "same-tree prefix adapter"]
+    },
+    "guard": {
+      "definition": "A negative theorem, obstruction, endpoint echo, circular lemma, or non-applicability condition used as context rather than as a repair.",
+      "generic_examples": ["impossibility", "countermodel", "endpoint restatement", "wrong-carrier lemma", "circular adapter"],
+      "ns_instance": ["log-Minkowski obstruction", "event-per-node tautology guard", "classical r^2 charge guard"]
+    }
+  },
+  "edge_types": [
+    "uses",
+    "specializes",
+    "rewrites",
+    "transports_carrier",
+    "locks_same_carrier",
+    "moves_across_scale",
+    "creates_fresh_object",
+    "consumes_budget",
+    "splits_event",
+    "shares_tree_ancestor",
+    "discharges_side_condition",
+    "introduces_side_condition",
+    "blocks_by_guard",
+    "is_endpoint_shaped",
+    "is_adapter_shaped"
+  ],
+  "substrate_instances": {
+    "navier_stokes_same_tree": {
+      "carrier": "spacetime/function-space carrier",
+      "index_or_scale": "radius/frequency/tree-prefix",
+      "incidence": "same-tree bad-node/event incidence",
+      "budget": "beta-square radius and Duhamel/enstrophy event budget",
+      "lock": "pressure/Duhamel same-carrier lock",
+      "freshness": "fresh frequency packet, not inherited badness",
+      "adapter": "bounded fanout, pressure lock, prefix domination constructors",
+      "guard": "endpoint Carleson echo, event-per-node tautology, classical r^2 charge"
+    },
+    "probability_filtration": {
+      "carrier": "probability space and measure",
+      "index_or_scale": "filtration time or stopping time",
+      "incidence": "event membership in sigma algebra and adaptedness",
+      "budget": "moment, entropy, or tail-probability reserve",
+      "lock": "same measure and same filtration",
+      "freshness": "new stopping event or unspent tail split",
+      "adapter": "measurability transport, conditioning, restriction",
+      "guard": "wrong filtration, post-hoc stopping rule, union-bound double count"
+    },
+    "harmonic_analysis_tiles": {
+      "carrier": "function and measure space",
+      "index_or_scale": "dyadic scale, tile, or Littlewood-Paley index",
+      "incidence": "support overlap, tree, or tile relation",
+      "budget": "norm, summability, or logarithmic-loss reserve",
+      "lock": "same support/decomposition",
+      "freshness": "new packet/tile contribution",
+      "adapter": "interpolation, embedding, truncation, localization",
+      "guard": "endpoint interpolation echo or reused overlap budget"
+    },
+    "category_diagram": {
+      "carrier": "object, structure, universe, module, or group",
+      "index_or_scale": "degree, filtration, grading, or diagram level",
+      "incidence": "diagram edge, chain boundary, or naturality square",
+      "budget": "rank, finite generation, exactness, or dimension condition",
+      "lock": "same object under equivalence or same morphism domain-codomain",
+      "freshness": "new factorization or unspent universal property",
+      "adapter": "functoriality, naturality, coercion, isomorphism transport",
+      "guard": "wrong object, wrong universe, circular equivalence"
+    },
+    "optimization_projection": {
+      "carrier": "feasible set, vector space, topology, or constraint family",
+      "index_or_scale": "iteration, tolerance, or regularization parameter",
+      "incidence": "active constraint or primal-dual pairing",
+      "budget": "descent amount, Lipschitz reserve, error tolerance",
+      "lock": "same norm, same inner product, same constraint set",
+      "freshness": "new descent step or unspent slack",
+      "adapter": "projection lemma, duality lemma, subgradient transport",
+      "guard": "wrong norm, inactive constraint, reused descent"
+    }
+  }
+}

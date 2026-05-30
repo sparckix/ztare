@@ -1,0 +1,80 @@
+{
+  "payload": {
+    "agent_id": "leanmill_codex_post_probe_repair",
+    "allowed_paths": [
+      "analytics/public/leanmill",
+      "scripts/public/control",
+      "/tmp/rung1"
+    ],
+    "context": {
+      "exit_contract": {
+        "pair_count": 1,
+        "pairs": [
+          {
+            "closure_validity": "requires_matched_negative_control_expected_failure",
+            "paired_negative_packet_id": "zpow_covering_subtype_transport_planner:MCB_154_norm_dslope_le_div_of_mapsTo_bal:norm_dslope_le_div_of_mapsTo_ball_missing_mapsTo_bridge_negative_v1",
+            "positive_packet_id": "zpow_covering_subtype_transport_planner:MCB_154_norm_dslope_le_div_of_mapsTo_bal:norm_dslope_le_div_of_mapsTo_ball_positive_v1",
+            "unexpected_negative_control_pass_blocks_credit": true
+          }
+        ],
+        "proof_credit_authority": "governance_gate",
+        "schema": "leanmill-probe-exit-contract-v1"
+      },
+      "governance_summary": {
+        "closed_candidate_count": 0,
+        "examples": [],
+        "governance_reason_counts": {},
+        "missing_governance_count": 0,
+        "ratified_count": 0
+      },
+      "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_zpow_covering_subtype_transport_planner_MCB_154_norm_dslope_le_div_of_mapsTo_bal_1779567577.json",
+      "probe_lane": "family_spec",
+      "probe_work_id": "probe:family_spec:zpow_covering_subtype_transport_planner:MCB_154_norm_dslope_le_div_of_mapsTo_bal:1779567577",
+      "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_154_norm_dslope_le_div_of_mapsTo_bal_1779567577",
+      "scoreboard": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_154_norm_dslope_le_div_of_mapsTo_bal_1779567577/scoreboard.json",
+      "scoreboard_summary": {
+        "backend_artifact_reclassified_count": 0,
+        "cache_hit_count": 2,
+        "compile_candidate_count": 0,
+        "completed": 2,
+        "exact_gap_candidate_count": 0,
+        "negative_control_fail_count": 1,
+        "negative_control_unexpected_pass_count": 0,
+        "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_zpow_covering_subtype_transport_planner_MCB_154_norm_dslope_le_div_of_mapsTo_bal_1779567577.json",
+        "ratified_closure_count": 0,
+        "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_zpow_covering_subtype_transport_planner_MCB_154_norm_dslope_le_div_of_mapsTo_bal_1779567577",
+        "schema": "leanmill-repair-canary-scoreboard-v1",
+        "science_rule": "Only ratified closures score; compile-only goes to governance; negative-control pass is a failure.",
+        "score": 0,
+        "skipped": 0,
+        "tests_total": 2,
+        "warm_repl_inline": true
+      }
+    },
+    "expected_exit": "repaired_canary",
+    "family": "zpow_covering_subtype_transport_planner",
+    "max_iterations": 3,
+    "max_wall_time_s": 1200,
+    "negative_control": "Reuse or strengthen the probe exit_contract paired negative controls; a repair without a matched failing negative control is invalid.",
+    "proof_affecting": true,
+    "requires_negative_control": true,
+    "runtime": "codex",
+    "station": "proof_execution",
+    "task": "A family-spec proof probe finished with matched negative controls but no positive closure. Diagnose why the positive templates failed and emit one bounded next artifact: repaired_canary, exact_gap_candidate, valid_falsifier, or retired. Do not update scoreboards, registries, research logs, or governance receipts. Preserve the paired negative-control requirement; any repaired positive must still have a matched negative control that fails.",
+    "work_id": "post_probe_agent_repair:probe:family_spec:zpow_covering_subtype_transport_planner:MCB_154_norm_dslope_le_div_of_mapsTo_bal:1779567577"
+  },
+  "validation": {
+    "agent_launched": false,
+    "failure_count": 1,
+    "failures": [
+      {
+        "failure": "max_wall_time_exceeds_worker_budget",
+        "limit": 600,
+        "requested": 1200
+      }
+    ],
+    "schema": "leanmill-agent-repair-task-contract-v1",
+    "status": "fail"
+  },
+  "work_id": "post_probe_agent_repair:probe:family_spec:zpow_covering_subtype_transport_planner:MCB_154_norm_dslope_le_div_of_mapsTo_bal:1779567577"
+}

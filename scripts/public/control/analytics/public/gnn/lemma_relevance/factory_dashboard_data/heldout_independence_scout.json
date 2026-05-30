@@ -1,0 +1,28 @@
+{
+  "corpus_meta": [
+    {
+      "exists": false,
+      "path": "/tmp/rung1/mcb_refill_dedup_after_expand100/mcb_corpus.json",
+      "row_count": 0
+    },
+    {
+      "exists": false,
+      "path": "analytics/public/leanmill/leansearch/LEANSEARCH_MCB_REMAINING_QUEUE.json",
+      "row_count": 0
+    },
+    {
+      "exists": false,
+      "path": "analytics/public/leanmill/leansearch/LEANSEARCH_MCB_REMAINING_ROW_CONTEXT_FILTER.json",
+      "row_count": 0
+    }
+  ],
+  "eligible_family_count": 0,
+  "enqueued_gm_tasks": [],
+  "families": [],
+  "family_count": 0,
+  "generated_at_epoch": 1779998810,
+  "registry": "analytics/public/leanmill/dashboard_data/repair_family_registry.json",
+  "schema": "leanmill-heldout-independence-scout-v1",
+  "science_rule": "Scout results are eligibility hints only; validated-family promotion requires a passing heldout receipt and governance evidence.",
+  "spec_dir": "analytics/public/leanmill/repair_families"
+}

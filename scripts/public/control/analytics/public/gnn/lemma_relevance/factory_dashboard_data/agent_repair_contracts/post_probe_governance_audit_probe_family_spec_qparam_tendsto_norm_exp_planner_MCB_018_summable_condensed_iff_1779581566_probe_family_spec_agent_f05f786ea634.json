@@ -1,0 +1,100 @@
+{
+  "payload": {
+    "agent_id": "leanmill_codex_governance_audit_residual",
+    "allowed_paths": [
+      "scripts/public/control/authoritative_axioms.py",
+      "scripts/public/control/leanmill/search/repair_canary_drain.py",
+      "scripts/public/control/leanmill/post_probe_triage.py",
+      "/tmp/rung1"
+    ],
+    "context": {
+      "credit_boundary": "no proof credit unless a future probe receives governance verdict closure",
+      "exit_contract": {
+        "pair_count": 1,
+        "pairs": [
+          {
+            "closure_validity": "requires_matched_negative_control_expected_failure",
+            "paired_negative_packet_id": "qparam_tendsto_norm_exp_planner:MCB_018_summable_condensed_iff:summable_condensed_iff_missing_condensation_bridge_negative_v1",
+            "positive_packet_id": "qparam_tendsto_norm_exp_planner:MCB_018_summable_condensed_iff:summable_condensed_iff_positive_v1",
+            "unexpected_negative_control_pass_blocks_credit": true
+          }
+        ],
+        "proof_credit_authority": "governance_gate",
+        "schema": "leanmill-probe-exit-contract-v1"
+      },
+      "governance_summary": {
+        "closed_candidate_count": 1,
+        "examples": [
+          {
+            "action_family": "manual_extra",
+            "candidate": "summable_condensed_iff_positive_v1",
+            "governance": {
+              "axioms_deps": [
+                "Function expected at\n  Ico\nbut this term has type\n  ?m.3\n\nNote: Expected a function because this term is being applied t",
+                "Function expected at\n  f\nbut this term has type\n  ?m.1\n\nNote: Expected a function because this term is being applied to ",
+                "Function expected at\n  range\nbut this term has type\n  ?m.4\n\nNote: Expected a function because this term is being applied"
+              ],
+              "persisted": null,
+              "reason": "injected_audit_errors",
+              "verdict": "unverified",
+              "verified_by": "authoritative_axioms.govern (in-module injected collectAxioms; no de-module)"
+            },
+            "row_result_path": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec/rows/0001_MCB_018_summable_condensed_iff.json"
+          }
+        ],
+        "governance_reason_counts": {
+          "injected_audit_errors": 1
+        },
+        "missing_governance_count": 0,
+        "ratified_count": 0
+      },
+      "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec.json",
+      "probe_lane": "family_spec",
+      "probe_work_id": "probe:family_spec:qparam_tendsto_norm_exp_planner:MCB_018_summable_condensed_iff:1779581566_probe_family_spec",
+      "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec",
+      "scoreboard": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec/scoreboard.json",
+      "scoreboard_summary": {
+        "backend_artifact_reclassified_count": 0,
+        "cache_hit_count": 0,
+        "compile_candidate_count": 1,
+        "completed": 2,
+        "exact_gap_candidate_count": 0,
+        "negative_control_fail_count": 1,
+        "negative_control_unexpected_pass_count": 0,
+        "packet": "analytics/public/leanmill/dashboard_data/queued_learning_work/family_spec_probe_packet_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec.json",
+        "ratified_closure_count": 0,
+        "root": "/tmp/rung1/leanmill_24x7_learning/family_spec_probe_qparam_tendsto_norm_exp_planner_MCB_018_summable_condensed_iff_1779581566_probe_family_spec",
+        "schema": "leanmill-repair-canary-scoreboard-v1",
+        "science_rule": "Only ratified closures score; compile-only goes to governance; negative-control pass is a failure.",
+        "score": 0,
+        "skipped": 0,
+        "tests_total": 2,
+        "warm_repl_inline": true
+      }
+    },
+    "expected_exit": "governance_audit_residual",
+    "family": "qparam_tendsto_norm_exp_planner",
+    "max_iterations": 3,
+    "max_wall_time_s": 1200,
+    "proof_affecting": false,
+    "requires_negative_control": false,
+    "runtime": "codex",
+    "station": "governance_gate",
+    "task": "A compile-positive family-spec probe was refused by governance. Do not treat this as a template no-signal case and do not claim proof value. Diagnose the governance audit refusal and emit one bounded artifact: governance_audit_residual, operator_required, retired, exact_gap_candidate, or valid_falsifier. If the verifier is correct, explain the typed rejection/residual. If the verifier is broken, propose the minimal code fix plus self-test; do not edit scoreboards, registries, research logs, or governance receipts.",
+    "work_id": "post_probe_governance_audit:probe:family_spec:qparam_tendsto_norm_exp_planner:MCB_018_summable_condensed_iff:1779581566_probe_family_spec"
+  },
+  "validation": {
+    "agent_launched": false,
+    "failure_count": 1,
+    "failures": [
+      {
+        "failure": "max_wall_time_exceeds_worker_budget",
+        "limit": 600,
+        "requested": 1200
+      }
+    ],
+    "schema": "leanmill-agent-repair-task-contract-v1",
+    "status": "fail"
+  },
+  "work_id": "post_probe_governance_audit:probe:family_spec:qparam_tendsto_norm_exp_planner:MCB_018_summable_condensed_iff:1779581566_probe_family_spec"
+}

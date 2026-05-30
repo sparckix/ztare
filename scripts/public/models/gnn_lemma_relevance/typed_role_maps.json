@@ -1,0 +1,108 @@
+{
+  "version": "gnn_lemma_relevance_typed_role_maps_2026_05_11",
+  "default_map": "ns_same_tree_event_incidence",
+  "maps": {
+    "ns_same_tree_event_incidence": {
+      "description": "Typed proof/PDE role map for the Navier-Stokes same-tree event-incidence search. This is the first stress-test instance, not the whole GNN contract.",
+      "role_needles": {
+        "carrier_selection": ["Carrier", "Selection", "selected", "Center", "SelectedBadNode", "selectedBadNode", "BadNode"],
+        "scale_truncation": ["ScaleTruncation", "RadiusCutoff", "Prefix", "Cutoff"],
+        "same_tree_incidence": ["SameTree", "Incidence", "Nonadaptive", "EventNode"],
+        "duhamel_budget": ["Duhamel", "duhamel", "HeatKernelForcing", "heatKernelForcing", "Bernstein", "IndependentEventBudget", "EventBudget"],
+        "pressure_lock": ["Pressure", "SameReserve", "Leakage", "SameCarrier"],
+        "beta_payment": ["Beta", "beta", "Gain", "WeightedSquare"],
+        "bounded_fanout": ["Fanout", "Multiplicity", "Overlap", "NoLogReuse"],
+        "flat_skeleton": ["Flat", "Skeleton", "Reifenberg", "Rectifiable", "NoNeck"],
+        "fresh_packet": ["Fresh", "Packet", "ComparableFrequency", "Frequency"],
+        "endpoint_or_final": ["Carleson", "CodimFour", "Endpoint", "Final", "RadiusCharging"],
+        "guard_or_negative": ["DoesNot", "Blocks", "Cannot", "Not", "Guard", "Obstruction"],
+        "constructor_adapter": [".of", "_of", "toSameTree", "ofFresh", "ofDuhamel", "ofHeatKernelForcing", "ofEvent"]
+      },
+      "required_roles": [
+        "carrier_selection",
+        "scale_truncation",
+        "same_tree_incidence",
+        "duhamel_budget",
+        "pressure_lock",
+        "beta_payment",
+        "bounded_fanout",
+        "flat_skeleton",
+        "fresh_packet"
+      ],
+      "must_not_collapse": [
+        ["carrier_selection", "endpoint_or_final"],
+        ["duhamel_budget", "beta_payment"],
+        ["pressure_lock", "duhamel_budget"],
+        ["flat_skeleton", "beta_payment"],
+        ["bounded_fanout", "same_tree_incidence"]
+      ],
+      "role_to_graph_tag": {
+        "pressure_lock": "pressure_duhamel_lock",
+        "bounded_fanout": "bounded_fanout",
+        "fresh_packet": "fresh_packet_creation",
+        "duhamel_budget": "independent_budget",
+        "same_tree_incidence": "same_tree",
+        "scale_truncation": "prefix_cofinality",
+        "beta_payment": "beta_payment",
+        "flat_skeleton": "flat_escape"
+      },
+      "core_role_projection": {
+        "carrier_selection": ["carrier"],
+        "scale_truncation": ["index_or_scale"],
+        "same_tree_incidence": ["incidence"],
+        "duhamel_budget": ["budget"],
+        "pressure_lock": ["lock"],
+        "beta_payment": ["budget"],
+        "bounded_fanout": ["incidence", "budget"],
+        "flat_skeleton": ["carrier", "guard"],
+        "fresh_packet": ["freshness"],
+        "endpoint_or_final": ["guard"],
+        "guard_or_negative": ["guard"],
+        "constructor_adapter": ["adapter"]
+      }
+    },
+    "generic_theorem_workstation_seed": {
+      "description": "Substrate-agnostic seed roles. A future substrate should copy this map and replace the needles/required_roles with its own obligation graph roles before training or promotion.",
+      "role_needles": {
+        "carrier_or_object": ["Carrier", "Object", "Selection", "Witness", "Selected", "Node"],
+        "localization_or_truncation": ["Local", "Truncation", "Prefix", "Cutoff", "Scale"],
+        "incidence_or_dependency": ["Incidence", "Dependency", "Nonadaptive", "Graph"],
+        "budget_or_potential": ["Budget", "Potential", "Drop", "Measure", "Price", "Reserve"],
+        "error_or_obstruction_lock": ["Error", "Leakage", "Lock", "SameCarrier", "Guard"],
+        "payment_or_gain": ["Gain", "Payment", "Charge", "Weighted"],
+        "multiplicity_or_overlap": ["Multiplicity", "Overlap", "Fanout", "Packing"],
+        "flat_or_degenerate_escape": ["Flat", "Degenerate", "Skeleton", "NoNeck"],
+        "endpoint_or_final": ["Endpoint", "Final", "Carleson", "Closure"],
+        "constructor_adapter": [".of", "_of", "to", "Bridge", "Adapter"]
+      },
+      "required_roles": [
+        "carrier_or_object",
+        "localization_or_truncation",
+        "incidence_or_dependency",
+        "budget_or_potential",
+        "error_or_obstruction_lock",
+        "payment_or_gain",
+        "multiplicity_or_overlap"
+      ],
+      "must_not_collapse": [
+        ["carrier_or_object", "endpoint_or_final"],
+        ["budget_or_potential", "payment_or_gain"],
+        ["error_or_obstruction_lock", "budget_or_potential"],
+        ["multiplicity_or_overlap", "incidence_or_dependency"]
+      ],
+      "role_to_graph_tag": {},
+      "core_role_projection": {
+        "carrier_or_object": ["carrier"],
+        "localization_or_truncation": ["index_or_scale"],
+        "incidence_or_dependency": ["incidence"],
+        "budget_or_potential": ["budget"],
+        "error_or_obstruction_lock": ["lock", "guard"],
+        "payment_or_gain": ["budget"],
+        "multiplicity_or_overlap": ["incidence", "budget"],
+        "flat_or_degenerate_escape": ["carrier", "guard"],
+        "endpoint_or_final": ["guard"],
+        "constructor_adapter": ["adapter"]
+      }
+    }
+  }
+}

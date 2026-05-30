@@ -1,0 +1,11 @@
+{
+  "name": "dimensional_violation_demo",
+  "target": "demonstrate_buckingham_pi_failure",
+  "parametric_form": "c0 * exp(velocity_m_per_s)",
+  "init_ranges": {"c0": [0.1, 10]},
+  "feature_dimensions": {"velocity_m_per_s": "velocity"},
+  "algebraic_constraints": [],
+  "pre_translation_expression": null,
+  "post_translation_lean_statement": null,
+  "simulation": null
+}

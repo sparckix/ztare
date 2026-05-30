@@ -1,0 +1,11 @@
+{
+  "agent_id": "leanmill_claude_external_source_scout",
+  "is_new": false,
+  "last_used_at_epoch": 1780004268,
+  "policy": "session_warm_resume_if_supported",
+  "runtime": "claude",
+  "schema": "leanmill-subscription-agent-session-v1",
+  "session_id": "77cc5381-4692-4f99-92c6-a3bd2962ebc5",
+  "started_at_epoch": 1780004182,
+  "tick_count": 1
+}
