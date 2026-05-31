@@ -53,10 +53,12 @@ and `research_areas/insights_ledger.md`. *Snapshot, mid-May 2026:*
 - **Recursive gain was real, then plateaued.** Contextualized insight
   density rose then flattened (a plateau, not an exponential; in-system
   rubric, so reported with that caveat).
-- **Triple-digit ratified catches across dozens of categories.** The
-  discipline demoted this project's own measurement instrument
-  mid-cycle (a mis-selected rater) and the demotion is recorded next to
-  the original claim.
+- **Triple-digit ratified catches across dozens of categories — self-reported,
+  in-system.** This is the apparatus auditing itself, not externally verified.
+  The catch ledger's own integrity validator was found dead for weeks and
+  resurrected (surfacing ~300 integrity errors to remediate), and a mis-selected
+  rater was demoted mid-cycle — both recorded next to the original claims. Treat
+  the count as an internal signal, not a validated benchmark.
 
 Single operator, N=1, non-expert. Nothing here claims a solved
 Millennium problem, an autonomous research engine, or a general law. The
@@ -122,8 +124,9 @@ tests claims, ZTARE Research Co dogfoods the operating model, and case studies
 supply hard substrates with explicit evidence boundaries.
 
 The original LLM-gaming work is one important subset of the project. It is not
-the whole project. The larger object is a disciplined research operating system:
-claims move through evidence, tests, gates, ledgers, and accountable roles.
+the whole project. The larger object is a disciplined research operating model —
+for one operator, not a productized platform: claims move through evidence,
+tests, gates, ledgers, and accountable roles.
 
 ---
 

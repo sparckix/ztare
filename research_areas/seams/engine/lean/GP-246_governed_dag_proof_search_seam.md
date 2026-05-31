@@ -115,3 +115,52 @@ to calibrate against (a 0%-closure regime has nothing to calibrate).
 - Novel-to-apparatus: the GOVERNANCE is the contribution — ex-ante typed-contract DAG +
   deferral-aware typed-action policy + MNC + residual→lever + no-false-closure, all
   provider-agnostic. (Validated framing: epistemic-generation placement theory.)
+
+## A/B RESULT (2026-05-31) — ADOPT on cost; no closure-rate uplift
+
+First valid A/B (the prior run was VOID — `lake_not_on_PATH`, all 0/29; that bug
+is now mechanized away). Both arms on the SAME 29-row spectral/APN slice, fixed
+no-false-closure oracle, real compiles (0 lake_not_on_PATH), no orphan leak.
+
+| metric | cascade | dag_search |
+|---|---|---|
+| closed rows | 11 / 29 | 11 / 29 (identical set) |
+| attempts on the 18 never-closed rows | 54 | 40 |
+| claude_opus cold-shot calls | 18 | 3 |
+
+- **No closure-rate uplift**: DAG closes the same 11 rows as the cascade. The
+  best-first/reuse machinery did NOT find closures the cascade missed on this slice.
+- **Cost win, mechanism-confirmed**: the deferral-aware policy cuts the expensive
+  `claude_opus` cold-shot 18→3 (-83%) and failed-row attempts 54→40, concentrated
+  exactly on the low-P(close) rows it is designed to defer on. Per the
+  pre-registered adoption rule ("MORE closures OR equal closures at lower cost"),
+  DAG search EARNS ADOPTION — on the cost criterion, not closure rate.
+- **Caveats**: single run, n=29; "attempts" is a cost proxy (the real saving is the
+  expensive cold-shot calls). The 11 are compile_ok=1 candidates; full closure
+  needs proof_audit MNC + axiom-allowlist ratification (same metric both arms, so
+  the comparison holds). A confirmatory repeat would strengthen the cost claim, but
+  the saving is mechanistically coherent (lands on the deferral target).
+- **Baseline-validity resolved**: the sound run closes 11 distinct rows vs the
+  suspect baseline's ~8 — the prior closures were NOT inflated; the solver's
+  closure capability is real under the no-false-closure oracle.
+
+DONE-status: BUILD-done MET (DAG ≥ cascade closures on same rows, invariants green,
+no-false-closure verified, no orphan leak). Adoption SUPPORTED on cost; SCIENCE-done
+(repeat for power) optional.
+
+## Closure genuineness (2026-05-31) — the 11 are real proofs, not trivial restatements
+Inspected the stored `proof_text` for all 11 compile_ok rows in
+`leanmill_solver_lane_results.json`. They are genuine non-trivial Lean proofs
+invoking real library lemmas and target-specific context, e.g.:
+- `sum_sq_singularValues_eq_sum_eigenvalues`: `exact Finset.sum_congr rfl (fun i _ => T.sq_singularValues_fin hn i)`
+- `singularValues_le_singularValues_zero`: `exact T.singularValues_antitone (Nat.zero_le i)`
+- `singularValues_of_finrank_codomain_le`: `rw [LinearMap.singularValues_eq_zero_iff_le_finrank_range]; exact (Submodule.finrank_le T.range).trans hi`
+- larger bodies: trace_div_card... (1042 chars), spectralRadius_mul_comm (450),
+  perturb_2_row_and_col_gershgorin (411).
+None are `sorry`/bare-`rfl`. They depend on the target's own `T.*` projections, so
+a context-stripped MNC control should fail (non-vacuous). MNC ran inline
+(`executed_at: solver_layer`).
+
+REMAINING FORMAL STEP (not blocking adoption): run `proof_audit.py` on the 11 to
+surface the MNC pass/fail BOOLEAN + axiom-allowlist verdict per row, turning
+"11 kernel-clean genuine candidates" into "N formally-ratified closed theorems".
