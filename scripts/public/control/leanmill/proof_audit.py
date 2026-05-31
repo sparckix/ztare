@@ -44,6 +44,7 @@ from ztare.gates.lean_compile_primitives import (  # noqa: E402
     run_lake_compile as _canonical_run_lake_compile,
     run_lake_compile_source as _canonical_run_lake_compile_source,
     probe_axioms_via_augment as _canonical_probe_axioms_via_augment,
+    run_lake_subprocess as _run_lake_subprocess,
 )
 
 
@@ -255,6 +256,11 @@ def audit_l3(
                     # a blocker (2026-05-30 fix; ATLAS/APN audits showed the suspect-only
                     # rule false-flagged real proofs).
                     "confirmed": bool(paraphrase.get("trivial_restatement") and corpus.get("in_mathlib")),
+                    # SEV1-C: a trivial restatement of a lemma the (partial/NS-specific)
+                    # corpus index can't confirm must NOT pass silently — surface it for
+                    # review rather than fail-open (Lane-B foreign Mathlib coverage gap, #11).
+                    "uncorroborated_trivial": bool(paraphrase.get("trivial_restatement")
+                                                   and not corpus.get("in_mathlib")),
                     "advisory": bool(paraphrase.get("gold_name_verbatim_suspect")
                                      and not paraphrase.get("trivial_restatement")
                                      and corpus.get("in_mathlib")),
@@ -268,6 +274,9 @@ def audit_l3(
 
         if row["paraphrase"]["confirmed"]:
             confirmed_blockers.append({"name": decl.name, "class": "gold_name_verbatim_confirmed"})
+        elif row["paraphrase"]["uncorroborated_trivial"]:
+            review_flags.append({"name": decl.name,
+                                 "class": "gold_name_verbatim_uncorroborated_restatement"})
         elif row["paraphrase"]["advisory"]:
             review_flags.append({"name": decl.name, "class": "gold_name_verbatim_library_close_advisory"})
         if bool(preflight.get("vacuity_suspected")):
@@ -351,12 +360,9 @@ def _probe_axioms(target: Path, source: str, lean_root: Path, *, timeout_s: int)
         probe = Path(td) / target.name
         probe.write_text(augmented, encoding="utf-8")
         try:
-            proc = subprocess.run(
-                ["lake", "env", "lean", str(probe)],
-                cwd=str(lean_root), text=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                timeout=timeout_s, check=False,
-            )
+            # SEV2-E: group-killed drop-in so the `lean` child is not orphaned on timeout.
+            proc = _run_lake_subprocess(
+                ["lake", "env", "lean", str(probe)], str(lean_root), timeout_s=timeout_s)
             output = (proc.stdout or "") + "\n" + (proc.stderr or "")
             return parse_axiom_output(output), output[-1500:]
         except subprocess.TimeoutExpired:
@@ -372,8 +378,22 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     static = _static_counts(source)
     axiom_map = compile_receipt.get("axioms") if isinstance(compile_receipt.get("axioms"), dict) else {}
     axiom_probe_tail = ""
-    if bool(compile_receipt.get("ok")) and not axiom_map:
-        axiom_map, axiom_probe_tail = _probe_axioms(target, source, lean_root, timeout_s=args.timeout_s)
+    # SEV2-D: probe when the native axiom map misses ANY declared theorem/lemma — not
+    # only when it is entirely empty. A partial native map otherwise leaves the real
+    # theorem's axioms unaudited (only a clean helper covered) while reporting
+    # allowlist_ok. Probe covers all decls; merge fills the uncovered ones.
+    # Reconcile short (as-written, under an open namespace) decl names against the
+    # FULLY-QUALIFIED keys Lean prints (re-review SEV2-D: short-vs-qualified mismatch
+    # otherwise marked every namespaced file "uncovered" and forced a redundant
+    # full re-probe compile every run). A decl is covered if its name OR its tail
+    # matches a covered key's tail.
+    _covered = set(axiom_map.keys())
+    _covered_tails = {k.rsplit(".", 1)[-1] for k in _covered}
+    _missing = {d.name for d in extract_declarations(source)
+                if d.name not in _covered and d.name.rsplit(".", 1)[-1] not in _covered_tails}
+    if bool(compile_receipt.get("ok")) and _missing:
+        probe_map, axiom_probe_tail = _probe_axioms(target, source, lean_root, timeout_s=args.timeout_s)
+        axiom_map = {**axiom_map, **probe_map}
         compile_receipt = {**compile_receipt, "axioms": axiom_map, "axiom_probe_output_tail": axiom_probe_tail}
     disallowed_axioms = {
         name: [ax for ax in axioms if ax not in set(allowed_axioms)]

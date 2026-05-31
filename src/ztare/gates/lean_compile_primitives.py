@@ -95,13 +95,18 @@ _BARE_ERROR_RE = re.compile(r"(?m)^\s*error:")
 def _is_compile_ok(rc: "int | None", output: str) -> bool:
     """Single compile oracle. A clean compile requires exit 0 AND no error
     line (positional OR bare/non-positional) AND no `sorry` warning. Lean
-    emits "declaration uses 'sorry'" as a WARNING with exit 0, so a
-    sorry-backed proof would otherwise read as a clean compile — fail it."""
+    emits ``declaration uses `sorry``` (BACKTICKS, not straight quotes) as a
+    WARNING with exit 0, so a sorry-backed proof would otherwise read as a
+    clean compile — fail it. `admit` produces the same warning. We match the
+    quote-agnostic forms plus the bare phrase and `sorryAx` so the oracle is
+    robust to Lean's quoting and to #print-axioms output."""
     if rc != 0:
         return False
     if LEAN_ERROR_RE.search(output) or _BARE_ERROR_RE.search(output):
         return False
-    if "uses 'sorry'" in output:
+    if re.search(r"uses [`'\"]sorry[`'\"]", output) or "declaration uses" in output:
+        return False
+    if "sorryAx" in output:
         return False
     return True
 

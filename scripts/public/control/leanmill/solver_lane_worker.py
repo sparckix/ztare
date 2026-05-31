@@ -393,7 +393,7 @@ from ztare.leanmill.solver.contract import (  # noqa: E402
 # allows. solve() passes gate=None by default → behavior-preserving.
 from ztare.leanmill.solver.deterministic import run_deterministic_layer  # noqa: E402
 from ztare.leanmill.solver.llm_provers import run_llm_layers  # noqa: E402
-from ztare.gates.lean_compile_primitives import run_lake_subprocess  # noqa: E402
+from ztare.gates.lean_compile_primitives import run_lake_subprocess, _is_compile_ok  # noqa: E402
 
 
 def _source_cue_check(row: dict) -> dict:
@@ -812,7 +812,11 @@ def _warm_agent_solve(row: dict, lean_root: Path, timeout_s: int) -> tuple[bool,
             str(lean_root), timeout_s=timeout_s,
         )
         output = (proc.stdout or "") + "\n" + (proc.stderr or "")
-        kernel_ok = proc.returncode == 0 and "error:" not in output
+        # _is_compile_ok rejects sorry/admit/bare-error: `lake env lean` exits 0 on a
+        # `sorry` (it's a warning), so the old `rc==0 and "error:" not in output` minted
+        # FALSE `closed` verdicts for abandoned-with-sorry rows into the governance ledger
+        # (caught by the 2-row smoke 2026-05-30). Use the hardened oracle.
+        kernel_ok = _is_compile_ok(proc.returncode, output)
         tail = (
             f"[agent stdout tail]\n{stdout[-400:]}\n"
             f"[kernel verify exit={proc.returncode}]\n{output[-600:]}"
@@ -856,7 +860,9 @@ def _verify_compile(row_id: str, goal_text: str, proof_text: str,
                 str(lean_root), timeout_s=timeout_s,
             )
             output = (proc.stdout or "") + "\n" + (proc.stderr or "")
-            kernel_ok = proc.returncode == 0 and "error:" not in output
+            # _is_compile_ok rejects sorry/admit/bare-error (sorry exits 0 as a warning) —
+            # the 2-row smoke (2026-05-30) caught the old check minting FALSE `closed` on sorry.
+            kernel_ok = _is_compile_ok(proc.returncode, output)
             return kernel_ok, output[-800:]
     except subprocess.TimeoutExpired:
         return False, "verify_compile_timeout"
@@ -990,7 +996,118 @@ def _policy_fallbacks() -> list[str]:
     return list(lane.get("provider_fallbacks") or [])
 
 
-def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300) -> dict:
+def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
+                           verify_timeout: int, provider: str, fallbacks: list[str],
+                           invoke_with_routing, providers_tried: list[dict]):
+    """Bind a GP-246 `move_runner` to the worker's REAL move generators.
+
+    The returned callable takes (DagNode, move_kind, budget) and:
+      1. runs the corresponding worker move (native_hammer / warm agent /
+         cold-shot fan-out / frontier slot),
+      2. governs the emitted proof through the EXISTING `_validate_against_contract`
+         (kernel-compile receipt + matched-negative-control receipt; reuses
+         `_is_compile_ok` via `_verify_compile` / `_warm_agent_solve`),
+      3. returns a typed MoveResult whose `kernel_clean` / `mnc_passed` are read
+         straight off the governance receipts — the search NEVER self-credits.
+
+    This is the proposes/ratifies boundary: the runner ratifies, the search records.
+    """
+    from ztare.leanmill.solver.governed_dag_search import (
+        MoveResult, MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM, MOVE_COLD_SHOT, MOVE_FRONTIER,
+    )
+
+    target_name = r.get("target_theorem_name") or ""
+
+    def _govern(proof_text: str, compile_ok: bool, compile_tail: str) -> tuple[bool, bool]:
+        """Run the existing contract validation; return (kernel_clean, mnc_passed)."""
+        if not compile_ok or not proof_text.strip():
+            return False, False
+        validation = _validate_against_contract(
+            contract=contract, proof_text=proof_text, enriched_goal=enriched_goal,
+            target_name=target_name, lean_root=DEFAULT_LEAN_ROOT_FOR_VERIFY,
+            timeout_s=verify_timeout, kernel_compile_ok=compile_ok,
+            kernel_compile_tail=compile_tail,
+        )
+        kc = validation["receipts"]["kernel_compile_receipt"]["passed"]
+        mnc = validation["receipts"]["matched_negative_control_receipt"]["passed"]
+        return bool(kc), bool(mnc)
+
+    def move_runner(node, move, budget):
+        start = time.time()
+        if move == MOVE_NATIVE_HAMMER:
+            ok, proof, tail = _native_hammer_probe(
+                r, DEFAULT_LEAN_ROOT_FOR_VERIFY, min(180, verify_timeout),
+            )
+            proof_text = f"by {proof}" if proof else ""
+            kc, mnc = _govern(proof_text, ok, tail) if ok else (False, False)
+            _record_attempt(r["row_id"], "native_hammer",
+                            "closed" if (kc and mnc) else "failed_compile", kc and mnc, tail)
+            providers_tried.append({"provider": "native_hammer",
+                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "node_id": node.node_id, "move": move,
+                                    "agent_kind": "native_hammer_cascade"})
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              proof_text=proof_text, tail=(tail or "")[-300:],
+                              wallclock_s=round(time.time() - start, 2))
+        if move == MOVE_CLAUDE_WARM:
+            ok, proof_text, tail = _warm_agent_solve(
+                r, DEFAULT_LEAN_ROOT_FOR_VERIFY, max(180, verify_timeout * 2),
+            )
+            kc, mnc = _govern(proof_text, ok, tail) if ok else (False, False)
+            _record_attempt(r["row_id"], "claude_opus_warm",
+                            "closed" if (kc and mnc) else "failed_compile", kc and mnc, tail)
+            providers_tried.append({"provider": "claude_opus_warm",
+                                    "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                    "compile_ok": kc, "mnc_passed": mnc,
+                                    "node_id": node.node_id, "move": move,
+                                    "agent_kind": "warm_agent"})
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              proof_text=proof_text, tail=(tail or "")[-300:],
+                              wallclock_s=round(time.time() - start, 2))
+        if move in (MOVE_COLD_SHOT, MOVE_FRONTIER):
+            # Cold-shot fan-out across preferred + fallbacks. The frontier slot is
+            # provider-agnostic: a lab prover registered in the chain plugs in here
+            # as one more provider; governance is identical.
+            chain = [provider] + [f for f in fallbacks if f != provider]
+            best = None
+            for prov_name in chain:
+                decision = invoke_with_routing(
+                    enriched_goal or node.goal_text, preferred=prov_name,
+                    fallbacks=[], timeout_s=verify_timeout,
+                )
+                res = decision.result
+                proof_text = (res.proof_text if res else None) or ""
+                compile_ok, compile_tail = (False, "no provider proof")
+                if res is not None and res.ok and proof_text.strip():
+                    compile_ok, compile_tail = _verify_compile(
+                        r["row_id"], enriched_goal or node.goal_text, proof_text,
+                        DEFAULT_LEAN_ROOT_FOR_VERIFY, verify_timeout,
+                    )
+                kc, mnc = _govern(proof_text, compile_ok, compile_tail) if compile_ok else (False, False)
+                label = decision.chosen_provider or prov_name
+                _record_attempt(r["row_id"], label,
+                                "closed" if (kc and mnc) else ("failed_compile" if (res and res.ok) else "failed"),
+                                kc and mnc, compile_tail)
+                providers_tried.append({"provider": label,
+                                        "outcome": "closed" if (kc and mnc) else "failed_compile",
+                                        "compile_ok": kc, "mnc_passed": mnc,
+                                        "node_id": node.node_id, "move": move})
+                best = (proof_text, kc, mnc, compile_tail)
+                if kc and mnc:
+                    break
+            proof_text, kc, mnc, compile_tail = best or ("", False, False, "")
+            return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
+                              proof_text=proof_text, tail=(compile_tail or "")[-300:],
+                              wallclock_s=round(time.time() - start, 2))
+        return MoveResult(move=move, kernel_clean=False, mnc_passed=False,
+                          tail=f"unknown move {move}")
+
+    return move_runner
+
+
+def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
+          mode: str = "cascade") -> dict:
     # Routing: invoke via ztare.leanmill.providers.router.invoke_with_routing,
     # which honors per-node capability detection and the policy fallback chain
     # (operations.solver_lane.provider_fallbacks). Hard node failures
@@ -1056,6 +1173,55 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300) -> dic
             verify_timeout = max(60, timeout_s // 2)
             providers_tried: list[dict] = []
             final = None
+
+            # ── GP-246 governed DAG proof-search (additive, opt-in via --mode
+            # dag_search). The cascade path below is byte-unchanged on the
+            # default mode == "cascade". Here we route the row through
+            # run_governed_dag_search with a move_runner bound to the SAME real
+            # move generators + the SAME governance (_validate_against_contract).
+            if mode == "dag_search":
+                from ztare.leanmill.solver.governed_dag_search import (
+                    run_governed_dag_search,
+                )
+                move_runner = _build_dag_move_runner(
+                    r, contract, enriched_goal, verify_timeout, provider, fallbacks,
+                    invoke_with_routing, providers_tried,
+                )
+                dag_res = run_governed_dag_search(
+                    contract=contract,
+                    goal_text=enriched_goal or str(goal),
+                    move_runner=move_runner,
+                    wallclock_budget_s=float(timeout_s),
+                )
+                root_closed = dag_res["root_status"] == "closed"
+                results.append({
+                    "name": r["row_id"],
+                    "target_name": r.get("target_theorem_name"),
+                    "kind": "c_pool_no_template",
+                    "mode": "dag_search",
+                    "outcome": "closed" if root_closed else dag_res["root_resolution"],
+                    "compile_ok": root_closed,
+                    "exit_code": 0 if root_closed else 1,
+                    "proof_text": dag_res["root_proof_text"],
+                    "provider": "governed_dag_search",
+                    "providers_tried": providers_tried,
+                    "solver_action_contract": contract,
+                    "dag_search": {
+                        "root_status": dag_res["root_status"],
+                        "root_resolution": dag_res["root_resolution"],
+                        "closed_or_exact_gap": dag_res["closed_or_exact_gap"],
+                        "moves_made": dag_res["moves_made"],
+                        "wallclock_s": dag_res["wallclock_s"],
+                        "levers": dag_res["levers"],
+                        "move_attribution": dag_res["move_attribution"],
+                        "trace": dag_res["trace"],
+                    },
+                    "matched_negative_control": {
+                        "kind": "context_stripped",
+                        "executed_at": "solver_layer" if root_closed else "skipped",
+                    },
+                })
+                continue
 
             # ── Prover stack (driven by contract.action_program):
             #    Layer 2: native_hammer (free tactic cascade)
@@ -1350,6 +1516,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300) -> dic
     payload = {
         "schema": "leanmill-solver-lane-results-v1",
         "lane": "solver_lane",
+        "mode": mode,
         "provider": provider,
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
@@ -1366,6 +1533,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300) -> dic
     n_closed = sum(1 for r in results if r["outcome"] == "closed")
     n_failed_compile = sum(1 for r in results if r["outcome"] == "failed_compile")
     return {"eligible": len(rows),
+            "mode": mode,
             "attempted": len([r for r in results if r["outcome"] in ("closed", "failed", "failed_compile")]),
             "closure_candidates": n_closed,
             "failed_compile": n_failed_compile,
@@ -1382,6 +1550,9 @@ def main() -> int:
     pv.add_argument("--limit", type=int, default=0)
     pv.add_argument("--dry-run", action="store_true")
     pv.add_argument("--timeout", type=int, default=300)
+    pv.add_argument("--mode", choices=["cascade", "dag_search"], default="cascade",
+                    help="cascade = fixed Layer-2→5 baseline (unchanged); "
+                         "dag_search = GP-246 governed DAG best-first search.")
     args = ap.parse_args()
 
     if args.cmd == "select":
@@ -1396,7 +1567,8 @@ def main() -> int:
         return 0
 
     if args.cmd == "solve":
-        res = solve(args.provider, args.limit, args.dry_run, timeout_s=args.timeout)
+        res = solve(args.provider, args.limit, args.dry_run, timeout_s=args.timeout,
+                    mode=args.mode)
         print(json.dumps(res, indent=2))
         return 0
     return 1
