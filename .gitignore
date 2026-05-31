@@ -236,7 +236,6 @@ org/gates/pending/*.json
 org/gates/resolved/*.json
 
 # Agent instructions
-AGENTS.md
 CLAUDE.md
 
 # NS Track B public synthesis (per-project allow-list under projects/* deny)
