@@ -63,4 +63,8 @@ say "3. Build Lean backend artifacts"
 say "4. Verify Lean backend readiness"
 "$PY" scripts/public/control/lean_env_parity.py --timeout 120 --require-backends
 
+say "5. Solver-lane self-check (elan resolves, solver modules import, trivial proof"
+say "   compiles, sorry proof is rejected) — fail-loud before any node solves"
+PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/control/leanmill/solver_lane_worker.py selfcheck
+
 say "Lean backend preparation complete"

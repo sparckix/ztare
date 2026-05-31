@@ -1553,7 +1553,21 @@ def main() -> int:
     pv.add_argument("--mode", choices=["cascade", "dag_search"], default="cascade",
                     help="cascade = fixed Layer-2→5 baseline (unchanged); "
                          "dag_search = GP-246 governed DAG best-first search.")
+    sub.add_parser("selfcheck",
+                   help="fail-loud deploy verification: elan resolves, solver "
+                        "modules import, a trivial proof COMPILES and a sorry "
+                        "proof is REJECTED. Run on every fresh node before solving.")
     args = ap.parse_args()
+
+    # Mechanized fix for `lake_not_on_PATH`: bootstrap the elan bin dir into this
+    # process's PATH so every child (deterministic compiles AND dispatched agents
+    # that shell out to `lake env lean`) finds lake/lean regardless of whether we
+    # were launched from a login shell, nohup, cron, or ssh-exec.
+    from ztare.gates.lean_compile_primitives import ensure_elan_on_path
+    _elan = ensure_elan_on_path()
+    if _elan is None and not getattr(args, "dry_run", False):
+        print("WARN: elan/lake not found (~/.elan/bin absent and not on PATH); "
+              "compiles will fail. Install lean toolchain or set ELAN_HOME.", flush=True)
 
     if args.cmd == "select":
         import json as _j
@@ -1570,6 +1584,59 @@ def main() -> int:
         res = solve(args.provider, args.limit, args.dry_run, timeout_s=args.timeout,
                     mode=args.mode)
         print(json.dumps(res, indent=2))
+        return 0
+
+    if args.cmd == "selfcheck":
+        # Fail-loud deploy verification. Mechanizes the bugs hit on 2026-05-31
+        # (missing solver subtree, lake_not_on_PATH, broken oracle) so a fresh
+        # distributed node proves it can compile + reject sorry BEFORE solving.
+        from ztare.gates.lean_compile_primitives import run_lake_compile_source
+        fails = []
+        # 1. toolchain resolves
+        if _elan is None:
+            fails.append("elan/lake not resolvable (~/.elan/bin absent and not on PATH)")
+        else:
+            print(f"OK  elan bin dir: {_elan}")
+        # 2. solver subtree imports
+        try:
+            import importlib
+            for m in ("contract", "deterministic", "llm_provers", "governed_dag_search"):
+                importlib.import_module(f"ztare.leanmill.solver.{m}")
+            print("OK  solver modules import (contract/deterministic/llm_provers/governed_dag_search)")
+        except Exception as e:
+            fails.append(f"solver module import failed: {e!r}")
+        # 3. positive control: a trivial proof MUST compile clean (no import → fast)
+        try:
+            ok_pos, _ = run_lake_compile_source(
+                "theorem _selfcheck_ok : True := trivial\n",
+                DEFAULT_LEAN_ROOT_FOR_VERIFY, timeout_s=180,
+                prefix="leanmill_selfcheck_pos_")
+            if ok_pos:
+                print("OK  positive control: trivial proof compiles (lake pipeline live)")
+            else:
+                fails.append("positive control FAILED: trivial proof did not compile "
+                             "(lake/toolchain/lean_root broken)")
+        except Exception as e:
+            fails.append(f"positive control errored: {e!r}")
+        # 4. negative control: a sorry proof MUST be rejected (oracle fires)
+        try:
+            ok_neg, _ = run_lake_compile_source(
+                "theorem _selfcheck_sorry : True := by sorry\n",
+                DEFAULT_LEAN_ROOT_FOR_VERIFY, timeout_s=180,
+                prefix="leanmill_selfcheck_neg_")
+            if ok_neg is False:
+                print("OK  negative control: sorry proof REJECTED (no-false-closure oracle live)")
+            else:
+                fails.append(f"negative control FAILED: sorry proof not rejected (ok={ok_neg!r}) "
+                             "— no-false-closure oracle is broken")
+        except Exception as e:
+            fails.append(f"negative control errored: {e!r}")
+        if fails:
+            print("\nSELFCHECK: FAIL")
+            for f in fails:
+                print(f"  - {f}")
+            return 1
+        print("\nSELFCHECK: PASS — node can compile and rejects sorry. Safe to solve.")
         return 0
     return 1
 

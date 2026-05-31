@@ -27,12 +27,66 @@ verdict assembly, axiom allowlist policy lookup, anti-pattern dispatch.
 from __future__ import annotations
 import os
 import re
+import shutil
 import signal
 import subprocess
 import tempfile
 import time
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
+
+
+@lru_cache(maxsize=1)
+def _elan_bin_dir() -> str | None:
+    """Locate the elan bin dir (holds lake/lean/leanc). Non-login and nohup
+    shells do NOT source ~/.profile, so ~/.elan/bin is often absent from PATH;
+    every `lake` call then dies with FileNotFoundError and is mis-recorded as a
+    compile failure. This finds it deterministically so no shell setup is ever
+    required (mechanized fix for the recurring `lake_not_on_PATH` bug)."""
+    cand = Path(os.environ.get("ELAN_HOME", str(Path.home() / ".elan"))) / "bin"
+    if (cand / "lake").exists():
+        return str(cand)
+    # already on PATH?
+    found = shutil.which("lake")
+    if found:
+        return str(Path(found).parent)
+    return None
+
+
+def ensure_elan_on_path() -> str | None:
+    """Idempotently prepend the elan bin dir to THIS process's PATH so every
+    child (deterministic `lake` compiles AND dispatched agents that shell out to
+    `lake env lean` themselves) inherits it. Call once at worker/daemon startup.
+    Returns the elan bin dir if found, else None. Safe to call repeatedly."""
+    binp = _elan_bin_dir()
+    if binp and binp not in os.environ.get("PATH", "").split(os.pathsep):
+        os.environ["PATH"] = binp + os.pathsep + os.environ.get("PATH", "")
+    return binp
+
+
+def _lake_env() -> dict[str, str]:
+    """Subprocess env with the elan bin dir guaranteed on PATH, so both `lake`
+    AND the `lean`/`leanc` children it spawns resolve regardless of the
+    launching shell (login, nohup, cron, ssh-exec)."""
+    env = dict(os.environ)
+    binp = _elan_bin_dir()
+    if binp:
+        env["PATH"] = binp + os.pathsep + env.get("PATH", "")
+    return env
+
+
+def _resolve_cmd(cmd: list[str]) -> list[str]:
+    """Rewrite a bare `lake`/`lean`/`leanc` argv[0] to its absolute elan path so
+    the call works even when the binary is not on the inherited PATH."""
+    if not cmd:
+        return cmd
+    binp = _elan_bin_dir()
+    if binp and cmd[0] in ("lake", "lean", "leanc"):
+        abs_bin = Path(binp) / cmd[0]
+        if abs_bin.exists():
+            return [str(abs_bin), *cmd[1:]]
+    return cmd
 
 
 def _run_lake_with_group_kill(
@@ -42,7 +96,7 @@ def _run_lake_with_group_kill(
     group via SIGKILL (so lake's lean child does not get reparented to init).
     Returns (returncode, stdout, stderr, timed_out)."""
     proc = subprocess.Popen(
-        cmd, cwd=cwd, text=True,
+        _resolve_cmd(cmd), cwd=cwd, text=True, env=_lake_env(),
         stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         start_new_session=True,  # spawns into its own process group
     )
