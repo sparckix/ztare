@@ -24,7 +24,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 
 # ── 1. subprocess env scrub ───────────────────────────────────────────────
-# This is the load-bearing assertion: when daemon dispatches to claude/codex CLI,
+# This is the critical assertion: when daemon dispatches to claude/codex CLI,
 # ANTHROPIC_API_KEY + OPENAI_API_KEY must NOT be visible to the subprocess.
 # Otherwise CLI prefers API key over OAuth subscription token, and you pay API
 # rates for what should be subscription-quota work.
