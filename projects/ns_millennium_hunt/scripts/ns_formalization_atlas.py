@@ -507,7 +507,13 @@ HTML_TEMPLATE = r"""<!doctype html>
     .checkboxes { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; font-size: 12px; }
     .checkboxes label { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--ink); }
     .checkboxes input { width: auto; }
-    canvas { width: 100%; height: 100%; display: block; background: #fbfcfa; }
+    canvas { width: 100%; height: 100%; display: block; }
+    /* Background ONLY on the static fallback canvas. The cytoscape renderer
+       stacks transparent overlay layers (drag z=2, selectbox z=3) ABOVE the
+       node layer (z=1); giving every canvas an opaque background paints those
+       overlays solid over the nodes, leaving the graph invisible. Keep the
+       cytoscape canvases transparent; #cyGraph itself provides the backdrop. */
+    #graphCanvas { background: #fbfcfa; }
     .canvas-wrap { height: calc(100vh - 176px); min-height: 520px; position: relative; }
     .graph-status { position: absolute; left: 12px; top: 12px; z-index: 2; border: 1px solid var(--line); border-radius: 6px; background: rgba(255,255,255,0.9); color: var(--muted); font-size: 12px; padding: 6px 8px; pointer-events: none; }
     #cyGraph { position: absolute; inset: 0; display: none; background: #fbfcfa; }
@@ -722,7 +728,6 @@ HTML_TEMPLATE = r"""<!doctype html>
       </div>
       <nav class="public-links" aria-label="Public NS documentation">
         <a href="JOURNEY.md">Current status and journey</a>
-        <a href="../workspace/ns_proof_status_benchmark_20260524.md">Benchmark</a>
         <a href="../workspace/ns_residual_manifest.md">Residual manifest</a>
       </nav>
     </div>
