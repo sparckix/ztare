@@ -1,0 +1,96 @@
+{
+  "experiment": "gp216_negative_control_random_split",
+  "split_seed": 42,
+  "tb_a_arcs": [
+    "einstein_gr",
+    "polya_hadamard_meta",
+    "riemann_surfaces",
+    "scholze_perfectoid"
+  ],
+  "tb_b_arcs": [
+    "grothendieck_schemes",
+    "lurie_htt",
+    "newton_calculus",
+    "wiles_flt"
+  ],
+  "tb_a_moves": 45,
+  "tb_b_moves": 42,
+  "vocab_a_n_clusters": 6,
+  "vocab_b_n_clusters": 6,
+  "own_results": [
+    {
+      "arc": "einstein_gr",
+      "h_m_pct": 91.66666666666666,
+      "by_conf": {
+        "high": 10,
+        "medium": 1,
+        "unmapped": 1
+      }
+    },
+    {
+      "arc": "polya_hadamard_meta",
+      "h_m_pct": 92.3076923076923,
+      "by_conf": {
+        "medium": 4,
+        "high": 8,
+        "unmapped": 1
+      }
+    },
+    {
+      "arc": "riemann_surfaces",
+      "h_m_pct": 100.0,
+      "by_conf": {
+        "high": 7,
+        "medium": 2
+      }
+    },
+    {
+      "arc": "scholze_perfectoid",
+      "h_m_pct": 100.0,
+      "by_conf": {
+        "high": 9,
+        "medium": 2
+      }
+    }
+  ],
+  "cross_results": [
+    {
+      "arc": "grothendieck_schemes",
+      "h_m_pct": 100.0,
+      "by_conf": {
+        "high": 8,
+        "medium": 3
+      }
+    },
+    {
+      "arc": "lurie_htt",
+      "h_m_pct": 100.0,
+      "by_conf": {
+        "medium": 3,
+        "high": 7
+      }
+    },
+    {
+      "arc": "newton_calculus",
+      "h_m_pct": 90.0,
+      "by_conf": {
+        "high": 6,
+        "medium": 3,
+        "unmapped": 1
+      }
+    },
+    {
+      "arc": "wiles_flt",
+      "h_m_pct": 81.81818181818183,
+      "by_conf": {
+        "high": 5,
+        "medium": 4,
+        "unmapped": 2
+      }
+    }
+  ],
+  "mean_own_h_m": 95.99358974358974,
+  "mean_cross_h_m": 92.95454545454545,
+  "gap_pp": 3.039044289044284,
+  "verdict": "NEGATIVE CONTROL PASSES STRONGLY \u2014 random-split shows +3.0pp gap (\u22480). The full 42pp two-cultures gap is genuine signal, not partition artifact."
+}

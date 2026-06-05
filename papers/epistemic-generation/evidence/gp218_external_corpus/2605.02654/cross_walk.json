@@ -1,0 +1,189 @@
+{
+  "paper_id": "2605.02654",
+  "subfield": "number_theory",
+  "tagger": "agent_a",
+  "total_moves": 25,
+  "moves": [
+    {
+      "move_n": 1,
+      "move_text_short": "The authors generalize a question previously settled for the base field Q_p (the case f=1) to the unramified extension Q_{p^f}",
+      "v5_op": "core_07",
+      "match_level": "full",
+      "why": "Broadens the foundational setting (base field Q_p -> unramified extension Q_{p^f}) so the existing theory subsumes a strictly larger phenomenon, which is the framework-generalization mechanism."
+    },
+    {
+      "move_n": 2,
+      "move_text_short": "They reduce the study of the reduction of the integral lattice Theta_{k,a_p} to the study of the kernel X_{k,a_p}",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "An intractable analytic/integral question is mapped to an equivalent representation-theoretic kernel-computation question via a surjection, transporting the problem to a setting with sharper tools."
+    },
+    {
+      "move_n": 3,
+      "move_text_short": "They quotient V_r by V_r* and identify this quotient as the carrier on which T effectively acts modulo p",
+      "v5_op": "core_03",
+      "match_level": "partial",
+      "why": "Partially canonical decomposition: a complex module is partitioned by quotienting out a distinguished submodule, but the move stops short of full-component-plus-glue assembly; it isolates the action-relevant piece."
+    },
+    {
+      "move_n": 4,
+      "move_text_short": "They invoke an external structural fact (work of Ghate-Jana) identifying V_r/V_r* as a principal series",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports a prior structural identification (Ghate-Jana) as a black-box module to organize the analysis, matching external-framework-importation."
+    },
+    {
+      "move_n": 5,
+      "move_text_short": "They peel off the highest-weight Jordan-Holder factor by showing the corresponding submodule is killed when the slope is positive",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a vanishing/killing step that eliminates one Jordan-Holder factor under a slope hypothesis; it neither partitions into well-understood components for reassembly nor instantiates any other v5 mechanism cleanly."
+    },
+    {
+      "move_n": 6,
+      "move_text_short": "They organize the remaining quotient Q via its socle filtration into f layers and define induced filtrations",
+      "v5_op": "core_03",
+      "match_level": "full",
+      "why": "Partitions the module via the canonical socle filtration into f well-understood layers and analyzes subquotient-by-subquotient, matching canonical-decomposition with gluing along the filtration."
+    },
+    {
+      "move_n": 7,
+      "move_text_short": "They derive an explicit formula for T on the compact induction by working out the matrix of phi(alpha^{-1}) in a chosen monomial basis",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is an explicit computation in a chosen basis - a calculational derivation rather than a structural research-operation; no v5 op covers 'compute the matrix of an operator'."
+    },
+    {
+      "move_n": 8,
+      "move_text_short": "They split T into a sum T = T^+ + T^- corresponding to the two cosets in the double coset decomposition",
+      "v5_op": "core_03",
+      "match_level": "partial",
+      "why": "Half-decomposition: splits the operator T into two coset-indexed pieces to track contributions separately, but the pieces are then used additively rather than glued through nontrivial gluing data."
+    },
+    {
+      "move_n": 9,
+      "move_text_short": "They address whether the lattice's mod p reduction is even nonzero by following Breuil's earlier ad-hoc proof",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is an adaptation/extension of a prior author's proof technique to a new range of parameters; it's a methodological reuse rather than a structural mechanism named in v5 (not a black-box import nor a generalization of a framework)."
+    },
+    {
+      "move_n": 10,
+      "move_text_short": "They prove the non-vanishing in the small-weight case by a Vandermonde-determinant argument",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Direct technical proof using a determinant identity; this is a tool-use computation, not a structural research-operation in v5."
+    },
+    {
+      "move_n": 11,
+      "move_text_short": "They extend the non-vanishing argument by an intricate downward recursion on the radius of support in the Bruhat-Tits tree",
+      "v5_op": "core_02",
+      "match_level": "full",
+      "why": "A downward recursion that propagates p-adic divisibility from level m to level m-1 is an iterative-refinement loop with a monotone parameter (the radius) driving the argument toward the base case."
+    },
+    {
+      "move_n": 12,
+      "move_text_short": "They split the f=2 non-vanishing recursion into subcases (generic versus exceptional pairs)",
+      "v5_op": "core_05",
+      "match_level": "partial",
+      "why": "Half of extremal-case analysis: isolates exceptional/extremal parameter pairs (p-1,p) and (p,p-1) where standard argument degenerates; but the rigidity-from-extremality angle is weak - it's case-splitting plus extra bookkeeping."
+    },
+    {
+      "move_n": 13,
+      "move_text_short": "They reduce the problem at each layer of the socle filtration to showing that a certain explicit element vanishes",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Translates a layer-by-layer subquotient question into the equivalent problem of showing an explicit element is killed in a quotient of a universal supersingular module - a problem-domain translation to a setting where Barthel-Livne applies."
+    },
+    {
+      "move_n": 14,
+      "move_text_short": "They invoke the Barthel-Livne classification as a black box to convert quotient of universal supersingular into supercuspidality",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Explicit black-box importation of an external classification theorem (Barthel-Livne) whose preconditions are checked, exactly matching external-framework-importation."
+    },
+    {
+      "move_n": 15,
+      "move_text_short": "They prove a technical smoothing lemma reducing congruence-strengthening to non-vanishing of a tensor-product determinant",
+      "v5_op": "core_01",
+      "match_level": "partial",
+      "why": "Partially a problem-domain translation - the smoothing claim is reduced to a Krattenthaler-type combinatorial determinant non-vanishing - but the move is also a single technical lemma, so the bridge is local rather than the kind of full theorem-transport core_01 envisions."
+    },
+    {
+      "move_n": 16,
+      "move_text_short": "They prove auxiliary congruence lemmas using a generating-function trick comparing two evaluations",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Auxiliary technical lemma proven by a generating-function evaluation trick; a calculational tool-use rather than a structural research-operation."
+    },
+    {
+      "move_n": 17,
+      "move_text_short": "They construct a candidate function f_1 and use explicit T^pm formulas to compute (T - a_p)f_1 mod p",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Explicit ansatz construction plus computation - this is the 'try a candidate and compute' move, which v5 does not name; it is not a translation, decomposition, or other listed mechanism."
+    },
+    {
+      "move_n": 18,
+      "move_text_short": "They introduce auxiliary correction functions f_0 and f_{-1} whose role is to kill specific unwanted terms",
+      "v5_op": "core_02",
+      "match_level": "partial",
+      "why": "Iterated-correction maneuver where each new term cancels residual error from the previous - a discrete refinement loop monotonically reducing (T - a_p)(...) toward a clean expression - but only three steps long, so the loop structure is partial."
+    },
+    {
+      "move_n": 19,
+      "move_text_short": "They use the principal-series evaluation map to identify which monomials project to the trivial generator",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "A bridge-by-evaluation step that connects concrete polynomial identities to abstract Jordan-Holder layers; this is a calculation-via-canonical-map move not captured as a structural op in v5."
+    },
+    {
+      "move_n": 20,
+      "move_text_short": "They handle exceptional weight cases by branching the proof on three valuation regimes and rescaling f_0, f_1",
+      "v5_op": "broad_05",
+      "match_level": "partial",
+      "why": "Half match to forcing-via-constraint: the three valuation regimes for v(a_p) act as a constraint partition narrowing admissible auxiliary-function shape (rescaling by a_p^2/p), but the move is more case-split than progressive constraint narrowing."
+    },
+    {
+      "move_n": 21,
+      "move_text_short": "They tackle the second-deepest layer by reducing to the case f=2 where this layer equals the socle",
+      "v5_op": "core_05",
+      "match_level": "partial",
+      "why": "Partial extremal/strategic specialization: reduces a general claim to the f=2 special case where the layer collapses onto the socle, a rigidity-from-specialization move (one of the v3 aliases for core_05), though without minimal-counterexample machinery."
+    },
+    {
+      "move_n": 22,
+      "move_text_short": "They generalize the f=2 socle argument to general f by exploiting that under r ≡ a_0 mod (q-1) only one factor appears",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "An extension of an argument from f=2 to general f under a divisibility hypothesis that collapses the layer; this is a generalization of a proof technique under a simplifying assumption, not a redefinition of foundational objects (core_07) nor a translation."
+    },
+    {
+      "move_n": 23,
+      "move_text_short": "They explicitly identify the generators of each Jordan-Holder factor by exploiting Gamma-equivariance",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Uses an equivariance/symmetry constraint to force coefficient vanishing and pin down generators; a symmetry-exploitation calculation that is not a v5 structural op."
+    },
+    {
+      "move_n": 24,
+      "move_text_short": "They package the main theorems into a unified corollary for f=2 enumerating which residue classes yield a two-step filtration",
+      "v5_op": "broad_07",
+      "match_level": "full",
+      "why": "Enumerates canonical residue classes mod (q-1) with explicit divisibility conditions and verifies which yield supercuspidal subquotients - systematic-cataloging of the f=2 case-space."
+    },
+    {
+      "move_n": 25,
+      "move_text_short": "They close by noting limitations and drawing speculative connections to Hilbert modular forms at inert primes",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Concluding-discussion move (limitations + speculative positioning within Langlands); this is rhetorical/contextual framing, not a structural research-operation in v5."
+    }
+  ],
+  "summary": {
+    "n_full": 8,
+    "n_partial": 7,
+    "n_none": 10,
+    "coverage": 0.6
+  }
+}

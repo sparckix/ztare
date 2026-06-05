@@ -1,0 +1,182 @@
+{
+  "paper_id": "2605.02793",
+  "subfield": "combinatorics",
+  "tagger": "agent_a",
+  "total_moves": 24,
+  "moves": [
+    {
+      "move_n": 1,
+      "move_text_short": "Takes a previously published conjecture asserting a single closed-form value and splits it into two separate questions (Ramsey side vs Gallai-restricted analogue) treated as independent targets.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Question-bifurcation into two independent open problems is a research-agenda move; no v5 op covers splitting a single conjecture into two distinct claims that may have opposite answers."
+    },
+    {
+      "move_n": 2,
+      "move_text_short": "Construct a counter-witness coloring whose lower bound dominates the conjectured value in a regime the conjecture overlooked (many colors).",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Producing an explicit counterexample to refute a conjecture is a disproof move; v5 has no op for explicit-counterexample construction (core_05 uses extremal objects to PROVE a claim, not refute one)."
+    },
+    {
+      "move_n": 3,
+      "move_text_short": "Lower-bound construction built from a 1-factorization of an even complete graph, assigning each perfect matching its own color, plus private vertex blocks.",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports the 1-factorization decomposition theorem of K_{2n} as a black-box module to template a coloring, exactly the external-framework-as-tool mechanism."
+    },
+    {
+      "move_n": 4,
+      "move_text_short": "Two competing lower-bound expressions; carve the parameter space into regimes and prove a tight equality in each regime separately.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Parameter-regime case-splitting is a proof-organization tactic; it does not partition an OBJECT into well-understood components (core_03) nor enumerate canonical types of a CLASS (broad_07)."
+    },
+    {
+      "move_n": 5,
+      "move_text_short": "Prove a more general theorem (replacing cherry by K_{1,s} and leading object by long cycle C_n), then derive cherry result as specialization.",
+      "v5_op": "core_07",
+      "match_level": "partial",
+      "why": "Captures the generalization half of core_07 (broaden the parameters s and n to encompass cherry as a special case) but lacks the unify-disparate-concepts / paradox-resolving aspect; it is generalize-then-specialize for proof leverage."
+    },
+    {
+      "move_n": 6,
+      "move_text_short": "Greedily extract maximal vertex-disjoint monochromatic stars per non-leading color, then apply Bondy's pancyclicity theorem to leftover.",
+      "v5_op": "core_06",
+      "match_level": "partial",
+      "why": "Combines a greedy reduction step with importing Bondy's pancyclicity theorem as a black-box; the import-half is core_06, the greedy-reduce half is unmapped."
+    },
+    {
+      "move_n": 7,
+      "move_text_short": "Counting claim bounding same-color edges from any star vertex into unused region; summed across colors to yield global minimum-degree threshold.",
+      "v5_op": "core_04",
+      "match_level": "full",
+      "why": "Per-vertex local degree bound is summed across colors to assemble a global minimum-degree threshold — the canonical local-patches-to-global-property mechanism."
+    },
+    {
+      "move_n": 8,
+      "move_text_short": "For Rk(2P3) switch tactics: induction on the number of 'free' colors reducing step by step to a base case where one color must contain 2P3.",
+      "v5_op": "core_02",
+      "match_level": "partial",
+      "why": "Captures the reduce-to-smaller-instance half of core_02's iterative-procedure mechanism, but induction on a discrete parameter lacks the monotone-quality-metric / fixed-point flavor."
+    },
+    {
+      "move_n": 9,
+      "move_text_short": "Two structural lemmas isolated as the engine of the induction (high-degree vertices in 2P3-free graphs leave a matching; edge-count threshold for 2P3).",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Identifying and isolating reusable lemmas is a proof-engineering / tool-extraction move; it is not a structural inferential step that any v5 op encodes."
+    },
+    {
+      "move_n": 10,
+      "move_text_short": "Induction step: pick a high-degree vertex and delete it, converting K_{k+ℓ+1} problem into the same problem on K_{k+ℓ} with one fewer active color.",
+      "v5_op": "core_02",
+      "match_level": "partial",
+      "why": "Captures the recursive reduction half of core_02's iterative mechanism — applying the same procedure to a strictly smaller instance — without the quality-metric / convergence framing."
+    },
+    {
+      "move_n": 11,
+      "move_text_short": "Lemma 2.5 proved by longest-path case analysis: enumerate lengths s = 3, 4, 5, ≥6 and exhaust each.",
+      "v5_op": "broad_07",
+      "match_level": "full",
+      "why": "Enumerates canonical longest-path lengths as exhaustive types and verifies coverage of each, exactly the systematic-cataloging mechanism."
+    },
+    {
+      "move_n": 12,
+      "move_text_short": "R6(3P3,P3,...,P3)=11 established via explicit K_10 coloring built from two color-1 copies of K_5 plus a K_{5,5} decomposition into five perfect matchings.",
+      "v5_op": "core_06",
+      "match_level": "partial",
+      "why": "Imports the 1-factorization of K_{5,5} as a black-box decomposition to template a counterexample coloring; the import-as-tool half matches core_06 but the move's primary purpose is constructing an explicit witness, not deploying the theorem."
+    },
+    {
+      "move_n": 13,
+      "move_text_short": "Upper-bound argument organized by connectivity trichotomy: G_1 is 2-connected, has connectivity 1, or is disconnected.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Case-splitting the proof on a structural property of the leading-color subgraph is a proof-tactic dispatch; it does not classify a CLASS of objects by canonical types (broad_07) and does not partition a single object into glued components (core_03)."
+    },
+    {
+      "move_n": 14,
+      "move_text_short": "In the 2-connected branch, longest-cycle case analysis on possible lengths ℓ ∈ {6,7,8,≥9}, each handled by attaching extra vertices and using cycle-extension.",
+      "v5_op": "broad_07",
+      "match_level": "full",
+      "why": "Enumerates canonical longest-cycle lengths exhaustively as types and verifies each, the systematic-cataloging mechanism."
+    },
+    {
+      "move_n": 15,
+      "move_text_short": "Connectivity-1 branch: invoke a cut vertex, split G_1 − v into two components, apply Lemma 2.11 on the larger side, merge a 2P3 there with a P3 from the smaller side.",
+      "v5_op": "core_03",
+      "match_level": "full",
+      "why": "Partitions the graph at a cut vertex into well-understood components, solves on each, and glues the monochromatic 2P3 to a P3 — the canonical decomposition-and-glue mechanism."
+    },
+    {
+      "move_n": 16,
+      "move_text_short": "For Gallai–Ramsey direction, prove a stronger structural theorem (Theorem 3.1) conditioning only on colors realizing P3, and derive original conjecture as immediate corollary.",
+      "v5_op": "core_07",
+      "match_level": "partial",
+      "why": "Captures the broaden-the-hypothesis half of core_07 (condition on a more general set of colors), but the move is prove-stronger-then-corollary for proof leverage rather than a foundational reframing of the theory."
+    },
+    {
+      "move_n": 17,
+      "move_text_short": "Theorem 3.1 launched by method of minimal counterexample — pick a hypothetical bad graph minimizing (q, n_0, Σn_i) lexicographically.",
+      "v5_op": "core_05",
+      "match_level": "full",
+      "why": "The lex-minimal counterexample is the canonical extremal object whose extremality forces structural rigidity exploited by the proof — exact instantiation of core_05."
+    },
+    {
+      "move_n": 18,
+      "move_text_short": "Gallai structural theorem (Theorem 1.7) invoked to partition the vertex set into Gallai parts whose reduced graph is 2-colored.",
+      "v5_op": "core_06",
+      "match_level": "partial",
+      "why": "Imports the Gallai partition theorem as a black-box (core_06 half) and uses it to produce a structured decomposition of the vertex set (core_03 half); two ops genuinely combine here."
+    },
+    {
+      "move_n": 19,
+      "move_text_short": "Base cases q = 1 and q = 2 handled separately: q=1 by triangle-pigeonhole, q=2 by collapsing colors and quoting two-color Faudree–Schelp formula.",
+      "v5_op": "core_06",
+      "match_level": "partial",
+      "why": "The q=2 base case imports the Faudree–Schelp two-color Ramsey formula as a black-box (core_06), but the broader move is base-case dispatch for an induction, only half of which is the external import."
+    },
+    {
+      "move_n": 20,
+      "move_text_short": "Claim 3.4 ('fat bipartite implies a monochromatic n_iP3') proved by inductively producing a smaller monochromatic cherry-union and exchanging vertices between sides to lift it back up.",
+      "v5_op": "core_02",
+      "match_level": "partial",
+      "why": "The inductive-produce-then-exchange-to-lift loop captures the iterative-improvement half of core_02 (each step yields a slightly larger monochromatic structure), without the explicit quality-metric framing."
+    },
+    {
+      "move_n": 21,
+      "move_text_short": "Lemma 3.7: dichotomy — any red-blue edge-coloring of K_s contains either a monochromatic K_{1,s-1} or a properly colored even cycle.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Introducing a new auxiliary dichotomy lemma is tool creation; the lemma's statement is a structural disjunction internal to the proof, not a v5 inferential mechanism (it is neither duality, decomposition, nor extremal analysis)."
+    },
+    {
+      "move_n": 22,
+      "move_text_short": "Claim 3.8 (each n_i for i≥3 must be strictly less than max n_0) proved by contradiction using inductive hypothesis to produce (n_0−1)P3 in color 3, with sub-cases driven by Lemma 3.7.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Proof-by-contradiction combined with applying a previous lemma's dichotomy is generic logical scaffolding; no specific v5 mechanism (decomposition, generalization, local-to-global, etc.) is the load-bearing step."
+    },
+    {
+      "move_n": 23,
+      "move_text_short": "Claim 3.9 'remove four vertices': no K_4 simultaneously containing a red P3 and a blue P3, since deletion would yield smaller Gallai-colored graph contradicting minimality.",
+      "v5_op": "core_05",
+      "match_level": "partial",
+      "why": "Re-deploys the minimal-counterexample extremality (core_05): deleting four vertices would produce a strictly smaller bad object, but the move is a downstream application of the minimality setup rather than the setup itself."
+    },
+    {
+      "move_n": 24,
+      "move_text_short": "Final contradiction: combine Claim 3.5 (R, B both have ≥3 parts), Claim 3.9 (no double-colored K_4), and pigeonhole on R-B edges to force a vertex violating the K_4 prohibition.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Assembling previously proved claims with a pigeonhole bookkeeping argument to close out the contradiction is generic proof-completion scaffolding; no v5 op encodes 'combine three lemmas plus pigeonhole'."
+    }
+  ],
+  "summary": {
+    "n_full": 7,
+    "n_partial": 9,
+    "n_none": 8,
+    "coverage": 0.6667
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "experiment": "gp216_4op_compression_gigerenzer",
+  "n_moves_input": 167,
+  "n_clusters_forced": 4,
+  "result": {
+    "clusters": [
+      {
+        "cluster_id": "op_1",
+        "name": "DOMAIN TRANSLATION",
+        "structural_mechanism": "Re-expressing a problem or object in a different formal language or conceptual space to access new tools or reveal hidden structure.",
+        "n_moves_total": 32,
+        "n_moves_TB": 16,
+        "n_moves_PS": 16
+      },
+      {
+        "cluster_id": "op_2",
+        "name": "FRAMEWORK REFINEMENT",
+        "structural_mechanism": "Altering the foundational definitions or axioms to expand, restrict, or unify the class of objects under consideration.",
+        "n_moves_total": 33,
+        "n_moves_TB": 24,
+        "n_moves_PS": 9
+      },
+      {
+        "cluster_id": "op_3",
+        "name": "COMPOSITIONAL SYNTHESIS",
+        "structural_mechanism": "Breaking a complex object into simpler canonical parts or assembling a global structure from local, well-understood pieces.",
+        "n_moves_total": 19,
+        "n_moves_TB": 5,
+        "n_moves_PS": 14
+      },
+      {
+        "cluster_id": "op_4",
+        "name": "RECURSIVE APPLICATION",
+        "structural_mechanism": "Establishing a process that repeatedly applies a core argument to simpler or refined versions of the problem until a conclusion is reached.",
+        "n_moves_total": 21,
+        "n_moves_TB": 0,
+        "n_moves_PS": 21
+      }
+    ],
+    "n_clusters": 4,
+    "n_unmapped": 62,
+    "coverage_pct": 62.87,
+    "tb_coverage_pct": 51.72,
+    "ps_coverage_pct": 75.0,
+    "auditor_notes": "The four operations successfully account for a majority (63%) of the structural moves, with unmapped items largely consisting of non-structural process, sociological, or meta-cognitive actions. The compression reveals a persistent but re-characterized 'two cultures' divide: problem-solving (PS) moves are significantly better covered (75%) than theory-building (TB) moves (52%). While both cultures use DOMAIN TRANSLATION equally, TB heavily favors FRAMEWORK REFINEMENT, whereas PS relies almost exclusively on COMPOSITIONAL SYNTHESIS and RECURSIVE APPLICATION. The distinction is less about goals and more about operational posture: refining the system versus operating within it."
+  },
+  "coverage_pct": 62.874251497005986,
+  "tb_coverage_pct": 51.72,
+  "ps_coverage_pct": 75.0,
+  "tb_ps_gap_pp": 23.28,
+  "verdict": "PARSIMONY FAILS \u2014 4 ops cover only 63% of moves. The 18-op vocabulary's complexity is earned by coverage; Gigerenzer's compression prediction does not hold. Two-cultures structure survives compression test."
+}

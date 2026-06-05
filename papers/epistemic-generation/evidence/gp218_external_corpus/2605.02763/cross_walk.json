@@ -1,0 +1,189 @@
+{
+  "paper_id": "2605.02763",
+  "subfield": "alg_geom",
+  "tagger": "agent_a",
+  "total_moves": 25,
+  "moves": [
+    {
+      "move_n": 1,
+      "move_text_short": "Introduce new infinite family of invariants — higher Amitsur groups Am^n for all n>=2 — generalizing previously isolated low-n definitions",
+      "v5_op": "core_07",
+      "match_level": "full",
+      "why": "Broadens an existing definition (low-n Amitsur) into an infinite indexed family, unifying isolated cases under a single generalized structural setting — the canonical mechanism of Framework Generalization."
+    },
+    {
+      "move_n": 2,
+      "move_text_short": "Generalize coefficient setting from G_m to arbitrary k-split G-torus S, exposing cocharacter lattice as a free parameter",
+      "v5_op": "core_07",
+      "match_level": "full",
+      "why": "Promotes a fixed coefficient object (G_m) to a parameterized class (arbitrary G-tori), broadening the foundational setting so downstream theorems apply uniformly — Framework Generalization via parameter freedom."
+    },
+    {
+      "move_n": 3,
+      "move_text_short": "Give a substitute, more elementary definition of Am^n by tensoring the canonical four-term divisor sequence with the cocharacter lattice (Ext-class-based)",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Re-expresses the same invariant in a different formal system (Ext-class / connecting-homomorphism formalism vs spectral sequence) where computation is more tractable — Problem Domain Translation between equivalent formalisms."
+    },
+    {
+      "move_n": 4,
+      "move_text_short": "Prove equivalence of spectral-sequence definition and connecting-homomorphism definition (Theorem 2.1) via commutative-square argument",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Establishes the formal equivalence/bridge between the two formalisms introduced — the transport-of-theorems step that licenses Problem Domain Translation."
+    },
+    {
+      "move_n": 5,
+      "move_text_short": "Invoke a hypercohomology lemma identifying spectral-sequence d_2 differentials with double connecting maps, importing standard homological algebra",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Uses an off-the-shelf homological-algebra lemma as a black-box module to bridge two formal descriptions — External Framework Importation."
+    },
+    {
+      "move_n": 6,
+      "move_text_short": "Construct an explicit flasque resolution of S in G-equivariant Zariski sheaves, observing it fails to be flasque étale",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a tactical resolution-construction with a topology-asymmetry observation; not a domain translation, not a decomposition into well-understood components, and not an external black-box import — no v5 op captures 'build a resolution that is asymmetric across topologies'."
+    },
+    {
+      "move_n": 7,
+      "move_text_short": "Reduce stable birational invariance to two local invariance statements (blowups in smooth G-stable centers; products with projective space)",
+      "v5_op": "core_04",
+      "match_level": "full",
+      "why": "Reduces a global (birational) property to local cases (blowup-local + projective-bundle-local) intended to be glued — exactly the local-patch + gluing setup of Local-to-Global Inference."
+    },
+    {
+      "move_n": 8,
+      "move_text_short": "Invoke G-equivariant weak factorization theorem to glue local invariances into the full stable-birational statement",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports an external major theorem (equivariant weak factorization) as a black-box gluing module whose preconditions are verified — the canonical External Framework Importation pattern."
+    },
+    {
+      "move_n": 9,
+      "move_text_short": "Prove blowup invariance via splitting: Picard of blowup decomposes as direct sum, exceptional contribution maps to free piece, vanishing lemma kills it",
+      "v5_op": "core_03",
+      "match_level": "full",
+      "why": "The Picard group is partitioned into well-understood components (original Picard + exceptional/free part), with the global vanishing inferred from properties of the parts and the gluing/exact-sequence data — Canonical Decomposition."
+    },
+    {
+      "move_n": 10,
+      "move_text_short": "Establish β(X) = -α(X) under a natural isomorphism (Proposition 4.1), collapsing two a priori distinct obstructions into one",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a specific identification of two cohomology classes via a natural map; it is not a translation across formal systems (both live in the same formalism), not a generalization, and not a decomposition — it is a numerical/sign identity, which no v5 op captures."
+    },
+    {
+      "move_n": 11,
+      "move_text_short": "Use the β=-α identification plus connecting-homomorphism description to deduce Theorem 1.2 (vanishing of β implies vanishing of all higher Amitsur groups)",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "A direct logical deduction from previously-established identifications; no new structural move beyond consequence-derivation, which is not itself a v5 op."
+    },
+    {
+      "move_n": 12,
+      "move_text_short": "Consolidate properties of higher Amitsur groups into a single summary theorem (Theorem 5.1)",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is expository consolidation/packaging of already-established lemmas, not the enumeration of canonical types covering an object class (which is what broad_07 Systematic Cataloging requires)."
+    },
+    {
+      "move_n": 13,
+      "move_text_short": "Derive computational lemma (Lemma 6.1) expressing α concretely from a finite G-invariant generating set of divisors",
+      "v5_op": "core_01",
+      "match_level": "partial",
+      "why": "Partially translates an abstract Ext-class formulation into an explicit four-term-sequence/generators formalism amenable to direct computation; matches half of Problem Domain Translation (alternate computable formalism) but does not transport theorems across, only computability."
+    },
+    {
+      "move_n": 14,
+      "move_text_short": "Compute Am^n for cyclic actions on projective space via Yoneda product with canonical generator of H^2(G,Z)",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "A direct computation in a specific case; it is neither extremal-case analysis (no rigidity from extremality is used) nor a decomposition or translation — just instantiation of the developed machinery."
+    },
+    {
+      "move_n": 15,
+      "move_text_short": "Compute Am^n for Klein-four on P^1 via descent, decomposition into three-term pieces, identification with cup products, Steenrod squares + Künneth",
+      "v5_op": "core_06",
+      "match_level": "partial",
+      "why": "Combines two ops: imports external machinery (Steenrod squares, Künneth) as a black-box (core_06) and decomposes the four-term sequence into three-term pieces (core_03); the move is genuinely a join of these two mechanisms."
+    },
+    {
+      "move_n": 16,
+      "move_text_short": "Construct counterexample (Theorem 7.1): toric Klein-four variety with β nonzero but all higher Amitsur groups vanishing",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Counterexample construction to demonstrate strict separation between two notions; the v5 vocabulary has no 'construct separating example' op, and probabilistic-existence/forcing-via-constraint do not match (no probability, no narrowing-to-unique)."
+    },
+    {
+      "move_n": 17,
+      "move_text_short": "Build at lattice-cohomology level (Lemma 7.3) a faithful G-lattice and non-split extension whose cup-product connecting maps all vanish, via calibrated Bockstein A,B and kernel-of-cup-by-A",
+      "v5_op": "broad_05",
+      "match_level": "full",
+      "why": "Progressively narrows the admissible lattice + extension by stacking structural constraints (faithful action, non-split, all cup-products with chosen Bocksteins must vanish) until a unique calibrated solution emerges — Forcing via Constraint."
+    },
+    {
+      "move_n": 18,
+      "move_text_short": "Realize lattice-level data geometrically (Lemma 7.4) by constructing a smooth toric variety from a fan of one-dimensional cones spanned by free G-orbit elements",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Maps the abstract G-lattice problem into the toric-geometry formal system, where geometric tools become available and the desired Picard-sequence extension is realized — Problem Domain Translation from lattices to G-varieties."
+    },
+    {
+      "move_n": 19,
+      "move_text_short": "Compactify open toric Y in smooth proper G-equivariant compactification X and use rational-map functoriality to transfer Amitsur vanishing",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is an application of an already-proven functoriality theorem to extend a property from open to compactified variety; standard transport-by-applying-prior-theorem, not itself a fresh structural move in the vocabulary."
+    },
+    {
+      "move_n": 20,
+      "move_text_short": "Provide second illustrative example: degree-2 del Pezzo surface with faithful action of modular group of order 16",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "An exemplar/illustration choice, not a structural inferential move; choosing an example does not match any v5 mechanism."
+    },
+    {
+      "move_n": 21,
+      "move_text_short": "Reduce β computation on del Pezzo to concrete cocycle calculation via free-resolution chain complex, basis of 8 specific exceptional curves out of 56, tracked through two connecting homomorphisms (Magma)",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a tactical computation reduction with computer-algebra outsourcing; outsourcing arithmetic to Magma is not the same as importing a major theorem (core_06 requires a theorem/toolkit as black-box module, not a CAS), and no other op matches 'set up cocycle and compute'."
+    },
+    {
+      "move_n": 22,
+      "move_text_short": "Prove higher Amitsur vanishing on del Pezzo by reducing to Bogomolov B(G,Z) question, invoking known H^*(G,Z) presentation, GAP elimination-ideal computations",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports the Bogomolov B(G,Z) framework and a known cohomology-ring presentation as black-box modules whose preconditions are verified — External Framework Importation translating the question into a tractable known computation."
+    },
+    {
+      "move_n": 23,
+      "move_text_short": "Transport entire framework to arithmetic setting (Section 9): replace finite G by absolute Galois group g_k acting on X-bar; theorems 9.1-9.3 go through",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Maps the equivariant problem into the formally analogous Galois-arithmetic problem under a uniform substitution, transporting all theorems across the bridge — Problem Domain Translation between equivariant and arithmetic settings."
+    },
+    {
+      "move_n": 24,
+      "move_text_short": "Flag structural disanalogy (Remark 9.4): Hilbert 90 fails over BG, so β=0 not equivalent to elementary obstruction vanishing in equivariant world",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a meta-observation about where an analogy breaks, motivating an extra hypothesis; observing a disanalogy is not itself a v5 inferential move."
+    },
+    {
+      "move_n": 25,
+      "move_text_short": "Build bridge (Remark 9.5) between equivariant and arithmetic Amitsur via generic-fiber twist of versal G-torsor; comparison maps not injective; explicit Klein-four/P^1 example",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Constructs explicit comparison maps between the equivariant and arithmetic formal systems, making the inter-formalism translation precise (and quantifying its failure of injectivity) — Problem Domain Translation as a formal bridge."
+    }
+  ],
+  "summary": {
+    "n_full": 13,
+    "n_partial": 2,
+    "n_none": 10,
+    "coverage": 0.6
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "paper_id": "2605.01279",
+  "subfield": "topology_geom",
+  "tagger": "agent_a",
+  "total_moves": 20,
+  "moves": [
+    {
+      "move_n": 1,
+      "move_text_short": "Restricts attention from all crossings to only non-self crossings, isolating a sub-structure (inter-component crossings) as the carrier of data.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a scope-restriction / definitional focusing move, not a partition-with-gluing (core_03) nor a translation to a different formal system; no v5 op captures 'pick a substructure as the new object of study'."
+    },
+    {
+      "move_n": 2,
+      "move_text_short": "Encodes geometric crossing data as a combinatorial cyclic word over {O,U}, replacing diagram analysis with sequence analysis.",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Maps an intractable geometric problem to an equivalent combinatorial system (cyclic words) where sequence-theoretic tools become available; theorems transport across the bridge."
+    },
+    {
+      "move_n": 3,
+      "move_text_short": "Lifts an existing single-component characterization to a paired-sequence setting for two-component links via 'well-balanced pair'.",
+      "v5_op": "core_07",
+      "match_level": "full",
+      "why": "Broadens the foundational definition (well-balanced criterion) from one component to a paired/multi-component setting, creating a more general structural setting that subsumes the prior theory."
+    },
+    {
+      "move_n": 4,
+      "move_text_short": "Splits realizability question into linking-number-parity strata (even vs odd) yielding three coordinated theorems.",
+      "v5_op": "core_03",
+      "match_level": "partial",
+      "why": "Captures the partition half of canonical decomposition (stratify by mod-2 invariant into disjoint classes) but does not glue the strata back into a single global statement; the strata remain as separate theorems."
+    },
+    {
+      "move_n": 5,
+      "move_text_short": "Converts realizability proof into explicit combinatorial-geometric construction (Construction 1, 2) building a witness from any well-balanced pair.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a constructive existence proof / algorithmization; v5 has no op for 'replace existence claim with explicit construction', and broad_02 (probabilistic existence) does not apply since the construction is deterministic."
+    },
+    {
+      "move_n": 6,
+      "move_text_short": "Imports OU number invariant from a companion paper to bridge combinatorial sequence world and geometric linking-number world.",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports a major prior-defined invariant from a related paper as a black-box module whose properties are taken as given and used as the load-bearing bridge."
+    },
+    {
+      "move_n": 7,
+      "move_text_short": "New geometric interpretation of the OU number (Prop 6): |lk(D)| equals Φ when one component is simple, converting an algebraic count into a topological quantity.",
+      "v5_op": "core_01",
+      "match_level": "full",
+      "why": "Establishes a formal equivalence between an algebraically-defined count and a topological invariant, allowing results to transport across the algebraic/topological bridge."
+    },
+    {
+      "move_n": 8,
+      "move_text_short": "Uses contrapositive of geometric interpretation to extract diagnostic info about hidden self-crossings from non-self sequences alone.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a logical contrapositive / diagnostic-inference move; no v5 op captures 'invert an established equivalence to read out hidden structure'."
+    },
+    {
+      "move_n": 9,
+      "move_text_short": "Introduces a reduction operation (delete consecutive OO/UU) as normal-form procedure, shows Φ is invariant under it.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a normal-form / invariant-under-reduction construction; it neither partitions into glued components (core_03) nor monotonically optimizes a quality metric (core_02), and no v5 op covers 'define a reduction and prove an invariant survives'."
+    },
+    {
+      "move_n": 10,
+      "move_text_short": "Lemma 3 proved by induction on number of reductions, tracking which OU pairs survive into canonical form.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Standard induction-on-reduction-count proof technique; v5 collapsed structural-rank induction into core_05 only when the extremal-rigidity mechanism is present, which is absent here — this is bookkeeping, not extremal forcing."
+    },
+    {
+      "move_n": 11,
+      "move_text_short": "Singles out alternating sequences as a distinguished class and analyzes the full range of achievable linking numbers via Lemma 4.",
+      "v5_op": "core_05",
+      "match_level": "partial",
+      "why": "Captures the strategic-specialization half of core_05 (restrict to a distinguished maximally-structured subclass) but does not invoke extremal rigidity to force a general theorem from the special case."
+    },
+    {
+      "move_n": 12,
+      "move_text_short": "Defines families of 'core diagrams' A(N), B(N), C(N), D(N) tailored to target link types as scaffolds for grafting sequences.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is the introduction of bespoke template/scaffold objects for a constructive proof; v5 has no op for 'design parameterized scaffold objects to host a construction'."
+    },
+    {
+      "move_n": 13,
+      "move_text_short": "Generalizes construction strategy via a 5-step procedure (pair fixing, labeling, embedding, point assignment, recursive replacement).",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is procedural codification of a construction recipe, not framework generalization (no broadened definitions) and not iterative refinement toward a fixed point (each step is distinct, not a repeated operator)."
+    },
+    {
+      "move_n": 14,
+      "move_text_short": "Invokes Reidemeister-move invariance at end of construction to certify curve-replacement preserves link type.",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Applies a foundational external theorem (Reidemeister) as a black-box module to discharge a topological-equivalence obligation generated by the construction."
+    },
+    {
+      "move_n": 15,
+      "move_text_short": "Re-uses argument structure for trivial-link case as template for Hopf, Solomon, Whitehead by swapping only the core diagram.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is template-reuse-by-substitution / proof scheme transfer within the paper; not framework generalization (the template itself is not lifted to a broader definition) and not external importation."
+    },
+    {
+      "move_n": 16,
+      "move_text_short": "Patches Φ=0 corner case where generic construction breaks by introducing Lemma 6 and a separate Step 2'/3' branch using small (OU)(UO) seeds.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Boundary/corner-case patching of a construction; no v5 op captures 'detect failure of generic procedure on degenerate inputs and supply alternative seed'."
+    },
+    {
+      "move_n": 17,
+      "move_text_short": "Uses splitting-number invariant from literature as external lower-bound tool to constrain Os and Us in any sequence of a given link.",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports the splitting-number invariant and its computed table as a black-box external toolkit whose preconditions are verified and whose bounds are then applied."
+    },
+    {
+      "move_n": 18,
+      "move_text_short": "Separation theorem (Thm 4): (2,2n)-torus links yield infinitely many distinct realized sequence-pair sets, via minimal-diagram exhibit + splitting-number lower bound.",
+      "v5_op": "broad_04",
+      "match_level": "partial",
+      "why": "Captures half of bounding-via-surrogate (uses the splitting-number lower bound as a tractable surrogate to separate classes) combined with explicit-witness exhibition; the surrogate-bound mechanism is present but is paired with constructive separation, not asymptotic capture."
+    },
+    {
+      "move_n": 19,
+      "move_text_short": "Organizes final consequences as corollary chain (Cor 1, 2, 3, 5) packaging main theorems into split vs non-split statements, extending the catalogue.",
+      "v5_op": "broad_07",
+      "match_level": "partial",
+      "why": "Captures the cataloging half of broad_07 (enumerate canonical link types and extend coverage to split/non-split classes) but does not verify exhaustive coverage of the class — it extends rather than classifies."
+    },
+    {
+      "move_n": 20,
+      "move_text_short": "Worked examples (Ex 1–12) placed adjacent to definitions/lemmas to demonstrate constructive procedures terminate on small inputs.",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Pedagogical / sanity-check exposition; v5 has no op for 'place worked examples adjacent to formal statements as termination demonstrations'."
+    }
+  ],
+  "summary": {
+    "n_full": 6,
+    "n_partial": 4,
+    "n_none": 10,
+    "coverage": 0.5
+  }
+}

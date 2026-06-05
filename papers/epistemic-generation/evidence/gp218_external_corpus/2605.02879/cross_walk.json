@@ -1,0 +1,182 @@
+{
+  "paper_id": "2605.02879",
+  "subfield": "analysis_pde",
+  "tagger": "agent_a",
+  "total_moves": 24,
+  "moves": [
+    {
+      "move_n": 1,
+      "move_text_short": "set up parameterized family of NLS on metric graph and isolate a regime (Morse index bounded, λ_n→∞), decoupling from existence",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is problem setup / scope-narrowing by parameter regime, not a mapping to a different formal system or any of the listed structural moves; v5 has no 'regime isolation / scoping' op."
+    },
+    {
+      "move_n": 2,
+      "move_text_short": "adapt Morse index from Euclidean PDE to metric-graph setting by replacing test-function space with H^1(G) ∩ C_c(G)",
+      "v5_op": "core_07",
+      "match_level": "full",
+      "why": "A foundational definition (Morse index) is broadened so it makes sense in a new categorical setting (metric graphs), unifying the Euclidean and graph cases — exactly Framework Generalization."
+    },
+    {
+      "move_n": 3,
+      "move_text_short": "Liouville-type rigidity ruling out finite-Morse-index solutions on a star graph (W≡0), via oscillation argument with disjointly supported test functions",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a rigidity/non-existence theorem proved by a tailored oscillation argument; it is neither a domain translation nor an extremal-case reduction nor any other v5 mechanism — it's a domain-specific lemma."
+    },
+    {
+      "move_n": 4,
+      "move_text_short": "develop maximum principle for metric graphs handling vertex condition; complement with strong maximum principle",
+      "v5_op": "core_07",
+      "match_level": "partial",
+      "why": "Partly a generalization of a classical PDE tool (max principle) into the graph setting (core_07), but it's also just a tool-development step; coverage is half — only the abstraction half of core_07."
+    },
+    {
+      "move_n": 5,
+      "move_text_short": "construct explicit cosh comparison function on bounded interval as reusable 'exponential majorant' lemma",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Building an explicit barrier/comparison function is a technical-construction move; v5 has no op for 'auxiliary-object construction', and it isn't a partition, generalization, or transport."
+    },
+    {
+      "move_n": 6,
+      "move_text_short": "ODE convexity argument: local max of |u| is either ≥ fixed height or u vanishes on incident edges — quantitative threshold driving blow-up alternative",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Domain-specific ODE convexity dichotomy producing a quantitative lemma; not a domain translation, decomposition, or extremal-case reduction in the v5 sense."
+    },
+    {
+      "move_n": 7,
+      "move_text_short": "split blow-up analysis into two cases by comparing |u_n(x_n)|^{(p−2)/2} dist(x_n,V) against +∞: maxima away from vertex vs accumulating",
+      "v5_op": "core_03",
+      "match_level": "partial",
+      "why": "A case split into two geometrically distinct regimes resembles partial canonical decomposition (partition into well-understood pieces) — half of core_03's mechanism without explicit gluing."
+    },
+    {
+      "move_n": 8,
+      "move_text_short": "rescale u_n at blow-up point with ε_n to normalize maximum, use Ascoli-Arzelà + diagonal extraction + weak-* compactness to pass to a limit profile NLS",
+      "v5_op": "core_01",
+      "match_level": "partial",
+      "why": "Rescaling-and-pass-to-limit transports the problem from finite-λ NLS on G to a limit NLS on R or G_k, partially instantiating Problem Domain Translation (rescaling bridge) but is also a compactness argument."
+    },
+    {
+      "move_n": 9,
+      "move_text_short": "show limit profile inherits positive lower bound on frequency and Morse index 1≤·≤lim m(u_n), transferring spectral info from prelimit to limit",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a property-inheritance step under a limit; not a v5 op (not iterative refinement, not decomposition, not bootstrapping a weak property to strong)."
+    },
+    {
+      "move_n": 10,
+      "move_text_short": "iterative selection procedure: produce maximal sequence of well-separated blow-up points by repeatedly choosing maxima far from previous points",
+      "v5_op": "core_02",
+      "match_level": "full",
+      "why": "Greedy iterative procedure that monotonically extracts well-separated blow-up points until a termination/saturation condition is reached — direct instance of Iterative Refinement Loop's mechanism."
+    },
+    {
+      "move_n": 11,
+      "move_text_short": "cap number of blow-up points by m* via localized test functions giving linearly independent negative directions, contradicting Morse-index bound",
+      "v5_op": "core_05",
+      "match_level": "partial",
+      "why": "Uses an extremality/maximality argument (more than m* points would violate the Morse-index extremal constraint) — captures half of Extremal Case Analysis's rigidity mechanism."
+    },
+    {
+      "move_n": 12,
+      "move_text_short": "combine max principle with piecewise graph-wide barrier (cosh segments + exponentials, glued at vertices) to upgrade local exponential decay to global",
+      "v5_op": "core_04",
+      "match_level": "full",
+      "why": "Local exponential decay near each blow-up point is glued (transmission through vertices) into a global decay estimate via consistency at vertices — textbook Local-to-Global Inference."
+    },
+    {
+      "move_n": 13,
+      "move_text_short": "subdivide edges by inserting auxiliary degree-2 vertices where global distance function changes expression, so dn becomes affine on each refined edge",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Edge-subdivision is a technical refinement of the underlying combinatorial domain to make a function affine; not a generalization, decomposition into well-understood components-with-glue, or any other v5 op."
+    },
+    {
+      "move_n": 14,
+      "move_text_short": "translate global exponential decay into integral asymptotic (1.5): λ_n^{(1/2−q/(p−2))}∫|u_n|^q → positive limit determined by limit profiles",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Quantitative consequence: a pointwise decay bound is integrated to derive an asymptotic; this is a corollary computation, not a structural move in v5."
+    },
+    {
+      "move_n": 15,
+      "move_text_short": "extract uniform-in-n bound on λ_n in L^2-prescribed regime when p≠6 — input for compactness in normalized-solution theory",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Direct corollary of the previous asymptotic; positions the result as input to other theory but does not perform a v5 structural operation."
+    },
+    {
+      "move_n": 16,
+      "move_text_short": "four-star example showing m of selected blow-up points need not match local maxima count; discrepancy hidden in limit profile",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "An illustrative counterexample to clarify the theorem statement; v5 has no 'illustrative example / sharpness witness' op."
+    },
+    {
+      "move_n": 17,
+      "move_text_short": "pivot from blow-up analysis to a priori bounds; relate four numerical invariants (nodal zones, Morse index, L^∞, L^2) and how each inequality can fail",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "This is a thematic pivot and statement of relations among invariants — a roadmap step, not an instantiation of a v5 structural mechanism."
+    },
+    {
+      "move_n": 18,
+      "move_text_short": "adapt Bahri–Lions classical lower bound of Morse index by active nodal zones to graphs; explicit triple-bridge example shows strict inequality",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "Imports a classical Bahri–Lions theorem from Euclidean PDE as a black-box-like toolkit, verifying preconditions in the new graph setting — External Framework Importation."
+    },
+    {
+      "move_n": 19,
+      "move_text_short": "lower bounds on λ for given Morse index: separate compact case (eigenvalue of linearized operator) from half-line case (λ ≥ −inf lim W)",
+      "v5_op": "core_03",
+      "match_level": "partial",
+      "why": "Splits the geometric setting into two well-understood pieces (compact vs half-line) and proves the bound on each — partial decomposition without an explicit global gluing step."
+    },
+    {
+      "move_n": 20,
+      "move_text_short": "convert Hartman ODE result on superlinear equations into per-edge L^∞ bound on graphs by exploiting one-dimensional nature of each edge",
+      "v5_op": "core_06",
+      "match_level": "full",
+      "why": "A classical Hartman ODE theorem is imported as an external black-box module, with edge-wise preconditions verified to apply it in the graph setting."
+    },
+    {
+      "move_n": 21,
+      "move_text_short": "establish converse: L^∞ bound forces Morse-index bound on compact graphs (sharp), failing on noncompact (tadpole, Z-periodic counterexamples)",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "A converse direction with sharpness counterexamples; not duality framing (no dual problem solved jointly) and not a v5 structural mechanism."
+    },
+    {
+      "move_n": 22,
+      "move_text_short": "matching upper/lower L^2 bounds in λ for large λ from (1.5); refine small-λ behavior across three geometric settings (compact / localized / half-line)",
+      "v5_op": "broad_07",
+      "match_level": "partial",
+      "why": "Enumerates three canonical geometric settings and verifies the picture in each — partially Systematic Cataloging (canonical-types enumeration) but without a coverage-completeness claim."
+    },
+    {
+      "move_n": 23,
+      "move_text_short": "demonstrate sharpness of small-λ exponent λ^{−1/4} via tadpole-graph construction: implicit-function/continuity at periodic backbone gives U_λ blowing up at that rate",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Sharpness witness via an explicit construction; v5 has no op for 'sharpness counterexample construction' (probabilistic_existence requires randomness)."
+    },
+    {
+      "move_n": 24,
+      "move_text_short": "appendix records conserved energy and existence of sign-changing periodic solutions of underlying NLS ODE",
+      "v5_op": null,
+      "match_level": "none",
+      "why_not": "Bookkeeping of one-dimensional ODE prerequisites in an appendix; not a structural move — it just records facts the main constructions rely on."
+    }
+  ],
+  "summary": {
+    "n_full": 5,
+    "n_partial": 6,
+    "n_none": 13,
+    "coverage": 0.4583
+  }
+}
