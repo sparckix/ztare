@@ -38,6 +38,7 @@ import shutil
 import signal
 import subprocess
 import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -95,7 +96,27 @@ class PersistentLean:
         return "lake"
 
     # -- process lifecycle -------------------------------------------------
+    def _check_toolchain(self) -> tuple[str, str, bool | None]:
+        """Layer-1 deterministic guard (no process): compare the repl binary's
+        lean-toolchain to the project's. Returns (repl_tc, proj_tc, match) where match is
+        None if either is unknown. RAISES early on a DEFINITE mismatch — far cheaper and
+        clearer than discovering it via the post-import positive control."""
+        try:
+            from ztare.formal.substrate_liveness import toolchain_match
+            ok, rtc, ptc = toolchain_match(self.repl_bin, self.project_dir)
+        except Exception:
+            return "", "", None
+        if rtc and ptc and not ok:
+            raise RuntimeError(
+                f"TOOLCHAIN MISMATCH — refusing to spawn: repl binary built at {rtc!r} "
+                f"but project Mathlib oleans at {ptc!r}. `import Mathlib` would silently "
+                f"return an empty env (the 2026-06-01 'going blind' RCA). Rebuild the repl "
+                f"at {ptc!r} or point project_dir at a {rtc!r} Mathlib build.")
+        return rtc, ptc, (ok if (rtc and ptc) else None)
+
     def _spawn(self) -> None:
+        rtc, ptc, _ = self._check_toolchain()
+        t0 = time.time()
         self._p = subprocess.Popen(
             [self.lake_bin, "env", self.repl_bin],
             cwd=self.project_dir,
@@ -108,6 +129,40 @@ class PersistentLean:
             self._kill()
             raise RuntimeError(f"prelude load failed (timeout/crash): {r}")
         self._base_env = r["env"]
+        self._assert_prelude_live(r)
+        # observability: one liveness line per spawn — the signal that was MISSING when we
+        # went blind (a 0.8s import with Mathlib prelude is the dead-env signature).
+        if os.environ.get("ZTARE_LEAN_QUIET") != "1":
+            import sys as _sys
+            print(f"[lean-substrate] LIVE | toolchain {rtc or '?'}=={ptc or '?'} | "
+                  f"import {time.time()-t0:.1f}s | prelude positive control ok",
+                  file=_sys.stderr, flush=True)
+
+    def _assert_prelude_live(self, prelude_resp: dict) -> None:
+        """FAIL-LOUD positive control: a toolchain/ABI mismatch (repl binary built at
+        a DIFFERENT Lean than the project's oleans) makes `import Mathlib` SILENTLY
+        return an empty env (env 0 in ~0.8s, no error) instead of loading Mathlib (~40s).
+        Every probe against that dead env then errors, so a broken substrate masquerades
+        as a real '0 closures / talent-bound' result — a non-probative confound. We refuse
+        to hand back a base_env that cannot actually use its own prelude: probe a symbol
+        the prelude is supposed to provide and raise with an actionable message if absent.
+        """
+        if "import mathlib" not in self.prelude.lower():
+            return
+        probe = self._raw_cmd(
+            {"cmd": "example : Finset ℕ := ∅", "env": self._base_env}, 60)
+        ok = bool(probe) and not any(
+            str(m.get("severity", "")).lower() == "error"
+            for m in (probe.get("messages") or []))
+        if not ok:
+            self._kill()
+            raise RuntimeError(
+                "PersistentLean prelude loaded an env but Mathlib is NOT usable "
+                "(positive control `example : Finset ℕ := ∅` failed). Almost always a "
+                "TOOLCHAIN/ABI MISMATCH: the repl binary and the project's Mathlib oleans "
+                "were built at different Lean versions. Check that\n  "
+                f"{self.repl_bin}\nand\n  {self.project_dir}\nshare the same lean-toolchain. "
+                "Refusing to return a dead env (it would silently fail every probe).")
 
     def _ensure(self) -> None:
         if self._p is None or self._p.poll() is not None:

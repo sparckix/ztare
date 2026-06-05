@@ -261,7 +261,7 @@ setup-vps:
 		echo "ERROR: VPS is required. Usage: make setup-vps VPS=root@<vps-ip> [TENANT_REPO=...]"; \
 		exit 1; \
 	fi
-	$(if $(TENANT_REPO),TENANT_REPO=$(TENANT_REPO),) ./scripts/setup_vps.sh $(VPS)
+	$(if $(TENANT_REPO),TENANT_REPO=$(TENANT_REPO),) ./scripts/public/control/setup_vps.sh $(VPS)
 
 # GP-134 prompt-layer leak audit: cold cross-family auditor scans the
 # fully-built mutator prompt + evidence for target leakage before any
@@ -743,6 +743,7 @@ benchmark:
 
 benchmark-evidence:
 	$(PYTHON) scripts/public/control/benchmark_evidence_check.py
+	$(PYTHON) scripts/public/control/evidence_packet_check.py
 
 benchmark-stage1:
 	$(PYTHON) benchmarks/constraint_memory/run_benchmark.py --judge-model $(BENCH_JUDGE) --jobs $(BENCH_JOBS) --suite stage1_regression
@@ -1133,6 +1134,7 @@ smoke-docker:  ## Docker smoke: build image and run public smoke checks inside i
 .PHONY: gates gates-engagement install-hooks
 gates:  ## Run the publish-safety + docs-freshness + seam/spec-format forcing gates
 	$(PYTHON) scripts/public/control/benchmark_evidence_check.py
+	$(PYTHON) scripts/public/control/evidence_packet_check.py
 	$(PYTHON) scripts/public/control/public_adversarial_smoke.py
 	$(PYTHON) -m pytest scripts/private/test_publish_safety.py scripts/private/test_docs_freshness.py -q
 	$(PYTHON) scripts/private/validate_seam_spec_format.py

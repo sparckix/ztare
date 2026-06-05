@@ -1,0 +1,53 @@
+{
+  "generated": "2026-06-01",
+  "design": "strong_models_2stage_sharp_taxonomy",
+  "n": 3,
+  "live_providers": [
+    "deepseek_chat",
+    "google_gemini-2.5-flash"
+  ],
+  "nway_agreement_rate": 0.333,
+  "pairwise_kappa": {
+    "deepseek_chat__google_gemini-2.5-flash": 0.0
+  },
+  "ceiling_breaker_records": 0,
+  "ceiling_breaker_nway_agreement": null,
+  "baseline_2026_04_24": {
+    "fine_15class_3way": 0.48,
+    "superclass_3way": 0.75,
+    "weak_models": true
+  },
+  "verdict": "still weak",
+  "records": [
+    {
+      "project": "stieltjes_power_sums",
+      "score": 28,
+      "snippet": "The difference (or sum) of two real exponentials plus a smooth trend cannot reproduce the observed irregular, repeated s",
+      "labels": {
+        "deepseek_chat": "structural_blocker",
+        "google_gemini-2.5-flash": "structural_blocker"
+      },
+      "agree": true
+    },
+    {
+      "project": "seattle_tech_housing",
+      "score": 88,
+      "snippet": "Assumption that only hard-unit physical replacement cost is a valid denominator for closure, categorically excluding any",
+      "labels": {
+        "deepseek_chat": "structural_blocker",
+        "google_gemini-2.5-flash": "other"
+      },
+      "agree": false
+    },
+    {
+      "project": "gp138_noether_g_selection",
+      "score": 96,
+      "snippet": "Coverage for selectors leveraging non-AST substrate metadata (timestamps, provenance, etc.) is not formally excluded.",
+      "labels": {
+        "deepseek_chat": "structural_blocker",
+        "google_gemini-2.5-flash": "other"
+      },
+      "agree": false
+    }
+  ]
+}

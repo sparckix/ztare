@@ -67,4 +67,11 @@ say "5. Solver-lane self-check (elan resolves, solver modules import, trivial pr
 say "   compiles, sorry proof is rejected) — fail-loud before any node solves"
 PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/control/leanmill/solver_lane_worker.py selfcheck
 
+say "6. Node preflight — INSTRUMENT calibration (the dead-REPL RCA guard). Asserts the"
+say "   vendored repl binary's toolchain MATCHES a Mathlib-built project AND PersistentLean"
+say "   actually loads Mathlib. Step 5's lake-env-lean uses the project toolchain and would"
+say "   NOT catch a vendored-repl/oleans mismatch — the silent empty-env that voided runs."
+say "   HARD-fails (abort) if no live REPL pair; warns on a dead embedder / missing providers."
+PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/control/leanmill/node_preflight.py --soft-ok
+
 say "Lean backend preparation complete"

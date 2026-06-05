@@ -148,6 +148,76 @@ def _domain_atlas_semantic_hits(
     return hits, len(rows), None
 
 
+import re as _re_shelf
+
+
+def _shelf_conclusion(stmt: str) -> str:
+    """Text after the LAST top-level ':' (binders' ':' sit inside parens), ':='-stripped."""
+    body = _re_shelf.split(r":=", stmt or "", 1)[0]
+    depth = 0
+    last = -1
+    for i, ch in enumerate(body):
+        if ch in "([{⦃":
+            depth += 1
+        elif ch in ")]}⦄":
+            depth -= 1
+        elif ch == ":" and depth == 0:
+            last = i
+    return body[last + 1:].strip() if last >= 0 else body.strip()
+
+
+def _shelf_norm(s: str) -> str:
+    return _re_shelf.sub(r"[()\s]", "", _re_shelf.sub(r"\bid\b", "", s or ""))
+
+
+def in_scope_citation_hits(query: str, source: str, lean_root, *, k: int = 6) -> list:
+    """The MEMOIZATION fix (RCA 2026-06-04): surface IMPORTED-file lemmas whose CONCLUSION matches the
+    goal, so the agent (and the prompt) can `exact <name>` instead of re-deriving a result already in
+    scope. The premise shelf used to index only the embedded atlases (Mathlib/APN/NS), NEVER the file
+    the ad-hoc imports — so a 1-line citation (e.g. indicatorTranslationInteriorTerm_…) was invisible
+    and the warm agent re-derived + failed. EXACT-conclusion match → score 1.0 ('this already closes
+    it'); token-overlap ≥0.6 → near-match. Pure regex/CPU; advisory like the rest of the shelf."""
+    if not source or lean_root is None:
+        return []
+    from pathlib import Path as _P
+    lean_root = _P(lean_root)
+    goal_concl_raw = _shelf_conclusion(query)
+    goal_concl = _shelf_norm(goal_concl_raw)
+    if len(goal_concl) < 4:
+        return []
+    goal_tokens = set(_re_shelf.findall(r"[A-Za-z_][\w'.]+", goal_concl_raw))
+    hits, seen = [], set()
+    for mod in _re_shelf.findall(r"(?m)^\s*import\s+([\w.]+)", source):
+        f = lean_root / (mod.replace(".", "/") + ".lean")
+        if str(f) in seen or not f.exists():
+            continue
+        seen.add(str(f))
+        try:
+            text = f.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        for m in _re_shelf.finditer(
+                r"(?ms)^\s*(?:@\[[^\]]*\]\s*)?(?:theorem|lemma)\s+([A-Za-z_][\w'.]*)(.*?):=", text):
+            name, sig = m.group(1), m.group(2)
+            concl_raw = _shelf_conclusion(sig)
+            nconcl = _shelf_norm(concl_raw)
+            if len(nconcl) < 4:
+                continue
+            if nconcl == goal_concl:
+                score = 1.0
+            else:
+                lt = set(_re_shelf.findall(r"[A-Za-z_][\w'.]+", concl_raw))
+                ov = len(goal_tokens & lt) / max(1, len(goal_tokens | lt))
+                if ov < 0.6:
+                    continue
+                score = round(0.6 + 0.39 * ov, 4)
+            hits.append({"source": "in_scope", "name": name, "kind": "imported_lemma",
+                         "file": mod, "score": score, "preview": concl_raw[:160],
+                         "metadata": {"citation": f"exact {name}"}})
+    hits.sort(key=lambda h: h["score"], reverse=True)
+    return hits[:k]
+
+
 def build_semantic_premise_shelf(
     query: str,
     *,
@@ -157,6 +227,8 @@ def build_semantic_premise_shelf(
     threshold: float = 0.55,
     include_ns: bool = True,
     embedder: Callable[[str], list[float] | None] | None = None,
+    source: str = "",
+    lean_root=None,
 ) -> dict[str, Any]:
     """Return an advisory candidate-premise shelf for a proof-loop query."""
     query = str(query or "").strip()
@@ -170,6 +242,13 @@ def build_semantic_premise_shelf(
     embed_fn = embedder or _cached_embedder()
     hits: list[dict[str, Any]] = []
     skip_reasons: list[str] = []
+
+    # IN-SCOPE citation leg FIRST (the memoization fix) — imported lemmas whose conclusion matches the
+    # goal; an exact match (score 1.0) is a direct `exact <name>` closure. Surfaced ABOVE the atlas hits.
+    try:
+        hits.extend(in_scope_citation_hits(query, source, lean_root))
+    except Exception as _e:  # never let the new leg break the shelf
+        skip_reasons.append(f"in_scope: {str(_e)[:80]}")
 
     mathlib_hits, mathlib_size, mathlib_filtered, mathlib_skip = mathlib_semantic_neighbours(
         query,
@@ -276,7 +355,13 @@ def render_semantic_premise_shelf(shelf: dict[str, Any], *, max_hits: int = 12) 
         elif meta.get("status"):
             tag = f" status={meta.get('status')}"
         loc = f" @ {file}" if file else ""
-        lines.append(f"- [{source} cos={score:.4f}] {kind} {name}{tag}{loc}")
+        if source == "in_scope":
+            # the memoization hit: an imported lemma already in scope whose conclusion matches — the
+            # agent should CITE it, not re-derive. A match≈1.0 is a direct one-line closure.
+            verb = "CLOSES (try `exact " + name + "`)" if score >= 0.999 else "candidate (try `exact " + name + "`)"
+            lines.append(f"- [IN-SCOPE match={score:.2f}] {verb} — imported lemma, conclusion matches the goal{loc}")
+        else:
+            lines.append(f"- [{source} cos={score:.4f}] {kind} {name}{tag}{loc}")
         if preview:
             lines.append(f"  preview: {preview}")
     if shelf.get("skip_reasons"):

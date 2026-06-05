@@ -522,7 +522,17 @@ def render_text(report: ScientificAmnesiaReport) -> str:
             f"threshold={report.semantic_threshold} top_k={report.semantic_top_k}"
         )
         if report.semantic_skip_reason:
-            lines.append(f"    skipped: {report.semantic_skip_reason}")
+            # A DEAD embedder (vs a benignly-absent atlas) means the vocabulary-invariant
+            # layer is OFF exactly when it matters most (vocabulary drift defeats lexical —
+            # the strict-margin atom was rediscovered >=6x this way). Surface it LOUD: a
+            # 'no prior work' under a dead embedder is INADMISSIBLE, not a real absence.
+            reason = report.semantic_skip_reason
+            if "embedding unavailable" in reason or "embed" in reason.lower() and "fail" in reason.lower():
+                from ztare.common.embedder_liveness import liveness_banner
+                for bl in liveness_banner(False, reason, instrument="NS semantic amnesia layer").splitlines():
+                    lines.append("    " + bl)
+            else:
+                lines.append(f"    skipped: {reason}")
         elif report.semantic_hits:
             lines.append("    top semantic neighbours:")
             for hit in report.semantic_hits:

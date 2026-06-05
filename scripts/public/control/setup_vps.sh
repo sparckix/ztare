@@ -213,6 +213,37 @@ if [[ -d orbit ]] && [[ ! -d orbit/node_modules ]]; then
 fi
 "
 
+# ── Replicate local .env (incl. API keys) to the node — MECHANIZED ──────────
+# Was a manual checklist step. The LOCAL .env is the source of truth (GEMINI/OPENAI/DEEPSEEK/etc.).
+# Merge key-by-key on the node: every non-empty KEY=val locally is upserted (node-only keys kept,
+# existing node values never blanked). Skip with SYNC_ENV=0 (e.g. an untrusted node that must not
+# hold secrets). chmod 600 on the node. Run from the laptop that has the populated .env.
+echo ""
+echo "── Replicating local .env → node (API keys included; SYNC_ENV=0 to skip) ──"
+if [[ "${SYNC_ENV:-1}" == "1" ]] && [[ -f .env ]]; then
+    scp -q .env "$ZTARE_USER@$VPS_HOST:/tmp/.env.incoming"
+    ssh "$ZTARE_USER@$VPS_HOST" 'cd ~/figs_activist_loop && python3 - <<PY
+import pathlib
+node=pathlib.Path(".env"); inc=pathlib.Path("/tmp/.env.incoming")
+def parse(p):
+    d={}
+    if p.exists():
+        for l in p.read_text().splitlines():
+            s=l.strip()
+            if s and not s.startswith("#") and "=" in s:
+                k,v=l.split("=",1); d[k.strip()]=v
+    return d
+n=parse(node); i=parse(inc)
+for k,v in i.items():
+    if v.strip(): n[k]=v
+node.write_text("".join(k+"="+v+"\n" for k,v in n.items()))
+node.chmod(0o600); inc.unlink(missing_ok=True)
+print("  done: .env now has", sum(1 for v in n.values() if v.strip()), "non-empty vars")
+PY'
+else
+    echo "  (skipped: SYNC_ENV=0 or no local .env present)"
+fi
+
 # ── Print remaining manual steps ──────────────────────────────────────────
 DEPLOY_PUBKEY=$(ssh "$ZTARE_USER@$VPS_HOST" "cat ~/.ssh/github_deploy.pub" 2>/dev/null || echo "<run setup again to generate>")
 cat <<EOF
@@ -239,11 +270,10 @@ Remaining steps (interactive — principal must perform):
              --repo ${TENANT_REPO:-<your-org>/ztare-research-co} \\
              --title 'ztare-vps-${VPS_HOST}'
 
-  2. Drop API keys into VPS .env (use rsync from your local zshrc):
+  2. API keys / .env — DONE automatically above (local .env replicated key-by-key to the node;
+     re-run with SYNC_ENV=0 to skip on an untrusted node). Verify:
 
-         grep -E '^export (ANTHROPIC|OPENAI|GOOGLE|GEMINI|HF_|VERCEL|WANDB|LAMBDA)' ~/.zshrc \\
-             | sed 's/^export //' \\
-             | ssh $ZTARE_USER@$VPS_HOST 'cat >> ~/figs_activist_loop/.env'
+         ssh $ZTARE_USER@$VPS_HOST 'grep -c "=." ~/figs_activist_loop/.env'
 
   3. Set up Telegram bot creds:
 

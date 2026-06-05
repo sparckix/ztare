@@ -74,7 +74,7 @@ organisational kernel for running it → a self-audit layer where the
 architecture starts to observe itself → Navier-Stokes as the deepest test
 substrate, with the inner iteration loop quietly giving way to direct agent
 dispatch → the reframe of the system as a **workbench** of primitives that
-an agent **workforce** calls into → an honest critique of the Cognitive
+the agents call into → an honest critique of the Cognitive
 Gym and the operator functions nothing in the stack replaces.
 
 **The honest spine (measured, not asserted, see §9).** On 2026-05-16 the
@@ -339,7 +339,7 @@ empirical-law substrates. They were de-prioritized for theorem-formalization
 and open-math attempts where the bottleneck is parallel typed-companion
 decomposition rather than parametric search.
 
-## §5, Phase 5: ZTARE-as-workbench, Claude Code as workforce
+## §5, Phase 5: ZTARE as a workbench of primitives the agents call
 
 The 2026-05-08 architectural realization is the most consequential of
 the sprint. It is the **inversion of the relationship between ZTARE and
@@ -347,7 +347,7 @@ Claude Code agents**.
 
 Through Phase 4 the implicit framing was "ZTARE iter loops or Claude Code
 agents, pick one for this task." That framing was wrong, and the corrected
-framing is: **ZTARE is the workbench; Claude Code agents are the workforce**.
+framing is: **ZTARE is the workbench; the Claude Code agents call its primitives**.
 The architecture-index meta-graph (RP-001, the first registered _reflexive
 primitive_) is the wire that connects them.
 
@@ -639,7 +639,7 @@ constrains them.
 
 The Phase-5 reframe softens that constraint without dissolving it: ZTARE
 remains the workbench (the gym's primitives are callable), but the
-workbench does not constrain the workforce's choice of how to invoke
+workbench does not constrain the agents' choice of how to invoke
 those primitives. The agent decides whether `fit_primitive_features` is
 the right tool for the current sub-problem; the gym does not prescribe
 it. The cost of this softening is real, losing the gym's hard-zero
@@ -1030,7 +1030,7 @@ disclaimer attached to the result.
 
 **What landed.** The GP-245 Forecast Calibration Program now stands as a
 33-finding child seam with explicit retest tags and a public claim surface
-at `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/public/CLAIM_SUMMARY.md`. The
+at `projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`. The
 central pieces:
 
 - A separately-elicited tail-worry token (`tail_insurance_premium`) is now
@@ -1117,10 +1117,10 @@ search-budget hint or a stop-decision).
 surface was tightened the same week. A structural leak of a private
 external collaborator's name through the reflexive ledger generator
 (filename metadata, even though file content stayed gitignored) was
-fixed at the generator — `research_areas/private/` paths are now
-skipped at index time, not redacted after. Three downstream tracked
-artifacts that carried the name (a benchmark, a rubric, three ledger
-rows) were moved into the private subtree or filtered out. The
+fixed at the generator: private-path artifacts are now skipped at
+index time, not redacted after. Three downstream tracked artifacts
+that carried the name (a benchmark, a rubric, three ledger rows) were
+moved into the private subtree or filtered out. The
 top-level `public/` plus per-project `projects/*/public/`
 claim-summary convention was exercised at scale (the GP-245 program's
 claim surface joined ~80 existing per-project surfaces, plus a

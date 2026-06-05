@@ -43,20 +43,19 @@ def build_subscription_agent_command(
 ) -> list[str]:
     if runtime not in SUPPORTED_SUBSCRIPTION_RUNTIMES:
         raise ValueError(f"unsupported subscription runtime: {runtime}")
-    repo_path = str(Path(repo))
+    # ABSOLUTE: `_run_cli` runs with cwd=repo AND codex gets `--cd repo`; a relative repo
+    # then DOUBLES (cwd/repo/repo → "No such file or directory"). abspath makes relative→
+    # absolute (fixing the doubling) WITHOUT resolving symlinks — so already-absolute paths
+    # pass through unchanged (no regression for existing callers).
+    repo_path = os.path.abspath(str(repo))
     if runtime == "codex":
         model = codex_model or os.environ.get(codex_model_env) or default_codex_model
-        cmd = [
-            "codex",
-            "exec",
-            "--skip-git-repo-check",
-            "--model",
-            model,
-            "--cd",
-            repo_path,
-            "--sandbox",
-            codex_sandbox,
-        ]
+        cmd = ["codex", "exec", "--skip-git-repo-check"]
+        # Sentinel models mean "use the account-configured default" — OMIT --model so codex
+        # uses the strong default instead of being forced onto a weak pinned model.
+        if model and model not in ("default", "account-default", "account_default"):
+            cmd += ["--model", model]
+        cmd += ["--cd", repo_path, "--sandbox", codex_sandbox]
         if session_state and session_state.get("session_id") and not session_state.get("is_new"):
             cmd.extend(["resume", str(session_state["session_id"])])
             cmd.append(prompt)

@@ -43,7 +43,10 @@ def _bootstrap_dotenv_if_needed() -> None:
     No-op if all provider keys already present in env (the local developer flow where
     keys are exported in shell). Reads .env quietly; no override of present env.
     """
-    if all(os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY")):
+    if (all(os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY"))
+            and (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))):
+        # GEMINI/GOOGLE included so the embedding engine (semantic shelf / atlases) gets its key too —
+        # omitting it let the gate pass while the shelf was silently dead ("no GOOGLE_API_KEY").
         return
     try:
         from dotenv import load_dotenv  # python-dotenv (already in requirements)
