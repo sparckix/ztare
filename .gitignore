@@ -32,6 +32,12 @@ projects/*/*
 !projects/*/public/
 !projects/*/public/**
 
+# Forecasting program reproducibility tools (project-local, not global control).
+!projects/llm_forecasting_calibration_program/tools/
+!projects/llm_forecasting_calibration_program/tools/**
+projects/llm_forecasting_calibration_program/tools/__pycache__/
+projects/llm_forecasting_calibration_program/tools/**/*.py[cod]
+
 
 # 6. ...EXCEPT the ones you want to showcase (updated to _gemini_gemini naming)
 !projects/ai_inference_collapse_gemini_gemini/
@@ -143,6 +149,7 @@ projects/eu_union_failure_probability_2035/raw/*
 # repo root mirror the public name and hold build artifacts + submission
 # packages that must not enter public history.
 /workingpapers/
+/epistemic-generation/
 /cognitive-camouflage/
 /adversarial-precedent-memory/
 /contract-governed-hardening/
@@ -468,5 +475,17 @@ projects/**/ckpts*/
 # repo-root scratch
 scratch/
 
+# leanmill solver probe scratch — agentic_leaf writes these probe stubs (default probe_name) into the
+# working dir; when a solve runs from the repo root they land here. Regenerated on demand, never sources.
+/AgenticLeafProbe.lean
+/RobustProbe_*.lean
+
 # consciousness/ working-paper dir (29MB submission + experiment data; the /conciousness/ rule above is a typo)
 /consciousness/
+
+# Repo-wide Python cache guard. Keep this after broad unignore rules so
+# project/public whitelists cannot accidentally surface cache artifacts.
+__pycache__/
+**/__pycache__/
+*.py[cod]
+**/*.py[cod]
