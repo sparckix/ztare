@@ -116,7 +116,7 @@ always a validator iteration. A serious workbench run still needs:
 - a next decision or kill condition;
 - a durable ledger row when the result changes routing.
 
-The public sprint narrative in [../sprint_60day_journey.md](../sprint_60day_journey.md)
+The public sprint narrative in [../sprint_70day_journey.md](../sprint_70day_journey.md)
 explains the shift from "ZTARE versus agents" to "ZTARE as workbench, agents
 and humans as workforce." This guide uses that frame.
 

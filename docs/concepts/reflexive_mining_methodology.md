@@ -183,6 +183,23 @@ they are not rediscovered:
   `scripts/public/mining/_canonical_paths.py` (the warranted file-collapse;
   the 13 scripts stay modular by design — merging them would be an
   anti-pattern).
+- **Authored-week binning is GIT-DATE-robust (2026-06-04).**
+  `mine_trajectory_curves._file_create_date` now derives a file's creation week from
+  `frontmatter date > git first-commit (authored) date > birthtime > mtime`. A bulk checkout/restore
+  resets BOTH `st_birthtime` AND `st_mtime` to "now" (observed: a bulk re-create dumped ~every file's
+  birthtime to 2026-06-01) and Linux has no birthtime — git's authored date survives all of it. The
+  contextualized TASTE series was ALREADY robust (it groups by the STORED `first_seen_week` in the
+  ledger, never a re-stat, + content-hash cached), so the bulk change did NOT corrupt the realized-gain
+  trajectory; the git-date fix hardens the VOLUME curves to match.
+- **Realized recursive-gain is now MEASURED, not just candidate-recommended (2026-06-04).** The p0
+  rollup carries `realized_primitive_gain` (exogenous `impact_factor_expost`, carrier-split,
+  `self_measured=false`), `recursive_gain_trajectory` (the taste series + a `stale_days` silent-rot
+  guard), and a `dead_letter_rate` repaired to an exogenous catch-ledger join. The candidate aggregator
+  is the FORWARD recommender; these are the BACKWARD realized measure (read together). See GP-236 §3.4.
+- **Producer re-fire (P1, 2026-06-04).** `run_reflexive_mine.phase2_mine` now runs the candidate
+  aggregator's producer miners (`mine_closure_patterns`, `mine_structural_analogies`) BEFORE the
+  consumer, so candidates reflect current work (was stale-by-construction: month-old scorecards, 0
+  leanmill mentions).
 
 ## 5d. The per-graph "so what" (operator-mandated 2026-05-16)
 

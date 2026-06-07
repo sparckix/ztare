@@ -25,11 +25,11 @@ Ground rules for every prompt:
 ## 1. Repo map — what is this and what does it have
 
 ```text
-You are helping me understand the ZTARE repository. Read README.md, docs/README.md, docs/concepts/capabilities.md, docs/concepts/architecture.md, docs/concepts/glossary.md, docs/public_claim_register.md, and docs/guides/cli.md. Then give me a concise map of:
+You are helping me understand the ZTARE repository. Read README.md, docs/README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/primitive_evidence_matrix.md, docs/concepts/capabilities.md, docs/concepts/architecture.md, docs/concepts/glossary.md, docs/public_claim_register.md, and docs/guides/cli.md. Then give me a concise map of:
 
-1. what ZTARE is (the adversarial-reasoning kernel) and what it is not (the governance kernel — that's cognitive-firm);
+1. ZTARE's scope boundary: the adversarial-reasoning kernel here versus the reusable governance kernel in cognitive-firm;
 2. the three architectural layers (in-loop validator, operating discipline, named primitives) and one concrete capability inside each;
-3. where the conservative public claims live and how each is backed by sealed sandbox evidence;
+3. where the conservative public claims live, which evidence level each currently reaches, and what non-claims or caveats attach to them;
 4. the single CLI entry point (`ztare`) and the subcommands worth knowing;
 5. what I should read next given [my interest or task].
 
@@ -39,7 +39,7 @@ Do not summarize every file. Explain the repo as an operating system for adversa
 ## 2. Pick what to look at — your first session
 
 ```text
-I have about an hour with the ZTARE repo and I want to spend it well on [my goal — e.g. evaluate a specific claim, understand the apparatus, decide whether to use the engine on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
+I have about an hour with the ZTARE repo and I want to spend it well on [my goal — e.g. evaluate a specific claim, understand the apparatus, decide whether to use the engine on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
 
 1. point me at the 3–5 files that are highest-yield for my stated goal;
 2. name which sealed claims (in the public claim register) are most relevant, and which "held privately" items I would otherwise be tempted to chase;
@@ -52,7 +52,7 @@ Do not propose anything that requires private artifacts I cannot reach.
 ## 3. Inspect a specific claim or project
 
 ```text
-Inspect projects/[project_slug]/public/CLAIM_SUMMARY.md plus its entry in docs/public_claim_register.md and any relevant rows in research_areas/EXPERIMENT_TRACK_RECORD.md. Summarize:
+Inspect projects/[project_slug]/public/CLAIM_SUMMARY.md plus its entry in docs/public_claim_register.md, any relevant card in docs/evidence_atlas/claim_cards.md, and any relevant rows in research_areas/EXPERIMENT_TRACK_RECORD.md. Summarize:
 
 1. what the project actually claims, in one sentence;
 2. the gate verdicts and the retest tag — what was sealed, what is partial, what is a documented null or demotion;

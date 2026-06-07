@@ -1,3 +1,7 @@
+---
+description: "The mathematical-content move catalog (PDE craft ops + universal v5 ops + op tiers) the Research Director composes during pre-tick."
+---
+
 # Structural Language Catalog
 
 **Generated from Python registries. Do not hand-edit this file; run `python scripts/public/control/render_structural_language_catalog.py` after changing the registries.**

@@ -1,3 +1,7 @@
+---
+description: "The substrate-neutral structural-move vocabulary used to route research ticks independent of the active substrate."
+---
+
 # Primitive Glossary - Universal Research Language
 
 This glossary is the public, non-technical version of the universal research

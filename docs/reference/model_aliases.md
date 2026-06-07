@@ -15,7 +15,7 @@ the loader raises `ValueError: Unsupported model family`.
 
 | CLI flag value | Resolved model ID (mutator/judge) | Resolved Director ID | Provider |
 |---|---|---|---|
-| `gemini` | `gemini-2.5-flash` | `gemini-3.1-pro-preview` | Google |
+| `gemini` | `gemini-3.1-pro-preview` | `gemini-3.1-pro-preview` | Google |
 | `gemini-lite` | `gemini-3.1-flash-lite-preview` | `gemini-3.1-pro-preview` | Google |
 | `gemini-pro` | `gemini-3.1-pro-preview` | `gemini-3.1-pro-preview` | Google |
 | `claude` | `claude-sonnet-4-6` | `claude-sonnet-4-6` | Anthropic |
@@ -32,9 +32,8 @@ the loader raises `ValueError: Unsupported model family`.
 
 The Director column applies when the model is invoked as Research
 Director (post-run skeptic-review pass), which uses a stronger model
-than the mutator/judge for the same alias — e.g., calling `--mutator
-gemini` runs `gemini-2.5-flash` for per-iter mutation but
-`gemini-3.1-pro-preview` for Director synthesis.
+than the mutator/judge for some aliases; `gemini` now resolves to
+`gemini-3.1-pro-preview` in both mutator/judge and Director contexts.
 
 ## Recommended pairings
 

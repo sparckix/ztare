@@ -1,3 +1,7 @@
+---
+description: "Command-line entry points for the apparatus: demo, smoke, gates, loop, and the public model-free surfaces."
+---
+
 # The `ztare` CLI
 
 > **Up:** [`docs/README.md`](../README.md)
@@ -24,7 +28,7 @@ lives in `org/` and uses cognitive-firm primitives.
 
 | Command | What it does | Underlying script |
 |---|---|---|
-| `ztare forecast …` | Sealed forecast-pool operations (GP-230) | `scripts/public/control/forecast/pool.py` |
+| `ztare forecast <verb> …` | Forecast-pool, calibration DB, and experiment execution operations | `scripts/public/control/forecast/` plus selected experiment runners |
 | `ztare leanmill <verb> …` | LeanMill orchestration (GP-225) | `scripts/public/control/leanmill_*.py` |
 | `ztare bundle <verb> …` | Sealed-bundle run / verify | `bundle_run.py`, `bundle_verify.py` |
 | `ztare charter …` | Project-charter commit | `charter_commit.py` |
@@ -40,10 +44,21 @@ runner), `andon` (andon cord), `triage` (post-probe triage),
 ## Pass-through `--help`
 
 For any subcommand, `--help` flows through to the underlying control
-script's argument parser. So `ztare forecast --help` shows the full
-forecast-pool sub-verb list; `ztare bundle run --help` shows the
-`bundle_run.py` flags; and so on. The CLI's own help (`ztare --help`)
-is short by design.
+script's argument parser or verb router. So `ztare forecast --help`
+shows the user-facing forecast verb list; `ztare bundle run --help`
+shows the `bundle_run.py` flags; and so on. The CLI's own help
+(`ztare --help`) is short by design.
+
+`ztare forecast` is intentionally not a menu of every GP-245 research
+script. It keeps forecast-pool operations, calibration DB surfaces, and
+experiment execution/scoring commands that a user could reasonably run:
+`pool`, `resolve`, `calibration-stats`, `calibration-db`, `score`,
+`ingest-smoke`, `cutoff-panel-run`, `cutoff-panel-ingest`,
+`cutoff-panel-score`, `anti-bias-run`, `anti-bias-score`,
+`nurture-run`, `nurture-ingest`, `nurture-score`, `elo-refresh`,
+`brier-elo`, and `resolve-open-metaculus`. Research-planning,
+paper-readiness, packet-generation, and sibling-analysis scripts stay
+project-local under `projects/.../tools/`.
 
 ## Repository root discovery
 
@@ -75,10 +90,14 @@ than its implementation file, and stay short.
 ## Examples
 
 ```bash
-# Sealed forecast: open a new contract, attest, aggregate
-ztare forecast init-contract --substrate ns_l3a --branch r1
-ztare forecast add-forecast --contract-id ... --probability 0.62
-ztare forecast aggregate --contract-id ...
+# Forecast pool and calibration surfaces
+ztare forecast pool smoke
+ztare forecast calibration-stats --help
+ztare forecast calibration-db --help
+
+# Forecasting experiment execution surfaces
+ztare forecast cutoff-panel-run --mode preview --max-calls 6
+ztare forecast nurture-score --pilot-id n3_high_worry_action_policy_v1 --queue projects/llm_forecasting_calibration_program/nurture_intervention_v1/workspace/n3_high_worry_action_policy_dispatch_queue.jsonl
 
 # LeanMill: one-shot station-scheduler plan, then start the 24/7 worker
 ztare leanmill schedule --contract analytics/public/leanmill/_legacy_lemma_relevance/...

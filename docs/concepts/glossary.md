@@ -5,7 +5,7 @@ description: "Plain-English definitions for every ZTARE term that matters."
 
 > **Up:** [Documentation map](../README.md)
 
-> **Last revised:** 2026-05-20. The canonical principle set is [epistemic_principles.md](epistemic_principles.md) (P1-P16); this glossary surfaces only the plain-language terms.
+> **Last revised:** 2026-05-31. The canonical principle set is [epistemic_principles.md](epistemic_principles.md) (P1-P16); this glossary surfaces only the plain-language terms.
 
 Plain-English definitions for every term that matters. If a term isn't here, it's either standard (Google it) or jargon inflation that should be removed.
 
@@ -68,6 +68,64 @@ Code, or a role-bound Research Director. It can inspect files, run probes,
 edit artifacts, repair proofs, and leave receipts. It can execute or recommend
 within mandate, but it is not the final accountability holder for public claims
 unless the repo explicitly delegates a narrow decision.
+
+**Evidence Atlas**
+The reviewer-facing evidence map at [../evidence_atlas/README.md](../evidence_atlas/README.md).
+It does not create new claims; it links public claims, project summaries,
+patterns, primitives, runnable checks, evidence packets, non-claims, and
+caveats.
+
+**Evidence Level (L0-L5)**
+The atlas confidence shorthand for how much support a claim or primitive has:
+L0 = named only; L1 = implemented artifact exists; L2 = linked to an
+experiment, project, or stored result; L3 = changed a public claim, next
+action, demotion, or routing decision; L4 = controlled, ablated, baselined, or
+benchmark-compared; L5 = externally checked by a second lab, outside expert,
+upstream adoption, or peer review. Most strong current ZTARE claims sit in
+L2-L4. L5 is intentionally rare.
+
+**LeanMill Proof-Audit L1/L2/L3**
+Different from the atlas evidence levels. In the LeanMill/APN audit packet,
+L1/L2/L3 refer to proof-audit layers: kernel cleanliness, allowlisted axioms,
+and top-level anti-laundering checks. A proof can be "L3-clean" in that local
+audit sense without being atlas-evidence-level L3 or L4.
+
+**Evidence Packet**
+A short reviewer-facing packet assembled from existing public artifacts. A
+good packet states the scoped claim, evidence level, primary sources, runnable
+anchors, non-claims, confusers, falsifiers, and external-readiness status. In
+this repo, retrospective packets live under `docs/evidence_atlas/packets/`.
+
+**Claim Card**
+A curated atlas entry for a high-signal claim family. Claim cards are index
+routes, not proof by themselves; they point to source artifacts, evidence
+levels, commands, non-claims, and next falsifiers.
+
+**Public Claim Register**
+The canonical public claim-status page at [../public_claim_register.md](../public_claim_register.md).
+It says what the repo is willing to claim publicly, what it refuses to claim,
+what evidence exists, and what would change the claim.
+
+**Public Claim Summary (`public/CLAIM_SUMMARY.md`)**
+The project-level public surface for a campaign. It summarizes the claim,
+status, evidence, retest tags, caveats, and non-claims without exposing private
+or sealed working material.
+
+**Non-Claim**
+An explicit boundary around what the evidence does not establish. Non-claims
+are part of the evidence surface, not legal boilerplate; they prevent a scoped
+result from being read as a broader result.
+
+**Next Falsifier**
+The cheapest or clearest test that would change the current interpretation.
+Good claim surfaces name the next falsifier so the reader knows what evidence
+would promote, demote, or kill the claim.
+
+**Retest Tag**
+A status label saying how much re-checking a finding has survived: for example
+original-run-only, cross-corpus replicated, benchmarked, demoted, or externally
+checked. Retest tags help prevent a one-off result from reading like a stable
+law.
 
 ---
 

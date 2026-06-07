@@ -11,11 +11,11 @@ the combination of a human principal, agentic operators, role offices, source
 boundaries, verification tools, governance gates, public/private membranes,
 ledgers, and publication discipline.
 
-It is therefore not only a theorem prover, not only a symbolic-regression
-loop, not only an agent dashboard, and not only a set of papers. The core
-object is the full research trace: sources, proposals, tests, failures,
-demotions, forecasts, proof attempts, claims, non-claims, next falsifiers, and
-the authority path that decides what those artifacts are allowed to mean.
+The repo contains theorem-proving, symbolic-regression, agent-dashboard, and
+paper surfaces, but those are components of a larger research trace: sources,
+proposals, tests, failures, demotions, forecasts, proof attempts, claims,
+non-claims, next falsifiers, and the authority path that decides what those
+artifacts are allowed to mean.
 
 The shortest accurate summary is:
 
@@ -27,6 +27,11 @@ That means the repo has several modules that look different on the surface but
 serve one architecture: make research moves explicit enough that another
 agentic operator, the human operator, or a future model can inspect, reuse,
 refute, or demote them.
+
+For a claim-first review path, use the
+[evidence atlas](../evidence_atlas/README.md). This document positions the
+system; the atlas links public claims and reusable primitives to evidence
+levels, source artifacts, runnable checks, and non-claims.
 
 ## System Position
 
@@ -338,9 +343,9 @@ organizational learning across domains.
 Use this if someone asks whether it is a technical tool or an organization:
 
 ```text
-It is both. ZTARE's technical modules matter because they make evidence,
-verification, proof attempts, forecasts, and ledgers executable. Its
-organizational layer matters because it decides authority: what can be acted
-on, what can be published, what must be demoted, and what remains private or
+ZTARE is a technical research stack with an organizational layer. The technical
+modules make evidence, verification, proof attempts, forecasts, and ledgers
+executable. The organizational layer decides authority: what can be acted on,
+what can be published, what must be demoted, and what remains private or
 source-blocked.
 ```

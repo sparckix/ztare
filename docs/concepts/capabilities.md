@@ -1,3 +1,7 @@
+---
+description: "What the apparatus actually has: the architectural stack, operating discipline, and named primitives, each grounded in a module or deeper doc."
+---
+
 # Capabilities
 
 > **Up:** [`docs/README.md`](../README.md)
@@ -11,7 +15,9 @@ The page sits between three neighbours:
 [`system_position_and_module_map.md`](system_position_and_module_map.md) is the
 architectural framing; [`architecture.md`](architecture.md) is the
 implementation map; [`public_claim_register.md`](../public_claim_register.md)
-is the per-substrate result surface; [`priority_roadmap.md`](../../priority_roadmap.md)
+is the per-substrate result surface;
+[`evidence_atlas/README.md`](../evidence_atlas/README.md) is the
+reviewer-facing evidence crosswalk; [`priority_roadmap.md`](../../priority_roadmap.md)
 is what is next.
 
 The capabilities are organised in three layers: the **architectural stack**
@@ -53,9 +59,8 @@ with companion substrate critic at
 
 A loop that proposes, fits, and adversarially tests claims under deterministic
 gates. One iteration runs through a fixed pipeline; the relevant entry points
-are catalogued in
-[`docs/internal/architectural_maps/autoresearch_loop_architectural_map.md`](../internal/autoresearch_loop_architectural_map.md)
-for maintainer-level audit. Per-iteration: **rubric pre-flight → prepare
+are catalogued in a maintainer-only architectural map for audit.
+Per-iteration: **rubric pre-flight → prepare
 candidate → mutator call → prompt assembly → fit → compression → gate
 battery → judge → information-yield → pivot/close.** A rejection at the
 candidate-preparation stage (lint, AST, NameError, KeyError, missing
@@ -208,6 +213,29 @@ explicitly anti-anchor: they succeed only when they propose something the
 operator's prior would have suppressed. Implementations live in the
 analogy / framer trees referenced in
 [`cognitive_gym.md`](cognitive_gym.md).
+
+### Constraint-to-Isomorphism engine (the strange loop) — substrate-agnostic
+
+`src/ztare/common/constraint_isomorphism.py` generalises ANALOGY beyond
+curve-fit residuals into a canonical INTERFACE any consumer plugs into
+(Strategy pattern, like `fit.mdl.MDLLibrary`). When a system hits a
+structural ceiling it (1) abstracts the failure to a domain-stripped
+`ConstraintFingerprint` (pure topology/complexity/algebra), (2) queries an
+LLM with ONLY that abstract constraint — and a `forbidden_domain` to push
+away from — to surface established theorems from any field that solve it
+(the "orthogonal jump"; stripping semantic gravity is *why* it can reach a
+match that direct prompting can't), and (3) compiles each match to a gate
+and holdout-verifies it via the consumer's `oracle` (MDL / closure rate /
+MRE) — only matches that improve the metric survive. The general engine is
+shared; each consumer implements `StrangeLoopDomain` (`abstract_failure`,
+`compile_to_test`, `oracle`). `fit/analogy.py` (GP-164) is the validated
+curve-fit specialisation and remains in-loop; leanmill and the research
+directors are the intended new consumers. **Efficacy is unproven** — the
+apparatus exists; whether the autonomous query surfaces useful matches vs.
+plausible nonsense is the open test. Surfaced by the `primitive_amnesia`
+precheck (run it before building lateral-search machinery). The SOP for
+wiring any new primitive into the precheck is
+[`primitive_surfacing.md`](primitive_surfacing.md).
 
 ### Kepler vs Newton — two observable layers, judged separately
 
@@ -439,7 +467,7 @@ The primitive's operational rules are empirically derived from its first
 child seam, the GP-245 Forecast Calibration Program
 ([`research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md`](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md);
 public surface at
-[`projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/public/CLAIM_SUMMARY.md`](../../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/public/CLAIM_SUMMARY.md)):
+[`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)):
 
 - forecast rows collect a separately-elicited tail-worry token
   (`tail_insurance_premium`, int 1–100) alongside `p_success` and the
@@ -538,7 +566,7 @@ A separate, layered tamper-evidence protocol over JSONL kernel logs.
 Tamper-evidence is a *chain manifest* over the log, not a per-row
 attestation, and it is a protocol the operator opts into for any log
 they want to make tamper-evident. See
-[`docs/protocols/audit-integrity.md`](../protocols/audit-integrity.md).
+[`docs/guides/reflexive_audit_workflow.md`](../guides/reflexive_audit_workflow.md).
 
 ### Epistemic Airgap gate (cross-provider enforcement)
 
@@ -692,6 +720,14 @@ named axioms — typed infrastructure, not analytic-PDE closure. See
 [`ztare_proofs/`](../../ztare_proofs/).
 
 ---
+
+### Recent additions (2026-06-04, since the last full pass)
+
+- **Canonical MDL/BIC engine** (`src/ztare/fit/mdl.py`): `bic` / `bic_from_loglik` (de-duped from compress_champion's inline copies) + the two-part-code `MDLLibrary` (a Strategy interface). Consumed by autoresearch (compress_champion) and leanmill (lemma-library pruning).
+- **LeanMill calibration** (`src/ztare/leanmill/solver/move_calibration.py`): recursive self-tuning `selection_priors` (shifts each move's est_p_close from compile_ok → ratified as governed data accrues — live: claude_warm 0.35 → ~0.82 on ratified outcomes), `select_calibration_model` (BIC decides split-by-error-class vs pool), recorded-forecast Brier/Elo.
+- **Constraint-to-Isomorphism engine** (`src/ztare/common/constraint_isomorphism.py`, see §1) — now provider-flexible (gemini API / codex+claude subscription CLI; `gemini-3.1-pro-preview` default).
+- **Autoformalization + faithfulness firewall** (`src/ztare/leanmill/solver/autoformalize.py`, OPT-IN): NL→Lean via a frozen leaf, gated by governance-as-faithfulness — compile + non-trivial + non-vacuous + structural iso/lossless preservation + a directional cold cross-family judge; FAIL-CLOSED (a false ACCEPT is a fabricated success). Reuses the kernel; not a parallel governance. EFFICACY UNPROVEN.
+- **Isomorphism-surfaced default-off levers** (`governance_organs.py` MDL-generativity + Schwartz-Zippel [advisory]; equiv-keyed proof cache; reachability invent-criterion). Built + self-tested + parity-safe; **lift mostly UNPROVEN** — the easy-substrate A/Bs came out null (the strong leaf solos them), so the real measurement needs critical-difficulty substrate. Full status: `leanmill_architecture.md`.
 
 ## What this does not have
 

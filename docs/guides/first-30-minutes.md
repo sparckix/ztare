@@ -26,8 +26,10 @@ then start from:
 
 1. `README.md`
 2. `docs/README.md`
-3. `docs/public_claim_register.md`
-4. `docs/concepts/system_position_and_module_map.md`
+3. `docs/evidence_atlas/README.md`
+4. `docs/concepts/glossary.md`
+5. `docs/public_claim_register.md`
+6. `docs/concepts/system_position_and_module_map.md`
 
 The core rule: chat is not the system of record. Durable artifacts live under
 `projects/`, `research_areas/`, `org/`, `ztare_workspace/`, `analytics/`, and
@@ -75,6 +77,8 @@ path.
 | Goal | Start |
 |---|---|
 | Understand the whole stack | `docs/concepts/architecture.md` |
+| Review the evidence graph before trusting the architecture | `docs/evidence_atlas/README.md` |
+| Decode recurring terms and evidence levels | `docs/concepts/glossary.md` |
 | Evaluate public claims and non-claims | `docs/public_claim_register.md` |
 | Understand proof execution / governance gate / residual compiler | `docs/concepts/closure_claim_governance.md` |
 | Understand current priorities | `priority_roadmap.md` |
@@ -94,9 +98,11 @@ the agent name the durable artifact it expects to produce.
 
 ```text
 You are helping me understand ZTARE. Read README.md, docs/README.md,
-docs/guides/first-30-minutes.md, docs/concepts/architecture.md,
-docs/guides/workflow.md, docs/guides/org_runtime_quickstart.md, and
-docs/guides/agent-prompts.md. Then explain:
+docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md,
+docs/concepts/glossary.md, docs/guides/first-30-minutes.md,
+docs/concepts/architecture.md, docs/guides/workflow.md,
+docs/guides/org_runtime_quickstart.md, and docs/guides/agent-prompts.md.
+Then explain:
 
 1. the durable system of record;
 2. whether my task belongs in the substrate-prober workflow, workbench workflow,

@@ -29,6 +29,40 @@ Do not let intelligence stay trapped in conversation.
 ZTARE separates generation, verification, authority, execution, and learning
 so that each layer can fail visibly.
 
+If you are reviewing whether the architecture has evidence behind it, start
+with the [evidence atlas](../evidence_atlas/README.md) before reading this
+document end-to-end. This page explains the machinery; the atlas links
+machinery to claim cards, project summaries, experiments, runnable checks, and
+caveats.
+
+## Contents
+
+**Orientation** — [Model capability is not the unit](#model-capability-is-not-the-unit-of-analysis) ·
+[Training flywheel](#frontier-labs-and-the-training-flywheel) ·
+[Architecture at a glance](#architecture-at-a-glance)
+
+**Where things live** — [Repository topology](#repository-topology) ·
+[Cross-cutting invariants](#cross-cutting-invariants) ·
+[The four hard boundaries](#the-four-hard-boundaries)
+
+**The four layers** — [1 · Evidence & artifacts](#layer-1-project-evidence-and-artifacts) ·
+[2 · In-loop validator](#layer-2-the-in-loop-validator) ·
+[3 · Out-of-loop research ops (LeanMill)](#layer-3-out-of-loop-research-operations) ·
+[4 · Reflexive intelligence (capability catalog)](#layer-4-reflexive-intelligence)
+
+**Operating model** — [Human & agentic operators](#human-and-agentic-operators) ·
+[Canonical state vs. projections](#canonical-state-vs-projections) ·
+[Public repo boundary](#public-repo-boundary)
+
+**Reference** — [What to use when](#what-to-use-when) ·
+[Failure modes caught](#failure-modes-the-architecture-is-built-to-catch) ·
+[Maturity](#current-maturity) · [Documentation map](#documentation-map)
+
+> **Deeper maps:** this page is the *navigable overview*. For the module-level
+> family map see [system_position_and_module_map.md](system_position_and_module_map.md);
+> for the LeanMill engine see [leanmill_architecture.md](leanmill_architecture.md);
+> for the reflexive layer see [reflexive_engineering.md](reflexive_engineering.md).
+
 ## Model Capability Is Not The Unit Of Analysis
 
 ZTARE is built around a model-environment thesis. Frontier model capability
@@ -133,6 +167,59 @@ ledgers update forecasts, routing, primitives, and future work selection
 ```
 
 ---
+
+## Repository Topology
+
+The system is a **kernel** (`src/ztare/`, ~30 subpackages, importable and unit-testable)
+plus **operator scripts** (`scripts/public/`, thin shims that orchestrate the kernel)
+plus **canonical state** (files/ledgers) and **projections** (dashboards/UIs). The kernel
+subpackages, grouped by the four layers, with size as a scale signal:
+
+| Layer | Kernel subpackages (`src/ztare/…`) | Role |
+|---|---|---|
+| Cross-cutting | `gates/` (147), `common/` (9), `primitives/`, `notifications/` | deterministic gates + shared primitives + rails |
+| L2 — Validation | `validator/` (28), `framer/` (11), `framer_gates/`, `rubrics/`, `scaffold/` | adversarial claim testing under rubrics |
+| L3 — Formal/proof | `leanmill/` (7), `formal/` (10), `motion/` (6) | Lean queue/engine, compile/REPL, distance metrics |
+| L3 — Research ops | `research_director/` (45), `orchestrator/` (74), `supervisor/` (48), `orchestration/` (25), `substrates/` (29), `roles/`, `sessions/`, `composition/` | mandates, dispatch, role daemons, substrate plugins |
+| L4 — Reflexive | `forecasting/`, `fit/` (25), `synthesis/`, `signals/`, `experiments/`, `findings/` | forecasts, calibration, mining, learning |
+
+Operator scripts: `scripts/public/control/` (303 — lane workers, daemons, runners),
+`mining/` (36 — reflexive mining), `lean/` (26 — proof providers/tooling),
+`validators/` (14 — discipline linters), `analytics_shared/`, `audits/`, `utilities/`.
+
+> The **module-level** family map (what each module does, by function) is
+> [system_position_and_module_map.md](system_position_and_module_map.md). This table is
+> the navigational index into it; that doc is the detail.
+
+## Cross-Cutting Invariants
+
+Beyond [the four hard boundaries](#the-four-hard-boundaries), four invariants hold across
+every layer. They are what keep the system from drifting into the failure modes below.
+
+1. **Kernel/script dependency direction is one-way.** `src/ztare/` never imports from
+   `scripts/`. Durable, substrate-generic logic lives in the kernel (testable in
+   isolation); `scripts/public/control/` holds only LeanMill-/operator-specific
+   orchestration. A primitive that surfaces a reusable capability belongs in the kernel.
+
+2. **Substrate-agnostic core; substrate specifics plug in.** Shared runners/gates carry
+   no NS/Clay/PDE/APN logic. Substrate behavior enters via config/registry/plugin
+   (`org/structural_anchors/registry.yaml`, policy `domain_atlases`, the substrate
+   `contract`) — never hardcoded in shared code. The generic organization kernel itself
+   lives in [cognitive-firm](https://github.com/sparckix/cognitive-firm); `org/` is the
+   ZTARE tenant overlay.
+
+3. **Capability discoverability through one catalog.** Reusable primitives (gates,
+   operators, analytical/statistical utilities) are registered in
+   `analytics/public/index/architecture_index.jsonl` and surfaced by
+   `primitive_tick_surface.py` into the RD brief, plus a semantic precheck
+   (`research_director/primitive_amnesia.py` — gemini-embedding atlas, vocabulary-invariant
+   query, category tiers) so a task surfaces the capabilities that already exist instead of
+   reinventing them. Anti-patterns/patterns surface from the
+   [anti-pattern catalog](anti_pattern_catalog.md) via `build_context_primer.py`.
+
+4. **Generation never ratifies itself.** Across layers, the actor that proposes is never
+   the actor that grants credit (validator firing squad; LeanMill solver proposes /
+   governance ratifies; the GP-241 commit membrane as sole writer of the official store).
 
 ## The Four Hard Boundaries
 
@@ -330,6 +417,56 @@ The reflexive layer can route attention. It can recommend `run now`, `split`,
 authority by itself. Authority still runs through roles, mandates, gates,
 budgets, and claims.
 
+### Capability catalog and primitive surfacing
+
+A recurring failure of an agent-driven system is **capability amnesia**: an agent
+reinvents (or ignores) a primitive that already exists. The reflexive layer counters
+this with a single catalog and two surfacing paths:
+
+- **Catalog (single source):** `analytics/public/index/architecture_index.jsonl` —
+  every registered gate, operator, reflexive primitive, and reusable analytical/utility
+  primitive (id · path · description · `applicability` tags · impact · `category`).
+- **Proactive surface:** `primitive_tick_surface.py` scopes the catalog into the RD
+  tick brief, so relevant primitives appear *before* work starts. Patterns/anti-patterns
+  surface in parallel from the [anti-pattern catalog](anti_pattern_catalog.md) via
+  `build_context_primer.py`.
+- **Reactive query (semantic):** `research_director/primitive_amnesia.py` answers "what
+  exists for *this* task?" over a **gemini-embedding-001 atlas** of the catalog
+  (`primitive_atlas_embeddings.json`). Semantic is primary (vocabulary-invariant — "two
+  sets overlap" finds `jaccard_distance` with no shared tokens); lexical is a
+  parameter-free tiebreaker; a `category` taxonomy makes 500+ primitives navigable.
+  `--populate-catalog` registers new primitives; `--build-atlas` re-embeds.
+
+Design honesty: a hand-tuned keyword-alias scheme was tried first and **overfit** (it
+surfaced a primitive only for queries phrased in its tuned words); the semantic atlas
+replaced it because it generalizes. The retrieval is **measured**, not asserted: on an
+18-query held-out benchmark (queries phrased to avoid the alias vocabulary) the
+code-aware atlas (gemini-embedding-001, asymmetric `RETRIEVAL_DOCUMENT` /
+`CODE_RETRIEVAL_QUERY`, 768-dim) scores **recall@5 = 1.0, MRR = 0.93 vs lexical-only
+0.67 / 0.57** (`primitive_amnesia.py --eval`). A noise filter dropped utility/IO helpers
+(506 → 315 primitives). Remaining work: usage/impact-weighted ranking (the field exists,
+the blend doesn't yet use it) and a larger, less author-written benchmark.
+
+**Canonical embedding engine (2026-06-04).** Embedding atlases proliferated — primitives,
+Mathlib, APN, NS, and now seams/specs — each builder copy-pasting the same Gemini embed call,
+retry/backoff, content-hash cache, and cosine query. These are now ONE engine,
+`src/ztare/common/embeddings.py` (`embed_batch` / `build_atlas` / `query_atlas`), with each
+corpus a thin CONSUMER that supplies only its harvest (`[{id, text, …meta}]`) + config
+(model / dimensions / output paths) — the engine/consumer invariant (§6n.12) applied to
+embeddings. Atlases share the `gemini-embedding-001` space (asymmetric `RETRIEVAL_DOCUMENT`
+build / `RETRIEVAL_QUERY` query). To create or maintain an atlas: write a harvest, call
+`build_atlas(entries, out_emb, out_manifest, model=…, dimensions=…)` (content-hash cached, so
+re-runs only re-embed changed docs); to query, `query_atlas(path, text, k=…)`. New corpora MUST
+consume this engine, never re-implement the embed call; the existing per-corpus builders
+(`build_apn/mathlib/ns_atlas_embeddings.py`, the primitive atlas) are migrating their local
+copies onto it (APN done; the rest incremental, dual-path, regression-checked per §3b). The
+**seam/spec atlas** (`scripts/public/mining/build_seam_atlas_embeddings.py` →
+`analytics/public/index/seam_atlas_embeddings.json`, queried by
+`research_director/seam_semantic.py`) embeds all 336 seams + specs so a capability description
+maps SEMANTICALLY to the seam that already owns it — the embedding complement to the structural
+seam-interaction map, and the mechanized form of the "find the canonical home before building"
+rule (§6n.13).
+
 See:
 
 - [reflexive_engineering.md](reflexive_engineering.md);
@@ -433,6 +570,8 @@ rewritten as a public abstraction or moved out of the public entry path.
 | Run persistent role-bound work | org runtime / role daemon |
 | Work interactively with a human and agent | operator console + project artifacts |
 | Extract reusable failure patterns | reflexive audit workflow + anti-pattern catalog |
+| Track specification-gaming vectors from incident to runtime gate | [gaming behavior catalog map](gaming_behavior_catalog_map.md) |
+| Run bug-bounty / honeypot search for missed autoresearch failures | [make targets](../reference/make_targets.md) + [gaming behavior catalog map](gaming_behavior_catalog_map.md) |
 
 ---
 
@@ -440,6 +579,10 @@ rewritten as a public abstraction or moved out of the public entry path.
 
 - **Self-certification**: the same model family proposes and validates its own
   success.
+- **Specification-gaming recurrence**: a known gaming vector is cataloged but
+  never reaches a runtime gate or promotion receipt. See the
+  [gaming behavior catalog map](gaming_behavior_catalog_map.md) for the
+  incident -> registry -> promotion -> enforcement lifecycle.
 - **Narrative inflation**: a plausible story outruns deterministic receipts.
 - **Metric theatre**: tasks close while world-measured outcomes do not move.
 - **Chat-state loss**: important decisions remain only in conversation.
@@ -476,3 +619,28 @@ The honest state is that ZTARE is strongest as a research operating system for
 one serious operator and a small set of agents. The direction of travel is a
 cleaner separation between the public validator/research stack, the generic
 cognitive-firm kernel, and tenant-specific overlays.
+
+---
+
+## Documentation Map
+
+This page is the overview. Read next by intent:
+
+| If you want to… | Read |
+|---|---|
+| See every module by function | [system_position_and_module_map.md](system_position_and_module_map.md) |
+| Understand the LeanMill proof engine | [leanmill_architecture.md](leanmill_architecture.md) |
+| Understand the reflexive/learning layer | [reflexive_engineering.md](reflexive_engineering.md) · [reflexive_mining_methodology.md](reflexive_mining_methodology.md) |
+| Understand the validator's theory | [cognitive_gym.md](cognitive_gym.md) · [rubric_specification.md](rubric_specification.md) · [harness_specification.md](harness_specification.md) |
+| Understand the epistemic stance | [epistemic_principles.md](epistemic_principles.md) · [goodhart_at_every_layer.md](goodhart_at_every_layer.md) |
+| Know what already exists before building | the [capability catalog](#capability-catalog-and-primitive-surfacing) + [anti_pattern_catalog.md](anti_pattern_catalog.md) + [capabilities.md](capabilities.md) |
+| See the org/runtime model | [organizational_primitives.md](organizational_primitives.md) · [ztare_research_company_architecture.md](ztare_research_company_architecture.md) |
+| Check evidence behind claims | [evidence atlas](../evidence_atlas/README.md) |
+| Look up a term | [glossary.md](glossary.md) |
+
+Seams/specs (governance of in-flight work) live under `research_areas/seams/` and
+`research_areas/specs/active/`; the canonical experiment record is the GP-241
+daemon-owned store, exported to `research_areas/EXPERIMENT_TRACK_RECORD.md`.
+
+When this overview and a deeper doc disagree, the deeper doc wins for its subsystem;
+fix the drift here so the overview stays trustworthy.

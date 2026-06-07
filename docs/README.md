@@ -29,6 +29,7 @@ directions and in an Obsidian vault as well as on GitHub.
 | First-run path | `docs/guides/first-30-minutes.md` | public / usable | The fastest verified route through the Obsidian vault map, public smoke target, and track selection. |
 | Agent prompt sheets | `docs/guides/agent-prompts.md` | public / usable | Paste-ready prompts for using Codex or Claude to learn the repo, inspect projects, audit GP-230/GP-243, and stay inside membrane/observer boundaries. |
 | Scientific case studies and papers | `docs/public_claim_register.md`, `papers/README.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md`, `priority_roadmap.md` | mixed; status-labeled | Conservative public claims, manuscripts, and durable experiment/findings records for gravity, neural scaling, Navier-Stokes, transformer-successor, and other bounded campaigns. |
+| Evidence atlas | `docs/evidence_atlas/README.md` | public / reviewer-facing | Crosswalk from public claims and project summaries to evidence levels, primitive/pattern status, runnable review commands, non-claims, and known repo-health caveats. |
 | Benchmark evidence | `benchmarks/benchmark_evidence.md`, `benchmarks/constraint_memory/README.md`, `papers/experimental_math_letter/pysr_baseline_full.json` | bounded / public | Conservative comparison evidence for false-positive suppression, null-returning gates, and evaluator hardening. Not a public ranking claim. |
 | Formal artifacts | `ztare_proofs/README.md`, `ztare_proofs/ZtareProofs.lean`, `ztare_proofs/ZtareProofs/` | experimental / public source | Lean gate artifacts, proof sources, and formalization experiments. Generated `.lake/` build state is not source. |
 | Tooling & data map | `scripts/README.md`, `analytics/README.md` | hand-authored / per-file | The operational toolchain and the analytics/ledger tree. Each sub-folder README names every script and states in one line what it does, so an agent or reader can navigate the code surface without opening source. |
@@ -37,7 +38,7 @@ directions and in an Obsidian vault as well as on GitHub.
 | Reusable patterns | `docs/concepts/prediction_ledger_pattern.md`, `docs/concepts/graph_diagnostic_belief_update_pattern.md`, `docs/concepts/cross_scale_fractal_map.md`, `docs/concepts/agent_agnostic_recursive_gain.md` | public / reusable | Self-contained patterns extracted from the work, usable without the rest of ZTARE. |
 | Concept-level workflows | `docs/concepts/closed_loop_theorem_writer_workflow.md`, `docs/concepts/closure_utility_test_workflow.md` | public / procedural | Procedures that are concept-level rather than operator guides. |
 | Glossary & reference | `docs/concepts/glossary.md`, `docs/reference/` | reference | Plain-language term definitions and supporting reference material. |
-| Internal boundary | `docs/internal/` | internal / not public evidence | Maintainer audit support. Listed only to mark the boundary; not a first-read path or public evidence source. |
+| Internal boundary | maintainer-only docs | internal / not public evidence | Maintainer audit support. Listed only to mark the boundary; not a first-read path or public evidence source. |
 | Landings | `docs/landings/` | prototype UI artifacts | Static visual demos for governance and org-runtime concepts. |
 
 ## Recommended Paths
@@ -55,25 +56,30 @@ tenant notification provider as part of the generic kernel.
 
 1. `README.md`
 2. `docs/concepts/system_position_and_module_map.md`
-3. `docs/concepts/glossary.md` — GP-NNN tracking IDs (e.g. GP-225 LeanMill,
-   GP-230 forecast pool, GP-243 action intelligence) and other recurring terms
+3. `docs/concepts/glossary.md` — evidence levels, GP-NNN tracking IDs
+   (e.g. GP-225 LeanMill, GP-230 forecast pool, GP-243 action intelligence),
+   and other recurring terms
 4. `docs/concepts/capabilities.md` — what the apparatus actually has
-5. `docs/public_claim_register.md`
-6. `docs/guides/quickstart.md`
-7. `docs/guides/workflow.md`
-8. `docs/concepts/architecture.md`
-9. `priority_roadmap.md` — what is next
+5. `docs/evidence_atlas/README.md` — how to review claim evidence
+6. `docs/public_claim_register.md`
+7. `docs/guides/quickstart.md`
+8. `docs/guides/workflow.md`
+9. `docs/concepts/architecture.md`
+10. `priority_roadmap.md` — what is next
 
 ### Researcher Evaluating Claims
 
 1. `README.md`
 2. `docs/public_claim_register.md`
-3. `docs/concepts/system_position_and_module_map.md`
-4. `docs/concepts/closure_claim_governance.md`
-5. `benchmarks/benchmark_evidence.md`
-6. `papers/README.md`
-7. `research_areas/EXPERIMENT_TRACK_RECORD.md`
-8. Relevant project artifacts under `projects/` when intentionally public
+3. `docs/evidence_atlas/README.md`
+4. `docs/evidence_atlas/claim_cards.md`
+5. `docs/evidence_atlas/primitive_evidence_matrix.md`
+6. `docs/concepts/system_position_and_module_map.md`
+7. `docs/concepts/closure_claim_governance.md`
+8. `benchmarks/benchmark_evidence.md`
+9. `papers/README.md`
+10. `research_areas/EXPERIMENT_TRACK_RECORD.md`
+11. Relevant project artifacts under `projects/` when intentionally public
 
 ### Builder Integrating The Kernel
 
@@ -93,7 +99,8 @@ tenant notification provider as part of the generic kernel.
 
 1. `docs/concepts/agentic_engineering_patterns.md`
 2. `docs/concepts/reflexive_engineering.md`
-3. `docs/guides/reflexive_audit_workflow.md`
+3. `docs/evidence_atlas/primitive_evidence_matrix.md`
+4. `docs/guides/reflexive_audit_workflow.md`
 
 ### Agent Or Contributor Navigating The Code
 
@@ -113,7 +120,7 @@ tenant notification provider as part of the generic kernel.
 
 ## Non-Goals For The Public Entry Point
 
-- Do not read every file in `docs/internal/` first.
+- Do not read every maintainer-only doc first.
 - Do not treat every project under `projects/` as a polished public case study.
 - Do not infer that a high-scoring experiment is a scientific discovery unless
   the experiment ledger and paper layer say so.
@@ -125,17 +132,18 @@ tenant notification provider as part of the generic kernel.
 
 **Sub-folders**
 
-- [`concepts/`](concepts/) - 30 file(s)
+- [`concepts/`](concepts/) - 32 file(s)
+- [`evidence_atlas/`](evidence_atlas/) - 8 file(s)
 - [`guides/`](guides/) - 14 file(s)
 - [`landings/`](landings/) - 1 file(s)
 - [`reference/`](reference/) - 4 file(s)
 
 **Documents**
 
-- [9 Ways LLMs Cheat Their Own Evaluations](cheating_catalog.md)
+- [LLM Gaming Behavior Catalog](cheating_catalog.md) - Human-readable catalog of the original numeric self-certification cheats plus mined cross-substrate gaming vectors, registry status, and audit patterns.
 - [Multi-Substrate Validation — Companion to JOURNEY.md](multi_substrate_validation.md) - Companion evidence to the journey: how the same epistemic discipline held across the NS, Planck, consciousness and gravity substrates.
 - [Public Claim Register](public_claim_register.md) - Conservative public claim register for the rowdy ZTARE campaigns.
-- [A 60-Day Sprint, Six Architectural Phases](sprint_60day_journey.md) - First-person build narrative, the 60-day arc that produced ZTARE across six architectural phases, including honest failures and reflexive self-audit.
+- [A 70-Day Sprint, Six Architectural Phases](sprint_70day_journey.md) - First-person build narrative, the 70-day arc that produced ZTARE across six architectural phases, including honest failures and reflexive self-audit.
 
-<sub>4 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>5 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->
