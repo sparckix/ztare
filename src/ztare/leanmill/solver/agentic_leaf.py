@@ -26,13 +26,15 @@ offline and the substrate specifics live in the caller, not here.
 """
 from __future__ import annotations
 
+import os
 import re
 import subprocess
+import time
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable, Optional
 
-AXIOM_ALLOWLIST = {"propext", "Classical.choice", "Quot.sound"}
+from ztare.gates.lean_compile_primitives import AXIOM_ALLOWLIST  # F3: single source of truth (was a local literal)
 _AXIOM_LINE = re.compile(r"depends on axioms:\s*\[([^\]]*)\]")
 
 
@@ -123,6 +125,85 @@ class LeafResult:
     decomposed: bool = False
     calibration: dict = field(default_factory=dict)
     inadmissible: bool = False   # True ⇒ a negative here is NOT real (instrument not calibrated)
+    timeout_retried: bool = False  # True ⇒ an attempt ran out of time and was retried with more budget
+    gap: str = ""                # the leaf's own honest-gap diagnosis (`-- GAP: …`) — the exact missing
+    #                              lemma(s) it could not prove; the most useful signal a non-closure gives
+
+
+# Timeout-aware retry (adaptive budget, 2026-06-03): when an agent dispatch RUNS OUT OF TIME
+# (under-budget, not a genuine "cannot prove"), retry ONCE with this budget multiplier. This is
+# the non-naive form of adaptive budget — give an out-of-time attempt MORE time rather than read
+# it as a real negative. Non-iatrogenic: only fires on a DETECTED timeout; the kernel verify
+# still gates (no false closure); a genuine failure (no timeout marker) is NOT retried.
+TIMEOUT_RETRY_FACTOR = 1.6
+_MIN_DISPATCH_S = 30   # don't start a leaf dispatch with less than this budget left (a too-short call
+#                        can't do anything useful) — the floor for the whole-move deadline below
+_TIMEOUT_MARKERS = ("timed out after", "timeoutexpired")
+
+
+def _dispatch_timed_out(out: str) -> bool:
+    low = (out or "").lower()
+    return any(m in low for m in _TIMEOUT_MARKERS)
+
+
+def _extract_gap(probe: "str | Path") -> str:
+    """Pull the leaf's honest-gap diagnosis (`-- GAP: …`) out of the probe — the leaf telling us the
+    EXACT lemma(s) it needs but could not prove. Discarding this wastes the most useful signal an honest
+    non-closure produces; the caller surfaces it (→ residual_to_lever / a targeted conjecture / the
+    decompose retry below)."""
+    try:
+        txt = Path(probe).read_text(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001
+        return ""
+    gaps = re.findall(r"--\s*GAP:\s*(.+)", txt)
+    return " | ".join(g.strip() for g in gaps if g.strip())[:600]
+
+
+def _leaf_prompt(target: str, goal: str, probe_name: str, *, mode: str = "direct",
+                 prior_gap: str = "") -> str:
+    """The leaf is a FRONTIER research mathematician (codex-5.5-xhigh / opus-4.8 class) — prompt it like
+    one, not like a compile-bot. The legacy prompt was iatrogenic three ways, and it is what INDUCED the
+    instance-shadowing gaming on P1: (1) it optimized for COMPILATION, not truth — a stuck leaf then games
+    to make it compile; (2) it asserted 'the needed definitions are already in the file', FALSE on an open
+    target, pushing 'force a way'; (3) it forbade only sorry/axioms — NOT the laundering vectors — so the
+    cheat was implicitly allowed under compile-pressure. It also must NOT blindfold the leaf from real
+    mathematics. This prompt: give it room, the real objective (a GENUINE proof; the compile only CHECKS),
+    an HONEST-GAP exit, and a precise prohibition on LAUNDERING (not on mathematics).
+    `ZTARE_LEANMILL_LEGACY_PROMPT=1` reverts to the old narrow prompt (for the A/B)."""
+    if os.environ.get("ZTARE_LEANMILL_LEGACY_PROMPT") == "1":
+        if mode == "decompose":
+            return (f"The theorem `{target}` : {goal} in {probe_name} is hard and still has a sorry. "
+                    f"DECOMPOSE it: state and prove auxiliary helper lemmas (lemma/have) that build toward "
+                    f"it, then assemble `{target}` from them. Run `lake env lean {probe_name}` and iterate "
+                    f"until ZERO errors and NO sorry anywhere. Do not add axioms.")
+        return (f"Prove the theorem `{target}` in {probe_name} (currently `sorry`): theorem {target} : "
+                f"{goal}. Edit the file to replace the sorry with a real proof, then run "
+                f"`lake env lean {probe_name}` and iterate until it compiles with zero errors and no "
+                f"sorry. The needed definitions are already in the file. Do not add axioms or sorry.")
+    common = (
+        "You are a strong research mathematician. Prove it GENUINELY: use any real mathematics and any "
+        "genuine Mathlib lemma you know, invent and prove your own auxiliary lemmas, and RECOGNIZE the "
+        "underlying structure / the field that solves it if you can — knowing the relevant theory (e.g. "
+        "a transport from another field) is an ASSET, never forbidden. "
+        f"Run `lake env lean {probe_name}` to CHECK your proof — the compile is the VERIFICATION, not the "
+        "objective; a proof that only compiles because it cheats is REJECTED by governance and wastes the "
+        "attempt. FORBIDDEN (auto-detected and rejected — do not attempt them even when stuck): `sorry`/"
+        "`admit`/an added `axiom`; adding an instance, `notation`, `macro`, or `set_option` that changes "
+        "what the statement MEANS; altering or shadowing any definition the statement depends on; restating "
+        "the goal as its own hypothesis. If after genuine effort you CANNOT prove it, do NOT force a compile "
+        "— leave the `sorry` and add a comment `-- GAP: <the precise lemma(s) you would need but cannot "
+        "prove>`. An HONEST GAP that localizes the missing mathematics is a VALUED outcome; a gamed compile "
+        "is worthless.")
+    if mode == "decompose":
+        # RETRY FEEDBACK: if the direct attempt left an honest-gap diagnosis, hand it back so the
+        # decomposition targets exactly what the leaf already identified as missing (not a blind retry).
+        gap_fb = (f"Your direct attempt diagnosed this missing piece: «{prior_gap}». Build the "
+                  f"decomposition toward proving it. " if prior_gap else "")
+        return (f"The theorem `{target}` : {goal} in {probe_name} is hard. {gap_fb}Work BACKWARD like a "
+                f"mathematician: identify the intermediate lemmas the real proof needs; prove each, or "
+                f"leave a `-- GAP:` on the ones you genuinely cannot; then assemble `{target}` from them. "
+                + common)
+    return (f"Prove `{target}` : {goal} in {probe_name} (currently `sorry`). " + common)
 
 
 def _probe_text(defs: str, goal: str, target: str) -> str:
@@ -173,34 +254,56 @@ def solve_leaf(
         verify = lambda: verify_lean_proof(probe, target, lake_bin=lake_bin,
                                            project_dir=project_dir, timeout=250)
 
+    # WHOLE-attempt deadline (2026-06-07 — the warm-domination fix). `timeout` is the TOTAL budget for
+    # this solve_leaf; the direct + timeout-retry + decompose + decompose-retry SHARE it. Before this, each
+    # phase got the FULL `timeout`, so one solve_leaf could run direct[t] + decompose[t] + retries ≈ 4·t —
+    # and `solve_robust` then multiplied that by N providers (warm ran 1250s under a 150s cap, starving the
+    # whole move space). Each dispatch now gets the REMAINING budget; a phase is skipped once it's spent.
+    _dl = time.time() + max(_MIN_DISPATCH_S, timeout)
+
+    def _budget() -> int:
+        return max(0, int(_dl - time.time()))
+
     # 2) direct agentic attempt
     probe.write_text(_probe_text(defs, goal, target), encoding="utf-8")
-    direct = (f"Prove the theorem `{target}` in {probe_name} (currently `sorry`): "
-              f"theorem {target} : {goal}. Edit the file to replace the sorry with a real "
-              f"proof, then run `lake env lean {probe_name}` and iterate until it compiles "
-              f"with zero errors and no sorry. The needed definitions are already in the file. "
-              f"Do not add axioms or sorry.")
-    dispatch(direct, runtime=runtime, repo=repo, timeout=timeout)
+    direct = _leaf_prompt(target, goal, probe_name, mode="direct")
+    out = dispatch(direct, runtime=runtime, repo=repo, timeout=max(_MIN_DISPATCH_S, _budget()))
     res.rounds = 1
     ok, why = verify()
+    # Timeout-aware retry: an OPEN result whose dispatch RAN OUT OF TIME is under-budget, not a real
+    # negative — retry with the budget that REMAINS (capped at the retry factor), only if any is left.
+    if not ok and _dispatch_timed_out(out) and _budget() >= _MIN_DISPATCH_S:
+        dispatch(direct, runtime=runtime, repo=repo,
+                 timeout=min(int(timeout * TIMEOUT_RETRY_FACTOR), _budget()))
+        res.rounds += 1
+        res.timeout_retried = True
+        ok, why = verify()
     res.reason = why
     if ok:
         res.closed = True
         return res
+    res.gap = _extract_gap(probe)   # capture the leaf's own diagnosis from the direct attempt
 
-    # 3) decomposition fallback (the conjecture-DAG move): ask for helper lemmas, reassemble
-    if decompose:
-        decomp = (f"The theorem `{target}` : {goal} in {probe_name} is hard and still has a "
-                  f"sorry. DECOMPOSE it: state and prove auxiliary helper lemmas (lemma/have) "
-                  f"that build toward it, then assemble `{target}` from them. Run "
-                  f"`lake env lean {probe_name}` and iterate until ZERO errors and NO sorry "
-                  f"anywhere. Do not add axioms.")
-        dispatch(decomp, runtime=runtime, repo=repo, timeout=timeout)
-        res.rounds = 2
+    # 3) decomposition fallback (the conjecture-DAG move): ask for helper lemmas, reassemble — only if
+    #    budget remains (else the direct attempt already consumed this move's time). RETRY FEEDBACK: hand
+    #    the direct attempt's honest-gap diagnosis to the decomposition so it targets what the leaf found
+    #    missing (not a blind retry).
+    if decompose and _budget() >= _MIN_DISPATCH_S:
+        decomp = _leaf_prompt(target, goal, probe_name, mode="decompose", prior_gap=res.gap)
+        out = dispatch(decomp, runtime=runtime, repo=repo, timeout=_budget())
+        res.rounds += 1
         res.decomposed = True
         ok, why = verify()
+        if not ok and _dispatch_timed_out(out) and _budget() >= _MIN_DISPATCH_S:
+            dispatch(decomp, runtime=runtime, repo=repo,
+                     timeout=min(int(timeout * TIMEOUT_RETRY_FACTOR), _budget()))
+            res.rounds += 1
+            res.timeout_retried = True
+            ok, why = verify()
         res.reason = why
         res.closed = ok
+        if not ok:
+            res.gap = _extract_gap(probe) or res.gap   # refresh with the decomposition's diagnosis
     return res
 
 
@@ -227,12 +330,25 @@ def solve_robust(
     kernel-clean closure; if none closes, the most-informative admissible attempt (so the
     residual is still localized). Each attempt is independently calibrated + kernel-arbitrated;
     a closure from ANY attempt is a real closure (the kernel does not care which model found it)."""
+    # WHOLE-MOVE deadline (2026-06-07 — the warm-domination fix). `timeout` is the TOTAL budget for the
+    # ENTIRE best-of-N, not per-attempt: previously each of the N providers × attempts got the full
+    # `timeout`, so the warm move ran N × (direct+decompose+retries) ≈ the whole wallclock under a tight
+    # per-move cap, starving every other move. Each attempt now gets the budget that REMAINS; once it's
+    # spent we stop starting new attempts and keep the best of what we have.
+    deadline = time.time() + max(_MIN_DISPATCH_S, timeout)
     attempts: list[LeafResult] = []
+    stop = False
     for provider in providers:
+        if stop:
+            break
         for i in range(attempts_per_provider):
+            remaining = int(deadline - time.time())
+            if attempts and remaining < _MIN_DISPATCH_S:   # budget spent → keep best-of-what-we-have
+                stop = True
+                break
             r = solve_leaf(goal, defs=defs, project_dir=project_dir, repo=repo, lake_bin=lake_bin,
                            probe_name=f"RobustProbe_{provider}_{i}.lean", target=target,
-                           runtime=provider, timeout=timeout, decompose=decompose,
+                           runtime=provider, timeout=max(_MIN_DISPATCH_S, remaining), decompose=decompose,
                            dispatch=dispatch, verify=verify, substrate_calibrate=substrate_calibrate)
             attempts.append(r)
             if r.closed:
@@ -287,6 +403,31 @@ def _self_test() -> int:
                      verify=lambda: (True, "x"))
     if r.closed or not r.calibration.get("best_of", {}).get("all_inadmissible"):
         fails.append("solve_robust all-dead must be inadmissible, not a fake negative")
+    # _dispatch_timed_out detection
+    if not _dispatch_timed_out("subscription agent command timed out after 600s"):
+        fails.append("timeout marker must be detected")
+    if _dispatch_timed_out("could not prove the goal"):
+        fails.append("a genuine failure must NOT look like a timeout")
+    # TIMEOUT-AWARE RETRY: an under-budget timeout (open, then closes with more budget) is
+    # recovered; a GENUINE failure (no timeout marker) is NOT retried.
+    st = {"d": 0, "v": 0}
+    def _disp_timeout(prompt, **k):
+        if "ALIVE" in prompt:
+            return "ALIVE"
+        st["d"] += 1
+        return "...subscription agent command timed out after 600s" if st["d"] == 1 else "done"
+    def _verify_then_close():
+        st["v"] += 1
+        return (st["v"] >= 2, "clean" if st["v"] >= 2 else "uses_sorry")
+    r = solve_leaf("True", defs="", project_dir=".", repo=".", lake_bin="lake",
+                   dispatch=_disp_timeout, verify=_verify_then_close, decompose=False)
+    if not (r.closed and r.timeout_retried and r.rounds == 2):
+        fails.append("timeout-retry must recover an under-budget timeout (closed+retried)")
+    r = solve_leaf("True", defs="", project_dir=".", repo=".", lake_bin="lake",
+                   dispatch=lambda p, **k: "ALIVE" if "ALIVE" in p else "could not prove",
+                   verify=lambda: (False, "uses_sorry"), decompose=False)
+    if r.closed or r.timeout_retried or r.rounds != 1:
+        fails.append("a genuine failure must NOT trigger the timeout-retry")
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1
 

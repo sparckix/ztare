@@ -40,7 +40,7 @@ class DeepseekV2Provider(Provider):
                 model_id=self.model_id,
                 timeout_seconds=timeout_s,
                 request_label=f"leanmill::solver::deepseek::{self.model_id}",
-                max_tokens=2048,
+                max_tokens=16384  # was 2048 — truncated real Lean proofs (foot-gun fix),
             )
             stdout = getattr(resp, "text", "") or ""
         except Exception as e:

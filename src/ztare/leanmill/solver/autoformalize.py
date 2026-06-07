@@ -345,6 +345,66 @@ def autoformalize(nl: str, *, formalize_fn: "Callable[[str], str]",
     return AutoformalizeResult(nl, lean_statement, verdict)
 
 
+def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str) -> str:
+    """Turn the firewall's REJECTION into targeted NL guidance the formalizer can act on — the
+    per-leg feedback that makes the refine loop close compile/faithfulness gaps instead of re-rolling."""
+    checks = getattr(verdict, "checks", {}) or {}
+    reason = getattr(verdict, "reason", "") or ""
+    if checks.get("compiles") is False or "typecheck" in reason:
+        guide = ("It did NOT typecheck. Fix the Lean 4 syntax / Mathlib API errors so `lake env lean` "
+                 "reports zero `error:` lines (the `sorry` is fine). Keep the definitions; correct only what fails.")
+    elif checks.get("non_trivial") is False or "cheap tactic" in reason or "degenerate" in reason:
+        guide = ("It was closed by a CHEAP tactic (degenerate / not the real problem). State the GENUINE "
+                 "claim — non-vacuous, non-trivially-true.")
+    elif checks.get("structure_preserved") is False or "weaken" in reason or "hypothesis" in reason:
+        guide = ("It DROPPED/ADDED a hypothesis or WEAKENED the conclusion. Preserve EVERY hypothesis and "
+                 "the EXACT conclusion; keep quantifier order.")
+    elif checks.get("round_trip_faithful") is False or "round-trip" in reason:
+        guide = ("Its back-translation did not match the problem. Re-formalize faithfully to the ORIGINAL "
+                 "statement — neither weaker nor stronger.")
+    else:
+        guide = f"It was rejected: {reason}"
+    return (f"\n\n[REFINE] Your previous formalization was REJECTED by the faithfulness firewall. {guide}\n"
+            f"Your previous attempt (REPAIR it; reuse what is right, fix only the fault — do not restart):\n"
+            f"{prior_stmt}\n")
+
+
+def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
+                         compile_fn: "Callable[[str], bool]", triviality_fn: "Callable[[str], bool]",
+                         backtranslate_fn: "Callable[[str], str]", judge_fn: "Callable[[str, str], bool]",
+                         consistency_fn: "Optional[Callable[[str], bool]]" = None,
+                         structural_fn: "Optional[Callable[[str, str], bool]]" = None,
+                         max_refines: int = 2) -> "tuple[AutoformalizeResult, list]":
+    """Autoformalize through the shared RefineHandover loop — the compile-fix the one-shot `autoformalize`
+    lacks (Litt P1 produced a faithful-STRUCTURED but uncompiling formalization that the one-shot gate just
+    rejected). On a firewall rejection, hand the formalizer back the verdict's failing leg + its prior
+    attempt and re-formalize, bounded. SAME produce→feedback→refine shape as the solver's gap-refine, via
+    the SAME driver. The faithfulness gate stays FAIL-CLOSED on every leg (the driver never accepts on a
+    rejection). Returns (AutoformalizeResult, trace)."""
+    from ztare.common.refine_handover import RefineHandover
+
+    def _gen(ctx):
+        try:
+            return (formalize_fn((ctx.get("nl") or "") + (ctx.get("hint") or "")) or "").strip()
+        except Exception as e:  # noqa: BLE001
+            return ""
+
+    def _verify(stmt):
+        return faithfulness_gate(nl, stmt, compile_fn=compile_fn, triviality_fn=triviality_fn,
+                                 backtranslate_fn=backtranslate_fn, judge_fn=judge_fn,
+                                 consistency_fn=consistency_fn, structural_fn=structural_fn)
+
+    def _refine_ctx(stmt, verdict, ctx):
+        if not (stmt or "").strip():
+            return None                      # empty generation ⇒ nothing to repair from ⇒ stop
+        return {"nl": nl, "hint": _formalize_feedback_hint(verdict, stmt)}
+
+    rh = RefineHandover(generate=_gen, verify=_verify, accept_when=lambda v: bool(v.accepted),
+                        build_refine_context=_refine_ctx, max_refines=max_refines)
+    stmt, verdict, trace = rh.run({"nl": nl, "hint": ""})
+    return AutoformalizeResult(nl, stmt, verdict), trace
+
+
 def reference_fingerprint(lean_statement: str) -> dict:
     """The structural fingerprint to pass as `expected=` — derive it from a TRUSTED formalization (a
     human-checked reference, or the cross-family-agreed candidate). Then `structural_faithfulness`
@@ -352,7 +412,7 @@ def reference_fingerprint(lean_statement: str) -> dict:
     return _parse_lean_statement(lean_statement)
 
 
-def _api_text(prompt: str, *, model: str = "gemini-2.5-flash", label: str, timeout_s: int = 120) -> str:
+def _api_text(prompt: str, *, model: str = "gemini-3.1-pro-preview", label: str, timeout_s: int = 120) -> str:
     """One API completion via the EXISTING `LLMRuntime` (gemini/deepseek allowed; never a metered
     codex/claude call). For the mechanical legs (back-translate, judge) — NOT for formalize."""
     try:
@@ -388,6 +448,51 @@ _FORMALIZE_PROMPTS = {
 }
 
 
+_CLI_NOISE = re.compile(
+    r"^(Reading additional input|OpenAI Codex|Anthropic|Claude Code|workdir:|model:|provider:|"
+    r"approval:|sandbox:|reasoning effort|reasoning summaries|session id|tokens used|-{3,}|"
+    r"user|codex|assistant|system|\d{4}-\d\d-\d\dT[\d:.]+Z|.*ERROR rmcp|.*Transport channel|"
+    r".*AuthRequired|.*www_authenticate).*$",
+    re.IGNORECASE)
+
+
+def _extract_lean_from_dispatch(blob: str, mode: str) -> str:
+    """`default_dispatch` returns the RAW codex/claude CLI stdout+stderr — banner + prompt echo +
+    transcript + the answer (often printed twice). It is NOT a clean Lean statement; compiling it
+    raw chokes on the banner (this is WHY the autoformalizer one-shot e2e failed pre-2026-06-05).
+    Extract the Lean artifact: for `oneshot` the LAST `theorem|lemma … := (by) sorry` statement
+    (single- or multi-line); for `define_then_state` the `import…theorem` block. The oneshot path
+    keys on the theorem REGEX (not 'everything left'), so residual banner lines are harmless."""
+    if not blob:
+        return ""
+    text = blob.replace("\r", "")
+    # PREFER the LEAN-TAGGED fence (the model's deliberate Lean answer), take the LAST one (final
+    # answer); only fall back to the longest UNtagged fence if there is no ```lean block. (Adversarial-
+    # review fix 2026-06-05: "longest fence wins" mis-picked a prose fence / echoed example.)
+    tagged = re.findall(r"```lean\s*\n(.*?)```", text, re.DOTALL)
+    if tagged:
+        text = tagged[-1]
+    else:
+        untagged = re.findall(r"```\s*\n(.*?)```", text, re.DOTALL)
+        if untagged:
+            text = max(untagged, key=len)
+    lines = [ln for ln in text.split("\n")
+             if not _CLI_NOISE.match(ln.strip())
+             and not ln.strip().startswith(("Formalize this", "PROBLEM:", "Output ONLY", "Translate this"))]
+    clean = "\n".join(lines)
+    if mode == "define_then_state":
+        m = re.search(r"(?m)^\s*(import|open|set_option|variable|namespace|def|structure|abbrev|"
+                      r"inductive|class|instance|theorem|lemma)\b", clean)
+        return (clean[m.start():].strip() if m else "")    # "" (not prose) on no-match ⇒ gate fast-rejects
+    stmts = re.findall(r"(?s)\b((?:theorem|lemma)\s+\S+.*?:=\s*(?:by\s+)?sorry)", clean)
+    if stmts:
+        return stmts[-1].strip()
+    for ln in reversed(lines):                                          # fallback: last theorem-ish line
+        if ("theorem" in ln or "lemma" in ln) and "sorry" in ln:
+            return ln.strip()
+    return ""   # no theorem/import block found ⇒ "" so the firewall's empty-formalization fast-reject fires
+
+
 def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "codex", timeout_s: int = 240) -> str:
     """NL → candidate Lean (`… := by sorry`) via the leanmill WARM-AGENT ARCHITECTURE
     (`agentic_leaf.default_dispatch` on subscription, codex/claude) — the SAME dispatch the SOLVER uses,
@@ -414,7 +519,8 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "codex",
     repo = Path(__file__).resolve().parents[4]
     prompt = _FORMALIZE_PROMPTS[mode] + (nl or "")
     try:
-        return (default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or "").strip()
+        raw = default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or ""
+        return _extract_lean_from_dispatch(raw, mode)
     except Exception:
         return ""
 
@@ -425,7 +531,7 @@ def default_formalize_multistep(nl: str, *, runtime: str = "codex", timeout_s: i
     return default_formalize(nl, mode="define_then_state", runtime=runtime, timeout_s=timeout_s)
 
 
-def default_backtranslate(lean_statement: str, *, model: str = "gemini-2.5-flash") -> str:
+def default_backtranslate(lean_statement: str, *, model: str = "gemini-3.1-pro-preview") -> str:
     """Lean → NL back-translation — a mechanical rendering (one completion), so it uses `LLMRuntime`
     (gemini, a DIFFERENT family from a codex formalizer). Returns '' on any failure ⇒ the gate's
     non-empty guard fails-closed (no admission on a dead back-translator)."""
@@ -435,7 +541,7 @@ def default_backtranslate(lean_statement: str, *, model: str = "gemini-2.5-flash
     return (_api_text(prompt, model=model, label="autoformalize_backtranslate") or "").strip()
 
 
-def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemini-2.5-flash") -> bool:
+def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
     """DIRECTIONAL faithfulness judge: True ONLY if the back-translation is LOGICALLY EQUIVALENT to the
     original — not weaker, not stronger, no dropped/added hypothesis, no relaxed conclusion (≤→<, =→≤,
     ∀→∃). One `LLMRuntime` completion (gemini, cross-family from a codex formalizer); parses a strict
@@ -487,26 +593,104 @@ def default_triviality(statement: str, sandbox) -> bool:
                   ":= by first | trivial | rfl | simp_all | omega | decide | tauto | norm_num | aesop",
                   statement, count=1, flags=re.S)
     body = triv if triv.lstrip().startswith("import") else f"import Mathlib\n\n{triv}"
-    if _compile_probe(body, sandbox, "AutoformTriv", 150) is True:
+    cheap = _compile_probe(body, sandbox, "AutoformTriv", 150)
+    if cheap is None:
+        # FAIL-CLOSED (matches the docstring): a cheap-tactic probe we COULDN'T RUN (timeout / infra
+        # failure) must NOT silently admit. Raising routes through faithfulness_gate's fail-closed
+        # exception path. (Adversarial-review fix 2026-06-05: the old `is True` coerced None→False =
+        # "non-trivial PASS" = a documented fail-closed guarantee that was FALSE in code.)
+        raise RuntimeError("AutoformTriv cheap-tactic probe inconclusive (infra) — fail-closed, no silent admit")
+    if cheap is True:
         return True                                          # closed by cheap tactics → degenerate
     return nondegenerate_instance_probe(sig, sandbox, timeout=150).get("vacuity_confirmed") is True
 
 
 def default_solve(target_name: str, statement: str, *, substrate, timeout_s: int = 600) -> dict:
     """solve_fn: route an ADMITTED faithful statement into the existing solver+governance (solve_adhoc)."""
-    import importlib.util, sys
-    from pathlib import Path
-    wp = Path(__file__).resolve().parents[4] / "scripts/public/control/leanmill/solver_lane_worker.py"
-    spec = importlib.util.spec_from_file_location("solver_lane_worker", wp)
-    m = importlib.util.module_from_spec(spec); sys.modules["solver_lane_worker"] = m; spec.loader.exec_module(m)
+    from ztare.leanmill.solver.solver_core import solve_adhoc  # #42: import from src, not the script
     body = statement if statement.lstrip().startswith("import") else f"import Mathlib\n\n{statement}"
-    return m.solve_adhoc(target_name, body, "", substrate=str(substrate), mode="dag_search", timeout_s=timeout_s)
+    return solve_adhoc(target_name, body, "", substrate=str(substrate), mode="dag_search", timeout_s=timeout_s)
+
+
+_SHELL_CONST = {"0", "1", "True", "False", "∅", "()", "Unit", "PUnit", "default", "arbitrary",
+                "sorry", "trivial", "{}", "[]"}
+
+
+def detect_def_shells(formalization: str) -> "list[tuple[str, str]]":
+    """Deterministic def-faithfulness PRE-gate for `define_then_state` output (#23). A `def Genus := 0`
+    / `abbrev X := True` shell makes the theorem typecheck VACUOUSLY while the statement-level round-trip
+    (which back-translates the THEOREM text, not the def BODY) passes — so a def-shell launders through
+    the firewall. Flags def/abbrev declarations whose body is a DEGENERATE CONSTANT (bare literal /
+    True/False / ∅ / sorry / `fun _ => <const>`). CONSERVATIVE — only UNAMBIGUOUS shells, so it never
+    false-rejects a real def. Returns [(name, reason)]; empty = no obvious shell. (The full gate also
+    back-translates each def + cold-judges it vs the NL — the LLM layer; this is the cheap core.)"""
+    shells: "list[tuple[str, str]]" = []
+    for m in re.finditer(
+        r"(?ms)^\s*(?:noncomputable\s+|private\s+|scoped\s+)*(def|abbrev)\s+([A-Za-z_][\w'.]*)"
+        r".*?:=\s*(.+?)(?=\n\s*(?:noncomputable\s+|private\s+|scoped\s+)*"
+        r"(?:def|abbrev|structure|inductive|theorem|lemma|instance|class|namespace|end|open|variable|#)\b|\Z)",
+        formalization):
+        kind, name, raw = m.group(1), m.group(2), m.group(3).strip()
+        body = re.sub(r"^fun\b.*?=>\s*", "", raw, flags=re.DOTALL).strip()   # strip a leading λ
+        tok = body.split()[0] if body.split() else body
+        if (body in _SHELL_CONST or tok in _SHELL_CONST
+                or re.fullmatch(r"-?\d+(\.\d+)?", body) or body.startswith("sorry")):
+            shells.append((name, f"{kind} `{name}` body is a degenerate constant: {raw[:50]!r}"))
+    return shells
+
+
+_DEF_JUDGE_PROMPT = (
+    "A natural-language math problem and a Lean DEFINITION extracted from its formalization:\n"
+    "PROBLEM: {nl}\nDEFINITION (Lean): {decl}\n\n"
+    "Is this definition a FAITHFUL formalization of an object/notion the problem refers to — or is it a "
+    "PLACEHOLDER / SHELL / WRONG object (a constant stand-in, an opaque parameter, or a DIFFERENT notion "
+    "than intended)? Answer with EXACTLY one token on the first line: FAITHFUL or UNFAITHFUL, then a "
+    "one-line reason."
+)
+
+
+def _default_def_judge(nl: str, decl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
+    """Cold cross-family (gemini) judge for ONE Lean definition vs the NL intent. Returns True (faithful)
+    unless a CLEAR `UNFAITHFUL` verdict — FAITHFUL / ambiguous / empty / error all → True (admit), so the
+    layer does NOT over-reject faithful defs (detect_def_shells + the statement-level firewall are the
+    fail-closed layers; this catches the clear NON-constant wrong-object / placeholder)."""
+    text = (_api_text(_DEF_JUDGE_PROMPT.format(nl=(nl or "")[:1200], decl=(decl or "")[:800]),
+                      model=model, label="autoformalize_def_judge") or "").strip().upper()
+    first = text.splitlines()[0] if text else ""
+    return not first.startswith("UNFAITHFUL")
+
+
+def default_def_faithfulness(nl: str, formalization: str, *, judge_fn=None) -> dict:
+    """LLM-per-def layer of the def-faithfulness gate (#23): cold-judge each def/abbrev/structure against
+    the NL intent. Complements `detect_def_shells` (constant shells) by catching a NON-constant UNFAITHFUL
+    def (right shape, wrong object). Rejects ONLY on a clear UNFAITHFUL verdict (biased to admit — see
+    `_default_def_judge`). Returns {checked, unfaithful:[{name, decl}]}; `judge_fn(nl, decl)->bool` injectable."""
+    decls = re.findall(
+        r"(?ms)^\s*(?:noncomputable\s+|private\s+|scoped\s+)*(?:def|abbrev|structure)\s+[A-Za-z_][\w'.]*"
+        r".*?(?=\n\s*(?:noncomputable\s+|private\s+|scoped\s+)*"
+        r"(?:def|abbrev|structure|inductive|theorem|lemma|instance|class|namespace|end|open|variable|#)\b|\Z)",
+        formalization)
+    if not decls:
+        return {"checked": 0, "unfaithful": []}
+    judge_fn = judge_fn or _default_def_judge
+    unfaithful = []
+    for decl in decls:
+        nm = re.search(r"(?:def|abbrev|structure)\s+([A-Za-z_][\w'.]*)", decl)
+        name = nm.group(1) if nm else "?"
+        try:
+            faithful = judge_fn(nl, decl.strip())
+        except Exception:  # noqa: BLE001
+            faithful = True   # judge error → admit (do not over-reject on a tooling failure)
+        if faithful is False:
+            unfaithful.append({"name": name, "decl": decl.strip()[:120]})
+    return {"checked": len(decls), "unfaithful": unfaithful}
 
 
 def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
                             formalize_fn=None, compile_fn=None, triviality_fn=None,
                             backtranslate_fn=None, judge_fn=None, structural_fn=None,
-                            solve_fn=None, timeout_s: int = 600) -> dict:
+                            solve_fn=None, timeout_s: int = 600, max_refines: int = 2,
+                            def_faithfulness: bool = False) -> dict:
     """THE END-TO-END LINK: NL → autoformalize (faithfulness firewall) → if admitted, solve_adhoc
     (solver + governance kernel). The firewall GATES the solver — an unfaithful / vacuous / trivial
     statement is rejected BEFORE any solve, which is what prevents the worst laundering (an opaque or
@@ -520,15 +704,42 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
     judge_fn = judge_fn or default_directional_judge
     solve_fn = solve_fn or (lambda n, s: default_solve(n, s, substrate=substrate, timeout_s=timeout_s))
 
-    af = autoformalize(nl, formalize_fn=formalize_fn, compile_fn=compile_fn, triviality_fn=triviality_fn,
-                       backtranslate_fn=backtranslate_fn, judge_fn=judge_fn, structural_fn=structural_fn)
+    af, refine_trace = autoformalize_refine(
+        nl, formalize_fn=formalize_fn, compile_fn=compile_fn, triviality_fn=triviality_fn,
+        backtranslate_fn=backtranslate_fn, judge_fn=judge_fn, structural_fn=structural_fn,
+        max_refines=max_refines)
     out = {"nl": nl, "lean_statement": af.lean_statement, "faithful": af.verdict.accepted,
-           "faithfulness_reason": af.verdict.reason, "faithfulness_checks": af.verdict.checks, "solved": None}
+           "faithfulness_reason": af.verdict.reason, "faithfulness_checks": af.verdict.checks,
+           "refine_trace": refine_trace, "refine_rounds": max(0, len(refine_trace) - 1), "solved": None}
     if not af.is_target:
         out["outcome"] = "rejected_by_firewall"          # the firewall did its job — no unsound solve
         return out
-    m = re.search(r"(?m)\btheorem\s+(\w+)", af.lean_statement)
-    name = m.group(1) if m else "autoform_target"
+    # DEF-FAITHFULNESS GATE (#23): for define_then_state output, a degenerate-constant def-shell
+    # (`def Genus := 0`) makes the theorem typecheck vacuously while the statement round-trip passes
+    # (it back-translates the THEOREM, not the def body). If the formalization DEFINES objects and any
+    # is an unambiguous shell, REJECT before solving — no auto-solve of a def-shell. (Deterministic
+    # layer; the cold-judge-per-def is the remaining LLM layer.)
+    _shells = detect_def_shells(af.lean_statement)
+    if _shells:
+        out["def_shells"] = _shells
+        out["faithfulness_reason"] = f"def-shell(s) detected — unfaithful definition(s): {_shells}"
+        out["outcome"] = "rejected_by_firewall"
+        return out
+    # LLM-per-def layer (opt-in #23, def_faithfulness=True): catches a NON-constant UNFAITHFUL def (right
+    # shape, wrong object) that the deterministic detect_def_shells misses. Opt-in (per-def LLM cost +
+    # biased-to-admit so it never over-rejects a faithful def — rejects only on a clear UNFAITHFUL verdict).
+    if def_faithfulness:
+        _dff = default_def_faithfulness(nl, af.lean_statement)
+        if _dff["unfaithful"]:
+            out["def_unfaithful"] = _dff["unfaithful"]
+            out["faithfulness_reason"] = f"unfaithful def(s) (cold per-def judge): {_dff['unfaithful']}"
+            out["outcome"] = "rejected_by_firewall"
+            return out
+    # Target the LAST theorem|lemma (the stated target — in define_then_state the main claim follows
+    # the helper defs/lemmas; the old FIRST-`theorem`-only regex mis-pointed the solver at a helper and
+    # missed `lemma`-only bodies → misreported `admitted_and_closed` on a trivial helper). Review fix 2026-06-05.
+    _names = re.findall(r"(?m)\b(?:theorem|lemma)\s+([A-Za-z_][\w'.]*)", af.lean_statement)
+    name = _names[-1] if _names else "autoform_target"
     sv = solve_fn(name, af.lean_statement)
     r0 = (sv.get("results") or [{}])[0] if isinstance(sv, dict) else {}
     out["solved"] = r0.get("outcome")
