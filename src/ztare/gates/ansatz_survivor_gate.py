@@ -1,7 +1,19 @@
-"""GP-144 Gate G3 — Ansatz Survivor (SPECULATIVE SHELL).
+"""GP-144 Gate G3 — Ansatz Survivor (SPECULATIVE SHELL — SUPERSEDED 2026-06-07).
 
 Status: 2026-04-24 — speculative shell; blocked on live Lean compilation
 pipeline integration.
+
+SUPERSEDED 2026-06-07 by leanmill: the blocker ("live Lean compilation pipeline /
+GP-122 lean_repl") is now PROVIDED by the leanmill governed solver — `solve_adhoc`
+is the live kernel-verified Lean pipeline, and the "pick the SHORTEST verifying
+proof among top-K" idea this shell wanted IS already shipped as
+`ztare.leanmill.solver.family_lemma_library.mdl_shortest` (the MDL description-length
+proof-form selector). Do NOT build this out here; route any real ansatz-shortest-proof
+selection through leanmill. The gate is left registry-WIRED (a benign advisory shell;
+`proof_surveyability` declares a dependency on it and the gate-engagement tests assert
+its ordering) — fully removing it is a separate gate-engagement refactor (drop the
+dependency + update test_gate_engagement.py), NOT done here to avoid breaking the wired
+pipeline. See the GP-144 seam.
 
 PURPOSE
 -------

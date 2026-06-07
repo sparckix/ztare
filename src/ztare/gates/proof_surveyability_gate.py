@@ -45,12 +45,8 @@ DEFAULT_FORBIDDEN_PATTERNS = [
     r"\badmit\b",
 ]
 
-DEFAULT_ALLOWED_AXIOMS = {
-    "propext",
-    "Classical.choice",
-    "Quot.sound",
-    # Mathlib / Lean 4 core axioms
-}
+# F3 (2026-06-05): single source of truth — was a local literal identical to agentic_leaf's.
+from ztare.gates.lean_compile_primitives import AXIOM_ALLOWLIST as DEFAULT_ALLOWED_AXIOMS
 
 
 def axiom_allowlist_check(

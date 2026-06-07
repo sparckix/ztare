@@ -487,16 +487,31 @@ def compute_secondary_observables(lean_path: Path) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
-def _run_v33_anti_laundering(lean_source: str, lean_path: Path,
-                             ztare_proofs_root: Path,
-                             deep_verify: bool = False) -> dict[str, Any]:
-    """Run the v33 anti-laundering organs on the (already-compiled) Lean
+def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
+                               ztare_proofs_root: Path,
+                               deep_verify: bool = False,
+                               original_source: str | None = None,
+                               target_name: str | None = None) -> dict[str, Any]:
+    """THE ONE governance anti-laundering kernel (renamed 2026-06-06 from the cryptic
+    `_run_v33_anti_laundering`; a back-compat alias is kept at module end). This is the single canonical
+    organ stack EVERY solving mode routes through — never re-implement a reduced per-mode gate battery
+    beside it (that frankenstein is exactly what the `proof_cage` experiment proved out and what this
+    rename exists to discourage). Organs: vacuity / gold-name-verbatim / single-lemma-exact /
+    indirect-leakage / consequence-exposure / statement-integrity.
+
+    Run the anti-laundering organs on the (already-compiled) Lean
     source. Component-1 shape detectors + gold-name corpus confirm are
     CHEAP (no extra Lean). Component-2 Lean re-probes are gated behind
     deep_verify (the loop already paid one compile; don't 5x it).
 
-    Returns {passed, flags, detail}. passed=False iff any organ confirms
-    a false-closure class.
+    `original_source` + `target_name` (optional): when the caller knows the POSED statement (e.g. the
+    sorried candidate / row source), the statement-integrity organ runs — it diffs the probe's
+    pre-existing decls against the original and flags `statement_altered_confirmed` if the agent edited
+    a depended-on definition (the def-alteration channel v33's single-file organs structurally cannot
+    see). This is a GENERAL-PURPOSE organ of the ONE kernel: every solving mode that passes the
+    original (factory C-rows, ad-hoc, validator) gets it — not an ad-hoc special case.
+
+    Returns {passed, flags, detail}. passed=False iff any organ confirms a false-closure class.
     """
     import importlib.util as _ilu
     ctl = ztare_proofs_root.parent.parent / "scripts/public/control"
@@ -605,10 +620,60 @@ def _run_v33_anti_laundering(lean_source: str, lean_path: Path,
         except Exception as e:
             detail["consequence_exposure"] = {"error": str(e)}
 
+    # currency-mismatch organ (scalar-wrapper smuggle). ADVISORY — added 2026-06-06 to make THIS kernel
+    # the canonical SUPERSET so `proof_audit` (which ran currency but not statement_integrity) can reuse
+    # the kernel without losing an organ. Advisory flag ⇒ does NOT change any existing caller's pass/fail
+    # (only `_confirmed` flags + `vacuity_suspect` block), so this addition is byte-parity for `passed`.
+    cur = _load("v33_currency_mismatch_gate")
+    if cur is not None:
+        try:
+            s = cur.detect_shape(lean_source)
+            detail["currency_mismatch"] = {"shape": s}
+            if s.get("scalar_wrapper_suspect"):
+                flags.append("currency_mismatch_shape_suspect_advisory")
+        except Exception as e:
+            detail["currency_mismatch"] = {"error": str(e)}
+
+    # statement-integrity organ (two-input: original vs probe) — the def-alteration channel the
+    # single-file organs above cannot see. Runs whenever the caller supplies the posed statement.
+    if original_source and target_name:
+        try:
+            from ztare.leanmill.solver.statement_integrity import check as _si_check
+            iv = _si_check(original_source, lean_source, target_name)
+            detail["statement_integrity"] = iv.to_dict()
+            if not iv.ok:
+                flags.append("statement_altered_confirmed")
+        except Exception as e:
+            detail["statement_integrity"] = {"error": str(e)}  # fail-OPEN on organ crash
+
+    # canonical re-elaboration organ (2026-06-06): the airtight backstop for the WHOLE context-semantic-
+    # hijack class (added instance / notation / macro / set_option that hijacks a verbatim statement — the
+    # FALSIFY false-statement control's instance-shadowing was the seed). Strips the ADDED elaboration-
+    # context from the probe (KEEPS opens / lemmas) and RE-COMPILES; if the target no longer closes
+    # sorry-free, the proof DEPENDED on the manipulation. Recompiles ONLY when there is hijack-context to
+    # strip (else a fast pass) ⇒ cost paid only on suspect probes. Default-ON; ZTARE_CANONICAL_REELAB=0 off.
+    import os as _os_reelab
+    if (original_source and target_name and ztare_proofs_root is not None
+            and _os_reelab.environ.get("ZTARE_CANONICAL_REELAB", "1") != "0"):
+        try:
+            from ztare.leanmill.solver.canonical_reelaboration import check as _reelab
+            _ok_re, _d_re = _reelab(original_source, lean_source, target_name, ztare_proofs_root)
+            detail["canonical_reelaboration"] = {"ok": _ok_re, "detail": _d_re}
+            if not _ok_re:
+                flags.append("context_hijack_confirmed")
+        except Exception as e:  # noqa: BLE001 — fail-OPEN on a compile-infra error (never block on tooling)
+            detail["canonical_reelaboration"] = {"error": str(e)}
+
     # A CONFIRMED organ (not merely advisory shape-suspect) fails the layer.
     confirmed = [f for f in flags if f.endswith("_confirmed") or f == "vacuity_suspect"]
     return {"passed": len(confirmed) == 0, "flags": flags,
             "detail": detail, "confirmed": confirmed}
+
+
+# Back-compat alias: the kernel was `_run_v33_anti_laundering` before the 2026-06-06 rename. External
+# callers (ns_governance_gate, closure_claim_discipline_linter, older solver code) import the old name;
+# this keeps them working with ZERO behavior change while the canonical name is `run_anti_laundering_kernel`.
+_run_v33_anti_laundering = run_anti_laundering_kernel
 
 
 def run_lean_proof_gate(
@@ -674,7 +739,7 @@ def run_lean_proof_gate(
     # proof compiled — a non-compiling proof is already a fail).
     if result.compiled:
         try:
-            v33 = _run_v33_anti_laundering(lean_source, lean_path,
+            v33 = run_anti_laundering_kernel(lean_source, lean_path,
                                            ztare_proofs_root, deep_verify=deep_verify)
             result.anti_laundering_passed = bool(v33["passed"])
             result.v33_organ_flags = list(v33["flags"])

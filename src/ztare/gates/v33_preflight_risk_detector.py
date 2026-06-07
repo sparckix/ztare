@@ -340,6 +340,93 @@ def nondegenerate_instance_probe(statement: str, sandbox: Path, imports: "list[s
 
 
 # ---------------------------------------------------------------------------
+# Randomized multi-point falsifier (#38) — Schwartz-Zippel ext. of the above
+# ---------------------------------------------------------------------------
+def _parse_value_binders(statement: str) -> "tuple[list, str]":
+    """Extract instantiable (name, type) VALUE binders — explicit `(n:T)` params in the head AND
+    leading `∀ n : T,` binders in the conclusion — plus the conclusion body with those leading ∀s
+    stripped (so concrete values can be substituted). Hypothesis binders (types containing a relation)
+    are excluded; only nameable value variables are returned."""
+    concl = _conclusion(statement)
+    head = statement[:statement.rfind(concl)] if (concl and concl in statement) else statement
+    REL = ("=", "<", "≤", "≥", "∈", "≠", "↔", "∧", "∨", "→")
+    vars_ = []
+    for names, t in re.findall(r"\(([^():]+):([^()]+)\)", head):
+        if any(r in t for r in REL):
+            continue
+        for n in names.split():                 # split multi-name binders: (a b : ℝ) → a:ℝ, b:ℝ
+            if n.strip():
+                vars_.append((n.strip(), t.strip()))
+    body = concl
+    m = re.match(r"\s*∀\s+([\w'\s]+):\s*([^,]+?),\s*(.*)", body, re.DOTALL)
+    while m:
+        t = m.group(2).strip()
+        vars_ += [(n.strip(), t) for n in m.group(1).split() if n.strip()]
+        body = m.group(3)
+        m = re.match(r"\s*∀\s+([\w'\s]+):\s*([^,]+?),\s*(.*)", body, re.DOTALL)
+    return vars_, body.strip()
+
+
+def randomized_falsification_probe(statement: str, sandbox: Path, k: int = 8, timeout: int = 90,
+                                   seed: int = 1729, imports: "list[str] | None" = None) -> dict:
+    """Schwartz-Zippel-style EXOGENOUS falsifier for the COMPUTABLE-ALGEBRAIC class (#38, generalizing
+    `nondegenerate_instance_probe` from ONE instance to K RANDOM ones). Instantiate the statement's
+    value-variables at K random concrete points and try to prove the conclusion FALSE there
+    (`¬ concl[vars:=c]` via norm_num/decide). SOUND in the catch direction: a falsification that
+    COMPILES ⇒ the conclusion is genuinely false at c (a wording-quirk / false conjectured lemma /
+    laundered statement) — the fraud collapses under the random probe. NONE compiling ⇒
+    consistent-with-true, ADVISORY (never a false-confirm on prover weakness, and never auto-reject:
+    a parsing slip could mis-substitute, so this is advisory and MUST be calibrated on true+false
+    controls before any gating). Cheap: concrete evaluation, NO proof search. Best uses: a PRE-PROOF
+    filter for conjectured lemmas (#35 — kill a false L before spending a solve) and a multi-point
+    strengthening of the #24 vacuity probe. Applies ONLY when every value var is a computable numeric
+    type (ℕ/ℤ/ℚ/ℝ/Int/Nat/Rat/Real); otherwise returns an advisory skip."""
+    import random as _r
+    imp = "\n".join(imports) if imports else "import Mathlib"
+    vars_, body = _parse_value_binders(statement)
+    if not vars_:
+        return {"applicable": False, "reason": "no instantiable value variables (advisory skip)"}
+    # SOUNDNESS GUARD (red-team-driven, 2026-06-05): this conclusion-falsifier IGNORES hypotheses, so it
+    # is only sound for UNCONDITIONAL statements. A hypothesis-guarded theorem (a binder whose type is a
+    # relation/implication, or a top-level → / ↔ in the conclusion) would be FALSE-falsified by random
+    # points that violate its hypotheses (e.g. real_ineq `(a b:ℝ)(h:a≤b): a-b≤0` at a=5,b=3). Skip those —
+    # hypothesis-guarded vacuity is the randomized-NON-VACUITY probe's job (a separate tool), not this one.
+    _HYPREL = ("=", "<", "≤", "≥", "∈", "≠", "↔", "→")
+    _concl = _conclusion(statement)
+    _head = statement[:statement.rfind(_concl)] if (_concl and _concl in statement) else statement
+    # scan the WHOLE head (catches hyp binders the (n:T) regex misses on nested-paren types like
+    # `(h : (0:ℝ)=1)`, and function-type binders); a relation in the head ⇒ a hypothesis ⇒ skip (sound).
+    if any(s in _head for s in _HYPREL) or "→" in body or "↔" in body:
+        return {"applicable": False, "reason": "hypothesis-guarded — conclusion-falsifier ignores hyps (would false-falsify); skip"}
+    NUM = ("ℕ", "ℤ", "ℚ", "ℝ", "Nat", "Int", "Rat", "Real")
+    if not all(any(c in t for c in NUM) for _, t in vars_):
+        return {"applicable": False, "reason": f"non-computable var type(s): {[t for _, t in vars_]} (skip)"}
+    rng = _r.Random(seed)
+
+    def _val(t: str) -> str:
+        lo = 0 if ("ℕ" in t or "Nat" in t) else -9
+        return f"({rng.randint(lo, 17 if lo == 0 else 9)} : {t.strip()})"
+
+    checked = 0
+    for i in range(k):
+        subs, vals = body, []
+        for n, t in vars_:
+            v = _val(t)
+            subs = re.sub(rf"(?<![\w']){re.escape(n)}(?![\w'])", v, subs)
+            vals.append(f"{n}:={v}")
+        probe = (f"{imp}\n\nexample : ¬ ({subs}) := by\n"
+                 f"  first | norm_num | decide | simp_arith | (norm_num [Finset.sum_range_succ]; done)\n")
+        res = _compile_probe(probe, sandbox, f"V33RandFalsify{i}", timeout)
+        checked += 1
+        if res is True:
+            return {"applicable": True, "falsified": True, "carrier": "lean_random_refutation",
+                    "counterexample": vals, "k_checked": checked,
+                    "note": "conclusion proven FALSE at a random instance → quirk / false lemma / laundered"}
+    return {"applicable": True, "falsified": False, "k_checked": checked,
+            "note": f"no random refutation across k={checked} — consistent-with-true (ADVISORY, not a proof)"}
+
+
+# ---------------------------------------------------------------------------
 # Ground-truth validation
 # ---------------------------------------------------------------------------
 

@@ -36,6 +36,13 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
+# SINGLE SOURCE OF TRUTH for the kernel axiom allowlist (re-analysis F3, 2026-06-05). Was triplicated
+# (agentic_leaf.AXIOM_ALLOWLIST, verify_lean_stub.ALLOWED_AXIOMS, proof_surveyability_gate.
+# DEFAULT_ALLOWED_AXIOMS) — identical today, but a policy widening one would silently diverge the
+# supposed-ONE kernel. All three now import this. Lives in the lowest-level compile primitive (imports
+# none of those, so no cycle). frozenset = immutable; widen the policy in exactly one place.
+AXIOM_ALLOWLIST = frozenset({"propext", "Classical.choice", "Quot.sound"})
+
 
 @lru_cache(maxsize=1)
 def _elan_bin_dir() -> str | None:
@@ -142,6 +149,11 @@ AXIOM_OUTPUT_RE = re.compile(
     r"'([^']+)'\s+depends on axioms:\s+\[([^\]]*)\]",
     re.MULTILINE | re.DOTALL,
 )
+# Lean prints THIS form (not the bracketed one) for an axiom-FREE declaration —
+# the cleanest possible result. Without parsing it, an axiom-free theorem yields
+# an empty axiom_map and is mis-graded `axiom_probe_inconclusive` (the 2026-05-31
+# bug that left the auditor's verdict inconclusive even on clean proofs).
+AXIOM_NONE_RE = re.compile(r"'([^']+)'\s+does not depend on any axioms", re.MULTILINE)
 LEAN_ERROR_RE = re.compile(r"^\S*\.lean:\d+:\d+: error:", re.MULTILINE)
 _BARE_ERROR_RE = re.compile(r"(?m)^\s*error:")
 
@@ -176,6 +188,9 @@ def parse_axiom_output(output: str) -> dict[str, list[str]]:
             if part.strip()
         ]
         parsed[theorem] = axioms
+    # axiom-free declarations (Lean's "does not depend on any axioms" form) → []
+    for match in AXIOM_NONE_RE.finditer(output):
+        parsed.setdefault(match.group(1).strip(), [])
     return parsed
 
 

@@ -9,8 +9,43 @@ from __future__ import annotations
 from typing import Any
 
 
+_PLACEHOLDER_STRINGS = {
+    "missing",
+    "missing_receipt",
+    "not_present",
+    "not supplied",
+    "not_supplied",
+    "not yet derived",
+    "not_yet_derived",
+    "not yet proven",
+    "not_yet_proven",
+    "pending",
+    "placeholder",
+    "todo",
+    "tbd",
+    "unknown",
+    "label_only",
+    "label-only",
+    "same_source_label_only",
+}
+
+
 def _present(value: Any) -> bool:
-    return value not in (None, "", [], {}, False)
+    if value in (None, "", [], {}, False):
+        return False
+    if isinstance(value, str):
+        normalized = " ".join(value.strip().lower().split())
+        if normalized in _PLACEHOLDER_STRINGS:
+            return False
+        if normalized.startswith(("missing ", "todo:", "tbd:", "placeholder:")):
+            return False
+        if normalized.endswith((" missing", " pending", " label only")):
+            return False
+    if isinstance(value, list):
+        return any(_present(item) for item in value)
+    if isinstance(value, dict):
+        return any(_present(item) for item in value.values())
+    return True
 
 
 def _consumer_matches(value: Any, expected_consumers: list[str]) -> bool:

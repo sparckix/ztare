@@ -909,6 +909,33 @@ def run_global_gates(
         # Encode cap-at-50 as a -50 penalty on a base of 100
         total_penalty += am.get("penalty", -50)
 
+    # Autoresearch gaming gates (GP-086 follow-on). These are deterministic
+    # AST/provenance checks for fixture-backed autoresearch vectors. Semantic
+    # transfer/rigor vectors remain outside this syntactic gate and route
+    # through their own carriers.
+    from ztare.gates.autoresearch_gaming_gates import run_autoresearch_gaming_gates
+
+    psg_results = run_autoresearch_gaming_gates(project_dir, rubric_data)
+    gates.extend(psg_results)
+    for psg in psg_results:
+        if not psg["passed"] and psg.get("hard_fail"):
+            any_hard_fail = True
+        if not psg["passed"]:
+            total_penalty += psg.get("penalty", 0)
+
+    # Semantic gaming carrier gates. These do not claim syntactic proof of
+    # semantic failure; they select the appropriate scope/transfer/rigor review
+    # carrier and fail closed when that risk is present.
+    from ztare.gates.semantic_gaming_carrier import run_semantic_gaming_carrier_gates
+
+    sgc_results = run_semantic_gaming_carrier_gates(project_dir, rubric_data, thesis_text, evidence_text)
+    gates.extend(sgc_results)
+    for sgc in sgc_results:
+        if not sgc["passed"] and sgc.get("hard_fail"):
+            any_hard_fail = True
+        if not sgc["passed"]:
+            total_penalty += sgc.get("penalty", 0)
+
     failed_gates = [g["name"] for g in gates if not g["passed"]]
     return {
         "source": "global_gates",
