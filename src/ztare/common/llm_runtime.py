@@ -72,7 +72,7 @@ _bootstrap_dotenv_if_needed()
 
 
 MODEL_MAP = {
-    "gemini": "gemini-2.5-flash",
+    "gemini": "gemini-3.1-pro-preview",
     "gemini-lite": "gemini-3.1-flash-lite-preview",
     "gemini-pro": "gemini-3.1-pro-preview",
     "claude": "claude-sonnet-4-6",
@@ -558,13 +558,14 @@ class LLMRuntime:
         self._deepseek_client = None
 
     def gemini_client(self):
-        if self._gemini_client is None and os.environ.get("GEMINI_API_KEY"):
+        gemini_api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+        if self._gemini_client is None and gemini_api_key:
             if genai is None:
                 raise RuntimeError(
                     "Gemini provider requested but google-genai is not "
                     "installed (optional dependency). Install google-genai "
                     "or use the anthropic/openai providers.")
-            self._gemini_client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
+            self._gemini_client = genai.Client(api_key=gemini_api_key)
         return self._gemini_client
 
     def anthropic_client(self):
@@ -613,7 +614,7 @@ class LLMRuntime:
             return bool(os.environ.get("DEEPSEEK_API_KEY")) and OpenAI is not None
         if is_openai_model(model_id):
             return bool(os.environ.get("OPENAI_API_KEY")) and OpenAI is not None
-        return bool(os.environ.get("GEMINI_API_KEY"))
+        return bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
 
     def default_fallback_model_ids(self, model_id: str) -> tuple[str, ...]:
         configured: list[str] = []

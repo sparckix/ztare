@@ -102,7 +102,7 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
         {
             "case_id": "model_family_aliases_resolve_canonically",
             "passed": (
-                resolve_model_id("gemini") == "gemini-2.5-flash"
+                resolve_model_id("gemini") == "gemini-3.1-pro-preview"
                 and resolve_model_id("gemini-pro") == "gemini-3.1-pro-preview"
                 and resolve_model_id("deepseek-reasoner") == "deepseek-reasoner"
                 and resolve_director_model_id("gpt4o") == "o1"

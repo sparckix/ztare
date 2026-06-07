@@ -182,6 +182,39 @@ PROMPT_BY_LEG = {
 }
 
 
+# ── Lean-substrate plug (2026-06-06) ──────────────────────────────────────────────────────────────
+# The leanmill governed-proof-search factory is the Lean-substrate specialization of THIS cognitive
+# gym (isomorphism audit wf_bfb1a4eb: worth-it specialization, not a frankenstein). Its strategist
+# moves ARE the Three Legs on Lean proof artifacts, so they register here as the inner-primitive plugs
+# the meta strange-loop dispatches to (exactly as invert→inverter_agent / compress→compress_champion /
+# disagree→margin_of_safety do for the regression substrate). Dispatch-by-REFERENCE (names the leanmill
+# move + env flag + entry point) — the hook is a DISPATCHER, not a generator, so it does NOT invoke
+# lake/LLM here; the caller runs the named leanmill entry on the proof substrate.
+_LEAN_LEG_PLUGS = {
+    "compress": {
+        "suggestion": ("Lean COMPRESS = leanmill GENERALIZE (MOVE_GENERALIZE, ZTARE_LEANMILL_GENERALIZE=1): "
+                       "prove a STRONGER invariant G' with G'⇒G whose proof subsumes the goal; the "
+                       "'irreducible core that survives' is the load-bearing lemma — `conjecture.conjecture_advances` "
+                       "trivialize-to-True probe identifies the lemma whose removal collapses the chain. "
+                       "Run via `solver_core.solve(mode='dag_search')`."),
+        "rationale": "Lean-substrate Compress leg → leanmill generalize + load-bearing core (the isomorphism)."},
+    "invert": {
+        "suggestion": ("Lean INVERT = leanmill FALSIFY (the Invert leg): before spending proof budget on a "
+                       "conjectured (sub)goal, probe for a counterexample — `governance_organs.randomized_differential_probe` "
+                       "(Schwartz-Zippel literal perturbation) / the `governed_dag_search` MOVE_FALSIFY producer. "
+                       "When a live Lean goal + root are in the request context, this connector EXECUTES the producer "
+                       "(`conjecture.LeanFalsifier` via `common.inversion.run_inversion`) — the sink now has a real "
+                       "producer; this string is the no-substrate fallback."),
+        "rationale": "Lean-substrate Invert leg → leanmill falsify producer (shared common.inversion contract)."},
+    "disagree": {
+        "suggestion": ("Lean DISAGREE = leanmill matched-negative-control + statement_integrity: "
+                       "`solver_core._verify_matched_negative_control` (is the proof just a Mathlib lookup?) + "
+                       "`statement_integrity.check` (did the agent ALTER the statement to a provable variant?) + "
+                       "a cold cross-provider adversary pass on the goal."),
+        "rationale": "Lean-substrate Disagree leg → leanmill MNC + statement-integrity adversary."},
+}
+
+
 def call_gemini(prompt: str, max_tokens: int = 800) -> str:
     """Local LLM call. Returns text or empty string if no API key."""
     if not os.environ.get("GEMINI_API_KEY"):
@@ -204,78 +237,128 @@ def call_gemini(prompt: str, max_tokens: int = 800) -> str:
         return ""
 
 
-def maybe_dispatch_to_inner(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
-    """If the artifact is shaped right for an inner primitive, route to it.
+# ── Substrate-keyed leg-connector registry (the general-purpose connector layer) ─────────────────────
+# A LegConnector recognizes ITS substrate's artifact shape and dispatches to that substrate's inner
+# primitive by REUSE (it imports/references the existing primitive; it never reimplements one). It
+# returns None when the request isn't its shape, so `maybe_dispatch_to_inner` just tries the registered
+# connectors for a leg in order and takes the first hit. Adding a substrate = `register_leg_connector`,
+# NOT editing the dispatcher — this is the connector pattern that kills the capability-tax / built-but-
+# unwired class for the Three Legs (the leanmill↔gym isomorphism made concrete + reusable).
+LegConnector = Any  # Callable[[CognitiveGymRequest], Optional[CognitiveGymResponse]]
+_LEG_CONNECTORS: "dict[str, list]" = {"invert": [], "compress": [], "disagree": []}
 
-    Returns None if no inner primitive applies (caller falls back to LLM
-    dispatch). This is the strange-loop join: outer caller, inner
-    machinery where it fits.
 
-    Recognized artifact shapes (in `request.context`):
-      - "champion": dict with parametric form + score → routes to inner primitive
-      - "project_dir": Path to a substrate workspace → margin_of_safety / inverter
-      - else: no inner primitive applies; outer LLM dispatch
-    """
-    leg = request.leg
+def register_leg_connector(leg: str, connector: "LegConnector") -> None:
+    """Register a substrate's connector for a leg. Connectors are tried in registration order."""
+    _LEG_CONNECTORS.setdefault(leg, []).append(connector)
+
+
+def _lean_invert_producer(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Lean Invert leg PRODUCER (2026-06-06): when the request carries a live Lean goal + root, ACTUALLY
+    run the falsifier — `conjecture.LeanFalsifier` through the shared Popper contract
+    `common.inversion.run_inversion` — instead of returning a reference suggestion. This is the producer
+    the arch reserved (`_LEAN_LEG_PLUGS['invert']` was a sink). Returns None when no live goal/root is
+    present (⇒ the dispatch-by-reference plug handles it) or on any error (fail-soft to the suggestion)."""
     ctx = request.context or {}
-
-    # Only INVERT and COMPRESS have champion-shaped inner primitives.
-    # ADVERSARIAL_DISAGREE has margin_of_safety but it operates on full project_dir.
-
-    if leg == "invert":
-        # inverter_agent.run_inverter expects (project_dir, champion_thesis, score)
-        if "project_dir" in ctx and "champion_thesis" in ctx:
-            try:
-                from src.ztare.validator.inverter_agent import run_inverter
-                result = run_inverter(
-                    Path(ctx["project_dir"]),
-                    ctx["champion_thesis"],
-                    ctx.get("champion_score", 0),
-                )
-                # Adapt result to CognitiveGymResponse shape
-                return CognitiveGymResponse(
-                    leg=leg,
-                    suggestion=str(result.get("falsification_tests", ""))[:600],
-                    rationale="dispatched to inverter_agent (GP-119)",
-                    confidence="high",
-                )
-            except Exception as e:
-                # Inner primitive errored; fall back to LLM
-                return None
+    goal, lean_root = ctx.get("lean_goal"), ctx.get("lean_root")
+    if not (goal and lean_root):
+        return None
+    try:
+        from pathlib import Path as _P
+        from ztare.leanmill.solver.conjecture import LeanFalsifier
+        from ztare.common.inversion import run_inversion
+        row = ctx.get("row") or {"target_theorem_name": ctx.get("target_name", "tgt")}
+        lf = LeanFalsifier(row, _P(lean_root), int(ctx.get("timeout_s", 120)),
+                           preamble=ctx.get("preamble", ""))
+        v = run_inversion(lf, goal, {"lean_goal": goal})
+        outcome = ("FALSIFIED — kernel-checked ¬G (the target as stated is FALSE)"
+                   if v.falsified is True else "no falsifier (goal stands / undecided)")
+        return CognitiveGymResponse(
+            leg="invert", suggestion=f"Lean falsify producer: {outcome}. {(v.detail or '')[:220]}",
+            rationale="executed conjecture.LeanFalsifier via common.inversion.run_inversion (Invert-leg producer)",
+            confidence="high", reframed_state=((v.witness or "")[:600] if v.falsified else None))
+    except Exception:  # noqa: BLE001 — fall through to the reference plug
         return None
 
-    if leg == "compress":
-        # compress_champion is project-dir based; routes to it when champion file exists
-        if "project_dir" in ctx and ctx.get("artifact_kind") == "champion":
-            return CognitiveGymResponse(
-                leg=leg,
-                suggestion=(
-                    "Inner primitive available: run "
-                    f"`python -m src.ztare.fit.compress_champion --project "
-                    f"{Path(ctx['project_dir']).name}` (GP-103). "
-                    "This invokes template enumeration for the simplest gate-passing form."
-                ),
-                rationale="dispatched to compress_champion (GP-103) — outer hook recommends inner CLI invocation",
-                confidence="high",
-            )
+
+def _lean_connector(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Lean-substrate plug for ALL three legs (REUSE-by-reference to the leanmill moves). Handles the
+    request iff it carries a Lean proof artifact (substrate=='lean' or a 'lean_goal' in context). For the
+    INVERT leg, if a live goal+root are present it dispatches to the real producer (_lean_invert_producer)
+    first; otherwise (and for compress/disagree) it returns the dispatch-by-reference suggestion."""
+    ctx = request.context or {}
+    if not (ctx.get("substrate") == "lean" or "lean_goal" in ctx):
+        return None
+    if request.leg == "invert":
+        produced = _lean_invert_producer(request)
+        if produced is not None:
+            return produced
+    plug = _LEAN_LEG_PLUGS.get(request.leg)
+    if not plug:
+        return None
+    return CognitiveGymResponse(leg=request.leg, suggestion=plug["suggestion"],
+                                rationale=plug["rationale"], confidence="high")
+
+
+def _regression_invert_connector(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Regression substrate, Invert leg → REUSE validator.inverter_agent.run_inverter (GP-119)."""
+    ctx = request.context or {}
+    if not ("project_dir" in ctx and "champion_thesis" in ctx):
+        return None
+    try:
+        from src.ztare.validator.inverter_agent import run_inverter
+        result = run_inverter(Path(ctx["project_dir"]), ctx["champion_thesis"], ctx.get("champion_score", 0))
+        return CognitiveGymResponse(leg=request.leg, suggestion=str(result.get("falsification_tests", ""))[:600],
+                                    rationale="dispatched to inverter_agent (GP-119)", confidence="high")
+    except Exception:  # noqa: BLE001 — inner primitive errored; fall back to LLM
         return None
 
-    if leg == "disagree":
-        # margin_of_safety operates on project_dir
-        if "project_dir" in ctx and ctx.get("artifact_kind") == "champion":
-            return CognitiveGymResponse(
-                leg=leg,
-                suggestion=(
-                    "Inner primitive available: run "
-                    f"`python -m src.ztare.fit.margin_of_safety --project "
-                    f"{Path(ctx['project_dir']).name}` (GP-112). "
-                    "Buffett/Popper/Tukey/Taleb 5-test battery on the champion."
-                ),
-                rationale="dispatched to margin_of_safety (GP-112) — outer hook recommends inner CLI invocation",
-                confidence="high",
-            )
-        return None
 
+def _regression_compress_connector(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Regression substrate, Compress leg → REUSE fit.compress_champion (GP-103) via CLI suggestion."""
+    ctx = request.context or {}
+    if not ("project_dir" in ctx and ctx.get("artifact_kind") == "champion"):
+        return None
+    return CognitiveGymResponse(
+        leg=request.leg,
+        suggestion=("Inner primitive available: run "
+                    f"`python -m src.ztare.fit.compress_champion --project {Path(ctx['project_dir']).name}` (GP-103). "
+                    "This invokes template enumeration for the simplest gate-passing form."),
+        rationale="dispatched to compress_champion (GP-103) — outer hook recommends inner CLI invocation",
+        confidence="high")
+
+
+def _regression_disagree_connector(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Regression substrate, Disagree leg → REUSE fit.margin_of_safety (GP-112) via CLI suggestion."""
+    ctx = request.context or {}
+    if not ("project_dir" in ctx and ctx.get("artifact_kind") == "champion"):
+        return None
+    return CognitiveGymResponse(
+        leg=request.leg,
+        suggestion=("Inner primitive available: run "
+                    f"`python -m src.ztare.fit.margin_of_safety --project {Path(ctx['project_dir']).name}` (GP-112). "
+                    "Buffett/Popper/Tukey/Taleb 5-test battery on the champion."),
+        rationale="dispatched to margin_of_safety (GP-112) — outer hook recommends inner CLI invocation",
+        confidence="high")
+
+
+# Default registrations: lean plug FIRST (substrate-flagged), then the regression shape-recognizers.
+for _leg in ("invert", "compress", "disagree"):
+    register_leg_connector(_leg, _lean_connector)
+register_leg_connector("invert", _regression_invert_connector)
+register_leg_connector("compress", _regression_compress_connector)
+register_leg_connector("disagree", _regression_disagree_connector)
+
+
+def maybe_dispatch_to_inner(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
+    """Try each registered leg-connector in order; return the first non-None (the strange-loop join:
+    outer caller, inner substrate machinery where it fits). Returns None ⇒ no inner primitive applies
+    and the caller falls back to LLM dispatch. Substrates plug in via `register_leg_connector` — the
+    dispatcher itself is substrate-agnostic now (regression + lean both registered above)."""
+    for connector in _LEG_CONNECTORS.get(request.leg, []):
+        resp = connector(request)
+        if resp is not None:
+            return resp
     return None
 
 
@@ -363,17 +446,27 @@ def all_three(substrate: str, state_summary: str, context: dict) -> dict[str, Co
     }
 
 
-# Smoke test — verify the dispatcher imports and shape works without API
+# Smoke test — verify the connector registry routes per substrate without API
 if __name__ == "__main__":
     import sys
-    print("=== cognitive_gym_hooks dispatcher smoke test ===")
-    response = dispatch(CognitiveGymRequest(
-        leg="invert", substrate="ns_track_b",
-        state_summary="apparatus is converging on instance_with_evidence patches",
-        context={"prior_attempts": 3, "verified": 0},
-    ))
-    print(f"  leg={response.leg}")
-    print(f"  suggestion={response.suggestion[:200]}")
-    print(f"  rationale={response.rationale[:200]}")
-    print(f"  confidence={response.confidence}")
-    sys.exit(0)
+    fails = []
+    def ok(name, cond):
+        print(f"  [{'PASS' if cond else 'FAIL'}] {name}"); fails.append(name) if not cond else None
+    print("=== cognitive_gym_hooks connector-registry smoke test ===")
+    # LEAN substrate → leanmill plug for each leg (the registered isomorphism)
+    for leg, kw in (("compress", "GENERALIZE"), ("invert", "FALSIFY"), ("disagree", "matched-negative-control")):
+        r = maybe_dispatch_to_inner(CognitiveGymRequest(leg, "P1", "open goal", {"substrate": "lean", "lean_goal": "theorem t : G := by"}))
+        ok(f"lean {leg} → leanmill plug ({kw})", r is not None and kw in r.suggestion)
+    # regression compress (champion shape) → compress_champion CLI suggestion (REUSE preserved)
+    r = maybe_dispatch_to_inner(CognitiveGymRequest("compress", "sub", "x", {"project_dir": "/tmp/p", "artifact_kind": "champion"}))
+    ok("regression compress → compress_champion (behaviour preserved)", r is not None and "compress_champion" in r.suggestion)
+    # neither shape → None → caller falls back to LLM
+    ok("unrecognized artifact → None (LLM fallback)",
+       maybe_dispatch_to_inner(CognitiveGymRequest("invert", "s", "x", {"prior_attempts": 3})) is None)
+    # a newly-registered substrate is reached without editing the dispatcher
+    register_leg_connector("compress", lambda req: CognitiveGymResponse("compress", "NEWSUB", "test", "high")
+                           if (req.context or {}).get("substrate") == "newsub" else None)
+    r = maybe_dispatch_to_inner(CognitiveGymRequest("compress", "s", "x", {"substrate": "newsub"}))
+    ok("register_leg_connector extends without editing dispatcher", r is not None and r.suggestion == "NEWSUB")
+    print("SMOKE", "PASSED" if not fails else f"FAILED {fails}")
+    sys.exit(1 if fails else 0)
