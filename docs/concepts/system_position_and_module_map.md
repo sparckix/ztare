@@ -219,6 +219,8 @@ typed endpoint packs, LeanSearch-style adapters, and source-quality checks.
 
 Key surfaces:
 
+- [leanmill_architecture.md](leanmill_architecture.md) — the current frontier: the governed DAG proof-search
+  solver (GP-246), its move space, the one governance kernel, and the capability-discipline lift ledger
 - [ztare_proofs/README.md](../../ztare_proofs/README.md)
 - [closed_loop_theorem_writer_workflow.md](closed_loop_theorem_writer_workflow.md)
 - [closure_utility_test_workflow.md](closure_utility_test_workflow.md)

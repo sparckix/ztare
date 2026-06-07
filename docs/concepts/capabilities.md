@@ -666,16 +666,31 @@ to answer a question — the within-class feature-collapse finding on the
 v2 RAR substrate is the canonical case. The probe is a gate
 (R26 G-CROSS-CLASS-FEATURE-SUPPORT), not an after-the-fact narrative.
 
-### LeanMill — GNN lemma-relevance and station factory (GP-225)
+### LeanMill — governed DAG proof-search solver (GP-246, current frontier)
 
-A GNN-backed lemma-relevance ranker and a Lean station-factory
-orchestrator that let proof-search routes consume Mathlib at scale
-without dragging the whole stack into hand-engineering. Long-running
-24/7 worker scripts at
-[`scripts/public/control/leanmill_*`](../../scripts/public/control/)
-(station scheduler, source worker, probe worker, post-probe triage,
-agent repair worker, LLM proposal worker). Spec under
-[`research_areas/seams/engine/lean/GP-225_leanmill_vnext_station_factory_seam.md`](../../research_areas/seams/engine/lean/GP-225_leanmill_vnext_station_factory_seam.md).
+The current leanmill core is a **governed best-first search over a proof-obligation DAG** around a *swappable*
+LLM "leaf" (codex/claude on subscription): the leaf PROPOSES moves; **one governance kernel RATIFIES** every
+closure (kernel compile + axiom allowlist + matched-negative-control + the v33 anti-laundering organs +
+statement-integrity). A goal is *closed* only on a ratified closure — never because the agent says so. The
+move space spans the direct attack (native tactic cascade, warm agentic leaf, cold-shot fan-out, external
+frontier prover), the structure-changers (conjecture/decompose, specialize, generalize, falsify, tactic-step),
+the **exogenous-compute** moves (`witness_transport` — SymPy finds a witness for a non-linear existential /
+Kronecker linear-system / Pell-form diophantine, the kernel re-verifies; `corroborate` — the Popper dual of
+falsify), **composite ratification** (assemble a parent from proven sub-lemmas), a **target-conditioned
+move-router** (promote the move whose precondition matches the goal), boosting, and isomorphism-decomposition.
+Shared compute lives in `src/ztare/common/{sandboxed_python,symbolic_witness}.py`; the subsystem is
+`src/ztare/leanmill/solver/**`; full spec in [`docs/concepts/leanmill_architecture.md`](leanmill_architecture.md)
+and [`research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md`](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md).
+
+**Honest status (the discipline, not marketing):** the **soundness moat is the validated strength** — the
+governance kernel demonstrably catches gaming/laundering (statement alteration, vacuity, axiom smuggling,
+in-proof leakage) that a bare `compile_ok` misses. The **capability LIFT over the bare leaf is mostly
+UNPROVEN**: a strong Lean+Mathlib leaf saturates easy substrates (witness-transport measured lift = 0) and
+fails open-conjecture-hard ones (P1), so most moves are "lift-test pending" per the capability-discipline
+ledger in the architecture doc. leanmill is a governed *environment* around a frontier leaf, **not** a trained
+prover — it competes on governance, and whether the environment multiplies the leaf is under active
+measurement (PutnamBench baseline-vs-apparatus). The older GP-225 GNN lemma-relevance ranker + 24/7 Lean
+station-factory workers (`scripts/public/control/leanmill_*`) remain the SCALE layer beneath this solver.
 
 ### Power-aware experimental statistics (GP-245 toolkit)
 
