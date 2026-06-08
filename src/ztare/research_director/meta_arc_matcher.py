@@ -180,14 +180,27 @@ def load_catalog(substrate: str = "all") -> list[MetaMove]:
 
 
 def _embed(text: str, api_key: str) -> list[float]:
-    import google.generativeai as genai
-    genai.configure(api_key=api_key)
-    res = genai.embed_content(
+    # Migrated to the canonical embedding engine (ztare.common.embeddings) — the
+    # ONE place Gemini embeddings are created/queried. The embedding space is
+    # preserved EXACTLY: model gemini-embedding-001, task_type RETRIEVAL_DOCUMENT
+    # (both the stall AND every move are embedded as documents here, NOT
+    # asymmetric query/document — keep it symmetric so cosine stays comparable),
+    # and the model's native dimensionality (3072) since the legacy
+    # genai.embed_content call passed no output_dimensionality. No atlas/cache is
+    # persisted by this matcher (stall + moves are embedded fresh each call and
+    # compared only against each other), so there is no stored vector to break.
+    # Error contract unchanged: this never returned None — callers only reach
+    # _embed when api_key is truthy, and any failure propagates (rule 3: a
+    # raising contract stays raising). make_client raises SystemExit on a missing
+    # key, but api_key is non-empty by construction at every call site.
+    from ztare.common.embeddings import embed_batch, make_client
+    return embed_batch(
+        make_client(api_key),
+        [text],
         model="gemini-embedding-001",
-        content=text,
-        task_type="retrieval_document",
-    )
-    return res["embedding"]
+        dimensions=3072,
+        task_type="RETRIEVAL_DOCUMENT",
+    )[0]
 
 
 def _cos(a: list[float], b: list[float]) -> float:

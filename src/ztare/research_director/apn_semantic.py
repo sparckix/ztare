@@ -25,7 +25,17 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
 DEFAULT_APN_ATLAS = REPO / "analytics" / "public" / "queries" / "lean" / "apn_atlas_embeddings.json"
-DEFAULT_APN_CORPUS = REPO / "analytics" / "public" / "queries" / "lean" / "apn_atlas_corpus.json"
+# Corpus path is env-overridable so a LEAK-TIGHT benchmark can point at a
+# quarantined corpus (one with the target's own proof-helper DAG removed)
+# WITHOUT mutating the shipped general-purpose shelf. The retrieval join is
+# corpus-driven (rows iterate the corpus, embeddings joined by id), so swapping
+# the corpus alone fully quarantines — no embedding rebuild needed. See
+# docs/concepts/leanmill_architecture.md §"Solver Lane Subsystem · premise-shelf
+# leakage". Default = the canonical shipped corpus.
+DEFAULT_APN_CORPUS = Path(
+    os.environ.get("ZTARE_LEANMILL_APN_CORPUS")
+    or (REPO / "analytics" / "public" / "queries" / "lean" / "apn_atlas_corpus.json")
+)
 APN_THRESHOLD_DEFAULT = 0.55
 APN_TOP_K_DEFAULT = 5
 # NS-relevant default domain filter (optimization carries monotone-operator
@@ -83,31 +93,26 @@ def _load_apn_atlas(atlas_path: Path, corpus_path: Path) -> tuple[list[dict], li
 
 
 def _embed_query_genai(query: str) -> list[float] | None:
+    # Migrated to the canonical embedding engine (ztare.common.embeddings). The
+    # embedding space is preserved EXACTLY: model gemini-embedding-001, 384 dims,
+    # task_type RETRIEVAL_QUERY (asymmetric query side; atlas docs are
+    # RETRIEVAL_DOCUMENT) — so existing apn_atlas_embeddings.json + cosine stay
+    # compatible. Graceful-None contract kept: make_client raises SystemExit (not
+    # caught by `except Exception`), so check the key BEFORE calling it.
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:
-        from google import genai  # type: ignore[import-not-found]
-        from google.genai import types  # type: ignore[import-not-found]
-    except Exception:
-        return None
-    client = genai.Client(api_key=api_key)
-    try:
-        result = client.models.embed_content(
+        from ztare.common.embeddings import embed_batch, make_client
+        return embed_batch(
+            make_client(api_key),
+            [query],
             model="gemini-embedding-001",
-            contents=query,
-            config=types.EmbedContentConfig(
-                output_dimensionality=384,
-                task_type="RETRIEVAL_QUERY",
-            ),
-        )
+            dimensions=384,
+            task_type="RETRIEVAL_QUERY",
+        )[0]
     except Exception:
         return None
-    embeddings = getattr(result, "embeddings", None)
-    if not embeddings:
-        return None
-    first = embeddings[0]
-    return list(getattr(first, "values", first))
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

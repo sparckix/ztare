@@ -249,29 +249,38 @@ def _load_semantic_atlas(
 
 
 def _embed_query_genai(query: str) -> list[float] | None:
-    """Embed query via gemini-embedding-001. Returns None on missing deps/key."""
+    """Embed query via gemini-embedding-001. Returns None on missing deps/key.
+
+    Delegates to the canonical embedding engine (``ztare.common.embeddings``) so
+    there is exactly one place that creates/queries Gemini embeddings. The
+    embedding space is preserved byte-for-byte against the NS atlas built by
+    ``build_ns_atlas_embeddings.py``: same model (``gemini-embedding-001``), same
+    output dimensionality (384), and the same query-side task_type — historically
+    this query path sent NO taskType, so ``task_type=None`` is preserved exactly
+    rather than introducing RETRIEVAL_QUERY (which would shift the query vectors).
+    The graceful-degradation contract is kept: the API key is checked BEFORE
+    ``make_client`` (which raises SystemExit, not caught by ``except Exception``),
+    and any embed error returns None for the lexical-only fallback.
+    """
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:
-        from google import genai  # type: ignore[import-not-found]
-        from google.genai import types  # type: ignore[import-not-found]
-    except Exception:
-        return None
-    client = genai.Client(api_key=api_key)
-    try:
-        result = client.models.embed_content(
+        from ztare.common.embeddings import embed_batch, make_client
+
+        client = make_client(api_key)
+        vecs = embed_batch(
+            client,
+            [query],
             model="gemini-embedding-001",
-            contents=query,
-            config=types.EmbedContentConfig(output_dimensionality=384),
+            dimensions=384,
+            task_type=None,
         )
     except Exception:
         return None
-    embeddings = getattr(result, "embeddings", None)
-    if not embeddings:
+    if not vecs or vecs[0] is None:
         return None
-    first = embeddings[0]
-    return list(getattr(first, "values", first))
+    return list(vecs[0])
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

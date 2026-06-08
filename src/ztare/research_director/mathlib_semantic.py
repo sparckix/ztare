@@ -92,32 +92,34 @@ def _load_mathlib_atlas(
 
 
 def _embed_query_genai(query: str) -> list[float] | None:
-    """Embed via gemini-embedding-001 at 384 dims. Returns None on missing deps/key."""
+    """Embed via gemini-embedding-001 at 384 dims (RETRIEVAL_QUERY). Returns None on missing deps/key.
+
+    Delegates the embed call to the canonical engine (``ztare.common.embeddings``).
+    The API key is checked BEFORE ``make_client`` because ``make_client`` raises
+    ``SystemExit`` on a missing key (not caught by ``except Exception``); the
+    graceful-degradation contract here is to return ``None`` instead.
+    """
     api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:
-        from google import genai  # type: ignore[import-not-found]
-        from google.genai import types  # type: ignore[import-not-found]
+        from ztare.common.embeddings import embed_batch, make_client
     except Exception:
         return None
-    client = genai.Client(api_key=api_key)
     try:
-        result = client.models.embed_content(
+        client = make_client(api_key)
+        vecs = embed_batch(
+            client,
+            [query],
             model="gemini-embedding-001",
-            contents=query,
-            config=types.EmbedContentConfig(
-                output_dimensionality=384,
-                task_type="RETRIEVAL_QUERY",
-            ),
+            dimensions=384,
+            task_type="RETRIEVAL_QUERY",
         )
     except Exception:
         return None
-    embeddings = getattr(result, "embeddings", None)
-    if not embeddings:
+    if not vecs:
         return None
-    first = embeddings[0]
-    return list(getattr(first, "values", first))
+    return list(vecs[0])
 
 
 def _cosine(a: list[float], b: list[float]) -> float:

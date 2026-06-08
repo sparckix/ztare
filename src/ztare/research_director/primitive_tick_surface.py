@@ -472,15 +472,34 @@ def build_primitive_tick_surface(
     rows, warnings = _load_rows()
     graph_bonus, graph_warnings = _load_graph_bonus()
     warnings.extend(graph_warnings)
+    # ONE retrieval engine (2026-06-01): rank via the SEMANTIC atlas
+    # (`primitive_amnesia`, vocabulary-invariant, held-out recall@5=1.0) using the
+    # scope terms as the query — instead of this module's old lexical `_score`. The
+    # lexical `_matches` is kept ONLY for bucketing/display + the skip filter, not for
+    # ranking. Falls back to lexical ranking when no atlas/embedder is available.
+    sem_scores: dict[str, float] = {}
+    try:
+        from src.ztare.research_director.primitive_amnesia import precheck as _amnesia_precheck
+        q = " ".join(terms)
+        for h in _amnesia_precheck(q, top_k=max(len(rows), 1)):
+            sem_scores[str(h.get("name") or h.get("signature"))] = float(h.get("score") or 0.0)
+    except Exception:
+        sem_scores = {}
     hits: list[PrimitiveHit] = []
     for row in rows:
         if exclusions and _matches(row, exclusions):
             continue
-        score, matched, buckets = _score(row, terms)
-        if not matched and not buckets:
+        lex_score, matched, buckets = _score(row, terms)
+        sem = sem_scores.get(str(row.get("id", "")), 0.0)
+        if sem <= 0 and not matched and not buckets:
             continue
         bonus = graph_bonus.get(str(row.get("id", "")), 0.0)
-        score += bonus
+        # Semantic relevance DOMINATES (to milli-cosine precision); impact/graph/lexical
+        # only break ties WITHIN the same relevance band. This keeps high-graph-bonus
+        # primitives from drowning the actually-relevant ones (parameter-free, no magic
+        # weight). Lexical fallback when no atlas/embedder.
+        priors = bonus + lex_score + _impact(row) * 0.1
+        score = (round(sem, 3) * 1000 + priors) if sem_scores else (lex_score + bonus)
         desc = str(row.get("description", "") or "")
         why_parts = []
         if matched:

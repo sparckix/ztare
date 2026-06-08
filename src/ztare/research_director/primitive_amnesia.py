@@ -33,6 +33,7 @@ from src.ztare.research_director.scientific_amnesia import tokenize, _score
 REPO = Path(__file__).resolve().parents[3]
 ARCH_INDEX = REPO / "analytics" / "public" / "index" / "architecture_index.jsonl"
 ATLAS_PATH = REPO / "analytics" / "public" / "index" / "primitive_atlas_embeddings.json"
+_LAST_EMBED_ERROR: str | None = None
 
 # Deterministic TAXONOMY (tiers): module-path prefix → category. Makes a 500+ flat
 # catalog navigable/scopable instead of a dump. Derived on read (no row rewrite).
@@ -75,6 +76,11 @@ PRIMITIVE_MODULES = [
     "src/ztare/product_exports/judgment_primitives.py",
     "src/ztare/research_director/problem_solving_ops.py",
     "src/ztare/research_director/theory_building_ops.py",
+    "src/ztare/leanmill/semantic_premise_shelf.py",
+    "src/ztare/common/constraint_isomorphism.py",  # strange loop (common/ not auto-swept)
+    "src/ztare/common/sandboxed_python.py",          # the ONE sandboxed-python exec home (2026-06-07)
+    "src/ztare/common/symbolic_witness.py",          # SymPy witness/recurrence/linear-system builders
+    "src/ztare/fit/analogy.py",                      # GP-164 curve-fit analogy (the specialization)
 ]
 # Directories swept for additional primitive-bearing modules (every public def/class).
 PRIMITIVE_DIRS = [
@@ -105,7 +111,14 @@ WHEN_TO_USE = {
     "paired_permutation_test": "significance A/B comparison paired permutation sign-flip p-value",
     "tost_equivalence": "equivalence no difference indistinguishable two one-sided",
     "build_ablation_layers": "ablation inject premises helpers frontier distance how far above how much help",
+    "build_semantic_premise_shelf": "lean proof mathlib semantic premise retrieval shelf candidate lemmas theorem search missing API exact lemma source context before proof attempt",
     "spearman_rho": "rank correlation monotone association ordinal",
+    "IsomorphismLoop": "stuck structural ceiling blocked after many attempts find a theorem from another field cross-field isomorphism analogy orthogonal jump self-prompt next idea Barrington abstract the failure to pure math constraint surface established theorem that solves it transport structure when no progress what would unblock",
+    "default_llm_query": "cross-field theorem search structural isomorphism query strip domain gravity name theorems that solve this abstract constraint orthogonal jump",
+    "surface_for_research_ceiling": "research director stuck seam find a field where this seam is already solved transport structure cross-field isomorphism deanchor next idea abstract the frontier to operator seam leanmill architecture ceiling next Barrington",
+    "score_research_avenue": "research route rank avenue MDL information yield per complexity amnesia penalty source currency next lever what to pursue",
+    "score_research_avenues": "portfolio rank research avenues MDL information yield density amnesia recurrence source currency proof route priority",
+    "ResearchAvenue": "candidate research route avenue receipts kill conditions expected reuse exposure amnesia hits novelty hints MDL score",
 }
 
 
@@ -151,9 +164,19 @@ def _extract_from_module(path: Path) -> list[Primitive]:
     return out
 
 
+# Catalog kinds surfaced by the amnesia precheck (FULL COVERAGE, 2026-06-07): every reusable capability +
+# the reflexive "how we work" memory. (Set ZTARE_AMNESIA_PRIMITIVE_ONLY=1 to restrict back to the analytical-
+# primitive view if a caller wants only those.)
+_INVENTORY_KINDS_FULL = ("primitive", "reflexive_primitive", "op", "gate", "validator",
+                         "orchestrator", "mining", "script", "pattern", "anti-pattern", "meta-pattern")
+_INVENTORY_KINDS_PRIMITIVE = ("primitive", "reflexive_primitive", "op")
+
+
 def _extract_from_arch_index(path: Path = ARCH_INDEX) -> list[Primitive]:
     if not path.exists():
         return []
+    _INVENTORY_KINDS = (_INVENTORY_KINDS_PRIMITIVE if os.environ.get("ZTARE_AMNESIA_PRIMITIVE_ONLY") == "1"
+                        else _INVENTORY_KINDS_FULL)
     out: list[Primitive] = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
@@ -162,7 +185,11 @@ def _extract_from_arch_index(path: Path = ARCH_INDEX) -> list[Primitive]:
             r = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if r.get("kind") not in ("primitive", "reflexive_primitive", "op"):
+        # FULL COVERAGE (2026-06-07): embed/surface every CAPABILITY-bearing kind, not just analytical
+        # primitives — gates, validators, orchestrators, mining ops, scripts ARE reusable capabilities, and
+        # patterns / anti-patterns / meta-patterns are the reflexive "how we work" memory worth surfacing in a
+        # "have we already built/learned this?" precheck. (Excludes only genuinely non-capability index rows.)
+        if r.get("kind") not in _INVENTORY_KINDS:
             continue
         appl = r.get("applicability") or []
         appl_str = " ".join(appl) if isinstance(appl, list) else str(appl)
@@ -193,12 +220,74 @@ _UTILITY_NAME_RE = re.compile(
 def _is_quality_primitive(name: str, doc: str) -> bool:
     """Keep a swept primitive only if it's a genuine reusable capability: has a real
     docstring AND is not an obvious utility/IO/serialization helper. Curated
-    (WHEN_TO_USE) primitives always pass. This is the noise gate on the 500+ sweep."""
+    (WHEN_TO_USE) primitives always pass. This is the DETERMINISTIC noise floor on the
+    500+ sweep (free, no key); the opt-in `_llm_quality_filter` sharpens the borderline."""
     if name in WHEN_TO_USE:
         return True
     if _UTILITY_NAME_RE.match(name):
         return False
+    # internal code-STRING builders (build_*_script): the public API is the registered primitive
+    # (solve_existential / find_linear_recurrence …), not the `build_*_script` that emits the snippet.
+    if name.startswith("build_") and name.endswith("_script"):
+        return False
     return len((doc or "").strip()) >= 40        # must describe what it does
+
+
+def _llm_quality_filter(items: "list[tuple]",
+                        model: str = "gemini-3.1-flash-lite-preview") -> "set[str]":
+    """OPT-IN (`ZTARE_PRIMITIVE_LLM_FILTER=1`) cheap LLM precision pass over the regex-PASSING candidates:
+    classify each (name, doc) as a reusable named CAPABILITY (keep) vs an INTERNAL helper / glue / one-off
+    (drop) — the borderline the deterministic floor can't judge (a `build_*_script` from a real `build_atlas`).
+    ONE batched gemini-flash-lite call. This is CURATION, not a soundness gate (a wrong call only adds/drops a
+    catalog row — never launders), so an LLM judgment is acceptable here. CONSERVATIVE: on no-key / error /
+    unparseable / drops-everything → KEEP ALL (never silently lose primitives on infra failure). Returns the
+    set of names to KEEP."""
+    names = [it[0] for it in items]
+    if not names:
+        return set()
+    try:
+        from src.ztare.common.llm_runtime import LLMRuntime
+    except Exception:
+        try:
+            from ztare.common.llm_runtime import LLMRuntime
+        except Exception:
+            return set(names)        # no runtime → keep all (deterministic floor already applied)
+    # richer informational value (2026-06-07): give the LLM the SIGNATURE (args disambiguate a builder from a
+    # real op) + the full first docstring line — not a 140-char stub (the thin input wrongly dropped build_goal
+    # = a real Lean-goal EXTRACTOR, read as a "builder").
+    def _fmt(it):
+        name = it[0]
+        doc = (it[1] or "").splitlines()[0] if (len(it) > 1 and it[1]) else ""
+        sig = it[2] if (len(it) > 2 and it[2]) else ""
+        head = f"- {sig or name}" + (f"  [{name}]" if sig else "")
+        return f"{head}: {doc[:240]}"
+    listing = "\n".join(_fmt(it) for it in items)
+    prompt = (
+        "You are curating a catalog of REUSABLE engineering/analytical capabilities so future work REUSES them "
+        "instead of rebuilding. Be VERY CONSERVATIVE — the cost of dropping a real capability (someone rebuilds "
+        "it) FAR outweighs keeping a borderline one. DEFAULT TO KEEP.\n"
+        "drop ONLY if you are CERTAIN it is pure internal PLUMBING: specifically a code-STRING builder that "
+        "emits source text (e.g. `build_*_script`, `build_*_prompt`), or trivial glue with no standalone "
+        "capability. If it is a named operation, solver, dispatcher, extractor, derivation, metric, gate, "
+        "transform, selector, assembler, router, or anything you are even slightly unsure about → KEEP.\n"
+        "Return ONLY a JSON object mapping each exact name to \"keep\" or \"drop\".\nITEMS:\n" + listing + "\n")
+    try:
+        resp = LLMRuntime().call_text(prompt, model_id=model,
+                                      fallback_model_ids=("gemini-2.5-flash",),
+                                      max_tokens=4000, request_label="primitive_quality_filter",
+                                      timeout_seconds=90)
+        text = getattr(resp, "text", "") or ""
+    except Exception:
+        return set(names)            # error → keep all
+    m = re.search(r"\{.*\}", text, re.DOTALL)
+    if not m:
+        return set(names)
+    try:
+        verdicts = json.loads(m.group(0))
+    except Exception:
+        return set(names)
+    keep = {n for n in names if str(verdicts.get(n, "keep")).lower().strip() != "drop"}
+    return keep or set(names)        # distrust a total wipe → keep all
 
 
 def populate_catalog(repo: Path = REPO, path: Path = ARCH_INDEX, *, clean: bool = False) -> int:
@@ -229,11 +318,23 @@ def populate_catalog(repo: Path = REPO, path: Path = ARCH_INDEX, *, clean: bool 
     for m in dict.fromkeys(mods):                       # dedup, preserve order
         for p in _extract_from_module(repo / m):
             by_name.setdefault(p.name, p)
+    # DETERMINISTIC floor first (free, no key): regex + the build_*_script rule.
+    cands = [(name, p, _id_for(name)) for name, p in by_name.items()
+             if _id_for(name) not in existing and _is_quality_primitive(name, p.doc)]
+    # OPT-IN cheap LLM precision pass (ZTARE_PRIMITIVE_LLM_FILTER=1): drop the borderline internal helpers the
+    # regex can't judge. ONE batched gemini-flash-lite call; conservative fallback = keep all. Curated
+    # (WHEN_TO_USE) primitives are EXEMPT (never sent to the LLM — they are operator-blessed reuse).
+    # ADVISORY, opt-in (ZTARE_PRIMITIVE_LLM_FILTER=1) — NOT a default. A single batched LLM call is
+    # non-deterministic across batch contexts (it kept `build_goal` in a 4-item test but dropped it in the
+    # 402-item run), so it is too unreliable to AUTO-drop when the bar is "lose nothing relevant"; the
+    # deterministic regex floor stays the safe default and this is a review aid the operator opts into.
+    if os.environ.get("ZTARE_PRIMITIVE_LLM_FILTER") == "1" and cands:
+        _judge = [(n, p.doc, p.signature) for n, p, _ in cands if n not in WHEN_TO_USE]
+        if _judge:
+            _keep = _llm_quality_filter(_judge)
+            cands = [(n, p, cid) for n, p, cid in cands if n in WHEN_TO_USE or n in _keep]
     new_rows = []
-    for name, p in by_name.items():
-        cid = _id_for(name)
-        if cid in existing or not _is_quality_primitive(name, p.doc):
-            continue
+    for name, p, cid in cands:
         existing.add(cid)
         # applicability = curated effect-aliases if present, else name+module+doc tokens
         aliases = WHEN_TO_USE.get(name)
@@ -265,35 +366,45 @@ def _embed(text: str, *, role: str = "query", backend: str = "gemini-code") -> "
     retrieval-quality lever the old symmetric RETRIEVAL_QUERY-for-everything missed).
     Backends: 'gemini' (RETRIEVAL_QUERY/DOCUMENT), 'gemini-code' (CODE_RETRIEVAL_QUERY
     for the NL→code query side), 'openai' (text-embedding-3-large)."""
+    global _LAST_EMBED_ERROR
+    _LAST_EMBED_ERROR = None
     text = (text or "").strip()
     if not text:
+        _LAST_EMBED_ERROR = "empty text"
         return None
     if backend in ("gemini", "gemini-code"):
+        # Migrated to the canonical embedding engine (ztare.common.embeddings, §6n.14). The
+        # code-aware asymmetric task type is preserved; the None-on-missing-key / None-on-error
+        # contract (lexical fallback) is kept; make_client owns .env bootstrapping.
         key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-        if not key:
-            return None
+        tt = ("RETRIEVAL_DOCUMENT" if role == "document"
+              else ("CODE_RETRIEVAL_QUERY" if backend == "gemini-code" else "RETRIEVAL_QUERY"))
         try:
-            from google import genai
-            from google.genai import types
-            client = genai.Client(api_key=key)
-            tt = ("RETRIEVAL_DOCUMENT" if role == "document"
-                  else ("CODE_RETRIEVAL_QUERY" if backend == "gemini-code" else "RETRIEVAL_QUERY"))
-            r = client.models.embed_content(
-                model="gemini-embedding-001", contents=text,
-                config=types.EmbedContentConfig(output_dimensionality=768, task_type=tt))
-            return list(r.embeddings[0].values)
-        except Exception:
+            try:
+                from ztare.common.embeddings import embed_batch, make_client
+            except ModuleNotFoundError:
+                from src.ztare.common.embeddings import embed_batch, make_client
+            return embed_batch(make_client(key), [text], model="gemini-embedding-001",
+                               dimensions=768, task_type=tt)[0]
+        except SystemExit as exc:
+            _LAST_EMBED_ERROR = str(exc)[:240]
+            return None
+        except Exception as exc:
+            _LAST_EMBED_ERROR = f"{type(exc).__name__}: {str(exc)[:240]}"
             return None
     if backend == "openai":
         if not os.environ.get("OPENAI_API_KEY"):
+            _LAST_EMBED_ERROR = "missing OPENAI_API_KEY"
             return None
         try:
             import openai
             v = openai.OpenAI().embeddings.create(
                 model="text-embedding-3-large", input=text, dimensions=1024)
             return list(v.data[0].embedding)
-        except Exception:
+        except Exception as exc:
+            _LAST_EMBED_ERROR = f"{type(exc).__name__}: {str(exc)[:240]}"
             return None
+    _LAST_EMBED_ERROR = f"unknown backend: {backend}"
     return None
 
 
@@ -308,6 +419,16 @@ def build_primitive_atlas(path: Path = ATLAS_PATH, backend: str = "gemini-code")
         v = _embed(f"{p.name}. {p.doc} {p.when_to_use}".strip(), role="document", backend=backend)
         if v is not None:
             vecs[p.signature or p.name] = v
+    if inv and not vecs:
+        if path.exists():
+            try:
+                current = json.loads(path.read_text(encoding="utf-8"))
+                existing = current.get("embeddings") or {}
+                if existing:
+                    return len(existing)
+            except Exception:
+                pass
+        return 0
     path.write_text(json.dumps({"backend": backend, "n": len(vecs), "embeddings": vecs}),
                     encoding="utf-8")
     return len(vecs)
@@ -410,6 +531,19 @@ BENCHMARK = [
     ("control false positives across many simultaneous hypothesis tests", ["bh-fdr", "fdr"]),
     ("how far apart are two probability distributions / vectors", ["distance", "cosine", "set-distance"]),
     ("which capability already exists for a task before I build one", ["primitive-amnesia", "amnesia"]),
+    # ── expanded 2026-06-07 to cover the leanmill-solver / common surface where the LLM filter wrongly
+    #    dropped relevant primitives (the n=18 set couldn't DETECT those false drops). These targets all exist.
+    ("dispatch an agentic coding task to codex or claude on the operator subscription", ["default_dispatch", "dispatch"]),
+    ("run an untrusted model-written sympy script safely in a sandboxed subprocess", ["run_guarded_script", "sandboxed", "guarded"]),
+    ("recover the linear recurrence behind a number sequence via hankel rank", ["find_linear_recurrence", "recurrence"]),
+    ("find a counterexample to a universally-quantified arithmetic claim", ["find_counterexample", "counterexample"]),
+    ("solve a determined system of equations for an integer witness", ["solve_linear_system", "solve_existential"]),
+    ("derive predictions from a Lagrangian model specification", ["derive_from_action", "lagrangian"]),
+    ("extract a fair provable goal for a target theorem from Lean source", ["build_goal"]),
+    ("inject a computed witness into a Lean refine tactic", ["inject_witness_tactic", "witness"]),
+    ("among several proofs that close the same goal pick the description-length shortest", ["mdl_shortest", "shortest"]),
+    ("transport a proof technique from a field where the structure is solved, by analogy", ["surface_field_analogies", "isomorph", "analog"]),
+    ("select which solver move to try next with a calibrated bandit", ["ucb_move_scores", "ucb"]),
 ]
 
 
@@ -463,10 +597,16 @@ def semantic_live() -> "tuple[bool, str]":
     precheck degrades to brittle lexical, and a 'no primitive matched' becomes a FALSE
     NEGATIVE that green-lights re-derivation (the treadmill the amnesia firewall exists to
     prevent). Reuses the shared `common.embedder_liveness` positive control."""
-    from ztare.common.embedder_liveness import embedder_live
+    try:
+        from ztare.common.embedder_liveness import embedder_live
+    except ModuleNotFoundError:  # supports `python -m src.ztare...` from repo root
+        from src.ztare.common.embedder_liveness import embedder_live
     atlas, backend = _load_atlas()
-    return embedder_live(lambda t: _embed(t, role="query", backend=backend),
-                         atlas_nonempty=bool(atlas))
+    live, why = embedder_live(lambda t: _embed(t, role="query", backend=backend),
+                              atlas_nonempty=bool(atlas))
+    if not live and _LAST_EMBED_ERROR:
+        return live, _LAST_EMBED_ERROR
+    return live, why
 
 
 def main(argv=None) -> int:
@@ -488,6 +628,8 @@ def main(argv=None) -> int:
                     help="embedding backend for --build-atlas (default: code-aware gemini)")
     ap.add_argument("--eval", action="store_true",
                     help="recall@k + MRR over the held-out benchmark (MEASURE retrieval)")
+    ap.add_argument("--semantic-live", action="store_true",
+                    help="positive-control the semantic embedder + atlas and print the result")
     a = ap.parse_args(argv)
     if a.repopulate:
         n = populate_catalog(clean=True)
@@ -511,6 +653,10 @@ def main(argv=None) -> int:
         for q, t in sem["misses"]:
             print(f"  semantic MISS: {q!r} -> wanted {t}")
         return 0
+    if a.semantic_live:
+        live, why = semantic_live()
+        print(f"SEMANTIC_LIVE={str(live).lower()} reason={why}")
+        return 0 if live else 2
     if a.selftest:
         return _selftest()
     if not a.query:

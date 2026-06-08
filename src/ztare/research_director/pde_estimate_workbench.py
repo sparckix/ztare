@@ -53,6 +53,10 @@ for _hd in (
     if _hs not in sys.path:
         sys.path.insert(0, _hs)
 
+from ztare.research_director.source_currency_discriminator import (  # noqa: E402
+    classify_source_currency,
+)
+
 DEFAULT_OUT_DIR = (
     REPO / "projects" / "ns_millennium_hunt" / "workspace" / "queries"
     / "pde_workbench"
@@ -12683,6 +12687,14 @@ def main() -> int:
         ),
         "target_context": context,
         "gap_classification": gap,
+        "source_currency_discriminator": classify_source_currency(
+            args.target,
+            args.field,
+            args.target_currency,
+            context.get("doc") if isinstance(context, dict) else None,
+            gap.get("gap_type") if isinstance(gap, dict) else None,
+            gap.get("rationale") if isinstance(gap, dict) else None,
+        ),
         "mathlib_lemmas": mathlib_lemmas,
         "mathlib_semantic_fallback": mathlib_semantic_fallback,
         "basin_context": basin_context,
@@ -13069,6 +13081,10 @@ def main() -> int:
     print(f"wrote: {json_path.relative_to(REPO)}")
     print(f"wrote: {md_path.relative_to(REPO)}")
     print(f"gap_type: {gap_type}")
+    print(
+        "source_currency_class: "
+        f"{pack['source_currency_discriminator']['source_currency_class']}"
+    )
     print(f"mathlib_lemmas: {len(pack['mathlib_lemmas'])}")
     print(f"auxiliary_families: {len(pack['auxiliary_families'])}")
     print(f"pde_craft_ops: {len(pack['pde_craft_ops'])}")
