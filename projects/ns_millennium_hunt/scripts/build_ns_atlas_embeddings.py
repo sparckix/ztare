@@ -11,15 +11,16 @@ import argparse
 import hashlib
 import json
 import os
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from google import genai
-from google.genai import types
-
 from ns_formalization_atlas import REPO, build_data
+
+sys.path.insert(0, str(REPO / "src"))
+from ztare.common import embeddings as common_embeddings
 
 
 PUBLIC_DIR = REPO / "projects" / "ns_millennium_hunt" / "public"
@@ -118,34 +119,21 @@ def build_corpus(max_entries: int) -> list[dict]:
 
 
 def load_existing_embeddings(path: Path, model: str, dimensions: int) -> dict[str, list[float]]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    if payload.get("model") != model or payload.get("dimensions") != dimensions:
-        return {}
-    return {
-        row["id"]: row["embedding"]
-        for row in payload.get("embeddings", [])
-        if isinstance(row, dict) and "id" in row and isinstance(row.get("embedding"), list)
-    }
+    # Delegates to the canonical engine; cache format (model/dimensions header +
+    # embeddings:[{id, embedding}]) is shared, so existing atlas files stay reusable.
+    return common_embeddings.load_cached(path, model, dimensions)
 
 
-def embed_batch(client: genai.Client, model: str, dimensions: int, texts: list[str]) -> list[list[float]]:
-    response = client.models.embed_content(
+def embed_batch(client, model: str, dimensions: int, texts: list[str]) -> list[list[float]]:
+    # Delegates to the canonical engine. Preserves model, outputDimensionality, and
+    # taskType=RETRIEVAL_DOCUMENT (document-side embeddings) plus the 6dp rounding.
+    return common_embeddings.embed_batch(
+        client,
+        texts,
         model=model,
-        contents=texts,
-        config=types.EmbedContentConfig(
-            taskType="RETRIEVAL_DOCUMENT",
-            outputDimensionality=dimensions,
-        ),
+        dimensions=dimensions,
+        task_type="RETRIEVAL_DOCUMENT",
     )
-    return [
-        [round(float(value), 6) for value in embedding.values]
-        for embedding in response.embeddings
-    ]
 
 
 def write_json(path: Path, data: Any) -> None:
@@ -186,7 +174,7 @@ def main() -> int:
         api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise SystemExit("GEMINI_API_KEY or GOOGLE_API_KEY is required unless --no-embed is set")
-        client = genai.Client(api_key=api_key)
+        client = common_embeddings.make_client(api_key)
         existing = {} if args.rebuild else load_existing_embeddings(args.embeddings_out, args.model, args.dimensions)
         pending: list[dict] = []
         for row in corpus:

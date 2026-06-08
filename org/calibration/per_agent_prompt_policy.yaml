@@ -15,9 +15,9 @@
 # F61 (multi-channel R² with new b_mid/b_width interval primitive).
 
 readiness: apparatus-internal-grade
-last_updated: 2026-05-28
-last_evidence_pilot: v22d + v23 + v24 + v26a-d + v27a/b/c + v28a/i/o/N + v28a-refill (N=142 public)
-replication_status: power-audited (Fisher-z); cross-corpus partial (specialist N=15, public N=42 baseline + N=142 refill for routing analytics); meta_routing (F107) added 2026-05-29 as PRE-REGISTERED — NOT YET CONFIRMED (requires N>=300 confirmation per quartile before deploy)
+last_updated: 2026-06-04
+last_evidence_pilot: v22d + v23 + v24 + v26a-d + v27a/b/c + v28a/i/o/N + v28a-refill (N=142 public) + F47 paired-delta/consumer re-audits + F47 source-balanced four-family packet + F47 translation tournament + F47 cross-packet transfer audit + F47 external-bar manifest/control + F47 prospective market-freeze packet + FRED vintage timing audit/bulk repair/rescore
+replication_status: power-audited (Fisher-z); cross-corpus partial (specialist N=15, public N=42 baseline + N=142 refill for routing analytics); meta_routing (F107) negative on N=142; F47 contrastive ranking now bounded-promoted for pairwise ranking/tournament use after source-balanced four-family confirmation; F47 translated probabilities have one-direction cross-packet support but are not production default and lose to raw panel on the tiny mixed external-bar slice; FRED current-label positives demoted by complete vintage timing repair/rescore
 extension_path: 4-cell de-confounded corpus (Task #110) for clean transfer claims
 caveat_for_consumers: >
   Several v26 N=5 rules below have bootstrap CIs that include zero and are
@@ -31,7 +31,29 @@ caveat_for_consumers: >
       queued as v28-retest-balance (420 calls)
   All RETRACTED entries below carry retest_pending: true and action: RETRACTED.
   Downstream consumers MUST NOT apply RETRACTED rules. Apply remaining rules
-  as Bayesian priors weighted by evidence_strength.
+  as Bayesian priors weighted by evidence_strength. F47 contrastive elicitation
+  is not generic prompt repair: the 2026-06-03 consumer audit found strong
+  repeated-call pairwise utility but only 6 unique non-tie pairs; the later
+  source-balanced four-family packet cleared 24 unique pairs and promoted
+  bounded pairwise ranking/tournament use. A subsequent overlapping
+  source-heldout tournament promoted an experimental pairwise-to-probability
+  translation layer. A no-call same-packet policy control then beat raw and
+  F100 by point estimate, but missed the panel-level F100 production p-gate and
+  had only 3 same-contract market rows. A cross-packet transfer audit then
+  cleared the panel F100 gate in one direction and missed it in the reverse
+  direction. A first external-bar manifest/control found 24 joined mixed market
+  rows after public acquisition plus corrected Polymarket direct-slug and
+  intraday-fidelity fallbacks: translated F47 was best by point estimate, but
+  the paired tests were wide and non-significant. F47 still must not be used as
+  production default until it beats F100/raw/source/market controls
+  prospectively or on joined market/human bars. A prospective Polymarket
+  market-freeze packet now exists for that test, but it is not evidence until
+  calls are fired and the markets resolve. FRED current-label positives are
+  demoted: the 2026-06-04 vintage timing audit plus bulk repair found
+  label/value revisions on the complete denominator and the rescore erased the
+  blinded-control current-label penalty. Treat
+  current-FRED DB rows as apparatus receipts, not policy-calibration evidence,
+  unless an ALFRED/bulk-export confirmation reinstates the repaired labels.
 
 # ============================================================
 # Prompt-engineering rules per family
@@ -50,10 +72,10 @@ families:
         rationale: "Only family that responds positively to 'consider both sides' instruction in v22d factorial. v25 confirmation required."
 
       contrastive_elicitation:
-        action: ENABLE
-        evidence: F47 (rho=+0.35 predicted-vs-actual delta)
+        action: ENABLE_PAIRWISE_RANKING_EXPERIMENTAL
+        evidence: F47 paired-delta re-audit + F47 source-balanced four-family consumer packet
         evidence_strength: medium
-        rationale: "Universal across all 5 families. Use for ordering/routing decisions, NOT for absolute probability calibration."
+        rationale: "Universal paired-delta signal survives and the source-balanced four-family consumer packet promoted bounded pairwise ranking. Use for A/B ranking/tournament evidence; do not use as absolute probability repair or production action routing."
 
       frequency_framing:
         action: ENABLE_SPECIALIST_ONLY
@@ -86,10 +108,10 @@ families:
         rationale: "No measurable effect. Don't bother adding to prompt."
 
       contrastive_elicitation:
-        action: ENABLE
-        evidence: F47 (rho=+0.63 — strongest of the 5 families)
+        action: ENABLE_PAIRWISE_RANKING_EXPERIMENTAL
+        evidence: F47 paired-delta re-audit + F47 source-balanced four-family consumer packet
         evidence_strength: high
-        rationale: "Strongest predicted-vs-actual delta correlation across families. Use for routing."
+        rationale: "Strong paired-delta signal plus bounded source-balanced consumer promotion. Use for A/B ranking/tournament evidence only until a translation layer beats F100/source/market controls."
 
       frequency_framing:
         action: DISABLE
@@ -122,10 +144,10 @@ families:
         rationale: "Balance instruction actively hurts. Exclude."
 
       contrastive_elicitation:
-        action: ENABLE
-        evidence: F47 (rho=+0.62)
+        action: ENABLE_PAIRWISE_RANKING_EXPERIMENTAL
+        evidence: F47 paired-delta re-audit + F47 source-balanced four-family consumer packet
         evidence_strength: medium
-        rationale: "Strong predicted-vs-actual delta correlation. Use for routing."
+        rationale: "Source-balanced four-family consumer packet promotes bounded pairwise ranking. Keep separate from single-contract probability calibration."
 
       frequency_framing:
         action: NEUTRAL
@@ -158,10 +180,10 @@ families:
         rationale: "No measurable effect."
 
       contrastive_elicitation:
-        action: ENABLE
-        evidence: F47 (rho=+0.75 — strongest of the 5 families)
+        action: ENABLE_PAIRWISE_RANKING_EXPERIMENTAL
+        evidence: F47 paired-delta re-audit + F47 source-balanced four-family consumer packet
         evidence_strength: high
-        rationale: "Highest predicted-vs-actual delta correlation. Strong route signal."
+        rationale: "Highest paired-delta signal and source-balanced consumer promotion support bounded A/B ranking. Route/action use still needs separate costed translation evidence."
 
       frequency_framing:
         action: ENABLE_SPECIALIST_ONLY
@@ -194,10 +216,10 @@ families:
         rationale: "Balance instruction actively damages calibration. Exclude."
 
       contrastive_elicitation:
-        action: ENABLE
-        evidence: F47 (rho=+0.71)
+        action: ENABLE_PAIRWISE_RANKING_EXPERIMENTAL
+        evidence: F47 paired-delta re-audit + F47 source-balanced four-family consumer packet
         evidence_strength: high
-        rationale: "Strong predicted-vs-actual delta correlation. Use for routing."
+        rationale: "Strong paired-delta signal and source-balanced consumer promotion support bounded A/B ranking. Do not treat this as a calibrated point-probability policy."
 
       frequency_framing:
         action: ENABLE_SPECIALIST_ONLY
@@ -225,10 +247,11 @@ families:
 universal:
   confident_no_discount:
     action: ENABLE
-    scope: post_forecast_adjustment
-    evidence: F100 (N=142 public-domain; all 5 families show paired Δ-Brier < 0; p_perm < 0.05 every family)
+    scope: forward_looking_post_forecast_adjustment
+    evidence: F100 (N=142 public-domain; all 5 families show paired Δ-Brier < 0; p_perm < 0.05 every family) + source-currency stress audit (cutoff_stage_b_panel_v1; 240 rows)
     evidence_strength: high
-    apply_when: "raw_p_success < 0.10"
+    apply_when: "raw_p_success < 0.10 AND the forecast is live/forward-looking or otherwise source-valid with time-valid labels/baselines"
+    do_not_apply_when: "retrospective pre-cutoff/source-visible benchmark rows; current-label dataset rows without vintage/label-time validation; keep raw and F100 views separate for audits"
     rule: "p_adjusted = p_raw + (0.65 - p_raw) * 0.5"
     per_family_delta:
       claude:     {raw: 0.2543, modified: 0.2240, delta: -0.0302, p_perm: 0.0164}
@@ -238,28 +261,58 @@ universal:
       gemini:     {raw: 0.3167, modified: 0.2840, delta: -0.0327, p_perm: 0.0081}
     rationale: >
       Every family is dramatically over-confident on its lowest-probability
-      forecasts. On N=142 public-domain contracts, p_raw < 0.10 actually
-      resolves YES with empirical base rate around 0.65. Apply the rule
-      post-forecast (after the model has emitted p_raw); do not change the
-      prompt. The rule is a one-line adjustment that strictly improves Brier
-      at p < 0.05 across every family. Discounted-claude (Brier = 0.2240) is
-      at parity-or-better than the prior four-rule composed recipe
-      (Brier = 0.2320), making this the deployable headline rule.
+      forecasts in the original F100 analysis. Apply the rule post-forecast
+      (after the model has emitted p_raw); do not change the prompt. The rule
+      is a one-line adjustment that strictly improves Brier at p < 0.05 across
+      every family. Discounted-claude (Brier = 0.2240) is at parity-or-better
+      than the prior four-rule composed recipe (Brier = 0.2320), making this
+      the deployable headline rule for live/source-valid forecasts.
     caveats: >
       Calibrated on public-domain corpus only (Manifold, Polymarket, yfinance).
-      The 0.65 anchor is the observed empirical YES rate in the
-      p_raw < 0.10 bin on this corpus. Re-audit on a different corpus before
-      deploying outside that family of sources.
+      The 0.65 anchor comes from the original F100 public-domain analysis; the
+      later complete-panel family-row audit shows source/denominator sensitivity.
+      Re-audit on a different corpus before deploying outside that family of
+      sources, and require label-time validity for dataset-source rows. A
+      2026-06-03 no-call fitted calibrator audit did NOT promote a
+      replacement: source-isotonic was
+      slightly better overall but non-significant and lost Manifold; tail-beta
+      shrinkage was worse than hand F100. A later source-currency stress audit
+      on the Law 3 cutoff panel narrowed the rule: F100 improved post-cutoff
+      rows (delta -0.025326; tail-only delta -0.101306) but significantly
+      regressed pre-cutoff rows (delta +0.035016, p=0.0002; tail-only delta
+      +0.097719, p=0.0002). Keep the hand rule live only for forward-looking
+      forecasts until a source-conflict confirmation or market-baseline join
+      beats it. FRED current-label rows are explicitly excluded as calibration
+      evidence after the vintage timing audit/bulk repair/rescore found
+      complete-denominator label revisions and erased the blinded-control
+      current-label penalty. The dataset label-time gate currently finds 108
+      resolved dataset-source rows, with 83 current-label rows supported by
+      available FRED vintage receipts and 25 current-label rows ineligible
+      (15 FRED label changes plus 10 yfinance/yfinance_etf rows without
+      label-time receipts). The 2026-06-04 policy-scoreable rerun of the F100
+      fitted-calibrator audit uses `v_policy_scoreable_calls`, excludes the 10
+      yfinance/yfinance_etf complete panels lacking label-time receipts, and
+      still does not promote a fitted replacement: source-isotonic is only
+      -0.005248 Brier vs confident-NO with p=0.7099, while raw mean-panel is
+      +0.029598 worse.
 
   contrastive_elicitation:
-    action: ENABLE
-    evidence: F47 (all 5 families show positive ρ)
-    rationale: "First v26-round primitive WITHOUT per-family heterogeneity. Use for ordering/routing decisions. Magnitudes are family-specific (use rank order, not absolute predicted delta)."
+    action: ENABLE_PAIRWISE_RANKING_AND_TRANSLATION_EXPERIMENTAL
+    evidence: F47 paired-delta re-audit + F47 contrastive-to-policy consumer audit + F47 source-balanced four-family packet + F47 translation tournament + F47 cross-packet transfer audit + F47 external-bar manifest/control + F47 prospective market-freeze packet
+    promotion_gate: "bounded pairwise ranking and experimental translation research are promoted; production probability/action use still requires prospective or market/human-joined validation against F100, raw mean-panel, source controls, and market/human bars"
+    current_state: "paired-delta reproducible; repeated-call consumer utility strong; source-balanced four-family packet cleared 24 unique pairs: unique accuracy 0.750, unique utility +0.583, p=0.0044 vs random, p=0.0248 vs always-A, p=0.0918 vs always-B, p=0.0002 vs source control. Overlapping four-family tournament then promoted source-heldout pairwise-score translation: 194 calls, 192 schema-ok, raw Brier 0.234719, translated Brier 0.200417, delta -0.034302, p=0.0050, no source regression. Same-packet policy control: translated panel Brier 0.178411 vs raw panel 0.198773 and mean-family F100 0.201126; translated-minus-F100 delta -0.022714, p=0.0628; market overlap n=3. Cross-packet transfer: source-balanced -> tournament translated panel 0.175687 vs F100 0.201126, delta -0.025439, p=0.0314; tournament -> source-balanced translated panel 0.171162 vs F100 0.196125, delta -0.024963, p=0.0636. External-bar control after corrected Polymarket direct-slug and intraday-fidelity acquisition: 24 joined mixed rows, translated F47 Brier 0.169991, 50/50 market+F47 0.170067, raw 0.176079, market 0.183011, F100 0.185751; translated beats F100/raw/market by point estimate but remains underpowered (translated-vs-market p=0.5783, translated-vs-raw p=0.7351). Prospective market-freeze packet: 24 Polymarket pairs / 48 currently open markets, bars frozen before calls and hidden from dispatch. Companion scorer joins 48/48 markets live and returns not_ready_unresolved_markets; not outcome evidence until fired and resolved."
+    rationale: "Use for A/B contract ranking, tournament construction, and experimental pairwise-to-probability translation. Do not treat as generic self-repair prompting or production default until it beats F100/raw/market controls prospectively or in an externally joined design."
+
+  rationale_compression_distance:
+    action: DO_NOT_USE_FOR_ROUTING
+    evidence: rationale_compression_audit_2026_06_03 (v28a/v28i external paired N=210)
+    current_state: "Inversion improved mean Brier by -0.052001, but rationale NCD did not explain where it helped: Spearman(NCD, inversion-minus-baseline Brier delta)=+0.016463, high-minus-low NCD Brier delta=-0.006765, below promotion gate."
+    rationale: "Deterministic zlib/NCD is useful as an audit lens for rationale/probability decoupling, but this slice does not justify using compression distance as a live routing or escalation feature."
 
   predicted_brier_interval:
-    action: ENABLE
+    action: ENABLE_DIAGNOSTIC_ONLY
     evidence: F61 (new primitive — self-predicted Brier [b_lo, b_hi]; b_mid + b_width explain 20-90% of per-family R² when combined with worry-scalar and spread)
-    rationale: "Elicit [b_lo, b_hi] alongside p_success. Use b_mid for routing and b_width as confidence weight. Per-family sign rules in channel_routing below."
+    rationale: "Elicit [b_lo, b_hi] alongside p_success for audits and candidate allocation features only. The later channel-only re-audit found negative incremental LOO value after shortcut controls, so do not use this as a live routing feature."
 
 # ============================================================
 # New primitives (F56, F58, F61) — channel routing per (family, corpus)
@@ -267,7 +320,7 @@ universal:
 
 # Channel definitions:
 #   worry              = tail_downside_worry - tail_upside_surprise (F35/F36)
-#   spread             = p_buy_yes_max - p_sell_yes_min            (F56 bid-ask)
+#   spread             = p_sell_yes_min - p_buy_yes_max            (F56 bid-ask)
 #   b_mid              = (predicted_brier_lo + predicted_brier_hi) / 2 (F61)
 #   b_width            = predicted_brier_hi - predicted_brier_lo  (F61)
 # Sign convention:
@@ -275,7 +328,7 @@ universal:
 #   inverted           -> higher channel value implies LOWER actual error (flip before use)
 
 bid_ask_spread:
-  description: "F56 — elicit p_buy_yes_max and p_sell_yes_min as a two-sided market quote; spread = p_buy - p_sell."
+  description: "F56 — elicit p_buy_yes_max and p_sell_yes_min as a two-sided market quote; spread = p_sell - p_buy."
   enabled_for:
     - family: codex_mini
       corpus: specialist
@@ -318,8 +371,43 @@ bid_ask_spread:
 # shape, pending N>=300 per-quartile confirmation.
 
 meta_routing:
-  status: pre-registered  # deployable-pending-confirmation at N>=300
+  status: pre-registered_negative_n142  # research target; not deployable
   source_finding: F99-extension (research_log.md, 2026-05-29) + F107 (task #66)
+  current_db_check: >
+    scripts/public/control/forecast/router_confirmation_eval.py evaluated the
+    registered rule on the N=142 complete five-family public-domain cohort from
+    forecaster_calibration.db and found F107 worse than claude, mean-of-5, and
+    median-of-5. Treat this block as a candidate policy family to rederive and
+    confirm, not as a live router. A 2026-06-03 graph-family interaction audit
+    rederived a topology-flavored alternative using nearest contracts in
+    five-family probability-vector space. It is suggestive but not deployable:
+    best graph+confident-NO Brier is 0.231166 vs confident-NO mean-panel
+    0.233528 on N=142 (paired p=0.3019); on a balanced Manifold/Polymarket
+    slice, source-graph+confident-NO is 0.238961 vs confident-NO 0.242317
+    (paired p=0.0398) and beats source hash-neighbor control by 0.0033
+    (p=0.0262), but the lift is tiny and needs pre-registered replication.
+    A same-day expert-advice audit then tested the obvious online-learning
+    version over raw family, F100-adjusted family, and simple-pool experts.
+    Hedge improved weakly overall (0.226481 vs confident-NO mean-panel
+    0.233529, delta -0.0070, p=0.4671) and weakly on balanced
+    Manifold/Polymarket rows (0.233990 vs 0.238435, delta -0.0044, p=0.7578),
+    but regressed on Manifold. Oracle-expert Brier was 0.117454 overall, so
+    family-choice headroom remains diagnostic rather than deployable.
+  graph_family_interaction:
+    action: CANDIDATE_DIAGNOSTIC_ONLY
+    evidence: graph_family_interaction_audit_2026_06_03
+    promotion_gate: "pre-registered replication with >=300 complete-five panels, source-balanced cells, and graph policy beating confident-NO mean-panel plus hash-neighbor controls by >=0.01 Brier"
+    rationale: "Topology may expose family x contract interaction, but the current no-call audit shows only a small lift that is not strong enough for live routing."
+  expert_advice_router:
+    action: DO_NOT_DEPLOY
+    evidence: expert_advice_router_audit_2026_06_03
+    promotion_gate: "source-stratified expert-advice policy must beat confident-NO mean-panel by >=0.01 Brier, paired p<=0.05, and no eligible major-source regression"
+    rationale: "Online expert weighting recovers only a tiny, non-significant share of oracle-family headroom and regresses on Manifold in the balanced source slice."
+  diagnostic_review_allocation:
+    action: CANDIDATE_DIAGNOSTIC_ONLY
+    evidence: diagnostic_review_allocation_audit_2026_06_03
+    promotion_gate: "independent reviewer source, fixed nonzero review cost, source-balanced packet, >=0.01 costed Brier lift over confident-NO forecast-all, paired p<=0.05, no major-source regression, and sham/inverted-trigger controls"
+    rationale: "Diagnostic channels identify oracle-review headroom, but train-fold proxy reviewers do not promote; best non-oracle policy is sigma_high_review_to_source_best with costed Brier 0.227372 vs F100 0.233528, p=0.3531."
   inputs:
     panel_sigma: cross-family stdev of p_success on the contract
     contract_category: source_corpus from analytics/public/calibration/forecaster_calibration.db contracts table
@@ -362,10 +450,13 @@ meta_routing:
 channel_routing:
   description: >
     F58 channel orthogonality + F61 multi-channel R² with leave-one-out CV
-    (R²_LOO). Per-family channel routing is DEPLOYABLE only when R²_LOO is
-    materially positive on the public_domain corpus. The N=15 specialist
-    in-sample R² values are NOT deployable (k=4 with N=15 → 10 dof; fit-noise
-    dominates) and are retained only as ZTARE-internal record.
+    (R²_LOO), superseded by the 2026-06-03 channel-only re-audit. The channel
+    fields remain diagnostic/eigenframe surfaces, but are NOT a broad live
+    Brier classifier or routing policy: after shortcut controls, channel-only
+    incremental LOO value is negative for all five families. The N=15
+    specialist in-sample R² values are retained only as ZTARE-internal record.
+  action: DO_NOT_USE_FOR_ROUTING
+  superseding_evidence: "channel_only_classifier_reaudit_2026_06_03"
   spread_convention: "p_sell_yes_min - p_buy_yes_max (ask - bid, non-negative)"
   detectable_rho_at_n42: 0.43  # Fisher-z, alpha=0.05, beta=0.20
 
@@ -373,30 +464,30 @@ channel_routing:
     # OLS k=4 channels (worry, spread, b_mid, b_width) → ys = err². Source:
     # projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/v28a_external_multichannel_r2.json
     codex_55:
-      status: deployable
+      status: diagnostic_retracted_for_policy
       r2_in_sample: 0.57
       r2_adj: 0.53
       r2_loo: 0.31
       primary: worry
       sign: direction_correct
       secondary: spread
-      note: "Only family whose multi-channel decomposition survives LOO-CV at N=42 public_domain."
+      note: "Historical initial-public result only. Superseded for policy by the larger channel-only re-audit after shortcut controls."
     gemini:
-      status: marginal
+      status: diagnostic_retracted_for_policy
       r2_in_sample: 0.31
       r2_adj: 0.23
       r2_loo: 0.04
       primary: worry
       sign: direction_correct
-      note: "LOO-CV barely positive; do not deploy multi-channel weighting until N≥91 replication."
+      note: "Historical initial-public result only. Do not deploy multi-channel weighting."
     claude:
-      status: marginal
+      status: diagnostic_retracted_for_policy
       r2_in_sample: 0.20
       r2_adj: 0.12
       r2_loo: 0.03
       primary: spread
       sign: direction_correct
-      note: "LOO-CV barely positive; same caveat."
+      note: "Historical initial-public result only. Do not deploy multi-channel weighting."
     deepseek:
       status: overfit
       r2_in_sample: 0.28
@@ -457,6 +548,8 @@ f60_mechanism:
 #   3. For each candidate intervention in the prompt-construction layer,
 #      check this file's action field:
 #        ENABLE              -> include the intervention in the prompt
+#        ENABLE_DIAGNOSTIC_ONLY -> include only for diagnostic/confirmation
+#                                  packets; do not route or allocate from it
 #        DISABLE             -> explicitly exclude (don't add even by default)
 #        NEUTRAL             -> intervention is harmless but not helpful; skip for simplicity
 #        DO_NOT_USE          -> don't even compute the signal (no value)
