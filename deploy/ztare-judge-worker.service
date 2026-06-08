@@ -13,17 +13,20 @@ User=ztare_judge
 Group=ztare_judge
 Environment=ZTARE_OFFICIAL_STORE=/srv/ztare_official_store
 Environment=PYTHONPATH=/srv/ztare_gate
-Environment=PATH=/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/usr/local/bin:/usr/bin:/bin:/home/ztare/.local/bin
 Environment=PYTHONDONTWRITEBYTECODE=1
-# The judge is a DIRECT OpenAI API call (NOT codex). The API key is
-# supplied from an AGENT-UNREADABLE EnvironmentFile (root:ztare_judge
-# 0640). The mutator cannot read it — and even if it could, it still
-# lacks the ed25519 judge key, so it cannot sign a verdict. Absent ⇒
-# _llm raises ⇒ no verdict ⇒ substantive ticks fail-closed (safe),
-# never falsely trusted. gpt-4.1 is fully API-supported (the codex
-# ChatGPT-subscription model limit does not apply to the API).
+# Judge transport is provider-neutral API first, subscription CLI
+# fallback. API keys and subscription auth live outside the agent-owned
+# repo; the mutator still lacks the ed25519 judge key, so it cannot
+# fabricate a verdict even if an upstream model account is shared.
 EnvironmentFile=-/etc/ztare/judge.env
-Environment=ZTARE_JUDGE_MODEL=gpt-4.1
+Environment=ZTARE_JUDGE_TRANSPORT=auto
+Environment=ZTARE_JUDGE_API_MODEL=gemini-2.5-flash
+Environment=ZTARE_JUDGE_SUBSCRIPTION_RUNTIME=codex
+Environment=ZTARE_JUDGE_SUBSCRIPTION_MODEL=gpt-5.5
+Environment=HOME=/var/lib/ztare_judge
+Environment=CODEX_HOME=/var/lib/ztare_judge/.codex
+Environment=ZTARE_JUDGE_REPO=/srv/ztare_gate
 # Code runs from the read-only gate tree (OUTSIDE the agent-owned
 # synced repo): ztare_judge can read it, the agent cannot write it ⇒
 # the worker code itself is tamper-prevented.
@@ -34,7 +37,7 @@ RestartSec=5
 # The worker may write ONLY the judge_queue subtree (its verdicts +
 # its own worker_state). OS ownership still prevents it writing the
 # requests dir (ztare_verify-owned) — defence in depth.
-ReadWritePaths=/srv/ztare_official_store/judge_queue
+ReadWritePaths=/srv/ztare_official_store/judge_queue /var/lib/ztare_judge
 ProtectSystem=strict
 ProtectHome=read-only
 NoNewPrivileges=true

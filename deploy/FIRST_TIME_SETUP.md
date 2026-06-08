@@ -79,21 +79,26 @@ Until a key/anchor is provisioned the relevant path **fail-closes**
    verified; pinned pubkey
    `da35951baf36c69e9156c4ff11d2c7cc5d8382f0b81a3a131394e754ec72b309`.
 
-   **Judge codex credentials (ChatGPT SUBSCRIPTION, not an API key).**
-   codex on this box authenticates via a ChatGPT subscription (OAuth
-   `auth.json`), NOT `OPENAI_API_KEY`. Hard facts learned the hard way
-   (now automated by deploy step 4b — do not rediscover):
+   **Judge model credentials (Gemini API first, Codex subscription fallback).**
+   The worker defaults to `ZTARE_JUDGE_TRANSPORT=auto`:
+   `gemini-2.5-flash` through `LLMRuntime`, then Codex subscription
+   fallback (`gpt-5.5`) through `subscription_agent_runtime`. Hard facts
+   learned the hard way (now automated by deploy step 4b — do not
+   rediscover):
+   - API keys are read from `/etc/ztare/judge.env`
+     (`GEMINI_API_KEY` or `GOOGLE_API_KEY` preferred; OpenAI/Anthropic/
+     DeepSeek may also be present for fallback chains). The file is
+     `root:ztare_judge 0640`, so the agent cannot read it.
    - `ztare_judge` needs a **persistent** agent-unreadable HOME +
      CODEX_HOME (`/var/lib/ztare_judge` + `/.codex`). codex **refuses
      to create helper binaries under `/tmp`** and walks CWD upward for
      a project `config.toml` (the unit's `WorkingDirectory=/srv/ztare_gate`
      keeps it off the agent's `~/.codex`). The unit sets `HOME`,
      `CODEX_HOME`.
-   - A ChatGPT account does **not** support `gpt-4.1`
-     (`400 … not supported when using Codex with a ChatGPT account`).
-     The unit pins `ZTARE_JUDGE_MODEL=gpt-5.5` (subscription-supported,
-     proven) at `medium` reasoning. Subscription cost is flat, so this
-     is a latency choice, not a $-per-call one.
+   - A ChatGPT account does **not** support API-only model ids such as
+     `gpt-4.1` through Codex CLI (`400 … not supported when using Codex
+     with a ChatGPT account`). The unit pins subscription fallback to
+     `ZTARE_JUDGE_SUBSCRIPTION_MODEL=gpt-5.5`.
    - The deploy **seeds** `/var/lib/ztare_judge/.codex/auth.json` from
      the box's working subscription login (`/root/.codex` — the
      finance-os session — else the agent user's), and is **idempotent:
@@ -106,11 +111,11 @@ Until a key/anchor is provisioned the relevant path **fail-closes**
      sudo -u ztare_judge env HOME=/var/lib/ztare_judge \
        CODEX_HOME=/var/lib/ztare_judge/.codex codex login
      ```
-   Absent/stale judge auth ⇒ codex `401` ⇒ no verdict ⇒ substantive
-   ticks **fail-closed**, never falsely trusted. Token rotation note:
-   if the seeded session is also actively used elsewhere it may
-   rotate the judge copy stale — give the judge its **own** one-time
-   `codex login` for a fully independent session.
+   Absent/stale API env and absent/stale judge auth ⇒ no verdict ⇒
+   substantive ticks **fail-closed**, never falsely trusted. Token
+   rotation note: if the seeded session is also actively used elsewhere
+   it may rotate the judge copy stale — give the judge its **own**
+   one-time `codex login` for a fully independent session.
 
    **Judge charter (prose, deliberately NOT a cognitive-firm role —
    minimal TCB).** The judge worker exists to do exactly one thing:
