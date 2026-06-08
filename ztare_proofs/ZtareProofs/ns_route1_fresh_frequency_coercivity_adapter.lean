@@ -5152,6 +5152,32 @@ theorem SurplusLiftProjectionSourceCertificate.targetPrefix_le_budget
       (h.ambientPrefixBudget N) h.C_proj_nonneg
   exact le_trans hpoint hbudget
 
+/-- The projected ambient source itself has the projected ambient prefix
+budget.  This is the source stream later reused by the spectral-triad adapter. -/
+theorem SurplusLiftProjectionSourceCertificate.projectedAmbientPrefix_le_budget
+    {targetCharge : Nat → Real}
+    (h : SurplusLiftProjectionSourceCertificate targetCharge) :
+    ∀ N : Nat,
+      NS.nsPrefixSum (fun n : Nat => h.C_proj * h.ambientCharge n) N ≤
+        h.C_proj * h.ambientBudget := by
+  intro N
+  have hsum :
+      ∀ M : Nat,
+        NS.nsPrefixSum
+            (fun n : Nat => h.C_proj * h.ambientCharge n) M =
+          h.C_proj * NS.nsPrefixSum h.ambientCharge M := by
+    intro M
+    induction M with
+    | zero =>
+        simp [NS.nsPrefixSum]
+    | succ M ih =>
+        rw [NS.ns_prefix_sum_succ, NS.ns_prefix_sum_succ, ih]
+        ring
+  rw [hsum N]
+  exact
+    mul_le_mul_of_nonneg_left
+      (h.ambientPrefixBudget N) h.C_proj_nonneg
+
 /--
 The surplus/loss/projection certificate is a sufficient source of the
 selected-tent anti-concentration record used by the high-high branch.
@@ -6590,6 +6616,754 @@ theorem annularOwnerPointwiseBudget_allows_unbounded_eventPrefix :
     exact nsPrefixSum_single_zero_unit_le_one M
   · rw [nsPrefixSum_const_one_real]
     exact hN
+
+/--
+Sum-product phase-space label guard.
+
+A Wigner/wavepacket or phase-space-owner label does not repair the owner
+rebilling obstruction unless it supplies the selected-prefix owner-preimage
+inequality.  The same one-owner profile satisfies the qualitative labels below
+and still has an arbitrarily large selected-event prefix.
+-/
+theorem phaseSpaceOwnerLabelsWithoutPreimageBudget_allow_unboundedEventPrefix :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+        (∀ n : Nat, 0 ≤ atomCharge n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        True ∧
+        True ∧
+        True ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩ :=
+    annularOwnerPointwiseBudget_allows_unbounded_eventPrefix B
+  exact
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      hAtomNonneg, hPointwise, hBudget, True.intro, True.intro, True.intro,
+      hPrefix⟩
+
+/--
+Microlocal-label version of the phase-space rebilling guard.
+
+Adding qualitative spatial-marginal, wavefront, symplectic-flow, same-carrier,
+and fixed-owner labels still does not produce a selected-prefix budget.  The
+missing datum is numerical: a monotone reserve/drop or selected-prefix
+owner-preimage inequality.
+-/
+theorem microlocalLabelsWithoutMonotoneReserve_allow_selectedTreeRebilling :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+      ∃ spatialMarginalControlled : Prop,
+      ∃ wavefrontLedgerControlled : Prop,
+      ∃ symplecticFlowLabel : Prop,
+      ∃ sameCarrierPacketLabel : Prop,
+      ∃ ownerMapFixedBeforePayoffLabel : Prop,
+        spatialMarginalControlled ∧
+        wavefrontLedgerControlled ∧
+        symplecticFlowLabel ∧
+        sameCarrierPacketLabel ∧
+        ownerMapFixedBeforePayoffLabel ∧
+        (∀ n : Nat, 0 ≤ atomCharge n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      hAtomNonneg, hPointwise, hBudget, _, _, _, hPrefix⟩ :=
+    phaseSpaceOwnerLabelsWithoutPreimageBudget_allow_unboundedEventPrefix B
+  exact
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      True, True, True, True, True,
+      True.intro, True.intro, True.intro, True.intro, True.intro,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩
+
+/--
+Lamb/helicity/frame label guard.
+
+The Lamb identity, helicity density, Beltrami null channel, local vortex-frame
+labels, Biot-Savart constraint labels, and Leray-projection gradient-kill label
+are all auxiliary structure unless they produce a positive selected-prefix
+payment.  Qualitative orthogonality still allows the same selected-tree
+rebilling profile.
+-/
+theorem lambHelicityFrameLabelsWithoutPositiveReceipt_allow_selectedTreeRebilling :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+      ∃ lambVectorCarrierTracked : Prop,
+      ∃ helicityDensityTracked : Prop,
+      ∃ beltramiNullChannelTracked : Prop,
+      ∃ localVortexFrameTracked : Prop,
+      ∃ biotSavartNonlocalConstraintTracked : Prop,
+      ∃ lerayGradientChannelKilled : Prop,
+        lambVectorCarrierTracked ∧
+        helicityDensityTracked ∧
+        beltramiNullChannelTracked ∧
+        localVortexFrameTracked ∧
+        biotSavartNonlocalConstraintTracked ∧
+        lerayGradientChannelKilled ∧
+        (∀ n : Nat, 0 ≤ atomCharge n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      _spatialMarginalControlled, _wavefrontLedgerControlled,
+      _symplecticFlowLabel, _sameCarrierPacketLabel,
+      _ownerMapFixedBeforePayoffLabel, _, _, _, _, _,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩ :=
+    microlocalLabelsWithoutMonotoneReserve_allow_selectedTreeRebilling B
+  exact
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      True, True, True, True, True, True,
+      True.intro, True.intro, True.intro, True.intro, True.intro,
+      True.intro, hAtomNonneg, hPointwise, hBudget, hPrefix⟩
+
+/-- Concrete real Fourier three-vector used by the spectral-triad guard. -/
+abbrev FourierV3 := Fin 3 → Real
+
+/-- Coordinatewise addition for concrete Fourier three-vectors. -/
+def fourierV3Add (a b : FourierV3) : FourierV3 :=
+  fun i => a i + b i
+
+/-- Concrete dot product on `FourierV3`. -/
+def dot3 (a b : FourierV3) : Real :=
+  a 0 * b 0 + a 1 * b 1 + a 2 * b 2
+
+/-- Concrete cross product on `FourierV3`. -/
+def cross3 (a b : FourierV3) : FourierV3 :=
+  fun i =>
+    if i = 0 then
+      a 1 * b 2 - a 2 * b 1
+    else if i = 1 then
+      a 2 * b 0 - a 0 * b 2
+    else
+      a 0 * b 1 - a 1 * b 0
+
+/-- Coordinate constructor for concrete Fourier three-vectors. -/
+def mkFourierV3 (x y z : Real) : FourierV3 :=
+  fun i => if i = 0 then x else if i = 1 then y else z
+
+@[simp] theorem mkFourierV3_zero (x y z : Real) :
+    mkFourierV3 x y z 0 = x := by
+  simp [mkFourierV3]
+
+@[simp] theorem mkFourierV3_one (x y z : Real) :
+    mkFourierV3 x y z 1 = y := by
+  simp [mkFourierV3]
+
+@[simp] theorem mkFourierV3_two (x y z : Real) :
+    mkFourierV3 x y z 2 = z := by
+  have h20 : ¬ ((2 : Fin 3) = 0) := by decide
+  have h21 : ¬ ((2 : Fin 3) = 1) := by decide
+  simp [mkFourierV3, h20, h21]
+
+@[simp] theorem cross3_zero (a b : FourierV3) :
+    cross3 a b 0 = a 1 * b 2 - a 2 * b 1 := by
+  simp [cross3]
+
+@[simp] theorem cross3_one (a b : FourierV3) :
+    cross3 a b 1 = a 2 * b 0 - a 0 * b 2 := by
+  simp [cross3]
+
+@[simp] theorem cross3_two (a b : FourierV3) :
+    cross3 a b 2 = a 0 * b 1 - a 1 * b 0 := by
+  have h20 : ¬ ((2 : Fin 3) = 0) := by decide
+  have h21 : ¬ ((2 : Fin 3) = 1) := by decide
+  simp [cross3, h20, h21]
+
+/-- Fourier carrier for one closed resonant triad `k = p + q`. -/
+structure ResonantTriad where
+  k : FourierV3
+  p : FourierV3
+  q : FourierV3
+  h_triad : k = fourierV3Add p q
+
+/-- Velocity coefficients attached to a triad, with incompressibility typed
+at each mode. -/
+structure TriadState (triad : ResonantTriad) where
+  u_k : FourierV3
+  u_p : FourierV3
+  u_q : FourierV3
+  h_div_k : dot3 u_k triad.k = 0
+  h_div_p : dot3 u_p triad.p = 0
+  h_div_q : dot3 u_q triad.q = 0
+
+/-- Vorticity Fourier coefficient generated by `p × u_p`. -/
+def triadVorticityMode {triad : ResonantTriad}
+    (state : TriadState triad) : FourierV3 :=
+  cross3 triad.p state.u_p
+
+/-- Raw Lamb-triad throughput before any shell aggregation.  This is the
+coefficient-level object that scalar LP shell prices do not expose. -/
+def rawLambTriadThroughput {triad : ResonantTriad}
+    (state : TriadState triad) : Real :=
+  dot3 state.u_k (cross3 (triadVorticityMode state) state.u_q)
+
+/-- The zero Fourier vector, used only to witness that the triad type itself
+is inhabited and therefore cannot be mistaken for a penalty. -/
+def zeroFourierV3 : FourierV3 :=
+  fun _ => 0
+
+/-- Trivial resonant triad. -/
+def zeroResonantTriad : ResonantTriad where
+  k := zeroFourierV3
+  p := zeroFourierV3
+  q := zeroFourierV3
+  h_triad := by
+    funext i
+    simp [zeroFourierV3, fourierV3Add]
+
+/-- Trivial divergence-free state on the trivial triad. -/
+def zeroTriadState : TriadState zeroResonantTriad where
+  u_k := zeroFourierV3
+  u_p := zeroFourierV3
+  u_q := zeroFourierV3
+  h_div_k := by simp [dot3, zeroFourierV3, zeroResonantTriad]
+  h_div_p := by simp [dot3, zeroFourierV3, zeroResonantTriad]
+  h_div_q := by simp [dot3, zeroFourierV3, zeroResonantTriad]
+
+/-- A fixed non-degenerate triad `k = p + q`, with `p = e₁` and `q = e₂`. -/
+def positiveThroughputTriad : ResonantTriad where
+  k := mkFourierV3 1 1 0
+  p := mkFourierV3 1 0 0
+  q := mkFourierV3 0 1 0
+  h_triad := by
+    funext i
+    fin_cases i <;> norm_num [mkFourierV3, fourierV3Add]
+
+/-- Divergence-free triad state with adjustable Lamb throughput. -/
+def positiveThroughputTriadState (A : Real) :
+    TriadState positiveThroughputTriad where
+  u_k := mkFourierV3 (-A) A 0
+  u_p := mkFourierV3 0 0 1
+  u_q := mkFourierV3 0 0 1
+  h_div_k := by
+    simp [positiveThroughputTriad, dot3]
+  h_div_p := by
+    norm_num [positiveThroughputTriad, dot3]
+  h_div_q := by
+    norm_num [positiveThroughputTriad, dot3]
+
+/-- The explicit state has raw Lamb-triad throughput exactly `A`. -/
+theorem rawLambTriadThroughput_positiveThroughputTriadState
+    (A : Real) :
+    rawLambTriadThroughput (positiveThroughputTriadState A) = A := by
+  simp [rawLambTriadThroughput, triadVorticityMode, positiveThroughputTriadState,
+    positiveThroughputTriad, dot3]
+
+/--
+Geometry-only obstruction for the Fourier-triad route.
+
+The resonant relation, divergence-free coefficient frame, and raw Lamb
+trilinear form by themselves impose no uniform throughput bound.  Any positive
+receipt must therefore import a real source currency: amplitude/energy control,
+projection injectivity, owner-preimage, no-rebilling, or a prefix budget.
+-/
+theorem resonantDivergenceFreeTriadGeometryAlone_allows_arbitraryRawLambThroughput :
+    ∀ B : Real,
+      ∃ triad : ResonantTriad,
+      ∃ state : TriadState triad,
+        B < rawLambTriadThroughput state := by
+  intro B
+  refine ⟨positiveThroughputTriad, positiveThroughputTriadState (B + 1), ?_⟩
+  rw [rawLambTriadThroughput_positiveThroughputTriadState]
+  linarith
+
+/-- Positive receipt the spectral-triad route must supply.
+
+The fields are intentionally stricter than a shell-level coherence price.  The
+triad tensor must be fixed before shell aggregation, the phase/helicity data
+must be declared before payoff, and the event-radius payment must be charged
+through a prefix-bounded tensor penalty on the same carrier.
+-/
+structure FourierTriadPositivePenaltyReceipt
+    (eventRadiusPayment ownerOfEvent atomCharge : Nat → Real)
+    (atomBudget : Real) where
+  triad : Nat → ResonantTriad
+  state : ∀ n : Nat, TriadState (triad n)
+  phasePenalty : Nat → Real
+  phase_penalty_nonneg : ∀ n : Nat, 0 ≤ phasePenalty n
+  lamb_throughput_controlled_by_phase_penalty :
+    ∀ n : Nat, |rawLambTriadThroughput (state n)| ≤ phasePenalty n
+  event_payment_le_phase_penalty :
+    ∀ n : Nat, eventRadiusPayment n ≤ phasePenalty n
+  phase_penalty_prefix_budget :
+    ∀ M : Nat, NS.nsPrefixSum phasePenalty M ≤ atomBudget
+  tensorGeometryDeclaredBeforeShellAggregation : Prop
+  helicalSignsDeclaredBeforePayoff : Prop
+  phaseCoordinatesDeclaredBeforePayoff : Prop
+  sameCarrierAsSelectedTree : Prop
+  ownerMapFixedBeforePayoff : Prop
+
+/-- A positive spectral-triad penalty receipt really bounds the selected event
+prefix.  This is the exact consumer missing from scalar shell-coherence labels. -/
+theorem FourierTriadPositivePenaltyReceipt.eventPrefix_le_budget
+    {eventRadiusPayment ownerOfEvent atomCharge : Nat → Real}
+    {atomBudget : Real}
+    (R :
+      FourierTriadPositivePenaltyReceipt
+        eventRadiusPayment ownerOfEvent atomCharge atomBudget)
+    (M : Nat) :
+    NS.nsPrefixSum eventRadiusPayment M ≤ atomBudget := by
+  have hprefix :
+      NS.nsPrefixSum eventRadiusPayment M ≤
+        NS.nsPrefixSum R.phasePenalty M :=
+    NS.ns_prefix_sum_le_of_pointwise
+      eventRadiusPayment R.phasePenalty
+      R.event_payment_le_phase_penalty M
+  exact hprefix.trans (R.phase_penalty_prefix_budget M)
+
+/--
+Source-budgeted constructor surface for the spectral-triad route.
+
+This is stronger than a pointwise Lamb tensor label.  It asks for the raw
+triad throughput and selected event payments to be charged to the same
+prefix-bounded source stream, with the owner/no-rebilling and separated PDE
+payment channels declared on the same carrier.
+-/
+structure SourceBudgetedFourierTriadPenaltyReceipt
+    (eventRadiusPayment ownerOfEvent atomCharge : Nat → Real)
+    (atomBudget : Real) where
+  triad : Nat → ResonantTriad
+  state : ∀ n : Nat, TriadState (triad n)
+  sourcePenalty : Nat → Real
+  sourcePenalty_nonneg : ∀ n : Nat, 0 ≤ sourcePenalty n
+  raw_lamb_throughput_controlled_by_source_penalty :
+    ∀ n : Nat, |rawLambTriadThroughput (state n)| ≤ sourcePenalty n
+  event_payment_le_source_penalty :
+    ∀ n : Nat, eventRadiusPayment n ≤ sourcePenalty n
+  source_penalty_prefix_budget :
+    ∀ M : Nat, NS.nsPrefixSum sourcePenalty M ≤ atomBudget
+  tensorGeometryDeclaredBeforeShellAggregation : Prop
+  helicalSignsDeclaredBeforePayoff : Prop
+  phaseCoordinatesDeclaredBeforePayoff : Prop
+  sameCarrierAsSelectedTree : Prop
+  ownerMapFixedBeforePayoff : Prop
+  sourcePrefixBudgetPaid : Prop
+  ownerPreimagePrefixInequalityPaid : Prop
+  noRebillingFreshnessPaid : Prop
+  ownerRootNumericBoundPaid : Prop
+  noOverlapOrDisjointnessPaid : Prop
+  sameOwnerOrSourceBindingPaid : Prop
+  pressureReserveSeparated : Prop
+  duhamelReserveSeparated : Prop
+  inheritedReserveSeparated : Prop
+  partitionTyped : Prop
+  sectionIdentityTyped : Prop
+
+/-- A source-budgeted spectral-triad receipt instantiates the positive receipt. -/
+def SourceBudgetedFourierTriadPenaltyReceipt.to_positivePenaltyReceipt
+    {eventRadiusPayment ownerOfEvent atomCharge : Nat → Real}
+    {atomBudget : Real}
+    (R :
+      SourceBudgetedFourierTriadPenaltyReceipt
+        eventRadiusPayment ownerOfEvent atomCharge atomBudget) :
+    FourierTriadPositivePenaltyReceipt
+      eventRadiusPayment ownerOfEvent atomCharge atomBudget where
+  triad := R.triad
+  state := R.state
+  phasePenalty := R.sourcePenalty
+  phase_penalty_nonneg := R.sourcePenalty_nonneg
+  lamb_throughput_controlled_by_phase_penalty :=
+    R.raw_lamb_throughput_controlled_by_source_penalty
+  event_payment_le_phase_penalty := R.event_payment_le_source_penalty
+  phase_penalty_prefix_budget := R.source_penalty_prefix_budget
+  tensorGeometryDeclaredBeforeShellAggregation :=
+    R.tensorGeometryDeclaredBeforeShellAggregation
+  helicalSignsDeclaredBeforePayoff := R.helicalSignsDeclaredBeforePayoff
+  phaseCoordinatesDeclaredBeforePayoff := R.phaseCoordinatesDeclaredBeforePayoff
+  sameCarrierAsSelectedTree := R.sameCarrierAsSelectedTree
+  ownerMapFixedBeforePayoff := R.ownerMapFixedBeforePayoff
+
+/-- Consumer theorem for the source-budgeted route. -/
+theorem SourceBudgetedFourierTriadPenaltyReceipt.eventPrefix_le_budget
+    {eventRadiusPayment ownerOfEvent atomCharge : Nat → Real}
+    {atomBudget : Real}
+    (R :
+      SourceBudgetedFourierTriadPenaltyReceipt
+        eventRadiusPayment ownerOfEvent atomCharge atomBudget)
+    (M : Nat) :
+    NS.nsPrefixSum eventRadiusPayment M ≤ atomBudget :=
+  FourierTriadPositivePenaltyReceipt.eventPrefix_le_budget
+    R.to_positivePenaltyReceipt M
+
+/--
+Surplus/loss/projection source imported into the spectral-triad receipt.
+
+The certificate pays the selected event stream through the projected ambient
+source `C_proj * ambientCharge`.  The only Fourier-specific analytic input left
+outside the certificate is the explicit pointwise bound on raw Lamb throughput.
+-/
+def SourceBudgetedFourierTriadPenaltyReceipt.ofSurplusLiftProjectionCertificate
+    {eventRadiusPayment ownerOfEvent atomCharge : Nat → Real}
+    (triad : Nat → ResonantTriad)
+    (state : ∀ n : Nat, TriadState (triad n))
+    (h :
+      SurplusLiftProjectionSourceCertificate eventRadiusPayment)
+    (hRaw :
+      ∀ n : Nat,
+        |rawLambTriadThroughput (state n)| ≤
+          h.C_proj * h.ambientCharge n) :
+    SourceBudgetedFourierTriadPenaltyReceipt
+      eventRadiusPayment ownerOfEvent atomCharge
+      (h.C_proj * h.ambientBudget) where
+  triad := triad
+  state := state
+  sourcePenalty := fun n : Nat => h.C_proj * h.ambientCharge n
+  sourcePenalty_nonneg := by
+    intro n
+    exact mul_nonneg h.C_proj_nonneg (h.ambientCharge_nonnegative n)
+  raw_lamb_throughput_controlled_by_source_penalty := hRaw
+  event_payment_le_source_penalty := h.pointwiseTargetPaidByProjectedAmbient
+  source_penalty_prefix_budget :=
+    h.projectedAmbientPrefix_le_budget
+  tensorGeometryDeclaredBeforeShellAggregation :=
+    h.ambientLiftDeclaredBeforePayoff
+  helicalSignsDeclaredBeforePayoff :=
+    h.constantsFixedBeforeLimit
+  phaseCoordinatesDeclaredBeforePayoff :=
+    h.constantsFixedBeforeLimit
+  sameCarrierAsSelectedTree :=
+    h.projectionInjectiveOrFiniteMultiplicity
+  ownerMapFixedBeforePayoff :=
+    h.constantsFixedBeforeLimit
+  sourcePrefixBudgetPaid :=
+    ∀ M : Nat,
+      NS.nsPrefixSum (fun n : Nat => h.C_proj * h.ambientCharge n) M ≤
+        h.C_proj * h.ambientBudget
+  ownerPreimagePrefixInequalityPaid :=
+    h.projectionInjectiveOrFiniteMultiplicity
+  noRebillingFreshnessPaid :=
+    h.noPostHocSelection
+  ownerRootNumericBoundPaid :=
+    0 ≤ h.C_proj * h.ambientBudget
+  noOverlapOrDisjointnessPaid :=
+    h.projectionInjectiveOrFiniteMultiplicity
+  sameOwnerOrSourceBindingPaid :=
+    h.projectionInjectiveOrFiniteMultiplicity
+  pressureReserveSeparated :=
+    h.quotientOrDenominatorLossUniform
+  duhamelReserveSeparated :=
+    ∀ n : Nat,
+      h.productionSpend n + h.pressureReserveSpend n +
+          h.duhamelReserveSpend n + h.inheritedReserveSpend n ≤
+        h.ambientCharge n
+  inheritedReserveSeparated :=
+    ∀ N : Nat,
+      NS.nsPrefixSum h.parentRadiusInvoiceSpend N ≤
+        NS.nsPrefixSum h.ambientCharge N
+  partitionTyped :=
+    ∀ n : Nat,
+      h.productionSpend n + h.pressureReserveSpend n +
+          h.duhamelReserveSpend n + h.inheritedReserveSpend n ≤
+        h.ambientCharge n
+  sectionIdentityTyped :=
+    ∀ n : Nat, h.parentRadiusInvoiceSpend n = eventRadiusPayment n
+
+/-- Consumer form of the surplus/projection-to-triad adapter. -/
+theorem sourceBudgetedTriad_eventPrefix_le_projectedAmbientBudget
+    {eventRadiusPayment ownerOfEvent atomCharge : Nat → Real}
+    (triad : Nat → ResonantTriad)
+    (state : ∀ n : Nat, TriadState (triad n))
+    (h :
+      SurplusLiftProjectionSourceCertificate eventRadiusPayment)
+    (hRaw :
+      ∀ n : Nat,
+        |rawLambTriadThroughput (state n)| ≤
+          h.C_proj * h.ambientCharge n)
+    (M : Nat) :
+    NS.nsPrefixSum eventRadiusPayment M ≤
+      h.C_proj * h.ambientBudget :=
+  (SourceBudgetedFourierTriadPenaltyReceipt.ofSurplusLiftProjectionCertificate
+    (eventRadiusPayment := eventRadiusPayment)
+    (ownerOfEvent := ownerOfEvent)
+    (atomCharge := atomCharge)
+    triad state h hRaw).eventPrefix_le_budget M
+
+/--
+Spectral-triad tensor label guard.
+
+Typing the resonant triad relation, divergence-free Fourier coefficients,
+Lamb trilinear form, helicity signature label, phase-coherence label, and a
+scalar shell-coherence price still does not supply the positive tensor-penalty
+receipt above.  The one-owner selected-tree packet remains possible.
+-/
+theorem spectralTriadTensorLabelsWithoutPositivePenalty_allow_selectedTreeRebilling :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+      ∃ triad : ResonantTriad,
+      ∃ state : TriadState triad,
+      ∃ shellCoherencePrice : Nat → Real,
+      ∃ triadPhasePenalty : Nat → Real,
+      ∃ resonantTriadManifoldTyped : Prop,
+      ∃ divergenceFreeFrameTyped : Prop,
+      ∃ lambTrilinearFormTyped : Prop,
+      ∃ helicitySignatureTracked : Prop,
+      ∃ phaseCoherenceTracked : Prop,
+      ∃ shellAggregationAvailable : Prop,
+        resonantTriadManifoldTyped ∧
+        divergenceFreeFrameTyped ∧
+        lambTrilinearFormTyped ∧
+        helicitySignatureTracked ∧
+        phaseCoherenceTracked ∧
+        shellAggregationAvailable ∧
+        rawLambTriadThroughput state = 0 ∧
+        (∀ n : Nat, 0 ≤ shellCoherencePrice n) ∧
+        (∀ n : Nat, 0 ≤ triadPhasePenalty n) ∧
+        (∀ n : Nat, triadPhasePenalty n = 0) ∧
+        (∀ n : Nat, 0 ≤ atomCharge n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      _lambVectorCarrierTracked, _helicityDensityTracked,
+      _beltramiNullChannelTracked, _localVortexFrameTracked,
+      _biotSavartNonlocalConstraintTracked, _lerayGradientChannelKilled,
+      _, _, _, _, _, _, hAtomNonneg, hPointwise, hBudget, hPrefix⟩ :=
+    lambHelicityFrameLabelsWithoutPositiveReceipt_allow_selectedTreeRebilling B
+  exact
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      zeroResonantTriad, zeroTriadState,
+      (fun _ : Nat => 0), (fun _ : Nat => 0),
+      True, True, True, True, True, True,
+      True.intro, True.intro, True.intro, True.intro, True.intro, True.intro,
+      (by simp [rawLambTriadThroughput, triadVorticityMode, cross3, dot3,
+        zeroTriadState, zeroFourierV3, zeroResonantTriad]),
+      (fun _ : Nat => by norm_num),
+      (fun _ : Nat => by norm_num),
+      (fun _ : Nat => rfl),
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩
+
+/--
+Pointwise source labels are still not a positive receipt.
+
+Even after the resonant triad manifold, divergence-free frame, and Lamb
+trilinear form are typed, a pointwise source penalty without a prefix budget
+and no-rebilling owner binding allows the selected-event prefix to exceed any
+budget.  The missing ingredient is the prefix-bounded same-source payment
+receipt, not another geometric label.
+-/
+theorem sourceBudgetPointwiseLabelsWithoutPrefixNoRebilling_allow_selectedTreeRebilling :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+      ∃ triad : ResonantTriad,
+      ∃ state : TriadState triad,
+      ∃ sourcePenalty : Nat → Real,
+      ∃ resonantTriadManifoldTyped : Prop,
+      ∃ divergenceFreeFrameTyped : Prop,
+      ∃ lambTrilinearFormTyped : Prop,
+        resonantTriadManifoldTyped ∧
+        divergenceFreeFrameTyped ∧
+        lambTrilinearFormTyped ∧
+        rawLambTriadThroughput state = 0 ∧
+        (∀ n : Nat, 0 ≤ sourcePenalty n) ∧
+        (∀ n : Nat,
+          |rawLambTriadThroughput state| ≤ sourcePenalty n) ∧
+        (∀ n : Nat, eventRadiusPayment n ≤ sourcePenalty n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      triad, state, _shellCoherencePrice, _triadPhasePenalty,
+      resonantTriadManifoldTyped, divergenceFreeFrameTyped,
+      lambTrilinearFormTyped, _helicitySignatureTracked,
+      _phaseCoherenceTracked, _shellAggregationAvailable,
+      hResonant, hDivergence, hLamb, _hHelicity, _hPhase, _hShell,
+      hRaw, _hShellPriceNonneg, _hTriadPenaltyNonneg, _hTriadPenaltyZero,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩ :=
+    spectralTriadTensorLabelsWithoutPositivePenalty_allow_selectedTreeRebilling B
+  refine
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      triad, state, (fun n : Nat => atomCharge (ownerOfEvent n)),
+      resonantTriadManifoldTyped, divergenceFreeFrameTyped,
+      lambTrilinearFormTyped,
+      hResonant, hDivergence, hLamb, hRaw,
+      (fun n : Nat => hAtomNonneg (ownerOfEvent n)),
+      ?_, hPointwise, hPointwise, hBudget, hPrefix⟩
+  intro n
+  rw [hRaw]
+  simpa using hAtomNonneg (ownerOfEvent n)
+
+/-- Unit-distance / Golod-Shafarevich style lifted-carrier projection receipt.
+
+This is the NS-side version of the arithmetic lift discipline: a large lifted
+carrier, controlled projection loss, and a prime/congruence-like sink do not
+pay the route until the projected triad penalty is tied to the selected events
+and remains prefix-bounded after projection.
+-/
+structure LiftedTriadTowerProjectionReceipt
+    (eventRadiusPayment : Nat → Real) (atomBudget : Real) where
+  liftedDegree : Nat → Nat
+  liftedSurplus : Nat → Real
+  projectionLoss : Nat → Real
+  projectedTriadPenalty : Nat → Real
+  lifted_surplus_nonneg : ∀ n : Nat, 0 ≤ liftedSurplus n
+  projection_loss_nonneg : ∀ n : Nat, 0 ≤ projectionLoss n
+  projected_penalty_nonneg : ∀ n : Nat, 0 ≤ projectedTriadPenalty n
+  projected_penalty_le_lifted_surplus_minus_loss :
+    ∀ n : Nat, projectedTriadPenalty n ≤ liftedSurplus n - projectionLoss n
+  event_payment_le_projected_triad_penalty :
+    ∀ n : Nat, eventRadiusPayment n ≤ projectedTriadPenalty n
+  projected_triad_penalty_prefix_budget :
+    ∀ M : Nat, NS.nsPrefixSum projectedTriadPenalty M ≤ atomBudget
+  towerDegreeGrowsBeforeProjection : Prop
+  discriminantOrVolumeLossControlled : Prop
+  primeSinkOrCongruenceSurplusDeclared : Prop
+  projectionMapFixedBeforePayoff : Prop
+  projectionInjectiveOnSelectedEvents : Prop
+  noRebillingUnderProjection : Prop
+  sameCarrierAsLambTriadTensor : Prop
+
+/-- A lifted tower receipt bounds the selected event prefix only after the
+projection-side penalty is paid on the same carrier. -/
+theorem LiftedTriadTowerProjectionReceipt.eventPrefix_le_budget
+    {eventRadiusPayment : Nat → Real} {atomBudget : Real}
+    (R : LiftedTriadTowerProjectionReceipt eventRadiusPayment atomBudget)
+    (M : Nat) :
+    NS.nsPrefixSum eventRadiusPayment M ≤ atomBudget := by
+  have hprefix :
+      NS.nsPrefixSum eventRadiusPayment M ≤
+        NS.nsPrefixSum R.projectedTriadPenalty M :=
+    NS.ns_prefix_sum_le_of_pointwise
+      eventRadiusPayment R.projectedTriadPenalty
+      R.event_payment_le_projected_triad_penalty M
+  exact hprefix.trans (R.projected_triad_penalty_prefix_budget M)
+
+/--
+Capacity/spectral-gap constructor boundary selected by the isomorphism pass.
+
+The useful cross-domain pattern is not "capacity" vocabulary by itself.  It is
+a same-carrier numerical receipt: local Leray/Biot-Savart/triad inputs plus a
+global capacity or spectral-gap certificate must construct the existing
+`SurplusLiftProjectionSourceCertificate`.  Once it does, the already-formal
+sparse high-high ghost must be inadmissible for the same target stream.
+-/
+structure SameCarrierCapacityGapTriadSourceConstructor
+    (eventRadiusPayment : Nat → Real) where
+  localLerayBiotSavartTriadInputs : Prop
+  localInputs_proof : localLerayBiotSavartTriadInputs
+  capacityOrSpectralGapSameCarrierReceipt : Prop
+  capacityReceipt_proof : capacityOrSpectralGapSameCarrierReceipt
+  constructs_surplus_source :
+    localLerayBiotSavartTriadInputs →
+      capacityOrSpectralGapSameCarrierReceipt →
+        SurplusLiftProjectionSourceCertificate eventRadiusPayment
+
+/-- Any capacity/gap constructor must kill the sparse high-high ghost on the
+same selected target stream. -/
+theorem SameCarrierCapacityGapTriadSourceConstructor.excludes_sparseHighHighGhost
+    {eventRadiusPayment : Nat → Real}
+    (hCtor :
+      SameCarrierCapacityGapTriadSourceConstructor eventRadiusPayment) :
+    SparseHighHighCriticalSourceGhostPacket eventRadiusPayment → False := by
+  intro hGhost
+  exact
+    no_surplusLiftProjectionSourceCertificate_of_sparseHighHighGhost hGhost
+      (hCtor.constructs_surplus_source hCtor.localInputs_proof
+        hCtor.capacityReceipt_proof)
+
+/-- Equivalently: in the sparse high-high ghost regime, no local
+Leray/Biot-Savart/triad-plus-capacity constructor can inhabit the surplus
+source constructor boundary. -/
+theorem no_sameCarrierCapacityGapTriadSourceConstructor_of_sparseHighHighGhost
+    {eventRadiusPayment : Nat → Real}
+    (hGhost : SparseHighHighCriticalSourceGhostPacket eventRadiusPayment) :
+    SameCarrierCapacityGapTriadSourceConstructor eventRadiusPayment → False := by
+  intro hCtor
+  exact hCtor.excludes_sparseHighHighGhost hGhost
+
+/--
+Lifted-carrier analogy guard.
+
+High-degree tower labels, controlled-discriminant labels, and prime-sink /
+congruence-surplus labels are still only labels unless they project to a
+same-carrier selected-triad penalty with no rebilling.  Without that
+projection receipt, the old one-owner selected-tree packet remains possible.
+-/
+theorem liftedTowerLabelsWithoutProjectionPenalty_allow_selectedTreeRebilling :
+    ∀ B : Real,
+      ∃ eventRadiusPayment : Nat → Real,
+      ∃ ownerOfEvent : Nat → Nat,
+      ∃ atomCharge : Nat → Real,
+      ∃ atomBudget : Real,
+      ∃ N : Nat,
+      ∃ liftedDegree : Nat → Nat,
+      ∃ liftedSurplus : Nat → Real,
+      ∃ projectionLoss : Nat → Real,
+      ∃ projectedTriadPenalty : Nat → Real,
+      ∃ towerDegreeGrowsBeforeProjection : Prop,
+      ∃ discriminantOrVolumeLossControlled : Prop,
+      ∃ primeSinkOrCongruenceSurplusDeclared : Prop,
+      ∃ projectionMapFixedBeforePayoff : Prop,
+      ∃ physicalTriadProjectionTyped : Prop,
+        towerDegreeGrowsBeforeProjection ∧
+        discriminantOrVolumeLossControlled ∧
+        primeSinkOrCongruenceSurplusDeclared ∧
+        projectionMapFixedBeforePayoff ∧
+        physicalTriadProjectionTyped ∧
+        (∀ n : Nat, n ≤ liftedDegree n) ∧
+        (∀ n : Nat, 0 ≤ liftedSurplus n) ∧
+        (∀ n : Nat, 0 ≤ projectionLoss n) ∧
+        (∀ n : Nat, projectedTriadPenalty n = 0) ∧
+        (∀ n : Nat, 0 ≤ atomCharge n) ∧
+        (∀ n : Nat,
+          eventRadiusPayment n ≤ atomCharge (ownerOfEvent n)) ∧
+        (∀ M : Nat, NS.nsPrefixSum atomCharge M ≤ atomBudget) ∧
+        B < NS.nsPrefixSum eventRadiusPayment N := by
+  intro B
+  obtain
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      _triad, _state, _shellCoherencePrice, triadPhasePenalty,
+      _resonantTriadManifoldTyped, _divergenceFreeFrameTyped,
+      _lambTrilinearFormTyped, _helicitySignatureTracked,
+      _phaseCoherenceTracked, _shellAggregationAvailable,
+      _, _, _, _, _, _, _, _, _, hPenaltyZero,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩ :=
+    spectralTriadTensorLabelsWithoutPositivePenalty_allow_selectedTreeRebilling B
+  exact
+    ⟨eventRadiusPayment, ownerOfEvent, atomCharge, atomBudget, N,
+      (fun n : Nat => n), (fun _ : Nat => 0), (fun _ : Nat => 0),
+      triadPhasePenalty, True, True, True, True, True,
+      True.intro, True.intro, True.intro, True.intro, True.intro,
+      (fun _ : Nat => le_rfl),
+      (fun _ : Nat => by norm_num),
+      (fun _ : Nat => by norm_num),
+      hPenaltyZero,
+      hAtomNonneg, hPointwise, hBudget, hPrefix⟩
 
 /--
 Branching owner-reuse guard.
@@ -20646,6 +21420,227 @@ theorem sameCarrierPacking_scaledFreshPrefix_le_scaledRootBudget
       (hPack.finitePrefixFreshCarrierBudget N) hinv_nonneg
   rw [hscaled]
   simpa [div_eq_inv_mul] using hmul
+
+/--
+Qualitative receipts needed when a C7 same-carrier packing source is promoted
+to the surplus/loss/projection certificate consumed by the spectral-triad
+adapter.
+
+The numerical prefix and no-reuse payments come from
+`C7SameCarrierPackingNoReuseReceipt`; this object keeps the non-numerical
+surplus/projection side conditions explicit so the constructor below does not
+silently turn a finite route-tail budget into a full source theorem.
+-/
+structure C7PackingToSurplusProjectionQualitativeReceipts where
+  ambientLiftDeclaredBeforePayoff : Prop
+  ambientLiftDeclaredBeforePayoff_proof :
+    ambientLiftDeclaredBeforePayoff
+  surplusLowerBoundBeatsLossBudget : Prop
+  surplusLowerBoundBeatsLossBudget_proof :
+    surplusLowerBoundBeatsLossBudget
+  quotientOrDenominatorLossUniform : Prop
+  quotientOrDenominatorLossUniform_proof :
+    quotientOrDenominatorLossUniform
+  projectionInjectiveOrFiniteMultiplicity : Prop
+  projectionInjectiveOrFiniteMultiplicity_proof :
+    projectionInjectiveOrFiniteMultiplicity
+  constantsFixedBeforeLimit : Prop
+  constantsFixedBeforeLimit_proof :
+    constantsFixedBeforeLimit
+  targetPacketFalsifierNamed : Prop
+  targetPacketFalsifierNamed_proof :
+    targetPacketFalsifierNamed
+  noGlobalL4OrESSInput : Prop
+  noGlobalL4OrESSInput_proof :
+    noGlobalL4OrESSInput
+  noPostHocSelection : Prop
+  noPostHocSelection_proof :
+    noPostHocSelection
+
+/--
+C7 same-carrier packing as a surplus/loss/projection source certificate.
+
+This is the positive constructor selected by the capacity/gap lane.  The
+ambient carrier is the scaled fresh charge `freshCharge / c`; the target
+payment is the C7 route active tail; `C_proj = 1`; and the ambient budget is
+`rootBudget / c`.  The proof is deliberately conditional on route-tail
+nonnegativity and the qualitative surplus/projection receipts: those are still
+the live PDE obligations, while the prefix arithmetic and no-reuse invoice are
+now kernel-checked.
+-/
+noncomputable def SurplusLiftProjectionSourceCertificate.ofC7SameCarrierPackingNoReuseReceipt
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hPack : C7SameCarrierPackingNoReuseReceipt hIndexed hId)
+    (routeActiveTail_nonnegative : ∀ n : Nat, 0 ≤ routeActiveTail n)
+    (hQual : C7PackingToSurplusProjectionQualitativeReceipts) :
+    SurplusLiftProjectionSourceCertificate routeActiveTail where
+  ambientCharge := fun n : Nat => hPack.freshCharge n / hPack.c
+  productionSpend := fun _ : Nat => 0
+  parentRadiusInvoiceSpend := routeActiveTail
+  pressureReserveSpend := fun _ : Nat => 0
+  duhamelReserveSpend := fun _ : Nat => 0
+  inheritedReserveSpend := fun _ : Nat => 0
+  C_proj := 1
+  ambientBudget := hPack.rootBudget / hPack.c
+  C_proj_nonneg := by norm_num
+  ambientBudget_nonneg := by
+    have h0 :=
+      sameCarrierPacking_scaledFreshPrefix_le_scaledRootBudget hPack 0
+    simpa [NS.nsPrefixSum] using h0
+  ambientCharge_nonnegative := by
+    intro n
+    have hpay :
+        routeActiveTail n ≤ hPack.freshCharge n / hPack.c := by
+      have hpay' :
+          routeActiveTail n * hPack.c ≤ hPack.freshCharge n := by
+        simpa [mul_comm] using hPack.pointwiseSameCarrierPayment n
+      exact (le_div_iff₀ hPack.c_pos).2 hpay'
+    exact le_trans (routeActiveTail_nonnegative n) hpay
+  productionSpend_nonnegative := by
+    intro n
+    norm_num
+  parentRadiusInvoiceSpend_nonnegative :=
+    routeActiveTail_nonnegative
+  pressureReserveSpend_nonnegative := by
+    intro n
+    norm_num
+  duhamelReserveSpend_nonnegative := by
+    intro n
+    norm_num
+  inheritedReserveSpend_nonnegative := by
+    intro n
+    norm_num
+  pointwiseTargetPaidByProjectedAmbient := by
+    intro n
+    have hpay :
+        routeActiveTail n ≤ hPack.freshCharge n / hPack.c := by
+      have hpay' :
+          routeActiveTail n * hPack.c ≤ hPack.freshCharge n := by
+        simpa [mul_comm] using hPack.pointwiseSameCarrierPayment n
+      exact (le_div_iff₀ hPack.c_pos).2 hpay'
+    simpa using hpay
+  ambientPrefixBudget :=
+    sameCarrierPacking_scaledFreshPrefix_le_scaledRootBudget hPack
+  singleSpendPartition := by
+    intro n
+    have hambient_nonnegative :
+        0 ≤ hPack.freshCharge n / hPack.c := by
+      have hpay :
+          routeActiveTail n ≤ hPack.freshCharge n / hPack.c := by
+        have hpay' :
+            routeActiveTail n * hPack.c ≤ hPack.freshCharge n := by
+          simpa [mul_comm] using hPack.pointwiseSameCarrierPayment n
+        exact (le_div_iff₀ hPack.c_pos).2 hpay'
+      exact le_trans (routeActiveTail_nonnegative n) hpay
+    simpa using hambient_nonnegative
+  sectionIdentityReceipt := by
+    intro n
+    rfl
+  noReuseReceipt := by
+    intro N
+    simpa using
+      sameCarrierPacking_scaledRoutePrefix_le_scaledFreshPrefix hPack N
+  ambientLiftDeclaredBeforePayoff :=
+    hQual.ambientLiftDeclaredBeforePayoff
+  surplusLowerBoundBeatsLossBudget :=
+    hQual.surplusLowerBoundBeatsLossBudget
+  quotientOrDenominatorLossUniform :=
+    hQual.quotientOrDenominatorLossUniform
+  projectionInjectiveOrFiniteMultiplicity :=
+    hQual.projectionInjectiveOrFiniteMultiplicity
+  constantsFixedBeforeLimit :=
+    hQual.constantsFixedBeforeLimit
+  targetPacketFalsifierNamed :=
+    hQual.targetPacketFalsifierNamed
+  noGlobalL4OrESSInput :=
+    hQual.noGlobalL4OrESSInput
+  noPostHocSelection :=
+    hQual.noPostHocSelection
+
+/--
+Consumer form of the C7 packing-to-surplus adapter: if the qualitative
+surplus/projection receipts are supplied, the same C7 packing source excludes
+the sparse high-high ghost on the route active-tail stream.
+-/
+theorem no_sparseHighHighGhost_of_C7SameCarrierPackingSurplusProjection
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    (hPack : C7SameCarrierPackingNoReuseReceipt hIndexed hId)
+    (routeActiveTail_nonnegative : ∀ n : Nat, 0 ≤ routeActiveTail n)
+    (hQual : C7PackingToSurplusProjectionQualitativeReceipts)
+    (hGhost : SparseHighHighCriticalSourceGhostPacket routeActiveTail) :
+    False :=
+  no_surplusLiftProjectionSourceCertificate_of_sparseHighHighGhost
+    hGhost
+    (SurplusLiftProjectionSourceCertificate.ofC7SameCarrierPackingNoReuseReceipt
+      hPack routeActiveTail_nonnegative hQual)
 
 /--
 Same-carrier packing itself rules out selected-tree rebilling.

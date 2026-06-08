@@ -7,6 +7,7 @@ import Mathlib.Analysis.Convolution
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.MeasureTheory.Measure.Haar.OfBasis
+import ZtareProofs.mathlib_pr_drafts.PR_1a_translate_eLpNorm_continuity
 
 /-!
 # KRF Phase A: the L² mollifier-rate estimate
@@ -97,7 +98,7 @@ ABSENT (each blocks a step of the proof below):
 
 6. The named-sorry inventory at the bottom.
 
-The file compiles against Mathlib v4.30.0-rc2 with three sorries.
+The file compiles against Mathlib v4.30.0-rc2 with two remaining sorries.
 The sorries are surgically scoped: each is precisely the Mathlib
 lemma that, once landed upstream, mechanically discharges the local
 proof obligation.
@@ -108,6 +109,7 @@ namespace ZtareProofs.NS.KRFMollifierRate
 noncomputable section
 
 open MeasureTheory Filter Topology Convolution
+open scoped ENNReal
 
 universe u
 
@@ -322,22 +324,21 @@ theorem translation_continuous_of_memLp_two
     {μ : MeasureTheory.Measure G} [μ.IsAddHaarMeasure]
     {f : G → ℝ} (_hf : MemLp f 2 μ) :
     TranslationContinuousL2 G μ f := by
-  -- BLOCKED on the missing Mathlib lemma above. The classical
-  -- argument is a 3-step density+uniform-continuity argument; all
-  -- ingredients are PRESENT in Mathlib (see docstring) but not
-  -- packaged.
-  sorry
+  simpa [TranslationContinuousL2] using
+    (MeasureTheory.tendsto_translate_eLpNorm_zero
+      (G := G) (E := ℝ) (μ := μ) (p := (2 : ℝ≥0∞))
+      (hp := by norm_num) (hp1 := by norm_num) (f := f) _hf)
 
 /-! ## §6. Sorry inventory and feasibility assessment
 
-This file ships **three sorries**, audited against Mathlib v4.30.0-rc2
-on 2026-05-07:
+This file ships **two remaining sorries**, audited against Mathlib
+v4.30.0-rc2 on 2026-06-04:
 
 | # | Theorem                                  | Status   | Effort       |
 |---|------------------------------------------|----------|--------------|
 | 1 | `mollifier_rate_pointwise`               | DEFERRED | ~250–400 LoC |
 | 2 | `mollifier_rate_uniform`                 | DEFERRED | ~80 LoC*     |
-| 3 | `translation_continuous_of_memLp_two`    | DEFERRED | ~150 LoC     |
+| 3 | `translation_continuous_of_memLp_two`    | CLOSED   | LeanMill + local PR draft |
 
 (*) cumulative on top of (1).
 

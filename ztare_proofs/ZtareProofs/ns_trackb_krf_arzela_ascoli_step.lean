@@ -1,6 +1,7 @@
 import Mathlib.Topology.UniformSpace.Ascoli
 import Mathlib.Topology.UniformSpace.Equicontinuity
 import Mathlib.Topology.UniformSpace.CompactConvergence
+import Mathlib.Topology.MetricSpace.UniformConvergence
 import Mathlib.Topology.ContinuousMap.Basic
 import Mathlib.Topology.ContinuousMap.Bounded.Basic
 
@@ -108,6 +109,49 @@ structure MollifiedFamilyHypotheses (f : ℕ → X → ℝ) : Prop where
   equicontinuous : ∀ K : Set X, IsCompact K → EquicontinuousOn f K
   pointwiseBdd   : ∀ x : X, ∃ Q : Set ℝ, IsCompact Q ∧ ∀ n, f n x ∈ Q
 
+/-- Build `MollifiedFamilyHypotheses` from the usual scalar pointwise
+absolute-value bound.
+
+The compact-range part of Arzelà-Ascoli is often produced analytically as
+`∀ x, ∃ C, ∀ n, |f n x| ≤ C`.  This lemma packages that bound as the compact
+interval `[-C, C]`, leaving continuity and compact-wise equicontinuity as the
+only remaining analytic inputs. -/
+theorem mollifiedFamilyHypotheses_of_pointwise_abs_bound
+    {f : ℕ → X → ℝ}
+    (hcont : ∀ n, Continuous (f n))
+    (heq : ∀ K : Set X, IsCompact K → EquicontinuousOn f K)
+    (hbound : ∀ x : X, ∃ C : ℝ, ∀ n, |f n x| ≤ C) :
+    MollifiedFamilyHypotheses f := by
+  refine ⟨hcont, heq, ?_⟩
+  intro x
+  rcases hbound x with ⟨C, hC⟩
+  refine ⟨Set.Icc (-C) C, isCompact_Icc, ?_⟩
+  intro n
+  exact abs_le.mp (hC n)
+
+/-- Build `MollifiedFamilyHypotheses` from compact-wise uniform Lipschitz
+bounds and scalar pointwise bounds.
+
+This is the formal shape expected from the mollifier step: a C¹ or convolution
+estimate supplies, for each compact `K`, a common Lipschitz constant for all
+members of the family on `K`; Mathlib turns that into uniform
+equicontinuity, hence equicontinuity on `K`. -/
+theorem mollifiedFamilyHypotheses_of_lipschitzOnWith_pointwise_abs_bound
+    {Y : Type u} [PseudoMetricSpace Y]
+    {f : ℕ → Y → ℝ}
+    (hcont : ∀ n, Continuous (f n))
+    (hlip :
+      ∀ K : Set Y, IsCompact K →
+        ∃ C : NNReal, ∀ n, LipschitzOnWith C (f n) K)
+    (hbound : ∀ x : Y, ∃ C : ℝ, ∀ n, |f n x| ≤ C) :
+    MollifiedFamilyHypotheses f :=
+  mollifiedFamilyHypotheses_of_pointwise_abs_bound hcont
+    (by
+      intro K hK
+      rcases hlip K hK with ⟨C, hC⟩
+      exact (LipschitzOnWith.uniformEquicontinuousOn f C hC).equicontinuousOn)
+    hbound
+
 /-- The collection of compact sets used as the *covering family* for the
 Arzelà–Ascoli theorem.  We take **all** compact subsets of `X`; this is
 the natural choice for "uniform convergence on compact sets". -/
@@ -177,6 +221,138 @@ theorem arzelaAscoli_uniform_on_compacts_subseq
         TendstoUniformlyOn (fun n x => f (φ n) x) g atTop K := by
   obtain ⟨_, hEq, hPt⟩ := mollified_family_satisfies_ascoli_inputs H
   exact prec hEq hPt
+
+/-- Compact closure of a sequence of continuous maps gives a subsequence that
+converges uniformly on every compact set.
+
+This discharges the purely sequential part of the Arzelà conduit: once Ascoli
+has produced compactness of the closure in `C(X, ℝ)`, and once the compact-open
+space is first-countable, the desired subsequence follows from
+`IsCompact.tendsto_subseq'` and Mathlib's compact-open convergence bridge. -/
+theorem continuousMap_subseq_tendstoUniformlyOn_of_compact_closure
+    (F : ℕ → C(X, ℝ))
+    [FirstCountableTopology C(X, ℝ)]
+    (hcomp : IsCompact (closure (Set.range F))) :
+    ∃ (φ : ℕ → ℕ) (g : X → ℝ),
+      StrictMono φ ∧ Continuous g ∧
+      ∀ K : Set X, IsCompact K →
+        TendstoUniformlyOn (fun n x => F (φ n) x) g atTop K := by
+  have hx : ∃ᶠ n in atTop, F n ∈ closure (Set.range F) := by
+    exact Frequently.of_forall fun n => subset_closure ⟨n, rfl⟩
+  rcases hcomp.tendsto_subseq' hx with ⟨g, _hg_mem, φ, hφ, hφ_tendsto⟩
+  refine ⟨φ, g, hφ, g.continuous, ?_⟩
+  exact (ContinuousMap.tendsto_iff_forall_isCompact_tendstoUniformlyOn.mp
+    hφ_tendsto)
+
+/-- A `MollifiedFamilyHypotheses` family has a uniformly-on-compacts
+convergent subsequence once its continuous-map image has compact closure.
+
+This is the source-shape form needed by the KRF files: the analytic work can
+target compact closure of the actual mollified family in `C(X, ℝ)`, while this
+bridge handles the sequence extraction and compact-open-to-uniform-on-compacts
+conversion. -/
+theorem mollifiedFamily_subseq_tendstoUniformlyOn_of_compact_closure
+    {f : ℕ → X → ℝ} (H : MollifiedFamilyHypotheses f)
+    [FirstCountableTopology C(X, ℝ)]
+    (hcomp :
+      IsCompact
+        (closure
+          (Set.range (fun n : ℕ =>
+            ({ toFun := f n, continuous_toFun := H.continuous n } :
+              C(X, ℝ)))))) :
+    ∃ (φ : ℕ → ℕ) (g : X → ℝ),
+      StrictMono φ ∧ Continuous g ∧
+      ∀ K : Set X, IsCompact K →
+        TendstoUniformlyOn (fun n x => f (φ n) x) g atTop K :=
+  continuousMap_subseq_tendstoUniformlyOn_of_compact_closure
+    (fun n : ℕ =>
+      ({ toFun := f n, continuous_toFun := H.continuous n } : C(X, ℝ)))
+    hcomp
+
+/-- The bundled continuous-map embedding into the compact-convergence
+`UniformOnFun` space is closed when the domain is compactly coherent. -/
+theorem continuousMap_toUniformOnFunIsCompact_isClosedEmbedding
+    [CompactlyCoherentSpace X] :
+    IsClosedEmbedding
+      (ContinuousMap.toUniformOnFunIsCompact :
+        C(X, ℝ) → X →ᵤ[{K | IsCompact K}] ℝ) := by
+  refine ⟨ContinuousMap.isUniformEmbedding_toUniformOnFunIsCompact.isEmbedding, ?_⟩
+  rw [ContinuousMap.range_toUniformOnFunIsCompact]
+  exact UniformOnFun.isClosed_setOf_continuous
+    CompactlyCoherentSpace.isCoherentWith
+
+/-- Mathlib's Arzelà-Ascoli theorem supplies compact closure for a
+`MollifiedFamilyHypotheses` family on a compactly coherent domain.
+
+This closes the abstract Ascoli compactness side of the KRF step.  The
+concrete KRF file still has to prove that its actual mollified family satisfies
+`MollifiedFamilyHypotheses`, and that the relevant continuous-map space is
+first-countable when a sequence is extracted. -/
+theorem mollifiedFamily_compact_closure_of_ascoli
+    [CompactlyCoherentSpace X]
+    {f : ℕ → X → ℝ} (H : MollifiedFamilyHypotheses f) :
+    IsCompact
+      (closure
+        (Set.range (fun n : ℕ =>
+          ({ toFun := f n, continuous_toFun := H.continuous n } :
+            C(X, ℝ))))) := by
+  let F : C(X, ℝ) → X → ℝ := fun g x => g x
+  let s : Set C(X, ℝ) :=
+    Set.range (fun n : ℕ =>
+      ({ toFun := f n, continuous_toFun := H.continuous n } : C(X, ℝ)))
+  have hcompact : ∀ K ∈ 𝔖compact X, IsCompact K := by
+    intro K hK
+    exact hK
+  have hclemb :
+      IsClosedEmbedding (UniformOnFun.ofFun (𝔖compact X) ∘ F) := by
+    simpa [F, 𝔖compact, ContinuousMap.toUniformOnFunIsCompact] using
+      (continuousMap_toUniformOnFunIsCompact_isClosedEmbedding (X := X))
+  have heq :
+      ∀ K ∈ 𝔖compact X,
+        EquicontinuousOn (F ∘ ((↑) : s → C(X, ℝ))) K := by
+    intro K hK
+    let u : s → ℕ := fun i => Classical.choose i.property
+    have hfamily : F ∘ ((↑) : s → C(X, ℝ)) = f ∘ u := by
+      funext i x
+      dsimp [F, u, s]
+      have hi := Classical.choose_spec i.property
+      have hfun :
+          (({ toFun := f (Classical.choose i.property),
+              continuous_toFun := H.continuous (Classical.choose i.property) } :
+              C(X, ℝ)) : X → ℝ) = (i : C(X, ℝ)) :=
+        congrArg DFunLike.coe hi
+      exact (congrFun hfun x).symm
+    rw [hfamily]
+    exact (H.equicontinuous K hK).comp u
+  have hpt :
+      ∀ K ∈ 𝔖compact X, ∀ x ∈ K,
+        ∃ Q, IsCompact Q ∧ ∀ i ∈ s, F i x ∈ Q := by
+    intro K _ x _
+    rcases H.pointwiseBdd x with ⟨Q, hQ, hQi⟩
+    refine ⟨Q, hQ, ?_⟩
+    intro i hi
+    rcases hi with ⟨n, rfl⟩
+    exact hQi n
+  simpa [s] using
+    (ArzelaAscoli.isCompact_closure_of_isClosedEmbedding
+      (F := F) (𝔖 := 𝔖compact X) hcompact hclemb
+      (s := s) heq hpt)
+
+/-- Abstract Arzelà-Ascoli subsequence source from `MollifiedFamilyHypotheses`.
+
+This combines Mathlib's Ascoli compact-closure theorem with the sequential
+compact-open extraction bridge above.  The hypotheses are exactly the remaining
+topological side conditions: compact coherence for closedness of the continuous
+map embedding, and first-countability of `C(X, ℝ)` for subsequence extraction. -/
+theorem mollifiedFamily_subseq_tendstoUniformlyOn_of_ascoli
+    [CompactlyCoherentSpace X] [FirstCountableTopology C(X, ℝ)]
+    {f : ℕ → X → ℝ} (H : MollifiedFamilyHypotheses f) :
+    ∃ (φ : ℕ → ℕ) (g : X → ℝ),
+      StrictMono φ ∧ Continuous g ∧
+      ∀ K : Set X, IsCompact K →
+        TendstoUniformlyOn (fun n x => f (φ n) x) g atTop K :=
+  mollifiedFamily_subseq_tendstoUniformlyOn_of_compact_closure H
+    (mollifiedFamily_compact_closure_of_ascoli H)
 
 /-- **Specialization to ℝᵈ via Mathlib's Arzelà–Ascoli.**
 

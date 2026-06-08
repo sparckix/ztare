@@ -322,6 +322,11 @@ structure KolmogorovRieszFrechetData
   /-- (KRF1) Uniform L² bound. -/
   unif_l2_bound : ∃ M : ℝ, 0 ≤ M ∧
     ∀ n, ∫ t in Set.Icc 0 T, ‖u n t‖^2 ≤ M
+  /-- (KRF1a) The squared norm is actually integrable on the interval.
+  This makes the L² source contract explicit; a bare Bochner integral bound
+  does not by itself expose the `MemLp` witness consumed downstream. -/
+  integrable_norm_sq :
+    ∀ n, IntegrableOn (fun t => ‖u n t‖^2) (Set.Icc 0 T) MeasureTheory.volume
   /-- (KRF2) Uniform tightness in the Mathlib sense, restricted to
   the time interval `[0,T]`. -/
   unif_tight :

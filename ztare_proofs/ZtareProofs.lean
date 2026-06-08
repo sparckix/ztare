@@ -188,6 +188,8 @@ import ZtareProofs.ns_trackb_krf_arzela_ascoli_step
 import ZtareProofs.ns_trackb_krf_cantor_diagonal
 import ZtareProofs.ns_trackb_krf_master_assembly
 import ZtareProofs.ns_trackb_krf_mollifier_rate
+import ZtareProofs.ns_trackb_krf_mollifier_source_bridge
+import ZtareProofs.ns_trackb_krf_mollifier_mlg2_bridge
 -- Fefferman B + smoothness-criterion bridges (Clay-conditional)
 import ZtareProofs.ns_trackb_fefferman_b_existence_modulo
 import ZtareProofs.ns_trackb_bkm_smoothness_criterion
@@ -327,4 +329,5 @@ import ZtareProofs.ns_tick668_avisc_same_source_transfer_boundary
 import ZtareProofs.ns_tick668_avisc_traceless_tensor_obstruction
 import ZtareProofs.ns_tick668_lagrangian_morphology_obstruction
 import ZtareProofs.ns_tick668_pressure_cutoff_carrier_identity
+import ZtareProofs.ns_c7_surplus_five_frame_bridge
 import ZtareProofs.ns_material_window_channel_decrement_bridge

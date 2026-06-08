@@ -52,16 +52,28 @@ This file formalizes the duality at the `eLpNorm` level for
    over the L^q unit ball of `∫⁻ ‖f‖ₑ ‖g‖ₑ dμ` is bounded above by
    `eLpNorm f p μ`. **Sorry-free.**
 
+3. **`eLpNorm_iSup_lintegral_mul_eq_zero_of_eLpNorm_eq_zero`** — the
+   zero-norm edge case of the reverse direction: if `eLpNorm f p μ = 0`,
+   then the L^q-unit-ball supremum is also `0`. **Sorry-free.**
+
+4. **`eLpNorm_two_le_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top`** —
+   the positive finite p=2 lower-bound witness, using Mathlib's
+   normalized `ENNReal.funMulInvSnorm f 2 μ`. **Sorry-free.**
+
+5. **`eLpNorm_two_eq_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top`** —
+   the positive finite p=2 equality, combining the witness lower bound
+   with the closed Hölder upper bound. **Sorry-free.**
+
 ### Named typed-companion `Prop`s (open; saturating witness)
 
-3. **`eLpNorm_le_iSup_lintegral_mul_witness`** — the REVERSE direction:
+6. **`eLpNorm_le_iSup_lintegral_mul_witness`** — the REVERSE direction:
    the supremum is *attained* by the saturating witness
    `g = ‖f‖ₑ^(p-1) / ‖f‖_p^(p-1)` (when `0 < ‖f‖_p < ∞`). Stated as a
    `def : Prop`. Discharge effort: ~80–120 LoC (Bochner pairing of `f`
    with the saturating `g`; bookkeeping with `rpow_self_rpow` identities
    and the `1/p + 1/q = 1` constraint to verify `‖g‖_q = 1`).
 
-4. **`eLpNorm_eq_iSup_lintegral_mul`** — the headline equality. Stated
+7. **`eLpNorm_eq_iSup_lintegral_mul`** — the headline equality. Stated
    as a `def : Prop` with discharge pipeline = §1.2 (forward) ∧ §1.3
    (reverse witness).
 
@@ -93,7 +105,9 @@ All three legs PASS.
 
 ## §4. Honest scope demote
 
-Closed: the FORWARD direction (sup ≤ eLpNorm) — proven sorry-free.
+Closed: the FORWARD direction (sup ≤ eLpNorm), the zero-norm reverse
+edge case, the positive finite p=2 reverse lower bound, and the positive
+finite p=2 equality — proven sorry-free.
 
 Named-only: the REVERSE direction (eLpNorm ≤ sup, via saturating
 witness) — typed companion, open. This is structurally heavier than 12
@@ -102,8 +116,9 @@ verification that `‖witness‖_q = 1`, and a Bochner pairing computation
 showing `∫⁻ f · witness = ‖f‖_p`. Each step uses real `rpow` algebra
 that compiles slowly under `simp`/`ring`.
 
-This delivery is **PL-048 bucket (2)** — scaffold + 0 sub-sorries on
-the closed half + 2 typed companions for the open half. (Strictly
+This delivery is **PL-048 bucket (2)** plus the p=2 positive finite
+equality slice: scaffold + 0 sub-sorries on the closed half + 2 typed
+companions for the remaining general/infinite-edge open half. (Strictly
 better than "≤ 2 sub-sorries" — we have 0 sub-sorries; the open work
 is named via `def : Prop` not `sorry`.)
 
@@ -113,6 +128,10 @@ is named via `def : Prop` not `sorry`.)
 |--------------------------------------------------------|--------------|---------|
 | `lintegral_enorm_mul_le_eLpNorm_mul_eLpNorm`           | `theorem`    | 0       |
 | `eLpNorm_iSup_lintegral_mul_le_self`                   | `theorem`    | 0       |
+| `eLpNorm_iSup_lintegral_mul_eq_zero_of_eLpNorm_eq_zero`| `theorem`    | 0       |
+| `eLpNorm_two_le_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top` | `theorem` | 0 |
+| `eLpNorm_two_eq_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top` | `theorem` | 0 |
+| `eLpNorm_eq_iSup_lintegral_mul_of_reverse_and_top_edge`| `theorem`    | 0       |
 | `eLpNorm_le_iSup_lintegral_mul_witness`                | `def : Prop` | 0       |
 | `eLpNorm_eq_iSup_lintegral_mul`                        | `def : Prop` | 0       |
 
@@ -220,6 +239,153 @@ theorem eLpNorm_iSup_lintegral_mul_le_self
           exact mul_le_mul' (le_refl _) hg_norm
     _ = eLpNorm f (ENNReal.ofReal p) μ := by rw [mul_one]
 
+/-! ## §2a. Closed zero-norm edge case
+
+The reverse direction has a trivial but useful edge case: if
+`eLpNorm f p μ = 0`, the supremum over all L^q-unit-ball test
+functions is also zero. This removes one previously-open hypothesis
+from the equality assembly; the remaining nontrivial work is the
+positive finite saturating witness plus the infinite-norm edge case. -/
+
+/-- **Zero-norm edge of eLpNorm duality.** If `eLpNorm f p μ = 0`, then
+the L^q-unit-ball pairing supremum is also zero. -/
+theorem eLpNorm_iSup_lintegral_mul_eq_zero_of_eLpNorm_eq_zero
+    {μ : Measure α}
+    {p q : ℝ} (hpq : p.HolderConjugate q)
+    {f : α → ℝ≥0∞} (hf : AEMeasurable f μ)
+    (h_zero : eLpNorm f (ENNReal.ofReal p) μ = 0) :
+    (⨆ g : { g : α → ℝ≥0∞ //
+              AEMeasurable g μ ∧
+              eLpNorm g (ENNReal.ofReal q) μ ≤ 1 },
+        ∫⁻ x, f x * (g.val x) ∂μ) = 0 := by
+  apply le_antisymm
+  · refine iSup_le ?_
+    rintro ⟨g, hg_meas, _hg_norm⟩
+    have h_pair :
+        ∫⁻ x, f x * g x ∂μ
+          ≤ eLpNorm f (ENNReal.ofReal p) μ * eLpNorm g (ENNReal.ofReal q) μ :=
+      lintegral_mul_le_eLpNorm_mul_eLpNorm_ennreal hpq hf hg_meas
+    simpa [h_zero] using h_pair
+  · exact bot_le
+
+/-! ## §2b. Closed positive finite p=2 witness
+
+For p=2, Mathlib already contains the normalized function
+`ENNReal.funMulInvSnorm f 2 μ` and the proof that its squared lintegral
+is one under nonzero/finite `∫ f^2`. That is exactly the positive
+finite lower-bound witness for the eLpNorm duality supremum. The three
+lemmas below expose that witness at the `eLpNorm`-duality surface. -/
+
+/-- The normalized p=2 witness has eLpNorm at most one. -/
+theorem eLpNorm_funMulInvSnorm_two_le_one
+    {μ : Measure α}
+    {f : α → ℝ≥0∞}
+    (hf_nonzero : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ 0)
+    (hf_nontop : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ ⊤) :
+    eLpNorm (ENNReal.funMulInvSnorm f (2 : ℝ) μ) (ENNReal.ofReal (2 : ℝ)) μ ≤ 1 := by
+  have h_two_ne_zero : ENNReal.ofReal (2 : ℝ) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero]
+    norm_num
+  have h_two_ne_top : ENNReal.ofReal (2 : ℝ) ≠ ∞ := ENNReal.ofReal_ne_top
+  have h_toReal : (ENNReal.ofReal (2 : ℝ)).toReal = (2 : ℝ) := by norm_num
+  have h_unit :=
+    ENNReal.lintegral_rpow_funMulInvSnorm_eq_one (μ := μ) (p := (2 : ℝ))
+      (by norm_num) (f := f) hf_nonzero hf_nontop
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top, h_toReal]
+  change (∫⁻ x, ENNReal.funMulInvSnorm f (2 : ℝ) μ x ^ (2 : ℝ) ∂μ) ^
+      (1 / (2 : ℝ)) ≤ 1
+  rw [h_unit]
+  norm_num
+
+/-- The p=2 normalized witness pairs with `f` to dominate the p=2 eLpNorm. -/
+theorem eLpNorm_two_le_lintegral_mul_funMulInvSnorm
+    {μ : Measure α}
+    {f : α → ℝ≥0∞}
+    (hf_nonzero : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ 0)
+    (hf_nontop : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ ⊤) :
+    eLpNorm f (ENNReal.ofReal (2 : ℝ)) μ ≤
+      ∫⁻ x, f x * ENNReal.funMulInvSnorm f (2 : ℝ) μ x ∂μ := by
+  have h_two_ne_zero : ENNReal.ofReal (2 : ℝ) ≠ 0 := by
+    rw [Ne, ENNReal.ofReal_eq_zero]
+    norm_num
+  have h_two_ne_top : ENNReal.ofReal (2 : ℝ) ≠ ∞ := ENNReal.ofReal_ne_top
+  have h_toReal : (ENNReal.ofReal (2 : ℝ)).toReal = (2 : ℝ) := by norm_num
+  have h_unit :=
+    ENNReal.lintegral_rpow_funMulInvSnorm_eq_one (μ := μ) (p := (2 : ℝ))
+      (by norm_num) (f := f) hf_nonzero hf_nontop
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal h_two_ne_zero h_two_ne_top, h_toReal]
+  change (∫⁻ x, f x ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ)) ≤
+    ∫⁻ x, f x * ENNReal.funMulInvSnorm f (2 : ℝ) μ x ∂μ
+  let N : ℝ≥0∞ := (∫⁻ x, f x ^ (2 : ℝ) ∂μ) ^ (1 / (2 : ℝ))
+  have hN_ne_top : N ≠ ∞ := by
+    exact ENNReal.rpow_ne_top_of_nonneg (by norm_num) hf_nontop
+  change N ≤ ∫⁻ x, f x * ENNReal.funMulInvSnorm f (2 : ℝ) μ x ∂μ
+  apply le_of_eq
+  calc
+    N
+        = (∫⁻ x, ENNReal.funMulInvSnorm f (2 : ℝ) μ x ^ (2 : ℝ) ∂μ) * N := by
+          rw [h_unit, one_mul]
+    _ = ∫⁻ x, ENNReal.funMulInvSnorm f (2 : ℝ) μ x ^ (2 : ℝ) * N ∂μ := by
+          rw [lintegral_mul_const' N _ hN_ne_top]
+    _ = ∫⁻ x, f x * ENNReal.funMulInvSnorm f (2 : ℝ) μ x ∂μ := by
+          apply lintegral_congr
+          intro x
+          have hfx :=
+            ENNReal.fun_eq_funMulInvSnorm_mul_eLpNorm (μ := μ) (p := (2 : ℝ))
+              f hf_nonzero hf_nontop (a := x)
+          rw [hfx]
+          rw [show ENNReal.funMulInvSnorm f (2 : ℝ) μ x ^ (2 : ℝ)
+              = ENNReal.funMulInvSnorm f (2 : ℝ) μ x *
+                  ENNReal.funMulInvSnorm f (2 : ℝ) μ x by
+              rw [ENNReal.rpow_two, pow_two]]
+          ring
+
+/-- **Positive finite p=2 lower-bound witness.** If `∫ f^2` is nonzero
+and finite, Mathlib's normalized `funMulInvSnorm` witness proves the
+reverse lower bound for the eLpNorm-duality supremum at p=2. -/
+theorem eLpNorm_two_le_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top
+    {μ : Measure α}
+    {f : α → ℝ≥0∞} (hf : AEMeasurable f μ)
+    (hf_nonzero : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ 0)
+    (hf_nontop : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ ⊤) :
+    eLpNorm f (ENNReal.ofReal (2 : ℝ)) μ
+      ≤ ⨆ g : { g : α → ℝ≥0∞ //
+                AEMeasurable g μ ∧
+                eLpNorm g (ENNReal.ofReal (2 : ℝ)) μ ≤ 1 },
+          ∫⁻ x, f x * (g.val x) ∂μ := by
+  let g0 : α → ℝ≥0∞ := ENNReal.funMulInvSnorm f (2 : ℝ) μ
+  have hg0_meas : AEMeasurable g0 μ := by
+    dsimp [g0, ENNReal.funMulInvSnorm]
+    exact hf.mul_const _
+  have hg0_norm : eLpNorm g0 (ENNReal.ofReal (2 : ℝ)) μ ≤ 1 := by
+    simpa [g0] using eLpNorm_funMulInvSnorm_two_le_one
+      (μ := μ) (f := f) hf_nonzero hf_nontop
+  let gSubtype : { g : α → ℝ≥0∞ //
+                AEMeasurable g μ ∧
+                eLpNorm g (ENNReal.ofReal (2 : ℝ)) μ ≤ 1 } :=
+    ⟨g0, hg0_meas, hg0_norm⟩
+  refine (eLpNorm_two_le_lintegral_mul_funMulInvSnorm
+    (μ := μ) (f := f) hf_nonzero hf_nontop).trans ?_
+  exact le_iSup_of_le gSubtype (by rfl)
+
+/-- **Positive finite p=2 eLpNorm duality equality.** If `∫ f^2` is
+nonzero and finite, the p=2 eLpNorm equals the supremum of lintegral
+pairings against the p=2 eLpNorm unit ball. -/
+theorem eLpNorm_two_eq_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top
+    {μ : Measure α}
+    {f : α → ℝ≥0∞} (hf : AEMeasurable f μ)
+    (hf_nonzero : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ 0)
+    (hf_nontop : (∫⁻ a, f a ^ (2 : ℝ) ∂μ) ≠ ⊤) :
+    eLpNorm f (ENNReal.ofReal (2 : ℝ)) μ
+      = ⨆ g : { g : α → ℝ≥0∞ //
+                AEMeasurable g μ ∧
+                eLpNorm g (ENNReal.ofReal (2 : ℝ)) μ ≤ 1 },
+          ∫⁻ x, f x * (g.val x) ∂μ := by
+  apply le_antisymm
+  · exact eLpNorm_two_le_iSup_lintegral_mul_of_lintegral_rpow_ne_zero_ne_top
+      hf hf_nonzero hf_nontop
+  · exact eLpNorm_iSup_lintegral_mul_le_self Real.HolderConjugate.two_two hf
+
 /-! ## §3. Reverse direction — typed companion (open)
 
 The REVERSE direction states that the sup is *attained* (or at least
@@ -303,6 +469,41 @@ def eLpNorm_eq_iSup_lintegral_mul_pipeline
         ∫⁻ x, f x * (g.val x) ∂μ) = ∞) →
   -- Conclusion: the headline equality holds.
   eLpNorm_eq_iSup_lintegral_mul μ p
+
+/-- **Equality assembly with the zero edge discharged.** The closed
+forward inequality plus the closed zero-norm edge reduce the headline
+duality equality to:
+
+* the positive finite reverse-witness statement, and
+* the infinite-norm edge case.
+
+This is the executable version of the §4 pipeline with the zero-edge
+hypothesis removed. -/
+theorem eLpNorm_eq_iSup_lintegral_mul_of_reverse_and_top_edge
+    (μ : Measure α) (p : ℝ)
+    (h_reverse : eLpNorm_le_iSup_lintegral_mul_witness μ p)
+    (h_top :
+      ∀ {q : ℝ} (_hpq : p.HolderConjugate q)
+        {f : α → ℝ≥0∞} (_hf : AEMeasurable f μ)
+        (_h_top : eLpNorm f (ENNReal.ofReal p) μ = ∞),
+        (⨆ g : { g : α → ℝ≥0∞ //
+                  AEMeasurable g μ ∧
+                  eLpNorm g (ENNReal.ofReal q) μ ≤ 1 },
+            ∫⁻ x, f x * (g.val x) ∂μ) = ∞) :
+    eLpNorm_eq_iSup_lintegral_mul μ p := by
+  intro q hpq f hf
+  by_cases h_zero : eLpNorm f (ENNReal.ofReal p) μ = 0
+  · rw [h_zero]
+    exact Eq.symm
+      (eLpNorm_iSup_lintegral_mul_eq_zero_of_eLpNorm_eq_zero hpq hf h_zero)
+  by_cases h_top_eq : eLpNorm f (ENNReal.ofReal p) μ = ∞
+  · rw [h_top_eq]
+    exact Eq.symm (h_top hpq hf h_top_eq)
+  apply le_antisymm
+  · exact h_reverse hpq hf
+      (bot_lt_iff_ne_bot.mpr h_zero)
+      (lt_top_iff_ne_top.mpr h_top_eq)
+  · exact eLpNorm_iSup_lintegral_mul_le_self hpq hf
 
 end
 
