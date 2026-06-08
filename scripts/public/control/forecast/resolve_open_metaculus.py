@@ -29,9 +29,24 @@ import time
 import urllib.request
 from pathlib import Path
 
+try:
+    from dotenv import load_dotenv
+except Exception:  # pragma: no cover
+    load_dotenv = None  # type: ignore[assignment]
+
 REPO = Path(__file__).resolve().parents[4]
 DB = REPO / "analytics/public/calibration/forecaster_calibration.db"
 API = "https://www.metaculus.com/api2/questions/"
+
+
+def _bootstrap_dotenv() -> None:
+    if os.environ.get("METACULUS_API_KEY"):
+        return
+    if load_dotenv is None:
+        return
+    candidate = REPO / ".env"
+    if candidate.exists():
+        load_dotenv(candidate, override=False)
 
 
 def _get(qid: str, headers: dict, *, retries: int = 3) -> dict | None:
@@ -60,6 +75,7 @@ def main() -> int:
     if not (args.dry_run or args.commit):
         print("specify --dry-run or --commit", file=sys.stderr)
         return 2
+    _bootstrap_dotenv()
     tok = os.environ.get("METACULUS_API_KEY")
     if not tok:
         print("METACULUS_API_KEY not set (source .env)", file=sys.stderr)

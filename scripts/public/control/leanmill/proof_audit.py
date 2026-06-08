@@ -162,6 +162,37 @@ def _namespace_closers(prefix: str) -> str:
     return "\n".join(f"end {name}" for name in reversed(stack))
 
 
+def _namespace_prefix_at(source: str, pos: int) -> str:
+    """Dotted namespace prefix open at byte `pos` (e.g. 'Foo.Bar'), '' if none.
+    Mirrors `_namespace_closers`' open/end walk but returns the qualified prefix."""
+    stack: list[str] = []
+    for line in source[:pos].splitlines():
+        open_match = re.match(r"\s*namespace\s+([A-Za-z0-9_.'`]+)\s*$", line)
+        if open_match:
+            stack.append(open_match.group(1).strip()); continue
+        close_match = re.match(r"\s*end(?:\s+([A-Za-z0-9_.'`]+))?\s*$", line)
+        if close_match and stack:
+            name = close_match.group(1)
+            if name and name in stack:
+                stack = stack[: stack.index(name)]
+            else:
+                stack.pop()
+    return ".".join(stack)
+
+
+def _qualified_decl_name(source: str, decl: DeclBlock) -> str:
+    """The fully-qualified Lean name for a decl (namespace stack + written name),
+    so `#print axioms <qualified>` resolves even after the namespace closes — the
+    fix for the module-incompatible probe that returned 'unknown constant' and made
+    axiom verdicts inconclusive (the pre-2026-05-31 #print-axioms bug)."""
+    prefix = _namespace_prefix_at(source, decl.start)
+    name = decl.name
+    if not prefix:
+        return name
+    # Lean concatenates namespace + written name; avoid double-prefix if already qualified.
+    return name if name.startswith(prefix + ".") else f"{prefix}.{name}"
+
+
 def _probe_source(source: str, decl: DeclBlock, tactic_body: str) -> str | None:
     original = source[decl.start : decl.end]
     proof_match = PROOF_START_RE.search(original)
@@ -354,7 +385,7 @@ def _probe_axioms(target: Path, source: str, lean_root: Path, *, timeout_s: int)
     decls = extract_declarations(source)
     if not decls:
         return {}, ""
-    print_lines = "\n".join(f"#print axioms {d.name}" for d in decls)
+    print_lines = "\n".join(f"#print axioms {_qualified_decl_name(source, d)}" for d in decls)
     augmented = source.rstrip() + "\n\n-- pr_a1_audit axiom probe --\n" + print_lines + "\n"
     with tempfile.TemporaryDirectory(prefix="leanmill_axiom_probe_") as td:
         probe = Path(td) / target.name

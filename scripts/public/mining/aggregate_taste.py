@@ -61,8 +61,11 @@ def main():
     ap.add_argument("--metadata", type=Path, default=METADATA_PATH)
     ap.add_argument("--ratings", type=Path, default=RATINGS_PATH)
     ap.add_argument("--ledger", type=Path, default=LEDGER_PATH)
-    ap.add_argument("--rater-id", default="cold_subagent",
-                    help="Identifier for the rater used this run; written into ledger")
+    ap.add_argument("--rater-id", required=True,
+                    help="Identifier for the rater used this run; written into ledger. REQUIRED "
+                         "(P5a, Meta-Darwin 2026-06-04): the old `cold_subagent` default silently "
+                         "POOLED raters and mislabeled the canonical contextualized series — bare "
+                         "invocation must now fail loud. The orchestrator passes the canonical id.")
     ap.add_argument("--out-json", type=Path, default=OUT_JSON)
     ap.add_argument("--out-md", type=Path, default=OUT_MD)
     args = ap.parse_args()

@@ -67,7 +67,7 @@ def _run_v33(lean_path: Path) -> dict:
     sys.modules["lpg_v36"] = m
     spec.loader.exec_module(m)  # type: ignore[attr-defined]
     src = lean_path.read_text(errors="replace")
-    return m._run_v33_anti_laundering(
+    return m.run_anti_laundering_kernel(
         src, lean_path, REPO / "ztare_workspace" / "proofs", deep_verify=False)
 
 

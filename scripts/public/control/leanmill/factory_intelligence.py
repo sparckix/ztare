@@ -159,6 +159,17 @@ def _now() -> int:
     return int(time.time())
 
 
+def _dict_field(obj: Any, key: str) -> dict[str, Any]:
+    """Safe nested-dict accessor: `obj[key]` if it is a dict, else `{}`. Replaces the
+    `obj.get(k) if isinstance(obj.get(k), dict) else {}` idiom hand-inlined ~78x across the read
+    models (the Action-4 dedup). Behavior-identical by construction; locked by the golden-master test
+    (`tests/formal/test_factory_intelligence_golden.py`)."""
+    if not isinstance(obj, dict):
+        return {}
+    value = obj.get(key)
+    return value if isinstance(value, dict) else {}
+
+
 def _read_json(path: str | Path | None) -> Any:
     return read_json(path)
 
@@ -383,9 +394,9 @@ def _evaluation_harness_read_model(
             "run_path": run_path,
             "next_action": "run leanmill_benchmark_prep.py before attempting a credited benchmark",
         }
-    next_blocker = prep.get("next_blocker") if isinstance(prep.get("next_blocker"), dict) else {}
-    preflight = prep.get("benchmark_preflight") if isinstance(prep.get("benchmark_preflight"), dict) else {}
-    materialization = preflight.get("source_materialization") if isinstance(preflight.get("source_materialization"), dict) else {}
+    next_blocker = _dict_field(prep, "next_blocker")
+    preflight = _dict_field(prep, "benchmark_preflight")
+    materialization = _dict_field(preflight, "source_materialization")
     selected_ready = (
         bool(next_blocker.get("benchmark_can_run_full"))
         and str(preflight.get("selected_target_resolution_status") or "") == "pass"
@@ -406,7 +417,7 @@ def _evaluation_harness_read_model(
     masked_family_candidate_record_count = int(residual_observability.get("masked_family_candidate_record_count") or 0)
     run_selected_count = int(run_summary.get("selected_row_count") or 0) if run_summary else 0
     run_completed_row_count = int(run_summary.get("completed_row_count") or run_summary.get("row_count") or 0) if run_summary else 0
-    arm_metrics = run_summary.get("arm_metrics") if isinstance(run_summary.get("arm_metrics"), dict) else {}
+    arm_metrics = _dict_field(run_summary, "arm_metrics")
     lift_comparison = (
         arm_metrics.get("benchmark_lift_comparison")
         if isinstance(arm_metrics.get("benchmark_lift_comparison"), dict) else {}
@@ -661,13 +672,13 @@ def _competitive_inventory_read_model(
             "path": path,
             "next_action": "run leanmill_competitive_inventory.py to materialize the Section 8 Phase 2 artifact inventory",
         }
-    summary = inventory.get("summary") if isinstance(inventory.get("summary"), dict) else {}
-    pr = inventory.get("pr_a1_candidate") if isinstance(inventory.get("pr_a1_candidate"), dict) else {}
-    ztare = inventory.get("ztare_proofs") if isinstance(inventory.get("ztare_proofs"), dict) else {}
-    route_c_tasks = inventory.get("route_c_gap_tasks") if isinstance(inventory.get("route_c_gap_tasks"), dict) else {}
-    route_c_synthesis = inventory.get("route_c_hold_synthesis") if isinstance(inventory.get("route_c_hold_synthesis"), dict) else {}
-    route_c_replay_prep = inventory.get("route_c_exact_gap_replay_prep") if isinstance(inventory.get("route_c_exact_gap_replay_prep"), dict) else {}
-    route_c_replay_probe = inventory.get("route_c_exact_gap_replay_probe") if isinstance(inventory.get("route_c_exact_gap_replay_probe"), dict) else {}
+    summary = _dict_field(inventory, "summary")
+    pr = _dict_field(inventory, "pr_a1_candidate")
+    ztare = _dict_field(inventory, "ztare_proofs")
+    route_c_tasks = _dict_field(inventory, "route_c_gap_tasks")
+    route_c_synthesis = _dict_field(inventory, "route_c_hold_synthesis")
+    route_c_replay_prep = _dict_field(inventory, "route_c_exact_gap_replay_prep")
+    route_c_replay_probe = _dict_field(inventory, "route_c_exact_gap_replay_probe")
     route_c_gap_count = int(summary.get("route_c_gap_report_count") or 0)
     route_c_closed_count = int(summary.get("route_c_compiled_or_closed_count") or 0)
     route_c_gap_task_count = int(summary.get("route_c_gap_task_count") or route_c_tasks.get("task_count") or 0)
@@ -968,7 +979,7 @@ def _policy_intelligence(policy: dict[str, Any] | None) -> dict[str, Any]:
     obj = policy.get("intelligence") or {}
     if not isinstance(obj, dict):
         obj = {}
-    operations = policy.get("operations") if isinstance(policy.get("operations"), dict) else {}
+    operations = _dict_field(policy, "operations")
     priority_policy = priority_policy_from_policy(policy)
     active_meta_reasoning_loop = (
         operations.get("active_meta_reasoning_loop")
@@ -1009,7 +1020,7 @@ def _policy_intelligence(policy: dict[str, Any] | None) -> dict[str, Any]:
 
 
 def _recommendation_priority(payload: dict[str, Any], key: str, fallback: int) -> int:
-    intelligence_policy = payload.get("intelligence_policy") if isinstance(payload.get("intelligence_policy"), dict) else {}
+    intelligence_policy = _dict_field(payload, "intelligence_policy")
     priorities = (
         intelligence_policy.get("recommendation_priorities")
         if isinstance(intelligence_policy.get("recommendation_priorities"), dict)
@@ -1511,7 +1522,7 @@ def _conversion_diagnostics(
     now = _now()
     stage_counts: dict[str, Counter[str]] = defaultdict(Counter)
     examples: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    source_binding = observability.get("source_binding") if isinstance(observability.get("source_binding"), dict) else {}
+    source_binding = _dict_field(observability, "source_binding")
     source_query_gate = _source_query_gate_failures(events, trailing_window_s=trailing_window_s)
 
     for row in rows:
@@ -1621,7 +1632,7 @@ def _conversion_diagnostics(
             "next_action": "fix the station command before judging candidate quality",
             "examples": (observability.get("runner") or {}).get("command_failures") or [],
         })
-    version_health = observability.get("worker_version_health") if isinstance(observability.get("worker_version_health"), dict) else {}
+    version_health = _dict_field(observability, "worker_version_health")
     stale_process_count = int(version_health.get("stale_process_count") or 0)
     if stale_process_count:
         root_causes.append({
@@ -1949,10 +1960,10 @@ def _execution_mode_read_model(
     policy_profile: str,
     trailing_window_s: int,
 ) -> dict[str, Any]:
-    operations = factory_policy.get("operations") if isinstance(factory_policy.get("operations"), dict) else {}
-    mode_policy = operations.get("agentic_execution_mode_policy") if isinstance(operations.get("agentic_execution_mode_policy"), dict) else {}
-    budget_policy = operations.get("agentic_execution_budget_policy") if isinstance(operations.get("agentic_execution_budget_policy"), dict) else {}
-    budget_minimums = budget_policy.get("minimums") if isinstance(budget_policy.get("minimums"), dict) else {}
+    operations = _dict_field(factory_policy, "operations")
+    mode_policy = _dict_field(operations, "agentic_execution_mode_policy")
+    budget_policy = _dict_field(operations, "agentic_execution_budget_policy")
+    budget_minimums = _dict_field(budget_policy, "minimums")
     runner = _runner_policy(factory_policy, policy_profile)
     source_integrator = _profile_section(factory_policy, policy_profile, "source_search_integrator")
     c_supply_controller = _profile_section(factory_policy, policy_profile, "c_supply_growth_controller")
@@ -2162,7 +2173,7 @@ def _execution_mode_read_model(
         if int(row["updated_at"]) >= now - trailing_window_s and status in TERMINAL_STATUSES:
             terminal_recent_by_mode[mode] += 1
         if len(examples) < 12 and (status in OPEN_STATUSES or int(row["updated_at"]) >= now - trailing_window_s):
-            usage_row = payload_row.get("usage_estimate") if isinstance(payload_row.get("usage_estimate"), dict) else {}
+            usage_row = _dict_field(payload_row, "usage_estimate")
             examples.append({
                 "work_id": str(row["work_id"]),
                 "kind": str(row["kind"]),
@@ -2175,14 +2186,14 @@ def _execution_mode_read_model(
                 "claimed_by": str(row["claimed_by"] or ""),
             })
 
-    version_health = payload.get("worker_version_health") if isinstance(payload.get("worker_version_health"), dict) else {}
+    version_health = _dict_field(payload, "worker_version_health")
     active_heartbeats = [h for h in version_health.get("active_heartbeats") or [] if isinstance(h, dict)]
     active_by_mode: Counter[str] = Counter()
     heartbeat_examples: list[dict[str, Any]] = []
     for hb in active_heartbeats:
         worker_id = str(hb.get("worker_id") or "")
         kind = str(hb.get("worker_kind") or "")
-        hb_payload = hb.get("payload") if isinstance(hb.get("payload"), dict) else {}
+        hb_payload = _dict_field(hb, "payload")
         if "source-codex" in worker_id or kind.startswith("agent_repair_runtime"):
             mode = "subscription_agent_worker"
         elif "llm" in worker_id or "proposal" in kind:
@@ -2207,7 +2218,7 @@ def _execution_mode_read_model(
                 "claim_patch_modes": hb_payload.get("claim_patch_modes"),
             })
 
-    usage = payload.get("subscription_agent_usage") if isinstance(payload.get("subscription_agent_usage"), dict) else {}
+    usage = _dict_field(payload, "subscription_agent_usage")
     launched = int(usage.get("launched_count") or 0)
     warm_reused = int(usage.get("warm_session_reused_count") or 0)
     cold_calls = int(usage.get("cold_subscription_call_count") or 0)
@@ -2390,7 +2401,7 @@ def _family_supply_lifecycle_read_model(rows: list[sqlite3.Row], events: list[di
     activation_seeded_count = 0
     activation_recent: list[dict[str, Any]] = []
     for ev in activation_events:
-        ev_payload = ev.get("payload") if isinstance(ev.get("payload"), dict) else {}
+        ev_payload = _dict_field(ev, "payload")
         status = str(ev_payload.get("status") or "unknown")
         activation_status_counts[status] += 1
         activation_seeded_count += learning_feedback.int_count(ev_payload, "enqueued")
@@ -2460,7 +2471,7 @@ def _agentic_handoff_contract_read_model(
         recent = updated >= now - trailing_window_s
         if kind in SUBSCRIPTION_AGENT_KINDS and str(payload.get("expected_exit") or "") == "family_spec_patch":
             mode = str(payload.get("family_spec_patch_mode") or "")
-            patch_receipt = payload.get("family_spec_patch_receipt") if isinstance(payload.get("family_spec_patch_receipt"), dict) else {}
+            patch_receipt = _dict_field(payload, "family_spec_patch_receipt")
             patch_passed = str(patch_receipt.get("status") or "") == "pass" and str(row["status"]) == "done"
             if not patch_passed:
                 continue
@@ -2713,8 +2724,8 @@ def _target_resolution_read_model(rows: list[sqlite3.Row]) -> dict[str, Any]:
         status = str(row["status"])
         work_id = str(row["work_id"])
         family = str(payload.get("family") or "")
-        meta = payload.get("probe_corpus_meta") if isinstance(payload.get("probe_corpus_meta"), dict) else {}
-        selected_targets = meta.get("selected_row_targets") if isinstance(meta.get("selected_row_targets"), dict) else {}
+        meta = _dict_field(payload, "probe_corpus_meta")
+        selected_targets = _dict_field(meta, "selected_row_targets")
         selected_target_count += len(selected_targets)
         unresolved = meta.get("unresolved_row_reasons") if isinstance(meta.get("unresolved_row_reasons"), list) else []
         for rec in unresolved:
@@ -3061,8 +3072,8 @@ def _latest_c_supply_demand_summary(c_supply_growth: dict[str, Any]) -> dict[str
 
 
 def _c_supply_yield_policy(factory_policy: dict[str, Any] | None) -> dict[str, Any]:
-    operations = factory_policy.get("operations") if isinstance(factory_policy, dict) and isinstance(factory_policy.get("operations"), dict) else {}
-    obj = operations.get("c_supply_yield_decomposition") if isinstance(operations.get("c_supply_yield_decomposition"), dict) else {}
+    operations = _dict_field(factory_policy, "operations")
+    obj = _dict_field(operations, "c_supply_yield_decomposition")
 
     def int_value(key: str, fallback: int) -> int:
         try:
@@ -3076,8 +3087,8 @@ def _c_supply_yield_policy(factory_policy: dict[str, Any] | None) -> dict[str, A
         except (TypeError, ValueError):
             return fallback
 
-    penalties = obj.get("governance_integrity_penalties") if isinstance(obj.get("governance_integrity_penalties"), dict) else {}
-    next_levers = obj.get("next_levers") if isinstance(obj.get("next_levers"), dict) else {}
+    penalties = _dict_field(obj, "governance_integrity_penalties")
+    next_levers = _dict_field(obj, "next_levers")
     return {
         "schema": str(obj.get("schema") or "leanmill-strict-c-yield-decomposition-policy-v1"),
         "source": "factory_policy" if obj else "kernel_default",
@@ -3205,13 +3216,13 @@ def _strict_c_yield_decomposition(
     calibrated before there are enough resolved attempts.
     """
     policy = _c_supply_yield_policy(factory_policy)
-    credit = payload.get("c_supply_credit_ready_read_model") if isinstance(payload.get("c_supply_credit_ready_read_model"), dict) else {}
-    growth = payload.get("c_supply_growth") if isinstance(payload.get("c_supply_growth"), dict) else {}
-    population = payload.get("population_elo") if isinstance(payload.get("population_elo"), dict) else {}
-    upstream = payload.get("c_supply_upstream_rater") if isinstance(payload.get("c_supply_upstream_rater"), dict) else {}
-    feedback = payload.get("learning_feedback_read_model") if isinstance(payload.get("learning_feedback_read_model"), dict) else {}
-    blockers = credit.get("blockers_by_reason") if isinstance(credit.get("blockers_by_reason"), dict) else {}
-    breadth = credit.get("breadth_metrics") if isinstance(credit.get("breadth_metrics"), dict) else {}
+    credit = _dict_field(payload, "c_supply_credit_ready_read_model")
+    growth = _dict_field(payload, "c_supply_growth")
+    population = _dict_field(payload, "population_elo")
+    upstream = _dict_field(payload, "c_supply_upstream_rater")
+    feedback = _dict_field(payload, "learning_feedback_read_model")
+    blockers = _dict_field(credit, "blockers_by_reason")
+    breadth = _dict_field(credit, "breadth_metrics")
     demand = _latest_c_supply_demand_summary(growth)
 
     cycle_time_s, cycle_basis = _growth_cycle_time_s(growth, trailing_window_s=trailing_window_s)
@@ -3245,7 +3256,7 @@ def _strict_c_yield_decomposition(
     penalties = policy["governance_integrity_penalties"]
     governance_integrity = 1.0
     penalty_evidence: list[str] = []
-    feedback_exits = feedback.get("exit_counts") if isinstance(feedback.get("exit_counts"), dict) else {}
+    feedback_exits = _dict_field(feedback, "exit_counts")
     if int(feedback_exits.get("invalid_negative_control") or 0) > 0:
         governance_integrity *= float(penalties["invalid_negative_control"])
         penalty_evidence.append("invalid_negative_control")
@@ -3275,8 +3286,8 @@ def _strict_c_yield_decomposition(
             top_contestant = str(row.get("contestant") or "")
             break
     initial_rating = 1000.0
-    operations = factory_policy.get("operations") if isinstance(factory_policy, dict) and isinstance(factory_policy.get("operations"), dict) else {}
-    pop_policy = operations.get("population_elo") if isinstance(operations.get("population_elo"), dict) else {}
+    operations = _dict_field(factory_policy, "operations")
+    pop_policy = _dict_field(operations, "population_elo")
     try:
         initial_rating = float(pop_policy.get("initial_rating") or initial_rating)
     except (TypeError, ValueError):
@@ -3445,7 +3456,7 @@ def _c_supply_source_materialization_read_model(obj: dict[str, Any]) -> dict[str
         for row in rows
         if str(row.get("status") or "") == "source_ready" and str(row.get("row_id") or "")
     ]
-    materialization = obj.get("materialization") if isinstance(obj.get("materialization"), dict) else {}
+    materialization = _dict_field(obj, "materialization")
     return {
         "schema": "leanmill-c-supply-source-materialization-read-model-v1",
         "status": obj.get("status"),
@@ -3658,16 +3669,23 @@ def _population_elo_summary(obj: dict[str, Any], *, limit: int = 12) -> dict[str
                 "losses": row.get("losses"),
                 "ties": row.get("ties"),
             })
+    _record_count = int(obj.get("record_count") or 0)
     return {
         "schema": "leanmill-population-elo-summary-v1",
         "checkpoint": obj.get("checkpoint"),
         "run_id": obj.get("run_id"),
-        "record_count": int(obj.get("record_count") or 0),
+        "record_count": _record_count,
         "row_count": int(obj.get("row_count") or 0),
         "contestant_count": int(obj.get("contestant_count") or 0),
         "event_count": int(obj.get("event_count") or 0),
         "contestant_scope_counts": dict(sorted(by_scope.items())),
         "top_routing_priorities": top,
+        # Honest dark-feature flag: population_elo is DARK when no records are produced (e.g. its
+        # checkpoint input is empty/absent), so the pane shows "inactive" rather than presenting zeros
+        # as a measured-but-empty leaderboard. Consumers gate the frontier-quality signal on this.
+        "active": _record_count > 0,
+        "active_note": ("observed" if _record_count > 0 else
+                        "dark: no population_elo records produced (empty/absent checkpoint input)"),
         "non_laundering_note": obj.get("non_laundering_note") or "routing memory only; proof credit remains governed",
     }
 
@@ -3682,7 +3700,7 @@ def _upstream_rater_summary(
     if not isinstance(obj, dict):
         return {}
     combined = [r for r in obj.get("combined_ranking") or [] if isinstance(r, dict)]
-    model_output = obj.get("model_output") if isinstance(obj.get("model_output"), dict) else {}
+    model_output = _dict_field(obj, "model_output")
     model_ratings = {
         str(row.get("family") or ""): row
         for row in (model_output.get("ratings") or [])
@@ -3733,13 +3751,13 @@ def _upstream_rater_summary(
         "model": obj.get("model"),
         "run_model": bool(obj.get("run_model")),
         "candidate_count": int(obj.get("candidate_count") or 0),
-        "model_validation": obj.get("model_validation") if isinstance(obj.get("model_validation"), dict) else {},
+        "model_validation": _dict_field(obj, "model_validation"),
         "n_brier_scored_now": len(briers),
         "mean_brier_useful_exit_now": round(sum(briers) / len(briers), 6) if briers else None,
         "calibration_gap_mean_pred_minus_outcome_now": round((sum(probs) / len(probs)) - (sum(outcomes) / len(outcomes)), 6) if probs else None,
         "joined_routing_outcomes": joined[:limit],
         "ordered_families": obj.get("ordered_families")[:limit] if isinstance(obj.get("ordered_families"), list) else [],
-        "calibration_join_key": obj.get("calibration_join_key") if isinstance(obj.get("calibration_join_key"), dict) else {},
+        "calibration_join_key": _dict_field(obj, "calibration_join_key"),
         "calibration_note": "Brier is a live upstream-routing calibration signal over observed credit-ready outcomes, not proof credit or governance evidence.",
         "credit_boundary": obj.get("credit_boundary") or "routing_forecast_only_no_proof_credit",
     }
@@ -3765,10 +3783,10 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
     proof_lane = payload.get("proof_lane_rca") or {}
     heavy_lean_pressure = payload.get("heavy_lean_process_pressure") or {}
     pressure_risks = set(heavy_lean_pressure.get("risk_classes") or [])
-    learning_feedback_model = payload.get("learning_feedback_read_model") if isinstance(payload.get("learning_feedback_read_model"), dict) else {}
-    feedback_exit_counts = learning_feedback_model.get("exit_counts") if isinstance(learning_feedback_model.get("exit_counts"), dict) else {}
-    upstream_rater = payload.get("c_supply_upstream_rater") if isinstance(payload.get("c_supply_upstream_rater"), dict) else {}
-    upstream_validation = upstream_rater.get("model_validation") if isinstance(upstream_rater.get("model_validation"), dict) else {}
+    learning_feedback_model = _dict_field(payload, "learning_feedback_read_model")
+    feedback_exit_counts = _dict_field(learning_feedback_model, "exit_counts")
+    upstream_rater = _dict_field(payload, "c_supply_upstream_rater")
+    upstream_validation = _dict_field(upstream_rater, "model_validation")
     if upstream_rater and upstream_validation and bool(upstream_rater.get("run_model")) and not upstream_validation.get("ok", True):
         recommendations.append({
             "priority": _recommendation_priority(payload, "upstream_rater_output_invalid", 134),
@@ -3833,13 +3851,13 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
             "next_action": "repair replenisher candidate generation and family-spec row diversity before increasing workers or floors",
             "evidence": proof_lane,
         })
-    c_supply = payload.get("c_supply_batch") if isinstance(payload.get("c_supply_batch"), dict) else {}
-    c_cleaner = payload.get("c_supply_expost_cleaner") if isinstance(payload.get("c_supply_expost_cleaner"), dict) else {}
-    c_clean_selection = payload.get("c_supply_clean_selection") if isinstance(payload.get("c_supply_clean_selection"), dict) else {}
-    c_supply_growth = payload.get("c_supply_growth") if isinstance(payload.get("c_supply_growth"), dict) else {}
-    agentic_portfolio = payload.get("agentic_portfolio_read_model") if isinstance(payload.get("agentic_portfolio_read_model"), dict) else {}
-    c_credit_model = payload.get("c_supply_credit_ready_read_model") if isinstance(payload.get("c_supply_credit_ready_read_model"), dict) else {}
-    population = payload.get("population_elo") if isinstance(payload.get("population_elo"), dict) else {}
+    c_supply = _dict_field(payload, "c_supply_batch")
+    c_cleaner = _dict_field(payload, "c_supply_expost_cleaner")
+    c_clean_selection = _dict_field(payload, "c_supply_clean_selection")
+    c_supply_growth = _dict_field(payload, "c_supply_growth")
+    agentic_portfolio = _dict_field(payload, "agentic_portfolio_read_model")
+    c_credit_model = _dict_field(payload, "c_supply_credit_ready_read_model")
+    population = _dict_field(payload, "population_elo")
     population_top = population.get("top_routing_priorities") if isinstance(population.get("top_routing_priorities"), list) else []
     if population_top and int(population.get("record_count") or 0) > 0:
         recommendations.append({
@@ -3856,7 +3874,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
                 "non_laundering_note": population.get("non_laundering_note"),
             },
         })
-    yield_decomp = payload.get("strict_c_yield_decomposition") if isinstance(payload.get("strict_c_yield_decomposition"), dict) else {}
+    yield_decomp = _dict_field(payload, "strict_c_yield_decomposition")
     if yield_decomp.get("current_bottleneck") and yield_decomp.get("current_bottleneck") != "unknown":
         recommendations.append({
             "priority": _recommendation_priority(payload, "c_supply_yield_bottleneck", 152),
@@ -3873,15 +3891,32 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
                 "credit_boundary": yield_decomp.get("credit_boundary"),
             },
         })
-    if agentic_portfolio.get("status") in {"command_failed", "all_selected_lanes_zero_yield", "partial_zero_yield", "missing", "all_pressure_lanes_preflight_blocked"}:
+    _ap_status = agentic_portfolio.get("status")
+    if _ap_status in {"command_failed", "all_selected_lanes_zero_yield", "partial_zero_yield", "missing", "all_pressure_lanes_preflight_blocked"}:
+        # "missing" is a COLD-START / cyclic-read artifact, NOT a yield failure: the portfolio
+        # controller runs `post_factory_intelligence` (it CONSUMES this very report), so on a cold
+        # start — or any cycle before it has run once — factory reads the prior cycle's absent output.
+        # Scoring that as a top-priority failure made it the bogus #1 recommendation. Demote the
+        # `missing` case to informational (its fallback priority drops below the genuine-failure recs);
+        # a real failure (command_failed / zero_yield / preflight_blocked) keeps the high priority. The
+        # `class` string is UNCHANGED — the 24x7_runner self-correction contract keys on it.
+        _ap_missing = _ap_status == "missing"
         recommendations.append({
-            "priority": _recommendation_priority(payload, "agentic_portfolio_zero_yield_or_missing", 156),
+            "priority": _recommendation_priority(
+                payload, "agentic_portfolio_zero_yield_or_missing", 110 if _ap_missing else 156),
             "class": "agentic_portfolio_zero_yield_or_missing",
-            "why": "the policy-selected agentic generation portfolio did not produce queued downstream work, failed, was missing, or was deterministically blocked before spend, so agentic intent is not yet converting into verification inventory",
+            "why": (
+                "the agentic portfolio output is absent this cycle — expected on a cold start or before "
+                "the post-factory portfolio controller has produced its first output; informational, not a "
+                "yield failure"
+                if _ap_missing else
+                "the policy-selected agentic generation portfolio did not produce queued downstream work, "
+                "failed, or was deterministically blocked before spend, so agentic intent is not yet "
+                "converting into verification inventory"),
             "next_action": agentic_portfolio.get("next_action"),
             "evidence": agentic_portfolio,
         })
-    exec_modes = payload.get("execution_mode_read_model") if isinstance(payload.get("execution_mode_read_model"), dict) else {}
+    exec_modes = _dict_field(payload, "execution_mode_read_model")
     if exec_modes.get("gap_classes"):
         recommendations.append({
             "priority": _recommendation_priority(payload, "execution_mode_observability_gap", 153),
@@ -3910,12 +3945,12 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
                 "credit_boundary": exec_modes.get("credit_boundary"),
             },
         })
-    c_selection = c_clean_selection if c_clean_selection else (c_supply.get("selection") if isinstance(c_supply.get("selection"), dict) else {})
-    c_params = c_supply.get("params") if isinstance(c_supply.get("params"), dict) else {}
+    c_selection = c_clean_selection if c_clean_selection else (_dict_field(c_supply, "selection"))
+    c_params = _dict_field(c_supply, "params")
     c_selected = int(c_selection.get("selected_count") or 0)
     c_min = int(c_params.get("min_freeze_rows") or 20)
-    target_resolution = payload.get("target_resolution_read_model") if isinstance(payload.get("target_resolution_read_model"), dict) else {}
-    evaluation = payload.get("evaluation_harness_read_model") if isinstance(payload.get("evaluation_harness_read_model"), dict) else {}
+    target_resolution = _dict_field(payload, "target_resolution_read_model")
+    evaluation = _dict_field(payload, "evaluation_harness_read_model")
     if evaluation.get("status") in {
         "credited_run_masked_residual_memory",
         "credited_run_limited_slice",
@@ -3960,7 +3995,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
             "next_action": evaluation.get("next_action"),
             "evidence": evaluation,
         })
-    competitive_inventory = payload.get("competitive_inventory_read_model") if isinstance(payload.get("competitive_inventory_read_model"), dict) else {}
+    competitive_inventory = _dict_field(payload, "competitive_inventory_read_model")
     if competitive_inventory.get("status") == "pr_a1_compile_l3_audit_ready":
         recommendations.append({
             "priority": _recommendation_priority(payload, "pr_a1_compile_l3_audit_ready", 144),
@@ -4106,7 +4141,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
             "evidence": target_resolution,
         })
     probe_seed_summary = _latest_c_supply_probe_seed_summary(c_supply_growth)
-    source_materialization = payload.get("c_supply_source_materialization") if isinstance(payload.get("c_supply_source_materialization"), dict) else {}
+    source_materialization = _dict_field(payload, "c_supply_source_materialization")
     if (
         probe_seed_summary
         and int(probe_seed_summary.get("unresolved_row_count") or 0) > 0
@@ -4146,7 +4181,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
             "next_action": "increase credit-ready rows through strict static-fail mining, family-template repair, and verified positive/negative family-spec probes; do not count raw candidates or agent patches as credit-ready",
             "evidence": credit_ready,
         })
-    breadth_policy = c_credit_model.get("c_supply_breadth_policy") if isinstance(c_credit_model.get("c_supply_breadth_policy"), dict) else {}
+    breadth_policy = _dict_field(c_credit_model, "c_supply_breadth_policy")
     breadth_blockers = set(str(item) for item in (c_credit_model.get("breadth_blockers") or []) if str(item))
     if "family_breadth_target_not_met" in breadth_blockers or "single_family_concentration_warning" in breadth_blockers:
         recommendations.append({
@@ -4198,8 +4233,8 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
             },
         })
     if c_supply and c_selected < c_min:
-        candidate_accounting = c_supply.get("candidate_accounting") if isinstance(c_supply.get("candidate_accounting"), dict) else {}
-        blockers = c_selection.get("blockers_by_reason") if isinstance(c_selection.get("blockers_by_reason"), dict) else {}
+        candidate_accounting = _dict_field(c_supply, "candidate_accounting")
+        blockers = _dict_field(c_selection, "blockers_by_reason")
         template_backfill_pressure = int((blockers or {}).get("no_positive_family_template") or 0)
         candidate_rows = int(candidate_accounting.get("unique_supply_candidate_row_count") or c_cleaner.get("supply_candidate_row_count") or 0)
         c_next_action = (
@@ -4280,7 +4315,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
     probe_ready_general_count = int((supply_quality or {}).get("probe_ready_general_count") or 0) if isinstance(supply_quality, dict) else 0
     moat_summary = family_spec_gate.get("moat_disqualification_summary") if isinstance(family_spec_gate, dict) else {}
     moat_finding_count = int((moat_summary or {}).get("finding_count") or 0) if isinstance(moat_summary, dict) else 0
-    mechanism_moat_report = payload.get("mechanism_vs_moat_report") if isinstance(payload.get("mechanism_vs_moat_report"), dict) else {}
+    mechanism_moat_report = _dict_field(payload, "mechanism_vs_moat_report")
     mechanism_moat_published = bool(
         mechanism_moat_report
         and str(mechanism_moat_report.get("status") or "") == "published_mechanism_vs_moat_boundary"
@@ -4345,7 +4380,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
                 ],
             },
         })
-    handoff = payload.get("agentic_handoff_contract") if isinstance(payload.get("agentic_handoff_contract"), dict) else {}
+    handoff = _dict_field(payload, "agentic_handoff_contract")
     if int(handoff.get("hard_leak_count") or 0) > 0:
         rec_class = str((handoff.get("policy") or {}).get("recommendation_class") or "agentic_handoff_contract_leakage")
         recommendations.append({
@@ -4681,7 +4716,7 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
     for cause in (payload.get("conversion_diagnostics") or {}).get("root_causes") or []:
         lines.append(f"- `{cause.get('class')}` count={cause.get('count')}: {cause.get('next_action')}")
     usage = payload.get("subscription_agent_usage") or {}
-    exec_modes = payload.get("execution_mode_read_model") if isinstance(payload.get("execution_mode_read_model"), dict) else {}
+    exec_modes = _dict_field(payload, "execution_mode_read_model")
     if exec_modes:
         lines.extend([
             "",
@@ -4698,7 +4733,7 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
             f"- gap_classes: `{exec_modes.get('gap_classes', [])}`",
             f"- credit_boundary: `{exec_modes.get('credit_boundary')}`",
         ])
-    handoff = payload.get("agentic_handoff_contract") if isinstance(payload.get("agentic_handoff_contract"), dict) else {}
+    handoff = _dict_field(payload, "agentic_handoff_contract")
     if handoff:
         lines.extend([
             "",
@@ -4740,6 +4775,26 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
         f"- heldout_scout: `{payload.get('family_promotion_diagnostics', {}).get('heldout_scout', {})}`",
         f"- interpretation: {payload.get('family_promotion_diagnostics', {}).get('interpretation')}",
         "",
+    ])
+    _msy = payload.get("move_space_yield", {})
+    _msy_h = _msy.get("headline", {}) if isinstance(_msy, dict) else {}
+    if _msy_h:
+        lines.extend([
+            "## Move-Space Yield (are we using the move space we built?)",
+            "",
+            f"- native+warm attempt-share: `{_msy_h.get('native_warm_attempt_share')}`  "
+            f"(closers: `{_msy_h.get('closers')}`, only_warm_closes: `{_msy_h.get('only_warm_closes')}`)",
+            f"- dormant moves (never reached): `{_msy_h.get('dormant_moves')}`",
+            f"- reached moves: `{_msy_h.get('reached_moves')}`",
+        ])
+        for _mv, _m in sorted((_msy.get("by_move") or {}).items(),
+                              key=lambda x: -x[1].get("attempts", 0)):
+            lines.append(
+                f"  - `{_mv}`: attempts={_m.get('attempts')} ratified={_m.get('ratified_closes')} "
+                f"close_rate={_m.get('close_rate')} non_close_success={_m.get('non_close_success')} "
+                f"mean_s={_m.get('mean_wallclock_s')}")
+        lines.append("")
+    lines.extend([
         "## Top Actions",
         "",
     ])
@@ -4799,10 +4854,10 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
         f"- backlog_replenisher_unmet: `{replenisher.get('unmet_after_replenish', {})}` "
         f"starvation_reason=`{(replenisher.get('candidate_pool') or {}).get('starvation_reason')}`"
     )
-    c_clean = payload.get("c_supply_clean_selection") if isinstance(payload.get("c_supply_clean_selection"), dict) else {}
-    c_cleaner = payload.get("c_supply_expost_cleaner") if isinstance(payload.get("c_supply_expost_cleaner"), dict) else {}
-    population = payload.get("population_elo") if isinstance(payload.get("population_elo"), dict) else {}
-    upstream_rater = payload.get("c_supply_upstream_rater") if isinstance(payload.get("c_supply_upstream_rater"), dict) else {}
+    c_clean = _dict_field(payload, "c_supply_clean_selection")
+    c_cleaner = _dict_field(payload, "c_supply_expost_cleaner")
+    population = _dict_field(payload, "population_elo")
+    upstream_rater = _dict_field(payload, "c_supply_upstream_rater")
     if upstream_rater:
         lines.extend([
             "",
@@ -4823,9 +4878,9 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
             f"- top_routing_priorities: `{population.get('top_routing_priorities', [])[:5]}`",
             f"- non_laundering_note: `{population.get('non_laundering_note')}`",
         ])
-    yield_decomp = payload.get("strict_c_yield_decomposition") if isinstance(payload.get("strict_c_yield_decomposition"), dict) else {}
+    yield_decomp = _dict_field(payload, "strict_c_yield_decomposition")
     if yield_decomp:
-        readiness = yield_decomp.get("predictive_model_readiness") if isinstance(yield_decomp.get("predictive_model_readiness"), dict) else {}
+        readiness = _dict_field(yield_decomp, "predictive_model_readiness")
         lines.extend([
             "",
             "## Strict C Yield",
@@ -4850,8 +4905,8 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
             f"- static_conflict_keys: `{c_cleaner.get('static_conflict_key_count')}` positive_static_rows: `{c_cleaner.get('positive_static_row_count')}` supply_candidate_rows: `{c_cleaner.get('supply_candidate_row_count')}`",
             f"- static_unknown_row_count: `{c_clean.get('static_unknown_row_count')}` static_unknown_family_counts: `{c_clean.get('static_unknown_family_counts', {})}`",
         ])
-    typed = payload.get("typed_proof_exit_read_model") if isinstance(payload.get("typed_proof_exit_read_model"), dict) else {}
-    typed_summary = typed.get("summary") if isinstance(typed.get("summary"), dict) else {}
+    typed = _dict_field(payload, "typed_proof_exit_read_model")
+    typed_summary = _dict_field(typed, "summary")
     if typed_summary.get("exit_count"):
         lines.extend([
             "",
@@ -5034,6 +5089,19 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     )
     payload["action_impact_records"] = _action_impact_records(payload)
     payload["recommendations"] = _recommendations(payload)
+    # Move-space reachability + yield (2026-06-06): surfaces the starvation finding (native+warm dominate
+    # the attempts, the strategist/decomposition/falsify tail is dormant) + per-move ratified yield from the
+    # enriched attempts DB — answers "are we actually using the move space we built?" without raw-DB joins.
+    # Fail-soft: a DB-read error must never break the intelligence report.
+    try:
+        _src = str(REPO / "src")   # solver/__init__ uses bare `ztare` imports → need src on the path
+        if _src not in sys.path:
+            sys.path.insert(0, _src)
+        from ztare.leanmill.solver.move_calibration import move_yield_report as _move_yield_report
+        payload["move_space_yield"] = _move_yield_report(
+            REPO / "analytics" / "public" / "queries" / "solver_lane_attempts.db")
+    except Exception as _myr_err:  # noqa: BLE001
+        payload["move_space_yield"] = {"error": repr(_myr_err)[:160]}
     payload["verdict"] = _verdict(payload)
     if args.out:
         _write_json(args.out, payload)
@@ -5607,7 +5675,7 @@ def _self_test() -> int:
     return 0
 
 
-def main() -> int:
+def _build_arg_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser()
     ap.add_argument("--queue-db", default=work_queue.DEFAULT_DB)
     ap.add_argument("--events", default=work_queue.DEFAULT_EVENTS)
@@ -5643,7 +5711,11 @@ def main() -> int:
     ap.add_argument("--integration-receipt-limit", type=int, default=200)
     ap.add_argument("--worker-heartbeat-stale-s", type=int, default=0)
     ap.add_argument("--self-test", action="store_true")
-    args = ap.parse_args()
+    return ap
+
+
+def main() -> int:
+    args = _build_arg_parser().parse_args()
     if args.self_test:
         return _self_test()
     payload = build(args)

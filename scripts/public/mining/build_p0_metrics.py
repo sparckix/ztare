@@ -260,16 +260,93 @@ nyc("3.4_recursive", "time_to_catch_latency", "Time-to-catch latency",
     "artifact-introduced timestamp, and the tree is uncommitted (no git "
     "authorship dates). Not reliably computable until those exist.")
 
+# ── REALIZED RECURSIVE GAIN (2026-06-04). The recursive-gain readout was a stale CANDIDATE
+# aggregator (dead_letter actioned=None). Realized gain IS measurable via EXOGENOUS carriers — the
+# strange loop done honestly: (a) impact_factor_expost (primitives scored load-bearing from
+# catch-ledger refs + actual usage), (b) the contextualized-taste insight-quality trajectory.
+
+# (a) Realized primitive gain — fraction of registered primitives that became load-bearing,
+#     SPLIT BY CARRIER (Meta-Darwin: never a fused count — `last_used` is exogenous usage; the expost
+#     score is a semi-endogenous self-assessment an agent could inflate by spamming catch-refs).
+_expost, _lb_usage = [], 0
+try:
+    for _l in (REPO / "analytics/public/index/architecture_index.jsonl").read_text(
+            encoding="utf-8").splitlines():
+        if _l.strip():
+            _r = json.loads(_l)
+            _v = int(_r.get("impact_factor_expost") or 0)
+            _expost.append(_v)
+            if _v >= 3 and _r.get("last_used"):
+                _lb_usage += 1
+except Exception:
+    _expost = []
+if _expost:
+    _lb = sum(1 for v in _expost if v >= 3)
+    add("3.4_recursive", "realized_primitive_gain",
+        "Realized primitive gain (registered → exogenously depended-on, split by carrier)",
+        {"primitives": len(_expost), "load_bearing_ge3": _lb,
+         "load_bearing_with_usage": _lb_usage,
+         "rate": round(_lb / max(1, len(_expost)), 3),
+         "distribution": {str(k): _expost.count(k) for k in range(6)}},
+        "rate", "meta", "B",
+        "analytics/public/index/architecture_index.jsonl#impact_factor_expost",
+        "Split by carrier (Meta-Darwin): `load_bearing_with_usage` is the HARDER exogenous floor "
+        "(expost>=3 AND a logged `last_used`), distinct from the fused expost score (semi-endogenous). "
+        "Two-sided: a FALLING rate = registered-but-unused bloat. The realized-gain denominator the "
+        "candidate aggregator lacks.",
+        self_measured=False, owner="architecture_index")
+
+# (b) Contextualized-taste realized-gain TRAJECTORY + a freshness guard so it cannot silently rot.
+_ts = _load("analytics/public/queries/taste/taste_canonical_series.json")
+if _ts and _ts.get("weekly_stats"):
+    _series = [{"week": w, "mean": s.get("mean_score"), "n": s.get("n_rated"),
+                "hq_ge4": s.get("n_high_quality_ge4")}
+               for w, s in sorted(_ts["weekly_stats"].items())]
+    _last = _series[-1]["week"] if _series else None
+    _stale_days = None
+    try:
+        _stale_days = (datetime.now(timezone.utc).date()
+                       - datetime.fromisoformat(_last).date()).days
+    except Exception:
+        pass
+    _stale = bool(_stale_days is not None and _stale_days > 14)
+    add("3.4_recursive", "recursive_gain_trajectory",
+        "Recursive-gain trajectory (contextualized insight-quality mean / week)",
+        {"series": _series, "last_week": _last, "stale_days": _stale_days,
+         "rater": _ts.get("rater")},
+        "trend", "meta", "B",
+        "analytics/public/queries/taste/taste_canonical_series.json",
+        (f"STALE — last week {_last} is {_stale_days}d old; re-fire run_reflexive_mine.py to "
+         "extend the series. " if _stale else "")
+        + "The realized recursive-gain signal: weekly contextualized insight-quality mean (×volume "
+        "= compounding product). Rater = the contextualized-warm cold_subagent_contextualized "
+        "(canonical). Evidence-anchored to a primer; NOT a sophistication ladder.",
+        status=("partial" if _stale else "ok"))
+
+# (c) Dead-letter rate — fixed: 'actioned' now an EXOGENOUS catch-ledger join (was hardcoded None).
 rgc = _load("analytics/public/queries/trajectory/recursive_gain_candidates.json")
 if rgc:
+    _cands = rgc.get("candidates", [])
+    try:
+        _catch = (REPO / "analytics/public/ledgers/catch/catch_ledger.jsonl").read_text(
+            encoding="utf-8", errors="ignore")
+    except Exception:
+        _catch = ""
+    _surf = len(_cands) or (rgc.get("n_candidates") or 0)
+    _act = sum(1 for c in _cands
+               if _catch and any(g in _catch for g in re.findall(
+                   r"GP-\d+", (c.get("entity") or "") + " " + (c.get("rationale") or ""))))
     add("3.4_recursive", "dead_letter_rate",
-        "Dead-letter rate (candidates surfaced vs ever-actioned)",
-        {"surfaced": rgc.get("n_candidates"), "actioned": None},
+        "Dead-letter rate (candidates surfaced vs exogenously actioned)",
+        {"surfaced": _surf, "actioned_in_catch_ledger": _act,
+         "rate": round(1 - _act / max(1, _surf), 3)},
         "rate", "meta", "B",
-        "analytics/public/queries/trajectory/recursive_gain_candidates.json",
-        "surfaced count is reliable; 'actioned' detection (candidate→"
-        "seam/commit follow-through) needs a committed tree + a "
-        "candidate→outcome link not yet wired. Honest partial.",
+        "recursive_gain_candidates.json ⋈ catch_ledger.jsonl (GP-id)",
+        "actioned = a candidate GP-id appears in the EXOGENOUS catch ledger (was hardcoded None). "
+        "Conservative: rule-id candidates (R10…) carry no GP-id → un-joinable → counted "
+        "un-actioned, so this is an UPPER bound on dead-letter. Two-sided: high = mining theater. "
+        "Caveat: candidate INPUTS are stale (scorecards ~3wk old, 0 leanmill) — advisory until "
+        "the aggregator inputs are refreshed.",
         status="partial")
 
 # CONSUME GP-237 proof-health (Phase 2d) — the two adversary/Meta-Darwin

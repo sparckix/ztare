@@ -95,6 +95,9 @@ def _coerce_rows(rows: list[dict]) -> list[dict]:
     underlying jsonl (another agent may own that row)."""
     for r in rows:
         flagged = []
+        if "impact_factor_expost" not in r:
+            r["impact_factor_expost"] = 0
+            flagged.append("impact_factor_expost")
         v = r.get("impact_factor_expost", 0)
         if not isinstance(v, int):
             try:
@@ -107,7 +110,10 @@ def _coerce_rows(rows: list[dict]) -> list[dict]:
                 r[k] = [str(r[k])] if r.get(k) not in (None, "") else []
                 flagged.append(k)
         for k in ("id", "path", "kind", "description", "last_used"):
-            if not isinstance(r.get(k), str):
+            if k not in r:
+                r[k] = ""
+                flagged.append(k)
+            elif not isinstance(r.get(k), str):
                 r[k] = str(r.get(k, ""))
                 flagged.append(k)
         if flagged:

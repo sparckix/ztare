@@ -166,43 +166,19 @@ def harvest_apn_declarations() -> list[dict]:
     return entries
 
 
-def load_existing_embeddings(path: Path, model: str, dimensions: int) -> dict[str, list[float]]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    if payload.get("model") != model or payload.get("dimensions") != dimensions:
-        return {}
-    return {
-        row["id"]: row["embedding"]
-        for row in payload.get("embeddings", [])
-        if isinstance(row, dict) and "id" in row
-    }
+# Migrated to the canonical embedding engine — `ztare.common.embeddings` (AGENTS.md §6n.12/§6n.13,
+# 2026-06-04). The embed call / retry-backoff / content-hash cache now live in ONE place; these thin
+# wrappers preserve the historical call sites (behavior-identical). New corpora call
+# `common.build_atlas` directly instead of re-implementing this.
+import sys as _sys
+_sys.path.insert(0, str(REPO / "src"))
+from ztare.common.embeddings import load_cached as load_existing_embeddings  # noqa: E402,F401
 
 
 def embed_batch_with_retry(client, model, dims, texts, *, max_retries=5, default_backoff=30.0):
-    from google.genai import types
-    attempt = 0
-    while True:
-        try:
-            response = client.models.embed_content(
-                model=model, contents=texts,
-                config=types.EmbedContentConfig(taskType="RETRIEVAL_DOCUMENT", outputDimensionality=dims))
-            return [[round(float(v), 6) for v in e.values] for e in response.embeddings]
-        except Exception as exc:
-            msg = str(exc)
-            if not (("429" in msg) or ("RESOURCE_EXHAUSTED" in msg) or ("quota" in msg.lower())) or attempt >= max_retries:
-                raise
-            backoff = default_backoff
-            m = re.search(r"retryDelay['\"]?\s*:\s*['\"]?(\d+)s", msg)
-            if m:
-                try: backoff = float(m.group(1)) + 2.0
-                except: pass
-            attempt += 1
-            print(f"  rate-limit hit (attempt {attempt}/{max_retries}); sleeping {backoff:.1f}s")
-            time.sleep(backoff)
+    from ztare.common.embeddings import embed_batch
+    return embed_batch(client, texts, model=model, dimensions=dims,
+                       max_retries=max_retries, default_backoff=default_backoff)
 
 
 def main() -> int:

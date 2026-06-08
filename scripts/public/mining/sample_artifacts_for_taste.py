@@ -151,6 +151,21 @@ def _file_create_date(path: Path) -> datetime:
                                 return datetime.fromisoformat(md.group(1)).replace(tzinfo=timezone.utc)
             except Exception:  # noqa: BLE001
                 pass
+    # git first-commit (authored) date — robust to filesystem-timestamp clobbering (a bulk
+    # checkout/restore resets birthtime+mtime). Reuses the canonical helper (§6n.13, no dup).
+    # Gitignored artifacts (workspace/memory) are absent here → fall through to stat (unavoidable).
+    try:
+        import sys as _sys
+        _sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from mine_trajectory_curves import _git_create_dates
+        gd = _git_create_dates()
+        if gd:
+            repo = next(p for p in path.resolve().parents if (p / ".git").exists())
+            rel = str(path.resolve().relative_to(repo))
+            if rel in gd:
+                return gd[rel]
+    except Exception:  # noqa: BLE001
+        pass
     try:
         st = path.stat()
         ts = getattr(st, "st_birthtime", st.st_mtime)

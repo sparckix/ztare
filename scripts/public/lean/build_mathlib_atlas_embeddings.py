@@ -13,7 +13,7 @@ import argparse
 import hashlib
 import json
 import os
-import re
+import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -21,6 +21,8 @@ from typing import Any
 
 
 REPO = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(REPO / "src"))
+from ztare.common import embeddings as _emb  # noqa: E402  canonical embedding engine
 DEFAULT_INDEX = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_lemma_index.json"
 DEFAULT_EMBEDDINGS = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_atlas_embeddings.json"
 DEFAULT_MANIFEST = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_atlas_embeddings_manifest.json"
@@ -99,63 +101,24 @@ def select_entries(
 
 
 def load_existing_embeddings(path: Path, model: str, dimensions: int) -> dict[str, list[float]]:
-    if not path.exists():
-        return {}
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except Exception:
-        return {}
-    if payload.get("model") != model or payload.get("dimensions") != dimensions:
-        return {}
-    return {
-        row["id"]: row["embedding"]
-        for row in payload.get("embeddings", [])
-        if isinstance(row, dict) and "id" in row and isinstance(row.get("embedding"), list)
-    }
-
-
-def embed_batch(client, model: str, dimensions: int, texts: list[str]) -> list[list[float]]:
-    """Embed a single batch. Caller handles retry/backoff."""
-    from google.genai import types  # type: ignore[import-not-found]
-    response = client.models.embed_content(
-        model=model,
-        contents=texts,
-        config=types.EmbedContentConfig(
-            taskType="RETRIEVAL_DOCUMENT",
-            outputDimensionality=dimensions,
-        ),
-    )
-    return [
-        [round(float(value), 6) for value in embedding.values]
-        for embedding in response.embeddings
-    ]
+    """Reuse prior embeddings iff model+dims match. Delegates to the canonical engine."""
+    return _emb.load_cached(path, model, dimensions)
 
 
 def embed_batch_with_retry(
     client, model: str, dimensions: int, texts: list[str],
     *, max_retries: int = 5, default_backoff: float = 30.0,
 ) -> list[list[float]]:
-    """Wrap embed_batch with 429/quota retry. Respects `retryDelay` when present."""
-    attempt = 0
-    while True:
-        try:
-            return embed_batch(client, model, dimensions, texts)
-        except Exception as exc:
-            msg = str(exc)
-            is_quota = ("429" in msg) or ("RESOURCE_EXHAUSTED" in msg) or ("quota" in msg.lower())
-            if not is_quota or attempt >= max_retries:
-                raise
-            # Try to parse retryDelay from the error message (Google APIs include it as e.g. "retryDelay': '51s'")
-            backoff = default_backoff
-            m = re.search(r"retryDelay['\"]?\s*:\s*['\"]?(\d+)s", msg)
-            if m:
-                try:
-                    backoff = float(m.group(1)) + 2.0  # small buffer past the suggested delay
-                except ValueError:
-                    pass
-            attempt += 1
-            print(f"  rate-limit hit (attempt {attempt}/{max_retries}); sleeping {backoff:.1f}s")
-            time.sleep(backoff)
+    """Embed a single batch with 429/quota retry/backoff. Delegates to the canonical engine.
+
+    Preserves the original embedding space: same model string, same outputDimensionality,
+    and taskType=RETRIEVAL_DOCUMENT (the document side).
+    """
+    return _emb.embed_batch(
+        client, texts,
+        model=model, dimensions=dimensions, task_type="RETRIEVAL_DOCUMENT",
+        max_retries=max_retries, default_backoff=default_backoff,
+    )
 
 
 def main() -> int:
@@ -222,8 +185,7 @@ def main() -> int:
         api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
         if not api_key:
             raise SystemExit("GEMINI_API_KEY or GOOGLE_API_KEY is required unless --no-embed is set")
-        from google import genai  # type: ignore[import-not-found]
-        client = genai.Client(api_key=api_key)
+        client = _emb.make_client(api_key)
         existing: dict[str, list[float]] = (
             {} if args.rebuild else load_existing_embeddings(args.embeddings_out, args.model, args.dimensions)
         )

@@ -367,7 +367,7 @@ RECOMMENDED_ELICITATION_PROMPT_FRAGMENTS = {
         "BUY YES (you think YES is undervalued at any p <= this)\n"
         "  p_sell_yes_min — the lowest probability at which you would still "
         "SELL YES (you think YES is overvalued at any p >= this)\n"
-        "Constraints: 0 <= p_sell_yes_min <= p_success <= p_buy_yes_max <= 1. "
+        "Constraints: 0 <= p_buy_yes_max <= p_success <= p_sell_yes_min <= 1. "
         "Wider spread = lower confidence. Do NOT collapse the spread to zero "
         "unless you would genuinely take either side at p_success."
     ),
@@ -776,6 +776,73 @@ def horizon_confidence_weight(horizon: str | None, reference_iso_date: str = "20
     # Linear decay 1.0 → 0.5 over 180 days, floor at 0.1.
     w = 1.0 - 0.5 * (days / 180.0)
     return max(0.1, min(1.0, w))
+
+
+def confident_no_discount(p_success: float) -> float:
+    """F100 post-forecast correction for confident-NO overconfidence.
+
+    On the public-domain N=142 cohort, every family improved under this
+    adjustment when raw p_success was below 0.10. Keep this as an explicit
+    calibrated view rather than silently overwriting the raw forecast. A
+    2026-06-03 source-currency audit narrowed its use to live/source-valid
+    rows: it improved post-cutoff rows but regressed retrospective pre-cutoff
+    benchmark rows. A 2026-06-04 FRED vintage audit plus bulk repair further
+    narrowed "post-cutoff" dataset use: rows scored from current revised
+    labels are not source-valid calibration evidence unless label-time/vintage
+    receipts pass.
+    """
+    p = clamp_p(float(p_success))
+    if p < 0.10:
+        return p + (0.65 - p) * 0.5
+    return p
+
+
+def confident_no_policy_eligibility(contract: dict[str, Any]) -> dict[str, Any]:
+    """Machine-readable scope gate for consuming the F100 adjusted view.
+
+    Forecast-pool contracts are normally forward-looking decisions, so F100 is
+    policy-eligible by default. Retrospective benchmark or dataset-source
+    contracts can opt out by storing explicit source/label-time metadata on the
+    contract. This keeps the adjusted probability visible for audit while giving
+    downstream decision code a concrete eligibility bit to consume.
+    """
+    source_state = str(
+        contract.get("source_currency_state")
+        or contract.get("source_currency")
+        or contract.get("cutoff_relation")
+        or ""
+    ).lower()
+    label_state = str(
+        contract.get("label_time_status")
+        or contract.get("law_policy_scoreable_reason")
+        or contract.get("dataset_label_time_status")
+        or ""
+    ).lower()
+    explicit_scoreable = contract.get("law_policy_scoreable")
+    if explicit_scoreable is False:
+        return {
+            "eligible": False,
+            "reason": "contract_law_policy_scoreable_false",
+        }
+    if "pre_cutoff" in source_state or "pre-cutoff" in source_state:
+        return {
+            "eligible": False,
+            "reason": "retrospective_pre_cutoff_source_visible",
+        }
+    if "current_label" in label_state or "without_label_time_receipt" in label_state:
+        return {
+            "eligible": False,
+            "reason": label_state or "dataset_current_label_without_receipt",
+        }
+    if "changed" in label_state and "stable" not in label_state:
+        return {
+            "eligible": False,
+            "reason": label_state,
+        }
+    return {
+        "eligible": True,
+        "reason": "forward_looking_or_source_valid_contract",
+    }
 
 
 def derive_agent_family(agent_id: str) -> str | None:
@@ -1638,7 +1705,7 @@ def cmd_add_forecast(args: argparse.Namespace) -> int:
         and payload.get("p_sell_yes_min") is not None
     ):
         payload["spread"] = round(
-            float(payload["p_buy_yes_max"]) - float(payload["p_sell_yes_min"]), 6
+            float(payload["p_sell_yes_min"]) - float(payload["p_buy_yes_max"]), 6
         )
     if (
         payload.get("predicted_brier_lo") is not None
@@ -1689,6 +1756,7 @@ def cmd_add_forecast(args: argparse.Namespace) -> int:
 
 def aggregate(contract_id: str) -> dict[str, Any]:
     contract = load_contract(contract_id)
+    confident_no_eligibility = confident_no_policy_eligibility(contract)
     forecast_history = load_forecasts(contract_id)
     forecasts = latest_forecasts_by_agent(forecast_history)
     if not forecasts:
@@ -1699,6 +1767,10 @@ def aggregate(contract_id: str) -> dict[str, Any]:
     weighted_regressions = []
     weighted_dependency = []
     weighted_new_lemma = []
+    weighted_confident_no_logits = []
+    raw_panel_ps = []
+    confident_no_panel_ps = []
+    confident_no_adjusted_count = 0
     total_w = 0.0
     failure_modes: dict[str, float] = {}
     participants = []
@@ -1706,17 +1778,27 @@ def aggregate(contract_id: str) -> dict[str, Any]:
         agent_id = fc["agent_id"]
         domain = fc.get("domain") or contract.get("task_type") or "default"
         w = max(0.05, domain_weight(weights, agent_id, domain))
+        raw_p_success = clamp_p(fc["p_success"])
+        adjusted_p_success = confident_no_discount(raw_p_success)
+        adjusted = abs(adjusted_p_success - raw_p_success) > 1e-12
+        if adjusted:
+            confident_no_adjusted_count += 1
         total_w += w
         participants.append({
             "agent_id": agent_id,
             "domain": domain,
             "weight": w,
-            "p_success": fc["p_success"],
+            "p_success": raw_p_success,
+            "confident_no_adjusted_p_success": adjusted_p_success,
+            "confident_no_adjustment_applied": adjusted,
             "forecasted_at": fc.get("forecasted_at"),
             "belief_update": bool(fc.get("belief_update")),
             "forecast_artifact_path": fc.get("forecast_artifact_path"),
         })
-        weighted_logits.append(w * logit(fc["p_success"]))
+        weighted_logits.append(w * logit(raw_p_success))
+        weighted_confident_no_logits.append(w * logit(adjusted_p_success))
+        raw_panel_ps.append(raw_p_success)
+        confident_no_panel_ps.append(adjusted_p_success)
         expected_cost = fc.get("expected_cost_agent_minutes")
         if expected_cost is None:
             expected_cost = domain_effort_prior(weights, domain)
@@ -1727,6 +1809,9 @@ def aggregate(contract_id: str) -> dict[str, Any]:
         for mode, p in (fc.get("failure_mode_distribution") or {}).items():
             failure_modes[mode] = failure_modes.get(mode, 0.0) + w * float(p)
     p_success = sigmoid(sum(weighted_logits) / total_w)
+    raw_mean_panel_p_success = sum(raw_panel_ps) / len(raw_panel_ps)
+    confident_no_p_success = sum(confident_no_panel_ps) / len(confident_no_panel_ps)
+    confident_no_weighted_logit_p_success = sigmoid(sum(weighted_confident_no_logits) / total_w)
     expected_cost = sum(weighted_costs) / total_w
     p_regression = sum(weighted_regressions) / total_w
     p_dependency = sum(weighted_dependency) / total_w
@@ -1738,14 +1823,24 @@ def aggregate(contract_id: str) -> dict[str, Any]:
         - float(contract["risk_penalty"]) * p_regression
         + float(contract["information_value"])
     )
+    confident_no_ev = (
+        float(contract["value_if_success"]) * confident_no_p_success
+        - float(contract["cost_penalty"]) * expected_cost
+        - float(contract["risk_penalty"]) * p_regression
+        + float(contract["information_value"])
+    )
     aggregate_summary = {
         "exists": True,
         "p_success": p_success,
+        "raw_mean_panel_p_success": raw_mean_panel_p_success,
+        "confident_no_adjusted_p_success": confident_no_p_success,
+        "confident_no_adjusted_weighted_logit_p_success": confident_no_weighted_logit_p_success,
         "expected_cost_agent_minutes": expected_cost,
         "p_regression": p_regression,
         "p_dependency_issue": p_dependency,
         "p_needs_new_lemma": p_new_lemma,
         "expected_value": ev,
+        "confident_no_adjusted_expected_value": confident_no_ev,
         "top_failure_modes": top_failure_modes(norm_failure),
     }
     allocation = allocation_recommendation(
@@ -1762,12 +1857,27 @@ def aggregate(contract_id: str) -> dict[str, Any]:
         "aggregation_policy": "latest_forecast_per_agent_id",
         "aggregate": {
             "p_success": p_success,
+            "raw_mean_panel_p_success": raw_mean_panel_p_success,
+            "confident_no_adjusted_p_success": confident_no_p_success,
+            "confident_no_adjusted_weighted_logit_p_success": confident_no_weighted_logit_p_success,
+            "confident_no_adjusted_forecast_count": confident_no_adjusted_count,
+            "confident_no_adjustment_policy": {
+                "policy_id": "F100_confident_no_discount_v1",
+                "source": "org/calibration/per_agent_prompt_policy.yaml#universal.confident_no_discount",
+                "rule": "if p_raw < 0.10: p_adjusted = p_raw + (0.65 - p_raw) * 0.5",
+                "aggregation": "unweighted mean panel over latest forecasts; weighted-logit adjusted view also emitted",
+                "policy_eligible": confident_no_eligibility["eligible"],
+                "policy_eligibility_reason": confident_no_eligibility["reason"],
+                "scope": "forward-looking/source-valid calibrated post-forecast view with time-valid labels/baselines; raw aggregate preserved; do not use for retrospective pre-cutoff or current-label dataset benchmark correction",
+                "latest_scope_caveat": "FRED current-label rows are excluded as calibration evidence unless an ALFRED/bulk-export confirmation reinstates repaired labels; see 2026-06-04 FRED vintage timing audit/bulk repair/rescore.",
+            },
             "expected_cost_agent_minutes": expected_cost,
             "p_regression": p_regression,
             "p_dependency_issue": p_dependency,
             "p_needs_new_lemma": p_new_lemma,
             "failure_mode_distribution": norm_failure,
             "expected_value": ev,
+            "confident_no_adjusted_expected_value": confident_no_ev,
         },
         "participants": participants,
         "contract_question": contract["question"],
@@ -2172,7 +2282,7 @@ def cmd_scratch_forecast(args: argparse.Namespace) -> int:
             None
             if getattr(args, "p_buy_yes_max", None) is None
             or getattr(args, "p_sell_yes_min", None) is None
-            else round(float(args.p_buy_yes_max) - float(args.p_sell_yes_min), 6)
+            else round(float(args.p_sell_yes_min) - float(args.p_buy_yes_max), 6)
         ),
         "predicted_brier_lo": (
             None if getattr(args, "predicted_brier_lo", None) is None
@@ -5949,7 +6059,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--p-dependency-issue", type=float, default=0.05)
     p.add_argument("--p-needs-new-lemma", type=float, default=0.05)
     p.add_argument("--tail-insurance-premium", type=float, default=None,
-                   help="F8 legacy magnitude (1-100). Per F36 sign is per-agent-family; "
+                   help="F8 legacy probability-like magnitude in [0,1]. Per F36 sign is per-agent-family; "
                         "prefer --tail-downside-worry + --tail-upside-surprise.")
     p.add_argument("--tail-loss-magnitude", type=float, default=None)
     p.add_argument("--tail-downside-worry", type=float, default=None,
@@ -5968,10 +6078,10 @@ def build_parser() -> argparse.ArgumentParser:
     # F56 bid-ask spread channel (codex_mini + deepseek specialist; rho=+0.69/+0.61 N=15).
     p.add_argument("--p-buy-yes-max", type=float, default=None,
                    help="F56 bid-ask: highest p at which the forecaster would buy YES. "
-                        "Pair with --p-sell-yes-min; spread = p_buy - p_sell is the channel.")
+                        "Pair with --p-sell-yes-min; spread = p_sell - p_buy is the channel.")
     p.add_argument("--p-sell-yes-min", type=float, default=None,
                    help="F56 bid-ask: lowest p at which the forecaster would sell YES. "
-                        "Must satisfy p_sell_yes_min <= p_buy_yes_max.")
+                        "Must satisfy p_buy_yes_max <= p_sell_yes_min.")
     # F61 self-predicted Brier interval channel (b_mid/b_width per channel_routing).
     p.add_argument("--predicted-brier-lo", type=float, default=None,
                    help="F61 self-predicted Brier interval lower bound (0..1). "
@@ -6067,7 +6177,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--p-success", type=float, required=True)
     p.add_argument("--expected-cost-agent-minutes", type=float, default=None)
     p.add_argument("--tail-insurance-premium", type=float, required=True,
-                   help="F8 legacy magnitude (1-100). Per F36 sign is per-agent-family; "
+                   help="F8 legacy probability-like magnitude in [0,1]. Per F36 sign is per-agent-family; "
                         "prefer the signed-tail pair below.")
     p.add_argument("--tail-loss-magnitude", type=float, required=True)
     p.add_argument("--tail-downside-worry", type=float, default=None,
@@ -6087,10 +6197,10 @@ def build_parser() -> argparse.ArgumentParser:
     # F56 bid-ask spread channel (codex_mini + deepseek specialist; rho=+0.69/+0.61 N=15).
     p.add_argument("--p-buy-yes-max", type=float, default=None,
                    help="F56 bid-ask: highest p at which the forecaster would buy YES. "
-                        "Pair with --p-sell-yes-min; spread = p_buy - p_sell is the channel.")
+                        "Pair with --p-sell-yes-min; spread = p_sell - p_buy is the channel.")
     p.add_argument("--p-sell-yes-min", type=float, default=None,
                    help="F56 bid-ask: lowest p at which the forecaster would sell YES. "
-                        "Must satisfy p_sell_yes_min <= p_buy_yes_max.")
+                        "Must satisfy p_buy_yes_max <= p_sell_yes_min.")
     # F61 self-predicted Brier interval channel (b_mid/b_width per channel_routing).
     p.add_argument("--predicted-brier-lo", type=float, default=None,
                    help="F61 self-predicted Brier interval lower bound (0..1). "

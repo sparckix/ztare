@@ -659,7 +659,7 @@ def check_tier0_lean_organs(path: Path) -> Dict[str, object]:
         spec.loader.exec_module(m)  # type: ignore[attr-defined]
         source = path.read_text(encoding="utf-8", errors="replace")
         proofs_root = REPO / "ztare_workspace" / "proofs"
-        res = m._run_v33_anti_laundering(source, path, proofs_root,
+        res = m.run_anti_laundering_kernel(source, path, proofs_root,
                                          deep_verify=False)
         return {"check": "TIER-0-lean-organs",
                 "passes": bool(res.get("passed", True)),

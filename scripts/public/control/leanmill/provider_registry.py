@@ -70,6 +70,14 @@ REGISTRY = {
         "tested": False,  # requires LeanCopilot in the Lake project
         "note": "LeanCopilot search_proof/suggest_tactics. IDE incumbent; needs install in ztare_proofs Lake project.",
     },
+    "leanhammer": {
+        "wrapper": "leanhammer.sh",
+        "kind": "native_tactic",
+        "arg_shape": "goal_file",
+        "cost_class": "local",
+        "tested": False,  # STUB: LeanHammer not installed in ztare_proofs; wrapper returns provider_unavailable until then
+        "note": "LeanHammer premise-selection hammer (arXiv:2506.07477, ~33% Mathlib proof rate). STUB. Needs a `require Hammer` (lean-auto + Duper + premise-selection client) in ztare_proofs/lakefile.toml, a fetched premise-selection model, and a Lake rebuild. Wrapper emits provider_unavailable + exits 1 until ZTARE_LEANHAMMER_INSTALLED=1. Install steps: scripts/public/control/leanmill/leanhammer_feasibility_report.md.",
+    },
 }
 
 

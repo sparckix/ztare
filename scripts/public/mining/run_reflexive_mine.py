@@ -225,6 +225,19 @@ def phase2_mine() -> None:
         ("mine_recursive_gain_candidates.py", "recursive-gain candidates"),
         ("sample_artifacts_for_taste.py", "stratified taste sample"),
     ]
+    # P1 (Meta-Darwin 2026-06-04): refresh the candidate aggregator's PRODUCER miners BEFORE the
+    # consumer so candidates reflect current work. BEST-EFFORT (WARN-not-fatal, like mine_climb_triggers):
+    # mine_closure_patterns reads the daemon-managed F-row store, often absent locally — a producer miss
+    # must NOT abort the cycle (it just leaves that scorecard as-is, no worse than pre-P1).
+    import subprocess as _sp
+    for _script, _label in [("research_mode/mine_closure_patterns.py", "closure patterns (producer)"),
+                            ("research_mode/mine_structural_analogies.py", "structural analogies (producer)")]:
+        _r = _sp.run([PY, str(MINING / _script)], capture_output=True, text=True)
+        if _r.returncode == 0:
+            print(f"PHASE 2 (producer, best-effort): {_label} ✓")
+        else:
+            print(f"  WARN: producer '{_label}' exit {_r.returncode} — scorecard left as-is, continuing "
+                  f"(often the daemon-managed F-row store is absent locally): {(_r.stderr or _r.stdout or '')[-140:]}")
     for script, label in steps:
         sh([PY, str(MINING / script)], f"PHASE 2: {label}")
     # G6: keep the graphs/ reader copy in sync with the canonical writer path

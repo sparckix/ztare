@@ -97,7 +97,6 @@ FILES=(
   "$CTL/leanmill_station_health_dashboard.py"
   "$CTL/leanmill_station_scheduler.py"
   "$CTL/leanmill_vnext_coverage_gate.py"
-  "$CTL/leanmill_work_queue.py"
   "$CTL/lean_proofstate_feature_extract.py"
   "$CTL/lean_repair_policy_score.py"
   "$CTL/lean_repair_trajectory_dataset.py"
@@ -116,6 +115,24 @@ FILES=(
   "$CTL/codex_proofstate_pilot_fast.py"
   "deploy/prepare_lean_backends.sh"
   "src/ztare/formal/lean_persistent.py"
+  # Solver-lane core + governance (extracted to src/ in #37; added to the parity set 2026-06-05 so the
+  # governed entry, the strategist-move generators, and the integrity/compile-probe kernel stay
+  # byte-identical local↔VPS — this is the prover/gate behavior the parity proof exists to protect).
+  "src/ztare/leanmill/solver/solver_core.py"
+  "src/ztare/leanmill/solver/governed_dag_search.py"
+  "src/ztare/leanmill/solver/conjecture.py"
+  "src/ztare/leanmill/solver/statement_integrity.py"
+  "src/ztare/leanmill/solver/agentic_leaf.py"
+  "src/ztare/leanmill/solver/proof_state.py"
+  "src/ztare/leanmill/solver/move_calibration.py"
+  "src/ztare/leanmill/solver/isomorphism_decompose.py"
+  "src/ztare/leanmill/solver/failure_class.py"
+  "src/ztare/leanmill/solver/no_good_store.py"
+  "src/ztare/leanmill/solver/outcome_link.py"
+  "src/ztare/leanmill/solver/witness_transport.py"
+  "src/ztare/common/symbolic_witness.py"
+  "src/ztare/gates/lean_compile_primitives.py"
+  "src/ztare/gates/v33_preflight_risk_detector.py"
 )
 
 echo "=== 1. SYNC local -> VPS ==="
@@ -220,7 +237,6 @@ for pair in \
   "leanmill_station_health_dashboard.py||python3 $CTL/leanmill_station_health_dashboard.py --self-test" \
   "leanmill_station_scheduler.py||python3 $CTL/leanmill_station_scheduler.py --self-test" \
   "leanmill_vnext_coverage_gate.py||python3 $CTL/leanmill_vnext_coverage_gate.py --self-test" \
-  "leanmill_work_queue.py||python3 $CTL/leanmill_work_queue.py --db /tmp/leanmill_work_queue_parity_selftest.sqlite --events /tmp/leanmill_work_queue_parity_selftest.jsonl self-test" \
   "lean_proofstate_feature_extract.py||python3 $CTL/lean_proofstate_feature_extract.py --self-test" \
   "lean_repair_policy_score.py||python3 $CTL/lean_repair_policy_score.py --self-test" \
   "lean_repair_trajectory_dataset.py||python3 $CTL/lean_repair_trajectory_dataset.py --self-test" \

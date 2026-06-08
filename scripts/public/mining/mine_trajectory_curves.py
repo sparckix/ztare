@@ -154,18 +154,85 @@ def _read_frontmatter_date(path: Path) -> Optional[datetime]:
     return None
 
 
-def _file_create_date(path: Path) -> datetime:
-    """Best-effort creation date: frontmatter > stat birthtime > mtime."""
+_GIT_CREATE_DATES = None
+
+
+def _git_create_dates() -> dict:
+    """Map repo-relative path → authored date of the commit that ADDED it (its creation week),
+    from git history. ONE `git log` pass, cached. Robust to filesystem-timestamp clobbering — a
+    bulk checkout/restore resets BOTH st_birthtime AND st_mtime to 'now' (observed 2026-06-04: a
+    bulk re-create dumped every file's birthtime to ~06-01), and Linux has no birthtime at all.
+    Git's authored date survives all of that and is the canonical authored-week source. Uncommitted
+    edits don't change a committed file's add-date; genuinely-new uncommitted files are absent here
+    and fall through to birthtime/mtime (correct — they really are new)."""
+    global _GIT_CREATE_DATES
+    if _GIT_CREATE_DATES is not None:
+        return _GIT_CREATE_DATES
+    _GIT_CREATE_DATES = {}
+    try:
+        import subprocess
+        repo = next(p for p in Path(__file__).resolve().parents if (p / ".git").exists())
+        out = subprocess.run(
+            ["git", "-C", str(repo), "log", "--diff-filter=A", "--no-renames",
+             "--name-only", "--format=%aI"],
+            capture_output=True, text=True, timeout=180).stdout
+        cur = None
+        for line in out.splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            if len(line) >= 10 and line[:4].isdigit() and line[4] == "-":   # ISO date
+                try:
+                    cur = datetime.fromisoformat(line.replace("Z", "+00:00"))
+                    if cur.tzinfo is None:
+                        cur = cur.replace(tzinfo=timezone.utc)
+                except Exception:  # noqa: BLE001
+                    cur = None
+            elif cur is not None:   # a path added in `cur`'s commit — keep the EARLIEST add-date
+                prev = _GIT_CREATE_DATES.get(line)
+                if prev is None or cur < prev:
+                    _GIT_CREATE_DATES[line] = cur
+    except Exception:  # noqa: BLE001
+        _GIT_CREATE_DATES = {}
+    return _GIT_CREATE_DATES
+
+
+_FNAME_DATE_RE = re.compile(r"(20\d{2})[_-]?(0[1-9]|1[0-2])[_-]?(0[1-9]|[12]\d|3[01])")
+
+
+def robust_create_date(path: Path) -> "tuple[datetime, str]":
+    """(date, source) robust to filesystem-timestamp clobbering. In order:
+    frontmatter > git first-commit (authored) date > a YYYY-MM-DD in the FILENAME > stat birthtime/mtime.
+    `source` ∈ {frontmatter, git, filename, stat} so callers can DISTRUST 'stat' (a bulk checkout/restore
+    resets birthtime+mtime to ~now — observed 2026-06-01). Git dates ~half the corpus; date-stamped
+    filenames recover a chunk of the gitignored workspace the clobber would otherwise jam into one week."""
     fm = _read_frontmatter_date(path)
     if fm:
-        return fm
+        return fm, "frontmatter"
+    gd = _git_create_dates()
+    if gd:
+        try:
+            repo = next(p for p in path.resolve().parents if (p / ".git").exists())
+            rel = str(path.resolve().relative_to(repo))
+            if rel in gd:
+                return gd[rel], "git"
+        except Exception:  # noqa: BLE001
+            pass
+    m = _FNAME_DATE_RE.search(path.name)
+    if m:
+        try:
+            return datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)), tzinfo=timezone.utc), "filename"
+        except Exception:  # noqa: BLE001
+            pass
     try:
         st = path.stat()
-        # macOS has st_birthtime; linux has only st_mtime
-        ts = getattr(st, "st_birthtime", st.st_mtime)
-        return datetime.fromtimestamp(ts, tz=timezone.utc)
+        return datetime.fromtimestamp(getattr(st, "st_birthtime", st.st_mtime), tz=timezone.utc), "stat"
     except Exception:  # noqa: BLE001
-        return datetime.now(timezone.utc)
+        return datetime.now(timezone.utc), "stat"
+
+
+def _file_create_date(path: Path) -> datetime:
+    return robust_create_date(path)[0]
 
 
 def _week_bucket(dt: datetime) -> str:

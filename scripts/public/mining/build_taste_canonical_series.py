@@ -71,11 +71,41 @@ def main() -> int:
     print(f"  ledger entries total:                  {len(ledger)}")
     print(f"  filtered to canonical rater:           {len(entries)}")
 
+    # Re-derive each entry's week from a CLOBBER-PROOF source (frontmatter > git > filename),
+    # OVERRIDING the stored first_seen_week — which for entries first-seen AFTER the 2026-06-01 bulk
+    # file re-create is the clobbered-birthtime week (everything jammed into one week). The stored
+    # week is kept ONLY when no robust source exists (pre-bulk entries: correct; dateless gitignored
+    # scratch: unrecoverable). This reverse-engineers the real authored week from git for the
+    # git-tracked .md work (leanmill / forecasting / seams / papers / CLI docs) actually done.
+    import sys as _sys
+    _sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from mine_trajectory_curves import robust_create_date, _week_bucket
+    _rederived = 0
+    _undated_recent = 0
     by_week: dict[str, list[dict]] = defaultdict(list)
     by_week_kind: dict[str, dict[str, list[int]]] = defaultdict(lambda: defaultdict(list))
     for e in entries:
         wk = e.get("first_seen_week")
+        _p = e.get("path_at_first_sight", "")
+        _src = "stored"
+        if _p:
+            try:
+                _d, _src = robust_create_date(REPO / _p)
+                if _src in ("frontmatter", "git", "filename"):
+                    _new = _week_bucket(_d)
+                    if _new != wk:
+                        _rederived += 1
+                    wk = _new
+            except Exception:  # noqa: BLE001
+                _src = "stored"
         if not wk:
+            continue
+        # Clobber-jammed UNDATABLE: a post-bulk entry (stored week ≥ 2026-05-26) with NO robust date
+        # source (git/filename/frontmatter) — its "week" is just the arbitrary 2026-06-01 bulk-clobber
+        # date, not a real authored week. Count it separately, keep it OUT of the weekly trend so a
+        # pile of dateless gitignored scratch can't fake a low recent quality point.
+        if _src == "stat" and wk >= "2026-05-26":
+            _undated_recent += 1
             continue
         try:
             score = int(e["score"])
