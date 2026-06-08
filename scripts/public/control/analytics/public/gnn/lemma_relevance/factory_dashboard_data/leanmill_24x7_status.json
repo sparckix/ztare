@@ -55,7 +55,7 @@
       "--apply"
     ],
     "returncode": 2,
-    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/andon_cord.py': [Errno 2] No such file or directory\n",
+    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/andon_cord.py': [Errno 2] No such file or directory\n",
     "stdout_tail": "",
     "timed_out": false,
     "timeout_s": 1800
@@ -84,7 +84,7 @@
       "analytics/public/leanmill/dashboard_data/c_supply_conversion_prioritizer.json"
     ],
     "returncode": 2,
-    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/c_supply_conversion_prioritizer.py': [Errno 2] No such file or directory\n",
+    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/c_supply_conversion_prioritizer.py': [Errno 2] No such file or directory\n",
     "stdout_tail": "",
     "timed_out": false,
     "timeout_s": 1800
@@ -107,7 +107,7 @@
         "analytics/public/leanmill/dashboard_data/leanmill_governance_sentinel_suite_latest.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/governance_sentinel_suite.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/governance_sentinel_suite.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -132,7 +132,7 @@
         "analytics/public/leanmill/dashboard_data/mcb_expand100_active_corpus.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/corpus_expansion_from_files.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/corpus_expansion_from_files.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -154,7 +154,7 @@
         "10"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/station_scheduler.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/station_scheduler.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -241,7 +241,7 @@
         "50"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/external_source_search_recovery.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/external_source_search_recovery.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -263,7 +263,7 @@
         "analytics/public/leanmill/dashboard_data/recover_rejected_source_bindings_status.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/source_search_integrator.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/source_search_integrator.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -286,7 +286,7 @@
         "analytics/public/leanmill/dashboard_data/leanmill_factory_policy.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/source_binding_ingester.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/source_binding_ingester.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -305,7 +305,7 @@
         "4"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/agent_output_ingester.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/agent_output_ingester.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -329,7 +329,7 @@
         "--enqueue"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/dead_letter_triage.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/dead_letter_triage.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -355,7 +355,7 @@
         "--enqueue"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/retryable_failure_recovery.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/retryable_failure_recovery.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -384,7 +384,7 @@
         "--mark"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/post_probe_triage.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/post_probe_triage.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -405,7 +405,7 @@
         "94"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/recover_pruned_source_requests.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/recover_pruned_source_requests.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -441,7 +441,7 @@
         "analytics/public/leanmill/dashboard_data/repair_family_registry.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/registry_worker.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/registry_worker.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -464,7 +464,7 @@
         "leanmill_24x7"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/llm_proposal_worker.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/llm_proposal_worker.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -481,7 +481,7 @@
         "leanmill-24x7-local-source-search"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/source_search_worker.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/source_search_worker.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -502,7 +502,7 @@
         "codex"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/source_search_integrator.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/source_search_integrator.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -531,7 +531,7 @@
         "3"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/agent_repair_worker.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/agent_repair_worker.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -559,7 +559,7 @@
         "analytics/public/leanmill/dashboard_data/station_health_dashboard.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/station_health_dashboard.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/station_health_dashboard.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -576,7 +576,7 @@
         "analytics/public/leanmill/dashboard_data/c_supply_batch_cleaned_row_context.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/c_supply_expost_cleaner.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/c_supply_expost_cleaner.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -606,7 +606,7 @@
         "--allow-not-ready"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/c_discriminating_slice_prep.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/c_discriminating_slice_prep.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -627,7 +627,7 @@
         "analytics/public/leanmill/dashboard_data/leanmill_population_elo.md"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/population_elo.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/population_elo.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -648,7 +648,7 @@
         "analytics/public/leanmill/dashboard_data/leanmill_24x7_status.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/observability.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/observability.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -691,7 +691,7 @@
         "analytics/public/leanmill/dashboard_data/leanmill_population_elo.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/factory_intelligence.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/factory_intelligence.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -712,7 +712,7 @@
         "analytics/public/leanmill/dashboard_data/c_supply_conversion_prioritizer.json"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/c_supply_conversion_prioritizer.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/c_supply_conversion_prioritizer.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -742,7 +742,7 @@
         "--apply"
       ],
       "returncode": 2,
-      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/andon_cord.py': [Errno 2] No such file or directory\n",
+      "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/andon_cord.py': [Errno 2] No such file or directory\n",
       "stdout_tail": "",
       "timed_out": false,
       "timeout_s": 1800
@@ -874,7 +874,7 @@
       "analytics/public/leanmill/dashboard_data/leanmill_population_elo.md"
     ],
     "returncode": 2,
-    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/daalami/figs_activist_loop/scripts/public/control/scripts/public/control/leanmill/population_elo.py': [Errno 2] No such file or directory\n",
+    "stderr_tail": "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/Resources/Python.app/Contents/MacOS/Python: can't open file 'scripts/public/control/scripts/public/control/leanmill/population_elo.py': [Errno 2] No such file or directory\n",
     "stdout_tail": "",
     "timed_out": false,
     "timeout_s": 1800

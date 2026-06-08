@@ -89,7 +89,7 @@ The noise filter (`_is_quality_primitive`) drops utility-named functions (`_*`, 
 
 #### Case (a) — gate/miner/op in an auto-scanned dir
 ```bash
-cd /Users/daalami/figs_activist_loop
+cd .
 # 1. (recommended) add a WHEN_TO_USE effect-alias so a TASK-phrased query finds it.
 # 2. register into the catalog:
 python -m ztare.research_director.primitive_amnesia --repopulate

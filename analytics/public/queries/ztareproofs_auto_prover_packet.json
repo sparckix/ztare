@@ -4,7 +4,7 @@
     "canonical_truth": "ZtareProofs filesystem scan; not a Lean compile or governance receipt",
     "write_mode": "atomic_replace"
   },
-  "auto_prover_command": "scripts/public/lean/auto_prover_harness.py --obligations-json /Users/daalami/figs_activist_loop/analytics/public/queries/ztareproofs_auto_prover_packet.json --dry-run",
+  "auto_prover_command": "scripts/public/lean/auto_prover_harness.py --obligations-json analytics/public/queries/ztareproofs_auto_prover_packet.json --dry-run",
   "closed_file_audits": [
     {
       "audit_schema": "leanmill-ztareproofs-closed-file-static-l3-audit-v1",

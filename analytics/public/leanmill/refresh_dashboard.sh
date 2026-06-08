@@ -7,7 +7,7 @@
 set -euo pipefail
 
 VPS="${ZTARE_VPS_SSH:-ztare@49.13.160.58}"
-KEY="${ZTARE_VPS_KEY:-/Users/daalami/.ssh/id_ed25519}"
+KEY="${ZTARE_VPS_KEY:-$HOME/.ssh/id_ed25519}"
 RREPO="${ZTARE_VPS_REPO:-/home/ztare/figs_activist_loop}"
 ROOT="${ZTARE_FACTORY_ROOT:-/tmp/rung1/factory_intake_full_drain_vps}"
 INTAKE_DB="${ZTARE_FACTORY_INTAKE_DB:-/tmp/rung1/factory_intake_full_vps.sqlite}"

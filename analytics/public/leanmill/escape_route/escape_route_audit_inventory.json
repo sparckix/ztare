@@ -1,5 +1,5 @@
 {
-  "aggregate": "/Users/daalami/figs_activist_loop/analytics/public/leanmill/escape_route/escape_route_run_results.json",
+  "aggregate": "analytics/public/leanmill/escape_route/escape_route_run_results.json",
   "aggregate_ref": {
     "exists": true,
     "path": "analytics/public/leanmill/escape_route/escape_route_run_results.json",

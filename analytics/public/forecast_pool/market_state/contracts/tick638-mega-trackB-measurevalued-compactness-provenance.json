@@ -50,7 +50,7 @@
     "next_action": "malformed_forecast_skipped",
     "state": "malformed_forecast",
     "warnings": [
-      "forecast /Users/daalami/figs_activist_loop/analytics/public/forecast_pool/forecasts/tick638-mega-trackB-measurevalued-compactness-provenance/codex.json missing required fields: domain, expected_cost_agent_minutes, p_dependency_issue, p_needs_new_lemma, p_regression"
+      "forecast analytics/public/forecast_pool/forecasts/tick638-mega-trackB-measurevalued-compactness-provenance/codex.json missing required fields: domain, expected_cost_agent_minutes, p_dependency_issue, p_needs_new_lemma, p_regression"
     ]
   },
   "outcome": {

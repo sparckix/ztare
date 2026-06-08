@@ -76,8 +76,8 @@ The recurring multi-hour failure (incl. by this apparatus's own builder): open t
 Before ANY `git commit` or `git push`, run `make gates` (publish-safety +
 docs-freshness; tooling is operator-internal at `scripts/private/`, gitignored, 
 deliberately not public CI). It fails (exit≠0) if a tracked file carries a
-private reference (`daalami`, `research_areas/private`, `ztare-research-co`,
-home/url-encoded forms, API keys) or the doc index / per-doc descriptions
+private reference (the operator home username/path, `research_areas/private`,
+`ztare-research-co`, home/url-encoded forms, API keys) or the doc index / per-doc descriptions
 drifted. On failure: run `python scripts/private/publish_mask.py <files>` for
 leaks, `python scripts/private/gen_folder_index.py <trees>` for index drift,
 add missing `description:` frontmatter; never commit through a red gate. The

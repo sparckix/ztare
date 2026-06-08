@@ -3,7 +3,8 @@
 # Designed to be invoked manually per-round (autofire_next_round.sh roundN nextN).
 # Polls every 60s. Writes status to /tmp/autofire_<from_round>_to_<to_round>.log.
 set -e
-cd /Users/daalami/figs_activist_loop
+# Resolve the repo root portably (works from any clone location).
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
 
 ROUND_FROM="${1:-round1}"
 ROUND_TO="${2:-round2}"

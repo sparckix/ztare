@@ -3,7 +3,8 @@
 # Each pilot is checkpoint-resumable via --resume flag.
 # Idempotent: rows already in checkpoint are skipped.
 set -e
-cd /Users/daalami/figs_activist_loop
+# Resolve the repo root portably (works from any clone location).
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && git rev-parse --show-toplevel)"
 
 echo "[$(date)] resuming all in-flight pilots..."
 

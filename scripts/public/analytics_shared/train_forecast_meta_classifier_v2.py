@@ -26,7 +26,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import r2_score, mean_absolute_error
 from sklearn.preprocessing import OneHotEncoder
 
-REPO = Path("/Users/daalami/figs_activist_loop")
+REPO = Path(__file__).resolve().parents[3]  # repo root — portable, works from any clone
 POOL = REPO / "analytics/public/forecast_pool"
 
 

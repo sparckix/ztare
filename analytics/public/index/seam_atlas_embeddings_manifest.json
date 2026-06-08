@@ -3,7 +3,7 @@
   "model": "gemini-embedding-001",
   "dimensions": 768,
   "size": 336,
-  "embeddings_file": "/Users/daalami/figs_activist_loop/analytics/public/index/seam_atlas_embeddings.json",
+  "embeddings_file": "analytics/public/index/seam_atlas_embeddings.json",
   "by_kind": {
     "seam": 281,
     "spec": 55
