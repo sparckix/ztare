@@ -9,6 +9,11 @@ Owner: Daniel
 Siblings: GP-056 (axiomatic patching), GP-057 (ratio-finiteness gate),
 GP-055 (meta-judge parse robustness)
 
+Current routing: this seam is the discovery-mode precedent for
+factory/honeypot bounty reports. Current vector status, promotion evidence,
+and runtime enforcement are routed through
+`docs/concepts/gaming_behavior_catalog_map.md`.
+
 ## Problem
 
 ZTARE currently runs in two disconnected modes:

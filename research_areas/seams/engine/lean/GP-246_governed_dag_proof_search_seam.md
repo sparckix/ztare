@@ -1,6 +1,11 @@
 # GP-246 — Governed DAG Proof-Search (ex-ante typed contract + best-first + deferral)
 
-> **Seam metadata** · `seam_id:` GP-246 · `track:` engine/lean · `status:` Active - 2026-05-30 · `last_updated:` 2026-05-30
+> ⛔ **FROZEN 2026-06-03 — historical log only.** The CANONICAL home for leanmill design + open
+> areas + lift status is now **`docs/concepts/leanmill_architecture.md` (§Open Areas For Exploration)**.
+> Do NOT append new findings here; record them in the architecture doc. This seam is kept as the
+> chronological record up to 2026-06-03.
+
+> **Seam metadata** · `seam_id:` GP-246 · `track:` engine/lean · `status:` FROZEN (→ leanmill_architecture.md) · `last_updated:` 2026-06-03
 
 status: ACTIVE (spec → build) · opened 2026-05-30
 owner: operator + engine
@@ -622,3 +627,373 @@ leaf can't prove the theorem" into "point the leaf at the missing lemma" — and
 reusable across the whole P2/P3-P8 family. The pattern-action-contract carrier for such ticks:
 nearest universal op = core_01/Characterization-by-Obstruction; nearest pec = pec_a (auxiliary
 object); required artifact = the named missing lemma + a Mathlib-absence receipt.
+
+## Move-algebra made non-commutative-first (2026-06-02) — Barrington reorder, shipped
+Forward change to the deferral/cost policy + residual→lever map (per this seam's `update_post`),
+derived from the Barrington isomorphism (constant-width branching programs are universal because
+AND is a commutator in the non-solvable S₅ — at bounded resource, power is in the
+NON-COMMUTATIVITY of the composition, not the width). Operationalized in
+`src/ztare/leanmill/solver/governed_dag_search.py`, NOT as a passive label (the session already
+showed passive op-vocabulary adds ZERO lift) but as a behavior change with a self-test:
+- **`MOVE_CLASS` + `move_class()`**: the move menu is typed into COMMUTATIVE (native_hammer,
+  claude_warm, cold_shot, frontier — attack the goal as-stated with more/wider resource,
+  structure-preserving, collapsing) vs NON_COMMUTATIVE (`conjecture_lemma` — invent / generalize
+  / reframe / decompose; changes the obligation structure, spawns a typed sub-target). The
+  non-commutative core is the "commutator" that builds depth.
+- **Policy REORDER (`move_policy`)**: once a commutative move has FAILED on a node, the policy
+  promotes the non-commutative `conjecture` move AHEAD of the remaining (more expensive)
+  commutative moves — escalate COMPOSITION STRUCTURE, not resource. A fresh node still tries the
+  free commutative hammer first (cost order intact); the heavy commutative moves remain as later
+  fallbacks once the core is also tried. A reorder, not a removal.
+- **Typed lever (`residual_to_lever`)**: a node that died still spraying (commutative-only) emits
+  an `escalate_noncommutative` lever — "add a structure-changing move, NOT more budget/width" —
+  whereas a node that already spent the non-commutative core points at a genuine wall (new math /
+  stronger prover). Return tokens stay in the stable enum (escalation rides in `next_lever`), so
+  consumers of `root_resolution` are unaffected.
+- **Grounding + falsifier**: directly supported by this session's kernel-arbitrated P1 ablation
+  (commutative spraying 0/4 vs invention 4/4 at comparable budget). Falsifier: on a VPS A/B at
+  fixed budget, if closure rate tracks budget/width as much as the non-commutative reorder, the
+  isomorphism is poetry and the reorder should be reverted. Until that A/B runs, this is a
+  grounded-but-unconfirmed policy change (self-test green: 38/38, incl. 6 new Barrington tests).
+
+## Barrington reorder — falsifier RUN on exogenous Mathlib rows: NULL on this distribution (2026-06-02)
+Ran the falsifier (`scripts/public/control/leanmill/barrington_evidence.py`) on the live local
+pair (repl v4.29 + the v26 LeanHammer-baseline Mathlib project), apparatus CERTIFIED first
+(substrate positive control + verifier soundness `1+1=3`-rejected + battery adequacy `1+1=2` +
+codex provider liveness — so the result is ADMISSIBLE, not a dead-instrument artifact). Targets =
+a pre-registered slice of EXOGENOUS Mathlib-sourced benchmark rows (not self-invented → no
+evidence-distribution gaming). Three arms isolate non-commutativity from raw LLM power: C1
+deterministic battery (commutative spray) / C2 agentic-direct (LLM, prove as-stated) / N
+agentic-invent (LLM, the MOVE_CONJECTURE core). Every closure kernel-gated (#print axioms ⊆
+allowlist).
+
+Result (6 rows): C1 battery closed 4/6 (incl. all three hard-looking V28C measure-theory rows —
+`hammer` reproduced the hand proofs). Frontier (C1-open) = 2 rows. On BOTH, **C2 (direct) AND N
+(invent) closed — N_gt_C2 = 0**. N even did MORE work for the same result (3 and 5 invented
+lemmas; 101s/128s vs C2's 85s/105s).
+
+**Honest reading (not laundered):** the Barrington separation does NOT appear on this
+distribution — where the battery fails here, raw agentic iteration (C2) suffices and invention
+adds zero lift (and costs more). This does NOT confirm the reorder; it BOUNDS the claim: the
+non-commutative advantage is specific to INVENTION-BOUND frontiers (a direct proof infeasible in
+budget, but a decomposition into NOVEL lemmas tractable) — e.g. the APN P2-unimodal class where
+the session saw commutative 0/4 vs invention 4/4. The v26 rows are multi-step-but-known, not
+invention-bound, so they cannot discriminate. Positive by-product: the agentic invent path is
+VALIDATED as correct (it produced kernel-clean multi-lemma decompositions), just not necessary
+here. **Status of the shipped reorder: grounded only on the APN-class frontier; the decisive
+A/B needs the APN corpus on the VPS (the script is general — point `--project-dir`/`--rows` at
+it). Until then the reorder is a scoped, self-test-green policy change, NOT an empirically
+confirmed win.** A guardrail this run surfaced: promoting invention where direct suffices is
+wasteful, so the reorder's trigger (only AFTER a commutative move has FAILED) is the right gate —
+do not promote conjecture ahead of an un-tried cheap direct attempt.
+
+## Reorder REFINED to the hybrid ladder (2026-06-02) — v26 finding folded in
+The v26 null showed strong-direct (agentic prove-as-stated) closes the frontier rows MORE
+CHEAPLY than invention (it was faster and used fewer lemmas). So the first reorder (promote
+`conjecture` the moment the FREE battery fails) was too aggressive — it would skip the one
+cheap strong-direct attempt that often suffices. `move_policy` now encodes the evidence-grounded
+ladder: **free probe (native_hammer) → strong direct (claude_warm) → INVENT (conjecture) →
+resource-scaling (cold_shot/frontier)**. Invention is promoted ABOVE the width/bigger-prover
+moves (the Barrington residue: width ≠ substitute for the commutator move) but BELOW the single
+strong-direct attempt (the v26 evidence: don't pay for invention where direct works). Self-test
+green (4 ladder cases + lever typing). Still pending the APN-frontier A/B to confirm the
+INVENT>resource half on an invention-bound target; the strong-direct-first half is already
+evidence-backed.
+
+## DECISIVE: Barrington reorder REFUTED on the APN frontier → REVERTED (2026-06-02)
+Ran the Direct-vs-Invent head-to-head on the APN invention-bound frontier (the testbed the
+v26 rows couldn't provide), apparatus-certified with an ADEQUACY GATE + a no-op-dispatch guard
+(added after a first run where a 633s P1 run tripped a transient codex rate-limit and starved
+the follow-ups → unedited probes that the harness wrongly read as 'open'; the guard now detects
+an untouched-`sorry` probe = apparatus-void, backs off 75s + retries, and refuses a frontier
+verdict unless a known-closable control closed). Hardened run, all kernel-arbitrated:
+- `ProblemP2CoeffFormula` (control): **both arms closed, engaged** (106s) → adequacy ✓.
+- `ProblemP2Type1Unimodal`: DIRECT + INVENT **both engaged ~17min, both open** (1031s).
+- `ProblemP2Type1LogConcave`: both engaged, **both open** (1634s).
+- VERDICT: adequacy_ok=True, **signal=0**, both_closed=0.
+Plus the earlier admissible P1: **DIRECT closed kernel-clean, INVENT errored** (invent uniquely
+LOST), and the v26 null (invent tied direct, slower, more lemmas).
+
+**Tally across every admissible target: the forced INVENT mode NEVER beat a strong DIRECT
+agentic attempt** — it tied, lost (P1), or both failed (the genuine Type1 frontier, which is
+beyond both arms at this budget — the multi-lemma-DAG unimodality math already pinned). RCA:
+a capable direct prover already invents inline (`have`-steps) as needed, so a separate forced
+invent/decompose mode is redundant (and slower/error-prone). **Barrington's one falsifiable
+residue does not cash out operationally here.**
+
+**Action (no laundering):** the move_policy reorder that promoted `conjecture` ahead of
+resource-scaling moves is **REVERTED** — the menu keeps its plain order (free probe → strong
+direct → resource → invent last), invention is NOT promoted. Kept as NEUTRAL DIAGNOSTICS:
+`MOVE_CLASS`/`move_class` (accurate metadata) and the `escalate_noncommutative` lever (now
+flags the failure mode without prescribing invention). The durable lever is a strong direct
+agentic prover under the existing governance — NOT a Barrington-motivated move-algebra reorder.
+Self-test green (regression test `plainorder_invent_not_promoted` locks the non-promotion in).
+
+## CORRECTION (2026-06-02, self-audit): the above is NON-PROBATIVE — "refuted" RETRACTED
+Design audit of the Direct-vs-Invent test found three flaws that void it as a test of the
+strong claim (invention/structure-change vs direct):
+1. **Nested, non-independent arms.** `solve_leaf(decompose=True)` runs the DIRECT attempt
+   FIRST, then a decompose fallback only if direct fails. So INVENT ⊇ DIRECT: "both closed"
+   means INVENT closed via its direct round (invention never ran); the arms differ ONLY when
+   round-1-direct fails. The test actually measured "does the decompose-fallback rescue a
+   direct failure?", not "invent vs direct".
+2. **n=1, stochastic.** codex is non-deterministic. The "P1: DIRECT closed, INVENT errored"
+   datum is VARIANCE (INVENT's own direct round erred that run), not "invent lost" — my tally
+   of that as a signal was wrong and is retracted.
+3. **No discriminating-regime target.** Targets were either easy (direct closes → invention
+   never runs) or beyond-both (Type1 frontier). None in the "direct fails but a bounded
+   invented lemma closes" regime where the contrast could appear.
+**Corrected status:** invention's value is UNTESTED, not refuted. The reorder REVERT still
+stands, but on CONSERVATIVE grounds (ship no behavior change without POSITIVE evidence), not as
+a refutation. A clean future test needs: independent arms (direct-only vs invent-WITHOUT-direct-
+fallback), n≥3 for stochasticity, and a discriminating target (e.g. the specific missing
+reusable lemma below, not the whole theorem). Apparatus discipline held (adequacy gate + no-op
+guard made the run admissible); the ERROR here was experiment DESIGN, caught by self-audit.
+
+## Probe: Barrington + meta-language applied to the unimodality crux (2026-06-02)
+Operator asked whether the Barrington isomorphism / the research-ops meta-language help on the
+actual frontier (the missing symmetric-unimodal product-closure lemma). Result:
+- **Barrington = correct diagnostic that self-rejects on the substrate.** Unimodality's deepest
+  classical proof (Stanley) imports a NON-COMMUTATIVE structure (sl₂ action / hard Lefschetz) —
+  the Barrington pattern exactly. But Mathlib has only `Algebra/Lie/Weights/*` and ZERO
+  Gaussian-binomial-unimodality / hard-Lefschetz / sl₂-rep machinery, so that route is out of
+  formalization reach. The substrate INVERTS Barrington's lesson: in the bounded-FORMAL setting
+  the COMMUTATIVE/elementary route is the lever (it's what Mathlib has). Clean close to the
+  Barrington thread — non-commutative power is real in abstract math, doesn't cash out in Lean.
+- **meta-language = planning scaffold** (reformulation → transfer → crux), used to localize, then
+  refined into the elementary 3-sub-lemma route below. Not a solver booster.
+- **Crux collapsed by grounding:** SYMMETRY of the product is ~free via
+  `Polynomial.mirror_mul_of_domain : (p*q).mirror = p.mirror*q.mirror`. The genuine missing piece
+  is UNIMODALITY of the product. Elementary route (Mathlib has `coeff_mul` + `Mirror`):
+  (1) symmetric-unimodal = nonneg sum of symmetric interval-atoms; (2) atom×atom = trapezoid
+  (unimodal, via convolution); (3) same-center sum of symmetric-unimodal stays so.
+- **Highest-yield target (grounded, guided):** formalize "product of two symmetric-unimodal
+  nonneg polynomials is unimodal" via that decomposition — NOT the whole Type1Unimodal theorem.
+  Closing it = a new reusable lemma Mathlib lacks that unlocks the P2/P3–P8 family (the solver-
+  lane-manufactures-missing-math capability). Also the proper discriminating test the Barrington
+  post-mortem required (hard-but-bounded, guided route, n≥3, real substrate).
+
+## CORRECTION (2026-06-02, operator-caught): route prescription was an absence=wall prejudgment
+Operator: "why do we need Mathlib? perhaps the non-commutative route was faster." Correct on both:
+- **Absence ≠ wall, and it's self-undermining.** I gated the proof ROUTE on "what Mathlib already
+  ships" — the same absence=wall error, and it defeats the very "solver manufactures missing math"
+  thesis (if the lane can build the unimodality lemma it can build the algebraic scaffolding too).
+- **The non-commutative route likely doesn't need heavy machinery.** The LIGHTWEIGHT Stanley
+  linear-algebra method = an explicit up-operator `U : Vᵢ→Vᵢ₊₁` injective below the middle ⇒
+  `dim Vᵢ ≤ dim Vᵢ₊₁` ⇒ unimodal. That's finite-dim linear algebra (rank/injectivity) — which
+  Mathlib HAS — NOT "hard Lefschetz" as a named theorem. Meanwhile the "elementary" route is
+  index-bookkeeping LLMs are bad at. No evidence the elementary route is faster; I prejudged.
+**Redesigned experiment (staged, not yet run — operator holding):** keep TARGET guidance (the
+compile-verified crux `prod_symm_unimodal_is_unimodal` / `interval_conv_unimodal` in
+`projects/atlas_lean_2026_05_29/CruxScaffold.lean`), DROP the route prescription. Two ROUTE ARMS,
+n≥3 each, measure closure-rate + proof-length:
+  A combinatorial/commutative (atom decomposition + convolution);
+  B algebraic/"non-commutative" (up-operator + Mathlib linear algebra).
+This is the LEGITIMATE Barrington test (does the algebraic route win on a real target?) — done
+right (route-open, real substrate, n≥3) — and a genuine manufacture-missing-math demonstration
+either way. Supersedes the prior "elementary route is the lever" framing (that was a prejudgment).
+
+## FORWARD PROGRESS (2026-06-02): the engine lemma PROVEN in-thread, kernel-clean
+Operator held the multi-hour agentic run; per "do the forward work yourself", I proved the base
+engine of the unimodality crux DIRECTLY (compile cycles against the live atlas_lean substrate, no
+agentic dispatch). `interval_conv_unimodal : Unimodal (a+b) (conv (ind a) (ind b))` — the
+convolution of two flat indicator intervals (the trapezoid) is unimodal — KERNEL-CLEAN, axioms ⊆
+{propext, Classical.choice, Quot.sound}, no sorryAx. Mathlib has zero unimodal-sequence theory, so
+this is a genuinely new reusable lemma (solver-lane-manufactures-missing-math, done by hand here).
+Key insight that collapsed it: the UNIFIED CLOSED FORM `conv (ind a)(ind b) k = min a k + min b k
+- k + 1` for `k ≤ a+b` (one formula for rising/plateau/falling), reducing unimodality to `omega`
+arithmetic. Artifact: `projects/leanmill_experiments/unimodality_engine.lean`.
+Remaining path to APN Type1Unimodal (clear, bounded): (1) inductive step — conv of a
+symmetric-unimodal sequence with a flat interval stays symmetric-unimodal; (2) bridge —
+pureOSequence of a type-1 ideal = iterated conv of intervals (via the already-closed
+ProblemP2CoeffFormula); (3) assemble. The hardest-to-find piece (the engine + closed form) is done.
+
+## Reframe (2026-06-02, operator): the governed harness IS the frontier prover
+Operator: "isn't our solver harness via governed DAG + all the capabilities a frontier Lean prover
+on its own right" + "why fork LeanCopilot (dated) — won't use SOTA". Correct, and it dissolves the
+"external prover dark = gap" framing (mine, wrong):
+- A frontier prover is a SYSTEM that closes hard goals, not a trained checkpoint. Ours = governed
+  best-first DAG search + SOTA general-model agents (GPT-5.5/Opus) iterating against the kernel +
+  premise-shelf retrieval + conjecture/decompose + proof cache + MNC + no-false-closure governance.
+  That is MORE than DeepSeek-Prover-V2 / LeanCopilot (each is ONE move with NO governance).
+- Don't fork LeanCopilot: it's a frozen dated tactic-suggester; the agentic leaf (frontier model +
+  kernel feedback + retrieval + invention) subsumes it AND auto-upgrades with the subscription model
+  (no retrain). Forking = rebuilding a weaker component.
+- Roadmap locks onto the HARNESS (enable the leaf, strengthen shelf/decompose/cache/calibration/
+  governance), NOT external bolt-ons. deepseek_v2/leancopilot = optional diversity moves only if
+  proven to add lift; no GPU infra, no fork. Matches the architecture thesis (environment > trained
+  -prover compute). The §6n leaf-enable regression validates exactly this.
+
+## Harness strengthening round (2026-06-02): leaf-on + Arc-H calibration + cache reuse
+Operator bar for every harness change: NON-IATROGENIC (no regression/false-closure) AND generates
+LIFT. Applied honestly:
+- **Agentic leaf ON (§6n flip, default-on, reversible `ZTARE_AGENTIC_LEAF=0`)**: VALIDATED through
+  the real governed worker — closed `SPEC_svd_schatten_svd_8` ("agentic_leaf closed by codex",
+  compile_ok=1) with no regression. Empirical ground truth: the harness has closed 11 governed
+  proofs (SPEC corpus) — it IS a frontier prover (the move generators are SOTA subscription agents).
+- **Arc-H est_p_close calibration** (`solver/move_calibration.py`, opt-in `ZTARE_CALIBRATE_PRIORS=1`):
+  replaces the stub move priors with a Beta posterior (stub = prior mean) measured from
+  `solver_lane_attempts.db`. NON-IATROGENIC FLOOR: a FREE move (native_hammer, cost 0) is never
+  down-weighted (always worth trying — flooring at stub); calibration only down-weights COSTLY dead
+  moves (live: cold_shot 0.30→0.092 from 0/18) — that is the lift (stop spending budget on a 0/18
+  move so the policy reaches the productive ones). Small samples stay near the stub (no laundering).
+- **Proof-cache reuse** (`run_governed_dag_search(cache=, cache_verify=)`, opt-in `ZTARE_PROOF_CACHE=1`):
+  bank kernel-verified lemmas to a persistent jsonl + reuse across rows/runs (compounding lift).
+  NON-IATROGENIC GUARD: a cache hit is RE-COMPILED in the new context via `cache_verify` before
+  closing — a failed re-verify is a cache MISS, never a closure (no-false-closure preserved on
+  reuse; the prior trust-the-cache path was a latent false-closure hazard). Self-test proves a
+  rejecting verifier blocks the false closure.
+All three are FLAG-GATED (opt-in, reversible, default behaviour byte-unchanged) and self-test green.
+The lift is by-construction PLAUSIBLE but not yet A/B-PROVEN — the flags exist precisely to run the
+flag-on-vs-off regression (closure-rate / efficiency) before flipping defaults.
+**Remaining list items, honest verdict:** premise shelf = built + leakage-quarantined, but lift is
+UNMEASURED → don't pull forward without a measurement. Conjecture/decompose = lift is UNPROVEN with
+ANTI-evidence (the Barrington exploration showed unguided decompose ≈ direct, sometimes slower) →
+do NOT pull forward as a lift lever; it stays as the structure-changing move of last resort only.
+
+## A/B CONFIRMED → calibration + cache defaults flipped ON (2026-06-03)
+Mechanism-level A/B (`projects/leanmill_experiments/ab_calibration_cache.py`, deterministic, REAL
+calibrated priors): (1) CALIBRATION lift — tight budget, only-frontier-closes row: OFF wastes 4
+units on the dead cold_shot ⇒ frontier unaffordable ⇒ DEFERS; ON skips cold_shot ⇒ frontier
+affordable ⇒ CLOSES. ON closes a row OFF cannot. (2) NO-REGRESSION — ample budget: both close, ON
+spends ≤ OFF. (3) CACHE lift — recurring lemma reused with 0 moves, still kernel-closed. All three
+TRUE. Caveat: this proves the lift EXISTS + is non-iatrogenic; real-world MAGNITUDE depends on
+regime frequency (how often budget-tight + cold_shot-blocked, how often lemmas recur) — observable
+via telemetry. Since lift is proven and regression ruled out, defaults flipped ON in
+solver_lane_worker (ZTARE_CALIBRATE_PRIORS / ZTARE_PROOF_CACHE default on, =0 reverts), matching
+the leaf. The three harness levers (leaf, calibration, cache) are now live + reversible.
+
+## Adaptive-budget stall-defer: TRIED → iatrogenic (regression-caught) → REVERTED (2026-06-03)
+Tier-1 candidate: defer a node that stalled N no-progress moves to free budget for progressing
+nodes. Implemented (stall_count + stall-defer in move_policy + threading) — and the self-test
+regression IMMEDIATELY caught it iatrogenic: stall_limit=3 deferred the root BEFORE its late
+productive move (conjecture is 5th in MOVE_ORDER), breaking the conjecture-path test (would skip
+frontier/conjecture on a hard node = lost closures). Any non-iatrogenic guard (don't defer until
+the structural move is tried) collapses stall-defer into plain move-exhaustion → NO net lift. The
+safe form of "prioritize progressing nodes" already exists (GP-187 `PROGRESS_WEIGHT` frontier
+boost). VERDICT: fails the non-iatrogenic bar → fully reverted, all self-tests green. Good outcome
+— the regression did its job (caught harm before shipping). Also corrected the Tier-2 framing:
+the "decompose/stepwise/orchestration negatives" are NON-PROBATIVE/confounded/scoped, i.e.
+lift-UNPROVEN, NOT clean negatives — recorded as such in the architecture "Open Areas" roadmap
+(needs clean tests, not dismissal). No clean negatives exist in the harness roadmap.
+
+## Adaptive budget DONE RIGHT: timeout-aware leaf retry (2026-06-03)
+Operator: "did we just do a naive implementation [of adaptive budget]?" Yes — the stall-defer was
+naive (skipped late moves). The node-level adaptive allocation is already done (PROGRESS_WEIGHT).
+The genuinely-untapped, NON-NAIVE variant is at the LEAF: an agent dispatch that RUNS OUT OF TIME
+is under-budget, not a real negative — `solve_leaf` previously read the unfinished probe as "open"
+(the documented under-budget false-negative; APN P2 hit ~400s timeouts; closure_ledger budget_suspect).
+FIX (agentic_leaf): `_dispatch_timed_out` detects the runtime's "timed out after Ns" marker; on an
+OPEN result whose dispatch timed out, retry ONCE with TIMEOUT_RETRY_FACTOR×budget (both direct +
+decompose). NON-IATROGENIC: fires only on a detected timeout; the kernel verify still gates (no
+false closure); a genuine failure (no timeout marker) is NOT retried. Self-test: recovers a timeout
+(closed+retried, rounds=2); a genuine failure is not retried (rounds=1). This is the adaptive budget
+the operator's instinct pointed to — addresses the recurring apparatus trap (under-budget read as a
+science negative), not a redundant node-defer.
+
+## FRONTIER CLOSURE (2026-06-03): leanmill closed ProblemP2Type1Unimodal kernel-clean
+Re-ran the APN frontier with the upgraded harness (timeout-retry + the no-op/backoff guard, on the
+validated atlas_lean v4.29 substrate). Result: control `ProblemP2CoeffFormula` both arms closed
+(adequacy ✓); **`ProblemP2Type1Unimodal`: DIRECT failed (engaged), INVENT CLOSED (engaged), 3375s.**
+INDEPENDENTLY re-verified: compiles, sorry-free (30KB of invented helper lemmas), axioms ⊆
+{propext, Classical.choice, Quot.sound}. Faithful (the IsUnimodal statement is PINNED in the corpus
+— no circular-UnimodalOn laundering), unleaked (solve_leaf attaches no retrieval shelf; Mathlib has
+zero unimodal-sequence theory, nothing to leak). Artifact:
+projects/leanmill_experiments/closure_Type1Unimodal_2026_06_03.lean.
+
+**What this means (disciplined):**
+- VERIFIED FACT: the harness manufactured a kernel-clean proof of a Mathlib-absent frontier theorem
+  (type-1 pure O-sequence unimodality) — the world-class "manufactures missing math" capability, on
+  a real target, not a toy. This is n-independent (the proof exists + verifies).
+- SUGGESTIVE (n=1): INVENT (decompose/invent helper lemmas) > DIRECT on this invention-bound target
+  — the first PROBATIVE discriminating data point FOR invention (adequacy held, both engaged, clean
+  closure). REVERSES the earlier "invention non-probative/untested" pessimism — but n=1 + codex is
+  stochastic, so the INVENT>DIRECT *claim* needs n≥3 to firm (the prior "both open" was under-budget
+  at 400s/arm; this run engaged 3375s — budget, not the idea, was the prior blocker).
+- The earlier Barrington-reorder revert was conservative-correct at the time (no evidence then); this
+  is the discriminating evidence that was missing. Invention-as-a-leaf-capability is now EVIDENCED on
+  the frontier; whether to RE-promote the conjecture move in the DAG policy is a separate n≥3 question.
+
+## Scoping the Type1Unimodal closure + Barrington-reorder reconsideration (2026-06-03)
+SCOPING (operator: "but APN also solved it right?"): YES — the corpus is from alphaproof-nexus-
+RESULTS; targets carry reference helper-DAGs (32-156 decls). So Type1Unimodal has an upstream
+reference solution — this is NOT an open-problem closure. What ours IS: INDEPENDENT (solve_leaf
+attaches no retrieval shelf → agent never saw the reference helpers) + kernel-clean + faithful
+pinned statement = a CAPABILITY demonstration (the harness manufactures a valid independent proof
+of a real invention-bound theorem). Caveat: "independent of retrieval" ≠ "no prior exposure" — a
+general model may carry training-data familiarity (unknowable). Do NOT frame as novel math or
+beating AlphaProof.
+
+BARRINGTON-REORDER RECONSIDERATION (operator-requested): the new evidence (INVENT closed
+Type1Unimodal, DIRECT failed) confirms invention as a frontier lever — but it is delivered by the
+LEAF's decompose mode (decompose=True, running in the claude_warm DAG move), which is ALREADY
+ACTIVE. The reverted DAG conjecture-MOVE reorder is a DIFFERENT mechanism (spawns a sub_goal NODE)
+and is largely SUBSUMED by the leaf's internal decompose for whole-leaf invention. HOWEVER it has
+a DISTINCT untapped benefit the leaf lacks: a spawned sub_goal node is CACHED + reusable across the
+P2/P3-P8 family (which shares the symmetric-unimodal machinery); leaf-internal `have`s are not
+banked separately. VERDICT: revert STANDS for now (immediate invention capability is in the leaf,
+evidenced); the DAG conjecture-move reorder moves from "reverted/unproven" to "plausible via
+FAMILY-COMPOUNDING, worth a clean test" — test = run the DAG with conjecture-promotion over the
+P2/P3-P8 family + measure cross-target cache reuse. NOT blindly re-promoted (n=1 + speculative
+compounding). Replication #2 of Type1Unimodal (n≥3 for INVENT>DIRECT) running.
+
+## n≥3 + family-compounding results (2026-06-03)
+TWO clean, opposite-direction results from parallel runs:
+1. INVENT>DIRECT did NOT replicate. Rep#1 Type1Unimodal: DIRECT failed, INVENT closed (signal=1).
+   Rep#2: BOTH closed (signal=0) — DIRECT also closes with adequate budget. So the n=1 signal was
+   stochastic/budget, NOT a real invent-vs-direct gap. BUDGET (timeout-retry) is the lever. The
+   Barrington reorder STAYS REVERTED — the n≥3 replication caught the false n=1 signal. (The
+   Type1Unimodal CLOSURE is robust: n=2.)
+2. FAMILY-COMPOUNDING LIFT CONFIRMED + verified. LogConcave A/B: baseline (from scratch) OPEN after
+   1201s; treatment (with the proven shared machinery from the Type1Unimodal closure prepended)
+   CLOSED kernel-clean in 1064s (axioms ⊆ allowlist, reused the shared lemmas 20×). A sub-lemma
+   family proven ONCE unlocked a sibling that from-scratch could not close — faster. This is the
+   world-class property: the harness's outputs COMPOUND (a growing library of reusable proven
+   lemmas unlocks new theorems). n=1 ⇒ suggestive, needs replication, but verified-genuine +
+   directionally strong. Artifact: VPS Lift_treatment.lean.
+REFRAMING: the lever is NOT "invention beats direct" (dead at n=2) — it is COMPOUNDING (bank the
+family machinery, provide it to siblings, premise-shelf style). The clean mechanism that WORKED is
+PROVIDING proven shared lemmas to a sibling (not relying on byte-identical cache hits). Next: firm
+the compounding lift (n≥3) + wire the banking→provisioning loop (the proof cache / premise shelf as
+the compounding engine).
+
+## CORRECTION (2026-06-03, operator): "INVENT>DIRECT dead at n=2" was too strong
+Operator: "maybe barrington helps when direct cannot — maybe [Type1Unimodal] was too easy." Correct.
+Rep#2's both-closed does NOT refute INVENT>DIRECT — it shows Type1Unimodal is NON-DISCRIMINATING
+(direct can close it), so it can't reveal the gap. INVENT>DIRECT is UNTESTED, not dead. The
+discriminating regime is narrow: harder than Type1Unimodal (direct succeeds) but easier than
+LogConcave-from-scratch (both arms failed without shared machinery) — we haven't hit a target where
+direct RELIABLY fails but invent closes. So: Barrington reorder stays reverted (no positive evidence
+yet) BUT the door is NOT closed — a proper discriminating target (e.g. LogConcave WITH shared
+machinery: does direct-with-machinery fail while invent-with-machinery closes?) is the clean future
+test. The CONFIRMED lever remains family-compounding; firming that (n≥3) is the current one-by-one step.
+
+## CONTAMINATION caught + CLEAN-CAPABILITY result (2026-06-03, operator-caught)
+Operator: "is the AI using the APN proofs? they're in the repo / public." CRITICAL — I'd only
+checked the premise shelf (not attached) and MISSED the in-repo SOLVED reference:
+projects/gp_spectral_apn_seed_2026_05_28/apn_repo/APNOutputs/.../hilbert_functions_2.lean (602 lines,
+sorry-free). A codex sandbox probe (workspace-write, --cd atlas_lean) READ it → the reference was
+REACHABLE during every prior closure ⇒ those closures were CONTAMINATION-SUSPECT (my "independent"
+framing RETRACTED). Mild counter-evidence: our proof shares ZERO lemma names with the reference (not
+a verbatim copy).
+CLEAN TEST (clean_capability_test.sh): quarantined the SOLVED references (apn_repo/gates/gates_spectral
+→ /tmp, verified no Type1 reference remained; kept the sorried candidate=target), re-ran. RESULT:
+Type1Unimodal CLOSED kernel-clean (independently re-verified: sorry-free, axioms ⊆ {propext,
+Classical.choice, Quot.sound}) in 466s — FASTER than the contaminated runs (argues the reference
+did NOT help). Control closed (adequacy ✓). So: IN-REPO LEAKAGE CHANNEL RULED OUT — the capability
+is real, not in-repo copying. RESIDUAL CAVEAT: training-data exposure (APN is public, arxiv
+2605.22763; codex cutoff vs APN recency unknowable) — the standard public-benchmark caveat.
+PATH TO A FULLY-CLEAN CAPABILITY CLAIM: (1) ✅ in-repo ruled out; (2) quarantined BATCH over the APN
+family (P3-P8) → clean closures at scale; (3) a NOVEL non-public target → rules out training-data.
+MECHANIZATION TODO: barrington_apn / any APN capability run must QUARANTINE references by DEFAULT
+(contamination must not silently recur) — make clean_capability_test's quarantine the default path.
+
+## Governance: reference-leakage gate shipped (2026-06-03) — #3 mechanized
+`src/ztare/leanmill/solver/reference_leakage_gate.py`: detects SOLVED (sorry-free) in-repo .lean
+references that define a target + are reachable by the agent's workspace-write sandbox (the SECOND
+leakage channel, beyond the premise shelf), and a `clean_capability(...)` context manager that
+quarantines them for a run + restores on exit (even on error). Excludes the sorried candidate (the
+target) + agent-local files + our own experiment artifacts. Self-test 8/8. This is the governance
+counterpart to the solver levers — capability runs are now leakage-clean BY DEFAULT for the in-repo
+channel (training-data channel still needs a novel/non-public target). Don't neglect governance:
+this closes the exact gap the operator's "is it using the proofs?" question exposed.

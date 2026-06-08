@@ -9,6 +9,75 @@
 **Goal slug:** `cage_kernel_hardening_automated_promotion`
 **Origin:** Operator strategy memo (2026-04-18) synthesizing 1,115 debate log analysis via `sandbox_gaming_extractor.py`. Motivated by two converging findings: (1) gaming signals are frequent and patterned enough to warrant deterministic gates; (2) without automated promotion, identified patterns accumulate in catalogs but never enter the engine.
 
+## Current Source-Of-Truth Note (2026-06-07)
+
+This seam is the historical provenance anchor for the autoresearch hardening board and GP-086 promotion model. It is not the live vector-status ledger.
+
+Current split:
+
+| Role | Source |
+|---|---|
+| Live gaming-vector status | `analytics/public/queries/gaming_vector_catalog.jsonl` |
+| Human-readable catalog | `docs/cheating_catalog.md` |
+| Source-of-truth map | `docs/concepts/gaming_behavior_catalog_map.md` |
+| GP-086 promotion spec | `research_areas/specs/active/apparatus/cage/GP-086_cage_kernel_hardening_spec.md` |
+| Reusable incident-derived precedents | `global_primitives/` |
+| Shared mining/checkpoint contract | `src/ztare/common/kernel_hardener.py` |
+| Autoresearch instance | `src/ztare/validator/autoresearch_hardener.py` |
+
+The current MECE ownership is: registry status, public explanation, RH/rubric anti-patterns, reusable primitive precedents, mining/checkpoint machinery, enforcement code, and historical seams/specs. If counts in this seam disagree with the JSONL registry, the JSONL registry wins and this seam should be treated as provenance rather than current status.
+
+## Cross-Substrate Hardener Note (2026-06-07)
+
+The shared thing is the loop shape, not the older supervisor engine. Autoresearch, LeanMill, and future substrates should share:
+
+```text
+mine artifacts -> record vector -> reproduce escape -> derive deterministic gate -> promote into the substrate gate stack
+```
+
+They should not share autoresearch-specific program lifecycle machinery such as debate seats, seed registries, or human-gate promotion state. `src/ztare/common/kernel_hardener.py` is the lightweight interface: `GamingVector`, the JSONL registry helpers, content-hash checkpoint helpers, and the `KernelHardener` protocol. Substrate implementations own their own miner and deterministic gate form.
+
+Current audit state:
+
+- `analytics/public/queries/gaming_vector_catalog.jsonl` exists and contains 17 rows: 17 `gated`, 0 `open`.
+- Every row currently carries `added_on=2026-06-06` and a `discovered_by` provenance label.
+- `src/ztare/common/kernel_hardener.py` defines the intended content-hash mining checkpoint: `content_hash`, `should_mine`, `record_mined`, and `MINE_MANIFEST = analytics/public/queries/gaming_mine_manifest.jsonl`.
+- `src/ztare/leanmill/solver/leanmill_hardener.py` calls `should_mine` / `record_mined`, so the LeanMill hardener is wired to the hash checkpoint.
+- The older `src/ztare/validator/sandbox_gaming_extractor.py` still uses `seen_files[path] = mtime` in `sandbox_gaming_state.json`; its "incremental" mode is mtime-based.
+
+Current gaps:
+
+- No file named `analytics/public/queries/gaming_mine_manifest.jsonl` was present in this checkout during the 2026-06-07 audit. That is expected if the hash-checkpoint mechanism was added after the June 6 project sweep; it cannot retroactively prove which files yesterday's agents scanned.
+- No standalone `remine_v2_2026-06-06` or `projects_sweep_2026-06-06` output report was found by path/name search.
+- The `abstraction_stripping_invariance_laundering` row has a plausible mechanism but no matching fixture path found by name search.
+
+Operational rule: do not describe the June 6 remining as replayable unless an original report is recovered. The registry records the current classification, most project-sweep fixture families are findable, and the hash-checkpoint mechanism exists for future hardener runs. An ex-post reconstruction can be useful for audit, but label it as reconstructed.
+
+If an older note says "20 vectors" while the registry says 17 rows, treat the 20 as raw mined candidates or an intermediate synthesis unless a run report proves otherwise. The registry row count is the canonical catalog count; raw candidates should be collapsed into mechanism classes before being counted as catalog entries.
+
+Future sweep reports must answer:
+
+- Which files were scanned?
+- Which files were skipped because hash + miner version were unchanged?
+- Which raw vectors were emitted per file?
+- Which raw vectors collapsed into a registry row?
+- Which registry rows changed status?
+- Which proposed gates are deterministic, and which rows require judge/adversary carriers?
+
+2026-06-07 continuation:
+
+- `src/ztare/validator/autoresearch_hardener.py` now accepts raw text or file paths. File inputs use the shared content-hash manifest rather than the older mtime state.
+- Added narrow deterministic project-sweep detectors for three tractable open autoresearch rows:
+  - `definitional_tautology_self_confirming_metric`
+  - `fabricated_calibration_set_threshold_laundering`
+  - `assumption_as_evidence_relabeling`
+- Selftest covers the actual constraint-memory fixtures for those three rows.
+- Ran an ex-post hardener pass over:
+  - `benchmarks/constraint_memory/specimens/bad/self_referential_falsification/test_model.py`
+  - `benchmarks/constraint_memory/derived_subtle/threshold_rigging_submerged/test_model.py`
+  - `benchmarks/constraint_memory/auxiliary_historical/central_station_hypothetical_target_laundering/test_model.py`
+- Result: `analytics/public/queries/gaming_mine_manifest.jsonl` now has replay receipts for those three artifacts. This is a new 2026-06-07 hardener pass, not the original June 6 sweep report.
+
 ---
 
 ## Architecture Clarification (load this before debating)
@@ -20,7 +89,7 @@ There are **three distinct promotion channels** and one staging mechanism. Confl
 | **CAGE** | `src/ztare/validator/gate_harness.py` | Deterministic gates that fire inside every autoresearch_loop iteration. Makes the engine *honester* — forces mutator to face hard checks it can't reason its way around. |
 | **KERNEL** | `src/ztare/validator/autoresearch_loop.py` | Contracts baked into loop logic — structural requirements the loop enforces before advancing (e.g., mutator must propose a fitted form with independent derivation path). Makes the engine *faster/stronger* — removes paths the mutator can waste cycles on. |
 | **RUBRIC** | `rubrics/*.json` template | Scoring fix with no code change — adds penalty weight or dimension to the rubric template. Lowest friction, lowest durability. |
-| **v4_meta_runner** | `src/ztare/validator/v4_meta_runner.py` | Stage-gating pipeline for hardening *projects* (e.g., stage2_derivation_seam_hardening). **NOT** the promotion mechanism for gaming patterns. It validates whether a hardening project has earned its next stage. Don't conflate. |
+| **v4_meta_runner** | `src/ztare/validator/v4_meta_runner.py` | Stage-gating pipeline for hardening *projects* (e.g., `epistemic_engine_v4` stages). In the old hardening-board workflow it governed promotion of fixes using frozen artifacts, typed contracts, fixture regressions, and benchmark evidence. The gaming signals fed that workflow through GP-086's promotion table; runtime enforcement still landed in global gates, rubric changes, or autoresearch-loop contracts. |
 
 The hardening loop is: `sandbox_gaming_extractor.py` (miner) → promotion table → CAGE / KERNEL / RUBRIC implementation → re-run extractor on next batch to verify signal drops.
 

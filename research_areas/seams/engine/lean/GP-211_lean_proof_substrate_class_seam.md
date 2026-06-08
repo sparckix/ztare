@@ -184,3 +184,19 @@ Unchanged but referenced:
   `cage_meta.substrate_class: "lean_proof"`; no changes needed.
 - `scripts/public/lean/verify_lean_stub.py` — imported (not modified) for axiom-allowlist
   + forbidden-token logic.
+
+## Update 2026-06-07 — runner already reuses the canonical leanmill kernel (NOT naive)
+
+Re-audited `lean_substrate_runner` against leanmill (the question: is it a parallel/weaker Lean
+verifier that should route to leanmill?). Finding: **it already routes through the ONE canonical
+governance kernel.** `run_lean_substrate_iteration → run_lean_proof_gate` (lean_proof_gate.py) which,
+with `enforce_anti_laundering=True` (default), calls **`run_anti_laundering_kernel`** — the same v33 +
+`statement_integrity` anti-laundering stack leanmill's `solve_adhoc` uses. So it is NOT a duplicate/weaker
+governance and needs no rewrite for soundness.
+
+What it deliberately does NOT do — and correctly so: it **VERIFIES** the mutator's `thesis.md` Lean proof,
+it does not **SEARCH** for a proof. The only future "route to leanmill" that would ADD capability is if the
+autoresearch loop wants the **solver** to actually attempt/produce the proof (not just grade the mutator's) —
+that is a `solve_adhoc` call, a feature addition, not a correctness fix. Until then the runner stays as a
+governed verifier reusing the shared kernel. (The old G3/ansatz "blocked on live Lean pipeline" concern is
+likewise resolved — see GP-144 §9.)
