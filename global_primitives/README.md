@@ -49,6 +49,17 @@ So:
 - `workspace/` = content memory
 - `global_primitives/` = meta-pattern memory
 
+## Relationship To The Gaming Catalog
+
+`global_primitives/` is related to the gaming catalog, but it is downstream of it.
+
+- `docs/cheating_catalog.md` explains the public catalog of gaming behaviors.
+- `analytics/public/queries/gaming_vector_catalog.jsonl` records live vector status and gate lineage.
+- `global_primitives/incidents/` records extracted occurrences that can support reusable patterns.
+- `global_primitives/approved/` stores approved attack/failure/test templates that may be reused in validator roles.
+
+So a pattern such as `cooked_books` can appear in both places: as a gaming behavior in the catalog and as an approved attack template in this primitive library. The primitive file does not decide whether the vector is gated; it only says the pattern is reusable enough to retrieve as a precedent.
+
 ## Promotion Model
 
 Promotion is intentionally hybrid:
