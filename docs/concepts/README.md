@@ -21,7 +21,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [Cross-Scale Fractal Map](cross_scale_fractal_map.md) - Empirical observation that the same failure shapes recur across scales in mature LLM systems.
 - [Epistemic Supervision Principles](epistemic_principles.md) - Epistemic supervision principles, the constitution behind the gates.
 - [Evaluation Failure Cases](evaluation_failure_cases.md) - Three compact examples of evaluation checks that pass while missing their intent.
-- [Gaming Behavior Catalog Map](gaming_behavior_catalog_map.md) - Source-of-truth map for gaming behavior documentation: numeric cheats, mined vectors, RH anti-patterns, primitive libraries, and gate implementations.
+- [Gaming Behavior Catalog Map](gaming_behavior_catalog_map.md) - Source-of-truth map for gaming behavior lifecycle: incident catalog, vector registry, promotion governance, runtime gates, and primitive precedents.
 - [ZTARE Glossary](glossary.md) - Plain-English definitions for every ZTARE term that matters.
 - [Goodhart at Every Layer](goodhart_at_every_layer.md) - How optimization pressure corrupts measurement at each architectural layer, and the counters.
 - [Pattern: Graph Diagnostic → Agent Belief Update → Strategy Change](graph_diagnostic_belief_update_pattern.md) - Pattern: using a graph diagnostic to force an agent belief update.

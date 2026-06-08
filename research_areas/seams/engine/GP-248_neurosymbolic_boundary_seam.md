@@ -1,5 +1,7 @@
 # GP-248 — Neurosymbolic Boundary: neural in the PROPOSER (yes, gated) vs neural in the GATES (never)
 
+> **Seam metadata** · `seam_id:` GP-248 · `track:` kernel · `status:` `decided` — opened 2026-06-06 · `last_updated:` 2026-06-06
+
 Status: decided (factory-wide boundary; one gated follow-up implemented for leanmill, one identified for law discovery)
 Opened: 2026-06-06
 Track: kernel

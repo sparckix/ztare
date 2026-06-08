@@ -140,7 +140,7 @@ tenant notification provider as part of the generic kernel.
 
 **Documents**
 
-- [LLM Gaming Behavior Catalog](cheating_catalog.md) - Human-readable catalog of the original numeric self-certification cheats plus mined cross-substrate gaming vectors, registry status, and audit patterns.
+- [LLM Gaming Behavior Catalog](cheating_catalog.md) - Human-readable catalog of LLM gaming behaviors: the original numeric self-certification cheats plus mined cross-substrate vectors, registry status, and audit pa
 - [Multi-Substrate Validation — Companion to JOURNEY.md](multi_substrate_validation.md) - Companion evidence to the journey: how the same epistemic discipline held across the NS, Planck, consciousness and gravity substrates.
 - [Public Claim Register](public_claim_register.md) - Conservative public claim register for the rowdy ZTARE campaigns.
 - [A 70-Day Sprint, Six Architectural Phases](sprint_70day_journey.md) - First-person build narrative, the 70-day arc that produced ZTARE across six architectural phases, including honest failures and reflexive self-audit.
