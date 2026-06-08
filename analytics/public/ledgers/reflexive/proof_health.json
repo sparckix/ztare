@@ -1,19 +1,19 @@
 {
-  "generated_utc": "2026-05-17T12:55:48.150163+00:00",
+  "generated_utc": "2026-06-04T21:03:17.848734+00:00",
   "spec": "research_areas/private/seams/apparatus/instrumentation/GP-237_scope_evolution_seam.md \u00a70d-KILL-b",
   "status": "ok",
   "frame": "NOT a sophistication score (v1/v3/v4 killed). (1) binary laundering tripwire; (2) non-accumulation regression/rework rate (two-sided, bad=UP, CAN say 'treadmilling').",
   "honest_limit": "STRUCTURAL proxy, no Lean re-run: a green decl silently broken by an UPSTREAM change with no local sorry is NOT caught. Decl-name regex; conceptual triviality not detected (adversary's known limit, stated not hidden).",
-  "n_decls_scanned": 2674,
-  "n_clean": 2434,
+  "n_decls_scanned": 3702,
+  "n_clean": 3458,
   "laundering_tripwire": {
     "laundering_introduced": true,
-    "n_laundered_decls": 240,
+    "n_laundered_decls": 244,
     "by_kind": {
-      "trivial-closer-only": 4,
-      "sorry/admit/axiom": 236
+      "trivial-closer-only": 6,
+      "sorry/admit/axiom": 238
     },
-    "n_duplicate_fp_groups": 16,
+    "n_duplicate_fp_groups": 19,
     "examples": {
       "norm_bohrCharacter_translate_diff": "sorry/admit/axiom",
       "bohrCharacter_isAP": "sorry/admit/axiom",

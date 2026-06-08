@@ -1,0 +1,40 @@
+{
+  "vector": "abstraction_stripping_invariance_laundering",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:abstraction_stripping_invariance_laundering",
+  "evidence_mode": "judge_carrier",
+  "exposing_artifacts": [
+    {
+      "path": "benchmarks/constraint_memory/specimens/ood/domain_leakage_logistics/specimen.json",
+      "sha": "2b0e0c5001f57306"
+    }
+  ],
+  "carrier_receipt": {
+    "vector": "abstraction_stripping_invariance_laundering",
+    "carrier_type": "semantic_gaming_carrier",
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "gate_name": "global_semantic_abstraction_transfer_carrier",
+    "review_role": "TRANSFER_SCOPE_AUDITOR",
+    "fixture": "benchmarks/constraint_memory/specimens/ood/domain_leakage_logistics",
+    "fixture_detected": true,
+    "good_control_passed": true
+  },
+  "runtime_enforcement": {
+    "name": "global_semantic_abstraction_transfer_carrier",
+    "wired": true,
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "entrypoint": "run_semantic_gaming_carrier_gates"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python -m ztare.gates.semantic_gaming_carrier"
+  },
+  "promotion_recommendation": true
+}

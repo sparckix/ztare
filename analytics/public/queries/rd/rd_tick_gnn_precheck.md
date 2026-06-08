@@ -24,8 +24,8 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## Remote CPU Sanity
 
-- `available`: `True`
-- `path`: `analytics/public/leanmill/results/v52_residual_hetero_gnn_remote_cpu_sanity.json`
+- `available`: `False`
+- `path`: `analytics/public/leanmill/_legacy_lemma_relevance/v52_residual_hetero_gnn_remote_cpu_sanity.json`
 
 ## Graph
 
@@ -75,13 +75,10 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v5.5 Typed-Symmetry Canary
 
-- `available`: `True`
-- `status`: `pass_typed_symmetry_canary`
-- `path`: `analytics/public/leanmill/results/v55_typed_symmetry_perturbation_canary.json`
-- `namespace_prefix` role preservation: `1.0`
-- `binder_suffix` role preservation: `1.0`
-- `semantic_alias` role preservation: `0.8583333333333334`
-- `roadmap_decision`: `{'reason': 'no measured typed-symmetry gap beyond v5.4 role coverage', 'v6_generic_equivariant_architecture': 'blocked', 'v6_typed_symmetry_residual': 'not_yet_justified'}`
+- `available`: `False`
+- `status`: `None`
+- `path`: `analytics/public/leanmill/_legacy_lemma_relevance/v55_typed_symmetry_perturbation_canary.json`
+- `roadmap_decision`: `{}`
 
 ## v5.4 Audit on v5.6 Repaired Queue
 
@@ -95,10 +92,9 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v5.5 Canary on v5.6 Repaired Queue
 
-- `available`: `True`
-- `status`: `pass_typed_symmetry_canary`
-- `path`: `analytics/public/leanmill/results/v55_on_v56_top7_typed_symmetry_perturbation_canary.json`
-- `semantic_alias` role preservation: `0.8988095238095238`
+- `available`: `False`
+- `status`: `None`
+- `path`: `analytics/public/leanmill/_legacy_lemma_relevance/v55_on_v56_top7_typed_symmetry_perturbation_canary.json`
 
 ## v5.6 Typed-Role Repair Queue
 
@@ -166,32 +162,9 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
   - `FreshComparablePacketForNonflatNonInheritedNode.ofPartitionSelectionPayment`
   - `FreshComparablePacketSideConditionAudit`
   - `FreshComparablePacketSideConditionAudit.toFreshComparablePacket`
-- `analytics/public/leanmill/results/v65_gnn_graph_combo_beta_payment_patch_attribution.json` status `positive_compile_checked_patch_attribution` compile `True`
-  - `FreshPacketGainPaysNonflatBeta.ofFreshComparablePacket`
-  - `FreshPacketGainPaysNonflatBeta.ofFreshPacketSideConditionAudit`
-- `analytics/public/leanmill/results/v66_gnn_graph_combo_structured_lock_patch_attribution.json` status `positive_compile_checked_patch_attribution` compile `True`
-  - `FreshPacketGainPaysNonflatBeta.ofFreshPacketSideConditionAuditAndLocks`
 - `analytics/public/leanmill/results/v70_non_ns_generated_patch_attribution.json` status `positive_compile_checked_generated_non_ns_patch_attribution` compile `True`
   - `forwardChar_mul_conj_self`
   - `trigPoly_packet_mul_conj_split`
-- `analytics/public/leanmill/results/v86_gnn_graph_combo_pressure_duhamel_audit_patch_attribution.json` status `positive_compile_checked_ns_patch_attribution` compile `True`
-  - `FreshFrequencyPressureTailEventAssignment`
-  - `FreshFrequencyDuhamelErrorEventAssignment`
-  - `LerayHeatFreshFrequencyCarrierCompatibility`
-  - `FreshFrequencyPressureDuhamelBudgetReceipt`
-  - `FreshFrequencyPressureDuhamelSameCarrierAudit`
-  - `FreshFrequencyPressureDuhamelSameCarrierLock.ofAudit`
-  - `PressureDuhamelSameCarrierLock.ofFreshFrequencyLock`
-- `analytics/public/leanmill/results/v87_non_ns_ortho_generated_patch_attribution.json` status `positive_compile_checked_generated_non_ns_patch_attribution` compile `True`
-  - `forwardChar_mul_conj_self`
-  - `forwardChar_zero`
-  - `forwardChar_mul_conj_self_eq_one`
-- `analytics/public/leanmill/results/v89_non_ns_charmulconj_generated_patch_attribution.json` status `positive_compile_checked_generated_non_ns_patch_attribution` compile `True`
-  - `forwardChar_sum_sub`
-  - `star_exp_forwardChar_exponent`
-- `analytics/public/leanmill/results/v91_ns_leray_heat_tent_geometry_patch_attribution.json` status `positive_compile_checked_ns_patch_attribution` compile `True`
-  - `LerayHeatFreshFrequencyEventTentGeometry`
-  - `LerayHeatFreshFrequencyCarrierCompatibility.ofEventTentGeometry`
 
 ## v6.7/v7 Roadmap
 
@@ -204,10 +177,10 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v6.7 Endpoint-Occluded Harness
 
-- `available`: `True`
-- `status`: `pass_endpoint_occluded_ns_pilot`
-- `hit_at_3`: `1.0`
-- `training_decision`: `still_blocked_until_non_ns_canary_and_more_patch_attributions`
+- `available`: `False`
+- `status`: `None`
+- `hit_at_3`: `None`
+- `training_decision`: `None`
 
 ## v6.8 Non-NS Role-Map Canary
 
@@ -218,11 +191,11 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v6.9 Real Non-NS Lean Canary
 
-- `available`: `True`
-- `status`: `pass_real_non_ns_lean_attribution_canary`
-- `substrate`: `almost_periodic_harmonic_analysis`
-- `role_hit_rate`: `1.0`
-- `training_decision`: `blocked_but_non_ns_evidence_improved`
+- `available`: `False`
+- `status`: `None`
+- `substrate`: `None`
+- `role_hit_rate`: `None`
+- `training_decision`: `None`
 
 ## v7.0 Non-NS Generated Patch
 
@@ -241,12 +214,12 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v7.2 MathlibGraph Baseline
 
-- `available`: `True`
-- `status`: `mathlibgraph_external_baseline_extracted`
-- `network_r10`: `0.5200779274690902`
-- `all_features_r10`: `0.5246824912435099`
-- `hard_network_r10`: `0.5103782600858937`
-- `hard_all_features_r10`: `0.5203356738855442`
+- `available`: `False`
+- `status`: `None`
+- `network_r10`: `None`
+- `all_features_r10`: `None`
+- `hard_network_r10`: `None`
+- `hard_all_features_r10`: `None`
 
 ## v7.3 Scientific-Yield Gate
 
@@ -258,97 +231,97 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## v7.6 LeanRank Gated Residual
 
-- `available`: `True`
-- `status`: `gated_typed_residual_eval_complete`
-- `best_safe_policy`: `tail_after_top1`
-- `best_safe_delta`: `{'hit@1': 0.0, 'hit@10': 0.11120000000000008, 'hit@3': 0.05180000000000007, 'hit@5': 0.0474, 'mrr': 0.019515591630591578}`
+- `available`: `False`
+- `status`: `None`
+- `best_safe_policy`: `None`
+- `best_safe_delta`: `None`
 
 ## v7.9 Repair Benchmark Seed
 
-- `available`: `True`
-- `status`: `repair_benchmark_seed_created`
-- `row_count`: `8`
-- `generated_non_ns_rows`: `3`
-- `training_decision`: `blocked_seed_too_small`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `generated_non_ns_rows`: `None`
+- `training_decision`: `None`
 
 ## v8.0 LeanRank BM25 Gated Eval
 
-- `available`: `True`
-- `status`: `bm25_gated_eval_complete`
-- `rows_scored`: `5000`
-- `graph_top1_bm25_tail_metrics`: `{'hit@1': 0.3864, 'hit@10': 0.9476, 'hit@3': 0.6588, 'hit@5': 0.7692, 'mean_rank': 3.4788, 'mrr': 0.5620543506493506, 'n': 5000}`
-- `graph_top1_bm25_tail_delta`: `{'hit@1': 0.0, 'hit@10': 0.13980000000000004, 'hit@3': 0.13540000000000008, 'hit@5': 0.139, 'mrr': 0.051468448773448694}`
+- `available`: `False`
+- `status`: `None`
+- `rows_scored`: `None`
+- `graph_top1_bm25_tail_metrics`: `None`
+- `graph_top1_bm25_tail_delta`: `None`
 
 ## v8.1 Repair Router Protocol
 
-- `available`: `True`
-- `status`: `protocol_debug_complete_not_evidence`
-- `row_count`: `4`
-- `cheap_baseline_success_at_1`: `0.0`
-- `typed_router_success_at_1`: `1.0`
-- `interpretation`: `This only validates the benchmark mechanics.  The candidate pools are protocol decoys, not an external heldout sample.  Next step is adding real generated non-NS repair rows and deriving candidate pools from actual Lean declarations/obligation contexts.`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `cheap_baseline_success_at_1`: `None`
+- `typed_router_success_at_1`: `None`
+- `interpretation`: `None`
 
 ## v8.2 Actual-Declaration Repair Pool
 
-- `available`: `True`
-- `status`: `actual_declaration_pool_proxy_not_training_evidence`
-- `row_count`: `8`
-- `metrics`: `{'lexical_hit_at_1': 0.5, 'lexical_hit_at_7': 0.75, 'typed_hit_at_1': 0.25, 'typed_hit_at_7': 0.375}`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `metrics`: `None`
 
 ## v8.3 Constrained Repair Queue
 
-- `available`: `True`
-- `status`: `constrained_repair_queue_proxy_not_training_evidence`
-- `row_count`: `8`
-- `metrics`: `{'constrained_hit_at_7': 0.75, 'constrained_mean_first_gold_rank': 1.3333333333333333, 'constrained_top1_gold': 0.5, 'lexical_hit_at_7': 0.75, 'lexical_mean_first_gold_rank': 9.0, 'lexical_top1_gold': 0.5, 'typed_hit_at_7': 0.375, 'typed_mean_first_gold_rank': 20.125, 'typed_top1_gold': 0.25}`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `metrics`: `None`
 
 ## v8.4 Hybrid Repair Router
 
-- `available`: `True`
-- `status`: `hybrid_repair_router_proxy_not_training_evidence`
-- `row_count`: `8`
-- `metrics`: `{'hybrid_hit_at_7': 0.875, 'hybrid_mean_first_gold_rank': 1.8571428571428572, 'hybrid_top1_gold': 0.5, 'lexical_hit_at_7': 0.75, 'lexical_mean_first_gold_rank': 9.0, 'lexical_top1_gold': 0.5, 'typed_hit_at_7': 0.375, 'typed_mean_first_gold_rank': 20.125, 'typed_top1_gold': 0.25}`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `metrics`: `None`
 
 ## v8.5 Literature Positioning
 
-- `available`: `True`
-- `status`: `positioning_complete_no_novelty_overclaim`
-- `positioning`: `The 10x candidate is not a better generic premise selector.  It is a typed repair debugger: retrieve candidates with established methods, then route around unmet carrier/index/incidence/budget/freshness obligations with endpoint/guard/wrong-carrier risk flags.`
-- `next_test`: `Freeze a 12-row endpoint-occluded repair benchmark with actual declaration pools and compare: retrieval/BM25 baseline, typed-only tail, and hybrid repair-router.  Kill or demote learned training if the hybrid router does not beat the cheap baseline on repair-bundle success and alias stability.`
+- `available`: `False`
+- `status`: `None`
+- `positioning`: `None`
+- `next_test`: `None`
 
 ## v8.8 Repair Router Alias Stress
 
-- `available`: `True`
-- `status`: `alias_stress_proxy_complete`
-- `row_count`: `8`
-- `metrics`: `{'identity_hit_at_7': 0.875, 'name_anonymized_hit_at_7': 0.875, 'semantic_alias_hit_at_7': 0.875}`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `metrics`: `None`
 
 ## v9.0 Structural Occlusion Stress
 
-- `available`: `True`
-- `status`: `structural_occlusion_proxy_complete`
-- `row_count`: `8`
-- `metrics`: `{'docless_name_anonymized_hit_at_7': 0.5, 'identity_hit_at_7': 0.875, 'role_token_alias_signature_hit_at_7': 0.625, 'signature_names_erased_hit_at_7': 0.625}`
+- `available`: `False`
+- `status`: `None`
+- `row_count`: `None`
+- `metrics`: `None`
 
 ## v9.2 Label-Blind Hard-Decoy Audit
 
-- `available`: `True`
-- `status`: `label_blind_hard_decoy_audit_complete`
-- `decision`: `proxy_pass_but_gpu_still_blocked_by_structural_occlusion`
-- `static_label_blind_check`: `{'checked_functions': ['build_pool', 'lexical_score', 'typed_score'], 'evaluator_label_access': {'build_pool': False, 'lexical_score': False, 'typed_score': False}, 'passes': True}`
-- `metrics`: `{'all_pools_ge_50': True, 'all_pools_gt_7': True, 'hybrid_hit_at_7': 0.875, 'hybrid_mrr': 0.65, 'hybrid_top1': 0.5, 'lexical_hit_at_7': 0.75, 'lexical_mrr': 0.6328431372549019, 'lexical_top1': 0.5, 'min_pool_size': 50, 'row_count': 8, 'typed_hit_at_7': 0.375, 'typed_mrr': 0.34837213485455854, 'typed_top1': 0.25}`
+- `available`: `False`
+- `status`: `None`
+- `decision`: `None`
+- `static_label_blind_check`: `None`
+- `metrics`: `None`
 
 ## v9.3 Kernel-Shape Feature Probe
 
-- `available`: `True`
-- `status`: `kernel_shape_feature_probe_complete`
-- `metrics`: `{'combo_hit_at_7': 0.75, 'combo_mrr': 0.6218434343434344, 'lexical_hit_at_7': 0.75, 'lexical_mrr': 0.6328431372549019, 'row_count': 8, 'shape_hit_at_7': 0.5, 'shape_mrr': 0.3202020202020202, 'typed_hit_at_7': 0.375, 'typed_mrr': 0.34837213485455854}`
+- `available`: `False`
+- `status`: `None`
+- `metrics`: `None`
 
 ## v9.4 Post-Patch Dependency Probe
 
-- `available`: `True`
-- `status`: `post_patch_dependency_attribution_probe_complete`
-- `metrics`: `{'dependency_hit_at_7': 0.375, 'dependency_mrr': 0.18485023041474655, 'row_count': 8}`
+- `available`: `False`
+- `status`: `None`
+- `metrics`: `None`
 
 ## Candidate Risk
 
@@ -404,40 +377,64 @@ Use top candidates as premise/navigation context only. Prefer atomic primitives 
 
 ## Warnings
 
+- missing optional remote CPU sanity: analytics/public/leanmill/_legacy_lemma_relevance/v52_residual_hetero_gnn_remote_cpu_sanity.json
 - top candidates include endpoint/guard/tautology danger terms
 - v5.4 typed-symmetry audit has missing roles or collapse risks
+- missing optional v5.5 typed-symmetry canary: analytics/public/leanmill/_legacy_lemma_relevance/v55_typed_symmetry_perturbation_canary.json
+- missing optional repaired v5.5 canary: analytics/public/leanmill/_legacy_lemma_relevance/v55_on_v56_top7_typed_symmetry_perturbation_canary.json
 - v6 contract blocks generic E3/CFD equivariant GNN for theorem search
 - v6.1 typed-obligation hypergraph contract is ready for design only, not training
 - v6.2 typed-obligation work packet is advisory only
-- v8.1 repair-router protocol is mechanics-only; do not treat as evidence
-- v8.2 actual-declaration repair pool is proxy evidence only
-- v8.3 constrained repair queue is proxy evidence only
-- v8.4 hybrid repair router is proxy evidence only
-- v8.8 repair-router semantic-alias stress is below robustness gate
-- v8.8 repair-router name-anonymization stress is below robustness gate
-- v9.0 structural occlusion stress is below robustness gate
-- v9.0 role-token alias signature stress is below robustness gate
-- v9.3 kernel-shape proxy does not beat lexical
-- v9.4 post-patch dependency proxy is weak
-- v9.7 name-erased AST-shape signal is below router gate
-- v9.8 local-redacted symbolic Expr graph signal is below router gate
-- v10.0 non-name typed-neighborhood Jaccard is below router gate
-- v10.0 role-neighborhood Jaccard depends on bootstrap role edges
-- v10.1 PPR graph baseline is below router gate
-- v10.2 row-obligation seeded role matching is below router gate
-- v10.3 non-bootstrap static interface roles are below router gate
-- v10.5 raw exact/apply action probe is below router gate
-- v10.6 mixed text-prior router underperforms action-only; treat text priors as overfit risk
-- v10.7 failure classifier is too coarse; split other_failure before training
-- v10.8 combination does not beat v10.7 tactic-probe MRR; split failures before adding weights
-- v11.7 old action inventory has low repair-bundle ceiling; use expanded actions
-- v12.0 convert selectivity precision is low; do not trust raw convert progress
-- v12.1 focused witness precision is below promotion gate
-- v12.6 full target-unit rewrite passed; repaired benchmark unit is available
-- v12.7 target-aware policy eval failed strict gate; do not expand benchmark or use GPU
-- v12.8 decomposition says next target is action-affordance compression plus v87 queue repair
-- v12.9 compressed affordance passed repaired seed; robustness stress is next, not GPU
-- v12.10 found temporal/current-file candidate-pool risk; use pre-patch/scrubbed pools next
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v65_gnn_graph_combo_beta_payment_patch_attribution.json
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v66_gnn_graph_combo_structured_lock_patch_attribution.json
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v86_gnn_graph_combo_pressure_duhamel_audit_patch_attribution.json
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v87_non_ns_ortho_generated_patch_attribution.json
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v89_non_ns_charmulconj_generated_patch_attribution.json
+- missing optional patch attribution: analytics/public/leanmill/_legacy_lemma_relevance/v91_ns_leray_heat_tent_geometry_patch_attribution.json
+- missing optional v6.7 endpoint-occluded harness: analytics/public/leanmill/_legacy_lemma_relevance/v67_endpoint_occluded_attribution_harness.json
+- missing optional v6.9 real non-NS Lean attribution canary: analytics/public/leanmill/_legacy_lemma_relevance/v69_non_ns_real_lean_attribution_canary.json
+- missing optional v7.2 MathlibGraph baseline summary: analytics/public/leanmill/_legacy_lemma_relevance/v72_mathlibgraph_external_baseline_summary.json
+- missing optional v7.6 LeanRank gated residual eval: analytics/public/leanmill/_legacy_lemma_relevance/v76_leanrank_gated_typed_residual_eval.json
+- missing optional v7.9 repair benchmark seed: analytics/public/leanmill/_legacy_lemma_relevance/v79_endpoint_occluded_repair_benchmark_seed.json
+- missing optional v8.0 LeanRank BM25 gated eval: analytics/public/leanmill/_legacy_lemma_relevance/v80_leanrank_bm25_gated_eval.json
+- missing optional v8.1 repair-router protocol: analytics/public/leanmill/_legacy_lemma_relevance/v81_repair_router_baseline_protocol.json
+- missing optional v8.2 actual-declaration repair pool: analytics/public/leanmill/_legacy_lemma_relevance/v82_actual_declaration_repair_pool_eval.json
+- missing optional v8.3 constrained repair queue: analytics/public/leanmill/_legacy_lemma_relevance/v83_constrained_repair_queue_eval.json
+- missing optional v8.4 hybrid repair router: analytics/public/leanmill/_legacy_lemma_relevance/v84_hybrid_repair_router_eval.json
+- missing optional v8.5 literature positioning audit: analytics/public/leanmill/_legacy_lemma_relevance/v85_literature_positioning_audit.json
+- missing optional v8.8 repair-router alias stress: analytics/public/leanmill/_legacy_lemma_relevance/v88_repair_router_alias_stress.json
+- missing optional v9.0 structural occlusion stress: analytics/public/leanmill/_legacy_lemma_relevance/v90_repair_router_structural_occlusion_stress.json
+- missing optional v9.2 label-blind hard-decoy audit: analytics/public/leanmill/_legacy_lemma_relevance/v92_label_blind_hard_decoy_audit.json
+- missing optional v9.3 kernel-shape feature probe: analytics/public/leanmill/_legacy_lemma_relevance/v93_kernel_shape_feature_probe.json
+- missing optional v9.4 dependency attribution probe: analytics/public/leanmill/_legacy_lemma_relevance/v94_post_patch_dependency_attribution_probe.json
+- missing optional v9.5 Lean environment type extractor: analytics/public/leanmill/_legacy_lemma_relevance/v95_lean_check_type_extractor.json
+- missing optional v9.6 Lean Expr AST graph extractor: analytics/public/leanmill/_legacy_lemma_relevance/v96_lean_expr_ast_graph_extractor.json
+- missing optional v9.7 AST graph repair backtest: analytics/public/leanmill/_legacy_lemma_relevance/v97_ast_graph_repair_backtest.json
+- missing optional v9.8 symbolic Expr graph backtest: analytics/public/leanmill/_legacy_lemma_relevance/v98_symbolic_expr_graph_repair_backtest.json
+- missing optional v9.9 typed-obligation Expr graph: analytics/public/leanmill/_legacy_lemma_relevance/v99_typed_obligation_expr_graph.json
+- missing optional v10.0 typed-neighborhood similarity backtest: analytics/public/leanmill/_legacy_lemma_relevance/v100_neighborhood_similarity_graph_backtest.json
+- missing optional v10.1 PPR typed-obligation graph backtest: analytics/public/leanmill/_legacy_lemma_relevance/v101_ppr_typed_obligation_graph_backtest.json
+- missing optional v10.2 row-obligation seeded role backtest: analytics/public/leanmill/_legacy_lemma_relevance/v102_row_obligation_seeded_role_backtest.json
+- missing optional v10.3 non-bootstrap interface role extractor: analytics/public/leanmill/_legacy_lemma_relevance/v103_nonbootstrap_interface_role_extractor.json
+- missing optional v10.4 action-delta type probe: analytics/public/leanmill/_legacy_lemma_relevance/v104_action_delta_type_probe.json
+- missing optional v10.5 metavariable action-delta probe: analytics/public/leanmill/_legacy_lemma_relevance/v105_metavar_action_delta_probe.json
+- missing optional v10.6 anti-failure repair router: analytics/public/leanmill/_legacy_lemma_relevance/v106_antifailure_repair_router.json
+- missing optional v10.7 tactic rewrite delta probe: analytics/public/leanmill/_legacy_lemma_relevance/v107_tactic_rewrite_delta_probe.json
+- missing optional v10.8 combined action-delta router: analytics/public/leanmill/_legacy_lemma_relevance/v108_combined_action_delta_router.json
+- missing optional v10.9 tactic failure taxonomy probe: analytics/public/leanmill/_legacy_lemma_relevance/v109_tactic_failure_taxonomy_probe.json
+- missing optional v11.7 probe-budget bundle harness: analytics/public/leanmill/_legacy_lemma_relevance/v117_probe_budget_repair_bundle_harness.json
+- missing optional v11.8 expanded tactic action probe: analytics/public/leanmill/_legacy_lemma_relevance/v118_expanded_tactic_action_probe.json
+- missing optional v11.9 expanded action bundle router: analytics/public/leanmill/_legacy_lemma_relevance/v119_expanded_action_bundle_router.json
+- missing optional v12.0 convert selectivity audit: analytics/public/leanmill/_legacy_lemma_relevance/v120_convert_selectivity_audit.json
+- missing optional v12.1 focused proof-state witness probe: analytics/public/leanmill/_legacy_lemma_relevance/v121_focused_proof_state_witness_probe.json
+- missing optional v12.3 full goal-snapshot witness probe: analytics/public/leanmill/_legacy_lemma_relevance/v123_full_goal_snapshot_witness_probe.json
+- missing optional v12.4 target-unit audit: analytics/public/leanmill/_legacy_lemma_relevance/v124_target_unit_audit.json
+- missing optional v12.5 target-unit repair packet: analytics/public/leanmill/_legacy_lemma_relevance/v125_target_unit_repair_packet.json
+- missing optional v12.6 full target-unit rewrite packet: analytics/public/leanmill/_legacy_lemma_relevance/v126_full_target_unit_rewrite_packet.json
+- missing optional v12.7 target-aware policy eval: analytics/public/leanmill/_legacy_lemma_relevance/v127_target_aware_policy_eval.json
+- missing optional v12.8 policy-gap decomposition: analytics/public/leanmill/_legacy_lemma_relevance/v128_policy_gap_decomposition.json
+- missing optional v12.9 compressed affordance policy eval: analytics/public/leanmill/_legacy_lemma_relevance/v129_compressed_affordance_policy_eval.json
+- missing optional v12.10 label leakage static audit: analytics/public/leanmill/_legacy_lemma_relevance/v130_label_leakage_static_audit.json
 - GPU v5.1/v5.2 validation pending; do not promote beyond advisory use
 - non-NS v5.2 guard pending; keep scope at NS/math workstation assistance
 

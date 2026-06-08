@@ -64,6 +64,26 @@ function Sparkline({ points, sparkKey }) {
     return (_jsxs("div", { className: "p0-spark", title: `${sparkKey}: ${points.length} cycles`, children: [_jsx("div", { className: "p0-spark-chart", children: _jsx(ResponsiveContainer, { width: 120, height: 32, children: _jsxs(LineChart, { data: points, margin: { top: 4, right: 4, bottom: 4, left: 4 }, children: [_jsx(YAxis, { hide: true, domain: ["dataMin", "dataMax"] }), _jsx(Tooltip, { cursor: false, contentStyle: { background: "#15171c", border: "1px solid #262a31",
                                     fontSize: 11, padding: "4px 8px" }, labelFormatter: (v) => typeof v === "string" ? v.slice(0, 10) : String(v ?? ""), formatter: (v) => [String(v), sparkKey] }), _jsx(Line, { type: "monotone", dataKey: "y", stroke: "#e8a33d", strokeWidth: 1.5, dot: false, isAnimationActive: false })] }) }) }), _jsxs("div", { className: "p0-spark-meta", children: [_jsx("span", { className: "p0-spark-trend", children: trend }), _jsxs("span", { className: "p0-spark-n", children: [points.length, " cycles", subKey ? ` · .${subKey}` : ""] })] })] }));
 }
+// Pull a single metric's value off the live p0Metrics list by key, so
+// the glance cards below are derived from data — never re-hardcoded.
+// Returns the metric's `value` (scalar / breakdown object / series), or
+// null if the key is absent.
+function metricValue(metrics, key) {
+    return metrics.find((m) => m.key === key)?.value ?? null;
+}
+// Narrow a breakdown value to its numeric subfield, tolerating a missing
+// metric or missing field (returns null so the caller can fall back to "—").
+function subNum(v, field) {
+    if (v && typeof v === "object" && field in v) {
+        const n = v[field];
+        if (typeof n === "number" && Number.isFinite(n))
+            return n;
+    }
+    return null;
+}
+function numOrDash(n) {
+    return n === null ? "—" : String(n);
+}
 function MetricRow({ m, history }) {
     const tierClass = m.tier === "A" ? "tag-signal" : m.tier === "B" ? "tag-amber"
         : m.tier === "C" ? "tag-slate" : "tag-warn";
@@ -84,13 +104,80 @@ export function P0View({ data }) {
     }
     const order = p0.group_order || Object.keys(GROUP_TITLE);
     const byGroup = (g) => p0.metrics.filter((m) => m.group === g);
-    // 5-second at-a-glance — only the trustworthy reads
+    // 5-second at-a-glance — derived live from p0Metrics, never hardcoded.
+    // Each card reads the same numbers the panels below show, so the glance
+    // can't drift from the rollup.
+    const metrics = p0.metrics;
+    // Out-of-loop: live 7-day share is the headline; cumulative is context.
+    const ool = metricValue(metrics, "out_of_loop_share");
+    const oolLive = subNum(ool, "live_7d_pct");
+    const oolCum = subNum(ool, "cumulative_pct");
+    // Calibration: distinct positive/negative externality tags + latest Brier.
+    const ext = metricValue(metrics, "forecast_externalities");
+    const extPos = subNum(ext?.positive, "distinct_tags");
+    const extNeg = subNum(ext?.negative, "distinct_tags");
+    const brierSeries = metricValue(metrics, "brier_per_period");
+    const brierRow = Array.isArray(brierSeries) ? brierSeries[brierSeries.length - 1] : null;
+    const brier = subNum(brierRow, "brier");
+    const brierBase = subNum(brierRow, "uniform_baseline");
+    // Self-correction: who diagnosed the catches (apparatus vs operator).
+    const diag = metricValue(metrics, "operator_vs_apparatus_diagnosis_ratio");
+    const apparatus = subNum(diag, "apparatus");
+    const operator = subNum(diag, "operator");
+    // Insight density: latest contextualized-taste read + its weekly trend.
+    const taste = metricValue(metrics, "contextualized_taste");
+    const tasteLatest = subNum(taste, "latest");
+    const tasteMax = subNum(taste, "max");
+    const traj = metricValue(metrics, "recursive_gain_trajectory");
+    const trajSeries = traj?.series;
+    const lastWeek = Array.isArray(trajSeries) && trajSeries.length
+        ? trajSeries[trajSeries.length - 1] : null;
+    // Science frontier: state-only, honestly stuck (no progress score).
+    const frontier = metricValue(metrics, "scientific_frontier_state");
+    const frontierKnown = frontier !== null;
     const glance = [
-        { k: "Out-of-loop (live)", v: "~97%", sub: "agent work, not the loop", tone: "neutral" },
-        { k: "Calibration", v: "net-positive", sub: "externalities 211:95 · Brier 0.16<0.25", tone: "good" },
-        { k: "Self-correction", v: "apparatus-carried", sub: "~85/133 catches by Darwin/agents, 6 operator", tone: "good" },
-        { k: "Insight density", v: "plateaued", sub: "~2.5–3.1, no paradigm-shifters", tone: "flat" },
-        { k: "Science frontier", v: "stuck", sub: "NS/gravity/neural — no breakthrough", tone: "flat" },
+        {
+            k: "Out-of-loop (live)",
+            v: oolLive !== null ? `${oolLive}%` : "—",
+            sub: oolCum !== null
+                ? `7-day agent work · cumulative ~${oolCum}%`
+                : "7-day agent work, not the loop",
+            tone: "neutral",
+        },
+        {
+            k: "Calibration",
+            v: "net-positive",
+            sub: `externalities ${numOrDash(extPos)}:${numOrDash(extNeg)}`
+                + (brier !== null
+                    ? ` · Brier ${brier}${brierBase !== null ? ` < ${brierBase}` : ""}`
+                    : ""),
+            tone: "good",
+        },
+        {
+            k: "Self-correction",
+            v: "apparatus-carried",
+            sub: `${numOrDash(apparatus)} catches diagnosed by apparatus, ${numOrDash(operator)} by operator`,
+            tone: "good",
+        },
+        {
+            k: "Insight density",
+            v: "plateaued",
+            sub: (tasteLatest !== null
+                ? `latest ~${tasteLatest}${tasteMax !== null ? ` (peak ${tasteMax})` : ""}`
+                : "plateau")
+                + (lastWeek
+                    ? ` · week ${lastWeek.week} dipped to ${lastWeek.mean}`
+                    : ""),
+            tone: "flat",
+        },
+        {
+            k: "Science frontier",
+            v: "stuck",
+            sub: frontierKnown
+                ? "NS/gravity/neural — state only, no breakthrough"
+                : "frontier state not wired this cycle",
+            tone: "flat",
+        },
     ];
     return (_jsxs("div", { children: [sw && (_jsxs("div", { className: "p0-verdict", children: [_jsx("div", { className: "p0-verdict-tag", children: "So what \u2014 the honest verdict" }), _jsx("div", { className: "p0-verdict-head", children: sw.headline }), sw.detail && _jsx("div", { className: "p0-verdict-detail", children: sw.detail })] })), _jsx("div", { className: "p0-glance", children: glance.map((g) => (_jsxs("div", { className: `p0-gcard p0-g-${g.tone}`, children: [_jsx("div", { className: "p0-gv", children: g.v }), _jsx("div", { className: "p0-gk", children: g.k }), _jsx("div", { className: "p0-gs", children: g.sub })] }, g.k))) }), _jsxs("div", { className: "p0-pagecaveat", children: [_jsx("strong", { children: "How to read this:" }), " ", p0.page_caveat, " Only the green \"exogenous\" panel resists this. Everything tagged", _jsx("span", { className: "tag tag-warn", children: "self-measured" }), " is the apparatus grading itself; everything tagged", _jsx("span", { className: "tag tag-signal", children: "exogenous/consumed" }), " has real independence. Tier A\u2192C = how much to trust the number."] }), order.map((g) => {
                 const rows = byGroup(g);

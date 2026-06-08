@@ -1,5 +1,5 @@
 {
-  "audit_timestamp_utc": "2026-05-16T21:37:33.249842+00:00",
+  "audit_timestamp_utc": "2026-06-04T21:03:13.329016+00:00",
   "score_floor": 3,
   "weeks": {
     "2026-03-30": {
@@ -8,30 +8,30 @@
       "n_cited_above_floor": 0,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_032",
-          "kind": "project_workspace_md",
-          "path": "projects/epistemic_engine_v4/debate_log_iter_1775433220.md",
-          "score": 3,
-          "rationale": "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
-          "content_sha": "5d2a80f918719996"
-        },
-        {
-          "sample_id": "SAMPLE_061",
+          "sample_id": "SAMPLE_007",
           "kind": "raw_evidence_input",
           "path": "projects/epistemic_engine_v4/raw/v3_variant_matrix.md",
           "score": 3,
           "rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
           "content_sha": "bc2b2afec20a5942"
+        },
+        {
+          "sample_id": "SAMPLE_040",
+          "kind": "project_workspace_md",
+          "path": "projects/epistemic_engine_v4/debate_log_iter_1775433220.md",
+          "score": 3,
+          "rationale": "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
+          "content_sha": "5d2a80f918719996"
         }
       ],
       "top_cited": [],
       "rated_by_kind": {
-        "project_workspace_md": 1,
-        "raw_evidence_input": 1
+        "raw_evidence_input": 1,
+        "project_workspace_md": 1
       },
       "narrative_seeds": [
-        "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
-        "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings"
+        "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
+        "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism"
       ]
     },
     "2026-04-06": {
@@ -40,7 +40,15 @@
       "n_cited_above_floor": 0,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_016",
+          "sample_id": "SAMPLE_006",
+          "kind": "project_workspace_md",
+          "path": "projects/eu_union_failure_probability_2035/history/1775794166_iter0_score_67_eu_union_failure_probability_2035.md",
+          "score": 3,
+          "rationale": "derived constraints PC-001..PC-005; concrete cataloging of meta-structural failures",
+          "content_sha": "e61c367389f1d838"
+        },
+        {
+          "sample_id": "SAMPLE_018",
           "kind": "project_workspace_md",
           "path": "projects/eu_union_load_bearing_pillars/thesis.md",
           "score": 3,
@@ -48,20 +56,12 @@
           "content_sha": "5f7f0d5d330657bc"
         },
         {
-          "sample_id": "SAMPLE_018",
+          "sample_id": "SAMPLE_065",
           "kind": "project_workspace_md",
           "path": "projects/epistemic_engine_v4_bridge_hardening/debate_log_iter_1775501638.md",
           "score": 3,
           "rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
           "content_sha": "6e517d028627cc31"
-        },
-        {
-          "sample_id": "SAMPLE_069",
-          "kind": "project_workspace_md",
-          "path": "projects/eu_union_failure_probability_2035/history/1775794166_iter0_score_67_eu_union_failure_probability_2035.md",
-          "score": 3,
-          "rationale": "derived constraints PC-001..PC-005; concrete cataloging of meta-structural failures",
-          "content_sha": "e61c367389f1d838"
         }
       ],
       "top_cited": [],
@@ -69,9 +69,9 @@
         "project_workspace_md": 3
       },
       "narrative_seeds": [
+        "derived constraints PC-001..PC-005; concrete cataloging of meta-structural failures",
         "GP-145 SAW \u03bc_sq problem statement; Fields-medal-adjacent target framing (matches primer entry)",
-        "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
-        "derived constraints PC-001..PC-005; concrete cataloging of meta-structural failures"
+        "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings"
       ]
     },
     "2026-04-13": {
@@ -80,15 +80,7 @@
       "n_cited_above_floor": 0,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_002",
-          "kind": "project_workspace_md",
-          "path": "projects/gp023_planck_sandbox_06/_frozen_reference/GP-023_sandbox06_identifiability_hardening_seam.md",
-          "score": 4,
-          "rationale": "GP-138 Noether G-selection impossibility framing \u2014 exact primer calibration anchor for score 4",
-          "content_sha": "9922d7a2bb8306ba"
-        },
-        {
-          "sample_id": "SAMPLE_040",
+          "sample_id": "SAMPLE_026",
           "kind": "raw_evidence_input",
           "path": "projects/glp1_adoption_economics/raw/web_research_2026_04_13.md",
           "score": 4,
@@ -96,7 +88,15 @@
           "content_sha": "d8a212b7c6c3174b"
         },
         {
-          "sample_id": "SAMPLE_038",
+          "sample_id": "SAMPLE_068",
+          "kind": "project_workspace_md",
+          "path": "projects/gp023_planck_sandbox_06/_frozen_reference/GP-023_sandbox06_identifiability_hardening_seam.md",
+          "score": 4,
+          "rationale": "GP-138 Noether G-selection impossibility framing \u2014 exact primer calibration anchor for score 4",
+          "content_sha": "9922d7a2bb8306ba"
+        },
+        {
+          "sample_id": "SAMPLE_075",
           "kind": "project_workspace_md",
           "path": "projects/gp023_planck_sandbox_03/history/1776046185_iter0_score_0_gp023_planck_sandbox_03.md",
           "score": 3,
@@ -106,22 +106,22 @@
       ],
       "top_cited": [],
       "rated_by_kind": {
-        "project_workspace_md": 2,
-        "raw_evidence_input": 1
+        "raw_evidence_input": 1,
+        "project_workspace_md": 2
       },
       "narrative_seeds": [
-        "GP-138 Noether G-selection impossibility framing \u2014 exact primer calibration anchor for score 4",
         "GPT-4o non-convergence three-layer mechanism \u2014 primer memory entry; mechanism-revealing",
+        "GP-138 Noether G-selection impossibility framing \u2014 exact primer calibration anchor for score 4",
         "GP-139 Lean CI hardening pre-registration with 4 specific axiom-allowlist hardenings"
       ]
     },
     "2026-04-20": {
       "week": "2026-04-20",
       "n_rated_above_floor": 3,
-      "n_cited_above_floor": 2,
+      "n_cited_above_floor": 0,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_012",
+          "sample_id": "SAMPLE_003",
           "kind": "raw_evidence_input",
           "path": "projects/gp165_analogy_architecture_review/raw/starter_failure_modes.md",
           "score": 4,
@@ -129,7 +129,7 @@
           "content_sha": "514ebf2a0555f341"
         },
         {
-          "sample_id": "SAMPLE_019",
+          "sample_id": "SAMPLE_004",
           "kind": "project_workspace_md",
           "path": "projects/gp116_cot_exchange/project_charter.md",
           "score": 3,
@@ -137,7 +137,7 @@
           "content_sha": "5a249fba84b5b12d"
         },
         {
-          "sample_id": "SAMPLE_054",
+          "sample_id": "SAMPLE_022",
           "kind": "project_workspace_md",
           "path": "projects/seattle_tech_housing/history/1776741534_iter0_score_48_seattle_tech_housing.md",
           "score": 3,
@@ -145,22 +145,7 @@
           "content_sha": "a60ebef1f1f68d74"
         }
       ],
-      "top_cited": [
-        {
-          "path": "docs/internal/agent_workflow/agent_task_discipline_map.md",
-          "kind": "doc",
-          "in_degree": 4,
-          "out_degree": 2,
-          "week": "2026-04-20"
-        },
-        {
-          "path": "docs/internal/architectural_maps/information_yield_architectural_map.md",
-          "kind": "doc",
-          "in_degree": 3,
-          "out_degree": 0,
-          "week": "2026-04-20"
-        }
-      ],
+      "top_cited": [],
       "rated_by_kind": {
         "raw_evidence_input": 1,
         "project_workspace_md": 2
@@ -174,18 +159,18 @@
     "2026-04-27": {
       "week": "2026-04-27",
       "n_rated_above_floor": 4,
-      "n_cited_above_floor": 1,
+      "n_cited_above_floor": 0,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_004",
-          "kind": "raw_evidence_input",
-          "path": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_diagnostics/gpu_gamma0p25_L4p0_n128_20260430/minimal_aqual_sandbox_summary_gpu_normalface_boxL4p0_n128_gamma0p25_rot45_stencilinv.md",
+          "sample_id": "SAMPLE_001",
+          "kind": "project_workspace_md",
+          "path": "projects/ns_millennium_hunt/workspace/phase5ds_candidate_cascade_audit.md",
           "score": 3,
-          "rationale": "Paper 8 outline names tier-1 collinearity-trap finding + Havrilla-Liao form",
-          "content_sha": "ab70fa15e2645648"
+          "rationale": "Anti-tautology cascade intake harness; all-zero profit backtest cleanly falsifies the iter-1 cascade thesis",
+          "content_sha": "ace63a55d34da9b0"
         },
         {
-          "sample_id": "SAMPLE_034",
+          "sample_id": "SAMPLE_013",
           "kind": "project_workspace_md",
           "path": "projects/ns_spike_lifecycle_discriminator/debate_log_iter_1777652075.md",
           "score": 3,
@@ -193,48 +178,48 @@
           "content_sha": "1aebf81a7033e0e5"
         },
         {
-          "sample_id": "SAMPLE_042",
-          "kind": "project_workspace_md",
-          "path": "projects/ns_millennium_hunt/workspace/phase5ds_candidate_cascade_audit.md",
-          "score": 3,
-          "rationale": "five-mode interaction-primitive taxonomy (M1-M5); sharp framing for human_ai_interaction substrate",
-          "content_sha": "ace63a55d34da9b0"
-        },
-        {
-          "sample_id": "SAMPLE_060",
+          "sample_id": "SAMPLE_052",
           "kind": "project_workspace_md",
           "path": "projects/ns_millennium_hunt/workspace/phase5n_stall_law_audit.md",
           "score": 3,
-          "rationale": "epistemic-engine current state + open problems table; sharp framing of v1/v2 with score asymptote",
+          "rationale": "Distributed two-core churn stall-law: positive budget without identity-stable stretching winner \u2014 non-obvious NS read",
           "content_sha": "0c3fbb28b2789c05"
-        }
-      ],
-      "top_cited": [
+        },
         {
-          "path": "docs/internal/agent_workflow/human_agent_flow_map_2026-04-30.md",
-          "kind": "doc",
-          "in_degree": 5,
-          "out_degree": 1,
-          "week": "2026-04-27"
+          "sample_id": "SAMPLE_067",
+          "kind": "raw_evidence_input",
+          "path": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_diagnostics/gpu_gamma0p25_L4p0_n128_20260430/minimal_aqual_sandbox_summary_gpu_normalface_boxL4p0_n128_gamma0p25_rot45_stencilinv.md",
+          "score": 3,
+          "rationale": "Paper 8 outline names tier-1 collinearity-trap finding + Havrilla-Liao form",
+          "content_sha": "ab70fa15e2645648"
         }
       ],
+      "top_cited": [],
       "rated_by_kind": {
-        "raw_evidence_input": 1,
-        "project_workspace_md": 3
+        "project_workspace_md": 3,
+        "raw_evidence_input": 1
       },
       "narrative_seeds": [
-        "Paper 8 outline names tier-1 collinearity-trap finding + Havrilla-Liao form",
+        "Anti-tautology cascade intake harness; all-zero profit backtest cleanly falsifies the iter-1 cascade thesis",
         "GPU link-prediction status memo with bootstrap-snapshot gap named; matches primer entry",
-        "five-mode interaction-primitive taxonomy (M1-M5); sharp framing for human_ai_interaction substrate"
+        "Distributed two-core churn stall-law: positive budget without identity-stable stretching winner \u2014 non-obvious NS read"
       ]
     },
     "2026-05-04": {
       "week": "2026-05-04",
-      "n_rated_above_floor": 2,
-      "n_cited_above_floor": 52,
+      "n_rated_above_floor": 3,
+      "n_cited_above_floor": 6,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_026",
+          "sample_id": "SAMPLE_053",
+          "kind": "project_workspace_md",
+          "path": "projects/ns_proofsearch_leray_convexity_trackb/history/1777908097_iter1_score_82_ns_proofsearch_leray_convexity_trackb.md",
+          "score": 3,
+          "rationale": "Cognitive Gym intro framing \u2014 squat-rack analogy + LLM-good/LLM-bad division; sharp framing",
+          "content_sha": "7fcf4f364eb3606e"
+        },
+        {
+          "sample_id": "SAMPLE_069",
           "kind": "project_workspace_md",
           "path": "projects/neural_hunt/workspace/cross_family_fixed_online_group_audit_2026_05_08.md",
           "score": 3,
@@ -242,135 +227,230 @@
           "content_sha": "447441b7b1449d1e"
         },
         {
-          "sample_id": "SAMPLE_056",
+          "sample_id": "SAMPLE_076",
           "kind": "project_workspace_md",
-          "path": "projects/ns_proofsearch_leray_convexity_trackb/history/1777908097_iter1_score_82_ns_proofsearch_leray_convexity_trackb.md",
+          "path": "projects/ns_millennium_hunt/workspace/research_notes/axisym_with_swirl_liouville_attack_2026_05_07.md",
           "score": 3,
-          "rationale": "Cognitive Gym intro framing \u2014 squat-rack analogy + LLM-good/LLM-bad division; sharp framing",
-          "content_sha": "7fcf4f364eb3606e"
+          "rationale": "Thorough 2024-26 lit scan; verdict \"depth-3 isomorphic to C1 Prodi-Serrin polar-slice barrier\" sharply localizes obstruction",
+          "content_sha": "7c99f06a21e0267a"
         }
       ],
       "top_cited": [
         {
-          "path": "docs/concepts/reflexive_engineering.md",
-          "kind": "doc",
-          "in_degree": 19,
-          "out_degree": 4,
-          "week": "2026-05-04"
-        },
-        {
-          "path": "docs/guides/org_runtime_quickstart.md",
-          "kind": "doc",
-          "in_degree": 16,
-          "out_degree": 4,
-          "week": "2026-05-04"
-        },
-        {
-          "path": "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_audit_2026_05_08.md",
-          "kind": "project",
-          "in_degree": 13,
+          "path": "org/patterns/darwin_idea_killer.md",
+          "kind": "org",
+          "in_degree": 6,
           "out_degree": 0,
           "week": "2026-05-04"
         },
         {
-          "path": "docs/internal/architectural_maps/autoresearch_loop_architectural_map.md",
-          "kind": "doc",
-          "in_degree": 10,
-          "out_degree": 3,
+          "path": "org/patterns/smuggling_audit.md",
+          "kind": "org",
+          "in_degree": 5,
+          "out_degree": 0,
           "week": "2026-05-04"
         },
         {
-          "path": "projects/ns_millennium_hunt/workspace/research_notes/pincer_meta_darwin_re_audit_2026_05_08.md",
-          "kind": "project",
-          "in_degree": 10,
+          "path": "org/patterns/reducer.md",
+          "kind": "org",
+          "in_degree": 4,
+          "out_degree": 0,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "org/patterns/tautology_trap.md",
+          "kind": "org",
+          "in_degree": 3,
+          "out_degree": 0,
+          "week": "2026-05-04"
+        },
+        {
+          "path": "org/patterns/independent_cas_verification.md",
+          "kind": "org",
+          "in_degree": 3,
           "out_degree": 0,
           "week": "2026-05-04"
         }
       ],
       "rated_by_kind": {
-        "project_workspace_md": 2
+        "project_workspace_md": 3
       },
       "narrative_seeds": [
+        "Cognitive Gym intro framing \u2014 squat-rack analogy + LLM-good/LLM-bad division; sharp framing",
         "skeptic-director-as-research-scientist-role correction; matches primer memory entry",
-        "Cognitive Gym intro framing \u2014 squat-rack analogy + LLM-good/LLM-bad division; sharp framing"
+        "Thorough 2024-26 lit scan; verdict \"depth-3 isomorphic to C1 Prodi-Serrin polar-slice barrier\" sharply localizes obstruction"
       ]
     },
     "2026-05-11": {
       "week": "2026-05-11",
-      "n_rated_above_floor": 3,
-      "n_cited_above_floor": 14,
+      "n_rated_above_floor": 7,
+      "n_cited_above_floor": 1,
       "top_rated": [
         {
-          "sample_id": "SAMPLE_011",
-          "kind": "concept_doc",
-          "path": "docs/internal/architectural_maps/structural_fingerprint_usage.md",
-          "score": 3,
-          "rationale": "NS Track B SOS-receipt infrastructure-gap diagnosis; sharp framing",
-          "content_sha": "ae325f6782617350"
+          "sample_id": "SAMPLE_009",
+          "kind": "project_workspace_md",
+          "path": "projects/neural_hunt/workspace/h136_gpu_burst_synthesis_and_architecture_status_2026_05_12.md",
+          "score": 4,
+          "rationale": "Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; blocks naive arch claim",
+          "content_sha": "58ac94a0fc722653"
+        },
+        {
+          "sample_id": "SAMPLE_045",
+          "kind": "project_workspace_md",
+          "path": "projects/x_algo_goodhart_audit/_run1_archive/debate_log_iter_1778893915.md",
+          "score": 4,
+          "rationale": "Names load-bearing failure: documentary-absence\u2192structural-necessity inference; correctly rescopes \"structurally blind\"",
+          "content_sha": "b9ba26390335d4d4"
+        },
+        {
+          "sample_id": "SAMPLE_047",
+          "kind": "project_workspace_md",
+          "path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_15_GPT55Pro_asymptotic_super_typeI_sparse_cascade_closure.md",
+          "score": 4,
+          "rationale": "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps",
+          "content_sha": "e8260d940fb6d929"
         },
         {
           "sample_id": "SAMPLE_027",
           "kind": "project_workspace_md",
-          "path": "projects/ns_millennium_hunt/workspace/route1_tail_square_to_active_tail_bridge_audit_20260514.md",
+          "path": "projects/neural_hunt/workspace/h158_strict_holdout_all_layer_gentle_probe_plan_2026_05_12.md",
           "score": 3,
-          "rationale": "NS triad-block algebraic gain-vs-tax cubic-vs-linear scaling claim; concrete mechanism",
-          "content_sha": "01fe697dc549142c"
+          "rationale": "Sharp pre-registered eigenquestion isolating selection-error vs no-utility-frontier; useful framing, not yet a result",
+          "content_sha": "19aaa38efb836f66"
         },
         {
-          "sample_id": "SAMPLE_048",
-          "kind": "project_workspace_md",
-          "path": "projects/neural_hunt/workspace/h159_h147_h158_gpu_burst_science_closure_2026_05_12.md",
+          "sample_id": "SAMPLE_051",
+          "kind": "concept_doc",
+          "path": "docs/concepts/agentic_engineering_patterns.md",
           "score": 3,
-          "rationale": "recursive epistemic gain example: failure-grammar reused to audit later artifact (mirrors GP-149)",
-          "content_sha": "5f64905766005a0a"
+          "rationale": "Stand-alone agentic-engineering catalogue; orchestration-layer-deterministic / LLM-as-oracle is a sharp reusable abstraction",
+          "content_sha": "295361fb7d96a645"
+        },
+        {
+          "sample_id": "SAMPLE_057",
+          "kind": "project_workspace_md",
+          "path": "projects/ns_millennium_hunt/workspace/route1_active_tail_singular_part_control_20260514.md",
+          "score": 3,
+          "rationale": "Lebesgue-decomposition singular-part control lemma cleanly names the missing theorem and its failure consequence",
+          "content_sha": "5de21963568415b9"
+        },
+        {
+          "sample_id": "SAMPLE_060",
+          "kind": "project_workspace_md",
+          "path": "projects/ns_millennium_hunt/workspace/route1_n8_inversion_nonroute_branch_packet_20260514.md",
+          "score": 3,
+          "rationale": "Top-down inversion enumerating 7 non-route branches; CKN r^2-budget vs r-budget scaling gap is a sharp obstruction",
+          "content_sha": "2da65748da4d13e5"
         }
       ],
       "top_cited": [
         {
-          "path": "org/mandates/research_director_mandate.md",
+          "path": "org/patterns/terminal_de_anonymization_reformulation.md",
           "kind": "org",
-          "in_degree": 18,
-          "out_degree": 11,
-          "week": "2026-05-11"
-        },
-        {
-          "path": "docs/concepts/agentic_engineering_patterns.md",
-          "kind": "doc",
-          "in_degree": 10,
-          "out_degree": 5,
-          "week": "2026-05-11"
-        },
-        {
-          "path": "docs/concepts/anti_pattern_catalog.md",
-          "kind": "doc",
-          "in_degree": 9,
+          "in_degree": 3,
           "out_degree": 0,
-          "week": "2026-05-11"
-        },
-        {
-          "path": "org/patterns/INDEX.md",
-          "kind": "org",
-          "in_degree": 8,
-          "out_degree": 29,
-          "week": "2026-05-11"
-        },
-        {
-          "path": "org/anti-patterns/INDEX.md",
-          "kind": "org",
-          "in_degree": 8,
-          "out_degree": 4,
           "week": "2026-05-11"
         }
       ],
       "rated_by_kind": {
-        "concept_doc": 1,
-        "project_workspace_md": 2
+        "project_workspace_md": 6,
+        "concept_doc": 1
       },
       "narrative_seeds": [
-        "NS Track B SOS-receipt infrastructure-gap diagnosis; sharp framing",
-        "NS triad-block algebraic gain-vs-tax cubic-vs-linear scaling claim; concrete mechanism",
-        "recursive epistemic gain example: failure-grammar reused to audit later artifact (mirrors GP-149)"
+        "Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; blocks naive arch claim",
+        "Names load-bearing failure: documentary-absence\u2192structural-necessity inference; correctly rescopes \"structurally blind\"",
+        "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps"
       ]
+    },
+    "2026-05-25": {
+      "week": "2026-05-25",
+      "n_rated_above_floor": 0,
+      "n_cited_above_floor": 29,
+      "top_rated": [],
+      "top_cited": [
+        {
+          "path": "projects/ns_millennium_hunt/workspace/queries/krf_row20_pairwise_elpnorm_cauchy_receipt_20260601.md",
+          "kind": "project",
+          "in_degree": 24,
+          "out_degree": 3,
+          "week": "2026-05-25"
+        },
+        {
+          "path": "docs/concepts/reflexive_engineering.md",
+          "kind": "doc",
+          "in_degree": 23,
+          "out_degree": 6,
+          "week": "2026-05-25"
+        },
+        {
+          "path": "docs/guides/org_runtime_quickstart.md",
+          "kind": "doc",
+          "in_degree": 17,
+          "out_degree": 3,
+          "week": "2026-05-25"
+        },
+        {
+          "path": "docs/concepts/agentic_engineering_patterns.md",
+          "kind": "doc",
+          "in_degree": 13,
+          "out_degree": 6,
+          "week": "2026-05-25"
+        },
+        {
+          "path": "org/README.md",
+          "kind": "org",
+          "in_degree": 11,
+          "out_degree": 1,
+          "week": "2026-05-25"
+        }
+      ],
+      "rated_by_kind": {},
+      "narrative_seeds": []
+    },
+    "2026-06-01": {
+      "week": "2026-06-01",
+      "n_rated_above_floor": 0,
+      "n_cited_above_floor": 28,
+      "top_rated": [],
+      "top_cited": [
+        {
+          "path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+          "kind": "project",
+          "in_degree": 43,
+          "out_degree": 175,
+          "week": "2026-06-01"
+        },
+        {
+          "path": "org/mandates/research_director_mandate.md",
+          "kind": "org",
+          "in_degree": 20,
+          "out_degree": 11,
+          "week": "2026-06-01"
+        },
+        {
+          "path": "docs/concepts/anti_pattern_catalog.md",
+          "kind": "doc",
+          "in_degree": 14,
+          "out_degree": 0,
+          "week": "2026-06-01"
+        },
+        {
+          "path": "docs/concepts/architecture.md",
+          "kind": "doc",
+          "in_degree": 14,
+          "out_degree": 2,
+          "week": "2026-06-01"
+        },
+        {
+          "path": "research_areas/private/seams/apparatus/instrumentation/GP-236_p0_metrics_rollup_seam.md",
+          "kind": "seam_apparatus",
+          "in_degree": 11,
+          "out_degree": 0,
+          "week": "2026-06-01"
+        }
+      ],
+      "rated_by_kind": {},
+      "narrative_seeds": []
     }
   }
 }

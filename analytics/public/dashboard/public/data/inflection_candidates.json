@@ -1,21 +1,58 @@
 {
-  "audit_timestamp_utc": "2026-05-16T21:37:25.210966+00:00",
+  "audit_timestamp_utc": "2026-06-04T21:03:05.935239+00:00",
   "z_threshold": 2.0,
   "convergence_floor": 2,
   "n_real_inflections": 2,
-  "n_candidate_inflections": 2,
+  "n_candidate_inflections": 1,
   "ranked_inflections": [
     {
-      "week": "2026-05-04",
-      "convergence_score": 5,
+      "week": "2026-04-27",
+      "convergence_score": 3,
       "metrics": [
         "sophistication_a_capability_count_cumulative",
         "insight_a_f_row_creates_per_week",
-        "insight_c_paper_line_growth_per_week",
-        "confound_a_code_activity_density",
         "confound_b_total_artifact_creation_per_week"
       ],
-      "verdict": "real_inflection",
+      "verdict": "real_inflection"
+    },
+    {
+      "week": "2026-05-25",
+      "convergence_score": 3,
+      "metrics": [
+        "sophistication_a_capability_count_cumulative",
+        "insight_d_project_workspace_artifacts_per_week",
+        "confound_b_total_artifact_creation_per_week"
+      ],
+      "verdict": "real_inflection"
+    },
+    {
+      "week": "2026-04-13",
+      "convergence_score": 2,
+      "metrics": [
+        "sophistication_a_capability_count_cumulative",
+        "confound_b_total_artifact_creation_per_week"
+      ],
+      "verdict": "candidate_inflection",
+      "coincident_external_events": [
+        {
+          "date": "2026-04-15",
+          "kind": "paper_deadline",
+          "label": "Pace anxiety surfaced \u2014 Erd\u0151s + Odrzywo\u0142ek paper context (per memory)"
+        },
+        {
+          "date": "2026-04-16",
+          "kind": "model_upgrade",
+          "label": "GPT-4.1 added as default fallback (Gemini Pro instability)"
+        }
+      ]
+    },
+    {
+      "week": "2026-05-04",
+      "convergence_score": 1,
+      "metrics": [
+        "insight_a_f_row_creates_per_week"
+      ],
+      "verdict": "single_metric_noise",
       "coincident_external_events": [
         {
           "date": "2026-05-06",
@@ -46,89 +83,26 @@
     },
     {
       "week": "2026-05-11",
-      "convergence_score": 4,
-      "metrics": [
-        "sophistication_a_capability_count_cumulative",
-        "insight_a_f_row_creates_per_week",
-        "confound_a_code_activity_density",
-        "confound_b_total_artifact_creation_per_week"
-      ],
-      "verdict": "real_inflection"
-    },
-    {
-      "week": "2026-04-06",
-      "convergence_score": 2,
-      "metrics": [
-        "insight_c_paper_line_growth_per_week",
-        "insight_e_verified_axioms_added_per_week"
-      ],
-      "verdict": "candidate_inflection"
-    },
-    {
-      "week": "2026-04-20",
-      "convergence_score": 2,
-      "metrics": [
-        "insight_c_paper_line_growth_per_week",
-        "insight_d_project_workspace_artifacts_per_week"
-      ],
-      "verdict": "candidate_inflection",
-      "coincident_external_events": [
-        {
-          "date": "2026-04-23",
-          "kind": "paper_release",
-          "label": "Mungerian thinking codified into core philosophy"
-        }
-      ]
-    },
-    {
-      "week": "2026-03-02",
-      "convergence_score": 1,
-      "metrics": [
-        "confound_b_total_artifact_creation_per_week"
-      ],
-      "verdict": "single_metric_noise"
-    },
-    {
-      "week": "2026-03-30",
-      "convergence_score": 1,
-      "metrics": [
-        "insight_e_verified_axioms_added_per_week"
-      ],
-      "verdict": "single_metric_noise"
-    },
-    {
-      "week": "2026-04-13",
-      "convergence_score": 1,
-      "metrics": [
-        "insight_c_paper_line_growth_per_week"
-      ],
-      "verdict": "single_metric_noise",
-      "coincident_external_events": [
-        {
-          "date": "2026-04-15",
-          "kind": "paper_deadline",
-          "label": "Pace anxiety surfaced \u2014 Erd\u0151s + Odrzywo\u0142ek paper context (per memory)"
-        },
-        {
-          "date": "2026-04-16",
-          "kind": "model_upgrade",
-          "label": "GPT-4.1 added as default fallback (Gemini Pro instability)"
-        }
-      ]
-    },
-    {
-      "week": "2026-04-27",
       "convergence_score": 1,
       "metrics": [
         "insight_a_f_row_creates_per_week"
+      ],
+      "verdict": "single_metric_noise"
+    },
+    {
+      "week": "2026-06-01",
+      "convergence_score": 1,
+      "metrics": [
+        "insight_d_project_workspace_artifacts_per_week"
       ],
       "verdict": "single_metric_noise"
     }
   ],
   "inflections_per_curve": {
     "sophistication_a_capability_count_cumulative": [
-      "2026-05-04",
-      "2026-05-11"
+      "2026-04-13",
+      "2026-04-27",
+      "2026-05-25"
     ],
     "sophistication_d_autonomous_actions_per_week": [],
     "insight_a_f_row_creates_per_week": [
@@ -137,27 +111,16 @@
       "2026-05-11"
     ],
     "insight_b_f_row_closures_per_week": [],
-    "insight_c_paper_line_growth_per_week": [
-      "2026-04-06",
-      "2026-04-13",
-      "2026-04-20",
-      "2026-05-04"
-    ],
     "insight_d_project_workspace_artifacts_per_week": [
-      "2026-04-20"
+      "2026-05-25",
+      "2026-06-01"
     ],
-    "insight_e_verified_axioms_added_per_week": [
-      "2026-03-30",
-      "2026-04-06"
-    ],
-    "confound_a_code_activity_density": [
-      "2026-05-04",
-      "2026-05-11"
-    ],
+    "insight_e_verified_axioms_added_per_week": [],
+    "confound_a_code_activity_density": [],
     "confound_b_total_artifact_creation_per_week": [
-      "2026-03-02",
-      "2026-05-04",
-      "2026-05-11"
+      "2026-04-13",
+      "2026-04-27",
+      "2026-05-25"
     ]
   }
 }

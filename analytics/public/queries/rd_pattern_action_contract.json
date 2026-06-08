@@ -1,31 +1,16 @@
 {
-  "generated_at": "2026-05-25T03:06:09.447813+00:00",
-  "scope": "ns_millennium_hunt",
-  "goal_excerpt": "TICK668 hard PDE residual: LEI-to-log endpoint payment blocked by BMO/log endpoint spike; search for a non-BKM non-CF endpoint regularization source or kill the lane.",
+  "generated_at": "2026-06-05T12:28:14.331584+00:00",
+  "scope": "forecasting",
+  "goal_excerpt": "exhaust forecasting laws and prepare paper by killing unsupported Law 1/Law 2/Law 3/F100/F47/equal-information claims with current DB evidence before spending new calls",
   "problem_surfaces": [
-    "hard_mathematical_residual",
-    "pde_estimate_or_carrier_residual"
+    "general_research_task"
   ],
   "pattern_chain": [
-    "PATTERN-025:gowers_first_formalize_second",
-    "GP-219:pde_estimate_craft_ops",
-    "META-PATTERN-022:gowers_first_with_content_layer_composition",
-    "PATTERN-011:swarm_dispatch",
-    "PATTERN-028:recursive_tool_depth_loop",
-    "PATTERN-002:darwin_idea_killer"
+    "PATTERN-012:prediction_ledger_if_action_gating"
   ],
-  "anti_patterns": [
-    "ANTI-PATTERN-011:scientific_amnesia",
-    "ANTI-PATTERN-018:tool_underuse_formal_satisficing",
-    "ANTI-PATTERN-012:vocabulary_chain_laundering",
-    "ANTI-PATTERN-014:premature_settled_negative",
-    "ANTI-PATTERN-016:premature_heuristic_escape",
-    "ANTI-PATTERN-017:category_conflation_strawman_shift",
-    "ANTI-PATTERN-005:narrative_inflation",
-    "ANTI-PATTERN-013:lean_closure_laundering"
-  ],
+  "anti_patterns": [],
   "obligation_spine": [
-    "transfer"
+    "bound"
   ],
   "route_tests": [
     "Does this action force a concrete next check, artifact, gate, or breaker?",
@@ -43,151 +28,11 @@
   ],
   "evidence_carriers": [
     {
-      "name": "routed_operator_receipt_gate",
-      "required": true,
-      "artifact_slot": "operator_receipt_gate_artifact",
-      "acceptance_check": "route <=3 candidate operators, select one, name the nearest confuser, fill operator-specific action-constraint fields, state reject/repair behavior for failed receipts, and name the downstream consumer check that would verify the handoff was executable",
-      "required_fields": [
-        "candidate_operators",
-        "selected_operator",
-        "nearest_confuser",
-        "action_constraint_fields",
-        "action_target_source",
-        "source_contract_alignment_check",
-        "required_receipts",
-        "reject_or_repair_behavior",
-        "downstream_consumer_check"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "hard_residual_antipattern_guard",
-      "required": true,
-      "artifact_slot": "anti_pattern_guard_artifact",
-      "acceptance_check": "artifact records prior-overlap/amnesia result, local work before terminal negatives or heuristic escape, exact object identity for reviewer objections, scoped claim wording, minimal preventive artifact, typed boundary state, boundary preprocessor card fields, boundary card source-alignment check, missing-or-paid preventive receipt, source-specific false-reading confuser, nearest-confuser rejection, clean-proceed condition, paid-clean terminal action, and intervention feedback trace across repair/proceed legs",
-      "required_fields": [
-        "prior_overlap_check",
-        "local_work_before_terminal_negative",
-        "heuristic_escape_blocker",
-        "object_identity_check",
-        "claim_scope_boundary",
-        "minimal_preventive_artifact",
-        "typed_boundary_state",
-        "boundary_preprocessor_card",
-        "paid_receipt",
-        "unpaid_receipt",
-        "permitted_update",
-        "blocked_update",
-        "next_action_rule",
-        "boundary_card_action_program",
-        "boundary_card_current_action_index",
-        "boundary_card_required_next_action",
-        "boundary_card_program_counter_rule",
-        "boundary_card_source_alignment_check",
-        "boundary_card_source_cue_receipts",
-        "boundary_card_validation_status",
-        "boundary_card_rewrite_or_refusal_rule",
-        "boundary_card_gate_result",
-        "boundary_card_gate_cli",
-        "boundary_card_repair_trace_cli",
-        "missing_or_paid_preventive_receipt",
-        "source_specific_false_reading_confuser",
-        "nearest_confuser_rejection",
-        "clean_proceed_condition",
-        "paid_clean_terminal_action",
-        "intervention_feedback_trace"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "orientation",
-      "required": true,
-      "artifact_slot": "orientation_artifact",
-      "acceptance_check": "pencil artifact names eigenquestion, candidate theorem/obstruction, kill condition, and ops/checks",
-      "required_fields": [
-        "eigenquestion",
-        "candidate_theorem_or_obstruction",
-        "kill_condition",
-        "intended_checks"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "tool_or_primitive_pass",
-      "required": true,
-      "artifact_slot": "stress_test_artifact",
-      "acceptance_check": "class-matched workbench/graph/gate/primitives run, or each skipped tool has why_not",
-      "required_fields": [
-        "tool_or_primitive",
-        "result",
-        "nearest_confuser",
-        "repair_or_stop"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "artifact_edit",
-      "required": true,
-      "artifact_slot": "artifact_ref",
-      "acceptance_check": "formal/code/graph/falsifier artifact changed the residual surface or cleanly killed it",
-      "required_fields": [
-        "artifact_changed",
-        "residual_delta",
-        "claim_boundary"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "post_edit_stress",
-      "required": true,
-      "artifact_slot": "verification_artifact",
-      "acceptance_check": "patched artifact was rerun through compile/check/tool and adversarial critique when applicable",
-      "required_fields": [
-        "verification_command_or_gate",
-        "verdict",
-        "remaining_failure_mode"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "pde_workbench_or_dimensional_gate",
-      "required": true,
-      "artifact_slot": "tool_pass_artifact",
-      "acceptance_check": "PDE estimate/workbench, dimensional/endpoint, single-spend, or pi/Buckingham check run as applicable",
-      "required_fields": [
-        "pde_tool_or_gate",
-        "estimate_target",
-        "passed_or_failed",
-        "why_not_if_skipped"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "estimate_attempt_or_sharp_witness",
-      "required": true,
-      "artifact_slot": "estimate_attempt_artifact",
-      "acceptance_check": "after the workbench/tool pass, attempt the actual PDE estimate route or construct a sharp hostile witness; artifact must state theorem/counterexample, proof attempt layers, and exact kill condition",
-      "required_fields": [
-        "theorem_or_counterexample",
-        "proof_layers",
-        "sharp_witness_or_blocker",
-        "kill_condition"
-      ],
-      "schema_mode": "artifact_ref_or_action_constraint_fields"
-    },
-    {
-      "name": "constructive_turn_check",
-      "required": true,
-      "artifact_slot": "positive_constructor_attempt_artifact",
-      "acceptance_check": "if a conditional source law and bounded/selectable carrier are visible, artifact includes a positive constructor attempt before obstruction-only continuation; if skipped, why_not names an already-tested blocker",
-      "required_fields": [
-        "conditional_source_law",
-        "target_carrier",
-        "bounded_or_selectable_variable",
-        "constructor_map_or_why_not",
-        "nearest_confuser",
-        "first_failed_line_or_success"
-      ],
+      "name": "decision_boundary",
+      "required": false,
+      "artifact_slot": "decision_artifact",
+      "acceptance_check": "log only if the action gates a typed commitment",
+      "required_fields": [],
       "schema_mode": "artifact_ref_or_action_constraint_fields"
     },
     {

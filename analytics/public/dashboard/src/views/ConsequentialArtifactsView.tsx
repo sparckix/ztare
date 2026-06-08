@@ -27,7 +27,7 @@ export function ConsequentialArtifactsView({ data }: { data: DashboardData }) {
         <p>
           <strong>Source:</strong> joins <code>_taste_metadata.json</code> (sample/week mapping)
           + <code>taste_ledger.json</code> (scores) + <code>reference_graph.json</code> (in-degrees).
-          Re-run with <code>python scripts/mining/build_consequential_artifacts.py</code>.
+          Re-run with <code>python scripts/public/mining/build_consequential_artifacts.py</code>.
         </p>
       </div>
 

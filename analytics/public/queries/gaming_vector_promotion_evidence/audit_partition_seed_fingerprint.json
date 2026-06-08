@@ -1,0 +1,34 @@
+{
+  "vector": "audit_partition_seed_fingerprint",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:audit_partition_seed_fingerprint",
+  "evidence_mode": "config_fix",
+  "exposing_artifacts": [
+    {
+      "path": "src/ztare/orchestrator/holdout_audit.py",
+      "sha": "e9a172642afe01bb"
+    },
+    {
+      "path": "src/ztare/validator/autoresearch_loop.py",
+      "sha": "84807cec70b2c1fd"
+    }
+  ],
+  "runtime_enforcement": {
+    "name": "holdout_audit_per_run_partition_salt",
+    "wired": true,
+    "module": "ztare.orchestrator.holdout_audit",
+    "entrypoint": "partition_audit_slice"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python - <<'PY'\nfrom ztare.orchestrator.holdout_audit import partition_audit_slice\nrows = list(range(20))\n_, aud_a = partition_audit_slice(rows, 0.3, rubric_id='r', rubric_version='1', audit_salt='a')\n_, aud_a2 = partition_audit_slice(rows, 0.3, rubric_id='r', rubric_version='1', audit_salt='a')\n_, aud_b = partition_audit_slice(rows, 0.3, rubric_id='r', rubric_version='1', audit_salt='b')\nassert aud_a == aud_a2 and aud_a != aud_b and len(aud_a) == 6\nPY"
+  },
+  "promotion_recommendation": true
+}

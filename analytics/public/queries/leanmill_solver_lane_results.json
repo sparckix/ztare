@@ -1,34 +1,427 @@
 {
   "schema": "leanmill-solver-lane-results-v1",
   "lane": "solver_lane",
+  "mode": "dag_search",
   "provider": "claude_opus",
-  "generated_at": "2026-05-29T00:04:16.177447+00:00",
+  "generated_at": "2026-06-06T01:32:15.781399+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "claude_opus",
   "results": [
     {
-      "name": "APN_hilbert_1_sorried",
-      "target_name": "P1",
+      "name": "adhoc::denef_lipshitz_question_formalization",
+      "target_name": "denef_lipshitz_question_formalization",
       "kind": "c_pool_no_template",
+      "mode": "dag_search",
       "outcome": "closed",
+      "compile_ok": true,
       "exit_code": 0,
-      "proof_text": "trivial",
-      "provider": "claude_opus",
-      "provider_error": "none",
-      "provider_error_detail": null,
-      "provider_wallclock_s": 3.1,
-      "routing": {
-        "chain_walked": [
-          "claude_opus"
+      "proof_text": "",
+      "provider": "governed_dag_search",
+      "providers_tried": [
+        {
+          "provider": "native_hammer",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "native_hammer",
+          "agent_kind": "native_hammer_cascade"
+        },
+        {
+          "provider": "claude_opus_warm",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "claude_warm",
+          "agent_kind": "warm_agent"
+        },
+        {
+          "provider": "claude_opus",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "cold_shot_fanout"
+        },
+        {
+          "provider": "codex_gpt5",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "cold_shot_fanout"
+        },
+        {
+          "provider": "deepseek_v2",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "cold_shot_fanout"
+        },
+        {
+          "provider": "claude_opus",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "external_frontier_prover"
+        },
+        {
+          "provider": "codex_gpt5",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "external_frontier_prover"
+        },
+        {
+          "provider": "deepseek_v2",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "external_frontier_prover"
+        },
+        {
+          "provider": "conjecture_lemma",
+          "outcome": "no_advance",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "conjecture_lemma",
+          "agent_kind": "conjecture"
+        },
+        {
+          "provider": "native_hammer",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n1_sub_goal_1",
+          "move": "native_hammer",
+          "agent_kind": "native_hammer_cascade"
+        },
+        {
+          "provider": "claude_opus_warm",
+          "outcome": "closed",
+          "compile_ok": true,
+          "mnc_passed": true,
+          "node_id": "n1_sub_goal_1",
+          "move": "claude_warm",
+          "agent_kind": "warm_agent"
+        }
+      ],
+      "solver_action_contract": {
+        "schema": "leanmill-solver-action-contract-v1",
+        "generated_at_epoch": 1780707712,
+        "row_id": "adhoc::denef_lipshitz_question_formalization",
+        "target_theorem_name": "denef_lipshitz_question_formalization",
+        "source_file": "ztare_proofs/AdHoc_denef_lipshitz_question_formalization.lean",
+        "scope": "solver_lane_no_positive_family_template",
+        "goal_excerpt": "(n N : \u2115)\n    (hN : 0 < N)\n    (G : RationalFunctionInJetVariables n)\n    (f : FormalPowerSeries \u211a)\n    (hf_integral : localizedIntegerPowerSeries N f)\n    (hf_ode : satisfiesDifferentialEquation G f)\n    (hG_defined : RationalFunctionInJetVariables.definedAtInitialJet G f) :\n    AlgebraicFunctionTaylorExpansion f",
+        "requested_residual_class": "no_positive_family_template_closure",
+        "accepted_residual_class": "no_positive_family_template_closure",
+        "source_cue_check_status": "passed",
+        "source_cue_receipts": [
+          "source_file_exists",
+          "goal_text_present",
+          "target_theorem_name_present"
         ],
-        "skipped_unavailable": [],
-        "skipped_hard_failed": []
+        "missing_source_cues": [],
+        "rejected_nearest_confuser": "pde_estimate_or_carrier_residual (rejected: target is not a PDE inequality; routes to PDE workbench instead)",
+        "pattern_chain": [
+          "native_hammer",
+          "claude_opus_warm",
+          "cold_shot_fanout"
+        ],
+        "anti_patterns": [
+          "lean_closure_laundering",
+          "gold_name_verbatim_confirmed",
+          "single_lemma_exact_confirmed",
+          "paraphrase_of_existing_mathlib_lemma",
+          "scientific_amnesia",
+          "tool_underuse_formal_satisficing",
+          "category_conflation_strawman_shift",
+          "premature_settled_negative",
+          "vocabulary_chain_laundering"
+        ],
+        "evidence_basis": "local_default",
+        "rd_primitive_hits": [
+          {
+            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+            "kind": "primitive",
+            "score": 738.9,
+            "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4",
+            "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea"
+          },
+          {
+            "id": "RESIDUAL-TO-LEVER",
+            "kind": "primitive",
+            "score": 737.9,
+            "why": "bucket negative_to_object; impact 4",
+            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
+          },
+          {
+            "id": "PDE-ESTIMATE-CRAFT-OPS",
+            "kind": "op",
+            "score": 733.65,
+            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.75",
+            "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin"
+          },
+          {
+            "id": "NS-ROUTE1-FIVE-CLAY-EQUIVALENT-RESIDUAL-VOID-ANCHOR",
+            "kind": "primitive",
+            "score": 721.6,
+            "why": "matched ode; bucket negative_to_object; impact 1",
+            "description": "STRUCTURAL ANCHOR (vocabulary-drift-proof): route-1 closure is ALREADY encoded as discharge >=1 of 5 Clay-equivalent residual axioms {BKM, Prodi-Serrin, ESS-L3, Beirao-da-Veiga, Constantin-Fefferman vorticity-direction-L"
+          },
+          {
+            "id": "PDE-CURRENCY-LEDGER",
+            "kind": "op",
+            "score": 720.9,
+            "why": "matched ode; bucket pde_ns_lean; impact 4; graph_bonus 1.5",
+            "description": "PDE execution currency ledger for exchange-rate obligations and produced currencies; includes local-model to finite-energy cutoff invoice conversion used to prevent spending local surplus as global PDE payment without cu"
+          },
+          {
+            "id": "NS-ROUTE1-RESIDUAL-MANIFEST-O1-DECISION-SURFACE",
+            "kind": "primitive",
+            "score": 712.6,
+            "why": "matched ode; bucket negative_to_object; impact 1",
+            "description": "O(1) amnesia decision surface: canonical open nodes C1-C6 (5 Clay-equiv + anti-twist) + alias table (>=6 vocab drifts all -> C5 Constantin-Fefferman == perennial atom) + formalized-negative blockers (tick578-580). Match "
+          }
+        ],
+        "action_program": [
+          "layer2_native_hammer_cascade",
+          "layer3_warm_agent_iterate",
+          "layer4_cold_shot_multi_provider",
+          "layer5_validate_against_contract"
+        ],
+        "current_action_index": 0,
+        "required_next_action": "layer2_native_hammer_cascade",
+        "program_counter_rule": "advance current_action_index only after the current action has emitted its receipt; if the receipt is `closed` AND matched_negative_control passes, stop (credit_ready_at_solver_layer = true). Otherwise continue to the next action_program step until exhausted or stop_condition fires.",
+        "stop_condition": "stop on first credit_ready_at_solver_layer = true; or when action_program is exhausted (last action's receipt recorded); or when the row exceeds MAX_FAILED_ATTEMPTS_PER_ROW across cycles (cooldown).",
+        "required_receipts": [
+          {
+            "name": "kernel_compile_receipt",
+            "required": true,
+            "acceptance_check": "lake env lean over the enriched probe (prelude + semantic shelf + proof body) returns exit 0 with no error: lines."
+          },
+          {
+            "name": "matched_negative_control_receipt",
+            "required": true,
+            "acceptance_check": "the same proof_text under bare `import Mathlib` (gold-bearing prelude STRIPPED) FAILS to compile. A negative-control PASS = the proof was a single-Mathlib-lookup; that is leakage and forces rejection."
+          },
+          {
+            "name": "axiom_allowlist_receipt",
+            "required": true,
+            "acceptance_check": "`#print axioms <target>` shows axioms \u2286 {propext, Classical.choice, Quot.sound}.",
+            "deferred_to": "leanmill_proof_audit"
+          },
+          {
+            "name": "l3_anti_pattern_receipt",
+            "required": true,
+            "acceptance_check": "the v33 deep verifier (single-lemma `by exact?`, indirect leakage, currency mismatch, paraphrase) returns no confirmed blocker.",
+            "deferred_to": "leanmill_proof_audit"
+          }
+        ],
+        "reject_or_repair_behavior": {
+          "kernel_compile_fail": "advance to next action_program step; if exhausted, mark row failed_compile and record attempt.",
+          "matched_negative_control_pass": "REJECT closure as leakage/laundering; mark row rejected_negative_control; do not credit.",
+          "axiom_outside_allowlist": "REJECT closure; mark row rejected_axiom_outside_allowlist.",
+          "l3_confirmed_blocker": "REJECT closure; mark row rejected_l3; record the specific blocker class.",
+          "clean_proceed_condition": "all required_receipts at solver_layer must pass AND downstream_consumer_check must accept; only then upgrade to unratified_closure_candidate typed exit."
+        },
+        "downstream_consumer_check": "leanmill_proof_audit emits a typed receipt that the governance worker consumes; only payloads with all receipts passing become unratified_closure_candidate typed exits.",
+        "credit_boundary": "advisory_only_no_factory_credit; the contract names the receipts that must pass before any credit-ready upgrade."
+      },
+      "dag_search": {
+        "root_status": "closed",
+        "root_resolution": "closure",
+        "closed_or_exact_gap": true,
+        "moves_made": 7,
+        "wallclock_s": 1821.643,
+        "levers": {
+          "n0_root": "closure: node n0_root (root_goal) ratified; propagate to parent / hand typed-exit to governance",
+          "n1_sub_goal_1": "closure: node n1_sub_goal_1 (sub_goal) ratified; propagate to parent / hand typed-exit to governance"
+        },
+        "move_attribution": [
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "native_hammer",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": null,
+            "progress": 0.2,
+            "goals_remaining": 0,
+            "error_class": "tactic_failed",
+            "wallclock_s": 214.59
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "claude_warm",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": null,
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "wallclock_s": 911.45
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "cold_shot_fanout",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": null,
+            "progress": 0.05,
+            "goals_remaining": 0,
+            "error_class": "unknown_identifier",
+            "wallclock_s": 100.53
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "external_frontier_prover",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": null,
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "wallclock_s": 104.2
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "conjecture_lemma",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": "conjecture_no_advance",
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "wallclock_s": 105.77
+          },
+          {
+            "node_id": "n1_sub_goal_1",
+            "node_kind": "sub_goal",
+            "move": "native_hammer",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "residual": null,
+            "progress": 0.2,
+            "goals_remaining": 0,
+            "error_class": "tactic_failed",
+            "wallclock_s": 191.38
+          },
+          {
+            "node_id": "n1_sub_goal_1",
+            "node_kind": "sub_goal",
+            "move": "claude_warm",
+            "kernel_clean": true,
+            "mnc_passed": true,
+            "ratified_close": true,
+            "falsifier": false,
+            "residual": null,
+            "progress": 1.0,
+            "goals_remaining": 0,
+            "error_class": "clean",
+            "wallclock_s": 134.91
+          }
+        ],
+        "trace": [
+          {
+            "event": "cache_reverify_failed",
+            "node_id": "n0_root"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "native_hammer"
+          },
+          {
+            "event": "cache_reverify_failed",
+            "node_id": "n0_root"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "claude_warm"
+          },
+          {
+            "event": "cache_reverify_failed",
+            "node_id": "n0_root"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "cold_shot_fanout"
+          },
+          {
+            "event": "cache_reverify_failed",
+            "node_id": "n0_root"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "external_frontier_prover"
+          },
+          {
+            "event": "cache_reverify_failed",
+            "node_id": "n0_root"
+          },
+          {
+            "event": "conjectured_sub_lemma",
+            "node_id": "n0_root",
+            "move": "conjecture_lemma",
+            "new_node_id": "n1_sub_goal_1",
+            "lever": "conjecture: proposed sub-lemma \u2192 n1_sub_goal_1",
+            "sub_goal_preview": "conjecture_no_advance"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n1_sub_goal_1",
+            "move": "native_hammer"
+          },
+          {
+            "event": "closed",
+            "node_id": "n1_sub_goal_1",
+            "move": "claude_warm",
+            "lever": "closure: node n1_sub_goal_1 (sub_goal) ratified; propagate to parent / hand typed-exit to governance"
+          },
+          {
+            "event": "parent_closed_by_children",
+            "node_id": "n0_root",
+            "via_children": [
+              "n1_sub_goal_1"
+            ]
+          },
+          {
+            "event": "stop",
+            "reason": "root_closed"
+          }
+        ]
       },
       "matched_negative_control": {
         "kind": "context_stripped",
-        "instruction": "governance recompiles proof_text under bare `import Mathlib` (gold-bearing context removed); a closure that still compiles is leakage/paraphrase and is REJECTED by L3 (gold_name_verbatim / lean_closure_laundering)."
-      },
-      "stderr_excerpt": null
+        "executed_at": "solver_layer"
+      }
     }
   ]
 }

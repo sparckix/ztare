@@ -1,24 +1,26 @@
 # Taste — Canonical Series (Ledger-Derived)
 
-_Generated 2026-05-23T22:34:27.699698+00:00_  
+_Generated 2026-06-04T21:24:01.138005+00:00_  
 _Rater:_ `cold_subagent_contextualized`  
 _Source:_ `analytics/public/queries/taste/taste_ledger.json` (full ledger, read-only)  
 _Scope:_ full historical ledger, rater-segregated — NOT sample-scoped  
-_Entries (rater-filtered / total):_ 168 / 222  
-_Weeks observed:_ 8
+_Entries (rater-filtered / total):_ 248 / 302  
+_Weeks observed:_ 10
 
 ## Weekly insight quality
 
 | Week | N | Mean | Max | High-quality (≥4) | Paradigm-shift (≥5) |
 |---|---:|---:|---:|---:|---:|
-| 2026-03-23 | 6 | 1.83 | 2 | 0 | 0 |
-| 2026-03-30 | 25 | 1.44 | 4 | 1 | 0 |
-| 2026-04-06 | 25 | 1.84 | 4 | 2 | 0 |
-| 2026-04-13 | 24 | 2 | 4 | 1 | 0 |
-| 2026-04-20 | 24 | 2.21 | 4 | 5 | 0 |
-| 2026-04-27 | 28 | 2.36 | 4 | 1 | 0 |
-| 2026-05-04 | 27 | 2.78 | 4 | 6 | 0 |
+| 2026-03-23 | 4 | 2 | 2 | 0 | 0 |
+| 2026-03-30 | 27 | 1.63 | 4 | 1 | 0 |
+| 2026-04-06 | 40 | 1.68 | 4 | 3 | 0 |
+| 2026-04-13 | 42 | 2.07 | 4 | 4 | 0 |
+| 2026-04-20 | 32 | 1.81 | 4 | 5 | 0 |
+| 2026-04-27 | 36 | 2.61 | 4 | 4 | 0 |
+| 2026-05-04 | 31 | 2.61 | 4 | 7 | 0 |
 | 2026-05-11 | 9 | 3.11 | 4 | 3 | 0 |
+| 2026-05-25 | 17 | 2.53 | 4 | 3 | 0 |
+| 2026-06-01 | 5 | 1.2 | 2 | 0 | 0 |
 
 ## Top artifact per week
 
@@ -32,6 +34,8 @@ _Weeks observed:_ 8
 | 2026-04-27 | 4 | `memory_entry` | `/projects//memory/feedback_fractal_deanchoring.md` | "de-anchoring is fractal" memory entry: frame-not-code as bug; primer memory entry |
 | 2026-05-04 | 4 | `seam` | `research_areas/private/seams/engine/GP-216f_cross_scale_fractal_map.md` | GP-216f cross-scale fractal: 7 scales × 82 moves empirical finding; load-bearing for primer's GP-216 |
 | 2026-05-11 | 4 | `project_workspace_md` | `projects/neural_hunt/workspace/h136_gpu_burst_synthesis_and_architecture_status_2026_05_12.md` | Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; b |
+| 2026-05-25 | 4 | `concept_doc` | `docs/concepts/cross_scale_fractal_map.md` | Cross-Scale Fractal Map concept doc — names the recurring-vocabulary pattern across scales; load-bea |
+| 2026-06-01 | 2 | `project_workspace_md` | `projects/leanmill_experiments/ns_closures/closure_translation_continuous_of_memLp_two_2026_06_04.md` | LeanMill closure of a translation-continuity helper via an existing Mathlib lemma; honest "not an NS |
 
 ## Rater caveat
 

@@ -1,0 +1,30 @@
+{
+  "vector": "definitional_tautology_self_confirming_metric",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:definitional_tautology_self_confirming_metric",
+  "evidence_mode": "deterministic_detector",
+  "exposing_artifacts": [
+    {
+      "path": "benchmarks/constraint_memory/specimens/bad/self_referential_falsification/test_model.py",
+      "sha": "a172399e263039b8"
+    }
+  ],
+  "runtime_enforcement": {
+    "name": "global_project_sweep_definitional_tautology",
+    "wired": true,
+    "module": "ztare.gates.autoresearch_gaming_gates",
+    "entrypoint": "run_autoresearch_gaming_gates"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python -m ztare.gates.autoresearch_gaming_gates"
+  },
+  "promotion_recommendation": true
+}

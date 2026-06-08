@@ -1,10 +1,10 @@
 {
-  "audit_timestamp_utc": "2026-05-16T21:37:33.341411+00:00",
+  "audit_timestamp_utc": "2026-06-04T21:03:13.412954+00:00",
   "n_candidates": 18,
   "by_source": {
-    "structural_analogies": 9,
     "cross_audit": 8,
-    "synthesis": 1
+    "synthesis": 1,
+    "structural_analogies": 9
   },
   "by_mechanism": {
     "wire_one_shot_as_loop": 9,

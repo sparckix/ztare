@@ -1,0 +1,40 @@
+{
+  "vector": "scope_overclaim_local_to_systemic",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:scope_overclaim_local_to_systemic",
+  "evidence_mode": "judge_carrier",
+  "exposing_artifacts": [
+    {
+      "path": "benchmarks/constraint_memory/stage1_ood/local_gate_whole_system_overclaim/specimen.json",
+      "sha": "b2512fd784c2c8f0"
+    }
+  ],
+  "carrier_receipt": {
+    "vector": "scope_overclaim_local_to_systemic",
+    "carrier_type": "semantic_gaming_carrier",
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "gate_name": "global_semantic_scope_overclaim_carrier",
+    "review_role": "SCOPE_OVERCLAIM_AUDITOR",
+    "fixture": "benchmarks/constraint_memory/stage1_ood/local_gate_whole_system_overclaim",
+    "fixture_detected": true,
+    "good_control_passed": true
+  },
+  "runtime_enforcement": {
+    "name": "global_semantic_scope_overclaim_carrier",
+    "wired": true,
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "entrypoint": "run_semantic_gaming_carrier_gates"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python -m ztare.gates.semantic_gaming_carrier"
+  },
+  "promotion_recommendation": true
+}

@@ -1,431 +1,127 @@
 {
-  "audit_timestamp_utc": "2026-05-16T22:50:25.895552+00:00",
-  "n_samples": 76,
-  "n_cached": 62,
-  "n_new": 14,
+  "audit_timestamp_utc": "2026-06-04T21:03:16.647511+00:00",
+  "n_samples": 91,
+  "n_cached": 9,
+  "n_new": 82,
   "ledger_path": "analytics/public/queries/taste/taste_ledger.json",
   "samples": [
     {
       "sample_id": "SAMPLE_001",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/ns_millennium_hunt/workspace/phase5ds_candidate_cascade_audit.md",
-      "content_sha": "ace63a55d34da9b0",
+      "kind": "evidence_file",
+      "week": "2026-04-13",
+      "source_path": "projects/gp023_planck_sandbox_05/evidence_farther_tail.txt",
+      "content_sha": "a174057d921db1b0",
       "cached": false
     },
     {
       "sample_id": "SAMPLE_002",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/gp037_substrate_swap_01/debate_log_iter_1776008773.md",
-      "content_sha": "28697751eea609dd",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "pint registry crash trace; debug noise",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821342+00:00"
+      "kind": "paper_md",
+      "week": "2026-04-13",
+      "source_path": "papers/case_studies/rank_deficient_bootstrap.md",
+      "content_sha": "1f4973dab1731f40",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_003",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-20",
-      "source_path": "projects/gp165_analogy_architecture_review/raw/starter_failure_modes.md",
-      "content_sha": "514ebf2a0555f341",
-      "cached": true,
-      "cached_score": 4,
-      "cached_rationale": "F1-F8 operator-seeded failure modes for v2.0 with HIGH-severity numerical-magnitude leak; concrete contamination mechanism",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.137042+00:00"
+      "kind": "evidence_ledger",
+      "week": "2026-05-11",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "a889eaad85a97645",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_004",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/gp116_cot_exchange/project_charter.md",
-      "content_sha": "5a249fba84b5b12d",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "Epistemic Verification treatise front matter; lays out the ten-operations decomposition claim",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822644+00:00"
+      "kind": "evidence_ledger",
+      "week": "2026-05-11",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "de847e3d00a62772",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_005",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/gp096_sandbox_18/debate_log_iter_1776637668.md",
-      "content_sha": "390679468d7ee40d",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "wavefunction-pruning ontology debate; speculative but standard",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822821+00:00"
+      "kind": "paper_md",
+      "week": "2026-04-27",
+      "source_path": "papers/experimental_math_letter/draft.md",
+      "content_sha": "59ad26768b52349d",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_006",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/eu_union_failure_probability_2035/history/1775794166_iter0_score_67_eu_union_failure_probability_2035.md",
-      "content_sha": "e61c367389f1d838",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "derived constraints PC-001..PC-005; concrete cataloging of meta-structural failures",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822777+00:00"
+      "kind": "top_level_reasoning",
+      "week": "2026-03-30",
+      "source_path": "README.md",
+      "content_sha": "dca42a3dad9eebd1",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_007",
-      "kind": "raw_evidence_input",
-      "week": "2026-03-30",
-      "source_path": "projects/epistemic_engine_v4/raw/v3_variant_matrix.md",
-      "content_sha": "bc2b2afec20a5942",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.134797+00:00"
+      "kind": "concept_doc",
+      "week": "2026-04-27",
+      "source_path": "docs/concepts/chaos_substrate_primitives.md",
+      "content_sha": "6b6f09de6e31ca98",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_008",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/gp023_planck_sandbox_08/debate_log_iter_1776221747.md",
-      "content_sha": "9cb59b5e7aa3d465",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "Canonical Axiom-Sensitivity Architecture proposal; useful but standard",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821165+00:00"
+      "kind": "top_level_reasoning",
+      "week": "2026-05-04",
+      "source_path": "RELEASE_CHECKLIST.md",
+      "content_sha": "bad086cd0c67aff4",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_009",
-      "kind": "project_workspace_md",
+      "kind": "f_row",
       "week": "2026-05-11",
-      "source_path": "projects/neural_hunt/workspace/h136_gpu_burst_synthesis_and_architecture_status_2026_05_12.md",
-      "content_sha": "58ac94a0fc722653",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "04f7b399638741a7",
       "cached": false
     },
     {
       "sample_id": "SAMPLE_010",
       "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/recursive_bayesian_gpt4o_gemini_no_escalation/debate_log_iter_1775256522.md",
-      "content_sha": "d8b531c98f654444",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "pint registry crash trace; debug noise",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.133559+00:00"
+      "week": "2026-05-25",
+      "source_path": "projects/gp163d_alien_invariant_bridge/workspace/submissions/iter_003_20260503T192220.824146+0000.md",
+      "content_sha": "8ca321d0f9f0dbed",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_011",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/ns_trackb_closure_recursive_strategy/debate_log_iter_1778109678.md",
-      "content_sha": "14c2a7a768462757",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "retired axiom + symbolic mapping for epistemic-engine; useful but routine workspace prose",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820388+00:00"
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260405_084431_hbr_case_method_roi_proxy_C_gates_plus_primitives/evidence.txt",
+      "content_sha": "226177de4000ca6e",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_012",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-20",
-      "source_path": "projects/seattle_tech_housing/raw/evidence_fetch_20260421T034453Z.md",
-      "content_sha": "5ef7a05b9e5975e7",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "manager-agent mandate; useful contract but standard",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822949+00:00"
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/ns_millennium_hunt/workspace/queries/krf_row20_restricted_measurability_source_bridge_receipt_20260602.md",
+      "content_sha": "aca1585edaacf2ac",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_013",
       "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/ns_spike_lifecycle_discriminator/debate_log_iter_1777652075.md",
-      "content_sha": "1aebf81a7033e0e5",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "GPU link-prediction status memo with bootstrap-snapshot gap named; matches primer entry",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821811+00:00"
+      "week": "2026-04-06",
+      "source_path": "projects/recursive_bayesian_gemini_gemini/current_iteration.md",
+      "content_sha": "fbbba74d26435a6b",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_014",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/eu_union_load_bearing_pillars/history/1775741946_iter1_score_67_eu_union_load_bearing_pillars.md",
-      "content_sha": "e77ce286f21e902d",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "NS cycle-resupply bridge charter; standard threshold framing",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822293+00:00"
+      "kind": "concept_doc",
+      "week": "2026-04-13",
+      "source_path": "docs/guides/for_researchers.md",
+      "content_sha": "9ca48d61bd650649",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_015",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/survey_s1/debate_log_iter_1776950661.md",
-      "content_sha": "4136358ac36c0480",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "sandbox 17 charter (duplicate of SAMPLE_011); standard",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821988+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_016",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/gp023_planck_sandbox_01/history/1775911536_iter2_score_70_gp023_planck_sandbox_01.md",
-      "content_sha": "0a8f91dcbe27cb12",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "gp168 weakest-link min() critique; standard adversarial output",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822121+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_017",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-06",
-      "source_path": "projects/eu_union_failure_probability_2035/raw/28_historical_unions_are_upper_tail_comparators_not_direct_rate_transfers.md",
-      "content_sha": "c4adc25c35bfae2d",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "paper README pointer; boilerplate",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821900+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_018",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/eu_union_load_bearing_pillars/thesis.md",
-      "content_sha": "5f7f0d5d330657bc",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "GP-145 SAW \u03bc_sq problem statement; Fields-medal-adjacent target framing (matches primer entry)",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820840+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_019",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/us_tariff_passthrough_2026/debate_log_iter_1776142565.md",
-      "content_sha": "a5badd7d6471a0d5",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "central station debate output; routine",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821253+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_020",
-      "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/figs/history/figs_v2_score_68_old.md",
-      "content_sha": "a11389c7050686a5",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "activist B2B intervention memo; consolidates known",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.135896+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_021",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/central_station/debate_log_iter_1775255970.md",
-      "content_sha": "dd988854cb4c2217",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "central station debate output; routine",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.133485+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_022",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/seattle_tech_housing/history/1776741534_iter0_score_48_seattle_tech_housing.md",
-      "content_sha": "a60ebef1f1f68d74",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "GP-169 consciousness eigenquestion four conditions; sibling to primer GP-168 unfalsifiability",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822032+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_023",
-      "kind": "raw_evidence_input",
-      "week": "2026-05-04",
-      "source_path": "projects/ztare_on_ztare_red_team/raw/01_recursive_gain_candidates_2026-05-07.md",
-      "content_sha": "0e6f7324d854b8b9",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "central station debate score + weakest-point; expected",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820982+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_024",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/epistemic_engine_v4/frozen_stage3_candidate.md",
-      "content_sha": "fb42f150ea2fbd65",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "NS Path A theorem-packet stub; standard",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822553+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_025",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/x_algo_goodhart_audit/debate_log_iter_1778899493.md",
-      "content_sha": "9813cb75e2eb82ae",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_026",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-13",
-      "source_path": "projects/glp1_adoption_economics/raw/web_research_2026_04_13.md",
-      "content_sha": "d8a212b7c6c3174b",
-      "cached": true,
-      "cached_score": 4,
-      "cached_rationale": "GPT-4o non-convergence three-layer mechanism \u2014 primer memory entry; mechanism-revealing",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821715+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_027",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/neural_hunt/workspace/h158_strict_holdout_all_layer_gentle_probe_plan_2026_05_12.md",
-      "content_sha": "19aaa38efb836f66",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_028",
-      "kind": "raw_evidence_input",
-      "week": "2026-05-11",
-      "source_path": "projects/x_algo_goodhart_audit/raw/x_algorithm_src/phoenix_README.md",
-      "content_sha": "0172aa567f8fb120",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "CLAUDE.md pointer to AGENTS.md; pure scaffolding",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820179+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_029",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/ns_proofsearch_finite_stencil_full_closure/workspace/submissions/iter_002_20260503T221120.922210+0000.md",
-      "content_sha": "b04da80bda88d782",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "activist memo on marketing co-pay paradox; consolidates argument",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821208+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_030",
-      "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/simulation_god_gemini_gemini/history/v2_score_20.md",
-      "content_sha": "8453748e02c24c1f",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "informational-parsimony WAP rebuttal; speculative debate",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.136222+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_031",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_results/20260501_141148130171_jaxbg_parity_stopped/debrief.md",
-      "content_sha": "2014b2b843768497",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "adversarial debate strengths for FDM/MPA; standard apparatus output",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820497+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_032",
-      "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/figs/history/v1_score_64.md",
-      "content_sha": "dc262a7b05cc8118",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "activist memo on marketing co-pay paradox; consolidates argument",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.133449+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_033",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/ai_inference_collapse_gemini_gemini/debate_log_iter_1775008955.md",
-      "content_sha": "d6c2f071cf4f9ce1",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "Microsoft-OpenAI channel conflict critique; standard",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.136005+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_034",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/recursive_bayesian_gpt4o_gemini_no_escalation/current_iteration.md",
-      "content_sha": "7c749cc20d082fa4",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "Canonical Axiom-Sensitivity Architecture proposal; useful but standard",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.133412+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_035",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/ztare_on_ztare/debate_log_iter_1776971123.md",
-      "content_sha": "d9888f904424a0c9",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "case-studies README explaining why holdout checks aren't sufficient",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820937+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_036",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/ztare_on_ztare/workspace/gp220_analytic_nt_validation/2605.00759/raw_moves.md",
-      "content_sha": "35e9f949a30bdefd",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "gp154 holdout JSON dump; data only",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821561+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_037",
       "kind": "evidence_file",
       "week": "2026-03-30",
-      "source_path": "projects/_bench_20260405_084431_ai_inference_internal_price_floor_B_deterministic_gates/evidence.txt",
+      "source_path": "projects/_bench_20260405_174457_t2_ai_inference_B_deterministic_gates/evidence.txt",
       "content_sha": "b291ab56d19d8687",
       "cached": true,
       "cached_score": 2,
@@ -434,335 +130,259 @@
       "cached_rated_at": "2026-05-06T21:03:15.133595+00:00"
     },
     {
-      "sample_id": "SAMPLE_038",
-      "kind": "project_workspace_md",
+      "sample_id": "SAMPLE_016",
+      "kind": "evidence_ledger",
+      "week": "2026-05-18",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "f36198f0f5bab3e9",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_017",
+      "kind": "concept_doc",
       "week": "2026-04-13",
-      "source_path": "projects/gp023_planck_sandbox_04/current_iteration.md",
-      "content_sha": "c1f403292dfc2878",
+      "source_path": "docs/guides/experiment_cookbook.md",
+      "content_sha": "82e7d0cc10fd13fc",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_018",
+      "kind": "evidence_ledger",
+      "week": "2026-05-18",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "4c85addc64d9bc85",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_019",
+      "kind": "f_row",
+      "week": "2026-05-11",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "6460770fa848b671",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_020",
+      "kind": "evidence_file",
+      "week": "2026-05-04",
+      "source_path": "projects/ns_proofsearch_low_high_operator_norm_bridge/evidence_holdout.txt",
+      "content_sha": "44ab471659af5afb",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_021",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_09_1880s_meta_meta_vocab_mapping.md",
+      "content_sha": "4f8cf85932102023",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_022",
+      "kind": "f_row",
+      "week": "2026-04-13",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "79287324a38b5d42",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_023",
+      "kind": "f_row",
+      "week": "2026-04-27",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "3d3c09bd1689f06e",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_024",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260404_205204_t3_tsmc_B_deterministic_gates/evidence.txt",
+      "content_sha": "c64c5a678febfd8d",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_025",
+      "kind": "concept_doc",
+      "week": "2026-05-04",
+      "source_path": "docs/guides/org_runtime_quickstart.md",
+      "content_sha": "9dfcd145b2980fa6",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_026",
+      "kind": "f_row",
+      "week": "2026-04-20",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "0afcd1900bf99141",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_027",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260405_174457_t2_ai_inference_C_gates_plus_primitives/evidence.txt",
+      "content_sha": "b291ab56d19d8687",
       "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "failed-assert sandbox debate; trivial",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821296+00:00"
+      "cached_score": 2,
+      "cached_rationale": "LOAD-BEARING VARIABLES table for inference pricing; useful evidence consolidation",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.133595+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_028",
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/llm_forecasting_calibration_program/nurture_intervention_v1/workspace/n1_nurture_intervention_score_report.md",
+      "content_sha": "f47b014d2246873b",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_029",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/gp118_persona_neutral/evidence_farther_tail.txt",
+      "content_sha": "c114e5bd246259ee",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_030",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260404_204413_t4_simulation_god_B_deterministic_gates/evidence.txt",
+      "content_sha": "04985e1d1cf412c1",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_031",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/ns_proofsearch_alien_invariant_bridge/current_iteration.md",
+      "content_sha": "e980c4f40fca29ce",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_032",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/gp163d_DM/frozen_1777226455/workspace/mutator_briefing_iter_002.md",
+      "content_sha": "3f9775720ad4c938",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_033",
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/leanmill_experiments/ns_closures/closure_translation_continuous_of_memLp_two_2026_06_04.md",
+      "content_sha": "7d5f720d6eaf8815",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_034",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/ai_inference_collapse_gemini_gemini/history/v8_score_90.md",
+      "content_sha": "a27705bb29947dfe",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_035",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260404_205204_t5_epistemic_engine_A_baseline_soft_judge/evidence.txt",
+      "content_sha": "3dec73a1213c65fd",
+      "cached": true,
+      "cached_score": 3,
+      "cached_rationale": "epistemic-engine current state + open problems table; sharp framing of v1/v2 with score asymptote",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.134462+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_036",
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/ns_millennium_hunt/workspace/queries/krf_phaseA_uniform_mlg2_source_contract_receipt_20260604.md",
+      "content_sha": "d36fd9cef193fbc5",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_037",
+      "kind": "concept_doc",
+      "week": "2026-05-04",
+      "source_path": "docs/concepts/ztare_research_company_architecture.md",
+      "content_sha": "03330bed6456927a",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_038",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260405_164920_t1_recursive_bayesian_C_gates_plus_primitives/evidence.txt",
+      "content_sha": "68f72e4b522c5b62",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_039",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/gp163d_MG/archive_pre_xfamily_1777226521/history/1777211826_iter4_score_40_gp163d_unified_accel.md",
-      "content_sha": "483d0e57602ec363",
+      "kind": "evidence_file",
+      "week": "2026-05-04",
+      "source_path": "projects/human_ai_interaction_primitive/evidence.txt",
+      "content_sha": "4292e00904dfe414",
       "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "malformed function call boilerplate; sentinel",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822467+00:00"
+      "cached_score": 3,
+      "cached_rationale": "five-mode interaction-primitive taxonomy (M1-M5); sharp framing for human_ai_interaction substrate",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.133299+00:00"
     },
     {
       "sample_id": "SAMPLE_040",
       "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/epistemic_engine_v4/debate_log_iter_1775433220.md",
-      "content_sha": "5d2a80f918719996",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "epistemic_engine_v4 anti-hallucination ExploitFamilyTag bifurcation mechanism",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.137006+00:00"
+      "week": "2026-05-25",
+      "source_path": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260524T_cone_localized_affine_packet_geometry_source/20260524T120839Z_ConeLocalizedAffinePacketGeometrySource_angularCutoffBoundaryInvoicePaid/pack.md",
+      "content_sha": "5e5567ec7f2c19c1",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_041",
       "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/simulation_god_gemini_gemini/history/v2_score_45.md",
-      "content_sha": "7b0f5ac1d2d3934f",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "wavefunction-pruning ontology debate; speculative but standard",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.134983+00:00"
+      "week": "2026-06-01",
+      "source_path": "projects/llm_forecasting_calibration_program/cutoff_validity_v1/workspace/cutoff_second_source_void_miner_report.md",
+      "content_sha": "879f36420fa5c0fe",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_042",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-27",
-      "source_path": "projects/gp163d_unified_accel/raw/dark_dataset_udg/post_shear_audit_3d_pivot_takeaway.md",
-      "content_sha": "90aa41967419c394",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "tariff pass-through evidence consolidation; useful but expected",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821603+00:00"
+      "kind": "evidence_ledger",
+      "week": "2026-05-11",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "4781eb117981598f",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_043",
-      "kind": "project_workspace_md",
+      "kind": "evidence_file",
       "week": "2026-04-20",
-      "source_path": "projects/gp163d_unified_accel/archive_pre_xfamily_1777226521/workspace/submissions/iter_001_20260426T171634.189019+0000.md",
-      "content_sha": "6cfff5a12599eaff",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "gp154 holdout JSON dump; data only",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821763+00:00"
+      "source_path": "projects/gp159_retrieval_trap/evidence.txt",
+      "content_sha": "61519cc51ef8a2d9",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_044",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-06",
-      "source_path": "projects/eu_union_load_bearing_pillars/raw/12_us_supremacy_clause_comparator.md",
-      "content_sha": "388172daa6df58e5",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "AlphaSense query stub; raw input scaffold",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821431+00:00"
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/llm_forecasting_calibration_program/cutoff_validity_v1/workspace/cutoff_polymarket_candidate_review_report.md",
+      "content_sha": "56efde9b77bb27df",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_045",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/x_algo_goodhart_audit/_run1_archive/debate_log_iter_1778893915.md",
-      "content_sha": "b9ba26390335d4d4",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/riemann_li/evidence_rotated_diff(z).txt",
+      "content_sha": "163ace93efff3f92",
       "cached": false
     },
     {
       "sample_id": "SAMPLE_046",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/simulation_god_gemini_gemini/debate_log_iter_1774885636.md",
-      "content_sha": "cae33367b4248e87",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "malformed function call boilerplate; sentinel",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.134686+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_047",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_15_GPT55Pro_asymptotic_super_typeI_sparse_cascade_closure.md",
-      "content_sha": "e8260d940fb6d929",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_048",
-      "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/figs/history/v3_score_82.md",
-      "content_sha": "298b1cc9253bb5fa",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "activist memo prose; consolidates known activist arguments",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.132751+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_049",
-      "kind": "raw_evidence_input",
-      "week": "2026-05-04",
-      "source_path": "projects/ztare_on_ztare_v3_meta_recursive/raw/v2_run_history/1778107134_iter2_score_44_ztare_on_ztare_v2_expanded_scope.md",
-      "content_sha": "0cf921f7bcb3c526",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "sandbox debate output with gate JSON; routine",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822164+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_050",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/neural_hunt/workspace/h99_h73_8step_residual_cell_feature_analysis_2026_05_11.md",
-      "content_sha": "cab55157b8a3f73a",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_051",
-      "kind": "concept_doc",
-      "week": "2026-05-11",
-      "source_path": "docs/concepts/agentic_engineering_patterns.md",
-      "content_sha": "295361fb7d96a645",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_052",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/ns_millennium_hunt/workspace/phase5n_stall_law_audit.md",
-      "content_sha": "0c3fbb28b2789c05",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_053",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/ns_proofsearch_leray_convexity_trackb/history/1777908097_iter1_score_82_ns_proofsearch_leray_convexity_trackb.md",
-      "content_sha": "7fcf4f364eb3606e",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "Cognitive Gym intro framing \u2014 squat-rack analogy + LLM-good/LLM-bad division; sharp framing",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822423+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_054",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/gp163d_DM/archive_run1_contaminated/debate_log_iter_1777165845.md",
-      "content_sha": "7ea3339889b961e9",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "debate output describing failed thesis; routine",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820891+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_055",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/recursive_bayesian_gpt4o_gemini_no_escalation/debate_log_iter_1775256712.md",
-      "content_sha": "c8a7eb201a3166e6",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "debate output describing failed thesis; routine",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.133034+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_056",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/human_ai_interaction_primitive/workspace/submissions/iter_007_20260506T172801.596906+0000.md",
-      "content_sha": "795abd872c010069",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "raw evidence dump for sandbox; data only",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820447+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_057",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/ns_millennium_hunt/workspace/route1_active_tail_singular_part_control_20260514.md",
-      "content_sha": "5de21963568415b9",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_058",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/ns_proofsearch_constructive/workspace/submissions/iter_002_20260502T211445.486448+0000.md",
-      "content_sha": "48bffc36c7aaf44e",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "duplicate harness-defect 0 score; near-identical to SAMPLE_038",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822734+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_059",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/ztare_on_ztare_v2_expanded_scope/debate_log_iter_1778108140.md",
-      "content_sha": "33a7171a8687033e",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "single verified-axiom fact; sentinel-grade",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820596+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_060",
-      "kind": "project_workspace_md",
-      "week": "2026-05-11",
-      "source_path": "projects/ns_millennium_hunt/workspace/route1_n8_inversion_nonroute_branch_packet_20260514.md",
-      "content_sha": "2da65748da4d13e5",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_061",
-      "kind": "project_workspace_md",
-      "week": "2026-03-30",
-      "source_path": "projects/ai_inference_collapse_gemini_gemini/debate_log_iter_1775007590.md",
-      "content_sha": "dfead78370729b76",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "OpenAI sign-flip critique in falsification suite; standard auditor output",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.135500+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_062",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/gp077_a002865_01/thesis.md",
-      "content_sha": "5ec69af013468d4c",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "failed-assert sandbox; routine",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.823082+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_063",
-      "kind": "project_workspace_md",
-      "week": "2026-03-23",
-      "source_path": "projects/simulation_god_gemini_gemini/history/v3_score_25.md",
-      "content_sha": "19cf63e80b83948e",
-      "cached": true,
-      "cached_score": 1,
-      "cached_rationale": "Riemannian-manifold qualia rectification; speculative",
-      "cached_rater": "cold_subagent_contextualized",
-      "cached_rated_at": "2026-05-06T21:03:15.137869+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_064",
-      "kind": "project_workspace_md",
-      "week": "2026-05-04",
-      "source_path": "projects/ns_millennium_hunt/workspace/research_notes/ns_trackb_numeric_liminf_divide_conquer.md",
-      "content_sha": "6aad0005bd08a0df",
-      "cached": false
-    },
-    {
-      "sample_id": "SAMPLE_065",
-      "kind": "project_workspace_md",
-      "week": "2026-04-06",
-      "source_path": "projects/epistemic_engine_v4_bridge_hardening/debate_log_iter_1775501638.md",
-      "content_sha": "6e517d028627cc31",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "V3 variant matrix postmortem named \"Bayesian decay rule\" + domain-leakage findings; sharp findings",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822599+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_066",
-      "kind": "project_workspace_md",
-      "week": "2026-04-27",
-      "source_path": "projects/gp210_consciousness_theory/workspace/submissions/iter_006_20260503T224045.295456+0000.md",
-      "content_sha": "56513e9e29e2e80d",
-      "cached": true,
-      "cached_score": 0,
-      "cached_rationale": "trivial axiom string; sentinel",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822907+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_067",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-27",
-      "source_path": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_diagnostics/gpu_gamma0p25_L4p0_n128_20260430/minimal_aqual_sandbox_summary_gpu_normalface_boxL4p0_n128_gamma0p25_rot45_stencilinv.md",
-      "content_sha": "ab70fa15e2645648",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "Paper 8 outline names tier-1 collinearity-trap finding + Havrilla-Liao form",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.820648+00:00"
-    },
-    {
-      "sample_id": "SAMPLE_068",
       "kind": "project_workspace_md",
       "week": "2026-04-13",
       "source_path": "projects/gp023_planck_sandbox_06/_frozen_reference/GP-023_sandbox06_identifiability_hardening_seam.md",
@@ -774,91 +394,379 @@
       "cached_rated_at": "2026-05-16T20:34:44.821073+00:00"
     },
     {
-      "sample_id": "SAMPLE_069",
+      "sample_id": "SAMPLE_047",
+      "kind": "paper_md",
+      "week": "2026-06-01",
+      "source_path": "papers/epistemic-generation/evidence/README.md",
+      "content_sha": "54bcb99fb431eaab",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_048",
+      "kind": "evidence_file",
+      "week": "2026-04-13",
+      "source_path": "projects/gp023_crucial_03/evidence.txt",
+      "content_sha": "2cdf8ed11e1d13cb",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_049",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/eu_union_failure_probability_2035/project_charter.md",
+      "content_sha": "85c10811ec3d619d",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_050",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/ns_trackb_closure_recursive_strategy/debate_log_iter_1778113954.md",
+      "content_sha": "9bc7d51dac3d9b35",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_051",
+      "kind": "seam",
+      "week": "2026-06-01",
+      "source_path": "research_areas/private/seams/apparatus/instrumentation/GP-236_p0_metrics_rollup_seam.md",
+      "content_sha": "59bf301ad31604d6",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_052",
+      "kind": "f_row",
+      "week": "2026-05-11",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "6afde2aaa8514b1f",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_053",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/simulation_god_gemini_gemini/history/v2_score_57.md",
+      "content_sha": "8018ec34380d0c8c",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_054",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260404_205204_t4_simulation_god_A_baseline_soft_judge/evidence.txt",
+      "content_sha": "04985e1d1cf412c1",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_055",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/gp116_cot_exchange/evidence_L7_8.txt",
+      "content_sha": "831dc2d81570f39f",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_056",
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/krf_row20_elpnorm_upstream_producer_after_discriminator_fix/20260601T005715Z_KRF_row20_LinkedKRFELpNormProducerOutput_from_unary_mollifier_rate_approximation_and_smoothed_pairwise_Arzela_Cantor_sou/pack.md",
+      "content_sha": "3ddd534d0eb40898",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_057",
+      "kind": "evidence_file",
+      "week": "2026-04-27",
+      "source_path": "projects/gp210_consciousness_theory/evidence.txt",
+      "content_sha": "2d207625c50f366f",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_058",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/ns_millennium_hunt/workspace/queries/tick668_level424_definitional_threshold_transaction_channel_pencil.md",
+      "content_sha": "f5e91a6f3317f384",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_059",
+      "kind": "evidence_file",
+      "week": "2026-04-13",
+      "source_path": "projects/gp023_planck_sandbox_04/evidence_holdout.txt",
+      "content_sha": "163595cc9ea645d7",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_060",
+      "kind": "evidence_file",
+      "week": "2026-03-30",
+      "source_path": "projects/_bench_20260404_200225_t1_recursive_bayesian_A_baseline_soft_judge/evidence.txt",
+      "content_sha": "68f72e4b522c5b62",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_061",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/survey_s1/evidence_rotated_diff(z).txt",
+      "content_sha": "1a88b6478d29eb3a",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_062",
+      "kind": "paper_md",
+      "week": "2026-04-13",
+      "source_path": "papers/case_studies/README.md",
+      "content_sha": "84507b27e25d2349",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_063",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/backtest_sqrt_over_log_pure/evidence_holdout.txt",
+      "content_sha": "073fcb59a508b968",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_064",
+      "kind": "paper_md",
+      "week": "2026-05-04",
+      "source_path": "papers/cognitive-camouflage/draft.md",
+      "content_sha": "26da40da38b682e2",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_065",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/gp163d_DM/frozen_1777226455/evidence.txt",
+      "content_sha": "4b1bda839f42493b",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_066",
+      "kind": "evidence_file",
+      "week": "2026-04-27",
+      "source_path": "projects/ns_proofsearch_residual_defect_packet_certificate/evidence.txt",
+      "content_sha": "8070dfcd4ca7ddac",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_067",
       "kind": "project_workspace_md",
       "week": "2026-05-04",
-      "source_path": "projects/neural_hunt/workspace/cross_family_fixed_online_group_audit_2026_05_08.md",
-      "content_sha": "447441b7b1449d1e",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "skeptic-director-as-research-scientist-role correction; matches primer memory entry",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822689+00:00"
+      "source_path": "projects/ns_millennium_hunt/workspace/research_notes/business_framing_meta_darwin_strange_loop_2026_05_08.md",
+      "content_sha": "a8540e978c4fd758",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_068",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/ai_inference_collapse_gemini_gemini/history/v2_score_65.md",
+      "content_sha": "72fe17f8e5592edb",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_069",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/backtest_sqrt_n_times_log/evidence.txt",
+      "content_sha": "9819fd0abbaf6d04",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_070",
       "kind": "project_workspace_md",
       "week": "2026-04-06",
-      "source_path": "projects/gp023_planck_sandbox_01/debate_log_iter_1775881797.md",
-      "content_sha": "def37b3b7dafd2a0",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "gp023 debate score 88; standard apparatus state",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821027+00:00"
+      "source_path": "projects/simulation_god_gemini_gemini/history/v1_score_50.md",
+      "content_sha": "2d1f56e6115a1236",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_071",
-      "kind": "project_workspace_md",
+      "kind": "f_row",
       "week": "2026-04-27",
-      "source_path": "projects/ns_millennium_hunt/workspace/phase5br_5bq_failure_mode_audit.md",
-      "content_sha": "b2c005c87a015af4",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "e29eb9b16fcf30eb",
       "cached": false
     },
     {
       "sample_id": "SAMPLE_072",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/gp090_01/workspace/derived_constraints_brief.md",
-      "content_sha": "fc9e3867036f7f67",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "gp163d universality pre-commit with farther-tail diagnostic gap; sharp critique",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.823040+00:00"
+      "kind": "raw_evidence_input",
+      "week": "2026-05-25",
+      "source_path": "projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/remote_results/20260430_20920158139_latest_download/projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/GRAVITY_STATUS_2026-04-30.md",
+      "content_sha": "5576da5ab7c95a60",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_073",
-      "kind": "raw_evidence_input",
-      "week": "2026-04-13",
-      "source_path": "projects/glp1_adoption_economics/raw/evidence_fetch_20260414T005026Z.md",
-      "content_sha": "3da8f4ac8a0be487",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "seams cabinet structure; useful organization scaffold",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822078+00:00"
+      "kind": "project_workspace_md",
+      "week": "2026-06-01",
+      "source_path": "projects/leanmill_experiments/ns_closures/closure_KRF_mollifier_arzela_bridge_report_2026_06_03.md",
+      "content_sha": "47bd94a3a2829891",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_074",
-      "kind": "project_workspace_md",
-      "week": "2026-04-20",
-      "source_path": "projects/gp145_saw_mu_square/history/1777036455_iter10_score_56_gp145_saw_mu_square.md",
-      "content_sha": "3347f85d48e7d75b",
-      "cached": true,
-      "cached_score": 2,
-      "cached_rationale": "sandbox 17 KWW pre-registration with discriminator points; standard division-A artifact",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.822864+00:00"
+      "kind": "f_row",
+      "week": "2026-05-04",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "e8bd47828c8532a6",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_075",
-      "kind": "project_workspace_md",
-      "week": "2026-04-13",
-      "source_path": "projects/gp023_planck_sandbox_03/history/1776046185_iter0_score_0_gp023_planck_sandbox_03.md",
-      "content_sha": "55edcdc7431e698d",
-      "cached": true,
-      "cached_score": 3,
-      "cached_rationale": "GP-139 Lean CI hardening pre-registration with 4 specific axiom-allowlist hardenings",
-      "cached_rater": "cold_subagent",
-      "cached_rated_at": "2026-05-16T20:34:44.821663+00:00"
+      "kind": "evidence_file",
+      "week": "2026-04-27",
+      "source_path": "projects/gp116c_managerial_debt_successor_design/evidence.txt",
+      "content_sha": "cddbc07b4e1aba1f",
+      "cached": false
     },
     {
       "sample_id": "SAMPLE_076",
-      "kind": "project_workspace_md",
+      "kind": "raw_evidence_input",
+      "week": "2026-05-25",
+      "source_path": "projects/ztare_on_ztare_v2_expanded_scope/raw/01_recursive_gain_candidates_2026-05-06.md",
+      "content_sha": "0e6f7324d854b8b9",
+      "cached": true,
+      "cached_score": 2,
+      "cached_rationale": "central station debate score + weakest-point; expected",
+      "cached_rater": "cold_subagent",
+      "cached_rated_at": "2026-05-16T20:34:44.820982+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_077",
+      "kind": "concept_doc",
+      "week": "2026-04-13",
+      "source_path": "docs/guides/workflow.md",
+      "content_sha": "b1132a714b4d3472",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_078",
+      "kind": "evidence_ledger",
+      "week": "2026-04-27",
+      "source_path": "research_areas/insights_ledger.md",
+      "content_sha": "d6150e20f93f2675",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_079",
+      "kind": "evidence_ledger",
+      "week": "2026-05-18",
+      "source_path": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",
+      "content_sha": "f7f935985d365cf3",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_080",
+      "kind": "f_row",
       "week": "2026-05-04",
-      "source_path": "projects/ns_millennium_hunt/workspace/research_notes/axisym_with_swirl_liouville_attack_2026_05_07.md",
-      "content_sha": "7c99f06a21e0267a",
+      "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md",
+      "content_sha": "807ddabbb56ef1c4",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_081",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/eu_union_failure_probability_2035/raw/18_structured_expert_judgment_for_probability_calibration.md",
+      "content_sha": "49c8fc8c1b839063",
+      "cached": true,
+      "cached_score": 2,
+      "cached_rationale": "uncertainty elicitation source notes; useful but standard",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.134611+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_082",
+      "kind": "concept_doc",
+      "week": "2026-04-27",
+      "source_path": "docs/concepts/cognitive_gym.md",
+      "content_sha": "d11f7cd8d14dddd3",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_083",
+      "kind": "raw_evidence_input",
+      "week": "2026-04-06",
+      "source_path": "projects/figs_hbs_turnaround_2026/raw/Interviews/More AlphaSense insights.md",
+      "content_sha": "d0aee486d2eb6b5b",
+      "cached": true,
+      "cached_score": 1,
+      "cached_rationale": "AlphaSense query stub; raw input scaffold",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.133710+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_084",
+      "kind": "evidence_file",
+      "week": "2026-05-11",
+      "source_path": "projects/x_algo_goodhart_audit/evidence.txt",
+      "content_sha": "643071a4270e4b15",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_085",
+      "kind": "evidence_file",
+      "week": "2026-03-23",
+      "source_path": "projects/figs/evidence.txt",
+      "content_sha": "0607225db86356f6",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_086",
+      "kind": "evidence_file",
+      "week": "2026-04-27",
+      "source_path": "projects/gp116b_transformer_successor/evidence.txt",
+      "content_sha": "8124285660aef328",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_087",
+      "kind": "project_workspace_md",
+      "week": "2026-05-25",
+      "source_path": "projects/ztare_on_ztare/debate_log_iter_1776969071.md",
+      "content_sha": "85e8ae4371cac5a7",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_088",
+      "kind": "raw_evidence_input",
+      "week": "2026-04-06",
+      "source_path": "projects/eu_union_load_bearing_pillars/raw/00_collection_plan.md",
+      "content_sha": "d2e0bed591ad5622",
+      "cached": true,
+      "cached_score": 2,
+      "cached_rationale": "EU evidence-collection plan; useful scaffold",
+      "cached_rater": "cold_subagent_contextualized",
+      "cached_rated_at": "2026-05-06T21:03:15.136612+00:00"
+    },
+    {
+      "sample_id": "SAMPLE_089",
+      "kind": "evidence_file",
+      "week": "2026-04-20",
+      "source_path": "projects/mlh_f2/evidence.txt",
+      "content_sha": "d20d32175358c6f5",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_090",
+      "kind": "project_workspace_md",
+      "week": "2026-04-06",
+      "source_path": "projects/eu_union_failure_probability_2035/raw/16_discretionary_resilience_buys_time_not_permanence.md",
+      "content_sha": "5f72deca393d1bab",
+      "cached": false
+    },
+    {
+      "sample_id": "SAMPLE_091",
+      "kind": "paper_md",
+      "week": "2026-05-04",
+      "source_path": "papers/adversarial-precedent-memory/draft.md",
+      "content_sha": "8a2dc9f05450f5c5",
       "cached": false
     }
   ]

@@ -1,11 +1,11 @@
 {
-  "audit_timestamp_utc": "2026-05-23T22:34:27.699698+00:00",
+  "audit_timestamp_utc": "2026-06-04T21:24:01.138005+00:00",
   "source": "analytics/public/queries/taste/taste_ledger.json",
   "rater": "cold_subagent_contextualized",
   "scope": "full historical ledger, rater-segregated \u2014 NOT sample-scoped",
-  "n_entries_in_ledger": 222,
-  "n_entries_for_rater": 168,
-  "n_samples_with_ratings": 168,
+  "n_entries_in_ledger": 302,
+  "n_entries_for_rater": 248,
+  "n_samples_with_ratings": 243,
   "weeks_observed": [
     "2026-03-23",
     "2026-03-30",
@@ -14,29 +14,31 @@
     "2026-04-20",
     "2026-04-27",
     "2026-05-04",
-    "2026-05-11"
+    "2026-05-11",
+    "2026-05-25",
+    "2026-06-01"
   ],
   "weekly_stats": {
     "2026-04-06": {
-      "n_rated": 25,
-      "mean_score": 1.84,
+      "n_rated": 40,
+      "mean_score": 1.68,
       "max_score": 4,
-      "n_high_quality_ge4": 2,
+      "n_high_quality_ge4": 3,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
-        "0": 3,
-        "1": 7,
-        "2": 8,
-        "3": 5,
-        "4": 2,
+        "0": 8,
+        "1": 9,
+        "2": 14,
+        "3": 6,
+        "4": 3,
         "5": 0
       },
       "by_kind_mean": {
         "top_level_reasoning": 0,
         "evidence_file": 1.5,
-        "project_workspace_md": 1.44,
+        "project_workspace_md": 1.5,
+        "paper_md": 1.17,
         "raw_evidence_input": 1.67,
-        "paper_md": 1.5,
         "seam": 3.33,
         "project_charter": 2,
         "memory_entry": 3.5,
@@ -57,35 +59,37 @@
         },
         {
           "kind": "project_workspace_md",
-          "score": 3,
-          "rationale": "Stage 5 information-yield controller distinguishing flat-score classes; sharp framing",
-          "source_path": "projects/epistemic_engine_v4/_archive/pre_stage6_reseed_thesis.md"
+          "score": 4,
+          "rationale": "Reframe: the enterprise compliance moat is a property of the compute provider's VPC, not the model weights \u2014 explains why the prior switching-cost thesis auto-failed and repivots the attack surface.",
+          "source_path": "projects/ai_inference_collapse_gemini_gemini/history/v8_score_90.md"
         }
       ]
     },
     "2026-04-13": {
-      "n_rated": 24,
-      "mean_score": 2,
+      "n_rated": 42,
+      "mean_score": 2.07,
       "max_score": 4,
-      "n_high_quality_ge4": 1,
+      "n_high_quality_ge4": 4,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
-        "0": 0,
-        "1": 6,
-        "2": 13,
-        "3": 4,
-        "4": 1,
+        "0": 3,
+        "1": 9,
+        "2": 16,
+        "3": 10,
+        "4": 4,
         "5": 0
       },
       "by_kind_mean": {
         "seam": 2.67,
-        "evidence_file": 1.5,
+        "evidence_file": 0.6,
         "project_workspace_md": 1.64,
         "memory_entry": 3.5,
-        "paper_md": 2,
+        "paper_md": 3,
         "raw_evidence_input": 2.33,
         "verified_axiom": 1,
-        "project_charter": 2
+        "project_charter": 2,
+        "f_row": 2.67,
+        "concept_doc": 1.67
       },
       "top_3_artifacts": [
         {
@@ -95,40 +99,40 @@
           "source_path": "/projects//memory/project_invert_compress_primitives.md"
         },
         {
-          "kind": "seam",
-          "score": 3,
-          "rationale": "GP-036 names a concrete reuse contract violation in supervisor seam (95% reimplementation vs 70% promised)",
-          "source_path": "research_areas/private/seams/apparatus/supervisor/GP-036_findings_runner_supervisor_convergence_seam.md"
+          "kind": "paper_md",
+          "score": 4,
+          "rationale": "Mechanism: bootstrap-under-noise identifiability check passes a secretly rank-5 family while adversarial multi-start catches it (params diverge >150%, ratio agrees to machine precision); transferable ",
+          "source_path": "papers/case_studies/rank_deficient_bootstrap.md"
         },
         {
-          "kind": "raw_evidence_input",
-          "score": 3,
-          "rationale": "Epistemic Verification treatise front matter; lays out the ten-operations decomposition claim",
-          "source_path": "projects/treatise_rule0_self_pass/raw/treatise_principles_of_epistemic_verification.md"
+          "kind": "f_row",
+          "score": 4,
+          "rationale": "Zero-cost rival baseline (row_type+intervention mean) PASSES the old absolute gates \u2014 shows the gate measured nothing; hardens it. Mechanism-revealing apparatus catch.",
+          "source_path": "research_areas/EXPERIMENT_TRACK_RECORD.md"
         }
       ]
     },
     "2026-03-30": {
-      "n_rated": 25,
-      "mean_score": 1.44,
+      "n_rated": 27,
+      "mean_score": 1.63,
       "max_score": 4,
       "n_high_quality_ge4": 1,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
-        "0": 8,
+        "0": 7,
         "1": 4,
-        "2": 8,
-        "3": 4,
+        "2": 9,
+        "3": 6,
         "4": 1,
         "5": 0
       },
       "by_kind_mean": {
-        "project_workspace_md": 1.73,
+        "project_workspace_md": 1.7,
         "verified_axiom": 0.29,
-        "evidence_file": 2.5,
+        "evidence_file": 2,
         "memory_entry": 3.5,
-        "paper_md": 0,
-        "raw_evidence_input": 3
+        "raw_evidence_input": 3,
+        "top_level_reasoning": 3
       },
       "top_3_artifacts": [
         {
@@ -152,21 +156,22 @@
       ]
     },
     "2026-03-23": {
-      "n_rated": 6,
-      "mean_score": 1.83,
+      "n_rated": 4,
+      "mean_score": 2,
       "max_score": 2,
       "n_high_quality_ge4": 0,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
         "0": 0,
-        "1": 1,
-        "2": 5,
+        "1": 0,
+        "2": 4,
         "3": 0,
         "4": 0,
         "5": 0
       },
       "by_kind_mean": {
-        "project_workspace_md": 1.83
+        "project_workspace_md": 2,
+        "evidence_file": 2
       },
       "top_3_artifacts": [
         {
@@ -184,34 +189,34 @@
         {
           "kind": "project_workspace_md",
           "score": 2,
-          "rationale": "wavefunction-pruning ontology debate; speculative but standard",
-          "source_path": "projects/simulation_god_gemini_gemini/history/v2_score_45.md"
+          "rationale": "activist B2B intervention memo; consolidates known",
+          "source_path": "projects/figs/history/figs_v2_score_68_old.md"
         }
       ]
     },
     "2026-04-27": {
-      "n_rated": 28,
-      "mean_score": 2.36,
+      "n_rated": 36,
+      "mean_score": 2.61,
       "max_score": 4,
-      "n_high_quality_ge4": 1,
+      "n_high_quality_ge4": 4,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
         "0": 0,
-        "1": 5,
-        "2": 9,
-        "3": 13,
-        "4": 1,
+        "1": 4,
+        "2": 10,
+        "3": 18,
+        "4": 4,
         "5": 0
       },
       "by_kind_mean": {
         "paper_md": 3,
-        "concept_doc": 1.5,
-        "project_workspace_md": 2.18,
+        "project_workspace_md": 2.25,
         "seam": 2.67,
         "project_charter": 2,
+        "concept_doc": 3,
         "memory_entry": 3.5,
-        "raw_evidence_input": 2.33,
-        "evidence_file": 3,
+        "raw_evidence_input": 2.5,
+        "evidence_file": 3.17,
         "verified_axiom": 1
       },
       "top_3_artifacts": [
@@ -222,88 +227,41 @@
           "source_path": "/projects//memory/feedback_fractal_deanchoring.md"
         },
         {
-          "kind": "paper_md",
-          "score": 3,
-          "rationale": "Paper 8 outline names tier-1 collinearity-trap finding + Havrilla-Liao form",
-          "source_path": "papers/paper8_archive_pre_reembed_2026_05_02/outline.md"
+          "kind": "concept_doc",
+          "score": 4,
+          "rationale": "Mechanism: positive-Lyapunov divergence makes pointwise trajectory-RMS reject the TRUE generator (measures butterfly effect not the ODE); bans a whole fitness form with a quantified bound.",
+          "source_path": "docs/concepts/chaos_substrate_primitives.md"
         },
         {
-          "kind": "seam",
-          "score": 3,
-          "rationale": "GP-169 consciousness eigenquestion four conditions; sibling to primer GP-168 unfalsifiability",
-          "source_path": "research_areas/private/seams/mission/GP-169_consciousness_decision_protocol_seam.md"
-        }
-      ]
-    },
-    "2026-05-04": {
-      "n_rated": 27,
-      "mean_score": 2.78,
-      "max_score": 4,
-      "n_high_quality_ge4": 6,
-      "n_paradigm_shift_ge5": 0,
-      "score_distribution": {
-        "0": 0,
-        "1": 3,
-        "2": 6,
-        "3": 12,
-        "4": 6,
-        "5": 0
-      },
-      "by_kind_mean": {
-        "paper_md": 3,
-        "evidence_file": 3,
-        "seam": 4,
-        "project_workspace_md": 2.5,
-        "memory_entry": 3.5,
-        "project_charter": 2,
-        "concept_doc": 3.5,
-        "top_level_reasoning": 1,
-        "verified_axiom": 2
-      },
-      "top_3_artifacts": [
-        {
-          "kind": "seam",
+          "kind": "evidence_file",
           "score": 4,
-          "rationale": "GP-216f cross-scale fractal: 7 scales \u00d7 82 moves empirical finding; load-bearing for primer's GP-216",
-          "source_path": "research_areas/private/seams/engine/GP-216f_cross_scale_fractal_map.md"
-        },
-        {
-          "kind": "memory_entry",
-          "score": 4,
-          "rationale": "\"don't kill paid compute\" rule with falsifier-as-hypothesis principle; primer memory entry",
-          "source_path": "/projects//memory/feedback_dont_kill_paid_compute_on_noisy_diagnostic.md"
-        },
-        {
-          "kind": "project_workspace_md",
-          "score": 4,
-          "rationale": "sixth failure mode \"apparatus provenance laundering\" \u2014 adds to known failure-mode catalog (RH-1..RH-12 / CB-1..CB-7)",
-          "source_path": "projects/gp212_consciousness_omega_audit/current_iteration.md"
+          "rationale": "Consciousness-theory brief stating prior governance findings in neutral graph language (non-identifiability O(M1)=O(M2), different \u0398) with deliberate vocabulary-withholding to prevent anchoring; sharp",
+          "source_path": "projects/gp210_consciousness_theory/evidence.txt"
         }
       ]
     },
     "2026-04-20": {
-      "n_rated": 24,
-      "mean_score": 2.21,
+      "n_rated": 32,
+      "mean_score": 1.81,
       "max_score": 4,
       "n_high_quality_ge4": 5,
       "n_paradigm_shift_ge5": 0,
       "score_distribution": {
-        "0": 2,
+        "0": 8,
         "1": 7,
-        "2": 4,
-        "3": 6,
+        "2": 5,
+        "3": 7,
         "4": 5,
         "5": 0
       },
       "by_kind_mean": {
         "seam": 3.33,
-        "evidence_file": 2,
+        "evidence_file": 0.91,
         "project_workspace_md": 1.5,
         "project_charter": 3,
         "concept_doc": 1,
         "memory_entry": 3.5,
         "raw_evidence_input": 3.33,
-        "paper_md": 1,
         "verified_axiom": 1
       },
       "top_3_artifacts": [
@@ -327,6 +285,92 @@
         }
       ]
     },
+    "2026-05-25": {
+      "n_rated": 17,
+      "mean_score": 2.53,
+      "max_score": 4,
+      "n_high_quality_ge4": 3,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 0,
+        "1": 3,
+        "2": 5,
+        "3": 6,
+        "4": 3,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "concept_doc": 2.5,
+        "evidence_ledger": 2.71,
+        "project_workspace_md": 2.33
+      },
+      "top_3_artifacts": [
+        {
+          "kind": "concept_doc",
+          "score": 4,
+          "rationale": "Cross-Scale Fractal Map concept doc \u2014 names the recurring-vocabulary pattern across scales; load-bearing for GP-216f",
+          "source_path": "docs/concepts/cross_scale_fractal_map.md"
+        },
+        {
+          "kind": "project_workspace_md",
+          "score": 4,
+          "rationale": "NS theorem packet: equal-shell orthogonal-dual-shear two-mode packet is an exact NS solution with zero projected residual, plus a blocking theorem (unequal shells / nonorthogonality destroy it). Concr",
+          "source_path": "projects/ns_proofsearch_alien_invariant_bridge/current_iteration.md"
+        },
+        {
+          "kind": "evidence_ledger",
+          "score": 4,
+          "rationale": "INS-080: not that clean-room independence is impossible but that a nominal clean-room stays porous if featurization/source-domain/mask steps remain ambiguous (tacit leakage at score 86); reframes the ",
+          "source_path": "research_areas/insights_ledger.md"
+        }
+      ]
+    },
+    "2026-05-04": {
+      "n_rated": 31,
+      "mean_score": 2.61,
+      "max_score": 4,
+      "n_high_quality_ge4": 7,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 1,
+        "1": 4,
+        "2": 8,
+        "3": 11,
+        "4": 7,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "evidence_file": 2.67,
+        "seam": 4,
+        "project_workspace_md": 2.57,
+        "memory_entry": 3.5,
+        "project_charter": 2,
+        "top_level_reasoning": 0.5,
+        "verified_axiom": 2,
+        "concept_doc": 1.5,
+        "paper_md": 4
+      },
+      "top_3_artifacts": [
+        {
+          "kind": "seam",
+          "score": 4,
+          "rationale": "GP-216f cross-scale fractal: 7 scales \u00d7 82 moves empirical finding; load-bearing for primer's GP-216",
+          "source_path": "research_areas/private/seams/engine/GP-216f_cross_scale_fractal_map.md"
+        },
+        {
+          "kind": "memory_entry",
+          "score": 4,
+          "rationale": "\"don't kill paid compute\" rule with falsifier-as-hypothesis principle; primer memory entry",
+          "source_path": "/projects//memory/feedback_dont_kill_paid_compute_on_noisy_diagnostic.md"
+        },
+        {
+          "kind": "project_workspace_md",
+          "score": 4,
+          "rationale": "sixth failure mode \"apparatus provenance laundering\" \u2014 adds to known failure-mode catalog (RH-1..RH-12 / CB-1..CB-7)",
+          "source_path": "projects/gp212_consciousness_omega_audit/current_iteration.md"
+        }
+      ]
+    },
     "2026-05-11": {
       "n_rated": 9,
       "mean_score": 3.11,
@@ -343,7 +387,7 @@
       },
       "by_kind_mean": {
         "project_workspace_md": 3.12,
-        "concept_doc": 3
+        "evidence_file": 3
       },
       "top_3_artifacts": [
         {
@@ -363,6 +407,45 @@
           "score": 4,
           "rationale": "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps",
           "source_path": "projects/ns_millennium_hunt/workspace/external_prover/questions/eigq_2026_05_15_GPT55Pro_asymptotic_super_typeI_sparse_cascade_closure.md"
+        }
+      ]
+    },
+    "2026-06-01": {
+      "n_rated": 5,
+      "mean_score": 1.2,
+      "max_score": 2,
+      "n_high_quality_ge4": 0,
+      "n_paradigm_shift_ge5": 0,
+      "score_distribution": {
+        "0": 1,
+        "1": 2,
+        "2": 2,
+        "3": 0,
+        "4": 0,
+        "5": 0
+      },
+      "by_kind_mean": {
+        "project_workspace_md": 1.5,
+        "paper_md": 0
+      },
+      "top_3_artifacts": [
+        {
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "LeanMill closure of a translation-continuity helper via an existing Mathlib lemma; honest \"not an NS result\" framing, routine plumbing closure.",
+          "source_path": "projects/leanmill_experiments/ns_closures/closure_translation_continuous_of_memLp_two_2026_06_04.md"
+        },
+        {
+          "kind": "project_workspace_md",
+          "score": 2,
+          "rationale": "KRF mollifier/Arzela bridge sidecar closure specializing abstract contracts to integral-form smoothing; honest scratch closure, routine.",
+          "source_path": "projects/leanmill_experiments/ns_closures/closure_KRF_mollifier_arzela_bridge_report_2026_06_03.md"
+        },
+        {
+          "kind": "project_workspace_md",
+          "score": 1,
+          "rationale": "KRF row-20 source-bridge receipt with pointers and one new checked theorem; routine workspace bookkeeping.",
+          "source_path": "projects/ns_millennium_hunt/workspace/queries/krf_row20_restricted_measurability_source_bridge_receipt_20260602.md"
         }
       ]
     }

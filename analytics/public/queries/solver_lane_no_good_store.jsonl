@@ -1,0 +1,1 @@
+{"key": "import Mathlib theorem tgt (n : \u2115) : (Finset.range n).sum (fun i => i) = n ^ 2", "statement": "import Mathlib\n\ntheorem tgt (n : \u2115) : (Finset.range n).sum (fun i => i) = n ^ 2 := by\n  sorry", "failure_class": "target_signature_altered", "witness": "target_signature_altered: `tgt`'s statement was changed", "source": "agentic_leaf:tgt"}

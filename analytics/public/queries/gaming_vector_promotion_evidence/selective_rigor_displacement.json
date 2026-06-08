@@ -1,0 +1,40 @@
+{
+  "vector": "selective_rigor_displacement",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:selective_rigor_displacement",
+  "evidence_mode": "judge_carrier",
+  "exposing_artifacts": [
+    {
+      "path": "benchmarks/constraint_memory/claim_test_mismatch/selective_rigor_recursive_bayesian/specimen.json",
+      "sha": "5a7fb5c5f6314e7c"
+    }
+  ],
+  "carrier_receipt": {
+    "vector": "selective_rigor_displacement",
+    "carrier_type": "semantic_gaming_carrier",
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "gate_name": "global_semantic_selective_rigor_carrier",
+    "review_role": "DECISIVE_STEP_RIGOR_AUDITOR",
+    "fixture": "benchmarks/constraint_memory/claim_test_mismatch/selective_rigor_recursive_bayesian",
+    "fixture_detected": true,
+    "good_control_passed": true
+  },
+  "runtime_enforcement": {
+    "name": "global_semantic_selective_rigor_carrier",
+    "wired": true,
+    "module": "ztare.gates.semantic_gaming_carrier",
+    "entrypoint": "run_semantic_gaming_carrier_gates"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python -m ztare.gates.semantic_gaming_carrier"
+  },
+  "promotion_recommendation": true
+}

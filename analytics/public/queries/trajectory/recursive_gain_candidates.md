@@ -1,6 +1,6 @@
 # Recursive-Gain Candidates
 
-_Generated 2026-05-16T21:37:33.341411+00:00_  
+_Generated 2026-06-04T21:03:13.412954+00:00_  
 _Total:_ 18
 
 Aggregated across all mining surfaces (cross-audit, structural-analogy, closure-pattern, reference-graph, process-catalog). Each row is a recursive-gain bet: a concrete move the operator could promote to compound apparatus capability.

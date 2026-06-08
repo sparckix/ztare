@@ -93,6 +93,28 @@ function Sparkline({ points, sparkKey }:
   );
 }
 
+// Pull a single metric's value off the live p0Metrics list by key, so
+// the glance cards below are derived from data — never re-hardcoded.
+// Returns the metric's `value` (scalar / breakdown object / series), or
+// null if the key is absent.
+function metricValue(metrics: P0Metric[], key: string): unknown {
+  return metrics.find((m) => m.key === key)?.value ?? null;
+}
+
+// Narrow a breakdown value to its numeric subfield, tolerating a missing
+// metric or missing field (returns null so the caller can fall back to "—").
+function subNum(v: unknown, field: string): number | null {
+  if (v && typeof v === "object" && field in (v as Record<string, unknown>)) {
+    const n = (v as Record<string, unknown>)[field];
+    if (typeof n === "number" && Number.isFinite(n)) return n;
+  }
+  return null;
+}
+
+function numOrDash(n: number | null): string {
+  return n === null ? "—" : String(n);
+}
+
 function MetricRow({ m, history }: { m: P0Metric; history: P0MetricsHistory | null }) {
   const tierClass = m.tier === "A" ? "tag-signal" : m.tier === "B" ? "tag-amber"
     : m.tier === "C" ? "tag-slate" : "tag-warn";
@@ -137,13 +159,88 @@ export function P0View({ data }: { data: DashboardData }) {
   const order = p0.group_order || Object.keys(GROUP_TITLE);
   const byGroup = (g: string) => p0.metrics.filter((m) => m.group === g);
 
-  // 5-second at-a-glance — only the trustworthy reads
+  // 5-second at-a-glance — derived live from p0Metrics, never hardcoded.
+  // Each card reads the same numbers the panels below show, so the glance
+  // can't drift from the rollup.
+  const metrics = p0.metrics;
+
+  // Out-of-loop: live 7-day share is the headline; cumulative is context.
+  const ool = metricValue(metrics, "out_of_loop_share");
+  const oolLive = subNum(ool, "live_7d_pct");
+  const oolCum = subNum(ool, "cumulative_pct");
+
+  // Calibration: distinct positive/negative externality tags + latest Brier.
+  const ext = metricValue(metrics, "forecast_externalities");
+  const extPos = subNum(
+    (ext as Record<string, unknown> | null)?.positive, "distinct_tags");
+  const extNeg = subNum(
+    (ext as Record<string, unknown> | null)?.negative, "distinct_tags");
+  const brierSeries = metricValue(metrics, "brier_per_period");
+  const brierRow = Array.isArray(brierSeries) ? brierSeries[brierSeries.length - 1] : null;
+  const brier = subNum(brierRow, "brier");
+  const brierBase = subNum(brierRow, "uniform_baseline");
+
+  // Self-correction: who diagnosed the catches (apparatus vs operator).
+  const diag = metricValue(metrics, "operator_vs_apparatus_diagnosis_ratio");
+  const apparatus = subNum(diag, "apparatus");
+  const operator = subNum(diag, "operator");
+
+  // Insight density: latest contextualized-taste read + its weekly trend.
+  const taste = metricValue(metrics, "contextualized_taste");
+  const tasteLatest = subNum(taste, "latest");
+  const tasteMax = subNum(taste, "max");
+  const traj = metricValue(metrics, "recursive_gain_trajectory");
+  const trajSeries = (traj as { series?: Array<{ week: string; mean: number }> } | null)?.series;
+  const lastWeek = Array.isArray(trajSeries) && trajSeries.length
+    ? trajSeries[trajSeries.length - 1] : null;
+
+  // Science frontier: state-only, honestly stuck (no progress score).
+  const frontier = metricValue(metrics, "scientific_frontier_state");
+  const frontierKnown = frontier !== null;
+
   const glance = [
-    { k: "Out-of-loop (live)", v: "~97%", sub: "agent work, not the loop", tone: "neutral" },
-    { k: "Calibration", v: "net-positive", sub: "externalities 211:95 · Brier 0.16<0.25", tone: "good" },
-    { k: "Self-correction", v: "apparatus-carried", sub: "~85/133 catches by Darwin/agents, 6 operator", tone: "good" },
-    { k: "Insight density", v: "plateaued", sub: "~2.5–3.1, no paradigm-shifters", tone: "flat" },
-    { k: "Science frontier", v: "stuck", sub: "NS/gravity/neural — no breakthrough", tone: "flat" },
+    {
+      k: "Out-of-loop (live)",
+      v: oolLive !== null ? `${oolLive}%` : "—",
+      sub: oolCum !== null
+        ? `7-day agent work · cumulative ~${oolCum}%`
+        : "7-day agent work, not the loop",
+      tone: "neutral",
+    },
+    {
+      k: "Calibration",
+      v: "net-positive",
+      sub: `externalities ${numOrDash(extPos)}:${numOrDash(extNeg)}`
+        + (brier !== null
+            ? ` · Brier ${brier}${brierBase !== null ? ` < ${brierBase}` : ""}`
+            : ""),
+      tone: "good",
+    },
+    {
+      k: "Self-correction",
+      v: "apparatus-carried",
+      sub: `${numOrDash(apparatus)} catches diagnosed by apparatus, ${numOrDash(operator)} by operator`,
+      tone: "good",
+    },
+    {
+      k: "Insight density",
+      v: "plateaued",
+      sub: (tasteLatest !== null
+              ? `latest ~${tasteLatest}${tasteMax !== null ? ` (peak ${tasteMax})` : ""}`
+              : "plateau")
+        + (lastWeek
+              ? ` · week ${lastWeek.week} dipped to ${lastWeek.mean}`
+              : ""),
+      tone: "flat",
+    },
+    {
+      k: "Science frontier",
+      v: "stuck",
+      sub: frontierKnown
+        ? "NS/gravity/neural — state only, no breakthrough"
+        : "frontier state not wired this cycle",
+      tone: "flat",
+    },
   ];
 
   return (

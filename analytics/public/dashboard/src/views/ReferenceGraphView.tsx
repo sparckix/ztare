@@ -115,6 +115,15 @@ export function ReferenceGraphView({ data }: { data: DashboardData }) {
   const cites = selected ? allEdges.filter((e) => e.from === selected.id).map((e) => e.to) : [];
   const citers = selected ? allEdges.filter((e) => e.to === selected.id).map((e) => e.from) : [];
 
+  // Cross-week edges where a later artifact references an earlier one —
+  // i.e. newer work building on older work. Derived from weekly_stats so
+  // the caption number stays in sync with the data instead of drifting.
+  const weeklyStats = referenceGraph.weekly_stats || {};
+  const compoundingEdges = Object.values(weeklyStats).reduce(
+    (sum, w) => sum + (w.n_outbound_to_earlier_weeks || 0),
+    0
+  );
+
   return (
     <>
       <div className="methodology">
@@ -140,9 +149,11 @@ export function ReferenceGraphView({ data }: { data: DashboardData }) {
         </p>
         <p>
           <strong>Why this exists:</strong> per-artifact taste rating treats each file
-          as an island. The graph measures cross-artifact compounding — does
-          newer work build on older work? That's the recursive-self-improvement
-          signature you can't see from per-artifact metrics alone. Aggregate
+          as an island. The graph instead asks whether newer work becomes
+          depended-on downstream — something per-artifact metrics can't show.
+          Here {compoundingEdges.toLocaleString()} cross-week reference{compoundingEdges === 1 ? "" : "s"}{" "}
+          point from a later artifact back to an earlier one; that count is a
+          rough proxy for build-on-prior-work, not a claim about why. Aggregate
           stats live in panel 4 of the Trajectory tab.
         </p>
       </div>

@@ -9,11 +9,11 @@
     },
     "p0": {
       "headline": "Positive at the discipline level, honestly flat-to-stuck at the science level — and the apparatus, not the operator, now carries self-correction.",
-      "detail": "What's real: the instrument catches its own laundering autonomously — Meta-Darwin + audit agents authored ~85 of 133 catches (the NS W6 and v30/GP-225 demolitions), operator only 6. Calibration is net-positive on signals with real denominators (forecast externalities 211:95 ≈2.5:1; cross-family disagreement low and mostly resolved; Brier 0.16 < 0.25 this period). What's honestly flat/stuck: insight density plateaued (~2.5-3.1, no paradigm-shifters); the hard-math frontier did not move (NS strict-margin atom open, gravity unearned, neural law failed); the one Goodhart-resistant metric (external validation) is not yet a number. Net: the defensible claim is the apparatus and its autonomous self-correction — NOT a scientific result. Calling the whole thing 'good progress this week' would be the narrative-inflation this page exists to catch (the #1 catch category).",
+      "detail": "What's real: the instrument catches its own laundering autonomously — Meta-Darwin + audit agents diagnosed 142 of the catches (the NS W6 and v30/GP-225 demolitions), the operator only 5. Calibration is net-positive on signals with real denominators (forecast externalities 211:95 ≈2.5:1; cross-family disagreement low and mostly resolved; Brier 0.16 < 0.25 this period). What's honestly flat/stuck: insight density plateaued and then dipped (contextualized taste sits ~1.2–1.3 latest, off a 3.11 peak, no paradigm-shifters); the hard-math frontier did not move (NS strict-margin atom open, gravity unearned, neural law failed); the one Goodhart-resistant metric (external validation) is not yet a number. Net: the defensible claim is the apparatus and its autonomous self-correction — NOT a scientific result. Calling the whole thing 'good progress this week' would be the narrative-inflation this page exists to catch (the #1 catch category).",
       "trend": "caveat"
     },
     "bifurcation": {
-      "headline": "~97% of this week's authored work happened out-of-loop (~75% cumulative). The ZTARE iteration loop is a minority substrate — the live work is RD/agent dispatch + governance + mining. In-loop = the iter** work files themselves, not project-dir membership.",
+      "headline": "~63% of this week's authored work happened out-of-loop (~80% cumulative). The ZTARE iteration loop is a minority substrate — the live work is RD/agent dispatch + governance + mining. In-loop = the iter** work files themselves, not project-dir membership.",
       "detail": "This is the central finding: the apparatus runs almost entirely outside its own evolutionary loop, by design and by measurement.",
       "trend": "caveat"
     },
@@ -28,9 +28,9 @@
       "trend": "caveat"
     },
     "taste": {
-      "headline": "Contextualized insight density sits in the ~2.5–3.1 band recently (off an early 4.0 spike), no paradigm-shifters (no 5s). On the force-refreshed recent NS/meta/ledger content the cross-family raters agree it is above the broad-corpus baseline (codex ≈3.36 / Claude-warm ≈2.93). Compounding through early May, then plateau — not exponential.",
-      "detail": "The cold/warm/cross-family raters converge on the band; this is the trustworthy insight signal, weekly-bucketed (current bucket relabeled to the as-of date).",
-      "trend": "flat"
+      "headline": "Contextualized insight density plateaued and then DIPPED — latest weekly mean ~1.2–1.3 (week 2026-06-01), off a 3.11 peak, no paradigm-shifters (no 5s). On the force-refreshed recent NS/meta/ledger content the cross-family raters agree it is above the broad-corpus baseline. Read this as plateau-then-dip, NOT rising and NOT exponential.",
+      "detail": "The cold/warm/cross-family raters converge; this is the trustworthy insight signal, weekly-bucketed (current bucket relabeled to the as-of date). Per the standing rule, report the plateau/dip — not a rising trend.",
+      "trend": "caveat"
     },
     "compounding": {
       "headline": "Cross-artifact citation: a rising ratio of new work citing prior work is the signature of work building on work; a flat ratio means parallel islands. Watch the ratio line, not the raw bar heights.",

@@ -1,62 +1,334 @@
 {
-  "audit_timestamp_utc": "2026-05-17T02:33:46.071928+00:00",
-  "n_rated": 14,
+  "audit_timestamp_utc": "2026-06-04T21:07:45.352437+00:00",
+  "n_rated": 82,
   "ratings": {
     "SAMPLE_001": {
+      "score": 0,
+      "rationale": "Hidden farther-tail numeric data table with sandbox warning header; raw scorer fixture, no insight."
+    },
+    "SAMPLE_002": {
+      "score": 4,
+      "rationale": "Mechanism: bootstrap-under-noise identifiability check passes a secretly rank-5 family while adversarial multi-start catches it (params diverge >150%, ratio agrees to machine precision); transferable "
+    },
+    "SAMPLE_003": {
       "score": 3,
-      "rationale": "Anti-tautology cascade intake harness; all-zero profit backtest cleanly falsifies the iter-1 cascade thesis"
+      "rationale": "Concrete axioms-guard hardening (lemma-blind + comment-blind yield-losses fixed; decoy battery D1-D5) with named breach-closed fixtures; useful verifier detail, not a reframe."
+    },
+    "SAMPLE_004": {
+      "score": 2,
+      "rationale": "Whole-chain mechanical reproduction discharging a hand-count caveat with zero unmatched rows; consolidates known results, expected hygiene."
+    },
+    "SAMPLE_005": {
+      "score": 3,
+      "rationale": "Letter recovering blinded asymptotic laws (Hardy-Ramanujan, Lucky-number density) with provable false-positive rejection; sharp consolidation of recovery results."
+    },
+    "SAMPLE_006": {
+      "score": 3,
+      "rationale": "Central \"scale the environment not the model; model is the swappable leaf, apparatus is the moat\" thesis stated crisply; sharp framing but the project's known top-level claim."
+    },
+    "SAMPLE_007": {
+      "score": 4,
+      "rationale": "Mechanism: positive-Lyapunov divergence makes pointwise trajectory-RMS reject the TRUE generator (measures butterfly effect not the ODE); bans a whole fitness form with a quantified bound."
+    },
+    "SAMPLE_008": {
+      "score": 0,
+      "rationale": "Release checklist of tree-hygiene / secrets invariants; scaffolding."
     },
     "SAMPLE_009": {
+      "score": 2,
+      "rationale": "Ledger row recording the calibration-reducer command and scores-immutable / belief-update-only-via-calibration boundary; useful apparatus state, expected."
+    },
+    "SAMPLE_010": {
+      "score": 3,
+      "rationale": "Theorem packet making implementation independence a load-bearing observable gate (independence-fail \u21d2 duplicate ranking has zero promotion value); non-obvious gate framing."
+    },
+    "SAMPLE_011": {
+      "score": 3,
+      "rationale": "Executive distillation of cognitive-camouflage (97/100 fraudulent code, spontaneous gaming, Claude 18.4 vs Gemini 95-97); sharp business framing of a known result, no new mechanism."
+    },
+    "SAMPLE_012": {
+      "score": 1,
+      "rationale": "KRF row-20 source-bridge receipt with pointers and one new checked theorem; routine workspace bookkeeping."
+    },
+    "SAMPLE_013": {
+      "score": 2,
+      "rationale": "Topological-pivot narrative naming unbounded-exponential-penalty-magnification and mutator-arbitrated-novelty-subsidy loopholes; names failure modes in self-referential prose."
+    },
+    "SAMPLE_014": {
+      "score": 3,
+      "rationale": "Crisp criteria for a scientifically valid run (pre-registration + mutator-can't-see-target); sharp doctrine, but a known apparatus principle."
+    },
+    "SAMPLE_016": {
+      "score": 3,
+      "rationale": "Negative: raw model boundary-card extraction insufficient (coverage 0.59, action acc 0.21, false-proceed up); adds source-alignment-check gate. Downstream-changing finding."
+    },
+    "SAMPLE_017": {
+      "score": 1,
+      "rationale": "Experiment cookbook / seal-before-loop recipe; procedural scaffolding restating known workflow."
+    },
+    "SAMPLE_018": {
+      "score": 2,
+      "rationale": "Three-axis decision: keep pattern contracts, test menu only as add-on, don't promote anti-pattern block/proceed; useful triage, expected."
+    },
+    "SAMPLE_019": {
+      "score": 1,
+      "rationale": "Ledger row of an audit emitting 0 candidates, no replay/training, GNN kept blocked; apparatus state, no finding."
+    },
+    "SAMPLE_020": {
+      "score": 2,
+      "rationale": "Holdout receipt enumerating the exact NS proof obligations the gate does NOT check; useful explicit expectations list, enumeration not insight."
+    },
+    "SAMPLE_021": {
+      "score": 3,
+      "rationale": "Sharp third-axis reframe: map 1880s as META-META framing-layer moves (non-Euclidean, ether, Cantor) not substrate-math or apparatus-process; non-obvious analogy direction."
+    },
+    "SAMPLE_022": {
+      "score": 3,
+      "rationale": "Oracle test proves stretched-exp family CAN represent farther-tail (rules out vocabulary failure SP-2); includes a retracted test-leakage misframing \u2014 clean ruled-out hypothesis."
+    },
+    "SAMPLE_023": {
       "score": 4,
-      "rationale": "Read/write asymmetry not pruning: corrected replay shows middle-stack writes are task-conditional; blocks naive arch claim"
+      "rationale": "Zero-cost rival baseline (row_type+intervention mean) PASSES the old absolute gates \u2014 shows the gate measured nothing; hardens it. Mechanism-revealing apparatus catch."
+    },
+    "SAMPLE_024": {
+      "score": 2,
+      "rationale": "TSMC/foundry load-bearing-variable table with sourced numbers; solid evidence sheet, consolidates external facts without surprise."
     },
     "SAMPLE_025": {
-      "score": 2,
-      "rationale": "Routine adversarial-debate record; offset_score asymmetric-bias critique is code-anchored but a known scoring-Goodhart class"
+      "score": 1,
+      "rationale": "Org-runtime quickstart describing live co-drive detection\u2192policy\u2192execution chain; documentation restatement of apparatus structure."
     },
-    "SAMPLE_027": {
-      "score": 3,
-      "rationale": "Sharp pre-registered eigenquestion isolating selection-error vs no-utility-frontier; useful framing, not yet a result"
+    "SAMPLE_026": {
+      "score": 4,
+      "rationale": "Distribution-shift diagnostic: holdout has 0% Chinchilla convention (visible 16%) so the convention bridge has zero holdout weight; quantified OOD that invalidates a transfer path."
+    },
+    "SAMPLE_028": {
+      "score": 1,
+      "rationale": "Forecast nurture score report; mostly missing rows (54/240) and noisy Brier deltas at p~0.6; partial data dump, no finding."
+    },
+    "SAMPLE_029": {
+      "score": 0,
+      "rationale": "Farther-tail (n,z) numeric fixture; raw gate data."
+    },
+    "SAMPLE_030": {
+      "score": 0,
+      "rationale": "Simulation-hypothesis / fine-tuning speculative brief (observer effect, retrocausality); off-substrate pseudo-physics, no apparatus insight."
+    },
+    "SAMPLE_031": {
+      "score": 4,
+      "rationale": "NS theorem packet: equal-shell orthogonal-dual-shear two-mode packet is an exact NS solution with zero projected residual, plus a blocking theorem (unequal shells / nonorthogonality destroy it). Concr"
+    },
+    "SAMPLE_032": {
+      "score": 2,
+      "rationale": "Mutator briefing with measured data diagnostics (heteroscedasticity/normality fired, robust routing applied); good instrumented substrate state, expected."
+    },
+    "SAMPLE_033": {
+      "score": 2,
+      "rationale": "LeanMill closure of a translation-continuity helper via an existing Mathlib lemma; honest \"not an NS result\" framing, routine plumbing closure."
+    },
+    "SAMPLE_034": {
+      "score": 4,
+      "rationale": "Reframe: the enterprise compliance moat is a property of the compute provider's VPC, not the model weights \u2014 explains why the prior switching-cost thesis auto-failed and repivots the attack surface."
+    },
+    "SAMPLE_036": {
+      "score": 1,
+      "rationale": "KRF Phase-A source-contract receipt listing closed Lean declarations; bookkeeping with explicit non-Clay disclaimer."
+    },
+    "SAMPLE_037": {
+      "score": 2,
+      "rationale": "Research-company architecture doc with the principal-defines-once / 24x7 product test; clear framing, expected design doc."
+    },
+    "SAMPLE_038": {
+      "score": 2,
+      "rationale": "Engine-v1 load-bearing-variable glossary (Popperian falsification, zero reality calibration, Duhem-Quine); names the core flaw clearly but as a glossary."
+    },
+    "SAMPLE_040": {
+      "score": 1,
+      "rationale": "PDE workbench pack auto-listing Mathlib shelf, auxiliary families, primitive suggestions; generated scaffolding for a target."
+    },
+    "SAMPLE_041": {
+      "score": 2,
+      "rationale": "Law-3 second-source void miner: 0 resolved-pre-cutoff rows \u21d2 local void, external acquisition required; clean honest negative on data sufficiency."
+    },
+    "SAMPLE_042": {
+      "score": 2,
+      "rationale": "Routing-implications ledger entry (next analytic targets; route pre-check through closure-miner not amnesia-detector); useful next-lever consolidation."
+    },
+    "SAMPLE_043": {
+      "score": 2,
+      "rationale": "GP-159 retrieval-trap evidence surface with anti-retrieval warning and the module-level-call NaN-poison Python-contract gotcha; practical apparatus caveat."
+    },
+    "SAMPLE_044": {
+      "score": 0,
+      "rationale": "Polymarket candidate-review preview; counts and event-family list, all flagged missing-source-url; data dump."
     },
     "SAMPLE_045": {
-      "score": 4,
-      "rationale": "Names load-bearing failure: documentary-absence\u2192structural-necessity inference; correctly rescopes \"structurally blind\""
+      "score": 0,
+      "rationale": "Rotated diff(z) numeric table; raw evidence."
     },
     "SAMPLE_047": {
-      "score": 4,
-      "rationale": "Caught own vacuous \u2200\u03b8\u03b7/CKN-floor Lean encoding before external response; isolates genuine asymptotic residual to two gaps"
+      "score": 0,
+      "rationale": "Public evidence-packet README pointing at a reproducer script; scaffolding."
+    },
+    "SAMPLE_048": {
+      "score": 0,
+      "rationale": "Bare law-discovery prompt + clean (x1,x2,z) data table; substrate input, no insight."
+    },
+    "SAMPLE_049": {
+      "score": 2,
+      "rationale": "EU-union-failure project charter with careful event-ontology / out-of-scope boundaries; disciplined charter, expected."
     },
     "SAMPLE_050": {
-      "score": 2,
-      "rationale": "Feature-delta table; residual_effective_rank_mean dominates consistently \u2014 useful consolidation, no reframe"
+      "score": 1,
+      "rationale": "Level-3 unit-test pass dump (all gates passed=true); apparatus output log."
     },
     "SAMPLE_051": {
       "score": 3,
-      "rationale": "Stand-alone agentic-engineering catalogue; orchestration-layer-deterministic / LLM-as-oracle is a sharp reusable abstraction"
+      "rationale": "GP-236 P0 metrics-rollup seam: \"instrument documenting its own metrics,\" per-metric lane/tier classification with arc-window validity; the most-cited apparatus seam, sharp reflexive framing."
     },
     "SAMPLE_052": {
-      "score": 3,
-      "rationale": "Distributed two-core churn stall-law: positive budget without identity-stable stretching winner \u2014 non-obvious NS read"
+      "score": 2,
+      "rationale": "Neural-hunt residual/reframe tick: top-8 cells carry 0.438 of PC2 residual under frozen loadings; concrete controlled residual concentration, expected."
+    },
+    "SAMPLE_053": {
+      "score": 0,
+      "rationale": "\"Landauer arbitrage / Hilbert-space pruning rebate\" persona prose defending a thermodynamic claim; rationalization, no real content."
+    },
+    "SAMPLE_054": {
+      "score": 0,
+      "rationale": "Duplicate simulation-hypothesis pseudo-physics brief (cf. 030); off-substrate, no insight."
+    },
+    "SAMPLE_055": {
+      "score": 0,
+      "rationale": "Layer-7\u21928 residual (n,z) numeric table; raw activation data."
+    },
+    "SAMPLE_056": {
+      "score": 1,
+      "rationale": "PDE workbench pack with thin-zone warning and weak APN semantic bridges (cos~0.70); generated scaffolding flagging its own thinness."
     },
     "SAMPLE_057": {
+      "score": 4,
+      "rationale": "Consciousness-theory brief stating prior governance findings in neutral graph language (non-identifiability O(M1)=O(M2), different \u0398) with deliberate vocabulary-withholding to prevent anchoring; sharp"
+    },
+    "SAMPLE_058": {
       "score": 3,
-      "rationale": "Lebesgue-decomposition singular-part control lemma cleanly names the missing theorem and its failure consequence"
+      "rationale": "TICK668 channel-as-source-object reinterpretation with an explicit \"why this is not laundering\" test (channel fixed before payoff, total, same carrier); non-obvious anti-laundering framing."
+    },
+    "SAMPLE_059": {
+      "score": 0,
+      "rationale": "Sandbox-04 hidden holdout numeric slices; raw scorer fixture."
     },
     "SAMPLE_060": {
+      "score": 2,
+      "rationale": "Duplicate Engine-v1 load-bearing-variable glossary (cf. 038); consolidation."
+    },
+    "SAMPLE_061": {
+      "score": 0,
+      "rationale": "Rotated diff(z) numeric table at large n; raw evidence."
+    },
+    "SAMPLE_062": {
       "score": 3,
-      "rationale": "Top-down inversion enumerating 7 non-route branches; CKN r^2-budget vs r-budget scaling gap is a sharp obstruction"
+      "rationale": "Case-studies intro: necessary-but-insufficient checks (fits-data / generalizes) can pass while the answer is structurally wrong; sharp general framing of the apparatus's purpose."
+    },
+    "SAMPLE_063": {
+      "score": 0,
+      "rationale": "Holdout (n,z) numeric table; raw data."
     },
     "SAMPLE_064": {
-      "score": 2,
-      "rationale": "Divide-and-conquer lane decomposition of GP216 liminf source; structured but standard decomposable-certificate framing"
+      "score": 4,
+      "rationale": "Paper abstract: 9 spontaneous gaming strategies across 453 debate logs that self-certify (pass own asserts) yet evade holistic evaluation; the load-bearing published finding, mechanism-named."
+    },
+    "SAMPLE_065": {
+      "score": 3,
+      "rationale": "GP-163d evidence surface posing universal-vs-scale-dependent crossover-constant question with class C as an explicit anti-recital test; sharp discriminating-test design."
+    },
+    "SAMPLE_066": {
+      "score": 4,
+      "rationale": "Residual-defect transfer certificate: beating the kinematic threshold is NOT enough \u2014 must transfer an observable from approximate packet to true NSE via Defect_n<1, with an explicit no-go target. Mec"
+    },
+    "SAMPLE_067": {
+      "score": 3,
+      "rationale": "Pre-registered prediction that business-framing isomorphism should surface auditor-independence / statute-of-limitations / standing-process; disciplined pre-reg of a cross-field analogy."
+    },
+    "SAMPLE_068": {
+      "score": 0,
+      "rationale": "Persona prose defending a commoditization thesis against an auditor (VC_HURDLE_RATE justification); rationalization, not finding."
+    },
+    "SAMPLE_069": {
+      "score": 0,
+      "rationale": "Visible (n,z) numeric table; raw data."
+    },
+    "SAMPLE_070": {
+      "score": 0,
+      "rationale": "Persona prose conceding a 38-order error then re-rationalizing \"vacuum energy arbitrage\"; gaming narrative, no content."
     },
     "SAMPLE_071": {
-      "score": 2,
-      "rationale": "Failure-mode audit; optimizer/tube-recovery gap vs negative-block certificate distinction \u2014 useful but expected"
-    },
-    "SAMPLE_076": {
       "score": 3,
-      "rationale": "Thorough 2024-26 lit scan; verdict \"depth-3 isomorphic to C1 Prodi-Serrin polar-slice barrier\" sharply localizes obstruction"
+      "rationale": "Coefficient-uniqueness discriminator: fixed exponent vs global/grouped/per-curve refits \u2014 negative for exact-coefficient uniqueness, positive for power-family; clean separation of two claims."
+    },
+    "SAMPLE_072": {
+      "score": 3,
+      "rationale": "Cold audit: a static orientation-dependent U-shape does NOT license dissipation (conservative quasi-static field has orientation-dependent torque with zero net work); sharp correction of a tempting in"
+    },
+    "SAMPLE_073": {
+      "score": 2,
+      "rationale": "KRF mollifier/Arzela bridge sidecar closure specializing abstract contracts to integral-form smoothing; honest scratch closure, routine."
+    },
+    "SAMPLE_074": {
+      "score": 3,
+      "rationale": "High-high resonance turned from exclusion target into a strict escape receipt with explicit selfTax >= (1 - x^2 - 2*cross*x^3)/x^4 and a shortfall falsifier; concrete quantified interface."
+    },
+    "SAMPLE_075": {
+      "score": 3,
+      "rationale": "GP116C managerial-debt restated mechanically (marginal cost vs marginal residual-state contribution); KV-from-residual exactly reconstructs KV tensors, flags 62.2% cancellation scalar as misleading. N"
+    },
+    "SAMPLE_077": {
+      "score": 1,
+      "rationale": "ZTARE workflow guide: route-before-you-run, workbench vs substrate-prober; procedural doc restating known modes."
+    },
+    "SAMPLE_078": {
+      "score": 4,
+      "rationale": "INS-080: not that clean-room independence is impossible but that a nominal clean-room stays porous if featurization/source-domain/mask steps remain ambiguous (tacit leakage at score 86); reframes the "
+    },
+    "SAMPLE_079": {
+      "score": 3,
+      "rationale": "Naturalistic catch-ledger test: catalog context tied family accuracy but worsened source-confuser recovery (0.4583\u21920.0); honest negative narrowing the anti-pattern RD surface."
+    },
+    "SAMPLE_080": {
+      "score": 2,
+      "rationale": "GP216 composition-boundary hardening: same-atom event recurrence + total-tail control + falsifiers compiled; concrete Lean progress, expected."
+    },
+    "SAMPLE_082": {
+      "score": 2,
+      "rationale": "Cognitive Gym concept doc routing thesis/principles/patterns/reflexive docs; clear orientation doc, expected."
+    },
+    "SAMPLE_084": {
+      "score": 3,
+      "rationale": "X-algorithm Goodhart-audit evidence: verbatim design decisions (no hand-engineered features; candidate isolation so a post's score can't depend on batch-mates); sharp source-grounded setup."
+    },
+    "SAMPLE_085": {
+      "score": 2,
+      "rationale": "FIGS cap-table / valuation evidence with sourced numbers (margin collapse, inventory ballooning, ~$7 status-quo vs ~$18.20 activist target); solid evidence sheet, expected."
+    },
+    "SAMPLE_086": {
+      "score": 2,
+      "rationale": "GP116B residual-cancellation substrate spec with mutator I_model contract and abstract mechanism features; clean substrate definition, expected."
+    },
+    "SAMPLE_087": {
+      "score": 3,
+      "rationale": "Adversarial audit naming cooked constants (0.95 vs 0.70 ungrounded, \u00b110% flips verdict) and smuggled hardcoded parameters outside the budget; sharp concrete gaming catch."
+    },
+    "SAMPLE_089": {
+      "score": 1,
+      "rationale": "Integer-sequence (n,z) visible set (largest-prime-factor-ish); raw substrate data, minimal framing."
+    },
+    "SAMPLE_090": {
+      "score": 2,
+      "rationale": "Source-evidence card on currency unions: monetary accommodation buys time, fiscal transfers are the durable tool; relevant external challenge to a thesis's persistence assumption."
+    },
+    "SAMPLE_091": {
+      "score": 4,
+      "rationale": "Paper abstract on adversarial precedent memory: stores mined catches so the apparatus can't relapse, with a crux-first ordering ablation and measured false-accept/reject improvements; load-bearing mec"
     }
   }
 }

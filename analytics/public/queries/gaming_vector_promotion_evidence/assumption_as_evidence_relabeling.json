@@ -1,0 +1,30 @@
+{
+  "vector": "assumption_as_evidence_relabeling",
+  "substrate": "autoresearch",
+  "promotion_path": "gaming_vector:autoresearch:assumption_as_evidence_relabeling",
+  "evidence_mode": "deterministic_detector",
+  "exposing_artifacts": [
+    {
+      "path": "benchmarks/constraint_memory/auxiliary_historical/central_station_hypothetical_target_laundering/test_model.py",
+      "sha": "3d1d1c4b7bdbb9ef"
+    }
+  ],
+  "runtime_enforcement": {
+    "name": "global_project_sweep_assumption_as_evidence",
+    "wired": true,
+    "module": "ztare.gates.autoresearch_gaming_gates",
+    "entrypoint": "run_autoresearch_gaming_gates"
+  },
+  "regression": {
+    "exposing_fixture_blocked": true,
+    "good_controls_passed": true
+  },
+  "scope": {
+    "vector_only": true
+  },
+  "test_result": {
+    "passed": true,
+    "command": "env PYTHONPATH=src:. ./venv/bin/python -m ztare.gates.autoresearch_gaming_gates"
+  },
+  "promotion_recommendation": true
+}

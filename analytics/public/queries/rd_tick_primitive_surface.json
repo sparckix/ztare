@@ -3,6 +3,23 @@
     "cognitive_reframe": [
       {
         "buckets": [
+          "graph_mining",
+          "cognitive_reframe"
+        ],
+        "description": "Level-1 cognitive gym hooks (substrate-level inverter / compress / margin / negative-space dispatch).",
+        "id": "COGNITIVE-GYM-HOOKS",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-05-06",
+        "matched_terms": [
+          "closure_attempt"
+        ],
+        "path": "src/ztare/research_director/cognitive_gym_hooks.py",
+        "score": 117.7,
+        "why": "matched closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+      },
+      {
+        "buckets": [
           "cognitive_reframe",
           "negative_to_object"
         ],
@@ -13,23 +30,8 @@
         "last_used": "2026-05-13",
         "matched_terms": [],
         "path": "org/patterns/cold_shot_dispatch.md",
-        "score": 69.0,
+        "score": 68.0,
         "why": "bucket cognitive_reframe, negative_to_object; impact 5"
-      },
-      {
-        "buckets": [
-          "cognitive_reframe",
-          "negative_to_object"
-        ],
-        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
-        "id": "SOLVER0-GATE",
-        "impact_factor_expost": 4.0,
-        "kind": "gate",
-        "last_used": "2026-05-16",
-        "matched_terms": [],
-        "path": "scripts/public/control/solver0_gate.py",
-        "score": 59.0,
-        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
       },
       {
         "buckets": [
@@ -43,22 +45,23 @@
         "last_used": "2026-05-08",
         "matched_terms": [],
         "path": "org/patterns/darwin_idea_killer.md",
-        "score": 58.0,
+        "score": 58.4,
         "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
       },
       {
         "buckets": [
-          "cognitive_reframe"
+          "cognitive_reframe",
+          "negative_to_object"
         ],
-        "description": "3-leg verification (invert + compress + adversarial disagreement).",
-        "id": "PATTERN-008-THREE-LEG-VERIFICATION",
+        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
+        "id": "SOLVER0-GATE",
         "impact_factor_expost": 4.0,
-        "kind": "pattern",
-        "last_used": "2026-05-08",
+        "kind": "gate",
+        "last_used": "2026-05-16",
         "matched_terms": [],
-        "path": "org/patterns/three_leg_verification.md",
-        "score": 53.0,
-        "why": "bucket cognitive_reframe; impact 4; graph_bonus 1.5"
+        "path": "scripts/public/control/solver0_gate.py",
+        "score": 57.9,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
       }
     ],
     "graph_mining": [
@@ -80,48 +83,8 @@
           "typed_endpoint"
         ],
         "path": "src/ztare/research_director/ns_graph_tick.py",
-        "score": 103.0,
+        "score": 234.4,
         "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
-      },
-      {
-        "buckets": [
-          "pde_ns_lean",
-          "graph_mining"
-        ],
-        "description": "Verifies Lean proof compiles with no axioms/sorries (GP-211) AND runs the v33 Tier-0 anti-laundering organs (vacuity / gold-name / single-exact / indirect-leakage / currency) \u2014 flips gate_passed=False on a CONFIRMED fals",
-        "id": "LEAN-PROOF-GATE",
-        "impact_factor_expost": 4.0,
-        "kind": "gate",
-        "last_used": "2026-05-15",
-        "matched_terms": [
-          "lean_substrate",
-          "proof_compile_check",
-          "pre_lean_preflight",
-          "closure_attempt"
-        ],
-        "path": "src/ztare/gates/lean_proof_gate.py",
-        "score": 92.25,
-        "why": "matched lean_substrate, proof_compile_check, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.25"
-      },
-      {
-        "buckets": [
-          "pde_ns_lean",
-          "sympy_cas",
-          "graph_mining"
-        ],
-        "description": "Tier-0 closure-governance organ: flags vacuous / True-hypothesis / trivial-exists / exists-Prop closures; independent verify via Lean trivial-cascade probe (zero audit verdict). Mechanizes AP-013 vacuous sub-mode.",
-        "id": "V33-PREFLIGHT-RISK-DETECTOR",
-        "impact_factor_expost": 4.0,
-        "kind": "gate",
-        "last_used": "2026-05-15",
-        "matched_terms": [
-          "lean_substrate",
-          "pre_lean_preflight",
-          "closure_attempt"
-        ],
-        "path": "scripts/public/control/v33_preflight_risk_detector.py",
-        "score": 89.0,
-        "why": "matched lean_substrate, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
       },
       {
         "buckets": [
@@ -139,8 +102,42 @@
           "typed_endpoint"
         ],
         "path": "src/ztare/research_director/ns_l3a_workmap.py",
-        "score": 85.5,
+        "score": 171.9,
         "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+      },
+      {
+        "buckets": [
+          "graph_mining",
+          "cognitive_reframe"
+        ],
+        "description": "Level-1 cognitive gym hooks (substrate-level inverter / compress / margin / negative-space dispatch).",
+        "id": "COGNITIVE-GYM-HOOKS",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-05-06",
+        "matched_terms": [
+          "closure_attempt"
+        ],
+        "path": "src/ztare/research_director/cognitive_gym_hooks.py",
+        "score": 117.7,
+        "why": "matched closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
+        "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
+        "impact_factor_expost": 5.0,
+        "kind": "reflexive_primitive",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "injection"
+        ],
+        "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
+        "score": 102.0,
+        "why": "matched injection; bucket pde_ns_lean, graph_mining; impact 5"
       }
     ],
     "lagrangian_path_b": [
@@ -159,8 +156,36 @@
           "lean_substrate"
         ],
         "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 73.0,
+        "score": 125.9,
         "why": "matched lean_substrate; bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "Audit-fix B2 (2026-04-28): write the derived closed-form back into",
+        "id": "SUBSTITUTE-DERIVED-PARAMETRIC-FORM",
+        "impact_factor_expost": 1.0,
+        "kind": "primitive",
+        "last_used": "",
+        "matched_terms": [],
+        "path": "src/ztare/fit/lagrangian_derivation.py",
+        "score": 62.1,
+        "why": "bucket lagrangian_path_b; impact 1"
+      },
+      {
+        "buckets": [
+          "lagrangian_path_b"
+        ],
+        "description": "GP-180/181 Path B Lagrangian derivation: derives equations of motion from a Lagrangian via Euler-Lagrange.",
+        "id": "LAGRANGIAN-DERIVATION",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-04-28",
+        "matched_terms": [],
+        "path": "src/ztare/fit/lagrangian_derivation.py",
+        "score": 61.7,
+        "why": "bucket lagrangian_path_b; impact 2; graph_bonus 2.5"
       },
       {
         "buckets": [
@@ -173,74 +198,11 @@
         "last_used": "2026-05-08",
         "matched_terms": [],
         "path": "src/ztare/validator/autoresearch_loop.py",
-        "score": 51.5,
+        "score": 51.9,
         "why": "bucket lagrangian_path_b; impact 4"
-      },
-      {
-        "buckets": [
-          "sympy_cas",
-          "lagrangian_path_b"
-        ],
-        "description": "GP-188 dimensional-monomial forcing / pi-group analysis: decides whether a target quantity is the unique forced monomial of a chosen constant subset S, needs an independent dimensionful constant (target not in col-space ",
-        "id": "PI-GROUP-FORCING-GATE",
-        "impact_factor_expost": 1.0,
-        "kind": "gate",
-        "last_used": "2026-05-16",
-        "matched_terms": [
-          "dimensional_check"
-        ],
-        "path": "src/ztare/gates/pi_group_forcing.py",
-        "score": 37.0,
-        "why": "matched dimensional_check; bucket sympy_cas, lagrangian_path_b; impact 1"
-      },
-      {
-        "buckets": [
-          "sympy_cas",
-          "lagrangian_path_b"
-        ],
-        "description": "GP-181 dimensional consistency check (Buckingham pi theorem): enforces transcendental-function arguments are dimensionless via AST prune.",
-        "id": "BUCKINGHAM-PI-GATE",
-        "impact_factor_expost": 1.0,
-        "kind": "gate",
-        "last_used": "2026-04-28",
-        "matched_terms": [
-          "dimensional_check"
-        ],
-        "path": "src/ztare/gates/buckingham_pi_gate.py",
-        "score": 35.5,
-        "why": "matched dimensional_check; bucket sympy_cas, lagrangian_path_b; impact 1"
       }
     ],
     "negative_to_object": [
-      {
-        "buckets": [
-          "cognitive_reframe",
-          "negative_to_object"
-        ],
-        "description": "Cold-shot dispatch pattern for de-anchored external or cross-family review before expensive commitment or novelty claims.",
-        "id": "PATTERN-014-COLD-SHOT-DISPATCH",
-        "impact_factor_expost": 5.0,
-        "kind": "pattern",
-        "last_used": "2026-05-13",
-        "matched_terms": [],
-        "path": "org/patterns/cold_shot_dispatch.md",
-        "score": 69.0,
-        "why": "bucket cognitive_reframe, negative_to_object; impact 5"
-      },
-      {
-        "buckets": [
-          "negative_to_object"
-        ],
-        "description": "5-round adversarial 2-role friction debate; produced 2 clean theorems tonight per memory index.",
-        "id": "PATTERN-001-FRICTION-DEBATE",
-        "impact_factor_expost": 5.0,
-        "kind": "pattern",
-        "last_used": "2026-05-08",
-        "matched_terms": [],
-        "path": "org/patterns/pattern_1_friction_debate.md",
-        "score": 63.25,
-        "why": "bucket negative_to_object; impact 5; graph_bonus 1.75"
-      },
       {
         "buckets": [
           "negative_to_object",
@@ -253,23 +215,53 @@
         "last_used": "2026-05-16",
         "matched_terms": [],
         "path": "scripts/public/control/gp225_audit.py",
-        "score": 59.0,
+        "score": 98.9,
         "why": "bucket negative_to_object, orchestration_compression; impact 4"
       },
       {
         "buckets": [
-          "cognitive_reframe",
+          "pde_ns_lean",
           "negative_to_object"
         ],
-        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
-        "id": "SOLVER0-GATE",
-        "impact_factor_expost": 4.0,
-        "kind": "gate",
+        "description": "Classify the proposed estimate against a substrate normal-form profile.",
+        "id": "RUN-RESIDUAL-NORMAL-FORM",
+        "impact_factor_expost": 1.0,
+        "kind": "primitive",
+        "last_used": "",
+        "matched_terms": [
+          "PDE_estimate"
+        ],
+        "path": "src/ztare/research_director/pde_estimate_workbench.py",
+        "score": 93.1,
+        "why": "matched PDE_estimate; bucket pde_ns_lean, negative_to_object; impact 1"
+      },
+      {
+        "buckets": [
+          "negative_to_object"
+        ],
+        "description": "STRUCTURAL ANCHOR (vocabulary-drift-proof): route-1 closure is ALREADY encoded as discharge >=1 of 5 Clay-equivalent residual axioms {BKM, Prodi-Serrin, ESS-L3, Beirao-da-Veiga, Constantin-Fefferman vorticity-direction-L",
+        "id": "NS-ROUTE1-FIVE-CLAY-EQUIVALENT-RESIDUAL-VOID-ANCHOR",
+        "impact_factor_expost": 1.0,
+        "kind": "primitive",
         "last_used": "2026-05-16",
         "matched_terms": [],
-        "path": "scripts/public/control/solver0_gate.py",
-        "score": 59.0,
-        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
+        "path": "ztare_proofs/ZtareProofs/ns_trackb_FINAL_THEOREM.lean",
+        "score": 74.6,
+        "why": "bucket negative_to_object; impact 1"
+      },
+      {
+        "buckets": [
+          "negative_to_object"
+        ],
+        "description": "Return the open-goal block(s) from Lean's `unsolved goals` output \u2014 the",
+        "id": "EXTRACT-UNSOLVED-GOALS",
+        "impact_factor_expost": 3.0,
+        "kind": "primitive",
+        "last_used": "",
+        "matched_terms": [],
+        "path": "src/ztare/leanmill/solver/proof_state.py",
+        "score": 69.3,
+        "why": "bucket negative_to_object; impact 3"
       }
     ],
     "orchestration_compression": [
@@ -288,7 +280,7 @@
           "lean_substrate"
         ],
         "path": "scripts/public/control/bundle_run.py",
-        "score": 73.0,
+        "score": 126.9,
         "why": "matched lean_substrate; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
       },
       {
@@ -306,7 +298,7 @@
           "lean_substrate"
         ],
         "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 73.0,
+        "score": 125.9,
         "why": "matched lean_substrate; bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
       },
       {
@@ -321,23 +313,22 @@
         "last_used": "2026-05-16",
         "matched_terms": [],
         "path": "scripts/public/control/gp225_audit.py",
-        "score": 59.0,
+        "score": 98.9,
         "why": "bucket negative_to_object, orchestration_compression; impact 4"
       },
       {
         "buckets": [
-          "cognitive_reframe",
           "orchestration_compression"
         ],
-        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
-        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
+        "description": "Reusable Path-A verifier (productizes the disposable per-corpus /tmp/run_*.py rewrites that were themselves the rewrite anti-pattern). Verbatim-compiles a proofs.json against ANY registered canonical pinned Mathlib sandb",
+        "id": "BUNDLE-VERIFY-REUSABLE-PATH-A-VERIFIER",
         "impact_factor_expost": 4.0,
-        "kind": "pattern",
-        "last_used": "2026-05-08",
+        "kind": "primitive",
+        "last_used": "2026-05-16",
         "matched_terms": [],
-        "path": "org/patterns/darwin_idea_killer.md",
-        "score": 58.0,
-        "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
+        "path": "scripts/public/control/bundle_verify.py",
+        "score": 92.9,
+        "why": "bucket orchestration_compression; impact 4"
       }
     ],
     "pde_ns_lean": [
@@ -372,30 +363,8 @@
           "bounded_multiplicity"
         ],
         "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
-        "score": 206.75,
+        "score": 668.65,
         "why": "matched NS_track_b, PDE_estimate, harmonic_analysis, source_selection, nonadaptive; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
-      },
-      {
-        "buckets": [
-          "pde_ns_lean"
-        ],
-        "description": "Same-carrier packing/no-reuse gate for pec_j: checks source carrier, target payment family, assignment/injection map, total prefix coverage, same-carrier binding, overlap or multiplicity bound, finite-prefix budget, pre-",
-        "id": "SAME-CARRIER-PACKING-GATE",
-        "impact_factor_expost": 4.0,
-        "kind": "gate",
-        "last_used": "2026-05-25",
-        "matched_terms": [
-          "NS_track_b",
-          "PDE_estimate",
-          "same_carrier",
-          "fresh_capacity",
-          "no_reuse",
-          "packing",
-          "injection"
-        ],
-        "path": "src/ztare/gates/same_carrier_packing_gate.py",
-        "score": 109.0,
-        "why": "matched NS_track_b, PDE_estimate, same_carrier, fresh_capacity, no_reuse; bucket pde_ns_lean; impact 4"
       },
       {
         "buckets": [
@@ -415,32 +384,67 @@
           "typed_endpoint"
         ],
         "path": "src/ztare/research_director/ns_graph_tick.py",
-        "score": 103.0,
+        "score": 234.4,
         "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
       },
       {
         "buckets": [
           "pde_ns_lean"
         ],
-        "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
-        "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+        "description": "PDE execution currency ledger for exchange-rate obligations and produced currencies; includes local-model to finite-energy cutoff invoice conversion used to prevent spending local surplus as global PDE payment without cu",
+        "id": "PDE-CURRENCY-LEDGER",
         "impact_factor_expost": 4.0,
-        "kind": "pattern",
-        "last_used": "2026-05-14",
+        "kind": "op",
+        "last_used": "2026-05-24",
         "matched_terms": [
           "NS_track_b",
-          "pre_lean_preflight",
-          "gowers_first",
-          "formalization_sequence",
-          "theorem_surface",
-          "carrier_observable"
+          "PDE_estimate",
+          "same_carrier",
+          "single_spend"
         ],
-        "path": "org/patterns/gowers_first_formalize_second.md",
-        "score": 101.0,
-        "why": "matched NS_track_b, pre_lean_preflight, gowers_first, formalization_sequence, theorem_surface; bucket pde_ns_lean; impact 4"
+        "path": "src/ztare/research_director/pde_currency_ledger.py",
+        "score": 197.9,
+        "why": "matched NS_track_b, PDE_estimate, same_carrier, single_spend; bucket pde_ns_lean; impact 4; graph_bonus 1.5"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+        "id": "NS-L3A-CONCENTRATION-WORKMAP",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "NS_track_b",
+          "lean_substrate",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_l3a_workmap.py",
+        "score": 171.9,
+        "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
       }
     ],
     "sympy_cas": [
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas",
+          "orchestration_compression"
+        ],
+        "description": "THE single runnable entrypoint for the bundled Path A (solver) + Path B (governance) \u2014 the ZTARE-analogue for solver-yield work (answers 'how do you run it': `python bundle_run.py --substrate <s> --sandbox <pinned vX> --",
+        "id": "BUNDLE-RUN-PATH-A-B-HARNESS",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [
+          "lean_substrate"
+        ],
+        "path": "scripts/public/control/bundle_run.py",
+        "score": 126.9,
+        "why": "matched lean_substrate; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
+      },
       {
         "buckets": [
           "pde_ns_lean",
@@ -458,7 +462,7 @@
           "closure_attempt"
         ],
         "path": "scripts/public/control/v33_preflight_risk_detector.py",
-        "score": 89.0,
+        "score": 87.9,
         "why": "matched lean_substrate, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
       },
       {
@@ -476,7 +480,7 @@
           "CAS_verification"
         ],
         "path": "scripts/projects/ns/CAS_W6_verification.py",
-        "score": 85.5,
+        "score": 86.0,
         "why": "matched harmonic_analysis, CAS_verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
       },
       {
@@ -496,26 +500,8 @@
           "endpoint_check"
         ],
         "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
-        "score": 80.75,
+        "score": 81.05,
         "why": "matched PDE_estimate, pre_lean_preflight, dimensional_check, endpoint_check; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
-      },
-      {
-        "buckets": [
-          "pde_ns_lean",
-          "sympy_cas",
-          "orchestration_compression"
-        ],
-        "description": "THE single runnable entrypoint for the bundled Path A (solver) + Path B (governance) \u2014 the ZTARE-analogue for solver-yield work (answers 'how do you run it': `python bundle_run.py --substrate <s> --sandbox <pinned vX> --",
-        "id": "BUNDLE-RUN-PATH-A-B-HARNESS",
-        "impact_factor_expost": 4.0,
-        "kind": "primitive",
-        "last_used": "2026-05-16",
-        "matched_terms": [
-          "lean_substrate"
-        ],
-        "path": "scripts/public/control/bundle_run.py",
-        "score": 73.0,
-        "why": "matched lean_substrate; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
       }
     ]
   },
@@ -591,30 +577,8 @@
         "bounded_multiplicity"
       ],
       "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
-      "score": 206.75,
+      "score": 668.65,
       "why": "matched NS_track_b, PDE_estimate, harmonic_analysis, source_selection, nonadaptive; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean"
-      ],
-      "description": "Same-carrier packing/no-reuse gate for pec_j: checks source carrier, target payment family, assignment/injection map, total prefix coverage, same-carrier binding, overlap or multiplicity bound, finite-prefix budget, pre-",
-      "id": "SAME-CARRIER-PACKING-GATE",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-25",
-      "matched_terms": [
-        "NS_track_b",
-        "PDE_estimate",
-        "same_carrier",
-        "fresh_capacity",
-        "no_reuse",
-        "packing",
-        "injection"
-      ],
-      "path": "src/ztare/gates/same_carrier_packing_gate.py",
-      "score": 109.0,
-      "why": "matched NS_track_b, PDE_estimate, same_carrier, fresh_capacity, no_reuse; bucket pde_ns_lean; impact 4"
     },
     {
       "buckets": [
@@ -634,69 +598,8 @@
         "typed_endpoint"
       ],
       "path": "src/ztare/research_director/ns_graph_tick.py",
-      "score": 103.0,
+      "score": 234.4,
       "why": "matched NS_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean"
-      ],
-      "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
-      "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
-      "impact_factor_expost": 4.0,
-      "kind": "pattern",
-      "last_used": "2026-05-14",
-      "matched_terms": [
-        "NS_track_b",
-        "pre_lean_preflight",
-        "gowers_first",
-        "formalization_sequence",
-        "theorem_surface",
-        "carrier_observable"
-      ],
-      "path": "org/patterns/gowers_first_formalize_second.md",
-      "score": 101.0,
-      "why": "matched NS_track_b, pre_lean_preflight, gowers_first, formalization_sequence, theorem_surface; bucket pde_ns_lean; impact 4"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean",
-        "graph_mining"
-      ],
-      "description": "Verifies Lean proof compiles with no axioms/sorries (GP-211) AND runs the v33 Tier-0 anti-laundering organs (vacuity / gold-name / single-exact / indirect-leakage / currency) \u2014 flips gate_passed=False on a CONFIRMED fals",
-      "id": "LEAN-PROOF-GATE",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-15",
-      "matched_terms": [
-        "lean_substrate",
-        "proof_compile_check",
-        "pre_lean_preflight",
-        "closure_attempt"
-      ],
-      "path": "src/ztare/gates/lean_proof_gate.py",
-      "score": 92.25,
-      "why": "matched lean_substrate, proof_compile_check, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.25"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean",
-        "sympy_cas",
-        "graph_mining"
-      ],
-      "description": "Tier-0 closure-governance organ: flags vacuous / True-hypothesis / trivial-exists / exists-Prop closures; independent verify via Lean trivial-cascade probe (zero audit verdict). Mechanizes AP-013 vacuous sub-mode.",
-      "id": "V33-PREFLIGHT-RISK-DETECTOR",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-15",
-      "matched_terms": [
-        "lean_substrate",
-        "pre_lean_preflight",
-        "closure_attempt"
-      ],
-      "path": "scripts/public/control/v33_preflight_risk_detector.py",
-      "score": 89.0,
-      "why": "matched lean_substrate, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
     },
     {
       "buckets": [
@@ -714,26 +617,8 @@
         "single_spend"
       ],
       "path": "src/ztare/research_director/pde_currency_ledger.py",
-      "score": 86.5,
+      "score": 197.9,
       "why": "matched NS_track_b, PDE_estimate, same_carrier, single_spend; bucket pde_ns_lean; impact 4; graph_bonus 1.5"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean",
-        "sympy_cas"
-      ],
-      "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight).",
-      "id": "CAS-W6-VERIFICATION",
-      "impact_factor_expost": 5.0,
-      "kind": "script",
-      "last_used": "2026-05-08",
-      "matched_terms": [
-        "harmonic_analysis",
-        "CAS_verification"
-      ],
-      "path": "scripts/projects/ns/CAS_W6_verification.py",
-      "score": 85.5,
-      "why": "matched harmonic_analysis, CAS_verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
     },
     {
       "buckets": [
@@ -751,67 +636,140 @@
         "typed_endpoint"
       ],
       "path": "src/ztare/research_director/ns_l3a_workmap.py",
-      "score": 85.5,
+      "score": 171.9,
       "why": "matched NS_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
     },
     {
       "buckets": [
-        "pde_ns_lean"
+        "pde_ns_lean",
+        "sympy_cas",
+        "orchestration_compression"
       ],
-      "description": "Covering-selection receipt gate: checks metric/quasi-metric, source family, scale/radius, uniform doubling or Besicovitch constant, engulfing/eccentricity control, pre-payoff selection rule, coverage or paid omissions, s",
-      "id": "METRIC-COVERING-SELECTION-GATE",
+      "description": "THE single runnable entrypoint for the bundled Path A (solver) + Path B (governance) \u2014 the ZTARE-analogue for solver-yield work (answers 'how do you run it': `python bundle_run.py --substrate <s> --sandbox <pinned vX> --",
+      "id": "BUNDLE-RUN-PATH-A-B-HARNESS",
       "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-25",
+      "kind": "primitive",
+      "last_used": "2026-05-16",
       "matched_terms": [
-        "NS_track_b",
-        "PDE_estimate",
-        "same_carrier",
-        "packing"
+        "lean_substrate"
       ],
-      "path": "src/ztare/gates/metric_covering_selection_gate.py",
-      "score": 85.0,
-      "why": "matched NS_track_b, PDE_estimate, same_carrier, packing; bucket pde_ns_lean; impact 4"
+      "path": "scripts/public/control/bundle_run.py",
+      "score": 126.9,
+      "why": "matched lean_substrate; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "lagrangian_path_b",
+        "orchestration_compression"
+      ],
+      "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
+      "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-16",
+      "matched_terms": [
+        "lean_substrate"
+      ],
+      "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
+      "score": 125.9,
+      "why": "matched lean_substrate; bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
     },
     {
       "buckets": [
         "pde_ns_lean"
       ],
-      "description": "Distinct-payment/no-reuse gate: checks selected-unit to payment-atom assignments for total-on-prefix mapping, disjointness/distinctness, no rebilling of the same atom, prefix budget bound, pre-payoff timing, same-owner/s",
-      "id": "NO-REBILLING-FRESHNESS-GATE",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-24",
+      "description": "Run the RD single-spend carrier audit if fields were supplied.",
+      "id": "RUN-SINGLE-SPEND-AUDIT",
+      "impact_factor_expost": 1.0,
+      "kind": "primitive",
+      "last_used": "",
       "matched_terms": [
-        "NS_track_b",
-        "PDE_estimate",
-        "nonadaptive",
-        "no_reuse"
+        "PDE_estimate"
       ],
-      "path": "src/ztare/gates/no_rebilling_freshness_gate.py",
-      "score": 85.0,
-      "why": "matched NS_track_b, PDE_estimate, nonadaptive, no_reuse; bucket pde_ns_lean; impact 4"
+      "path": "src/ztare/research_director/pde_estimate_workbench.py",
+      "score": 118.1,
+      "why": "matched PDE_estimate; bucket pde_ns_lean; impact 1"
     },
     {
       "buckets": [
         "pde_ns_lean"
       ],
-      "description": "Pre-payoff source/extractor selection gate: checks that a reinterpreted source object, extractor or selection rule, source family, owner/carrier binding, index map, and timing receipt are fixed before payoff and independ",
-      "id": "NONADAPTIVE-SOURCE-SELECTION-GATE",
-      "impact_factor_expost": 4.0,
-      "kind": "gate",
-      "last_used": "2026-05-24",
+      "description": "Convert source-truth context fields into audit inputs.",
+      "id": "SINGLE-SPEND-FIELDS-FROM-CONTEXT",
+      "impact_factor_expost": 1.0,
+      "kind": "primitive",
+      "last_used": "",
       "matched_terms": [
-        "NS_track_b",
+        "PDE_estimate"
+      ],
+      "path": "src/ztare/research_director/pde_estimate_workbench.py",
+      "score": 118.1,
+      "why": "matched PDE_estimate; bucket pde_ns_lean; impact 1"
+    },
+    {
+      "buckets": [
+        "graph_mining",
+        "cognitive_reframe"
+      ],
+      "description": "Level-1 cognitive gym hooks (substrate-level inverter / compress / margin / negative-space dispatch).",
+      "id": "COGNITIVE-GYM-HOOKS",
+      "impact_factor_expost": 2.0,
+      "kind": "primitive",
+      "last_used": "2026-05-06",
+      "matched_terms": [
+        "closure_attempt"
+      ],
+      "path": "src/ztare/research_director/cognitive_gym_hooks.py",
+      "score": 117.7,
+      "why": "matched closure_attempt; bucket graph_mining, cognitive_reframe; impact 2"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Run the owner-preimage prefix gate when selected or receipts are supplied.",
+      "id": "RUN-OWNER-PREIMAGE-PREFIX-AUDIT",
+      "impact_factor_expost": 1.0,
+      "kind": "primitive",
+      "last_used": "",
+      "matched_terms": [
+        "PDE_estimate"
+      ],
+      "path": "src/ztare/research_director/pde_estimate_workbench.py",
+      "score": 117.1,
+      "why": "matched PDE_estimate; bucket pde_ns_lean; impact 1"
+    },
+    {
+      "buckets": [],
+      "description": "Return whether a positive-constructor attempt is action-order due.",
+      "id": "CONSTRUCTIVE-TURN-DUE",
+      "impact_factor_expost": 1.0,
+      "kind": "primitive",
+      "last_used": "",
+      "matched_terms": [],
+      "path": "src/ztare/research_director/pde_work_unit_gate.py",
+      "score": 113.1,
+      "why": "impact 1"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Run G-NONADAPTIVE-SOURCE-SELECTION checks supplied by the caller.",
+      "id": "RUN-NONADAPTIVE-SOURCE-SELECTION-CHECKS",
+      "impact_factor_expost": 1.0,
+      "kind": "primitive",
+      "last_used": "",
+      "matched_terms": [
         "PDE_estimate",
-        "source_selection",
         "nonadaptive"
       ],
-      "path": "src/ztare/gates/nonadaptive_source_selection_gate.py",
-      "score": 85.0,
-      "why": "matched NS_track_b, PDE_estimate, source_selection, nonadaptive; bucket pde_ns_lean; impact 4"
+      "path": "src/ztare/research_director/pde_estimate_workbench.py",
+      "score": 111.1,
+      "why": "matched PDE_estimate, nonadaptive; bucket pde_ns_lean; impact 1"
     }
   ],
-  "total_index_rows": 247,
+  "total_index_rows": 614,
   "warnings": []
 }

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-05-23T22:46:54.037933+00:00",
+  "generated_utc": "2026-06-04T21:44:05.670220+00:00",
   "spec": "research_areas/private/seams/apparatus/instrumentation/GP-236_p0_metrics_rollup_seam.md",
   "page_caveat": "Every metric except group 3.1_exogenous is self-produced, self-labeled, self-ratified by the apparatus it measures. A self-measured metrics page is itself the Goodhart layer; only external review catches spec-layer self-deception. No self-measured metric is a standalone headline.",
   "group_order": [
@@ -9,7 +9,7 @@
     "3.4_recursive"
   ],
   "status_counts": {
-    "ok": 18,
+    "ok": 20,
     "partial": 2,
     "not_yet_computable": 2
   },
@@ -91,7 +91,7 @@
       "group": "3.2_state",
       "key": "papers",
       "label": "Paper manuscripts",
-      "value": 7,
+      "value": 9,
       "unit": "papers",
       "lane": "meta",
       "tier": "A",
@@ -107,8 +107,8 @@
       "key": "out_of_loop_share",
       "label": "Out-of-loop share (cumulative / live-7d)",
       "value": {
-        "cumulative_pct": 76,
-        "live_7d_pct": 92
+        "cumulative_pct": 80,
+        "live_7d_pct": 63
       },
       "unit": "%",
       "lane": "out_of_loop",
@@ -124,7 +124,7 @@
       "group": "3.2_state",
       "key": "iter_loop_files",
       "label": "Iter-loop work files",
-      "value": 8526,
+      "value": 8508,
       "unit": "files",
       "lane": "in_loop",
       "tier": "B",
@@ -139,7 +139,7 @@
       "group": "3.2_state",
       "key": "authored_artifacts_indexed",
       "label": "Authored artifacts indexed",
-      "value": 35630,
+      "value": 43178,
       "unit": "files",
       "lane": "meta",
       "tier": "B",
@@ -154,7 +154,7 @@
       "group": "3.2_state",
       "key": "sorry_free_lean",
       "label": "Sorry-free authored .lean files",
-      "value": 478,
+      "value": 481,
       "unit": "files",
       "lane": "meta",
       "tier": "C",
@@ -170,10 +170,10 @@
       "key": "contextualized_taste",
       "label": "Contextualized taste \u2014 the PLATEAU is the headline",
       "value": {
-        "latest": 3.11,
-        "min": 1.44,
+        "latest": 1.2,
+        "min": 1.2,
         "max": 3.11,
-        "weeks": 8,
+        "weeks": 10,
         "shape": "plateau",
         "scope": "full historical ledger, rater-segregated \u2014 NOT sample-scoped",
         "rater": "cold_subagent_contextualized"
@@ -211,7 +211,7 @@
       "group": "3.3_insight",
       "key": "compounding_ratio",
       "label": "Compounding ratio (peak)",
-      "value": 0.24,
+      "value": 0.38,
       "unit": "ratio",
       "lane": "out_of_loop",
       "tier": "C",
@@ -228,7 +228,7 @@
       "label": "Catch-rate per unit work + category drift + ratified-fraction",
       "value": {
         "catches": 147,
-        "per_1k_artifacts": 4.13,
+        "per_1k_artifacts": 3.4,
         "distinct_categories": 89,
         "ratified_fraction": 0.231
       },
@@ -259,17 +259,127 @@
     },
     {
       "group": "3.4_recursive",
-      "key": "dead_letter_rate",
-      "label": "Dead-letter rate (candidates surfaced vs ever-actioned)",
+      "key": "realized_primitive_gain",
+      "label": "Realized primitive gain (registered \u2192 exogenously depended-on, split by carrier)",
       "value": {
-        "surfaced": 18,
-        "actioned": null
+        "primitives": 587,
+        "load_bearing_ge3": 119,
+        "load_bearing_with_usage": 101,
+        "rate": 0.203,
+        "distribution": {
+          "0": 9,
+          "1": 407,
+          "2": 52,
+          "3": 49,
+          "4": 53,
+          "5": 17
+        }
       },
       "unit": "rate",
       "lane": "meta",
       "tier": "B",
-      "source": "analytics/public/queries/trajectory/recursive_gain_candidates.json",
-      "caveat": "surfaced count is reliable; 'actioned' detection (candidate\u2192seam/commit follow-through) needs a committed tree + a candidate\u2192outcome link not yet wired. Honest partial.",
+      "source": "analytics/public/index/architecture_index.jsonl#impact_factor_expost",
+      "caveat": "Split by carrier (Meta-Darwin): `load_bearing_with_usage` is the HARDER exogenous floor (expost>=3 AND a logged `last_used`), distinct from the fused expost score (semi-endogenous). Two-sided: a FALLING rate = registered-but-unused bloat. The realized-gain denominator the candidate aggregator lacks.",
+      "self_measured": false,
+      "status": "ok",
+      "owner": "architecture_index",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "recursive_gain_trajectory",
+      "label": "Recursive-gain trajectory (contextualized insight-quality mean / week)",
+      "value": {
+        "series": [
+          {
+            "week": "2026-03-23",
+            "mean": 2,
+            "n": 4,
+            "hq_ge4": 0
+          },
+          {
+            "week": "2026-03-30",
+            "mean": 1.63,
+            "n": 27,
+            "hq_ge4": 1
+          },
+          {
+            "week": "2026-04-06",
+            "mean": 1.68,
+            "n": 40,
+            "hq_ge4": 3
+          },
+          {
+            "week": "2026-04-13",
+            "mean": 2.07,
+            "n": 42,
+            "hq_ge4": 4
+          },
+          {
+            "week": "2026-04-20",
+            "mean": 1.81,
+            "n": 32,
+            "hq_ge4": 5
+          },
+          {
+            "week": "2026-04-27",
+            "mean": 2.61,
+            "n": 36,
+            "hq_ge4": 4
+          },
+          {
+            "week": "2026-05-04",
+            "mean": 2.61,
+            "n": 31,
+            "hq_ge4": 7
+          },
+          {
+            "week": "2026-05-11",
+            "mean": 3.11,
+            "n": 9,
+            "hq_ge4": 3
+          },
+          {
+            "week": "2026-05-25",
+            "mean": 2.53,
+            "n": 17,
+            "hq_ge4": 3
+          },
+          {
+            "week": "2026-06-01",
+            "mean": 1.2,
+            "n": 5,
+            "hq_ge4": 0
+          }
+        ],
+        "last_week": "2026-06-01",
+        "stale_days": 3,
+        "rater": "cold_subagent_contextualized"
+      },
+      "unit": "trend",
+      "lane": "meta",
+      "tier": "B",
+      "source": "analytics/public/queries/taste/taste_canonical_series.json",
+      "caveat": "The realized recursive-gain signal: weekly contextualized insight-quality mean (\u00d7volume = compounding product). Rater = the contextualized-warm cold_subagent_contextualized (canonical). Evidence-anchored to a primer; NOT a sophistication ladder.",
+      "self_measured": true,
+      "status": "ok",
+      "owner": "p0_rollup",
+      "value_kind": "breakdown"
+    },
+    {
+      "group": "3.4_recursive",
+      "key": "dead_letter_rate",
+      "label": "Dead-letter rate (candidates surfaced vs exogenously actioned)",
+      "value": {
+        "surfaced": 18,
+        "actioned_in_catch_ledger": 0,
+        "rate": 1.0
+      },
+      "unit": "rate",
+      "lane": "meta",
+      "tier": "B",
+      "source": "recursive_gain_candidates.json \u22c8 catch_ledger.jsonl (GP-id)",
+      "caveat": "actioned = a candidate GP-id appears in the EXOGENOUS catch ledger (was hardcoded None). Conservative: rule-id candidates (R10\u2026) carry no GP-id \u2192 un-joinable \u2192 counted un-actioned, so this is an UPPER bound on dead-letter. Two-sided: high = mining theater. Caveat: candidate INPUTS are stale (scorecards ~3wk old, 0 leanmill) \u2014 advisory until the aggregator inputs are refreshed.",
       "self_measured": true,
       "status": "partial",
       "owner": "p0_rollup",
@@ -301,8 +411,8 @@
       "label": "Laundering tripwire (binary, per cycle)",
       "value": {
         "introduced": true,
-        "n_laundered": 240,
-        "dup_fp_groups": 16
+        "n_laundered": 244,
+        "dup_fp_groups": 19
       },
       "unit": "bool",
       "lane": "meta",
@@ -391,7 +501,7 @@
       "lane": "out_of_loop",
       "tier": "C",
       "source": "ztare_workspace/frontier_state/*.json (status only, no slugs)",
-      "caveat": "NOT a progress score (a score over honestly-stuck hard-math is laundering). State only. STALE: newest file 2026-05-10; daemon-written and the VPS workers were not run this cycle. The hard-math frontier is stuck per the terminal characterizations (NS strict-margin atom open, gravity portability unearned, neural law failed) \u2014 a flat/stuck distribution IS the honest signal.",
+      "caveat": "NOT a progress score (a score over honestly-stuck hard-math is laundering). State only. STALE: newest file 2026-05-30; daemon-written and the VPS workers were not run this cycle. The hard-math frontier is stuck per the terminal characterizations (NS strict-margin atom open, gravity portability unearned, neural law failed) \u2014 a flat/stuck distribution IS the honest signal.",
       "self_measured": false,
       "status": "partial",
       "owner": "p0_rollup",
@@ -402,9 +512,9 @@
       "key": "capability_engaged_count",
       "label": "Capability engaged-count (weak observability only)",
       "value": {
-        "engaged": 4,
-        "dead": 7,
-        "insufficient": 7
+        "engaged": null,
+        "dead": null,
+        "insufficient": 18
       },
       "unit": "count",
       "lane": "meta",

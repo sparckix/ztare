@@ -42,20 +42,30 @@ export function RecursiveGainView({ data }: { data: DashboardData }) {
   return (
     <>
       <div className="methodology">
-        <h3>Recursive-gain candidates — what to ship next</h3>
+        <h3>Recursive-gain candidates — the forward half</h3>
         <p>
-          Aggregates 5 mining surfaces (cross-audit, structural-analogy, closure-pattern,
-          reference-graph, process-catalog) into a single ranked list of recursive-gain bets.
-          Each row is a concrete move the operator could ship to compound apparatus capability.
+          This is the <strong>forward recommender</strong>: a ranked list of moves that{" "}
+          <em>could</em> compound apparatus capability, aggregated from five mining surfaces
+          (cross-audit, structural-analogy, closure-pattern, reference-graph, process-catalog).
+          It is a list of bets, <strong>not evidence of gain</strong>. A candidate counts as
+          realized only when an independent ledger shows it was acted on — see the{" "}
+          <strong>realized-gain</strong> readings on the P0 tab (insight-quality trajectory +
+          the fraction of registered primitives that became depended-on downstream). Read them
+          together: candidates ahead, realized measure behind.
         </p>
         <ul>
-          <li><strong>Mechanism</strong> — kind of recursive gain (retire-decorative-primitive, wire-one-shot-as-loop, promote-to-cage-gate, run-new-ZTARE-substrate, revive-stalled-loop, self-skeptic-substrate)</li>
+          <li><strong>Mechanism</strong> — kind of gain (retire-decorative, wire-one-shot-as-loop, promote-to-gate, new-substrate, revive-stalled-loop)</li>
           <li><strong>Cost</strong> — operator effort estimate (trivial / day / week / month)</li>
           <li><strong>Confidence</strong> — signal strength from the source miner</li>
           <li><strong>Source</strong> — which mining surface produced it</li>
         </ul>
-        <p>
-          <strong>Re-run:</strong> <code>python scripts/mining/mine_recursive_gain_candidates.py</code> after any of the upstream miners refresh.
+        <p style={{ fontSize: 13, color: "#666" }}>
+          <strong>Honest caveat:</strong> these candidates are only as fresh as their upstream
+          scorecards, and follow-through is measured <em>exogenously</em> (a candidate's GP-id
+          appearing in the catch ledger). A high dead-letter rate means the mining is surfacing
+          moves nobody ships — a signal to read, not to hide. Re-run{" "}
+          <code>python scripts/public/mining/mine_recursive_gain_candidates.py</code> after the
+          upstream miners refresh.
         </p>
       </div>
 
