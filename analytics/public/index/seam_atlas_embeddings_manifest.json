@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-06-04T20:33:28.149760+00:00",
+  "model": "gemini-embedding-001",
+  "dimensions": 768,
+  "size": 336,
+  "embeddings_file": "/Users/daalami/figs_activist_loop/analytics/public/index/seam_atlas_embeddings.json",
+  "by_kind": {
+    "seam": 281,
+    "spec": 55
+  },
+  "source_roots": [
+    "research_areas/seams",
+    "research_areas/private/seams",
+    "research_areas/specs"
+  ],
+  "query_surface": "src/ztare/research_director/seam_semantic.py"
+}
