@@ -38,6 +38,8 @@ audit, dependencies, falsifier, anti-laundering commitments).
 |---|---|---|---|---|
 | RP-001 | architecture_index_meta_graph | Capability index + meta-graph used as central context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired. | B (PARTIALLY NOVEL) | Spearman ρ(impact, frequency) > 0.9 for 4 weeks → demote impact-factor claim. Period: 2026-05-08 .. 2026-06-05. |
 | RP-002 | pattern_action_contract | Pattern/anti-pattern/menu evidence converted into required RD evidence-carrier slots and close-time validation. | B (PARTIALLY NOVEL) | Next 10 depth-sensitive closes: <7 contract-filled payloads or unchanged tool-underuse catch rate → demote. Period: 2026-05-20 .. 2026-06-20. |
+| RP-003 | capability_evidence_contract | Carrier-bound preflight contract for choosing which capability to build: exogenous carrier + bottleneck pinned to a frozen yield-decomposition (GP-233/GP-246) + kill criterion. Replaces the cold-pre-flight-killed CEP scalar. | B (PARTIALLY NOVEL) | Next K≥5 CEC bets: a capability adopted on a proposer-chooseable carrier, or fields no better than prior p_success → demote. Period: 2026-05-31 .. 2026-08-31. |
+| RP-004 | self_report_epistemology_critic | GP-166 noise-profile critic turned inward on the apparatus's own metric series; flags autocorrelation/heteroscedasticity/non-Gaussian/errors-in-X so untrustworthy self-numbers are disclosed. | B (PARTIALLY NOVEL) | Positive+negative synthetic control monthly: false-alarm on i.i.d. OR miss on AR(1) φ=0.6 → demote. Period: 2026-05-31 .. ongoing. |
 
 ## Classification logic (operator-defined 2026-05-08)
 

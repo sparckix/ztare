@@ -93,7 +93,7 @@ DEFAULT_CLAUDE_MODEL = "claude-sonnet-4-6"
 the runner stays consistent with the rest of the supervisor stack
 without re-parsing that config file."""
 
-DEFAULT_GEMINI_MODEL = "gemini-2.5-flash"
+DEFAULT_GEMINI_MODEL = "gemini-3.1-pro-preview"
 """Default Google GenAI model for Gemini turns. Matches the default
 gemini model used elsewhere in the repo (``llm_runtime`` /
 mutator+judge defaults). Gemini takes the second debate seat in place

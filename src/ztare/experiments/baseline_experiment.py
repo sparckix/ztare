@@ -30,7 +30,7 @@ from src.ztare.common.paths import PAPER1_DIR
 # 0. CLI
 # ---------------------------------------------------------------------------
 parser = argparse.ArgumentParser()
-parser.add_argument("--model", default="gemini-2.5-flash", help="Gemini model ID")
+parser.add_argument("--model", default="gemini-3.1-pro-preview", help="Gemini model ID")
 parser.add_argument("--claude", default="claude-sonnet-4-6", help="Claude model ID")
 parser.add_argument("--all", action="store_true", help="Run all available providers")
 parser.add_argument("--out", default=str(PAPER1_DIR / "data" / "baseline_results.json"), help="Output path")

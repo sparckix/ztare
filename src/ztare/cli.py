@@ -131,9 +131,9 @@ def _make_verb_router(name: str, verb_map: dict[str, str]) -> Callable[[list[str
 
 
 # `ztare forecast <verb>` — verb router over the forecast operator surface.
-# Mixed delegation: control scripts under scripts/public/control/, a
-# repo-relative analytics script, and two registered console-script
-# modules under `ztare.forecasting`. Each tuple is (kind, target):
+# Mixed delegation: reusable control scripts under scripts/public/control/,
+# project-local experiment tools, and registered console-script modules under
+# `ztare.forecasting`. Each tuple is (kind, target):
 #   ("control", "<name>.py")        → scripts/public/control/<name>.py
 #   ("script",  "<rel/path.py>")    → <repo_root>/<rel/path.py>
 #   ("module",  "<dotted.path>")    → python -m <dotted.path>
@@ -144,6 +144,34 @@ _FORECAST_VERBS: dict[str, tuple[str, str]] = {
     "calibration-db":    ("module",  "ztare.forecasting.calibration_db"),
     "score":             ("control", "forecast/score_prediction_ledger_calibration.py"),
     "ingest-smoke":      ("control", "forecast/ingest_smoke_jsonl.py"),
+    "cutoff-panel-run": ("script", "projects/llm_forecasting_calibration_program/tools/cutoff_stage_b_dispatch_runner.py"),
+    "cutoff-panel-ingest": ("script", "projects/llm_forecasting_calibration_program/tools/cutoff_stage_b_ingest_calls.py"),
+    "cutoff-panel-score": ("script", "projects/llm_forecasting_calibration_program/tools/cutoff_stage_b_score.py"),
+    "anti-bias-run":    ("script", "projects/llm_forecasting_calibration_program/tools/anti_bias_collapse_dispatch_runner.py"),
+    "anti-bias-score":  ("script", "projects/llm_forecasting_calibration_program/tools/anti_bias_collapse_score.py"),
+    "nurture-run":      ("script", "projects/llm_forecasting_calibration_program/tools/nurture_intervention_dispatch_runner.py"),
+    "nurture-ingest":   ("script", "projects/llm_forecasting_calibration_program/tools/nurture_intervention_ingest.py"),
+    "nurture-score":    ("script", "projects/llm_forecasting_calibration_program/tools/nurture_intervention_score.py"),
+    "f47-freeze-packet": ("script", "projects/llm_forecasting_calibration_program/tools/f47_prospective_market_freeze_packet.py"),
+    "f47-run":          ("script", "projects/llm_forecasting_calibration_program/tools/f47_source_balanced_consumer_dispatch.py"),
+    "f47-score":        ("script", "projects/llm_forecasting_calibration_program/tools/f47_source_balanced_consumer_score.py"),
+    "f47-external-bars": ("script", "projects/llm_forecasting_calibration_program/tools/f47_external_bar_score.py"),
+    "f47-prospective-score": ("script", "projects/llm_forecasting_calibration_program/tools/f47_prospective_market_freeze_score.py"),
+    "f47-production-readiness": ("script", "projects/llm_forecasting_calibration_program/tools/f47_production_readiness_audit.py"),
+    "fred-pre-companion": ("script", "projects/llm_forecasting_calibration_program/tools/fred_pre_cutoff_companion_manifest.py"),
+    "fred-pair-packet": ("script", "projects/llm_forecasting_calibration_program/tools/fred_cutoff_pair_dispatch_packet.py"),
+    "fred-pair-score": ("script", "projects/llm_forecasting_calibration_program/tools/fred_cutoff_pair_score.py"),
+    "fred-blind-value-packet": ("script", "projects/llm_forecasting_calibration_program/tools/fred_blinded_value_control_packet.py"),
+    "fred-ingest": ("script", "projects/llm_forecasting_calibration_program/tools/fred_ingest_workspace_results.py"),
+    "fred-vintage-audit": ("script", "projects/llm_forecasting_calibration_program/tools/fred_vintage_timing_audit.py"),
+    "fred-vintage-bulk-repair": ("script", "projects/llm_forecasting_calibration_program/tools/fred_vintage_bulk_repair.py"),
+    "fred-vintage-rescore": ("script", "projects/llm_forecasting_calibration_program/tools/fred_vintage_rescore.py"),
+    "dataset-label-time-gate": ("script", "projects/llm_forecasting_calibration_program/tools/dataset_label_time_gate.py"),
+    "source-currency-gate": ("script", "projects/llm_forecasting_calibration_program/tools/source_currency_gate.py"),
+    "paper-readiness-audit": ("script", "projects/llm_forecasting_calibration_program/tools/paper_readiness_exhaustion_audit.py"),
+    "equal-info-acquisition": ("script", "projects/llm_forecasting_calibration_program/tools/equal_information_baseline_acquisition_run.py"),
+    "equal-info-export-packet": ("script", "projects/llm_forecasting_calibration_program/tools/equal_information_baseline_export_packet.py"),
+    "equal-info-result-ingest": ("script", "projects/llm_forecasting_calibration_program/tools/equal_information_baseline_result_ingest.py"),
     "elo-refresh":       ("control", "forecast/compute_elo_by_corpus.py"),
     "brier-elo":         ("control", "forecast/brier_elo_report.py"),
     "resolve-open-metaculus": ("control", "forecast/resolve_open_metaculus.py"),
@@ -726,7 +754,7 @@ compdef _ztare ztare
 
 _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
     "forecast": (
-        "Forecast operations (GP-230): pool | resolve | calibration-stats | calibration-db | score.",
+        "Forecast operations: pool | resolve | calibration-stats | calibration-db | score | ingest-smoke | cutoff-panel-run | cutoff-panel-ingest | cutoff-panel-score | anti-bias-run | anti-bias-score | nurture-run | nurture-ingest | nurture-score | elo-refresh | brier-elo | resolve-open-metaculus.",
         _cmd_forecast_router,
     ),
     "leanmill": (

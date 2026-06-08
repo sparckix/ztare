@@ -231,7 +231,7 @@ def family_of(agent_id):
     a = str(agent_id).lower()
     if "claude" in a: return "claude"
     if "codex_55" in a or "codex_5.5" in a or "gpt-5.5" in a or "gpt5.5" in a: return "codex_55"
-    if "codex_54mini" in a or "codex_5.4mini" in a or "5.4-mini" in a or "5.4mini" in a or "gpt-5.4-mini" in a: return "codex_mini"
+    if "codex_54mini" in a or "codex_5.4mini" in a or "5.4-mini" in a or "5.4mini" in a or "gpt-5.4-mini" in a: return "codex_54mini"
     # codex_rd_pilot_* without explicit version: treat as codex_55 (the default codex in those pilots)
     if "codex_rd_pilot" in a or a.startswith("codex_") or a.startswith("codex-"): return "codex_55"
     if "gemini" in a: return "gemini"

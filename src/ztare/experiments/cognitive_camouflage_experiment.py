@@ -31,7 +31,7 @@ from google import genai
 from src.ztare.common.paths import PAPER1_DIR, PROJECTS_DIR
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--model_gemini", default="gemini-2.5-flash")
+parser.add_argument("--model_gemini", default="gemini-3.1-pro-preview")
 parser.add_argument("--model_claude", default="claude-sonnet-4-6")
 parser.add_argument("--out", default=str(PAPER1_DIR / "data" / "cognitive_camouflage_results.json"))
 args = parser.parse_args()

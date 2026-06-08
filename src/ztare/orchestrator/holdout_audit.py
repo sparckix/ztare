@@ -8,14 +8,15 @@ available — the audit slice is hash-locked from the mutator and only
 computed at run-end.
 
 Substrate-agnostic. Helpers operate on opaque row sequences and a
-deterministic seed derived from rubric identity. Substrates opt in by
-reading rubric.holdout_audit_fraction in their features module and
-calling partition_audit_slice.
+deterministic seed derived from rubric identity plus a per-run audit salt.
+Substrates opt in by reading rubric.holdout_audit_fraction in their features
+module and calling partition_audit_slice.
 
 Contract:
     - Default off (frac=0.0 → audit slice is empty, visible == input).
-    - Deterministic: seed = sha256(rubric_id + "::" + rubric_version).
-    - Stable across runs: same rubric → same partition by row identity.
+    - Deterministic within a run: seed = sha256(rubric_id + "::" +
+      rubric_version + "::" + audit_salt).
+    - Replayable when the post-run salt is supplied.
     - The audit slice is NOT exposed during iteration. The substrate's
       farther_tail_rows() returns ONLY the visible portion; the audit
       portion is consumed once at run-end via compute_audit_mre().
@@ -28,17 +29,26 @@ from __future__ import annotations
 
 import hashlib
 import math
+import os
 import random
 from typing import Any, Callable, Iterable, Sequence
 
 
-def _seed_from_rubric(rubric_id: str, rubric_version: str | None = None) -> int:
-    """Derive a deterministic 64-bit seed from rubric identity.
+def _seed_from_rubric(
+    rubric_id: str,
+    rubric_version: str | None = None,
+    audit_salt: str | None = None,
+) -> int:
+    """Derive a deterministic 64-bit seed from rubric identity plus salt.
 
-    rubric_version is optional; absent versions reduce to rubric_id only,
-    which is still stable across runs of the same rubric.
+    ``audit_salt`` defaults to ``ZTARE_AUDIT_PARTITION_SALT``. Generate it
+    per run so a proposer cannot infer the audit partition from the rubric
+    file alone.
     """
-    payload = f"{rubric_id}::{rubric_version or ''}"
+    salt = audit_salt
+    if salt is None:
+        salt = os.environ.get("ZTARE_AUDIT_PARTITION_SALT", "")
+    payload = f"{rubric_id}::{rubric_version or ''}::{salt}"
     digest = hashlib.sha256(payload.encode("utf-8")).digest()
     # Fold to 64 bits for Python's PRNG seed.
     return int.from_bytes(digest[:8], "big", signed=False)
@@ -50,6 +60,7 @@ def partition_audit_slice(
     *,
     rubric_id: str,
     rubric_version: str | None = None,
+    audit_salt: str | None = None,
     row_key: Callable[[Any], Any] | None = None,
 ) -> tuple[list[Any], list[Any]]:
     """Deterministically partition rows into (visible, audit) sets.
@@ -61,6 +72,9 @@ def partition_audit_slice(
             returns (rows, []); 1.0 returns ([], rows).
         rubric_id: stable rubric identifier (e.g. rubric file basename).
         rubric_version: optional version string; appended to seed input.
+        audit_salt: optional per-run salt. Defaults to
+            ``ZTARE_AUDIT_PARTITION_SALT``. Do not expose it to the proposer
+            before the audit partition is fixed.
         row_key: optional callable mapping a row to a sort key. When
             provided, rows are sorted by this key before shuffling so
             partition is stable even when the input order varies. When
@@ -77,9 +91,9 @@ def partition_audit_slice(
         - len(rows) == 0 → ([], []).
         - n_audit clamped to [0, len(rows)].
 
-    Determinism guarantee: for a given (rubric_id, rubric_version, frac,
-    rows-by-row_key), this function returns identical output across
-    Python invocations and platforms.
+    Determinism guarantee: for a given (rubric_id, rubric_version,
+    audit_salt, frac, rows-by-row_key), this function returns identical
+    output across Python invocations and platforms.
     """
     rows_list = list(rows)
     n = len(rows_list)
@@ -96,7 +110,7 @@ def partition_audit_slice(
     else:
         ordered = list(rows_list)
 
-    seed = _seed_from_rubric(rubric_id, rubric_version)
+    seed = _seed_from_rubric(rubric_id, rubric_version, audit_salt)
     rng = random.Random(seed)
     indices = list(range(n))
     rng.shuffle(indices)

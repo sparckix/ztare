@@ -35,6 +35,7 @@ except ImportError:
     _SCIPY = False
 
 from src.ztare.common.paths import PROJECTS_DIR
+from src.ztare.fit.mdl import bic as _mdl_bic  # canonical BIC (was inlined identically 3× below)
 from src.ztare.fit.primitive_library import load_library, save_to_library
 
 
@@ -673,7 +674,7 @@ def compress_champion(
         # Compute BIC
         sse = float(np.sum((ydata - y_pred) ** 2))
         sse_safe = max(sse, 1e-300)
-        bic = n_pts * math.log(sse_safe / n_pts) + k * math.log(n_pts)
+        bic = _mdl_bic(n_pts, sse_safe / n_pts, k)
 
         fitted_params = dict(zip(param_names, [float(v) for v in popt]))
 
@@ -759,7 +760,7 @@ def compress_champion(
 
             sse = float(np.sum((ydata - y_pred) ** 2))
             sse_safe = max(sse, 1e-300)
-            bic = n_pts * math.log(sse_safe / n_pts) + k * math.log(n_pts)
+            bic = _mdl_bic(n_pts, sse_safe / n_pts, k)
 
             fitted_params = dict(zip(param_names, [float(v) for v in popt]))
 
@@ -901,7 +902,7 @@ def compress_champion(
                                 sse_p = float(np.sum((ydata - y_pred_p) ** 2))
                                 sse_safe_p = max(sse_p, 1e-300)
                                 k_p = len(periodic_params)
-                                bic_p = n_pts * math.log(sse_safe_p / n_pts) + k_p * math.log(n_pts)
+                                bic_p = _mdl_bic(n_pts, sse_safe_p / n_pts, k_p)
 
                                 fitted_p = dict(zip(periodic_params, [float(v) for v in popt_p]))
 
@@ -1022,7 +1023,7 @@ def compress_champion(
                         continue
                     max_res = float(np.max(np.abs(ydata - y_sg)))
                     sse = float(np.sum((ydata - y_sg) ** 2))
-                    bic = n_pts * math.log(max(sse / n_pts, 1e-300)) + k * math.log(n_pts)
+                    bic = _mdl_bic(n_pts, max(sse / n_pts, 1e-300), k)
                     fitted_params = dict(zip(sg_params, [float(v) for v in popt]))
 
                     _write_test_model(project_dir, sg_expr, fitted_params, var_name=var_name)
