@@ -1,0 +1,29 @@
+{
+  "sha256": "51518e8b6d8f97a316b18145fa98abef6abf9ce9e243391d75692acdfaa43d46",
+  "contract": [
+    [
+      "agentic_portfolio_zero_yield_or_missing",
+      110
+    ],
+    [
+      "c_supply_credit_ready_row_gap",
+      141
+    ],
+    [
+      "c_supply_family_breadth_debt",
+      142
+    ],
+    [
+      "c_supply_source_breadth_debt",
+      142
+    ],
+    [
+      "c_supply_yield_bottleneck",
+      152
+    ],
+    [
+      "conversion_validated_family_path_blocked_by_missing_heldout_receipts",
+      88
+    ]
+  ]
+}
