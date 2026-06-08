@@ -26,29 +26,43 @@ Usage:
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
 import hashlib
 import json
 import os
-import urllib.error
-import urllib.request
+from pathlib import Path
 
-# Judge = a DIRECT OpenAI API call (NOT the codex agent CLI). The
-# obligation-grading task is bounded + near-deterministic (fixed
-# rubric + fixed witness → JSON verdict): it needs a competent grader,
-# NOT an agent with tools/sandbox/repo access. A plain chat-completion
-# at temperature 0 is faster (seconds, not codex-harness minutes),
-# cheaper, MORE reproducible (a deterministic judge is better for
-# audit), and removes the entire codex subscription/CODEX_HOME/
-# sandbox surface. gpt-4.1 is fully available via the API key (the
-# ChatGPT-subscription "gpt-4.1 unsupported" limit was a codex-CLI
-# auth-mode artefact, irrelevant here). The anti-gaming guarantee is
-# STRUCTURAL (OS-separated judge key + cross-FAMILY + monitor
-# binding), NOT judge-model IQ and NOT the transport. gpt-4.1 is
-# openai-family ≠ the claude/anthropic mutator. All env-overridable.
-JUDGE_MODEL = os.environ.get("ZTARE_JUDGE_MODEL", "gpt-4.1")
-JUDGE_IDENTITY = f"openai:{JUDGE_MODEL}"  # openai family ≠ claude
-_OPENAI_URL = os.environ.get(
-    "ZTARE_JUDGE_API_URL", "https://api.openai.com/v1/chat/completions")
+# Judge transport policy. The OS/key isolation and daemon-bound prompt hash are
+# the trust boundary; the model transport is an availability/cost choice. The
+# API lane goes through the shared provider-neutral LLMRuntime, defaulting to
+# Gemini Flash; subscription CLI fallback is allowed so exhausted metered keys
+# do not leave substantive ticks stuck.
+JUDGE_TRANSPORT = os.environ.get("ZTARE_JUDGE_TRANSPORT", "auto").strip().lower()
+JUDGE_API_MODEL = os.environ.get("ZTARE_JUDGE_API_MODEL", "gemini-2.5-flash")
+JUDGE_SUBSCRIPTION_RUNTIME = os.environ.get(
+    "ZTARE_JUDGE_SUBSCRIPTION_RUNTIME", "codex").strip().lower()
+JUDGE_SUBSCRIPTION_MODEL = os.environ.get(
+    "ZTARE_JUDGE_SUBSCRIPTION_MODEL",
+    os.environ.get("ZTARE_JUDGE_MODEL", "gpt-5.5"),
+)
+_JUDGE_REPO = Path(os.environ.get(
+    "ZTARE_JUDGE_REPO", str(Path(__file__).resolve().parents[3])))
+_SUBSCRIPTION_ERROR_PATTERNS = (
+    "credit balance is too low",
+    "insufficient credits",
+    "out of credit",
+    "quota exceeded",
+    "not logged in",
+    "please run `codex login`",
+    "codex login",
+    "please run `claude login`",
+    "claude /login",
+    "unauthorized",
+    "authentication required",
+    "rate limit",
+    "too many requests",
+    "429",
+)
 
 # GP-241 #2: the producer's ONLY output is the verdicts queue (owned
 # by ztare_judge, read by the daemon). It NEVER writes the inbox /
@@ -62,46 +76,122 @@ _STORE = _pl.Path(os.environ.get(
 _JVERD = _STORE / "judge_queue" / "verdicts"
 
 
-def _llm(prompt: str, timeout: int = 90) -> str:
-    """One deterministic OpenAI chat-completion. temperature=0 so the
-    verdict is reproducible/auditable. The API key is read from the
-    env (the worker unit supplies it from an agent-UNREADABLE
-    EnvironmentFile; the producing mutator cannot read it and, even
-    if it could, still lacks the ed25519 judge key to sign a verdict).
-    Any non-200 / missing key / empty content RAISES ⇒ run_request
-    returns 3 (terminal, NO verdict) ⇒ the substantive tick stays
-    fail-closed (cold review bxu2w8voa R3 semantics preserved)."""
-    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
-    if not api_key:
-        raise RuntimeError(
-            "OPENAI_API_KEY unset for the judge identity — "
-            "fail-closed, no verdict")
-    body = json.dumps({
-        "model": JUDGE_MODEL,
-        "temperature": 0,
-        "messages": [{"role": "user", "content": prompt}],
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        _OPENAI_URL, data=body, method="POST",
-        headers={"Authorization": f"Bearer {api_key}",
-                 "Content-Type": "application/json"})
+@dataclass(frozen=True)
+class _LLMResponse:
+    text: str
+    identity: str
+
+
+def _resolve_api_model(model_id: str) -> str:
+    from src.ztare.common.llm_runtime import MODEL_MAP, resolve_model_id
+
+    return resolve_model_id(model_id) if model_id in MODEL_MAP else model_id
+
+
+def _llm_api(prompt: str, timeout: int = 90) -> _LLMResponse:
+    """One deterministic provider-neutral API completion via LLMRuntime.
+
+    Missing keys, quota/rate errors, unsupported models, or empty content raise
+    and leave the substantive tick fail-closed unless subscription fallback is
+    available.
+    """
+    from src.ztare.common.llm_runtime import LLMRuntime
+
+    model_id = _resolve_api_model(JUDGE_API_MODEL)
     try:
-        with urllib.request.urlopen(req, timeout=timeout) as r:
-            payload = json.loads(r.read().decode("utf-8"))
-    except urllib.error.HTTPError as e:
+        response = LLMRuntime().call_text(
+            prompt,
+            model_id=model_id,
+            fallback_model_ids=(),
+            config={"temperature": 0},
+            max_tokens=4096,
+            retries=1,
+            timeout_seconds=timeout,
+            request_label=f"judge::{model_id}",
+        )
+    except Exception as exc:
         raise RuntimeError(
-            f"judge API HTTP {e.code} — fail-closed, no verdict")
-    except Exception as e:
+            f"judge API runtime failed for {model_id}: {exc}") from exc
+    content = getattr(response, "text", "") or ""
+    if not content.strip():
+        raise RuntimeError(f"judge API runtime returned empty content for {model_id}")
+    return _LLMResponse(
+        text=str(content),
+        identity=f"api:{getattr(response, 'model_name', model_id)}",
+    )
+
+
+def _llm_subscription(prompt: str, timeout: int = 300) -> _LLMResponse:
+    """Subscription-backed judge call through the shared agent runtime.
+
+    This deliberately reuses `subscription_agent_runtime`; do not grow a
+    bespoke subprocess wrapper here. The prompt asks for JSON-only output and
+    disables repo mutation paths as far as each runtime permits.
+    """
+    from src.ztare.common.subscription_agent_runtime import (
+        run_subscription_agent_with_recovery,
+    )
+
+    if JUDGE_SUBSCRIPTION_RUNTIME not in {"codex", "claude"}:
         raise RuntimeError(
-            f"judge API error {type(e).__name__} — fail-closed")
+            f"unsupported judge subscription runtime "
+            f"{JUDGE_SUBSCRIPTION_RUNTIME!r}")
+    run = run_subscription_agent_with_recovery(
+        runtime=JUDGE_SUBSCRIPTION_RUNTIME,
+        prompt=prompt,
+        agent_id=f"ztare_judge::{JUDGE_SUBSCRIPTION_RUNTIME}",
+        repo=_JUDGE_REPO,
+        session_state=None,
+        timeout_seconds=timeout,
+        default_codex_model=JUDGE_SUBSCRIPTION_MODEL,
+        codex_sandbox="read-only",
+        claude_disallowed_tools=[
+            "Bash", "Edit", "Write", "WebSearch", "WebFetch",
+        ],
+    )
+    stdout = getattr(run.result, "stdout", "") or ""
+    stderr = getattr(run.result, "stderr", "") or ""
+    combined = f"{stdout}\n{stderr}".strip()
+    haystack = combined.lower()
+    if getattr(run.result, "returncode", 1) != 0:
+        raise RuntimeError(
+            "judge subscription runtime failed "
+            f"rc={getattr(run.result, 'returncode', '?')}: "
+            f"{combined[:500]}")
+    if any(pat in haystack for pat in _SUBSCRIPTION_ERROR_PATTERNS):
+        raise RuntimeError(
+            f"judge subscription runtime auth/quota/rate failure: "
+            f"{combined[:500]}")
+    if not combined:
+        raise RuntimeError("judge subscription runtime: empty output")
+    return _LLMResponse(
+        text=combined,
+        identity=(
+            f"{JUDGE_SUBSCRIPTION_RUNTIME}_subscription:"
+            f"{JUDGE_SUBSCRIPTION_MODEL}"
+        ),
+    )
+
+
+def _llm(prompt: str, timeout: int = 90) -> _LLMResponse:
+    if JUDGE_TRANSPORT == "api":
+        return _llm_api(prompt, timeout=timeout)
+    if JUDGE_TRANSPORT == "subscription":
+        return _llm_subscription(prompt, timeout=max(timeout, 300))
+    if JUDGE_TRANSPORT != "auto":
+        raise RuntimeError(
+            f"unsupported ZTARE_JUDGE_TRANSPORT={JUDGE_TRANSPORT!r}")
+    api_error: RuntimeError | None = None
     try:
-        content = payload["choices"][0]["message"]["content"]
-    except Exception:
-        raise RuntimeError("judge API: no message content — "
-                           "fail-closed, no verdict")
-    if not str(content).strip():
-        raise RuntimeError("judge API: empty content — fail-closed")
-    return str(content)
+        return _llm_api(prompt, timeout=timeout)
+    except RuntimeError as exc:
+        api_error = exc
+    try:
+        return _llm_subscription(prompt, timeout=max(timeout, 300))
+    except RuntimeError as sub_exc:
+        raise RuntimeError(
+            f"judge API failed ({api_error}); subscription fallback failed "
+            f"({sub_exc})") from sub_exc
 
 
 def _extract_json(text: str) -> dict:
@@ -151,14 +241,16 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
             f"obligation {item_id!r} not a real fired obligation")
     prompt_hash = hashlib.sha256(
         judge_prompt.encode("utf-8")).hexdigest()
-    raw1 = _llm(judge_prompt)
+    resp1 = _llm(judge_prompt)
+    identities = [resp1.identity]
+    raw1 = resp1.text
     v1 = _extract_json(raw1)
     raw_all = raw1
     verdict = str(v1.get("verdict", "fail")).strip().lower()
     # INDEPENDENT critique pass: a single judge rubber-stamps polished
     # prose; the critique downgrades an inflated/ungrounded PASS.
     if verdict == "pass":
-        raw2 = _llm(
+        resp2 = _llm(
             "You are a SECOND independent reviewer. A first judge "
             "PASSED this discharge. Detect rubber-stamping / inflated "
             "pass / ungrounded acceptance.\nJUDGE PROMPT+WITNESS:\n"
@@ -167,6 +259,8 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
             + "\nOutput ONLY JSON: {\"first_pass_sound\": true|false,"
             " \"reason\": \"..\"}. false if the witness does not "
             "actually evidence the required work.")
+        identities.append(resp2.identity)
+        raw2 = resp2.text
         raw_all = raw_all + "\n---CRITIQUE---\n" + raw2
         crit = _extract_json(raw2)
         if not bool(crit.get("first_pass_sound", False)):
@@ -178,7 +272,7 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
         "tick_id": tick_id, "contract_id": contract_id,
         "item_id": item_id, "prompt_hash": prompt_hash,
         "witness_sha": witness_sha, "artifact_sha": artifact_sha,
-        "model_identity": JUDGE_IDENTITY,
+        "model_identity": "+".join(dict.fromkeys(identities)),
         "raw_output_hash": raw_output_hash, "verdict": verdict,
     }
     proof_msg = json.dumps(proof, sort_keys=True, ensure_ascii=False)
@@ -191,7 +285,7 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
             f"judge key unreadable ({e}) — not the provisioned judge "
             f"identity; a mutator cannot sign a verdict (fail-closed)")
     close = dict(proof)
-    close["judge_identity"] = JUDGE_IDENTITY
+    close["judge_identity"] = close["model_identity"]
     close["judge_sig"] = judge_sig
     close["proof_msg"] = proof_msg
     close["judged_witness"] = witness

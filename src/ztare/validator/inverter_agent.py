@@ -22,11 +22,18 @@ Usage (called automatically by autoresearch_loop):
 from __future__ import annotations
 
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
 
 from src.ztare.common.llm_runtime import LLMRuntime, resolve_model_id
+
+
+def _default_inverter_model() -> str:
+    """The inverter model, env-configurable (deploy sets it without a code change). Falls back to the
+    historical default. Mirrors the ZTARE_ROUTER_MODEL / ZTARE_COMMITTEE_MODEL convention (.env.example)."""
+    return os.environ.get("ZTARE_INVERTER_MODEL") or "gpt4.1"
 
 
 # The Inverter's prompt: Popper-style, not Munger-style.
@@ -227,30 +234,15 @@ def _parse_or_salvage_inverter_response(response_text: str) -> dict:
     raise json.JSONDecodeError("Could not parse inverter JSON", cleaned, 0)
 
 
-def run_inverter(
-    project_dir: Path,
-    champion_thesis: str,
-    champion_score: int,
-    champion_weakest_point: str = "",
-    evidence_summary: str = "",
-    inverter_model: str = "gpt4.1",
-    skip_if_score_below: int = 50,
+def _produce_inverter_review(
+    project_dir: Path, champion_thesis: str, champion_score: int,
+    champion_weakest_point: str = "", evidence_summary: str = "", inverter_model: str = "",
 ) -> dict:
-    """Run the Inverter agent on a newly promoted champion.
-
-    Returns a dict with proposed tests, overall assessment, and
-    confidence the champion survives.
-
-    If the champion score is below skip_if_score_below, the Inverter
-    skips (low-scoring champions are not worth falsifying — they'll
-    be replaced soon).
-    """
-    if champion_score < skip_if_score_below:
-        return {
-            "skipped": True,
-            "reason": f"Score {champion_score} < {skip_if_score_below}, not worth falsifying",
-        }
-
+    """Mode-1 (Munger inversion) + Mode-2 (Popper test spec), fused in ONE LLM call (the
+    INVERTER_SYSTEM_PROMPT does both): query the inverter model, parse/salvage the JSON, and annotate the
+    review (timestamp / score / model / test counts). Returns the review dict — NO side effects (the file
+    write + queue + constraint injection are the DEFERRED adjudication, in `_persist_inverter_review`)."""
+    inverter_model = inverter_model or _default_inverter_model()
     # GP-123: Load the probability DAG to target the weakest assumption
     dag_context = _load_dag_weakest_node(project_dir)
 
@@ -325,6 +317,17 @@ Output valid JSON matching the schema in your system prompt.
     auto_tests = [t for t in tests if t.get("auto_testable")]
     result["total_tests_proposed"] = len(tests)
     result["auto_testable_count"] = len(auto_tests)
+    return result
+
+
+def _persist_inverter_review(project_dir: Path, champion_thesis: str, champion_score: int,
+                             result: dict) -> dict:
+    """DEFERRED adjudication: stage the proposed falsification tests so the EXOGENOUS test harness can RUN
+    them later. Writes inverter_review.json, appends the GP-190 discriminator queue, prints the summary,
+    and injects auto-testable tests as mutator constraints. Mutates+returns `result` (queue paths added),
+    exactly as the pre-refactor run_inverter did."""
+    tests = result.get("tests", [])
+    auto_tests = [t for t in tests if t.get("auto_testable")]
 
     # Save to workspace
     out_path = project_dir / "workspace" / "inverter_review.json"
@@ -369,8 +372,86 @@ Output valid JSON matching the schema in your system prompt.
     # (so the mutator knows what the Inverter is watching for)
     if auto_tests:
         _inject_inverter_constraints(project_dir, auto_tests, champion_score)
-
     return result
+
+
+class ThesisInverter:
+    """The AUTORESEARCH instance of the shared Popper Inverter (`common.inversion`). The champion-thesis
+    falsifier (GP-119), refactored onto the SAME contract the leanmill FALSIFY move (LeanFalsifier) uses —
+    one inversion algorithm, two substrates, no parallel implementations (2026-06-06):
+
+      invert      Mode-1 (Munger): the counter-hypothesis is "the champion thesis is FALSE" (the concrete
+                  inversions are produced by the LLM inside `specify`, where Mode-1 and Mode-2 are fused).
+      specify     Mode-2 (Popper): the LLM produces SPECIFIC tests with pre-committed pass/fail criteria
+                  (`_produce_inverter_review`). The review is always the executable artifact.
+      adjudicate  DEFERRED: the proposed tests RUN later, in the empirical test harness / discriminator
+                  queue. This stages them (`_persist_inverter_review`) and returns a Verdict with
+                  deferred=True (falsified is filled in by the harness when the tests actually run) — the
+                  honest analogue of LeanFalsifier's SYNCHRONOUS kernel verdict.
+    """
+
+    def __init__(self, project_dir: Path, champion_score: int, champion_weakest_point: str = "",
+                 evidence_summary: str = "", inverter_model: str = ""):
+        self.project_dir = Path(project_dir)
+        self.champion_score = champion_score
+        self.weakest_point = champion_weakest_point
+        self.evidence_summary = evidence_summary
+        self.inverter_model = inverter_model or _default_inverter_model()
+
+    def invert(self, claim, context):
+        from src.ztare.common.inversion import CounterHypothesis
+        return CounterHypothesis(statement="the champion thesis is FALSE",
+                                 rationale=self.weakest_point or "judge-identified weakest point")
+
+    def specify(self, counter, context):
+        from src.ztare.common.inversion import FalsificationTest
+        result = _produce_inverter_review(
+            self.project_dir, context.get("champion_thesis", ""), self.champion_score,
+            self.weakest_point, self.evidence_summary, self.inverter_model)
+        # The review is ALWAYS the executable artifact (the staged Popper tests + assessment), so the
+        # shared run_inversion never refuses it as "narrative-only" — the no-doubt-without-a-test
+        # discipline is enforced inside the INVERTER_SYSTEM_PROMPT (Mode-2 requires a test per doubt).
+        return FalsificationTest(counter=counter, candidate="thesis-falsification-review",
+                                 pass_when="proposed tests, when RUN, confirm the thesis",
+                                 fail_when="a proposed test, when RUN, refutes the thesis",
+                                 meta={"result": result})
+
+    def adjudicate(self, test, context):
+        from src.ztare.common.inversion import Verdict
+        result = _persist_inverter_review(
+            self.project_dir, context.get("champion_thesis", ""), self.champion_score,
+            test.meta.get("result", {}))
+        return Verdict(falsified=None, deferred=True, arbiter="test_harness",
+                       detail=str(result.get("overall_assessment", ""))[:300], meta={"result": result})
+
+
+def run_inverter(
+    project_dir: Path,
+    champion_thesis: str,
+    champion_score: int,
+    champion_weakest_point: str = "",
+    evidence_summary: str = "",
+    inverter_model: str = "",
+    skip_if_score_below: int = 50,
+) -> dict:
+    """Run the Inverter agent on a newly promoted champion (GP-119). Back-compatible thin shim over the
+    shared Popper inversion contract: it delegates to `ThesisInverter` via `common.inversion.run_inversion`
+    (invert → specify → adjudicate) and returns the SAME review dict as before (signature + output
+    unchanged; the autoresearch loop call-site is untouched).
+
+    If the champion score is below skip_if_score_below, the Inverter skips (low-scoring champions are not
+    worth falsifying — they'll be replaced soon)."""
+    if champion_score < skip_if_score_below:
+        return {
+            "skipped": True,
+            "reason": f"Score {champion_score} < {skip_if_score_below}, not worth falsifying",
+        }
+    from src.ztare.common.inversion import run_inversion
+    inverter = ThesisInverter(project_dir, champion_score, champion_weakest_point,
+                              evidence_summary, inverter_model)
+    verdict = run_inversion(inverter, champion_thesis, {"champion_thesis": champion_thesis,
+                                                        "project_dir": str(project_dir)})
+    return verdict.meta.get("result", {})
 
 
 def _inject_inverter_constraints(

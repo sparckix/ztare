@@ -35,9 +35,9 @@ _IS_GEMINI = _COMMITTEE_MODEL_LABEL.startswith("gemini")
 if _IS_GEMINI:
     # Map ZTARE gemini aliases to concrete model IDs for the genai client
     _GEMINI_MODEL_MAP = {
-        "gemini": "gemini-2.5-flash",
-        "gemini-lite": "gemini-2.5-flash",
-        "gemini-pro": "gemini-2.5-pro",
+        "gemini": "gemini-3.1-pro-preview",
+        "gemini-lite": "gemini-3.1-flash-lite-preview",
+        "gemini-pro": "gemini-3.1-pro-preview",
     }
     MODEL_ID = _GEMINI_MODEL_MAP.get(_COMMITTEE_MODEL_LABEL, _COMMITTEE_MODEL_LABEL)
     client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))

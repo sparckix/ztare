@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Any, Literal
 
 from src.ztare.common.paths import PROJECTS_DIR
+from src.ztare.common.sandboxed_python import (run_python_file as _shared_run_python_file,
+                                               run_python_module as _shared_run_python_module)
 
 ContractVerdict = Literal["pass", "fail", "blocked"]
 
@@ -39,21 +41,12 @@ def plan_path(project: str) -> Path:
 
 
 def _run_python_module(module_name: str, *, cwd: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, "-m", module_name],
-        cwd=cwd,
-        capture_output=True,
-        text=True,
-    )
+    # Shared sandboxed-python exec (the ONE home); behaviour-identical to the prior inline calls.
+    return _shared_run_python_module(module_name, cwd=cwd)
 
 
 def _run_python_file(path: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, str(path)],
-        cwd=path.parents[2],
-        capture_output=True,
-        text=True,
-    )
+    return _shared_run_python_file(path, cwd=path.parents[2])
 
 
 def _bridge_contract(project: str) -> ContractResult:

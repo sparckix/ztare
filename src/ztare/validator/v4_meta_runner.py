@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Any, Callable, Literal
 
 from src.ztare.common.paths import PROJECTS_DIR
+from src.ztare.common.sandboxed_python import run_python_file as _shared_run_python_file
 from src.ztare.reports.forensic_reporter import build_report, write_report
 
 ContractVerdict = Literal["pass", "fail", "blocked"]
@@ -95,12 +96,8 @@ class MetaRunner:
 
 
 def _run_python_file(path: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, str(path)],
-        cwd=path.parent.parent.parent,
-        capture_output=True,
-        text=True,
-    )
+    # Shared sandboxed-python exec (the ONE home); behaviour-identical to the prior inline call.
+    return _shared_run_python_file(path, cwd=path.parent.parent.parent)
 
 
 def _semantic_gate_stabilization_contract(project: str, _: Any) -> ContractResult:

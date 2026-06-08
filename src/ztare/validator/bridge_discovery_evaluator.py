@@ -7,26 +7,21 @@ import sys
 from pathlib import Path
 
 from src.ztare.common.paths import PROJECTS_DIR
+# Shared sandboxed-python execution (the ONE canonical home; leanmill uses its guarded-script path, autoresearch
+# the trusted-file/module path) — stop re-implementing the subprocess wrapper. Behaviour-identical to the prior
+# inline calls (same cwd, capture_output, text, no timeout).
+from src.ztare.common.sandboxed_python import (run_python_file as _shared_run_python_file,
+                                               run_python_module as _shared_run_python_module)
 from src.ztare.gates.bridge_scope_contract import BridgeScopeMismatchCode, evaluate_bridge_scope
 from src.ztare.validator.core.mutation_contract import MutationDeclaration, parse_mutation_declaration
 
 
 def _run_python_file(path: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, str(path)],
-        cwd=path.parents[2],
-        capture_output=True,
-        text=True,
-    )
+    return _shared_run_python_file(path, cwd=path.parents[2])
 
 
 def _run_python_module(module_name: str) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
-        [sys.executable, "-m", module_name],
-        cwd=Path(__file__).resolve().parents[3],
-        capture_output=True,
-        text=True,
-    )
+    return _shared_run_python_module(module_name, cwd=Path(__file__).resolve().parents[3])
 
 
 def evaluate_bridge_discovery(project: str) -> dict[str, object]:

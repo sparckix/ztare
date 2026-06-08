@@ -1,5 +1,6 @@
 import os
 import json
+import hashlib
 import importlib
 import importlib.util
 import math
@@ -3284,6 +3285,10 @@ if __name__ == "__main__":
     with open(MAIN_RUBRIC_PATH, "r") as f:
         rubric_data = json.load(f)
 
+    AUDIT_PARTITION_SALT = os.environ.get("ZTARE_AUDIT_PARTITION_SALT") or os.urandom(16).hex()
+    os.environ["ZTARE_AUDIT_PARTITION_SALT"] = AUDIT_PARTITION_SALT
+    AUDIT_PARTITION_SALT_SHA256 = hashlib.sha256(AUDIT_PARTITION_SALT.encode("utf-8")).hexdigest()
+
     # GP-180/GP-181 rubric-mode resolution (2026-04-28). Maps `rubric_mode`
     # to flag defaults (e.g. invariant_search → Lagrangian + Buckingham π +
     # Noether + DAG steering). Operator-set flags win. Owns the mapping in
@@ -4095,6 +4100,8 @@ def _finalize_run_telemetry_once() -> None:
         "run_exit_reason": run_exit_reason,
     }
     if _audit_mre_block is not None:
+        _audit_mre_block["audit_partition_salt"] = AUDIT_PARTITION_SALT
+        _audit_mre_block["audit_partition_salt_sha256"] = AUDIT_PARTITION_SALT_SHA256
         _payload["holdout_audit"] = _audit_mre_block
         # Surface to operator console so the audit MRE isn't buried.
         if "mean_relative_error" in _audit_mre_block:
@@ -4134,6 +4141,7 @@ _append_run_boundary_telemetry(
         "iteration_budget": ITERATIONS,
         "mutator_model": MUTATOR_MODEL_ID,
         "judge_model": JUDGE_MODEL_ID,
+        "audit_partition_salt_sha256": AUDIT_PARTITION_SALT_SHA256,
     },
 )
 
