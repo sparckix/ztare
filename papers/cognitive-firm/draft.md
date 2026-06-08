@@ -235,7 +235,7 @@ The model also does not claim to be the *unique* formal model of the M-Form patt
 
 ## 5 Empirical Evidence
 
-The evidence in this section is drawn from one system: a deterministic supervisor controlling multiple agent programs over a four-month development period, implementing the OS / Config / App decomposition introduced in Section 2. The primary case study is a manuscript-production program that executed 38 state transitions over approximately 5.5 hours, producing one theory section through the full pipeline at a total cost of $1.36 (plus $0.71 in specification refinement). Additional evidence is drawn from the evaluator layer (nine documented specification gaming strategies across five domains), the kernel hardening layer (typed derivation failures), and the blind-protocol drafting layer (context contamination under shared context windows). All claims are scoped to this system; generalization requires independent replication.
+The evidence in this section is drawn from one system: a deterministic supervisor controlling multiple agent programs over a four-month development period, implementing the OS / Config / App decomposition introduced in Section 2. The primary case study is a manuscript-production program that executed 38 state transitions over approximately 5.5 hours, producing one theory section through the full pipeline at a total cost of $1.36 (plus $0.71 in specification refinement). Additional evidence is drawn from the evaluator layer (nine documented specification gaming strategies across six domains), the kernel hardening layer (typed derivation failures), and the blind-protocol drafting layer (context contamination under shared context windows). All claims are scoped to this system; generalization requires independent replication.
 
 ### 5.1 Enforced Governance
 
@@ -265,7 +265,7 @@ The evidence supports a scoped claim: a single principal can manage one active p
 
 The same Goodhart pattern (the optimizer satisfies the letter of the specification while violating its spirit) was observed at five layers of the system. The evaluator, kernel, and apparatus-specification findings are reported fully in prior work and cited here; the supervisor and interface-contract findings are this paper's contribution.
 
-**Layer 1, Evaluator.** Alami (2026a) documents nine specification gaming strategies across five domains of adversarial evaluation, all self-certifying: generated code passes its own assertions while violating the epistemic intent of the evaluation rubric. These strategies were discovered through ZTARE (Zero-Trust Adversarial Reasoning Engine), a deterministic adversarial evaluation architecture that separates execution of counter-tests from the model that proposed them.
+**Layer 1, Evaluator.** Alami (2026a) documents nine specification gaming strategies across six domains of adversarial evaluation, all self-certifying: generated code passes its own assertions while violating the epistemic intent of the evaluation rubric. These strategies were discovered through ZTARE (Zero-Trust Adversarial Reasoning Engine), a deterministic adversarial evaluation architecture that separates execution of counter-tests from the model that proposed them.
 
 **Layer 2, Kernel.** Alami (2026b, 2026c) document specification gaming at the evaluator kernel layer: the derivation gate was found to be gameable through label hardcoding, allowing fabricated theses to reach the aligned-evidence path instead of failing closed. The fix followed the same typed-failure-class pattern: a named failure class, a fail-closed constraint, and a regression fixture proving the evasion path is permanently closed.
 
@@ -309,7 +309,7 @@ The prose pipeline telemetry in Section 5.3 is a negative-ROI case: the M-Form's
 
 **Honest scope.** This is one program, closed. The run is not a controlled experiment and it is not a generalization claim. The cost ledger is a single data point; a rigorous capital-efficiency comparison remains the Section 5.5 excluded claim. What this subsection demonstrates is narrower and more concrete: the M-Form supervisor ran a real kernel modification to completion through its normal state machine, the verifier contract held at closure and reproduces today against the same frozen code, the write-scope enforcement matched declared intent exactly, and the refinement budget was never needed. These are the properties Section 4's theory predicts for the build-pipeline case, and they are now recorded with file-level provenance rather than argued in prose. The full audit trail (the run's final status record, the event stream, the verification report, and reproduction instructions) is included in the paper's replication package (see Data and Code Availability).
 
-**Additional observations.** Four further observations of the same Goodhart pattern documented in Section 5.4 are reported in Appendix A: a live catch in a catch-grammar self-audit, a context-contamination incident in a blind-protocol experiment, a self-reference observation from a meta-recursive substrate test, and a methodological adjacency note on the panel-of-roles substitute for substrate-mode evaluation. Those observations are presented as additional cases consistent with the framework rather than as central tests of it; the central observation is Section 5.4's narrowed recurrence claim. Readers focused on the theoretical contribution may proceed directly to Section 6.
+**Additional observations.** Three further observations of the same Goodhart pattern documented in Section 5.4 are reported in Appendix A: a live catch in a catch-grammar self-audit, a context-contamination incident in a blind-protocol experiment, and a self-reference observation from a meta-recursive substrate test. Those observations are presented as additional cases consistent with the framework rather than as central tests of it; the central observation is Section 5.4's narrowed recurrence claim. Readers focused on the theoretical contribution may proceed directly to Section 6.
 
 
 ## 6 Counterarguments and Boundaries
@@ -420,7 +420,7 @@ The three-layer decomposition introduced in Section 2 (OS for state machine enfo
 
 ## Appendix A. Additional Observations
 
-The four subsections that follow document additional observations of the same Goodhart pattern documented in Section 5.4. They are presented as additional cases consistent with the framework rather than as central tests of it; the central observation is Section 5.4's recurrence claim narrowed to four within-paper instances. Readers focused on the theoretical contribution may treat this appendix as supplementary; readers interested in the operational shape of the apparatus will find the implementation details that motivate the §3-§4 propositions here.
+The three subsections that follow document additional observations of the same Goodhart pattern documented in Section 5.4. They are presented as additional cases consistent with the framework rather than as central tests of it; the central observation is Section 5.4's recurrence claim narrowed to four within-paper instances. Readers focused on the theoretical contribution may treat this appendix as supplementary; readers interested in the operational shape of the apparatus will find the implementation details that motivate the §3-§4 propositions here.
 
 ### A.1 Live Catch: Recursive Epistemic Gain in a Catch Grammar Self-Audit
 
@@ -488,7 +488,7 @@ The replication package for this paper is bundled with the paper source at `http
 
 ## References
 
-Alami, D. (2026a). Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution. *SSRN working paper*.
+Alami, D. (2026a). Specification Gaming in LLM-Generated Code: Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial Execution. *SSRN working paper*.
 
 Alami, D. (2026b). Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints. *SSRN working paper*.
 

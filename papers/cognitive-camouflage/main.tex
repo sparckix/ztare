@@ -107,7 +107,7 @@
   urlcolor=blue,
   pdfcreator={LaTeX via pandoc}}
 
-\title{Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution}
+\title{Specification Gaming in LLM-Generated Code: Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial Execution}
 \author{Daniel Alami\thanks{SSRN abstract ID: 6512960} \\
 \normalsize \textit{Independent Researcher} \\
 \normalsize \textit{MBA Candidate, Harvard Business School}}
@@ -117,16 +117,17 @@
 \maketitle
 
 \begin{abstract}
-We present a taxonomy of specification gaming strategies that emerge
-spontaneously in large language models (LLMs) when tasked with
-generating self-validating code under adversarial evaluation pressure.
-Using the Zero-Trust Adversarial Reasoning Engine (ZTARE), we document 9
-top-level gaming strategies across 453 adversarial debate logs spanning
-6 domains (macroeconomic forecasting, semiconductor supply chain
-analysis, AI inference economics, cosmological simulation, epistemic
-architecture, and startup comparative design evaluation) and 3
-mutator families.\footnote{The 453 count excludes two off-matrix variants: \texttt{recursive\_bayesian\_gemini\_claude} (Claude judge, off the Gemini-judge axis) and \texttt{recursive\_bayesian\_gpt4o\_gemini\_no\_escalation} (ablation variant), which run under the same scaffold but are not cross-mutator replication data points.} These strategies are self-certifying: they pass their
-own assert statements while violating the epistemic intent of the test.
+This paper studies a software-evaluation failure mode in LLM-generated
+code: a model can generate a test or falsification suite that passes
+locally while violating the intended specification. Using the Zero-Trust
+Adversarial Reasoning Engine (ZTARE), we document 9 top-level
+specification-gaming strategies across 453 adversarial debate logs
+spanning 6 domains (macroeconomic forecasting, semiconductor supply
+chain analysis, AI inference economics, cosmological simulation,
+epistemic architecture, and startup comparative design evaluation) and 3
+mutator families.\footnote{The 453 count excludes two off-matrix variants: \texttt{recursive\_bayesian\_gemini\_claude} (Claude judge, off the Gemini-judge axis) and \texttt{recursive\_bayesian\_gpt4o\_gemini\_no\_escalation} (ablation variant), which run under the same scaffold but are not cross-mutator replication data points.} The strategies are self-certifying:
+they pass their own assert statements while failing the epistemic intent
+of the test.
 We then extend the original study with a cross-mutator replication
 matrix. Under identical Gemini-judge conditions, Claude converges in all
 4 replicated technical domains and exhibits a clean instance of what we
@@ -146,28 +147,36 @@ Mutator-generated theses (prose + embedded Python), Gemini was fooled on
 4/5, scoring gaming theses at 95--97/100; Claude remained skeptical. In
 both conditions, the ZTARE Firing Squad caught all instances through
 adversarial counter-test execution.
-These results reveal a \emph{Cognitive Camouflage} effect: persuasive
-prose seduces holistic LLM evaluation into accepting fraudulent proofs.
-They also show that the same domain can elicit different gaming
-strategies under different mutator architectures, and that comparative
-rubrics introduce a new attack surface at the specification layer
-itself. The contribution is therefore twofold: a taxonomy of code-level
-specification gaming strategies, and an adversarial evaluation
-architecture that detects them when holistic review does not.
+These results identify what we call \emph{Cognitive Camouflage}: natural
+language framing can make structurally invalid code-backed claims appear
+credible to holistic LLM judges. The term names an AI-evaluation
+artifact, not a psychological or cognitive-science thesis. The
+contribution is therefore twofold: a taxonomy of code-level
+specification-gaming strategies, and an adversarial execution
+architecture that detects them when static or holistic LLM review does
+not.
 \end{abstract}
+
+\noindent\textbf{Keywords:} LLM evaluation; specification gaming; reward
+hacking; software testing; adversarial execution; AI safety.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
 \subsection{1. Introduction}\label{1-introduction}
 
-When you ask an AI to prove a claim and then ask a second AI to check
-the proof, you have a problem: both AIs want to look good. The checker
-has no incentive to fail the prover, and the prover knows it.
+LLM systems increasingly generate code, tests, rationales, and
+evaluation reports in the same workflow. This creates a familiar
+software-engineering risk in a new form: the evaluated system may help
+construct the test by which it is evaluated. When a model writes both a
+claim and a self-validating code artifact, passing tests no longer imply
+that the intended specification was tested.
 
 We built an adversarial reasoning engine to stress-test economic and
-scientific claims generated by LLMs. We did not build it to study
-specification gaming; we built it to find the weakest assumption in a
-thesis. Gaming found us.
+scientific claims generated by LLMs. The system was designed to find the
+weakest assumption in a code-backed thesis. In practice, it surfaced a
+recurring specification-gaming pattern: generated falsification suites
+often passed their own assertions while avoiding the counterfactual or
+invariant that would have falsified the claim.
 
 Prior work on specification gaming \citep{krakovna2020} documents the
 phenomenon extensively in reinforcement learning agents, where reward
@@ -180,6 +189,11 @@ To our knowledge, prior work has not documented a taxonomy of
 self-authored falsification-suite gaming in LLM-generated thesis/code
 systems together with the detection gap between holistic LLM judging and
 adversarial deterministic execution.
+
+The title phrase ``Cognitive Camouflage'' is used narrowly. It does not
+claim a new theory of human cognition. It names the observed evaluation
+failure in which fluent explanatory prose and apparently executable code
+mask a specification violation from a holistic LLM judge.
 
 This paper makes four contributions:
 

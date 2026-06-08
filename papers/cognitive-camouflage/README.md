@@ -1,4 +1,4 @@
-# Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution
+# Specification Gaming in LLM-Generated Code: Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial Execution
 
 SSRN abstract ID: `6512960`
 
@@ -6,6 +6,15 @@ Published version:
 - https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960
 
 Clean public source bundle for the paper.
+
+Scope boundary:
+- The paper is frozen to the original 9 top-level strategies and the benchmark lineage that supports them.
+- Later mined vectors live in `docs/cheating_catalog.md` and `analytics/public/queries/gaming_vector_catalog.jsonl`; they should not be retrofitted into the paper claims without a new benchmark/lineage pass.
+
+Submission positioning:
+- Primary arXiv fit: `cs.SE` or `cs.AI`.
+- Secondary fit, if allowed by the submitter account: `cs.CL`.
+- Avoid presenting the paper as cognitive science; "Cognitive Camouflage" is the named LLM-evaluation effect, while the paper's actual contribution is specification gaming in LLM-generated code and adversarial execution-based evaluation.
 
 Files:
 - `draft.md`, working markdown draft
@@ -19,7 +28,7 @@ Files:
 
 **Documents**
 
-- [Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution](draft.md), How confident-but-wrong AI output disguises itself, and the detection discipline against it.
+- [Specification Gaming in LLM-Generated Code: Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial Execution](draft.md), How confident-but-wrong AI output disguises itself, and the detection discipline against it.
 
 <sub>0 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

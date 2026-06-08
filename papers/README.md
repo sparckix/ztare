@@ -11,6 +11,14 @@ In general that means:
 - `main.pdf`, rendered public mirror PDF when available
 - paper-specific figures or evidence bundles when a paper makes auditable artifact claims
 
+## Current public manuscripts
+
+- [`Specification Gaming in LLM-Generated Code`](cognitive-camouflage/draft.md) — frozen original-9 benchmark lineage; Cognitive Camouflage as an LLM-evaluation failure mode.
+- [`Adversarial Precedent Memory`](adversarial-precedent-memory/draft.md) — hardening evaluators through mined failure constraints.
+- [`Contract-Governed Hardening`](contract-governed-hardening/draft.md) — stage-gated recursive improvement with typed promotion contracts.
+- [`Cognitive Firm`](cognitive-firm/draft.md) — managerial capitalism for artificial intelligence.
+- [`Epistemic Verification`](epistemic-verification/draft.md) — manuscript in revision.
+
 <!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index

@@ -197,7 +197,7 @@ This is not a universal governance framework. It is a concrete, replicable archi
 
 ## References
 
-Alami, D. (2025a). Cognitive Camouflage: Specification Gaming in LLM-Generated Code Evades Holistic Evaluation but Not Adversarial Execution. *Working paper*.
+Alami, D. (2025a). Specification Gaming in LLM-Generated Code: Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial Execution. *Working paper*.
 
 Alami, D. (2025b). Adversarial Precedent Memory: Hardening LLM Evaluators Through Mined Failure Constraints. *Working paper*.
 

@@ -55,10 +55,13 @@ bias-transfer findings.
   the text frequency of the bias being discussed drives the output, not
   a utility function operating.
 
-- **Axis 3, Alignment overlay.** RLHF / alignment damps a subset of
-  inherited biases and reshapes per-family channel surfaces. Per-family
+- **Axis 3, Family/alignment overlay.** Family identity reshapes
+  inherited-bias magnitude and per-family channel surfaces. Per-family
   heterogeneity in worry-channel sign, channel decomposition $R^2$, and
-  meta-cognitive routing all live on this axis.
+  meta-cognitive routing all live on this axis. We call this an alignment
+  overlay only as a hypothesis for matched-checkpoint follow-up; the
+  measurements here are cross-family and therefore confound RLHF/alignment
+  with pretraining mix.
 
 The contribution shape is the **synthesis** of the three axes plus the
 [mimic]{.smallcaps} category as a specifically novel articulation on
@@ -66,8 +69,12 @@ axis 2: prior LLM-bias work has not separated
 transfer-because-mechanism-is-shared (inherit) from
 transfer-because-bias-is-discussed-extensively-in-text (mimic). The
 [mimic]{.smallcaps} category lets the same surface observation carry
-different interpretations depending on which cell the bias belongs to,
-and predicts distinct signatures under explicit anti-bias prompting.
+different interpretations depending on which cell the bias belongs to. A later
+180-call anti-bias-collapse smoke scoped down the strongest prompt-actuation
+version of this mechanism: directional MIMIC collapse did not survive
+label-shuffle control, and raw-gap adjustment reversed the MIMIC coefficient.
+We therefore keep [mimic]{.smallcaps} as a representational taxonomy, not as a
+clean anti-bias-prompt law.
 
 #### Methodological backbone.
 
@@ -102,7 +109,7 @@ reference="sec:multi-channel-r2"}; Axis 2 findings sit in
 $\S$[15](#sec:bias-inheritance){reference-type="ref"
 reference="sec:bias-inheritance"} (with the [mimic]{.smallcaps} category
 as the central original contribution) and inside the universal-patterns
-deployable rules in $\S$[14](#sec:universal){reference-type="ref"
+diagnostic rules in $\S$[14](#sec:universal){reference-type="ref"
 reference="sec:universal"} (the confident-NO discount as the
 [inherit]{.smallcaps} cell in deployment shape); Axis 3 findings sit in
 $\S$[5](#sec:worry-direction-split){reference-type="ref"
@@ -200,12 +207,35 @@ contracts. The set of channels the model surfaces is itself the first
 inheritance signature: training-mix differences across model families
 produce different elicitation surfaces, even when prompted identically.
 $\S\ref{sec:bid-ask-spread}$ introduces the bid-ask spread as a novel
-runtime calibration warning that is elicitable on the low-overlap
+diagnostic error-warning channel that is elicitable on the low-overlap
 corpus; $\S\ref{sec:channel-orthogonality}$ shows the three uncertainty
-channels are statistically independent on a paired panel, requiring
-per-family channel routing; $\S\ref{sec:multi-channel-r2}$ shows only
+channels are statistically independent on a paired panel, motivating
+per-family channel analysis; $\S\ref{sec:multi-channel-r2}$ shows only
 one family generalises a multi-channel decomposition under leave-one-out
 cross-validation. All three findings sit on this axis.
+
+#### Behavioral latent-carrier interpretation.
+
+We do not observe the hidden activations of the closed models used here,
+so our channel claims are behavioral rather than mechanistic-
+interpretability claims. Still, the right unit is closer to a structured
+carrier than to the generated rationale. Recent latent-prediction theory
+shows that learning or predicting internal representations can avoid the
+sample-complexity cost of token-level prediction on hierarchical
+data (Korchinski, Favero, and Wyart 2026). Our setting is not
+training-time latent prediction, but the analogy is operationally useful:
+the channel fields are forced intermediate representations whose relation
+to Brier can be scored directly, while free-form rationale tokens are a
+noisy surface artifact. Two small follow-up smokes across two families found
+that structured evidence carriers beat free prose on mean Brier, while the
+stricter two-step variant did not consistently beat a same-turn carrier. A
+later placebo-control smoke was harsher: among 30 schema-valid rows, baseline
+mean Brier was `0.078000`, two-call prose `0.107254`, same-turn carrier
+`0.110300`, free prose `0.122767`, and two-step carrier `0.149921`; ten
+additional Codex rows failed at runtime before forecasts. This is not a
+validated law. It keeps structured carrier fields as a hypothesis for larger
+paired tests, but argues against treating the hard prompt break as an
+established mechanism.
 
 #### Axis 2: bias-mechanism class.
 
@@ -241,12 +271,14 @@ The [mimic]{.smallcaps} cell is the central original contribution of the
 framework. Prior LLM-bias work has not separated
 transfer-because-the-mechanism-is-shared ([inherit]{.smallcaps}) from
 transfer-because-the-bias-is-discussed-extensively-in-text
-([mimic]{.smallcaps}). The cell distinction matters: [mimic]{.smallcaps}
-predicts that explicit anti-bias prompting collapses the effect (the
-corrective narrative is also present in training text and can be
-retrieved), where [inherit]{.smallcaps} predicts the effect persists
-under anti-bias prompting because it is the model's default sampling
-pattern, not a retrievable narrative.
+([mimic]{.smallcaps}). The cell distinction matters because it suggests
+different intervention surfaces, but the direct anti-bias-prompt signature did
+not promote as a clean law: in the 180-call collapse smoke, MIMIC mean collapse
+was positive but underpowered, the class-label shuffle was null ($p=0.5387$),
+and the raw-gap-adjusted MIMIC coefficient was negative ($-0.076587$,
+$p=0.0025$). The supported claim is therefore taxonomic and diagnostic; a
+causal anti-bias-collapse mechanism requires matched raw-gap strata or
+randomization.
 
 #### Axis 3: alignment overlay.
 
@@ -415,9 +447,10 @@ family has a different "best channel":
   DeepSeek Chat             $-0.26$ (sign-flipped)                  $\mathbf{+0.29}$                            $-0.10$                     **bid-ask spread**
 
 **There is no universal best uncertainty primitive across LLMs.** The
-deployable recipe is a per-family elicitation policy: identify the best
-channel per family via a pre-registered pilot, then use that channel as
-the runtime calibration warning. Per-primitive per-family single-channel
+diagnostic recipe is per-family elicitation analysis: identify the best
+channel per family via a pre-registered pilot, then treat that channel
+as an error-warning candidate rather than a deployment rule.
+Per-primitive per-family single-channel
 $R^2$ on the same-pilot Brier is $10$--$26\%$ for the families where the
 channel works (GPT-5.4-mini's bid-ask explains $26\%$ of bid-ask-pilot
 Brier; DeepSeek's $19\%$). The multi-channel $R^2$ from the
@@ -430,8 +463,9 @@ level. A reasoning-decomposition claim would require mechanistic
 interpretability tooling, logit lens, attention probing, causal
 intervention on chain-of-thought spans, which we do not use. Our
 primitives are black-box behavioral probes of uncertainty expression;
-the deployment implication (per-family routing) is unchanged but the
-mechanistic-reasoning claim is left for white-box work.
+the diagnostic implication (per-family channel analysis) is unchanged,
+but the mechanistic-reasoning claim is left for white-box work, and a
+prospective routing policy must separately clear heldout Brier controls.
 
 # Frequency framing transfers in a corpus-specific way {#sec:frequency-framing}
 
@@ -576,13 +610,12 @@ The mechanism is identified at evidence-summary grade for Claude (the
 most cleanly-inverted family). It is partial for the other inverted
 families. White-box activation-level probing would directly test which
 activations drive worry emission versus probability emission; we have
-only the black-box behavioral signature. The deployment implication is
-unchanged, the worry scalar by itself is not a competent calibration
-signal across families, but the routing recipe is now mechanistically
-explained: per-(family, corpus) routing is needed because
-mean-regression is universal-but-variable, while per-family
-topic-accuracy alignment is what gives the worry-Brier relationship its
-sign.
+only the black-box behavioral signature. The diagnostic interpretation
+is sharper: the worry scalar by itself is not a competent calibration
+signal across families, and any per-(family, corpus) routing policy
+needs heldout confirmation because mean-regression is
+universal-but-variable, while per-family topic-accuracy alignment is
+what gives the worry-Brier relationship its sign.
 
 # Multi-channel R² and a NEW channel: self-predicted Brier interval {#sec:multi-channel-r2}
 
@@ -659,8 +692,8 @@ partial cross-corpus replication of a novel primitive, not a full
 generalization.
 
 **Saturation curve.** The R²-vs-channel-count saturation curve is the
-right summary plot for the deployment recipe; we leave it pre-registered
-as the next analytical pass, on the public-domain corpus and reported in
+right summary plot for policy translation; we leave it pre-registered as
+the next analytical pass, on the public-domain corpus and reported in
 LOO terms.
 
 # Where the per-family signal actually lives: conditional structure {#sec:conditional}
@@ -737,11 +770,13 @@ the deepseek Q3 $R^2_{\mathrm{LOO}}{=}{-}480$ is a near-singular-design
 artifact. The pre-registered confirmation pass is on the $N{=}142$
 topic-balanced extension.
 
-The deployable form of these three findings is one rule: *deploy
-per-family multi-channel routing only when sub-source identity is
-matched and cross-family disagreement is low.* Stated differently, the
-LLM-uncertainty signal is conditional on context-of-call, not
-unconditional per-family.
+The policy hypothesis from these three findings is one scoped rule: *test
+per-family multi-channel routing only when sub-source identity is matched and
+cross-family disagreement is low.* Later re-audits demote current channel-only
+routing to diagnostic status, so the claim here is about where an uncertainty
+signal appears, not a validated deployment rule. Stated differently, the
+LLM-uncertainty signal is conditional on context-of-call, not unconditional
+per-family.
 
 **Cross-corpus-class Brier and Elo: the family ordering flips between
 internal apparatus and external markets.** A per-(family, corpus_class)
@@ -788,12 +823,12 @@ well-calibrated rather than conservative. Internal $N$ at
 resolved-contract level is $45$, so the largest per-family Elo gap
 (GPT-5.4-mini vs Claude $\Delta {=} 373$) is `h1_supported` and tighter
 pairs are `inconclusive_underpowered`; an internal-corpus re-fire to
-$N{\geq}142$ resolved parity is queued. The deployable shape is
-identical to the conditional-routing recipe in
+$N{\geq}142$ resolved parity is queued. The candidate policy shape is
+conditional routing by Elo where Brier least discriminates, as in
 $\S$[12](#sec:conditional){reference-type="ref"
-reference="sec:conditional"}: route by Elo where Brier least
-discriminates, with the rule keyed on both contract-level panel $\sigma$
-AND corpus class.
+reference="sec:conditional"}, with the rule keyed on both contract-level
+panel $\sigma$ AND corpus class; later source-balanced policy audits keep this
+below deployment status.
 
 **Ensemble feasibility probe (apples-to-apples on the $N{=}157$ shared
 cohort).** A direct test of whether naive aggregation can substitute for
@@ -822,11 +857,11 @@ family$\times$contract interaction (*different families err on different
 contracts --- the actual ensemble opportunity*), and only $0.6\%$ is
 between-family identity. Naive mean and median cannot capture the $32\%$
 interaction because they assume independent family errors of similar
-magnitude; the deployable shape that would convert this signal is
+magnitude; the policy hypothesis that would convert this signal is
 contract-level conditional routing keyed on (panel disagreement
 $\sigma$, contract category, family Elo on similar-$\sigma$ contracts).
-The pre-registered $N{\geq}300$ confirmation pass is what the
-conditional-router deployment requires.
+The pre-registered $N{\geq}300$ confirmation pass is required before
+that hypothesis can be treated as a deployment rule.
 
 # Five additional findings from the all-channels primitive round {#sec:v28batch}
 
@@ -839,9 +874,9 @@ trained only up to 2023, emit a rollback forecast") HURTS Brier for 4 of
 5 families at $N{=}142$ paired ($\Delta$ Brier rollback$-$normal: claude
 $+0.064$, codex-5.5 $+0.034$, codex-5.4-mini $+0.028$, deepseek
 $+0.028$, gemini $-0.005$). Post-2023 training is net-useful even though
-families can't introspect WHICH contracts benefit. *Deployable rule:*
-don't prompt-engineer "imagine you knew less" framings on forecasting
-tasks.
+families can't introspect WHICH contracts benefit. *Operational
+caution:* don't prompt-engineer "imagine you knew less" framings on
+forecasting tasks without a heldout correction check.
 
 **Leakage agreement without calibration.** On the same rollback
 primitive, all 10 pairwise $\rho(|\text{leak}_A|, |\text{leak}_B|)$
@@ -861,7 +896,8 @@ emits the most Bayes-coherent thresholds (mean YES-bad $0.750$, exact
 match). Deepseek h1:
 $\rho(\text{threshold\_yes\_bad}, \text{err}^2) = -0.19$, $95\%$ CI
 $[-0.35, -0.03]$ at $N{=}142$. The emitted threshold tracks accuracy for
-one family. Novel deployable channel.
+one family. This is a novel diagnostic channel; policy use requires a heldout
+utility test.
 
 **Stake-framing amplifies worry universally, leaves $p$ unchanged.**
 Same contract framed as "\$1 stake" vs "\$100K stake" across 103--142
@@ -879,8 +915,8 @@ anti-coherence at $N{=}15$ internal: claude, codex-5.5, and deepseek
 pick the WRONG channel $87\%$ of the time (binomial $p{=}0.005$ each).
 Within those picks, $\rho(\text{picked}, \text{err}^2)$ is negative
 while $\rho(\text{unpicked}, \text{err}^2)$ is strongly positive (claude
-$+0.51$, codex-5.5 $+0.53$, deepseek $+0.65$). *Deployable inversion
-rule:* when these three families claim "worry is my best channel," use
+$+0.51$, codex-5.5 $+0.53$, deepseek $+0.65$). The candidate inversion
+rule is: when these three families claim "worry is my best channel," test
 spread instead (or the analogous flip). Codex-5.4-mini is coherent
 ($73\%$ right); gemini is random. Companion finding to the per-family
 worry sign-flip, on a new axis. Internal-only at $N{=}15$; cross-corpus
@@ -917,8 +953,9 @@ $-0.02$ to $-0.21$). The miscalibration is asymmetric: confident-NO is
 poorly calibrated; confident-YES is OK. With $N{=}8$--$10$ per quintile
 per family, the per-family CI is wide, but the universality across all
 five families and the consistent direction of the gap argue the pattern
-is real. *Deployable rule:* on a news-event public corpus, do not trust
-LLM $p_{\text{success}} < 0.10$ as a confident-NO commit.
+is real. *Operational caution:* on a news-event public corpus, do not
+treat LLM $p_{\text{success}} < 0.10$ as a confident-NO commit without a
+heldout correction check.
 
 **Horizon-conditional Brier.** Pooled across all 5 families ($N{=}210$):
 $\rho(\text{days to resolution from 2026-01-01}, \text{err}^2) = +0.161$,
@@ -947,7 +984,7 @@ Brier $= 0.272$, mean-of-5 Brier $= 0.261$, best-single-family (Claude)
 Brier $= 0.254$. Paired permutation: median-of-5 loses to the best
 single family ($\Delta{=}{+}0.018$); mean-of-5 also loses
 ($\Delta{=}{+}0.007$). The standard "ask five LLMs, take the median"
-deployment recipe yields no benefit on this corpus and slightly hurts.
+aggregation strategy yields no benefit on this corpus and slightly hurts.
 Best-single-family dominates naive ensembling at this $N$.
 
 **Universal cross-family forecast agreement.** For every pair of the
@@ -972,15 +1009,15 @@ yfinance ETF threshold contracts yield $0.22$--$0.23$. The same order
 holds for every family. Source identity is a per-contract
 confidence-weighting term independent of family.
 
-**The six universal patterns together suggest a deployable per-contract
+**The six universal patterns together suggest a candidate per-contract
 recipe:** (a) discount the model's confident-NO forecasts; (b)
 horizon-weight per-contract confidence; (c) apply a per-family YES-bias
 correction term; (d) prefer a calibrated single family over a naive
 ensemble; (e) weight pooled-forecast confidence by cross-family
 consensus-strength; (f) weight by source difficulty.
 
-**Composed recipe at $N{=}142$: routing beats naive aggregation; matches
-but does not yet exceed the best single family.** We instantiate the
+**Composed recipe at $N{=}142$: routing beats naive aggregation; later audits
+demote the composite policy.** We instantiate the
 rules above as a single composed forecast (the mean-of-5 panel forecast
 adjusted by four universal coefficients: a confident-NO discount when
 the panel mean is below $0.20$, an upward YES-bias correction in the
@@ -1002,12 +1039,13 @@ channel-routed alternative on the same $N{=}142$ paired contracts.
 
 Three results.
 
-*(i) Routed-vs-naive-aggregation is the clean win.* Routed
+*(i) Routed-vs-naive-aggregation is the clean within-cohort win.* Routed
 (universal-only) beats median-of-5 by $\Delta{=}{-}0.040$
 ($p_{\mathrm{perm}}{=}0.0013$) and mean-of-5 by $\Delta{=}{-}0.029$
 ($p_{\mathrm{perm}}{=}0.0069$). `h1_supported`. The composed recipe
-out-performs the standard "ask five LLMs, take the median/mean"
-deployment baseline at $p{<}0.01$ on the same $N{=}142$ paired set.
+out-performs the standard "ask five LLMs, take the median/mean" baseline at
+$p{<}0.01$ on the same $N{=}142$ paired set, but this comparison is weaker
+than a source-balanced policy audit against the strongest simple correction.
 
 *(ii) Routed-vs-best-single is directional but underpowered.* The point
 estimate $\Delta{=}{-}0.022$ sits almost entirely on the routing-wins
@@ -1023,7 +1061,8 @@ detection bar that the program's pre-registration sets for deployment
 claims, and `inconclusive_underpowered` against the smaller observed
 effect.
 
-*(iii) Universal rules generalize; per-family channel routing does not.*
+*(iii) Universal rules generalize better than per-family channel routing in
+this audit, but the composite does not survive as the live policy.*
 Routed (universal-only) beats routed (per-channel) by
 $\Delta{=}{+}0.014$ ($p_{\mathrm{perm}}{=}0.042$), i.e. the per-family
 channel-weighting alternative makes the forecast *worse* than the
@@ -1032,13 +1071,19 @@ is consistent with $\S\ref{sec:channel-orthogonality}$ (only GPT-5.5's
 multi-channel decomposition has a generalizable $R^2_{\mathrm{LOO}}{>}0$
 at $N{=}42$) and with the conditional-structure result
 ($\S\ref{sec:conditional}$): channel-level routing is contextually
-conditional and does not survive a uniform application. The routing
-surface that does survive is the universal-rules layer.
+conditional and does not survive a uniform application. Later source-balanced
+policy audits further show that the current source+$\sigma$ router and
+diagnostic-triggered allocation lose to simpler rules. The surviving applied
+rule is the confident-NO discount. A costed review-allocation audit shows
+oracle headroom but does not promote any realistic proxy reviewer; graph-family
+routing and diagnostic review remain candidate diagnostics pending stronger
+source-balanced confirmation.
 
-A $\sim 100$-contract pre-registered follow-on on the public-domain
-corpus is the refill required to escalate (ii) from
-`inconclusive_underpowered` to a $p{<}0.05$ verdict at the observed
-effect size.
+A $\sim 100$-contract pre-registered follow-on on the public-domain corpus was
+the original refill required to escalate (ii) from `inconclusive_underpowered`.
+The newer evidence changes the applied question: the next policy test must beat
+the confident-NO discount and source/hash controls, not only naive mean or
+median aggregation.
 
 **The confident-NO discount as a standalone rule beats raw on every
 family at $p<0.05$.** The simpler form of the recipe, the single
@@ -1059,8 +1104,17 @@ additional three rules add nothing meaningful on top of the discount on
 this corpus at $N{=}142$. (b) A single one-line post-forecast adjustment
 improves Brier at $p<0.05$ across every model family, including outside
 the panel that originated the rule (DeepSeek and Gemini are
-subscription-distinct families). The deployable shape is the discount
-alone, applied to whichever single model is in production.
+subscription-distinct families). The current applied shape is the discount
+alone, applied to whichever single model is in production and tracked against
+source-balanced controls. A later no-call fitted-calibrator audit did not
+promote a replacement: source-isotonic slightly improved the overall point
+estimate but lost Manifold and was non-significant, while tail-beta shrinkage
+was worse than the hand F100 rule. A later source-currency stress audit on the
+Law 3 Stage-B panel narrowed this rule: it improved post-cutoff rows (Brier
+delta $-0.025326$; tail-only $-0.101306$) but regressed
+pre-cutoff/source-visible rows (delta $+0.035016$, $p=0.0002$; tail-only
+$+0.097719$, $p=0.0002$). We therefore treat the discount as forward-looking
+calibration, not as retrospective benchmark correction.
 
 # Bias-type-specific inheritance: LLMs escape utility-grounded biases and inherit framing-grounded biases {#sec:bias-inheritance}
 
@@ -1112,7 +1166,7 @@ diagnostic shape: *LLMs inherit framing-grounded biases and escape
 utility-grounded biases.* It is neither the "LLMs are human-like" nor
 the "LLMs are rational" framing the literature has been working with.
 
-The deployable rule the split suggests: when contract framing is
+The candidate rule the split suggests: when contract framing is
 ambiguous on current-state, elicit BOTH framings and average. Two-arm
 cost ($+2\times$) on ambiguous contracts, near-zero cost on unambiguous
 ones, eliminates the codex-$5.5$ half-flip pattern in (F). An $N{=}42$
@@ -1232,12 +1286,14 @@ status-quo [mimic]{.smallcaps} as re-classified from
 [inherit]{.smallcaps}), classifying $\geq 8$ of 10 into the predicted
 cell is the bar for `h1_supported` on the framework as a structured
 prediction. The random-cell baseline is $\sim 3.3 / 10$. The
-[mimic]{.smallcaps} vs [inherit]{.smallcaps} discrimination is checked
-separately via two signatures: (S1) the magnitude correlates with how
-often the bias is *discussed* in training corpora (proxy: retrieval of
-the bias name returns case-study hits, not first-person enactments);
-(S2) the effect collapses under explicit anti-bias prompting much more
-for [mimic]{.smallcaps} than for [inherit]{.smallcaps}.
+[mimic]{.smallcaps} vs [inherit]{.smallcaps} discrimination has two candidate
+signatures: (S1) the magnitude correlates with how often the bias is
+*discussed* in training corpora (proxy: retrieval of the bias name returns
+case-study hits, not first-person enactments); (S2) the effect collapses under
+explicit anti-bias prompting much more for [mimic]{.smallcaps} than for
+[inherit]{.smallcaps}. S2 is reported as a failed/scoped companion test, not as
+part of the promoted law: the anti-bias-collapse score verdict is
+`kill_or_scope_raw_gap_explains_collapse`.
 
 #### Slate verdict.
 
@@ -1261,6 +1317,38 @@ S1), and (ii) a further out-of-distribution slate of biases drawn from
 outside the inducing set, classified ex ante under the same predicate.
 The pre-registration of cell classifications and decision rule is fixed
 at the version-tag of this manuscript.
+
+#### Out-of-distribution slate (ii): inconclusive, and the apparent gradient is confounded.
+
+We fired extension (ii) as a sealed pre-registration of nine fully-novel
+biases (none in the inducing set), scored as the *excess over a
+pre-registered normative framing gap* $g_0$ rather than the raw gap---so
+a model that gives the rational (framing-insensitive) answer reads as
+[escape]{.smallcaps}, never as a missed [inherit]{.smallcaps}. (An
+earlier instrument that scored raw gaps mislabelled rational answers as
+misses; that run is void.) On the five-family panel ($n{=}15$
+events/bias, $1348/1350$ schema-valid) the **full three-cell
+point-prediction is `inconclusive`**: median per-family cell-match is
+$5/9$, below the pre-registered $\geq 7/9$ bar (random $\sim 3/9$). We
+also observed an ordering in which less RLHF-aligned families carry
+larger [inherit]{.smallcaps}/[mimic]{.smallcaps} excess (Claude lowest
+at $+0.095$; DeepSeek highest at $+0.152$; $3/4$ adjacent pairs
+monotone) that would superficially support the Axis-3 alignment overlay.
+**We do not claim this as a result**, for three reasons. (1) It is
+underpowered: five families, a hand-assigned alignment ordinal, not a
+measured alignment quantity. (2) A cross-family contrast confounds
+alignment with pretraining-corpus differences---families differ in
+pretraining as well as in RLHF, so a cross-family ordering cannot
+isolate the alignment stage. (3) The *direction* runs opposite to the
+established finding that instruction-tuning / RLHF *amplifies* several
+cognitive biases rather than damping them (Itzhak et al. 2024). We
+therefore report slate (ii) as inconclusive on the cell-prediction and
+confounded on the alignment overlay. The framework's validated
+contribution remains the in-distribution taxonomy and the
+[mimic]{.smallcaps} articulation; an out-of-distribution alignment law
+is *not* established here, and de-confounding alignment from pretraining
+(held-out within-family checkpoints, or matched-pretraining families) is
+the required follow-up.
 
 # The re-audit discipline: a warning to the field {#sec:reaudit}
 
@@ -1305,7 +1393,7 @@ flawed. The interpretation discipline was.
 
 ## A worked example: the per-family worry sign-flip retest
 
-The deployed YAML routing for Gemini was scope-restricted to
+The previous YAML routing hypothesis for Gemini was scope-restricted to
 "low-overlap corpus, $v21$-style prompt only" pending a
 $\sim$`<!-- -->`{=html}42-call retest of the same prompt on the
 public-domain $N{=}42$ slice that the other v28 pilots fired on. The
@@ -1376,13 +1464,49 @@ resolution. A $30$-call probe on a uniform random sample from this
 dataset returned Brier $0.13$ on $14$ of $14$ fired confident-NO cases
 with empirical YES rate $= 0.07$ -- a calibration signature that is
 statistically indistinguishable from outcome recall on a forecasting
-task. The deployable check before any replication is one filter:
-*resolve_date $>$ max(panel_cutoff)*. That filter empties this dataset
-for the current LLM generation. The general point is corpus-validity
-drift: a benchmark that was honest at publication time may stop being
-honest once a new model generation has trained through the resolution
-dates. The verdict resolver discipline extends to corpus eligibility,
-not only to per-claim power.
+task. We then ran a stricter source-currency panel on newly collected
+Manifold questions: 40 pre-cutoff and 40 post-cutoff contracts matched
+on source, topic, question-length bucket, and computed cutoff relation,
+with Claude, Codex 5.4-mini, and Gemini run tool-free on all 240
+dispatch rows. The panel is 240/240 schema-valid. Post-cutoff rows have
+higher Brier than pre-cutoff rows by $+0.191098$ in aggregate; the
+paired-stratum delta is $+0.2155$ with permutation $p=0.0004$ and
+95\% interval $[0.1584,0.2795]$. A later Stage-C repair joined 51 of the
+80 contracts to pre-outcome probability metadata; 27 family/stratum/
+base-rate-band paired cells still show post-minus-pre Brier
+$+0.255418$, and an adversarial missing-band sensitivity assigning the
+29 unjoined rows to possible base-rate bands leaves the effect positive
+at $+0.127901$. We also ingested the same 51 pre-outcome Manifold
+probabilities into the DB as `market_baseline_stage_c_v1`: the narrow
+market bar scores mean Brier $0.099673$ versus the joined LLM-panel mean
+$0.166963$ overall, while splitting by cutoff relation shows the market
+beats the LLM panel on post-cutoff rows and the LLM panel beats the
+market on pre-cutoff rows. A simple market+LLM blend fails promotion:
+leave-one-out grid Brier is $0.097218$ versus market-alone $0.099673$, but the
+paired delta is only $-0.002455$ ($p=0.794$, 95% interval
+$[-0.021,0.0166]$), and the post-cutoff subset selects market-only. This is
+not a broad equal-information human/crowd baseline. The second-source
+replication remains open, but the
+newly acquired Polymarket slice now has bounded Gemini and DeepSeek smokes:
+each is 48/48 schema-valid over 24 pre-cutoff and 24 post-cutoff matched
+rows. The raw aggregate matches the source-currency direction for Gemini
+($+0.246832$ post-minus-pre Brier) and weakly for DeepSeek ($+0.077758$),
+but the six matched source/topic/length strata are null/opposite-sign
+(Gemini $+0.005731$, $p=0.9696$; DeepSeek $-0.061706$, $p=0.8836$), so this
+is stress evidence rather than source-general replication. A follow-up
+availability probe found that the natural Polymarket market-price control is
+not executable yet on the frozen slice: pre-cutoff rows have 24/24 DB
+freeze-price values, but post-cutoff rows have 0/24 locally and a live
+Gamma/CLOB probe joined 0/24 because the public endpoints reset connections
+from this environment. The original
+base-rate limitation is now a partial-repair
+limitation, not an absence of base-rate evidence. The deployable check before any
+replication is one filter: *resolve_date $>$ max(panel_cutoff)*. That
+filter empties this dataset for the current LLM generation. The general
+point is corpus-validity drift: a benchmark that was honest at
+publication time may stop being honest once a new model generation has
+trained through the resolution dates. The verdict resolver discipline
+extends to corpus eligibility, not only to per-claim power.
 
 ## Lane B external proof audit: the helper-vs-top-level distinction and an explicit retraction
 
@@ -1433,16 +1557,16 @@ report the four rounds and the retraction transparently because the same
 conflation pattern is a plausible failure mode in any third-party Lean
 audit.
 
-## The deployable consequence
+## The policy consequence
 
-The deployable rule the re-audit produced: *a per-family or per-(family,
-sub-source) routing rule should be deployed only when its supporting CI
-has been computed on $N{\geq}n_{\mathrm{required}}$ at the target effect
+The re-audit guardrail: *a per-family or per-(family, sub-source)
+routing hypothesis should be promoted only when its supporting CI has
+been computed on $N{\geq}n_{\mathrm{required}}$ at the target effect
 size, and only with sub-source stratification reported.* The pilot
 queue's three remaining cheap retests ($\sim 0$, $42$, and $420$ calls
-respectively) close the same gap on the program's other deployment
-rules; their results are published alongside the existing rules as the
-retests complete.
+respectively) close the same gap on the program's other policy
+hypotheses; their results are published alongside the existing
+hypotheses as the retests complete.
 
 # What this paper does NOT establish {#sec:limits}
 
@@ -1467,6 +1591,19 @@ retests complete.
   result is evidence that at least one axis matters, not yet a clean
   attribution. The 4-cell de-confounded corpus is the most important
   methodological follow-up.
+
+- It does NOT establish that RLHF/alignment *causes* the per-family bias
+  differences (Axis 3). Every Axis-3 result, in-distribution and
+  out-of-distribution, is a *cross-family* contrast, which confounds
+  alignment with pretraining-corpus differences; families differ in
+  both. The apparent "more alignment, less inherited bias" ordering also
+  runs opposite to the established result that instruction-tuning
+  amplifies several cognitive biases (Itzhak et al. 2024). The honest
+  Axis-3 claim is therefore the weaker, observational one---*family
+  identity predicts bias magnitude*---not the causal *alignment damps
+  bias*. Isolating the alignment stage requires within-family
+  checkpoints (pre- vs post-RLHF) or matched-pretraining families, which
+  we do not have.
 
 - Bid-ask spread cross-corpus is currently underpowered; the
   direction-shift is suggestive but not conclusive at $N{=}42$.
@@ -1533,7 +1670,7 @@ file. The implementation reproduces from
 `projects/forecaster_skill_calibration_v1/workspace/composed_routing_n142.py`
 on the database snapshot dated 2026-05-28.
 
-:::::::::::::::: {#refs .references .csl-bib-body .hanging-indent entry-spacing="0"}
+::::::::::::::::: {#refs .references .csl-bib-body .hanging-indent entry-spacing="0"}
 ::: {#ref-arkes1985sunk .csl-entry}
 Arkes, Hal R., and Catherine Blumer. 1985. "The Psychology of Sunk
 Cost." *Organizational Behavior and Human Decision Processes* 35 (1):
@@ -1550,6 +1687,14 @@ Economic Literature* 40 (2): 351--401.
 Halawi, Danny, Fred Zhang, Chen Yueh-Han, and Jacob Steinhardt. 2024.
 "Approaching Human-Level Forecasting with Language Models." *arXiv
 Preprint arXiv:2402.18563*.
+:::
+
+::: {#ref-itzhak2024instructed .csl-entry}
+Itzhak, Itay, Gabriel Stanovsky, Nir Rosenfeld, and Yonatan Belinkov.
+2024. "Instructed to Bias: Instruction-Tuned Language Models Exhibit
+Emergent Cognitive Bias." *Transactions of the Association for
+Computational Linguistics* 12: 771--85.
+<https://doi.org/10.1162/tacl_a_00673>.
 :::
 
 ::: {#ref-kahneman1979prospect .csl-entry}
@@ -1607,4 +1752,4 @@ Numbers." *Psychological Bulletin* 76 (2): 105--10.
 ---------. 1992. "Advances in Prospect Theory: Cumulative Representation
 of Uncertainty." *Journal of Risk and Uncertainty* 5 (4): 297--323.
 :::
-::::::::::::::::
+:::::::::::::::::
