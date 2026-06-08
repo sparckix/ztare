@@ -495,3 +495,9 @@ ztare_proofs/AutoformCompile/
 ztare_proofs/**/tmp*.lean
 ztare_proofs/AdHoc_*.lean
 ztare_proofs/RobustProbe_*.lean
+ztare_proofs/LeanMill*.lean
+ztare_proofs/P1_*.lean
+ztare_proofs/family_context_*.lean
+ztare_proofs/scratch*.lean
+ztare_proofs/_strategist_lift_work/
+ztare_proofs/closures/
