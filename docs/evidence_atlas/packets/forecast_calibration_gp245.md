@@ -1,5 +1,5 @@
 ---
-description: "Evidence packet for the GP-245 LLM forecasting calibration program."
+description: "Evidence packet for the [GP-245](../../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) LLM forecasting calibration program."
 ---
 # GP-245 Forecast Calibration Packet
 
@@ -10,7 +10,7 @@ description: "Evidence packet for the GP-245 LLM forecasting calibration program
 The GP-245 program provides DB-backed apparatus evidence for a narrower
 scientific claim than "LLMs forecast well": LLM forecasting behavior is
 conditional on source currency, representational carrier, and auxiliary
-elicitation channel. The strongest current public surface is a compact
+elicitation channel. The current public surface is a compact
 two-document program summary plus a DB/tooling contract. The active law program
 is:
 
@@ -57,7 +57,7 @@ Mixed L2-L4 internally, depending on finding. Not L5.
 
 ## Primary Sources
 
-- [Public claim register, GP-245](../../public_claim_register.md#gp-245-forecast-calibration-program-llm-forecasting-channels--operationalization)
+- [Public claim register, [GP-245](../../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)](../../public_claim_register.md#gp-245-forecast-calibration-program-llm-forecasting-channels--operationalization)
 - [Project claim summary](../../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)
 - [Project methodology architecture](../../../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md)
 - [Forecast pool scorer](../../../scripts/public/control/forecast/pool.py)

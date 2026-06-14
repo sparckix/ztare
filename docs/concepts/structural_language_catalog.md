@@ -6,13 +6,13 @@ description: "The mathematical-content move catalog (PDE craft ops + universal v
 
 **Generated from Python registries. Do not hand-edit this file; run `python scripts/public/control/render_structural_language_catalog.py` after changing the registries.**
 
-Purpose: a readable public concept surface for the universal research language, the theory-builder/problem-solver split, meta-meta reframes, and GP-219 PDE estimate-craft language. The `.py` registries remain canonical because tick briefs, gates, and classifiers import them.
+Purpose: a readable public concept surface for the universal research language, the theory-builder/problem-solver split, meta-meta reframes, and [GP-219](../../research_areas/seams/engine/meta/GP-219_pde_estimate_craft_sister_vocabulary.md) PDE estimate-craft language. The `.py` registries remain canonical because tick briefs, gates, and classifiers import them.
 
 ## Use Rule
 
 Pattern catalog = how to move next. Structural language = what mechanism the move found or repaired. Pretick may require either move-layer v5 ops or game-layer `mm_*` ops when the tick changes what counts as the object, state, or admissible frame. Closure artifacts should include `structural_language_fingerprint` with universal ops, TB/PS culture, PDE ops or `not_applicable`, evidence pointer, and next-move effect.
 
-# Universal Research Operations Vocabulary v5 (paper 5b, GP-216)
+# Universal Research Operations Vocabulary v5 (paper 5b, [GP-216](../../research_areas/seams/engine/meta/GP-216_theory_building_operations_seam.md))
 
 **Status:** descriptive (not generative); empirically generic across structural-research corpora
 **Source:** mined from 64 arcs across 8 mathematical subfields (1214 moves)
@@ -144,7 +144,7 @@ validated descriptive primitive.
 - Distribution theory after Schwartz: generalized functions and the Dirac delta move from calculation aids to primary objects with their own topology and operations.
 - Scheme theory: prime ideals / functor-of-points machinery promote solution sets and nilpotent structure from auxiliary algebraic data to the geometric object itself.
 - Defect-measure analysis: a limit defect first introduced to account for lost compactness becomes a primary carrier whose geometry and transport properties are studied directly.
-- ZTARE GP-216 meta arc, J4 2026-05-18: the two-family blind pass kept Ontological Promotion distinct from Generalization/Lifting because the move is role inversion, not scope extension.
+- ZTARE [GP-216](../../research_areas/seams/engine/meta/GP-216_theory_building_operations_seam.md) meta arc, J4 2026-05-18: the two-family blind pass kept Ontological Promotion distinct from Generalization/Lifting because the move is role inversion, not scope extension.
 
 **NS-Track-B projection:** For NS Track B, OP is the disciplined version of promoting a budget, defect, skeleton, invoice, or capacity object to a primary PDE carrier only when it has autonomous laws. TICK651's fresh-radius invoice target is OP-adjacent: a capacity budget cannot be promoted unless it becomes a descendant-exclusive payment object with its own non-reuse law.
 
@@ -291,7 +291,7 @@ validated descriptive primitive.
 - **tb_03 ↔ ps_04** — Surrogate Problem Substitution ↔ Black-Box Theorem Application (leverage moves)
 - **tb_NEW_POLYA ↔ ps_04** — Strategic Specialization ↔ Black-Box Theorem Application (special-case leverage)
 
-GP-219 PDE estimate-craft vocabulary:
+[GP-219](../../research_areas/seams/engine/meta/GP-219_pde_estimate_craft_sister_vocabulary.md) PDE estimate-craft vocabulary:
   pec_a  Auxiliary Comparison Object Construction [gate-shipped]
   pec_b  Regime / Class Scoping
   pec_c  Quantitative Threshold Dichotomy [gate-shipped]

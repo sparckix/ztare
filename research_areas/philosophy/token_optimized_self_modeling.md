@@ -4,7 +4,7 @@
 **Date:** 2026-04-19
 **Philosophical parent:** Compress, always compress (Leg 2)
 **Operational counterpart:** `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` — first instance
-**Provenance:** Principal inception during GP-100 session. The agent made a partial-view mistake on a 4100-line file because it read snippets instead of understanding the pipeline ordering. The principal inverted the fix: instead of "read more code," the instruction was "compress your own understanding into a reusable artifact optimized for your consumption, not mine."
+**Provenance:** Principal inception during [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md) session. The agent made a partial-view mistake on a 4100-line file because it read snippets instead of understanding the pipeline ordering. The principal inverted the fix: instead of "read more code," the instruction was "compress your own understanding into a reusable artifact optimized for your consumption, not mine."
 
 ---
 
@@ -56,6 +56,6 @@ The inversion test (Leg 1): what would make this self-model harmful? If it becom
 
 ## What the Optimal Format Looks Like
 
-See GP-101 seam for the open debate on agent-native format. The v1 map was 70% optimized — still too much prose, too human-readable. The eigenquestion: what representation minimizes agent error rate per token of self-model consumed?
+See [GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) seam for the open debate on agent-native format. The v1 map was 70% optimized — still too much prose, too human-readable. The eigenquestion: what representation minimizes agent error rate per token of self-model consumed?
 
 Candidates under debate: dependency graphs (YAML), precondition/postcondition contracts, edit-intent lookup tables, assertion-based invariant lists, hybrid formats.

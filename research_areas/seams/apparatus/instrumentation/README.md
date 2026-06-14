@@ -2,7 +2,7 @@
 
 _Folder index. Prose may be added above the auto-index block._
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
@@ -16,8 +16,8 @@ _Folder index. Prose may be added above the auto-index block._
 - [GP-033 Multi-Project Synthesis Generalization Seam](GP-033_multi_project_synthesis_generalization_seam.md)
 - [GP-038 Tail Cycle-Time Instrumentation Seam](GP-038_tail_cycle_time_instrumentation_seam.md)
 - [GP-040 Throughput & Cost Instrumentation Seam](GP-040_throughput_instrumentation_seam.md)
-- [GP-051 — Evidence Fetch Agent Seam](GP-051_evidence_fetch_agent_seam.md)
-- [GP-052 — Experiment Track Record Ledger Seam](GP-052_experiment_track_record_ledger_seam.md)
+- [GP-051, Evidence Fetch Agent Seam](GP-051_evidence_fetch_agent_seam.md)
+- [GP-052, Experiment Track Record Ledger Seam](GP-052_experiment_track_record_ledger_seam.md)
 - [GP-081 — Peircean Pipeline: Abductive Discovery → Deductive Verification](GP-088_ansatz_to_prover_seam.md)
 - [GP-098 — Evidence Compressor: Preprocessing Warps for Dynamical Systems and Heteroscedastic Noise](GP-098_evidence_compressor_seam.md)
 - [GP-101 — Agent-Native Self-Model Format: What Representation Minimizes Agent Error Rate?](GP-101_agent_native_self_model_format_seam.md)
@@ -28,6 +28,9 @@ _Folder index. Prose may be added above the auto-index block._
 - [GP-221 — Seam Health Telemetry](GP-221_seam_health_telemetry_seam.md)
 - [GP-222 — Operator-Memory ↔ Apparatus Bridge (PROPOSAL ONLY)](GP-222_operator_memory_bridge_seam.md)
 - [GP-233 Research Yield Decomposition Seam](GP-233_research_yield_decomposition_seam.md)
+- [GP-244 ZTARE Intelligence Surface Seam](GP-244_research_operations_intelligence_cockpit_seam.md)
+- [GP-245 Forecaster Skill Calibration Seam](GP-245_forecaster_skill_calibration_seam.md)
+- [GP-247 Capability Evidence Contract Seam](GP-247_capability_evidence_contract_seam.md)
 
-<sub>0 sub-folder(s), 20 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 23 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

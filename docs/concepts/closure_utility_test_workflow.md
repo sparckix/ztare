@@ -30,7 +30,7 @@ There are two "novelty" tools that produce different kinds of signal. They are N
 
 **When to use:** when you want SEMANTIC + STRUCTURAL novelty. The LLM reads the structural diagnostics AND has training-data intuitions about what's mathematically surprising. Output tends to be high-level and conceptual ("viscosity should bound shell-level dissipation").
 
-**Empirically measured (2026-05-06):** 0% overlap with standard-prompt nominations on both providers. Cross-LLM agreement: both nominated viscosity-to-sharpTarget bridges (the structurally-disconnected pair). Prompt engineering successfully unlocks novelty mode.
+**Empirically measured (2026-05-06):** 0% overlap with standard-prompt nominations on both providers. Cross-LLM agreement: both nominated viscosity-to-sharpTarget bridges (the structurally-disconnected pair). The novelty prompt shifts the output distribution away from the standard prompt.
 
 **Run cost:** ~30 sec, two API calls. ~$0.02.
 
@@ -57,7 +57,7 @@ There are two "novelty" tools that produce different kinds of signal. They are N
 | LLM novelty | Conceptual / semantic surprise (e.g. "viscosity should connect to sharpTarget") | High-level; you have to translate to Lean signatures |
 | GNN novelty | Edge-level structural surprise (e.g. "B.qform ≤ rightPrice missing") | Low-level; vocabulary gap and embedding artifacts |
 
-When LLM and GNN converge on the same target quantity, that's the strongest signal (multi-method agreement). When they diverge, you get two independent priors to evaluate.
+When LLM and GNN converge on the same target quantity, two independent methods agree on it. When they diverge, you get two independent priors to evaluate.
 
 **If you only have time for one:** start with LLM novelty. Output is more directly actionable as Lean proposals. Use GNN novelty as a second-pass tiebreaker on quantities the LLM mentioned.
 

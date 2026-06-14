@@ -151,8 +151,9 @@ The important distinction is:
 - **Manager** runs operational work: cleanup, workflow execution, closure, and
   standard task processing.
 
-This is not another chat wrapper. The durable state is in files under `org/`,
-`ztare_workspace/`, `projects/`, and `research_areas/`.
+The durable state is in files under `org/`,
+`ztare_workspace/`, `projects/`, and `research_areas/`. State lives on the
+filesystem, not in a chat transcript.
 
 ## State Backend: Where The Org Lives
 

@@ -33,7 +33,7 @@ You are helping me understand the ZTARE repository. Read README.md, docs/README.
 4. the single CLI entry point (`ztare`) and the subcommands worth knowing;
 5. what I should read next given [my interest or task].
 
-Do not summarize every file. Explain the repo as an operating system for adversarial scientific reasoning.
+Do not summarize every file. Describe how the parts fit together: the validator gates, the operating discipline, and the named primitives that run on top of them.
 ```
 
 ## 2. Pick what to look at — your first session
@@ -79,13 +79,14 @@ Keep the output calibrated. A high apparatus-internal score is not a discovery u
 ## 5. Operate the engine on your substrate
 
 ```text
-You are helping me use ZTARE on my own substrate for [my task]. Read docs/guides/cli.md, docs/concepts/capabilities.md, src/ztare/cli.py, and the relevant control scripts under scripts/public/control/ for the `ztare` subcommand I would use (e.g. forecast / leanmill / bundle / charter / routine-review / action-intel). Then:
+You are helping me use ZTARE on my own substrate for [my task]. Read docs/guides/cli.md, docs/guides/workflow.md, docs/concepts/capabilities.md, src/ztare/cli.py, and the relevant control scripts under scripts/public/control/ for the `ztare` subcommand I would use (e.g. autoresearch / forecast / leanmill / bundle / charter / routine-review / action-intel). Then:
 
 1. confirm which subcommand is the right entry for my task, and which step of the apparatus loop it covers;
-2. show the exact invocation with the operator flags I need, including how to pass `--help` through to see the underlying script's full surface;
-3. explain what the run reads (charter, rubric, evidence files) and what it writes (ledger row, bundle verdict, action-intel delta);
-4. name the side effects I should check after the run;
-5. if my task requires governance-side primitives (roles, mandates, role daemons, OKR closure), route me to cognitive-firm — they deliberately do not live in `ztare`.
+2. if I am about to use Codex/Claude or another persistent agent out of loop, run the workbench-routing analysis first and tell me whether to invoke autoresearch, prepare a missing evaluator/rubric/artifact surface, or stay out of loop;
+3. show the exact invocation with the operator flags I need, including how to pass `--help` through to see the underlying script's full surface;
+4. explain what the run reads (charter, rubric, evidence files, route JSON) and what it writes (ledger row, bundle verdict, action-intel delta, projection);
+5. name the side effects I should check after the run;
+6. if my task requires governance-side primitives (roles, mandates, role daemons, OKR closure), route me to cognitive-firm — they deliberately do not live in `ztare`.
 
 Do not invent subcommands. If the right capability is not in the current CLI, name the underlying script in scripts/public/control/ to run directly and say why it has not been promoted yet.
 ```

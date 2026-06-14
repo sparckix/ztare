@@ -2,7 +2,7 @@
 
 > Public-evidence surface for the H31-H55 pattern/action, orchestration-menu,
 > anti-pattern, and PDE/RD contract work. Detailed artifacts remain in
-> `workingpapers/epistemic-generation/experiments/`.
+> `epistemic-generation/experiments/`.
 
 ## Claim
 
@@ -45,7 +45,7 @@ live payloads.
 
 - Public claim register: `docs/public_claim_register.md`, section *Epistemic
   Generation as Mechanization Placement*.
-- Research log: `workingpapers/epistemic-generation/research_log.md`, H31-H55
+- Research log: `epistemic-generation/research_log.md`, H31-H55
   and "Reasoning-compiler synthesis after H31-H51".
 - Key code: `orchestration_contract_gate.py`, `orchestration_shadow_log.py`,
   `boundary_card_gate.py`, `boundary_card_repair_trace.py`,

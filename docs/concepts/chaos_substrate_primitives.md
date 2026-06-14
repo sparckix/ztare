@@ -7,7 +7,7 @@ description: "Apparatus-wide canonical primitives for chaotic/dynamical substrat
 
 **Audience:** any agent (human or LLM) authoring a charter, rubric, or implementation for a continuous-chaotic substrate (positive Lyapunov exponent, strange attractor, dissipative flow).
 
-**Purpose:** document controlling principles that prevent common failure modes when the mutator reasons about chaotic systems. These principles are ENFORCED at rubric/charter layer via mutator-visible evidence + GATE layer via deterministic checks when the gates are built (per GP-144 seam).
+**Purpose:** document controlling principles that prevent common failure modes when the mutator reasons about chaotic systems. These principles are ENFORCED at rubric/charter layer via mutator-visible evidence + GATE layer via deterministic checks when the gates are built (per [GP-144](../../research_areas/seams/engine/GP-144_new_science_claim_discipline_seam.md) seam).
 
 ---
 
@@ -81,7 +81,7 @@ description: "Apparatus-wide canonical primitives for chaotic/dynamical substrat
 - **Bottleneck distance** d_B(PD_cand, PD_obs). Continuous; max persistence-pair distance.
 - **Admit threshold**: τ_W = admit_factor · 2σ·√T (Fasy et al. 2014 stability bound) OR calibrated noise floor from perturbed-IC simulations of the declared generator. Rubric-declared; candidate cannot influence threshold.
 
-**Origin:** gp140 v2.7 charter correction + GP-143 kernel integration spec, 2026-04-24.
+**Origin:** gp140 v2.7 charter correction + [GP-143](../../research_areas/seams/engine/GP-143_continuous_chaotic_kernel_integration_seam.md) kernel integration spec, 2026-04-24.
 
 ---
 
@@ -112,7 +112,7 @@ description: "Apparatus-wide canonical primitives for chaotic/dynamical substrat
 - **Charter**: cite this doc (`see docs/concepts/chaos_substrate_primitives.md`) and enumerate which principles apply.
 - **Rubric**: the persona text should reject theses that violate any of these principles; add a dedicated dimension scoring "chaos-substrate principle compliance" with weight ≥5.
 - **Evidence surface**: include a terse section restating the principles for mutator-visibility.
-- **Gate layer (future)**: when continuum_limit_gate / wasserstein_persistence_gate / coordinate_invariance_gate are implemented, they encode these principles at code level (see GP-144 seam for the gate-stack design).
+- **Gate layer (future)**: when continuum_limit_gate / wasserstein_persistence_gate / coordinate_invariance_gate are implemented, they encode these principles at code level (see [GP-144](../../research_areas/seams/engine/GP-144_new_science_claim_discipline_seam.md) seam for the gate-stack design).
 
 ## Known failure modes if these principles are ignored
 

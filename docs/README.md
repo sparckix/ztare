@@ -12,11 +12,11 @@ directions and in an Obsidian vault as well as on GitHub.
 
 | Layer | Canonical docs | Maturity | Purpose |
 |---|---|---:|---|
-| ZTARE architecture | `docs/concepts/architecture.md`, `docs/concepts/leanmill_architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Current map of in-loop validation, out-of-loop research operations, LeanMill station-factory flow, reflexive intelligence, and the project workflow. |
+| ZTARE architecture | `docs/concepts/architecture.md`, `docs/concepts/leanmill_architecture.md`, `docs/guides/workflow.md`, `docs/guides/quickstart.md` | usable / evolving | Current map of in-loop validation, out-of-loop research operations, LeanMill station workflow, reflexive intelligence, and the project workflow. |
 | Capabilities surface | `docs/concepts/capabilities.md` | canonical / public | A two-minute "what the apparatus actually has" page — deterministic gates, adversarial library, sealed-result discipline, reflexive primitives, vocabulary escape, cross-tool triangulation, grammar-vs-space diagnosis, Lean bridge, substrate probing — each linking to the deeper doc. |
 | System position and module map | `docs/concepts/system_position_and_module_map.md` | canonical / public | How ZTARE positions itself as a socio-technical research system, how related systems such as AI Co-Mathematician and LeanMill fit as orientation points, and how the validator, proof-search, GNN, forecast, workbench, org-runtime, and claim layers compose. |
 | Proof/governance/residual loop | `docs/concepts/closure_claim_governance.md` | canonical / public | Human-facing map of Proof Execution, Governance Gate, and Residual Compiler, plus the closure-claim governance contract. |
-| Cognitive gym / recursive primitives | `docs/concepts/cognitive_gym.md`, `docs/concepts/epistemic_principles.md`, `docs/concepts/reflexive_engineering.md` | conceptual / partially mechanized | The constraint stack and epistemic operations that make the validator more than a chat loop. |
+| Constrained validation loop / recursive primitives | `docs/concepts/cognitive_gym.md`, `docs/concepts/epistemic_principles.md`, `docs/concepts/reflexive_engineering.md` | conceptual / partially mechanized | The constraint stack and epistemic operations behind bounded validation, anti-laundering checks, and reusable research moves. |
 | Reflexive mining methodology | `docs/concepts/reflexive_mining_methodology.md` | authoritative / canonical | Weekly mining + taste-rating procedure, RCA from the 2026-05-16 procedure-inversion incident, gap register, and pre-cycle prevention checklist. Read before running `scripts/public/mining/run_reflexive_mine.py`. |
 | Agentic engineering patterns | `docs/concepts/agentic_engineering_patterns.md`, `docs/guides/reflexive_audit_workflow.md` | public / reusable | General LLM-pipeline engineering patterns extracted from building ZTARE. |
 | Forecast pool / decision market | `research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md`, `research_areas/seams/protocol/GP-230_forecast_pool_decision_market_seam.md`, `scripts/public/control/forecast/pool.py` | active / mechanized | Sealed forecast contracts for macro/meso/micro branch choices, swarm gates, effort estimates, and externality audits. |
@@ -24,8 +24,8 @@ directions and in an Obsidian vault as well as on GitHub.
 | Universal research language | `docs/concepts/universal_research_language.md`, `docs/concepts/structural_language_catalog.md` | public / generated from registries | Plain-English explainer plus the full generated catalogue for universal research operations, meta-language moves, and PDE estimate-craft handles. |
 | Org runtime tenant overlay | `org/README.md`, `docs/concepts/organizational_primitives.md`, `docs/guides/org_runtime_quickstart.md` | working prototype | ZTARE's applied instance of cognitive-firm primitives: persistent roles, mandates, tasks, gates, preferences, transition logs, damage signals, Orbit, optional notification providers, and role-bound execution. |
 | ZTARE Research Co | `docs/concepts/ztare_research_company_architecture.md`, `priority_roadmap.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md` | dogfood / active | The repo operating as its own research company: hard-problem campaigns, recursive self-improvement, organizational learning, and closure discipline. |
-| Operator surfaces | `docs/guides/operator_console.md`, `docs/guides/runtime_smoke_test.md`, `docs/guides/org_runtime_docker_deploy.md` | working / local-first | How a principal operates the repo locally or through daemonized roles. |
-| `ztare` CLI | `docs/guides/cli.md` | usable | The single command entry point for the engine's operator surface — `ztare forecast`, `ztare leanmill`, `ztare bundle`, etc. — wrapping the underlying control scripts. Engine-only by design; governance / org-side belongs to `cognitive-firm`. |
+| Human-facing surfaces | `docs/guides/operator_console.md`, `docs/guides/runtime_smoke_test.md`, `docs/guides/org_runtime_docker_deploy.md` | working / local-first | How a human reviewer operates the repo locally or through daemonized roles. |
+| `ztare` CLI | `docs/guides/cli.md` | usable | The single command entry point for the engine's human-facing surface — `ztare autoresearch`, `ztare action-intel`, `ztare forecast`, `ztare bundle`, etc. — wrapping the underlying control scripts. Engine-only by design; governance / org-side belongs to `cognitive-firm`. |
 | First-run path | `docs/guides/first-30-minutes.md` | public / usable | The fastest verified route through the Obsidian vault map, public smoke target, and track selection. |
 | Agent prompt sheets | `docs/guides/agent-prompts.md` | public / usable | Paste-ready prompts for using Codex or Claude to learn the repo, inspect projects, audit GP-230/GP-243, and stay inside membrane/observer boundaries. |
 | Scientific case studies and papers | `docs/public_claim_register.md`, `papers/README.md`, `research_areas/EXPERIMENT_TRACK_RECORD.md`, `priority_roadmap.md` | mixed; status-labeled | Conservative public claims, manuscripts, and durable experiment/findings records for gravity, neural scaling, Navier-Stokes, transformer-successor, and other bounded campaigns. |
@@ -36,7 +36,7 @@ directions and in an Obsidian vault as well as on GitHub.
 | Failure & governance discipline | `docs/concepts/epistemic_principles.md`, `docs/concepts/anti_pattern_catalog.md`, `docs/concepts/goodhart_at_every_layer.md`, `docs/concepts/closure_claim_governance.md`, `docs/concepts/problem_class_taxonomy.md` | canonical / public | The failure axis, deconflicted: the structural law (`epistemic_principles` Part I), the operational field guide (`anti_pattern_catalog`), the per-layer manifestation map (`goodhart_at_every_layer`), plus closure-claim and problem-class discipline. |
 | Specifications & substrate contracts | `docs/concepts/rubric_specification.md`, `docs/concepts/harness_specification.md`, `docs/concepts/mlh_family_protocol.md`, `docs/concepts/chaos_substrate_primitives.md` | canonical / public | The formats and contracts a substrate, rubric, or harness must satisfy. |
 | Reusable patterns | `docs/concepts/prediction_ledger_pattern.md`, `docs/concepts/graph_diagnostic_belief_update_pattern.md`, `docs/concepts/cross_scale_fractal_map.md`, `docs/concepts/agent_agnostic_recursive_gain.md` | public / reusable | Self-contained patterns extracted from the work, usable without the rest of ZTARE. |
-| Concept-level workflows | `docs/concepts/closed_loop_theorem_writer_workflow.md`, `docs/concepts/closure_utility_test_workflow.md` | public / procedural | Procedures that are concept-level rather than operator guides. |
+| Concept-level workflows | `docs/concepts/closed_loop_theorem_writer_workflow.md`, `docs/concepts/closure_utility_test_workflow.md` | public / procedural | Procedures that are concept-level rather than human-facing guides. |
 | Glossary & reference | `docs/concepts/glossary.md`, `docs/reference/` | reference | Plain-language term definitions and supporting reference material. |
 | Internal boundary | maintainer-only docs | internal / not public evidence | Maintainer audit support. Listed only to mark the boundary; not a first-read path or public evidence source. |
 | Landings | `docs/landings/` | prototype UI artifacts | Static visual demos for governance and org-runtime concepts. |
@@ -132,18 +132,18 @@ tenant notification provider as part of the generic kernel.
 
 **Sub-folders**
 
-- [`concepts/`](concepts/) - 32 file(s)
-- [`evidence_atlas/`](evidence_atlas/) - 8 file(s)
+- [`concepts/`](concepts/) - 33 file(s)
+- [`evidence_atlas/`](evidence_atlas/) - 10 file(s)
 - [`guides/`](guides/) - 14 file(s)
 - [`landings/`](landings/) - 1 file(s)
 - [`reference/`](reference/) - 4 file(s)
 
 **Documents**
 
-- [LLM Gaming Behavior Catalog](cheating_catalog.md) - Human-readable catalog of LLM gaming behaviors: the original numeric self-certification cheats plus mined cross-substrate vectors, registry status, and audit pa
+- [LLM Gaming Behavior Catalog](cheating_catalog.md) - Human-readable catalog of LLM gaming behaviors: the original numeric self-certification cheats plus mined cross-substrate behavior classes and audit patterns.
 - [Multi-Substrate Validation — Companion to JOURNEY.md](multi_substrate_validation.md) - Companion evidence to the journey: how the same epistemic discipline held across the NS, Planck, consciousness and gravity substrates.
-- [Public Claim Register](public_claim_register.md) - Conservative public claim register for the rowdy ZTARE campaigns.
-- [A 70-Day Sprint, Six Architectural Phases](sprint_70day_journey.md) - First-person build narrative, the 70-day arc that produced ZTARE across six architectural phases, including honest failures and reflexive self-audit.
+- [Public Claim Register](public_claim_register.md) - Public claim register for the ZTARE campaigns: what survived, what did not, and where the evidence lives.
+- [A 70-Day Sprint, Six Architectural Phases](sprint_70day_journey.md) - Build narrative covering 70 days of work on ZTARE across six architectural phases, including failures and reflexive self-audit.
 
 <sub>5 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

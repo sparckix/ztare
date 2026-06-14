@@ -37,6 +37,20 @@ These are atlas evidence levels. They are also defined in the
 with LeanMill proof-audit L1/L2/L3 layers, which are local proof-checking
 layers rather than general evidence levels.
 
+## Reading The Evidence Through Five Questions
+
+The public introduction uses five release questions. The atlas is where those
+questions should be grounded. Read each answer through the source packets and
+claim register, not through general repo scale.
+
+| Question | Current public evidence | What is still missing |
+|---|---|---|
+| Can a bounded loop produce measurable research improvement under a hardened evaluator? | Claim-specific. Evaluator-hardening and self-certification failures have L4 controlled benchmark evidence; scientific and methodology campaigns have project summaries, retest tags, demotions, and packetized evidence where available. | No blanket system-level benchmark claim. Stronger external-facing work is a small number of frozen packet suites or benchmarks tied to specific claims. |
+| Does the kernel make fake progress visible before it becomes a claim? | Strong public route: cheating catalog, evaluator-hardening packet, anti-laundering catches, public claim governance, demotion history, and non-claim fields. | Larger frozen comparison suites that separate ordinary review, rubric-only review, deterministic gates, and precedent/gate combinations. |
+| Does research state survive across in-loop runs and out-of-loop agent work? | Partial public route: public claim register, experiment track record, action/forecast surfaces, primitive matrix, reflexive primitives, and operations-intelligence artifacts. | More packetized evidence that state reuse changes later routing or outcomes, not only that state is stored. |
+| Can API calls, subscription agents, and local workers share the same typed artifact contract? | Implemented and testable in the kernel surfaces, with dispatch and subscription outcome audits. Treat this as implementation evidence unless a run packet links it to outcomes. | More matched API/subscription runs on substantive substrates before making transport-quality claims. |
+| Can an outside reader reproduce the evidence path from command to artifact to gate? | Evidence packets, executable review pack, public claim register, benchmark evidence, and packet checker provide a review path for selected claims. | Uniform machine-readable claim packets and validators across all public claims. |
+
 ## Files
 
 - [Claim Cards](claim_cards.md): curated high-signal claims and where the
@@ -91,7 +105,7 @@ experiments.
 
 **Sub-folders**
 
-- [`packets/`](packets/) - 4 file(s)
+- [`packets/`](packets/) - 6 file(s)
 
 **Documents**
 

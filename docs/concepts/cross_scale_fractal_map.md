@@ -15,7 +15,7 @@ description: "Empirical observation that the same failure shapes recur across sc
 
 An empirical observation: in LLM-mediated systems that mature past prototype, the same small set of structural moves tends to recur at multiple operational scales, coordinate-time, iteration-time, research-arc-time, verification-time, infrastructure-time, engineering-practice-time. Each scale gets its own bounded vocabulary (3-18 elements typically) and its own apparatus enforcement. The structural moves at one scale are aliases of structural moves at another.
 
-This document names the pattern and gives a concrete reference instance from one mature system. The pattern itself is the contribution; the reference instance is illustrative.
+This document names the pattern and gives a concrete reference instance from one mature system. The document's subject is the pattern; the reference instance is illustrative.
 
 ---
 
@@ -48,9 +48,9 @@ The reference instance below shows 7 scales × 82 moves with cross-scale alias s
 
 ---
 
-## Cross-scale aliases, the Rosetta Stone
+## Cross-scale aliases
 
-The same underlying structural-move appears at multiple scales with scale-specific apparatus. Reading horizontally:
+The same underlying structural move appears at multiple scales with scale-specific apparatus. Reading horizontally:
 
 | Underlying move | Coordinate scale | Iteration scale | Research-arc scale |
 |---|---|---|---|
@@ -75,7 +75,7 @@ Plausibly, three factors:
 
 3. **Underlying moves are limited.** Not every formal move at every scale is structurally distinct. The pattern emerges because the operational repertoire of "useful structural moves under uncertainty" is itself bounded, Polya's heuristics, Lakatos's dialectical operations, Munger's mental models all suggest a few-dozen-element universal repertoire.
 
-The fractal is the natural consequence: each scale formalizes the same handful of underlying moves into scale-specific apparatus.
+The recurring shape follows: each scale formalizes the same handful of underlying moves into scale-specific apparatus.
 
 ---
 
@@ -83,7 +83,7 @@ The fractal is the natural consequence: each scale formalizes the same handful o
 
 ### 1. Don't fight the fractal, design for it
 
-If your system has multiple operational scales (most non-trivial LLM systems do), accept that each scale will accumulate its own bounded vocabulary. Don't try to merge scales into one mega-vocabulary; do build cross-scale aliases (Rosetta Stone) explicitly.
+If your system has multiple operational scales (most non-trivial LLM systems do), accept that each scale will accumulate its own bounded vocabulary. Don't try to merge scales into one mega-vocabulary; do build cross-scale aliases explicitly.
 
 ### 2. Maintain the alias table as a first-class artifact
 
@@ -97,9 +97,9 @@ Token-Optimized Self-Modeling (Pattern 9) and Cross-Reference Knowledge Graph (P
 
 If `coordinate_compression` is renamed at iteration scale, the alias to `core_01` at research-arc scale silently breaks. A cross-scale linter that walks the alias table and confirms each side resolves catches this class of bug. Cost: ~1 hour to write; runs on every PR.
 
-### 5. The fractal IS the contribution
+### 5. The cross-scale structure is the claim
 
-In a published-paper or external-review context, the cross-scale fractal structure of the system is itself worth pointing at. It's the empirical observation that LLM-mediated systems mature into multi-scale bounded-vocabulary apparatus, and that those vocabularies cohere through cross-scale aliases. This isn't novel as components (each piece has prior art); it's a coherent practice claim.
+In a published-paper or external-review context, the claim is the cross-scale structure itself: LLM-mediated systems mature into multi-scale bounded-vocabulary apparatus, and those vocabularies cohere through cross-scale aliases. The components are not novel (each piece has prior art); the claim is about the combination as a coherent practice.
 
 ---
 
@@ -125,7 +125,7 @@ In a published-paper or external-review context, the cross-scale fractal structu
 
 ## Origin
 
-The pattern was named retrospectively in May 2026 after the ZTARE system had accumulated 7 scales of bounded-vocabulary apparatus and a cross-scale linter caught its first real drift. Documented in private seam GP-216f. The public version (this document) extracts the pattern from the specific instance for use in other LLM-mediated systems.
+The pattern was named retrospectively in May 2026 after the ZTARE system had accumulated 7 scales of bounded-vocabulary apparatus and a cross-scale linter caught its first real drift. Documented in private seam [GP-216f](../../research_areas/seams/engine/meta/GP-216f_cross_scale_fractal_map.md). The public version (this document) extracts the pattern from the specific instance for use in other LLM-mediated systems.
 
 Components are not novel: bounded vocabularies (Polya 1945; Lakatos 1976); paired validators (every type-system); cross-references (Memex, Zettelkasten); apparatus enforcement (gates, profiles, runtime checks). The combination + the explicit cross-scale alias discipline + the "fractal observation" framing may be modestly novel as a coherent practice claim.
 

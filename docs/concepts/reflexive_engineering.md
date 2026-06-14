@@ -9,19 +9,25 @@ description: "Reflexive engineering primitives, patterns the apparatus applies t
 **Companion docs:** [docs/guides/reflexive_audit_workflow.md](../guides/reflexive_audit_workflow.md) (discovery mechanism), [docs/concepts/agentic_engineering_patterns.md](agentic_engineering_patterns.md) (LLM-pipeline test patterns, sibling concept at the engineering layer)
 **Philosophical parent:** Three Legs of ZTARE (Invert, Compress, Adversarial Disagreement)
 
-> **How this differs from `agentic_engineering_patterns.md`.** Reflexive primitives apply ZTARE's *scientific principles* (Invert / Compress / Adversarial Disagreement) to ZTARE's own infrastructure, bootstrapping the engine using its own legs. Agentic engineering patterns apply *standard software engineering discipline* (record-replay testing, contract checking, AST canonicalization) to LLM-mediated pipelines. This is a layer distinction, not a strict mutually-exclusive split: the same mechanism can be a public agentic pattern when described as reusable orchestration infrastructure, and a reflexive primitive when ZTARE turns it inward on its own research loop. Pattern 12 / Primitive 9 is the working example. Both docs are public, neither is redundant.
+> **How this differs from `agentic_engineering_patterns.md`.** Agentic
+> engineering patterns are ordinary software practices adapted to LLM pipelines:
+> record/replay testing, contract checks, AST canonicalization, and provenance.
+> Reflexive primitives are narrower. They are cases where ZTARE applies its own
+> research principles to its own infrastructure. The same mechanism can appear in
+> both places: as a reusable engineering pattern in the agentic catalog, and as a
+> reflexive primitive when ZTARE uses it to improve its own loop.
 
 ---
 
-## The Meta-Move
+## What reflexive primitives are
 
-ZTARE rests on three epistemic operations: Invert, Compress, Adversarial Disagreement. These were derived as principles for the *science* the engine does, how to evaluate candidate models, how to test claims, how to detect gaming.
+ZTARE uses three recurring research moves: invert the claim, compress the useful
+structure, and force disagreement between roles. Reflexive engineering means
+using those same moves on the engine itself.
 
-The reflexive engineering primitives are what happens when you apply those same legs to *the engine itself*. Each primitive is a specific instance of a ZTARE leg turned inward.
-
-This is not circular. A weightlifter who applies progressive overload to their own training program (not just their lifts) is making the same move. ZTARE applying Compress to its own context management is the engine improving its own infrastructure using the same principles it uses to improve its candidates.
-
-Every primitive below was discovered the same way: a specific failure occurred, the failure was recognized as infrastructure (not science), a ZTARE leg was applied reflexively, and a primitive emerged. None was designed from first principles. Each is testable against the failure that motivated it.
+The test for inclusion is practical. A primitive belongs here when a concrete
+infrastructure failure happened, the failure was not just "the science was hard,"
+and the fix is a reusable move the engine can apply to itself again.
 
 ---
 
@@ -46,7 +52,7 @@ Every primitive below was discovered the same way: a specific failure occurred, 
 **Leg applied:** Compress (Leg 2)
 **Target:** The agent's own understanding of its operational substrate
 
-**The move:** The agent reads large files through a narrow context window, the same problem as observing a system through a narrow instrument window. Partial views cause globally wrong local edits. The standard fix (more documentation) is Ptolemaic: add tokens, hope the agent reads the right ones. The Compress move: build a minimal structural cache that gives the agent the global dependency graph in fewer tokens than reading any single region of the source file.
+**The move:** The agent reads large files through a narrow context window. Partial views cause globally wrong local edits. The standard fix (more documentation) adds tokens and hopes the agent reads the right ones. The Compress move: build a minimal structural cache that gives the agent the global dependency graph in fewer tokens than reading any single region of the source file.
 
 **What makes it reflexive:** Compress is a principle ZTARE applies to candidate models, prefer the form that survives outside the fit window with fewer assumptions. Token-Optimized Self-Modeling applies the same principle to the agent's own cognition, prefer the representation that prevents errors with fewer tokens consumed.
 
@@ -75,7 +81,7 @@ Every primitive below was discovered the same way: a specific failure occurred, 
 - Errors arise from the agent not knowing which downstream gate rejects its output
 - Build: typed dependency chain (PHASE_A output → PHASE_B input, etc.)
 - Inject: into agent context before task, not after failure
-- Format: edit-intent lookup table ("I want to do X → I MUST consult Y")
+- Format: edit-intent lookup table ("I want to do X -> I must consult Y")
 
 ---
 
@@ -97,16 +103,16 @@ Every primitive below was discovered the same way: a specific failure occurred, 
 
 ---
 
-## Primitive 4: Residual Isomorphism (Solving for the Shape of Ignorance)
+## Primitive 4: Residual Isomorphism (abducing the missing primitive from the failure residual)
 
 **Leg applied:** Compress (Leg 2) + Invert (Leg 1)
 **Target:** The grammar expansion mechanism itself
 
 **The move:** When the engine's grammar ceiling is reached (best form fails the farther-tail gate), the failure residual, the structured discrepancy between the best static form and the observed data, encodes the mathematical shape of what the grammar is missing. Standard fix: operator injects a new primitive based on domain intuition (not scalable). Reflexive fix: the engine inverts its own failure (Leg 1) and compresses the residual into a primitive proposal (Leg 2).
 
-**The Observability Axiom:** A missing primitive can only be discovered by visible-window search if it produces a detectable residual in the observation window. Residual Isomorphism breaks this constraint by using the farther-tail gate's failure signal, which the engine already computes, as the diagnostic input. The farther-tail gate sees catastrophic failure even when the visible window looks clean.
+**Observability constraint:** A missing primitive can only be discovered by visible-window search if it produces a detectable residual in the observation window. Residual Isomorphism gets around this by using the farther-tail gate's failure signal, which the engine already computes, as the diagnostic input. The farther-tail gate registers failure even when the visible window looks clean.
 
-**Known limitation:** Works when the missing primitive is an additive correction. Multiplicative or nested corrections produce residuals that don't match the primitive library in their raw shape. This is accepted for n=1 and acknowledged as a scope boundary.
+**Known limitation:** Works when the missing primitive is an additive correction. Multiplicative or nested corrections produce residuals that don't match the primitive library in their raw shape. This is accepted for n=1 and is a scope boundary.
 
 **Instantiation checklist:**
 - Grammar ceiling reached (best form fails held-out gate)
@@ -134,7 +140,7 @@ Every primitive below was discovered the same way: a specific failure occurred, 
 ## The Pattern Class: What These Have in Common
 
 1. **Each applies a ZTARE leg to the engine itself**, not to the candidate models the engine evaluates.
-2. **Each was discovered from a specific failure.** None was designed from first principles. Token-Optimized Self-Modeling and Inception came from a partial-view edit mistake. The Persona Router came from static personas being insufficient for novel failure families. Residual Isomorphism came from Component D's visible-window blindness.
+2. **Each was discovered from a specific failure.** None was designed from first principles. Token-Optimized Self-Modeling and Inception came from a partial-view edit mistake. The Persona Router came from static personas being insufficient for novel failure families. Residual Isomorphism came from the symbolic-regression path's visible-window blindness.
 3. **Each is testable against the failure that motivated it.** The architectural map prevents the class of errors that motivated it. The persona router selects better lenses than the static table. Residual Isomorphism should break the grammar ceiling it was designed for.
 4. **None requires new theoretical machinery.** Each is a straightforward application of an existing ZTARE principle to a new target. The novelty is the reflexive application, not the principle.
 
@@ -145,9 +151,22 @@ A new reflexive primitive is indicated when:
 - The failure can be traced to a **structural constraint in the infrastructure**, not to the difficulty of the substrate
 - An existing ZTARE leg, applied reflexively to the stuck layer, would prevent the failure from recurring
 
-This is the Groundhog Day signature: the engine is not exploring (which looks like thrashing across different failure modes), it is stuck at a structural wall.
+The signature is zero-variance stagnation rather than thrashing: the engine is not exploring across different failure modes, it is stuck at one structural constraint.
 
 For the periodic discovery mechanism that detects this signature automatically, see `docs/guides/reflexive_audit_workflow.md`.
+
+### Current candidate boundary
+
+Autoresearch workbench routing is intentionally treated as an implementation of
+the agentic Pattern 16 contract compiler, not as a new reflexive primitive yet.
+It is inward-facing infrastructure: the apparatus decides when its own in-loop
+workbench should be used instead of manual RD/agent work, and records the route
+as an action-impact row. That is valuable, but the REP bar is higher. Promotion
+would require evidence across more than one context that the route receipt
+changes behavior: fewer unexplained out-of-loop bypasses, more prepared
+workbench surfaces, or better reuse of failed-branch constraints. Until then it
+belongs in OP-AWR/action-intelligence machinery rather than in the primitive
+catalogue.
 
 ---
 
@@ -211,8 +230,6 @@ For the periodic discovery mechanism that detects this signature automatically, 
 ---
 
 ## Primitive 9: Reflexive Forecast Market
-
-**Status:** catalogued reflexive primitive.
 
 **Leg applied:** Adversarial Disagreement + Compress + Invert
 **Target:** ZTARE's own research allocation and tick-level action choices
@@ -281,9 +298,8 @@ explicitly.
 
 **Internal closure (works without exogenous pressure):**
 
-Technical-validation closures, formal-method primitives whose
-closure is guaranteed by their own structure. They do not need a
-budget, deadline, or principal to terminate.
+Technical-validation closures are checks whose stopping condition is internal to
+the artifact. They do not need a budget, deadline, or principal to terminate.
 
 - `validate_substrate_meta`, schema validation
 - `validate_rubric.py`, rubric pre-flight
@@ -307,16 +323,13 @@ because no internal property distinguishes the "correct" answer.
 
 **Why this distinction matters operationally:**
 
-Conflating the two, claiming "all closure needs exogenous pressure"
-is the failure mode that scored 44 on iter-4 of gp168 v3 run-2.
-Conflating the other way, claiming "all closure can be internal", 
-is the v1 score-20 paralysis attractor (paper7 §11.6's anchor).
-The correct stance: **technical validation closes internally**;
-**coordination closure requires exogenous pressure**. The
-implementation already maintains this distinction, schema
-validators don't ask the principal for permission; OKR closure does.
-This section makes the distinction explicit so future
-ZTARE-on-org runs cannot silently collapse it.
+Conflating the two creates two opposite mistakes. If "all closure needs
+exogenous pressure," even schema validation becomes a management decision. If
+"all closure can be internal," the system can deliberate forever over choices
+that require taste, budget, or priority. The practical rule is: technical
+validation closes internally; coordination closure requires an external
+constraint. Schema validators do not ask the principal for permission; OKR
+closure does.
 
 ---
 
@@ -324,4 +337,7 @@ ZTARE-on-org runs cannot silently collapse it.
 
 - **Not Epistemic Verification.** The treatise makes claims about the decomposition of epistemic verification. These primitives are engineering patterns. They are evidence that the decomposition is useful, not claims about the world.
 - **Not the Operational Manual (pre-run checklist).** The manual is for run-time checks. These primitives are design-time decisions, they are made when building a new component of the engine, not when launching a run.
-- **This document is the right home.** It is a companion to the architecture doc (what the engine is) and the cognitive gym (why the engine cages the LLM). The reflexive primitives are how the engine improves its own cage.
+- **This document is the right home.** It is a companion to the architecture doc
+  (what the engine is) and the constrained validation loop (how the engine
+  separates model proposals from deterministic checks). The reflexive
+  primitives are how the engine improves that loop.

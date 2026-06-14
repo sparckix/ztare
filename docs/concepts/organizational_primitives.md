@@ -1,7 +1,7 @@
 ---
-description: "The code primitives that make the M-Form organizational separation physical."
+description: "Code primitives for separating agent roles, authority, and work routing in the ZTARE org runtime."
 ---
-# Organizational Primitives: The M-Form in Code
+# Organizational Primitives
 
 > **Up:** [Documentation map](../README.md)
 
@@ -11,7 +11,12 @@ description: "The code primitives that make the M-Form organizational separation
 **Philosophical parent:** Chandler (1962), Matzinger (2002), Margulis (1967), Kauffman (1993), Doerr (2018), Hölldobler & Wilson (1990)
 **Last revised:** 2026-05-20 (aligned ZTARE tenant overlay with the generic cognitive-firm kernel and added the action-intelligence boundary)
 
-> **How this relates to the sibling org docs.** This doc owns the *code primitives* that make the M-Form separation physical (signals, sessions, alignment audit, routing). The *north-star reference architecture* for a 24x7 virtual research org is [ztare_research_company_architecture.md](ztare_research_company_architecture.md); the *runnable org tree* (roles, mandates, tasks, gates as files) is [org/README.md](../../org/README.md). This doc is the primitive layer those two build on; it does not restate the architecture or the runtime layout.
+> **How this relates to the sibling org docs.** This doc owns the code primitives
+> for role separation: signals, sessions, alignment audits, and routing. The
+> reference architecture for a persistent research org is
+> [ztare_research_company_architecture.md](ztare_research_company_architecture.md);
+> the runnable org tree is [org/README.md](../../org/README.md). This doc
+> explains the primitive layer those two build on.
 
 ---
 
@@ -19,7 +24,10 @@ description: "The code primitives that make the M-Form organizational separation
 
 *Cognitive Firm* argues that recursive AI systems require the same structural separation that Chandler documented in human firms: strategic oversight in a general office, operational execution in autonomous divisions, with a deterministic governance layer between them. When the division that generates output also evaluates it, you get specification gaming, metric inflation, and fabricated compliance, regardless of substrate.
 
-This document describes the **code primitives** that make that separation physical. They are to *Cognitive Firm* what the [cognitive gym](cognitive_gym.md) is to *Epistemic Verification*: the operational instantiation of a theoretical claim.
+This document describes the code primitives that make that separation executable.
+They are to *Cognitive Firm* what the
+[constrained validation loop](cognitive_gym.md) is to *Epistemic Verification*:
+the code-level instantiation of a theoretical claim.
 
 The generic version of these primitives is being factored into
 [cognitive-firm](https://github.com/sparckix/cognitive-firm). In this repo,
@@ -29,7 +37,7 @@ other domains.
 
 | Paper | Theory | Code instantiation | Doc |
 |-------|--------|-------------------|-----|
-| Epistemic Verification | Ten operations decompose judgment | Cognitive gym: semantic router, topological sieve, deterministic sidecar, contamination gate, operator-agent replay | `docs/concepts/cognitive_gym.md` |
+| Epistemic Verification | Ten operations decompose judgment | Constrained validation loop: semantic router, residual diagnostics, deterministic sidecar, contamination gate, operator-agent replay | `docs/concepts/cognitive_gym.md` |
 | Cognitive Firm | M-form separation bounds gaming | **This document**: damage signals, session claims, M-form audit, closure map, closure pressure, OKR tree, research direction | You are here |
 
 ---
@@ -37,7 +45,7 @@ other domains.
 ## The Nine Organizational Primitives
 
 Originally four (damage signals, session claims, M-form alignment audit, closure
-map). The 2026-04-27 GP-168 addendum added two more, closure pressure and the
+map). The 2026-04-27 [GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md) addendum added two more, closure pressure and the
 OKR tree, to operationalize the finding that *bicameral architectures provide
 consistency but not closure; closure requires exogenous resource pressure*. The
 2026-04-30 added Research Direction: a role-bound external-validity and
@@ -64,7 +72,10 @@ primitives now compose the firm's current operational schema.
 
 **Code:** `src/ztare/signals/damage.py`
 
-**Any-LLM applicability:** Any multi-agent system where authorized actions can still be harmful. The damage channel is a typed "something went wrong" surface that doesn't depend on knowing WHO did it or WHETHER they were authorized, just that something hurts.
+**Any-LLM applicability:** Any multi-agent system where authorized actions can
+still be harmful. The damage channel is a typed "something went wrong" surface.
+It does not need to decide who caused the damage before making the damage
+visible.
 
 ---
 
@@ -76,7 +87,7 @@ primitives now compose the firm's current operational schema.
 
 **How it works:**
 - Claiming a task writes a JSON file under `org/sessions/_claims/<task_id>.json` with owner (session_id), task_id, and expiry
-- Any other session that tries to claim the same task while the first claim is live MUST defer
+- Any other session that tries to claim the same task while the first claim is live must defer
 - Deferred sessions SHOULD emit a damage signal of kind `handoff_conflict`
 - Claims are gitignored (runtime coordination, not shipped state)
 
@@ -127,7 +138,7 @@ primitives now compose the firm's current operational schema.
 
 ---
 
-### 5. Closure Pressure (GP-168, Pheromone Decay + Mycelial Pruning)
+### 5. Closure Pressure ([GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md), Pheromone Decay + Mycelial Pruning)
 
 **Biological analog:** Ant pheromone trails evaporate; a foraging route that is
 not reinforced disappears within minutes to hours, regardless of how
@@ -156,7 +167,7 @@ constraints available.
   inbox at `ztare_workspace/gates/pending/` with options + an
   `auto_resolution_on_default` rule that fires after N days of principal
   silence
-- The GP-070 orchestrator owns mutations; the daemon only schedules requests
+- The [GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md) orchestrator owns mutations; the daemon only schedules requests
   via gates and appends `gate.opened` events to `ztare_workspace/transitions.jsonl`
   (single write-ahead log)
 - The principal resolves gates via Orbit (full state) or a configured
@@ -168,8 +179,8 @@ constraints available.
 at closure: `(world-measured KRs with non-null last_measured_utc in the
 closure window) / (total world-measured KRs)`. If <0.5 across two consecutive
 Objective closures, daemon posts: *"OKR honesty score declining. The system
-may have collapsed into theatre."* This is the explicit kill signal that
-prevents the architecture from outliving its honesty.
+may have collapsed into empty process."* This is the kill signal for the case where
+the work-item tree keeps closing Objectives whose KRs were never measured.
 
 **Code:** `scripts/public/control/closure_daemon.py`, gates at `ztare_workspace/gates/pending/`,
 write-ahead log at `ztare_workspace/transitions.jsonl`
@@ -190,12 +201,10 @@ break ties the deliberation cannot.
 ("survive winter"), sub-level ("maintain pheromone trails"), bottom-level
 ("forage from this tree"). The structure spans roughly 10⁵ in timescale
 ratio between top and bottom, about one decade per tier across four-to-five
-tiers. Critically, *successful* biological systems use **extrinsic**
-measurement: trails that don't lead to food evaporate; carbon-starved hyphae
-prune themselves; the environment measures, not the colony. The pathological
-case is the cell that measures its own success, cancer arises from broken
-extrinsic feedback (immune surveillance failure) plus intact intrinsic
-signaling (growth pathways firing).
+tiers. The relevant property is *extrinsic* measurement: trails that don't
+lead to food evaporate; carbon-starved hyphae prune themselves; the
+environment measures, not the colony. A unit that measures only its own
+success has no external feedback and drifts.
 
 **The M-form problem it solves:** The pre-2026-04-27 work-item primitive
 (`org/goals/`) was task-shaped, no Objective layer above (the "why" was
@@ -224,7 +233,7 @@ moved). This is Goodhart's Law at the work-item layer.
   (see primitive #5) plus optional `objective_id` and `kr_id` foreign keys
   linking upward.
 - Daemon enforces the world-measurement invariant: an Objective with only
-  self-measured KRs is rejected at creation as a tumor-cell pattern.
+  self-measured KRs is rejected at creation (no external feedback).
 
 **Why three tiers, not two or four:** the principal's timescale ratio between
 top intent (multi-year, *"produce a body of work that matters"*) and atomic
@@ -239,7 +248,7 @@ three tiers. Two would be too coarse, four too ceremonial.
 to express *what it's trying to do and how it will know if it worked*. The
 controlling piece is `measurement_locus: world`, the requirement that every
 Objective have at least one externally-verifiable measurement. Without it,
-self-grading drift toward self-flattery is mathematically guaranteed. The
+self-grading drifts toward self-flattery. The
 three-tier structure is well-calibrated to organizations whose top-intent
 horizon is 10³-10⁴ × their atomic-task duration; very flat orgs (one human +
 one agent, hour-scale work, no multi-year intents) can collapse to two tiers.
@@ -429,18 +438,18 @@ adapters and mandates, not in the generic route enum.
 Epistemic Verification               Cognitive Firm
          │                                     │
          ▼                                     ▼
-Cognitive Gym                        Organizational Primitives (9)
-(epistemic discipline on the LLM)        (governance of the agents)
+Constrained Validation Loop          Organizational Primitives (9)
+(in-loop proposal discipline)            (governance of the agents)
          │                                     │
     ┌────┴────┐                       ┌────────┼────────┐
     │         │                       │        │        │
-Semantic   Determin-                Damage  Session   M-Form
- Router    istic                   Signals  Claims   Audit
-           Sidecar                     │        │        │
+Semantic   Deterministic            Damage  Session   M-Form
+ Router    Sidecar                 Signals  Claims   Audit
+              │                        │        │        │
     │         │                     Closure  Closure   OKR
-Topolog-   Contam-                   Map    Pressure  Tree
-ical       ination                              │
-Sieve      Gate
+Residual   Contam-                   Map    Pressure  Tree
+Diagnostics ination                             │
+           Gate
                                            Research
                                            Direction
                                                │
@@ -452,7 +461,7 @@ Sieve      Gate
                                             Routing
 ```
 
-The cognitive gym answers: **how does a single LLM operate within the verification pipeline?** (Caged, with typed inputs and deterministic checks.)
+The constrained validation loop answers: **how does a single LLM operate within the verification pipeline?** It uses typed inputs, deterministic checks, residual diagnostics, and gates.
 
 The organizational primitives answer: **how do multiple agents coordinate without dissolving the governance layer?** (Through damage signals, membrane exclusion, stochastic audits, closure analysis, exogenous clocks, world-measured objectives, role-bound research direction, persistent-agent channels, and generic work routing.)
 
@@ -466,7 +475,7 @@ answer who may act, how work is routed, where claims/gates live, and how
 coordination is audited. The reflexive allocation layer asks whether a proposed
 action was predicted, chosen, executed, observed, and learned from. In ZTARE
 that layer is implemented through the forecast pool, prediction ledger,
-GP-243 action-impact records, and GP-244 research-operations intelligence
+[GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) action-impact records, and [GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md) research-operations intelligence
 surface.
 
 This boundary matters. A market price or action-impact score can route

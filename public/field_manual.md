@@ -1,10 +1,10 @@
 # The Field Manual: Patterns That Survive Smart Rooms
 
-*A short, practical catalogue of the structural failure modes that routinely survive ordinary strategic review — written for case-method instructors, diligence teams, and operators who need to spot weak arguments in real time.*
+*A short, practical catalogue of the structural failure modes that routinely survive ordinary strategic review — written for case-method instructors, diligence teams, and reviewers who need to spot weak arguments in real time.*
 
 *Version 1 — extracted from adversarial verification runs on real strategic theses. Each pattern includes a one-line "Killer Question" designed to expose it. Provenance tags indicate how broadly it has been observed so far.*
 
-> **Relationship to other catalogues in this repo.** This field manual is the operator/instructor-facing catalogue: short patterns with killer questions for use in real-time strategic review. The apparatus-internal, mining-derived classifier vocabulary (different audience, different purpose) lives in [`docs/concepts/anti_pattern_catalog.md`](../docs/concepts/anti_pattern_catalog.md) and the structural account in [`docs/concepts/epistemic_principles.md`](../docs/concepts/epistemic_principles.md). The two surfaces are intentionally non-overlapping.
+> **Relationship to other catalogues in this repo.** This field manual is the reviewer/instructor-facing catalogue: short patterns with killer questions for use in real-time strategic review. The apparatus-internal, mining-derived classifier vocabulary (different audience, different purpose) lives in [`docs/concepts/anti_pattern_catalog.md`](../docs/concepts/anti_pattern_catalog.md) and the structural account in [`docs/concepts/epistemic_principles.md`](../docs/concepts/epistemic_principles.md). The two surfaces are intentionally non-overlapping.
 
 ---
 

@@ -38,7 +38,7 @@ Standard diagnostic workflow: produce metrics, hand them to a reviewer, reviewer
 
 This pattern: produce metrics, hand them to a reviewer, **the metrics' value is conditioned on whether the reviewer's strategy changes after reading them**. Metrics that surface only "things the reviewer already knew" are scored as zero-information. Metrics that surface artifacts of extraction noise are scored as negative-information (they actively misled).
 
-The empirical question shifts from *"is this metric statistically meaningful?"* to *"did this metric move a competent reviewer's prior?"*, which is the only question that actually matters for resource allocation.
+The empirical question shifts from *"is this metric statistically meaningful?"* to *"did this metric move a competent reviewer's prior?"*, which is the question that matters for resource allocation.
 
 ---
 
@@ -66,7 +66,7 @@ The empirical question shifts from *"is this metric statistically meaningful?"* 
 
 3. **Negative findings are findings.** The "no directed path from `nu` to `sharpTarget`" result is an absence, not a presence, and it changed strategy. Apparatus designed only for positive findings would have missed this.
 
-4. **The agent must be domain-competent.** A novice reading the same output would not have known that "no path from viscosity to the threshold wall" was a structural integrity signal rather than a bug. The pattern's value is in surfacing structure to a competent reader, not in interpretation.
+4. **The agent must be domain-competent.** A novice reading the same output would not have known that "no path from viscosity to the threshold wall" was a structural integrity signal rather than a bug. The pattern surfaces structure to a competent reader; it does not interpret.
 
 ---
 
@@ -104,7 +104,7 @@ The substrate-specific work is the graph extraction and the plumbing filter. The
 
 ## Extension: from descriptive to predictive / comparative / interventional
 
-The base pattern is descriptive, it produces a snapshot ranking and asks the agent to update beliefs from it. Five extensions move the apparatus along orthogonal axes that compose with the base. Each maps to a v5 universal-vocabulary core op as the operational instantiation:
+The base pattern is descriptive, it produces a snapshot ranking and asks the agent to update beliefs from it. The following extensions add orthogonal capabilities that compose with the base. Each maps to a v5 universal-vocabulary core op as the operational instantiation:
 
 | Extension | Frame shift | core op | Validated finding (NS Track B, 2026-05-05) |
 |---|---|---|---|
@@ -116,7 +116,7 @@ The base pattern is descriptive, it produces a snapshot ranking and asks the age
 | **F-row mention trajectory** | static graph → comparative-across-time | core_03 + core_06 | **Meta-diagnostic:** 16 of 25 top-composite quantities are NEVER mentioned in 267 F-rows. Either F-rows use different aliases, or this is a "silent ledger" zone, central in the proof, invisible in the experimental log |
 | **Workmap-graph linkage** | diagnostic → recommendation | core_06 (Cross-Domain Translation) | The `S.payoffLimit / S.priceLimit` chokepoint is the closure target for three open obligations (`LeraySelfTaxProfilePriceStream`, `CountablePricingStream`, `LPBeatBackscatterChargeStream`), but it's only 50%-robust per ensemble, so workmap recommendations are pegged to a noise-sensitive chokepoint |
 
-Each extension is independent CPU-feasible work; together they take the apparatus from "describe what's there" to "describe + validate + predict + recommend + retract."
+Each extension is independent CPU-feasible work; together they extend the apparatus from "describe what's there" to "describe + validate + predict + recommend + retract."
 
 ---
 
@@ -124,13 +124,13 @@ Each extension is independent CPU-feasible work; together they take the apparatu
 
 5. **Robustness ensembles retroactively retract findings.** Without random-edge-dropout testing, the base pattern's belief updates are conditional on the extracted graph being noise-free, which it isn't. A robustness pass either confirms a finding (≥90% appearance across runs) or strips its central claim. This is the canonical-form (core_05) test applied to the apparatus's own outputs.
 
-6. **Link prediction converts the apparatus from observatory to oracle.** The Adamic-Adar baseline produces falsifiable predictions ("there should be an inequality between X and Y") at zero GPU cost. Each prediction is testable by the proof author. Win-rate becomes a direct measure of apparatus utility, something the descriptive methods never expose. A strong example: `leraySelfTaxLimitPrice ↔ continuumGlobalSelfTaxTarget` was predicted as missing, promoted to an explicit theorem-level bridge, and then disappeared from the missing-edge list after graph regeneration.
+6. **Link prediction adds falsifiable predictions to the descriptive output.** The Adamic-Adar baseline produces predictions ("there should be an inequality between X and Y") at zero GPU cost. Each prediction is testable by the proof author. Win-rate is a direct measure of utility that the descriptive methods do not expose. Example: `leraySelfTaxLimitPrice ↔ continuumGlobalSelfTaxTarget` was predicted as missing, promoted to an explicit theorem-level bridge, and then disappeared from the missing-edge list after graph regeneration.
 
 7. **Role typology generalizes; rankings don't.** A list of 580 numbered nodes is substrate-specific. Six role labels (central core, ledger transit, peripheral fringe, architectural seam, etc.) transfer to any constraint-basin graph. The typology IS the universal vocabulary instantiation at the structural-role level.
 
 8. **F-row trajectory exposes apparatus blind spots.** When the graph elevates quantities the experimental log never names, one of two things is true: the log is using outdated terminology (calibration problem) or the apparatus and the agent have genuinely diverged on what matters (epistemic problem). Both are findings; the static graph alone hides them.
 
-9. **The cross-method retraction is a hallmark of working apparatus.** The pattern produced a brittle-bridge claim, then produced its own correction under robustness testing and parser hardening. An apparatus that ONLY produces affirmations is suspect, a working apparatus should also produce its own corrections under sufficient testing.
+9. **The apparatus corrects its own claims under further testing.** The pattern produced a brittle-bridge claim, then produced its own correction under robustness testing and parser hardening. An apparatus that only produces affirmations is suspect; one that also retracts under further testing is more credible.
 
 ---
 
@@ -169,7 +169,7 @@ Two-tier honest assessment after a full day of apparatus + GPU experiments:
 
 **Sharper frame after v3 → closure-utility test (2026-05-06):** the apparatus is good at *rediscovering structurally-likely edges*, but in a near-finished proof spine those edges are already proven. **Predictive accuracy ≠ closure utility.** The GNN's top-K novel predictions tend to be either (a) plumbing/under-resolved quantities with AA=0 (apparatus filter bug per Codex's regex fix), or (b) real spine edges already covered by existing theorems. Neither generates a missing closure theorem. Codex's redirect to direct profile/Lipschitz obligation hardening is the right response.
 
-**Closure-utility verdict locked in (2026-05-06, Codex panel marking, n=22):** the LLM novelty probe produced different *slogans* (0% theorem-name overlap with standard prompt) but **0% novelty rate** when type-checked against the actual Lean spine. Every novelty-prompted nomination either restated existing theorems with new names, referenced under-resolved/wrong-typed identifiers, or proposed dimensionally-incoherent bounds. **Aggregate novelty rate: 0/22 = confirmation theater.** The novelty-prompt layer is a useful FALSIFIER of the LLM/GNN apparatus's surprise claims, not proof progress. The apparatus surfaces what the spine already contains; it does not generate missing closure theorems. **For theorem discovery this batch was 0-1x, not 10-100x.** The honest closure-utility ceiling at this graph scale, with this LLM/GNN pipeline, is descriptive, Codex's manual obligation hardening remains the central path.
+**Closure-utility verdict locked in (2026-05-06, Codex panel marking, n=22):** the LLM novelty probe produced different *slogans* (0% theorem-name overlap with standard prompt) but **0% novelty rate** when type-checked against the actual Lean spine. Every novelty-prompted nomination either restated existing theorems with new names, referenced under-resolved/wrong-typed identifiers, or proposed dimensionally-incoherent bounds. **Aggregate novelty rate: 0/22.** The novelty-prompt layer falsifies the LLM/GNN apparatus's surprise claims; it does not produce proof progress. The apparatus surfaces what the spine already contains; it does not generate missing closure theorems. **For theorem discovery this batch was 0-1x, not 10-100x.** The closure-utility ceiling at this graph scale, with this LLM/GNN pipeline, is descriptive; Codex's manual obligation hardening remains the central path.
 
 **Sharper failure-mode diagnosis (Codex, 2026-05-06):** "Zero overlap" only means the prompt changed the *slogans*; it does not mean the prompt found usable math. The concrete failure modes:
 
@@ -214,11 +214,11 @@ Two-tier honest assessment after a full day of apparatus + GPU experiments:
 
 ---
 
-## What 100x would still require
+## What the 100x target would require
 
 The remaining unimplemented extension is **GNN-based link prediction** trained on the F-row trajectory of constraint-graph snapshots. Adamic-Adar gives a baseline; a graph neural network conditioned on the temporal evolution would in principle exceed it because it can learn substrate-specific structural priors. This requires:
 - GPU compute (single A10 / equivalent)
 - A sequence of constraint-graph snapshots (currently blocked by sparse git history; F-row-derived snapshots are the workaround)
 - A held-out evaluation on Lean theorems added after some training cutoff
 
-This is the genuine 100x bet. The 10x extensions in this document are CPU-feasible scaffolding for it: they establish the baseline (Adamic-Adar), the validation protocol (robustness ensemble), and the typology (role clustering) that any GNN approach must improve upon. The pattern is intentionally GPU-optional at the 10x level, all four shipped extensions ran in under five CPU-minutes total on the validated NS instance.
+This is the untested high-leverage bet. The 10x extensions in this document are CPU-feasible scaffolding for it: they establish the baseline (Adamic-Adar), the validation protocol (robustness ensemble), and the typology (role clustering) that any GNN approach must improve upon. The pattern is GPU-optional at the 10x level; all four shipped extensions ran in under five CPU-minutes total on the validated NS instance.

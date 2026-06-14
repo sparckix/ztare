@@ -49,8 +49,10 @@ demotion, a source-blocked state, or a next falsifier.
 
 ## Missing Upgrade
 
-The next upgrade is a validator for public claim packets. It should fail if a
-public claim lacks:
+The current packet checker validates curated claim cards for the minimum public
+fields. The next upgrade is broader: normalize project `public/CLAIM_SUMMARY.md`
+files or add sidecar rows so the checker can fail if any public project claim
+lacks:
 
 - scoped claim;
 - evidence level or status;
@@ -61,4 +63,3 @@ public claim lacks:
 
 This belongs in docs/tooling and can validate project summaries in place. It
 does not require creating a new `projects/` experiment.
-

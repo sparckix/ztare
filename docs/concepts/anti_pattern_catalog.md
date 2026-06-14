@@ -2,7 +2,7 @@
 description: "Mining-derived catalogue of epistemic failure modes with cross-LLM validation."
 ---
 
-# Anti-Pattern Catalog, Mining-Derived Epistemic Discipline
+# Anti-Pattern Catalog, Mining-Derived
 
 > **Up:** [Documentation map](../README.md)
 
@@ -16,7 +16,7 @@ description: "Mining-derived catalogue of epistemic failure modes with cross-LLM
 >
 > **Key implication:** the `"ceilingbreaker"` and `"both"` modes of `inject_antipattern_catalog` inject class-labels that different LLMs would assign differently. Operators should treat those modes as EXPERIMENTAL, not validated. Use `"hardkill"` mode by default. Full audit: `analytics/queries/cross_provider_classifier_agreement_2026-04-24.json`.
 >
-> **2026-04-24 SUPER-CLASS COLLAPSE TEST (GP-151 §5.4):** same 100-record sample, labels collapsed from 15 classes to 3 super-classes (`structural_blocker` / `ceiling_breaker` / `other`). Three-way agreement jumps 48% → 75% (below the 90% gate for live adoption). Per-super-class stability: `ceiling_breaker` 72.2%, `structural_blocker` 28.6%. **Verdict: observability-only, do not adopt live super-class routing.** Task 12 stagnation-reset on fine-grained regex labels remains live because regex is deterministic within-session. See `GP-151 (internal seam)` §8.
+> **2026-04-24 SUPER-CLASS COLLAPSE TEST ([GP-151](../../research_areas/seams/engine/diagnostics/GP-151_classifier_telemetry_downgrade_seam.md) §5.4):** same 100-record sample, labels collapsed from 15 classes to 3 super-classes (`structural_blocker` / `ceiling_breaker` / `other`). Three-way agreement jumps 48% → 75% (below the 90% gate for live adoption). Per-super-class stability: `ceiling_breaker` 72.2%, `structural_blocker` 28.6%. **Verdict: observability-only, do not adopt live super-class routing.** Task 12 stagnation-reset on fine-grained regex labels remains live because regex is deterministic within-session. See `GP-151 (internal seam)` §8.
 >
 > **2026-06-02 STRONG-MODEL RETEST (better design):** the 2026-04-24 run used weak models (gpt-4.1-mini / haiku / flash-lite). Re-ran on the same records with a sharp 2-stage super-class prompt and STRONG cross-family raters routed correctly (deepseek via API; codex-GPT + claude via subscription CLI), each gated by a positive control. n=50, 3 raters: 3-way super-class agreement **70%**, but the two **frontier raters agree substantially: codex↔claude κ=0.72** (deepseek is the divergent/weaker rater, κ≈0.50 vs each). Diagnosis of the residual: the disagreements are **principled, not noise** — ~25% of critiques are genuinely **dual** (an unsupported assumption that ALSO overclaims scope; a missing mechanism that IS a scope limitation), so a forced single dominant label caps agreement. **Net: the original FINE 15-class failure was over-granularity (stands); the ceiling-breaker SUPER-CLASS is substantially reliable between strong raters (κ=0.72); the right fix is MULTI-LABEL (a critique can be both structural and ceiling), not a finer single-label taxonomy.** Script: `scripts/public/mining/research_mode/ceiling_breaker_retest.py`; data: `analytics/public/queries/classification/ceiling_breaker_retest_2026-06-02.json`.
 
@@ -161,7 +161,7 @@ Empirical signature: `farther tail`, `asymptot`, `beyond training`, `large-N beh
 
 High-score frequency: 8.2%.
 
-Engagement protocol: declare the evidence envelope explicitly. Declare the asymptotic regime (if any). If the thesis extrapolates, name the specific asymptotic-scaling assumption, its source, and the observation that would falsify it in the far-tail. The topological pivot library does NOT help this class (pivot effectiveness = −0.7 mean Δ); evidence-level engagement is mandatory.
+Engagement protocol: declare the evidence envelope explicitly. Declare the asymptotic regime (if any). If the thesis extrapolates, name the specific asymptotic-scaling assumption, its source, and the observation that would falsify it in the far-tail. The structural-pivot library does NOT help this class (pivot effectiveness = -0.7 mean delta); evidence-level engagement is mandatory.
 
 ---
 
@@ -189,7 +189,7 @@ Default: false. Opt-in per project rubric. Existing projects unaffected.
 
 **Why this split matters (data):** stratified analysis across 4 judge families shows that all 7 structural-blocker classes have lift=0.00 across every tested judge (universally bad). But `missing_mechanism` has lift 0.84 under gpt-4.1 (negative signal) vs. 2.43 under o3 (positive signal), direction flips. Injecting a universal ceiling-breaker catalog would give the o3-mutator+gpt-4.1-judge pipeline MISALIGNED guidance on those classes. Only Part 1 is safe to inject regardless of judge choice.
 
-### Validation plan (Popper pre-registration, per GP-149 §9)
+### Validation plan (Popper pre-registration, per [GP-149](../../research_areas/seams/engine/diagnostics/GP-149_failure_taxonomy_hardening_primitives_seam.md) §9)
 
 If this catalog is effective on opted-in projects:
 - `missing_mechanism` frequency in weakest-points drops by ≥30%.
@@ -264,7 +264,7 @@ These heuristics are extracted from runtime trajectories, not the initial corpus
 
 **Pattern:** Loop control kills a productive run via stagnation counter when the mutator is actually exploring distinct critique classes, not repeating itself.
 
-**Source:** gp150, run-1 killed at iter 8 (stagnation_count 4) because `underidentified_after` defaulted to 3 in the generated rubric. But GP-148 corpus mining shows champions typically need 20+ iterations of grinding through different critique classes. The loop control contradicted the chassis's own mining findings.
+**Source:** gp150, run-1 killed at iter 8 (stagnation_count 4) because `underidentified_after` defaulted to 3 in the generated rubric. But [GP-148](../../research_areas/seams/engine/discovery/GP-148_void_mining_seam.md) corpus mining shows champions typically need 20+ iterations of grinding through different critique classes. The loop control contradicted the chassis's own mining findings.
 
 **Avoidance:** Track "number of distinct critique classes encountered" separately from "number of iterations without score improvement." A run cycling through 3 critique classes for 10 iterations (true stagnation) is worse than one bouncing through 7 distinct classes in 8 iterations (healthy exploration). Rubric should set `underidentified_after` to at least 6 for self-auditing substrates.
 
@@ -344,7 +344,7 @@ The 10× threshold has no derivation; it's a round number chosen to look approxi
 
 ### RH-13: Categorical-as-Continuous Smuggle
 
-**Pattern:** When the substrate exposes a categorical predictor (modality, architecture, study, fit-convention), the mutator hashes the string to an integer and applies continuous math (log, division, polynomial) to that integer. The distance between hash("L") and hash("V") has no physical meaning, the geometry of the input manifold is destroyed before the solver boots.
+**Pattern:** When the substrate exposes a categorical predictor (modality, architecture, study, fit-convention), the mutator hashes the string to an integer and applies continuous math (log, division, polynomial) to that integer. The distance between hash("L") and hash("V") has no physical meaning, so the input's structure is meaningless before any math runs on it.
 
 **Source:** gp154 iters 5, 8, 11, 12, 13 (2026-04-24). Across multiple iters the o3 mutator wrote `numeric_code(d)` helpers that mapped {"L", "V", "M", ...} to {0, 1, 2, ...}, then applied `log(d)` and `1/d`. The judge correctly identified this every time as "a fundamental data-type error... mapping categorical variables to a continuous integer index, and then applying continuous mathematical functions". Harness then crashed with IndexError / ZeroDivisionError because the hashing was uneven. Score 0 every iter.
 

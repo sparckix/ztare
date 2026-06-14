@@ -5,7 +5,7 @@ description: "Why recursive self-improvement here is mining-mediated rather than
 
 > **Up:** [Documentation map](../README.md)
 
-## The realization
+## Where recursive gain actually lives
 
 Recursive self-improvement, the loop that lets a research apparatus get
 better at its own job, was originally implemented inside ZTARE's iter
@@ -18,18 +18,17 @@ loop. As the project matured, most of the actual research work shifted
 to **Research Director agents** working on substrates (Navier-Stokes
 proof search, modified gravity, consciousness theory, Fermi-paradox
 discriminators) **outside** the ZTARE iter loop. The original ZTARE-on-
-ZTARE seam went mostly dormant. The natural conclusion: recursive gain
-also went dormant.
+ZTARE seam went mostly dormant, which made it look like recursive gain
+had gone dormant too.
 
-The 2026-05-06 realization breaks that conclusion. **It doesn't matter
-which agent does the work.** As long as the work hits the apparatus's
-data ecosystem (F-rows, project workspaces, seams, papers, verified-
-axioms ledgers), the mining layer harvests it; the harvested signals
-can feed back into apparatus refinement. Recursive gain doesn't require
-in-loop evaluation, it requires **mining-mediated evidence flowing
-back to apparatus state**.
+It hasn't. It doesn't matter which agent does the work. As long as the
+work hits the apparatus's data ecosystem (F-rows, project workspaces,
+seams, papers, verified-axioms ledgers), the mining layer harvests it,
+and the harvested signals can feed back into apparatus refinement.
+Recursive gain doesn't require in-loop evaluation; it requires
+mining-mediated evidence flowing back to apparatus state.
 
-## Why this is central
+## Three consequences
 
 Three implications:
 
@@ -43,7 +42,7 @@ capability does not depend on which agent did the typing.
 
 ### 2. Mining is the new ZTARE-iter
 
-The mining infrastructure built around GP-227 (`mine_trajectory_curves`,
+The mining infrastructure built around [GP-227](../../research_areas/seams/reflexive/GP-227_apparatus_sophistication_vs_insight_curve.md) (`mine_trajectory_curves`,
 `mine_reference_graph`, `sample_artifacts_for_taste`,
 `mine_recursive_gain_candidates`) plus the trajectory dashboard
 constitutes one full revolution of a recursive-gain cycle:
@@ -67,15 +66,14 @@ rubric scores against evidence drawn from the mining outputs; survivors
 are operator-reviewed before promotion. The substrate grows weekly
 because the corpus grows weekly.
 
-This is the strange loop closing: the apparatus evaluates the
-apparatus's own ecosystem of work, regardless of which sub-agent did
-which piece of that work.
+The result is that the apparatus evaluates its own ecosystem of work,
+regardless of which sub-agent did which piece of that work.
 
-## Operator-First Correction
+## Choosing the unit of agency
 
-A FinanceOS browser-import failure exposed a stronger version of the agent-agnostic thesis. The important question is not only whether work compounds regardless of which agent authored the artifact. It is whether the human-AI pair has chosen the right *unit of agency* for the task.
+A FinanceOS browser-import failure showed a second axis to the agent-agnostic thesis. The question is not only whether work compounds regardless of which agent authored the artifact. It is whether the human-AI pair has chosen the right *unit of agency* for the task.
 
-In that episode, the pair spent hours improving a narrow browser controller: compressed DOM prompts, action schemas, state-machine guards, progress copy, telemetry, and replay checks. Those fixes were locally rational inside the assumed frame. But a Codex-style tool-using agent attached to the same live browser session completed the import in minutes by inspecting the page, probing the runtime, diagnosing the blob download path, verifying bytes, and adapting strategy. The failure was not simply model weakness. It was a symbiotic framing failure: the human and AI jointly optimized a controller when the task needed an operator.
+In that episode, the pair spent hours improving a narrow browser controller: compressed DOM prompts, action schemas, state-machine guards, progress copy, telemetry, and replay checks. Those fixes were locally rational inside the assumed frame. But a Codex-style tool-using agent attached to the same live browser session completed the import in minutes by inspecting the page, probing the runtime, diagnosing the blob download path, verifying bytes, and adapting strategy. The failure was not simply model weakness. The human and AI jointly optimized a controller when the task needed an operator.
 
 This adds a new rule to recursive-gain architecture:
 
@@ -93,7 +91,7 @@ The ZTARE boundary becomes sharper:
 - RAG/memory should retrieve prior traces and failure families for the agentic operator; it should not be mistaken for agency.
 - Successful operator traces are the raw material from which future ZTARE primitives are distilled.
 
-This is not an argument against ZTARE. It is an argument against using ZTARE-shaped controllers before the task has earned that shape. The apparatus should mechanize what has become stable, not amputate the operator in order to appear rigorous. The workbench therefore has two legitimate modes: agentic-operator-first exploration for live unknown systems, and controller/gate-first execution once the evaluation surface is stable. The human operator still owns accountability for promotion, publication, and strategic direction.
+This is not an argument against ZTARE. It is an argument against using ZTARE-shaped controllers before the task has earned that shape. Mechanize what has become stable; keep an operator on what hasn't. The workbench therefore has two legitimate modes: agentic-operator-first exploration for live unknown systems, and controller/gate-first execution once the evaluation surface is stable. The human operator still owns accountability for promotion, publication, and strategic direction.
 
 ## Lab-Scale Training Flywheel
 
@@ -146,7 +144,7 @@ For the operator:
     list of refinements you could ship. That replaces the implicit
     "what should I do this week" decision with an evidence-anchored
     candidate list.
-  - **The proposed expanded-scope ZTARE substrate in GP-134 is the next
+  - **The proposed expanded-scope ZTARE substrate in [GP-134](../../research_areas/seams/apparatus/instrumentation/GP-134_prompt_layer_contamination_incident_seam.md) is the next
     architectural step.** Replaces "operator
     hand-picks from the candidate list" with "ZTARE iter loop selects
     under rubric discipline, operator reviews champions."
@@ -179,5 +177,5 @@ Concept-stage as of 2026-05-06. Has not yet been implemented as a v2
 ZTARE substrate. Two confirmation tests gate the build:
 
   1. Operator confirms the expanded-scope framing.
-  2. GP-227 dashboard used for 2+ weeks of operator-mediated
+  2. [GP-227](../../research_areas/seams/reflexive/GP-227_apparatus_sophistication_vs_insight_curve.md) dashboard used for 2+ weeks of operator-mediated
      refinement-shipping (baseline for ZTARE-vs-operator comparison).

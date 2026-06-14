@@ -16,8 +16,8 @@ Observed in this checkout on 2026-05-31:
 - `make smoke-public` passed.
 - `python -m pytest tests -q` failed during collection because some tests still
   import moved root-level scripts, including
-  `scripts/agent_daemon.py`, `scripts/validate_evidence.py`, and
-  `scripts/export_layered_knowledge_graph.py`.
+  `scripts/public/control/agent_daemon.py`, `scripts/validate_evidence.py`, and
+  `scripts/public/analytics_shared/export_layered_knowledge_graph.py`.
 - `make gates` passed after recalibrating publish-safety to the explicit
   external-review surface and fixing one seam metadata header.
 

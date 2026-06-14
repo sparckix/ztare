@@ -20,8 +20,7 @@ A weekly cadence: re-mine every artifact the project produced, score a
 de-biased sample for *insight density* (not volume), rebuild the dashboard,
 and read the week-over-week delta. The point is to separate **volume**
 (always rises) from **insight** (the thing recursive gain would actually
-move). The dashboard/website is part of the story: the architecture
-observing itself.
+move). The dashboard reports the same metrics the pipeline produces.
 
 ## 2. Canonical procedure (run in this order)
 

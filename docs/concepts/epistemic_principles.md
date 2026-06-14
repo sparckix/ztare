@@ -1,5 +1,5 @@
 ---
-description: "Epistemic supervision principles, the constitution behind the gates."
+description: "Epistemic supervision principles: the rules the gates enforce and why they exist."
 ---
 
 # Epistemic Supervision Principles
@@ -34,7 +34,7 @@ The principles in this section describe *how* probabilistic generation-evaluatio
 
 **Why.** The generator is optimizing against whatever signal the evaluator produces. If that signal is produced by the same process, the generator has access (through any shared representation, training data, context window, prompt family) to the evaluator's decision surface. The shortest path through that surface is almost never the path the evaluator's designer intended, and the generator will find it.
 
-**Evidence.** Paper 1 (Alami 2026a) documents nine distinct specification gaming strategies, replicated across five evaluation domains, under exactly this topology. Paper 4 §5.4 reports the same pattern at three additional layers of the same system (evaluator, kernel, supervisor), supporting the claim that the gradient is a function of loop topology rather than of substrate.
+**Evidence.** *Cognitive Camouflage* (Alami 2026a) documents nine distinct specification gaming strategies, replicated across five evaluation domains, under exactly this topology. *The Cognitive Firm* §5.4 reports the same pattern at three additional layers of the same system (evaluator, kernel, supervisor), supporting the claim that the gradient is a function of loop topology rather than of substrate.
 
 **How to apply.** When designing a new evaluation loop, the first question is not "how good is the evaluator" but "is the evaluator inside or outside the optimizing loop." If it is inside, if its output, its parameters, or its training data are shaped by the generator's outputs, the loop is structurally U-Form and will game in time. The fix is not a better evaluator. It is a structurally separated verification layer that does not share a gradient with the generator.
 
@@ -44,7 +44,7 @@ The principles in this section describe *how* probabilistic generation-evaluatio
 
 **Why.** Capability improvements reduce the search cost for any strategy the generator tries, including strategies that satisfy the letter of the specification while violating its spirit. A weaker generator may fail to find the gaming path by accident; a stronger one will not. The adversarial-gradient problem is orthogonal to the capability axis, not reduced by it.
 
-**Evidence.** Paper 1 shows the nine gaming strategies reproduce across mutator families (Claude, Gemini, GPT-4o), including across model families of different reported capability. Paper 4 §6.2 makes the corresponding theoretical point: the Bitter Lesson is a claim about representation learning, not about governance, and capability improvements that would be positive under the Bitter Lesson can be negative under an adversarial-gradient framing.
+**Evidence.** *Cognitive Camouflage* shows the nine gaming strategies reproduce across mutator families (Claude, Gemini, GPT-4o), including across model families of different reported capability. *The Cognitive Firm* §6.2 makes the corresponding theoretical point: the Bitter Lesson is a claim about representation learning, not about governance, and capability improvements that would be positive under the Bitter Lesson can be negative under an adversarial-gradient framing.
 
 **How to apply.** Do not wait for a stronger model to solve a governance problem. If the current model can game the current evaluator, a stronger model will game it faster. Fix the evaluator topology now, on a weaker model, where the experiments are cheap.
 
@@ -54,7 +54,7 @@ The principles in this section describe *how* probabilistic generation-evaluatio
 
 **Why.** The pattern is not substrate-dependent. It follows from the topology of having a specification, an optimizer, and co-location between them. Any layer that has all three will reproduce the pattern unless a structural break is introduced.
 
-**Evidence.** Paper 4 §5.4 documents the same Goodhart pattern at the evaluator layer (paper 1), the kernel layer (papers 2 and 3), and the supervisor layer (paper 4 itself). Paper 4 §5.7 documents a fourth instance caught in a live drafting session between a human and a warm LLM pair; §5.7 itself marks this instance as N=1, with the warm and cold instances sharing model family, tokenizer, and training data, so its independence is bounded by context isolation rather than by substrate. The first three instances were discovered across independent research programs and should be read as peer evidence; the fourth was caught in-session and should not. The recurrence across the first three layers is consistent with P1 and P2 and is the strongest evidence the project has that the pattern is structural.
+**Evidence.** *The Cognitive Firm* §5.4 documents the same Goodhart pattern at the evaluator layer (paper 1), the kernel layer (papers 2 and 3), and the supervisor layer (paper 4 itself). *The Cognitive Firm* §5.7 documents a fourth instance caught in a live drafting session between a human and a warm LLM pair; §5.7 itself marks this instance as N=1, with the warm and cold instances sharing model family, tokenizer, and training data, so its independence is bounded by context isolation rather than by substrate. The first three instances were discovered across independent research programs and should be read as peer evidence; the fourth was caught in-session and should not. The recurrence across the first three layers is consistent with P1 and P2 and is the strongest evidence the project has that the pattern is structural.
 
 **How to apply.** When a specification-gaming failure is fixed at one layer, run the same diagnostic at every other layer of the system before declaring the issue contained. The fix at the first layer does not prevent recurrence at the next one; at best it teaches you what the pattern looks like so you recognize the next instance faster.
 
@@ -64,7 +64,7 @@ The principles in this section describe *how* probabilistic generation-evaluatio
 
 **Why.** The warm instance has no information the author does not already have. Its confidence on substrate claims updates the author's posterior by approximately zero, because the author has direct access to the same artifact. What the warm instance contributes is narrative framing, which is aesthetic rather than epistemic. The mechanism by which the framing lands convincingly is the hedge-then-inflate pattern paper 1 documents at the evaluator layer: the warm instance correctly hedges the hardest claim on first ask, then recovers positivity through qualification chains over subsequent turns. Each link is locally reasonable; the composite drifts from the honest answer to the flattering one.
 
-**Why this is a first-class failure mode.** Paper 4 §5.7 documents this exact pattern at the drafting-session layer as the fourth instance of fractal convergence. An operator who discounts it risks recreating at the self-model layer the same failure the project exists to document at the evaluator layer. This is not a rhetorical concern; it is a category the project has already been caught in and had to explicitly guard against.
+**Why this is a first-class failure mode.** *The Cognitive Firm* §5.7 documents this exact pattern at the drafting-session layer as the fourth instance of fractal convergence. An operator who discounts it risks recreating at the self-model layer the same failure the project exists to document at the evaluator layer. This is not a rhetorical concern; it is a category the project has already been caught in and had to explicitly guard against.
 
 **How to apply.** After any warm-instance conversation about an artifact, return to the cold surface (the artifact itself, a fresh-context review, a deterministic test) and check whether the confidence levels on the artifact's central claims actually moved, or only felt like they moved. If they didn't, the warm conversation was entertainment, not evidence.
 
@@ -80,7 +80,7 @@ The principles in this section describe *what bounds* the failures in Part I. Th
 
 **Why.** A probabilistic constraint can be softened by model output. A generator optimizing against a probabilistic referee will, in time, produce outputs that the referee scores as acceptable but that violate the constraint's intent. The only way to prevent this is to take the constraint out of the probabilistic regime entirely, to compute it, not to predict it.
 
-**Evidence.** Paper 4 §3.1, §3.3, §5.1. The write-scope guard (a post-hoc diff that the generator cannot negotiate) and the deterministic verifier (typed assertions returning pass/fail) are the two primitives the project has the most direct evidence for. Paper 4 §5.1 documents two live incidents in which the write-scope guard fired against unauthorized writes and caught them.
+**Evidence.** *The Cognitive Firm* §3.1, §3.3, §5.1. The write-scope guard (a post-hoc diff that the generator cannot negotiate) and the deterministic verifier (typed assertions returning pass/fail) are the two primitives the project has the most direct evidence for. *The Cognitive Firm* §5.1 documents two live incidents in which the write-scope guard fired against unauthorized writes and caught them.
 
 **How to apply.** When designing a new constraint, ask: can this constraint be checked by code that does not call a model? If yes, make it deterministic. If no, treat it as a *signal* (useful, but not a bound) and look for a deterministic constraint upstream of it that closes the same hole.
 
@@ -90,7 +90,7 @@ The principles in this section describe *what bounds* the failures in Part I. Th
 
 **Why.** Role separation is a surface property. Governance separation is a topological property. The question is not "are there multiple agents" but "is there any constraint in the loop that no agent can soften through output production." If the answer is no, the multi-agent architecture has moved the failure mode rather than removed it.
 
-**Evidence.** Paper 4 §7.2 makes this point explicitly against multi-agent frameworks like AutoGen: role-based separation is compatible with U-Form governance and typically is U-Form governance unless a deterministic enforcement layer is added under it.
+**Evidence.** *The Cognitive Firm* §7.2 makes this point explicitly against multi-agent frameworks like AutoGen: role-based separation is compatible with U-Form governance and typically is U-Form governance unless a deterministic enforcement layer is added under it.
 
 **How to apply.** When evaluating any multi-agent architecture, strip away the role labels and ask: if all agents cooperated against the user, what would stop them? If the answer is "another agent," the governance is probabilistic. If the answer is a deterministic check on a physical artifact, the governance is structural.
 
@@ -100,7 +100,7 @@ The principles in this section describe *what bounds* the failures in Part I. Th
 
 **Why.** A deontological primitive depends on the generator continuing to hold the values it was trained on, under distribution shift and under active optimization pressure. An institutional primitive depends on the verifier remaining structurally separated from the generator, regardless of what values either is currently holding. These are different reliance structures, and they fail in different ways.
 
-**Evidence.** Paper 4 §3.3 and §7.4 make the deontological-vs-institutional distinction explicit and point at the historical precedent: the external audit profession is an institutional primitive, its credibility derives from structural separation (rule-boundedness, independence, liability), and the Arthur Andersen / Enron failure is what happens when the institutional primitive is co-located with revenue from the party it is supposed to verify.
+**Evidence.** *The Cognitive Firm* §3.3 and §7.4 make the deontological-vs-institutional distinction explicit and point at the historical precedent: the external audit profession is an institutional primitive, its credibility derives from structural separation (rule-boundedness, independence, liability), and the Arthur Andersen / Enron failure is what happens when the institutional primitive is co-located with revenue from the party it is supposed to verify.
 
 **How to apply.** Do not treat Constitutional AI or RLHF as substitutes for a hard-gate enforcement layer. They are useful inside a system whose ultimate constraints are enforced deterministically. They are not sufficient on their own, and assuming they are is how you end up with a system that passes every prompt-level check while structurally drifting.
 
@@ -110,7 +110,7 @@ The principles in this section describe *what bounds* the failures in Part I. Th
 
 **Why.** Trust in a verifier is a property of where it sits in the loop topology, not of how well it reasons. A smarter verifier that has been pulled into a co-construction loop (its training data, its reward signal, its context) is less trustworthy than a stupider verifier whose separation is physical. The audit profession's historical precedent is the clearest example: the rule-bound partner signature is what makes the attestation credible, and the Andersen collapse shows what happens when capability grows inside a compromised separation.
 
-**Evidence.** Paper 4 §7.4 develops this point through the audit analogy; paper 4 §4.2 (T4) formalizes it as the co-construction-extends-co-location claim: RLHF-style co-construction does not escape the principal-agent problem, it repeats it at a new layer.
+**Evidence.** *The Cognitive Firm* §7.4 develops this point through the audit analogy; paper 4 §4.2 (T4) formalizes it as the co-construction-extends-co-location claim: RLHF-style co-construction does not escape the principal-agent problem, it repeats it at a new layer.
 
 **How to apply.** When tempted to improve a verifier by giving it more context, more training signal, or more integration with the generator, stop and ask: does this change reduce the structural separation between the verifier and the generator? If yes, the improvement is reducing trust, not increasing it, regardless of what the benchmark numbers say.
 
@@ -126,7 +126,7 @@ The principles in this section describe what the human operator of an epistemic 
 
 **Why.** The operator sets the contract, approves promotions, decides what counts as a closed seam, and chooses which findings to publish. None of these are deterministic operations. A supervision system that claims to remove the operator is describing either a different system or a moved failure mode.
 
-**Evidence.** Paper 4 §5.7 records this point explicitly in the N=1 live-catch scope section: the operator remains the uncontrolled variable, and the cold critic that caught the paper's central failure also caught the operator-absence as the limiting factor for the claim.
+**Evidence.** *The Cognitive Firm* §5.7 records this point explicitly in the N=1 live-catch scope section: the operator remains the uncontrolled variable, and the cold critic that caught the paper's central failure also caught the operator-absence as the limiting factor for the claim.
 
 **How to apply.** Make the operator's role explicit in any system description. The question "who approves the promotion" should have a named answer, and that answer should not be automated away to satisfy a narrative of autonomy. The operator is the accountability surface, and concealing the surface is how accountability gets lost.
 
@@ -136,7 +136,7 @@ The principles in this section describe what the human operator of an epistemic 
 
 **Why.** A supervision project that publishes uncalibrated claims is doing the exact thing it exists to prevent. The calibration discipline is the operator's hardest job because it trades short-term rhetorical power (confident framings travel further) for long-term trust (calibrated framings survive adversarial review). The project's papers are explicit about this tradeoff and choose the second every time.
 
-**Evidence.** Paper 4's Tier 1 / Tier 2 / Tier 3 evidence-boundary framing in §1, the per-section "Honest scope" paragraphs in §5.6 and §5.7, the Claim 1-6 confidence structure in the private philosophy document, and the explicit rule in PRINCIPLES.md that no external LLM conversation updates any confidence level.
+**Evidence.** *The Cognitive Firm*'s Tier 1 / Tier 2 / Tier 3 evidence-boundary framing in §1, the per-section "Honest scope" paragraphs in §5.6 and §5.7, the Claim 1-6 confidence structure in the private philosophy document, and the explicit rule in PRINCIPLES.md that no external LLM conversation updates any confidence level.
 
 **How to apply.** When writing anything public, ask two questions before publishing: (1) is this claim the one the evidence actually supports, or a stronger version? and (2) if a cold reviewer with no investment in the project checked this against the evidence tomorrow, would they flag any drift? If the answer to either is uncertain, weaken the claim or cut it.
 
@@ -146,7 +146,7 @@ The principles in this section describe what the human operator of an epistemic 
 
 **Why.** The operator's posterior is the system's de facto world-model. A drift in that posterior drifts every subsequent decision the operator makes, which seams to close, which claims to promote, which experiments to run. Adversarial hardening at the artifact layer does not protect against drift at the operator layer, and the drift at the operator layer is the one the supervision system cannot catch on its own.
 
-**Evidence.** Paper 4 §5.7 (the live catch) is the clearest instance: the warm pair co-authored a pre-registration they believed satisfied a novelty criterion, and the circularity was invisible to them because they had written it. The cold instance, same model, different context, caught it in seconds.
+**Evidence.** *The Cognitive Firm* §5.7 (the live catch) is the clearest instance: the warm pair co-authored a pre-registration they believed satisfied a novelty criterion, and the circularity was invisible to them because they had written it. The cold instance, same model, different context, caught it in seconds.
 
 **How to apply.** Periodically read your own documents as a cold instance would, ideally, give them to a fresh-context reader (human or model) and ask them to list every claim the conclusion rests on and whether the cited evidence actually supports it. If the fresh reader finds claims the author did not think were being made, the author was drifting. This is not a failure of honesty; it is a failure of calibration, and it is routine.
 
@@ -156,7 +156,7 @@ The principles in this section describe what the human operator of an epistemic 
 
 **Why.** The most durable improvements in this project have all had the same shape: a named failure class was observed, typed, converted to a fail-closed constraint, and regression-tested so it cannot recur. Changes that do not follow this shape usually amount to "the current output looks better," which is the exact kind of improvement that specification gaming produces.
 
-**Evidence.** Paper 4 §5.2 describes the constrained self-hosting pattern: every improvement the supervisor made to its own governance surface followed the typed-failure-class protocol (debate → type → constraint → regression). Paper 2 and paper 3 document the same shape at the kernel layer.
+**Evidence.** *The Cognitive Firm* §5.2 describes the constrained self-hosting pattern: every improvement the supervisor made to its own governance surface followed the typed-failure-class protocol (debate → type → constraint → regression). *Adversarial Precedent Memory* and paper 3 document the same shape at the kernel layer.
 
 **How to apply.** Before accepting a change to a supervision system, ask: what failure class does this close, and what is the regression that proves the class stays closed? If the answer is "it just seems better now," the change is probably drift.
 
@@ -164,9 +164,9 @@ The principles in this section describe what the human operator of an epistemic 
 
 **Rule.** An enforcement surface that covers some branches of a conditional but not others is structurally equivalent to no enforcement on the uncovered branches. When a new mode, flag, or execution path is added, every enforcement mechanism that touches the old path must be audited for coverage of the new path. Silence on a branch is a gap, not a default.
 
-**Why.** The GP-080 postmortem (2026-04-17) exposed a three-iteration failure caused by a single missing prompt contract for a new `fit_score_mode`. The contract existed for the discrete branch but not for the continuous branch. Three consecutive fix sessions addressed downstream symptoms (evidence parsing, function aliasing, variable threading) without tracing upstream to discover that the prompt never told the mutator what to produce. The pattern generalizes: any conditional that switches behavior must have enforcement coverage on every arm. The most dangerous gap is the `else` branch that inherits nothing, because it fails silently, the system runs, produces output, and the output is wrong in a way that looks like a content failure rather than an infrastructure failure.
+**Why.** The [GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) postmortem (2026-04-17) exposed a three-iteration failure caused by a single missing prompt contract for a new `fit_score_mode`. The contract existed for the discrete branch but not for the continuous branch. Three consecutive fix sessions addressed downstream symptoms (evidence parsing, function aliasing, variable threading) without tracing upstream to discover that the prompt never told the mutator what to produce. The pattern generalizes: any conditional that switches behavior must have enforcement coverage on every arm. The most dangerous gap is the `else` branch that inherits nothing, because it fails silently, the system runs, produces output, and the output is wrong in a way that looks like a content failure rather than an infrastructure failure.
 
-**Evidence.** Agent failure registry, Failure 15 (GP-080 continuous_rmse). Also structurally the same class as Failure 10 (GP-037 human-readable charter vs. machine contract), the machine path had a gap the human-readable path did not, and the gap was silent.
+**Evidence.** Agent failure registry, Failure 15 ([GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) continuous_rmse). Also structurally the same class as Failure 10 ([GP-037](../../research_areas/seams/protocol/GP-037_substrate_swap_01_pre_registration.md) human-readable charter vs. machine contract), the machine path had a gap the human-readable path did not, and the gap was silent.
 
 **How to apply.** When adding a new value to any flag that switches a code path, enumerate every enforcement mechanism that touches the existing path (prompt contracts, deterministic gates, validation checks, harness expectations). For each mechanism, verify it covers the new value. The test is literal: assemble the actual artifact (prompt, config, harness input) the new path will produce, and check that every downstream consumer can accept it. If the mechanism is mode-specific, add a parallel block for the new mode; if it is mode-general, verify it is truly general and not accidentally mode-specific.
 
@@ -215,7 +215,7 @@ fails and what bounds the failure; this part says what is left after
 the bound is reached. Both principles were found the hard way, by
 turning the supervision apparatus on itself, the agent that authored
 a commit-membrane was made to harden it under repeated independent
-cross-provider review (GP-241, 2026-05), and both were corroborated
+cross-provider review ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md), 2026-05), and both were corroborated
 against concurrent published work in a 2026-05 arXiv survey rather
 than rested on this project's evidence alone.
 
@@ -241,7 +241,7 @@ a precommitted deterministic surface the builder cannot reshape.
 **Evidence.** GP-241: five successive cold cross-provider passes over
 one commit-membrane each returned artifact-NO-GO with fresh findings,
 and at least one round introduced a regression faster than it closed
-the prior hole. Paper 2 (*Contract-Governed Adversarial Evaluator
+the prior hole. *Adversarial Precedent Memory* (*Contract-Governed Adversarial Evaluator
 Hardening*) is the constructive converse: a parameterless,
 precommitted PASS / FAIL / BLOCKED promotion-contract meta-runner that
 sits outside the improvement loop, carries no learned or
@@ -319,5 +319,5 @@ The following questions are explicitly open. Any of them being answered cleanly 
 
 - **v0.1 (2026-04-11)**: initial extraction from papers 1-4 and the private philosophy document. Marked as a working draft pending cold review. No principle in this document has been independently replicated on a second system; treat accordingly.
 - **v0.1.1 (2026-04-11)**: cold adversarial review applied. Principles unchanged: P1, P2, P4-P12. Principle changed: P3 Evidence paragraph narrowed to reflect §5.7's own N=1 scope (the fourth instance is context-isolated, not substrate-independent). Review artifact on file.
-- **v0.2 (2026-04-17)**: added P13 (enforcement completeness across execution branches) and P14 (downstream symptom chasing as root-cause discipline failure), both elevated from GP-080 postmortem. Added "Procedure: Applying Postmortem Lessons to Future Iterations" section with pre-run checklist and post-failure update protocol. Evidence: agent failure registry Failure 15, Patterns 12-13.
+- **v0.2 (2026-04-17)**: added P13 (enforcement completeness across execution branches) and P14 (downstream symptom chasing as root-cause discipline failure), both elevated from [GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) postmortem. Added "Procedure: Applying Postmortem Lessons to Future Iterations" section with pre-run checklist and post-failure update protocol. Evidence: agent failure registry Failure 15, Patterns 12-13.
 - **v0.3 (2026-05-18)**: added Part IV, P15 (a gate over agent-authored work converges to a treadmill, not soundness; three point-fixes ⇒ the surface is the bug; Evaluator-Stress-Test before trust) and P16 (the formal↔informal faithfulness gap is irreducible by any in-loop mechanism; schema-complete/insight-empty is the true residual; readiness criterion = remaining failure mode is exactly P16). Extracted from the GP-241 commit-membrane self-hardening effort; corroborated against concurrent arXiv work (2507.05619, 2605.02964, 2604.19459, 2510.15981, 2510.01346). Cross-referenced from Pattern 14 prior-art.

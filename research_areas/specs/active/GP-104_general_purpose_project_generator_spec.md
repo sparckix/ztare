@@ -41,17 +41,17 @@ make generate-gp \
 
 ## Evidence Pipeline Architecture
 
-Qualitative projects have two evidence build paths. The generator scaffolds both:
+Qualitative projects have two evidence build lanes. The generator creates both:
 
-**Path A — Manual curation (small projects, curated evidence):**
+**Manual curation lane (small projects, curated evidence):**
 Operator writes `evidence.txt` directly. Suitable when evidence is already structured (e.g., hand-curated facts, analyst summaries).
 
-**Path B — Compile from raw documents (large projects, many sources):**
+**Compiled-evidence lane (large projects, many sources):**
 Operator dumps source documents into `projects/<slug>/raw/`, optionally types them via `source_type_map.json`, then runs `make evidence-compile PROJECT=<slug>` to produce `evidence.txt` via the LLM compiler. This is the Karpathy-wiki-inspired RAM layer: raw documents → compiled evidence brief → loop.
 
-The generator creates the scaffold for both paths. The operator chooses which to use based on their evidence situation. The `make evidence-fetch` target can additionally fetch web sources into `raw/` before the compile step.
+The generator creates both lanes. The operator chooses which to use based on their evidence situation. The `make evidence-fetch` target can additionally fetch web sources into `raw/` before the compile step.
 
-**Compile flow (Path B):**
+**Compiled-evidence flow:**
 ```bash
 # Drop documents into raw/
 cp my_report.pdf projects/<slug>/raw/
@@ -67,8 +67,8 @@ make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
 
 ```
 projects/<PROJECT>/
-    evidence.txt           # blank with instructional header (Path A starting point)
-    raw/                   # empty directory for raw source documents (Path B)
+    evidence.txt           # blank with instructional header for manual curation
+    raw/                   # empty directory for raw source documents
     raw/source_type_map.json   # blank type map for evidence compiler
     thesis.md              # template with neutral seed thesis
     project_charter.md     # auto-drafted from BRIEF

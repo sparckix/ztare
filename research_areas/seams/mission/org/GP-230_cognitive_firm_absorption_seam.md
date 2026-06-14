@@ -109,3 +109,34 @@ real validated field pilot.
 
 Verdict: open. O1-O3 are being pulled forward now at operator request; O4-O5
 are strategy decisions held pending the validating pilot.
+
+## 2026-06-09 competitive-landscape reconciliation
+
+Status update: the public cognitive-firm repo now has a canonical positioning
+page at `docs/system-positioning.md`. That page should own public framing
+against LangGraph, CrewAI, AutoGen, Letta, Google ADK, Microsoft Agent
+Framework, SaaS automation, and observability tools.
+
+Boundary decision:
+- Public docs may compare by category and capability boundary.
+- This seam continues to own named prior-art absorption decisions and
+  threat-model verdicts.
+- Do not duplicate a second public landscape table inside ZTARE. Link to the
+  cognitive-firm page when public positioning is needed.
+
+Current competitive thesis:
+- cognitive-firm should not compete on graph execution, model inference,
+  prompt orchestration, runtime memory, tracing dashboards, connector catalogs,
+  or enterprise IAM administration.
+- Its edge is typed organizational authority, human work as state, obligation
+  lifecycle, machine provenance, accountable closure, and durable learning.
+- The implementation roadmap is adapter-first: LangGraph interrupt-to-A2H,
+  then thin lifecycle projections for CrewAI, AutoGen / Microsoft Agent
+  Framework, Letta, and Google ADK.
+
+Open cleanup:
+- The rubric still references C1-C6 while this seam enumerates C1-C5 plus the
+  OS-path axis. Either add an explicit C6 or revise the rubric anchors before
+  re-running the GP-230 substrate.
+- Reconcile shipped cognitive-firm features against C1-C5 so this seam records
+  which prior-art properties were absorbed, rejected, or deferred.

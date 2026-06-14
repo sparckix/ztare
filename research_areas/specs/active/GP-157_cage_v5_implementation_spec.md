@@ -6,8 +6,8 @@ summary: v5.0 implementation spec; Phase 1-3b shipped, Phase 3c-6 in flight
 
 # GP-157 — Cage Orchestrator v5.0 Implementation Spec
 
-**Status**: READY-FOR-IMPLEMENTATION (consolidated from gp158 audit champion 77 + lower-score nuggets + 2026-04-25 evening empirical findings)
-**Date**: 2026-04-25 night
+**Status**: READY-FOR-IMPLEMENTATION (consolidated from gp158 audit champion 77 + lower-score nuggets + 2026-04-25 empirical findings)
+**Date**: 2026-04-25
 **Supersedes**: `GP-157_cage_orchestrator_substrate_agnostic_dispatch.md` seam (still authoritative for design rationale; this doc is the implementation contract)
 
 ## 1. Authority and dependencies
@@ -404,14 +404,14 @@ The 4-phase plan becomes:
   Phase 4a ✅ IterContext dataclass (Hickey decomplecting target, 9 tests)
   Phase 4b ✅ orchestrator/telemetry.py (CageEngagementRecord + JSONL primitives, 8 tests)
   Phase 4c ✅ orchestrator/state.py (CageRuntime + mode resolution, 13 tests)
-  Phase 4d ✅ orchestrator/prompt.py (substrate-contract-hint, 31 tests, NARROWED 2026-04-25 night to {nd_features} only) — fixes gp159 mutator-empty-Python; adds Contract C (scalar 1D) hint + verify_class_consistency_with_substrate to lock the gp159 wrong-class regression
-  Phase 4e ⏳ orchestrator/parallel_mutator.py SKELETON shipped (18 tests) — pull-forward of GP-060 design + Gemini Pro MCTS framing. NOT YET WIRED — autoresearch_loop unchanged. Wire-in deferred per Linus atomic-commit discipline + cost concern (K× spend per iter; opt-in only).
+  Phase 4d ✅ orchestrator/prompt.py (substrate-contract-hint, 31 tests, narrowed on 2026-04-25 to {nd_features} only) — fixes gp159 mutator-empty-Python; adds Contract C (scalar 1D) hint + verify_class_consistency_with_substrate to lock the gp159 wrong-class regression
+  Phase 4e ✅ orchestrator/parallel_mutator.py worker pool shipped and wired through `orchestrator/blitz_dispatch.py`; fan-out remains rubric/stagnation gated (`parallel_mutator_k`, force flags, and stagnation threshold). K=1 is the ordinary single-mutator path.
   Phase 4f ✅ orchestrator/contract_adherence.py (18 tests) — adherence telemetry per operator concern that hint may be ignored amid ~15 prompt sections. JSONL emit per iter to workspace/contract_violations.jsonl.
   Phase 4g ⏳ orchestrator/main.py + dispatch.py + r1_retry.py (full modular split — pending stability soak)
   L1 ✅ typed-contract foundation: contract_table.py (SubstrateABI enum + ContractSpec dataclass + CONTRACT_REGISTRY) + protocols.py (PEP 544 ScalarModel/FeatureModel + adapt() boundary validator + ContractError) + render_evidence_template.py (auto-generate evidence.txt §D from ContractSpec — single source of truth for the test_model.py shape, eliminates the 5-source-contradiction failure mode by construction). 29 tests. Per Task #67 panel verdict.
   L70 ✅ Phase 2 wire-in AUTHORITATIVE: autoresearch_loop's fit dispatch routes through FitEngine.select_adapter(substrate, candidate). OneDFitEngine.fit + FeatureVectorFitEngine.fit return native FitSuccess|FitFailure for downstream isinstance compat. Legacy direct fit_parameters() call retained as safety-net fallback only when no adapter matches (closed_form_constant, proof_target). JSONL telemetry to workspace/fit_engine_dispatch.jsonl per fit. After full substrate-class coverage, fallback removes.
 
-### Panel Failure-Mode Closure (Tasks #72-74, plus follow-on wires) — 2026-04-25 night
+### Panel Failure-Mode Closure (Tasks #72-74, plus follow-on wires) — 2026-04-25
 
 Per Gemini Pro panel review on Ada-style typed contracts + four failure-mode inversion. Concrete closures shipped:
 

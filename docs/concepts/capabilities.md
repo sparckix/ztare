@@ -29,7 +29,7 @@ tools).
 
 ## 1. The architectural stack
 
-### Cage Orchestrator (GP-157) — top-level substrate dispatcher
+### Cage Orchestrator ([GP-157](../../research_areas/seams/apparatus/cage/GP-157_R10_R16_backport_scoping_2026_05_06.md)) — top-level substrate dispatcher
 
 Sits above every constraint layer below. Reads `substrate.meta['class']`,
 queries each gate's `can_handle()` predicate, and runs gates in a
@@ -42,15 +42,14 @@ substrate class: `off` / `observe` / `authoritative`. Lives in
 and the symbolic-logic dispatcher
 [`src/ztare/gates/symbolic_logic_cage.py`](../../src/ztare/gates/symbolic_logic_cage.py).
 
-### Statistical meta-diagnostics (GP-166) — pre-loop substrate classification
+### Statistical meta-diagnostics ([GP-166](../../research_areas/seams/mission/meta/GP-166_self_enacted_procedural_compliance_seam.md)) — pre-loop substrate classification
 
 Runs *before* the first iteration. A noise-profile classifier probes
 the substrate for heteroscedasticity, non-Gaussian residuals,
 autocorrelation, and errors-in-X, and *auto-routes* the solver
 configuration (fit-score mode, grammar tier, gate-DAG order) before any
-mutator call. The point is that the apparatus does not assume the
-operator got the data epistemology right — it measures it.
-Implementation at
+mutator call. The substrate's data epistemology is measured rather than
+assumed from operator input. Implementation at
 [`src/ztare/diagnostics/noise_profile.py`](../../src/ztare/diagnostics/noise_profile.py)
 with companion substrate critic at
 [`src/ztare/diagnostics/substrate_critic.py`](../../src/ztare/diagnostics/substrate_critic.py).
@@ -80,11 +79,10 @@ takes one of: `eml_only` (only the EML primitive `eml(x, y) = exp(x) − ln(y)`
 plus arithmetic), `math_exp_only` (arithmetic + `math.exp`), `math_exp_trig`
 (adds `math.sin`/`math.cos`/`math.tan`), `py_exec` (sandboxed Python with
 authorised primitives like `isprime`, `factorint`, `primefactors`, `divisors`,
-`gcd`), or `omit`. EML is the canonical "single composite primitive" used in
-the Planck-sandbox vocabulary-escape calibration: by giving the mutator one
-fused exp/ln operator, the apparatus forces *categorical* invention (the
-mutator must build composites *out of* the primitive) rather than vocabulary
-drift. `py_exec` is gated by an explicit `py_exec_authorized_by` rubric flag
+`gcd`), or `omit`. EML is the single composite primitive used in
+the Planck-sandbox vocabulary-escape calibration: giving the mutator one
+fused exp/ln operator forces it to build composites *out of* the primitive
+rather than drift through vocabulary. `py_exec` is gated by an explicit `py_exec_authorized_by` rubric flag
 plus an `expression_byte_budget` ceiling, enforced fail-closed at
 rubric-preflight.
 
@@ -101,8 +99,8 @@ strips overparameterised surrogates:
   power-law exponents.
 - **Stage 2** activates only when Stage 1 returns no gate-passing form: 13
   depth-1 compositional templates such as `√(n / ln n)` (which is how the
-  Vaughan prime-partition form was first reached). Component D seed
-  selection uses BIC sort + topology diversification so the next iteration
+  Vaughan prime-partition form was first reached). Synthesizer seed
+  selection uses BIC sort + structural diversity so the next iteration
   is not trapped in one family.
 - **Stage 2.5 (observable rotation)** applies monotonic transforms
   (`1/z`, `ln z`, `Δz`) when Stage 1 and Stage 2 both return no
@@ -110,54 +108,61 @@ strips overparameterised surrogates:
   representation. This is how the Ulam reciprocal compression
   (`n / U(n)`) was discovered without operator guidance.
 
-The fit-primitive-features path (GP-156 Proposal 3) writes
+The fit-primitive-features path ([GP-156](../../research_areas/specs/active/GP-156_apparatus_hardening_proposal.md) Proposal 3) writes
 `workspace/fit_features_result.json` with per-parameter init-range
 auto-escalation (5×, 25× widening on flat-desert) and substitutes the
 fitted `MODEL_PARAMS` into the in-memory `python_code` via AST rewrite —
 no disk round-trip during the substitution.
 
-### The Mutator Briefing (five providers)
+### The Mutator Briefing
 
-Before the mutator is called, a structured pre-prompt is assembled by five
-deterministic providers under
+Before the mutator is called, a structured pre-prompt is assembled by the
+deterministic provider registry under
 [`src/ztare/orchestrator/briefing_providers/`](../../src/ztare/orchestrator/briefing_providers/):
-**fit_telemetry**, **gate_gap**, **iter_trajectory**, **row_outliers**, and
-**asymptote_deviation**. Each provider writes its own section; the resulting
+contract rules, tried-and-failed negative memory, fit telemetry, gate gaps,
+per-class breakdowns, structural seeds, verifier context, and opt-in
+stagnation/debug lenses. Each provider writes its own section; the resulting
 `workspace/mutator_briefing_iter_NNN.md` is persisted per-iteration for
-operator audit, and adding a future provider is one file plus one line —
-not a redesign.
+operator audit. Adding a future provider is one file plus one registry line,
+not a prompt rewrite.
 
-### Component A (positive-space) and Component B (negative-space) extractors
+The tried-and-failed provider is the negative-memory channel for the in-loop
+workbench. It summarizes prior R1 rejection reasons, mutation-contract
+mismatches, fit failures, repeated non-improving weakest points, and projection
+constraints so the next mutator sees failed branches as reusable constraints
+rather than rediscovering them from a blank prompt.
+
+### Structural-presence and negative-space extractors
 
 Two structural extractors named for the side of the search space they read.
-**Component A** is the positive-space extractor (GP-061.A,
+The **structural-presence extractor** is the positive-space extractor ([GP-061](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md).A,
 [`src/ztare/gates/structural_constraint_extractor.py`](../../src/ztare/gates/structural_constraint_extractor.py)):
 it surfaces features that *are present* in the current evidence as candidates for the
-next form. **Component B** is the negative-space / void extractor
-(GP-061.B,
+next form. The **negative-space extractor** is the void extractor
+([GP-061](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md).B,
 [`src/ztare/gates/negative_space_extractor.py`](../../src/ztare/gates/negative_space_extractor.py)):
 it surfaces *what is structurally missing* — feature-bag gaps
-the mutator systematically avoids. Component B's canonical instance is the
+the mutator systematically avoids. Its canonical instance is the
 Planck-sandbox-08 post-mortem, where it mechanically surfaced
 `EMLCALL(arg0|has_op:Pow)` as a dense void on a corpus of 8 failed
 families. Both write to the derived-constraints ledger
 ([`src/ztare/gates/derived_constraints.py`](../../src/ztare/gates/derived_constraints.py));
 only confirmed constraints render into the mutator prompt.
 
-### Component C (topological sieve) and Component D (topology synthesizer)
+### Residual diagnostics and symbolic regression
 
-Two layers further down the constraint stack. **Component C**
-([`src/ztare/motion/residual_analyzer.py`](../../src/ztare/motion/residual_analyzer.py))
-is the topological sieve: a deterministic 2-bit residual-shape
+Two layers further down the constraint stack. **Residual diagnostics**
+([`src/ztare/motion/residual_diagnostics.py`](../../src/ztare/motion/residual_diagnostics.py))
+uses a deterministic 2-bit residual
 descriptor that classifies a fitted form's residual as smooth,
 periodic, or pathological, narrowing the corrector-library
-recommendation *without oracle leakage*. **Component D**
-([`src/ztare/composition/topology_synthesizer.py`](../../src/ztare/composition/topology_synthesizer.py))
-is the topology synthesizer: when the additive and depth-1
-compositional templates exhaust, Component D composes new candidate
+recommendation *without oracle leakage*. **Grammar-guided symbolic regression**
+([`src/ztare/composition/symbolic_regression_synthesizer.py`](../../src/ztare/composition/symbolic_regression_synthesizer.py))
+builds new forms when the additive and depth-1
+compositional templates exhaust. It composes candidate
 forms via LLM-guided depth-2 templates, deterministic ratio probes,
-tail-correction primitives (GP-087 residual-driven seeds), and
-additive regime composition (GP-103 additive composite). Component D
+tail-correction primitives ([GP-087](../../research_areas/seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md) residual-driven seeds), and
+additive regime composition ([GP-103](../../research_areas/seams/engine/GP-103_topology_induction_gap.md) additive composite). The synthesizer
 runs in lifecycle phases (G1, G1.5, G2) with explicit seed-queue
 source tags so an operator can audit which iterations were
 mutator-driven vs. composition-driven.
@@ -166,12 +171,12 @@ mutator-driven vs. composition-driven.
 
 A per-iteration evaluator tracks whether the mutator's current functional
 class is still producing new structural information. **Class-novelty
-stagnation decoupling** (Task 12, 2026-04-24) lets the loop register
+stagnation decoupling** lets the loop register
 stagnation on the *class* of forms even when the iteration counter
 increases. A **committee-rotation throttle** prevents the same judge
 panel from re-affirming a stuck class. Stagnation thresholds are
 resolved through `pivot_heuristics.resolve_stagnation_pivot_state()` —
-one source of truth for prompt assembly *and* event logging. **GP-216
+one source of truth for prompt assembly *and* event logging. **[GP-216](../../research_areas/seams/engine/meta/GP-216_theory_building_operations_seam.md)
 op-class pivot enrichment** maps current failure-log signals (e.g.
 `profile decomposition`, `lower-semicontinuity`, `limit-passage`,
 `finite certificates`, `global Sobolev`) into named operation classes
@@ -179,7 +184,7 @@ op-class pivot enrichment** maps current failure-log signals (e.g.
 Assembly`) and rewrites the mutator instruction text — advisory only;
 the pivot itself is data-driven.
 
-### DAG steering (GP-134)
+### DAG steering ([GP-134](../../research_areas/seams/apparatus/instrumentation/GP-134_prompt_layer_contamination_incident_seam.md))
 
 Before each mutator call, the apparatus computes a steering context from
 the probability DAG of prior iterations — which nodes have survived,
@@ -204,17 +209,61 @@ the mutator asserted is conserved.
 
 ### REFRAME and ANALOGY — the two non-grammar primitives
 
-REFRAME enumerates coordinate transforms `(h_in, h_out)` the operator's
-prior would not try, ranks them by MDL on the actual data, and tells the
-apparatus which frame the data prefers. ANALOGY queries an LLM for
-cross-domain forms whose structural shape matches the failure surface,
-breaking out of the home discipline's repertoire of templates. Both are
-explicitly anti-anchor: they succeed only when they propose something the
-operator's prior would have suppressed. Implementations live in the
+REFRAME enumerates coordinate transforms `(h_in, h_out)`, ranks them by
+MDL on the actual data, and reports which frame the data prefers. ANALOGY
+queries an LLM for cross-domain forms whose structural shape matches the
+failure surface, drawing candidates from outside the home discipline's
+template set. Both exist to propose decompositions a domain expert's priors
+would tend to rule out. Implementations live in the
 analogy / framer trees referenced in
 [`cognitive_gym.md`](cognitive_gym.md).
 
-### Constraint-to-Isomorphism engine (the strange loop) — substrate-agnostic
+### Full-catalog primitive families
+
+The live architecture index is a generated 781-row capability catalog. Each row
+now carries two derived taxonomy fields:
+
+- `source_category`: where the implementation lives, such as `research-operator`,
+  `proof-search`, `fit/regime`, `gate`, `mining`, or `common-infra`.
+- `semantic_family`: what research role it serves, currently one of
+  `research_move_operator`, `evidence_governance_gate`,
+  `proof_formalization_worker`, `model_fit_structure_probe`,
+  `orchestration_briefing_provider`, `mining_operations_intelligence`,
+  `pattern_memory`, `substrate_workbench`, or `infrastructure_utility`.
+
+The generator is
+[`primitive_catalog_taxonomy.py`](../../src/ztare/research_director/primitive_catalog_taxonomy.py).
+It also normalizes moved paths, reports duplicate ids/signatures, and checks
+whether the rendered index and semantic atlas are stale. This is the long-term
+catalog structure; embeddings and agents may propose related-capability edges,
+but promoted taxonomy should be deterministic or explicitly curated.
+
+### LLM-mediated primitive families
+
+Several primitives use an LLM or subscription-backed agent as a worker, but
+they do not all play the same architectural role. The semantic parent graph in
+[`primitive_family_registry.py`](../../src/ztare/research_director/primitive_family_registry.py)
+groups the concrete child primitives without renaming their implementation
+symbols:
+
+- `core_workbench_worker`: the main in-loop mutator, judge, and committee
+  workers.
+- `external_perspective_generator`: cold seeds, inversion, analogy,
+  eigenquestion generation, and alignment-style independent critiques.
+- `review_governance_helper`: rubric review, charter critique, primitive
+  catalog quality filtering, and post-run meta-audit.
+- `composition_helper`: recombination fusion, evidence-gap enrichment, and
+  proposal-class labeling.
+
+This parent graph is a legibility layer for dispatchable LLM/agent workers; it
+is not a second primitive catalog and does not cover the whole 789-row index.
+The RD primitive surface displays both full-catalog parent nodes and these
+worker-family nodes before concrete hits, so a director sees the family of move
+first and the exact reusable primitive second.
+`make primitive-parent-utility JSON=1` checks both held-out route usefulness and
+whether the worker-family cards still point at live module entrypoints.
+
+### Constraint-to-Isomorphism engine — substrate-agnostic
 
 `src/ztare/common/constraint_isomorphism.py` generalises ANALOGY beyond
 curve-fit residuals into a canonical INTERFACE any consumer plugs into
@@ -222,16 +271,16 @@ curve-fit residuals into a canonical INTERFACE any consumer plugs into
 structural ceiling it (1) abstracts the failure to a domain-stripped
 `ConstraintFingerprint` (pure topology/complexity/algebra), (2) queries an
 LLM with ONLY that abstract constraint — and a `forbidden_domain` to push
-away from — to surface established theorems from any field that solve it
-(the "orthogonal jump"; stripping semantic gravity is *why* it can reach a
-match that direct prompting can't), and (3) compiles each match to a gate
+away from — to surface established theorems from any field that solve it;
+removing the domain semantics from the prompt is what lets the query reach
+matches direct prompting does not, and (3) compiles each match to a gate
 and holdout-verifies it via the consumer's `oracle` (MDL / closure rate /
 MRE) — only matches that improve the metric survive. The general engine is
 shared; each consumer implements `StrangeLoopDomain` (`abstract_failure`,
-`compile_to_test`, `oracle`). `fit/analogy.py` (GP-164) is the validated
+`compile_to_test`, `oracle`). `fit/analogy.py` ([GP-164](../../research_areas/seams/engine/meta/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md)) is the validated
 curve-fit specialisation and remains in-loop; leanmill and the research
-directors are the intended new consumers. **Efficacy is unproven** — the
-apparatus exists; whether the autonomous query surfaces useful matches vs.
+directors are the intended new consumers. **Efficacy is unproven** —
+whether the autonomous query surfaces useful matches vs.
 plausible nonsense is the open test. Surfaced by the `primitive_amnesia`
 precheck (run it before building lateral-search machinery). The SOP for
 wiring any new primitive into the precheck is
@@ -254,7 +303,7 @@ because some of the early framers were caught optimising for Kepler-step
 parsimony at the expense of Newton-step content (the canonical instance
 is `gp161_mdl_anti_goodhart`).
 
-### Post-run discriminator wiring (GP-190)
+### Post-run discriminator wiring ([GP-190](../../research_areas/seams/engine/GP-190_post_run_discriminator_daemon_seam.md))
 
 When `enable_post_run_meta_audit` is set, the postloop translates the
 meta-audit verdict into `workspace/next_discriminator_queue.jsonl` via
@@ -347,7 +396,7 @@ walks the residual search tree with an `O(M log M)` per-axis MDL-greedy
 search, and hands the best-MDL coordinate pair to the existing solvers.
 Implemented in [`src/ztare/framer/`](../../src/ztare/framer/) (active framer,
 search, collapse, enumeration, report) with gate enforcement in
-[`src/ztare/framer_gates/`](../../src/ztare/framer_gates/). The GP-152
+[`src/ztare/framer_gates/`](../../src/ztare/framer_gates/). The [GP-152](../../research_areas/specs/active/GP-152_framer_architecture_spec_v1.md)
 observe-mode hook fires inside the main loop at the post-mutation
 `fit_parameters` site and writes `framing_report.json` without mutating
 data, so a Framer claim is an auditable artifact alongside the substrate
@@ -396,7 +445,7 @@ Named persona labels (Dijkstra, Knuth, Munger, etc.) are stylistic
 shorthand for reasoning approaches, not claims about the persons; the
 README's named-personas note is the canonical disclaimer.
 
-### Commit-membrane daemon (GP-241)
+### Commit-membrane daemon ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md))
 
 The epistemic verificator daemon — the *sole writer* of the official store
 (experiment record + ledgers). The agent cannot hand-edit official state;
@@ -452,7 +501,7 @@ drifting. The
 per-project `public/CLAIM_SUMMARY.md` slice that summarises each sealed
 result.
 
-### Forecast pool and prediction market (GP-230)
+### Forecast pool and prediction market ([GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md))
 
 Sealed forecast contracts for macro / meso / micro branch choices, swarm
 gates, effort estimates, and externality audits. Belief is recorded
@@ -464,7 +513,7 @@ spec under
 [`research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md`](../../research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md).
 
 The primitive's operational rules are empirically derived from its first
-child seam, the GP-245 Forecast Calibration Program
+child seam, the [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) Forecast Calibration Program
 ([`research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md`](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md);
 public surface at
 [`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)):
@@ -534,7 +583,7 @@ audit and recorded as dead. See
 [`reflexive_engineering.md`](reflexive_engineering.md) and
 [`agent_agnostic_recursive_gain.md`](agent_agnostic_recursive_gain.md).
 
-### Research-yield decomposition (GP-233)
+### Research-yield decomposition ([GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md))
 
 Throughput is one coefficient in scientific yield. The seam contract
 decomposes a research lane into
@@ -549,7 +598,7 @@ false ratification*. Evidence ledger at
 `analytics/public/ledgers/research_yield_decomposition/`. See
 [`closure_claim_governance.md`](closure_claim_governance.md).
 
-### Action intelligence and intelligence surface (GP-243 / GP-244)
+### Action intelligence and intelligence surface ([GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) / [GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md))
 
 A read-side surface that joins forecast use, yield bottlenecks,
 experiment state, catch risk, source readiness, and observer-only
@@ -587,7 +636,7 @@ against single-author monoculture. The pattern is described in
 [`glossary.md`](glossary.md) and ships as a runtime move, not a
 manual review step.
 
-### Damage signals (GP-129)
+### Damage signals ([GP-129](../../research_areas/seams/mission/org/GP-129_biological_org_design_panel_seam.md))
 
 An orthogonal signal channel for system failures, constraint
 violations, and mandate-compliance alerts — decoupled from
@@ -666,7 +715,7 @@ to answer a question — the within-class feature-collapse finding on the
 v2 RAR substrate is the canonical case. The probe is a gate
 (R26 G-CROSS-CLASS-FEATURE-SUPPORT), not an after-the-fact narrative.
 
-### LeanMill — governed DAG proof-search solver (GP-246, current frontier)
+### LeanMill — governed DAG proof-search solver ([GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md), current frontier)
 
 The current leanmill core is a **governed best-first search over a proof-obligation DAG** around a *swappable*
 LLM "leaf" (codex/claude on subscription): the leaf PROPOSES moves; **one governance kernel RATIFIES** every
@@ -682,17 +731,17 @@ Shared compute lives in `src/ztare/common/{sandboxed_python,symbolic_witness}.py
 `src/ztare/leanmill/solver/**`; full spec in [`docs/concepts/leanmill_architecture.md`](leanmill_architecture.md)
 and [`research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md`](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md).
 
-**Honest status (the discipline, not marketing):** the **soundness moat is the validated strength** — the
-governance kernel demonstrably catches gaming/laundering (statement alteration, vacuity, axiom smuggling,
+**Status:** the **soundness governance is the validated part** — the
+governance kernel catches gaming/laundering (statement alteration, vacuity, axiom smuggling,
 in-proof leakage) that a bare `compile_ok` misses. The **capability LIFT over the bare leaf is mostly
 UNPROVEN**: a strong Lean+Mathlib leaf saturates easy substrates (witness-transport measured lift = 0) and
 fails open-conjecture-hard ones (P1), so most moves are "lift-test pending" per the capability-discipline
 ledger in the architecture doc. leanmill is a governed *environment* around a frontier leaf, **not** a trained
-prover — it competes on governance, and whether the environment multiplies the leaf is under active
-measurement (PutnamBench baseline-vs-apparatus). The older GP-225 GNN lemma-relevance ranker + 24/7 Lean
-station-factory workers (`scripts/public/control/leanmill_*`) remain the SCALE layer beneath this solver.
+prover; whether the environment multiplies the leaf is under active
+measurement (PutnamBench baseline-vs-apparatus). The older [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) GNN lemma-relevance ranker + 24/7 Lean
+station workers (`scripts/public/control/leanmill_*`) remain the SCALE layer beneath this solver.
 
-### Power-aware experimental statistics (GP-245 toolkit)
+### Power-aware experimental statistics ([GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) toolkit)
 
 A single-file general-purpose statistics module that codifies the experiment-discipline used across pilot rounds — Fisher-$z$ power computation, proper equivalence testing, multi-comparison correction, OLS with leave-one-out cross-validation, three legal verdicts, and a Bayes factor wrapper. Lives at
 [`src/ztare/experiment_stats.py`](../../src/ztare/experiment_stats.py).
@@ -704,7 +753,7 @@ Thirteen public functions:
 - **Equivalence testing:** `tost_equivalence(a, b, equiv_bound)` — proper `h0_kept` claims via two one-sided tests at a pre-stated bound; not "p > 0.05".
 - **Multiple comparison:** `bh_fdr(p_values)` — Benjamini-Hochberg false-discovery-rate correction across panel tests.
 - **Multi-channel R² without overfitting:** `ols_multichannel_r2(xs_cols, ys)` returns R², adjusted R², and **leave-one-out R²_LOO** — the audit-clearing test against in-sample-fit noise at small N. The meta-Darwin audit flagged "R² without LOO at small N" as a recurring program error; this function makes the correct report unavoidable.
-- **Three legal verdicts:** `power_aware_verdict(observed_rho, n, target_rho)` returns one of `h1_supported` / `h0_kept` / `inconclusive_underpowered`. `h0_kept` requires the CI to wholly exclude $\pm$target_rho; otherwise the verdict is `inconclusive_underpowered`. The "underpowered null misread as h0_kept" error is what the GP-245 program found in 8 of 12 of its own earlier nulls; this resolver makes the correct verdict unavoidable.
+- **Three legal verdicts:** `power_aware_verdict(observed_rho, n, target_rho)` returns one of `h1_supported` / `h0_kept` / `inconclusive_underpowered`. `h0_kept` requires the CI to wholly exclude $\pm$target_rho; otherwise the verdict is `inconclusive_underpowered`. The "underpowered null misread as h0_kept" error is what the [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) program found in 8 of 12 of its own earlier nulls; this resolver makes the correct verdict unavoidable.
 - **Reproducibility manifest:** `reproducibility_hash(prompt_template, dispatcher_version, corpus_row, agent_id)` — per-call SHA-256 of inputs so any score row can be audited back to the exact prompt + corpus row that produced it.
 
 Codified disciplines that the toolkit supports (referenced by [`AGENTS.md`](../../AGENTS.md) §6n.6–§6n.9):
@@ -714,11 +763,11 @@ Codified disciplines that the toolkit supports (referenced by [`AGENTS.md`](../.
 - **LOO-CV at small N.** Multi-channel R² claims at $N < 30$ with $k \geq 3$ regressors carry LOO alongside in-sample; the meta-Darwin audit retracts findings reported without it.
 - **BH-FDR across panel tests.** Per-family panel tests (5-family $\times$ multi-intervention) carry BH-FDR adjustment when reported.
 
-The meta-Darwin retract-and-retest pattern (audit every claim post-hoc against the discipline; retract anything that fails; re-fire if a retest disambiguates) is documented in the pattern catalogue and applied to all GP-245 findings (`projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/meta_darwin_audit_2026_05_27.md`).
+The meta-Darwin retract-and-retest pattern (audit every claim post-hoc against the discipline; retract anything that fails; re-fire if a retest disambiguates) is documented in the pattern catalogue and applied to all [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) findings (`projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/meta_darwin_audit_2026_05_27.md`).
 
 ### Forecasting-program calibration database and Brier/Elo stats
 
-The general-purpose tooling for any binary-forecast calibration program. Both modules were hoisted 2026-05-27 from the GP-245 workspace into `src/` so future calibration programs can reuse them as a library; the historical CLI paths in `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/` survive as thin shims that import from canonical copies.
+The general-purpose tooling for any binary-forecast calibration program. Both modules were hoisted 2026-05-27 from the [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) workspace into `src/` so future calibration programs can reuse them as a library; the historical CLI paths in `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/` survive as thin shims that import from canonical copies.
 
 - [`src/ztare/forecasting/calibration_db.py`](../../src/ztare/forecasting/calibration_db.py) — SQLite schema (three tables: `contracts`, `pilot_calls`, `pre_registrations`), idempotent DELETE-then-INSERT ingest (so re-ingesting a fired JSONL is safe), per-call Brier auto-computed from `y_known`, normalised primitive/family/pilot_id fields. CLI: `init`, `ingest-corpus`, `ingest-pilot`, `ingest-all`, `query`, `stats`, `prereg-add` (auto-computes `n_required` from `--target-rho` via Fisher-$z$ power), `prereg-resolve`, `prereg-list`. The pre-registration table makes "you said you'd need N=42 to call a `h1` here" auditable.
 - [`src/ztare/forecasting/calibration_stats.py`](../../src/ztare/forecasting/calibration_stats.py) — forecasting-specific stat wrappers on top of `ztare.experiment_stats`. CLI: `brier-ci`, `delta-test` (paired Δ-Brier with bootstrap CI + Bayes factor), `spearman` (per-family ρ + 95% CI + verdict), `elo` (cross-pilot Elo ranking across families), `finding` (replication-harness checking a named finding against current DB state), `power-n`, `power-detectable`, `tost`, `brier-decomp` (Murphy reliability/resolution/uncertainty), `verdict` (resolves a finding to one of three legal verdicts).

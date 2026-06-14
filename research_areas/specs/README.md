@@ -31,18 +31,17 @@ Formatting is governed by:
 
 - `research_areas/[redacted]`
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
 **Sub-folders**
 
-- [`active/`](active/), 57 file(s)
-- [`archive/`](archive/), 0 file(s)
+- [`active/`](active/) - 61 file(s)
 
 **Documents**
 
 - [paper4_drafting_paper_outline_prose_spec.json](paper4_drafting_paper_outline_prose_spec.json)
 
-<sub>2 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>1 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

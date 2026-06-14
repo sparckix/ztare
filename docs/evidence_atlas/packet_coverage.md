@@ -50,14 +50,14 @@ Concrete packets assembled from existing public artifacts live under
 | Area | Current packet status | What exists | Missing before "complete" |
 |---|---|---|---|
 | Evaluator hardening / self-certification failures | Strongest packetized area | Benchmark evidence, cheating catalog, case studies, papers, `make demo`, `make benchmark-evidence` | Larger frozen claim-packet suite with ordinary LLM review, rubric-only review, deterministic gates, and gates-plus-precedent as separate conditions |
-| Public claim governance | Partially packetized | Public claim register, 38 project `public/CLAIM_SUMMARY.md` files, experiment track record | Machine-readable required-field validator for each public claim: evidence pointer, non-claim, status, next falsifier |
+| Public claim governance | Partially packetized with claim-card validation | Public claim register, 38 project `public/CLAIM_SUMMARY.md` files, experiment track record, claim-card required-field checks in `evidence_packet_check.py` | Machine-readable per-project/public-claim packet rows beyond the curated claim cards |
 | Scientific case studies / OEIS / sandbox recoveries | Many project packets, uneven external strength | Per-project summaries, register sections, benchmark evidence where applicable | Per-claim retest tags normalized across all summaries; external baseline packets for claims that currently rest on apparatus-internal evidence |
 | Navier-Stokes Track B | Rich residual packets, not closure packet | Public journey, public graph, Lean tree, residual manifest, PDE workbench packs | No theorem-closure packet. Needs target-axiom-specific packet with amnesia check, tool-depth receipt, formal/source receipt, and external mathematical review |
-| GP-245 forecasting science / Law 1-3 | Public-packetized as a law-validation program, still apparatus-internal | Public register section, project summary, methodology architecture, law validation matrix, findings-to-laws map, unifying law note, premium-channel report, channel-holdout report, cutoff Stage A audit, paper drafts, calibration commands | Law 1 anti-bias-collapse run, Law 2 prospective policy-cell validation or demotion, Law 3 matched pre/post cutoff corpus, external replication |
+| [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) forecasting science / Law 1-3 | Public-packetized as a law-validation program, still apparatus-internal | Public register section, project summary, methodology architecture, law validation matrix, findings-to-laws map, unifying law note, premium-channel report, channel-holdout report, cutoff Stage A audit, paper drafts, calibration commands | Law 1 anti-bias-collapse run, Law 2 prospective policy-cell validation or demotion, Law 3 matched pre/post cutoff corpus, external replication |
 | LeanMill / formal audit | Governance/audit packet exists; performance packet incomplete | Architecture doc, APN public audit summary/receipts, F103 register entry, `lake build` | Public miniF2F or named-baseline benchmark; external proof artifact review; no public claim yet that planner memory improves natural Mathlib proof closure |
 | Reflexive primitives | Seed packetized, not fully outcome-tested | Registry, primitive matrix, capability evidence contract ledger, self-report critic | At least five resolved capability-evidence-contract bets; synthetic controls for self-report critic; outcome tracking for pattern-action-contract closes |
 | Agentic engineering patterns | Catalogued, not uniformly packetized | Pattern catalog, anti-pattern catalog, implementation anchors, smoke tests | Per-pattern evidence packet: motivating failure, implementation artifact, validator/test, observed prevented failure, demotion criterion |
-| GP-230 forecast pool / action intelligence | Mechanized smoke packet; calibration packet incomplete | Forecast pool implementation, action-intelligence smoke, analytics artifacts | Public calibration report with enough resolved contracts for per-agent calibration and decision-use lift estimates; keep separate from GP-245 law-validation claims |
+| [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) forecast pool / action intelligence | Mechanized smoke packet; calibration packet incomplete | Forecast pool implementation, action-intelligence smoke, analytics artifacts | Public calibration report with enough resolved contracts for per-agent calibration and decision-use lift estimates; keep separate from [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) law-validation claims |
 | Cross-substrate methodology | Synthesis packet exists; external packet missing | Public claim register, multi-substrate validation, experiment track record | Frozen cross-substrate benchmark over claim packets with external baselines and independent labels |
 
 ## Direct Answer
@@ -71,7 +71,8 @@ serious reviewer route.
 
 What is missing is uniformity and externalization:
 
-- not every claim has a machine-readable packet;
+- not every claim has a machine-readable packet, though curated claim cards now
+  have required-field validation;
 - not every named primitive has causal or ablation evidence;
 - several strong-looking areas are still apparatus-internal;
 - some links and paths still need normalization;
@@ -91,8 +92,8 @@ reviewer-runnable packets. The priority order should be:
 | Priority | Packet or benchmark | Why it matters | Minimum useful version |
 |---|---|---|---|
 | P0 | Claim-card schema + validator | Prevents the atlas from becoming another prose index | Required fields, file-existence checks, evidence-level enum, non-claim and next-falsifier checks |
-| P0 | Evaluator-hardening claim-packet benchmark | This is the strongest externally communicable result | Frozen suite comparing ordinary LLM review, rubric-only review, deterministic gates, and gates-plus-precedent |
-| P1 | Agentic-pattern evidence packets | Converts reusable engineering patterns from interesting lore into transferable evidence | Five packets for highest-transfer patterns, each with motivating failure, implementation, test, observed prevented failure, demotion criterion |
+| P0 | Evaluator-hardening claim-packet benchmark | This is the most externally legible result, and it lacks a frozen comparison suite | Frozen suite comparing ordinary LLM review, rubric-only review, deterministic gates, and gates-plus-precedent |
+| P1 | Agentic-pattern evidence packets | Gives reusable engineering patterns evidence another team can check, instead of catalog entries | Five packets for highest-transfer patterns, each with motivating failure, implementation, test, observed prevented failure, demotion criterion |
 | P1 | Forecast calibration report | GP-230/GP-245 is strong but currently sprawling | Resolved contracts, per-agent calibration, decision-use rows, uncertainty intervals, contamination caveats |
 | P1 | LeanMill public benchmark or proof-review packet | Prevents proof/governance claims from being confused with theorem-prover performance claims | One named-baseline benchmark or one externally reviewed proof artifact |
 | P2 | NS residual-frontier packet | Makes the NS campaign inspectable without implying theorem closure | One named residual frontier with killed siblings, target axiom, tool-depth artifacts, Lean/source receipts, next mathematical falsifier |
@@ -102,15 +103,17 @@ Do not build benchmark volume for its own sake. A benchmark is worth adding
 only when it changes an evidence level, discriminates a confuser, or makes a
 claim inspectable by someone outside the repo.
 
-Current runnable packet check:
+Current runnable packet and claim-card check:
 
 ```bash
 ./venv/bin/python scripts/public/control/evidence_packet_check.py
 ```
 
 It validates concrete packet files under `docs/evidence_atlas/packets/` for
-required reviewer-facing sections and local link existence. It is now included
-in `make benchmark-evidence`.
+required reviewer-facing sections, evidence-level values, and local link
+existence. It also validates `docs/evidence_atlas/claim_cards.md` for the
+minimum public fields: claim, evidence level, primary sources, runnable anchor,
+non-claim, and next falsifier. It is included in `make benchmark-evidence`.
 
 ## Where New Work Belongs
 
@@ -129,8 +132,9 @@ Use the smallest durable surface that matches the work:
 1. **Public claim packet schema.** JSON or YAML beside each claim card with
    claim, evidence level, sources, commands, non-claims, next falsifier, and
    status.
-2. **Claim-card validator.** A script that fails if any public claim-card row
-   lacks required fields or points to a missing file.
+2. **Per-project claim summary validator.** Extend the current claim-card
+   validator to project `public/CLAIM_SUMMARY.md` files once their format is
+   normalized enough to avoid false precision.
 3. **Pattern evidence packets.** One packet per agentic engineering pattern,
    starting with the highest-transfer patterns: pre-flight assertion battery,
    fallback provenance telemetry, structural contract gating, forecast-pool

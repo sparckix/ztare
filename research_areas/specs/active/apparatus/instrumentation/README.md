@@ -2,7 +2,7 @@
 
 _Folder index. Prose may be added above the auto-index block._
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
@@ -16,6 +16,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [GP-098 Evidence Compressor: Variance-Stabilizing Transform Enumeration](GP-098_evidence_compressor_spec.md)
 - [GP-102 Reflexive Primitive Discovery Spec](GP-102_reflexive_primitive_discovery_spec.md)
 - [GP-190 Post-Run Discriminator Queue + Briefing Budget Spec](GP-190_post_run_discriminator_and_briefing_budget_spec.md)
+- [GP-244 ZTARE Intelligence Surface Spec](GP-244_research_operations_intelligence_cockpit_spec.md)
 
-<sub>0 sub-folder(s), 8 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 9 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

@@ -25,8 +25,8 @@ Applied to the solver, the north-star object is therefore NOT a smarter prover (
 not out-scale AlphaProof / DeepSeek-Prover-V2 on RL+search+compute). It is:
 
 > **A provider-agnostic, typed-contract-GOVERNED best-first search over a proof-obligation
-> DAG, where the LLM/hammer/frontier-prover is a subordinate move-generator and the moat
-> is the mechanization-placement governance** (ex-ante contract → typed moves → kernel-
+> DAG, where the LLM/hammer/frontier-prover is a subordinate move-generator and the
+> non-swappable core is the mechanization-placement governance** (ex-ante contract → typed moves → kernel-
 > ratified credit → matched-negative-control → residual→lever → no-false-closure).
 
 The shift the operator named: the typed contract is **EX ANTE generative scaffold**
@@ -569,7 +569,7 @@ search / budget / orchestration.
   + ProofCache + the calibrated substrate/embedder/provider liveness gates.
 This closes tractable leaves one-shot can't and localizes hard theorems to their genuine
 mathematical core — it does NOT manufacture the missing mathematical idea. That boundary is
-the honest, calibrated result; "world-class proof search" is NOT claimed (cf. AlphaProof solves
+the honest, calibrated result; "frontier / leaderboard proof search" is NOT claimed (cf. AlphaProof solves
 IMO; this closed degree-0 arithmetic + scaffolding on one corpus). The lever is the ENVIRONMENT
 (general model + governed loop), not trained-prover compute.
 
@@ -903,7 +903,7 @@ projects/leanmill_experiments/closure_Type1Unimodal_2026_06_03.lean.
 
 **What this means (disciplined):**
 - VERIFIED FACT: the harness manufactured a kernel-clean proof of a Mathlib-absent frontier theorem
-  (type-1 pure O-sequence unimodality) — the world-class "manufactures missing math" capability, on
+  (type-1 pure O-sequence unimodality) — the "manufactures missing math" capability, on
   a real target, not a toy. This is n-independent (the proof exists + verifies).
 - SUGGESTIVE (n=1): INVENT (decompose/invent helper lemmas) > DIRECT on this invention-bound target
   — the first PROBATIVE discriminating data point FOR invention (adequacy held, both engaged, clean
@@ -948,7 +948,7 @@ TWO clean, opposite-direction results from parallel runs:
    1201s; treatment (with the proven shared machinery from the Type1Unimodal closure prepended)
    CLOSED kernel-clean in 1064s (axioms ⊆ allowlist, reused the shared lemmas 20×). A sub-lemma
    family proven ONCE unlocked a sibling that from-scratch could not close — faster. This is the
-   world-class property: the harness's outputs COMPOUND (a growing library of reusable proven
+   compounding property: the harness's outputs COMPOUND (a growing library of reusable proven
    lemmas unlocks new theorems). n=1 ⇒ suggestive, needs replication, but verified-genuine +
    directionally strong. Artifact: VPS Lift_treatment.lean.
 REFRAMING: the lever is NOT "invention beats direct" (dead at n=2) — it is COMPOUNDING (bank the

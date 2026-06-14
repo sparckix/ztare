@@ -16,7 +16,7 @@ This is the **single authored surface** for how the architecture governs
 asserts a residual / theorem / sub-problem is closed. It is **not** a
 dynamically-joined document: the dynamic join across the three catalog
 languages already exists and is regenerated in code (see §3). Humans read
-this doc; machines read the join. GP-225 is **one consumer**, not the owner
+this doc; machines read the join. [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) is **one consumer**, not the owner
 (see §6). No dependency on a separate `exports/` tree: the previous
 `exports/epistemic_hygiene_bundle/` was an extract of native `org/`
 catalogs (shipped once as `epistemic_hygiene_bundle.zip` and removed
@@ -91,12 +91,12 @@ structurally cannot.
 | **T2, semantic** | *Right tokens, wrong chain?* | LLM semantic audit of the narrative (gpt-4.1-mini). | `closure_claim_discipline_linter_tier2.py` |
 | **T3, cross-model** | *Single-model bias in T2?* | Same audit across 3 providers, agreement analysis. | `closure_claim_discipline_linter_tier3.py` |
 
-T0 is the **execution-grounded tier**: GP-211's compile + axiom-audit clears
+T0 is the **execution-grounded tier**: [GP-211](../../research_areas/seams/engine/lean/GP-211_lean_proof_substrate_class_seam.md)'s compile + axiom-audit clears
 a proof; it does **not** catch a proof that compiles, is sorry-free, has no
 extra axioms, and is *still* vacuous / verbatim-gold-name / one-`exact?` /
 indirect-leakage / currency-mismatched. Those five false-closure sub-modes
 (catalogued as **AP-013**, 5 sub-modes) are exactly what slipped past
-GP-211 in tick541 and the v22-v30 chain until the organs mechanized them.
+[GP-211](../../research_areas/seams/engine/lean/GP-211_lean_proof_substrate_class_seam.md) in tick541 and the v22-v30 chain until the organs mechanized them.
 
 ### T0 organs
 
@@ -131,7 +131,7 @@ this capability is meant to prevent.
 
 ## 4. In-loop enrichment (done, non-breaking)
 
-`src/ztare/gates/lean_proof_gate.py` (GP-211) enriched in place:
+`src/ztare/gates/lean_proof_gate.py` ([GP-211](../../research_areas/seams/engine/lean/GP-211_lean_proof_substrate_class_seam.md)) enriched in place:
 `_run_v33_anti_laundering()` runs the T0 organs on every compiled proof;
 `run_lean_proof_gate(..., enforce_anti_laundering=True, deep_verify=False)`
 flips `gate_passed=False` on a CONFIRMED sub-mode, surfaces shape-suspects
@@ -145,7 +145,7 @@ Unit-validated: VACUOUS→fail, GENUINE-H07→pass, GOLD-NAME→fail.
 
 | Consumer | Uses it for |
 |---|---|
-| **GP-225** | the line that produced T0; one consumer, not the owner |
+| **[GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md)** | the line that produced T0; one consumer, not the owner |
 | **NS Clay hunt** | per-tick T0 (CLI or in-loop) before any closure claim, the organ missing when GPT-5.5 caught tick541 offline |
 | **epistemic-generation working paper** | T1/T2/T3 discipline linter is its operationalization; AP-013 + T0 extend the same governance story |
 | **cognitive_gym** | T0 is a constraint-stack gate (deterministic machinery handed what the LLM does poorly: self-consistency under closure pressure) |
@@ -162,7 +162,7 @@ Unit-validated: VACUOUS→fail, GENUINE-H07→pass, GOLD-NAME→fail.
    `gate_passed=False` before they can be scored.
 3. **Deep audit:** `deep_verify=True` for pre-publication thoroughness.
 
-## 6. Honest standing verdict (GP-225 line)
+## 6. Honest standing verdict ([GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) line)
 
 - The arc: GNN lemma-relevance (v2.1-v6) **killed**; high-trust closure
   chain (v22-v30) **all killed** under fair audit (structural bound: 0-1
@@ -196,10 +196,10 @@ Unit-validated: VACUOUS→fail, GENUINE-H07→pass, GOLD-NAME→fail.
 - **Done (2026-05-16):** the bundled proof-execution and governance-gate
   apparatus + the kernel-axioms authoritative 0-false-ratify guard, see §8.
 
-## 8. The Bundled Closure Apparatus (GP-225 consumer)
+## 8. The bundled closure run ([GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) consumer)
 
 A single runnable bundle (`scripts/public/control/bundle_run.py`)
-composes the two formerly separate lines and is the concrete GP-225 consumer of
+composes the two formerly separate lines and is the concrete [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) consumer of
 this governance concept.
 
 - **Proof execution** (`bundle_verify.py`): author ≠
@@ -268,7 +268,7 @@ genuine counts carry that caveat.
 guard above closes R1-R4 *for genuine-credit purposes*; an advisory
 mechanical stopgap (`scripts/public/control/proof_source_integrity_lint.py`)
 independently screens proof sources and is clean on all recorded
-in-thread-authored proofs. The GP-233 evidence ledger
+in-thread-authored proofs. The [GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) evidence ledger
 (`analytics/public/ledgers/research_yield_decomposition/`) carries the
 full register and the empirical Tier-2 record (powered gate reached;
 closure-route via **in-thread AI** grounded-iterative proving, reasoning
@@ -281,7 +281,7 @@ gate (closure rate prover-bound; the arXiv:2506.07477 falsifier,
 Mathlib-test R@16 > 0.635 AND Carleson R@1 > 5%, not cleared) is unchanged
 and was not re-tested here.
 
-## 9. Directional Benchmark Hypothesis For Proof Execution
+## 9. Directional benchmark hypothesis for proof execution
 
 **Status:** directional/strategic. The external-prover benchmark is the END
 gate (WIP), run only once proof execution, the governance gate, and the
@@ -304,7 +304,7 @@ are candidate sources/baselines, not strawman competitors; the comparison must
 be candidate-source + generic action-sweep + same governance filter, never
 retrieval-only.
 
-### 9.1 External Baseline Systems Vs Proof Execution Direction
+### 9.1 External baseline systems vs. proof-execution direction
 
 | | LeanDojo/ReProver, LeanHammer/LeanPremise | Proof execution direction |
 |---|---|---|
@@ -315,19 +315,19 @@ retrieval-only.
 | OOD behaviour | collapses (Carleson ≈ 0%) | the regime we train/select *on*, by design |
 | Closure numbers | generally not adversarially audited | 0-false-ratify, idiom-independent (`#print axioms`), adversarially hardened |
 
-### 9.2 The defensible asset
+### 9.2 The distinguishing component
 
 Not the tactic generator by itself: ReProver-style systems already
-retrieve, generate, and verify. The defensible asset is the
-**kernel-grounded, adversarially-hardened governance loop that produces
-leakage-controlled, OOD-by-construction, un-laundered supervision**. It is
+retrieve, generate, and verify. The distinguishing component is the
+kernel-grounded, adversarially-hardened governance loop that produces
+leakage-controlled, OOD-by-construction, un-laundered supervision. It is
 expensive and discipline-bound to produce. The intended composition is the
 governance gate plus residual compiler wired back into proof execution; the
-signal generator is the asset.
+signal generator is the part that is not already commodity.
 
-### 9.3 The 10-Move Proof-Execution Ladder (staged, kill-gated, not a batch build)
+### 9.3 The 10-step proof-execution sequence (staged, kill-gated, not a batch build)
 
-1. **Verifier-grounded premise scoring**, rank candidates by real in-sandbox progress, not text. (Wedge: cheapest, reuses bundle_verify, no training.)
+1. **Verifier-grounded premise scoring**, rank candidates by real in-sandbox progress, not text. (Cheapest step: reuses bundle_verify, no training.)
 2. **Verifier-grounded tactic rerank**, N candidates → rerank by kernel outcome + governance signal, not LM score.
 3. **Error-typed transition policy**, structured Lean-error→action map (unknown-ident→re-resolve; unsolved→decompose; mismatch→normalize), vs flat best-first.
 4. **`exact?`/`simp?`/`aesop?` as a learned sub-oracle + skeleton seed**, not a fallback.
@@ -340,4 +340,4 @@ signal generator is the asset.
 
 ### 9.4 Discipline overlay (non-negotiable)
 
-Each rung is premortem'd / killed before it is relied on; attack the most-loved rung first (e.g. "typed-AST GNN obviously wins"); build only from the residual. Self-voiced adversary rounds are a monoculture, a controlling rung needs a **cold cross-provider generative** pass, not another same-family self-review, before it is trusted as direction. Sequence by cheapest-falsifiable-first (rung 1 wedge before any training). The win is unproven until rung 10; the verifier/governance loop (§9.2) is the only part demonstrated today.
+Each step is premortem'd / killed before it is relied on; test the most-assumed step first (e.g. "typed-AST GNN obviously wins"); build only from the residual. Self-voiced adversary rounds are a monoculture, a decision-critical step needs a cold cross-provider generative pass, not another same-family self-review, before it is trusted as direction. Sequence by cheapest-falsifiable-first (step 1 before any training). The result is unproven until step 10; the verifier/governance loop (§9.2) is the only part demonstrated today.

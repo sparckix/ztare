@@ -13,7 +13,8 @@ still exists, but it is only one operating flavor:
 Gather sources -> Build workspace -> Extract evidence -> Run adversarial loop -> Generate report
 ```
 
-The current default is:
+Most current work starts one step earlier: decide what kind of object you are
+holding before you choose a tool.
 
 ```text
 choose work object -> choose route -> use the workbench or validator -> write outcome -> feed reflexive intelligence
@@ -26,7 +27,9 @@ For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts
 ## 0. Route Before You Run
 
 ZTARE has two mature workflows and one developer workflow. Pick the workflow
-before launching a loop.
+before launching a loop. This prevents a common failure: using the validator
+because it is available, even when the task is actually source work, proof
+decomposition, or project setup.
 
 1. **Workbench workflow**
    - Use when a Research Director, operator, or agent needs to do research
@@ -48,12 +51,11 @@ before launching a loop.
      connectors, ledgers, gates, control-plane code, or public docs.
    - The path is `seed spec -> genesis -> debate/build/verify -> gates`.
 
-This routing reflects the repo's substrate-prober thesis and the later
-workbench reframe. The substrate prober tells a researcher what a substrate can
-and cannot answer before the researcher commits to a theory. The workbench lets
-agents and humans use ZTARE's primitives outside a single iteration loop when
-the next move is proof work, coding, source acquisition, panel review, or
-human-agent co-work.
+The substrate-prober path asks: "What can this evidence packet actually answer?"
+The workbench path asks: "What is the next useful operation?" Those are different
+questions. Autoresearch is strong when the claim is bounded and the gates are
+defined. The workbench is better when the next step is proof work, coding, source
+acquisition, panel review, or human-agent co-work.
 
 ## 0a. Routing Table
 
@@ -88,7 +90,8 @@ This repo now serves two distinct readers. If you can identify which one you are
    - Read everything, but pay special attention to section 0 routing, section 14 (primitive workflow), section 15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/concepts/architecture.md`.
    - The hardening path and supervisor-routed programs are for you, not for the general-purpose user.
 
-If you are not sure which you are: start as a general-purpose engine user. You almost certainly do not need the hardening machinery on day one.
+If you are not sure which you are, start as a general-purpose engine user. You
+almost certainly do not need the hardening machinery on day one.
 
 Inside the supervisor path:
 
@@ -122,13 +125,13 @@ and humans as workforce." This guide uses that frame.
 
 ## 0d. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
 
-If you are running ZTARE as an experiment (not just pressure-testing a domain thesis), three rules govern whether the run is diagnostic. Full version in [`docs/guides/for_researchers.md`](for_researchers.md).
+If you are running ZTARE as a cited experiment rather than a loose domain pressure test, three rules govern whether the run is diagnostic. Full version in [`docs/guides/for_researchers.md`](for_researchers.md).
 
-1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the private sealed pre-reg area. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: GP-023 sandbox_07, 2026-04-14. Two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
+1. **Charter contamination.** `autoresearch_loop.py:1319` injects `project_charter.md` verbatim into the mutator prompt every turn. Any target form, parameter values, or derivation you write to "motivate" or "explain" the target becomes a turn-1 cheat sheet. The target itself lives only in the private sealed pre-reg area. Before sealing a charter, sha256 it, grep it for GT substrings, and ask whether a stranger could reconstruct the target from it alone. Origin: [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) sandbox_07, 2026-04-14. Two mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimals. Neither run was diagnostic.
 
 2. **Visibility rule: closed = public, open/testing = private.** Closed seams and pre-regs move to `research_areas/seams/` at close time. In-flight experiment artifacts (pre-regs, GT derivations, blind oracle details) stay in the private sealed area until the experiment closes, even if other materials are public. One seam, one place. No toggle, no symlink. Full rule in `AGENTS.md`.
 
-3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a free bug report: it names something the factory gate battery missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to factory scores.
+3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a bug report: it names something the standard gate suite missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to standard-run scores.
 
 If you are a general-purpose engine user (section 0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
 
@@ -225,6 +228,11 @@ make help
 make workspace-update PROJECT=<project> MODEL=gemini
 make evidence-compile PROJECT=<project> MODEL=gemini
 make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=gemini JUDGE_MODEL=gemini
+make autoresearch-projection PROJECT=<project> OUT=/tmp/<project>_projection.json
+make autoresearch-kernel-health JSON=1
+make operations-intelligence OUT=/tmp/ztare_intel.json MD_OUT=/tmp/ztare_intel.md
+make blitz-survival-report PROJECT=<project> OUT=/tmp/<project>_blitz_survival.json
+make action-intel-materialize-dry
 make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
 make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
 ```
@@ -252,6 +260,248 @@ Choose make loop ONLY when:
 In practice: **`make experiment-loop` is the correct default for any live run, including qualitative / exploratory / no-ground-truth projects.** The "experiment" prefix is about pre-registered safety, not about requiring a hidden GT. The hard-gate-specific hardening only activates when the rubric asks for it.
 
 Pre-registered falsification runs (blind law recovery with sealed GT) additionally require `make seal` before launch, see `docs/guides/experiment_cookbook.md`. That discipline is separate from the loop vs experiment-loop choice.
+
+### In-loop vs RD/out-of-loop agent work
+
+Use `make experiment-loop` / `ztare autoresearch run` when the task has a
+bounded claim, stable evaluator, rubric surface, and artifact surface. After a
+run, use `make autoresearch-projection PROJECT=<slug>` or
+`ztare autoresearch projection --project <slug>` to inspect the read-only
+hypothesis/evidence projection over `eval_history`.
+
+Do not use autoresearch as a replacement for every model or agent call. Use a
+cold-shot model call when the main need is a fresh frame or a quick
+counter-hypothesis. Use a persistent agent when the value is carried context,
+judgment, and many dependent moves. Use autoresearch when the value is
+adversarial accumulation: prior failures become constraints, proposals are tied
+to artifacts, and claims face gates, judges, projections, and post-run audits.
+If the loop would only add fields without changing the proposal boundary,
+evidence record, or gate behavior, stay out of loop.
+
+To audit narrowing behavior across stale runs, use
+`ztare autoresearch hillclimb-audit --project <slug>` or
+`make autoresearch-hillclimb-audit PROJECT=<slug>`. It joins
+`iteration_telemetry.jsonl`, `loop_events.jsonl`, `parallel_blitz_log.jsonl`,
+and `explored_primitive_classes.jsonl` and flags workspaces where stagnation
+appears without any recorded pivot, blitz, or primitive-class evidence. The
+audit uses the rubric's effective pivot threshold, so a run that only reaches
+the threshold on its final row is not treated as an overdue control failure.
+The report separates active controls from advisory and diagnostic surfaces:
+pending eigenquestions and survival reports are visible, but they do not count
+as a recorded breadth-control activation. It also reports a three-iteration
+post-control outcome window: score improvement, champion promotion, or reduced
+stagnation after an active control fires. This is an evidence-coverage check
+and an observational follow-up metric, not a claim that any specific escape
+move caused the improvement.
+When the loop-control evaluator returns `REFRESH_SPECIALISTS`,
+`PIVOT_REQUIRED`, or `UNDERIDENTIFIED`, the next mutator prompt now includes a
+compact loop-control signal: pending action, stagnant window, and the evaluator
+reason. This keeps breadth controls at the proposal boundary instead of only in
+post-run telemetry.
+
+For a first-page preflight, use `ztare autoresearch health --json` or
+`make autoresearch-kernel-health JSON=1`. The aggregate health report reuses
+the narrower audits and prints each component's owning drill-down command, so
+the next repair path stays visible. It also prints advisory `evidence_gaps`
+when a comparative claim is under-supported by current run history. These gaps
+do not fail strict preflight by themselves; use the named drill-down command to
+collect the missing evidence before making a transport or mechanism-lift claim.
+The corpus-wide rubric-mode audit reports legacy unset rubrics as a measured
+count, not a global blocker. When you scope health or the audit to a specific
+rubric, a missing `rubric_mode` becomes attention: choose `newton`, `kepler`,
+or `calibration` before treating that rubric as a serious launch surface.
+The dispatch component also names direct API exceptions by file, function, and
+reason. A green count is therefore inspectable: direct calls are acceptable only
+when they are one of the named wrapper fallbacks or an explicitly dual-transport
+surface.
+The health report includes a compact operations-intelligence component so sparse
+RD route logging or blocking action-intelligence sources are visible before a
+run. Explained ready-workbench bypasses remain visible as counts; bypasses
+without `why_not_autoresearch` become health debt because the later source
+repair pass cannot tell whether the RD had a good reason to stay out of loop.
+Source-health warnings are also counted there by issue type; they are advisory
+unless they become blocking, but they should be reviewed before relying on the
+operations packet for allocation claims.
+Use `make operations-intelligence` for the full read-only packet.
+The equivalent CLI form is
+`ztare autoresearch operations-intelligence --out /tmp/ztare_intel.json --markdown /tmp/ztare_intel.md`.
+For dormant in-loop mechanisms, run `ztare autoresearch fixtures --json` or
+`make inloop-fixture-validate JSON=1`; the fixture matrix names each mechanism,
+what the fixture proves, the command to try next, and the focused test
+reference.
+If the question is whether optional controls are visible to the normal
+project-scoped evidence audit, run `ztare autoresearch control-demo --json` or
+`make autoresearch-control-demo JSON=1`. This materializes a controlled local
+replay project for parallel blitz, primitive-class rotation, and eigenquestion
+preflight. Treat it as wiring/evidence-surface validation, not as live research
+lift.
+
+When a run uses the blitz/parallel-mutator path, use
+`make blitz-survival-report PROJECT=<slug>` to join the tournament winner to
+downstream evaluation, gate failures, and champion promotion. This is the
+quick check for whether the cheap candidate selector is producing candidates
+that survive the normal apparatus. The loop also materializes
+`workspace/blitz_survival_report.json` and `.md` at run end whenever blitz
+artifacts are present; the Make target reruns the same read-only join.
+
+Before deciding manually, ask the router:
+
+```bash
+ztare autoresearch route \
+  --task "<task description>" \
+  --project <project> \
+  --rubric <rubric>
+
+make autoresearch-route \
+  TASK="<task description>" \
+  PROJECT=<project> \
+  RUBRIC=<rubric>
+```
+
+The decision values are `invoke_autoresearch`, `prepare_autoresearch_surface`,
+and `stay_out_of_loop`. The router infers the four workbench prerequisites from
+project/rubric context when possible; use `--bounded-claim`,
+`--stable-evaluator`, `--rubric-ready`, and `--artifact-surface` only as
+overrides. When the decision is `prepare_autoresearch_surface` or
+`stay_out_of_loop`, the JSON includes `surface_scaffold`: the missing artifact,
+required fields, and acceptance check for each absent prerequisite. Use scoped subscription flags only after the route says the
+workbench surface exists, for example `ZTARE_AGENT_DISPATCH_MUTATOR=agent`;
+avoid the global flag for first measurements because it promotes every wired
+call site.
+
+The Make surface exposes the same scoped knobs:
+
+```bash
+make experiment-loop PROJECT=<project> RUBRIC=<rubric> \
+  AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 \
+  AGENT_RUNTIME=codex
+```
+
+Use dispatch parity for contract plumbing, then use run-history outcomes for
+the actual transport comparison:
+
+```bash
+ztare autoresearch dispatch-parity --json
+ztare autoresearch subscription-outcomes --json
+```
+
+When comparable rows are missing, `subscription-outcomes` includes a
+`matched_run_plan` with ready project/rubric candidates plus the paired API,
+subscription, and follow-up audit commands. Use `--plan-limit <n>` or
+`PLAN_LIMIT=<n>` to change how many candidates are shown. Each candidate also
+reports `suitability_score` and `risk_flags`; prefer high-suitability surfaces
+for the first transport comparison and avoid starting with hard proof-search
+or extra-gated projects unless that is the explicit target.
+`autoresearch health --json` also lifts the first suggested matched-pair
+command into the `subscription_outcomes` evidence gap, so the first-page health
+report can be used as the launch checklist.
+The default text report is read-only and prints `model_calls=none`; only the
+generated `experiment-loop` commands or the matched-pair wrapper with
+`RUN_MATCHED_PAIR=1` launch model work.
+
+The generated commands stamp `MATCHED_RUN_ID` and `MATCHED_RUN_ROLE` into
+future `eval_history.jsonl` rows. After both sides run, the audit reports
+`matched_run_groups` and `comparable_matched_run_group_count`, so the ex-post
+read is a grouped comparison rather than a loose search over nearby history. The
+audit suggestions use the next visible id for that project, for example
+`pair_<project>_001`, then `_002` after the first pair appears in history. Do
+not reuse a pair id for a second transport trial.
+
+To avoid copying the pair manually, use the dry-run wrapper first:
+
+```bash
+make autoresearch-matched-transport-pair PROJECT=<project> [RUBRIC=<rubric>]
+```
+
+It prints the API row, subscription row, and follow-up audit command. Add
+`RUN_MATCHED_PAIR=1` only when you intend to launch both runs. If
+`MATCHED_RUN_ID` is omitted, the wrapper uses a UTC timestamp plus shell-PID id
+so repeated wrapper invocations do not collide. The equivalent CLI surface is
+`ztare autoresearch matched-transport-pair --project <project> --rubric
+<rubric> [--run]`; pass `--pair-id <id>` only when you deliberately want a
+specific id.
+
+Fresh `eval_history.jsonl` rows record both an aggregate transport and
+`worker_metadata_by_call_site` for mutator, judge, committee, and inverter
+review. Successful subscription-backed mutator, judge, and committee calls also
+emit prompt-free `worker_dispatch_receipts`; the projection prefers those
+completed receipts over requested policy metadata when they are present. That
+keeps judge-only or committee-only subscription experiments visible to the
+outcome audit, while avoiding a false subscription row when a flag was set but
+the call site did not complete through the subscription worker.
+
+When the question is which substrate or branch surface to prepare next, use the
+RD recommender before creating project scaffolding:
+
+```bash
+ztare autoresearch substrate-recommend --prompt-only
+ztare autoresearch substrate-recommend --agent-recommender --agent-runtime codex
+```
+
+Eigenquestion rotation is adjacent but not automatic. `ztare eigenquestion
+propose --project <project>` writes an advisory `proposed_eigenquestion_*.md`;
+it does not rewrite `project_charter.md`. `rd_tick_brief.py` surfaces pending
+proposals in §8f when `--autoresearch-project` is set, including whether the
+proposal is newer than the charter. `make loop`, `make experiment-loop`, and
+`ztare autoresearch run` also run a non-mutating preflight that warns when an
+advisory proposal is newer than the charter. Use
+`ztare eigenquestion status --project <project>` or
+`make eigenquestion-status PROJECT=<project>` to inspect it directly; set
+`EIGENQUESTION_PREFLIGHT=strict` on the Make path to fail the launch until the
+proposal is reviewed. Before merging a proposal, run `ztare eigenquestion
+validate --project <project>` or `make eigenquestion-validate PROJECT=<project>`
+so falsified explored-class rows have real `evidence_path` receipts.
+
+If a Research Director uses Codex, Claude, or another persistent/subscription
+agent outside the loop on a task that could plausibly have gone through
+autoresearch, record the decision with:
+
+```bash
+ztare autoresearch route \
+  --task "<task description>" \
+  --project <project> \
+  --rubric <rubric> \
+  --record-decision-id DECISION_ID
+```
+
+That row belongs to `domain=agentic_workbench` and should include the router
+decision: invoke autoresearch, prepare the missing surface, or stay out of loop
+with an explicit reason. Use `--selected-action` and
+`--why-not-autoresearch` when the RD chooses a different path from the router's
+default action. This is mandatory when the router says `invoke_autoresearch`
+and the selected action stays out of loop; otherwise kernel health flags the row
+as an unexplained bypass. The command saves the route JSON under
+`analytics/public/queries/rd/autoresearch_routes/` and appends a validated
+action-impact row. The route JSON also records the worker shape as explicit
+metadata: archetype, capability, state, identity, and transport. Use
+`record-agentic-route` for a pre-existing route JSON and
+`record-agentic-work --route-json-ref <route.json>` only when the row needs a
+custom payload. The row feeds action-impact evidence for later reflexive mining
+and operations intelligence. The aggregate
+in-loop/out-of-loop split already comes from reflexive mining
+(`analytics/public/ledgers/reflexive/bifurcation_report.json`) and is pushed to
+the dashboard via `scripts/public/mining/build_dashboard_bundle.py`; the
+action-intelligence row gives the decision-level explanation underneath that
+dashboard metric.
+
+Before treating subscription-backed workers as an execution default, run
+`ztare autoresearch dispatch-parity --json` on the fixed contract set. It
+reports API/subscription contract parity, replay `quality_score`, and a
+latency/call-count `cost_proxy`; `--live` exercises the subscription leg while
+keeping the API leg deterministic.
+
+For depth-sensitive RD closes, carry the same decision into
+`research_done.carrier_schema_receipts.autoresearch_workbench_routing` when
+the pattern-action contract selects `OP-AWR-01`. The receipt fields are owned
+by `src/ztare/research_director/pattern_action_contract.py`; the close scaffold
+only creates the placeholder object. Always include `route_json_ref` and
+`action_impact_ref` from the recorded route. If the router chooses
+`stay_out_of_loop`, include `why_not_autoresearch` and set
+`workbench_evidence_ref` to the action-intelligence row. If it chooses
+`invoke_autoresearch`, set `workbench_evidence_ref` to the run/projection
+artifact. If it chooses `prepare_autoresearch_surface`, name the missing
+evaluator/rubric/artifact surface there; `surface_scaffold` is the next build
+target.
 
 Supervisor commands:
 
@@ -296,11 +546,14 @@ Forecast typing rule:
 
 Stagnation pivoting:
 
-- at `stagnation_count >= 3`, the loop now injects a named pivot profile rather than a silent monolithic prompt
+- the loop injects a named pivot profile rather than a silent monolithic prompt once the active threshold is reached
+- Newton-mode rubrics pivot at `stagnation_count >= 2`; Kepler, calibration, and legacy-unspecified rubrics pivot at `stagnation_count >= 3`
+- `composition_stagnation_threshold` in the rubric overrides those defaults for that project
 - profiles currently include:
   - `legacy_generic`
   - `bounded_discriminator`
   - `kernel_bounded`
+  - `newton_discovery`
 - stdout reports which profile and heuristic modules were injected
 
 ### Artifact roles
@@ -431,10 +684,12 @@ make paper1-epistemic-legacy
 
 Stagnation handling is now explicit:
 
-- on non-V4 projects, the generic topological-pivot prompt is injected only once `stagnation_count >= 3`
-- at `stagnation_count >= 4`, the loop also purges visible axiom context and forces a blank-slate reset
-- on V4-family projects, the generic pivot is intentionally suppressed; `stagnation_count >= 3` injects a bounded mutation override instead of a free-form pivot
+- on non-V4 Newton-mode projects, the `newton_discovery` structural-pivot profile starts at `stagnation_count >= 2`
+- on non-V4 Kepler, calibration, and legacy-unspecified projects, the default structural-pivot profile starts at `stagnation_count >= 3`
+- one count after the pivot threshold, the loop also purges visible axiom context and forces a blank-slate reset unless the rubric overrides the threshold
+- on V4-family projects, the generic structural pivot is intentionally suppressed; `stagnation_count >= 3` injects a bounded mutation override instead of a free-form pivot
 - these modes are now announced in loop stdout so the operator can see when the prompt contract changes
+- loop-event JSON keeps legacy `event_type` ids for dashboard compatibility and adds `event_label` for the operator-facing name
 
 ## Runtime Notes
 
@@ -748,7 +1003,7 @@ For an existing project:
 
 ---
 
-## 12. Sandbox Construction: GP-072 Division A/B Protocol
+## 12. Sandbox Construction: [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) Division A/B Protocol
 
 When setting up a science sandbox (closed experiment with known GT), use the Division A / Division B information isolation protocol. **Do not** have a single agent that knows GT also write mutator-visible files. Contamination is an information flow problem, not a discipline problem.
 
@@ -978,7 +1233,7 @@ Use this when the goal is to test whether ZTARE can recover a known mathematical
 
 ### When to use
 
-- Testing a new Component D grammar command or primitive on a controlled target
+- Testing a new grammar-guided symbolic regression command or primitive on a controlled target
 - Calibration runs before pointing ZTARE at a genuinely unknown domain
 - Infrastructure verification (continuous substrate, bivariate evidence, new mutator plumbing)
 
@@ -989,7 +1244,7 @@ Use this when the goal is to test whether ZTARE can recover a known mathematical
 ```python
 # src/ztare/substrates/<slug>_gt.py
 def f_true(x1, x2) -> float: ...       # ground truth
-def f_dominant(x1, x2) -> float: ...   # dominant term (for Component C)
+def f_dominant(x1, x2) -> float: ...   # dominant term for residual diagnostics
 def evidence_grid() -> list[tuple[float, float]]: ...   # visible training points
 def holdout_grid() -> list[tuple[float, float]]: ...    # hidden evaluation points
 ```
@@ -1007,7 +1262,7 @@ python -m src.ztare.scaffold.generate_substrate --help
 # sandboxes").
 ```
 
-This writes Division B artifacts (rubric, gate_harness.py, test_model.py, evidence files, charter) and an opaque re-export stub at `src/ztare/substrates/<slug>_gt.py`. The rubric field `component_c_gt_module` points to the stub, not the Division A script.
+This writes Division B artifacts (rubric, gate_harness.py, test_model.py, evidence files, charter) and an opaque re-export stub at `src/ztare/substrates/<slug>_gt.py`. The rubric field `residual_diagnostics_gt_module` points to the stub, not the Division A script; `component_c_gt_module` remains accepted only as a legacy alias for old rubrics.
 
 **3. Seal the sandbox**
 

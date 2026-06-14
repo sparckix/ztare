@@ -15,15 +15,15 @@ description: "Criteria for what counts as a ZTARE primitive."
 
 ### Reflexive Engineering Primitive (REP)
 
-A specific application of one of ZTARE's three legs (Invert / Compress / Adversarial Disagreement) turned **inward on the apparatus itself**, the engine using its own scientific principles to improve its own infrastructure. The catalog lives in `docs/concepts/reflexive_engineering.md`.
+A specific application of one of ZTARE's three legs (Invert / Compress / Adversarial Disagreement) turned **inward on the apparatus itself**: the engine applies a principle it uses to evaluate substrates to its own infrastructure instead. The catalog lives in `docs/concepts/reflexive_engineering.md`.
 
-The defining quality: a REP is a **philosophical meta-move**. It says: "We have a principle for evaluating substrates; here's that same principle applied to the apparatus that evaluates them." Each existing REP names the leg, names the apparatus surface it operates on, and explains why the leg-application is the right shape.
+A REP is a meta-move: it takes a principle used for evaluating substrates and applies that same principle to the apparatus that evaluates them. Each existing REP names the leg, names the apparatus surface it operates on, and explains why the leg-application is the right shape.
 
 ### Agentic Engineering Pattern (AEP)
 
 A **standard software-engineering discipline** adapted for pipelines whose internals are LLM calls, pipelines that are non-deterministic at the call layer but deterministic at the orchestration layer. The catalog lives in `docs/concepts/agentic_engineering_patterns.md`.
 
-The defining quality: an AEP is **plumbing, not philosophy**. It says: "Here's a recurring bug class in LLM-mediated pipelines; here's a detector + fix + invariant assertion that closes it." Patterns are substrate-agnostic and adoptable à la carte without buying into ZTARE epistemology.
+An AEP is orchestration infrastructure, not a ZTARE-specific principle. It names a recurring bug class in LLM-mediated pipelines and a detector + fix + invariant assertion that closes it. Patterns are substrate-agnostic and adoptable à la carte without adopting any ZTARE-specific framing.
 
 ---
 
@@ -44,7 +44,7 @@ The catalogs should stay separate by primary claim:
   across contexts.
 
 When both tests pass, document both entries and cross-link them instead of
-forcing a false exclusive choice. GP-230 is the working example: Pattern 12
+forcing a false exclusive choice. [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) is the working example: Pattern 12
 is the public sealed-forecast-pool infrastructure; Primitive 9 is the inward
 reflexive market that uses scored forecasts to govern ZTARE's own actions.
 

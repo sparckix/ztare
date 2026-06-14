@@ -5,14 +5,15 @@ ZTARE commands
 
 Variables:
   PROJECT=<project> RUBRIC=<rubric> MODEL=<model> MUTATOR_MODEL=<model> JUDGE_MODEL=<model>
+  AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 AGENT_RECOMMENDER=1 [AGENT_RUNTIME=codex|claude]
   MODE=factory|honeypot  (default: factory; honeypot sets ITERS=50 and skips pre-run pipeline)
 
 Run modes:
-  factory, tight rubric, GP-054 pre-run, 5-10 iters, synthesis output (default)
+  factory, standard tight-rubric mode, [GP-054](../../research_areas/seams/protocol/GP-054_rubric_quality_and_generation_seam.md) pre-run, 5-10 iters, synthesis output (default)
   honeypot, loose rubric, no pre-run, 50 iters, debate log is the output
 
 Targets:
-  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # factory pre-run: fetch→compile→review→pause
+  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # standard pre-run: fetch→compile→review→pause
   make honeypot-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=50]       # honeypot run: no pre-run, MODE=honeypot
   make evidence-prepare PROJECT=<project> MODEL=gemini                    # workspace-update + evidence-compile in one step
   make workspace-update PROJECT=<project> MODEL=gemini
@@ -21,6 +22,37 @@ Targets:
   make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]
   make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] MUTATOR_MODEL=gemini JUDGE_MODEL=gemini
   make experiment-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10]   # auto-configures from rubric (holdout gate, underidentified_after)
+  make experiment-loop PROJECT=<project> RUBRIC=<rubric> AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 [AGENT_RUNTIME=codex]
+  make experiment-loop PROJECT=<project> RUBRIC=<rubric> MATCHED_RUN_ID=<id> MATCHED_RUN_ROLE=api|subscription
+  make autoresearch-route TASK='<task>' PROJECT=<project> RUBRIC=<rubric> [BOUNDED=1 STABLE=1 RUBRIC_READY=1 ARTIFACT=1]
+  make autoresearch-projection PROJECT=<project> [OUT=<path>]
+  make autoresearch-dispatch-validate [JSON=1]
+  make autoresearch-dispatch-canary [CONTRACT=text|mutator|judge|committee|inverter] [DISPATCH_CALL_SITE=mutator] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]
+  make autoresearch-dispatch-parity [CONTRACTS=text,mutator,judge,committee,inverter] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]
+  make autoresearch-subscription-outcome-audit [PROJECT=<project>] [JSON=1] [STRICT=1] [MIN_ROWS=1] [PLAN_LIMIT=5]
+  make autoresearch-matched-transport-pair PROJECT=<project> [RUBRIC=<rubric>] [MATCHED_RUN_ID=<id>] [RUN_MATCHED_PAIR=1]
+  make autoresearch-consequence-audit [PROJECT=<project>] [WORKSPACE=<path>] [JSON=1]
+  make autoresearch-rubric-mode-audit [RUBRIC=<path>] [JSON=1] [LIMIT=40] [FRESHNESS_DAYS=30] [STRICT=1]
+  make autoresearch-hillclimb-audit [PROJECT=<project>] [JSON=1] [LIMIT=40] [STAGNATION_THRESHOLD=2]
+  make autoresearch-kernel-health [PROJECT=<project>] [RUBRIC=<path>] [WORKSPACE=<path>] [JSON=1] [STRICT=1] [STAGNATION_THRESHOLD=2]
+  make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [FRESHNESS_DAYS=14] [MAX_PROJECTS=30] [NO_MARKDOWN=1] [JSON=1]
+  make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]
+  make blitz-survival-report PROJECT=<project> [OUT=<json>] [MD_OUT=<md>]
+  make inloop-fixture-validate [JSON=1]
+  make gaming-vector-hardening-show
+  make gaming-vector-hardening-check-plan
+  make gaming-vector-hardening-sync-plan
+  make gaming-vector-hardening-run-current
+  make gaming-vector-hardening-run-vector VECTOR=<name> [SUBSTRATE=autoresearch]
+  make gaming-vector-hardening-selftest
+  make eigenquestion-propose PROJECT=<project> [MODEL=<model>]
+  make eigenquestion-validate PROJECT=<project>
+  make eigenquestion-status PROJECT=<project> [EIGENQUESTION_PREFLIGHT=strict]
+  make primitive-catalog-health [JSON=1]
+  make primitive-parent-utility [JSON=1]
+  make primitive-amnesia-eval [RECORD_MISSES=1]
+  make primitive-catalog-repopulate
+  make primitive-catalog-build-atlas [EMBEDDER=gemini-code]
   make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
   make committee PROJECT=<project>
   make benchmark BENCH_JUDGE=gemini BENCH_JOBS=3

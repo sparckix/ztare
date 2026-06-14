@@ -14,17 +14,29 @@ Plain-English definitions for every term that matters. If a term isn't here, it'
 ## Core Concepts
 
 **GP-NNN (project / seam tracking ID)**
-A numbered identifier the repository uses to tag a project, a seam (a design contract), a primitive, or a sealed result — *not* a part of any public API. The convention is read-only for outside readers: an entry such as "GP-225 (LeanMill)" is a pointer into the internal ledger, not a commitment about an interface. The mapping from GP-NNN to artifacts is maintained in `docs/internal/repo_audits/gp_index.md`. Recurring examples a public reader will encounter: GP-191 (cognitive-firm kernel overlay), GP-225 (LeanMill / GNN lemma-relevance work), GP-230 (forecast pool), GP-233 (research-yield decomposition seam), GP-241 (commit-membrane daemon), GP-243 (action intelligence).
+A numbered identifier the repository uses to tag a project, a seam (a design contract), a primitive, or a sealed result — *not* a part of any public API. The convention is read-only for outside readers: an entry such as "[GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) (LeanMill)" is a pointer into the internal ledger, not a commitment about an interface. The mapping from GP-NNN to artifacts is maintained in `docs/internal/repo_audits/gp_index.md`. Recurring examples a public reader will encounter: [GP-191](../../research_areas/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md) (cognitive-firm kernel overlay), [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) (LeanMill / GNN lemma-relevance work), [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) (forecast pool), [GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) (research-yield decomposition seam), [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) (commit-membrane daemon), [GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) (action intelligence).
 
 **ZTARE (Zero-Trust Adversarial Reasoning Engine)**
 A system that stress-tests claims by having one AI propose an answer and another AI attack it, with hard numeric checks that neither can override. Think of it as an independent audit for any claim, the same idea as hiring an auditor who doesn't work for the company being audited.
 
 **Model-Environment Thesis**
-The core intuition behind ZTARE: model capability is talent, but research
-quality depends on the environment around that talent. Task framing, evidence
-boundaries, role separation, source readiness, falsifiers, durable memory, and
-demotion rules decide whether a strong model produces auditable work or
-persuasive overclaim.
+The core intuition behind ZTARE, also called the *nurture thesis*: model
+capability is talent, but research quality depends on the environment around
+that talent. Task framing, evidence boundaries, role separation, source
+readiness, falsifiers, durable memory, and demotion rules decide whether a
+strong model produces auditable work or persuasive overclaim. The slogan form is
+"scale the environment, not the model."
+
+**Leaf (swappable model)**
+The frozen frontier model inside the apparatus (Claude, GPT, or Gemini). It is
+interchangeable: a stronger model plugs in as a new leaf under the same
+governance, so the discipline carries over rather than being rebuilt.
+
+**Constrained Validation Loop**
+The in-loop validation stack around the model. It lets the model propose
+structures such as functional forms and analogies, while deterministic
+machinery owns fitting, holdouts, gates, and evidence-bearing verdicts.
+The historical document filename is [cognitive_gym.md](cognitive_gym.md).
 
 **Mutator**
 The AI that proposes answers. It writes a thesis (the argument) and a test suite (code that checks the argument against data). Named "mutator" because each iteration mutates/improves the previous answer.
@@ -131,7 +143,7 @@ law.
 
 ## Scoring & Gates
 
-**Hard Gates (formally: Deterministic Charter Gates, GP-030)**
+**Hard Gates (formally: Deterministic Charter Gates, [GP-030](../../research_areas/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md))**
 Numeric pass/fail tests that no AI judge can override. Example: "the model's prediction must be within 5% of the actual data on the hidden points." If a hard gate fails, the score is capped at 50 regardless of how good the prose looks. This prevents the judge from rationalizing a wrong answer into a high score.
 
 **Rubric**
@@ -156,7 +168,7 @@ A "show your work" mode where the AI must: (1) break the problem into distinct r
 **Ontology Trap**
 When the AI recognizes what the data is (e.g., "this looks like Planck radiation") and imports the known formula instead of deriving it from the data. Named "trap" because it looks like success, the formula fits perfectly, but the AI cheated by recognizing the pattern rather than discovering it. This is a specific form of data contamination.
 
-**Fit Primitive (GP-035)**
+**Fit Primitive ([GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md))**
 A tool that lets the AI propose the shape of an equation, then uses a numerical optimizer (scipy) to find the best parameters. Without this, the AI has to guess the numbers, which it's bad at. With this, the AI proposes structure and the computer finds the numbers. Like giving a student a calculator after they set up the equation.
 
 **Findings Track**
@@ -174,16 +186,16 @@ controlled verifier.
 **Organizational Learning**
 The repo-level memory system that helps ZTARE allocate attention better over
 time: forecast records, yield decomposition, experiment rows, catch rows,
-action-impact records, and intelligence read models. It is not just more
-documentation; it is the source-backed record of what changed because of what
-the organization learned.
+action-impact records, and intelligence read models. It is a source-backed
+record of what changed in the project's behavior in response to a recorded
+finding, not just accumulated documentation.
 
 ---
 
 ## Loop Control
 
-**Pivot / Strategy Rotation (formally: Topological Pivot)**
-When the AI is stuck, the system changes the attack angle. Different project types get different rotation strategies. The goal is to avoid grinding the same failed approach.
+**Structural Pivot / Strategy Rotation**
+When the AI is stuck, the system changes the attack angle. Different project types get different rotation strategies. The goal is to avoid grinding the same failed approach. Some telemetry still uses the historical `topological_pivot` key for compatibility.
 
 **Underidentified**
 When the loop runs out of iterations without finding a satisfactory answer. The system stops and says "I couldn't solve this with the current evidence and approach" rather than pretending to have an answer.
@@ -208,6 +220,23 @@ The core evaluator code being improved. When we say "kernel hardening," we mean 
 The full scientific-discovery engine: validator, rubrics, substrate contracts,
 fit primitives, gates, proof bridges, and anti-Goodhart machinery. It is the
 part of ZTARE that pressure-tests hypotheses and returns a bounded verdict.
+
+**leanmill**
+The governed Lean proof-search subsystem (`src/ztare/leanmill/`). Swappable
+agent "leaves" propose proofs; one governance kernel decides whether a proof
+counts as a closure. It owns a work queue, an event log, and the space of moves
+the solver searches over.
+
+**Exogenous move**
+A solver step that brings in a result computed outside the language model — for
+example a witness found by symbolic computation — and hands it to the proof. The
+Lean kernel still verifies the finished proof, so the outside computation can
+suggest a step but never certify it.
+
+**Target-conditioned move router**
+A selector that reads the goal's structure and the last failure signal and
+promotes the move most likely to apply, so a useful move is tried first instead
+of after the budget is already spent.
 
 **Hard Problem Campaign**
 A bounded research campaign on a difficult substrate, such as Navier-Stokes,
@@ -252,7 +281,7 @@ A sealed record of what was believed at the end of a run. Immutable, never edite
 The state machine driver inside the supervisor. Owns hard gates and state transitions (A1 → A2 → B → C → D). No agent can bypass an OS-level gate.
 
 **Config Layer**
-Typed goal-lifecycle contracts that sit between the OS state machine and the agent runtime. The goal orchestrator (GP-070) lives here, it tracks active goals, defines their stages, and routes advancement commands.
+Typed goal-lifecycle contracts that sit between the OS state machine and the agent runtime. The goal orchestrator ([GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md)) lives here, it tracks active goals, defines their stages, and routes advancement commands.
 
 **App Layer**
 The agent runtime that operates within the fences set by OS and Config. Agents read staged requests, produce artifacts, and submit them back through the supervisor's commit path.
@@ -270,6 +299,15 @@ The organizational structure borrowed from Chandler/Williamson applied to AI gov
 **Division A / Division B**
 The two structural divisions in the M-Form. Division A is the generation side (mutator, workspace, synthesis). Division B is the verification side (verification panel, judge, hard gates). The governance claim is that they must not share a gradient.
 
+**Closure / Ratification**
+In leanmill, a proof counts as a *closure* only after governance *ratifies* it: the Lean kernel compiles the proof, its axioms are on an allowlist, a matched negative control fails (so the gate is not trivially passable), and a statement-integrity check confirms the proved statement is the one that was asked. The agent that proposed the proof never ratifies its own work.
+
+**Composite ratification**
+Assembling a proof of a parent goal from sub-lemmas proved independently. The assembled chain is re-checked by the kernel and rejected unless every sub-lemma is used, none of them merely restates the goal, and the chain type-checks — which blocks the circular or vacuous "decompositions" that would otherwise manufacture a false closure.
+
+**Anti-laundering kernel (governance kernel)**
+The single deterministic gate that ratifies closures. "Laundering" is when a proof compiles but does not actually establish the claim — citing the target, assuming the conclusion, or exploiting a vacuous hypothesis. A clean compile is necessary but not sufficient; this kernel exists to catch the rest.
+
 **Subliminal Learning**
 A training-time phenomenon (Cloud et al. 2026, Nature 652) where models sharing base initialization transmit behavioral traits through semantically unrelated data during fine-tuning. Distinct from steganography, the signal is not human-readable. Operates during gradient descent, not during inference-time in-context reading.
 
@@ -284,7 +322,7 @@ A JSON file in a project's `raw/` directory that maps filenames to source types 
 
 ## Science Track (Asymptotic Discovery)
 
-**Compression Primitive (GP-103)**
+**Compression Primitive ([GP-103](../../research_areas/seams/engine/GP-103_topology_induction_gap.md))**
 A template enumeration engine that strips overparameterized surrogates to their minimal gate-passing form. Stage 1 tests 22 additive templates (combinations of sqrt, log, power, exp, 1/n). Stage 2 tests 13 depth-1 compositional templates (sqrt(n/log(n)), etc.). Selection by BIC. No LLM in the loop. The compression primitive is the core of `make discover` Phase 2.
 
 **Farther-Tail Holdout**
@@ -300,12 +338,12 @@ A discrete set of candidate exponents {0.25, 1/3, 0.5, 2/3, 1.0, 1.5, 2.0} used 
 Maps fitted floating-point parameters to exact mathematical constants using the PSLQ integer relation algorithm (via `mpmath.identify()`) and a curated constant library (pi, sqrt(2), euler_gamma, etc.). Transforms a numerical regression into a falsifiable mathematical conjecture.
 
 **Rival Exclusion Test**
-A post-discovery closure test that fits alternative functional forms (the "rivals" flagged by the judge's weakest-point feedback) against the same evidence and gates. If all rivals fail, the judge's concern is closed. Part of Phase 2.5 (GP-111).
+A post-discovery closure test that fits alternative functional forms (the "rivals" flagged by the judge's weakest-point feedback) against the same evidence and gates. If all rivals fail, the judge's concern is closed. Part of Phase 2.5 ([GP-111](../../research_areas/seams/engine/diagnostics/GP-111_proactive_closure_seam.md)).
 
 **UNDERIDENTIFIED**
 The correct output when no template in the library passes the holdout gates. Means the template library cannot express the target's asymptotic form. This is a finding, not a failure. The Ulam density result (A002858) is the canonical example.
 
-**Statistical Fingerprint (GP-110)**
+**Statistical Fingerprint ([GP-110](../../research_areas/seams/engine/diagnostics/GP-110_statistical_fingerprint_seam.md))**
 A characterization of sequences that resist closed-form compression. Measures spectral slope, Hurst exponent (via DFA), phase linearity (via Hilbert transform), and amplitude envelope. Used for UNDERIDENTIFIED sequences.
 
 **Lean Proof Stubs**
@@ -315,10 +353,10 @@ Lean 4 files generated by `lean_compiler.py` from ZTARE gate results. Gate passe
 
 ## Extraction Components
 
-**Structural Constraint Extractor (GP-061 Component A)**
+**Structural-Presence Extractor ([GP-061](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md))**
 Extracts structural constraints from failed candidate families by computing feature-bag intersections across iterations. Lives in `src/ztare/validator/`.
 
-**Negative Space Extractor (GP-061 Component B)**
+**Negative-Space Extractor ([GP-061](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md))**
 Detects void operators, mathematical operations absent from all tried candidate families. Identifies what the search space has systematically avoided, which may indicate structural gaps in the mutator's exploration.
 
 ---
@@ -328,7 +366,7 @@ Detects void operators, mathematical operations absent from all tried candidate 
 The full set is P1-P16 in [epistemic_principles.md](epistemic_principles.md) (the canonical owner). Only the two terms most often used as standalone vocabulary are restated here.
 
 **Enforcement Completeness (P13)**
-The principle that an enforcement surface must cover every branch of every conditional it touches. A deterministic enforcement floor with a gap on one branch is structurally equivalent to no enforcement on that branch. Added after GP-080 postmortem (2026-04-17). See [epistemic_principles.md](epistemic_principles.md).
+The principle that an enforcement surface must cover every branch of every conditional it touches. A deterministic enforcement floor with a gap on one branch is structurally equivalent to no enforcement on that branch. Added after [GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) postmortem (2026-04-17). See [epistemic_principles.md](epistemic_principles.md).
 
 **Downstream Symptom Chasing (P14)**
 The anti-pattern of fixing downstream effects of a root cause across multiple sessions without tracing upstream to the root. Diagnostic: if three fixes at three layers don't resolve the same error, the root cause is in the part of the path no fix has touched. Added after GP-080 postmortem (2026-04-17). See [epistemic_principles.md](epistemic_principles.md).
@@ -337,12 +375,12 @@ The anti-pattern of fixing downstream effects of a root cause across multiple se
 
 ## Org Runtime And 2026 Vocabulary
 
-Terms from the org-runtime and post-GP-128 arc, the part of the project the older sections above predate.
+Terms from the org-runtime and post-[GP-128](../../research_areas/seams/mission/org/GP-128_persistent_manager_agent_seam.md) arc, the part of the project the older sections above predate.
 
-**Cognitive-Firm Kernel / Tenant Overlay (GP-191)**
+**Cognitive-Firm Kernel / Tenant Overlay ([GP-191](../../research_areas/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md))**
 The substrate-agnostic governance kernel is the separate public repo `cognitive-firm`. This repo carries only a thin *tenant overlay* of it; a fresh public clone here runs kernel-only. The overlay is the project-specific configuration on top of the shared kernel.
 
-**Commit-Membrane Daemon (GP-241)**
+**Commit-Membrane Daemon ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md))**
 An epistemic-verificator daemon that is the sole writer of the official store (the experiment record and ledgers). The agent cannot hand-edit official state; it submits a proposal and the daemon stamps or quarantines it. A hand-written record is non-authoritative by construction.
 
 **Post-Tick Gate (`post_tick_check.py`)**
@@ -354,7 +392,7 @@ The substrate-agnostic amnesia defense (GP-238). Each substrate declares a small
 **Reflexive Primitive**
 A capability the apparatus runs on its own infrastructure (the audit that demoted the project's own measurement instrument is one). Catalogued in [reflexive_engineering.md](reflexive_engineering.md).
 
-**Forecast Pool (GP-230)**
+**Forecast Pool ([GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md))**
 A sealed primitive that records macro/meso/micro branch choices as forecast contracts with ex-post scoring, so routing decisions are calibrated rather than asserted.
 
 **Mandate / Role Daemon / Transition Log / Damage Signal**

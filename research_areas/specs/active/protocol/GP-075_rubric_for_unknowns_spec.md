@@ -1,5 +1,11 @@
 # GP-075 — Rubric Generation for Unknown Domains
 
+Canonical file-format note: this spec governs unknown-domain rubric design
+principles. The current rubric JSON schema, `rubric_mode` contract, and
+operator flag list are maintained in `docs/concepts/rubric_specification.md`.
+When adding or changing a rubric field, update the canonical spec and link back
+from here only if the change affects unknown-domain design.
+
 ## Status
 
 Active

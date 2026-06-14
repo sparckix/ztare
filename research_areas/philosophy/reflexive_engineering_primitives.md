@@ -3,7 +3,7 @@
 **Status:** public / catalog of architectural self-applications
 **Date:** 2026-04-19; updated 2026-05-08 with RP-001 third-class addition
 **Philosophical parent:** Three Legs of ZTARE
-**Provenance:** Principal inception during GP-100/GP-101 sessions. Gemini Pro synthesis identified the pattern class. Each primitive applies a ZTARE leg back onto the ZTARE infrastructure itself — the engine eating its own tail in a productive way.
+**Provenance:** Principal inception during [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md)/GP-101 sessions. Gemini Pro synthesis identified the pattern class. Each primitive applies a ZTARE leg back onto the ZTARE infrastructure itself — the engine eating its own tail in a productive way.
 
 ## Summary Table
 
@@ -33,7 +33,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Leg applied:** Compress (Leg 2)
 **Target of application:** The agent's own understanding of its operational substrate
-**First instance:** `autoresearch_loop_architectural_map.md` (GP-100)
+**First instance:** `autoresearch_loop_architectural_map.md` ([GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md))
 **Full derivation:** `token_optimized_self_modeling.md` in this folder
 
 **The move:** The agent reads large files through a narrow context window. This is the same problem as observing a system through a narrow instrument window — partial views cause globally wrong local edits. The standard fix (more documentation) is Ptolemaic: add more tokens, hope the agent reads the right ones. The compress move: build a minimal structural cache that gives the agent the global dependency graph in fewer tokens than reading any single region of the source file.
@@ -45,7 +45,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 - Pipeline ordering contracts exist (phase A must complete before phase C)
 - A demonstrated error occurred from partial-view reading
 - Build: region index + dependency chain + invariant contracts + edit-intent lookup table
-- Format: structured blocks (GP-101 debate converged on DEPENDS_ON edges, not prose)
+- Format: structured blocks ([GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) debate converged on DEPENDS_ON edges, not prose)
 
 ---
 
@@ -73,7 +73,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Leg applied:** Adversarial Disagreement (Leg 3)
 **Target of application:** The review layer's own expertise selection
-**First instance:** GP-079 Option 4 implementation (LLM router + dynamic fallback + promotion)
+**First instance:** [GP-079](../seams/protocol/GP-079_persona_library_unification_seam.md) Option 4 implementation (LLM router + dynamic fallback + promotion)
 
 **The move:** Static personas are expert lenses that focus adversarial review on specific failure types. But the set of failure types is not closed — novel substrates produce novel failure families that no pre-authored persona covers. Standard fix: author more personas (linear scaling, requires operator domain knowledge — oracle-adjacent). Reflexive fix: the review system applies adversarial disagreement to its own persona selection — an LLM evaluates which static lenses are insufficient and generates a novel lens when needed.
 
@@ -94,7 +94,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Leg applied:** Compress (Leg 2) + Invert (Leg 1)
 **Target of application:** The grammar expansion mechanism itself
-**First instance:** GP-087 (not yet implemented — Langevin v2 is the motivating case)
+**First instance:** [GP-087](../seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md) (not yet implemented — Langevin v2 is the motivating case)
 
 **The move:** When the engine's grammar ceiling is reached (best form fails farther-tail), the failure residual — the structured discrepancy between the best static form and the observed data — encodes the mathematical shape of what the grammar is missing. Standard fix: operator injects a new primitive based on domain intuition (not scalable). Reflexive fix: the engine inverts its own failure (Leg 1) and compresses the residual into a primitive proposal (Leg 2).
 
@@ -117,7 +117,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 1. **Each applies a ZTARE leg to the engine itself**, not to the candidate models the engine evaluates.
 2. **Each was discovered from a specific failure**, not designed from first principles. Token-Optimized Self-Modeling came from a partial-view edit mistake. The Inception Pattern came from the same incident. The Persona Router came from static personas being insufficient for novel failure families. Residual Isomorphism came from Component D's visible-window blindness.
-3. **Each is testable against the failure that motivated it.** The architectural map prevents the class of errors from GP-100. The persona router selects better lenses than the static table. Residual Isomorphism should break the Langevin ceiling (not yet verified — n=0 for this primitive).
+3. **Each is testable against the failure that motivated it.** The architectural map prevents the class of errors from [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md). The persona router selects better lenses than the static table. Residual Isomorphism should break the Langevin ceiling (not yet verified — n=0 for this primitive).
 4. **None requires new theoretical machinery.** Each is a straightforward application of an existing ZTARE principle to a new target. The novelty is the reflexive application, not the principle.
 
 ---
@@ -126,10 +126,10 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Leg applied:** Adversarial Disagreement (Leg 3) + Compress (Leg 2)
 **Target of application:** The goal lifecycle and declarative configs
-**First instance:** Not yet implemented — conceptual, triggered by GP-079 + supervisor loop convergence
-**Status:** n=0 — proposed by principal during GP-087 wiring session
+**First instance:** Not yet implemented — conceptual, triggered by [GP-079](../seams/protocol/GP-079_persona_library_unification_seam.md) + supervisor loop convergence
+**Status:** n=0 — proposed by principal during [GP-087](../seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md) wiring session
 
-**The move:** The supervisor loop (GP-070) orchestrates goals through stages with declarative configs. When a goal fails repeatedly at a specific stage, the failure is usually attributed to the hypothesis (the science was wrong). But sometimes the failure is in the process — the stage description is ambiguous, the gate criteria are miscalibrated, or a structural requirement is missing from the config. Standard fix: the operator manually audits and patches the config. Reflexive fix: the supervisor launches an Orchestration Audit goal that treats `transitions.jsonl` as evidence and uses the Hybrid Persona Router to convene a "Process Committee" that identifies structural friction.
+**The move:** The supervisor loop ([GP-070](../seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md)) orchestrates goals through stages with declarative configs. When a goal fails repeatedly at a specific stage, the failure is usually attributed to the hypothesis (the science was wrong). But sometimes the failure is in the process — the stage description is ambiguous, the gate criteria are miscalibrated, or a structural requirement is missing from the config. Standard fix: the operator manually audits and patches the config. Reflexive fix: the supervisor launches an Orchestration Audit goal that treats `transitions.jsonl` as evidence and uses the Hybrid Persona Router to convene a "Process Committee" that identifies structural friction.
 
 **What makes it reflexive:** The supervisor applies Adversarial Disagreement to its own orchestration process. The "residual" is not a mathematical discrepancy but a process residual — stages with high rejection rates, long dwell times, or frequent escalations. Compress (Leg 2) reduces the audit log to the minimal set of config changes that would have prevented the observed friction.
 
@@ -137,9 +137,9 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Instantiation checklist (when implemented):**
 - Supervisor loop can trigger a meta-goal with `transitions.jsonl` as input
-- Process Committee uses existing persona infrastructure (GP-079 router)
+- Process Committee uses existing persona infrastructure ([GP-079](../seams/protocol/GP-079_persona_library_unification_seam.md) router)
 - Output is a PR or config patch, not a report
-- Gate: config change must reduce friction on historical replay (same test as GP-101 Q5)
+- Gate: config change must reduce friction on historical replay (same test as [GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) Q5)
 
 **Open question:** Is this a new primitive or an instantiation of Hybrid Persona Router applied to a different layer? The mechanism (route personas to failure signal, generate if missing, promote on success) is identical — only the target changes from "review layer" to "orchestration layer." If it's just a new target for an existing primitive, it doesn't deserve a separate catalog entry. If the orchestration layer has structurally different properties (declarative configs vs. prose prompts, process residuals vs. mathematical residuals), it earns its own entry. The answer depends on whether the implementation reveals new failure modes the router doesn't handle.
 
@@ -149,10 +149,10 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 **Leg applied:** Adversarial Disagreement (Leg 3)
 **Target of application:** The specification layer — rubrics and their fidelity to charters
-**First instance:** GP-105 M-Form Alignment Audit seam (2026-04-20), motivated by Seattle qualitative project scoring 94 on a narrow housing-NPV thesis while the charter demanded full externality balance
+**First instance:** [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-Form Alignment Audit seam (2026-04-20), motivated by Seattle qualitative project scoring 94 on a narrow housing-NPV thesis while the charter demanded full externality balance
 **Status:** n=0 — seam open, design debated, spec pending
 
-**The move:** A rubric-optimizing Mutator will systematically exploit any gap between a rubric's explicit scoring criteria and the charter's implicit analytical requirements. Standard fix: harden the pre-run rubric (GP-104B, GP-054 check 6). Reflexive fix: during the run, fire an independent "General Office" LLM call that reads only the charter and the champion thesis — blinded to the rubric — and asks "did this thesis engage the charter's full scope?" If a gap is detected, append an adversarial criterion to the rubric and resume under the hardened specification. The Mutator is forced back to work on the actual question.
+**The move:** A rubric-optimizing Mutator will systematically exploit any gap between a rubric's explicit scoring criteria and the charter's implicit analytical requirements. Standard fix: harden the pre-run rubric (GP-104B, [GP-054](../seams/protocol/GP-054_rubric_quality_and_generation_seam.md) check 6). Reflexive fix: during the run, fire an independent "General Office" LLM call that reads only the charter and the champion thesis — blinded to the rubric — and asks "did this thesis engage the charter's full scope?" If a gap is detected, append an adversarial criterion to the rubric and resume under the hardened specification. The Mutator is forced back to work on the actual question.
 
 **What makes it reflexive:** Adversarial Disagreement (Leg 3) is a principle ZTARE applies to candidate evaluation — multiple independent judges must agree for a claim to survive. The Reflexive Specification Audit applies the same principle to the *specification* rather than the *candidate*: the General Office disagrees with the rubric's implicit claim to fully capture the charter, not with the thesis's claims about the world.
 
@@ -161,10 +161,10 @@ This is not circular. A weightlifter who applies progressive overload to their o
 **Critical panel findings (multidisciplinary debate, 2026-04-20):**
 1. **Trigger must be stochastic** (Goodhart): `p = 0.15 + 0.65 * sigmoid(score − 85)`. Fixed thresholds are exploitable.
 2. **Cross-family model separation required** (Chandler): General Office must use a different LLM family from Judge and Mutator. Prompt separation alone is not organizational separation.
-3. **Act step closes the PDCA loop** (Deming): GP-105 findings write to `rubrics/goodhart_log.jsonl`; `generate_gp_project.py` reads this at rubric generation time and injects top-3 prior adversarial criteria for same domain. Without Act, inspection does not reduce defect rate.
+3. **Act step closes the PDCA loop** (Deming): [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) findings write to `rubrics/goodhart_log.jsonl`; `generate_gp_project.py` reads this at rubric generation time and injects top-3 prior adversarial criteria for same domain. Without Act, inspection does not reduce defect rate.
 4. **Antifragile weight schedule** (Taleb): appended criterion starts at 10% weight, +5% per evasion iter, capped at 30%. Grows proportionally to evasion — the Mutator cannot avoid it indefinitely.
-5. **Polycentric monitoring** (Ostrom): GP-102 `insufficient_data` on qualitative + score ≥ 85 should escalate to GP-105 as its resolution path. New GP-102 verdict: `goodharted_specification`.
-6. **Strange loop is productive** (Hofstadter): GP-105 can itself be Goodharted (Mutator stays just below stochastic trigger mean). The loop is productive because each successful evasion updates goodhart_log.jsonl, making the next project's initial rubric harder to evade. Antifragility terminates the regress.
+5. **Polycentric monitoring** (Ostrom): [GP-102](../seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) `insufficient_data` on qualitative + score ≥ 85 should escalate to [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) as its resolution path. New [GP-102](../seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) verdict: `goodharted_specification`.
+6. **Strange loop is productive** (Hofstadter): [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) can itself be Goodharted (Mutator stays just below stochastic trigger mean). The loop is productive because each successful evasion updates goodhart_log.jsonl, making the next project's initial rubric harder to evade. Antifragility terminates the regress.
 
 **Distinction from Primitive 5 (Reflexive Orchestration):** Primitive 5 audits the *orchestration process* (goal lifecycle, declarative configs, transitions.jsonl). Primitive 6 audits the *specification* (rubric fidelity to charter). Different targets, different evidence surfaces, different interventions — earns a separate catalog entry.
 
@@ -174,8 +174,8 @@ This is not circular. A weightlifter who applies progressive overload to their o
 - `general_office_model` rubric flag set to a different family from Judge and Mutator
 - Stochastic trigger: `p_audit(score)` computed per iteration; max_audits_per_run = 2; iter ≤ 10 only
 - General Office receives: charter + thesis (scoring metadata stripped). Never receives rubric.
-- goodhart_log.jsonl write path in GP-105; read path in generate_gp_project.py
-- GP-102 escalation connection: `insufficient_data` + score ≥ 85 → `escalation_required` event
+- goodhart_log.jsonl write path in [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md); read path in generate_gp_project.py
+- [GP-102](../seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) escalation connection: `insufficient_data` + score ≥ 85 → `escalation_required` event
 
 ---
 
@@ -183,7 +183,7 @@ This is not circular. A weightlifter who applies progressive overload to their o
 
 1. **Each applies a ZTARE leg to the engine itself**, not to the candidate models the engine evaluates.
 2. **Each was discovered from a specific failure**, not designed from first principles. Token-Optimized Self-Modeling came from a partial-view edit mistake. The Inception Pattern came from the same incident. The Persona Router came from static personas being insufficient for novel failure families. Residual Isomorphism came from Component D's visible-window blindness. Reflexive Specification Audit came from the Seattle qualitative run scoring 94 on the wrong question.
-3. **Each is testable against the failure that motivated it.** The architectural map prevents the class of errors from GP-100. The persona router selects better lenses than the static table. Residual Isomorphism should break the Langevin ceiling. Reflexive Specification Audit should prevent the Seattle Goodharting pattern from recurring.
+3. **Each is testable against the failure that motivated it.** The architectural map prevents the class of errors from [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md). The persona router selects better lenses than the static table. Residual Isomorphism should break the Langevin ceiling. Reflexive Specification Audit should prevent the Seattle Goodharting pattern from recurring.
 4. **None requires new theoretical machinery.** Each is a straightforward application of an existing ZTARE principle to a new target. The novelty is the reflexive application, not the principle.
 
 ---
@@ -216,9 +216,9 @@ Both are reflexive in the same sense as RP-001: they treat the apparatus's own o
 
 ---
 
-## META-DARWIN strange-loop self-demotion (2026-05-08)
+## Meta-Darwin self-demotion (2026-05-08)
 
-When the catch ledger or anti-pattern catalog detects a violation, the META-DARWIN protocol demotes the offending claim *in the same artifact as the original claim* — not in a separate erratum, not in a follow-up document. The protocol earned its name from applying its own demotion rule recursively to the demotion rule itself: if the catch ledger inflates its own row count past what the concurring-agent gate would ratify, the ledger demotes its own count in the same row. Tonight's session (2026-05-08) ran five such self-demotions: pincer-verdict UPGRADE, fix-dispatch UPGRADE attempt, `_of_liminf_eq` "Onsager-1/3-open → uncontroversial" laundering, "no new 2026 breakthroughs needed" overclaim, and the T9 "user-visible sorry-free" claim.
+When the catch ledger or anti-pattern catalog detects a violation, the Meta-Darwin protocol demotes the offending claim *in the same artifact as the original claim* — not in a separate erratum, not in a follow-up document. The protocol earned its name from applying its own demotion rule recursively to the demotion rule itself: if the catch ledger inflates its own row count past what the concurring-agent gate would ratify, the ledger demotes its own count in the same row. Tonight's session (2026-05-08) ran five such self-demotions: pincer-verdict UPGRADE, fix-dispatch UPGRADE attempt, `_of_liminf_eq` "Onsager-1/3-open → uncontroversial" laundering, "no new 2026 breakthroughs needed" overclaim, and the T9 "user-visible sorry-free" claim.
 
 The strange-loop framing (after Hofstadter) is that recursive application of the demotion rule to itself is what makes the discipline robust against being gamed by agents who learn the demotion rule's surface form. A one-pass self-check is gameable; a self-check that applies recursively to itself is what catches what one-pass review misses.
 
@@ -226,7 +226,7 @@ The strange-loop framing (after Hofstadter) is that recursive application of the
 
 ## Where This Does NOT Belong
 
-- **Not Paper 5.** Paper 5 is the permanent treatise on ZTARE methodology. These primitives are engineering patterns, not research findings. They may be referenced in Paper 5's future-work section but they are not claims about the world — they are claims about how to build agentic systems.
+- **Not *Epistemic Verification*.** *Epistemic Verification* is the permanent treatise on ZTARE methodology. These primitives are engineering patterns, not research findings. They may be referenced in *Epistemic Verification*'s future-work section but they are not claims about the world — they are claims about how to build agentic systems.
 - **Not the Operational Manual.** The manual is a pre-run checklist. These primitives are design-time decisions, not run-time checks.
 - **This document IS the right home.** It is a companion to `three_legs_of_ztare.md` (the philosophy these primitives reflexively apply) and `cognitive_gym.md` (the constraint architecture that several of these primitives improve). It lives in `philosophy/` because the reflexive application is the insight, not the implementation.
 
@@ -236,11 +236,11 @@ The strange-loop framing (after Hofstadter) is that recursive application of the
 
 | Primitive | Seam | Implementation | Philosophy doc |
 |-----------|------|----------------|----------------|
-| Token-Optimized Self-Modeling | GP-101 | `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` | `token_optimized_self_modeling.md` |
-| Inception Pattern | GP-100 | Same map, injected via AGENTS.md §6i | (this document) |
-| Hybrid Persona Router | GP-079 | `src/ztare/personas/routing.py` | (this document) |
-| Residual Isomorphism | GP-087 | `autoresearch_loop.py` PHASE_G1 (~4092-4120) | (this document) |
+| Token-Optimized Self-Modeling | [GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) | `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` | `token_optimized_self_modeling.md` |
+| Inception Pattern | [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md) | Same map, injected via AGENTS.md §6i | (this document) |
+| Hybrid Persona Router | [GP-079](../seams/protocol/GP-079_persona_library_unification_seam.md) | `src/ztare/personas/routing.py` | (this document) |
+| Residual Isomorphism | [GP-087](../seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md) | `autoresearch_loop.py` PHASE_G1 (~4092-4120) | (this document) |
 | Reflexive Orchestration | (none) | Not yet implemented | (this document) |
-| Reflexive Specification Audit | GP-105 / GP-102 | `generate_gp_project.py` (audit invocation) | (this document) |
+| Reflexive Specification Audit | [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) / [GP-102](../seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) | `generate_gp_project.py` (audit invocation) | (this document) |
 | **RP-001 Architecture-Index Meta-Graph** | (architecture-index) | `src/ztare/architecture_index/INDEX.md` + `src/ztare/reflexive_primitives/architecture_index_meta_graph.md` | (this document, §Primitive 7) |
-| Reflexive Specification Audit | GP-105 | autoresearch_loop.py PHASE_E (pending) | (this document) |
+| Reflexive Specification Audit | [GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) | autoresearch_loop.py PHASE_E (pending) | (this document) |

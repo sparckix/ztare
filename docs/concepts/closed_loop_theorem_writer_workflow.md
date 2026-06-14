@@ -144,7 +144,7 @@ Either type of finding feeds back into the next iteration's nomination prompt (m
 
 ---
 
-## Honest caveats
+## Caveats and limitations
 
 - **Stage 1 is regex-based**, not Lean elaboration; misses qualified-name resolution edge cases (false-positive unresolved idents possible).
 - **Stage 2 produces scaffolds**, not finished proofs. Codex must resolve `?lemma_name` placeholders to actual term-mode references.

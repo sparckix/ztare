@@ -25,8 +25,8 @@ PASS  runtime smoke test  stamp=test_runtime_smoke_<timestamp>
 ```
 
 If you see five `ok` rows and a clean cleanup, the runtime is sound. The
-script exercises the five irreducible elements of the runtime, all in one
-pass, with no LLM dependency.
+script exercises the five core elements of the runtime in one pass, with no
+LLM dependency.
 
 ---
 
@@ -95,10 +95,9 @@ Common diagnoses:
 ## What "smoke test" means here
 
 This is not a stress test, a benchmark, a fuzzer, or a security audit. It is
-the smallest possible runnable proof that the runtime is alive and the
-contracts hold. If it passes, your runtime is in a sound starting state. If
-it fails, the runtime itself is broken, fix it before doing anything else
-with the org.
+the smallest runnable check that the runtime starts and the contracts hold.
+If it passes, your runtime is in a sound starting state. If it fails, the
+runtime itself is broken, fix it before doing anything else with the org.
 
 A passing smoke test is a necessary, not sufficient, condition for shipping
 work through the runtime. The next layer up is the rail-specific verification

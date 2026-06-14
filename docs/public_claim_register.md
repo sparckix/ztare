@@ -1,12 +1,12 @@
 ---
-description: "Conservative public claim register for the rowdy ZTARE campaigns."
+description: "Public claim register for the ZTARE campaigns: what survived, what did not, and where the evidence lives."
 ---
 
 # Public Claim Register
 
-Last refreshed: 2026-05-28
+Last refreshed: 2026-06-12
 
-This is the public claim register for the high-variance ZTARE campaigns:
+This is the public claim register for the ZTARE campaigns:
 Navier-Stokes, consciousness-ascription governance, modified gravity, neural
 scaling / mechanistic audits, experimental mathematics, vocabulary-escape
 calibration, empirical curve-fit recoveries, sealed apparatus calibrations,
@@ -21,7 +21,7 @@ next falsifier or source-design step is.
 The register is intentionally prose-first. Tables make these claims look more
 settled and more commensurable than they are.
 
-This is the canonical public entry point for rowdy campaigns. The
+This is the canonical public entry point for these campaigns. The
 [70-day journey](sprint_70day_journey.md), raw experiment track record, and
 project folders are evidence/provenance layers; they are not the source of
 current public claim status. If a campaign is not summarized here, treat it as
@@ -29,11 +29,10 @@ private, historical, or not yet public-claim-ready.
 
 ## Scope Discipline
 
-The repository is strong, but not finished. Its best public posture is:
-
-ZTARE is a falsification-native research system that has produced bounded
-scientific and governance results across several difficult substrates, while
-also preserving the demotions of its own wrong causal stories.
+ZTARE is a falsification-native research system. It has produced bounded
+scientific and governance results across several difficult substrates and
+preserves the demotions of its own wrong causal stories alongside the
+positive results. That is the scope of the public claim, no wider.
 
 The repository should not claim that Navier-Stokes is solved, consciousness is
 solved, modified gravity or dark matter is adjudicated, neural scaling laws are
@@ -85,7 +84,7 @@ The general posture: a single sealed run is real evidence, but it is the
 *weakest* defensible category, and the register should say so out loud
 rather than letting prose-volume substitute for replication.
 
-**Self-report epistemology caveat (2026-05-31).** The GP-166 noise-profile
+**Self-report epistemology caveat (2026-05-31).** The [GP-166](../research_areas/seams/mission/meta/GP-166_self_enacted_procedural_compliance_seam.md) noise-profile
 critic was turned inward on the apparatus's own metric series (the same critic
 that refuses to trust a substrate fit until it measures the residual's
 statistics). Two results the reader should hold: (1) the per-iteration
@@ -166,6 +165,50 @@ reduction ticks unless they carry a new falsifiable obligation.
 **Readiness.** Public, but requires careful framing. The journey is usable;
 the claim surface still needs readers to understand "scaffold sorry-free modulo
 named axioms" as bounded infrastructure, not closure.
+
+## LeanMill: Governed Proof Search And Autoformalization
+
+Last updated: 2026-06-12.
+
+**Public claim.** LeanMill is a governance layer for machine-generated formal
+work: LLM agents propose proofs, decompositions, and formalizations; a
+deterministic stack (kernel re-compile, axiom allowlist audit,
+statement-integrity diff against the original, matched negative controls)
+decides what earns credit. The claim is the governance, not the prover: the
+harness has repeatedly caught its own agents producing compiling-but-altered
+"closures" and rejected them at solve time, with receipts in the closure
+certificate ledger (`analytics/public/queries/adhoc_closure_certificates.jsonl`,
+`outcome=rejected_governance`, `statement_altered_confirmed`).
+
+**What survived.** Witness-transport closed 12/12 on a controlled corpus
+(Pell / factoring / Diophantine) where the native cascade closed 0/12 — a
+matched A/B, the one move with measured lift. The faithfulness firewall
+(round-trip judges + SMT boundary checks) runs on non-mathematical substrates
+(healthcare-privacy, aviation, export-control, DeFi policy text) and caught
+meaning-altering formalizations that passed a human review battery. On the
+Lam–Litt 1.1.1 order-1 program (open mathematics; no closure claimed),
+kernel-ratified sub-lemma certificates — each with a statement hash and a
+recompilable `.lean` artifact — accumulate across governed runs and are cited
+by later runs instead of re-derived.
+
+**What did not survive, kept on the record.** Early "apparatus gives no lift"
+nulls were dead-instrument artifacts (probes never parsed): the thesis was
+untested, not refuted. The abduce and reflection moves are subsumed by native
+automation at low degree; their lift claims were withdrawn and the nulls kept.
+A run-forensics pass found that closures ratified before 2026-06-12 carry
+hollow certificates (the checker verified in memory and persisted no probe);
+fixed, pre-fix rows retained and labeled, and integrity-unverified closures no
+longer earn credit.
+
+**Next falsifiers.** The differential re-verification stage (a proof that also
+closes its negated conclusion is rejected as vacuous-context) awaits its live
+contradictory-hypothesis positive control; attack-ordering and
+sum-of-squares-hint legs are claimed as built, with lift PENDING controlled
+A/Bs.
+
+**Readiness.** Public. The honest frame: an open problem decomposed under
+governance with certified partial progress and the cheating receipts kept —
+not a solved problem, not a benchmark claim.
 
 ## Consciousness-Ascription Governance
 
@@ -275,8 +318,9 @@ not externally reviewed.*
 
 **What is real here.** The pre-commit discipline was real, the anti-patterns
 were explicitly named and respected, and a non-trivial farther-tail margin
-was cleared on unseen classes under a smooth feature-conditioned form. That
-is good craft and worth recording. It is not yet a public physics claim.
+was cleared on unseen classes under a smooth feature-conditioned form. The
+result is recorded as an apparatus-internal candidate. It is not yet a public
+physics claim.
 
 **Next falsifier or source-design step.** An enriched v4 substrate that
 exposes one new candidate class-separating feature (e.g., a cluster
@@ -418,9 +462,9 @@ project's `public/` slice).**
   `p(n) − p(n−1)` recurrence. This is the canonical INS-015 instance
   of judge-demotion-then-recovery discipline. Public summary:
   [`projects/gp077_a002865_01/public/CLAIM_SUMMARY.md`](../projects/gp077_a002865_01/public/CLAIM_SUMMARY.md).
-  A weaker direct-fitting variant exists in `oeis_a002865` (score 54)
-  — the contrast between the two is itself the discipline lesson;
-  details in
+  A weaker direct-fitting variant exists in `oeis_a002865` (score 54);
+  the contrast between the two records the effect of enforcing the
+  analytic constants instead of fitting them. Details in
   [`projects/oeis_a002865/public/CLAIM_SUMMARY.md`](../projects/oeis_a002865/public/CLAIM_SUMMARY.md).
   *Retest tag: original-run only (n=1) per variant.*
 
@@ -674,9 +718,10 @@ evidence is the per-project thesis and the champion-eval verdict.
   operator-authored Planck-adjacent target; total spend ~$1.01.
   *Retest tag: original-run only (n=1); farther-tail gate pending and
   expected to fail on the non-Wien asymptotic, per project notes.*
-  The recorded finding is the cage-as-intelligence property — the
-  apparatus, not the model, supplied the selection pressure — not a
-  derivation of a physical law.
+  The recorded finding is that the selection pressure came from the
+  apparatus gates, not from the model: a cheap-tier mutator reached the
+  Wien family under the gate stack. This is not a derivation of a physical
+  law.
 
 - **`gp023_crucial_02`, `gp023_crucial_03` — Planck-shape calibration
   cohort.** Score 88/88 each. Multi-regime structure confirmed across
@@ -889,7 +934,7 @@ private; the summary records the claim, score, and retest tag).
   Summary:
   [`projects/gp161_mdl_anti_goodhart/public/CLAIM_SUMMARY.md`](../projects/gp161_mdl_anti_goodhart/public/CLAIM_SUMMARY.md).
 
-- **GP-233 — research-yield decomposition with zero-false-ratify
+- **[GP-233](../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) — research-yield decomposition with zero-false-ratify
   governance gate.** A seam contract decomposes scientific yield into
   named factors (candidate supply, eligibility rate,
   verification-compile rate, residual-or-closure rate, decision impact,
@@ -1124,7 +1169,7 @@ minute.
 
 ## Cross-Substrate Methodology
 
-**Public claim.** Across the rowdy campaigns, the strongest integrative claim
+**Public claim.** Across the campaigns, the strongest integrative claim
 is methodological: the same operating discipline surfaced bounded positives,
 clean negatives, and self-demotions across structurally different substrates.
 
@@ -1159,7 +1204,7 @@ self-demotion, catch, forecast, and source-readiness discipline to hold.
 **Readiness.** Public as a thesis with explicit single-operator and
 single-apparatus limitations.
 
-## GP-245 Forecast Calibration Program (LLM Forecasting Channels + Operationalization)
+## [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) Forecast Calibration Program (LLM Forecasting Channels + Operationalization)
 
 **Public claim.** The GP-245 program (a forecaster-skill / multi-channel calibration subsystem of the ZTARE repo) measured 104 documented findings (F1–F104, with F31 reserved) on subscription-class LLM forecasting across a 5-family panel (claude-opus-4.7, codex-gpt-5.5, codex-gpt-5.4-mini, deepseek-chat, gemini-2.5-flash) over apparatus-internal and external ForecastBench corpora. The strongest empirical contributions:
 
@@ -1169,9 +1214,9 @@ single-apparatus limitations.
 
 3. **Premium-as-abstention rescues a failed threshold-shift wiring** (F25 negative → F28 +22 utility lift on symmetric-loss regime). Same signal, different wiring → opposite operational outcome.
 
-4. **Closed-loop super-judge re-decision on worried cases dramatically improves Brier** (F30 N=44, judge Brier 0.21 vs original 0.35, Δ=−0.14; +11 utility lift on asymmetric-favor-yes vs abstention). Pure-LLM autonomy without humans-in-the-loop, on cases the original agent flagged worried.
+4. **Closed-loop super-judge re-decision on worried cases improves Brier** (F30 N=44, judge Brier 0.21 vs original 0.35, Δ=−0.14; +11 utility lift on asymmetric-favor-yes vs abstention). Pure-LLM autonomy without humans-in-the-loop, on cases the original agent flagged worried.
 
-5. **Failure-mode atlas surface** documented in the GP-245 research log and current forecasting paper draft: F12 (LLMs predict Lean-proof completability worse than constant baseline), F19/F22 (rationale-only transfer null on single-shot binary forecasting; adversarial framing rescues worst-case anchoring only), F24 (meta-classifier OOD failure remediated), with F23 reconciliation distinguishing where debate-style mechanisms work (code/seam) vs fail (binary forecasting).
+5. **Failure-mode atlas surface** documented in the [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) research log and current forecasting paper draft: F12 (LLMs predict Lean-proof completability worse than constant baseline), F19/F22 (rationale-only transfer null on single-shot binary forecasting; adversarial framing rescues worst-case anchoring only), F24 (meta-classifier OOD failure remediated), with F23 reconciliation distinguishing where debate-style mechanisms work (code/seam) vs fail (binary forecasting).
 
 **Status.** Methodology + empirical-instrument claims, mostly apparatus-internal-verdict-only. Code/data at `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/` and sibling directories; reproducible scorer at `scripts/public/control/forecast/pool.py` (extended with F8/F10 second-moment-Spearman per F9 v2 landed this session). Full per-finding strength + retest-tag table in `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md`.
 
@@ -1208,6 +1253,6 @@ single-apparatus limitations.
 - F8/F10/F20 cross-family replication (Gemini / open-weights / reasoning-class) on contamination-clean external corpus.
 - F28/F30 replication under non-synthetic cost structures (operator-measured costs, not assumed regimes).
 - F12 natural-distribution Lean replication (v7.2 pilot built but not yet completed; current stratified-corpus result could collapse).
-- Independent second-lab submission to GP-245-CalBench (zero submissions to date; testbed claim depends on this).
+- Independent second-lab submission to [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)-CalBench (zero submissions to date; testbed claim depends on this).
 
 **Readiness.** Public as a multi-finding portfolio with explicit strength + retest tags per F-ID. Methodology findings (F3, F4, F9) are high-strength; empirical findings (F8, F10, F15, F17, F20, F28, F30, F32, F33) are apparatus-internal-grade with documented external-extension path. Earlier standalone draft paths were retired; the live public surfaces are the GP-245 project docs and the LLM forecast calibration paper draft. Per-project public surface: [`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md).

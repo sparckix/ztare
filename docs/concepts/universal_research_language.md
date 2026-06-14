@@ -217,7 +217,7 @@ whole research arc?
 ## Pointers
 
 - Generated technical catalogue: `docs/concepts/structural_language_catalog.md`
-- Research synthesis: `workingpapers/epistemic-generation/research_log.md`
+- Research synthesis: `epistemic-generation/research_log.md`
 - Public status summary: `docs/public_claim_register.md`
 - Pattern/action contract surface: `src/ztare/research_director/pattern_action_contract.py`
 - Operator-card surface: `src/ztare/research_director/primitive_operator_cards.py`

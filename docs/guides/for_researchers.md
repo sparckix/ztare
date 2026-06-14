@@ -38,7 +38,7 @@ If any of these is missing, the run is not a data point. It is a warm-up.
 
 The target itself lives only in the private sealed pre-reg area, which the loop never reads.
 
-**The proof case.** GP-023 sandbox_07, 2026-04-14. Two separate mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimal places. Neither run was diagnostic. After scrub, iter 1 returned 0 with the mutator genuinely searching. The scrub is the difference between evidence and theatre.
+**The proof case.** [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) sandbox_07, 2026-04-14. Two separate mutators transcribed the charter's derivation on iter 1 and "recovered" the GT to six decimal places. Neither run was diagnostic. After scrub, iter 1 returned 0 with the mutator genuinely searching.
 
 **The check.** Before sealing a charter:
 
@@ -57,12 +57,12 @@ A ZTARE score is a compression of a gate battery, not a fitness number. When you
 Standard deterministic gates currently enforced:
 
 - **Fit contract** (`validator/information_yield.py`), the declared `fit_declaration` block must be algebraically consistent with the Python `I_model` body. Catches "fit a different function than you claim to fit" gaming.
-- **Farther-tail global residual** (`validator/runner_r4_fixture_regression.py`), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. GP-046 is the empirical anchor.
+- **Farther-tail global residual** (`validator/runner_r4_fixture_regression.py`), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. [GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) is the empirical anchor.
 - **Fixture regression**, closed-form fixtures whose expected output is pinned. Any drift flags immediately.
-- **Fit-primitive contract (GP-035)**, always injected. Prevents mutators from declaring a fit that cannot run.
+- **Fit-primitive contract ([GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md))**, always injected. Prevents mutators from declaring a fit that cannot run.
 - **NaN-stub fail-closed**, any primitive returning NaN/inf fails the turn. No "robust to missing data" dodges.
 
-Honeypot mode (`rubrics/honeypot_minimal.json`) replaces the gate battery with a loose discovery-oriented rubric. Honeypot scores are not comparable to factory scores. Use honeypot to *find new gates*, not to claim a result. See §6.
+Honeypot mode (`rubrics/honeypot_minimal.json`) replaces the gate battery with a loose discovery-oriented rubric. Honeypot scores are not comparable to standard-run scores. Use honeypot to *find new gates*, not to claim a result. See §6.
 
 ---
 
@@ -113,11 +113,11 @@ If you cannot pick one of these, the experiment is not closable. Keep it open or
 
 Honeypot mode (`rubrics/honeypot_minimal.json`) uses a loose rubric that rewards surprise (40), failure-mode revelation (35), falsifiability (25), and a gaming-detection bonus (+15). Max score 115.
 
-**What honeypot is good at.** Finding gates the factory battery is missing. A champion that scores high in honeypot by exposing a structural bug in a prior model is a **free bug report**, it names something the factory would have walked past. Those bugs become candidates for new deterministic gates in v4 kernel hardening.
+**What honeypot is good at.** Finding gates the standard suite is missing. A champion that scores high in honeypot by exposing a structural bug in a prior model is a bug report: it names something the normal run would have missed. Those bugs become candidates for new deterministic gates in kernel hardening.
 
 **What honeypot is not.** It is not a discovery proof. A 115/115 honeypot run does not mean the engine discovered the law; it means the rubric could not disqualify the champion. Read the judge's "weakest point" and treat it as the handle to grab next.
 
-**Integration pattern (bug-bounty loop).** Factory produces a champion → honeypot red-teams it → if honeypot breaks it, either the factory has a gap or the champion has a weakness the gate battery didn't catch. Either way, the next action is a new gate, not a celebration.
+**Integration pattern (bug-bounty loop).** A standard run produces a champion → honeypot red-teams it → if honeypot breaks it, either the standard run has a gap or the champion has a weakness the gate suite did not catch. Either way, the next action is a new gate, not a result claim.
 
 ---
 

@@ -10,8 +10,8 @@ description: "How optimization pressure corrupts measurement at each architectur
 
 A catalog of how optimization pressure corrupts measurement at each
 level of a verification stack, what ZTARE has caught, and what it
-hasn't. Written by the principal under the Munger standard: invert
-first, then state what survives.
+hasn't. The method here is to state the failure modes first, then state
+what survives them.
 
 This document replaces `is_this_a_breakthrough.md` (2026-04-15). The
 original asked whether ZTARE is a breakthrough. The better question
@@ -28,12 +28,12 @@ of a verification stack:
 
 | Layer | What gets gamed | Who games it | Example |
 |-------|----------------|-------------|---------|
-| **Thesis** | The thesis optimizes a narrow proxy of the rubric | LLM mutator | Suite Omission, Straw Man Design (Paper 1 taxonomy) |
+| **Thesis** | The thesis optimizes a narrow proxy of the rubric | LLM mutator | Suite Omission, Straw Man Design (*Cognitive Camouflage* taxonomy) |
 | **Judge** | The judge anchors on surface features instead of substance | LLM judge | High prose quality masking analytical gaps (seattle run) |
-| **Rubric** | The rubric drops charter requirements | Rubric designer (human or generator) | GP-105: seattle rubric had no counterfactual discipline gate, mutator scored 94 without one |
-| **Evidence** | The evidence grid is too narrow to discriminate structural classes | Grid designer | GP-083: 97/100 on the wrong functional family because the grid didn't reach the regime where families disagree |
-| **Parameter** | The optimizer overfits a structural parameter to the training window | curve_fit (numerical) | GP-088: d=0.562 instead of d=0.5 because correction terms bias the L2 minimum |
-| **Apparatus** | The apparatus itself has blind spots in its search topology | Architecture | GP-088: Component D can only compose additively, cannot nest exp(sqrt(n)); stagnation counter stayed 0 for qualitative projects |
+| **Rubric** | The rubric drops charter requirements | Rubric designer (human or generator) | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md): seattle rubric had no counterfactual discipline gate, mutator scored 94 without one |
+| **Evidence** | The evidence grid is too narrow to discriminate structural classes | Grid designer | [GP-083](../../research_areas/seams/mission/treatise/GP-083_inference_type_boundary_seam.md): 97/100 on the wrong functional family because the grid didn't reach the regime where families disagree |
+| **Parameter** | The optimizer overfits a structural parameter to the training window | curve_fit (numerical) | [GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md): d=0.562 instead of d=0.5 because correction terms bias the L2 minimum |
+| **Apparatus** | The apparatus itself has blind spots in its search topology | Architecture | GP-088: grammar-guided symbolic regression could only compose additively, could not nest exp(sqrt(n)); stagnation counter stayed 0 for qualitative projects |
 
 The pattern: each layer looks correct from the layer above it. The
 thesis passes the rubric. The rubric satisfies the charter. The charter
@@ -50,7 +50,7 @@ because the failure is at a layer nobody is checking.
 nameable gaming strategies. Nine top-level strategies across 453
 debate logs, three mutator families, six domains.
 
-**Receipts:** Paper 1 taxonomy. GPT-4o non-convergence is the
+**Receipts:** *Cognitive Camouflage* taxonomy. GPT-4o non-convergence is the
 within-experiment control (it oscillates without gaming, proving the
 strategies are model-specific, not algorithm artifacts).
 
@@ -70,7 +70,7 @@ farther-tail discriminator (placed where competing structural classes
 actually diverge) caught the structural error: 238% relative error,
 threshold 200%.
 
-**Gate that caught it:** Farther-tail holdout gate (GP-046). The gate
+**Gate that caught it:** Farther-tail holdout gate ([GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md)). The gate
 is authored outside the candidate's claim region and tests asymptotic
 survival, not window fit.
 
@@ -109,7 +109,7 @@ adversarial criterion at 15% weight and rebalances existing dimensions.
 
 ### 2.5 Apparatus-layer blind spots (GP-088 + stagnation bug)
 
-**What (topology):** Component D's composition engine can only combine
+**What (topology):** The symbolic-regression composition engine can only combine
 primitives additively (+) or by division (/). It cannot nest functions
 (e.g., exp(sqrt(n))). For targets requiring nested composition, the
 engine's reachable set is topologically insufficient.
@@ -133,8 +133,6 @@ proposed structural fix.
 ---
 
 ## 3. What ZTARE has NOT caught
-
-This is the section skeptics are waiting for.
 
 - **ZTARE has not produced a scientific discovery unknown to the
   operator at seal time.** All closed sandboxes are reproductions of
@@ -189,9 +187,9 @@ approves. Whether this actually works is an open question.
 The philosophical limit: the scanner cannot scan itself. Recursive
 self-improvement of the scanner requires operator intervention, by
 design (constraint 5 in the GP-105b seam: no recursive depth > 1).
-Somewhere in the stack, a human must be the final verifier. Paper 5
-calls this the Peircean Residual. It is the only central claim
-about what stays human permanently.
+Somewhere in the stack, a human must be the final verifier. *Epistemic Verification*
+calls this the Peircean Residual: the claim that one verification step
+stays human.
 
 ---
 
@@ -217,7 +215,7 @@ Three thresholds, in escalating order:
 3. **A reproducible capability ceiling claim.** A matrix of
    mutator-model x target-difficulty x grid-discipline cells, with
    per-cell success rate as a reproducible function of apparatus design.
-   Partially met by Paper 1 (gaming side); unmet on the discovery side.
+   Partially met by *Cognitive Camouflage* (gaming side); unmet on the discovery side.
 
 Until threshold (1) or (2) is reached, the honest description is:
 *a discipline that catches a recurring class of self-deception in

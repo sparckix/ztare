@@ -13,9 +13,17 @@ description: "Pattern catalogue for engineering pipelines whose internals are LL
 
 ## What this is
 
-A pattern catalogue for engineering pipelines whose internals are LLM calls. Most software-testing literature assumes deterministic functions; LLM pipelines are non-deterministic at the call layer but deterministic at the orchestration layer. The patterns here target the orchestration layer, the dispatch logic, contract enforcement, candidate selection, telemetry, and treat the LLM calls themselves as oracles to be stubbed during integration testing.
+A pattern catalogue for engineering pipelines whose internals are LLM calls.
+Most software-testing literature assumes deterministic functions. LLM pipelines
+are different: the call output is variable, but the surrounding orchestration is
+still ordinary software. These patterns target that ordinary software: dispatch
+logic, contracts, candidate selection, telemetry, and test doubles for model
+calls.
 
-Each pattern was discovered the same way: a specific bug shipped to production (or got close), an examination of why standard testing missed it, and a small reusable technique emerged that closes that class. The patterns are independent, adopt them à la carte.
+Each pattern came from a concrete bug that shipped or nearly shipped. The useful
+question after each incident was not "was the model good?" but "why did the
+harness allow this failure to look acceptable?" The patterns are independent;
+adopt them one at a time.
 
 This catalog is intentionally public and portable. Some entries also have a
 reflexive interpretation inside ZTARE, but the AEP entry must stand on its own
@@ -118,7 +126,9 @@ All three were caught by stub-replay scenarios over a pre-launch evening, no liv
 
 ### Pattern 6, Decomposed Wire-In with Single Entry Point
 
-**Problem.** Pipeline orchestration logic accumulates inline at the call site. After three feature additions, the call site is a 300-line monstrosity that nobody dares refactor. New bugs hide in the spaghetti.
+**Problem.** Pipeline orchestration logic accumulates inline at the call site.
+After three feature additions, the call site is a 300-line block that nobody
+wants to change. New bugs hide in the tangled control flow.
 
 **Pattern.** Extract the dispatch logic into a single helper module with a typed input dataclass. The call site becomes one function call with one dataclass. Helper module tests cleanly in isolation; call site stays readable.
 
@@ -126,7 +136,7 @@ All three were caught by stub-replay scenarios over a pre-launch evening, no liv
 
 **Concrete shape.**
 ```python
-# Before, spaghetti
+# Before, inline dispatch
 for i in range(N):
     if some_flag:
         try:
@@ -155,7 +165,7 @@ The dispatch_blitz module owns the K-fan-out, recombination, tournament, fallbac
 2. *Operator multiset Jaccard*, distance ≥ threshold (catches structural-rearrangement gaming).
 3. *Behavioral fingerprint*, residuals on a held-out probe set differ (catches everything else; only available post-fit).
 
-Score with `min(axis_1, axis_2, axis_3)` so the candidate must move on every axis simultaneously. This is the symbolic-regression equivalent of defense-in-depth.
+Score with `min(axis_1, axis_2, axis_3)` so the candidate must move on every axis simultaneously.
 
 **Why it works.** Each axis has known attacks; combined they have no known cheap attack. A mutator that wants to win novelty must produce a structurally different form, with a different operator multiset, AND different behavior. That's the bar you actually want.
 
@@ -185,7 +195,11 @@ Score with `min(axis_1, axis_2, axis_3)` so the candidate must move on every axi
 4. **Line-anchored with drift tolerance.** Line numbers are approximate pointers, not stable addresses. The map acknowledges drift ("lines ~2900-3053") so the agent greps to confirm rather than trusting a stale number.
 5. **Drift-checked by formal validator.** Pair each map with a runnable validator that compares claims against live source. Run on every PR; fail-closed on structural drift (claimed function no longer exists, claimed line range no longer contains the claimed pattern, etc.).
 
-**Why it works.** The compression is for the agent's consumption characteristics (narrow context window, snippet-based reading, partial-view failure mode), not the human's. The validator prevents the map from becoming stale fiction, which is the failure mode of all hand-maintained documentation. Together: maps stay fresh because they MUST stay fresh to pass CI.
+**Why it works.** The compression is for the agent's consumption characteristics
+(narrow context window, snippet-based reading, partial-view failure mode), not the
+human's. The validator prevents the map from becoming stale fiction, which is the
+failure mode of hand-maintained documentation. The map stays useful because it
+has to stay true enough to pass the drift check.
 
 **When to deploy.** Any module the agent edits frequently AND that is too large to hold in context (>500 lines of code with non-trivial cross-line invariants). The cost is one map per module + one validator script. The break-even is the first time a stale-context bug would have shipped.
 
@@ -196,13 +210,18 @@ Score with `min(axis_1, axis_2, axis_3)` so the candidate must move on every axi
 
 **Anti-pattern.** Treating arch maps as documentation that gets updated "when there's time." Without the validator gate, maps drift faster than the prose itself; agents consult stale maps and make worse decisions than if there were no map at all. The pattern is "map + validator", not "map alone."
 
-**Origin.** GP-100 session in April 2026: an agent made a partial-view mistake on `autoresearch_loop.py` (4100 lines, agent read snippets, missed the pipeline-ordering contract). The principal inverted the fix: instead of "read more code," the instruction was "compress your own understanding into a reusable artifact optimized for your consumption." GP-101 added the formal validator. The pattern has since been promoted to all modules with non-trivial pipeline ordering.
+**Origin.** [GP-100](../../research_areas/seams/engine/mutator/GP-100_epistemic_decoupling_seam.md) session in April 2026: an agent made a partial-view mistake on `autoresearch_loop.py` (4100 lines, agent read snippets, missed the pipeline-ordering contract). The principal inverted the fix: instead of "read more code," the instruction was "compress your own understanding into a reusable artifact optimized for your consumption." [GP-101](../../research_areas/seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) added the formal validator. The pattern has since been promoted to all modules with non-trivial pipeline ordering.
 
 ---
 
 ### Pattern 10, Cross-Reference Knowledge Graph
 
-**Problem.** Pattern 9 compresses code internals. But research artifacts (seams, F-rows, gates, ops, mandates, papers) carry MOST of their relational signal in cross-references, "see GP-148 for context"; "this seam shipped GP-149 §2.2 plateau guard"; "instantiates core_07 per paper 5b §4.4." LLMs reading the artifacts as flat text re-parse implicit relationships from prose every time. Director-level synthesis ("what depends on this seam?") requires reading 10-30 artifacts to answer one question that should be a graph traversal.
+**Problem.** Pattern 9 compresses code internals. Research artifacts have a
+different problem: their meaning often lives in cross-references. A seam points
+to a gate, a finding points to a paper section, a mandate points to an operation.
+An LLM reading those files as flat text has to rediscover the graph each time.
+Director-level questions such as "what depends on this seam?" should be a graph
+lookup, not a fresh reading of 10-30 files.
 
 **Pattern.** Extract the artifact relationship graph as JSON-LD (or property-graph format), regenerate on demand, drift-check via the same validator pattern as Pattern 9:
 
@@ -218,7 +237,7 @@ Score with `min(axis_1, axis_2, axis_3)` so the candidate must move on every axi
 
 **Anti-pattern.** Building the graph in a graph database (Neo4j etc.) rather than emitting JSON-LD on disk. The infrastructure cost dominates the value at < 5000 nodes. JSON-LD is enough; graph-DB is premature.
 
-**Concrete example.** ZTARE's seams + F-rows + gates produced 137 nodes / 459 edges (avg out-degree 3.4) when prototyped in May 2026. JSON-LD compression: 12K tokens vs 440K of full seam text, 2.8% of original. Top hubs (GP-023, GP-088, GP-035, GP-072) are foundational seams that newer work references repeatedly; the graph makes that core structure visible at one query instead of requiring grep across 137 files. Documented in seam GP-216d.
+**Concrete example.** ZTARE's seams + F-rows + gates produced 137 nodes / 459 edges (avg out-degree 3.4) when prototyped in May 2026. JSON-LD compression: 12K tokens vs 440K of full seam text, 2.8% of original. Top hubs ([GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md), [GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md), [GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md), [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md)) are foundational seams that newer work references repeatedly; the graph makes that core structure visible at one query instead of requiring grep across 137 files. Documented in seam [GP-216d](../../research_areas/seams/engine/meta/GP-216d_knowledge_graph_proposal.md).
 
 **Relationship to Pattern 9.** Pattern 9 compresses code; Pattern 10 compresses artifact-network. Orthogonal compressions of orthogonal substrates. Use both for systems with both kinds of complexity. The validator pattern transports cleanly: same drift-check skeleton, different artifact types.
 
@@ -275,9 +294,9 @@ If you're building one of these systems and reading this for the first time:
 
 ## Origin
 
-These patterns crystallized during the development of [ZTARE](https://github.com/...), an apparatus for adversarial symbolic regression. The patterns themselves are independent of ZTARE and apply to any LLM-mediated multi-stage pipeline. Each was distilled from a specific bug we shipped (or nearly shipped). The patterns make the bugs cheaper for the next builder.
+These patterns emerged during the development of [ZTARE](https://github.com/...), a system for adversarial symbolic regression. The patterns themselves are independent of ZTARE and apply to any LLM-mediated multi-stage pipeline. Each was distilled from a specific bug we shipped (or nearly shipped).
 
-If you adopt one and find it broken in your context, that's a contribution. The taxonomy is provisional; failure modes are the test.
+The taxonomy is provisional. If you adopt a pattern and find it breaks in your context, that's worth recording.
 
 ---
 
@@ -289,7 +308,7 @@ If you adopt one and find it broken in your context, that's a contribution. The 
 
 1. **Identify operational scales.** A scale is a temporal/structural layer at which the system formalizes tacit moves into typed apparatus. Each scale has its own bounded vocabulary (3-18 elements) and apparatus enforcement (gate library / pivot injection / mutator briefing / Director directive / etc.).
 2. **Document the bounded vocabulary per scale.** Each vocabulary should be in code (registry module) or in a structured doc with stable identifiers. Naming convention should be scale-prefixed (e.g., `core_NN` at research-arc scale, `pivot_NN` at iteration scale, etc.).
-3. **Build a cross-scale alias table (Rosetta Stone).** For each underlying structural-move, list the apparatus that enforces it at multiple scales. Example: "Translate problem to other domain" appears as `log` / `signed_log` (Σ primitive at coordinate scale), `coordinate_compression` (pivot module at iteration scale), `core_01 Problem Reformulation` (op at research-arc scale). The aliases are what make scales coherent rather than fragmenting.
+3. **Build a cross-scale alias table.** For each underlying structural-move, list the apparatus that enforces it at multiple scales. Example: "Translate problem to other domain" appears as `log` / `signed_log` (Σ primitive at coordinate scale), `coordinate_compression` (pivot module at iteration scale), `core_01 Problem Reformulation` (op at research-arc scale). The aliases are what make scales coherent rather than fragmenting.
 4. **Pair the alias table with a linter.** Cross-scale alias linter walks the table and confirms each side resolves. CI gate on drift > 0. If `coordinate_compression` is renamed at iteration scale, the alias to `core_01` at research-arc scale silently breaks without the linter.
 5. **Recognize the fractal as an empirical observation, not a design prescription.** The pattern (bounded vocab + apparatus + validator + cross-scale aliases) emerges naturally as the system matures; don't try to design it top-down. Accept that scales accumulate; track aliases when they appear.
 
@@ -303,7 +322,7 @@ If you adopt one and find it broken in your context, that's a contribution. The 
 
 **Relationship to Patterns 9 + 10.** Pattern 11 subsumes Patterns 9 + 10 at a meta-layer: code internals (Pattern 9) and artifact network (Pattern 10) are two specific scales among the system's operational scales. The fractal pattern is what organizes them and any other scales the system develops. The drift validators (paired with each pattern) compose: code drift + artifact-graph drift + cross-scale alias drift are three independent checks at three scales of the same system.
 
-**Origin.** ZTARE's GP-216 + GP-216d-g + paper 5b in May 2026. The pattern was named retrospectively after running a graph-DB prototype on ZTARE's seams, observing 137 nodes / 459 edges / 3.4× cross-reference density, and noticing that the same structural shape (bounded vocab + apparatus + validator + cross-scale aliases) recurred at every operational scale ZTARE had matured into. Documented in private seam `GP-216f_cross_scale_fractal_map.md`; public version `docs/concepts/cross_scale_fractal_map.md`.
+**Origin.** ZTARE's [GP-216](../../research_areas/seams/engine/meta/GP-216_theory_building_operations_seam.md) + [GP-216d](../../research_areas/seams/engine/meta/GP-216d_knowledge_graph_proposal.md)-g + paper 5b in May 2026. The pattern was named retrospectively after running a graph-DB prototype on ZTARE's seams, observing 137 nodes / 459 edges / 3.4× cross-reference density, and noticing that the same structural shape (bounded vocab + apparatus + validator + cross-scale aliases) recurred at every operational scale ZTARE had matured into. Documented in private seam `GP-216f_cross_scale_fractal_map.md`; public version `docs/concepts/cross_scale_fractal_map.md`.
 
 ---
 
@@ -383,7 +402,7 @@ orientation.
 
 **Anti-pattern.** Treating forecasts as generic advisory prose. A forecast earns
 preconditioner credit only when the named failure mode is specific and appears
-in the implementation diff, outcome, E-row, or GP-233 decomposition as a
+in the implementation diff, outcome, E-row, or [GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) decomposition as a
 constraint the executor honored.
 
 **Adjacent anti-pattern: rationale-exchange ensembles for single-shot binary
@@ -453,7 +472,7 @@ This writes `market_state/global_health.json`,
 `market_state/reliability.json`, `market_state/reflexive_insights.json`, and
 `market_state/maintenance_plan.json`, and `market_state/contracts/<id>.json`.
 
-**Origin.** GP-230 forecast-pool / decision-market primitive, May 2026:
+**Origin.** [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) forecast-pool / decision-market primitive, May 2026:
 `research_areas/seams/protocol/GP-230_forecast_pool_decision_market_seam.md`
 and `research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md`.
 
@@ -507,13 +526,29 @@ and `research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_s
 
 #### Generalization (2026-05-18): exogenous-identity authority over consequential state
 
-The judge keypair above is one instance of a more general primitive, and naming the general form is the upgrade. The invariant is not "a judge signs verdicts"; it is: **every state transition the producer must not be able to self-authorize is gated by a signature from an identity outside the producer's write boundary, verified against a pinned committed anchor, fail-closed until provisioned.** The judge key gates *verdicts*. A second instance, the **operator key**, gates *consequential-state declarations the producer must never make for itself*: registering the canonical target a proof is checked against, retiring an un-closeable obligation, vouching for manifest provenance. Same primitive (a dedicated OS identity, key `0400`, unreadable by the agent and the daemon signer, generated-if-absent on the trusted host, public half pinned in a reviewed commit or the gate fail-closes), a different consequential transition. The lesson for practitioners: when you find one place the producer self-authorizes something central, look for the others, they are the same key pattern applied to a different verb, and an env flag or a proposal boolean is never a substitute for the signature.
+The judge keypair above is one instance of a more general primitive. The invariant is not "a judge signs verdicts"; it is: **every state transition the producer must not be able to self-authorize is gated by a signature from an identity outside the producer's write boundary, verified against a pinned committed anchor, fail-closed until provisioned.** The judge key gates *verdicts*. A second instance, the **operator key**, gates *consequential-state declarations the producer must never make for itself*: registering the canonical target a proof is checked against, retiring an un-closeable obligation, vouching for manifest provenance. Same primitive (a dedicated OS identity, key `0400`, unreadable by the agent and the daemon signer, generated-if-absent on the trusted host, public half pinned in a reviewed commit or the gate fail-closes), a different consequential transition. The lesson for practitioners: when you find one place the producer self-authorizes something central, look for the others, they are the same key pattern applied to a different verb, and an env flag or a proposal boolean is never a substitute for the signature.
 
 A second technique emerged as the antidote to this pattern's characteristic failure mode (the hardening treadmill, see `epistemic_principles.md` P15). **Precommitted promotion contracts**: a change to the membrane is admitted only by a deterministic PASS / FAIL / BLOCKED contract authored *before* the change, carrying no learned or language-model judgement, and whose code additionally encodes *what the change may not claim* (debt is externalized to a separately governed item, never absorbed into a passing claim). This converts an open-ended "patch, cold-review, patch" loop into a finite auditable ladder. It is the operational form of Pattern 13's honesty escalated to the membrane's own evolution.
 
-**The recursive lesson, and a deliberate status boundary.** This pattern's own acceptance machinery proved the pattern. A builder-written "acceptance" kill-test for the membrane was submitted to a not-the-builder cold pass and returned *theatre*: its nominally distinct adversarial fixtures collapsed to one rejection, its evidence had a stale-artifact false-pass, and it never exercised the real risk (a well-formed envelope carrying a vacuous or unfaithful claim, as opposed to obvious garbage). The finding generalizes: **a builder cannot author its own acceptance gate** — the acceptance harness is itself agent-authored containment and inherits Pattern 14's defect one level out. Valid acceptance is authored *and* run by not-the-builder, in the provisioned environment, evidenced by the daemon's own artifacts, not by a runner's prose; "no output" is not a pass. Accordingly this catalogue entry documents the *techniques* (they are sound independent of any one deployment) but explicitly does **not** assert the GP-241 instance is *validated*: its status is *implemented; acceptance = not-the-builder construction-and-run in the provisioned environment, pending*. Marking it validated before that gate clears would be the exact self-blessing the pattern exists to forbid — the pattern documenting itself as proven before its own kill-test is a category error, and is fenced here on purpose. The irreducible residual (a faithful formal target is still only as good as the human judgement that it captures the informal problem) is `epistemic_principles.md` P16 and is not closed by any technique above.
+**The recursive lesson, and a deliberate status boundary.** This pattern's own
+acceptance machinery became a test case for the pattern. A builder-written
+"acceptance" kill-test for the membrane was submitted to a not-the-builder cold
+pass and failed: its nominally distinct adversarial fixtures collapsed to one
+rejection, its evidence had a stale-artifact false-pass, and it never exercised
+the real risk: a well-formed envelope carrying a vacuous or unfaithful claim. The
+finding generalizes: a builder cannot author its own acceptance gate. Valid
+acceptance is authored and run by not-the-builder, in the provisioned
+environment, evidenced by the daemon's own artifacts, not by a runner's prose;
+"no output" is not a pass. Accordingly this catalogue entry documents the
+techniques, but does **not** assert that the
+[GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)
+instance is validated. Its status is implemented; acceptance requires
+not-the-builder construction and run in the provisioned environment. The
+irreducible residual, a faithful formal target is still only as good as the human
+judgment that it captures the informal problem, is `epistemic_principles.md` P16
+and is not closed by any technique above.
 
-**Origin.** GP-241 commit-membrane, 2026-05-17; generalized because the failure, self-attesting producer with write access to its own verdict, is the structural core of every autonomous-agent trust problem, not specific to this apparatus. Full hardening history (the cold-review defect chain) lives in `research_areas/seams/apparatus/cage/GP-241_commit_membrane_mode_independent_forcing_seam.md`; reproducible provisioning in `deploy/FIRST_TIME_SETUP.md`.
+**Origin.** [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) commit-membrane, 2026-05-17; generalized because the failure, self-attesting producer with write access to its own verdict, is the structural core of every autonomous-agent trust problem, not specific to this apparatus. Full hardening history (the cold-review defect chain) lives in `research_areas/seams/apparatus/cage/GP-241_commit_membrane_mode_independent_forcing_seam.md`; reproducible provisioning in `deploy/FIRST_TIME_SETUP.md`.
 
 ---
 
@@ -531,7 +566,7 @@ A second technique emerged as the antidote to this pattern's characteristic fail
 
 **Anti-pattern.** Free-string fields where structural commitment must be named. A `multiple_comparison_correction_method: "we adjusted for the family"` field passes presence but commits to no structural position. Replace with a recognised-set enum (`{none, bonferroni, holm, fdr_bh, ...}`). The single most common SCG implementation mistake.
 
-**Concrete example #1 (NS).** GP-219 / `pec_k` owner-preimage prefix gate. The RD/action-contract loop hit a cancellation-laundering attractor; the algebraic reframe forced 5-direction trace-free tensor recovery (textbook tomography, not novel); `pec_k` is the SCG contribution — a downstream audit that demands the receipt enumerate `owner_map`, `pre_payoff_timing`, `full_output_scale_owner`, `pointwise_payment`, `finite_atom_budget`, `multiplicity_bound`, `owner_preimage_prefix_inequality`. The workbench surfaced `owner_preimage_receipt_missing` instead of pages of "sheath" prose. Code at `src/ztare/gates/owner_preimage_prefix_gate.py`.
+**Concrete example #1 (NS).** [GP-219](../../research_areas/seams/engine/meta/GP-219_pde_estimate_craft_sister_vocabulary.md) / `pec_k` owner-preimage prefix gate. The RD/action-contract loop hit a cancellation-laundering attractor; the algebraic reframe forced 5-direction trace-free tensor recovery (textbook tomography, not novel); `pec_k` is the SCG contribution — a downstream audit that demands the receipt enumerate `owner_map`, `pre_payoff_timing`, `full_output_scale_owner`, `pointwise_payment`, `finite_atom_budget`, `multiplicity_bound`, `owner_preimage_prefix_inequality`. The workbench surfaced `owner_preimage_receipt_missing` instead of pages of "sheath" prose. Code at `src/ztare/gates/owner_preimage_prefix_gate.py`.
 
 **Concrete example #2 (non-NS substrate).** Parametric hypothesis-test claim verification at `projects/structural_contract_gating_demo/`. The anchor is each test family's structural surface (degrees-of-freedom rule, normality assumption, multiple-comparison surface, effect-size requirement). Three realistic laundered claims the gate refuses: adaptive interim looks declared with `alpha "unchanged"`; within-subject pre/post design forced into independent-samples t-test; 12 pairwise contrasts uncorrected because "all primary". The same scenarios done honestly (O'Brien-Fleming alpha-spending; paired family; closed-testing-procedure justification) pass. An adversarial audit of the gate against 27 attempted laundering modes found 15 succeeded against a free-string-permitting early version of the contract; enum + whitelist closures dropped that to a smaller residual whose remaining hacks fell into the scope boundaries listed below.
 
@@ -573,7 +608,7 @@ Domains where SCG has *no* clean anchor and should not be attempted: creative wr
 - **Scope is structural, not content or process** (see above). Treat SCG as one of three or four composing layers, not as the whole defence.
 - **Anchor maintenance is operator work.** When the domain's structural surface evolves, the contract has to be re-versioned and re-pinned. Without maintenance, the pattern silently misses laundering on the new surface.
 
-**Origin.** First observed in ZTARE's NS millennium hunt (`pec_l`/`pec_k`, GP-219, 2026-05); the replication on hypothesis-test claim verification (`projects/structural_contract_gating_demo/`) substantiates substrate transfer.
+**Origin.** First observed in ZTARE's NS millennium hunt (`pec_l`/`pec_k`, [GP-219](../../research_areas/seams/engine/meta/GP-219_pde_estimate_craft_sister_vocabulary.md), 2026-05); the replication on hypothesis-test claim verification (`projects/structural_contract_gating_demo/`) substantiates substrate transfer.
 
 ---
 
@@ -627,6 +662,14 @@ then validates with `src/ztare/research_director/orchestration_contract_gate.py`
 Boundary-card and PDE work-unit gates showed the same shape: validate the typed
 work unit or repair trace, not prose that says the work happened.
 
+**Workbench-routing instance.** The autoresearch boundary uses the same pattern
+at a smaller scale. `OP-AWR-01` asks whether a Research Director task has the
+four prerequisites for in-loop autoresearch, then lowers the answer into a
+route JSON plus `domain=agentic_workbench` action-impact row. The useful object
+is not the label "agent" or "API"; it is the typed route receipt:
+bounded-claim/evaluator/rubric/artifact bits, selected action, rejected path,
+worker metadata, route JSON ref, and action-impact ref.
+
 **Drift validator.** Periodically replay recent decisions through the contract
 gate and measure field coverage, wrong-contract rejection, required-next-action
 accuracy, and later outcome deltas. A high route-label accuracy with low
@@ -673,7 +716,7 @@ causal evidence without blocking current operations.
 auto-repair loop, budget allocator, reviewer assignment policy, or any
 agent-selected next-action controller whose mistakes create cost.
 
-**Anti-pattern.** Post-hoc controller theatre: after an action is already
+**Anti-pattern.** Post-hoc controller ceremony: after an action is already
 complete, the system logs what it would have recommended and treats that as
 validation. A second failure is promoting on field completeness alone.
 Completeness only says the data can support evaluation; it is not evidence of
@@ -706,7 +749,7 @@ never would have changed anything.
 
 **Concrete example.** ZTARE's NS Track B work. **486 NS-prefixed `.lean` files** at `ztare_proofs/ZtareProofs/ns_*.lean` encode obstructions, residuals, charging adapters, kinematic dichotomies, and route-invariant terminuses as typed Lean structures. The basin graph at `projects/ns_millennium_hunt/workspace/queries/ns_trackb_constraint_basin_graph.json` (8846 nodes derived from 2999 decl scans across 444 files; JSON-LD with `@context` vocab) is computed mechanically from those structures. Per `AGENTS.md` §0a2 / §2j, every NS pre-tick *must* consult the basin via `AMNESIA_BASIN_ENTRYPOINT.md` and the basin graph before proposing a new attack; the consumer is `src/ztare/surfacing/pre_tick_obligation_compiler.py`. Outcome example: F-NS-TICK604 (2026-05-16) Lean-verified `uniformCKNBound ⟹ cascade-uniform H ∧ cascade-uniform H FALSE on flat Kolmogorov cascade ⟹ ¬ uniformCKNBound`, closing the porosity route's hypothesis negatively; the basin gained that as a node with explicit `route_invariant_terminus` typing, so future "porosity-variant" proposals dead-end against it immediately. The atlas serialization (`projects/ns_millennium_hunt/public/ns_atlas_rag_corpus.json`, `ns_atlas_embeddings.json`, `phase5bq_spectral_n_certificate_atlas.*`) is the consumable/shareable form of the basin for downstream/external readers and aspirational RAG retrieval; the *operational* consumption is the basin graph itself via the pre-tick compiler.
 
-**Composes with.** Pattern 15 (Structural Contract Gating) supplies the *typing* of each obstruction; the `scientific_amnesia_precheck` primitive in `org/patterns/` supplies the *consumption discipline*; the catch ledger supplies *durability* across operator turnover; Pattern 10 (Cross-Reference Knowledge Graph) is the analog for *code* artifacts (this pattern is the analog for *domain-knowledge* artifacts). The four together form what an external observer might call an "epistemic isolation" stack — but each piece is documented separately because each composes with substrates that do not need all four.
+**Composes with.** Pattern 15 (Structural Contract Gating) supplies the *typing* of each obstruction; the `scientific_amnesia_precheck` primitive in `org/patterns/` supplies the *consumption discipline*; the catch ledger supplies *durability* across operator turnover; Pattern 10 (Cross-Reference Knowledge Graph) is the analog for *code* artifacts (this pattern is the analog for *domain-knowledge* artifacts). Each piece is documented separately because each composes with substrates that do not need all four.
 
 **Scope — what the obstruction basin does NOT do.** It catches *route-rediscovery* failures (proposing a dead route under a renamed vocabulary). It does NOT catch: (i) genuinely novel routes that the existing basin has no node for — the basin can only return no-match; (ii) typed obstructions whose typing is itself wrong — a misclassified obstruction in the basin can mislead future agents (compose with the same content-auditor discipline as Pattern 15); (iii) live-tactical failures that occur mid-attack — the basin is consulted pre-attack, not mid-attack (compose with the catch ledger for in-flight failure recording); (iv) substrate-internal obstructions that don't transfer cross-substrate — a Navier-Stokes basin does not help a Riemann attack unless the obstruction class generalises.
 
@@ -751,10 +794,9 @@ The *components* are classical computer security; the *novel combination* is app
 
 #### Concurrent independent reinvention (2026 arXiv survey)
 
-The strongest validation of a design is other people arriving at it
-without coordination. Between December 2025 and April 2026 the
+Between December 2025 and April 2026 the
 verifiable-agent-execution literature converged, independently, on the
-exact skeleton of Pattern 14: a sole-writer verifier that an agent
+same skeleton as Pattern 14: a sole-writer verifier that an agent
 cannot impersonate, an append-only tamper-evident ledger, signed
 receipts that bind work to state, and a human approval point that no
 amount of model capability dissolves.
@@ -763,7 +805,7 @@ amount of model capability dissolves.
 Execution"* (arXiv 2602.20214) is the closest parallel: an RFC-6962
 Merkle audit log, capability-based isolation, energy-budget governance
 and a human-approval mechanism, formalised as five system invariants
-with proof sketches. Its shape is GP-241's shape. The instructive
+with proof sketches. Its shape is [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)'s shape. The instructive
 divergence is structural, it uses a Merkle tree where this repo uses
 a linear hash chain. The chain is correctness-equivalent but a Merkle
 log additionally yields succinct third-party inclusion proofs, which
@@ -771,7 +813,7 @@ matters precisely when the trust root is *operator inspection*: an
 operator should be able to verify one tick without replaying the whole
 ledger. The **IETF `draft-sharif-agent-audit-trail`** points the same
 way, SHA-256 hash-chained records with optional ECDSA signatures and
-explicit trust-level fields are becoming the standard envelope GP-241
+explicit trust-level fields are becoming the standard envelope [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)
 should converge toward rather than maintain in a private dialect.
 
 Two papers sharpen the *monitoring* side. *"Verifiability-First
@@ -780,7 +822,7 @@ lightweight intent-versus-behaviour audit agent and a
 challenge-response protocol for high-risk operations; the
 out-of-loop `judge:auto` here is the audit-agent leg, but the
 challenge-response form, where the verifier issues a fresh nonce the
-producer must route through real work, is absent and is the natural
+producer must route through substantive task execution, is absent and is the natural
 hardening for closure claims. *"TraceGuard"* (arXiv 2604.03968) is the
 direct remedy for this apparatus's recurring monoculture failure: it
 replaces a single holistic monitor verdict with structured,
@@ -799,8 +841,8 @@ primitive, and it attacks the treadmill at its root rather than
 patching the latest symptom. The empirical backdrop is supportive:
 *"Reward Hacking Benchmark"* (arXiv 2605.02964) measures environmental
 hardening / deterministic refusals cutting reward hacking by ~88%
-relative, which is the quantitative form of this project's hardest-won
-lesson, only refusals the producer cannot author have ever held.
+relative, which matches this project's experience: only refusals the
+producer cannot author have held.
 
 Finally, the literature independently confirms the *limit*. *"Do LLMs
 Game Formalization?"* (arXiv 2604.19459) finds that an LLM judge
@@ -873,4 +915,4 @@ The narrower novel claim is the *composition*: structural-invariant-anchored sch
 
 Both Pattern 9 and Pattern 10 are instances of `docs/concepts/reflexive_engineering.md`'s primitive #1 (Token-Optimized Self-Modeling), the apparatus applies its own Compress leg to its own infrastructure. The patterns and the reflexive primitives are the same move at different abstraction layers (engineering practice vs. philosophical primitive).
 
-Connection to GP-216 universal vocabulary v5: each reflexive primitive maps cleanly onto a GP-216 universal op (Token-Optimized Self-Modeling = core_07 Generalization; Inception Pattern = core_05 Extremal; Reflexive Orchestration = core_02 Iterative Refinement; etc.). The reflexive primitives and the v5 ops are the same phenomenon at different levels of abstraction: **formalizing tacit cognitive moves into typed apparatus**.
+Connection to [GP-216](../../research_areas/seams/engine/meta/GP-216_theory_building_operations_seam.md) universal vocabulary v5: each reflexive primitive maps cleanly onto a GP-216 universal op (Token-Optimized Self-Modeling = core_07 Generalization; Inception Pattern = core_05 Extremal; Reflexive Orchestration = core_02 Iterative Refinement; etc.). The reflexive primitives and the v5 ops are the same phenomenon at different levels of abstraction: **formalizing tacit cognitive moves into typed apparatus**.

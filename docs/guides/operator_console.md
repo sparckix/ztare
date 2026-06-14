@@ -1,7 +1,7 @@
 ---
-description: "Driving the repo via the operator console without the autonomous runtime."
+description: "Driving the repo via the manual console without the autonomous runtime."
 ---
-# Operator Console
+# Manual Console
 
 > **Up:** [Documentation map](../README.md)
 
@@ -9,19 +9,20 @@ description: "Driving the repo via the operator console without the autonomous r
 repo without starting the autonomous org runtime.
 
 This is the path for work like a normal Claude Code or Codex collaboration:
-the principal is present, the agent can ask clarifying questions, and no
+the human reviewer is present, the agent can ask clarifying questions, and no
 background work-discovery loop is running.
 
-The word **operator** is overloaded in this repo. In this guide:
+The script name still uses `operator_console`, but the human-facing role is
+plainly a reviewer. In this guide:
 
-- **Human operator / principal** means the accountable person supervising the
+- **Human reviewer** means the accountable person supervising the
   session.
-- **Agentic operator** means the tool-using Claude/Codex process that can
+- **Agentic worker** means the tool-using Claude/Codex process that can
   inspect files, run commands, edit artifacts, and report back.
 
-The operator console is a human-operated session with an agentic operator
-inside it. It is not the same as a role daemon, where the agentic operator
-continues under a standing mandate without the principal present.
+The manual console is a human-operated session with an agentic worker inside
+it. It is not the same as a role daemon, where the agentic worker continues
+under a standing mandate without the human reviewer present.
 
 ---
 
@@ -31,11 +32,11 @@ Do not collapse these:
 
 | Lane | Command surface | What it is for |
 |---|---|---|
-| **Operator console** | `scripts/public/control/operator_console.sh claude` | Direct human-agent collaboration. No daemon, no automatic task discovery, no validator loop. |
+| **Manual console** | `scripts/public/control/operator_console.sh claude` | Direct human-agent collaboration. No daemon, no automatic task discovery, no validator loop. |
 | **Role daemon** | `python scripts/public/control/agent_daemon.py ...` or Docker daemon profile | Persistent role-bound work with gates, claims, transitions, and closure. |
 | **ZTARE validator** | `make experiment-loop ...` | Formal adversarial validation: mutator, judge, hard gates, telemetry, synthesis. |
 
-The operator console is Mode A. The daemon is Mode B/org-runtime work. The
+The manual console is Mode A. The daemon is Mode B/org-runtime work. The
 validator is Mode C/domain validation.
 
 ---
@@ -97,7 +98,7 @@ The service:
   reused when available;
 - passes API-key environment variables through.
 
-This is still an operator console, not a daemon. When the container exits, the
+This is still a manual console, not a daemon. When the container exits, the
 interactive session is over. Durable changes are whatever the agent wrote to
 the mounted repo.
 
@@ -105,9 +106,9 @@ the mounted repo.
 
 ## When To Use This Instead Of The Org Runtime
 
-Use the operator console when:
+Use the manual console when:
 
-- the principal is actively supervising;
+- the human reviewer is actively supervising;
 - the work is exploratory or conversational;
 - you want the agent to inspect code, draft, debug, or reason interactively;
 - the task does not need autonomous scheduling, notification approval, or
@@ -115,7 +116,7 @@ Use the operator console when:
 
 Use the role daemon when:
 
-- work should continue without the principal present;
+- work should continue without the human reviewer present;
 - decisions should be surfaced as gates;
 - a role mandate and budget should constrain the run;
 - the result must be closed through the org runtime.
@@ -123,3 +124,24 @@ Use the role daemon when:
 The invariant is simple: direct collaboration stays lightweight, but any result
 that changes durable research state still has to obey `AGENTS.md` closure and
 recording discipline.
+
+## Before Durable RD Work
+
+If the manual console is about a Research Director task, an autoresearch
+boundary decision, or a project-charter/eigenquestion change, run the RD brief
+first:
+
+```bash
+python scripts/public/control/rd_tick_brief.py \
+  --allow-no-owner \
+  --autoresearch-project <project> \
+  --autoresearch-rubric <rubric> \
+  --workbench-task "<task description>"
+```
+
+Read §8e for the autoresearch-workbench route and §8f for pending advisory
+eigenquestions. If you continue out of loop on a task that could have used the
+workbench, record the route decision with
+`ztare autoresearch route --record-decision-id <id>`. Use
+`ztare action-intel record-agentic-route` only when you already have a saved
+route JSON.

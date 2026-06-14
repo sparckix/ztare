@@ -41,7 +41,7 @@ separate conditions.
 ## Card 2: Public Claim Register And Project Claim Summaries
 
 **Claim.** The repository has a public claim register that separates claims,
-non-claims, evidence pointers, retest tags, and next falsifiers across rowdy
+non-claims, evidence pointers, retest tags, and next falsifiers across
 scientific and methodology campaigns.
 
 **Evidence level.** L3 as claim-governance infrastructure; individual claims
@@ -164,9 +164,10 @@ confidence intervals.
 
 ## Card 6: LeanMill Governance And Formal-Audit Discipline
 
-**Claim.** LeanMill is a station-factory and audit substrate for Lean proof
+**Claim.** LeanMill is a station workflow and audit substrate for Lean proof
 work, with leak-tight benchmarking, matched negative controls, proof-governance
-distinctions, and explicit mechanism-vs-moat separation.
+distinctions, and explicit separation between mechanism evidence and competitive
+claims.
 
 **Evidence level.** L3-L4 for governance discipline and no-lift benchmark;
 not L5 and not a theorem-prover leaderboard claim.
@@ -225,7 +226,7 @@ construction. No claim that typed wrappers close analytic PDE obligations.
 **Next falsifier.** Route only through named residual frontiers with explicit
 target axiom, amnesia check, tool-depth loop, and formal/source receipts.
 
-## Card 8: GP-245 LLM Forecasting Calibration Program
+## Card 8: [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) LLM Forecasting Calibration Program
 
 **Claim.** The forecasting program measured many forecasting-channel,
 herding, abstention, judge-loop, and bias-inheritance findings across a
@@ -285,9 +286,9 @@ clear expected output.
 
 ## Card 10: Cross-Substrate Methodology
 
-**Claim.** Across campaigns, ZTARE's strongest integrative claim is not that
-it solved each domain, but that the same discipline repeatedly demoted
-overclaims, preserved nulls, and surfaced next falsifiers.
+**Claim.** Across campaigns, the integrative claim is not that ZTARE solved
+each domain, but that the same discipline repeatedly demoted overclaims,
+preserved nulls, and surfaced next falsifiers.
 
 **Evidence level.** L3 methodology claim; individual domains vary.
 

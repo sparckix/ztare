@@ -19,7 +19,7 @@ The machine-readable registry is [src/ztare/reflexive_primitives/INDEX.md](../..
 |---|---|---:|---|---|
 | RP-001 | architecture_index_meta_graph | L2-L3 | architecture index rows, mandate wiring, catch-ledger impact weighting | Strong as a navigation/control primitive; needs current drift/frequency falsifier monitoring to avoid becoming a self-importance map. |
 | RP-002 | pattern_action_contract | L2-L3 | `src/ztare/research_director/pattern_action_contract.py`, RD tick brief, close-payload contracts | Strong direction: turns patterns into required carrier slots. Needs outcome tracking across depth-sensitive closes. |
-| RP-003 | capability_evidence_contract | L2 seed | GP-247 seam, `cec_ledger.jsonl` with CEC-001 resolved Kepler-alive | Correctly refuses scalar priority scoring. Needs >=5 resolved bets before it can support capability-ranking claims. |
+| RP-003 | capability_evidence_contract | L2 seed | [GP-247](../../research_areas/seams/apparatus/instrumentation/GP-247_capability_evidence_contract_seam.md) seam, `cec_ledger.jsonl` with CEC-001 resolved Kepler-alive | Correctly refuses scalar priority scoring. Needs >=5 resolved bets before it can support capability-ranking claims. |
 | RP-004 | self_report_epistemology_critic | L2 seed | script plus disclosed public-claim caveat | Useful as a disclosure mechanism. Needs synthetic controls and wording cleanup around small-N catch-ledger interpretation. |
 
 ## Philosophical Reflexive Primitives
@@ -80,7 +80,7 @@ The source tables are [pattern catalog](../../org/patterns/INDEX.md) and
 
 ## What The Matrix Makes Visible
 
-The repo is not short on constructs. The portfolio problem is evidence
+The repo has many constructs. The portfolio problem is evidence
 stratification:
 
 - Some constructs are only named or philosophical.
@@ -89,6 +89,6 @@ stratification:
 - A smaller set has controlled benchmark evidence.
 - Almost none yet has second-lab external validation.
 
-That distribution is normal for a fast research apparatus, but it should be
+That distribution is normal for a research repo of this size, but it should be
 visible in public claims.
 

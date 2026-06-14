@@ -81,3 +81,22 @@ When in doubt, default private. The cost of an over-classified private seam is o
 
 - `research_areas/ZTARE_BOARD.md` — the canonical full-detail board (gitignored). Lists every seam, public and private.
 - `research_areas/ZTARE_BOARD.md` — the public board. Lists only public seams; carries a structural note that further items exist in the private mirror.
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`apparatus/`](apparatus/) - 55 file(s)
+- [`audits/`](audits/) - 14 file(s)
+- [`charters/`](charters/) - 1 file(s)
+- [`engine/`](engine/) - 73 file(s)
+- [`gaming/`](gaming/) - 2 file(s)
+- [`mission/`](mission/) - 29 file(s)
+- [`protocol/`](protocol/) - 26 file(s)
+- [`reflexive/`](reflexive/) - 14 file(s)
+- [`substrates/`](substrates/) - 43 file(s)
+
+<sub>9 sub-folder(s), 0 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

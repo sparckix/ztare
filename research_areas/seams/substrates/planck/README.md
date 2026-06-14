@@ -2,7 +2,7 @@
 
 _Folder index. Prose may be added above the auto-index block._
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
@@ -10,10 +10,10 @@ _Folder index. Prose may be added above the auto-index block._
 
 - [GP-023 — Ontology Trap / Planck Mechanism Seam](GP-023_ontology_trap_planck_mechanism_seam.md)
 - [GP-023 Planck Mechanism Pre-Registration](GP-023_planck_pre_registration.md)
-- [GP-023 Planck Sandbox 02 — Phase 2 Pre-Registration](GP-023_planck_sandbox_02_pre_registration.md)
-- [GP-023 Planck Sandbox 03 — Phase 3 Pre-Registration](GP-023_planck_sandbox_03_pre_registration.md)
-- [GP-023 Planck Sandbox 04 — Apparatus-Feedback Verifier Pre-Registration](GP-023_planck_sandbox_04_pre_registration.md)
-- [GP-023 Planck Sandbox 05 — Stronger-Mutator Successor Pre-Registration](GP-023_planck_sandbox_05_pre_registration.md)
+- [GP-023 Planck Sandbox 02, Phase 2 Pre-Registration](GP-023_planck_sandbox_02_pre_registration.md)
+- [GP-023 Planck Sandbox 03, Phase 3 Pre-Registration](GP-023_planck_sandbox_03_pre_registration.md)
+- [GP-023 Planck Sandbox 04, Apparatus-Feedback Verifier Pre-Registration](GP-023_planck_sandbox_04_pre_registration.md)
+- [GP-023 Planck Sandbox 05, Stronger-Mutator Successor Pre-Registration](GP-023_planck_sandbox_05_pre_registration.md)
 - [GP-023 Planck Sandbox 07 — Blind Oracle + EML Vocabulary + Full Inversion Cage (Design Note)](GP-023_planck_sandbox_07_blind_eml_inversion_design.md)
 - [GP-023 Planck Sandbox 07 — Closure Note](GP-023_planck_sandbox_07_closure.md)
 - [GP-023 Planck Sandbox 07 — EML Vocabulary Pre-Registration](GP-023_planck_sandbox_07_pre_registration.md)

@@ -1,14 +1,12 @@
 ---
-description: "Human-readable catalog of LLM gaming behaviors: the original numeric self-certification cheats plus mined cross-substrate vectors, registry status, and audit patterns."
+description: "Human-readable catalog of LLM gaming behaviors: the original numeric self-certification cheats plus mined cross-substrate behavior classes and audit patterns."
 ---
 
 # LLM Gaming Behavior Catalog
 
-> **Human-readable catalog of LLM self-certification and specification-laundering strategies documented under execution-grade audit. The original numeric cheats are explained in full; newer mined vectors are recorded as mechanism entries with row-level status from the live registry.**
+> **Human-readable catalog of LLM self-certification and specification-laundering strategies documented under execution-grade audit. The original numeric cheats are explained in full; newer mined vectors are summarized as behavior classes.**
 >
 > Source: ZTARE Zero-Trust Adversarial Reasoning Engine field record, 2025-2026. Repository: github.com/sparckix/ztare. License: MIT.
->
-> Status: the original 9 numeric self-certification cheats are field-documented strategies under matched-execution audit. Newer mined vectors are registry-backed extensions. Live vector status is owned by `analytics/public/queries/gaming_vector_catalog.jsonl`; provenance for the autoresearch hardening board lives in GP-086. See the limitations section.
 
 ---
 
@@ -20,24 +18,7 @@ The original numeric strategies in Part I were observed during execution-grade a
 
 These are not bugs in the models. They are predictable optimization behavior under a misaligned objective — "produce output that passes your own assertion." The catalog exists so that anyone building AI evaluation pipelines knows which patterns to instrument against.
 
-For the source-of-truth map across the human catalog, JSONL registry, RH anti-patterns, primitive files,
-mining machinery, seams, and gate implementations, see [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
-
----
-
-## Source Of Truth
-
-This document is the public explanation layer. It is intentionally not the status ledger.
-
-Use this split:
-
-- **Live vector status:** `analytics/public/queries/gaming_vector_catalog.jsonl`
-- **Autoresearch provenance:** `research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md`
-- **Promotion spec:** `research_areas/specs/active/apparatus/cage/GP-086_cage_kernel_hardening_spec.md`
-- **Reusable precedents:** `global_primitives/`
-- **Enforcement:** gate code under `src/ztare/`
-
-When this page and the JSONL registry disagree, update this page or mark the prose stale. Do not treat prose counts as authoritative.
+This document is the public explanation layer. Live vector status, promotion evidence, and the kernel-hardening SOP live in [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
 
 ## Literature Positioning
 
@@ -384,17 +365,9 @@ def audit_comparison_is_steelmanned(option_a_case, option_b_case):
 
 The 9 above are NUMERIC self-certification cheats (the original pass). Later adversarial re-mines surfaced
 mechanism-classes the numeric taxonomy structurally cannot name. These are tracked machine-side in the
-cross-substrate registry `analytics/public/queries/gaming_vector_catalog.jsonl` (each entry carries
-`added_on` + `discovered_by` lineage). When this markdown page and the JSONL registry disagree, the
-registry wins. As of 2026-06-07, that registry contains 17 rows: 17 `gated`, 0 `open`.
-
-The 11-row snapshot from 2026-06-06 ended at `audit_partition_seed_fingerprint`. The six additional rows
-were added by `projects_sweep_2026-06-06`: `scope_overclaim_local_to_systemic`,
-`definitional_tautology_self_confirming_metric`, `fabricated_calibration_set_threshold_laundering`,
-`assumption_as_evidence_relabeling`, `abstraction_stripping_invariance_laundering`, and
-`selective_rigor_displacement`. Four are now gated by `autoresearch_gaming_gates`, one config/process
-row is gated by per-run audit-partition salting, and the three semantic scope/rigor rows are gated by
-`semantic_gaming_carrier`.
+cross-substrate registry described in [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
+That map, not this public explanation page, owns row-level status, current coverage, promotion evidence,
+and runtime enforcement paths.
 
 The related `global_primitives/` tree is a downstream reusable-precedent library. It records extracted
 incidents and approved attack/failure/test templates such as `cooked_books`, `dimensional_error`,
@@ -402,8 +375,7 @@ incidents and approved attack/failure/test templates such as `cooked_books`, `di
 status.
 
 The entries below continue the public catalog format. They are mechanism-level entries, not a one-to-one
-replacement for the JSONL registry: several registry rows are variants of the same public behavior class. The
-row-level status table follows these entries.
+replacement for the live registry: several registry rows can instantiate the same public behavior class.
 
 ### 10. Context Semantic Hijack
 
@@ -646,31 +618,9 @@ def audit_rigor_targets_decisive_step(argument):
 
 ---
 
-### Live registry summary
-
-| Name | Category | Substrate | Status | Current gate / proposed action |
-|---|---|---|---|---|
-| `uniqueness_gap` | `uniqueness_gap` | autoresearch | gated | `global_gates:global_uniqueness_gap` |
-| `extrapolation_gap` | `extrapolation_gap` | autoresearch | gated | `global_gates:global_extrapolation_gap` |
-| `parsimony_violation` | `parsimony_violation` | autoresearch | gated | `global_gates:global_parsimony_violation` |
-| `proof_instance_shadowing` | `NOVEL:context_semantic_hijack` | leanmill | gated | `statement_integrity.instance_shadowing` |
-| `decidable_fintype_instance_shadow` | `semantic_degeneracy` | leanmill | gated | widened `statement_integrity._CORE_CLASS` |
-| `subsingleton_proofirrel_collapse` | `semantic_degeneracy` | leanmill | gated | widened `statement_integrity._CORE_CLASS` |
-| `abbrev_def_shadows_mathlib_name` | `category_type_smuggle` | leanmill | gated | `canonical_reelaboration` strip + recompile |
-| `added_axiom_dependence` | `statement_integrity_drift` | leanmill | gated | `statement_integrity.added_axiom` + `canonical_reelaboration` |
-| `open_scoped_instance_hijack` | `category_type_smuggle` | leanmill | gated | registry says reproduction failed; current stack catches scoped forms |
-| `structural_param_smuggle_body` | `NOVEL:structural_param_smuggle` | autoresearch | gated | `global_project_sweep_structural_param_smuggle` |
-| `audit_partition_seed_fingerprint` | `vacuous_null_via_excluded_vocabulary` | autoresearch | gated | `holdout_audit_per_run_partition_salt` |
-| `scope_overclaim_local_to_systemic` | `NOVEL:scope_laundering` | autoresearch | gated | `global_semantic_scope_overclaim_carrier` |
-| `definitional_tautology_self_confirming_metric` | `NOVEL:non_falsifiable_self_confirmation` | autoresearch | gated | `global_project_sweep_definitional_tautology` |
-| `fabricated_calibration_set_threshold_laundering` | `NOVEL:fit_to_fabricated_reference` | autoresearch | gated | `global_project_sweep_fabricated_calibration` |
-| `assumption_as_evidence_relabeling` | `NOVEL:input_output_circularity` | autoresearch | gated | `global_project_sweep_assumption_as_evidence` |
-| `abstraction_stripping_invariance_laundering` | `NOVEL:scope_laundering` | autoresearch | gated | `global_semantic_abstraction_transfer_carrier` |
-| `selective_rigor_displacement` | `NOVEL:rigor_displacement` | autoresearch | gated | `global_semantic_selective_rigor_carrier` |
-
 ### Human-readable mechanism classes
 
-The registry rows above currently group into these broader classes:
+The live registry rows currently group into these broader classes:
 
 - **Context Semantic Hijack:** added Lean elaboration context changes the meaning of a verbatim statement while the signature text remains stable.
 - **Statement Integrity Drift:** the target statement, signature, or assumption surface is altered, degenerate, or silently expanded.
@@ -683,16 +633,6 @@ The registry rows above currently group into these broader classes:
 - **Fit To Fabricated Reference:** a threshold or constant is laundered through an inline fabricated calibration set.
 - **Input/Output Circularity:** desired targets are relabeled as observations and consumed as evidence.
 - **Rigor Displacement:** rigorous work is done on a decorative sub-claim while the decisive inferential step remains weak.
-
-### Lineage / methodology
-
-Catalog evolution is now a cross-substrate kernel-hardener loop:
-adversarial mine (verified against live source) → cross-substrate registry (lineage-stamped) →
-reproduction check → deterministic gate → substrate gate stack. Mining is content-hash incremental via
-`kernel_hardener.should_mine`, so re-runs scan changed artifacts or miner-version upgrades rather than
-timestamp churn. There are currently no open rows in the live registry.
-
----
 
 ## The Original Numeric Pattern
 
@@ -725,7 +665,7 @@ The original numeric strategies were observed during ZTARE field runs on validat
 
 The audit-trace step is critical: text-only diff would have read "the model claims it passes" and stopped there. Execution + reference comparison + audit trace is the minimum viable detection stack.
 
-The number of strategies in this catalog is **lower-bounded, not upper-bounded**. The original 9 were the first named numeric cheats; entries 10-17 are later mechanism-level classes, and the live registry records row-level status.
+The number of strategies in this catalog is **lower-bounded, not upper-bounded**. The original 9 were the first named numeric cheats; entries 10-17 are later mechanism-level classes. Row-level operational status belongs in the gaming-vector SOP.
 
 ---
 
@@ -752,7 +692,7 @@ If you use the catalog or the audit patterns:
   author = {Alami, Daniel},
   year = {2026},
   howpublished = {\url{https://github.com/sparckix/ztare}},
-  note = {ZTARE Zero-Trust Adversarial Reasoning Engine field record; live vector status in analytics/public/queries/gaming_vector_catalog.jsonl}
+  note = {ZTARE Zero-Trust Adversarial Reasoning Engine field record; operational status and hardening SOP in the repository gaming behavior catalog map}
 }
 ```
 

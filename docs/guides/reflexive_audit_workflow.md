@@ -6,7 +6,7 @@ description: "How every reflexive primitive was discovered, the principal-led au
 
 > **Up:** [Documentation map](../README.md)
 
-**Canonical for:** GP-102 reflexive primitive discovery audit, how to run it, interpret it, and act on it.
+**Canonical for:** [GP-102](../../research_areas/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) reflexive primitive discovery audit, how to run it, interpret it, and act on it.
 **Companion doc:** `docs/concepts/reflexive_engineering.md`, the primitives catalog this audit extends.
 **Implementation:** `src/ztare/composition/reflexive_audit.py`
 
@@ -16,7 +16,7 @@ description: "How every reflexive primitive was discovered, the principal-led au
 
 Every reflexive engineering primitive in the catalog was discovered the same way: the principal observed a failure, recognized it as infrastructure (not science), and incepted a fix. The engine discovered none of them.
 
-The reflexive audit mechanizes the *detection* half of that pattern. It cannot invent a new primitive, the creative act of applying a ZTARE leg to a stuck layer requires judgment. But it can reliably detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for principal review.
+The reflexive audit mechanizes the *detection* half of that pattern. It cannot invent a new primitive; applying a ZTARE leg to a stuck layer requires judgment. It can detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for principal review.
 
 **The key distinction the audit makes:** Is the project stagnating because the *science is hard* (a genuinely difficult substrate with high-variance failures across many gates) or because the *machinery is broken* (the same gate failing with similar residual across K+ iterations, the Groundhog Day signature)?
 
@@ -33,7 +33,7 @@ Run the audit when:
 
 The design is Kaizen-style: **periodic and scheduled, not event-driven.** Event-driven detection requires knowing the shape of the failure signal in advance, but a *new* primitive addresses a failure class you haven't seen before, so you can't pre-specify its trigger.
 
-In artisan mode (GP-070 orchestrator not running), trigger manually. In orchestrator mode, wire as a goal with `trigger: cron` and `frequency: every_5_goals`.
+In artisan mode ([GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md) orchestrator not running), trigger manually. In orchestrator mode, wire as a goal with `trigger: cron` and `frequency: every_5_goals`.
 
 ---
 
@@ -68,7 +68,7 @@ The core logic is W. Edwards Deming's Statistical Process Control distinction be
 | Ambiguous | Neither threshold | Mixed | `AMBIGUOUS` | Report, don't flag |
 | Too few iterations |, |, | `INSUFFICIENT_DATA` | Skip |
 
-**Deming's key insight applied here:** Intervening on common-cause variation (the engine exploring a hard substrate) makes things worse, it generates spurious process-improvement seams on projects that are simply in difficult territory. Only zero-variance stagnation (special-cause) is actionable.
+Intervening on common-cause variation (the engine exploring a hard substrate) generates spurious process-improvement seams on projects that are simply in difficult territory. Only low-variance stagnation (special-cause) is actionable.
 
 **Gate 2, recovery exhausted:** Before flagging MACHINERY_BROKEN, the discriminator checks that recovery mechanisms have had opportunities to fire. Proxy: `families_exhausted == families_total` AND `stagnation_count > threshold`. If recovery is not yet exhausted, the verdict is `INSUFFICIENT_DATA`, the engine may still be working.
 
@@ -143,8 +143,8 @@ The audit writes to the configured private audit output directory after each run
 
 | Failure mode | What it means |
 |--------------|---------------|
-| `primitive_exhaustion` | All expression families exhausted AND stagnation persists. Component D has run out of topology to try. |
-| `persistent_stagnation` | Stagnation persists but recovery is not fully exhausted, a dominant gate is failing but Component D hasn't fired yet. |
+| `primitive_exhaustion` | All expression families exhausted AND stagnation persists. Grammar-guided symbolic regression has run out of topology to try. |
+| `persistent_stagnation` | Stagnation persists but recovery is not fully exhausted, a dominant gate is failing but symbolic-regression synthesis has not fired yet. |
 | `qualitative_ceiling` | Stagnation with no hard gate failures logged. The review layer is scoring the same candidates similarly without improvement. |
 
 ---

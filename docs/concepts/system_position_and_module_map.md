@@ -7,7 +7,7 @@ description: "How ZTARE positions itself among related AI research systems and h
 
 ZTARE is a socio-technical research system for AI-assisted scientific work.
 The technical machinery matters, but it is not the whole object. The system is
-the combination of a human principal, agentic operators, role offices, source
+the combination of a human reviewer, agentic workers, role offices, source
 boundaries, verification tools, governance gates, public/private membranes,
 ledgers, and publication discipline.
 
@@ -25,7 +25,7 @@ ZTARE turns human-agent research activity into auditable claims.
 
 That means the repo has several modules that look different on the surface but
 serve one architecture: make research moves explicit enough that another
-agentic operator, the human operator, or a future model can inspect, reuse,
+agentic worker, the human reviewer, or a future model can inspect, reuse,
 refute, or demote them.
 
 For a claim-first review path, use the
@@ -101,10 +101,10 @@ subsystem inside the larger workbench. It includes Lean sources, proof gates,
 LeanSearch-style queues, GNN/graph diagnostics, closure-utility tests, and
 internal-for-now LeanMill work. The LeanMill engine's importable kernel lives
 at [`src/ztare/leanmill/`](../../src/ztare/leanmill/README.md) (work queue,
-paths, policy, common helpers, source-query contract); operator scripts under
+paths, policy, common helpers, source-query contract); public control scripts under
 `scripts/public/control/leanmill_*` are thin shims that re-export from the
 kernel. LeanMill should be described publicly only at the architectural level:
-a source-qualified proof-factory line for turning candidate proof rows into
+a source-qualified proof workflow for turning candidate proof rows into
 intake queues, source-quality decisions, repair canaries, and status packets.
 Do not make public performance claims about LeanMill, or link internal
 operating surfaces as evidence, until its benchmark, source boundary, and
@@ -123,7 +123,7 @@ unreviewed artifacts; without the technical layer, the institution cannot
 scale evidence, replay, or verification.
 
 **Agent workbenches.** Codex, Claude Code, and similar tool-using agents are
-agentic operators inside the ZTARE workbench. ZTARE adds the governance layer
+agentic workers inside the ZTARE workbench. ZTARE adds the governance layer
 around them: role mandates, filesystem gates, public/private boundaries,
 source-readiness labels, and claim ledgers.
 
@@ -145,7 +145,7 @@ system. It includes:
 - [Orbit](../../orbit/README.md), a browser projection over governance state;
 - [supervisor](../../supervisor/USER_MANUAL.md), typed program routing,
   revision checks, human gates, and commit control;
-- [operator console](../guides/operator_console.md), the direct
+- [manual console](../guides/operator_console.md), the direct
   human-agent collaboration rail;
 - [`ztare` CLI](../guides/cli.md), the single command entry point
   (`ztare forecast`, `ztare leanmill`, `ztare bundle`, `ztare doctor`,
@@ -165,20 +165,20 @@ many projections, one filesystem-backed source of truth
 ```
 
 Orbit can make state legible. The supervisor can route bounded programs. The
-operator console can handle live ambiguity. The validator can attack a bounded
+console session can handle live ambiguity. The validator can attack a bounded
 claim. None of those surfaces is allowed to become the whole system.
 
-This doc uses **operator** in two distinct senses:
+This doc uses two research-actor classes:
 
-- **Human operator / principal:** the accountable person who sets priorities,
+- **Human reviewer:** the accountable person who sets priorities,
   accepts risk, decides what can be public, and supplies taste or direction
   when the substrate is ambiguous.
-- **Agentic operator:** a tool-using AI agent, such as Codex, Claude Code, or a
+- **Agentic worker:** a tool-using AI agent, such as Codex, Claude Code, or a
   role-bound Research Director, that can inspect files, run probes, edit
   artifacts, and leave a trace.
 
 Both can operate the workbench. They do not have the same authority. An
-agentic operator can execute and recommend; the human operator owns final
+agentic worker can execute and recommend; the human reviewer owns final
 accountability for public claims, budget/risk acceptance, and strategic
 direction unless a specific role mandate says otherwise.
 
@@ -220,7 +220,7 @@ typed endpoint packs, LeanSearch-style adapters, and source-quality checks.
 Key surfaces:
 
 - [leanmill_architecture.md](leanmill_architecture.md) — the current frontier: the governed DAG proof-search
-  solver (GP-246), its move space, the one governance kernel, and the capability-discipline lift ledger
+  solver ([GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md)), its move space, the one governance kernel, and the capability-discipline lift ledger
 - [ztare_proofs/README.md](../../ztare_proofs/README.md)
 - [closed_loop_theorem_writer_workflow.md](closed_loop_theorem_writer_workflow.md)
 - [closure_utility_test_workflow.md](closure_utility_test_workflow.md)
@@ -244,9 +244,8 @@ Key surfaces:
 - [scripts/public/models/gnn_link_predict_score_v3.py](../../scripts/public/models/gnn_link_predict_score_v3.py)
 - [scripts/public/models/gnn_novelty_filter.py](../../scripts/public/models/gnn_novelty_filter.py)
 
-This module is a good example of ZTARE's non-hype discipline: a GNN can predict
-structurally likely edges and still fail to produce closure utility. Predictive
-accuracy is not the same as research value.
+A GNN can predict structurally likely edges and still fail to produce closure
+utility. Predictive accuracy is not the same as research value.
 
 ### 5. Forecast Pool And Prediction Markets
 
@@ -261,8 +260,8 @@ Key surfaces:
 - [scripts/public/control/forecast/pool.py](../../scripts/public/control/forecast/pool.py)
 - `analytics/public/ledgers/prediction/`
 
-This is not decorative forecasting. It is a way to make branch selection,
-effort estimates, and action externalities auditable.
+It makes branch selection, effort estimates, and action externalities
+auditable.
 
 ### 6. Org Runtime And Supervisor
 
@@ -279,7 +278,7 @@ Key surfaces:
 - [org/README.md](../../org/README.md)
 
 This is where the "workbench" becomes operational. The research system can run
-through direct operator work, bounded supervisor programs, or persistent
+through direct human review work, bounded supervisor programs, or persistent
 role-daemon work without losing the source-of-truth boundary.
 
 ### 7. Reflexive Mining And Organizational Learning
@@ -296,7 +295,7 @@ Key surfaces:
 - [scripts/public/mining/README.md](../../scripts/public/mining/README.md) —
   canonical weekly pipeline at the top level;
   [`research_mode/`](../../scripts/public/mining/research_mode/) holds the
-  one-shot ticket analyses (GP-148/149 weakest-link, closure/process miners,
+  one-shot ticket analyses ([GP-148](../../research_areas/seams/engine/discovery/GP-148_void_mining_seam.md)/149 weakest-link, closure/process miners,
   substrate audits) that are not on the weekly path.
 - [scripts/public/mining/mine_recursive_gain_candidates.py](../../scripts/public/mining/mine_recursive_gain_candidates.py)
 
@@ -306,8 +305,8 @@ future choices.
 
 ### 8. Scientific Campaigns And Public Claim Layer
 
-The rowdy projects are not the system's only purpose, but they are the hardest
-stress tests: Navier-Stokes, modified gravity, consciousness governance,
+The scientific campaigns are not the system's only purpose, but they are the
+hardest stress tests: Navier-Stokes, modified gravity, consciousness governance,
 neural scaling, experimental mathematics, and evaluation-design failures.
 
 Key surfaces:
@@ -320,7 +319,7 @@ Key surfaces:
 
 The right public posture is claim-by-claim: scope, evidence, non-claim, and
 next falsifier. A campaign can be impressive as a stress test while still not
-licensing a domain-breakthrough claim.
+licensing a domain-level claim.
 
 ## How To Explain The Whole Repo
 

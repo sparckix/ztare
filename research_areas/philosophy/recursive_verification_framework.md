@@ -14,7 +14,7 @@ A small bounded vocabulary, observed at three scales of one cognitive system's o
 This vocabulary is observed at three nested scales of the system's own work:
 
 1. **Iteration scale** — single-pass thesis verification. ZTARE's deterministic gates instantiate paper-5 ops at this scale.
-2. **Arc scale** — multi-iteration cycles ending in proof-object events (Lean files, gates, audits). GP-215's 22 NS cycles + 9 AQUAL + 9 Neural map onto paper-5 ops at this scale.
+2. **Arc scale** — multi-iteration cycles ending in proof-object events (Lean files, gates, audits). [GP-215](../seams/engine/meta/GP-215_meta_arc_mining_seam.md)'s 22 NS cycles + 9 AQUAL + 9 Neural map onto paper-5 ops at this scale.
 3. **Meta-arc scale** — cross-substrate matching, panel review of the seam-authoring process. The GP-215 matcher applies paper-5-ops-shaped discipline to its own catalog.
 
 ## What this is
@@ -31,7 +31,7 @@ After a three-reviewer panel (Hofstadter / working-mathematician / cognitive-sci
 - **Not a "meta-solver for any problem."** The vocabulary is closed and bounded. Catalog at depth-2 maps cleanly to paper-5 ops *because Sonnet was prompted with paper 5*. In-room validation, not external evidence. The Gigerenzer warning bites: a taxonomy that maps everything maps nothing.
 - **Not a decomposition of Polya's residuals.** "Operational substrate-choice within a fixed strategic frame" is not what Polya, Hadamard, Tao meant by eigenquestion selection. "Saturation-gate-plus-inversion-as-generation" samples a bounded grammar more aggressively; Polya's reframe escapes the grammar. They share names; they don't share operations.
 - **Not categorically AGI-shape.** Inversion-as-generation produces structurally-distinct labels via constrained search with a critic. Useful, defensible, and not different in kind from any other generative-with-discriminator system.
-- **Not a verified replacement for paper 5 chapter 3.** Paper 5's hedge — "permanently irreducible vs not-yet-decomposed is an empirical question this paper cannot answer from the inside" — was central prudence and survives intact.
+- **Not a verified replacement for paper 5 chapter 3.** *Epistemic Verification*'s hedge — "permanently irreducible vs not-yet-decomposed is an empirical question this paper cannot answer from the inside" — was central prudence and survives intact.
 
 ## What's central in the corrected framing
 
@@ -42,9 +42,9 @@ After a three-reviewer panel (Hofstadter / working-mathematician / cognitive-sci
 
 ## The Gödel-sentence reading and why it deflated
 
-The fourth-pass write-up suggested paper 5's three residuals were Gödel-sentences (true at every scale, undecidable inside the system). Decomposing 2 of 3 was claimed to support this reading. The Hofstadter persona pointed out the inverse: if a residual decomposes, it was never a Gödel sentence — it was a not-yet-mechanized operation. Paper 5's chapter 3 hedge was correct.
+The fourth-pass write-up suggested paper 5's three residuals were Gödel-sentences (true at every scale, undecidable inside the system). Decomposing 2 of 3 was claimed to support this reading. The Hofstadter persona pointed out the inverse: if a residual decomposes, it was never a Gödel sentence — it was a not-yet-mechanized operation. *Epistemic Verification*'s chapter 3 hedge was correct.
 
-The honest reading: residual C (social dynamics of live pressure-testing) is the only one this corpus structurally cannot test. That makes it a *boundary artifact of the experimental setup*, not necessarily a Gödel sentence either. A real Gödel-sentence claim would require an undecidable that survives *within* the apparatus's own substrate. Paper 5's residual chapter does not provide that; it provides three operations that this corpus has not yet decomposed and may or may not decompose given enough work.
+The honest reading: residual C (social dynamics of live pressure-testing) is the only one this corpus structurally cannot test. That makes it a *boundary artifact of the experimental setup*, not necessarily a Gödel sentence either. A real Gödel-sentence claim would require an undecidable that survives *within* the apparatus's own substrate. *Epistemic Verification*'s residual chapter does not provide that; it provides three operations that this corpus has not yet decomposed and may or may not decompose given enough work.
 
 ## What scaling would actually require
 
@@ -72,7 +72,7 @@ The duplication stays. The architectural target stays deferred. The honest path 
 
 - The matcher with G1-G5 + V6/V8 + acceptance ledger ships and operates as decision-support tooling. Operator-pull, advisory-only, scope-limit visible.
 - The inversion-as-generation outputs ("Bilinear Charge Witness" etc.) are *prompts for thinking*, not validated mathematical objects. Codex treats them appropriately.
-- Paper 5 chapter 3 stays unchanged. The empirical claim that residuals decompose has not been earned; the original hedge is correct.
+- *Epistemic Verification* chapter 3 stays unchanged. The empirical claim that residuals decompose has not been earned; the original hedge is correct.
 - Five tests are documented above as the conditions under which any retracted claim could be re-asserted. None has been scheduled.
 
 ## The thing to remember

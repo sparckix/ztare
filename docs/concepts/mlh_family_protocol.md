@@ -6,14 +6,14 @@ description: "Pre-registered cross-substrate protocol for the formula-recovery t
 
 > **Up:** [Documentation map](../README.md)
 
-**Status:** Active (GP-135). Primary scientific object of the discovery track.
-**Supersedes:** Per-substrate single-recovery claims as the unit of science.
+**Status:** Active ([GP-135](../../research_areas/seams/mission/discovery/GP-135_meta_law_hypothesis_family_program_seam.md)).
+**Supersedes:** Per-substrate single-recovery claims as the unit of measurement for the discovery track.
 
 ---
 
 ## Why this exists
 
-The unit of science for the engine's external-domain track has been a single recovered formula on a single substrate. That unit does not cleanly separate instrument capability (the engine can find a law) from the law's objective reality (the law predicts more than it was fit to). It also leaves the engine exposed to a class of apparatus-layer leaks that can only be caught substrate-by-substrate.
+The measurement unit for the engine's external-domain track has been a single recovered formula on a single substrate. That unit does not separate instrument capability (the engine can find a law) from the law's objective reach (the law predicts more than it was fit to). It also leaves the engine exposed to apparatus-layer leaks that can only be caught substrate-by-substrate.
 
 The MLH protocol replaces that unit. The new unit is:
 
@@ -100,11 +100,11 @@ Per the reviewer recommendations at `GP-134 (internal seam)`:
 
 ## What counts as success
 
-One clean family-level Newton-gate pass earns the right to author a paper claim beyond the two-ceiling instrument-characterization claim currently in the Experimental Mathematics letter draft. The claim is:
+One clean family-level Newton-gate pass supports a paper claim beyond the two-ceiling instrument-characterization claim currently in the Experimental Mathematics letter draft. The claim is:
 
 > *"Given evidence from N related substrates, the engine can propose a cross-substrate invariant whose prediction for an unseen related substrate is structurally and point-wise correct."*
 
-This is a genuinely Newton-class claim because the secondary observable (the prediction on F6) is authored before F6 is observed. It is not a fit. It is not a recovery. It is a derived prediction on a substrate the engine has never seen, scored against sealed truth.
+This qualifies as Newton-class (per the Kepler/Newton distinction in [rubric_specification.md](rubric_specification.md)) because the secondary observable — the prediction on F6 — is authored before F6 is observed. It is a derived prediction on a substrate the engine has not seen, scored against sealed truth, rather than a fit to visible data.
 
 A failed first attempt is also informative. It tells us the apparatus recognizes family structure but cannot generalize across that structure to a novel member, which is what the space-ceiling finding would predict, and which settles whether category-switch + primitives + reasoning model is sufficient to lift that ceiling.
 

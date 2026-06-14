@@ -29,7 +29,7 @@ description: "Recipes for running experiments; run make seal before make experim
 
 ---
 
-## 0A. Qualitative Projects, `make generate-gp` (GP-104)
+## 0A. Qualitative Projects, `make generate-gp` ([GP-104](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md))
 
 For qualitative projects (text evidence, no numerical GT), use `generate-gp` instead of the Division A/B substrate pipeline. The generator scaffolds the project with correct gate configuration and an LLM-drafted adversarial rubric.
 
@@ -64,7 +64,7 @@ Qualitative projects require three non-obvious configuration keys that must be p
 }
 ```
 
-**Do not omit these.** Their absence causes hard fails that look like scoring failures (score 0 every iteration). Three projects hit this in one session before the generator was built (GP-104).
+**Do not omit these.** Their absence causes hard fails that look like scoring failures (score 0 every iteration). Three projects hit this in one session before the generator was built ([GP-104](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md)).
 
 **Evidence: two paths:**
 
@@ -111,11 +111,11 @@ python generate_substrate.py --project <slug> --gt-module <module>
 python -m src.ztare.substrates.render_evidence --project <slug> --gt-class <class>
 ```
 
-Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the GP-072 Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence, do not bypass with one-off scripts.
+Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence, do not bypass with one-off scripts.
 
-**Custom substrate triumvirate (gp159/160/161 lessons, 2026-04-25):**
+**Custom substrate three-file alignment (gp159/160/161 lessons, 2026-04-25):**
 
-When building a custom substrate (not using `generate_substrate.py`), enforce the triumvirate alignment, evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
+When building a custom substrate (not using `generate_substrate.py`), evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
 
 1. **gate_harness.py** is the authority, contains GT, holdout splits, gate logic. It dynamically imports test_model.py and calls `I_model(d)`.
 2. **test_model.py** is the mutator's submission, starts as a NaN-returning stub. The mutator overwrites it. **Must NOT be a copy of gate_harness.py** (causes infinite import recursion).
@@ -158,10 +158,10 @@ Paste results into the pre-registration before sealing it. A pre-reg without ide
 
 **Rubric rules:**
 
-- Persona must not mention ZTARE architecture components (Component A/B, seam IDs, negative_space_extractor).
+- Persona must not mention ZTARE architecture internals (structural extractors, seam IDs, negative_space_extractor).
 - No cross-project comparisons in rubric text (sandbox_07, Planck family, etc.).
 - `"grammar_extension"` field must match the charter's grammar extension list exactly.
-- Domain-expert review (Phase 5 of GP-072) requires GT knowledge: verify the rubric is well-posed for the actual answer class before sealing.
+- Domain-expert review (Phase 5 of [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md)) requires GT knowledge: verify the rubric is well-posed for the actual answer class before sealing.
 
 ---
 
@@ -235,7 +235,7 @@ Model labels (not raw API IDs): `gemini`, `gemini-lite`, `gemini-pro`, `claude`,
 
 **Branch audit before every launch:**
 
-For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, grammar variant, `enable_*`), verify that prompt contracts, gate harnesses, and deterministic checks cover the flag's **actual value** in this rubric, not the default. The GP-080 incident burned three iterations because `def f()` contract existed for `discrete_exact` but not for `continuous_rmse`.
+For every rubric flag that switches a code path (`fit_score_mode`, `run-mode`, grammar variant, `enable_*`), verify that prompt contracts, gate harnesses, and deterministic checks cover the flag's **actual value** in this rubric, not the default. The [GP-080](../../research_areas/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) incident burned three iterations because `def f()` contract existed for `discrete_exact` but not for `continuous_rmse`.
 
 ---
 
@@ -251,7 +251,7 @@ Mandatory in the same session:
    python -m src.ztare.validator.telemetry_reporter --write-cost-summary --update-run-summary
    ```
 5. **Update thesis.md** with best-iteration marker (or null result note).
-6. **Advance goal state** if tracked by GP-070: `python -m src.ztare.orchestration.cli advance <slug>`.
+6. **Advance goal state** if tracked by [GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md): `python -m src.ztare.orchestration.cli advance <slug>`.
 
 ---
 
@@ -288,7 +288,7 @@ make experiment-loop PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json IT
 - Full leak taxonomy + denylist construction: `docs/guides/for_researchers.md` §2 (charter contamination) and AGENTS.md §7
 - Strip test procedure: `docs/guides/for_researchers.md` §2
 - Identifiability + pre-registration protocol: `docs/guides/for_researchers.md` §4 and AGENTS.md §7
-- GP-072 full 7-phase spec: `GP-072 (internal seam)`
+- [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) full 7-phase spec: `GP-072 (internal seam)`
 - Operational philosophy: `docs/concepts/epistemic_principles.md`
 - Three-leg/reflexive framing: `docs/concepts/reflexive_engineering.md`
 - Enforcement principles (P13, P14): `docs/concepts/epistemic_principles.md`

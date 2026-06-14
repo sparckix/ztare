@@ -117,3 +117,42 @@ If you are not sure where to put something, ask:
 3. Is it a rendered *view* of supervisor state for human reading? → `research_areas/program_plans/` or `research_areas/proposal_plans/`
 4. Is it confidential / still-cooking / principal-facing? → `[internal-ref]` (gitignored)
 5. Is it from a closed program? → archive it per PRINCIPAL_MANUAL §1b, don't leave it in `active/`
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`drafts/`](drafts/) - 4 file(s)
+- [`gate_library/`](gate_library/) - 3 file(s)
+- [`goal_types/`](goal_types/) - 4 file(s)
+- [`goals/`](goals/) - 16 file(s)
+- [`kernel/`](kernel/) - 8 file(s)
+- [`mlh_prediction_packets/`](mlh_prediction_packets/) - 2 file(s)
+- [`mlh_predictions/`](mlh_predictions/) - 7 file(s)
+- [`philosophy/`](philosophy/) - 6 file(s)
+- [`postmortems/`](postmortems/) - 9 file(s)
+- [`pre_registrations/`](pre_registrations/) - 12 file(s)
+- [`probes/`](probes/) - 1 file(s)
+- [`program_plans/`](program_plans/) - 0 file(s)
+- [`proposal_plans/`](proposal_plans/) - 0 file(s)
+- [`seams/`](seams/) - 258 file(s)
+- [`seeds/`](seeds/) - 8 file(s)
+- [`specs/`](specs/) - 63 file(s)
+- [`synthesis/`](synthesis/) - 2 file(s)
+
+**Documents**
+
+- [Cold-shot meta-falsification test, gpt-5.5, 2026-04-28 (retry)](cold_shot_test_2026-04-28.md)
+- [ZTARE Track Record — Canonical Ledger](EXPERIMENT_TRACK_RECORD.md)
+- [GP-023 Independent Contamination Audit — audit 01](gp023_contamination_audit_01.md)
+- [Hardening Board](HARDENING_BOARD.md)
+- [ZTARE Insights Ledger](insights_ledger.md)
+- [mlh_family_manifest.json](mlh_family_manifest.json)
+- [Project Ledger Index](PROJECT_LEDGER_INDEX.md)
+- [seed_registry.json](seed_registry.json)
+- [ZTARE Board, Historical Tracker](ZTARE_BOARD.md)
+
+<sub>17 sub-folder(s), 9 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

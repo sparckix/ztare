@@ -1,5 +1,11 @@
 # GP-054 — Rubric Quality and Generation Spec
 
+Canonical file-format note: this spec records the GP-054 review/generation
+slice. The current rubric JSON schema, mode contract, submission-contract
+fields such as `require_i_model_in_submission`, and run-time flag list are
+maintained in `docs/concepts/rubric_specification.md`. Do not duplicate new
+rubric keys here; reference that document from implementation work.
+
 ## Status
 
 Active — opened 2026-04-13 17:58:45 EDT; implemented 2026-04-13 18:21:21 EDT; fixture-verified 2026-04-13 18:21:21 EDT; live-verified 2026-04-13 (GLP-1 run); pre-run gaps emission implemented 2026-04-13 19:27:58 EDT; fixture-verified 2026-04-13 19:27:58 EDT

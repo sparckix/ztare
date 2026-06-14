@@ -1,12 +1,12 @@
 ---
-description: "Two-page orientation for a new operator."
+description: "Two-page orientation for a new reviewer."
 ---
 
 # ZTARE Quickstart
 
 > **Up:** [Documentation map](../README.md)
 
-Two-page orientation for a new operator. Start with
+Two-page orientation for a new reviewer. Start with
 [first-30-minutes.md](first-30-minutes.md) if this is your first time in the
 repo. This page is the fast path for running ZTARE after you know which route
 you want. Full reference: `docs/guides/workflow.md` and
@@ -68,13 +68,13 @@ frontier research, proof splitting, evidence acquisition, trajectory mining,
 human-agent co-work, or a role-daemon task, route it first:
 
 ```bash
-make demo
-make smoke-public
+ztare autoresearch route --task "<task description>" --project <project> --rubric <rubric>
 ```
 
 Then read:
 
 - [workflow.md](workflow.md), especially section 0 route choice;
+- [cli.md](cli.md), for `ztare autoresearch route`, `run`, and `projection`;
 - [org_runtime_quickstart.md](org_runtime_quickstart.md), for role-daemon and
   executive-inbox work;
 - [agent-prompts.md](agent-prompts.md), for paste-ready Codex/Claude prompts.
@@ -138,7 +138,7 @@ python -m src.ztare.scaffold.generate_substrate --help
 # brief per --help, following the GP-072 sandbox-construction discipline
 # (AGENTS.md "Don't hand-build sandboxes" discipline).
 #
-# For the factory pre-run on an existing project:
+# For the standard pre-run on an existing project:
 make setup-project PROJECT=<project> RUBRIC=<rubric>
 ```
 
@@ -236,14 +236,14 @@ Each iteration prints:
 Iteration N, score: XX
   Gate: harness_ok = true, rmse = 0.031
   Information yield: [...]
-  Component C: [shape hint]
+  Residual diagnostics: [shape hint]
 ```
 
 Key signals:
 - **Score 0 with `harness_ok=false`**: gate fired; model is wrong, loop continues searching
 - **Score 0 with `harness_error`**: infrastructure bug; check imports, fix before rerunning
 - **Score stagnant for 3+ iters**: stagnation pivot fires automatically
-- **FEYNMAN WALL**: all 32 library primitives exhausted; Component D composition mode activates
+- **FEYNMAN WALL**: all 32 library primitives exhausted; grammar-guided symbolic regression activates
 
 ---
 
@@ -266,7 +266,7 @@ projects/<slug>/          ← per-run artifacts (evidence, gate harness, test_mo
 rubrics/<slug>.json       ← scoring rubric (GT-blind)
 src/ztare/substrates/     ← GT scripts (Division A, private)
 research_areas/            ← public seams, specs, boards, and experiment records
-docs/                     ← operator docs (this file)
+docs/                     <- reviewer docs (this file)
 config/prompts/           ← reviewer domain personas
 ```
 
@@ -278,7 +278,7 @@ config/prompts/           ← reviewer domain personas
 - Full workflow reference: `docs/guides/workflow.md`
 - Experiment procedure: `docs/guides/experiment_cookbook.md`
 - Architecture overview: `docs/concepts/architecture.md`
-- Cognitive Gym, why the validator works: `docs/concepts/cognitive_gym.md`
+- How the validator works: `docs/concepts/cognitive_gym.md`
 - Epistemic principles: `docs/concepts/epistemic_principles.md`
 - Reflexive engineering: `docs/concepts/reflexive_engineering.md`
 - Glossary: `docs/concepts/glossary.md`

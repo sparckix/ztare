@@ -311,7 +311,7 @@ Accountability cannot be collapsed to one layer.
 | Causal accountability | Transition log + artifacts | What happened, who/what triggered it, which gate/claim/message licensed it, what evidence was produced. | Cannot decide values by itself. |
 | Model-call attribution | Transient invocation artifact | Prompt, model, inputs, output, score, critique, mutation, or cold-shot proposal. | No standing authority, no ownership of decisions. |
 
-Munger inversion: if humans keep all accountability but agents act without
+By inversion: if humans keep all accountability but agents act without
 traceable obligations, the system becomes ungovernable. If agents are assigned
 ultimate accountability, the system becomes legal and moral theater. The only
 honest split is **ultimate accountability remains human/organizational;
@@ -436,7 +436,7 @@ debugging tools, not the intended governance experience.
 
 Changes made during the productization session:
 
-- Added this document as the durable north-star architecture.
+- Added this document as the durable reference architecture.
 - Added `docs/guides/org_runtime_quickstart.md`.
 - Genericized the principal preference surface to
   `org/preferences/principal.yaml`.
@@ -452,7 +452,7 @@ Changes made during the productization session:
   gate inbox, surface pending decisions, and bind localhost by default.
 - Added `src/ztare/orchestration/transition_log.py`.
 - Added `src/ztare/orchestration/task_authorization.py`.
-- Updated GP-167 with Turns 5 and 6 so the debate record matches the code.
+- Updated [GP-167](../../research_areas/seams/mission/org/GP-167_multi_agent_interface_form_factor_seam.md) with Turns 5 and 6 so the debate record matches the code.
 
 Verification:
 

@@ -24,6 +24,8 @@ ZTARE already has mature local instruments:
 - LeanSearch factory P0 rollups and live-state dashboards;
 - the source JSON feeds already used by the public analytics dashboard;
 - durable work surfaces in NS, GNN/LeanMill, and epistemic-generation.
+- factory-style read models such as LeanMill factory intelligence, consumed as
+  source surfaces rather than copied into this compiler.
 
 The gap is not another source ledger. The gap is an ETL-style private intelligence surface that tells the operator:
 
@@ -65,7 +67,7 @@ The optional HTML output is a private visualization of the same packet. It is no
 | `etl_manifest` | What was extracted, transformed, validated, and loaded? | compiler source map and validation checks |
 | `source_map` | Which sources feed which aggregates? | all read sources |
 | `source_improvement_backlog` | Which gaps should be fixed at the source? | validation issues and source-health debt |
-| `focus_tracks` | What do the current high-interest tracks expose? | NS, GNN/LeanMill, epistemic-generation artifacts plus ledger joins |
+| `focus_tracks` | What do the current high-interest tracks expose? | NS, GNN/LeanMill, epistemic-generation, and agentic-workbench artifacts plus ledger/action joins |
 | `forecast_market` | Is GP-230 producing usable allocation evidence? | contracts, aggregates, outcomes, scores, decision-use rows |
 | `scientific_yield` | What bottlenecks and next levers are recurring? | GP-233 evidence ledger |
 | `experiment_ledger` | What does the experiment track record say? | `research_areas/EXPERIMENT_TRACK_RECORD.md` |
@@ -81,7 +83,8 @@ The first configured focus tracks are:
 
 - `ns_millennium_hunt`;
 - `gnn_lemma_relevance`;
-- `epistemic_generation`.
+- `epistemic_generation`;
+- `agentic_ai_workbench`.
 
 These are joins, not official project records. Each focus row carries:
 
@@ -98,6 +101,7 @@ These are joins, not official project records. Each focus row carries:
     "gp233_refs": 0,
     "catch_refs": 0,
     "experiment_refs": 0,
+    "action_refs": 0,
     "status_files": 0
   },
   "latest_summary": "short extracted heading or paragraph",
@@ -106,6 +110,11 @@ These are joins, not official project records. Each focus row carries:
 ```
 
 Weak linkage is an output, not a failure. It means the system can see activity but cannot yet join it confidently to forecast, yield, catch, or experiment evidence.
+
+The `agentic_ai_workbench` track joins GP-243 `domain=agentic_workbench` rows
+with autoresearch projection/dispatch seams and reflexive-mining outputs. It
+exists to answer whether RD/out-of-loop agent labor is bypassing, preparing, or
+feeding the in-loop workbench. It must not become a second scheduler.
 
 ## Learning Candidate Rule
 

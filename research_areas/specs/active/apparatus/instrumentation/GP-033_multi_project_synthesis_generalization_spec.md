@@ -96,7 +96,7 @@ No shared single-project synthesis artifact may be overwritten by a multi-projec
 
 1. fixture regression for scoped paths / merged history summary / ledger cache matching
 2. live render on a real multi-project pair, starting with:
-   - `eu_union_load_bearing_pillars`
+   - `eu_union_decisive_pillars`
    - `eu_union_failure_probability_2035`
 3. confirm that the combined report preserves:
    - the distinction between `component_only` and a fully earned top-line forecast
@@ -104,7 +104,7 @@ No shared single-project synthesis artifact may be overwritten by a multi-projec
 
 Verifier outcome:
 
-- passed on `eu_union_load_bearing_pillars + eu_union_failure_probability_2035`
+- passed on `eu_union_decisive_pillars + eu_union_failure_probability_2035`
 - final report written
 - QA score `98`
 

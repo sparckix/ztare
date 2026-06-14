@@ -2,13 +2,13 @@
 
 _Folder index. Prose may be added above the auto-index block._
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
 **Documents**
 
-- [The Cognitive Gym](cognitive_gym.md)
+- [The Cognitive Gym → moved](cognitive_gym.md) - Moved — the canonical Cognitive Gym thesis now lives in docs/concepts/.
 - [ZTARE Operational Manual for Scientific Discovery](operational_manual_substrate_construction.md)
 - [The recursive verification framework — what it is, what it isn't](recursive_verification_framework.md)
 - [Reflexive Engineering Primitives](reflexive_engineering_primitives.md)

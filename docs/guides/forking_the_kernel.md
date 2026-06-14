@@ -41,7 +41,7 @@ of ZTARE Research Co lives in a **separate private overlay repo** that
 symlinks tenant-specific role/mandate/preference files into the
 conventional `org/...` paths at runtime. A fresh fork without an overlay
 runs in **kernel-only mode**, no `research_director.yaml`, no ZTARE-
-specific mandates, exactly the GP-191 Stage 3 verification target.
+specific mandates, exactly the [GP-191](../../research_areas/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md) Stage 3 verification target.
 
 > **The contract:** changes to kernel files (anything under `src/ztare/`,
 > `schemas/`, `scripts/public/`, `orbit/src/server/`, or `AGENTS.md`) are upstream
@@ -49,7 +49,7 @@ specific mandates, exactly the GP-191 Stage 3 verification target.
 > `<your-org>-tenant-overlay` private repo under `tenants/<your-id>/`,
 > symlinked in via your tenant's `setup_tenant.sh` script.
 
-### Tenant overlay pattern (GP-191 Stage 2)
+### Tenant overlay pattern ([GP-191](../../research_areas/seams/engine/GP-191_typed_cold_shot_portfolio_seam.md) Stage 2)
 
 ```
 ~/ztare/                                    ← public kernel (this repo)
@@ -246,7 +246,7 @@ When you push your fork:
 | `org/{objectives,key_results,tasks,sessions,signals,directives,goals}/` | gitignored from public |
 | `projects/`                   | curated showcase allowlist; rest gitignored |
 | `papers/`                     | usually public for ZTARE Research Co (published work); private if you choose |
-| `ztare_workspace/`            | runtime state gitignored; future GP-192 Axis 7 daily-snapshot lives in your tenant overlay |
+| `ztare_workspace/`            | runtime state gitignored; future [GP-192](../../research_areas/seams/protocol/GP-192_enterprise_grade_org_runtime_seam.md) Axis 7 daily-snapshot lives in your tenant overlay |
 
 The public `.gitignore` enforces these defaults. The kernel-only-runnable
 property is verified by `setup_tenant.sh` / `teardown_tenant.sh`, running

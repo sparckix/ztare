@@ -3,7 +3,7 @@
 **Status:** public / central — constitutional "why" document
 **Date:** 2026-04-12
 **Operational counterpart:** `operational_manual_substrate_construction.md` — Chapter 1 distills this document into engineering rules. That manual is the mandatory pre-run read; this document is the philosophical derivation.
-**Provenance:** Gemini Pro synthesis (Invert + Compress as "two laws of epistemic thermodynamics"), refined with a third leg from the GP-042→GP-046 chain.
+**Provenance:** Gemini Pro synthesis (Invert + Compress as "two laws of epistemic thermodynamics"), refined with a third leg from the [GP-042](../seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md)→[GP-046](../seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) chain.
 
 ZTARE is not a fitter with a falsifier bolted on. It is an apparatus resting on three non-substitutable legs. Remove any one and the apparatus collapses into something already in the literature (curve fitting, model selection, LLM-as-judge).
 
@@ -15,7 +15,7 @@ ZTARE is not a fitter with a falsifier bolted on. It is an apparatus resting on 
 
 ZTARE's first move on any candidate is to ask *how would I kill this?*, not *does this fit?*. Gates, quarantines, and the bounded discriminator exist so that a failed hypothesis is diagnosed in seconds, not absorbed into a model as free parameters. This is Mungerian inversion hardened into executable code.
 
-What this buys us: cheap failure. The unit economics of GP-032 are a direct consequence — epistemic throughput is high because most candidates die fast.
+What this buys us: cheap failure. The unit economics of [GP-032](../seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md) are a direct consequence — epistemic throughput is high because most candidates die fast.
 
 What this rules out: any architecture that treats negative evidence as a regularization term. Negative evidence must be terminal, not absorbed.
 
@@ -61,7 +61,7 @@ try -> expose failure -> classify obstruction -> repair smallest interface -> re
 ```
 
 At the research-loop scale, the apparatus asks how a candidate law dies under
-gates before spending more search. At the apparatus scale, seams such as GP-188
+gates before spending more search. At the apparatus scale, seams such as [GP-188](../seams/protocol/GP-188_research_director_primitive_compilation_boundary_seam.md)
 ask how the workstation fails to use its own primitives before creating another
 loop. At the proof-search scale, the GNN/router lane asks how a Lean action
 fails before ranking another premise.
@@ -98,9 +98,9 @@ repair queue item that a cold agent can inspect without conversation history.
 
 **Primitive:** a claim earns status only by surviving outside the window in which it was fit.
 
-This is where we depart from the Kolmogorov / Occam framing that the "compress" word invites. ZTARE does **not** reward minimum parameter count. GP-046 enforces something stricter: if a candidate makes an asymptotic claim, that claim must survive on a sandbox-authored farther-tail holdout the candidate never saw. A parsimonious finite-window surrogate is *more* dangerous than a messy global law, because parsimony is what makes the surrogate persuasive.
+This is where we depart from the Kolmogorov / Occam framing that the "compress" word invites. ZTARE does **not** reward minimum parameter count. [GP-046](../seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) enforces something stricter: if a candidate makes an asymptotic claim, that claim must survive on a sandbox-authored farther-tail holdout the candidate never saw. A parsimonious finite-window surrogate is *more* dangerous than a messy global law, because parsimony is what makes the surrogate persuasive.
 
-GP-045 is the cautionary tale: iter-7 scored 100 inside the fit window with a clean closed form, and was still the wrong psi-dependent floor. Parameter count was fine. Asymptotic survival was not tested. GP-046 is the fix.
+[GP-045](../seams/substrates/corrector/GP-045_cold_residual_01_pre_registration.md) is the cautionary tale: iter-7 scored 100 inside the fit window with a clean closed form, and was still the wrong psi-dependent floor. Parameter count was fine. Asymptotic survival was not tested. GP-046 is the fix.
 
 What this buys us: protection against Ptolemaic compression — elegant models that are locally perfect and globally wrong.
 
@@ -112,7 +112,7 @@ What this rules out: scoring by description length alone. The test surface must 
 
 **Primitive:** truth survives structured disagreement between independent judges, not a single verifier.
 
-This is the leg Gemini's synthesis missed and the one the GP-042 / debate-log work exposed. Invert + Compress together still leave a single verifier in the loop, and a single verifier is gameable — we have the labeled dataset to prove it. The third leg is:
+This is the leg Gemini's synthesis missed and the one the [GP-042](../seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md) / debate-log work exposed. Invert + Compress together still leave a single verifier in the loop, and a single verifier is gameable — we have the labeled dataset to prove it. The third leg is:
 
 - **Firing Squad** — independent judges scoring the same candidate, disagreement is signal
 - **Meta-Judge** — a judge of judges when the verification panel splits
@@ -134,7 +134,7 @@ What this rules out: any single-oracle architecture, including "use a bigger mod
 | Compress (asymptotic survival) | A fitter with a falsifier — wins the window, loses the law. Planck-class traps pass. |
 | Adversarial disagreement | LLM-as-judge with extra steps. Gameable by a good mutator. |
 
-The three legs are the reason ZTARE detects *compound* failure modes no single leg catches. GP-045 (Compress leg did the work post-mortem), GP-042 debate logs (Adversarial leg), GP-032 throughput economics (Invert leg) are each one-legged views of the same apparatus.
+The three legs are the reason ZTARE detects *compound* failure modes no single leg catches. GP-045 (Compress leg did the work post-mortem), GP-042 debate logs (Adversarial leg), [GP-032](../seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md) throughput economics (Invert leg) are each one-legged views of the same apparatus.
 
 ---
 
@@ -149,7 +149,7 @@ The three legs are the reason ZTARE detects *compound* failure modes no single l
 
 ## The Separation of Concerns Principle (added 2026-04-16)
 
-The three legs above describe *what* ZTARE enforces. The separation of concerns is *how* it enforces them at the implementation layer. The core insight, earned through GP-074 Component C integration:
+The three legs above describe *what* ZTARE enforces. The separation of concerns is *how* it enforces them at the implementation layer. The core insight, earned through [GP-074](../seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md) Component C integration:
 
 **The LLM is a semantic router, not a calculator.**
 
@@ -170,7 +170,7 @@ The cage is not punitive — it is a *cognitive gym*. Each layer removes a failu
 
 The separation of concerns materialized as three discrete components, each addressing a different failure class:
 
-- **Component A** (GP-061, structural constraint extractor): extracts a feature-bag from failed model families — what structural properties do ALL failures share? Narrows the search space by elimination. *Leg 1 (Invert) made concrete.*
+- **Component A** ([GP-061](../seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md), structural constraint extractor): extracts a feature-bag from failed model families — what structural properties do ALL failures share? Narrows the search space by elimination. *Leg 1 (Invert) made concrete.*
 - **Component B** (GP-061, negative space extractor): identifies what the void slot looks like — what's missing from every failed model? Topological pruner, not semantic injector. *Leg 2 (Compress) made concrete — but operates on structure, not parameters.*
 - **Component C** (GP-074, residual fingerprinting): probes the GT corrector shape via Mutator-Dominant Subtraction, classifies it, checks against a 26-form library. Gives the mutator a geometric hint without leaking the answer. *The bridge between Legs 1 and 2 — geometric feedback that is shape-class, not value.*
 
@@ -182,7 +182,7 @@ The key engineering insight of Component C: probe `f_true(u,v) - f_dominant(u,v)
 
 ---
 
-## Proportionality Principle (added 2026-04-20, GP-106)
+## Proportionality Principle (added 2026-04-20, [GP-106](../seams/reflexive/GP-106_proportionality_precautionary_principle_seam.md))
 
 The three legs describe what the apparatus enforces on candidates. The
 proportionality principle describes what the apparatus owes to the models it
@@ -206,7 +206,7 @@ how the architecture works. Documenting it as a design principle ensures it
 remains true as the architecture evolves.
 
 **Leg 3 addendum (Adversarial Disagreement — model rotation as proportionality hedge):**
-Cross-family model separation (GP-105 M-Form) already rotates models across
+Cross-family model separation ([GP-105](../seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-Form) already rotates models across
 roles (mutator, judge, general office). Extend this principle: no single model
 instance should be subjected to extended adversarial pressure without rotation.
 This is good practice for avoiding overfitting to one model's biases AND a
@@ -226,7 +226,7 @@ objection, GP-106 debate).
 
 **The single most dangerous form of overfitting in a discovery engine is not overfitting data — it is overfitting the grammar to the domain.**
 
-Earned through GP-080 Component D extension. The distinction:
+Earned through [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) Component D extension. The distinction:
 
 | Concept | What it is | Epistemic status |
 |---|---|---|
@@ -313,16 +313,16 @@ across structurally diverse substrates.
 
 ## Open questions
 
-- Does GP-023 Phase 3 produce a real farther-tail survival result? (Empirical anchor for Compress leg.) **Resolved: YES — H-GRAMMAR-01 confirmed 2026-04-17.**
+- Does [GP-023](../seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) Phase 3 produce a real farther-tail survival result? (Empirical anchor for Compress leg.) **Resolved: YES — H-GRAMMAR-01 confirmed 2026-04-17.**
 - Is the Meta-Judge itself gameable by a mutator that models judge disagreement? (Recursive adversarial pressure on leg 3.)
 - Can the three legs be collapsed to two without losing the compound-failure property? (We currently believe no; this is the falsifier for the thesis.)
 - **NEW:** Does the 26-form corrector library hit a "Library Ceiling" on real physics? (Feynman benchmark is the falsification test.) **Partially resolved: GCH confirmed on Planck substrate; IMPDH dark run in progress for second domain.**
 - **NEW:** Can Component C's 2-bit descriptor be extended without breaking the contamination gate? (More bits = more useful hints, but also more leak surface.)
-- **NEW (GP-080):** Does the domain-axiom / domain-dimensionality distinction hold under adversarial audit? Can a determined auditor find a grammar construct name that leaks domain knowledge without naming a domain?
+- **NEW ([GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md)):** Does the domain-axiom / domain-dimensionality distinction hold under adversarial audit? Can a determined auditor find a grammar construct name that leaks domain knowledge without naming a domain?
 - **NEW (2026-04-18) — UNRESOLVED:** Do sibling architectures (Aletheion Emergence Protocol, Active Epistemic Control, Agent Ontogeny & Lineage Physics — purportedly late-2025 to early-2026 preprints) substantively differ from ZTARE, or do they converge on the same gate-battery logic? These names were asserted in an external AI synthesis and require confirmation from primary sources before citing in paper5 related work. Do not treat as established references until verified.
 
 
-## Measuring Before Killing (added 2026-04-25, GP-166)
+## Measuring Before Killing (added 2026-04-25, [GP-166](../seams/mission/meta/GP-166_self_enacted_procedural_compliance_seam.md))
 
 The three legs above describe what the apparatus enforces on candidates. The v2.1 work, completed during the gp163d session, sharpened the Invert leg in a way that is worth recording here as an extension rather than a fourth leg.
 

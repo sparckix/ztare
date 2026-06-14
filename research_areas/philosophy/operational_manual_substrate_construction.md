@@ -2,8 +2,8 @@
 
 **Status:** Public — mandatory reading before adding any substrate, grammar construct, or pipeline component
 **Date:** 2026-04-17
-**Provenance:** Distilled from GP-027→GP-080. Updated continuously as new failure modes are earned.
-**Relationship to Paper 5 (Treatise):** The Treatise explains *why* the principles work — permanent,
+**Provenance:** Distilled from [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md)→[GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md). Updated continuously as new failure modes are earned.
+**Relationship to *Epistemic Verification* (Treatise):** The Treatise explains *why* the principles work — permanent,
 academic, no runbook. This manual explains *how not to break them* — paranoid, updatable, engineering.
 If GPT-5 can do gradient descent in its head tomorrow, Chapter 2 changes. Chapter 2 of the Treatise does not.
 
@@ -73,7 +73,7 @@ the obstacle. The cage is what lets you push harder.
 
 ### The Separation of Concerns Rule
 
-When these boundaries blur, the system breaks. Every GP-074 integration bug traced to a boundary violation:
+When these boundaries blur, the system breaks. Every [GP-074](../seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md) integration bug traced to a boundary violation:
 
 | Concern | Owner | NOT the owner |
 |---|---|---|
@@ -93,11 +93,11 @@ Each layer was added because the previous configuration hit a specific failure m
 
 | GP | Failure mode | Layer added |
 |---|---|---|
-| GP-027 | Numerical hallucination (LLM guessing 0.081234) | Deterministic Sidecar (SciPy) |
-| GP-035 | Combinatorial explosion (10,000 random forms) | Components A+B (structural pruning) |
-| GP-061 | Null result on Selkov (search space too large) | Component B (negative space) |
+| [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md) | Numerical hallucination (LLM guessing 0.081234) | Deterministic Sidecar (SciPy) |
+| [GP-035](../seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md) | Combinatorial explosion (10,000 random forms) | Components A+B (structural pruning) |
+| [GP-061](../seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md) | Null result on Selkov (search space too large) | Component B (negative space) |
 | GP-074 | Shape guessing (LLM couldn't characterize residual) | Component C (residual fingerprint) |
-| GP-080 | Grammar semantic leak (DOSE_SCALED named the domain) | Contamination Gate at grammar layer |
+| [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | Grammar semantic leak (DOSE_SCALED named the domain) | Contamination Gate at grammar layer |
 
 ### Why "Gym" Not "Prison"
 
@@ -146,7 +146,7 @@ retrieval. The mutator stops reasoning from residuals and starts retrieving "pha
 **Test before committing:** Read every new grammar construct name aloud without context.
 Can you describe what it does without mentioning the application domain? If no — rename.
 
-**Canonical fix:** `DOSE_SCALED → BIVARIATE_SCALE`. Documented 2026-04-17, GP-080.
+**Canonical fix:** `DOSE_SCALED → BIVARIATE_SCALE`. Documented 2026-04-17, [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md).
 
 ---
 
@@ -220,7 +220,7 @@ they artificially narrow the search space.
 
 **Trap:** Putting any GT information (parameters, functional form, derivation) in Division B artifacts.
 
-**Division A / Division B boundary (GP-072 protocol):**
+**Division A / Division B boundary ([GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) protocol):**
 
 | Artifact | Division | What it may contain |
 |---|---|---|
@@ -293,7 +293,7 @@ Before running `generate_substrate.py` for any new substrate:
 
 ## Chapter 4: The Evidence-Grammar Diagnostic — What Hardy Actually Is
 
-*Distilled from GP-080→GP-083 crucial experiment sequence. Updated 2026-04-18.*
+*Distilled from [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md)→[GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md) crucial experiment sequence. Updated 2026-04-18.*
 
 When the engine hits a plateau (stagnation at a high-scoring champion that fails the farther-tail
 discriminator), the bottleneck is in one of two places:
@@ -324,7 +324,7 @@ engine — Hardy is the system that tells Ramanujan what to measure next.
 **Answer A fails because the axiom selection problem IS the eigenquestion selection problem.**
 If the operator feeds `E=hv` into the prover, the operator has already done the discovery.
 The prover confirms; it does not discover. This is oracle contamination through the axiom channel
-(identified independently by the Systems ML reviewer, GP-083 Turn 2).
+(identified independently by the Systems ML reviewer, [GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md) Turn 2).
 
 **Answer B is architecturally consistent** — it produces a typed, stateless, deterministic operation
 (compute divergence surface, propose measurement point). It belongs in the decomposed operations
@@ -385,11 +385,11 @@ They belong in Chapter 1 of the Treatise, not Chapter 3.
 
 | ID | Name | First observed | Rule violated | Fix |
 |---|---|---|---|---|
-| AP-001 | `DOSE_SCALED` semantic leak | GP-080, 2026-04-17 | Rule 1 | Renamed `BIVARIATE_SCALE` |
-| AP-002 | Post-loop sentinel | GP-078, 2026-04-17 | Rule 6 | Seal before loop |
-| AP-003 | Charter GT derivation | GP-072 seam, 2026-04-16 | Rule 5 | Charter is Division B — no formulas |
-| AP-004 | `int()` cast on continuous GT | GP-080 analysis, 2026-04-17 | Rule 3 | `generate_substrate.py` continuous mode |
-| AP-005 | Stage 1 overclaim | GP-080 seam debate, 2026-04-17 | Rule 7 | Two-stage strategy; Stage 1 = `apparatus_verified` |
+| AP-001 | `DOSE_SCALED` semantic leak | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md), 2026-04-17 | Rule 1 | Renamed `BIVARIATE_SCALE` |
+| AP-002 | Post-loop sentinel | [GP-078](../seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md), 2026-04-17 | Rule 6 | Seal before loop |
+| AP-003 | Charter GT derivation | [GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) seam, 2026-04-16 | Rule 5 | Charter is Division B — no formulas |
+| AP-004 | `int()` cast on continuous GT | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) analysis, 2026-04-17 | Rule 3 | `generate_substrate.py` continuous mode |
+| AP-005 | Stage 1 overclaim | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) seam debate, 2026-04-17 | Rule 7 | Two-stage strategy; Stage 1 = `apparatus_verified` |
 | AP-006 | Within-withheld-class feature collapse | gp163d v2 backtest, 2026-04-26 | Rule 9 (new) | R26 G-CROSS-CLASS-FEATURE-SUPPORT + per-system enrichment |
 | AP-007 | Vacuum gate verdicts (form_str-key bug) | gp154 audit, 2026-04-26 | Rule 10 (new) | Suppress write when gate refused upstream; surfaced by 2B effectiveness audit |
 

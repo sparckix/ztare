@@ -30,9 +30,9 @@ Every rubric fits ONE of three flavors. Pick one before writing:
 
 | Flavor | When to use | Characterized by |
 |---|---|---|
-| **Quantitative-discovery (blind GT)** | You have a ground-truth function and want the mutator to recover it blind. Phase B / Phase C per GP-096. | `fit_score_mode: "continuous_rmse"` or `"discrete_exact"`; `holdout_hard_gate: true`; `gate_harness.py` present; `evidence_holdout.txt` present. |
+| **Quantitative-discovery (blind GT)** | You have a ground-truth function and want the mutator to recover it blind. Phase B / Phase C per [GP-096](../../research_areas/seams/mission/discovery/GP-096_science_programme_decomposition_seam.md). | `fit_score_mode: "continuous_rmse"` or `"discrete_exact"`; `holdout_hard_gate: true`; `gate_harness.py` present; `evidence_holdout.txt` present. |
 | **Quantitative-calibration (known GT, open)** | You have a GT and want to measure apparatus performance without hidden holdout. Instrument shakedown. | `fit_score_mode: "continuous_l2"` (default) or `"continuous_rmse"`; `holdout_hard_gate: false`; gates mostly default. |
-| **Qualitative-thesis (no GT)** | Exploratory, thesis-driven, no numerical curve to fit. GP-131 / GP-133 / ztare_on_ztare class. | `disable_evidence_fit_gate: true` + reason; `disable_uniqueness_gap_gate: true` + reason; `fit_score_mode: "none"`; `holdout_hard_gate: false`; `enable_fit_primitive: false`. |
+| **Qualitative-thesis (no GT)** | Exploratory, thesis-driven, no numerical curve to fit. [GP-131](../../research_areas/seams/mission/discovery/GP-131_work_discovery_loop_seam.md) / [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) / ztare_on_ztare class. | `disable_evidence_fit_gate: true` + reason; `disable_uniqueness_gap_gate: true` + reason; `fit_score_mode: "none"`; `holdout_hard_gate: false`; `enable_fit_primitive: false`. |
 
 If you don't know which flavor you're writing, you are writing a broken rubric.
 
@@ -95,24 +95,28 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | `composition_min_families` | int |, | Minimum structural families the mutator must propose before stagnation applies. |
 | `composition_budget` | int |, | Maximum composition budget for the run. |
 | `confirmation_threshold_runs` | int |, | Runs needed to confirm a constraint. |
-| `gp103_stagnation_threshold` | int | ≈3 | GP-103 Compression-Gap-aware stagnation window. |
+| `gp103_stagnation_threshold` | int | ≈3 | [GP-103](../../research_areas/seams/engine/GP-103_topology_induction_gap.md) Compression-Gap-aware stagnation window. |
 | `discovery_mode` | bool | `false` | Enables Phase-C discovery affordances (different gate semantics). |
 | `falsification_mode` | string | `"continuous"` | `"bounded_discriminator"` is the qualitative-thesis variant. |
-| `epistemic_alignment` | object |, | GP-105 M-form alignment audit configuration. |
-| `cold_residual_successor_mode` | bool | `false` | Enables GP-045-style cold-residual treatment. |
+| `require_i_model_in_submission` | bool | inferred, legacy default `true` | Set `false` for qualitative/assertion-suite substrates. If omitted, the runner infers `false` only for unambiguous theorem-packet or qualitative bounded-discriminator rubrics with fitting and holdout disabled. |
+| `epistemic_alignment` | object |, | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-form alignment audit configuration. |
+| `cold_residual_successor_mode` | bool | `false` | Enables [GP-045](../../research_areas/seams/substrates/corrector/GP-045_cold_residual_01_pre_registration.md)-style cold-residual treatment. |
 
 ---
 
-## 7. Component / feature flags
+## 7. Feature flags
 
 | Field | Type | Default | Notes |
 |---|---|---|---|
 | `enable_fit_primitive` | bool | `true` | Whether to run the fit primitive. `false` for qualitative. |
-| `enable_component_c` | bool | `false` | GP-074 Component C residual fingerprinting. |
-| `enable_mform_audit` | bool | `false` | GP-105 M-Form alignment audit (qualitative rubrics typically enable this). |
-| `enable_lean_proof` | bool | `false` | GP-088 Lean-4 proof gate, requires `lean_prover_model`. |
-| `component_c_gt_module` | string |, | Path to Component C GT module if enabled. |
-| `component_c_stagnation_k` | int |, | Component C stagnation threshold. |
+| `enable_residual_diagnostics` | bool | `false` | Enables residual diagnostics ([GP-074](../../research_areas/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md)). |
+| `enable_component_c` | bool | `false` | Legacy alias for `enable_residual_diagnostics`; accepted for old rubrics. |
+| `enable_mform_audit` | bool | `false` | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-Form alignment audit (qualitative rubrics typically enable this). |
+| `enable_lean_proof` | bool | `false` | [GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md) Lean-4 proof gate, requires `lean_prover_model`. |
+| `residual_diagnostics_gt_module` | string | none | Sealed GT module used by residual diagnostics when enabled. |
+| `residual_diagnostics_stagnation_k` | int | none | Residual-diagnostics stagnation threshold. |
+| `component_c_gt_module` | string | none | Legacy alias for `residual_diagnostics_gt_module`; accepted for old rubrics. |
+| `component_c_stagnation_k` | int | none | Legacy alias for `residual_diagnostics_stagnation_k`; accepted for old rubrics. |
 
 ---
 
@@ -120,7 +124,7 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 
 | Field | Valid values | Default | Notes |
 |---|---|---|---|
-| `general_office_model` | `"gemini"` \| `"gemini-pro"` \| `"claude"` \| `"claude-opus"` \| `"gpt4o"` \| `"gpt4.1"` \| `"gpt4.1-mini"` | set via flag | GP-105 auditor model, must differ from judge + mutator per Chandler separation. |
+| `general_office_model` | `"gemini"` \| `"gemini-pro"` \| `"claude"` \| `"claude-opus"` \| `"gpt4o"` \| `"gpt4.1"` \| `"gpt4.1-mini"` | set via flag | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) auditor model, must differ from judge + mutator per Chandler separation. |
 | `lean_prover_model` | same vocabulary | `"gpt4.1"` | Lean-proof gate model when `enable_lean_proof: true`. |
 
 **Model labels are NOT raw API model IDs.** Valid labels are the ZTARE aliases enumerated above. `gemini-2.5-pro-preview-*` or similar raw IDs WILL fail the argparse `choices=` check.
@@ -132,7 +136,7 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | Field | Type | Notes |
 |---|---|---|
 | `synthesis_renderer` | string | Which synth renderer to use (`founder_memo`, `policy_essay`, etc.). See `src/ztare/synthesis/`. |
-| `reviewer_domains` | list of strings | GP-079 domain lenses to inject into the skeptic persona. Read by findings runner; NOT by autoresearch_loop. |
+| `reviewer_domains` | list of strings | [GP-079](../../research_areas/seams/protocol/GP-079_persona_library_unification_seam.md) domain lenses to inject into the skeptic persona. Read by findings runner; NOT by autoresearch_loop. |
 
 ---
 
@@ -155,6 +159,11 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 
 Use the committee rubric as drop-in: `make experiment-loop PROJECT=<slug> RUBRIC=dynamic_<slug>`. Committee rubrics cost ~2-3× per iter but discriminate better than single-persona rubrics for exploratory projects.
 
+Rubric-mode audit treats this shape as a `committee_panel`, not as a
+Newton/Kepler/calibration scoring rubric. The panel can guide critique under
+`--dynamic`; it does not need `rubric_mode` or a Generative Yield dimension
+unless it is promoted into a normal scoring rubric.
+
 ---
 
 ## 11. Worked examples
@@ -171,6 +180,7 @@ Use the committee rubric as drop-in: `make experiment-loop PROJECT=<slug> RUBRIC
   "holdout_hard_gate": false,
   "enable_fit_primitive": false,
   "falsification_mode": "bounded_discriminator",
+  "require_i_model_in_submission": false,
   "persona": "<adversarial domain-anchored reviewer, 3+ sentences>",
   "dimensions": [
     {"name": "...", "weight": 40, "description": "..."},
@@ -217,7 +227,7 @@ Requires: `projects/<slug>/gate_harness.py` + `projects/<slug>/evidence_holdout.
 8. **`dimensions[].weight` sums to 100** (if dimensions are used).
 9. **`criteria` names match `dimensions.name`** when both are present (no orphan criteria).
 
-Run `python -m json.tool rubrics/<slug>.json` to verify JSON validity. Beyond that, there is currently no automated spec-conformance checker, this is an open gap (candidate for a `make rubric-lint` target).
+Run `make validate-rubric PROJECT=<slug> RUBRIC=<slug>` before launch. The same deterministic validator is a prerequisite of `make loop`; it checks JSON structure, project-file presence, mode-specific rules such as Newton `Secondary observable` charter alignment, theorem-packet function exposure, and other launch blockers. Use `python -m json.tool rubrics/<slug>.json` only as a quick syntax check.
 
 ---
 
@@ -237,20 +247,20 @@ Run `python -m json.tool rubrics/<slug>.json` to verify JSON validity. Beyond th
 
 ## 14. Historical context
 
-- **GP-054** (Rubric Quality and Generation Spec) governs how rubrics are generated and reviewed, ties to `make rubric-review`.
-- **GP-075** (Rubric Generation for Unknown Domains) governs taxonomy of GT-independent vs GT-dependent criteria in discovery mode.
-- **GP-104 / `make generate-gp`** is the standard tool for fresh qualitative scaffolding; it produces Type-B rubric scaffolds that comply with this spec.
+- **[GP-054](../../research_areas/seams/protocol/GP-054_rubric_quality_and_generation_seam.md)** (Rubric Quality and Generation Spec) governs how rubrics are generated and reviewed, ties to `make rubric-review`.
+- **[GP-075](../../research_areas/seams/protocol/GP-075_rubric_for_unknowns_seam.md)** (Rubric Generation for Unknown Domains) governs taxonomy of GT-independent vs GT-dependent criteria in discovery mode.
+- **[GP-104](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md) / `make generate-gp`** is the standard tool for fresh qualitative scaffolding; it produces Type-B rubric scaffolds that comply with this spec.
 
 ---
 
 ## 15. Change log
 
 - **2026-04-23:** Initial version of this specification document. Filed after a hand-rolled rubric with `fit_score_mode: "rubric_only"` caused score-zero hard-fails on the ztare_on_ztare project. Triggering incident: the failure mode table in §13 is a direct post-mortem. (Author: claude_manager.)
-- **2026-04-23 (later):** GP-133 Round 4 additions, §§ 16-20 below. Rubric-loader in `autoresearch_loop.py` enforces `py_exec` gates + `rubric_mode` discipline fail-closed. Architectural map updated with new region `rubric_preflight` and new exit `GP133_R4_gate`.
+- **2026-04-23 (later):** [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4 additions, §§ 16-20 below. Rubric-loader in `autoresearch_loop.py` enforces `py_exec` gates + `rubric_mode` discipline fail-closed. Architectural map updated with new region `rubric_preflight` and new exit `GP133_R4_gate`.
 
 ---
 
-## 16. `rubric_mode` top-level field (GP-133 Round 4)
+## 16. `rubric_mode` top-level field ([GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4)
 
 Every rubric SHOULD declare its epistemic mode. Enforced by the rubric-preflight gate in `autoresearch_loop.py`:
 
@@ -259,14 +269,14 @@ Every rubric SHOULD declare its epistemic mode. Enforced by the rubric-preflight
 | `"newton"` | Discovery-class. The `dimensions` list MUST include a dimension whose name contains `"Generative Yield"` (case-insensitive) with weight ≥15. | **Fail-closed:** autoresearch loop refuses to launch if the Generative Yield dimension is missing or under-weighted. |
 | `"kepler"` | Descriptive-fit. No Generative Yield requirement. | Passes gate unconditionally. Outputs labeled Kepler-class descriptive findings. |
 | `"calibration"` | Apparatus-shakedown. Discovery claims suppressed. | Passes gate unconditionally. Outputs labeled calibration-class. |
-| unknown value |, | **Fail-closed:** refuses to launch. |
+| unknown value | invalid mode | **Fail-closed:** refuses to launch. |
 | absent | legacy unspecified | Passes gate (no warning emitted in current implementation; legacy rubrics continue to work). |
 
 `make generate-gp` emits `rubric_mode: "kepler"` by default. Promotion to `rubric_mode: "newton"` requires principal signoff and rubric updates to include Generative Yield.
 
 ---
 
-## 17. `fit_expression_grammar: "py_exec"`, gates + discipline (GP-133 Round 4)
+## 17. `fit_expression_grammar: "py_exec"`, gates + discipline ([GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4)
 
 When a rubric sets `fit_expression_grammar: "py_exec"`, two additional fields are **required**. Enforced by the rubric-preflight gate:
 
@@ -291,11 +301,32 @@ Scoring rubric for the dimension should distinguish:
 
 Trivial restatements of the fitting target score 0, not partial credit.
 
-**Matching charter requirement:** project charters targeted by Newton-mode rubrics MUST require each primitive to include a `**Secondary observable**` field in the thesis format. Charter and rubric move in lock-step.
+**Tracked contract requirement:** Newton-mode rubrics should carry a
+`secondary_observable_contract` object so the requirement survives even when a
+project workspace is local or ignored. If the object is present, launch
+preflight requires all four fields below to be non-empty:
+
+```json
+{
+  "secondary_observable_contract": {
+    "observable": "<what is measured beyond the primary fit/admission target>",
+    "measurement": "<how the observable is computed or scored>",
+    "expected_range": "<expected value, range, or pass condition>",
+    "falsifier": "<what observation would refute the generative claim>"
+  }
+}
+```
+
+Project charters targeted by Newton-mode rubrics should also require each
+primitive to include a `Secondary observable` field in the thesis format. The
+rubric-level contract is the durable run surface; the charter is the
+operator-facing local version. Launch preflight accepts a valid rubric-level
+contract or a project charter that contains `Secondary observable`; malformed
+rubric-level contracts fail even if the charter contains the heading.
 
 ---
 
-## 19. F-row extensions for discovery-class labeling (GP-133 Round 4)
+## 19. F-row extensions for discovery-class labeling ([GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4)
 
 F-rows in the experiment track record carry two new fields when the run's rubric has `rubric_mode: "newton"` OR `fit_expression_grammar: "py_exec"`:
 
@@ -308,7 +339,7 @@ Staleness check: F-rows with missing `discovery_class` in Newton-mode or py_exec
 
 ---
 
-## 20. PR checklist, governance for new grammar / mode additions (GP-133 Round 4)
+## 20. PR checklist, governance for new grammar / mode additions ([GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4)
 
 Any pull request that:
 
@@ -324,11 +355,11 @@ must satisfy ALL of:
 - **Architectural-map update** in `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` if the gate changes region structure or exit taxonomy.
 - **Principal signoff** in the PR description for any default-behavior change.
 
-Retroactive: GP-133 Round 4 itself is the first application of this checklist. Future PRs follow the checklist prospectively.
+Retroactive: [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4 itself is the first application of this checklist. Future PRs follow the checklist prospectively.
 
 ---
 
-## 21. Cage authoritative + reflexive-primitive flags (GP-157 / GP-167-GP-170, 2026-04-26)
+## 21. Cage authoritative + reflexive-primitive flags ([GP-157](../../research_areas/seams/apparatus/cage/GP-157_R10_R16_backport_scoping_2026_05_06.md) / [GP-167](../../research_areas/seams/mission/org/GP-167_multi_agent_interface_form_factor_seam.md)-[GP-170](../../research_areas/seams/engine/lean/GP-170_symbolic_logic_cage_seam.md), 2026-04-26)
 
 The 2026-04-26 wave promoted the Cage Orchestrator from observe-mode to authoritative across substrates and added six apparatus-general flags. Loader gates live in `src/ztare/orchestrator/state.py::resolve_cage_mode` and the per-flag dispatch sites listed below.
 
@@ -340,7 +371,7 @@ The 2026-04-26 wave promoted the Cage Orchestrator from observe-mode to authorit
 | `cage_authoritative_mode` | bool | same | Cage verdicts are authoritative; gate failures decrement scores via `apply_verdict_to_eval`. **`cage_authoritative_mode=true` IMPLIES observe-mode behaviour**, when both flags are set, authoritative wins. |
 | `cage_meta` | object | `orchestrator/state.py::build_cage_runtime` | Required keys: `class` (substrate-class predicate), `target_convention_homogeneity`, plus optional `algebraic_constraints`, `feature_dimensions`. Read by `can_handle` predicates on each Cage-routed gate. |
 
-Per GP-157 §3a (binding rule): all gates from R10 onward MUST be Cage-routed (register via `register_<name>_gate(s)(cage)` from `state.py::build_cage_runtime`). Direct-wire gates in `autoresearch_loop.py` are frozen, no new direct-wire imports allowed.
+Per [GP-157](../../research_areas/seams/apparatus/cage/GP-157_R10_R16_backport_scoping_2026_05_06.md) §3a (binding rule): all gates from R10 onward MUST be Cage-routed (register via `register_<name>_gate(s)(cage)` from `state.py::build_cage_runtime`). Direct-wire gates in `autoresearch_loop.py` are frozen, no new direct-wire imports allowed.
 
 ### 21.2 Per-class farther-tail flags (R10 / R11)
 
@@ -352,7 +383,7 @@ Per GP-157 §3a (binding rule): all gates from R10 onward MUST be Cage-routed (r
 
 R10 (cross-class extrapolation diagnostic, POST_FIT) always runs when Cage is active and substrate has `cage_meta.class` set. R11 (per-class MRE ceiling, PRE_JUDGE) only enforces when `enforce_per_class_farther_tail=true`.
 
-### 21.3 GP-168 Forced-REFRAME flags
+### 21.3 [GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md) Forced-REFRAME flags
 
 | Field | Default | Read by |
 |---|---|---|
@@ -363,7 +394,7 @@ R10 (cross-class extrapolation diagnostic, POST_FIT) always runs when Cage is ac
 
 Forced-REFRAME injects mandatory disjoint-architecture alternatives parsed from `GP-164 (internal seam)*.md` §Appendix (loader: `orchestrator/alien_math_seam_loader.py`); falls back to a hardcoded list of 3 framings (RG-flow / multifractal Legendre / modular q-expansion) if the seam file is unavailable.
 
-### 21.4 GP-169 Cold-LLM Erdős seed flags (Phase 1: iter-0 baseline)
+### 21.4 [GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) Cold-LLM Erdős seed flags (Phase 1: iter-0 baseline)
 
 | Field | Default | Read by |
 |---|---|---|
@@ -373,7 +404,7 @@ Forced-REFRAME injects mandatory disjoint-architecture alternatives parsed from 
 | `cold_llm_seed_k_law_budget` | `7` | same, max K per candidate form |
 | `cold_llm_seed_timeout_seconds` | `30` | same, hard wall-clock budget; on timeout the seed mechanism degrades cleanly (iter-1 proceeds without the cold seed) |
 
-### 21.5 GP-169 Phase 2, Erdős re-query on stagnation (2026-04-26)
+### 21.5 [GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) Phase 2, Erdős re-query on stagnation (2026-04-26)
 
 When stagnation triggers fire, the cold LLM is re-queried with the **current** residual fingerprint (computed from `noise_profile_post_fit_iter_*.json` + latest `analogy_log.jsonl` + `substrate_critique.json`). The refreshed candidates replace the iter-0 seed in the briefing via the same provider channel. Idempotent within a stagnation event (signature-cached); capped per run.
 
@@ -397,7 +428,7 @@ These are not new in this wave but are now read by R10/R11/R13-R16 and so must b
 | `enable_analogy` | bool, fires the L1 ANALOGY mechanism (cross-domain candidate forms triggered by residual fingerprint) |
 | `enable_framer` | bool, fires the v2.0 active-framer (Box-Cox / log / no-transform via raw-coord BIC) |
 
-### 21.7 Numeric-redaction in DataDiagnostics briefing (Task #140)
+### 21.7 Numeric-Redaction In DataDiagnostics Briefing
 
 `briefing_providers/data_diagnostics.py` buckets all leakable numerics surfaced to the mutator:
 
@@ -408,7 +439,7 @@ These are not new in this wave but are now read by R10/R11/R13-R16 and so must b
 
 Numerics remain in `workspace/substrate_critique.json` for operator audit; only the briefing-rendered text is redacted. No rubric flag, unconditional protection against RH-13 / RH-18 mutator-side numeric memorization.
 
-### 21.8 GP-170 Symbolic Logic Cage (R12)
+### 21.8 [GP-170](../../research_areas/seams/engine/lean/GP-170_symbolic_logic_cage_seam.md) Symbolic Logic Cage (R12)
 
 R12 runs as a Cage-routed PRE_FIT gate that reduces `PARAMETRIC_FORM` via SymPy + AST-rewrite (`where()` → `Piecewise`, `sigmoid()` → closed form) and checks declared `cage_meta.algebraic_constraints` before the fit primitive sees the form. No additional rubric flag, engagement is gated by `cage_meta.algebraic_constraints` being a non-empty list.
 
@@ -438,7 +469,7 @@ When the structural anti-pattern gates (R20 / R21 / R24) detect a form embedding
 
 R20/R21/R24 verdicts feed R22, the meta-runner translates structural detections into RH codes (RH-18, RH-18-ANCHOR, RH-EFFK-LAUNDER) for human-readable judge feedback. R22 retains a regex catalog only for orthogonal patterns the structural detectors don't cover (RH-13 categorical-as-continuous, RH-17 explicit lookup table).
 
-### 21.8b Relationship to v4-era anti-gaming gates (GP-086)
+### 21.8b Relationship to v4-era anti-gaming gates ([GP-086](../../research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md))
 
 The v4-era hardening pillars (`circularity_gate`, `falsifiability_gate`, `derived_constraints`, `structural_constraint_extractor`, `negative_space_extractor`, `bridge_scope_contract`, `domain_match_gate`, `asymptotic_claim_discipline`) detect **thesis-structural** properties: does the form have rivals, do parameters exceed evidence count, does the falsification suite exist, etc.
 
@@ -488,12 +519,33 @@ Cost contract: hard 60s wall-clock per gap, ~3K input tokens, ~3K
 output tokens. On failure: log + continue. Writes
 `workspace/evidence_gap_enrichment_proposals.json`.
 
-This is the apparatus-side trigger of the Karpathy RAM-loop pattern:
-ZTARE stays ALU; EGE flags when the bottleneck is RAM (the substrate
-is missing data the apparatus cannot synthesize). The OPERATOR-side
-decision (do these proposals fit? does the substrate enrichment
-generalize?) stays human.
+EGE separates two bottleneck types: the apparatus handles the
+compute/search side, and EGE flags the cases where the limit is missing
+data the apparatus cannot synthesize. The operator-side decision (do
+these proposals fit? does the substrate enrichment generalize?) stays
+human.
+
+### 21.8e Parallel-mutator fan-out
+
+The parallel-mutator path is opt-in through rubric fields. K=1 is the
+ordinary single mutator, not a parallel run. The loop calls the
+parallel-mutator wrapper only when `should_run_parallel(...)` is true.
+
+| Field | Default | Read by |
+|---|---|---|
+| `parallel_mutator_k` | `1` | `orchestrator/blitz_dispatch.py::should_run_parallel` |
+| `parallel_mutator_force` | `false` | same |
+| `parallel_mutator_force_iters` | `[]` | same |
+| `parallel_mutator_min_stagnation` | `1` | same |
+| `parallel_mutator_k1_ablation_every` | `0` | same |
+| `enable_recombination` | `false` | `orchestrator/blitz_dispatch.py::dispatch_mutator_blitz` |
+
+Contract: no rubric flag, no fan-out. `parallel_mutator_k > 1` only
+becomes active after `parallel_mutator_force`, `parallel_mutator_force_iters`,
+or the stagnation threshold selects it. Subscription-backed mutators follow
+the same rule; they are not parallelized merely because
+`AGENT_MUTATOR=1` is set.
 
 ### 21.9 Compatibility with older substrates
 
-Substrates that pre-date this wave (no `cage_meta`, no per-class flags, no cold-seed) continue to run unchanged: the loader returns `mode="off"` from `resolve_cage_mode` when neither `cage_observe_mode` nor `cage_authoritative_mode` is set, all GP-168 / GP-169 hooks check their `enable_*` flags before firing, and the DataDiagnostics provider applies redaction unconditionally (a strict win, never leaks more than before).
+Substrates that pre-date this wave (no `cage_meta`, no per-class flags, no cold-seed) continue to run unchanged: the loader returns `mode="off"` from `resolve_cage_mode` when neither `cage_observe_mode` nor `cage_authoritative_mode` is set, all [GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md) / [GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) hooks check their `enable_*` flags before firing, and the DataDiagnostics provider applies redaction unconditionally (a strict win, never leaks more than before).

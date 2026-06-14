@@ -7,11 +7,11 @@ description: "One-page pilot brief: the cost of confidently-wrong AI analysis."
 
 ## The Problem
 
-AI-generated analysis is fast, cheap, and confidently wrong at a rate that human
-review cannot catch at scale. As generation costs approach zero, the volume of
-persuasive, well-formatted hallucinations will exceed any organization's capacity
-to verify them manually. Firms that generate faster than they verify will
-accumulate confident errors until one becomes a catastrophic loss.
+AI-generated analysis is fast and cheap, and it produces confident errors at a
+rate human review does not reliably catch under time pressure. As generation cost
+falls, output volume grows faster than manual verification capacity. An
+organization that generates faster than it verifies accumulates undetected errors
+in its decision record.
 
 ## What ZTARE Is
 
@@ -19,10 +19,10 @@ ZTARE is a verification engine for AI-augmented knowledge work. It runs a
 structured loop: an AI generates a thesis, a second AI and a battery of
 deterministic gates verify it, failures are recorded as constraints, and the
 next iteration must respect every prior failure. The output is a thesis that
-has survived adversarial scrutiny under pre-registered criteria, or an honest
-declaration that the evidence is insufficient.
+passed the gates under pre-registered criteria, or a declaration that the
+evidence is insufficient.
 
-ZTARE is not a model. It is a discipline imposed on models.
+ZTARE is not a model. It is a control layer applied to models.
 
 ## What the Pilot Measures
 

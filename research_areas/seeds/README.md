@@ -12,15 +12,15 @@ These files define program intent. Debate, implementation, and verifier artifact
 - prose/code drafts: `research_areas/drafts/`
 - deterministic specs: `research_areas/specs/`
 
-<!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py, edit prose OUTSIDE this block) -->
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
 ## Index
 
 **Sub-folders**
 
-- [`active/`](active/), 0 file(s)
-- [`deferred/`](deferred/), 4 file(s)
-- [`legacy/`](legacy/), 4 file(s)
+- [`active/`](active/) - 0 file(s)
+- [`deferred/`](deferred/) - 4 file(s)
+- [`legacy/`](legacy/) - 4 file(s)
 
 <sub>3 sub-folder(s), 0 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

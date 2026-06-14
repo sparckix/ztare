@@ -15,6 +15,8 @@ the whole repository.
 - [Public Claim Governance](public_claim_governance.md)
 - [GP-245 Forecast Calibration](forecast_calibration_gp245.md)
 - [LeanMill APN Audit](leanmill_apn_audit.md)
+- [Anti-Laundering Catches](anti_laundering_catches.md)
+- [Governed Autoformalization](governed_autoformalization.md)
 
 ## What Counts As A Packet
 
@@ -36,10 +38,12 @@ listed in [Packet Coverage](../packet_coverage.md) as missing or partial.
 
 **Documents**
 
+- [Anti-Laundering Catches Packet](anti_laundering_catches.md) - Evidence packet: the governance kernel rejecting compiling-but-laundered closures produced by its own agents, with ledger receipts and a runnable check.
 - [Evaluator Hardening Packet](evaluator_hardening.md) - Evidence packet for ZTARE evaluator hardening and self-certification failure claims.
-- [GP-245 Forecast Calibration Packet](forecast_calibration_gp245.md) - Evidence packet for the GP-245 LLM forecasting calibration program.
+- [GP-245 Forecast Calibration Packet](forecast_calibration_gp245.md) - Evidence packet for the [GP-245](../../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) LLM forecasting calibratio
+- [Governed Autoformalization Packet](governed_autoformalization.md) - Evidence packet for governed autoformalization: a checker-agnostic faithfulness firewall with kernel-grade ground-truth checks.
 - [LeanMill APN Audit Packet](leanmill_apn_audit.md) - Evidence packet for the LeanMill APN audit and proof-governance discipline.
 - [Public Claim Governance Packet](public_claim_governance.md) - Evidence packet for ZTARE public claim governance: claim register, project summaries, non-claims, and next falsifiers.
 
-<sub>0 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 6 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

@@ -1,5 +1,5 @@
 ---
-description: "Why predictions are gameable and how the append-only ledger + Brier de-games them."
+description: "Why predictions are gameable and how the append-only ledger + Brier scoring catch miscalibration."
 ---
 # Prediction Ledger Pattern
 
@@ -13,7 +13,7 @@ description: "Why predictions are gameable and how the append-only ledger + Brie
 
 ## What this pattern catches
 
-Predictions are claims about the future. Like substrate-level claims, they are gameable. Unlike substrate-level claims, they have a deterministic resolver: time passing. The Prediction Ledger records every substantive prediction at the moment it is made, predicted odds, predicted effort, predicted cost, predicted robustness, predicted direction-of-effect, predicted category, predicted replication, predicted cascade, predicted information loss, and compares against the actual outcome when the result lands. Calibration drift becomes a typed object that the catch ledger can fire on.
+Predictions are claims about the future. Like substrate-level claims, they are gameable. Unlike substrate-level claims, they have a deterministic resolver: time passing. The Prediction Ledger records every substantive prediction at the moment it is made, predicted odds, predicted effort, predicted cost, predicted robustness, predicted direction-of-effect, predicted category, predicted replication, predicted cascade, predicted information loss, and compares against the actual outcome when the result lands. A resolved prediction with a large calibration delta is a structured record the catch ledger can fire on.
 
 The bug this is designed to catch is **systematic miscalibration of effort estimates**, specifically, a strong prior to estimate in human-effort units ("1 day," "1 week") for tasks that agents complete in agent-effort units (minutes, hours). Operator surfaced 2026-05-08 that the Research Director (Claude) was citing "1 working day" for tasks where an agent does the same work in ~30 minutes. Pilot data confirmed: 4 predictions, calibration ratios 8.1×, 8.5×, 11.1×, 11.8×, converging on **~10× systematic over-estimation**. Pattern is broader than this one bug; expanded estimation taxonomy added 2026-05-09 to cover cost, robustness, direction, category, replication, cascade, info-loss.
 
@@ -106,7 +106,7 @@ Atom 3 and catch ratification are the high-leverage moves; the other two are MED
 
 - **Sibling to catch ledger.** Catch ledger fires on past overclaims. Prediction ledger fires on future overclaims by recording them ahead of resolution.
 - **Pre-registration discipline (P15/P17).** The prediction ledger IS pre-registration, just with explicit calibration tracking added. Every pre-registered claim should generate a prediction ledger row.
-- **META-DARWIN strange loop (P18).** Predictions are themselves gameable, under-confident predictions to look "calibrated," padded effort estimates to look "humble." The strange-loop applies: if the predictor consistently shows a calibration bias (e.g., Brier score worse than chance, or agent-effort estimates 10× too high), the pattern catches that and demotes the predictor's authority to make further predictions.
+- **Meta-Darwin strange loop (P18).** Predictions are themselves gameable, under-confident predictions to look "calibrated," padded effort estimates to look "humble." The strange-loop applies: if the predictor consistently shows a calibration bias (e.g., Brier score worse than chance, or agent-effort estimates 10× too high), the pattern catches that and demotes the predictor's authority to make further predictions.
 
 ## Positive externality: forecasts can improve execution
 
@@ -141,7 +141,7 @@ from entering the implementation.
 
 The 2026-05-14 forecast-pool externalities audit found that calibration and
 effort are measurable today, while positive externalities are mostly recoverable
-only from GP-233 prose and resolution notes. For future contracts, record:
+only from [GP-233](../../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) prose and resolution notes. For future contracts, record:
 
 - contract-level: `baseline_action`, `counterfactual_action`,
   `externality_hypotheses`;
@@ -160,7 +160,7 @@ execution before the run.
 
 The 4 gravity Phase 1 agents currently running constitute the pilot. Predictions logged at the moment of dispatch. Resolution will be recorded when each agent returns. After all 4 resolve, write a calibration summary to `projects/gp163d_unified_accel/workspace/ns_pattern_application_2026_05_08/phase1/CALIBRATION_RESULT.md` comparing predicted vs actual. If calibration is good (predictions within 1 SD of actuals on average), promote pattern to runbook (AGENTS.md §4c). If poor, debug the predictor before promoting.
 
-## META-DARWIN audit on this pattern (recursive)
+## Meta-Darwin audit on this pattern (recursive)
 
 Audit applied to this design at the moment of writing:
 
@@ -179,7 +179,7 @@ Audit applied to this design at the moment of writing:
 5. **Catch MM-E** (recursive on MM-A through MM-D). Am I writing this audit performatively to look disciplined?
    - *Verdict: partially.* The audits are real but the format is conventional. The actual test of whether this audit matters is whether MM-B and MM-C correctly flag the pattern's known failure modes when they fire. Track over the next 2 weeks.
 
-## META-DARWIN audit on whether to promote this pattern (2026-05-09)
+## Meta-Darwin audit on whether to promote this pattern (2026-05-09)
 
 Applied the recursive demotion rule to the question "should this pattern be logged in `org/patterns/` (the orchestration catalog) or kept at `docs/concepts/` as documented-but-unpromoted?"
 

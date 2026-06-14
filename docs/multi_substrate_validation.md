@@ -28,21 +28,20 @@ inventoried below.
 — substrate / mutator / judge, `autoresearch_loop.py`, iter loops — and
 they demonstrate the experiment-loop's substrate-generality. The
 **current meta-architecture** (catch ledger with ratified-row gating, the
-nine-entry anti-pattern catalog, the META-DARWIN strange-loop, the
+nine-entry anti-pattern catalog, the Meta-Darwin, the
 architecture-index meta-graph, reflexive primitives, the Claude-Code
 agent-orchestration regime) crystallized later, during the NS Track B
 sprint specifically, and has been validated on **one substrate (NS) so
 far**. It is designed to be substrate-general; that empirical test is
 pending — re-running it on a non-NS substrate is on the next-sprint list.
 
-The strongest positioning claim available from the artifact base is
-**not** "Clay closure on NS," **not** "consciousness solved," and **not**
-"current meta-architecture validated across four substrates." It is: a
-single non-expert principal, operating under one anti-laundering
-discipline, produced defensible Tier-1 / Tier-2 substrate-prober results
-on four structurally unrelated substrates (the earlier-era experiment-loop
-era) and built a meta-architecture during NS Track B (current era) that
-self-demotes its own wrong causal stories.
+What the artifact base supports is **not** "Clay closure on NS," **not**
+"consciousness solved," and **not** "current meta-architecture validated
+across four substrates." It is: a single non-expert principal, operating
+under one anti-laundering discipline, produced Tier-1 / Tier-2
+substrate-prober results on four structurally unrelated substrates (the
+earlier-era experiment-loop era) and built a meta-architecture during NS
+Track B (current era) that demotes its own wrong causal stories.
 
 ## §2 — Per-substrate dossier
 
@@ -80,8 +79,7 @@ field-slice solver, ADMSR ambiguity-audit clean-room.
 **Substrate-specific findings.** A row-wise RAR campaign across 17
 candidate functional families on SPARC + cluster + wide-binary data
 returned a **substrate-bounded null** — within-class feature collapse at
-cross-class joints, no joint interpolation form passed MAE < 0.5 (Paper 7
-§3.3). On the 3-D AQUAL-style PDE sandbox (the GPU track), a diffuse
+cross-class joints, no joint interpolation form passed MAE < 0.5 (*Operator-Supervisor Mechanization* §3.3). On the 3-D AQUAL-style PDE sandbox (the GPU track), a diffuse
 UDG-like source exhibits a tensor-orientation susceptibility well-compressed
 by `χ(θ) = χ₀ + χ₄ cos(4θ)`, while a compact binary control is essentially
 flat — but the result is bounded as an **instrument-audit / numerical-
@@ -102,15 +100,15 @@ analytically matched off-diagonal tidal boundaries`).
 
 **Project locations.** Three in-repo project directories:
 `projects/gp169_consciousness_ascription_audit/` (40+ debate logs,
-v2 alien-substrate de-anchor reframe after iter-1 pluralism artifact),
+v2 exogenous-substrate de-anchor reframe after iter-1 pluralism artifact),
 `projects/gp210_consciousness_theory/` (causal-graph H-node theory,
 explicit anti-tautology charter constraint), and
 `projects/gp212_consciousness_omega_audit/` (Omega-gaming auditable
 classifier, adversarial completeness target). Paper integration:
-Paper 7 §3.4. Memory entries trace the trajectory:
+*Operator-Supervisor Mechanization* §3.4. Memory entries trace the trajectory:
 `feedback_charter_contamination.md`, `feedback_skeptic_director_seam.md`.
 
-**Architecture primitives used.** Domain-general: alien-substrate de-anchor
+**Architecture primitives used.** Domain-general: exogenous-substrate de-anchor
 (stripping anthropic asymmetry as charter constraint), no-citation reframe
 (the cold-shot's forbidden-domain list excluded "consciousness philosophy,
 philosophy of mind, formal epistemology, identification theory" to force
@@ -120,17 +118,17 @@ attempt, ZTARE qualitative-substrate mode (`cage_observe_mode +
 disable_evidence_fit_gate + cage_meta` per
 `feedback_rubric_canonical_format.md`).
 
-**Substrate-specific findings.** GP-169 produced the **AID-MCVP** result
+**Substrate-specific findings.** [GP-169](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) produced the **AID-MCVP** result
 (Adversarial Identification Certificate for the Measurement-Channel Veto
 Protocol): a low-concern verdict on a substrate of unknown consciousness
 is forbidden unless intervention access, independent replication, an
 invertible predicate bridge, and an adversarial completeness certificate
 make the target property identifiable from admissible measurements. This
 is a **causal-identification governance theorem**, not a theory of
-consciousness (Paper 7 §3.4). GP-210 attempts the formal H-characterization
+consciousness (*Operator-Supervisor Mechanization* §3.4). GP-210 attempts the formal H-characterization
 upstream (P1–P4 properties → necessary non-identifiability → "consciousness"
 denotation), with anti-tautology gate explicitly imposed in the charter.
-GP-212 builds an Omega-gaming classifier (under-specification, strategic
+[GP-212](../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md) builds an Omega-gaming classifier (under-specification, strategic
 exclusion, conservative/non-conservative misclassification, post-hoc
 revision, residual epistemic blindness).
 
@@ -169,14 +167,14 @@ panel for the slope-anchor candidate (β = 1/φ refuted by cross-modality
 testing — explicit catch).
 
 **Substrate-specific findings.** The **BOS-contamination measurement
-artifact** (Paper 6): the published "low-rank bottleneck" finding in
+artifact** (*Neural Scaling*): the published "low-rank bottleneck" finding in
 Pythia is a measurement artifact — mean-pooling lets the BOS token
 (35× norm ratio) collapse apparent effective rank from ~105 to 1.8;
 per-token effective rank with BOS excluded is 103-106. **Cross-layer
 orthogonality** as architectural invariant (cosine 0.05-0.19 across
 adjacent layers, 72% Cancellation Ratio, 70.2% in untrained null,
 replicated on Mamba-370M state-space model). **Neural scaling-law
-trajectory morphology** (Paper 7 §3.1): OLMo2 7B / 13B production
+trajectory morphology** (*Operator-Supervisor Mechanization* §3.1): OLMo2 7B / 13B production
 telemetry collapses onto a power-family shape law (point-MAE 0.054,
 six-of-six holdout splits beating baseline at 2.4×); β ≈ 0.486 ± 0.083
 SEM across 14 (study, modality, scaling-variable) groups.
@@ -204,7 +202,7 @@ substrate: `ztare_proofs/ZtareProofs/` (~22+ sorry-free files).
 
 **Architecture primitives used.** Typed-companion + 4-way swarm pattern
 (`feedback_typed_companion_swarm_decomposition.md`); Unified Categorical
-Compactness 12-route enumeration; META-DARWIN strange-loop self-demotion;
+Compactness 12-route enumeration; Meta-Darwin self-demotion;
 9-entry anti-pattern catalog; impact-weighted catch ledger with
 ratified-row gating; reflexive primitives (RP-001 architecture-index
 typed object); Lean lake build as smoke-test gate; cold-shot adversarial
@@ -226,7 +224,7 @@ across the substrates noted. They fired through the ZTARE experiment-loop
 (gravity / consciousness / neural era) and through the NS Track B
 Claude-Code orchestration era. The CURRENT meta-architecture as a whole
 (catch ledger with ratified-row gating + anti-pattern catalog as binary
-falsifiable tests + META-DARWIN + architecture-index meta-graph +
+falsifiable tests + Meta-Darwin + architecture-index meta-graph +
 reflexive primitives) crystallized during NS Track B and has not yet
 been re-tested as a unit on a non-NS substrate._
 
@@ -242,7 +240,7 @@ rather than four parallel tracks:
   is the canonical detection vector.
 - **ANTI-PATTERN-001 citation_laundering** (`org/anti-patterns/citation_laundering.md`)
   fired on gravity (model-family cold-shot misattributions caught in cleanroom
-  ADMSR audits), consciousness (early literature mis-citation in iter-1 GP-169
+  ADMSR audits), consciousness (early literature mis-citation in iter-1 [GP-169](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md)
   pluralism artifact), neural (β = 1/φ from PSLQ on a small sample explicitly
   retired), and NS (DiPerna–Majda / Lions IV.4 / Alibert–Bouchitté / Tartar /
   Duchon–Robert citations checked at every Atom 1 wiring step). The catalog
@@ -281,7 +279,7 @@ are the honest substrate-conditional architecture deltas:
 - **GPU-remote PDE field-slice sandbox**: gravity-only at present
   (`projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/`,
   `deploy_and_launch_gpu_batch.sh`). The neural mechanistic-interp work
-  in Paper 6 is CPU/single-GPU local; the NS Lean work is CPU `lake`.
+  in *Neural Scaling* is CPU/single-GPU local; the NS Lean work is CPU `lake`.
   Cross-substrate transfer of the GPU dispatch primitive is **not yet
   realized**.
 - **AID-MCVP (Adversarial Identification Certificate)**: consciousness-only.
@@ -291,7 +289,7 @@ are the honest substrate-conditional architecture deltas:
   to other governance substrates (AI safety, biosecurity) is open.
 - **BOS-contamination per-position norm audit**: neural-only. The 35×
   norm-ratio diagnostic is specific to transformer hidden-state geometry.
-- **UCC 12-route + atom-decomposition + META-DARWIN + Bohr-Fourier
+- **UCC 12-route + atom-decomposition + Meta-Darwin + Bohr-Fourier
   formalism**: NS-only (Track B specific).
 - **Cybernetic-evolution log per domain** (`papers/paper7/draft.md`
   Appendix A): cross-substrate, but the specific demotions are
@@ -300,7 +298,7 @@ are the honest substrate-conditional architecture deltas:
   → corpus overdetermination; NS bounded-near-miss → Galerkin
   truncation).
 
-## §5 — Hirability framing
+## §5 — What the artifact base shows about the work
 
 This is **not** the artifact base of a math-PhD candidate narrowly
 attacking a single Clay problem. The artifact base is consistent with a
@@ -313,7 +311,7 @@ research-engineer / principal-orchestrator profile:
   studies, (iii) deep-learning empirical research on transformer +
   state-space-model internals, (iv) Lean-formalized PDE proof
   scaffolding. The current meta-architecture (catch ledger + anti-pattern
-  catalog + META-DARWIN + architecture-index + reflexive primitives)
+  catalog + Meta-Darwin + architecture-index + reflexive primitives)
   emerged from NS Track B specifically and has been validated on one
   substrate so far — designed substrate-general, empirical multi-substrate
   re-test pending.
@@ -321,28 +319,24 @@ research-engineer / principal-orchestrator profile:
   documented in-repo (gravity scalar-boost → instrument-audit; consciousness
   pluralism → training-corpus artifact; neural β = 1/φ → cross-modality
   refuted; NS Clay-closure language → "structural decomposition with
-  named axioms"). The catch ledger is the central artifact, not
-  any single positive claim.
+  named axioms"). The catch ledger records these demotions; no single
+  positive claim stands without it.
 - **Tooling shipped.** Substrate-specific gates (`gravity_ppn_gates.py`),
   GPU-dispatch infrastructure, anti-pattern catalog (9 entries),
   pattern catalog (11+ entries), reflexive primitive class, ADMSR
   ambiguity-audit clean-rooms, Lean tactic + smoke-test discipline.
-- **Honest non-claim discipline.** Paper 7 §6 ("limits and non-claims")
-  is the canonical artifact: each substrate's residual is named at the
-  maturity it has earned — not above. This is the cultural deliverable.
+- **Non-claim discipline.** *Operator-Supervisor Mechanization* §6 ("limits and non-claims") names
+  each substrate's residual at the maturity it has reached — not above.
 
-What this artifact base does **not** prove: that any one substrate is
-solved, and **not** that the current meta-architecture has been
-multi-substrate-validated as a unit. What it does prove: that one
-principal, under one operating discipline, produced defensible
-Tier-1/Tier-2 substrate-prober output on four structurally unrelated
-substrates (the experiment-loop era) and built a current meta-architecture
-during NS Track B that is designed substrate-general and awaits
-non-NS empirical re-test.
-
-That is the cross-substrate research-engineer track record from the
-experiment-loop era, plus a current meta-architecture whose
-substrate-generality is a hypothesis the next sprint will test.
+What this artifact base does **not** show: that any one substrate is
+solved, or that the current meta-architecture has been
+multi-substrate-validated as a unit. What it does show: that one
+principal, under one operating discipline, produced Tier-1/Tier-2
+substrate-prober output on four structurally unrelated substrates (the
+experiment-loop era) and built a current meta-architecture during NS
+Track B that is designed substrate-general and awaits non-NS empirical
+re-test. The substrate-generality of that meta-architecture is a
+hypothesis the next sprint will test.
 
 ---
 

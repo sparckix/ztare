@@ -5,7 +5,7 @@ description: "The canonical problem-class taxonomy consumed by the gate-package 
 
 > **Up:** [Documentation map](../README.md)
 
-**Status:** scaffold v0.1, 2026-05-04. Per-class hit rates are NOT YET populated and will be filled by Phase 2 mining (GP-212 spec, Phase B). Until then, this file is a documented taxonomy for charter authoring; it is not yet the empirical input to the gate-package recommender.
+**Status:** scaffold v0.1, 2026-05-04. Per-class hit rates are NOT YET populated and will be filled by Phase 2 mining ([GP-212](../../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md) spec, Phase B). Until then, this file is a documented taxonomy for charter authoring; it is not yet the empirical input to the gate-package recommender.
 
 **Source seam:** `research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md`
 **Source spec:** `research_areas/private/specs/active/engine/GP-212_meta_solver_kernel_spec.md`
@@ -54,7 +54,7 @@ When the gate-package recommender runs against this taxonomy, classes with `stab
 - `falsification_mode: "bounded_discriminator"`
 
 **Anti-pattern emphasis:**
-- `tail_generalization` (the central blindspot per GP-149)
+- `tail_generalization` (the central blindspot per [GP-149](../../research_areas/seams/engine/diagnostics/GP-149_failure_taxonomy_hardening_primitives_seam.md))
 - `overclaimed_scope`
 - `unfalsifiable_claim`
 
@@ -184,7 +184,7 @@ When the gate-package recommender runs against this taxonomy, classes with `stab
 
 **Definition:** Substrates whose target is the methodology itself, applied across distinct scientific or governance domains, where the deliverable is the operating-regime claim ("the apparatus discipline produces analogous structural results across N substrates with no shared physical content"). Composition of multiple domain-specific substrates under one organizing claim.
 
-**Canonical example:** Paper 7 (cross-domain ZTARE substrate-prober: neural scaling, Navier-Stokes, gravity, consciousness)
+**Canonical example:** *Operator-Supervisor Mechanization* (cross-domain ZTARE substrate-prober: neural scaling, Navier-Stokes, gravity, consciousness)
 
 **Default rubric_mode:** kepler (descriptive cross-substrate; no Generative Yield expected at the meta-level)
 
@@ -218,7 +218,7 @@ This taxonomy is operator-curated. Refresh triggers:
 
 - New substrate class encountered (≥ 3 projects share a structural pattern not covered by current classes)
 - Mining run produces hit-rate evidence that an existing class's recommended gates underperform, flagged for re-evaluation
-- Cross-LLM consistency check on a problem-class label drops below 75% (per GP-151 super-class threshold)
+- Cross-LLM consistency check on a problem-class label drops below 75% (per [GP-151](../../research_areas/seams/engine/diagnostics/GP-151_classifier_telemetry_downgrade_seam.md) super-class threshold)
 
 Each refresh bumps the file's version stamp at the top. The gate-package recommender reads the version and refuses to deploy with confidence > medium if its mining-hit-rate data is older than the taxonomy's most recent refresh.
 
