@@ -1,7 +1,7 @@
 """Tests for scripts/validate_evidence.py (GP-162 + GP-157 Phase 7).
 
 Pin down the class-aware lint set + STRICT mode toggle. The cross-substrate
-checks (#1-7) have been load-bearing since GP-162 and are tested via the
+checks (#1-7) have been decision-critical since GP-162 and are tested via the
 existing make-seal smoke run; this file focuses on Phase 7 additions:
 
     - cage_meta.class drives per-class lints (no double-firing across classes)

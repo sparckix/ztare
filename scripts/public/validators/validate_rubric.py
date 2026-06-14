@@ -32,6 +32,8 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[3]
+from src.ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
+
 KNOWN_FALSIFICATION_MODES = {
     "numerical_proof",
     "bounded_discriminator",
@@ -50,6 +52,29 @@ def _warn(msg: str) -> str:
 
 def _ok(msg: str) -> str:
     return f"  ✅ {msg}"
+
+
+def _secondary_observable_contract_errors(rubric: dict[str, Any]) -> list[str]:
+    contract = rubric.get("secondary_observable_contract")
+    if contract is None:
+        return []
+    if not isinstance(contract, dict):
+        return ["secondary_observable_contract must be an object when present."]
+    required = ("observable", "measurement", "expected_range", "falsifier")
+    missing = [key for key in required if not str(contract.get(key, "") or "").strip()]
+    if missing:
+        return [
+            "secondary_observable_contract missing non-empty field(s): "
+            + ", ".join(missing)
+        ]
+    return []
+
+
+def _has_secondary_observable_contract(rubric: dict[str, Any]) -> bool:
+    return not _secondary_observable_contract_errors(rubric) and isinstance(
+        rubric.get("secondary_observable_contract"),
+        dict,
+    )
 
 
 def _check_rubric(rubric: dict[str, Any], rubric_path: Path, project_slug: str) -> list[str]:
@@ -102,32 +127,25 @@ def _check_rubric(rubric: dict[str, Any], rubric_path: Path, project_slug: str) 
     else:
         info.append(_ok(f"weight sum = 100 across {len(rubric['dimensions'])} dimensions"))
 
-    # 3. rubric_mode discipline (GP-133 R4 §16-18)
-    rubric_mode = (rubric.get("rubric_mode") or "kepler").lower().strip()
-    if rubric_mode == "newton":
+    # 3. rubric_mode discipline (GP-133 R4 §16-18). Keep this validator
+    # aligned with the loop's launch contract; do not maintain a parallel
+    # allowlist here.
+    mode_result = validate_rubric_mode_contract(rubric)
+    if not mode_result.ok:
+        errors.append(_err(mode_result.message))
+    elif mode_result.mode == "newton":
+        for contract_error in _secondary_observable_contract_errors(rubric):
+            errors.append(_err(contract_error + " (rubric_specification.md §18)"))
         gy_dims = [
             d for d in rubric["dimensions"]
             if "generative yield" in str(d.get("name", "")).lower()
         ]
-        if not gy_dims:
-            errors.append(_err(
-                "rubric_mode='newton' but NO dimension whose name contains 'Generative Yield' "
-                "(rubric_specification.md §16, §18). Either add the dimension with weight ≥15 OR "
-                "downgrade rubric_mode to 'kepler'."
-            ))
-        else:
-            gy_w = float(gy_dims[0].get("weight", 0))
-            if gy_w < 15:
-                errors.append(_err(
-                    f"rubric_mode='newton' Generative Yield dimension weight = {gy_w} < 15 "
-                    "(rubric_specification.md §18 minimum)."
-                ))
-            else:
-                info.append(_ok(f"newton-mode Generative Yield dimension found, weight={gy_w}"))
-    elif rubric_mode == "kepler":
-        info.append(_ok("rubric_mode=kepler (no Generative Yield requirement)"))
-    elif rubric.get("rubric_mode"):
-        errors.append(_err(f"rubric_mode='{rubric.get('rubric_mode')}' not in {{'kepler','newton'}} (rubric_specification.md §16)"))
+        gy_w = float(gy_dims[0].get("weight", 0)) if gy_dims else 0.0
+        info.append(_ok(f"newton-mode Generative Yield dimension found, weight={gy_w}"))
+    elif mode_result.message:
+        info.append(_ok(mode_result.message))
+    else:
+        info.append(_ok("rubric_mode unset (legacy accepted; loop uses explicit defaults elsewhere)"))
 
     # 4. py_exec grammar gates (§17)
     grammar = (rubric.get("fit_expression_grammar") or "").lower().strip()
@@ -376,13 +394,18 @@ def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) 
 
     # Newton-mode charter must have "Secondary observable" field per §18
     if rubric_mode == "newton":
-        charter_path = project_dir / "project_charter.md"
-        if charter_path.is_file():
+        if _has_secondary_observable_contract(rubric):
+            info.append(_ok("newton-mode rubric has secondary_observable_contract"))
+        else:
+            charter_path = project_dir / "project_charter.md"
+            if not charter_path.is_file():
+                return errors + info
             charter_text = charter_path.read_text(encoding="utf-8", errors="ignore").lower()
             if "secondary observable" not in charter_text:
                 errors.append(_err(
-                    "rubric_mode='newton' but project_charter.md has no 'Secondary observable' "
-                    "field (rubric_specification.md §18 — charter and rubric move in lock-step)."
+                    "rubric_mode='newton' but neither secondary_observable_contract nor "
+                    "project_charter.md 'Secondary observable' field is present "
+                    "(rubric_specification.md §18)."
                 ))
             else:
                 info.append(_ok("newton-mode charter has Secondary observable field"))

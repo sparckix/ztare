@@ -27,8 +27,8 @@ Class-aware checks (Phase 7, when --rubric supplied AND cage_meta.class set):
 Soft / strict mode (Phase 7):
     By default, class-aware lints emit as warnings (advisory). Set
     `evidence_strict_lint: true` in the rubric to promote them to errors.
-    Cross-substrate checks above remain blocking regardless — those have
-    been load-bearing since GP-162.
+Cross-substrate checks above remain blocking regardless — those have
+    been core evidence-contract checks since GP-162.
 
 Exit 0 = PASSED, Exit 1 = FAILED (with diagnostics).
 """
@@ -317,7 +317,7 @@ def validate_evidence(slug: str, rubric_path: Path | None = None) -> tuple[bool,
     except Exception as exc:  # noqa: BLE001
         warnings.append(f"could not run L1 Protocol boundary check: {exc}")
 
-    # 15. L2 typed evidence contract (Task #71): when the rubric declares
+    # 15. L2 typed evidence contract: when the rubric declares
     # an `evidence_contract` block, parse the evidence with the explicit
     # spec rather than auto-detecting. Raises EvidenceContractError on
     # shape violations — fail-loud at seal time, not silent drop at iter time.
