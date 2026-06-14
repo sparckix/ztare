@@ -1,4 +1,4 @@
-"""Tests for orchestrator/parallel_mutator.py (Phase 4e skeleton)."""
+"""Tests for orchestrator/parallel_mutator.py."""
 
 from __future__ import annotations
 

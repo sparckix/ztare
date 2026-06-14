@@ -1,4 +1,4 @@
-"""Tests for L2 typed evidence contract (Task #71)."""
+"""Tests for L2 typed evidence contract."""
 
 from __future__ import annotations
 

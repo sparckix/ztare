@@ -10,7 +10,7 @@ from pathlib import Path
 
 _AGENT_DAEMON_SPEC = importlib.util.spec_from_file_location(
     "agent_daemon_under_test_auth",
-    Path(__file__).resolve().parents[1] / "scripts" / "agent_daemon.py",
+    Path(__file__).resolve().parents[1] / "scripts" / "public" / "control" / "agent_daemon.py",
 )
 assert _AGENT_DAEMON_SPEC and _AGENT_DAEMON_SPEC.loader
 agent_daemon = importlib.util.module_from_spec(_AGENT_DAEMON_SPEC)

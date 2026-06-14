@@ -1,5 +1,5 @@
 """GP-157 Bug #37 regression test — fit-time / gate-time namespace
-invariant. Per Gemini Pro panel mandate (2026-04-25 night):
+invariant. Per Gemini Pro panel mandate (2026-04-25):
 
     Any function exposed to the mutator in the FitEngine whitelisted AST
     parser MUST also be present and executable in the gate_harness
@@ -251,7 +251,7 @@ def test_end_to_end_fit_to_gate_handoff_with_where_form():
 
 
 def test_where_is_eager_guard_pattern_unsafe():
-    """GP-157 Bug #39 (2026-04-25 night) — gp154 iter 3 lesson:
+    """GP-157 Bug #39 (2026-04-25) — gp154 iter 3 lesson:
     `where(cond, a, b)` is a regular function call; Python evaluates BOTH
     `a` and `b` before invoking it. Therefore `where()` is UNSAFE for
     guard patterns where one branch references a value that may be None

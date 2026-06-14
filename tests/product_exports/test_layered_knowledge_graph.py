@@ -5,7 +5,11 @@ from pathlib import Path
 
 
 SCRIPT_PATH = (
-    Path(__file__).resolve().parents[2] / "scripts" / "export_layered_knowledge_graph.py"
+    Path(__file__).resolve().parents[2]
+    / "scripts"
+    / "public"
+    / "analytics_shared"
+    / "export_layered_knowledge_graph.py"
 )
 SPEC = spec_from_file_location("export_layered_knowledge_graph", SCRIPT_PATH)
 assert SPEC is not None and SPEC.loader is not None

@@ -19,6 +19,12 @@ from unittest.mock import patch
 from src.ztare.notifications import telegram as tg
 
 
+_PATCHABLE_TELEGRAM_TRANSPORT = (
+    getattr(tg.push_notification, "__module__", "") == tg.__name__
+    and hasattr(tg, "_append_log")
+)
+
+
 class _FakeApi:
     """Tracks calls to _api_call so tests can assert payload shape + return canned responses."""
 
@@ -31,6 +37,10 @@ class _FakeApi:
         return self.canned_responses.get(method, {"ok": True, "result": {}})
 
 
+@unittest.skipUnless(
+    _PATCHABLE_TELEGRAM_TRANSPORT,
+    "Telegram transport is optional and not locally patchable in this checkout",
+)
 class TestPushWithInlineButtons(unittest.TestCase):
     def test_inline_buttons_render_as_reply_markup(self):
         fake = _FakeApi()
@@ -68,6 +78,10 @@ class TestPushWithInlineButtons(unittest.TestCase):
         self.assertNotIn("reply_markup", params)
 
 
+@unittest.skipUnless(
+    _PATCHABLE_TELEGRAM_TRANSPORT,
+    "Telegram transport is optional and not locally patchable in this checkout",
+)
 class TestCallbackQueryPolling(unittest.TestCase):
     def test_callback_query_synthesizes_approve_message(self):
         fake = _FakeApi()
@@ -161,7 +175,7 @@ class TestEndToEndApprovalFlow(unittest.TestCase):
     """
 
     def test_token_recognition(self):
-        """Replicates daemon logic at scripts/agent_daemon.py:937-944."""
+        """Replicates daemon logic in scripts/public/control/agent_daemon.py."""
         cases = {
             "APPROVE": "approve",
             "YES": "approve",

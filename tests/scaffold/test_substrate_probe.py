@@ -24,7 +24,7 @@ class TestDiscreteDetection:
         assert result.integer_fraction == 1.0
 
     def test_mostly_integers_with_one_float_not_discrete(self):
-        # Substrate is "all integer or it's not discrete" — strict
+        # Substrate is strict: all integer values are required for discrete status.
         targets = [1, 2, 3, 5, 8, 13, 21.5]
         result = classify_substrate(targets)
         assert result.detected is not SubstrateClass.DISCRETE

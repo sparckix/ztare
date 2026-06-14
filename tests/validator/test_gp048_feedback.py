@@ -1,7 +1,7 @@
 """GP-048 apparatus-feedback surface tests.
 
 Covers all three surfaces (telemetry, cohort injection, farther-tail veto)
-without a live LLM. Sanitization checks are load-bearing: they assert that
+without a live LLM. Sanitization checks are decision-critical: they assert that
 no true gate name, no hidden value, and no topology enumeration ever leaks
 into the rendered veto block.
 """
@@ -155,7 +155,7 @@ def test_render_cohort_non_empty_when_above_min_k(tmp_path: Path) -> None:
 
 
 # ---------------------------------------------------------------------------
-# Farther-tail veto — sanitization is load-bearing
+# Farther-tail veto — sanitization is decision-critical
 # ---------------------------------------------------------------------------
 
 
@@ -273,7 +273,7 @@ def test_veto_writes_mapping_jsonl(tmp_path: Path) -> None:
 
 def test_veto_sanitization_regex_against_descriptive_names() -> None:
     """Feed the veto highly-descriptive gate names and assert that every
-    load-bearing semantic token is absent from the rendered prompt."""
+    decision-critical semantic token is absent from the rendered prompt."""
 
     payload = {
         "gate_results": [

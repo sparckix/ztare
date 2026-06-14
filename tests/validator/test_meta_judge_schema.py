@@ -16,7 +16,11 @@ def _valid_verdict(score=93):
         "debate_summary": "substantive verdict",
         "adversarial_alignment": "",
         "friction_points": [],
-        "probability_dag": {"outcome": {"label": "survives", "probability": 0.65}},
+        "probability_dag": {
+            "outcome": {"label": "survives", "probability": 0.65},
+            "nodes": [],
+            "edges": [],
+        },
     }
 
 
@@ -41,3 +45,17 @@ def test_raw_meta_judge_accepts_full_verdict_and_coerces_numeric_score():
 
     assert raw_meta_judge_shape_errors(payload) == []
     assert coerce_raw_meta_judge_score(payload)["score"] == 93
+
+
+def test_raw_meta_judge_rejects_wrong_string_and_probability_dag_shapes():
+    payload = _valid_verdict()
+    payload["debate_summary"] = []
+    payload["adversarial_alignment"] = []
+    payload["probability_dag"] = {"outcome": "canary", "nodes": {}, "edges": []}
+
+    errors = raw_meta_judge_shape_errors(payload)
+
+    assert "invalid:debate_summary_not_string" in errors
+    assert "invalid:adversarial_alignment_not_string" in errors
+    assert "invalid:probability_dag.outcome_not_object" in errors
+    assert "invalid:probability_dag.nodes_not_array" in errors

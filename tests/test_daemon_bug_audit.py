@@ -31,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 class TestSubprocessEnvScrub(unittest.TestCase):
     def test_anthropic_and_openai_keys_stripped(self):
-        """Replicates the env-scrub at scripts/agent_daemon.py:589-593."""
+        """Replicates the env-scrub in scripts/public/control/agent_daemon.py."""
         fake_env = {
             "ANTHROPIC_API_KEY": "sk-ant-leak",
             "OPENAI_API_KEY": "sk-openai-leak",
@@ -61,6 +61,22 @@ class TestSubprocessEnvScrub(unittest.TestCase):
                     if k not in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY")}
         self.assertIn("HOME", scrubbed)
         self.assertIn("USER", scrubbed)
+
+    def test_subscription_agent_preserves_claude_auth_token(self):
+        """Claude Code token auth is subscription CLI state, not a metered API key."""
+        from src.ztare.common.subscription_agent_runtime import subscription_agent_env
+
+        scrubbed = subscription_agent_env(
+            "claude",
+            {
+                "ANTHROPIC_API_KEY": "drop-me",
+                "ANTHROPIC_AUTH_TOKEN": "keep-token-auth",
+                "HOME": "/home/ztare",
+            },
+        )
+        self.assertNotIn("ANTHROPIC_API_KEY", scrubbed)
+        self.assertEqual(scrubbed["ANTHROPIC_AUTH_TOKEN"], "keep-token-auth")
+        self.assertEqual(scrubbed["HOME"], "/home/ztare")
 
 
 # ── 2. work_discovery scope filter ─────────────────────────────────────────
@@ -184,6 +200,17 @@ class TestEigenquestionGenerator(unittest.TestCase):
         from src.ztare.research_director.eigenquestion_generator import generate_eigenquestion
         with self.assertRaises(FileNotFoundError):
             generate_eigenquestion("nonexistent_project_xyz_12345")
+
+    def test_validate_explored_missing_project_returns_two(self):
+        from src.ztare.research_director import eigenquestion_generator
+
+        rc = eigenquestion_generator.main([
+            "--project",
+            "nonexistent_project_xyz_12345",
+            "--validate-explored",
+        ])
+
+        self.assertEqual(rc, 2)
 
     def test_summarize_explored_classes_empty(self):
         from src.ztare.research_director.eigenquestion_generator import _summarize_explored_classes

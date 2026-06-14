@@ -1,6 +1,6 @@
 """GP-157 Bug #38 — sparse-indicator hard reject regression tests.
 
-Per Gemini Pro panel mandate (2026-04-25 night): when a parameter is bound
+Per Gemini Pro panel mandate (2026-04-25): when a parameter is bound
 to a one-hot indicator that fires on fewer than N rows in visible_data,
 the parameter is statistically underdetermined and scipy will absorb noise
 into it. The fit primitive must reject such forms PRE-FIT with a structural

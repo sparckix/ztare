@@ -108,7 +108,7 @@ def test_dispatch_model_stateful_agent_persists_warm_session(
         return SimpleNamespace(
             result=subprocess.CompletedProcess(["codex"], 0, stdout="typed contract", stderr=""),
             final_session_state={
-                "schema": "ztare-subscription-agent-session-v1",
+                "schema": "leanmill-subscription-agent-session-v1",
                 "runtime": "codex",
                 "agent_id": "rd-director",
                 "session_id": "session-123",

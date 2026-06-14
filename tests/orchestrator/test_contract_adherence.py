@@ -169,7 +169,7 @@ class TestAdherenceMisc:
             "missing_imodel_def",
             "deferred_assert_helper",
             "nan_return_literal",
-            # Runtime checks added 2026-04-25 night per gp159 o3 evidence.
+            # Runtime checks added 2026-04-25 per gp159 o3 evidence.
             "runtime_nan_return",
             "runtime_import_failure",
             "runtime_imodel_raises",

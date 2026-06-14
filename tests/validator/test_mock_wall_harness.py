@@ -28,7 +28,7 @@ from pathlib import Path
 # Ensure repo root is importable
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
-from src.ztare.composition.topology_synthesizer import (
+from src.ztare.composition.symbolic_regression_synthesizer import (
     CompositionCommand,
     CompositionMutatorResult,
     CompositionRequest,
@@ -85,7 +85,7 @@ def _build_synthetic_failure_package() -> FailurePackage:
         (float(i), (-1) ** i * (0.5 + 0.1 * i)) for i in range(2, 32)
     ]
 
-    from src.ztare.composition.topology_synthesizer import _compute_residual_statistics
+    from src.ztare.composition.symbolic_regression_synthesizer import _compute_residual_statistics
 
     stats = _compute_residual_statistics(residual_delta)
 
@@ -273,7 +273,7 @@ def test_residual_statistics_periodic():
 
 def test_compute_residual_delta_from_fit():
     """Pointwise residual computation from FitSuccess + FitDeclaration."""
-    from src.ztare.composition.topology_synthesizer import _compute_residual_delta_from_fit
+    from src.ztare.composition.symbolic_regression_synthesizer import _compute_residual_delta_from_fit
     from src.ztare.fit.fit_primitive import FitDeclaration, FitSuccess
 
     decl = FitDeclaration(
