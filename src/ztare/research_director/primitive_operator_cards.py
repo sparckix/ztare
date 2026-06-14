@@ -13,6 +13,8 @@ from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
 
+from src.ztare.common.kernel_action_schema import KernelActionSchema
+
 
 REPO = Path(__file__).resolve().parents[3]
 OUT_PATH = REPO / "analytics" / "public" / "queries" / "rd_operator_cards_experimental.json"
@@ -72,8 +74,6 @@ OBLIGATION_CLASSES: tuple[ObligationClass, ...] = (
             "explicit",
             "algorithm",
             "procedure",
-            "scaffold",
-            "scaffolds",
             "diagram",
             "diagrams",
             "family",
@@ -178,6 +178,17 @@ OBLIGATION_CLASSES: tuple[ObligationClass, ...] = (
             "distinguish",
             "distinguishes",
             "diagnostic",
+            "metric",
+            "metrics",
+            "freshness",
+            "sample",
+            "sample-scoped",
+            "yield",
+            "portfolio",
+            "roi",
+            "share",
+            "attention",
+            "roadmap",
         ),
         owes=(
             "the claimed bound, boundary, or update",
@@ -667,6 +678,178 @@ CARDS: tuple[OperatorCard, ...] = (
             "pass_fail_boundary",
         ),
     ),
+    OperatorCard(
+        card_id="OP-RMI-01",
+        name="Reflexive Mining Instrument Check",
+        source_ops=("core_01", "core_03", "broad_08"),
+        trigger_terms=(
+            "reflexive mining",
+            "reflexive mine",
+            "primitive roi",
+            "capability roi",
+            "recursive gain",
+            "bifurcation",
+            "in loop share",
+            "in-loop share",
+            "out of loop share",
+            "out-of-loop share",
+            "agent work share",
+            "abandoned project",
+            "abandoned projects",
+            "project portfolio",
+            "operations intelligence",
+            "route row",
+            "route rows",
+            "missing route row",
+            "missing route rows",
+            "backfill route row",
+            "backfill route rows",
+            "p0 metrics",
+            "dashboard",
+            "taste rating",
+            "contextualized rater",
+            "artifact index",
+        ),
+        obligation_classes=("bound", "decompose"),
+        problem_classes=(
+            "reflexive_mining",
+            "primitive_roi_audit",
+            "portfolio_attention",
+            "in_loop_out_of_loop_measurement",
+        ),
+        entry_conditions=(
+            "The decision depends on whether the apparatus is spending effort in the right place.",
+            "The project or primitive portfolio may be stale, underused, duplicated, or overcounted.",
+        ),
+        steps=(
+            "Name the portfolio question: primitive reuse, project focus, in-loop/out-of-loop split, or dashboard trust.",
+            "Run or inspect the canonical reflexive sources instead of relying on memory.",
+            "Separate activity volume from measured yield before recommending work.",
+            "Name the next action and the measurement that would falsify it.",
+        ),
+        required_output=(
+            "Reflexive instrument row: question, source inspected, metric, current value, decision consequence.",
+            "Pointers to the relevant source files: bifurcation report, P0 metrics, recursive-gain candidates, primitive ROI, operations-intelligence payload, or dashboard bundle.",
+            "One stale-source or missing-source note if a source is absent, old, or sample-scoped.",
+            "One action rule: continue kernel work, revive a project, retire/deprioritize a project, backfill route rows, or repair an emitter.",
+        ),
+        breaker=(
+            "Show that the recommendation follows from artifact volume alone, or from a stale/sample-scoped source "
+            "that does not measure the claimed portfolio property."
+        ),
+        stop_update_rule=(
+            "Do not convert reflexive mining into roadmap claims until the source, metric, and decision consequence are named."
+        ),
+        boundary=(
+            "Reflexive mining is measurement and triage. It can prioritize kernel or project work, but it is not "
+            "evidence that a primitive improves research output without a downstream outcome trace."
+        ),
+        disambiguators=(
+            "Prefer this card over autoresearch workbench routing when the live question is portfolio measurement rather than whether to invoke the loop for a bounded task.",
+            "Prefer autoresearch workbench routing when the task has a bounded claim/evaluator/rubric/artifact surface and the decision is in-loop versus out-of-loop execution.",
+            "Prefer branch coverage when all sources are current and the only missing object is a branch table.",
+        ),
+        fine_handles=(
+            "bifurcation_measure: iter_loop_artifacts, agent_work_artifacts, agent_work_share.",
+            "primitive_roi_measure: capability id, action count, downstream outcome trace, verdict band.",
+            "operations_intelligence_attention: attention kind, severity, source refs, learning candidate.",
+            "contextualized_taste_measure: rater id, sample scope, freshness, canonical-series caveat.",
+        ),
+        required_schema_fields=(
+            "portfolio_question",
+            "source_refs",
+            "metric_name",
+            "metric_value",
+            "freshness_or_scope_note",
+            "decision_consequence",
+            "falsifier",
+            "next_action",
+        ),
+    ),
+    OperatorCard(
+        card_id="OP-AWR-01",
+        name="Autoresearch Workbench Routing",
+        source_ops=("core_01", "core_05", "broad_08"),
+        trigger_terms=(
+            "autoresearch",
+            "auto research",
+            "workbench",
+            "in loop",
+            "in-loop",
+            "out of loop",
+            "out-of-loop",
+            "research director",
+            "subscription agent",
+            "agentic workbench",
+            "bounded claim",
+            "stable evaluator",
+            "rubric surface",
+            "artifact surface",
+            "hypothesis projection",
+            "manual agent",
+        ),
+        obligation_classes=("bound", "transfer"),
+        problem_classes=(
+            "autoresearch_workbench_routing",
+            "agentic_workbench_boundary",
+            "in_loop_out_of_loop_decision",
+        ),
+        entry_conditions=(
+            "An RD or out-of-loop agent may do work that could be run through autoresearch.",
+            "The task may have a bounded claim, evaluator, rubric, and artifact surface.",
+        ),
+        steps=(
+            "Score the four workbench prerequisites: bounded claim, stable evaluator, rubric surface, artifact surface.",
+            "Choose invoke_autoresearch, prepare_autoresearch_surface, or stay_out_of_loop.",
+            "If invoking autoresearch, run the workbench and inspect the projection before treating the result as evidence.",
+            "If staying out of loop, record the missing surface or cost reason in action intelligence.",
+            "Feed failed branches back as reusable negative constraints rather than private session memory.",
+        ),
+        required_output=(
+            "Workbench routing row: task, project family, four prerequisite booleans, router decision, missing surfaces.",
+            "Saved route JSON and action-intelligence row from `ztare autoresearch route --record-decision-id`, or an equivalent pre-saved route JSON recorded through `record-agentic-route`.",
+            "Command or artifact pointer for the autoresearch run/projection, or a reason it was not run.",
+            "One negative-constraint summary for any failed branch worth reusing.",
+        ),
+        breaker=(
+            "Show that an out-of-loop agent produced primary evidence while all four workbench "
+            "prerequisites were present and no bypass reason/action-impact row was recorded."
+        ),
+        stop_update_rule=(
+            "Do not promote manual RD/out-of-loop work as primary workbench evidence until the "
+            "router decision is recorded and any ready autoresearch surface was either used or "
+            "explicitly bypassed."
+        ),
+        boundary=(
+            "This card governs the transport/state/identity boundary; it does not claim the "
+            "autoresearch result is true without normal gates and held-out/admission evidence."
+        ),
+        disambiguators=(
+            "Prefer this card over generic evidence-carrier routing when the decision is whether the RD should use autoresearch.",
+            "Prefer evidence-carrier routing when the workbench path is already chosen and the live issue is a claim/evidence receipt.",
+            "Prefer claim-boundary mutation when the task itself is too broad and no bounded workbench claim exists yet.",
+        ),
+        fine_handles=(
+            "workbench_router_decision: invoke_autoresearch, prepare_autoresearch_surface, stay_out_of_loop.",
+            "worker_metadata: worker_archetype, worker_capability, worker_state, worker_identity, transport.",
+            "route_receipt: route_json_ref plus action_impact_ref; default producer is `ztare autoresearch route --record-decision-id`.",
+            "negative_constraint_summary: tried branch, failure receipt, reusable constraint, next excluded region.",
+        ),
+        required_schema_fields=(
+            "task",
+            "project_family",
+            "bounded_claim",
+            "stable_evaluator",
+            "rubric_ready",
+            "artifact_surface",
+            "workbench_router_decision",
+            "why_not_autoresearch",
+            "worker_metadata",
+            "route_json_ref",
+            "action_impact_ref",
+            "workbench_evidence_ref",
+        ),
+    ),
 )
 
 ROUTER_BOILERPLATE_PHRASES: tuple[str, ...] = (
@@ -819,6 +1002,49 @@ def render_operator_cards(cards: list[OperatorCard]) -> str:
     return "\n".join(lines)
 
 
+def operator_card_to_kernel_action_schema(card: OperatorCard) -> dict:
+    """View an operator card through the common kernel action ABI."""
+
+    return KernelActionSchema(
+        source_kind="primitive_operator_card",
+        action_family="operator_card",
+        action_name=card.card_id,
+        source_summary=f"{card.name}: {'; '.join(card.entry_conditions)}",
+        target_mapping=(
+            " -> ".join(card.steps[:3])
+            if card.steps
+            else "apply selected operator card to the current research context"
+        ),
+        nearest_confuser=(
+            card.disambiguators[0]
+            if card.disambiguators
+            else "nearby operator card selected by vocabulary overlap rather than owed artifact"
+        ),
+        falsifier=card.breaker,
+        verification_artifact=card.required_output[0] if card.required_output else "operator-card artifact",
+        action_constraints=[
+            *card.required_schema_fields,
+            card.stop_update_rule,
+            card.boundary,
+        ],
+        evidence_basis="epistemic-generation: coarse obligation plus checked action fields",
+        payload={
+            "card_id": card.card_id,
+            "name": card.name,
+            "source_ops": list(card.source_ops),
+            "obligation_classes": list(card.obligation_classes),
+            "problem_classes": list(card.problem_classes),
+            "matched_terms": list(card.matched_terms),
+            "required_output": list(card.required_output),
+            "fine_handles": list(card.fine_handles),
+        },
+    ).to_dict()
+
+
+def operator_cards_to_kernel_action_schemas(cards: list[OperatorCard]) -> list[dict]:
+    return [operator_card_to_kernel_action_schema(card) for card in cards]
+
+
 def write_operator_cards(
     path: Path = OUT_PATH,
     *,
@@ -831,13 +1057,14 @@ def write_operator_cards(
         "ok": bool(cards),
         "obligation_route": [asdict(item) for item in route_obligation_classes(context=context, top_n=top_n)],
         "top_cards": [asdict(card) for card in cards],
+        "kernel_action_schemas": operator_cards_to_kernel_action_schemas(cards),
         "promotion_policy": GP219_PROMOTION_POLICY,
         "note": (
             "Experimental operator-card surface. V128 policy: coarse obligation "
             "classes route machinery; fine cards and GP-219 handles are recall, "
             "receipt, and nearest-confuser surfaces. V177R narrows the active "
-            "carrier to action-constraint content; field names are scaffold "
-            "and routing support. The 2026-05-23 HES ceiling adds a surface "
+            "carrier to action-constraint content; field names are routing support. "
+            "The 2026-05-23 HES ceiling adds a surface "
             "guard: action targets must be inferred from source facts, not "
             "spoon-fed by proposed-update/check-menu wording."
         ),

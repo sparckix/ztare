@@ -1,11 +1,26 @@
 from pathlib import Path
 import importlib.util
+import json
 
 from src.ztare.research_director.primitive_operator_cards import (
+    CARDS,
+    OBLIGATION_CLASSES,
+    operator_card_to_kernel_action_schema,
     render_operator_cards,
+    route_obligation_classes,
     route_operator_cards,
     write_operator_cards,
 )
+from src.ztare.common.kernel_action_schema import validate_kernel_action_schema
+
+
+def test_operator_card_term_lists_have_no_internal_duplicates() -> None:
+    for card in CARDS:
+        assert len(card.trigger_terms) == len(set(card.trigger_terms)), card.card_id
+        assert len(card.problem_classes) == len(set(card.problem_classes)), card.card_id
+        assert len(card.required_schema_fields) == len(set(card.required_schema_fields)), card.card_id
+    for obligation in OBLIGATION_CLASSES:
+        assert len(obligation.trigger_terms) == len(set(obligation.trigger_terms)), obligation.class_id
 
 
 def test_routes_proxy_evidence_to_evidence_carrier_card() -> None:
@@ -31,6 +46,25 @@ def test_routes_analogy_to_cross_frame_transfer_card() -> None:
     assert cards
     assert cards[0].card_id == "OP-XFT-01"
     assert "analogy" in cards[0].matched_terms
+
+
+def test_operator_card_exports_common_kernel_action_schema() -> None:
+    card = route_operator_cards(
+        context=(
+            "Use an isomorphism and source-target mapping; reject the nearest "
+            "confuser and require a target-side receipt."
+        ),
+        top_n=1,
+    )[0]
+
+    action = operator_card_to_kernel_action_schema(card)
+    ok, missing = validate_kernel_action_schema(action)
+
+    assert ok is True
+    assert missing == []
+    assert action["record_type"] == "kernel_action_schema"
+    assert action["action_family"] == "operator_card"
+    assert action["payload"]["card_id"] == "OP-XFT-01"
 
 
 def test_routes_surplus_lift_projection_certificate_card() -> None:
@@ -127,6 +161,27 @@ def test_routes_question_replacement_to_claim_boundary_family() -> None:
     assert "success_criterion" in " ".join(cards[0].required_output)
 
 
+def test_routes_reflexive_portfolio_measurement_to_instrument_card() -> None:
+    context = (
+        "Use reflexive mining and primitive ROI to inspect abandoned projects, "
+        "operations intelligence attention, and the in-loop share versus "
+        "out-of-loop share before deciding the kernel roadmap."
+    )
+    cards = route_operator_cards(
+        context=context
+    )
+    obligations = route_obligation_classes(context=context)
+
+    assert cards
+    assert cards[0].card_id == "OP-RMI-01"
+    assert "reflexive mining" in cards[0].matched_terms
+    assert "operations intelligence" in cards[0].matched_terms
+    assert "metric_value" in " ".join(cards[0].required_schema_fields)
+    assert "artifact volume alone" in cards[0].breaker
+    assert obligations
+    assert obligations[0].class_id == "bound"
+
+
 def test_routes_encoding_representatives_to_cross_frame_family() -> None:
     cards = route_operator_cards(
         context=(
@@ -180,6 +235,9 @@ def test_cli_match_and_no_match_exit_codes(tmp_path: Path, capsys) -> None:
     assert rc == 0
     assert "OP-ECR-01" in captured.out
     assert out.exists()
+    payload = json.loads(out.read_text(encoding="utf-8"))
+    assert payload["kernel_action_schemas"]
+    assert payload["kernel_action_schemas"][0]["record_type"] == "kernel_action_schema"
 
     rc = module.main(["--context", "plain status update", "--out", str(tmp_path / "none.json")])
     assert rc == 1
@@ -213,3 +271,29 @@ def test_render_surfaces_action_target_source_guard() -> None:
     assert "action-target guard" in text
     assert "infer the action target from source facts" in text
 
+
+def test_autoresearch_boundary_still_beats_reflexive_measurement_when_loop_decision_is_primary() -> None:
+    cards = route_operator_cards(
+        context=(
+            "Research Director deciding in-loop autoresearch workbench vs out-of-loop "
+            "subscription agent for a bounded claim with rubric surface and artifact surface"
+        ),
+        top_n=1,
+    )
+
+    assert cards
+    assert cards[0].card_id == "OP-AWR-01"
+
+
+def test_reflexive_route_row_gap_beats_workbench_when_measurement_is_primary() -> None:
+    cards = route_operator_cards(
+        context=(
+            "Operations intelligence shows high out-of-loop share and missing "
+            "agentic-workbench route rows; decide whether to backfill route rows "
+            "or continue kernel work."
+        ),
+        top_n=1,
+    )
+
+    assert cards
+    assert cards[0].card_id == "OP-RMI-01"

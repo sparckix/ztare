@@ -133,7 +133,7 @@ def _summarize_explored_classes(explored: list[dict[str, Any]]) -> str:
     whose ``outcome`` field starts with ``FALSIFIED_`` are split into a
     separate "DO NOT PROPOSE NEAR-NEIGHBORS" block, with their evidence
     path quoted. This converts the previously-decorative ``outcome``
-    field into load-bearing prompt context. The mutator may still
+    field into consequential prompt context. The mutator may still
     propose in the falsified neighborhood, but must do so by *explicitly
     citing divergence* from the named verification finding.
     """
@@ -272,7 +272,7 @@ GENERATE A FRESH EIGENQUESTION that:
      the new eigenquestion should NOT pull the mutator into that family.
 
   2. Is ANCHORED to specific project evidence sources — name 1-2 of the
-     files above whose evidence is load-bearing for this eigenquestion.
+     files above whose evidence is decisive for this eigenquestion.
      Do not invent files, schemas, or JSONPaths that are not listed.
 
   3. Has a CLEAR CANDIDATE FORM — what kind of refinement would answer
@@ -334,11 +334,19 @@ def generate_eigenquestion(project_slug: str, model_id: str | None = None,
     if chosen_model is None:
         raise RuntimeError(
             "no LLM provider — set ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY"
-        )
+    )
     runtime = LLMRuntime()
-    resp = runtime.call_text(
-        prompt, model_id=chosen_model, max_tokens=2000,
-        request_label="frontier_eigenquestion_generator",
+    from src.ztare.common.dispatch_model import dispatch_call_text
+
+    resp = dispatch_call_text(
+        "eigenquestion_generator",
+        prompt,
+        llm_response_call=lambda p: runtime.call_text(
+            p, model_id=chosen_model, max_tokens=2000,
+            request_label="frontier_eigenquestion_generator",
+        ),
+        repo=project_dir,
+        timeout_seconds=300,
     )
     text = (resp.text or "").strip()
     if not text:
@@ -379,6 +387,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.validate_explored:
         project_dir = REPO_ROOT / "projects" / args.project
+        if not project_dir.exists():
+            print(f"  ERROR: project dir not found at {project_dir}")
+            return 2
         explored = _load_jsonl(project_dir / "workspace" / "explored_primitive_classes.jsonl")
         errors = validate_explored_classes(explored)
         if errors:

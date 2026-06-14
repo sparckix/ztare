@@ -35,6 +35,7 @@ Output sections:
   §7. Pre-dispatch checklist reminder
   §8. Prediction logging discriminator
   §8b. External GPU/API run surface
+  §8e. Autoresearch workbench router
   §9. Primitive discoverability surface
   §9b. Pattern activation guard (negative-to-object trigger)
   §9c. Problem-surface → primitive-chain routing
@@ -52,6 +53,7 @@ import argparse
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 from collections import Counter
@@ -66,6 +68,8 @@ ANTI_PATTERN_INDEX = REPO / "org/anti-patterns/INDEX.md"
 SCORER_SUMMARY = REPO / "analytics/public/ledgers/pattern_deployment/pattern_deployment_diversity.json"
 CATCH_LEDGER = REPO / "analytics/public/ledgers/catch/catch_ledger.jsonl"
 PL_LEDGER = REPO / "analytics/public/ledgers/prediction/prediction_ledger.jsonl"
+ACTION_IMPACT_LEDGER = REPO / "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl"
+BIFURCATION_REPORT = REPO / "analytics/public/ledgers/reflexive/bifurcation_report.json"
 FORECAST_POOL = REPO / "analytics/public/forecast_pool"
 FORECASTING_CHANNEL = REPO / "org/channels/forecasting_agent"
 EXPERIMENT_TRACK_RECORD = REPO / "research_areas/EXPERIMENT_TRACK_RECORD.md"
@@ -86,6 +90,60 @@ ZTARE_TENANT_ROOT = REPO.parent / "ztare-research-co" / "tenants" / "ztare"
 EXTERNAL_RUNS_KERNEL = REPO / "src/ztare/orchestration/external_runs.py"
 EXTERNAL_RUN_MONITOR = REPO / "scripts/public/control/external_run_monitor.py"
 GPU_UTILITIES = REPO / "scripts/public/utilities/gpu"
+
+
+def _env_bool(name: str) -> bool | None:
+    value = os.environ.get(name)
+    if value is None or value == "":
+        return None
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _first_env(*names: str) -> str | None:
+    for name in names:
+        value = os.environ.get(name)
+        if value:
+            return value
+    return None
+
+
+def _resolve_project_path(value: str | None) -> Path | None:
+    if not value:
+        return None
+    path = Path(value)
+    if not path.is_absolute():
+        direct = REPO / path
+        if direct.exists():
+            return direct
+        return REPO / "projects" / value
+    return path
+
+
+def _resolve_rubric_path(value: str | None) -> Path | None:
+    if not value:
+        return None
+    path = Path(value)
+    candidates: list[Path]
+    if path.is_absolute():
+        candidates = [path]
+    else:
+        candidates = [REPO / path, REPO / "rubrics" / value]
+        if path.suffix == "":
+            candidates.append(REPO / "rubrics" / f"{value}.json")
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[-1] if candidates else None
+
+
+def _read_json_object(path: Path | None) -> dict:
+    if path is None or not path.exists():
+        return {}
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+    return value if isinstance(value, dict) else {}
 
 
 def section(title: str) -> None:
@@ -150,6 +208,24 @@ def _read_json_silent(path: Path) -> dict:
     except Exception:
         return {}
     return data if isinstance(data, dict) else {}
+
+
+def _read_jsonl_silent(path: Path) -> list[dict]:
+    try:
+        lines = path.read_text(encoding="utf-8", errors="ignore").splitlines()
+    except Exception:
+        return []
+    rows: list[dict] = []
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except Exception:
+            continue
+        if isinstance(payload, dict):
+            rows.append(payload)
+    return rows
 
 
 def tenant_overlay_precheck() -> None:
@@ -1254,7 +1330,7 @@ def pattern_action_contract_surface(scope: str | None = None) -> int:
     print("    or repair exposes a blocking missing discriminator.")
     print("    MM/self-referential repairs need explicit nearest-confuser")
     print("    rejection before downstream acceptance.")
-    print("  evidence basis: workingpapers/epistemic-generation/research_log.md")
+    print("  evidence basis: epistemic-generation/research_log.md")
     print("    V54/MM-V7: target receipt gates rejected polished near-misses")
     print("    that generic quality gates accepted.")
     print("    V55/MM-V8: target receipt feedback repaired wrong-path")
@@ -1720,6 +1796,263 @@ def post_tick_gate_precheck() -> int:
     return 0
 
 
+def autoresearch_workbench_router_surface(
+    *,
+    task: str | None = None,
+    project: str | None = None,
+    rubric: str | None = None,
+    bounded_claim: bool | None = None,
+    stable_evaluator: bool | None = None,
+    rubric_ready: bool | None = None,
+    artifact_surface: bool | None = None,
+    subscription_worker_available: bool | None = None,
+) -> int:
+    """Surface the RD decision to use autoresearch as an in-loop workbench."""
+    try:
+        sys.path.insert(0, str(REPO))
+        from src.ztare.research_director.autoresearch_workbench_router import (
+            route_autoresearch_workbench_from_context,
+        )
+        from src.ztare.research_director.primitive_operator_cards import (
+            render_operator_cards,
+            route_operator_cards,
+        )
+    except Exception as exc:
+        print(f"  ERROR: autoresearch workbench router unavailable: {exc}")
+        return 1
+
+    workbench_summary: dict | None = None
+    try:
+        from src.ztare.reports.operations_intelligence import summarize_agentic_workbench
+
+        workbench_summary = summarize_agentic_workbench(
+            _read_jsonl_silent(ACTION_IMPACT_LEDGER),
+            bifurcation_report=_read_json_silent(BIFURCATION_REPORT),
+        )
+    except Exception as exc:
+        print(f"  WARN: workbench route-coverage summary unavailable: {exc}")
+
+    task = (
+        task
+        or _first_env("RD_WORKBENCH_TASK", "ZTARE_TICK_GOAL", "RD_TICK_GOAL")
+        or "current RD task"
+    )
+    project = project or _first_env(
+        "ZTARE_AUTORESEARCH_PROJECT",
+        "RD_AUTORESEARCH_PROJECT",
+        "PROJECT",
+    )
+    rubric = rubric or _first_env(
+        "ZTARE_AUTORESEARCH_RUBRIC",
+        "RD_AUTORESEARCH_RUBRIC",
+        "RUBRIC",
+    )
+    project_path = _resolve_project_path(project)
+    rubric_path = _resolve_rubric_path(rubric)
+
+    env_bounded = _env_bool("ZTARE_WORKBENCH_BOUNDED_CLAIM")
+    env_stable = _env_bool("ZTARE_WORKBENCH_STABLE_EVALUATOR")
+    env_rubric = _env_bool("ZTARE_WORKBENCH_RUBRIC_READY")
+    env_artifact = _env_bool("ZTARE_WORKBENCH_ARTIFACT_SURFACE")
+    env_subscription = _env_bool("ZTARE_SUBSCRIPTION_WORKER_AVAILABLE")
+
+    if bounded_claim is None:
+        bounded_claim = env_bounded
+    if stable_evaluator is None:
+        stable_evaluator = env_stable
+    if rubric_ready is None:
+        rubric_ready = env_rubric
+    if artifact_surface is None:
+        artifact_surface = env_artifact
+    if subscription_worker_available is None:
+        subscription_worker_available = env_subscription
+    subscription_worker_available = bool(subscription_worker_available)
+
+    decision = route_autoresearch_workbench_from_context(
+        task,
+        project=project or "",
+        rubric=rubric or "",
+        stable_evaluator=stable_evaluator,
+        bounded_claim=bounded_claim,
+        rubric_ready=rubric_ready,
+        artifact_surface=artifact_surface,
+        subscription_worker_available=subscription_worker_available,
+        repo_root=REPO,
+    )
+    print("  source: src/ztare/research_director/autoresearch_workbench_router.py")
+    print(f"  task: {task}")
+    print(f"  project: {project or '<unset>'}"
+          + (f" ({project_path.relative_to(REPO)})" if project_path and project_path.exists() else ""))
+    print(f"  rubric: {rubric or '<unset>'}"
+          + (f" ({rubric_path.relative_to(REPO)})" if rubric_path and rubric_path.exists() else ""))
+    print("  inferred/declared feature bits:")
+    print(f"    bounded_claim={decision.bounded_claim}")
+    print(f"    stable_evaluator={decision.stable_evaluator}")
+    print(f"    rubric_ready={decision.rubric_ready}")
+    print(f"    artifact_surface={decision.artifact_surface}")
+    print(f"    subscription_worker_available={decision.subscription_worker_available}")
+    print("  router decision:")
+    print(f"    decision={decision.decision} confidence={decision.confidence:.2f}")
+    if decision.reasons:
+        print(f"    reasons={'; '.join(decision.reasons)}")
+    if decision.missing:
+        print(f"    missing={'; '.join(decision.missing)}")
+    print(f"    next={decision.suggested_next_step}")
+    card_context = " ".join(
+        part
+        for part in (
+            "autoresearch_workbench_routing",
+            task,
+            project or "",
+            rubric or "",
+            decision.decision,
+            " ".join(decision.missing),
+        )
+        if part
+    )
+    print("  typed operator-card surface:")
+    print(render_operator_cards(route_operator_cards(context=card_context, top_n=2)))
+    if decision.decision == "invoke_autoresearch" and project and rubric:
+        print("  run surface:")
+        print(f"    ztare autoresearch run --project {project} --rubric {rubric}")
+        print(f"    ztare autoresearch projection --project {project}")
+        print("  close receipt:")
+        print("    workbench_evidence_ref=<autoresearch-run-or-projection-artifact>")
+    elif decision.decision == "prepare_autoresearch_surface":
+        print("  prepare surface before treating manual agent work as primary evidence:")
+        print("    create/fix the missing evaluator, rubric, or artifact surface; then rerun this brief")
+        if decision.surface_scaffold:
+            print("  missing-surface scaffold:")
+            for row in decision.surface_scaffold[:4]:
+                fields = ", ".join(str(f) for f in row.get("required_fields", [])[:4])
+                print(f"    - {row.get('surface')}: {row.get('artifact')}")
+                print(f"      fields={fields}")
+                print(f"      check={row.get('acceptance_check')}")
+    else:
+        print("  stay out of loop only for exploratory definition work; reroute once a bounded claim exists")
+        if decision.surface_scaffold:
+            print("  first surfaces to create before rerouting:")
+            for row in decision.surface_scaffold[:2]:
+                fields = ", ".join(str(f) for f in row.get("required_fields", [])[:3])
+                print(f"    - {row.get('surface')}: {row.get('artifact')} ({fields})")
+
+    if decision.decision == "invoke_autoresearch":
+        print("  if the ready workbench is bypassed, record the bypass:")
+        selected_action = "run_out_of_loop_agent"
+        why_hint = "<cost-or-capability-reason-for-bypassing-ready-workbench>"
+    elif decision.decision == "prepare_autoresearch_surface":
+        print("  record the surface-preparation decision when it consumes RD/out-of-loop work:")
+        selected_action = "prepare_autoresearch_surface"
+        why_hint = "<missing-surface-being-prepared>"
+    else:
+        print("  record the exploratory stay-out decision:")
+        selected_action = "stay_out_of_loop"
+        why_hint = "<why-no-bounded-autoresearch-surface-yet>"
+    print("    ztare autoresearch route \\")
+    print(f"      --task {shlex.quote(task)} \\")
+    if project:
+        print(f"      --project {shlex.quote(project)} \\")
+    if rubric:
+        print(f"      --rubric {shlex.quote(rubric)} \\")
+    print("      --record-decision-id DECISION_ID \\")
+    print(f"      --selected-action {selected_action} \\")
+    print(f"      --why-not-autoresearch {shlex.quote(why_hint)}")
+    print("  fallback for a pre-saved route JSON:")
+    print("    ztare autoresearch route \\")
+    print(f"      --task {shlex.quote(task)} \\")
+    if project:
+        print(f"      --project {shlex.quote(project)} \\")
+    if rubric:
+        print(f"      --rubric {shlex.quote(rubric)} \\")
+    print("      > /tmp/autoresearch_route.json")
+    print("    ztare action-intel record-agentic-route \\")
+    print("      --route-json /tmp/autoresearch_route.json --decision-id DECISION_ID \\")
+    print(f"      --selected-action {selected_action} \\")
+    print(f"      --why-not-autoresearch {shlex.quote(why_hint)}")
+    if workbench_summary:
+        bif = workbench_summary.get("reflexive_bifurcation") or {}
+        coverage = workbench_summary.get("route_row_coverage") or {}
+        out_share = bif.get("out_of_loop_share")
+        in_share = bif.get("in_loop_share")
+        ratio = coverage.get("route_rows_per_1k_agent_artifacts")
+        print("  route logging coverage:")
+        print(
+            f"    route_rows={workbench_summary.get('rows', 0)} "
+            f"out_of_loop_share={out_share if out_share is not None else '<unknown>'} "
+            f"in_loop_share={in_share if in_share is not None else '<unknown>'} "
+            f"rows_per_1k_agent_artifacts={ratio if ratio is not None else '<unknown>'}"
+        )
+        print(f"    status={coverage.get('status', 'unknown')}")
+        if coverage.get("needs_logging_attention"):
+            print(
+                "    ATTENTION: reflexive mining shows substantial out-of-loop work, "
+                "but agentic-workbench route rows are missing or sparse."
+            )
+            print(
+                "    Before continuing out of loop, run the route command above and "
+                "record the selected action unless the work is pure scratch."
+            )
+    return 0
+
+
+def eigenquestion_rotation_surface(project: str | None) -> int:
+    """Surface advisory eigenquestion proposals for the selected project.
+
+    Eigenquestion generation is deliberately not an automatic charter rewrite.
+    This brief section makes pending proposals visible so RD/operator work can
+    decide whether to merge, reject, or supersede them before the next run.
+    """
+
+    project_path = _resolve_project_path(project)
+    if project_path is None:
+        print("  project: <not provided>")
+        print("  status: skipped — pass --autoresearch-project to inspect proposals")
+        return 0
+    print(f"  project: {project_path}")
+    if not project_path.exists():
+        print("  status: project_missing")
+        return 0
+
+    proposals = sorted(
+        project_path.glob("proposed_eigenquestion_*.md"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    charter = project_path / "project_charter.md"
+    charter_mtime = charter.stat().st_mtime if charter.exists() else 0.0
+    if not proposals:
+        print("  status: no proposed_eigenquestion_*.md files")
+        print(
+            "  generate: ztare eigenquestion propose "
+            f"--project {shlex.quote(project_path.name)}"
+        )
+        return 0
+
+    now_ts = datetime.now(timezone.utc).timestamp()
+    pending = [p for p in proposals if not charter.exists() or p.stat().st_mtime > charter_mtime]
+    print(
+        f"  proposals: {len(proposals)} "
+        f"(pending_newer_than_charter={len(pending)}, charter_exists={charter.exists()})"
+    )
+    for path in proposals[:3]:
+        age_h = max(0.0, (now_ts - path.stat().st_mtime) / 3600.0)
+        status = (
+            "pending_review"
+            if (not charter.exists() or path.stat().st_mtime > charter_mtime)
+            else "older_than_charter"
+        )
+        print(f"    - {path.name}: {status}, age={age_h:.1f}h")
+    if len(proposals) > 3:
+        print(f"    ...and {len(proposals) - 3} more")
+
+    print("  discipline: advisory only; merge/reject/supersede in project_charter.md intentionally")
+    print(
+        "  validate explored-class negative-evidence rows before merge: "
+        f"ztare eigenquestion validate --project {shlex.quote(project_path.name)}"
+    )
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--short", action="store_true",
@@ -1742,6 +2075,30 @@ def main() -> int:
                         help="Skip RD primitive discoverability surface.")
     parser.add_argument("--skip-gnn-precheck", action="store_true",
                         help="Skip frozen GNN advisory precheck.")
+    parser.add_argument("--skip-workbench-router", action="store_true",
+                        help="Skip autoresearch workbench router surfacing.")
+    parser.add_argument("--workbench-task",
+                        help="Task text for the autoresearch workbench router.")
+    parser.add_argument("--autoresearch-project",
+                        help="Project slug/path for autoresearch router inference.")
+    parser.add_argument("--autoresearch-rubric",
+                        help="Rubric slug/path for autoresearch router inference.")
+    parser.add_argument("--subscription-worker-available",
+                        action=argparse.BooleanOptionalAction,
+                        default=None,
+                        help="Declare a subscription-backed fungible worker for autoresearch.")
+    parser.add_argument("--workbench-bounded-claim",
+                        action=argparse.BooleanOptionalAction,
+                        default=None)
+    parser.add_argument("--workbench-stable-evaluator",
+                        action=argparse.BooleanOptionalAction,
+                        default=None)
+    parser.add_argument("--workbench-rubric-ready",
+                        action=argparse.BooleanOptionalAction,
+                        default=None)
+    parser.add_argument("--workbench-artifact-surface",
+                        action=argparse.BooleanOptionalAction,
+                        default=None)
     parser.add_argument("--allow-no-owner", action="store_true",
                         help="Permit a non-owner-scoped brief for "
                              "NON-tick informational use ONLY. The tick "
@@ -1904,7 +2261,7 @@ def main() -> int:
         import subprocess as _sp
         _ps = _sp.run(
             [sys.executable, str(REPO / "scripts/public/validators/"
-             "validate_prescription_surfacing.py")],
+             "validate_prescription_surfacing.py"), "--skip-arch-self"],
             capture_output=True, text=True, timeout=30)
         _lines = [l for l in _ps.stdout.splitlines()
                   if l.startswith(("WARN: surfacing_gap", "INFO: PROMOTE-READY", "OK:"))]
@@ -1931,6 +2288,23 @@ def main() -> int:
                   f"validate_prescription_surfacing.py)")
     except Exception as _e:
         print(f"  (prescription-surfacing surface degraded: {_e})")
+
+    workbench_router_status = 0
+    if not args.skip_workbench_router:
+        section("8e. Autoresearch workbench router")
+        workbench_router_status = autoresearch_workbench_router_surface(
+            task=args.workbench_task,
+            project=args.autoresearch_project,
+            rubric=args.autoresearch_rubric,
+            bounded_claim=args.workbench_bounded_claim,
+            stable_evaluator=args.workbench_stable_evaluator,
+            rubric_ready=args.workbench_rubric_ready,
+            artifact_surface=args.workbench_artifact_surface,
+            subscription_worker_available=args.subscription_worker_available,
+        )
+
+    section("8f. Eigenquestion rotation surface")
+    eigenquestion_rotation_surface(args.autoresearch_project)
 
     primitive_status = 0
     if not args.skip_primitive_surface:
@@ -1980,6 +2354,7 @@ def main() -> int:
         "pattern_action_contract(§9d)": pattern_contract_status,
         "structural_vocab(§9e)": structural_vocabulary_status,
         "pattern_activation(§9b)": pattern_activation_status,
+        "workbench_router(§8e)": workbench_router_status,
         "substrate_graph(§10)": graph_status,
         "gnn(§11,optional)": gnn_status,
     }
