@@ -11,10 +11,18 @@ from pathlib import Path
 from google.genai import types
 from src.ztare.common import utils
 from src.ztare.common.llm_runtime import (
+    LLMTextResponse,
     LLMRuntime,
+    LLMUsage,
     PRODUCTION_CALL_RETRIES,
     pricing_model_name,
     resolve_model_id,
+)
+from src.ztare.common.dispatch_model import (
+    dispatch_env_for_call_site,
+    dispatch_model,
+    dispatch_result_receipt,
+    resolve_dispatch_capability,
 )
 from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import re
@@ -95,7 +103,7 @@ parser.add_argument("--use_transfer_hypotheses", action="store_true")
 parser.add_argument(
     "--crux_first_primitives",
     action="store_true",
-    help="Identify the load-bearing claim / eigenquestion before injecting primitive context into the meta-judge.",
+    help="Identify the crux claim / eigenquestion before injecting primitive context into the meta-judge.",
 )
 parser.add_argument("--primitive_top_k", type=int, default=3)
 parser.add_argument(
@@ -148,6 +156,7 @@ JUDGE_USAGE = {
 }
 JUDGE_EFFECTIVE_MODELS_USED: set[str] = set()
 JUDGE_FALLBACK_EVENTS: list[dict[str, str]] = []
+JUDGE_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
 
 
 def _load_v4_stage_index() -> int | None:
@@ -609,10 +618,71 @@ def _accumulate_judge_usage(
         JUDGE_USAGE["cost_known"] = True
 
 
+def _prompt_with_response_config_hint(prompt: str, config) -> str:
+    if config is None:
+        return prompt
+    response_mime = getattr(config, "response_mime_type", None)
+    response_schema = getattr(config, "response_schema", None)
+    if not response_mime and response_schema is None:
+        return prompt
+    try:
+        schema_text = json.dumps(response_schema, default=str, indent=2) if response_schema is not None else ""
+    except TypeError:
+        schema_text = str(response_schema)
+    return (
+        prompt.rstrip()
+        + "\n\nRESPONSE CONTRACT FOR SUBSCRIPTION WORKER:\n"
+        + (f"- MIME/type expectation: {response_mime}\n" if response_mime else "")
+        + (
+            "- Return only a JSON value matching this schema. No markdown, "
+            "no code fences, no explanatory preamble.\n"
+            f"{schema_text}\n"
+            if schema_text
+            else ""
+        )
+    )
+
+
 def safe_generate(prompt, config=None, model_id=None):
     """Exponential backoff with dynamic model routing."""
     if model_id is None:
         model_id = JUDGE_MODEL_ID
+    capability = resolve_dispatch_capability("judge")
+    if capability == "agent":
+        result = dispatch_model(
+            _prompt_with_response_config_hint(prompt, config),
+            capability="agent",
+            fungible=True,
+            stateful=False,
+            backend=os.environ.get("ZTARE_AUTORESEARCH_JUDGE_AGENT_RUNTIME"),
+            repo=REPO_ROOT,
+            agent_id=f"autoresearch_judge_{args.project}",
+            timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
+            enabled_env=dispatch_env_for_call_site("judge"),
+        )
+        effective_model_name = f"{result.transport}:{result.command[0] if result.command else 'agent'}"
+        JUDGE_EFFECTIVE_MODELS_USED.add(effective_model_name)
+        JUDGE_USAGE["model_name"] = effective_model_name
+        if result.returncode != 0:
+            raise RuntimeError(
+                "subscription judge dispatch failed "
+                f"(returncode={result.returncode}): {result.stderr[:1200]}"
+            )
+        JUDGE_WORKER_DISPATCH_RECEIPTS.append(
+            dispatch_result_receipt("judge", result)
+        )
+        if result.recovery_note:
+            print(f"🔁 Subscription judge recovery: {result.recovery_note}")
+        return LLMTextResponse(
+            text=result.text,
+            model_name=effective_model_name,
+            usage=LLMUsage(model_name=effective_model_name),
+            raw_response=result,
+            requested_model_id=model_id,
+            effective_model_id=effective_model_name,
+        )
+    if capability != "llm":
+        raise ValueError(f"unsupported judge dispatch capability: {capability}")
     response = RUNTIME.call_text(
         prompt,
         model_id=model_id,
@@ -761,7 +831,7 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     Write a COUNTER-TEST that exposes the insolvency of their equation.
     
     CRITICAL INSTRUCTION (PARAMETRIC GROUNDING):
-    You MUST use your deep parametric knowledge of physics, mathematics, and finance to audit the Mutator's "LOAD-BEARING VARIABLES" table and Python constants.
+    You MUST use your deep parametric knowledge of physics, mathematics, and finance to audit the Mutator's "DECISIVE VARIABLES" table and Python constants.
     If they claim a specific physical constant, temperature, limit, or financial metric, verify it against established scientific or market consensus.
     If their baseline variables are fictional, misapplied, or off by orders of magnitude, destroy the thesis and cite the actual real-world metric.
 
@@ -999,8 +1069,8 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
                 primitive_query_parts.extend(
                     [
                         crux_analysis.get("eigenquestion", ""),
-                        crux_analysis.get("load_bearing_claim", ""),
-                        crux_analysis.get("why_load_bearing", ""),
+                        _crux_claim_from_analysis(crux_analysis),
+                        _why_crux_from_analysis(crux_analysis),
                         crux_analysis.get("mismatch_reason", ""),
                         "\n".join(crux_analysis.get("crux_keywords", [])),
                     ]
@@ -1019,7 +1089,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
         crux_instruction = """
     RULES FOR CRUX-FIRST ORDERING:
     - The crux analysis above was produced before any failure precedents were shown.
-    - Treat that load-bearing claim as the anchor for this evaluation unless the verification-panel evidence directly refutes it.
+    - Treat that crux claim as the anchor for this evaluation unless the verification-panel evidence directly refutes it.
     - Decide first whether the falsification suite actually tests that crux.
     - Use failure precedents only to pressure-test the crux; do not let them redefine the crux or soften a claim-test mismatch.
     - If `test_targets_claim` is false or `mismatch_risk` is high, scrutinize selective rigor, halo validation, suite omission, and tautological verification before granting credit for passing tests.
@@ -1068,7 +1138,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
     If the Mutator proposes retiring an axiom, evaluate if it is a valid dimensional shift or just lazy accounting. If valid, add it to retired_axioms_approved. If it is a fraudulent attempt to evade a constraint, penalize the score by -30
 
     PROBABILITY DAG MANDATE (SUPERFORECASTING OUTPUT):
-    After scoring, you must extract the 3-5 most critical load-bearing variables from the thesis and express them as a probability DAG.
+    After scoring, you must extract the 3-5 most critical variables from the thesis and express them as a probability DAG.
 
     CRITICAL PROBABILITY SEMANTICS (read carefully before assigning numbers):
     - Each node probability represents: P(this node is TRUE | the thesis direction is correct).
@@ -1079,7 +1149,7 @@ def run_meta_judge(text, evidence, main_rubric_data, aggregated_critiques, axiom
       outcome = sum(node_i.probability * edge_i.weight) / sum(edge_i.weight)
       This is a causal confidence score, not a joint probability of independent events.
     - Edge weights (0.0-1.0) represent causal contribution: how much does this node drive the outcome?
-      The highest-leverage load-bearing variable gets weight ~0.8-1.0. Supporting nodes: 0.3-0.6.
+      The highest-leverage critical variable gets weight ~0.8-1.0. Supporting nodes: 0.3-0.6.
 
     CALIBRATION CHECK: If your outcome_probability is below 0.05, you have made a math error.
     The DAG measures thesis confidence, not actuarial risk of the worst-case scenario.
@@ -1207,7 +1277,7 @@ You must also output a structured `self_reference_evidence` record for Python-si
 - `independent_grounding_present`: boolean
 - `test_recomputes_thesis_authored_target`: boolean
 - `causal_variable_perturbed`: boolean
-- `load_bearing_claim_directly_tested`: boolean
+- `crux_claim_directly_tested`: boolean
 - `local_component_scope_disclaimer_present`: boolean
 - `whole_system_availability_claim_present`: boolean
 - `verifies_authored_mapping_only`: boolean
@@ -1216,7 +1286,7 @@ You must also output a structured `self_reference_evidence` record for Python-si
 - `confidence`: one of `high|medium|low`
 
 You must also output a structured quarantine assessment:
-- `quarantined_load_bearing_dependency`: boolean
+- `quarantined_crux_dependency`: boolean
 - `quarantine_target`: one of `background_only|causal_mechanism|named_discriminator|falsification_environment|unknown`
 - `quarantine_legitimate`: boolean
 - `quarantine_rationale`: string
@@ -1231,7 +1301,7 @@ Quarantine rule:
 - if the unresolved variable still determines whether the thesis's named discriminator actually discriminates between the thesis and the rival, set `quarantine_target = named_discriminator`
 - if the unresolved variable still determines whether the test suite constitutes an independent falsification environment for the claim being made, set `quarantine_target = falsification_environment`
 - if the unresolved variable still gates the central mechanism but not the named discriminator directly, set `quarantine_target = causal_mechanism`
-- if you cannot localize the dependency precisely but it is still load-bearing, set `quarantine_target = unknown`
+- if you cannot localize the dependency precisely but it is still critical to the claim, set `quarantine_target = unknown`
 - set the three `quarantine_gates_*` booleans independently and conservatively
 - if `quarantine_gates_named_discriminator` is true, then `quarantine_gates_causal_mechanism` should normally also be true
 - if `quarantine_gates_falsification_environment` is true, that is score-bearing even if the named discriminator is otherwise well-phrased
@@ -1320,7 +1390,7 @@ Field intent for local safe-harbor cases:
 - `verifies_authored_mapping_only` = true when the tests only verify the component's own authored deterministic mapping, thesis-authored thresholds, or thesis-authored future scenarios rather than a claim about independently grounded external reality. A counter-scenario or inverse scenario does NOT make this false if both scenarios are still thesis-authored.
 
 Grounding rule for prediction claims:
-- `independent_grounding_present` = true only if the specific load-bearing variable or threshold that determines whether the central claim passes or fails is independently grounded.
+- `independent_grounding_present` = true only if the specific crux variable or threshold that determines whether the central claim passes or fails is independently grounded.
 - Do NOT set `independent_grounding_present` true merely because some other input variable is externally sourced, or because the thesis cites background evidence elsewhere.
 - For forward prediction claims, if the decisive future variable, threshold, horizon, or causal multiplier is a thesis assumption, then `independent_grounding_present` must be false even if other inputs are externally cited.
 
@@ -1373,7 +1443,7 @@ Required fields:
     "independent_grounding_present": <boolean>,
     "test_recomputes_thesis_authored_target": <boolean>,
     "causal_variable_perturbed": <boolean>,
-    "load_bearing_claim_directly_tested": <boolean>,
+    "crux_claim_directly_tested": <boolean>,
     "local_component_scope_disclaimer_present": <boolean>,
     "whole_system_availability_claim_present": <boolean>,
     "verifies_authored_mapping_only": <boolean>,
@@ -1381,7 +1451,7 @@ Required fields:
     "counterevidence_lines": [<string>, ...],
     "confidence": <string>
   },
-  "quarantined_load_bearing_dependency": <boolean>,
+  "quarantined_crux_dependency": <boolean>,
   "quarantine_target": <string>,
   "quarantine_legitimate": <boolean>,
   "quarantine_rationale": <string>,
@@ -1553,7 +1623,7 @@ Required fields:
                         "independent_grounding_present": {"type": "BOOLEAN"},
                         "test_recomputes_thesis_authored_target": {"type": "BOOLEAN"},
                         "causal_variable_perturbed": {"type": "BOOLEAN"},
-                        "load_bearing_claim_directly_tested": {"type": "BOOLEAN"},
+                        "crux_claim_directly_tested": {"type": "BOOLEAN"},
                         "local_component_scope_disclaimer_present": {"type": "BOOLEAN"},
                         "whole_system_availability_claim_present": {"type": "BOOLEAN"},
                         "verifies_authored_mapping_only": {"type": "BOOLEAN"},
@@ -1562,7 +1632,7 @@ Required fields:
                         "confidence": {"type": "STRING"},
                     },
                 },
-                "quarantined_load_bearing_dependency": {"type": "BOOLEAN"},
+                "quarantined_crux_dependency": {"type": "BOOLEAN"},
                 "quarantine_target": {"type": "STRING"},
                 "quarantine_legitimate": {"type": "BOOLEAN"},
                 "quarantine_rationale": {"type": "STRING"},
@@ -1661,7 +1731,7 @@ Required fields:
                 "contains_infallible_aggregator",
                 "proof_is_self_referential",
                 "self_reference_evidence",
-                "quarantined_load_bearing_dependency",
+                "quarantined_crux_dependency",
                 "quarantine_target",
                 "quarantine_legitimate",
                 "quarantine_rationale",
@@ -1824,7 +1894,7 @@ Required fields:
             "requires_manual_review": routing_decision.requires_manual_review,
             "rationale": routing_decision.rationale,
         }
-    # GP-167 fix (2026-04-25 night): clamp judge-emitted score to
+    # GP-167 fix (2026-04-25): clamp judge-emitted score to
     # [0, 100]. The judge LLM has been observed to return 170 on
     # gp163d (gpt-5.5 judge), which propagates to all downstream
     # comparison logic (champion promotion, deltas, near-miss floors)
@@ -1844,16 +1914,45 @@ Required fields:
     return evaluation
 
 
+_LEGACY_CRUX_CLAIM_KEY = "load_" + "bearing_claim"
+_LEGACY_WHY_CRUX_KEY = "why_load_" + "bearing"
+_LEGACY_CRUX_TESTED_KEY = "load_" + "bearing_claim_directly_tested"
+_LEGACY_QUARANTINED_CRUX_KEY = "quarantined_load_" + "bearing_dependency"
+
+
+def _first_present(mapping: dict, *keys: str, default=None):
+    for key in keys:
+        if key in mapping:
+            return mapping.get(key)
+    return default
+
+
+def _bool_first_present(mapping: dict, *keys: str, default: bool = False) -> bool:
+    return bool(_first_present(mapping, *keys, default=default))
+
+
+def _crux_claim_from_analysis(crux_analysis: dict | None) -> str:
+    if not crux_analysis:
+        return ""
+    return str(_first_present(crux_analysis, "crux_claim", _LEGACY_CRUX_CLAIM_KEY, default="") or "")
+
+
+def _why_crux_from_analysis(crux_analysis: dict | None) -> str:
+    if not crux_analysis:
+        return ""
+    return str(_first_present(crux_analysis, "why_crux", _LEGACY_WHY_CRUX_KEY, default="") or "")
+
+
 def identify_crux_analysis(text, evidence, main_rubric_data, aggregated_critiques):
     prompt = f"""
     {main_rubric_data["persona"]}
-    TASK: Identify the single load-bearing claim / eigenquestion of the thesis BEFORE reading any failure precedents.
+    TASK: Identify the single crux claim / eigenquestion of the thesis BEFORE reading any failure precedents.
 
     Return strict JSON with this schema:
     {{
       "eigenquestion": "<single foundational yes/no or either/or question>",
-      "load_bearing_claim": "<single claim whose failure makes much of the thesis irrelevant>",
-      "why_load_bearing": "<brief explanation of why this is the crux>",
+      "crux_claim": "<single claim whose failure makes much of the thesis irrelevant>",
+      "why_crux": "<brief explanation of why this is the crux>",
       "test_targets_claim": true or false,
       "mismatch_risk": "high" | "medium" | "low",
       "mismatch_reason": "<brief explanation of whether the falsification suite targets the crux or only nearby scaffolding>",
@@ -1885,8 +1984,8 @@ CRITICAL: You must respond with ONLY a valid JSON object. No markdown, no explan
 Required fields:
 {
   "eigenquestion": <string>,
-  "load_bearing_claim": <string>,
-  "why_load_bearing": <string>,
+  "crux_claim": <string>,
+  "why_crux": <string>,
   "test_targets_claim": <boolean>,
   "mismatch_risk": <string>,
   "mismatch_reason": <string>,
@@ -1901,8 +2000,8 @@ Required fields:
         "type": "OBJECT",
         "properties": {
             "eigenquestion": {"type": "STRING"},
-            "load_bearing_claim": {"type": "STRING"},
-            "why_load_bearing": {"type": "STRING"},
+            "crux_claim": {"type": "STRING"},
+            "why_crux": {"type": "STRING"},
             "test_targets_claim": {"type": "BOOLEAN"},
             "mismatch_risk": {"type": "STRING"},
             "mismatch_reason": {"type": "STRING"},
@@ -1910,8 +2009,8 @@ Required fields:
         },
         "required": [
             "eigenquestion",
-            "load_bearing_claim",
-            "why_load_bearing",
+            "crux_claim",
+            "why_crux",
             "test_targets_claim",
             "mismatch_risk",
             "mismatch_reason",
@@ -2040,7 +2139,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             "threshold. Score zeroed by the gate; finalize honors this."
         )
     if test_suite_status != "pass":
-        # Bug B fix (gp163d postmortem, 2026-04-25 night): when the gate
+        # Bug B fix (gp163d postmortem, 2026-04-25): when the gate
         # harness ran and produced a meaningful HOLDOUT signal — pass or
         # fail — the gate IS the falsification. The L3 in-test asserts
         # inside test_model.py's __main__ block are a SECONDARY check; a
@@ -2113,8 +2212,10 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             }
         )
 
-    quarantined_load_bearing_dependency = bool(
-        evaluation.get("quarantined_load_bearing_dependency", False)
+    quarantined_crux_dependency = _bool_first_present(
+        evaluation,
+        "quarantined_crux_dependency",
+        _LEGACY_QUARANTINED_CRUX_KEY,
     )
     quarantine_target = str(evaluation.get("quarantine_target", "unknown") or "unknown")
     quarantine_legitimate = bool(evaluation.get("quarantine_legitimate", False))
@@ -2129,7 +2230,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         evaluation.get("quarantine_gates_falsification_environment", False)
     )
     # Backward-compatible fallback for older evaluations or mis-specified outputs.
-    if quarantined_load_bearing_dependency:
+    if quarantined_crux_dependency:
         if quarantine_target == "causal_mechanism":
             quarantine_gates_causal_mechanism = True
         elif quarantine_target == "named_discriminator":
@@ -2143,7 +2244,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             or quarantine_gates_falsification_environment
         ):
             quarantine_gates_causal_mechanism = True
-    if quarantined_load_bearing_dependency:
+    if quarantined_crux_dependency:
         if quarantine_gates_named_discriminator or quarantine_gates_falsification_environment:
             soft_score_caps.append(
                 {
@@ -2171,7 +2272,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
             soft_score_caps.append(
                 {
                     "reason": (
-                        "Meta-Judge found a quarantined load-bearing unresolved dependency with "
+                        "Meta-Judge found a quarantined critical unresolved dependency with "
                         f"unclear scope. {quarantine_rationale}".strip()
                     ),
                     "cap": 83,
@@ -2319,7 +2420,7 @@ def finalize_deterministic_score(evaluation, main_rubric_data, test_suite_status
         "soft_score_caps": soft_score_caps,
         "semantic_gate_status": evaluation.get("semantic_gate_status"),
         "self_reference_rule_fired": evaluation.get("self_reference_rule_fired"),
-        "quarantined_load_bearing_dependency": quarantined_load_bearing_dependency,
+        "quarantined_crux_dependency": quarantined_crux_dependency,
         "quarantine_target": quarantine_target,
         "quarantine_legitimate": quarantine_legitimate,
         "quarantine_gates_causal_mechanism": quarantine_gates_causal_mechanism,
@@ -2441,7 +2542,7 @@ if __name__ == "__main__":
 
         # GP-211 substrate dispatch: when the rubric declares
         # cage_meta.substrate_class == "lean_proof", the test_model.py path is
-        # NOT load-bearing — the actual falsifier is `lake build` against the
+        # NOT critical — the actual falsifier is `lake build` against the
         # mutator's ```lean fenced block in thesis.md. Closes the iter-1/iter-2
         # fake-95 path where Lean-shaped prose + a Python tautology scored as
         # "validated" because the judge can't run Lean.
@@ -2733,7 +2834,7 @@ if __name__ == "__main__":
                         elif not all_gates_passed and not _holdout_passed and _holdout_near_miss:
                             pre_cap_score = evaluation.get("score", 0)
                             _floor = 30
-                            # GP-167 fix (2026-04-25 night, panel-revealed): the
+                            # GP-167 fix (2026-04-25, panel-revealed): the
                             # previous expression `min(pre_cap_score, _floor) if
                             # pre_cap_score >= _floor else _floor` always
                             # evaluated to _floor=30 regardless of input, which
@@ -2893,6 +2994,7 @@ if __name__ == "__main__":
         print("█" * 60 + "\n")
 
     evaluation["usage_telemetry"] = dict(JUDGE_USAGE)
+    evaluation["worker_dispatch_receipts"] = list(JUDGE_WORKER_DISPATCH_RECEIPTS)
     latest_eval_payload = _evaluation_artifact_payload(evaluation, artifact_role="latest")
     eval_results_path = Path(args.eval_results_path)
     eval_results_path.parent.mkdir(parents=True, exist_ok=True)

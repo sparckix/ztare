@@ -6,6 +6,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 AUTORESEARCH_LOOP = REPO_ROOT / "src" / "ztare" / "validator" / "autoresearch_loop.py"
+TEST_THESIS = REPO_ROOT / "src" / "ztare" / "validator" / "test_thesis.py"
+GENERATE_COMMITTEE = REPO_ROOT / "src" / "ztare" / "validator" / "generate_committee.py"
 
 
 def _main_iteration_loops(tree: ast.AST) -> list[ast.For]:
@@ -107,3 +109,89 @@ def test_linear_observable_coercivity_dispatch_uses_literal_label_key() -> None:
     assert "_loc_res[label]" not in source
     assert "linear_observable_coercivity.json" in source
 
+
+def test_mutator_safe_mutate_routes_through_dispatch_model_before_api_call() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    assert "dispatch_env_for_call_site" in source
+    assert 'capability = resolve_dispatch_capability("mutator")' in source
+    assert "result = dispatch_model(" in source
+    assert 'enabled_env=dispatch_env_for_call_site("mutator")' in source
+
+    safe_mutate_start = source.index("def safe_mutate(")
+    dispatch_pos = source.index("result = dispatch_model(", safe_mutate_start)
+    api_call_pos = source.index("response = RUNTIME.call_text(", safe_mutate_start)
+    assert dispatch_pos < api_call_pos
+
+
+def test_r1_retry_prompt_receives_same_iteration_error_history() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    assert "_r1_error_history: list[str] = []" in source
+    assert "_r1_error_history.append(_r1_last_error)" in source
+    assert "retry_error_history=_r1_error_history" in source
+
+    append_pos = source.index("_r1_error_history.append(_r1_last_error)")
+    format_pos = source.index("retry_error_history=_r1_error_history", append_pos)
+    retry_call_pos = source.index("new_content = safe_mutate(", format_pos)
+    assert append_pos < format_pos < retry_call_pos
+
+
+def test_single_mutator_route_avoids_parallel_wrapper_until_rubric_triggers() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "should_run_parallel" in source
+    assert "_run_parallel_mutator" in source
+    assert "_parallel_reason" in source
+
+    policy_pos = source.index("_run_parallel_mutator, _parallel_k, _parallel_reason = should_run_parallel(")
+    direct_single_pos = source.index('new_content = _single_mutate("")', policy_pos)
+    dispatch_pos = source.index("dispatch_mutator_blitz(BlitzDispatchInputs(", policy_pos)
+    assert direct_single_pos < dispatch_pos
+
+
+def test_judge_safe_generate_routes_through_dispatch_model_before_api_call() -> None:
+    source = TEST_THESIS.read_text(encoding="utf-8")
+    assert "dispatch_env_for_call_site" in source
+    assert 'capability = resolve_dispatch_capability("judge")' in source
+    assert 'enabled_env=dispatch_env_for_call_site("judge")' in source
+    assert "ZTARE_AUTORESEARCH_JUDGE_AGENT_RUNTIME" in source
+    assert "RESPONSE CONTRACT FOR SUBSCRIPTION WORKER" in source
+
+    safe_generate_start = source.index("def safe_generate(")
+    dispatch_pos = source.index("result = dispatch_model(", safe_generate_start)
+    api_call_pos = source.index("response = RUNTIME.call_text(", safe_generate_start)
+    assert dispatch_pos < api_call_pos
+
+
+def test_committee_generation_routes_through_dispatch_model_before_api_call() -> None:
+    source = GENERATE_COMMITTEE.read_text(encoding="utf-8")
+    assert "dispatch_env_for_call_site" in source
+    assert 'capability = resolve_dispatch_capability("committee")' in source
+    assert 'enabled_env=dispatch_env_for_call_site("committee")' in source
+    assert "ZTARE_AUTORESEARCH_COMMITTEE_AGENT_RUNTIME" in source
+    assert "RESPONSE CONTRACT FOR SUBSCRIPTION WORKER" in source
+
+    safe_generate_start = source.index("def safe_generate_committee(")
+    dispatch_pos = source.index("result = dispatch_model(", safe_generate_start)
+    api_call_pos = source.index("_RUNTIME.call_text(", safe_generate_start)
+    assert dispatch_pos < api_call_pos
+
+
+def test_primitive_class_rotation_tracks_judged_candidates_not_only_champions() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+    assert source.count("maybe_track_primitive_class_rotation(") == 1
+
+    r3_branch_pos = source.index("if not selection_record.candidate_admissible:")
+    r3_track_pos = source.index("_track_primitive_class_rotation_candidate(", r3_branch_pos)
+    r3_continue_pos = source.index("continue", r3_branch_pos)
+    assert r3_track_pos < r3_continue_pos
+    assert 'outcome="r3_rejected"' in source[r3_track_pos:r3_continue_pos]
+
+    candidate_improved_pos = source.index("_candidate_improved = _capped_strict")
+    judged_track_pos = source.index(
+        "_track_primitive_class_rotation_candidate(",
+        candidate_improved_pos,
+    )
+    champion_branch_pos = source.index("if _candidate_improved:", judged_track_pos)
+    assert judged_track_pos < champion_branch_pos
+    assert '"non_improving_candidate"' in source[judged_track_pos:champion_branch_pos]
+    assert '"champion_promoted"' in source[judged_track_pos:champion_branch_pos]

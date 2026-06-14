@@ -4,8 +4,14 @@ import argparse
 from google import genai
 from google.genai import types
 from src.ztare.common import utils
+from src.ztare.common.dispatch_model import (
+    dispatch_env_for_call_site,
+    dispatch_model,
+    dispatch_result_receipt,
+    resolve_dispatch_capability,
+)
 from src.ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES, LLMRuntime, resolve_model_id
-from src.ztare.common.paths import PROJECTS_DIR, RUBRICS_DIR
+from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import time
 import concurrent.futures
 from src.ztare.primitives.primitive_library import format_attack_templates, retrieve_primitives
@@ -27,6 +33,7 @@ parser.add_argument(
     ),
 )
 args = parser.parse_known_args()[0]
+COMMITTEE_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
 
 # Model resolution: gemini family still uses genai structured response;
 # other families route through llm_runtime with a JSON-output prompt.
@@ -64,11 +71,63 @@ class _RuntimeResponse:
         self.text = text
 
 
+def _prompt_with_response_config_hint(prompt: str, config) -> str:
+    if config is None:
+        return prompt
+    response_mime = getattr(config, "response_mime_type", None)
+    response_schema = getattr(config, "response_schema", None)
+    if not response_mime and response_schema is None:
+        return prompt
+    try:
+        schema_text = json.dumps(response_schema, default=str, indent=2) if response_schema is not None else ""
+    except TypeError:
+        schema_text = str(response_schema)
+    return (
+        prompt.rstrip()
+        + "\n\nRESPONSE CONTRACT FOR SUBSCRIPTION WORKER:\n"
+        + (f"- MIME/type expectation: {response_mime}\n" if response_mime else "")
+        + (
+            "- Return only a JSON value matching this schema. No markdown, "
+            "no code fences, no explanatory preamble.\n"
+            f"{schema_text}\n"
+            if schema_text
+            else ""
+        )
+    )
+
+
 def safe_generate_committee(prompt, config=None):
     """Retries for 503 (High Demand) and 429 (Rate Limits).
 
     Dispatches via genai for gemini models or via llm_runtime for others.
     """
+    capability = resolve_dispatch_capability("committee")
+    if capability == "agent":
+        result = dispatch_model(
+            _prompt_with_response_config_hint(prompt, config),
+            capability="agent",
+            fungible=True,
+            stateful=False,
+            backend=os.environ.get("ZTARE_AUTORESEARCH_COMMITTEE_AGENT_RUNTIME"),
+            repo=REPO_ROOT,
+            agent_id=f"autoresearch_committee_{args.project}",
+            timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
+            enabled_env=dispatch_env_for_call_site("committee"),
+        )
+        if result.returncode != 0:
+            raise RuntimeError(
+                "subscription committee dispatch failed "
+                f"(returncode={result.returncode}): {result.stderr[:1200]}"
+            )
+        COMMITTEE_WORKER_DISPATCH_RECEIPTS.append(
+            dispatch_result_receipt("committee", result)
+        )
+        if result.recovery_note:
+            print(f"🔁 Subscription committee recovery: {result.recovery_note}")
+        return _RuntimeResponse(result.text)
+    if capability != "llm":
+        raise ValueError(f"unsupported committee dispatch capability: {capability}")
+
     if not _IS_GEMINI:
         # Non-gemini path: run through llm_runtime with a JSON-output
         # instruction appended. Schema info from config is folded into
@@ -162,7 +221,7 @@ def generate_dynamic_attackers(thesis_text, evidence_text):
     
     Generate a JSON array of 3 distinct, highly specialized 'Attacker' personas to audit this specific document.
     They must be adversarial, mathematically rigorous, and focused exclusively on edge cases and execution friction.
-    One of these attackers MUST focus exclusively on the mathematical solvency of the Python falsification suite and the LOAD-BEARING VARIABLES table
+    One of these attackers MUST focus exclusively on the mathematical solvency of the Python falsification suite and the CRUX VARIABLES table
     Do NOT give them scoring criteria. They exist only to find logical flaws.
 
     KNOWN ADVERSARIAL PRECEDENTS:
@@ -207,6 +266,7 @@ if __name__ == "__main__":
         )
     else:
         output = {"committee": generate_dynamic_attackers(thesis, evidence)}
+    output["worker_dispatch_receipts"] = list(COMMITTEE_WORKER_DISPATCH_RECEIPTS)
 
     output_path = RUBRICS_DIR / f"dynamic_{args.project}.json"
     with open(output_path, "w") as f:

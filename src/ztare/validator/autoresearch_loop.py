@@ -26,6 +26,12 @@ from src.ztare.common.llm_runtime import (
     pricing_model_name,
     get_model_family,
 )
+from src.ztare.common.dispatch_model import (
+    dispatch_env_for_call_site,
+    dispatch_model,
+    dispatch_result_receipt,
+    resolve_dispatch_capability,
+)
 from src.ztare.common.paths import DOCS_DIR, PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 from src.ztare.validator.mform_alignment_audit import (
     apply_mform_pending,
@@ -46,6 +52,8 @@ from src.ztare.validator.core.information_yield import (
     LoopControlAction,
     apply_latent_motion_veto,
     evaluate_information_yield,
+    render_loop_control_prompt_context,
+    select_thesis_control_mode,
 )
 from src.ztare.validator.utilities.pivot_heuristics import (
     resolve_stagnation_pivot_state,
@@ -72,8 +80,9 @@ from src.ztare.fit.mutation_suite_guard import (
     attest_visible_mre,
 )
 from src.ztare.orchestrator.submission_path_helpers import (
-    detect_submission_path,
+    detect_submission_contract,
     format_r1_retry_skeleton,
+    requires_i_model_submission,
 )
 from src.ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
@@ -110,7 +119,7 @@ from src.ztare.composition.structural_memory import (
     render_structural_memory_prompt_section,
     update_structural_memory,
 )
-from src.ztare.composition.topology_synthesizer import (
+from src.ztare.composition.symbolic_regression_synthesizer import (
     detect_feynman_wall,
     run_composition_loop,
 )
@@ -122,10 +131,13 @@ from src.ztare.reports.gp048_feedback import (
     render_primitive_cohort_prompt_section,
     write_telemetry_line,
 )
-from src.ztare.motion.residual_analyzer import (
+from src.ztare.motion.residual_diagnostics import (
     ShapeDescriptor,
     analyze_residual,
     format_descriptor_for_prompt,
+    residual_diagnostics_enabled,
+    residual_diagnostics_gt_module,
+    residual_diagnostics_stagnation_k,
     reset_stagnation_on_holdout_pass,
 )
 from src.ztare.gates.corrector_library import filter_by_descriptor
@@ -135,7 +147,7 @@ from src.ztare.validator.predictive_divergence_sweep import (
 from src.ztare.rubrics.review_rubric import review_exit_code, run_rubric_review
 from src.ztare.gates.global_gates import run_global_gates, merge_into_score_contract
 
-# GP-157 v5.0 Phase 3b — Cage observe-mode wire-in (2026-04-25 night).
+# GP-157 v5.0 Phase 3b — Cage observe-mode wire-in (2026-04-25).
 # ADDITIVE ONLY: Cage runs alongside existing dispatch logic, logs
 # engagement decisions to workspace/cage_engagement.jsonl, and NEVER
 # replaces existing flow. Activated per-rubric via `cage_observe_mode: true`.
@@ -160,6 +172,7 @@ SESSION_MUTATOR_USAGE = {
 }
 SESSION_MUTATOR_MODELS_USED: set[str] = set()
 SESSION_MUTATOR_FALLBACK_EVENTS: list[dict[str, str]] = []
+SESSION_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
 
 # WAR Guard C (2026-04-27): rail-off pattern detection. Consecutive iters
 # where R1 exhausted all 3 strikes indicate the mutator has gone off-rails
@@ -212,8 +225,8 @@ parser.add_argument(
     "--disable-negative-space-extractor",
     action="store_true",
     help=(
-        "GP-061.B live-harvest discipline: skip Component B (negative space extractor) "
-        "post-eval hook entirely. Used during cold-harvest runs where Component B output "
+        "GP-061.B live-harvest discipline: skip negative-space extractor "
+        "post-eval hook entirely. Used during cold-harvest runs where negative-space output "
         "must not contaminate derived_constraints.json while a corpus of failed families "
         "is being gathered for a separate cold test. See "
         "GP-061 (internal seam)"
@@ -531,6 +544,7 @@ def _append_iteration_telemetry(
     mutator_usage: dict,
     judge_usage: dict,
     pending_loop_action: str,
+    information_yield_rationale: str | None = None,
     raw_judge_score: int | None = None,
     score_cap_reason: str | None = None,
     gp180_telemetry: dict | None = None,
@@ -562,10 +576,52 @@ def _append_iteration_telemetry(
         mutator_usage=mutator_usage,
         judge_usage=judge_usage,
         pending_loop_action=pending_loop_action,
+        information_yield_rationale=information_yield_rationale,
         raw_judge_score=raw_judge_score,
         score_cap_reason=score_cap_reason,
         gp180_telemetry=gp180_telemetry,
     )
+
+
+def _track_primitive_class_rotation_candidate(
+    *,
+    rubric_data: dict,
+    project_dir: Path,
+    run_id: str,
+    iter_index: int,
+    thesis_text: str,
+    score: float | int | None,
+    outcome: str,
+) -> None:
+    """Record structural class moves after judge/R3 evaluation.
+
+    The ledger feeds the next mutator brief, so rejected and non-improving
+    structural moves matter: otherwise the loop can revisit the same local
+    basin while believing the class is unexplored.
+    """
+
+    try:
+        from src.ztare.orchestrator.prompt import (
+            maybe_track_primitive_class_rotation,
+        )
+
+        _rotation = maybe_track_primitive_class_rotation(
+            rubric_data=rubric_data,
+            project_dir=project_dir,
+            run_id=str(run_id),
+            iter_index=iter_index,
+            thesis_text=thesis_text or "",
+            score=float(score) if score is not None else None,
+            outcome=outcome,
+        )
+        if _rotation.tracked:
+            print(
+                f"🔁 primitive-class rotation: tracked '{_rotation.class_name}' "
+                f"(iter {iter_index}, score {score}, outcome {outcome})"
+            )
+    except Exception as _rot_exc:  # noqa: BLE001
+        # Tracking is best-effort. Don't break the iter loop.
+        print(f"🔁 primitive-class rotation tracking error (non-fatal): {_rot_exc}")
 
 
 # Phase 4g extraction (2026-05-06): the saved-best read accessors live
@@ -877,6 +933,17 @@ def _load_current_committee_digest(project: str) -> str:
     return _load_current_committee_digest_impl(project, RUBRICS_DIR)
 
 
+def _load_current_committee_dispatch_receipts(project: str) -> list[dict[str, object]]:
+    try:
+        payload = json.loads(_dynamic_rubric_path(project).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return []
+    receipts = payload.get("worker_dispatch_receipts")
+    if not isinstance(receipts, list):
+        return []
+    return [dict(item) for item in receipts if isinstance(item, dict)]
+
+
 # Phase 4g extraction (2026-05-06 PM): _is_catastrophic_failure body
 # lives in src/ztare/orchestrator/iter_status_print. Re-aliased so
 # existing call sites are unchanged.
@@ -908,6 +975,7 @@ def _stagnation_trigger_mode() -> str:
 # re-alias.
 from src.ztare.orchestrator.iter_signal_helpers import (
     populate_weakest_class as _populate_weakest_class,
+    weakest_point_text as _weakest_point_text,
 )
 
 
@@ -1029,7 +1097,7 @@ def _validate_bounded_discriminator_suite(
     have these installed; the rubric's `runner_allowed_imports`
     declaration is the documented contract.
 
-    GP-166 contract-collision fix (2026-04-25 night): N-D feature-dict
+    GP-166 contract-collision fix (2026-04-25): N-D feature-dict
     substrates expose canonical data accessors via `features.py` in
     the project directory. The R1 stdlib-only rule was designed to
     prevent apparatus-import bypass (`from src.ztare.* import …`), not
@@ -1166,7 +1234,7 @@ def _prepare_mutation_candidate(
         # Audit/meta substrates (gp156-style) don't have an I_model contract;
         # opt out via rubric.require_i_model_in_submission=false. Default true
         # for back-compat with predictor substrates.
-        _require_i_model = bool(rubric_data.get("require_i_model_in_submission", True))
+        _require_i_model = requires_i_model_submission(rubric_data)
         # GP-156 force-opt-in (2026-04-25): when the rubric explicitly enables
         # the feature-vector fit primitive, the substrate was designed for
         # apparatus-fit constants. Mutators must declare PARAMETRIC_FORM +
@@ -1206,6 +1274,14 @@ def _prepare_mutation_candidate(
             before_text=current_thesis,
             after_text=clean_thesis,
             approved_primitive_keys=approved_primitive_keys(),
+            expected_thesis_control_mode=(
+                select_thesis_control_mode(
+                    pending_action=pending_loop_action,
+                    rationale=pending_loop_rationale,
+                )
+                if pending_loop_action != LoopControlAction.CONTINUE
+                else None
+            ),
         )
 
     return declaration, validation_record, clean_thesis, python_code, working_text
@@ -1272,6 +1348,33 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID, max_tokens=16000
         f.write(f"MODEL USED: {model_id}\n")
         f.write("=" * 30 + "\n")
         f.write(prompt)
+    capability = resolve_dispatch_capability("mutator")
+    if capability == "agent":
+        result = dispatch_model(
+            prompt,
+            capability="agent",
+            fungible=True,
+            stateful=False,
+            backend=os.environ.get("ZTARE_AUTORESEARCH_MUTATOR_AGENT_RUNTIME"),
+            repo=REPO_ROOT,
+            agent_id=f"autoresearch_mutator_{args.project}",
+            timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
+            enabled_env=dispatch_env_for_call_site("mutator"),
+        )
+        SESSION_MUTATOR_MODELS_USED.add(f"{result.transport}:{result.command[0] if result.command else 'agent'}")
+        if result.returncode != 0:
+            raise RuntimeError(
+                "subscription mutator dispatch failed "
+                f"(returncode={result.returncode}): {result.stderr[:1200]}"
+            )
+        SESSION_WORKER_DISPATCH_RECEIPTS.append(
+            dispatch_result_receipt("mutator", result)
+        )
+        if result.recovery_note:
+            print(f"🔁 Subscription mutator recovery: {result.recovery_note}")
+        return result.text
+    if capability != "llm":
+        raise ValueError(f"unsupported mutator dispatch capability: {capability}")
     # Pre-drain: discard any failed-retry state leaked from prior call_text
     # invocations (judge, ANALOGY, inverter, etc) that share the module-
     # level tracker. We can't attribute those to mutator_usage so we drop
@@ -1526,8 +1629,10 @@ def mutate_thesis(
     residual_mode_context="",
     gp048_cohort_context="",
     farther_tail_veto_context="",
-    component_c_context="",
+    residual_diagnostics_context="",
     divergence_sweep_context="",
+    pending_loop_action=LoopControlAction.CONTINUE,
+    pending_loop_rationale: str = "",
 ):
     task_header = "TASK: Resolve the following Systemic Inconsistency:"
     pivot_instruction = ""
@@ -1723,12 +1828,12 @@ def mutate_thesis(
                 "🚨 V4 bounded mutation override injected "
                 f"(profile={pivot_profile.name if pivot_profile else 'none'}; "
                 f"modules=[{profile_summary}]; "
-                f"stagnation_count={stagnation_count}; generic topological pivot disabled)."
+                f"stagnation_count={stagnation_count}; generic structural pivot disabled)."
             )
             task_header = "🚨 V4 DISCIPLINE OVERRIDE: BOUNDED KERNEL MUTATION 🚨"
             pivot_instruction = """
                 ### V4 MUTATION DISCIPLINE
-        The run is stagnating, but you are NOT allowed to execute a generic topological pivot.
+        The run is stagnating, but you are NOT allowed to execute a generic structural pivot.
         You must remain inside the active V4 target: semantic-gate stabilization.
 
         Allowed mutation surface:
@@ -1757,7 +1862,7 @@ def mutate_thesis(
         style_guide = """
     V4 STYLE GUIDE:
         - NO METAPHORS.
-        - NO generic topological pivots.
+        - NO generic structural pivots.
         - NO symbolic-mapping theater like forcing $Z = f(X, Y)$.
         - Keep the object of improvement narrow: semantic-gate stabilization only.
         - Quantitative claims must map to benchmark-visible outputs such as:
@@ -1805,7 +1910,7 @@ def mutate_thesis(
         - Any upstream-stage weakness must be labeled `OUT-OF-SCOPE DEBT` and must not be the main thesis target.
         """
     elif pivot_state.loop_control_action == "emergency_pivot":
-        print("🚨 emergency mandate: executing topological pivot")
+        print("🚨 emergency mandate: executing emergency structural pivot")
         if pivot_profile:
             profile_summary = ", ".join(pivot_profile.modules)
             print(
@@ -1818,18 +1923,18 @@ def mutate_thesis(
         if os.path.exists(AXIOM_PATH):
             shutil.copy(AXIOM_PATH, f"{AXIOM_PATH}.bak")
             os.remove(AXIOM_PATH) # Hide from test_thesis.py            
-        axiom_str = "NONE. (Previous axioms purged due to topological pivot)."
+        axiom_str = "NONE. (Previous axioms purged due to emergency structural pivot)."
         document_context = "🚨 [SYSTEM STATE PURGED]: Your previous logic was fundamentally and repeatedly rejected by the Auditor. You are starting from a BLANK SLATE. You must derive a new architecture using ONLY the Grounding Data and First Principles. Do NOT iterative-fix; RE-ENGINEER. 🚨"
-        task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"
+        task_header = "🚨 EMERGENCY MANDATE: EXECUTE STRUCTURAL PIVOT 🚨"
     elif pivot_state.loop_control_action == "stagnation_pivot":
         profile_summary = ", ".join(pivot_profile.modules) if pivot_profile else "none"
         print(
-            "🚨 Topological pivot profile injected "
+            "🚨 Stagnation pivot profile injected "
             f"(profile={pivot_profile.name if pivot_profile else 'none'}; "
             f"modules=[{profile_summary}]; stagnation_count={stagnation_count})."
         )
         document_context = "🚨 [SYSTEM STATE PURGED]: Current logic has reached a terminal friction point. You must derive a NEW Transformation Function. 🚨"
-        task_header = "🚨 EMERGENCY MANDATE: EXECUTE TOPOLOGICAL PIVOT 🚨"
+        task_header = "🚨 STAGNATION MANDATE: EXECUTE STRUCTURAL PIVOT 🚨"
     else:
         document_context = (
             f"### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)\n{current_content}"
@@ -1850,7 +1955,7 @@ def mutate_thesis(
         )
         if (
             _theorem_packet_required
-            and not bool(rubric_data.get("require_i_model_in_submission", True))
+            and not requires_i_model_submission(rubric_data)
         ):
             _fn_list = "\n".join(
                 f"          - def {name}(): ..."
@@ -1913,7 +2018,7 @@ def mutate_thesis(
           NOTE: A forward observable (B) is NOT the same as a latent variable. Latent variables
           lack a measurement protocol entirely. Forward observables have a clear protocol and
           timeline — the thesis is making a testable prediction about future evidence.
-        - LOAD-BEARING VARIABLES (MANDATORY): Where thresholds or comparisons appear, derive them
+        - DECISIVE VARIABLES (MANDATORY): Where thresholds or comparisons appear, derive them
           from cited evidence ranges. If no evidence supports a specific threshold, use a
           comparative form (A > B under condition C) rather than an absolute scalar.
         - NO METAPHORS: Strictly forbidden.
@@ -1928,19 +2033,19 @@ def mutate_thesis(
 
     FORMATTING:
         - MANDATORY: You must provide exactly one Python code block (```python) for `test_model.py`.
-        - SUBMISSION FORM (the test_model.py block): you have two equally-valid paths.
-          PATH A (legacy / direct closed-form):
+        - SUBMISSION FORM (the test_model.py block): choose one accepted numeric declaration.
+          Parametric model declaration:
               declare PARAMETRIC_FORM = "<closed expression in features+params>" together with
               MODEL_PARAMS, PARAMETER_NAMES, INIT_RANGE, and an I_model(features, params=None) callable.
-          PATH B (Newton-mode / Lagrangian, used when the physics is cleaner as an action principle):
+          Variational/Lagrangian declaration (used when the physics is cleaner as an action principle):
               declare LAGRANGIAN = "<sympy expression in q, q_dot, background, params>" together with
               Q_VARIABLES = [...], BACKGROUND = [...], PARAMETER_NAMES = [...], and
               PREDICTION = "<closed-form g_obs in q + features + params>".
               The GP-180 lagrangian_derivation primitive will compute Euler-Lagrange equations,
               solve for the steady-state field q in terms of the background features, substitute
               into PREDICTION, and emit the apparatus-ready PARAMETRIC_FORM automatically. You DO
-              NOT need to manually invert E-L. State whether you are submitting Path A or Path B
-              in the thesis prose for clarity.
+              NOT need to manually invert E-L. Name the declaration you are using in the thesis
+              prose for clarity.
         - DISCRIMINATOR TEST (MANDATORY): The Python block must assert the discriminator structure —
           e.g., that rival predictions diverge from your thesis predictions under specified conditions,
           or that your named observable holds in the cited evidence range.
@@ -1961,7 +2066,7 @@ def mutate_thesis(
           are available in the runner env and MAY be imported (e.g., for number-theoretic
           substrates `sympy` is commonly declared so the discriminator suite can use
           `sympy.isprime`, `sympy.factorint`, `sympy.primefactors`, `sympy.divisors`).
-          EXCEPTION 2 (GP-166, 2026-04-25 night): if the project evidence explicitly
+          EXCEPTION 2 (GP-166, 2026-04-25): if the project evidence explicitly
           allows importing `features.py`, `from features import ...` is allowed for
           the named helpers only. Project evidence and source gates override this
           generic exception. If the evidence forbids row accessors such as
@@ -1981,7 +2086,7 @@ def mutate_thesis(
     STRICT STYLE GUIDE & LAWS OF PHYSICS:
         - SYMBOLIC MAPPING: You must map the core problem to the equation $Z = f(X, Y)$. Explicitly define $X$ (the blocked variable) and $Y$ (the leverage variable).
         - ARITHMETIC TRANSPARENCY: All quantitative claims must be supported by a balanced equation.
-        - LOAD-BEARING VARIABLES (MANDATORY): Before your Python block, you MUST provide a markdown table titled "LOAD-BEARING VARIABLES". List every physical constant, financial metric, or baseline assumption you use, and state its exact real-world value. The Attackers will Google these values to verify them. NO HALLUCINATED ENTITY CONSTANTS.
+        - DECISIVE VARIABLES (MANDATORY): Before your Python block, you MUST provide a markdown table titled "DECISIVE VARIABLES". List every physical constant, financial metric, or baseline assumption you use, and state its exact real-world value. The Attackers will verify these values. NO HALLUCINATED ENTITY CONSTANTS.
         - STRUCTURAL ARBITRAGE: You are REQUIRED to introduce systemic bypasses, reciprocal leverage points, or category shifts to resolve the Auditor's critique.
         - CONSERVATION OF TRADE-OFFS: A system cannot increase Velocity ($V$) without a proportional increase in Energy ($E$) or decrease in Mass ($M$). You must explicitly state the new operational drag introduced by the pivot.
         - GATEKEEPER REALITY: Identify the entity with the Absolute Veto (The Bottleneck). Define the Asymmetric Leverage required to force a state-change.
@@ -2120,6 +2225,49 @@ def mutate_thesis(
     fit_declaration_reminder = ""
     structural_memory_prompt = ""
     residual_mode_prompt = ""
+    mutator_briefing_context = ""
+    loop_control_context = render_loop_control_prompt_context(
+        pending_action=pending_loop_action,
+        rationale=pending_loop_rationale,
+        stagnant_window=stagnation_count,
+    )
+    _briefing_block = ""
+
+    try:
+        from src.ztare.orchestrator.mutator_briefing import (
+            BriefingContext,
+            default_briefing,
+        )
+        _briefing_ctx = BriefingContext(
+            project_dir=Path(PROJECT_DIR),
+            iter_index=i + 1,
+            rubric=rubric_data,
+            workspace_dir=Path(PROJECT_DIR) / "workspace",
+            mutator_model_id=MUTATOR_MODEL_ID,
+            stagnation_count=int(stagnation_count),
+        )
+        _briefing_obj = default_briefing()
+        _briefing_block = _briefing_obj.render(_briefing_ctx)
+        _active = [
+            p.name for p in sorted(_briefing_obj.providers, key=lambda p: (p.priority, p.name))
+            if p.passes_tier_gate(_briefing_ctx) and p.applies(_briefing_ctx)
+        ]
+        _diag = getattr(_briefing_obj, "_last_render_diagnostics", {}) or {}
+        _gated = _diag.get("tier_gated", [])
+        _trimmed = _diag.get("budget_trimmed", [])
+        print(
+            f"📋 MutatorBriefing: {len(_active)} providers active "
+            f"({', '.join(_active) if _active else 'none'}) | "
+            f"{len(_briefing_block)} chars / {_diag.get('budget_chars', '?')} budget "
+            f"| stagnation={int(stagnation_count)} "
+            f"| tier_gated={len(_gated)} budget_trimmed={len(_trimmed)}"
+        )
+    except Exception as _briefing_exc:
+        print(f"⚠️ MutatorBriefing render failed: {_briefing_exc} (continuing without provider briefing)")
+        _briefing_block = ""
+
+    if _briefing_block and not fit_primitive_features_enabled:
+        mutator_briefing_context = _briefing_block
 
     if fit_primitive_features_enabled:
         # 2026-04-26 (Mutator Briefing refactor): the legacy inline
@@ -2133,40 +2281,6 @@ def mutate_thesis(
         # The legacy inline blocks below are KEPT as a defensive
         # fallback in case the briefing module fails to import; they
         # produce a strict subset of the briefing's content.
-        _briefing_block = ""
-        try:
-            from src.ztare.orchestrator.mutator_briefing import (
-                BriefingContext,
-                default_briefing,
-            )
-            _briefing_ctx = BriefingContext(
-                project_dir=Path(PROJECT_DIR),
-                iter_index=i + 1,
-                rubric=rubric_data,
-                workspace_dir=Path(PROJECT_DIR) / "workspace",
-                mutator_model_id=MUTATOR_MODEL_ID,
-                stagnation_count=int(stagnation_count),
-            )
-            _briefing_obj = default_briefing()
-            _briefing_block = _briefing_obj.render(_briefing_ctx)
-            _active = [
-                p.name for p in sorted(_briefing_obj.providers, key=lambda p: (p.priority, p.name))
-                if p.passes_tier_gate(_briefing_ctx) and p.applies(_briefing_ctx)
-            ]
-            _diag = getattr(_briefing_obj, "_last_render_diagnostics", {}) or {}
-            _gated = _diag.get("tier_gated", [])
-            _trimmed = _diag.get("budget_trimmed", [])
-            print(
-                f"📋 MutatorBriefing: {len(_active)} providers active "
-                f"({', '.join(_active) if _active else 'none'}) | "
-                f"{len(_briefing_block)} chars / {_diag.get('budget_chars', '?')} budget "
-                f"| stagnation={int(stagnation_count)} "
-                f"| tier_gated={len(_gated)} budget_trimmed={len(_trimmed)}"
-            )
-        except Exception as _briefing_exc:
-            print(f"⚠️ MutatorBriefing render failed: {_briefing_exc} (using legacy inline fallback)")
-            _briefing_block = ""
-
         # Legacy inline path (defensive fallback only — only fires if
         # _briefing_block is empty). Kept for backward compatibility
         # during the briefing-refactor transition.
@@ -2838,7 +2952,7 @@ def mutate_thesis(
       Work from the residual geometry unless your candidate itself requires the broader harness context.
     """
 
-    # GP-157 v5.0 Phase 4d (2026-04-25 night): substrate-class-aware
+    # GP-157 v5.0 Phase 4d (2026-04-25): substrate-class-aware
     # contract hint. Tells the mutator the I_model OVERRIDE contract when
     # the substrate is custom (cage_meta.class in {nd_features, audit,
     # literature, proof_target}) AND no fit primitive is engaged. Empty
@@ -2871,7 +2985,7 @@ def mutate_thesis(
     primitive_class_history = _primitive_class_history_packet(
         rubric_data, project_dir=Path(PROJECT_DIR),
     )
-    # Prompt-engineer panel recommendation (2026-04-25 night): LLMs anchor
+    # Prompt-engineer panel recommendation (2026-04-25): LLMs anchor
     # on first + last sections; surface the active contract at BOTH ends.
     # Top-of-prompt one-liner + terminal-third full block.
     _active_contract_top_label = _active_contract_label(
@@ -2900,6 +3014,7 @@ def mutate_thesis(
     {constraint_context}
     {document_context}
     {failure_context}
+    {loop_control_context}
     {primitive_context}
     {_dag_steering_context}
 
@@ -2911,13 +3026,14 @@ def mutate_thesis(
 
     {dag_steering_context}
 
+    {mutator_briefing_context}
     {residual_mode_prompt}
     {fit_primitive_context}
     {fit_primitive_features_context}
     {structural_memory_prompt}
     {gp048_cohort_context}
     {farther_tail_veto_context}
-    {component_c_context}
+    {residual_diagnostics_context}
     {divergence_sweep_context}
     {style_guide}
     {substrate_contract_hint}
@@ -2938,6 +3054,7 @@ RUNNER R1 DECLARATION PHASE (MANDATORY):
 Required keys:
 - `scope_delta`
 - `claim_delta_type`
+- `thesis_control_mode`
 - `primitive_invoked`
 - `touched_artifacts`
 
@@ -2952,6 +3069,13 @@ Allowed `claim_delta_type` values:
 - `NARROWING`
 - `WIDENING`
 - `REFRAMING`
+
+Allowed `thesis_control_mode` values:
+- `EXPLOIT_CURRENT_THESIS`
+- `TRANSFER_MECHANISM`
+- `ROTATE_ORTHOGONAL_THESIS`
+- `INVERT_OR_KILL_THESIS`
+- `NARROW_EVIDENCE_BOUNDARY`
 
 Allowed `touched_artifacts` values:
 - `thesis.md`
@@ -2971,6 +3095,7 @@ Allowed `touched_artifacts` values:
             {
                 "scope_delta": declaration.scope_delta.value,
                 "claim_delta_type": declaration.claim_delta_type.value,
+                "thesis_control_mode": declaration.thesis_control_mode.value,
                 "primitive_invoked": declaration.primitive_invoked,
                 "touched_artifacts": [item.value for item in declaration.touched_artifacts],
             },
@@ -3000,6 +3125,7 @@ RUNNER R1 DECLARATION CONTRACT (MANDATORY):
 - That JSON block must contain exactly these keys:
   - `scope_delta`
   - `claim_delta_type`
+  - `thesis_control_mode`
   - `primitive_invoked`
   - `touched_artifacts`
 - Allowed `scope_delta` values:
@@ -3012,6 +3138,12 @@ RUNNER R1 DECLARATION CONTRACT (MANDATORY):
   - `NARROWING`
   - `WIDENING`
   - `REFRAMING`
+- Allowed `thesis_control_mode` values:
+  - `EXPLOIT_CURRENT_THESIS`
+  - `TRANSFER_MECHANISM`
+  - `ROTATE_ORTHOGONAL_THESIS`
+  - `INVERT_OR_KILL_THESIS`
+  - `NARROW_EVIDENCE_BOUNDARY`
 - Allowed `touched_artifacts` values:
   - `thesis.md`
   - `current_iteration.md`
@@ -3021,6 +3153,7 @@ RUNNER R1 DECLARATION CONTRACT (MANDATORY):
   - `runner_runtime`
   - `other`
 - `primitive_invoked` must be `null` or an approved primitive key if you are explicitly relying on one.
+- `thesis_control_mode` must match the LOOP CONTROL SIGNAL when that signal is present.
 - This declaration is a prior commitment. Do not generate the thesis first and then rationalize the declaration after the fact.
 """
     # --- CHANGED: Passing model_id through to safe_mutate ---
@@ -3297,6 +3430,7 @@ if __name__ == "__main__":
     from src.ztare.validator.rubric_mode_resolver import (
         apply_rubric_mode_defaults,
         describe_rubric_mode,
+        validate_rubric_mode_contract,
     )
     apply_rubric_mode_defaults(rubric_data)
     print(f"📋 {describe_rubric_mode(rubric_data)}")
@@ -3316,7 +3450,7 @@ if __name__ == "__main__":
             f"(was CLI default — adjusted per audit-substrate stagnation window)."
         )
 
-    # GP-157 v5.0 Phase 3b — Cage observe-mode initialization (2026-04-25 night).
+    # GP-157 v5.0 Phase 3b — Cage observe-mode initialization (2026-04-25).
     # Activated when rubric declares `cage_observe_mode: true` AND `cage_meta: {...}`.
     # Observe-mode runs Cage.dispatch alongside the existing per-rubric-flag
     # dispatch logic, logs engagement decisions to workspace/cage_engagement.jsonl,
@@ -3401,46 +3535,11 @@ if __name__ == "__main__":
             )
     # --- end GP-133 R4 gates ---
 
-    # --- GP-133 Round 4: rubric_mode governance + enforcement ---
-    # rubric_mode is metadata AND a gate: when rubric_mode='newton', the
-    # rubric MUST include a dimension whose name contains 'generative yield'
-    # (case-insensitive) with weight >= 15. Without this, the Newton-mode
-    # label is cosmetic — no enforcement. Fail-closed rather than silently
-    # ignoring the discipline the rubric_mode claims to enforce.
-    _rubric_mode = str(rubric_data.get("rubric_mode", "") or "").strip().lower()
-    if _rubric_mode == "newton":
-        _dims = rubric_data.get("dimensions", []) or []
-        _has_gy = any(
-            isinstance(d, dict)
-            and "generative yield" in str(d.get("name", "")).lower()
-            and int(d.get("weight", 0)) >= 15
-            for d in _dims
-        )
-        if not _has_gy:
-            raise SystemExit(
-                "GP-133 R4 GATE FAIL: rubric declares rubric_mode='newton' but does NOT "
-                "include a dimension whose name contains 'Generative Yield' with weight "
-                ">= 15%. Newton-mode is meaningless without the dimension that enforces "
-                "it. Either add the Generative Yield dimension (see docs/concepts/"
-                "rubric_specification.md § 18) or downgrade the rubric to "
-                "rubric_mode='kepler'. Refusing to launch."
-            )
-        print(
-            "🧭 Newton-mode rubric detected (rubric_mode='newton'). Generative Yield "
-            "dimension present. Judge will penalize proposals predicting no secondary "
-            "observable beyond the primary fitting target."
-        )
-    elif _rubric_mode == "kepler":
-        print("📐 Kepler-mode rubric (descriptive-fit-only). Generative Yield not enforced.")
-    elif _rubric_mode == "calibration":
-        print("🔧 Calibration-mode rubric (instrument-characterization). Discovery claims suppressed.")
-    elif _rubric_mode:
-        # non-empty but not one of the valid values
-        raise SystemExit(
-            f"GP-133 R4 GATE FAIL: rubric_mode={_rubric_mode!r} is not a recognized value. "
-            f"Valid: 'newton', 'kepler', 'calibration'. Refusing to launch."
-        )
-    # absence of rubric_mode is not fatal — treat as legacy/unspecified
+    _rubric_mode_contract = validate_rubric_mode_contract(rubric_data)
+    if not _rubric_mode_contract.ok:
+        raise SystemExit(_rubric_mode_contract.message)
+    if _rubric_mode_contract.message:
+        print(_rubric_mode_contract.message)
     # --- end rubric_mode handling ---
 
     # --- Epistemic Airgap: rubric-level override ---
@@ -3951,6 +4050,7 @@ _mform_audits_this_run: int = 0
 _gp103_tried_pairs: set[tuple[str, str]] = set()
 iteration_history: list[IterationSignal] = []
 pending_loop_action = LoopControlAction.CONTINUE
+pending_loop_rationale = ""
 current_committee_digest = _load_current_committee_digest(args.project) if args.dynamic else ""
 workspace_dir = Path(PROJECT_DIR) / "workspace"
 workspace_dir.mkdir(parents=True, exist_ok=True)
@@ -4086,11 +4186,37 @@ def _compute_holdout_audit_mre_for_run() -> dict | None:
         }
 
 
+def _materialize_blitz_survival_report_for_run() -> dict | None:
+    """Write blitz candidate-survival report at run end when blitz ran."""
+    if not (workspace_dir / "parallel_blitz_log.jsonl").exists():
+        return None
+    try:
+        from src.ztare.reports.blitz_survival_report import (
+            build_blitz_survival_report as _build_blitz_survival_report,
+            render_blitz_survival_markdown as _render_blitz_survival_markdown,
+        )
+
+        _report = _build_blitz_survival_report(workspace_dir)
+        _json_path = workspace_dir / "blitz_survival_report.json"
+        _md_path = workspace_dir / "blitz_survival_report.md"
+        _json_path.write_text(json.dumps(_report, indent=2) + "\n", encoding="utf-8")
+        _md_path.write_text(_render_blitz_survival_markdown(_report), encoding="utf-8")
+        _summary = dict(_report.get("summary") or {})
+        _summary["artifact_path"] = str(_json_path)
+        _summary["artifact_path_md"] = str(_md_path)
+        return _summary
+    except Exception as _blitz_report_exc:  # noqa: BLE001
+        return {
+            "error": f"{type(_blitz_report_exc).__name__}: {_blitz_report_exc}",
+        }
+
+
 def _finalize_run_telemetry_once() -> None:
     if _run_telemetry_state["finalized"]:
         return
     _run_telemetry_state["finalized"] = True
     _audit_mre_block = _compute_holdout_audit_mre_for_run()
+    _blitz_survival_block = _materialize_blitz_survival_report_for_run()
     _payload = {
         "record_type": "run_end",
         "run_id": RUN_ID,
@@ -4112,6 +4238,17 @@ def _finalize_run_telemetry_once() -> None:
             )
         elif "skipped" in _audit_mre_block:
             print(f"🔒 holdout_audit: skipped — {_audit_mre_block.get('skipped')}")
+    if _blitz_survival_block is not None:
+        _payload["blitz_survival_report"] = _blitz_survival_block
+        if "error" in _blitz_survival_block:
+            print(f"⚔️  blitz_survival_report: error — {_blitz_survival_block['error']}")
+        else:
+            print(
+                "⚔️  blitz_survival_report: "
+                f"iters={_blitz_survival_block.get('num_blitz_iterations')} "
+                f"gate_clean_positive_rate={_blitz_survival_block.get('gate_clean_positive_rate')} "
+                f"champion_promotion_rate={_blitz_survival_block.get('champion_promotion_rate')}"
+            )
     _append_run_boundary_telemetry(workspace_dir, _payload)
 
 
@@ -4145,7 +4282,7 @@ _append_run_boundary_telemetry(
     },
 )
 
-# ── GP-157 §3a backport (Task #151, 2026-04-26) ──
+# ── GP-157 §3a backport (2026-04-26) ──
 # R13 substrate_critic + R14 noise_profile preflight gates dispatched via
 # the Cage. Replaces the legacy direct-wired pre-iter-1 if-blocks. Each
 # adapter reads cage_meta + rubric_flags via can_handle, builds artifacts
@@ -4263,6 +4400,7 @@ for i in range(ITERATIONS):
     print(
         f"\n--- Iteration {i + 1} (Score: {best_score} | Stagnation: {stagnation_count}) ---"
     )
+    _iteration_worker_receipt_start = len(SESSION_WORKER_DISPATCH_RECEIPTS)
     # GP-182 evidence-reload-per-iter (2026-04-28). When the operator
     # updates `evidence.txt` mid-run (long runs benefit from corrective
     # injections), the closure-captured `evidence_text` would otherwise
@@ -4433,10 +4571,7 @@ for i in range(ITERATIONS):
         )
         _current_weakest = ""
         try:
-            _current_weakest = (
-                iteration_history[-1].get("weakest_point", "")
-                if iteration_history else ""
-            )
+            _current_weakest = _weakest_point_text(iteration_history[-1]) if iteration_history else ""
         except Exception:
             _current_weakest = ""
         _wl_class = classify_weakest_point(_current_weakest) if _current_weakest else None
@@ -4643,15 +4778,15 @@ for i in range(ITERATIONS):
             print(f"🔧 GP-048 farther-tail veto: error — {_veto_exc}")
             _farther_tail_veto_ctx = ""
 
-    # GP-074 Component C: load residual fingerprint for prompt injection
-    _component_c_ctx = ""
-    if rubric_data.get("enable_component_c", False):
+    # GP-074 residual diagnostics: load residual fingerprint for prompt injection
+    _residual_diagnostics_ctx = ""
+    if residual_diagnostics_enabled(rubric_data):
         _fp_path = workspace_dir / "residual_fingerprint.json"
         if _fp_path.exists():
             try:
                 _fp = json.loads(_fp_path.read_text())
                 if _fp.get("status") == "emitted" and _fp.get("descriptor"):
-                    _component_c_ctx = format_descriptor_for_prompt(
+                    _residual_diagnostics_ctx = format_descriptor_for_prompt(
                         ShapeDescriptor(**_fp["descriptor"])
                     )
             except (json.JSONDecodeError, KeyError, TypeError):
@@ -4659,7 +4794,7 @@ for i in range(ITERATIONS):
 
     # GP-076: Load sweep state for mutator prompt injection
     _divergence_sweep_ctx = ""
-    if rubric_data.get("enable_component_c", False):
+    if residual_diagnostics_enabled(rubric_data):
         _sweep_path = workspace_dir / "sweep_state.json"
         if _sweep_path.exists():
             try:
@@ -4691,7 +4826,7 @@ for i in range(ITERATIONS):
                 _queue_len = len(_seed_raw) if isinstance(_seed_raw, list) else 1
                 if _seed_expr and _seed_params:
                     print(
-                        f"🧬 Component D beam injection [{1}/{_queue_len}]: "
+                        f"🧬 Symbolic-regression synthesis beam injection [{1}/{_queue_len}]: "
                         f"{_seed_expr[:70]} "
                         f"(from iter {_seed_data.get('iteration_synthesized', '?')})"
                     )
@@ -4716,8 +4851,8 @@ for i in range(ITERATIONS):
                     )
                     new_content = (
                         _clean_thesis.rstrip() + "\n\n"
-                        "--- Component D Topological Synthesis ---\n\n"
-                        "This candidate was deterministically synthesized by Component D "
+                        "--- Grammar-Guided Symbolic Regression ---\n\n"
+                        "This candidate was deterministically synthesized "
                         "via depth-2 AST composition to correct systematic failures of "
                         "prior additive models. The topology was discovered by composing "
                         "existing primitives, not by LLM free-form generation.\n\n"
@@ -4728,7 +4863,7 @@ for i in range(ITERATIONS):
                         # with the deterministically fitted f() before test_model.py
                         # is written to disk. The stub never executes.
                         "```python\n"
-                        "assert False, 'Component D seed — Layer 3 Mandatory will overwrite this stub.'\n"
+                        "assert False, 'Symbolic-regression seed — Layer 3 Mandatory will overwrite this stub.'\n"
                         "```\n"
                     )
                     _comp_seed_injected = True
@@ -4811,7 +4946,7 @@ for i in range(ITERATIONS):
                     # so a mid-iteration exception preserves the seed for
                     # retry on the next iteration.
             except Exception as _seed_exc:
-                print(f"🧬 Component D seed: error — {_seed_exc}")
+                print(f"🧬 Symbolic-regression seed: error — {_seed_exc}")
 
         # GP-184 cold-shot direct injection on iter 1 (paper 7 §11.15
         # briefing-density fix). When the cold-shot fired successfully
@@ -4867,7 +5002,7 @@ for i in range(ITERATIONS):
             # readable. K=1 default (single mutate) — K=K only when
             # rubric flag set AND stagnation/force trigger fires.
             from src.ztare.orchestrator.blitz_dispatch import (
-                BlitzDispatchInputs, dispatch_mutator_blitz,
+                BlitzDispatchInputs, dispatch_mutator_blitz, should_run_parallel,
             )
 
             def _single_mutate(persona_extra: str = ""):
@@ -4910,24 +5045,38 @@ for i in range(ITERATIONS):
                     residual_mode_context=_residual_mode_ctx,
                     gp048_cohort_context=_gp048_cohort_ctx,
                     farther_tail_veto_context=_farther_tail_veto_ctx,
-                    component_c_context=_component_c_ctx,
+                    residual_diagnostics_context=_residual_diagnostics_ctx,
                     divergence_sweep_context=_divergence_sweep_ctx,
+                    pending_loop_action=pending_loop_action,
+                    pending_loop_rationale=pending_loop_rationale,
                 )
 
-            try:
-                _blitz_result = dispatch_mutator_blitz(BlitzDispatchInputs(
-                    stagnation_count=stagnation_count,
-                    iter_idx=i + 1,
-                    rubric_data=rubric_data,
-                    workspace_dir=workspace_dir,
-                    current_thesis=current_thesis or "",
-                    current_mutator=current_mutator,
-                    single_mutate=_single_mutate,
-                ))
-                new_content = _blitz_result.winner_text or _single_mutate("")
-            except Exception as _bl_exc:
-                print(f"⚔️  Blitz dispatch error (non-fatal): {_bl_exc}; falling back to single mutate")
+            _run_parallel_mutator, _parallel_k, _parallel_reason = should_run_parallel(
+                stagnation_count=stagnation_count,
+                iter_idx=i + 1,
+                rubric_data=rubric_data,
+            )
+            if not _run_parallel_mutator:
+                print(
+                    "⚔️  Parallel mutator skipped: "
+                    f"{_parallel_reason}"
+                )
                 new_content = _single_mutate("")
+            else:
+                try:
+                    _blitz_result = dispatch_mutator_blitz(BlitzDispatchInputs(
+                        stagnation_count=stagnation_count,
+                        iter_idx=i + 1,
+                        rubric_data=rubric_data,
+                        workspace_dir=workspace_dir,
+                        current_thesis=current_thesis or "",
+                        current_mutator=current_mutator,
+                        single_mutate=_single_mutate,
+                    ))
+                    new_content = _blitz_result.winner_text or _single_mutate("")
+                except Exception as _bl_exc:
+                    print(f"⚔️  Blitz dispatch error (non-fatal): {_bl_exc}; falling back to single mutate")
+                    new_content = _single_mutate("")
         _runner_allowed_raw = rubric_data.get("runner_allowed_imports", ()) or ()
         _runner_allowed = tuple(
             str(x).strip() for x in _runner_allowed_raw if isinstance(x, str) and x.strip()
@@ -4947,6 +5096,7 @@ for i in range(ITERATIONS):
         _MAX_R1_RETRIES = 3
         _r1_strike = 0
         _r1_last_error = None
+        _r1_error_history: list[str] = []
         mutation_declaration = mutation_validation = clean_thesis = None
         python_code = full_candidate = None
         while True:
@@ -4988,7 +5138,7 @@ for i in range(ITERATIONS):
                     # adherence checker blocks every iter's stub with
                     # missing_imodel_def even though the rubric explicitly
                     # opts out.
-                    if not bool(rubric_data.get("require_i_model_in_submission", True)):
+                    if not requires_i_model_submission(rubric_data):
                         _adherence_blocking = _adherence_blocking - {
                             "missing_imodel_def",
                             "nan_return_literal",
@@ -5080,7 +5230,7 @@ for i in range(ITERATIONS):
                 except ImportError:
                     pass  # forced_reframe module unavailable — degrade gracefully
 
-                # GP-166 Fix D (2026-04-25 night): pre-submission denylist
+                # GP-166 Fix D (2026-04-25): pre-submission denylist
                 # scan as R1 retry. Without this, the mutator's iter
                 # zero-fails on `global_named_import_check` only AFTER the
                 # judge has been called and the iter consumed. The denylist
@@ -5139,7 +5289,7 @@ for i in range(ITERATIONS):
                     bool((rubric_data.get("theorem_packet_contract") or {}).get(
                         "required_top_level_functions"
                     ))
-                    and not bool(rubric_data.get("require_i_model_in_submission", True))
+                    and not requires_i_model_submission(rubric_data)
                 )
 
                 # 2026-04-27: pre-flight AST + whitelist validation on
@@ -5180,31 +5330,33 @@ for i in range(ITERATIONS):
                         # this to an R1 strike so the mutator gets prompted to
                         # add the declarations on a free retry.
                         #
-                        # GP-180 Path B (2026-05-02): accept a valid Path B
+                        # GP-180 variational/Lagrangian declaration (2026-05-02): accept
+                        # a valid LAGRANGIAN+PREDICTION+PARAMETER_NAMES
                         # submission (LAGRANGIAN + PREDICTION + PARAMETER_NAMES)
                         # in lieu of PARAMETRIC_FORM. GP-180 lagrangian_derivation
                         # auto-derives the apparatus-ready PARAMETRIC_FORM via
-                        # sympy downstream. Without this gate, the briefing tells
-                        # the mutator to submit Path B but this guard rejects it.
+                        # sympy downstream.
                         if bool(rubric_data.get("enable_fit_primitive_features", False)):
-                            # GP-180 Path B is a valid alternative to Path A when
-                            # the mutator submits LAGRANGIAN+PREDICTION+PARAMETER_NAMES.
-                            # detect_submission_path() lives in submission_path_helpers.
-                            _path_info = detect_submission_path(python_code or "")
-                            _has_path_b = _path_info["path"] in ("B", "A+B")
-                            if not _has_path_b:
+                            # The variational/Lagrangian declaration is a valid
+                            # alternative to a parametric model declaration.
+                            _contract_info = detect_submission_contract(python_code or "")
+                            _has_variational_contract = _contract_info["contract"] in (
+                                "variational_lagrangian",
+                                "mixed_parametric_variational",
+                            )
+                            if not _has_variational_contract:
                                 raise ValueError(
                                     "Submission missing required module-level "
                                     "declarations. The apparatus accepts ONE OF:\n"
-                                    "  PATH A: PARAMETRIC_FORM (str) + PARAMETER_NAMES (list)\n"
-                                    "  PATH B: LAGRANGIAN (str) + PREDICTION (str) + PARAMETER_NAMES (list)\n"
+                                    "  Parametric model declaration: PARAMETRIC_FORM (str) + PARAMETER_NAMES (list)\n"
+                                    "  Variational/Lagrangian declaration: LAGRANGIAN (str) + PREDICTION (str) + PARAMETER_NAMES (list)\n"
                                     "Your submission has neither. The apparatus uses these for "
-                                    "scipy.optimize fitting (Path A) or GP-180 sympy auto-derivation "
-                                    "(Path B); without them, MODEL_PARAMS stays at your hand-set "
+                                    "scipy.optimize fitting or GP-180 sympy auto-derivation; "
+                                    "without them, MODEL_PARAMS stays at your hand-set "
                                     "values and L3 falsification asserts will fail. Defining "
                                     "I_model alone is insufficient when "
                                     "rubric.enable_fit_primitive_features=true. See the briefing's "
-                                    "PATH A / PATH B skeletons."
+                                    "numeric declaration templates."
                                 )
                 except ImportError:
                     pass  # fit primitive unavailable — degrade gracefully
@@ -5221,6 +5373,7 @@ for i in range(ITERATIONS):
             except ValueError as _r1_exc:
                 _r1_strike += 1
                 _r1_last_error = str(_r1_exc)
+                _r1_error_history.append(_r1_last_error)
                 if _r1_strike > _MAX_R1_RETRIES:
                     # Persist the final exhausted attempt for postmortem
                     # debugging — see workspace/r1_debug/iter_NNN_r1_attempts.md.
@@ -5280,21 +5433,23 @@ for i in range(ITERATIONS):
                 # thesis text" → score 0). Truncation bumped to 12000 (was
                 # 6000) so the prior submission's full thesis prose is in
                 # the retry context, not just its python_code prefix.
-                # GP-180 Path A / Path B retry skeleton + hedge detection are
+                # GP-180 numeric-declaration retry templates + mixed parametric/
+                # variational detection are
                 # encapsulated in src/ztare/orchestrator/submission_path_helpers.py.
                 # That module owns:
-                #   - detect_submission_path() — AST inspection of test_model.py
-                #     reporting which contract path the mutator satisfied
+                #   - detect_submission_contract() — AST inspection of test_model.py
+                #     reporting which numeric contract the mutator satisfied
                 #   - format_r1_retry_skeleton() — assembles the retry prompt
-                #     with PATH A / PATH B skeletons + hedge-detection advice
-                # Keeping them out of autoresearch_loop avoids the spaghetti
-                # accretion observed during the GP-180 Path B briefing rollout
+                #     with contract templates + mixed-contract advice
+                # Keeping them out of autoresearch_loop avoids re-growing
+                # inline retry logic from the GP-180 variational-declaration rollout
                 # (2026-05-02 multi-fix session).
                 _retry_prompt = format_r1_retry_skeleton(
                     r1_error=_r1_last_error,
                     prior_content=new_content or "",
                     max_prior_chars=12000,
                     rubric_data=rubric_data,
+                    retry_error_history=_r1_error_history,
                 )
                 # WAR Guard A (2026-04-27, v2): cap retry output at 10000
                 # tokens. v1 cap of 6000 was too tight — a complete
@@ -5373,7 +5528,7 @@ for i in range(ITERATIONS):
                     # escalate to 3 starts when stagnation_count >= 3.
                     _n_starts = 3 if stagnation_count >= 3 else 1
                     _gate_thr_for_fit = float(rubric_data.get("gate_residual_threshold", 0.05))
-                    # GP-157 §3a backport (Task #151): R16 1D framer dispatched
+                    # GP-157 §3a backport: R16 1D framer dispatched
                     # via Cage PRE_FIT phase. Replaces the legacy direct-wired
                     # observe-mode block — adapter parses evidence, runs frame(),
                     # writes workspace/framing_report.json. Behavior is identical;
@@ -5399,7 +5554,7 @@ for i in range(ITERATIONS):
                     except Exception as _pf_exc:
                         print(f"  🪞 PRE_FIT Cage dispatch error (non-fatal): {_pf_exc}")
 
-                    # GP-157 v5.0 Phase 2 AUTHORITATIVE wire-in (L70, 2026-04-25 night):
+                    # GP-157 v5.0 Phase 2 AUTHORITATIVE wire-in (L70, 2026-04-25):
                     # The fit dispatch now goes through FitEngine.select_adapter().
                     # The Protocol routes by substrate.meta['class'] — same
                     # rubric/cage_meta the rest of the apparatus reads. The
@@ -5457,7 +5612,7 @@ for i in range(ITERATIONS):
                     if isinstance(_fit_result, FitSuccess):
                         if python_code is not None:
                             python_code = substitute_fitted_params(python_code, _fit_result.fitted_params)
-                            # Bug #37 fix (2026-04-25 night): same gate-time
+                            # Bug #37 fix (2026-04-25): same gate-time
                             # primitive injection for the legacy 1D path —
                             # if the mutator wrote `where(...)` or `sigmoid(x,c,w)`
                             # in their FIT_DECLARATION expression, gate harness
@@ -5779,7 +5934,7 @@ for i in range(ITERATIONS):
                             # weighting low-y rows equally with high-y. Default
                             # False to preserve compatibility on existing substrates.
                             _ffp_relative = bool(rubric_data.get("fit_relative_residuals", False))
-                            # GP-164 wMDL (2026-04-25 night): weighted-χ² fit
+                            # GP-164 wMDL (2026-04-25): weighted-χ² fit
                             # for heteroscedastic substrates that expose
                             # per-row σ in the feature dict (e.g. gp163d's
                             # `errV_frac`). Rubric flags:
@@ -5886,7 +6041,7 @@ for i in range(ITERATIONS):
                                             f"{' …' if len(_sparse) > 6 else ''}"
                                         )
 
-                                # GP-166 Fix C (2026-04-25 night): pathology
+                                # GP-166 Fix C (2026-04-25): pathology
                                 # ENFORCEMENT. The detector caught the
                                 # k_m=-1.2M blow-up but then the catastrophic
                                 # params got substituted into MODEL_PARAMS and
@@ -5965,7 +6120,7 @@ for i in range(ITERATIONS):
                                 )
                                 print(f"🧮   wrote fit_features_result.json (+ MODEL_PARAMS substituted)")
 
-                                # ── GP-157 §3a backport (Task #151): R13/R14/R15 POST_FIT dispatch ──
+                                # ── GP-157 §3a backport: R13/R14/R15 POST_FIT dispatch ──
                                 # noise_profile residual classifier + substrate_critic
                                 # per-iter refresh + ANALOGY cross-domain query, all
                                 # routed through the Cage. Replaces three legacy direct-
@@ -6073,7 +6228,7 @@ for i in range(ITERATIONS):
                                 # GP-164 ANALOGY (R15) is now dispatched as part of
                                 # the POST_FIT Cage call above (post_fit_dispatch.py).
                                 # The legacy direct-wire block has been removed per
-                                # GP-157 §3a backport (Task #151).
+                                # GP-157 §3a backport.
 
                             if not _ffp_result.success:
                                 print(f"🧮   ❌ FIT FAILURE: {_ffp_result.error_message}")
@@ -6093,7 +6248,7 @@ for i in range(ITERATIONS):
                                 # Replace I_model with a LOUD-FAIL stub so the
                                 # harness fails with a SHARP diagnostic naming
                                 # the fit failure reason, not a vague KeyError.
-                                # GP-157 Bug #34 (2026-04-25 night): the previous
+                                # GP-157 Bug #34 (2026-04-25): the previous
                                 # stub-writer corrupted test_model.py whenever
                                 # `error_message` was multi-line — only the FIRST
                                 # line was `#`-prefixed in the comment header, and
@@ -6167,6 +6322,7 @@ for i in range(ITERATIONS):
         last_failure_reason = f"Runner R1 rejection: {exc}"
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        pending_loop_rationale = yield_decision.rationale
         _append_iteration_telemetry(
             workspace_dir,
             iteration_index=i + 1,
@@ -6192,6 +6348,7 @@ for i in range(ITERATIONS):
                 _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
             ),
             pending_loop_action=pending_loop_action.value,
+            information_yield_rationale=yield_decision.rationale,
         )
         last_completed_iteration = i + 1
         _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -6206,6 +6363,7 @@ for i in range(ITERATIONS):
                 {
                     "scope_delta": mutation_declaration.scope_delta.value,
                     "claim_delta_type": mutation_declaration.claim_delta_type.value,
+                    "thesis_control_mode": mutation_declaration.thesis_control_mode.value,
                     "primitive_invoked": mutation_declaration.primitive_invoked,
                     "touched_artifacts": [item.value for item in mutation_declaration.touched_artifacts],
                 },
@@ -6220,6 +6378,7 @@ for i in range(ITERATIONS):
                     "mismatch_code": mutation_validation.mismatch_code.value,
                     "declared_scope_delta": mutation_validation.declared_scope_delta.value,
                     "declared_claim_delta_type": mutation_validation.declared_claim_delta_type.value,
+                    "declared_thesis_control_mode": mutation_validation.declared_thesis_control_mode.value,
                     "declared_primitive_invoked": mutation_validation.declared_primitive_invoked,
                     "declared_touched_artifacts": [item.value for item in mutation_validation.declared_touched_artifacts],
                     "actual_touched_artifacts": [item.value for item in mutation_validation.actual_touched_artifacts],
@@ -6264,6 +6423,7 @@ for i in range(ITERATIONS):
         )
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        pending_loop_rationale = yield_decision.rationale
         _append_iteration_telemetry(
             workspace_dir,
             iteration_index=i + 1,
@@ -6289,6 +6449,7 @@ for i in range(ITERATIONS):
                 _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
             ),
             pending_loop_action=pending_loop_action.value,
+            information_yield_rationale=yield_decision.rationale,
         )
         last_completed_iteration = i + 1
         _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -6306,7 +6467,7 @@ for i in range(ITERATIONS):
         """Guarantee that test_model.py exposes ``f``, ``model``, AND ``I_model``
         as top-level names, regardless of which path wrote the file.
 
-        GP-157 v5.0 fix (2026-04-25 night): added I_model as a canonical name
+        GP-157 v5.0 fix (2026-04-25): added I_model as a canonical name
         per Contract C/B requirements. The deterministic-fit-primitive build
         path writes `def f(x)` (legacy convention); gate_harness.py (post-fix)
         imports `I_model`; mutator-prompt Contract C tells mutator to write
@@ -6386,7 +6547,7 @@ for i in range(ITERATIONS):
     # (this code runs at module scope where nonlocal is a SyntaxError).
     _layer3_built = [False]
 
-    # GP-157 v5.0 defense-in-depth (2026-04-25 night): mirror Cage's
+    # GP-157 v5.0 defense-in-depth (2026-04-25): mirror Cage's
     # OneDFitEngine.can_handle() at this legacy gate. Logic extracted to
     # src/ztare/fit/legacy_engagement_guard.py with regression tests.
     # Surfaced on gp159 nd_features run by parallel agent: legacy 1D
@@ -6427,7 +6588,7 @@ for i in range(ITERATIONS):
                 f"'Layer 3 Mandatory: {reason} — no callable built')\n"
             )
             write_file(_stub_target_path, _ensure_canonical_model_aliases(_stub))
-            # GP-157 fix 2026-04-25 night: when stub goes to sidecar
+            # GP-157 fix 2026-04-25: when stub goes to sidecar
             # (_fit_stub.py), the apparatus MUST still let the python_code
             # path write test_model.py from the mutator's submission.
             # Setting _layer3_built[0]=True when the stub diverted to a
@@ -6677,7 +6838,7 @@ for i in range(ITERATIONS):
                     f"penalty={_penalty}"
                 )
 
-            # GP-157 Cage post-harness dispatch (Phase 4g modular split — task #65).
+            # GP-157 Cage post-harness dispatch.
             # All Cage-routed post-harness gates (R10, R11 today; GP-170 symbolic
             # logic cage and GP-168 forced-reframe when implemented) dispatch
             # through a single entry point in the orchestrator. New gates register
@@ -6732,7 +6893,7 @@ for i in range(ITERATIONS):
 
         _raw_candidate_score = new_eval.get("score")
 
-        # Bug #48 (2026-04-25 night, gp160 cross-family run hit this):
+        # Bug #48 (2026-04-25, gp160 cross-family run hit this):
         # if the judge response is malformed (e.g., evidence_gap fields
         # leaked to top-level instead of nested under evidence_gaps[]),
         # new_eval may lack "score". Treat missing/None as 0 so the iter
@@ -6781,10 +6942,11 @@ for i in range(ITERATIONS):
         # Champion telemetry persistence (2026-04-27): persist parametric_form, raw_judge_score,
         # score_cap_applied at write time so briefing providers do not have
         # to backfill via lossy regex from submission files. The backfill
-        # path was the load-bearing bug behind the gp163d v3 phantom-REFRAME
+        # path was the critical bug behind the gp163d v3 phantom-REFRAME
         # cascade in run_id 1777250273.
         try:
             _eval_hist_path = workspace_dir / "eval_history.jsonl"
+            gate_engagement, gate_failure_count, failed_gate_ids = _extract_iteration_gate_metrics(new_eval)
             _sc = new_eval.get("score_contract") or {}
             _dcg = _sc.get("deterministic_charter_gates", {}).get("results", {})
             _gate_verdicts = {g: r.get("passed", None) for g, r in _dcg.items()} if isinstance(_dcg, dict) else {}
@@ -6798,8 +6960,46 @@ for i in range(ITERATIONS):
                 _form_str = ""
             _cap_meta = new_eval.get("score_cap_applied") or {}
             _raw_judge_score = _cap_meta.get("original_judge_score")
+            try:
+                from src.ztare.common.worker_metadata import (
+                    aggregate_autoresearch_worker_metadata as _aggregate_worker_metadata,
+                    autoresearch_worker_metadata_by_call_site as _worker_metadata_by_call_site,
+                )
+                _worker_meta_by_call_site = _worker_metadata_by_call_site(rubric_data)
+                _worker_meta = _aggregate_worker_metadata(_worker_meta_by_call_site)
+            except Exception:
+                _worker_meta = {
+                    "worker_archetype": "fungible_llm_call",
+                    "worker_capability": "llm",
+                    "worker_state": "stateless_externalized_briefing",
+                    "worker_identity": "fungible",
+                    "transport": "api",
+                    "worker_metadata_source": "autoresearch_loop_fallback",
+                    "worker_transport_set": ["api"],
+                    "worker_capability_set": ["llm"],
+                    "worker_metadata_by_call_site": {},
+                }
+            _matched_run_id = os.environ.get("ZTARE_AUTORESEARCH_MATCHED_RUN_ID", "").strip()
+            if _matched_run_id:
+                _worker_meta["matched_run_id"] = _matched_run_id
+                _matched_run_role = os.environ.get("ZTARE_AUTORESEARCH_MATCHED_RUN_ROLE", "").strip().lower()
+                if _matched_run_role:
+                    _worker_meta["matched_run_role"] = _matched_run_role
+            _worker_dispatch_receipts = list(
+                SESSION_WORKER_DISPATCH_RECEIPTS[_iteration_worker_receipt_start:]
+            )
+            _judge_dispatch_receipts = new_eval.get("worker_dispatch_receipts")
+            if isinstance(_judge_dispatch_receipts, list):
+                _worker_dispatch_receipts.extend(
+                    dict(item) for item in _judge_dispatch_receipts if isinstance(item, dict)
+                )
+            if args.dynamic:
+                _worker_dispatch_receipts.extend(
+                    _load_current_committee_dispatch_receipts(args.project)
+                )
             _eval_hist_path.open("a").write(
                 json.dumps({
+                    "run_id": RUN_ID,
                     "iteration": i + 1,
                     "score": new_eval.get("score"),
                     "raw_judge_score": _raw_judge_score,
@@ -6807,7 +7007,11 @@ for i in range(ITERATIONS):
                     "parametric_form": _form_str,
                     "weakest_point": (new_eval.get("weakest_point") or "")[:200],
                     "gate_verdicts": _gate_verdicts,
+                    "gate_failure_count": gate_failure_count,
+                    "failed_gate_ids": failed_gate_ids,
                     "timestamp": datetime.now().isoformat(),
+                    "worker_dispatch_receipts": _worker_dispatch_receipts,
+                    **_worker_meta,
                 }) + "\n"
             )
         except Exception:
@@ -6827,6 +7031,15 @@ for i in range(ITERATIONS):
         escalation_flags = _extract_iteration_escalation_flags(new_eval)
 
         if not selection_record.candidate_admissible:
+            _track_primitive_class_rotation_candidate(
+                rubric_data=rubric_data,
+                project_dir=Path(PROJECT_DIR),
+                run_id=str(RUN_ID),
+                iter_index=i + 1,
+                thesis_text=new_content or "",
+                score=new_eval.get("score", 0),
+                outcome="r3_rejected",
+            )
             print(f"⚠️ Runner R3 rejection: {selection_record.rationale}")
             signal = IterationSignal(
                 iteration_index=i + 1,
@@ -6845,6 +7058,7 @@ for i in range(ITERATIONS):
             last_failure_reason = f"Runner R3 rejection: {selection_record.rationale}"
             stagnation_count = yield_decision.stagnant_window
             pending_loop_action = yield_decision.action
+            pending_loop_rationale = yield_decision.rationale
             _append_iteration_telemetry(
                 workspace_dir,
                 iteration_index=i + 1,
@@ -6870,6 +7084,7 @@ for i in range(ITERATIONS):
                     _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
                 ),
                 pending_loop_action=pending_loop_action.value,
+                information_yield_rationale=yield_decision.rationale,
             )
             last_completed_iteration = i + 1
             _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -6926,6 +7141,19 @@ for i in range(ITERATIONS):
                 f"with gate failures {best_gate_failure_count}→{_new_gate_failure_count}. "
                 f"Champion promoted on the raw-score signal hidden behind the per-class cap."
             )
+        _track_primitive_class_rotation_candidate(
+            rubric_data=rubric_data,
+            project_dir=Path(PROJECT_DIR),
+            run_id=str(RUN_ID),
+            iter_index=i + 1,
+            thesis_text=new_content or "",
+            score=new_eval.get("score", 0),
+            outcome=(
+                "champion_promoted"
+                if _candidate_improved
+                else "non_improving_candidate"
+            ),
+        )
         signal = IterationSignal(
             iteration_index=i + 1,
             score=new_eval.get("score", 0),
@@ -6983,11 +7211,11 @@ for i in range(ITERATIONS):
                     print(f"🧭 epistemic-coherence audit skipped: {_eca_report['error']}")
             except Exception as _eca_exc:                              # noqa: BLE001
                 print(f"🧭 epistemic-coherence audit error (non-fatal): {_eca_exc}")
-            if rubric_data.get("enable_component_c", False):
+            if residual_diagnostics_enabled(rubric_data):
                 try:
                     reset_stagnation_on_holdout_pass(workspace_dir)
                 except Exception as _cc_exc:
-                    print(f"🔧 GP-074 Component C reset: error — {_cc_exc}")
+                    print(f"🔧 GP-074 residual diagnostics reset: error — {_cc_exc}")
             best_score = new_eval["score"]
             # Two-tier promotion: track raw + gate-failure across champions so the
             # latent-gradient promotion check has live state to compare.
@@ -6998,6 +7226,7 @@ for i in range(ITERATIONS):
             stagnation_count = yield_decision.stagnant_window
             last_failure_reason = None
             pending_loop_action = yield_decision.action
+            pending_loop_rationale = yield_decision.rationale
 
             _persist_best_candidate(
                 new_content,
@@ -7014,55 +7243,6 @@ for i in range(ITERATIONS):
                 champion_fingerprint_before_iteration,
                 champion_artifacts.get("regime_fingerprint"),
             )
-
-            # 2026-05-06 PM: primitive-class rotation tracking. After
-            # each iter, if the proposal used mechanism =
-            # propose_new_primitive_class, extract the class name and
-            # append to workspace/explored_primitive_classes.jsonl.
-            # The next iter's mutator prompt reads this file via
-            # primitive_class_history_packet().
-            try:
-                if bool(rubric_data.get("enable_primitive_class_rotation", False)):
-                    from src.ztare.orchestrator.prompt import (
-                        extract_proposal_class_name as _extract_class,
-                        append_explored_primitive_class as _append_class,
-                    )
-                    # Only record if the proposal explicitly mentions
-                    # propose_new_primitive_class mechanism (or the
-                    # thesis structure indicates a primitive-class
-                    # proposal). This avoids polluting the history with
-                    # tactical-patch iters.
-                    is_primitive_class_iter = (
-                        "propose_new_primitive_class" in (new_content or "")
-                        or "STRUCTURAL PIVOT" in (new_content or "").upper()
-                        or "STRUCTURAL MUTATION" in (new_content or "").upper()
-                        or "CATEGORY SWITCH" in (new_content or "").upper()
-                    )
-                    if is_primitive_class_iter:
-                        substrate_class = (
-                            (rubric_data.get("cage_meta") or {})
-                            .get("class") or ""
-                        )
-                        class_name = _extract_class(
-                            new_content or "",
-                            substrate_class=str(substrate_class),
-                        )
-                        if not class_name:
-                            class_name = f"unknown_proposal_iter_{i + 1}"
-                        _append_class(
-                            project_dir=Path(PROJECT_DIR),
-                            run_id=str(RUN_ID),
-                            iter_index=i + 1,
-                            class_name=class_name,
-                            score=float(best_score) if best_score is not None else 0.0,
-                        )
-                        print(
-                            f"🔁 primitive-class rotation: tracked '{class_name}' "
-                            f"(iter {i + 1}, score {best_score})"
-                        )
-            except Exception as _rot_exc:  # noqa: BLE001
-                # Tracking is best-effort. Don't break the iter loop.
-                print(f"🔁 primitive-class rotation tracking error (non-fatal): {_rot_exc}")
 
             # GP-119: Post-champion Inverter (in-loop promotion path)
             if best_score >= 50:
@@ -7314,6 +7494,7 @@ for i in range(ITERATIONS):
                     _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
                 ),
                 pending_loop_action=pending_loop_action.value,
+                information_yield_rationale=yield_decision.rationale,
             )
             last_completed_iteration = i + 1
 
@@ -7412,7 +7593,7 @@ for i in range(ITERATIONS):
                     print(f"    🔬 GP-103 compression: error — {_comp_exc}")
 
         else:
-            # Task #143: retroactive champion invalidation. If the new iter
+            # Retroactive champion invalidation. If the new iter
             # is evaluated under a tighter gate set than the existing
             # champion (R20-R23 structural anti-pattern flags), and the
             # old champion lacks those telemetry payloads (so we can't
@@ -7425,7 +7606,7 @@ for i in range(ITERATIONS):
                         and isinstance(current_eval, dict)
                         and "cage_r20_r23" not in (current_eval or {})):
                     print(
-                        f"⚖️  Retroactive champion invalidation (task #143): "
+                        f"⚖️  Retroactive champion invalidation: "
                         f"champion (score={best_score}) predates the R20-R23 "
                         f"structural-pattern gate set. Demoting to allow the "
                         f"current gate basis to determine the new champion."
@@ -7459,6 +7640,7 @@ for i in range(ITERATIONS):
             last_failure_reason = new_eval["weakest_point"]
             current_target_weakest_point = new_eval["weakest_point"]  # GP-002: update targeting even on non-improving iterations
             pending_loop_action = yield_decision.action
+            pending_loop_rationale = yield_decision.rationale
             _append_iteration_telemetry(
                 workspace_dir,
                 iteration_index=i + 1,
@@ -7484,12 +7666,13 @@ for i in range(ITERATIONS):
                     _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
                 ),
                 pending_loop_action=pending_loop_action.value,
+                information_yield_rationale=yield_decision.rationale,
             )
             last_completed_iteration = i + 1
             _pop_seed_queue(workspace_dir, _comp_seed_injected)
-            # GP-074 Component C: fire analyzer on stagnation with degenerate fit
-            if rubric_data.get("enable_component_c", False):
-                _cc_gt_module = rubric_data.get("component_c_gt_module")
+            # GP-074 residual diagnostics: fire analyzer on stagnation with degenerate fit
+            if residual_diagnostics_enabled(rubric_data):
+                _cc_gt_module = residual_diagnostics_gt_module(rubric_data)
                 _cc_fit_path = workspace_dir / "fit_result.json"
                 if _cc_gt_module and _cc_fit_path.exists():
                     try:
@@ -7509,7 +7692,7 @@ for i in range(ITERATIONS):
                         _cc_test_mod = importlib.util.module_from_spec(_cc_spec)
                         _cc_spec.loader.exec_module(_cc_test_mod)
                         if not hasattr(_cc_test_mod, "f"):
-                            raise AttributeError("test_model.py does not expose f() — Component C skipped")
+                            raise AttributeError("test_model.py does not expose f() — residual diagnostics skipped")
                         _cc_f_model = _cc_test_mod.f
                         _cc_evidence = []
                         if evidence_text:
@@ -7524,7 +7707,7 @@ for i in range(ITERATIONS):
                                     except ValueError:
                                         continue
                         if _cc_evidence:
-                            _cc_stagnation_k = rubric_data.get("component_c_stagnation_k", 3)
+                            _cc_stagnation_k = residual_diagnostics_stagnation_k(rubric_data)
                             _cc_result = analyze_residual(
                                 workspace_dir=workspace_dir,
                                 iteration_index=i + 1,
@@ -7536,7 +7719,7 @@ for i in range(ITERATIONS):
                                 substrate_id=args.project,
                                 stagnation_k=_cc_stagnation_k,
                             )
-                            print(f"🔧 GP-074 Component C: {_cc_result.status} "
+                            print(f"🔧 GP-074 residual diagnostics: {_cc_result.status} "
                                   f"(stag={_cc_result.stagnation_count}, "
                                   f"probes={_cc_result.probe_count})")
                             if _cc_result.descriptor:
@@ -7545,16 +7728,16 @@ for i in range(ITERATIONS):
 
                             # GP-076: Predictive Divergence Sweep
                             # Uses outer loop stagnation_count, not _cc_result.stagnation_count —
-                            # Component C resets its counter to 0 on every emission, so
+                            # Residual diagnostics reset their counter to 0 on every emission, so
                             # _cc_result.stagnation_count is always 0 when a descriptor is present.
-                            # Threshold mirrors component_c_stagnation_k so both fire together.
+                            # Threshold mirrors the sieve stagnation setting so both fire together.
                             #
-                            # PERSISTENCE FIX: Component C only emits on its own stagnation
+                            # PERSISTENCE FIX: residual diagnostics only emit on their own stagnation
                             # schedule (every K inner iterations). On non-emission iterations,
                             # _cc_result.descriptor is None even though a prior descriptor was
                             # persisted to residual_fingerprint.json. Fall back to the persisted
                             # descriptor so the sweep can fire on any iteration where outer
-                            # stagnation >= threshold, not only on Component C emission iterations.
+                            # stagnation >= threshold, not only on diagnostic emission iterations.
                             _cc_active_descriptor = _cc_result.descriptor
                             if not _cc_active_descriptor:
                                 _fp_persisted = workspace_dir / "residual_fingerprint.json"
@@ -7620,7 +7803,7 @@ for i in range(ITERATIONS):
                                 except Exception as _sweep_exc:
                                     print(f"🔬 GP-076 sweep: error — {_sweep_exc}")
                     except Exception as _cc_exc:
-                        print(f"🔧 GP-074 Component C: error — {_cc_exc}")
+                        print(f"🔧 GP-074 residual diagnostics: error — {_cc_exc}")
             _restore_project_state(best_state)
             if os.path.exists(f"{AXIOM_PATH}.bak"):
                 shutil.copy(f"{AXIOM_PATH}.bak", AXIOM_PATH)
@@ -7665,6 +7848,7 @@ for i in range(ITERATIONS):
         _write_latest_information_yield(workspace_dir, signal=signal, decision=yield_decision)
         stagnation_count = yield_decision.stagnant_window
         pending_loop_action = yield_decision.action
+        pending_loop_rationale = yield_decision.rationale
         _append_iteration_telemetry(
             workspace_dir,
             iteration_index=i + 1,
@@ -7690,6 +7874,7 @@ for i in range(ITERATIONS):
                 _usage_bucket_snapshot(SESSION_JUDGE_USAGE),
             ),
             pending_loop_action=pending_loop_action.value,
+            information_yield_rationale=yield_decision.rationale,
         )
         last_completed_iteration = i + 1
         _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -7698,18 +7883,19 @@ for i in range(ITERATIONS):
 
     # GP-087 Slim: Residual-driven primitive injection.
     # When the farther-tail gate fails, propose tail-correction seeds
-    # from the primitive library. Takes priority over Component D —
+    # from the primitive library. Takes priority over autonomous synthesis —
     # if GP-087 injects seeds, skip the regular composition loop.
     # Information boundary: only primitive names reach the seed queue,
     # no farther-tail residual values leak to the mutator.
     #
-    # Short-circuit fix (2026-04-19): Component D was clobbering GP-087
+    # Short-circuit fix (2026-04-19): autonomous synthesis was clobbering GP-087
     # seeds because the old guard (`not seed_path.exists()`) prevented
-    # GP-087 from firing whenever Component D had already written its
+    # GP-087 from firing whenever autonomous synthesis had already written its
     # own candidates to composition_seed.json. The fix: check the *source*
-    # field of existing seeds. If they are component_d_autonomous, GP-087
-    # may overwrite them. If they are already gp087_residual_driven, block
-    # Component D but do not re-inject (seeds are already queued).
+    # field of existing seeds. GP-087 may overwrite old autonomous-synthesis
+    # queues, including files stamped with the old autonomous-synthesis source
+    # token. If they are already gp087_residual_driven, block autonomous
+    # synthesis but do not re-inject (seeds are already queued).
     _gp087_injected = False
     if rubric_data.get("enable_fit_primitive", False):
         _seed_path_087 = workspace_dir / "composition_seed.json"
@@ -7729,12 +7915,12 @@ for i in range(ITERATIONS):
                 pass
 
         if _existing_gp087_queued:
-            # Tail-correction seeds are already in queue. Block Component D
+            # Tail-correction seeds are already in queue. Block autonomous synthesis
             # from overwriting them; they will be consumed next iteration.
             _gp087_injected = True
-            print("    >> GP-087: tail-correction seeds already queued — Component D blocked")
+            print("    >> GP-087: tail-correction seeds already queued — autonomous synthesis blocked")
         elif _gp087_eval is not None:
-            # Seed file is absent or contains only component_d_autonomous
+            # Seed file is absent or contains only legacy autonomous-synthesis
             # candidates — GP-087 may overwrite.
             _gp087_seeds = _gp087_propose_tail_correction_seeds(
                 _gp087_eval,
@@ -7748,7 +7934,7 @@ for i in range(ITERATIONS):
                 _gp087_injected = True
                 print(
                     f"    >> GP-087: farther-tail gate failed — injected {len(_gp087_seeds)} "
-                    f"tail-correction seeds (overwrote component_d queue)"
+                    f"tail-correction seeds (overwrote autonomous synthesis queue)"
                 )
                 for _qi, _qs in enumerate(_gp087_seeds[:3]):
                     print(
@@ -7761,8 +7947,8 @@ for i in range(ITERATIONS):
     # families show regime-separated visible residuals (one family dramatically
     # better than another at visible, signalling different gate failure layers).
     # Proposes additive two-regime composites of the top-performing failed
-    # families.  Takes priority over Component D — if additive seeds are
-    # injected, Component D is skipped so seeds are not overwritten.
+    # families. Takes priority over autonomous synthesis — if additive seeds are
+    # injected, synthesis is skipped so seeds are not overwritten.
     # Information boundary: reads only visible residuals and example expressions
     # from structural_memory.json — no holdout / farther-tail values reach seeds.
     _gp103_injected = False
@@ -7836,7 +8022,7 @@ for i in range(ITERATIONS):
         except Exception as _gp103_exc:
             print(f"    >> H-GP103-5: error — {_gp103_exc}")
 
-    # GP-078 Component D: Universal Feynman Wall check.
+    # GP-078 grammar-guided symbolic regression: Universal Feynman Wall check.
     # Fires at the end of every iteration, substrate-agnostic.
     # Reads structural_memory.json — if library exhaustion is detected,
     # runs the composition loop to bootstrap new primitives.
@@ -7853,7 +8039,7 @@ for i in range(ITERATIONS):
                 min_families=_comp_min_families,
                 stagnation_threshold=_comp_stagnation_k,
             ):
-                print("    >> FEYNMAN WALL: library exhausted — Component D composition mode")
+                print("    >> FEYNMAN WALL: library exhausted — symbolic-regression synthesis mode")
                 # Parse visible evidence preserving all columns (supports nD substrates).
                 # Each row becomes a tuple of floats: (x1, [x2, ...], z).
                 _comp_evidence: list[tuple[float, ...]] = []
@@ -7883,12 +8069,12 @@ for i in range(ITERATIONS):
                         ind_vars=_comp_ind_vars,
                     )
                     print(
-                        f"    >> Component D: {_comp_result.get('wall_exit_code')} "
+                        f"    >> Symbolic-regression synthesis: {_comp_result.get('wall_exit_code')} "
                         f"({_comp_result.get('successes', 0)} fits in "
                         f"{_comp_result.get('rounds', 0)} rounds)"
                     )
                     # GP-078 Fix B v2: Topological Beam Search.
-                    # Component D is blind to the holdout — it cannot know
+                    # Symbolic-regression synthesis is blind to the holdout — it cannot know
                     # which candidate has the correct asymptotic behavior.
                     # Instead of picking one winner, write a queue of top-K
                     # candidates.  The judge falsifies them one per iteration
@@ -7970,7 +8156,7 @@ for i in range(ITERATIONS):
                                     f"math_exp_only violations from seed queue"
                                 )
 
-                        # Topology diversification: guarantee the seed queue
+                        # Structural diversity: guarantee the seed queue
                         # contains at least one representative from each structural
                         # class. GP-088 panel verdict: without this, the queue fills
                         # with log-polynomial variants that overfit the visible window,
@@ -8029,14 +8215,14 @@ for i in range(ITERATIONS):
                             _class_summary = ", ".join(
                                 f"{c}({len(v)})" for c, v in sorted(_by_class.items())
                             )
-                            print(f"    >> Topology diversification: {_class_summary}")
+                            print(f"    >> Symbolic-regression diversification: {_class_summary}")
                             print(f"       Selected {len(_top_k)} seeds from {len(_by_class)} classes")
 
                         if _top_k:
                             _seeds = []
                             for _comp in _top_k:
                                 _seeds.append({
-                                    "source": "component_d_autonomous",
+                                    "source": "symbolic_regression_autonomous",
                                     "expression": _comp.get("expression", ""),
                                     "independent_vars": _comp_ind_vars,
                                     "parameter_names": _comp.get("parameter_names", []),
@@ -8047,7 +8233,7 @@ for i in range(ITERATIONS):
                             _seed_path = workspace_dir / "composition_seed.json"
                             _seed_path.write_text(json.dumps(_seeds, indent=2) + "\n")
                             print(
-                                f"    >> Component D seed queue: {len(_seeds)} candidates "
+                                f"    >> Symbolic-regression seed queue: {len(_seeds)} candidates "
                                 f"({sum(1 for s in _top_k if any(b in str(s.get('round','')) for b in _SATURATING_BASES))} saturating-first)"
                             )
                             for _qi, _qs in enumerate(_seeds[:3]):
@@ -8057,7 +8243,7 @@ for i in range(ITERATIONS):
                                 )
         except Exception as _comp_exc:
             import traceback as _tb_comp
-            print(f"    >> Component D: error — {_comp_exc}")
+            print(f"    >> Symbolic-regression synthesis: error — {_comp_exc}")
             _tb_comp.print_exc()
 
     # Iter-budget checkpoint structure (apparatus-wide, 2026-04-26).
