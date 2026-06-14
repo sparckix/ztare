@@ -3,22 +3,22 @@
   "exits": [
     {
       "schema": "leanmill-typed-proof-exit-v1",
-      "generated_at_epoch": 1780709535,
+      "generated_at_epoch": 1781299956,
       "source_kind": "auto_prover_harness",
       "source_path": "analytics/public/queries/leanmill_solver_lane_results.json",
       "run_id": "solver_lane",
       "credit_status": "not_credit_ready",
       "credit_boundary": "advisory_only_no_factory_credit; closures require the existing governance and matched-negative-control receipt path before credit-ready status",
       "proof_credit": "none_typed_exit_is_advisory",
-      "attempt_id": "adhoc::denef_lipshitz_question_formalization",
-      "target_name": "adhoc::denef_lipshitz_question_formalization",
+      "attempt_id": "adhoc::b112f_u",
+      "target_name": "adhoc::b112f_u",
       "target_kind": "c_pool_no_template",
-      "outcome": "closed",
-      "exit_code": 0,
-      "typed_exit_kind": "unratified_closure_candidate",
-      "residual_class": "none_closed",
-      "next_lever": "ratify_closure",
-      "next_target_statement": "Route `adhoc::denef_lipshitz_question_formalization` closure candidate to governance",
+      "outcome": "exact_gap",
+      "exit_code": 1,
+      "typed_exit_kind": "unknown_advisory_exit",
+      "residual_class": "vocabulary_gap",
+      "next_lever": "operator_review_gp233",
+      "next_target_statement": "Retry or prove `adhoc::b112f_u` with a stronger prover/context",
       "candidate_lemmas": [],
       "semantic_premise_shelf": {
         "schema": null,
@@ -35,8 +35,8 @@
           "source_kind": "auto_prover_harness",
           "source_path": "analytics/public/queries/leanmill_solver_lane_results.json",
           "run_id": "solver_lane",
-          "attempt_id": "adhoc::denef_lipshitz_question_formalization",
-          "closure_verdict": "closed",
+          "attempt_id": "adhoc::b112f_u",
+          "closure_verdict": "exact_gap",
           "compiled_any": null,
           "candidate_lemmas": [],
           "semantic_premise_shelf": {
@@ -48,43 +48,24 @@
           }
         },
         "selected_residual_edge": {
-          "residual_class": "none_closed",
-          "typed_exit_kind": "unratified_closure_candidate",
-          "next_lever": "ratify_closure"
+          "residual_class": "vocabulary_gap",
+          "typed_exit_kind": "unknown_advisory_exit",
+          "next_lever": "operator_review_gp233"
         },
-        "rejected_nearest_confuser_edge": "raw_closure_candidate_laundered_as_factory_credit",
+        "rejected_nearest_confuser_edge": "treat_unknown_exit_as_credible_evidence",
         "action_program": [
           {
-            "id": "route_to_governance_gate",
+            "id": "operator_review_unknown_exit",
             "requires": [
-              "compiled_candidate_artifact"
+              "typed_exit"
             ],
             "produces": [
-              "governance_receipt"
-            ]
-          },
-          {
-            "id": "run_matched_negative_control",
-            "requires": [
-              "governance_receipt"
-            ],
-            "produces": [
-              "matched_negative_control_receipt"
-            ]
-          },
-          {
-            "id": "credit_only_if_all_receipts_pass",
-            "requires": [
-              "governance_receipt",
-              "matched_negative_control_receipt"
-            ],
-            "produces": [
-              "credit_ready_decision_or_rejection"
+              "classified_residual_or_retirement"
             ]
           }
         ],
         "current_action_index": 0,
-        "required_next_action": "route_to_governance_gate",
+        "required_next_action": "operator_review_unknown_exit",
         "program_counter_rule": "Advance only after the required action has a concrete artifact_ref or typed terminal outcome; do not convert advisory exits into proof credit.",
         "deterministic_invariants": [
           {
@@ -100,12 +81,12 @@
           {
             "id": "nearest_confuser_named",
             "status": "pass",
-            "detail": "raw_closure_candidate_laundered_as_factory_credit"
+            "detail": "treat_unknown_exit_as_credible_evidence"
           },
           {
             "id": "action_program_nonempty",
             "status": "pass",
-            "detail": "3"
+            "detail": "1"
           }
         ],
         "shadow_outcome_trace": {

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "bundle_generated_utc": "2026-06-04T21:44:05.791477+00:00",
+  "bundle_generated_utc": "2026-06-10T16:51:02.446224+00:00",
   "sources": {
     "trajectoryCurves": "analytics/public/queries/trajectory/trajectory_curves.json",
     "inflections": "analytics/public/queries/trajectory/inflection_candidates.json",

@@ -1,0 +1,20 @@
+{
+  "action_change_recommendation": null,
+  "agent_family": "codex",
+  "agent_id": "codex:codex_forecaster",
+  "contract_id": "leanmill_close_pool_plumbing_e2e",
+  "contract_question": "Will the leanmill solver CLOSE this target with a KERNEL-verified, governance-ratified proof in one bounded attempt (no sorry/axiom/statement-swap)? Target: theorem t : 1 + 1 = 2 := by rfl",
+  "domain": "general",
+  "expected_cost_agent_minutes": 36.75,
+  "expected_cost_source": "domain_effort_prior",
+  "failure_mode_distribution": {},
+  "forecast_externality_tags": [],
+  "forecasted_at": "2026-06-11T18:43:59Z",
+  "p_dependency_issue": 0.05,
+  "p_needs_new_lemma": 0.05,
+  "p_regression": 0.05,
+  "p_success": 0.3,
+  "rationale_short": "plumbing e2e",
+  "read_only_attestation": true,
+  "specific_failure_mode_ids": []
+}

@@ -1,0 +1,6 @@
+{"action": "TRANSPORT", "reason": "use generic identity/reflexivity as the transported structure, instantiated at `2`.", "target": "2 = 2"}
+{"action": "GENERALIZE", "reason": "make the first rung a fully polymorphic identity principle, then instantiate it at `Nat` and `2` in the chain so the reduction is structurally broader than the goal.", "target": "2 = 2"}
+{"action": "DECOMPOSE", "reason": "attach to the arithmetic rung `2 + 2 = 4`, then cancel the shared right summand.", "target": "2 = 2"}
+{"action": "SOLVE_DIRECT", "reason": "within reach, no decomposition needed.", "target": "n = n"}
+{"action": "ABDUCE", "reason": "an arbitrary opaque proposition is uninhabited from the empty context, so the honest reduction is to expose an inhabitance premise.", "target": "P"}
+{"action": "ABDUCE", "reason": "an arbitrary `P : Prop` has no internal structure, so the missing premise is an inhabitance witness for `P`.", "target": "P"}

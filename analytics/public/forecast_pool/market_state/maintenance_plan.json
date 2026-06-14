@@ -73,7 +73,7 @@
     "aggregate_debt": 17,
     "decision_use_rows": 2,
     "resolved_without_forecasts": 15,
-    "score_debt": 1
+    "score_debt": 2
   },
   "decision_use": {
     "decision_changed_rows": 2,
@@ -153,7 +153,7 @@
       "split": 2
     }
   },
-  "generated_at": "2026-05-27T08:40:51Z",
+  "generated_at": "2026-06-11T18:44:00Z",
   "purpose": "Generated maintenance queue for forecast-market hygiene.",
   "resolved_without_forecasts": [
     {
@@ -218,6 +218,10 @@
     }
   ],
   "score_debt": [
+    {
+      "command": "forecast_pool.py score --contract-id leanmill_close_pool_plumbing_e2e",
+      "contract_id": "leanmill_close_pool_plumbing_e2e"
+    },
     {
       "command": "forecast_pool.py score --contract-id ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575",
       "contract_id": "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575"

@@ -1,5 +1,5 @@
 // Publish-safety (dashboard_publish_safety_spec_2026_05_17 M1): the
-// contextualized-rater primer is the operator's PRIVATE memory index and
+// contextualized-rater primer is the private human-curated memory index and
 // MUST NOT be inlined into the public bundle. The methodology is described
 // publicly without dumping the private anchor.
 
@@ -43,7 +43,7 @@ export function MethodologyView() {
           trust, and when an approach is a dead end. This dashboard tracks
           whether that judgment layer is compounding, measured{" "}
           <strong>model-agnostically</strong>: the work is done by whatever
-          agent (Claude, Codex, the operator), and the gain lives in the
+          agent (Claude, Codex, or a human reviewer), and the gain lives in the
           apparatus, not inside any one model.
         </p>
 

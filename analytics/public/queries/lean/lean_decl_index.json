@@ -1,7 +1,7 @@
 {
   "n_files": 471,
-  "n_declarations": 23740,
-  "source_fingerprint": "8c164625c0d417ed88d2bd3ae8700e24a85af255d0372859876660255bd21ee9",
+  "n_declarations": 23747,
+  "source_fingerprint": "bb53054c04109b3a04355548e93e70f9a9d2265300aa5856eac207d544f25d87",
   "excluded_globs": [
     "*_iter.lean",
     "*_smoke*.lean",
@@ -8163,11 +8163,77 @@
         "line": 153
       }
     ],
-    "no_C7PackingPaidFiveFrameTracefreeSource_of_diagonalDiniOverflow": [
+    "can": [
       {
         "kind": "theorem",
         "file": "ns_c7_surplus_five_frame_bridge",
         "line": 218
+      },
+      {
+        "kind": "structure",
+        "file": "ns_route1_constructive_frontier",
+        "line": 294
+      },
+      {
+        "kind": "class",
+        "file": "ns_trackb_tao_2014_falsifier",
+        "line": 182
+      }
+    ],
+    "FiveFrameOwnerPreimagePrefixReceipt": [
+      {
+        "kind": "structure",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 220
+      }
+    ],
+    "FiveFrameOwnerPreimagePrefixReceipt.ofC7PackingOwnerPreimageReceipt": [
+      {
+        "kind": "def",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 248
+      }
+    ],
+    "FiveFrameWeakOwnerPreimageLabels": [
+      {
+        "kind": "structure",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 326
+      }
+    ],
+    "weakOwnerPreimageLabels_of_diagonalDiniOverflow": [
+      {
+        "kind": "def",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 342
+      }
+    ],
+    "weakOwnerPreimageLabels_compatible_with_diagonalDiniOverflow": [
+      {
+        "kind": "theorem",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 370
+      }
+    ],
+    "no_ownerPreimagePrefixPaidFiveFrameTracefreeSource_of_diagonalDiniOverflow": [
+      {
+        "kind": "theorem",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 390
+      }
+    ],
+    "no_weakOwnerLabelsPlusReceiptPaidFiveFrameTracefreeSource_of_diagonalDiniOverflow": [
+      {
+        "kind": "theorem",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 416
+      }
+    ],
+    "no_C7PackingPaidFiveFrameTracefreeSource_of_diagonalDiniOverflow": [
+      {
+        "kind": "theorem",
+        "file": "ns_c7_surplus_five_frame_bridge",
+        "line": 437
       }
     ],
     "ProjectedPressureRotation": [
@@ -93868,18 +93934,6 @@
         "kind": "structure",
         "file": "ns_route1_constructive_frontier",
         "line": 252
-      }
-    ],
-    "can": [
-      {
-        "kind": "structure",
-        "file": "ns_route1_constructive_frontier",
-        "line": 294
-      },
-      {
-        "kind": "class",
-        "file": "ns_trackb_tao_2014_falsifier",
-        "line": 182
       }
     ],
     "Route1ChannelAccountingBase": [

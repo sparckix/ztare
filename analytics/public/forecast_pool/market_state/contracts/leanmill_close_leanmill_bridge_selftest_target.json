@@ -1,0 +1,81 @@
+{
+  "aggregate": {
+    "exists": false
+  },
+  "artifact_paths": {
+    "aggregate": "analytics/public/forecast_pool/aggregates/leanmill_close_leanmill_bridge_selftest_target.json",
+    "contract": "analytics/public/forecast_pool/contracts/leanmill_close_leanmill_bridge_selftest_target.json",
+    "market_state": "analytics/public/forecast_pool/market_state/contracts/leanmill_close_leanmill_bridge_selftest_target.json",
+    "outcome": "analytics/public/forecast_pool/outcomes/leanmill_close_leanmill_bridge_selftest_target.json",
+    "score": "analytics/public/forecast_pool/scores/leanmill_close_leanmill_bridge_selftest_target.json"
+  },
+  "contract": {
+    "budget_agent_minutes": 60.0,
+    "consumes_surfaced": null,
+    "created_at": "2026-06-11T18:12:44Z",
+    "created_by": "leanmill:forecast_router",
+    "horizon": "bounded_attempt",
+    "layer": "micro",
+    "objective_resolver": "leanmill_kernel",
+    "question": "Will the leanmill solver CLOSE this target with a KERNEL-verified, governance-ratified proof in one bounded attempt (no sorry/axiom/statement-swap)? Target: theorem t : 1 + 1 = 2 := by rfl",
+    "success_threshold": "kernel_ratified_closure",
+    "task_type": "leanmill_close"
+  },
+  "contract_id": "leanmill_close_leanmill_bridge_selftest_target",
+  "decision_use": {
+    "latest": null,
+    "ledger_path": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
+    "row_count": 0
+  },
+  "effective_independence": {
+    "effective_n": 0,
+    "independence_groups": [],
+    "latest_forecast_count": 0,
+    "meets_two_independent_agents": false,
+    "note": "Effective-N is a conservative read-time lower bound. Multiple aliases in one provider/runtime family count as one independent agent family for routing.",
+    "raw_agent_ids": []
+  },
+  "forecasts": {
+    "history_count": 0,
+    "latest": [],
+    "latest_count": 0
+  },
+  "generated_at": "2026-06-11T18:12:45Z",
+  "lifecycle": {
+    "blocks_post_tick_close": false,
+    "closed": true,
+    "missing_obligations": [],
+    "next_action": "voided_no_score",
+    "state": "voided"
+  },
+  "outcome": {
+    "actual_cost_agent_minutes": null,
+    "changed_by_forecast_ids": [],
+    "decision_changed_bool": null,
+    "exists": true,
+    "resolved_at": "2026-06-11T18:12:45Z",
+    "success_bool": null,
+    "voided": true
+  },
+  "rd_fast_read": {
+    "allocation_recommendation": {
+      "action": "ask_another_independent_agent",
+      "reason": "aggregate lacks p_success",
+      "voi_proxy": null
+    },
+    "effective_n": 0,
+    "expected_cost_agent_minutes": null,
+    "latest_decision_use": null,
+    "meets_two_independent_agents": false,
+    "next_action": "voided_no_score",
+    "p_success": null,
+    "routing_hint": null,
+    "top_failure_modes": []
+  },
+  "score": {
+    "exists": false,
+    "mean_brier": null,
+    "score_rows": 0,
+    "scored_at": null
+  }
+}

@@ -1,17 +1,17 @@
 {
   "counts": {
-    "aggregate_contracts": 326,
-    "contracts": 368,
+    "aggregate_contracts": 327,
+    "contracts": 370,
     "decision_use_rows": 2,
     "forecast_update_files": 11,
     "score_rows": 594,
     "thin_independence_contracts": 65
   },
   "effective_independence": {
-    "contracts_with_forecasts": 343,
+    "contracts_with_forecasts": 344,
     "effective_n_bins": {
       "1": 65,
-      "2": 262,
+      "2": 263,
       "3": 14,
       "4": 2
     },
@@ -311,7 +311,7 @@
       "tick668_level503_no_reuse_collision_free_incidence_source"
     ]
   },
-  "generated_at": "2026-05-27T08:40:51Z",
+  "generated_at": "2026-06-11T18:44:00Z",
   "insight_count": 8,
   "insights": [
     {
@@ -418,7 +418,7 @@
     },
     {
       "evidence": {
-        "aggregate_contracts": 326,
+        "aggregate_contracts": 327,
         "decision_changed_rows": 2,
         "decision_use_rows": 2
       },
@@ -545,10 +545,10 @@
     },
     {
       "evidence": {
-        "contracts_with_forecasts": 343,
+        "contracts_with_forecasts": 344,
         "effective_n_bins": {
           "1": 65,
-          "2": 262,
+          "2": 263,
           "3": 14,
           "4": 2
         },
@@ -829,8 +829,9 @@
     },
     {
       "evidence": {
-        "count": 1,
+        "count": 2,
         "samples": [
+          "leanmill_close_pool_plumbing_e2e",
           "ns_route1_atom_tangentiality_proven_or_assumed_meso_20260516_tick575"
         ]
       },

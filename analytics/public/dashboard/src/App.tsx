@@ -54,18 +54,23 @@ export function App() {
           ZTARE
           <span className="sub">Reflexive Research Instrument</span>
         </h1>
-        <div className="app-meta">
-          {asOf ? <>As of <b>{asOf}</b></> : "—"}<br />
-          {data.trajectoryCurves
-            ? `mine ${new Date(data.trajectoryCurves.audit_timestamp_utc).toLocaleDateString()}`
-            : ""}
+        <div className="app-side">
+          <div className="app-links">
+            <a href="./ns-atlas/">NS Atlas</a>
+          </div>
+          <div className="app-meta">
+            {asOf ? <>As of <b>{asOf}</b></> : "—"}<br />
+            {data.trajectoryCurves
+              ? `mine ${new Date(data.trajectoryCurves.audit_timestamp_utc).toLocaleDateString()}`
+              : ""}
+          </div>
         </div>
       </div>
 
       <div className="caveat">
-        <strong>Instrument, not verdict.</strong> Volume panels are activity,
-        not insight; the honest insight signal is the contextualized taste
-        curve — and the apparatus has demoted its own measurement here before.
+        <strong>Read as an instrument.</strong> Counts show activity. The
+        stronger signals are external calibration, cross-family disagreement,
+        downstream dependence, and the contextualized taste curve.
       </div>
 
       <div className="tabs">

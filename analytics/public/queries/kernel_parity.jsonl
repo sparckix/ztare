@@ -1,0 +1,3 @@
+{"target": "seam_t", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "disc_u", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "b112_t", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}

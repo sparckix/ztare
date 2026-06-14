@@ -252,7 +252,7 @@ export function TrajectoryView({ data }: { data: DashboardData }) {
           <ol>
             <li><code>scripts/public/mining/sample_artifacts_for_taste.py</code> walks 11 artifact kinds (F-rows, seams, paper sections, project evaluations, verified axioms, project workspace markdown, raw evidence inputs, evidence files, project charters, concept docs, memory entries, top-level reasoning) across the corpus.</li>
             <li>Stratified sampling: ~25 per week, balanced across kinds, capped at 3 per project so NS doesn't dominate. Random shuffle so the rater can't infer week from order.</li>
-            <li><code>scripts/public/mining/build_context_primer.py</code> compiles a primer of (a) top-15 most-cited seams in the reference graph, (b) the operator-curated memory entries, (c) anti-pattern catalog headers, (d) DECISION_LOG headers.</li>
+            <li><code>scripts/public/mining/build_context_primer.py</code> compiles a primer of (a) top-15 most-cited seams in the reference graph, (b) human-curated memory entries, (c) anti-pattern catalog headers, (d) DECISION_LOG headers.</li>
             <li>A <strong>cold sub-agent</strong> (no context contamination from this codebase) reads the primer FIRST, then rates each sample 0-5: <strong>0</strong> = boilerplate, <strong>1</strong> = trivially observable, <strong>2</strong> = useful but expected, <strong>3</strong> = sharp framing, <strong>4</strong> = high-reuse / mechanism-revealing, <strong>5</strong> = paradigm-shifting (would force rewriting one of the most-cited seams in the primer).</li>
             <li><code>scripts/public/mining/aggregate_taste.py</code> bins ratings by the sample's week (revealed only at aggregation time) and computes mean / max / count of ≥4 / count of ≥5 per week.</li>
           </ol>
@@ -299,7 +299,7 @@ export function TrajectoryView({ data }: { data: DashboardData }) {
             <li><strong>Confound-B (total artifact creation):</strong> count of <em>all</em> apparatus-shaped files created repo-wide per week. The broadest possible activity-volume signal.</li>
             <li><strong>Confound-C (external events):</strong> manually curated in <code>org/runtime/external_events.yaml</code>. Paper deadlines, model upgrades, GPU runs, conferences — anything not apparatus-driven that might create activity.</li>
           </ul>
-          <p>If sophistication / insight / compounding curves rise together with confounds, the apparent acceleration is mostly "operator working more hours that week." If they diverge — sophistication up, confounds flat — the apparatus signal is something other than raw typing volume.</p>
+          <p>If sophistication / insight / compounding curves rise together with confounds, the apparent acceleration is mostly "more human work that week." If they diverge — sophistication up, confounds flat — the apparatus signal is something other than raw typing volume.</p>
         </details>
       </div>
 

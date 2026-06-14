@@ -1,1 +1,2 @@
 {"run_id": "1778164390", "iter": 3, "class_name": "RankNormalizedFamilyGate", "score": 67.0, "ts_utc": "2026-05-07T14:45:32.571414+00:00", "project_slug": "ztare_on_ztare_v3_meta_recursive"}
+{"run_id": "controlled_replay_20260613", "iter": 1, "class_name": "residual-boundary replay ledger", "score": 51.0, "outcome": "controlled_replay", "ts_utc": "2026-06-13T21:59:19.329239+00:00", "project_slug": "autoresearch_control_demo_20260613"}

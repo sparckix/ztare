@@ -5,8 +5,8 @@
     "closed": 288,
     "malformed_forecast_skipped": 1,
     "resolved_without_forecasts": 15,
-    "score": 1,
-    "voided_no_score": 32
+    "score": 2,
+    "voided_no_score": 33
   },
   "aggregate_missing": {
     "count": 17,
@@ -294,7 +294,7 @@
     "weights_exists": true,
     "weights_path": "analytics/public/forecast_pool/calibration_weights.json"
   },
-  "contract_count": 368,
+  "contract_count": 370,
   "decision_use": {
     "decision_changed_rows": 2,
     "ignored_without_reason": 0,
@@ -374,15 +374,15 @@
     }
   },
   "forecast_pool_root": "analytics/public/forecast_pool",
-  "generated_at": "2026-05-27T08:40:51Z",
+  "generated_at": "2026-06-11T18:44:00Z",
   "lifecycle_counts": {
     "aggregate_ready": 14,
     "forecast_fulfilled": 17,
     "malformed_forecast": 1,
     "resolved_scored": 288,
-    "resolved_unscored": 1,
+    "resolved_unscored": 2,
     "resolved_without_forecasts": 15,
-    "voided": 32
+    "voided": 33
   },
   "maintenance_plan": {
     "path": "analytics/public/forecast_pool/market_state/maintenance_plan.json",
@@ -402,8 +402,9 @@
     "summary": "probability buckets, effort reliability, failure-mode precision, drift, high-confidence misses"
   },
   "resolved_without_score": {
-    "count": 16,
+    "count": 17,
     "samples": [
+      "leanmill_close_pool_plumbing_e2e",
       "ns_route1_C7_surplus_cf_depletion_reduction_meso_20260516_tick582",
       "ns_route1_C7_viscous_alignment_surplus_atom_meso_20260516_tick581",
       "ns_route1_CF_needs_alignment_sign_not_s_z_meso_20260516_tick577",

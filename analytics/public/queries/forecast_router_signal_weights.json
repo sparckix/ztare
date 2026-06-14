@@ -1,0 +1,14 @@
+{
+  "move_prior": {
+    "default_weight": 1.0,
+    "domains": {
+      "lean": 0.1533
+    },
+    "evidence": {
+      "lean": {
+        "mean_brier": 0.4233,
+        "score_rows": 6
+      }
+    }
+  }
+}

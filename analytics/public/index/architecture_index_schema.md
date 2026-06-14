@@ -8,7 +8,7 @@ catalog of available primitives — pattern-matched by lexical triggers.
 **Context (2026-05-08)**: The motivating discoverability failure — ~60+ gates,
 GP-216/GP-219 ops, Lagrangian derivation, eigenquestion generator, mining
 infrastructure, fit primitives all underused tonight until operator prompted.
-Index is the load-bearing fix.
+Index is the consequential discoverability fix.
 
 ## File format
 
@@ -21,17 +21,17 @@ Render via `scripts/render_architecture_index.py` to `src/ztare/architecture_ind
 |---|---|---|---|
 | `id` | string | yes | Stable identifier, SCREAMING-KEBAB-CASE (e.g. `LAGRANGIAN-DERIVATION`, `MINE-CLIMB-TRIGGERS`). |
 | `path` | string | yes | Repo-relative path. Must exist on disk. |
-| `kind` | string | yes | One of: `gate` / `op` / `mining` / `primitive` / `pattern` / `anti-pattern` / `reflexive_primitive` / `validator` / `orchestrator` / `script`. The `reflexive_primitive` kind (added 2026-05-08) catalogs load-bearing self-referential architectural components — third class parallel to `pattern` (orchestration) and `anti-pattern` (failure modes); see `org/reflexive_primitives/INDEX.md`. |
+| `kind` | string | yes | One of: `gate` / `op` / `mining` / `primitive` / `pattern` / `anti-pattern` / `reflexive_primitive` / `validator` / `orchestrator` / `script`. The `reflexive_primitive` kind (added 2026-05-08) catalogs consequential self-referential architectural components — third class parallel to `pattern` (orchestration) and `anti-pattern` (failure modes); see `org/reflexive_primitives/INDEX.md`. |
 | `description` | string | yes | One-line capability summary. |
 | `applicability` | array<string> | yes | Lexical/structural triggers when to deploy. Director pattern-matches these. |
-| `impact_factor_expost` | int | yes | 0-5 honest score. Criteria: catch ledger refs + climb-trigger mining + tonight's session usage producing load-bearing output. |
+| `impact_factor_expost` | int | yes | 0-5 honest score. Criteria: catch ledger refs + climb-trigger mining + tonight's session usage producing consequential output. |
 | `last_used` | string | yes | ISO date `YYYY-MM-DD`, or `"never"`. |
 | `dependencies` | array<string> | yes | Other primitive `id`s this composes with. |
 
 ## Impact factor scoring rubric (anti-laundering)
 
-- **5**: Tonight produced a load-bearing catch via this primitive AND it appears in catch ledger / top climb trigger.
-- **4**: Used tonight + produced load-bearing output, OR appears in ≥1 ratified catch.
+- **5**: Tonight produced a consequential catch via this primitive AND it appears in catch ledger / top climb trigger.
+- **4**: Used tonight + produced consequential output, OR appears in ≥1 ratified catch.
 - **3**: Used in recent (last 14 days) substrate work with verified output, but no catch ledger row.
 - **2**: Wired and validated but only intermittent recent use.
 - **1**: Exists but rarely fired in last 30 days. Architectural debt candidate.
@@ -67,5 +67,5 @@ so wiring the index there makes capabilities discoverable by default.
 ## Maintenance
 
 Append-only by default. Update `impact_factor_expost` + `last_used` when a
-primitive fires in a load-bearing way. Periodic prune of `impact_factor_expost: 0`
+primitive fires in a consequential way. Periodic prune of `impact_factor_expost: 0`
 entries during retirement reviews (don't auto-delete; flag for principal).

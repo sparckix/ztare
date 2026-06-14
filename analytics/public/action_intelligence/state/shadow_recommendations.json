@@ -1,36 +1,10 @@
 {
   "counts": {
-    "forecast_ops": 16,
+    "forecast_ops": 25,
     "trajectory_surfacing": 10
   },
-  "generated_at": "2026-05-19T19:26:27Z",
+  "generated_at": "2026-06-13T16:18:57Z",
   "recommendations": [
-    {
-      "blocking_checks": [
-        "missing_decision_use"
-      ],
-      "confidence": "diagnostic_only",
-      "decision_id": "sh_c901d8c3617fbdcb",
-      "domain": "forecast_ops",
-      "evidence_refs": [
-        "analytics/public/forecast_pool/aggregates",
-        "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
-      ],
-      "execution_authority": "none_advisory_only",
-      "externality_checks": {
-        "confidence_interval": null,
-        "goodhart_risk": "medium",
-        "min_sample_size_met": false,
-        "negative_externality_risk": "unknown",
-        "sample_size": 0,
-        "uncertainty_note": "source-health defect blocks stronger recommendation"
-      },
-      "generated_at": "2026-05-19T19:26:26Z",
-      "rationale": "forecast_ops recommendations remain diagnostic until decision-use rows exist",
-      "recommendation_id": "sr_64489f3af3cbeb6c",
-      "recommended_action": "repair_source_emitter",
-      "schema_version": 1
-    },
     {
       "blocking_checks": [
         "source_compilation_defect"
@@ -49,10 +23,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 195.0,
@@ -60,7 +34,7 @@
         "p_success": 0.1697658291072176
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_23077480d7445888",
+      "recommendation_id": "sr_852a0f2657749de7",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -83,10 +57,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 38.5,
@@ -94,7 +68,7 @@
         "p_success": 0.4463327300805155
       },
       "rationale": "large cross-forecaster disagreement",
-      "recommendation_id": "sr_b270b690e565971d",
+      "recommendation_id": "sr_c18d678b7da30df3",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -117,10 +91,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 3,
         "expected_cost_agent_minutes": 36.0,
@@ -128,7 +102,7 @@
         "p_success": 0.5133587075721221
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_a1d63664cc86157d",
+      "recommendation_id": "sr_e8d9a41b2d7f5563",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -151,10 +125,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 29.0,
@@ -162,7 +136,7 @@
         "p_success": 0.45894196372880147
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_197fadc60914986f",
+      "recommendation_id": "sr_20a99cdddb6b10f6",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -185,10 +159,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 51.5,
@@ -196,7 +170,7 @@
         "p_success": 0.3679584233351364
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_80b71156b66bec99",
+      "recommendation_id": "sr_98d45903872ebc51",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -219,10 +193,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 3,
         "expected_cost_agent_minutes": 17120.0,
@@ -230,8 +204,42 @@
         "p_success": 0.12811027996197352
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_bfa4950298dc9b05",
+      "recommendation_id": "sr_43fb1dbebdcd0f35",
       "recommended_action": "defer",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "leanmill_close_pool_plumbing_e2e",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/leanmill_close_pool_plumbing_e2e.json",
+        "analytics/public/forecast_pool/contracts/leanmill_close_pool_plumbing_e2e.json",
+        "analytics/public/forecast_pool/market_state/contracts/leanmill_close_pool_plumbing_e2e.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 2,
+        "expected_cost_agent_minutes": 36.75,
+        "meets_two_independent_agents": true,
+        "p_success": 0.4449944320643648
+      },
+      "rationale": "large cross-forecaster disagreement",
+      "recommendation_id": "sr_de3184d7f7962637",
+      "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
     },
@@ -253,10 +261,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 25.0,
@@ -264,7 +272,7 @@
         "p_success": 0.7713820414894621
       },
       "rationale": "positive expected value and high success probability",
-      "recommendation_id": "sr_fa694336c284d001",
+      "recommendation_id": "sr_707bd87bf5eb5981",
       "recommended_action": "run_now",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -287,10 +295,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 31.375,
@@ -298,7 +306,7 @@
         "p_success": 0.3537051415930706
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_c977e41135aeb29b",
+      "recommendation_id": "sr_ea3caf08e7aad91b",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -321,10 +329,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": 32.0,
@@ -332,7 +340,7 @@
         "p_success": 0.17999999999999997
       },
       "rationale": "fewer than two independent usable forecasts",
-      "recommendation_id": "sr_112d7069eb81d3ed",
+      "recommendation_id": "sr_8167be16c0e14d1e",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -355,10 +363,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 605.0,
@@ -366,7 +374,7 @@
         "p_success": 0.22632608231571438
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_18111e61a00d7cd7",
+      "recommendation_id": "sr_83da769e116f4bf5",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -389,10 +397,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 420.0,
@@ -400,7 +408,7 @@
         "p_success": 0.2683622323599068
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_567c6155cdd4ae8c",
+      "recommendation_id": "sr_1fccccacb0990659",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -423,10 +431,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 510.0,
@@ -434,7 +442,7 @@
         "p_success": 0.3240165287061081
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_13b6005cee5161cd",
+      "recommendation_id": "sr_d903c09f4f99eedc",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -457,10 +465,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 640.0,
@@ -468,7 +476,7 @@
         "p_success": 0.45329983228431997
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_5d552cd4a1a0ff24",
+      "recommendation_id": "sr_37041d62afb161a9",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -491,10 +499,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 417.5,
@@ -502,7 +510,7 @@
         "p_success": 0.4167997809419332
       },
       "rationale": "large cross-forecaster disagreement",
-      "recommendation_id": "sr_76d0a6042442fae9",
+      "recommendation_id": "sr_a8e2496ef9308ee2",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -525,10 +533,10 @@
         "goodhart_risk": "medium",
         "min_sample_size_met": false,
         "negative_externality_risk": "unknown",
-        "sample_size": 0,
+        "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-05-19T19:26:26Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 38.375,
@@ -536,17 +544,323 @@
         "p_success": 0.2594996871087636
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_fe71460ba8bbcbcc",
+      "recommendation_id": "sr_723062609c2145a6",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
     },
     {
       "blocking_checks": [
-        "weak_gp233_linkage"
+        "source_compilation_defect"
       ],
       "confidence": "diagnostic_only",
-      "decision_id": "gp233_surface_7c998a7400a2c609",
+      "decision_id": "tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+        "analytics/public/forecast_pool/contracts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level498_incidence_derived_targetslot_or_no_current_field_obstruction.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_63959ed4accb85f5",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json",
+        "analytics/public/forecast_pool/contracts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level499_finite_incidence_extraction_source_or_prop_only_boundary.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 2,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": true,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_2109a7276c136a13",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level500_bounded_event_index_selector_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level500_bounded_event_index_selector_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level500_bounded_event_index_selector_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level500_bounded_event_index_selector_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 2,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": true,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_aff30b0224635590",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level501_least_hit_incidence_selector_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level501_least_hit_incidence_selector_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level501_least_hit_incidence_selector_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level501_least_hit_incidence_selector_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_36ed7fec52b50175",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level502_pde_bounded_incidence_collision_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level502_pde_bounded_incidence_collision_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level502_pde_bounded_incidence_collision_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level502_pde_bounded_incidence_collision_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_280437053657f540",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level503_no_reuse_collision_free_incidence_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level503_no_reuse_collision_free_incidence_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level503_no_reuse_collision_free_incidence_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level503_no_reuse_collision_free_incidence_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_797ae29718d38a0a",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level504_eventdata_horizon_bounded_incident_existence_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level504_eventdata_horizon_bounded_incident_existence_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level504_eventdata_horizon_bounded_incident_existence_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level504_eventdata_horizon_bounded_incident_existence_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_07adfb0ab2e587d5",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level505_cover_selection_target_event_candidate_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level505_cover_selection_target_event_candidate_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level505_cover_selection_target_event_candidate_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level505_cover_selection_target_event_candidate_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_405ee6da26554df0",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "source_compilation_defect"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "tick668_level506_eventdata_incidence_cover_source",
+      "domain": "forecast_ops",
+      "evidence_refs": [
+        "analytics/public/forecast_pool/aggregates/tick668_level506_eventdata_incidence_cover_source.json",
+        "analytics/public/forecast_pool/contracts/tick668_level506_eventdata_incidence_cover_source.json",
+        "analytics/public/forecast_pool/market_state/contracts/tick668_level506_eventdata_incidence_cover_source.json"
+      ],
+      "execution_authority": "none_advisory_only",
+      "externality_checks": {
+        "confidence_interval": null,
+        "goodhart_risk": "medium",
+        "min_sample_size_met": false,
+        "negative_externality_risk": "unknown",
+        "sample_size": 2,
+        "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
+      },
+      "generated_at": "2026-06-13T16:18:57Z",
+      "gp230": {
+        "effective_n": 1,
+        "expected_cost_agent_minutes": null,
+        "meets_two_independent_agents": false,
+        "p_success": null
+      },
+      "rationale": "aggregate lacks p_success",
+      "recommendation_id": "sr_1129bd5b7e6f04ac",
+      "recommended_action": "ask_another_independent_agent",
+      "schema_version": 1,
+      "source": "gp230_read_model"
+    },
+    {
+      "blocking_checks": [
+        "unconsumed_surface"
+      ],
+      "confidence": "diagnostic_only",
+      "decision_id": "gp233_surface_d2ff2855c9107f6d",
       "domain": "trajectory_surfacing",
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -560,16 +874,16 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_f3248a972b5e5a35",
+      "recommendation_id": "sr_5837fff431b83a6a",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
-        "bottleneck": "`are belief-updates / the recurring pessimism mechanically caught, and can micro-scores infer it?`",
-        "decision_changed": "Mechanized one surfaced positive-externality (signed forecast bias, diagnostic-only, reuse calibration_payload+\u00a76b, no new scorer/ledger). Finding: n=12 RD contracts bias=-0.024 CALIBRATED \u21d2 pessimism is NARRATIVE (F-row verdicts, caught by conclusion-soundness gate) NOT numeric (forecasts near-calibrated). **Decision change:** stop looking for the pessimism reflex in forecast calibration; route vigilance to narrative-verdict framing. Honest status: NOT a mechanized recurrence-detector (catch ledger=manual incident log, not belief-delta tracker; AP-014 cluster hand-incremented; externalities_rollup EXISTS but DORMANT). Next = 3-source audit revive-vs-prune externalities_rollup, NOT a parallel build (don't-over-architect).",
+        "bottleneck": "Lean compiled a definitional threshold transaction-channel source; pointwise formula bindings now derive from full pre-payoff payment/boundary function equalities instead of post-hoc scalar equality.",
+        "decision_changed": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260526T_level424_definitional_threshold_transaction_channel/20260526T051437Z_LEINativeDefinitionalThresholdTransactionChannelSource_thresholdInterfacePayment_eq_defectActiveChannel/pack.md; ztare_proofs/ZtareProofs/ns_tick668_pressure_cutoff_carrier_identity.lean",
         "surface_kind": "gp233_next_lever",
-        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:500"
+        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:1322"
       }
     },
     {
@@ -577,7 +891,7 @@
         "unconsumed_surface"
       ],
       "confidence": "diagnostic_only",
-      "decision_id": "gp233_surface_1d719189e187ac64",
+      "decision_id": "gp233_surface_38e7b4c60147b61d",
       "domain": "trajectory_surfacing",
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -591,16 +905,16 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_e10e3f8f8cb688a3",
+      "recommendation_id": "sr_a24053be9b0a526f",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
-        "bottleneck": "`how do multiple RDs (artisanal/VPS, diff substrates) not cross-block; was the periodic-guarantee fix mode-correct?`",
-        "decision_changed": "Owner-scoped the GP-230 leg (--owner=created_by; own=HARD/other=WARN/none=advisory; owner=None=legacy global back-compat). 3-mode synthetic proof decisive. Reverted GAP-H (enforced org-runtime KR/daemon register dormant in artisanal mode \u2192 permanent false-nag = the predicted over-architecting failure; honest self-revert). **Decision change:** multi-RD isolation = scope GATES by owner (reuse blocking-substrate precedent), NOT new infra; mode is a driver not an architecture, org-runtime-only enforcement self-gates-off in artisanal; shared ledgers stay append-only+owner-stamped. Activation caveat recorded (opt-in --owner must be wired at the role call site or the fix orphans).",
+        "bottleneck": "Lean compiled a restricted-prefix H-prefix-defined threshold channel source and a core-only gap confuser; Level422 formula fields now derive from pre-payoff threshold/H-prefix channel definitions, while bare local-energy H-prefix visibility is blocked as a relabeling source.",
+        "decision_changed": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260526T_level425_h_prefix_defined_threshold_channel_v2/20260526T052346Z_LEINativeHighInterfaceDefinedThresholdChannelSource_selectedAbs_eq_selectedDefectActive/pack.md; ztare_proofs/ZtareProofs/ns_tick668_pressure_cutoff_carrier_identity.lean",
         "surface_kind": "gp233_next_lever",
-        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:501"
+        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:1323"
       }
     },
     {
@@ -608,7 +922,7 @@
         "unconsumed_surface"
       ],
       "confidence": "diagnostic_only",
-      "decision_id": "gp233_surface_bf9982408e91aacf",
+      "decision_id": "gp233_surface_87a1c83accfe8d8b",
       "domain": "trajectory_surfacing",
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -622,16 +936,16 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_236004941fd96f3a",
+      "recommendation_id": "sr_960ecb4f75b5a2ca",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
-        "bottleneck": "`is the consequence-exposure mechanization my (bundle) build, and is 0-false-ratify actually clean?`",
-        "decision_changed": "Surfaced a real hole: gp233 genuine_novel_closure absorbs hypothesis-as-fact shims \u21d2 0-false-ratify sound this session only via hand-labeling. **Decision change:** (1) do NOT build (D) \u2014 GP-188 Q3 FLAWED-review MF#3 already adjudicated hypothesis-as-fact OUT of the deterministic set and INTO existing v33 (currency-mismatch/indirect-leakage); my (D) `by assumption` idea would re-litigate their settled must-fix = cross-agent duplication; (2) D detector owned by another agent's cycle; (3) correctly-aimed bundle fix = wire genuine rows through EXISTING v33, deferred until their interface settles (premature now = rework). Disclosed as standing caveat on all 0-false-ratify claims (anti-AP-013 overclaim). No code this turn.",
+        "bottleneck": "Lean compiled `Level424 -> Level425` but blocked selected-point correlated coarea evidence from sourcing the restricted-prefix H-defined threshold channel.",
+        "decision_changed": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260526T_level426_selected_point_coarea_gap/20260526T053011Z_CorrelatedThresholdSelectedPointOnlyChannelGap_no_highInterfaceDefinedThresholdChannelSource/pack.md; ztare_proofs/ZtareProofs/ns_tick668_pressure_cutoff_carrier_identity.lean",
         "surface_kind": "gp233_next_lever",
-        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:502"
+        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:1324"
       }
     },
     {
@@ -639,7 +953,7 @@
         "unconsumed_surface"
       ],
       "confidence": "diagnostic_only",
-      "decision_id": "gp233_surface_f93808734ed699f0",
+      "decision_id": "gp233_surface_f45571cb21b53d08",
       "domain": "trajectory_surfacing",
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -653,24 +967,24 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_80b9d1dd83fc46e2",
+      "recommendation_id": "sr_c319084275f954d1",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
-        "bottleneck": "`operator delegated ownership; impl review FLAWED (MFa/MFb/MFc); placement rule (loop-executed \u21d2 src/ not scripts/); beware regressions`",
-        "decision_changed": "Fixed MFa (depth-aware := / by body-cut \u2014 default-arg false-FAIL), MFb (fail-closed/blocking gated on non-empty hard_target set \u2014 empty head-set never blocks the live loop), MFc (_peel namespace last-component), + my gap#1 (conclusion \u2200/\u2192 antecedents), gap#2 (ALL theorems not just last \u2014 trailing-clean-theorem evasion), gap#3 (multiline def/abbrev delta). 14/14 self-smoke incl explicit false-FAIL negative controls. Moved to src/ztare/gates/; lean_proof_gate._load made DUAL-PATH (src first, scripts fallback) \u2192 migrated organ + 4 unmoved siblings all load OK (end-to-end regression-checked). **Decision change:** placement rule applied INCREMENTALLY via dual-path loader (not a big-bang family move \u2014 the other 5 organs have scripts/ consumers route_c/gp225_audit/v33_corpus_vacuity; moving them now = regression, deferred to a scoped consumer-path-tolerant-ize-then-migrate follow-up). **Honest status: FLAWED-until-independent-re-review \u2014 I implemented the fixes, cannot self-bless; trust requires re-review per FLAWED-discipline.**",
+        "bottleneck": "Workbench showed coherent finite-prefix and metric-covering invoice receipts pay budget/no-reuse but fail threshold-channel event-family binding at event_identity/no_proxy_family; Lean added the coherent-invoice-only threshold-channel gap.",
+        "decision_changed": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260526T_level427_coherent_invoice_threshold_channel_gap_v2/20260526T053634Z_CoherentBoundaryInvoiceOnlyThresholdChannelGap_no_highInterfaceDefinedThresholdChannelSource/pack.md; ztare_proofs/ZtareProofs/ns_tick668_pressure_cutoff_carrier_identity.lean",
         "surface_kind": "gp233_next_lever",
-        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:503"
+        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:1325"
       }
     },
     {
       "blocking_checks": [
-        "weak_gp233_linkage"
+        "unconsumed_surface"
       ],
       "confidence": "diagnostic_only",
-      "decision_id": "gp233_surface_9df62092c0ebc946",
+      "decision_id": "gp233_surface_1e0a256d07edb5cf",
       "domain": "trajectory_surfacing",
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -684,16 +998,16 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_9c8d138510f276db",
+      "recommendation_id": "sr_545d21b46b3fb685",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
-        "bottleneck": "`did the disclosed 0-false-ratify hypothesis-as-fact hole actually materialize in any recorded claim; is the fixed organ advisory-reliable?`",
-        "decision_changed": "Ran the fixed organ (advisory, empty-targets, never-block) over all 18 prior bundle genuine-closure rows (A/B/C). Initially 1 flag (C03) \u2014 investigated: a `_peel` false-advisory (non-depth-aware arrow grabbed the `\u2192` inside `E \u2192L[\u211d] E` continuous-linear-map TYPE / argument parens \u21d2 spurious shared head). Fixed `_peel`: whole-wrapper paren strip + depth-aware top-level logical-arrow split that EXCLUDES bundled-hom decorators (\u2192L/\u2192+/\u2192\u2097/\u2192*/\u2192\u2090/\u2243L/[\u2026]). **Decision change:** (1) the 0-false-ratify hole did NOT materialize \u2014 18/18 prior genuine rows verified NOT consequence-exposure (caveat tightened: hand-label \u2192 mechanically-corroborated advisory); (2) a real organ bug (advisory cry-wolf on any \u2192L[-notation signature) found+fixed BEFORE the organ's independent re-review, self-smoke held 14/14 (no regression), C03 cleared. Pull-forward (operator: \"work on other things to avoid being on hold\") produced honest verification + a pre-re-review defect fix, non-conflicting with the running screener. Organ remains FLAWED-until-independent-re-review (now with one more fix in the set).",
+        "bottleneck": "Lean compiled a two-leg threshold/budget certificate: Level425 threshold channel gives analytic bridge, channel-separated reserve gives finite selected-depth, with a guard blocking separated budget alone as threshold-channel source.",
+        "decision_changed": "projects/ns_millennium_hunt/workspace/queries/pde_workbench/tick668/20260526T_level428_composite_threshold_budget_certificate/20260526T054049Z_ThresholdChannelWithSeparatedBoundaryBudgetSource_analytic_bridge_and_selected_depth_bound/pack.md; ztare_proofs/ZtareProofs/ns_tick668_pressure_cutoff_carrier_identity.lean",
         "surface_kind": "gp233_next_lever",
-        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:504"
+        "surface_payload_ref": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md:1326"
       }
     },
     {
@@ -716,9 +1030,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "TICK643 strain-eigenframe observable lane resolved FALSE (calibrated sharp-negative; H6)",
-      "recommendation_id": "sr_95fe91baa0ad8798",
+      "recommendation_id": "sr_88e1df9e38e724ca",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -747,9 +1061,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "TICK644 Lagrangian deformation-history class EXCLUDED (calibrated sharp-negative; H6)",
-      "recommendation_id": "sr_cbed711888858a14",
+      "recommendation_id": "sr_5e3115e2bf6d4f17",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -778,9 +1092,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "TICK644 contract tick644-lagrangian-vortexline-history-observable resolved FALSE (H6 reference; calibrated sharp-negative)",
-      "recommendation_id": "sr_17235c1f7c3f11ff",
+      "recommendation_id": "sr_fd9bdb0d6f2422d0",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -810,9 +1124,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "tick645-biotsavart-commutator-defect-nonlocality / F-NS-TICK645-BIOTSAVART-COMMUTATOR-DEFECT-NONLOCALITY-20260519 resolved FALSE (calibrated; CF_global_extension target; homogeneity-0 sharpening + operator-caught amnesia)",
-      "recommendation_id": "sr_9b2ee6d15dccf8c1",
+      "recommendation_id": "sr_3eb32aac60ba0e58",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -843,9 +1157,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-05-19T19:26:27Z",
+      "generated_at": "2026-06-13T16:18:57Z",
       "rationale": "tick652-c7-split-excess-fresh-radius-invoice / F-NS-TICK652-C7-SPLIT-EXCESS-FRESH-RADIUS-INVOICE-20260519 resolved FALSE: split-excess projection is not a same-tree fresh-radius invoice",
-      "recommendation_id": "sr_1bd7a58b528a9bac",
+      "recommendation_id": "sr_140770df39f73309",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {

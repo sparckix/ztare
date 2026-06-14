@@ -3,18 +3,18 @@
   "lane": "solver_lane",
   "mode": "dag_search",
   "provider": "claude_opus",
-  "generated_at": "2026-06-06T01:32:15.781399+00:00",
+  "generated_at": "2026-06-12T21:32:36.709581+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "claude_opus",
   "results": [
     {
-      "name": "adhoc::denef_lipshitz_question_formalization",
-      "target_name": "denef_lipshitz_question_formalization",
+      "name": "adhoc::b112f_u",
+      "target_name": "b112f_u",
       "kind": "c_pool_no_template",
       "mode": "dag_search",
-      "outcome": "closed",
-      "compile_ok": true,
-      "exit_code": 0,
+      "outcome": "exact_gap",
+      "compile_ok": false,
+      "exit_code": 1,
       "proof_text": "",
       "provider": "governed_dag_search",
       "providers_tried": [
@@ -35,91 +35,16 @@
           "node_id": "n0_root",
           "move": "claude_warm",
           "agent_kind": "warm_agent"
-        },
-        {
-          "provider": "claude_opus",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "cold_shot_fanout"
-        },
-        {
-          "provider": "codex_gpt5",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "cold_shot_fanout"
-        },
-        {
-          "provider": "deepseek_v2",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "cold_shot_fanout"
-        },
-        {
-          "provider": "claude_opus",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "external_frontier_prover"
-        },
-        {
-          "provider": "codex_gpt5",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "external_frontier_prover"
-        },
-        {
-          "provider": "deepseek_v2",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "external_frontier_prover"
-        },
-        {
-          "provider": "conjecture_lemma",
-          "outcome": "no_advance",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n0_root",
-          "move": "conjecture_lemma",
-          "agent_kind": "conjecture"
-        },
-        {
-          "provider": "native_hammer",
-          "outcome": "failed_compile",
-          "compile_ok": false,
-          "mnc_passed": false,
-          "node_id": "n1_sub_goal_1",
-          "move": "native_hammer",
-          "agent_kind": "native_hammer_cascade"
-        },
-        {
-          "provider": "claude_opus_warm",
-          "outcome": "closed",
-          "compile_ok": true,
-          "mnc_passed": true,
-          "node_id": "n1_sub_goal_1",
-          "move": "claude_warm",
-          "agent_kind": "warm_agent"
         }
       ],
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1780707712,
-        "row_id": "adhoc::denef_lipshitz_question_formalization",
-        "target_theorem_name": "denef_lipshitz_question_formalization",
-        "source_file": "ztare_proofs/AdHoc_denef_lipshitz_question_formalization.lean",
+        "generated_at_epoch": 1781299617,
+        "row_id": "adhoc::b112f_u",
+        "target_theorem_name": "b112f_u",
+        "source_file": "/var/folders/p3/y8cz7t3d7jv32skk58hf6l580000gn/T/b112f_d3gaw4ne/.solver_scratch/AdHoc_b112f_u.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": "(n N : \u2115)\n    (hN : 0 < N)\n    (G : RationalFunctionInJetVariables n)\n    (f : FormalPowerSeries \u211a)\n    (hf_integral : localizedIntegerPowerSeries N f)\n    (hf_ode : satisfiesDifferentialEquation G f)\n    (hG_defined : RationalFunctionInJetVariables.definedAtInitialJet G f) :\n    AlgebraicFunctionTaylorExpansion f",
+        "goal_excerpt": ": 2 = 2",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -149,46 +74,46 @@
         "evidence_basis": "local_default",
         "rd_primitive_hits": [
           {
-            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+            "id": "MECE-EXHAUSTIVE-PRE-POST-TICK-SURFACING",
+            "kind": "gate",
+            "score": 739.9,
+            "why": "bucket sympy_cas; impact 4",
+            "description": "RCA fix: protocol was split across tools (this precheck entrypoint-forced; rd_tick_brief \u00a78 pointer-not-forced; post_tick_check close-out only) \u21d2 forecast/codex-bet/ordering legs forgotten under goal-pressure. The ONE en"
+          },
+          {
+            "id": "CAS-W6-VERIFICATION",
+            "kind": "script",
+            "score": 728.5,
+            "why": "bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2",
+            "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack, shipped tonight)."
+          },
+          {
+            "id": "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
+            "kind": "anti-pattern",
+            "score": 726.4,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5",
+            "description": "A Lean proof compiles, is sorry-free, axiom-clean (clears GP-211) yet is NOT a novel closure: vacuous / gold-name-verbatim / one-exact? / indirect-leakage / scalar-currency. 5 sub-modes mechanized by the v33 Tier-0 organ"
+          },
+          {
+            "id": "BOUNDED-RATIO-SUPPORT-GATE",
+            "kind": "gate",
+            "score": 726.15,
+            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.25",
+            "description": "Exact rational gate for bounded-ratio surplus routes: checks whether E[rho]>=1+delta with a pre-payoff cap rho<=R gives support mass delta/(R-1) large enough, with a companion lower bound, to overfill threshold space; bl"
+          },
+          {
+            "id": "BUILD-DIAGNOSIS-PROMPT",
             "kind": "primitive",
-            "score": 738.9,
-            "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4",
-            "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea"
+            "score": 726.1,
+            "why": "impact 1",
+            "description": "Build a diagnosis-informed prompt from GP-112 output."
           },
           {
-            "id": "RESIDUAL-TO-LEVER",
+            "id": "FIT-RIEMANN-OPERATOR",
             "kind": "primitive",
-            "score": 737.9,
-            "why": "bucket negative_to_object; impact 4",
-            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
-          },
-          {
-            "id": "PDE-ESTIMATE-CRAFT-OPS",
-            "kind": "op",
-            "score": 733.65,
-            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.75",
-            "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin"
-          },
-          {
-            "id": "NS-ROUTE1-FIVE-CLAY-EQUIVALENT-RESIDUAL-VOID-ANCHOR",
-            "kind": "primitive",
-            "score": 721.6,
-            "why": "matched ode; bucket negative_to_object; impact 1",
-            "description": "STRUCTURAL ANCHOR (vocabulary-drift-proof): route-1 closure is ALREADY encoded as discharge >=1 of 5 Clay-equivalent residual axioms {BKM, Prodi-Serrin, ESS-L3, Beirao-da-Veiga, Constantin-Fefferman vorticity-direction-L"
-          },
-          {
-            "id": "PDE-CURRENCY-LEDGER",
-            "kind": "op",
-            "score": 720.9,
-            "why": "matched ode; bucket pde_ns_lean; impact 4; graph_bonus 1.5",
-            "description": "PDE execution currency ledger for exchange-rate obligations and produced currencies; includes local-model to finite-energy cutoff invoice conversion used to prevent spending local surplus as global PDE payment without cu"
-          },
-          {
-            "id": "NS-ROUTE1-RESIDUAL-MANIFEST-O1-DECISION-SURFACE",
-            "kind": "primitive",
-            "score": 712.6,
-            "why": "matched ode; bucket negative_to_object; impact 1",
-            "description": "O(1) amnesia decision surface: canonical open nodes C1-C6 (5 Clay-equiv + anti-twist) + alias table (>=6 vocab drifts all -> C5 Constantin-Fefferman == perennial atom) + formalized-negative blockers (tick578-580). Match "
+            "score": 726.1,
+            "why": "impact 1",
+            "description": "Attempt to find an operator whose eigenvalues match the Riemann zeros."
           }
         ],
         "action_program": [
@@ -236,14 +161,13 @@
         "credit_boundary": "advisory_only_no_factory_credit; the contract names the receipts that must pass before any credit-ready upgrade."
       },
       "dag_search": {
-        "root_status": "closed",
-        "root_resolution": "closure",
+        "root_status": "exact_gap",
+        "root_resolution": "exact_gap",
         "closed_or_exact_gap": true,
-        "moves_made": 7,
-        "wallclock_s": 1821.643,
+        "moves_made": 2,
+        "wallclock_s": 336.819,
         "levers": {
-          "n0_root": "closure: node n0_root (root_goal) ratified; propagate to parent / hand typed-exit to governance",
-          "n1_sub_goal_1": "closure: node n1_sub_goal_1 (sub_goal) ratified; propagate to parent / hand typed-exit to governance"
+          "n0_root": "escalate_noncommutative(diagnostic): node n0_root deferred having tried ONLY commutative/direct moves ['native_hammer', 'claude_warm'] \u2014 invent/decompose not reached. (Diagnostic only: tested invent \u226f strong-direct; flags the failure mode, not a guaranteed lever \u2014 escalate to a stronger prover/human.)"
         },
         "move_attribution": [
           {
@@ -254,11 +178,12 @@
             "mnc_passed": false,
             "ratified_close": false,
             "falsifier": false,
+            "rung": false,
             "residual": null,
-            "progress": 0.2,
+            "progress": 0.0,
             "goals_remaining": 0,
-            "error_class": "tactic_failed",
-            "wallclock_s": 214.59
+            "error_class": "other_error",
+            "wallclock_s": 0.0
           },
           {
             "node_id": "n0_root",
@@ -268,96 +193,19 @@
             "mnc_passed": false,
             "ratified_close": false,
             "falsifier": false,
+            "rung": false,
             "residual": null,
             "progress": 0.0,
             "goals_remaining": 0,
             "error_class": "other_error",
-            "wallclock_s": 911.45
-          },
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "cold_shot_fanout",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "residual": null,
-            "progress": 0.05,
-            "goals_remaining": 0,
-            "error_class": "unknown_identifier",
-            "wallclock_s": 100.53
-          },
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "external_frontier_prover",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "residual": null,
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "wallclock_s": 104.2
-          },
-          {
-            "node_id": "n0_root",
-            "node_kind": "root_goal",
-            "move": "conjecture_lemma",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "residual": "conjecture_no_advance",
-            "progress": 0.0,
-            "goals_remaining": 0,
-            "error_class": "other_error",
-            "wallclock_s": 105.77
-          },
-          {
-            "node_id": "n1_sub_goal_1",
-            "node_kind": "sub_goal",
-            "move": "native_hammer",
-            "kernel_clean": false,
-            "mnc_passed": false,
-            "ratified_close": false,
-            "falsifier": false,
-            "residual": null,
-            "progress": 0.2,
-            "goals_remaining": 0,
-            "error_class": "tactic_failed",
-            "wallclock_s": 191.38
-          },
-          {
-            "node_id": "n1_sub_goal_1",
-            "node_kind": "sub_goal",
-            "move": "claude_warm",
-            "kernel_clean": true,
-            "mnc_passed": true,
-            "ratified_close": true,
-            "falsifier": false,
-            "residual": null,
-            "progress": 1.0,
-            "goals_remaining": 0,
-            "error_class": "clean",
-            "wallclock_s": 134.91
+            "wallclock_s": 336.81
           }
         ],
         "trace": [
           {
-            "event": "cache_reverify_failed",
-            "node_id": "n0_root"
-          },
-          {
             "event": "move_failed",
             "node_id": "n0_root",
             "move": "native_hammer"
-          },
-          {
-            "event": "cache_reverify_failed",
-            "node_id": "n0_root"
           },
           {
             "event": "move_failed",
@@ -365,62 +213,14 @@
             "move": "claude_warm"
           },
           {
-            "event": "cache_reverify_failed",
-            "node_id": "n0_root"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n0_root",
-            "move": "cold_shot_fanout"
-          },
-          {
-            "event": "cache_reverify_failed",
-            "node_id": "n0_root"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n0_root",
-            "move": "external_frontier_prover"
-          },
-          {
-            "event": "cache_reverify_failed",
-            "node_id": "n0_root"
-          },
-          {
-            "event": "conjectured_sub_lemma",
-            "node_id": "n0_root",
-            "move": "conjecture_lemma",
-            "new_node_id": "n1_sub_goal_1",
-            "lever": "conjecture: proposed sub-lemma \u2192 n1_sub_goal_1",
-            "sub_goal_preview": "conjecture_no_advance"
-          },
-          {
-            "event": "move_failed",
-            "node_id": "n1_sub_goal_1",
-            "move": "native_hammer"
-          },
-          {
-            "event": "closed",
-            "node_id": "n1_sub_goal_1",
-            "move": "claude_warm",
-            "lever": "closure: node n1_sub_goal_1 (sub_goal) ratified; propagate to parent / hand typed-exit to governance"
-          },
-          {
-            "event": "parent_closed_by_children",
-            "node_id": "n0_root",
-            "via_children": [
-              "n1_sub_goal_1"
-            ]
-          },
-          {
             "event": "stop",
-            "reason": "root_closed"
+            "reason": "wallclock_budget_exhausted"
           }
         ]
       },
       "matched_negative_control": {
         "kind": "context_stripped",
-        "executed_at": "solver_layer"
+        "executed_at": "skipped"
       }
     }
   ]

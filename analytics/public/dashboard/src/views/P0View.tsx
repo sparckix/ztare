@@ -3,10 +3,17 @@ import type { DashboardData } from "../lib/data";
 import type { P0Metric, P0MetricsHistory } from "../lib/types";
 
 const GROUP_TITLE: Record<string, string> = {
-  "3.1_exogenous": "Exogenous anchors — the only Goodhart-resistant metrics",
-  "3.2_state": "State — where the work is",
-  "3.3_insight": "Insight generation (self-measured)",
-  "3.4_recursive": "Recursive improvement (self-measured)",
+  "3.1_exogenous": "External checks",
+  "3.2_state": "System state",
+  "3.3_insight": "Research quality signals",
+  "3.4_recursive": "Self-correction and compounding",
+};
+
+const GROUP_DETAIL: Record<string, string> = {
+  "3.1_exogenous": "Signals with some independence from the apparatus: forecast calibration, human catch attribution, and cross-family disagreement.",
+  "3.2_state": "Inventory and activity measures. Useful for context, weak as evidence of quality.",
+  "3.3_insight": "Quality-oriented signals. These are stricter than volume counts, but several still depend on in-system ratings.",
+  "3.4_recursive": "Whether the system catches faults, reuses primitives, avoids regressions, and turns proposed improvements into acted-on changes.",
 };
 
 // Sparkline minimum sample count. Below this we hide the sparkline:
@@ -24,9 +31,11 @@ function fmt(v: unknown): string {
   if (v === null || v === undefined) return "—";
   if (typeof v === "object")
     return Object.entries(v as Record<string, unknown>)
-      .map(([k, val]) => `${k}: ${typeof val === "object" ? JSON.stringify(val) : val}`)
+      .map(([k, val]) => `${publicText(k)}: ${
+        typeof val === "object" ? publicText(JSON.stringify(val)) : publicText(String(val))
+      }`)
       .join("  ·  ");
-  return String(v);
+  return publicText(String(v));
 }
 
 function historyFor(history: P0MetricsHistory | null, m: P0Metric):
@@ -115,20 +124,34 @@ function numOrDash(n: number | null): string {
   return n === null ? "—" : String(n);
 }
 
+function publicText(s: string): string {
+  return s
+    .replace(/\bOperator-vs-apparatus\b/g, "Human-vs-apparatus")
+    .replace(/\boperator-vs-apparatus\b/g, "human-vs-apparatus")
+    .replace(/\boperator-caught\b/g, "human-caught")
+    .replace(/\boperator-curated\b/g, "human-curated")
+    .replace(/\boperator working\b/g, "human working")
+    .replace(/\boperator load\b/g, "human review load")
+    .replace(/\boperator\b/g, "human")
+    .replace(/\bOperator\b/g, "Human");
+}
+
 function MetricRow({ m, history }: { m: P0Metric; history: P0MetricsHistory | null }) {
   const tierClass = m.tier === "A" ? "tag-signal" : m.tier === "B" ? "tag-amber"
     : m.tier === "C" ? "tag-slate" : "tag-warn";
   const spark = historyFor(history, m);
+  const label = publicText(m.label);
+  const caveat = publicText(m.caveat || "");
   return (
     <div className={`p0-row p0-${m.status}`}>
       <div className="p0-head">
-        <span className="p0-label">{m.label}</span>
+        <span className="p0-label">{label}</span>
         <span className="p0-badges">
           <span className={`tag ${tierClass}`}>tier {m.tier}</span>
           <span className="tag tag-slate">{m.lane}</span>
           {m.self_measured
             ? <span className="tag tag-warn">self-measured</span>
-            : <span className="tag tag-signal">exogenous/consumed</span>}
+            : <span className="tag tag-signal">external/consumed</span>}
           {m.status !== "ok" && <span className="tag tag-warn">{m.status}</span>}
         </span>
       </div>
@@ -136,11 +159,11 @@ function MetricRow({ m, history }: { m: P0Metric; history: P0MetricsHistory | nu
         <div className="p0-value">
           {m.status === "not_yet_computable"
             ? <em>not yet computable — null by design, not fabricated</em>
-            : fmt(m.value)}
+          : fmt(m.value)}
         </div>
         <Sparkline points={spark.points} sparkKey={spark.sparkKey} />
       </div>
-      <div className="p0-caveat">{m.caveat}
+      <div className="p0-caveat">{caveat}
         {m.owner && m.owner !== "p0_rollup" &&
           <span className="p0-owner"> · owner: {m.owner}</span>}
       </div>
@@ -180,10 +203,10 @@ export function P0View({ data }: { data: DashboardData }) {
   const brier = subNum(brierRow, "brier");
   const brierBase = subNum(brierRow, "uniform_baseline");
 
-  // Self-correction: who diagnosed the catches (apparatus vs operator).
+  // Self-correction: who diagnosed the catches (apparatus vs human reviewer).
   const diag = metricValue(metrics, "operator_vs_apparatus_diagnosis_ratio");
   const apparatus = subNum(diag, "apparatus");
-  const operator = subNum(diag, "operator");
+  const human = subNum(diag, "operator");
 
   // Insight density: latest contextualized-taste read + its weekly trend.
   const taste = metricValue(metrics, "contextualized_taste");
@@ -219,7 +242,7 @@ export function P0View({ data }: { data: DashboardData }) {
     {
       k: "Self-correction",
       v: "apparatus-carried",
-      sub: `${numOrDash(apparatus)} catches diagnosed by apparatus, ${numOrDash(operator)} by operator`,
+      sub: `${numOrDash(apparatus)} catches diagnosed by apparatus, ${numOrDash(human)} by human review`,
       tone: "good",
     },
     {
@@ -264,12 +287,13 @@ export function P0View({ data }: { data: DashboardData }) {
       </div>
 
       <div className="p0-pagecaveat">
-        <strong>How to read this:</strong> {p0.page_caveat} Only the green
-        "exogenous" panel resists this. Everything tagged
-        <span className="tag tag-warn">self-measured</span> is the apparatus
-        grading itself; everything tagged
-        <span className="tag tag-signal">exogenous/consumed</span> has real
-        independence. Tier A→C = how much to trust the number.
+        <strong>Trust the external checks first.</strong> {p0.page_caveat}
+        Metrics tagged
+        <span className="tag tag-warn">self-measured</span> are the apparatus
+        grading itself. Metrics tagged
+        <span className="tag tag-signal">external/consumed</span> have a
+        stronger independence story. Tier A-C is the trust grade, not an
+        achievement score.
       </div>
 
       {order.map((g) => {
@@ -279,6 +303,7 @@ export function P0View({ data }: { data: DashboardData }) {
         return (
           <div className={`panel ${exo ? "p0-exo" : ""}`} key={g}>
             <h3>{GROUP_TITLE[g] || g}</h3>
+            {GROUP_DETAIL[g] && <div className="panel-intro">{GROUP_DETAIL[g]}</div>}
             {rows.map((m) => <MetricRow key={m.key} m={m} history={history} />)}
           </div>
         );
