@@ -16,6 +16,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+# Canonical comment-stripping sorry/admit check (the ONE primitive — never substring-match raw Lean for a
+# consequential decision; a `sorry` in a comment/identifier must not false-positive). 2026-06-13 audit.
+from ztare.leanmill.lean_source import has_sorry as _has_sorry, strip_comments as _strip_comments, signature_before_proof
+
 _CONJECTURE_PROMPT = (
     "You are a Lean 4 prover reasoning BACKWARD. The goal below is hard to prove directly. INVENT "
     "exactly ONE genuinely-useful intermediate lemma that, if true, makes the goal provable, then "
@@ -41,7 +45,7 @@ def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
     is unchanged, so both arms go through the IDENTICAL parse + `conjecture_advances` kernel gate."""
     base = re.sub(r"[^A-Za-z0-9_]", "", (row.get("target_theorem_name") or "lem"))[:28] or "lem"
     lname = f"conj_{base}"
-    goal_head = (goal_text or "").split(":=", 1)[0].strip() or (goal_text or "")
+    goal_head = signature_before_proof(goal_text or "").strip() or (goal_text or "")
     if prompt_override:
         prompt = (prompt_override.replace("{lname}", lname)
                   .replace("{goal_head}", goal_head).replace("{goal}", goal_text or ""))
@@ -49,19 +53,17 @@ def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
         prompt = _CONJECTURE_PROMPT.format(lname=lname, goal=goal_text, goal_head=goal_head)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return "", "", lname, f"dispatch_error: {e!r}"
 
-    def _fenced(after: str) -> str:
-        m = re.search(rf"{after}\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-        return m.group(1).strip() if m else ""
+    from ztare.leanmill.solver.agent_output import fenced_block
 
-    lemma, proof = _fenced("LEMMA:"), _fenced("PROOF:")
+    lemma, proof = fenced_block(raw,"LEMMA:"), fenced_block(raw,"PROOF:")
     if not (lemma and proof):                               # fallback: two theorem/lemma blocks
         thms = re.findall(r"(?s)((?:theorem|lemma)\s+\S+.*?:=\s*by\b.*?)(?=\n(?:theorem|lemma)\s|\Z)", raw)
         if len(thms) >= 2:
-            sor = [t.strip() for t in thms if "sorry" in t]
+            sor = [t.strip() for t in thms if _has_sorry(t)]   # comment-robust: a `sorry` in a comment ≠ a sorried lemma
             lemma = (sor[0] if sor else thms[0].strip())
             proof = next((t.strip() for t in thms if t.strip() != lemma), thms[-1].strip())
     return lemma, proof, lname, (raw or "")[-200:]
@@ -127,9 +129,9 @@ def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
     α-restatement; definitional-unfolding equivalence is out of cheap reach (would need the kernel)."""
     if not lemma or not proof:
         return False, "no lemma/proof generated"
-    if "sorry" in proof or "admit" in proof:
+    if _has_sorry(proof):
         return False, "goal-proof not sorry-free (G must follow from L, not a hidden sorry)"
-    proof_nc = re.sub(r"--[^\n]*", "", re.sub(r"/-.*?-/", "", proof, flags=re.S))  # strip Lean comments
+    proof_nc = _strip_comments(proof)   # canonical nested-aware strip (no ad-hoc regex)
     if lname not in proof_nc:
         return False, "goal-proof does not cite the conjectured lemma in tactic text (spurious / comment-only)"
     if goal_conclusion and _norm_ws(_lemma_conclusion(lemma)) == _norm_ws(goal_conclusion):
@@ -181,9 +183,9 @@ def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list
     v: dict = {"n_lemmas": len(lemmas or [])}
     if not lemmas or not (chain_proof or "").strip():
         return False, {**v, "killed": "empty decomposition (no lemmas / no chain proof)"}
-    if "sorry" in chain_proof or "admit" in chain_proof:
+    if _has_sorry(chain_proof):
         return False, {**v, "killed": "chain proof not sorry-free (G must follow from the Lᵢ, not a hidden sorry)"}
-    chain_nc = re.sub(r"--[^\n]*", "", re.sub(r"/-.*?-/", "", chain_proof, flags=re.S))
+    chain_nc = _strip_comments(chain_proof)   # canonical nested-aware strip (no ad-hoc regex)
     uncited = [ln for ln in (lnames or []) if ln and ln not in chain_nc]
     if uncited:
         return False, {**v, "killed": f"lemma(s) not cited in the chain (spurious): {uncited}"}
@@ -273,14 +275,12 @@ def specialize_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: i
         prompt = prompt.replace("the PREAMBLE", "the PREAMBLE below") + "\nPREAMBLE:\n" + preamble.strip() + "\n"
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return "", "", sname, f"dispatch_error: {e!r}"
 
-    def _fenced(after: str) -> str:
-        m = re.search(rf"{after}\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-        return m.group(1).strip() if m else ""
-    return _fenced("SPECIAL:"), _fenced("IMPLIES:"), sname, (raw or "")[-200:]
+    from ztare.leanmill.solver.agent_output import fenced_block
+    return fenced_block(raw,"SPECIAL:"), fenced_block(raw,"IMPLIES:"), sname, (raw or "")[-200:]
 
 
 def specialization_is_genuine(special_block: str, implies_block: str, sname: str, goal_conclusion: str,
@@ -292,7 +292,7 @@ def specialization_is_genuine(special_block: str, implies_block: str, sname: str
     closed G' is a verified special-case rung — real progress on a hard/open goal, never a closure of G."""
     if not special_block:
         return False, "no special case generated"
-    if "sorry" in special_block or "admit" in special_block:
+    if _has_sorry(special_block):
         return False, "special case not sorry-free (must be a genuinely PROVED instance)"
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
     _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
@@ -310,7 +310,7 @@ def specialization_is_genuine(special_block: str, implies_block: str, sname: str
     if _compile_probe(snip, lean_root, "SpecClose", timeout_s) is not True:
         return False, "special case does NOT compile sorry-free (not a genuine closed instance)"
     # (b) G ⇒ G' : the implication must typecheck sorry-free (so G' is a genuine consequence of G)
-    if not implies_block or "sorry" in implies_block or "admit" in implies_block:
+    if not implies_block or _has_sorry(implies_block):
         return False, "missing/incomplete `G ⇒ G'` implication — cannot confirm G' is a genuine special case of G"
     snip2 = _pre + implies_block.strip()
     if not snip2.lstrip().startswith("import"):
@@ -374,7 +374,7 @@ def specialization_substantive(goal_text: str, special_block: str) -> "tuple[boo
 # and is promoted only if signal-gated selection beats the plain menu.
 # ── CAPABILITY (Invert leg): FALSIFY — the "is the target actually FALSE?" producer (2026-06-06) ──────
 # The refutation dual of a closure, and the Lean instance of the shared Popper inversion
-# (common/inversion.py): on the OPEN/untrusted-statement regime (the moat's whole reason to exist) the
+# (common/inversion.py): on the OPEN/untrusted-statement regime (the anti-laundering gate's whole reason to exist) the
 # target may be FALSE, and a kernel-checked proof of ¬G is a first-class, high-value outcome (excluding a
 # false conjectured (sub)goal before more budget is spent). leanmill had a falsifier SINK (NODE_KIND/status/MoveResult.falsifier
 # + residual_to_lever) but NO producer — this feeds it. SOUND by construction: the refuted statement is
@@ -397,8 +397,8 @@ def _closed_goal_prop(goal_text: str) -> str:
     if not concl:
         return ""
     # strip the leading `theorem|lemma|example <name>` to leave just the binder telescope
-    m = re.match(r"\s*(?:theorem|lemma|example)\s+[\w'.]*\s*(.*)$", head, re.DOTALL)
-    binders = (m.group(1).strip() if m else "")
+    from ztare.leanmill import lean_source as _ls   # canonical Lean parsing
+    binders = _ls.strip_decl_prefix(head)
     cn = _norm_ws(concl)
     if cn in ("True", "(True)", "False", "(False)"):
         return ""   # degenerate literal — not a real open goal to refute
@@ -438,14 +438,12 @@ def falsify_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
     prompt = _FALSIFY_PROMPT.format(fname=fname, gprop=gprop, goal=goal_text, pre=pre)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return "", fname, gprop, f"dispatch_error: {e!r}"
 
-    def _fenced(after: str) -> str:
-        m = re.search(rf"{after}\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-        return m.group(1).strip() if m else ""
-    helpers, proof = _fenced("HELPERS:"), _fenced("PROOF:")
+    from ztare.leanmill.solver.agent_output import fenced_block
+    helpers, proof = fenced_block(raw,"HELPERS:"), fenced_block(raw,"PROOF:")
     if not proof:
         return "", fname, gprop, (raw or "")[-200:]   # honest non-refutation
     # ASSEMBLE with OUR signature — the leaf supplies only the RHS proof (a `by` block OR a proof term),
@@ -466,7 +464,7 @@ def falsification_is_genuine(refute_block: str, fname: str, gprop: str,
     (vacuity / leakage / consequence-exposure organs)."""
     if not refute_block:
         return False, "no refutation generated (honest non-falsification)"
-    if "sorry" in refute_block or "admit" in refute_block:
+    if _has_sorry(refute_block):
         return False, "refutation not sorry-free (must be a genuinely PROVED ¬G)"
     if not gprop or _norm_ws(gprop) in ("True", "(True)", "False", "(False)"):
         return False, "degenerate/empty negated Prop"
@@ -478,6 +476,84 @@ def falsification_is_genuine(refute_block: str, fname: str, gprop: str,
     if _compile_probe(snip, lean_root, "FalsifyRefute", timeout_s) is not True:
         return False, "¬G does NOT compile sorry-free — not a genuine refutation"
     return True, "genuine falsifier — a kernel-checked sorry-free proof of ¬(the verbatim goal Prop)"
+
+
+def verify_statement_false_claim(target_name: str, source_text: str, goal: str,
+                                 lean_root: Path, timeout_s: int) -> "tuple[bool, str, str]":
+    """GATE a SOFT `-- STATEMENT-FALSE:` leaf CLAIM at the soundness boundary. The engine's rule is that ONLY
+    a kernel-checked ¬G is a refutation verdict (a code comment is the agent's hypothesis, not a verdict);
+    accepting a bare claim let the v7 leaf escape a TRUE, tractable lemma with a bogus counterexample (one
+    that violates a structure-field hypothesis), deadlocking the reformulation re-entry on a provable target.
+
+    This dispatches the SKEPTIC (`falsify_generate` — an INDEPENDENT attempt to PROVE ¬G, the same machinery
+    MOVE_FALSIFY uses) and kernel-verifies the result. The verify routes through the WARM campaign env when a
+    substrate is registered — so confirming a claim re-uses the amortized elaboration and does NOT re-introduce
+    the verify-starvation that the inline path suffered. The negated goal's signature is OWNED by us (no
+    strawman), and the `#print axioms` audit on the warm path rejects a ¬G that launders via a still-`sorry`
+    decl in the env. Returns (confirmed, detail, refute_block): confirmed=True ONLY when ¬G genuinely compiles
+    sorry-free with a clean axiom set ⇒ the target really is false; else (False, why, "") ⇒ the claim is
+    UNVERIFIED and must NOT trigger reformulation.
+
+    The PREAMBLE for the cold fallback is the source prelude up to the target (so a ¬G that needs the campaign
+    defs can still elaborate when no warm env is available); on the warm path the env already holds them."""
+    row = {"target_theorem_name": target_name}
+    # GOAL RECOVERY: the decomposition path (`solve_decomposition`) calls `solve_adhoc(lname, src, "")` with an
+    # EMPTY goal — the statement lives only in `source_text`. Without this, `falsify_generate` would build ¬G
+    # from "" and bail, so a confirmed-false PLANNER sub-lemma (iso_lemma1: the bare ∀ that DROPPED the parent's
+    # denominator-unit hypothesis) would never verify. Recover the verbatim signature for the named target.
+    goal = (goal or "").strip()
+    if not goal and source_text and target_name:
+        try:
+            from ztare.leanmill.lean_source import extract_signature as _exsig
+            goal = (_exsig(source_text, target_name) or "").strip()
+        except Exception:  # noqa: BLE001
+            goal = ""
+        if not goal:
+            return False, "could not recover the target signature from source (empty goal)", ""
+    # cold-path preamble: the source up to (but excluding) the target decl — the defs/structures the ¬G needs.
+    # Match `theorem|lemma|example <name>` (not just `theorem`), so a `lemma`-declared target still gets its
+    # prelude on the cold path (the warm campaign env already holds the defs, so this only matters cold).
+    preamble = ""
+    if source_text and target_name:
+        _m = re.search(r"(?m)^\s*(?:noncomputable\s+|private\s+|scoped\s+|@\[[^\]]*\]\s*)*"
+                       r"(?:theorem|lemma|example)\s+" + re.escape(target_name) + r"\b", source_text)
+        if _m:
+            preamble = source_text[:_m.start()].strip()
+    refute_block, fname, gprop, tail = falsify_generate(row, goal, lean_root, timeout_s, preamble=preamble)
+    if not refute_block:
+        return False, f"no ¬G produced (honest non-refutation): {(tail or '')[:160]}", ""
+    if _has_sorry(refute_block):
+        return False, "skeptic's ¬G is not sorry-free (an unproved counterexample is not a refutation)", ""
+    # WARM campaign env first (avoid re-starving verify); fall back to the cold genuineness gate.
+    try:
+        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                               warm_verify_campaign)
+        from ztare.common.timeouts import timeout_s as _budget   # the ONE timeout home (no inline magic numbers)
+        _sub = get_campaign_substrate()
+        if _sub:
+            # env build = a heavy substrate elaboration (use the cold-compile budget); warm probe = the warm-REPL ceiling.
+            _env = campaign_file_env(_sub, lean_root, timeout=_budget("cold_compile"))
+            if _env is not None:
+                _wv = warm_verify_campaign(refute_block, f"{fname}_refute", lean_root,
+                                           _budget("warm_repl_ceiling"), env=_env)
+                if _wv is not None:
+                    ok, diag = _wv
+                    return bool(ok), f"warm-¬G: {diag}", (refute_block if ok else "")
+    except Exception:  # noqa: BLE001 — warm verify is best-effort; fall through to the cold kernel gate
+        pass
+    genuine, why = falsification_is_genuine(refute_block, fname, gprop, lean_root, timeout_s, preamble=preamble)
+    return bool(genuine), f"cold-¬G: {why}", (refute_block if genuine else "")
+
+
+def statement_false_rejection_feedback(claim: str, why: str) -> str:
+    """Corrective source-comment guidance fed back to the leaf when its STATEMENT-FALSE claim FAILED kernel
+    verification: the negation did not compile, so the target is consistent-with-true — prove it as given, and
+    re-check that the proposed counterexample actually satisfies every hypothesis (incl. each structure field)."""
+    return ("\n\n-- ⚠ STATEMENT-FALSE claim was NOT kernel-confirmed: " + (why or "¬G did not compile").strip()[:240] +
+            "\n-- Your counterexample is " + (claim or "").strip()[:160] +
+            "\n-- A real counterexample must satisfy EVERY hypothesis (including each field of any structure the\n"
+            "-- statement binds); the skeptic could not prove ¬(goal), so the statement is consistent-with-true.\n"
+            "-- PROVE the statement EXACTLY AS GIVEN — do NOT re-flag it STATEMENT-FALSE without a compiling ¬G.\n")
 
 
 class LeanFalsifier:
@@ -572,7 +648,7 @@ def corroborate_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: 
     prompt = _CORROBORATE_PROMPT.format(G=gprop, goal=goal_text, pre=pre)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return "", fname, gprop, f"dispatch_error: {e!r}"
     refute_block = assemble_consequence_refutation(raw, fname, gprop)
@@ -584,16 +660,14 @@ def assemble_consequence_refutation(raw: str, fname: str, gprop: str) -> str:
     tollens. PURE (no dispatch/compile) ⇒ unit-testable. Returns '' if any block is missing or carries a
     sorry/admit (an honest non-refutation — never an unsound partial). The composition `fun hg => hnk
     (himpl hg)` is type-correct iff both leg theorems compile; the downstream kernel gate decides that."""
-    def _fenced(after: str) -> str:
-        m = re.search(rf"{after}\s*```(?:lean)?\s*\n(.*?)```", raw or "", re.DOTALL)
-        return m.group(1).strip() if m else ""
-    kprop = _fenced("CONSEQUENCE:")
-    implies_body = _fenced("IMPLIES:")
-    refute_body = _fenced("REFUTE:")
+    from ztare.leanmill.solver.agent_output import fenced_block   # canonical (#80/#49); was a shadowing local _fenced def
+    kprop = fenced_block(raw, "CONSEQUENCE:", lang="lean")
+    implies_body = fenced_block(raw, "IMPLIES:", lang="lean")
+    refute_body = fenced_block(raw, "REFUTE:", lang="lean")
     if not kprop or not implies_body or not refute_body:
         return ""   # honest non-refutation (missing a leg)
     blob = kprop + "\n" + implies_body + "\n" + refute_body
-    if "sorry" in blob or "admit" in blob:
+    if _has_sorry(blob):
         return ""   # never assemble an unsound partial
     himpl = f"theorem {fname}_himpl : ({gprop}) → ({kprop}) := {implies_body.strip()}"
     hnk = f"theorem {fname}_hnk : ¬ ({kprop}) := {refute_body.strip()}"
@@ -627,7 +701,7 @@ def claim_of(context: dict) -> str:
 # ── CAPABILITY (M3 v2): TACTIC-STEPPING — per-step agentic search vs a persistent proofState ──────────
 # The leaf emits ONE tactic at a time against a PERSISTENT REPL proofState built from OUR decl (the goal +
 # preamble) — REACTING to the live goal after each step, the genuinely-non-redundant value over whole-proof
-# moves. The MOAT: a tactic applied to a fixed proofState CANNOT redefine a depended-on decl (no file write),
+# moves. The ANTI-LAUNDERING INVARIANT: a tactic applied to a fixed proofState CANNOT redefine a depended-on decl (no file write),
 # so the file-edit laundering surface is removed by construction. REPL-`closed` is NEVER the verdict — the
 # caller REASSEMBLES the accepted sequence and re-verifies it through the SAME governance (_verify_compile +
 # kernel + MNC). CALIBRATION-FIRST: a dead/mismatched REPL ⇒ INADMISSIBLE, never a fake negative.
@@ -645,7 +719,7 @@ def _next_tactic(goal_pp: str, lean_root: Path, timeout_s: int, last_error: str 
     prompt = _TACTIC_STEP_PROMPT.format(goal=goal_pp, err=err)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception:  # noqa: BLE001
         return ""
     for ln in raw.strip().splitlines():
@@ -736,11 +810,11 @@ def generalize_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: i
         prompt += "\nPREAMBLE:\n" + preamble.strip() + "\n"
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return "", gname, f"dispatch_error: {e!r}"
-    m = re.search(r"PROOF:\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-    body = (m.group(1).strip() if m else "")
+    from ztare.leanmill.solver.agent_output import fenced_block   # canonical (#80/#49); was a raw PROOF: fence regex
+    body = fenced_block(raw, "PROOF:", lang="lean")
     # The body must be a tactic proof the runner folds after the goal's `:= by`. The verifier
     # (`_verify_compile`) only strips a leading `"by "` (with a SPACE) — a `by\n...` body would DOUBLE
     # the `by` and fail every compile. So normalize to the single `"by <tactics>"` form (the same shape
@@ -778,7 +852,7 @@ def decomposition_review(goal: str, lemma: str, lean_root: Path, timeout_s: int 
     try:
         if dispatch_fn is None:
             from ztare.leanmill.solver.agentic_leaf import default_dispatch as dispatch_fn
-        raw = dispatch_fn(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = dispatch_fn(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception as e:  # noqa: BLE001
         return True, f"review dispatch error — fail-open (advisory): {e!r}"
     m = re.search(r"\b(NOT_WORTHY|WORTHY)\b", raw)

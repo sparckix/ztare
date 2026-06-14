@@ -39,10 +39,14 @@ the proof-laundering organs don't cover); even that reuses the LLM runtime + col
 """
 from __future__ import annotations
 
+import os
 import re
 import unicodedata
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Callable, Optional
+
+from ztare.leanmill.solver import prompts          # canonical prompt home (#49): backtranslate / judge / def-judge templates
 
 
 def _is_true(v) -> bool:
@@ -226,6 +230,66 @@ def structural_faithfulness(nl: str, lean_statement: str, *, expected: "Optional
     return True
 
 
+def semantic_instance_battery(formalization: str, predicate: str, cases: "list[tuple[str, bool]]",
+                              *, compile_probe: "Callable[[str], bool]") -> bool:
+    """GROUND-TRUTH-BINDING faithfulness leg (KERNEL-grade — the non-math-enabling carrier). The
+    formalization's `predicate`, applied to concrete human-LABELLED instances, must DECIDE to the labelled
+    truth: for each `(instance, expected)` the probe `example : (¬)?(predicate instance) := by decide`
+    must compile. A formalization silently WEAKENED / BROADENED (∧→∨, dropped clause, flipped comparator,
+    swapped role) misclassifies ≥1 labelled instance ⇒ its probe fails to compile ⇒ this leg returns
+    False. This is the carrier the round-trip judge (consensus-grade) and the structural diff (syntactic)
+    cannot supply — the difference between 'two models agree it's the same problem' and 'the predicate
+    returns the human-labelled answer on concrete cases'. It is also the only leg that binds the formal
+    statement to GROUND TRUTH (the firewall's documented faithfulness ceiling).
+
+    Requires a DECIDABLE predicate (access policies / arithmetic thresholds / boolean compliance rules —
+    the non-math sweet spot). For an undecidable / universally-quantified math claim pass `cases=[]` and
+    the leg is skipped (returns True; the consensus/structural legs remain the defense). FAIL-CLOSED: one
+    wrong OR unverifiable decision ⇒ False (a probe that won't `decide` is not a positive ground-truth
+    signal, so it must not admit)."""
+    if not cases:
+        return True
+    # AXIOM-CLEAN by default (2026-06-09): `decide | norm_num | simp_all` keep the ground-truth certificate
+    # inside the kernel allowlist {propext, Classical.choice, Quot.sound}. `norm_num` (not bare `decide`)
+    # is what handles `Nat.Prime`/large-arithmetic instances — bare `decide` builds an inefficient proof
+    # term and chokes (the "decide is shit" failure). `native_decide` is OPT-IN ONLY
+    # (`ZTARE_LEANMILL_BATTERY_NATIVE_DECIDE=1`): it adds `Lean.ofReduceBool` (compiler-trust, OUTSIDE the
+    # allowlist), so a battery cert that relied on it is NOT kernel-clean — which would undercut the
+    # firewall's whole "verifiable kernel certificate" value. Off by default ⇒ the cert is auditable.
+    _nd = " | native_decide" if os.environ.get("ZTARE_LEANMILL_BATTERY_NATIVE_DECIDE") == "1" else ""
+    for instance, expected in cases:
+        guard = "" if expected else "¬ "
+        probe = (f"{formalization.rstrip()}\n\n"
+                 f"example : {guard}({predicate} {instance}) := by\n"
+                 f"  first | decide | norm_num | simp_all{_nd}\n")
+        if compile_probe(probe) is not True:
+            return False
+    return True
+
+
+def provable_equivalence(prelude: str, predicate: str, binder: str, domain_type: str,
+                         body_ref: str, body_cand: str, *, compile_probe: "Callable[[str], bool]") -> bool:
+    """KERNEL-grade EXHAUSTIVE faithfulness for a FINITE decidable domain — the '100%' leg. Are two
+    formalizations of `predicate` (Lean bodies `body_ref` = a TRUSTED reference, `body_cand` = the
+    candidate; both over `(binder : domain_type)`) PROVABLY EQUIVALENT on EVERY element? Compiles
+    `example : ∀ <binder> : <domain_type>, ref <binder> ↔ cand <binder> := by decide`. When `domain_type`
+    is a `Fintype` with `DecidableEq`, this `decide` ENUMERATES the whole domain — every input checked —
+    so a True verdict is a genuine 100%-faithfulness certificate ON THAT FINITE DOMAIN (strictly stronger
+    than a finite labelled battery, which only samples). Two faithful renderings are equivalent (compiles);
+    a silently weakened/broadened one is NOT (a disagreeing element makes the ∀-iff false ⇒ no compile).
+    The reference can be a human-checked formalization OR the majority of N independent samples (consensus
+    promoted to a kernel-checked equivalence — the upgrade from 'judges agree' to 'provably the same')."""
+    # `abbrev` (reducible), NOT `def` (semireducible): `decide` must unfold the predicate to synthesize its
+    # `Decidable` instance — a `def` blocks instance synthesis and the ∀-iff silently fails to compile for
+    # EVERY candidate (a false-negative that makes even a genuinely-equivalent body look non-equivalent).
+    probe = (f"{prelude.rstrip()}\n\n"
+             f"abbrev {predicate}_ref ({binder} : {domain_type}) : Prop := {body_ref}\n"
+             f"abbrev {predicate}_cand ({binder} : {domain_type}) : Prop := {body_cand}\n\n"
+             f"example : ∀ {binder} : {domain_type}, "
+             f"{predicate}_ref {binder} ↔ {predicate}_cand {binder} := by decide\n")
+    return compile_probe(probe) is True
+
+
 @dataclass
 class FaithfulnessVerdict:
     accepted: bool
@@ -250,23 +314,32 @@ def faithfulness_gate(nl: str, lean_statement: str, *,
                       backtranslate_fn: "Callable[[str], str]",
                       judge_fn: "Callable[[str, str], bool]",
                       consistency_fn: "Optional[Callable[[str], bool]]" = None,
-                      structural_fn: "Optional[Callable[[str, str], bool]]" = None) -> FaithfulnessVerdict:
+                      structural_fn: "Optional[Callable[[str, str], bool]]" = None,
+                      battery_fn: "Optional[Callable[[str], bool]]" = None,
+                      crossvote_fn: "Optional[Callable[[str, str], bool]]" = None,
+                      prior_confirmed_fn: "Optional[Callable[[str, str], bool]]" = None) -> FaithfulnessVerdict:
     """The firewall. ALL injected fns MUST return strict `bool`. compile_fn(stmt)->typechecks-with-
     sorry; triviality_fn(stmt)->closeable-by-cheap-tactics(goal AND context, e.g. simp_all/omega);
     consistency_fn(stmt)->hypotheses-mutually-CONSISTENT (False ⇒ vacuous; reuse
     `governance_organs.randomized_differential_probe` / a derive-False probe); backtranslate_fn(stmt)
-    ->NL; judge_fn(orig_nl, back_nl)->faithful-AND-not-weaker (DIRECTIONAL — see contract below).
+    ->NL; judge_fn(orig_nl, back_nl)->does-proving-the-candidate-ESTABLISH-the-original (DIRECTIONAL-for-
+    proving — see contract below).
 
     FAIL-CLOSED on EVERY leg: a formalization is admitted only on a POSITIVE signal; ANY inconclusive,
     errored, or non-canonical-True result ⇒ NOT admitted. Opposite of the prover gates, because here a
     false ACCEPT is a fabricated success.
 
-    judge_fn CONTRACT (HIGH-4/MEDIUM-3, enforce in the PRODUCTION wiring, not here): the judge must be
-    DIRECTIONAL — "is the formalization EQUIVALENT, or weaker/stronger? does it drop/add a hypothesis or
-    relax the conclusion (≤→<, =→≤, ∀→∃)?" — accept only EQUIVALENT; it must be a COLD cross-family
-    judge (family ≠ the formalizer's), ideally ≥2 unanimous; and a deterministic structural diff
-    (`statement_integrity`) on the hypothesis set / conclusion shape should be able to OVERRIDE a
-    charitable judge. The single NL-vs-NL paraphrase judge alone is NOT sufficient for hard targets."""
+    judge_fn CONTRACT (HIGH-4/MEDIUM-3, enforce in the PRODUCTION wiring, not here): the judge is
+    DIRECTIONAL-FOR-PROVING — "would PROVING the candidate ESTABLISH the original's claim?" — accept a
+    STRONGER-or-equal CONCLUSION (incl. a CONSTRUCTIVE witness for an ∃-goal — proving a specific F for
+    `∃F,F'=f` is faithful, NEVER a launder: proving more is harder, not easier) on the SAME-or-weaker
+    HYPOTHESES; REJECT a WEAKER/changed conclusion (≤→<, =→≤, ∀→∃) or a DROPPED/ADDED/RESTRICTED hypothesis
+    (narrowed domain, assumed splitting). [2026-06-11: was strict EQUIVALENCE, which wrongly REJECTED a
+    faithful constructive formalization — equivalence is over-strict on the ADMIT side for a PROVING firewall.]
+    It must be a COLD cross-family judge (family ≠ the formalizer's), ideally ≥2 unanimous; and the
+    deterministic structural diff (`statement_integrity`) on the hypothesis set / conclusion shape OVERRIDES a
+    charitable judge (it still rejects a hypothesis change). The NL-vs-NL paraphrase judge alone is NOT
+    sufficient for hard targets."""
     checks: dict = {}
     stmt = (lean_statement or "").strip()
     if not stmt:
@@ -286,7 +359,16 @@ def faithfulness_gate(nl: str, lean_statement: str, *,
         return FaithfulnessVerdict(False, f"triviality probe errored ⇒ not admitted (fail-closed): {repr(e)[:80]}", checks)
     checks["non_trivial"] = not trivial
     if trivial:
-        return FaithfulnessVerdict(False, "closed by a cheap tactic — degenerate / not the hard problem", checks)
+        # SAFE handling of the cold-agent "compliance is mathematically trivial" point (2026-06-09): real
+        # policy/IAM/legal rules ARE simple (threshold inequalities), so theorem-triviality mis-fires. But
+        # do NOT disable the check (that admits `permit := True` always-allow — a vacuity laundering hole).
+        # Instead, when a GROUND-TRUTH BATTERY is supplied, DEFER to it: a battery that decides the labelled
+        # allow/deny instances correctly already rules out vacuity (an always-true predicate misclassifies the
+        # deny cases ⇒ battery FAILS later). With no battery (the math regime) triviality stays FATAL.
+        if battery_fn is not None:
+            checks["non_trivial_deferred_to_battery"] = True
+        else:
+            return FaithfulnessVerdict(False, "closed by a cheap tactic — degenerate / not the hard problem", checks)
 
     # Vacuity: contradictory hypotheses ⇒ vacuously true (ex falso). Optional probe (reuse the SZ /
     # derive-False organ); if not supplied the round-trip is the only vacuity defense (weaker).
@@ -313,13 +395,56 @@ def faithfulness_gate(nl: str, lean_statement: str, *,
         if not preserved:
             return FaithfulnessVerdict(False, "structure NOT preserved — dropped/added hypothesis or weakened conclusion (silent weakening)", checks)
 
-    try:
-        back_nl = backtranslate_fn(stmt) or ""
-        checks["round_trip_faithful"] = bool(_visible(back_nl)) and _is_true(judge_fn(nl, back_nl))
-    except Exception as e:
-        return FaithfulnessVerdict(False, f"round-trip errored ⇒ NOT admitted (fail-closed): {repr(e)[:80]}", checks)
+    # GROUND-TRUTH carrier (KERNEL-grade, non-math-enabling): the predicate, applied to human-labelled
+    # concrete instances, must DECIDE to the labelled truth. Binds the formal statement to reality the
+    # consensus round-trip and the syntactic structural diff cannot. Strongest single faithfulness leg
+    # where the domain is decidable; skipped (no-op True) when no cases are supplied. Fail-closed.
+    if battery_fn is not None:
+        try:
+            battery_ok = _is_true(battery_fn(stmt))
+        except Exception as e:
+            return FaithfulnessVerdict(False, f"instance battery errored ⇒ not admitted (fail-closed): {repr(e)[:80]}", checks)
+        checks["instance_battery"] = battery_ok
+        if not battery_ok:
+            return FaithfulnessVerdict(False, "instance battery FAILED — predicate misclassifies a labelled instance (ground-truth-bound weakening/broadening)", checks)
+
+    # PRIOR-CONFIRMED short-circuit (#105): an EXACT statement already CONFIRMED faithful for this NL need not
+    # be re-litigated by the variance-prone round-trip JUDGE (the 2026-06-11 flaky judge false-rejected a
+    # statement that had PASSED the prior run). SOUND: the deterministic legs above (compile / triviality /
+    # consistency / structural / battery) ALREADY ran on THIS statement; this skips ONLY the LLM round-trip,
+    # and only on an EXACT prior confirmation (prior_confirmed_fn returns True solely for the stored statement).
+    _prior = False
+    if prior_confirmed_fn is not None:
+        try:
+            _prior = _is_true(prior_confirmed_fn(nl, stmt))
+        except Exception:  # noqa: BLE001 — a broken store never blocks the gate; fall through to the judge
+            _prior = False
+    if _prior:
+        checks["round_trip_faithful"] = True
+        checks["prior_confirmed"] = True
+    else:
+        try:
+            back_nl = backtranslate_fn(stmt) or ""
+            checks["round_trip_faithful"] = bool(_visible(back_nl)) and _is_true(judge_fn(nl, back_nl))
+        except Exception as e:
+            return FaithfulnessVerdict(False, f"round-trip errored ⇒ NOT admitted (fail-closed): {repr(e)[:80]}", checks)
     if not checks["round_trip_faithful"]:
         return FaithfulnessVerdict(False, "round-trip does NOT match the NL (or empty/degenerate) — unfaithful / weakened / vacuous", checks)
+
+    # CROSS-VOTE carrier (kernel-grade CONSENSUS, optional — heaviest leg, so LAST): dispatch N DIVERSE
+    # formalizers on the SAME NL and require the independent consensus to be kernel-equivalent to `stmt`.
+    # Catches a single-formalizer systematic mistranslation the one-shot round-trip judge would bless
+    # (the judge sees ONE back-translation; cross-vote sees N independent FORWARD formalizations and the
+    # kernel adjudicates their agreement). FAIL-CLOSED like every other leg; flag-gated at the call site
+    # (`crossvote_enabled()` decides whether crossvote_fn is supplied — default None ⇒ skipped, byte parity).
+    if crossvote_fn is not None:
+        try:
+            agree = _is_true(crossvote_fn(nl, stmt))
+        except Exception as e:
+            return FaithfulnessVerdict(False, f"cross-vote errored ⇒ not admitted (fail-closed): {repr(e)[:80]}", checks)
+        checks["cross_vote_consensus"] = agree
+        if not agree:
+            return FaithfulnessVerdict(False, "cross-vote DISAGREES — independent formalizers do not kernel-agree with this statement (systematic mistranslation)", checks)
 
     return FaithfulnessVerdict(True, "faithful: typechecks, non-trivial, (consistent,) round-trip matches the NL intent", checks)
 
@@ -330,7 +455,9 @@ def autoformalize(nl: str, *, formalize_fn: "Callable[[str], str]",
                   backtranslate_fn: "Callable[[str], str]",
                   judge_fn: "Callable[[str, str], bool]",
                   consistency_fn: "Optional[Callable[[str], bool]]" = None,
-                  structural_fn: "Optional[Callable[[str, str], bool]]" = None) -> AutoformalizeResult:
+                  structural_fn: "Optional[Callable[[str, str], bool]]" = None,
+                  battery_fn: "Optional[Callable[[str], bool]]" = None,
+                  crossvote_fn: "Optional[Callable[[str, str], bool]]" = None) -> AutoformalizeResult:
     """NL → candidate Lean statement → faithfulness gate. Returns the result; `.is_target` is True
     only for an ADMITTED faithful formalization. All steps injected (real apparatus in production,
     mocks in tests). The formalizer and the judge SHOULD be different model families (the judge is a
@@ -339,20 +466,30 @@ def autoformalize(nl: str, *, formalize_fn: "Callable[[str], str]",
         lean_statement = (formalize_fn(nl) or "").strip()
     except Exception as e:
         return AutoformalizeResult(nl, "", FaithfulnessVerdict(False, f"formalizer errored: {repr(e)[:80]}"))
+    from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH
+    if lean_statement == INADMISSIBLE_DISPATCH:                # #89: every provider dead ⇒ a DEAD INSTRUMENT,
+        return AutoformalizeResult(nl, "",                    # not an unfaithful formalization. Skip the gate;
+                                   FaithfulnessVerdict(False, "INADMISSIBLE_PROVIDER_DEAD"))  # caller marks inadmissible.
     verdict = faithfulness_gate(nl, lean_statement, compile_fn=compile_fn, triviality_fn=triviality_fn,
                                 backtranslate_fn=backtranslate_fn, judge_fn=judge_fn,
-                                consistency_fn=consistency_fn, structural_fn=structural_fn)
+                                consistency_fn=consistency_fn, structural_fn=structural_fn,
+                                battery_fn=battery_fn, crossvote_fn=crossvote_fn)
     return AutoformalizeResult(nl, lean_statement, verdict)
 
 
-def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str) -> str:
+def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str, compile_error: str = "") -> str:
     """Turn the firewall's REJECTION into targeted NL guidance the formalizer can act on — the
-    per-leg feedback that makes the refine loop close compile/faithfulness gaps instead of re-rolling."""
+    per-leg feedback that makes the refine loop close compile/faithfulness gaps instead of re-rolling.
+    `compile_error` (optional, from `default_compile_diagnose`) is the ACTUAL Lean error so a compile-fail
+    refine is GUIDED (fix THIS error) not blind (re-guess) — the convergence + burn fix."""
     checks = getattr(verdict, "checks", {}) or {}
     reason = getattr(verdict, "reason", "") or ""
     if checks.get("compiles") is False or "typecheck" in reason:
         guide = ("It did NOT typecheck. Fix the Lean 4 syntax / Mathlib API errors so `lake env lean` "
                  "reports zero `error:` lines (the `sorry` is fine). Keep the definitions; correct only what fails.")
+        if (compile_error or "").strip():
+            guide += ("\n\nThe Lean compiler reported (fix EXACTLY these, do not re-guess the whole statement):\n"
+                      + compile_error.strip()[:600])
     elif checks.get("non_trivial") is False or "cheap tactic" in reason or "degenerate" in reason:
         guide = ("It was closed by a CHEAP tactic (degenerate / not the real problem). State the GENUINE "
                  "claim — non-vacuous, non-trivially-true.")
@@ -374,10 +511,12 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
                          backtranslate_fn: "Callable[[str], str]", judge_fn: "Callable[[str, str], bool]",
                          consistency_fn: "Optional[Callable[[str], bool]]" = None,
                          structural_fn: "Optional[Callable[[str, str], bool]]" = None,
+                         compile_diagnose_fn: "Optional[Callable[[str], str]]" = None,
+                         prior_confirmed_fn: "Optional[Callable[[str, str], bool]]" = None,
                          max_refines: int = 2) -> "tuple[AutoformalizeResult, list]":
     """Autoformalize through the shared RefineHandover loop — the compile-fix the one-shot `autoformalize`
-    lacks (Litt P1 produced a faithful-STRUCTURED but uncompiling formalization that the one-shot gate just
-    rejected). On a firewall rejection, hand the formalizer back the verdict's failing leg + its prior
+    lacks (a real open-problem target produced a faithful-STRUCTURED but uncompiling formalization that the
+    one-shot gate just rejected). On a firewall rejection, hand the formalizer back the verdict's failing leg + its prior
     attempt and re-formalize, bounded. SAME produce→feedback→refine shape as the solver's gap-refine, via
     the SAME driver. The faithfulness gate stays FAIL-CLOSED on every leg (the driver never accepts on a
     rejection). Returns (AutoformalizeResult, trace)."""
@@ -392,12 +531,19 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
     def _verify(stmt):
         return faithfulness_gate(nl, stmt, compile_fn=compile_fn, triviality_fn=triviality_fn,
                                  backtranslate_fn=backtranslate_fn, judge_fn=judge_fn,
-                                 consistency_fn=consistency_fn, structural_fn=structural_fn)
+                                 consistency_fn=consistency_fn, structural_fn=structural_fn,
+                                 prior_confirmed_fn=prior_confirmed_fn)
 
     def _refine_ctx(stmt, verdict, ctx):
         if not (stmt or "").strip():
             return None                      # empty generation ⇒ nothing to repair from ⇒ stop
-        return {"nl": nl, "hint": _formalize_feedback_hint(verdict, stmt)}
+        cerr = ""
+        if compile_diagnose_fn is not None and (getattr(verdict, "checks", {}) or {}).get("compiles") is False:
+            try:
+                cerr = compile_diagnose_fn(stmt) or ""    # the ACTUAL Lean error ⇒ guided (not blind) repair
+            except Exception:  # noqa: BLE001 — advisory; never break the refine on a diagnose failure
+                cerr = ""
+        return {"nl": nl, "hint": _formalize_feedback_hint(verdict, stmt, cerr)}
 
     rh = RefineHandover(generate=_gen, verify=_verify, accept_when=lambda v: bool(v.accepted),
                         build_refine_context=_refine_ctx, max_refines=max_refines)
@@ -484,19 +630,237 @@ def _extract_lean_from_dispatch(blob: str, mode: str) -> str:
         m = re.search(r"(?m)^\s*(import|open|set_option|variable|namespace|def|structure|abbrev|"
                       r"inductive|class|instance|theorem|lemma)\b", clean)
         return (clean[m.start():].strip() if m else "")    # "" (not prose) on no-match ⇒ gate fast-rejects
-    stmts = re.findall(r"(?s)\b((?:theorem|lemma)\s+\S+.*?:=\s*(?:by\s+)?sorry)", clean)
+    # STRIP COMMENTS before extracting the formalized statement (2026-06-13 audit): a commented
+    # `-- theorem ex : … := by sorry` in the model's answer must not be picked as THE formalization.
+    # Canonical NESTED-aware stripper (handles `/- /- -/ -/`).
+    from ztare.leanmill.lean_source import strip_comments as _sc_af, has_sorry as _has_sorry_af
+    clean_nc = _sc_af(clean)
+    stmts = re.findall(r"(?s)\b((?:theorem|lemma)\s+\S+.*?:=\s*(?:by\s+)?sorry)", clean_nc)
     if stmts:
         return stmts[-1].strip()
-    for ln in reversed(lines):                                          # fallback: last theorem-ish line
-        if ("theorem" in ln or "lemma" in ln) and "sorry" in ln:
+    for ln in reversed(clean_nc.split("\n")):                           # fallback: last theorem-ish line
+        if ("theorem" in ln or "lemma" in ln) and _has_sorry_af(ln):
             return ln.strip()
     return ""   # no theorem/import block found ⇒ "" so the firewall's empty-formalization fast-reject fires
 
 
-def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "codex", timeout_s: int = 240) -> str:
+def _observe_formalize(nl: str, mode: str, raw: str, extracted: str, provider: str = "subscription") -> None:
+    """OBSERVABILITY (the recurring 'why did formalize produce empty' gap — diagnose from the LOG, not a re-run):
+    append the RAW dispatch output + the extracted statement to OUT_DIR/formalize_observations.jsonl. So an empty
+    formalization is attributable: raw_len≈0 ⇒ claude returned nothing (dispatch timeout/fail); raw_len>0 ∧
+    extracted_empty ⇒ the extraction regex MISSED claude's answer. `provider` attributes which lane produced it
+    (`subscription` = codex/claude CLI; `deepseek` = the API fallback) so a run's provider mix is legible.
+    Best-effort, never breaks formalize; default-on (cheap append), ZTARE_LEANMILL_FORMALIZE_OBS=0 disables."""
+    import os as _os
+    if _os.environ.get("ZTARE_LEANMILL_FORMALIZE_OBS", "1") == "0":
+        return
+    try:
+        import json                          # LOCAL import — module has no top-level `json`; its absence made
+        from datetime import datetime, timezone   # this whole writer throw on json.dumps and the bare except
+        from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT   # swallow it ⇒ a created-but-EMPTY obs file
+        rec = {"ts": datetime.now(timezone.utc).isoformat(), "mode": mode, "provider": provider,
+               "nl": (nl or "")[:200],
+               "raw_len": len(raw or ""), "extracted_empty": not (extracted or "").strip(),
+               "raw_tail": (raw or "")[-1500:], "extracted": (extracted or "")[:400]}
+        p = _OUT / "formalize_observations.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception:  # noqa: BLE001
+        pass
+
+
+def _observe_roundtrip(kind: str, **fields) -> None:
+    """OBSERVABILITY for the FAITHFULNESS round-trip (the 'WHY did the judge reject a CORRECT statement' gap,
+    2026-06-11 — a correct RatFunc-antiderivative formalization that PASSED one run was false-rejected the
+    next with only an opaque `round-trip does NOT match the NL`). Append the back-translation + the judge's
+    RAW verdict text to OUT_DIR/faithfulness_roundtrip_observations.jsonl, so a rejection is ATTRIBUTABLE:
+    a back-translation that DROPPED a hypothesis (back-translator bug) vs. a JUDGE false-negative on a
+    precise-but-informal mismatch (the formal `hres` quantifies residues over ALL field extensions L; the
+    one-sentence NL is looser). Best-effort, never breaks the gate; ZTARE_LEANMILL_FORMALIZE_OBS=0 disables."""
+    import os as _os
+    if _os.environ.get("ZTARE_LEANMILL_FORMALIZE_OBS", "1") == "0":
+        return
+    try:
+        import json                                   # LOCAL imports (module has no top-level json/datetime) —
+        from datetime import datetime, timezone       # else this best-effort writer NameErrors + silently no-ops
+        from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
+        rec = {"ts": datetime.now(timezone.utc).isoformat(), "kind": kind}
+        for k, v in fields.items():
+            rec[k] = (v[:1500] if isinstance(v, str) else v)
+        p = _OUT / "faithfulness_roundtrip_observations.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception:  # noqa: BLE001
+        pass
+
+
+# The subscription CLI runtimes (agentic, repo-aware) — anything else passed as `runtime` is treated as an
+# llm_runtime API MODEL ID, routed provider-agnostically. "" = the configured default subscription runtime.
+_SUBSCRIPTION_RUNTIMES = {"", "claude", "codex"}
+
+
+def _api_formalize_fallback_enabled() -> bool:
+    """The API-activated formalize fallback is DEFAULT-ON: the subscription CLI (codex/claude) is a single
+    contended/quota-limited lane, and the P1-RUNG-A close died because every formalize TIMED OUT on sole-claude
+    contention. The fallback provider is API-metered (NOT subscription), so it neither competes with the CLI nor
+    hits the codex usage wall. Set ZTARE_LEANMILL_FORMALIZE_API_FALLBACK=0 to force subscription-only."""
+    import os as _os
+    return _os.environ.get("ZTARE_LEANMILL_FORMALIZE_API_FALLBACK", "1") != "0"
+
+
+def _api_fallback_model() -> str:
+    """The API formalize provider model — PROVIDER-AGNOSTIC, chosen via env. The kernel's `llm_runtime` routes
+    ANY of gemini / deepseek / openai by model id, so switching providers is a config change, NOT a code change:
+        ZTARE_LEANMILL_FORMALIZE_API_MODEL=gemini-3.1-pro-preview   # or gpt-5.5, o3, deepseek-reasoner, …
+    Default 'deepseek-chat' (fast V3 chat, cheap, cross-family from the codex/claude subscription lane)."""
+    import os as _os
+    from ztare.common.llm_runtime import MODEL_MAP
+    raw = (_os.environ.get("ZTARE_LEANMILL_FORMALIZE_API_MODEL") or "deepseek-chat").strip()
+    return MODEL_MAP.get(raw, raw)          # resolve a friendly alias ("deepseek"→"deepseek-chat") if given
+
+
+def _formalize_via_api(prompt: str, *, model: str = "", timeout_s: int = 120) -> str:
+    """RAW single-shot formalization via the API-activated provider — PROVIDER-AGNOSTIC: the model is resolved
+    from env (`_api_fallback_model`) or the explicit `model` arg, then routed by `llm_runtime` to whichever of
+    gemini/deepseek/openai owns it. Availability is checked with the util's own `model_is_configured` (NO
+    hardcoded *_API_KEY). Used (a) as the FALLBACK when the subscription dispatch is dead/empty and (b) directly
+    for an API `runtime`. Returns '' if the chosen model is unconfigured or the call fails ⇒ the caller
+    propagates INADMISSIBLE/empty. NOT a faithfulness shortcut: the firewall (compile + round-trip + structural
+    + battery) stays the SOLE admit arbiter, so a weaker API formalizer can only ever FAIL CLOSED."""
+    try:
+        from ztare.common.llm_runtime import LLMRuntime, MODEL_MAP
+    except Exception:
+        try:
+            from src.ztare.common.llm_runtime import LLMRuntime, MODEL_MAP  # type: ignore
+        except Exception:
+            return ""
+    model = MODEL_MAP.get((model or "").strip(), (model or "").strip()) or _api_fallback_model()
+    try:
+        rt = LLMRuntime()
+        if not rt.model_is_configured(model):
+            return ""                       # provider-agnostic availability (no hardcoded key name)
+        resp = rt.call_text(prompt, model_id=model, fallback_model_ids=(),
+                            max_tokens=2000, request_label="autoformalize_api_provider",
+                            timeout_seconds=timeout_s)
+        return getattr(resp, "text", "") or ""
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def _formalize_interactive_on() -> bool:
+    """The INTERACTIVE formalizer (the agent ITERATES write→warm-check→search→fix to a TYPECHECKING statement)
+    is DEFAULT-ON 2026-06-10 — single-shot formalize was the P1 bottleneck (the agent invents Mathlib names →
+    does not typecheck → firewall rejects → solve never reached). =0 reverts to single-shot (the A/B baseline)."""
+    import os as _os
+    return _os.environ.get("ZTARE_LEANMILL_FORMALIZE_INTERACTIVE", "1") != "0"
+
+
+_FORMALIZE_INTERACTIVE_PROMPT = (
+    "You are FORMALIZING a natural-language math statement into a Lean 4 theorem. You STATE it, you do NOT prove "
+    "it — end the theorem in ` := by sorry`. Produce a SINGLE theorem that TYPECHECKS against Mathlib.\n\n"
+    "WORKFLOW — write the file, then ITERATE against the warm kernel until it typechecks (do NOT stop at the "
+    "first draft):\n"
+    "  1. Write your candidate (with `import Mathlib` on the first line) to this file:\n       {probe_ref}\n"
+    "  2. Check it — warm, ~0.1s, prints the EXACT Lean errors or 'OK':\n       {leancheck_cmd}\n"
+    "  3. On an 'unknown identifier' / 'unknown constant' / wrong-API error, find the REAL Mathlib name — do NOT "
+    "invent one:\n       {search_cmd}\n"
+    "  4. Fix the file and re-check. Repeat until ZERO errors (the `sorry` is fine — you are only stating it).\n\n"
+    "MANDATORY — do NOT skip the checker: you MUST run the check command in step 2 and SEE it print 'OK' before "
+    "you output anything. A statement you have not verified with the checker WILL be rejected. Common errors the "
+    "checker catches that you must fix: `∑`/`∏` with no Finset domain (use `∑ x ∈ s, …` or `Finset.sum`), a "
+    "wrong/invented lemma or definition name (use the search tool — do NOT guess), a missing instance argument, a "
+    "type mismatch. Iterate; do not hand back a first draft.\n\n"
+    "FAITHFULNESS — typechecking is NECESSARY but NOT SUFFICIENT (a downstream firewall back-translates your "
+    "statement and rejects it unless it is LOGICALLY EQUIVALENT to the NL AND non-degenerate): preserve EVERY "
+    "hypothesis and the EXACT conclusion below; do NOT strengthen, weaken, drop, add, or reorder quantifiers. "
+    "Do NOT take the easy way out — a statement that typechecks because you WEAKENED it (dropped a hypothesis, "
+    "added a vacuous/decorative binder, relaxed `=`→`≤` or `∀`→`∃`, or made it trivially true) is REJECTED as "
+    "degenerate. Encode the FULL claim even when that is harder to state in Lean.\n\nONLY after the checker prints "
+    "'OK', leave the final theorem in the file AND print it between "
+    "===LEAN-BEGIN=== and ===LEAN-END===.\n\nThe statement to formalize:\n")
+
+
+def formalize_interactive(nl: str, *, lean_root, timeout_s: int = 360, context: str = "", runtime: str = "") -> str:
+    """INTERACTIVE formalize: the CLI agent ITERATES (write probe → warm `lean-check` → `search` Loogle for the
+    REAL Mathlib name → fix) until the statement TYPECHECKS — instead of a blind single-shot that invents names.
+    REUSES the primitives (the agentic `default_dispatch`, the warm `lean_check_server`, `agent_tools search`,
+    the tool block) — NOT a fork. The agent fixes the COMPILE leg (the P1 bottleneck); the firewall still governs
+    FAITHFULNESS downstream. Returns the typechecking statement, or '' to let the caller fall back to single-shot."""
+    import re
+    import sys as _sys
+    from pathlib import Path
+    try:
+        from ztare.leanmill.solver.agentic_leaf import default_dispatch, probe_dir
+        from ztare.formal.lean_check_server import ensure_server, default_socket_path
+    except Exception:  # noqa: BLE001
+        return ""
+    lean_root = Path(lean_root)
+    repo = Path(__file__).resolve().parents[4]
+    sock = ensure_server(str(lean_root)) or default_socket_path(str(lean_root))
+    probe = probe_dir(lean_root) / "FormalizeProbe.lean"
+    try:
+        probe.write_text("import Mathlib\n\n-- replace with the theorem statement, ending in := by sorry\n", encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        return ""
+    leancheck = f"PYTHONPATH={repo}/src {_sys.executable} -m ztare.formal.lean_check_server --check {sock} {probe}"
+    search = f"PYTHONPATH={repo}/src {_sys.executable} -m ztare.leanmill.agent_tools search '<Mathlib name or type pattern>'"
+    ctx_block = (f"\n\nSURROUNDING CONTEXT (use ONLY to render faithfully; do NOT formalize the context):\n"
+                 f"{context.strip()[:2000]}\n" if (context or "").strip() else "")
+    # NOTE: do NOT append render_tool_block here — that surfaces the PROVING tools (witness/abduct/hammer), which
+    # are useless for STATING a theorem and would duplicate the inline `search` command. Formalize needs only
+    # lean-check + search, both specified in the prompt above.
+    prompt = (_FORMALIZE_INTERACTIVE_PROMPT.format(probe_ref=str(probe), leancheck_cmd=leancheck, search_cmd=search)
+              + ctx_block + (nl or ""))
+    try:
+        raw = default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or ""
+    except Exception:  # noqa: BLE001
+        raw = ""
+    # EXTRACT the statement via the CANONICAL parsers (#49 / #80), NOT ad-hoc regex. Order by RELIABILITY:
+    #   1) the lean-checked PROBE FILE — the artifact the agent ITERATED to TYPECHECK; it is real Lean (ground
+    #      truth), with no ```fence to mis-strip. THIS is why the 2026-06-11 "```lean glue ⇒ does not typecheck"
+    #      P1 blocker existed: the text-marker path ran FIRST and left the fence; preferring the probe avoids it.
+    #   2) the agent's TEXT answer — the ```lean fence ANCHORED to the ===LEAN-BEGIN=== label via the canonical
+    #      `agent_output.fenced_block` (label-anchored so a prompt-echo example fence can't win), else the bare
+    #      marker body.
+    #   3) the shared oneshot theorem extractor.
+    # Validity is judged by `lean_source.theorem_names` (the one canonical Lean parser), not a `"theorem" in s`
+    # substring. The only regexes left are at the true LLM-output boundary (the markers + the import prefix).
+    from ztare.leanmill import lean_source as _ls
+    from ztare.leanmill.solver.agent_output import fenced_block as _fb
+    stmt = ""
+    try:                                                   # 1) lean-checked probe file (ground truth, no fence)
+        _body = probe.read_text(encoding="utf-8")
+        if _ls.theorem_names(_body):
+            stmt = _body
+    except Exception:  # noqa: BLE001
+        pass
+    if not stmt.strip():                                   # 2) the agent text answer (canonical, label-anchored fence)
+        stmt = _fb(raw, "===LEAN-BEGIN===", lang="lean")
+        if not stmt:                                       #    no ```lean fence ⇒ the bare ===LEAN-BEGIN/END=== body
+            _m = re.search(r"===LEAN-BEGIN===(.*?)===LEAN-END===", raw, re.DOTALL)
+            stmt = (_m.group(1).strip() if _m else "")
+    if not stmt.strip():                                   # 3) last resort: the shared oneshot theorem extractor
+        stmt = _extract_lean_from_dispatch(raw, "oneshot")
+    stmt = re.sub(r"^\s*import\s+Mathlib\s*\n+", "", stmt or "").strip()   # minimal boundary strip (the preamble)
+    if stmt and not _ls.theorem_names(stmt):               # a non-theorem fragment (e.g. a stray 'and') is NOT a stmt
+        stmt = ""
+    _observe_formalize(nl, "interactive", raw, stmt, provider="interactive")
+    return stmt
+
+
+def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", timeout_s: "int | None" = None,
+                      context: str = "", lean_root=None) -> str:
     """NL → candidate Lean (`… := by sorry`) via the leanmill WARM-AGENT ARCHITECTURE
     (`agentic_leaf.default_dispatch` on subscription, codex/claude) — the SAME dispatch the SOLVER uses,
-    NOT a parallel one and NOT the isomorphism loop (which deanchors for analogical jumps). `mode`
+    NOT a parallel one and NOT the isomorphism loop (which deanchors for analogical jumps).
+
+    PROVIDER RESILIENCE (formalize is SINGLE-SHOT, so it can use a non-agentic API model — unlike the solver
+    leaf which is agentic/repo-aware): pass `runtime='deepseek-chat'` (or any llm_runtime model id) to formalize
+    purely via the API provider, OR rely on the DEFAULT-ON fallback — if the subscription lane returns DEAD/EMPTY
+    (the sole-claude-contention timeouts that zeroed P1-RUNG-A), it recovers via the env-selected API provider
+    (`_api_fallback_model`, provider-agnostic). `mode`
     selects the prompt: 'oneshot' (single theorem, objects in Mathlib) or 'define_then_state' (a
     self-contained file that DEFINES Mathlib-absent objects then states the theorem — the same file shape
     the solver already proves, so the link reuses `solve_adhoc` unchanged). The judge must be a DIFFERENT
@@ -509,6 +873,19 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "codex",
     from pathlib import Path
     if mode not in _FORMALIZE_PROMPTS:
         mode = "oneshot"
+    if timeout_s is None:                    # NOT a hardcoded 240 — the calibrated, env-tunable factory budget
+        from ztare.common.timeouts import timeout_s as _budget
+        timeout_s = _budget("formalize_oneshot")
+    # INTERACTIVE (agentic) formalize — the agent ITERATES write→warm-check→search→fix to a TYPECHECKING
+    # statement, fixing the single-shot "invented name → does not typecheck" P1 bottleneck. Default-on; the
+    # firewall still governs faithfulness. Only on the agentic path (a lean_root + subscription runtime);
+    # falls through to single-shot if it returns empty.
+    if (mode == "oneshot" and lean_root is not None and (runtime or "") in _SUBSCRIPTION_RUNTIMES
+            and _formalize_interactive_on()):
+        _iv = formalize_interactive(nl, lean_root=lean_root, timeout_s=max(int(timeout_s), 360),
+                                    context=context, runtime=runtime)
+        if (_iv or "").strip():
+            return _iv
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
     except Exception:
@@ -517,17 +894,56 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "codex",
         except Exception:
             return ""
     repo = Path(__file__).resolve().parents[4]
-    prompt = _FORMALIZE_PROMPTS[mode] + (nl or "")
+    # #88: optional BLUEPRINT CONTEXT so the formalizer can faithfully render a hard research-level lemma it
+    # cannot pin down from the prose alone (the P1-RUNG-A run rejected every lemma faithful=False because the
+    # formalizer was blind to the surrounding notation/objects). The context INFORMS rendering only — the
+    # firewall (round-trip + cross-vote + structural + def-faithfulness) is still the SOLE admit arbiter, so an
+    # over-helpful context can never launder an unfaithful statement through.
+    ctx_block = ("\n\nSURROUNDING BLUEPRINT CONTEXT — use ONLY to render the statement below faithfully (its "
+                 "notation, the intended objects, how this piece fits); do NOT formalize the context itself:\n"
+                 + context.strip()[:2000] + "\n\n") if (context or "").strip() else ""
+    prompt = _FORMALIZE_PROMPTS[mode] + ctx_block + (nl or "")
+    # PROVIDER A — caller named an API model (runtime is not a subscription CLI runtime — e.g. 'deepseek-chat',
+    # 'gemini-3.1-pro-preview', 'gpt-5.5'): formalize single-shot via llm_runtime, no subscription quota / no CLI
+    # contention. Provider-agnostic; the firewall still arbitrates faithfulness downstream.
+    if (runtime or "") not in _SUBSCRIPTION_RUNTIMES:
+        api_raw = _formalize_via_api(prompt, model=runtime, timeout_s=min(timeout_s, 120))
+        extracted = _extract_lean_from_dispatch(api_raw, mode)
+        _observe_formalize(nl, mode, api_raw, extracted, provider=(runtime or "api"))
+        return extracted
     try:
         raw = default_dispatch(prompt, runtime=runtime, repo=repo, timeout=timeout_s) or ""
-        return _extract_lean_from_dispatch(raw, mode)
-    except Exception:
+        from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH
+        # PROVIDER B (fallback) — the subscription lane came back DEAD (all providers down ⇒ INADMISSIBLE) or
+        # EMPTY (the close's 240s timeouts returned ''). Recover via the API-activated provider (env-selected,
+        # provider-agnostic) so a contended/exhausted subscription no longer ZEROES the run (the whole reason
+        # RUNG-A produced 0 closures).
+        sub_dead = (raw.strip() == INADMISSIBLE_DISPATCH) or (not raw.strip())
+        if sub_dead and _api_formalize_fallback_enabled():
+            api_raw = _formalize_via_api(prompt, timeout_s=min(timeout_s, 120))
+            api_extracted = _extract_lean_from_dispatch(api_raw, mode)
+            _observe_formalize(nl, mode, api_raw, api_extracted, provider=_api_fallback_model())
+            if api_extracted.strip():
+                return api_extracted            # the API provider recovered a statement the subscription couldn't
+        if raw.strip() == INADMISSIBLE_DISPATCH:
+            _observe_formalize(nl, mode, raw, INADMISSIBLE_DISPATCH)
+            return INADMISSIBLE_DISPATCH       # #89: propagate the dead-instrument signal (every provider dead)
+        extracted = _extract_lean_from_dispatch(raw, mode)
+        _observe_formalize(nl, mode, raw, extracted)   # OBSERVABILITY: raw output + extraction logged (no re-run)
+        return extracted
+    except Exception as _e:  # noqa: BLE001
+        _observe_formalize(nl, mode, "", f"EXCEPTION: {_e!r}")
         return ""
 
 
-def default_formalize_multistep(nl: str, *, runtime: str = "codex", timeout_s: int = 360) -> str:
+def default_formalize_multistep(nl: str, *, runtime: str = "", timeout_s: "int | None" = None) -> str:
     """Thin alias — define-then-state is now a MODE of `default_formalize` (merged to kill the duplicate
-    dispatch boilerplate). See the def-faithfulness CAVEAT in `default_formalize`."""
+    dispatch boilerplate). See the def-faithfulness CAVEAT in `default_formalize`. The per-dispatch budget is
+    the CALIBRATED `formalize_multistep` factory budget (measured ~243s peak + headroom, not guessed) unless
+    the caller overrides — so it lives in `common/timeouts`, the one home, env-tunable per node."""
+    if timeout_s is None:
+        from ztare.common.timeouts import timeout_s as _budget
+        timeout_s = _budget("formalize_multistep")
     return default_formalize(nl, mode="define_then_state", runtime=runtime, timeout_s=timeout_s)
 
 
@@ -535,27 +951,48 @@ def default_backtranslate(lean_statement: str, *, model: str = "gemini-3.1-pro-p
     """Lean → NL back-translation — a mechanical rendering (one completion), so it uses `LLMRuntime`
     (gemini, a DIFFERENT family from a codex formalizer). Returns '' on any failure ⇒ the gate's
     non-empty guard fails-closed (no admission on a dead back-translator)."""
-    prompt = ("Translate this Lean 4 theorem statement into a precise one-sentence natural-language math "
-              "statement. Preserve EVERY hypothesis and the exact conclusion (do not strengthen, weaken, "
-              "or drop anything). Output ONLY the sentence.\n\n" + (lean_statement or ""))
-    return (_api_text(prompt, model=model, label="autoformalize_backtranslate") or "").strip()
+    prompt = prompts.BACKTRANSLATE_PROMPT.format(lean_statement=(lean_statement or ""))
+    back = (_api_text(prompt, model=model, label="autoformalize_backtranslate") or "").strip()
+    _observe_roundtrip("backtranslate", lean_statement=(lean_statement or ""), back_nl=back, model=model)
+    return back
 
 
 def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
-    """DIRECTIONAL faithfulness judge: True ONLY if the back-translation is LOGICALLY EQUIVALENT to the
-    original — not weaker, not stronger, no dropped/added hypothesis, no relaxed conclusion (≤→<, =→≤,
-    ∀→∃). One `LLMRuntime` completion (gemini, cross-family from a codex formalizer); parses a strict
-    verdict token and FAILS-CLOSED (returns False) on any ambiguity/failure. The deterministic
-    `structural_faithfulness` carrier OVERRIDES a charitable verdict here."""
-    prompt = ("You are a strict faithfulness judge. Two natural-language math statements:\n"
-              f"ORIGINAL: {orig_nl}\nCANDIDATE (back-translated from a formalization): {back_nl}\n\n"
-              "Is the CANDIDATE LOGICALLY EQUIVALENT to the ORIGINAL — same hypotheses, same conclusion, "
-              "neither weaker nor stronger (watch for a dropped/added hypothesis or a relaxed conclusion "
-              "such as ≤ vs <, = vs ≤, ∀ vs ∃)? Answer with EXACTLY one token on the first line: "
-              "EQUIVALENT or NOT_EQUIVALENT.")
-    text = (_api_text(prompt, model=model, label="autoformalize_judge") or "").strip().upper()
-    first = text.splitlines()[0] if text else ""
-    return first.strip().startswith("EQUIVALENT")
+    """DIRECTIONAL-for-proving faithfulness judge: True iff PROVING the back-translation would ESTABLISH the
+    original's claim — a stronger-or-equal CONCLUSION (incl. a CONSTRUCTIVE witness for an ∃-goal: exhibiting a
+    specific F for "∃F, F'=f" is faithful, never a launder — proving more is harder, not easier) on the
+    same-or-weaker HYPOTHESES. False on a WEAKER/changed conclusion (=→≤, ∀→∃) or a DROPPED/ADDED/RESTRICTED
+    hypothesis (narrowed domain, assumed splitting, extra side condition). FAILS-CLOSED on ambiguity/failure.
+    The deterministic `statement_integrity` carrier OVERRIDES a charitable verdict here. (2026-06-11: was strict
+    EQUIVALENCE, which wrongly rejected a faithful CONSTRUCTIVE formalization — equivalence is over-strict on
+    the ADMIT side for a proving firewall; directional implication is the correct model.)
+
+    MAJORITY-OF-N (2026-06-11 flaky-judge fix): a SINGLE gemini completion is a near-coin-flip on a HARD
+    equivalence (an INFORMAL NL vs. a deliberately MORE-PRECISE formalization — e.g. `hres` quantifying the
+    residue over every field extension L). MEASURED: the identical (nl, back_nl) returned True/True/False on
+    the EXACT RatFunc-antiderivative statement, so the production single-sample false-rejected a CORRECT
+    formalization and dead-ended the run. We now take a STRICT MAJORITY of N independent votes
+    (ZTARE_LEANMILL_JUDGE_SAMPLES, default 3) — sound variance reduction (an UNFAITHFUL statement still loses
+    the vote) — and the prompt explicitly tells the judge that MORE PRECISION is NOT strengthening. Every
+    vote + the raw verdicts are logged via `_observe_roundtrip` so a rejection is never opaque again."""
+    import os as _os
+    prompt = prompts.DIRECTIONAL_JUDGE_PROMPT.format(orig_nl=orig_nl, back_nl=back_nl)
+    n = 3
+    try:
+        n = max(1, int(_os.environ.get("ZTARE_LEANMILL_JUDGE_SAMPLES", "3") or "3"))
+    except (TypeError, ValueError):
+        n = 3
+    raws: "list[str]" = []
+    votes: "list[bool]" = []
+    for _ in range(n):
+        raw = (_api_text(prompt, model=model, label="autoformalize_judge") or "").strip()
+        raws.append(raw)
+        first = raw.upper().splitlines()[0] if raw else ""
+        votes.append(first.strip().startswith("EQUIVALENT"))
+    faithful = (sum(1 for v in votes if v) * 2 > n)          # STRICT majority (fail-closed on a tie)
+    _observe_roundtrip("judge", orig_nl=orig_nl, back_nl=back_nl, n=n, votes=votes,
+                       raw_verdicts=[r[:200] for r in raws], faithful=faithful, model=model)
+    return faithful
 
 
 # ── PRODUCTION wiring of the firewall to the ONE kernel + the #24 probe, and the SOLVER LINK ────────
@@ -566,8 +1003,10 @@ def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemin
 
 def _extract_signature(statement: str) -> str:
     """`theorem T (a:ℝ) : a = a := by sorry` → `theorem T (a:ℝ) : a = a` (drop the proof tail).
-    The detector helpers (`_conclusion`/`_hyp_types`) tolerate the `theorem T` prefix."""
-    return re.split(r":=", statement, maxsplit=1)[0].strip()
+    The detector helpers (`_conclusion`/`_hyp_types`) tolerate the `theorem T` prefix. Binder-safe:
+    a `let k := 5` inside a hypothesis must NOT be read as the proof `:=` (canonical splitter)."""
+    from ztare.leanmill.lean_source import signature_before_proof
+    return signature_before_proof(statement).strip()
 
 
 def default_compile(statement: str, sandbox) -> bool:
@@ -576,6 +1015,130 @@ def default_compile(statement: str, sandbox) -> bool:
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
     body = statement if statement.lstrip().startswith("import") else f"import Mathlib\n\n{statement}"
     return _compile_probe(body, sandbox, "AutoformCompile", 150) is True
+
+
+def default_compile_diagnose(statement: str, sandbox) -> str:
+    """The compile ERROR TEXT for a failing statement — the targeted feedback the refine loop needs so the
+    formalizer FIXES the specific Lean error instead of re-guessing blind. The firewall's `compile_fn` returns
+    only a bool (discarding WHY it failed), which made the compile-fix refine loop non-convergent (the root
+    cause of the P1-RUNG-A formalize-reject + the retry token-burn: claude was told 'it did not typecheck' with
+    no error to act on). Best-effort, ADVISORY (never a gate — it does not affect admission, only the hint):
+    reuses the warm REPL (which already returns the actual `error:` lines, just discarded by `default_compile`).
+    Returns '' when it compiles, or when the REPL is unavailable here (graceful — the hint stays generic, no
+    worse than before). `reject_sorry=False` matches `default_compile`'s policy (a `sorry` is fine)."""
+    body = statement if statement.lstrip().startswith("import") else f"import Mathlib\n\n{statement}"
+    try:
+        from ztare.formal.repl_compile import compile_probe_via_repl
+        r = compile_probe_via_repl(body, sandbox, reject_sorry=False)
+        if r is None:
+            return ""                         # REPL off / toolchain mismatch / dead ⇒ no diagnostics available
+        ok, diag = r
+        return "" if ok else (diag or "")
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def default_instance_battery(formalization: str, predicate: str, cases, *, sandbox) -> bool:
+    """battery_fn production wiring: run `semantic_instance_battery` through the kernel compile probe
+    (`_compile_probe` = `lake env lean`). `import Mathlib` is prepended when absent. `cases` is the
+    human-labelled `[(instance_lean_term, expected_truth)]` for the decidable predicate `predicate`."""
+    from ztare.gates.v33_preflight_risk_detector import _compile_probe
+
+    def _probe(body: str) -> bool:
+        full = body if body.lstrip().startswith("import") else f"import Mathlib\n\n{body}"
+        return _compile_probe(full, sandbox, "AutoformBattery", 150) is True
+
+    return semantic_instance_battery(formalization, predicate, cases, compile_probe=_probe)
+
+
+def _smt_assignment_to_lean(assignment: "dict", field_order: "list[str]",
+                            value_map: "Optional[dict]" = None) -> str:
+    """Render an SMT model assignment `{attr: value}` as a Lean anonymous-constructor instance term
+    `⟨v0, v1, …⟩` in `field_order`. bool→`true`/`false`, int→decimal; a `value_map[attr][value]` override
+    renders enum/string attributes to their Lean constructor. The structure's field order MUST match."""
+    value_map = value_map or {}
+    parts = []
+    for f in field_order:
+        v = assignment.get(f)
+        if value_map.get(f) and v in value_map[f]:
+            parts.append(str(value_map[f][v]))
+        elif isinstance(v, bool):
+            parts.append("true" if v else "false")
+        else:
+            parts.append(str(v))
+    return "⟨" + ", ".join(parts) + "⟩"
+
+
+def default_smt_boundary_battery(formalization: str, predicate: str, *, sandbox,
+                                 smt_rule: str, numeric_attr: str, smt_domain: "dict",
+                                 field_order: "list[str]", value_map: "Optional[dict]" = None,
+                                 candidate_smt: "Optional[str]" = None, auto_candidates: bool = True) -> bool:
+    """CROSS-SUBSTRATE battery_fn: instead of HUMAN-labelled instances, the SMT side (z3) PROPOSES the
+    adversarial cases over the INFINITE numeric range and the Lean KERNEL RATIFIES them. The "SMT proposes,
+    Lean ratifies" leapfrog as a production firewall leg — a drop-in `battery_fn` (same `(stmt)->bool`
+    contract), so it composes with the existing gate. Reuses the ONE battery kernel (`default_instance_
+    battery` = `semantic_instance_battery` over `_compile_probe`); NO parallel governance.
+
+    Cases come from `SmtPolicyChecker`:
+      • `threshold_cases(smt_rule, numeric_attr)` — the decision-FLIP boundary over all ℤ (the $10,000 edge
+        a human battery misses), labelled by the rule's own z3 decision;
+      • if `candidate_smt` is given, ALSO `distinguishing_requests(smt_rule, candidate_smt)` — concrete
+        requests where the trusted rule and the candidate DISAGREE (each labelled by the trusted rule).
+    The Lean `predicate` must DECIDE to those labels; a laundered formalization (e.g. `>=` weakened to `>`)
+    misclassifies the SMT-found boundary and FAILS. FAIL-CLOSED: no z3 / no cases ⇒ False (no silent admit;
+    a firewall leg that can't produce its adversarial cases must not wave the formalization through)."""
+    try:
+        from ztare.common.smt_checker import SmtPolicyChecker
+    except Exception:  # noqa: BLE001
+        return False
+    try:
+        chk = SmtPolicyChecker(smt_domain)
+    except Exception:  # noqa: BLE001 — z3 absent ⇒ fail-closed
+        return False
+    cases_smt = list(chk.threshold_cases(smt_rule, numeric_attr) or [])
+    if candidate_smt:
+        cases_smt += list(chk.distinguishing_requests(smt_rule, candidate_smt) or [])
+    if auto_candidates:   # AUTO-derive the laundering surface (off-by-one + operator weakenings) — no human
+        cases_smt += list(chk.auto_distinguishing_battery(smt_rule) or [])   # candidate needed; the kernel ratifies each
+    # dedup by request (threshold / distinguishing / auto may land on the same boundary point)
+    _seen: set = set()
+    _dedup: "list[tuple[dict, bool]]" = []
+    for req, dec in cases_smt:
+        k = tuple(sorted(req.items()))
+        if k not in _seen:
+            _seen.add(k)
+            _dedup.append((req, dec))
+    cases_smt = _dedup
+    if not cases_smt:
+        return False   # FAIL-CLOSED: the SMT side proposed no adversarial case (cannot certify emptily)
+    lean_cases = [(_smt_assignment_to_lean(req, field_order, value_map), bool(dec)) for req, dec in cases_smt]
+    return default_instance_battery(formalization, predicate, lean_cases, sandbox=sandbox)
+
+
+def default_crossvote(nl: str, statement: str, *, sandbox, mode: str = "oneshot",
+                      timeout_s: int = 240, equiv_timeout_s: "Optional[int]" = None) -> bool:
+    """crossvote_fn production wiring (flag-gated by `crossvote_enabled()` at the call site): dispatch the
+    DIVERSE formalizer panel on `nl`, require they form a CROSS-FAMILY kernel-equivalence clique, AND require
+    the candidate `statement` to be kernel-equivalent to that consensus. Two clean checks, both via the ONE
+    kernel (`kernel_equivalent` = a `lake env lean` ↔-bridge compile):
+      (1) `cross_vote_faithfulness` — ≥2 independent formalizations agree (across ≥2 families); and
+      (2) `kernel_equivalent(statement, consensus)` — THIS statement is the same problem as the consensus.
+    FAIL-CLOSED on every leg (kernel_equivalent / cross_vote_faithfulness both return False / non-faithful on
+    any infra failure, <2 votes, or disagreement). NEVER admits on a missing signal.
+
+    `equiv_timeout_s` (the per-pair `↔` compile budget) defaults to `ZTARE_LEANMILL_EQUIV_TIMEOUT_S` (else
+    300s) — NOT hardcoded tight: each pair pays a cold Mathlib reload, so a small value times out → None →
+    fail-closed false-negative."""
+    from ztare.leanmill.solver.cross_voting import (cross_vote_faithfulness, kernel_equivalent,
+                                                    _equiv_timeout_default)
+    if equiv_timeout_s is None:
+        equiv_timeout_s = _equiv_timeout_default()
+    verdict, _votes = cross_vote_faithfulness(nl, lean_root=Path(sandbox), mode=mode,
+                                              timeout_s=timeout_s, equiv_timeout_s=equiv_timeout_s)
+    if not verdict.faithful or not (verdict.agreed_statement or "").strip():
+        return False   # the independent panel did not reach a cross-family kernel consensus
+    agree, _why = kernel_equivalent(statement, verdict.agreed_statement, Path(sandbox), equiv_timeout_s)
+    return bool(agree)
 
 
 def default_triviality(statement: str, sandbox) -> bool:
@@ -602,14 +1165,18 @@ def default_triviality(statement: str, sandbox) -> bool:
         raise RuntimeError("AutoformTriv cheap-tactic probe inconclusive (infra) — fail-closed, no silent admit")
     if cheap is True:
         return True                                          # closed by cheap tactics → degenerate
-    return nondegenerate_instance_probe(sig, sandbox, timeout=150).get("vacuity_confirmed") is True
+    from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: vacuity_probe defaults to the prior 150)
+    return nondegenerate_instance_probe(sig, sandbox, timeout=timeout_s("vacuity_probe")).get("vacuity_confirmed") is True
 
 
-def default_solve(target_name: str, statement: str, *, substrate, timeout_s: int = 600) -> dict:
-    """solve_fn: route an ADMITTED faithful statement into the existing solver+governance (solve_adhoc)."""
+def default_solve(target_name: str, statement: str, *, substrate, timeout_s: int = 600,
+                  notes: "str | None" = None) -> dict:
+    """solve_fn: route an ADMITTED faithful statement into the existing solver+governance (solve_adhoc).
+    `notes` (optional, #81) carries a blueprint into the recursive planner (advisory; kernel-gated)."""
     from ztare.leanmill.solver.solver_core import solve_adhoc  # #42: import from src, not the script
     body = statement if statement.lstrip().startswith("import") else f"import Mathlib\n\n{statement}"
-    return solve_adhoc(target_name, body, "", substrate=str(substrate), mode="dag_search", timeout_s=timeout_s)
+    return solve_adhoc(target_name, body, "", substrate=str(substrate), mode="dag_search",
+                       timeout_s=timeout_s, notes=notes)
 
 
 _SHELL_CONST = {"0", "1", "True", "False", "∅", "()", "Unit", "PUnit", "default", "arbitrary",
@@ -639,25 +1206,32 @@ def detect_def_shells(formalization: str) -> "list[tuple[str, str]]":
     return shells
 
 
-_DEF_JUDGE_PROMPT = (
-    "A natural-language math problem and a Lean DEFINITION extracted from its formalization:\n"
-    "PROBLEM: {nl}\nDEFINITION (Lean): {decl}\n\n"
-    "Is this definition a FAITHFUL formalization of an object/notion the problem refers to — or is it a "
-    "PLACEHOLDER / SHELL / WRONG object (a constant stand-in, an opaque parameter, or a DIFFERENT notion "
-    "than intended)? Answer with EXACTLY one token on the first line: FAITHFUL or UNFAITHFUL, then a "
-    "one-line reason."
-)
-
-
 def _default_def_judge(nl: str, decl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
     """Cold cross-family (gemini) judge for ONE Lean definition vs the NL intent. Returns True (faithful)
-    unless a CLEAR `UNFAITHFUL` verdict — FAITHFUL / ambiguous / empty / error all → True (admit), so the
-    layer does NOT over-reject faithful defs (detect_def_shells + the statement-level firewall are the
-    fail-closed layers; this catches the clear NON-constant wrong-object / placeholder)."""
-    text = (_api_text(_DEF_JUDGE_PROMPT.format(nl=(nl or "")[:1200], decl=(decl or "")[:800]),
-                      model=model, label="autoformalize_def_judge") or "").strip().upper()
-    first = text.splitlines()[0] if text else ""
-    return not first.startswith("UNFAITHFUL")
+    unless a STRICT MAJORITY of N votes give a CLEAR `UNFAITHFUL` verdict — FAITHFUL / ambiguous / empty /
+    error all → True (admit), so the layer does NOT over-reject faithful defs (detect_def_shells + the
+    statement-level firewall are the fail-closed layers; this catches the clear NON-constant wrong-object /
+    placeholder). MAJORITY-OF-N (2026-06-11, same flaky-single-sample class as `default_directional_judge`):
+    a lone spurious `UNFAITHFUL` used to reject a correct def; now reject only on a strict majority. Votes +
+    raw verdicts logged via `_observe_roundtrip`."""
+    import os as _os
+    prompt = prompts.DEF_JUDGE_PROMPT.format(nl=(nl or "")[:1200], decl=(decl or "")[:800])
+    try:
+        n = max(1, int(_os.environ.get("ZTARE_LEANMILL_JUDGE_SAMPLES", "3") or "3"))
+    except (TypeError, ValueError):
+        n = 3
+    raws: "list[str]" = []
+    unfaithful = 0
+    for _ in range(n):
+        raw = (_api_text(prompt, model=model, label="autoformalize_def_judge") or "").strip()
+        raws.append(raw)
+        first = raw.upper().splitlines()[0] if raw else ""
+        if first.startswith("UNFAITHFUL"):
+            unfaithful += 1
+    faithful = not (unfaithful * 2 > n)                  # reject ONLY on a strict majority of UNFAITHFUL (admit-biased)
+    _observe_roundtrip("def_judge", nl=(nl or "")[:400], decl=(decl or "")[:400], n=n,
+                       unfaithful_votes=unfaithful, raw_verdicts=[r[:120] for r in raws], faithful=faithful, model=model)
+    return faithful
 
 
 def default_def_faithfulness(nl: str, formalization: str, *, judge_fn=None) -> dict:
@@ -686,33 +1260,169 @@ def default_def_faithfulness(nl: str, formalization: str, *, judge_fn=None) -> d
     return {"checked": len(decls), "unfaithful": unfaithful}
 
 
+def _solve_refutation(sv) -> str:
+    """The solver's signal that the FORMAL target itself is false / mis-stated — the trigger for a governed
+    reformulation re-entry. Both strengths are now KERNEL-GATED before reaching here (so acting on them is
+    sound, and a reformulation additionally re-passes the firewall so it cannot launder): (a) HARD — the
+    falsify move kernel-proved ¬G (`outcome="falsified"`); (b) SOFT — the leaf flagged the statement mis-stated
+    (`-- STATEMENT-FALSE:`) AND `solve_adhoc` independently CONFIRMED it via a kernel ¬G attempt (#143; only
+    then is `statement_false` set — an UNVERIFIED claim lands in `statement_false_unverified` and is NOT a
+    refutation, which is what stops the v7 deadlock on a true-but-hard lemma the leaf wrongly flagged). The
+    `statement_false_verified` flag is the defense-in-depth guard: the SOFT path counts only when the verify
+    gate confirmed it, OR when that gate was explicitly disabled (=0 opt-out, legacy A/B baseline). Returns
+    the refutation text (witness/counterexample/reason), or "" if not refuted."""
+    if not isinstance(sv, dict):
+        return ""
+    r0 = (sv.get("results") or [{}])[0] if (sv.get("results")) else {}
+    if (r0.get("outcome") or "") == "falsified":
+        return (r0.get("falsifier") or r0.get("notes") or "kernel-checked ¬G (falsify move)")[:600]
+    sf = r0.get("statement_false") or sv.get("statement_false")
+    if not sf:
+        return ""
+    # SOFT path: only a kernel-CONFIRMED claim refutes. Accept when solve_adhoc verified it, or when the
+    # verify gate was explicitly turned off (the legacy/A-B baseline). A bare claim with the gate ON but no
+    # confirmation is NOT trusted here (belt-and-suspenders behind solve_adhoc's single capture point).
+    _verified = bool(sv.get("statement_false_verified") or r0.get("statement_false_verified"))
+    _gate_off = os.environ.get("ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE", "1") == "0"
+    if not (_verified or _gate_off):
+        return ""
+    return str(sf)[:600]
+
+
+def _reformulate_feedback(prior_stmt: str, refutation: str) -> str:
+    """Targeted formalizer context for the reformulation re-entry: tell the (warm-RESUMED) agent its prior
+    rendering was REFUTED and why, and that it must produce the INTENDED TRUE statement faithful to the NL —
+    NOT a weakening, NOT the refuted rendering. The faithfulness firewall re-gates this against the ORIGINAL nl
+    (it cannot launder); statement_integrity keeps it from reproducing the refuted statement."""
+    return ("\n\n[REFORMULATE] A prior formalization of this target was REFUTED as FALSE during proving:\n"
+            f"  {(prior_stmt or '').strip()[:500]}\n"
+            f"Refutation: {refutation.strip()[:400]}\n"
+            "That rendering MIS-STATES the intended mathematics. Produce the INTENDED, TRUE statement that "
+            "faithfully captures the natural-language target — do NOT weaken it, and do NOT reproduce the "
+            "refuted rendering. (The faithfulness firewall re-checks this against the original problem.)")
+
+
+def _planner_subdag(sv) -> "Optional[dict]":
+    """The planner's sub-DAG `{lemmas, chain, lnames}` for the notes write-back / compound. `route_and_solve`
+    returns `{routed, decomposition: {lemmas, chain, lnames}, solution}` — the lemmas live UNDER `decomposition`.
+    Surface THAT, not the whole `iso_route` wrapper: the prior code set `out["decomposition"] = sv["iso_route"]`,
+    so compound/refined-notes looked for `["lemmas"]` one level too high, found None, and the self-evolving loop
+    PERSISTED NOTHING (the agent's mid-proof decomposition was dropped between runs — the amnesia bug)."""
+    if not isinstance(sv, dict):
+        return None
+    return (sv.get("iso_route") or {}).get("decomposition") or None
+
+
 def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
                             formalize_fn=None, compile_fn=None, triviality_fn=None,
                             backtranslate_fn=None, judge_fn=None, structural_fn=None,
                             solve_fn=None, timeout_s: int = 600, max_refines: int = 2,
-                            def_faithfulness: bool = False) -> dict:
+                            def_faithfulness: bool = False, notes: "str | None" = None,
+                            extra_context: str = "", reformulate_budget: "int | None" = None) -> dict:
     """THE END-TO-END LINK: NL → autoformalize (faithfulness firewall) → if admitted, solve_adhoc
     (solver + governance kernel). The firewall GATES the solver — an unfaithful / vacuous / trivial
     statement is rejected BEFORE any solve, which is what prevents the worst laundering (an opaque or
     weakened statement that then gets "closed"). Every leg is injectable (mocks in tests); the defaults
-    wire the real apparatus. Returns the formalization, the faithfulness verdict, and the closure."""
+    wire the real apparatus. Returns the formalization, the faithfulness verdict, and the closure.
+
+    REFORMULATION RE-ENTRY (ZTARE_LEANMILL_REFORMULATE=1, default-off; rounds = ZTARE_LEANMILL_REFORMULATE_ROUNDS
+    or 1): when the solver REFUTES the formal target (kernel ¬G, or a leaf `statement_false` flag — the
+    iso_lemma1 case, only discoverable by attempting the proof), re-open the SAME firewall on the SAME nl with
+    the refutation as formalizer context (a warm RESUME → the agent continues, not a cold re-call), bounded.
+    Architecture: the AGENT owns formalize↔prove↔reformulate; the HARNESS owns only the independent faithfulness
+    gate + kernel audit (the agent can't be its own faithfulness judge). SOUND: each reformulation re-passes the
+    firewall against the original nl; the refuted formalization is reported, NEVER credited as a closure."""
     substrate = substrate or sandbox
+    _caller_formalize_fn = formalize_fn   # PRESERVE the caller's value (None in prod) for the reformulate recursion,
+    #                                       so the re-entry rebuilds formalize_fn with the NEW refutation context.
     formalize_fn = formalize_fn or default_formalize
+    if formalize_fn is default_formalize:
+        # Thread the LEAN ROOT so the INTERACTIVE formalizer (default-on) can start the warm REPL + the agent can
+        # `lean-check`/`search` to a TYPECHECKING statement. Plus, when ZTARE_LEANMILL_FORMALIZE_NOTES=1, the
+        # blueprint NOTES as render context (#88; it was notes-blind). The firewall still gates faithfulness, so
+        # neither can launder — they only RAISE the faithful-render rate. `extra_context` carries the reformulate
+        # refutation feedback (warm-resumed agent's continuation cue) on a re-entry.
+        _notes_ctx = notes if (os.environ.get("ZTARE_LEANMILL_FORMALIZE_NOTES") == "1" and (notes or "").strip()) else ""
+        _fctx = (_notes_ctx + extra_context).strip()
+        formalize_fn = lambda _nl: default_formalize(_nl, lean_root=sandbox, context=_fctx)  # noqa: E731
     compile_fn = compile_fn or (lambda s: default_compile(s, sandbox))
+    compile_diagnose_fn = lambda s: default_compile_diagnose(s, sandbox)  # noqa: E731 — advisory Lean-error text for the refine hint (not a gate)
     triviality_fn = triviality_fn or (lambda s: default_triviality(s, sandbox))
     backtranslate_fn = backtranslate_fn or default_backtranslate
     judge_fn = judge_fn or default_directional_judge
-    solve_fn = solve_fn or (lambda n, s: default_solve(n, s, substrate=substrate, timeout_s=timeout_s))
+    solve_fn = solve_fn or (lambda n, s: default_solve(n, s, substrate=substrate, timeout_s=timeout_s, notes=notes))
+
+    # FAITHFULNESS STORE (#86, ZTARE_LEANMILL_FAITHFULNESS_STORE=1; default-off = byte-parity). The
+    # autoformalize axis was the ONLY one that learned nothing — every faithfulness verdict recomputed cold,
+    # and `structural_faithfulness` ran advisory-NO-OP because production never fed it a reference. When ON +
+    # no caller-supplied structural_fn: recall a prior CONFIRMED faithful rendering of THIS NL and feed its
+    # fingerprint as the `expected` reference so the silent-weakening guard runs LOAD-BEARING; deposit on a
+    # fresh admit. Parity-safe: a first-seen NL has no reference ⇒ `structural_faithfulness(expected=None)` =
+    # True (admit, as today); only a RE-seen NL whose new rendering is WEAKER than the stored faithful one is
+    # newly caught (a sound tightening). The firewall's kernel legs remain the sole faithfulness arbiter.
+    _fstore = None
+    _prior_confirmed_fn = None
+    if structural_fn is None and os.environ.get("ZTARE_LEANMILL_FAITHFULNESS_STORE", "1") != "0":   # DEFAULT-ON 2026-06-12 (deposit only on CONFIRMED admits; recall only STRENGTHENS the guard; =0 reverts)
+        try:
+            from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore
+            from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
+            _fstore = FaithfulnessStore(_OUT / "solver_lane_faithfulness_store.jsonl")
+            _exp = (_fstore.reference(nl) or {}).get("fingerprint")
+            structural_fn = lambda _nl, _s: structural_faithfulness(_nl, _s, expected=_exp)  # noqa: E731
+            # #105: a re-seen statement that EXACTLY matches the stored CONFIRMED rendering skips the flaky
+            # round-trip JUDGE (the deterministic legs — incl. the structural reference above — still run, so
+            # this can only skip the variance-prone LLM, never admit a different/weaker statement).
+            def _prior_confirmed_fn(_nl, _s):  # noqa: E306
+                _ref = _fstore.reference(_nl) or {}
+                _ss = " ".join((_ref.get("statement") or "").split())
+                return bool(_ss) and _ss == " ".join((_s or "").split())
+        except Exception:  # noqa: BLE001 — the store is advisory; never break the firewall
+            _fstore = None
+            _prior_confirmed_fn = None
 
     af, refine_trace = autoformalize_refine(
         nl, formalize_fn=formalize_fn, compile_fn=compile_fn, triviality_fn=triviality_fn,
         backtranslate_fn=backtranslate_fn, judge_fn=judge_fn, structural_fn=structural_fn,
+        compile_diagnose_fn=compile_diagnose_fn,   # feed the ACTUAL Lean error into the compile-fix refine (not blind)
+        prior_confirmed_fn=_prior_confirmed_fn,
         max_refines=max_refines)
+    # #88 MULTISTEP ESCALATION: a oneshot formalization the firewall REJECTS may still be faithfully
+    # formalizable with more deliberation — MEASURED 2026-06-10: the hard partial-fraction-existence lemma went
+    # rejected(oneshot) → admitted+faithful(multistep, real Mathlib `RatFunc` objects, no def-shell). Retry the
+    # REJECTED case ONCE with `default_formalize_multistep` (define_then_state). The escalated statement flows
+    # through the SAME downstream gates (def-shell + def-faithfulness below), so it cannot launder. Gated
+    # default-off (`ZTARE_LEANMILL_MULTISTEP_ESCALATE`) — multistep is EXPENSIVE (~7 dispatches/lemma).
+    from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH as _INADM
+    if (not af.is_target and af.verdict.reason != "INADMISSIBLE_PROVIDER_DEAD" and af.lean_statement != _INADM
+            and os.environ.get("ZTARE_LEANMILL_MULTISTEP_ESCALATE") == "1"):
+        try:
+            _af2, _tr2 = autoformalize_refine(
+                nl, formalize_fn=lambda _nl: default_formalize_multistep(_nl),
+                compile_fn=compile_fn, triviality_fn=triviality_fn, backtranslate_fn=backtranslate_fn,
+                judge_fn=judge_fn, structural_fn=structural_fn, max_refines=0)
+            if _af2.is_target:
+                af, refine_trace = _af2, (refine_trace or []) + ["multistep_escalation"] + (_tr2 or [])
+        except Exception:  # noqa: BLE001 — escalation is best-effort; the oneshot rejection stands on failure
+            pass
     out = {"nl": nl, "lean_statement": af.lean_statement, "faithful": af.verdict.accepted,
            "faithfulness_reason": af.verdict.reason, "faithfulness_checks": af.verdict.checks,
            "refine_trace": refine_trace, "refine_rounds": max(0, len(refine_trace) - 1), "solved": None}
+    from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH as _INADM  # #89: dead instrument —
+    if af.lean_statement == _INADM or af.verdict.reason == "INADMISSIBLE_PROVIDER_DEAD":  # every provider dead ⇒
+        out["outcome"] = "inadmissible_provider_dead"      # NOT a faithful=False negative. Deposit nothing,
+        out["faithful"] = None; out["lean_statement"] = ""  # exclude from the faithful-rate denominator.
+        return out
     if not af.is_target:
         out["outcome"] = "rejected_by_firewall"          # the firewall did its job — no unsound solve
+        # #85: a CROSS-VOTE disagreement is a cross-substrate MISTRANSLATION — record it as a faithfulness
+        # CONFLICT memo so the formalizer recalls the trap on a re-seen NL (prompt_block). This is what makes
+        # the cross-substrate "alien" consensus LOAD-BEARING (it compounds into learned memos) instead of pure
+        # advisory telemetry. Best-effort + gated by the store (default-off) ⇒ parity; can never admit anything.
+        if _fstore is not None and af.verdict.checks.get("cross_vote_consensus") is False:
+            try:
+                _fstore.record_conflict(nl, ["lean", "cross_vote"], af.verdict.reason, source="firewall_crossvote")
+            except Exception:  # noqa: BLE001
+                pass
         return out
     # DEF-FAITHFULNESS GATE (#23): for define_then_state output, a degenerate-constant def-shell
     # (`def Genus := 0`) makes the theorem typecheck vacuously while the statement round-trip passes
@@ -735,17 +1445,56 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
             out["faithfulness_reason"] = f"unfaithful def(s) (cold per-def judge): {_dff['unfaithful']}"
             out["outcome"] = "rejected_by_firewall"
             return out
+    # FAITHFULNESS STORE deposit (#86): the statement passed EVERY firewall leg (round-trip + structural +
+    # def-shell + def-faithfulness) ⇒ a CONFIRMED faithful NL→Lean correspondence. Record it (the compounding
+    # win the inventory found missing) so a re-seen NL recalls it + the silent-weakening guard gets a reference.
+    if _fstore is not None:
+        try:
+            _fstore.record(nl, af.lean_statement, confirmed=True,
+                           fingerprint=_parse_lean_statement(af.lean_statement), source="firewall_admit")
+        except Exception:  # noqa: BLE001
+            pass
     # Target the LAST theorem|lemma (the stated target — in define_then_state the main claim follows
     # the helper defs/lemmas; the old FIRST-`theorem`-only regex mis-pointed the solver at a helper and
     # missed `lemma`-only bodies → misreported `admitted_and_closed` on a trivial helper). Review fix 2026-06-05.
-    _names = re.findall(r"(?m)\b(?:theorem|lemma)\s+([A-Za-z_][\w'.]*)", af.lean_statement)
+    from ztare.leanmill.lean_source import theorem_names as _thm_names   # canonical, line-anchored
+    _names = _thm_names(af.lean_statement)
     name = _names[-1] if _names else "autoform_target"
     sv = solve_fn(name, af.lean_statement)
     r0 = (sv.get("results") or [{}])[0] if isinstance(sv, dict) else {}
     out["solved"] = r0.get("outcome")
     out["governance"] = sv.get("governance") if isinstance(sv, dict) else None
     out["closure_certificate"] = sv.get("closure_certificate") if isinstance(sv, dict) else None
+    # #81: surface the PLANNER's actual decomposition (route_and_solve's {lemmas, chain, lnames}) so the notes
+    # write-back persists the SAME agent's mid-proof sub-DAG, not a fresh post-hoc re-proposal.
+    out["decomposition"] = _planner_subdag(sv)   # the nested {lemmas,chain,lnames}, NOT the iso_route wrapper
     out["outcome"] = f"admitted_and_{r0.get('outcome')}"
+
+    # REFORMULATION RE-ENTRY (the agent owns formalize↔prove↔reformulate; the harness re-opens the independent
+    # faithfulness gate). The solver REFUTED this formalization (kernel ¬G or a leaf statement_false flag) — a
+    # falsity the STATIC firewall could not see (a false statement compiles + looks faithful; only PROVING reveals
+    # it). Re-open the SAME firewall on the SAME nl with the refutation as formalizer context (warm RESUME → the
+    # agent continues), bounded. SOUND: the reformulation re-passes the firewall vs the original nl; the refuted
+    # original is surfaced (`refutation`/`reformulated_from`), never credited as a closure.
+    if reformulate_budget is None:
+        reformulate_budget = (int(os.environ.get("ZTARE_LEANMILL_REFORMULATE_ROUNDS", "1") or "1")
+                              if os.environ.get("ZTARE_LEANMILL_REFORMULATE", "1") != "0" else 0)   # DEFAULT-ON 2026-06-12 (sound: re-entry re-passes the SAME firewall; =0 reverts)
+    _refutation = _solve_refutation(sv)
+    if _refutation and reformulate_budget > 0 and r0.get("outcome") != "closed":
+        re_out = autoformalize_and_solve(
+            nl, sandbox=sandbox, substrate=substrate, formalize_fn=_caller_formalize_fn,
+            compile_fn=compile_fn, triviality_fn=triviality_fn, backtranslate_fn=backtranslate_fn,
+            judge_fn=judge_fn, structural_fn=structural_fn, solve_fn=solve_fn, timeout_s=timeout_s,
+            max_refines=max_refines, def_faithfulness=def_faithfulness, notes=notes,
+            extra_context=extra_context + _reformulate_feedback(af.lean_statement, _refutation),
+            reformulate_budget=reformulate_budget - 1)
+        re_out["reformulated_from"] = af.lean_statement
+        re_out["prior_refutation"] = _refutation
+        re_out["reformulate_trace"] = (out.get("reformulate_trace") or []) + [
+            {"refuted_statement": af.lean_statement, "refutation": _refutation, "refuted_outcome": r0.get("outcome")}]
+        return re_out
+    if _refutation:
+        out["refutation"] = _refutation   # terminal honest non-closure (no budget left / could not reformulate)
     return out
 
 
@@ -756,6 +1505,15 @@ def _self_test() -> int:
         print(f"  [{'PASS' if cond else 'FAIL'}] {name}")
         if not cond:
             fails.append(name)
+
+    # the planner sub-DAG capture seam (the self-evolving-loop amnesia bug): surface iso_route['decomposition']
+    # ({lemmas,chain,lnames}), NOT the iso_route wrapper, so compound/refined-notes find the lemmas.
+    _iso = {"iso_route": {"routed": True, "decomposition": {"lemmas": ["theorem L1 : P := by sorry"],
+            "chain": "c", "lnames": ["L1"]}, "solution": {"parent_closed": True}}}
+    ok("planner_subdag: extracts NESTED decomposition lemmas (not the iso_route wrapper)",
+       (_planner_subdag(_iso) or {}).get("lemmas") == ["theorem L1 : P := by sorry"])
+    ok("planner_subdag: no iso_route ⇒ None (fail-safe, compound no-ops)", _planner_subdag({"outcome": "x"}) is None)
+    ok("planner_subdag: non-dict ⇒ None", _planner_subdag(None) is None)
 
     NL = "For Hermitian matrices A, B, if B - A is positive semidefinite then each sorted eigenvalue of A is ≤ that of B."
     GOOD = "theorem t {A B : Matrix n n ℝ} (hA : A.IsHermitian) (hB : B.IsHermitian) (h : (B-A).PosSemidef) (i) : hA.ev i ≤ hB.ev i := by sorry"
@@ -863,6 +1621,113 @@ def _self_test() -> int:
        _parse_lean_statement("theorem t (n:ℕ) : (a < b) → c = d := by sorry")["conclusion_op"] == "→")
     # absent reference ⇒ advisory-True (round-trip judge is then the defense), never a false reject
     ok("structural_advisory_when_no_reference", structural_faithfulness(NL, GOOD, expected=None))
+
+    # --- INSTANCE BATTERY leg (ground-truth binding) — mock the kernel decide-probe with a python oracle.
+    # NL policy: "permit iff role=admin AND resource=secret." Labelled battery + a BROADENED (∧→∨) launder.
+    FAITHFUL_DEC = {"admin_secret": True, "user_secret": False, "admin_public": False}
+    LAUNDERED_OR = {"admin_secret": True, "user_secret": True, "admin_public": True}  # AND→OR broadening
+    BATTERY = [("admin_secret", True), ("user_secret", False), ("admin_public", False)]
+
+    def _mk_probe(decision):  # mock: probe `example : (¬)?(permit <inst>) := by …` compiles iff polarity matches
+        def probe(body):
+            m = re.search(r"example : (¬ )?\(permit (\w+)\)", body)
+            if not m:
+                return False
+            asserted = not bool(m.group(1))
+            return decision.get(m.group(2), False) == asserted
+        return probe
+
+    ok("battery_admits_faithful",
+       semantic_instance_battery("def permit …", "permit", BATTERY, compile_probe=_mk_probe(FAITHFUL_DEC)))
+    ok("battery_rejects_broadening_launder",
+       not semantic_instance_battery("def permit …", "permit", BATTERY, compile_probe=_mk_probe(LAUNDERED_OR)))
+    ok("battery_skipped_when_no_cases",
+       semantic_instance_battery("def permit …", "permit", [], compile_probe=_mk_probe(LAUNDERED_OR)))
+    # gate integration: a faithful-everything-else formalization is REJECTED when the battery fails, and
+    # ADMITTED when it passes — the new leg gates independently of the consensus round-trip.
+    ok("gate_rejects_on_battery_fail",
+       not faithfulness_gate(NL, GOOD, judge_fn=lambda o, b: True, battery_fn=lambda s: False, **base).accepted)
+    ok("gate_admits_on_battery_pass",
+       faithfulness_gate(NL, GOOD, judge_fn=judge, battery_fn=lambda s: True, **base).accepted)
+    ok("gate_battery_fail_closed_on_error",
+       not faithfulness_gate(NL, GOOD, judge_fn=judge,
+                             battery_fn=lambda s: (_ for _ in ()).throw(RuntimeError("repl down")), **base).accepted)
+
+    # --- CROSS-VOTE leg (kernel-grade consensus) — mock crossvote_fn (the live N-formalizer + kernel
+    # equivalence is exercised in cross_voting._selftest). The gate must: ADMIT on consensus, REJECT on
+    # disagreement, and FAIL-CLOSED on a probe error. Gates independently of every other leg.
+    ok("gate_admits_on_crossvote_agree",
+       faithfulness_gate(NL, GOOD, judge_fn=judge, crossvote_fn=lambda nl, s: True, **base).accepted)
+    ok("gate_rejects_on_crossvote_disagree",
+       not faithfulness_gate(NL, GOOD, judge_fn=lambda o, b: True, crossvote_fn=lambda nl, s: False, **base).accepted)
+    ok("gate_crossvote_fail_closed_on_error",
+       not faithfulness_gate(NL, GOOD, judge_fn=judge,
+                             crossvote_fn=lambda nl, s: (_ for _ in ()).throw(RuntimeError("panel down")), **base).accepted)
+    ok("gate_crossvote_skipped_when_none",
+       faithfulness_gate(NL, GOOD, judge_fn=judge, crossvote_fn=None, **base).accepted)
+
+    # --- REFORMULATION RE-ENTRY (the governed formal↔NL oscillation) — mock the whole pipeline ---
+    # The agent's "this formalization is FALSE (found while proving) — here is the corrected one" must:
+    # re-open the firewall on the refutation, re-solve the corrected statement, NEVER credit the refuted one,
+    # stay firewall-gated (an unfaithful reformulation is REJECTED not closed), and honor the budget. The live
+    # agent loop runs on the VPS; here we pin the MECHANICS + the soundness boundary. max_refines=0 ⇒ exactly
+    # one formalize call per pass, so the stateful mock (FALSE first, TRUE on re-entry) is deterministic.
+    RF_NL = "the intended true statement about X"
+    FALSE_STMT, TRUE_STMT = "theorem t : FalseRender := by sorry", "theorem t : TrueRender := by sorry"
+
+    def _mk_formalize():            # FALSE first (refuted during proving), TRUE on the reformulate re-entry
+        st = {"n": 0}
+        def f(_s):
+            st["n"] += 1
+            return TRUE_STMT if st["n"] >= 2 else FALSE_STMT
+        return f
+    _rf_solve = lambda name, stmt: {"results": [{"outcome": "closed" if "TrueRender" in stmt else "falsified",
+                                                 "falsifier": "counterexample at x=0"}]}
+    _rf_base = dict(sandbox=".", compile_fn=lambda s: True, triviality_fn=lambda s: False,
+                    judge_fn=lambda o, b: True, structural_fn=lambda o, s: True, solve_fn=_rf_solve, max_refines=0)
+    r_ref = autoformalize_and_solve(RF_NL, formalize_fn=_mk_formalize(), backtranslate_fn=lambda s: RF_NL,
+                                    reformulate_budget=1, **_rf_base)
+    ok("reformulate_reenters_and_closes",
+       r_ref.get("outcome") == "admitted_and_closed" and r_ref.get("reformulated_from") == FALSE_STMT
+       and "counterexample" in (r_ref.get("prior_refutation") or ""))
+    r_nb = autoformalize_and_solve(RF_NL, formalize_fn=lambda _s: FALSE_STMT, backtranslate_fn=lambda s: RF_NL,
+                                   reformulate_budget=0, **_rf_base)
+    ok("reformulate_budget0_terminal_noclose",
+       r_nb.get("outcome") == "admitted_and_falsified" and bool(r_nb.get("refutation"))
+       and not r_nb.get("reformulated_from"))
+    # the reformulation is itself UNFAITHFUL (round-trips to a DIFFERENT problem) ⇒ the firewall REJECTS it —
+    # the refuted original is NOT laundered into a close (the load-bearing soundness property).
+    r_unf = autoformalize_and_solve(RF_NL, formalize_fn=_mk_formalize(), reformulate_budget=1,
+                                    backtranslate_fn=lambda s: ("a different problem" if "TrueRender" in s else RF_NL),
+                                    judge_fn=lambda o, b: b == RF_NL, sandbox=".", compile_fn=lambda s: True,
+                                    triviality_fn=lambda s: False, structural_fn=lambda o, s: True,
+                                    solve_fn=_rf_solve, max_refines=0)
+    ok("reformulate_unfaithful_rejected_not_closed",
+       r_unf.get("outcome") == "rejected_by_firewall" and r_unf.get("solved") != "closed")
+    r_clean = autoformalize_and_solve(RF_NL, formalize_fn=lambda _s: TRUE_STMT, backtranslate_fn=lambda s: RF_NL,
+                                      reformulate_budget=1, **_rf_base)
+    ok("reformulate_noop_on_clean_close",
+       r_clean.get("outcome") == "admitted_and_closed" and not r_clean.get("reformulated_from"))
+
+    # #143 — the STATEMENT-FALSE kernel-gate invariant in _solve_refutation: a HARD kernel ¬G refutes; a SOFT
+    # `statement_false` claim refutes ONLY when solve_adhoc CONFIRMED it (statement_false_verified) — an
+    # unverified claim with the gate ON is NOT a refutation (the v7 deadlock fix). The =0 opt-out restores the
+    # legacy bare-claim behaviour for the A/B baseline. (Pure-function cases; no Lean needed.)
+    _gate_prev = os.environ.get("ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE")
+    os.environ["ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE"] = "1"
+    ok("refutation_hard_falsified", _solve_refutation({"results": [{"outcome": "falsified", "falsifier": "n=2"}]}) == "n=2")
+    ok("refutation_soft_unverified_is_NOT_refutation",
+       _solve_refutation({"results": [{"outcome": "open"}], "statement_false": "cex p=1"}) == "")
+    ok("refutation_soft_verified_is_refutation",
+       _solve_refutation({"results": [{"outcome": "open"}], "statement_false": "cex z",
+                          "statement_false_verified": True}) == "cex z")
+    os.environ["ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE"] = "0"
+    ok("refutation_soft_bare_refutes_when_gate_OFF",
+       _solve_refutation({"results": [{"outcome": "open"}], "statement_false": "cex"}) == "cex")
+    if _gate_prev is None:
+        os.environ.pop("ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE", None)
+    else:
+        os.environ["ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE"] = _gate_prev
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

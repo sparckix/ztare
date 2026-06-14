@@ -119,6 +119,21 @@ TRANSPORTABLE_TECHNIQUES = (
      "(Kronecker's theorem; equivalently a finite linear recurrence / a finite-dimensional LTI state "
      "realization) — bounded local data forces a finite-dimensional realization; the constructive criterion "
      "for the RATIONAL sub-case of algebraicity (a clean SPECIALIZE rung when full algebraicity is out of reach)"),
+    ("obstruction-descent (boundedness kills the obstruction class)",
+     "compute the LOCAL OBSTRUCTION CLASS to the desired descent (a residue, a log/monodromy term, a Chern/"
+     "winding number, a stretch factor), show the GLOBAL boundedness/integrality hypothesis forces it to "
+     "VANISH, then DESCEND to the rigid object (rational/algebraic/trivializable). One meta-move across "
+     "fields: vanishing residues ⇒ rational antiderivative; Dirac quantization; BIBO stability (no poles on "
+     "the boundary — a residue there generates secular/log growth); Wannier localization ⇒ trivial Chern "
+     "class. Surfaced by deanchored isomorphism search 2026-06-12 — five independent fields, one argument"),
+    ("transport of structure across an isomorphism (prove-once-get-iso-free)",
+     "when the goal is an instance of a fact already true for an ISOMORPHIC structure, TRANSPORT it instead of "
+     "re-proving: exhibit the iso (a Mathlib `Equiv` / `MulEquiv` / `RingEquiv` / `OrderIso`, or the additive↔"
+     "multiplicative `to_additive` duality) and push the known statement across it (`Equiv.forall_congr`, "
+     "`MulEquiv.map_*`, congruence / `simp only [e.map_…]`, or cite the `to_additive`-generated sibling lemma). "
+     "Lean-INTERNAL transport — no exogenous compute; the kernel re-checks the transported term, so a wrong "
+     "iso just fails to compile. The cleanest SPECIALIZE/GENERALIZE rung when a sibling structure already has "
+     "the lemma (Pontryagin/Fourier duality, op-ring / `mul_opposite`, completion, quotient-vs-section)"),
     ("spectral gap / eigenvalue separation",
      "bound a combinatorial or dynamical quantity by the second eigenvalue (expander mixing, Cheeger)"),
     ("duality certificate (LP/SDP)",
@@ -130,8 +145,11 @@ TRANSPORTABLE_TECHNIQUES = (
 )
 
 
-def _render_techniques(k: int = 4) -> str:
-    """Render the top transportable-attack techniques as a domain-general prior for the deanchor prompt."""
+def _render_techniques(k: int = 6) -> str:
+    """Render the top transportable-attack techniques as a domain-general prior for the deanchor prompt.
+    k=6 (2026-06-13): admits TRANSPORT-OF-STRUCTURE (edge #4 — the Lean-internal Equiv/to_additive
+    prove-once-get-iso-free move) alongside OBSTRUCTION-DESCENT (2026-06-12), without demoting the four
+    P1-relevant domain priors above them."""
     if os.environ.get("ZTARE_ISO_TECHNIQUES") == "0":
         return ""
     return " || ".join(f"[{name}] {how}" for name, how in TRANSPORTABLE_TECHNIQUES[:k])
@@ -149,25 +167,82 @@ def _resolve_iso_catalog(have_dynamic: bool, dynamic_primary: bool, has_techniqu
         return False, ("dynamic" if have_dynamic else "none")
     return True, ("both" if have_dynamic else "static")
 
-_DEANCHOR_PROMPT = (
-    "You are a strong research mathematician working in Lean 4. The goal below has its surface names "
-    "neutralized — focus on its mathematical STRUCTURE. USE your full knowledge of which field/theory "
-    "solves this structure to find the genuine attack — recognizing the structure is an ASSET, not "
-    "forbidden. (You may NOT discharge the goal by merely CITING a famous theorem as if it were a Mathlib "
-    "lemma — that is rejected by the kernel, which recompiles without the gold context — and no "
-    "intermediate lemma may merely restate the goal, which the audit rejects as circular; so transport the "
-    "proof's STRUCTURE into lemmas you could genuinely prove.) {iso_step}"
-    "then TRANSPORT that field's proof shape into an intermediate LEMMA DAG. Output EXACTLY:\n"
-    "DECOMP:\n```lean\n"
-    "theorem {p}_lemma1 : <statement> := by sorry\n"
-    "theorem {p}_lemma2 : <statement> := by sorry\n"
-    "-- … as many sorried intermediate lemmas as the transported proof needs …\n"
-    "theorem {p}_chain {binders}: {goal_concl} := by\n  <tactics that REFERENCE the {p}_lemmaᵢ; NO sorry>\n"
-    "```\n"
-    "RULES: leave every intermediate lemma as `:= by sorry` (do NOT prove them); the CHAIN must be "
-    "sorry-free and CITE the lemmas; NO lemma may merely restate the goal; self-contained against the "
-    "PREAMBLE below.{ban}\nPREAMBLE (fixed; defines the objects):\n{preamble}\nGOAL:\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import (DEANCHOR_PROMPT as _DEANCHOR_PROMPT,  # canonical prompts home (#49; moved verbatim)
+                                           ISO_PLANNER_WARMCHECK_BLOCK as _WARMCHECK_TEMPLATE)
+
+
+# AGENT-ORCHESTRATED PLANNING (#74, `ZTARE_LEANMILL_AGENT_PLAN`, default-off = byte-parity). The planner today
+# HARDCODES decompose (this prompt forces a DECOMP DAG). The agent's real planning catalogue is richer — the
+# structural moves {decompose, specialize, generalize, falsify, abduce, transport} + solve-direct, each with an
+# EXISTING executor (conjecture/specialize/falsify/generalize_generate, abduce_seed). STEP 1 surfaced the CHOICE
+# to the agent + recorded it (telemetry). STEP 2 (#74 finish): the agent's chosen action now DRIVES the artifact
+# it produces — the plan prefix asks for the action-appropriate proves-G DAG (SPECIALIZE→stronger B, GENERALIZE→
+# general H, ABDUCE→premise A, TRANSPORT→exogenous fact, DECOMPOSE→sub-lemmas), ALL gated by the SAME kernel
+# decomposition audit (sorry-free + non-circular + load-bearing + proves-G). The agent IS the planner — ONE
+# unified DAG producer, action-parameterized (NOT a forked executor path). Default-OFF (ZTARE_LEANMILL_AGENT_PLAN)
+# = byte-parity decompose-only until the live lift test promotes it.
+_PLAN_ACTIONS = {
+    "DECOMPOSE": "break G into sub-lemmas L₁…Lₙ whose conjunction implies G (the current path)",
+    "SOLVE_DIRECT": "G is within reach — prove it directly, no decomposition",
+    "SPECIALIZE": "prove a STRONGER explicit statement B that implies G",
+    "GENERALIZE": "prove a MORE GENERAL lemma H of which G is an instance",
+    "FALSIFY": "G looks FALSE — pursue a kernel-checked proof of ¬G instead",
+    "ABDUCE": "G needs a missing PREMISE A (A ∧ context ⇒ G) — supply it",
+    "TRANSPORT": "bring exogenous compute (a witness / hammer / cross-substrate) to G",
+}
+
+
+def _agent_plan_on() -> bool:
+    # DEFAULT-ON (operator 2026-06-10): the agent ORCHESTRATES the structural action (decompose / specialize /
+    # generalize / abduce / TRANSPORT) — declares PLAN: <ACTION> and produces the action-appropriate, kernel-
+    # audited DAG — rather than the planner hardcoding decompose. =0 opts out (the byte-parity decompose-only arm
+    # for A/B). Pairs with ZTARE_LEANMILL_AGENT_TOOLS (also default-on) so TRANSPORT can reach the exogenous tools.
+    return os.environ.get("ZTARE_LEANMILL_AGENT_PLAN", "1") != "0"
+
+
+def _plan_choice_prefix() -> str:
+    opts = "\n".join(f"  {a}: {d}" for a, d in _PLAN_ACTIONS.items())
+    return ("FIRST, choose the single best STRUCTURAL ACTION for this goal and state it on ONE line as "
+            "`PLAN: <ACTION> — <one-line reason>`, where <ACTION> is EXACTLY one of:\n" + opts +
+            "\nThen PRODUCE THE ARTIFACT FOR YOUR CHOSEN ACTION in the DECOMP format below — a sub-lemma DAG "
+            "whose sorry-free chain proves the goal G. The SAME kernel audit (sorry-free + non-circular + "
+            "every-lemma-load-bearing + proves-G) gates every action, so your CHOICE drives WHICH artifact you "
+            "build (this IS the dispatch — it is no longer recorded-and-ignored):\n"
+            "  • DECOMPOSE   → the intermediate sub-lemmas L₁…Lₙ, chain proves G from them.\n"
+            "  • SPECIALIZE  → FIRST lemma = the STRONGER statement B; chain proves G from B.\n"
+            "  • GENERALIZE  → FIRST lemma = the MORE GENERAL H; chain instantiates G from H.\n"
+            "  • ABDUCE      → FIRST lemma = the missing PREMISE A; chain proves G from A + the goal's context.\n"
+            "  • TRANSPORT   → FIRST lemma = the exogenous-compute fact (a witness / hammered premise); chain closes G with it.\n"
+            "(FALSIFY and SOLVE_DIRECT do NOT fit a proves-G DAG. If EITHER is genuinely your best move, "
+            "declare it on the PLAN line and STOP — produce NO DAG; do NOT fabricate sub-lemmas to satisfy "
+            "the format. The harness then routes the goal to the cascade, which carries BOTH a direct-proof "
+            "path (SOLVE_DIRECT) and a refutation/¬G move (FALSIFY). Only pick a DAG action above when a "
+            "genuine reduction exists. The format serves the proof — never the reverse.)\n"
+            "Optionally also declare `BUDGET: <seconds>` — the wallclock you want for your NEXT refinement "
+            "round (granted up to a hard cap; omit to keep the default).\n\n")
+
+
+def parse_plan_action(raw: str) -> "tuple[str, str]":
+    """The agent's declared structural action (default DECOMPOSE if absent/unrecognized). Uses the SHARED
+    `leanmill.solver.agent_output.labeled_value` — not a per-caller regex (the consolidation of the ad-hoc parsers)."""
+    from ztare.leanmill.solver.agent_output import labeled_value
+    return labeled_value(raw, "PLAN", allowed=tuple(_PLAN_ACTIONS), default="DECOMPOSE")
+
+
+def _record_plan_choice(action: str, reason: str, target: str = "") -> None:
+    """Best-effort telemetry (#74 step 1): persist the agent's declared PLAN action so we can MEASURE — across
+    runs — whether the agent actually wants moves beyond DECOMPOSE. That data gates building the heterogeneous
+    step-2 dispatch (don't wire executors the agent never elects). Append-only JSONL, never fails the solve."""
+    try:
+        import json
+        from pathlib import Path
+        p = Path(__file__).resolve().parents[4] / "analytics" / "public" / "queries" / "solver_lane_plan_choices.jsonl"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        with p.open("a", encoding="utf-8") as f:
+            f.write(json.dumps({"action": action, "reason": (reason or "")[:200],
+                                "target": (target or "")[:120]}, ensure_ascii=False) + "\n")
+    except Exception:  # noqa: BLE001 — telemetry is best-effort; never break the solve
+        pass
 
 
 def deanchor(source: str, target_name: str, banned_terms: "list[str] | None" = None) -> "tuple[str, str, str, str]":
@@ -175,7 +250,8 @@ def deanchor(source: str, target_name: str, banned_terms: "list[str] | None" = N
     and builds a banned-terms clause so the leaf can't cite a memorized named result. Local decl names
     are left intact (renaming them reversibly is a v2 refinement); comment-strip + name-ban + the
     'treat as abstract' instruction carry the deanchor for v1."""
-    nocomment = re.sub(r"/-.*?-/", " ", re.sub(r"(?m)--[^\n]*", "", source), flags=re.S)
+    from ztare.leanmill.lean_source import blank_comments as _bc   # canonical nested-aware scanner
+    nocomment = _bc(source)   # offset/newline-preserving so `^theorem` anchor + decl spans stay valid
     blocks = dict(_decl_blocks(nocomment))
     goal_decl = next((blocks[n] for n in blocks if n == target_name or n.endswith("." + target_name)), "")
     preamble = re.split(r"(?m)^(?:theorem|lemma)\s+" + re.escape(target_name) + r"\b", nocomment, maxsplit=1)[0].rstrip()
@@ -190,22 +266,47 @@ def deanchor(source: str, target_name: str, banned_terms: "list[str] | None" = N
 
 def _parse_dag(raw: str, prefix: str) -> "tuple[list[str], str, list[str]]":
     """Parse DECOMP: fenced block → (sorried lemma blocks, chain block, lemma names). The chain is the
-    block whose body is NOT `:= by sorry` (it proves the goal); the rest are the sorried lemmas."""
-    m = re.search(r"DECOMP:\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-    body = m.group(1) if m else raw
-    thms = re.findall(r"(?s)((?:theorem|lemma)\s+(\S+).*?:=\s*by\b.*?)(?=\n(?:theorem|lemma)\s|\Z)", body)
+    block whose body is NOT `:= by sorry` (it proves the goal); the rest are the sorried lemmas.
+
+    Block extraction = the CANONICAL `statement_integrity.decl_blocks` (#49 — "no module may regex Lean
+    structure on its own"). This is a behaviour-FIX over the prior ad-hoc theorem-regex, whose differential
+    (2026-06-12) exposed two latent COMPLETENESS bugs: (1) a helper `def` between sorried lemmas was absorbed
+    into the prior theorem's block, breaking the sorry-check → the lemma was SILENTLY DROPPED; (2) comments
+    were not blanked, so `-- theorem fake : … := by sorry` became a PHANTOM lemma. decl_blocks fixes both
+    (comment-blanked decl detection, per-decl boundaries). Non-theorem decls (def/abbrev/…) are scaffold —
+    kept OUT of the lemma/chain classification, exactly as intended."""
+    from ztare.leanmill.solver.agent_output import fenced_block  # canonical fence extractor (#80/#49); was a local _fenced-pattern regex
+    from ztare.leanmill.solver.statement_integrity import _DECL_START  # the ONE decl-start pattern (no re-rolled regex)
+    body = fenced_block(raw, "DECOMP:", lang="lean") or raw   # the DECOMP fence; fall back to scanning the whole output if absent
+    def _is_thm(blk: str) -> bool:
+        m = _DECL_START.match(blk)
+        return bool(m and m.group(1) in ("theorem", "lemma"))
+    from ztare.leanmill.solver.statement_integrity import _strip_comments as _sc_dag  # 2026-06-13 audit
+    thms = [(blk, nm) for nm, blk in _decl_blocks(body) if _is_thm(blk)]
     lemmas, names, chain = [], [], ""
     for block, name in thms:
         b = block.strip()
-        if re.search(r":=\s*by\s+sorry\s*$", b) or (":= by sorry" in b and "sorry" in b.split(":=")[-1] and "\n" not in b.split(":= by")[-1].strip()):
+        # CLASSIFY on a COMMENT-STRIPPED copy (a `sorry` in a trailing comment that `decl_blocks` glued onto
+        # this block must NOT misclassify a sorry-free chain as a sorried lemma — the autoformalize_notes bug
+        # class). The RAW `b` is kept for downstream use (lemmas/chain text); only the test reads the stripped.
+        bnc = _sc_dag(b)
+        if re.search(r":=\s*by\s+sorry\s*$", bnc.strip()) or (":= by sorry" in bnc and "sorry" in bnc.split(":=")[-1] and "\n" not in bnc.split(":= by")[-1].strip()):
             lemmas.append(b); names.append(name)
-        elif "sorry" not in b.split(":=", 1)[-1]:
+        elif "sorry" not in bnc.split(":=", 1)[-1]:
             chain = b           # the sorry-free chain proof
     # fallback: the last block is the chain if none classified
     if not chain and thms:
         chain = thms[-1][0].strip()
         if chain in lemmas:
             i = lemmas.index(chain); lemmas.pop(i); names.pop(i)
+    # GUARD: reject a verbatim TEMPLATE ECHO — the agent returned the prompt scaffold instead of real Lean
+    # (P1 RUNG-A 2026-06-11: it echoed `<statement>` / `<tactics …; NO sorry>`, and the literal "NO sorry" then
+    # tripped the audit's sorry check → a MISLEADING "chain not sorry-free" kill that MASKED the real failure
+    # "the agent didn't decompose"). A `<word>` placeholder in any block ⇒ NOT a decomposition; return empty so
+    # the route reports it honestly (empty decomposition) rather than a confusing sorry kill.
+    if re.search(r"<\s*(?:statement|tactics|term|proof|expr|goal|hypoth|lemma|fill|your|the)\b",
+                 "\n".join(lemmas) + "\n" + chain, re.I):
+        return [], "", []
     return lemmas, chain, names
 
 
@@ -238,12 +339,44 @@ def _sample_diverse(k: int, generate, verify, base_ctx: dict):
     """Generate `k` technique-diverse decompositions, AUDIT each, return (audited, attempts):
     audited = [(art, verdict)] that PASSED the sound audit; attempts = all (art, verdict) in order. `generate`
     and `verify` are injected (the attack closures) so this is unit-testable with fakes — no dispatch/Lean.
-    Sequential dispatch (best-of-k is about SELECTION, not timing; concurrent dispatch is a later optimization
-    bounded by subscription rate limits)."""
-    audited, attempts = [], []
-    for i in range(max(1, int(k))):
+
+    PARALLEL GENERATION (#117; ZTARE_ISO_SAMPLES_PARALLEL default-on, =0 reverts to sequential): the K
+    planner dispatches are independent LLM calls, so generation wall ≈ 1× planner budget instead of K×.
+    Two designed properties: (a) CONCURRENCY-SAFETY — samples i≥1 carry `agent_tag="iso_s<i>"`, keying
+    their OWN durable sessions (no collision on the one repo-scoped session resume; sample 0 keeps the
+    warm campaign session = single-shot parity; tagged slots stay warm across rounds). (b) INDEPENDENCE —
+    sequentially, every sample RESUMED the shared session, so later samples saw earlier samples' context:
+    correlated draws, quietly weakening the best-of-K dominance argument. Per-sample sessions make the K
+    draws genuinely independent. VERIFY (the audit — Lean compiles) stays SERIAL in sample order: the
+    no-parallel-Lean rule + deterministic selection. K=1 (default) never enters the parallel branch."""
+    k = max(1, int(k))
+    ctxs = []
+    for i in range(k):
         ctx = dict(base_ctx or {})
         ctx["feedback"] = (base_ctx or {}).get("feedback", "") + _diversity_seed(i)
+        if i:
+            ctx["agent_tag"] = f"iso_s{i}"
+        ctxs.append(ctx)
+    audited, attempts = [], []
+    if k > 1 and os.environ.get("ZTARE_ISO_SAMPLES_PARALLEL", "1") != "0":
+        import concurrent.futures as _cf
+
+        def _gen_safe(c):
+            try:
+                return generate(c)
+            except Exception as e:  # noqa: BLE001 — one failed sample must not sink the round
+                return {"lemmas": [], "chain": "", "lnames": [], "raw": f"sample dispatch error: {e!r}"}
+
+        workers = max(1, min(k, int(os.environ.get("ZTARE_ISO_SAMPLES_WORKERS", "3") or 3)))
+        with _cf.ThreadPoolExecutor(max_workers=workers) as ex:
+            arts = list(ex.map(_gen_safe, ctxs))      # order-stable fan-out
+        for art in arts:                              # SERIAL audit in sample order
+            v = verify(art)
+            attempts.append((art, v))
+            if getattr(v, "accepted", False):
+                audited.append((art, v))
+        return audited, attempts
+    for ctx in ctxs:                                  # sequential: original interleaved order preserved
         art = generate(ctx)
         v = verify(art)
         attempts.append((art, v))
@@ -259,12 +392,15 @@ def _richest(pairs):
 
 
 def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 180,
-           banned_terms: "list[str] | None" = None, dispatch_fn=None, max_refines: "int | None" = None) -> dict:
+           banned_terms: "list[str] | None" = None, dispatch_fn=None, max_refines: "int | None" = None,
+           notes: "str | None" = None) -> dict:
     """Run the full loop on a hard target, with a BOUNDED refine cycle (reuses the canonical
     `RefineHandover` — no new loop machinery): on an audit-KILL, the kill reason is fed back and the
     leaf re-decomposes, until an audited DAG passes or `max_refines` (ZTARE_ISO_REFINES, default 2) is
-    hit. Returns {audited, killed?, lemmas, chain, lnames, verdict, rounds, raw_tail}. `audited=True`
-    ⇒ a SOUND, non-circular, load-bearing decomposition the solver should now prove."""
+    hit. Returns {audited, killed?, lemmas, chain, lnames, verdict, rounds, raw_tail, notes_used}.
+    `audited=True` ⇒ a SOUND, non-circular, hypothesis-necessary decomposition the solver should now prove.
+    `notes` (optional) = a human / research-director BLUEPRINT for this target, injected into the planner
+    prompt as guidance (#81 uplevel); the kernel audit still gates soundness, so notes are advisory."""
     preamble, goal_decl, goal_concl, ban = deanchor(source, target_name, banned_terms)
     if not goal_decl or not goal_concl:
         return {"audited": False, "killed": f"could not locate target `{target_name}` in source"}
@@ -303,26 +439,120 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         _iso_step += (" Among POWERFUL transportable techniques that crack structurally-similar problems, "
                       f"check whether ONE fits and transport it (do not force a fit): {_techniques}. ")
 
+    # NOTES / BLUEPRINT CONTEXT (#81 uplevel): a target may arrive with a human / research-director blueprint
+    # — notes that sketch the decomposition. Inject them into the planner prompt as GUIDANCE so the warm leaf
+    # decomposes ALONG the blueprint rather than re-inventing it. Parity when `notes` is empty (no block →
+    # byte-identical prompt). ADVISORY only: the KERNEL audit still gates every lemma, so a misleading note
+    # cannot launder a closure — a wrong decomposition is killed exactly as a guessed one is.
+    _notes_block = ""
+    if notes and notes.strip():
+        _notes_block = ("BLUEPRINT NOTES for this target (a human / research-director sketch of the "
+                        "decomposition — use as GUIDANCE, do NOT restate the goal; the kernel still audits "
+                        f"every lemma):\n{notes.strip()}\n\n")
+    # RUNG-ADJACENCY ADVISORY (#121): name the kernel-closed attachment sites so the planner can decompose
+    # TOWARD proven infrastructure (it still decides). Empty when nothing is proven (byte-parity); advisory
+    # only — the kernel audit gates every lemma regardless. ZTARE_LEANMILL_RUNG_ADJACENCY=0 disables.
+    try:
+        from ztare.leanmill.solver import rung_adjacency as _radj_mod
+        if _radj_mod.enabled():
+            _notes_block = _radj_mod.render_adjacency_block(_radj_mod.proven_statements()) + _notes_block
+    except Exception:  # noqa: BLE001 — advisory; never break planner-prompt assembly
+        pass
+
+    # WARM LEAN CHECK for the planner (2026-06-11 foot-gun fix): codex's verify instinct is GOOD — it caught a
+    # real universe-inference bug while building the DAG — but it reached for COLD `lake env lean` (~90s Mathlib
+    # reload), which BLEW the dispatch budget before it could emit. (Recovered from the rollout: codex had an
+    # audit-PASSING Hermite split READY and lost it waiting on its own cold compile.) Surface the SAME warm checker
+    # the formalizer uses (`lean_check_server --check`, ~0.1s warm) + tell it NOT to cold-compile. This is REUSE of
+    # the formalize_interactive pattern, not a fork. Graceful: any setup failure → empty block → prior behaviour
+    # (no regression). The hang-protection is now this warm path (no cold-compile stall), not a tiny hard wall.
+    _warmcheck_block = ""
+    try:
+        import sys as _sys
+        from ztare.leanmill.solver.agentic_leaf import probe_dir as _probe_dir
+        from ztare.formal.lean_check_server import ensure_server as _ensure, default_socket_path as _dsock
+        _repo = Path(__file__).resolve().parents[4]
+        _sock = _ensure(str(lean_root)) or _dsock(str(lean_root))
+        # per-target probe name (2026-06-13 audit B3): a FIXED `IsoDagProbe.lean` collides across
+        # concurrent shards on the same lean_root — one shard's warm-check reads another's probe. Key it
+        # to the target (sound either way — the kernel re-verifies every closure — but a collision wastes
+        # the warm-check steer). Sanitize the name to a safe filename fragment.
+        _safe_tn = re.sub(r"[^A-Za-z0-9_]", "_", str(target_name or "tgt"))[:60]
+        _probe = _probe_dir(lean_root) / f"IsoDagProbe_{_safe_tn}.lean"
+        _leancheck = (f"PYTHONPATH={_repo}/src {_sys.executable} -m ztare.formal.lean_check_server "
+                      f"--check {_sock} {_probe}")
+        _warmcheck_block = _WARMCHECK_TEMPLATE.format(probe=_probe, leancheck=_leancheck)
+    except Exception:  # noqa: BLE001 — never let warm-check setup break planning
+        _warmcheck_block = ""
+    _budget_req: "list[int | None]" = [None]   # #103(1): the agent's BUDGET: declaration, carried across refine rounds
+
     def _generate(ctx):
         fb = (ctx or {}).get("feedback", "")
         prompt = _DEANCHOR_PROMPT.format(p="iso", binders=(binders + " " if binders else ""),
                                          iso_step=_iso_step,
                                          goal_concl=goal_concl, ban=ban + fb, preamble=preamble, goal=goal_decl)
+        if _agent_plan_on():                     # #74 step 1: surface the structural-action choice (default-off = parity)
+            prompt = _plan_choice_prefix() + prompt
+        if _notes_block:                          # #81: prepend the blueprint notes as planner context (parity if none)
+            prompt = _notes_block + prompt
+        if _warmcheck_block:                      # surface the WARM lean-check at the TOP (most salient steer)
+            prompt = _warmcheck_block + prompt
+        # BOUND the PLANNER dispatch — GENEROUS now (the `planner` factory budget, default 360s, NOT the 180s
+        # `propose` clamp that GUILLOTINED a codex run with an audit-PASSING DAG ready, 2026-06-11). A frontier
+        # decomposition is real research, not a quick generate. The hang-protection that the old tight clamp gave
+        # (a wedged CLI eating the wallclock) is now the WARM check above (codex no longer stalls ~90s on a cold
+        # `lake env lean`) + the flushed HEARTBEAT (a frozen log still pinpoints a true wedge here). Still clamped
+        # to `timeout_s` remaining so a genuine hang can't exceed the lemma/target wallclock.
+        from ztare.common.timeouts import clamp_to_remaining as _clamp
+        _cap = _clamp("planner", timeout_s)
+        # #103(1) AGENT-CHOSEN TIME (bounded free will): the agent's PRIOR round may have declared
+        # `BUDGET: <seconds>` (parsed below, already clamped to [60, cap-at-parse]); grant min(request, cap-now)
+        # — re-clamped because the remaining wallclock SHRINKS between rounds. No declaration ⇒ the factory cap.
+        _plan_budget = _cap if _budget_req[0] is None else max(60, min(_budget_req[0], _cap))
+        _src = "agent-declared" if _budget_req[0] is not None else "factory"
+        print(f"[iso] planner dispatch (budget {_plan_budget}s, {_src}) for: {goal_concl[:70]}", flush=True)
         try:
-            raw = dispatch_fn(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+            _kw = {"repo": lean_root, "timeout": _plan_budget}
+            if (ctx or {}).get("agent_tag"):   # #117 parallel sampling: per-sample durable session
+                _kw["agent_tag"] = ctx["agent_tag"]
+            raw = dispatch_fn(prompt, **_kw) or ""
+        except TypeError:
+            # an injected dispatch (test fake / older signature) without `agent_tag` — retry untagged:
+            # SEQUENTIAL-equivalent behavior, never a crash
+            raw = dispatch_fn(prompt, repo=lean_root, timeout=_plan_budget) or ""
         except Exception as e:  # noqa: BLE001
             return {"lemmas": [], "chain": "", "lnames": [], "raw": f"dispatch error: {e!r}"}
         lemmas, chain, lnames = _parse_dag(raw, "iso")
-        return {"lemmas": lemmas, "chain": chain, "lnames": lnames, "raw": raw}
+        out = {"lemmas": lemmas, "chain": chain, "lnames": lnames, "raw": raw}
+        if _agent_plan_on():                     # #74 step 2: the chosen action DROVE the artifact (the prefix asked for the action-appropriate proves-G DAG); record it for the lift telemetry
+            out["plan_action"], out["plan_reason"] = parse_plan_action(raw)
+            _record_plan_choice(out["plan_action"], out["plan_reason"], goal_concl)
+            from ztare.leanmill.solver.agent_output import budget_request as _breq   # #103(1): part of the PLAN contract
+            _budget_req[0] = _breq(raw, floor=60, cap=_cap)
+        return out
 
     def _verify(art):
         if not art.get("lemmas") or not art.get("chain"):
+            # #133 (agency unlock): the agent may DELIBERATELY decline a DAG by electing SOLVE_DIRECT /
+            # FALSIFY (the prompt now lets it). That is an honest non-decomposition, NOT a parse failure —
+            # label it so, and `_refine_ctx` stops the loop (no re-coercion). The cascade carries both the
+            # direct-proof and the ¬G/falsify moves (with their outcome plumbing), so the election routes
+            # there; route_and_solve never duplicates that executor.
+            _elected = art.get("plan_action")
+            if _elected in ("FALSIFY", "SOLVE_DIRECT"):
+                return _DagVerdict(False, f"agent elected {_elected} — no decomposition (cascade handles it)",
+                                   {"elected": _elected})
             return _DagVerdict(False, "no parseable lemma DAG", {})
         passed, v = decomposition_dag_audit(art["lemmas"], art["chain"], art["lnames"], lean_root,
                                             max(120, timeout_s), preamble=preamble, goal_conclusion=goal_concl)
         return _DagVerdict(passed, (v.get("passed") if passed else v.get("killed")) or "", v)
 
     def _refine_ctx(art, v, ctx):
+        # #133 (agency): the agent elected SOLVE_DIRECT/FALSIFY and produced no DAG ON PURPOSE — refining
+        # would re-coerce a DAG it deliberately declined (the old waste). Return None ⇒ RefineHandover stops
+        # the loop immediately; the cascade routes the election to the direct/¬G move.
+        if art.get("plan_action") in ("FALSIFY", "SOLVE_DIRECT") and not art.get("lemmas"):
+            return None
         # TARGETED refine (2026-06-07): the GENERIC "redo it" demonstrably LOOPS on a circular-kill — the
         # leaf re-introduces a defective lemma each round (P1 iso_lemma1: 3 rounds, still circular, a 4/5-
         # sound DAG discarded). Instead, name the SOUND lemmas to KEEP and the single defective one to
@@ -360,7 +590,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
             return {"audited": True, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
                     "lnames": art.get("lnames"), "verdict": v.detail, "rounds": len(attempts),
                     "n_samples": n_samples, "n_audited": len(audited), "iso_source": _iso_source,
-                    "raw_tail": (art.get("raw") or "")[-200:]}
+                    "raw_tail": (art.get("raw") or "")[-200:], "notes_used": bool(_notes_block)}
         # none of the K audited → seed the refine loop with the BEST near-miss's targeted feedback (compose:
         # explore K structures, then fix the most-sound one) instead of regenerating blind.
         seed_ctx = _refine_ctx(*_richest(attempts), {}) if attempts else {}
@@ -368,18 +598,19 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         return {"audited": verdict.accepted, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
                 "lnames": art.get("lnames"), "verdict": verdict.detail, "rounds": len(attempts) + len(trace),
                 "n_samples": n_samples, "n_audited": 0, "iso_source": _iso_source,
-                "raw_tail": (art.get("raw") or "")[-200:],
+                "raw_tail": (art.get("raw") or "")[-200:], "notes_used": bool(_notes_block),
                 **({} if verdict.accepted else {"killed": verdict.reason})}
 
     art, verdict, trace = loop.run({})
     return {"audited": verdict.accepted, "lemmas": art.get("lemmas"), "chain": art.get("chain"),
             "lnames": art.get("lnames"), "verdict": verdict.detail, "rounds": len(trace),
-            "iso_source": _iso_source, "raw_tail": (art.get("raw") or "")[-200:],
+            "iso_source": _iso_source, "raw_tail": (art.get("raw") or "")[-200:], "notes_used": bool(_notes_block),
             **({} if verdict.accepted else {"killed": verdict.reason})}
 
 
 def solve_decomposition(result: dict, source: str, target_name: str, *, lean_root: Path,
-                        timeout_s: int = 400, substrate=None) -> dict:
+                        timeout_s: int = 400, substrate=None, notes: "str | None" = None,
+                        _depth: int = 0) -> dict:
     """CONSISTENCY: route an AUDITED decomposition's lemmas through the ONE governed solver entry
     (`solve_adhoc`) — the SAME interface ad-hoc / autoformalize / residual-C / proof_repair use. No
     parallel solve, no parallel governance: each lemma Lᵢ is a target `preamble + Lᵢ` solved + ratified
@@ -389,20 +620,70 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
     if not result.get("audited"):
         return {"solved": False, "reason": "decomposition not audited — nothing to solve"}
     from ztare.leanmill.solver.solver_core import solve_adhoc  # lazy: avoid import cycle
+    import time as _time
     preamble, _gd, _gc, _ban = deanchor(source, target_name)
     out: list = []
     proofs: dict = {}   # lname → ratified proof body (captured DIRECTLY from each solve result)
-    for lemma, lname in zip(result.get("lemmas") or [], result.get("lnames") or []):
+    # BUDGET-LEAK FIX (RCA 2026-06-12, the v3 2h-elongation): each sub-lemma previously got the FULL
+    # `timeout_s` — K sub-lemmas ⇒ K× the phase budget, and each sub-solve recurses with ITS full budget ⇒
+    # multiplicative wallclock. DEADLINE-THREAD instead: the WHOLE decomposition shares `timeout_s`; each
+    # sub-lemma gets the REMAINING wallclock (≥60s floor). When the budget is spent, the rest are marked
+    # `budget_exhausted` HONESTLY (the parent stays open — never a silent skip, never a fake negative).
+    _deadline = _time.monotonic() + max(60, int(timeout_s))
+    _pairs = list(zip(result.get("lemmas") or [], result.get("lnames") or []))
+    # RUNG-ADJACENCY ATTACK ORDER (#121, Kossel–Stranski transport): attack max-coordination-with-proven-
+    # rungs FIRST — sub-lemmas are solved INDEPENDENTLY against the preamble (dependencies matter only at
+    # composite time), so the reorder is sound; under the SHARED deadline it spends the budget where the
+    # proven infrastructure gives the leaf the most purchase, and the isolated deep crux goes last (v3
+    # burned 91 min attacking that shape first). Telemetry records the order for the A/B falsifier.
+    # ZTARE_LEANMILL_RUNG_ADJACENCY=0 reverts to planner (foundational-first) order.
+    try:
+        from ztare.leanmill.solver import rung_adjacency as _radj
+        if _radj.enabled() and len(_pairs) > 1:
+            _pv = _radj.proven_statements()
+            if _pv:
+                _ord = _radj.attack_order([l for l, _ in _pairs], _pv)
+                if _ord != list(range(len(_pairs))):
+                    _pairs = [_pairs[i] for i in _ord]
+                _radj_telemetry = {"order": _ord,
+                                   "scores": _radj.adjacency_scores([l for l, _ in _pairs], _pv)}
+            else:
+                _radj_telemetry = {"order": None, "note": "no proven rungs — planner order"}
+        else:
+            _radj_telemetry = None
+    except Exception as _e:  # noqa: BLE001 — advisory ordering must never break the solve
+        _radj_telemetry = {"error": repr(_e)[:80]}
+    false_rungs: list = []   # planner sub-lemmas KERNEL-CONFIRMED false (#143/Layer-B): the decomposition is
+    #                          defective (a true parent cannot have a false rung discharge its chain) → re-plan.
+    for lemma, lname in _pairs:
+        _rem = int(_deadline - _time.monotonic())
+        if _rem < 60:
+            out.append({"name": lname, "outcome": "budget_exhausted"})
+            continue
         src = preamble.rstrip() + "\n\n" + lemma.strip() + "\n"
         try:
-            r = solve_adhoc(lname, src, "", substrate=substrate, mode="dag_search", timeout_s=timeout_s)
+            r = solve_adhoc(lname, src, "", substrate=substrate, mode="dag_search", timeout_s=_rem,
+                            notes=notes, _iso_depth=_depth)
             r0 = (r.get("results") or [{}])[0]
             outcome = r0.get("outcome")
+            # A rung the leaf flagged STATEMENT-FALSE *and* solve_adhoc KERNEL-CONFIRMED (¬rung compiles): the
+            # PLANNER produced a false sub-lemma — typically by dropping a hypothesis the parent guarantees
+            # (the v7 iso_lemma1 case: a bare ∀ that omitted the denominator-unit hypothesis). Record it so
+            # route_and_solve can RE-PLAN with the agent's correction (it never closes, so the chain can't
+            # ratify — re-decomposition is the only sound way to progress). Distinct from an honest open rung.
+            if r.get("statement_false_verified") and r.get("statement_false"):
+                out.append({"name": lname, "outcome": "statement_false_confirmed"})
+                false_rungs.append({"name": lname, "lemma": lemma.strip()[:600],
+                                    "claim": str(r.get("statement_false") or "")[:400],
+                                    "feedback": str(r.get("statement_false_feedback") or "")[:600]})
+                continue
             out.append({"name": lname, "outcome": outcome})
             if outcome == "closed":
-                # capture the proof from the RESULT (root_proof_text) — reliable, vs a cache lookup whose key
-                # (the ENRICHED goal the DAG banks under) would not match the bare lemma string.
-                _p = (r0.get("dag_search") or {}).get("root_proof_text") or r0.get("proof_text") or ""
+                # capture the proof DIRECTLY from the result's top-level `proof_text` (which IS the DAG's
+                # root_proof_text — reliable), NOT a cache lookup whose key (the ENRICHED goal the DAG banks
+                # under) would not match the bare lemma string. (The nested `dag_search` dict carries NO
+                # `root_proof_text` key — that prior lookup was dead code; `proof_text` is the populated field.)
+                _p = r0.get("proof_text") or ""
                 if _p.strip():
                     proofs[lname] = _p
         except Exception as e:  # noqa: BLE001
@@ -410,6 +691,10 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
     n_closed = sum(1 for x in out if x["outcome"] == "closed")
     res = {"solved": n_closed == len(out) and bool(out), "n_closed": n_closed,
            "n_lemmas": len(out), "lemmas": out}
+    if false_rungs:
+        res["false_rungs"] = false_rungs   # planner produced provably-false sub-lemma(s) → route_and_solve re-plans
+    if _radj_telemetry is not None:
+        res["rung_adjacency"] = _radj_telemetry   # the #121 A/B evidence trail (order + scores per run)
     # COMPOSITE RATIFICATION (2026-06-07): when EVERY sub-lemma closed, assemble {proven lemmas} + {chain}
     # → one sorry-free proof of G → ratify the PARENT through the ONE kernel. This is the decomposition→
     # closure step the DAG fail-safe withheld (a child proving a distinct lemma never closes G by itself).
@@ -442,7 +727,8 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
 
 def _splice_proof(lemma: str, proof: str) -> str:
     """Replace a sorried lemma's body with its ratified proof (split on the FIRST top-level `:=`)."""
-    head = lemma.split(":=", 1)[0].rstrip()
+    from ztare.leanmill.lean_source import signature_before_proof   # canonical binder-safe head extractor
+    head = signature_before_proof(lemma).rstrip()
     return f"{head} := {proof.strip()}"
 
 
@@ -452,9 +738,10 @@ def assemble_composite_proof(preamble: str, lemmas, lnames, lemma_proofs: dict, 
     missing / itself contains sorry, or the chain is empty (⇒ cannot assemble; parent stays open). The kernel
     ratifies the result downstream — this only BUILDS the candidate."""
     parts = [preamble.rstrip()] if (preamble or "").strip() else []
+    from ztare.leanmill.lean_source import has_sorry as _hs_assemble   # comment-robust, not substring
     for lemma, lname in zip(lemmas or [], lnames or []):
         proof = (lemma_proofs or {}).get(lname)
-        if not proof or "sorry" in proof or "admit" in proof:
+        if not proof or _hs_assemble(proof):
             return ""
         parts.append(_splice_proof(lemma, proof))
     if not (chain or "").strip() or not parts:
@@ -476,8 +763,8 @@ def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: 
     if not composite:
         return {"parent_closed": False, "reason": "could not assemble (missing/invalid lemma proof or chain)"}
     chain = result.get("chain") or ""
-    m = re.search(r"(?:theorem|lemma)\s+(\w+)", chain)
-    gname = m.group(1) if m else None
+    from ztare.leanmill import lean_source as _ls   # canonical Lean parsing
+    gname = _ls.first_theorem_name(chain) or None
     if not gname:
         return {"parent_closed": False, "reason": "could not locate the chain's goal theorem name"}
     # DEFENSE-IN-DEPTH (do NOT trust the upstream audit for a default-ON parent-closure path): re-check that
@@ -500,15 +787,68 @@ def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: 
         k = run_anti_laundering_kernel(src, Path(lean_root) / "_composite_kernel.lean", Path(lean_root),
                                        original_source=original_source, target_name=gname)
         passed = bool(k.get("passed"))
+        _axs: "list[str]" = []
+        if passed:
+            # AXIOM AUDIT (soundness #84 F2): the parent / open-problem closure must be axiom-CLEAN too — a
+            # `native_decide` (Lean.ofReduceBool) in the chain or a spliced sub-lemma proof would otherwise
+            # ratify the parent (the anti-laundering kernel does not run `#print axioms`). Fail-CLOSED only on a
+            # CONFIRMED banned axiom. Runs once, only on a kernel-passed candidate (no wasted compile).
+            from ztare.gates.lean_compile_primitives import audit_axioms_subset as _aax
+            _ax_clean, _ax_bad, _axs = _aax(src, gname, Path(lean_root) / "_composite_axiom_audit.lean",
+                                            Path(lean_root), timeout_s=max(120, timeout_s))
+            if _ax_bad:
+                return {"parent_closed": False, "composite_source": composite, "target": gname,
+                        "reason": f"BAD_AXIOMS in composite: {_axs} (native_decide?) — refusing parent closure"}
         return {"parent_closed": passed, "composite_source": composite, "target": gname,
-                "reason": f"compile_ok + kernel passed={passed} confirmed={k.get('confirmed')}"}
+                "reason": f"compile_ok + kernel passed={passed} confirmed={k.get('confirmed')} axioms={_axs}"}
     except Exception as e:  # noqa: BLE001
         return {"parent_closed": False, "composite_source": composite, "target": gname,
                 "reason": f"kernel error: {repr(e)[:120]}"}
 
 
+def iso_should_recurse(depth: int, *, soft_bound: int, hard_cap: int,
+                       agent_vote: "bool | None" = None) -> "tuple[bool, str]":
+    """Decide whether the recursive planner should DECOMPOSE AGAIN at this depth — separating the two concerns
+    the old `depth >= ZTARE_ISO_MAX_DEPTH` magic number conflated (operator: "depth<2 is arbitrary; the agent
+    should choose WHEN to stop, against a system-defined MAX hard cap, not a strawmanned lower bound"):
+      • HARD CAP (`hard_cap`, ZTARE_ISO_DEPTH_HARD_CAP) — the SYSTEM safety ceiling. Recursion NEVER exceeds it,
+        whatever the policy or the agent says (the cost + non-termination backstop). Checked FIRST, always wins.
+      • STOP POLICY within the cap — TUNABLE, not a hardcoded low bound:
+          – default (parity): the legacy soft bound `depth < soft_bound` (ZTARE_ISO_MAX_DEPTH, default 2).
+          – adaptive (ZTARE_ISO_ADAPTIVE_DEPTH=1): the AGENT owns the stop — an explicit `agent_vote` (False =
+            "solve HERE, do not decompose further") up to the hard cap. The agentic half of the goldilocks split
+            (agent chooses the stop; THIS deterministic guard enforces the ceiling). `agent_vote=None` ⇒ recurse
+            to the hard cap (the agent has not voted; the cap is then the only bound).
+    Returns (should_recurse, reason). The HARD CAP is enforced regardless of mode."""
+    if depth >= hard_cap:
+        return (False, f"hard depth cap reached ({depth} >= {hard_cap}) — system safety ceiling")
+    if os.environ.get("ZTARE_ISO_ADAPTIVE_DEPTH") == "1":
+        if agent_vote is False:
+            return (False, f"agent elected to solve at depth {depth} rather than decompose further")
+        return (True, f"adaptive: decompose at depth {depth} (within hard cap {hard_cap})")
+    if depth >= soft_bound:                          # default / parity policy: the legacy soft bound
+        return (False, f"iso-route depth cap reached ({depth} >= {soft_bound})")
+    return (True, f"within soft bound (depth {depth} < {soft_bound})")
+
+
+def _render_false_rung_feedback(false_rungs: list) -> str:
+    """Planner-prompt correction (#143/Layer-B): tell the re-decomposing leaf which sub-lemma(s) it produced
+    were KERNEL-CONFIRMED false and why, so it re-decomposes with the MISSING hypothesis restored — instead of
+    silently re-emitting the same defective rung. Advisory (the kernel audit still gates every new lemma);
+    cannot launder — it only steers the planner toward a SOUND decomposition the parent actually implies."""
+    lines = ["\n\nPRIOR-DECOMPOSITION DEFECT — these sub-lemmas were proven FALSE as stated (a kernel-checked "
+             "counterexample compiled), so they CANNOT discharge the parent and the whole decomposition is "
+             "invalid. They are almost always a DROPPED HYPOTHESIS the parent guarantees (a non-vanishing "
+             "denominator, a unit/regularity condition, a domain restriction). Re-decompose so every sub-lemma "
+             "is TRUE: restore the missing hypothesis; do NOT reproduce the refuted statement."]
+    for fr in false_rungs:
+        lines.append(f"  • `{fr.get('name')}` is FALSE — counterexample/reason: {(fr.get('claim') or '').strip()[:300]}")
+    return "\n".join(lines) + "\n"
+
+
 def route_and_solve(source: str, target_name: str, goal: str, *, lean_root: Path,
-                    timeout_s: int = 400, substrate=None) -> dict:
+                    timeout_s: int = 400, substrate=None, notes: "str | None" = None,
+                    _depth: "int | None" = None) -> dict:
     """AUTONOMOUS RECURSION — the wiring that makes leanmill recursively self-solve (the gap: this
     producer was invoked only by an experiment runner, so a `strong_missing` rung that came back
     `exact_gap` was never re-decomposed). `frontier_triage` routes: ONLY a `strong_missing` target
@@ -517,39 +857,100 @@ def route_and_solve(source: str, target_name: str, goal: str, *, lean_root: Path
     `solve_decomposition`. Because `solve_decomposition` calls `solve_adhoc`, which re-enters this route
     on an `exact_gap` sub-rung, the decomposition RECURSES until the leaves are citable — bounded by the
     DEPTH GUARD (`ZTARE_ISO_DEPTH`/`ZTARE_ISO_MAX_DEPTH`, default 2). The lemmas that close are verified
-    RUNGS; G never closes here unless its sub-lemmas + chain discharge through the kernel. Default-OFF at
-    the call site (`ZTARE_LEANMILL_ISO_ROUTE`); parity until the recursion lift is validated, then flip.
+    RUNGS; G never closes here unless its sub-lemmas + chain discharge through the kernel. DEFAULT-ON at the
+    call site (`ZTARE_LEANMILL_ISO_ROUTE`, 2026-06-09; =0 reverts to parity) — sound by construction (parent
+    closes only via composite_ratify's anti-laundering kernel; caught cheats excluded). Fires on the HONEST
+    non-closure the caller gates (exact_gap/open/failed) — NOT gated behind triage `strong_missing`, which keys
+    on English markers absent from formalized goals (`ZTARE_LEANMILL_ISO_STRONG_ONLY=1` restores the narrow gate).
     Returns {routed, audited?, killed?, decomposition?, solution?, depth}."""
     from ztare.leanmill.solver.frontier_triage import triage
-    depth = int(os.environ.get("ZTARE_ISO_DEPTH", "0"))
-    max_depth = int(os.environ.get("ZTARE_ISO_MAX_DEPTH", "2"))
-    if depth >= max_depth:
-        return {"routed": False, "reason": f"iso-route depth cap reached ({depth} >= {max_depth})", "depth": depth}
+    # RECURSION DEPTH is an explicit PARAMETER threaded through the recursion (#127, 2026-06-13): the prior
+    # `os.environ["ZTARE_ISO_DEPTH"]` bump/restore was process-global mutable recursion state — concurrent
+    # route_and_solve calls would race and corrupt the depth bound. The env var stays a READ-ONLY top-level
+    # override (experiment runner / selftest); the recursion never mutates it.
+    depth = _depth if _depth is not None else int(os.environ.get("ZTARE_ISO_DEPTH", "0"))
+    soft_bound = int(os.environ.get("ZTARE_ISO_MAX_DEPTH", "2"))
+    # HARD CAP (system safety ceiling) DECOUPLED from the stop policy (operator's "depth<2 is arbitrary"): the
+    # cap is system-defined + non-negotiable; WHEN to stop within it is a tunable policy / the agent's call.
+    # Default (no ZTARE_ISO_ADAPTIVE_DEPTH) = the legacy soft bound ⇒ byte-parity (soft_bound=2 stops before
+    # hard_cap=4 is ever reached). `iso_should_recurse` is the named seam where the agent's vote will plug in.
+    hard_cap = max(soft_bound, int(os.environ.get("ZTARE_ISO_DEPTH_HARD_CAP", "4")))
+    _recurse, _stop = iso_should_recurse(depth, soft_bound=soft_bound, hard_cap=hard_cap)
+    if not _recurse:
+        return {"routed": False, "reason": _stop, "stop_reason": _stop, "depth": depth, "hard_cap": hard_cap}
     tv = triage(goal or "", source_hint=target_name)
-    if tv.target_strength != "strong_missing":
-        return {"routed": False, "depth": depth,
-                "reason": f"target_strength={tv.target_strength!r} (route fires only on strong_missing)"}
-    res = attack(source, target_name, lean_root=lean_root, timeout_s=timeout_s)
-    if not res.get("audited"):
-        return {"routed": True, "audited": False, "killed": res.get("killed"),
-                "decomposition": res, "depth": depth}
-    _prev = os.environ.get("ZTARE_ISO_DEPTH")
-    os.environ["ZTARE_ISO_DEPTH"] = str(depth + 1)   # children recurse at depth+1, bounded by the cap
-    try:
-        sol = solve_decomposition(res, source, target_name, lean_root=lean_root,
-                                  timeout_s=timeout_s, substrate=substrate)
-    finally:
-        if _prev is None:
-            os.environ.pop("ZTARE_ISO_DEPTH", None)
+    # REACHABILITY FIX (2026-06-09): fire on the HONEST NON-CLOSURE the caller already gated (exact_gap/open/
+    # failed) — direct-failure IS the decompose signal (DeepSeek-Prover-V2 / BFS-Prover-V2 / LEAP all decompose
+    # on direct-failure, not on a hardness classifier). The prior `strong_missing`-only gate keyed on ENGLISH
+    # discovery-markers ("conjecture" / "open problem" / "sharp constant" …) that are ABSENT from a FORMALIZED
+    # Lean signature, so `triage` tagged BOTH the P1 autonomous-n1 target AND the full denef conjecture
+    # "elementary" — the planner NEVER fired on exactly the open targets it exists for (verified 2026-06-09).
+    # `target_strength` is kept only as an ADVISORY telemetry tag. ZTARE_LEANMILL_ISO_STRONG_ONLY=1 restores
+    # the old narrow gate (e.g. for a cost-bounded batch where decomposing every miss is too expensive).
+    if os.environ.get("ZTARE_LEANMILL_ISO_STRONG_ONLY") == "1" and tv.target_strength != "strong_missing":
+        return {"routed": False, "depth": depth, "target_strength": tv.target_strength,
+                "reason": f"target_strength={tv.target_strength!r} (ISO_STRONG_ONLY narrow gate)"}
+    # RE-PLAN ON A CONFIRMED-FALSE RUNG (#143/Layer-B, default-on; =0 reverts to single-shot). The agentic-first
+    # decomposition can hand back a sub-lemma that is provably FALSE — almost always a hypothesis the parent
+    # guarantees but the planner dropped (v7 iso_lemma1: the bare ∀ that omitted the denominator-unit condition,
+    # which the leaf CORRECTLY refuted with a compiling ¬G). A true parent cannot be discharged by a false rung,
+    # so the run would otherwise STALL with the agent's correct correction thrown away. Feed that correction back
+    # to the planner (advisory notes; the kernel audit + composite_ratify still gate soundness — a re-plan can
+    # NEVER launder) and re-decompose, bounded by ZTARE_LEANMILL_REPLAN_FALSE_RUNG rounds (default 1).
+    _replan_budget = (int(os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") or "1")
+                      if os.environ.get("ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "1") != "0" else 0)
+    import time as _time
+    from ztare.common.timeouts import timeout_s as _budget   # the ONE timeout home (no inline magic numbers)
+    # BUDGET CONTRACT (the v3 budget-leak lesson + byte-parity): ROUND 0 is the original single-shot — attack
+    # and solve_decomposition each get the caller's `timeout_s`, exactly as before #143 (so the dominant
+    # no-false-rung path is unchanged). The EXTRA re-plan rounds collectively share ONE `notes_lemma` budget
+    # (`_replan_deadline`), so re-plan can never MULTIPLY the target budget by the round count; a round is only
+    # started if at least `replan_floor` wall remains (a planner dispatch + a minimal solve), else we stop
+    # HONESTLY (parent left open). Both values resolve through the central factory — no inline constants.
+    _replan_floor = _budget("replan_floor")
+    _replan_deadline = _time.monotonic() + _budget("notes_lemma")
+    _notes = notes
+    _replan_trace: list = []
+    res = None
+    sol = None
+    for _round in range(_replan_budget + 1):
+        if _round == 0:
+            _round_t = int(timeout_s)                       # byte-parity with the pre-#143 single shot
         else:
-            os.environ["ZTARE_ISO_DEPTH"] = _prev
+            _rem = max(0, int(_replan_deadline - _time.monotonic()))
+            if _rem < _replan_floor:                        # not enough wall for another round → stop honestly
+                _replan_trace.append({"round": _round, "stopped": "replan_budget_exhausted"})
+                break
+            _round_t = _rem
+        res = attack(source, target_name, lean_root=lean_root, timeout_s=_round_t, notes=_notes)
+        if not res.get("audited"):
+            return {"routed": True, "audited": False, "killed": res.get("killed"),
+                    "decomposition": res, "depth": depth,
+                    "replan_trace": _replan_trace or None}
+        # children recurse at depth+1 — threaded as a PARAMETER (no env mutation, concurrency-safe). Round 0 gets
+        # the caller's `timeout_s` (parity); a re-plan round gets what remains of the shared `notes_lemma` extra.
+        _sol_t = int(timeout_s) if _round == 0 else max(_replan_floor, int(_replan_deadline - _time.monotonic()))
+        sol = solve_decomposition(res, source, target_name, lean_root=lean_root,
+                                  timeout_s=_sol_t, substrate=substrate, notes=_notes, _depth=depth + 1)
+        _false = sol.get("false_rungs") or []
+        # stop: no false rung, OR the parent already ratified, OR the re-plan budget is spent
+        if not _false or sol.get("parent_closed") or _round >= _replan_budget:
+            break
+        _replan_trace.append({"round": _round, "false_rungs": [f["name"] for f in _false]})
+        _notes = (notes or "") + _render_false_rung_feedback(_false)   # correction → next planner round
     return {"routed": True, "audited": True, "decomposition": res, "solution": sol, "depth": depth,
-            "rungs_closed": sol.get("n_closed", 0), "rungs_total": sol.get("n_lemmas", 0)}
+            "rungs_closed": sol.get("n_closed", 0), "rungs_total": sol.get("n_lemmas", 0),
+            "replan_trace": _replan_trace or None}
 
 
 def _selftest() -> int:
     """Deterministic parse + deanchor checks (no dispatch)."""
     fails = []
+    # HERMETIC: rung-adjacency reads the LIVE local cert ledger (box-dependent) — force planner order in
+    # the suite (the sledgehammer-live lesson: a default-on signal gating on local state makes tests
+    # pass/fail by BOX, not code). Restored on exit.
+    _radj_prev = os.environ.get("ZTARE_LEANMILL_RUNG_ADJACENCY")
+    os.environ["ZTARE_LEANMILL_RUNG_ADJACENCY"] = "0"
 
     def ok(name, cond):
         print(f"  [{'PASS' if cond else 'FAIL'}] {name}"); fails.append(name) if not cond else None
@@ -567,6 +968,28 @@ def _selftest() -> int:
     lemmas, chain, names = _parse_dag(raw, "iso")
     ok("parse: one sorried lemma", len(lemmas) == 1 and names == ["iso_lemma1"])
     ok("parse: chain is sorry-free body", "iso_chain" in chain and "sorry" not in chain.split(":=",1)[-1])
+    # _parse_dag behaviour-equivalence NET (#49): locks the parse contract BEFORE the line-249 theorem-regex →
+    # decl_blocks migration (which is NOT byte-equivalent, so it needs this net). Also guards the fenced_block (#80)
+    # swap of the DECOMP-fence extractor. Cover: multi-lemma, no-fence fallback, echo-guard, empty, fenced-no-thm.
+    _raw_multi = ("DECOMP:\n```lean\ntheorem l1 : (1:ℕ)=1 := by sorry\n"
+                  "theorem l2 : (2:ℕ)=2 := by sorry\ntheorem chn (n:ℕ) : Good n := by exact l1 ▸ rfl\n```\n")
+    _lm, _cm, _nm = _parse_dag(_raw_multi, "iso")
+    ok("parse: two sorried lemmas + sorry-free chain", _nm == ["l1", "l2"] and len(_lm) == 2 and "chn" in _cm)
+    _ln, _cn, _nn = _parse_dag("theorem l1 : (1:ℕ)=1 := by sorry\ntheorem chn : True := by trivial\n", "iso")
+    ok("parse: no DECOMP fence ⇒ scan whole output (legacy fallback preserved)", _nn == ["l1"] and "chn" in _cn)
+    ok("parse: echo `<placeholder>` ⇒ empty (the RUNG-A echo-guard)",
+       _parse_dag("DECOMP:\n```lean\ntheorem l1 : <statement> := by sorry\n```\n", "iso") == ([], "", []))
+    ok("parse: empty input ⇒ empty", _parse_dag("", "iso") == ([], "", []))
+    ok("parse: fenced but no theorem ⇒ empty", _parse_dag("DECOMP:\n```lean\njust prose\n```\n", "iso") == ([], "", []))
+    # CORRECTED behaviour (the decl_blocks swap, #49 2026-06-12) — the two latent bugs the differential exposed:
+    _ld, _cd, _nd = _parse_dag("DECOMP:\n```lean\ntheorem l1 : (1:ℕ)=1 := by sorry\n"
+                               "def helper (n:ℕ) : ℕ := n + 1\ntheorem chn : True := by trivial\n```\n", "iso")
+    ok("parse FIX: a helper def between lemmas no longer swallows the sorried lemma",
+       _nd == ["l1"] and len(_ld) == 1 and "chn" in _cd)
+    _lc, _cc, _nc = _parse_dag("DECOMP:\n```lean\n-- theorem fake_in_comment : False := by sorry\n"
+                               "theorem l1 : (1:ℕ)=1 := by sorry\ntheorem chn : True := by trivial\n```\n", "iso")
+    ok("parse FIX: a commented-out theorem is no longer a phantom lemma",
+       _nc == ["l1"] and "fake_in_comment" not in _nc)
 
     # v2: Step 2 wired to the CANONICAL IsomorphismLoop (mock query — no live LLM/key in the test).
     _mock = [SurfacedIsomorphism("heat-kernel off-diagonal bound", "spectral geometry",
@@ -588,13 +1011,34 @@ def _selftest() -> int:
     _tech = _render_techniques()
     ok("technique catalog renders G-function + orthogonality attacks",
        "globally-bounded" in _tech and "polynomial method" in _tech)
+    ok("technique catalog renders OBSTRUCTION-DESCENT (deanchored-iso meta-move, 2026-06-12)",
+       "obstruction-descent" in _tech and "OBSTRUCTION CLASS" in _tech)
     # GAP 1: autonomous-recursion route GATES before any leaf call — depth cap + strong_missing only.
     os.environ["ZTARE_ISO_DEPTH"] = "2"; os.environ["ZTARE_ISO_MAX_DEPTH"] = "2"
     _rc = route_and_solve("s", "t", "theorem t : True := by sorry", lean_root=Path("/tmp"))
     os.environ.pop("ZTARE_ISO_DEPTH", None)
     ok("route depth-cap gates before any leaf call", _rc.get("routed") is False and "depth cap" in _rc.get("reason", ""))
+    # DEPTH POLICY decoupling (#82): hard cap (system ceiling) vs soft bound (default/parity) vs adaptive (agent).
+    ok("depth policy: default parity = legacy soft bound (recurse below it, stop AT it)",
+       iso_should_recurse(1, soft_bound=2, hard_cap=4)[0] is True
+       and iso_should_recurse(2, soft_bound=2, hard_cap=4)[0] is False)
+    os.environ["ZTARE_ISO_ADAPTIVE_DEPTH"] = "1"
+    ok("depth policy: adaptive recurses PAST the soft bound (agent owns the stop, not a fixed 2)",
+       iso_should_recurse(2, soft_bound=2, hard_cap=4)[0] is True)
+    ok("depth policy: HARD CAP inviolable even in adaptive mode",
+       iso_should_recurse(4, soft_bound=2, hard_cap=4)[0] is False
+       and "ceiling" in iso_should_recurse(4, soft_bound=2, hard_cap=4)[1])
+    ok("depth policy: agent_vote=False stops within the cap (the agentic stop slot)",
+       iso_should_recurse(1, soft_bound=2, hard_cap=4, agent_vote=False)[0] is False)
+    os.environ.pop("ZTARE_ISO_ADAPTIVE_DEPTH", None)
     _rs = route_and_solve("s", "t", "theorem t : True := by sorry", lean_root=Path("/tmp"))
-    ok("route fires only on strong_missing", _rs.get("routed") is False and "strong_missing" in _rs.get("reason", ""))
+    ok("route fires on the honest non-closure (no strong_missing pre-gate); attack bails on unlocatable target",
+       _rs.get("routed") is True and _rs.get("audited") is False)
+    os.environ["ZTARE_LEANMILL_ISO_STRONG_ONLY"] = "1"
+    _rg = route_and_solve("s", "t", "theorem t : True := by sorry", lean_root=Path("/tmp"))
+    os.environ.pop("ZTARE_LEANMILL_ISO_STRONG_ONLY", None)
+    ok("ISO_STRONG_ONLY restores the narrow strong_missing gate",
+       _rg.get("routed") is False and "ISO_STRONG_ONLY" in _rg.get("reason", ""))
 
     # ── Parallel diverse decomposition sampling (best-of-K under a SOUND audit filter) ────────────
     ok("diversity seed 0 is un-primed (K=1 parity)", _diversity_seed(0) == "")
@@ -631,6 +1075,39 @@ def _selftest() -> int:
     # K=1 ⇒ a single un-primed sample (byte-identical single-shot input)
     _aud1, _att1 = _sample_diverse(1, _fake_gen, _fake_ver, {})
     ok("K=1 is one un-primed sample (parity)", len(_att1) == 1 and _att1[0][0]["_fb"] == "")
+    # ── PARALLEL generation (#117): concurrency + per-sample sessions + order-stable audit ──────
+    import time as _tm
+    _tags: "list" = []
+    def _slow_gen(ctx):
+        _tags.append(ctx.get("agent_tag", ""))
+        _tm.sleep(0.25)
+        return {"lemmas": ["L"], "chain": "c", "lnames": ["L"], "raw": "", "_fb": ctx.get("feedback", "")}
+    _t0 = _tm.time()
+    _audP, _attP = _sample_diverse(3, _slow_gen, _fake_ver, {})
+    _wallP = _tm.time() - _t0
+    ok("parallel: 3×0.25s samples overlap (wall < 0.6s)", _wallP < 0.6 and len(_attP) == 3)
+    ok("parallel: sample 0 untagged (warm campaign session), 1..K own sessions",
+       sorted(_tags) == ["", "iso_s1", "iso_s2"] and "" in _tags)
+    ok("parallel: attempts stay in SAMPLE order (deterministic selection)",
+       [a["_fb"] for a, _ in _attP] == ["", _diversity_seed(1), _diversity_seed(2)])
+    _sv = os.environ.get("ZTARE_ISO_SAMPLES_PARALLEL")
+    try:
+        os.environ["ZTARE_ISO_SAMPLES_PARALLEL"] = "0"
+        _tags.clear()
+        _t0 = _tm.time()
+        _audS, _attS = _sample_diverse(3, _slow_gen, _fake_ver, {})
+        ok("parallel: =0 reverts to sequential (wall ≥ 0.7s, same results shape)",
+           (_tm.time() - _t0) >= 0.7 and len(_attS) == 3
+           and [a["_fb"] for a, _ in _attS] == [a["_fb"] for a, _ in _attP])
+    finally:
+        os.environ.pop("ZTARE_ISO_SAMPLES_PARALLEL", None) if _sv is None else os.environ.__setitem__("ZTARE_ISO_SAMPLES_PARALLEL", _sv)
+    def _raising_gen(ctx):
+        if ctx.get("agent_tag") == "iso_s1":
+            raise RuntimeError("boom")
+        return {"lemmas": ["L"], "chain": "c", "lnames": ["L"], "raw": "", "_fb": ctx.get("feedback", "")}
+    _audE, _attE = _sample_diverse(2, _raising_gen, _fake_ver, {})
+    ok("parallel: one raising sample degrades to an empty art, never sinks the round",
+       len(_attE) == 2 and "sample dispatch error" in _attE[1][0]["raw"])
 
     # ── Composite ratification (decomposition→closure assembler) — the PURE assembly ─────────────
     ok("splice: replaces the sorried body with the ratified proof",
@@ -663,6 +1140,64 @@ def _selftest() -> int:
     ok("composite_ratify refuses a chain proving a DIFFERENT statement (pre-kernel)",
        _bad.get("parent_closed") is False and "DIFFERENT statement" in _bad.get("reason", ""))
 
+    # #143/Layer-B — RE-PLAN ON A CONFIRMED-FALSE RUNG. A planner sub-lemma proven FALSE (a dropped hypothesis)
+    # must feed the agent's correction back to a bounded re-decomposition, not stall. Inject attack/solve/triage
+    # so the loop is exercised with NO LLM/Lean; save+restore the patched globals (hermetic).
+    # PATCH `globals()` DIRECTLY, not an `import … as _self` copy: under `python -m` this module runs as
+    # `__main__`, so `route_and_solve` resolves `attack`/`solve_decomposition`/`triage` from THIS namespace —
+    # patching a re-imported copy would miss it and dispatch the REAL planner (codex) for 180s. (Learned the
+    # hard way.) Save+restore here; the finally below restores from `_g` (same globals()).
+    _g = {k: globals().get(k) for k in ("attack", "solve_decomposition", "triage")}
+    _envk = ("ZTARE_LEANMILL_ISO_ROUTE", "ZTARE_LEANMILL_REPLAN_FALSE_RUNG", "ZTARE_LEANMILL_ISO_STRONG_ONLY")
+    _envp = {k: os.environ.get(k) for k in _envk}
+    try:
+        os.environ["ZTARE_LEANMILL_ISO_ROUTE"] = "1"
+        os.environ["ZTARE_LEANMILL_REPLAN_FALSE_RUNG"] = "1"
+        os.environ["ZTARE_LEANMILL_ISO_STRONG_ONLY"] = "0"
+        _seen = {"notes": [], "solves": 0}
+
+        def _fake_attack(source, target_name, *, lean_root, timeout_s=180, notes=None, **kw):
+            _seen["notes"].append(notes or "")
+            return {"audited": True, "lemmas": ["theorem iso_lemma1 : P := by sorry"],
+                    "lnames": ["iso_lemma1"], "chain": "..."}
+
+        def _fake_solve(result, source, target_name, *, lean_root, timeout_s=400, substrate=None,
+                        notes=None, _depth=0):
+            _seen["solves"] += 1
+            if _seen["solves"] == 1:
+                return {"solved": False, "n_closed": 0, "n_lemmas": 1,
+                        "lemmas": [{"name": "iso_lemma1", "outcome": "statement_false_confirmed"}],
+                        "false_rungs": [{"name": "iso_lemma1", "claim": "needs constantCoeff(q f) ≠ 0"}]}
+            return {"solved": True, "n_closed": 1, "n_lemmas": 1, "parent_closed": True,
+                    "lemmas": [{"name": "iso_lemma1", "outcome": "closed"}]}
+        globals()["triage"] = lambda goal, source_hint=None: type("T", (), {"target_strength": "strong_missing"})()
+        globals()["attack"], globals()["solve_decomposition"] = _fake_attack, _fake_solve
+        _ro = route_and_solve("import Mathlib\ntheorem t : P := by sorry", "t", "P",
+                              lean_root=Path("/tmp"), timeout_s=600)
+        ok("replan: re-decomposes once on a confirmed-false rung (2 attacks, 2 solves)",
+           len(_seen["notes"]) == 2 and _seen["solves"] == 2)
+        ok("replan: round-1 planner gets the false-rung correction; round-0 is clean",
+           "PRIOR-DECOMPOSITION DEFECT" in _seen["notes"][1] and "PRIOR-DECOMPOSITION DEFECT" not in _seen["notes"][0])
+        ok("replan: parent closes after the corrected decomposition",
+           bool((_ro.get("solution") or {}).get("parent_closed")) and bool(_ro.get("replan_trace")))
+        os.environ["ZTARE_LEANMILL_REPLAN_FALSE_RUNG"] = "0"
+        _seen["notes"].clear(); _seen["solves"] = 0
+        route_and_solve("import Mathlib\ntheorem t : P := by sorry", "t", "P", lean_root=Path("/tmp"), timeout_s=120)
+        ok("replan: =0 ⇒ single-shot, no re-plan (A/B baseline)", len(_seen["notes"]) == 1 and _seen["solves"] == 1)
+    finally:
+        for k, v in _g.items():
+            if v is not None:
+                globals()[k] = v
+        for k in _envk:
+            if _envp[k] is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = _envp[k]
+
+    if _radj_prev is None:
+        os.environ["ZTARE_LEANMILL_RUNG_ADJACENCY"] = "0"   # keep hermetic until process exit (suite-local)
+    else:
+        os.environ["ZTARE_LEANMILL_RUNG_ADJACENCY"] = _radj_prev
     print("SELFTEST", "PASSED" if not fails else f"FAILED {fails}")
     return 1 if fails else 0
 

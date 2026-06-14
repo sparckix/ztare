@@ -1,5 +1,5 @@
 ---
-description: "LeanMill architecture: lanes, handoffs, credit boundaries, and factory intelligence."
+description: "LeanMill architecture: lanes, handoffs, credit boundaries, and operational read models."
 ---
 
 # LeanMill Architecture
@@ -8,22 +8,22 @@ description: "LeanMill architecture: lanes, handoffs, credit boundaries, and fac
 >
 > **Current seam/spec:** `research_areas/seams/engine/lean/GP-225_leanmill_vnext_station_factory_seam.md` and `research_areas/specs/active/engine/lean/GP-225_leanmill_vnext_station_factory_spec.md`.
 >
-> **Canonical process-flow reference:** this document. The GP-225 spec owns the
+> **Canonical process-flow reference:** this document. The [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) spec owns the
 > durable invariants and credit boundaries; this architecture document owns the
 > current end-to-end lane topology, handoffs, and operating picture.
 
-LeanMill is a station factory for Lean proof work. Its output unit is a typed learning-unit exit, not agent activity. Proof value is credited only when the execution artifact passes governance and matched controls. Everything else is inventory, routing signal, repair work, or retirement evidence.
+LeanMill is a station workflow for Lean proof work. Its output unit is a typed learning-unit exit, not agent activity. Proof value is credited only when the execution artifact passes governance and matched controls. Everything else is inventory, routing signal, repair work, or retirement evidence.
 
 ## INVARIANT — ONE governance kernel, shared across all solving modes (2026-06-04)
 
-**Everything is the factory.** There is exactly ONE governance kernel, and EVERY solving mode —
+There is exactly ONE governance kernel, and EVERY solving mode —
 cascade, governed-DAG, ad-hoc (`solve_adhoc`), proof-repair, family/compounding, batch C-row — ratifies
 through it. The kernel is the anti-laundering organ stack (`gates/lean_proof_gate.run_anti_laundering_kernel`
 — renamed 2026-06-06 from the cryptic `_run_v33_anti_laundering`; back-compat alias kept; run by `proof_audit`)
 + the axiom-allowlist gate (the leaf's `#print axioms`) + matched-negative-control.
 It is EXTENSIBLE BY ORGAN: a new governance check (e.g. `statement_integrity`, the def-alteration organ
 added 2026-06-04) is registered ONCE in the kernel and every mode inherits it — it is NEVER bolted onto a
-single mode. Rules: (1) no per-mode governance re-implementation (that is the frankenstein this invariant
+single mode. Rules: (1) no per-mode governance re-implementation (that is the duplicated governance path this invariant
 forbids — it bred the duplicated-axiom-gate + ad-hoc-only-integrity bugs); (2) gates fail-OPEN on
 tooling-inconclusive, fail-CLOSED only on a CONFIRMED violation; (3) solver `closed` is an UNRATIFIED
 PROPOSAL — only the kernel verdict ratifies. `statement_integrity` is now a KERNEL ORGAN (in
@@ -45,7 +45,7 @@ auto-derives it from the provider via `PROVIDER_TO_MOVE → _move_prior` when a 
 organ stack inline — those reach batch closures only via the downstream `proof_audit` worker, and the
 ad-hoc path inline. The clean unification = one `govern_closure()` the cascade/DAG path also calls
 (reconstruct probe = source-with-sorry→proof_text, original = row source); deferred as a careful refactor,
-not rushed (rushing shared governance is what bred the frankenstein).
+not rushed (rushing shared governance is what created the duplicated-path failure).
 
 **Context-semantic-hijack organs + the cross-substrate kernel-hardener (2026-06-06).** The FALSIFY
 false-statement control (a calibration probe over known-FALSE targets) surfaced a real laundering vector:
@@ -60,11 +60,11 @@ set_option context (KEEPS opens + lemmas) and recompiles; if the target no longe
 DEPENDED on the manipulation (`context_hijack_confirmed`). It recompiles ONLY when there is hijack-context
 to strip, so cost is paid only on suspect probes. — This is a gaming finding, so it is cataloged: the
 gaming catalog is now the cross-substrate registry `analytics/public/queries/gaming_vector_catalog.jsonl`,
-and the GP-086 cage gaming-pattern hardener is generalized into a shared `common/kernel_hardener.py`
+and the [GP-086](../../research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md) cage gaming-pattern hardener is generalized into a shared `common/kernel_hardener.py`
 contract (`KernelHardener` + `GamingVector` + `to_cage_gate`) instantiated by BOTH autoresearch
 (`validator/autoresearch_hardener`, wraps `sandbox_gaming_extractor` + Cage gates) and leanmill
 (`leanmill/solver/leanmill_hardener`, organs as `POST_JUDGE`/`proof_target` `cage.Gate`s) — neural mining
-allowed (GP-248 proposer column), gates always deterministic.
+allowed ([GP-248](../../research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md) proposer column), gates always deterministic.
 
 ## INVARIANT — ONE governed solve entry (`solve_adhoc`); every lane is a target-PRODUCER through it (2026-06-05)
 
@@ -74,12 +74,23 @@ target-PRODUCER that routes through it via the SAME interface `(target_name, sou
 mode, timeout_s)`; none re-implements solving or governance:
 - **ad-hoc** — the CLI `adhoc` → `solve_adhoc_governed`.
 - **autoformalize** — `autoformalize_and_solve` → `default_solve` → `solve_adhoc` (after the faithfulness firewall admits the statement).
+- **autoformalize-from-notes** — `autoformalize_notes.autoformalize_from_notes`: a blueprint (NL `## Target` + `## Lemmas`, dependency order) → per-line `autoformalize_and_solve` → a citable proven-lemma SHELF; every line still routes through `solve_adhoc`. The blueprint is also threaded into the recursive planner as decomposition guidance (the `notes=` channel — see the Solver Lane reference). A thin LITE loop — NOT the autoresearch evidence-mutation machinery (`orchestrator.mutator_briefing` does open-ended discovery; this proves a KNOWN blueprint).
 - **residual-C / work_queue** — the C-row lane → `solve`; governance-rejection retry is "PARITY with the C path".
 - **proof-repair** — `proof_repair.repair` → `solve_adhoc` (after confirming the break).
 - **family / compounding** — `solve_family` → `solve_adhoc` per sibling.
-- **iso-decompose** (deanchor→isomorphism→audit) — `isomorphism_decompose.solve_decomposition` → `solve_adhoc` per audited lemma. It is a PRODUCER, not a lane: it emits audited sub-goals; the kernel solves+ratifies them. (Frankenstein risk caught + fixed 2026-06-05: it previously dead-ended at the audited DAG without routing through `solve_adhoc`.)
+- **iso-decompose** (deanchor→isomorphism→audit) — `isomorphism_decompose.solve_decomposition` → `solve_adhoc` per audited lemma. It is a PRODUCER, not a lane: it emits audited sub-goals; the kernel solves+ratifies them. (Parallel-path risk caught + fixed 2026-06-05: it previously dead-ended at the audited DAG without routing through `solve_adhoc`.)
 
-SHARED PRIMITIVES the producers/lanes invoke (never fork): `agentic_leaf.default_dispatch` (the leaf),
+SHARED PRIMITIVES the producers/lanes invoke (never fork): `agentic_leaf.default_dispatch` (the leaf —
+which dispatches the codex/claude subscription agent through the SHARED **durable warm-session manager** in
+`common/subscription_agent_runtime.py` (`get_or_create_warm_session` / `persist_warm_session` /
+`warm_session_recovery_callbacks`): a disk-persisted, staleness-rotated, self-healing CLI conversation keyed
+by (runtime, agent_id) so the fungible leaf's **formalize→plan→solve** dispatches share ONE warm agent and
+RESUME across process / queue-work-item boundaries. This is the SAME manager the residual-family factory
+workers run (`agent_repair_worker`, warm default-ON) — extracted to the shared lib 2026-06-11 after the #96
+in-memory hand-rolled copy in `agentic_leaf` diverged from it (the "two warm systems" duplicated path the
+operator flagged). RULE: a caller NEVER hand-rolls subscription dispatch or session handling — it goes
+through `default_dispatch` + the shared warm-session manager. A warm session is a PERFORMANCE CACHE of the
+fungible leaf, NOT a persistent identity (leaf fungibility preserved; `ZTARE_LEANMILL_WARM_AGENTS=0` → cold).),
 `conjecture.{conjecture_advances, decomposition_dag_audit}` (decomposition soundness), `proof_cache`
 (verified-win memo), `no_good_store` (confirmed-refutation memo), `statement_integrity` (kernel organ),
 `obstruction_to_conjecture` (refutation→targeted seed), `RefineHandover` (the ONE produce→verify→
@@ -93,14 +104,36 @@ reduction-SOUNDNESS; `solve_adhoc`'s kernel gates lemma-TRUTH — so a false sub
 
 ## SETTLED — the leaf solver IS the agents; leanmill is the environment (do not re-litigate)
 
-The leaf solver **is** the subscription agents (codex/claude) — "swappable talent." **leanmill is the
+The leaf solver **is** the subscription agents (codex/claude) — swappable. **leanmill is the
 ENVIRONMENT** (governed DAG + conjecture + cache + compounding + the ONE governance kernel) that
-multiplies that leaf — it is itself a meta-solver. This is the **nurture** thesis, and it is the
-world-class claim. A stronger leaf (an RL/trained prover, DeepSeek-Prover, LeanCopilot) is an OPTIONAL,
-already-supported **provider-router registration** (`leanmill_provider_registry.py` slot) — NOT a missing
-capability and NOT a requirement. **Do NOT re-raise "we need a trained/external prover to be world-class"**
-— that chases AlphaProof's *nature* path and is off-thesis; the leaf is the agents, and the open question
-is whether the ENVIRONMENT multiplies them (the SCALE / coherent-theory-build-up test), not leaf compute.
+wraps and multiplies that leaf; it is itself a meta-solver. A stronger leaf (an RL/trained prover,
+DeepSeek-Prover, LeanCopilot) is an OPTIONAL, already-supported **provider-router registration**
+(a slot in `src/ztare/leanmill/providers/` `REGISTRY` (typed `Provider` ABC) + the cold fan-out in
+`solver/llm_provers.py`; the old `leanmill_provider_registry.py` name is retired) — NOT a missing capability and NOT a requirement. **Do NOT
+re-raise "we need a trained/external prover"** — that is the trained-prover (AlphaProof) path and is
+off the design here; the leaf is the agents, and the open question is whether the ENVIRONMENT improves
+their closure rate (the SCALE / coherent-theory-build-up test), not leaf compute.
+
+## SETTLED — the Goldilocks line: determinism ONLY at the soundness boundary, agency everywhere upstream (2026-06-11)
+
+The operative corollary of "the leaf IS the agents" — be CRISP about it; getting it wrong is what causes churn.
+Put DETERMINISM exactly where soundness REQUIRES it, and NOWHERE else; put AGENCY everywhere upstream.
+- **Deterministic (the harness owns, mechanical, non-negotiable — the TRUST PRIMITIVES):** the Lean kernel
+  proof-check, the `#print-axioms` allowlist audit, `statement_integrity` (anti-laundering), the faithfulness
+  GATE's pass/fail decision, the non-vacuity / matched-negative-control probes, budgets/sandbox. Mechanical so a
+  closure is trustworthy REGARDLESS of what the agent did.
+- **Agentic (the agent owns — its OWN actions):** formalize, choose/correct the STATEMENT, decompose, route
+  moves, prove, construct witnesses, reformulate, decide when to gap. The harness gives GOAL + ENVIRONMENT
+  (warm Lean, tools, Mathlib) + HARD RULES + TRUST — never the procedure.
+- **Test for any knob:** does soundness REQUIRE this to be mechanical? yes → boundary, deterministic; no →
+  agency. Err toward agency UPSTREAM + determinism AT THE BOUNDARY; no fuzzy blend in the middle.
+- **The two failure modes (both observed 2026-06-11):** (a) determinism CREEP into the agent's lane (hand-wired
+  routers, hand-crafted statements/hypotheses, prescriptive tool menus, a strict-EQUIVALENCE faithfulness judge
+  that rejected a CORRECT constructive formalization) → cripples the frontier leaf + induces oscillation
+  (over-determine → over-correct); (b) agency LEAK into the boundary (agent as its own faithfulness judge) →
+  laundering. The reformulation re-entry, the soft `STATEMENT-FALSE` signal, full-auto permissions, and the
+  DIRECTIONAL-for-proving judge are all instances of moving determinism OFF the agent's lane and concentrating
+  it at the boundary. Before adding ANY logic ask: trust primitive (mechanical) or thinking step (agentic)?
 
 ## INVARIANT — the solver BUILDS new proofs; it is NOT a Mathlib lookup (do not re-forget)
 
@@ -118,7 +151,66 @@ AGAINST, not the solver's mode of operation. Recurring failure to avoid: surveyi
 and concluding "avoid that direction" — that silently demotes the meta-solver to a library composer and
 abandons the open-problem regime (operator correction, 2026-06-05).
 
-**Competitive landscape — LEAP (Google Cloud AI Research / DeepMind, arXiv:2606.03303, 2026-06-03).** An agentic Lean prover on **Gemini-3.1-pro, no fine-tuning**: informal blueprint → Lean → iterative compiler-feedback refinement, over an AND-OR DAG with shared-lemma memoization + DFS backtracking + an LLM decomposition-reviewer. Results: Putnam-2025 12/12, Lean-IMO-Bench 56.7% advanced, beats Aristotle, one-shot <10%→70%. **This VALIDATES the nurture thesis at Google scale** (general leaf + agentic environment, no trained prover → SOTA) — and convergently rebuilds our own pieces (their AND-OR DAG = `governed_dag_search`; their memoization = `proof_cache`; their compiler-refinement = our gap-refine / `autoformalize_refine`; their blueprint-decomposition = `MOVE_CONJECTURE`). **What LEAP has that we don't:** real benchmarks (Lean-IMO-Bench) + a frontier-leaf result. **What we have that LEAP does NOT:** the GOVERNANCE KERNEL — anti-laundering, matched-negative-control (is the proof just a Mathlib lookup?), nondegenerate-instance probe (is the statement vacuously true?), faithfulness firewall on autoformalized statements. LEAP trusts "it compiled," which is fine for KNOWN-TRUE competition statements and **useless for OPEN problems** (untrusted statement; "compiles" can be a vacuous/laundered shell). Our defensible niche is exactly the untrusted-statement / open-problem regime. **Rescue/adopt (all published):** (1) adopt Lean-IMO-Bench / Putnam-2025 as the DISCRIMINATING target tier (unblocks the cascade-vs-DAG A/B — SVD was too easy); (2) LEAP's blueprint-decomposition + memoization lift (73→83%) is direct evidence to WIRE THE DEAD `MOVE_CONJECTURE` production path over the spraying moves; (3) leaf = frontier model + governed search, NOT self-training (LEAP needs no fine-tuning).
+**Competitive landscape — LEAP (Google Cloud AI Research / DeepMind, arXiv:2606.03303, 2026-06-03).** An agentic Lean prover on **Gemini-3.1-pro, no fine-tuning**: informal blueprint → Lean → iterative compiler-feedback refinement, over an AND-OR DAG with shared-lemma memoization + DFS backtracking + an LLM decomposition-reviewer. Results: Putnam-2025 12/12, Lean-IMO-Bench 56.7% advanced, beats Aristotle, one-shot <10%→70%. This is independent evidence for the general-leaf + agentic-environment approach at scale (no trained prover → SOTA), and it convergently rebuilds several of our pieces (their AND-OR DAG = `governed_dag_search`; their memoization = `proof_cache`; their compiler-refinement = our gap-refine / `autoformalize_refine`; their blueprint-decomposition = `MOVE_CONJECTURE`). **What LEAP has that we don't:** real benchmarks (Lean-IMO-Bench) + a frontier-leaf result. **What we have that LEAP does NOT:** the governance kernel — anti-laundering, matched-negative-control (is the proof just a Mathlib lookup?), nondegenerate-instance probe (is the statement vacuously true?), faithfulness firewall on autoformalized statements. LEAP trusts "it compiled," which is sufficient for KNOWN-TRUE competition statements but not for OPEN problems (untrusted statement; "compiles" can be a vacuous/laundered shell). The target regime here is the untrusted-statement / open-problem case. **Rescue/adopt (all published):** (1) adopt Lean-IMO-Bench / Putnam-2025 as the DISCRIMINATING target tier (unblocks the cascade-vs-DAG A/B — SVD was too easy); (2) LEAP's blueprint-decomposition + memoization lift (73→83%) is direct evidence to WIRE THE DEAD `MOVE_CONJECTURE` production path over the spraying moves; (3) leaf = frontier model + governed search, NOT self-training (LEAP needs no fine-tuning).
+
+## SETTLED — the exogenous moves are a RELIABILITY layer, the GOVERNANCE is the differentiator (do not re-litigate, 2026-06-09)
+
+Empirically resolved (transcript-proven): the exogenous-compute moves (witness-transport / abduce-QE / sledgehammer) are **NOT a capability edge** over a shell-enabled frontier leaf. On an un-tabled Pell (D=4093, 21-digit fundamental solution) with the witness tool OFF, the leaf **wrote and ran its own `python3` continued-fraction solver** and closed; on a tabled D it simply **recalled** the witness. The leaf reproduces the move itself. The witness `12/12` lift is real **vs Lean tactics** (`native_hammer`), but NOT vs the agent. So the moves' value is **reliability + cost + determinism** (a curated 1s sandboxed tool the leaf *prefers* over hand-rolling a solver — measured: with the tool working, the leaf used it, 5 tool-calls / 0 self-coded; with it broken it self-coded in 124s) — NOT new capability. **Do NOT re-raise "are the moves alien / a capability edge" — they are not.**
+
+The **genuinely-alien differentiator is the governance** — the same point as the LEAP comparison above, now demonstrated under adversarial pressure: on the OPEN denef_lipshitz target the leaf produced **3 closes that compiled, had no `sorry`, and had clean axioms** — a naive "it compiled" verifier (LEAP) accepts all three; `statement_integrity` caught all three as laundered (`ratified=0`). That is the capability you cannot get from a stronger leaf, because the leaf is the thing being policed. **Architecture, settled:** leaf orchestrates + may CALL the exogenous-compute moves as tools (`agent_tools` surfaced via `move_cards`, behind `ZTARE_LEANMILL_AGENT_TOOLS`); the kernel + anti-laundering governance ratifies (deterministic). A genuinely-alien MOVE would require what the leaf cannot reproduce in its sandbox (a trained specialist, or beyond-sandbox compute) — an explicit, separate bet, not the SymPy-wrapper moves.
+
+**Recursive planner (the strategy layer), DEFAULT-ON 2026-06-09.** Decomposition is NOT an `agent_tools` card — it is `isomorphism_decompose.route_and_solve`, the recursive planner-executor (the DeepSeek-Prover-V2 / BFS-Prover-V2 / LEAP shape): on an HONEST non-closure (`exact_gap/rung/new_sub_target` (+ cascade `open`/`failed`), never a caught cheat — direct-failure is the decompose signal; NOT gated behind triage `strong_missing`, which mis-tags formalized targets — see the Implementation Reference), the warm leaf **generates the decomposition** (deanchor prompt + iso hints — the leaf IS the planner; the iso-catalog is only a hint, NOT a rigid plan-source), the **kernel audits it** (`conjecture.decomposition_dag_audit`: sorry-free + non-circular + every-lemma-used + proves-G — a KERNEL decomposition-reviewer, vs LEAP's *LLM* reviewer = the governance differentiator), it **re-plans on kill** (bounded `RefineHandover`), proves each sub-lemma through the ONE governed solver (`solve_decomposition` → `solve_adhoc`, which **re-enters this route** on a sub-rung's `exact_gap` → recursion, depth-bounded `ZTARE_ISO_MAX_DEPTH=2`), then **composite-ratifies** the parent (`composite_ratify`'s anti-laundering kernel). One flip (`solver_core` gate `ZTARE_LEANMILL_ISO_ROUTE`, default-on, `=0` reverts) covers adhoc / autoformalize / proof-repair / residual-C (all route through `solve_adhoc`). SOUND BY CONSTRUCTION at default-on (parent closes only via the composite kernel; caught cheats excluded; fires on the honest non-closure — `ZTARE_LEANMILL_ISO_STRONG_ONLY=1` narrows it back to triage `strong_missing` for cost-bounded batches). The planner is a CONTRACT/layer the fungible leaf fills — no separate persistent planner agent (preserves leaf fungibility). Do NOT fork a 4th decompose path (the menu `MOVE_CONJECTURE` + in-head leaf are the others); route through `route_and_solve`.
+
+**Agent-orchestrated planning — the foot-gun + the fix (#74, 2026-06-10).** Today the planner HARDCODES decompose: `route_and_solve` always calls `attack` (a DECOMP DAG), and *whether/how-deep/how-wide* to decompose is fixed Python (`ZTARE_ISO_MAX_DEPTH`, `ZTARE_ISO_SAMPLES`) — the agent authors the decomposition CONTENT but does not orchestrate the META-strategy. That is the old tactic-cascade pattern moved up a layer (the solving stage was already freed: the agent chooses moves via `agent_tools`/`move_cards`). The agent's real planning catalogue is the **structural** moves `{DECOMPOSE, SOLVE_DIRECT, SPECIALIZE, GENERALIZE, FALSIFY, ABDUCE, TRANSPORT}` (a catalogue with dualities — specialize↔generalize, falsify↔corroborate — and gaps like induction/case-split; NOT a strict MECE partition), each with an EXISTING executor (`conjecture.specialize_generate`/`falsify_generate`/`generalize_generate`, `abduction.abduce_seed`). **Steps 1+2 BUILT, `ZTARE_LEANMILL_AGENT_PLAN` flipped DEFAULT-ON 2026-06-10** (operator: a sound knob left off "to A/B" just stays dormant; =0 is the opt-out baseline arm). **Step 1**: the planner prompt prepends `_plan_choice_prefix` asking the agent to declare `PLAN: <ACTION>` (parsed by the SHARED `leanmill/solver/agent_output.labeled_value`, recorded to `solver_lane_plan_choices.jsonl` for lift telemetry). **Step 2 (NOT "open" — wired at `isomorphism_decompose.py` ~391/410)**: the declared action DRIVES the artifact — the prompt asks for the action-appropriate proves-G DAG (DECOMPOSE→sub-lemmas, SPECIALIZE→stronger B as L₁, GENERALIZE→general H as L₁, ABDUCE→premise A as L₁, **TRANSPORT→an exogenous/cross-substrate fact (a witness / Isabelle-hammered premise / Loogle-found lemma) as L₁** via the now-default-on `agent_tools`), ALL gated by the SAME kernel `decomposition_dag_audit` (sorry-free + non-circular + load-bearing + proves-G). This is the agent ORCHESTRATING the structural move — ONE unified action-parameterized DAG producer, NOT a forked executor path (the deterministic `specialize_generate`/etc. executors remain the non-agent fallback). FALSIFY/SOLVE_DIRECT don't fit a proves-G DAG (FALSIFY → the falsify move; SOLVE_DIRECT → no decomposition). **TRANSPORT = the agent's leapfrog**: it consults another substrate via the exogenous tools and brings the result back as a kernel-checked Lean fact — the practical cross-substrate transport (a full Isabelle/SMT proof-term port is NOT auto-done; the agent re-derives in Lean from the hint).
+
+**Decompose-FIRST + the closure-propagation fix (#106, 2026-06-11).** Two real bugs surfaced on the first genuinely-hard target (P1 RUNG A, the partial-fraction antiderivative). (1) **ORDERING** — `route_and_solve` (the only path that can close a target NEEDING decomposition) ran AFTER a doomed direct cascade (warm/native/cold/frontier — moves that provably can't close it) that consumed the whole `notes_target` wallclock first; the planner got the leftovers, or the run timed out before it. (2) **PROPAGATION GAP (the serious one)** — even when the planner CLOSED the parent through `composite_ratify`'s kernel, `solve_adhoc` returned the *cascade's* `r0` outcome (a miss) and only attached the closure as `res["iso_route"]` metadata, so `autoformalize_and_solve`'s `out["solved"] = r0.outcome` reported "not solved": **the recursive planner could literally never report a win through the notes channel.** FIX (`solver_core.solve_adhoc`): a **DECOMPOSE-FIRST pre-pass** — when `_notes_carry_decomposition(notes)` (≥2 formal `theorem … := by sorry` scaffolds — a human / prior-agent blueprint, e.g. the recovered Hermite DAG seeded into the notes), run `route_and_solve` BEFORE the cascade; if it closes the parent return SOLVED + skip the cascade, else the (now-calibrated) cascade is the FALLBACK. TOP-LEVEL only (`ZTARE_ISO_DEPTH==0` — sub-lemmas inherit the parent's notes, so without this guard they'd each re-decompose on the PARENT's blueprint). Gate `ZTARE_LEANMILL_DECOMPOSE_FIRST` (default-on); byte-parity for every `solve_adhoc` caller that passes no blueprint notes. **`_lift_decomposition_closure`** lifts a kernel-RATIFIED `parent_closed` into the primary outcome (`closed`) — SOUND (composite_ratify is the gate) with a defense-in-depth guard that REFUSES to lift a `parent_closed` carrying no actual composite proof (no phantom closures; unit-tested 5/5). Companion calibrations: the iso **planner now gets the warm `lean_check_server`** (~0.1s) + the full caller wallclock — it had been COLD-compiling (`lake env lean` ~90s) and getting guillotined at the 180s `propose` clamp before it could emit (the agent had an audit-passing DAG ready and lost it to the timeout); and `_PERMOVE_FRAC` ceils were dropped to the measured success times (warm 1800→360s) so the doomed cascade can't monopolise the budget. NET: the apparatus now STRATEGIZES (decomposes) before it grinds, and a decomposition win is reportable. **CLOSED 2026-06-12 (the agentic-first invariant, A+B):** the follow-up "make the agent self-recognize 'this needs decomposition' at EVERY node" is now built. **(B)** the decompose-first gate no longer requires top-level + a seeded blueprint — `_agent_recommends_decompose` (one cheap, conservative DECOMPOSE-vs-SOLVE_DIRECT agent call) fires at every node below the depth ceiling (`_below_cap`); `_is_top` now only selects WHICH notes feed the planner (the seeded blueprint at the top, a FRESH decomposition on a sub-lemma's OWN goal below — never re-decompose a sub-lemma on the parent's blueprint). So the agent orchestrates SOLVING, not just the seeded top — the Goldilocks "agent orchestrates planning AND solving" thesis, finally an invariant rather than a doc aspiration. **(A)** the deterministic `MOVE_ORDER` cascade is demoted to the explicit NON-AGENT fallback: when the agent path is live (`AGENT_TOOLS`), `move_policy` walks the AGENT-FIRST ladder `native_hammer (free filter) → claude_warm (the agent) → conjecture (decompose)` via `_active_move_order()` — `cold_shot`/`frontier` are the redundant cold one-shots a warm, tool-equipped, iterating agent already subsumes (the P1 run burned ~13min/0-closes on them), returned only with `ZTARE_LEANMILL_FULL_CASCADE=1` (the A/B baseline) or no agent. Sound: dropping direct-proof moves only shrinks attack surface — the kernel re-verifies every closure.
+
+**STATEMENT-FALSE is now KERNEL-GATED + a confirmed-false rung RE-PLANS (#143 / Layer-B, 2026-06-14).** Found by reading the agent's ACTUAL probe (not DB aggregates) on v7 P1: the leaf flagged a planner sub-lemma `-- STATEMENT-FALSE` and hand-wrote a *compiling* `¬G` — it was CORRECT (the planner's `iso_lemma1` was a bare `∀ p q f` that DROPPED the parent's denominator-unit hypothesis, so Mathlib's `(non-unit)⁻¹ = 0` breaks the quotient rule; counterexample `p=1, q=X, f=X`). Two bugs: **(1)** a bare `-- STATEMENT-FALSE:` comment (the leaf's CLAIM) was treated as a refutation VERDICT — `solve_adhoc` set `res["statement_false"]` with NO kernel check, and the bubble-up scan over the SHARED scratch dir mis-attributed the sub-lemma's claim to the TRUE parent, so `_solve_refutation` fired `autoformalize_and_solve`'s reformulation re-entry on a provable target → churn. The engine's own rule is *only a kernel-checked ¬G refutes*. FIX: the capture point (`solver_core.solve_adhoc`) now routes the claim through `conjecture.verify_statement_false_claim` (dispatch the skeptic → PROVE ¬G → kernel-verify, via the WARM campaign env so it does not re-starve verify; goal recovered from source for the decomposition path's empty `goal`). Only a CONFIRMED ¬G sets `statement_false` (+ `statement_false_verified`); an unverified claim lands in `statement_false_unverified` + corrective feedback and does NOT reformulate. The leaf prompt now states the rule (a counterexample must satisfy EVERY hypothesis incl. each structure field; the claim is kernel-verified). `_solve_refutation` requires `statement_false_verified` (or the `=0` opt-out). Gate `ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE` (default-on). **(2)** even gated, a genuinely-false PLANNER sub-lemma just STALLED — the parent can't ratify on a false rung, and the agent's correct correction was dropped. FIX: `solve_decomposition` surfaces `false_rungs` (rungs the leaf flagged AND `solve_adhoc` kernel-confirmed false), and `route_and_solve` RE-PLANS — re-runs `attack` with the correction injected as advisory planner notes ("sub-lemma X is false: <cex>; restore the dropped hypothesis"), bounded by `ZTARE_LEANMILL_REPLAN_FALSE_RUNG` (default 1 round). SOUND: the kernel `decomposition_dag_audit` + `composite_ratify` still gate every new lemma — a re-plan can never launder; it only self-corrects a hypothesis-dropping decomposition the parent actually implies. NET: the engine now distinguishes "the leaf is wrong (true lemma, hard)" from "the PLANNER is wrong (dropped a hypothesis)" — and fixes the latter instead of looping on the former. The lesson (operator, "why a day of bug-fixing"): the bugs lived in the harness's handling of CORRECT agent behaviour at the decomposition boundary and were only visible by reading the agent's actual Lean artifacts — DB/log aggregates hid them.
+
+## INVARIANT — ONE WorkItem contract: theorems, THEORY (defs + API), and manifests are typed, receipt-bearing work (2026-06-13)
+
+Origin: the operator's underpowering RCA — the NS millennium-hunt track had a mature work
+discipline (pattern-router action cards with receipts, a canonical residual manifest with an
+anti-rehash gate, a-priori declared check-moves; itself transported from the epistemic-generation
+research-log pattern vocabulary), and leanmill never received it: the solver lane could only
+manufacture *theorem-shaped* goals, so the formal SUBSTRATE a frontier campaign must CREATE
+(definitions, structures, API lemmas — this directly serves the "BUILDS new proofs, NOT a Mathlib
+lookup" invariant above) was never a first-class deliverable. Contract:
+`contracts/work_items.py` (`WorkItem`/`WorkReceipt`, pydantic per #49); design rules:
+
+- **The non-anthropomorphic invariant (the distinctive insight).** The NS cards are human-diligence
+  artifacts — an RD reasoning legibly, one tick at a time. LeanMill's agents are not humans and the
+  architecture must not cosplay one: (a) the warm session + the ledgers ARE the agent's working
+  memory, so **receipts are machine-consumed first** (fed verbatim into the next dispatch: gap
+  text, no-goods, adjacency vocabulary, consumer obligations) and human-rendered second (the
+  dashboard is a projection, never the substrate); (b) a human works ~depth-first because context
+  switches are expensive — the agent switches at the cost of a prompt, so items form a **typed
+  FRONTIER, not a to-do list**: traversal order belongs to the calibrated policy (UCB,
+  rung-adjacency, est_p) and may jump anywhere the receipts make attackable — order is policy,
+  never structure; (c) a human re-derives, the agent must never need to: **a receipt's defining
+  test is that any later item can build on it without re-derivation** (the conservation discipline
+  extended from closures to all work kinds).
+- **Three kinds, every verdict from an EXISTING organ** (no parallel governance):
+  `theorem_goal` — the whole solve path; its cert-ledger entry IS the receipt's formal leg today
+  (the wrapper only adds `residual_class` + `consumer_check`). `theory_extension` — campaign
+  phase 0 (`autoformalize_notes.theory_consolidation`): the agent CREATES/EXTENDS the
+  campaign-owned theory file (defs + sorried API statements); gates = kernel compile
+  (sorry-tolerant v33 probe) + **append-only integrity** (prior non-import lines preserved
+  verbatim, in order — definition EDITING is the laundering surface; violation reverts the file
+  and rejects the round); each new sorried API statement auto-becomes a `theorem_goal`.
+  `manifest_update` — the NS transport: a campaign obstacle manifest (canonical open nodes +
+  alias table + anti-rehash gate) so a re-vocabularized gap is recognized as an alias, never
+  funded as new work (v6's recurring GAP names were exactly alias-able).
+- **The receipt's three legs bind what exists**: formal leg = cert/compile/manifest-diff verdicts;
+  tool leg = the exogenous-move telemetry (referenced, not duplicated); **consumer leg = DEFERRED,
+  stamped only when a later item actually consumes the deliverable** (`stamp_consumer`,
+  append-only) — the ledger-evidenced-use rule. A `theory_extension` whose API is never consumed
+  stays visibly consumer-leg-empty: decorative theory, the analogue of a decorative hypothesis,
+  visible instead of silent.
+- **Migration is deliberate, not a sweep**: (1) v7 ships `theory_extension` live; (2) `theorem_goal`
+  wrapping = pure annotation on the cert ledger (zero behavior change); (3) the obstacle manifest +
+  consumer-leg stamping in the compounding loop; (4) scheduler-consumes-WorkItems last, behind
+  calibration evidence. This section is the design of record (no standalone doc).
 
 ## Comparable Systems & Positioning
 
@@ -145,7 +237,17 @@ rank on competition sets:
   vacuously true), a statement-integrity check (no altered dependency), and a kernel axiom-allowlist gate.
 - A faithfulness firewall on autoformalized statements (compile + non-trivial + round-trip
   cross-family judge + structural fingerprint) that gates the solver, so an unfaithful or vacuous
-  statement is rejected before any proof is attempted.
+  statement is rejected before any proof is attempted. Two further **kernel-grade** legs move
+  faithfulness from consensus (the LLM round-trip judge) to ground truth: a **semantic instance
+  battery** — the formalized predicate must `decide` to human-labelled concrete cases, so a silently
+  weakened/broadened rule is caught by a wrong decision rather than a judge's opinion — and, for a
+  **finite decidable domain**, an **exhaustive provable-equivalence** check (`∀ x, ref x ↔ cand x` by
+  `decide` enumerates every input: a 100%-faithfulness certificate on that domain, accepting a
+  semantically-equivalent reformulation while rejecting any real divergence). These two legs are what
+  let the firewall apply **beyond math**: the first validated non-math substrate is access-control
+  policy (`projects/governed_autoformalization_demo/`), where a laundered policy formalization (∧→∨
+  broadening, dropped clause, flipped role) is kernel-rejected on labelled allow/deny cases — the
+  glass-box, auditable counterpart to "trust the model's formalization".
 - Self-learning loops scored on the exogenous kernel/governance verdict rather than model
   self-narration (move-prior calibration, gap-refine, autoformalize-refine).
 
@@ -219,6 +321,44 @@ Implementation should move toward these rules:
 - More workers are allowed only when the relevant contract read model shows the
   lane is producing deterministic downstream inventory and not merely
   increasing queued terminal artifacts.
+
+## Typed contracts — the kernel data seams (#49)
+
+The kernel passed data between modules as bare `dict`s and built/parsed strings with hand-rolled `.replace`/regex.
+That is the dominant bug surface: a seam where one side writes `sorried_file` and the other reads `source_file`,
+or a result shape drifts and `.get("results")` silently returns `None` (the 2026-06-03 flywheel bug), or the
+`solved` field carries the OUTCOME STRING and a caller reads it as `bool(solved)` (scoring an unproven gap as a
+closure). The convention (`src/ztare/leanmill/contracts/kernel.py`, pydantic):
+
+| Kind | Home | Why |
+|---|---|---|
+| **Config** (cascades, thresholds, prover lists, timeouts, flags) | a `YamlConfig` subclass + a YAML file | scattered `os.environ.get` + hardcoded constants drift, unvalidated; a typo'd key now FAILS LOUD |
+| **Cross-module data** (the proof `row`, a move outcome/result) | a pydantic model in `contracts/` | a bare dict has no declared shape; `.get` defaults hide seam drift until 3 calls later |
+| **Inter-service contract** (the Isabelle server request) | a pydantic request model (`SledgehammerRequest`) | regex-extracting fields from a string WE generated is a self-inflicted round-trip |
+| **External-tool output** (Lean / Isabelle stdout) | the producer's OWN decoder first (`YXML.content_of`), regex only at the true boundary | the irreducible boundary — minimise it, don't pretend it away |
+| **Code templates** (the Isabelle ML harness, LLM prompts) | a parameterised template with DATA passed as data (a file/field), not interpolated into code | interpolating a symbol-laden value into source is what produced the `\<forall>` escaping bug; YAML-for-code is an anti-pattern |
+
+**Shipped contracts (the named seams, each behind a behaviour-equivalence test):** `ProofTarget` (the `row`,
+with the `source_path()` source/sorried fallback encoded once + a None→"" validator so the typed path can't crash
+where `.get(k) or ""` worked); `MoveOutcome` (the `(closed, proof, transcript)` tuple); `primary_result` (kills the
+flywheel `(…or [{}])[0]` mis-score, fails loud on an absent `results` key); `AttackRecord` (the notes-loop `solved`
+truthy-string false-positive — `solved` is a typed BOOL, True IFF the firewall closed it); and the OUTCOME-VOCABULARY
+seam (#49 finish, 2026-06-13) — `MoveResult`/`GovernanceVerdict`/`FirewallResult` + the `OUTCOME_CLOSED`/`FW_*`
+constants. The bare string `"closed"` was compared in ~15 places (each a drift risk); the typed accessors encode it
+ONCE — `MoveResult.is_closed`, `FirewallResult.is_admitted_closed` (= `admitted_and_*` AND `solved == "closed"`, NOT
+`bool(solved)`), `GovernanceVerdict.integrity_verified` (mirrors solver_core `_gov_verified`). These last three are
+READ-ONLY accessors (from_dict + properties, no write-back ⇒ zero lossy-round-trip risk); the producers keep mutating
+their dicts. Also live: the Isabelle server (`IsabelleServerConfig` YAML + `SledgehammerRequest`, goal-as-DATA-via-file),
+domain firewall specs (declarative JSON), and the canonical Lean envelope/decl parsers (`agent_output.fenced_block`,
+`lean_source`/`statement_integrity.decl_blocks`) replacing per-module regex.
+
+**The Rule (and the scope of "finished"):** migrate highest-bug-risk-first, EACH behind a behaviour-equivalence test
+(old expression == new), NEVER a blind sweep; a migration that CHANGES behaviour is a separate reviewed change, not
+smuggled into a "typing" diff. So the typed contracts permeate the SEAMS (solver / autoformalizer / governance) and
+the vocabulary is encoded once — but the in-place dict MUTATION inside `autoformalize_and_solve` is *deliberately*
+left dict-shaped (typing a mutation-heavy local is the blind sweep we avoid; its consumers read through the typed
+accessors). BDD invariants: `tests/test_parser_invariants.py` (hypothesis property tests, incl. the truthy-string trap
+and AttackRecord⇄FirewallResult agreement) + each contract's `_selftest`.
 
 ## Main Lanes
 
@@ -339,7 +479,7 @@ from the Lean output `_verify_compile` already captures:
 
 These are additive columns on `attempts` (migrated in place) and are recorded by
 `_record_attempt`, derived from compile output with zero call-site change. This
-is the GP-187 "missing middle layer": the gradient a governed DAG must order
+is the [GP-187](../../research_areas/seams/apparatus/engine/GP-187_proof_progress_middle_layer_seam.md) "missing middle layer": the gradient a governed DAG must order
 candidates by before it can beat the cascade.
 
 **Per-move yield shape (2026-06-06).** The DB keyed everything on `provider`, which conflates move identity
@@ -372,7 +512,7 @@ closure is credit-grade only when it is kernel-clean **AND** passes the
 matched-negative-control (`--no-mnc` downgrades to a faster, non-credit-grade
 pilot). Leak-tight runs set `ZTARE_LEANMILL_APN_CORPUS` to the quarantined shelf.
 
-### General proof-search engine (GP-246 v3 — conjecture · verify · cache)
+### General proof-search engine ([GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md) v3 — conjecture · verify · cache)
 
 The fair experiments established that one-shot whole-proof generation lands ONE goal
 short on leak-clean research-grade rows (0/7), and that the closure is reachable by
@@ -402,7 +542,13 @@ three legs, which are ZTARE's substrate-agnostic core (Lean is one plug-in):
   hilbert set the 7 rows have *disjoint* leaf conjuncts (0 shared), so the cache gave
   zero cross-row reuse there. SCALE pays on a coherent theory build-up (one theorem's
   many shared lemmas), not on a grab-bag of independent targets. Within-search reuse
-  (COMPRESS) holds regardless.
+  (COMPRESS) holds regardless. **Theoretical FLOOR (iso-run 2026-06-12, impossibility
+  transport):** DAG-pebbling time-space lower bounds say re-derivation cannot be driven to
+  zero without persistent per-artifact memory proportional to the build's width — so the
+  compounding ledger REDUCES re-derivation, it does not eliminate it; and Witsenhausen's
+  counterexample (decentralized control) warns that stateless short-lived leaves with no
+  shared context are provably sub-optimal vs a consolidated long session — the formal case
+  for the long-dispatch / session-continuity lever (#103/#117), not just an efficiency hunch.
 
 **Closure persistence — the system of record (so a verdict is never unauditable).** Durable, git-tracked
 stores under `analytics/public/queries/`, each owning one fact:
@@ -418,8 +564,45 @@ stores under `analytics/public/queries/`, each owning one fact:
   `inconclusive` (NON-informative ⇒ never credited), so the self-tuning is scored against the OBJECTIVE,
   not the forecast-Brier proxy. Borrowed from cognitive-firm `orchestration/outcome_links.py`.
 - `adhoc_closure_certificates.jsonl` — per ad-hoc closure, the AUDIT context: the governance-kernel verdict,
-  the matched negative control, and the EXACT recompilable probe (re-running `#print axioms` on that probe
-  reproduces the axiom audit with zero archaeology). Written for clean closures AND governance-rejections.
+  the matched negative control, the EXACT recompilable probe (re-running `#print axioms` on that probe
+  reproduces the axiom audit with zero archaeology), and `goal_sha` (the STATEMENT identity — planner DAG
+  node names like `iso_lemma1` are generic and collide across runs). Written for clean closures AND
+  governance-rejections. **CLOSURE-ARTIFACT INVARIANT (v3 RCA 2026-06-12):** every verified-OK compile in
+  `LeanLakeChecker.verify` PERSISTS its probe (`RobustProbe_native_<row_id>.lean` in the shared probe_dir) —
+  the REPL fast-path verified in-memory and the cold path used a deleted tempdir, so cascade closures left
+  NO artifact: the governance glob found nothing ⇒ statement-integrity silently skipped
+  (`integrity_unverified`), the certificate captured an EMPTY probe, no `closures/<name>.lean` was
+  materialized, and the rung was unauditable + unreusable. An `integrity_unverified` closure now stamps
+  `ratified=0` (kernel-verified but NOT a governed win — fail-closed at the trust boundary, never
+  fail-open); the notes channel surfaces ALL-depth kernel closures from this ledger
+  (`autoformalize_notes.deep_closures_since`) into `.refined.md` + an accumulated sha-deduped
+  `## Proven rungs (kernel-closed, auto)` section of the ORIGINAL notes — depth≥2 rungs previously never
+  reached the compounding loop (v3 closed 2 and reported "none"); surfaced INCREMENTALLY per lemma (killed
+  runs are the norm — a kill loses nothing). Companions from the same RCA: **trust-conservation epilogue**
+  (`run_standards.trust_conservation_audit`, run at the end of every notes run — every `ratified=1` DB row
+  must have an integrity-verified, recompilable cert; the layers can no longer disagree silently);
+  **warm-goal cap + retry feedback** (`solver_core._WARM_GOAL_ATTEMPTS`: ≤2 warm DIRECT attempts per
+  identical goal per run, attempt 2 carries the agent's OWN `r.gap` diagnosis back — v3 burned 91 min on
+  9 blind sorried re-dispatches while the gap was dropped at the runner seam; the gap now also rides the
+  attempts-DB notes); **agent transcripts default-on** (`ZTARE_LEANMILL_DEBUG_TRANSCRIPT`, per-run-tag
+  subdirs under /tmp/leanmill_transcripts — never run a campaign blind again). **Rung-adjacency attack
+  prioritization** (#121, `solver/rung_adjacency.py`, default-on `ZTARE_LEANMILL_RUNG_ADJACENCY`): among an
+  audited decomposition's (independently-solved) sub-lemmas, attack the highest identifier-coordination-
+  with-proven-rungs ones FIRST under the shared deadline + advertise the proven attachment sites to the
+  planner (advisory). Mechanism = MePo-style symbol-overlap relevance repurposed for budget ORDER with the
+  closed-rung ledger as reference vocabulary (Kossel–Stranski transport, 2026-06-12 iso run). Order-only ⇒
+  sound; lift PENDING the A/B (`res["rung_adjacency"]` telemetry per run). The research-isomorphism ledger
+  now carries DISPOSITIONS (forecast/tested/wired/refuted/stale + `--review`) so surfaced candidates can't
+  rot untracked. **DIFFERENTIAL RE-VERIFICATION stage (2026-06-12 iso-run transport, DEFAULT-ON
+  `ZTARE_PROOF_MARGIN`; =0 reverts):** the margin-of-safety battery (now mandatory between compile and
+  ratify) gained a `conclusion_discrimination` leg — rebuild the target with the NEGATED conclusion + the
+  SAME proof body and recompile. A genuine proof is conclusion-specific (negation must FAIL =
+  differential confirmed); if the same body ALSO closes ¬G in the same context, the hypotheses are
+  contradictory — kernel-true but VACUOUS, the shape laundering hides in — and that ONE verdict is a
+  governance BLOCKER (`margin:zero_differential_vacuous_context` → rejected_governance). Fragility/
+  decorative-hypothesis signals stay ADVISORY (kernel truth stands) and ride the cert + the notes render
+  as a `fragile` tier. Cost ~1-2 warm compiles, closures only. Live real-Lean positive control (a
+  contradictory-hypothesis target must be rejected) QUEUED for when the box is free.
 - `leanmill_solver_lane_results.json` + typed-exits — the batch run's per-row outcomes/proofs.
 
 The leaf's working probes (`RobustProbe_*.lean` in the substrate, `/tmp` tempdir compiles) are EPHEMERAL —
@@ -428,25 +611,25 @@ overwritten by the next run; they are NEVER the system of record. Any ad-hoc har
 just the `closed`/`outcome` verdict — the gap that briefly left the 2026-06-04 spectral closures recoverable
 only from `/tmp` scratch (the proof itself was safe in the cache the whole time; the audit linkage was not).
 
-The leaf solver (the LLM / future RL prover) is **swappable talent**; this engine is the
-*environment* that multiplies it (the ZTARE nurture thesis). Status: the loop +
+The leaf solver (the LLM / future RL prover) is swappable; this engine is the
+*environment* that wraps it. Status: the loop +
 conjecture move + global cache are kernel-built and unit-tested (mock runner, no
 Lean/LLM); the remaining gap to AlphaProof-Nexus on the hard leaves is **leaf-solver
 strength** (their Gemini 3.1 Pro + RL prover + massive per-leaf search), orthogonal to
 the engine. The production move-runner (LLM conjecture-generation + Lean verify) is the
 wiring that turns this from kernel-tested to closing real rows.
 
-**MOVE_CONJECTURE — WIRED + SOUND + UN-INERTED (2026-06-05).** Code: `src/ztare/leanmill/solver/conjecture.py` (extracted, #42) + the worker `move_runner`. Pipeline: `conjecture_generate` (invent lemma L + prove G-given-L) → `conjecture_advances` (kernel L⇒G sorry-discipline typecheck via the v33 `_compile_probe`, sorry-OK; comment-stripped cite-check + a DETERMINISTIC LOAD-BEARING probe (replace L's type with `True` → the goal-proof must BREAK, else L was cited-but-unused → reject; exogenous, stronger than the advisory reviewer); **never closes G ⇒ no false closure** — adversarially reviewed, w1162vqnh) → spawn L as `new_sub_goal_text` → **INERTNESS FIX** (`ZTARE_CONJECTURE_DECOMPOSE=1`, default off = byte-parity): spawned sub_goal nodes prove `node.goal_text`(=L), not re-prove G (the review found every generator re-proved G ⇒ the move was a no-op). **Borrow B reviewer** (`decomposition_review`, `ZTARE_CONJECTURE_REVIEW=1`, default off, ADVISORY + fail-OPEN): per-edge "is L strictly easier / non-circular?" productivity filter (LEAP §5.3). Three flags are default-off (parity); **the lift validation is the PutnamBench A/B (#27)** — gated on the v4.27 Mathlib build + the substrate-routing fix (`solve()` hardcodes `DEFAULT_LEAN_ROOT_FOR_VERIFY` at ~22 sites; must thread the substrate root so PutnamBench/v4.27 verifies against its own toolchain, not the v4.30 sandbox). A/B flips are gated by the anytime-valid `SequentialABGate` (`src/ztare/leanmill/sequential_ab.py`, #40, MC-calibrated) — no single-run lift claims.
+**MOVE_CONJECTURE — WIRED + SOUND + UN-INERTED (2026-06-05).** Code: `src/ztare/leanmill/solver/conjecture.py` (extracted, #42) + the worker `move_runner`. Pipeline: `conjecture_generate` (invent lemma L + prove G-given-L) → `conjecture_advances` (kernel L⇒G sorry-discipline typecheck via the v33 `_compile_probe`, sorry-OK; comment-stripped cite-check + a DETERMINISTIC dependence probe (replace L's type with `True` → the goal-proof must BREAK, else L was cited-but-unused → reject; exogenous, stronger than the advisory reviewer); **never closes G ⇒ no false closure** — adversarially reviewed, w1162vqnh) → spawn L as `new_sub_goal_text` → **INERTNESS FIX** (`ZTARE_CONJECTURE_DECOMPOSE=1`, default off = byte-parity): spawned sub_goal nodes prove `node.goal_text`(=L), not re-prove G (the review found every generator re-proved G ⇒ the move was a no-op). **Borrow B reviewer** (`decomposition_review`, `ZTARE_CONJECTURE_REVIEW=1`, default off, ADVISORY + fail-OPEN): per-edge "is L strictly easier / non-circular?" productivity filter (LEAP §5.3). Three flags are default-off (parity); **the lift validation is the PutnamBench A/B (#27)** — gated on the v4.27 Mathlib build + the substrate-routing fix (`solve()` hardcodes `DEFAULT_LEAN_ROOT_FOR_VERIFY` at ~22 sites; must thread the substrate root so PutnamBench/v4.27 verifies against its own toolchain, not the v4.30 sandbox). A/B flips are gated by the anytime-valid `SequentialABGate` (`src/ztare/leanmill/sequential_ab.py`, #40, MC-calibrated) — no single-run lift claims.
 
 **Strategist + Invert-leg moves (2026-06-06).** Beyond the base `MOVE_ORDER` walk, `STRATEGIST_MOVES` are offered ONLY when a node is STUCK (menu exhausted) and the move's env flag is set — default behaviour is byte-identical. The A=B control arm (`ZTARE_LEANMILL_STRATEGIST_RANDOM`) picks uniformly over the same eligible set, so SELECTION lift is the discriminator (signal > random) for any of them.
 - **MOVE_SPECIALIZE / MOVE_GENERALIZE** (`ZTARE_LEANMILL_{SPECIALIZE,GENERALIZE}`, default-OFF, lift A/B in flight): a verified weaker-case RUNG (never closes G) / a closure via an internal strengthening.
-- **MOVE_FALSIFY — the Invert leg (`ZTARE_LEANMILL_FALSIFY`, default-OFF pending box validation).** On the OPEN/untrusted regime the target may be FALSE; this PRODUCES a kernel-checked proof of `¬G` and feeds the existing falsifier sink (`MoveResult.falsifier` → `residual_to_lever`). SOUND by construction: the refuted Prop is OURS (`conjecture._closed_goal_prop` builds `∀ binders, concl` from the goal signature; the leaf supplies ONLY the proof), so "negate a strawman" is impossible. Kernel RATIFIES (sorry-free `¬G` compile via `falsification_is_genuine` + `run_anti_laundering_kernel` organs); never closes G. The Lean producer is the `conjecture.LeanFalsifier` instance of the **shared Popper inversion contract** `common/inversion.py` (`invert→specify→adjudicate`, "no doubt without a test"). `validator/inverter_agent` (autoresearch champion-thesis falsifier) is the OTHER instance (`ThesisInverter`, test-harness-DEFERRED adjudication) — ONE contract, two substrates; `cognitive_gym`'s Invert-leg connector now EXECUTES the Lean producer (was a sink). See GP-248.
-- **MOVE_TACTIC_STEP — per-step agentic stepping (`ZTARE_LEANMILL_TACTIC_STEP`, default-OFF).** The leaf emits ONE tactic at a time vs a PERSISTENT REPL proofState (`conjecture.tactic_step_solve` → `formal/lean_persistent.PersistentLean.start_tactic_proof`/`step`), REACTING to the live goal after each step (the non-redundant value over whole-proof moves; bounded by a step budget + per-step retry with the error fed back). MOAT: the decl is OURS (built from the goal + preamble) so a tactic CANNOT redefine a depended-on decl — no file-edit cheat surface. CALIBRATION-FIRST: a dead/mismatched REPL ⇒ INADMISSIBLE (never a fake negative; `substrate_liveness.calibrate`). REPL-`closed` is NOT the verdict — the accepted sequence is reassembled and re-verified through the SAME `_verify_compile` + `_govern` (kernel + MNC + statement_integrity), exactly like generalize.
+- **MOVE_FALSIFY — the Invert leg (`ZTARE_LEANMILL_FALSIFY`, default-OFF pending box validation).** On the OPEN/untrusted regime the target may be FALSE; this PRODUCES a kernel-checked proof of `¬G` and feeds the existing falsifier sink (`MoveResult.falsifier` → `residual_to_lever`). SOUND by construction: the refuted Prop is OURS (`conjecture._closed_goal_prop` builds `∀ binders, concl` from the goal signature; the leaf supplies ONLY the proof), so "negate a strawman" is impossible. Kernel RATIFIES (sorry-free `¬G` compile via `falsification_is_genuine` + `run_anti_laundering_kernel` organs); never closes G. The Lean producer is the `conjecture.LeanFalsifier` instance of the **shared Popper inversion contract** `common/inversion.py` (`invert→specify→adjudicate`, "no doubt without a test"). `validator/inverter_agent` (autoresearch champion-thesis falsifier) is the OTHER instance (`ThesisInverter`, test-harness-DEFERRED adjudication) — ONE contract, two substrates; `cognitive_gym`'s Invert-leg connector now EXECUTES the Lean producer (was a sink). See [GP-248](../../research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md).
+- **MOVE_TACTIC_STEP — per-step agentic stepping (`ZTARE_LEANMILL_TACTIC_STEP`, default-OFF).** The leaf emits ONE tactic at a time vs a PERSISTENT REPL proofState (`conjecture.tactic_step_solve` → `formal/lean_persistent.PersistentLean.start_tactic_proof`/`step`), REACTING to the live goal after each step (the non-redundant value over whole-proof moves; bounded by a step budget + per-step retry with the error fed back). ANTI-LAUNDERING INVARIANT: the decl is OURS (built from the goal + preamble) so a tactic CANNOT redefine a depended-on decl — no file-edit cheat surface. CALIBRATION-FIRST: a dead/mismatched REPL ⇒ INADMISSIBLE (never a fake negative; `substrate_liveness.calibrate`). REPL-`closed` is NOT the verdict — the accepted sequence is reassembled and re-verified through the SAME `_verify_compile` + `_govern` (kernel + MNC + statement_integrity), exactly like generalize.
 - **CEGIS no-good (`ZTARE_LEANMILL_NOGOOD`, DEFAULT-ON — disable via `=0`).** `no_good_store` INFORMS the leaf prompt with CONFIRMED prior refutations (never prunes — can only help/no-op) and RECORDS each confirmed `statement_integrity` cheat; `obstruction_to_conjecture` localizes a confirmed cheat into a TARGETED `MOVE_CONJECTURE` seed (refutation→construction dual). Sound (the seeded lemma still routes the kernel), no move-budget cost ⇒ safe default-ON.
 
 **Move budget (don't starve the strategist moves).** `solve()` now passes `move_budget_units` (env `ZTARE_DAG_MOVE_BUDGET`, default **32**); the dag-search default of 20 let the base menu (cost 15) starve the cost-4 strategist moves regardless of wallclock (P1 hit exactly 20). Wallclock (`timeout_s`) + `max_moves` stay the real caps.
 
-**Per-move wallclock caps — the REAL starvation fix (`ZTARE_LEANMILL_PERMOVE_CAPS=1`, default-OFF=parity, 2026-06-06).** Diagnosis (FALSIFY_DIAGNOSIS_2026-06-06 + workflow `w46e35wue`, all_wired confirmed): the move-budget UNITS were not the binding constraint — the per-move *leaf timeouts* were FRACTIONS of the total wallclock (`verify_timeout = timeout_s//2`; warm = `max(180, verify_timeout*2)` = the whole budget; native_hammer's 18-tactic cascade divides `timeout_s/18` then floors each, summing to ~400s). So `native_hammer + one warm call exhaust the wallclock` and the loop breaks (`wallclock_budget_exhausted`) before `move_policy` offers moves 3+ — FALSIFY is offered 6th and was NEVER reached. Production DB confirms: native+warm = **90% of all attempts, warm is the only move that ever closes**; the whole tail (cold/frontier/conjecture/generalize/specialize/falsify/tactic_step) is dormant. Because the caps were fractions of the total, **bumping the wallclock is leaky** (every per-move cap scales with it). FIX: `_cap(move, legacy)` returns the legacy expression byte-identically when off (parity) and an ABSOLUTE per-move cap when on (native 90 / warm 150 / cold_frontier 180 / conjecture 120 / falsify 120 …, env-overridable `ZTARE_LEANMILL_CAP_<MOVE>`), decoupling per-move time from the total so the full menu fits a sized wallclock. Three deadline guards make the caps actually BOUND wall time (the cap value alone was divided away): native's in-cascade deadline, cold/frontier's WHOLE-chain budget, conjecture's three sub-steps. All gated behind the flag (parity off). The `_propagate_closure` parent-by-children close is FAIL-SAFE under `ZTARE_CONJECTURE_DECOMPOSE=1` (withheld pending a composite `G-given-L ∧ L ⟹ G` re-ratification — no false closure via uncomposed lemmas).
+**Per-move wallclock caps — the REAL starvation fix (`ZTARE_LEANMILL_PERMOVE_CAPS`, DEFAULT-ON since 2026-06-07, `=0` reverts to parity).** Diagnosis (FALSIFY_DIAGNOSIS_2026-06-06 + workflow `w46e35wue`, all_wired confirmed): the move-budget UNITS were not the binding constraint — the per-move *leaf timeouts* were FRACTIONS of the total wallclock (`verify_timeout = timeout_s//2`; warm = `max(180, verify_timeout*2)` = the whole budget; native_hammer's 18-tactic cascade divides `timeout_s/18` then floors each, summing to ~400s). So `native_hammer + one warm call exhaust the wallclock` and the loop breaks (`wallclock_budget_exhausted`) before `move_policy` offers moves 3+ — FALSIFY is offered 6th and was NEVER reached. Production DB confirms: native+warm = **90% of all attempts, warm is the only move that ever closes**; the whole tail (cold/frontier/conjecture/generalize/specialize/falsify/tactic_step) is dormant. Because the caps were fractions of the total, **bumping the wallclock is leaky** (every per-move cap scales with it). FIX: `_cap(move, legacy)` returns the legacy expression byte-identically when off (parity) and an ABSOLUTE per-move cap when on (native 90 / warm 150 / cold_frontier 180 / conjecture 120 / falsify 120 …, env-overridable `ZTARE_LEANMILL_CAP_<MOVE>`), decoupling per-move time from the total so the full menu fits a sized wallclock. Three deadline guards make the caps actually BOUND wall time (the cap value alone was divided away): native's in-cascade deadline, cold/frontier's WHOLE-chain budget, conjecture's three sub-steps. All gated behind the flag (parity off). The `_propagate_closure` parent-by-children close is FAIL-SAFE under `ZTARE_CONJECTURE_DECOMPOSE=1` (withheld pending a composite `G-given-L ∧ L ⟹ G` re-ratification — no false closure via uncomposed lemmas).
 
 **Measuring it — the equal-total-budget A/B (`ZTARE_LEANMILL_MENU=native_warm`).** `move_policy` can restrict the menu to native+warm so the A/B compares `{native+warm only}` vs `{full menu}` at the SAME caps + wallclock — the only difference being tail availability (unconfounded). Harness: `projects/leanmill_experiments/strategist_lift/_movespace_ab.py`. The CONFOUND fix is ATTRIBUTION: a win whose RESOLVING move is a tail move arm A lacks is unconfounded *by construction* (arm A cannot make it at any compute); a win via native/warm is the compute confound, flagged separately. This finally gives per-move YIELD data — currently we cannot evaluate ~90% of the move space we built.
 
@@ -457,10 +640,10 @@ wiring that turns this from kernel-tested to closing real rows.
 - **Warm-domination budget bug FIXED**: `_cap("warm")` bounded a single leaf DISPATCH, but the warm move = `solve_robust(codex,claude) × (direct+decompose+retries)` ≈ 8 dispatches with NO whole-move budget, so warm ran ~1250s under a 150s cap and starved the move space. `agentic_leaf` now shares ONE deadline across `solve_leaf`'s phases AND across `solve_robust`'s providers (each dispatch gets the REMAINING budget; stop when spent) — the whole move is bounded to its cap.
 - **Per-move caps → FRACTIONS of the wallclock (`_permove_cap` + `_PERMOVE_FRAC`), caps DEFAULT-ON.** The old absolute seconds (warm 150/360, native 90, …) silently assumed a ~900s run and didn't compose. Now each move's budget is `clamp(fraction × wallclock, floor, ceil)` — it SCALES (minutes→hours): at a 6h backstop warm is ≤30min/call and the hours spend across MANY moves; at 5min everything shrinks. The fractions ARE the allocation policy (scale-invariant), not magic constants. `PERMOVE_CAPS` default-on (`=0` reverts to the legacy parity expressions); per-move absolute override still via `ZTARE_LEANMILL_CAP_<MOVE>`.
 - **Adaptive stall-termination** (`governed_dag_search`, `ZTARE_DAG_STALL_PATIENCE`, default 6): the search STOPS when it stalls — no AUDITED progress (more closed/rung nodes or higher best_progress) in K consecutive moves — so `max_moves`/`wallclock` become generous BACKSTOPS and the budget tracks PROGRESS, not an arbitrary clock. Safe: stopping early on a true stall only saves wasted budget; a node about to close shows RISING best_progress. **The tasteful budget model: one operator backstop ("most I'll spend") + adaptive stall + fractional caps — no hardcoded 900/600/12 governing the search.**
-- **Autonomous recursion** (`isomorphism_decompose.route_and_solve` + `solve_adhoc` wiring, `ZTARE_LEANMILL_ISO_ROUTE`, default-OFF): an HONEST exact_gap on a `strong_missing` target routes into the blueprint producer and recurses on its sub-rungs (depth-guarded). The MOAT case (`rejected_governance`) is excluded.
+- **Autonomous recursion** (`isomorphism_decompose.route_and_solve` + `solve_adhoc` wiring, `ZTARE_LEANMILL_ISO_ROUTE`, **DEFAULT-ON 2026-06-09**, `=0` reverts): an HONEST exact_gap routes into the recursive planner and recurses on its sub-rungs (depth-guarded; fires on the honest non-closure, NOT gated behind triage `strong_missing` which mis-tags formalized targets — `ISO_STRONG_ONLY=1` restores the narrow gate). The TERMINAL-REJECTION case (`rejected_governance`) is excluded. Sound by construction (parent closes only via `composite_ratify`'s kernel). Full spec: the Solver Lane "Implementation Reference" subsection above.
 
 **MCTS/UCB search-selection + parallel diverse decomposition sampling (2026-06-07).** Three flag-gated, default-OFF (byte-identical parity), self-tested selection upgrades, each A/B-able. **An adversarial red-team + a fresh-eyes self-pass caught a regressive first cut and reshaped the design — recorded here so it is not relitigated.**
-- **UCB-over-MOVES** (`ZTARE_LEANMILL_UCB_MOVES`; `move_calibration.ucb_move_scores` + `governed_dag_search._ucb_move_policy`): replaces the fixed-priority closure-menu walk with argmax over `calibrated-Q + a SCALE-INVARIANT exploration bonus` (`c·span·√(ln N/(n+1))/(1+λ·cost)`, span = the Q-spread). The bonus is scaled by the Q-spread so `c` (`DEFAULT_UCB_C=0.15`, env `ZTARE_LEANMILL_UCB_C`) is a DIMENSIONLESS fraction that does not inflate as N grows — the first cut (`c=0.3`, un-scaled) was caught REGRESSING (the n=0 bonus was ~2× the whole Q-span, so the unproven tail steamrolled proven moves; measured on both the live skew and a matured-DB sim). **Pool = the closure menu only** (native/warm/cold/frontier/conjecture); the strategist tail (specialize/falsify/…) is EXCLUDED — blind UCB over their non-comparable Q (0.45=P(rung), 0.20=P(¬G)) over-promoted them (specialize won fresh nodes ahead of every closer). The tail stays on the existing stuck-gated `_strategist_move` path; its reachability is the **context-prior**'s job (GP-248), not blind exploration. SCOPE (honest): native is FREE and warm dominates, so closure-menu reordering is a MODEST lever, not the headline.
+- **UCB-over-MOVES** (`ZTARE_LEANMILL_UCB_MOVES`; `move_calibration.ucb_move_scores` + `governed_dag_search._ucb_move_policy`): replaces the fixed-priority closure-menu walk with argmax over `calibrated-Q + a SCALE-INVARIANT exploration bonus` (`c·span·√(ln N/(n+1))/(1+λ·cost)`, span = the Q-spread). The bonus is scaled by the Q-spread so `c` (`DEFAULT_UCB_C=0.15`, env `ZTARE_LEANMILL_UCB_C`) is a DIMENSIONLESS fraction that does not inflate as N grows — the first cut (`c=0.3`, un-scaled) was caught REGRESSING (the n=0 bonus was ~2× the whole Q-span, so the unproven tail steamrolled proven moves; measured on both the live skew and a matured-DB sim). **Pool = the closure menu only** (native/warm/cold/frontier/conjecture); the strategist tail (specialize/falsify/…) is EXCLUDED — blind UCB over their non-comparable Q (0.45=P(rung), 0.20=P(¬G)) over-promoted them (specialize won fresh nodes ahead of every closer). The tail stays on the existing stuck-gated `_strategist_move` path; its reachability is the **context-prior**'s job ([GP-248](../../research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md)), not blind exploration. SCOPE (honest): native is FREE and warm dominates, so closure-menu reordering is a MODEST lever, not the headline.
 - **UCB-over-the-FRONTIER** (`ZTARE_LEANMILL_UCB_FRONTIER`; `governed_dag_search._frontier_select`): the MCTS-style NODE selection — expand an UNDER-EXPANDED open node (visits = `len(moves_tried)`) instead of greedy argmax of `_frontier_score`, so the search EXPLORES diverse decomposition branches rather than tunneling. Bonus scaled by the frontier-score spread (`DEFAULT_UCB_FRONTIER_C=0.5`, env `ZTARE_LEANMILL_UCB_FRONTIER_C`). This is the lever with real upside in the DEEP-decomposition regime (the P1 conjecture-DAG, `ZTARE_DAG_MAX_MOVES` raised); a no-op on a shallow single-node target.
 - **Warm-start visit denominator** (`move_calibration.move_visit_counts`): UCB's exploration counts come from the canonical `move` column, FALLING BACK to the `provider` column via `PROVIDER_TO_MOVE` when `move` is absent/all-NULL (the un-backfilled live DB) — without this fallback the live DB returned `{}`, collapsing UCB to cold-start pure-Q and re-starving the tail. Installed once per solve, HOISTED OUT of the `CALIBRATE_PRIORS` guard (so a `CALIBRATE_PRIORS=0`+UCB worker can't consult a stale snapshot). WHOLE-DB read (no run_tag slice) is deliberate — the denominator IS the warm-start production skew.
 - **Parallel diverse decomposition sampling** (`isomorphism_decompose`, `ZTARE_ISO_SAMPLES`, default 1 = single-shot): a BREADTH leg over the sequential refine loop — generate K decompositions priming K DISTINCT transportable techniques (`_diversity_seed` rotates `TRANSPORTABLE_TECHNIQUES`), AUDIT all, pursue survivors; on a miss the best near-miss seeds the refine loop. FORMAL DOMINANCE: under the SOUND `decomposition_dag_audit` filter, best-of-K weakly dominates best-of-1 on P(≥1 sound). The A/B knob is cost-normalized lift vs K=1.
@@ -475,19 +658,19 @@ wiring that turns this from kernel-tested to closing real rows.
 
 **Exogenous-move telemetry + C-discriminating benchmark (cold-review #3/#4, 2026-06-07).** The discipline that keeps exogenous moves from becoming mythology: *"exogenous moves may generate ideas; only kernel-governed proof/exact-gap/falsifier exits create credit"*, and a move is PROMOTED only on evidence. `move_calibration.exogenous_move_telemetry` is the per-move outcome dashboard from the EXOGENOUS attempts DB (never self-scored): per move — attempts, **useful_exits** (closure | rung | falsified | advanced | exact_gap), no_positive (cheap misses), **wrong_target** (caught cheats), ratified_closes, **false_ratifications** (a `closed` that governance REJECTED — the safety tripwire), budget_s, useful_exit_rate; `promotion_eligible` iff useful_exit_rate > baseline AND false_ratifications == 0 AND attempts ≥ min. The **C-discriminating benchmark** (`projects/leanmill_experiments/strategist_lift/c_discriminating_benchmark.py` + the `ms_exogenous` arm) enforces *"test exogenous moves only where public tools fail"*: phase 1 runs `ms_baseline` (native+warm) and DROPS every row it resolves; phase 2 runs `ms_exogenous` (full menu + corroborate + witness-transport) on ONLY the baseline-FAILURE subset and reports per-move useful-exit lift via the telemetry (run_tag-sliced). A null on that subset is admissible (the baseline already failed those rows). The promotion gate replaces conceptual elegance with measured outcome lift. VPS-pending.
 
-**Target-conditioned MOVE ROUTER — the move-reachability fix (`move_router`, `ZTARE_LEANMILL_MOVE_ROUTER`, default-OFF, 2026-06-07).** The fixed-priority menu is the wrong abstraction: a move's QUEUE POSITION has nothing to do with whether it fits THIS target, so the strategist/exogenous tail can STARVE UNREACHED behind a closure menu that exhausts the budget (conjecture diverting into sub-goals). The router (`governed_dag_search.move_router`) examines the goal's STRUCTURE + the failure SIGNAL and PROMOTES the matched move — selected on a PRECONDITION MATCH, fired after the free native probe: computable arithmetic `∃` → witness-transport (before warm — SymPy beats the LLM for an arithmetic witness); `unknown_identifier` → conjecture (invent the missing primitive); then, only AFTER warm has also failed (don't pre-empt the strong leaf): a CONFIRMED COUNTEREXAMPLE (a bounded `symbolic_witness.find_counterexample` grid search via `witness_transport.looks_false`) → falsify/corroborate, checked BEFORE the induction heuristic (a false ∀ that stalled goes to FALSIFY, not generalize); else an induction stall (`unsolved_goals`/`tactic_failed` on a true ∀) → generalize. So `symbolic_witness` powers BOTH arms — *witnesses* (→ witness-transport) and *counterexamples* (→ falsify) — the same exogenous-compute discipline as a front-end SELECTOR. The kernel still ratifies (selection-only); the counterexample subprocess is memoized per node. Default-off (byte-identical parity); the A/B arm is `apparatus_v2`. This is the principled reachability fix (vs the satisficing frontier-UCB/context-prior, which don't address WHY the right move starves). (Experiment results — keystone validation, apparatus move-lift, P1 frontier-reach — live in the project memories + `projects/leanmill_experiments/` logs, NOT this spec.)
+**Target-conditioned MOVE ROUTER — the move-reachability fix (`move_router`, `ZTARE_LEANMILL_MOVE_ROUTER`, default-OFF, 2026-06-07).** The fixed-priority menu is the wrong abstraction: a move's QUEUE POSITION has nothing to do with whether it fits THIS target, so the strategist/exogenous tail can STARVE UNREACHED behind a closure menu that exhausts the budget (conjecture diverting into sub-goals). The router (`governed_dag_search.move_router`) examines the goal's STRUCTURE + the failure SIGNAL and PROMOTES the matched move — selected on a PRECONDITION MATCH, fired after the free native probe: computable arithmetic `∃` → witness-transport (before warm — SymPy beats the LLM for an arithmetic witness); `unknown_identifier` → conjecture (invent the missing primitive); then, only AFTER warm has also failed (don't pre-empt the strong leaf): a CONFIRMED COUNTEREXAMPLE (a bounded `symbolic_witness.find_counterexample` grid search via `witness_transport.looks_false`) → falsify/corroborate, checked BEFORE the induction heuristic (a false ∀ that stalled goes to FALSIFY, not generalize); else an induction stall (`unsolved_goals`/`tactic_failed` on a true ∀) → generalize. So `symbolic_witness` powers BOTH arms — *witnesses* (→ witness-transport) and *counterexamples* (→ falsify) — the same exogenous-compute discipline as a front-end SELECTOR. The falsity oracle `looks_false` is now TWO-STAGE (#114, 2026-06-12): stage 1 `symbolic_witness.invariant_mismatch` (degree/parity/growth conservation of an equality's two sides, ~ms) decides before the ~8s grid search; the SAME oracle is agent-callable as the `falsity` tool (5th agent_tools card), so the agent can screen a suspect sub-goal before grinding it. Advisory throughout — the kernel-proved ¬G remains the only refutation verdict. The kernel still ratifies (selection-only); the counterexample subprocess is memoized per node. Default-off (byte-identical parity); the A/B arm is `apparatus_v2`. This is the principled reachability fix (vs the satisficing frontier-UCB/context-prior, which don't address WHY the right move starves). (Experiment results — keystone validation, apparatus move-lift, P1 frontier-reach — live in the project memories + `projects/leanmill_experiments/` logs, NOT this spec.)
 
 **Kronecker / linear-SYSTEM witness route (`ZTARE_LEANMILL_KRONECKER`, default-OFF, 2026-06-07).** Extends the existential witness transport from a single equality to a CONJUNCTION of equalities — a linear/Diophantine SYSTEM existential `∃ c0 c1 …, e0 ∧ e1 ∧ …`. The motivating case is **Kronecker's theorem** (a generating function is rational ⇔ finite Hankel rank): recovering the recurrence coefficients IS solving the Hankel LINEAR SYSTEM for the c's. The general SymPy compute lives in `common.symbolic_witness` (`solve_linear_system` via `linsolve`+nonlinear fallback, rejecting parametric solutions; and `find_linear_recurrence`, which recovers the minimal recurrence by the **Hankel-determinant stabilization** criterion `D_k≠0 ∧ D_{k+1}=0` — the rank test that rejects a prefix-overfit; caveat: it certifies only fit-on-the-prefix, the kernel re-verifies globally so a false recurrence fails honestly). leanmill's `witness_transport.is_system_existential` gates the conjunction shape and routes it through the same `MOVE_WITNESS_TRANSPORT` runner (kernel verifies the FINITE conjunction = a clean close); `recurrence_specialize_seed` turns a recovered recurrence into a SPECIALIZE-rung conjecture for the ∀n claim (not a direct close). A/B arm `ms_kronecker` (vs `ms_witness`); meta `path=kronecker_system`. Self-tested (`symbolic_witness._selftest`, `witness_transport._selftest`). **Pell/diophantine extension (2026-06-07):** the same flag also routes a PELL-form existential `∃ x y, x²−D·y²=N [∧ 0<y]` through `solve_diophantine_pell` (SymPy `diop_DN`, the continued-fraction solver) → meta `path=pell_diophantine`. This is the genuinely-LLM-IMPOSSIBLE niche: the fundamental solution is enormous (D=61 ⇒ x=1766319049) — SymPy-trivial, unguessable by an LLM, no native finder — so it is the discriminating substrate for the witness lift (with large-semiprime FACTORING systems `∃ x y, x·y=N ∧ x+y=S`, which the existing `solve_linear_system` nonlinear fallback cracks). Corpora: `corpus/{kronecker,pell}_tier.jsonl`; a closure tests both witness-FINDING and the kernel VERIFYING the big-integer `norm_num` arithmetic.
 
-**Boosting — budget-concentration on a bottleneck rung (`ZTARE_LEANMILL_BOOST`, default-OFF, 2026-06-07).** The AdaBoost analog for the DAG search: a node the frontier keeps RE-SELECTING after `BOOST_AFTER` (default 3) failed moves is a load-bearing BOTTLENECK, so its next move gets a per-move cap MULTIPLIER (`BOOST_MULT`, default 2.0, bounded by the run wallclock) — concentrating DEPTH on the hard sub-goal instead of spreading budget thin across already-tried nodes. Distinct from UCB-over-frontier (which NODE) and UCB-over-moves (which MOVE): boosting is HOW MUCH budget the chosen move gets. Pure helper `governed_dag_search._boost_factor(node)` (env-read-at-call) → `DagNode.boost_factor` → consumed in `solver_core._cap` (multiplies the per-move cap, wallclock-bounded so one node can't eat the whole budget). Default 1.0 = byte-identical caps (parity). A/B arm `apparatus_boost` (vs `apparatus_v2`). Self-tested (parity + bite + tunables + wallclock-bound).
+**Boosting — budget-concentration on a bottleneck rung (`ZTARE_LEANMILL_BOOST`, default-OFF, 2026-06-07).** The AdaBoost analog for the DAG search: a node the frontier keeps RE-SELECTING after `BOOST_AFTER` (default 3) failed moves is a BOTTLENECK rung, so its next move gets a per-move cap MULTIPLIER (`BOOST_MULT`, default 2.0, bounded by the run wallclock) — concentrating DEPTH on the hard sub-goal instead of spreading budget thin across already-tried nodes. Distinct from UCB-over-frontier (which NODE) and UCB-over-moves (which MOVE): boosting is HOW MUCH budget the chosen move gets. Pure helper `governed_dag_search._boost_factor(node)` (env-read-at-call) → `DagNode.boost_factor` → consumed in `solver_core._cap` (multiplies the per-move cap, wallclock-bounded so one node can't eat the whole budget). Default 1.0 = byte-identical caps (parity). A/B arm `apparatus_boost` (vs `apparatus_v2`). Self-tested (parity + bite + tunables + wallclock-bound).
 
 **Static-catalog SHRINK — dynamic-primary isomorphism (`ZTARE_LEANMILL_ISO_DYNAMIC_PRIMARY`, default-OFF, 2026-06-07).** Addresses the operator's "why a static catalogue?" smell: the hand-curated `TRANSPORTABLE_TECHNIQUES` is a FALLBACK PRIOR, but it was ALWAYS injected alongside the per-target dynamic engine. Under this flag the static list is SHRUNK to a true fallback — suppressed once the per-target gemini engine (`surface_field_analogies`) surfaces real hints (redundant), kept only when dynamic is empty. The routing decision is a pure helper `_resolve_iso_catalog(have_dynamic, dynamic_primary, has_techniques)` returning `(inject_static, iso_source∈{dynamic,static,both,none})`; `iso_source` is stamped into the decomposition result for per-arm telemetry. Default (flag off) ALWAYS injects the static prior = byte-identical parity. A/B arm `apparatus_dyniso` (vs `apparatus_v2`; needs a gemini key for the dynamic engine to fire). Self-tested.
 
-**GP-248 context-aware move prior (`ZTARE_LEANMILL_CONTEXT_PRIOR`, default-OFF).** WIRING (not a new model): `_effective_est_p` conditions the per-move prior on `node.last_error_class` via `move_calibration.calibrated_priors_for_class` (the existing BIC-selected per-`(move,error_class)` Beta posterior). Ordering-only — the kernel still ratifies, so a bad prior wastes budget but can NEVER launder. The only "learned/neural" addition that fits the topology; a learned/differentiable GATE is forbidden (`research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md`).
+**[GP-248](../../research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md) context-aware move prior (`ZTARE_LEANMILL_CONTEXT_PRIOR`, default-OFF).** WIRING (not a new model): `_effective_est_p` conditions the per-move prior on `node.last_error_class` via `move_calibration.calibrated_priors_for_class` (the existing BIC-selected per-`(move,error_class)` Beta posterior). Ordering-only — the kernel still ratifies, so a bad prior wastes budget but can NEVER launder. The only "learned/neural" addition that fits the topology; a learned/differentiable GATE is forbidden (`research_areas/seams/engine/GP-248_neurosymbolic_boundary_seam.md`).
 
 **Governance→calibration loop CLOSED (the ratified verdict was emitted-then-dropped; 2026-06-06).** The attempts DB stamps `ratified` (the kernel/MNC governance verdict) on every closing attempt, but the per-`(move,error_class)` context prior + the BIC model-selector aggregated raw `compile_ok` (`_cells_from_db`), so a gamed-then-REJECTED closure (`compile_ok=1, ratified=0`) counted as a calibration WIN and poisoned the priors that ORDER the search (on the live DB, 4 of 7 `compile_ok` "wins" were governance-rejected cheats). FIX: `_cells_from_db` now scores `COALESCE(ratified, compile_ok)` — a ratified closure is a win, a rejected closure is a LOSS, an ungoverned attempt (ratified NULL) keeps its raw compile_ok so sparse data is never starved (a column guard degrades to compile_ok on an un-migrated DB = parity). This makes the per-class prior consistent with the marginal `selection_priors` (already ratified-aware). Reversible via `ZTARE_CALIBRATION_SCORE=compile_ok`; regression-locked (`context_prior_ratified_downweights_gamed`). The OBJECTIVE metric the loop now tunes toward is `move_calibration.closure_at_budget` (ratified closures), measured by `outcome_link` — NOT the forecast-Brier proxy.
 
-### Agentic leaf solver + the calibrated multi-step lever (GP-246, validated 2026-06-02)
+### Agentic leaf solver + the calibrated multi-step lever ([GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md), validated 2026-06-02)
 
 `src/ztare/leanmill/solver/agentic_leaf.py` productionizes the empirically-validated
 proof-search lever. A layered, kernel-arbitrated experiment on the APN hilbert-functions
@@ -511,7 +694,7 @@ corpus (matched live pair repl v4.29 + atlas_lean_2026_05_29) established the ra
   under *guided missing-lemma targeting* (vs attacking the whole theorem) is an OPEN, staged
   two-route experiment — NOT a settled ceiling. An earlier "cannot invent the missing idea"
   read came from a non-probative whole-theorem attack (nested arms, n=1, unguided); see the
-  GP-246 seam.
+  [GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md) seam.
 
 The primitive enforces three invariants (each a hard lesson — see
 `docs/concepts/epistemic_principles.md` and the substrate/embedder/provider liveness gates):
@@ -537,7 +720,7 @@ The remaining step is the §6n decision to FLIP THE DEFAULT ON, which needs a re
 (worker closes ≥ the current warm path on the same rows, governance invariants intact) + an
 adversarial review of the in-loop behavior swap before the validated multi-step lever becomes
 the live per-node solver. NOT claimed:
-world-class proof search — AlphaProof solves IMO problems; this closed degree-0 arithmetic +
+frontier / leaderboard proof search — AlphaProof solves IMO problems; this closed degree-0 arithmetic +
 scaffolding on one corpus. The distinct lever is the *environment* (a general model + a
 governed loop), not trained-prover compute.
 
@@ -549,6 +732,85 @@ a matched context-stripped negative control, the axiom-allowlist
 {`propext`, `Classical.choice`, `Quot.sound`} via `#print axioms`, and the
 anti-pattern catalog (e.g. `gold_name_verbatim`). The lane exit is
 `unratified_closure_candidate`; governance ratifies.
+
+### Implementation Reference — the COMPLETE solver-lane map (read this BEFORE proposing to build planner/decompose/recursion machinery; it already exists)
+
+> This subsection is the single source of truth for *what is already wired*. The recurring failure mode is re-proposing to "build a recursive planner" or "surface decompose as a tool" when both exist. Defaults below are verified from code (`solver/governed_dag_search.py`, `solver/solver_core.py`, `solver/isomorphism_decompose.py`, `solver/conjecture.py`).
+
+**Solve entry + flow.** ONE governed entry: `solve_adhoc(target_name, source, goal, *, mode="dag_search", timeout_s, substrate)` → `solve_adhoc_governed` wraps it with a governance-feedback retry (`ZTARE_GOV_MAX_RETRIES=1`). Flow: native_hammer (free) → DAG move-search (UCB over cost-weighted priors) → governance ratification → **autonomous recursion on an honest non-closure** (below). Every attempt is logged to `analytics/public/queries/solver_lane_attempts.db` (WAL; columns incl. `move, outcome, ratified, progress, est_p_close`). autoformalize / proof_repair / iso-decompose / residual-C ALL route through `solve_adhoc` — it is the only governed solve entry.
+
+**The plan → solve → govern loop (state machine).** The flow above is a small state machine; making it explicit is the single source of truth for *where context enters and where soundness is gated*. There is NO separate FSM engine — these are the states the existing functions already move through (do not build a parallel loop driver):
+
+```
+  notes / blueprint ───────────────┐   (optional context, threaded at EVERY entry via `notes=`)
+                                    ▼
+  [INGEST] ─► [TRIAGE] ─► [PLAN / DECOMPOSE] ─► [SOLVE-LEAF] ─► [GOVERN / RATIFY] ─► (CLOSED)
+   NL→firewall  honest      attack: leaf          solve_adhoc      composite_ratify + axiom
+   OR Lean→     non-closure  GENERATES a DAG       per lemma /      + MNC + statement_integrity
+   solve_adhoc  needs        (notes-informed),     cascade               │            │
+                machinery    kernel-audited            │ non-closure     ├─► (REJECTED)  caught cheat — NOT re-decomposed
+                    │            │ audit KILL           ▼ → recurse       └─► (OPEN / EXACT_GAP)  honest miss
+                    ▼            ▼ → refine           to PLAN (depth<2)
+                direct solve  (RefineHandover)
+                (easy goal)
+```
+
+| state | owner | in → out |
+|---|---|---|
+| INGEST | `autoformalize_and_solve` (NL, firewall-gated) **or** `solve_adhoc` (formalized Lean) | a goal + optional `notes` → a target |
+| TRIAGE | `frontier_triage.triage` (advisory) + `solve_adhoc`'s outcome gate | target → direct-solve, or PLAN on an honest non-closure |
+| PLAN / DECOMPOSE | `isomorphism_decompose.route_and_solve` → `attack` | target + `notes` (prompt guidance) → a kernel-audited lemma DAG (audit-KILL → refine) |
+| SOLVE-LEAF | `solve_decomposition` → `solve_adhoc` per lemma | each sub-lemma → closed lemmas; a sub-rung non-closure RE-ENTERS PLAN (depth ≤2) |
+| GOVERN / RATIFY | `composite_ratify` + the governance stack | proven lemmas + chain → CLOSED (cert + `notes_used`), REJECTED (cheat), or OPEN |
+
+The anti-laundering invariant is the terminal **REJECTED** state: a governance-caught cheat is excluded from re-decomposition (`solve_adhoc`'s route gate excludes `rejected_governance`), so re-planning can never launder a cheat. Notes enter at INGEST and are carried THROUGH the recursion — see the `notes=` channel below.
+
+**Move inventory** (`governed_dag_search.py` `MOVE_*` + `MOVE_PRIOR_P_CLOSE`; runners in `solver_core.py` + the named module). "closure" = can close G; "advance" = produces a sub-goal/rung/falsifier, never closes G itself.
+
+| move | prior P(close) | kind | runner module | one-line |
+|---|---|---|---|---|
+| `native_hammer` | 0.25 | closure (free, cost 0) | `solver_core` `_native_hammer_probe` | deterministic tactic cascade (rfl/decide/norm_num/simp_all/omega/linarith/exact?/aesop) |
+| `claude_warm` (+`_refine`) | 0.35 | closure | `agentic_leaf` | iterative warm leaf (edit+`lake env lean`, ≤5 rounds, gap-refine) |
+| `cold_shot_fanout` | 0.30 | closure | `solver_core` provider fan-out | multi-provider one-shot (claude_opus/codex_gpt5/gemini/deepseek) |
+| `external_frontier_prover` | 0.40 | closure | `solver_core` | provider-agnostic frontier slot |
+| `conjecture` (MOVE_CONJECTURE) | 0.50 | advance | `conjecture.conjecture_generate/_advances` | invent intermediate lemma L, prove G assuming L (kernel-audited), spawn L |
+| `specialize` | 0.45 | rung | `conjecture.specialize_generate` | prove a weaker special case G' + G⇒G' (honest partial, not closure) |
+| `generalize` | 0.35 | closure | `conjecture` GeneralizeLoop | close G via an internal stronger fact (have/suffices) |
+| `falsify` | 0.20 | advance | `conjecture` LeanFalsifier | prove ¬G (kernel-checked falsifier) |
+| `tactic_step` | 0.35 | advance | `conjecture` LeanTacticStepLoop | per-step agentic REPL search |
+| `corroborate` | 0.22 | advance | `conjecture` LeanConsequenceCorroborator | refute a consequence K of G (G→K ∧ ¬K ⟹ ¬G) |
+| `witness_transport` | 0.45 | closure | `witness_transport.solve_witness` | SymPy witness for a computable ∃ → `refine ⟨w,?_⟩` |
+| `sledgehammer` | 0.30 | closure | `sledgehammer` | Isabelle premise selection → map facts to Mathlib (needs server) |
+| `reflection` | 0.35 | closure | `reflection` | decidable `check` + soundness lemma → `by decide` |
+| `abduce` | 0.45 | advance | `abduction.abduce_seed/route_abduction` | z3-QE most-general missing premise (Dillig "Explain"); fail-closed nonlinear |
+| `functor_lift` | 0.25 | closure | `spectral_lift` | discrete→continuous (NumPy spectral) with a Mathlib bridge lemma |
+
+Base menu — **agent-first by default** (`_active_move_order()`, A 2026-06-12): `native_hammer (free filter) → claude_warm (the agent) → conjecture (decompose)`. The full `MOVE_ORDER` (…→ cold_shot → frontier → …) is the NON-AGENT fallback, walked only with `ZTARE_LEANMILL_FULL_CASCADE=1` (A/B baseline) or no agent. The rest are STRATEGIST moves, each behind its own opt-in flag (default-OFF, table below), promoted only when stuck.
+
+**The recursive planner (the strategy layer) — `isomorphism_decompose.route_and_solve`, DEFAULT-ON.** This is the planner-executor (DeepSeek-Prover-V2 / BFS-Prover-V2 / LEAP shape). On an HONEST non-closure (`exact_gap/rung/new_sub_target` (+ cascade `open`/`failed`), NOT a caught cheat — direct-failure IS the decompose signal), `solve_adhoc` routes to:
+1. **`attack`** — the **warm leaf GENERATES the decomposition** (deanchor prompt + cross-field iso hints). The iso-catalog is only a prompt HINT; the leaf is the planner. NOT "iso-catalog vs agent."
+2. **`conjecture.decomposition_dag_audit`** — a **KERNEL** decomposition-review (sorry-free + every lemma cited + non-circular + compiles + every-lemma-used + proves-G). This is the differentiator vs LEAP's *LLM* reviewer. Unsound plan → REFUSED.
+3. **re-plan on kill** — bounded `RefineHandover` (`ZTARE_ISO_REFINES=2`): the kill reason is fed back, the leaf re-decomposes.
+4. **`solve_decomposition`** — proves each sub-lemma through `solve_adhoc` (the SAME governed entry), which **re-enters this route** on a sub-rung `exact_gap` → recursion, depth-bounded `ZTARE_ISO_MAX_DEPTH=2`.
+5. **`composite_ratify`** — assemble {proven lemmas}+{chain} → the anti-laundering kernel ratifies the PARENT. The parent closes ONLY here ⇒ default-on is **sound by construction** (cannot launder); caught cheats are excluded.
+
+**Notes / blueprint context — the `notes=` channel (#81, 2026-06-10).** A target may arrive with a human / research-director BLUEPRINT (research notes sketching the decomposition). That context now threads through the WHOLE plan+solve loop, not just the autoformalize front-end: `notes=` is an optional param on `solve_adhoc` → `route_and_solve` → `solve_decomposition` → `attack`, default `None` = byte-parity (no notes ⇒ the decomposition prompt is unchanged). **Entry points:** (a) a formalized-Lean target via `solve_adhoc(..., notes=…)` — the entry that previously had NO blueprint channel, because autoformalize is not invoked on already-formalized goals; (b) an NL target via `autoformalize_and_solve(..., notes=…)` (→ `default_solve` → `solve_adhoc`); (c) the blueprint loop `autoformalize_notes.autoformalize_from_notes`, which passes the whole blueprint to each line and the proven SHELF (the closed lemmas) to the target. **Injection point:** `attack` prepends the notes as a guidance block to the decomposition prompt, so the warm leaf decomposes ALONG the blueprint instead of re-inventing it. **Exit point:** `solve_adhoc` and `attack` record `notes_used` on their result. ADVISORY by construction — the `decomposition_dag_audit` kernel still gates every lemma, so a misleading note cannot launder a closure (a wrong decomposition is killed exactly as a guessed one is). This is the LITE channel feeding a KNOWN blueprint into the recursive planner — NOT autoresearch's evidence-mutation discovery machinery.
+
+**Full notes LIFECYCLE (verified wired 2026-06-11, no state machine — it's linear):** blueprint → **planning** (`notes=` injected into the planner prompt as decomposition guidance, `route_and_solve`/`attack`) → **solver** (each line through firewall+kernel; the proven-lemma **shelf** feeds the target) → **governance** (only `outcome=="closed"` — kernel-ratified — lemmas enter the shelf + the refined-notes "✅ kernel-closed — citable" section; an exact_gap/open does NOT) → **write-back** (`write_refined_notes(result, notes_path)` in `autoformalize_from_notes.main` emits `<name>.refined.md` = the deterministic ✅-closed-only certified shelf + the warm-agent synthesis that PREFERS the planner's ACTUAL sub-DAG from `route_and_solve` (surfaced, not re-proposed) — so the next run reads the refined notes and COMPOUNDS: cites the proven shelf, attacks the finer breakdown). Each insert point is wired; write-back is now INCREMENTAL — re-emitted (deterministic ✅-closed shelf) after EVERY lemma when `notes_path` is threaded into `autoformalize_from_notes` (2026-06-11), so a timed-out/killed run keeps the compounding (fixing the real loss: the 100-min-budget P1 run was SIGTERM'd mid-solve and the end-of-run write never fired). `main()` still adds the warm-agent synthesis at the very end. A gated SIBLING path `compound_into_original_notes` (`ZTARE_LEANMILL_COMPOUND_ORIGINAL`, default-OFF pending a real-run validation that `result['target']['decomposition']['lemmas']` is populated) writes the planner's OWN decomposition back into the ORIGINAL seed's `## Lemmas` body — so the seed itself compounds, not just `.refined.md`; the rewrite is order-robust (preserves every other section, incl. any that FOLLOWS `## Lemmas`) and idempotent (no marker stacking), is a deterministic render of the agent's output (no authoring ⇒ no fake-closure surface), and no-ops when the planner produced no decomposition (never clobbers the seed). Governance is the invariant throughout: a note can only ever RAISE the faithful-render / decomposition-quality rate, never certify an unproven fact into the notes (the kernel gates what enters).
+
+> **REACHABILITY (2026-06-09 — why default-on alone wasn't enough).** The route originally fired ONLY on a `frontier_triage` `strong_missing` target. But `_target_strength` keys on ENGLISH discovery-markers ("conjecture" / "open problem" / "sharp constant" …) that exist in NL problem statements and are ABSENT from a FORMALIZED Lean signature — so `triage` tags BOTH the P1 autonomous-n1 target AND the full denef conjecture **`elementary`**, and the planner NEVER fired on the open targets it exists for (verified directly). Fixed: the route fires on the **honest non-closure itself** — direct-failure is the decompose signal, exactly as DeepSeek-Prover-V2 / BFS / LEAP do it; `target_strength` is now an advisory tag, not a gate. `ZTARE_LEANMILL_ISO_STRONG_ONLY=1` restores the narrow strong_missing gate (the cost valve for batches — below). **(2026-06-10 bug-hunt follow-up.)** `solve_adhoc`'s gate must match the `dag_search` PRODUCER enum (`governed_dag_search.residual_to_lever`) = `exact_gap` / `rung` / `new_sub_target` — a kernel-proven weaker *rung* (full goal still OPEN; P1's proven rungs are literally this) or a fresh *sub-target* both warrant re-decomposition — plus the cascade-mode `open` / `failed` / `failed_compile`; `falsifier` (target may be false), `retired_impossible` (genuine wall), and `rejected_governance` (caught cheat) stay OUT. The gate had listed only `exact_gap` + the cascade values, so it silently UNDER-FIRED on `rung` / `new_sub_target` — exactly the rung-style non-closures the recursion exists for.
+
+> **COST characteristic of default-on (the one real property to know).** `solve_decomposition` gives each sub-lemma the *full* `timeout_s` (not a divided fraction), so a routed row's wallclock is no longer ~`timeout_s` but up to ~`(N + N·M)·timeout_s` (N,M = lemmas per level, depth ≤2), and — post the reachability fix — the route now fires on EVERY honest non-closure, not just rare strong_missing ones. There is NO cumulative-time guard, only the depth-2 cap + the `decomposition_dag_audit` killing bad plans cheaply. For a hard single target (P1) this deep recursion is the POINT; for a BATCH worker it can blow a fixed time budget. Two mitigations: the CALLER's wallclock kill, and `ZTARE_LEANMILL_ISO_STRONG_ONLY=1` (batch workers narrow the route back to triage `strong_missing`). If batch blowup persists, add an opt-in total-recursion budget (`ZTARE_ISO_TOTAL_BUDGET_S`, default unbounded) — do NOT default it (it would cut legitimate deep recursion). **Measure actual wallclock in the lift A/B before adding any valve.**
+
+Three decompose surfaces exist (do NOT add a 4th): (a) the menu move `MOVE_CONJECTURE` (`runner_conjecture`, scheduler-selected, often starved); (b) in-head leaf (`agentic_leaf` decompose mode — no audit/recursion/memo); (c) **`route_and_solve`** (the governed recursion — the canonical one). The planner is a CONTRACT the fungible leaf fills, NOT a separate persistent agent (preserves leaf fungibility, GP-249). SHARED PRIMITIVES (never fork): `agentic_leaf.default_dispatch`, `conjecture.decomposition_dag_audit`, `isomorphism_decompose.{attack, solve_decomposition, assemble_composite_proof, composite_ratify}`, `proof_cache.ProofCache`.
+
+**Governance ratification stack** (runs on every claimed closure; solver PROPOSES, this RATIFIES). Fail-CLOSED ⇒ `rejected_governance`; advisory ⇒ flag only. (1) no-false-closure oracle `_is_compile_ok` (exit 0 ∧ no error ∧ no sorry/admit); (2) axiom allowlist `#print axioms ⊆ {propext, Classical.choice, Quot.sound}`; (3) matched-negative-control (proof must FAIL on a near-miss statement); (4) `statement_integrity` (no altered depended-on definition); (5) v33 anti-laundering `run_anti_laundering_kernel` (single-lemma-lookup / vacuity / paraphrase-leakage; + advisory MDL & Schwartz-Zippel organs under `ZTARE_LEANMILL_EXTRA_ORGANS`); (6) `composite_ratify` for decomposed parents. A clean `#print axioms` is necessary, NOT sufficient — (3)+(4) are the decisive anti-laundering checks.
+
+**Warm-agent inventory** (all roles, so "many warm agents" is concrete): the **agentic leaf** (`agentic_leaf.default_dispatch`/`solve_leaf` — the prover/executor, workspace-write); the **iso planner** (`isomorphism_decompose.attack` — generates decompositions; same leaf, planner contract); the **autoformalize firewall judge** (`autoformalize.py` — judges NL→Lean faithfulness, cross-family from the prover); the **source scout/review/search/integration** agents (`contracts/source_*` — upstream demand-corpus builders, NOT proof credit); **proof_repair** (`proof_repair.py` — repairs non-compiling proofs). The leaf is fungible (best-of-N codex/claude via `subscription_agent_runtime`).
+
+**The default-ON principle (operator 2026-06-10).** A SOUND knob (pure-tuning, kernel-gated — a worse setting costs closures, never a FALSE closure) belongs DEFAULT-ON with `=0` as the opt-out, NOT default-off-"pending an A/B" — because if we forget to run the A/B (we do), default-off means the capability does NOTHING, forever. The `=0` opt-out **is** the A/B baseline arm; you don't need default-off to measure lift. Default-OFF is reserved for the genuinely unsafe: contaminated-data learners, or a half-built capability. (Flipped under this principle: `AGENT_TOOLS`, `AGENT_PLAN`, `LEAN_WARM`, `FORMALIZE_API_FALLBACK`, `FORECAST_ROUTER`.)
+
+**Env-flag reference** (verified defaults). DEFAULT-ON (set `=0` to revert): `ZTARE_LEANMILL_ISO_ROUTE` (recursive planner), `ZTARE_LEANMILL_COMPOSITE_RATIFY` (composite gate), `ZTARE_AGENTIC_LEAF`, `ZTARE_PROOF_CACHE`, `ZTARE_LEANMILL_NOGOOD` (CEGIS no-good store), `ZTARE_LEANMILL_PERMOVE_CAPS`, `ZTARE_CALIBRATE_PRIORS`, `ZTARE_ISO_EXPLICIT_LOOP`, `ZTARE_KERNEL_AUTHORITATIVE`, **`ZTARE_LEANMILL_AGENT_TOOLS`** (surface the 5 exogenous tools — witness/abduct/hammer/**search**=Loogle/**falsity**=invariant-screen+counterexample — to the leaf), **`ZTARE_LEANMILL_AGENT_PLAN`** (agent orchestrates the structural action incl. TRANSPORT), **`ZTARE_LEANMILL_LEAN_WARM`** (warm-REPL `lean_check_server` for the agent's iterate loop, ~0.1s vs cold ~60s), **`ZTARE_LEANMILL_FORMALIZE_API_FALLBACK`** (deepseek formalize fallback), **`ZTARE_LEANMILL_FORECAST_ROUTER`** (forecast-pool policy; advisory-logs-then-self-promotes). DEFAULT VALUES: `ZTARE_DAG_MAX_MOVES=12` (solve_adhoc raises for hard one-offs), `ZTARE_DAG_MOVE_BUDGET=32`, `ZTARE_DAG_STALL_PATIENCE=6`, `ZTARE_ISO_MAX_DEPTH=2`, `ZTARE_ISO_REFINES=2`, `ZTARE_GOV_MAX_RETRIES=1`, `ZTARE_LEANMILL_MENU="full"`, `ZTARE_CALIBRATION_SCORE="ratified"`. DEFAULT-OFF (opt-in `=1`): the DETERMINISTIC strategist/exogenous move executors — `ZTARE_LEANMILL_{SPECIALIZE,GENERALIZE,FALSIFY,TACTIC_STEP,CORROBORATE,SLEDGEHAMMER,REFLECT,ABDUCE,FUNCTORLIFT,WITNESS_TRANSPORT}` (these are the NON-agent fallback path; the agent now reaches the same moves via `AGENT_PLAN`+`AGENT_TOOLS`, so they're the redundant cascade — flip per-need), `ZTARE_LEANMILL_MOVE_ROUTER`, `ZTARE_LEANMILL_UCB_MOVES`, `ZTARE_LEANMILL_CONTEXT_PRIOR`, `ZTARE_CONJECTURE_DECOMPOSE`, `ZTARE_LEANMILL_EQUIV_CACHE` (sound knobs — candidates for the default-ON flip after a sanity check, per the principle above), and `ZTARE_LEANMILL_ISO_STRONG_ONLY` (a cost valve — correctly default-off; default = fire on every honest non-closure). Genuinely default-off (real reason): `ZTARE_LEANMILL_LEARNED_CONTEXT`+`ZTARE_LEANMILL_CALIBRATION_TRUSTED` (the attempts-DB move-rates are contaminated by the 2026-06-08 dead-instrument bug). (Strategist moves are also stuck-gated inside `move_policy` regardless of flag.)
 
 ## End-To-End Process Flow
 
@@ -1181,9 +1443,9 @@ resolved attempts, the read model explicitly reports
 That is deliberate: the factory should collect the variance-explaining feature
 surface without fitting noise or laundering a tiny sample into a routing myth.
 
-## Mechanism Vs Moat Evidence
+## Mechanism Vs Competitive Evidence
 
-A governed family-spec closure is proof-value evidence for the factory, but it is not automatically competitive evidence. `leanmill_family_spec_gate.py` now consumes row-context target names and source/gold names. Templates that directly reference the target/gold theorem are quarantined from usable probe supply. Templates that are public-lemma wrappers or generic tactic-floor closures remain visible as mechanism/calibration evidence, but `moat_disqualification_summary` marks them `mechanism_evidence_only` until the pre-registered arm comparison shows lift over public/static tools.
+A governed family-spec closure is proof-value evidence for the factory, but it is not automatically competitive evidence. `leanmill_family_spec_gate.py` now consumes row-context target names and source/gold names. Templates that directly reference the target/gold theorem are quarantined from usable probe supply. Templates that are public-lemma wrappers or generic tactic-floor closures remain visible as mechanism/calibration evidence, but `moat_disqualification_summary` (legacy field name; data-contract rename pending) marks them `mechanism_evidence_only` until the pre-registered arm comparison shows lift over public/static tools.
 
 This prevents the factory from laundering Mathlib adaptation rows into solver-advantage claims. Competitive claims require C-discriminating rows: static/public tools fail, a family is eligible, controls pass, family/source breadth is visible, and the C arm improves closure/exact-gap/falsifier rate or efficiency under the frozen benchmark contract.
 
@@ -1332,8 +1594,105 @@ The public-tool calibration benchmark and C-discriminating benchmark are differe
 ## Open Areas For Exploration (lift-mindful roadmap)
 
 > ✅ **CANONICAL HOME (2026-06-03).** This section is the single source of truth for leanmill
-> open areas + lift status. The GP-246 seam doc is FROZEN (historical log only). Memory holds
+> open areas + lift status. The [GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md) seam doc is FROZEN (historical log only). Memory holds
 > one-line cross-session pointers. Record all new findings HERE — do not start a parallel log.
+
+### Open research directions — by axis
+
+leanmill spans three axes; each has an open scientific question. The differentiation vs a fixed-statement
+prover (e.g. Axiom) is NOT raw proving — it is governance + the cross-substrate moves + non-math reach.
+
+- **Autoformalizer (incl. non-math domains).** Governed autoformalization of NON-MATH substrates — AML /
+  sanctions / access-control policy → Lean, gated by the faithfulness firewall (compile + non-trivial +
+  vacuity + structural + ground-truth battery + SMT-boundary + cross-vote). The wedge: kernel-grade,
+  auditable faithfulness on regulatory rules, not just theorems. Open Q: where does governed
+  autoformalization's faithfulness verdict beat a plain LLM judge? (Tested: NOT on judgment-class weakening —
+  a strong LLM matches it; the defensible edge is VERIFIABILITY — a checkable kernel certificate — and the
+  computational/adversarial classes. Substrate registry is org-pluggable, not hardcoded.)
+  *Faithfulness judge — directional-for-proving (2026-06-11).* The round-trip judge wrongly listed "existence
+  vs a construction" as NOT_EQUIVALENT, so it REJECTED a leaf's faithful CONSTRUCTIVE formalization of an ∃-goal
+  (it exhibited an explicit antiderivative for RUNG A vs "some F exists") — blocking the agent from owning its
+  own correct statement. Fix: the judge now asks "would PROVING the candidate ESTABLISH the original's claim?"
+  — a stronger-or-equal CONCLUSION (incl. a constructive witness) on the same-or-weaker HYPOTHESES is faithful
+  (proving more can never launder — it's harder, not easier); only a weaker/changed conclusion or a
+  changed/RESTRICTED hypothesis set (e.g. assuming the field splits / poles rational) is rejected. Defense in
+  depth unchanged (statement_integrity + structural + battery + cross-vote still gate). DIRECTIONAL implication
+  is the correct faithfulness model for a PROVING firewall; equivalence was over-strict on the admit side.
+- **Solvers — the exogenous moves (outside-Lean machinery, ~absent from the NTP literature).**
+  *Computational reflection* (a verified decision procedure replaces search), *abduce* (cvc5 `get-abduct`
+  proposes the missing premise — SMT⇄Lean solving), *sledgehammer-smuggle* (Isabelle premise selection →
+  Mathlib), *spectral/functor lift* (discrete goal → spectrum → continuous bound). Open Q: per-move
+  CLOSURE-lift on a DISCRIMINATING substrate (where the `native_hammer` cascade fails). Discipline: discover
+  the cascade-failure set first; a null on an easy substrate is non-probative (subsumption). Reachable now:
+  reflection, abduce. sledgehammer Isabelle server now LIVE (lift unmeasured). Blocked: spectral (Mathlib's spectral library is thin).
+- **Transport edges #1–#4 — the decision-procedure → Lean-certificate frontier (BUILT + kernel-validated 2026-06-13).**
+  Four new edges, each the witness-transport shape (an exogenous decision procedure for a theory Lean's tactics are
+  incomplete on, landing a kernel-RE-VERIFIED certificate — a wrong cert is a MISS, never a false closure), all
+  agent-electable via `agent_tools` + `move_cards`:
+  • **#3 Gröbner → `linear_combination`** (`common/groebner_cert.py`, `groebner` tool): a multivariate polynomial
+    EQUALITY from equation hypotheses is ideal membership — SymPy's exact division yields the cofactors, emitted as a
+    `linear_combination` the kernel discharges by `ring`. Fail-closed when raw division doesn't reach remainder 0.
+  • **#1 nlsat oracle** (`common/nlsat_oracle.py`, `nlsat` tool): z3 nlsat DECIDES a nonlinear-real ∀ (Tarski RCF-QE,
+    decidable where `nlinarith` is heuristic). ADVISORY — VALID routes a `0 ≤ p` shape to `sos`; INVALID returns a
+    counterexample (→ falsify). A decision, never a Lean closure (no soundness surface; mistranslation ⇒ wrong advice or None).
+  • **#2 multivariate SOS via SDP** (`sos_certificate.sos_certificate_multivariate`, the `sos` tool's multivariate fall-through):
+    cvxpy/SCS solves the SOS SDP, eigendecomposition → rounded `sq_nonneg` HINTS (HEURISTIC — the kernel's nlinarith
+    re-verifies; a reconstruction gate prevents garbage; Motzkin-type nonneg-but-not-SOS ⇒ infeasible ⇒ None). cvxpy is
+    an OPT-IN VPS dep (`requirements.txt`; multivariate fail-closes to None without it, univariate path unaffected).
+  • **#4 transport-of-structure** (Lean-internal, agent-surfaced): the `Equiv`/`to_additive` prove-once-get-iso-free move,
+    added to the deanchor `TRANSPORTABLE_TECHNIQUES` catalog (k=6). By Goldilocks this is agent JUDGMENT (the agent writes
+    the transport, the kernel checks it), not a mechanical engine — so the wiring is the named technique, not a determinizer.
+  KERNEL-VALIDATED (VPS, 2026-06-13): the emitted certs COMPILE — `nlinarith [sq_nonneg (x^2-1)]` closes `x⁴−2x²+1 ≥ 0`,
+  `linear_combination (1)*h0+(1)*h1` closes a 2-hyp chain, and the SDP hint `sq_nonneg (6*x−6*y)` closes `x²+y²−2xy ≥ 0`.
+  **Per-move closure-LIFT is UNMEASURED** (same discipline as the moves above). The lift BASELINE is NOT "the native
+  cascade" alone — under the agentic-first solver (#107) the AGENT orchestrates the moves; the *native-hammer cascade*
+  (`deterministic.py`, aesop/simp_all/omega/polyrith/…) survives only as the FREE zero-LLM Layer-2 FIRST pass (task
+  #112), not the primary solver. So the discriminating substrate is goals that neither the free native pass NOR the
+  agent's in-Lean tactics close, but the exogenous certificate does — an A/B is the next step (#139), not shipped.
+  MECHANIZED for future nodes: dep in `requirements.txt`
+  (auto-installed by `prepare_lean_backends.sh` step 6b) + a `check_*`/`_check_*` in `verify_solver_backends.py` +
+  `preflight_carriers.py` (the SDP carrier is OPTIONAL — reported, never bricks a minimal node).
+  RESULT (2026-06-09, honest): on a WORKING baseline, computational reflection shows NO closure-lift — once
+  the `native_hammer` adhoc-stub bug was fixed (see below) the bare cascade closes 7/7 genuinely-true
+  decidable goals via `rfl`/`decide`/`norm_num`; reflection is subsumed. The moves are sound + wired but
+  none yet demonstrates closure-lift over a working cascade on a reachable substrate — the discriminating
+  substrate is rare/blocked. NB the night's real solver win was a BUG FIX, not a move: `_native_hammer_probe`'s
+  no-`source_file` fallback built a malformed `… := by := by` stub ⇒ the bare cascade was SILENTLY DEAD on
+  every adhoc/`solve_adhoc` row (the NL→formalize→solve / non-math path); fixed ⇒ 0/8 → 7/8. Plus a cascade
+  reorder (cheap deterministic closers before `exact?`/`aesop`, to avoid cap-starvation).
+- **Governance checkers.** Checker-agnostic kernel (Lean / Python / SMT) + the cross-substrate propose→ratify
+  leg (SMT proposes adversarial boundaries over ∞ domains, the Lean kernel certifies). Open Q: adversarial
+  robustness on the semantic-degeneracy class (circular defs, hidden vacuity, def-shells) vs an LLM judge.
+- **Agent mode-fluidity — the governed solve↔NL↔formal re-entry (reformulation).** The agent can already move
+  solve↔plan (`route_and_solve` re-plans on an audit-kill; the leaf votes direct-vs-decompose and on recursion
+  via `iso_should_recurse`) and NL→formal (`autoformalize_refine` on a compile/faithfulness failure). The
+  MISSING governed seam: a solver-discovered *"this is a mis-formalization of the intended math — here is the
+  corrected statement that IS provable"* signal (the `iso_lemma1` sign-error case, 2026-06-11) currently dies
+  as a `-- GAP:`. The firewall gates BEFORE solving and never re-opens — but a *false* statement can pass the
+  static firewall (it compiles + looks faithful) and only gets refuted DURING solving. Enabling (NOT a new
+  loop): let that signal **re-open `autoformalize_refine`** with the agent's counterexample/correction as
+  targeted feedback, bounded by `max_refines`, re-gated by the SAME faithfulness firewall. SOUND boundary
+  (this is the prime laundering vector, so it must hold): a restatement is admissible only if it passes the
+  firewall against the ORIGINAL NL (`provable_equivalence` / `statement_integrity` / directional judge); a
+  counterexample is a TERMINAL honest non-closure (never a closure of the original); the original false
+  formalization is never credited. ARCHITECTURE (decided 2026-06-11): the AGENT owns formalize↔prove↔reformulate
+  (its own actions, one WARM-RESUMED session — re-entry is the agent CONTINUING, not a lossy cold re-call); the
+  HARNESS owns only the independent faithfulness gate + kernel audit (the agent cannot be its own faithfulness
+  judge — that is the laundering hole). The firewall-BEFORE-solve barrier is KEPT (vs collapsing to output-only
+  gating) because it blocks proof-pressure-driven statement drift. STATUS: CORE BUILT + selftested
+  (`autoformalize_and_solve` reformulate re-entry, `ZTARE_LEANMILL_REFORMULATE` default-off, `_ROUNDS` budget; 4
+  boundary tests: reenters+closes / budget0-terminal / unfaithful-reformulation-REJECTED / clean-close-noop).
+  Triggers on the HARD signal (`outcome="falsified"`, kernel ¬G) AND now the SOFT signal — the leaf's own
+  `-- STATEMENT-FALSE:` refutation (it reasons the target mis-formalized without kernel-proving ¬G, the literal
+  RUNG A case): prompts.py advertises the marker, `agentic_leaf._extract_statement_false` parses it onto
+  `LeafResult.statement_false`, and `solve_adhoc` surfaces it via `scan_probes_for_statement_false` (a SINGLE
+  capture point — scan the scratch probes — vs threading every `results.append`) into `res["statement_false"]`,
+  which `_solve_refutation` reads → governed re-formalization. NET: the agent corrects the statement HIMSELF
+  (no human editing the NL); the firewall re-verifies faithfulness so it can never launder. All selftested
+  (parse + scan + the 4 re-entry boundary tests). REMAINING: (a) live-validate end-to-end on a controlled
+  false/true pair before flipping default-on; (b) the re-entry is at the TOP (autoformalize) level — a SUB-lemma
+  refutation inside `route_and_solve` currently re-formalizes the top NL (sound-neutral, bounded, but imprecise);
+  the precise fix is a sub-lemma-level re-plan-with-correction inside the planner.
 
 **Lift-status board (each lever: non-iatrogenic? + lift demonstrated?):**
 
@@ -1360,7 +1719,263 @@ The public-tool calibration benchmark and C-discriminating benchmark are differe
 | **Calibration→control auto-tune** (`autotune_strength`, #28) | ✅ flag-gated `ZTARE_CALIBRATE_AUTOTUNE` (off ⇒ strength=DEFAULT = PARITY); CONSERVATIVE raise-k-only (overfitting-gap ⇒ MORE shrinkage; can't collapse the distribution; free-floor untouched); recorded-Brier LOGGED every run (observability — the "measure" half) | ⏳ CLOSES the loop — the recorded-Brier monitor (was zero-callers) now DRIVES k; self-tested (empty/no-gap→base_k, overfit→k=24 bounded); lift latent until the governed DB grows |
 | Information-yield routing (REUSE `validator/core/information_yield`) | ✅ advisory in solve_family (records CONTINUE/REFRESH/PIVOT) | ⏳ QUEUED-for-lift — wired-to-have-ready; not a rebuild (existing autoresearch primitive) |
 | **Randomized falsification probe** (`randomized_falsification_probe`, #38 — Schwartz-Zippel ext. of #24) | ✅ ADVISORY (never auto-rejects); SOUND only for UNCONDITIONAL statements — a head-scan guard skips ALL hypothesis-guarded inputs (incl. nested-paren hyp types), so 0 false-positives on RED_TEAM_GENUINE | ⚖️ **RED-TEAM-GATED, scope REFUTED then RESCOPED**: pre-guard it false-positived `real_ineq` (ignored `h:a≤b`); does NOT beat #24 on the corpus (hypothesis-guarded vacuity defers to #24's linarith/omega, 3/4 caught there). Sound niche = a pre-proof FALSIFIER for **unconditional** conjectured lemmas (#35) / pure algebraic identities — NOT a governance-escape catcher. Catches unconditional-false (e.g. `a+b=a*b` at a=-8,b=4) |
+| **PutnamBench apparatus A/B** (n=24, first ADMISSIBLE run, 2026-06-08) | ✅ paired arms, run_tag-attributed (contamination fixed), 0 regressions | ❌ **NO closure-lift** (closure_lift=−1; the lone "new closure" was a FileNotFoundError artifact ⇒ ZERO clean new closures). The +16 closed-or-GAP is HOLLOW — every `conjecture_lemma` on the 14 gap targets returned `no_advance` (circular / non-typechecking / empty ⇒ the soundness gate correctly REJECTED all; the gaps are *deferred failures*, not sound reductions). 2 divert-downgrades (apparatus over-decomposed a *closable* target). Instrument ADMISSIBLE (strategist fired 16/24); PutnamBench = no-regression substrate, NOT the compounding regime. Fixes: FileNotFoundError guard (done); divert = per-move budget starvation (moot for P1); gap soundness now verified hollow |
+| **5 orchestrated moves** (reflection / abduce / functor_lift / sledgehammer / cross-voting) | ✅ wired (reflection/abduce/functor_lift in the DAG runner; cross-voting + cross-substrate at the autoformalize firewall); flag-gated default-OFF, byte-parity off, MOVE_ORDER untouched, kernel-gated (no false-closure). functor_lift re-verifies the leaf's BODY under the ORIGINAL goal (statement-swap ⇒ MISS). abduce reachable via `cvc5` pip-API (no binary). sledgehammer Isabelle server VALIDATED LIVE (the subprocess captures a real proof via `isabelle build` session-mode + the Sledgehammer ML API + `YXML.content_of` decode — `deploy/isabelle_sledgehammer_server.py`, typed config/contract); the move stays opt-in (`ZTARE_ISABELLE_SERVER`). | **Per-move closure-lift is NOT a blanket "10×" and largely UNMEASURED — by regime, not by neglect**: reflection's `decide`-reflection is SUBSUMED by native_hammer's `decide` on easy targets (lift only where plain `decide` fails — a curated hard substrate); functor_lift is BLOCKED on Mathlib's thin spectral library; abduce is ADVANCE-only and was REBUILT on the frontier (2026-06-09): the original cvc5 first-`get-abduct` was a STRAWMAN (SyGuS → degenerate point-abducts; pip wheel hangs/crashes). The principled mechanism is **most-general abduct via QUANTIFIER ELIMINATION** (Dillig & Dillig "Explain", CAV 2013) — wired as `abduction.qe_abduct_premise` (z3 `qe2` + pivot selection = eliminate the hyp∩concl vars), producing the exact weakest missing premise (`y≤z`, `0≤c`, `x≥11`), kernel-sound. The move now dispatches through an explicit **AST router** (`abduction.classify_abduction_route`/`route_abduction`, `ZTARE_LEANMILL_ABDUCE_ROUTER`): **linear → z3 QE; bitvector/string → cvc5 SyGuS; non-linear (`var·var`/`var^k`/`var-mod/div`) → ABORT fail-closed** (undecidable for ℤ — QE hangs, cvc5 degenerates/crashes — so don't burn compute; that niche is premise-selection = sledgehammer). z3-vs-cvc5 are complementary by THEORY, not superiority. **ADVANCE-lift MEASURED 6/6** (`qe_abduct_lift_controlled.py`, 2026-06-09): on missing-premise goals the native cascade advances 0/6, QE-abduce supplies the most-general premise admitted by `abduction_advances` 6/6 (abduce is an ADVANCE move — it spawns the missing premise, not a direct close). cross-voting + cross-substrate are FAITHFULNESS-not-closure moves. reflection closes a decidable target e2e; cross-voting kernel-equivalence is sound. `equiv_timeout` is env (`ZTARE_LEANMILL_EQUIV_TIMEOUT_S`, measured-default 180s). (Dated validation logs live in session memory, not here.) |
+| **Cross-substrate propose→ratify** (SMT proposes, Lean kernel ratifies) | ✅ productionized as a firewall `battery_fn` (`default_smt_boundary_battery`) | z3 (`threshold_cases`/`distinguishing_requests`) proposes the adversarial numeric boundary over ∞ℤ → rendered to Lean → the existing `semantic_instance_battery` kernel certifies. Validated: faithful AML rule certified at the SMT-found $10k case, laundered (`>` vs `>=`) caught — directly and through `faithfulness_gate`. **Extended 2026-06-09: `smt_checker.auto_laundered_candidates` / `auto_distinguishing_battery` AUTO-derive the laundered variants (no human-supplied candidate) — the battery covers the whole laundering surface, not one hand-picked point (selftest: reproduces the certify-demo 449 boundary automatically). Lean-verify wiring pending.** High-assurance value (kernel spot-checks at SMT boundaries, not a universal proof) remains a hypothesis. |
+| **Cross-substrate CONSENSUS** (agreement = trust, disagreement = faithfulness-bug) | ✅ BUILT 2026-06-10 (`common/cross_substrate_consensus.py`, folded into `claim_audit.with_consensus`) | The peer layer above propose→ratify: reconciles the verdicts ≥2 **independent** substrates produced on the SAME claim (each via its own NL→formal translation) — `corroborated` (trust-lift), `faithfulness_conflict` (≥1 ratifies, ≥1 refuses ⇒ exactly one translation is UNFAITHFUL — a translation bug localized with NO human), `insufficient` (fail-closed <2 distinct), `unanimous_reject`. PURE reconciliation of already-produced `CheckResult`s (`is_ok` strict) — adds NO soundness surface; advisory-loud (a conflict flags + sets `trustworthy=False`, never flips the kernel verdict). The independence axis is the SUBSTRATE (different logic + different translation), not the model family — so it catches a faithful-looking-but-mistranslated Lean statement an independent z3 rendering would refuse, which a same-substrate cross-vote cannot. The 2025-26 literature (LEAP / BFS-Prover-V2 / hammers / ProofBridge) does NOT use cross-substrate disagreement as a signal — the novel piece. Selftest 8/8. HONEST SCOPE: the decidable / non-math overlap where ≥2 substrates can both render the claim; degrades to the single-substrate cross-vote on open higher math (Finset/∑/nonlinear, where SMT/Isabelle bail out). **AGENT-ELECTABLE (2026-06-13):** the independent Isabelle verdict the consensus layer consumes is now an agent tool — `agent_tools verify` (8th card in `move_cards`, gated on `isabelle_hammer_live`) submits a COMPLETE Isabelle theory (or a bare `lemma … <proof>` it wraps) to `sledgehammer.verify_isabelle` and returns ACCEPT/REJECT. Goldilocks-fenced: an Isabelle accept is a peer-substrate corroboration signal, **NOT** a Lean closure (the tool says so in its output) — the Lean kernel remains the sole closure arbiter; this only gives the agent the *agency to elect* a cross-substrate check (pairs with `hammer`: hammer finds the Isar proof, verify confirms it). Closes the #73 gap (the full-theory checker existed but was not agent-callable). |
+| **Soundness vs public** (checkers-vs-public audit) | n/a (audit) | On pure soundness leanmill is behind lean4checker (no `Environment.replay`/olean re-check; inherits lean4 #7463/#8840); the edge is the agent-EDITABLE-context class (`statement_integrity` + `canonical_reelaboration`) fixed-statement provers never face. Lexical ban extended to the compiler-trust axioms `ofReduceBool`/`trustCompiler` (calibrated zero-FP; `partial`/`unsafe`/`@[extern]` left to the `#print axioms` allowlist). `lake exe lean4checker` olean-replay still pending (needs the exe). |
 | Adaptive-budget stall-defer | — | ❌ REVERTED (iatrogenic) |
+
+### Mission apparatus — the mathematician×alien reconciliation (audit 2026-06-12, #124)
+
+Two deliberately different lenses were run over the apparatus — "what would a working mathematician
+miss here" × "how would a non-anthropomorphic agent that can traverse the statement space faster than
+a human actually USE this" — then reconciled. The reconciliation produced three build-now legs (in
+build order, cheapest first) and three deferred-by-design directions. The non-anthropomorphic
+invariant (operator): don't mimic a mathematician's workflow; mechanize the parts of it that are
+SUBSTRATE (evidence, recall, cheap falsification) and let the agent traverse faster than a human would.
+
+1. **Instances-first gate** (mathematician leg; the positive dual of `witness_transport.looks_false`).
+   Before funding a dispatch ≥ half the `agent_dispatch` budget on a computable-shaped ∀-goal, CONFIRM
+   3–5 concrete instances by SymPy (same parse / Lean→SymPy translation / sandboxed runner as
+   `looks_false` — one home, no parallel translator). Confirmed instances ride into the leaf prompt as
+   cheap confidence (comment-inert, like no-good/learned-context); a counterexample rides in as a
+   LIKELY-FALSE warning AND feeds the existing falsity routing. ADVISORY at the agency line
+   (Goldilocks): never blocks a dispatch; the kernel-proved ¬G stays the only refutation verdict.
+   Each outcome is recorded as conjecture-book evidence (leg 3). `ZTARE_LEANMILL_INSTANCES_FIRST`,
+   default-on, =0 reverts. **STATUS: BUILT 2026-06-12** (`symbolic_witness.confirm_instances` +
+   `witness_transport.instance_evidence` + the `_agentic_leaf_warm_solve` gate), selftested. Building
+   it exposed + fixed TWO pre-existing `looks_false` holes (both regression-tested): the parenthesized
+   binder `∀ (n : ℕ), …` that `_closed_goal_prop` emits mis-split as `vars='(n'` ⇒ silent no-signal;
+   and a bare-Prop goal (what `_leaf_goal_from_source` hands the leaf) parsed as '' by the decl parser.
+   SCOPE EXTENDED same day (the open extension built): **hypothesis-guarded goals** (`∀ …, H₁ → … → C`,
+   hypothesis BINDERS `(h : 2 ≤ n)`, and same-type multi-group telescopes `∀ (a : ℤ) (b : ℤ), …`) are
+   now sampled on hypothesis-ADMITTED points only — every guard must translate cleanly AND evaluate
+   definite-True at a point for it to count (an untranslatable hypothesis ⇒ no signal at all; guards
+   never satisfied in the box ⇒ no-signal, never fake confidence). The SAME guards extend `looks_false`
+   (a guard-satisfying refutation of C soundly refutes the implication). SOUNDNESS NOTE: the #114
+   invariant-screen (degree/parity/growth) runs UNGUARDED ONLY — under hypotheses the domain is
+   restricted, so a global mismatch is not decisive. Still out of scope (conservative None): mixed-type
+   telescopes, non-relational hypotheses (`Nat.Prime n`), ∧/∨-compound hypotheses.
+2. **Own-ledger semantic recall** (alien leg; partially builds trust-direction #4 "failure-manifold-
+   conditioned routing" below — over certs/gaps rather than failure signatures). Reuse the EXISTING
+   embedding pipeline (`semantic_premise_shelf`, gemini-embedding-001, disk-cached vectors) to index
+   leanmill's OWN production: the cert ledger's ratified closures (statement + proof head) and the
+   attempts-DB GAP diagnoses (the agent's own named missing lemmas). On every shelf build, the query
+   goal is cosine-matched against that corpus and the top-k structural matches surface in the SAME
+   shelf block: "0.9-similar rung PROVEN — cite/transport it" / "0.9-similar GAP already diagnosed —
+   don't re-derive it." The campaign manifest keeps governance NAMES; embeddings do RETRIEVAL.
+   Advisory + fail-open like every shelf leg. **STATUS: BUILT + LIVE-VALIDATED 2026-06-12** (`own_ledger_hits`
+   leg in `semantic_premise_shelf`, injectable embedder, hermetic selftest; live positive control on the
+   VPS corpus: querying the v7 crux statement recalled the PROVEN
+   `rational_function_antiderivative_of_vanishing_simple_pole…` rung at cos 0.66 + the two GAP
+   diagnoses naming the arithmetic residue obstruction at cos 0.70 — exactly the cite/transport +
+   don't-re-derive context the campaign needs; first corpus build 10.6s/28 embeds, then disk-cached).
+   The control also caught a real bug: sqlite `LIKE '%GAP:%'` is case-INSENSITIVE, so lowercase
+   `agent's own gap:` cap-echo rows crashed the leg — fixed with a case-sensitive per-row re-check.
+   NOTE the env seam: embedding needs `GOOGLE_API_KEY` (campaign launches source the repo `.env`; a
+   bare shell gets a clean "query embedding unavailable" skip, never an error).
+3. **Conjecture book** (mathematician leg; typed via the ONE WorkItem contract — `kind="conjecture"`).
+   Conjectures accumulate EVIDENCE EVENTS append-only (`analytics/public/queries/conjecture_book.jsonl`,
+   keyed by `proof_cache.normalize_statement` — the canonical statement key): `instance_confirmed`,
+   `counterexample_found`, `special_case_proven`, `falsification_failed`. The book renders raw evidence
+   tallies into prompts; it does NOT hand-roll a credence formula — CREDENCE is stamped only through
+   the forecast POOL (the canonical diverse-forecaster market, `stamp_credence` seam for the
+   `forecast_pool_bridge`), per the route-don't-one-off rule. The exp-rungs-are-evidence-for-the-
+   residue-crux pattern is exactly what this ledgers. **STATUS: BUILT 2026-06-12** (`conjecture_book.py`;
+   WRITE side gate-wired for instance evidence, READ side consumed in the warm prompt via `render_block`
+   — ledger-evidenced use, not write-only; pool-credence stamping + `special_case_proven` wiring from
+   the compounding path = the open seams).
+
+4. **Error-conditioned fix memory** (alien leg; the audit's orphan row, **BUILT 2026-06-13**, #125) —
+   `solver/fix_memory.py`, the REPAIR dual of `no_good_store`: error SIGNATURE (the canonical
+   `proof_state_signal` error_class + the first error line normalized, identifiers→⟨id⟩ numbers→#) →
+   the kernel-verified repair that followed it. WRITE: the warm retry-success path, only after
+   `statement_integrity` passes (the confirmed-repair contract — never a narrated improvement). READ:
+   the retry-feedback block, comment-inert inform-never-block ("a kernel-verified repair followed this
+   error signature before: …"). `ZTARE_LEANMILL_FIX_MEMORY` default-on, =0 reverts. Full-cycle smoke:
+   fail → record → retry-close → ledger row → recurrence prompt carries the fix. Next producer
+   (recorded): RefineHandover / `autoformalize_refine` accepted rounds.
+5. **Conjecture-book pool credence — seam CLOSED 2026-06-13**: `route_credence_via_pool` emits a micro
+   contract through the CANONICAL `forecast_pool_bridge` (diverse external forecasters), reads the
+   aggregate consensus, stamps it via `stamp_credence`. OPT-IN (`ZTARE_LEANMILL_CONJECTURE_POOL=1`,
+   default OFF — each emission wakes warm forecaster dispatches, a per-conjecture token cost a campaign
+   flips deliberately; the evidence EVENTS stay always-on/free).
+
+**Reconciliation ladder — ALL SEVEN RUNGS NOW BUILT + WIRED (2026-06-13).** The two remaining gaps closed:
+- *anti-unification extraction* ✅ **MACHINERY + CONSUMER** (`solver/anti_unify.py`: token-level lgg with
+  metavariable CONSISTENCY (a recurring difference binds ONE ?Mi — anti-unification, not a diff), quality
+  gates ≤4 holes / ≤40% coverage; schema = TARGETED CONJECTURE SEED under the `obstruction_to_conjecture`
+  discipline — the agent formalizes, the kernel gates, no type inference, no laundering surface; reuses the
+  ONE cert reader `own_ledger_corpus`). Live mine on the real 25-rung corpus: 1 genuine sibling pair, zero
+  false-positive flood. CONSUMER NOW WIRED: `autoformalize_notes._anti_unify_block` injects the top mined
+  schema as an advisory lead into the theory-consolidation prompt (`ZTARE_LEANMILL_ANTIUNIFY` default-on,
+  fail-open). The solver-side seed→`MOVE_CONJECTURE` path stays the next extension.
+- *prompt evolution* ✅ **SUBSTRATE WIRED** (`solver/prompt_evolution.py`): the adjudicator
+  (`SequentialABGate`, anytime-valid / peeking-safe) already existed; the missing half was the ledger that
+  stamps each dispatch with the prompt-TEMPLATE fingerprint + (goal_sha, closed). Auto-accrues on every
+  admissible warm-leaf outcome (close / non-close / laundering-catch), so when a template changes the new
+  fingerprint's outcomes are A/B-adjudicable against the old — PAIRED by goal_sha — through the gate
+  (`evaluate`; `report <slot>` CLI). Default-on telemetry, `ZTARE_LEANMILL_PROMPT_EVO=0` reverts. HONEST
+  LINE (no-frankenstein / no-dormancy): prompt GENERATION (proposing a mutation) stays the agent/operator's
+  creative act — automating mutation on zero data is the overfit trap; the substrate makes volume accrue so
+  the promotion loop activates when there is data. It is never dormant (records on every dispatch) and adds
+  no parallel statistics (reuses the one gate).
+- *goal-state REPL search* ✅ the `goalstate` agent tool exposes the existing
+  `PersistentLean.start_tactic_proof`/`step` oracle (the agent drives the search, the harness adds no
+  strategy — Goldilocks; REPL-closed is NOT credit, the kernel still re-verifies).
+
+**Deferred by design** (chosen, not forgotten): the prompt-evolution generation/promotion LOOP (substrate
+now feeds it; activates at volume) and the anti-unification solver-side consumer (theory-phase consumer
+ships now). The goal-state SEARCH loop (multi-step tree search driven by the oracle) stays the agent's,
+not a harness automation.
+
+**Reconciliation completions + agency unlocks (2026-06-13).** A fresh both-lens re-assessment of the ladder
+("exhaustive? well done? missing novel rungs?") found the ladder Goldilocks-correct (every leg advisory /
+fail-open / kernel-backstopped / both lenses) but surfaced one genuine MISSING PRODUCER and three harness
+over-constraints. All built + selftested, advisory, no soundness/gaming surface:
+- **#128 — GAP → conjecture-book producer (the missing writer).** The conjecture book's only writer was the
+  instances-first gate; the richest source of named OPEN conjectures — the agent's own `-- GAP:` diagnoses —
+  never registered. Now the warm-leaf non-closure path `conjecture_book.register`s the GAP (`solver_core`,
+  best-effort) so cross-run evidence (instances confirmed, special cases proven) accumulates on it. Closes
+  the alien-leg curriculum substrate (A2 stays the agent's to drive).
+- **#129 — full-proof transport on high-similarity recall.** `own_ledger` recall surfaced only a 300-char
+  statement preview; a mathematician REUSES the proof. The corpus now carries the kernel-verified proof and
+  `own_ledger_hits` attaches it on a high-cosine (`ZTARE_LEANMILL_OWN_LEDGER_PROOF_SIM`, default 0.82) PROVEN
+  rung; the shelf renders it as a "proof to transport — adapt the skeleton" block. The agent decides how to
+  adapt; the kernel re-verifies. (Also fixed a binder-unsafe `(.*?):=` statement-extraction in the corpus.)
+- **#132 agency unlocks — harness determinism-creep removed (kernel still governs all).** (a) The lexical
+  `_notes_carry_decomposition` router (a `^theorem`×2 + `:= sorry` regex that misrouted `lemma`/inlined
+  blueprints into the doomed direct cascade) is DELETED; a top-level blueprint now routes on PRESENCE to the
+  agentic planner. (b) **Skip-and-return**: the fixed-order notes sweep now does ONE retry pass over still-open
+  lemmas with the grown shelf — a lemma blocked early closes once a neighbour's closure makes it citable
+  (`ZTARE_LEANMILL_NOTES_RETRY`, default-on; simmed: L open in pass 1 → closed on retry after B). (c) The
+  planner prompt no longer COERCES a sub-lemma DAG: if SOLVE_DIRECT/FALSIFY is genuinely best the agent
+  declares it and stops (the cascade carries both the direct and the ¬G/falsify move) — "the format serves
+  the proof, never the reverse." (d) **No-waste on an elected non-DAG action (#133):** when the agent
+  declares SOLVE_DIRECT/FALSIFY and produces no DAG, `_verify` labels it honestly (not "parse failure") and
+  `_refine_ctx` returns `None` → `RefineHandover` stops the loop at one dispatch instead of re-coercing a DAG
+  the agent deliberately declined; the cascade (which owns the direct + ¬G moves and their outcome plumbing)
+  routes it. Simmed via the real loop: elected non-DAG → 1 dispatch, a normal DAG-miss still refines.
+  **Deliberately NOT done (lower value, deferred):** threading a *refuted* outcome (¬G is not a closure of G)
+  as a first-class branch *inside* `route_and_solve` — the cascade already owns that plumbing, so duplicating
+  it would be frankenstein; #133 keeps the slice that removes the waste and routes cleanly.
+- **#130 — extremal instance probing (mathematician leg).** `build_instance_check_script` already sampled the
+  degenerate points (0, ±1) + a Fibonacci spread; it now ALSO probes the BOX EXTREMES (±bound, ±(bound−1)),
+  so a ∀-claim that holds on small values but breaks at the boundary is caught. The extremes are probed
+  AFTER the degenerate points but BEFORE the rest of the spread — a tail-appended extreme is never reached
+  (the `k`-confirmation early-stop fires first; caught + fixed live). STRUCTURE-FREE by design (no parsing the
+  relation for poles/roots — that would be iatrogenic); advisory, the kernel stays the arbiter. **Live-
+  validated (SymPy, venv):** `n<20` over [0,24] → refuted at 24; `n²<100` signed → refuted at 24; true claims
+  still confirm; full `symbolic_witness` selftest 49/49.
+
+**Catalog — rungs a fresh both-lens pass surfaces that are CORRECTLY the agent's or deferred-by-design (#131,
+documented so they are neither forgotten nor frankenstein-automated):**
+- **M3 — generalize-to-induct / strengthen-the-IH.** The classic "the statement is too weak to induct; prove
+  the stronger parametric version." This is the agent's creative act (the harness must not automate it);
+  anti-unification already SEEDS the generalization parameter (a recurring metavariable across siblings).
+- **A2 — curriculum / intermediate-target generation loop.** A non-anthropomorphic agent can bootstrap toward
+  an out-of-reach crux via a ladder of intermediate conjectures. The conjecture book (+ the #128 GAP producer)
+  is the SUBSTRATE; the generation loop stays the agent's (automating mutation on zero data is the overfit
+  trap — same discipline as prompt-evolution generation).
+- **A3 — positive manifold interpolation** (the geodesic of lemmas between proven and target — the positive
+  dual of failure-manifold routing). Speculative, no data, overfit risk → deferred, not built.
+- **A4 — agent-facing move-calibration.** The richest learner (`move_calibration`, ~120 attempts) is
+  agent-BLIND by default; `move_cards` surfaces it but is double-gated on the contaminated-DB re-baseline.
+  A known agency gap, correctly gated on the data-admissibility A/B (#108-adjacent), not a frankenstein.
+
+**Adjacent ship (#117 leg, 2026-06-13): PARALLEL diverse-decomposition sampling.** `_sample_diverse`'s
+K planner dispatches now run CONCURRENTLY (`ZTARE_ISO_SAMPLES_PARALLEL` default-on; =0 reverts;
+K=1 default never enters the branch — byte-parity): generation wall ≈ 1× planner budget instead of K×.
+The enabling primitive is `agent_tag` on `default_dispatch`/`_dispatch_once` — a non-empty tag keys its
+OWN durable warm session beside the repo-scoped one (a PARAMETER, not env: env is process-global and
+not thread-safe). Sample 0 stays untagged (the warm campaign session, single-shot parity); samples
+i≥1 get `iso_s<i>` slots that stay warm across rounds. This also FIXES an independence flaw: sequential
+samples all resumed the ONE shared session, so later samples saw earlier samples' context — correlated
+draws quietly weakening the best-of-K dominance argument; per-sample sessions make the K draws
+genuinely independent. The audit (Lean compiles) stays SERIAL in sample order (the no-parallel-Lean
+rule + deterministic selection). Hermetic selftests: overlap timing, tag assignment, order-stable
+attempts, =0 sequential parity, one-raising-sample degradation. Live K>1 A/B = post-v6 box time.
+
+### Untrusted-claim verification — open build directions (the trust axis)
+
+The prover race optimizes closure % on TRUSTED benchmarks (miniF2F / Putnam), where "it compiled" suffices and governance is dead weight. leanmill's distinctive value is on UNTRUSTED claims — autoformalized math, AI-generated proofs, compliance/policy rules, open conjectures — where the question is not "can it be proved" but "can the result be trusted." No public benchmark exists for that regime; defining and winning it is the open direction.
+
+> **Measured honestly (2026-06-09, NOT an accuracy advantage).** The firewall-vs-LLM-judge confusion matrix was run (`firewall_vs_agent_judge.py`: a STEELMANNED subscription agent judge vs the kernel firewall on the numeric SMT-boundary compliance pairs) and on accuracy the agent **MATCHES** the kernel (3/3 = 3/3) — and on the structural + computational classes too (`RESULTS_faithfulness_lift.md`: catch-lift 0; a frontier LLM even matched/beat kernel `decide` on off-by-one arithmetic facts). So the differentiation is NOT "governance catches a weakening the LLM misses." It is (a) **VERIFIABILITY** — an auditable kernel certificate vs an unfalsifiable opinion — and (b) **computational faithfulness**: SMT-searched boundaries + kernel-decided ground truth over an INFINITE input range, the class an LLM can only guess at (reading the formalization isn't enough; you must search). The open #54 question is to find/measure the laundering class where that search gives the firewall a real ACCURACY edge, not just a verifiability one — lead with computational faithfulness, not "catches what the LLM misses."
+
+Concrete builds — each REQUIRES the prover + governance + SMT combination together, so a bare prover structurally cannot reproduce them:
+
+1. **Self-generating discriminating instance batteries** (BUILT + Lean-wired 2026-06-09/-10 — `smt_checker.auto_laundered_candidates` / `auto_distinguishing_battery`, consumed by `autoformalize.default_smt_boundary_battery(auto_candidates=True, default-on)` which threads the auto-derived boundary instances through `default_instance_battery → _compile_probe`, so the Lean KERNEL ratifies each auto-generated case; pos/neg control confirmed on live Lean — the faithful rule passes the auto-battery, the off-by-one launder FAILS it). Auto-derive the plausible laundered variants of a rule (off-by-one thresholds, operator weakenings) and the boundary instances where they diverge — generalizing a hand-picked boundary to the whole laundering surface with NO human supplying the candidate. Open: extend beyond the arithmetic-policy fragment; measure assurance-lift vs a human-written battery (the #54 confusion-matrix A/B).
+2. **Adversarial faithfulness — matched-negative-control for the STATEMENT, not the proof.** Spend the prover to prove the claim's NEIGHBORS to triangulate the claim's actual semantic strength — the deepest faithfulness check, using the prover as a semantic-strength oracle. **The two deepest neighbor-legs already exist in `solver/proof_margin_of_safety.py` (don't rebuild them — anti-amnesia 2026-06-10):** (a) the *hypothesis-dropped* neighbor = the `load_bearing` perturbation (trivialize each Prop hypothesis to `True` + recompile; one that still closes is DECORATIVE — the statement is over-specified / the proof ignores it); (b) the *strengthened variant* = `rung_tighten` (the leaf extracts an explicit strictly-STRONGER B, kernel-verified `B ⇒ claim` sorry-free + B≠claim, else not banked). Both reuse the one kernel + the leaf, ADVISORY (annotate, never re-reject), emit a `RobustnessReport` (strengthen/weaken/inconclusive). The remaining gaps: the *negation* leg is the existing kernel MNC (separate); compose the three into one statement-strength read and **fold the `RobustnessReport` into the legible `claim_audit`** (DONE 2026-06-10 — the audit now renders decorative-hypothesis / provable-strengthening signals as faithfulness caveats). The deep `load_bearing` leg is now **validated on real Lean** (2026-06-10 pos/neg control: an over-specified `(h:2≤n)⊢0≤n` flags `h` DECORATIVE/weaken; a tight `(h:2≤n)⊢1≤n` reports load-bearing/strengthen — the selftest had only monkeypatched the probe). Open = the contrapositive leg + a calibrated lift measurement on a discriminating over-specified/vacuous corpus (does margin-of-safety catch what a bare close misses, at rate).
+3. **The certificate as a distilled AUDIT, not the raw proof** (BUILT 2026-06-10 — `common/claim_audit.py`). The deliverable for an untrusted-claim consumer is a legible audit — {claim, faithfulness evidence, the discriminating instances decided, the laundering checks survived, axioms used, the matched-negative-controls that failed} — distilled from the governance organs already run. The proof is the evidence; the audit is the product. `ClaimAudit` (substrate-neutral, in `common/` beside `governed_verification`/`apparatus_certificate`; NO substrate import) is PURE DISTILLATION + RENDERING — it READS the organ verdicts the kernel already produced and re-runs nothing, so it adds NO soundness surface (it cannot make a wrong close look right; it can only present, faithfully, what governance found). Two real distillers (the `common/` ≥2-consumer rule): `from_lean_gate_result` (math — reads `LeanProofGateResult`'s compiled/gate_passed/axiom_audit/anti_laundering/v33_organ_flags/extra_axioms/theorem_statement_hashes; surfaced as `LeanProofGateResult.to_claim_audit()`) and `from_provider_payload` (non-math/SMT — reads the `formal-verification-provider/v1` payload's `anti_laundering` + `provider_artifacts` battery/boundary; surfaced as `formal_verification_provider.render_audit()` + the `audit` CLI). The laundered→`invalid` invariant holds (an organ flag is `invalid`, never surfaced as `verified`); every audit carries the standing P16 caveat (formal↔informal semantic equivalence stays human). Validated on the real Lean-certified Basel payload (renders VERIFIED with the SMT boundary @ 449 as a discriminating instance, MNC + statement-integrity survived, axiom-clean). Open: wire `to_claim_audit` into the live solver-closure path (currently the gate result exposes it; the cascade/DAG `govern_closure()` unification is where it lands) + measure whether the legible audit lifts human trust calibration vs the bare verdict.
+4. **Failure-manifold-conditioned routing.** Embed the target + its failure signature; retrieve structurally-similar past failures (the no-good store); route the next move by what worked on similar failures — turning the failure archive into a search prior. Open: the embedding + retrieval; the lift vs the coarse per-`error_class` prior.
+
+Two capability levers behind these: (a) **cache → learned library** — periodically distill banked proofs into reusable lemmas that compress future proofs (wire `proof_cache` + `solve_family` + the default-off MDL-library into a library-learning loop), raising the leaf's effective ceiling without a stronger model; (b) **autonomy** — proactive target generation + curriculum + an autonomy-gap measurement, with governance as the enabler (an autonomous prover is only useful if its results are trustworthy). Build order: (1) done; (3) audit-as-product **done 2026-06-10** (`common/claim_audit.py`, both substrates, validated); (2) adversarial faithfulness — its deepest legs already existed (`proof_margin_of_safety`: decorative-hypothesis perturbation + `rung_tighten` strengthening) and are now **folded into the legible audit** (`ClaimAudit.with_robustness`, 2026-06-10); remaining open = the contrapositive leg + a lift measurement (does margin-of-safety catch over-specified/vacuous statements a bare close misses, on a discriminating corpus). Next deepest unbuilt area: (4) failure-manifold-conditioned routing.
+
+### Formal-verification PROVIDER boundary (cognitive-firm integration)
+
+leanmill exports its certify/firewall verdicts to cognitive-firm as a **provider**, not as a library: cognitive-firm's kernel records a `formal-verification-provider/v1` payload and never imports leanmill; leanmill never imports `cognitive_firm`. The entire contract is the **signed JSON payload** — a clean process/CLI boundary, so neither codebase can break the other and the kernel stays checker-agnostic. Adapter: `src/ztare/leanmill/formal_verification_provider.py` (READ before touching the integration). The kernel half lives in cognitive-firm `orchestration/formal_verification.py`; the public contract is `cognitive-firm/docs/protocols/formal-verification.md`.
+
+- **Verdict mapping** (`map_verdict`, order-sensitive): an **unfaithful** formalization → `invalid` (NOT `verified`, NOT a `refuted` of the original claim — it proved a *different* statement); anti-laundering / statement-integrity caught → `invalid`; faithful claim with a checker counterexample → `refuted` (+ mandatory `counterexample_ref`); timeout / no-checker → `inconclusive`; faithful + checker-closed + ratified → `verified`. The faithfulness/governance failures are checked *before* the closed/refuted read so a laundered close can never surface as `verified`.
+- **Signing parity decides whether the signature verifies.** A `verified` row is trusted only if `metadata.provider_payload_signature` (Ed25519) verifies against the org-installed public key AND `faithfulness_refs` + `checker_evidence_refs` are non-empty (the bundled `leanmill-formal-verification` trust overlay). The signature is over `canonical_provider_payload_bytes` — which normalizes the payload **through the kernel's dataclass field set** (drops unknown top-level keys, fills list defaults, strips the 4 signature-bookkeeping metadata keys) and serializes `sort_keys=True, separators=(",",":"), ensure_ascii=True`. The adapter reproduces this **byte-for-byte without importing cognitive_firm**; the module selftest cross-checks byte-equality against the kernel's own `canonical_provider_payload_bytes`/`sign_provider_payload` whenever `cognitive_firm` is importable, and a wire round-trip (install trust policy → ingest → assert `signature_verified=True`; tampered + unsigned both rejected) passed 9/9. If you change the canonical surface on either side, both signatures break — re-run the parity selftest.
+- **e2e**: `certify_demo_to_payload(...)` runs the certify firewall (`autoformalize.default_instance_battery`) on a candidate formalization against labelled cases + a **matched-laundered control** (the anti-laundering signal: a candidate that passes while its laundered twin is *not* rejected ⇒ `governance_ratified=False` ⇒ `invalid`), maps the verdict, attaches faithfulness/checker refs + a re-runnable `metadata.provider_artifacts` receipt, and signs. The checker is injectable (`battery_fn`) so the selftest stays Lean-free. CLI: `python -m ztare.leanmill.formal_verification_provider {selftest|keygen|emit-demo}` — `emit-demo` runs the Basel rule against live Lean and emits a signed payload for `cognitive-firm-formal-verification create-from-provider-payload`.
+- **Boundary discipline**: payload/CLI only. Do NOT `import cognitive_firm` from `ztare/*`, nor `import ztare` from cognitive-firm. The kernel is untouched; trust is org-policy (an installed public key) + a re-verifiable certificate, never a provider name.
+
+### Self-learning / compounding taxonomy (catalogued 2026-06-10)
+
+> **Balance thesis (operator):** a capable agentic prover needs **determinism** (the kernel audit, anti-laundering, and safety caps), **agentic planning** (the agent orchestrates planning, solving, and substrate-routing, and sets search knobs rather than reading hardcoded env vars), and **self-learning** (the system compounds from its own runs and the agent can consult what it learned). LeanMill has all three layers, but the self-learning layer's richest signal is currently agent-blind.
+
+Seven mechanisms compound across runs. The decisive column is the last: does the **agent** consult it, or only the Python scheduler?
+
+| # | Mechanism | learns | persists | compounds (flag) | **AGENT-facing?** |
+|---|---|---|---|---|---|
+| 1 | `proof_cache` | verified proofs (statement-keyed) | `solver_lane_proof_cache.jsonl` (committed) | exact reuse, re-compiled in-context (default-**ON**) | **NO** — scheduler short-circuit before any leaf call |
+| 2 | `family_lemma_library` | invented helper lemmas (per-family context) + MDL keep/retire ledger | `<substrate>/family_context_FLYWHEEL.lean` (per-run) | generalize to a sibling family (`solve_family`; MDL off) | **YES** — provisioned into the leaf prompt, but only inside `solve_family` |
+| 3 | `no_good_store` | confirmed refutations | `solver_lane_no_good_store.jsonl` (committed) | negative memo, statement-keyed (default-**ON**) | **YES** — `prompt_block` "do NOT repeat these refuted attempts" |
+| 4 | `move_calibration` + UCB + context-prior | move-values (Beta posteriors / Elo / useful-exit) per `(move, error_class)` | `solver_lane_attempts.db` (committed) | a prior over move-selection (marginal default-**ON**; UCB/context-prior off) | **MOSTLY NO** — the scheduler `move_policy` consumes it; the agent never sees the Q-values |
+| 5 | `obstruction_to_conjecture` | the missing bridge lemma from a rejected cheat | in-memory seed (derived from #3) | refutation→targeted conjecture (rides #3, default-**ON**) | **YES (indirect)** — rewrites the conjecture prompt, post-cheat only |
+| 6 | `move_cards` | re-surfaces #4's per-move track-records as tool cards | reads the attempts DB | a learned prior the agent reads (`ZTARE_LEANMILL_AGENT_TOOLS`, **off**) | **YES** — but default-off |
+| 7 | `outcome_link` | did a calibration retune change a decision + help (Holmström) | `solver_lane_outcome_links.jsonl` | meta-learning over the tuner (recorder) | **NO** — built-but-**DORMANT** (zero production callers) |
+
+**The sharp finding:** the richest learner (#4 — 120 attempts, ratified-aware, per-error-class) is **agent-blind in the default config**; the Python scheduler picks the move from it, the agent never sees "for this error-class, native_hammer is 0/29, warm closes 38%." Three of seven reach the agent's prompt (no_good default-on; family in `solve_family`; obstruction post-cheat); the calibration bridge (`move_cards`) is default-off. And **no target-CLASS-conditioned** "for targets like this, these moves/substrates/decompositions worked" block exists — every agent-facing channel is keyed to the *exact* goal or the *current* family.
+
+**Interface verdict (the operator's question — primitive or not?):** a thin shared **read** interface is warranted; a unified **write/persist** abstraction is **not** (the stores are genuinely different shapes — statement-keyed JSONL, a SQLite attempts DB, a per-run Lean file — and forcing them under one persist API is the "two-engines-one-coat" trap they correctly avoid today via the shared `_key_for` only where it fits). The read side passes the ≥2-consumer bar cleanly: `no_good.prompt_block` + `move_cards.render_tool_block` + `family.provision` are already **three** independent producers of agent-prompt blocks from learned stores, injected at the same `agentic_leaf` seam with **no shared contract**. **BUILT 2026-06-10: `solver/learned_context.py`** — `render(goal, error_class, *, no_good_path, db_path)` **composes** the existing producers (no reimplementation): the `no_good_store` refutation memo (gated by `ZTARE_LEANMILL_NOGOOD`, default-on — parity with the prior injection) + the per-error-class (else marginal) move close-rates read from `move_calibration._cells_from_db`. Wired at the live leaf-prompt seam (`solver_core` ~1232, replacing the bare no-good injection). The no-good memo (trustworthy — confirmed refutations) surfaces by default (parity). The move-track-record surfacing is **DOUBLE-gated** by `ZTARE_LEANMILL_LEARNED_CONTEXT` (default-OFF = byte-identical to today) **AND** `ZTARE_LEANMILL_CALIBRATION_TRUSTED` (default-OFF). Selftest 7/7 incl. the off-parity and the contamination guard.
+
+> **⚠ DATA-ADMISSIBILITY (operator's catch, 2026-06-10) — the deepest self-learning lesson.** The attempts-DB calibration is **CONTAMINATED**: `native_hammer 0/46`, `cold_shot 0/27`, `external_frontier_prover 0/8` are NOT "these moves are bad" — they are **dead-instrument artifacts** from the pre-carrier-fix bug (those moves fed the kernel a never-parsing probe and so recorded 0/N without ever running; fixed 2026-06-08, but the poisoned rows persist). Surfacing that to the agent would **teach it the bug** ("never use native_hammer") — self-learning *compounding* a defect. So the move-stats are suppressed unless `CALIBRATION_TRUSTED=1` asserts the DB was re-baselined on the fixed apparatus. **The `apparatus_certificate` rule — "a negative is inadmissible without calibration" — applies to the LEARNING DATA itself; a 0/N from a dead carrier must not enter calibration.** The SCHEDULER's priors read the same contaminated DB (it has been down-weighting native_hammer for a bug, not a measurement). **FIXED 2026-06-10: the admissibility filter is BUILT in `move_calibration._cells_from_db`** (the single aggregation feeding both the scheduler priors AND learned_context): (a) a **re-baseline cutoff** `attempt_at >= 2026-06-09` (the carrier+REPL fix boundary — the operator's "the cutoff is essentially from yesterday when we fixed the bug"; env `ZTARE_LEANMILL_CALIBRATION_SINCE`), and (b) **apparatus-failure error-class exclusion** (`parse_error` = probe never parsed; `timeout` = right-censored cold-reload — neither is a move-quality signal). Default-on; `ZTARE_LEANMILL_CALIBRATION_ADMISSIBLE=0` reverts. Measured on the live DB: `native_hammer 0/46 → 0/10`, `cold_shot 0/27 → 0/7` — the poisoned dead-instrument losses dropped, so the prior falls back to the clean stub instead of being dragged to 0. This is the goldilocks bridge built correctly — the deterministic store persists, the agent + scheduler consult, but a negative from a dead instrument is refused entry (the `apparatus_certificate` rule applied to the learning data). The agent channel's move-stats stay double-gated (`LEARNED_CONTEXT` + `CALIBRATION_TRUSTED`) pending the A/B that the now-clean data unblocks.
+
+**BUILT 2026-06-10 — the compounder, from taxonomy to wired primitives.** The catalogue above became code:
+- **`contracts/learning_unit.py`** — the unified model the taxonomy implied. `LearningKind` (6: PROOF · LEMMA · REFUTATION · POLICY · FAITHFULNESS · CHEAT_PATTERN), `KeyLearningUnit` (the atomic increment), and `LearningExit` (CLOSED/GAP/REFUTED/CHEAT_CAUGHT/NO_SIGNAL/INADMISSIBLE) which **unifies the four legacy vocabularies** — `exit_of()` maps every solver `outcome` AND every factory `exit_kind` (the live `learning_feedback.py` set — all 13 values bridged, verified) into one disposition. "Exit-C credit" is one kind (PROOF/CLOSED); "credit" = the `admissible` bit (kernel-confirmed ∧ carrier-live), not the unit. Borrows `context_signature` + the `PolicyPromotion` blocked→advisory→promotable gate from cognitive-firm's `action_impact` (design-adapted, **NOT imported** — the payload-boundary discipline).
+- **`solver/faithfulness_store.py` (the 8th mechanism)** — the FAITHFULNESS axis was stateless (every NL↔formal verdict recomputed cold). Now the dual of `no_good_store`: confirmed NL→Lean correspondences + cross-substrate conflict memos, statement-keyed JSONL, wired INTO the firewall (`autoformalize_and_solve`: deposit on a confirmed admit; recall feeds `structural_faithfulness` its reference so the silent-weakening guard runs load-bearing instead of advisory-True). Default-off (`ZTARE_LEANMILL_FAITHFULNESS_STORE`).
+- **`solver/forecast_router.py` (the POLICY router the forecast pool lacked)** — wired at the STRATEGIC seam (`solver_core.solve` batch loop, where targets are distinct statements): a calibration-weighted ensemble over the signals the system already produces (move prior · cache · no_good · faithfulness · agent vote) prices the target batch by EV (`rank_rows`, advisory); `resolve_batch` records each kernel outcome → per-signal Brier → reweight, so it LEARNS which signal to trust and can earn promotion (advisory→active via `PolicyPromotion`). Gated (`ZTARE_LEANMILL_FORECAST_ROUTER`, default-off). Correctly **NOT** in the tactical move loop (the per-statement signals short-circuit earlier there — it would duplicate UCB+priors and create a second policy path). Honest null: near-term signal is thin on fresh targets (the default move prior); it compounds as cache/no_good history accrues on re-attacks — the machinery is the deliverable, the lift is the open A/B.
+- **Dead-learners:** `family_lemma_library.record_reuse` is **revived** — it was never called, so the MDL ledger retired every banked lemma as dead weight; a closed proof's cited helpers now get `+1 reuse`. `outcome_link` (#7) stays dormant (zero callers — revive-or-retire open).
+
+### Resilience & observability — the unbounded-blocking-wait class + the timeout factory (2026-06-10)
+
+The recurring "a run silently dies / hangs" class was root-caused: an **unbounded or over-budget blocking wait** in a deeply-nested layer (a warm-REPL `check`, a cold `lake env lean #print axioms` audit, an agent-CLI dispatch that got most of the wallclock). The fixes, all parity-safe:
+- **Central time-budget factory `common/timeouts.py`** — `timeout_s(name)` / `clamp_to_remaining()` / `budgets_report()`; named operational budgets with env overrides (defaults-in-code, absent ⇒ byte-parity — mirrors `solver/config.py`, which keeps the native-hammer tuning knobs; one home per concept). A missing timeout is now greppable ("a blocking call that didn't call `timeout_s`"). Warm-REPL compiles are capped at a ceiling (the persistent REPL is ~0.1s warm; >ceiling = pathological → fail-closed fast, cold `lake` keeps its full budget); the axiom audit fails **closed** (a timeout returns a sentinel axiom so it can never read as axiom-clean). **Coverage extended (2026-06-11):** the previously-scattered hardcoded call-site literals across the solver/formalizer/governance hot path now route through the factory too — `notes_refine`(240) · `leaf_verify`(250) · `vacuity_probe`(150) · `substrate_liveness`(120) · `independent_verify`(70) · `margin_probe`(90) · `selfcheck_compile`(180), each key defaulting to its prior literal (byte-parity verified per key, zero behavior change). The few remaining un-migrated sites are peripheral by design (internal server-ready polls in `lean_check_server`, subprocess version/availability checks, and already-caller-overridable `timeout_seconds=` function-signature defaults) — a focused follow-up, not a blind sweep.
+- **Dispatch heartbeats + py-spy** — every agent dispatch brackets a flushed `[dispatch] <rt> start/done` line, so a frozen log localizes a wedge without a live stack dump; py-spy is the live-stack tool when one is needed.
+- **Provider failover + one-switch primary** — codex/claude have separate subscription quotas; `agentic_leaf.default_dispatch` fails over on a quota/auth-dead provider, and `ZTARE_DEFAULT_SUBSCRIPTION_RUNTIME` flips the whole apparatus (leaf/planner/formalizer/provider-order) to the live one. A both-dead dispatch is classified **INADMISSIBLE** (the dead-instrument rule applied to the formalizer carrier — deposits nothing, not a false `faithful=False`).
+- **Compile-error feedback to the refine loop — 2026-06-10 (firewall convergence + burn fix)** — the autoformalize compile-fix refine loop was **blind**: `compile_fn` returns a strict bool, so a rejected-on-typecheck formalization handed the formalizer only "it did not typecheck" with no error to act on ⇒ it re-guessed ⇒ non-convergent retries (the P1-RUNG-A root cause: real-but-malformed `RatFunc`/partial-fraction Lean rejected + ~36% of dispatches burned to timeout on blind retries). Fix: `default_compile_diagnose` returns the ACTUAL Lean error (reuses the warm REPL's diagnostics, already produced and discarded), threaded via `compile_diagnose_fn` into `_formalize_feedback_hint` so a compile-fail refine is GUIDED ("fix EXACTLY these errors") not blind. ADVISORY (never a gate — the firewall's strict-bool soundness contract is untouched; only the hint changes). Validated: real diagnostic returned on a malformed statement, empty on valid, firewall selftest 7/7. The firewall itself is SOUND — it correctly refuses non-typechecking statements; the bottleneck was formalizer convergence, now fed the signal to converge.
+- **Formalize provider resilience (API-activated, single-shot) — 2026-06-10** — the formalizer is NL→Lean **single-shot**, so unlike the agentic solver leaf it can use a non-subscription API model. `default_formalize` falls the subscription lane (codex/claude CLI) back to an **env-selected, provider-agnostic** API model when the subscription returns DEAD/EMPTY (the sole-claude-contention timeouts that zeroed P1-RUNG-A): `ZTARE_LEANMILL_FORMALIZE_API_MODEL` (default `deepseek-chat`), routed by `llm_runtime.call_text` to whichever of deepseek/gemini/openai owns the id, availability checked with the util's own `model_is_configured` (no hardcoded `*_API_KEY`). Default-on (`ZTARE_LEANMILL_FORMALIZE_API_FALLBACK`); passing `runtime='<model-id>'` formalizes purely via the API provider. The firewall stays the **SOLE** faithfulness arbiter, so a weaker API formalizer can only ever FAIL CLOSED — never launder. The **solver leaf** is agentic (writes probes, runs Lean, multi-turn tool-use), so a single-shot API model cannot drive it; its resilience remains the subscription-CLI failover (a non-subscription *agentic* leaf is open future work, not retrofitted onto the firewall).
+- **Global campaign wall + per-move-clamp finding (the "v6 ran 6 hours" RCA, 2026-06-13).** The per-lemma / per-target budgets are GENEROUS by design, but under deep recursion (`ZTARE_ISO_MAX_DEPTH`) their SUM across the tree is effectively unbounded — v6 closed the easy rungs in ~3h then ground the open-math residue crux for 3 more (7 codex timeouts, 0 closures, no global wall). Fix: `autoformalize_from_notes` now has **`ZTARE_LEANMILL_CAMPAIGN_WALL_S`** (default 14400 = 4h; 0 disables): once the monotonic deadline passes, remaining lemmas + the target are SKIPPED as `wall_deferred` (honest-open, never a fake closure; earned rungs are already kill-safe via incremental write-back). DEEPER finding from the same RCA: all 7 v6 timeouts hit at *exactly* 358–360s — the real guillotine was the **per-MOVE sub-allocation clamp** (a 1800s lemma budget split across the DAG moves ⇒ ~358s/move), not the lemma budget; a proof making genuine progress could not request more time. Mitigation in use (bigger lemma budget ⇒ proportionally bigger per-move share); the proper fix (a move requests its own budget) is **[#103]**. CAUTION re-stated for honesty: v6's 3 ratified certs were exp-MODEL-CASE + a MvPolynomial helper, **NOT** the 4 blueprint decomposition lemmas (all four stayed open) — see `reference_v6_forensic_blueprint_lemmas_all_open` memory; do not cite ratified-cert *count* as crux progress.
+- **Leaf model + reasoning-effort pinning (2026-06-13).** The claude leaf lane pins per-run via env (no code change at call sites): `ZTARE_CLAUDE_AGENT_MODEL` (e.g. `claude-opus-4-8`) → `--model`, and **`ZTARE_CLAUDE_EFFORT`** (`low|medium|high|xhigh|max`) → `--effort` (validated against the live `claude --print` flag set; unset/garbage ⇒ omitted = account-default parity). `ZTARE_LEANMILL_LEAF_RUNTIME=claude` routes the leaf to the claude lane. (Used by the v7 campaign: Opus-4-8 at `xhigh` — claude `--print` BUFFERS output so it is exempt from the codex-only idle-kill, which also removes the 358s idle-guillotine on a long honest proof.)
+- **Calibration-banner de-spam (2026-06-13).** The move-calibration table was re-printed on EVERY `solve_adhoc` entry — 368 table lines (40% of the 918-line v6 log), burying the actual reasoning. The full table now prints only when calibration *changes* (a content fingerprint guard, `_LAST_CALIB_FP`); else a one-liner. `ZTARE_LEANMILL_VERBOSE_CALIB=1` restores the always-full behaviour. Pure observability fix, no behaviour change.
+
+### Adversarial bug-class audit + fail-closed hardening (2026-06-13)
+
+Triggered by a costly iatrogenic (a PROVEN theory lemma queued as a malformed work item because the sorried-detection grep `"sorry" in <lean_text>` was fooled by a section-header comment containing the word "sorry"). Two adversarial sweeps followed; all fixes below are parity-safe and selftested.
+
+- **THE INVARIANT (lexical-decision hardening).** A consequential decision about Lean source (is this sorried? where does the statement end? which decls exist?) is NEVER made by a raw substring/`split` on source text — it routes through the canonical **comment-stripping** primitives (`lean_source.has_sorry`, `statement_integrity._strip_comments`/`_blank_comments`/`decl_blocks`) or, better, the **kernel** (REPL `sorries` / `#print axioms sorryAx`). A `sorry`/`theorem`/`:= by` inside a comment, string, or identifier must not drive routing/extraction/gating. Sites fixed to this invariant: `autoformalize_notes` sorried-extraction (the original bug), `isomorphism_decompose._parse_dag` chain-vs-lemma classification, `conjecture`/`spectral_lift`/`reflection` proof sorry-checks, `autoformalize` statement extraction, `solver_core` governance probe-selection, the `_notes_carry_decomposition` route, and **`statement_extract.py`** (the goal-extractor — `parse_decls`/`split_header`/`local_refs` now blank comments first, via an offset-preserving `_blank_lean_comments`, so a `-- theorem … := by` in a comment no longer creates a phantom decl or mis-cuts the header). All are COST/CORRECTNESS (the kernel backstops closure); none was a soundness hole. The proper kernel-backed sorried detector is **[#126]**.
+
+  **CODEBASE-WIDE SWEEP (2026-06-13, "fix once and for all" — the operator: "we have ast/contracts, why harm ourselves; regex is not world-class for this").** Lean's grammar is **not regular** (nested `/- /- -/ -/`, `:=` in binders, unicode, string literals), so a regex/substring is a strictly-weaker PROXY for what the kernel knows exactly. The fix is structural, not another band-aid:
+  - **ONE comment scanner.** `lean_source._comment_mask` is the single nested-aware Lean-comment scan; `strip_comments` (remove) and `blank_comments` (offset-preserving) both derive from it. A bare `re.sub(r"/-.*?-/")` is non-nested (stops at the first `-/`, leaks the tail → phantom decls). **Every ad-hoc comment stripper in leanmill was migrated** to delegate here — `statement_integrity._strip_comments`/`_blank_comments`, `statement_extract._blank_lean_comments`, `isomorphism_decompose.deanchor`, `conjecture` (×2), `abduction` (×2), `spectral_lift`, `reflection` (×3). Re-scan confirms **zero** `re.sub(r"/-…-/")` outside the canonical home.
+  - **ONE binder-safe `:=` split.** `lean_source.split_at_proof` / `signature_before_proof` cut at the first **bracket-depth-0** `:=` — a `let k := 5` in a hypothesis binder, a `(n := 3)` default arg, a `{ x := 1 }` structure literal is NOT mistaken for the proof. Replaced `text.split(":=")[0]` / `re.split(r":=", …)` in `proof_cache.normalize_statement` (the canonical cache KEY — parity for every non-binder statement, correct for the rest), `anti_unify`, `autoformalize._extract_signature`, `solver_core` sibling-banking, plus the `extract_signature` no-sorry fallback itself.
+  - **KERNEL TRUTH for "is it open?".** New `solver/kernel_structure.py`: a decl is OPEN iff `#print axioms` shows `sorryAx` (reusing `audit_external`'s pattern — the same F1/F2 channel that gates closures, name-based, no line arithmetic). `theory_consolidation` now asks the kernel which NEW decls are sorried (the file just compiled), falling back to the now-correct `has_sorry` only when no live REPL exists — so the lexical check is a safety net, never load-bearing. This is **[#126]** done right. The only residual `"sorry" in X` in the solver is a selftest fixture assertion.
+  - **Lexical `sorry` decisions** (the cheap, non-kernel sites — proof-cheat guards, chain assembly) now route through the nested-aware `lean_source.has_sorry`: `conjecture` special/implies/refute/blob gates, `isomorphism_decompose` composite-assembly proof guard, `autoformalize` fallback line scan.
+- **BUG fixed (anti-laundering, soundness): `theory_consolidation` append-only GATE 1 was a SUBSTRING match.** `_a_text.find(line)` let an in-place definition edit whose old text is a prefix of the new line (`def A := True` → `def A := True ∧ True`) pass the wall that exists to reject definition editing (GATE 2's sorry-tolerant compile can't catch an edited def — it still compiles). Now whole-line, in-order matching. A silently-edited def could invalidate a previously-proven rung, so this is a real soundness tightening (not new governance — making an existing gate do its job).
+- **FAIL-CLOSED at the soundness boundary (3 gates hardened).** The standing rule "a gate that cannot run must BLOCK the closure, never credit it" was violated in three places, now fixed: (1) `leanmill_cage.govern_via_cage` wrapped the *fallback anti-laundering kernel* in its fail-open `try`, so a kernel crash returned `passed=True` — the fail-open scope is now ONLY the Cage routing; a fallback-kernel crash returns `passed=False`. (2) `_agentic_leaf_warm_solve` ran the statement-integrity diff (the laundering-catch on the self-edited probe) only `if ptxt:`, silently crediting a closure whose probe was unreadable — now it **fails closed** (and the probe lookup is robust to a winner closing on attempt index >0, not a hardcoded `_0`). (3) the adhoc governance kernel-crash branch now stamps `integrity_unverified=True` so the cert/notes layers don't ratify an integrity-unverified closure. Regression-tested: a reported closure with no verifiable probe returns a non-closure.
+- **Minor (cost/telemetry).** `_domain_atlas_semantic_hits` reported the last atlas's row count instead of the merged corpus size (`len(all_rows)`); `agent_output.budget_request`'s clamp could exceed `cap` when `floor>cap` (now `min(cap, max(min(floor,cap), v))`).
+- **Round 3 — numeric / state / typed-contract (2026-06-13).** A third adversarial sweep + the typed-contract (#49) gap audit. Fixed: **forecast scores clamped to [0,1]** (`forecast_router` AgentVote + Pool — the LLM-sourced forecaster emitting `95` ("95%") would corrupt the EV ranking AND the Brier ledger that drives the learned per-signal weights — a real silent-wrong-result); **winner-probe path carried** (`agentic_leaf` records the exact `RobustProbe_<provider>_<i>.lean` it closed on, so the warm-leaf integrity readback stops guessing `_0` + a lexically-mis-ordered glob — fixes A1 and the `sorted()[-1]` `_10<_9` bug B2 in one move); **recursion depth threaded as a parameter** (`route_and_solve`/`solve_decomposition`/`solve_adhoc` take `_depth`; the `os.environ['ZTARE_ISO_DEPTH']` mutation that raced under concurrency is gone, env stays a read-only top-level override — **#127 done**); **nested block comments** (`lean_source.strip_comments` is now a depth-aware scanner — `/- /- -/ -/` removes the whole region; `has_sorry` routes through it, so the comment-strip class is robust even to nested comments); spawned sub-goal gets a **distinct name** (`_eff_row` no longer silently inherits the parent's `target_theorem_name` on a regex miss); `ProofTarget.source_path()` at the warm-leaf read (a missing key is a clean miss, not a `KeyError`); deleted the dead `_source_cue_check_legacy` twin; `stamp_credence` clamped; the iso warm-check probe is per-target (`IsoDagProbe_<target>.lean`, no cross-shard collision). DEFERRED as **deliberate** migrations (the convention's own rule — highest-risk-first behind equivalence tests, never a blind sweep, **#49**): the ~15 bare `(ok, proof, tail)` move tuples → `MoveOutcome`; the near-duplicate contract-builders → one canonical. THE PRINCIPLE (operator): brittle bare-dict/regex parsing is the #1 bug class; route every structured-data seam through the typed contracts (`ProofTarget`/`MoveOutcome`/`YamlConfig`) and every Lean-source/LLM-output parse through the canonical extractors (`lean_source`/`decl_blocks`/`fenced_block`) — pydantic where the data is a dict, canonical parser where it is Lean text.
 
 ### Capability A/B-discipline ledger (audit 2026-06-07)
 
@@ -1372,18 +1987,32 @@ The public-tool calibration benchmark and C-discriminating benchmark are differe
 > Legend: ✅ present · ⚠️ present-but-flawed · ❌ missing. Grounded by the 16-capability audit
 > (`leanmill-capability-discipline-audit`, 2026-06-07).
 
+> **PRE-REGISTERED VERDICT MAPS (NS-hunt transfer, 2026-06-13).** A 6th element for NEW lift
+> experiments: fix the test spec, thresholds, and what-each-outcome-will-mean BEFORE the result
+> lands (the NS phase5bp rule — interpreting after seeing the data is the architectural-leakage
+> trap). Pre-registrations live in `projects/leanmill_experiments/preregistrations/`; first
+> instance: `k3_parallel_sampling_ab.md` (authored before v7 launched — it scopes what the
+> sampling lever may claim from a bundled campaign run: only its internal metrics, never the
+> closure-rate delta). NS-hunt meta-pattern review (2026-06-13, deliberately conservative):
+> ABSORBED = this pre-registration rule + the impossibility-as-deliverable kill leg in the theory
+> prompt (a compiled `<name>_impossible` is a kernel-certified route correction — Level439's
+> self-kill pattern) + definitional-bundling-over-compatibility-hypotheses; ALREADY HAD =
+> consequence-for-next-consumer (`consumer_check`), pattern-action cards (`move_cards` RP-002),
+> eigenquestion ≈ `residual_class`; REJECTED (overfit risk, no demonstrated leanmill failure
+> mode) = second-order control taxonomy (classifying the negative controls themselves).
+
 | Capability | Flag (default-off) | Isolating A/B arm | Telemetry | Pass/fail gate | Lift |
 |---|---|---|---|---|---|
 | proof_cache (reuse) | ⚠️ default-**ON** (`ZTARE_PROOF_CACHE`) | ❌ only a MOCKED A/B (no kernel) | ✅ **FIXED 2026-06-07** (`MOVE_CACHE_REUSE` row + `on_cache_reuse` hook — reuse was invisible to the attempts DB) | ⚠️ ad-hoc | ⏳ pending (real bank→hit→reverify e2e) |
 | UCB-over-moves | ✅ `ZTARE_LEANMILL_UCB_MOVES` | ✅ `ms_full_ucb` vs `ms_full` | ✅ | ✅ | ⏳ pending (run `_ucb_ab.py` on VPS) |
 | UCB-over-frontier | ✅ `ZTARE_LEANMILL_UCB_FRONTIER` | ✅ `ms_full_ucb_frontier` (needs a DEEP-decomp corpus; no-op on shallow) | ⚠️ frontier-select trace only | ⏳ | ⏳ pending |
-| witness_transport (∃) | ✅ `ZTARE_LEANMILL_WITNESS_TRANSPORT` | ✅ **`ms_witness` added 2026-06-07** (was bundled in `ms_exogenous`) | ✅ (path in attempt notes) | ✅ kernel | ⏳ pending |
+| witness_transport (∃) | ✅ `ZTARE_LEANMILL_WITNESS_TRANSPORT` | ✅ **`ms_witness` added 2026-06-07** (was bundled in `ms_exogenous`) | ✅ (path in attempt notes) | ✅ kernel | ✅ **MEASURED 2026-06-09: 12/12** — first admissible NON-SUBSUMED closure-lift. Controlled A/B (`witness_lift_controlled.py`, carrier-preflight-gated) on the Pell/Kronecker/witness tiers: native cascade closed **0/12** (discriminating), witness-transport closed **12/12** kernel-ratified (Pell fundamentals incl. x=1766319049; semiprime factoring; integer roots) |
 | **Kronecker / linear-system** (NEW) | ✅ `ZTARE_LEANMILL_KRONECKER` | ✅ `ms_kronecker` (vs `ms_witness`) | ✅ (`path=kronecker_system`) | ✅ kernel | ⏳ pending |
-| MOVE_FALSIFY | ✅ `ZTARE_LEANMILL_FALSIFY` | ✅ `falsify` | ✅ | ✅ | ⚖️ **0/4 = STARVATION** (offered 6th, never selected; root-caused, not a capability fail) |
+| MOVE_FALSIFY | ✅ `ZTARE_LEANMILL_FALSIFY` | ✅ `falsify` | ✅ | ✅ | ✅ **MEASURED 2026-06-09: 4/4 + 0 wrongly-falsified** — controlled runner (real `falsify_generate`+`falsification_is_genuine`, sidesteps the prior 0/4 STARVATION confound): cascade proves the false G 0×, falsify kernel-proves ¬G on all 4 genuine-false targets, soundness control holds (0/2 true wrongly refuted) (`falsify_lift_controlled.py`) |
 | MOVE_CORROBORATE | ✅ `ZTARE_LEANMILL_CORROBORATE` | ⚠️ rides `ms_exogenous` (sliced post-hoc) | ✅ | ✅ | ⏳ pending |
 | MOVE_SPECIALIZE | ✅ `ZTARE_LEANMILL_SPECIALIZE` | ✅ `ms_full`/`signal` | ✅ | ✅ (verified rung) | ⏳ never-fired (starvation — router fix targets this) |
 | MOVE_GENERALIZE | ✅ `ZTARE_LEANMILL_GENERALIZE` | ⚠️ confounded w/ SPECIALIZE in `signal` | ✅ | ✅ | ⚖️ inadmissible (band `too_easy`) |
-| MOVE_CONJECTURE | ⚠️ hardwired in `MOVE_ORDER` (no off-flag) | ❌ | ✅ | ✅ | ⚖️ inadmissible (no ablation control) |
+| MOVE_CONJECTURE | ✅ `ZTARE_LEANMILL_NO_CONJECTURE` (off-flag added 2026-06-12; default-OFF = byte-parity, excludes it from all 4 selection paths) | ✅ `apparatus_no_conjecture` (vs `apparatus`) | ✅ | ✅ | ⏳ control WIRED; run pending (serial Lean + admissible 0<base<1 corpus) |
 | iso-decompose | ✅ `ZTARE_LEANMILL_ISO_ROUTE`/`ZTARE_ISO_SAMPLES` | ✅ `apparatus`/`apparatus_v2` | ⚠️ no `MOVE_ISO` constant (records under leaf move) | ✅ audit | ⏳ pending |
 | **catalog-shrink** (dynamic-primary iso, NEW) | ✅ `ZTARE_LEANMILL_ISO_DYNAMIC_PRIMARY` | ✅ `apparatus_dyniso` (vs `apparatus_v2`) | ✅ (`iso_source` in result) | ✅ audit | ⏳ pending (needs gemini key) |
 | composite ratification | ⚠️ default-on-in-`apparatus` (`ZTARE_LEANMILL_COMPOSITE_RATIFY`) | ❌ no `apparatus_no_composite` control | ⚠️ | ✅ kernel (keystone PASS) | ⏳ soundness ✅, lift pending |
@@ -1394,271 +2023,38 @@ The public-tool calibration benchmark and C-discriminating benchmark are differe
 | autoformalize | ❌ no flag (opt-in/UNWIRED) | ❌ | ❌ | ✅ firewall | ⚖️ not a live capability (Mathlib-bound) |
 | governance retry / MNC | n/a (a GATE, not a lever) | n/a | ⚠️ | ✅ | n/a (soundness gate) |
 
-**Three gaps fixed THIS session (2026-06-07):** (1) **proof_cache reuse telemetry** — a cache hit closed via `closed_from_cache`+`continue` BEFORE `move_attribution`/`_record_attempt`, so reuse wrote NO attempts-DB row (invisible to `move_yield_report`/per-arm lift); now emits a `MOVE_CACHE_REUSE` attribution row + fires an injected `on_cache_reuse` → `_record_attempt(move="cache_reuse")`. (2) **isolating arms** — added `ms_witness` (witness-only), `ms_kronecker`, `apparatus_boost`, `apparatus_dyniso` so the four newest levers each have an UNCONFOUNDED control (the audit flagged witness/corroborate/composite/generalize as bundled). (3) **clear-list completeness** — verified every env key any of the 16 arms SETS is in `apply_arm_env`'s parity clear-list (no cross-arm leak).
+### Move-carrier integrity, and the open lift question
 
-**Later 2026-06-07 — more isolating arms + the witness-niche finding:** added `ms_corroborate` (corroborate-only vs `ms_baseline`) and `apparatus_no_composite` (the composite-ratify control) — corroborate + composite now have unconfounded controls. Built the **Pell/diophantine** witness route (`solve_diophantine_pell` via `diop_DN`) + the genuinely-LLM-hard corpora (`kronecker_tier` = large-semiprime FACTORING systems; `pell_tier` = huge fundamental solutions). **LIVE FINDING from the witness lift (`ms_baseline` vs `ms_kronecker`):** the warm agentic leaf (with Lean+Mathlib) **closes the large-semiprime systems itself** (it factors 13-digit semiprimes), so they drop as non-discriminating — the SAME "strong-leaf saturates the substrate" lesson, now at 13 digits. So **witness-transport's lift niche is NARROW**: a strong Lean-wielding leaf covers most computable existentials; the only robust discriminator left is the Pell tier (no native/Mathlib one-liner emits a 10-digit fundamental solution) — verdict pending. Honest implication for the ledger: witness/Kronecker lift is likely LOW not because the move is broken but because the leaf rarely NEEDS it; the move earns its place only on the narrow band the leaf can't compute-or-cite. **proof_cache e2e** (`_proof_cache_e2e.py` + `proof_cache_tier.jsonl`) BUILT + locally key-collision-validated + VPS-launch-ready — closes the "lift only ever mocked" gap (a same-Prop bank/hit pair must close via `MOVE_CACHE_REUSE` with the real in-context re-verify).
+A 2026-06-08 audit of the attempts ledger found that **every recorded closure came from the warm agentic
+leaf** (`claude_warm`). The deterministic cascade (`native_hammer`), `cold_shot_fanout`, and
+`external_frontier_prover` had a 0% close rate because their probe assembly fed the kernel a never-parsing
+string — the enriched context was valid as an LLM *prompt* but not as *compiler input* (a bare,
+unwrapped goal signature plus raw, un-commented premise-shelf text) — and the strategist moves never
+produced a closure. **So the governed apparatus had, in effect, never run.** Prior "apparatus-lift = 0 /
+lift pending" results compared the warm leaf against itself with the other moves dead; they are
+dead-instrument artifacts, not evidence that the environment does not help. The nurture thesis is
+*untested*, not refuted. (Read the "lift pending" cells in the ledger above as "carrier was dead until
+2026-06-08; lift now measurable," not "built and measured-null.")
 
-**Two OPEN polarity decisions (operator call — behavior-affecting, NOT flipped unilaterally):** `proof_cache` and `gap-refine` are default-**ON** but their lift is unmeasured (proof_cache's only A/B was mocked). The discipline wants default-OFF-parity-until-lift; but both have production history, so flipping is a behavior change. RECOMMENDATION: leave proof_cache/gap-refine ON (grandfathered, with the now-fixed telemetry to measure them in place); flip **composite ratification** to default-OFF (it is NEW + only soundness-validated) once the apparatus arm is decoupled. Decide before the next batch run.
+The fix — compile-valid probes built from the real source via `ztare.leanmill.lean_source`, native_hammer
+compiling the real file, and a robust statement extractor — resurrected the dead moves (proven on real
+Lean). Three standing guards now make a silent dead move impossible:
 
-**QUEUED for lift-testing (built/wired, lift not yet proven — REUSING existing primitives, not rebuilds):**
-1. **Closure-rate amplification** (the decisive SCALE claim): a HARD cited-base build-up where compound closes what baseline can't. Highest-priority; validates the SCALE thesis.
-2. **MDL-optimal lemma library** ✅ BUILT (default OFF until lift-tested): retire banked lemmas that don't compress future proofs (exposed ≥`min_exposure`, never reused) so the leaf's context stays lean. The MATH lives in the canonical `ztare.fit.mdl` (BIC + two-part-code MDL, de-duped from `compress_champion`'s 3 inline BIC copies); leanmill consumes it via the `MDLLibrary` interface with a Lean-token size function (`family_lemma_library.lean_description_length`) — Strategy pattern, no math reimplemented. Reuse/exposure tracked in a per-context `.mdl.json` ledger (recorded always; provisioning switches to `provision_mdl` only under `ZTARE_LEANMILL_MDL_LIBRARY=1`). The principled evolution of the proven reuse mechanism. NOTE: leanmill uses the **MDL/two-part-code** side; **BIC** is shared autoresearch infra (curve-fit model-selection), canonicalized here but not yet wired into leanmill.
-3. **Information-yield routing**: REUSE `evaluate_information_yield` (now advisory in solve_family) to gate/pivot a stagnant build-up; gate it on once the lift A/B shows it cuts wasted spend.
-4. **Frontier-triage budget-lift**: a defer-on run proving it never defers a closable row.
-5. **MDL proof-form selection** ✅ SELECTOR BUILT (`family_lemma_library.mdl_shortest`): among best-of-N closing proofs of the same target, bank the description-length-shortest → minimizes the library's total DL (leaner context, faster recompiles, more portable). The proof-form analogue of compress_champion's "simplest gate-passing form". Live wiring is OPT-IN + queued: `solve_robust` short-circuits on the first closer (cost discipline), so collecting multiple closers to choose among costs extra generation — a cost/quality tradeoff to lift-test, not a free lunch.
-6. **BIC calibration-model selection** ✅ BUILT (`move_calibration.select_calibration_model`, reuses canonical `bic_from_loglik` — the leanmill use of BIC): decides by BIC whether est_p_close should split by error_class (more params) or pool by move (fewer), so sparse governed data can't overfit the priors that route the solver. Lift = does BIC-gated splitting beat always-pooled / always-split on recorded-forecast Brier (needs governed data to accrue). Caveat: BIC over-splits at ~1 obs/cell (perfect separation); the existing nested shrinkage handles within-split sparse cells (complementary).
-7. **Value-guided DAG frontier** ✅ WIRED (`governed_dag_search._effective_est_p`): the best-first frontier now ranks open nodes by the EXOGENOUS est_p (retrieval `est_p_seed` override, calibrated move prior else), the same value the policy acts on — previously it ignored `est_p_seed` and scored every premise node at the generic native prior. Surgical: byte-identical for seedless nodes; only premise-anchored nodes change (now expanded by retrieval value). Lift = does value-ordered expansion close more on a premise-rich substrate. Borrowed from the value-guided-search lineage (AlphaProof/DeepSeek) but reusing OUR calibration as the value function. Deeper refinements queued (per-error-class-conditioned priors via the BIC selector; beam/lookahead).
-8. **Equivalence-keyed proof cache** ✅ BUILT default-off (`proof_cache.normalize_statement_equiv`, `ZTARE_LEANMILL_EQUIV_CACHE=1`): α-equivalence keying (bound-var-agnostic) so structurally-identical goals collapse — reuse as REACH, not just speed (covering-space-quotient lever, surfaced by the isomorphism engine). PURELY SYNTACTIC O(len) regex normal-form (the string IS the hash) — NOT semantic equivalence, which would be the "execution trap" (kernel cost > proof step); the in-context re-verify guards correctness on hits. Lift = cache hit-rate (equiv vs exact) on a build-up; deeper equivalence only via the goal term Lean already elaborates (free byproduct), never dedicated compute.
-9. **Extra governance organs (ADVISORY)** ✅ BUILT default-off (`governance_organs.py`, `ZTARE_LEANMILL_EXTRA_ORGANS=1`): (a) MDL/generativity — flag a lone-citation lookup whose proof-DL is anomalously low for the claim; (b) Schwartz-Zippel randomized differential probe — perturb a numeric literal + re-verify the SAME proof (closing a should-be-false variant = vacuity/assumes-conclusion candidate). Surfaced by the engine on the governance ceiling. BOTH advisory (never auto-reject — SZ can't guarantee the perturbation falsifies, e.g. inequalities weaken-but-stay-true; per §3b don't hard-gate an unvalidated organ). Efficacy test = catch known laundering WITHOUT false-positives on genuine proofs (positive+negative controls); promotion to fail-closed only after that + adversarial review.
-10. **Reachability invent-criterion** ✅ BUILT default-off (`governed_dag_search` `ZTARE_LEANMILL_REACH_INVENT=1`): fire the invent move EARLY only on an OUT-OF-SPAN signal (`unknown_identifier`/zero-progress after a commutative move) — skip doomed resource escalation, adjoin a primitive (Kronecker/Kalman lever). NOT the reverted BLANKET promotion (conditional + criterion-gated; default-off = byte-identical plain order). Lift = closes more out-of-span targets / saves budget vs the plain menu.
-**CHEAP-LIFT VERDICT on the isomorphism-surfaced levers (2026-06-04, no-leaf replay over the real proof cache `lever_lift_cheap.py`; small-N but informative; survived an adversarial review that fixed real bugs in all 3):** #8 equiv-cache = **0 α-collapse on the real cache** (the leaf names consistently → no α-variants → the syntactic version rarely fires; the valuable definitional version is the execution-trap) → LIKELY LOW VALUE, undemonstrated. #9 MDL-generativity organ = **false-flags genuine banked-lemma reuse** (`exact PROVEN_…` IS the compounding mechanism); the MDL ratio cannot separate "right lemma" from "too-strong lemma" → **NOT VIABLE as a flag, demote to a reported ratio.** #9 SZ randomized-differential organ + #10 reachability-invent = NOT cheaply testable (need lake/leaf) → still queued. So cheap parallel calibration killed/demoted 2 of 3 before VPS spend.
+- **Move-carrier integrity (positive control).** Before any run trusts a move *negative*, `solve_adhoc`
+  runs a pre-flight requiring `native_hammer` to close a trivial `: True := by trivial`; a move that
+  cannot close anything is loudly flagged `harness_dead` and its negatives are **inadmissible**. A 0/N
+  from a move whose carrier never fired is not a scientific result.
+- **Failure triage.** `ztare.leanmill.failure_triage` classifies every `failed_compile` by error class;
+  a move whose failures are ≥80% parse/elaboration errors is a DEAD INSTRUMENT (the probe never parsed,
+  not the math), surfaced to factory intelligence (`leanmill_failure_triage.json`).
+- **One canonical parser.** `ztare.leanmill.lean_source` is the single home for reading structure out of
+  Lean source (signatures, stubs, sorry-detection, names); no module rolls its own goal/signature/proof
+  regex — the divergence that caused the bug.
 
-These reuse ZTARE autoresearch primitives (info_yield, compress_champion/MDL+BIC, residual_to_lever, premise-shelf) + the isomorphism-surfaced levers (#8–10) — build-to-have-ready, prove lift before defaulting on. A/B harness for the MDL-library: `projects/leanmill_experiments/mdl_library_ab.py` (`--dry` positive control PASSES — drops 4 dead-ends, keeps the spine, context 127→43 tokens; `--live` is LAUNCH-READY for the VPS — consumes `longbuildup_substrate.py`'s 24-sibling triangular-number build-up, runs flat-vs-MDL, tests the Barrington prediction that flat's late-sibling closure degrades as length grows while MDL holds).
+The decisive open measurement is now possible for the first time: an apparatus-vs-bare-leaf A/B on the
+fixed solver, on a critical-band substrate (the leaf near ~50% stochastic closure), scored on
+closed-or-exact-gap — does the now-alive apparatus close (or localize) anything the bare warm leaf cannot?
+Lift is only visible in that critical band: on easy substrates a strong leaf closes everything and the
+environment is invisible; on impossible ones nothing closes either way.
 
-**LIFT DEBT (honest, §0 discipline):** every item in this QUEUED list — plus the prior engine round (ad-hoc entry, frontier-triage, leakage-gate, compounding closure-rate, per-class calibration, proof-repair, selection_priors, info-yield routing) — is BUILT + self-tested + parity-safe but has **NO run lift verdict**. The ONLY thing demonstrated is the SCALE reuse MECHANISM (deterministic reuse=3, N=3) — a mechanism-existence proof, not a lift measurement.
-
-**STRATEGIC STATE — DISCRIMINATING-SUBSTRATE PIVOT + the criticality insight (2026-06-04).** The MDL-library Barrington A/B RAN to a verdict: **null** — flat 1.0 / MDL 1.0 closure (no degradation) and MDL ~24% SLOWER (pruning bookkeeping with nothing to prune). Root cause is general: **on EASY substrates the strong leaf solos every target, so the environment (library / governance / calibration / the surfaced levers) is invisible — every easy-substrate A/B comes out null.** The isomorphism engine, run on this exact ceiling, surfaced the **criticality** principle (Thom catastrophe / bifurcation / Griffith fracture / error-correction): a controller's value is measurable+dominant only at the **critical regime near the failure frontier** — i.e. on targets the leaf closes ~50% **stochastically**, not at 100% (easy) or 0% (impossible). So the real lift program is: (1) a HARD FORMAL substrate — the **APN spectral seed** (`projects/gp_spectral_apn_seed_2026_05_28/candidates/`, 13 well-formed sorried spectral-theory targets; project = `apn_v427_sidecar`, v4.27 Mathlib built; leaf verifies via `lake env lean`, no toolchain mismatch); (2) a cold-leaf BASELINE (`spectral_baseline.py`) to find the **critical** (~50%-solo) targets; (3) the environment-lift A/B THERE (does library/seeding close the marginal ones the cold leaf can't?). That A/B — not the easy-substrate ones — is the real measurement; paying down the lift debt = running it, not building more.
-
-**SVD/SCHATTEN BAND + COMPOUNDING A/B — RAN, with a calibration correction (2026-06-05).** Built a coherent SVD/Schatten family (`candidates/svd_schatten/svd_1..8`, well-formed against v4.30 — `LinearMap.singularValues`; the old v4.27-curation ERROR was a substrate-version artifact). A SOLO band run (`svd_band.py`, ONE attempt/target) gave 3/8 = 0.375 — looked like the discriminating band. **It did NOT replicate:** the compounding A/B (`svd_compound_ab.py` via `solve_family`, leaf-first, compound on vs off) closed **8/8 on BOTH arms**. So (a) NO compounding lift — ceiling artifact (baseline saturates 8/8, no headroom), and (b) the 0.375 was **single-attempt stochastic** (claude_warm p≈0.83; the 5 `exact_gap`s were first-attempt misses the leaf closes on retry), NOT a stable substrate property. LESSON (hard): **never claim a closure RATE from one attempt per target** — a band must be measured over N≥5 runs at a FIXED budget. The SVD targets ARE harder than rayleigh (most needed >1 attempt) but the leaf still saturates at this budget, so the SCALE/compounding leg is **UNMEASURED, not refuted**. CORRECT next experiment: a budget-CONSTRAINED A/B — cap per-target attempts/timeout so the baseline sits at a stable ~50% (measured, not assumed), giving real headroom; the critical regime is budget-dependent, not a fixed property of the substrate.
-
-**AUTOFORMALIZATION + faithfulness firewall (2026-06-04, built, OPT-IN, gated).** `solver/autoformalize.py` — the SCALE direction (unlock the NL math universe — Litt's problems, arXiv — as targets). Borrow the NL→Lean step (frontier model + premise-shelf retrieval); the distinctive value is the **faithfulness firewall** = governance applied to STATEMENTS (compile→`lean_proof_gate`, vacuity→`governance_organs`, structural weakening-diff→`statement_integrity`, DIRECTIONAL cold cross-family judge→the analogy/cold-dispatch). FAIL-CLOSED (a false ACCEPT = a fabricated success). Adversarial-review-hardened (strict-bool, all legs fail-closed, vacuity probe; the structural carrier = isomorphism + lossless round-trip, surfaced by the engine). Reuses the kernel — NOT a parallel governance. **Sequencing: it scales a value → gated on the spectral A/B showing the environment lifts on hard formal targets first.** (See also: the GitHub README needs a first-principles positioning rewrite — task #19.) **TESTED 2026-06-04 (adversarial, 15 triples, RAN the real code):** the DETERMINISTIC two legs (structural fingerprint + v33 vacuity) robustly catch quantifier-REORDER (5/5 — the `quantifier_sequence` feature, where ∀/∃ presence is unchanged), added-hypothesis (binder count), dropped-top-level-conjunct (`conclusion_op`) ≈ **11/15 on advertised carriers**; STRUCTURALLY BLIND to 4 classes — buried domain/membership weakening (`Ioo→Icc`), operator-inside-equation flip (`a²+b²→a²−b²`), unused-hypothesis (conclusion holds without a hyp), arithmetic empty-domain (`b<a ⇒ Icc a b = ∅`, which the LITERAL empty-domain rule can't derive). Those need the LAKE tier (`triviality_fn`/`independent_verify`, leave-one-hypothesis-out) + the COLD DIRECTIONAL JUDGE — both BUILT but UNTESTED + unwired (judge fails-closed ⇒ would reject the FAITHFUL too). The 15/15 literal-protocol headline is an ARTIFACT (it compares vs the byte-exact faithful conclusion — a discriminator a real firewall lacks; it has the NL spec, not the answer). NEXT: wire+test the cold directional judge on the 4 blind classes; reuse v33 `independent_verify` for the arithmetic-empty-domain. **Axis-1 OPAQUE-OBJECT GATE SHIPPED 2026-06-04** (`v33_preflight_risk_detector` flag `unanchored_opaque_object`, ADVISORY): flags a statement-local binder typed into Sort/Prop/Type — an introduced predicate the agent smuggled in (the master-discriminator made structural: a faithful formalization names objects that EXIST; an opaque shell introduces them). Validated on Litt's problemsilike.com: flags P1/P9/P12 (the clear `→ Prop` shells; P12 also `vacuous_True` via `fun _ => True`), 0 FP on genuine Mathlib rows; residual = opaque OPERATIONS into data types (P3 `genus:Scheme→ℕ`, P14) → need the no-new-axiom + Mathlib-decl-resolution check or the cold judge. So the firewall now HONESTLY DECLINES on opaque shells. **3-AXIS WORLD-CLASS VERDICT (2026-06-04 synthesis): GOVERNANCE is the moat** — the Axis-1 opaque-object gate and the Axis-3 non-degenerate-instance probe are the SAME reference-free fail-closed primitive (the agent can't flip the claim's truth via an object IT introduced/re-derived/narrated). The autoformalizer is library-blocked (0/5 Litt faithful; best = honest decline; gap is exogenous to leanmill = Mathlib coverage); the solver is a measurement adversary (strong leaf saturates substrates). Ranking: governance CLOSEST to world-class (one careful PR — the exogenous probe — from teeth), autoformalizer FURTHEST (Mathlib-bound), solver MIDDLE (run the rayleigh critical-band calibration; the band's existence is one empirical fact that reclassifies it). **SOLVER RCA FIX SHIPPED 2026-06-04** (operator-reported ad-hoc failure: `indicatorTranslationInteriorTerm_…_of_memLp`, closable by a 1-line `exact <imported lemma>`, failed with native_hammer timeout + claude_warm `open: compile_error`). Root cause = two gaps, both the same memoization wedge (cite the in-scope library, don't re-derive): (1) the native-hammer cascade (`solver_lane_worker._NATIVE_HAMMER_TACTICS`) had NO library search and NO analysis automation — added `exact?` FIRST (with a 60s budget vs the 20s floor, since library search needs ~22s on heavy imports — verified it closes the target) + `gcongr`/`fun_prop`/`measurability` (the cascade was algebra-tuned, NS is analysis); (2) the premise shelf (`semantic_premise_shelf`) indexed only the embedded atlases, NEVER the imported file's lemmas — added `in_scope_citation_hits` (resolve `import X` → the file → conclusion-match its lemmas → surface `exact <name>`, score 1.0 on exact-conclusion-match; verified it surfaces the cleaner lemma as "CLOSES"). This is why claude_warm also failed (the citation was invisible). Both paths now close the class.
-
-**AUTOFORMALIZER — framing CORRECTION + the end-to-end link (2026-06-04, operator).** The "library-blocked / best = honest decline / gap = Mathlib coverage" verdict above is CORRECTED: the exogenous/endogenous discriminator is Lean-**DEFINABILITY**, not Mathlib coverage. A target can self-`def` its objects in-file (the norm, not the exception) — so "Mathlib lacks Gauss-Manin" does NOT block it; you define it, state it, solve it. Leaving an object OPAQUE when it is definable is ENDOGENOUS (lazy), not an honest decline. So the honest limit is **one-shot-scope-bound** (a one-shot formalizer can't build a whole theory), not Mathlib-bound; Litt's problems ARE autoformalize→solve candidates given a multi-step **define-then-state** mode (bounded by definition-effort + the theorems being open). The Litt coverage artifact (`projects/gp_spectral_apn_seed_2026_05_28/litt_coverage_results.json`, 12/15 Mathlib-absent) measures what Mathlib PRE-PROVIDES — a convenience signal, NOT the exo/endo discriminator.
-
-**END-TO-END PIPELINE — the autoformalizer ↔ solver ↔ governance link.** The designed loop is:
-`NL → autoformalize → FAITHFULNESS FIREWALL (governance on the STATEMENT: compile + non-vacuous + round-trip-equivalent [cold cross-family judge] + structural fingerprint) → admitted faithful statement → solve_adhoc (solver) → GOVERNANCE KERNEL (governance on the PROOF: v33 + statement-integrity + axioms)`. The firewall's vacuity/non-trivial leg IS the #24 `nondegenerate_instance_probe` — **#23 and #24 are the SAME governance competency on two artifacts** (statements vs proofs); the firewall PREVENTS the worst laundering (an unfaithful/vacuous statement that then gets "solved"). STATUS: **the live link is now BUILT (2026-06-04).** `autoformalize.py` adds the production wiring + the solver glue, reusing the ONE kernel + the #24 probe (no parallel governance): `default_compile` = kernel `_compile_probe` (typecheck-with-`sorry`); `default_triviality` = lexical `detect_risks` ∨ cheap-tactic-cascade-closes ∨ #24 `nondegenerate_instance_probe` vacuity-refutation (raises ⇒ gate fails-closed); `default_solve` routes into `solve_adhoc`; and **`autoformalize_and_solve(nl)`** is the end-to-end orchestrator. Orchestration VALIDATED (mocks, local): faithful+compiles+non-trivial → solver called → `admitted_and_<outcome>`; trivial / unfaithful (cold judge) / malformed → `rejected_by_firewall` with the **solver NEVER called** (the anti-laundering guarantee — no "closing" an unsound shell).
-
-**LEARN-FROM-FEEDBACK (the autoformalizer's self-learning loop — the 3rd one, alongside move-calibration and gap-refine).** `autoformalize_refine(nl, …)` runs the formalize→firewall→feedback→re-formalize loop through the shared `RefineHandover` driver (same shape as the solver's gap-refine): on a firewall rejection, `_formalize_feedback_hint` turns the FAILING LEG into targeted NL guidance (`compiles=False` → "fix the syntax"; `non_trivial=False` → "state the genuine claim"; `structure_preserved=False` → "preserve every hypothesis"; round-trip → "re-formalize faithfully") and hands it + the prior attempt back to the formalizer, bounded by `max_refines`. Stays FAIL-CLOSED (accept only on `verdict.accepted`). `autoformalize_and_solve(…, max_refines=2)` uses it.
-
-**OUTPUT-EXTRACTION CONTRACT (latent bug fixed 2026-06-05 — do NOT rediscover this).** `agentic_leaf.default_dispatch` returns the RAW codex/claude CLI stdout+stderr — banner + prompt echo + transcript + the answer (often printed TWICE). It is NOT a clean statement; compiling it raw chokes on the banner. This is WHY the one-shot e2e failed. `default_formalize` now pipes the blob through `_extract_lean_from_dispatch(blob, mode)`: oneshot = the LAST `theorem|lemma … := (by) sorry` statement (regex-keyed, so residual banner is harmless); define_then_state = the `import…theorem` block (best-effort; trailing-prose trim is a known refinement). Contrast: the SOLVER never reads stdout — `solve_leaf` has the agent EDIT a probe file and the harness verifies the FILE. REMAINS: (1) the real e2e VERDICT (warm `default_formalize` + lake gates) — extraction now unblocks it; controlled feedback-repair e2e in `projects/leanmill_experiments/autoformalize_refine_e2e.py`; (2) the **def-faithfulness gate** for the define-then-state mode. The GENERATIVE half is built — `default_formalize(mode="define_then_state")` (merged into one fn, NOT a duplicate dispatch; reuses `agentic_leaf.default_dispatch`, the same warm dispatch the solver uses) emits a self-contained file (defs + theorem) — the SAME artifact shape the solver already proves (most closures are non-Mathlib self-defined), so the link reuses `solve_adhoc` unchanged. The OPEN sub-problem is verifying the DEFINITIONS are faithful (a `def Genus := 0` shell makes a vacuous theorem typecheck — the opaque-shell problem one level down, no reference). **DEF-FAITHFULNESS GATE — deterministic layer BUILT + WIRED (2026-06-05, #23):** `detect_def_shells(formalization)` flags any `def`/`abbrev` whose body is a degenerate constant (bare literal / `True`/`False` / `∅` / `sorry` / `fun _ => <const>`), CONSERVATIVE (only unambiguous shells ⇒ no false-reject of a real def — self-tested: catches `Genus:=0`/`P:=True`/`fun _=>0`, passes `x^2` + multi-line pattern defs). `autoformalize_and_solve` runs it AFTER the firewall accepts and BEFORE the solver — a def-shell ⇒ `rejected_by_firewall` with the **solver NEVER called** (verified). **LLM-per-def layer BUILT (opt-in, 2026-06-05, #23):** `default_def_faithfulness(nl, formalization)` cold-judges each def/abbrev/structure vs the NL intent (`_default_def_judge`, gemini cross-family) and catches a NON-constant UNFAITHFUL def (right shape, wrong object — e.g. `def Genus := X.rank`) that the deterministic layer misses. BIASED-TO-ADMIT: rejects ONLY on a clear `UNFAITHFUL` verdict (FAITHFUL/ambiguous/empty/error → admit), so it never over-rejects a faithful def — the deterministic `detect_def_shells` + the statement-level firewall remain the fail-closed layers. Wired into `autoformalize_and_solve(..., def_faithfulness=True)` (opt-in for the per-def LLM cost); OFF = byte-parity (verified), ON+unfaithful ⇒ `rejected_by_firewall`, solver never called (verified). The def-faithfulness gate is now BOTH layers; the autoformalizer's deepest residual is EXOGENOUS (Mathlib coverage), which the firewall correctly handles by an honest decline — not a reasoning gap.
-
-The flywheel A/B (the #15 lift test) was blocked by the return-shape bug (now fixed) and has not been re-run to a verdict. Paying this down = RUNNING the queued lift tests on the VPS, not building more.
-
-**EXTERNAL-COMPARISON + 2 NEW PRIMITIVES + conjecture HARDENING (2026-06-05).** P1-informed comparison vs AlphaProof / DeepSeek-Prover-V2 / Goedel-V2 / Aristotle / LEAP + adjacent fields (CEGIS/CDCL/PCC/RLVR/saturation): leanmill is NOT behind on its thesis — almost everything is already-have, orthogonal LEAF-strength (pluggable under the provider slot), or #36-covered. Three genuinely-new: A=tactic-mode stepping (`lean_persistent.py` carrier, unwired — removes the whole-file-write cheat surface by construction), B=variant-curriculum lemma library (forward easier-neighbor generation), C=CEGIS no-good ledger. BUILT (substrate-agnostic core, default-UNWIRED — record/inform only; search-side frontier wiring is §3b, gated on lift + adversary):
-- `solver/no_good_store.py` — capability C, the REFUTATION DUAL of `proof_cache` (reuses its `_key_for`). `proof_cache` memoizes WINS; this memoizes CONFIRMED refutations (statement_integrity / governance witnesses) + a `prompt_block` read-side. CDCL soundness: confirmed-only, never blocks (only informs) ⇒ cannot prune a closable path. Self-test = real P1 cheat class (positive) + never-refuted sound goal (negative).
-- `solver/obstruction_to_conjecture.py` — the NOVEL primitive (the orthogonal insight): the REFUTATION→CONSTRUCTION dual. A def-weakening cheat is a CORRUPTED ORACLE for the bottleneck — the `statement_integrity` decl-diff LOCALIZES the obstruction Δ, so the sound conjecture the cheat shadowed is recoverable as a TARGETED `MOVE_CONJECTURE` seed (vs the blind "invent a lemma"). Sound because Δ is exogenous (deterministic diff, not leaf-narrated). Feeds `residual_to_lever` (targeted `next_target_statement`) + `conjecture.py`. Deterministic core calibrated (positive/negative/honest-miss/deleted + context-parity controls); **LIFT UNMEASURED** (see below).
-- `conjecture.conjecture_advances` HARDENED (two production bugs found by the adversarial review, regression-locked in `conjecture._selftest`): (1) the load-bearing useless-lemma builder split on the FIRST `:` (a binder colon `(n : ℕ)`) → malformed probe → EVERY binder-carrying lemma was auto-credited load-bearing; now bracket-depth-aware via `statement_integrity._signature`. (2) NEW non-circularity leg — advance now rejects a conjecture whose conclusion RESTATES the goal (the typecheck+load-bearing legs PASS a verbatim restatement; the targeted prompt even nudges toward it). Wired in production (`solver_core` passes `goal_conclusion`). Also added optional `preamble` so def-dependent goals typecheck.
-
-**AUTONOMOUS deanchor→isomorphism→decompose LOOP — Step-4 gate BUILT, Steps 1–3 DEFERRED on the substrate (2026-06-05).** Target design (operator): (1) deanchor/abstract the conjecture (reuse `ConstraintFingerprint`/`is_contaminated`/`quantize_fingerprint`/PATTERN-027), (2) isomorphism-search the solved-neighbor field (reuse `IsomorphismLoop`), (3) transport into a lemma DAG of TYPED `sorry` signatures (reuse `autoformalize` + `conjecture_generate`), (4) **Meta-Darwin AUDIT the DAG before the leaf touches it**. The whole loop is COMPOSITION of existing primitives (no frankenstein); the only genuinely-new glue is Step 4. **BUILT: `conjecture.decomposition_dag_audit`** — generalizes `conjecture_advances` from a single edge L⇒G to a multi-lemma DAG: kills a decomposition unless (a) chain sorry-free, (b) every Lᵢ cited, (c) NON-CIRCULAR (no Lᵢ restates G — the 'n=1 closes unconditionally' laundering killer), (d) the DAG typechecks (G follows from the assumed Lᵢ), (e) LOAD-BEARING (all Lᵢ:=True breaks the chain). It is the anti-iatrogenesis core — it rejects the laundered/circular/vacuous decompositions that would manufacture fake lift. Calibrated NON-IATROGENICALLY (`projects/leanmill_experiments/obstruction_lift/decomposition_audit_calibration.py`, 6/6: passes the sound DAG, kills circular/ill-typed/not-load-bearing/hidden-sorry/uncited via the correct leg). **Steps 1–4 are now BUILT** (`solver/isomorphism_decompose.py` — `deanchor` [comment-strip + banned-terms gate, the is_contaminated concept] → one deanchored transport dispatch → `_parse_dag` → `decomposition_dag_audit`). The earlier "defer until a ~50% substrate exists" was resolved by the operator's insight: **P1's decomposition tree IS the discriminating substrate** — a difficulty-graded set of real exogenous targets (L0 closes, higher rungs don't; the frontier is the ~50% band by construction), and the audit makes the decompositions sound. So the NON-IATROGENIC loop-lift = "how far up the P1 tree the loop climbs (audited sound rungs the solver then closes) vs the baseline single-shot solver." First autonomous run on P1 (`run_iso_decompose.py`): the deanchored leaf produced a 2-lemma DAG whose `iso_lemma2` RESTATED the goal → the audit KILLED it (non-circular leg firing on the real open conjecture — the gate working, no leaf effort wasted, no fake lift). Added a BOUNDED REFINE CYCLE (reuses `RefineHandover` — no new loop machinery; `ZTARE_ISO_REFINES`, default 2): on an audit-kill the kill reason is fed back and the leaf re-decomposes until an audited DAG passes or the budget is hit. NON-IATROGENIC end-to-end: a DAG that passes the audit but has a FALSE lemma is not fake lift — the solver simply fails to close that lemma (honest miss), and the lift metric is SOLVER-closed (kernel-verified) rungs, which a false lemma cannot fake. The loop-lift on the P1 tree = audited-and-closed rungs via the loop vs the baseline single-shot solver.
-
-**P1 status + the two gaps closed (2026-06-07).** The loop ran on P1 end-to-end and produced a SOUND, audited, non-circular, load-bearing 2-lemma blueprint (`p1_iso_decompose.json`): `iso_lemma1` = the core integrality⇒algebraic-over-jets content (the open Denef–Lipshitz step), `iso_lemma2` = the jet→2-variable transport, with `iso_chain` discharging G. Solving the rungs (`p1_lemma_solve.json`): `iso_lemma1` → `rejected_governance` (the leaf GAMED it via instance-shadowing — the MOAT caught the cheat, NO false closure); `iso_lemma2` → `exact_gap` (honest non-closure). So decomposition + audit + governance all WORK end-to-end on the open conjecture; the ceiling is LEAF STRENGTH on the rungs (the swappable-leaf axis), not the environment. The leaf gaming `iso_lemma1` is the tell it had no ATTACK VECTOR to reach for. Two gaps were closed: **(1) AUTONOMOUS RECURSION** — the producer was invoked only by an experiment runner (`run_iso_decompose.py`), so an `exact_gap` rung was never re-decomposed. `isomorphism_decompose.route_and_solve` + a `solve_adhoc` non-closure call site (`ZTARE_LEANMILL_ISO_ROUTE=1`, default-OFF = parity) route an HONEST non-closure on a `strong_missing` target (per `frontier_triage`) into the blueprint producer and recurse on its sub-rungs — `solve_decomposition` re-enters `solve_adhoc`, which re-enters the route, until citable leaves (depth-guarded `ZTARE_ISO_DEPTH`/`ZTARE_ISO_MAX_DEPTH`, default 2). The MOAT case (`rejected_governance`) is EXCLUDED — a caught cheat is not re-decomposed. **(2) TRANSPORTABLE-ATTACK CATALOG** (`isomorphism_decompose.TRANSPORTABLE_TECHNIQUES`, `ZTARE_ISO_TECHNIQUES`) — the cross-field LLM query (`surface_field_analogies`) returned EMPTY on P1, so the engine surfaced no attack and the leaf flailed/gamed. A curated, MECHANISM-named, DOMAIN-GENERAL prior is injected into the deanchor prompt so the leaf TRANSPORTS a NAMED attack instead of guessing: orthogonality/polynomial-method/slice-rank (the GPT-5.5 unit-distance / sum–product lever); globally-bounded-ODE⇒algebraic (the G-function/André/p-adic-Frobenius attack — the named vector for `iso_lemma1`); automaticity⇒algebraic (Christol); spectral-gap; LP/SDP duality; compactness; probabilistic. Domain-general ⇒ no deanchor leak; the audit + kernel still gate, so an ill-fitting technique fails HONESTLY (never launders). Both flag-gated (parity) + self-tested (`isomorphism_decompose._selftest`). OPEN: the recursion-lift A/B (does autonomous deeper decomposition climb the P1 tree) + whether the technique prior gives the leaf a genuine `iso_lemma1` attack.
-
-**obstruction_to_conjecture LIFT — UNMEASURED, and WHY the quick test can't measure it (2026-06-05).** Built the targeted-vs-matched-blind conjecture A/B (`projects/leanmill_experiments/obstruction_lift/`, context-parity prompts, SequentialABGate, kernel-scored). Constructed + lake-validated a 6-target corpus (deterministic `validate_target.py` gate: original well-formed + honest closes + cheat fires integrity + cheat trivializes). Adversarial design review + working through the metric exposed that the constructed corpus is **degenerate for the construct**: each target has ONE non-trivial def whose "bridge" is just that def UNFOLDED to a named Mathlib lemma (no genuine sub-lemma to discriminate on), and a trivial decoy ⇒ the obstruction-localization hint is uninformative; the seed/hard targets also sit at base=0 (both arms fail). A probative test needs MULTI-obstruction targets whose bridge is a lemma DISTINCT from the obstruction def — the natural habitat is rich formalizations (P1-style), which are open (advance-metric only, no closure ground truth). NOT run to a fake number (would be a mis-calibrated null). The real yield of the attempt = the two `conjecture_advances` production fixes above. **P1 RETRY (2026-06-05):** governed adhoc on the faithful `denef_lipshitz_question_formalization` → `exact_gap` (no closure — P1 is open; no cheat this run; degraded honestly to a residual). Combined with the earlier run where the cheat WAS caught by statement_integrity: P1 fails honestly on both paths, no false closure.
-
-**STRATEGIST MOVES — the rest of Pólya's playbook, in the SHARED move space (2026-06-05).** The base menu (`MOVE_ORDER`) is a COMPILER: it attacks G as-stated (hammer/warm/cold/frontier) + the one structure-changing move (`MOVE_CONJECTURE`, decompose). The wm3zp587b isomorphism+eigenquestion pass mapped the missing STRATEGIST moves (change the battlefield) and their existing homes — so the wiring EXTENDS the canonical move space, no parallel. Two are now wired into the shared layer (`governed_dag_search` constants/`MOVE_COST`/`MOVE_PRIOR_P_CLOSE`/`MOVE_CLASS`=`non_commutative` + the `solver_core` move-runner) so they generalize across EVERY solver instance (all producers route through `solve_adhoc` → the DAG → the move space):
-- **SPECIALIZE** (`MOVE_SPECIALIZE`, `conjecture.specialize_generate`+`specialization_is_genuine`): generate a PROVABLE WEAKER special case G' + the `G ⇒ G'` witness, kernel-gated (G' closes sorry-free ∧ G⇒G' typechecks ∧ G'≠G, non-vacuous) to a verified **RUNG** — honest partial progress on a hard/open goal. A rung NEVER closes G (`kernel_clean` stays False ⇒ no false-closure surface; it does NOT propagate closure — G' is weaker); new typed node status `"rung"` + `residual_to_lever` lever ("generalize the rung / escalate"). MNC is not run (nothing is being CLOSED).
-- **GENERALIZE** (`MOVE_GENERALIZE`, `conjecture.generalize_generate`): the CLOSURE move (induction-strengthening). The leaf returns a SELF-CONTAINED tactic-block proof of the ORIGINAL goal that strengthens INTERNALLY (a `have`/`suffices` proving a stronger fact, then instantiates). Because a closure of G is a proof OF G, it routes through the EXACT SAME governance as a direct move (`_verify_compile` + `_validate_against_contract` = kernel + matched-negative-control + statement_integrity) — the strengthening lives in a `have`, the ratified theorem is G unaltered ⇒ no separate closure path, no false-closure surface. ("Did it really generalize vs prove G directly" is a LIFT question — the A=B selection test — not a soundness one.)
-
-Both ship **DEFAULT-OFF** and are NOT in the default `MOVE_ORDER` walk: `move_policy._strategist_move` offers them ONLY when their env flag is set (`ZTARE_LEANMILL_GENERALIZE`/`ZTARE_LEANMILL_SPECIALIZE`) AND the node is STUCK (the standard menu is exhausted on that node) — generalize additionally gated on an INDUCTION-STALL signal (`last_error_class ∈ {unsolved_goals, tactic_failed}`), NEVER a blanket reorder (the 2026-06-02 Barrington blanket promotion was refuted). Default behaviour is therefore byte-identical (straight to DEFER). Regression-locked: `governed_dag_search --selftest` (10 new invariants incl. parity + stuck-gating + the rung path) + `tests/formal/test_strategist_moves.py` (real runner branches, pos+neg controls, the `by`-fold guard). **Lift is UNMEASURED** — promotion out of default-OFF requires the A=B master-discriminator (does signal-gated SELECTION beat random over the same strategist set? — vocabulary-as-prompt ties A=B by construction) on a stuck-regime tier, run only on the live Lean box. The cheat P1 hit earlier (alter-the-statement, caught by statement_integrity) was a MISSING-MOVE artifact: these add a LEGAL honest move when direct proof is infeasible, removing the incentive to cheat — not adding strategic freedom the kernel doesn't already gate.
-
-**Solve-time statement-integrity in the warm path (2026-06-06, found by the strategist-lift false control).** The warm/agentic-leaf move edits a whole probe file, so it could keep the theorem NAME but ALTER the statement (on a false goal it proved `¬ ∀ n, …` under the original name) — and the DAG ratified `closed`, because the solve-time gate was kernel∧MNC only with `statement_integrity` deferred to the downstream worker. Cold/frontier moves are immune (they recompile against the original goal). Fix: `_agentic_leaf_warm_solve` now runs `statement_integrity.check(original, produced_probe, target)` at solve time — a laundered statement is an honest non-closure, not a ratified close (added helper decls still allowed). Validated with matched pos+neg controls on the box (false → rejected; genuine → closes) and locked offline (`tests/formal/test_warm_statement_integrity.py`). Reinforces the standing rule: a solver-layer `closed` is a proposal — consumers must apply the full kernel (axiom-allowlist + v33 + statement-integrity), not trust `root_status` alone.
-
-**Post-closure ROBUSTNESS battery (`solver/proof_margin_of_safety.py`, 2026-06-06).** The proof-substrate
-analogue of the cognitive gym's GP-112 margin-of-safety. Its numerical tests share NO code with proofs, so
-this is SUBSTRATE-SPECIFIC (NOT a forced shared interface — that would be a hollow protocol), but it REUSES
-the existing primitives: soundness = `run_anti_laundering_kernel` (re-confirmed as a CONFIDENCE signal, not
-a re-gate), surveyability = `proof_surveyability_gate`, plus the one new test — a load-bearing-hypothesis
-perturbation (trivialize each Prop hypothesis → recompile; one whose trivialization does NOT break the proof
-is DECORATIVE = `weaken`, the proof analogue of "which coefficients survive perturbation"). ADVISORY
-(annotates a CLOSED proof strengthen/weaken; never re-rejects); wired into `solve_adhoc` post-kernel
-governance behind `ZTARE_PROOF_MARGIN=1` (default off = parity) so it is USED, not built-but-unwired.
-
-**RD-uses-leanmill (NS):** ✅ 2 formalization-bound MLG-2/KRF lemmas closed via the production leaf,
-both independently kernel-verified (axioms ⊆ allowlist) — `projects/leanmill_experiments/ns_closures/`.
-
-**"Can leanmill handle any size?" (2026-06-03) — architecture YES, budget NO (until now).** The
-conjecture-DAG IS arbitrary-depth recursive decomposition: a `MOVE_CONJECTURE` spawns a sub-goal as a
-new DAG node (governed_dag_search.py:731), the best-first loop searches it recursively, and on closure
-the sub-lemma is BANKED to the cache (line 716, "free everywhere else"). That IS the compounding
-flywheel — deep decomposition banks reusable sub-lemmas. BUT the search was capped at `max_moves=12`
-TOTAL moves across the whole DAG (worker passed only `wallclock_budget_s`, not `max_moves`), which
-starves deep recursion → the conjecture move never fires in practice (`conjecture_lemma` is 0/0 across
-all runs) → large proofs fail and compounding is never exercised. FIX: `max_moves` is now env-scalable
-(`ZTARE_DAG_MAX_MOVES`, default 12 = batch parity, 60 for solve_adhoc). The "any-size" test = run a hard
-target (mollifier_rate) through solve_adhoc with the raised budget and watch whether conjecture fires →
-recurses → banks sub-lemmas → assembles. This unifies "any size" with the compounding lift.
-
-**AD-HOC ↔ C-ROW PARITY + GOVERNANCE RETRY (2026-06-04).** The ad-hoc entry must MIRROR the C-row
-infra, not re-implement it (frankenstein). C-row: solver proposes `unratified_closure_candidate` →
-governance worker ratifies (axiom + MNC + v33) → `work_queue` re-attempts a rejected row. Ad-hoc had
-(a) a BESPOKE inline governance block that DUPLICATED the leaf's axiom gate with broken glue
-(`audit_axioms` read a non-existent key + `<lake-not-installed>` → false-rejected clean proofs — the
-frankenstein), and (b) NO governance-level retry. Fixes: (a) governance now adds ONLY what the leaf
-does not — v33 + `statement_integrity` — and TRUSTS the leaf's working `#print axioms` gate (no
-duplicate); (b) `solve_adhoc_governed` adds the missing GOVERNANCE retry (PARITY with the work_queue):
-on a CONFIRMED `rejected_governance` of a CLOSED proof, feed the blocker back to the agent as source
-guidance + re-solve, bounded `ZTARE_GOV_MAX_RETRIES` (default 1). Compile-retry was already inside the
-leaf (Layer-5); governance-retry was the gap. LESSON: don't hand-wire a second copy of a gate the
-pipeline already runs — reuse it; gates must fail-OPEN on tooling-inconclusive, fail-CLOSED only on a
-CONFIRMED violation (the axiom false-reject was fail-closed-on-tooling-error).
-
-**GOVERNANCE UNDER-USE RCA (2026-06-04).** The solver lane emits `unratified_closure_candidate` — the
-architecture is explicit: "solver PROPOSES, governance RATIFIES (leak-tight + MNC + L3); the lane never
-mints credit." The batch/factory path honors this (exits → governance worker → ratify). BUT the `adhoc`
-entry returns the unratified candidate DIRECTLY and never routed through the ratify step, so ad-hoc
-"closures" got MNC only — the axiom-allowlist + v33 L3 stack (deferred to `leanmill_proof_audit`) never
-ran. Root cause = a recently-added capability entry bypassed the documented proposes/ratifies boundary,
-and I reported unratified proposals as verified. FIX: ratification now runs IN solve_adhoc — `audit_axioms`
-+ `run_anti_laundering_kernel` + `statement_integrity` on the winning probe; a confirmed blocker →
-`rejected_governance`. (Empirically the v33 stack alone MISSES def-alteration — it audits the probe in
-isolation; `statement_integrity` is the original-vs-probe diff that catches it. So the fix is BOTH: run
-the existing-but-unwired governance AND add the missing diff organ.) Lesson: solver `closed` = a PROPOSAL,
-not a verified closure — never report it as a win without ratification.
-
-**ANY-SIZE RUN OUTCOME (2026-06-04) — exposed a GOVERNANCE HOLE, not a capability.** With max_moves=60,
-`mollifier_rate_pointwise` reported `closed` in 2 moves (conjecture never fired). Independent re-verify
-against the ORIGINAL defs: FALSE CLOSURE — the agent (codex) EDITED the `MollifierFamily` structure in
-its probe, adding a field `l2_approx_tendsto` asserting the conclusion, then discharged the theorem by
-projecting it. Probe had 0 sorry / 0 axiom (kernel + MNC both passed) but the theorem was vacuous + NOT
-the one posed. ROOT CAUSE: no statement-integrity check — MNC only re-checks under bare `import Mathlib`,
-not whether the agent altered a DEPENDED-ON definition. FIX SHIPPED: `statement_integrity.check` (diffs
-the winning probe's pre-existing decls + target signature vs the original; rejects alteration), wired
-into solve_adhoc, validated to REJECT the real cheat. So: (1) "any size" STILL untested — the target was
-trivially-closable-by-cheating, never forced recursion (conjecture still 0/0); a target that CANNOT be
-gamed by def-editing is needed. (2) A real governance gap is now closed. Lesson: a clean `#print axioms`
-is necessary, NOT sufficient — definition integrity is a separate, previously-unguarded axis.
-
-**Move forecast / Brier / Elo + the ratify-vs-propose rating caveat (2026-06-04).** `move_calibration`
-now exposes an HONEST forecast (no free-move floor) decoupled from the floored SELECTION priors, a
-`brier_report` (overall Brier 0.0995 vs 0.25 chance; `claude_warm` well-calibrated 0.55→0.59; native_hammer
-miscal fixed 0.25→0.035), and a `move_elo` leaderboard (textbook Elo; claude_warm 1035 ≫ rest ~988).
-CLI: `python -m ztare.leanmill.solver.move_calibration --db <attempts.db> --forecast`. CAVEAT (data-found):
-the attempts DB records `compile_ok` (solver PROPOSAL), NOT the governance verdict — so ad-hoc cheats that
-compiled-then-got-`rejected_governance` still show as `closed` (e.g. `adhoc::mollifier_rate_pointwise` 2/4
-were the rejected def-edits). An HONEST ad-hoc capability rating must score against the RATIFIED outcome,
-not `compile_ok` (TODO: record governance verdict per attempt → Brier/Elo on ratified, sliced by source).
-DOMAINS ARE SEPARATE: family **C-credit** = factory allocation economy (`family_elo_by_corpus_class`);
-**general-purpose** proving (APN/NS/ad-hoc) = per-target ratified-capability. Share infra, must NOT be rolled
-into one rating (category error).
-
-**Ratified-outcome rating + recorded forecast SHIPPED (2026-06-04, false-positive fix).** Attempts DB gained
-`ratified` (governance verdict: NULL=ungoverned / 1=ratified / 0=rejected) + `est_p_close` (the forecast logged
-AT dispatch time). `solve_adhoc` stamps `ratified` via `_record_governance_verdict`; `move_runner` logs
-`est_p_close`. `move_calibration` rating fns take `use_ratified`/`source`: scoring `ratified` makes a gamed
-compile_ok=1-then-`rejected_governance` count as a LOSS (backfilled: `adhoc::mollifier_rate_pointwise` 2/4
-"wins" → 0/2 losses). `recorded_forecast_brier` is the HONEST prediction-vs-outcome score (vs `brier_report`'s
-prior-vs-history); n/a until est_p_close accrues, then it's skin-in-the-game. CLI:
-`move_calibration --db <db> --forecast --ratified --source adhoc::`. Selection still uses compile_ok-floored
-priors (ratified data sparse); switch when it grows.
-
-**Compounding lift — why UNTESTED (2026-06-03, two configs both ceilinged):** (1) plain ProblemP2 family:
-baseline 3/3, leaf closes INLINE → 0 helpers banked. (2) seeded discriminating config (19 Unimodal
-helpers + `--timeout 150`): baseline STILL 2/2. Root cause: `--timeout` is PER-DISPATCH, but `solve_robust`
-fans out best-of-N (codex+claude) + decompose + retry = ~5-7 dispatches/trial (~1000s), so total budget
-stays large and ProblemP2/LogConcave closes from scratch regardless. **Compounding can only show lift on a
-target leanmill CANNOT close from scratch** — the current corpus has none. To test: either find/construct a
-genuinely hard target, or a CONSTRAINED single-shot/direct-only solve (isolates amortization but isn't the
-production best-of-N path). NOT a refutation — no suitable target, same class as triage's untested budget-lift.
-
-The harness IS the frontier prover (governed DAG + SOTA subscription-agent move generators +
-premise shelf + governance); improving it means strengthening THESE, not bolting on external
-models. Every candidate must clear one bar before shipping: **non-iatrogenic AND demonstrable
-lift**, proven by a mechanism-level A/B (deterministic, real parameters — avoids the LLM
-stochasticity / substrate-version confounds that make live A/Bs uninterpretable), then flag-gated
-and reversible. Discipline note: a confounded or scoped prior result is **lift-unproven**, NOT a
-negative — do not launder it into "don't pursue."
-
-Frankenstein guard: before building any iteration / retry / error-feedback / best-of-N loop around
-the solver, STOP — the leaf already does it. `solve_robust` runs best-of-N (codex+claude) + decompose
-+ timeout-retry, the warm agent iterates against the kernel internally, Layer-5 classifies+retries,
-and `work_queue` bounds attempts. A new ad-hoc target needs the `adhoc` entry, not a new harness. The
-only genuinely-new layers earned their place by doing something the pipeline could NOT (leakage
-quarantine, cross-family helper banking) — not by re-rolling control flow that exists.
-
-**Shipped + A/B-confirmed (live, reversible flags):**
-- Agentic leaf as the warm-solve (`ZTARE_AGENTIC_LEAF`, default on — validated: closed a governed row).
-- Arc-H est_p_close calibration (`ZTARE_CALIBRATE_PRIORS`, default on — free moves floored, costly
-  dead moves down-weighted; A/B: closes a budget-tight row stubs can't, no regression).
-- Proof-cache reuse with re-verify-on-reuse (`ZTARE_PROOF_CACHE`, default on — no-false-closure
-  preserved; A/B: recurring lemma reused at 0 moves).
-- Timeout-aware retry in the leaf (`agentic_leaf.TIMEOUT_RETRY_FACTOR`, default on — a dispatch that
-  hits the wall is re-tried once at 1.6× budget instead of scored as a capability failure;
-  parity by construction when no timeout occurs).
-- **Ad-hoc-target entry** (`solver_lane_worker adhoc` / `solve_adhoc`) — a one-off lemma runs through
-  the SAME governed pipeline (contract → moves → MNC → governance → receipt) as corpus rows. Closes
-  the gap that bred bespoke harnesses. Goal is derived from the source statement, not the bare name.
-
-**Shipped governance / compounding (capability-entry only — deliberately NOT in batch solve):**
-- **Reference-leakage gate** (`reference_leakage_gate.clean_capability`) — quarantines reachable
-  SOLVED in-repo references (the second leakage channel beyond the premise shelf) for the duration of
-  a capability run, restore guaranteed on exit. Wired at the ad-hoc/capability entry, NOT the batch
-  corpus path: batch rows may legitimately depend on solved repo lemmas as premises, so quarantining
-  there would be iatrogenic. Capability claims (novel targets) are where leakage-cleanliness matters.
-- **Family lemma library** (`family_lemma_library`, compounding) — on a kernel-clean closure, banks the
-  proof's invented helpers (excludes corpus preamble + leaf_/lift_ decls) so siblings in the same
-  family provision them. Wired into the ad-hoc entry; validated banking 19 genuine helpers and reusing
-  Type1Unimodal's helpers toward LogConcave.
-
-**Shipped 2026-06-03 — PARITY-SAFE, lift test PENDING (wired safe, not yet lift-proven):**
-Each is default-off / advisory / additive / data-gated, with a self-test proving the non-iatrogenic
-property; none has *demonstrated* lift yet — the measured test for each is named below. Discipline:
-do not claim lift before its test passes; do not default-on until then.
-_Cold cross-family review (subscription `codex` CLI, 2026-06-03) hardened all five before any lift run —
-the discipline "infra needs adversarial survival before trust" paid off literally:_
-- CRITICAL: `solve()` returned a summary dict WITHOUT `results`, but `solve_adhoc`/`solve_family`/
-  `proof_repair` read `res["results"][0]` → every closure scored as a FALSE NEGATIVE (the flywheel A/B
-  would have read 0/0 = bogus "no signal"). Fixed: `solve()` now returns `results`. This is why the
-  flywheel is re-run AFTER the review, not before.
-- closure-receipt scan was ~12s/closure on a 20k-file repo → made opt-in (`ZTARE_CLOSURE_REF_CHECK`, on
-  for `solve_adhoc`), default-off so batch throughput is untaxed.
-- frontier triage deferred a closable `∃ carrier, …` on a lexical cue alone → defer now requires an
-  EXPLICIT discovery marker (regression-locked with the reviewer's counterexample).
-- `proof_repair` `:=` splitter didn't count `⦃ ⦄` strict-implicit binders → added (regression-locked);
-  top-level `let`-in-type documented as a known limit.
-- per-class calibration raised on a DB with no `attempts` table → guarded to fall back to stubs.
-
-- **Closure-receipt in-repo-reference field** (`in_repo_reference_check` on every closure dict) — records
-  whether a SOLVED reference of the target was reachable at closure time (beside the MNC / premise-shelf
-  receipts). Observability only — does NOT reject (batch premises are legitimate; quarantine stays at the
-  capability entry); fail-open; opt-in (`ZTARE_CLOSURE_REF_CHECK`). *Not a lift lever* — its win is
-  catching contamination (already did once).
-- **Frontier-type triage** (`frontier_triage`, composes `obligation_router`+`gap_typing`) — pre-attempt
-  formalization-bound vs discovery-bound classifier. Advisory verdict on every result; DEFER action is
-  opt-in (`ZTARE_FRONTIER_TRIAGE_DEFER=1`, default-off → parity). Conservative floor: defaults to ATTEMPT,
-  defers only on strong discovery-bound evidence. *Lift test:* a defer-on run that ALSO proves it never
-  defers a row the attempt-arm closes.
-- **Compounding driver** (`solve_family` + `family` CLI) —
-  > **SOLVER-LANE DESIGN FACT (known since the Barrington work 2026-06-02; do not re-derive):**
-  > `agentic_leaf.solve_leaf(decompose=True)` runs the DIRECT attempt FIRST and only falls back to
-  > decomposition WHEN DIRECT FAILS. So compounding can only bank helpers when the direct attempt
-  > FAILS *and* the decompose round emits TOP-LEVEL `lemma`s (not inline `have`s). Easy targets close
-  > direct → 0 helpers → nothing to compound. Therefore the compounding flywheel is only testable in a
-  > DISCRIMINATING regime: baseline must NOT saturate (tight budget / hard target) AND proofs must
-  > invent reusable named lemmas. The 2026-06-03 ProblemP2 flywheel run was NON-discriminating exactly
-  > for this reason (baseline 3/3, 0 banked). `flywheel_discriminating.py` is the proper test: seed the
-  > library with a saved decompose-proof's helpers, then A/B a sibling under a tight budget.
-  > (A reuse-metric bug that counted corpus-decl refs as "reuse" was also fixed.)
-  threads one shared family
-  context through an ordered sibling list, banking each closure's helpers → provisioning to later siblings; `compound=False`
-  is the baseline A/B arm. New function, existing paths byte-unchanged → parity. *Lift test:* the flywheel
-  A/B (`flywheel_ab.py`): compound closure-rate > baseline AND banked-helper reuse > 0.
-- **Finer calibration** (`move_calibration.calibrated_priors_for_class`) — per-(move × error-class) via
-  NESTED shrinkage (sparse cell → marginal move → stub). Data-gated: equals the marginal calibration today
-  (DB sparse → parity), sharpens as per-class cells fill. *Lift test:* DB accumulation, then per-class A/B.
-- **Governed proof repair / version-migration** (`proof_repair` + `repair` CLI) — confirm-the-break-first
-  (calibrate, fail-closed: a still-compiling proof is never "repaired"), strip the broken body to `sorry`
-  with the old body kept as a warm-start hint, re-prove via `solve_adhoc`, emit a migration diff. Reuses
-  the governed pipeline (no new loop). *Lift test:* repair the BohrMean v4.29→v4.30 break end-to-end.
-
-**Tried → REVERTED (regression caught it iatrogenic):**
-- Adaptive-budget stall-defer: deferring a stalled node cut it off BEFORE its late productive move
-  (frontier/conjecture) — iatrogenic; and any non-iatrogenic guard collapses it to plain
-  move-exhaustion (no net lift). The safe "prioritize progressing nodes" is already the GP-187
-  `PROGRESS_WEIGHT` frontier boost.
-
-**Lift UNPROVEN — needs a CLEAN test before deciding (NOT negatives; prior evidence was
-non-probative / confounded / scoped):**
-- **Premise shelf** — built + leakage-quarantined, lift unmeasured. A/B shelf on/off on a
-  leak-clean corpus; only strengthen retrieval if positive (iatrogenic risk = leakage).
-- **Guided decompose** (frontier-diagnosis → conjecture the specific missing reusable lemma).
-  The "decompose ≈ direct" reading came from the non-probative Barrington test — untested, not
-  negative. Needs a clean discriminating target (e.g. the unimodality crux).
-- **Stepwise / proof-state continuation** — prior run was confounded; discriminator pending.
-- **Cross-provider orchestration alpha** — measured ≈0 only on EASY slices; Jaccard suggested a
-  hidden complementarity signal. Untested on hard slices.
-- **External provers** (DeepSeek-Prover-V2 / LeanCopilot) — unprovisioned (no GPU) + unmeasured.
-  Optional diversity move only; not a dependency. Fork of LeanCopilot rejected (frozen/dated; the
-  agentic leaf subsumes it and auto-upgrades with the subscription model).
-
-**Governance (the moat):** mature; diminishing returns. The one data-gated extension is finer
-calibration (per-move × error-class) once the attempts DB is larger.
+Detailed, dated session-by-session notes on these open areas are kept in an internal engineering log.
