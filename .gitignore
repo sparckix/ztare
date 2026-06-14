@@ -475,8 +475,11 @@ projects/**/ckpts*/
 # repo-root scratch
 scratch/
 
-# leanmill solver probe scratch — agentic_leaf writes these probe stubs (default probe_name) into the
-# working dir; when a solve runs from the repo root they land here. Regenerated on demand, never sources.
+# leanmill solver probe scratch — agentic_leaf + solve_adhoc now write probes into `<lean_project>/.solver_scratch`
+# (out of the project ROOT, still inside the lake project so `lake env lean` resolves). Regenerated on demand,
+# never sources. The bare-root patterns below stay for back-compat with any pre-relocation strays.
+.solver_scratch/
+**/.solver_scratch/
 /AgenticLeafProbe.lean
 /RobustProbe_*.lean
 

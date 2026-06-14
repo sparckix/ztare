@@ -1,0 +1,25 @@
+# Isabelle sledgehammer server config — the single source of truth (vs scattered hardcoded constants).
+# Loaded + VALIDATED by `IsabelleServerConfig` in deploy/isabelle_sledgehammer_server.py.
+# Precedence: $ZTARE_ISABELLE_CONFIG path > this file > legacy ISABELLE_* env vars > field defaults.
+
+# Path to the `isabelle` launcher (the deploy script discovers and exports ISABELLE_BIN, which overrides this).
+isabelle_bin: isabelle
+
+# Pre-built heap whose image provides the goal's imports. prepare_isabelle_server.sh builds this once so the
+# first live /sledgehammer request doesn't pay the ~5-15 min parent build. Must contain `default_imports`.
+parent_session: HOL-Computational_Algebra
+
+# ATP backend(s) sledgehammer drives. Single value or space-separated (e.g. "e vampire z3 cvc4").
+# `e` ships with Isabelle and needs no extra install; add others once provisioned on the box.
+provers: e
+
+# Per-prover wallclock budget INSIDE sledgehammer (seconds). The HTTP request's own `timeout` bounds the
+# whole call; this bounds each ATP.
+prover_timeout_s: 30
+
+# `isabelle build -o threads=` for the per-request session. 1 keeps a single request from saturating the box
+# (the leanmill DAG may issue several); raise on a dedicated server.
+build_threads: 1
+
+# Imports clause used when a request omits one (must be satisfied by `parent_session`'s image).
+default_imports: 'Main "HOL-Library.Multiset" "HOL-Computational_Algebra.Computational_Algebra"'

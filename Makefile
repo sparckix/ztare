@@ -88,7 +88,13 @@ endif
 	gaming-vector-hardening-show gaming-vector-hardening-check-plan gaming-vector-hardening-sync-plan gaming-vector-hardening-run-current gaming-vector-hardening-run-vector gaming-vector-hardening-selftest \
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show experiment-loop autoresearch-route autoresearch-projection autoresearch-dispatch-validate autoresearch-dispatch-canary autoresearch-dispatch-parity autoresearch-subscription-outcome-audit autoresearch-matched-transport-pair autoresearch-hillclimb-audit autoresearch-consequence-audit autoresearch-rubric-mode-audit autoresearch-kernel-health operations-intelligence autoresearch-substrate-recommend blitz-survival-report inloop-fixture-validate autoresearch-control-demo eigenquestion-propose eigenquestion-validate eigenquestion-status _preflight_eigenquestion_review seal wipe-sandbox \
-	action-intel-smoke action-intel-materialize-dry
+	action-intel-smoke action-intel-materialize-dry \
+	leanmill-certify-demo
+
+# LeanMill one-command demo: plain-English rule → z3 finds the adversarial boundary → Lean kernel certifies
+# the faithful rule + catches the laundered off-by-one. The auditable certificate is the product.
+leanmill-certify-demo:
+	$(PYTHON) scripts/public/demo/leanmill_certify_demo.py
 
 help:
 	@echo "ZTARE commands"

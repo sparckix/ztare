@@ -35,6 +35,21 @@ no stable command surface exists yet, and keep it reusable.
   effects stay out of the kernel.
 - Treat failures as signal, not embarrassment.
 - Close experiments with ledger rows before moving on.
+- Before using out-of-loop RD/Codex/Claude/subscription-agent work on a task
+  that could be run by autoresearch, evaluate the workbench route with
+  `ztare autoresearch route --task "<task>" --project <slug> --rubric <slug> > /tmp/autoresearch_route.json`
+  or `make autoresearch-route TASK="<task>" PROJECT=<slug> RUBRIC=<slug>`.
+  The router infers bounded claim, stable evaluator/gate, rubric surface, and
+  artifact surface where possible; explicit boolean flags are overrides. Invoke
+  autoresearch when all four exist, then inspect the projection with
+  `ztare autoresearch projection --project <slug>` or
+  `make autoresearch-projection PROJECT=<slug>`. Prepare the missing surface
+  when they do not; if staying out of loop, record why with
+  `ztare action-intel record-agentic-route --route-json /tmp/autoresearch_route.json --decision-id DECISION_ID`.
+  Use `record-agentic-work` only for custom rows without saved router JSON. For depth-sensitive closes
+  selected by `OP-AWR-01`, carry the run/projection or action-row ref as
+  `workbench_evidence_ref` in
+  `research_done.carrier_schema_receipts.autoresearch_workbench_routing`.
 - Prediction-ledger tiering is delegated to the executable pre-tick
   discriminator (`scripts/public/control/rd_tick_brief.py` + `scripts/public/control/prediction_logging_discriminator.py`);
   do not duplicate the tier table here.

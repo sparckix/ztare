@@ -6,6 +6,20 @@ openai>=1.0.0
 # Scientific stack — required by validator/orchestrator/substrate paths
 sympy>=1.14
 scipy>=1.14
+z3-solver>=4.12   # SMT: ztare.common.smt_checker (checker-agnostic equivalence + counterexamples) + a
+                  # general-purpose decidable-fragment solver. Local & deterministic (NOT a metered API).
+                  # Lazy-imported (fails CLOSED if absent) so it is not required for `make gates` / smoke.
+cvc5>=1.2         # SMT ABDUCTION (`get-abduct`): the ONLY mainstream solver with native abduction; powers
+                  # MOVE_ABDUCE (ztare.leanmill.solver.abduction). The pip wheel ships the engine via its
+                  # Python bindings — no binary download needed (abduction.py uses the API when the `cvc5`
+                  # binary is absent). Lazy-imported + FAIL-CLOSED (absent ⇒ MOVE_ABDUCE inert `no_seed`;
+                  # default-OFF flag regardless). Local & deterministic (NOT a metered API).
+cvxpy>=1.4        # SDP solver (transport edge #2): MULTIVARIATE sum-of-squares / Positivstellensatz
+                  # certificates (ztare.common.sos_certificate.sos_certificate_multivariate → the `sos` agent
+                  # tool). Numerically solves the SOS SDP, then hands rounded `sq_nonneg` HINTS to nlinarith
+                  # (the kernel re-verifies — a bad hint is a MISS, never a false closure). Lazy-imported +
+                  # FAIL-CLOSED (absent ⇒ multivariate sos returns None; univariate path is unaffected).
+                  # Heavier wheel (pulls SCS/OSQP) — auto-installed on solver nodes by prepare_lean_backends.sh.
 
 sentence-transformers>=5.0
 hdbscan>=0.8.40
@@ -42,6 +56,8 @@ httpx>=0.27
 
 # Dev / test — needed to run `make gates` and the fixture suites
 pytest>=8.0
+hypothesis>=6.0    # property-based parser/contract invariants (tests/test_parser_invariants.py — the #49/#80
+                   # prevention); absent ⇒ those tests importorskip, so `make gates` can't validate the seams
 
 # Optional, per-substrate only (NOT needed for the core apparatus or
 # `make gates`; imported solely by individual project / benchmark
