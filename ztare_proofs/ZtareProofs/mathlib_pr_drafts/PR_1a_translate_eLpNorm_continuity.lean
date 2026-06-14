@@ -1,7 +1,7 @@
 /-
 Copyright (c) 2026 Mathlib Contributors. All rights reserved.
 Released under Apache 2.0 license, as described in the file LICENSE.
-Authors: ZTARE NS Track B contributors
+Authors: Daniel Alami
 -/
 import Mathlib.MeasureTheory.Function.ContinuousMapDense
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
@@ -256,7 +256,7 @@ end CompactSupportCase
 
 section MainResult
 
-variable [LocallyCompactSpace G] [μ.IsAddHaarMeasure] [μ.Regular]
+variable [LocallyCompactSpace G] [μ.IsAddHaarMeasure]
 
 /-- **Translation continuity in `Lᵖ`.**
 
@@ -314,13 +314,13 @@ theorem tendsto_translate_eLpNorm_zero
   have hAB_aesm : AEStronglyMeasurable (fun x => A x + B x) μ := hA_aesm.add hB_aesm
   -- Triangle: `‖A + B + C‖_p ≤ ‖A + B‖_p + ‖C‖_p ≤ ‖A‖_p + ‖B‖_p + ‖C‖_p`.
   have step_outer :
-      eLpNorm (fun x => A x + B x + C x) p μ
+      eLpNorm ((fun x => A x + B x) + C) p μ
         ≤ eLpNorm (fun x => A x + B x) p μ + eLpNorm C p μ := by
     have := eLpNorm_add_le (μ := μ) (p := p)
       (f := fun x => A x + B x) (g := C) hAB_aesm hC_aesm hp1
     simpa using this
   have step_inner :
-      eLpNorm (fun x => A x + B x) p μ
+      eLpNorm (A + B) p μ
         ≤ eLpNorm A p μ + eLpNorm B p μ := by
     have := eLpNorm_add_le (μ := μ) (p := p)
       (f := A) (g := B) hA_aesm hB_aesm hp1
@@ -347,8 +347,18 @@ theorem tendsto_translate_eLpNorm_zero
     rw [← ENNReal.add_div, ← ENNReal.add_div]
     rw [show (ε + ε + ε : ℝ≥0∞) = ε * 3 by ring]
     rw [ENNReal.mul_div_cancel_right h3_ne h3_top]
+  have hABC :
+      eLpNorm (fun x => A x + B x + C x) p μ =
+        eLpNorm ((fun x => A x + B x) + C) p μ := by
+    congr
+  have hAB :
+      eLpNorm (fun x => A x + B x) p μ =
+        eLpNorm (A + B) p μ := by
+    congr
   calc eLpNorm (fun x => A x + B x + C x) p μ
-      ≤ eLpNorm (fun x => A x + B x) p μ + eLpNorm C p μ := step_outer
+      = eLpNorm ((fun x => A x + B x) + C) p μ := hABC
+    _ ≤ eLpNorm (fun x => A x + B x) p μ + eLpNorm C p μ := step_outer
+    _ = eLpNorm (A + B) p μ + eLpNorm C p μ := by rw [hAB]
     _ ≤ (eLpNorm A p μ + eLpNorm B p μ) + eLpNorm C p μ := by gcongr
     _ ≤ (ε / 3 + ε / 3) + ε / 3 := by gcongr
     _ = ε := triple_third
