@@ -100,7 +100,7 @@ class BriefingProvider(ABC):
     #: model produces clean Lagrangians). Tier defines when the provider
     #: renders:
     #:   T0 = always (apparatus contract — non-negotiable)
-    #:   T1 = always (load-bearing structural directive)
+    #:   T1 = always (central structural directive)
     #:   T2 = always (lightweight per-iter feedback)
     #:   T3 = stagnation_count > 2 (regime-specific failure analysis)
     #:   T4 = stagnation_count > 4 (big-hammer reframings)
@@ -126,6 +126,15 @@ class BriefingProvider(ABC):
         """Return the markdown fragment to inject. Stable header, then
         body. Include a trailing newline. Empty string returned by
         a provider that thought it applied but had nothing to say."""
+
+    def structured_records(self, ctx: BriefingContext) -> list[dict[str, Any]]:
+        """Optional machine-readable records behind a rendered fragment.
+
+        Providers should keep this deterministic and read-only, just like
+        ``fragment``. The renderer persists these records next to the briefing
+        so downstream reports can consume the same evidence the mutator saw.
+        """
+        return []
 
     def passes_tier_gate(self, ctx: BriefingContext) -> bool:
         """Tier-based stagnation gate. Returns True if the provider's
@@ -164,7 +173,7 @@ class MutatorBriefing:
         T5 providers hibernate unless explicitly forced via rubric.
         Plus a soft budget cap (`briefing_budget_chars`, default 12000)
         beyond which lower-priority T3+ providers are dropped — apparatus
-        contract (T0/T1) and load-bearing always-on (T2) providers are
+        contract (T0/T1) and central always-on (T2) providers are
         never dropped by the budget.
 
         Persists to `workspace/mutator_briefing_iter_NNN.md` for
@@ -181,6 +190,7 @@ class MutatorBriefing:
         # by setting `briefing_tiered_disable: true` in the rubric.
         tiering_disabled = bool(ctx.rubric.get("briefing_tiered_disable", False))
         fragments: list[tuple[str, str]] = []
+        structured_records: list[dict[str, Any]] = []
         tier_gated: list[str] = []
         budget_trimmed: list[str] = []
         provider_timings_ms: dict[str, float] = {}
@@ -207,6 +217,11 @@ class MutatorBriefing:
                             budget_trimmed.append(f"{p.name}(T{p.tier},{len(frag)}c)")
                             continue
                         fragments.append((p.name, frag))
+                        for record in p.structured_records(ctx):
+                            if isinstance(record, dict):
+                                structured_records.append(
+                                    {"provider": p.name, **record}
+                                )
                         running_chars += len(frag)
             except Exception as exc:
                 # Provider exceptions are NEVER fatal to the mutator
@@ -231,6 +246,7 @@ class MutatorBriefing:
             "tiering_disabled": tiering_disabled,
             "render_ms": round((time.perf_counter() - render_started) * 1000.0, 3),
             "provider_timings_ms": provider_timings_ms,
+            "structured_record_count": len(structured_records),
         }
 
         # Persist for operator audit. Best effort.
@@ -247,7 +263,7 @@ class MutatorBriefing:
                     f"(budget {diag.get('budget_chars', '?')}; "
                     f"stagnation_count={diag.get('stagnation_count', '?')})\n"
                     f"Tier-gated (silent this iter): {diag.get('tier_gated', [])}\n"
-                    f"Budget-trimmed (load-bearing but oversized): "
+                    f"Budget-trimmed (central but oversized): "
                     f"{diag.get('budget_trimmed', [])}\n"
                     f"Tiering disabled: {diag.get('tiering_disabled', False)}\n\n"
                     f"Render ms: {diag.get('render_ms', '?')}\n"
@@ -255,6 +271,20 @@ class MutatorBriefing:
                     f"---\n"
                 )
                 audit_path.write_text(header + body, encoding="utf-8")
+                records_path = ws / f"mutator_briefing_iter_{ctx.iter_index:03d}_records.json"
+                records_path.write_text(
+                    json.dumps(
+                        {
+                            "schema_version": 1,
+                            "iter_index": ctx.iter_index,
+                            "records": structured_records,
+                        },
+                        indent=2,
+                        sort_keys=True,
+                    )
+                    + "\n",
+                    encoding="utf-8",
+                )
         except Exception:
             pass  # audit failure is non-fatal
 
@@ -319,14 +349,17 @@ def default_briefing() -> MutatorBriefing:
     from src.ztare.orchestrator.briefing_providers.verified_axioms import (
         VerifiedAxiomsProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.path_b_promotion_floor import (
-        PathBPromotionFloorProvider,
+    from src.ztare.orchestrator.briefing_providers.variational_promotion_floor import (
+        VariationalPromotionFloorProvider,
     )
     from src.ztare.orchestrator.briefing_providers.contract_rules import (
         ContractRulesProvider,
     )
     from src.ztare.orchestrator.briefing_providers.r1_pattern_warning import (
         R1PatternWarningProvider,
+    )
+    from src.ztare.orchestrator.briefing_providers.tried_failed_digest import (
+        TriedFailedDigestProvider,
     )
     from src.ztare.orchestrator.briefing_providers.lagrangian_worked_example import (
         LagrangianWorkedExampleProvider,
@@ -335,7 +368,7 @@ def default_briefing() -> MutatorBriefing:
     b = MutatorBriefing()
 
     # ── Tier classification (paper 7 §11.15 briefing-density fix) ──
-    # T0/T1 = always (apparatus contract + load-bearing structural directive)
+    # T0/T1 = always (apparatus contract + central structural directive)
     # T2    = always (lightweight per-iter feedback)
     # T3    = stagnation_count > 2
     # T4    = stagnation_count > 4
@@ -350,18 +383,20 @@ def default_briefing() -> MutatorBriefing:
     # briefing tokens; ROI: prevents ~$0.30-1.20/iter R1-thrash bills.
     _p = R1PatternWarningProvider(); _p.tier = 0
     b.register(_p)
+    _p = TriedFailedDigestProvider(); _p.tier = 2
+    b.register(_p)
     _p = ContractRulesProvider(); _p.tier = 0
     b.register(_p)
     _p = FitTelemetryProvider(); _p.tier = 2
     b.register(_p)
-    # Path-B promotion-floor explainer (2026-04-27): when a substrate has
+    # Variational-promotion explainer (2026-04-27): when a substrate has
     # tier_3_universal_law_target.active=true AND a prior iter was capped
     # at 50 by R20-R24 or PPN gates, this provider renders an unambiguous
     # cap-mechanism explanation at the TOP of the briefing (priority 30 —
     # before VerifiedAxioms@50, ForcedReframe@130, ColdLLM@150). Solves the
     # gp163d gp-5.5 attractor problem where briefing density obscured the
-    # path-b promotion criteria; this provider surfaces them load-bearing.
-    _p = PathBPromotionFloorProvider(); _p.tier = 2
+    # Variational-promotion criteria; this provider surfaces them as a central signal.
+    _p = VariationalPromotionFloorProvider(); _p.tier = 2
     b.register(_p)
     # GP-180 Lagrangian worked-example (2026-04-28): when the rubric has
     # `enable_lagrangian_derivation: true` (or `rubric_modes` contains
@@ -384,7 +419,7 @@ def default_briefing() -> MutatorBriefing:
     # before any framings or reframes.
     _p = VerifiedAxiomsProvider(); _p.tier = 2
     b.register(_p)
-    # GP-168 Forced REFRAME (task #141): when stagnation triggers fire,
+    # GP-168 Forced REFRAME: when stagnation triggers fire,
     # injects MANDATORY-DISJOINT-ARCHITECTURE block ahead of the cold-LLM
     # seed. Priority 130 — renders before cold-LLM seed (150) so the
     # mutator sees the forcing-function context first.
@@ -425,7 +460,7 @@ def default_briefing() -> MutatorBriefing:
     b.register(_p)
     _p = GateGapProvider(); _p.tier = 3
     b.register(_p)
-    _p = PerClassBreakdownProvider(); _p.tier = 2  # load-bearing per-iter signal
+    _p = PerClassBreakdownProvider(); _p.tier = 2  # central per-iter signal
     b.register(_p)
     _p = FramerRecommendationProvider(); _p.tier = 3
     b.register(_p)

@@ -1,7 +1,7 @@
 """Tests for orchestrator/prompt.py (GP-157 v5.0 Phase 4d).
 
 Pin down the substrate-contract-hint selector. Surfaced by gp159
-mutator-empty-Python failure (other agent diagnosis 2026-04-25 night):
+mutator-empty-Python failure (other agent diagnosis 2026-04-25):
 custom-substrate without fit primitive has no contract instruction in
 the standard mutator prompt.
 """
@@ -53,7 +53,7 @@ class TestNeedsOverrideContractHint:
         ["audit", "literature", "proof_target"],
     )
     def test_audit_literature_proof_target_no_longer_get_override_hint(self, non_nd_class):
-        # NARROWED 2026-04-25 night: these substrates do NOT use the
+        # NARROWED 2026-04-25: these substrates do NOT use the
         # I_model(features) contract — audit scores on critique, literature
         # on prose, proof_target on Lean tactics. The feature-dict hint
         # was being injected wrongly for them; now silent.

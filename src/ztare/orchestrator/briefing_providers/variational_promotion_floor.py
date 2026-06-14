@@ -1,17 +1,17 @@
-"""Path-B promotion floor — load-bearing score-cap explainer for the mutator.
+"""Variational-promotion floor — score-cap explainer for the mutator.
 
-When a substrate has a path-b promotion target (e.g.,
+When a substrate has a variational-promotion target (e.g.,
 `tier_3_universal_law_target.promotion_floor_raw_score = 100`) AND prior
 iters were capped at 50 by R20-R24 (parameterized-bridge detection) or
 by Solar-System PPN (Mercury/Cassini violation), this provider renders an
 unambiguous instruction at the TOP of the mutator briefing telling the
-mutator *why* its prior submissions capped and what the only path to
-exceed 50 looks like.
+mutator *why* its prior submissions capped and what kind of declaration can
+exceed 50.
 
 Motivation (2026-04-27): the gp163d run produced 5 iters where gpt-5.5
 returned to the verified-axiom bridge despite REFRAME, Erdős cold-LLM
-seed, topological pivot, and even axiom purge. The briefing was dense
-but no single block explained the cap mechanism in load-bearing terms.
+seed, structural pivot, and even axiom purge. The briefing was dense
+but no single block explained the cap mechanism in decision-critical terms.
 This provider is that explanation, surfaced first, every iter.
 
 Priority 30 — renders BEFORE verified_axioms (50), forced_reframe (130),
@@ -26,14 +26,14 @@ from pathlib import Path
 from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
-class PathBPromotionFloorProvider(BriefingProvider):
-    """Render path-b promotion floor + cap-mechanism explanation."""
+class VariationalPromotionFloorProvider(BriefingProvider):
+    """Render variational-promotion floor + cap-mechanism explanation."""
 
-    name = "path_b_promotion_floor"
+    name = "variational_promotion_floor"
     priority = 30  # render FIRST, before everything else
 
     def applies(self, ctx: BriefingContext) -> bool:
-        # Only fire when the substrate declares a path-b promotion target.
+        # Only fire when the substrate declares a variational-promotion target.
         target = (ctx.rubric or {}).get("tier_3_universal_law_target") or {}
         if not target.get("active", False):
             return False
@@ -88,13 +88,13 @@ class PathBPromotionFloorProvider(BriefingProvider):
             return ""
 
         lines: list[str] = []
-        lines.append("## Path-B Promotion Floor (Apparatus-Deterministic)")
+        lines.append("## Variational-Promotion Floor (Apparatus-Deterministic)")
         lines.append("")
         lines.append(
             f"**Your prior submission(s) capped at 50.** The judge gave qualitative "
             f"raw scores up to 100, but the apparatus capped to 50 because the "
             f"submitted form(s) failed deterministic structural gates. Below is a "
-            f"load-bearing summary of the cap mechanism — this is not advice, it "
+            f"decision-critical summary of the cap mechanism — this is not advice, it "
             f"is the protocol."
         )
         lines.append("")
@@ -134,14 +134,14 @@ class PathBPromotionFloorProvider(BriefingProvider):
             )
             lines.append("")
             lines.append(
-                "**Path-b answer:** the screen must emerge from the Lagrangian's "
+                "**Variational answer:** the screen must emerge from the Lagrangian's "
                 "potential V(φ) and coupling A(φ), not be imposed by hand. "
                 "Chameleon screening, f(R) Compton-mass screening, and AQUAL+A(φ) "
                 "all derive a screening scale from a single physical parameter."
             )
             lines.append("")
 
-        lines.append("### The only path to exceed score 50")
+        lines.append("### The declaration needed to exceed score 50")
         lines.append("")
         lines.append(
             f"Apparatus promotion floor = raw {floor}. To exceed 50, your "
@@ -172,7 +172,7 @@ class PathBPromotionFloorProvider(BriefingProvider):
             "still fail because R20 catches the screen-scale literal."
         )
         lines.append("")
-        lines.append("### Honest path-b template (cage-whitelist friendly)")
+        lines.append("### Honest variational template (cage-whitelist friendly)")
         lines.append("")
         lines.append(
             "**Published physical constants are auto-whitelisted by R20/R21.** "
@@ -234,7 +234,7 @@ class PathBPromotionFloorProvider(BriefingProvider):
         lines.append(
             "If you cannot complete a Lagrangian derivation in this iter, "
             "submit the *partial* derivation with explicit holes named and a "
-            "K_extra ≤ 2 fitted form. The judge can score partial path-b "
+            "K_extra ≤ 2 fitted form. The judge can score partial variational "
             "progress > 50; only complete-and-laundered bridge submissions "
             "trigger the 50-cap."
         )
