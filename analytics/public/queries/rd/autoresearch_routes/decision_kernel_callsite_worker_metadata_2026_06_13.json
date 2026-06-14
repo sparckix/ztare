@@ -1,0 +1,58 @@
+{
+  "artifact_surface": true,
+  "bounded_claim": true,
+  "confidence": 0.66,
+  "decision": "prepare_autoresearch_surface",
+  "missing": [
+    "stable evaluator/gate",
+    "rubric surface"
+  ],
+  "project": "ztare_kernel",
+  "reasons": [
+    "bounded claim surface",
+    "artifact surface is available for mutation/projection",
+    "subscription-backed fungible worker available"
+  ],
+  "rubric": "",
+  "rubric_ready": false,
+  "stable_evaluator": false,
+  "subscription_worker_available": true,
+  "suggested_next_step": "construct the missing evaluator/rubric/artifact surface before using out-of-loop agent work as the primary research path",
+  "surface_scaffold": [
+    {
+      "acceptance_check": "same artifact produces the same pass/fail signal across runs",
+      "artifact": "test_model.py or gate_harness.py",
+      "missing": "stable evaluator/gate",
+      "project": "ztare_kernel",
+      "required_fields": [
+        "deterministic_input",
+        "scoring_or_gate_function",
+        "heldout_or_negative_control",
+        "failure_mode"
+      ],
+      "surface": "stable_evaluator"
+    },
+    {
+      "acceptance_check": "the autoresearch loop can score proposals without RD interpretation",
+      "artifact": "rubrics/ztare_kernel.json",
+      "missing": "rubric surface",
+      "project": "ztare_kernel",
+      "required_fields": [
+        "dimensions_or_criteria",
+        "score_contract",
+        "falsification_mode_or_hard_gate",
+        "minimum_acceptance_threshold"
+      ],
+      "surface": "rubric"
+    }
+  ],
+  "task": "kernel hardening: make autoresearch eval history record per-call-site worker metadata for mutator judge committee and inverter so subscription outcome audits can measure non-mutator subscription workers",
+  "worker_metadata": {
+    "transport": "subscription_cli",
+    "worker_archetype": "persistent_agent",
+    "worker_capability": "tool_using_agent",
+    "worker_identity": "persistent",
+    "worker_metadata_source": "autoresearch_workbench_router",
+    "worker_state": "stateful"
+  }
+}

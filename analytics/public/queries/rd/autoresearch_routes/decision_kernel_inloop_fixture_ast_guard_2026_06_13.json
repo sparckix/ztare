@@ -1,0 +1,45 @@
+{
+  "artifact_surface": true,
+  "bounded_claim": true,
+  "confidence": 0.66,
+  "decision": "prepare_autoresearch_surface",
+  "missing": [
+    "rubric surface"
+  ],
+  "project": "ztare_kernel",
+  "reasons": [
+    "bounded claim surface",
+    "stable evaluator or deterministic gate",
+    "artifact surface is available for mutation/projection",
+    "subscription-backed fungible worker available"
+  ],
+  "rubric": "ztare_kernel",
+  "rubric_ready": false,
+  "stable_evaluator": true,
+  "subscription_worker_available": true,
+  "suggested_next_step": "construct the missing evaluator/rubric/artifact surface before using out-of-loop agent work as the primary research path",
+  "surface_scaffold": [
+    {
+      "acceptance_check": "the autoresearch loop can score proposals without RD interpretation",
+      "artifact": "rubrics/ztare_kernel.json",
+      "missing": "rubric surface",
+      "project": "ztare_kernel",
+      "required_fields": [
+        "dimensions_or_criteria",
+        "score_contract",
+        "falsification_mode_or_hard_gate",
+        "minimum_acceptance_threshold"
+      ],
+      "surface": "rubric"
+    }
+  ],
+  "task": "kernel source repair: strengthen in-loop mechanism fixture validation so static wiring checks executable AST call-sites instead of inert text markers",
+  "worker_metadata": {
+    "transport": "subscription_cli",
+    "worker_archetype": "persistent_agent",
+    "worker_capability": "tool_using_agent",
+    "worker_identity": "persistent",
+    "worker_metadata_source": "autoresearch_workbench_router",
+    "worker_state": "stateful"
+  }
+}

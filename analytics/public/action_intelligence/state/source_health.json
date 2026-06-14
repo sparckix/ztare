@@ -1,38 +1,19 @@
 {
   "counts": {
-    "action_impact_rows": 0,
-    "aggregates": 322,
-    "blocking": 1,
+    "action_impact_rows": 7,
+    "agentic_workbench_rows": 5,
+    "aggregates": 335,
+    "blocking": 0,
     "consumed_surfacing_events": 0,
-    "decision_use_rows": 0,
-    "gp233_rows": 342,
+    "decision_use_rows": 2,
+    "gp233_rows": 358,
     "info": 0,
-    "issues": 5,
+    "issues": 3,
     "surfacing_event_rows": 0,
-    "warning": 4
+    "warning": 3
   },
-  "generated_at": "2026-05-19T19:26:26Z",
+  "generated_at": "2026-06-13T16:18:57Z",
   "issues": [
-    {
-      "affected_domains": [
-        "forecast_ops"
-      ],
-      "blocking_rule": "forecast_ops recommendations remain diagnostic until decision-use rows exist",
-      "denominator": "forecast aggregates",
-      "domain": null,
-      "evidence_refs": [
-        "analytics/public/forecast_pool/aggregates",
-        "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
-      ],
-      "expected_count": 322,
-      "freshness_window_days": 14,
-      "issue_id": "sh_c901d8c3617fbdcb",
-      "issue_type": "missing_decision_use",
-      "observed_count": 0,
-      "recommended_action": "repair_source_emitter",
-      "scope": "forecast_ops",
-      "severity": "blocking"
-    },
     {
       "affected_domains": [
         "trajectory_surfacing",
@@ -44,11 +25,11 @@
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
       ],
-      "expected_count": 342,
+      "expected_count": 358,
       "freshness_window_days": 14,
-      "issue_id": "sh_bd0f5eb54484e22a",
+      "issue_id": "sh_c0d096d56471c40c",
       "issue_type": "weak_gp233_linkage",
-      "observed_count": 329,
+      "observed_count": 345,
       "recommended_action": "repair_source_emitter",
       "scope": "gp233",
       "severity": "warning"
@@ -91,31 +72,12 @@
       "recommended_action": "repair_source_emitter",
       "scope": "trajectory_surfacing",
       "severity": "warning"
-    },
-    {
-      "affected_domains": [
-        "trajectory_surfacing"
-      ],
-      "blocking_rule": "catch preconditioners remain diagnostic until action consumption is recorded",
-      "denominator": "load-bearing catch rows linked to action-impact rows",
-      "domain": null,
-      "evidence_refs": [
-        "analytics/public/ledgers/catch/catch_ledger.jsonl",
-        "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl"
-      ],
-      "expected_count": 99,
-      "freshness_window_days": 14,
-      "issue_id": "sh_ba101af51c83851d",
-      "issue_type": "unconsumed_surface",
-      "observed_count": 0,
-      "recommended_action": "repair_source_emitter",
-      "scope": "catch",
-      "severity": "warning"
     }
   ],
   "schema_version": 1,
   "source_paths": {
     "aggregates": "analytics/public/forecast_pool/aggregates",
+    "bifurcation_report": "analytics/public/ledgers/reflexive/bifurcation_report.json",
     "catch": "analytics/public/ledgers/catch/catch_ledger.jsonl",
     "decision_use": "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl",
     "gp233": "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md",

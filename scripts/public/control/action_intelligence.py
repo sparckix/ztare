@@ -50,6 +50,7 @@ TRAJECTORY_ARCHIVE_ENRICHED = (
 PRIMITIVE_SURFACE = REPO / "analytics/public/queries/rd/rd_tick_primitive_surface.json"
 RECURSIVE_GAIN = REPO / "analytics/public/queries/trajectory/recursive_gain_candidates.json"
 CLOSURE_PATTERNS = REPO / "analytics/public/queries/reflexive/closure_patterns.json"
+BIFURCATION_REPORT = REPO / "analytics/public/ledgers/reflexive/bifurcation_report.json"
 
 FORECAST_ACTIONS = [
     "run_now",
@@ -70,6 +71,14 @@ SURFACING_ACTIONS = [
     "suppress_surface_as_low_voi",
     "repair_source_emitter",
 ]
+AGENTIC_WORKBENCH_ACTIONS = [
+    "invoke_autoresearch",
+    "prepare_autoresearch_surface",
+    "run_out_of_loop_agent",
+    "stay_out_of_loop",
+    "record_negative_constraint",
+    "repair_source_emitter",
+]
 SURFACE_KIND_TO_ACTION = {
     "pattern": "surface_pattern",
     "anti_pattern": "surface_anti_pattern",
@@ -85,6 +94,13 @@ GP230_USED_FOR_TO_GP243 = {
     "kill": "kill_branch",
     "ignore": "ignore_forecast",
     "override": "override_forecast",
+}
+LEGACY_CONSEQUENTIAL_CATCH_KEY = "load" + "_bearing"
+ROUTER_DECISION_TO_AGENTIC_ACTION = {
+    "invoke_autoresearch": "invoke_autoresearch",
+    "prepare_autoresearch_surface": "prepare_autoresearch_surface",
+    "stay_out_of_loop": "stay_out_of_loop",
+    "not_evaluated": "run_out_of_loop_agent",
 }
 
 
@@ -434,6 +450,261 @@ def surfacing_event_to_action_impact(row: dict[str, Any]) -> dict[str, Any] | No
     return impact
 
 
+def validate_agentic_workbench_impact(row: dict[str, Any]) -> list[str]:
+    errors = validate_action_impact(row)
+    if (row.get("decision_point") or {}).get("domain") != "agentic_workbench":
+        errors.append("decision_point.domain must be agentic_workbench")
+    selected = row.get("selected_action")
+    if selected not in AGENTIC_WORKBENCH_ACTIONS:
+        errors.append("selected_action must be an agentic workbench action")
+    context = row.get("context_features")
+    if not isinstance(context, dict):
+        errors.append("context_features must be an object")
+        context = {}
+    router_decision = context.get("workbench_router_decision")
+    if router_decision not in {
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "stay_out_of_loop",
+        "not_evaluated",
+    }:
+        errors.append(
+            "context_features.workbench_router_decision must be invoke_autoresearch, "
+            "prepare_autoresearch_surface, stay_out_of_loop, or not_evaluated"
+        )
+    bypassed_ready_workbench = (
+        router_decision == "invoke_autoresearch"
+        and selected != "invoke_autoresearch"
+    )
+    explicit_out_of_loop = selected in {"run_out_of_loop_agent", "stay_out_of_loop"}
+    if (bypassed_ready_workbench or explicit_out_of_loop) and not str(context.get("why_not_autoresearch") or "").strip():
+        errors.append(f"{selected} requires context_features.why_not_autoresearch")
+    source_refs = (row.get("source_refs") or {}).get("source_refs")
+    if not isinstance(source_refs, list):
+        source_refs = []
+    has_route_ref = any(
+        "route" in str(ref).lower() and str(ref).lower().endswith(".json")
+        for ref in source_refs
+    )
+    if not has_route_ref:
+        errors.append("agentic workbench rows require a route JSON source ref")
+    return errors
+
+
+def agentic_workbench_impact_from_args(args: argparse.Namespace) -> dict[str, Any]:
+    source_refs = parse_json_list(args.source_refs_json, "--source-refs-json")
+    route_json_ref = str(getattr(args, "route_json_ref", "") or "").strip()
+    if route_json_ref and route_json_ref not in source_refs:
+        source_refs = [route_json_ref, *source_refs]
+    catch_ids = parse_json_list(args.catch_ids_json, "--catch-ids-json")
+    negative_tags = parse_json_list(
+        args.negative_externality_tags_json,
+        "--negative-externality-tags-json",
+    )
+    worker = {
+        "worker_archetype": args.worker_archetype,
+        "worker_capability": args.worker_capability,
+        "worker_state": args.worker_state,
+        "worker_identity": args.worker_identity,
+        "transport": args.transport,
+    }
+    payload = {
+        "schema_version": 1,
+        "action_impact_id": args.action_impact_id,
+        "recorded_at": args.recorded_at or now_iso(),
+        "decision_point": {
+            "decision_id": args.decision_id,
+            "tick_id": args.tick_id,
+            "project_id": args.project_id,
+            "domain": "agentic_workbench",
+            "stage": args.stage,
+        },
+        "candidate_actions": AGENTIC_WORKBENCH_ACTIONS,
+        "selected_action": args.selected_action,
+        "policy_source": args.policy_source,
+        "logged_policy": {
+            "logging_policy": "rd_workbench_router",
+            "propensity_or_selection_rule": args.selection_rule,
+            "eligible_actions": AGENTIC_WORKBENCH_ACTIONS,
+            "why_selected": args.why_selected,
+            "why_not_selected": {},
+        },
+        "source_refs": {
+            "forecast_contract_id": args.forecast_contract_id,
+            "decision_use_id": None,
+            "surface_event_id": None,
+            "surfacing_event_path": None,
+            "forecast_aggregate_path": None,
+            "forecast_score_path": None,
+            "gp233_evidence_ref": args.gp233_evidence_ref,
+            "catch_ids": catch_ids,
+            "trajectory_refs": source_refs,
+            "prediction_ids": parse_json_list(args.prediction_ids_json, "--prediction-ids-json"),
+            "source_refs": source_refs,
+        },
+        "context_features": {
+            "task": args.task,
+            "project_family": args.project_family,
+            "workbench_router_decision": args.workbench_router_decision,
+            "why_not_autoresearch": args.why_not_autoresearch,
+            "bounded_claim": args.bounded_claim,
+            "stable_evaluator": args.stable_evaluator,
+            "rubric_ready": args.rubric_ready,
+            "artifact_surface": args.artifact_surface,
+            "worker": worker,
+        },
+        "outcome": {
+            "known": bool(args.outcome_known),
+            "success_bool": args.success_bool,
+            "decision_impact": args.decision_impact,
+            "yield_signal": args.yield_signal,
+            "actual_cost_agent_minutes": args.actual_cost_agent_minutes,
+            "negative_externality_tags": negative_tags,
+            "catch_ids_realized": catch_ids,
+        },
+        "counterfactual": {
+            "baseline_action": args.baseline_action,
+            "counterfactual_action": args.counterfactual_action,
+            "counterfactual_value_bucket": args.counterfactual_value_bucket,
+            "notes": args.notes,
+        },
+    }
+    if not payload["action_impact_id"]:
+        payload["action_impact_id"] = stable_id("ai", {
+            "domain": "agentic_workbench",
+            "decision_id": payload["decision_point"]["decision_id"],
+            "task": args.task,
+            "recorded_at": payload["recorded_at"],
+        })
+    errors = validate_agentic_workbench_impact(payload)
+    if errors:
+        payload["validation_errors"] = errors
+    return payload
+
+
+def _route_missing_reason(route: dict[str, Any]) -> str:
+    missing = route.get("missing")
+    if isinstance(missing, list) and missing:
+        return "router missing prerequisites: " + ", ".join(str(item) for item in missing)
+    suggestion = str(route.get("suggested_next_step") or "").strip()
+    if suggestion:
+        return "router suggested next step: " + suggestion
+    return "router did not mark the autoresearch surface ready"
+
+
+def _worker_defaults_for_agentic_route(
+    selected_action: str,
+    subscription_worker_available: bool,
+) -> dict[str, str]:
+    if selected_action == "invoke_autoresearch":
+        return {
+            "worker_archetype": "fungible_agent_worker" if subscription_worker_available else "fungible_llm_call",
+            "worker_capability": "tool_using_agent" if subscription_worker_available else "bare_llm_call",
+            "worker_state": "stateless",
+            "worker_identity": "fungible",
+            "transport": "subscription_cli" if subscription_worker_available else "api",
+        }
+    return {
+        "worker_archetype": "persistent_agent",
+        "worker_capability": "tool_using_agent",
+        "worker_state": "stateful",
+        "worker_identity": "persistent",
+        "transport": "subscription_cli",
+    }
+
+
+def _worker_metadata_from_route(route: dict[str, Any], fallback: dict[str, str]) -> dict[str, str]:
+    metadata = route.get("worker_metadata")
+    if not isinstance(metadata, dict):
+        return fallback
+    resolved = dict(fallback)
+    for key in (
+        "worker_archetype",
+        "worker_capability",
+        "worker_state",
+        "worker_identity",
+        "transport",
+    ):
+        value = metadata.get(key)
+        if isinstance(value, str) and value.strip():
+            resolved[key] = value.strip()
+    return resolved
+
+
+def agentic_workbench_impact_from_route_args(args: argparse.Namespace) -> dict[str, Any]:
+    route = read_json(args.route_json, None)
+    if not isinstance(route, dict):
+        raise SystemExit("--route-json must point to a router JSON object")
+    decision = str(route.get("decision") or "not_evaluated")
+    if decision not in ROUTER_DECISION_TO_AGENTIC_ACTION:
+        raise SystemExit(f"unknown route decision in {args.route_json}: {decision!r}")
+
+    selected_action = args.selected_action or ROUTER_DECISION_TO_AGENTIC_ACTION[decision]
+    subscription_worker_available = bool(route.get("subscription_worker_available"))
+    worker_defaults = _worker_defaults_for_agentic_route(
+        selected_action,
+        subscription_worker_available,
+    )
+    worker_defaults = _worker_metadata_from_route(route, worker_defaults)
+    route_ref = relpath(args.route_json)
+    extra_refs = parse_json_list(args.source_refs_json, "--source-refs-json")
+    source_refs = [route_ref, *extra_refs]
+
+    why_not = args.why_not_autoresearch
+    if selected_action in {"run_out_of_loop_agent", "stay_out_of_loop"} and not why_not:
+        why_not = _route_missing_reason(route)
+
+    why_selected = args.why_selected
+    if not why_selected:
+        why_selected = f"router decision {decision}; selected {selected_action}"
+
+    project = str(route.get("project") or "").strip()
+    ns = argparse.Namespace(
+        action_impact_id=args.action_impact_id,
+        recorded_at=args.recorded_at,
+        decision_id=args.decision_id,
+        tick_id=args.tick_id,
+        project_id=args.project_id or project or None,
+        project_family=args.project_family or project or "unknown",
+        stage=args.stage,
+        task=args.task or str(route.get("task") or ""),
+        selected_action=selected_action,
+        policy_source=args.policy_source,
+        selection_rule=args.selection_rule,
+        why_selected=why_selected,
+        workbench_router_decision=decision,
+        why_not_autoresearch=why_not,
+        bounded_claim=bool(route.get("bounded_claim")),
+        stable_evaluator=bool(route.get("stable_evaluator")),
+        rubric_ready=bool(route.get("rubric_ready")),
+        artifact_surface=bool(route.get("artifact_surface")),
+        worker_archetype=args.worker_archetype or worker_defaults["worker_archetype"],
+        worker_capability=args.worker_capability or worker_defaults["worker_capability"],
+        worker_state=args.worker_state or worker_defaults["worker_state"],
+        worker_identity=args.worker_identity or worker_defaults["worker_identity"],
+        transport=args.transport or worker_defaults["transport"],
+        forecast_contract_id=args.forecast_contract_id,
+        gp233_evidence_ref=args.gp233_evidence_ref,
+        route_json_ref=None,
+        source_refs_json=json.dumps(source_refs),
+        prediction_ids_json=args.prediction_ids_json,
+        catch_ids_json=args.catch_ids_json,
+        outcome_known=args.outcome_known,
+        success_bool=args.success_bool,
+        decision_impact=args.decision_impact,
+        yield_signal=args.yield_signal,
+        actual_cost_agent_minutes=args.actual_cost_agent_minutes,
+        negative_externality_tags_json=args.negative_externality_tags_json,
+        baseline_action=args.baseline_action,
+        counterfactual_action=args.counterfactual_action,
+        counterfactual_value_bucket=args.counterfactual_value_bucket,
+        notes=args.notes,
+    )
+    if not ns.task:
+        raise SystemExit("route JSON does not contain task; pass --task")
+    return agentic_workbench_impact_from_args(ns)
+
+
 def gp233_rows() -> list[dict[str, Any]]:
     if not GP233_LEDGER.exists():
         return []
@@ -486,6 +757,7 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
         domain: str | None = None,
         freshness_window_days: int = 14,
         affected_domains: list[str] | None = None,
+        details: dict[str, Any] | None = None,
     ) -> None:
         payload = {
             "severity": severity,
@@ -501,6 +773,8 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
             "recommended_action": "repair_source_emitter",
             "evidence_refs": evidence_refs,
         }
+        if details:
+            payload["details"] = details
         payload["issue_id"] = stable_id("sh", payload)
         issues.append(payload)
 
@@ -594,18 +868,94 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
             affected_domains=["trajectory_surfacing"],
         )
 
-    load_bearing_catches = [
-        row for row in read_jsonl(CATCH_LEDGER)
-        if row.get("load_bearing") is True
+    agentic_rows = [
+        row for row in action_rows
+        if ((row.get("decision_point") or {}).get("domain") == "agentic_workbench")
     ]
-    if load_bearing_catches and not action_rows:
+    unevaluated_agentic = [
+        row for row in agentic_rows
+        if ((row.get("context_features") or {}).get("workbench_router_decision") in {None, "", "not_evaluated"})
+    ]
+    if agentic_rows and unevaluated_agentic:
+        add_issue(
+            severity="warning",
+            scope="agentic_workbench",
+            issue_type="missing_workbench_router_decision",
+            expected_count=len(agentic_rows),
+            observed_count=len(agentic_rows) - len(unevaluated_agentic),
+            denominator="out-of-loop agent action-impact rows with router decision",
+            blocking_rule=(
+                "manual agent work remains diagnostic until each row records whether "
+                "autoresearch was invoked, prepared, or bypassed with a reason"
+            ),
+            evidence_refs=[relpath(ACTION_IMPACT_LEDGER)],
+            affected_domains=["agentic_workbench"],
+        )
+    invalid_agentic: list[tuple[dict[str, Any], list[str]]] = []
+    for row in agentic_rows:
+        errors = validate_agentic_workbench_impact(row)
+        if errors:
+            invalid_agentic.append((row, errors))
+    if agentic_rows and invalid_agentic:
+        add_issue(
+            severity="warning",
+            scope="agentic_workbench",
+            issue_type="invalid_agentic_workbench_rows",
+            expected_count=len(agentic_rows),
+            observed_count=len(agentic_rows) - len(invalid_agentic),
+            denominator="agentic-workbench action-impact rows passing schema and router checks",
+            blocking_rule=(
+                "workbench coverage is diagnostic until route rows carry valid selected action, "
+                "router decision, and bypass rationale fields"
+            ),
+            evidence_refs=[relpath(ACTION_IMPACT_LEDGER)],
+            affected_domains=["agentic_workbench"],
+            details={
+                "invalid_rows": [
+                    {
+                        "action_impact_id": row.get("action_impact_id"),
+                        "decision_id": (row.get("decision_point") or {}).get("decision_id"),
+                        "selected_action": row.get("selected_action"),
+                        "workbench_router_decision": (
+                            row.get("context_features") or {}
+                        ).get("workbench_router_decision"),
+                        "validation_errors": errors,
+                    }
+                    for row, errors in invalid_agentic[:5]
+                ],
+                "invalid_row_count": len(invalid_agentic),
+            },
+        )
+    bifurcation = read_json(BIFURCATION_REPORT, {})
+    agent_work_share = (bifurcation.get("bifurcation") or {}).get("agent_work_share")
+    if isinstance(agent_work_share, (int, float)) and agent_work_share >= 0.5 and not agentic_rows:
+        add_issue(
+            severity="warning",
+            scope="agentic_workbench",
+            issue_type="missing_agentic_workbench_decision_rows",
+            expected_count=1,
+            observed_count=0,
+            denominator="bifurcation report with out-of-loop majority and agentic-workbench action rows",
+            blocking_rule=(
+                "reflexive mining already shows out-of-loop work dominates; "
+                "decision-level workbench rows are needed to explain which RD/agent tasks "
+                "invoked autoresearch, prepared missing surfaces, or stayed out of loop"
+            ),
+            evidence_refs=[relpath(BIFURCATION_REPORT), relpath(ACTION_IMPACT_LEDGER)],
+            affected_domains=["agentic_workbench"],
+        )
+    consequential_catches = [
+        row for row in read_jsonl(CATCH_LEDGER)
+        if row.get(LEGACY_CONSEQUENTIAL_CATCH_KEY) is True or row.get("consequential") is True
+    ]
+    if consequential_catches and not action_rows:
         add_issue(
             severity="warning",
             scope="catch",
             issue_type="unconsumed_surface",
-            expected_count=len(load_bearing_catches),
+            expected_count=len(consequential_catches),
             observed_count=0,
-            denominator="load-bearing catch rows linked to action-impact rows",
+            denominator="consequential catch rows linked to action-impact rows",
             blocking_rule="catch preconditioners remain diagnostic until action consumption is recorded",
             evidence_refs=[relpath(CATCH_LEDGER), relpath(ACTION_IMPACT_LEDGER)],
             affected_domains=["trajectory_surfacing"],
@@ -622,6 +972,7 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
             "gp233": relpath(GP233_LEDGER),
             "catch": relpath(CATCH_LEDGER),
             "trajectory": relpath(trajectory_source) if trajectory_source else None,
+            "bifurcation_report": relpath(BIFURCATION_REPORT),
         },
         "counts": {
             "issues": len(issues),
@@ -631,6 +982,7 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
             "aggregates": aggregate_count,
             "decision_use_rows": len(decision_rows),
             "action_impact_rows": len(action_rows),
+            "agentic_workbench_rows": len(agentic_rows),
             "surfacing_event_rows": len(surfacing_events),
             "consumed_surfacing_events": len(consumed_surfacing_events),
             "gp233_rows": len(gp233),
@@ -843,7 +1195,7 @@ def trajectory_recommendations(
 
     catches = [
         row for row in read_jsonl(CATCH_LEDGER)
-        if row.get("load_bearing") is True
+        if row.get(LEGACY_CONSEQUENTIAL_CATCH_KEY) is True or row.get("consequential") is True
     ][-5:]
     for catch in catches:
         rec = {
@@ -853,7 +1205,7 @@ def trajectory_recommendations(
             "decision_id": str(catch.get("catch_id") or stable_id("catch", catch)),
             "recommended_action": "surface_catch_preconditioner",
             "confidence": "diagnostic_only",
-            "rationale": str(catch.get("title") or "load-bearing catch preconditioner available"),
+            "rationale": str(catch.get("title") or "consequential catch preconditioner available"),
             "evidence_refs": [relpath(CATCH_LEDGER)] + [str(p) for p in catch.get("workpaper_paths") or []],
             "externality_checks": {
                 "negative_externality_risk": "medium",
@@ -897,6 +1249,18 @@ def materialize_models(write: bool = True) -> dict[str, Any]:
     for row in manual_rows + derived_rows + derived_surface_rows:
         merged[str(row.get("action_impact_id") or stable_id("ai", row))] = row
     action_rows = list(merged.values())
+    forecast_ops_rows = [
+        row for row in action_rows
+        if (row.get("decision_point") or {}).get("domain") == "forecast_ops"
+    ]
+    trajectory_surfacing_rows = [
+        row for row in action_rows
+        if (row.get("decision_point") or {}).get("domain") == "trajectory_surfacing"
+    ]
+    agentic_workbench_rows = [
+        row for row in action_rows
+        if (row.get("decision_point") or {}).get("domain") == "agentic_workbench"
+    ]
     health = source_health_model(action_rows)
     recommendations = (
         forecast_ops_recommendations(action_rows=action_rows, health=health)
@@ -907,14 +1271,9 @@ def materialize_models(write: bool = True) -> dict[str, Any]:
         "generated_at": now_iso(),
         "summary": {
             "action_impact_rows": len(action_rows),
-            "forecast_ops_rows": len([
-                row for row in action_rows
-                if (row.get("decision_point") or {}).get("domain") == "forecast_ops"
-            ]),
-            "trajectory_surfacing_rows": len([
-                row for row in action_rows
-                if (row.get("decision_point") or {}).get("domain") == "trajectory_surfacing"
-            ]),
+            "forecast_ops_rows": len(forecast_ops_rows),
+            "trajectory_surfacing_rows": len(trajectory_surfacing_rows),
+            "agentic_workbench_rows": len(agentic_workbench_rows),
             "surfacing_event_rows": len(surfacing_events),
             "consumed_surfacing_events": len(derived_surface_rows),
             "shadow_recommendations": len(recommendations),
@@ -1019,6 +1378,44 @@ def cmd_record_surfacing_event(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_record_agentic_work(args: argparse.Namespace) -> int:
+    payload = agentic_workbench_impact_from_args(args)
+    errors = payload.get("validation_errors") or []
+    if errors:
+        raise SystemExit("invalid agentic-work impact row: " + "; ".join(errors))
+    rows = read_jsonl(ACTION_IMPACT_LEDGER)
+    if args.dedupe:
+        for row in rows:
+            if str(row.get("action_impact_id") or "") == str(payload.get("action_impact_id") or ""):
+                print(json.dumps({"deduped": True, "existing": row}, indent=2, sort_keys=True))
+                return 0
+    rows.append(payload)
+    write_jsonl(ACTION_IMPACT_LEDGER, rows)
+    if args.materialize:
+        materialize_models(write=True)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
+def cmd_record_agentic_route(args: argparse.Namespace) -> int:
+    payload = agentic_workbench_impact_from_route_args(args)
+    errors = payload.get("validation_errors") or []
+    if errors:
+        raise SystemExit("invalid agentic-route impact row: " + "; ".join(errors))
+    rows = read_jsonl(ACTION_IMPACT_LEDGER)
+    if args.dedupe:
+        for row in rows:
+            if str(row.get("action_impact_id") or "") == str(payload.get("action_impact_id") or ""):
+                print(json.dumps({"deduped": True, "existing": row}, indent=2, sort_keys=True))
+                return 0
+    rows.append(payload)
+    write_jsonl(ACTION_IMPACT_LEDGER, rows)
+    if args.materialize:
+        materialize_models(write=True)
+    print(json.dumps(payload, indent=2, sort_keys=True))
+    return 0
+
+
 def cmd_smoke(_: argparse.Namespace) -> int:
     fixture = {
         "decision_use_id": "du_fixture",
@@ -1079,6 +1476,49 @@ def cmd_smoke(_: argparse.Namespace) -> int:
     surface_row = surfacing_event_to_action_impact(event)
     if not surface_row or (surface_row.get("decision_point") or {}).get("domain") != "trajectory_surfacing":
         raise SystemExit("surfacing event to action-impact fixture failed")
+    class _Args:
+        action_impact_id = None
+        recorded_at = "2026-05-19T18:59:32Z"
+        decision_id = "fixture_agentic_decision"
+        tick_id = "fixture_tick"
+        project_id = "fixture_project"
+        stage = "pretick"
+        selected_action = "run_out_of_loop_agent"
+        policy_source = "rd"
+        selection_rule = "rd_workbench_router"
+        why_selected = "fixture checks manual out-of-loop path"
+        forecast_contract_id = "fixture_contract"
+        gp233_evidence_ref = None
+        source_refs_json = '["analytics/public/queries/rd/autoresearch_routes/fixture.json"]'
+        catch_ids_json = "[]"
+        prediction_ids_json = "[]"
+        negative_externality_tags_json = "[]"
+        task = "fixture bounded task"
+        project_family = "fixture_family"
+        workbench_router_decision = "prepare_autoresearch_surface"
+        why_not_autoresearch = "missing stable evaluator fixture"
+        bounded_claim = True
+        stable_evaluator = False
+        rubric_ready = True
+        artifact_surface = True
+        worker_archetype = "persistent_agent"
+        worker_capability = "tool_using_agent"
+        worker_state = "stateful"
+        worker_identity = "persistent"
+        transport = "subscription_cli"
+        outcome_known = True
+        success_bool = False
+        decision_impact = "prepared_autoresearch_surface"
+        yield_signal = "negative_constraint"
+        actual_cost_agent_minutes = 7.0
+        baseline_action = "invoke_autoresearch"
+        counterfactual_action = "run_out_of_loop_agent"
+        counterfactual_value_bucket = "diagnostic"
+        notes = "fixture"
+
+    agentic_row = agentic_workbench_impact_from_args(_Args())
+    if validate_agentic_workbench_impact(agentic_row):
+        raise SystemExit("valid agentic workbench fixture failed validation")
     with tempfile.TemporaryDirectory() as td:
         tmp = Path(td) / "state.json"
         write_json(tmp, {"ok": True})
@@ -1090,6 +1530,7 @@ def cmd_smoke(_: argparse.Namespace) -> int:
             "shadow_policy_live_row_rejection",
             "override_without_reason_rejection",
             "surfacing_event_to_action_impact",
+            "agentic_workbench_action_impact",
             "json_io",
         ],
     }, indent=2, sort_keys=True))
@@ -1138,6 +1579,108 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--dedupe", action="store_true")
     p.add_argument("--materialize", action="store_true")
     p.set_defaults(func=cmd_record_surfacing_event)
+
+    p = sub.add_parser("record-agentic-work")
+    p.add_argument("--action-impact-id")
+    p.add_argument("--recorded-at")
+    p.add_argument("--decision-id", required=True)
+    p.add_argument("--tick-id")
+    p.add_argument("--project-id")
+    p.add_argument("--project-family", required=True)
+    p.add_argument("--stage", default="pretick")
+    p.add_argument("--task", required=True)
+    p.add_argument("--selected-action", choices=AGENTIC_WORKBENCH_ACTIONS, required=True)
+    p.add_argument(
+        "--policy-source",
+        choices=["rd", "manual", "forecast_market", "unknown"],
+        default="rd",
+    )
+    p.add_argument("--selection-rule", default="rd_workbench_router")
+    p.add_argument("--why-selected")
+    p.add_argument(
+        "--workbench-router-decision",
+        choices=["invoke_autoresearch", "prepare_autoresearch_surface", "stay_out_of_loop", "not_evaluated"],
+        default="not_evaluated",
+    )
+    p.add_argument("--why-not-autoresearch")
+    p.add_argument("--bounded-claim", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--stable-evaluator", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--rubric-ready", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--artifact-surface", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--worker-archetype", default="persistent_agent")
+    p.add_argument("--worker-capability", default="tool_using_agent")
+    p.add_argument("--worker-state", default="stateful")
+    p.add_argument("--worker-identity", default="persistent")
+    p.add_argument("--transport", default="subscription_cli")
+    p.add_argument("--forecast-contract-id")
+    p.add_argument("--gp233-evidence-ref")
+    p.add_argument(
+        "--route-json-ref",
+        help=(
+            "Path or ref to the saved autoresearch router JSON. "
+            "Required for a valid agentic_workbench row; prefer "
+            "`ztare autoresearch route --record-decision-id` when possible."
+        ),
+    )
+    p.add_argument("--source-refs-json", default="[]")
+    p.add_argument("--prediction-ids-json", default="[]")
+    p.add_argument("--catch-ids-json", default="[]")
+    p.add_argument("--outcome-known", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--success-bool", action=argparse.BooleanOptionalAction, default=None)
+    p.add_argument("--decision-impact")
+    p.add_argument("--yield-signal")
+    p.add_argument("--actual-cost-agent-minutes", type=float)
+    p.add_argument("--negative-externality-tags-json", default="[]")
+    p.add_argument("--baseline-action")
+    p.add_argument("--counterfactual-action")
+    p.add_argument("--counterfactual-value-bucket")
+    p.add_argument("--notes")
+    p.add_argument("--dedupe", action="store_true")
+    p.add_argument("--materialize", action="store_true")
+    p.set_defaults(func=cmd_record_agentic_work)
+
+    p = sub.add_parser("record-agentic-route")
+    p.add_argument("--route-json", type=Path, required=True)
+    p.add_argument("--action-impact-id")
+    p.add_argument("--recorded-at")
+    p.add_argument("--decision-id", required=True)
+    p.add_argument("--tick-id")
+    p.add_argument("--project-id")
+    p.add_argument("--project-family")
+    p.add_argument("--stage", default="pretick")
+    p.add_argument("--task")
+    p.add_argument("--selected-action", choices=AGENTIC_WORKBENCH_ACTIONS)
+    p.add_argument(
+        "--policy-source",
+        choices=["rd", "manual", "forecast_market", "unknown"],
+        default="rd",
+    )
+    p.add_argument("--selection-rule", default="rd_workbench_router")
+    p.add_argument("--why-selected")
+    p.add_argument("--why-not-autoresearch")
+    p.add_argument("--worker-archetype")
+    p.add_argument("--worker-capability")
+    p.add_argument("--worker-state")
+    p.add_argument("--worker-identity")
+    p.add_argument("--transport")
+    p.add_argument("--forecast-contract-id")
+    p.add_argument("--gp233-evidence-ref")
+    p.add_argument("--source-refs-json", default="[]")
+    p.add_argument("--prediction-ids-json", default="[]")
+    p.add_argument("--catch-ids-json", default="[]")
+    p.add_argument("--outcome-known", action=argparse.BooleanOptionalAction, default=False)
+    p.add_argument("--success-bool", action=argparse.BooleanOptionalAction, default=None)
+    p.add_argument("--decision-impact")
+    p.add_argument("--yield-signal")
+    p.add_argument("--actual-cost-agent-minutes", type=float)
+    p.add_argument("--negative-externality-tags-json", default="[]")
+    p.add_argument("--baseline-action")
+    p.add_argument("--counterfactual-action")
+    p.add_argument("--counterfactual-value-bucket")
+    p.add_argument("--notes")
+    p.add_argument("--dedupe", action="store_true")
+    p.add_argument("--materialize", action="store_true")
+    p.set_defaults(func=cmd_record_agentic_route)
 
     p = sub.add_parser("shadow-recommend")
     p.add_argument("--write", action="store_true")

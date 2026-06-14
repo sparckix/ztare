@@ -1,7 +1,593 @@
 {
-  "generated_at": "2026-05-19T19:26:27Z",
+  "generated_at": "2026-06-13T16:18:57Z",
   "ledger_path": "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl",
-  "recent_action_impact_rows": [],
+  "recent_action_impact_rows": [
+    {
+      "action_impact_id": "ai_hormuz_hill_climb_projection_route_2026_06_12",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "project_family": "hormuz_oil_shock_2026",
+        "rubric_ready": true,
+        "stable_evaluator": true,
+        "task": "audit Hormuz hill-climb narrowing and improve projection-backed mutator memory",
+        "why_not_autoresearch": null,
+        "workbench_router_decision": "invoke_autoresearch",
+        "worker": {
+          "transport": "subscription_cli",
+          "worker_archetype": "fungible_agent_worker",
+          "worker_capability": "tool_using_agent",
+          "worker_identity": "fungible",
+          "worker_state": "stateless"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_hormuz_hill_climb_projection_2026_06_12",
+        "domain": "agentic_workbench",
+        "project_id": "hormuz_oil_shock_2026",
+        "stage": "kernel-audit",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "Hormuz has the bounded claim, deterministic test_model.py, rubric, and mutable artifacts needed for the autoresearch workbench; projection-backed memory is the appropriate in-loop fix for this hill-climb failure."
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": "Projection fallback and frontier constraints make legacy hill-climb narrowing visible to future mutator briefings.",
+        "known": true,
+        "negative_externality_tags": [],
+        "success_bool": true,
+        "yield_signal": "legacy_history_project_now_projectable"
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-06-12T21:47:53Z",
+      "schema_version": 1,
+      "selected_action": "invoke_autoresearch",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "docs/internal/repo_audits/hormuz_hill_climb_projection_route_2026_06_12.json",
+          "projects/hormuz_oil_shock_2026/history/1776113318_iter3_score_74_hormuz_oil_shock_2026_meta.json",
+          "src/ztare/validator/hypothesis_projection.py",
+          "src/ztare/orchestrator/briefing_providers/tried_failed_digest.py"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "docs/internal/repo_audits/hormuz_hill_climb_projection_route_2026_06_12.json",
+          "projects/hormuz_oil_shock_2026/history/1776113318_iter3_score_74_hormuz_oil_shock_2026_meta.json",
+          "src/ztare/validator/hypothesis_projection.py",
+          "src/ztare/orchestrator/briefing_providers/tried_failed_digest.py"
+        ]
+      }
+    },
+    {
+      "action_impact_id": "ai_62bfa7a1f56bc3c9",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "project_family": "ztare_kernel",
+        "rubric_ready": true,
+        "stable_evaluator": true,
+        "task": "Verify whether the autoresearch loop entrypoint can route judge and inverter-review through subscription workers on a disposable bounded fixture.",
+        "why_not_autoresearch": "Program-hardening diagnostic: the evidence is an executable pytest canary, not a project thesis search; no full project autoresearch run was needed beyond the disposable fixture.",
+        "workbench_router_decision": "invoke_autoresearch",
+        "worker": {
+          "transport": "subscription_cli",
+          "worker_archetype": "fungible_agent_worker",
+          "worker_capability": "tool_using_agent",
+          "worker_identity": "fungible",
+          "worker_state": "stateless_externalized_briefing"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_kernel_live_subscription_canary_2026_06_13",
+        "domain": "agentic_workbench",
+        "project_id": "ztare_kernel",
+        "stage": "pretick",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "router decision invoke_autoresearch; selected stay_out_of_loop"
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": [],
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-06-13T13:14:11Z",
+      "schema_version": 1,
+      "selected_action": "stay_out_of_loop",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_live_subscription_canary_2026_06_13.json"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_live_subscription_canary_2026_06_13.json"
+        ]
+      }
+    },
+    {
+      "action_impact_id": "ai_bcbe490a249fa6d7",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "project_family": "ztare_kernel",
+        "rubric_ready": false,
+        "stable_evaluator": false,
+        "task": "kernel hardening: make autoresearch eval history record per-call-site worker metadata for mutator judge committee and inverter so subscription outcome audits can measure non-mutator subscription workers",
+        "why_not_autoresearch": null,
+        "workbench_router_decision": "prepare_autoresearch_surface",
+        "worker": {
+          "transport": "subscription_cli",
+          "worker_archetype": "persistent_agent",
+          "worker_capability": "tool_using_agent",
+          "worker_identity": "persistent",
+          "worker_state": "stateful"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_kernel_callsite_worker_metadata_2026_06_13",
+        "domain": "agentic_workbench",
+        "project_id": "ztare_kernel",
+        "stage": "pretick",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "router decision prepare_autoresearch_surface; selected prepare_autoresearch_surface"
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": [],
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-06-13T14:57:51Z",
+      "schema_version": 1,
+      "selected_action": "prepare_autoresearch_surface",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_callsite_worker_metadata_2026_06_13.json"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_callsite_worker_metadata_2026_06_13.json"
+        ]
+      }
+    },
+    {
+      "action_impact_id": "ai_1a381f1e4bba51dd",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "project_family": "ztare_kernel",
+        "rubric_ready": false,
+        "stable_evaluator": true,
+        "task": "kernel source repair: make operations intelligence quantify sparse RD route logging and surface the route-recording command",
+        "why_not_autoresearch": null,
+        "workbench_router_decision": "prepare_autoresearch_surface",
+        "worker": {
+          "transport": "subscription_cli",
+          "worker_archetype": "persistent_agent",
+          "worker_capability": "tool_using_agent",
+          "worker_identity": "persistent",
+          "worker_state": "stateful"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_kernel_ops_route_coverage_2026_06_13",
+        "domain": "agentic_workbench",
+        "project_id": "ztare_kernel",
+        "stage": "pretick",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "router decision prepare_autoresearch_surface; selected prepare_autoresearch_surface"
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": [],
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-06-13T16:18:57Z",
+      "schema_version": 1,
+      "selected_action": "prepare_autoresearch_surface",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_ops_route_coverage_2026_06_13.json"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_ops_route_coverage_2026_06_13.json"
+        ]
+      }
+    },
+    {
+      "action_impact_id": "ai_5fd4ad5e24b7d4cf",
+      "candidate_actions": [
+        "invoke_autoresearch",
+        "prepare_autoresearch_surface",
+        "run_out_of_loop_agent",
+        "stay_out_of_loop",
+        "record_negative_constraint",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "artifact_surface": true,
+        "bounded_claim": true,
+        "project_family": "ztare_kernel",
+        "rubric_ready": false,
+        "stable_evaluator": true,
+        "task": "kernel source repair: strengthen in-loop mechanism fixture validation so static wiring checks executable AST call-sites instead of inert text markers",
+        "why_not_autoresearch": null,
+        "workbench_router_decision": "prepare_autoresearch_surface",
+        "worker": {
+          "transport": "subscription_cli",
+          "worker_archetype": "persistent_agent",
+          "worker_capability": "tool_using_agent",
+          "worker_identity": "persistent",
+          "worker_state": "stateful"
+        }
+      },
+      "counterfactual": {
+        "baseline_action": null,
+        "counterfactual_action": null,
+        "counterfactual_value_bucket": null,
+        "notes": null
+      },
+      "decision_point": {
+        "decision_id": "decision_kernel_inloop_fixture_ast_guard_2026_06_13",
+        "domain": "agentic_workbench",
+        "project_id": "ztare_kernel",
+        "stage": "pretick",
+        "tick_id": null
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "invoke_autoresearch",
+          "prepare_autoresearch_surface",
+          "run_out_of_loop_agent",
+          "stay_out_of_loop",
+          "record_negative_constraint",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "rd_workbench_router",
+        "propensity_or_selection_rule": "rd_workbench_router",
+        "why_not_selected": {},
+        "why_selected": "router decision prepare_autoresearch_surface; selected prepare_autoresearch_surface"
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": [],
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "rd",
+      "recorded_at": "2026-06-13T16:18:57Z",
+      "schema_version": 1,
+      "selected_action": "prepare_autoresearch_surface",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": null,
+        "forecast_aggregate_path": null,
+        "forecast_contract_id": null,
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "source_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_inloop_fixture_ast_guard_2026_06_13.json"
+        ],
+        "surface_event_id": null,
+        "surfacing_event_path": null,
+        "trajectory_refs": [
+          "analytics/public/queries/rd/autoresearch_routes/decision_kernel_inloop_fixture_ast_guard_2026_06_13.json"
+        ]
+      }
+    },
+    {
+      "action_impact_id": "ai_ebe823d77a3fa764",
+      "candidate_actions": [
+        "run_now",
+        "split_contract",
+        "ask_another_independent_agent",
+        "defer",
+        "kill_branch",
+        "ignore_forecast",
+        "override_forecast",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "current_bottleneck": null,
+        "expected_cost_agent_minutes": null,
+        "forecast_spread": null,
+        "gp230_allocation_action": null,
+        "gp230_allocation_reason": null,
+        "next_lever": null,
+        "p_success": null,
+        "surface_kind": null,
+        "top_failure_mode": null
+      },
+      "counterfactual": {
+        "baseline_action": "scale workers and keep draining lanes equally",
+        "counterfactual_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "counterfactual_value_bucket": null,
+        "notes": "Decision row for GP225 A/B/C path forward after factory scoreboard: conveyor works, new lanes yielded 5/5 Path-C residuals, bottleneck is repair-template generation rather than B governance capacity."
+      },
+      "decision_point": {
+        "decision_id": "du_e10552fcf492",
+        "domain": "forecast_ops",
+        "project_id": null,
+        "stage": "manual",
+        "tick_id": "gp225_factory_pathc_20260520"
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "run_now",
+          "split_contract",
+          "ask_another_independent_agent",
+          "defer",
+          "kill_branch",
+          "ignore_forecast",
+          "override_forecast",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "gp230_allocation",
+        "propensity_or_selection_rule": "gp230_allocation_recommendation",
+        "why_not_selected": {},
+        "why_selected": null
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": null,
+        "score_mean_brier": null,
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "forecast_market",
+      "recorded_at": "2026-05-20T12:48:13Z",
+      "schema_version": 1,
+      "selected_action": "split_contract",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": "du_e10552fcf492",
+        "forecast_aggregate_path": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+        "forecast_contract_id": "scratch_9e7572ea8cc99cba",
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "trajectory_refs": []
+      }
+    },
+    {
+      "action_impact_id": "ai_478d46c5c4aa6503",
+      "candidate_actions": [
+        "run_now",
+        "split_contract",
+        "ask_another_independent_agent",
+        "defer",
+        "kill_branch",
+        "ignore_forecast",
+        "override_forecast",
+        "repair_source_emitter"
+      ],
+      "context_features": {
+        "current_bottleneck": null,
+        "expected_cost_agent_minutes": null,
+        "forecast_spread": null,
+        "gp230_allocation_action": null,
+        "gp230_allocation_reason": null,
+        "next_lever": null,
+        "p_success": null,
+        "surface_kind": null,
+        "top_failure_mode": null
+      },
+      "counterfactual": {
+        "baseline_action": "scale workers and keep draining lanes equally",
+        "counterfactual_action": "prioritize Path-C residual planner plus typed repair-family lanes; increase B workers only when to_govern queue is nonempty",
+        "counterfactual_value_bucket": null,
+        "notes": "Corrected scratch decision-use row after enabling scratch contract support; prior du_e10552fcf492 had a malformed artifact path because scratch contracts were not accepted by record-decision-use."
+      },
+      "decision_point": {
+        "decision_id": "du_7c7881d2ad27",
+        "domain": "forecast_ops",
+        "project_id": null,
+        "stage": "manual",
+        "tick_id": "gp225_factory_pathc_20260520"
+      },
+      "logged_policy": {
+        "eligible_actions": [
+          "run_now",
+          "split_contract",
+          "ask_another_independent_agent",
+          "defer",
+          "kill_branch",
+          "ignore_forecast",
+          "override_forecast",
+          "repair_source_emitter"
+        ],
+        "logging_policy": "gp230_allocation",
+        "propensity_or_selection_rule": "gp230_allocation_recommendation",
+        "why_not_selected": {},
+        "why_selected": null
+      },
+      "outcome": {
+        "actual_cost_agent_minutes": null,
+        "catch_ids_realized": [],
+        "decision_impact": null,
+        "known": false,
+        "negative_externality_tags": null,
+        "score_mean_brier": null,
+        "success_bool": null,
+        "yield_signal": null
+      },
+      "policy_source": "forecast_market",
+      "recorded_at": "2026-05-20T12:49:38Z",
+      "schema_version": 1,
+      "selected_action": "split_contract",
+      "source_refs": {
+        "catch_ids": [],
+        "decision_use_id": "du_7c7881d2ad27",
+        "forecast_aggregate_path": "analytics/public/forecast_pool/aggregates/scratch_9e7572ea8cc99cba.json",
+        "forecast_contract_id": "scratch_9e7572ea8cc99cba",
+        "forecast_score_path": null,
+        "gp233_evidence_ref": null,
+        "prediction_ids": [],
+        "trajectory_refs": []
+      }
+    }
+  ],
   "schema_version": 1,
   "state_paths": {
     "action_intelligence": "analytics/public/action_intelligence/state/action_intelligence.json",
@@ -9,11 +595,12 @@
     "source_health": "analytics/public/action_intelligence/state/source_health.json"
   },
   "summary": {
-    "action_impact_rows": 0,
-    "blocking_source_health_issues": 1,
+    "action_impact_rows": 7,
+    "agentic_workbench_rows": 5,
+    "blocking_source_health_issues": 0,
     "consumed_surfacing_events": 0,
-    "forecast_ops_rows": 0,
-    "shadow_recommendations": 26,
+    "forecast_ops_rows": 2,
+    "shadow_recommendations": 35,
     "surfacing_event_rows": 0,
     "trajectory_surfacing_rows": 0
   }

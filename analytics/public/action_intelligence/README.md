@@ -14,6 +14,18 @@ operators read, daemon writes.
 Consumer: `src/ztare/reports/operations_intelligence.py` (the RD-side
 intelligence reporter). The CLI surface is `ztare action-intel`.
 
+## Agentic workbench rows
+
+`ztare action-intel record-agentic-work ...` records RD/Codex/Claude or other
+out-of-loop agent labor as `domain=agentic_workbench` action-impact evidence.
+Use it when a task could plausibly have been sent through autoresearch. The row
+must state the workbench-router decision: invoke autoresearch, prepare the
+missing surface, stay out of loop, or not evaluated. If the selected action is
+`run_out_of_loop_agent`, include `--why-not-autoresearch`.
+
+These rows feed operations intelligence and reflexive mining. They do not
+schedule workers, mutate autoresearch state, or replace source ledgers.
+
 ## Update cadence
 
 Refreshed by the action-intelligence daemon at end of every RD tick.

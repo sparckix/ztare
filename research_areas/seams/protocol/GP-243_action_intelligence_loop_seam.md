@@ -35,6 +35,8 @@ Covers:
 - the glue layer between GP-230 forecast market state, GP-233 yield decomposition, trajectory mining, catch ledger, and RD/pre-tick behavior;
 - an action-impact/intelligence ledger schema;
 - shadow policy evaluation for forecast operations and trajectory-surfacing choices;
+- RD/out-of-loop agent work at the autoresearch boundary, recorded as
+  `domain=agentic_workbench` action-impact rows;
 - read-only recommendations that can inform RD decisions without taking control of execution.
 
 Does not cover:
@@ -42,6 +44,7 @@ Does not cover:
 - live LMSR market mechanics;
 - live in-loop reinforcement learning that autonomously overrides RD choices;
 - replacing GP-230 forecasts, GP-233, the catch ledger, or the prediction ledger;
+- replacing autoresearch, factory-intelligence read models, or reflexive-mining emitters;
 - optimizing a single scalar research reward.
 
 ## Existing Surfaces And Use Cases
@@ -58,6 +61,8 @@ Does not cover:
 | `analytics/public/ledgers/catch/catch_ledger.jsonl` | Ratified catches | Supplies negative externality labels, false-positive classes, missed-preconditioner classes, and mechanism-laundering incidents. |
 | `analytics/public/ledgers/prediction/prediction_ledger.jsonl` | Legacy and tiered predictions | Supplies broader prediction history, but effort/cost fields require caution where telemetry is self-reported. |
 | `analytics/public/ledgers/trajectory/trajectory_archive.jsonl` and enriched archive | Cross-project trajectory mining corpus | Supplies repeated failure basins, pivot patterns, primitive exposure, stagnation signals, and miner ROI candidates. |
+| Factory-intelligence read models | Station/factory observability | Supplies bottlenecks, readiness, queue/source health, and recommendation surfaces for factory-shaped substrates; GP-243 consumes them as evidence, not as copied policy. |
+| `domain=agentic_workbench` action-impact rows | RD/out-of-loop agent boundary | Records whether a persistent/subscription agent invoked autoresearch, prepared the missing surface, or bypassed it with a reason. |
 | `scripts/public/control/rd_tick_brief.py` | Pre-tick surfacing | Natural place to show action-intelligence recommendations before RD commits to a route. |
 | `scripts/public/control/start_tick.py` | Action boundary | Natural place to auto-record forecast decision-use once the key mismatch is corrected. |
 | `scripts/public/mining/*` | Primitive and trajectory miners | Candidate source for surfacing arms: which primitive, anti-pattern, miner, or trajectory cue to show next. |
@@ -82,6 +87,15 @@ The second vocabulary should cover trajectory/primitives surfacing:
 - `surface_gp233_next_lever`
 - `surface_catch_preconditioner`
 - `suppress_surface_as_low_voi`
+
+The third vocabulary should cover the autoresearch/RD boundary:
+
+- `invoke_autoresearch`
+- `prepare_autoresearch_surface`
+- `run_out_of_loop_agent`
+- `stay_out_of_loop`
+- `record_negative_constraint`
+- `repair_source_emitter`
 
 Domain-specific action classes may be added only when the historical corpus has enough repeated decisions to evaluate them. GP-225-style proof repair/replay tasks are a better early target than NS theorem-frontier route choice because outcomes are more frequent and resolvers are more objective.
 
@@ -167,7 +181,12 @@ Open a downstream spec for a conservative v0:
    - forecast operations: whether to run, split, ask another independent agent, defer, or kill;
    - trajectory/primitives surfacing: which pattern, anti-pattern, trajectory cluster, GP-233 lever, or catch preconditioner to surface.
 5. Surface recommendations in RD pre-tick briefs as advisory evidence with provenance and confidence, not as execution commands.
-6. Keep live bandit/RL control out of scope until the ledger has enough resolved action-impact rows per domain and externality penalties are demonstrably working.
+6. Add typed `record-agentic-work` and `record-agentic-route` surfaces so
+   RD/Codex/Claude labor can be compared later with in-loop autoresearch and
+   prepared-but-not-run surfaces. Prefer `record-agentic-route` when the
+   router JSON exists, so the row carries the exact route artifact ref instead
+   of a reconstructed summary.
+7. Keep live bandit/RL control out of scope until the ledger has enough resolved action-impact rows per domain and externality penalties are demonstrably working.
 
 ## Open Questions
 

@@ -1,0 +1,30 @@
+{
+  "artifact_surface": true,
+  "bounded_claim": true,
+  "confidence": 0.86,
+  "decision": "invoke_autoresearch",
+  "missing": [],
+  "project": "ztare_kernel",
+  "reasons": [
+    "bounded claim surface",
+    "stable evaluator or deterministic gate",
+    "rubric can encode success/failure",
+    "artifact surface is available for mutation/projection",
+    "subscription-backed fungible worker available"
+  ],
+  "rubric": "kernel",
+  "rubric_ready": true,
+  "stable_evaluator": true,
+  "subscription_worker_available": true,
+  "suggested_next_step": "open an autoresearch run with worker metadata recorded; keep RD outside the loop and use the workbench output as ratified evidence",
+  "surface_scaffold": [],
+  "task": "Verify whether the autoresearch loop entrypoint can route judge and inverter-review through subscription workers on a disposable bounded fixture.",
+  "worker_metadata": {
+    "transport": "subscription_cli",
+    "worker_archetype": "fungible_agent_worker",
+    "worker_capability": "tool_using_agent",
+    "worker_identity": "fungible",
+    "worker_metadata_source": "autoresearch_workbench_router",
+    "worker_state": "stateless_externalized_briefing"
+  }
+}

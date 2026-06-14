@@ -16,6 +16,7 @@ This spec governs a conservative v0 action-intelligence loop for ZTARE:
 - a materialized action-intelligence read model;
 - shadow recommendations for forecast operations;
 - shadow recommendations for trajectory/primitives surfacing;
+- typed logging for RD/out-of-loop agent work at the autoresearch boundary;
 - observer-mode advisory recommendations that do not disturb RD pre-tick behavior by default.
 
 Out of scope:
@@ -23,6 +24,7 @@ Out of scope:
 - live RL or bandit control over RD decisions;
 - live LMSR or continuous price mechanics;
 - replacing GP-230, GP-233, the catch ledger, the prediction ledger, or the trajectory archive;
+- replacing autoresearch projections, gates, or the claim membrane;
 - optimizing a single scalar research reward;
 - NS theorem-frontier live route selection.
 
@@ -42,6 +44,17 @@ forecast/state/trajectory evidence -> action-impact row
 -> RD pre-tick surfacing -> later outcome linkage
 ```
 
+For RD/out-of-loop agent work, the loop is:
+
+```text
+workbench-shaped task -> RD router decision -> agentic_workbench action-impact row
+-> operations intelligence focus-track join -> later yield/catch/forecast linkage
+```
+
+This records whether the RD invoked autoresearch, prepared an autoresearch
+surface, or bypassed it with a persistent/subscription agent. It does not
+authorize GP-243 to schedule workers or mutate in-loop state.
+
 The implementation must first repair and populate decision-use capture. Shadow recommendations are allowed only as advisory read-model rows. They must cite their source rows and include a confidence class. No GP-243 component may execute, resolve, score, open, close, or override a research tick.
 
 The implementation must also fail diagnostic-first when source compilation is
@@ -55,6 +68,11 @@ GP-230's aggregate/read-model recommendation and evaluate whether it was used,
 ignored, or overrode later action. A GP-243 "recommendation" in this domain is
 an audit/read-model presentation of GP-230 state plus source-health status, not
 a second allocator.
+
+GP-243 also must not duplicate factory-intelligence or reflexive-mining
+surfaces. Station/factory read models and trajectory mining remain their own
+emitters. GP-243 consumes their outputs only as action-impact evidence and
+source-health signals.
 
 ## Problem
 
@@ -115,6 +133,8 @@ Commands:
 materialize
 record-impact
 record-surfacing-event
+record-agentic-work
+record-agentic-route
 shadow-recommend
 health
 smoke
@@ -127,6 +147,21 @@ smoke
 `record-surfacing-event` appends a typed trajectory/primitives surfacing event.
 Consumed or explicitly suppressed events are materialized into
 `ActionImpactRow` rows with `domain=trajectory_surfacing`.
+
+`record-agentic-work` appends a typed action-impact row with
+`domain=agentic_workbench`. It is for RD/Codex/Claude/subscription-agent work
+that could plausibly have gone through autoresearch. Rows must record the
+workbench-router decision and, when the selected action is
+`run_out_of_loop_agent`, the reason autoresearch was not used. A valid row also
+requires a saved router JSON source ref; use `--route-json-ref` for custom rows.
+
+`ztare autoresearch route --record-decision-id <id>` is the preferred route
+recording path: it saves the router JSON and appends the validated
+`domain=agentic_workbench` action-impact row in one command. Use
+`record-agentic-route` when the RD already saved router JSON from
+`ztare autoresearch route`; it derives the selected action, surface booleans,
+project family, worker defaults, and route artifact ref from that JSON, then
+validates and appends the same row.
 
 `shadow-recommend` emits advisory recommendations for forecast operations and trajectory/primitives surfacing.
 
@@ -175,6 +210,17 @@ suppress_surface_as_low_voi
 repair_source_emitter
 ```
 
+Agentic/autoresearch boundary actions:
+
+```text
+invoke_autoresearch
+prepare_autoresearch_surface
+run_out_of_loop_agent
+stay_out_of_loop
+record_negative_constraint
+repair_source_emitter
+```
+
 ### ActionImpactRow
 
 ```json
@@ -186,7 +232,7 @@ repair_source_emitter
     "decision_id": "string",
     "tick_id": "string|null",
     "project_id": "string|null",
-    "domain": "forecast_ops|trajectory_surfacing|proof_repair|other",
+    "domain": "forecast_ops|trajectory_surfacing|agentic_workbench|proof_repair|other",
     "stage": "pretick|membrane|posttick|manual|offline"
   },
   "candidate_actions": [
@@ -242,12 +288,40 @@ repair_source_emitter
 }
 ```
 
+For `domain=agentic_workbench`, `context_features` must include:
+
+```json
+{
+  "task": "string",
+  "project_family": "string",
+  "workbench_router_decision": "invoke_autoresearch|prepare_autoresearch_surface|stay_out_of_loop|not_evaluated",
+  "why_not_autoresearch": "string|null",
+  "bounded_claim": true,
+  "stable_evaluator": true,
+  "rubric_ready": true,
+  "artifact_surface": true,
+  "worker": {
+    "worker_archetype": "persistent_agent|fungible_llm_call|...",
+    "worker_capability": "tool_using_agent|bare_llm_call|...",
+    "worker_state": "stateful|stateless",
+    "worker_identity": "persistent|fungible",
+    "transport": "subscription_cli|api|local_process|..."
+  }
+}
+```
+
+The field is intentionally an evidence row, not private warm memory. It lets
+later reflexive mining compare in-loop autoresearch, prepared-but-not-run
+surfaces, and out-of-loop agent labor.
+
 Validation:
 
 - `selected_action` must be present in `candidate_actions`.
 - `stage` must be controlled vocabulary.
 - `policy_source=shadow_policy` is allowed only for offline evaluation rows, not live RD action rows.
 - live rows may not use `policy_source=shadow_policy`.
+- `domain=agentic_workbench` rows must include a route JSON source ref.
+- if a ready workbench is bypassed, or if the selected action is `run_out_of_loop_agent`/`stay_out_of_loop`, `context_features.why_not_autoresearch` must explain why.
 - `outcome.known=false` must not be scored as success or failure.
 - rows with `selected_action` in `ignore|override` equivalents must carry a reason in `counterfactual.notes`.
 
@@ -357,7 +431,7 @@ Required checks:
 - GP-230 aggregate count vs decision-use/action-impact row count;
 - missing decision-use ledger while aggregates exist;
 - GP-233 rows that cannot be linked to a project, tick, contract, or evidence pointer;
-- catch rows with `load_bearing=true` but no later action-impact reference;
+- consequential catch rows with no later action-impact reference;
 - trajectory miner outputs that are missing, stale, or unavailable as dated artifacts;
 - recommendations with no later consumption evidence.
 
