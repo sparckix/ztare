@@ -4,15 +4,15 @@ Reads workspace/iteration_telemetry.jsonl produced by autoresearch_loop.py and e
 three report sections:
 
   Cost Report  (GP-040 Slice 1.5) — per-run and aggregate cost / token breakdown (mean/min/max)
-  Episode Report  (GP-038 Slice 1.5) — load-bearing episode classification and cycle-time stats
-  Tail Report   (Slice 2a)        — p50/p90/p95/p99 wall-clock and cost, split by load-bearing
+  Episode Report  (GP-038 Slice 1.5) — consequential episode classification and cycle-time stats
+  Tail Report   (Slice 2a)        — p50/p90/p95/p99 wall-clock and cost, split by consequential status
 
 The Tail Report is the Slice 2a deliverable. Means lie on heavy tails; GP-032 Turn 1 §2
-requires load-bearing claims quote tail cycle-time, not mean. Quoting per-iter means from
+requires consequential claims quote tail cycle-time, not mean. Quoting per-iter means from
 the Cost Report as "cost of experimentation" is the laundering failure mode flagged in
 GP-032 Turn 1 §5 — use the Tail Report instead.
 
-A load-bearing episode is any iteration where at least one of the following is true:
+A consequential episode is any iteration where at least one of the following is true:
   - gate_engagement is True (GP-030 deterministic gate fired)
   - escalation_flags.self_reference is True
   - escalation_flags.semantic_escalation is True
@@ -68,7 +68,7 @@ def group_by_run(records: list[dict[str, Any]]) -> dict[int, dict[str, Any]]:
 # Episode classification (GP-038)
 # ---------------------------------------------------------------------------
 
-_LOAD_BEARING_LOOP_ACTIONS = {"underidentified", "catastrophic_failure"}
+_CONSEQUENTIAL_LOOP_ACTIONS = {"underidentified", "catastrophic_failure"}
 
 _TAIL_PS: tuple[int, ...] = (50, 90, 95, 99)
 
@@ -101,13 +101,13 @@ def tail_stats(values: list[float]) -> dict[str, float | int | None]:
     }
 
 
-def is_load_bearing(it: dict[str, Any]) -> bool:
+def is_consequential_episode(it: dict[str, Any]) -> bool:
     if it.get("gate_engagement"):
         return True
     flags = it.get("escalation_flags") or {}  # guard against explicit null
     if flags.get("self_reference") or flags.get("semantic_escalation"):
         return True
-    if it.get("loop_control_action") in _LOAD_BEARING_LOOP_ACTIONS:
+    if it.get("loop_control_action") in _CONSEQUENTIAL_LOOP_ACTIONS:
         return True
     return False
 
@@ -138,11 +138,11 @@ def analyse_run(run_id: int, run: dict[str, Any]) -> dict[str, Any]:
     total_wall = sum(wall_times)
 
     # --- episode classification (GP-038) ---
-    lb_iters = [it for it in iters if is_load_bearing(it)]
-    non_lb_iters = [it for it in iters if not is_load_bearing(it)]
+    consequential_iters = [it for it in iters if is_consequential_episode(it)]
+    ordinary_iters = [it for it in iters if not is_consequential_episode(it)]
 
-    lb_wall = [it.get("wall_clock_seconds", 0.0) for it in lb_iters]
-    non_lb_wall = [it.get("wall_clock_seconds", 0.0) for it in non_lb_iters]
+    consequential_wall = [it.get("wall_clock_seconds", 0.0) for it in consequential_iters]
+    ordinary_wall = [it.get("wall_clock_seconds", 0.0) for it in ordinary_iters]
 
     # stagnation run: consecutive iterations with the same stagnation_count increasing
     stagnation_windows: list[dict[str, Any]] = []
@@ -208,24 +208,24 @@ def analyse_run(run_id: int, run: dict[str, Any]) -> dict[str, Any]:
         # Slice 2a tail stats — the honest cycle-time / cost answer
         "tail": {
             "wall_seconds_all": tail_stats(wall_times),
-            "wall_seconds_load_bearing": tail_stats(lb_wall),
-            "wall_seconds_non_load_bearing": tail_stats(non_lb_wall),
+            "wall_seconds_consequential": tail_stats(consequential_wall),
+            "wall_seconds_ordinary": tail_stats(ordinary_wall),
             "cost_usd_all": tail_stats([c for c in costs if c is not None]),
-            "cost_usd_load_bearing": tail_stats(
-                [it.get("estimated_cost_usd") or 0.0 for it in lb_iters]
+            "cost_usd_consequential": tail_stats(
+                [it.get("estimated_cost_usd") or 0.0 for it in consequential_iters]
             ),
-            "cost_usd_non_load_bearing": tail_stats(
-                [it.get("estimated_cost_usd") or 0.0 for it in non_lb_iters]
+            "cost_usd_ordinary": tail_stats(
+                [it.get("estimated_cost_usd") or 0.0 for it in ordinary_iters]
             ),
         },
 
         # GP-038 episode
         "episodes": {
-            "load_bearing_count": len(lb_iters),
-            "non_load_bearing_count": len(non_lb_iters),
-            "load_bearing_fraction": round(len(lb_iters) / len(iters), 3) if iters else 0.0,
-            "mean_wall_load_bearing_seconds": round(statistics.mean(lb_wall), 1) if lb_wall else None,
-            "mean_wall_non_load_bearing_seconds": round(statistics.mean(non_lb_wall), 1) if non_lb_wall else None,
+            "consequential_count": len(consequential_iters),
+            "ordinary_count": len(ordinary_iters),
+            "consequential_fraction": round(len(consequential_iters) / len(iters), 3) if iters else 0.0,
+            "mean_wall_consequential_seconds": round(statistics.mean(consequential_wall), 1) if consequential_wall else None,
+            "mean_wall_ordinary_seconds": round(statistics.mean(ordinary_wall), 1) if ordinary_wall else None,
             "stagnation_windows": stagnation_windows,
             "loop_control_actions": action_counts,
             "gate_failure_frequency": gate_failure_freq,
@@ -250,18 +250,18 @@ def aggregate(run_results: list[dict[str, Any]]) -> dict[str, Any]:
     total_wall = sum(r["cost"]["total_wall_seconds"] for r in run_results if "cost" in r)
     total_tokens = sum(r["cost"]["total_tokens"] for r in run_results if "cost" in r)
 
-    all_lb = sum(r["episodes"]["load_bearing_count"] for r in run_results if "episodes" in r)
-    all_non_lb = sum(r["episodes"]["non_load_bearing_count"] for r in run_results if "episodes" in r)
+    all_consequential = sum(r["episodes"]["consequential_count"] for r in run_results if "episodes" in r)
+    all_ordinary = sum(r["episodes"]["ordinary_count"] for r in run_results if "episodes" in r)
 
     # Slice 2a cross-run pooled tails. Pooling is correct here — we want
     # "what does an iteration look like across all runs," not "what does
     # the average of per-run means look like."
     pooled_wall_all: list[float] = []
-    pooled_wall_lb: list[float] = []
-    pooled_wall_non_lb: list[float] = []
+    pooled_wall_consequential: list[float] = []
+    pooled_wall_ordinary: list[float] = []
     pooled_cost_all: list[float] = []
-    pooled_cost_lb: list[float] = []
-    pooled_cost_non_lb: list[float] = []
+    pooled_cost_consequential: list[float] = []
+    pooled_cost_ordinary: list[float] = []
     for r in run_results:
         raw_iters = r.get("_raw_iterations", [])
         for it in raw_iters:
@@ -269,12 +269,12 @@ def aggregate(run_results: list[dict[str, Any]]) -> dict[str, Any]:
             c = it.get("estimated_cost_usd") or 0.0
             pooled_wall_all.append(w)
             pooled_cost_all.append(c)
-            if is_load_bearing(it):
-                pooled_wall_lb.append(w)
-                pooled_cost_lb.append(c)
+            if is_consequential_episode(it):
+                pooled_wall_consequential.append(w)
+                pooled_cost_consequential.append(c)
             else:
-                pooled_wall_non_lb.append(w)
-                pooled_cost_non_lb.append(c)
+                pooled_wall_ordinary.append(w)
+                pooled_cost_ordinary.append(c)
 
     return {
         "run_count": len(run_results),
@@ -284,14 +284,14 @@ def aggregate(run_results: list[dict[str, Any]]) -> dict[str, Any]:
         "total_tokens": total_tokens,
         "cost_per_iteration_usd": round(total_cost / total_iters, 6) if total_iters else 0.0,
         "wall_per_iteration_seconds": round(total_wall / total_iters, 1) if total_iters else 0.0,
-        "load_bearing_fraction_overall": round(all_lb / (all_lb + all_non_lb), 3) if (all_lb + all_non_lb) else 0.0,
+        "consequential_fraction_overall": round(all_consequential / (all_consequential + all_ordinary), 3) if (all_consequential + all_ordinary) else 0.0,
         "tail_pooled": {
             "wall_seconds_all": tail_stats(pooled_wall_all),
-            "wall_seconds_load_bearing": tail_stats(pooled_wall_lb),
-            "wall_seconds_non_load_bearing": tail_stats(pooled_wall_non_lb),
+            "wall_seconds_consequential": tail_stats(pooled_wall_consequential),
+            "wall_seconds_ordinary": tail_stats(pooled_wall_ordinary),
             "cost_usd_all": tail_stats(pooled_cost_all),
-            "cost_usd_load_bearing": tail_stats(pooled_cost_lb),
-            "cost_usd_non_load_bearing": tail_stats(pooled_cost_non_lb),
+            "cost_usd_consequential": tail_stats(pooled_cost_consequential),
+            "cost_usd_ordinary": tail_stats(pooled_cost_ordinary),
         },
     }
 
@@ -315,12 +315,12 @@ def render_cost_section(run: dict[str, Any]) -> str:
 
 def render_episode_section(run: dict[str, Any]) -> str:
     e = run["episodes"]
-    lb_mean = f"{e['mean_wall_load_bearing_seconds']:.0f}s" if e["mean_wall_load_bearing_seconds"] is not None else "n/a"
-    non_lb_mean = f"{e['mean_wall_non_load_bearing_seconds']:.0f}s" if e["mean_wall_non_load_bearing_seconds"] is not None else "n/a"
+    consequential_mean = f"{e['mean_wall_consequential_seconds']:.0f}s" if e["mean_wall_consequential_seconds"] is not None else "n/a"
+    ordinary_mean = f"{e['mean_wall_ordinary_seconds']:.0f}s" if e["mean_wall_ordinary_seconds"] is not None else "n/a"
     lines = [
         f"  Run {run['run_id']}  project={run['project']}",
-        f"    load-bearing iters : {e['load_bearing_count']} / {run['iteration_count']} ({e['load_bearing_fraction']:.0%})  mean wall {lb_mean}",
-        f"    non-load-bearing   : {e['non_load_bearing_count']}  mean wall {non_lb_mean}",
+        f"    consequential iters : {e['consequential_count']} / {run['iteration_count']} ({e['consequential_fraction']:.0%})  mean wall {consequential_mean}",
+        f"    ordinary iters      : {e['ordinary_count']}  mean wall {ordinary_mean}",
     ]
     if e["stagnation_windows"]:
         for w in e["stagnation_windows"]:
@@ -356,12 +356,12 @@ def render_tail_section(run: dict[str, Any]) -> str:
     lines = [f"  Run {run['run_id']}  project={run['project']}"]
     lines.append("    wall clock (seconds)")
     lines.append(_fmt_tail("  all iterations", t["wall_seconds_all"], "s", 1))
-    lines.append(_fmt_tail("  load-bearing", t["wall_seconds_load_bearing"], "s", 1))
-    lines.append(_fmt_tail("  non-load-bearing", t["wall_seconds_non_load_bearing"], "s", 1))
+    lines.append(_fmt_tail("  consequential", t["wall_seconds_consequential"], "s", 1))
+    lines.append(_fmt_tail("  ordinary", t["wall_seconds_ordinary"], "s", 1))
     lines.append("    cost (USD per iter)")
     lines.append(_fmt_tail("  all iterations", t["cost_usd_all"], "", 4))
-    lines.append(_fmt_tail("  load-bearing", t["cost_usd_load_bearing"], "", 4))
-    lines.append(_fmt_tail("  non-load-bearing", t["cost_usd_non_load_bearing"], "", 4))
+    lines.append(_fmt_tail("  consequential", t["cost_usd_consequential"], "", 4))
+    lines.append(_fmt_tail("  ordinary", t["cost_usd_ordinary"], "", 4))
     return "\n".join(lines)
 
 
@@ -392,13 +392,13 @@ def render_report(run_results: list[dict[str, Any]], agg: dict[str, Any]) -> str
             sections.append(render_episode_section(r))
     sections.append("")
     sections.append("  AGGREGATE")
-    sections.append(f"    load-bearing fraction (all runs) : {agg['load_bearing_fraction_overall']:.0%}")
+    sections.append(f"    consequential fraction (all runs) : {agg['consequential_fraction_overall']:.0%}")
     sections.append("")
 
     sections.append("=" * 70)
     sections.append("SLICE 2a  TAIL REPORT  (p50/p90/p95/p99)")
     sections.append("=" * 70)
-    sections.append("  (quote these — not the means — for any load-bearing claim)")
+    sections.append("  (quote these — not the means — for any consequential claim)")
     sections.append("")
     for r in run_results:
         if "tail" in r:
@@ -409,12 +409,12 @@ def render_report(run_results: list[dict[str, Any]], agg: dict[str, Any]) -> str
         sections.append("  POOLED ACROSS RUNS")
         sections.append("    wall clock (seconds)")
         sections.append(_fmt_tail("  all iterations", pooled["wall_seconds_all"], "s", 1))
-        sections.append(_fmt_tail("  load-bearing", pooled["wall_seconds_load_bearing"], "s", 1))
-        sections.append(_fmt_tail("  non-load-bearing", pooled["wall_seconds_non_load_bearing"], "s", 1))
+        sections.append(_fmt_tail("  consequential", pooled["wall_seconds_consequential"], "s", 1))
+        sections.append(_fmt_tail("  ordinary", pooled["wall_seconds_ordinary"], "s", 1))
         sections.append("    cost (USD per iter)")
         sections.append(_fmt_tail("  all iterations", pooled["cost_usd_all"], "", 4))
-        sections.append(_fmt_tail("  load-bearing", pooled["cost_usd_load_bearing"], "", 4))
-        sections.append(_fmt_tail("  non-load-bearing", pooled["cost_usd_non_load_bearing"], "", 4))
+        sections.append(_fmt_tail("  consequential", pooled["cost_usd_consequential"], "", 4))
+        sections.append(_fmt_tail("  ordinary", pooled["cost_usd_ordinary"], "", 4))
         sections.append("")
 
     return "\n".join(sections)
