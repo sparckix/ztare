@@ -1,7 +1,7 @@
 """G-STAGNATION-SPECIAL-CASE-HINT — Director-assist gate for tb_NEW_POLYA Strategic Specialization.
 
 Operationalizes tb_NEW_POLYA from the GP-216 theory-building vocabulary:
-"solve a load-bearing special case that breaks a structural barrier; not
+"solve a decision-critical special case that breaks a structural barrier; not
 generic specialization."
 
 When ZTARE score stagnates ≥N iterations on a substrate, this gate surfaces

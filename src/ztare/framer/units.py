@@ -1,4 +1,4 @@
-"""GP-152 Framer Component B — DimensionalFilter (v2.0).
+"""GP-152 Framer — DimensionalFilter (v2.0).
 
 Buckingham-π filtering on candidate transformation pairs based on declared
 units in meta["units"]. When units are unspecified, this is a no-op

@@ -1432,7 +1432,7 @@ def build_wrapper_prompt(
                     "- the spec artifact must use operation `replace`, never `update` or `append`",
                     "- required top-level prose spec keys are exactly: `packet_id`, `required_headers`, `assertions`, `global_word_min`, `global_word_max`",
                     "- each assertion must use one of: `contains_phrase`, `contains_citation`, `has_subsection`, `word_count_range`, `absent_phrase`",
-                    "- HARD CONSTRAINT: you are strictly forbidden from creating assertions that test cosmetic properties — word counts, formatting, capitalization, sentence structure, or stylistic phrasing. `word_count_range` may only be used for gross structural bounds (e.g. minimum 200 words to prevent stub sections), never for tight windows. `contains_phrase` and `contains_citation` must test load-bearing theoretical claims or evidence anchors, not stylistic wording.",
+                    "- HARD CONSTRAINT: you are strictly forbidden from creating assertions that test cosmetic properties — word counts, formatting, capitalization, sentence structure, or stylistic phrasing. `word_count_range` may only be used for gross structural bounds (e.g. minimum 200 words to prevent stub sections), never for tight windows. `contains_phrase` and `contains_citation` must test decision-critical theoretical claims or evidence anchors, not stylistic wording.",
                     "- for `contains_phrase` and `contains_citation`, the `target` string must be an exact substring that B can paste verbatim into the draft",
                     "- do not emit legacy prose-spec keys like `required_phrases`, `required_citations`, `banned_phrases`, or `word_count_bounds`",
                     "- do not draft prose in A2",

@@ -41,7 +41,7 @@ def f_true(x1: float, x2: float) -> float:
 
 
 def f_dominant(x1: float, x2: float) -> float:
-    """Dominant (elimination) phase only — used by Component C."""
+    """Dominant (elimination) phase only — used by residual diagnostics."""
     t, dose = x1, x2
     if t <= 0:
         return 0.0

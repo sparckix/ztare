@@ -8,7 +8,7 @@ produce spurious integer relations with probability approaching 1.
 
 This gate enforces three deterministic checks:
 
-  1. Bit-budget compliance (load-bearing):
+  1. Bit-budget compliance (decision-critical):
        precision_bits >= dim * log2(dict_size) + safety_margin
      Refuses any claim whose declared precision is below this bound.
 
@@ -50,7 +50,7 @@ DEFAULT_PERTURBATION_TRIALS = 5
 
 
 # ---------------------------------------------------------------------------
-# Bit-budget compliance (load-bearing)
+# Bit-budget compliance (decision-critical)
 # ---------------------------------------------------------------------------
 
 def required_precision_bits(
@@ -196,15 +196,15 @@ def dictionary_ablation_test(
 ) -> dict[str, Any]:
     """For each single-constant drop, re-run PSLQ on the reduced dictionary.
     A real relation either collapses (some coefficients drop to 0 when a
-    non-load-bearing constant is removed) OR fails cleanly (no relation
-    found when a load-bearing constant is removed). A false positive often
+    non-decision-critical constant is removed) OR fails cleanly (no relation
+    found when a decision-critical constant is removed). A false positive often
     persists with a different, arbitrary coefficient pattern.
 
     Returns per-drop: {dropped_constant, relation_found, coefficients_if_found,
     classified_as}. classified_as in:
-      - "consistent_collapse" — load-bearing constant dropped; no relation
+      - "consistent_collapse" — decision-critical constant dropped; no relation
         found OR relation collapses to the reduced natural form.
-      - "consistent_preserved" — non-load-bearing constant dropped; original
+      - "consistent_preserved" — non-decision-critical constant dropped; original
         relation's non-dropped coefficients unchanged (zero for the dropped
         slot implied).
       - "suspicious_rewrite" — relation found with DIFFERENT coefficient

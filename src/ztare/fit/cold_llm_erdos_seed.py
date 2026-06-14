@@ -443,12 +443,19 @@ def query_cold_llm_erdos_seed(
     prompt = _build_cold_seed_prompt(fingerprint, forbidden_domain, k_law_budget)
 
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "cold_llm_erdos_seed",
             prompt,
-            model_id=model_id,
-            timeout_seconds=timeout_seconds,
-            request_label="gp169_cold_llm_erdos_seed",
-            retries=2,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=timeout_seconds,
+                request_label="gp169_cold_llm_erdos_seed",
+                retries=2,
+            ),
+            timeout_seconds=int(timeout_seconds),
         )
     except Exception as exc:
         return ColdSeedResponse(

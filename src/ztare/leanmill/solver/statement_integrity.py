@@ -69,9 +69,12 @@ def _top_colon(sig: str) -> int:
 
 
 def _strip_comments(text: str) -> str:
-    text = re.sub(r"/-.*?-/", " ", text, flags=re.S)   # block comments (incl. /-! -/)
-    text = re.sub(r"--[^\n]*", " ", text)               # line comments
-    return text
+    # Delegate to the ONE canonical comment scanner (nested-block + line aware). A bare
+    # `re.sub(r"/-.*?-/")` is non-nested → it stops at the first `-/` and leaks the tail, producing
+    # phantom decls (2026-06-13 audit). `blank_comments` space-replaces (callers `_norm`-collapse or
+    # substring-check, so space-vs-remove is immaterial — and spacing keeps `a/- -/b` two tokens).
+    from ztare.leanmill.lean_source import blank_comments as _bc
+    return _bc(text)
 
 
 def _norm(text: str) -> str:
@@ -81,10 +84,10 @@ def _norm(text: str) -> str:
 
 def _blank_comments(text: str) -> str:
     """Replace comment regions with spaces, PRESERVING newlines/length — so decl-start detection
-    never fires inside a docstring (e.g. a `/-! … the lemma that … -/` line)."""
-    text = re.sub(r"/-.*?-/", lambda m: re.sub(r"[^\n]", " ", m.group(0)), text, flags=re.S)
-    text = re.sub(r"--[^\n]*", lambda m: " " * len(m.group(0)), text)
-    return text
+    never fires inside a docstring (e.g. a `/-! … the lemma that … -/` line). Nested-aware via the
+    canonical `lean_source.blank_comments` (a non-nested `re.sub` registered phantom decls)."""
+    from ztare.leanmill.lean_source import blank_comments as _bc
+    return _bc(text)
 
 
 def decl_blocks(text: str) -> "list[tuple[str, str]]":

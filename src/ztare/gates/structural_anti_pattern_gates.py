@@ -2,22 +2,22 @@
 
 Bundles four gates that share a structural-pattern-detection design:
 
-    R20 — G-WITHHELD-VALUE-LEAKAGE (task #137)
+    R20 — G-WITHHELD-VALUE-LEAKAGE
         Scans PARAMETRIC_FORM for hardcoded numeric constants that match
         a withheld-class feature value to within tolerance. Catches RH-18
         kernel-camouflage where the mutator pulls withheld-class numeric
         values from the briefing and pins kernel centers/widths/amplitudes
         at exactly those values.
 
-    R21 — G-EFFECTIVE-PARAMETER-COUNT (task #139)
+    R21 — G-EFFECTIVE-PARAMETER-COUNT
         Perturbs each numeric constant in PARAMETRIC_FORM by ±10% and
         measures the resulting farther-tail MRE delta. Constants whose
         perturbation changes MRE by more than a threshold count as
         effectively-fitted; the form's declared K (PARAMETER_NAMES count)
         must match the effective K. Catches forms that declare K=1 but
-        have 5+ load-bearing hardcoded constants.
+        have 5+ decision-critical hardcoded constants.
 
-    R22 — APPARATUS-META-RUNNER (task #146)
+    R22 — APPARATUS-META-RUNNER
         Treats the form + thesis prose + judge weakest-points as input
         to a deterministic pattern-match against the apparatus's
         anti_pattern_catalog.md. If the form structurally matches a
@@ -25,7 +25,7 @@ Bundles four gates that share a structural-pattern-detection design:
         RH-17 lookup table, RH-18 kernel camouflage, etc.), the gate
         demotes the form's score and surfaces the matched pattern.
 
-    R23 — G-SPARSE-CELL-EXCLUSION (task #147)
+    R23 — G-SPARSE-CELL-EXCLUSION
         Detects categorical cells in the holdout/farther-tail that have
         fewer than N rows AND no continuous-feature pathway to the
         free-parameter portion of the form. Moves those rows to the
@@ -186,10 +186,10 @@ _TRIVIAL_MATH_CONSTANTS = (
 _TRIVIAL_SAFETY_FLOORS = (1e-3, 1e-6, 1e-9, 1e-12)
 
 # 2026-04-27: Published physical constants whitelist. Forms that derive
-# their structure from physics (path-b) need to use {G, c, ℏ, M_sun, ...}
-# without those numerical values being flagged as "load-bearing magnitude
+# their structure from physics need to use {G, c, ℏ, M_sun, ...}
+# without those numerical values being flagged as "decision-critical magnitude
 # literals" by R20/R21. Without this whitelist the cage falsely caps
-# every legitimate Lagrangian-derivation form, defeating path-b.
+# every legitimate Lagrangian-derivation form.
 #
 # Whitelist criterion: a constant is "published" if it appears in CODATA
 # or other authoritative reference tables and the mutator could justify
@@ -299,7 +299,7 @@ def _is_trivial_constant(c: float, *, tol_rel: float = 1e-4) -> bool:
         if abs(c - f) / max(abs(f), 1e-12) < 1e-2:
             return True
     # 2026-04-27: Published physical constants (G, c, ℏ, M_sun, etc.) are
-    # not "load-bearing magnitude literals" the mutator chose to absorb
+    # not "decision-critical magnitude literals" the mutator chose to absorb
     # substrate noise — they're inputs to the form derived from physics.
     # Without this whitelist, R20/R21 cap legitimate Lagrangian-derived
     # forms along with parameter-laundering bridge variants. See
@@ -1278,7 +1278,7 @@ def dispatch_structural_anti_pattern_gates(
             out["any_flag"] = True
             out["log_lines"].append(
                 f"🦴 R21 FLAGGED: declared K={v21.declared_k} but effective K={v21.effective_k} "
-                f"(load-bearing hardcoded constants: {len(v21.load_bearing_constants)})"
+                f"(decision-critical hardcoded constants: {len(v21.load_bearing_constants)})"
             )
 
     # R24 — feature-bump pattern detector (NEW, 2026-04-26)

@@ -192,7 +192,7 @@ def _has_straw_man_mismatch(text: str) -> bool:
         ],
     )
     falsification_threshold_pack = (
-        _contains_any(text, ["falsification condition", "load-bearing variables", "arithmetic transparency", "symbolic mapping"])
+        _contains_any(text, ["falsification condition", "decisive variables", "arithmetic transparency", "symbolic mapping"])
         and _contains_any(text, ["gross profit", "breakeven point", "operational cost per active host"])
     )
     return direct or (comparative_design_rubric and falsification_threshold_pack)
@@ -224,7 +224,7 @@ def _has_decisive_self_authored_future_variable(text: str) -> bool:
             "predicted future price",
             "internal price floor",
             "distress threshold",
-            "load-bearing variable",
+            "decisive variable",
             "asserted variable origin",
         ],
     )

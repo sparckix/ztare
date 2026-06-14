@@ -82,6 +82,9 @@ class SurfacedIsomorphism:
     mechanism: str                 # HOW it solves the abstract constraint
     mapping_hint: str = ""         # how its components map back to the system's variables
     raw: str = ""                  # raw LLM text (audit)
+    invariant_map: dict = field(default_factory=dict)   # typed invariant→counterpart map (opt-in, #122):
+    #   present only when the query ran with typed_mapping=True; a candidate that cannot map EVERY
+    #   fingerprint invariant is decorative and is mechanically rejected (validate_typed_mapping)
 
 
 @dataclass
@@ -191,14 +194,40 @@ class IsomorphismLoop:
 # Default Step-2 query — reuses the validated LLM runtime + contamination discipline
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_query_prompt(fp: ConstraintFingerprint, n: int) -> str:
+def _build_query_prompt(fp: ConstraintFingerprint, n: int, *, typed_mapping: bool = False,
+                        mode: str = "solve") -> str:
     # forbidden_domain is the distance-from-home knob that UNIFIES the autoresearch family:
     #   None  → ANALOGY direction (fit/analogy.py): match from ANY field, including adjacent.
     #   set   → DEANCHOR direction (fit/cold_llm_erdos_seed.py): forbid the home field AND directly
     #           adjacent fields to force a far, non-canonical match (the orthogonal jump).
+    # #122 opt-ins (DEFAULT path is byte-identical — both flags off reproduce the prior prompt):
+    #   typed_mapping → demand an explicit invariant→counterpart map per candidate (decorative
+    #                   analogies die at the schema, not at human review);
+    #   mode="impossibility" → ask for NO-GO/impossibility results instead of solutions (an
+    #                   impossibility transport kills a doomed approach — the cheapest research value).
     away = (f"\nDo NOT answer from {fp.forbidden_domain} OR any field directly adjacent to it — that "
             "is the home framing that produced this ceiling, and the point is to surface what the "
             "home discipline would not. Reach into structurally-distant fields." if fp.forbidden_domain else "")
+    if mode == "impossibility":
+        ask = (f"Name up to {n} established IMPOSSIBILITY / NO-GO THEOREMS or hardness results from any "
+               "field showing that some natural approach to exactly these constraints CANNOT work "
+               "(lower bounds, conservation obstructions, undecidability, no-free-lunch results). For "
+               "each, return strict JSON with keys: `theorem`, `field`, `mechanism` (WHAT the result "
+               "forbids and WHY), `mapping_hint` (which approach to a generic system with these "
+               "invariants it would rule out).")
+    else:
+        ask = (f"Name up to {n} established THEOREMS, ALGORITHMS, or PHYSICAL LAWS from any field "
+               "(group theory, complexity, cryptography, physics, information theory, topology, …) that "
+               "SOLVE or OPTIMIZE exactly these constraints. For each, return strict JSON with keys: "
+               "`theorem`, `field`, `mechanism` (how it resolves the abstract constraint), `mapping_hint` "
+               "(how its components would map onto a generic system with these invariants).")
+    typed = ""
+    if typed_mapping and fp.invariants:
+        _keys = [k for k in fp.invariants if k != "do_not_resurface_refuted_transports"]
+        typed = ("\nAdditionally each candidate MUST include `invariant_map`: a JSON object mapping "
+                 f"EVERY one of these invariant keys {_keys} to the candidate's corresponding "
+                 "component. A candidate that cannot map every invariant is NOT a structural match — "
+                 "omit it (unmapped candidates are mechanically discarded).")
     return (
         "You are given ONLY an abstract structural constraint — no domain, no variable names, no "
         "context about where it came from. This is deliberate: name the STRUCTURE, not a memorized "
@@ -207,11 +236,7 @@ def _build_query_prompt(fp: ConstraintFingerprint, n: int) -> str:
         f"ABSTRACT FORM: {fp.abstract_form}\n"
         f"STRUCTURAL INVARIANTS: {fp.invariants}\n"
         f"{away}\n\n"
-        f"Name up to {n} established THEOREMS, ALGORITHMS, or PHYSICAL LAWS from any field "
-        "(group theory, complexity, cryptography, physics, information theory, topology, …) that "
-        "SOLVE or OPTIMIZE exactly these constraints. For each, return strict JSON with keys: "
-        "`theorem`, `field`, `mechanism` (how it resolves the abstract constraint), `mapping_hint` "
-        "(how its components would map onto a generic system with these invariants). Return a JSON "
+        f"{ask}{typed} Return a JSON "
         "list. Retrieve the STRUCTURE that fits; do not invent, and do not return a result claimed "
         "to already solve the caller's specific problem.")
 
@@ -264,13 +289,16 @@ def _dispatch_text(prompt: str, *, provider: str = "gemini", model: "str | None"
 
 
 def default_llm_query(fp: ConstraintFingerprint, n: int = 5, *, provider: str = "gemini",
-                      model: "str | None" = None) -> "list[SurfacedIsomorphism]":
+                      model: "str | None" = None, typed_mapping: bool = False,
+                      mode: str = "solve") -> "list[SurfacedIsomorphism]":
     """Production Step-2: query a frontier LLM with the structural-only prompt and parse the JSON.
     Provider-flexible (gemini API default `gemini-3.1-pro-preview`; codex/claude via subscription CLI;
-    deepseek API) — see `_dispatch_text`. Returns [] (never raises) on any runtime/parse failure."""
+    deepseek API) — see `_dispatch_text`. Returns [] (never raises) on any runtime/parse failure.
+    #122 opt-ins (defaults reproduce the prior behavior byte-for-byte): `typed_mapping` demands an
+    invariant→counterpart map per candidate; `mode="impossibility"` asks for no-go results instead."""
     import json
     import re as _re
-    prompt = _build_query_prompt(fp, n)
+    prompt = _build_query_prompt(fp, n, typed_mapping=typed_mapping, mode=mode)
     text = _dispatch_text(prompt, provider=provider, model=model)
     if not text:
         return []
@@ -290,8 +318,39 @@ def default_llm_query(fp: ConstraintFingerprint, n: int = 5, *, provider: str = 
             field=str(it.get("field", "")).strip(),
             mechanism=str(it.get("mechanism", "")).strip(),
             mapping_hint=str(it.get("mapping_hint", "")).strip(),
-            raw=json.dumps(it)[:400]))
+            raw=json.dumps(it)[:400],
+            invariant_map=it.get("invariant_map") if isinstance(it.get("invariant_map"), dict) else {}))
     return [o for o in out if o.theorem]
+
+
+def validate_typed_mapping(isos: "list[SurfacedIsomorphism]",
+                           fp: ConstraintFingerprint) -> "tuple[list[SurfacedIsomorphism], list[SurfacedIsomorphism]]":
+    """MECHANICAL decorative-analogy filter (#122): keep only candidates whose `invariant_map` covers
+    EVERY fingerprint invariant (minus the no-good feedback key). Returns (kept, rejected) — the
+    rejected list is kept for the audit trail, never silently dropped."""
+    keys = {k for k in fp.invariants if k != "do_not_resurface_refuted_transports"}
+    if not keys:
+        return list(isos), []
+    kept, rejected = [], []
+    for iso in isos:
+        (kept if keys <= set(iso.invariant_map or {}) else rejected).append(iso)
+    return kept, rejected
+
+
+def second_order_fingerprint(fp: ConstraintFingerprint,
+                             first_round: "list[SurfacedIsomorphism]") -> ConstraintFingerprint:
+    """SECOND-ORDER DEANCHOR (#122): banning the home FIELD is not enough — the first round's answers
+    reveal which latent neighborhoods the fingerprint's own nouns pull toward. Forbid the first
+    round's FIELDS too, forcing the next query into genuinely more distant structure. Returns a NEW
+    fingerprint (the original is never mutated)."""
+    fields = sorted({i.field for i in first_round if i.field})
+    extra = ("; ALSO do not answer from any of these already-surfaced fields: " + ", ".join(fields)
+             if fields else "")
+    return ConstraintFingerprint(
+        constraint_class=fp.constraint_class,
+        abstract_form=fp.abstract_form,
+        invariants=dict(fp.invariants),
+        forbidden_domain=(fp.forbidden_domain or "the home field") + extra)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -388,6 +447,31 @@ def _self_test() -> int:
     # a domain with NO matches surfaced → best() is None (honest: nothing rediscovered)
     none_best = IsomorphismLoop(_MockDomain(), query=lambda fp, n: []).best(None, holdout)
     ok("no_matches_returns_none", none_best is None)
+
+    # ── #122 opt-ins: default path BYTE-PARITY + the three new mechanisms ──
+    _fp = ConstraintFingerprint("c", "a", {"inv1": 1, "inv2": "x"}, forbidden_domain="ITP")
+    _base = _build_query_prompt(_fp, 3)
+    ok("default prompt has NO #122 blocks (parity)",
+       "invariant_map" not in _base and "IMPOSSIBILITY" not in _base)
+    _typed = _build_query_prompt(_fp, 3, typed_mapping=True)
+    ok("typed prompt demands the invariant map for every key",
+       "invariant_map" in _typed and "inv1" in _typed and "inv2" in _typed)
+    _imp = _build_query_prompt(_fp, 3, mode="impossibility")
+    ok("impossibility prompt asks for no-go results", "IMPOSSIBILITY / NO-GO" in _imp
+       and "SOLVE or OPTIMIZE" not in _imp)
+    _good = SurfacedIsomorphism("T1", "f1", "m", invariant_map={"inv1": "a", "inv2": "b"})
+    _bad = SurfacedIsomorphism("T2", "f2", "m", invariant_map={"inv1": "a"})   # inv2 unmapped
+    kept, rej = validate_typed_mapping([_good, _bad], _fp)
+    ok("typed validation: full map kept, partial map REJECTED (auditable)",
+       [k.theorem for k in kept] == ["T1"] and [r.theorem for r in rej] == ["T2"])
+    _fp2 = second_order_fingerprint(_fp, [_good, _bad])
+    ok("second-order deanchor forbids first-round fields, original unmutated",
+       "f1" in _fp2.forbidden_domain and "f2" in _fp2.forbidden_domain
+       and _fp.forbidden_domain == "ITP")
+    # no-good feedback key is exempt from the typed-coverage requirement
+    _fp3 = ConstraintFingerprint("c", "a", {"inv1": 1, "do_not_resurface_refuted_transports": ["x"]})
+    k3, _ = validate_typed_mapping([SurfacedIsomorphism("T3", "f", "m", invariant_map={"inv1": "a"})], _fp3)
+    ok("feedback key exempt from typed coverage", len(k3) == 1)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

@@ -23,7 +23,7 @@ Detection rule for a transcendental call `T(arg)`:
 
 The gate does NOT validate parameter dimensions (params are
 mutator-declared; we trust the naming convention via `log_*` / `raw_*` /
-amp_*` etc.). It catches the load-bearing violation: dimensionful feature
+amp_*` etc.). It catches the decision-critical violation: dimensionful feature
 quantities used directly inside transcendentals.
 
 Usage

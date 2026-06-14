@@ -1,7 +1,7 @@
-"""Component-D composition-seed queue helper (Phase 4g, 2026-05-06 PM).
+"""Symbolic-regression seed-queue helper.
 
 Single helper extracted from autoresearch_loop. Pops the front of the
-Component D seed queue (`workspace/composition_seed.json`) after a
+symbolic-regression seed queue (`workspace/composition_seed.json`) after a
 failed iteration so the loop doesn't infinite-retry a crashing
 candidate.
 
@@ -16,7 +16,7 @@ from pathlib import Path
 
 
 def pop_seed_queue(workspace_dir: Path, injected: bool) -> None:
-    """Pop the front of the Component D seed queue after a failed iteration.
+    """Pop the front of the symbolic-regression seed queue after a failed iteration.
 
     Called from every early-exit path (R1 exception, R1 mismatch, R3
     rejection, subprocess crash) to prevent infinite retry of a

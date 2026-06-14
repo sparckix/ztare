@@ -8,7 +8,7 @@ debate primitive (``supervisor_findings_debate``) and the promotion edge
 (``supervisor_findings_promotion``) per the Codex Turn 2 order
 inversion.
 
-Design boundaries (load-bearing, see GP-031 Turn 4 avenue analysis):
+Design boundaries (decision-critical, see GP-031 Turn 4 avenue analysis):
 
 - Findings-debate is *not* a SeedPipelineType. The runner does not
   consult ``supervisor_pipeline.actor_for_pipeline_state`` and does not
@@ -243,7 +243,7 @@ _AUTHOR_ROLE_HEADER = """\
 === YOUR ROLE THIS TURN: AUTHOR ===
 
 You are the Author seat in a structured findings-debate. Your job is
-to propose or sharpen load-bearing architectural claims in the seam
+to propose or sharpen decision-critical architectural claims in the seam
 under debate. Run the project principles above as a GENERATIVE
 checklist:
 
@@ -252,7 +252,7 @@ checklist:
   around it.
 - Invert, always invert: before proposing a fix, ask how the seam
   could fail, and address the failure mode first.
-- "What would you have to believe" (WWYHTB): for each load-bearing
+- "What would you have to believe" (WWYHTB): for each decision-critical
   claim you accept or propose, state the beliefs it rests on — if any
   belief is unstated, surface it.
 - Principle vs instantiation strip: state any general claim so the
@@ -274,7 +274,7 @@ _SKEPTIC_ROLE_HEADER = """\
 === YOUR ROLE THIS TURN: SKEPTIC ===
 
 You are the Skeptic seat in a structured findings-debate. Your job is
-to attack load-bearing claims in the seam and in the most recent
+to attack decision-critical claims in the seam and in the most recent
 Author turn. Run the project principles above as an ADVERSARIAL
 checklist:
 
@@ -393,10 +393,10 @@ def load_skeptic_persona(path: Path | None = None) -> str:
 
 _SENTINEL_LINE = re.compile(r"SENTINEL_DECISION:\s*(raise|hold)\b", re.IGNORECASE)
 """Match the agent's decision marker. ``raise`` = the agent has no new
-load-bearing claim and the
+decision-critical claim and the
 ``FINDINGS_DEBATE: no_new_load_bearing_claim`` sentinel should be
 appended to the turn. ``hold`` = the agent is still introducing or
-rebutting a load-bearing claim and the debate must continue.
+rebutting a decision-critical claim and the debate must continue.
 
 The pattern is deliberately lenient: it matches the marker anywhere in
 the response body (not just on its own line) because models will
@@ -473,9 +473,9 @@ Your job in one debate turn:
 
 1. Read the seam file in full. It is included verbatim below between
    `--- BEGIN SEAM ---` and `--- END SEAM ---`.
-2. Identify any **load-bearing architectural claim** the OTHER agent
+2. Identify any **decision-critical architectural claim** the OTHER agent
    has made in the existing debate that you have not yet addressed. A
-   load-bearing claim is one whose acceptance or rejection changes the
+   decision-critical claim is one whose acceptance or rejection changes the
    shape of the proposed fix.
 3. Write a single debate turn body in plain markdown. Do NOT include a
    `### Turn N — Agent` header — the runner will add it. Do NOT
@@ -487,12 +487,12 @@ Your job in one debate turn:
        SENTINEL_DECISION: raise
        SENTINEL_DECISION: hold
 
-   - `raise` = you have NO new load-bearing claim and you accept the
+   - `raise` = you have NO new decision-critical claim and you accept the
      debate as ready to converge from your side. Use this when the
      other agent's most recent turn has fully addressed your prior
      concerns and you have nothing new to add.
-   - `hold` = you ARE introducing a new load-bearing claim, or you are
-     rejecting a load-bearing claim from the other agent that has not
+   - `hold` = you ARE introducing a new decision-critical claim, or you are
+     rejecting a decision-critical claim from the other agent that has not
      yet been resolved. Use this when the debate is not yet done from
      your side.
 

@@ -11,6 +11,14 @@ class LoopControlAction(str, Enum):
     UNDERIDENTIFIED = "UNDERIDENTIFIED"
 
 
+class ThesisControlMode(str, Enum):
+    EXPLOIT_CURRENT_THESIS = "EXPLOIT_CURRENT_THESIS"
+    TRANSFER_MECHANISM = "TRANSFER_MECHANISM"
+    ROTATE_ORTHOGONAL_THESIS = "ROTATE_ORTHOGONAL_THESIS"
+    INVERT_OR_KILL_THESIS = "INVERT_OR_KILL_THESIS"
+    NARROW_EVIDENCE_BOUNDARY = "NARROW_EVIDENCE_BOUNDARY"
+
+
 @dataclass(frozen=True)
 class IterationSignal:
     iteration_index: int
@@ -74,6 +82,86 @@ class InformationYieldDecision:
     action: LoopControlAction
     stagnant_window: int
     rationale: str
+
+
+def select_thesis_control_mode(
+    *,
+    pending_action: LoopControlAction | str,
+    rationale: str | None = None,
+) -> ThesisControlMode:
+    """Map the loop-control decision to the mutation posture owed next."""
+    action = (
+        pending_action.value
+        if isinstance(pending_action, LoopControlAction)
+        else str(pending_action or "").strip()
+    )
+    reason = (rationale or "").lower()
+    if action == LoopControlAction.REFRESH_SPECIALISTS.value:
+        return ThesisControlMode.TRANSFER_MECHANISM
+    if action == LoopControlAction.UNDERIDENTIFIED.value:
+        return ThesisControlMode.NARROW_EVIDENCE_BOUNDARY
+    if action == LoopControlAction.PIVOT_REQUIRED.value:
+        if any(term in reason for term in ("crash", "r1", "declaration", "runtime")):
+            return ThesisControlMode.INVERT_OR_KILL_THESIS
+        return ThesisControlMode.ROTATE_ORTHOGONAL_THESIS
+    return ThesisControlMode.EXPLOIT_CURRENT_THESIS
+
+
+def render_loop_control_prompt_context(
+    *,
+    pending_action: LoopControlAction | str,
+    rationale: str | None,
+    stagnant_window: int | None = None,
+) -> str:
+    """Render the previous iteration's loop-control decision for the mutator.
+
+    The evaluator already records this decision in telemetry. The mutator also
+    needs the reason when the next proposal is being written; otherwise a pivot
+    or specialist refresh can look like generic prompt flavor instead of a
+    measured response to a specific low-yield pattern.
+    """
+    action = (
+        pending_action.value
+        if isinstance(pending_action, LoopControlAction)
+        else str(pending_action or "").strip()
+    )
+    reason = (rationale or "").strip()
+    if not action or action == LoopControlAction.CONTINUE.value:
+        return ""
+
+    thesis_control_mode = select_thesis_control_mode(
+        pending_action=pending_action,
+        rationale=rationale,
+    )
+    lines = [
+        "### LOOP CONTROL SIGNAL (from the previous iteration)",
+        f"- pending_action: {action}",
+        f"- thesis_control_mode: {thesis_control_mode.value}",
+    ]
+    if stagnant_window is not None:
+        lines.append(f"- stagnant_window: {int(stagnant_window)}")
+    if reason:
+        lines.append(f"- reason: {reason}")
+    lines.extend([
+        "",
+        "Required response:",
+        "- Declare the same thesis_control_mode in the R1 mutation declaration when that contract is active.",
+        "- Address this reason directly in the next thesis.",
+        "- Change the mechanism, evidence boundary, or evaluator-facing discriminator; do not only rephrase the prior proposal.",
+    ])
+    if action == LoopControlAction.REFRESH_SPECIALISTS.value:
+        lines.append(
+            "- Treat this as low-yield search: use a different review angle or primitive family before continuing."
+        )
+    elif action == LoopControlAction.PIVOT_REQUIRED.value:
+        lines.append(
+            "- Treat this as a pivot requirement: leave the repeated local basin and name the new mechanism class."
+        )
+    elif action == LoopControlAction.UNDERIDENTIFIED.value:
+        lines.append(
+            "- Treat this as an evidence-boundary result: narrow the claim or specify what measurement would make it decidable."
+        )
+    return "\n".join(lines) + "\n"
 
 
 def apply_latent_motion_veto(

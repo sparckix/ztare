@@ -1,4 +1,4 @@
-"""Structural constraint extractor (GP-061 Component A).
+"""Structural-presence constraint extractor (GP-061).
 
 Reads `workspace/structural_memory.json` for a project, finds the
 mathematical skeleton invariant across failed families via deterministic AST
@@ -210,7 +210,7 @@ def _extract_feature_bag(tree: ast.AST) -> set[str]:
 # The legacy `_extract_feature_bag` above is a hand-crafted set of features
 # driven by what we observed mattered for sandbox_07 (eml_arg shapes, var
 # powers, outer additive const). It is still used by the positive-path
-# Component A extractor — do not remove it without re-running retroactive
+# Structural-presence extractor — do not remove it without re-running retroactive
 # tests on sandbox_07.
 #
 # The matrix below is mechanical and schema-driven: for every Call node in
@@ -411,7 +411,7 @@ def _deterministic_classify(
     Reads the feature bag attached to the skeleton (populated by
     extract_shared_skeleton) and maps it onto the rigid taxonomy. This path
     makes the retroactive sandbox_07 test runnable without hitting an API.
-    Production Component A.2 uses an LLM with the same enum schema.
+    Production structural-presence A.2 uses an LLM with the same enum schema.
     """
 
     features: set[str] = getattr(skeleton, "features", set())

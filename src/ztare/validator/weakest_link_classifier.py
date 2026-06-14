@@ -6,7 +6,7 @@ by autoresearch_loop.py for two opt-in behaviors:
   1. Class-aware stagnation threshold (I-2): suppress stagnation-triggered
      pivots until N distinct weakest-link classes have been observed.
 
-  2. Pivot-ineffective-class skip (I-3): before firing topological pivots,
+  2. Pivot-ineffective-class skip (I-3): before firing structural pivots,
      classify the current weakest-point; if the class has empirically-
      negative pivot effect (tail_generalization, unverified_bound), skip
      the pivot OR log-observe depending on rubric mode.
@@ -31,7 +31,7 @@ from typing import Optional
 
 # Pivot-ineffective classes per GP-149 §2.2 — pivots have non-positive mean Δ
 # on iterations weakest-linked to these classes. When skip_pivot_on_ineffective_classes
-# mode is "suppress," autoresearch_loop should NOT fire topological pivot for
+# mode is "suppress," autoresearch_loop should NOT fire a structural pivot for
 # these classes. When mode is "observe," still fire but log the class.
 PIVOT_INEFFECTIVE_CLASSES: frozenset[str] = frozenset({
     "tail_generalization",      # 25 events, mean Δ -0.7, 20% regress
@@ -97,7 +97,7 @@ _RULES: list[tuple[str, list[str]]] = [
     # Tier 1a': catastrophic_fit_failure — cross-LLM stable at 0.538 in the
     # 2026-05-04 audit (highest among all classes); the only class greenlit for
     # GP-214 I-5 Mode B auto-injection. MUST precede catastrophic_assumption since
-    # fit-failure phrasing often co-occurs with "load-bearing assumption" pinging.
+    # fit-failure phrasing often co-occurs with "decision-critical assumption" pinging.
     (
         "catastrophic_fit_failure",
         [

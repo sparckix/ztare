@@ -1,6 +1,6 @@
 """GP-157 v5.0 Layer 1 — runtime-checkable PEP 544 Protocols.
 
-Per panel synthesis (Task #67): the apparatus types its own consumption
+Per panel synthesis: the apparatus types its own consumption
 of the mutator's test_model.py via Protocols, NOT the other way. Mutator
 emits free Python; apparatus calls `adapt(module, spec)` once at the
 boundary, raises `ContractError` on mismatch, returns a typed callable

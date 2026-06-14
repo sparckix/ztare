@@ -221,12 +221,12 @@ def detect_forced_reframe_trigger(
 
     # Trigger 3 — capped-stagnation detection (2026-04-27): consecutive iters
     # where the apparatus capped the judge's raw score (raw > capped) with
-    # identical capped value. Catches gp163d's path-a-stuck-at-cap pattern:
+    # identical capped value. Catches gp163d's parametric-refit-at-cap pattern:
     # bridge skeleton variants score raw 100 but get capped to 50 by
     # R20+R21+R24+R22. Pure zero-score and same-AST-bucket detectors miss
     # this because (a) capped score is never 0 and (b) different bridge
     # variants (with/without screening, hardcoded vs fitted sigmoid centers)
-    # produce different AST buckets despite all being path-a.
+    # produce different AST buckets despite all being parametric refits.
     if len(iter_history) >= stagnation_threshold:
         recent = iter_history[-stagnation_threshold:]
         capped_streak = 0
@@ -247,10 +247,10 @@ def detect_forced_reframe_trigger(
             decision.trigger_reason = (
                 f"capped_stagnation: {stagnation_threshold} consecutive iters "
                 f"capped at score={recent[-1].get('score')} by structural detectors "
-                f"(raw_judge_score > capped, indicating path-a parameter laundering)"
+                f"(raw_judge_score > capped, indicating parametric-model parameter laundering)"
             )
             decision.banned_family_description = (
-                f"the path-a parametric family that the apparatus has capped at "
+                f"the parametric-model family that the apparatus has capped at "
                 f"score={recent[-1].get('score')} for {stagnation_threshold} consecutive iters. "
                 f"R20/R21/R24/R22 detected hardcoded structural constants masquerading "
                 f"as fitted parameters. Submit a Lagrangian-derived form (chameleon, AQUAL, "

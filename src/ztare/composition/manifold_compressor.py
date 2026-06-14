@@ -61,7 +61,7 @@ class EntanglementWall:
 
 
 # ---------------------------------------------------------------------------
-# Primitive library (re-used from topology_synthesizer)
+# Primitive library reused from symbolic-regression synthesis.
 # ---------------------------------------------------------------------------
 
 # Subset of _BASE_PRIMITIVES suitable for library sweep.
@@ -83,7 +83,7 @@ _SWEEP_PRIMITIVES: list[tuple[str, str, list[str]]] = [
     ("cos", "a * math.cos(b * {v} + c) + d", ["a", "b", "c", "d"]),
     ("gaussian", "a * math.exp(-((({v}) - b)**2) / (2 * c**2))", ["a", "b", "c"]),
     ("log_shifted", "a * math.log({v} + b) + c", ["a", "b", "c"]),
-    # --- Additional families from topology_synthesizer ---
+    # --- Additional families from symbolic-regression synthesis ---
     ("cosh", "a * math.cosh(b * {v}) + c", ["a", "b", "c"]),
     ("sinh", "a * math.sinh(b * {v}) + c", ["a", "b", "c"]),
     ("sqrt_reciprocal", "a / math.sqrt({v}) + b", ["a", "b"]),

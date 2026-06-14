@@ -17,7 +17,7 @@ Two engagement modes per the gp-164 seam:
     iter.
 
 The provider is contamination-defended: it surfaces only the
-structural-descriptor + candidate-form text from the LLM response,
+structural descriptor + candidate expression text from the LLM response,
 never the original substrate's variable names or charter prose.
 The fingerprint that produced the analogy is already anonymized
 upstream (in analogy.build_residual_fingerprint).
@@ -26,6 +26,10 @@ from __future__ import annotations
 
 import json
 
+from src.ztare.common.structural_transfer_action import (
+    action_schemas_from_legacy_analogy_record,
+    render_action_schema_prompt_lines,
+)
 from src.ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
@@ -102,8 +106,12 @@ class AnalogyCandidatesProvider(BriefingProvider):
             body_lines.append("")
         if candidates:
             body_lines.append("    Candidate forms (placeholder vars x, y, z; not your substrate's vars):")
-            for c in candidates[:5]:
+            schemas = action_schemas_from_legacy_analogy_record(rec, active=active)
+            for idx, c in enumerate(candidates[:5]):
                 body_lines.append(f"      - {c}")
+                if idx < len(schemas):
+                    for line in render_action_schema_prompt_lines(schemas[idx]):
+                        body_lines.append(f"        {line}")
             body_lines.append("")
         if reasoning:
             body_lines.append(f"    Reasoning (LLM): {reasoning[:300]}")
@@ -114,3 +122,8 @@ class AnalogyCandidatesProvider(BriefingProvider):
             "    let the holdout gate decide whether the structural pattern matches."
         )
         return header + preamble + "\n".join(body_lines) + "\n"
+
+    def structured_records(self, ctx: BriefingContext) -> list[dict]:
+        rec = self._load_latest_record(ctx) or {}
+        active = bool(ctx.rubric.get("enable_analogy_active", False))
+        return action_schemas_from_legacy_analogy_record(rec, active=active)

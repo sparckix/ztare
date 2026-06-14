@@ -80,31 +80,31 @@ def _ast_check_params_contract(python_code: str) -> Optional[str]:
                         if isinstance(stmt.value, ast.Dict) and len(stmt.value.keys) > 0:
                             has_nonempty_model_params = True
     # Three valid contracts:
-    #   Path A (legacy): PARAMETRIC_FORM + PARAMETER_NAMES
-    #   Path B (Newton-mode / GP-180): LAGRANGIAN + PREDICTION + PARAMETER_NAMES
+    #   Parametric model: PARAMETRIC_FORM + PARAMETER_NAMES
+    #   Variational/Lagrangian model: LAGRANGIAN + PREDICTION + PARAMETER_NAMES
     #     (lagrangian_derivation auto-derives the apparatus-ready PARAMETRIC_FORM)
-    #   Path H (hardcoded, theory-pinned): MODEL_PARAMS non-empty
-    path_a_ok = has_form and has_names
-    path_b_ok = has_lagrangian and has_prediction and has_names
-    path_h_ok = has_nonempty_model_params
-    if path_a_ok or path_b_ok or path_h_ok:
+    #   Fixed-parameter model: MODEL_PARAMS non-empty
+    parametric_model_ok = has_form and has_names
+    variational_lagrangian_ok = has_lagrangian and has_prediction and has_names
+    fixed_parameter_model_ok = has_nonempty_model_params
+    if parametric_model_ok or variational_lagrangian_ok or fixed_parameter_model_ok:
         return None
     return (
         "Contract violation: I_model body references `params[...]` but "
-        "none of the three valid contract paths is satisfied. At gate "
+        "none of the three valid numeric contracts is satisfied. At gate "
         "time MODEL_PARAMS={} so I_model will KeyError on the first "
         "`params['x']` access. Choose ONE:\n"
-        "  Path A — apparatus scipy-fits PARAMETRIC_FORM (most common):\n"
+        "  Parametric model declaration — apparatus scipy-fits PARAMETRIC_FORM:\n"
         "      PARAMETRIC_FORM = \"params['a'] * features['x'] + params['b']\"\n"
         "      PARAMETER_NAMES = ['a', 'b']\n"
         "      MODEL_PARAMS = {}      # apparatus fills with fitted values\n"
-        "  Path B — Newton-mode / GP-180 lagrangian_derivation auto-derives:\n"
+        "  Variational/Lagrangian declaration — GP-180 lagrangian_derivation auto-derives:\n"
         "      LAGRANGIAN = \"q_dot**2/2 - 0.5*m2*q**2 - 0.25*lam*q**4 + q*(J0/log_d)\"\n"
         "      PREDICTION = \"q\"\n"
         "      PARAMETER_NAMES = ['m2', 'lam', 'J0']\n"
         "      Q_VARIABLES = ['q'];  BACKGROUND = ['log_d']\n"
         "      MODEL_PARAMS = {}      # GP-180 + apparatus fill via sympy + scipy\n"
-        "  Path H — hardcode (only when constants are pinned by theory):\n"
+        "  Fixed-parameter model — only when constants are pinned by theory:\n"
         "      MODEL_PARAMS = {'a': 0.5, 'b': 1.0}\n"
         "Reference: GP-156 Proposal 3 + GP-180 Lagrangian primitive."
     )
@@ -201,7 +201,7 @@ def _ast_check_no_module_level_i_model_call(python_code: str) -> Optional[str]:
         f"evaluate/calculate with `p`. PARAMETRIC_FORM should reference "
         f"`params['key']` only. Do NOT write numeric defaults inside "
         f"PARAMETRIC_FORM as `params.get('key', 0.34)`: those defaults "
-        f"become hidden load-bearing constants and trigger R20/R21 "
+        f"become hidden decision-critical constants and trigger R20/R21 "
         f"effective-K laundering. "
         f"Do NOT hide module-level calls in private helpers like "
         f"`_post_fit_sanity()` — the apparatus does not invoke them, so "
@@ -211,7 +211,7 @@ def _ast_check_no_module_level_i_model_call(python_code: str) -> Optional[str]:
 
 
 def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
-    """GP-180 Path B asymptotic-divergence guard (2026-05-02).
+    """GP-180 variational/Lagrangian asymptotic-divergence guard (2026-05-02).
 
     For substrates with the inversion-limit axiom (α(d → ∞) → 0), a Lagrangian
     whose source J contains divergent-with-d terms — e.g. `log_d`, `log(d)`,
@@ -221,7 +221,7 @@ def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
     d=1e6 vs observed 0.0015, 326× violation) is the canonical case.
 
     This guard scans the LAGRANGIAN string for forbidden source-divergence
-    patterns when Path B is detected. Returns None if Path B is not used or
+    patterns when a variational/Lagrangian declaration is detected. Returns None if it is not used or
     the source is asymptotically clean; returns diagnostic string if a
     forbidden pattern is found.
 
@@ -231,7 +231,7 @@ def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
       - d**k or d^k for positive k (polynomial-in-d divergence)
       - explicit d * (anything) at top level of source coupling
 
-    Returns: None if guard is satisfied or Path B not used; diagnostic str
+    Returns: None if guard is satisfied or the Lagrangian contract is not used; diagnostic str
     if a forbidden divergent term is found.
     """
     import re
@@ -259,7 +259,7 @@ def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
                     has_prediction = True
 
     if lagrangian_str is None or not has_prediction:
-        return None  # not Path B; defer to other guards
+        return None  # not a variational/Lagrangian declaration; defer to other guards
 
     # Forbidden patterns in the LAGRANGIAN string. We're looking for these
     # appearing as identifiers or function calls in the action expression.
@@ -296,7 +296,7 @@ def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
 
     forbidden_uniq = sorted(set(forbidden))
     return (
-        f"LAGRANGIAN asymptotic-divergence guard (Path B): the LAGRANGIAN "
+        f"LAGRANGIAN asymptotic-divergence guard: the LAGRANGIAN "
         f"expression contains divergent-with-d term(s) {forbidden_uniq}. "
         f"Per evidence.txt 'HARD STRUCTURAL CONSTRAINT 2 — Asymptotic "
         f"inversion limit', any candidate must satisfy α(d → ∞) → 0. A "
@@ -372,7 +372,7 @@ def validate_python_suite_imports(
     if _violation_params is not None:
         raise ValueError(_violation_params)
 
-    # Stage 1c.5: GP-180 Path B asymptotic-divergence guard (2026-05-02).
+    # Stage 1c.5: GP-180 variational/Lagrangian asymptotic-divergence guard (2026-05-02).
     # Catches LAGRANGIAN whose source J contains divergent-with-d terms
     # (log_d, polynomials in d) that violate the inversion-limit axiom by
     # construction. RUBRIC-GATED: only enabled when the substrate's rubric
@@ -400,12 +400,12 @@ def validate_python_suite_imports(
             _tree_pf = None
         _has_form = False
         _has_names = False
-        # GP-180 Path B (2026-05-02): the mutator may submit
+        # GP-180 variational/Lagrangian declaration (2026-05-02): the mutator may submit
         #   LAGRANGIAN + PREDICTION + Q_VARIABLES + BACKGROUND
         # instead of PARAMETRIC_FORM. The lagrangian_derivation primitive
         # solves Euler-Lagrange via sympy and emits PARAMETRIC_FORM
         # automatically downstream. Accept this contract here so the guard
-        # does not auto-reject Path B before the apparatus can derive.
+        # does not auto-reject the Lagrangian before the apparatus can derive.
         _has_lagrangian = False
         _has_prediction = False
         if _tree_pf is not None:
@@ -421,18 +421,18 @@ def validate_python_suite_imports(
                                 _has_lagrangian = True
                             elif tgt.id == "PREDICTION":
                                 _has_prediction = True
-        # Path A satisfied: PARAMETRIC_FORM + PARAMETER_NAMES at module scope.
-        # Path B satisfied: LAGRANGIAN + PREDICTION + PARAMETER_NAMES at module scope.
-        path_a_ok = _has_form and _has_names
-        path_b_ok = _has_lagrangian and _has_prediction and _has_names
-        if not (path_a_ok or path_b_ok):
+        # Parametric model satisfied: PARAMETRIC_FORM + PARAMETER_NAMES at module scope.
+        # Variational/Lagrangian model satisfied: LAGRANGIAN + PREDICTION + PARAMETER_NAMES at module scope.
+        parametric_model_ok = _has_form and _has_names
+        variational_lagrangian_ok = _has_lagrangian and _has_prediction and _has_names
+        if not (parametric_model_ok or variational_lagrangian_ok):
             raise ValueError(
                 "Force-opt-in (rubric flag enable_fit_primitive_features=true): "
                 "this substrate was designed for the apparatus to fit "
                 "constants via scipy.optimize. You MUST declare ONE OF the "
                 "following two contracts at module level:\n\n"
-                "  PATH A (legacy): PARAMETRIC_FORM (str) AND PARAMETER_NAMES (list[str]).\n"
-                "  PATH B (Newton-mode / GP-180): LAGRANGIAN (str) AND PREDICTION (str) "
+                "  Parametric model declaration: PARAMETRIC_FORM (str) AND PARAMETER_NAMES (list[str]).\n"
+                "  Variational/Lagrangian declaration: LAGRANGIAN (str) AND PREDICTION (str) "
                 "AND PARAMETER_NAMES (list[str]); Q_VARIABLES + BACKGROUND are recommended. "
                 "GP-180 lagrangian_derivation will compute Euler-Lagrange via sympy and "
                 "emit the apparatus-ready PARAMETRIC_FORM for you.\n\n"

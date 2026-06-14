@@ -5,7 +5,7 @@ This is the v2 EVOLUTION of the fixed Layer-2→5 cascade in the solver lane
 the measured BASELINE; this module is the optimization OVER it and earns
 adoption only by closing ≥ the cascade's closures on the SAME rows (see the
 GP-246 seam). It is NOT a smarter prover — the LLM/hammer/frontier prover stays
-a subordinate move-generator and the moat is the mechanization-placement
+a subordinate move-generator and the defensible value is the mechanization-placement
 governance: ex-ante typed contract → typed moves → kernel-ratified credit →
 matched-negative-control → residual→lever → no-false-closure.
 
@@ -102,6 +102,23 @@ MOVE_CORROBORATE = "corroborate"             # Popper DUAL of falsify: refute a 
 MOVE_WITNESS_TRANSPORT = "witness_transport"  # CLOSURE move, gate-triggered: for a non-linear existential the
 #   native cascade can't close, SymPy FINDS the witness → inject `refine ⟨w,?_⟩ <;> norm_num` → the kernel
 #   PROVES it (witness-transport.solve_witness). Same _verify_compile+_govern closure gate as warm/generalize.
+MOVE_SLEDGEHAMMER = "sledgehammer"           # PREMISE-RETRIEVAL closure move: translate G to Isabelle/HOL, run
+#   `sledgehammer` (EXTERNAL server) → its dependency trace → map Isabelle fact names to Mathlib (HALLUCINATES)
+#   → kernel `#check`-validate each (drop hallucinations) → inject the survivors as exact?/aesop premises. Same
+#   _verify_compile+_govern closure gate as warm/generalize. FAIL-CLOSED (no-op) when no Isabelle server is set.
+MOVE_REFLECTION = "reflection"               # COMPUTATIONAL closure move: the leaf writes a decidable
+#   `def check` + `theorem check_sound : check args = true → G` + a closing body; the helper decls prepend
+#   to the goal stub (added decls statement_integrity allows) and the kernel PROVES G via `by decide` —
+#   same _verify_compile+_govern closure gate as generalize. native_decide is fail-closed (axiom). Finite/
+#   decidable goals only. WIRED: reflection.reflection_solve + runner.
+MOVE_ABDUCE = "abduce"                        # SMT-GROUNDED conjecture: for a decidable-arithmetic goal,
+#   cvc5 `(get-abduct)` derives the minimal missing premise A; abduce_seed wraps it as a targeted prompt
+#   override for conjecture_generate (replaces weak free-generation with a grounded one). Same advance/spawn
+#   gate as MOVE_CONJECTURE; inert (fail-closed) without cvc5. WIRED: abduction.abduce_seed + runner.
+MOVE_FUNCTOR_LIFT = "functor_lift"            # SPECTRAL/domain lift: a stuck DISCRETE goal is lifted to the
+#   continuous domain (graph→adjacency matrix), NumPy computes the spectral bound, the continuous bound
+#   bounds the discrete property — GATED on the Mathlib bridge lemma EXISTING (abort if absent; don't prove
+#   it from scratch). NumPy fail-closed. Narrow/domain-specific. WIRED: spectral_lift + runner.
 MOVE_DEFER = "defer"                         # explicit stop → exact_gap
 MOVE_CACHE_REUSE = "cache_reuse"             # TELEMETRY-only label for a CLOSED-FROM-CACHE reuse (COMPRESS+
 #   SCALE leg). Not a selectable move — emitted by the cache-hit branch so a reuse is a first-class attributed
@@ -110,8 +127,28 @@ MOVE_CACHE_REUSE = "cache_reuse"             # TELEMETRY-only label for a CLOSED
 # Conjecture is tried AFTER the cheap direct moves (try to close directly first; if
 # stuck, invert and decompose). The strategist moves (specialize/generalize) are NOT in this default
 # walk — they are stuck-gated + env-flagged in `move_policy` (parity-safe), see STRATEGIST_MOVES.
-MOVE_ORDER = (MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM, MOVE_COLD_SHOT, MOVE_FRONTIER, MOVE_CONJECTURE)
-STRATEGIST_MOVES = (MOVE_SPECIALIZE, MOVE_GENERALIZE, MOVE_FALSIFY, MOVE_TACTIC_STEP, MOVE_CORROBORATE)  # default-OFF; offered by move_policy on a stuck signal
+MOVE_ORDER = (MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM, MOVE_COLD_SHOT, MOVE_FRONTIER, MOVE_CONJECTURE)  # the FULL ladder (the non-agent fallback)
+STRATEGIST_MOVES = (MOVE_SPECIALIZE, MOVE_GENERALIZE, MOVE_FALSIFY, MOVE_TACTIC_STEP, MOVE_CORROBORATE, MOVE_SLEDGEHAMMER, MOVE_REFLECTION, MOVE_ABDUCE, MOVE_FUNCTOR_LIFT)  # default-OFF; offered by move_policy on a stuck signal
+
+# AGENTIC-FIRST move ladder (the architecture, not a filter): when the agent path is LIVE — `claude_warm` runs the
+# agentic leaf with AGENT_TOOLS{witness/abduct/hammer/search} + AGENT_PLAN{decompose} — the agent REACHES those
+# capabilities itself, so cold_shot + frontier are the REDUNDANT cold one-shots (arch §685: "the agent now reaches
+# the same moves… the redundant cascade"; a warm, iterating, tool-equipped agent that already tried can't be beaten
+# by a cold one-shot). So they DEMOTE to the non-agent fallback: the live ladder is native_hammer (free cheap-first
+# filter) → claude_warm (THE agent) → conjecture (decompose). The deterministic cascade is what runs WITHOUT an agent.
+_AGENT_FIRST_ORDER = (MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM, MOVE_CONJECTURE)
+
+
+def _active_move_order() -> "tuple[str, ...]":
+    """The per-node move ladder. AGENT-FIRST by default (native filter → agent → decompose); the cold one-shots
+    (cold_shot/frontier) are the NON-AGENT FALLBACK, included only when there is no agent. `ZTARE_LEANMILL_FULL_CASCADE=1`
+    restores the legacy 5-move cascade (the A/B baseline); `ZTARE_LEANMILL_AGENT_TOOLS=0` (no agent) also keeps the
+    full ladder so a non-agent run still has its fallbacks. SOUND: removing direct-proof moves only shrinks attack
+    surface — the kernel re-verifies every closure — so this can never false-close, only save the doomed grind."""
+    if (os.environ.get("ZTARE_LEANMILL_FULL_CASCADE") == "1"
+            or os.environ.get("ZTARE_LEANMILL_AGENT_TOOLS", "1") == "0"):
+        return MOVE_ORDER
+    return _AGENT_FIRST_ORDER
 
 # Heuristic cost model (v1, STUB — see honest-notes in the seam/report). Units
 # are abstract "budget units" (cold wall-clock seconds / fan-out width proxy),
@@ -129,6 +166,10 @@ MOVE_COST: dict[str, float] = {
     MOVE_TACTIC_STEP: 5.0,  # multi-step per-tactic leaf loop (several leaf calls) + REPL; costliest leaf move
     MOVE_CORROBORATE: 4.0,  # one leaf call: a consequence K + G→K + ¬K proofs, kernel-gated like falsify
     MOVE_WITNESS_TRANSPORT: 1.0,  # a BOUNDED SymPy subprocess (direct path; no LLM) + one kernel compile — cheap
+    MOVE_SLEDGEHAMMER: 4.0,  # one external Isabelle sledgehammer call + per-premise #check probes + one closing compile
+    MOVE_REFLECTION: 4.0,    # one leaf call (check/sound/close) + a pre-filter compile + the closure compile ≈ generalize
+    MOVE_ABDUCE: 2.0,        # a bounded cvc5 abduct + ONE seeded leaf call; the proving cost is in the spawned child ≈ conjecture
+    MOVE_FUNCTOR_LIFT: 4.0,  # one leaf call (define the lift) + a NumPy spectral compute + a bridge-lemma #check + closing compile
 }
 
 # Heuristic prior P(this move closes THIS node), independent of node features. These are the
@@ -149,6 +190,11 @@ MOVE_PRIOR_P_CLOSE: dict[str, float] = {
     #   easier to refute than G directly), but still rare (most targets are true). Non-closure (emits a falsifier).
     MOVE_WITNESS_TRANSPORT: 0.45,  # P(close) CONDITIONAL on the gate (a computable non-linear ∃) — SymPy is
     #   complete on its fragment, so when eligible the close rate is high; the gate makes it rarely eligible.
+    MOVE_SLEDGEHAMMER: 0.30,  # P(close) CONDITIONAL on a configured Isabelle server — sledgehammer is a strong
+    #   premise selector, but the Isabelle→Mathlib name map + translation are lossy; shifts to the measured rate.
+    MOVE_REFLECTION: 0.35,   # P(close a finite/decidable goal via a reflection procedure) — stub = generalize's
+    MOVE_ABDUCE: 0.45,       # P(ADVANCE) given a decidable-arithmetic goal + a non-trivial cvc5 abduct (ORDERING only; never P(close G))
+    MOVE_FUNCTOR_LIFT: 0.25,  # P(close) CONDITIONAL on a discrete goal WITH the Mathlib bridge lemma present — narrow gate
 }
 
 # Arc-H calibration override (GP-246): a caller (the worker) may install measured priors via
@@ -225,6 +271,10 @@ MOVE_CLASS: dict[str, str] = {
     MOVE_TACTIC_STEP: "commutative",       # attacks G AS-STATED via stepping (structure-preserving)
     MOVE_CORROBORATE: "non_commutative",  # changes the obligation (refute a CONSEQUENCE of G) — Invert-dual
     MOVE_WITNESS_TRANSPORT: "commutative",  # attacks G AS-STATED with a computed witness (structure-preserving)
+    MOVE_SLEDGEHAMMER: "commutative",       # attacks G AS-STATED with retrieved premises (structure-preserving)
+    MOVE_REFLECTION: "commutative",         # attacks G AS-STATED with a decision procedure (structure-preserving)
+    MOVE_ABDUCE: "non_commutative",         # changes the obligation (spawns a missing-premise sub-target) — Invert/decompose
+    MOVE_FUNCTOR_LIFT: "commutative",       # attacks G AS-STATED via a spectral bound (structure-preserving)
     MOVE_DEFER: "terminal",
 }
 
@@ -597,7 +647,7 @@ def _ucb_eligible_moves(node: DagNode, budget_remaining: float,
     (`_strategist_move`), exactly as the fixed-order policy, and its reachability is the context-prior's job
     (calibrated_priors_for_class on the error signal), not blind exploration."""
     out: list[str] = []
-    for m in MOVE_ORDER:
+    for m in _active_move_order():
         if m in node.moves_tried:
             continue
         if menu_allowed is not None and m not in menu_allowed:
@@ -621,6 +671,8 @@ def _ucb_move_policy(node: DagNode, budget_remaining: float, defer_threshold: fl
     a mis-ranked closer only wastes budget, never launders. If no closer clears threshold → the strategist
     gate → DEFER (same terminal structure as fixed-order)."""
     eligible = _ucb_eligible_moves(node, budget_remaining, menu_allowed)
+    if os.environ.get("ZTARE_LEANMILL_NO_CONJECTURE") == "1":
+        eligible = [m for m in eligible if m != MOVE_CONJECTURE]   # #53 apparatus_no_conjecture control arm (UCB path)
     if eligible:
         c = float(os.environ.get("ZTARE_LEANMILL_UCB_C", DEFAULT_UCB_C))
         lam = float(os.environ.get("ZTARE_LEANMILL_UCB_LAMBDA", DEFAULT_UCB_EXPLORE_COST_LAMBDA))
@@ -681,15 +733,20 @@ def move_policy(node: DagNode, budget_remaining: float,
     # difference being tail availability (unconfounded). Default ⇒ no filter (byte-identical to v1).
     _menu_allowed = ((MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM)
                      if os.environ.get("ZTARE_LEANMILL_MENU", "full") == "native_warm" else None)
+    # #53 apparatus_no_conjecture CONTROL ARM (ZTARE_LEANMILL_NO_CONJECTURE=1, default-OFF = byte-identical): excludes
+    # MOVE_CONJECTURE from EVERY selection path (router/REACH_INVENT/fixed-order; UCB filters in _ucb_move_policy) so the
+    # obstruction/decomposition-lift ablation has a clean control — it was hardwired in MOVE_ORDER with no off-flag.
+    _no_conjecture = os.environ.get("ZTARE_LEANMILL_NO_CONJECTURE") == "1"
     # TARGET-CONDITIONED MOVE ROUTER (ZTARE_LEANMILL_MOVE_ROUTER=1, default-OFF): the reachability fix —
     # after the FREE native probe, PROMOTE the move whose precondition matches THIS target (generalizes the
     # witness gate to all moves). Fires only once native_hammer is tried (native keeps first crack), so it
     # composes with both the UCB and fixed-order paths; caller-verified enabled/affordable/untried. This is
     # what makes the strategist/exogenous tail REACHABLE (the apparatus-lift run showed it never fires otherwise).
-    if (_menu_allowed is None and os.environ.get("ZTARE_LEANMILL_MOVE_ROUTER") == "1"
+    if (_menu_allowed is None and os.environ.get("ZTARE_LEANMILL_MOVE_ROUTER", "1") != "0"   # DEFAULT-ON 2026-06-12 (selection-only; kernel ratifies; =0 reverts)
             and MOVE_NATIVE_HAMMER in node.moves_tried):
         _routed = move_router(node)
-        if _routed and _routed not in node.moves_tried and MOVE_COST.get(_routed, 1.0) <= budget_remaining:
+        if (_routed and _routed not in node.moves_tried and MOVE_COST.get(_routed, 1.0) <= budget_remaining
+                and not (_no_conjecture and _routed == MOVE_CONJECTURE)):
             return _routed
     # WITNESS TRANSPORT (ZTARE_LEANMILL_WITNESS_TRANSPORT=1, default-OFF): a gate-triggered COMPUTATIONAL
     # closure move. Offered AFTER native_hammer (the free native bridges — omega/polyrith/decide — get first
@@ -697,7 +754,7 @@ def move_policy(node: DagNode, budget_remaining: float,
     # SymPy niche). The kernel ratifies the injected witness (no false-closure surface). Composes with both
     # the UCB and fixed-order paths because it fires only once native is already tried.
     if (_menu_allowed is None
-            and os.environ.get("ZTARE_LEANMILL_WITNESS_TRANSPORT") == "1"
+            and os.environ.get("ZTARE_LEANMILL_WITNESS_TRANSPORT", "1") != "0"   # DEFAULT-ON 2026-06-12
             and MOVE_WITNESS_TRANSPORT not in node.moves_tried
             and MOVE_NATIVE_HAMMER in node.moves_tried
             and MOVE_COST.get(MOVE_WITNESS_TRANSPORT, 1.0) <= budget_remaining
@@ -711,6 +768,7 @@ def move_policy(node: DagNode, budget_remaining: float,
     if os.environ.get("ZTARE_LEANMILL_UCB_MOVES") == "1":
         return _ucb_move_policy(node, budget_remaining, defer_threshold, _menu_allowed)
     if (_menu_allowed is None
+            and not _no_conjecture
             and os.environ.get("ZTARE_LEANMILL_REACH_INVENT") == "1"
             and MOVE_CONJECTURE not in node.moves_tried
             and MOVE_COST.get(MOVE_CONJECTURE, 1.0) <= budget_remaining
@@ -723,9 +781,11 @@ def move_policy(node: DagNode, budget_remaining: float,
         # is the only clean out-of-span signal; a noisy failure is NOT one.
         if max(_effective_est_p(node, MOVE_CONJECTURE), node.best_progress) >= defer_threshold:
             return MOVE_CONJECTURE
-    for move in MOVE_ORDER:
+    for move in _active_move_order():
         if move in node.moves_tried:
             continue
+        if _no_conjecture and move == MOVE_CONJECTURE:
+            continue   # #53 apparatus_no_conjecture control arm: drop conjecture, fall through to strategist/DEFER
         if _menu_allowed is not None and move not in _menu_allowed:
             continue   # A/B restricted menu: skip the tail moves entirely
         cost = MOVE_COST.get(move, 1.0)
@@ -766,7 +826,7 @@ def move_router(node: DagNode) -> "Optional[str]":
     ec = node.last_error_class
 
     def _on(flag: str) -> bool:
-        return os.environ.get(flag) == "1"
+        return os.environ.get(flag, "1") != "0"   # DEFAULT-ON 2026-06-12 (router legs; each move still kernel-ratified)
 
     # ── Signals that fire after the FREE native probe (the caller already gated on native tried) ──────
     # (A) COMPUTABLE ARITHMETIC ∃ → WITNESS-TRANSPORT before warm: SymPy is COMPLETE on its fragment, so it
@@ -842,15 +902,32 @@ def _strategist_move(node: DagNode, budget_remaining: float) -> Optional[str]:
         real iff `closed_or_rung@budget(SIGNAL) > closed_or_rung@budget(RANDOM)`; if they tie, SELECTION
         carries no information and the claim is dropped. Seeded per (run, node, history) for reproducibility.
     """
-    gen_on = os.environ.get("ZTARE_LEANMILL_GENERALIZE") == "1"
-    spec_on = os.environ.get("ZTARE_LEANMILL_SPECIALIZE") == "1"
-    fal_on = os.environ.get("ZTARE_LEANMILL_FALSIFY") == "1"
-    step_on = os.environ.get("ZTARE_LEANMILL_TACTIC_STEP") == "1"
-    corr_on = os.environ.get("ZTARE_LEANMILL_CORROBORATE") == "1"
+    gen_on = os.environ.get("ZTARE_LEANMILL_GENERALIZE", "1") != "0"      # DEFAULT-ON 2026-06-12 (stuck-gated + kernel-ratified; =0 reverts)
+    spec_on = os.environ.get("ZTARE_LEANMILL_SPECIALIZE", "1") != "0"
+    fal_on = os.environ.get("ZTARE_LEANMILL_FALSIFY", "1") != "0"
+    step_on = os.environ.get("ZTARE_LEANMILL_TACTIC_STEP", "1") != "0"
+    corr_on = os.environ.get("ZTARE_LEANMILL_CORROBORATE", "1") != "0"
+    from ztare.leanmill.solver.sledgehammer import isabelle_hammer_live as _hammer_live
+    sledge_on = _hammer_live()   # DEFAULT-ON when the Isabelle server is live (was opt-in `==1`); =0 force-off
+    reflect_on = os.environ.get("ZTARE_LEANMILL_REFLECT", "1") != "0"
+    abduce_on = os.environ.get("ZTARE_LEANMILL_ABDUCE", "1") != "0"
+    lift_on = os.environ.get("ZTARE_LEANMILL_FUNCTORLIFT", "1") != "0"
     eligible: list[str] = []
     if (step_on and MOVE_TACTIC_STEP not in node.moves_tried
             and MOVE_COST.get(MOVE_TACTIC_STEP, 1.0) <= budget_remaining):
         eligible.append(MOVE_TACTIC_STEP)
+    if (sledge_on and MOVE_SLEDGEHAMMER not in node.moves_tried
+            and MOVE_COST.get(MOVE_SLEDGEHAMMER, 1.0) <= budget_remaining):
+        eligible.append(MOVE_SLEDGEHAMMER)
+    if (reflect_on and MOVE_REFLECTION not in node.moves_tried
+            and MOVE_COST.get(MOVE_REFLECTION, 1.0) <= budget_remaining):
+        eligible.append(MOVE_REFLECTION)
+    if (abduce_on and MOVE_ABDUCE not in node.moves_tried
+            and MOVE_COST.get(MOVE_ABDUCE, 1.0) <= budget_remaining):
+        eligible.append(MOVE_ABDUCE)
+    if (lift_on and MOVE_FUNCTOR_LIFT not in node.moves_tried
+            and MOVE_COST.get(MOVE_FUNCTOR_LIFT, 1.0) <= budget_remaining):
+        eligible.append(MOVE_FUNCTOR_LIFT)
     if (gen_on and MOVE_GENERALIZE not in node.moves_tried
             and MOVE_COST.get(MOVE_GENERALIZE, 1.0) <= budget_remaining):
         eligible.append(MOVE_GENERALIZE)
@@ -881,6 +958,24 @@ def _strategist_move(node: DagNode, budget_remaining: float) -> Optional[str]:
     # SIGNAL arm: GENERALIZE first (closure move, strictly more valuable when it fires) on an induction stall.
     if MOVE_GENERALIZE in eligible and node.last_error_class in ("unsolved_goals", "tactic_failed"):
         return MOVE_GENERALIZE
+    # SLEDGEHAMMER — a CLOSURE attempt via RETRIEVED premises (the missing-premise regime: the leaf knows the
+    # tactics but not WHICH Mathlib lemmas unlock the goal). Offered before the finer tactic-stepping / rung /
+    # falsify moves; it still tries to close G as-stated (kernel-validated premises → exact?/aesop). FAIL-CLOSED
+    # to a no-op when no Isabelle server is configured (the runner records 'no_server'), so it never starves the
+    # later moves on a box without the external infra.
+    if MOVE_SLEDGEHAMMER in eligible:
+        return MOVE_SLEDGEHAMMER
+    # REFLECTION — a CLOSURE attempt via a decision procedure on a finite/decidable goal (kernel-ratified
+    # like generalize; native_decide axiom-banned). FUNCTOR_LIFT — a CLOSURE via a spectral bound on a
+    # discrete goal (gated on the Mathlib bridge lemma existing). Both attack G AS-STATED, closure tier.
+    if MOVE_REFLECTION in eligible:
+        return MOVE_REFLECTION
+    if MOVE_FUNCTOR_LIFT in eligible:
+        return MOVE_FUNCTOR_LIFT
+    # ABDUCE — a GROUNDED conjecture: cvc5 derives the missing premise on an arithmetic stall (replaces weak
+    # free-generation). It SPAWNS a sub-target (never closes G), so it sits in the advance tier before SPECIALIZE.
+    if MOVE_ABDUCE in eligible:
+        return MOVE_ABDUCE
     # TACTIC_STEP — a CLOSURE attempt at finer (per-tactic) granularity when the whole-proof moves stalled;
     # offered before the rung/falsify moves (it still tries to close G as-stated).
     if MOVE_TACTIC_STEP in eligible:
@@ -951,6 +1046,77 @@ def _boost_factor(node: "DagNode") -> float:
     after = int(os.environ.get("ZTARE_LEANMILL_BOOST_AFTER", DEFAULT_BOOST_AFTER))
     mult = float(os.environ.get("ZTARE_LEANMILL_BOOST_MULT", DEFAULT_BOOST_MULT))
     return mult if len(node.moves_tried) >= after else 1.0
+
+
+# ── LUBY RESTARTS (#116; ZTARE_LEANMILL_LUBY_RESTARTS=1, default OFF = byte-parity) ───────────────────
+# Move-search runtimes are HEAVY-TAILED (the same observation that motivated the dispatch-layer Luby in
+# `common/timeouts.luby`): a search can tunnel into one doomed frontier branch and grind down its
+# move-budget-units without closing, when a FRESH exploration budget on the (re-scored) frontier would have
+# found the close. The Luby–Sinclair–Zuckerman sequence (1,1,2,1,1,2,4,…) is the provably near-optimal
+# restart schedule when the runtime distribution is unknown — NOT one long shot. Transposed to this search:
+# a "restart" REFILLS the abstract move-budget-units to a fresh Luby-scaled window when the search has burned
+# a window's worth of moves WITHOUT audited progress (the same stall signal the adaptive-termination block
+# already computes). Restarts NEVER touch closure soundness — the kernel still ratifies every close; a restart
+# only buys the search another exploration window on the SAME DAG (closed/rung nodes persist), so the worst
+# case is "spends the wallclock backstop trying" — never a false closure. The wallclock + max_moves stay the
+# hard outer bound (a restart cannot resurrect an exhausted wallclock). Reuses `timeouts.luby` (one home for
+# the sequence). Default OFF ⇒ the budget-units monotonically deplete exactly as before (byte-identical).
+DEFAULT_LUBY_RESTART_PATIENCE = 4   # consecutive no-progress moves that trigger a restart (≤ stall_patience)
+DEFAULT_LUBY_MAX_RESTARTS = 6       # cap restarts so a pathological run can't loop forever inside the wallclock
+
+
+def _luby_restart_unit(base_units: float, restart_n: int) -> float:
+    """The refilled move-budget window for the `restart_n`-th restart (1-indexed): `luby(restart_n) * base`
+    units, where `base` is the ORIGINAL move_budget_units the run started with. Pure; reuses the canonical
+    Luby sequence in `common/timeouts`. Degenerate inputs clamp safely (never a starving 0)."""
+    from ztare.common.timeouts import luby
+    return max(1.0, float(base_units)) * luby(max(1, int(restart_n)))
+
+
+# ── INTERNAL-STANDARD SPIKING (#116; ZTARE_LEANMILL_SPIKE=1, default OFF = byte-parity) ───────────────
+# Borrowed from analytical chemistry: you cannot tell a TRULY-zero reading from a DEAD instrument unless you
+# periodically inject a KNOWN quantity (the "internal standard") and confirm the apparatus registers it. The
+# dead-instrument class here is the recurring one (memory: probes that never parse/run record a silent 0/N that
+# masquerades as "this move can't close anything"). The PREFLIGHT carriers (preflight_carriers.run_preflight +
+# solver_core.preflight_moves_alive) are the ONE-SHOT positive control at run START; SPIKING is the in-stream
+# COMPLEMENT — periodically inject a trivially-closeable target INTO the live move stream and assert the move
+# actually closed it. A spike that FAILS to close means the apparatus has gone dead MID-RUN (the move runner
+# stopped parsing/compiling), so every subsequent 0/N is INADMISSIBLE — surfaced LOUD (same contract as
+# solver_core._preflight_dead_loud_record), never a silent pass. Pure calibration: a spike result NEVER closes
+# a real node, spawns no sub-goal, and is excluded from move_attribution credit — it only proves the apparatus
+# is live. Default OFF ⇒ no spike target is ever injected (byte-identical move stream).
+DEFAULT_SPIKE_EVERY = 8   # inject a spike once per this many real moves (calibration cadence; ≥1)
+
+# The known-answer standard: a target ANY live move runner must close. `True := by trivial` is the canonical
+# positive control already used by preflight_carriers / preflight_moves_alive — reused verbatim so "spike live"
+# means the SAME thing across the apparatus (one definition of a trivially-closeable goal).
+SPIKE_GOAL_TEXT = "theorem _spike_internal_standard : True := by trivial"
+
+
+def spike_probe() -> DagNode:
+    """A KNOWN-closeable calibration target (the analytical-chemistry internal standard): a fresh disposable
+    DagNode carrying `True := by trivial` — the same trivial positive control the carrier preflight uses. NOT
+    part of the real DAG; the search runs ONE move on it purely to confirm the apparatus is live, then discards
+    it. Returns a new node each call (no shared mutable state across spikes)."""
+    return DagNode(node_id="_spike", kind="root_goal", goal_text=SPIKE_GOAL_TEXT)
+
+
+def spike_closed(result: "MoveResult") -> bool:
+    """The spike CHECKER: did the move actually close the known-answer standard? True iff the runner ratified
+    the close (kernel-clean AND MNC) — the exact bar a real closure must clear. A False here means the move ran
+    but did NOT close a goal that is closeable by `trivial`, i.e. the apparatus is dead (probe never
+    parsed/compiled) — the dead-instrument signature."""
+    return bool(result is not None and result.ratified_close)
+
+
+def _spike_dead_loud(restart_detail: str) -> None:
+    """Fail-LOUD when a spike does not close — a dead apparatus mid-run can never be a silent 0/N. Mirrors
+    solver_core._preflight_dead_loud_record's banner contract; kept dependency-light (a print) so this module
+    stays import-cycle-free. The caller also stamps a `spike` event into the trace for the structured record."""
+    bar = "=" * 70
+    print(f"\n{bar}\n⚠ DEAD APPARATUS (spike) — the internal-standard probe '{SPIKE_GOAL_TEXT}' did NOT close.\n"
+          f"  {restart_detail}\n  Every subsequent move 0/N is INADMISSIBLE until the move runner is fixed "
+          f"(probe assembly / carrier).\n{bar}\n", flush=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1113,6 +1279,29 @@ def run_governed_dag_search(
     # ADAPTIVE termination — track AUDITED progress so the budget follows PROGRESS, not an arbitrary clock.
     _best_sig = None   # (closed+rung count, best partial-progress); strictly increasing while productive
     _stall = 0
+    # LUBY RESTARTS (#116; ZTARE_LEANMILL_LUBY_RESTARTS=1, default OFF = byte-parity). When ON: a search that
+    # burns `LUBY_RESTART_PATIENCE` consecutive no-AUDITED-progress moves with budget still left has tunnelled
+    # into a doomed branch — REFILL the move-budget-units to a fresh Luby-scaled window (luby(n) × the original
+    # base) and reset the stall counter, so the re-scored frontier gets a clean exploration budget instead of
+    # grinding the remaining units into one branch. Soundness untouched: the kernel still ratifies every close;
+    # a restart only buys another window on the SAME DAG (closed/rung nodes persist). The wallclock + max_moves
+    # stay the hard outer bound. OFF ⇒ these stay inert and budget_units deplete byte-identically.
+    _luby_on = os.environ.get("ZTARE_LEANMILL_LUBY_RESTARTS") == "1"
+    _luby_base_units = float(move_budget_units)   # the ORIGINAL window the run started with (restart unit base)
+    _luby_restart_patience = int(os.environ.get("ZTARE_LEANMILL_LUBY_RESTART_PATIENCE",
+                                                str(DEFAULT_LUBY_RESTART_PATIENCE)))
+    _luby_max_restarts = int(os.environ.get("ZTARE_LEANMILL_LUBY_MAX_RESTARTS", str(DEFAULT_LUBY_MAX_RESTARTS)))
+    _luby_restarts = 0          # restarts done so far (1-indexes the Luby sequence)
+    _luby_stall = 0             # consecutive no-progress moves toward the NEXT restart (separate from _stall)
+    # INTERNAL-STANDARD SPIKING (#116; ZTARE_LEANMILL_SPIKE=1, default OFF = byte-parity). When ON: every
+    # `_spike_every` real moves, inject the known-answer standard (spike_probe) into the move stream and assert
+    # the runner CLOSED it (spike_closed). A failed spike ⇒ the apparatus went dead mid-run ⇒ LOUD telemetry +
+    # a `spike` trace event so the subsequent 0/N can never be a silent null. Spikes are pure calibration: they
+    # do NOT spend budget_units, do NOT count as real moves, and are excluded from move_attribution credit.
+    # OFF ⇒ no spike is ever injected (byte-identical move stream).
+    _spike_on = os.environ.get("ZTARE_LEANMILL_SPIKE") == "1"
+    _spike_every = max(1, int(os.environ.get("ZTARE_LEANMILL_SPIKE_EVERY", str(DEFAULT_SPIKE_EVERY))))
+    _spikes_done = _spikes_live = _spikes_dead = 0
 
     while moves_made < max_moves:
         if (time.time() - start) >= wallclock_budget_s:
@@ -1126,6 +1315,32 @@ def run_governed_dag_search(
             trace.append({"event": "stop", "reason": "root_closed"})
             break
 
+        # Shared AUDITED-progress signal (more closed/rung nodes, or higher partial-progress) used by BOTH the
+        # adaptive-termination stall and the Luby restart below. Computed once per loop (parity: identical to
+        # the prior inline `_sig`).
+        _open_now = [n for n in nodes.values() if n.status == "open"]
+        _sig = (sum(1 for n in nodes.values() if n.status in ("closed", "rung")),
+                round(max((getattr(n, "best_progress", 0.0) or 0.0 for n in _open_now), default=0.0), 3))
+        _progressed = _best_sig is None or _sig > _best_sig
+
+        # LUBY RESTART (default OFF). Checked BEFORE the adaptive-termination stall-break so that, when ON, a
+        # stalled branch RESTARTS with a fresh Luby-scaled exploration window instead of terminating — until
+        # the restart cap is hit, after which the adaptive break (or budget/wallclock backstop) ends the run.
+        # OFF ⇒ this whole block is skipped and behaviour is byte-identical.
+        if _luby_on and moves_made > 0:
+            if _progressed:
+                _luby_stall = 0
+            else:
+                _luby_stall += 1
+                if _luby_stall >= _luby_restart_patience and _luby_restarts < _luby_max_restarts:
+                    _luby_restarts += 1
+                    budget_units = _luby_restart_unit(_luby_base_units, _luby_restarts)
+                    _luby_stall = 0
+                    _stall = 0   # a fresh window is genuine progress room — don't let the adaptive break fire
+                    trace.append({"event": "luby_restart", "restart_n": _luby_restarts,
+                                  "refilled_budget_units": round(budget_units, 3),
+                                  "moves_made": moves_made})
+
         # ADAPTIVE termination: stop when the search STALLS — no AUDITED progress (more closed/rung nodes,
         # or higher partial-progress) in `stall_patience` consecutive moves. This makes the budget track
         # PROGRESS rather than a hardcoded clock; max_moves/wallclock are generous BACKSTOPS, not the bound,
@@ -1134,10 +1349,7 @@ def run_governed_dag_search(
         # best_progress (goal-count dropping), so it isn't a plateau. `ZTARE_DAG_STALL_PATIENCE=0` disables.
         _patience = int(os.environ.get("ZTARE_DAG_STALL_PATIENCE", "6"))
         if _patience > 0 and moves_made > 0:
-            _open_now = [n for n in nodes.values() if n.status == "open"]
-            _sig = (sum(1 for n in nodes.values() if n.status in ("closed", "rung")),
-                    round(max((getattr(n, "best_progress", 0.0) or 0.0 for n in _open_now), default=0.0), 3))
-            if _best_sig is None or _sig > _best_sig:
+            if _progressed:
                 _best_sig, _stall = _sig, 0
             else:
                 _stall += 1
@@ -1145,6 +1357,8 @@ def run_governed_dag_search(
                     trace.append({"event": "stop", "reason": "stalled_no_progress",
                                   "moves_without_progress": _stall, "moves_made": moves_made})
                     break
+        elif _progressed:
+            _best_sig = _sig   # keep _best_sig current even when the adaptive stall-break is disabled
 
         # Frontier = open nodes; pick the best by (est_p×value − cost) — greedy by default, or UCB over the
         # frontier (explore under-expanded branches) under ZTARE_LEANMILL_UCB_FRONTIER=1 (default-off parity).
@@ -1226,6 +1440,32 @@ def run_governed_dag_search(
         result = move_runner(node, move, budget_units)
         moves_made += 1
         budget_units -= MOVE_COST.get(move, 1.0)
+
+        # INTERNAL-STANDARD SPIKE (default OFF). Once per `_spike_every` real moves, inject the known-answer
+        # standard and confirm the live apparatus CLOSES it. A failed spike ⇒ the move runner went dead
+        # mid-run (probe assembly broke) ⇒ LOUD + a `spike` trace event, so the subsequent 0/N are flagged
+        # INADMISSIBLE rather than silently believed. Pure calibration: the spike does NOT spend budget_units,
+        # does NOT count toward moves_made, and is excluded from move_attribution credit. OFF ⇒ never runs.
+        if _spike_on and moves_made % _spike_every == 0:
+            _spike_node = spike_probe()
+            try:
+                _spike_res = move_runner(_spike_node, MOVE_NATIVE_HAMMER, budget_units)
+                _live = spike_closed(_spike_res)
+            except Exception as _se:  # a runner that THROWS on the standard is itself a dead-apparatus signal
+                _live, _spike_res = False, None
+                _spike_detail = f"move_runner raised on the spike: {type(_se).__name__}: {_se}"
+            else:
+                _spike_detail = ("apparatus live (standard closed)" if _live
+                                 else "move ran but did NOT ratify a close of `True := by trivial`")
+            _spikes_done += 1
+            if _live:
+                _spikes_live += 1
+            else:
+                _spikes_dead += 1
+                _spike_dead_loud(_spike_detail)
+            trace.append({"event": "spike", "after_moves": moves_made, "live": _live,
+                          "detail": _spike_detail})
+
         move_attribution.append({
             "node_id": node.node_id,
             "node_kind": node.kind,
@@ -1348,6 +1588,10 @@ def run_governed_dag_search(
         "moves_made": moves_made,
         "wallclock_s": round(time.time() - start, 3),
         "budget_units_remaining": round(budget_units, 3),
+        "luby_restarts": _luby_restarts,   # 0 when the flag is off (byte-parity) or no restart was needed
+        "spikes": {"done": _spikes_done, "live": _spikes_live, "dead": _spikes_dead},  # all 0 when SPIKE off
+        "apparatus_live": _spikes_dead == 0,  # True unless a spike caught a dead apparatus mid-run
+
         "nodes": {nid: asdict(n) for nid, n in nodes.items()},
         "levers": {nid: n.next_lever for nid, n in nodes.items()},
         "trace": trace,
@@ -1361,6 +1605,28 @@ def run_governed_dag_search(
 
 def _selftest() -> int:
     failures: list[str] = []
+    # HERMETICITY: these tests assert the STRATEGIST tail is default-off (stuck ⇒ DEFER). But sledgehammer is now
+    # DEFAULT-ON when the Isabelle server is LIVE (`sledge_on = isabelle_hammer_live()`, 2026-06-11), so on a box WITH
+    # Isabelle (the VPS) a stuck node falls through to sledgehammer instead of DEFER and ~14 asserts flip. Force it OFF
+    # for the suite so it is deterministic regardless of whether Isabelle is live on THIS box (surfaced by a VPS sync).
+    import os as _os_h
+    _sledge_save = _os_h.environ.get("ZTARE_LEANMILL_SLEDGEHAMMER")
+    _os_h.environ["ZTARE_LEANMILL_SLEDGEHAMMER"] = "0"
+    # HERMETICITY: most tests below assert the FULL 5-move cascade (cold_shot/frontier present); the agent-first
+    # ladder (default) demotes those — force the full cascade so they're deterministic. A dedicated block (tagged
+    # 'agentic_ladder') tests the agent-first collapse with it ON.
+    _cascade_save = _os_h.environ.get("ZTARE_LEANMILL_FULL_CASCADE")
+    _os_h.environ["ZTARE_LEANMILL_FULL_CASCADE"] = "1"
+    # HERMETICITY (executors DEFAULT-ON 2026-06-12): the strategist/exogenous moves are now default-on; the
+    # parity tests below assert flags-OFF behaviour, so force the whole set to "0" — each block that TESTS a
+    # move sets its flag explicitly (same pattern as sledge/FULL_CASCADE above; restored at the end).
+    _EXEC_FLAGS = ("ZTARE_LEANMILL_WITNESS_TRANSPORT", "ZTARE_LEANMILL_KRONECKER", "ZTARE_LEANMILL_FALSIFY",
+                   "ZTARE_LEANMILL_CORROBORATE", "ZTARE_LEANMILL_REFLECT", "ZTARE_LEANMILL_ABDUCE",
+                   "ZTARE_LEANMILL_FUNCTORLIFT", "ZTARE_LEANMILL_SPECIALIZE", "ZTARE_LEANMILL_GENERALIZE",
+                   "ZTARE_LEANMILL_TACTIC_STEP")
+    _exec_save = {k: _os_h.environ.get(k) for k in _EXEC_FLAGS}
+    for _k in _EXEC_FLAGS:
+        _os_h.environ[_k] = "0"
 
     def ok(name: str, cond: bool) -> None:
         status = "PASS" if cond else "FAIL"
@@ -1547,6 +1813,18 @@ def _selftest() -> int:
        move_policy(n_prog, 100.0, defer_threshold=0.5) != MOVE_DEFER)
     ok("no_progress_defers_at_high_threshold",
        move_policy(DagNode("nn", "helper_lemma", "g"), 100.0, defer_threshold=0.99) == MOVE_DEFER)
+    # #53 apparatus_no_conjecture CONTROL ARM: a node with all 4 closure moves tried selects conjecture by default;
+    # ZTARE_LEANMILL_NO_CONJECTURE=1 excludes it → falls through to the (default-off) strategist tail → DEFER.
+    import os as _osnc
+    _ncn = DagNode("ncj", "sub_goal", "g")
+    _ncn.moves_tried = [MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM, MOVE_COLD_SHOT, MOVE_FRONTIER]
+    _osnc.environ.pop("ZTARE_LEANMILL_NO_CONJECTURE", None)
+    ok("no_conjecture OFF: stuck node still selects conjecture (byte-parity)",
+       move_policy(_ncn, 100.0, defer_threshold=0.3) == MOVE_CONJECTURE)
+    _osnc.environ["ZTARE_LEANMILL_NO_CONJECTURE"] = "1"
+    ok("no_conjecture ON: conjecture excluded → DEFER (the apparatus_no_conjecture control)",
+       move_policy(_ncn, 100.0, defer_threshold=0.3) == MOVE_DEFER)
+    _osnc.environ.pop("ZTARE_LEANMILL_NO_CONJECTURE", None)
     # 10c: backward-compat — a runner that never sets progress leaves best_progress 0.
     n_bp = [n for n in res6["nodes"].values()]  # res6 used runner_always_fail (no progress)
     ok("gradient_backward_compatible", all(n.get("best_progress", 0.0) == 0.0 for n in n_bp))
@@ -1692,7 +1970,7 @@ def _selftest() -> int:
         ok("ucb_preserves_strategist_gate_when_menu_exhausted",
            move_policy(_stk, 100.0) == MOVE_FALSIFY)
         # (e) DEFER on a hopeless node (high threshold, strategist off).
-        _osu.environ.pop("ZTARE_LEANMILL_FALSIFY", None)
+        _osu.environ["ZTARE_LEANMILL_FALSIFY"] = "0"   # hermetic: default-ON now
         set_move_visits({})
         ok("ucb_defers_hopeless_node",
            move_policy(DagNode("u5", "sub_goal", "g"), 100.0, defer_threshold=0.99) == MOVE_DEFER)
@@ -1870,8 +2148,13 @@ def _selftest() -> int:
     # out-of-span node: tried a direct (commutative) move, hit unknown_identifier (missing primitive).
     oos = DagNode("oos", "root_goal", "g"); oos.moves_tried = [MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM]
     oos.last_error_class = "unknown_identifier"
+    # the ROUTER (default-ON 2026-06-12) promotes conjecture on exactly this signal — assert the new default,
+    # then force it OFF to isolate the REACH_INVENT lever this block actually tests (hermetic, like sledge).
+    ok("router_default_on_promotes_conjecture_on_missing_primitive",
+       move_policy(oos, 100.0) == MOVE_CONJECTURE)
+    _os16.environ["ZTARE_LEANMILL_MOVE_ROUTER"] = "0"
     ok("reach_invent_default_off_plain_order",
-       move_policy(oos, 100.0) == MOVE_COLD_SHOT)        # default: plain order (resource next), parity
+       move_policy(oos, 100.0) == MOVE_COLD_SHOT)        # router off ⇒ plain order (resource next), parity
     _os16.environ["ZTARE_LEANMILL_REACH_INVENT"] = "1"
     try:
         ok("reach_invent_on_fires_invent_out_of_span",
@@ -1893,6 +2176,7 @@ def _selftest() -> int:
         ok("reach_invent_fresh_node_unaffected", move_policy(fresh16, 100.0) == MOVE_NATIVE_HAMMER)
     finally:
         del _os16.environ["ZTARE_LEANMILL_REACH_INVENT"]
+        _os16.environ.pop("ZTARE_LEANMILL_MOVE_ROUTER", None)   # restore the default-ON router for later tests
 
     # --- Test 17: STRATEGIST MOVES (specialize/generalize) — stuck-gated, env-flagged, parity ---
     import os as _os17
@@ -1914,9 +2198,9 @@ def _selftest() -> int:
             ok("corroborate_offered_before_falsify",
                move_policy(_stuck("tactic_failed"), 100.0) == MOVE_CORROBORATE)
         finally:
-            del _os17.environ["ZTARE_LEANMILL_FALSIFY"]
+            _os17.environ["ZTARE_LEANMILL_FALSIFY"] = "0"   # hermetic: default-ON now
     finally:
-        del _os17.environ["ZTARE_LEANMILL_CORROBORATE"]
+        _os17.environ["ZTARE_LEANMILL_CORROBORATE"] = "0"   # hermetic: default-ON now
     ok("corroborate_default_off_not_offered", move_policy(_stuck("tactic_failed"), 100.0) == MOVE_DEFER)
     # (a3) WITNESS TRANSPORT: gate-triggered (computable ∃) + flag-on + native ALREADY tried ⇒ offered before
     # the LLM moves; default-off ⇒ not offered; not eligible (∀ goal) ⇒ not offered even when flagged.
@@ -1934,7 +2218,7 @@ def _selftest() -> int:
         _ab = DagNode("ab", "sub_goal", "theorem t : ∀ n : ℕ, n = n := by sorry"); _ab.moves_tried = [MOVE_NATIVE_HAMMER]
         ok("witness_transport_gate_rejects_abstract", move_policy(_ab, 100.0) != MOVE_WITNESS_TRANSPORT)
     finally:
-        del _os17.environ["ZTARE_LEANMILL_WITNESS_TRANSPORT"]
+        _os17.environ["ZTARE_LEANMILL_WITNESS_TRANSPORT"] = "0"   # hermetic: default-ON now
     # (b) GENERALIZE: flag on + INDUCTION-STALL signal ⇒ offered (only after the menu is exhausted).
     _os17.environ["ZTARE_LEANMILL_GENERALIZE"] = "1"
     try:
@@ -1948,7 +2232,7 @@ def _selftest() -> int:
         ok("generalize_not_before_menu_exhausted",
            move_policy(_fresh, 100.0) == MOVE_NATIVE_HAMMER)
     finally:
-        del _os17.environ["ZTARE_LEANMILL_GENERALIZE"]
+        _os17.environ["ZTARE_LEANMILL_GENERALIZE"] = "0"   # hermetic: default-ON now
     # (e) SPECIALIZE: flag on ⇒ offered as the last-resort rung on a stuck node (no signal required).
     _os17.environ["ZTARE_LEANMILL_SPECIALIZE"] = "1"
     try:
@@ -1960,7 +2244,7 @@ def _selftest() -> int:
             ok("generalize_preferred_over_specialize",
                move_policy(_stuck("unsolved_goals"), 100.0) == MOVE_GENERALIZE)
         finally:
-            del _os17.environ["ZTARE_LEANMILL_GENERALIZE"]
+            _os17.environ["ZTARE_LEANMILL_GENERALIZE"] = "0"   # hermetic: default-ON now
         # (g) RUNG PATH: a runner that returns rung=True on SPECIALIZE ⇒ root resolves to the typed `rung`
         # outcome (NOT closed, NOT exact_gap) and NEVER mints a closure.
         def runner_rung(node: DagNode, move: str, budget: float) -> MoveResult:
@@ -1977,7 +2261,7 @@ def _selftest() -> int:
            and res17["root_status"] != "closed")
         ok("rung_not_counted_as_closed_or_gap", res17["closed_or_exact_gap"] is False)
     finally:
-        del _os17.environ["ZTARE_LEANMILL_SPECIALIZE"]
+        _os17.environ["ZTARE_LEANMILL_SPECIALIZE"] = "0"   # hermetic: default-ON now
     # (h) PARITY (whole-search): with NO flags, the same stuck-runner search DEFERs to exact_gap, byte-for-byte
     # the pre-strategist behaviour (the rung path is unreachable without the flag).
     def runner_rung_off(node: DagNode, move: str, budget: float) -> MoveResult:
@@ -1985,6 +2269,93 @@ def _selftest() -> int:
     res17b = run_governed_dag_search({}, "theorem t : G := by", runner_rung_off, max_moves=12,
                                      move_budget_units=100.0)
     ok("strategist_off_search_no_rung", res17b["root_status"] != "rung")
+
+    # ── (L) LUBY RESTARTS (#116) — pure sequence + restart wiring + default-off parity ──
+    from ztare.common.timeouts import luby as _luby
+    ok("luby_canonical_1..15",
+       [_luby(i) for i in range(1, 16)] == [1, 1, 2, 1, 1, 2, 4, 1, 1, 2, 1, 1, 2, 4, 8])
+    # property: luby(2^k - 1) == 2^(k-1) (the powers-of-two peaks), and every value is a power of two
+    ok("luby_peak_property", all(_luby((1 << k) - 1) == (1 << (k - 1)) for k in range(1, 8)))
+    ok("luby_restart_unit_scales", _luby_restart_unit(10.0, 1) == 10.0
+       and _luby_restart_unit(10.0, 7) == 40.0 and _luby_restart_unit(10.0, 0) >= 10.0)
+
+    # A runner that NEVER closes ⇒ the search makes no audited progress ⇒ stalls. With a SMALL move budget and
+    # Luby ON, the search must REFILL (luby_restart events appear) and run MORE moves than the OFF baseline,
+    # which exhausts the small budget and stops. Both are SOUND: the runner never closes, so neither arm mints
+    # a closure (root stays exact_gap) — Luby only buys more exploration windows, never a false win.
+    def _runner_stuck(node: DagNode, move: str, budget: float) -> MoveResult:
+        return MoveResult(move=move, kernel_clean=False, mnc_passed=False, error_class="tactic_failed")
+    # OFF baseline (byte-parity): no restarts, budget depletes once, search stops on stall/exhaustion.
+    _os_h.environ.pop("ZTARE_LEANMILL_LUBY_RESTARTS", None)
+    _os_h.environ["ZTARE_DAG_STALL_PATIENCE"] = "0"   # disable the adaptive break so the run is budget-bounded
+    res_luby_off = run_governed_dag_search({}, "theorem t : G := by", _runner_stuck,
+                                           max_moves=200, move_budget_units=4.0)
+    ok("luby_off_no_restarts", res_luby_off["luby_restarts"] == 0
+       and not any(e.get("event") == "luby_restart" for e in res_luby_off["trace"]))
+    ok("luby_off_root_open_no_false_closure", res_luby_off["root_status"] != "closed")
+    _moves_off = res_luby_off["moves_made"]
+    # ON: same stuck runner + small budget, but restarts refill the window so MORE moves run before the
+    # max_moves/restart-cap backstop ends it. The restart cap bounds it (can't loop forever).
+    _os_h.environ["ZTARE_LEANMILL_LUBY_RESTARTS"] = "1"
+    _os_h.environ["ZTARE_LEANMILL_LUBY_RESTART_PATIENCE"] = "2"
+    _os_h.environ["ZTARE_LEANMILL_LUBY_MAX_RESTARTS"] = "3"
+    res_luby_on = run_governed_dag_search({}, "theorem t : G := by", _runner_stuck,
+                                          max_moves=200, move_budget_units=4.0)
+    ok("luby_on_restarts_fire", res_luby_on["luby_restarts"] >= 1
+       and any(e.get("event") == "luby_restart" for e in res_luby_on["trace"]))
+    ok("luby_on_runs_more_moves_than_off", res_luby_on["moves_made"] > _moves_off)
+    ok("luby_on_respects_restart_cap", res_luby_on["luby_restarts"] <= 3)
+    ok("luby_on_no_false_closure", res_luby_on["root_status"] != "closed")
+    _os_h.environ.pop("ZTARE_LEANMILL_LUBY_RESTARTS", None)
+    _os_h.environ.pop("ZTARE_LEANMILL_LUBY_RESTART_PATIENCE", None)
+    _os_h.environ.pop("ZTARE_LEANMILL_LUBY_MAX_RESTARTS", None)
+    _os_h.environ.pop("ZTARE_DAG_STALL_PATIENCE", None)
+
+    # ── (S) INTERNAL-STANDARD SPIKING (#116) — known-answer probe + dead-apparatus detection + parity ──
+    ok("spike_probe_is_known_closeable_target",
+       spike_probe().goal_text == SPIKE_GOAL_TEXT and spike_probe().goal_text != "")
+    ok("spike_closed_true_on_ratified",
+       spike_closed(MoveResult(move="m", kernel_clean=True, mnc_passed=True)) is True)
+    ok("spike_closed_false_on_dead", spike_closed(MoveResult(move="m", kernel_clean=False, mnc_passed=False))
+       is False and spike_closed(None) is False)
+
+    # A LIVE apparatus: the runner closes the spike (and any real move). Spikes register LIVE, apparatus_live
+    # stays True, and (parity) the spike does NOT spend budget or count toward moves_made.
+    def _runner_live(node: DagNode, move: str, budget: float) -> MoveResult:
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by trivial")
+    _os_h.environ["ZTARE_LEANMILL_SPIKE"] = "1"
+    _os_h.environ["ZTARE_LEANMILL_SPIKE_EVERY"] = "1"
+    res_spike_live = run_governed_dag_search(
+        {"decomposition": [{"kind": "sub_goal", "goal_text": "a"}, {"kind": "sub_goal", "goal_text": "b"}]},
+        "root", _runner_live, max_moves=10, move_budget_units=100.0)
+    ok("spike_live_registers", res_spike_live["spikes"]["done"] >= 1
+       and res_spike_live["spikes"]["live"] == res_spike_live["spikes"]["done"]
+       and res_spike_live["spikes"]["dead"] == 0)
+    ok("spike_live_apparatus_live_true", res_spike_live["apparatus_live"] is True)
+
+    # A DEAD apparatus: the runner closes a REAL move BUT fails the known-answer standard (the dead-instrument
+    # signature: a probe that no longer parses/compiles). The spike must CATCH it — dead>0, apparatus_live
+    # False, and a `spike` event with live=False in the trace. This is the whole point: a silent 0/N becomes a
+    # LOUD inadmissibility flag.
+    def _runner_dead_on_spike(node: DagNode, move: str, budget: float) -> MoveResult:
+        if node.goal_text == SPIKE_GOAL_TEXT:           # the standard fails to close ⇒ apparatus dead
+            return MoveResult(move=move, kernel_clean=False, mnc_passed=False, error_class="parse_error")
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by ok")
+    res_spike_dead = run_governed_dag_search(
+        {"decomposition": [{"kind": "sub_goal", "goal_text": "a"}, {"kind": "sub_goal", "goal_text": "b"}]},
+        "root", _runner_dead_on_spike, max_moves=10, move_budget_units=100.0)
+    ok("spike_dead_caught", res_spike_dead["spikes"]["dead"] >= 1
+       and res_spike_dead["apparatus_live"] is False)
+    ok("spike_dead_trace_event",
+       any(e.get("event") == "spike" and e.get("live") is False for e in res_spike_dead["trace"]))
+    _os_h.environ.pop("ZTARE_LEANMILL_SPIKE", None)
+    _os_h.environ.pop("ZTARE_LEANMILL_SPIKE_EVERY", None)
+
+    # PARITY: with SPIKE off, no spike is injected (done==0) and apparatus_live is vacuously True.
+    res_spike_off = run_governed_dag_search({}, "theorem t : G := by", _runner_live,
+                                            max_moves=5, move_budget_units=100.0)
+    ok("spike_off_no_injection", res_spike_off["spikes"]["done"] == 0
+       and not any(e.get("event") == "spike" for e in res_spike_off["trace"]))
 
     # (i) A=B CONTROL ARM (random over the SAME strategist set): the master-discriminator's Arm B.
     # With both flags + RANDOM mode on, a stuck node returns SOME enabled strategist move regardless of
@@ -2008,12 +2379,42 @@ def _selftest() -> int:
             _seen.add(move_policy(_n, 100.0))
         ok("abtest_random_covers_both_moves", {MOVE_SPECIALIZE, MOVE_GENERALIZE} <= _seen)
     finally:
-        for _k in ("ZTARE_LEANMILL_SPECIALIZE", "ZTARE_LEANMILL_GENERALIZE",
-                   "ZTARE_LEANMILL_STRATEGIST_RANDOM", "ZTARE_LEANMILL_STRATEGIST_SEED"):
+        # SPECIALIZE/GENERALIZE are default-ON now ⇒ restore the suite's hermetic "0", NOT unset (a pop would
+        # fall back to default-on and break the flags-off parity re-confirm below).
+        _os17.environ["ZTARE_LEANMILL_SPECIALIZE"] = "0"
+        _os17.environ["ZTARE_LEANMILL_GENERALIZE"] = "0"
+        for _k in ("ZTARE_LEANMILL_STRATEGIST_RANDOM", "ZTARE_LEANMILL_STRATEGIST_SEED"):
             _os17.environ.pop(_k, None)
     # (j) PARITY re-confirm: after the A=B env is cleared, a stuck node DEFERs again (no leakage).
     ok("strategist_env_cleared_defers_again", move_policy(_stuck("unsolved_goals"), 100.0) == MOVE_DEFER)
 
+    # (k) AGENTIC LADDER (A): agent-first demotes cold_shot/frontier to the non-agent fallback. A node with
+    # native+warm tried picks cold_shot under the FULL cascade, but conjecture under the agent-first ladder.
+    _al = DagNode("al", "sub_goal", "g"); _al.moves_tried = [MOVE_NATIVE_HAMMER, MOVE_CLAUDE_WARM]
+    _os_h.environ["ZTARE_LEANMILL_FULL_CASCADE"] = "1"
+    ok("full_cascade: native+warm tried → cold_shot next (legacy ladder)",
+       move_policy(_al, 100.0, defer_threshold=0.2) == MOVE_COLD_SHOT)
+    _os_h.environ.pop("ZTARE_LEANMILL_FULL_CASCADE", None)   # agent-first (AGENT_TOOLS default-on)
+    ok("agentic ladder: cold_shot/frontier demoted → conjecture next (agent-first)",
+       move_policy(_al, 100.0, defer_threshold=0.2) == MOVE_CONJECTURE)
+    _os_h.environ["ZTARE_LEANMILL_AGENT_TOOLS"] = "0"   # no agent ⇒ the full cascade returns (fallbacks available)
+    ok("no-agent: cold_shot fallback returns when AGENT_TOOLS off",
+       move_policy(_al, 100.0, defer_threshold=0.2) == MOVE_COLD_SHOT)
+    _os_h.environ.pop("ZTARE_LEANMILL_AGENT_TOOLS", None)
+
+    if _sledge_save is None:
+        _os_h.environ.pop("ZTARE_LEANMILL_SLEDGEHAMMER", None)
+    else:
+        _os_h.environ["ZTARE_LEANMILL_SLEDGEHAMMER"] = _sledge_save
+    if _cascade_save is None:
+        _os_h.environ.pop("ZTARE_LEANMILL_FULL_CASCADE", None)
+    else:
+        _os_h.environ["ZTARE_LEANMILL_FULL_CASCADE"] = _cascade_save
+    for _k, _v in _exec_save.items():
+        if _v is None:
+            _os_h.environ.pop(_k, None)
+        else:
+            _os_h.environ[_k] = _v
     print()
     if failures:
         print(f"SELFTEST FAILED: {len(failures)} failing — {failures}")

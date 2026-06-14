@@ -4,7 +4,7 @@
 The GP-128 post-ship adversarial debate (2026-04-23) found that the
 damage-signal channel was a pipe with nothing feeding it — the Matzinger
 frame was half-implemented. This module provides the first two auto-emitters
-the debate identified as load-bearing:
+the debate identified as decision-critical:
 
 1. `check_mandate_drift(session, mandate_path)` — at session entry, compares
    the current mandate file hash to the hash stored in the session's

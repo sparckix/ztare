@@ -18,7 +18,7 @@ Three sub-gates when fully implemented:
      proof > 500 tactical lines, require machine-authored sketch whose
      structure corresponds 1-to-1 to proof structure. Not just a summary.
   3. Adversarial 30-min reviewer persona (BLOCKED on persona infrastructure):
-     simulated reviewer with 30-min budget must reconstruct load-bearing
+     simulated reviewer with 30-min budget must reconstruct decision-critical
      moves from the sketch. Failure → unsurveyable.
 
 STATUS
@@ -132,7 +132,7 @@ def adversarial_reviewer_persona_check(
     sketch_path: Optional[Path],
     reviewer_budget_minutes: int = 30,
 ) -> dict[str, Any]:
-    """Simulated 30-min reviewer persona must reconstruct load-bearing moves
+    """Simulated 30-min reviewer persona must reconstruct decision-critical moves
     from the sketch. Blocked on persona-invocation protocol.
     """
     return {

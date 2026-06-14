@@ -9,8 +9,8 @@ provider was originally registered at priority 9999 (render last) on
 recency-bias grounds. Empirically this did not fire GP-180 — the
 mutator (gpt-5.5) read the worked example but kept submitting plain
 PARAMETRIC_FORM, capping at 50 each iter. Moving to priority 25
-(right after `contract_rules` at 20, before `path_b_promotion_floor`
-at 30) so the contract is load-bearing first context, not optional
+(right after `contract_rules` at 20, before `variational_promotion_floor`
+at 30) so the contract is decision-critical first context, not optional
 afterthought. Compressed ~3× to keep the briefing budget in check.
 """
 from __future__ import annotations
@@ -19,14 +19,14 @@ from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingPro
 
 
 _WORKED_EXAMPLES = r"""
-GP-180 LAGRANGIAN-DERIVATION CONTRACT — load-bearing for path-b promotion
+GP-180 LAGRANGIAN-DERIVATION CONTRACT — decision-critical for variational promotion
 =========================================================================
-This rubric has `enable_lagrangian_derivation: true`. Path-a (refit a
-closed-form PARAMETRIC_FORM) is exhausted on this substrate; the cage
+This rubric has `enable_lagrangian_derivation: true`. A plain
+closed-form PARAMETRIC_FORM refit is exhausted on this substrate; the cage
 caps every closed-form refit at 50 via R20–R24 (effective-K leak) or
-PPN. The ONLY path to clear that cap is to declare an action principle,
+PPN. The declaration that can clear that cap is an action principle,
 let sympy derive the closed form, and let SciPy fit only the surviving
-dimensional constants. PARAMETRIC_FORM is the LEGACY/FALLBACK path on
+dimensional constants. PARAMETRIC_FORM is the legacy/fallback contract on
 this substrate this iter.
 
 CONTRACT (declare these alongside the legacy PARAMETRIC_FORM):
@@ -146,9 +146,9 @@ class LagrangianWorkedExampleProvider(BriefingProvider):
     """Inject the GP-180 contract + three worked Lagrangians."""
 
     name = "lagrangian_worked_example"
-    # Priority 25 — between contract_rules (20) and path_b_promotion_floor (30).
+    # Priority 25 — between contract_rules (20) and variational_promotion_floor (30).
     # Repositioned 2026-04-28 after iter 1-2 telemetry showed priority 9999
-    # (last) was being read but ignored. Loading it as load-bearing first
+    # (last) was being read but ignored. Loading it as decision-critical first
     # context, not afterthought.
     priority = 25
 
@@ -167,15 +167,15 @@ class LagrangianWorkedExampleProvider(BriefingProvider):
         return _COMPACT_RECAP
 
 
-# Iter-2+ schema. All load-bearing fields preserved (LAGRANGIAN syntax,
+# Iter-2+ schema. All decision-critical fields preserved (LAGRANGIAN syntax,
 # the two failure modes, three worked Lagrangians as one-liners, the
 # contract checklist). Saves ~4k chars / iter from iter 2 onward.
 _COMPACT_RECAP = r"""
 GP-180 Lagrangian — recap (full prose in iter-1 briefing)
 =========================================================
-Path-a (PARAMETRIC_FORM refit) caps at 50 via R20–R24/PPN. The path
+A plain PARAMETRIC_FORM refit caps at 50 via R20–R24/PPN. The route
 above 50 is GP-180: declare an action principle, sympy derives the
-closed form, SciPy fits dimensional constants only.
+closed form, and SciPy fits dimensional constants only.
 
 ```
 CONTRACT (declare alongside legacy PARAMETRIC_FORM):

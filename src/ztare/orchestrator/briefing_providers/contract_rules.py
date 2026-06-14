@@ -13,7 +13,7 @@ Total cost saving on a 6-iter run: ~9k × 5 = 45k chars / ~11k tokens of
 input, plus the corresponding reasoning tokens. The teaching is upstream;
 once the mutator has seen it, the gates (downstream) enforce compliance.
 
-Priority 20 — renders first; before path_b_promotion_floor (30),
+Priority 20 — renders first; before variational_promotion_floor (30),
 lagrangian_worked_example (25), VerifiedAxioms (50), ForcedReframe (130),
 ColdLLM (150).
 """
@@ -22,6 +22,12 @@ from __future__ import annotations
 from pathlib import Path
 
 from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from src.ztare.orchestrator.submission_path_helpers import requires_i_model_submission
+
+
+def _declared_rubric_mode(rubric: dict) -> str:
+    """Return the explicit primary rubric mode, if the rubric declares one."""
+    return str(rubric.get("rubric_mode", "") or "").strip().lower()
 
 
 class ContractRulesProvider(BriefingProvider):
@@ -98,11 +104,36 @@ class ContractRulesProvider(BriefingProvider):
                             break
                         except Exception:
                             continue
-            require_i_model = bool(rubric.get("require_i_model_in_submission", True))
-            rubric_mode = rubric.get("rubric_mode", "newton")
+            require_i_model = requires_i_model_submission(rubric)
+            rubric_mode = _declared_rubric_mode(rubric)
+            mode_label = rubric_mode or "legacy_unspecified"
             denylist_str = (
                 ", ".join(f"`{t}`" for t in denylist_terms) if denylist_terms else "(none)"
             )
+            if require_i_model:
+                contract_body = (
+                    "  required_signature : def I_model(features|d, params=None) -> float  [required=True]\n"
+                    "  imports            : stdlib only — math, re, itertools, collections. NO numpy/scipy/pandas/pint/sympy.\n"
+                    "  injected_primitives: sigmoid, where, erf (auto-inserted at file top)\n"
+                    "  required_decls     : MODEL_PARAMS, PARAMETER_NAMES, INIT_RANGE, and ONE OF (PARAMETRIC_FORM | LAGRANGIAN+PREDICTION)\n"
+                    "  invariant_search    : LAGRANGIAN+Q_VARIABLES+BACKGROUND+PREDICTION → GP-180 sympy auto-derives PARAMETRIC_FORM\n"
+                    "\n"
+                    "PARAMETRIC_FORM grammar (R1 rejects):\n"
+                    "  reject pseudo-code   : IF/WHEN/GIVEN/THEN  → use ternary (A if cond else B)\n"
+                    "  reject Greek symbols : α β γ π ω           → use ASCII (alpha, beta, ...)\n"
+                    "  reject inline notes  : (8 params), K=5     → move to PARAMETER_NAMES\n"
+                    "  reject bare ids      : d, regime           → use features['key']\n"
+                    "  reject hidden params : params.get('a', 0.34) in PARAMETRIC_FORM → use params['a']; defaults belong in I_model only\n"
+                    "  reject statements    : = / return / def    → expressions only\n"
+                    "  reject unicode arrows: → ⇒                 → use ==, >=, etc.\n"
+                    "  accept scope         : features[k], params[k], math primitives, sigmoid/where/erf\n"
+                )
+            else:
+                contract_body = (
+                    "  required_signature : none [required=False]\n"
+                    "  imports            : stdlib only — math, re, itertools, collections. NO numpy/scipy/pandas/pint/sympy.\n"
+                    "  suite_shape        : plain Python assertions; no I_model/PARAMETRIC_FORM/LAGRANGIAN/MODEL_PARAMS\n"
+                )
             return (
                 "## Apparatus Contract Rules — recap (lossless schema, full prose in iter-1 briefing)\n\n"
                 "```\n"
@@ -110,23 +141,9 @@ class ContractRulesProvider(BriefingProvider):
                 f"  → any occurrence → score 0 via global_named_import_check\n"
                 f"\n"
                 f"test_model.py contract:\n"
-                f"  required_signature : def I_model(features|d, params=None) -> float  [required={require_i_model}]\n"
-                f"  imports            : stdlib only — math, re, itertools, collections. NO numpy/scipy/pandas/pint/sympy.\n"
-                f"  injected_primitives: sigmoid, where, erf (auto-inserted at file top)\n"
-                f"  required_decls     : MODEL_PARAMS, PARAMETER_NAMES, INIT_RANGE, and ONE OF (PARAMETRIC_FORM | LAGRANGIAN+PREDICTION)\n"
-                f"  invariant_search    : LAGRANGIAN+Q_VARIABLES+BACKGROUND+PREDICTION → GP-180 sympy auto-derives PARAMETRIC_FORM\n"
+                f"{contract_body}"
                 f"\n"
-                f"PARAMETRIC_FORM grammar (R1 rejects):\n"
-                f"  reject pseudo-code   : IF/WHEN/GIVEN/THEN  → use ternary (A if cond else B)\n"
-                f"  reject Greek symbols : α β γ π ω           → use ASCII (alpha, beta, ...)\n"
-                f"  reject inline notes  : (8 params), K=5     → move to PARAMETER_NAMES\n"
-                f"  reject bare ids      : d, regime           → use features['key']\n"
-                f"  reject hidden params : params.get('a', 0.34) in PARAMETRIC_FORM → use params['a']; defaults belong in I_model only\n"
-                f"  reject statements    : = / return / def    → expressions only\n"
-                f"  reject unicode arrows: → ⇒                 → use ==, >=, etc.\n"
-                f"  accept scope         : features[k], params[k], math primitives, sigmoid/where/erf\n"
-                f"\n"
-                f"Mode: {rubric_mode}"
+                f"Mode: {mode_label}"
                 + ("  → secondary observable + falsifying observation required in thesis" if rubric_mode == "newton" else "")
                 + "\n"
                 "```\n"
@@ -153,8 +170,8 @@ class ContractRulesProvider(BriefingProvider):
                     except Exception:
                         continue
 
-        require_i_model = bool(rubric.get("require_i_model_in_submission", True))
-        rubric_mode = rubric.get("rubric_mode", "newton")
+        require_i_model = requires_i_model_submission(rubric)
+        rubric_mode = _declared_rubric_mode(rubric)
         is_qualitative = (
             not bool(rubric.get("enable_fit_primitive", True))
             and rubric.get("fit_score_mode") == "none"
@@ -230,7 +247,8 @@ class ContractRulesProvider(BriefingProvider):
 
         # Section 4 — mode reminder (one-liner)
         if is_qualitative:
-            lines.append("### Mode: kepler (qualitative)")
+            mode_label = "kepler" if rubric_mode == "kepler" else "qualitative (legacy unspecified)"
+            lines.append(f"### Mode: {mode_label}")
             lines.append("Thesis prose is the deliverable. test_model.py can be a stub.")
             lines.append("")
         elif rubric_mode == "newton":

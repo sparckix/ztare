@@ -53,7 +53,7 @@ REQUIRED_SUBSTRATE_META_KEYS: tuple[str, ...] = (
 
 VALID_SUBSTRATE_CLASSES: frozenset[str] = frozenset({
     "1d", "nd_features", "time_series", "audit", "literature",
-    # Panel-added classes (2026-04-25 night gp158 audit synthesis):
+    # Panel-added classes (2026-04-25 gp158 audit synthesis):
     "proof_target",            # Lean / formal-proof substrates (GP-122, GP-139)
     "closed_form_constant",    # PSLQ integer-relation discovery (GP-145)
     "time_series_chaotic",     # subset of time_series with chaotic dynamics (Wasserstein-persistence)
@@ -431,7 +431,7 @@ class Cage:
     def dispatch_and_run(
         self, substrate: Any, candidate: Any
     ) -> tuple[EngagementMatrix, dict[str, Any]]:
-        """Phase 3c authoritative dispatch (GP-157 v5.0 — 2026-04-25 night).
+        """Phase 3c authoritative dispatch (GP-157 v5.0 — 2026-04-25).
 
         Computes the engagement matrix (same as `dispatch`), then for each
         gate that engaged, invokes `gate.run(substrate, candidate)` and

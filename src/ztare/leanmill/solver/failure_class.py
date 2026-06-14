@@ -27,19 +27,40 @@ _APPARATUS_STOP_CUES = (
 
 
 def classify_failure(*, error_tail: str = "", returncode: "int | None" = None,
-                     stop_reason: str = "", conjecture_enabled: "bool | None" = None) -> dict:
-    """Returns {class: 'apparatus'|'math'|'unknown', error_class, reason}. Order matters: a budget/
-    timeout stop or a gated-off decompose move are apparatus REGARDLESS of the error text (the run never
-    got the chance to fail on the merits)."""
+                     stop_reason: str = "", conjecture_enabled: "bool | None" = None,
+                     iso_route_enabled: "bool | None" = None,
+                     governance_rejections: int = 0) -> dict:
+    """Returns {class: 'apparatus'|'math'|'unknown'|'cheat_caught', error_class, reason}. Order matters: a
+    budget/timeout stop, or a gap with NO decompose path enabled at all, is apparatus REGARDLESS of the error
+    text (the run never got the chance to fail on the merits). `governance_rejections` = this run's
+    close-attempts governance did NOT ratify; when >0 it is the DOMINANT story (the leaf kept trying to launder,
+    governance kept refusing) — surfacing it stops the generic `other_error`/budget summary from OBSCURING the
+    anti-laundering gate."""
+    import os as _os
     sl = proof_state_signal(returncode, error_tail or "")
     ec = sl.get("error_class", "other_error")
     sr = (stop_reason or "").lower()
+    # CORRECTED 2026-06-12: "recursion never ran" requires NO decompose path. The agent-planner
+    # `route_and_solve` (ZTARE_LEANMILL_ISO_ROUTE, DEFAULT-ON) recurses + composite-ratifies REGARDLESS of the
+    # legacy `governed_dag_search` MOVE_CONJECTURE (ZTARE_CONJECTURE_DECOMPOSE, default-off). The old branch
+    # branded EVERY gap apparatus whenever CONJECTURE_DECOMPOSE was off — false once route_and_solve went
+    # default-on (it WAS recursing). Infer iso_route from the env when the caller does not pass it.
+    if iso_route_enabled is None:
+        iso_route_enabled = _os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0"
+    if governance_rejections > 0:
+        # the anti-laundering gate FIRED (possibly several times) during the search; even if the run then hit budget, the
+        # headline is "governance blocked N laundered/non-assembling closures", NOT "toolchain/other_error".
+        return {"class": "cheat_caught", "error_class": "governance_blocked_closes",
+                "reason": f"governance did NOT ratify {governance_rejections} close-attempt(s) this run "
+                          f"(governance refused laundered/non-assembling closures); the non-closure is HONEST, "
+                          f"not a toolchain error"}
     if any(c in sr for c in _APPARATUS_STOP_CUES):
         return {"class": "apparatus", "error_class": ec,
                 "reason": f"controller stop = {stop_reason!r} (budget/timeout cut-off, not a math refutation)"}
-    if conjecture_enabled is False:
+    if conjecture_enabled is False and iso_route_enabled is False:
         return {"class": "apparatus", "error_class": ec,
-                "reason": "decompose/recurse move GATED OFF (ZTARE_CONJECTURE_DECOMPOSE!=1) — recursion never ran"}
+                "reason": "NO decompose path enabled (ISO_ROUTE off AND CONJECTURE_DECOMPOSE off) — recursion "
+                          "never ran; the gap is apparatus, not a math dead-end"}
     if ec == "parse_error":
         # the leaf produced syntactically invalid Lean: NOT a toolchain artifact (apparatus would launder
         # it as "re-run with more budget/gate") and NOT a confirmed math dead-end (math would over-claim
@@ -64,9 +85,12 @@ def _selftest() -> int:
     # budget/timeout stop ⇒ apparatus (even with a math-looking error)
     ok("budget stop → apparatus",
        classify_failure(error_tail="unsolved goals\n⊢ P", stop_reason="move_budget_units_exhausted")["class"] == "apparatus")
-    # decompose gated off ⇒ apparatus
-    ok("gated-off decompose → apparatus",
-       classify_failure(error_tail="unsolved goals", conjecture_enabled=False)["class"] == "apparatus")
+    # NO decompose path (BOTH off) ⇒ apparatus (recursion never ran)
+    ok("both decompose paths off → apparatus",
+       classify_failure(error_tail="unsolved goals", conjecture_enabled=False, iso_route_enabled=False)["class"] == "apparatus")
+    # conjecture off BUT iso_route ON (the default) ⇒ recursion DID run ⇒ classify on the merits (math), NOT apparatus
+    ok("conjecture off + iso_route on → classified on merits (math), not no-recursion apparatus",
+       classify_failure(error_tail="unsolved goals", conjecture_enabled=False, iso_route_enabled=True)["class"] == "math")
     # toolchain/scope error ⇒ apparatus
     ok("unknown identifier → apparatus",
        classify_failure(error_tail="error: unknown identifier 'foo'")["class"] == "apparatus")

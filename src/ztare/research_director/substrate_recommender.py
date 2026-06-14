@@ -227,7 +227,7 @@ Output the JSON now.
 # ---------- LLM call ------------------------------------------------------- #
 
 
-def call_gemini(prompt: str, model: str = DEFAULT_MODEL) -> str:
+def _call_gemini_api(prompt: str, model: str = DEFAULT_MODEL) -> str:
     import google.generativeai as genai  # type: ignore
 
     api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -245,7 +245,19 @@ def call_gemini(prompt: str, model: str = DEFAULT_MODEL) -> str:
     return res.text
 
 
-# ---------- Path B integration: G5 stall extraction + matcher pairing ----- #
+def call_recommender_model(prompt: str, model: str = DEFAULT_MODEL) -> str:
+    from src.ztare.common.dispatch_model import dispatch_call_text
+
+    response = dispatch_call_text(
+        "substrate_recommender",
+        prompt,
+        llm_response_call=lambda p: _call_gemini_api(p, model=model),
+        timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "300")),
+    )
+    return response.text
+
+
+# ---------- Literature-transfer integration: G5 stall extraction + matcher pairing ----- #
 #
 # Per the panel-reviewed contract additions (GP-215 second-pass section), the
 # stall description fed to the matcher must come ONLY from a candidate's
@@ -654,11 +666,11 @@ def run(
         out.write_text("# Recommender prompt (operator runs this manually)\n\n" + prompt)
         return prompt, out
     else:
-        text = call_gemini(prompt, model=model)
+        text = call_recommender_model(prompt, model=model)
 
     payload = json.loads(text)
 
-    # Path B integration: attach meta-arc recommendations to each candidate.
+    # Literature-transfer integration: attach meta-arc recommendations to each candidate.
     # Advisory only — predicted_class still wins for routing; the matcher's
     # role is to surface adversary moves and stall-anchor matches at the
     # operator decision moment.

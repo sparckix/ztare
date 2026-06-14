@@ -32,6 +32,8 @@ from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any
 
+from ztare.common.timeouts import timeout_s   # central budget factory (stdlib-only; safe for the ztare.formal layer)
+
 
 class SubstrateDeadError(RuntimeError):
     """Raised when calibration fails — the substrate cannot be trusted to produce an
@@ -116,7 +118,7 @@ def toolchain_match(repl_bin: str | Path, project_dir: str | Path) -> tuple[bool
 
 
 def _closed_clean(pl, code: str) -> bool:
-    r = pl.check(code, timeout=120)
+    r = pl.check(code, timeout=timeout_s("substrate_liveness"))
     return bool(r.get("success")) and not (r.get("errors") or []) and not (r.get("sorries") or [])
 
 
@@ -150,13 +152,13 @@ def calibrate(pl, corpus_probe: str | None = None,
                                 f"(substrate not alive / Mathlib not loaded)")
 
     # negative control: a false goal must NOT be reported closed
-    rf = pl.check(_NEGATIVE_FALSE[1], timeout=120)
+    rf = pl.check(_NEGATIVE_FALSE[1], timeout=timeout_s("substrate_liveness"))
     rep.false_goal_rejected = not (rf.get("success") and not (rf.get("errors") or []))
     if not rep.false_goal_rejected:
         rep.failures.append("verifier FALSE-ACCEPT: a known-false goal was reported closed")
 
     # sorry-gate control: a sorry proof's axioms MUST contain sorryAx (gate detects sorry)
-    rs = pl.check(_SORRY_GATE[1], timeout=120)
+    rs = pl.check(_SORRY_GATE[1], timeout=timeout_s("substrate_liveness"))
     rep.sorry_gate_detects = "sorryAx" in (rs.get("output") or "")
     if not rep.sorry_gate_detects:
         rep.failures.append("closure gate BLIND: #print axioms did not surface sorryAx "

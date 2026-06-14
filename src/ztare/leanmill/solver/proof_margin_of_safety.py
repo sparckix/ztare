@@ -137,6 +137,50 @@ def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path 
             _record(rep, "load_bearing", "strengthen",
                     {"all_hypotheses_load_bearing": len(hyps)})
 
+    # 4. CONCLUSION DISCRIMINATION (differential re-verification, iso-run transport 2026-06-12): rebuild
+    #    the target with the NEGATED conclusion and the SAME proof body, recompile. A genuine proof is
+    #    conclusion-SPECIFIC: it must FAIL on ¬(conclusion) ("differential_confirmed"). If the same body
+    #    ALSO closes the negation in the same context ("zero_differential"), the hypotheses are
+    #    CONTRADICTORY — the closure is kernel-true but VACUOUS, the shape laundering hides in. The
+    #    battery only MEASURES (advisory, per this module's contract); the governance layer owns the
+    #    credit decision (solve_adhoc treats zero_differential as a blocker — the one perturbation
+    #    verdict that is sound to reject on, since both G and ¬G proving ⇒ inconsistent context.)
+    if not deep or lean_root is None:
+        _record(rep, "conclusion_discrimination", "inconclusive", {"note": "deep/lake not run"})
+    else:
+        try:
+            from ztare.leanmill import lean_source as _ls
+            from ztare.leanmill.solver.conjecture import _top_level_colon
+            from ztare.gates.v33_preflight_risk_detector import _compile_probe as _cp_disc
+            sig = _ls.extract_signature(lean_source, target_name) or ""
+            j = _top_level_colon(sig) if sig else -1
+            body = _ls.split_at_proof(block)[1][2:] if block else ""   # proof body, binder-safe ([2:] drops `:=`)
+            if j < 0 or not body.strip():
+                _record(rep, "conclusion_discrimination", "inconclusive",
+                        {"note": "could not split signature/body via canonical parsers"})
+            else:
+                binders, concl = sig[:j].strip(), sig[j + 1:].strip()
+                neg_block = (f"theorem {target_name}_negdisc {binders} : ¬ ({concl}) :={body}"
+                             if binders else f"theorem {target_name}_negdisc : ¬ ({concl}) :={body}")
+                neg_src = lean_source.replace(block, neg_block, 1)
+                r = _cp_disc(neg_src, lean_root, "MoS_discrimination", timeout_s)
+                if r is True:
+                    _record(rep, "conclusion_discrimination", "weaken",
+                            {"differential": "zero",
+                             "interpretation": "the SAME proof body closes the NEGATED conclusion in the "
+                                               "same context ⇒ hypotheses contradictory (vacuous context) "
+                                               "or conclusion-independent automation — laundering-shaped"})
+                elif r is False:
+                    _record(rep, "conclusion_discrimination", "strengthen",
+                            {"differential": "confirmed",
+                             "interpretation": "negated conclusion does NOT close — the proof is "
+                                               "conclusion-specific (the discriminating differential)"})
+                else:
+                    _record(rep, "conclusion_discrimination", "inconclusive",
+                            {"note": "perturbed compile timed out / errored — never block on inconclusive"})
+        except Exception as e:  # noqa: BLE001 — a measuring leg must never break the battery
+            _record(rep, "conclusion_discrimination", "inconclusive", {"error": repr(e)[:140]})
+
     return rep.to_dict()
 
 
@@ -173,14 +217,12 @@ def rung_tighten(rung_block: str, rung_conclusion: str, sname: str, lean_root: "
     prompt = _RUNG_TIGHTEN_PROMPT.format(bname=bname, rung=rung_block, pre=pre)
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
-        raw = default_dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = default_dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception:  # noqa: BLE001
         return "", "", bname
 
-    def _fenced(after: str) -> str:
-        m = re.search(rf"{after}\s*```(?:lean)?\s*\n(.*?)```", raw, re.DOTALL)
-        return m.group(1).strip() if m else ""
-    bound, implies = _fenced("BOUND:"), _fenced("IMPLIES:")
+    from ztare.leanmill.solver.agent_output import fenced_block
+    bound, implies = fenced_block(raw, "BOUND:"), fenced_block(raw, "IMPLIES:")
     if not bound:
         return "", "", bname
     # Gate: B sorry-free + (B ⇒ G') typechecks + B's conclusion ≠ the rung's. Passing goal_conclusion =
@@ -213,12 +255,15 @@ def _selftest() -> int:
     ok("does NOT flag the plain type-param (n : ℕ) / (G : RationalFn) as Prop",
        not any(re.fullmatch(r"\(n : ℕ\)", g.strip()) for g in names) and not any("RationalFn" in g for g in names))
 
-    # static battery (deep off): soundness + surveyability run; load_bearing inconclusive.
+    # static battery (deep off): soundness + surveyability run; deep legs inconclusive.
     src = "import Mathlib\n\ntheorem t (n : ℕ) (hn : 0 < n) : n + 0 = n := by simp\n"
     rep = proof_margin_of_safety(src, "t", lean_root=None, deep=False)
     ok("battery is ADVISORY (advisory=True, never a reject)", rep["advisory"] is True)
-    ok("runs soundness + surveyability + load_bearing legs", set(rep["tests"]) == {"soundness", "surveyability", "load_bearing"})
+    ok("runs soundness + surveyability + load_bearing + discrimination legs",
+       set(rep["tests"]) == {"soundness", "surveyability", "load_bearing", "conclusion_discrimination"})
     ok("load_bearing inconclusive when deep off", rep["tests"]["load_bearing"]["verdict"] == "inconclusive")
+    ok("discrimination inconclusive when deep off",
+       rep["tests"]["conclusion_discrimination"]["verdict"] == "inconclusive")
     ok("overall is one of robust/fragile_advisory/inconclusive", rep["overall"] in ("robust", "fragile_advisory", "inconclusive"))
 
     # deep leg: monkeypatch the compile probe so a hypothesis trivialization 'still compiles' ⇒ decorative=weaken.
@@ -228,6 +273,23 @@ def _selftest() -> int:
     try:
         rep2 = proof_margin_of_safety(src, "t", lean_root=Path("/tmp"), deep=True)
         ok("deep load-bearing flags decorative hypotheses (weaken)", rep2["tests"]["load_bearing"]["verdict"] == "weaken")
+        # everything-compiles ⇒ the NEGATED conclusion also "closes" ⇒ ZERO differential (the blocker class)
+        _d2 = rep2["tests"]["conclusion_discrimination"]
+        ok("discrimination: negation also closing ⇒ zero differential (weaken + detail flag)",
+           _d2["verdict"] == "weaken" and _d2["detail"].get("differential") == "zero")
+        # name-tagged mock: load-bearing probes "compile", the DISCRIMINATION probe FAILS ⇒ confirmed
+        v33._compile_probe = lambda src_, root_, name_, t_: name_ != "MoS_discrimination"
+        rep3 = proof_margin_of_safety(src, "t", lean_root=Path("/tmp"), deep=True)
+        _d3 = rep3["tests"]["conclusion_discrimination"]
+        ok("discrimination: negation failing ⇒ differential confirmed (strengthen)",
+           _d3["verdict"] == "strengthen" and _d3["detail"].get("differential") == "confirmed")
+        ok("negated probe built by canonical parsers (¬-wrapped conclusion, same body)",
+           "negdisc" not in src)   # original source untouched (replace built a NEW string)
+        # timeout/None ⇒ inconclusive, NEVER a weaken (never block on inconclusive)
+        v33._compile_probe = lambda *a, **k: None
+        rep4 = proof_margin_of_safety(src, "t", lean_root=Path("/tmp"), deep=True)
+        ok("discrimination: probe timeout ⇒ inconclusive (never blocks)",
+           rep4["tests"]["conclusion_discrimination"]["verdict"] == "inconclusive")
     finally:
         v33._compile_probe = _orig
 

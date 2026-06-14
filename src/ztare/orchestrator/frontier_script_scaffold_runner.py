@@ -255,17 +255,23 @@ def run_frontier_script_meta_cold_shot(
     else:
         if llm_call is None:
             from src.ztare.common.llm_runtime import LLMRuntime
+            from src.ztare.common.dispatch_model import dispatch_call_text
 
             runtime = LLMRuntime()
-            response = runtime.call_text(
+            response = dispatch_call_text(
+                "frontier_script_scaffold",
                 prompt,
-                model_id=model_id,
-                fallback_model_ids=(),
-                config={"reasoning_effort": "xhigh"} if model_id.startswith("gpt-5") else None,
-                max_tokens=max_tokens,
-                retries=1,
-                timeout_seconds=timeout_seconds,
-                request_label="frontier_script_scaffold",
+                llm_response_call=lambda p: runtime.call_text(
+                    p,
+                    model_id=model_id,
+                    fallback_model_ids=(),
+                    config={"reasoning_effort": "xhigh"} if model_id.startswith("gpt-5") else None,
+                    max_tokens=max_tokens,
+                    retries=1,
+                    timeout_seconds=timeout_seconds,
+                    request_label="frontier_script_scaffold",
+                ),
+                timeout_seconds=int(timeout_seconds),
             )
         else:
             response = llm_call(prompt)

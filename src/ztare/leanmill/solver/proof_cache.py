@@ -26,9 +26,10 @@ _WS_RE = re.compile(r"\s+")
 
 
 def normalize_statement(statement: str) -> str:
+    from ztare.leanmill.lean_source import signature_before_proof
     s = _NAME_RE.sub("theorem _", (statement or "").strip())
-    s = s.split(":=")[0]                       # drop any trailing `:= …` body/sorry
-    return _WS_RE.sub(" ", s).strip()
+    s = signature_before_proof(s)              # drop the proof `:=` body, BINDER-SAFE (not first `:=`,
+    return _WS_RE.sub(" ", s).strip()          # which truncated a `let k := 5` hypothesis — same key bug)
 
 
 # --- EQUIVALENCE-keyed normalization (default OFF; ZTARE_LEANMILL_EQUIV_CACHE=1) -----------------

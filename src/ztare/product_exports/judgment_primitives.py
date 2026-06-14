@@ -180,7 +180,7 @@ JUDGMENT_PRIMITIVES_V1: tuple[JudgmentPrimitive, ...] = (
 NON_PRIMITIVE_RUNTIME_CONCEPTS_V1: tuple[NonPrimitiveRuntimeConcept, ...] = (
     NonPrimitiveRuntimeConcept(
         key="topological_pivot",
-        title="Topological Pivot",
+        title="Structural Pivot",
         role="runtime_meta_decision",
         description=(
             "Decision that the current framing is wrong and that the search should "

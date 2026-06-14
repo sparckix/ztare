@@ -322,7 +322,7 @@ def _view_create() -> None:
 
     description = st.text_area(
         "description (what you want to accomplish)",
-        placeholder="Run a ZTARE experiment on a quadratic substrate to test Component B...",
+        placeholder="Run a ZTARE experiment on a quadratic substrate to test negative-space extraction...",
         height=80,
         key="nl_desc",
     )

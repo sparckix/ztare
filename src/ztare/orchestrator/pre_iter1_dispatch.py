@@ -1,6 +1,6 @@
 """Pre-iter-1 Cage dispatch — extracted from autoresearch_loop.
 
-Part of the Phase 4g modular split (task #65). Orchestrator
+Part of the pre-iteration modular split. Orchestrator
 holds the once-per-run pre-iter-1 hooks. Today: GP-169 cold-LLM Erdős
 seed. Future: any other once-before-iter-1 work that today lives
 inline in autoresearch_loop.

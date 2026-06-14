@@ -4,7 +4,7 @@ Hardens the GP-023 Phase 1 attack surface (judge softening on hard
 numeric thresholds) by binding declared charter gates to the project's
 ``test_model.py`` harness rather than to thesis prose.
 
-Design (load-bearing per GP-030 Turns 1–3):
+Design (decision-critical per GP-030 Turns 1–3):
 
 - The charter is the source of truth for *which* gates exist.
 - ``test_model.py`` is the source of truth for *whether* a gate passes.

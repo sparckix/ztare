@@ -13,7 +13,7 @@ What this module provides:
 
 - a parser that reads a markdown seam file and returns a structured
   view of its debate log (turns per agent, turn ordering, the sentinel
-  that marks a turn as adding no new load-bearing claim)
+  that marks a turn as adding no new decision-critical claim)
 - a convergence rule that is deliberately minimal and fails open to the
   operator (min 2 turns per agent, both agents' most-recent turn carries
   the sentinel, else pending; at hard turn cap the state escalates to
@@ -41,7 +41,7 @@ from pathlib import Path
 
 SENTINEL_NO_NEW_CLAIM = "<!-- FINDINGS_DEBATE: no_new_load_bearing_claim -->"
 """Marker an agent includes anywhere in a turn body to signal that the
-turn adds no new load-bearing architectural claim the other agent has
+turn adds no new decision-critical architectural claim the other agent has
 not already addressed. This is the explicit-flag exit channel Codex
 Turn 2 required; it is not an LLM judge."""
 

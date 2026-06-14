@@ -25,12 +25,12 @@ _HOLDOUT_SEED = 137
 
 
 def f_true(x1: float, x2: float) -> float:
-    """Clean GT — used by Component C and internal checks."""
+    """Clean GT — used by residual diagnostics and internal checks."""
     return _f_true_clean(x1, x2)
 
 
 def f_dominant(x1: float, x2: float) -> float:
-    """Dominant phase — re-export for Component C."""
+    """Dominant phase — re-export for residual diagnostics."""
     from src.ztare.substrates.gp080_tacrolimus_gt import f_dominant as _fd
     return _fd(x1, x2)
 

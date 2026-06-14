@@ -164,7 +164,7 @@ def _make_run_callback(module_path: str, function_name: str) -> Callable[[Any, A
 def _build_gates() -> list[Gate]:
     return [
         # ── Universal gates (run on every substrate) ─────────────────
-        # bridge_scope_contract: RETIRED per panel synthesis 2026-04-25 night.
+        # bridge_scope_contract: RETIRED per panel synthesis 2026-04-25.
         # Three perspectives (Chaos, Physics, Mathematician) flagged the
         # forbidden-marker blacklist as brittle code-smell with no v5.0
         # signal. Module remains importable; revive when bridge-discovery
@@ -221,7 +221,7 @@ def _build_gates() -> list[Gate]:
             dependencies=[],
         ),
         # residual_norm: classified as UTILITY (not registered as Gate)
-        # per panel synthesis 2026-04-25 night. Module remains importable;
+        # per panel synthesis 2026-04-25. Module remains importable;
         # downstream gates (e.g. coordinate_invariance, asymptotic) call it
         # as a helper, not as a separately-dispatched gate.
 

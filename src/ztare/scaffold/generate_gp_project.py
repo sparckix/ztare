@@ -241,11 +241,11 @@ def _write_evidence_txt(proj_dir: Path, slug: str) -> None:
     content = f"""\
 # Evidence for {slug}
 # ─────────────────────────────────────────────────────────────────
-# PATH A (manual): Add observations directly below this header.
+# Manual curation lane: add observations directly below this header.
 #   Format: one observation per line, e.g.:
 #   [Source 2024] Claim text here. [Strength: high/medium/low]
 #
-# PATH B (compile): Drop source documents into projects/{slug}/raw/
+# Compiled-evidence lane: drop source documents into projects/{slug}/raw/
 #   then run: make evidence-compile PROJECT={slug} MODEL=gpt4.1
 #   The compiler will produce a structured evidence.txt from your raw docs.
 #   Use raw/source_type_map.json to type each document

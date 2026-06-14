@@ -199,7 +199,7 @@ def generate_and_store_reply(role_id: str, max_pending: int = 5) -> Optional[dic
         f"The principal sent you message(s) via the Orbit chat pane. "
         f"This is dialog (not a task dispatch). Reply concisely (≤200 words), "
         f"directly, conversational tone. If the message asks you to DO something "
-        f"that requires real work (run a substrate, commit a charter patch, etc.), "
+        f"that requires substantive task execution (run a substrate, commit a charter patch, etc.), "
         f"acknowledge and point them at the official task/gate surface. "
         f"Don't pretend to have done work you haven't.\n\n"
         f"Your role mandate (excerpt):\n{mandate_excerpt}\n\n"

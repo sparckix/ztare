@@ -144,7 +144,7 @@ class ColdShotSeedBriefingProvider(BriefingProvider):
         )
 
         lines: list[str] = []
-        lines.append("## 🌌 GP-184 Cold-Shot Structural Seed — HARD DIRECTIVE\n")
+        lines.append("## GP-184 Cold-Shot Structural Seed\n")
         lines.append(
             "A separate pre-iter-1 LLM call (model: "
             f"`{model_id}`{' [cached]' if cache_hit else ' [fresh]'}) was "
@@ -153,15 +153,15 @@ class ColdShotSeedBriefingProvider(BriefingProvider):
             "It returned a Lagrangian-derivable structural seed.\n"
         )
         lines.append(
-            "**This is your iter-1 anchor.** Two equally-acceptable submission paths "
-            "(labels match the FORMATTING block at the end of the prompt):\n\n"
-            "**PATH A (legacy / direct closed-form) — Submit PARAMETRIC_FORM directly.** "
+            "**This is your iter-1 anchor.** Two equally acceptable submission contracts "
+            "(labels match the formatting block at the end of the prompt):\n\n"
+            "**Parametric model declaration — submit PARAMETRIC_FORM directly.** "
             "Declare `PARAMETRIC_FORM = \"...\"` and `PARAMETER_NAMES = [...]` in your "
             "test_model.py and skip the LAGRANGIAN. Use this when you have a hand-derived "
             "closed form already, or when the Lagrangian's E-L is non-trivial to solve in "
             "closed form, or when you are explicitly rejecting the cold-shot Lagrangian "
             "with stated reason in thesis prose.\n\n"
-            "**PATH B (Newton-mode / Lagrangian, PREFERRED for invariant_search rubric).** "
+            "**Variational/Lagrangian declaration (preferred for invariant_search rubrics).** "
             "Declare `LAGRANGIAN = \"...\"`, `Q_VARIABLES = [...]`, `BACKGROUND = [...]`, "
             "`PARAMETER_NAMES = [...]`, and `PREDICTION = \"...\"` in your test_model.py. "
             "The GP-180 lagrangian_derivation primitive will (i) compute Euler-Lagrange "
@@ -169,15 +169,15 @@ class ColdShotSeedBriefingProvider(BriefingProvider):
             "background features, (iii) substitute into PREDICTION to derive the closed-form "
             "g_obs(features, params) automatically, and (iv) generate the apparatus-ready "
             "PARAMETRIC_FORM for you. You DO NOT need to manually solve the perturbative "
-            "inversion — the apparatus will. This is the Newton-mode path; use it when the "
+            "inversion — the apparatus will. Use this when the "
             "physics is cleaner expressed as an action principle than as a fitted polynomial. "
-            "When in doubt for invariant_search, prefer PATH B because the cold-shot already "
+            "When in doubt for invariant_search, prefer the variational/Lagrangian declaration because the cold-shot already "
             "provides a Lagrangian seed and the apparatus's sympy auto-inversion sidesteps "
             "the cubic-Cardano / Padé-asymptote pitfalls that have killed prior iters.\n\n"
             "Apparatus-feature nests (chained tanh/asinh/exp without grounding in a stated "
             "Lagrangian) will be R1-struck under the action-principle contract regardless "
             "of which path you choose.\n\n"
-            "**MUTUALLY EXCLUSIVE.** Pick PATH A or PATH B, not both. If you declare "
+            "**MUTUALLY EXCLUSIVE.** Pick one declaration form, not both. If you declare "
             "LAGRANGIAN you do NOT need PARAMETRIC_FORM (GP-180 generates it). If you "
             "declare PARAMETRIC_FORM you do NOT need LAGRANGIAN (you've hand-derived "
             "the closed form yourself). Submitting both means you are hedging because "

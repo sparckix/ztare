@@ -4,7 +4,7 @@ Mirrors Layer 1's substrate-ABI design (see `contract_table.py`) for the
 evidence.txt parseable shape. Eliminates the gp159-class implicit-format
 sniffing that the markdown-table parser fix patched only by accident.
 
-Per panel synthesis (Task #67 Expert 4 + the architectural review):
+Per panel synthesis from the evidence-contract architectural review:
   - One stable enumeration of evidence shapes (Linux syscall-table discipline).
   - Per-format parsers, dispatched via registry.
   - Validation at seal time: declared format + actual data shape.

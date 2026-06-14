@@ -1,4 +1,4 @@
-"""GP-168 Forced REFRAME briefing provider — task #141 wire-in.
+"""GP-168 Forced REFRAME briefing provider.
 
 Reads `workspace/eval_history.jsonl` + last submission's PARAMETRIC_FORM,
 runs `forced_reframe.detect_forced_reframe_trigger`, and when triggered
@@ -6,7 +6,7 @@ renders a MANDATORY-DISJOINT-ARCHITECTURE block into the next iter's
 mutator briefing. Alien-math alternatives are pulled from the GP-164
 seam if available.
 
-Per Phase-4g shape: provider-level integration only — no inline if-block
+Provider-level integration only: no inline if-block
 in autoresearch_loop. Provider self-decides via reading iter telemetry.
 """
 from __future__ import annotations
@@ -74,7 +74,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
             return False
         # 2026-04-27 hotfix: REFRAME fires from iter 1 (no stagnation
         # streak required) when EITHER:
-        #   (a) tier_3_universal_law_target.active=true (path-b target —
+        #   (a) tier_3_universal_law_target.active=true (variational target —
         #       framings should be visible immediately, not after 3
         #       iters of bridge replay), OR
         #   (b) substrate_domain is declared (the operator has wired
@@ -119,14 +119,14 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         # determines REFRAME vs REFINE. Gaming caps (R20-R24) → fire
         # REFRAME (escape attractor). Honest caps (PPN, generalization
         # gap, holdout miss) → render "Refine Prior Winner" instead —
-        # the form is structurally engaging path-b correctly and the
+        # the form is structurally engaging the variational contract and the
         # cap signals a refinement target, not an architectural pivot.
         if eh:
             last_kind = self._last_cap_kind(eh)
             if last_kind in ("generalization_gap", "physics_violation", "holdout_miss"):
                 return self._render_refine_prior_winner(ctx, eh, last_kind)
 
-        # 2026-04-27 hotfix: substrates with path-b target OR substrate_domain
+        # 2026-04-27 hotfix: substrates with variational target OR substrate_domain
         # surface REFRAME framings from iter 1 (eval_history empty).
         target = (ctx.rubric or {}).get("tier_3_universal_law_target") or {}
         domain = (ctx.rubric or {}).get("substrate_domain")
@@ -136,10 +136,10 @@ class ForcedReframeBriefingProvider(BriefingProvider):
                 return ""
             domain = (ctx.rubric or {}).get("substrate_domain", "")
             lines: list[str] = []
-            lines.append("## REFRAME — Iter-1 Panel of Candidate Framings (path-b target)")
+            lines.append("## REFRAME — Iter-1 Panel of Candidate Framings (variational target)")
             lines.append("")
             lines.append(
-                f"This substrate has a path-b promotion target active. The apparatus "
+                f"This substrate has a variational-promotion target active. The apparatus "
                 f"surfaces the panel-recommended framings below from iter 1 so you "
                 f"can engage them directly instead of converging to the verified-"
                 f"axiom basin and learning the cap mechanism through R20-R24 hits. "
@@ -212,7 +212,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
 
         Triggered when the most recent cap was an honest one (physics
         violation, generalization gap, holdout miss) — the form is
-        engaging path-b correctly and the apparatus's right move is to
+        engaging the variational contract and the apparatus's right move is to
         encourage the mutator to inherit and extend it, not pivot to a
         different architectural family.
 
@@ -279,10 +279,10 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         lines.append(
             f"**Most recent cap kind: `{last_kind}` ({kind_label})**. "
             f"This is an honest-form cap — the apparatus has detected "
-            f"that the prior submission engaged path-b correctly and "
+            f"that the prior submission engaged the variational contract and "
             f"the cap signals a *refinement target*, not an "
             f"architectural failure. Diversity-forcing mechanisms "
-            f"(REFRAME, Erdős re-query, topological pivot) are "
+            f"(REFRAME, Erdős re-query, structural pivot) are "
             f"SUPPRESSED for this iter — they would burn budget pivoting "
             f"away from a structurally-honest candidate."
         )
@@ -374,7 +374,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         # substrate_domain='modified_gravity', the loader returns
         # Lagrangian framings (chameleon, f(R), AQUAL, MOG, TeVeS)
         # instead of the default math-family framings. This makes
-        # REFRAME steer physics substrates toward path-b (Lagrangian
+        # REFRAME steer physics substrates toward variational/Lagrangian
         # derivation) instead of generic alien-math families.
         try:
             from src.ztare.orchestrator.alien_math_seam_loader import (

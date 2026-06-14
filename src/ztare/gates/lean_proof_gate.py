@@ -120,6 +120,17 @@ class LeanProofGateResult:
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
 
+    def to_claim_audit(self, *, claim_nl: str = "", claim_formal: str = "", mnc_passed: bool | None = None):
+        """Distill the legible CLAIM AUDIT from this gate result — the math-side consumer of the
+        substrate-neutral `common.claim_audit`. PURE distillation of the organ verdicts already on this
+        dataclass (compiled / gate_passed / axiom_audit_passed / anti_laundering_passed / v33_organ_flags /
+        extra_axioms / theorem_statement_hashes); it re-runs NOTHING. `mnc_passed` is the matched-negative-
+        control verdict the solver gate runs alongside (not carried here) — pass it when known. Returns a
+        `ClaimAudit` (render with `claim_audit.render_markdown`)."""
+        from ztare.common.claim_audit import from_lean_gate_result
+        return from_lean_gate_result(self.to_dict(), claim_nl=claim_nl,
+                                     claim_formal=claim_formal, mnc_passed=mnc_passed)
+
 
 # ---------------------------------------------------------------------------
 # Step 1: extract
@@ -495,8 +506,8 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
     """THE ONE governance anti-laundering kernel (renamed 2026-06-06 from the cryptic
     `_run_v33_anti_laundering`; a back-compat alias is kept at module end). This is the single canonical
     organ stack EVERY solving mode routes through — never re-implement a reduced per-mode gate battery
-    beside it (that frankenstein is exactly what the `proof_cage` experiment proved out and what this
-    rename exists to discourage). Organs: vacuity / gold-name-verbatim / single-lemma-exact /
+    beside it (the `proof_cage` experiment showed that parallel gate stacks
+    drift and disagree). Organs: vacuity / gold-name-verbatim / single-lemma-exact /
     indirect-leakage / consequence-exposure / statement-integrity.
 
     Run the anti-laundering organs on the (already-compiled) Lean
@@ -576,7 +587,8 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
             detail["single_lemma_exact"] = {"shape": s}
             if s.get("single_lemma_exact_suspect"):
                 if deep_verify:
-                    v = sle.independent_exact_verify_rowfile(lean_source, ztare_proofs_root, timeout=70)
+                    from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: independent_verify defaults to the prior 70)
+                    v = sle.independent_exact_verify_rowfile(lean_source, ztare_proofs_root, timeout=timeout_s("independent_verify"))
                     detail["single_lemma_exact"]["verify"] = v
                     if v.get("single_lemma_exact_confirmed"):
                         flags.append("single_lemma_exact_confirmed")
@@ -592,7 +604,8 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
             detail["indirect_leakage"] = {"shape": s}
             if s.get("indirect_leakage_suspect"):
                 if deep_verify:
-                    v = ind.independent_verify(lean_source, s.get("closer_tactic"), ztare_proofs_root, timeout=70)
+                    from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: independent_verify defaults to the prior 70)
+                    v = ind.independent_verify(lean_source, s.get("closer_tactic"), ztare_proofs_root, timeout=timeout_s("independent_verify"))
                     detail["indirect_leakage"]["verify"] = v
                     if v.get("indirect_leakage_confirmed"):
                         flags.append("indirect_leakage_confirmed")
@@ -644,7 +657,17 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
             if not iv.ok:
                 flags.append("statement_altered_confirmed")
         except Exception as e:
-            detail["statement_integrity"] = {"error": str(e)}  # fail-OPEN on organ crash
+            # FAIL-CLOSED (soundness #84/F5, 2026-06-12; ZTARE_STATEMENT_INTEGRITY_FAILOPEN=1 reverts):
+            # statement_integrity is PURE-PYTHON (a decl-block parse, no Lean tooling), so a crash is a parser
+            # bug or ADVERSARIAL input crafted to crash the parser — NOT a tooling flake. Failing OPEN here would
+            # let such a probe BYPASS the def-alteration check, so treat an organ crash as a CONFIRMED suspect.
+            # (canonical_reelaboration still independently backstops the hijack class; this closes the one
+            # remaining pure-python fail-open. The Lean-recompile organs below stay fail-open — a compile-infra
+            # flake there is NOT adversarial.)
+            detail["statement_integrity"] = {"error": str(e)}
+            import os as _os_si
+            if _os_si.environ.get("ZTARE_STATEMENT_INTEGRITY_FAILOPEN") != "1":
+                flags.append("statement_integrity_error_confirmed")
 
     # canonical re-elaboration organ (2026-06-06): the airtight backstop for the WHOLE context-semantic-
     # hijack class (added instance / notation / macro / set_option that hijacks a verbatim statement — the

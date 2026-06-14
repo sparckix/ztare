@@ -48,7 +48,7 @@ MODE_HINTS = {
         ),
         "out_of_scope": [
             "broad strategic conclusions not required to test the mechanism",
-            "secondary forecasts or market sizing unless explicitly load-bearing",
+            "secondary forecasts or market sizing unless explicitly decision-critical",
             "adjacent mechanisms that are not needed for the core discriminator",
         ],
         "success_states": [
@@ -175,7 +175,7 @@ Before any run starts, name what an honest null result would look like — what 
 Required (any project):
 - **Obstruction class** — the named structural reason the positive claim might fail. Examples by project type:
   - *Quantitative*: "real-symmetric polynomial+arithmetic ansatz hits MSE-vs-CV Pareto"; "finite-prefix budget cannot inherit to infinite limit without a named LSC lemma"; "vocabulary narrows to <30% coverage on a held-out subfield"
-  - *Qualitative / strategic / business*: "the thesis depends on a load-bearing assumption that fails empirically (e.g., adoption rate < N)"; "the mechanism only fires under a regime our cohort doesn't represent"; "the proposed market segment behaves bimodally and median-reasoning misses the actual customer"
+  - *Qualitative / strategic / business*: "the thesis depends on a decision-critical assumption that fails empirically (e.g., adoption rate < N)"; "the mechanism only fires under a regime our cohort doesn't represent"; "the proposed market segment behaves bimodally and median-reasoning misses the actual customer"
 - **What we would learn from the null** — the structural finding the obstruction itself would constitute, distinct from "the experiment didn't work" or "the thesis doesn't hold." A pre-stated null shape converts a no-result run into a finding about *which* part of the search/argument space is empty.
 
 Optional (quantitative / sweep-based projects only):

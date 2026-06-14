@@ -12,6 +12,7 @@ from src.ztare.validator.core.mutation_contract import (
     MutationMismatchCode,
     MutationScopeDelta,
     MutationValidationRecord,
+    ThesisControlMode,
 )
 from src.ztare.validator.core.runner_selection import (
     CandidateScopeVerdict,
@@ -41,6 +42,7 @@ def build_runner_r3_fixture_cases() -> list[RunnerR3FixtureCase]:
         mismatch_code=MutationMismatchCode.CLEAN,
         declared_scope_delta=MutationScopeDelta.TEST_HARNESS,
         declared_claim_delta_type=ClaimDeltaType.NARROWING,
+        declared_thesis_control_mode=ThesisControlMode.EXPLOIT_CURRENT_THESIS,
         declared_primitive_invoked=None,
         declared_touched_artifacts=(MutationArtifact.TEST_MODEL_PY,),
         actual_touched_artifacts=(MutationArtifact.TEST_MODEL_PY,),

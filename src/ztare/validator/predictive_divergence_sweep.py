@@ -1,6 +1,6 @@
 """GP-076 Predictive Divergence Sweep.
 
-Breaks corrector degeneracy when Component C narrows the library to N
+Breaks corrector degeneracy when residual diagnostics narrow the library to N
 candidates that all achieve zero residual on visible data.
 
 Pipeline:
@@ -314,7 +314,7 @@ def run_sweep(
     Args:
         corrector_data: (v, corrector_value) pairs from visible evidence.
         f_true_corrector: callable(v) -> true corrector value (one-point query).
-        descriptor_forms: narrowed library forms (from Component C). None = full library.
+        descriptor_forms: narrowed library forms (from residual diagnostics). None = full library.
         v_max_visible: largest v in visible evidence.
         stagnation_count: consecutive iterations with no score improvement.
         run_length: total iterations in the run (for query budget).
@@ -446,7 +446,7 @@ def run_sweep(
 
 
 def backtest_sandbox_15_full_library() -> SweepResult:
-    """Scenario A: full library, no Component C filtering."""
+    """Scenario A: full library, no residual-diagnostics filtering."""
     def gt_corrector(v: int) -> float:
         return float(round(0.08 * v))
     corrector_data = [(v, gt_corrector(v)) for v in range(1, 17)]
@@ -462,7 +462,7 @@ def backtest_sandbox_15_full_library() -> SweepResult:
 
 
 def backtest_sandbox_15_component_c() -> SweepResult:
-    """Scenario B: Component C narrowed to non-smooth+monotone (7 forms).
+    """Scenario B: residual diagnostics narrowed to non-smooth+monotone (7 forms).
 
     GT is smooth but visible data looks step-like → GT excluded from
     narrowed set → sweep should exhaust and trigger Feynman Wall.
@@ -560,14 +560,14 @@ if __name__ == "__main__":
 
     # Scenario A: full library
     _print_step_by_step(
-        "SCENARIO A: Full library (no Component C filtering)",
+        "SCENARIO A: Full library (no residual-diagnostics filtering)",
         corrector_data, gt_corrector, forms=None,
     )
 
-    # Scenario B: Component C narrowed
+    # Scenario B: residual diagnostics narrowed
     narrowed = filter_by_descriptor(is_smooth=False, is_monotone=True)
     _print_step_by_step(
-        f"SCENARIO B: Component C narrowed ({len(narrowed)} non-smooth+monotone)",
+        f"SCENARIO B: residual diagnostics narrowed ({len(narrowed)} non-smooth+monotone)",
         corrector_data, gt_corrector, forms=narrowed,
     )
 
@@ -583,7 +583,7 @@ if __name__ == "__main__":
     if result_a.survivors:
         print(f"  Survivors: {[s.form.name for s in result_a.survivors]}")
 
-    print("\nScenario B (Component C narrowed):")
+    print("\nScenario B (residual diagnostics narrowed):")
     result_b = backtest_sandbox_15_component_c()
     print(f"  Status: {result_b.status}")
     print(f"  Message: {result_b.message}")
@@ -600,5 +600,5 @@ if __name__ == "__main__":
     print(f"  Scenario B: Library exhausted = {result_b.library_exhausted}")
     print(f"  Both outcomes are correct GP-076 behavior:")
     print(f"    A: Sweep breaks degeneracy, GT wins")
-    print(f"    B: Component C excluded GT → sweep exhausts → Feynman Wall fires")
+    print(f"    B: residual diagnostics excluded GT → sweep exhausts → Feynman Wall fires")
     print(f"{'=' * 72}")

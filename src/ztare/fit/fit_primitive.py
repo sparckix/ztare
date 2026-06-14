@@ -188,7 +188,7 @@ _ALLOWED_DIRECT_CALLS = frozenset({
 # ``eml((gamma*phi/psi)**q, math.e)`` to be reachable under the EML grammar.
 _EML_ONLY_CONSTANT_ATTRS = frozenset({"e", "pi"})
 
-# ``math_exp_only`` grammar (GP-061 Component B generalization target, sandbox_09
+# ``math_exp_only`` grammar (GP-061 negative-space generalization target, sandbox_09
 # RC step response): permits only the minimal set needed to express a
 # first-order exponential with real-valued prefactors. Forbids direct ``eml``
 # calls and all other ``math.*`` nonlinearities. Closes the charter contract

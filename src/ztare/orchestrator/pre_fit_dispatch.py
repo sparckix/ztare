@@ -1,6 +1,6 @@
 """Pre-fit Cage dispatch — extracted from autoresearch_loop.
 
-Part of the GP-157 §3a backport (Task #151). New PRE_FIT-phase gates
+Part of the GP-157 §3a backport. New PRE_FIT-phase gates
 register through the Cage and dispatch through this single entry-point
 rather than accreting inline if-blocks in autoresearch_loop.
 

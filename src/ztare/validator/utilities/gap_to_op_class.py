@@ -6,7 +6,7 @@ module returns the v5 op-class most-likely to repair it. The op-class is then
 injected into the next mutator iteration's prompt as an advisory directive
 (option B: stagnation-only, OR option A: every-iteration).
 
-This is the load-bearing core-engine integration of paper 5b's v5 universal
+This is the decision-critical core-engine integration of paper 5b's v5 universal
 vocabulary. NOT for ClearJudgment / mini-ztare (those are separate parallel
 work owned by other agents).
 
@@ -45,7 +45,7 @@ GAP_TO_OP_CLASS: dict[str, OpClassSuggestion] = {
         op_name="Extremal Method",
         suggestion_text=(
             "The current thesis fits in-distribution data but fails on extremes. Consider the "
-            "Extremal Method (broad_05): identify the load-bearing extremal configuration that, if "
+            "Extremal Method (broad_05): identify the decision-critical extremal configuration that, if "
             "handled, forces structural rigidity on the rest. Find the minimal counterexample or "
             "maximal configuration where the current thesis breaks; rebuild from that anchor."
         ),
@@ -109,7 +109,7 @@ GAP_TO_OP_CLASS: dict[str, OpClassSuggestion] = {
         suggestion_text=(
             "The current proof prices or observes the wrong object. Consider Generalization & "
             "Abstraction (core_02): replace the hidden/internal coordinate ledger with the "
-            "externally load-bearing observable class before scoring payoff. Define the topology, "
+            "externally decision-critical observable class before scoring payoff. Define the topology, "
             "atoms, and observable prices independently of the successful candidate, then rerun the "
             "claim inside that fixed broader observable space."
         ),
@@ -191,7 +191,7 @@ GAP_TO_OP_CLASS: dict[str, OpClassSuggestion] = {
             "(1) Generalization & Abstraction (core_02) — is the claim too narrow? "
             "(2) Decomposition & Recomposition (core_03) — is the argument monolithic? "
             "(3) Problem Reformulation & Reduction (core_01) — is there a cross-domain bridge? "
-            "(4) Extremal Method (broad_05) — is the load-bearing extremal case unhandled?"
+            "(4) Extremal Method (broad_05) — is the decision-critical extremal case unhandled?"
         ),
         rationale="Generic stagnation fallback when judge gap-type is unclassified",
     ),

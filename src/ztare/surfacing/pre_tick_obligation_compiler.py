@@ -102,11 +102,11 @@ def extract_features(goal: str) -> dict:
             "characterize the impossib", "rule out", "no such",
             "negative result", "sharply characterize the impossib",
             "exclude the")),
-        # this session's RCA mechanized: a load-bearing ARCHITECTURE /
+        # this session's RCA mechanized: a decision-critical ARCHITECTURE /
         # mechanism / design decision must get a cold cross-provider
         # generative pass, never self-simulated review.
         "load_bearing_arch_decision": any(k in g for k in (
-            "architecture", "design decision", "load-bearing decision",
+            "architecture", "design decision", "decision-critical decision",
             "which approach", "should we build", "mechanism choice",
             "spec decision", "redesign", "which mechanism")),
     }

@@ -107,7 +107,8 @@ def repair(source_text: str, target: str, *, project_dir: str, lake_bin: str,
     res = solve_adhoc(target, sorried, "", provider=provider, timeout_s=timeout_s,
                       substrate=substrate)
     r0 = (res.get("results") or [{}])[0]
-    repaired = r0.get("outcome") == "closed"
+    from ztare.leanmill.contracts.kernel import MoveResult
+    repaired = MoveResult.from_dict(r0).is_closed   # #49: the `outcome == "closed"` vocabulary, encoded ONCE
     new_body = (r0.get("proof_text") or "").strip()
     return {"target": target, "repaired": repaired,
             "already_compiles": False,

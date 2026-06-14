@@ -12,8 +12,8 @@ Why this is a module
 Before the extraction, ~150 lines of GP-180 logic lived inline in
 the autoresearch_loop's fit_primitive_features dispatch block. That
 file is already long and had been flagged for modular refactor.
-Adding more inline accretion would have re-introduced the spaghetti
-pattern. This module concentrates everything GP-180-related in one
+Adding more inline accretion would have re-introduced tangled dispatch
+logic. This module concentrates everything GP-180-related in one
 file with a clean function boundary; the autoresearch loop now calls
 it as a single line.
 
@@ -25,7 +25,7 @@ Result schema:
         substituted_form: Optional[str],   # the derived callable_src; None if no substitution
         substituted_python_code: Optional[str], # python_code with PARAMETRIC_FORM rewritten
         noether_kept: dict[str, str], # symmetry → invariant strings that survived non-degeneracy gate
-        telemetry: dict,              # path-adoption counters for iteration_telemetry
+        telemetry: dict,              # declaration-adoption counters for iteration_telemetry
         gaming_streak_emitted: bool,  # True iff noether_gaming_streak signal fired this iter
     )
 
@@ -228,7 +228,7 @@ def dispatch_gp180_lagrangian(
         except OSError:
             pass
 
-    # Path-adoption telemetry: same dual-write pattern. GP-183 phase A3.
+    # Declaration-adoption telemetry: same dual-write pattern. GP-183 phase A3.
     tel_payload = json.dumps(result.telemetry, indent=2)
     try:
         (workspace_dir / f"gp180_telemetry_iter_{iter_index_one_based:03d}.json").write_text(tel_payload)

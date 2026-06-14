@@ -38,7 +38,7 @@ from pathlib import Path
 # Primitives that produce a correction term decaying toward zero at large u.
 # These are candidates when the farther-tail gate fails because the model
 # overshoots or undershoots the true asymptote. Parameter prefix "tail_"
-# avoids collision with Component D's "d2_" prefix — the champion
+# avoids collision with the symbolic-regression "d2_" prefix — the champion
 # expression may already contain d2_a, d2_b, d2_c from a prior depth-2
 # composition; reusing those names would create duplicate assignments
 # in test_model.py and break the fit.

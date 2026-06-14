@@ -184,7 +184,7 @@ def primitive_for_bucket(reframe_type: str, taxonomy: ReframeTaxonomy) -> str | 
 
 
 QUALITATIVE_THESIS_TAXONOMY: ReframeTaxonomy = {
-    "path_b_honest_engagement": {
+    "literature_transfer_engagement": {
         "regex_patterns": [
             r"regression\s+to\s+(tool|labor[\s-]*economics|economic)\s+discourse",
             r"vanilla\s+labor\s+economics",
@@ -200,7 +200,7 @@ QUALITATIVE_THESIS_TAXONOMY: ReframeTaxonomy = {
         ],
         "jaccard_threshold": 0.42,
         "patch_target": "evidence",
-        "patch_template_fn": "_template_path_b_honest_engagement",
+        "patch_template_fn": "_template_literature_transfer_engagement",
         "primitive": PRIMITIVE_DERIVE,
     },
     "named_historical_retrodiction": {
@@ -277,7 +277,7 @@ QUALITATIVE_THESIS_TAXONOMY: ReframeTaxonomy = {
         "patch_template_fn": "_template_vocabulary_neutral_restate",
         "primitive": PRIMITIVE_DERIVE,
     },
-    "path_c_decomposition_forcing": {
+    "task_class_decomposition_forcing": {
         "regex_patterns": [
             r"single[\s-]*mode\s+(dogma|claim)",
             r"no\s+task[\s-]*class\s+(typology|decomposition)",
@@ -292,13 +292,13 @@ QUALITATIVE_THESIS_TAXONOMY: ReframeTaxonomy = {
         ],
         "jaccard_threshold": 0.42,
         "patch_target": "evidence",
-        "patch_template_fn": "_template_path_c_decomposition_forcing",
+        "patch_template_fn": "_template_task_class_decomposition_forcing",
         "primitive": PRIMITIVE_BOUND,
     },
     # Bucket #7 — added 2026-05-06 PM after run 1778093346 surfaced
     # measurement-fragility critiques that didn't fit any prior bucket.
     # The pattern: panel attacks the estimability/observability/auditability
-    # of the load-bearing parameters in the thesis (e.g., ε exception-rate,
+    # of the decision-critical parameters in the thesis (e.g., ε exception-rate,
     # δ invisibility-rate, audit-coverage fraction) — not the structural
     # claim itself, but whether the variables on which the claim depends
     # are reliably measurable in deployment.
@@ -322,7 +322,7 @@ QUALITATIVE_THESIS_TAXONOMY: ReframeTaxonomy = {
             "taxonomy blindness undercounts errors",
             "silent errors are not surfaced",
             "context-dependent validation is fragile",
-            "load-bearing variables are not reliably observable",
+            "decision-critical variables are not reliably observable",
             "audit coverage cannot be empirically bounded",
         ],
         "jaccard_threshold": 0.40,
@@ -979,12 +979,19 @@ def _llm_classify_fingerprint(
     )
     try:
         runtime = LLMRuntime()
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "charter_critic_fingerprint",
             prompt,
-            model_id=model_id,
-            timeout_seconds=float(rubric_data.get("fingerprint_classifier_timeout_seconds", 20.0)),
-            request_label="charter_critic_fingerprint_classifier",
-            retries=1,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=float(rubric_data.get("fingerprint_classifier_timeout_seconds", 20.0)),
+                request_label="charter_critic_fingerprint_classifier",
+                retries=1,
+            ),
+            timeout_seconds=int(float(rubric_data.get("fingerprint_classifier_timeout_seconds", 20.0))),
         )
         raw = (response.text or "").strip()
     except Exception:
@@ -1205,22 +1212,22 @@ def check_patch_expiry(project_dir: Path, current_run_id: str) -> list[dict[str,
 # Patch templates (light patches — deterministic prose)
 # ----------------------------------------------------------------------------
 
-def _template_path_b_honest_engagement(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
+def _template_literature_transfer_engagement(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
     body = (
-        "## REFRAME PRESSURE — Path B honest engagement (charter-critic GP-226)\n\n"
+        "## REFRAME PRESSURE — literature-transfer engagement (charter-critic GP-226)\n\n"
         "The panel has flagged regression to tool/labor-economics discourse "
-        "across recent iters. The thesis must explicitly engage charter Path B:\n\n"
-        "  Q: Is the load-bearing structural claim a genuine novel primitive of\n"
+        "across recent iters. The thesis must explicitly engage the literature-transfer alternative:\n\n"
+        "  Q: Is the decision-critical structural claim a genuine novel primitive of\n"
         "  human-AI interaction, OR is it the standard governance-of-automation\n"
         "  / principal-agent finding wearing AI-specific vocabulary?\n\n"
-        "If Path B (no novel primitive), name (a) the existing literature whose\n"
+        "If the claim is literature-transfer rather than a novel primitive, name (a) the existing literature whose\n"
         "results transfer wholesale, (b) the AI-specific quantitative regime-shift\n"
         "that distinguishes the case, (c) the structural property AI has that the\n"
-        "transferred-from substrate did not. Path B with these three components\n"
+        "transferred-from substrate did not. Literature-transfer with these three components\n"
         "is a positive finding and earns full credit on the Substitution-Survival\n"
-        "Gate per the rubric. Path B without them is regression."
+        "Gate per the rubric. Literature-transfer without them is regression."
     )
-    return ("evidence", "REFRAME PRESSURE — Path B", "append", body)
+    return ("evidence", "REFRAME PRESSURE — literature-transfer engagement", "append", body)
 
 
 def _template_named_historical_retrodiction(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
@@ -1232,7 +1239,7 @@ def _template_named_historical_retrodiction(project_slug: str, agg: dict, _spec:
         "and retrodict the relevant durability/snapback question for each.\n\n"
         "Required output structure per case:\n"
         "  CASE: <named historical instance, public-record>\n"
-        "  STRUCTURAL ANALOG: <how the substrate's load-bearing variable maps>\n"
+        "  STRUCTURAL ANALOG: <how the substrate's decision-critical variable maps>\n"
         "  RETRODICTION: <did the analog snap back / stabilize / drift / collapse>\n"
         "  IMPLICATION: <what this predicts for the substrate's durability claim>\n\n"
         "A thesis that lists fewer than five named cases or that treats the\n"
@@ -1247,7 +1254,7 @@ def _template_velocity_vs_level_disclosure(project_slug: str, agg: dict, _spec: 
     body = (
         "## REFRAME PRESSURE — velocity-vs-level disclosure (charter-critic GP-226)\n\n"
         "The thesis is level-bound to current capability and does not engage\n"
-        "near-future capability shifts that could dissolve the load-bearing\n"
+        "near-future capability shifts that could dissolve the decision-critical\n"
         "structural claim. The thesis MUST do EXACTLY ONE of:\n\n"
         "(a) DERIVE LEVEL-INVARIANCE — show the structural claim survives at\n"
         "    near-future capability levels with explicit derivation of which\n"
@@ -1267,10 +1274,10 @@ def _template_velocity_vs_level_disclosure(project_slug: str, agg: dict, _spec: 
 def _template_ui_affordance_specification(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
     body = (
         "Concrete output specification (charter-critic GP-226 patch). The "
-        "load-bearing claim must specify the concrete affordance / interface / "
+        "decision-critical claim must specify the concrete affordance / interface / "
         "operational shape at the grammar level — what an external party would "
         "actually build, see, or measure. Abstract category labels alone earn "
-        "partial credit only. For decomposed verdicts (Path C), specify per "
+        "partial credit only. For task-class decomposition, specify per "
         "sub-class. The 'concrete' threshold: a competent third party reading "
         "the spec could implement or measure it without further clarification."
     )
@@ -1281,7 +1288,7 @@ def _template_vocabulary_neutral_restate(project_slug: str, agg: dict, _spec: di
     body = (
         "## REFRAME PRESSURE — vocabulary-neutral restate (charter-critic GP-226)\n\n"
         "Panel critique recurred: the thesis smuggles a primitive in disguise.\n"
-        "The load-bearing structural property must be re-stated in vocabulary\n"
+        "The decision-critical structural property must be re-stated in vocabulary\n"
         "that does NOT presuppose the conclusion.\n\n"
         "Admissible vocabulary classes (by substrate):\n"
         "  - information theory (channel capacity, mutual information, error correction)\n"
@@ -1297,9 +1304,9 @@ def _template_vocabulary_neutral_restate(project_slug: str, agg: dict, _spec: di
     return ("charter", "VOCABULARY-NEUTRAL CLAUSE", "append", body)
 
 
-def _template_path_c_decomposition_forcing(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
+def _template_task_class_decomposition_forcing(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
     body = (
-        "## REFRAME PRESSURE — Path C decomposition forcing (charter-critic GP-226)\n\n"
+        "## REFRAME PRESSURE — task-class decomposition forcing (charter-critic GP-226)\n\n"
         "Panel critique recurred: single-mode dogma without task-class\n"
         "typology. The thesis must EITHER:\n\n"
         "(a) PROVE single-mode invariance — show the structural primitive is\n"
@@ -1314,7 +1321,7 @@ def _template_path_c_decomposition_forcing(project_slug: str, agg: dict, _spec: 
         "credit on the Multi-Mode Pareto Concession Gate. Single-mode dogma\n"
         "without defense earns zero."
     )
-    return ("evidence", "REFRAME PRESSURE — Path C decomposition", "append", body)
+    return ("evidence", "REFRAME PRESSURE — task-class decomposition", "append", body)
 
 
 def _template_parameter_estimability_fragility(project_slug: str, agg: dict, _spec: dict) -> tuple[str, str, str, str]:
@@ -1323,11 +1330,11 @@ def _template_parameter_estimability_fragility(project_slug: str, agg: dict, _sp
         "The panel is no longer attacking the structural claim. The panel is\n"
         "attacking the OBSERVABILITY of the variables the structural claim\n"
         "depends on. The thesis must engage this distinct critique:\n\n"
-        "For each load-bearing parameter in the thesis (exception rate, error\n"
+        "For each decision-critical parameter in the thesis (exception rate, error\n"
         "rate, invisibility rate, coverage fraction, calibration confidence,\n"
         "drift coefficient — whichever the substrate uses), the thesis MUST do\n"
         "ALL of the following:\n\n"
-        "(1) NAME the parameter and its role in the load-bearing argument.\n"
+        "(1) NAME the parameter and its role in the decision-critical argument.\n"
         "(2) STATE the proposed measurement protocol — what is sampled, by\n"
         "    whom, with what coverage assumption.\n"
         "(3) ENUMERATE failure modes of the protocol: silent errors, adversarial\n"
@@ -1351,9 +1358,9 @@ def _template_primitive_DERIVE(project_slug: str, agg: dict, _spec: dict) -> tup
     body = (
         "## REFRAME PRESSURE — DERIVE primitive (charter-critic GP-226)\n\n"
         "The panel has issued a critique that does not match a specific bucket\n"
-        "but clusters around the DERIVE primitive: the load-bearing structural\n"
+        "but clusters around the DERIVE primitive: the decision-critical structural\n"
         "claim is ASSERTED rather than DERIVED from neutral structure.\n\n"
-        "The thesis must, for the load-bearing claim:\n\n"
+        "The thesis must, for the decision-critical claim:\n\n"
         "(1) STRIP all proper nouns, vendor names, domain-specific vocabulary,\n"
         "    and presupposed primitives from the claim.\n"
         "(2) STATE the residual structural property in vocabulary from one of:\n"
@@ -1364,7 +1371,7 @@ def _template_primitive_DERIVE(project_slug: str, agg: dict, _spec: dict) -> tup
         "    into a different domain (e.g., human-AI → human-employee, or\n"
         "    cosmic-civilization → extinct-Earth-civilization) preserves the\n"
         "    derivation, the property is genuinely structural. If it breaks,\n"
-        "    name what specifically about the original domain is load-bearing.\n\n"
+        "    name what specifically about the original domain is decision-critical.\n\n"
         "A claim that survives strip+restate+derive earns the DERIVE primitive.\n"
         "A claim that requires the original vocabulary to be coherent has\n"
         "smuggled a primitive and earns zero on this pressure."
@@ -1376,17 +1383,17 @@ def _template_primitive_BOUND(project_slug: str, agg: dict, _spec: dict) -> tupl
     body = (
         "## REFRAME PRESSURE — BOUND primitive (charter-critic GP-226)\n\n"
         "The panel's critique clusters around the BOUND primitive: the\n"
-        "load-bearing claim is stated WITHOUT specifying the conditions,\n"
+        "decision-critical claim is stated WITHOUT specifying the conditions,\n"
         "scope, or range under which it holds. The panel reads this as\n"
         "implicit-universalism — the claim asserted as if it holds always,\n"
         "when it holds only under unstated conditions.\n\n"
         "The thesis must produce explicit conditional structure for every\n"
-        "load-bearing claim:\n\n"
+        "decision-critical claim:\n\n"
         "  if condition X then verdict V; if condition X' then verdict V'.\n\n"
-        "Specifically, for the load-bearing claim, name and bound:\n"
+        "Specifically, for the decision-critical claim, name and bound:\n"
         "(1) the CAPABILITY range over which it holds (e.g., 2026–2028, fails\n"
         "    above ~95% per-task-class reliability),\n"
-        "(2) the TASK-CLASS where it holds (Path C decomposition: which task\n"
+        "(2) the TASK-CLASS where it holds (task-class decomposition: which task\n"
         "    classes select the dominant mode? which fall outside scope?),\n"
         "(3) the POLICY/INSTITUTIONAL regime (e.g., regulatory-acceptance\n"
         "    floor, attestation-coverage threshold, liability framework),\n"
@@ -1403,9 +1410,9 @@ def _template_primitive_OBSERVE(project_slug: str, agg: dict, _spec: dict) -> tu
     body = (
         "## REFRAME PRESSURE — OBSERVE primitive (charter-critic GP-226)\n\n"
         "The panel's critique clusters around the OBSERVE primitive: the\n"
-        "load-bearing claim depends on variables/parameters that may not be\n"
+        "decision-critical claim depends on variables/parameters that may not be\n"
         "empirically tractable in the deployed regime.\n\n"
-        "For each load-bearing variable in the thesis:\n\n"
+        "For each decision-critical variable in the thesis:\n\n"
         "(1) NAME the variable and its role.\n"
         "(2) STATE whether the thesis treats it as observable/measurable,\n"
         "    bounded/estimable, or controllable/exogenous.\n"
@@ -1431,9 +1438,9 @@ def _template_endogeneity_reflexivity(project_slug: str, agg: dict, _spec: dict)
         "## REFRAME PRESSURE — endogeneity / reflexivity (charter-critic GP-226)\n\n"
         "The panel has identified a class of critique distinct from\n"
         "capability-shift or parameter-estimability: the thesis treats a\n"
-        "load-bearing CONTROL VARIABLE as exogenous when it is in fact\n"
+        "decision-critical CONTROL VARIABLE as exogenous when it is in fact\n"
         "ENDOGENOUS to the very interventions the thesis recommends.\n\n"
-        "For each load-bearing control variable in the thesis (regulatory\n"
+        "For each decision-critical control variable in the thesis (regulatory\n"
         "reversion hazard, adoption rate, trust calibration, audit acceptance,\n"
         "exception classification — substrate-specific), the thesis MUST:\n\n"
         "(1) NAME the control variable and its role in the structural argument.\n"
@@ -1462,7 +1469,7 @@ def _template_proof_anchor_resolution(project_slug: str, agg: dict, _spec: dict)
         "## REFRAME PRESSURE — proof anchor resolution (charter-critic GP-226)\n\n"
         "The panel has flagged unresolved or weak proof anchors. The next "
         "candidate must name only declarations that resolve in the current "
-        "workspace and must cite the file path for each load-bearing source.\n\n"
+        "workspace and must cite the file path for each decision-critical source.\n\n"
         "Required output for each proposed proof move:\n"
         "(1) TARGET: exact theorem/structure name being closed or simplified.\n"
         "(2) SOURCES: exact existing declarations used as premises, with paths.\n"
@@ -1572,12 +1579,12 @@ def _template_proof_secondary_observable(project_slug: str, agg: dict, _spec: di
 
 
 PATCH_TEMPLATE_REGISTRY = {
-    "_template_path_b_honest_engagement": _template_path_b_honest_engagement,
+    "_template_literature_transfer_engagement": _template_literature_transfer_engagement,
     "_template_named_historical_retrodiction": _template_named_historical_retrodiction,
     "_template_velocity_vs_level_disclosure": _template_velocity_vs_level_disclosure,
     "_template_ui_affordance_specification": _template_ui_affordance_specification,
     "_template_vocabulary_neutral_restate": _template_vocabulary_neutral_restate,
-    "_template_path_c_decomposition_forcing": _template_path_c_decomposition_forcing,
+    "_template_task_class_decomposition_forcing": _template_task_class_decomposition_forcing,
     "_template_parameter_estimability_fragility": _template_parameter_estimability_fragility,
     "_template_endogeneity_reflexivity": _template_endogeneity_reflexivity,
     "_template_proof_anchor_resolution": _template_proof_anchor_resolution,
@@ -1625,8 +1632,8 @@ for _prim in (PRIMITIVE_DERIVE, PRIMITIVE_BOUND, PRIMITIVE_OBSERVE):
 # it returns ONLY a patch-body block (no preamble, no explanation).
 
 _HEAVY_PATCH_GOALS: dict[str, str] = {
-    "path_b_honest_engagement": (
-        "Force explicit Path B engagement: name the specific existing literature "
+    "literature_transfer_engagement": (
+        "Force explicit literature-transfer engagement: name the specific existing literature "
         "whose results transfer to this substrate (e.g. principal-agent theory, "
         "governance-of-automation, domain-specific economics), state the "
         "substrate's quantitative regime-shift, and identify the specific "
@@ -1634,7 +1641,7 @@ _HEAVY_PATCH_GOALS: dict[str, str] = {
     ),
     "named_historical_retrodiction": (
         "Force named historical retrodiction: list 5-6 SPECIFIC public-record "
-        "cases adjacent to the substrate's load-bearing claim (regulated sectors, "
+        "cases adjacent to the substrate's decision-critical claim (regulated sectors, "
         "scientific-discovery analogs, technology-adoption analogs — substrate-"
         "appropriate). For each: structural analog, what actually happened "
         "(durability/snapback/drift/collapse), implication for the thesis. "
@@ -1643,7 +1650,7 @@ _HEAVY_PATCH_GOALS: dict[str, str] = {
     "velocity_vs_level_disclosure": (
         "Force velocity-vs-level engagement: identify 2-3 SPECIFIC near-future "
         "(2027-2030) capability shifts plausibly relevant to the substrate, and "
-        "for each: state how the load-bearing structural claim either survives "
+        "for each: state how the decision-critical structural claim either survives "
         "or is dominated by the shift. Force a derivation, scope-bound, or "
         "ill-posed verdict."
     ),
@@ -1660,7 +1667,7 @@ _HEAVY_PATCH_GOALS: dict[str, str] = {
         "economics / cognitive science / dynamical systems / measure theory), "
         "and require substitution-test verification."
     ),
-    "path_c_decomposition_forcing": (
+    "task_class_decomposition_forcing": (
         "Force task-class decomposition: identify 4-6 task-classes adjacent to "
         "the substrate's domain that exhibit different selection pressures, and "
         "require the thesis to either (a) prove its claim is task-class-invariant "
@@ -1668,14 +1675,14 @@ _HEAVY_PATCH_GOALS: dict[str, str] = {
         "with a typology that selects which mode dominates per task-class."
     ),
     "parameter_estimability_fragility": (
-        "Force parameter-estimability engagement: name the load-bearing "
+        "Force parameter-estimability engagement: name the decision-critical "
         "parameters in the thesis (e.g., exception rate ε, invisibility rate δ, "
         "coverage fraction, calibration confidence — substrate-specific). For "
         "each: state the measurement protocol assumed, enumerate the failure "
         "modes of that protocol (silent errors, adversarial drift, taxonomy "
         "blindness, distributed/emergent errors, observer-effect bias), and "
         "force a derivation: is the parameter estimable in the deployed regime, "
-        "or is the load-bearing claim measurement-bound? Identify the specific "
+        "or is the decision-critical claim measurement-bound? Identify the specific "
         "deployment regimes where measurement reliability fails."
     ),
     "endogeneity_reflexivity": (
@@ -1944,12 +1951,19 @@ def _heavy_patch_via_llm(
 
     try:
         runtime = LLMRuntime()
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "charter_critic_patch",
             prompt,
-            model_id=model_id,
-            timeout_seconds=float(rubric_data.get("charter_critic_timeout_seconds", 30.0)),
-            request_label="charter_critic_heavy_patch",
-            retries=1,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=float(rubric_data.get("charter_critic_timeout_seconds", 30.0)),
+                request_label="charter_critic_heavy_patch",
+                retries=1,
+            ),
+            timeout_seconds=int(float(rubric_data.get("charter_critic_timeout_seconds", 30.0))),
         )
         raw = (response.text or "").strip()
     except Exception:
@@ -2224,7 +2238,7 @@ def _build_reviewer_prompt(
         "REVIEW CRITERIA — reject a patch if ANY of:\n"
         "1. The patch is substantively REDUNDANT with content already in evidence/charter.\n"
         "2. The patch contains GROUND-TRUTH leakage (oracle knowledge, harness internals, derivations).\n"
-        "3. The patch is OFF-TOPIC for the substrate's load-bearing eigenquestion.\n"
+        "3. The patch is OFF-TOPIC for the substrate's decisive eigenquestion.\n"
         "4. The patch contains PROPER-NOUN endorsement of vendors/products/authors not already in evidence.\n"
         "5. The patch is an ANSWER/THESIS/SOLUTION rather than adversarial pressure.\n"
         "6. The patch violates the operator policy stated above.\n"
@@ -2259,12 +2273,19 @@ def _review_via_llm(
     prompt = _build_reviewer_prompt(patches_entries, project_dir, operator_policy)
     try:
         runtime = LLMRuntime()
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "charter_critic_reviewer",
             prompt,
-            model_id=reviewer_id,
-            timeout_seconds=float(rubric_data.get("charter_patches_reviewer_timeout_seconds", 30.0)),
-            request_label="charter_patches_reviewer",
-            retries=1,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=reviewer_id,
+                timeout_seconds=float(rubric_data.get("charter_patches_reviewer_timeout_seconds", 30.0)),
+                request_label="charter_patches_reviewer",
+                retries=1,
+            ),
+            timeout_seconds=int(float(rubric_data.get("charter_patches_reviewer_timeout_seconds", 30.0))),
         )
         raw = (response.text or "").strip()
     except Exception:

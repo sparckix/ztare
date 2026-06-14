@@ -8,7 +8,7 @@ restructuring.
 
 Composition (per GP-174 §2):
 
-    Stage 1: K Parallel Mutators           (already shipped 2026-04-27 night
+    Stage 1: K Parallel Mutators           (already shipped 2026-04-27
                                              at autoresearch_loop wire-in)
     Stage 2: AST Crossover                  (this module)
     Stage 3: Persona-Fusion synthesis       (this module)
@@ -601,11 +601,11 @@ def crossover_pair(
     sub_a_top = sorted(sub_a, key=lambda x: -len(x[0]))[:5]
     sub_b_top = sorted(sub_b, key=lambda x: -len(x[0]))[:5]
 
-    for path_a, st_a in sub_a_top:
-        for path_b, st_b in sub_b_top:
+    for left_path, _st_a in sub_a_top:
+        for _right_path, st_b in sub_b_top:
             if len(hybrids) >= max_hybrids:
                 break
-            new_expr = _replace_at_path(expr_a, path_a, st_b)
+            new_expr = _replace_at_path(expr_a, left_path, st_b)
             if new_expr is None:
                 continue
             try:
@@ -690,7 +690,7 @@ regresses to the mean):
 
 PASS 1 — DIAGNOSIS (return this section in your JSON):
   For each candidate i in {1..K}, identify:
-    - load_bearing_fragment_i: the AST sub-tree this candidate uniquely
+    - decisive_fragment_i: the AST sub-tree this candidate uniquely
       contributes (a sub-expression NO other candidate has)
     - failure_mode_i: the structural property this candidate cannot
       represent (one sentence, mechanical not philosophical)
@@ -700,7 +700,7 @@ PASS 1 — DIAGNOSIS (return this section in your JSON):
 
 PASS 2 — CONSTRUCTION (return as fusion_form):
   Construct a single PARAMETRIC_FORM F such that:
-    (a) F contains load_bearing_fragment_1 AND _2 AND _3 simultaneously.
+    (a) F contains decisive_fragment_1 AND _2 AND _3 simultaneously.
     (b) F is NOT in dominant_family. If 2 of 3 inputs are threshold
         forms, the fusion form must be non-threshold.
     (c) For each candidate i, name the mechanism by which F structurally
@@ -709,7 +709,7 @@ PASS 2 — CONSTRUCTION (return as fusion_form):
         construction, not that a parameter could be tuned to suppress it.
 
 If the candidates collapsed to a single family (no genuinely disjoint
-load-bearing fragments), return:
+decision-critical fragments), return:
     {"fusion_form": null,
      "diagnosis": {{"dominant_family": "<name>", ...}},
      "reasoning": "candidates_collapsed_to_<family>"}
@@ -718,7 +718,7 @@ Otherwise return strict JSON:
     {{
       "diagnosis": {{
         "candidates": [
-          {{"i": 1, "load_bearing_fragment": "<expr>", "failure_mode": "<...>"}},
+          {{"i": 1, "decisive_fragment": "<expr>", "failure_mode": "<...>"}},
           {{"i": 2, ...}},
           ...
         ],
@@ -790,12 +790,19 @@ def persona_fusion(
     prompt = _FUSION_PROMPT.replace("{candidate_block}", "\n".join(block_lines))
 
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "recombination_fusion",
             prompt,
-            model_id=model_id,
-            timeout_seconds=timeout_seconds,
-            request_label="gp174_persona_fusion",
-            retries=2,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=timeout_seconds,
+                request_label="gp174_persona_fusion",
+                retries=2,
+            ),
+            timeout_seconds=int(timeout_seconds),
         )
     except Exception as exc:
         return FusionResult(success=False, error=f"{type(exc).__name__}: {exc!s}"[:200])
@@ -859,7 +866,7 @@ def score_candidate_extended(
     *,
     prior_champion_form: Optional[str] = None,
 ) -> float:
-    """Score a candidate thesis. Panel-revised (2026-04-27 night):
+    """Score a candidate thesis. Panel-revised (2026-04-27):
 
       Baseline (syntactic validity):
         + 1.0 PARAMETRIC_FORM present

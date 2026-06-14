@@ -84,7 +84,7 @@ THESIS_SPECIMENS = [
         "thesis_file": f"{BASE}/tsmc_fragility_gemini_gemini/history/v11_score_75.md",
         "verification_panel_score": 75,
         "gaming_documented": ["Dimensional Correction Factor (*1000)", "Scope overgeneralization"],
-        "verification_panel_summary": "Verification Panel caught dimensional inconsistency in market cap destruction calculation (gdp_loss * 0.045 * 1000 is unjustified). Thesis scored 75 — geopolitical framing and load-bearing variable table gave false appearance of rigor.",
+        "verification_panel_summary": "Verification Panel caught dimensional inconsistency in market cap destruction calculation (gdp_loss * 0.045 * 1000 is unjustified). Thesis scored 75 — geopolitical framing and decision-critical variable table gave false appearance of rigor.",
     },
     {
         "id": "T4_SIMULATION_GOD",

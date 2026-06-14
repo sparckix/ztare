@@ -30,7 +30,7 @@ def f_true(x1: float, x2: float) -> float:
     return x1 ** 3 / denom
 
 
-# Alias for Component C compatibility (f_dominant is the same as f_true for
+# Alias for residual-diagnostics compatibility (f_dominant is the same as f_true for
 # single-regime substrates — added post-run 2026-04-18).
 f_dominant = f_true
 

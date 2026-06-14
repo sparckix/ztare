@@ -39,6 +39,7 @@ from dataclasses import dataclass, field
 from ztare.leanmill.solver.statement_integrity import (
     check as _integrity_check, decl_blocks as _decl_blocks, _signature, _norm,
 )
+from ztare.leanmill.lean_source import signature_before_proof
 
 _TOKEN = re.compile(r"[A-Za-z_][\w'.]*|[^\sA-Za-z_]")
 
@@ -116,7 +117,7 @@ def _goal_of(original_source: str, target_name: str) -> "tuple[str, str]":
     """(goal_statement, goal_head) for the target decl — both arms prove EXACTLY this."""
     blocks = dict(_decl_blocks(original_source))
     tgt = next((blocks[n] for n in blocks if n == target_name or n.endswith("." + target_name)), "")
-    head = tgt.split(":=", 1)[0].strip() if tgt else target_name
+    head = signature_before_proof(tgt).strip() if tgt else target_name
     return (tgt or target_name), head
 
 

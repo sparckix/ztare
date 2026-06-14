@@ -11,7 +11,7 @@ Context:
       - generic remote watchdog
       - local monitor/downloader
 
-The stack is useful and can run real work, but it is not yet kernel-strong.
+The stack is useful and can run substantive external jobs, but it is not yet kernel-strong.
 The remaining gaps are architectural rather than cosmetic.
 """
 

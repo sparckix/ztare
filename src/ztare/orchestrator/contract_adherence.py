@@ -1,6 +1,6 @@
 """GP-157 v5.0 — substrate-contract adherence telemetry.
 
-Operator concern (2026-04-25 night): the substrate-contract hint is one
+Operator concern (2026-04-25): the substrate-contract hint is one
 of ~15 prompt sections; the mutator may skim past it. Empirical question
 whether the hint is effective. This module surfaces the answer by
 inspecting each iteration's emitted test_model.py for contract
@@ -152,7 +152,7 @@ def check_contract_adherence(
 
     # Deferred-assert detection: ANY private helper (`def _<name>(`)
     # whose body contains `assert` but is never called at module scope or
-    # inside I_model. Generalized 2026-04-25 night per panel review:
+    # inside I_model. Generalized 2026-04-25 per panel review:
     # previously hardcoded {_post_fit_sanity, _validate, _sanity_check,
     # _verify_assumptions} — the next mutator hiding asserts in
     # `_check_invariants()` or any other private name would have evaded.
@@ -202,7 +202,7 @@ def runtime_check_imodel(
     Catches the case where test_model.py is statically clean
     (no deferred-assert helper, signature correct) but I_model
     returns NaN due to arithmetic bug — surfaced by gp159 o3 mutator
-    runs 2026-04-25 night. Static analysis cannot see this.
+    runs 2026-04-25. Static analysis cannot see this.
 
     Returns a list of violation codes; empty when adherent at runtime.
     Caller decides whether to surface as warnings or to use as R1

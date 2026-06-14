@@ -1,4 +1,4 @@
-"""GP-152 Framer Component F — ReportWriter (v2.0).
+"""GP-152 Framer — ReportWriter (v2.0).
 
 Serializes the framing decision and provenance into a dict that travels
 with the framed data through the pipeline.

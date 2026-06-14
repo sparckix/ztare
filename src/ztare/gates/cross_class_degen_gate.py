@@ -11,7 +11,7 @@ structure that the form's algebraic shape does not encode honestly.
 Companion to G-LAGRANGIAN-NONTRIVIAL (B1), G-SCREEN-SIGN (B2), and
 G-FEATURE-CONTRIB (B3). Where B1 audits Lagrangian derivation content,
 B2 audits empirical screening direction, and B3 audits per-feature
-empirical load-bearingness, B4 audits per-class parameter consistency.
+empirical decision-criticality, B4 audits per-class parameter consistency.
 
 GP-183 Phase B4.
 

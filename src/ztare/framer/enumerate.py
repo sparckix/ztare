@@ -1,4 +1,4 @@
-"""GP-152 Framer Component C — TransformationEnumerator (v2.0).
+"""GP-152 Framer — TransformationEnumerator (v2.0).
 
 Generates the candidate `(h_in, h_out)` pairs after symmetry + dimensional
 filtering. v2.0 does depth-1 only; depth-2 composition is a follow-up.

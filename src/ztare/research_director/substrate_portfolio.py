@@ -5,7 +5,7 @@ Seam: research_areas/private/seams/reflexive/GP-228_substrate_portfolio_v05_v3_s
 Parent: GP-213 (director-mechanization)
 
 Reads the substrate portfolio registry at `org/runtime/substrate_portfolio.yaml`
-and runs members SEQUENTIALLY (not parallel — sequence is load-bearing
+and runs members SEQUENTIALLY (not parallel — sequence is consequential
 for cross-substrate exclusion ledger §25 in rubric_specification.md).
 
 Replaces a one-shot script that hardcoded the portfolio in Python. Adding

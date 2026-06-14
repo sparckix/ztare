@@ -31,8 +31,8 @@ Examples:
 ## 3. Extraction and Memory Components
 
 These components harvest structural signals from run history:
-- `structural_constraint_extractor.py`, GP-061 Component A: feature-bag intersection across failed families to extract structural constraints
-- `negative_space_extractor.py`, GP-061 Component B: detects void operators (operations absent from all tried families)
+- `structural_constraint_extractor.py`: feature-bag intersection across failed families to extract structural constraints
+- `negative_space_extractor.py`: detects void operators (operations absent from all tried families)
 - `structural_memory.py`, per-iteration structural memory accumulation
 - `structural_memory_fixture_regression.py`, fixture regression for structural memory
 - `fit_multistart_replay.py`, multi-start fit replay for curve-fitting sandboxes

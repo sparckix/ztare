@@ -136,10 +136,17 @@ def run_general_office_audit(
             excerpt_chars=_THESIS_EXCERPT_CHARS,
         )
 
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "mform_alignment_audit",
             prompt,
-            model_id=model_id,
-            retries=PRODUCTION_CALL_RETRIES,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                retries=PRODUCTION_CALL_RETRIES,
+            ),
+            timeout_seconds=300,
         )
         if not response:
             return None

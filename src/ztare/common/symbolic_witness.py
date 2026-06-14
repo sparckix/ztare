@@ -254,14 +254,34 @@ def solve_diophantine_pell(D: int, N: int, var_names: "list[str]", timeout_s: in
     return None
 
 
+def _guard_clause(guards: "tuple[str, ...] | list[str]") -> str:
+    """Shared point-admissibility test for the two grid scripts: a sample point COUNTS only when every
+    guard (hypothesis relation) evaluates to a definite True there — definite-False ⇒ out of the
+    hypotheses' domain (skip), symbolic residue ⇒ not evidence either way (skip). Returns script lines
+    that set `_admit` for the current `_vals`."""
+    if not guards:
+        return "        _admit = True\n"
+    return (
+        "        _admit = True\n"
+        "        for _g in _grds:\n"
+        "            _gv = _g.subs(dict(zip(_syms, _vals)))\n"
+        "            if not ((hasattr(_gv, 'is_Boolean') and _gv.is_Boolean) or _gv in (sympy.true, sympy.false)) or not bool(_gv):\n"
+        "                _admit = False; break\n"
+    )
+
+
 def build_counterexample_script(sympy_relation: str, var_names: "list[str]", integer: bool = True,
-                                bound: int = 24, nonneg: bool = False) -> str:
+                                bound: int = 24, nonneg: bool = False,
+                                guards: "tuple[str, ...] | list[str]" = ()) -> str:
     """Build a SymPy script that GRID-SEARCHES a small box for a COUNTEREXAMPLE to a universally-quantified
     relation `sympy_relation` (a relation that SHOULD hold for ALL assignments — e.g. `Eq(n + 1, n)` or
     `n <= n*n`). `nonneg=True` (for ℕ/Nat) searches [0, bound] with nonnegative symbols so a counterexample
     invalid for the actual type is never reported (a false ∀ over ℤ but TRUE over ℕ must not misfire); else
-    [−bound, bound]. Prints the first FAILING assignment as a JSON witness, or ok=False. '' if not
-    translatable."""
+    [−bound, bound]. `guards` (hypothesis relations, for `∀ …, H₁ → … → C` goals): a point is a
+    counterexample only if every guard is definite-True there AND the conclusion is definite-False —
+    sound for the implication (a guard-satisfying refutation of C refutes the whole statement). Prints
+    the first FAILING assignment as a JSON witness, or ok=False. '' if not translatable. (Script-internal
+    names are _-prefixed + `_syms` binds first — the goal-var-shadows-harness-name collision class.)"""
     if not var_names:
         return ""
     syms = ", ".join(var_names)
@@ -272,34 +292,179 @@ def build_counterexample_script(sympy_relation: str, var_names: "list[str]", int
     return (
         "import sympy, json, itertools\n"
         f"{syms} = sympy.symbols('{sym_arg}', {assum})\n"
+        f"_syms = [{syms}]\n"
         f"_loc = {loc}\n"
-        "hit = None\n"
+        "_hit = None\n"
         "try:\n"   # sympify INSIDE the try → a malformed relation yields a clean ok:false, not a crash
-        f"    rel = sympy.sympify({json.dumps(sympy_relation)}, locals=_loc)\n"
-        f"    _syms = [{syms}]\n"
-        f"    for vals in itertools.product(range({lo}, {int(bound)} + 1), repeat=len(_syms)):\n"
-        "        v = rel.subs(dict(zip(_syms, vals)))\n"
-        "        if v is sympy.false or (hasattr(v, 'is_Boolean') and v.is_Boolean and not bool(v)):\n"
-        "            hit = [str(x) for x in vals]; break\n"
+        f"    _rel = sympy.sympify({json.dumps(sympy_relation)}, locals=_loc)\n"
+        f"    _grds = [sympy.sympify(_gs, locals=_loc) for _gs in {json.dumps(list(guards))}]\n"
+        f"    for _vals in itertools.product(range({lo}, {int(bound)} + 1), repeat=len(_syms)):\n"
+        + _guard_clause(guards) +
+        "        if not _admit:\n"
+        "            continue\n"
+        "        _v = _rel.subs(dict(zip(_syms, _vals)))\n"
+        "        if _v is sympy.false or (hasattr(_v, 'is_Boolean') and _v.is_Boolean and not bool(_v)):\n"
+        "            _hit = [str(_x) for _x in _vals]; break\n"
         "except Exception:\n"
-        "    hit = None\n"
-        "print(json.dumps({'ok': hit is not None, 'witnesses': hit or []}))\n"
+        "    _hit = None\n"
+        "print(json.dumps({'ok': _hit is not None, 'witnesses': _hit or []}))\n"
     )
 
 
 def find_counterexample(sympy_relation: str, var_names: "list[str]", integer: bool = True,
-                        bound: int = 24, timeout_s: int = 8, nonneg: bool = False) -> "list[str] | None":
+                        bound: int = 24, timeout_s: int = 8, nonneg: bool = False,
+                        guards: "tuple[str, ...] | list[str]" = ()) -> "list[str] | None":
     """Bounded grid-search for a COUNTEREXAMPLE to a ∀-relation; returns the failing assignment or None. The
     falsity signal: a non-None result means the goal is (computably) FALSE in the box → route to falsify.
     `nonneg=True` (ℕ/Nat) restricts the search to non-negative integers so a counterexample invalid for the
-    type is never reported."""
-    script = build_counterexample_script(sympy_relation, var_names, integer=integer, bound=bound, nonneg=nonneg)
+    type is never reported. `guards` = hypothesis relations for guarded (`H → C`) goals."""
+    script = build_counterexample_script(sympy_relation, var_names, integer=integer, bound=bound,
+                                         nonneg=nonneg, guards=guards)
     if not script:
         return None
     res = run_solver_script(script, timeout_s=timeout_s)
     if res and res.get("ok") and res.get("witnesses"):
         return [str(w) for w in res["witnesses"]]
     return None
+
+
+def build_instance_check_script(sympy_relation: str, var_names: "list[str]", integer: bool = True,
+                                bound: int = 24, nonneg: bool = False, k: int = 5,
+                                guards: "tuple[str, ...] | list[str]" = ()) -> str:
+    """Build a SymPy script that CONFIRMS a ∀-relation at concrete sample points — the POSITIVE DUAL of
+    `build_counterexample_script` (#124 instances-first; same relation/var contract, same box semantics:
+    `nonneg=True` ⇒ [0, bound], else [−bound, bound]). Samples a deterministic SPREAD (small + spaced
+    values, not just consecutive ints), collects up to `k` assignments where the relation evaluates to a
+    DEFINITE True, and stops early on a definite False (which is reported as the refuting assignment —
+    one script answers both 'looks true at samples' and 'is false here'). Prints
+    `{"ok": true, "confirmed": [[..],..], "refuted": [..]|null, "evaluated": n}`. '' if not translatable.
+    A relation that never evaluates to a definite Boolean (symbolic residue) yields confirmed=[] — an
+    honest NO-SIGNAL, never fake confidence."""
+    if not var_names:
+        return ""
+    syms = ", ".join(var_names)
+    sym_arg = " ".join(var_names)
+    assum = ("integer=True, nonnegative=True" if nonneg else "integer=True") if integer else "real=True"
+    # #130 (mathematician leg): probe the degenerate points (0, ±1) FIRST, then the BOX EXTREMES, then the
+    # rest of the spread — so a SINGLE-VARIABLE ∀-claim that holds on small values but breaks at the
+    # boundary is caught WITHIN the first few evals (BEFORE the k-confirmation early-stop, which otherwise
+    # never reaches a tail-appended extreme — caught live). For MULTI-variable claims this is best-effort:
+    # `itertools.product` advances the LAST var fastest, so the first var may not reach its extreme before
+    # the early-stop; the gate is advisory (a missed counterexample just funds a real proof attempt that
+    # then cannot close a false statement — never a false closure). STRUCTURE-FREE (no parsing the relation
+    # for poles/roots — that would be iatrogenic); the kernel stays the only arbiter.
+    if nonneg:
+        _deg, _rest, _ext = [0, 1], [2, 3, 5, 8, 13, 21], [int(bound), int(bound) - 1]
+    else:
+        _deg, _rest = [0, 1, -1], [2, -2, 3, 5, -5, 8, 13, -13, 21]
+        _ext = [int(bound), int(bound) - 1, -int(bound), -(int(bound) - 1)]
+    pts = [v for v in dict.fromkeys(_deg + _ext + _rest) if abs(v) <= int(bound)]   # dedupe, order-preserving, in-box
+    loc = "{" + ", ".join(f"'{v}': {v}" for v in var_names) + "}"
+    # All script-internal names are _-prefixed AND `_syms` binds BEFORE any other assignment — a goal
+    # variable named `n`/`v`/`vals` must never collide with the harness names (the n-shadowed-the-symbol
+    # bug this selftest caught: the counter clobbered the symbol ⇒ subs was a no-op ⇒ zero evidence).
+    return (
+        "import sympy, json, itertools\n"
+        f"{syms} = sympy.symbols('{sym_arg}', {assum})\n"
+        f"_syms = [{syms}]\n"
+        f"_loc = {loc}\n"
+        "_confirmed, _refuted, _ne = [], None, 0\n"
+        "try:\n"   # sympify INSIDE the try → a malformed relation yields a clean no-signal, not a crash
+        f"    _rel = sympy.sympify({json.dumps(sympy_relation)}, locals=_loc)\n"
+        f"    _grds = [sympy.sympify(_gs, locals=_loc) for _gs in {json.dumps(list(guards))}]\n"
+        f"    for _vals in itertools.product({pts!r}, repeat=len(_syms)):\n"
+        + _guard_clause(guards) +
+        "        if not _admit:\n"
+        "            continue\n"   # outside the hypotheses' domain — not evidence either way
+        "        _v = _rel.subs(dict(zip(_syms, _vals)))\n"
+        "        if not (hasattr(_v, 'is_Boolean') and _v.is_Boolean) and _v not in (sympy.true, sympy.false):\n"
+        "            continue\n"   # symbolic residue at this point — skip, never count as evidence
+        "        _ne += 1\n"
+        "        if bool(_v):\n"
+        "            _confirmed.append([str(_x) for _x in _vals])\n"
+        f"            if len(_confirmed) >= {int(k)}:\n"
+        "                break\n"
+        "        else:\n"
+        "            _refuted = [str(_x) for _x in _vals]; break\n"
+        "except Exception:\n"
+        "    _confirmed, _refuted, _ne = [], None, 0\n"
+        "print(json.dumps({'ok': True, 'confirmed': _confirmed, 'refuted': _refuted, 'evaluated': _ne}))\n"
+    )
+
+
+def confirm_instances(sympy_relation: str, var_names: "list[str]", integer: bool = True,
+                      bound: int = 24, timeout_s: int = 8, nonneg: bool = False,
+                      k: int = 5, guards: "tuple[str, ...] | list[str]" = ()) -> "dict | None":
+    """Instances-first evidence (#124): evaluate a ∀-relation at a deterministic spread of concrete
+    points. Returns `{"confirmed": [[..],..], "refuted": [..]|None, "evaluated": n}` or None
+    (untranslatable / sandbox failure / no definite evaluation — NO-SIGNAL, never fake confidence).
+    `find_counterexample`'s positive dual: confirmation is cheap CONFIDENCE + recorded evidence (the
+    conjecture-book feed), a refutation is the same falsity signal `looks_false` routes on. ADVISORY
+    by contract — the kernel stays the only arbiter. `guards` (for `∀ …, H₁ → … → C`): only points
+    where every hypothesis is definite-True count — a guard-satisfying refutation of C refutes the
+    implication; guards never satisfied in the box ⇒ evaluated=0 ⇒ no-signal."""
+    script = build_instance_check_script(sympy_relation, var_names, integer=integer, bound=bound,
+                                         nonneg=nonneg, k=k, guards=guards)
+    if not script:
+        return None
+    res = run_solver_script(script, timeout_s=timeout_s)
+    if not res or not res.get("ok") or not int(res.get("evaluated") or 0):
+        return None
+    return {"confirmed": [list(map(str, c)) for c in (res.get("confirmed") or [])],
+            "refuted": ([str(x) for x in res["refuted"]] if res.get("refuted") else None),
+            "evaluated": int(res.get("evaluated") or 0)}
+
+
+def invariant_mismatch(sympy_relation: str, var_names: "list[str]") -> "list[str] | None":
+    """INVARIANT-SCREEN (#114, the conservation-law instinct from the deanchored-isomorphism traversal):
+    compare CHEAP STRUCTURAL INVARIANTS of an equality's two sides — polynomial degree per variable, parity on
+    an integer sample, leading growth. A mismatch is a strong it's-FALSE signal at ~ms cost (vs the ~8s grid
+    search) — physicists' first check: conserved quantities must balance. `find_counterexample`'s SIBLING and
+    cheap FIRST STAGE (same input contract: the `lhs == rhs` relation + var names). ADVISORY: a non-None only
+    ROUTES toward falsify; the kernel-proved ¬G stays the only refutation verdict. Equality-only (an inequality
+    has no two-sided conservation); returns None on parse failure / non-equality / no-carrier — never blocks."""
+    try:
+        import sympy as sp
+        rel = (sympy_relation or "").strip()
+        if "==" in rel:                       # `lhs == rhs` surface form
+            l_s, r_s = rel.split("==", 1)
+            lhs, rhs = sp.sympify(l_s), sp.sympify(r_s)
+        else:                                  # `Eq(lhs, rhs)` functional form (what _lean_relation_to_sympy emits)
+            e = sp.sympify(rel)
+            if not isinstance(e, sp.Eq):
+                return None                    # equality-only (an inequality has no two-sided conservation)
+            lhs, rhs = e.lhs, e.rhs
+        symbols = [sp.Symbol(v) for v in var_names] or sorted(lhs.free_symbols | rhs.free_symbols, key=str)
+        out: "list[str]" = []
+        # 1. polynomial degree per variable (identities conserve degree)
+        try:
+            if all(e.is_polynomial(*symbols) for e in (lhs, rhs)):
+                for s in symbols:
+                    dl, dr = sp.degree(sp.Poly(lhs, s)), sp.degree(sp.Poly(rhs, s))
+                    if dl != dr:
+                        out.append(f"degree({s}): lhs={dl} rhs={dr}")
+        except Exception:  # noqa: BLE001 — per-leg fail-quiet (skip, never a false mismatch)
+            pass
+        # 2. parity on integer samples (mod-2 conservation): one break is decisive
+        try:
+            for base in (-2, 0, 1, 3, 5):
+                subs = {s: base + i for i, s in enumerate(symbols)}
+                vl, vr = lhs.subs(subs), rhs.subs(subs)
+                if getattr(vl, "is_Integer", False) and getattr(vr, "is_Integer", False) \
+                        and (int(vl) - int(vr)) % 2 != 0:
+                    out.append(f"parity@{subs}: {vl} vs {vr} differ mod 2")
+                    break
+        except Exception:  # noqa: BLE001
+            pass
+        # 3. leading growth (identities conserve asymptotics in the first variable)
+        try:
+            if symbols and sp.limit(lhs / (sp.Abs(rhs) + 1), symbols[0], sp.oo) in (sp.oo, -sp.oo):
+                out.append(f"growth: lhs dominates rhs as {symbols[0]}→oo")
+        except Exception:  # noqa: BLE001
+            pass
+        return out or None
+    except Exception:  # noqa: BLE001 — no carrier / unparseable ⇒ no signal
+        return None
 
 
 def _selftest() -> int:
@@ -375,6 +540,47 @@ def _selftest() -> int:
        solve_diophantine_pell(61, 1, ["x", "y"]) == ["1766319049", "226153980"])
     ok("pell: D=3,N=2 (impossible mod 3) → None", solve_diophantine_pell(3, 2, ["x", "y"]) is None)
 
+        # invariant_mismatch (#114): the conservation-law screen — find_counterexample's cheap stage 1
+    ok("invariant: true identity ⇒ None", invariant_mismatch("(n+1)**2 == n**2 + 2*n + 1", ["n"]) is None)
+    _im = invariant_mismatch("n**3 == n**2 + 5", ["n"])
+    ok("invariant: degree mismatch caught", _im is not None and any("degree" in m for m in _im))
+    _im = invariant_mismatch("2*n == 2*n + 1", ["n"])
+    ok("invariant: parity break at equal degree caught", _im is not None and any("parity" in m for m in _im))
+    ok("invariant: inequality ⇒ None (equality-only)", invariant_mismatch("n <= n + 1", ["n"]) is None)
+    ok("invariant: garbage ⇒ None (advisory)", invariant_mismatch("?? == ]]", ["n"]) is None)
+
+    # confirm_instances (#124 instances-first): the POSITIVE dual of find_counterexample
+    _ci = confirm_instances("Eq((n+1)**2, n**2 + 2*n + 1)", ["n"], integer=True)
+    ok("confirm: true identity ⇒ k confirmed, no refutation",
+       _ci is not None and len(_ci["confirmed"]) == 5 and _ci["refuted"] is None)
+    _ci = confirm_instances("n <= n*n", ["n"], integer=True, nonneg=True)
+    ok("confirm: true-over-ℕ inequality confirmed (nonneg samples)",
+       _ci is not None and len(_ci["confirmed"]) >= 3 and _ci["refuted"] is None)
+    _ci = confirm_instances("Eq(n + 1, n)", ["n"], integer=True)
+    ok("confirm: false relation ⇒ refuting assignment, zero fake confidence",
+       _ci is not None and _ci["refuted"] is not None and len(_ci["confirmed"]) == 0)
+    _ci = confirm_instances("n*n >= n", ["n"], integer=True)   # false over ℝ-mindset? true over ℤ: n²≥n ∀n∈ℤ
+    ok("confirm: true-over-ℤ inequality confirmed on the signed spread",
+       _ci is not None and len(_ci["confirmed"]) >= 3 and _ci["refuted"] is None)
+    ok("confirm: garbage ⇒ None (no-signal, never fake confidence)",
+       confirm_instances("?? == ]]", ["n"]) is None)
+    ok("confirm: no vars ⇒ None", confirm_instances("Eq(1, 1)", []) is None)
+
+    # GUARDED (H → C) legs: only hypothesis-satisfying points count, both duals
+    _ci = confirm_instances("2*n <= n*n", ["n"], integer=True, nonneg=True, guards=["n >= 2"])
+    ok("guard confirm: 2≤n → 2n≤n² holds on the admitted points (n≥2)",
+       _ci is not None and len(_ci["confirmed"]) >= 3 and _ci["refuted"] is None)
+    _ci = confirm_instances("n*n <= 2*n", ["n"], integer=True, nonneg=True, guards=["n >= 2"])
+    ok("guard confirm: 2≤n → n²≤2n refuted at an ADMITTED point (n≥3), n=0,1 never misfire",
+       _ci is not None and _ci["refuted"] is not None and int(_ci["refuted"][0]) >= 3)
+    _ci = confirm_instances("Eq(n, n)", ["n"], integer=True, nonneg=True, guards=["n >= 1000"])
+    ok("guard confirm: guards never satisfied in the box ⇒ no-signal (never fake confidence)",
+       _ci is None)
+    _cx = find_counterexample("n*n <= 2*n", ["n"], integer=True, nonneg=True, guards=["n >= 2"])
+    ok("guard counterexample: guard-satisfying refutation found (n≥3)",
+       _cx is not None and int(_cx[0]) >= 3)
+    _cx = find_counterexample("2*n <= n*n", ["n"], integer=True, nonneg=True, guards=["n >= 2"])
+    ok("guard counterexample: true-under-guard ⇒ None (n=1 not misreported)", _cx is None)
     print("SELFTEST", "PASSED" if not fails else f"FAILED {fails}")
     return 1 if fails else 0
 

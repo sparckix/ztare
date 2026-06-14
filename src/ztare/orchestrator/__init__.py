@@ -1,7 +1,7 @@
 """GP-157 v5.0 Phase 4a: orchestrator package.
 
-Decomplecting (Hickey) target for the autoresearch_loop spaghetti.
-Per panel synthesis 2026-04-25 night, the extraction sequence is:
+Extraction target for the large autoresearch_loop control surface.
+Per panel synthesis 2026-04-25, the extraction sequence is:
 
     Phase 4a:  IterContext dataclass (this commit — additive)
     Phase 3c:  Cage authoritative dispatch (uses IterContext)

@@ -16,6 +16,8 @@ from src.ztare.research_director.structural_fingerprint import (
     RESIDUAL_TO_LEVER,
 )
 
+REPO = Path(__file__).resolve().parents[3]
+
 SCHEMA = "leanmill-typed-proof-exit-v1"
 SUMMARY_SCHEMA = "leanmill-typed-proof-exit-summary-v1"
 
@@ -40,6 +42,29 @@ def _now() -> int:
 
 def _read_json(path: str | Path) -> Any:
     return read_json(path)
+
+
+def _public_path(value: str | Path | None) -> str:
+    if value is None:
+        return ""
+    s = str(value)
+    if not s:
+        return ""
+    try:
+        p = Path(s)
+        if not p.is_absolute():
+            return s
+        try:
+            return str(p.resolve().relative_to(REPO))
+        except Exception:
+            pass
+        try:
+            return f"<home>/{p.resolve().relative_to(Path.home())}"
+        except Exception:
+            pass
+        return f"<external>/{p.name}"
+    except Exception:
+        return s
 
 
 def _as_bool(value: Any) -> bool:
@@ -92,7 +117,7 @@ def _base_exit(*, source_kind: str, source_path: str = "", run_id: str = "") -> 
         "schema": SCHEMA,
         "generated_at_epoch": _now(),
         "source_kind": source_kind,
-        "source_path": str(source_path or ""),
+        "source_path": _public_path(source_path),
         "run_id": str(run_id or ""),
         "credit_status": "not_credit_ready",
         "credit_boundary": CREDIT_BOUNDARY,
@@ -109,7 +134,7 @@ def _nearest_confuser(exit_kind: str, residual_class: str) -> str:
         return "spend_more_prover_calls_on_source_or_context_mismatch"
     if residual_class == "vocabulary_gap":
         return "treat_unknown_exit_as_credible_evidence"
-    return "collapse_advisory_exit_into_moat_claim"
+    return "collapse_advisory_exit_into_ratified_claim"
 
 
 def _action_program_for_exit(row: dict[str, Any]) -> list[dict[str, Any]]:
@@ -306,7 +331,7 @@ def normalize_route_c_result(
     out.update({
         "attempt_id": attempt_id,
         "target_name": str(result.get("theorem") or ""),
-        "source_file": str(result.get("source_file") or ""),
+        "source_file": _public_path(result.get("source_file") or ""),
         "closure_verdict": result.get("closure_verdict") or result.get("verdict") or result.get("status"),
         "compiled_any": _as_bool(result.get("compiled_any")),
         "typed_exit_kind": exit_kind,

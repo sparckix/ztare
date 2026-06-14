@@ -366,7 +366,7 @@ def _repertoire_history(workspace_dir: Optional[Path]) -> dict:
     if not records:
         return out
     out["prior_fires"] = len(records)
-    # Hash the candidate-form set per fire (token-shape only, not literal
+    # Hash the candidate expression set per fire (token-shape only, not literal
     # constants — strip whitespace and lowercase to ignore rendering noise)
     def _hash_forms(forms: list) -> str:
         norm = sorted({str(f).strip().lower().replace(" ", "")[:80] for f in (forms or [])})
@@ -679,6 +679,130 @@ class AnalogyResponse:
     error: Optional[str] = None
 
 
+def _constraint_fingerprint_from_residual(fingerprint: dict) -> Any:
+    from src.ztare.common.constraint_isomorphism import ConstraintFingerprint
+
+    topology = fingerprint.get("residual_topology") or {}
+    asym = fingerprint.get("asymptotic_profile") or {}
+    per_class = fingerprint.get("residual_topology_by_class") or {}
+    unref = fingerprint.get("unreferenced_correlations") or []
+    shape = topology.get("shape") or fingerprint.get("shape") or "residual_misspecification"
+    constraint_class = "autoresearch residual structural transfer"
+    abstract_form = (
+        f"candidate family leaves residual shape={shape}; "
+        f"asymptotic_profile={asym.get('asymptotic_failure', 'unknown')}; "
+        f"class_asymmetry={'present' if per_class else 'absent'}; "
+        f"unreferenced_feature_correlations={len(unref)}"
+    )
+    invariants = {
+        "residual_shape": shape,
+        "monotonicity": topology.get("monotonicity", fingerprint.get("monotonicity", "unknown")),
+        "regime_break": topology.get("regime_break_likely", fingerprint.get("regime_break_count", "unknown")),
+        "heavy_tail": topology.get("heavy_tail", fingerprint.get("heavy_tail_flag", "unknown")),
+        "sign_pattern": topology.get("sign_pattern", fingerprint.get("sign_pattern", "unknown")),
+        "asymptotic_failure": asym.get("asymptotic_failure", "unknown"),
+        "class_asymmetry": bool(per_class),
+        "unreferenced_correlation_count": len(unref),
+    }
+    forbidden = fingerprint.get("forbidden_domain")
+    return ConstraintFingerprint(
+        constraint_class=constraint_class,
+        abstract_form=abstract_form,
+        invariants=invariants,
+        forbidden_domain=str(forbidden) if forbidden else None,
+    )
+
+
+def _query_constraint_isomorphism_analogy(
+    fingerprint: dict,
+    *,
+    model_id: str,
+    query: Any = None,
+) -> AnalogyResponse:
+    """Use the shared constraint-isomorphism engine for structural analogy mode."""
+
+    try:
+        from src.ztare.common.constraint_isomorphism import (
+            default_llm_query,
+            validate_typed_mapping,
+        )
+        from src.ztare.common.structural_transfer_action import (
+            action_schema_from_isomorphism,
+        )
+    except Exception as exc:
+        return AnalogyResponse(error=f"constraint_isomorphism_unavailable: {exc}")
+
+    fp = _constraint_fingerprint_from_residual(fingerprint)
+    try:
+        if query is not None:
+            surfaced = query(fp, 5)
+        else:
+            surfaced = default_llm_query(
+                fp,
+                5,
+                model=model_id,
+                typed_mapping=True,
+                mode="solve",
+            )
+        kept, rejected = validate_typed_mapping(surfaced or [], fp)
+    except Exception as exc:
+        return AnalogyResponse(error=f"constraint_isomorphism_query_failed: {type(exc).__name__}: {exc}")
+    if not kept:
+        return AnalogyResponse(
+            model_id=model_id,
+            raw_response=json.dumps(
+                {
+                    "constraint_fingerprint": {
+                        "constraint_class": fp.constraint_class,
+                        "abstract_form": fp.abstract_form,
+                        "invariants": fp.invariants,
+                    },
+                    "rejected_count": len(rejected),
+                },
+                sort_keys=True,
+            ),
+            error="constraint_isomorphism_no_typed_mapping_survivors",
+        )
+
+    actions = [
+        action_schema_from_isomorphism(
+            iso,
+            fp,
+            source_kind="autoresearch_analogy",
+            transfer_mode="structural_isomorphism",
+        )
+        for iso in kept[:5]
+    ]
+    return AnalogyResponse(
+        candidate_forms=[
+            str(action.get("target_mapping") or action.get("source_structure") or "")
+            for action in actions
+        ],
+        structural_descriptors=[
+            f"{action.get('source_structure')} ({action.get('source_field')}): "
+            f"{action.get('mechanism')}"
+            for action in actions
+        ],
+        reasoning=(
+            "constraint_isomorphism typed mapping survivors; rejected "
+            f"{len(rejected)} decorative or incomplete candidates"
+        ),
+        raw_response=json.dumps(
+            {
+                "constraint_fingerprint": {
+                    "constraint_class": fp.constraint_class,
+                    "abstract_form": fp.abstract_form,
+                    "invariants": fp.invariants,
+                },
+                "actions": actions,
+                "rejected_count": len(rejected),
+            },
+            sort_keys=True,
+        ),
+        model_id=model_id,
+    )
+
+
 # ── LLM query (single call, no retries) ────────────────────────────────
 
 
@@ -841,7 +965,7 @@ def _build_query_prompt(fingerprint: dict, *, structural_mode: bool = False) -> 
         history_clause = (
             "REPERTOIRE-COLLAPSE WARNING: the prior "
             f"{n_consec} consecutive ANALOGY fires on this run returned "
-            "the SAME candidate-form repertoire. Continuing with the same "
+            "the SAME candidate expression repertoire. Continuing with the same "
             "family will not help the apparatus. You MUST propose forms "
             "from a DIFFERENT structural family this fire. Specifically:\n"
             "  - If prior repertoires were threshold/sigmoid-dominated, "
@@ -902,7 +1026,7 @@ def _build_query_prompt(fingerprint: dict, *, structural_mode: bool = False) -> 
             "Euler-Lagrange.\n"
             "  5. THEN, optionally, propose 1-2 closed-form expressions "
             "that this action term would reduce to in steady state — but "
-            "the action term is the load-bearing output.\n\n"
+            "the action term is the decision-critical output.\n\n"
             "CONTAMINATION POSTURE:\n"
             "  - Forbidden: name specific numerical constants from any "
             "published theory ('a₀ = 1.2e-10' is forbidden; 'a single "
@@ -994,6 +1118,7 @@ def query_analogy(
     observe_only: bool = True,
     timeout_seconds: int = 90,
     structural_mode: bool = False,
+    isomorphism_query: Any = None,
 ) -> AnalogyResponse:
     """Single-call LLM query for cross-domain analogy candidates.
 
@@ -1036,6 +1161,12 @@ def query_analogy(
                 "explicitly from the dispatch hook."
             ),
         )
+    if structural_mode:
+        return _query_constraint_isomorphism_analogy(
+            fingerprint,
+            model_id=model_id,
+            query=isomorphism_query,
+        )
 
     # Lazy import to avoid forcing llm_runtime as a module-level dep
     # when analogy.py is used in a unit-test context.
@@ -1046,12 +1177,19 @@ def query_analogy(
     prompt = _build_query_prompt(fingerprint, structural_mode=structural_mode)
 
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "fit_analogy",
             prompt,
-            model_id=model_id,
-            timeout_seconds=timeout_seconds,
-            request_label="gp164_analogy",
-            retries=2,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=timeout_seconds,
+                request_label="gp164_analogy",
+                retries=2,
+            ),
+            timeout_seconds=int(timeout_seconds),
         )
     except Exception as e:
         return AnalogyResponse(

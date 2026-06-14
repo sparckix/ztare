@@ -62,6 +62,11 @@ def govern_via_cage(lean_source: str, lean_path: "Path", ztare_proofs_root: "Pat
     """Route leanmill anti-laundering through the Cage and return the SAME dict `run_anti_laundering_kernel`
     returns ({passed, flags, confirmed, detail}). Behavior-identical to the direct call (the kernel gate IS
     the kernel) — this is the §3b-safe full Cage routing entry. Fail-OPEN on a Cage error (never block)."""
+    # The fail-OPEN scope is ONLY the Cage ROUTING (a routing error falls back to the real kernel — never
+    # lose the gate). The REAL gate runs OUTSIDE this try (2026-06-13 audit): the prior single try wrapped
+    # the fallback kernel too, so a KERNEL crash credited `passed=True` — a gate that cannot run must
+    # fail CLOSED, never mint a closure.
+    _routing_err = None
     try:
         from ztare.gates.cage import Cage
         sub = SimpleNamespace(meta=proof_target_meta())
@@ -74,12 +79,19 @@ def govern_via_cage(lean_source: str, lean_path: "Path", ztare_proofs_root: "Pat
             verdict = dict(verdict)
             verdict["_routed_via"] = "cage"
             return verdict
-        # Cage didn't engage / errored → fall back to the direct kernel (never lose the gate).
+        # Cage didn't engage → fall through to the direct kernel below (never lose the gate).
+    except Exception as e:  # noqa: BLE001 — a Cage ROUTING error is the ONLY fail-open case (kernel fallback below)
+        _routing_err = str(e)[:160]
+    try:
         from ztare.gates.lean_proof_gate import run_anti_laundering_kernel
-        return run_anti_laundering_kernel(lean_source, lean_path, ztare_proofs_root, deep_verify=deep_verify,
-                                          original_source=original_source, target_name=target_name)
-    except Exception as e:  # noqa: BLE001 — fail-open; never block a closure on a routing error
-        return {"passed": True, "flags": [], "confirmed": [], "detail": {"cage_routing_error": str(e)[:160]}}
+        out = run_anti_laundering_kernel(lean_source, lean_path, ztare_proofs_root, deep_verify=deep_verify,
+                                         original_source=original_source, target_name=target_name)
+        if _routing_err and isinstance(out, dict):
+            out.setdefault("detail", {})["cage_routing_error"] = _routing_err
+        return out
+    except Exception as e:  # noqa: BLE001 — fail-CLOSED: the anti-laundering kernel could not run ⇒ BLOCK the closure
+        return {"passed": False, "flags": ["anti_laundering_kernel_error"], "confirmed": [],
+                "detail": {"kernel_error": str(e)[:160], "cage_routing_error": _routing_err}}
 
 
 def _selftest() -> int:

@@ -38,12 +38,21 @@ _FIELD_TYPES = {"ℝ", "Real", "ℚ", "Rat", "ℂ", "Complex"}
 
 
 def _closed_prop(goal_text: str) -> str:
-    """The goal's closed Prop (reuse conjecture._closed_goal_prop so the binder parse is consistent)."""
+    """The goal's closed Prop (reuse conjecture._closed_goal_prop so the binder parse is consistent).
+    BARE-PROP fallback (#124): solve-time callers (the instances-first gate) hand the LEAF goal, which
+    `_leaf_goal_from_source` has already closed to a bare `∀ …` Prop — not a declaration, so the decl
+    parser yields ''. A non-declaration text IS its own prop."""
     try:
         from ztare.leanmill.solver.conjecture import _closed_goal_prop
-        return _closed_goal_prop(goal_text) or ""
+        p = _closed_goal_prop(goal_text) or ""
     except Exception:  # noqa: BLE001
-        return ""
+        p = ""
+    if p:
+        return p
+    t = (goal_text or "").strip()
+    if t and not re.match(r"^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|noncomputable\s+)*(?:theorem|lemma|def|example|instance)\b", t):
+        return t
+    return ""
 
 
 def is_computable_existential(goal_text: str) -> "dict | None":
@@ -124,7 +133,7 @@ SCRIPT_PROMPT = (
 def _solve_via_llm(info: dict, goal_text: str, dispatch, lean_root, timeout_s: int) -> "list[str] | None":
     prompt = SCRIPT_PROMPT.format(goal=goal_text)
     try:
-        raw = dispatch(prompt, runtime="codex", repo=lean_root, timeout=timeout_s) or ""
+        raw = dispatch(prompt, repo=lean_root, timeout=timeout_s) or ""
     except Exception:  # noqa: BLE001
         return None
     m = re.search(r"```(?:python)?\s*\n(.*?)```", raw, re.DOTALL)
@@ -136,6 +145,87 @@ def _solve_via_llm(info: dict, goal_text: str, dispatch, lean_root, timeout_s: i
 
 _FORALL = re.compile(r"^\s*(?:∀|\\?forall)\s*(?P<vars>[^,:]+?)\s*(?::\s*(?P<typ>[^,]+?))?\s*,\s*(?P<body>.+)$",
                      re.DOTALL)
+
+
+_FORALL_GROUPS = re.compile(r"^\s*(?:∀|\\?forall)\s*(?P<groups>(?:\([^()]*\)\s*)+),\s*(?P<body>.+)$",
+                            re.DOTALL)
+_BINDER_GROUP = re.compile(r"\(\s*([^:()]+?)\s*:\s*([^()]+?)\s*\)")
+_REL_MARK = re.compile(r"≤|≥|<|>|≠|(?<![:=<>!])=(?!=)")   # a relation in a binder TYPE ⇒ a Prop (hypothesis) binder
+_IDENT = re.compile(r"[A-Za-z_][\w']*\Z")
+
+
+def _forall_parts(prop: str) -> "tuple[list[str], str, str, list[str]] | None":
+    """Shared ∀-parse for `looks_false` / `instance_evidence` (one home — they must agree). Handles the
+    unparenthesized `∀ n : ℕ, …`, the parenthesized `∀ (n : ℕ), …` that `_closed_goal_prop` emits, a
+    MULTI-GROUP telescope `∀ (a : ℤ) (b : ℤ), …` (all TYPE groups must share one type — mixed types
+    degrade to a clean None), and HYPOTHESIS BINDERS `∀ (n : ℕ) (h : 2 ≤ n), …` whose Prop type (it
+    contains a relation marker) becomes a GUARD, not a variable. Var names are validated as identifiers
+    — never garbage-to-SymPy. Returns (vars, typ, body, guard_props) or None."""
+    prop = (prop or "").strip()
+    m = _FORALL_GROUPS.match(prop)
+    if m:
+        vars_: "list[str]" = []
+        typs: "set[str]" = set()
+        guard_props: "list[str]" = []
+        for names_raw, typ_raw in _BINDER_GROUP.findall(m.group("groups")):
+            typ_raw = typ_raw.strip()
+            names = [v for v in re.split(r"\s+", names_raw.strip()) if v]
+            if not names or any(not _IDENT.fullmatch(v) for v in names):
+                return None
+            if _REL_MARK.search(typ_raw):          # Prop binder: (h : 2 ≤ n) — the binder NAME is dropped
+                guard_props.append(typ_raw)
+            else:
+                typs.add(typ_raw)
+                vars_.extend(names)
+        if not vars_ or len(typs) != 1:
+            return None                             # no numeric vars / mixed-type telescope: conservative
+        return vars_, typs.pop(), (m.group("body") or "").strip(), guard_props
+    m = _FORALL.match(prop)
+    if not m:
+        return None
+    vars_raw = (m.group("vars") or "").strip()
+    typ = (m.group("typ") or "").strip()
+    vars_ = [v for v in re.split(r"\s+", vars_raw) if v]
+    if not vars_ or any(not _IDENT.fullmatch(v) for v in vars_):
+        return None
+    return vars_, typ, (m.group("body") or "").strip(), []
+
+
+def _split_implication_chain(body: str) -> "list[str]":
+    """Split a Lean Prop body on TOP-LEVEL `→`/`->` (paren/bracket-depth aware): the parts before the
+    last arrow are hypotheses (guards), the last is the conclusion. A single-part list = unguarded."""
+    parts, depth, cur, i = [], 0, [], 0
+    while i < len(body):
+        ch = body[i]
+        if ch in "([{⟨⦃":
+            depth += 1
+        elif ch in ")]}⟩⦄":
+            depth -= 1
+        if depth == 0 and ch == "→":
+            parts.append("".join(cur)); cur = []; i += 1; continue
+        if depth == 0 and body.startswith("->", i):
+            parts.append("".join(cur)); cur = []; i += 2; continue
+        cur.append(ch); i += 1
+    parts.append("".join(cur))
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _guarded_relation(parts: "tuple[list[str], str, str, list[str]]") -> "tuple[str, list[str]] | None":
+    """(vars, typ, body, props) → (conclusion_rel, guard_rels) in SymPy form, or None. EVERY hypothesis
+    (binder Prop + each top-level →-antecedent) must translate cleanly — an untranslatable guard means
+    point-admissibility cannot be certified, so NO signal at all (conservative, both duals)."""
+    _, _, body, props = parts
+    chain = _split_implication_chain(body)
+    rel = _lean_relation_to_sympy(chain[-1])
+    if not rel:
+        return None
+    guards: "list[str]" = []
+    for h in props + chain[:-1]:
+        g = _lean_relation_to_sympy(h)
+        if not g:
+            return None
+        guards.append(g)
+    return rel, guards
 
 
 def _lean_relation_to_sympy(body: str) -> str:
@@ -161,18 +251,51 @@ def looks_false(goal_text: str, timeout_s: int = 8) -> "list[str] | None":
     relation, grid-search for a COUNTEREXAMPLE. Returns the failing assignment (⇒ the goal is computably FALSE
     in the search box → route to falsify) or None (no counterexample / not a computable ∀). Conservative — a
     non-None result is a HIGH-confidence falsity signal; the kernel still arbitrates the actual ¬G."""
-    prop = _closed_prop(goal_text)
-    m = _FORALL.match(prop.strip())
-    if not m:
+    parts = _forall_parts(_closed_prop(goal_text))
+    if not parts:
         return None
-    rel = _lean_relation_to_sympy((m.group("body") or "").strip())
-    vars_ = [v for v in re.split(r"\s+", (m.group("vars") or "").strip()) if v]
-    if not rel or not vars_:
+    vars_, _typ, _body, _props = parts
+    gr = _guarded_relation(parts)
+    if not gr:
         return None
-    from ztare.common.symbolic_witness import find_counterexample
-    _typ = (m.group("typ") or "").strip()
+    rel, guards = gr
+    from ztare.common.symbolic_witness import find_counterexample, invariant_mismatch
+    # STAGE 1 (#114 invariant-screen, ~ms): a degree/parity/growth mismatch of the two sides is a decisive
+    # falsity signal BEFORE the ~8s grid search — the conservation-law check. Same advisory contract: a
+    # non-None only routes toward falsify; the kernel-proved ¬G stays the only refutation verdict.
+    # UNGUARDED ONLY: under hypotheses the domain is restricted, so a global degree/growth mismatch is
+    # NOT decisive (e.g. h : n ≤ 5 caps the growth) — guarded goals go straight to the admitted-point grid.
+    if not guards:
+        mm = invariant_mismatch(rel, vars_)
+        if mm:
+            return mm
     return find_counterexample(rel, vars_, integer=(_typ in _INT_TYPES or not _typ),
-                               nonneg=(_typ in _NAT_TYPES), timeout_s=timeout_s)
+                               nonneg=(_typ in _NAT_TYPES), timeout_s=timeout_s, guards=guards)
+
+
+def instance_evidence(goal_text: str, k: int = 5, timeout_s: int = 8) -> "dict | None":
+    """INSTANCES-FIRST evidence (#124) — `looks_false`'s POSITIVE DUAL, same parse (`_closed_prop` +
+    `_FORALL`) and same translation (`_lean_relation_to_sympy`), one home for the Lean→SymPy glue.
+    For a computable-shaped bare-∀ arithmetic goal, CONFIRM up to `k` concrete instances before the
+    apparatus funds an expensive dispatch on it. Returns
+    `{"relation", "vars", "confirmed", "refuted", "evaluated"}` or None (not computable-shaped /
+    no definite evaluation — NO-SIGNAL). ADVISORY by contract: confirmed instances are cheap
+    confidence + conjecture-book evidence; a `refuted` assignment is the SAME falsity signal
+    `looks_false` routes on; the kernel-proved ¬G stays the only refutation verdict."""
+    parts = _forall_parts(_closed_prop(goal_text))
+    if not parts:
+        return None
+    vars_, _typ, _body, _props = parts
+    gr = _guarded_relation(parts)
+    if not gr:
+        return None
+    rel, guards = gr
+    from ztare.common.symbolic_witness import confirm_instances
+    ev = confirm_instances(rel, vars_, integer=(_typ in _INT_TYPES or not _typ),
+                           nonneg=(_typ in _NAT_TYPES), timeout_s=timeout_s, k=k, guards=guards)
+    if ev is None:
+        return None
+    return {"relation": rel, "vars": vars_, "guards": guards, **ev}
 
 
 # ── 5. Kronecker / linear-system route (ZTARE_LEANMILL_KRONECKER=1) ────────────────────────────────
@@ -256,7 +379,7 @@ def solve_witness(goal_text: str, dispatch=None, lean_root=None, timeout_s: int 
     # Pell-form diophantine route (default-OFF parity): `∃ x y, x²−D·y²=N [∧ 0<y]` — the genuinely-LLM-
     # impossible witness (huge fundamental solution). Checked BEFORE the linear-system route (a Pell body is a
     # single NON-linear equality the direct/system paths can't solve).
-    if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER") == "1":
+    if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER", "1") != "0":
         pell = is_pell_existential(goal_text)
         if pell:
             w = solve_diophantine_pell(pell["D"], pell["N"], pell["pell_vars"], timeout_s=timeout_s)
@@ -266,7 +389,7 @@ def solve_witness(goal_text: str, dispatch=None, lean_root=None, timeout_s: int 
                 path = "pell_diophantine"
     # Kronecker / linear-system route (default-OFF parity): a conjunction-bodied existential SymPy can solve as
     # a system, BEFORE spending an LLM call. Only engages when the single-equality direct path found nothing.
-    if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER") == "1":
+    if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER", "1") != "0":
         sysinfo = is_system_existential(goal_text)
         if sysinfo:
             witnesses = solve_linear_system(sysinfo["equations"], sysinfo["vars"], integer=integer, timeout_s=timeout_s)
@@ -311,13 +434,50 @@ def _selftest() -> int:
        looks_false("theorem t : ∀ n : ℤ, n + 1 = n := by sorry") is not None)
     ok("looks_false: a TRUE ∀ (n+0=n) → None",
        looks_false("theorem t : ∀ n : ℤ, n + 0 = n := by sorry") is None)
-    ok("looks_false: a ∀ with a hypothesis (→) is skipped (conservative)",
+    ok("looks_false: guarded-TRUE ∀ (H → C, C holds under H) → None",
        looks_false("theorem t : ∀ n : ℕ, n = n → n + 1 = n + 1 := by sorry") is None)
+    _lf = looks_false("theorem t : ∀ n : ℕ, 2 <= n → n * n <= 2 * n := by sorry")
+    ok("looks_false: guarded-FALSE detected at an ADMITTED point (n≥3; n=0,1 never misfire)",
+       _lf is not None and int(_lf[0]) >= 3)
+    ok("looks_false: untranslatable hypothesis ⇒ None (admissibility uncertifiable)",
+       looks_false("theorem t : ∀ n : ℕ, Nat.Prime n → n + 1 = n := by sorry") is None)
     # ℕ vs ℤ: `0 ≤ n` is TRUE over ℕ (no counterexample) but FALSE over ℤ (n=-1) — the type MUST gate the
     # grid so a counterexample invalid for the actual type never misfires the router to falsify.
     ok("looks_false: true-over-ℕ not misfired (nonneg grid)",
        looks_false("theorem t : ∀ n : ℕ, 0 <= n := by sorry") is None)
     ok("looks_false: false-over-ℤ detected", looks_false("theorem t : ∀ n : ℤ, 0 <= n := by sorry") is not None)
+    # instance_evidence (#124) — looks_false's POSITIVE dual through the SAME parse/translation
+    _ie = instance_evidence("theorem t : ∀ n : ℕ, n <= n * n := by sorry")
+    ok("instances: true-over-ℕ confirmed (≥3 instances, no refutation)",
+       _ie is not None and len(_ie["confirmed"]) >= 3 and _ie["refuted"] is None)
+    _ie = instance_evidence("theorem t : ∀ n : ℤ, n + 1 = n := by sorry")
+    ok("instances: false ∀ ⇒ refuting assignment (the looks_false signal, zero fake confidence)",
+       _ie is not None and _ie["refuted"] is not None and not _ie["confirmed"])
+    ok("instances: binder-signature goal closed to ∀ (theorem (n : ℕ) : …)",
+       (instance_evidence("theorem t (n : ℕ) : n <= n + 1 := by sorry") or {}).get("refuted", "x") is None)
+    # the parenthesized-∀ hole the gate exposed: `∀ (n : ℕ), …` (what _closed_goal_prop emits) used to
+    # mis-split as vars='(n' typ='ℕ)' ⇒ silent no-signal in looks_false TOO. Both duals must parse it.
+    ok("looks_false: parenthesized binder parsed (false-over-ℤ detected)",
+       looks_false("theorem t (n : ℤ) : 0 <= n := by sorry") is not None)
+    _ie = instance_evidence("theorem t : ∀ (a : ℤ) (b : ℤ), a + b = b + a := by sorry")
+    ok("instances: same-type multi-group telescope PEELED (commutativity confirmed)",
+       _ie is not None and len(_ie["confirmed"]) >= 3 and _ie["refuted"] is None)
+    ok("instances: MIXED-type telescope degrades to None (conservative)",
+       instance_evidence("theorem t : ∀ (a : ℤ) (x : ℝ), a + 0 = a := by sorry") is None)
+    # GUARDED goals (H → C) — formerly skipped, now evaluated on hypothesis-ADMITTED points only
+    _ie = instance_evidence("theorem t : ∀ n : ℕ, 2 <= n → 2 * n <= n * n := by sorry")
+    ok("instances: guarded-TRUE confirmed on admitted points (2≤n → 2n≤n²)",
+       _ie is not None and len(_ie["confirmed"]) >= 3 and _ie["refuted"] is None and len(_ie["guards"]) == 1)
+    _ie = instance_evidence("theorem t : ∀ n : ℕ, 2 <= n → n * n <= 2 * n := by sorry")
+    ok("instances: guarded-FALSE refuted at an admitted point (n≥3; n=0,1 never misfire)",
+       _ie is not None and _ie["refuted"] is not None and int(_ie["refuted"][0]) >= 3)
+    _ie = instance_evidence("theorem t : ∀ (n : ℕ) (h : 2 <= n), 2 * n <= n * n := by sorry")
+    ok("instances: hypothesis-BINDER (h : 2 ≤ n) becomes a guard, not a variable",
+       _ie is not None and len(_ie["confirmed"]) >= 3 and _ie["refuted"] is None and len(_ie["guards"]) == 1)
+    ok("instances: untranslatable hypothesis ⇒ None (admissibility uncertifiable)",
+       instance_evidence("theorem t : ∀ n : ℕ, Nat.Prime n → n + 1 = n := by sorry") is None)
+    ok("instances: abstract goal → None (no carrier)",
+       instance_evidence("theorem t : ∀ f : ℝ → ℝ, Continuous f := by sorry") is None)
 
     # ── Kronecker / linear-system route (gated, default-OFF) ──
     _sys_goal = "theorem t : ∃ c0 c1 : ℤ, c0 + c1 = 5 ∧ c0 - c1 = 1 := by sorry"
@@ -327,9 +487,9 @@ def _selftest() -> int:
        is_system_existential("theorem t : ∃ x : ℤ, x + 1 = 5 := by sorry") is None)
     _ksave = os.environ.get("ZTARE_LEANMILL_KRONECKER")
     try:
-        os.environ.pop("ZTARE_LEANMILL_KRONECKER", None)
+        os.environ["ZTARE_LEANMILL_KRONECKER"] = "0"   # default is ON now; =0 is the explicit A/B baseline
         # PARITY: flag OFF + no dispatch ⇒ the system goal is NOT solved by the deterministic route (None).
-        ok("system: parity when flag OFF (no kronecker route)", solve_witness(_sys_goal) is None)
+        ok("system: parity when flag =0 (no kronecker route)", solve_witness(_sys_goal) is None)
         os.environ["ZTARE_LEANMILL_KRONECKER"] = "1"
         _out = solve_witness(_sys_goal)
         ok("system: flag ON solves the system + emits multi-binder refine",
@@ -344,8 +504,8 @@ def _selftest() -> int:
     ok("pell: gate rejects a non-Pell existential", is_pell_existential("theorem t : ∃ x : ℤ, x + 1 = 5 := by sorry") is None)
     _ksave2 = os.environ.get("ZTARE_LEANMILL_KRONECKER")
     try:
-        os.environ.pop("ZTARE_LEANMILL_KRONECKER", None)
-        ok("pell: parity when flag OFF", solve_witness(_pell_goal) is None)
+        os.environ["ZTARE_LEANMILL_KRONECKER"] = "0"   # default is ON now; =0 is the explicit A/B baseline
+        ok("pell: parity when flag =0", solve_witness(_pell_goal) is None)
         os.environ["ZTARE_LEANMILL_KRONECKER"] = "1"
         _po = solve_witness(_pell_goal)
         ok("pell: flag ON emits the HUGE fundamental witness via diophantine",

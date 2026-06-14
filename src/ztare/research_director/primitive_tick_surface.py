@@ -8,6 +8,7 @@ starts free-recalling tools.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import asdict, dataclass, field
 from datetime import date
 from pathlib import Path
@@ -18,6 +19,92 @@ REPO = Path(__file__).resolve().parents[3]
 ARCH_INDEX = REPO / "analytics" / "public" / "index" / "architecture_index.jsonl"
 GRAPH_PATH = REPO / "src" / "ztare" / "architecture_index" / "graph.yaml"
 OUT_PATH = REPO / "analytics" / "public" / "queries" / "rd_tick_primitive_surface.json"
+
+_QUERY_STOPWORDS = {
+    "about",
+    "after",
+    "again",
+    "against",
+    "and",
+    "another",
+    "before",
+    "being",
+    "between",
+    "could",
+    "current",
+    "does",
+    "for",
+    "from",
+    "has",
+    "have",
+    "into",
+    "itself",
+    "little",
+    "more",
+    "need",
+    "needs",
+    "next",
+    "only",
+    "same",
+    "several",
+    "should",
+    "show",
+    "that",
+    "the",
+    "their",
+    "there",
+    "these",
+    "this",
+    "what",
+    "when",
+    "where",
+    "whether",
+    "with",
+    "would",
+}
+
+
+def expand_query_terms(query_terms: list[str] | tuple[str, ...]) -> list[str]:
+    """Expand natural RD task text into stable lexical retrieval terms.
+
+    The semantic atlas can consume full prose, but catalog/worker parent-node
+    ranking also uses deterministic substring matches. This keeps natural
+    operator/RD brief text usable without replacing the semantic retrieval path.
+    """
+    out: list[str] = []
+
+    def add(term: str) -> None:
+        norm = term.strip().lower()
+        if not norm or norm in _QUERY_STOPWORDS:
+            return
+        if norm not in out:
+            out.append(norm)
+
+    for raw in query_terms:
+        text = str(raw or "").strip()
+        if not text:
+            continue
+        lower = text.lower()
+        add(lower)
+        if "_" in lower:
+            add(lower.replace("_", " "))
+        if " " in lower:
+            add(lower.replace(" ", "_"))
+        tokens = [
+            token
+            for token in re.findall(r"[a-zA-Z0-9_]+", lower)
+            if len(token) >= 3 and token not in _QUERY_STOPWORDS
+        ]
+        for token in tokens:
+            add(token)
+            if "_" in token:
+                add(token.replace("_", " "))
+        for left, right in zip(tokens, tokens[1:]):
+            phrase = f"{left} {right}"
+            add(phrase)
+            add(phrase.replace(" ", "_"))
+    return out
+
 
 DEFAULT_QUERY_TERMS = [
     "NS_track_b",
@@ -30,7 +117,7 @@ DEFAULT_QUERY_TERMS = [
     "endpoint_check",
     "CAS_verification",
     "sympy",
-    "lagrangian_path_b",
+    "variational_lagrangian",
     "variational_principle",
     "inversion",
     "anti_anchoring",
@@ -228,13 +315,13 @@ BUCKET_TERMS = {
         "typed_endpoint",
         "leverage_audit",
     ],
-    "lagrangian_path_b": [
+    "variational_lagrangian": [
         "lagrangian",
-        "lagrangian_path_b",
+        "lagrangian_derivation",
         "variational_principle",
         "noether_check",
         "physics_substrate",
-        "path_b",
+        "action_principle",
     ],
     "cognitive_reframe": [
         "inversion",
@@ -331,6 +418,7 @@ class PrimitiveTickSurface:
     total_index_rows: int
     top_hits: list[PrimitiveHit]
     buckets: dict[str, list[PrimitiveHit]]
+    parent_nodes: list[dict[str, Any]] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
     @property
@@ -467,13 +555,21 @@ def build_primitive_tick_surface(
     top_n: int = 12,
     per_bucket: int = 4,
 ) -> PrimitiveTickSurface:
-    terms = query_terms or DEFAULT_QUERY_TERMS
+    terms = expand_query_terms(query_terms or DEFAULT_QUERY_TERMS)
     exclusions = excluded_terms or []
     rows, warnings = _load_rows()
     graph_bonus, graph_warnings = _load_graph_bonus()
     warnings.extend(graph_warnings)
+    try:
+        from src.ztare.research_director.primitive_amnesia import atlas_freshness_status
+        atlas_status = atlas_freshness_status()
+        if not atlas_status.ok:
+            warnings.append("primitive atlas stale: " + "; ".join(atlas_status.warnings[:3]))
+    except Exception as exc:
+        warnings.append(f"primitive atlas freshness check unavailable: {type(exc).__name__}: {str(exc)[:120]}")
     # ONE retrieval engine (2026-06-01): rank via the SEMANTIC atlas
-    # (`primitive_amnesia`, vocabulary-invariant, held-out recall@5=1.0) using the
+    # (`primitive_amnesia`, vocabulary-invariant; measure current recall with
+    # `python -m ztare.research_director.primitive_amnesia --eval`) using the
     # scope terms as the query — instead of this module's old lexical `_score`. The
     # lexical `_matches` is kept ONLY for bucketing/display + the skip filter, not for
     # ranking. Falls back to lexical ranking when no atlas/embedder is available.
@@ -531,11 +627,28 @@ def build_primitive_tick_surface(
         bucket_hits = [hit for hit in hits if bucket in hit.buckets]
         bucketed[bucket] = bucket_hits[:per_bucket]
 
+    parent_node_payloads: list[dict[str, Any]] = []
+    try:
+        from src.ztare.research_director.primitive_catalog_taxonomy import catalog_parent_nodes
+        from src.ztare.research_director.primitive_family_registry import parent_nodes
+
+        parent_node_payloads = [
+            {**asdict(node), "scope": "catalog"}
+            for node in catalog_parent_nodes(rows, terms)
+        ]
+        parent_node_payloads.extend(
+            {**asdict(node), "scope": "llm_mediated"}
+            for node in parent_nodes(terms)
+        )
+    except Exception as exc:
+        warnings.append(f"primitive parent nodes unavailable: {type(exc).__name__}: {str(exc)[:120]}")
+
     return PrimitiveTickSurface(
         query_terms=terms,
         total_index_rows=len(rows),
         top_hits=hits[:top_n],
         buckets=bucketed,
+        parent_nodes=parent_node_payloads,
         warnings=warnings,
     )
 
@@ -564,6 +677,7 @@ def write_primitive_tick_surface(
             name: [asdict(hit) for hit in hits]
             for name, hits in surface.buckets.items()
         },
+        "parent_nodes": surface.parent_nodes,
         "warnings": surface.warnings,
     }
     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n")
@@ -580,8 +694,44 @@ def render_text(surface: PrimitiveTickSurface) -> str:
         "    use the chosen hit only by converting it into action-constraint receipt fields,",
         "    infer the action target from source facts rather than task/check-menu wording,",
         "    a gate, artifact, falsifier, repair rule, or explicit why_not.",
-        "  top primitives for this tick:",
+        "  catalog parent nodes:",
     ]
+    catalog_nodes = [node for node in surface.parent_nodes if node.get("scope") == "catalog"]
+    worker_nodes = [node for node in surface.parent_nodes if node.get("scope") == "llm_mediated"]
+    for node in catalog_nodes[:4]:
+        matched_terms = node.get("matched_terms", [])
+        if isinstance(matched_terms, (list, tuple)):
+            matched = ", ".join(str(term) for term in matched_terms[:5]) or "no query match"
+        else:
+            matched = "no query match"
+        lines.append(
+            f"    - {node.get('family_id')} ({node.get('child_count')} children): {matched}"
+        )
+        purpose = str(node.get("purpose") or "")
+        if purpose:
+            lines.append(f"      {purpose}")
+        examples = node.get("child_primitives", [])
+        if not isinstance(examples, (list, tuple)) or not examples:
+            examples = node.get("example_ids", [])
+        if isinstance(examples, (list, tuple)) and examples:
+            lines.append("      examples: " + ", ".join(str(item) for item in examples[:5]))
+    lines.append("  worker family nodes:")
+    for node in worker_nodes[:4]:
+        matched_terms = node.get("matched_terms", [])
+        if isinstance(matched_terms, (list, tuple)):
+            matched = ", ".join(str(term) for term in matched_terms[:5]) or "no query match"
+        else:
+            matched = "no query match"
+        lines.append(
+            f"    - {node.get('family_id')} ({node.get('child_count')} children): {matched}"
+        )
+        purpose = str(node.get("purpose") or "")
+        if purpose:
+            lines.append(f"      {purpose}")
+        examples = node.get("child_primitives", [])
+        if isinstance(examples, (list, tuple)) and examples:
+            lines.append("      examples: " + ", ".join(str(item) for item in examples[:5]))
+    lines.append("  top primitives for this tick:")
     for hit in surface.top_hits[:10]:
         lines.append(f"    - {hit.id} [{hit.kind}] score={hit.score:g}")
         lines.append(f"      {hit.path}")

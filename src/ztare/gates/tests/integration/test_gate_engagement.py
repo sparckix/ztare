@@ -52,7 +52,7 @@ def test_default_cage_constructs():
     cage = get_default_cage()
     assert isinstance(cage, Cage)
     # 17 dormant - 1 retired (bridge_scope_contract) + 5 already-LIVE = 21 minimum.
-    # Actual count after panel synthesis + RETIRE decisions (2026-04-25 night):
+    # Actual count after panel synthesis + RETIRE decisions (2026-04-25):
     # 14 WIRE'd (10 unconditional + 3 conditional + 1 utility excluded) +
     # but residual_norm registered as utility-not-gate so subtract 1.
     # Net registered: ~17. We assert ≥15 to allow future RETIRE flexibility.
@@ -79,7 +79,7 @@ def test_1d_substrate_engages_correct_gates():
     cage = get_default_cage()
     s = _make_substrate("1d")
     engaged = _engaged_gates(cage, s)
-    # bridge_scope_contract RETIRED per panel synthesis 2026-04-25 night
+    # bridge_scope_contract RETIRED per panel synthesis 2026-04-25
     assert "bridge_scope_contract" not in engaged
     assert "semantic_gate_stabilization" in engaged
     assert "circularity" in engaged
@@ -228,7 +228,7 @@ def test_coverage_all_dormant_gates_registered():
     be registered in the default Cage. RETIRE decisions belong in
     DECISION_LOG.md, not this file."""
     cage = get_default_cage()
-    # Per panel synthesis 2026-04-25 night, bridge_scope_contract RETIRED
+    # Per panel synthesis 2026-04-25, bridge_scope_contract RETIRED
     # and residual_norm classified as utility (not registered as Gate).
     expected_wired = {
         "ansatz_survivor", "asymptotic_claim_discipline",

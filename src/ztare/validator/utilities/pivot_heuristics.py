@@ -46,7 +46,7 @@ MODULE_TEXT = {
     ),
     "adversarial_stress_test": (
         "7. ADVERSARIAL STRESS-TEST: Pressure-test the candidate design against a forensic skeptic, "
-        "a minimalist purist, and a moat hunter."
+        "a minimalist purist, and an overclaim hunter."
     ),
     "success_liability": (
         "8. SUCCESS LIABILITY: If the mechanism works, what new technical, legal, or competitive "

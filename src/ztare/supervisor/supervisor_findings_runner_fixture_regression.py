@@ -91,12 +91,12 @@ def test_parse_sentinel_inline_at_end_of_sentence() -> None:
     raw = (
         "I have addressed every prior concern and have nothing further "
         "to add. With that guardrail in place, I see no outstanding "
-        "load-bearing architectural claims. SENTINEL_DECISION: raise"
+        "decision-critical architectural claims. SENTINEL_DECISION: raise"
     )
     body, raised = parse_sentinel_decision(raw)
     assert raised is True
     assert "SENTINEL_DECISION" not in body
-    assert "load-bearing architectural claims." in body
+    assert "decision-critical architectural claims." in body
 
 
 def test_parse_sentinel_inline_in_middle_does_not_lock_in_early() -> None:

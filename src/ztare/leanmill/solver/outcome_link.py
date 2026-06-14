@@ -1,5 +1,13 @@
 """Outcome links — bind a CALIBRATION RETUNE to a measured CLOSURE@BUDGET outcome.
 
+STATUS (2026-06-10): BUILT but DORMANT (zero live callers). Its Holmström decision-changed principle is now the
+canonical `PolicyPromotion.decision_changed` gate in `contracts/learning_unit.py` (the unified compounder), and
+the forecast router's resolve→Brier loop measures forecast decision-impact. What remains UNIQUE to this module —
+meta-measuring whether a calibration RETUNE moved the OBJECTIVE — is second-order and was never wired. DECISION:
+retire-defer — keep the harness (no callers ⇒ no cost, no parity surface), do NOT rebuild this principle
+elsewhere (it lives in learning_unit now), and wire it (snapshot closure@budget across a retune) only if the
+self-tuning's own validity claim becomes a measured priority.
+
 The Holmström informativeness principle applied to the solver's self-tuning. `move_calibration`
 RECORDS that priors shifted (a retune happened) and `recorded_forecast_brier` measures a PROXY
 (forecast Brier). Neither records whether a retune actually moved the OBJECTIVE — closure@budget —

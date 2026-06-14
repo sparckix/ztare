@@ -407,18 +407,30 @@ def run_rubric_review(
     runtime = LLMRuntime()
     model_id = MODEL_MAP[model_family]
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "rubric_review",
             prompt,
-            model_id=model_id,
-            retries=4,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                retries=4,
+                timeout_seconds=300,
+                request_label="rubric_review request",
+                transient_wait_seconds=5,
+                timeout_wait_seconds=2,
+            ),
+            repo=REPO_ROOT,
             timeout_seconds=300,
-            request_label="rubric_review request",
-            transient_wait_seconds=5,
-            timeout_wait_seconds=2,
         )
     except LLMRuntimeError as exc:
         raise RubricReviewError(
             f"Rubric review LLM call failed after retries: {exc}"
+        ) from exc
+    except Exception as exc:
+        raise RubricReviewError(
+            f"Rubric review dispatch failed after retries: {exc}"
         ) from exc
 
     parsed = parse_llm_json(response.text)

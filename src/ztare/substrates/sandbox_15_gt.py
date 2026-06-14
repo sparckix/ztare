@@ -1,4 +1,4 @@
-"""Ground-truth module for sandbox_15 integer substrate (GP-074 Component C).
+"""Ground-truth module for sandbox_15 integer substrate.
 
 GT: f(u, v) = u^2 * v - u + round(0.08 * v)
   dominant term:  u^2 * v - u

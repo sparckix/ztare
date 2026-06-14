@@ -438,13 +438,20 @@ def propose_evidence_gap_enrichment(
             "tokens_out": 0,
         }
         try:
-            response = runtime.call_text(
+            from src.ztare.common.dispatch_model import dispatch_call_text
+
+            response = dispatch_call_text(
+                "evidence_gap_enrichment",
                 prompt,
-                model_id=model_id,
+                llm_response_call=lambda p: runtime.call_text(
+                    p,
+                    model_id=model_id,
+                    timeout_seconds=int(timeout_seconds),
+                    max_tokens=max_output_tokens,
+                    request_label=f"evidence_gap_enrichment[{target_class}/{feature_name}]",
+                    retries=1,
+                ),
                 timeout_seconds=int(timeout_seconds),
-                max_tokens=max_output_tokens,
-                request_label=f"evidence_gap_enrichment[{target_class}/{feature_name}]",
-                retries=1,
             )
         except Exception as exc:  # noqa: BLE001
             gap_record["error"] = f"{type(exc).__name__}: {str(exc)[:280]}"

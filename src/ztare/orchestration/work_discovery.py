@@ -31,6 +31,9 @@ from typing import Iterable, Optional
 
 from src.ztare.common.paths import REPO_ROOT
 from src.ztare.orchestration.execution_routing import infer_execution_route
+from src.ztare.research_director.primitive_class_rotation import (
+    cross_substrate_primitive_class_ledger_path_for_repo,
+)
 from src.ztare.signals import damage
 
 
@@ -274,7 +277,7 @@ def discover_resolved_pending_execution(
     daemon's main flow will then dispatch claude/codex to run it.
 
     Idempotency: once dispatched, the daemon writes a sibling `.dispatched`
-    file next to the resolved gate so it's not re-discovered.
+    file next to the resolved gate and skips it on later discovery passes.
     """
     out: list[Candidate] = []
     if assigned_to and assigned_to.startswith("role."):
@@ -470,7 +473,7 @@ def discover_substrate_portfolio_opportunities(
 
     # Eigenquestion-rotation candidate: any scaffolded substrate whose
     # cross-substrate ledger shows ≥3 recent runs in the same class.
-    ledger_path = REPO_ROOT / "analytics" / "queries" / "cross_substrate_explored_classes.jsonl"
+    ledger_path = cross_substrate_primitive_class_ledger_path_for_repo(REPO_ROOT)
     if ledger_path.exists():
         try:
             anchored: dict[str, dict[str, int]] = {}
@@ -581,7 +584,7 @@ def discover_all(
     damage_candidates = discover_damage_signals(max_per_source=max_per_source)
     out.extend([c for c in damage_candidates if c.severity == "critical"])
     # Resolved-but-unexecuted approved gates rank ABOVE most other sources
-    # because the principal already approved them — they're load-bearing.
+    # because the principal already approved them — they're decision-critical.
     out.extend(discover_resolved_pending_execution(
         assigned_to=assigned_to, max_per_source=max_per_source))
     out.extend(discover_principal_goals(

@@ -1,6 +1,6 @@
 """GP-157 v5.0 Layer 1 — typed substrate-ABI contract table.
 
-Per panel synthesis (Task #67 verdict 2026-04-25 night, recorded in
+Per panel synthesis (2026-04-25, recorded in
 GP-157 seam): the apparatus has had three concurrent test_model.py
 contracts (A/B/C) with five sources of contradiction taught to the
 mutator. The fix is a single-source-of-truth table mapping each

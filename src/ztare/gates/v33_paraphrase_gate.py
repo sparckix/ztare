@@ -2,7 +2,7 @@
 """v33_paraphrase_gate.py — leakage-independent gold-name-verbatim / paraphrase organ.
 
 Second forward gate (after the validated vacuity organ). Catches the
-v28-v29 retraction class: a claimed "moat-grade closure" whose proof is
+v28-v29 retraction class: a claimed "non-subsumed closure" whose proof is
 essentially `exact <existing Mathlib gold lemma>` + trivial glue.
 
 Same pattern as the vacuity organ — shape-predict + independent-corpus-
@@ -134,7 +134,7 @@ _PROJ_SUFFIX = re.compile(r"\.(mpr|mp|1|2|left|right|symm|le|ge|elim|intro|conti
 
 
 def _head_ident(expr: str) -> str | None:
-    """First identifier token of an application expression (the load-bearing
+    """First identifier token of an application expression (the decision-critical
     head), skipping leading `@`, parens, and anonymous constructors."""
     expr = expr.strip().lstrip("@(")
     m = re.match(r"\s*([A-Za-z_][\w'.]*)", expr)
@@ -239,7 +239,7 @@ def detect_gold_name_verbatim(statement_and_proof: str) -> dict:
     has_composition = any(t in body for t in COMPOSITION_TACTICS) and len(have_lemma_lines) >= 2
 
     suspect = (
-        len(distinct_cited) == 1            # exactly one load-bearing lemma
+        len(distinct_cited) == 1            # exactly one decision-critical lemma
         and not has_composition             # no multi-have composition
         and len(distinct_have_lemmas) <= 1  # not ≥2 distinct lemma-haves
     )
@@ -293,7 +293,7 @@ example {E : Type*} [SeminormedAddCommGroup E] (a b c d : E) :
   have h2 : ‖a - c‖ ≤ ‖a - b‖ + ‖b - c‖ := norm_sub_le_norm_sub_add_norm_sub a b c
   linarith""")
 
-# Legitimate library-COMPOSED proof: real work (funext/simp) over its OWN goal, then
+# Legitimate library-composed proof: independent proof construction (funext/simp) over its own goal, then
 # closes with ONE Mathlib lemma. suspect (one cited lemma) but MUST NOT be a
 # trivial_restatement → must NOT become a blocker. This is the ATLAS pullbackForm_id
 # false-positive the 2026-05-30 work-tactic fix targets.
@@ -304,7 +304,7 @@ theorem pullbackForm_id (ω : M) : pullbackForm LinearMap.id ω = ω := by
   exact AlternatingMap.compLinearMap_id ω""")
 
 # SEV1-A attack: prepend a NO-OP (`simp only []`) to a bare restatement to dodge the
-# blocker. MUST still be a trivial_restatement (no-op is not real work).
+# blocker. MUST still be a trivial_restatement (no-op is not substantive proof construction).
 GT_POS_NOOP = ("noop_evasion", """import Mathlib
 theorem mine : SomeProp := by
   simp only []
@@ -321,7 +321,7 @@ GT_POS_PROJ = ("projection_restatement", """import Mathlib
 theorem mine : P := by
   exact some_gold_iff_lemma.mpr h""")
 
-# Re-review SEV1-B false-positive: a term-mode LAMBDA construction is real work, NOT
+# Re-review SEV1-B false-positive: a term-mode LAMBDA construction is independent proof construction, NOT
 # a bare restatement — must NOT be flagged trivial.
 GT_NEG_LAMBDA = ("term_lambda_construction", """import Mathlib
 theorem mine : ∀ x, P x :=
@@ -345,7 +345,7 @@ def run_validation() -> dict:
     pos_ok = pos["detect"]["trivial_restatement"] and pos["corpus_confirm"]["in_mathlib"]
     # H07: two distinct lemma-haves + linarith -> not even suspect.
     neg_ok = not neg["detect"]["gold_name_verbatim_suspect"]
-    # ATLAS: real work (funext/simp) then closes with one lemma -> suspect but NOT trivial,
+    # ATLAS: independent proof construction (funext/simp) then closes with one lemma -> suspect but NOT trivial,
     # so it must NOT be elevated to a blocker (the 2026-05-30 false-positive fix).
     work_ok = (work["detect"]["gold_name_verbatim_suspect"]
                and not work["detect"]["trivial_restatement"])

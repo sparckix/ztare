@@ -1,19 +1,18 @@
-"""GP-157 v5.0 Phase 4e — parallel mutator skeleton (NOT YET WIRED).
+"""Parallel mutator worker primitives for the autoresearch blitz path.
 
 Pull-forward of GP-060 Parallel Champion Synthesis design + Gemini Pro
-master-worker MCTS framing (2026-04-25 night). This module is shipped
-ADDITIVELY — data shapes and the combiner protocol are locked down with
-tests, but the autoresearch_loop is NOT modified to invoke parallel
-mutators in this commit.
+master-worker MCTS framing (2026-04-25). This module owns only the
+small worker/task/result primitives and deterministic combiner. The live
+autoresearch wire-in is `orchestrator.blitz_dispatch`, which decides when
+K-way mutation should run and records tournament provenance.
 
-Why ship the skeleton without wiring:
-  - Same shape as Phase 4b/4c/4d: build the testable primitive first,
-    wire later when stability soak passes.
-  - Cost shape: K-way parallelism is N× mutator + N× judge per iter.
-    Wiring it on by default would silently 3× spend; opt-in at the
-    rubric layer (parallel_mutator_k=K) keeps default behavior intact.
-  - Empirical question: does engineered divergence beat sampled
-    divergence? Better to measure before architecting around it.
+Cost shape:
+  - K-way parallelism is N× mutator per tournament. It remains opt-in at
+    the rubric layer (`parallel_mutator_k=K`) and is normally triggered by
+    stagnation, force-iters, or an explicit force flag.
+  - The deterministic combiner here does not call judges or gates. The
+    caller supplies scoring policy and is responsible for downstream R1,
+    fit, gate, and judge validation of the selected candidate.
 
 Selective deployment guidance (operator-honest):
   - Substrates where local-minimum trapping is the binding constraint
@@ -24,14 +23,15 @@ Selective deployment guidance (operator-honest):
     wrong cage_meta) — gain near zero. Parallelization does not unfuck
     non-commensurable y or wrong contracts.
 
-Wire-in plan (separate commit, after stability soak):
-  1. autoresearch_loop reads `parallel_mutator_k` from rubric.
-  2. When K > 1: build K MutatorTask objects with persona-seeded
-     variants of mutate_thesis().
-  3. Run via run_parallel_mutators() with concurrent.futures.
-  4. Pass results through pick_best_candidate() with the existing
-     gate_harness as scoring_fn.
-  5. Adopt the winner's test_model.py + thesis as the iter's output.
+Operational path:
+  1. `autoresearch_loop` calls `dispatch_mutator_blitz`.
+  2. `dispatch_mutator_blitz` builds `MutatorTask` objects with
+     persona-seeded variants of `mutate_thesis`.
+  3. This module runs them concurrently and returns stable worker-id
+     ordered results.
+  4. The dispatch layer scores/tournaments the candidates and adopts the
+     selected text as the iteration candidate, after which normal R1/gate
+     validation continues.
 """
 
 from __future__ import annotations
@@ -160,7 +160,7 @@ def build_default_tasks(k: int = 3) -> list[MutatorTask]:
     """Convenience: K tasks seeded with DEFAULT_PARALLEL_PERSONAS.
 
     K > len(DEFAULT_PARALLEL_PERSONAS) wraps; K <= 0 returns []. Per
-    operator note 2026-04-25 night: K=3 is the recommended default
+    operator guidance: K=3 is the recommended default
     when wiring lands; K=5 offers diminishing returns at 1.6× the
     cost.
     """

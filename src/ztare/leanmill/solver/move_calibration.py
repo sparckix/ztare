@@ -151,6 +151,32 @@ def _score_ratified_default() -> bool:
     return os.environ.get("ZTARE_CALIBRATION_SCORE", "ratified").strip().lower() != "compile_ok"
 
 
+# DATA-ADMISSIBILITY (2026-06-10, operator's catch): an attempt that died at the INSTRUMENT is NOT evidence
+# about the move's close-rate — the move never got a fair shot at the MATH. Counting it as a calibration LOSS
+# poisons the prior. `parse_error` = the probe never parsed (the 2026-06-08 carrier bug recorded native_hammer/
+# cold_shot 0/N as dead-instrument artifacts, NOT real losses); `timeout` = the cold-Mathlib-reload censoring
+# (right-censored — the move might have closed with more budget, so it is not a Bernoulli "did-not-close"). Both
+# are inadmissible for est_p_close. This is the `apparatus_certificate` rule — "a negative is inadmissible
+# without calibration" — applied to the LEARNING DATA itself, forward AND retroactively. Default-ON (a poisoned
+# prior is a bug); `ZTARE_LEANMILL_CALIBRATION_ADMISSIBLE=0` reverts to the legacy count-everything aggregation.
+_APPARATUS_FAILURE_CLASSES = ("parse_error", "timeout")
+
+# RE-BASELINE CUTOFF (operator: "the cutoff is essentially from yesterday when we fixed the bug"). The apparatus
+# materially changed at the carrier-probe fix (2026-06-08) + the REPL-toolchain / cold-Mathlib-timeout fix
+# (2026-06-09 — warm REPL replaced the cold reload). Attempts BEFORE the later fix are from a DIFFERENT, broken
+# instrument and are inadmissible wholesale (a clean re-baseline, no per-row archaeology). Override with
+# `ZTARE_LEANMILL_CALIBRATION_SINCE=<ISO8601>` (e.g. to widen the window once more clean data accrues).
+_CALIBRATION_ADMISSIBLE_SINCE_DEFAULT = "2026-06-09T00:00:00+00:00"
+
+
+def _admissible_filter_on() -> bool:
+    return os.environ.get("ZTARE_LEANMILL_CALIBRATION_ADMISSIBLE", "1") != "0"
+
+
+def _admissible_since() -> str:
+    return os.environ.get("ZTARE_LEANMILL_CALIBRATION_SINCE", _CALIBRATION_ADMISSIBLE_SINCE_DEFAULT)
+
+
 def _has_column(con: "sqlite3.Connection", table: str, col: str) -> bool:
     """True iff `table.col` exists. An un-migrated attempts DB has no `ratified` column, so effective
     scoring must DEGRADE to compile_ok there (no governance verdicts to score anyway → parity)."""
@@ -174,9 +200,23 @@ def _cells_from_db(db_path: str | Path, effective: "bool | None" = None) -> "tup
         with sqlite3.connect(str(db_path)) as con:
             if effective and not _has_column(con, "attempts", "ratified"):
                 effective = False  # un-migrated DB (no governance verdicts) → compile_ok (parity)
+            where = ["provider IS NOT NULL"]
+            params: "list" = []
+            if _admissible_filter_on() and _has_column(con, "attempts", "attempt_at"):
+                # RE-BASELINE: only attempts from the FIXED apparatus (after the 2026-06-09 carrier+REPL fixes).
+                where.append("attempt_at >= ?"); params.append(_admissible_since())
+                # FORWARD HYGIENE: an instrument failure (probe-never-parsed / cold-reload timeout) is not a
+                # move-quality signal — drop it so it can never poison est_p_close (apparatus_certificate rule).
+                where.append("COALESCE(error_class,'none') NOT IN (%s)" % ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
+                params.extend(_APPARATUS_FAILURE_CLASSES)
+            # DYNAMIC carrier-liveness admissibility (#90): drop DEAD-carrier attempts (provider quota/auth-dead,
+            # tagged at write time) regardless of date — a provider outage (codex exhaustion) self-cleans WITHOUT
+            # hand-moving the static date-cutoff. NULL (unknown, pre-#90 rows) and 1 (live) are kept ⇒ back-compat.
+            if _admissible_filter_on() and _has_column(con, "attempts", "carrier_live"):
+                where.append("COALESCE(carrier_live, 1) != 0")
             rows = con.execute(
                 f"SELECT provider, COALESCE(error_class,'none'), COUNT(*), COALESCE(SUM({_close_score_expr(effective)}),0) "
-                "FROM attempts WHERE provider IS NOT NULL GROUP BY provider, error_class").fetchall()
+                f"FROM attempts WHERE {' AND '.join(where)} GROUP BY provider, error_class", params).fetchall()
     except sqlite3.Error:  # DB exists but has no `attempts` table / is unreadable → safe empty
         return {}, {}
     for provider, eclass, total, closed in rows:
@@ -740,6 +780,69 @@ def report(db_path: str | Path, strength: float = DEFAULT_PRIOR_STRENGTH) -> str
     return "\n".join(lines)
 
 
+# ── #103(2) SELF-LEARNED dispatch budgets ────────────────────────────────────────────────────────────
+# A fixed per-dispatch wall is always arbitrary (the planner-guillotine foot-gun). The dispatch analogue of
+# `cold_calibration.cold_safe_timeout`: learn the budget from the wallclock of attempts that ACTUALLY SUCCEEDED,
+# instead of a hand-set default. Reuses the SAME admissibility filter as the move priors (#79/#90 re-baseline +
+# apparatus-failure exclusion + carrier-liveness), so the 2026-06-08/09 dead-instrument rows can't poison the
+# budget. PURE + DB legs separated so the math is unit-testable; both FAIL-SAFE (None ⇒ caller keeps its factory
+# default — never starve a dispatch on thin/contaminated data). Wiring into the timeouts factory as an OPT-IN
+# override is the follow-up (the attempts DB must accrue enough CLEAN successful rows first).
+def _percentile(sorted_vals: "list[float]", p: float) -> float:
+    """Nearest-rank percentile of an ASCENDING-sorted, non-empty list (`p` in [0, 100])."""
+    k = int(round((p / 100.0) * (len(sorted_vals) - 1)))
+    return sorted_vals[max(0, min(len(sorted_vals) - 1, k))]
+
+
+def budget_from_durations(durations: "Iterable[float]", *, percentile: float = 90.0,
+                          headroom: float = 1.5, floor: int, cap: int,
+                          min_samples: int = 5) -> "Optional[int]":
+    """SELF-LEARNED dispatch budget (#103(2)) = percentile(SUCCESSFUL durations) × headroom, clamped to
+    [floor, cap]. Returns None when fewer than `min_samples` positive durations are supplied (insufficient data
+    ⇒ the caller keeps its hand-set factory default — FAIL-SAFE: thin data never starves a dispatch). PURE (no
+    DB / no env) so the percentile + clamp logic is unit-testable in isolation."""
+    vals = sorted(float(d) for d in durations if d and float(d) > 0)
+    if len(vals) < max(1, min_samples):
+        return None
+    return int(max(floor, min(cap, round(_percentile(vals, percentile) * headroom))))
+
+
+def learned_dispatch_budget(db_path: "str | Path", *, move: "Optional[str]" = None,
+                            percentile: float = 90.0, headroom: float = 1.5, floor: int, cap: int,
+                            min_samples: int = 5, run_tag: "Optional[str]" = None) -> "Optional[int]":
+    """Learn a dispatch budget from SUCCESSFUL attempts' `wallclock_s` in the calibration DB, ADMISSIBILITY-
+    FILTERED exactly like the move priors (#79/#90: re-baseline date + apparatus-failure-class exclusion +
+    carrier-liveness), optionally scoped to one `move` (via PROVIDER_TO_MOVE) and/or `run_tag`. "Successful" =
+    the same governance close-score the priors use (`COALESCE(ratified, compile_ok) > 0`). Returns None when the
+    DB is unreadable / lacks `wallclock_s` / yields fewer than `min_samples` admissible successful rows ⇒ the
+    caller keeps its factory default (FAIL-SAFE). The self-learned analogue of the hand-set timeouts factory."""
+    try:
+        with sqlite3.connect(str(db_path)) as con:
+            if not _has_column(con, "attempts", "wallclock_s"):
+                return None
+            effective = _score_ratified_default() and _has_column(con, "attempts", "ratified")
+            where = ["wallclock_s IS NOT NULL", "wallclock_s > 0", f"{_close_score_expr(effective)} > 0"]
+            params: "list" = []
+            if move is not None:
+                provs = [p for p, m in PROVIDER_TO_MOVE.items() if m == move]
+                if not provs:
+                    return None   # unknown move ⇒ no provider maps to it ⇒ no admissible data
+                where.append("provider IN (%s)" % ",".join("?" * len(provs))); params.extend(provs)
+            if run_tag is not None and _has_column(con, "attempts", "run_tag"):
+                where.append("run_tag = ?"); params.append(run_tag)
+            if _admissible_filter_on() and _has_column(con, "attempts", "attempt_at"):
+                where.append("attempt_at >= ?"); params.append(_admissible_since())
+                where.append("COALESCE(error_class,'none') NOT IN (%s)" % ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
+                params.extend(_APPARATUS_FAILURE_CLASSES)
+            if _admissible_filter_on() and _has_column(con, "attempts", "carrier_live"):
+                where.append("COALESCE(carrier_live, 1) != 0")
+            rows = con.execute(f"SELECT wallclock_s FROM attempts WHERE {' AND '.join(where)}", params).fetchall()
+    except sqlite3.Error:
+        return None
+    return budget_from_durations((r[0] for r in rows), percentile=percentile, headroom=headroom,
+                                 floor=floor, cap=cap, min_samples=min_samples)
+
+
 def _self_test() -> int:
     fails = []
 
@@ -1056,6 +1159,43 @@ def _self_test() -> int:
        and "corroborate" not in rep["headline"]["promotable"])
     ok("exo_tele: empty/no-move-col DB is safe", exogenous_move_telemetry(_tf.mktemp(suffix=".db"))["by_move"] == {})
     _os.path.exists(tdb) and _os.remove(tdb)
+
+    # ── #103(2) self-learned dispatch budget — PURE leg ──
+    ok("budget: <min_samples ⇒ None (fail-safe)",
+       budget_from_durations([10, 20, 30], min_samples=5, floor=30, cap=1800) is None)
+    ok("budget: p90×headroom (p90 of 10..100 = 90 ×1.5 = 135)",
+       budget_from_durations([10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+                             percentile=90, headroom=1.5, floor=30, cap=1800, min_samples=5) == 135)
+    ok("budget: cap clamps a huge p90",
+       budget_from_durations([5000] * 8, percentile=90, headroom=1.5, floor=30, cap=1800, min_samples=5) == 1800)
+    ok("budget: floor clamps tiny durations",
+       budget_from_durations([1, 1, 1, 1, 1, 1], percentile=90, headroom=1.5, floor=30, cap=1800, min_samples=5) == 30)
+    ok("budget: non-positive durations filtered (then <min_samples ⇒ None)",
+       budget_from_durations([0, -1, None, 5], min_samples=5, floor=30, cap=1800) is None)
+
+    # ── #103(2) self-learned dispatch budget — DB leg (admissibility-filtered) ──
+    ldb = _tf.mktemp(suffix=".db"); con = sqlite3.connect(ldb)
+    con.execute("CREATE TABLE attempts(row_id TEXT, provider TEXT, compile_ok INT, ratified INT, "
+                "wallclock_s REAL, attempt_at TEXT, error_class TEXT, carrier_live INT)")
+    good = [(f"g{i}", "claude_opus_warm", 1, 1, float(w), "2026-06-10T00:00:00+00:00", "none", 1)
+            for i, w in enumerate([60, 70, 80, 90, 100, 200])]
+    bad = [("b1", "claude_opus_warm", 1, 1, 9999.0, "2026-06-01T00:00:00+00:00", "none", 1),    # pre-cutoff
+           ("b2", "claude_opus_warm", 1, 1, 9999.0, "2026-06-10T00:00:00+00:00", "none", 0),    # dead carrier
+           ("b3", "claude_opus_warm", 0, 0, 9999.0, "2026-06-10T00:00:00+00:00", "timeout", 1), # apparatus-fail
+           ("b4", "claude_opus_warm", 0, 0, 9999.0, "2026-06-10T00:00:00+00:00", "none", 1)]    # not successful
+    con.executemany("INSERT INTO attempts VALUES(?,?,?,?,?,?,?,?)", good + bad)
+    con.commit(); con.close()
+    _lb = learned_dispatch_budget(ldb, move=MOVE_CLAUDE_WARM, percentile=90, headroom=1.5,
+                                  floor=30, cap=1800, min_samples=5)
+    ok("learned_budget: admissible successful rows only — excludes the 9999 contamination (pre-cutoff/dead/fail)",
+       _lb is not None and _lb < 1000)   # the 9999s would slam it to cap=1800 if any leaked through the filter
+    ok("learned_budget: thin/no admissible data ⇒ None (fail-safe)",
+       learned_dispatch_budget(ldb, move=MOVE_FRONTIER, floor=30, cap=1800, min_samples=5) is None)
+    _os.path.exists(ldb) and _os.remove(ldb)
+    _nwdb = _tf.mktemp(suffix=".db"); con = sqlite3.connect(_nwdb)
+    con.execute("CREATE TABLE attempts(provider TEXT, compile_ok INT)"); con.commit(); con.close()
+    ok("learned_budget: missing wallclock_s column ⇒ None", learned_dispatch_budget(_nwdb, floor=30, cap=1800) is None)
+    _os.path.exists(_nwdb) and _os.remove(_nwdb)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

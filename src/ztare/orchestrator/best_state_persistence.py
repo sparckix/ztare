@@ -221,7 +221,7 @@ def saved_best_comparison_anchor(
     persisted number, may be present even when compare_score is None
     in regime-mismatch cases), ``status``, ``label``.
 
-    GP-167 fix (2026-04-25 night, panel-revealed): regime_mismatch
+    GP-167 fix (2026-04-25, panel-revealed): regime_mismatch
     keeps the raw saved score as the comparison anchor instead of
     returning None. Returning None had silently promoted any new
     score (even 0) over a previously-saved 50 whenever the rubric

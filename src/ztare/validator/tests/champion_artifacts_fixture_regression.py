@@ -72,7 +72,7 @@ def run_champion_artifacts_fixture_regression() -> dict[str, object]:
     rebuilt_eval = build_champion_eval_from_saved_best(
         saved_meta,
         history_stem,
-        project_rubric="eu_union_load_bearing_pillars",
+        project_rubric="eu_union_decisive_pillars",
         project_dynamic=False,
         project_mutator_model_id="gemini-2.5-flash",
         project_judge_model_id="gemini-2.5-flash",
@@ -81,7 +81,7 @@ def run_champion_artifacts_fixture_regression() -> dict[str, object]:
     )
     rebuilt_gap_payload = build_champion_gap_payload_from_saved_best(
         saved_meta,
-        project_name="eu_union_load_bearing_pillars",
+        project_name="eu_union_decisive_pillars",
         score_regime_fingerprint_from_meta=_fingerprint_from_meta,
         score_regime_fingerprint_from_score_contract=_fingerprint_from_score_contract,
     )

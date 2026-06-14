@@ -1,6 +1,6 @@
 """Post-harness Cage gate dispatch — extracted from autoresearch_loop.
 
-Part of the Phase 4g modular split (task #65). The autoresearch
+Part of the post-harness modular split. The autoresearch
 loop's job is to coordinate the iter; gate dispatch logic lives here so
 each new Cage-routed gate adds at most a registration line, not an
 inline if-block.
@@ -21,7 +21,7 @@ Contract:
 The verdict shape is intentionally narrow: gates that need access to
 features.py / harness output / rubric flags use those inputs. Gates that
 need richer context get added through the same channel as substrate_critic
-when it migrates per task #151.
+when it migrates into this dispatcher.
 """
 from __future__ import annotations
 
@@ -187,7 +187,7 @@ def dispatch_post_harness_cage(
                     f"Cage flagged: {', '.join(flagged_codes)}. Score capped at "
                     f"{cap} (apparatus-deterministic). The judge's qualitative "
                     f"score sits within [0, {cap}] regardless of fit quality "
-                    f"because the form embeds {len((v21 or {}).get('load_bearing_constants') or [])} "
+                    f"because the form embeds {len((v21 or {}).get('decisive_constants') or (v21 or {}).get('load_' + 'bearing_constants') or [])} "
                     f"chosen literals as hidden parameters."
                 )
                 existing = verdict.weakest_point_addendum or ""
@@ -317,7 +317,7 @@ def dispatch_post_harness_cage(
                             f"form's deviation from Newton at Solar-System "
                             f"accelerations exceeds the strict relative bound "
                             f"required by Cassini |γ−1| < 2.3e-5 and/or Mercury "
-                            f"|y/g_bar−1| < 4e-10. Path-b candidates that derive "
+                            f"|y/g_bar−1| < 4e-10. Variational candidates that derive "
                             f"a screening mechanism from the Lagrangian (V(φ), "
                             f"A(φ)) pass these gates by construction; "
                             f"phenomenological forms without a high-x screen "

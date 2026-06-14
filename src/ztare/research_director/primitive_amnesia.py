@@ -21,41 +21,52 @@ Substrate-agnostic kernel logic. CLI:
 from __future__ import annotations
 import argparse
 import ast
+import hashlib
 import json
 import os
 import re
 import sys
+from collections import Counter
 from dataclasses import dataclass, asdict
+from datetime import datetime, timezone
 from pathlib import Path
 
+from src.ztare.research_director.primitive_catalog_taxonomy import (
+    enrich_row,
+    source_category_for_path,
+)
 from src.ztare.research_director.scientific_amnesia import tokenize, _score
 
 REPO = Path(__file__).resolve().parents[3]
 ARCH_INDEX = REPO / "analytics" / "public" / "index" / "architecture_index.jsonl"
 ATLAS_PATH = REPO / "analytics" / "public" / "index" / "primitive_atlas_embeddings.json"
+MISS_QUEUE_PATH = REPO / "analytics" / "public" / "queries" / "primitive_amnesia_miss_queue.jsonl"
 _LAST_EMBED_ERROR: str | None = None
 
-# Deterministic TAXONOMY (tiers): module-path prefix → category. Makes a 500+ flat
-# catalog navigable/scopable instead of a dump. Derived on read (no row rewrite).
-_CATEGORY_BY_PREFIX = [
-    ("src/ztare/experiment_stats", "statistical"),
-    ("src/ztare/motion", "set-distance/metric"),
-    ("src/ztare/validator", "validation/scoring"),
-    ("src/ztare/leanmill/solver", "proof-search"),
-    ("src/ztare/leanmill", "leanmill"),
-    ("src/ztare/fit", "fit/regime"),
-    ("src/ztare/framer", "framing"),
-    ("src/ztare/research_director", "research-operator"),
-    ("src/ztare/gates", "gate"),
-    ("src/ztare/product_exports", "export/judgment"),
-]
+_EMBEDDING_DIMENSIONS = {
+    "gemini-code": 768,
+    "gemini": 768,
+    "openai": 1024,
+}
+
+
+def _expected_embedding_dimension(backend: str) -> int | None:
+    return _EMBEDDING_DIMENSIONS.get(backend)
+
+
+def _valid_embedding_vector(vector: object, *, backend: str = "") -> bool:
+    if (
+        not isinstance(vector, list)
+        or not vector
+        or not all(isinstance(value, (int, float)) for value in vector)
+    ):
+        return False
+    expected_dimension = _expected_embedding_dimension(backend)
+    return expected_dimension is None or len(vector) == expected_dimension
 
 
 def _category_for(path: str) -> str:
-    for prefix, cat in _CATEGORY_BY_PREFIX:
-        if (path or "").startswith(prefix):
-            return cat
-    return "other"
+    return source_category_for_path(path)
 
 # The EXTRACTED-CAPABILITY surface: curated modules holding reusable analytical /
 # utility primitives that the architecture_index does NOT cover. Add a module here
@@ -139,6 +150,143 @@ class Primitive:
         return f"{self.name} {Path(self.module).stem} {self.doc} {self.when_to_use}"
 
 
+@dataclass
+class AtlasFreshnessStatus:
+    ok: bool
+    catalog_path: str
+    atlas_path: str
+    catalog_count: int
+    atlas_n: int
+    embeddings_count: int
+    backend: str
+    missing_embeddings: int
+    extra_embeddings: int
+    invalid_embeddings: int
+    vector_dimension: int
+    duplicate_embedding_keys: int
+    catalog_newer_than_atlas: bool
+    warnings: list[str]
+
+    def summary(self) -> str:
+        status = "ok" if self.ok else "stale"
+        bits = [
+            f"status={status}",
+            f"catalog={self.catalog_count}",
+            f"atlas_n={self.atlas_n}",
+            f"embeddings={self.embeddings_count}",
+            f"backend={self.backend or 'unknown'}",
+        ]
+        if self.missing_embeddings:
+            bits.append(f"missing={self.missing_embeddings}")
+        if self.extra_embeddings:
+            bits.append(f"extra={self.extra_embeddings}")
+        if self.invalid_embeddings:
+            bits.append(f"invalid_embeddings={self.invalid_embeddings}")
+        if self.vector_dimension:
+            bits.append(f"dimension={self.vector_dimension}")
+        if self.duplicate_embedding_keys:
+            bits.append(f"duplicate_embedding_keys={self.duplicate_embedding_keys}")
+        if self.catalog_newer_than_atlas:
+            bits.append("catalog_newer_than_atlas=true")
+        return " ".join(bits)
+
+
+def atlas_freshness_status(
+    *,
+    catalog_path: Path = ARCH_INDEX,
+    atlas_path: Path = ATLAS_PATH,
+) -> AtlasFreshnessStatus:
+    """Fast consistency check for the primitive catalog and semantic atlas.
+
+    The atlas is a cache of catalog primitives. A catalog row without an embedding
+    is lexically visible but semantically invisible, so a stale atlas can make the
+    amnesia precheck under-recall existing capabilities.
+    """
+    warnings: list[str] = []
+    inventory = _extract_from_arch_index(catalog_path)
+    expected_key_counts = Counter(p.signature or p.name for p in inventory)
+    expected_keys = set(expected_key_counts)
+    duplicate_embedding_keys = sum(1 for count in expected_key_counts.values() if count > 1)
+    atlas_n = 0
+    backend = ""
+    embeddings: dict[str, object] = {}
+    if not atlas_path.exists():
+        warnings.append(f"atlas missing: {atlas_path}")
+    else:
+        try:
+            payload = json.loads(atlas_path.read_text(encoding="utf-8"))
+        except Exception as exc:
+            payload = {}
+            warnings.append(f"atlas unreadable: {type(exc).__name__}: {str(exc)[:160]}")
+        if isinstance(payload, dict):
+            backend = str(payload.get("backend") or "")
+            raw_embeddings = payload.get("embeddings") or {}
+            if isinstance(raw_embeddings, dict):
+                embeddings = raw_embeddings
+            else:
+                warnings.append("atlas embeddings are not a dict")
+            try:
+                atlas_n = int(payload.get("n") or 0)
+            except (TypeError, ValueError):
+                warnings.append("atlas n is not an integer")
+        elif payload:
+            warnings.append("atlas payload is not an object")
+    embedding_keys = set(embeddings)
+    missing = expected_keys - embedding_keys
+    extra = embedding_keys - expected_keys
+    invalid_embeddings = 0
+    vector_lengths: set[int] = set()
+    for key, vector in embeddings.items():
+        if not _valid_embedding_vector(vector):
+            invalid_embeddings += 1
+            continue
+        vector_lengths.add(len(vector))
+    vector_dimension = next(iter(vector_lengths)) if len(vector_lengths) == 1 else 0
+    expected_dimension = _expected_embedding_dimension(backend)
+    if atlas_n != len(inventory):
+        warnings.append(f"atlas n {atlas_n} != catalog capability count {len(inventory)}")
+    if len(embeddings) != atlas_n:
+        warnings.append(f"embedding count {len(embeddings)} != atlas n {atlas_n}")
+    if duplicate_embedding_keys:
+        warnings.append(f"{duplicate_embedding_keys} catalog embedding keys are ambiguous")
+    if missing:
+        warnings.append(f"{len(missing)} catalog primitives lack atlas embeddings")
+    if extra:
+        warnings.append(f"{len(extra)} atlas embeddings have no catalog primitive")
+    if invalid_embeddings:
+        warnings.append(f"{invalid_embeddings} atlas embeddings are malformed")
+    if len(vector_lengths) > 1:
+        warnings.append(f"atlas embeddings have mixed dimensions: {sorted(vector_lengths)}")
+    if expected_dimension is not None and vector_dimension and vector_dimension != expected_dimension:
+        warnings.append(
+            f"atlas embedding dimension {vector_dimension} != expected {expected_dimension} for {backend}"
+        )
+    catalog_newer = False
+    if catalog_path.exists() and atlas_path.exists():
+        try:
+            catalog_newer = catalog_path.stat().st_mtime > atlas_path.stat().st_mtime + 1.0
+        except OSError:
+            catalog_newer = False
+        if catalog_newer:
+            warnings.append("catalog jsonl is newer than atlas embeddings")
+    return AtlasFreshnessStatus(
+        ok=not warnings,
+        catalog_path=str(catalog_path),
+        atlas_path=str(atlas_path),
+        catalog_count=len(inventory),
+        atlas_n=atlas_n,
+        embeddings_count=len(embeddings),
+        backend=backend,
+        missing_embeddings=len(missing),
+        extra_embeddings=len(extra),
+        invalid_embeddings=invalid_embeddings,
+        vector_dimension=vector_dimension,
+        duplicate_embedding_keys=duplicate_embedding_keys,
+        catalog_newer_than_atlas=catalog_newer,
+        warnings=warnings,
+    )
+
+
 def _extract_from_module(path: Path) -> list[Primitive]:
     if not path.exists():
         return []
@@ -170,6 +318,25 @@ def _extract_from_module(path: Path) -> list[Primitive]:
 _INVENTORY_KINDS_FULL = ("primitive", "reflexive_primitive", "op", "gate", "validator",
                          "orchestrator", "mining", "script", "pattern", "anti-pattern", "meta-pattern")
 _INVENTORY_KINDS_PRIMITIVE = ("primitive", "reflexive_primitive", "op")
+_SUBSTRATE_SPECIFIC_CATEGORIES = {
+    "formal-artifact",
+    "leanmill",
+    "leanmill-script",
+    "proof-search",
+    "substrate-project",
+}
+_SUBSTRATE_SCOPE_TERMS = {
+    "lean",
+    "mathlib",
+    "navier",
+    "ns",
+    "pde",
+    "proof",
+    "solver",
+    "theorem",
+    "ztare_proofs",
+}
+_SUBSTRATE_SPECIFIC_SCOPE_PENALTY = 0.08
 
 
 def _extract_from_arch_index(path: Path = ARCH_INDEX) -> list[Primitive]:
@@ -272,10 +439,20 @@ def _llm_quality_filter(items: "list[tuple]",
         "transform, selector, assembler, router, or anything you are even slightly unsure about → KEEP.\n"
         "Return ONLY a JSON object mapping each exact name to \"keep\" or \"drop\".\nITEMS:\n" + listing + "\n")
     try:
-        resp = LLMRuntime().call_text(prompt, model_id=model,
-                                      fallback_model_ids=("gemini-2.5-flash",),
-                                      max_tokens=4000, request_label="primitive_quality_filter",
-                                      timeout_seconds=90)
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        runtime = LLMRuntime()
+        resp = dispatch_call_text(
+            "primitive_quality_filter",
+            prompt,
+            llm_response_call=lambda p: runtime.call_text(
+                p, model_id=model,
+                fallback_model_ids=("gemini-2.5-flash",),
+                max_tokens=4000, request_label="primitive_quality_filter",
+                timeout_seconds=90,
+            ),
+            timeout_seconds=90,
+        )
         text = getattr(resp, "text", "") or ""
     except Exception:
         return set(names)            # error → keep all
@@ -300,7 +477,7 @@ def populate_catalog(repo: Path = REPO, path: Path = ARCH_INDEX, *, clean: bool 
     a new reusable analytical primitive ships."""
     # Clean repopulate: drop rows THIS tool added (they carry a `signature` field) so
     # we re-register under the current noise filter instead of accumulating cruft.
-    rows = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    rows = [enrich_row(json.loads(l)) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
     if clean:
         rows = [r for r in rows if "signature" not in r]
         path.write_text("\n".join(json.dumps(r) for r in rows) + "\n", encoding="utf-8")
@@ -339,13 +516,14 @@ def populate_catalog(repo: Path = REPO, path: Path = ARCH_INDEX, *, clean: bool 
         # applicability = curated effect-aliases if present, else name+module+doc tokens
         aliases = WHEN_TO_USE.get(name)
         appl = sorted(set(aliases.split())) if aliases else sorted(tokenize(f"{name} {Path(p.module).stem} {p.doc}"))
-        new_rows.append({
+        row = {
             "id": cid, "path": p.module, "kind": "primitive",
             "description": (p.doc.splitlines()[0][:200] if p.doc else name),
             "applicability": appl[:24],
             "impact_factor_expost": 3 if aliases else 1,   # curated high-value rank above swept
             "last_used": "", "dependencies": [], "signature": p.signature,
-        })
+        }
+        new_rows.append(enrich_row(row))
     if new_rows:
         with path.open("a", encoding="utf-8") as f:
             for r in new_rows:
@@ -414,20 +592,28 @@ def build_primitive_atlas(path: Path = ATLAS_PATH, backend: str = "gemini-code")
     backend by default. This is what makes semantic retrieval scale + generalize
     (vocabulary-invariant), removing the hand-tuned aliases as the mechanism."""
     inv = build_inventory()
-    vecs = {}
-    for p in inv:
-        v = _embed(f"{p.name}. {p.doc} {p.when_to_use}".strip(), role="document", backend=backend)
-        if v is not None:
-            vecs[p.signature or p.name] = v
-    if inv and not vecs:
-        if path.exists():
-            try:
-                current = json.loads(path.read_text(encoding="utf-8"))
+    expected = {p.signature or p.name for p in inv}
+    vecs: dict[str, list[float]] = {}
+    if path.exists():
+        try:
+            current = json.loads(path.read_text(encoding="utf-8"))
+            if str(current.get("backend") or backend) == backend:
                 existing = current.get("embeddings") or {}
-                if existing:
-                    return len(existing)
-            except Exception:
-                pass
+                if isinstance(existing, dict):
+                    vecs.update({
+                        str(k): v for k, v in existing.items()
+                        if k in expected and _valid_embedding_vector(v, backend=backend)
+                    })
+        except Exception:
+            vecs = {}
+    for p in inv:
+        key = p.signature or p.name
+        if key in vecs:
+            continue
+        v = _embed(f"{p.name}. {p.doc} {p.when_to_use}".strip(), role="document", backend=backend)
+        if _valid_embedding_vector(v, backend=backend):
+            vecs[key] = v
+    if inv and len(vecs) != len(inv):
         return 0
     path.write_text(json.dumps({"backend": backend, "n": len(vecs), "embeddings": vecs}),
                     encoding="utf-8")
@@ -449,6 +635,25 @@ def _cos(a, b) -> float:
     for x, y in zip(a, b):
         s += x * y; sa += x * x; sb += y * y
     return s / ((sa ** 0.5) * (sb ** 0.5)) if sa and sb else 0.0
+
+
+def _query_names_substrate(query: str, primitive: Primitive) -> bool:
+    """Return whether a substrate-specific catalog row is scoped by the query."""
+    if primitive.category not in _SUBSTRATE_SPECIFIC_CATEGORIES:
+        return True
+    query_tokens = {token.lower() for token in tokenize(query)}
+    if query_tokens & _SUBSTRATE_SCOPE_TERMS:
+        return True
+    query_l = query.lower()
+    if any(re.search(rf"\b{re.escape(term)}\b", query_l) for term in _SUBSTRATE_SCOPE_TERMS):
+        return True
+    return False
+
+
+def _scope_adjusted_score(score: float, query: str, primitive: Primitive) -> float:
+    if score <= 0 or _query_names_substrate(query, primitive):
+        return score
+    return max(0.0, score - _SUBSTRATE_SPECIFIC_SCOPE_PENALTY)
 
 
 def _semantic_blend(query: str, inv: list[Primitive]) -> dict:
@@ -495,7 +700,14 @@ def precheck(query: str, top_k: int = 8, *, semantic: "bool | None" = None,
     # Without an atlas, fall back to lexical-only.
     if sem:
         cand = [i for i in range(len(inv)) if sem.get(i, 0.0) > 0 or lex_by_i.get(i, 0.0) > 0]
-        cand.sort(key=lambda i: (sem.get(i, 0.0), lex_by_i.get(i, 0.0)), reverse=True)
+        cand.sort(
+            key=lambda i: (
+                _scope_adjusted_score(sem.get(i, 0.0), query, inv[i]),
+                sem.get(i, 0.0),
+                lex_by_i.get(i, 0.0),
+            ),
+            reverse=True,
+        )
         score_of = lambda i: round(sem.get(i, 0.0), 4)
     else:
         cand = [i for i in range(len(inv)) if lex_by_i.get(i, 0.0) > 0]
@@ -547,24 +759,301 @@ BENCHMARK = [
 ]
 
 
+def _case_id(query: str, index: int) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", query.lower()).strip("-")
+    return f"case-{index:03d}-{slug[:48]}"
+
+
+def _normalize_benchmark_case(case: object, index: int) -> dict:
+    """Return a typed benchmark row while preserving the legacy tuple format."""
+    if isinstance(case, dict):
+        query = str(case.get("query", ""))
+        targets = [str(t).lower() for t in case.get("targets", case.get("acceptable", []))]
+        return {
+            "case_id": str(case.get("case_id") or case.get("id") or _case_id(query, index)),
+            "query": query,
+            "targets": targets,
+            "confusers": [str(t).lower() for t in case.get("confusers", [])],
+            "family": str(case.get("family", "")),
+            "repair_hint": str(case.get("repair_hint", "")),
+        }
+    query, targets = case  # legacy: (query, acceptable target substrings)
+    return {
+        "case_id": _case_id(str(query), index),
+        "query": str(query),
+        "targets": [str(t).lower() for t in targets],
+        "confusers": [],
+        "family": "",
+        "repair_hint": "",
+    }
+
+
+def _stable_json_digest(payload: object) -> str:
+    blob = json.dumps(payload, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
+def _inventory_digest(inv: list[Primitive]) -> str:
+    return _stable_json_digest([
+        {
+            "name": p.name,
+            "module": p.module,
+            "signature": p.signature,
+            "source": p.source,
+            "category": p.category,
+        }
+        for p in inv
+    ])
+
+
+def _candidate_excerpt(ranked: list[dict], limit: int = 5) -> list[dict]:
+    out: list[dict] = []
+    for row in ranked[:limit]:
+        out.append(
+            {
+                "name": row.get("name", ""),
+                "module": row.get("module", ""),
+                "signature": row.get("signature", ""),
+                "score": row.get("score"),
+                "matched_terms": row.get("matched_terms", []),
+            }
+        )
+    return out
+
+
+def _primitive_match_text(row: Primitive | dict) -> str:
+    if isinstance(row, Primitive):
+        parts = [row.name, row.signature, row.module, row.kind, row.category]
+    else:
+        parts = [
+            str(row.get("name", "")),
+            str(row.get("signature", "")),
+            str(row.get("module", "")),
+            str(row.get("kind", "")),
+            str(row.get("category", "")),
+        ]
+    return " ".join(parts).lower().replace("_", "-")
+
+
+def _matches_any_target(row: Primitive | dict, targets: list[str]) -> bool:
+    text = _primitive_match_text(row)
+    return any(str(target).lower().replace("_", "-") in text for target in targets)
+
+
+def _target_resolution(targets: list[str], inv: list[Primitive]) -> dict:
+    matched = []
+    for primitive in inv:
+        if _matches_any_target(primitive, targets):
+            matched.append(
+                {
+                    "name": primitive.name,
+                    "module": primitive.module,
+                    "signature": primitive.signature,
+                }
+            )
+    return {"resolved": bool(matched), "matches": matched[:8], "match_count": len(matched)}
+
+
 def evaluate(top_k: int = 5, *, semantic: "bool | None" = None) -> dict:
-    """Recall@k + MRR over the held-out benchmark. The world-class discipline:
+    """Recall@k + MRR over the held-out benchmark. The discipline:
     MEASURE retrieval, don't assert it. `semantic=False` forces the lexical baseline
     so the semantic lift is quantified on the same queries."""
     inv = build_inventory()
+    ranker = "semantic" if semantic is not False else "lexical"
+    cases = [_normalize_benchmark_case(case, i) for i, case in enumerate(BENCHMARK)]
+    bench_digest = _stable_json_digest(cases)
+    catalog_digest = _inventory_digest(inv)
     hits_at_k = 0; rr_sum = 0.0; misses = []
-    for query, targets in BENCHMARK:
+    miss_records = []
+    unresolved_cases = []
+    confuser_hits = []
+    resolvable_n = 0
+    for benchmark_index, case in enumerate(cases):
+        query = case["query"]
+        targets = case["targets"]
+        resolution = _target_resolution(targets, inv)
+        target_resolved = bool(resolution["resolved"])
+        if target_resolved:
+            resolvable_n += 1
+        else:
+            unresolved_cases.append(
+                {
+                    "case_id": case["case_id"],
+                    "query": query,
+                    "targets": targets,
+                }
+            )
         ranked = precheck(query, top_k=top_k, inventory=inv, semantic=semantic)
-        names = [(h["name"] + " " + h["signature"]).lower() for h in ranked]
-        rank = next((r for r, n in enumerate(names, 1)
-                     if any(t in n for t in targets)), None)
+        rank = next((r for r, row in enumerate(ranked, 1)
+                     if _matches_any_target(row, targets)), None)
+        confuser_rank = next((r for r, row in enumerate(ranked, 1)
+                              if case["confusers"] and _matches_any_target(row, case["confusers"])), None)
+        if confuser_rank is not None:
+            confuser_hits.append(
+                {
+                    "case_id": case["case_id"],
+                    "query": query,
+                    "confusers": case["confusers"],
+                    "confuser_rank": confuser_rank,
+                }
+            )
         if rank:
             hits_at_k += 1; rr_sum += 1.0 / rank
         else:
             misses.append((query[:50], targets))
-    n = len(BENCHMARK)
-    return {"n": n, "recall_at_k": round(hits_at_k / n, 3), "k": top_k,
-            "mrr": round(rr_sum / n, 3), "misses": misses}
+            miss_kind = "retrieval_miss" if target_resolved else "benchmark_target_unresolved"
+            miss_id = _stable_json_digest(
+                {
+                    "case_id": case["case_id"],
+                    "query": query,
+                    "targets": targets,
+                    "top_k": top_k,
+                    "ranker": ranker,
+                    "miss_kind": miss_kind,
+                    "benchmark_digest": bench_digest,
+                    "catalog_digest": catalog_digest,
+                }
+            )[:16]
+            miss_records.append(
+                {
+                    "miss_id": miss_id,
+                    "miss_kind": miss_kind,
+                    "case_id": case["case_id"],
+                    "benchmark_index": benchmark_index,
+                    "query": query,
+                    "targets": list(targets),
+                    "target_resolution": resolution,
+                    "confusers": case["confusers"],
+                    "family": case["family"],
+                    "top_k": top_k,
+                    "ranker": ranker,
+                    "benchmark_digest": bench_digest,
+                    "catalog_digest": catalog_digest,
+                    "top_candidates": _candidate_excerpt(ranked),
+                    "repair_hint": case["repair_hint"],
+                    "repair_policy": (
+                        "If miss_kind=benchmark_target_unresolved, fix the benchmark target "
+                        "or add the missing primitive/catalog row before treating this as a "
+                        "retrieval failure. If miss_kind=retrieval_miss, inspect whether the "
+                        "target primitive is missing an effect-vocabulary alias, stale in the "
+                        "semantic atlas, or crowded out by a confuser. Fix the catalog/alias/atlas "
+                        "first; change the benchmark only if the target label is wrong."
+                    ),
+                }
+            )
+    n = len(cases)
+    denom = resolvable_n or n or 1
+    return {"n": n, "resolvable_n": resolvable_n,
+            "unresolved_target_cases": unresolved_cases,
+            "unresolved_target_count": len(unresolved_cases),
+            "confuser_hits": confuser_hits,
+            "confuser_hit_count": len(confuser_hits),
+            "recall_at_k": round(hits_at_k / denom, 3), "k": top_k,
+            "mrr": round(rr_sum / denom, 3), "misses": misses,
+            "miss_records": miss_records,
+            "benchmark_digest": bench_digest,
+            "catalog_digest": catalog_digest,
+            "ranker": ranker}
+
+
+def record_miss_queue(eval_result: dict, path: Path = MISS_QUEUE_PATH) -> dict:
+    """Append new held-out retrieval misses to a deduped JSONL repair queue."""
+    miss_records = list(eval_result.get("miss_records") or [])
+    if eval_result.get("ranker") == "semantic" and eval_result.get("semantic_live") is False:
+        return {
+            "path": str(path),
+            "misses": len(miss_records),
+            "appended": 0,
+            "existing_after": None,
+            "skipped": True,
+            "skip_reason": (
+                "semantic embedder unavailable; refusing to record lexical-fallback "
+                "misses as semantic retrieval debt"
+            ),
+            "semantic_liveness_reason": eval_result.get("semantic_liveness_reason"),
+        }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    existing_ids: set[str] = set()
+    if path.exists():
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            miss_id = row.get("miss_id")
+            if isinstance(miss_id, str):
+                existing_ids.add(miss_id)
+    now = datetime.now(timezone.utc).isoformat()
+    appended = 0
+    with path.open("a", encoding="utf-8") as fh:
+        for record in miss_records:
+            miss_id = record.get("miss_id")
+            if not isinstance(miss_id, str) or miss_id in existing_ids:
+                continue
+            row = {
+                "schema_version": "primitive_amnesia_miss_v1",
+                "recorded_at": now,
+                "status": "open",
+                **record,
+            }
+            fh.write(json.dumps(row, sort_keys=True) + "\n")
+            existing_ids.add(miss_id)
+            appended += 1
+    return {
+        "path": str(path),
+        "misses": len(miss_records),
+        "appended": appended,
+        "existing_after": len(existing_ids),
+    }
+
+
+def miss_queue_status(path: Path = MISS_QUEUE_PATH) -> dict:
+    """Summarize primitive-amnesia repair debt from the JSONL miss queue."""
+    rows: list[dict] = []
+    malformed = 0
+    if path.exists():
+        for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            if not raw.strip():
+                continue
+            try:
+                obj = json.loads(raw)
+            except json.JSONDecodeError:
+                malformed += 1
+                continue
+            if isinstance(obj, dict):
+                rows.append(obj)
+            else:
+                malformed += 1
+    status_counts = Counter(str(row.get("status") or "open") for row in rows)
+    open_rows = [
+        row
+        for row in rows
+        if str(row.get("status") or "open").lower() not in {"closed", "resolved", "retired"}
+    ]
+    open_rows.sort(key=lambda row: str(row.get("recorded_at") or ""), reverse=True)
+    return {
+        "path": str(path),
+        "exists": path.exists(),
+        "row_count": len(rows),
+        "open_count": len(open_rows),
+        "malformed_count": malformed,
+        "status_counts": dict(status_counts),
+        "latest_open": [
+            {
+                "miss_id": row.get("miss_id"),
+                "case_id": row.get("case_id"),
+                "query": row.get("query"),
+                "targets": row.get("targets"),
+                "miss_kind": row.get("miss_kind"),
+                "ranker": row.get("ranker"),
+                "recorded_at": row.get("recorded_at"),
+                "repair_hint": row.get("repair_hint"),
+            }
+            for row in open_rows[:5]
+        ],
+    }
 
 
 def _selftest() -> int:
@@ -628,8 +1117,14 @@ def main(argv=None) -> int:
                     help="embedding backend for --build-atlas (default: code-aware gemini)")
     ap.add_argument("--eval", action="store_true",
                     help="recall@k + MRR over the held-out benchmark (MEASURE retrieval)")
+    ap.add_argument("--record-misses", action="store_true",
+                    help="with --eval, append semantic misses to the primitive-amnesia repair queue")
+    ap.add_argument("--miss-queue", default=str(MISS_QUEUE_PATH),
+                    help="JSONL path for --record-misses")
     ap.add_argument("--semantic-live", action="store_true",
                     help="positive-control the semantic embedder + atlas and print the result")
+    ap.add_argument("--atlas-status", action="store_true",
+                    help="check catalog/atlas freshness without embedding calls")
     a = ap.parse_args(argv)
     if a.repopulate:
         n = populate_catalog(clean=True)
@@ -641,22 +1136,67 @@ def main(argv=None) -> int:
         return 0
     if a.build_atlas:
         n = build_primitive_atlas(backend=a.embedder)
-        print(f"embedded {n} primitives into the semantic atlas (backend={a.embedder}).")
-        return 0
+        status = atlas_freshness_status()
+        if status.ok:
+            print(f"embedded {n} primitives into the semantic atlas (backend={a.embedder}).")
+            return 0
+        print(f"FAILED to build a complete semantic atlas (backend={a.embedder}, embedded={n}).")
+        for warning in status.warnings:
+            print(f"WARNING: {warning}")
+        return 2
     if a.eval:
         k = a.top_k if a.top_k != 8 else 5
         lex = evaluate(top_k=k, semantic=False)
         sem = evaluate(top_k=k, semantic=True)
-        print(f"HELD-OUT BENCHMARK (n={sem['n']}, k={k}):")
+        live, why = semantic_live()
+        sem["semantic_live"] = live
+        sem["semantic_liveness_reason"] = why
+        print(
+            f"HELD-OUT BENCHMARK (n={sem['n']}, "
+            f"resolvable={sem.get('resolvable_n', sem['n'])}, k={k}):"
+        )
         print(f"  lexical-only : recall@{k}={lex['recall_at_k']}  MRR={lex['mrr']}")
-        print(f"  semantic     : recall@{k}={sem['recall_at_k']}  MRR={sem['mrr']}  (the lift)")
-        for q, t in sem["misses"]:
-            print(f"  semantic MISS: {q!r} -> wanted {t}")
+        delta = round(float(sem["recall_at_k"]) - float(lex["recall_at_k"]), 3)
+        print(
+            f"  semantic     : recall@{k}={sem['recall_at_k']}  "
+            f"MRR={sem['mrr']}  (delta={delta:+.3f})"
+        )
+        if not live:
+            print(f"  semantic live: false ({why})")
+        if sem.get("unresolved_target_count"):
+            print(f"  benchmark debt: unresolved_targets={sem['unresolved_target_count']}")
+        if sem.get("confuser_hit_count"):
+            print(f"  confuser hits : {sem['confuser_hit_count']}")
+        miss_label = "semantic MISS" if live else "fallback MISS"
+        for miss in sem.get("miss_records", []):
+            print(
+                f"  {miss_label}: "
+                f"{miss['query'][:50]!r} -> wanted {miss['targets']} "
+                f"kind={miss.get('miss_kind', 'retrieval_miss')}"
+            )
+        if a.record_misses:
+            queue = record_miss_queue(sem, path=Path(a.miss_queue))
+            if queue.get("skipped"):
+                print(
+                    "  miss queue   : "
+                    f"skipped=true misses={queue['misses']} reason={queue['skip_reason']}"
+                )
+            else:
+                print(
+                    "  miss queue   : "
+                    f"appended={queue['appended']} misses={queue['misses']} path={queue['path']}"
+                )
         return 0
     if a.semantic_live:
         live, why = semantic_live()
         print(f"SEMANTIC_LIVE={str(live).lower()} reason={why}")
         return 0 if live else 2
+    if a.atlas_status:
+        status = atlas_freshness_status()
+        print(f"ATLAS_STATUS {status.summary()}")
+        for warning in status.warnings:
+            print(f"WARNING: {warning}")
+        return 0 if status.ok else 2
     if a.selftest:
         return _selftest()
     if not a.query:
@@ -666,9 +1206,10 @@ def main(argv=None) -> int:
     sem_live, sem_why = (False, "lexical-only forced") if a.lexical_only else semantic_live()
     if not sem_live:
         print(f"⚠️  SEMANTIC EMBEDDER DEAD/UNAVAILABLE: {sem_why}")
-        print("    Running LEXICAL-ONLY (recall ~0.67 vs semantic 1.0). A 'no primitive matched'")
-        print("    here is INADMISSIBLE — it may be a dead instrument, not a real absence. Set")
-        print("    GEMINI_API_KEY (or --build-atlas) before concluding a capability must be built.\n")
+        print("    Running LEXICAL-ONLY. A 'no primitive matched' here is INADMISSIBLE —")
+        print("    it may be a dead instrument, not a real absence. Run `--eval` for")
+        print("    current retrieval calibration and fix GEMINI_API_KEY / atlas liveness")
+        print("    before concluding a capability must be built.\n")
     hits = precheck(a.query, a.top_k, semantic=(False if a.lexical_only else None))
     if not hits:
         if sem_live:

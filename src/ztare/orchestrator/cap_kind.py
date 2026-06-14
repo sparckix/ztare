@@ -1,7 +1,7 @@
 """Cap-source classifier — REFRAME vs REFINE decision support.
 
 Background (2026-04-27): the apparatus has 5 overlapping diversity-forcing
-mechanisms (forced_reframe, Erdős re-query, topological pivot, axiom purge,
+mechanisms (forced_reframe, Erdős re-query, structural pivot, axiom purge,
 REFRAME alien-math seam) that all fire on the same `score_cap_reason`
 signal. This is correct when the cap source is *gaming* (parameter
 laundering, kernel camouflage). It is WRONG when the cap source is
@@ -27,7 +27,7 @@ Usage:
   from src.ztare.orchestrator.cap_kind import classify_cap_kind
   kind = classify_cap_kind(eval_record.get("score_cap_reason"))
   if kind == "gaming":
-      # fire forced_reframe / Erdős re-query / topological pivot
+      # fire forced_reframe / Erdős re-query / structural pivot
   elif kind in ("generalization_gap", "physics_violation"):
       # render "refine prior winner" block — DO NOT pivot
 """
@@ -157,7 +157,7 @@ def is_honest_cap(cap_reason: Optional[str]) -> bool:
     (form passed gaming + holdout but not farther-tail), holdout_miss (form
     is structurally OK but doesn't fit Class A well).
 
-    These all signal "the form is engaging path-b correctly; refine it" —
+    These all signal "the form is engaging the variational contract; refine it" —
     NOT "pivot to a different family."
     """
     return classify_cap_kind(cap_reason) in (

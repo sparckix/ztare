@@ -161,8 +161,19 @@ def run_semantic_gaming_carrier_gates(
     name = "global_semantic_gaming_carrier"
 
     if rubric_data.get("disable_semantic_gaming_carrier"):
-        reason = rubric_data.get("disable_semantic_gaming_carrier_reason", "(no reason provided)")
-        return [_gate(name, True, None, None, f"DISABLED by rubric config; reason: {reason}")]
+        reason = str(rubric_data.get("disable_semantic_gaming_carrier_reason") or "").strip()
+        if not reason:
+            return [
+                _gate(
+                    name,
+                    False,
+                    "disabled_without_reason",
+                    "non-empty disable_semantic_gaming_carrier_reason",
+                    "disable_semantic_gaming_carrier requires an explicit reason",
+                    hard_fail=True,
+                )
+            ]
+        return [_gate(name, True, "disabled", "explicit disable reason", f"DISABLED by rubric config; reason: {reason}")]
 
     test_model_path = Path(project_dir) / "test_model.py"
     try:

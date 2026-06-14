@@ -48,10 +48,10 @@ class IterRecord:
 
     DAG nodes (added 2026-05-02 evening per operator flag):
     `*_dag.json` per iter carries the judge's structural model of the
-    thesis — nodes are labeled load-bearing claims (id, label),
+    thesis — nodes are labeled decision-critical claims (id, label),
     edges are inferential relations with weights. This is RICHER than
     parsing thesis text because the judge has already identified what
-    is load-bearing. Complementarity detection prefers DAG node
+    is decision-critical. Complementarity detection prefers DAG node
     labels when present.
     """
     iter_index: int
@@ -73,7 +73,7 @@ class IterRecord:
 
     def dag_node_labels(self) -> list[str]:
         """Convenience: extract node labels from DAG. Empty list if no
-        DAG was loaded. These ARE the load-bearing primitives the
+        DAG was loaded. These ARE the decision-critical primitives the
         judge identified — better signal than thesis-text fallback."""
         return [str(n.get("label", "")).strip()
                 for n in self.dag_nodes if n.get("label")]
@@ -267,9 +267,9 @@ def read_iter_records(project_dir: Path,
                 log.warning("iter_extraction: meta read failed for %s: %s",
                             meta_path, exc)
         # DAG sidecar (judge's structural model of the thesis —
-        # nodes are labeled load-bearing claims). This is RICHER than
+        # nodes are labeled decision-critical claims). This is RICHER than
         # thesis-text parsing because the judge has already identified
-        # what is load-bearing. Preferred signal for complementarity
+        # what is decision-critical. Preferred signal for complementarity
         # detection when present.
         dag_path = f.with_name(f.stem + "_dag.json")
         if dag_path.exists():
@@ -280,7 +280,7 @@ def read_iter_records(project_dir: Path,
             except Exception as exc:
                 log.warning("iter_extraction: DAG read failed for %s: %s",
                             dag_path, exc)
-        # Thesis text body (load-bearing fallback for verified_axioms)
+        # Thesis text body (decision-critical fallback for verified_axioms)
         if not rec.verified_axioms and f.exists():
             try:
                 rec.verified_axioms = [f.read_text(encoding="utf-8")]
@@ -336,11 +336,11 @@ def content_words(text: str, min_len: int = 4) -> set[str]:
 def detect_complementary_pairs(records: list[IterRecord],
                                 min_overlap: int = 3
                                 ) -> list[tuple[int, int]]:
-    """Find iter pairs (M, N) where iter-M's load-bearing claims
+    """Find iter pairs (M, N) where iter-M's decision-critical claims
     close iter-N's weakest_point.
 
     Signal preference (richest first):
-      1. DAG node labels (judge-identified load-bearing claims) —
+      1. DAG node labels (judge-identified decision-critical claims) —
          strongest signal because the judge has already extracted them
       2. verified_axioms field from meta sidecar (when populated)
       3. Thesis text fallback (full body — noisier but always available)

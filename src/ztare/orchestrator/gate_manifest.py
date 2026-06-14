@@ -1,6 +1,6 @@
 """GP-157 v5.0 Layer 3 — declarative gate manifest.
 
-Per Gemini Pro architectural review (2026-04-25 night): the iatrogenic-free
+Per Gemini Pro architectural review (2026-04-25): the iatrogenic-free
 fix for the gp160-class intent/mechanism translation gap is to remove
 operator-authored imperative gate code (`gate_harness.py`) entirely and
 replace it with a declarative gate manifest in the rubric. The Cage
@@ -48,7 +48,7 @@ class GateType(Enum):
     impl. Removing/renaming requires DECISION_LOG entry + substrate
     migration.
 
-    Per panel triage (2026-04-25 night), 10 unanimous-WIRE gates:
+    Per panel triage (2026-04-25), 10 unanimous-WIRE gates:
     """
 
     BOUNDS_CHECK = 1

@@ -4,7 +4,7 @@ Covers the pure parser, the harness invocation contract, the
 fail-closed semantics, and the soft-cap translation. The harness
 contract is exercised against a real ``test_model.py`` written into a
 tempdir so the subprocess path is real (no mocks). Mocking subprocess
-would defeat the purpose: the harness contract is the load-bearing
+would defeat the purpose: the harness contract is the decision-critical
 piece per Codex Turn 2, and the things that break in practice
 (--emit-deterministic-gates flag handling, JSON shape, exit code) are
 exactly what subprocess mocking elides.

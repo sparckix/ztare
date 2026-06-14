@@ -325,7 +325,7 @@ def evaluate_feature_contrib(
             f"{cosmetic_names}. The form names these features but its "
             f"empirical fit barely changes when they are replaced by "
             f"their class-median value, indicating cosmetic dependence "
-            f"rather than load-bearing structural use. A real Lagrangian "
+            f"rather than decision-critical structural use. A real Lagrangian "
             f"derivation should produce a form where every named feature "
             f"has measurable empirical content."
         )
@@ -334,7 +334,7 @@ def evaluate_feature_contrib(
         reason = (
             f"all {len(per_feature)} referenced feature(s) contribute "
             f"≥ {threshold:.3f} ΔMRE under median-ablation; the form's "
-            f"feature footprint is empirically load-bearing."
+            f"feature footprint is empirically decision-critical."
         )
         verdict = "ok"
 

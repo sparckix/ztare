@@ -1,6 +1,6 @@
 """GP-157 v5.0 Layer 1 — generate evidence.txt §D from ContractSpec.
 
-Per panel synthesis (Task #67, Expert 1 / E5 agreement): the 5-source
+Per panel synthesis from the evidence-contract review: the 5-source
 contradiction failure mode (gp159) is structurally cured iff
 evidence.txt §D is GENERATED from the ContractSpec, not hand-authored.
 Substrate authors continue to write Evidence Sets A/B/C (the substrate-
@@ -17,7 +17,7 @@ Usage:
     section_d = render_evidence_set_d(spec)
     # → drop into evidence.txt or ship as part of `make seal`'s template
 
-Future tooling (Task #68 LLM consistency checker): cross-check that the
+Future tooling: cross-check that the
 substrate's evidence.txt §D matches the freshly-rendered §D for its
 declared cage_meta.class. Drift = misconfigured substrate.
 """

@@ -48,9 +48,9 @@ class StagnationSignal:
     consecutive_zero_iters: int = 0
     consecutive_same_ast_iters: int = 0
     # 2026-04-27 capped-stagnation streak detection: detects the
-    # path-a-stuck-at-cap pattern: consecutive iters where the apparatus
+    # parametric-refit-at-cap pattern: consecutive iters where the apparatus
     # capped the judge raw score (raw > capped) with identical capped value.
-    # gp163d's path-a regression hits this every iter; the pure zero-score
+    # gp163d's parametric-refit regression hits this every iter; the pure zero-score
     # streak detector misses it because the capped score is never 0.
     consecutive_capped_iters: int = 0
     last_form: Optional[str] = None
@@ -153,7 +153,7 @@ def detect_stagnation(
     # 2026-04-27 capped-stagnation detection: also detect consecutive
     # iters where capped score is identical AND raw_judge_score >= cap+1
     # (i.e., the apparatus capped repeatedly because of structural detectors,
-    # not because the form is bad). gp163d's path-a-stuck-at-50 is this
+    # not because the form is bad). gp163d's parametric-refit-at-50 is this
     # exact pattern: every iter caps at 50 from R20+R21+R24+R22 firing on
     # the bridge skeleton variants. Pure zero-score streak detector misses
     # this because the capped score is never 0.
@@ -197,9 +197,9 @@ def detect_stagnation(
         # as stagnation when the most recent cap is a GAMING cap (R20-R24).
         # Honest caps (PPN, generalization gap, holdout miss) do NOT mean
         # the mutator is stuck in the same architectural family — they
-        # mean the form is engaging path-b correctly and needs refinement.
+        # mean the form is engaging the variational contract and needs refinement.
         # Triggering Erdős re-query / forced REFRAME on those caps wastes
-        # budget pivoting away from a viable scaffold.
+        # budget pivoting away from a viable candidate.
         try:
             from src.ztare.orchestrator.cap_kind import classify_cap_kind
             _last_iter = max(iter_entries.keys())
@@ -222,7 +222,7 @@ def detect_stagnation(
             sig.reason = (
                 f"capped_streak={capped_stagnation_streak} but cap_kind="
                 f"{_last_kind} (honest); Erdős re-query suppressed — "
-                f"the form is engaging path-b correctly. forced_reframe "
+                f"the form is engaging the variational contract. forced_reframe "
                 f"will render REFINE PRIOR WINNER instead of pivoting."
             )
     elif sig.consecutive_same_ast_iters >= ast_bucket_threshold:

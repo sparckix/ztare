@@ -6,7 +6,7 @@ GT type: tabulated empirical data + scipy interpolation.
 No analytical symbolic expression exists — the GT is the data itself.
 
 f_true(t) returns the reference G value for any t via log-log interpolation.
-Used by Component C and by evidence_holdout / evidence_farther_tail evaluation.
+Used by residual diagnostics and by evidence_holdout / evidence_farther_tail evaluation.
 """
 from __future__ import annotations
 

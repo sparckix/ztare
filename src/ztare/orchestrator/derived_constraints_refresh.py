@@ -5,7 +5,7 @@ sub-systems and was 137 lines of tangled apparatus state in
 autoresearch_loop:
 
   - judge-emitted constraints (sanitize + ledger update)
-  - GP-061 Component A: structural_extractor (cross-family invariant)
+  - structural_extractor (cross-family invariant)
   - GP-062: trajectory_thrash_detector (preserved-skeleton signal)
   - GP-061.B: negative_space_extractor (unexplored AST slots)
 
@@ -97,7 +97,7 @@ def refresh_derived_constraints_from_eval(
         f"{ledger.get('provisional_constraint_count', 0)} provisional"
     )
 
-    # ---- 2. GP-061 Component A: structural_extractor ----
+    # ---- 2. Structural-presence extractor ----
     # Reads workspace/structural_memory.json, looks for a skeleton
     # shared by all failed families, emits a have-to-believe
     # constraint into the ledger.
@@ -172,7 +172,7 @@ def refresh_derived_constraints_from_eval(
     # Reads structural_memory.json via the generalized AST feature
     # matrix and emits a constraint listing (function × arg_pos ×
     # operator) slots that every failed family left empty. Same
-    # provisional gate as Component A — stays in the provisional
+    # provisional gate as the structural-presence extractor — stays in the provisional
     # bucket until a second distinct run confirms the surfaced voids.
     if disable_negative_space_extractor:
         print(

@@ -375,8 +375,8 @@ def load_alien_math_alternatives(
             math-family seam (RG-flow / multifractal / modular).
 
     Domain-aware dispatch was added 2026-04-27 after gp163d v3.2.2 iter-1
-    showed the mutator picking path-a (bridge refit) over path-b
-    (Lagrangian derivation) because the alien-math fallback offered only
+    showed the mutator picking a parametric bridge refit over
+    Lagrangian derivation because the alien-math fallback offered only
     cross-math-family candidates, not physics Lagrangians. For physics
     substrates (modified gravity, gauge theory, etc.) the apparatus
     needs to surface domain-appropriate Lagrangian classes as REFRAME

@@ -630,7 +630,7 @@ def _gate_extrapolation_gap(
     Per-dimension overlap check: declared range must extend beyond training data
     by at least one std dev of training spacing in that dimension.
 
-    Class-aware bypass (2026-04-25 night): for cage_meta.class in
+    Class-aware bypass (2026-04-25): for cage_meta.class in
     {"audit", "literature", "proof_target", "closed_form_constant"} the
     gate auto-skips because those substrate classes have no numeric
     extrapolation regime by definition (audit = critique of artifact;
@@ -892,7 +892,7 @@ def run_global_gates(
     if not eg["passed"] and eg.get("hard_fail"):
         any_hard_fail = True
 
-    # Phase 1: audit_mock_bypass (GP-166 Fix E, 2026-04-25 night).
+    # Phase 1: audit_mock_bypass (GP-166 Fix E, 2026-04-25).
     # Audit substrates have all numerical-validation gates disabled by
     # design (no holdout, no fit, no uniqueness gap), leaving only the
     # rubric prose for the LLM judge to grade against. A common LLM
@@ -913,7 +913,7 @@ def run_global_gates(
     # AST/provenance checks for fixture-backed autoresearch vectors. Semantic
     # transfer/rigor vectors remain outside this syntactic gate and route
     # through their own carriers.
-    from ztare.gates.autoresearch_gaming_gates import run_autoresearch_gaming_gates
+    from src.ztare.gates.autoresearch_gaming_gates import run_autoresearch_gaming_gates
 
     psg_results = run_autoresearch_gaming_gates(project_dir, rubric_data)
     gates.extend(psg_results)
@@ -926,7 +926,7 @@ def run_global_gates(
     # Semantic gaming carrier gates. These do not claim syntactic proof of
     # semantic failure; they select the appropriate scope/transfer/rigor review
     # carrier and fail closed when that risk is present.
-    from ztare.gates.semantic_gaming_carrier import run_semantic_gaming_carrier_gates
+    from src.ztare.gates.semantic_gaming_carrier import run_semantic_gaming_carrier_gates
 
     sgc_results = run_semantic_gaming_carrier_gates(project_dir, rubric_data, thesis_text, evidence_text)
     gates.extend(sgc_results)

@@ -62,13 +62,13 @@ def classify_harness_failure(
     to write the anti-rationalization note into the Judge's critique
     text.
 
-    GP-166 Fix A (2026-04-25 night): when the regex-based exception
+    GP-166 Fix A (2026-04-25): when the regex-based exception
     name match fails (truncated stderr, wrapped exception, gate-harness
     internal print format) BUT the stderr text mentions an `assert` /
     `AssertionError` pattern, classify as FAIL_ASSERT rather than
     FAIL_OTHER.
 
-    GP-167 Fix (2026-04-25 night, panel-revealed): substrates with
+    GP-167 Fix (2026-04-25, panel-revealed): substrates with
     frozen gate harnesses (gate_harness.py --run-visible-assertions)
     report gate failure via exit code 1 + JSON in stdout, with empty
     stderr. The harness has done its job; the form has been falsified
@@ -127,7 +127,7 @@ def classify_harness_failure(
 # requires either "AssertionError" verbatim or a Python traceback frame
 # pointing at an `assert` statement. The frame can be inside any function
 # (`in <module>`, `in test_thesis`, `in run_validation`, etc.) — the
-# epistemic panel review (2026-04-25 night) caught that the original
+# epistemic panel review (2026-04-25) caught that the original
 # `<module>`-only regex missed in-function asserts, which were the
 # dominant gp163d failure mode.
 _ASSERT_FALLBACK_RE = re.compile(
@@ -138,7 +138,7 @@ _ASSERT_FALLBACK_RE = re.compile(
 
 
 def sanitize_stderr_for_mutator(stderr_text: str, exception_name: str) -> str:
-    """GP-157 v5.0 Gap #1 (2026-04-25 night, panel Failure Mode 1):
+    """GP-157 v5.0 Gap #1 (2026-04-25, panel Failure Mode 1):
     strip Popper-leakage from raw stderr before it flows back to the
     mutator's prompt.
 

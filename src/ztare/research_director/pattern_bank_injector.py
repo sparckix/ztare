@@ -135,7 +135,7 @@ def evaluate_injection(
         f"PATTERN-BANK EXEMPLARS — class={chosen_class} (GP-214 I-5, mode={source_label}). "
         "Concrete past-failure exemplars from the mining corpus. Avoid these specific "
         "shapes; structural avoidance does NOT trump the rubric — the rubric is still "
-        "load-bearing.\n\n"
+        "decisive.\n\n"
     )
     body_with_footer = body + CROSS_LLM_FOOTER
 

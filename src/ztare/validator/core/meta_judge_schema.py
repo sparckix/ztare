@@ -42,8 +42,21 @@ def raw_meta_judge_shape_errors(evaluation: object) -> list[str]:
         if field in evaluation and not isinstance(evaluation.get(field), list):
             errors.append(f"invalid:{field}_not_array")
 
-    if "probability_dag" in evaluation and not isinstance(evaluation.get("probability_dag"), dict):
-        errors.append("invalid:probability_dag_not_object")
+    for field in ("weakest_point", "debate_summary", "adversarial_alignment"):
+        if field in evaluation and not isinstance(evaluation.get(field), str):
+            errors.append(f"invalid:{field}_not_string")
+
+    if "probability_dag" in evaluation:
+        probability_dag = evaluation.get("probability_dag")
+        if not isinstance(probability_dag, dict):
+            errors.append("invalid:probability_dag_not_object")
+        else:
+            if not isinstance(probability_dag.get("outcome"), dict):
+                errors.append("invalid:probability_dag.outcome_not_object")
+            if "nodes" in probability_dag and not isinstance(probability_dag.get("nodes"), list):
+                errors.append("invalid:probability_dag.nodes_not_array")
+            if "edges" in probability_dag and not isinstance(probability_dag.get("edges"), list):
+                errors.append("invalid:probability_dag.edges_not_array")
 
     if (
         "score" not in evaluation

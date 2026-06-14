@@ -119,7 +119,7 @@ def build_cage_runtime(
     except Exception:
         pass  # gate registration is best-effort; never abort Cage init
 
-    # GP-157 §3a backport (Task #151, 2026-04-26): migrate the four direct-
+    # GP-157 §3a backport (2026-04-26): migrate the four direct-
     # wired diagnostics (substrate_critic, noise_profile, ANALOGY, framer)
     # to the Cage-routed pattern so autoresearch_loop's per-gate if-block
     # stack stops accreting. Each register_r{N}_gate call appends its

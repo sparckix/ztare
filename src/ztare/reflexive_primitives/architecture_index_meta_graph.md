@@ -105,7 +105,7 @@ falsifier:
   not_trivial: |
     On the 2026-05-08 snapshot, ranking by impact_factor_expost surfaces
     UNIVERSAL-RESEARCH-OPS / PDE-ESTIMATE-CRAFT-OPS (impact 4, last_used
-    2026-05-08, central in tonight's W6/T9 work) at the top, while a
+    2026-05-08, central in the W6/T9 work) at the top, while a
     frequency-only ranking would surface gates that fire on every cage run
     regardless of whether they catch anything. The two rankings ARE
     different at t=0; the falsifier tests whether they CONVERGE over 4

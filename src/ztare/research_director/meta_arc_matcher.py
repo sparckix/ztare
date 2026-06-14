@@ -449,7 +449,7 @@ def _annotate_theory_building_op(top_scored: list) -> dict[str, Any]:
         reason = "move accumulates a constraint stack that progressively narrows admissible solutions"
     elif any(k in text for k in ["special case", "killing-mode", "semistable", "barrier", "branch"]):
         label = "tb_NEW_POLYA"
-        reason = "move solves a load-bearing special case selected to break a structural barrier"
+        reason = "move solves a decisive special case selected to break a structural barrier"
     return {
         "label": label,
         "reason": reason,

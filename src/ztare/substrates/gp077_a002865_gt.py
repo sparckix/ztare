@@ -1,4 +1,4 @@
-"""Ground-truth module for A002865 log-scaled sequence recovery (GP-077 Component C)."""
+"""Ground-truth module for A002865 log-scaled sequence recovery."""
 from __future__ import annotations
 
 import math

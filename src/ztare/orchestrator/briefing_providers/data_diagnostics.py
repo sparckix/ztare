@@ -36,7 +36,7 @@ import re
 from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
-# Task #140 numeric-redaction helpers (2026-04-26). The substrate critic
+# Numeric-redaction helpers (2026-04-26). The substrate critic
 # emits implication strings like "below 1 in 2424/2424 rows" and "log10|y|
 # jump of 2.7 dex"; those numerics seed mutator priors with values that
 # can coincide with GT (RH-18 kernel-camouflage centers were memorized
@@ -244,7 +244,7 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
         cc = d.get("cross_class_signal") or []
         if cc:
-            # Task #140 — numeric-redaction (panel Blindspot from gp163d
+            # Numeric-redaction panel blind spot from gp163d
             # iter-5 RH-18 hack). Previously we emitted the literal
             # withheld-class numeric values ("withheld ['14.5', '31.09']");
             # the mutator memorized those into kernel centers. Now we
@@ -276,7 +276,7 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
         cols = d.get("feature_dimensionality_collapses") or []
         if cols:
-            # Task #140 (2026-04-26): bucket the relative_range qualitatively
+            # Bucket the relative_range qualitatively
             # so we don't leak the exact within-class span the mutator could
             # memorize as a parameter init value.
             lines.append("  Feature dimensionality collapses (visible class):")
@@ -302,7 +302,7 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
         art = d.get("data_artifacts_suspected") or []
         if art:
-            # Task #140: strip per-row counts and exact ratios from the
+            # Strip per-row counts and exact ratios from the
             # implication text to avoid leaking n_rows/min_ratio/max_ratio
             # numerics that could anchor mutator priors. Replace with
             # qualitative descriptors. Numerics stay in workspace JSON
@@ -319,7 +319,7 @@ class DataDiagnosticsBriefingProvider(BriefingProvider):
 
         rb = d.get("regime_breaks_in_data") or []
         if rb:
-            # Task #140: never emit the exact split_at_x or jump magnitude
+            # Never emit the exact split_at_x or jump magnitude
             # — those frequently coincide with the GT crossover constant
             # (g_dagger ≈ 1.2e-10 for RAR; transition mass for power laws).
             # Replace with bucketed descriptors.

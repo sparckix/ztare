@@ -450,13 +450,20 @@ def run_post_run_meta_audit(
             return verdict.to_dict()
 
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "post_run_meta_audit",
             prompt,
-            model_id=audit_model_id,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=audit_model_id,
+                timeout_seconds=int(timeout_seconds),
+                max_tokens=max_output_tokens,
+                request_label="post_run_meta_audit",
+                retries=1,
+            ),
             timeout_seconds=int(timeout_seconds),
-            max_tokens=max_output_tokens,
-            request_label="post_run_meta_audit",
-            retries=1,
         )
     except Exception as exc:  # noqa: BLE001
         verdict.error = f"{type(exc).__name__}: {str(exc)[:280]}"

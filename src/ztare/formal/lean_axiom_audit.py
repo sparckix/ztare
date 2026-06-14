@@ -51,18 +51,33 @@ def _lean_source(module: str, declaration: str) -> str:
     return f"import {module}\n\n#print axioms {declaration}\n"
 
 
-def audit_declaration(lake_dir: Path, module: str, declaration: str) -> AxiomAuditRow:
+def audit_declaration(lake_dir: Path, module: str, declaration: str,
+                      timeout_s: "int | None" = None) -> AxiomAuditRow:
+    from ztare.common.timeouts import timeout_s as _budget
+    budget = int(timeout_s) if timeout_s is not None else _budget("axiom_audit")
     with TemporaryDirectory() as tmp:
         lean_file = Path(tmp) / "AxiomAudit.lean"
         lean_file.write_text(_lean_source(module, declaration), encoding="utf-8")
-        proc = subprocess.run(
-            ["lake", "env", "lean", str(lean_file)],
-            cwd=lake_dir,
-            text=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=False,
-        )
+        try:
+            proc = subprocess.run(
+                ["lake", "env", "lean", str(lean_file)],
+                cwd=lake_dir,
+                text=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                check=False,
+                timeout=budget,
+            )
+        except subprocess.TimeoutExpired:
+            # FAIL-CLOSED: a wedged `lake env lean` must NEVER be read as axiom-clean. `parse_axioms` on an
+            # empty/partial output returns [] = "no axioms" = clean → a silent ratification of an UNAUDITED
+            # closure (the same unbounded-wait class as the REPL hang). Surface a non-zero returncode AND a
+            # sentinel axiom so EITHER gate (returncode==0 OR empty-axiom-list) refuses the closure.
+            return AxiomAuditRow(
+                declaration=declaration, returncode=124,
+                axioms=["__axiom_audit_timeout__"],
+                raw_output=f"axiom_audit_timeout: `lake env lean` exceeded {budget}s (fail-closed)",
+            )
     raw_output = "\n".join(part for part in (proc.stdout, proc.stderr) if part)
     return AxiomAuditRow(
         declaration=declaration,

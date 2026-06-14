@@ -174,7 +174,7 @@ def _evaluator_from_context(
 
     # Gate-time primitive prelude — kept in sync with GP-157
     # `_SAFE_NS_BASE` and the gate harness namespace. v3.5 update
-    # (2026-04-27 night): tanh / sinh / cosh / atan2 / log1p / expm1 /
+    # (2026-04-27): tanh / sinh / cosh / atan2 / log1p / expm1 /
     # log2 added so PPN gates do not crash on hyperbolic-saturation forms
     # the K=3 blitz personas naturally propose.
     safe_globals = {

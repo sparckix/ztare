@@ -10,7 +10,7 @@ dependencies:
   - org/patterns/
   - org/anti-patterns/
   - org/menu/orchestration_menu.yaml
-  - workingpapers/epistemic-generation/research_log.md
+  - epistemic-generation/research_log.md
   - src/ztare/research_director/pattern_action_contract.py
 falsifier:
   test: "Across the next 10 depth-sensitive RD closes, fewer than 7 close payloads include a pattern_action_contract and filled required carrier_artifacts, or contract-bearing closes have the same tool-underuse catch rate as the 10 prior comparable closes."
@@ -51,7 +51,7 @@ primitive registry rather than only in `org/patterns/`.
 ## Evidence Basis
 
 The operational evidence comes from
-`workingpapers/epistemic-generation/research_log.md`:
+`epistemic-generation/research_log.md`:
 
 - passive primitive labels and operator prose often changed rationale
   vocabulary without changing route choice;

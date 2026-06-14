@@ -418,7 +418,7 @@ PLANCK_TIME    = 5.391e-44   # seconds (NIST)
 PLANCK_ENERGY  = 1.956e9     # joules  (NIST)
 UNIVERSE_AGE   = 4.35e17     # seconds (Planck 2018)
 
-# Mutator's load-bearing variable — no theoretical derivation provided
+# Mutator's decision-critical variable — no theoretical derivation provided
 # The Verification Panel noted: "any value from 1e-60 to 1e-20 satisfies the assert"
 grav_coupling_strength = 1e-40  # "computation-to-gravity leakage constant"
 

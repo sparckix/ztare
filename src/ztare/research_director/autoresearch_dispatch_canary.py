@@ -463,6 +463,7 @@ def run_dispatch_canary(
     live: bool = False,
     timeout_seconds: int = 120,
     repo: str | Path = ".",
+    full_auto: bool = False,
 ) -> dict[str, Any]:
     """Exercise ``dispatch_call_text`` through the subscription path.
 
@@ -479,6 +480,8 @@ def run_dispatch_canary(
         f"ZTARE_AGENT_DISPATCH_{site_key}": "agent",
         f"ZTARE_AUTORESEARCH_{site_key}_AGENT_RUNTIME": runtime,
     }
+    if live:
+        env_values["ZTARE_LEANMILL_AGENT_FULL_AUTO"] = "1" if full_auto else "0"
     prompt = _prompt_for_contract(contract)
     runner = run_subscription_agent_with_recovery if live else _fake_subscription_runner
     with _temporary_env(env_values):
@@ -692,6 +695,7 @@ def run_dispatch_parity_benchmark(
     live_subscription: bool = False,
     timeout_seconds: int = 120,
     repo: str | Path = ".",
+    full_auto: bool = False,
 ) -> dict[str, Any]:
     """Compare API and subscription dispatch on fixed typed canary contracts.
 
@@ -728,6 +732,7 @@ def run_dispatch_parity_benchmark(
             live=live_subscription,
             timeout_seconds=timeout_seconds,
             repo=repo,
+            full_auto=full_auto,
         )
         subscription_elapsed_ms = int((time.perf_counter() - subscription_start) * 1000)
 
@@ -828,6 +833,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--timeout-seconds", type=int, default=120)
     parser.add_argument("--repo", default=".")
     parser.add_argument("--live", action="store_true", help="Invoke the real subscription CLI.")
+    parser.add_argument("--full-auto", action="store_true", help="Allow the runtime's full-auto mode for live canary.")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args(argv)
 
@@ -838,6 +844,7 @@ def main(argv: list[str] | None = None) -> int:
             live_subscription=args.live,
             timeout_seconds=args.timeout_seconds,
             repo=args.repo,
+            full_auto=args.full_auto,
         )
         if args.json:
             print(json.dumps(report, indent=2, sort_keys=True))
@@ -864,6 +871,7 @@ def main(argv: list[str] | None = None) -> int:
         live=args.live,
         timeout_seconds=args.timeout_seconds,
         repo=args.repo,
+        full_auto=args.full_auto,
     )
     if args.json:
         print(json.dumps(report, indent=2, sort_keys=True))

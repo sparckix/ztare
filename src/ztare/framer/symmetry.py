@@ -1,4 +1,4 @@
-"""GP-152 Framer Component A — SymmetryScanner (v2.0).
+"""GP-152 Framer — SymmetryScanner (v2.0).
 
 Empirical detection of:
   - Power-law scaling: y ∝ x^α (estimate α via log-log slope)

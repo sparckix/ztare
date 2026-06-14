@@ -34,7 +34,7 @@ RULES: List[Dict[str, Any]] = [
     {
         "primitive_key": "silent_injection",
         "pattern_label": "Silent Injection / Hidden Upstream Assumption",
-        "keywords": [r"Silent Injection", r"hidden upstream", r"silently set to 100%", r"never named in load-bearing", r"assumed at 100%", r"hardcoded to True"],
+        "keywords": [r"Silent Injection", r"hidden upstream", r"silently set to 100%", r"never named in decision-critical", r"assumed at 100%", r"hardcoded to True"],
         "classification": "epistemic_failure",
         "epistemic_role_guess": "attack_template",
         "severity": "high",

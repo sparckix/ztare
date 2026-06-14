@@ -2,7 +2,7 @@
 """v33_single_lemma_exact_gate.py — leakage-independent single-lemma-exact organ.
 
 Third forward gate (after vacuity + paraphrase). Catches the v26/v27
-moat-surface class: a claimed closure whose goal Lean's OWN `exact?`
+subsumption class: a claimed closure whose goal Lean's OWN `exact?`
 solves with a single library lemma — not a novel closure, a one-liner
 Mathlib already trivially discharges.
 

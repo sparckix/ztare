@@ -11,7 +11,9 @@ from src.ztare.validator.core.mutation_contract import (
     MutationDeclaration,
     MutationMismatchCode,
     MutationScopeDelta,
+    ThesisControlMode,
     evaluate_mutation_declaration,
+    parse_mutation_declaration,
 )
 
 
@@ -105,6 +107,7 @@ def build_runner_r1_fixture_cases() -> list[RunnerR1FixtureCase]:
             declaration=MutationDeclaration(
                 scope_delta=MutationScopeDelta.MULTI_ARTIFACT,
                 claim_delta_type=ClaimDeltaType.WIDENING,
+                thesis_control_mode=ThesisControlMode.ROTATE_ORTHOGONAL_THESIS,
                 primitive_invoked="domain_leakage",
                 touched_artifacts=(
                     MutationArtifact.THESIS_MD,
@@ -169,11 +172,45 @@ def run_runner_r1_fixture_regression() -> dict[str, object]:
     }
 
 
+def _selftest_parse_thesis_control_mode() -> None:
+    legacy = parse_mutation_declaration(
+        {
+            "scope_delta": "THESIS_ONLY",
+            "claim_delta_type": "REFRAMING",
+            "primitive_invoked": None,
+            "touched_artifacts": ["thesis.md"],
+        }
+    )
+    assert legacy.thesis_control_mode == ThesisControlMode.EXPLOIT_CURRENT_THESIS
+
+    explicit = parse_mutation_declaration(
+        {
+            "scope_delta": "TEST_HARNESS",
+            "claim_delta_type": "REFRAMING",
+            "thesis_control_mode": "TRANSFER_MECHANISM",
+            "primitive_invoked": None,
+            "touched_artifacts": ["test_model.py"],
+        }
+    )
+    assert explicit.thesis_control_mode == ThesisControlMode.TRANSFER_MECHANISM
+
+    mismatch = evaluate_mutation_declaration(
+        explicit,
+        ("projects/sample/test_model.py",),
+        before_text="Bounded local parser.",
+        after_text="Bounded local parser with one extra check.",
+        approved_primitive_keys=APPROVED_PRIMITIVE_KEYS,
+        expected_thesis_control_mode=ThesisControlMode.ROTATE_ORTHOGONAL_THESIS,
+    )
+    assert mismatch.mismatch_code == MutationMismatchCode.THESIS_CONTROL_MODE_MISMATCH
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the isolated runner R1 mutation-contract fixture regression.")
     parser.add_argument("--json-out", type=Path, default=None)
     args = parser.parse_args()
 
+    _selftest_parse_thesis_control_mode()
     summary = run_runner_r1_fixture_regression()
     if args.json_out is not None:
         args.json_out.write_text(json.dumps(summary, indent=2) + "\n")

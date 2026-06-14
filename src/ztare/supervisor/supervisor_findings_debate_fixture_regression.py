@@ -62,7 +62,7 @@ def run_supervisor_findings_debate_fixture_regression() -> dict[str, object]:
             agent="Claude",
             date="2026-04-11",
             title="Opening",
-            body="First turn body with a load-bearing claim.",
+            body="First turn body with a decision-critical claim.",
             no_new_load_bearing=False,
         )
         state = read_debate_state(seam)
@@ -79,7 +79,7 @@ def run_supervisor_findings_debate_fixture_regression() -> dict[str, object]:
             agent="Codex",
             date="2026-04-11",
             title="Counterproposal",
-            body="Counter body with its own load-bearing claim.",
+            body="Counter body with its own decision-critical claim.",
             no_new_load_bearing=False,
         )
         state = read_debate_state(seam)
@@ -96,7 +96,7 @@ def run_supervisor_findings_debate_fixture_regression() -> dict[str, object]:
             agent="Claude",
             date="2026-04-11",
             title="Response",
-            body="Response body introducing a new load-bearing claim.",
+            body="Response body introducing a new decision-critical claim.",
             no_new_load_bearing=False,
         )
         append_turn(
@@ -138,7 +138,7 @@ def run_supervisor_findings_debate_fixture_regression() -> dict[str, object]:
             agent="Codex",
             date="2026-04-11",
             title="Agreement",
-            body="Accepting. No new load-bearing claim.",
+            body="Accepting. No new decision-critical claim.",
             no_new_load_bearing=True,
         )
         state = read_debate_state(seam)

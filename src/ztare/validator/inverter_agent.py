@@ -278,11 +278,18 @@ Output valid JSON matching the schema in your system prompt.
 
     try:
         full_prompt = f"{INVERTER_SYSTEM_PROMPT}\n\n{user_prompt}"
-        llm_response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        llm_response = dispatch_call_text(
+            "inverter_review",
             full_prompt,
-            model_id=model_id,
-            max_tokens=2000,
-            request_label="gp119_inverter",
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                max_tokens=2000,
+                request_label="gp119_inverter",
+            ),
+            timeout_seconds=300,
         )
         response = llm_response.text if hasattr(llm_response, 'text') else str(llm_response)
 

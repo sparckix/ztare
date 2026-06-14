@@ -510,13 +510,20 @@ def fire_cold_shot_seed(
     timeout_s = float(rubric_data.get("cold_shot_seed_timeout_seconds", 240.0))
     max_tokens = int(rubric_data.get("cold_shot_seed_max_tokens", 12000))
     try:
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "cold_shot_seed",
             prompt,
-            model_id=resolved,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=resolved,
+                timeout_seconds=int(timeout_s),
+                max_tokens=max_tokens,
+                request_label="gp184_cold_shot_seed",
+                retries=1,
+            ),
             timeout_seconds=int(timeout_s),
-            max_tokens=max_tokens,
-            request_label="gp184_cold_shot_seed",
-            retries=1,
         )
     except Exception as exc:                                            # noqa: BLE001
         verdict.error = f"{type(exc).__name__}: {str(exc)[:280]}"

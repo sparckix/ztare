@@ -1,4 +1,4 @@
-"""GP-152 Framer Component E — UniversalityAligner (v2.0, stub).
+"""GP-152 Framer — UniversalityAligner (v2.0, stub).
 
 Multi-dataset universality collapse: align N datasets `D_i = {(x_ij, y_ij)}`
 onto a single master curve via per-dataset scaling parameters.

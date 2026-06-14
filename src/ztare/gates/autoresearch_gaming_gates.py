@@ -237,13 +237,24 @@ def run_autoresearch_gaming_gates(project_dir: Path, rubric_data: dict[str, Any]
     name = "global_autoresearch_gaming_vectors"
 
     if rubric_data.get("disable_autoresearch_gaming_gates"):
-        reason = rubric_data.get("disable_autoresearch_gaming_gates_reason", "(no reason provided)")
+        reason = str(rubric_data.get("disable_autoresearch_gaming_gates_reason") or "").strip()
+        if not reason:
+            return [
+                _gate(
+                    name,
+                    False,
+                    "disabled_without_reason",
+                    "non-empty disable_autoresearch_gaming_gates_reason",
+                    "disable_autoresearch_gaming_gates requires an explicit reason",
+                    hard_fail=True,
+                )
+            ]
         return [
             _gate(
                 name,
                 True,
-                None,
-                None,
+                "disabled",
+                "explicit disable reason",
                 f"DISABLED by rubric config; reason: {reason}",
             )
         ]

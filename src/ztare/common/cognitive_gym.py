@@ -1,91 +1,38 @@
-"""Cognitive gym runtime hooks — OUTER/META layer (strange-loop).
+"""Constrained-validation hooks shared by the in-loop and RD layers.
 
-# Important framing (corrected 2026-05-06)
+This module keeps the historic ``cognitive_gym`` import path, but the current
+public vocabulary is simpler: validation operators.
 
-The Three Legs of ZTARE are ALREADY MECHANIZED at the INNER level:
+The three operators are:
 
-  - Invert  → `src/ztare/validator/inverter_agent.py` (GP-119)
-              Popper-style falsification tests post-champion
-  - Compress → `src/ztare/fit/compress_champion.py` (GP-103)
-               Template enumeration for simpler gate-passing form
-  - Adversarial Disagreement → `src/ztare/fit/margin_of_safety.py` (GP-112)
-                               Buffett/Popper/Tukey/Taleb 5-test battery
-  - + `src/ztare/gates/negative_space_extractor.py` (GP-061.B)
-        Voids in the candidate universe
+  - invert: ask what would falsify the current frame or what opposite move
+    should be tested.
+  - compress: ask which invariant or smallest core survives perturbation.
+  - disagree: ask for the strongest specific counter-frame.
 
-  Mutator briefing has 19 stateless providers in
-  `src/ztare/orchestrator/briefing_providers/`.
+The in-loop validator already has concrete implementations for common
+champion-shaped artifacts:
 
-  v5 vocab as generative dispatcher already exists at the option-B
-  stagnation-only integration point: `gap_to_op_class.py` +
-  `gap_to_op_class_integration.py`.
+  - ``inverter_agent.py`` for falsification tests.
+  - ``compress_champion.py`` for simpler gate-passing forms.
+  - ``margin_of_safety.py`` for the 5-test stress battery.
+  - ``negative_space_extractor.py`` for missing structural moves.
 
-# What THIS module is for (OUTER, not INNER)
+This module is the shared router around those implementations. If a request has
+an artifact shape that an existing primitive can handle, the router returns that
+primitive's invocation. If the artifact is broader, such as a closure attempt,
+F-row, mandate edit, paper draft, or cross-substrate synthesis, the router emits
+a structured LLM request for the RD/reviewer to fill.
 
-The strange-loop / fractal application: **applying invert / compress /
-disagree to WHOLE-SUBSTRATE artifacts that the inner primitives don't
-touch** — closure attempts, F-rows, mandate edits, paper drafts,
-cross-substrate findings. The inner primitives operate on per-iter
-champions / theses; this module operates on the META level RD reviews.
+Use it for:
 
-# The hooks dispatch to inner primitives when applicable
+  - RD review of closure attempts across substrates.
+  - skeptic review of mandate edits or paper drafts.
+  - cross-substrate analysis where no single substrate primitive applies.
+  - stagnation review in ``autoresearch_loop``.
 
-Where there's an existing inner primitive that solves a sub-question
-the OUTER hook needs, this module IMPORTS and DISPATCHES rather than
-re-implementing. Concretely:
-  - The "compress" hook on a closure-attempt artifact CAN call
-    `compress_champion.find_simpler_form()` if the artifact is a
-    champion-shaped object.
-  - The "invert" hook on a verified theorem CAN call
-    `inverter_agent.run_inverter()` to produce falsification tests.
-  - The "disagree" hook on a finding CAN call
-    `margin_of_safety.run_battery()` for the 5-test stress.
-
-When the artifact ISN'T champion-shaped (e.g. it's a paper draft, an
-F-row, or a cross-substrate synthesis), the hook produces a structured
-LLM prompt instead — the meta-layer that doesn't yet have a learned
-counterpart.
-
-# When to use THIS module
-
-  - RD reviewing a closure attempt across multiple substrates
-  - RD applying skeptic-review to mandate edits or paper drafts
-  - Cross-substrate analysis where no single substrate's inner primitive
-    applies
-  - The Director's per-closure-attempt review duty (see RD mandate v1.22+)
-
-# Honest scope
-
-  - This is a SCAFFOLD. v0.1 dispatches via LLM with structured prompt
-    templates. Future versions could compute the inversion / compression /
-    disagreement directly from a learned model (see ranker_checkpoint.pt
-    for the start of the world-model layer).
-  - Where inner primitives apply, USE THEM. This module is for the
-    cases they don't reach.
-
-# The three legs as runtime operators
-
-  invert(state)     — invert the current frame: what would FALSIFY this?
-                       what's the OPPOSITE move? returns reframed state
-  compress(state)   — asymptotic-survival compression: which features
-                       SURVIVE under perturbation? returns trimmed state
-  disagree(state)   — adversarial disagreement: spawn an opposing-frame
-                       analysis; returns disagreement report
-
-# Honest scope
-
-  - These are SCAFFOLDS, not solvers. Each hook produces a structured
-    request the LLM (or a subagent) is asked to fill. The hook is a
-    DISPATCHER not a generator.
-  - First-class versions would compute the inversion / compression /
-    disagreement directly from a learned model. v0.1 here delegates
-    to LLM with a structured prompt template.
-
-# When to use
-
-  - Stagnation in autoresearch_loop (≥3 iters with no score movement)
-  - RD skeptic-review of a closure attempt
-  - Pre-commit review of a high-leverage F-row
+Scope: the hooks are dispatch and prompt surfaces. They are not a replacement
+for the inner primitives or for deterministic gates.
 """
 from __future__ import annotations
 
@@ -98,7 +45,7 @@ from typing import Any, Optional
 
 @dataclass
 class CognitiveGymRequest:
-    """Structured input to a cognitive-gym hook."""
+    """Structured input to a constrained-validation hook."""
     leg: str  # "invert" | "compress" | "disagree"
     substrate: str
     state_summary: str
@@ -107,7 +54,7 @@ class CognitiveGymRequest:
 
 @dataclass
 class CognitiveGymResponse:
-    """Structured output from a hook."""
+    """Structured output from a constrained-validation hook."""
     leg: str
     suggestion: str
     rationale: str
@@ -115,9 +62,9 @@ class CognitiveGymResponse:
     reframed_state: Optional[str] = None
 
 
-INVERT_PROMPT = """You are operating the "Invert" leg of ZTARE's cognitive gym.
+INVERT_PROMPT = """You are operating ZTARE's Invert validation operator.
 
-The Invert leg asks: given the CURRENT FRAME of analysis, what would FALSIFY it? What's the opposite move? What would the negative-result version of this attempt look like?
+Invert asks: given the CURRENT FRAME of analysis, what would FALSIFY it? What's the opposite move? What would the negative-result version of this attempt look like?
 
 # Current state
 
@@ -135,9 +82,9 @@ Produce ONE specific INVERSION of the current frame. Don't be diplomatic — be 
 Return JSON: {{"suggestion": "<one-sentence inversion>", "rationale": "<2 sentences why>", "confidence": "high|medium|low"}}"""
 
 
-COMPRESS_PROMPT = """You are operating the "Compress" leg of ZTARE's cognitive gym.
+COMPRESS_PROMPT = """You are operating ZTARE's Compress validation operator.
 
-The Compress leg asks: given the current state, what features SURVIVE asymptotically? Strip everything contingent. What's the smallest invariant that must hold?
+Compress asks: given the current state, what features SURVIVE asymptotically? Strip everything contingent. What's the smallest invariant that must hold?
 
 # Current state
 
@@ -155,9 +102,9 @@ Produce ONE compression. Strip away everything that could vary across runs / reg
 Return JSON: {{"suggestion": "<the irreducible core>", "rationale": "<2 sentences why this is what survives>", "confidence": "high|medium|low"}}"""
 
 
-DISAGREE_PROMPT = """You are operating the "Adversarial Disagreement" leg of ZTARE's cognitive gym.
+DISAGREE_PROMPT = """You are operating ZTARE's Adversarial Disagreement validation operator.
 
-The Disagree leg asks: assume the current analysis is WRONG. What's the strongest counter-frame? Don't temper it.
+Disagree asks: assume the current analysis is WRONG. What's the strongest counter-frame? Don't temper it.
 
 # Current state
 
@@ -182,22 +129,17 @@ PROMPT_BY_LEG = {
 }
 
 
-# ── Lean-substrate plug (2026-06-06) ──────────────────────────────────────────────────────────────
-# The leanmill governed-proof-search factory is the Lean-substrate specialization of THIS cognitive
-# gym (isomorphism audit wf_bfb1a4eb: worth-it specialization, not a frankenstein). Its strategist
-# moves ARE the Three Legs on Lean proof artifacts, so they register here as the inner-primitive plugs
-# the meta strange-loop dispatches to (exactly as invert→inverter_agent / compress→compress_champion /
-# disagree→margin_of_safety do for the regression substrate). Dispatch-by-REFERENCE (names the leanmill
-# move + env flag + entry point) — the hook is a DISPATCHER, not a generator, so it does NOT invoke
-# lake/LLM here; the caller runs the named leanmill entry on the proof substrate.
+# Lean-substrate connectors name the proof-side move, environment flag, and
+# entry point. The hook itself does not run Lake or an LLM; callers execute the
+# returned command on the proof substrate.
 _LEAN_LEG_PLUGS = {
     "compress": {
         "suggestion": ("Lean COMPRESS = leanmill GENERALIZE (MOVE_GENERALIZE, ZTARE_LEANMILL_GENERALIZE=1): "
                        "prove a STRONGER invariant G' with G'⇒G whose proof subsumes the goal; the "
-                       "'irreducible core that survives' is the load-bearing lemma — `conjecture.conjecture_advances` "
+                       "'irreducible core that survives' is the decision-critical lemma — `conjecture.conjecture_advances` "
                        "trivialize-to-True probe identifies the lemma whose removal collapses the chain. "
                        "Run via `solver_core.solve(mode='dag_search')`."),
-        "rationale": "Lean-substrate Compress leg → leanmill generalize + load-bearing core (the isomorphism)."},
+        "rationale": "Lean-substrate Compress leg → leanmill generalize + decision-critical core (the isomorphism)."},
     "invert": {
         "suggestion": ("Lean INVERT = leanmill FALSIFY (the Invert leg): before spending proof budget on a "
                        "conjectured (sub)goal, probe for a counterexample — `governance_organs.randomized_differential_probe` "
@@ -237,13 +179,9 @@ def call_gemini(prompt: str, max_tokens: int = 800) -> str:
         return ""
 
 
-# ── Substrate-keyed leg-connector registry (the general-purpose connector layer) ─────────────────────
-# A LegConnector recognizes ITS substrate's artifact shape and dispatches to that substrate's inner
-# primitive by REUSE (it imports/references the existing primitive; it never reimplements one). It
-# returns None when the request isn't its shape, so `maybe_dispatch_to_inner` just tries the registered
-# connectors for a leg in order and takes the first hit. Adding a substrate = `register_leg_connector`,
-# NOT editing the dispatcher — this is the connector pattern that kills the capability-tax / built-but-
-# unwired class for the Three Legs (the leanmill↔gym isomorphism made concrete + reusable).
+# Substrate-keyed connector registry. A connector recognizes one artifact shape
+# and returns the existing primitive or command that should handle it. New
+# substrates register connectors instead of editing the dispatcher.
 LegConnector = Any  # Callable[[CognitiveGymRequest], Optional[CognitiveGymResponse]]
 _LEG_CONNECTORS: "dict[str, list]" = {"invert": [], "compress": [], "disagree": []}
 
@@ -351,10 +289,7 @@ register_leg_connector("disagree", _regression_disagree_connector)
 
 
 def maybe_dispatch_to_inner(request: CognitiveGymRequest) -> Optional[CognitiveGymResponse]:
-    """Try each registered leg-connector in order; return the first non-None (the strange-loop join:
-    outer caller, inner substrate machinery where it fits). Returns None ⇒ no inner primitive applies
-    and the caller falls back to LLM dispatch. Substrates plug in via `register_leg_connector` — the
-    dispatcher itself is substrate-agnostic now (regression + lean both registered above)."""
+    """Return the first registered connector that can handle this request."""
     for connector in _LEG_CONNECTORS.get(request.leg, []):
         resp = connector(request)
         if resp is not None:
@@ -363,19 +298,17 @@ def maybe_dispatch_to_inner(request: CognitiveGymRequest) -> Optional[CognitiveG
 
 
 def dispatch(request: CognitiveGymRequest) -> CognitiveGymResponse:
-    """Run a cognitive-gym hook on a state.
+    """Run a validation operator on a state.
 
     Routing:
-      1. If an inner primitive (inverter_agent / compress_champion /
-         margin_of_safety) handles this artifact shape, dispatch there.
-      2. Else fall back to LLM with structured prompt template.
+      1. If a registered primitive handles the artifact shape, return that
+         primitive's invocation.
+      2. Otherwise, fall back to the structured LLM prompt.
 
-    Honest scope: this is the OUTER/META layer. Inner primitives are
-    the load-bearing implementations for champion-shaped artifacts;
-    LLM dispatch handles the meta-artifacts (closure attempts, F-rows,
-    mandate edits, paper drafts) the inner primitives don't reach.
+    Scope: champion-shaped artifacts should route to concrete primitives. Broad
+    review artifacts use the LLM prompt surface.
     """
-    # Try inner-primitive dispatch first
+    # Try existing primitive dispatch first.
     inner_response = maybe_dispatch_to_inner(request)
     if inner_response is not None:
         return inner_response

@@ -237,6 +237,39 @@ def run_lake_compile(target: Path, lean_root: Path, *, timeout_s: int) -> dict[s
     }
 
 
+def audit_axioms_subset(lean_source: str, target_name: str, lean_path: Path, lean_root: Path,
+                        *, timeout_s: int = 180) -> "tuple[bool, bool, list[str]]":
+    """Compile `lean_source` with a `#print axioms <target_name>` directive and check the TARGET's axioms ⊆
+    AXIOM_ALLOWLIST ({propext, Classical.choice, Quot.sound}). This is the soundness gate that catches
+    `native_decide`'s `Lean.ofReduceBool` (the trust-the-compiler escape) and any smuggled axiom — the audit
+    that was MISSING on the cascade + `composite_ratify` closure paths (only the warm leaf ran it; bug-hunt
+    #84 F1+F2).
+
+    MASKING-SAFE: keys on `target_name`, so a DECOY `#print axioms helper` (clean) cannot hide a dirty target
+    (the multi-`#print` masking trick).
+
+    Returns (clean, confirmed_bad, axioms):
+      • clean        — the target's axioms ⊆ the allowlist (a genuine, axiom-clean closure).
+      • confirmed_bad — the target's axioms were FOUND and contain a BANNED axiom ⇒ the caller fails CLOSED.
+      • axioms       — the sorted axiom list (for the receipt).
+    A tooling error (target line absent ⇒ compile/directive failure) returns (False, False, []) so the caller
+    fails OPEN — don't credit unaudited, but don't block a valid closure on a tooling hiccup (the kernel's
+    fail-open-on-crash philosophy; a SUCCESSFUL compile always yields the line, so native_decide is caught)."""
+    src = lean_source if f"#print axioms {target_name}" in (lean_source or "") else (
+        (lean_source or "").rstrip() + f"\n#print axioms {target_name}\n")
+    try:
+        Path(lean_path).write_text(src, encoding="utf-8")
+        rec = run_lake_compile(Path(lean_path), Path(lean_root), timeout_s=timeout_s)
+    except Exception:  # noqa: BLE001 — tooling error ⇒ inconclusive (caller fails OPEN)
+        return (False, False, [])
+    axioms_by_name = rec.get("axioms") or {}
+    if target_name not in axioms_by_name:
+        return (False, False, [])   # the directive produced no line for the target ⇒ inconclusive
+    ax = set(axioms_by_name.get(target_name) or [])
+    clean = ax.issubset(AXIOM_ALLOWLIST)
+    return (clean, (not clean), sorted(ax))
+
+
 def run_lake_compile_source(
     source: str, lean_root: Path, *, timeout_s: int,
     prefix: str = "leanmill_lake_compile_",

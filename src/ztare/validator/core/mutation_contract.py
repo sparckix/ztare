@@ -5,6 +5,7 @@ from enum import Enum
 from pathlib import Path
 
 from src.ztare.primitives.primitive_library import load_approved_primitives_index
+from src.ztare.validator.core.information_yield import ThesisControlMode
 
 
 class MutationScopeDelta(str, Enum):
@@ -36,6 +37,7 @@ class MutationMismatchCode(str, Enum):
     UNDECLARED_ARTIFACT_BREADTH = "UNDECLARED_ARTIFACT_BREADTH"
     INVALID_PRIMITIVE_DECLARATION = "INVALID_PRIMITIVE_DECLARATION"
     CLAIM_DELTA_SCOPE_CONFLICT = "CLAIM_DELTA_SCOPE_CONFLICT"
+    THESIS_CONTROL_MODE_MISMATCH = "THESIS_CONTROL_MODE_MISMATCH"
 
 
 @dataclass(frozen=True)
@@ -44,6 +46,7 @@ class MutationDeclaration:
     claim_delta_type: ClaimDeltaType
     primitive_invoked: str | None
     touched_artifacts: tuple[MutationArtifact, ...]
+    thesis_control_mode: ThesisControlMode = ThesisControlMode.EXPLOIT_CURRENT_THESIS
 
 
 @dataclass(frozen=True)
@@ -51,6 +54,7 @@ class MutationValidationRecord:
     mismatch_code: MutationMismatchCode
     declared_scope_delta: MutationScopeDelta
     declared_claim_delta_type: ClaimDeltaType
+    declared_thesis_control_mode: ThesisControlMode
     declared_primitive_invoked: str | None
     declared_touched_artifacts: tuple[MutationArtifact, ...]
     actual_touched_artifacts: tuple[MutationArtifact, ...]
@@ -62,6 +66,9 @@ def parse_mutation_declaration(payload: dict[str, object]) -> MutationDeclaratio
     scope_delta = MutationScopeDelta(str(payload["scope_delta"]))
     claim_delta_type = ClaimDeltaType(str(payload["claim_delta_type"]))
     primitive_invoked = payload.get("primitive_invoked")
+    thesis_control_mode = ThesisControlMode(
+        str(payload.get("thesis_control_mode") or ThesisControlMode.EXPLOIT_CURRENT_THESIS.value)
+    )
     touched_artifacts_payload = payload.get("touched_artifacts", ())
     if not isinstance(touched_artifacts_payload, (list, tuple)):
         raise ValueError("`touched_artifacts` must be a list.")
@@ -71,6 +78,7 @@ def parse_mutation_declaration(payload: dict[str, object]) -> MutationDeclaratio
         claim_delta_type=claim_delta_type,
         primitive_invoked=None if primitive_invoked in (None, "", "null") else str(primitive_invoked),
         touched_artifacts=touched_artifacts,
+        thesis_control_mode=thesis_control_mode,
     )
 
 
@@ -85,6 +93,7 @@ def evaluate_mutation_declaration(
     before_text: str = "",
     after_text: str = "",
     approved_primitive_keys: tuple[str, ...] = (),
+    expected_thesis_control_mode: ThesisControlMode | None = None,
 ) -> MutationValidationRecord:
     actual_touched_artifacts = _dedupe_preserve_order(
         tuple(_map_path_to_artifact(path) for path in changed_paths)
@@ -95,6 +104,7 @@ def evaluate_mutation_declaration(
             mismatch_code=MutationMismatchCode.INVALID_PRIMITIVE_DECLARATION,
             declared_scope_delta=declaration.scope_delta,
             declared_claim_delta_type=declaration.claim_delta_type,
+            declared_thesis_control_mode=declaration.thesis_control_mode,
             declared_primitive_invoked=declaration.primitive_invoked,
             declared_touched_artifacts=declaration.touched_artifacts,
             actual_touched_artifacts=actual_touched_artifacts,
@@ -107,6 +117,7 @@ def evaluate_mutation_declaration(
             mismatch_code=MutationMismatchCode.UNDECLARED_ARTIFACT_BREADTH,
             declared_scope_delta=declaration.scope_delta,
             declared_claim_delta_type=declaration.claim_delta_type,
+            declared_thesis_control_mode=declaration.thesis_control_mode,
             declared_primitive_invoked=declaration.primitive_invoked,
             declared_touched_artifacts=declaration.touched_artifacts,
             actual_touched_artifacts=actual_touched_artifacts,
@@ -115,11 +126,31 @@ def evaluate_mutation_declaration(
         )
 
     breadth_delta = _estimate_claim_breadth(after_text) - _estimate_claim_breadth(before_text)
+    if (
+        expected_thesis_control_mode is not None
+        and declaration.thesis_control_mode != expected_thesis_control_mode
+    ):
+        return MutationValidationRecord(
+            mismatch_code=MutationMismatchCode.THESIS_CONTROL_MODE_MISMATCH,
+            declared_scope_delta=declaration.scope_delta,
+            declared_claim_delta_type=declaration.claim_delta_type,
+            declared_thesis_control_mode=declaration.thesis_control_mode,
+            declared_primitive_invoked=declaration.primitive_invoked,
+            declared_touched_artifacts=declaration.touched_artifacts,
+            actual_touched_artifacts=actual_touched_artifacts,
+            breadth_delta=breadth_delta,
+            rationale=(
+                "Declared thesis_control_mode does not match the pending loop-control signal "
+                f"({declaration.thesis_control_mode.value} != {expected_thesis_control_mode.value})."
+            ),
+        )
+
     if declaration.claim_delta_type == ClaimDeltaType.NARROWING and breadth_delta > 0:
         return MutationValidationRecord(
             mismatch_code=MutationMismatchCode.CLAIM_DELTA_SCOPE_CONFLICT,
             declared_scope_delta=declaration.scope_delta,
             declared_claim_delta_type=declaration.claim_delta_type,
+            declared_thesis_control_mode=declaration.thesis_control_mode,
             declared_primitive_invoked=declaration.primitive_invoked,
             declared_touched_artifacts=declaration.touched_artifacts,
             actual_touched_artifacts=actual_touched_artifacts,
@@ -131,6 +162,7 @@ def evaluate_mutation_declaration(
             mismatch_code=MutationMismatchCode.CLAIM_DELTA_SCOPE_CONFLICT,
             declared_scope_delta=declaration.scope_delta,
             declared_claim_delta_type=declaration.claim_delta_type,
+            declared_thesis_control_mode=declaration.thesis_control_mode,
             declared_primitive_invoked=declaration.primitive_invoked,
             declared_touched_artifacts=declaration.touched_artifacts,
             actual_touched_artifacts=actual_touched_artifacts,
@@ -142,6 +174,7 @@ def evaluate_mutation_declaration(
         mismatch_code=MutationMismatchCode.CLEAN,
         declared_scope_delta=declaration.scope_delta,
         declared_claim_delta_type=declaration.claim_delta_type,
+        declared_thesis_control_mode=declaration.thesis_control_mode,
         declared_primitive_invoked=declaration.primitive_invoked,
         declared_touched_artifacts=declaration.touched_artifacts,
         actual_touched_artifacts=actual_touched_artifacts,

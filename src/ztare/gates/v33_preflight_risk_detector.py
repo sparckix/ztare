@@ -256,6 +256,30 @@ def _compile_probe(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool |
     sandbox = Path(sandbox).resolve()
     if not sandbox.exists():
         return None
+    # WARM/VERIFY PARITY (RCA 2026-06-12): the warm REPL path (below) has Mathlib PRE-LOADED so an import-less
+    # snippet passes, but the cold `lake env lean` path needs the header — without it a VALID proof false-errors.
+    # Ensure the substrate header so BOTH paths see the same self-contained probe (canonical helper, idempotent).
+    try:
+        from ztare.leanmill.solver.agentic_leaf import ensure_import_header
+        probe = ensure_import_header(probe)
+    except Exception:  # noqa: BLE001 — never break the gate on the helper
+        pass
+    # REPL-backed fast path (ZTARE_LEANMILL_REPL_COMPILE=1 + a LIVE toolchain-matched repl over `sandbox`):
+    # a warm PersistentLean elaborates in ~0.1s vs the ~60-90s cold `lake env lean` reload below — SAME verdict
+    # contract as the cold path: clean ⇔ no `error:` line. SORRY IS ALLOWED ON BOTH PATHS BY DESIGN — this probe
+    # AUDITS sorried decomposition DAGs (a sorried sub-lemma must still COMPILE as a placeholder), so it calls
+    # `compile_probe_via_repl` with the default `reject_sorry=False` and the cold path below only screens
+    # `LEAN_ERR_RE`. DO NOT add a sorry-reject here: a True from `_compile_probe` means "compiles", NOT
+    # "sorry-free" — the no-false-closure checkers that need sorry-free are `LeanLakeChecker.verify` /
+    # `_is_compile_ok` (reject_sorry=True), NOT this one. Returns None when unusable (flag off / toolchain
+    # mismatch / dead) ⇒ fall through to the canonical compile (byte-parity when off). Never breaks the cold path.
+    try:
+        from ztare.formal.repl_compile import compile_probe_via_repl
+        _r = compile_probe_via_repl(probe, sandbox, timeout)
+        if _r is not None:
+            return _r[0]
+    except Exception:  # noqa: BLE001
+        pass
     d = sandbox / tag
     d.mkdir(exist_ok=True)
     tf = tempfile.NamedTemporaryFile(mode="w", suffix=".lean", dir=str(d), delete=False)

@@ -1014,8 +1014,8 @@ def _write_rubric(
     """Write scoring rubric (Division B artifact — GT-blind).
 
     continuous=True: emits continuous_rmse mode, float persona, no integer-exact language.
-    discovery_mode=True: disables Component C (GP-075 contamination constraint).
-    composition_stagnation_threshold: iterations before Component D fires (default 3).
+    discovery_mode=True: disables residual diagnostics (GP-075 contamination constraint).
+    composition_stagnation_threshold: iterations before grammar-guided symbolic regression fires (default 3).
     gp103_stagnation_threshold: iterations before H-GP103-5 compositor fires (default 1).
     """
     var_str = ", ".join(variables)
@@ -1079,6 +1079,7 @@ def _write_rubric(
         "project": slug,
         "falsification_mode": "bounded_discriminator",
         "enable_fit_primitive": True,
+        "enable_residual_diagnostics": enable_cc,
         "enable_component_c": enable_cc,
         "fit_score_mode": fit_score_mode,
         "fit_required_dimensionality": len(variables),
@@ -1129,12 +1130,13 @@ def _write_rubric(
     if not enable_cc:
         rubric["discovery_mode"] = True
     else:
+        rubric["residual_diagnostics_gt_module"] = f"src.ztare.substrates.{slug}_gt"
         rubric["component_c_gt_module"] = f"src.ztare.substrates.{slug}_gt"
 
     if continuous and rmse_threshold != 0.15:
         rubric["fit_rmse_threshold"] = rmse_threshold
 
-    # GP-157 Gap #3b (2026-04-25 night): auto-classify substrate from
+    # GP-157 Gap #3b (2026-04-25): auto-classify substrate from
     # the visible-evidence target column and write cage_meta.class +
     # source provenance into the rubric. Pushes substrate-class
     # determination upstream from operator-tagging (gp159 wrong-class
@@ -1197,9 +1199,9 @@ def generate_substrate(
     """Generate all substrate artifacts following GP-072 Division A/B protocol.
 
     New params (2026-04-19):
-      composition_stagnation_threshold: iters before Component D fires (rubric field).
+      composition_stagnation_threshold: iters before grammar-guided symbolic regression fires (rubric field).
       gp103_stagnation_threshold: iters before H-GP103-5 compositor fires (rubric field).
-      discovery_mode: sets enable_component_c=False per GP-075 constraint.
+      discovery_mode: disables residual diagnostics per GP-075 constraint.
 
     Continuous substrates (GT script exposes evidence_grid() + holdout_grid()):
       - evidence_farther_tail.txt generated from farther_tail_grid() if present.

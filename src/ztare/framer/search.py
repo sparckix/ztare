@@ -1,4 +1,4 @@
-"""GP-152 Framer Component D — BranchAndBoundMDLSearch (v2.0).
+"""GP-152 Framer — BranchAndBoundMDLSearch (v2.0).
 
 Computes MDL_v2.0 = N · log(σ̂²_raw) + K_total · log(N), where σ̂²_raw is
 the residual variance in RAW y coordinates after fitting the law in framed

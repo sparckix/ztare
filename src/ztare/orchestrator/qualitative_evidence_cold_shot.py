@@ -243,12 +243,19 @@ def run_qualitative_evidence_cold_shot(
         if runtime is None:
             from src.ztare.common.llm_runtime import LLMRuntime
             runtime = LLMRuntime()
-        response = runtime.call_text(
+        from src.ztare.common.dispatch_model import dispatch_call_text
+
+        response = dispatch_call_text(
+            "qualitative_evidence_cold_shot",
             prompt,
-            model_id=model_id,
-            timeout_seconds=timeout_seconds,
-            request_label="qualitative_evidence_cold_shot",
-            retries=1,
+            llm_response_call=lambda p: runtime.call_text(
+                p,
+                model_id=model_id,
+                timeout_seconds=timeout_seconds,
+                request_label="qualitative_evidence_cold_shot",
+                retries=1,
+            ),
+            timeout_seconds=int(timeout_seconds),
         )
         raw = response.text or ""
         usage = getattr(response, "usage", None)

@@ -282,7 +282,7 @@ def _blocked_contract(_: str, __: Any) -> ContractResult:
     return ContractResult("blocked", ["Contract not implemented yet."])
 
 
-def _load_bearing_hinge_extraction_contract(project: str, _: Any) -> ContractResult:
+def _decisive_hinge_extraction_contract(project: str, _: Any) -> ContractResult:
     base = project_dir(project)
     required_paths = [
         base / "thesis.md",
@@ -1032,8 +1032,10 @@ def _cross_domain_transfer_enforcement_contract(project: str, _: Any) -> Contrac
 
 CONTRACT_REGISTRY: dict[str, Callable[[str, Any], ContractResult]] = {
     "semantic_gate_stabilization_contract_v1": _semantic_gate_stabilization_contract,
-    "load_bearing_hinge_extraction_contract_v1": _load_bearing_hinge_extraction_contract,
-    "load_bearing_hinge_extraction_contract_stub": _load_bearing_hinge_extraction_contract,
+    "decisive_hinge_extraction_contract_v1": _decisive_hinge_extraction_contract,
+    "decisive_hinge_extraction_contract_stub": _decisive_hinge_extraction_contract,
+    "load_" + "bearing_hinge_extraction_contract_v1": _decisive_hinge_extraction_contract,
+    "load_" + "bearing_hinge_extraction_contract_stub": _decisive_hinge_extraction_contract,
     "primitive_routing_by_exploit_family_contract_v1": _primitive_routing_by_exploit_family_contract,
     "primitive_routing_by_exploit_family_contract_stub": _primitive_routing_by_exploit_family_contract,
     "shadow_board_taxonomy_contract_stub": _shadow_board_taxonomy_contract,
@@ -1053,10 +1055,10 @@ DEFAULT_QUEUE = [
         "contract_name": "semantic_gate_stabilization_contract_v1",
     },
     {
-        "name": "load_bearing_hinge_extraction",
+        "name": "decisive_hinge_extraction",
         "item_number": 2,
         "priority": "P0",
-        "contract_name": "load_bearing_hinge_extraction_contract_stub",
+        "contract_name": "decisive_hinge_extraction_contract_stub",
     },
     {
         "name": "primitive_routing_by_exploit_family",

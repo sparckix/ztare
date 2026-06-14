@@ -2,7 +2,7 @@
 
 Primitive shipped 2026-04-24 per gp150_epistemic_boundary_audit iter-N thesis
 (score 78) + operator + Gemini-Pro analysis. The gp150 self-audit identified
-fractional calculus as the load-bearing structural gap in ZTARE's four-solver
+fractional calculus as the decision-critical structural gap in ZTARE's four-solver
 architecture:
 
   - Integer calculus (standard derivatives, polynomial weak-form SINDy) models

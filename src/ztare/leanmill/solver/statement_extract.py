@@ -34,9 +34,20 @@ def _kind0(kind_str: str) -> str:
     return kind_str.split()[-1]
 
 
+def _blank_lean_comments(text: str) -> str:
+    """Replace comment regions with same-length blanks (newlines preserved), so decl-start / `:= by`
+    detection NEVER fires inside a comment and the resulting spans still index the ORIGINAL `src`.
+    Delegates to the canonical `lean_source.blank_comments` (lean_source has no solver deps → no
+    cycle). 2026-06-13 audit: `_DECL_RE`/`split_header` previously ran on raw source, so a `-- def …` /
+    `theorem` in a comment registered as a phantom decl and shifted every span; and the OLD inline
+    `re.sub(r"/-.*?-/")` was non-nested, leaking a nested comment's tail back as a phantom decl."""
+    from ztare.leanmill.lean_source import blank_comments as _bc
+    return _bc(text)
+
+
 def parse_decls(src: str) -> list[dict]:
     """Split a Lean file into top-level decls: name, kind, span [start,end), text."""
-    matches = list(_DECL_RE.finditer(src))
+    matches = list(_DECL_RE.finditer(_blank_lean_comments(src)))   # detect off comment-blanked copy (offsets kept)
     decls = []
     for i, m in enumerate(matches):
         start = m.start()
@@ -57,7 +68,7 @@ def local_refs(text: str, by_name: dict) -> set[str]:
     never linked and gets wrongly dropped, breaking the extracted context. This was a
     real closure-completeness bug (`_IDENT_RE` swallows the trailing `.field`)."""
     refs: set[str] = set()
-    for tok in _IDENT_RE.findall(text):
+    for tok in _IDENT_RE.findall(_blank_lean_comments(text)):   # comments don't contribute phantom refs (audit)
         parts = tok.split(".")
         for i in range(len(parts), 0, -1):
             cand = ".".join(parts[:i])
@@ -93,7 +104,7 @@ def split_header(target_text: str) -> "tuple[str, str] | None":
     """Split a target decl into (statement header, proof body) at the proof
     intro `:= by`. Handles `theorem P1 : ProblemP1 := by`, `theorem P7 : ∀ r,
     ProblemP7 r := by`, and multi-line `theorem Conjecture2 <binders> := by`."""
-    m = re.search(r":=\s*by\b", target_text)
+    m = re.search(r":=\s*by\b", _blank_lean_comments(target_text))   # cut at the REAL `:= by`, not one in a comment (audit)
     if not m:
         return None
     return target_text[:m.start()].rstrip(), target_text[m.start():]

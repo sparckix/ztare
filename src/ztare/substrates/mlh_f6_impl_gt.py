@@ -23,12 +23,12 @@ def f_true(n: int) -> int:
 
 
 def f_dominant(n: int) -> float:
-    """Smooth dominant-term approximation for Component C (residual fingerprinting).
+    """Smooth dominant-term approximation for residual diagnostics.
 
     GP-135 stub: for arithmetic-function substrates the "dominant term" is not
     well-defined in the analytic sense. We return f_true(n) as a float so
-    Component C's residual check (f_true - f_dominant) produces zeros and
-    Component C treats the substrate as "no separable dominant term." This
+    The residual check (f_true - f_dominant) produces zeros and
+    residual diagnostics treat the substrate as "no separable dominant term." This
     is a soft stub; the component's output on this substrate is advisory.
     """
     return float(f_true(n))

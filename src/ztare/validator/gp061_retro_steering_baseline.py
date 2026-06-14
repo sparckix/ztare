@@ -1,5 +1,5 @@
 """
-GP-061 Component B — tier-2 retrospective baseline (A-arm only).
+GP-061 negative-space extractor — tier-2 retrospective baseline (A-arm only).
 
 Reads the ACTUAL structural_memory.json for sandbox_07 and sandbox_08,
 which stores canonical `N(...)` labels (matches what the detector expects).
@@ -12,8 +12,8 @@ it computes:
   - whether that new family's feature bag fills any void at the detected key
 
 Reports observed hit rate vs chance rate across all firing iterations.
-This is the A arm — mutator runs with NO Component B injection — which
-is factually true for sandbox_07/08 since Component B did not exist when
+This is the A arm — mutator runs with no negative-space injection — which
+is factually true for sandbox_07/08 since the extractor did not exist when
 they ran. The B arm (live run with injection) is deferred.
 
 Constraints respected:

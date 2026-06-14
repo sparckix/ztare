@@ -64,7 +64,7 @@ _GATE_TO_LAYER: dict[str, str] = {
     "evidence_fit":     "Fit Engine / Primitive Library",
     "uniqueness_gap":   "Review Layer (Identifiability)",
     "naming_import":    "Grammar / Vocabulary",
-    "composition":      "Component D / Composition Loop",
+    "composition":      "Grammar-Guided Symbolic Regression",
     "holdout":          "Holdout Gate",
 }
 
@@ -81,8 +81,8 @@ class ProjectTelemetrySummary:
     activity fields to consume telemetry surfaces that shipped after
     the audit was originally written (cage_engagement, analogy_log,
     contract_violations, dag_steering_log). All new fields are
-    non-load-bearing for the existing discriminator + classify_failure_mode
-    paths — they're additional context for Component 4 LLM proposals
+    advisory for the existing discriminator + classify_failure_mode
+    paths — they're additional context for LLM proposal generation
     and for downstream tools like GP-220's ROI scorecard.
     """
     project_id: str
@@ -93,7 +93,7 @@ class ProjectTelemetrySummary:
     gate_failure_history: list[dict]      # last K iteration records with failed_gate_ids
     families_exhausted: int               # from structural_memory.json
     families_total: int
-    recovery_exhausted: bool              # proxy for "Component D / GP-087 had chances"
+    recovery_exhausted: bool              # proxy for "symbolic regression / GP-087 had chances"
     latest_champion_expression: str | None
     latent_distance_trend: float | None   # slope of last-K latent distances; None if absent
     # ---- 2026-05-06 modernization fields (default-empty for back-compat) ----
@@ -199,7 +199,7 @@ class AuditReport:
         ],
         "load_bearing_version": str | None,
             # the most-recent version whose verdict is SHIP_V2 or PURSUE_V4;
-            # null means no ranker is currently load-bearing for production
+            # null means no ranker is currently decision-critical for production
       }
     """
 
@@ -331,7 +331,7 @@ def _parse_project_telemetry(
 
     # Structural memory: family exhaustion
     # Schema: families is a list of dicts; exhaustion is proxied by
-    # composition_primitive_count > 0 (Component D has fired) + stagnation.
+    # composition_primitive_count > 0 (symbolic-regression synthesis has fired) + stagnation.
     families_exhausted = 0
     families_total = 0
     composition_primitive_count = 0
@@ -390,14 +390,14 @@ def _parse_project_telemetry(
             pass
 
     # recovery_exhausted proxy:
-    # Component D has fired (composition_primitive_count > 0) AND still stagnating.
+    # Symbolic-regression synthesis has fired (composition_primitive_count > 0) AND still stagnating.
     # This is the observable "all recovery mechanisms have had an opportunity to fire"
     # condition without needing an explicit exhausted flag per family.
     # Fallback: if no composition data, fall back to family-level exhaustion ratio.
     if composition_primitive_count > 0:
         recovery_exhausted = stagnation_count >= stagnation_threshold
     else:
-        # Component D hasn't fired yet — use family-level proxy
+        # Symbolic-regression synthesis has not fired yet — use family-level proxy.
         recovery_exhausted = (
             families_total > 0
             and families_exhausted >= max(1, families_total // 2)
@@ -989,7 +989,7 @@ Project `{project_id}` entered MACHINERY_BROKEN state.
 - Score Trajectory: {evidence.get("score_trajectory", [])}
 - Family Exhaustion: {evidence.get("families_exhausted", "?")}/{evidence.get("families_total", "?")}
 
-The diagnostic ran after all known recovery mechanisms (Component D / GP-087) had
+The diagnostic ran after all known recovery mechanisms (symbolic-regression synthesis / GP-087) had
 opportunities to fire. The engine was structurally paralyzed, not epistemically
 frustrated by a hard substrate.
 
@@ -1271,14 +1271,14 @@ def run_reflexive_audit(
         )
 
     # 2026-05-06 PM: read lemma-relevance ranker ROI from v* falsifier
-    # outputs. Surfaces "is the retrieval primitive load-bearing?"
+    # outputs. Surfaces "is the retrieval primitive decision-critical?"
     # alongside primitive_exhaustion signals.
     ranker_roi = read_ranker_roi_summary(repo_dir)
     if ranker_roi["n_versions_seen"]:
         lb = ranker_roi.get("load_bearing_version") or "(none)"
         print(
             f"   ranker ROI: {ranker_roi['n_versions_seen']} version(s) "
-            f"evaluated; load-bearing={lb}"
+            f"evaluated; decision-critical={lb}"
         )
         for v in ranker_roi["versions"]:
             print(

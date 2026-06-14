@@ -15,7 +15,7 @@ invalidates when ANY of the following triggers fire:
 1. **Input content (primary gate)** — an SHA-256 of the call's
    inputs is the primary key. If substrate features, rubric flags, or
    model id changes, the hash changes and the cache misses correctly.
-   This is the load-bearing invalidation; everything below is a
+   This is the decision-critical invalidation; everything below is a
    safety net.
 
 2. **Prompt template version** — each call site declares an integer

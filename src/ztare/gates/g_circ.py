@@ -48,7 +48,7 @@ axiom's `parameters` block plus any numeric literals visible inside the
 Sacred-DNA constant within 1% relative tolerance (or within 1e-6 absolute
 when the constant is near zero).
 
-Check 3 — On-shell substitution audit  (load-bearing)
+Check 3 — On-shell substitution audit  (decision-critical)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 When the candidate declares an auxiliary field φ via a Lagrangian-style
 proposal, solve the EL equation for φ symbolically (or accept the
@@ -112,9 +112,9 @@ NUMERIC_LITERAL_FLOOR = 1e-12  # ignore literals smaller than this (e.g. 1e-300 
 # and therefore must NOT be treated as Sacred-DNA leakage even when the
 # axiom's parametric_form happens to contain them. These are skeletal
 # exponents (0.5, 2.0, the bridge's (1+...)^(1/eta) scaffold) and not
-# load-bearing fitted parameters. Distinguish by source: only the values
+# decision-critical fitted parameters. Distinguish by source: only the values
 # in the axiom's `parameters` block plus the SIGMOID_CENTERS heuristic
-# (any literal not in this set with magnitude > 1.0) are load-bearing.
+# (any literal not in this set with magnitude > 1.0) are decision-critical.
 BANAL_CONSTANTS: frozenset[float] = frozenset({
     0.0, 1.0, -1.0, 0.5, -0.5, 2.0, -2.0, 1e-300,
 })
@@ -458,7 +458,7 @@ def evaluate_g_circ_structural(
             continue
         # Skip banal structural constants (0, ±1, ±½, ±2) — they appear
         # in countless legitimate forms and the axiom's bridge form
-        # contains them as skeletal scaffolding, not load-bearing fits.
+        # contains them as skeletal scaffolding, not decision-critical fits.
         if any(abs(lit - bc) < 1e-9 for bc in BANAL_CONSTANTS):
             continue
         # Skip the universal log10-conversion ln(10) ≈ 2.3026 — it
@@ -470,7 +470,7 @@ def evaluate_g_circ_structural(
             value, prov = match
             # Likewise filter out matches against banal-valued sacred
             # entries — even if the axiom's parameters dict happens to
-            # contain a 1.0 or 0.5, that is not load-bearing leakage.
+            # contain a 1.0 or 0.5, that is not decision-critical leakage.
             if any(abs(value - bc) < 1e-9 for bc in BANAL_CONSTANTS):
                 continue
             leaks.append({

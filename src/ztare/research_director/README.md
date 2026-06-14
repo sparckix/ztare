@@ -11,10 +11,10 @@ Roughly grouped:
 | Concern | Modules |
 |---|---|
 | **Action contracts + tick discipline** | `pattern_action_contract`, `orchestration_contract_gate`, `orchestration_shadow_log`, `boundary_card_gate`, `boundary_card_repair_trace`, `primitive_operator_cards`, `primitive_tick_surface`, `phase_runner`, `pattern_bank_injector` |
-| **Adversarial generation** | `adversarial_packet_generator`, `hostile_packet_suite`, `eigenquestion_generator`, `cognitive_gym_hooks` |
+| **Adversarial generation** | `adversarial_packet_generator`, `hostile_packet_suite`, `eigenquestion_generator`, `primitive_class_rotation`, `cognitive_gym_hooks` |
 | **PDE / formal-method substrates** | `pde_currency_ledger`, `pde_estimate_craft_ops`, `pde_work_unit_gate`, `formalization_sequence`, `single_spend_carrier_audit`, `receipt_strength_audit`, `ns_l3a_workmap`, `meta_arc_acceptance`, `meta_arc_matcher` |
 | **Discipline rails** | `scientific_amnesia`, `mathlib_semantic`, `pde_estimate_workbench`, `retirement_detector`, `prediction_logging_discriminator`, `gap_typing`, `residual_normal_form` |
-| **Substrate routing** | `substrate_portfolio`, `substrate_recommender`, `semantic_feature_normalizer`, `structural_fingerprint`, `problem_solving_ops` |
+| **Substrate/workbench routing** | `substrate_portfolio`, `substrate_recommender`, `autoresearch_workbench_router`, `semantic_feature_normalizer`, `structural_fingerprint`, `problem_solving_ops` |
 | **Branch grids** | `branch_grids/` subpackage |
 
 
@@ -25,6 +25,8 @@ Roughly grouped:
 - `boundary_card_gate`: validates paid/unpaid boundary cards before downstream action. It checks boundary state, required receipts, action order, terminal action, blocked broad claim, and source anchoring. Current evidence: H45. It is card-shape/action validation, not a full semantic verifier.
 - `boundary_card_repair_trace`: validates/appends rejected-card repair-loop traces. Current evidence: H52. Use it to measure repair after gate rejection; do not treat it as broad auto-execution approval.
 - `pde_work_unit_gate`: validates PDE execution payloads. It blocks premature terminal gaps and, for constructive-turn states, requires a positive constructor attempt before more obstruction-only continuation unless an explicit tested blocker exists. Current evidence: H46.
+- `autoresearch_workbench_router`: advisory router for RD tasks at the in-loop/out-of-loop boundary. It checks whether a task has bounded claim, stable evaluator, rubric surface, and artifact surface. Prefer `ztare autoresearch route --record-decision-id ...`; use `ztare action-intel record-agentic-work --route-json-ref ...` only for custom rows.
+- `primitive_class_rotation`: shared ledger primitive for classes already tried by autoresearch or RD work. In-loop consumers render it into the mutator prompt; out-of-loop consumers summarize it for eigenquestion generation and route choice.
 
 ## Boundaries
 

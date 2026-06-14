@@ -112,7 +112,7 @@ def independent_verify(row_text: str, closer: str, sandbox: Path, timeout: int =
 def preflight_probe_goal(row_text: str, sandbox: Path, timeout: int = 70) -> dict:
     """Preflight: does the BARE goal fail trivial-floor yet close via a
     global-set automation tactic (fun_prop / simp / aesop)? If so, any LLM
-    'moat closure' here is indirect-leakage-equivalent — Lean's own global
+    'non-subsumed closure' claim here is indirect-leakage-equivalent — Lean's own global
     set already solves it. Leakage-independent (Lean only, no audit verdict)."""
     if not sandbox.exists():
         return {"preflight_indirect_leakage": None, "error": "sandbox missing"}
@@ -137,7 +137,7 @@ def preflight_probe_goal(row_text: str, sandbox: Path, timeout: int = 70) -> dic
                 "global_automation_closer": closer,
                 "interpretation": (f"bare goal is NON-trivial yet Lean's own `{closer}` "
                                    f"closes it via the global @[{closer}]/@[simp] set — "
-                                   f"an LLM 'moat closure' here is indirect-leakage-"
+                                   f"an LLM 'non-subsumed closure' claim here is indirect-leakage-"
                                    f"equivalent. Leakage-independent (Lean only)."),
             }
     return {"preflight_indirect_leakage": False, "trivial_floor_closes": False,

@@ -38,7 +38,7 @@ Honest scope:
   - Empirically validated on 8 mathematical subfields, a 6-arc business OOD
     set, and a sparse post-cutoff 2026 specialist-paper OOD set.
   - Coverage is 58% on held-out, not 100%. ~40% of moves remain outside
-    the 18-op total vocabulary even after Path A+B mining.
+    the 18-op total vocabulary even after the paired mining passes.
   - Vocabulary is descriptive, not generative. Recognition tool, not toolkit.
 """
 from __future__ import annotations
@@ -598,9 +598,9 @@ def render_meta_meta_summary() -> str:
     lines.append("a refuted/effect-named caution and functional-uplift arm, not as a")
     lines.append("validated descriptive primitive.")
     lines.append("**Sources:** PL-105 1880s framing-layer cold-shot;")
-    lines.append("`workingpapers/epistemic-generation/cli_runs/track_b_B1_verdict_20260518.md`;")
-    lines.append("`workingpapers/epistemic-generation/cli_runs/swarm_consolidated_verdict_20260518.md`;")
-    lines.append("`workingpapers/epistemic-generation/consolidated_claim_evidence_20260518.md`.")
+    lines.append("`epistemic-generation/cli_runs/track_b_B1_verdict_20260518.md`;")
+    lines.append("`epistemic-generation/cli_runs/swarm_consolidated_verdict_20260518.md`;")
+    lines.append("`epistemic-generation/consolidated_claim_evidence_20260518.md`.")
     lines.append("")
     for op in META_META_VOCABULARY.values():
         lines.append(f"## {op.op_id} {op.name}")
