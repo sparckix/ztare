@@ -36,7 +36,7 @@ The primitive library stores mined failure precedents rather than facts or succe
 - scope conditions
 - non-transfer cases
 - a required transfer test
-- firing-squad guidance
+- adversarial-review guidance
 - a judge penalty condition
 - a safe harbor
 

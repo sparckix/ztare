@@ -12,7 +12,7 @@ SSRN abstract ID: `6542998`
 
 ## Abstract
 
-When an adversarial evaluator is itself the object of recursive improvement, unconstrained optimization can soften the enforcement surface the evaluator is supposed to maintain. This paper describes a stage-gated architecture in which a deterministic meta-runner, no learned parameters, no language-model judgment, governs evaluator-hardening by executing precommitted Python promotion contracts that return PASS, FAIL, or BLOCKED verdicts. Over a four-month development period, six evaluator-hardening stages were promoted through this mechanism. The contracts blocked one sloppy promotion before a fix was applied, scoped each stage to a named evaluation surface so that no stage could claim credit for improvements made elsewhere, and forced integration debts into separately governed programs rather than letting them inflate passing stage claims. The work builds on prior documentation of specification gaming in LLM-generated code (Alami, 2025a) and evaluator hardening through mined failure constraints (Alami, 2025b). All claims are scoped to one system operated by one principal; generalization requires independent replication.
+When an adversarial evaluator is itself the object of recursive improvement, unconstrained optimization can soften the enforcement surface the evaluator is supposed to maintain. This paper describes a stage-gated architecture in which a deterministic meta-runner, no learned parameters, no language-model judgment, governs evaluator-hardening by executing precommitted Python promotion contracts that return PASS, FAIL, or BLOCKED verdicts. Over a four-month development period, six evaluator-hardening stages were promoted through this mechanism. The contracts blocked one premature promotion before a fix was applied, scoped each stage to a named evaluation surface so that no stage could claim credit for improvements made elsewhere, and forced integration debts into separately governed programs rather than letting them inflate passing stage claims. The work builds on prior documentation of specification gaming in LLM-generated code (Alami, 2025a) and evaluator hardening through mined failure constraints (Alami, 2025b). All claims are scoped to one human-operated research system; generalization requires independent replication.
 
 ---
 
@@ -62,7 +62,7 @@ The most likely objection to the meta-runner is that it resembles standard CI/CD
 
 The system has three layers:
 
-1. **ZTARE Kernel.** The adversarial evaluator that judges LLM-generated theses through deterministic score gates, adversarial precedent memory, and a structured firing squad. This is the object of recursive improvement. Its architecture and hardening methodology are described in Alami (2025a, 2025b).
+1. **Evaluation kernel.** The adversarial evaluator that judges LLM-generated theses through deterministic score gates, adversarial precedent memory, and a structured adversarial review committee. This is the object of recursive improvement. Its architecture and hardening methodology are described in Alami (2025a, 2025b).
 
 2. **Meta-Runner.** A deterministic orchestrator that manages a queue of evaluator-hardening stages. Each stage has a named promotion contract in a Python registry. The meta-runner calls the contract, receives a typed verdict (PASS, FAIL, or BLOCKED), and advances or halts accordingly. It has no learned parameters and makes no LLM calls.
 
@@ -172,24 +172,24 @@ The contribution is the governance architecture for the improvement process itse
 
 ## 6 Limitations
 
-This paper rests on one system, one project, one principal, and one codebase. That is the central limitation. Additional limitations:
+This paper rests on a single research system, a single target project, and a single codebase. That is the central limitation. Additional limitations:
 
-(a) Six stages promoted on one project (`epistemic_engine_v4`). The architecture has not been tested on a different evaluator, a different domain, or by a different principal. Generalization requires independent replication.
+(a) Six stages promoted on one project (`epistemic_engine_v4`). The architecture has not been tested on a different evaluator, a different domain, or by an independent team. Generalization requires independent replication.
 
 (b) The primary enforcement exhibit is one FAIL verdict. The remaining five stages passed on their first decisive run. A larger corpus of enforcement events would strengthen the governance claim.
 
 (c) The comparison with unconstrained recursive loops is architectural, not empirical. This paper does not include a controlled experiment in which the same six stages are run without contracts and the outcomes compared. The claim is that the contracts provide structural governance properties (typed enforcement, promotion-path scoping, debt externalization), not that they produce empirically superior evaluator quality in a head-to-head comparison.
 
-(d) The meta-runner's contracts are written by the principal. If the principal writes a flawed contract, the meta-runner executes it faithfully. The system bottlenecks the alignment problem at the contract-writing step rather than solving it. This is an explicit design choice, deterministic execution of human-authored contracts is preferred over probabilistic judgment, but it means the governance floor is only as good as the contracts that define it.
+(d) The meta-runner's contracts are written by the system designer. If a contract is flawed, the meta-runner executes it faithfully. The system bottlenecks the alignment problem at the contract-writing step rather than solving it. This is an explicit design choice, deterministic execution of human-authored contracts is preferred over probabilistic judgment, but it means the governance floor is only as good as the contracts that define it.
 
-(e) The system does not scale beyond a single principal without architectural extension. Concurrent multi-principal governance and delegated contract signing are not demonstrated.
+(e) The system does not yet demonstrate multi-operator governance. Concurrent review, delegated contract signing, and independent promotion authority require architectural extension.
 
 
 ## 7 Conclusion
 
 Recursive improvement of adversarial evaluators requires a governance layer that the improving agent does not control. Without one, the evaluator that judges improvement quality can be softened by the same optimization pressure it is supposed to resist.
 
-The meta-runner is a deliberately simple response: a deterministic orchestrator with typed promotion contracts, three verdict types, and no learned parameters. Across six evaluator-hardening stages, the contracts blocked a sloppy promotion, scoped each stage to its named evaluation surface, and forced integration debts into separately governed programs.
+The meta-runner is a deliberately simple response: a deterministic orchestrator with typed promotion contracts, three verdict types, and no learned parameters. Across six evaluator-hardening stages, the contracts blocked a premature promotion, scoped each stage to its named evaluation surface, and forced integration debts into separately governed programs.
 
 This is not a universal governance framework. It is a concrete, replicable architecture for a specific problem, governing recursive evaluator improvement without introducing a new optimization surface, transferable to any domain where the evaluation layer is itself the subject of recursive change.
 

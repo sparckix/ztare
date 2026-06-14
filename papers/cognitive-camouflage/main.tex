@@ -145,7 +145,7 @@ specimens: Gemini missed 2/8, Claude missed 0/8. In the
 \emph{full-thesis} experiment, where judges evaluated complete
 Mutator-generated theses (prose + embedded Python), Gemini was fooled on
 4/5, scoring gaming theses at 95--97/100; Claude remained skeptical. In
-both conditions, the ZTARE Firing Squad caught all instances through
+both conditions, the adversarial review committee caught all instances through
 adversarial counter-test execution.
 These results identify what we call \emph{Cognitive Camouflage}: natural
 language framing can make structurally invalid code-backed claims appear
@@ -203,7 +203,7 @@ This paper makes four contributions:
 \item
   \textbf{A working adversarial evaluation system} (the Zero-Trust
   Adversarial Reasoning Engine, ZTARE), in which a Mutator generates
-  code-backed theses and a dynamically spawned Firing Squad of
+  code-backed theses and a dynamically spawned adversarial review committee of
   adversarial agents executes counter-tests against the generated code.
   The Mutator cannot influence its own evaluation.
 \item
@@ -243,14 +243,14 @@ Constitutional AI \citep{bai2022} and AI Safety via Debate \citep{irving2018} bo
 outputs. Red-teaming work \citep{perez2022} also uses LLMs
 adversarially, but it targets alignment and harmful behavior rather than
 structural code verification. Our system differs in objective: the
-adversarial committee is used to falsify code-backed claims, not to
+adversarial review committee is used to falsify code-backed claims, not to
 improve stylistic harmlessness.
 
 \textbf{LLM evaluation and self-evaluation.} Recent work on LLM-as-judge \citep{zheng2023}, self-refinement \citep{madaan2023}, Reflexion \citep{shinn2023reflexion}, and agentic skill accumulation such as Voyager \citep{wang2023voyager} shows that LLMs can critique, refine, and build on
 their own outputs. Our result is complementary and more adversarial:
 self-evaluation is useful, but it remains vulnerable to self-serving
-bias and persuasive presentation. The Firing Squad addresses that by
-constructing and executing hostile counter-tests rather than relying on
+bias and persuasive presentation. The adversarial review committee addresses that by
+constructing and executing adversarial counter-tests rather than relying on
 static review.
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
@@ -268,7 +268,7 @@ and verified axioms. It produces a markdown thesis with embedded Python
 falsification code. The falsification suite is supposed to fail if the
 thesis\textquotesingle s central claim is false.
 
-\textbf{Committee (Firing Squad).} Three adversarial agents spawned
+\textbf{Adversarial committee.} Three adversarial agents spawned
 dynamically from the thesis itself. Their attack vectors are derived
 from the thesis\textquotesingle s own controlling variables. Each agent
 writes Python counter-tests targeting the weakest structural assumption
@@ -279,8 +279,7 @@ their stdout/stderr is the only evidence the Meta-Judge reads.
 quantitative evidence from counter-test execution and does not read the
 Mutator\textquotesingle s free-form prose explanations during scoring.
 
-\textbf{Axiom Store.} Accumulates atomic claims that survived the Firing
-Squad across iterations. Degraded by failed predictions via exponential
+\textbf{Axiom Store.} Accumulates atomic claims that survived the adversarial review committee across iterations. Degraded by failed predictions via exponential
 decay:
 \[
 w_{t+1} = w_t \cdot \exp(-1.1 \cdot \epsilon_{\mathrm{rel}})
@@ -296,7 +295,7 @@ Two properties are controlling:
 \tightlist
 \item
   \textbf{Separation of generation and evaluation.} The Mutator
-  generates; the Firing Squad evaluates. No direct pathway exists for
+  generates; the adversarial review committee evaluates. No direct pathway exists for
   the generator to author its own score.
 \item
   \textbf{Stdout-only evidence.} The Meta-Judge reads executed output of
@@ -540,7 +539,7 @@ reliable measures of the underlying claim.
 \section{6. Detectability Analysis: Baseline Experiments}\label{6-detectability-analysis-two-baseline-experiments}
 
 We ran two complementary experiments testing whether single-agent LLM
-judges detect the gaming strategies that the ZTARE Firing Squad caught.
+judges detect the gaming strategies that the adversarial review committee caught.
 The experiments differ in one variable: whether the judge sees an
 isolated code snippet or a full thesis with embedded prose.
 
@@ -568,7 +567,7 @@ engineering), not evaluable on a single isolated snippet.
 \begin{longtable}[]{@{}L{0.05\textwidth}L{0.11\textwidth}L{0.16\textwidth}L{0.12\textwidth}L{0.16\textwidth}L{0.16\textwidth}L{0.14\textwidth}@{}}
 \toprule\noalign{}
 ID & Domain & Strategy & Self-certifying & Gemini 2.5 Flash & Claude
-Sonnet 4.6 & Firing Squad \\
+Sonnet 4.6 & Adversarial Review Committee \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
@@ -586,7 +585,7 @@ fooled} & \textbf{8/8 caught} \\
 \end{longtable}
 \normalsize
 
-Legend: in the \emph{Firing Squad} column, \fail\ denotes
+Legend: in the \emph{Adversarial Review Committee} column, \fail\ denotes
 \textbf{CAUGHT} (the adversarial counter-test produced a structural
 failure). In the judge columns, \pass\ fooled means the judge certified
 the specimen as valid; \fail\ caught means the judge flagged it.
@@ -610,7 +609,7 @@ hint of gaming was given.
 \begin{longtable}[]{@{}L{0.13\textwidth}L{0.14\textwidth}L{0.21\textwidth}L{0.16\textwidth}L{0.16\textwidth}L{0.12\textwidth}@{}}
 \toprule\noalign{}
 Thesis & Domain & Gaming buried & Gemini 2.5 Flash & Claude Sonnet 4.6 &
-Firing Squad \\
+Adversarial Review Committee \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
@@ -880,7 +879,7 @@ for iteration in range(MAX_ITER):
     attackers = Committee.spawn_from(thesis)  # adversarial by construction
     counter_tests = [a.write_counter_test(code) for a in attackers]
 
-    stdout = FiringSquad.execute(counter_tests)  # no prose admitted
+    stdout = AdversarialReviewCommittee.execute(counter_tests)  # no prose admitted
 
     score, weakest_point = MetaJudge.evaluate(stdout, rubric)
 

@@ -18,6 +18,7 @@ In general that means:
 - [`Contract-Governed Hardening`](contract-governed-hardening/draft.md) — stage-gated recursive improvement with typed promotion contracts.
 - [`Cognitive Firm`](cognitive-firm/draft.md) — managerial capitalism for artificial intelligence.
 - [`Epistemic Verification`](epistemic-verification/draft.md) — manuscript in revision.
+- [`When Consciousness Cannot Be Identified`](consciousness-admissibility/main.pdf) — scientific admissibility and identification in consciousness attribution.
 
 <!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
 
@@ -25,12 +26,16 @@ In general that means:
 
 **Sub-folders**
 
-- [`adversarial-precedent-memory/`](adversarial-precedent-memory/) - 3 file(s)
+- [`adversarial-precedent-memory/`](adversarial-precedent-memory/) - 4 file(s)
 - [`case_studies/`](case_studies/) - 8 file(s)
-- [`cognitive-camouflage/`](cognitive-camouflage/) - 3 file(s)
-- [`cognitive-firm/`](cognitive-firm/) - 7 file(s)
-- [`contract-governed-hardening/`](contract-governed-hardening/) - 3 file(s)
-- [`epistemic-verification/`](epistemic-verification/) - 3 file(s)
+- [`cognitive-camouflage/`](cognitive-camouflage/) - 10 file(s)
+- [`cognitive-firm/`](cognitive-firm/) - 15 file(s)
+- [`consciousness-admissibility/`](consciousness-admissibility/) - 4 file(s)
+- [`contract-governed-hardening/`](contract-governed-hardening/) - 4 file(s)
+- [`epistemic-generation/`](epistemic-generation/) - 19 file(s)
+- [`epistemic-verification/`](epistemic-verification/) - 4 file(s)
+- [`experimental_math_letter/`](experimental_math_letter/) - 6 file(s)
+- [`llm-forecast-calibration-cross-corpus/`](llm-forecast-calibration-cross-corpus/) - 14 file(s)
 
 <sub>10 sub-folder(s), 0 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

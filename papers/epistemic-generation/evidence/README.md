@@ -18,3 +18,16 @@ It excludes old exploratory logs, hidden audit keys, and private path metadata.
 The full project provenance map is maintained in the private root workspace at
 `epistemic-generation/research_log.md`; this public packet carries only the
 saved artifacts needed to verify the manuscript's headline numbers.
+
+<!-- AUTO-INDEX:START (auto-generated; edit prose OUTSIDE this block) -->
+
+## Index
+
+**Sub-folders**
+
+- [`gp216_queries/`](gp216_queries/) - 6 file(s)
+- [`gp218_external_corpus/`](gp218_external_corpus/) - 6 file(s)
+- [`reproducers/`](reproducers/) - 1 file(s)
+
+<sub>3 sub-folder(s), 0 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<!-- AUTO-INDEX:END -->

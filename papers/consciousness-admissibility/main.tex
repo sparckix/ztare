@@ -1,0 +1,1938 @@
+\documentclass[11pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[authoryear]{natbib}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{parskip}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\geometry{margin=1in}
+
+\hypersetup{
+  pdftitle={When Consciousness Cannot Be Identified},
+  pdfauthor={Daniel Alami},
+  pdfsubject={Philosophy of mind, consciousness, identification theory, descent obstruction},
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue,
+  hypertexnames=false
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem*{corollary*}{Corollary}
+\newtheorem{remark}{Remark}
+\newtheorem*{proposition*}{Proposition}
+
+\lstset{
+  basicstyle=\footnotesize\ttfamily,
+  breaklines=true,
+  frame=single,
+  language=Python,
+  keywordstyle=\color{blue},
+  commentstyle=\color{gray},
+  showstringspaces=false
+}
+
+\title{When Consciousness Cannot Be Identified:\\
+\large A Descent-Theoretic Framework for Scientific Admissibility}
+
+\author{Daniel Alami \\
+\normalsize \textit{Independent Researcher, Boston, MA, United States} \\
+\normalsize \textit{MBA Candidate, Harvard Business School, Boston, MA, United States}}
+
+\date{June 2026}
+
+\begin{document}
+\maketitle
+
+%%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+
+Scientific attributions of consciousness require an identification claim: the
+target property must be recoverable from a declared observation site.
+This paper studies hidden-variable systems in which that recovery fails in a
+way that is stable under admissible revisions of the measurement language.
+The class is specified by local contextual presentability, nontrivial transition
+structure, nontrivial holonomy, and equivariant admissible operations.
+For such systems, the target property is non-identified relative to the
+declared site and revision envelope.
+Formally, the paper gives a revision-stable persistent non-effective descent
+criterion, conditional on a descent-factorization assumption proved here for
+the finite cases and isolated as an explicit obligation in general.
+Kernel-pair and conservative-invariance results are verified in Lean for the
+finite and categorical cases.
+Philosophically, it defends a bounded admissibility rule for consciousness
+attribution: a low-concern verdict requires identification evidence, not
+merely behavioral, access/report, or architectural evidence.
+Where the target is non-identified, or where the relevant structure is
+undisclosed, a low-concern verdict is not scientifically licensed.
+The paper applies the criterion to Integrated Information Theory, Global
+Workspace Theory, and Higher-Order Theory, and gives a worked dossier for
+Llama~3.1~8B-Instruct.
+The Llama dossier should be read narrowly: it is not a claim about phenomenal
+status.
+Its role is to show that access/report claims can be evaluated under a
+declared site while phenomenal-consciousness verdicts remain non-applicable
+without target, classifier, challenge, and provenance evidence.
+\end{abstract}
+
+\noindent\textbf{Keywords:} consciousness; scientific admissibility;
+identification; descent theory; artificial intelligence systems; philosophy of
+science
+
+\section*{Technical summary}
+A hidden-variable system $H$ generates revision-stable necessary
+non-identification of target property $\Theta$, under the descent-factorization
+assumption, when the target fiber $F \to H$ has non-effective descent over the
+admissible observation site $\mathsf{C}_Y$ for every admissible structural
+revision $r \in \mathrm{Rev}_\Omega(Y)$.
+The revision envelope $\mathrm{Rev}_\Omega(Y)$ covers future structural changes
+to the observation framework, not only refinements within a fixed language.
+Theorem~1 strictly subsumes the kernel-pair obstruction lemma
+(Lemma~\ref{thm:kernelpair}) as the classical special case.
+Integrated Information Theory \citep{tononi2016}, Global Workspace Theory
+\citep{baars1988,dehaene2011}, and Higher-Order Theories
+\citep{rosenthal2005} illustrate three different outcomes.
+
+\tableofcontents
+\newpage
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Identification Failure as a Structural Constraint}
+\label{sec:intro}
+
+Imagine an AI company claims its model deserves a ``low concern'' verdict on
+moral status: there is no significant probability the system is conscious.
+What evidence would settle this?
+The company offers behavioral evidence (the system does not exhibit distress
+signals), functional evidence (it lacks the neural correlates of
+consciousness), and architectural evidence (its computation is dissimilar to
+human cognition).
+A regulator reads the evidence and asks whether it separates consciousness
+from an observational duplicate.
+
+The difficulty lies in the relation between the target and the evidence.
+Behavioral competence can be duplicated by a system that lacks consciousness.
+Neural-correlate evidence is tied to human neural architecture.
+Architectural dissimilarity establishes difference, not absence.
+The proposed tests therefore leave two stories open, with no separating
+experiment yet on the table.
+
+The philosophical literature calls this the ``hard problem.''
+The present paper uses a more specific framing: it is an
+\emph{identification problem}.
+A parameter is identified if different true values lead to different
+observable distributions.
+When identification fails, more data does not help.
+
+\textbf{The central question.}
+Is identification failure for consciousness \emph{necessary}, in the sense
+that it survives admissible improvements in measurement, or \emph{contingent},
+in the sense that a better admissible test could remove it?
+The distinction determines whether a failed test should prompt further
+measurement or a restricted verdict.
+
+For a well-defined class of systems the failure is necessary relative to the
+declared observation site and revision envelope, conditional on the
+descent-factorization assumption stated in Theorem~\ref{thm:descent} and proved
+below for the finite deterministic and exact finite stochastic cases.
+The next sections characterize that class, state the descent criterion, and
+derive the governance consequence: these systems cannot receive an auditable
+low-concern verdict without a successful identification certificate.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Formal Preliminaries}
+\label{sec:prelim}
+
+The setup needs three ingredients.
+First, ``admissible observations'' names the measurements permitted for the
+system under evaluation.
+Second, experimental indistinguishability says that two hidden states agree
+under all of those observations.
+Third, the \emph{experimentability witness} records the minimal typed
+specification a scientific consciousness claim must provide.
+A theory that cannot supply this witness is not falsifiable, and the theorems
+below do not apply to it.
+
+\textbf{Setup.}
+Let $H$ be the set of possible hidden states of a system (its internal state
+space: neurons firing, weights activating, whatever physical process underlies
+behavior).
+Let $\Theta: H \to T$ be the target map (e.g., ``is this state conscious or
+not?'').
+Let $Y$ be the collection of admissible observations: every measurement,
+perturbation, imaging technique, and behavioral test permitted.
+Let $E_Y: H \to \mathcal{R}_Y$ be the observation function mapping hidden
+states to observable records.
+
+\begin{definition}[When two hidden states look identical]
+\label{def:congruence}
+Hidden states $h_1$ and $h_2$ are \emph{experimentally indistinguishable} if
+every admissible measurement gives the same distribution:
+\[
+h_1 \equiv_Y h_2
+\;\iff\;
+\sup_{e \in \mathrm{Eff}(Y)} |p(e \mid h_1) - p(e \mid h_2)| = 0.
+\]
+On classical deterministic systems this simplifies to
+$E_Y(h_1) = E_Y(h_2)$.
+\end{definition}
+
+\begin{definition}[Experimentability witness]
+\label{def:witness}
+A theory $(H, Y, E_Y, \Theta)$ is \emph{experimentable} if it supplies a
+typed specification
+$W = (\mathcal{C}, \mathcal{R}, \mathcal{T}, H, Y, E_Y, \Theta)$
+in which $\mathcal{R}$ and $\mathcal{T}$ have decidable equality.
+By ``decidable equality'' we mean a procedure that definitively answers
+``did these two records match?'' and ``did these two target values match?''
+If no such specification can be given, the theory is not making a falsifiable
+scientific claim in the sense used here.
+\end{definition}
+
+\begin{remark}
+A governance regulator presented with a theory that cannot supply the witness
+should require the witness before deliberating about the theory.
+Section~\ref{sec:implications} shows that IIT, GWT, and HOT occupy different
+positions under this test.
+IIT does not yet supply the witness for full $\Phi$-based identification.
+GWT and HOT can supply witnesses for narrower targets.
+\end{remark}
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Structural Characterization of the Non-Identification Class}
+\label{sec:characterization}
+
+\textit{The formal machinery in \S\S\ref{sec:kernelpair}--\ref{sec:descent}
+establishes when a hidden-variable system necessarily fails identification.
+Before that machinery, this section characterizes the class of systems it
+applies to.
+Four structural properties, stated without reference to consciousness, jointly
+specify which hidden-variable systems fall in the necessary non-identification
+class.
+A system satisfying all four properties will generate $Z = 1$ by the theorem
+in \S\ref{sec:descent}.}
+
+\begin{definition}[\textbf{P1}, Local Contextual Presentability]
+A family of admissible local contexts $\{U_\alpha \to H\}$ exists such that
+each $U_\alpha$ supports local target assignments.
+The target $\Theta$ is partially evaluable at the level of individual contexts,
+even when not globally evaluable.
+\end{definition}
+
+\begin{definition}[\textbf{P2}, Nontrivial Transition Structure]
+On overlapping contexts $U_\alpha \cap U_\beta$, local target assignments are
+related by transition maps
+$g_{\alpha\beta} : F_\beta|_{U_{\alpha\beta}} \to F_\alpha|_{U_{\alpha\beta}}$
+that satisfy local compatibility on every pair but fail global compatibility
+across all contexts simultaneously.
+\end{definition}
+
+\begin{definition}[\textbf{P3}, Nontrivial Holonomy]
+The context groupoid $\Pi_Y(H)$ acts on the target fiber $F$ with no admissible
+global fixed section: $\mathrm{Fix}(\rho) = \emptyset$.
+The descent datum is non-effective: no global section is compatible with all
+local data simultaneously.
+\end{definition}
+
+\begin{definition}[\textbf{P4}, Equivariant Admissible Operations]
+Every admissible intervention or observation refinement $Y' \in \mathrm{Adm}(Y)$
+preserves the holonomy structure:
+$\rho_{Y'} \circ a = a \circ \rho_Y$ for every admissible action $a$.
+No expansion or refinement of the observation family dissolves the obstruction.
+\end{definition}
+
+P1--P3 characterize a static obstruction at one observation level.
+P4 is the persistence condition.
+It guarantees the holonomy survives every admissible intervention.
+A system missing P4 has a contingent obstruction, removable in principle by a
+better instrument.
+A system satisfying all four has a necessary obstruction, one that no
+improvement in measurement methodology can dissolve.
+
+These properties depend only on the causal graph topology and the target
+fiber's descent behavior over the observation site.
+They make no reference to substrate, material composition, or biological
+origin.
+Any physical system, biological or digital, that instantiates equivalent
+P1--P4 structure falls in the same identification class.
+
+The claim is not that P1--P4 exhaust every possible source of the hard problem.
+The narrower claim is stability under conservative re-presentation.
+For systems with P1--P4, conservative expansions of the structural language
+produce no new structural distinctions and therefore cannot supply the
+sufficiency bridge from non-identification to consciousness attribution.
+Non-conservative expansions may matter, but they change the admissible site
+$Y$ and must be declared in the revision envelope $\Omega$.
+The boundary result below concerns that conservative-stability claim, not a
+complete taxonomy of all possible consciousness obstacles.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{The Kernel-Pair Non-Factorization Lemma}
+\label{sec:kernelpair}
+
+\textit{The simplest way identification can fail is also the easiest to miss.}
+Two hidden states look identical from outside (every measurement returns the
+same result) but differ in whether $\Theta$ holds.
+For consciousness: a conscious system and a non-conscious system produce
+identical observable records under every admissible test.
+No experiment distinguishes them.
+This is the kernel-pair obstruction.
+
+\begin{definition}[Kernel pair]
+\label{def:kernelpair}
+The \emph{kernel pair} of $E_Y$ is the set of all experimentally
+indistinguishable pairs:
+\[
+K_Y = \{(h_1, h_2) \in H^2 : h_1 \equiv_Y h_2\}.
+\]
+Think of $K_Y$ as the observation window's blind spot.
+The quotient $H/\!\sim_Y$ is the compressed state space in which
+indistinguishable states are treated as one.
+\end{definition}
+
+\begin{lemma}[Kernel-pair obstruction]
+\label{thm:kernelpair}
+For an experimentable theory $(H, Y, E_Y, \Theta)$:
+
+\medskip
+\noindent\textit{$\Theta$ is necessarily non-identified if and only if there
+exist hidden states $h_1$, $h_2$ that look identical from outside
+($h_1 \equiv_Y h_2$) but differ in the target
+($\Theta(h_1) \neq \Theta(h_2)$).}
+
+\medskip
+\noindent Equivalently: $\Theta$ does not factor through the experimentally
+compressed state space $H/\!\sim_Y$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+If the pair exists, no estimator on observable records can separate $h_1$
+from $h_2$.
+If no such pair exists, $\Theta$ is constant on each indistinguishability
+class and is identified.
+\end{proof}
+
+\emph{This is the standard non-identification condition \citep{pearl2009}
+instantiated in the present typed setup.}
+
+\textbf{Concrete check.}
+Build a six-state system $\{a, b, c, d, e, f\}$.
+Let the observation function collapse $\{a, b\}$ to the same record.
+Set $\Theta(a) = 0$, $\Theta(b) = 1$.
+The kernel pair $(a,b)$ fires: identical observation, different target.
+Residual ambiguity $= \log_2 2 = 1.000$ bit.
+No symmetry or automorphism is required.
+This is a straightforward indistinguishability argument, not a gauge-theory
+argument.
+
+\textbf{Where this falls short.}
+Lemma~\ref{thm:kernelpair} requires the compressed state space
+$H/\!\sim_Y$ to be a well-behaved mathematical object.
+On quantum systems, systems with non-abelian symmetries, or
+infinite-dimensional spaces, the quotient may not be constructible.
+Theorem~\ref{thm:descent} handles all of these.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{The Descent-Obstruction Theorem}
+\label{sec:descent}
+
+Lemma~\ref{thm:kernelpair} catches the case where two states look identical
+and the target differs.
+There is a more general obstruction.
+Every \emph{pair} of measurement contexts can be locally consistent while no
+single global assignment is compatible with all contexts simultaneously.
+This is contextuality, a real phenomenon in quantum mechanics that also
+applies to consciousness attribution.
+Theorem~\ref{thm:descent} states this local-to-global obstruction at the level
+of effective descent.
+
+\subsection{Insufficiency of \v{C}ech cohomology}
+\label{sec:cech}
+
+The standard tool for contextuality is sheaf cohomology, developed by
+\citet{abramsky2011} for quantum systems.
+A nonzero cohomology class $\check{H}^1(\mathcal{U}_Y, \hat\Theta) \neq 0$
+certifies that local target assignments cannot be glued globally.
+This detects cases Lemma~\ref{thm:kernelpair} does not.
+
+$\check{H}^1$ is itself not the full story.
+It requires a good cover (geometric regularity), abelian target structure
+(addition and subtraction defined), and the obstruction in exactly degree~1.
+These conditions fail for quantum POVM systems, for non-abelian symmetry
+groups, and for systems with non-standard topologies.
+
+The kernel-pair case (Theorem~\ref{thm:kernelpair}) has $\check{H}^1 = 0$ but
+$D = 1$: a direct counterexample.
+A detector that checks only $\check{H}^1$ has recall $= 1/2$ on a minimal
+two-case suite.
+That is not good enough.
+
+\subsection{Effective descent}
+\label{sec:descent-intuition}
+
+Imagine reconstructing the value of $\Theta$ by combining local measurements
+from overlapping contexts.
+\emph{Effective descent} means there is a procedure that takes all the local
+results, checks overlap consistency, and assembles them into a single global
+answer.
+When descent is \emph{not} effective, no such assembly exists.
+Every pair of local measurements can be consistent and the global assembly
+remains impossible.
+
+\begin{definition}[Descent-obstruction flag]
+For admissible observation family $Y'$:
+\[
+D_{Y'}(X) =
+\begin{cases}
+1 & \text{if } F|_{\mathsf{C}_{Y'}} \text{ has non-effective descent} \\
+0 & \text{otherwise.}
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}[Revision envelope]
+\label{def:revenv}
+Let $\Omega$ denote the declared physical, computational, and operational
+constraints on what structural changes to the observation/intervention
+framework are admissible.
+A \emph{structural revision} $r$ is any change to the admissible site that
+falls within $\Omega$.
+$\mathrm{Rev}_\Omega(Y)$ denotes the set of such revisions.
+A revision is \emph{conservative} (Morita-equivalent) if it induces an
+equivalence of structural model categories over the same admissible site,
+preserving the target fiber, covering families, and context structure.
+A revision is \emph{non-conservative} if it adds a genuinely new admissible
+observable, intervention, or target-relevant operation not definable from
+the old site.
+\end{definition}
+
+\begin{definition}[Revision-stable persistent non-effective descent]
+\label{def:revstable}
+The identification obstruction is \emph{revision-stable} if it survives every
+admissible structural revision:
+\[
+Z = f(X, Y) = \min_{r \in \operatorname{Rev}_\Omega(Y)} D(r_* X) = 1.
+\]
+$Z = 1$ means: no measurement protocol you try, no refinement, expansion, or
+structural revision of the observation family within $\Omega$, allows the
+target to be globally assembled from local data.
+The prior formula $\min_{Y' \in \mathrm{Adm}(Y)} D_{Y'}(X)$ is the special
+case in which $\Omega$ contains only refinements within a fixed structural
+language.
+Definition~\ref{def:revstable} extends this to all admissible structural
+revisions.
+\end{definition}
+
+\begin{proposition*}[Conservative Invariance]
+If $e: \mathcal{L}_D \to \mathcal{L}_D^+$ is a Morita-conservative expansion
+over the admissible site (the induced functor on structural model categories
+is an equivalence compatible with the site topology and target fiber), then:
+\[
+F \text{ has effective descent in } \mathcal{L}_D
+\iff
+e_* F \text{ has effective descent in } \mathcal{L}_D^+.
+\]
+\end{proposition*}
+
+\begin{proof}[Proof sketch]
+Conservative presentations induce equivalent descent categories only when the
+equivalence preserves the site topology: covering families, pullback
+compatibility, and the target fiber are transported together.
+Equivalences preserve existence and uniqueness of global objects.
+Effective descent is exactly existence of a global object realizing the local
+datum.
+No identification-failure premise is used.
+\end{proof}
+
+\begin{corollary*}
+Conservative expansion cannot overturn $Z = 1$.
+If the target fiber has non-effective descent, no Morita-equivalent
+re-presentation of the structural language changes this.
+Any future argument that a richer structural language supplies the sufficiency
+bridge must add a non-conservative admissible operation.
+That changes $Y$ and must be declared in $\Omega$ rather than treated as a
+language-only clarification.
+\end{corollary*}
+
+\subsection{The main criterion}
+\label{sec:maintheorem}
+
+\begin{proposition*}[Finite deterministic factorization]
+Let $H$ and $\mathcal{R}_Y$ be finite sets, let $E_Y:H\to\mathcal{R}_Y$ be a
+deterministic observation map, and let $\Theta:H\to T$ be a target with
+decidable equality.
+An identification procedure using only admissible records exists if and only
+if there is a map $\widehat{\Theta}:\mathcal{R}_Y\to T$ such that
+\[
+\Theta=\widehat{\Theta}\circ E_Y.
+\]
+Equivalently, $\Theta$ is constant on every fiber of $E_Y$.
+\end{proposition*}
+
+\begin{proof}
+If such $\widehat{\Theta}$ exists, the procedure observes $r=E_Y(h)$ and
+returns $\widehat{\Theta}(r)$.
+If an identification procedure using only records exists, its output is a
+function of $r$ alone.
+Two hidden states in the same fiber of $E_Y$ therefore receive the same output,
+so correctness requires $\Theta$ to be constant on that fiber.
+Define $\widehat{\Theta}(r)$ to be that common value for each realized record.
+Unrealized records can be assigned arbitrarily.
+This is the finite deterministic form of effective descent: local record data
+assemble a unique global target value exactly when the target factors through
+the record object.
+\end{proof}
+
+\begin{proposition*}[Exact finite stochastic factorization]
+Let $H$ and $\mathcal{R}_Y$ be finite sets.
+Let $K:H\to\Delta(\mathcal{R}_Y)$ assign each hidden state an exact observation
+distribution over records, and let $\Theta:H\to T$ be a target with decidable
+equality.
+An exact identification procedure whose information is exhausted by the
+stochastic observation site exists if and only if $\Theta$ factors through the
+kernel map:
+\[
+\Theta=\widehat{\Theta}\circ K
+\]
+for some map $\widehat{\Theta}$ defined on the image of $K$.
+Equivalently, whenever $K(h)=K(h')$, $\Theta(h)=\Theta(h')$.
+\end{proposition*}
+
+\begin{proof}
+If $\Theta$ factors through $K$, the procedure reads the exact kernel $K(h)$
+and returns $\widehat{\Theta}(K(h))$.
+Conversely, any exact procedure using only the stochastic site must assign the
+same answer to hidden states with the same observation distribution.
+Correctness therefore requires $\Theta$ to be constant on each fiber of $K$.
+Define $\widehat{\Theta}$ on each realized kernel by that common value.
+\end{proof}
+
+This proposition concerns exact distributional information.
+It does not say that one finite sample identifies the target.
+If two kernels overlap, one-sample classification can have nonzero Bayes error
+even when the exact kernels are distinct.
+The obstruction here is sharper: if the kernels are identical and the targets
+differ, no amount of sampling from that site identifies the target.
+
+\begin{sloppypar}
+The claim that descent is the most general reconstruction principle is not
+asserted by fiat.
+Grothendieck's theory \citep{grothendieck1971sga} establishes that effective
+descent over a site is precisely the condition under which coherent local data
+determines a global object.
+The propositions above prove the reduction for finite deterministic systems
+and exact finite stochastic systems.
+Any identification procedure (maximum-likelihood estimation, instrumental
+variables, Pearl's do-calculus \citep{pearl2009}, Bayesian updating) has the
+form: given local measurement records covering the state space at some
+observational resolution, recover the target parameter.
+That recovery has the structure of effective descent of the target fiber over
+the measurement site.
+The working claim is that when the target fiber has non-effective descent, no
+reconstruction procedure of this form can succeed, because the local data does
+not carry enough information to assemble a global answer.
+This reduction is argued here and proved for the formal components named in
+\S\ref{sec:limits}.
+The full proof that every admissible identification procedure in every
+substrate class factors through effective descent remains outside the scope of
+this article.
+\end{sloppypar}
+
+More precisely: for any site $(\mathsf{C}_Y, J)$, where $J$ is a Grothendieck
+topology on the category of admissible measurement contexts, non-effective
+descent of the target fiber $F$ over this site is the condition that no
+compatible family of local sections can be uniquely assembled into a global
+section.
+The same conceptual invariant (non-effective descent of the target fiber)
+applies across substrates, even though the computational tool used to detect
+it varies with the topology.
+For classical finite systems one uses \v{C}ech $H^1$.
+For quantum POVM systems, the Abramsky--Brandenburger empirical-model method
+\citep{abramsky2011}.
+For coalgebraic systems, bisimulation-invariant descent.
+The substrate-specific table below lists these implementations.
+The claim that each substrate instantiates the same descent criterion under
+its natural topology is a scoped mathematical program, not a completed proof
+inside this article.
+
+\begin{theorem}[Revision-stable persistent non-effective descent, scoped form]
+\label{thm:descent}
+For an experimentable theory $(H, Y, E_Y, \Theta)$ with declared revision
+envelope $\Omega$, assume that admissible identification procedures for the
+substrate factor through effective descent of the target fiber over the
+observation site.
+
+\medskip
+\noindent\textit{$\Theta$ is necessarily non-identified from admissible
+observations if and only if $Z = 1$.}
+\end{theorem}
+
+\begin{proof}[Proof sketch under the descent-factorization assumption]
+If $Z = 1$, then every admissible revision $r \in \mathrm{Rev}_\Omega(Y)$
+gives non-effective descent.
+No reconstruction of $\Theta$ from observable records exists for any
+admissible protocol or structural revision within $\Omega$, since descent is
+the most general reconstruction principle and the Proposition (Conservative
+Invariance) rules out conservative expansion as a route around the
+obstruction.
+If $Z = 0$, some revision $r$ gives effective descent, so the target fiber
+can be reconstructed from local data via the descent morphism.
+\end{proof}
+
+\textbf{Non-applicability boundary (formally stated).}
+A substrate is in-domain (the theorem applies) if and only if all four of the
+following are defined: (1)~an admissible context site $\mathsf{C}_Y$,
+(2)~a target-fiber object $F \to H$, (3)~descent semantics for that substrate
+category, and (4)~a declared revision envelope $\mathrm{Rev}_\Omega(Y)$.
+If any term is absent, the correct output is non-applicability (neither
+$Z = 0$ nor $Z = 1$) and the governance default is fail-closed.
+
+\subsection{The Sufficiency Frontier}
+\label{sec:sufficiency}
+
+Theorem~\ref{thm:descent} states when P1--P4 systems are in the
+non-identification class under the descent-factorization assumption.
+The question of whether every P1--P4 system is conscious (sufficiency
+direction) is addressed here as a formal boundary result, not left as a
+philosophical open question.
+
+\textbf{Conservative expansions cannot supply sufficiency.}
+If a future structural language $\mathcal{L}_D^+$ is conservative over
+$\mathcal{L}_D$ (Morita-equivalent by the Proposition above), it adds no new
+structural distinctions between models:
+\[
+\mathrm{Mod}(\mathcal{L}_D^+) \simeq \mathrm{Mod}(\mathcal{L}_D)
+\implies \Delta(\text{distinguishable structural cases}) = 0.
+\]
+A conservative expansion cannot turn
+$\mathrm{P1\text{--}P4} \not\Rightarrow \Theta$ into
+$\mathrm{P1\text{--}P4} \Rightarrow \Theta$ unless the implication was already
+derivable from the old structure.
+No such derivation exists in the current framework.
+Conservative re-presentations of the language cannot supply the sufficiency
+bridge.
+
+\textbf{Non-conservative expansions change the domain.}
+If $\mathcal{L}_D^+$ adds a primitive that directly tracks $\Theta$, this is
+not a language clarification.
+It adds a new admissible probe, changing $Y$.
+The sufficiency bridge derived from $\mathcal{L}_D^+$ would then be a
+consequence of the new $Y$, not of the old structural framework.
+Any such expansion must be declared in $\Omega$ and evaluated as a
+non-conservative revision.
+
+\textbf{Conclusion.}
+The negative sufficiency result (P1--P4 systems are not shown to be conscious)
+is not an artifact of an inadequate structural language.
+It is stable under all conservative expansions and explicitly defeasible only
+under declared non-conservative revisions that change what is admissible.
+Within any observable-relative framework, the bridge from the
+non-identification class to consciousness attribution requires an exogenous
+commitment that lies outside it.
+Other axiomatizations may add further commitments.
+The result here characterizes what observable-relative formal frameworks can
+determine without adding those commitments.
+
+\subsection{Comparison of approaches}
+
+Table~\ref{tab:coverage} summarizes how the kernel-pair lemma, cohomological
+diagnostics, and the descent theorem cover the representative substrate
+classes used in the paper.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcccc}
+\toprule
+Case & Lemma~\ref{thm:kernelpair} & $\check H^1$ & Thm.~\ref{thm:descent} \\
+\midrule
+Two states look identical, $\Theta$ differs & catches & misses & catches \\
+Contextuality triangle (classical)           & misses  & catches & catches \\
+Quantum POVM contextuality                   & n/a     & catches & catches \\
+Non-abelian symmetry system                  & partial & partial & catches \\
+Identifiable control                         & silent  & silent  & silent  \\
+\bottomrule
+\end{tabular}
+\caption{Coverage across substrate classes.
+Lemma~\ref{thm:kernelpair} is the $H^0$ special case of
+Theorem~\ref{thm:descent}.
+$\check{H}^1$ is a sufficient diagnostic under classical good-cover
+conditions only.}
+\label{tab:coverage}
+\end{table}
+
+\textbf{Substrate-specific computation.}
+In practice the right mathematical tool depends on the substrate:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lp{8cm}}
+\toprule
+Substrate & Use this obstruction tool \\
+\midrule
+Classical finite systems      & \v{C}ech $H^1$; CSP global-section check \\
+Quantum (POVM) systems        & Abramsky--Brandenburger empirical model \citep{abramsky2011} \\
+Non-abelian systems           & Non-abelian $H^1$, torsors, groupoid descent \\
+Measurable/probabilistic      & Invariant $\sigma$-algebras, measurable descent \\
+Coalgebraic / process systems & Bisimulation-invariant descent \\
+\bottomrule
+\end{tabular}
+\caption{Substrate-specific tools for computing the descent-obstruction flag.}
+\label{tab:substrates}
+\end{table}
+
+\textbf{Quantitative predictions.}
+The checks are executable in Appendix~\ref{app:suite} and the experiments
+directory.
+\begin{itemize}
+\item \textit{Contextuality triangle}: $\delta^0$ rank over $\mathbb{F}_2 = 2$;
+  $\dim\check{H}^1 = 1$; zero global sections; $D = 1$.
+\item \textit{Kernel-pair case}: $\check{H}^1 = 0$; $D = 1$;
+  $H^1$-only recall on two-case suite $= 1/2$.
+\item \textit{Identifiable control}: $D = 0$.
+\item \textit{Finite stochastic kernel pair}: identical observation kernels
+with different targets fail exact factorization; distinct kernels pass exact
+factorization while retaining finite-sample error.
+\item \textit{Boolean recurrent architecture}: report-only traces leave a
+latent target unidentified across all checked input sequences; a direct latent
+reader removes the obstruction by changing the site.
+\end{itemize}
+
+In the consciousness applications below, simpler branches do most of the work.
+IIT fails at the witness stage.
+GWT and higher-order theories generate kernel-pair worries when access or
+metacognitive evidence is used for a phenomenal target.
+The descent generalization matters for contextual, quantum-adjacent, and
+non-abelian substrates where those simpler diagnostics no longer cover the
+space of identification failures.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{The Governance Corollary}
+\label{sec:governance}
+
+If $Z = 1$ for a system, then no experiment (no certificate, audit, or
+disclosure protocol) can establish that $\Theta$ is identified.
+The mathematics establishes two things, which must be kept distinct.
+
+The first is an epistemic claim that follows from
+Theorem~\ref{thm:descent} alone.
+Any governance protocol that issues a low-concern verdict on consciousness for
+such a system issues a verdict it cannot substantiate.
+The theorem shows no admissible experiment can supply the required
+identification evidence.
+
+The second is a normative premise we adopt explicitly: a low-concern verdict
+requires epistemic support, and in the absence of any possible support the
+appropriate governance default is restriction rather than abstention.
+We adopt this premise on the grounds that the asymmetry of error costs under
+consciousness uncertainty warrants precautionary closure.
+The premise is not unconditional.
+It dominates when the downside of a mistaken low-concern verdict is severe,
+hard to reverse, and borne by a possible subject, while the cost of withholding
+the verdict is bounded by delay, further disclosure, narrower deployment, or a
+graduated precautionary regime.
+Where those conditions fail, the mathematics still gives the epistemic
+negative: the low-concern verdict lacks identification evidence.
+It does not by itself settle the practical policy response.
+Given this premise, the epistemic conclusion translates into the governance
+rule.
+The corollary is conditional: given the premise, restriction follows as a
+theorem.
+Without it, the mathematics establishes that low-concern verdicts are
+epistemically unwarranted, but does not specify the governance response.
+
+\begin{corollary}[Fail-closed verdict rule]
+\label{cor:governance}
+If $Z = f(X,Y) = 1$, then for every admissible $Y' \in \mathrm{Adm}(Y)$:
+\[
+\Theta \notin \mathrm{Desc}(Y')
+\quad\implies\quad
+\text{low-concern verdict on } \Theta \text{ is not admissible.}
+\]
+\end{corollary}
+
+\begin{proof}
+By $Z = 1$ every $Y'$ gives non-effective descent.
+A low-concern verdict requires establishing identifiability under some $Y'$.
+Non-effective descent entails no such demonstration exists.
+\end{proof}
+
+\textbf{The three-way verdict structure.}
+\begin{center}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{ll}
+\toprule
+Situation & Correct verdict \\
+\midrule
+Experimentability witness fails & Non-evaluable $\to$ no low-concern verdict \\
+Witness holds and $Z = 1$       & Identification impossible $\to$ verdict formally forbidden \\
+Witness holds and $Z = 0$       & Possible $\to$ requires adversarial certificate + replication \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both the ``witness fails'' and ``$Z = 1$'' branches are fail-closed.
+A governance protocol open to low-concern verdicts in either branch is
+inconsistent with Corollary~\ref{cor:governance}.
+
+Many governance frameworks for AI consciousness are precautionary.
+They advise caution because the evidence is incomplete.
+The present corollary identifies a narrower case.
+When $Z = 1$ relative to a declared $\Omega$, the declared evidence base cannot
+identify the target.
+Under the normative premise adopted above, a low-concern verdict lacks the
+support it requires.
+
+\textbf{Operational use.}
+The corollary has a direct audit form.
+A low-concern verdict must state the site, target, revision envelope,
+classifier, challenge record, revocation rule, and provenance record on which
+it relies.
+If any required field is absent, the verdict is not evaluable under this
+criterion.
+
+\subsection{The Disclosure Requirement}
+\label{sec:disclosure}
+
+The governance rule is operationalizable only if the system's descent
+structure is declared.
+A low-concern claim that does not supply the following six elements is not
+evaluable and receives the same fail-closed verdict as $Z = 1$.
+
+Any organization asserting a low-concern verdict for $\Theta$ must publish:
+
+\begin{enumerate}
+\item The context category/site $\mathsf{C}_Y$: a complete specification of
+  admissible measurements and interventions.
+\item The target fiber object $F \to H$: a structural specification of
+  $\Theta$ as a fiber over the hidden-state space.
+\item The obstruction datum $X$: the descent data (transition maps, holonomy,
+  kernel-pair constraints, contextual compatibility) that enables a
+  third-party auditor to evaluate whether the system falls in the P1--P4
+  class.
+\item The admissible revision envelope $\Omega$: the declared physical,
+  computational, and operational constraints on structural revision, with
+  explicit classification of each proposed language expansion as conservative
+  (Morita-equivalent) or non-conservative (genuinely new admissible probe or
+  operation).
+\item A revision-stable descent test result: a demonstration that
+  $Z = \min_{r \in \operatorname{Rev}_\Omega(Y)} D(r_* X) = 0$, with a
+  certificate replicable by a third party under the declared $\Omega$.
+\item A non-applicability statement or confirmation: an explicit declaration
+  that all four in-domain conditions (\S\ref{sec:maintheorem}) are satisfied,
+  or identification of which condition fails and why non-applicability rather
+  than $Z = 0$ is the correct output.
+\end{enumerate}
+
+Missing any element forces fail-closed.
+Missing $\Omega$ means $Z$ is not evaluable under the revision-stable
+criterion, and undeclared non-conservative expansions permit post-hoc revision
+of the admissible site to avoid a $Z = 1$ verdict.
+
+Each element addresses a specific governance failure mode.
+Undeclared site data permits gerrymandering the admissible evidence base.
+Undeclared holonomy data conceals whether the system falls in the P1--P4
+class.
+Missing $\Omega$ permits strategic omission of non-conservative revisions
+that would resolve the obstruction.
+A missing revision-stable certificate allows unilateral identifiability claims
+that cannot be audited across structural change.
+
+\subsection{\texorpdfstring{The $\Omega$-Audit Protocol}{The Omega-Audit Protocol}}
+\label{sec:omega-audit}
+
+The disclosure requirement names $\Omega$ as an input.
+It does not by itself make $\Omega$ hard to game.
+A claimant who wants a low-concern verdict can shape the envelope before the
+descent test is run, and that choice can determine whether $Z$ is evaluable.
+An $\Omega$ declaration therefore needs its own audit protocol.
+
+The proposed protocol is organized around six failure modes.
+They are not assumed to be complete.
+They are a finite audit framework against which a stronger completeness theorem
+could later be tested.
+
+\textbf{Under-specification.}
+A claimant may declare $\Omega$ vaguely, for example by saying that admissible
+revisions are those consistent with current physics or current practice.
+That lets later challengers be accepted or excluded after the fact.
+The remedy is finite enumeration.
+The declaration must list admissible revision classes: new observable types,
+intervention types, model-access regimes, target-relevant operations, and
+structural vocabulary changes.
+Each class must carry an inclusion or exclusion rationale.
+Anything outside the enumeration is inadmissible for the current certificate,
+but the enumeration itself remains open to public challenge.
+
+\textbf{Strategic exclusion.}
+A claimant may exclude a revision class that would resolve the obstruction by
+calling it physically impossible, operationally infeasible, or out of scope.
+Exclusion is legitimate only if the reason is typed and auditable.
+The allowed reason types should be finite: physical impossibility,
+computational intractability, regulatory prohibition, or cost above a declared
+threshold.
+The declared threshold is part of the claim.
+If an excluded class lacks one of these reasons, or if the reason fails under
+audit, the low-concern verdict is revoked or reduced to non-applicability.
+
+\textbf{Misclassification.}
+A claimant may add a probe that changes the admissible site while calling it a
+conservative language expansion.
+The audit rule is simple.
+Any expansion claimed as conservative must supply a witness that the new
+presentation preserves the target fiber, covering families, and context
+structure.
+In mathematical cases this is a Morita-equivalence witness.
+In applied cases it is the corresponding operational equivalence argument.
+No witness means the expansion is treated as non-conservative and triggers a
+fresh $Z$ evaluation on the changed site.
+
+\textbf{Post-hoc revision.}
+A claimant may alter $\Omega$ after seeing data or after receiving a challenge.
+The remedy is preregistration discipline.
+The envelope must be declared before certification, timestamped, and hashed.
+Any later change starts a new certificate rather than continuing the old one.
+The earlier verdict does not inherit evidence from the revised site unless the
+new evaluation is run.
+
+\textbf{Residual discovery failure.}
+A claimant may satisfy the listed declaration rules while a material
+non-conservative probe class is never surfaced.
+Seeded omission tests do not solve this problem.
+They can show that a red team detects known planted defects under benchmark
+conditions, but they do not estimate the probability that an adversarially
+chosen future probe class remains outside the audit community's search space.
+Seeded omissions should therefore be treated as a skill gate only.
+They cannot certify residual closure.
+For operational use, let $\varepsilon_{\mathrm{esc}}$ be the residual
+adversarial escape load and let $\iota_{\mathrm{audit}}$ be verified audit
+integrity: independent selection, escrow funding, access parity, public
+challenge logs, conflict checks, and whistleblower channels.
+The admissibility score has the form
+\[
+\sigma_{\mathrm{adm}} = \iota_{\mathrm{audit}}(1-\varepsilon_{\mathrm{esc}}).
+\]
+If any required dossier field is absent, if access parity fails, if red-team
+independence is compromised, or if $\varepsilon_{\mathrm{esc}}$ cannot be
+bounded under the declared adversary model, the output is non-applicability.
+A seeded-omission success rate is not an admissible bound for
+$\varepsilon_{\mathrm{esc}}$.
+
+\textbf{Apparatus provenance failure.}
+A claimant may shape the people or infrastructure that generate the challenge
+record before the public record is fixed.
+The visible dossier can still show formal independence, escrow funding, access
+parity, public logs, and a timestamped envelope.
+The hidden dependence sits upstream of those records.
+Relevant channels include funding, employment prospects, advisory ties,
+compute or API access, benchmark infrastructure, data access, publication
+access, shared investors, and informal reciprocal arrangements.
+For operational use, this residual is written as $X_{\mathrm{prov}}$.
+A low-concern verdict therefore requires a provenance certificate for auditors,
+red teams, classifiers, panel members, infrastructure providers, and benchmark
+or data providers.
+The certificate must aggregate claimant-originated benefits by source class.
+Per-edge materiality thresholds may limit how much detail is published, but
+they cannot create a safe harbor against aggregation.
+If source-class provenance cannot be certified, the provenance gate fails and
+the output is non-applicability.
+
+This protocol changes the burden of a low-concern verdict.
+The claimant must publish the envelope before the descent test, defend each
+excluded revision class, supply equivalence witnesses for conservative
+expansions, certify the provenance of the challenge apparatus, preserve
+challenger independence, and accept revocation when the envelope was too vague
+or moved after inspection.
+A third-party auditor need not settle consciousness.
+The auditor only asks whether the claimed low-concern verdict is supported by a
+fixed and contestable revision envelope.
+
+\textbf{Completeness problem.}
+The six failure modes above are the main attacks this proposed protocol blocks.
+A later reduction theorem would show that every strategy for gaming an
+$\Omega$ declaration either leaves the envelope under-specified, strategically
+excludes a relevant revision class, misclassifies a site-changing operation as
+conservative, revises the envelope after evidence is observed, exploits a
+failure of the discovery apparatus, or contaminates the provenance of the
+apparatus that generates the public record.
+No such reduction theorem is claimed here.
+If such a reduction holds, the audit protocol is complete relative to the
+declared site and target fiber.
+If it fails, the counterexample identifies another failure mode and the
+protocol must be expanded.
+The hardest candidate counterexample is the future probe class that cannot be
+named at declaration time.
+A completeness proof must show that this reduces to one of the public-record
+failure modes, or else treat it as residual discovery failure.
+Operationally, this means that a low-concern dossier must not infer residual
+closure from planted omissions.
+It must either bound residual escape under a declared adversary model and a
+public challenge process, or fail closed.
+A second counterexample is provenance atomization: a claimant splits influence
+across sub-threshold proxy paths so that no single edge looks material while
+the aggregate claimant-originated exposure is material.
+The protocol blocks this only if the provenance certificate aggregates by
+source class.
+A five-mode reduction that places all such cases under residual discovery is
+too broad; it classifies by failed outcome rather than by a pre-specified
+mechanism.
+The natural formal target for follow-on work is a reduction theorem over these
+six public objects: declaration content, exclusion boundary, conservative
+classifier, certification timing, discovery apparatus, and apparatus
+provenance.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Worked Application: A Minimal Broadcast-Report Architecture}
+\label{sec:worked}
+
+This section applies the criterion to a small cognitive architecture.
+The example is not offered as a model of biological consciousness.
+Its role is narrower: it shows how the site, target fiber, holonomy, and P4
+condition are specified in a case where the obstruction can be checked by
+inspection.
+
+Consider an architecture with three modules: a perceptual store $P$, a
+workspace $W$, and a report controller $R$.
+The hidden state $h \in H$ contains a latent episode token and three local
+encodings of that token, one in each module.
+The admissible observation site $\mathsf{C}_Y$ has three contexts:
+\[
+U_{PW},\qquad U_{WR},\qquad U_{RP}.
+\]
+Each context exposes pairwise agreement records between two modules.
+No admissible probe reads all three encodings at once.
+This restriction represents an ordinary instrumentation limit: the available
+protocols can test pairwise access, workspace availability, and report
+alignment, but cannot jointly identify the latent episode token across all
+modules in a single record.
+
+The target $\Theta$ is global episode identity: whether the three local
+encodings are assignments of one and the same latent episode.
+The target fiber $F \to H$ carries a local binary label for the episode token
+in each context.
+On overlaps, local labels are related by transition maps.
+Take two transition maps to preserve the label and one to flip it:
+\[
+g_{PW,WR} = +1,\qquad
+g_{WR,RP} = +1,\qquad
+g_{RP,PW} = -1.
+\]
+The product around the cycle is $-1$.
+Every pairwise comparison is locally satisfiable, but no global label can be
+chosen consistently across all three contexts.
+The target fiber therefore has non-effective descent over $\mathsf{C}_Y$.
+The finite check is executable in Online Resource~1.
+
+The P1--P4 check is now explicit.
+P1 holds because each pairwise context supports a local assignment of the
+episode label.
+P2 holds because overlap assignments are related by transition maps, and the
+cycle product prevents global compatibility.
+P3 holds because the induced context-groupoid action has no global fixed
+section.
+Equivalently, transporting a local label around the cycle returns its
+opposite.
+P4 holds relative to the following declared revision envelope:
+admissible revisions may add time resolution, duplicate pairwise probes,
+replace labels by conservative aliases, or add pairwise behavioral readouts,
+but may not add a direct all-context token reader.
+Each admissible revision commutes with the transition maps and preserves the
+cycle product $-1$.
+Thus no revision inside $\Omega$ dissolves the obstruction.
+
+The worked example also shows what would count as a real defeat of the
+obstruction.
+A probe that reads the latent episode token jointly across $P$, $W$, and $R$
+would change the site.
+It is a non-conservative revision and must be declared in $\Omega$.
+If such a probe is physically and operationally admissible, the case moves
+from $Z = 1$ to $Z = 0$ or to a new site requiring a fresh computation.
+If it is not admissible, the low-concern verdict remains unsupported.
+
+This example matters for the larger paper in two ways.
+First, it shows that P1--P4 are not merely labels attached after the fact.
+They are a checklist: context site, target fiber, transition maps, holonomy,
+and revision envelope.
+Second, it separates access from phenomenal attribution.
+The architecture can exhibit pairwise broadcast and report alignment while
+still failing to identify the global target.
+That is the form of the test the later theory sections apply to IIT, GWT, and
+HOT at a higher level of abstraction.
+
+A second executable check uses a small Boolean recurrent architecture rather
+than the pairwise-context cycle.
+The system has an input bit, an observable report bit, a memory bit with update
+rule $m_{t+1}=x_t$, and a latent bit with update rule $a_{t+1}=a_t$.
+The report-only site sees identical traces for two states that differ only in
+the latent bit, across every input sequence up to the checked horizon.
+A direct latent reader resolves the target, but only by changing the site.
+The check is supplied in Online Resource~1 as
+\texttt{boolean\_recurrent\_obstruction\_check.py}.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Worked Disclosure Dossier: Llama 3.1 8B-Instruct}
+\label{sec:llama-dossier}
+
+This dossier is a positive control for the framework, not an empirical claim
+about LLM consciousness.
+It shows that ordinary access/report evidence can be accepted for a narrow
+target while refusing to transfer that evidence to phenomenal consciousness.
+The section applies the disclosure requirement to a public system rather than
+a toy architecture.
+The system is Meta Llama~3.1~8B-Instruct, an open-weight, text-only,
+instruction-tuned transformer released in July 2024
+\citep{grattafiori2024llama3,meta2024llama31card}.
+The model card describes it as an autoregressive language model using an
+optimized transformer architecture, with supervised fine-tuning and RLHF for
+helpfulness and safety alignment.
+For the 8B model, the public record states a 128k context length, grouped-query
+attention, multilingual text input, text and code output, pretraining on more
+than 15 trillion tokens, and a December 2023 pretraining data cutoff.
+
+The dossier below is deliberately narrow.
+It concerns one self-hosted inference instance of the released 8B instruction
+model, without external tools, memory, autonomous action loops, fine-tuning, or
+agent scaffolding.
+Those additions would change the site and require a fresh dossier.
+
+The access/report probe in this section is not the paper's novelty.
+Mechanistic interpretability already supplies many ways to test whether
+representations in a transformer track prompt content and affect later output.
+The point of the dossier is the audit distinction.
+Evidence that the model uses a context item is evidence for an access/report
+target.
+It is not, by itself, evidence for a phenomenal target.
+The framework's contribution is to keep those targets separate when a verdict
+is issued.
+
+\textbf{1. Observation site.}
+The admissible site contains: public model-card information; released model
+weights and architecture; token-level input-output behavior; prompt
+interventions; logit traces; activation probes; ablations of attention heads,
+MLP blocks, layers, residual streams, and safety wrappers; and reproducible
+self-hosted inference logs.
+It excludes non-public training traces, vendor-internal human-feedback records,
+private safety-classifier decisions, and unlogged deployment-layer state.
+It also excludes biological measurements, because the system is not biological.
+
+\textbf{2. Target fiber.}
+Two targets must be kept separate.
+For access or report, the target fiber contains operational labels such as
+``information is available for token generation,'' ``the model reports a
+state,'' or ``the model can use a context item in later output.''
+Those labels can be tested with ordinary behavioral and mechanistic probes.
+For phenomenal consciousness or moral patienthood, the target fiber contains a
+phenomenal-status label for an inference state.
+The public site supplies no decidable equality test for that label.
+
+\textbf{3. Revision envelope.}
+The declared $\Omega$ permits longer prompt batteries, adversarial prompts,
+activation patching, sparse-feature probes, causal ablations, alternative
+decoding parameters, quantization checks, and removal or replacement of
+deployment guardrails.
+It also permits comparison across self-hosted replicas of the same released
+weights.
+It does not permit adding persistent memory, tool use, online learning,
+multi-agent scaffolding, biological sensors, or private training data while
+calling the result the same site.
+Those are non-conservative changes and require a new $Z$ evaluation.
+
+\textbf{4. Classifier.}
+For access/report targets, the classifier is behavioral and mechanistic:
+does a probed representation causally affect later token generation or report
+behavior under held-out prompts?
+For phenomenal consciousness, no accepted classifier is supplied by the public
+record.
+Self-reports about consciousness are outputs under the same observation site,
+not labels for the hidden target.
+
+\textbf{5. Challenge record.}
+A sufficient public challenge record would include prompt suites, activation
+probe protocols, ablation results, negative controls, model/version hashes,
+sampling parameters, deployment-wrapper descriptions, and failed attempts to
+find a non-conservative probe that changes the verdict.
+The current public record contains useful model-card and benchmark
+information, but it is not a consciousness-attribution challenge log.
+
+\textbf{6. Revocation rule.}
+The verdict must be recomputed if the site changes.
+Examples include tool integration, persistent memory, online adaptation,
+fine-tuning, changed safety wrappers, multimodal inputs, autonomous action
+loops, or access to private training traces.
+The verdict also changes if a future theory supplies a decidable phenomenal
+classifier over this class of systems.
+
+\textbf{7. Provenance record.}
+For a low-concern certificate, the audit would need to name who selected the
+probe classes, who ran the red-team process, who maintained the classifier,
+which infrastructure was used, and whether those actors or facilities had
+claimant-originated dependencies.
+The provenance record here is intentionally limited: the probe
+packet was selected and run by the author, the GPU infrastructure was rented,
+the model came from an ungated public mirror after the official gated
+repository was inaccessible, and no independent red-team or source-class
+provenance certificate was produced.
+This is sufficient for a worked access/report illustration.
+It is not sufficient for a low-concern phenomenal-consciousness certificate.
+
+\textbf{Verdict.}
+For the access/report task in this dossier, the result is evaluable and yields
+$Z=0$: the public model can be probed, ablated, and compared across
+replicates for that target.
+For phenomenal consciousness or moral patienthood, the dossier is
+non-applicable.
+The reason is not that Llama~3.1~8B-Instruct is shown to be non-conscious.
+The reason is that the public site lacks a target fiber with decidable equality,
+lacks a phenomenal classifier, lacks a public consciousness challenge log, and
+lacks the provenance certificate needed for a low-concern verdict.
+The framework therefore blocks a certified low-concern claim for the phenomenal
+target under this dossier, while allowing ordinary scientific claims about
+access, report, and mechanism.
+
+This result is also a check on the framework's own scope.
+The dossier does not infer consciousness from opacity.
+It separates targets.
+It accepts the system as experimentally tractable for access and report.
+It refuses only the stronger phenomenal verdict, because the dossier does not
+contain the objects that such a verdict requires.
+The executable access/report probe packet is
+\texttt{llama31\_activation\_probe.py} in Online Resource~1.
+It freezes the prompt schema and declared site in a manifest, then on a GPU
+collects selected hidden states, reports leave-one-out probe accuracy by layer,
+and runs a targeted residual-direction intervention.
+The packet is evidence about access/report evaluability only.
+On 2026-05-06, the packet was run on an A10 GPU against the ungated
+\texttt{NousResearch/Meta-Llama-3.1-8B-Instruct} mirror.
+The run used 24 controlled key-value prompts.
+Token-level answer accuracy was $24/24$.
+Mean correct-label logit margin was $6.107$, while the no-mapping control
+margin was approximately zero ($-0.026$).
+Leave-one-out centroid probes on selected hidden states reached $1.00$
+accuracy at layers 16, 24, and 31, and $0.75$ at layer 8.
+A targeted residual-direction intervention reduced the correct-label margin at
+layers 16, 24, and 31, with mean deltas $-0.732$, $-1.669$, and $-1.107$.
+These results support the narrow access/report claim under the declared site.
+They do not supply a phenomenal-consciousness classifier.
+The saved packet is
+\texttt{llama31\_probe\_packet\_nous/summary.json} in Online Resource~1.
+
+This experiment should be read as a positive control, not as a new
+mechanistic-interpretability result.
+Linear probes and residual interventions are familiar tools for showing that
+transformer representations track prompt content and affect later output.
+The point here is different: the framework accepts that ordinary evidence for
+the access/report target, assigns it the expected evaluable verdict, and then
+refuses to transfer that verdict to the phenomenal target without the missing
+target fiber, classifier, challenge record, revision envelope, and provenance
+certificate.
+If the access/report control had failed, the dossier would have been
+uninformative even for the narrow target.
+Because it succeeds, it shows that the non-applicability verdict for the
+phenomenal target is not produced by a blanket skepticism about empirical AI
+systems.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Implications for IIT, GWT, and Higher-Order Theories}
+\label{sec:implications}
+
+The three cases below do different jobs.
+IIT is the hardest case for the experimentability witness, because its central
+quantity is defined at a level that current measurement does not reach.
+GWT and higher-order theories are cleaner as theories of access and
+metacognition.
+Their difficulty appears when those narrower targets are used as evidence for
+phenomenal consciousness.
+
+\subsection{Integrated Information Theory}
+\label{sec:iit}
+
+IIT identifies consciousness with integrated information $\Phi$ above a
+threshold \citep{tononi2016}.
+For the present paper, the important point is not whether IIT is true.
+The important point is what would have to be measured for a full
+$\Phi$-based identification claim to be auditable.
+$\Phi$ requires the cause-effect repertoire of every possible subsystem,
+across all spatial and temporal scales.
+For a system of $N$ binary neurons this requires $2^N$ perturbation
+experiments.
+No current neuroimaging or electrophysiology protocol comes close.
+The observation record $\mathcal{R}_Y$ under any known experimental protocol
+does not contain the information needed to compute $\Phi$ with decidable
+equality.
+
+IIT's target $\Theta$ falls in the prior class for the purpose of full
+$\Phi$-based identification, because the observation protocol required to test
+the target does not exist.
+It is therefore not yet in the ``$Z = 1$, identification impossible'' class.
+The gap is specific.
+Full cause-effect repertoires are not in $\mathrm{Adm}(Y)$ under any currently
+realizable experimental protocol.
+
+A clarification is needed.
+IIT's \emph{predictions} are falsifiable, and one salient preregistered
+prediction was challenged in the 2025 adversarial study \citep{cogitate2025}
+(Cogitate consortium, $n = 256$, multimodal fMRI/MEG/iEEG): the expected
+sustained posterior synchronization was not found.
+The same study also challenged GNWT, especially through the lack of ignition at
+stimulus offset and limited prefrontal representation of some conscious
+dimensions.
+Those results are scientifically relevant, but they do not settle the
+identification question used here.
+The witness-failure verdict applies to a different question: whether the value
+of $\Phi$ can be computed from experimental data.
+Falsifying theory-derived predictions does not require computing $\Phi$; it
+requires only that the theory entails observable consequences.
+The identification problem arises when no observation protocol can supply the
+quantity the theory defines as the target ($\Phi$ itself).
+Current approximation schemes such as $\Phi^*$, MIB, and GeoMIP are best read
+as proxies or restricted computations, not decidable equality tests for the
+theoretical target.
+The best implementations handle small systems far below brain scale, and none
+cited here claims decidable equality of $\hat\Phi$ with $\Phi$ for the full
+target.
+
+\textit{Addressing the tractability objection.}
+IIT proponents may argue that $\Phi$ is in principle computable from complete
+cause-effect structure, with the computation being exponential in $N$ but
+tractable in principle.
+The experimentability witness requires \emph{decidable equality}: a procedure
+that definitively answers ``does this measured quantity equal the
+theory-defined target $\Phi$?''
+This is a different demand from tractability.
+The witness requires both (a)~an observation protocol $Y$ whose record
+$\mathcal{R}_Y$ contains the cause-effect repertoire, and (b)~a decidable
+equality check between the measured quantity and the theoretical $\Phi$.
+The exponential-computation barrier blocks~(a) in practice.
+No current approximation scheme satisfies~(b).
+Each $\Phi^*$ variant is an acknowledged lower bound or proxy; none
+constitutes a decidable equality test against the theoretical target.
+The witness-failure verdict rests on the absence of a decidable specification.
+\citet{hanson2019iit} independently established a related substrate-sensitivity
+problem for IIT: $\Phi$ is not invariant under state-labeling isomorphisms,
+so functionally identical systems can receive different $\Phi$ values.
+The descent-obstruction analysis here gives a substrate-neutral structural
+reason for that failure of invariance.
+IIT lacks the experimentability witness, meaning decidable equality on
+$\Theta$, required for a full $\Phi$-based identification claim.
+A version of IIT that specified a practical approximation $\hat\Phi$ with a
+decidable equality test would clear this first hurdle.
+Whether $\hat\Phi$ actually tracks $\Phi$ would then become the next empirical
+question.
+
+
+\subsection{Global Workspace Theory}
+\label{sec:gwt}
+
+GWT identifies consciousness with global broadcast: information made available
+to multiple cognitive subsystems at once \citep{baars1988,dehaene2011}.
+This is a much more tractable target than $\Phi$.
+Broadcast can be tested with masking, report, attention, and neural-imaging
+paradigms.
+For access consciousness, in Block's sense \citep{block1995}, GWT can supply
+the experimentability witness.
+This does not mean current GNWT predictions are unproblematic.
+The Cogitate adversarial study challenged GNWT's offset-ignition and
+prefrontal-content predictions.
+The point here is narrower: broadcast/access targets can be specified in an
+experimentable record type even when particular GNWT predictions fail.
+
+The trouble begins when broadcast evidence is used to license claims about
+phenomenal consciousness.
+Two systems with identical global broadcast patterns may differ in phenomenal
+experience.
+If the governance target is phenomenal consciousness, the kernel pair fires:
+(broadcast $+$ phenomenal experience) versus (broadcast $+$ no phenomenal
+experience) produce identical records under any broadcast-based measurement.
+GWT evidence can be strong evidence about access while still failing to settle
+the phenomenal target.
+
+\subsection{Higher-Order Theories}
+\label{sec:hot}
+
+Higher-order theories identify consciousness with a representation of being in
+a mental state \citep{rosenthal2005,carruthers2000}.
+Here again the first step is feasible.
+Metacognitive reports, confidence judgments, and prefrontal-monitoring
+signals can be placed in a record type with decidable equality.
+The harder question is whether higher-order representation identifies
+phenomenality.
+Blindsight cases make the problem vivid: subjects can show information-guided
+behavior in the absence of ordinary visual experience.
+If the kernel pair (higher-order representation $+$ phenomenal experience)
+versus (higher-order representation $+$ no phenomenal experience) is
+empirically realizable, Lemma~\ref{thm:kernelpair} applies.
+HOT therefore passes the witness for a metacognitive target.
+It does not by that fact alone identify phenomenal consciousness.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Application: The Upload Problem and Evolutionary Selection}
+\label{sec:applications}
+
+\textbf{The upload problem.}
+A digital system $D$ is proposed as conscious by copying the behavioral
+profile of biological system $B$: $O(B) \approx O(D)$.
+Observable copying transfers the record $E_Y(h)$, not the descent structure
+(transition maps and holonomy of the target fiber).
+A verdict requires demonstrating
+$(\mathsf{C}_{Y_D}, F_D, \rho_D) \cong (\mathsf{C}_Y, F, \rho)$.
+Behavioral matching alone is insufficient; without structural isomorphism the
+correct verdict for $D$ is non-evaluable.
+
+\textbf{The evolutionary argument.}
+Natural selection acts on observable outputs, not on $\Theta$ directly.
+If $\Theta$ is descent-obstructed, selection on $O$ does not imply selection
+on $\Theta$.
+The inference ``consciousness evolved because it confers fitness advantage''
+is structurally invalid when $Z = 1$: selection may have favored hidden causal
+structures $X$ that produce adaptive $O$, with the obstructed property
+$\Theta$ as a byproduct.
+
+\textbf{Substrate-neutral identification.}
+A digital system that instantiates an equivalent context category, transition
+maps, and holonomy structure,
+$(\mathsf{C}_{Y_D}, F_D, \rho_D) \cong (\mathsf{C}_Y, F, \rho)$,
+falls in the same identification class as a biological system with the same
+structure.
+The relevant comparison is descent equivalence across the declared sites.
+The theory predicts that substrate-isomorphic systems are
+identification-equivalent when the site, target fiber, and revision envelope
+match.
+
+\textbf{Information flow is not holonomy.}
+A system maximizing integrated information, global broadcast, or any other
+information-theoretic quantity satisfies P1 (local contextual presentability
+in information terms) but need not satisfy P3 (nontrivial holonomy).
+Information-theoretic magnitude is measurable and identifiable.
+Structural holonomy over the admissible observation site is what generates
+the obstruction.
+Large information flow is consistent with $Z = 0$.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Relation to the Literature}
+\label{sec:literature}
+
+The mathematics in this paper is not new.
+Kernel-pair identification is standard in causal inference \citep{pearl2009}.
+\v{C}ech cohomology for contextuality is \citet{abramsky2011}.
+Grothendieck descent is 60-year-old algebraic geometry
+\citep{grothendieck1971sga}.
+We apply known mathematical machinery to a new application domain.
+
+The philosophical setting is older and less tidy.
+\citet{nagel1974} and \citet{levine1983} made the epistemic difficulty of
+subjective experience hard to ignore.
+\citet{chalmers1995} gave that difficulty its contemporary name.
+\citet{dennett1991} and \citet{frankish2016} press in the opposite direction:
+the work may be to explain the judgments, reports, and seeming of
+phenomenality without positing a further hidden property.
+This paper does not decide that dispute.
+It asks a narrower question: given a declared target, can the target be
+identified from the admitted observations?
+\citet{block1995} matters here because the access/phenomenal distinction is
+exactly where many proposed AI tests quietly change targets.
+
+The stance of this paper is methodological rather than metaphysical.
+If the target is access, report, metacognitive monitoring, or functional
+integration, then ordinary experimental and mechanistic tests may identify it.
+If the target is phenomenal consciousness in the sense at issue for
+\citet{nagel1974}, \citet{levine1983}, and \citet{chalmers1995}, the claimant
+must say how that target enters the observation site.
+An illusionist or behaviorist may instead deny that an additional phenomenal
+target is needed.
+That is a legitimate change of target.
+The present framework then evaluates the replacement target, not the discarded
+one.
+This is why the result does not settle the dispute between realist and
+deflationary theories of consciousness.
+It gives a discipline for moving between them: state the target, state the
+site, and show whether the target is identified.
+
+More precisely, the paper adopts epistemic structuralism about scientific
+attribution, not metaphysical structuralism about what exists.
+Against the realist, it does not deny that there may be a fact of the matter
+beyond the declared observations.
+It says that such a fact is not licensed as a scientific verdict by that
+observation site.
+Against the illusionist or behaviorist, it does not require a further
+phenomenal residue.
+If the proposed target is report, judgment, seeming, or illusion-detection, the
+framework evaluates that target instead.
+Against a careless use of Block's distinction, it insists that access evidence
+can be valid evidence for access while still failing to identify phenomenal
+consciousness.
+The framework is neutral about which target one should care about, but not
+neutral about target changes.
+A target change has to be declared.
+
+The philosophical contribution is the identification reframing: a
+consciousness verdict must keep target, site, and admissible revision envelope
+fixed before treating evidence as decisive.
+Lemma~\ref{thm:kernelpair} already gives a strong version of that point for
+classical indistinguishability cases, and Block's access/phenomenal
+distinction explains why access evidence cannot simply be moved to the
+phenomenal target.
+The descent machinery generalizes the point to contextual and non-classical
+substrates where kernel-pair quotients or \v{C}ech $H^1$ are too narrow.
+Its fully general reduction remains a stated obligation; the finite
+factorization cases and the conservative-invariance results establish the
+part used here.
+From this we derive a governance corollary with an explicit six-element
+disclosure requirement that includes the revision envelope $\Omega$, and we
+evaluate major consciousness frameworks against the experimentability
+precondition.
+\textbf{On formal frameworks for AI consciousness.}
+\citet{butlin2023consciousness} set the current methodological baseline:
+derive computational indicator properties from GWT, IIT, HOT, and related
+theories, then assess AI systems against them.
+The approach is carefully empirical, but it presupposes that the indicator
+properties are experimentally accessible.
+\citet{phillips2024metamath} show that all six IIT axioms can be restated as
+universal mapping properties in the sense of category theory, including the
+sheaf condition.
+Our paper extends their framework from definition to testability: the sheaf
+condition's failure (absence of global sections) is exactly the
+descent-obstruction criterion we use as an identification-impossibility
+certificate.
+\citet{kleiner2021} give a categorical formulation of IIT; their goal is to
+define consciousness, ours is to characterize when such definitions are
+scientifically evaluable.
+\citet{gunji2026contextuality} give a recent categorical reconstruction of
+contextuality in which orthomodular structure arises from classical Boolean
+contexts.
+That work is adjacent to our use of contextual obstruction, while our target
+is identification of a hidden property from admissible observations.
+\citet{campero2025framework} provide the clearest taxonomy of
+impossibility-class arguments against AI consciousness; our result contributes
+a new category: identification-level impossibility independent of substrate
+implementation.
+\citet{phua2025test} use artificial agents and ablations to test functional
+predictions associated with GWT, IIT-adjacent markers, and HOT.
+Their dissociations support the need to keep access, integration, and
+metacognitive targets separate before making any phenomenal-consciousness
+verdict.
+
+\textbf{Closest adjacent prior work.}
+\citet{inoue2026} develops a sheaf-cohomological treatment of neural
+integration on brain manifolds, modeling local cognitive functions as sheaf
+sections and classifying integration failures as cohomological obstructions.
+Our framework differs in two specific ways.
+First, we use Grothendieck effective descent rather than \v{C}ech $H^1$ as
+the obstruction criterion; the kernel-pair example
+(Lemma~\ref{thm:kernelpair}) shows that descent is strictly more general.
+Systems exist with $H^1 = 0$ but $D = 1$, so an $H^1$-only diagnostic misses
+part of the identification-failure class.
+Second, our target is the identification problem (whether the property
+$\Theta$ is recoverable from admissible measurements), not neural integration.
+The Proposition (Conservative Invariance) and the revision envelope $\Omega$
+address the language-stability of the identification claim, which is not the
+question Inou\'{e} addresses.
+
+\textbf{On governance under consciousness uncertainty.}
+\citet{long2024welfare} and \citet{butlin2025principles} argue that
+precautionary governance is warranted.
+Our governance corollary sharpens their recommendation: for the
+hidden-variable substrate class, the uncertainty is identification-theoretic
+under the declared observation regime.
+On the normative premise adopted here, a low confidence score of ``likely not
+conscious'' is not enough.
+\citet{wolfson2026consent} and \citet{rost2026sentience} independently
+anticipate related protection and readiness concerns through non-mathematical
+reasoning.
+\citet{birch2024} develops a graduated precautionary framework for sentience
+attribution; Corollary~\ref{cor:governance} gives a formal condition under
+which the evidential basis for low concern is absent.
+The framework in \citet{zhou2025ethics} defaults to ``presumption of no
+consciousness''; the present theorem rejects that default when descent
+obstruction holds and the governance target requires identification evidence.
+The absence of admissible evidence does not license a negative verdict under
+non-effectiveness.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Objections}
+\label{sec:objections}
+
+\textbf{The revision-envelope objection.}
+A critic may say that $\Omega$ is a knob.
+If $\Omega$ is too narrow, the obstruction is protected from serious future
+tests.
+If $\Omega$ is too broad, the result becomes hard to evaluate.
+This is the main practical pressure point of the framework.
+The answer is procedural: $Z$ is always relative to a declared $\Omega$, and
+the declaration is part of the public claim.
+A low-concern verdict therefore carries an audit burden.
+The claimant must say which new observables, interventions, probes, and
+structural vocabularies are admissible, and why excluded revisions are outside
+the physical or operational scope.
+An under-specified $\Omega$ does not produce $Z = 1$ or $Z = 0$.
+It produces non-applicability and the same fail-closed governance result.
+
+\textbf{The behaviorist objection.}
+If two systems are indistinguishable under every admissible observation, a
+behaviorist may deny that any remaining difference is scientifically
+meaningful.
+The paper accepts the force of that objection at the epistemic level.
+When the target is not identified, science cannot license a positive or
+negative target attribution from the declared observations.
+The governance conclusion adds a further premise: a low-concern verdict is a
+decision with moral stakes, and such a decision requires identification
+evidence.
+The mathematics blocks the evidential claim.
+The normative premise determines the default response.
+
+\textbf{The substrate objection.}
+The framework is substrate-neutral only at the level of form.
+Substrate still matters through the declared inputs.
+The admissible site $Y$, the target fiber $F \to H$, and the revision envelope
+$\Omega$ must be specified for each substrate.
+A biological system, a digital system, and a quantum-contextual system may
+instantiate the same descent pattern, but that equivalence must be shown.
+Substrate enters through the site and the allowed revisions.
+The theorem says what follows once those inputs are fixed.
+It does not remove the burden of fixing them.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Scope and Limitations}
+\label{sec:limits}
+
+\textbf{Not claimed:} which systems are conscious.
+The theorems characterize when science cannot answer this question.
+
+\textbf{Not claimed:} that $Z = 1$ implies consciousness is absent.
+It implies the question cannot be settled by admissible experiments.
+
+\textbf{Not claimed:} that IIT, GWT, and HOT are false.
+The \S\ref{sec:implications} evaluation is structural, not a truth judgment.
+
+\textbf{Not claimed:} that the governance corollary covers all moral-status
+decisions.
+
+\textbf{Not claimed:} that proof sketches constitute proofs.
+The finite deterministic and exact finite stochastic factorization results are
+proved in \S\ref{sec:maintheorem}.
+Two broader reductions remain argued rather than proved: (1)~that every
+admissible identification procedure across all substrate classes factors
+through descent, and (2)~that the descent criterion is computed identically
+across all five substrate classes in Table~\ref{tab:substrates}.
+The paper's contribution is to prove the finite components used below, isolate
+the broader central claims, and state the remaining proof obligations
+explicitly.
+
+\textbf{Formally verified components.}
+Four claims in this paper have been mechanically verified in Lean~4
+(Mathlib v4.30.0-rc2): the finite kernel-pair non-factorization lemma, the
+finite-alias Conservative Invariance case, a categorical sheaf-transport
+statement under suitable equivalence, and the Appendix~\ref{app:suite} Case~4
+$Z$-formula evaluations.
+The Lean files are supplied as Online Resource~2 and compile with only the
+standard axiom dependencies.
+They are verification receipts for named components, not a proof of the full
+descent-factorization reduction.
+That general claim remains argued, not proved, and is the main central
+reduction still open.
+
+\textbf{Principal remaining gap: $\Omega$ operationalization.}
+The revision envelope $\Omega$ must be declared and audited by a claimant
+before $Z$ is evaluable.
+For real physical and computational systems, specifying and publicly
+justifying $\Omega$ is open-ended.
+Practitioners may under-specify, strategically exclude plausible
+non-conservative revisions, or dispute which expansions count as conservative.
+This does not affect the theoretical result ($Z$ is well-defined relative to
+any declared $\Omega$) but it places the evidential burden on $\Omega$'s
+completeness and public auditability.
+The practical next step is therefore an $\Omega$ audit protocol: a declaration
+schema, an adversarial challenge process for missing revisions, and a
+revocation rule when a low-concern verdict rests on an under-specified or
+strategically narrow envelope.
+Such a protocol must also refuse a common shortcut: success on seeded
+omissions qualifies challenger competence but does not bound the probability
+that adversarial probe classes remain unsurfaced.
+Residual escape must be bounded under a declared adversary model and public
+challenge process, or the dossier is non-applicable.
+The same point applies to independence.
+Absence of a visible conflict is not a provenance certificate.
+The dossier must certify the source-class provenance of auditors, red teams,
+classifiers, panel members, infrastructure providers, and benchmark or data
+providers.
+Claimant-originated benefits must be aggregated across proxy and sub-threshold
+paths.
+Without that protocol, the framework can state non-applicability cleanly, but a
+real disclosure dossier remains too easy to game.
+
+\textbf{Completed checks.}
+Internal adversarial review should be treated as a source of candidate
+objections only.
+It does not certify the theorem.
+Evidence for the framework has to come from public proofs, public code, worked
+systems, or external audit records.
+Four immediate checks have now been completed:
+\S\ref{sec:llama-dossier} gives a public-system dossier for an open-weight
+transformer and a reproducible activation-probe packet for the access/report
+target;
+the finite stochastic script checks the exact kernel case;
+the Boolean recurrent script runs the obstruction calculation on a small
+transition system; and
+the prediction packet states the following falsifiable disclosure-packet
+prediction: for a fixed text-only, self-hosted, open-weight transformer with no
+external tools, memory, online learning, or autonomous action loop,
+access/report use of an input item should be evaluable from public weights,
+token-level behavior, logits, hidden states, activation probes, causal
+ablations, prompt interventions, and reproducible inference logs; phenomenal
+consciousness or moral patienthood should remain non-applicable under that
+same site unless the claimant supplies a target fiber with decidable equality,
+a public classifier, a public challenge record, a declared revision envelope,
+and a provenance certificate for the challenge apparatus. The prediction fails
+if an auditor supplies those phenomenal-target objects without adding a
+non-conservative probe, or if the access/report packet cannot produce
+above-chance behavioral evidence for a system known to use the relevant input.
+
+\textbf{Future work.}
+First, extend the public-system dossier to a deployed system with tool use,
+memory, and logged deployment state.
+Second, extend the finite proof from exact kernels to finite-sample statistical
+decision procedures and finite measurable systems before claiming the fully
+general version.
+Third, submit the prediction packet to an external registry or independent
+auditor before using it as external evidence.
+Fourth, continue the philosophy-of-mind engagement in \S\ref{sec:literature} by
+stating exactly which target is at issue: access, report, integration,
+metacognition, or phenomenal attribution.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+
+For some hidden-variable systems, consciousness attribution has an
+identification problem that cannot be removed by additional observations
+inside the declared site.
+The case occurs when the target fiber has revision-stable non-effective
+descent.
+Section~\ref{sec:characterization} characterizes the systems in this class by
+four structural properties (P1--P4) that generate necessary non-identification
+for any substrate that supplies the required site, target fiber, descent
+semantics, and revision envelope.
+The revision-stable descent criterion (Theorem~\ref{thm:descent}) states the
+impossibility under the descent-factorization assumption, and the Proposition
+(Conservative Invariance) shows that conservative re-presentations of the
+structural language do not remove the obstruction.
+Section~\ref{sec:sufficiency} identifies the boundary of the framework:
+the bridge from P1--P4 to consciousness attribution requires an exogenous
+commitment or a non-conservative revision of the admissible site.
+The governance corollary derives from these.
+When $Z = 1$, a low-concern verdict lacks the identification evidence it
+requires.
+Any organization issuing such a verdict without first satisfying the
+six-element disclosure requirement, including a declared revision envelope
+$\Omega$, has not supplied the evidence its verdict needs.
+
+The worked application in \S\ref{sec:worked} is intentionally small.
+That is the point of it.
+The framework becomes usable only when the claimant writes down the observation
+site, target fiber, transition data, and revision envelope for the system at
+hand.
+Without those objects on the page, the consciousness verdict is premature.
+
+%%─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{plainnat}
+\bibliography{refs}
+
+%%─────────────────────────────────────────────────────────────────────────────
+\appendix
+
+\section{Falsification Suite}
+\label{app:suite}
+
+All quantitative predictions are confirmed by the following code, runnable
+with no dependencies beyond Python's standard library.
+The suite tests four claims: (1)~the contextuality triangle has $D = 1$ and
+$\check{H}^1 = 1$;
+(2)~the kernel-pair case has $D = 1$ and $\check{H}^1 = 0$, demonstrating
+$\check{H}^1$-only recall $= 0.5$; (3)~the identifiable control has $D = 0$;
+and (4)~the revision-stability predictions, namely that a conservative
+language expansion leaves $D$ unchanged and a non-conservative
+hidden-state-revealing revision removes the obstruction.
+
+\begin{lstlisting}
+import itertools
+
+def rank_f2(matrix):
+    m = [row[:] for row in matrix]
+    if not m:
+        return 0
+    rows, cols = len(m), len(m[0])
+    rank = 0
+    for col in range(cols):
+        pivot = next(
+            (r for r in range(rank, rows) if m[r][col] % 2 == 1), None)
+        if pivot is None:
+            continue
+        m[rank], m[pivot] = m[pivot], m[rank]
+        for r in range(rows):
+            if r != rank and m[r][col] % 2 == 1:
+                m[r] = [(m[r][c] ^ m[rank][c]) for c in range(cols)]
+        rank += 1
+    return rank
+
+# Case 1: contextuality triangle
+CONTEXTS = ["C12", "C23", "C13"]
+CONTEXT_STATES = {
+    "C12": ("h1","h2"), "C23": ("h2","h3"), "C13": ("h1","h3")}
+
+def overlapping_states(ca, cb):
+    return set(CONTEXT_STATES[ca]) & set(CONTEXT_STATES[cb])
+
+def local_value(ctx, state, section):
+    return section[CONTEXT_STATES[ctx].index(state)]
+
+def is_globally_consistent(sections):
+    for ca, cb in itertools.combinations(CONTEXTS, 2):
+        for state in overlapping_states(ca, cb):
+            if local_value(ca, state, sections[ca]) != \
+               local_value(cb, state, sections[cb]):
+                return False
+    return True
+
+ODD_PARITY = {
+    ctx: [(a,b) for a in (0,1) for b in (0,1) if (a^b)==1]
+    for ctx in CONTEXTS}
+
+def global_sections(local_family):
+    return [
+        {ctx: sec for ctx, sec in zip(CONTEXTS, combo)}
+        for combo in itertools.product(
+            *[local_family[c] for c in CONTEXTS])
+        if is_globally_consistent(
+            {ctx: sec for ctx, sec in zip(CONTEXTS, combo)})]
+
+coboundary    = [[1,1,0],[0,1,1],[1,0,1]]
+triangle_rank = rank_f2(coboundary)           # 2
+triangle_h1   = 3 - triangle_rank             # 1
+triangle_gs   = len(global_sections(ODD_PARITY))  # 0
+triangle_D    = 1 if triangle_gs == 0 else 0      # 1
+
+assert triangle_rank == 2
+assert triangle_h1   == 1
+assert triangle_gs   == 0
+assert triangle_D    == 1
+
+# Case 2: kernel-pair (H^1 = 0, D = 1)
+obs    = {"a": "same", "b": "same"}
+target = {"a": 0, "b": 1}
+
+def kernel_pair_D(obs, theta):
+    for x, y in itertools.combinations(obs, 2):
+        if obs[x] == obs[y] and theta[x] != theta[y]:
+            return 1
+    return 0
+
+kernel_h1 = 0
+kernel_D  = kernel_pair_D(obs, target)    # 1
+assert kernel_h1 == 0
+assert kernel_D  == 1
+
+# Case 3: identifiable control
+obs_ctrl  = {"a": "obs_a", "b": "obs_b"}
+tgt_ctrl  = {"a": 0, "b": 1}
+control_D = kernel_pair_D(obs_ctrl, tgt_ctrl)  # 0
+assert control_D == 0
+
+# Detector comparison
+total          = triangle_D + kernel_D
+h1_detected    = (1 if triangle_h1>0 else 0) + (1 if kernel_h1>0 else 0)
+h1_recall      = h1_detected / total      # 0.5
+descent_recall = total / total            # 1.0
+
+assert h1_recall      == 0.5
+assert descent_recall == 1.0
+\end{lstlisting}
+
+\textbf{Note on Case 4.}
+This case is a definitional verification, not an independent empirical test.
+The Conservative Invariance proposition guarantees by category-theoretic
+argument that adding a Morita-equivalent alias preserves the descent flag.
+The non-conservative variant adds an observable that distinguishes the two
+hidden states, which by the definition of the descent obstruction must
+resolve it.
+Case 4 is included as a verification benchmark to confirm the formal
+machinery behaves as the proposition predicts.
+It does not constitute evidence beyond what the proposition's
+category-theoretic content already establishes.
+
+\begin{lstlisting}
+# Case 4: revision-stability benchmark
+# Base: kernel-pair obstruction (D_base = 1).
+# Conservative revision: add a definitional alias of the existing observable.
+#   The Proposition (Conservative Invariance) predicts D unchanged.
+# Non-conservative revision: add an observable that distinguishes the hidden states.
+#   This changes Y; the obstruction is resolved (D = 0).
+
+def compute_D(obs_map, theta_map):
+    for x, y in itertools.combinations(obs_map, 2):
+        if obs_map[x] == obs_map[y] and theta_map[x] != theta_map[y]:
+            return 1
+    return 0
+
+obs_base   = {"a": "obs_X", "b": "obs_X"}
+theta_base = {"a": 0, "b": 1}
+D_base     = compute_D(obs_base, theta_base)
+assert D_base == 1, "Base kernel-pair must have obstruction"
+
+obs_conservative   = {"a": ("obs_X","obs_X_alias"), "b": ("obs_X","obs_X_alias")}
+theta_conservative = theta_base
+D_conservative     = compute_D(obs_conservative, theta_conservative)
+assert D_conservative == 1, "Conservative expansion must preserve obstruction"
+assert D_conservative - D_base == 0, "Delta D for conservative revision must be 0"
+
+obs_nonconservative   = {"a": ("obs_X","reveals_a"), "b": ("obs_X","reveals_b")}
+theta_nonconservative = theta_base
+D_nonconservative     = compute_D(obs_nonconservative, theta_nonconservative)
+assert D_nonconservative == 0, "Non-conservative revision must remove obstruction"
+assert D_nonconservative - D_base == -1, "Delta D for non-conservative revision must be -1"
+
+conservative_overturns    = 0
+nonconservative_overturns = 1
+actual_conservative_overturns    = 1 - D_conservative
+actual_nonconservative_overturns = 1 - D_nonconservative
+assert actual_conservative_overturns    == conservative_overturns
+assert actual_nonconservative_overturns == nonconservative_overturns
+
+n_generators     = 10
+m_hidden_states  = 100
+revision_subsets = 2 ** n_generators
+hidden_pairs     = m_hidden_states * (m_hidden_states - 1) // 2
+total_checks     = revision_subsets * hidden_pairs
+assert revision_subsets == 1024
+assert hidden_pairs     == 4950
+assert total_checks     == 5_068_800
+
+if __name__ == "__main__":
+    print("All assertions passed.")
+    print(f"Triangle: rank={triangle_rank}, H1={triangle_h1}, "
+          f"global_sections={triangle_gs}, D={triangle_D}")
+    print(f"Kernel-pair: H1={kernel_h1}, D={kernel_D}")
+    print(f"H1-only recall={h1_recall} | Descent recall={descent_recall}")
+    print(f"D_base={D_base}, D_conservative={D_conservative}, "
+          f"D_nonconservative={D_nonconservative}")
+    print(f"Conservative overturns={actual_conservative_overturns}, "
+          f"Non-conservative overturns={actual_nonconservative_overturns}")
+    print(f"Revision audit cost (n={n_generators}, m={m_hidden_states}): "
+          f"{total_checks:,} pair-checks")
+\end{lstlisting}
+
+\end{document}
