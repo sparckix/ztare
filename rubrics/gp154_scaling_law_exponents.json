@@ -24,6 +24,8 @@
   "description": "Newton-mode rubric for scaling law exponent recovery. Target: discover what determines the power-law exponent as a function of task/data properties. Cross-study meta-analysis substrate. Cold-framed: cold variable names (y, d, a) only; author names stripped from visible evidence; holdout truth in _holdout_locked/.",
   "rubric_mode": "newton",
   "rubric_mode_reason": "Discovery substrate: the functional form connecting scaling exponents to task properties is unknown. Generative yield required.",
+  "__do_not_run_live": true,
+  "__do_not_run_live_reason": "Dormant GP-154 surface currently contains diagnostics scripts but lacks tracked evidence, holdout, charter, and live run files; recover the complete project before running.",
   "falsification_mode": "bounded_discriminator",
   "require_cross_family": false,
   "require_cross_family_reason": "Set false 2026-04-25 for fast-iteration o3+o3 rerun after Proposals 1+2 R1 hardening shipped. Same-family blind-spot risk acknowledged; would re-cert with cross_family=true before claiming a champion. Original true preserved in commit history.",

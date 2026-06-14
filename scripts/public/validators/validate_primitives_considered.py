@@ -3,7 +3,7 @@
 validate_primitives_considered.py
 
 rigorous forcing core for the "surfaced-but-not-used primitive"
-failure (Task #20; RCA 2026-05-16). Sibling of
+failure (RCA 2026-05-16). Sibling of
 validate_prescription_surfacing.py — it does NOT fork the parallel
 agent's post_tick §3b block; it is wired as its own additive advisory
 leg (GAP-F), exactly like GAP-E.
@@ -255,7 +255,7 @@ def validate(blocking: bool) -> int:
     # reinvention-arm needs: (a) a real session-baseline (git diff vs a
     # session-start ref), NOT untracked-state; (b) self-match exclusion
     # (skip when new path == the registered primitive's own path);
-    # (c) calibration to a low FP rate. Spec'd in Task #20; the
+    # (c) calibration to a low FP rate. Spec'd for the primitives-considered gate; the
     # function is retained (not deleted) but NOT called until built
     # properly + dogfood-passed + adversary-passed. Consider-arm below
     # is sound and stays active (advisory).

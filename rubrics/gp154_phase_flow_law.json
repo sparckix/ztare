@@ -4,6 +4,8 @@
   "rubric_version": "v1.0-phase-flow-functional-collapse",
   "notes": "Quantitative-discovery rubric with custom nd_features hard gate. The target is smoothed local alpha, not raw loss and not the old scalar curve exponent.",
   "rubric_mode": "newton",
+  "__do_not_run_live": true,
+  "__do_not_run_live_reason": "Dormant GP-154 fork with no matching project directory in the current repo; recover the project surface before running.",
   "fit_score_mode": "none",
   "disable_evidence_fit_gate": true,
   "disable_evidence_fit_gate_reason": "Evidence is an nd_features trajectory packet with a custom whole-run gate harness, not a single fit expression over n.",

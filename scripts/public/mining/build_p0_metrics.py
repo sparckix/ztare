@@ -262,10 +262,10 @@ nyc("3.4_recursive", "time_to_catch_latency", "Time-to-catch latency",
 
 # ── REALIZED RECURSIVE GAIN (2026-06-04). The recursive-gain readout was a stale CANDIDATE
 # aggregator (dead_letter actioned=None). Realized gain IS measurable via EXOGENOUS carriers — the
-# strange loop done honestly: (a) impact_factor_expost (primitives scored load-bearing from
+# strange loop done honestly: (a) impact_factor_expost (primitives scored decision-critical from
 # catch-ledger refs + actual usage), (b) the contextualized-taste insight-quality trajectory.
 
-# (a) Realized primitive gain — fraction of registered primitives that became load-bearing,
+# (a) Realized primitive gain — fraction of registered primitives that became decision-critical,
 #     SPLIT BY CARRIER (Meta-Darwin: never a fused count — `last_used` is exogenous usage; the expost
 #     score is a semi-endogenous self-assessment an agent could inflate by spamming catch-refs).
 _expost, _lb_usage = [], 0

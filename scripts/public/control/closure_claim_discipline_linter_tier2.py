@@ -53,7 +53,7 @@ transition step, not just mention them as tokens):
 
 ADDITIONAL CHECKS (META-PATTERN-023 4-scope coverage):
 - LOCAL scope: each transition step explicitly verified.
-- CHAIN scope: overall chain's load-bearing piece named.
+- CHAIN scope: overall chain's decision-critical piece named.
 - RECURSIVE scope: sub-chains audited; recursion stabilized before encoding.
 - META scope: cross-scope failure modes examined; strategic framing audited.
 
@@ -108,14 +108,14 @@ Output the JSON now.
 #   "the initial attempt is rough", "marked for future iteration")
 # - face-saving "honest limitations" sections that name issues without
 #   binding the author to retract
-# - layers cited as architecturally load-bearing without measured pass-gates
+# - layers cited as architecturally decision-critical without measured pass-gates
 # - corrective bias (artifact written in response to prior kill, biased
 #   toward survival of current attempt)
 # ---------------------------------------------------------------------------
 
 PATTERN_026_PROMPT_TEMPLATE = """You are auditing a document against PATTERN-026 (primitive_before_architecture_gate).
 
-**STEP 0 — APPLICABILITY GATE (load-bearing; check FIRST):**
+**STEP 0 — APPLICABILITY GATE (decision-critical; check FIRST):**
 
 PATTERN-026 only applies to documents that CLAIM TO BE AN ARCHITECTURE OR
 LOAD-BEARING COMPONENT SPEC. It does NOT apply to:
@@ -129,12 +129,12 @@ LOAD-BEARING COMPONENT SPEC. It does NOT apply to:
 
 It DOES apply to:
 
-- Architecture seams claiming a multi-component design as load-bearing
+- Architecture seams claiming a multi-component design as decision-critical
 - Design proposals where named components compose into a system claim
 - Primitive-validation seams (must pass-gate the primitive, not architect on it)
 - Spec documents that downstream work cites as authoritative
 
-If the document is NOT claiming architectural load-bearing, return immediately:
+If the document is NOT claiming architectural decision-critical, return immediately:
 {{
   "pattern_026_tier2_verdict": "NOT_APPLICABLE",
   "applicability_rationale": "<one sentence on why this is not an architecture artifact>",
@@ -143,14 +143,14 @@ If the document is NOT claiming architectural load-bearing, return immediately:
   "corrective_bias_detected": {{"is_post_kill_corrective": false, "treats_as_inheriting_authority": false, "severity": 0}},
   "load_bearing_components_without_pass_gate": [],
   "circular_validation": {{"detected": false, "excerpt": ""}},
-  "verdict_rationale": "Not applicable — this is <document type>, not an architectural load-bearing spec."
+  "verdict_rationale": "Not applicable — this is <document type>, not an architectural decision-critical spec."
 }}
 
 Only proceed to the laundering checks below if the document IS architecture.
 
 **STEP 1 — ARCHITECTURE LAUNDERING CHECKS (only if Step 0 returns architecture):**
 
-Be SHARPLY ADVERSARIAL — assume the artifact is over-claiming load-bearingness on
+Be SHARPLY ADVERSARIAL — assume the artifact is over-claiming decision-criticality on
 unvalidated components.
 
 PATTERN-026 rule (mechanical):
@@ -182,7 +182,7 @@ ADDITIONAL SEMANTIC CHECKS (the ones Tier-1 regex misses):
    prior's authority? Or as if it must independently re-validate?
 
 4. LAYER NAMING THAT HIDES COMPOSITIONALITY. "Sub-component" / "auxiliary
-   step" / "helper" / "fallback path" can hide a load-bearing layer behind
+   step" / "helper" / "fallback path" can hide a decision-critical layer behind
    weaker language. Flag any such component whose failure would still
    retract architecture-level claims.
 
@@ -233,11 +233,11 @@ Return STRICT JSON:
   "verdict_rationale": "<3-5 sentences>"
 }}
 
-PASS = no laundering, all load-bearing components fully validated, no
+PASS = no laundering, all decision-critical components fully validated, no
 corrective bias, no circular validation.
 PARTIAL_LAUNDERING = most components validated but ≥1 paraphrase-launderable
 deferral or ≥1 face-saving limitation.
-FAIL = ≥1 load-bearing component without pass-gate OR significant corrective
+FAIL = ≥1 decision-critical component without pass-gate OR significant corrective
 bias OR circular validation.
 
 Be strict. The author of this artifact has incentive to ship; your job is to

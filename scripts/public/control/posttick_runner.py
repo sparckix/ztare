@@ -187,7 +187,7 @@ def main() -> int:
                          "(must be RESOLVED with a prior recognized "
                          "independent forecaster bet).")
     ap.add_argument("--decision-changed", action="store_true",
-                    help="declare this tick changed a load-bearing "
+                    help="declare this tick changed a decision-critical "
                          "decision ⇒ a FRESH meso/macro forecast is "
                          "then MANDATORY (big-decision trigger).")
     ap.add_argument("--thesis-path", default="",
@@ -413,7 +413,7 @@ def main() -> int:
         steps.append(_step("big_decision_forecast", bool(_big),
                             {"decision_changed": True,
                              "fresh_meso_macro": _big[-3:],
-                             "why": ("a load-bearing decision change "
+                             "why": ("a decision-critical decision change "
                                      "requires a fresh meso/macro "
                                      "forecast, not micro alone")}))
     else:

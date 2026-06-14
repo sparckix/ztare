@@ -72,7 +72,7 @@ def validate_row(row: dict, line_no: int, valid_categories: set[str]) -> list[st
     if not CATCH_ID_RE.match(row["catch_id"]):
         errors.append(f"{rid}: catch_id does not match C-YYYY-MM-DD-NN")
 
-    # Independence rule (the load-bearing assertion)
+    # Independence rule (the decision-critical assertion)
     if row["author_agent"] == row["concurring_agent"]:
         errors.append(
             f"{rid}: author_agent == concurring_agent ('{row['author_agent']}'); "

@@ -3,7 +3,7 @@
 
 The keyword tagger in mine_closure_patterns.py catches ~4.2% of
 2,595 axioms — too few for the closure-pattern miner's grammar-
-evolution arm to be load-bearing. This script does a one-pass
+evolution arm to be decision-critical. This script does a one-pass
 LLM enrichment:
 
   1. Walk projects/*/verified_axioms.json (same loader as the miner)

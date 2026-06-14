@@ -48,6 +48,11 @@ def _candidate_projects(explicit: str | None) -> list[Path]:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--project-dir", default=None, help="lean project to calibrate (default: auto-discover Mathlib-built projects)")
+    ap.add_argument("--require", action="append", default=[],
+                    help="substrate dir(s) that MUST EACH have a LIVE matched REPL pair (hard-fail otherwise). "
+                         "Asserts the repl is live over the substrate(s) the node ACTUALLY solves over — closes the "
+                         "'at least one project matches' hole that let a live atlas_lean mask a dead/non-matching "
+                         "ztare_proofs (the toolchain-drift slip).")
     ap.add_argument("--json", action="store_true")
     ap.add_argument("--soft-ok", action="store_true", help="exit 0 even if SOFT checks fail (still aborts on HARD)")
     a = ap.parse_args()
@@ -115,8 +120,38 @@ def main():
     else:
         log(f"[preflight] HARD ✅ leanmill suite imports (all scripts in {leanmill_dir.name}/)")
 
-    report["hard_ok"] = (live_pair is not None) and suite_ok
-    if live_pair:
+    # ── HARD: REQUIRED substrates must EACH have a live matched REPL pair (the drift-slip fix). The
+    # "first live pair wins / at least one project matches" rule above let a matched, live atlas_lean (v4.29)
+    # satisfy the guard while ztare_proofs (v4.30 — the substrate P1 actually solves over) was non-matching
+    # and silently fell back to cold `lake env lean`. A node MUST assert a live REPL for EVERY substrate it uses.
+    required_fail = []
+    for req in (a.require or []):
+        rp = (REPO / req) if not Path(req).is_absolute() else Path(req)
+        m, rtc, ptc = toolchain_match(DEFAULT_REPL_BIN, rp)
+        live = None
+        if m:
+            try:
+                with PersistentLean(project_dir=str(rp)) as pl:
+                    calibrate(pl)
+                    live = True
+            except (SubstrateDeadError, RuntimeError) as e:
+                live = False
+        report["projects"].append({"project": str(rp), "toolchain": ptc, "match": m,
+                                   "substrate_live": live, "required": True})
+        log(f"[preflight] REQUIRED substrate {Path(rp).name}: toolchain={ptc} match={'Y' if m else 'N'} live={live}")
+        if not (m and live):
+            required_fail.append(f"{Path(rp).name} (match={m}, live={live}, project_tc={ptc} vs repl_tc={rtc})")
+    report["required_substrates_ok"] = (not required_fail)
+    if required_fail:
+        log(f"[preflight] HARD ❌ REQUIRED substrate(s) lack a live REPL pair: {required_fail} — the repl "
+            f"toolchain must MATCH each substrate the node solves over (rebuild the repl at the substrate's "
+            f"toolchain, or build a matching-toolchain Mathlib). NODE IS NOT PROOF-READY for those substrates.")
+
+    # With --require, the named substrates ARE the gate (each must be live); without it, back-compat "any live pair".
+    report["hard_ok"] = ((not required_fail) and suite_ok) if a.require else ((live_pair is not None) and suite_ok)
+    if a.require and not required_fail:
+        log(f"[preflight] HARD ✅ all required substrates have a live REPL pair: {[Path((REPO/r)).name for r in a.require]}")
+    elif live_pair:
         log(f"[preflight] HARD ✅ live REPL pair: {Path(live_pair[0]).name}")
     else:
         log(f"[preflight] HARD ❌ NO live REPL pair — repl_toolchain={report['repl_toolchain']!r}; "

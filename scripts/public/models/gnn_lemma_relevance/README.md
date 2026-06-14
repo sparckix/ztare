@@ -37,7 +37,7 @@ strictly increasing experiment index. Examples:
 
 Nothing here is archived: it is an active GP-225 line, recently
 touched, and the version trajectory is itself the evidence. The
-moat-grade verdicts (what beat the LeanHammer baseline and what did
+non-subsumed verdicts (what beat the LeanHammer baseline and what did
 not) live in the GP-225 seams + operator memory, not in these files.
 Checkpoints and large run output go under `analytics/public/gnn/`
 (gitignored).

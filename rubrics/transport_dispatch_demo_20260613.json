@@ -1,0 +1,51 @@
+{
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "qualitative thesis project \u2014 no numerical holdout gate",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "qualitative thesis \u2014 evidence surface is text documents, not a numerical curve; global_evidence_fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "qualitative thesis \u2014 rival mechanisms scored by rubric criteria; mathematical-form keyword heuristic does not apply",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "fit_score_mode": "none",
+  "require_i_model_in_submission": false,
+  "require_i_model_in_submission_reason": "Transport-dispatch calibration run: test_model.py should carry a bounded assertion suite, not a scalar predictor.",
+  "discovery_mode": false,
+  "falsification_mode": "bounded_discriminator",
+  "composition_stagnation_threshold": 5,
+  "gp103_stagnation_threshold": 3,
+  "holdout_budget": 0,
+  "enable_mform_audit": false,
+  "general_office_model": "gpt4.1",
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "Transport-dispatch smoke test: the run characterizes API/subscription execution metadata and bounded thesis behavior, not discovery.",
+  "persona": "You are a rigorous analyst evaluating a thesis on: Demo qualitative autoresearch surface for testing API versus subscription-backed worker dispatch. The task is to improve a short thesis about when a bounded research workbench is better than a cold-shot model call or a persistent agent session. Evidence is intentionally small; the goal is transport plumbing and ex-post outcome metadata, not a scientific claim.. You are hostile to vague causal claims, unsupported analogies, and proposals that ignore the political economy of why the status quo exists. You reward exact mechanism identification, falsifiable predictions, and honest engagement with the strongest objections.",
+  "dimensions": [
+    {
+      "name": "Causal Mechanism",
+      "weight": 30,
+      "description": "Does the thesis identify a specific causal mechanism \u2014 not a correlation? Award full points if the mechanism names an intermediate variable and specifies the conditions under which it would NOT produce the claimed effect. Penalize temporal co-occurrence presented as causation."
+    },
+    {
+      "name": "rival_hypothesis_falsification",
+      "weight": 25,
+      "description": "Does the thesis enumerate at least two rival explanations and falsify them? Award full points if each rival is falsified on the evidence surface, not dismissed rhetorically. Penalize if rivals are strawmanned or ignored."
+    },
+    {
+      "name": "Mechanism Tractability",
+      "weight": 25,
+      "description": "Does the thesis propose a tractable mechanism and explain why it has not already been implemented? Award full points if the political economy barrier is named and assessed as contingent vs. structural. Penalize proposals that treat feasibility as purely technical."
+    },
+    {
+      "name": "Verdict Calibration",
+      "weight": 20,
+      "description": "Does the thesis deliver a specific, falsifiable verdict? Award full points if the verdict names an observable that would change the conclusion and assigns a specific condition for reversal. Penalize vague conclusions and 'on the one hand / on the other hand' hedging."
+    }
+  ],
+  "criteria": {
+    "1_Causal_Mechanism": "Does the thesis name a specific mechanism with an intermediate variable? Does it specify the conditions for mechanism failure? Is the causal claim anchored to at least one quantitative anchor from evidence?",
+    "2_rival_hypothesis_falsification": "Does the thesis enumerate two distinct rival explanations? Does it falsify each on the evidence surface with specific evidence citations? Penalize if rivals are strawmanned or if the falsification is not evidence-grounded.",
+    "3_Mechanism_Tractability": "Does the thesis identify a tractable implementation mechanism? Does it name the specific political economy barrier and assess its contingency? Penalize if feasibility is assumed without addressing the status quo.",
+    "4_Verdict_Calibration": "Does the thesis deliver a verdict with a named falsifying observable? Is the scope of the verdict explicitly bounded? Penalize omnibus conclusions and claims that cannot be disconfirmed."
+  }
+}

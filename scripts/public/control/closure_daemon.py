@@ -20,7 +20,7 @@ inbox at `ztare_workspace/gates/pending/`. The GP-070 orchestrator
 owns the actual mutation; this daemon just schedules.
 
 Replaces the prior parallel-tree daemon (org/clocks/ + org/budgets/ +
-org/escalations/) per Panel A synthesis. The load-bearing GP-168
+org/escalations/) per Panel A synthesis. The decision-critical GP-168
 behaviors (time-pressure auto-resolution, budget-pressure
 auto-resolution, exogenous-oracle escalation) are preserved as
 operations on the OKR tree's frontmatter rather than as a parallel

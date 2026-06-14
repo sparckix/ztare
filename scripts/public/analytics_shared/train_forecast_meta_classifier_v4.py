@@ -19,7 +19,7 @@ swamping the F35/F37/F39/F41 factorial signals. Two changes in v4:
 Pre-registered pass-gate (BEFORE running):
   - v4 combined CV MAE must improve on v3 (0.1002) by >= 0.003, OR
   - v4 held-out v22+ MAE must improve on v3 (0.1525) by >= 0.005
-  Either way demonstrates the new representation is load-bearing.
+  Either way demonstrates the new representation is decision-critical.
 
 If both gates fail, v4 is also exploratory and the v2/v3 baseline holds.
 """

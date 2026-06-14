@@ -189,7 +189,7 @@ def _interpret(r2: float, mae: float, baseline_mae: float) -> str:
     elif r2 > 0.1 and mae_reduction > 10:
         return "MODERATE: features carry real but modest signal; meta-classifier could supplement (not replace) self-introspection"
     elif r2 > -0.05 and mae_reduction > 0:
-        return "WEAK: marginal improvement over baseline; meta-classifier is not load-bearing"
+        return "WEAK: marginal improvement over baseline; meta-classifier is not decision-critical"
     else:
         return "NULL: features do not predict Brier above baseline; agent-feature pair does not have learnable structure on this corpus"
 

@@ -206,7 +206,7 @@ APPARATUS_CLAIMS = [
             "For every auto-deidentified retry, check whether the first response "
             "was an open-problem refusal and the retry produced a parseable Lean "
             "block or sharper CANNOT PATCH diagnosis. If success-rate ≤10% or "
-            "the diff strips load-bearing assumptions, the tool is not useful "
+            "the diff strips decision-critical assumptions, the tool is not useful "
             "for closure work."
         ),
         "predicted_outcome_if_true": "refusal-to-actionable rate ≥25% with no assumption loss",

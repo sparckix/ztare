@@ -535,8 +535,8 @@ def run_route_c_layer_2c(
     # PREFLIGHT SINGLE-LEMMA-EXACT GATE (Lean's own exact?, no audit verdict).
     # Component-1 shape gates cheaply; Component-2 exact? probe only on
     # shape-candidates (bounds the ~40s Lean cost). If Lean's own exact?
-    # closes the goal with one lemma, an LLM "moat-grade closure" here is
-    # not novel — the v26/v27 moat-surface class.
+    # closes the goal with one lemma, an LLM "non-subsumed closure" here is
+    # not novel — the v26/v27 subsumption class.
     if _HAVE_SLE_GATE:
         goal_stmt = context.get("goal", "") or context.get("signature_text", "")
         shape = _sle_detect(goal_stmt)
@@ -550,8 +550,8 @@ def run_route_c_layer_2c(
                         "exact_hint": ver.get("exact_hint"),
                         "rationale": ("Lean's own `exact?` closes this goal with a single "
                                       f"library lemma ({ver.get('exact_hint')}) — an LLM "
-                                      "'moat-grade closure' here is not novel (v26/v27 "
-                                      "moat-surface class). Leakage-independent: Lean's own "
+                                      "'non-subsumed closure' here is not novel (v26/v27 "
+                                      "subsumption class). Leakage-independent: Lean's own "
                                       "tactic, no audit verdict. Refusing LLM spend."),
                     },
                     "closure_verdict": "BLOCKED_SINGLE_LEMMA_EXACT_PREFLIGHT",
@@ -625,7 +625,7 @@ def run_route_c_layer_2c(
                 if compile_result.get("compiled"):
                     # POST-CANDIDATE PARAPHRASE GATE (leakage-independent, no audit verdict):
                     # a compiled candidate that is just gold-name-verbatim of an
-                    # existing Mathlib lemma is NOT a moat-grade closure. This is
+                    # existing Mathlib lemma is NOT a non-subsumed closure. This is
                     # the v28-v29 retraction class, now caught automatically.
                     if _HAVE_PARAPHRASE_GATE:
                         proof_txt = (candidate.get("lemma_statement", "") + " := by\n"
@@ -639,7 +639,7 @@ def run_route_c_layer_2c(
                                 "primary_cited": prim,
                                 "rationale": (f"compiled candidate is verbatim the existing "
                                               f"Mathlib lemma `{prim}` + trivial glue — NOT a "
-                                              f"moat-grade closure (v28-v29 retraction class). "
+                                              f"non-subsumed closure (v28-v29 retraction class). "
                                               f"Leakage-independent: confirmed via Mathlib's own "
                                               f"corpus, no audit verdict."),
                             }

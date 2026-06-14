@@ -4,7 +4,7 @@
 **Status:** scaffold-only. NOT the default execution path. The seam at
 ``research_areas/private/seams/engine/GP-224_ns_closure_swarm_decision_seam.md``
 documented the empirical tripwires under which Option B becomes
-load-bearing (≥50 typed endpoint events accumulated AND ≥10 are
+decision-critical (≥50 typed endpoint events accumulated AND ≥10 are
 scheduler-bound, not generation-bound). Today's empirical data has 9
 events concentrated on a single family + single patch class — we are
 not yet throughput-bound. This queue exists so the infrastructure is

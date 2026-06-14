@@ -12,7 +12,7 @@ Detector classes:
                      file source (so 0% really means the file says "no
                      fire", not "we have no way to read it"). Vacuum
                      verdicts (n_constants_scanned=0 etc.) are the
-                     load-bearing form_str-key-bug fingerprint.
+                     decision-critical form_str-key-bug fingerprint.
     SUSPICIOUS    -- engages > 70%, flags < 5%, and the rare flags do not
                      correlate with score caps. Either the gate misses
                      the failure mode or the score ignores it.
@@ -92,7 +92,7 @@ def _is_vacuum_struct_verdict(block: Any) -> bool:
 
     Vacuum = flagged False AND no positive counters AND empty matches.
     A genuine non-fire (gate ran, found nothing real) will have non-zero
-    scan counters or a non-empty load-bearing list.
+    scan counters or a non-empty decision-critical list.
     """
     if not isinstance(block, dict):
         return False
@@ -285,7 +285,7 @@ def analyse_workspace(label: str, ws: Path, *, cap_threshold: float, engage_thre
 
         # "Effective engagement" = the gate either ran (cage_engagement.ok=true)
         # OR produced a verdict file (which means the dispatcher was invoked,
-        # even if cage_engagement marked it refused). This is the load-bearing
+        # even if cage_engagement marked it refused). This is the decision-critical
         # signal for the form_str-key-bug class: the dispatcher writes a
         # vacuum file the gate would never have written if it had been
         # genuinely refused upstream.

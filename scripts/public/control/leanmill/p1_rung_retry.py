@@ -17,7 +17,8 @@ from ztare.leanmill.solver.solver_core import solve_adhoc_governed
 
 REPO = Path(__file__).resolve().parents[4]
 SUB = REPO / "ztare_proofs"
-TARGET = SUB / "AdHoc_denef_lipshitz_question_formalization.lean"
+# Probes now live in the shared `.solver_scratch` (out of the project root) — match solve_adhoc's write dir.
+TARGET = SUB / ".solver_scratch" / "AdHoc_denef_lipshitz_question_formalization.lean"
 OUT = REPO / "analytics" / "public" / "queries" / "p1_rung_retry_result.json"
 
 # A known-FALSE control: the gate MUST refuse to close it (no fake closure). The Prop is OURS.

@@ -64,7 +64,7 @@ Rate each sample 0-5 on insight density:
   1 = trivially observable; doesn't change downstream reasoning
   2 = useful but expected; consolidates known
   3 = non-obvious finding or sharp framing; would help a future reader
-  4 = surprising / load-bearing / mechanism-revealing
+  4 = surprising / decision-critical / mechanism-revealing
   5 = paradigm-shifting; reframes the problem or apparatus
 
 For each sample, output exactly one line in this format:

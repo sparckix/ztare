@@ -7,6 +7,8 @@
   "description": "Newton-mode substrate for normalized neural scaling laws. Target is z=(L-L_min(curve))/(L_max(curve)-L_min(curve)), not raw L. v3.1 baseline: axis-conditioned curve-shape collapse z=curve_axis_rev^alpha_axis passes holdout/farther-tail; candidates must beat, simplify, or mechanize it.",
   "rubric_mode": "newton",
   "rubric_mode_reason": "Discovery substrate: the open question is whether normalized scaling-curve shape is a transferable law after measurement gauges are removed.",
+  "__do_not_run_live": true,
+  "__do_not_run_live_reason": "Dormant GP-154 fork with no matching project directory in the current repo; recover the project surface before running.",
   "falsification_mode": "bounded_discriminator",
   "holdout_hard_gate": true,
   "holdout_budget": 0,

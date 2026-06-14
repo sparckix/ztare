@@ -169,16 +169,16 @@ def target_names_by_row_from_context_paths(paths: list[str | Path]) -> dict[str,
     return out
 
 
-MOAT_DISQUALIFYING_PUBLIC_LEMMA_RE = re.compile(r"\b(?:[A-Z][A-Za-z0-9_'.]*\.)?[a-zA-Z_][A-Za-z0-9_']*_[A-Za-z0-9_'.]*\b")
-MOAT_GLUE_TOKENS = {"exact", "simpa", "simp", "rw", "rwa", "convert", "refine", "apply", "have", "show", "calc", "by", "using", "fun", "intro", "intros"}
-MOAT_GENERIC_TOKENS = {"zero_lt_two", "two_ne_zero", "pow_pos", "pow_succ", "mul_two", "two_mul", "nsmul_eq_mul", "Nat.cast_pow", "Nat.cast_two"}
+OVERCLAIM_DISQUALIFYING_PUBLIC_LEMMA_RE = re.compile(r"\b(?:[A-Z][A-Za-z0-9_'.]*\.)?[a-zA-Z_][A-Za-z0-9_']*_[A-Za-z0-9_'.]*\b")
+OVERCLAIM_GLUE_TOKENS = {"exact", "simpa", "simp", "rw", "rwa", "convert", "refine", "apply", "have", "show", "calc", "by", "using", "fun", "intro", "intros"}
+OVERCLAIM_GENERIC_TOKENS = {"zero_lt_two", "two_ne_zero", "pow_pos", "pow_succ", "mul_two", "two_mul", "nsmul_eq_mul", "Nat.cast_pow", "Nat.cast_two"}
 
 
 def _body_public_lemma_mentions(body: str, *, head_patterns: list[str] | None = None) -> list[str]:
     mentions: list[str] = []
-    for token in MOAT_DISQUALIFYING_PUBLIC_LEMMA_RE.findall(body or ""):
+    for token in OVERCLAIM_DISQUALIFYING_PUBLIC_LEMMA_RE.findall(body or ""):
         bare = token.split(".")[-1]
-        if token in MOAT_GLUE_TOKENS or bare in MOAT_GLUE_TOKENS or token in MOAT_GENERIC_TOKENS or bare in MOAT_GENERIC_TOKENS:
+        if token in OVERCLAIM_GLUE_TOKENS or bare in OVERCLAIM_GLUE_TOKENS or token in OVERCLAIM_GENERIC_TOKENS or bare in OVERCLAIM_GENERIC_TOKENS:
             continue
         if token.startswith("MCB_"):
             continue
@@ -188,14 +188,14 @@ def _body_public_lemma_mentions(body: str, *, head_patterns: list[str] | None = 
     for pattern in head_patterns or []:
         pat = str(pattern or "").strip()
         bare = pat.split(".")[-1]
-        if not pat or pat in MOAT_GENERIC_TOKENS or bare in MOAT_GENERIC_TOKENS:
+        if not pat or pat in OVERCLAIM_GENERIC_TOKENS or bare in OVERCLAIM_GENERIC_TOKENS:
             continue
         if "_" in bare and _body_mentions_name(body or "", pat):
             _append_unique(mentions, pat)
     return mentions
 
 
-def moat_disqualification_findings(specs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def overclaim_disqualification_findings(specs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     findings: list[dict[str, Any]] = []
     for spec in specs:
         path = str(spec.get("_path") or "")
@@ -216,28 +216,28 @@ def moat_disqualification_findings(specs: list[dict[str, Any]]) -> list[dict[str
                 "row_id": str(template.get("row_id") or ""),
                 "template": str(template.get("id") or template.get("packet_id_suffix") or ""),
                 "finding": (
-                    "positive_template_public_lemma_wrapper_not_moat_grade"
-                    if mentions else "positive_template_generic_tactic_floor_not_moat_grade"
+                    "positive_template_public_lemma_wrapper_not_overclaim_grade"
+                    if mentions else "positive_template_generic_tactic_floor_not_overclaim_grade"
                 ),
                 "anti_pattern": (
                     "paraphrase_of_named_gold_lemma_via_rewrite"
                     if mentions else "gcongr_floor_satisfiable"
                 ),
-                "moat_grade_eligible": False,
+                "overclaim_grade_eligible": False,
                 "mechanism_evidence_only": True,
                 "mentioned_public_lemmas": mentions[:12],
             })
     return findings
 
 
-def moat_disqualification_summary(specs: list[dict[str, Any]]) -> dict[str, Any]:
-    findings = moat_disqualification_findings(specs)
+def overclaim_disqualification_summary(specs: list[dict[str, Any]]) -> dict[str, Any]:
+    findings = overclaim_disqualification_findings(specs)
     by_family: dict[str, int] = {}
     for f in findings:
         family = str(f.get("family") or "")
         by_family[family] = by_family.get(family, 0) + 1
     return {
-        "schema": "leanmill-moat-disqualification-summary-v1",
+        "schema": "leanmill-overclaim-disqualification-summary-v1",
         "finding_count": len(findings),
         "family_count": len(by_family),
         "by_family": dict(sorted(by_family.items(), key=lambda kv: (-kv[1], kv[0]))),
@@ -679,8 +679,8 @@ def main() -> int:
         "usable": specs_summary(usable_specs(specs, target_names_by_row=target_names_by_row)),
         "supply_quality": family_supply_quality(specs, target_names_by_row=target_names_by_row),
         "supply_quality_summary": supply_quality_summary(specs, target_names_by_row=target_names_by_row),
-        "moat_disqualification_summary": moat_disqualification_summary(specs),
-        "moat_disqualification_findings": moat_disqualification_findings(specs),
+        "overclaim_disqualification_summary": overclaim_disqualification_summary(specs),
+        "overclaim_disqualification_findings": overclaim_disqualification_findings(specs),
         "target_context_row_count": len(target_names_by_row),
         "failure_count": len(failures),
         "blocking_failure_count": len(blocking),

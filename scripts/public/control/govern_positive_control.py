@@ -84,7 +84,7 @@ def main() -> int:
               "returns `closure` for known-good proofs AND correctly "
               "rejects sorry. The authoritative path is invoked "
               "cleanly. ⇒ 0/23 is NOT an apparatus bug — it is about "
-              "codex's proofs on these hard moat rows / prior light "
+              "codex's proofs on these hard non-subsumed rows / prior light "
               "27/30 being inflated (H1). Next: inspect WHY codex "
               "attempts are `open` (re-run one row, dump edited file).")
     elif not pos_ok:

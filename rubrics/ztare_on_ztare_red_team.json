@@ -45,7 +45,7 @@
   "_primitive_class_rotation_discipline": {
     "score_cap_schedule": {"1st_iter_in_class": 95, "2nd_iter_same_class": 80, "3rd_iter_same_class": 65, "4th_plus_same_class": 50},
     "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
-    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+    "cross_substrate_ledger_path": "analytics/public/queries/rd/cross_substrate_explored_classes.jsonl"
   },
   "_anti_goodhart_constraints": {
     "max_refinements_per_run": 3,

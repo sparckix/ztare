@@ -71,7 +71,7 @@ Output strict JSON (no markdown fences, no prose outside the object):
 {
   "score": <integer 0..100>,
   "tier": "<high (90+) | mid (70-89) | low (<70)>",
-  "rationale": "<1 paragraph, ≤ 200 words; cite specific rubric dimensions; name the load-bearing strength and the largest weakness>",
+  "rationale": "<1 paragraph, ≤ 200 words; cite specific rubric dimensions; name the decision-critical strength and the largest weakness>",
   "load_bearing_dimension": "<one of the nine rubric names>",
   "largest_weakness_dimension": "<one of the nine rubric names>"
 }

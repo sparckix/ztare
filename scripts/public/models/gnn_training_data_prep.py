@@ -18,7 +18,7 @@ Caveats baked in (read before training):
   - File mtime is unreliable when files were edited after their F-row
     timestamp; we fall back to git blame when mtime is older than git
   - The "next edge added" target is approximate — we don't know which
-    edge was the load-bearing one for that F-row's progress
+    edge was the decision-critical one for that F-row's progress
 
 Output:
   analytics/public/leanmill/gnn_ranker/training_pairs.jsonl    — (snapshot, target) pairs

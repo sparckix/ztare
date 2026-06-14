@@ -123,7 +123,11 @@ def main() -> int:
     args.out.write_text(json.dumps(payload, indent=2))
     n_ok = sum(1 for s in statuses.values() if s == "ok")
     total = len(DATASETS) + len(JSONL_DATASETS)
-    print(f"  wrote {args.out.relative_to(REPO)}  ({n_ok}/{total} datasets present)")
+    try:
+        shown_out = args.out.relative_to(REPO)
+    except ValueError:
+        shown_out = args.out
+    print(f"  wrote {shown_out}  ({n_ok}/{total} datasets present)")
     return 0
 
 

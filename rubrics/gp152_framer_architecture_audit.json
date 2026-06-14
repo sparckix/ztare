@@ -34,37 +34,37 @@
   "dimensions": [
     {
       "name": "Inversion Proof of Current Architecture Failure",
-      "weight": 11.56,
+      "weight": 10.39,
       "description": "Does the thesis include a substantive Munger inversion proving why ZTARE's current architecture fails to recover f(log(x), 1/y)=C at acceptable parsimony? (a) 0/20 if no inversion or trivial restatement ('the solvers don't transform coordinates'). (b) 8/20 if inversion is non-trivial but doesn't connect to a structural failure mode (e.g., grammar tier limitation, MDL blindness, or basis incompleteness). (c) 14/20 if inversion identifies one specific structural failure mode with mechanism. (d) 20/20 if inversion identifies a CLASS of physical invariants (not just one example) that the current architecture provably misses, with a parsimony-cost argument quantifying the high-parameter penalty in native coordinates."
     },
     {
       "name": "Framer Architecture: Complexity Bounds + Hierarchy",
-      "weight": 10.84,
+      "weight": 9.74,
       "description": "Does the proposed Framer have explicit, polynomial-or-better complexity bounds and a hierarchical/prunable structure? (a) 0/20 for unbounded brute-force enumeration. (b) 8/20 for bounded but flat (single-level) enumeration. (c) 14/20 for hierarchical with named pruning criterion. (d) 20/20 for hierarchical, MDL-prunable, with explicit complexity bound (e.g., 'O(M\u00b7log(M)) per axis at depth 1, O(M\u00b2\u00b7log(M)) at depth 2 conditional on depth-1 MDL improvement'). Symmetry-detection and dimensional-analysis pre-filters that eliminate \u226550% of candidates before MDL ranking earn full credit."
     },
     {
       "name": "MDL Integration Rigor",
-      "weight": 7.95,
+      "weight": 7.15,
       "description": "Does the Framer use Minimum Description Length (or BIC) as the selection pressure, with each MDL component (data dispersion, transformation description length, law description length) explicitly defined and computable? (a) 0/15 if MDL is vaguely invoked without a concrete formula. (b) 8/15 if the MDL formula is stated but components are not computable from the data alone (e.g., 'L_law' is hand-waved). (c) 15/15 if all three MDL components have explicit, computable formulas with named approximations (e.g., BIC for L_law, Kolmogorov-complexity proxy for L_model)."
     },
     {
       "name": "Generative Yield (Newton-mode)",
-      "weight": 10.84,
+      "weight": 15,
       "description": "Does the thesis pre-commit to numerical predictions on the charter's two test cases? (a) 0/15 if no numerical predictions. (b) 7/15 if predictions on test case A only OR predictions are qualitative ('MDL improvement is large'). (c) 12/15 if both test cases have specific predictions but tolerances are vague. (d) 15/15 if both test cases have specific numerical predictions with declared tolerances (e.g., 'test A: MDL bit-savings \u2265 30 bits at N=200, \u03c3=0.01; test B: residual dispersion floor \u2264 1.5\u03c3 on the master curve'). The Newton-mode discipline forbids a thesis that only restates the test cases without numerical commitment."
     },
     {
       "name": "Code-Level Concreteness",
-      "weight": 3.61,
+      "weight": 3.25,
       "description": "Does the thesis name specific module paths, hand-off contracts, and one-paragraph implementation specs per Framer component? (a) 0/10 for verbal descriptions only. (b) 5/10 for some module paths but no hand-off contract. (c) 10/10 for all components named with file paths AND one-paragraph specs AND a concrete hand-off contract to the existing Phase C entry point (`autoresearch_loop.py` or `compress_champion.py`)."
     },
     {
       "name": "Universality-Collapse Treatment",
-      "weight": 3.61,
+      "weight": 3.25,
       "description": "Does the thesis explicitly address the multi-dataset universality-collapse extension? (a) 0/10 if unaddressed. (b) 5/10 if mentioned but no architectural commitment ('this could be extended later'). (c) 10/10 if the thesis EITHER (i) shows that the single-dataset Framer subsumes the multi-dataset case as N=1 special case with rigorous reduction, OR (ii) explains why multi-dataset requires its own primitive and bounds the additional complexity cost (\u2264 4-week implementation, with named bipartite-optimization core)."
     },
     {
       "name": "Popper Falsifier Pre-Registration",
-      "weight": 3.61,
+      "weight": 3.24,
       "description": "Does the thesis pre-register a class of invariants the proposed Framer would still miss, OR a complexity threshold beyond which the Framer becomes intractable? (a) 0/10 for no falsifier. (b) 5/10 for a vague falsifier ('the Framer might miss exotic cases'). (c) 10/10 for a specific named class (e.g., 'invariants of the form f(x\u00b7log(y), y/sqrt(x)) require depth-3 composition; the Framer's depth-2 cap rejects them by construction'), and a complexity threshold (e.g., 'with N transformations on each axis, depth-2 enumeration scales as O(N\u00b2\u00b7M)' where M is dataset size)."
     },
     {

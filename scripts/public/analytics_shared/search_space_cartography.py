@@ -267,7 +267,7 @@ def render_report(result: CartographyResult, sweep_path: Path) -> str:
         lines.append("(no modes detected — distribution may be too uniform or N too small)")
     lines.append("")
 
-    # §2 Empty gaps — the load-bearing cartography output
+    # §2 Empty gaps — the decision-critical cartography output
     lines.append("## Empty gaps on signal axis\n")
     lines.append("Empty gaps are the cartographic signal: regions where the parameter sweep produced ZERO points despite having neighbors on both sides. A wide gap is structural evidence that the search space has multiple regimes with no interpolant.\n")
     if result.empty_gaps:

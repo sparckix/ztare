@@ -2,7 +2,7 @@
 """Structural-analogy miner — pair one-shots with analogous loops.
 
 Closes the reflexive-mining blind spot identified 2026-05-06 PM:
-today's miners can ask "is X engaging / load-bearing / dead /
+today's miners can ask "is X engaging / decision-critical / dead /
 covered" but cannot ask "this one-shot generation step looks like
 that loop — should it become recursive?"
 

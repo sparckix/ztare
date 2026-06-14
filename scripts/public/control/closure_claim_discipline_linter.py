@@ -253,7 +253,7 @@ def check_literal_true_proofs(text: str) -> Dict[str, object]:
     }
 
 
-# Substrate's opaque Props that the load-bearing content lives in.
+# Substrate's opaque Props that the decision-critical content lives in.
 # A "substrate-direct" tick that doesn't reference ANY of these is just
 # a substrate-typed corollary, not a Prop-discharge.
 SUBSTRATE_OPAQUE_PROPS = [

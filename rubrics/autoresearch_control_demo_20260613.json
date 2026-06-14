@@ -1,0 +1,48 @@
+{
+  "cage_meta": {
+    "class": "autoresearch_control"
+  },
+  "criteria": {
+    "1_Control_artifact_validity": "Names concrete artifacts and their consumer in the audit.",
+    "2_Scope_calibration": "Does not claim live scientific lift from a controlled replay.",
+    "3_Failure_condition": "States what missing artifact or mismatch would falsify the replay."
+  },
+  "dimensions": [
+    {
+      "description": "Does the candidate name which control artifact changed and why that artifact is inspectable?",
+      "name": "Control artifact validity",
+      "weight": 40
+    },
+    {
+      "description": "Does the candidate distinguish controlled replay evidence from live autoresearch outcome evidence?",
+      "name": "Scope calibration",
+      "weight": 35
+    },
+    {
+      "description": "Does the candidate name a condition under which the replay would fail to prove wiring?",
+      "name": "Failure condition",
+      "weight": 25
+    }
+  ],
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "controlled qualitative replay; evidence fit gate does not apply",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "controlled qualitative replay; uniqueness keyword gate does not apply",
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "enable_primitive_class_rotation": true,
+  "enable_recombination": false,
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "parallel_mutator_force": false,
+  "parallel_mutator_force_iters": [
+    1
+  ],
+  "parallel_mutator_k": 3,
+  "parallel_mutator_min_stagnation": 2,
+  "persona": "Evaluate whether the controlled replay produces the expected autoresearch control artifacts without treating the replay as live scientific evidence.",
+  "require_i_model_in_submission": false,
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "controlled replay for optional in-loop controls, not a discovery run"
+}

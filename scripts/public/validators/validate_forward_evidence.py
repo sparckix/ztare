@@ -3,7 +3,7 @@
 
 v35 forward clean-corpus accrual gate. Same SOX §1220 independence +
 §1215 path-retention discipline as validate_catch_ledger.py, plus the
-load-bearing anti-mush rule: strict `target_kind` enum so closure /
+decision-critical anti-mush rule: strict `target_kind` enum so closure /
 consequence / gap / killed cannot be laundered into one success word.
 
 Schema: analytics/public/ledgers/forward_evidence/forward_evidence_schema.md

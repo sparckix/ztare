@@ -31,7 +31,7 @@ exact? probe; prover/verifier separated, verbatim proofs):
 Decision-changing GP-233 yield = (genuine_novel_closures on independent
 adversary-hard rows) + (anti-laundering rejections that prevented false
 ratification) + (honest gaps that isolate exactly what is missing),
-with false_ratifications == 0 being the load-bearing invariant.
+with false_ratifications == 0 being the decision-critical invariant.
 """
 from __future__ import annotations
 import re, sys, json, argparse

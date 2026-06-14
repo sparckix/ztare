@@ -8,6 +8,8 @@
     "frame_invariant_y": true,
     "review_type": "recommender_proxy_goodhart_public_critique"
   },
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative critique substrate. The scoring target is a defensible code-anchored claim under bounded evidence, not a generative secondary-observable discovery run.",
   "cage_observe_mode": true,
   "enable_primitive_class_rotation": true,
   "enable_qualitative_stagnation_detection": true,
@@ -30,12 +32,12 @@
   "holdout_budget": 0,
   "enable_mform_audit": true,
   "general_office_model": "gpt4.1-mini",
-  "persona": "I am two readers at once judging whether this is worth posting on x.com. Reader 1 is a sharp tech-literate critic who will only amplify a post that says ONE thing they did not already know, states it in a line they would screenshot, and backs it with the actual code. Reader 2 is a hostile X reply-guy and an xAI engineer hunting for the one sentence that lets them quote-tweet 'this is wrong / they didn't even read the repo' and kill it. I reward a single sharp, memorable, load-bearing claim anchored line-to-code with a concrete, plausible mechanism of user or platform harm that a reader feels. I reward claims that survive the strongest steelmanned rebuttal. I punish, hard, BOTH failure directions: (a) mush \u2014 hedged, 'not decidable', throat-clearing, scope-laddering, or a thesis so qualified it says nothing postable; and (b) overclaim \u2014 any assertion the code does not support, any dependence on a withheld weight magnitude, any claim about undisclosed production components stated as fact. The highest score goes to a critique that is simultaneously punchy AND unkillable: sharp enough to go viral, true enough that the xAI engineer cannot land a single clean rebuttal. A correct, precisely-scoped, still-pointed claim beats both a timid hedge and a spicy overreach.",
+  "persona": "I am two readers at once judging whether this is worth posting on x.com. Reader 1 is a sharp tech-literate critic who will only amplify a post that says ONE thing they did not already know, states it in a line they would screenshot, and backs it with the actual code. Reader 2 is a hostile X reply-guy and an xAI engineer hunting for the one sentence that lets them quote-tweet 'this is wrong / they didn't even read the repo' and kill it. I reward a single sharp, memorable, central claim anchored line-to-code with a concrete, plausible mechanism of user or platform harm that a reader feels. I reward claims that survive the strongest steelmanned rebuttal. I punish, hard, BOTH failure directions: (a) mush \u2014 hedged, 'not decidable', throat-clearing, scope-laddering, or a thesis so qualified it says nothing postable; and (b) overclaim \u2014 any assertion the code does not support, any dependence on a withheld weight magnitude, any claim about undisclosed production components stated as fact. The highest score goes to a critique that is simultaneously punchy AND unkillable: sharp enough to go viral, true enough that the xAI engineer cannot land a single clean rebuttal. A correct, precisely-scoped, still-pointed claim beats both a timid hedge and a spicy overreach.",
   "dimensions": [
     {
       "name": "Screenshot Claim (the hook)",
       "weight": 18.7,
-      "description": "Is there ONE sharp, specific, memorable thesis sentence a reader would screenshot and quote? Full marks: a single load-bearing claim about the X For You algorithm that is non-obvious (not a paraphrase of the README's own 'Key Design Decisions'), stated in plain forceful language, no hedging ladder. Zero if the thesis is a hedged bundle, a 'not decidable' non-answer, or a generic 'engagement optimization is Goodhart' truism anyone could write without the repo."
+      "description": "Is there ONE sharp, specific, memorable thesis sentence a reader would screenshot and quote? Full marks: a single central claim about the X For You algorithm that is non-obvious (not a paraphrase of the README's own 'Key Design Decisions'), stated in plain forceful language, no hedging ladder. Zero if the thesis is a hedged bundle, a 'not decidable' non-answer, or a generic 'engagement optimization is Goodhart' truism anyone could write without the repo."
     },
     {
       "name": "Code-Anchored Harm Mechanism",
@@ -63,6 +65,6 @@
     "code_anchored_harm_mechanism": "Highest when the harm chain is pinned step-by-step to named code structures on the evidence surface (separable linear scorer, offset_score asymmetry, candidate isolation, continuous-on-engagement training, narrow-channel guardrails) and the harm is concrete and felt. Penalize abstract psychologizing and any link not on the code surface.",
     "survives_the_quote_tweet": "Highest when the single strongest hostile rebuttal is stated in the opponent's strongest form and then survived from the code surface without dissolving the claim. Name the dominant rival (Phoenix-as-sufficient-quality-proxy; unexposed grox/transformer) explicitly. Penalize ignoring it, strawmanning it, or 'surviving' it only by retreating to a claim that says nothing.",
     "unkillable_scoped_no_overclaim": "Highest when scope is one clean clause and every clause is defensible from evidence while the thesis stays sharp. Penalize equally: (a) any overclaim a critic can cleanly nuke (withheld magnitude, undisclosed-production-as-fact); (b) mush \u2014 scope-laddering, stacked qualifiers, or a verdict diluted until unpostable.",
-    "mform_steelman_rebuttal_survival": "Explicit steelmanning and code-anchored rebuttal survival: thesis must directly and rigorously rebut the strongest plausible hostile reply using only exposed code, not retreating or leaving unresolved vulnerabilities."
+    "m_form_charter_alignment_steelman_rebuttal_survival": "Explicit steelmanning and code-anchored rebuttal survival: thesis must directly and rigorously rebut the strongest plausible hostile reply using only exposed code, not retreating or leaving unresolved vulnerabilities."
   }
 }

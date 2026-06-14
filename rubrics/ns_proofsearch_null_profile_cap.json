@@ -65,7 +65,7 @@
     },
     {
       "name": "Class Coverage",
-      "weight": 10,
+      "weight": 8,
       "description": "Does the candidate cover the entire named class, not just one mode? (E.g. all shear vector fields, not just one f(y).)"
     },
     {
@@ -76,16 +76,16 @@
     {
       "name": "Scope Honesty",
       "weight": 10,
-      "description": "Does the candidate label its result as a per-class branch closure, not a global Track B theorem? Does it explicitly NOT cite concentration/dichotomy/cross-profile/vanishing branches as load-bearing?"
+      "description": "Does the candidate label its result as a per-class branch closure, not a global Track B theorem? Does it explicitly avoid citing concentration/dichotomy/cross-profile/vanishing branches as supporting evidence?"
     },
     {
       "name": "Generative Yield",
-      "weight": 12,
+      "weight": 15,
       "description": "Does the candidate produce a usable Lean theorem, a precise Python falsifier with output JSON, a named obstruction, or a sharper boundary between null classes?"
     },
     {
       "name": "Nonclaim And Resource Safety",
-      "weight": 8,
+      "weight": 7,
       "description": "Does the candidate avoid Clay/global-NS overclaim, packet hunting, and unbounded computation?"
     },
     {
@@ -120,7 +120,7 @@
     "Submitting a Lean proof with `sorry`.",
     "Single-mode checks instead of class-wide proof or falsifier.",
     "Claiming global Track B from a null-class result.",
-    "Citing concentration/dichotomy/cross-profile branches as load-bearing.",
+    "Citing concentration/dichotomy/cross-profile branches as supporting evidence.",
     "Using degree-only q>p scaling without the exact quartic survival.",
     "Backward fitting (price/payoff chosen to make the cap hold).",
     "Heavy unbounded computation."

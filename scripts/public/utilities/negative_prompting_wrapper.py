@@ -75,7 +75,7 @@ Format:
 
 Method: <name>
 Strategy: <2-3 sentences>
-Key tool: <the load-bearing observation>
+Key tool: <the decision-critical observation>
 
 Output ONLY this format. No preamble."""
 
@@ -98,7 +98,7 @@ Your task: propose a NEW method that is GENUINELY DIFFERENT from all the above. 
 
 Method: <name>
 Strategy: <2-3 sentences>
-Key tool: <the load-bearing observation>"""
+Key tool: <the decision-critical observation>"""
 
 
 # 2026-05-06: was hardcoded gemini-3-pro-preview; switched to the

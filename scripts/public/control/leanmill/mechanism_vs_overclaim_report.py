@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Publish the LeanMill mechanism-vs-moat boundary as an internal receipt."""
+"""Publish the LeanMill mechanism-vs-overclaim boundary as an internal receipt."""
 from __future__ import annotations
 
 import argparse
@@ -20,8 +20,8 @@ from src.ztare.leanmill.common import read_json, sha256_file, write_json_atomic,
 
 DEFAULT_GATE = f"{DATA_DIR}/family_spec_gate.json"
 DEFAULT_NO_LIFT = f"{DATA_DIR}/evaluation_harness_no_lift_report.json"
-DEFAULT_OUT = f"{DATA_DIR}/mechanism_vs_moat_report.json"
-DEFAULT_MD = f"{DATA_DIR}/mechanism_vs_moat_report.md"
+DEFAULT_OUT = f"{DATA_DIR}/mechanism_vs_overclaim_report.json"
+DEFAULT_MD = f"{DATA_DIR}/mechanism_vs_overclaim_report.md"
 
 
 def _dict(value: Any) -> dict[str, Any]:
@@ -31,22 +31,22 @@ def _dict(value: Any) -> dict[str, Any]:
 def build(args: argparse.Namespace) -> dict[str, Any]:
     gate = _dict(read_json(args.family_spec_gate, default={}))
     no_lift = _dict(read_json(args.no_lift_report, default={}))
-    moat = _dict(gate.get("moat_disqualification_summary"))
-    by_family = _dict(moat.get("by_family"))
-    finding_count = int(moat.get("finding_count") or 0)
-    family_count = int(moat.get("family_count") or len(by_family))
+    overclaim = _dict(gate.get("overclaim_disqualification_summary"))
+    by_family = _dict(overclaim.get("by_family"))
+    finding_count = int(overclaim.get("finding_count") or 0)
+    family_count = int(overclaim.get("family_count") or len(by_family))
     no_lift_published = str(no_lift.get("status") or "") == "published_no_lift_result"
     status = (
-        "published_mechanism_vs_moat_boundary"
+        "published_mechanism_vs_overclaim_boundary"
         if finding_count > 0 else
-        "no_moat_disqualification_findings"
+        "no_overclaim_disqualification_findings"
     )
     top_families = [
         {"family": family, "finding_count": int(count or 0)}
         for family, count in sorted(by_family.items(), key=lambda item: int(item[1] or 0), reverse=True)[:20]
     ]
     return {
-        "schema": "leanmill-mechanism-vs-moat-report-v1",
+        "schema": "leanmill-mechanism-vs-overclaim-report-v1",
         "generated_at_epoch": int(time.time()),
         "status": status,
         "source_family_spec_gate": args.family_spec_gate,
@@ -59,19 +59,19 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "family_count": family_count,
         "top_families": top_families,
         "allowed_internal_claim": (
-            "Family-spec positives include mechanism/calibration signals, but the current benchmark publication forbids treating them as moat evidence."
+            "Family-spec positives include mechanism/calibration signals, but the current benchmark publication forbids treating them as overclaim evidence."
             if finding_count > 0 else
-            "No mechanism-vs-moat disqualification findings are present in the current gate."
+            "No mechanism-vs-overclaim disqualification findings are present in the current gate."
         ),
         "forbidden_claims": [
-            "competitive moat evidence from public/gold lemma wrappers",
+            "competitive overclaim evidence from public/gold lemma wrappers",
             "benchmark lift without a matching published lift receipt",
             "proof credit from family-spec mechanism/calibration positives",
         ],
-        "credit_boundary": "classification/reporting receipt only; no proof credit and no competitive moat claim",
+        "credit_boundary": "classification/reporting receipt only; no proof credit and no competitive overclaim claim",
         "meta_reasoning_receipt": {
-            "failure_mode": "mechanism positives can be summarized as moat evidence when public/static baselines explain the win",
-            "mechanized_prevention": "publish a gate-hash-bound report that separates mechanism/calibration findings from moat claims",
+            "failure_mode": "mechanism positives can be summarized as overclaim evidence when public/static baselines explain the win",
+            "mechanized_prevention": "publish a gate-hash-bound report that separates mechanism/calibration findings from overclaim claims",
             "gaming_guard": "the report lowers claim strength; it never upgrades mechanism findings into benchmark lift",
         },
         "next_action": "prioritize C-discriminating rows where public/static tools fail and require benchmark uplift before competitive claims",
@@ -80,7 +80,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
 
 def write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
     lines = [
-        "# LeanMill Mechanism vs Moat Report",
+        "# LeanMill Mechanism vs Overclaim Report",
         "",
         f"- generated_at_epoch: `{payload.get('generated_at_epoch')}`",
         f"- status: `{payload.get('status')}`",
@@ -105,12 +105,12 @@ def write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
 def _self_test() -> int:
     import tempfile
 
-    with tempfile.TemporaryDirectory(prefix="leanmill_mechanism_moat_") as td:
+    with tempfile.TemporaryDirectory(prefix="leanmill_mechanism_overclaim_") as td:
         root = Path(td)
         gate = root / "gate.json"
         no_lift = root / "no_lift.json"
         gate.write_text(json.dumps({
-            "moat_disqualification_summary": {
+            "overclaim_disqualification_summary": {
                 "finding_count": 3,
                 "family_count": 2,
                 "by_family": {"a": 2, "b": 1},
@@ -118,9 +118,9 @@ def _self_test() -> int:
         }) + "\n")
         no_lift.write_text(json.dumps({"status": "published_no_lift_result"}) + "\n")
         payload = build(argparse.Namespace(family_spec_gate=str(gate), no_lift_report=str(no_lift)))
-        assert payload["status"] == "published_mechanism_vs_moat_boundary", payload
+        assert payload["status"] == "published_mechanism_vs_overclaim_boundary", payload
         assert payload["source_family_spec_gate_sha256"] == sha256_file(gate), payload
-    print("leanmill_mechanism_vs_moat_report self-test PASS")
+    print("leanmill_mechanism_vs_overclaim_report self-test PASS")
     return 0
 
 
@@ -140,7 +140,7 @@ def main() -> int:
     write_markdown(args.md, payload)
     if args.events:
         work_queue.append_event(args.events, {
-            "event_type": "leanmill_mechanism_vs_moat_published",
+            "event_type": "leanmill_mechanism_vs_overclaim_published",
             "payload": {
                 "status": payload.get("status"),
                 "source_family_spec_gate_sha256": payload.get("source_family_spec_gate_sha256"),

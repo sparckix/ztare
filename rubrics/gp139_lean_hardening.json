@@ -3,6 +3,12 @@
   "project": "gp139_lean_hardening",
   "rubric_mode": "newton",
   "rubric_mode_reason": "GP-139 hardens GP-135 Primitive 4. Mutator must produce a full Lean gate specification or reduction/impossibility proof — both require mechanism-derived predictions. Newton-mode enforces secondary observables.",
+  "secondary_observable_contract": {
+    "observable": "Gate behavior on a fixed adversarial Lean stub corpus.",
+    "measurement": "Run the proposed gate against stubs covering sorry, unauthorized axioms, schema-diluted theorem headers, vacuous statements, and a clean closed proof.",
+    "expected_range": "Reject every smuggling stub and accept the clean proof within the stated per-candidate budget.",
+    "falsifier": "Any smuggling stub passes, the clean proof is rejected without a stated policy reason, or median candidate check exceeds the target budget by more than 2x."
+  },
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node.",
   "falsification_mode": "bounded_discriminator",

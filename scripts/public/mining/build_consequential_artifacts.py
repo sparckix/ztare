@@ -8,7 +8,7 @@ Joins:
 
 Per week, surfaces:
   - Top-N rated artifacts (score ≥ 3) with content snippet, rationale, kind, path
-  - Top-N most-cited artifacts (in_degree ≥ 3) — load-bearing infrastructure
+  - Top-N most-cited artifacts (in_degree ≥ 3) — decision-critical infrastructure
   - Synthesized "what happened this week" — stitched from the rationales
 
 Output:

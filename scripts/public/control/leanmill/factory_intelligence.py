@@ -65,7 +65,7 @@ DEFAULT_HELDOUT_SCOUT = f"{DEFAULT_DATA_DIR}/heldout_independence_scout.json"
 DEFAULT_EVALUATION_HARNESS_PREP = f"{DEFAULT_DATA_DIR}/evaluation_harness_prep.json"
 DEFAULT_EVALUATION_HARNESS_RUN = f"{DEFAULT_DATA_DIR}/evaluation_harness_run.json"
 DEFAULT_EVALUATION_NO_LIFT_REPORT = f"{DEFAULT_DATA_DIR}/evaluation_harness_no_lift_report.json"
-DEFAULT_MECHANISM_VS_MOAT_REPORT = f"{DEFAULT_DATA_DIR}/mechanism_vs_moat_report.json"
+DEFAULT_MECHANISM_VS_OVERCLAIM_REPORT = f"{DEFAULT_DATA_DIR}/mechanism_vs_overclaim_report.json"
 DEFAULT_COMPETITIVE_INVENTORY = f"{DEFAULT_DATA_DIR}/leanmill_competitive_inventory.json"
 DEFAULT_PR_A1_PUBLIC_REVIEW = f"{DEFAULT_DATA_DIR}/pr_a1_public_artifact_review.json"
 SUBSCRIPTION_AGENT_KINDS = {
@@ -4187,7 +4187,7 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
         recommendations.append({
             "priority": _recommendation_priority(payload, "c_supply_family_breadth_debt", 142),
             "class": "c_supply_family_breadth_debt",
-            "why": "strict C-supply is too concentrated by repair family to support a moat-grade Path C claim",
+            "why": "strict C-supply is too concentrated by repair family to support a overclaim-grade Path C claim",
             "next_action": "source and probe sibling rows across additional repair families; cap repeated-family interpretation to mechanism evidence until breadth targets are met by governed receipts",
             "evidence": {
                 "breadth_metrics": c_credit_model.get("breadth_metrics"),
@@ -4313,22 +4313,22 @@ def _recommendations(payload: dict[str, Any]) -> list[dict[str, Any]]:
     shallow_count = int((supply_gap_counts or {}).get("shallow_usable_supply") or 0)
     weak_surface_count = int((supply_gap_counts or {}).get("weak_residual_match_surface") or 0)
     probe_ready_general_count = int((supply_quality or {}).get("probe_ready_general_count") or 0) if isinstance(supply_quality, dict) else 0
-    moat_summary = family_spec_gate.get("moat_disqualification_summary") if isinstance(family_spec_gate, dict) else {}
-    moat_finding_count = int((moat_summary or {}).get("finding_count") or 0) if isinstance(moat_summary, dict) else 0
-    mechanism_moat_report = _dict_field(payload, "mechanism_vs_moat_report")
-    mechanism_moat_published = bool(
-        mechanism_moat_report
-        and str(mechanism_moat_report.get("status") or "") == "published_mechanism_vs_moat_boundary"
-        and str(mechanism_moat_report.get("source_family_spec_gate_sha256") or "") == str(sha256_file(family_spec_gate.get("source_path") or DEFAULT_FAMILY_SPEC_GATE) or "")
+    overclaim_summary = family_spec_gate.get("overclaim_disqualification_summary") if isinstance(family_spec_gate, dict) else {}
+    overclaim_finding_count = int((overclaim_summary or {}).get("finding_count") or 0) if isinstance(overclaim_summary, dict) else 0
+    mechanism_overclaim_report = _dict_field(payload, "mechanism_vs_overclaim_report")
+    mechanism_overclaim_published = bool(
+        mechanism_overclaim_report
+        and str(mechanism_overclaim_report.get("status") or "") == "published_mechanism_vs_overclaim_boundary"
+        and str(mechanism_overclaim_report.get("source_family_spec_gate_sha256") or "") == str(sha256_file(family_spec_gate.get("source_path") or DEFAULT_FAMILY_SPEC_GATE) or "")
     )
-    if moat_finding_count > 0 and not mechanism_moat_published:
+    if overclaim_finding_count > 0 and not mechanism_overclaim_published:
         recommendations.append({
-            "priority": _recommendation_priority(payload, "mechanism_vs_moat_evidence_debt", 142),
-            "class": "mechanism_vs_moat_evidence_debt",
-            "why": "some family-spec positives are public/gold lemma wrappers; they may be valid mechanism/calibration evidence but must not be summarized as competitive moat evidence without prereg arm lift",
+            "priority": _recommendation_priority(payload, "mechanism_vs_overclaim_evidence_debt", 142),
+            "class": "mechanism_vs_overclaim_evidence_debt",
+            "why": "some family-spec positives are public/gold lemma wrappers; they may be valid mechanism/calibration evidence but must not be summarized as competitive overclaim evidence without prereg arm lift",
             "next_action": "report these rows separately, prioritize C-discriminating rows where public/static tools fail, and require benchmark uplift before making competitive claims",
             "evidence": {
-                "moat_disqualification_summary": moat_summary,
+                "overclaim_disqualification_summary": overclaim_summary,
                 "gate_path": family_spec_gate.get("source_path") or DEFAULT_FAMILY_SPEC_GATE,
             },
         })
@@ -4839,15 +4839,15 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
         f"- family_spec_supply_quality: classes=`{sq.get('class_counts', {})}` "
         f"gaps=`{sq.get('gap_counts', {})}` median_score=`{sq.get('median_generality_score')}`"
     )
-    moat = spec_gate.get("moat_disqualification_summary") or {}
+    overclaim = spec_gate.get("overclaim_disqualification_summary") or {}
     lines.append(
-        f"- mechanism_vs_moat: disqualified_positive_templates=`{moat.get('finding_count', 0)}` "
-        f"families=`{moat.get('family_count', 0)}` note=`{moat.get('interpretation', '')}`"
+        f"- mechanism_vs_overclaim: disqualified_positive_templates=`{overclaim.get('finding_count', 0)}` "
+        f"families=`{overclaim.get('family_count', 0)}` note=`{overclaim.get('interpretation', '')}`"
     )
-    mechanism_moat_report = payload.get("mechanism_vs_moat_report") or {}
+    mechanism_overclaim_report = payload.get("mechanism_vs_overclaim_report") or {}
     lines.append(
-        f"- mechanism_vs_moat_report: status=`{mechanism_moat_report.get('status')}` "
-        f"gate_sha=`{mechanism_moat_report.get('source_family_spec_gate_sha256')}`"
+        f"- mechanism_vs_overclaim_report: status=`{mechanism_overclaim_report.get('status')}` "
+        f"gate_sha=`{mechanism_overclaim_report.get('source_family_spec_gate_sha256')}`"
     )
     replenisher = payload.get("backlog_replenisher") or {}
     lines.append(
@@ -4944,7 +4944,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
     evaluation_harness_prep_raw = _read_json(args.evaluation_harness_prep)
     evaluation_harness_run_raw = _read_json(args.evaluation_harness_run)
     evaluation_no_lift_report_raw = _read_json(args.evaluation_no_lift_report)
-    mechanism_vs_moat_report_raw = _read_json(args.mechanism_vs_moat_report)
+    mechanism_vs_overclaim_report_raw = _read_json(args.mechanism_vs_overclaim_report)
     competitive_inventory_raw = _read_json(args.competitive_inventory)
     pr_a1_public_review_raw = _read_json(args.pr_a1_public_review)
     c_supply_clean_selection_raw = _read_json(args.c_supply_clean_selection)
@@ -5006,7 +5006,7 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "observability": observability if isinstance(observability, dict) else {},
         "station_health": station_health if isinstance(station_health, dict) else {},
         "family_spec_gate": family_spec_gate if isinstance(family_spec_gate, dict) else {},
-        "mechanism_vs_moat_report": mechanism_vs_moat_report_raw if isinstance(mechanism_vs_moat_report_raw, dict) else {},
+        "mechanism_vs_overclaim_report": mechanism_vs_overclaim_report_raw if isinstance(mechanism_vs_overclaim_report_raw, dict) else {},
         "pr_a1_public_review_report": pr_a1_public_review_raw if isinstance(pr_a1_public_review_raw, dict) else {},
         "backlog_replenisher": backlog_replenisher if isinstance(backlog_replenisher, dict) else {},
         "c_supply_batch": c_supply_batch if isinstance(c_supply_batch, dict) else {},
@@ -5355,8 +5355,8 @@ def _self_test() -> int:
             "quarantine_failure_count": 0,
             "usable": {"row_template_count": 4},
             "supply_quality_summary": {"class_counts": {"probe_ready_general": 1}, "gap_counts": {}, "median_generality_score": 70},
-            "moat_disqualification_summary": {
-                "schema": "leanmill-moat-disqualification-summary-v1",
+            "overclaim_disqualification_summary": {
+                "schema": "leanmill-overclaim-disqualification-summary-v1",
                 "finding_count": 1,
                 "family_count": 1,
                 "by_family": {"fam": 1},
@@ -5399,7 +5399,7 @@ def _self_test() -> int:
             evaluation_harness_prep=str(eval_prep_path),
             evaluation_harness_run=str(root / "missing_eval_run.json"),
             evaluation_no_lift_report=str(root / "missing_no_lift_report.json"),
-            mechanism_vs_moat_report=str(root / "missing_mechanism_vs_moat.json"),
+            mechanism_vs_overclaim_report=str(root / "missing_mechanism_vs_overclaim.json"),
             pr_a1_public_review=str(root / "missing_pr_a1_public_review.json"),
             competitive_inventory=str(competitive_inventory_path),
             population_elo=str(root / "population_elo.json"),
@@ -5667,8 +5667,8 @@ def _self_test() -> int:
         assert payload["execution_mode_read_model"]["declared_models"]["general_subscription_agent"]["default_model"]
         assert any(rec["class"] == "upstream_rater_calibration_visible" for rec in payload["recommendations"])
         assert any(rec["class"] == "population_routing_priorities_ready" for rec in payload["recommendations"])
-        assert any(rec["class"] == "mechanism_vs_moat_evidence_debt" for rec in payload["recommendations"])
-        assert "mechanism_vs_moat" in (root / "intel.md").read_text(errors="ignore")
+        assert any(rec["class"] == "mechanism_vs_overclaim_evidence_debt" for rec in payload["recommendations"])
+        assert "mechanism_vs_overclaim" in (root / "intel.md").read_text(errors="ignore")
         assert payload["heavy_lean_process_pressure"]["schema"] == "leanmill-heavy-lean-process-pressure-v1"
         assert out.exists()
     print("leanmill_factory_intelligence self-test PASS")
@@ -5698,7 +5698,7 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     ap.add_argument("--evaluation-harness-prep", default=DEFAULT_EVALUATION_HARNESS_PREP)
     ap.add_argument("--evaluation-harness-run", default=DEFAULT_EVALUATION_HARNESS_RUN)
     ap.add_argument("--evaluation-no-lift-report", default=DEFAULT_EVALUATION_NO_LIFT_REPORT)
-    ap.add_argument("--mechanism-vs-moat-report", default=DEFAULT_MECHANISM_VS_MOAT_REPORT)
+    ap.add_argument("--mechanism-vs-overclaim-report", default=DEFAULT_MECHANISM_VS_OVERCLAIM_REPORT)
     ap.add_argument("--pr-a1-public-review", default=DEFAULT_PR_A1_PUBLIC_REVIEW)
     ap.add_argument("--competitive-inventory", default=DEFAULT_COMPETITIVE_INVENTORY)
     ap.add_argument("--population-elo", default=DEFAULT_POPULATION_ELO)

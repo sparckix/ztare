@@ -3,15 +3,15 @@
 
 Iterates a registry of (arch-map, source-file) pairs and asserts each
 map's claims against its live source. Originally single-pair
-(autoresearch_loop only); generalized 2026-04-25 night so Phase 4b/4c's
+(autoresearch_loop only); generalized 2026-04-25 so Phase 4b/4c's
 orchestrator/ split can register per-file arch maps without forking
 this script.
 
 Usage:
-    python -m scripts.validate_autoresearch_arch_map ex-ante
-    python -m scripts.validate_autoresearch_arch_map ex-post
-    python -m scripts.validate_autoresearch_arch_map show   # print all claims
-    python -m scripts.validate_autoresearch_arch_map ex-post --only autoresearch_loop
+    python scripts/public/validators/validate_autoresearch_arch_map.py ex-ante
+    python scripts/public/validators/validate_autoresearch_arch_map.py ex-post
+    python scripts/public/validators/validate_autoresearch_arch_map.py show   # print all claims
+    python scripts/public/validators/validate_autoresearch_arch_map.py ex-post --only autoresearch_loop
 
 Exit codes:
     0 — validation passed
@@ -37,73 +37,74 @@ from dataclasses import dataclass
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
+ARCH_MAP_DIR = REPO / "docs" / "internal" / "architectural_maps"
 # Registry of (label, map_path, src_path) pairs. Adding a new arch map
 # (e.g., orchestrator/telemetry_arch_map.md once Phase 4b lands) = one tuple.
 # Per Linus: data drives the loop, not code.
 MAP_REGISTRY: list[tuple[str, Path, Path]] = [
     (
         "autoresearch_loop",
-        REPO / "docs" / "internal" / "autoresearch_loop_architectural_map.md",
+        ARCH_MAP_DIR / "autoresearch_loop_architectural_map.md",
         REPO / "src" / "ztare" / "validator" / "autoresearch_loop.py",
     ),
     (
         "mutator_briefing",
-        REPO / "docs" / "internal" / "orchestrator_mutator_briefing_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_mutator_briefing_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "mutator_briefing.py",
     ),
     (
         "iter_context",
-        REPO / "docs" / "internal" / "orchestrator_iter_context_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_iter_context_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "iter_context.py",
     ),
     (
         "telemetry",
-        REPO / "docs" / "internal" / "orchestrator_telemetry_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_telemetry_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "telemetry.py",
     ),
     (
         "state",
-        REPO / "docs" / "internal" / "orchestrator_state_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_state_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "state.py",
     ),
     (
         "prompt",
-        REPO / "docs" / "internal" / "orchestrator_prompt_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_prompt_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "prompt.py",
     ),
     (
         "contract_adherence",
-        REPO / "docs" / "internal" / "orchestrator_contract_adherence_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_contract_adherence_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "contract_adherence.py",
     ),
     (
         "parallel_mutator",
-        REPO / "docs" / "internal" / "orchestrator_parallel_mutator_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_parallel_mutator_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "parallel_mutator.py",
     ),
     (
         "contract_table",
-        REPO / "docs" / "internal" / "orchestrator_contract_table_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_contract_table_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "contract_table.py",
     ),
     (
         "protocols",
-        REPO / "docs" / "internal" / "orchestrator_protocols_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_protocols_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "protocols.py",
     ),
     (
         "render_evidence_template",
-        REPO / "docs" / "internal" / "orchestrator_render_evidence_template_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_render_evidence_template_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "render_evidence_template.py",
     ),
     (
         "evidence_contract",
-        REPO / "docs" / "internal" / "orchestrator_evidence_contract_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_evidence_contract_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "evidence_contract.py",
     ),
     (
         "gate_manifest",
-        REPO / "docs" / "internal" / "orchestrator_gate_manifest_architectural_map.md",
+        ARCH_MAP_DIR / "orchestrator_gate_manifest_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "gate_manifest.py",
     ),
 ]

@@ -372,7 +372,7 @@ def stage1_error_message(type_check: dict) -> str:
             "These theorem binders shadow existing spine declarations: "
             + ", ".join(shadowed)
             + ". Rename local binders or use the existing declaration; do not "
-              "make a theorem pass by rebinding a load-bearing global name as "
+              "make a theorem pass by rebinding a decision-critical global name as "
               "an arbitrary parameter."
         )
     if not parts:

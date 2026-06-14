@@ -122,9 +122,9 @@ def main() -> int:
     print(f"  rows: {len(rows)}")
     print(f"  actions: {dict(acts)}")
     print(f"  BEFORE status: {before['by_status']} | "
-          f"cited-but-suspect load-bearing ratified: {before['honest_load_bearing_ratified']}")
+          f"cited-but-suspect decision-critical ratified: {before['honest_load_bearing_ratified']}")
     print(f"  AFTER  status: {after['by_status']} | "
-          f"HONEST load-bearing ratified: {after['honest_load_bearing_ratified']}")
+          f"HONEST decision-critical ratified: {after['honest_load_bearing_ratified']}")
     print("  (genuinely-malformed historical rows remain flagged by the "
           "validator — that is the truthful state; green-by-fabrication "
           "would be laundering)")

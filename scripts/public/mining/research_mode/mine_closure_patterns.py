@@ -511,11 +511,11 @@ def main():
                 "axiom_count": axiom_count,
                 "n_substrate_classes": n_classes,
                 "existing_gates": existing_gates,
-                "verdict": "covered_load_bearing",
+                "verdict": "covered_decisive",
                 "rationale": (
                     f"Recurs in {count} closing rows ({f_row_count} F-row + "
                     f"{axiom_count} axiom); existing gates {existing_gates} "
-                    "already cover. Load-bearing — do not retire."
+                    "already cover. Decisive enough to keep."
                 ),
             })
 
@@ -580,7 +580,7 @@ def main():
         )
     md.append("")
     if candidates:
-        md.append("## Primitive candidates + load-bearing-confirmed\n")
+        md.append("## Primitive candidates + decision-critical-confirmed\n")
         md.append(
             "| v5 op | Verdict | Closures | Classes | Existing gates |\n"
             "|---|---|---:|---:|---|"

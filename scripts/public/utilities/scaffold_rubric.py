@@ -49,7 +49,7 @@ def _qualitative_skeleton(slug: str) -> dict:
         "project": slug,
         "description": (
             "REPLACE: one-paragraph description of the substrate, the "
-            "eigenquestion it audits, and the load-bearing failure modes "
+            "eigenquestion it audits, and the decision-critical failure modes "
             "the rubric is designed to catch."
         ),
         "rubric_mode": "kepler",
@@ -78,7 +78,7 @@ def _qualitative_skeleton(slug: str) -> dict:
         "cage_observe_mode_reason": (
             "Cage gates run in observe-mode so the apparatus does not "
             "block iterations on numeric-harness violations from a "
-            "non-numeric I_model. The rubric judge is the load-bearing scorer."
+            "non-numeric I_model. The rubric judge is the decision-critical scorer."
         ),
         "cage_meta": {
             "type": "qualitative_audit",
@@ -162,7 +162,7 @@ def _numerical_skeleton(slug: str) -> dict:
         "description": (
             "REPLACE: one-paragraph description of the formal-recovery "
             "target, the substrate class (e.g. continuous_chaotic, "
-            "scaling_law, algebraic_constant), and the load-bearing "
+            "scaling_law, algebraic_constant), and the decision-critical "
             "anti-pattern the rubric is designed to catch."
         ),
         "rubric_mode": "newton",
@@ -191,7 +191,7 @@ def _numerical_skeleton(slug: str) -> dict:
             {
                 "name": "Generative Yield",
                 "weight": 20,
-                "description": "REPLACE — newton-mode load-bearing dim. Concrete falsifiable claim that survives holdout."
+                "description": "REPLACE — newton-mode decision-critical dim. Concrete falsifiable claim that survives holdout."
             },
             {
                 "name": "Mechanism Concreteness",
@@ -201,7 +201,7 @@ def _numerical_skeleton(slug: str) -> dict:
             {
                 "name": "REPLACE Substrate-Specific Hard Gate",
                 "weight": 20,
-                "description": "REPLACE — domain-load-bearing gate (e.g. PPN compatibility, ergodicity, Buckingham-π scaling)."
+                "description": "REPLACE — domain-decision-critical gate (e.g. PPN compatibility, ergodicity, Buckingham-π scaling)."
             },
             {
                 "name": "Holdout MRE / OOD Recovery",

@@ -3,6 +3,12 @@
   "project": "gp147_gate_discovery_validation",
   "rubric_mode": "newton",
   "rubric_mode_reason": "gp147 asks the mutator to discover Phase D / E1 claim-pipeline failure-mode gates via Munger inversion + Popper falsification, without spoon-feeding GP-144's answers. The task is meta-architectural — the operator will compare output to GP-144 offline.",
+  "secondary_observable_contract": {
+    "observable": "Coverage on a held-back claim-failure corpus, beyond the primary list of proposed gates.",
+    "measurement": "Instantiate proposed gates on synthetic claim artifacts containing continuum-limit gaps, numerical-relation false positives, basis-reformulation instability, proof-surveyability failures, and clean controls.",
+    "expected_range": "Each proposed gate catches at least one failure outside the motivating example and leaves clean controls unflagged.",
+    "falsifier": "A gate only catches its prompted example, cannot be computed from claim artifacts, or flags clean controls without an explicit conservative policy reason."
+  },
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "DAG steering keeps the mutator anchored on the claim-pipeline gap between Phase C admission gates and gp139 Lean hardening.",
   "falsification_mode": "bounded_discriminator",

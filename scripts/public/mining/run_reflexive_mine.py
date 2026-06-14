@@ -273,11 +273,11 @@ def phase2b_impact() -> None:
     # reorg-deleted weakest_link_clusters input — G-class debt). Best-effort.
     sh_soft([PY, str(MINING / "mine_climb_triggers.py")],
             "PHASE 2b: climb triggers (optional impact feeder)")
-    # The load-bearing recursive-capability-use signals — fail-loud:
+    # The decision-critical recursive-capability-use signals — fail-loud:
     roi = REPO / "scripts" / "public" / "analytics_shared" / "reflexive_primitive_roi_audit.py"
     if roi.exists():
         sh([PY, str(roi)],
-           "PHASE 2b: reflexive primitive ROI (load_bearing|useful|dead bands)")
+           "PHASE 2b: reflexive primitive ROI (critical|useful|dead bands)")
     render = REPO / "scripts" / "public" / "control" / "render_architecture_index.py"
     if render.exists():
         sh([PY, str(render)],
@@ -336,7 +336,7 @@ def phase4_aggregate() -> None:
     # G8/§5c canonical series: read-only, full-history, ledger-derived.
     # Sample-scoped aggregation above answers "this week's sample"; the
     # canonical series answers "the apparatus's week-over-week curve"
-    # and is the load-bearing input for the P0 recursive-gain metric.
+    # and is the decision-critical input for the P0 recursive-gain metric.
     sh([PY, str(MINING / "build_taste_canonical_series.py"),
         "--rater", CANONICAL_RATER],
        f"PHASE 4: build canonical series from ledger (rater={CANONICAL_RATER})")

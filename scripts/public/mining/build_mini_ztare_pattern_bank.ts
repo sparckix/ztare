@@ -79,7 +79,7 @@ const GENERIC_KILLER_QUESTIONS: Record<string, string> = {
   unverified_assumption:
     "Identify the assumption your argument relies on most heavily, and state the experiment you would run to test it.",
   catastrophic_assumption:
-    "What single load-bearing assumption, if false, would collapse your entire conclusion? Defend it directly.",
+    "What single decision-critical assumption, if false, would collapse your entire conclusion? Defend it directly.",
   exhaustiveness_claim:
     "Have you tested all the cases you claim to cover, or have you tested a sample and assumed the rest follow? Name the gap.",
   tail_generalization:
@@ -195,13 +195,13 @@ function describeMechanism(cls: string): string {
     missing_mechanism: "the argument describes WHAT happens without explaining HOW it happens",
     overclaimed_scope: "the conclusion is generalized beyond the population the evidence covers",
     unmeasurable_construct: "the central variable has no observable proxy",
-    unsupported_assumption: "a load-bearing assumption is asserted without test or evidence",
+    unsupported_assumption: "a decision-critical assumption is asserted without test or evidence",
     parameter_sensitivity: "the conclusion depends sensitively on a parameter or threshold that has not been justified",
     missing_counterfactual: "no rival explanation has been considered or excluded",
     missing_data: "the data needed to verify the claim is not available or not gathered",
     definition_ambiguity: "a key term is used without an operational definition",
     unverified_assumption: "an assumption is treated as fact without being tested",
-    catastrophic_assumption: "the entire argument hinges on one load-bearing assumption that is itself contested",
+    catastrophic_assumption: "the entire argument hinges on one decision-critical assumption that is itself contested",
     exhaustiveness_claim: "the argument claims completeness over a class but has tested only a sample",
     tail_generalization: "the evidence covers the visible window but the claim extends to extremes that have not been verified",
     unverified_bound: "a numerical bound is asserted without proof of its tightness",

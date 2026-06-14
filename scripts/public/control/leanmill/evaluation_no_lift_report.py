@@ -3,7 +3,7 @@
 
 This is intentionally a negative-result publisher. It records what the
 benchmark showed and which claims are forbidden; it does not create proof
-credit, benchmark lift, or public moat evidence.
+credit, benchmark lift, or public differentiation evidence.
 """
 from __future__ import annotations
 
@@ -74,14 +74,14 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         ),
         "forbidden_claims": [
             "competitive planner lift from this slice",
-            "moat-grade benchmark win from this slice",
+            "non-subsumed benchmark win from this slice",
             "proof credit from public/static closures",
             "exact-gap or family-template credit from a no-lift aggregate",
         ],
         "credit_boundary": "internal negative benchmark receipt only; no proof credit and no competitive-lift claim",
         "meta_reasoning_receipt": {
             "failure_mode": "positive-looking family/proposal mechanisms can be overclaimed when the benchmark shows no aggregate lift",
-            "mechanized_prevention": "publish the no-lift receipt keyed to the run hash and suppress lift/moat recommendations for that run",
+            "mechanized_prevention": "publish the no-lift receipt keyed to the run hash and suppress lift/differentiation recommendations for that run",
             "gaming_guard": "negative publication is not converted into proof value or benchmark success",
         },
         "next_action": (

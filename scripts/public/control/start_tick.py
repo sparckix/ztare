@@ -9,7 +9,7 @@ proposals were ad-hoc `propose --type start_tick` calls — so F3 was
 DORMANT (forecast_identity_frozen always False ⇒ all F3 close-side
 binding skipped). There was a sanctioned CLOSE path (tick_close.py)
 but no sanctioned OPEN path; this is it. Opening a research tick
-through this wrapper makes F3 load-bearing: the daemon hashes the
+through this wrapper makes F3 decision-critical: the daemon hashes the
 on-disk forecast contract and binds it into the signed start row, so
 the close cannot later swap to a weaker/unrelated/ mutated contract.
 

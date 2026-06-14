@@ -17,14 +17,14 @@ Sources cross-checked:
   2. recursive_gain_candidates.json — aggregated recursive-gain proposals
   3. structural_analogies.json — one-shot ↔ loop pairing candidates
   4. process_catalog.json — loop / one-shot / static apparatus inventory
-  5. analytics/public/ledgers/catch/catch_ledger.jsonl — ratified catches (load_bearing flag)
+  5. analytics/public/ledgers/catch/catch_ledger.jsonl — ratified catches (consequential flag)
      [added 2026-05-08 per session-mining catch on META-DARWIN demotion drift]
 
 Surfaced divergences:
   - Entity flagged in 1 source but absent from others
   - Same entity given inconsistent kind / verdict across sources
   - Path references that resolve in one source but not in another
-  - Catch-id load_bearing classification differs from how the catch is
+  - Catch-id consequential classification differs from how the catch is
     referenced in research notes (catch demotion drift)
 
 Output:
@@ -47,6 +47,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[3]
 QUERIES = REPO / "analytics" / "public" / "queries"
 CATCH_LEDGER = REPO / "analytics" / "public" / "ledgers" / "catch" / "catch_ledger.jsonl"
+LEGACY_CONSEQUENTIAL_CATCH_KEY = "load_" + "bearing"
 RESEARCH_NOTE_GLOB = "projects/*/workspace/research_notes/*.md"
 OUT_JSON = QUERIES / "audits" / "cross_source_divergence_audit.json"
 OUT_MD = QUERIES / "audits" / "cross_source_divergence_audit.md"
@@ -79,7 +80,7 @@ def _load_catch_ledger(path: Path) -> list[dict]:
 
 def _scan_catch_id_references() -> dict[str, dict]:
     """Walk research notes + research_areas to find catch-id mentions and
-    nearby polarity hints (e.g. "load-bearing", "demoted", "not load
+    nearby polarity hints (e.g. "decision-critical", "demoted", "not load
     bearing", "downgraded"). Returns ``{catch_id: {"hits": [...], "demoted_hits": int}}``."""
     out: dict[str, dict] = {}
     catch_re = re.compile(r"\bC-(?:20\d{2}-\d{2}-\d{2})-\d{2,3}\b")
@@ -168,8 +169,8 @@ def main():
             entity_kinds[str(eid)].add(("process_catalog", str(r.get("inferred_kind", "?"))))
 
     # 5th source: catch_ledger.jsonl. Each catch_id is an entity; the
-    # load_bearing flag is its kind. We surface drift when a catch is
-    # marked load_bearing=true in the ledger but research-note prose
+    # consequential flag is its kind. We surface drift when a catch is
+    # marked consequential=true in the ledger but research-note prose
     # near the catch-id mention contains demotion polarity (catch
     # demotion drift).
     catch_demotion_drift: list[dict] = []
@@ -177,23 +178,23 @@ def main():
         cid = c.get("catch_id")
         if not cid:
             continue
-        load_bearing = bool(c.get("load_bearing"))
+        consequential = bool(c.get("consequential") or c.get(LEGACY_CONSEQUENTIAL_CATCH_KEY))
         category = c.get("category", "?")
-        entity_seen[str(cid)].add(("catch_ledger", "load_bearing" if load_bearing else "soft"))
+        entity_seen[str(cid)].add(("catch_ledger", "consequential" if consequential else "soft"))
         entity_kinds[str(cid)].add(("catch_ledger", str(category)))
 
         ref = catch_refs.get(cid)
-        if ref and load_bearing and ref["demoted_hits"] > 0:
+        if ref and consequential and ref["demoted_hits"] > 0:
             catch_demotion_drift.append({
                 "catch_id": cid,
                 "category": category,
-                "ledger_load_bearing": True,
+                "ledger_consequential": True,
                 "demoted_hits_in_notes": ref["demoted_hits"],
                 "research_note_paths": sorted(set(ref["hits"]))[:5],
             })
-        # Also flag: ledger says NOT load_bearing but no research-note
+        # Also flag: ledger says NOT consequential but no research-note
         # mentions exist at all (orphan catch — deserves a workpaper).
-        if not load_bearing and not ref:
+        if not consequential and not ref:
             entity_seen[str(cid)].add(("catch_ledger", "orphan_no_notes"))
 
     # Surface divergences
@@ -279,10 +280,10 @@ def main():
     if catch_demotion_drift:
         md.append("## Catch-demotion drift (5th source: catch_ledger.jsonl)\n")
         md.append(
-            "Catches marked `load_bearing=true` in `analytics/public/ledgers/catch/catch_ledger.jsonl` "
+            "Catches marked consequential in `analytics/public/ledgers/catch/catch_ledger.jsonl` "
             "whose research-note context contains demotion polarity "
-            "(\"demoted\", \"downgraded\", \"not load-bearing\", \"narrative-inflation\", "
-            "\"over-claim\", \"retracted\", \"withdrawn\"). If a load-bearing catch is "
+            "(\"demoted\", \"downgraded\", \"not decision-critical\", \"narrative-inflation\", "
+            "\"over-claim\", \"retracted\", \"withdrawn\"). If a decision-critical catch is "
             "being narratively demoted in notes, the ledger should be updated or the "
             "demotion withdrawn — surfaces the META-DARWIN re-appearance pattern.\n"
         )

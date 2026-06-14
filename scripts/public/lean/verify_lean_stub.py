@@ -47,6 +47,16 @@ FORBIDDEN_TOKENS = (
     "admit",
     "native_decide",     # trusts compiled code, not kernel-checked
     "\naxiom ",          # user-declared axioms (leading newline anchors)
+    # Compiler-trust AXIOM names (2026-06-08). `native_decide` elaborates to `Lean.ofReduceBool`
+    # (and the compiler-trust path to `Lean.trustCompiler`) — axioms OUTSIDE the allowlist that the
+    # `#print axioms` audit already rejects. Banning the NAMES lexically closes the gap where a stub
+    # cites the axiom DIRECTLY (`exact Lean.ofReduceBool …`) on a path that skips the axiom audit.
+    # Zero false-positive: these identifiers never appear in legitimate kernel-checked proof source
+    # (unlike `partial`/`unsafe`/`@[extern]`, which DO occur in trusted preludes — deliberately NOT
+    # banned here to avoid prelude false-positives; the `#print axioms` allowlist is their real gate).
+    "Lean.ofReduceBool",
+    "Lean.trustCompiler",
+    "ofReduceBool",      # the unqualified form (under `open Lean`)
 )
 
 
@@ -222,6 +232,38 @@ def verify_stub(stub_path: Path, strict: bool = True) -> dict:
     return verdict
 
 
+def _lexical_selftest() -> int:
+    """Calibrated POSITIVE + NEGATIVE controls for `lexical_scan` (dead-instrument discipline: a banned
+    token MUST be caught AND a legitimate proof / a trusted prelude MUST NOT be flagged). Run via
+    `--selftest`; deterministic, no Lean toolchain needed."""
+    cases = [
+        ("POS sorry", "theorem t : True := by sorry", True),
+        ("POS admit", "theorem t : True := by admit", True),
+        ("POS native_decide", "theorem t : (2+2=4) := by native_decide", True),
+        ("POS ofReduceBool (qualified)", "theorem t : True := by exact Lean.ofReduceBool h", True),
+        ("POS ofReduceBool (open Lean)", "open Lean\ntheorem t : True := by exact ofReduceBool h", True),
+        ("POS trustCompiler", "theorem t : True := by exact Lean.trustCompiler", True),
+        ("POS standalone axiom", "axiom bad : False\ntheorem t : False := bad", True),
+        ("NEG clean decide", "theorem t : (List.range 5).sum = 10 := by decide", False),
+        ("NEG clean term", "theorem t : 1 = 1 := rfl", False),
+        ("NEG partial-def prelude (no FP)",
+         "partial def helper (n : Nat) : Nat := helper (n+1)\ntheorem t : 1 = 1 := rfl", False),
+        ("NEG unsafe/extern prelude (no FP)",
+         "@[extern \"c_fn\"] unsafe def f : Nat := 0\ntheorem t : 1 = 1 := rfl", False),
+        ("NEG comment mentions ofReduceBool (stripped)",
+         "-- we avoid Lean.ofReduceBool here\ntheorem t : 1 = 1 := rfl", False),
+    ]
+    fails = []
+    for name, src, expect in cases:
+        flagged = len(lexical_scan(src)) > 0
+        ok = flagged == expect
+        if not ok:
+            fails.append(name)
+        print(f"  [{'PASS' if ok else 'FAIL'}] {name}: flagged={flagged} expect={expect}")
+    print("LEXICAL SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
+    return 0 if not fails else 1
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     g = ap.add_mutually_exclusive_group(required=True)
@@ -229,8 +271,13 @@ def main() -> int:
     g.add_argument(
         "--project", help="Project name (stub at projects/<name>/<name>.lean)"
     )
+    g.add_argument("--selftest", action="store_true",
+                   help="Run the calibrated lexical-scan controls (no Lean toolchain needed)")
     ap.add_argument("--json", action="store_true", help="Emit verdict as JSON")
     args = ap.parse_args()
+
+    if args.selftest:
+        return _lexical_selftest()
 
     if args.stub:
         stub_path = Path(args.stub).resolve()

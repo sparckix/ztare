@@ -192,7 +192,7 @@ miss.
 | `v33_leakage_safe_miner.py` | Tick-2 variance gate + Tick-3 leakage-safe miner over the re-audited corpus. |
 | `v33_paraphrase_gate.py` | Second forward gate: gold-name-verbatim / paraphrase organ. |
 | `v33_preflight_risk_detector.py` | The governance harness's missing organ: catches tick541/carleman vacuity before, not after. |
-| `v33_single_lemma_exact_gate.py` | Third forward gate: leakage-independent single-lemma-exact organ (the v26/v27 moat class). |
+| `v33_single_lemma_exact_gate.py` | Third forward gate: leakage-independent single-lemma-exact organ (the v26/v27 subsumption class). |
 | `gp233_adversary_yield_decomp.py` | GP-233 scientific-yield decomposition of the non-gamed adversary-corpus run. |
 | `ns_governance_gate.py` | v36 NS governance integration: forces every live NS attempt through the v35 forward-evidence schema. |
 

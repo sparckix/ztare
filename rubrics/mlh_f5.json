@@ -3,6 +3,12 @@
   "project": "mlh_f5",
   "rubric_mode": "newton",
   "rubric_mode_reason": "GP-135 MLH family member. Newton-mode enforces the Generative Yield dimension; the Cross-Substrate Invariant Stance dimension further enforces family-level reasoning. See docs/concepts/mlh_family_protocol.md.",
+  "secondary_observable_contract": {
+    "observable": "Family-level prediction beyond fitting this substrate's visible values.",
+    "measurement": "Use the MLH packet and scoring scripts to evaluate composition class, prime-power rule, coprime composition rule, or a sealed sibling-substrate prediction.",
+    "expected_range": "The proposal distinguishes this substrate from at least one sibling and gives an evaluable prediction for a held-out or sealed family member.",
+    "falsifier": "The proposal only predicts additional values of this same table, offers a lookup rule, or cannot be evaluated from the exported MLH packet."
+  },
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "GP-135: DAG steering focuses mutator attention on the weakest belief-node each iter. Useful for preventing the mutator from camping on single-substrate fit-refinement at the expense of family-level structural claims.",
   "falsification_mode": "bounded_discriminator",

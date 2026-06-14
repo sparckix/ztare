@@ -3,7 +3,13 @@
   "rubric_version_reason": "2026-04-24: gp140 ceiling-broken from 78 via added dimension 'Empirical Stress Test Discipline'. Prior version 2.0 scored only proof-grade completeness bounds, saturating on unprovable-within-prompt universal guarantees across iters 6-15 of aggressive-judge run. v2.1 adds explicit reward for N-substrate empirical validation (something the mutator CAN execute) and softens 'Generative Yield' wording to accept empirical-prediction paths alongside closed-form proof paths. Minimal one-dimension intervention; weight rebalanced from Sealed-Prediction (5→3), Millennium (10→5), Primitive-Substrate (5→2). Net weight remains 100.",
   "project": "gp140_ztare_discovery",
   "rubric_mode": "newton",
-  "rubric_mode_reason": "gp140 v2 (2026-04-24) requires a paired-primitive proposal: class-A behavioral-fit solver + class-B Occam's-razor law-finder, composed with B-as-objective and A-as-optimizer. Either half alone is scored down; the composition is the load-bearing unit. See projects/gp140_ztare_discovery/project_charter.md and evidence.txt Evidence Set G.",
+  "rubric_mode_reason": "gp140 v2 (2026-04-24) requires a paired-primitive proposal: class-A behavioral-fit solver + class-B Occam's-razor law-finder, composed with B-as-objective and A-as-optimizer. Either half alone is scored down; the composition is the decisive unit. See projects/gp140_ztare_discovery/project_charter.md and evidence.txt Evidence Set G.",
+  "secondary_observable_contract": {
+    "observable": "A law-certification artifact or second-substrate stress prediction beyond immediate behavioral fit.",
+    "measurement": "Require a concrete output such as law_certified_subset, a Lyapunov/autocorrelation/topological statistic, or a second-substrate prediction with an acceptance threshold and rejection condition.",
+    "expected_range": "At least one secondary prediction is evaluable on a held-out substrate class or perturbation packet and is not a restatement of the primary fit.",
+    "falsifier": "The primitive pair only reports candidate fit, uses the B primitive as a cosmetic label without a measurable prediction, or cannot name the file and schema that would carry the secondary result."
+  },
   "enable_dag_steering": true,
   "enable_dag_steering_reason": "DAG steering keeps the mutator anchored to the weakest belief node in the A-B composition axis.",
   "falsification_mode": "bounded_discriminator",

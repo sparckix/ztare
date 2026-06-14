@@ -13,7 +13,7 @@ mechanization principle, docs/concepts/closure_claim_governance.md §3):
     subset can be derived deterministically; force-mapping the rest would
     itself be a laundered "derived" fact.
   - `impact_factor_expost` legitimately encodes human judgment (recency,
-    climb-triggers, load-bearingness) the ledger cannot fully capture, so
+    climb-triggers, decision-criticality) the ledger cannot fully capture, so
     this tool only PROPOSES, never overwrites (RP-001 falsifier watches
     for impact decaying into a rename of frequency).
 

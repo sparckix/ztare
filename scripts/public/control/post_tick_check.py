@@ -93,7 +93,7 @@ def check(window_hours: int, since: datetime | None,
     #   #3b conclusion-soundness ................ deterministic-by-token
     #         -convention-exempt (FAIL = missing [MD-SURVIVED] token;
     #          gating it on an empty ledger would DISABLE a working
-    #          load-bearing gate — exempt, NOT calibration-gated)
+    #          decision-critical gate — exempt, NOT calibration-gated)
     #   #8  prescription-surfacing (gap_e) ...... advisory-only; a flip
     #          to HARD is mechanically forbidden absent a calibration
     #          entry (calibration_gate refuses absent-entry) — nothing
@@ -405,7 +405,7 @@ def check(window_hours: int, since: datetime | None,
                 f"have NO forcing surfacing on the precheck path — they "
                 f"are dead-at-precheck (buried-prescription treadmill). "
                 f"Run validate_prescription_surfacing.py; force the "
-                f"load-bearing ones or accept+annotate the rest.")
+                f"decision-critical ones or accept+annotate the rest.")
     except Exception as e:
         warn.append(f"prescription-surfacing check degraded (advisory): {e}")
 

@@ -793,7 +793,7 @@ def main():
         "  - **1** = trivially observable; doesn't change downstream reasoning\n"
         "  - **2** = useful but expected; consolidates known\n"
         "  - **3** = non-obvious finding or sharp framing; would help a future reader\n"
-        "  - **4** = surprising / load-bearing / mechanism-revealing\n"
+        "  - **4** = surprising / decision-critical / mechanism-revealing\n"
         "  - **5** = paradigm-shifting; reframes the problem or apparatus\n\n"
         "Output format:\n```\n"
         "SAMPLE_001 | score | one-line rationale\n"

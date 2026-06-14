@@ -172,7 +172,7 @@ def main():
                 "details": cand.get("rationale", "")[:300],
             })
 
-    # ---- Source 4: reference graph — orphan + load-bearing
+    # ---- Source 4: reference graph — orphan + decision-critical
     ref_graph = _load(QUERIES / "graphs" / "reference_graph.json")
     if ref_graph:
         # Top-cited seams could be candidates for self-skeptic ZTARE substrates
@@ -187,7 +187,7 @@ def main():
             conf = "medium"
             rationale = (
                 f"Reference graph: this seam has in-degree {in_deg} (top-5 "
-                f"load-bearing). It's a structural anchor — running a "
+                f"decision-critical). It's a structural anchor — running a "
                 f"ZTARE substrate that adversarially questions this seam "
                 f"is a high-leverage recursive-gain move (the apparatus "
                 f"evaluating its own assumptions)."

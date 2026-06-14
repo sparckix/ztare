@@ -5,7 +5,7 @@ dispatch_external_prover.py
 PATTERN-014 (independent_cas_verification) deployer using the OpenAI API.
 
 Operator-authorized 2026-05-09: up to $10 spend per session for cross-
-family external-prover dispatch on load-bearing eigenquestions. Closes
+family external-prover dispatch on decision-critical eigenquestions. Closes
 the structural gap PATTERN-013 (pattern_deployment_ledger) flagged on
 the same day: PATTERN-014 utilization was ~0% over the 17-dispatch
 campaign window, which is exactly why operator-relayed GPT-5.5 had to
@@ -101,7 +101,7 @@ DEFAULT_FALLBACKS = ["gpt-5-mini", "gpt-4.1", "o1"]
 SYSTEM_PROMPT = """\
 You are an external mathematical prover dispatched as PATTERN-014 (independent
 cross-family verification) by the ZTARE Research Director. Your role is to
-attack a load-bearing eigenquestion from the ZTARE NS Track B campaign with
+attack a decision-critical eigenquestion from the ZTARE NS Track B campaign with
 maximum rigor.
 
 Operating discipline:

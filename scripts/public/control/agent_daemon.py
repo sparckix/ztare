@@ -679,7 +679,7 @@ def execute_task(
             prior_status = prior.get("status") or ""
             prior_intent = prior.get("task_intent") or ""
             prior_checkpoint_hint = (
-                "\nPRIOR TICK CHECKPOINT (read first, decide if it's still load-bearing):\n"
+                "\nPRIOR TICK CHECKPOINT (read first, decide if it's still decision-critical):\n"
                 f"- last status: {prior_status}\n"
                 f"- last task: {prior_intent[:200]}\n"
                 f"- last summary: {prior_summary[:400]}\n"
@@ -706,7 +706,7 @@ IMPORTANT:
 - If the route is `experiment_loop`, run the implementation-specific preflight substrate audit first; do not launch if the contract/gates are unstable.
 - If the ROLE PRE-TICK SURFACE contains "PATTERN ACTIVATION GUARD FIRING", use the named pattern chain before dispatch OR record the deviation reason in the F-row / closure artifact. Treat this as a role-tick gate, not a reminder.
 - If the ROLE PRE-TICK SURFACE contains "Structural vocabulary fingerprint", include a structural_language_fingerprint in closure/F-rows/advisor artifacts: universal v5 ops + TB/PS culture, and GP-219 PDE ops when the substrate is PDE/analysis leaning.
-- Conflict resolution: see `docs/internal/agent_workflow/agent_conflict_resolution_table.md` (canonical priority is in `org/bootstrap_manifest.yaml` under `conflict_resolution_priority`). When in doubt, the role yaml `forbidden_paths` typed contract wins; AGENTS.md §0–§5b load-bearing rules win over §6+ reference sections; role mandate wins over task description for SCOPE; task description wins for SUBJECT MATTER.
+- Conflict resolution: see `docs/internal/agent_workflow/agent_conflict_resolution_table.md` (canonical priority is in `org/bootstrap_manifest.yaml` under `conflict_resolution_priority`). When in doubt, the role yaml `forbidden_paths` typed contract wins; AGENTS.md §0–§5b decision-critical rules win over §6+ reference sections; role mandate wins over task description for SCOPE; task description wins for SUBJECT MATTER.
 - Follow the experiment cookbook (docs/guides/experiment_cookbook.md)
 - Stay within the role's authorized paths and forbidden paths
 - Run validate_agent_task_discipline.py post <task_type> before declaring done

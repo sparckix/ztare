@@ -25,6 +25,8 @@
   "description": "Newton-mode rubric for raw-loss scaling-law recovery. Target: discover the closed-form L(N, D, C, modality, regime, fit_convention) law that produces the per-paper alpha values when refitted under each paper's own fit convention. Scored substrate: Chinchilla / Kaplan (visible + holdout) and Hestness / Henighan (farther-tail). Bahri is honest-null and excluded from scored partitions. Cold variable surface: features include study, modality, architecture_class, scaling_var, fit_convention, regime_hint, loss_type, N_log10, D_log10, C_log10, intrinsic_dim_d.",
   "rubric_mode": "newton",
   "rubric_mode_reason": "Discovery substrate: the unified L(N, D, C, ...) law connecting all source-paper scaling forms is the open question. Generative yield required.",
+  "__do_not_run_live": true,
+  "__do_not_run_live_reason": "Dormant GP-154 fork with no matching project directory in the current repo; recover the project surface before running.",
   "falsification_mode": "bounded_discriminator",
   "require_cross_family": false,
   "require_cross_family_reason": "v1 default; flip to true after a champion clears holdout + farther-tail.",

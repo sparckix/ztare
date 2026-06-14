@@ -160,7 +160,7 @@ def derive(tick_id: str, cid: str, owner: str | None) -> dict:
         d.update(extra)
         return d
 
-    # (0) STORE REACHABILITY (cold-review b11rcv46f #1, load-bearing):
+    # (0) STORE REACHABILITY (cold-review b11rcv46f #1, decision-critical):
     # _rows() returns [] when LEDGER is absent — and enforce mode
     # silently points at /nonexistent when /srv is unverified. Then
     # tick_started/tick_closed are False NOT because the tick is

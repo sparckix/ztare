@@ -7,7 +7,7 @@ lemma-relevance line. The question this whole tree exists to answer:
 does a learned ranker beat the LeanHammer typeclass baseline. Each
 version header states what it fixes over the prior, so the file series
 is also the experiment record. Checkpoints and training pairs land
-under `analytics/public/gnn/` (gitignored, regenerable); moat-grade
+under `analytics/public/gnn/` (gitignored, regenerable); non-subsumed
 verdicts live in the GP-225 seams and memory, not here.
 
 ## GFlowNet baseline

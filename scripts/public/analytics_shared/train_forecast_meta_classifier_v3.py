@@ -19,7 +19,7 @@ v3 adds:
 Pre-registered pass-gate (BEFORE any retrain runs):
   - v3 combined-CV MAE must improve on v2's combined-CV MAE (0.0987) by >= 0.005
   - v3 must NOT degrade on the v2 OOD test set (v10, v10.1, v11, v6.1) by more than +0.01 MAE
-  - If v3 fails either gate, the new features are not load-bearing and the v2
+  - If v3 fails either gate, the new features are not decision-critical and the v2
     classifier remains the operational baseline.
 
 Author posture: not blocking the F36 paper. Independent finding line.
@@ -296,7 +296,7 @@ def main() -> int:
     if delta_mae >= 0.005:
         verdict = "v3-improves-on-v2"
         interpretation = (
-            "STRONG: v22+ factorial features add load-bearing signal beyond v2. "
+            "STRONG: v22+ factorial features add decision-critical signal beyond v2. "
             "New classifier is the operational baseline."
         )
     elif delta_mae > -0.005:

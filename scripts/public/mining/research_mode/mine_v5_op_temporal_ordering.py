@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Mine the *temporal ordering* of v5 ops applied during closure events.
 
-Closes a Layer-3 candidate gap surfaced by tonight's session-mining agent
+Closes a Layer-3 candidate gap surfaced by the 2026-05-08 session-mining agent
 (``analytics/public/queries/session_mining_analysis_2026_05_08.md``):
 ``mine_closure_patterns.py`` aggregates *which* v5 ops co-occur with
 verified closures but discards *the order* in which they appeared.
-Tonight's compression-first / falsification-last pattern (and its dual,
+The observed compression-first / falsification-last pattern (and its dual,
 falsification-first / compression-last on bouncing residuals) is therefore
 unrecoverable from existing miners.
 
@@ -216,7 +216,7 @@ def main() -> int:
         for a, b, c in zip(seq, seq[1:], seq[2:]):
             trigram_counter[(a, b, c)] += 1
 
-    # Spotlight queries from tonight's mining catch:
+    # Spotlight queries from the mined temporal-ordering catch:
     compression_first = first_op_counter.get("broad_compression", 0)
     falsification_last = last_op_counter.get("broad_falsification", 0)
     falsification_first = first_op_counter.get("broad_falsification", 0)

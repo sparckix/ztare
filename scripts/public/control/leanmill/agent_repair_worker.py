@@ -24,6 +24,8 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from src.ztare.common.subscription_agent_runtime import (  # noqa: E402
+    get_or_create_warm_session,
+    persist_warm_session,
     redact_prompt_command,
     run_subscription_agent_with_recovery,
 )
@@ -1561,47 +1563,19 @@ def _now() -> int:
 
 
 def _get_or_create_session(args: argparse.Namespace, *, runtime: str, agent_id: str) -> dict[str, Any] | None:
-    if not args.use_warm_session:
-        return None
-    path = _session_path(args, runtime=runtime, agent_id=agent_id)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    state = _read_json(path)
-    now = _now()
-    stale = True
-    if state.get("session_id") and state.get("started_at_epoch"):
-        age_s = now - int(state.get("started_at_epoch") or now)
-        stale = int(state.get("tick_count") or 0) >= args.warm_max_tasks or age_s >= args.warm_max_age_s
-    if stale:
-        state = {
-            "schema": "leanmill-subscription-agent-session-v1",
-            "runtime": runtime,
-            "agent_id": agent_id,
-            "session_id": str(uuid.uuid4()) if runtime == "claude" else None,
-            "started_at_epoch": now,
-            "last_used_at_epoch": None,
-            "tick_count": 0,
-            "is_new": True,
-            "policy": "session_warm_resume_if_supported",
-        }
-        path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n")
-    else:
-        state["is_new"] = False
-    state["session_state_path"] = str(path)
-    return state
+    # Delegates to the SHARED durable warm-session manager (common.subscription_agent_runtime) — the ONE home
+    # this logic was extracted to 2026-06-11 so the solver/planner/formalizer (agentic_leaf) reuse the SAME code
+    # instead of a divergent hand-rolled copy (the Frankenstein the operator flagged). Behaviour-preserving:
+    # identical slug, schema, staleness rule, and on-disk format (verified byte-equivalent).
+    return get_or_create_warm_session(
+        args.session_dir, runtime=runtime, agent_id=agent_id, enabled=args.use_warm_session,
+        warm_max_tasks=args.warm_max_tasks, warm_max_age_s=args.warm_max_age_s)
 
 
 def _persist_session(args: argparse.Namespace, *, runtime: str, agent_id: str, session_state: dict[str, Any] | None) -> None:
-    if not session_state or not args.use_warm_session:
+    if not args.use_warm_session:
         return
-    path = _session_path(args, runtime=runtime, agent_id=agent_id)
-    state = {k: v for k, v in dict(session_state).items() if k != "session_state_path"}
-    state.setdefault("schema", "leanmill-subscription-agent-session-v1")
-    state["runtime"] = runtime
-    state["agent_id"] = agent_id
-    state["is_new"] = False
-    state["last_used_at_epoch"] = _now()
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(state, indent=2, sort_keys=True) + "\n")
+    persist_warm_session(args.session_dir, runtime=runtime, agent_id=agent_id, session_state=session_state)
 
 
 def _codex_model_for_payload(args: argparse.Namespace, payload: dict[str, Any]) -> str:

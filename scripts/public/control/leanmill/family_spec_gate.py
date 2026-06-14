@@ -51,8 +51,8 @@ def build(args: argparse.Namespace) -> dict:
         "usable": family_specs.specs_summary(family_specs.usable_specs(specs, target_names_by_row=target_names_by_row)),
         "supply_quality": family_specs.family_supply_quality(specs, target_names_by_row=target_names_by_row),
         "supply_quality_summary": family_specs.supply_quality_summary(specs, target_names_by_row=target_names_by_row),
-        "moat_disqualification_summary": family_specs.moat_disqualification_summary(specs),
-        "moat_disqualification_findings": family_specs.moat_disqualification_findings(specs),
+        "overclaim_disqualification_summary": family_specs.overclaim_disqualification_summary(specs),
+        "overclaim_disqualification_findings": family_specs.overclaim_disqualification_findings(specs),
         "failure_count": len(failures),
         "blocking_failure_count": len(blocking),
         "quarantine_failure_count": len(quarantined),
@@ -115,10 +115,10 @@ def _self_test() -> int:
             ],
         }
     ], target_names_by_row={"R": ["gold_target"]}))["row_template_count"] == 0
-    moat = family_specs.moat_disqualification_summary([
+    overclaim = family_specs.overclaim_disqualification_summary([
         {
-            "_path": "moat.yaml",
-            "family": "moat",
+            "_path": "overclaim.yaml",
+            "family": "overclaim",
             "version": 1,
             "status": "seed_only",
             "credit": {"source_credit_eligible": False, "clean_solver_credit_eligible": False},
@@ -129,7 +129,7 @@ def _self_test() -> int:
             ],
         }
     ])
-    assert moat["finding_count"] >= 1 and moat["by_family"].get("moat") == 1, moat
+    assert overclaim["finding_count"] >= 1 and overclaim["by_family"].get("overclaim") == 1, overclaim
     explicit_bad = family_specs.validate_specs([
         {
             "_path": "candidate.yaml",
@@ -168,7 +168,7 @@ def main() -> int:
         "quarantine_failure_count": payload["quarantine_failure_count"],
         "target_context_row_count": payload.get("target_context_row_count", 0),
         "usable_row_template_count": payload["usable"]["row_template_count"],
-        "moat_disqualification_summary": payload.get("moat_disqualification_summary", {}),
+        "overclaim_disqualification_summary": payload.get("overclaim_disqualification_summary", {}),
         "supply_quality": payload.get("supply_quality_summary", {}),
         "out": args.out,
     }, sort_keys=True))

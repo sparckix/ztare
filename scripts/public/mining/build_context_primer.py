@@ -3,7 +3,7 @@
 
 The cold rater never gives ≥5 because it has no codebase context —
 to it, every "impossibility result" looks the same. The contextualized
-rater gets a primer of THIS codebase's load-bearing infrastructure
+rater gets a primer of THIS codebase's decision-critical infrastructure
 plus the operator's curated memory entries, then rates new samples
 relative to those anchors.
 
@@ -185,7 +185,7 @@ def main():
     md = ["# Taste Rater — Context Primer\n"]
     md.append(
         "This primer is given to a contextualized rater BEFORE rating "
-        "samples. It establishes 'what this codebase considers load-bearing.' "
+        "samples. It establishes 'what this codebase considers decision-critical.' "
         "The rater uses this as the anchor for distinguishing "
         "domain-significant insights from generic-looking ones.\n\n"
         "**Use this only to anchor scoring relative to the codebase's "
@@ -220,7 +220,7 @@ def main():
         md.append("## Known anti-patterns (failure modes already catalogued)\n")
         md.append(
             "Artifacts that surface a NEW failure mode not in this list are "
-            "load-bearing. Artifacts that re-discover a known anti-pattern "
+            "decision-critical. Artifacts that re-discover a known anti-pattern "
             "are typical (score 2).\n"
         )
         for ap_entry in anti_patterns:
@@ -238,11 +238,11 @@ def main():
         "## Calibration anchors for the rating scale (0-5)\n\n"
         "Use these as worked examples:\n\n"
         "  - **Score 5 (paradigm-shifting):** A structural finding that "
-        "would force a rewrite of one of the load-bearing seams above. "
+        "would force a rewrite of one of the decision-critical seams above. "
         "Example: GP-168 unfalsifiability theorem (closure requires "
         "exogenous resource pressure) reframed the apparatus's bicameral "
         "design assumption.\n"
-        "  - **Score 4 (load-bearing/mechanism-revealing):** Concrete "
+        "  - **Score 4 (decision-critical/mechanism-revealing):** Concrete "
         "mechanism, named gap, or structural framing that a future "
         "reader/seam will cite. Example: GP-138 Noether information-"
         "theoretic impossibility (selector group bounded by Aut(AST)).\n"

@@ -261,6 +261,9 @@ def main() -> int:
                          "(default: coverage metric + bounded sample only — "
                          "a full per-tick spew is itself the buried-"
                          "prescription anti-pattern)")
+    ap.add_argument("--skip-arch-self", action="store_true",
+                    help="skip the expensive architecture-index self-surfacing "
+                         "backstop; intended for latency-sensitive RD briefs")
     args = ap.parse_args()
 
     if not MENU.exists():
@@ -276,19 +279,23 @@ def main() -> int:
         print(f"WARN: surfacing_gap — prescription has NO forcing "
               f"surfacing on precheck path: {g}")
 
-    arch_gaps, arch_tested = arch_self_surfacing_gaps()
-    cov = (arch_tested - len(arch_gaps)) / arch_tested if arch_tested else 1.0
-    print(f"INFO: arch-index completeness backstop — "
-          f"{arch_tested - len(arch_gaps)}/{arch_tested} primitives "
-          f"self-surfacing ({cov:.0%} deterministic-prior coverage). "
-          f"The deterministic surface is a WEAK PRIOR only; the forced "
-          f"authoritative path is agent primitives_considered (GAP-F).")
-    shown = arch_gaps if args.verbose_arch else arch_gaps[:10]
-    for ag in shown:
-        print(f"WARN: arch_primitive: {ag}")
-    if not args.verbose_arch and len(arch_gaps) > len(shown):
-        print(f"WARN: ... {len(arch_gaps) - len(shown)} more "
-              f"self-surfacing gaps (run --verbose-arch for the full list)")
+    if args.skip_arch_self:
+        print("INFO: arch-index completeness backstop skipped "
+              "(run without --skip-arch-self for full self-surfacing audit)")
+    else:
+        arch_gaps, arch_tested = arch_self_surfacing_gaps()
+        cov = (arch_tested - len(arch_gaps)) / arch_tested if arch_tested else 1.0
+        print(f"INFO: arch-index completeness backstop — "
+              f"{arch_tested - len(arch_gaps)}/{arch_tested} primitives "
+              f"self-surfacing ({cov:.0%} deterministic-prior coverage). "
+              f"The deterministic surface is a WEAK PRIOR only; the forced "
+              f"authoritative path is agent primitives_considered (GAP-F).")
+        shown = arch_gaps if args.verbose_arch else arch_gaps[:10]
+        for ag in shown:
+            print(f"WARN: arch_primitive: {ag}")
+        if not args.verbose_arch and len(arch_gaps) > len(shown):
+            print(f"WARN: ... {len(arch_gaps) - len(shown)} more "
+                  f"self-surfacing gaps (run --verbose-arch for the full list)")
 
     promos = promotion_recommendations()
     for p in promos:

@@ -480,7 +480,7 @@ def main() -> int:
             "unverified_bound": (
                 "Iterations where a critical bound, derivation step, or quantitative claim "
                 "was asserted without formal proof or constructive derivation. The judge "
-                "identified a load-bearing assumption that the mutator treated as given but "
+                "identified a decision-critical assumption that the mutator treated as given but "
                 "never justified."
             ),
             "exhaustiveness_claim": (
@@ -502,7 +502,7 @@ def main() -> int:
                 "expected from the model."
             ),
             "catastrophic_assumption": (
-                "Iterations where the judge identified a single catastrophic or load-bearing "
+                "Iterations where the judge identified a single catastrophic or decision-critical "
                 "assumption that the entire thesis rests on. If that assumption is wrong, the "
                 "thesis collapses entirely. These are structural single-points-of-failure in "
                 "the argument architecture."
@@ -526,7 +526,7 @@ def main() -> int:
             "gate_boundary": (
                 "Iterations where an arbitrary or unjustified threshold, tolerance, or "
                 "gate boundary was identified as the weakest element. The numerical cutoff "
-                "is load-bearing but its value was not derived from first principles."
+                "is decision-critical but its value was not derived from first principles."
             ),
             "data_validity": (
                 "Iterations where the judge identified concerns about data source reliability, "

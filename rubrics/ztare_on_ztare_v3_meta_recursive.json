@@ -61,7 +61,7 @@
       "4th_plus_same_class": 50
     },
     "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
-    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+    "cross_substrate_ledger_path": "analytics/public/queries/rd/cross_substrate_explored_classes.jsonl"
   },
   "_meta_recursion_safeguards": {
     "max_recursion_depth": 1,

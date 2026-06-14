@@ -62,7 +62,7 @@ transition step, not just mention them as tokens):
 
 ADDITIONAL CHECKS (META-PATTERN-023 4-scope coverage):
 - LOCAL scope: each transition step explicitly verified.
-- CHAIN scope: overall chain's load-bearing piece named.
+- CHAIN scope: overall chain's decision-critical piece named.
 - RECURSIVE scope: sub-chains audited; recursion stabilized before encoding.
 - META scope: cross-scope failure modes examined; strategic framing audited.
 
@@ -175,7 +175,7 @@ def aggregate_pattern_026_verdicts(
     consensus = max(counts.items(), key=lambda kv: kv[1])[0]
 
     # Cross-provider count of: paraphrase deferrals, face-saving limits,
-    # corrective-bias detection, load-bearing-without-pass-gate items.
+    # corrective-bias detection, decision-critical-without-pass-gate items.
     deferrals_counts = [len(r.get("paraphrase_laundered_deferrals", [])) for _, r in valid]
     facesave_counts = [len(r.get("face_saving_limitations", [])) for _, r in valid]
     corrective_bias_yes = sum(

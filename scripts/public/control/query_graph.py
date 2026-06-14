@@ -16,7 +16,7 @@ Builds on:
   - scripts/public/validators/validate_knowledge_graph.py (drift validator) — same data source
   - /tmp/gp216_graph_db_prototype.py (extractor) — regenerate graph if needed
 
-This is the load-bearing tool for Pattern 10 to actually deliver Director-leverage.
+This is the decision-critical tool for Pattern 10 to actually deliver Director-leverage.
 Until this exists, the graph is just data; with this, the graph is queryable infrastructure.
 """
 from __future__ import annotations

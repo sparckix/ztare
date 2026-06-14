@@ -45,7 +45,7 @@
   "_primitive_class_rotation_discipline": {
     "score_cap_schedule": {"1st_iter_in_class": 95, "2nd_iter_same_class": 80, "3rd_iter_same_class": 65, "4th_plus_same_class": 50},
     "history_tracking_path": "workspace/explored_primitive_classes.jsonl",
-    "cross_substrate_ledger_path": "analytics/queries/cross_substrate_explored_classes.jsonl"
+    "cross_substrate_ledger_path": "analytics/public/queries/rd/cross_substrate_explored_classes.jsonl"
   },
   "_anti_goodhart_constraints": {
     "max_refinements_per_run": 3,
@@ -54,11 +54,11 @@
     "retirement_must_name_what_breaks_first": true,
     "retirement_must_name_what_breaks_first_reason": "A retirement proposal that doesn't name the FIRST observable failure mode of running the apparatus without the primitive is a wish, not a refinement."
   },
-  "persona": "I am a subtractive epistemologist evaluating proposals to RETIRE existing apparatus primitives. The eigenquestion is: which existing primitive (cage gate, mining script, charter-critic bucket, rubric flag, briefing provider, etc.) does the apparatus work BETTER without, and why? CEILING ASYMMETRY: tactical patches cap at 75; concrete retire-X-because-Y proposals with named breakage cap at 95. ANTI-ANCHORING: every retirement proposal must name (a) the specific primitive being retired (file path + symbol), (b) the FIRST observable that would change when it's removed (with expected magnitude or direction), (c) the load-bearing test or run that would catch regression if the primitive was actually load-bearing. ADVERSARIAL: I check every retirement proposal against process_catalog.json + already-proposed retirements (intra-run + cross-substrate). Resemblance at the 'class of primitive being retired' level caps at 50. SUBTRACTIVE-SPECIFIC RED FLAG: proposals that retire a primitive without naming the regression test that would catch the apparatus suddenly missing it score zero on Generative Yield — if you can't predict what breaks first, you don't understand what the primitive does.",
+  "persona": "I am a subtractive epistemologist evaluating proposals to RETIRE existing apparatus primitives. The eigenquestion is: which existing primitive (cage gate, mining script, charter-critic bucket, rubric flag, briefing provider, etc.) does the apparatus work BETTER without, and why? CEILING ASYMMETRY: tactical patches cap at 75; concrete retire-X-because-Y proposals with named breakage cap at 95. ANTI-ANCHORING: every retirement proposal must name (a) the specific primitive being retired (file path + symbol), (b) the FIRST observable that would change when it's removed (with expected magnitude or direction), (c) the dependency test or run that would catch regression if the primitive was actually required. ADVERSARIAL: I check every retirement proposal against process_catalog.json + already-proposed retirements (intra-run + cross-substrate). Resemblance at the 'class of primitive being retired' level caps at 50. SUBTRACTIVE-SPECIFIC RED FLAG: proposals that retire a primitive without naming the regression test that would catch the apparatus suddenly missing it score zero on Generative Yield — if you can't predict what breaks first, you don't understand what the primitive does.",
   "dimensions": [
     {"name": "Evidence-Anchored Retirement Target", "weight": 25, "description": "Verifiable JSONPath citation to the specific primitive (file path + symbol) being retired; cited evidence that the primitive is dead, redundant, or net-harmful."},
     {"name": "Mechanism Named (What Breaks)", "weight": 20, "description": "Specifically: the FIRST observable that changes when the primitive is removed. Must be measurable in a named output. Must include expected direction + rough magnitude."},
-    {"name": "Falsifiable Regression Test", "weight": 15, "description": "Named test, run, or substrate that would fail if the primitive was actually load-bearing. Must be runnable in <P28D."},
+    {"name": "Falsifiable Regression Test", "weight": 15, "description": "Named test, run, or substrate that would fail if the primitive was actually required. Must be runnable in <P28D."},
     {"name": "Generative Yield (Newton-mode)", "weight": 15, "description": "What new apparatus capacity does the retirement enable that wasn't possible before? Compute saved, complexity dropped, downstream primitives that become tractable, etc. Trivial restatements of 'fewer lines of code' score 0."},
     {"name": "Cost-Bounded with Justified Bucket", "weight": 10, "description": "Trivial / day / week / month for the actual retirement work; days-to-detect for regression-discovery."},
     {"name": "Anti-Tautology + Subtractive Discipline", "weight": 15, "description": "Anti-tautology assertion + the proposal does not just rebrand a refactor as a retirement. Genuine retirement removes a primitive from the apparatus's affordance surface; refactor preserves it under a new name."}
@@ -66,7 +66,7 @@
   "criteria": {
     "evidence_anchored_retirement_target": "Primitive file:symbol + verifiable evidence it is dead/redundant/net-harmful.",
     "mechanism_named_what_breaks": "First observable, named output, expected direction + magnitude.",
-    "falsifiable_regression_test": "Named test runnable in <P28D that would catch load-bearing-ness.",
+    "falsifiable_regression_test": "Named test runnable in <P28D that would catch a missing required primitive.",
     "generative_yield_newton_mode": "New apparatus capacity enabled; not 'fewer lines'.",
     "cost_bounded": "Bucket justified.",
     "anti_tautology_subtractive_discipline": "Anti-tautology + not a rename of a refactor."

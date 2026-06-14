@@ -162,14 +162,14 @@ def render(rows: list[dict]) -> str:
         "the **kind table** matching your problem class. Use lexical/structural "
         "triggers in the `applicability` column to match. **Honest scoring rule:** "
         "primitives at impact_factor 0-1 may be architectural debt — verify "
-        "before invoking; primitives at 4-5 fired in load-bearing ways recently "
+            "before invoking; primitives at 4-5 produced consequential outputs recently "
         "and are safe defaults."
     )
     lines.append("")
     lines.append(
         "Re-render via `python scripts/public/control/render_architecture_index.py`. "
         "Update `impact_factor_expost` + `last_used` when a primitive fires "
-        "in a load-bearing way."
+        "in a consequential way."
     )
     lines.append("")
     lines.append("---")
@@ -182,7 +182,7 @@ def render(rows: list[dict]) -> str:
         if kind in kind_hist:
             lines.append(f"- `{kind}`: {kind_hist[kind]}")
     lines.append("")
-    lines.append("**By impact factor (0=stale ... 5=tonight-load-bearing):**")
+    lines.append("**By impact factor (0=stale ... 5=recently consequential):**")
     lines.append("")
     for impact in sorted(impact_hist.keys(), reverse=True):
         bar = "#" * impact_hist[impact]
@@ -193,7 +193,7 @@ def render(rows: list[dict]) -> str:
     lines.append("## TOP 10 HIGH-IMPACT PRIMITIVES")
     lines.append("")
     lines.append(
-        "These are the primitives most-recently load-bearing. New agents "
+        "These are the primitives with the strongest recent evidence. New agents "
         "should **default to these** when applicable; deviation requires a "
         "stated reason in the F-row."
     )
