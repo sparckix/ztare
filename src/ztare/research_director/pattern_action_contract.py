@@ -41,6 +41,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from src.ztare.common.kernel_action_schema import KernelActionSchema
+
 
 REPO = Path(__file__).resolve().parents[3]
 OUT_PATH = REPO / "analytics" / "public" / "queries" / "rd_pattern_action_contract.json"
@@ -70,6 +72,7 @@ class PatternActionContract:
     stop_rule: str = ""
     decision_rule: str = ""
     evidence_basis: str = ""
+    kernel_action_schemas: list[dict] = field(default_factory=list)
 
 
 HARD_RESIDUAL_TOKENS = {
@@ -221,7 +224,6 @@ PORTABLE_ESTIMATE_RECEIPT_PHRASES = (
     "cand_g",
 )
 
-
 def _tokens(text: str | None) -> set[str]:
     raw = (text or "").lower().replace("_", " ").replace("-", " ")
     toks = set(raw.split())
@@ -232,6 +234,66 @@ def _tokens(text: str | None) -> set[str]:
 
 def _has_any(haystack: Iterable[str], needles: set[str]) -> bool:
     return any(item in needles for item in haystack)
+
+
+def _nearest_confuser_from_tests(route_tests: list[str]) -> str:
+    for test in route_tests:
+        if "confuser" in test.lower():
+            return test
+    return (
+        "pattern name, primitive vocabulary, or carrier label selected without "
+        "the source-bound action fields"
+    )
+
+
+def _kernel_action_schemas_for_contract(
+    *,
+    scope: str | None,
+    goal: str | None,
+    problem_surfaces: list[str],
+    pattern_chain: list[str],
+    route_tests: list[str],
+    carriers: list[EvidenceCarrier],
+) -> list[dict]:
+    actions: list[dict] = []
+    for carrier in carriers:
+        if not carrier.required:
+            continue
+        actions.append(
+            KernelActionSchema(
+                source_kind="pattern_action_contract",
+                action_family="pattern_contract",
+                action_name=carrier.name,
+                source_summary=carrier.acceptance_check,
+                target_mapping=(
+                    f"fill {carrier.artifact_slot} for "
+                    f"{(goal or scope or 'current research task')[:160]}"
+                ),
+                nearest_confuser=_nearest_confuser_from_tests(route_tests),
+                falsifier=(
+                    "the artifact is absent, lacks required fields, or follows "
+                    "the named confuser instead of the selected action"
+                ),
+                verification_artifact=carrier.artifact_slot,
+                action_constraints=[
+                    *carrier.required_fields,
+                    carrier.acceptance_check,
+                ],
+                evidence_basis=(
+                    "epistemic-generation: checked carrier fields and "
+                    "nearest-confuser rejection beat pattern labels"
+                ),
+                payload={
+                    "scope": scope,
+                    "goal_excerpt": (goal or "")[:500],
+                    "problem_surfaces": list(problem_surfaces),
+                    "pattern_chain": list(pattern_chain),
+                    "carrier": asdict(carrier),
+                    "route_tests": list(route_tests),
+                },
+            ).to_dict()
+        )
+    return actions
 
 
 def build_pattern_action_contract(
@@ -255,9 +317,9 @@ def build_pattern_action_contract(
         _has_any(all_tokens, PDE_TOKENS)
         or "navier" in all_tokens
         or "stokes" in all_tokens
-        or "ns" in scope_l
+        or "ns" in scope_tokens
     )
-    pde = _has_any(all_tokens, PDE_TOKENS) or pressure_is_pde or "ns" in scope_l
+    pde = _has_any(all_tokens, PDE_TOKENS) or pressure_is_pde or "ns" in scope_tokens
     formal = bool({"lean", "formal", "theorem", "lemma"} & all_tokens)
     analogy = (
         _has_any(all_tokens, ANALOGY_TOKENS)
@@ -291,16 +353,44 @@ def build_pattern_action_contract(
     )
     try:
         from src.ztare.research_director.primitive_operator_cards import (
+            route_operator_cards,
             route_obligation_classes,
         )
+        context = " ".join(part for part in (scope or "", goal or "") if part)
         obligation_spine = [
             item.class_id for item in route_obligation_classes(
-                context=" ".join(part for part in (scope or "", goal or "") if part),
+                context=context,
                 top_n=2,
             )
         ]
+        routed_operator_cards = route_operator_cards(context=context, top_n=8)
     except Exception:  # noqa: BLE001
         obligation_spine = []
+        routed_operator_cards = []
+    primary_card_id = routed_operator_cards[0].card_id if routed_operator_cards else ""
+    matched_by_card = {
+        card.card_id: {term.lower() for term in card.matched_terms}
+        for card in routed_operator_cards
+    }
+    reflexive_mining = (
+        primary_card_id == "OP-RMI-01"
+        or bool(
+            matched_by_card.get("OP-RMI-01", set())
+            & {"reflexive mining", "reflexive mine", "primitive roi", "capability roi", "operations intelligence"}
+        )
+    )
+    autoresearch_workbench = (
+        primary_card_id == "OP-AWR-01"
+        or (
+            primary_card_id != "OP-RMI-01"
+            and bool(
+                matched_by_card.get("OP-AWR-01", set())
+                & {"autoresearch", "auto research", "workbench", "agentic workbench"}
+            )
+        )
+    )
+    if primary_card_id == "OP-AWR-01":
+        reflexive_mining = False
 
     surfaces: list[str] = []
     chain: list[str] = []
@@ -728,9 +818,71 @@ def build_pattern_action_contract(
         if "ANTI-PATTERN-013:lean_closure_laundering" not in anti:
             anti.append("ANTI-PATTERN-013:lean_closure_laundering")
 
+    if autoresearch_workbench:
+        surfaces.append("autoresearch_workbench_routing")
+        if "OP-AWR-01:autoresearch_workbench_routing" not in chain:
+            chain.append("OP-AWR-01:autoresearch_workbench_routing")
+        carriers.append(
+            EvidenceCarrier(
+                name="autoresearch_workbench_routing",
+                required=True,
+                artifact_slot="autoresearch_workbench_routing_artifact",
+                acceptance_check=(
+                    "record task, project family, bounded-claim/evaluator/rubric/"
+                    "artifact booleans, router decision, missing surfaces, "
+                    "worker metadata, saved route JSON, action-impact row, and "
+                    "a route-specific evidence reference to the autoresearch "
+                    "run/projection or prepared/bypassed surface"
+                ),
+                required_fields=[
+                    "task",
+                    "project_family",
+                    "bounded_claim",
+                    "stable_evaluator",
+                    "rubric_ready",
+                    "artifact_surface",
+                    "workbench_router_decision",
+                    "why_not_autoresearch",
+                    "worker_metadata",
+                    "route_json_ref",
+                    "action_impact_ref",
+                    "workbench_evidence_ref",
+                ],
+            )
+        )
+
+    if reflexive_mining:
+        surfaces.append("reflexive_mining_instrument_check")
+        if "OP-RMI-01:reflexive_mining_instrument_check" not in chain:
+            chain.append("OP-RMI-01:reflexive_mining_instrument_check")
+        carriers.append(
+            EvidenceCarrier(
+                name="reflexive_mining_instrument_check",
+                required=True,
+                artifact_slot="reflexive_mining_instrument_artifact",
+                acceptance_check=(
+                    "artifact names the portfolio question, inspected source "
+                    "refs, metric name/value, freshness or sample-scope caveat, "
+                    "decision consequence, falsifier, and next action; activity "
+                    "volume alone is not accepted as yield evidence"
+                ),
+                required_fields=[
+                    "portfolio_question",
+                    "source_refs",
+                    "metric_name",
+                    "metric_value",
+                    "freshness_or_scope_note",
+                    "decision_consequence",
+                    "falsifier",
+                    "next_action",
+                ],
+            )
+        )
+
     if (
         hard or pde or analogy or surplus_lift or claim_boundary
         or meta_language or portable_estimate_receipt or formal
+        or autoresearch_workbench or reflexive_mining
     ):
         carriers.insert(
             0,
@@ -835,14 +987,26 @@ def build_pattern_action_contract(
             out.append(x)
         return out
 
+    problem_surfaces = dedupe(surfaces)
+    pattern_chain = dedupe(chain)
+    anti_patterns = dedupe(anti)
+    kernel_action_schemas = _kernel_action_schemas_for_contract(
+        scope=scope,
+        goal=goal,
+        problem_surfaces=problem_surfaces,
+        pattern_chain=pattern_chain,
+        route_tests=route_tests,
+        carriers=carriers,
+    )
+
     return PatternActionContract(
         generated_at=datetime.now(timezone.utc).isoformat(),
         scope=scope,
         goal_excerpt=(goal or "")[:500],
-        problem_surfaces=dedupe(surfaces),
+        problem_surfaces=problem_surfaces,
         obligation_spine=obligation_spine,
-        pattern_chain=dedupe(chain),
-        anti_patterns=dedupe(anti),
+        pattern_chain=pattern_chain,
+        anti_patterns=anti_patterns,
         route_tests=route_tests,
         evidence_carriers=carriers,
         stop_rule=(
@@ -859,7 +1023,7 @@ def build_pattern_action_contract(
             "an explicit nearest-confuser rejection before accepting a repair."
         ),
         evidence_basis=(
-            "workingpapers/epistemic-generation/research_log.md "
+            "epistemic-generation/research_log.md "
             "V54/MM-V7/V55/MM-V8/V183b/V183b-light: "
             "passive labels and large menus were weak; target primitive/mm "
             "receipt gates rejected polished near-misses, and receipt-guided "
@@ -905,7 +1069,7 @@ def build_pattern_action_contract(
             "were weak by themselves; GP-219-style typed fields paid because "
             "they carried source-bound action constraints. Schema slots helped "
             "some, but delabeled action-constraint values matched full typed "
-            "fields. Therefore field names are scaffold/routing support; the "
+            "fields. Therefore field names are routing support; the "
             "evidence carrier is the action-constraint content plus confuser "
             "separation."
             " The 2026-05-23 hard evidence-shop endpoint is a surface-design "
@@ -917,6 +1081,7 @@ def build_pattern_action_contract(
             "by the task wording."
             " The 2026-05-23 paired-confuser pattern-contract endpoint shows the matching failure mode for orchestration patterns and anti-patterns: source-only and two-label-menu rows still ceilinged, but confuser contracts routed `6/6` outputs to the wrong family and `0/6` to the expected family. Wrong receipt fields are active steering surfaces, not harmless labels; require source_contract_alignment_check before accepting the routed operator receipt. The 2026-05-24 execution-artifact endpoint gives the current positive Track 2b result: action-label selection ceilinged, but surfacing the actual contract schema improved required-field coverage from 0.2292 to 1.00 in the artifact-only follow-up. Treat this module as an artifact-field compiler and confuser guard, not proof that the menu beats vanilla first-action routing. The 2026-05-24 anti-pattern pre-mortem pilot adds a separate mechanics-positive result: catalog snippets improved pre-outcome failure-family and preventive-action accuracy from 2/4 to 4/4, with confuser rejection present. Surface anti-patterns as preventive gate/artifact requirements, not decorative warnings. The 2026-05-24 three-axis Track 2b tests split patterns, menu, and anti-patterns: pattern contracts improved downstream consumer execution coverage (0.5583 to 0.9083) and pass rate (0.25 to 1.00), and the harder downstream-consumer handoff plus second-stage consumer tests improved pass rate from 0.00 to 0.6667 and field recovery/coverage from 0.1444 to 1.00 while not improving next-action accuracy; a naturalistic NS trace consumer test then showed contract-plus-evidence recovered RD carrier slots and problem surfaces at 1.00 vs 0.00 for evidence-only while both arms preserved confusers, so routed contracts should include a downstream_consumer_check but should not be sold as action-choice or mathematical-insight improvements; deterministic menu-memory recurrence screening was positive only for memory_plus_menu, but the live transparent-packet and cue-stripped reruns did not show incremental gain over memory or menu-only context; menu surfaces should be treated as sequencing on top of project memory rather than standalone routing, with no live improvement claim and no more short-packet menu tests unless naturalistic traces are available; the hard-negative anti-pattern packet ceilinged on block/proceed while catalog improved family naming (0.80 to 1.00), so anti-pattern guards must include a clean_proceed_condition and minimal preventive artifact to avoid block-everything skepticism. The cue-stripped anti-pattern missing-field test then separated catalog value from generic critique: catalog improved missing-field accuracy from 0.50 to 1.00 and family accuracy from 0.00 to 0.50 with no false-stop increase, so hard-residual anti-pattern guards should require the exact missing-or-paid preventive receipt plus nearest-confuser rejection. The 2026-05-24 naturalistic catch-ledger test did not add a positive Axis C result: catalog context matched evidence-only family accuracy (0.875), only slightly improved repair specificity (0.375 to 0.45), and reduced source-confuser recovery (0.4583 to 0.0) because outputs often rejected a neighboring catalog family rather than the concrete false interpretation in the source. Therefore anti-pattern guards must require a source_specific_false_reading_confuser in addition to any catalog-family confuser. H52 adds a fair bounded boundary-card repair trace after H48/H51: rejected cards repaired with source observation plus non-oracle gate results reached 1.0 downstream action/terminal accuracy with no false proceed/stop on the six-card packet; use boundary_card_repair_trace.py for live repair-loop measurement, not broad auto-execution. H45 validates a deterministic boundary-card gate on the held-out H29 card packet with synthetic mutations: wrong-card catch rate 0.9583 and correct-card false-block rate 0.0. Use `src/ztare/research_director/boundary_card_gate.py` for card shape/action-program validation before downstream action; it is not a semantic verifier for every source phrase. The 2026-05-24 B production-trace readiness audit found 0/131 official transitions ready for a corrected menu shadow-controller test because candidate_action, pre-decision markers, owed-artifact fields, and cost/regret signals were sparse; add only non-blocking orchestration_shadow_controller_log instrumentation, not enforcement. The 2026-05-24 mixed naturalistic anti-pattern test then showed evidence-only already ceilinged on decision, receipt, and source-confuser recovery, so the source-confuser contract is a safety/recording requirement rather than proven incremental model uplift on transparent naturalistic rows. The 2026-05-24 synthetic closed-loop anti-pattern intervention test adds the current stateful Axis C positive: anti-pattern contracts reduced mean episode cost from 8.5714 to 3.5714, improved per-leg action accuracy from 0.375 to 0.875, raised receipt accuracy from 0.6875 to 1.00, eliminated paid-clean overwork (0.25 to 0.00), and prevented repeated wrong moves after feedback (1.00 to 0.00), while source-confuser accuracy tied. Therefore hard-residual anti-pattern guards should record intervention_feedback_trace across repair/proceed legs, but this remains synthetic evidence rather than production uplift. The 2026-05-24 B/C interaction follow-on failed to show incremental value from combining the orchestration menu with the anti-pattern contract on the same closed-loop episodes: combined beat menu-only but underperformed the anti-pattern contract reference. Keep menu instrumentation separate from anti-pattern intervention obligations unless production traces show incremental gain. The H20 neutral/wrong-contract ablation strengthens the Axis C mechanism: the correct H18 anti-pattern contract beat neutral structure and wrong anti-pattern mappings on action accuracy and cost, while neutral structure could still name source confusers. The useful unit is the failure-family-to-preventive-receipt/action/payment mapping plus feedback trace, not generic checklist wording. H21 naturalistic delayed replay gives directional but failed support: the contract improved action, cost, receipt, and confuser metrics on real catch/transition material, but increased false stops on paid-clean rows. Add paid_clean_terminal_action so source narrowing, non-relapse, and defer receipts terminate in proceed rather than repeated verification or downgrade. H22 tested that repair and it failed on the same naturalistic delayed replay: cost and false stops improved, but action/source-confuser/terminal accuracy fell and paid-clean overwork did not improve. Treat paid_clean_terminal_action as a required record field, not a solved behavior; the remaining need is typed paid/unpaid boundary-state extraction. H23 corpus edge-confuser decomposition over the external V70 rows supports the orchestration edge unit under non-internal controls: correct_edge beat neutral/no_carrier by 0.25, wrong_edge trailed correct_edge by 0.5833, and wrong-choice delta was 0.5833. For menu/shadow instrumentation, record selected_residual_edge, rejected_nearest_confuser_edge, and edge_source_evidence; do not surface a menu edge without source-bound confuser separation. H24 external corpus boundary-state replay gives a directional but failed typed-boundary result: typed_boundary_contract improved action accuracy by 0.5714 and reduced cost by 39.06%, but failed safety because false_stop increased by 0.0714 on a paid proxy-benefit case. Record typed_boundary_state, but do not treat prompt-level boundary typing as solved terminal behavior. H25 external corpus boundary-preprocessor card fixes that failure in the same replay: action and terminal accuracy reached 1.00, false proceed and false stop were 0.00, and the CPS1 paid-narrow/unpaid-mechanism split was handled correctly. Surface boundary_preprocessor_card fields (paid_receipt, unpaid_receipt, permitted_update, blocked_update, next_action_rule); this proves action use of a structured card, not automatic extraction from raw sources. H26 then failed automatic extraction: mean field coverage was 0.5918, downstream action accuracy fell to 0.2143, and false proceed rose to 0.1429 because the extractor overused paid_narrow_boundary_with_unpaid_mechanism for unpaid or paid-negative cases. Require boundary_card_source_alignment_check before treating an extracted card as usable. H27 model-only boundary-card validation improved action accuracy from 0.2143 to 0.5714 but failed safety, with false proceed 0.0714 and field coverage 0.7347; a free-form validator is not an enforcement checker. H28 rule-backed validation then reached 0.8571 action accuracy and 0.9592 field coverage but narrowly missed threshold due to a brittle normalized cue. H28R repaired only the term-by-term/term by term source-cue match and recovered H25 performance exactly on the same packet: action accuracy 1.00, terminal accuracy 1.00, false proceed 0.00, false stop 0.00, field coverage 1.00. Therefore boundary cards should be treated as compiler IR: raw model parsing is insufficient, model-only validation is partial, and same-packet deterministic source-cue typechecking is promising but requires held-out cue-family validation before any universal parser claim. H29 then supplied held-out cue-family support across robotics, education, privacy/compliance, hiring fairness, materials discovery, wearable health, social media inference, and software reliability: deterministic rule-compiled cards beat model extraction by +0.4375 action accuracy, cut mean cost by 50%, reached field coverage 1.0, and kept false proceed/stop at 0.0. The remaining H29 misses were backend sequence-order errors despite correct card fields. H30 fixed that by compiling next_action_rule into action_program, current_action_index, required_next_action, and program_counter_rule: action accuracy and terminal accuracy reached 1.0, mean cost fell from 2.875 to 1.25, and false proceed/stop stayed 0.0. For multi-step boundary cards, require executable action-program fields; natural-language next-action rules alone are not enough. H31 tests the same compiler shape on Axis B orchestration menu routing: compiled_menu_program reached 1.0 action accuracy and 1.0 terminal accuracy, while menu_label_only had 0.5 action accuracy and 0.125 terminal accuracy despite high edge accuracy. The mechanism is program-counter execution: labels and source-only outputs often named the edge but repeated prerequisites or swapped terminal actions. Therefore orchestration menu surfaces should record selected_residual_edge, rejected_nearest_confuser_edge, edge_source_evidence, orchestration_action_program, current_action_index, required_next_action, and program_counter_rule; label-only menu prompting is not the active unit. H32-H34 test automatic compilation on a six-case external/synthetic packet. H32 free-form program synthesis failed: action accuracy 0.3333, worse than source-only 0.4167, with program exact rate 0.0. H33 typed residual-class selection plus deterministic lowering improved to 0.6667 but introduced false proceed 0.0833. H34 added source-cue check bits before lowering and matched hand-compiled reference: action and terminal accuracy 1.0, false proceed/stop 0.0, accepted class/program exact 1.0 despite requested class accuracy 0.8333. H35 then ablated controller burden on the same packet: compact checked contracts matched full checked contracts at 1.0 action and terminal accuracy, while class-only contracts fell to 0.4167 action accuracy and 0.0 terminal accuracy. H36 tested ten external-style synthetic rows with four outside-menu blockers: open_set_checked_compiler reached 1.0 accepted-class, program, action, and terminal accuracy, while closed_set_checked_compiler had 0.0 open-set accept accuracy and 0.7 action accuracy. H37 open-set specificity then showed that naming specific outside residual classes beat generic outside routing: open_specific_outside reached 1.0 class accuracy and 1.0 outside-specific accuracy, while closed_known_menu had 0.3571 class accuracy and forced known classes on 0.5 of outside rows. The raw compiler stress associate found typed no-cue compilation transfers better than free-form classing (0.875 vs 0.375 class accuracy) but weakly constrained action-program generation remains unreliable (program exact 0.25), so deterministic lowering remains mandatory. The wrong-contract associate found plausible wrong compact contracts forced the wrong family on 0.375 of rows; adding source-alignment fields reduced forced wrong-family to 0.0 and raised wrong-contract reject/repair to 1.0. H40 corrected end-to-end pipeline was positive: corrected_checked_pipeline reached 1.0 action and terminal accuracy versus 0.1667 source-only and 0.5417 raw free-form program pipeline, while raw free-form still had only 0.25 program exactness. H41 larger outside corpus was not a clean pass: open_specific_outside kept outside-specific accuracy at 1.0 but in-support accuracy fell to 0.75, so outside-specific expansion should be known-class-first/two-stage, not a flat expanded menu. H42 subtle wrong-contract robustness was negative for alignment sufficiency: source alignment increased explicit conflict mentions but did not improve action or repair accuracy over subtle wrong contracts; alignment alone is not enough, so add program-order and stop-condition checks rather than relying on alignment prose alone. Automatic orchestration compilation should therefore log requested_residual_class, accepted_residual_class, source_cue_check_status, source_cue_receipts, missing_source_cues, open_set_refusal_status, specific_outside_residual_class, source_contract_alignment_check, wrong_contract_repair_or_refusal, and deterministic lowering result for audit, but expose compact execution fields to RD agents; free-form program synthesis, class-only control, closed-menu forcing, and unchecked wrong-contract obedience should remain disallowed outside experiments."
         ),
+        kernel_action_schemas=kernel_action_schemas,
     )
 
 
@@ -932,6 +1097,23 @@ def write_pattern_action_contract(
     return contract
 
 
+def render_contract_receipt(contract: PatternActionContract, out_path: Path) -> str:
+    required_slots = [
+        carrier.artifact_slot
+        for carrier in contract.evidence_carriers
+        if carrier.required
+    ]
+    return "\n".join(
+        [
+            f"wrote pattern action contract: {out_path}",
+            f"problem_surfaces={','.join(contract.problem_surfaces) or 'none'}",
+            f"pattern_chain={','.join(contract.pattern_chain[:5]) or 'none'}",
+            f"required_carriers={','.join(required_slots[:8]) or 'none'}",
+            f"route_tests={len(contract.route_tests)}",
+        ]
+    )
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Emit a pattern-to-action contract for RD hard-residual work."
@@ -939,13 +1121,21 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--scope", default=None)
     parser.add_argument("--goal", default=None)
     parser.add_argument("--out", type=Path, default=OUT_PATH)
+    parser.add_argument(
+        "--print-json",
+        action="store_true",
+        help="print the full JSON payload to stdout instead of a compact receipt",
+    )
     args = parser.parse_args(argv)
     contract = write_pattern_action_contract(
         scope=args.scope,
         goal=args.goal,
         out_path=args.out,
     )
-    print(json.dumps(asdict(contract), indent=2))
+    if args.print_json:
+        print(json.dumps(asdict(contract), indent=2))
+    else:
+        print(render_contract_receipt(contract, args.out))
     return 0
 
 

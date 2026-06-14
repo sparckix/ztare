@@ -1,7 +1,10 @@
 from pathlib import Path
+from src.ztare.common.kernel_action_schema import validate_kernel_action_schema
 from src.ztare.research_director.pattern_action_contract import (
     build_pattern_action_contract,
+    main,
 )
+from src.ztare.research_director.primitive_operator_cards import route_operator_cards
 
 
 def test_hard_pde_formal_contract_forces_action_slots():
@@ -36,7 +39,36 @@ def test_hard_pde_formal_contract_forces_action_slots():
     } <= required_slots
     assert any("nearest confuser" in test for test in contract.route_tests)
     assert "V54/MM-V7/V55/MM-V8" in contract.evidence_basis
-    assert "workingpapers/epistemic-generation/research_log.md" in contract.evidence_basis
+    assert "epistemic-generation/research_log.md" in contract.evidence_basis
+
+
+def test_pattern_contract_exports_common_action_schemas_for_required_carriers():
+    contract = build_pattern_action_contract(
+        scope="general external residual",
+        goal=(
+            "use analogy and nearest-confuser checks to escape a stale "
+            "thesis without only rewriting the wording"
+        ),
+    )
+
+    required_carrier_count = sum(
+        1 for carrier in contract.evidence_carriers if carrier.required
+    )
+    assert len(contract.kernel_action_schemas) == required_carrier_count
+
+    analogy_action = next(
+        action
+        for action in contract.kernel_action_schemas
+        if action["verification_artifact"] == "analogy_receipt_artifact"
+    )
+    ok, missing = validate_kernel_action_schema(analogy_action)
+    assert ok is True
+    assert missing == []
+    assert analogy_action["source_kind"] == "pattern_action_contract"
+    assert analogy_action["action_family"] == "pattern_contract"
+    assert analogy_action["action_name"] == "analogy_mapping_receipt"
+    assert "target-side" in analogy_action["source_summary"]
+    assert "nearest confuser" in analogy_action["nearest_confuser"].lower()
 
 
 def test_general_contract_is_lightweight_when_no_hard_surface():
@@ -47,6 +79,136 @@ def test_general_contract_is_lightweight_when_no_hard_surface():
 
     assert contract.problem_surfaces == ["general_research_task"]
     assert contract.evidence_carriers[0].required is False
+    assert contract.kernel_action_schemas == []
+
+
+def test_cli_out_prints_compact_receipt_not_full_payload(tmp_path, capsys):
+    out = tmp_path / "contract.json"
+
+    rc = main([
+        "--goal",
+        "hard residual with stale repeated branches",
+        "--out",
+        str(out),
+    ])
+
+    captured = capsys.readouterr()
+    assert rc == 0
+    assert out.exists()
+    assert "wrote pattern action contract:" in captured.out
+    assert "problem_surfaces=" in captured.out
+    assert "evidence_basis" not in captured.out
+
+
+def test_cli_print_json_preserves_full_payload(tmp_path, capsys):
+    out = tmp_path / "contract.json"
+
+    rc = main([
+        "--goal",
+        "hard residual with stale repeated branches",
+        "--out",
+        str(out),
+        "--print-json",
+    ])
+
+    captured = capsys.readouterr()
+    assert rc == 0
+    assert out.exists()
+    assert '"evidence_basis"' in captured.out
+
+
+def test_autoresearch_workbench_surface_uses_typed_card_and_contract():
+    cards = route_operator_cards(
+        context=(
+            "Research Director deciding in-loop autoresearch workbench vs "
+            "out-of-loop subscription agent for a bounded claim with rubric surface"
+        ),
+        top_n=1,
+    )
+
+    assert cards
+    assert cards[0].card_id == "OP-AWR-01"
+
+    contract = build_pattern_action_contract(
+        scope="agentic workbench boundary",
+        goal=(
+            "route RD manual agent work against autoresearch workbench with "
+            "hypothesis projection and action intelligence logging"
+        ),
+    )
+
+    assert "autoresearch_workbench_routing" in contract.problem_surfaces
+    assert "OP-AWR-01:autoresearch_workbench_routing" in contract.pattern_chain
+    carrier = next(
+        carrier
+        for carrier in contract.evidence_carriers
+        if carrier.artifact_slot == "autoresearch_workbench_routing_artifact"
+    )
+    assert carrier.required is True
+    assert {
+        "workbench_router_decision",
+        "worker_metadata",
+        "route_json_ref",
+        "action_impact_ref",
+        "workbench_evidence_ref",
+    } <= set(carrier.required_fields)
+
+
+def test_reflexive_mining_surface_requires_measurement_receipt():
+    cards = route_operator_cards(
+        context=(
+            "Use reflexive mining, primitive ROI, bifurcation, and operations "
+            "intelligence to decide whether abandoned projects or kernel work "
+            "deserve attention."
+        ),
+        top_n=1,
+    )
+
+    assert cards
+    assert cards[0].card_id == "OP-RMI-01"
+
+    contract = build_pattern_action_contract(
+        scope="reflexive mining portfolio audit",
+        goal=(
+            "inspect primitive ROI, in-loop share, out-of-loop share, P0 metrics, "
+            "and operations intelligence before deciding the kernel roadmap"
+        ),
+    )
+
+    assert "reflexive_mining_instrument_check" in contract.problem_surfaces
+    assert "autoresearch_workbench_routing" not in contract.problem_surfaces
+    assert "OP-RMI-01:reflexive_mining_instrument_check" in contract.pattern_chain
+    assert "OP-AWR-01:autoresearch_workbench_routing" not in contract.pattern_chain
+    carrier = next(
+        carrier
+        for carrier in contract.evidence_carriers
+        if carrier.artifact_slot == "reflexive_mining_instrument_artifact"
+    )
+    assert {
+        "portfolio_question",
+        "source_refs",
+        "metric_name",
+        "metric_value",
+        "freshness_or_scope_note",
+        "decision_consequence",
+        "falsifier",
+        "next_action",
+    } <= set(carrier.required_fields)
+    assert "activity volume alone" in carrier.acceptance_check
+
+
+def test_route_row_coverage_gap_is_reflexive_instrument_not_workbench_route():
+    contract = build_pattern_action_contract(
+        scope="operations intelligence portfolio audit",
+        goal=(
+            "high out-of-loop share with missing agentic-workbench route rows; "
+            "decide whether to backfill route rows or continue kernel work"
+        ),
+    )
+
+    assert "reflexive_mining_instrument_check" in contract.problem_surfaces
+    assert "autoresearch_workbench_routing" not in contract.problem_surfaces
+    assert "OP-RMI-01:reflexive_mining_instrument_check" in contract.pattern_chain
 
 
 def test_pde_only_contract_still_requires_receipt_gate():
