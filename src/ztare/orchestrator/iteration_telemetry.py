@@ -312,6 +312,7 @@ def append_iteration_telemetry(
     mutator_usage: dict,
     judge_usage: dict,
     pending_loop_action: str,
+    information_yield_rationale: str | None = None,
     raw_judge_score: int | None = None,
     score_cap_reason: str | None = None,
     gp180_telemetry: dict | None = None,
@@ -398,8 +399,9 @@ def append_iteration_telemetry(
         },
         "estimated_cost_usd": combined_iteration_cost_usd(mutator_usage, judge_usage),
         "pending_loop_action": pending_loop_action,
-        # GP-180 path-adoption telemetry (2026-04-28). Tracks whether
-        # the mutator engaged the Lagrangian declaration path on this
+        "information_yield_rationale": information_yield_rationale or "",
+        # GP-180 declaration-adoption telemetry (2026-04-28). Tracks whether
+        # the mutator engaged the Lagrangian declaration on this
         # iter and how the apparatus processed it. Used by the
         # Noether-gaming-streak detector and by post-run analysis.
         "gp180": gp180_telemetry

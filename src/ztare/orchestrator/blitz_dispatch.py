@@ -135,15 +135,31 @@ _TRIVIAL_LAGRANGIAN_PATTERNS = [
     r"q\s*-\s*\(?\s*radius_log10",
 ]
 
-def _baseline_candidate_score(thesis_text: str) -> float:
+def _requires_lagrangian_contract(rubric_data: dict | None) -> bool:
+    """Whether the active rubric expects Lagrangian/path-B structure."""
+    rubric = rubric_data or {}
+    if bool(rubric.get("enable_lagrangian_derivation", False)):
+        return True
+    modes: list[str] = []
+    primary = rubric.get("rubric_mode")
+    if isinstance(primary, str):
+        modes.append(primary.strip().lower())
+    secondary = rubric.get("rubric_modes") or []
+    if isinstance(secondary, list):
+        modes.extend(str(item).strip().lower() for item in secondary if str(item).strip())
+    return "invariant_search" in modes
+
+
+def _baseline_candidate_score(thesis_text: str, *, rubric_data: dict | None = None) -> float:
     """Cheap syntactic validity scorer — used when recombination is OFF.
 
     Same shape as the original Phase 4e wire-in heuristic + two
     structural hooks added 2026-04-28 from the iter-4 audit:
 
-    - Trivial-Lagrangian penalty: catches `(q − feature)²` harmonic
-      patterns that defeat B1's intent without requiring GP-180 sympy
-      dispatch per worker.
+    - Lagrangian/path-B penalties only apply when the active rubric asks
+      for that structure. Ordinary fit/discriminator runs should not lose
+      the tournament because they omit a Lagrangian they were never asked
+      to produce.
     - No domain-specific keyword bonus. Earlier versions rewarded
       domain-specific vocabulary globally; that overfits the kernel to
       whichever substrate happened to motivate the last repair.
@@ -171,34 +187,35 @@ def _baseline_candidate_score(thesis_text: str) -> float:
         pass
     s += min(len(thesis_text) / 4000.0, 1.0)
 
+    lagrangian_required = _requires_lagrangian_contract(rubric_data)
+
     # Lagrangian declaration check — under invariant_search rubric mode
     # the apparatus contract requires LAGRANGIAN = "..." alongside the
     # legacy PARAMETRIC_FORM. Audit of run 1777403089 found iter-2 had
     # ZERO Lagrangian declarations across all 3 workers, iter-3 had 1/3,
     # iter-4 had 3/3 (but 2 trivial). Workers that omit LAGRANGIAN under
     # invariant_search are operating in legacy mode and cannot pass
-    # path-b promotion floor; rank them below workers that declare one.
+    # variational-promotion floor; rank them below workers that declare one.
     has_lagrangian = "LAGRANGIAN" in thesis_text and "LAGRANGIAN_FREE" not in thesis_text
-    if not has_lagrangian:
+    if lagrangian_required and not has_lagrangian:
         s -= 1.5
 
-    # Trivial-Lagrangian penalty — only inspect inside an extracted
-    # LAGRANGIAN = "..." block to avoid false positives on q-dot terms.
-    is_trivial_lag = False
-    try:
-        lag_match = _re.search(
-            r'LAGRANGIAN\s*=\s*[\(\"\']([^\"\']{20,2000}?)[\)\"\']',
-            thesis_text, _re.DOTALL,
-        )
-        if lag_match:
-            lag_body = lag_match.group(1)
-            for pat in _TRIVIAL_LAGRANGIAN_PATTERNS:
-                if _re.search(pat, lag_body):
-                    is_trivial_lag = True
-                    s -= 2.0  # B1-shadow penalty: still positive, but ranks below
-                    break        # non-trivial siblings in the tournament
-    except Exception:
-        pass
+    if lagrangian_required:
+        # Trivial-Lagrangian penalty — only inspect inside an extracted
+        # LAGRANGIAN = "..." block to avoid false positives on q-dot terms.
+        try:
+            lag_match = _re.search(
+                r'LAGRANGIAN\s*=\s*[\(\"\']([^\"\']{20,2000}?)[\)\"\']',
+                thesis_text, _re.DOTALL,
+            )
+            if lag_match:
+                lag_body = lag_match.group(1)
+                for pat in _TRIVIAL_LAGRANGIAN_PATTERNS:
+                    if _re.search(pat, lag_body):
+                        s -= 2.0  # B1-shadow penalty: still positive, but ranks below
+                        break        # non-trivial siblings in the tournament
+        except Exception:
+            pass
 
     return s
 
@@ -328,7 +345,7 @@ def dispatch_mutator_blitz(deps: BlitzDispatchInputs) -> BlitzDispatchResult:
     # Stage 2+3: recombination (panel-revised, opt-in)
     # Bug A fix (dry-run 2026-04-28): pick_best_candidate calls scoring_fn(r)
     # with a MutatorResult, not a string. Wrap to extract .thesis_text.
-    score_fn = lambda r: _baseline_candidate_score(r.thesis_text)
+    score_fn = lambda r: _baseline_candidate_score(r.thesis_text, rubric_data=deps.rubric_data)
     n_crossovers = 0
     fusion_succeeded = False
     if deps.rubric_data.get("enable_recombination", False) and n_originals >= 2:

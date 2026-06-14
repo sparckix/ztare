@@ -26,6 +26,19 @@ from pathlib import Path
 from src.ztare.common.file_io import write_json, append_jsonl
 
 
+_EVENT_LABELS: dict[str, str] = {
+    "topological_pivot_profile_injected": "structural_pivot_profile_injected",
+    "topological_pivot_emergency": "emergency_structural_pivot",
+    "v4_bounded_mutation_override": "v4_bounded_mutation_override",
+    "pivot_skipped_gp149_i3": "pivot_skipped_by_weakest_link_class",
+}
+
+
+def event_label_for(event_type: str) -> str:
+    """Return the operator-facing label for a compatibility event id."""
+    return _EVENT_LABELS.get(event_type, event_type)
+
+
 def record_loop_event(
     workspace_dir: Path,
     *,
@@ -53,6 +66,7 @@ def record_loop_event(
         "run_id": run_id,
         "timestamp": datetime.now().isoformat(),
         "event_type": event_type,
+        "event_label": event_label_for(event_type),
         "project": project_name,
         "iteration_index": iteration_index,
         "stagnation_count": stagnation_count,

@@ -8,6 +8,8 @@ Two small helpers extracted from autoresearch_loop:
   - ``populate_weakest_class(signal)`` — enrich a frozen
     IterationSignal with `weakest_class` via the runtime regex
     classifier; returns the input unchanged when already populated
+  - ``weakest_point_text(signal)`` — read weakest-point text from either
+    the current IterationSignal dataclass or older dict-shaped records
 
 Both pure / near-pure (the second imports the classifier lazily
 to avoid a top-level dep cycle).
@@ -51,3 +53,12 @@ def populate_weakest_class(signal):
         return signal
     import dataclasses as _dc
     return _dc.replace(signal, weakest_class=cls)
+
+
+def weakest_point_text(signal) -> str:
+    """Return weakest-point text from an IterationSignal or legacy dict row."""
+    if signal is None:
+        return ""
+    if isinstance(signal, dict):
+        return str(signal.get("weakest_point") or "")
+    return str(getattr(signal, "weakest_point", "") or "")
