@@ -11,6 +11,36 @@ DYNAMIC ?= 0
 EVOLVE ?= 0
 CROSS_FAMILY ?= 0
 COMMITTEE_MODEL ?=
+AGENT_MUTATOR ?= 0
+AGENT_JUDGE ?= 0
+AGENT_COMMITTEE ?= 0
+AGENT_INVERTER ?= 0
+AGENT_RECOMMENDER ?= 0
+AGENT_RUNTIME ?=
+AGENT_MUTATOR_RUNTIME ?=
+AGENT_JUDGE_RUNTIME ?=
+AGENT_COMMITTEE_RUNTIME ?=
+AGENT_INVERTER_RUNTIME ?=
+AGENT_RECOMMENDER_RUNTIME ?=
+AGENT_TIMEOUT ?=
+MATCHED_AGENT_TIMEOUT ?= $(or $(AGENT_TIMEOUT),240)
+MATCHED_RUN_ID ?=
+MATCHED_RUN_ROLE ?=
+RUN_MATCHED_PAIR ?= 0
+DISPATCH_CALL_SITE ?= mutator
+CONTRACT ?= text
+CONTRACTS ?= text,mutator,judge,committee,inverter
+RECOMMENDER_MODE ?= cold
+RECOMMENDER_N ?= 3
+RECOMMENDER_CLASS ?=
+RECOMMENDER_SUBSTRATE_CLASS ?=
+BRANCH_GRID ?=
+INBOX ?=
+RAW_PAYLOAD ?=
+PROMPT_ONLY ?= 0
+SKIP_LLM ?= 0
+LIVE ?= 0
+FULL_AUTO ?= 0
 # Internal computed flag: when DYNAMIC=1, append --dynamic to the loop invocation.
 # Usage: make loop PROJECT=<p> RUBRIC=<r> DYNAMIC=1  (uses rubrics/dynamic_<p>.json via autoresearch_loop's --dynamic flag)
 # Optional COMMITTEE_MODEL=<label> overrides the committee generator model.
@@ -22,6 +52,7 @@ DYNAMIC_FLAG := $(if $(filter 1,$(DYNAMIC)),--dynamic,)
 EVOLVE_FLAG := $(if $(filter 1,$(EVOLVE)),--auto-evolve,)
 CROSS_FAMILY_FLAG := $(if $(filter 1,$(CROSS_FAMILY)),--require_cross_family,)
 COMMITTEE_MODEL_FLAG := $(if $(COMMITTEE_MODEL),--committee_model $(COMMITTEE_MODEL),)
+AGENT_DISPATCH_ENV := $(if $(filter 1,$(AGENT_MUTATOR)),ZTARE_AGENT_DISPATCH_MUTATOR=agent,) $(if $(filter 1,$(AGENT_JUDGE)),ZTARE_AGENT_DISPATCH_JUDGE=agent,) $(if $(filter 1,$(AGENT_COMMITTEE)),ZTARE_AGENT_DISPATCH_COMMITTEE=agent,) $(if $(filter 1,$(AGENT_INVERTER)),ZTARE_AGENT_DISPATCH_INVERTER_REVIEW=agent,) $(if $(filter 1,$(AGENT_RECOMMENDER)),ZTARE_AGENT_DISPATCH_SUBSTRATE_RECOMMENDER=agent,) $(if $(AGENT_RUNTIME),ZTARE_AUTORESEARCH_AGENT_RUNTIME=$(AGENT_RUNTIME),) $(if $(AGENT_MUTATOR_RUNTIME),ZTARE_AUTORESEARCH_MUTATOR_AGENT_RUNTIME=$(AGENT_MUTATOR_RUNTIME),) $(if $(AGENT_JUDGE_RUNTIME),ZTARE_AUTORESEARCH_JUDGE_AGENT_RUNTIME=$(AGENT_JUDGE_RUNTIME),) $(if $(AGENT_COMMITTEE_RUNTIME),ZTARE_AUTORESEARCH_COMMITTEE_AGENT_RUNTIME=$(AGENT_COMMITTEE_RUNTIME),) $(if $(AGENT_INVERTER_RUNTIME),ZTARE_AUTORESEARCH_INVERTER_REVIEW_AGENT_RUNTIME=$(AGENT_INVERTER_RUNTIME),) $(if $(AGENT_RECOMMENDER_RUNTIME),ZTARE_AUTORESEARCH_SUBSTRATE_RECOMMENDER_AGENT_RUNTIME=$(AGENT_RECOMMENDER_RUNTIME),) $(if $(AGENT_TIMEOUT),ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS=$(AGENT_TIMEOUT),) $(if $(MATCHED_RUN_ID),ZTARE_AUTORESEARCH_MATCHED_RUN_ID=$(MATCHED_RUN_ID),) $(if $(MATCHED_RUN_ROLE),ZTARE_AUTORESEARCH_MATCHED_RUN_ROLE=$(MATCHED_RUN_ROLE),)
 RENDERER ?=
 PDF ?= 0
 BENCH_JUDGE ?= gemini
@@ -53,15 +84,18 @@ $(error Unknown mutator Make variable(s): $(UNKNOWN_MUTATOR_VARS). Use MUTATOR_M
 endif
 
 .PHONY: help workspace-update evidence-compile evidence-prepare evidence-fetch rubric-review setup-project honeypot-loop loop audit-prompt _preflight_leak_audit synth committee benchmark benchmark-stage1 benchmark-stage1-ood benchmark-stage2 benchmark-stage3 benchmark-stage4 benchmark-stage5 benchmark-stage6 benchmark-stage24-bridge benchmark-bridge-scope benchmark-bridge-discovery benchmark-runner-r1 benchmark-runner-r2 benchmark-runner-r3 benchmark-runner-r4 benchmark-supervisor benchmark-supervisor-registry benchmark-supervisor-seed-registry benchmark-supervisor-genesis benchmark-supervisor-manifest benchmark-supervisor-backlog benchmark-supervisor-proposal benchmark-supervisor-staging benchmark-supervisor-wrappers benchmark-supervisor-refinement benchmark-supervisor-usage benchmark-supervisor-autoloop benchmark-supervisor-program-autoloop benchmark-supervisor-report benchmark-supervisor-gate-resolution benchmark-supervisor-findings-debate benchmark-supervisor-findings-runner benchmark-prose-verifier benchmark-document-assembler benchmark-supervisor-factory assemble-document supervisor-init supervisor-show supervisor-what-next supervisor-backlog supervisor-proposal supervisor-emit supervisor-commit supervisor-launch supervisor-autoloop supervisor-program-autoloop supervisor-report supervisor-resolve-gate bridge-meta-show bridge-meta-run-current bridge-meta-reset baseline camouflage gp-index arch-validate arch-validate-ex-ante audit-gate-coverage audit-gate-coverage-strict audit-gate-coverage-self-test \
-	primitives-extract primitives-draft primitive-approve paper1-legacy paper1-tsmc-legacy paper1-epistemic-legacy \
+	primitives-extract primitives-draft primitive-approve primitive-catalog-health primitive-parent-utility primitive-amnesia-eval primitive-catalog-repopulate primitive-catalog-build-atlas paper1-legacy paper1-tsmc-legacy paper1-epistemic-legacy \
+	gaming-vector-hardening-show gaming-vector-hardening-check-plan gaming-vector-hardening-sync-plan gaming-vector-hardening-run-current gaming-vector-hardening-run-vector gaming-vector-hardening-selftest \
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
-	v4-debate-init v4-debate-merge v4-debate-show experiment-loop seal wipe-sandbox
+	v4-debate-init v4-debate-merge v4-debate-show experiment-loop autoresearch-route autoresearch-projection autoresearch-dispatch-validate autoresearch-dispatch-canary autoresearch-dispatch-parity autoresearch-subscription-outcome-audit autoresearch-matched-transport-pair autoresearch-hillclimb-audit autoresearch-consequence-audit autoresearch-rubric-mode-audit autoresearch-kernel-health operations-intelligence autoresearch-substrate-recommend blitz-survival-report inloop-fixture-validate autoresearch-control-demo eigenquestion-propose eigenquestion-validate eigenquestion-status _preflight_eigenquestion_review seal wipe-sandbox \
+	action-intel-smoke action-intel-materialize-dry
 
 help:
 	@echo "ZTARE commands"
 	@echo ""
 	@echo "Variables:"
 	@echo "  PROJECT=<project> RUBRIC=<rubric> MODEL=<model> MUTATOR_MODEL=<model> JUDGE_MODEL=<model>"
+	@echo "  AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 AGENT_RECOMMENDER=1 [AGENT_RUNTIME=codex|claude]"
 	@echo "  MODE=factory|honeypot  (default: factory; honeypot sets ITERS=50 and skips pre-run pipeline)"
 	@echo ""
 	@echo "Run modes:"
@@ -78,6 +112,32 @@ help:
 	@echo "  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]"
 	@echo "  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] MUTATOR_MODEL=gemini JUDGE_MODEL=gemini"
 	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10]   # auto-configures from rubric (holdout gate, underidentified_after)"
+	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 [AGENT_RUNTIME=codex]  # subscription-backed workers"
+	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> MATCHED_RUN_ID=<id> MATCHED_RUN_ROLE=api|subscription  # stamp matched transport rows"
+	@echo "  make autoresearch-route TASK='<task>' PROJECT=<project> RUBRIC=<rubric> [BOUNDED=1 STABLE=1 RUBRIC_READY=1 ARTIFACT=1]  # RD workbench routing JSON"
+	@echo "  make autoresearch-projection PROJECT=<project> [OUT=<path>]          # read-only hypothesis/evidence projection over eval_history"
+	@echo "  make autoresearch-dispatch-validate [JSON=1]                         # verify autoresearch LLM calls route through dispatch wrappers"
+	@echo "  make autoresearch-dispatch-canary [CONTRACT=text|mutator|judge|committee|inverter] [DISPATCH_CALL_SITE=mutator] [AGENT_RUNTIME=codex] [LIVE=1]  # bounded subscription dispatch canary"
+	@echo "  make autoresearch-dispatch-parity [CONTRACTS=text,mutator,judge,committee,inverter] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]  # API-vs-subscription contract, quality, and cost-proxy replay"
+	@echo "  make autoresearch-subscription-outcome-audit [PROJECT=<project>] [JSON=1] [STRICT=1] [MIN_ROWS=1] [PLAN_LIMIT=5]  # compare actual run outcomes by transport"
+	@echo "  make autoresearch-matched-transport-pair PROJECT=<project> [RUBRIC=<rubric>] [ITERS=1] [MATCHED_RUN_ID=<id>] [AGENT_RUNTIME=codex] [AGENT_TIMEOUT=240] [RUN_MATCHED_PAIR=1]  # print or run matched API/subscription rows"
+	@echo "  make autoresearch-hillclimb-audit [PROJECT=<project>] [JSON=1] [LIMIT=40] [STAGNATION_THRESHOLD=2]  # check stale runs for stagnation escape evidence"
+	@echo "  make autoresearch-consequence-audit [PROJECT=<project>] [WORKSPACE=<path>] [JSON=1]  # classify kernel mechanisms by consequence/evidence"
+	@echo "  make autoresearch-rubric-mode-audit [RUBRIC=<path>] [JSON=1] [LIMIT=40] [FRESHNESS_DAYS=30] [STRICT=1]  # audit Newton/Kepler/calibration coherence across rubrics"
+	@echo "  make autoresearch-kernel-health [PROJECT=<project>] [RUBRIC=<path>] [WORKSPACE=<path>] [JSON=1] [STRICT=1]  # aggregate dispatch/catalog/fixture/rubric/control health"
+	@echo "  make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [NO_MARKDOWN=1]  # build the read-only RD operations packet"
+	@echo "  make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]  # RD substrate/workbench recommendation"
+	@echo "  make blitz-survival-report PROJECT=<project> [OUT=<json>] [MD_OUT=<md>] # join blitz winners to downstream eval/gate survival"
+	@echo "  make inloop-fixture-validate [JSON=1]                                # cheap fixtures for dormant in-loop mechanisms"
+	@echo "  make autoresearch-control-demo [PROJECT=<project>] [FORCE=1] [JSON=1] # controlled replay for optional in-loop controls"
+	@echo "  make primitive-parent-utility [JSON=1]                               # held-out check that primitive parent nodes route to useful children"
+	@echo "  make gaming-vector-hardening-show                                    # show anti-gaming promotion queue"
+	@echo "  make gaming-vector-hardening-check-plan                              # verify queue matches open registry rows"
+	@echo "  make eigenquestion-propose PROJECT=<project> [MODEL=<model>]          # draft advisory eigenquestion"
+	@echo "  make eigenquestion-validate PROJECT=<project>                         # lint explored-class negative evidence"
+	@echo "  make eigenquestion-status PROJECT=<project> [EIGENQUESTION_PREFLIGHT=strict]  # show pending advisory proposals before launch"
+	@echo "  make action-intel-smoke                                              # action-impact + agentic-work fixture smoke"
+	@echo "  make action-intel-materialize-dry                                    # compile GP-243 read model without writing"
 	@echo "  make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo"
 	@echo "  make committee PROJECT=<project>"
 	@echo "  make benchmark BENCH_JUDGE=gemini BENCH_JOBS=3"
@@ -142,6 +202,10 @@ help:
 	@echo "  make primitives-extract"
 	@echo "  make primitives-draft MODEL=gemini"
 	@echo "  make primitive-approve PRIMITIVE_KEY=cooked_books PRIMITIVE_DECISION=approved"
+	@echo "  make primitive-catalog-health [JSON=1]                         # architecture index taxonomy + freshness check"
+	@echo "  make primitive-amnesia-eval [RECORD_MISSES=1]                  # held-out primitive retrieval eval and optional miss queue"
+	@echo "  make primitive-catalog-repopulate                              # regenerate extracted primitive rows in architecture_index"
+	@echo "  make primitive-catalog-build-atlas [EMBEDDER=gemini-code]       # rebuild semantic primitive embeddings"
 	@echo "  make paper1-legacy"
 	@echo "  make paper1-tsmc-legacy"
 	@echo "  make paper1-epistemic-legacy"
@@ -212,7 +276,7 @@ charter-commit:
 		echo "Usage: make charter-commit PROJECT=<slug> RUN=<run_id> [PATCHES=1,3] [DRY=1]"; \
 		exit 1; \
 	fi
-	$(PYTHON) scripts/charter_commit.py $(PROJECT) --run $(RUN) \
+	$(PYTHON) scripts/public/control/charter_commit.py $(PROJECT) --run $(RUN) \
 		$(if $(PATCHES),--patches $(PATCHES),) \
 		$(if $(filter 1,$(DRY)),--dry-run,)
 
@@ -251,6 +315,29 @@ eigenquestion-propose:
 		--project $(PROJECT) \
 		$(if $(MODEL),--model $(MODEL),)
 
+eigenquestion-validate:
+	@if [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; then \
+		echo "ERROR: PROJECT is required. Usage: make eigenquestion-validate PROJECT=<slug>"; \
+		exit 1; \
+	fi
+	$(PYTHON) -m src.ztare.research_director.eigenquestion_generator \
+		--project $(PROJECT) \
+		--validate-explored
+
+eigenquestion-status:
+	@if [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; then \
+		echo "ERROR: PROJECT is required. Usage: make eigenquestion-status PROJECT=<slug> [EIGENQUESTION_PREFLIGHT=strict]"; \
+		exit 1; \
+	fi
+	@MODE="$(EIGENQUESTION_PREFLIGHT)"; \
+	if [ "$$MODE" = "off" ]; then \
+		echo "eigenquestion preflight: off"; \
+	else \
+		STRICT_FLAG=""; \
+		if [ "$$MODE" = "strict" ]; then STRICT_FLAG="--strict"; fi; \
+		$(PYTHON) scripts/public/control/preflight_eigenquestion_review.py $(PROJECT) $$STRICT_FLAG; \
+	fi
+
 # Seamless VPS bootstrap. Run from your laptop, pointing at a fresh Ubuntu VPS.
 # Idempotent — safe to re-run. Mechanizes everything except interactive auth steps
 # (which it prints as a checklist at the end).
@@ -268,13 +355,13 @@ setup-vps:
 # iteration runs. Soft gate (prints and continues) unless
 # STRICT_LEAK_AUDIT=1 is set, in which case failure aborts the run.
 gates-engagement:
-	@$(PYTHON) scripts/audit_gate_engagement.py $(if $(JSON),--json,) $(if $(STRICT),--strict,)
+	@$(PYTHON) scripts/public/audits/audit_gate_engagement.py $(if $(JSON),--json,) $(if $(STRICT),--strict,)
 
 gates-strict:
-	@$(PYTHON) scripts/audit_gate_engagement.py --strict
+	@$(PYTHON) scripts/public/audits/audit_gate_engagement.py --strict
 
 gates-json:
-	@$(PYTHON) scripts/audit_gate_engagement.py --json
+	@$(PYTHON) scripts/public/audits/audit_gate_engagement.py --json
 
 # META-GATE 2B: dynamic gate-effectiveness audit. Cross-references
 # cage_engagement.jsonl, structural_anti_pattern_iter_*.json, eval_history.jsonl
@@ -282,10 +369,10 @@ gates-json:
 # but never raise verdicts -- the form_str-key-bug fingerprint -- vs gates
 # missing only because gate_harness_result.json is absent (harness-output gap).
 audit-gate-effectiveness:
-	@$(PYTHON) scripts/audit_gate_effectiveness.py $(if $(JSON),--json,) $(if $(STRICT),--strict,) $(if $(VERBOSE),--verbose,)
+	@$(PYTHON) scripts/public/audits/audit_gate_effectiveness.py $(if $(JSON),--json,) $(if $(STRICT),--strict,) $(if $(VERBOSE),--verbose,)
 
 audit-gate-effectiveness-strict:
-	@$(PYTHON) scripts/audit_gate_effectiveness.py --strict
+	@$(PYTHON) scripts/public/audits/audit_gate_effectiveness.py --strict
 
 # META-GATE 2A — static scope-narrowing linter. AST-walks every function
 # in src/ztare/{diagnostics,gates,orchestrator}, flags any function whose
@@ -294,28 +381,28 @@ audit-gate-effectiveness-strict:
 # spot statically — the source-level twin of the R26 runtime gate.
 # Use --strict to fail CI on HIGH-severity findings.
 audit-gate-coverage:
-	@$(PYTHON) scripts/audit_gate_coverage.py $(if $(JSON),--json,) $(if $(STRICT),--strict,)
+	@$(PYTHON) scripts/public/audits/audit_gate_coverage.py $(if $(JSON),--json,) $(if $(STRICT),--strict,)
 
 audit-gate-coverage-strict:
-	@$(PYTHON) scripts/audit_gate_coverage.py --strict
+	@$(PYTHON) scripts/public/audits/audit_gate_coverage.py --strict
 
 audit-gate-coverage-self-test:
-	@$(PYTHON) scripts/audit_gate_coverage.py --self-test
+	@$(PYTHON) scripts/public/audits/audit_gate_coverage.py --self-test
 
 # GP-157 v5.0 Phase 5 Fix 1 (panel-approved 2026-04-25 night) — Linus
 # MAINTAINERS-style auto-generated index. Regenerates docs/internal/gp_index.{md,tsv}
 # from the live repo. Run after any GP-NNN add/move/archive.
 gp-index:
-	@$(PYTHON) scripts/build_gp_index.py
+	@$(PYTHON) scripts/public/control/build_gp_index.py
 
 # GP-101 arch-map drift check. Iterates the validator's MAP_REGISTRY
 # (currently autoresearch_loop; Phase 4b/4c will add orchestrator/{telemetry,state}).
 # Use ex-ante before editing, ex-post after. ARCH_MAP=label restricts scope.
 arch-validate:
-	@$(PYTHON) -m scripts.validate_autoresearch_arch_map ex-post $(if $(ARCH_MAP),--only $(ARCH_MAP),)
+	@$(PYTHON) scripts/public/validators/validate_autoresearch_arch_map.py ex-post $(if $(ARCH_MAP),--only $(ARCH_MAP),)
 
 arch-validate-ex-ante:
-	@$(PYTHON) -m scripts.validate_autoresearch_arch_map ex-ante $(if $(ARCH_MAP),--only $(ARCH_MAP),)
+	@$(PYTHON) scripts/public/validators/validate_autoresearch_arch_map.py ex-ante $(if $(ARCH_MAP),--only $(ARCH_MAP),)
 
 # META-GATE 2C — retroactive post-run meta-audit. Runs the LLM diagnostic
 # auditor against a completed project's workspace WITHOUT touching the
@@ -357,13 +444,13 @@ endif
 			echo "⚠️  Prompt leak audit reported potential leak (non-strict mode — continuing)"; \
 		fi
 
-loop: validate-rubric _preflight_leak_audit _preflight_charter_patches
+loop: validate-rubric _preflight_leak_audit _preflight_eigenquestion_review _preflight_charter_patches
 ifeq ($(PROJECT),your_project)
 	$(error PROJECT is required. Example: make loop PROJECT=gp161_mdl_anti_goodhart MUTATOR_MODEL=gpt4.1 JUDGE_MODEL=gpt4.1. \
 	  Note: make variables must be on the SAME line as the target, or escape newlines with backslash.)
 endif
 	@RUBRIC_SLUG=$$(echo "$(RUBRIC)" | sed -e 's|^rubrics/||' -e 's|\.json$$||'); \
-	$(PYTHON) -m src.ztare.validator.autoresearch_loop \
+		$(AGENT_DISPATCH_ENV) $(PYTHON) -m src.ztare.validator.autoresearch_loop \
 		--project $(PROJECT) \
 		--rubric "$$RUBRIC_SLUG" \
 		--iters $(ITERS) \
@@ -391,7 +478,7 @@ endif
 		echo "⚠️  VALIDATE_RUBRIC=0 — skipping rubric pre-flight validator (NOT RECOMMENDED)"; \
 	else \
 		RUBRIC_PATH=$$(echo "$(RUBRIC)" | grep -q '/' && echo "$(RUBRIC)" || echo "rubrics/$(RUBRIC).json"); \
-		$(PYTHON) scripts/validate_rubric.py $(PROJECT) --rubric $$RUBRIC_PATH || \
+		$(PYTHON) scripts/public/validators/validate_rubric.py $(PROJECT) --rubric $$RUBRIC_PATH || \
 		(echo ""; echo "❌ Rubric pre-flight FAILED. Fix before launching."; \
 		echo "   Spec: docs/concepts/rubric_specification.md"; \
 		echo "   Map:  docs/internal/rubric_authoring_map.md"; exit 1); \
@@ -409,13 +496,31 @@ _preflight_leak_audit:
 		echo "🔒 No prior prompt artifact at projects/$(PROJECT)/last_prompt_debug.txt — skipping pre-flight leak audit (first run)"; \
 	fi
 
+# Advisory eigenquestion preflight. Default mode warns and keeps the launch
+# non-mutating; EIGENQUESTION_PREFLIGHT=strict fails when a proposal is newer
+# than project_charter.md. EIGENQUESTION_PREFLIGHT=off is an explicit no-op.
+_preflight_eigenquestion_review:
+	@MODE="$(EIGENQUESTION_PREFLIGHT)"; \
+	if [ "$$MODE" = "off" ]; then \
+		echo "eigenquestion preflight: off"; \
+	else \
+		STRICT_FLAG=""; \
+		if [ "$$MODE" = "strict" ]; then STRICT_FLAG="--strict"; fi; \
+		$(PYTHON) scripts/public/control/preflight_eigenquestion_review.py $(PROJECT) $$STRICT_FLAG || \
+			if [ "$$MODE" = "strict" ]; then \
+				echo "ERROR: pending advisory eigenquestion proposal(s) require review before launch"; exit 1; \
+			else \
+				true; \
+			fi; \
+	fi
+
 # GP-226 charter-patch pre-iter-1 confirmation. Runs only when
 # `enable_charter_critic: true` AND `charter_patches_preflight_mode` is set
 # to "interactive" or "auto_confirm" in the rubric. Default mode "skip" is
 # a no-op so this never blocks runs that haven't opted in.
 _preflight_charter_patches:
 	@RUBRIC_PATH=$$(echo "$(RUBRIC)" | grep -q '/' && echo "$(RUBRIC)" || echo "rubrics/$(RUBRIC).json"); \
-	$(PYTHON) scripts/preflight_charter_patches.py $(PROJECT) \
+	$(PYTHON) scripts/public/control/preflight_charter_patches.py $(PROJECT) \
 		--rubric $$RUBRIC_PATH \
 		--mutator-model $(MUTATOR_MODEL) || true
 
@@ -537,8 +642,166 @@ experiment-loop:
 	if [ -n "$$REVIEWER_DOMAINS" ]; then \
 		echo "🔍 Rubric declares reviewer_domains: $$REVIEWER_DOMAINS (used by findings runner, not loop)"; \
 	fi; \
-	echo "🚀 Launching: make loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) EXTRA_ARGS=\"$$COMPUTED_EXTRA\""; \
-	$(MAKE) loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MUTATOR_MODEL=$(MUTATOR_MODEL) JUDGE_MODEL=$(JUDGE_MODEL) MODE=$(MODE) DYNAMIC=$(DYNAMIC) EVOLVE=$(EVOLVE) CROSS_FAMILY=$(CROSS_FAMILY) COMMITTEE_MODEL=$(COMMITTEE_MODEL) EXTRA_ARGS="$$COMPUTED_EXTRA"
+	echo "🚀 Launching: make loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) EXTRA_ARGS=\"$$COMPUTED_EXTRA\" AGENT_MUTATOR=$(AGENT_MUTATOR) AGENT_JUDGE=$(AGENT_JUDGE) AGENT_COMMITTEE=$(AGENT_COMMITTEE) AGENT_INVERTER=$(AGENT_INVERTER) MATCHED_RUN_ID=$(MATCHED_RUN_ID) MATCHED_RUN_ROLE=$(MATCHED_RUN_ROLE)"; \
+	$(MAKE) loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MUTATOR_MODEL=$(MUTATOR_MODEL) JUDGE_MODEL=$(JUDGE_MODEL) MODE=$(MODE) DYNAMIC=$(DYNAMIC) EVOLVE=$(EVOLVE) CROSS_FAMILY=$(CROSS_FAMILY) COMMITTEE_MODEL=$(COMMITTEE_MODEL) AGENT_MUTATOR=$(AGENT_MUTATOR) AGENT_JUDGE=$(AGENT_JUDGE) AGENT_COMMITTEE=$(AGENT_COMMITTEE) AGENT_INVERTER=$(AGENT_INVERTER) AGENT_RUNTIME=$(AGENT_RUNTIME) AGENT_MUTATOR_RUNTIME=$(AGENT_MUTATOR_RUNTIME) AGENT_JUDGE_RUNTIME=$(AGENT_JUDGE_RUNTIME) AGENT_COMMITTEE_RUNTIME=$(AGENT_COMMITTEE_RUNTIME) AGENT_INVERTER_RUNTIME=$(AGENT_INVERTER_RUNTIME) AGENT_TIMEOUT=$(AGENT_TIMEOUT) MATCHED_RUN_ID=$(MATCHED_RUN_ID) MATCHED_RUN_ROLE=$(MATCHED_RUN_ROLE) EXTRA_ARGS="$$COMPUTED_EXTRA"
+
+autoresearch-route:
+	@if [ -z "$(TASK)" ]; then \
+		echo "ERROR: TASK='<task description>' is required"; \
+		exit 1; \
+	fi
+	$(PYTHON) -m src.ztare.research_director.autoresearch_workbench_router "$(TASK)" \
+		$(if $(PROJECT),--project $(PROJECT),) \
+		$(if $(RUBRIC),--rubric $(RUBRIC),) \
+		$(if $(BOUNDED),--bounded-claim,) \
+		$(if $(STABLE),--stable-evaluator,) \
+		$(if $(RUBRIC_READY),--rubric-ready,) \
+		$(if $(ARTIFACT),--artifact-surface,) \
+		$(if $(SUBSCRIPTION_WORKER),--subscription-worker-available,)
+
+autoresearch-projection:
+	@if [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; then \
+		echo "ERROR: PROJECT=<project> is required"; \
+		exit 1; \
+	fi
+	$(PYTHON) -m src.ztare.validator.hypothesis_projection $(PROJECT) $(if $(OUT),--out $(OUT),)
+
+autoresearch-dispatch-validate:
+	$(PYTHON) scripts/public/validators/validate_autoresearch_llm_dispatch.py $(if $(JSON),--json,)
+
+autoresearch-dispatch-canary:
+	@$(PYTHON) -m src.ztare.research_director.autoresearch_dispatch_canary \
+		--call-site $(DISPATCH_CALL_SITE) \
+		--contract $(CONTRACT) \
+		$(if $(AGENT_RUNTIME),--runtime $(AGENT_RUNTIME),) \
+		$(if $(AGENT_TIMEOUT),--timeout-seconds $(AGENT_TIMEOUT),) \
+		$(if $(filter 1,$(LIVE)),--live,) \
+		$(if $(filter 1,$(FULL_AUTO)),--full-auto,) \
+		$(if $(JSON),--json,)
+
+autoresearch-dispatch-parity:
+	@$(PYTHON) -m src.ztare.research_director.autoresearch_dispatch_canary \
+		--parity \
+		--contracts $(CONTRACTS) \
+		$(if $(AGENT_RUNTIME),--runtime $(AGENT_RUNTIME),) \
+		$(if $(AGENT_TIMEOUT),--timeout-seconds $(AGENT_TIMEOUT),) \
+		$(if $(filter 1,$(LIVE)),--live,) \
+		$(if $(filter 1,$(FULL_AUTO)),--full-auto,) \
+		$(if $(JSON),--json,)
+
+autoresearch-subscription-outcome-audit:
+	@$(PYTHON) -m src.ztare.reports.subscription_outcome_audit \
+		$(if $(filter-out your_project,$(PROJECT)),--project $(PROJECT),) \
+		$(if $(MIN_ROWS),--min-rows $(MIN_ROWS),) \
+		$(if $(PLAN_LIMIT),--plan-limit $(PLAN_LIMIT),) \
+		$(if $(STRICT),--strict,) \
+		$(if $(JSON),--json,)
+
+autoresearch-matched-transport-pair:
+	@if [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; then \
+		echo "ERROR: PROJECT=<project> is required"; \
+		exit 1; \
+	fi; \
+	PROJECT_BARE=$$(echo "$(PROJECT)" | sed 's|^projects/||'); \
+	RUBRIC_INPUT="$(RUBRIC)"; \
+	if [ -z "$$RUBRIC_INPUT" ]; then RUBRIC_INPUT="$$PROJECT_BARE"; fi; \
+	RUBRIC_PATH=$$(echo "$$RUBRIC_INPUT" | grep -q '/' && echo "$$RUBRIC_INPUT" || echo "rubrics/$$RUBRIC_INPUT.json"); \
+	RUBRIC_BARE=$$(basename "$$RUBRIC_PATH" .json); \
+	PAIR_ID="$(MATCHED_RUN_ID)"; \
+	PAIR_PROJECT=$$(echo "$$PROJECT_BARE" | sed 's/[^A-Za-z0-9_-]/_/g'); \
+	if [ -z "$$PAIR_ID" ]; then PAIR_ID="pair_$${PAIR_PROJECT}_$$(date -u +%Y%m%dT%H%M%SZ)_$$$$"; fi; \
+	echo "matched transport pair: project=$$PROJECT_BARE rubric=$$RUBRIC_BARE pair_id=$$PAIR_ID iters=$(ITERS)"; \
+	echo "api:          make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MATCHED_RUN_ID=$$PAIR_ID MATCHED_RUN_ROLE=api"; \
+	echo "subscription: make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MATCHED_RUN_ID=$$PAIR_ID MATCHED_RUN_ROLE=subscription AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 AGENT_RUNTIME=$(or $(AGENT_RUNTIME),codex) AGENT_TIMEOUT=$(MATCHED_AGENT_TIMEOUT)"; \
+	echo "audit:        make autoresearch-subscription-outcome-audit PROJECT=$$PROJECT_BARE JSON=1"; \
+	if [ "$(RUN_MATCHED_PAIR)" != "1" ]; then \
+		echo "dry run only; set RUN_MATCHED_PAIR=1 to execute both rows"; \
+	else \
+		$(MAKE) experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MUTATOR_MODEL=$(MUTATOR_MODEL) JUDGE_MODEL=$(JUDGE_MODEL) MODE=$(MODE) DYNAMIC=$(DYNAMIC) EVOLVE=$(EVOLVE) CROSS_FAMILY=$(CROSS_FAMILY) COMMITTEE_MODEL=$(COMMITTEE_MODEL) MATCHED_RUN_ID=$$PAIR_ID MATCHED_RUN_ROLE=api || exit 1; \
+		$(MAKE) experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_BARE ITERS=$(ITERS) MUTATOR_MODEL=$(MUTATOR_MODEL) JUDGE_MODEL=$(JUDGE_MODEL) MODE=$(MODE) DYNAMIC=$(DYNAMIC) EVOLVE=$(EVOLVE) CROSS_FAMILY=$(CROSS_FAMILY) COMMITTEE_MODEL=$(COMMITTEE_MODEL) MATCHED_RUN_ID=$$PAIR_ID MATCHED_RUN_ROLE=subscription AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 AGENT_RUNTIME=$(or $(AGENT_RUNTIME),codex) AGENT_TIMEOUT=$(MATCHED_AGENT_TIMEOUT) || exit 1; \
+		$(MAKE) autoresearch-subscription-outcome-audit PROJECT=$$PROJECT_BARE JSON=1; \
+	fi
+
+autoresearch-hillclimb-audit:
+	@$(PYTHON) -m src.ztare.reports.hill_climb_behavior_audit \
+		$(if $(filter-out your_project,$(PROJECT)),--project $(PROJECT),) \
+		$(if $(STAGNATION_THRESHOLD),--stagnation-threshold $(STAGNATION_THRESHOLD),) \
+		$(if $(LIMIT),--limit $(LIMIT),) \
+		$(if $(JSON),--json,)
+
+autoresearch-consequence-audit:
+	@$(PYTHON) -m src.ztare.reports.mechanism_consequence_audit \
+		$(if $(filter-out your_project,$(PROJECT)),--project $(PROJECT),) \
+		$(if $(WORKSPACE),--workspace $(WORKSPACE),) \
+		$(if $(JSON),--json,)
+
+autoresearch-rubric-mode-audit:
+	@$(PYTHON) -m src.ztare.reports.rubric_mode_corpus_audit \
+		$(if $(filter-out your_project,$(RUBRIC)),--rubric $(RUBRIC),) \
+		$(if $(LIMIT),--limit $(LIMIT),) \
+		$(if $(FRESHNESS_DAYS),--freshness-days $(FRESHNESS_DAYS),) \
+		$(if $(STRICT),--fail-on-attention,) \
+		$(if $(JSON),--json,)
+
+autoresearch-kernel-health:
+	@$(PYTHON) -m src.ztare.reports.autoresearch_kernel_health \
+		$(if $(filter-out your_project,$(PROJECT)),--project $(PROJECT),) \
+		$(if $(WORKSPACE),--workspace $(WORKSPACE),) \
+		$(if $(filter-out your_project,$(RUBRIC)),--rubric $(RUBRIC),) \
+		$(if $(STAGNATION_THRESHOLD),--stagnation-threshold $(STAGNATION_THRESHOLD),) \
+		$(if $(STRICT),--strict,) \
+		$(if $(JSON),--json,)
+
+operations-intelligence:
+	@$(PYTHON) -m src.ztare.reports.operations_intelligence \
+		$(if $(OUT),--out $(OUT),) \
+		$(if $(MD_OUT),--markdown $(MD_OUT),) \
+		$(if $(HTML_OUT),--html $(HTML_OUT),) \
+		$(if $(FRESHNESS_DAYS),--freshness-days $(FRESHNESS_DAYS),) \
+		$(if $(MAX_PROJECTS),--max-projects $(MAX_PROJECTS),) \
+		$(if $(NO_MARKDOWN),--no-markdown,) \
+		$(if $(JSON),--json,)
+
+autoresearch-substrate-recommend:
+	@$(AGENT_DISPATCH_ENV) $(PYTHON) -m src.ztare.research_director.substrate_recommender \
+		--mode $(RECOMMENDER_MODE) \
+		--n $(RECOMMENDER_N) \
+		$(if $(RECOMMENDER_CLASS),--class $(RECOMMENDER_CLASS),) \
+		$(if $(RECOMMENDER_SUBSTRATE_CLASS),--substrate-class $(RECOMMENDER_SUBSTRATE_CLASS),) \
+		$(if $(BRANCH_GRID),--branch-grid $(BRANCH_GRID),) \
+		$(if $(INBOX),--inbox $(INBOX),) \
+		$(if $(MODEL),--model $(MODEL),) \
+		$(if $(RAW_PAYLOAD),--raw-payload $(RAW_PAYLOAD),) \
+		$(if $(filter 1,$(PROMPT_ONLY)),--prompt-only,) \
+		$(if $(filter 1,$(SKIP_LLM)),--skip-llm,)
+
+blitz-survival-report:
+	@if [ -z "$(WORKSPACE)" ] && { [ -z "$(PROJECT)" ] || [ "$(PROJECT)" = "your_project" ]; }; then \
+		echo "ERROR: PROJECT=<project> or WORKSPACE=<path> is required"; \
+		exit 1; \
+	fi
+	@WORKSPACE_PATH="$(WORKSPACE)"; \
+	if [ -z "$$WORKSPACE_PATH" ]; then WORKSPACE_PATH="projects/$(PROJECT)/workspace"; fi; \
+	$(PYTHON) -m src.ztare.reports.blitz_survival_report \
+		--workspace "$$WORKSPACE_PATH" \
+		$(if $(OUT),--json-out $(OUT),) \
+		$(if $(MD_OUT),--md-out $(MD_OUT),) \
+		$(if $(PRETTY),--pretty,)
+
+inloop-fixture-validate:
+	$(PYTHON) scripts/public/validators/validate_inloop_mechanism_fixtures.py $(if $(JSON),--json,)
+
+autoresearch-control-demo:
+	$(PYTHON) scripts/public/demo/autoresearch_control_mechanisms_demo.py \
+		$(if $(filter-out your_project,$(PROJECT)),--project $(PROJECT),) \
+		$(if $(FORCE),--force,) \
+		$(if $(JSON),--json,)
+
+action-intel-smoke:
+	$(PYTHON) scripts/public/control/action_intelligence.py smoke
+
+action-intel-materialize-dry:
+	$(PYTHON) scripts/public/control/action_intelligence.py materialize --no-write
 
 ## GP-104: Generate qualitative project scaffold with correct Type B gate configuration
 ## Usage: make generate-gp PROJECT=my_project BRIEF="one paragraph thesis question" [JUDGE_MODEL=gpt4.1]
@@ -664,7 +927,7 @@ endif
 	rm -f "$$PROJ_DIR/latest_evidence_gaps.json"; \
 	rm -f "$$PROJ_DIR"/structural_memory*.json; \
 	echo "Restoring baseline test_model.py..."; \
-	$(PYTHON) scripts/restore_baseline_test_model.py "$$PROJECT_BARE"; \
+	$(PYTHON) scripts/public/control/restore_baseline_test_model.py "$$PROJECT_BARE"; \
 	echo "Re-creating empty workspace/ directory..."; \
 	mkdir -p "$$PROJ_DIR/workspace"; \
 	echo "Clearing thesis Fit Declaration to placeholder..."; \
@@ -973,6 +1236,42 @@ primitives-draft:
 primitive-approve:
 	$(PYTHON) -m src.ztare.primitives.approve_primitive --primitive-key $(PRIMITIVE_KEY) --decision $(PRIMITIVE_DECISION)
 
+primitive-catalog-health:
+	$(PYTHON) -m src.ztare.research_director.primitive_catalog_taxonomy $(if $(JSON),--json,)
+
+primitive-parent-utility:
+	$(PYTHON) -m src.ztare.research_director.primitive_parent_utility $(if $(JSON),--json,)
+
+primitive-amnesia-eval:
+	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --eval $(if $(RECORD_MISSES),--record-misses,)
+
+primitive-catalog-repopulate:
+	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --repopulate
+
+primitive-catalog-build-atlas:
+	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --build-atlas --embedder $(if $(EMBEDDER),$(EMBEDDER),gemini-code)
+
+gaming-vector-hardening-show:
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening show
+
+gaming-vector-hardening-check-plan:
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening check-plan
+
+gaming-vector-hardening-sync-plan:
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening sync-plan
+
+gaming-vector-hardening-run-current:
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening run-current
+
+gaming-vector-hardening-run-vector:
+ifndef VECTOR
+	$(error VECTOR is required: make gaming-vector-hardening-run-vector VECTOR=<name> [SUBSTRATE=autoresearch])
+endif
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening run-vector $(if $(SUBSTRATE),$(SUBSTRATE),autoresearch) $(VECTOR)
+
+gaming-vector-hardening-selftest:
+	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening selftest
+
 paper1-legacy:
 	@echo "Legacy Paper 1 runs:"
 	@echo "  make paper1-tsmc-legacy"
@@ -1100,10 +1399,10 @@ check-graph: validate-knowledge-graph validate-cross-references
 NS_LINT_PYTHON ?= ./venv/bin/python3
 
 ns-antitautology-check:
-	$(NS_LINT_PYTHON) scripts/ns_antitautology_continuous_lint.py
+	$(NS_LINT_PYTHON) projects/ns_millennium_hunt/scripts/ns_antitautology_continuous_lint.py
 
 ns-antitautology-check-strict:
-	$(NS_LINT_PYTHON) scripts/ns_antitautology_continuous_lint.py --strict
+	$(NS_LINT_PYTHON) projects/ns_millennium_hunt/scripts/ns_antitautology_continuous_lint.py --strict
 
 .PHONY: demo demo-current benchmark-evidence docs-check
 demo:  ## Run small model-free evaluation-failure demos
@@ -1131,12 +1430,15 @@ public-adversarial-smoke:  ## Adversarial public smoke: isolation, cleanup, docs
 smoke-docker:  ## Docker smoke: build image and run public smoke checks inside it
 	bash scripts/public/control/docker_smoke.sh
 
-.PHONY: gates gates-engagement install-hooks
-gates:  ## Run the publish-safety + docs-freshness + seam/spec-format forcing gates
+.PHONY: gates gates-engagement install-hooks parser-invariants
+parser-invariants:  ## Property-based invariants for the bug-prone Lean/agent PARSERS (catches the case you didn't enumerate)
+	PYTHONPATH=src $(PYTHON) -m pytest tests/test_parser_invariants.py -q
+gates:  ## Run the publish-safety + docs-freshness + seam/spec-format + parser-invariant forcing gates
 	$(PYTHON) scripts/public/control/benchmark_evidence_check.py
 	$(PYTHON) scripts/public/control/evidence_packet_check.py
 	$(PYTHON) scripts/public/control/public_adversarial_smoke.py
 	$(PYTHON) -m pytest scripts/private/test_publish_safety.py scripts/private/test_docs_freshness.py -q
+	PYTHONPATH=src $(PYTHON) -m pytest tests/test_parser_invariants.py -q
 	$(PYTHON) scripts/private/validate_seam_spec_format.py
 install-hooks:  ## Install the local pre-push gate hook
 	ln -sf ../../scripts/private/git-hooks/pre-push .git/hooks/pre-push && echo "pre-push hook installed"

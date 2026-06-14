@@ -34,7 +34,11 @@ and writing a thin handler that delegates to a control script.
 
 from __future__ import annotations
 
+import argparse
+import importlib.util
+import json
 import os
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -283,12 +287,12 @@ _cmd_bundle_router = _make_verb_router(
 # ---------------------------------------------------------------------------
 
 
-def _run_subprocess(argv: list[str], cwd: Path | None = None) -> int:
+def _run_subprocess(argv: list[str], cwd: Path | None = None, env: dict[str, str] | None = None) -> int:
     """Run a subprocess, returning its exit code. Centralizes the stdout/err
     flush + the cwd handling for the Make / module shells below."""
     sys.stdout.flush()
     sys.stderr.flush()
-    completed = subprocess.run(argv, cwd=cwd, check=False)
+    completed = subprocess.run(argv, cwd=cwd, check=False, env=env)
     return completed.returncode
 
 
@@ -297,7 +301,14 @@ def _delegate_module(module: str, args: Iterable[str]) -> int:
     that already have a CLI but are not under scripts/public/control/."""
     root = _repo_root()
     argv = [sys.executable, "-m", module, *args]
-    return _run_subprocess(argv, cwd=root)
+    env = os.environ.copy()
+    src_path = str(root / "src")
+    env["PYTHONPATH"] = (
+        src_path
+        if not env.get("PYTHONPATH")
+        else f"{src_path}{os.pathsep}{env['PYTHONPATH']}"
+    )
+    return _run_subprocess(argv, cwd=root, env=env)
 
 
 def _delegate_script(rel_path: str, args: Iterable[str]) -> int:
@@ -327,9 +338,104 @@ def _delegate_make(target: str, vars_: dict[str, str], extra_args: Iterable[str]
     return _run_subprocess(argv, cwd=root)
 
 
-# `ztare eigenquestion <verb>` — wraps the eigenquestion-generator module.
-# `propose` calls the LLM; `validate` only lints the explored-classes
-# JSONL for the §14 (negative-evidence backpressure) discipline.
+_SAFE_ROUTE_ID = re.compile(r"[^A-Za-z0-9_.-]+")
+
+
+def _safe_route_id(value: str) -> str:
+    cleaned = _SAFE_ROUTE_ID.sub("_", value.strip()).strip("._-")
+    return cleaned or "decision"
+
+
+def _load_action_intelligence_module():
+    script = _repo_root() / "scripts" / "public" / "control" / "action_intelligence.py"
+    spec = importlib.util.spec_from_file_location("ztare_action_intelligence_cli", script)
+    if spec is None or spec.loader is None:
+        raise SystemExit(f"ztare: could not load action-intelligence module: {script}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def _default_autoresearch_route_path(decision_id: str) -> Path:
+    return (
+        _repo_root()
+        / "analytics"
+        / "public"
+        / "queries"
+        / "rd"
+        / "autoresearch_routes"
+        / f"{_safe_route_id(decision_id)}.json"
+    )
+
+
+def _record_autoresearch_route_action(
+    *,
+    route: dict,
+    route_path: Path,
+    decision_id: str,
+    selected_action: str | None,
+    why_not_autoresearch: str | None,
+    materialize: bool,
+    dedupe: bool,
+) -> dict:
+    module = _load_action_intelligence_module()
+    ns = argparse.Namespace(
+        route_json=route_path,
+        action_impact_id=None,
+        recorded_at=None,
+        decision_id=decision_id,
+        tick_id=None,
+        project_id=None,
+        project_family=None,
+        stage="pretick",
+        task=route.get("task"),
+        selected_action=selected_action,
+        policy_source="rd",
+        selection_rule="rd_workbench_router",
+        why_selected=None,
+        why_not_autoresearch=why_not_autoresearch,
+        worker_archetype=None,
+        worker_capability=None,
+        worker_state=None,
+        worker_identity=None,
+        transport=None,
+        forecast_contract_id=None,
+        gp233_evidence_ref=None,
+        source_refs_json="[]",
+        prediction_ids_json="[]",
+        catch_ids_json="[]",
+        outcome_known=False,
+        success_bool=None,
+        decision_impact=None,
+        yield_signal=None,
+        actual_cost_agent_minutes=None,
+        negative_externality_tags_json="[]",
+        baseline_action=None,
+        counterfactual_action=None,
+        counterfactual_value_bucket=None,
+        notes=None,
+    )
+    payload = module.agentic_workbench_impact_from_route_args(ns)
+    errors = payload.get("validation_errors") or []
+    if errors:
+        raise SystemExit("invalid agentic-route impact row: " + "; ".join(errors))
+
+    rows = module.read_jsonl(module.ACTION_IMPACT_LEDGER)
+    if dedupe:
+        for row in rows:
+            if str(row.get("action_impact_id") or "") == str(payload.get("action_impact_id") or ""):
+                return {"deduped": True, "existing": row}
+    rows.append(payload)
+    module.write_jsonl(module.ACTION_IMPACT_LEDGER, rows)
+    if materialize:
+        module.materialize_models(write=True)
+    return payload
+
+
+# `ztare eigenquestion <verb>` — wraps eigenquestion proposal / review helpers.
+# `propose` calls the LLM; `validate` only lints the explored-classes JSONL for
+# the §14 (negative-evidence backpressure) discipline; `status` is a launch
+# preflight for advisory proposals that are newer than the charter.
 def _cmd_eigenquestion_router(rest: list[str]) -> int:
     if not rest or rest[0] in ("-h", "--help"):
         print(
@@ -338,7 +444,9 @@ def _cmd_eigenquestion_router(rest: list[str]) -> int:
             "  propose   →  generate a fresh advisory eigenquestion (LLM call)\n"
             "  validate  →  lint workspace/explored_primitive_classes.jsonl for\n"
             "               falsified rows missing or pointing at nonexistent\n"
-            "               evidence_path (§14 caveat lint; no LLM call)\n\n"
+            "               evidence_path (§14 caveat lint; no LLM call)\n"
+            "  status    →  warn/fail if advisory proposals are newer than the\n"
+            "               project charter (no LLM call, no charter rewrite)\n\n"
             "Both verbs require --project <slug>. For full flags, run\n"
             "  ztare eigenquestion <verb> --help"
         )
@@ -349,8 +457,32 @@ def _cmd_eigenquestion_router(rest: list[str]) -> int:
         return _delegate_module(module, args)
     if verb == "validate":
         return _delegate_module(module, ["--validate-explored", *args])
+    if verb == "status":
+        parser = argparse.ArgumentParser(
+            prog="ztare eigenquestion status",
+            description=(
+                "Warn or fail when advisory eigenquestion proposals are newer "
+                "than project_charter.md."
+            ),
+        )
+        parser.add_argument("--project", required=True)
+        parser.add_argument("--strict", action="store_true")
+        parser.add_argument("--json", action="store_true")
+        try:
+            ns = parser.parse_args(args)
+        except SystemExit as exc:
+            return int(exc.code) if isinstance(exc.code, int) else 2
+        status_args = [ns.project]
+        if ns.strict:
+            status_args.append("--strict")
+        if ns.json:
+            status_args.append("--json")
+        return _delegate_script(
+            "scripts/public/control/preflight_eigenquestion_review.py",
+            status_args,
+        )
     print(
-        f"ztare: unknown eigenquestion verb {verb!r}. Known: propose, validate",
+        f"ztare: unknown eigenquestion verb {verb!r}. Known: propose, validate, status",
         file=sys.stderr,
     )
     return 2
@@ -388,6 +520,42 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "Verbs:\n"
             "  run       →  run a full experiment-loop on a project + rubric\n"
             "               (shells to `make experiment-loop`)\n"
+            "  route     →  decide whether an RD task should invoke autoresearch\n"
+            "               (calls the kernel workbench router)\n"
+            "  projection → emit read-only hypothesis/evidence projection\n"
+            "               (shells to `make autoresearch-projection`)\n"
+            "  dispatch-audit → verify LLM call sites are dispatch-covered\n"
+            "               (shells to `make autoresearch-dispatch-validate`)\n"
+            "  dispatch-canary → exercise one subscription dispatch path\n"
+            "               (mocked by default; pass --live for real CLI)\n"
+            "  dispatch-parity → compare API vs subscription contract, quality, and cost-proxy replay\n"
+            "               (mocked by default; pass --live for real subscription CLI)\n"
+            "  subscription-outcomes → compare actual run outcomes by worker transport\n"
+            "               (shells to `make autoresearch-subscription-outcome-audit`)\n"
+            "  matched-transport-pair → print or run a stamped API/subscription pair\n"
+            "               (shells to `make autoresearch-matched-transport-pair`)\n"
+            "  hillclimb-audit → inspect stale run traces for stagnation escape evidence\n"
+            "               (shells to `make autoresearch-hillclimb-audit`)\n"
+            "  consequence-audit → classify kernel mechanisms by consequence/evidence\n"
+            "               (shells to `make autoresearch-consequence-audit`)\n"
+            "  rubric-mode-audit → audit Newton/Kepler/calibration coherence across rubrics\n"
+            "               (shells to `make autoresearch-rubric-mode-audit`)\n"
+            "  health    → aggregate dispatch/catalog/fixture/rubric/control health\n"
+            "               (shells to `make autoresearch-kernel-health`)\n"
+            "  operations-intelligence → build the read-only RD operations packet\n"
+            "               (shells to `make operations-intelligence`)\n"
+            "  substrate-recommend → recommend next substrate/workbench surfaces\n"
+            "               (shells to `make autoresearch-substrate-recommend`)\n"
+            "  catalog-health → check primitive catalog taxonomy/freshness\n"
+            "               (shells to `make primitive-catalog-health`)\n"
+            "  parent-utility → check whether primitive parent nodes route to useful children\n"
+            "               (shells to `make primitive-parent-utility`)\n"
+            "  fixtures → cheap fixture matrix for dormant in-loop mechanisms\n"
+            "               (shells to `make inloop-fixture-validate`)\n"
+            "  control-demo → materialize a controlled replay for optional in-loop controls\n"
+            "               (shells to `make autoresearch-control-demo`)\n"
+            "  hardening → inspect or run anti-gaming promotion contracts\n"
+            "               (shells to `make gaming-vector-hardening-*`)\n"
             "  portfolio →  run a substrate-portfolio sweep\n"
             "               (shells to `make portfolio-run`)\n\n"
             "`run` flags:\n"
@@ -395,7 +563,110 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "  --rubric <name>    required (name or path)\n"
             "  --iters <n>        optional (default per Makefile)\n"
             "  --mutator <model>  optional\n"
-            "  --judge <model>    optional\n\n"
+            "  --judge <model>    optional\n"
+            "  --agent-mutator    route mutator calls through subscription worker\n"
+            "  --agent-judge      route judge calls through subscription worker\n"
+            "  --agent-committee  route dynamic committee calls through subscription worker\n"
+            "  --agent-inverter   route GP-119 inverter calls through subscription worker\n"
+            "  --agent-runtime <codex|claude> optional shared subscription runtime\n\n"
+            "`route` flags:\n"
+            "  --task <text>      required\n"
+            "  --project <slug>   optional context label\n"
+            "  --rubric <name>    optional context label\n"
+            "  --bounded-claim --stable-evaluator --rubric-ready --artifact-surface\n"
+            "  --no-bounded-claim --no-stable-evaluator --no-rubric-ready --no-artifact-surface\n"
+            "  --subscription-worker-available\n"
+            "  Output is JSON. To save the route and append a validated action row in one step:\n"
+            "    ztare autoresearch route --task <text> --record-decision-id DECISION_ID\n"
+            "  Or save it and record consumed RD/out-of-loop decisions later with:\n"
+            "    ztare action-intel record-agentic-route --route-json <route.json> --decision-id DECISION_ID\n\n"
+            "`projection` flags:\n"
+            "  --project <slug>   required\n"
+            "  --out <path>       optional JSON output path\n\n"
+            "`dispatch-audit` flags:\n"
+            "  --json             optional JSON report\n\n"
+            "`dispatch-canary` flags:\n"
+            "  --call-site <name> optional (default mutator)\n"
+            "  --contract <text|mutator|judge|committee|inverter> optional (default text)\n"
+            "  --runtime <codex|claude> optional\n"
+            "  --timeout-seconds <n> optional\n"
+            "  --live             invoke the real subscription CLI\n"
+            "  --full-auto        allow full-auto mode for the live canary\n"
+            "  --json             optional JSON report\n\n"
+            "`dispatch-parity` flags:\n"
+            "  --contracts <csv>  optional (default text,mutator,judge,committee,inverter)\n"
+            "  --runtime <codex|claude> optional\n"
+            "  --timeout-seconds <n> optional\n"
+            "  --live             invoke the real subscription CLI for the subscription leg\n"
+            "  --full-auto        allow full-auto mode for the live subscription leg\n"
+            "  --json             optional JSON report with per-contract quality_score and cost_proxy\n\n"
+            "`subscription-outcomes` flags:\n"
+            "  --project <slug>   optional, restrict to one project\n"
+            "  --min-rows <n>     optional minimum rows per transport, default 1\n"
+            "  --plan-limit <n>   optional matched-run command suggestions, default 5\n"
+            "  --strict           exit non-zero unless API and subscription rows are comparable\n"
+            "  --json             optional JSON report\n\n"
+            "`matched-transport-pair` flags:\n"
+            "  --project <slug>   required\n"
+            "  --rubric <name>    optional, defaults to project slug\n"
+            "  --iters <n>        optional, default Make ITERS\n"
+            "  --pair-id <id>     optional, defaults to a timestamped pair id\n"
+            "  --agent-runtime <codex|claude> optional, default codex in Make target\n"
+            "  --run              execute both rows; omitted prints commands only\n\n"
+            "`hillclimb-audit` flags:\n"
+            "  --project <slug>   optional, restrict to one project and archives\n"
+            "  --stagnation-threshold <n> optional, default 2\n"
+            "  --limit <n>        optional row limit\n"
+            "  --json             optional JSON report\n\n"
+            "`consequence-audit` flags:\n"
+            "  --project <slug>   optional, restrict project-scoped evidence\n"
+            "  --workspace <path> optional, inspect one workspace directly\n"
+            "  --json             optional JSON report\n\n"
+            "`rubric-mode-audit` flags:\n"
+            "  --rubric <path>    optional, inspect one rubric instead of rubrics/*.json\n"
+            "  --limit <n>        optional text attention row limit\n"
+            "  --freshness-days <n> optional window for active legacy-rubric debt\n"
+            "  --strict           exit non-zero when attention rows exist\n"
+            "  --json             optional JSON report\n\n"
+            "`health` flags:\n"
+            "  --project <slug>   optional, restrict project-scoped checks where supported\n"
+            "  --workspace <path> optional, inspect one workspace for mechanism evidence\n"
+            "  --rubric <path>    optional, restrict rubric-mode audit to one rubric\n"
+            "  --stagnation-threshold <n> optional, default 2\n"
+            "  --strict           exit non-zero when any component is not ok\n"
+            "  --json             optional JSON report\n\n"
+            "`operations-intelligence` flags:\n"
+            "  --out <path>       optional JSON output path\n"
+            "  --markdown <path>  optional Markdown output path\n"
+            "  --html <path>      optional HTML output path\n"
+            "  --freshness-days <n> optional source freshness window\n"
+            "  --max-projects <n> optional project sample cap\n"
+            "  --no-markdown      skip Markdown output\n"
+            "  --json             also print JSON to stdout\n\n"
+            "`substrate-recommend` flags:\n"
+            "  --mode <cold|branch> optional, default cold\n"
+            "  --n <count>        optional, default 3\n"
+            "  --class <label>    optional operator class hint\n"
+            "  --substrate-class <label> optional substrate-class hint\n"
+            "  --branch-grid <path> optional branch grid for branch mode\n"
+            "  --inbox <path>     optional output inbox\n"
+            "  --model <model>    optional API fallback model\n"
+            "  --raw-payload <path> render a precomputed JSON payload\n"
+            "  --prompt-only      emit prompt and exit without model call\n"
+            "  --skip-llm         write prompt to inbox for manual model run\n"
+            "  --agent-recommender route through subscription worker\n"
+            "  --agent-runtime <codex|claude> optional shared subscription runtime\n\n"
+            "`catalog-health` flags:\n"
+            "  --json             optional JSON report\n\n"
+            "`fixtures` flags:\n"
+            "  --json             optional JSON report\n\n"
+            "`control-demo` flags:\n"
+            "  --project <slug>   optional, default demo slug\n"
+            "  --force            rebuild the demo project/rubric if present\n"
+            "  --json             optional JSON report\n\n"
+            "`hardening` actions:\n"
+            "  show | check-plan | sync-plan | run-current | selftest\n"
+            "  run-vector --vector <name> [--substrate autoresearch]\n\n"
             "`portfolio` flags:\n"
             "  --iters <n>        optional (default 5)\n"
             "  --mutator <model>  optional (default gpt4.1)\n"
@@ -406,7 +677,11 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
     verb, *args = rest
     if verb == "run":
         kv = _parse_kv_flags(args, allowed={"--project", "--rubric", "--iters",
-                                             "--mutator", "--judge"})
+                                             "--mutator", "--judge", "--agent-runtime"})
+        bools = _parse_bool_flags(
+            args,
+            allowed={"--agent-mutator", "--agent-judge", "--agent-committee", "--agent-inverter"},
+        )
         if not kv.get("--project") or not kv.get("--rubric"):
             print("ztare: `autoresearch run` requires --project <slug> --rubric <name>",
                   file=sys.stderr)
@@ -415,9 +690,371 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "PROJECT": kv.get("--project", ""),
             "RUBRIC": kv.get("--rubric", ""),
             "ITERS": kv.get("--iters", ""),
-            "MUTATOR": kv.get("--mutator", ""),
-            "JUDGE": kv.get("--judge", ""),
+            "MUTATOR_MODEL": kv.get("--mutator", ""),
+            "JUDGE_MODEL": kv.get("--judge", ""),
+            "AGENT_MUTATOR": "1" if "--agent-mutator" in bools else "",
+            "AGENT_JUDGE": "1" if "--agent-judge" in bools else "",
+            "AGENT_COMMITTEE": "1" if "--agent-committee" in bools else "",
+            "AGENT_INVERTER": "1" if "--agent-inverter" in bools else "",
+            "AGENT_RUNTIME": kv.get("--agent-runtime", ""),
         })
+    if verb == "route":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch route --task <text> [flags]\n\n"
+                "Ask the kernel router whether a Research Director task should\n"
+                "invoke in-loop autoresearch, prepare a missing surface, or stay\n"
+                "out of loop.\n\n"
+                "Flags:\n"
+                "  --task <text>      required\n"
+                "  --project <slug>   optional context for surface inference\n"
+                "  --rubric <name>    optional context for surface inference\n"
+                "  --bounded-claim / --no-bounded-claim\n"
+                "  --stable-evaluator / --no-stable-evaluator\n"
+                "  --rubric-ready / --no-rubric-ready\n"
+                "  --artifact-surface / --no-artifact-surface\n"
+                "  --subscription-worker-available\n"
+                "  --record-decision-id <id>   save route JSON and append an action-intelligence row\n"
+                "  --route-json-out <path>     optional route JSON path for --record-decision-id\n"
+                "  --selected-action <action>  optional override for the recorded row\n"
+                "  --why-not-autoresearch <text> required when bypassing a ready workbench\n"
+                "  --dedupe --materialize      optional action-intelligence write flags\n"
+                "\nExample:\n"
+                "  ztare autoresearch route --task \"test bounded claim\" --project gp_example --rubric gp_example > /tmp/autoresearch_route.json\n"
+                "  ztare autoresearch route --task \"test bounded claim\" --project gp_example --rubric gp_example --record-decision-id decision_gp_example_route\n"
+                "  ztare action-intel record-agentic-route --route-json /tmp/autoresearch_route.json --decision-id DECISION_ID\n"
+            )
+            return 0
+        kv = _parse_kv_flags(
+            args,
+            allowed={
+                "--task",
+                "--project",
+                "--rubric",
+                "--record-decision-id",
+                "--route-json-out",
+                "--selected-action",
+                "--why-not-autoresearch",
+            },
+        )
+        bools = _parse_bool_flags(
+            args,
+            allowed={
+                "--bounded-claim",
+                "--no-bounded-claim",
+                "--stable-evaluator",
+                "--no-stable-evaluator",
+                "--rubric-ready",
+                "--no-rubric-ready",
+                "--artifact-surface",
+                "--no-artifact-surface",
+                "--subscription-worker-available",
+                "--dedupe",
+                "--materialize",
+            },
+        )
+        task = kv.get("--task")
+        if not task:
+            print("ztare: `autoresearch route` requires --task <text>", file=sys.stderr)
+            return 2
+        route_args = [task]
+        if kv.get("--project"):
+            route_args.extend(["--project", kv["--project"]])
+        if kv.get("--rubric"):
+            route_args.extend(["--rubric", kv["--rubric"]])
+        if "--bounded-claim" in bools:
+            route_args.append("--bounded-claim")
+        if "--no-bounded-claim" in bools:
+            route_args.append("--no-bounded-claim")
+        if "--stable-evaluator" in bools:
+            route_args.append("--stable-evaluator")
+        if "--no-stable-evaluator" in bools:
+            route_args.append("--no-stable-evaluator")
+        if "--rubric-ready" in bools:
+            route_args.append("--rubric-ready")
+        if "--no-rubric-ready" in bools:
+            route_args.append("--no-rubric-ready")
+        if "--artifact-surface" in bools:
+            route_args.append("--artifact-surface")
+        if "--no-artifact-surface" in bools:
+            route_args.append("--no-artifact-surface")
+        if "--subscription-worker-available" in bools:
+            route_args.append("--subscription-worker-available")
+        decision_id = kv.get("--record-decision-id")
+        if decision_id:
+            from src.ztare.research_director.autoresearch_workbench_router import (
+                route_autoresearch_workbench_from_context,
+            )
+
+            def _bool_override(name: str) -> bool | None:
+                if f"--{name}" in bools:
+                    return True
+                if f"--no-{name}" in bools:
+                    return False
+                return None
+
+            route_path = (
+                Path(kv["--route-json-out"])
+                if kv.get("--route-json-out")
+                else _default_autoresearch_route_path(decision_id)
+            )
+            if not route_path.is_absolute():
+                route_path = _repo_root() / route_path
+            decision = route_autoresearch_workbench_from_context(
+                task,
+                project=kv.get("--project", ""),
+                rubric=kv.get("--rubric", ""),
+                stable_evaluator=_bool_override("stable-evaluator"),
+                bounded_claim=_bool_override("bounded-claim"),
+                rubric_ready=_bool_override("rubric-ready"),
+                artifact_surface=_bool_override("artifact-surface"),
+                subscription_worker_available="--subscription-worker-available" in bools,
+                repo_root=_repo_root(),
+            )
+            route = decision.to_dict()
+            route_path.parent.mkdir(parents=True, exist_ok=True)
+            route_path.write_text(json.dumps(route, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            action = _record_autoresearch_route_action(
+                route=route,
+                route_path=route_path,
+                decision_id=decision_id,
+                selected_action=kv.get("--selected-action"),
+                why_not_autoresearch=kv.get("--why-not-autoresearch"),
+                materialize="--materialize" in bools,
+                dedupe="--dedupe" in bools,
+            )
+            try:
+                shown_route_path = str(route_path.relative_to(_repo_root()))
+            except ValueError:
+                shown_route_path = str(route_path)
+            print(json.dumps({
+                "route_json": shown_route_path,
+                "route": route,
+                "action_impact": action,
+            }, indent=2, sort_keys=True))
+            return 0
+        return _delegate_module("ztare.research_director.autoresearch_workbench_router", route_args)
+    if verb == "projection":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch projection --project <slug> [--out <path>]\n\n"
+                "Emit the read-only hypothesis/evidence projection over an\n"
+                "autoresearch project's eval_history. Shells to\n"
+                "`make autoresearch-projection`."
+            )
+            return 0
+        kv = _parse_kv_flags(args, allowed={"--project", "--out"})
+        if not kv.get("--project"):
+            print("ztare: `autoresearch projection` requires --project <slug>",
+                  file=sys.stderr)
+            return 2
+        return _delegate_make("autoresearch-projection", {
+            "PROJECT": kv.get("--project", ""),
+            "OUT": kv.get("--out", ""),
+        })
+    if verb == "dispatch-audit":
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("autoresearch-dispatch-validate", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "dispatch-canary":
+        kv = _parse_kv_flags(args, allowed={"--call-site", "--contract", "--runtime", "--timeout-seconds"})
+        bools = _parse_bool_flags(args, allowed={"--live", "--full-auto", "--json"})
+        return _delegate_make("autoresearch-dispatch-canary", {
+            "DISPATCH_CALL_SITE": kv.get("--call-site", ""),
+            "CONTRACT": kv.get("--contract", ""),
+            "AGENT_RUNTIME": kv.get("--runtime", ""),
+            "AGENT_TIMEOUT": kv.get("--timeout-seconds", ""),
+            "LIVE": "1" if "--live" in bools else "",
+            "FULL_AUTO": "1" if "--full-auto" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "dispatch-parity":
+        kv = _parse_kv_flags(args, allowed={"--contracts", "--runtime", "--timeout-seconds"})
+        bools = _parse_bool_flags(args, allowed={"--live", "--full-auto", "--json"})
+        return _delegate_make("autoresearch-dispatch-parity", {
+            "CONTRACTS": kv.get("--contracts", ""),
+            "AGENT_RUNTIME": kv.get("--runtime", ""),
+            "AGENT_TIMEOUT": kv.get("--timeout-seconds", ""),
+            "LIVE": "1" if "--live" in bools else "",
+            "FULL_AUTO": "1" if "--full-auto" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "subscription-outcomes":
+        kv = _parse_kv_flags(args, allowed={"--project", "--min-rows", "--plan-limit"})
+        bools = _parse_bool_flags(args, allowed={"--json", "--strict"})
+        return _delegate_make("autoresearch-subscription-outcome-audit", {
+            "PROJECT": kv.get("--project", ""),
+            "MIN_ROWS": kv.get("--min-rows", ""),
+            "PLAN_LIMIT": kv.get("--plan-limit", ""),
+            "STRICT": "1" if "--strict" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "matched-transport-pair":
+        kv = _parse_kv_flags(
+            args,
+            allowed={"--project", "--rubric", "--iters", "--pair-id", "--agent-runtime"},
+        )
+        bools = _parse_bool_flags(args, allowed={"--run"})
+        if not kv.get("--project"):
+            print("ztare: `autoresearch matched-transport-pair` requires --project <slug>",
+                  file=sys.stderr)
+            return 2
+        return _delegate_make("autoresearch-matched-transport-pair", {
+            "PROJECT": kv.get("--project", ""),
+            "RUBRIC": kv.get("--rubric", ""),
+            "ITERS": kv.get("--iters", ""),
+            "MATCHED_RUN_ID": kv.get("--pair-id", ""),
+            "AGENT_RUNTIME": kv.get("--agent-runtime", ""),
+            "RUN_MATCHED_PAIR": "1" if "--run" in bools else "",
+        })
+    if verb == "hillclimb-audit":
+        kv = _parse_kv_flags(args, allowed={"--project", "--stagnation-threshold", "--limit"})
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("autoresearch-hillclimb-audit", {
+            "PROJECT": kv.get("--project", ""),
+            "STAGNATION_THRESHOLD": kv.get("--stagnation-threshold", ""),
+            "LIMIT": kv.get("--limit", ""),
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "consequence-audit":
+        kv = _parse_kv_flags(args, allowed={"--project", "--workspace"})
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("autoresearch-consequence-audit", {
+            "PROJECT": kv.get("--project", ""),
+            "WORKSPACE": kv.get("--workspace", ""),
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "rubric-mode-audit":
+        kv = _parse_kv_flags(args, allowed={"--rubric", "--limit", "--freshness-days"})
+        bools = _parse_bool_flags(args, allowed={"--json", "--strict"})
+        return _delegate_make("autoresearch-rubric-mode-audit", {
+            "RUBRIC": kv.get("--rubric", ""),
+            "LIMIT": kv.get("--limit", ""),
+            "FRESHNESS_DAYS": kv.get("--freshness-days", ""),
+            "STRICT": "1" if "--strict" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "health":
+        kv = _parse_kv_flags(args, allowed={"--project", "--workspace", "--rubric", "--stagnation-threshold"})
+        bools = _parse_bool_flags(args, allowed={"--json", "--strict"})
+        return _delegate_make("autoresearch-kernel-health", {
+            "PROJECT": kv.get("--project", ""),
+            "WORKSPACE": kv.get("--workspace", ""),
+            "RUBRIC": kv.get("--rubric", ""),
+            "STAGNATION_THRESHOLD": kv.get("--stagnation-threshold", ""),
+            "STRICT": "1" if "--strict" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "operations-intelligence":
+        kv = _parse_kv_flags(
+            args,
+            allowed={"--out", "--markdown", "--html", "--freshness-days", "--max-projects"},
+        )
+        bools = _parse_bool_flags(args, allowed={"--no-markdown", "--json"})
+        return _delegate_make("operations-intelligence", {
+            "OUT": kv.get("--out", ""),
+            "MD_OUT": kv.get("--markdown", ""),
+            "HTML_OUT": kv.get("--html", ""),
+            "FRESHNESS_DAYS": kv.get("--freshness-days", ""),
+            "MAX_PROJECTS": kv.get("--max-projects", ""),
+            "NO_MARKDOWN": "1" if "--no-markdown" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "substrate-recommend":
+        kv = _parse_kv_flags(
+            args,
+            allowed={
+                "--mode",
+                "--n",
+                "--class",
+                "--substrate-class",
+                "--branch-grid",
+                "--inbox",
+                "--model",
+                "--raw-payload",
+                "--agent-runtime",
+            },
+        )
+        bools = _parse_bool_flags(args, allowed={"--prompt-only", "--skip-llm", "--agent-recommender"})
+        return _delegate_make("autoresearch-substrate-recommend", {
+            "RECOMMENDER_MODE": kv.get("--mode", ""),
+            "RECOMMENDER_N": kv.get("--n", ""),
+            "RECOMMENDER_CLASS": kv.get("--class", ""),
+            "RECOMMENDER_SUBSTRATE_CLASS": kv.get("--substrate-class", ""),
+            "BRANCH_GRID": kv.get("--branch-grid", ""),
+            "INBOX": kv.get("--inbox", ""),
+            "MODEL": kv.get("--model", ""),
+            "RAW_PAYLOAD": kv.get("--raw-payload", ""),
+            "PROMPT_ONLY": "1" if "--prompt-only" in bools else "",
+            "SKIP_LLM": "1" if "--skip-llm" in bools else "",
+            "AGENT_RECOMMENDER": "1" if "--agent-recommender" in bools else "",
+            "AGENT_RUNTIME": kv.get("--agent-runtime", ""),
+        })
+    if verb == "catalog-health":
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("primitive-catalog-health", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb in ("parent-utility", "primitive-parent-utility"):
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("primitive-parent-utility", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "fixtures":
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("inloop-fixture-validate", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "control-demo":
+        kv = _parse_kv_flags(args, allowed={"--project"})
+        bools = _parse_bool_flags(args, allowed={"--force", "--json"})
+        return _delegate_make("autoresearch-control-demo", {
+            "PROJECT": kv.get("--project", ""),
+            "FORCE": "1" if "--force" in bools else "",
+            "JSON": "1" if "--json" in bools else "",
+        })
+    if verb == "hardening":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch hardening <action> [flags]\n\n"
+                "Actions:\n"
+                "  show         show the current anti-gaming promotion queue\n"
+                "  check-plan   verify materialized queue matches open registry rows\n"
+                "  sync-plan    refresh the materialized queue from the registry\n"
+                "  run-current  evaluate the current vector promotion contract\n"
+                "  run-vector   evaluate one vector promotion contract\n"
+                "  selftest     run the promotion-runner self-test\n\n"
+                "`run-vector` flags:\n"
+                "  --vector <name>       required\n"
+                "  --substrate <name>    optional, defaults to autoresearch\n"
+            )
+            return 0
+        action, *hargs = args
+        target_by_action = {
+            "show": "gaming-vector-hardening-show",
+            "check-plan": "gaming-vector-hardening-check-plan",
+            "sync-plan": "gaming-vector-hardening-sync-plan",
+            "run-current": "gaming-vector-hardening-run-current",
+            "selftest": "gaming-vector-hardening-selftest",
+        }
+        if action in target_by_action:
+            return _delegate_make(target_by_action[action], {})
+        if action == "run-vector":
+            kv = _parse_kv_flags(hargs, allowed={"--vector", "--substrate"})
+            if not kv.get("--vector"):
+                print("ztare: `autoresearch hardening run-vector` requires --vector <name>",
+                      file=sys.stderr)
+                return 2
+            return _delegate_make("gaming-vector-hardening-run-vector", {
+                "VECTOR": kv.get("--vector", ""),
+                "SUBSTRATE": kv.get("--substrate", ""),
+            })
+        print(
+            f"ztare: unknown autoresearch hardening action {action!r}. Known: show, check-plan, sync-plan, run-current, run-vector, selftest",
+            file=sys.stderr,
+        )
+        return 2
     if verb == "portfolio":
         kv = _parse_kv_flags(args, allowed={"--iters", "--mutator", "--judge", "--only"})
         return _delegate_make("portfolio-run", {
@@ -427,7 +1064,62 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "ONLY": kv.get("--only", ""),
         })
     print(
-        f"ztare: unknown autoresearch verb {verb!r}. Known: run, portfolio",
+        f"ztare: unknown autoresearch verb {verb!r}. Known: run, route, projection, dispatch-audit, dispatch-canary, dispatch-parity, subscription-outcomes, matched-transport-pair, hillclimb-audit, consequence-audit, rubric-mode-audit, health, operations-intelligence, substrate-recommend, catalog-health, parent-utility, fixtures, control-demo, hardening, portfolio",
+        file=sys.stderr,
+    )
+    return 2
+
+
+# `ztare primitive <verb>` — capability-catalog / primitive-amnesia preflight.
+def _cmd_primitive_router(rest: list[str]) -> int:
+    if not rest or rest[0] in ("-h", "--help"):
+        print(
+            "ztare primitive <verb> [args...]\n\n"
+            "Verbs:\n"
+            "  health   →  run catalog health + atlas freshness checks\n\n"
+            "  parent-utility → check whether primitive parent nodes route to useful children\n\n"
+            "`health` flags:\n"
+            "  --json           pass JSON mode to catalog-health\n"
+            "  --semantic-live  also check live semantic embedder availability\n"
+            "  --eval           also run primitive-amnesia retrieval eval\n"
+        )
+        return 0
+    verb, *args = rest
+    if verb == "health":
+        bools = _parse_bool_flags(args, allowed={"--json", "--semantic-live", "--eval"})
+        rc = _delegate_make("primitive-catalog-health", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+        if rc != 0:
+            return rc
+        rc = _delegate_module(
+            "ztare.research_director.primitive_amnesia",
+            ["--atlas-status"],
+        )
+        if rc != 0:
+            return rc
+        if "--semantic-live" in bools:
+            rc = _delegate_module(
+                "ztare.research_director.primitive_amnesia",
+                ["--semantic-live"],
+            )
+            if rc != 0:
+                return rc
+        if "--eval" in bools:
+            rc = _delegate_module(
+                "ztare.research_director.primitive_amnesia",
+                ["--eval"],
+            )
+            if rc != 0:
+                return rc
+        return 0
+    if verb in ("parent-utility", "utility"):
+        bools = _parse_bool_flags(args, allowed={"--json"})
+        return _delegate_make("primitive-parent-utility", {
+            "JSON": "1" if "--json" in bools else "",
+        })
+    print(
+        f"ztare: unknown primitive verb {verb!r}. Known: health, parent-utility",
         file=sys.stderr,
     )
     return 2
@@ -789,6 +1481,10 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         "Autoresearch pipeline (in-loop validator): run | portfolio. Shells to Make.",
         _cmd_autoresearch_router,
     ),
+    "primitive": (
+        "Primitive catalog / amnesia health: health.",
+        _cmd_primitive_router,
+    ),
     "audit": (
         "Gate / coverage audits: gates | effectiveness | coverage. Shells to Make.",
         _cmd_audit_router,
@@ -819,7 +1515,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     # `score` verb (analytics_shared) and module verbs are intentionally
     # excluded from the control-script presence check.
     "forecast": (_SUBCOMMANDS["forecast"][0], _SUBCOMMANDS["forecast"][1], (
-        "forecast_pool.py", "forecast_resolve_from_json.py",
+        "forecast/pool.py", "forecast/resolve_from_json.py",
     )),
     "leanmill": (_SUBCOMMANDS["leanmill"][0], _SUBCOMMANDS["leanmill"][1], (
         "leanmill/station_scheduler.py", "leanmill/24x7_runner.py",
@@ -836,6 +1532,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "eigenquestion": (_SUBCOMMANDS["eigenquestion"][0], _SUBCOMMANDS["eigenquestion"][1], ()),
     "mine": (_SUBCOMMANDS["mine"][0], _SUBCOMMANDS["mine"][1], ()),
     "autoresearch": (_SUBCOMMANDS["autoresearch"][0], _SUBCOMMANDS["autoresearch"][1], ()),
+    "primitive": (_SUBCOMMANDS["primitive"][0], _SUBCOMMANDS["primitive"][1], ()),
     "audit": (_SUBCOMMANDS["audit"][0], _SUBCOMMANDS["audit"][1], ()),
     "arch-validate": (_SUBCOMMANDS["arch-validate"][0], _SUBCOMMANDS["arch-validate"][1], ()),
     "version": (_SUBCOMMANDS["version"][0], _SUBCOMMANDS["version"][1], ()),
