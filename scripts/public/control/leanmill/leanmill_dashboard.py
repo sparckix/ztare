@@ -116,6 +116,11 @@ ABSORBED_VIEWS = {
         ("leanmill_factory_intelligence.json", "python scripts/public/control/leanmill/factory_intelligence.py"),
     "No-lift receipts (evaluation harness)":
         ("evaluation_harness_no_lift_report.json", "python scripts/public/control/leanmill/evaluation_no_lift_report.py"),
+    "Solver-lane telemetry (moves / exits / efficiency)":
+        ("solver_lane_telemetry.json", "python scripts/public/control/leanmill/solver_lane_telemetry.py"),
+    "Non-math governance wedge (firewall vs LLM judge)":
+        ("nonmath_firewall_ab.json",
+         "PYTHONPATH=src ./venv/bin/python projects/leanmill_experiments/firewall_vs_agent_judge.py --real --json"),
 }
 
 
