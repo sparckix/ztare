@@ -28,7 +28,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [ZTARE Harness Specification](harness_specification.md) - Specification for a harness, the deterministic pre-judge evaluator.
 - [LeanMill Architecture](leanmill_architecture.md) - LeanMill architecture: a governed proof-search environment — components, invariants, soundness model, control flow, and operations.
 - [LeanMill Design History & Decision Log](leanmill_design_history.md) - LeanMill design history and decision log: the dated invariants, RCAs, A/B evidence, and rationale behind the architecture.
-- [LeanMill — positioning (receipts-first)](leanmill_positioning.md) - LeanMill positioning: a receipts-first account of what it is, who it is for, and the kernel-certified guarantee it sells.
+- [LeanMill — positioning (receipts-first)](leanmill_positioning.md) - What LeanMill is, who it's for, and the receipts behind the claims.
 - [MLH Family Protocol, Pre-Registered Cross-Substrate Prediction](mlh_family_protocol.md) - Pre-registered cross-substrate protocol for the formula-recovery track.
 - [Organizational Primitives](organizational_primitives.md) - Code primitives for separating agent roles, authority, and work routing in the ZTARE org runtime.
 - [Prediction Ledger Pattern](prediction_ledger_pattern.md) - Why predictions are gameable and how the append-only ledger + Brier scoring catch miscalibration.

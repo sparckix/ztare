@@ -1,5 +1,5 @@
 ---
-description: "LeanMill positioning: a receipts-first account of what it is, who it is for, and the kernel-certified guarantee it sells."
+description: "What LeanMill is, who it's for, and the receipts behind the claims."
 ---
 
 # LeanMill — positioning (receipts-first)
@@ -18,7 +18,7 @@ LeanMill turns an ambiguous specification (a compliance rule, an access policy, 
 It is not a semantic wrapper that asks a model for code and retries. Every output the agent produces is
 **independently re-verified by the kernel**; the agent is never trusted.
 
-## The differentiator, measured (not asserted)
+## What it actually adds
 
 A frequent objection: "a strong model is already accurate — what do you add?" We measured it. On the
 numeric compliance class, a steelmanned agent judge matched the kernel's faithfulness verdict exactly
@@ -60,7 +60,7 @@ Order the use cases by what the math actually allows, not by market size:
 - **Aspirational — DeFi / smart-contract defense.** Contract arithmetic is often *nonlinear*, where both z3
   QE and cvc5 abduction break down (undecidable over ℤ — measured). Do not lead with it.
 
-## Honest gaps (kept, not hidden)
+## Honest gaps
 
 - Everything validated is **toy-scale** (5-case batteries, single-threshold predicates). The bottleneck to
   real-world claims is **autoformalizer robustness** at the complexity of a 1000-page regulation or a real
@@ -70,9 +70,8 @@ Order the use cases by what the math actually allows, not by market size:
 
 ## Why open source
 
-Trust is the product, and you cannot sell cryptographic certainty as a proprietary black box. Open-sourcing
-the governance layer (the faithfulness firewall + the anti-laundering kernel) lets the security community
-audit that the kernel does not launder — and lets banks/defense run it air-gapped with their own weights.
-That auditability is also what the autoresearch loop provides as living proof: the same discipline is
-self-applied to LeanMill's own development (every capability here was measured with a 0-control and a
-carrier preflight, not asserted).
+Trust is the product, and you cannot sell certainty as a proprietary black box. Open-sourcing the governance
+layer (the faithfulness firewall and the anti-laundering kernel) lets the security community audit that the
+kernel does not launder, and lets banks and defense run it air-gapped with their own weights. The same
+discipline is applied to LeanMill's own development: every capability here was measured with a zero-control
+and a carrier preflight before it was written down.
