@@ -270,9 +270,38 @@ governance-rejected: <b>{certs["rejected"]}</b> · rejection reasons: {e(json.du
 """
 
 
+_CHEAP_PRODUCERS = [   # read-only producers (DB/cert mining — NO LLM, NO Lean) safe to auto-refresh on build.
+    ("compounding_curve.py", ["--json"]),
+    ("solver_lane_telemetry.py", ["--json"]),
+    ("build_frontier_ledger.py", ["--json", "DEFAULT"]),
+    # NOTE: the "Non-math governance wedge" producer is DELIBERATELY excluded — it dispatches the subscription
+    # LLM judge (token cost), so it refreshes MANUALLY only. Auto-refresh must never auto-spend.
+]
+
+
+def _refresh_cheap_producers() -> None:
+    """Run the cheap, read-only ABSORBED_VIEWS producers so their views stay LIVE on every dashboard build,
+    not just when manually run (the gap: `build()` only READS artifacts; nothing refreshed the new views).
+    Each is a bounded, fail-quiet subprocess (the same src→scripts boundary pattern `regenerate_dashboard`
+    uses). A stale view is acceptable; a crashed build is not — so every failure is swallowed."""
+    import subprocess as _sp
+    here = Path(__file__).resolve().parent
+    for fname, argv in _CHEAP_PRODUCERS:
+        script = here / fname
+        if not script.exists():
+            continue
+        try:
+            _sp.run([sys.executable, str(script), *argv], cwd=str(REPO), timeout=120,
+                    capture_output=True, text=True)
+        except Exception:  # noqa: BLE001 — observability must never break the build
+            pass
+
+
 def build(db: Path = DEFAULT_DB, certs: Path = DEFAULT_CERTS, out_dir: Path = DEFAULT_OUT,
           since: str = "2026-06-01", dash_dir: "Path | None" = None,
-          faithfulness_obs: "Path | None" = None) -> dict:
+          faithfulness_obs: "Path | None" = None, refresh: bool = False) -> dict:
+    if refresh:
+        _refresh_cheap_producers()   # keep the cheap read-only views fresh (NOT the LLM-judge wedge)
     runs = mine_attempts(db, since)
     dd = dash_dir if dash_dir is not None else DEFAULT_OUT
     fo = faithfulness_obs if faithfulness_obs is not None else (
@@ -370,10 +399,12 @@ if __name__ == "__main__":
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--out", default=str(DEFAULT_OUT))
     ap.add_argument("--since", default="2026-06-01")
+    ap.add_argument("--no-refresh", action="store_true",
+                    help="skip auto-refreshing the cheap read-only views (read existing artifacts only)")
     a = ap.parse_args()
     if a.selftest:
         sys.exit(_selftest())
-    b = build(out_dir=Path(a.out), since=a.since)
+    b = build(out_dir=Path(a.out), since=a.since, refresh=not a.no_refresh)
     miss = [t2 for t2, v in b["absorbed"].items() if v.get("missing")]
     print(f"dashboard: {len(b['runs'])} runs | certs verified={b['certs']['verified']} "
           f"unverified={b['certs']['integrity_unverified']} rejected={b['certs']['rejected']} | "
