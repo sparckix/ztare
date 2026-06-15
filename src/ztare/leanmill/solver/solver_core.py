@@ -1481,6 +1481,14 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
                 from ztare.leanmill import conjecture_book as _cbk_gap
                 _cbk_gap.register(str(r.gap), residual_class="agent_gap",
                                   campaign=os.environ.get("ZTARE_SOLVER_RUN_TAG", ""), repo_root=REPO)
+                # CLOSE the credence producer→consumer loop (#142): the conjecture-book CONSUMER (`render_block`,
+                # ~L1418) already surfaces "pool credence", but the PRODUCER `route_credence_via_pool` was never
+                # invoked — so the credence never populated even when a campaign opted in. Route this OPEN gap
+                # through the forecast POOL here. Internally OPT-IN + default-OFF (ZTARE_LEANMILL_CONJECTURE_POOL):
+                # a no-op returning None at ZERO token cost unless a campaign deliberately flips it; best-effort.
+                from datetime import datetime as _dt_cr, timezone as _tz_cr
+                _cbk_gap.route_credence_via_pool(str(r.gap), repo_root=REPO,
+                                                 ts=_dt_cr.now(_tz_cr.utc).isoformat())
             except Exception:  # noqa: BLE001 — the book is observability; a write must never break the solve
                 pass
         return False, "", (f"agentic_leaf open: {r.reason}"
