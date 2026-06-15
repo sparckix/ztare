@@ -1,3 +1,7 @@
+---
+description: "LeanMill positioning: a receipts-first account of what it is, who it is for, and the kernel-certified guarantee it sells."
+---
+
 # LeanMill — positioning (receipts-first)
 
 ## What it is, plainly

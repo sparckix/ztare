@@ -68,7 +68,7 @@ patches, not large theory imports.
 - Current-Mathlib check on 2026-06-09:
 
   ```bash
-  lake env lean /Users/daalami/figs_activist_loop/ztare_proofs/mathlib_pr_prep/PR3_translate_eLpNorm_continuity_domact.lean
+  lake env lean ztare_proofs/mathlib_pr_prep/PR3_translate_eLpNorm_continuity_domact.lean
   ```
 
 - Result: the short proof compiles. The better upstream shape is not the long

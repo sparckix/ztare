@@ -26,8 +26,9 @@ _Folder index. Prose may be added above the auto-index block._
 - [Goodhart at Every Layer](goodhart_at_every_layer.md) - How optimization pressure corrupts measurement at each architectural layer, and the counters.
 - [Pattern: Graph Diagnostic → Agent Belief Update → Strategy Change](graph_diagnostic_belief_update_pattern.md) - Pattern: using a graph diagnostic to force an agent belief update.
 - [ZTARE Harness Specification](harness_specification.md) - Specification for a harness, the deterministic pre-judge evaluator.
-- [LeanMill Architecture](leanmill_architecture.md) - LeanMill architecture: lanes, handoffs, credit boundaries, and operational read models.
-- [LeanMill — positioning (receipts-first)](leanmill_positioning.md)
+- [LeanMill Architecture](leanmill_architecture.md) - LeanMill architecture: a governed proof-search environment — components, invariants, soundness model, control flow, and operations.
+- [LeanMill Design History & Decision Log](leanmill_design_history.md) - LeanMill design history and decision log: the dated invariants, RCAs, A/B evidence, and rationale behind the architecture.
+- [LeanMill — positioning (receipts-first)](leanmill_positioning.md) - LeanMill positioning: a receipts-first account of what it is, who it is for, and the kernel-certified guarantee it sells.
 - [MLH Family Protocol, Pre-Registered Cross-Substrate Prediction](mlh_family_protocol.md) - Pre-registered cross-substrate protocol for the formula-recovery track.
 - [Organizational Primitives](organizational_primitives.md) - Code primitives for separating agent roles, authority, and work routing in the ZTARE org runtime.
 - [Prediction Ledger Pattern](prediction_ledger_pattern.md) - Why predictions are gameable and how the append-only ledger + Brier scoring catch miscalibration.
@@ -42,5 +43,5 @@ _Folder index. Prose may be added above the auto-index block._
 - [Primitive Glossary - Universal Research Language](universal_research_language.md) - The substrate-neutral structural-move vocabulary used to route research ticks independent of the active substrate.
 - [ZTARE Research Company Architecture](ztare_research_company_architecture.md) - How ZTARE instantiates cognitive-firm primitives as a research company.
 
-<sub>0 sub-folder(s), 33 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>0 sub-folder(s), 34 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

@@ -132,7 +132,7 @@ tenant notification provider as part of the generic kernel.
 
 **Sub-folders**
 
-- [`concepts/`](concepts/) - 33 file(s)
+- [`concepts/`](concepts/) - 34 file(s)
 - [`evidence_atlas/`](evidence_atlas/) - 10 file(s)
 - [`guides/`](guides/) - 14 file(s)
 - [`landings/`](landings/) - 1 file(s)

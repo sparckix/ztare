@@ -103,7 +103,7 @@ current Mathlib rather than extracting from project files.
   statement with `Lp.tendsto_Lp_iff_tendsto_eLpNorm'` and
   `DomAddAct.mk_vadd_toLp`.
 - Current-Mathlib validation passed on 2026-06-09:
-  `lake env lean /Users/daalami/figs_activist_loop/ztare_proofs/mathlib_pr_prep/PR3_translate_eLpNorm_continuity_domact.lean`.
+  `lake env lean ztare_proofs/mathlib_pr_prep/PR3_translate_eLpNorm_continuity_domact.lean`.
 - Required work: decide file placement and import direction. This should not
   be submitted as the older long density proof. Ask analysis/measure
   maintainers whether they prefer a small downstream file or adding the

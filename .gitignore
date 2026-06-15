@@ -504,3 +504,4 @@ ztare_proofs/family_context_*.lean
 ztare_proofs/scratch*.lean
 ztare_proofs/_strategist_lift_work/
 ztare_proofs/closures/
+analytics/public/calibration/forecaster_calibration.db

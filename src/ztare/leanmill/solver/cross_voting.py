@@ -495,7 +495,7 @@ def _selftest() -> int:
        v_e2e.faithful and len(votes_e2e) == 2)
 
     # ── LIVE kernel leg (only if the Lean toolchain is present; SKIPPED, not faked, otherwise) ──
-    live_root = Path("/Users/daalami/figs_activist_loop/ztare_proofs")
+    live_root = Path(__file__).resolve().parents[4] / "ztare_proofs"   # repo-relative (portable, no abs path)
     if live_root.exists() and os.environ.get("ZTARE_CROSSVOTE_LIVE_KERNEL") == "1":
         # POSITIVE: `∀ n, n+0=n` ↔ `∀ n, 0+n=n` — kernel-provably the same (simp/omega). NEGATIVE: a true
         # ∀ vs a FALSE ∀ cannot be `↔`-proved ⇒ NOT equivalent (the kernel refuses to launder).
