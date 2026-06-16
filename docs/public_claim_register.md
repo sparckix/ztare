@@ -211,13 +211,14 @@ steelmanned LLM judge*, 7 compliance domains: firewall **14/14**, judge
 returns a typed 3-verdict **artifact** (CERTIFIED_EQUIVALENT / REFUTED with a
 re-verifiable distinguishing input / OUT_OF_FRAGMENT), composing z3 + Gröbner +
 the Lean kernel (no reimplemented decision procedure). On an **N=18** policy
-corpus across 8 compliance domains (z3 exhaustive ground truth) the engine
-**decides 18/18, correct 18/18**, each a checkable artifact. *Kept null:* the
-N=5 probe's witness gap (engine 3/3 vs judge 2/3) **did not replicate** — at
-N=18 the judge got 18/18 verdicts and 9/9 valid witnesses too, so there is **no
-measured accuracy/witness edge**; the durable differentiator is the soundness
-*guarantee* (a decision-procedure certificate, sound by Cook–Levin and
-re-runnable), not a delta. (5) *Transport-to-decidability router* —
+corpus across 8 compliance domains the engine *decides* all 18 and agrees with
+the z3 ground truth — but since the engine **is** z3, that agreement is a
+**consistency check, NOT an accuracy claim** (it is not measured against an
+independent oracle). The non-tautological signals: every verdict is a checkable
+artifact, and vs the **independent** judge oracle the result is a **kept null** —
+the N=5 witness gap (engine 3/3 vs judge 2/3) **did not replicate** (at N=18 the
+judge matched it, 18/18 + 9/9). No measured accuracy edge; the differentiator is
+the soundness *guarantee* (a re-runnable certificate vs an unguaranteed opinion). (5) *Transport-to-decidability router* —
 `decidability_router.py` routes an obligation to the theory where it is
 decidable; **decidable-fraction lift = +3** (portfolio 5/7 = 71% vs single best
 theory 2/7 = 29%) on a mixed math+policy seed with honest OUT_OF_FRAGMENT rows.
@@ -225,10 +226,11 @@ theory 2/7 = 29%) on a mixed math+policy seed with honest OUT_OF_FRAGMENT rows.
 cofactor / false witness / asserted analogy by kernel re-verification: **8/8
 rejected, 0 false-positive**, genuine transport passes — "alien" exploration is
 safe by construction. (7) *Cloud/IAM policy refinement* — `certify_policy_refinement` (the SMT
-policy-permissiveness check, as a faithfulness verdict) on 9 access-policy cases: engine **9/9**,
-**5/5** over-grants (privilege escalations) caught with re-verifiable witnesses. Honest edge vs the
-mature SMT-policy-verification line is the *intent→formal translation* firewall + domain-generality +
-independent governance, **not** out-verifying their domain grammars. Receipts:
+policy-permissiveness check, as a faithfulness verdict) on 9 access-policy cases. Again the engine *is*
+z3, so "9/9 vs z3 ground truth" is a **consistency check, not an accuracy claim**; the real signal is the
+**artifact** — **5/5** over-grants (privilege escalations) caught with a concrete, **re-verifiable**
+escalation request. Honest edge vs the mature SMT-policy-verification line is the *intent→formal
+translation* firewall + domain-generality + independent governance, **not** out-verifying their domain grammars. Receipts:
 `results/{certified_faithfulness_demo,certify_policy_corpus_run,iam_refinement_run,decidability_router,governance_redteam}.md`;
 reviewer packet `docs/evidence_atlas/packets/transport_to_decidability.md`.
 
