@@ -104,3 +104,17 @@
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "e814e5a30352b12d0e37687d72f01ac5056b94967bf3b9094cd443cac6427251", "closed": 0, "run_tag": "", "ts": "2026-06-16T17:48:06.299495+00:00"}
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "59da3171a308350c15496cc9245c099eb3815751370de07e27fe43c0e40b375f", "closed": 1, "run_tag": "", "ts": "2026-06-16T17:50:58.603698+00:00"}
 {"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "192eccee87f0d1f64cee0c3fce31e4afb45c7b5f51e370c9915506957bf925a1", "closed": 0, "run_tag": "", "ts": "2026-06-16T17:56:31.644056+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "bf7b049cd13fc829ef42de1ac4a33a1629826dcf670149e03c8c31311ec5ca96", "closed": 0, "run_tag": "", "ts": "2026-06-16T20:58:29.298635+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "bf7b049cd13fc829ef42de1ac4a33a1629826dcf670149e03c8c31311ec5ca96", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:00:29.504279+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "15aaa2dcba0704560880c9891ab19059396b2d792f875c9817425f70ebb2b854", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:02:34.107937+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "4235abf6d811dc4ebf377f7f4bac0e6c6fa63997a92bffa835d382f22002deee", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:12:36.388457+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "06ac2756fbb77643c66ad28f60bdd2df26e711ee84a93e4af5e302d46efe4fd6", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:27:21.572342+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "34db71698bab037d45490f023fbb7b462d6ebdd70126ffd17bd27b966aabf320", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:38:35.627309+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "e7d9fb0c202e7724128ee3177fb3a62a64ddb2cc74b410742fff0762e6d198e2", "closed": 0, "run_tag": "", "ts": "2026-06-16T21:47:43.673187+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "27c2e30313ca9b52458b4509652a29290dcf54456a34aa9874ff42389c6bd603", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:02:44.703515+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "8806d66c1eb36afa976fea3a57d729cdc8766cc22f4528780b3813908a773e86", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:15:24.610912+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "e37fa9898d97f419c8205d74f2235ead92da47648be7219f061a6b829834a3d6", "closed": 1, "run_tag": "", "ts": "2026-06-16T22:21:46.697557+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "31c44972b4d633de30d9a640f6bf0f3c19924c674d5eac346752f6a39df3e408", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:29:16.517797+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "e5a19f92fb422e6b8dd53566d60ae954e0b0a97ebdffd9ad100877d7860c3606", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:36:16.115285+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "e5a19f92fb422e6b8dd53566d60ae954e0b0a97ebdffd9ad100877d7860c3606", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:38:02.938552+00:00"}
+{"slot": "warm_leaf", "fp": "47fe8bb4b2c4", "goal_sha": "bee32b0d93642a9fb6617aaf1dab35cab3f6142ce029b71995bca660248df179", "closed": 0, "run_tag": "", "ts": "2026-06-16T22:51:35.365797+00:00"}

@@ -41,3 +41,14 @@
 {"target": "mathd_numbertheory_212", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": false, "confirmed": ["gold_name_verbatim_confirmed"]}, "kernel_blocked": true}
 {"target": "mathd_numbertheory_100", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
 {"target": "mathd_algebra_160", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_362", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_125", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_170", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "iso_factor_product_local", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "induction_1pxpownlt1pnx", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_numbertheory_247", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_296", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_296", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_296", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_algebra_129", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "mathd_numbertheory_277", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}

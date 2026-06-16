@@ -25,3 +25,4 @@
 {"ts": "2026-06-16T07:55:20.202589+00:00", "tool": "search", "arg": "Matrix.det_ne_zero_iff", "exit": 0}
 {"ts": "2026-06-16T15:34:39.294126+00:00", "tool": "search", "arg": "real odd pow injective", "exit": 0}
 {"ts": "2026-06-16T17:54:55.144115+00:00", "tool": "search", "arg": "Nat.gcd n m * Nat.lcm n m = n * m", "exit": 0}
+{"ts": "2026-06-16T21:37:26.251243+00:00", "tool": "search", "arg": "1 + n * x \u2264 (1 + x) ^ n", "exit": 0}

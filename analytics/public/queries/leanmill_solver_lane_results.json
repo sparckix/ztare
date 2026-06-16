@@ -3,34 +3,53 @@
   "lane": "solver_lane",
   "mode": "cascade",
   "provider": "claude_opus",
-  "generated_at": "2026-06-16T17:58:47.874328+00:00",
+  "generated_at": "2026-06-16T22:53:37.938922+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "claude_opus",
   "results": [
     {
-      "name": "adhoc::mathd_algebra_160",
-      "target_name": "mathd_algebra_160",
+      "name": "adhoc::mathd_numbertheory_277",
+      "target_name": "mathd_numbertheory_277",
       "kind": "c_pool_no_template",
       "outcome": "closed",
       "compile_ok": true,
-      "compile_tail": "[ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[field_simp; ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[linarith] OK  repl: clean",
+      "compile_tail": "repl: clean",
       "exit_code": 0,
-      "proof_text": "by linarith",
-      "provider": "native_hammer",
+      "proof_text": "have hmn : m * n = 756 := by\n    have h := Nat.gcd_mul_lcm m n\n    rw [h\u2080, h\u2081] at h\n    omega\n  have h6m : 6 \u2223 m := h\u2080 \u25b8 Nat.gcd_dvd_left m n\n  have h6n : 6 \u2223 n := h\u2080 \u25b8 Nat.gcd_dvd_right m n\n  have hm : m \u2223 126 := h\u2081 \u25b8 Nat.dvd_lcm_left m n\n  have hmle : m \u2264 126 := Nat.le_of_dvd (by norm_num) hm\n  interval_cases m <;> omega",
+      "provider": "claude_opus",
       "providers_tried": [
         {
           "provider": "native_hammer",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "compile_tail": "[native_hammer] in-run dedup: identical goal already FAILED the full cascade this run (deterministic; re-run is waste) | prior: ications := 200 })] no  repl: L7:2 error: tactic 'aesop' failed, made no progress\nInitial goal:\n  m n : \u2115\n  h\u2080 : m.gcd n = 6\n  h\u2081 : m.lcm n = 126\n  \u22a2 60 \u2264 m + n",
+          "provider_wallclock_s": 0.0,
+          "agent_kind": "native_hammer_cascade"
+        },
+        {
+          "provider": "claude_opus_warm",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "compile_tail": "statement_integrity FAILED (laundering blocked at solve time): target_signature_altered: `mathd_numbertheory_277`'s statement was changed",
+          "provider_wallclock_s": 130.75,
+          "agent_kind": "warm_agent"
+        },
+        {
+          "provider": "claude_opus",
           "outcome": "closed",
           "compile_ok": true,
-          "compile_tail": "[ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[field_simp; ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[linarith] OK  repl: clean",
-          "provider_wallclock_s": 3.84,
-          "agent_kind": "native_hammer_cascade",
+          "compile_tail": "repl: clean",
+          "provider_error": "none",
+          "provider_wallclock_s": 66.91,
+          "routing_chain_walked": [
+            "claude_opus"
+          ],
           "contract_validation": {
             "contract_schema": "leanmill-solver-action-contract-v1",
             "receipts": {
               "kernel_compile_receipt": {
                 "passed": true,
-                "tail": "[ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[field_simp; ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[linarith] OK  repl: clean"
+                "tail": "repl: clean"
               },
               "matched_negative_control_receipt": {
                 "passed": true,
@@ -38,9 +57,9 @@
                 "interpretation": "PASS = bare-Mathlib stripped attempt did NOT compile \u2192 proof needs the prelude \u2192 genuine"
               },
               "axiom_allowlist_receipt": {
-                "passed": null,
+                "passed": true,
                 "axioms": [],
-                "tail": "inconclusive (no #print axioms line) \u2014 fail-open"
+                "tail": "clean []"
               },
               "l3_anti_pattern_receipt": {
                 "passed": null,
@@ -50,28 +69,28 @@
                 "passed": true,
                 "confirmed": [],
                 "flags": [
-                  "consequence_exposure_shape_suspect_advisory"
+                  "indirect_leakage_shape_suspect_advisory"
                 ],
                 "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
               }
             },
             "credit_ready_at_solver_layer": true,
             "required_receipts_all_passed_at_solver_layer": true,
-            "axiom_tier": "inconclusive",
+            "axiom_tier": "kernel_pure",
             "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
           }
         }
       ],
       "provider_error": "none",
-      "provider_wallclock_s": 64.63,
+      "provider_wallclock_s": 120.13,
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1781632661,
-        "row_id": "adhoc::mathd_algebra_160",
-        "target_theorem_name": "mathd_algebra_160",
-        "source_file": "ztare_proofs/.solver_scratch/AdHoc_mathd_algebra_160.lean",
+        "generated_at_epoch": 1781650162,
+        "row_id": "adhoc::mathd_numbertheory_277",
+        "target_theorem_name": "mathd_numbertheory_277",
+        "source_file": "ztare_proofs/.solver_scratch/AdHoc_mathd_numbertheory_277.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": "(n x : \u211d) (h\u2080 : n + x = 97) (h\u2081 : n + 5 * x = 265) : n + 2 * x = 139",
+        "goal_excerpt": "(m n : \u2115) (h\u2080 : Nat.gcd m n = 6) (h\u2081 : Nat.lcm m n = 126) :\n    60 \u2264 m + n",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -101,46 +120,46 @@
         "evidence_basis": "local_default",
         "rd_primitive_hits": [
           {
-            "id": "MOMENT-RATIO-SURPLUS-GATE",
-            "kind": "gate",
-            "score": 744.15,
-            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.25",
-            "description": "Exact rational gate for Paley-Zygmund/Cauchy moment-ratio routes: checks whether cheap-boundary lower bound plus first_moment_sq/second_moment_cap strictly overfills threshold space, blocking finite-second-moment-as-surp"
-          },
-          {
-            "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
-            "kind": "pattern",
-            "score": 735.25,
-            "why": "bucket sympy_cas; impact 5; graph_bonus 1.75",
-            "description": "Independent CAS verification of LLM-proposed inequalities."
+            "id": "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
+            "kind": "anti-pattern",
+            "score": 713.9,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5",
+            "description": "A Lean proof compiles, is sorry-free, axiom-clean (clears GP-211) yet is NOT a novel closure: vacuous / gold-name-verbatim / one-exact? / indirect-leakage / scalar-currency. 5 sub-modes mechanized by the v33 Tier-0 organ"
           },
           {
             "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
             "kind": "primitive",
-            "score": 734.4,
+            "score": 713.4,
             "why": "bucket pde_ns_lean, orchestration_compression; impact 4",
             "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes"
           },
           {
-            "id": "BOUNDED-RATIO-SUPPORT-GATE",
-            "kind": "gate",
-            "score": 732.15,
-            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.25",
-            "description": "Exact rational gate for bounded-ratio surplus routes: checks whether E[rho]>=1+delta with a pre-payoff cap rho<=R gives support mass delta/(R-1) large enough, with a companion lower bound, to overfill threshold space; bl"
-          },
-          {
-            "id": "EXTRACT-LAGRANGIAN-DECLARATION",
+            "id": "RESIDUAL-TO-LEVER",
             "kind": "primitive",
-            "score": 732.1,
-            "why": "bucket sympy_cas, variational_lagrangian; impact 1",
-            "description": "Parse the GP-180 Lagrangian-mode contract from a test_model.py text."
+            "score": 709.4,
+            "why": "bucket negative_to_object; impact 4",
+            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
           },
           {
-            "id": "SOLVER0-GATE",
+            "id": "V33-INDIRECT-LEAKAGE-GATE",
             "kind": "gate",
-            "score": 731.4,
-            "why": "bucket cognitive_reframe, negative_to_object; impact 4",
-            "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes "
+            "score": 707.4,
+            "why": "bucket pde_ns_lean, graph_mining; impact 4",
+            "description": "Tier-0 closure-governance organ: flags bare simp/fun_prop/aesop closures where the global @[simp]/@[fun_prop] set silently carries the gold lemma; independent confirm via floor-fails-but-global-closes. Mechanizes AP-013 "
+          },
+          {
+            "id": "MOMENT-RATIO-SURPLUS-GATE",
+            "kind": "gate",
+            "score": 707.15,
+            "why": "bucket pde_ns_lean; impact 4; graph_bonus 1.25",
+            "description": "Exact rational gate for Paley-Zygmund/Cauchy moment-ratio routes: checks whether cheap-boundary lower bound plus first_moment_sq/second_moment_cap strictly overfills threshold space, blocking finite-second-moment-as-surp"
+          },
+          {
+            "id": "ANTI-PATTERN-012-VOCABULARY-CHAIN-LAUNDERING",
+            "kind": "anti-pattern",
+            "score": 704.5,
+            "why": "impact 5",
+            "description": "Multi-step argument chaining named theorems where \u22651 transition has a subtle direction/quantifier/dimension/inclusion flip from rapid-synthesis-by-association without per-step explicit verification (sessional catches tic"
           }
         ],
         "action_program": [
@@ -192,7 +211,7 @@
         "receipts": {
           "kernel_compile_receipt": {
             "passed": true,
-            "tail": "[ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[field_simp; ring] no  repl: L5:98 error: unsolved goals\nn x : \u211d\nh\u2080 : n + x = 97\nh\u2081 : n + 5 * x = 265\n\u22a2 n + x * 2 = 139\n[linarith] OK  repl: clean"
+            "tail": "repl: clean"
           },
           "matched_negative_control_receipt": {
             "passed": true,
@@ -200,9 +219,9 @@
             "interpretation": "PASS = bare-Mathlib stripped attempt did NOT compile \u2192 proof needs the prelude \u2192 genuine"
           },
           "axiom_allowlist_receipt": {
-            "passed": null,
+            "passed": true,
             "axioms": [],
-            "tail": "inconclusive (no #print axioms line) \u2014 fail-open"
+            "tail": "clean []"
           },
           "l3_anti_pattern_receipt": {
             "passed": null,
@@ -212,14 +231,14 @@
             "passed": true,
             "confirmed": [],
             "flags": [
-              "consequence_exposure_shape_suspect_advisory"
+              "indirect_leakage_shape_suspect_advisory"
             ],
             "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
           }
         },
         "credit_ready_at_solver_layer": true,
         "required_receipts_all_passed_at_solver_layer": true,
-        "axiom_tier": "inconclusive",
+        "axiom_tier": "kernel_pure",
         "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
       },
       "matched_negative_control": {
@@ -231,10 +250,10 @@
         "triage_class": "formalization_bound",
         "confidence": "low",
         "attempt": true,
-        "obligation": "Construct",
+        "obligation": "Bound",
         "gap_type": "UNKNOWN",
-        "rationale": "Construct obligation \u2014 known-math shape; attempt with the standard pipeline.",
-        "target_strength": "unknown"
+        "rationale": "Bound obligation \u2014 known-math shape; attempt with the standard pipeline.",
+        "target_strength": "elementary"
       },
       "in_repo_reference_check": {
         "kind": "reachable_solved_references",
@@ -244,6 +263,13 @@
         "reachable_solved_references": [],
         "error": null,
         "note": "advisory: reachable in-repo solved references at closure time; opt-in (ZTARE_CLOSURE_REF_CHECK=1, on for solve_adhoc). Non-empty does NOT reject (premises are legitimate in batch) but flags a capability claim."
+      },
+      "routing": {
+        "chain_walked": [
+          "claude_opus"
+        ],
+        "skipped_unavailable": [],
+        "skipped_hard_failed": []
       }
     }
   ]

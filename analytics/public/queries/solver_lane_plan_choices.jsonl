@@ -55,3 +55,11 @@
 {"action": "DECOMPOSE", "reason": "convert the coupled recurrence into the 99-step rotation-dilation endpoint relation, then finish with scalar algebra.", "target": "a 1 + b 1 = 1 / 2 ^ 98"}
 {"action": "SOLVE_DIRECT", "reason": "this is a one-line complex arithmetic identity using `Complex.I_mul_I`/normalization.", "target": "(Complex.I / 2) ^ 2 = -(1 / 4)"}
 {"action": "SOLVE_DIRECT", "reason": "evaluating the polynomial identity at two small points gives the needed coefficient equations, and integer arithmetic closes the goal directly.", "target": "a * b + b = 12"}
+{"action": "TRANSPORT", "reason": "use algebraic elimination to reduce the monomial system to a univariate ninth-power equation for `b`, then back-substitute.", "target": "a + b = 8 / 3"}
+{"action": "TRANSPORT", "reason": "use the factor-divisor number-theory reduction to isolate the square-compatible divisor case.", "target": "3 * (x ^ 2 * y ^ 2) = 588"}
+{"action": "SOLVE_DIRECT", "reason": "normalize the rational sum, convert denominator-one to divisibility, bound `n ≤ 42`, then finite-check.", "target": "n = 42"}
+{"action": "FALSIFY", "reason": "`n = 0` with `p x = x ^ 2 - x + 41` gives `gcd 41 41 = 41 > 1` but not `41 ≤ 0`.", "target": "41 ≤ n"}
+{"action": "DECOMPOSE", "reason": "use a discrete maximum-principle split: rule out positive components, rule out negative components, then combine by antisymmetry.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "expose the Ackermann hierarchy rungs up to level 3, then substitute the level-3 exponential form into the level-4 recursion.", "target": "∀ y, f 4 (y + 1) = 2 ^ (f 4 y + 3) - 3"}
+{"action": "DECOMPOSE", "reason": "", "target": "60 ≤ m + n"}
+{"action": "DECOMPOSE", "reason": "translate gcd/lcm data into normalized factors, then prove the finite factor-pair lower bound.", "target": "60 ≤ m + n"}
