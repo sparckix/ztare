@@ -28,18 +28,19 @@ reported. The IAM model is toy-scale boolean, **not** the full IAM grammar (see 
 |---|---|---|---|
 | Decidable-fraction lift | portfolio **5/7 = 71%** vs single best theory **2/7**, **+3**; 2 honest OUT | `results/decidability_router.md` | `python -m ztare.leanmill.solver.decidability_router --selftest` |
 | Certified faithfulness (typed trichotomy) | selftest 11/11; CERTIFIED/REFUTED-with-witness/OUT | `results/certified_faithfulness_demo.md` | `python -m ztare.leanmill.solver.certified_faithfulness --selftest` |
-| Non-math policy, at scale | engine **18/18** decided+correct (8 compliance domains); witness gap **null** at scale | `results/certify_policy_corpus_run.md` | corpus `scripts/public/control/leanmill/certify_policy_corpus.json` |
-| IAM/cloud refinement (policy-permissiveness) | engine **9/9**, **5/5** over-grants caught w/ re-verifiable escalation witnesses | `results/iam_refinement_run.md` | corpus `scripts/public/control/leanmill/iam_refinement_corpus.json` |
-| Transport-laundering soundness | red-team **8/8** rejected, **0** false-positive (wrong cofactor / false witness / asserted analogy) | `results/governance_redteam.md` | `governance_redteam.py` (gitignored runner) |
-| Math transport lift | witness **12/12** vs native 0/12; Gröbner/SOS **+2** deg-≥3 | `results/transport_lift_controlled.md` | `transport_lift_controlled.py` (gitignored runner) |
-| Benchmark, honest+bounded | miniF2F **43%** (N=23 bounded) / 67% (N=9 pilot), both kept | `results/minif2f_test_calibration_triage.md` | `minif2f_calibration.py` (gitignored runner) |
+| Non-math policy, at scale | engine **18/18** decided+correct (8 compliance domains); witness gap **null** at scale | `results/certify_policy_corpus_run.md` | `projects/leanmill_experiments/public/certified_faithfulness_demo.py --corpus scripts/public/control/leanmill/certify_policy_corpus.json` |
+| IAM/cloud refinement (policy-permissiveness) | engine **9/9**, **5/5** over-grants caught w/ re-verifiable escalation witnesses | `results/iam_refinement_run.md` | corpus `scripts/public/control/leanmill/iam_refinement_corpus.json` (engine = `certified_faithfulness.certify_policy_refinement`) |
+| Transport-laundering soundness | red-team **8/8** rejected, **0** false-positive (wrong cofactor / false witness / asserted analogy) | `results/governance_redteam.md` | `projects/leanmill_experiments/public/governance_redteam.py` |
+| Math transport lift | witness **12/12** vs native 0/12; Gröbner/SOS **+2** deg-≥3 | `results/transport_lift_controlled.md` | `projects/leanmill_experiments/public/transport_lift_controlled.py` |
+| Benchmark, honest+bounded | miniF2F **43%** (N=23 bounded) / 67% (N=9 pilot), both kept | `results/minif2f_test_calibration_triage.md` | `minif2f_calibration.py` (env-heavy; not committed) |
 
-**Reproducibility note (honest).** The committable floor is the `--selftest` entrypoints above (in `src/`,
-public, no network) plus the corpora JSON (in `scripts/public/`). The *experiment runners* (live-judge,
-red-team, miniF2F, transport-lift) under `projects/leanmill_experiments/` and their `.md`/`.json` receipts under
-`analytics/public/leanmill/results/` are currently **gitignored**; a clone reproduces the engine + corpus claims
-from the selftests, but not the live-judge/red-team receipts without those runners. Un-gitignoring the four goal
-runners + their receipts is the open step for full from-clone reproduction.
+**Reproducibility note (honest).** Committable + from-clone runnable: the `--selftest` entrypoints (in `src/`,
+public, no network), the corpora JSON (in `scripts/public/`), and the three self-contained experiment runners now
+under `projects/leanmill_experiments/public/` (governed red-team, certified-faithfulness/policy corpus,
+transport-lift — the live ones need warm Lean / a subscription model in the env, but the scripts ship). Still
+**not** from-clone: the `.md`/`.json` receipts under `analytics/public/leanmill/results/` (gitignored by the
+private-accounting convention) and the env-heavy `minif2f_calibration.py` (needs the PutnamBench substrate). A
+clone reproduces every engine + corpus + governance claim by running the shipped selftests and `public/` runners.
 
 ## Primary Sources
 
