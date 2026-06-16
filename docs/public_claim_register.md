@@ -168,7 +168,7 @@ named axioms" as bounded infrastructure, not closure.
 
 ## LeanMill: Governed Proof Search And Autoformalization
 
-Last updated: 2026-06-12.
+Last updated: 2026-06-16.
 
 **Public claim.** LeanMill is a governance layer for machine-generated formal
 work: LLM agents propose proofs, decompositions, and formalizations; a
@@ -191,7 +191,53 @@ kernel-ratified sub-lemma certificates — each with a statement hash and a
 recompilable `.lean` artifact — accumulate across governed runs and are cited
 by later runs instead of re-derived.
 
-**What did not survive, kept on the record.** Early "apparatus gives no lift"
+**Measured this round (2026-06-16).** (1) *Benchmark* — miniF2F-test, governed,
+compiled warm against v4.30 Mathlib. A **depth-bounded N=23** random admissible
+sample closed **10/23 = 43% (Wilson 95% 26–63%)**; an earlier **N=9
+unbounded-depth pilot** landed **6/9 = 67%**. The larger bounded sample is the
+more reliable estimate (the small-N pilot was optimistic) and a **conservative
+floor** — the depth-1 cost cap timed 5 problems out (budget-cut, not clean
+failures). The two use different budget regimes (not apples-to-apples; CIs
+overlap), and the bare arm was off so the JSON `apparatus_lift` field is a
+cosmetic artifact, **not** a real lift. The matched bare-vs-LeanMill apparatus-lift
+A/B is built but **not yet published** (deferred on cost — the bare arm runs
+~13 min/problem); **no apparatus-lift rate is claimed.** (2) *Soundness, adversarial* — a
+governance red-team rejects **5/5** smuggled-unsoundness attacks
+(`sorry`/`admit`/`native_decide`→`ofReduceBool`/false-axiom) and admits genuine
+proofs; re-runnable (`governance_redteam.py`). (3) *Non-math firewall vs. a
+steelmanned LLM judge*, 7 compliance domains: firewall **14/14**, judge
+**13/14** — the edge is **precision + the certificate**, *not* catch-rate.
+(4) *Certified faithfulness — opinion vs. certificate, at scale.* `certify_policy_faithfulness`
+returns a typed 3-verdict **artifact** (CERTIFIED_EQUIVALENT / REFUTED with a
+re-verifiable distinguishing input / OUT_OF_FRAGMENT), composing z3 + Gröbner +
+the Lean kernel (no reimplemented decision procedure). On an **N=18** policy
+corpus across 8 compliance domains (z3 exhaustive ground truth) the engine
+**decides 18/18, correct 18/18**, each a checkable artifact. *Kept null:* the
+N=5 probe's witness gap (engine 3/3 vs judge 2/3) **did not replicate** — at
+N=18 the judge got 18/18 verdicts and 9/9 valid witnesses too, so there is **no
+measured accuracy/witness edge**; the durable differentiator is the soundness
+*guarantee* (a decision-procedure certificate, sound by Cook–Levin and
+re-runnable), not a delta. (5) *Transport-to-decidability router* —
+`decidability_router.py` routes an obligation to the theory where it is
+decidable; **decidable-fraction lift = +3** (portfolio 5/7 = 71% vs single best
+theory 2/7 = 29%) on a mixed math+policy seed with honest OUT_OF_FRAGMENT rows.
+(6) *Transport-laundering soundness* — the red-team now catches a wrong Gröbner
+cofactor / false witness / asserted analogy by kernel re-verification: **8/8
+rejected, 0 false-positive**, genuine transport passes — "alien" exploration is
+safe by construction. (7) *Cloud/IAM policy refinement* — `certify_policy_refinement` (the SMT
+policy-permissiveness check, as a faithfulness verdict) on 9 access-policy cases: engine **9/9**,
+**5/5** over-grants (privilege escalations) caught with re-verifiable witnesses. Honest edge vs the
+mature SMT-policy-verification line is the *intent→formal translation* firewall + domain-generality +
+independent governance, **not** out-verifying their domain grammars. Receipts:
+`results/{certified_faithfulness_demo,certify_policy_corpus_run,iam_refinement_run,decidability_router,governance_redteam}.md`;
+reviewer packet `docs/evidence_atlas/packets/transport_to_decidability.md`.
+
+**What did not survive, kept on the record.** The non-math *catch-rate* edge is
+a measured **null** across all three launder classes (structural, SMT-boundary,
+and a purpose-built must-search class): a frontier judge reasons through the
+same launders, so we claim no catch-rate edge — only precision + verifiability.
+The diverse judge-diversity panel showed a **null** false-reject lift against an
+already-strong single judge. Early "apparatus gives no lift"
 nulls were dead-instrument artifacts (probes never parsed): the thesis was
 untested, not refuted. The abduce and reflection moves are subsumed by native
 automation at low degree; their lift claims were withdrawn and the nulls kept.
@@ -202,9 +248,13 @@ longer earn credit.
 
 **Next falsifiers.** The differential re-verification stage (a proof that also
 closes its negated conclusion is rejected as vacuous-context) awaits its live
-contradictory-hypothesis positive control; attack-ordering and
-sum-of-squares-hint legs are claimed as built, with lift PENDING controlled
-A/Bs.
+contradictory-hypothesis positive control. The Gröbner / SOS transport edges
+now have a controlled A/B (both arms kernel-verified, baseline = full local
+native incl. `subst_vars`): they close **2 degree-≥3 goals** (`a+b+c=0 ⊢
+a³+b³+c³=3abc`; `(x²−1)²≥0`) the native cascade cannot. `polyrith` — the
+historical Gröbner competitor — is **decommissioned** in current Mathlib (its
+external service is dead), so the edge fills that gap locally with an auditable
+cert; the lift is not a polyrith or baseline-weakness artifact.
 
 **Readiness.** Public. The honest frame: an open problem decomposed under
 governance with certified partial progress and the cheating receipts kept —

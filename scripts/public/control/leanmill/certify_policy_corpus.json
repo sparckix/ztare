@@ -1,0 +1,94 @@
+{
+  "_meta": "Scaled non-math policy faithfulness corpus for certify_policy_faithfulness (goal item 3). Each case: a TRUSTED intent rule + a candidate formalization over an integer/bool domain (z3 SmtPolicyChecker syntax: And/Or/Not, ==,>=,>,<=,<). truth_equivalent is the GROUND TRUTH (z3 is the actual decider at runtime; this is the expected verdict). class = faithful | laundered. The engine returns CERTIFIED (faithful) or REFUTED (laundered, with a re-verifiable distinguishing input) — an artifact, never an opinion. Domains span compliance/finance/access/eligibility.",
+  "cases": [
+    {"label": "basel_car_reorder", "domain": "Basel capital adequacy: adequate iff CET1 ratio >= 7 (bp/100) AND total capital >= 105 (×10), OR a systemic waiver flag.",
+     "attrs": {"cet1": "int", "totcap": "int", "waiver": "int"},
+     "intent": "Or(And(cet1 >= 7, totcap >= 105), waiver == 1)",
+     "candidate": "Or(waiver == 1, And(totcap >= 105, cet1 >= 7))", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "basel_car_cet1_offby", "domain": "Basel: same, candidate weakens the CET1 floor 7→6.",
+     "attrs": {"cet1": "int", "totcap": "int", "waiver": "int"},
+     "intent": "Or(And(cet1 >= 7, totcap >= 105), waiver == 1)",
+     "candidate": "Or(And(cet1 >= 6, totcap >= 105), waiver == 1)", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "regt_margin_boundary", "domain": "Reg-T initial margin: call iff equity < 50% of market value; here call iff 2*equity < mktval.",
+     "attrs": {"equity": "int", "mktval": "int"},
+     "intent": "2*equity < mktval",
+     "candidate": "equity < mktval - equity", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "regt_margin_strict_launder", "domain": "Reg-T: candidate flips strict< to <= (admits the exact-50% boundary that should NOT call).",
+     "attrs": {"equity": "int", "mktval": "int"},
+     "intent": "2*equity < mktval",
+     "candidate": "2*equity <= mktval", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "tax_bracket_cliff", "domain": "Tax cliff: higher rate iff income > 100 (×1000). Candidate uses >= (taxes the exact 100k boundary).",
+     "attrs": {"income": "int"},
+     "intent": "income > 100",
+     "candidate": "income >= 101", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "tax_bracket_cliff_launder", "domain": "Tax cliff: candidate >= 100 (off-by-one — taxes 100k itself).",
+     "attrs": {"income": "int"},
+     "intent": "income > 100",
+     "candidate": "income >= 100", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "hipaa_access_faithful", "domain": "HIPAA access: permit iff (treating provider) OR (patient consent AND not restricted).",
+     "attrs": {"is_provider": "bool", "consent": "bool", "restricted": "bool"},
+     "intent": "Or(is_provider == True, And(consent == True, restricted == False))",
+     "candidate": "Or(And(Not(restricted == True), consent == True), is_provider == True)", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "hipaa_drop_restriction_launder", "domain": "HIPAA: candidate drops the 'not restricted' guard (leaks restricted records on consent).",
+     "attrs": {"is_provider": "bool", "consent": "bool", "restricted": "bool"},
+     "intent": "Or(is_provider == True, And(consent == True, restricted == False))",
+     "candidate": "Or(is_provider == True, consent == True)", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "aviation_duty_time", "domain": "Aviation: rest required iff duty hours >= 14 OR sectors flown >= 6.",
+     "attrs": {"duty": "int", "sectors": "int"},
+     "intent": "Or(duty >= 14, sectors >= 6)",
+     "candidate": "Or(sectors >= 6, duty >= 14)", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "aviation_sector_offby_launder", "domain": "Aviation: candidate raises the sector floor 6→7 (skips rest after 6 sectors).",
+     "attrs": {"duty": "int", "sectors": "int"},
+     "intent": "Or(duty >= 14, sectors >= 6)",
+     "candidate": "Or(duty >= 14, sectors >= 7)", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "export_control_clauses", "domain": "Export control: deny iff (dual_use AND destination_embargoed) OR entity_listed.",
+     "attrs": {"dual_use": "bool", "embargoed": "bool", "listed": "bool"},
+     "intent": "Or(And(dual_use == True, embargoed == True), listed == True)",
+     "candidate": "Or(listed == True, And(embargoed == True, dual_use == True))", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "export_and_to_or_launder", "domain": "Export control: candidate turns the AND into OR (denies any dual-use regardless of destination).",
+     "attrs": {"dual_use": "bool", "embargoed": "bool", "listed": "bool"},
+     "intent": "Or(And(dual_use == True, embargoed == True), listed == True)",
+     "candidate": "Or(Or(dual_use == True, embargoed == True), listed == True)", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "aml_threshold_faithful", "domain": "AML: report iff amount >= 10000 OR (structuring flag AND amount >= 3000).",
+     "attrs": {"amount": "int", "structuring": "bool"},
+     "intent": "Or(amount >= 10000, And(structuring == True, amount >= 3000))",
+     "candidate": "Or(And(amount >= 3000, structuring == True), amount >= 10000)", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "aml_structuring_floor_launder", "domain": "AML: candidate raises the structuring floor 3000→5000 (misses 3–5k structured transfers).",
+     "attrs": {"amount": "int", "structuring": "bool"},
+     "intent": "Or(amount >= 10000, And(structuring == True, amount >= 3000))",
+     "candidate": "Or(amount >= 10000, And(structuring == True, amount >= 5000))", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "loan_eligibility_faithful", "domain": "Loan: approve iff age >= 18 AND score >= 680 AND (income >= 50 OR cosigner).",
+     "attrs": {"age": "int", "score": "int", "income": "int", "cosigner": "bool"},
+     "intent": "And(age >= 18, And(score >= 680, Or(income >= 50, cosigner == True)))",
+     "candidate": "And(And(score >= 680, age >= 18), Or(cosigner == True, income >= 50))", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "loan_score_offby_launder", "domain": "Loan: candidate lowers the score floor 680→670.",
+     "attrs": {"age": "int", "score": "int", "income": "int", "cosigner": "bool"},
+     "intent": "And(age >= 18, And(score >= 680, Or(income >= 50, cosigner == True)))",
+     "candidate": "And(age >= 18, And(score >= 670, Or(income >= 50, cosigner == True)))", "truth_equivalent": false, "class": "laundered"},
+
+    {"label": "gdpr_lawful_basis_faithful", "domain": "GDPR processing: lawful iff consent OR contract OR legitimate_interest (and not a minor without parental consent).",
+     "attrs": {"consent": "bool", "contract": "bool", "legit": "bool", "minor": "bool", "parental": "bool"},
+     "intent": "And(Or(Or(consent == True, contract == True), legit == True), Or(minor == False, parental == True))",
+     "candidate": "And(Or(minor == False, parental == True), Or(consent == True, Or(contract == True, legit == True)))", "truth_equivalent": true, "class": "faithful"},
+
+    {"label": "gdpr_drop_minor_guard_launder", "domain": "GDPR: candidate drops the minor/parental guard (processes minors' data without parental consent).",
+     "attrs": {"consent": "bool", "contract": "bool", "legit": "bool", "minor": "bool", "parental": "bool"},
+     "intent": "And(Or(Or(consent == True, contract == True), legit == True), Or(minor == False, parental == True))",
+     "candidate": "Or(Or(consent == True, contract == True), legit == True)", "truth_equivalent": false, "class": "laundered"}
+  ]
+}

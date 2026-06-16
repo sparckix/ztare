@@ -976,6 +976,25 @@ def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemin
     the vote) — and the prompt explicitly tells the judge that MORE PRECISION is NOT strengthening. Every
     vote + the raw verdicts are logged via `_observe_roundtrip` so a rejection is never opaque again."""
     import os as _os
+    # JUDGE-DIVERSITY PANEL (#116 follow-up, `ZTARE_LEANMILL_JUDGE_PANEL`, default-off = byte-parity): poll K
+    # DIFFERENT model families + Dawid–Skene reliability weighting instead of N samples of ONE model — the
+    # measured single-judge 5/6-FALSE-REJECT fix (samples of one model share its systematic over-strictness;
+    # diverse families decorrelate). SOUNDNESS: the deterministic statement_integrity carrier still OVERRIDES
+    # downstream, so the panel only moves the faithful-admit / false-reject margin, never the no-false-admit
+    # floor. Any panel failure falls back to the single-model judge below (never crashes the gate).
+    if _os.environ.get("ZTARE_LEANMILL_JUDGE_PANEL", "0") == "1":
+        try:
+            from ztare.leanmill.solver.judge_panel import panel_judge
+            faithful, tel = panel_judge(
+                orig_nl, back_nl, prompt_template=prompts.DIRECTIONAL_JUDGE_PROMPT,
+                dispatch=lambda p, m: _api_text(p, model=m, label="autoformalize_judge_panel"))
+            if tel["n_live"] > 0:                          # ≥1 live judge ⇒ trust the panel; all-dead ⇒ fall through
+                _observe_roundtrip("judge_panel", orig_nl=orig_nl, back_nl=back_nl, n=tel["n_live"],
+                                   votes=list(tel["live_votes"].values()), raw_verdicts=tel["raw"],
+                                   faithful=faithful, model=f"panel:{tel['method']}")
+                return faithful
+        except Exception:  # noqa: BLE001 — panel error ⇒ fall back to the single-model judge, never crash
+            pass
     prompt = prompts.DIRECTIONAL_JUDGE_PROMPT.format(orig_nl=orig_nl, back_nl=back_nl)
     n = 3
     try:

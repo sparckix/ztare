@@ -208,6 +208,91 @@ def conservation(since: str, run_tags: "list[str]") -> dict:
     return {t: trust_conservation_audit(since, run_tag=t) for t in run_tags if t != "(untagged)"}
 
 
+_RESULTS_DIR = REPO / "analytics/public/leanmill/results"
+
+# Self-contained dark theme (no external deps) — plain string so its braces stay literal under the f-string.
+_CSS = (
+ ":root{--bg:#0d1117;--panel:#161b22;--bd:#30363d;--fg:#e6edf3;--mut:#8b949e;--acc:#3b82f6;--good:#2ea043;--warn:#d29922}"
+ "*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto}"
+ "header{padding:2rem 2rem .5rem}h1{margin:0;font-size:1.9rem;letter-spacing:-.02em}.tag{color:var(--mut);margin:.25rem 0 0}"
+ ".hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1rem;padding:1rem 2rem}"
+ ".card{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:1rem 1.1rem}"
+ ".card .cv{font-size:2.05rem;font-weight:700;letter-spacing:-.03em}.card.good .cv{color:var(--good)}"
+ ".card .cl{font-weight:600;margin-top:.1rem}.card .cs{color:var(--mut);font-size:.8rem;margin-top:.25rem}"
+ ".grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;padding:.2rem 2rem}@media(max-width:760px){.grid{grid-template-columns:1fr}}"
+ ".panel{background:var(--panel);border:1px solid var(--bd);border-radius:12px;padding:1.1rem 1.3rem;margin:1rem 2rem}"
+ ".grid .panel{margin:0}h2{font-size:1rem;margin:0 0 .8rem}.note{color:var(--mut);font-size:.78rem;margin:.7rem 0 0}"
+ ".bar{display:grid;grid-template-columns:170px 1fr 74px;align-items:center;gap:.6rem;margin:.4rem 0}"
+ ".bl{color:var(--mut);font-size:.85rem}.bt{height:18px;background:#0d1117;border-radius:6px;overflow:hidden}"
+ ".bf{display:block;height:100%}.bf.good{background:var(--good)}.bf.acc{background:var(--acc)}.bf.mut{background:var(--mut)}"
+ ".bv{text-align:right;font-variant-numeric:tabular-nums;font-size:.85rem}"
+ ".donutwrap{display:flex;align-items:center;gap:1.4rem}.donut{width:116px;height:116px;border-radius:50%;display:grid;place-items:center;position:relative}"
+ ".donut::after{content:'';position:absolute;width:66px;height:66px;border-radius:50%;background:var(--panel)}"
+ ".donut span{position:relative;font-weight:700;font-size:1.5rem}"
+ ".legend{list-style:none;padding:0;margin:0;font-size:.85rem}.legend li{display:flex;align-items:center;gap:.45rem;margin:.3rem 0}"
+ ".legend i{width:11px;height:11px;border-radius:3px}.legend i.good{background:var(--good)}.legend i.warn{background:var(--warn)}.legend i.mut{background:var(--mut)}"
+ "table{border-collapse:collapse;width:100%;font-size:.84rem}td,th{border-bottom:1px solid var(--bd);padding:.4rem .6rem;text-align:left}"
+ "th{color:var(--mut);font-weight:600}td{font-variant-numeric:tabular-nums}tr:hover td{background:#1c232c}"
+ "details summary{cursor:pointer;font-weight:600;color:var(--fg)}details[open] summary{margin-bottom:.6rem}"
+ "code{background:#0d1117;padding:.05rem .3rem;border-radius:4px;font-size:.85em}"
+ "footer{color:var(--mut);font-size:.76rem;padding:1.5rem 2rem 3rem}")
+
+
+def _headline_cards(bundle: dict) -> "list[tuple]":
+    """Best-effort hero metrics from the committed receipts + the live bundle (graceful '—' if absent).
+    Returns (value, label, sub, tone) — tone ∈ {good, info, warn}."""
+    import re as _re
+    cards: "list[tuple]" = []
+    # miniF2F governed closure (from the calibration receipt). Headline = admissibility-CORRECTED rate
+    # (inadmissible v4.30-unparseable statements excluded), matching the triage doc; raw kept in the sub.
+    try:
+        d = json.loads((_RESULTS_DIR / "minif2f_test_calibration.json").read_text())
+        if d.get("leanmill_rate") is not None:                     # runner's canonical schema (preferred)
+            num, den, rate = d.get("leanmill_closed"), d.get("n_admissible"), d["leanmill_rate"]
+            raw_den = (den or 0) + d.get("n_inadmissible", 0)
+            sub = f"{num}/{den} admissible-corrected" + (
+                f" · raw {num}/{raw_den}={100 * num / raw_den:.0f}%" if raw_den else "")
+        elif d.get("admissible_rate") is not None:                 # hand-curated pilot schema (fallback)
+            rate, num, den = d["admissible_rate"], d.get("admissible_closed", "?"), d.get("admissible_n", "?")
+            raw = d.get("closure_rate")
+            sub = f"{num}/{den} admissible-corrected" + (
+                f" · raw {d.get('closed', '?')}/{d.get('n', '?')}={raw * 100:.0f}%" if raw is not None else "")
+        else:
+            rate = d.get("closure_rate") or (d.get("closed", 0) / max(1, d.get("n", 1)))
+            sub = f"{d.get('closed', '?')}/{d.get('n', '?')} kernel-ratified"
+        cards.append((f"{rate * 100:.0f}%", "miniF2F governed", sub, "good"))
+    except Exception:  # noqa: BLE001
+        cards.append(("—", "miniF2F governed", "not run", "info"))
+    # soundness red-team
+    try:
+        m = _re.search(r"catch-rate\s*=\s*(\d+)/(\d+)", (_RESULTS_DIR / "governance_redteam.md").read_text())
+        cards.append((f"{m.group(1)}/{m.group(2)}", "soundness red-team", "smuggled-unsoundness rejected", "good") if m
+                     else ("✓", "soundness red-team", "no false closures", "good"))
+    except Exception:  # noqa: BLE001
+        cards.append(("—", "soundness red-team", "not run", "info"))
+    # live cert health
+    c = bundle.get("certs") or {}
+    cards.append((str(c.get("verified", 0)), "certs verified", f"{c.get('rejected', 0)} governance-rejected · {c.get('integrity_unverified', 0)} hollow", "info"))
+    # ratified closures across the window
+    ratified = sum((r.get("ratified") or 0) for r in (bundle.get("runs") or {}).values())
+    attempts = sum((r.get("attempts") or 0) for r in (bundle.get("runs") or {}).values())
+    cards.append((str(ratified), "ratified closures", f"of {attempts} attempts (window)", "info"))
+    # non-math firewall precision (from the A/B receipt). The artifact nests overall.{firewall,judge}
+    # with correct/incorrect counts; show it only when those numbers are actually present (no "?/?").
+    try:
+        fa = json.loads((REPO / "analytics/public/leanmill/dashboard_data/nonmath_firewall_ab.json").read_text())
+        ov = fa.get("overall") or {}
+        fw, jg = (ov.get("firewall") or {}), (ov.get("judge") or {})
+        fwc, fwt = fw.get("correct"), (fw.get("correct", 0) + fw.get("incorrect", 0))
+        jgc, jgt = jg.get("correct"), (jg.get("correct", 0) + jg.get("incorrect", 0))
+        if fwc is not None and fwt:
+            cards.append((f"{fwc}/{fwt}", "non-math firewall",
+                          f"vs steelmanned judge {jgc}/{jgt} · precision + auditable cert", "good"))
+    except Exception:  # noqa: BLE001
+        pass
+    return cards
+
+
 def render_html(bundle: dict) -> str:
     e = html.escape
 
@@ -215,6 +300,12 @@ def render_html(bundle: dict) -> str:
         h = "".join(f"<th>{e(str(x))}</th>" for x in headers)
         b = "".join("<tr>" + "".join(f"<td>{e(str(c))}</td>" for c in row) + "</tr>" for row in rows)
         return f"<table><tr>{h}</tr>{b}</table>"
+
+    def bar(label, value, total, tone="acc"):
+        pct = (100.0 * value / total) if total else 0.0
+        return (f'<div class="bar"><span class="bl">{e(str(label))}</span>'
+                f'<span class="bt"><span class="bf {tone}" style="width:{pct:.1f}%"></span></span>'
+                f'<span class="bv">{e(str(value))}/{e(str(total))}</span></div>')
 
     runs = bundle["runs"]
     run_rows = [(t, r["attempts"], r["closed"], r["ratified"], r["advanced"], r["dedup_skips"],
@@ -242,32 +333,79 @@ def render_html(bundle: dict) -> str:
                      if isinstance(d.get(k), (dict, list))} if isinstance(d, dict) else {}
             body = (f"<p><code>{e(v['artifact'])}</code> · scalars: {e(json.dumps(summary, default=str)[:500])}"
                     + (f" · collections: {e(json.dumps(sizes))}" if sizes else "") + "</p>")
-        absorbed_html += f"<h2>{e(title)}</h2>{body}"
-    return f"""<!doctype html><meta charset="utf-8"><title>LeanMill dashboard</title>
-<style>body{{font:14px system-ui;margin:2rem;max-width:1100px}}table{{border-collapse:collapse;margin:.6rem 0 1.4rem}}
-td,th{{border:1px solid #ccc;padding:.25rem .6rem;text-align:left}}th{{background:#f0f0f0}}h2{{margin-top:1.6rem}}</style>
-<h1>LeanMill — integrated dashboard</h1>
-<p>generated from the canonical artifacts (attempts DB, cert ledger, conservation audit) · window since {e(bundle["since"])}</p>
-<h2>Runs (work vs burn)</h2>
-{table(run_rows, ["run_tag", "attempts", "closed", "ratified", "advanced", "dedup skips", "cap refusals", "GAP-carrying fails", "agent-min"])}
-<h2>Certificate health</h2>
-<p>verified: <b>{certs["verified"]}</b> · integrity-unverified (hollow): <b>{certs["integrity_unverified"]}</b> ·
-governance-rejected: <b>{certs["rejected"]}</b> · rejection reasons: {e(json.dumps(certs["rejection_reasons"]))}</p>
-<h2>Trust conservation (per run)</h2>
-{table(cons_rows, ["run_tag", "verdict", "violations"])}
-<h2>Proven rung shelf (kernel-closed, citable)</h2>
-{table(rung_rows, ["ts", "target", "goal_sha", "probe bytes"])}
-<h2>Theory work (definitions/API — credit through use)</h2>
-<p>{("<i>no theory receipts yet</i>" if (bundle.get("work_receipts") or {}).get("missing") else
-     f"extensions: <b>{bundle['work_receipts']['theory_extensions']}</b> · completed: "
-     f"<b>{bundle['work_receipts']['completed']}</b> · rejected: <b>{bundle['work_receipts']['rejected']}</b> · "
-     f"consumer stamps (definitions actually USED): <b>{bundle['work_receipts']['consumer_stamps']}</b>")}</p>
-<h2>Autoformalizer faithfulness funnel</h2>
-<p>{("<i>no observations yet</i>" if ff.get("missing") else
-     f"observations: <b>{ff.get('observations', 0)}</b> · admitted: <b>{ff.get('admitted', 0)}</b> · "
-     f"rejected: <b>{ff.get('rejected', 0)}</b>")}</p>
-{absorbed_html}
-"""
+        absorbed_html += f"<h3>{e(title)}</h3>{body}"
+
+    # --- hero cards ---
+    cards_html = "".join(
+        f'<div class="card {e(tone)}"><div class="cv">{e(str(val))}</div>'
+        f'<div class="cl">{e(label)}</div><div class="cs">{e(sub)}</div></div>'
+        for val, label, sub, tone in _headline_cards(bundle))
+
+    # --- closure funnel (aggregate across the window): attempts → closed → ratified ---
+    tot_att = sum(r["attempts"] for r in runs.values())
+    tot_closed = sum(r["closed"] for r in runs.values())
+    tot_ratified = sum(r["ratified"] for r in runs.values())
+    funnel_html = (bar("attempts", tot_att, tot_att or 1, "mut")
+                   + bar("closed", tot_closed, tot_att or 1, "acc")
+                   + bar("ratified (kernel)", tot_ratified, tot_att or 1, "good"))
+
+    # --- cert-health donut (conic-gradient over verified / rejected / hollow) ---
+    cv, cr, ch = certs["verified"], certs["rejected"], certs["integrity_unverified"]
+    ctot = cv + cr + ch
+    if ctot:
+        p1 = 100.0 * cv / ctot
+        p2 = p1 + 100.0 * cr / ctot
+        grad = (f"conic-gradient(var(--good) 0 {p1:.1f}%,var(--warn) {p1:.1f}% {p2:.1f}%,"
+                f"var(--mut) {p2:.1f}% 100%)")
+    else:
+        grad = "conic-gradient(var(--bd) 0 100%)"
+    reasons = certs["rejection_reasons"]
+    reasons_note = (f'<p class="note">rejection reasons: {e(json.dumps(reasons))}</p>'
+                    if reasons else '<p class="note">no governance rejections in window</p>')
+    donut_html = (
+        f'<div class="donutwrap"><div class="donut" style="background:{grad}"><span>{cv}</span></div>'
+        f'<ul class="legend">'
+        f'<li><i class="good"></i>verified — <b>{cv}</b></li>'
+        f'<li><i class="warn"></i>governance-rejected — <b>{cr}</b></li>'
+        f'<li><i class="mut"></i>integrity-unverified (hollow) — <b>{ch}</b></li>'
+        f'</ul></div>{reasons_note}')
+
+    wr = bundle.get("work_receipts") or {}
+    theory_html = ("<i>no theory receipts yet</i>" if wr.get("missing") else
+                   f"extensions <b>{wr.get('theory_extensions', 0)}</b> · completed "
+                   f"<b>{wr.get('completed', 0)}</b> · rejected <b>{wr.get('rejected', 0)}</b> · "
+                   f"consumer stamps (definitions actually USED) <b>{wr.get('consumer_stamps', 0)}</b>")
+    ff_html = ("<i>no observations yet</i>" if ff.get("missing") else
+               f"observations <b>{ff.get('observations', 0)}</b> · admitted "
+               f"<b>{ff.get('admitted', 0)}</b> · rejected <b>{ff.get('rejected', 0)}</b>")
+
+    return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LeanMill dashboard</title><style>{_CSS}</style></head><body>
+<header><h1>LeanMill — governed verification engine</h1>
+<p class="tag">A kernel no-false-closure guarantee + an autoformalization firewall, measured honestly.
+Generated from the canonical artifacts (attempts DB · cert ledger · conservation audit) · window since {e(bundle["since"])}.</p></header>
+<section class="hero">{cards_html}</section>
+<div class="grid">
+  <div class="panel"><h2>Closure funnel (window)</h2>{funnel_html}
+    <p class="note">attempts → kernel-closed → governance-ratified. Ratified is the only trustworthy count.</p></div>
+  <div class="panel"><h2>Certificate health</h2>{donut_html}</div>
+</div>
+<div class="panel"><h2>Runs (work vs burn)</h2>
+{table(run_rows, ["run_tag", "attempts", "closed", "ratified", "advanced", "dedup skips", "cap refusals", "GAP-carrying fails", "agent-min"])}</div>
+<div class="grid">
+  <div class="panel"><h2>Trust conservation (per run)</h2>
+  {table(cons_rows, ["run_tag", "verdict", "violations"]) if cons_rows else "<p class='note'>no per-run conservation verdicts in window</p>"}</div>
+  <div class="panel"><h2>Autoformalizer faithfulness funnel</h2><p>{ff_html}</p>
+  <h2 style="margin-top:1rem">Theory work (credit through use)</h2><p>{theory_html}</p></div>
+</div>
+<div class="panel"><h2>Proven rung shelf (kernel-closed, citable)</h2>
+{table(rung_rows, ["ts", "target", "goal_sha", "probe bytes"]) if rung_rows else "<p class='note'>no verified rungs in window</p>"}</div>
+<div class="panel"><details><summary>Absorbed views — every other leanmill surface (canonical artifacts)</summary>
+{absorbed_html}</details></div>
+<footer>LeanMill integrated dashboard · reporting over canonical artifacts only (the kernel depends on none of this).
+Truth over polish — every null kept.</footer>
+</body></html>"""
 
 
 _CHEAP_PRODUCERS = [   # read-only producers (DB/cert mining — NO LLM, NO Lean) safe to auto-refresh on build.

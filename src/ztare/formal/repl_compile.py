@@ -28,6 +28,13 @@ _TC_CACHE: "dict[str, bool]" = {}         # resolved project_dir -> toolchain_ma
 # respawn (non-base env ids die with the process).
 _FILE_ENV_CACHE: "dict[str, tuple[float, int]]" = {}   # resolved file path -> (mtime, env_id)
 _IMPORT_MATHLIB_RE = re.compile(r"^\s*import\s+Mathlib\s*$", re.MULTILINE)
+# Strip ALL imports before a warm-REPL probe: the persistent REPL's base env IS the full Mathlib prelude
+# (which re-exports Aesop / Batteries / Std), and the REPL rejects ANY `import` mid-session with
+# "invalid 'import' command, it must be used in the beginning of the file". Stripping only `import Mathlib`
+# left e.g. miniF2F's `import Aesop` in place → every probe failed_compile regardless of proof correctness
+# (a dead instrument). SOUND: an import whose decls are NOT already in the base env ⇒ the probe fails with
+# "unknown identifier" (a real failure), never a false PASS — so stripping can only fix, never launder.
+_ALL_IMPORTS_RE = re.compile(r"^\s*import\s+\S+.*$", re.MULTILINE)
 
 
 def _flag_on() -> bool:
@@ -129,7 +136,7 @@ def campaign_file_env(file_path, sandbox, timeout: int = 600) -> "Optional[int]"
         src = fp.read_text(encoding="utf-8", errors="replace")
     except Exception:  # noqa: BLE001
         return None
-    code = _IMPORT_MATHLIB_RE.sub("", src).lstrip("\n")
+    code = _ALL_IMPORTS_RE.sub("", src).lstrip("\n")
     if not code.strip():
         return None
     try:
@@ -167,7 +174,7 @@ def compile_probe_via_repl(probe: str, sandbox, timeout: int = 120, *,
     pl = _get_repl(project)
     if pl is None:
         return None
-    code = _IMPORT_MATHLIB_RE.sub("", probe).lstrip("\n")   # the prelude already imported Mathlib
+    code = _ALL_IMPORTS_RE.sub("", probe).lstrip("\n")   # the prelude already has Mathlib (+Aesop/Batteries)
     if not code.strip():
         code = "example : True := trivial"
     try:
@@ -228,7 +235,7 @@ def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int 
     pl = _get_repl(project)
     if pl is None:
         return None
-    code = _IMPORT_MATHLIB_RE.sub("", probe_code).lstrip("\n")
+    code = _ALL_IMPORTS_RE.sub("", probe_code).lstrip("\n")
     try:
         r = pl.check(code, timeout=min(timeout, _warm_ceiling()), env=env)
     except Exception:  # noqa: BLE001

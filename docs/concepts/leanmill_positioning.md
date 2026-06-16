@@ -20,13 +20,34 @@ It is not a semantic wrapper that asks a model for code and retries. Every outpu
 
 ## What it actually adds
 
-A frequent objection: "a strong model is already accurate — what do you add?" We measured it. On the
-numeric compliance class, a steelmanned agent judge matched the kernel's faithfulness verdict exactly
-(3/3 laundered caught, 0 false positives). So the differentiator is **not** the verdict — it is the
-**auditable certificate**. You cannot sue an LLM for a hallucinated compliance opinion; you can stand
-behind a kernel proof. **Verifiability is the product.**
+A frequent objection: "a strong model is already accurate — what do you add?" We measured it, over 7
+compliance domains (14 faithful/laundered cases). On **catch-rate** the steelmanned agent judge tied the
+kernel (both caught 7/7 launderings — these off-by-ones are visible in the formula text, so the judge
+reads them). The kernel's measured edge is **precision + verifiability**: firewall **14/14 = 100%** (0
+false-alarms) vs. judge **13/14 = 93%** (it false-rejected one *faithful* rule), and every firewall verdict
+is an **auditable certificate** rather than an opinion. You cannot sue an LLM for a hallucinated compliance
+opinion; you can stand behind a kernel proof. **Verifiability is the product** — and a verifier that never
+false-rejects a compliant rule. (We also **built and measured** the harder *must-search* class — boolean
+precedence flips, divisibility refactors, linear-combination disguises — and the frontier judge caught those
+too, 3/3: it *reasons* through them. So we claim **no catch-rate edge** against a strong judge; the edge is
+precision + the certificate. Receipts: `analytics/public/leanmill/results/nonmath_mustsearch_ab.md`.)
 
-## Receipts (measured 2026-06-09, each through the **real** wired kernel + governance)
+The certificate point made concrete (`certify_policy_faithfulness`, a typed 3-verdict artifact — CERTIFIED_EQUIVALENT / REFUTED-with-a-distinguishing-input / OUT_OF_FRAGMENT, composing z3 + Gröbner + the Lean kernel; lineage PCP/IP, Rice, Gröbner/Farkas): on an **N=18** policy corpus across 8 compliance domains (z3 exhaustive ground truth) the engine **decides 18/18, correct 18/18**, each a checkable artifact. **Honest null:** the small-N probe's witness gap (engine 3/3 vs judge 2/3 at N=5) **did not replicate** — at N=18 the judge got 18/18 verdicts and 9/9 valid witnesses too. So there is no measured accuracy edge; the edge is the **soundness guarantee** (a decision-procedure certificate vs an unguaranteed opinion), not a delta. The same trichotomy drives a **transport-to-decidability router** whose *decidable-fraction lift* is **+3 (portfolio 5/7 vs single-theory 2/7)** on a mixed math+policy seed (`results/{certify_policy_corpus_run,decidability_router}.md`).
+
+## Receipts (each through the **real** wired kernel + governance)
+
+**Soundness — adversarial red-team (2026-06-16).** The one claim a verification reviewer should stress: *no
+false closures*. We tried to smuggle an unsound "closure" past the production gate (`audit_external`) — and
+every attack was rejected, the genuine proof passed:
+
+| attack | gate verdict |
+|---|---|
+| `sorry` / `admit` / nested `sorry` | **rejected** (sorryAx caught) |
+| `native_decide` ⇒ `Lean.ofReduceBool` | **rejected** (axiom outside the {propext, Classical.choice, Quot.sound} allowlist) |
+| false custom `axiom` + cite it | **rejected** (extra axiom caught) |
+| genuine clean proof (control) | **passes** |
+
+→ **catch-rate 5/5 = 100%, 0 false-flags.** Re-runnable: `PYTHONPATH=src python projects/leanmill_experiments/governance_redteam.py`.
 
 THE differentiating receipt — governance under adversarial pressure:
 
@@ -34,7 +55,7 @@ THE differentiating receipt — governance under adversarial pressure:
 |---|---|---|
 | anti-laundering on an OPEN target | denef_lipshitz: agent produced **3 closes that compiled, no `sorry`, clean axioms** — `statement_integrity` rejected ALL three (`ratified=0`) | a naive "it compiled" verifier accepts all three; the governance catches the faithless close. **This is the differentiator** — you cannot get it from a stronger model, because the model is what's being policed. |
 | autoformalization firewall | **13/13 domains** (compliance, pharma/HIPAA/aviation/export, DeFi incl. nonlinear `k≤x·y`, IAM: terminated-contractor / MFA / SoD / RBAC) | NL rule → Lean predicate; faithful admitted, laundered (∧→∨ / off-by-one / dropped-conjunct / `<`vs`≤`) caught by the kernel |
-| firewall vs steelmanned agent judge | agent = kernel on accuracy | the differentiator is the **cert**, not the verdict |
+| firewall vs steelmanned agent judge (7 domains, 14 cases, 2026-06-15) | firewall **14/14=100%** (0 false-alarms) vs judge **13/14=93%** (1 false-reject); catch-rate tied **7/7 vs 7/7** | the differentiator is **precision + cert**, not catch-rate — receipts `dashboard_data/nonmath_firewall_ab.json` |
 
 Capability receipts (the *environment* multiplying the leaf — but NOT a capability edge over a shell-agent; see the architecture doc's SETTLED note):
 

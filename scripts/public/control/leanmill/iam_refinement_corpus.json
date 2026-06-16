@@ -1,0 +1,49 @@
+{
+  "_meta": "IAM / cloud-access REFINEMENT corpus (goal item 3, tech-industry extension). Each case is a natural-language access INTENT and a candidate FORMAL policy (the kind an LLM/human produces from the intent), over cloud attributes (z3 SmtPolicyChecker syntax; booleans use ==True/==False, ordinals are int). The faithfulness question is the policy-permissiveness one (the standard SMT-policy-verification check) — does the candidate OVER-GRANT (allow a request the intent denies = privilege escalation)? certify_policy_refinement returns CERTIFIED (candidate ⊆ intent, a safe refinement) or REFUTED with the concrete escalation request. THE EDGE vs bespoke formal-input policy verifiers: they assume the formal policy IS the intent; this targets the untrusted INTENT→formal translation (the LLM-era failure mode), domain-general, kernel-re-verified. truth_safe = ground truth (z3 implies: candidate ⊆ intent).",
+  "cases": [
+    {"label": "iam_admin_or_mfa_stricter", "domain_nl": "Allow iff caller is admin, OR (MFA present AND target is non-prod).",
+     "attrs": {"is_admin": "bool", "mfa": "bool", "prod": "bool"},
+     "intent": "Or(is_admin == True, And(mfa == True, prod == False))",
+     "candidate": "And(is_admin == True, mfa == True)", "truth_safe": true, "class": "faithful_stricter"},
+
+    {"label": "iam_drop_prod_guard_escalation", "domain_nl": "Same intent; candidate drops the non-prod guard.",
+     "attrs": {"is_admin": "bool", "mfa": "bool", "prod": "bool"},
+     "intent": "Or(is_admin == True, And(mfa == True, prod == False))",
+     "candidate": "Or(is_admin == True, mfa == True)", "truth_safe": false, "class": "over_grant"},
+
+    {"label": "iam_role_ordering_escalation", "domain_nl": "Allow READ iff role is exactly reader (role: 0=none,1=reader,2=writer,3=admin).",
+     "attrs": {"role": "int"},
+     "intent": "role == 1",
+     "candidate": "role >= 1", "truth_safe": false, "class": "over_grant"},
+
+    {"label": "iam_region_consent_stricter", "domain_nl": "Allow iff data is in-region (EU) AND user consented.",
+     "attrs": {"eu": "bool", "consent": "bool", "mfa": "bool"},
+     "intent": "And(eu == True, consent == True)",
+     "candidate": "And(And(eu == True, consent == True), mfa == True)", "truth_safe": true, "class": "faithful_stricter"},
+
+    {"label": "iam_mfa_dropped_escalation", "domain_nl": "Allow iff caller is admin AND MFA present.",
+     "attrs": {"is_admin": "bool", "mfa": "bool"},
+     "intent": "And(is_admin == True, mfa == True)",
+     "candidate": "is_admin == True", "truth_safe": false, "class": "over_grant"},
+
+    {"label": "iam_reorder_equivalent", "domain_nl": "Allow iff admin OR (MFA AND non-prod) — candidate reordered.",
+     "attrs": {"is_admin": "bool", "mfa": "bool", "prod": "bool"},
+     "intent": "Or(is_admin == True, And(mfa == True, prod == False))",
+     "candidate": "Or(And(prod == False, mfa == True), is_admin == True)", "truth_safe": true, "class": "faithful_equiv"},
+
+    {"label": "iam_break_glass_widened_escalation", "domain_nl": "Emergency access allowed iff break_glass level is exactly 1 (1=active; 2+=expired/invalid).",
+     "attrs": {"break_glass": "int"},
+     "intent": "break_glass == 1",
+     "candidate": "break_glass >= 1", "truth_safe": false, "class": "over_grant"},
+
+    {"label": "iam_time_window_logged_stricter", "domain_nl": "Allow iff within business hours AND change approved.",
+     "attrs": {"in_hours": "bool", "approved": "bool", "logged": "bool"},
+     "intent": "And(in_hours == True, approved == True)",
+     "candidate": "And(And(in_hours == True, approved == True), logged == True)", "truth_safe": true, "class": "faithful_stricter"},
+
+    {"label": "iam_public_bucket_escalation", "domain_nl": "Allow GetObject iff (authenticated AND owner) OR explicit public-read grant.",
+     "attrs": {"authed": "bool", "owner": "bool", "public_read": "bool"},
+     "intent": "Or(And(authed == True, owner == True), public_read == True)",
+     "candidate": "Or(Or(authed == True, owner == True), public_read == True)", "truth_safe": false, "class": "over_grant"}
+  ]
+}

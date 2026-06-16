@@ -18,6 +18,9 @@ These are THIN wrappers over the canonical move functions (extend, don't fork):
                `linear_combination` cofactor certificate, the kernel discharges by ring)
   • nlsat    → common.nlsat_oracle   (z3 nlsat DECISION of a nonlinear-real ∀ — advisory VALID/counterexample,
                routes the prover effort; the certificate for a `0 ≤ p` shape is the `sos` tool)
+  • certify  → solver.certified_faithfulness  (during FORMALIZATION: certify a boolean policy/spec candidate is
+               faithful to a trusted reference over the whole integer domain → CERTIFIED_EQUIVALENT / REFUTED
+               with a concrete distinguishing input / OUT_OF_FRAGMENT — an artifact, never an opinion)
 
 These are the EXOGENOUS-COMPUTE tools (help PROVE the current goal). The recursive STRATEGY layer (decompose a
 hard goal into sub-lemmas → kernel-audit the plan → prove each recursively → composite-ratify) is NOT a tool here:
@@ -132,6 +135,48 @@ def _tool_groebner(arg: str) -> int:
           f"{cert['names']}). COPY THE BLOCK VERBATIM as the proof (the kernel re-verifies by ring):")
     print(render_verbatim_lean(cert))
     return 0
+
+
+def _tool_certify(arg: str) -> int:
+    """CERTIFY FAITHFULNESS of a candidate policy/spec formalization against a TRUSTED reference, over the WHOLE
+    integer domain — a checkable ARTIFACT, never an opinion. Use during FORMALIZATION when you must confirm a
+    boolean policy rule (compliance/access/finance) you wrote means the SAME as the intent, or find where it
+    differs. FORMAT: `<intent> ⊢ <candidate> @ attr0:int, attr1:int, …` (turnstile `⊢` or `|-`; rules in z3
+    syntax And/Or/Not/==/>=/>/<=/<). Returns CERTIFIED_EQUIVALENT (equal on every input — z3 exhaustive),
+    REFUTED (a CONCRETE distinguishing input you can re-check), or OUT_OF_FRAGMENT (undecided ⇒ fall back to the
+    battery+judge; never a silent pass). z3 is complete for linear-integer policy, so a verdict is a decision."""
+    from ztare.leanmill.solver.certified_faithfulness import certify_policy_faithfulness, Verdict
+    s = (arg or "").strip()
+    rules, _, dom_part = s.partition("@")
+    turn = "⊢" if "⊢" in rules else ("|-" if "|-" in rules else None)
+    if not turn or "@" not in s:
+        print("certify: NEED `<intent> ⊢ <candidate> @ attr0:int, attr1:int`. The `@` clause declares the "
+              "domain attributes (each `name:int`). Example: `Or(a>=18, vip==1) ⊢ Or(a>18, vip==1) @ a:int, vip:int`.")
+        return 1
+    intent, _, candidate = rules.partition(turn)
+    domain = {}
+    for part in dom_part.split(","):
+        if ":" in part:
+            k, _, v = part.partition(":")
+            if k.strip():
+                domain[k.strip()] = (v.strip() or "int")
+    if not domain:
+        print("certify: NONE — the `@` clause declared no attributes. FORMAT: `… @ age:int, balance:int`.")
+        return 1
+    cert = certify_policy_faithfulness(intent.strip(), candidate.strip(), domain)
+    if cert.verdict is Verdict.CERTIFIED_EQUIVALENT:
+        print(f"certify: CERTIFIED_EQUIVALENT — the candidate is faithful on EVERY input ({cert.certificate}). "
+              "The formalization preserves the intent; proceed.")
+        return 0
+    if cert.verdict is Verdict.REFUTED:
+        w = cert.witness or {}
+        print(f"certify: REFUTED — a concrete input distinguishes them: {w.get('request')} "
+              f"(intent decides {w.get('intent_decides')}, candidate decides {w.get('candidate_decides')}). "
+              "Re-check this case by hand; the candidate is NOT faithful — fix it.")
+        return 0
+    print(f"certify: OUT_OF_FRAGMENT — undecided in the decision procedure ({cert.detail}). "
+          "Fall back to the instance battery + round-trip judge; do NOT treat as faithful.")
+    return 1
 
 
 def _tool_nlsat(goal: str) -> int:
@@ -333,7 +378,7 @@ def _tool_goalstate(decl: str, tactics: "list[str] | None" = None) -> int:
 
 _TOOLS = {"witness": _tool_witness, "abduct": _tool_abduct, "hammer": _tool_hammer, "search": _tool_search,
           "falsity": _tool_falsity, "sos": _tool_sos, "goalstate": _tool_goalstate, "verify": _tool_verify,
-          "groebner": _tool_groebner, "nlsat": _tool_nlsat}
+          "groebner": _tool_groebner, "nlsat": _tool_nlsat, "certify": _tool_certify}
 
 
 def _log_tool_call(tool: str, arg: str, exit_code: int) -> None:

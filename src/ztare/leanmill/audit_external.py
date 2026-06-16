@@ -35,11 +35,14 @@ def _default_compile(src: str, project: str) -> dict:
     """Compile `src` standalone over `project` (warm REPL preferred, cold lake fallback). Returns
     {success, output}. Import-header-robust (the warm-vs-verify asymmetry lesson)."""
     try:
-        # WARM path: RAW source (the REPL pre-loads Mathlib; a mid-session `import` is rejected)
-        from ztare.formal.repl_compile import _get_repl
+        # WARM path: the REPL pre-loads Mathlib, and a mid-session `import` is REJECTED ("invalid 'import'
+        # command") — so strip ALL import lines before the check (Mathlib re-exports Aesop/Batteries/Std).
+        # Without this the gate fail-closes on EVERY Mathlib artifact (genuine and attack alike) → useless.
+        from ztare.formal.repl_compile import _get_repl, _ALL_IMPORTS_RE
         pl = _get_repl(project)
         if pl is not None:
-            r = pl.check(src, timeout=240)
+            code = _ALL_IMPORTS_RE.sub("", src).lstrip("\n")
+            r = pl.check(code, timeout=240)
             ok = bool(r.get("success")) if isinstance(r, dict) else bool(getattr(r, "ok", False))
             out = (r.get("output") or "") if isinstance(r, dict) else str(r)
             return {"success": ok, "output": out}

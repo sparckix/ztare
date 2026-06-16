@@ -1,0 +1,442 @@
+[
+  {
+    "domain": "pharma_trial_eligibility",
+    "family": "compliance/structural",
+    "predicate": "eligible",
+    "faithful_prelude": "structure Patient where\n  age : Nat\n  egfr : Nat\n  priorMI : Bool\n\nabbrev eligible (p : Patient) : Prop :=\n  18 ≤ p.age ∧ p.age ≤ 75 ∧ 60 ≤ p.egfr ∧ p.priorMI = false\n",
+    "laundered_prelude": "structure Patient where\n  age : Nat\n  egfr : Nat\n  priorMI : Bool\n\nabbrev eligible (p : Patient) : Prop :=\n  18 ≤ p.age ∧ p.age ≤ 75 ∧ 60 ≤ p.egfr\n",
+    "battery": [
+      [
+        "⟨55, 70, false⟩",
+        true
+      ],
+      [
+        "⟨55, 70, true⟩",
+        false
+      ],
+      [
+        "⟨80, 70, false⟩",
+        false
+      ],
+      [
+        "⟨40, 50, false⟩",
+        false
+      ],
+      [
+        "⟨25, 90, false⟩",
+        true
+      ]
+    ]
+  },
+  {
+    "domain": "hipaa_phi_access",
+    "family": "compliance/structural",
+    "predicate": "permitted",
+    "faithful_prelude": "structure AccessReq where\n  treatmentRelation : Bool\n  minimumNecessary : Bool\n  patientConsent : Bool\n\nabbrev permitted (r : AccessReq) : Prop :=\n  r.minimumNecessary = true ∧ (r.treatmentRelation = true ∨ r.patientConsent = true)\n",
+    "laundered_prelude": "structure AccessReq where\n  treatmentRelation : Bool\n  minimumNecessary : Bool\n  patientConsent : Bool\n\nabbrev permitted (r : AccessReq) : Prop :=\n  r.minimumNecessary = true ∨ (r.treatmentRelation = true ∨ r.patientConsent = true)\n",
+    "battery": [
+      [
+        "⟨true, true, false⟩",
+        true
+      ],
+      [
+        "⟨true, false, false⟩",
+        false
+      ],
+      [
+        "⟨false, true, false⟩",
+        false
+      ],
+      [
+        "⟨false, false, true⟩",
+        false
+      ],
+      [
+        "⟨false, true, true⟩",
+        true
+      ]
+    ]
+  },
+  {
+    "domain": "aviation_duty_time",
+    "family": "compliance/structural",
+    "predicate": "legal",
+    "faithful_prelude": "structure Duty where\n  dutyHours : Nat\n  flightHours : Nat\n  restHoursPrior : Nat\n\nabbrev legal (d : Duty) : Prop :=\n  d.dutyHours ≤ 14 ∧ d.flightHours ≤ 9 ∧ 10 ≤ d.restHoursPrior\n",
+    "laundered_prelude": "structure Duty where\n  dutyHours : Nat\n  flightHours : Nat\n  restHoursPrior : Nat\n\nabbrev legal (d : Duty) : Prop :=\n  d.dutyHours ≤ 14 ∧ d.flightHours ≤ 9 ∧ 9 ≤ d.restHoursPrior\n",
+    "battery": [
+      [
+        "⟨12, 8, 11⟩",
+        true
+      ],
+      [
+        "⟨12, 8, 9⟩",
+        false
+      ],
+      [
+        "⟨15, 8, 11⟩",
+        false
+      ],
+      [
+        "⟨12, 10, 11⟩",
+        false
+      ],
+      [
+        "⟨10, 5, 10⟩",
+        true
+      ]
+    ]
+  },
+  {
+    "domain": "export_ear_license",
+    "family": "compliance/structural",
+    "predicate": "licenseRequired",
+    "faithful_prelude": "structure Shipment where\n  eccnControlled : Bool\n  destGroupD : Bool\n  endUseMilitary : Bool\n  licenseException : Bool\n\nabbrev licenseRequired (s : Shipment) : Prop :=\n  s.eccnControlled = true ∧ (s.destGroupD = true ∨ s.endUseMilitary = true) ∧ s.licenseException = false\n",
+    "laundered_prelude": "structure Shipment where\n  eccnControlled : Bool\n  destGroupD : Bool\n  endUseMilitary : Bool\n  licenseException : Bool\n\nabbrev licenseRequired (s : Shipment) : Prop :=\n  s.eccnControlled = true ∧ (s.destGroupD = true ∨ s.endUseMilitary = true)\n",
+    "battery": [
+      [
+        "⟨true, true, false, false⟩",
+        true
+      ],
+      [
+        "⟨true, true, false, true⟩",
+        false
+      ],
+      [
+        "⟨false, true, true, false⟩",
+        false
+      ],
+      [
+        "⟨true, false, false, false⟩",
+        false
+      ],
+      [
+        "⟨true, false, true, false⟩",
+        true
+      ]
+    ]
+  },
+  {
+    "domain": "basel_capital_adequacy",
+    "family": "finance/SMT-boundary",
+    "predicate": "adequate",
+    "faithful_prelude": "structure Bank where\n  cet1Bp : Nat\n\nabbrev adequate (b : Bank) : Prop := 450 ≤ b.cet1Bp\n",
+    "laundered_prelude": "structure Bank where\n  cet1Bp : Nat\n\nabbrev adequate (b : Bank) : Prop := 449 ≤ b.cet1Bp\n",
+    "battery": [
+      [
+        "⟨460⟩",
+        true
+      ],
+      [
+        "⟨449⟩",
+        false
+      ],
+      [
+        "⟨450⟩",
+        true
+      ],
+      [
+        "⟨300⟩",
+        false
+      ]
+    ],
+    "note": "Basel III CET1 minimum 4.50% = 450bp; laundered ≥449 admits a 4.49% bank"
+  },
+  {
+    "domain": "tax_bracket_cliff",
+    "family": "finance/SMT-boundary",
+    "predicate": "topBracket",
+    "faithful_prelude": "structure Filer where\n  incomeK : Nat\n\nabbrev topBracket (f : Filer) : Prop := 100 < f.incomeK\n",
+    "laundered_prelude": "structure Filer where\n  incomeK : Nat\n\nabbrev topBracket (f : Filer) : Prop := 100 ≤ f.incomeK\n",
+    "battery": [
+      [
+        "⟨150⟩",
+        true
+      ],
+      [
+        "⟨100⟩",
+        false
+      ],
+      [
+        "⟨101⟩",
+        true
+      ],
+      [
+        "⟨50⟩",
+        false
+      ]
+    ],
+    "note": "top bracket applies when income STRICTLY exceeds $100k; laundered ≤ taxes the $100k filer"
+  },
+  {
+    "domain": "regt_margin_call",
+    "family": "finance/SMT-boundary",
+    "predicate": "marginCall",
+    "faithful_prelude": "structure Account where\n  equity : Nat\n  marketValue : Nat\n\nabbrev marginCall (a : Account) : Prop := 2 * a.equity < a.marketValue\n",
+    "laundered_prelude": "structure Account where\n  equity : Nat\n  marketValue : Nat\n\nabbrev marginCall (a : Account) : Prop := 2 * a.equity ≤ a.marketValue\n",
+    "battery": [
+      [
+        "⟨40, 100⟩",
+        true
+      ],
+      [
+        "⟨50, 100⟩",
+        false
+      ],
+      [
+        "⟨30, 100⟩",
+        true
+      ],
+      [
+        "⟨60, 100⟩",
+        false
+      ]
+    ],
+    "note": "Reg-T 50% maintenance: call iff equity STRICTLY below half of market value (2*equity < mv); laundered ≤ calls at exactly 50%"
+  },
+  {
+    "domain": "terminated_contractor_revocation",
+    "family": "IAM/access",
+    "predicate": "permitted",
+    "faithful_prelude": "structure Access where\n  roleGrants : Bool\n  accountActive : Bool\n\nabbrev permitted (a : Access) : Prop := a.roleGrants = true ∧ a.accountActive = true\n",
+    "laundered_prelude": "structure Access where\n  roleGrants : Bool\n  accountActive : Bool\n\nabbrev permitted (a : Access) : Prop := a.roleGrants = true\n",
+    "battery": [
+      [
+        "⟨true, true⟩",
+        true
+      ],
+      [
+        "⟨true, false⟩",
+        false
+      ],
+      [
+        "⟨false, true⟩",
+        false
+      ],
+      [
+        "⟨false, false⟩",
+        false
+      ]
+    ],
+    "note": "role still grants but account terminated — faithful DENIES, laundered (drops the active-check) ADMITS"
+  },
+  {
+    "domain": "mfa_required_prod",
+    "family": "IAM/access",
+    "predicate": "granted",
+    "faithful_prelude": "structure ProdAccess where\n  authorized : Bool\n  mfaSatisfied : Bool\n\nabbrev granted (p : ProdAccess) : Prop := p.authorized = true ∧ p.mfaSatisfied = true\n",
+    "laundered_prelude": "structure ProdAccess where\n  authorized : Bool\n  mfaSatisfied : Bool\n\nabbrev granted (p : ProdAccess) : Prop := p.authorized = true ∨ p.mfaSatisfied = true\n",
+    "battery": [
+      [
+        "⟨true, true⟩",
+        true
+      ],
+      [
+        "⟨true, false⟩",
+        false
+      ],
+      [
+        "⟨false, true⟩",
+        false
+      ],
+      [
+        "⟨false, false⟩",
+        false
+      ]
+    ],
+    "note": "authorized but MFA not satisfied — faithful (∧) DENIES, laundered (∨) ADMITS a passwordless-but-authorized session"
+  },
+  {
+    "domain": "separation_of_duties",
+    "family": "IAM/access",
+    "predicate": "validApproval",
+    "faithful_prelude": "structure Approval where\n  hasApproverRole : Bool\n  approverIsInitiator : Bool\n\nabbrev validApproval (x : Approval) : Prop := x.hasApproverRole = true ∧ x.approverIsInitiator = false\n",
+    "laundered_prelude": "structure Approval where\n  hasApproverRole : Bool\n  approverIsInitiator : Bool\n\nabbrev validApproval (x : Approval) : Prop := x.hasApproverRole = true\n",
+    "battery": [
+      [
+        "⟨true, false⟩",
+        true
+      ],
+      [
+        "⟨true, true⟩",
+        false
+      ],
+      [
+        "⟨false, false⟩",
+        false
+      ],
+      [
+        "⟨false, true⟩",
+        false
+      ]
+    ],
+    "note": "approver IS the initiator — faithful DENIES self-approval, laundered (drops the conjunct) ADMITS it"
+  },
+  {
+    "domain": "rbac_clearance_dominance",
+    "family": "IAM/access",
+    "predicate": "mayRead",
+    "faithful_prelude": "structure Req where\n  clearance : Nat\n  classification : Nat\n\nabbrev mayRead (r : Req) : Prop := r.classification ≤ r.clearance\n",
+    "laundered_prelude": "structure Req where\n  clearance : Nat\n  classification : Nat\n\nabbrev mayRead (r : Req) : Prop := r.classification ≤ r.clearance + 1\n",
+    "battery": [
+      [
+        "⟨3, 3⟩",
+        true
+      ],
+      [
+        "⟨5, 2⟩",
+        true
+      ],
+      [
+        "⟨3, 4⟩",
+        false
+      ],
+      [
+        "⟨2, 5⟩",
+        false
+      ]
+    ],
+    "note": "clearance 3 vs classification 4 — faithful DENIES read-up, laundered (≤ clearance+1) ADMITS one level above clearance"
+  },
+  {
+    "domain": "amm_constant_product",
+    "family": "DeFi/nonlinear",
+    "predicate": "invariantHeld",
+    "faithful_prelude": "structure Pool where\n  x : Nat\n  y : Nat\n  k : Nat\n\nabbrev invariantHeld (p : Pool) : Prop := p.k ≤ p.x * p.y\n",
+    "laundered_prelude": "structure Pool where\n  x : Nat\n  y : Nat\n  k : Nat\n\nabbrev invariantHeld (p : Pool) : Prop := p.k ≤ p.x + p.y\n",
+    "battery": [
+      [
+        "⟨10, 10, 100⟩",
+        true
+      ],
+      [
+        "⟨10, 9, 100⟩",
+        false
+      ],
+      [
+        "⟨99, 1, 100⟩",
+        false
+      ],
+      [
+        "⟨20, 6, 100⟩",
+        true
+      ]
+    ],
+    "note": "additive-vs-multiplicative: a contract checking x+y instead of x*y passes a drained pool"
+  },
+  {
+    "domain": "lending_health_factor",
+    "family": "DeFi/nonlinear",
+    "predicate": "healthy",
+    "faithful_prelude": "structure Account where\n  collateral : Nat\n  debt : Nat\n\nabbrev healthy (a : Account) : Prop := a.debt * 150 ≤ a.collateral * 100\n",
+    "laundered_prelude": "structure Account where\n  collateral : Nat\n  debt : Nat\n\nabbrev healthy (a : Account) : Prop := a.debt * 140 ≤ a.collateral * 100\n",
+    "battery": [
+      [
+        "⟨150, 100⟩",
+        true
+      ],
+      [
+        "⟨140, 100⟩",
+        false
+      ],
+      [
+        "⟨200, 100⟩",
+        true
+      ],
+      [
+        "⟨100, 100⟩",
+        false
+      ]
+    ],
+    "note": "150% min collateral; a 140% ratio is under-collateralized but a wrong-threshold rule passes it"
+  },
+  {
+    "domain": "sanctions_screening",
+    "family": "must-search",
+    "predicate": "denied",
+    "faithful_prelude": "structure Txn where\n  sanctioned : Bool\n  licensed : Bool\n  embargoed : Bool\n\nabbrev denied (t : Txn) : Prop := (t.sanctioned = true ∧ t.licensed = false) ∨ t.embargoed = true\n",
+    "laundered_prelude": "structure Txn where\n  sanctioned : Bool\n  licensed : Bool\n  embargoed : Bool\n\nabbrev denied (t : Txn) : Prop := t.sanctioned = true ∧ (t.licensed = false ∨ t.embargoed = true)\n",
+    "battery": [
+      [
+        "⟨true,false,false⟩",
+        true
+      ],
+      [
+        "⟨false,true,true⟩",
+        true
+      ],
+      [
+        "⟨false,false,true⟩",
+        true
+      ],
+      [
+        "⟨true,true,false⟩",
+        false
+      ],
+      [
+        "⟨false,false,false⟩",
+        false
+      ]
+    ],
+    "note": "A transaction is DENIED if and only if it is to a sanctioned party that lacks a valid license, OR the destination is embargoed. (Precisely: (sanctioned ∧ ¬licensed) ∨ embargoed.) An embargoed transaction is ALWAYS denied, regardless of sanction status."
+  },
+  {
+    "domain": "archive_retention",
+    "family": "must-search",
+    "predicate": "compliant",
+    "faithful_prelude": "structure Batch where\n  size : Nat\n\nabbrev compliant (b : Batch) : Prop := b.size % 8 = 0\n",
+    "laundered_prelude": "structure Batch where\n  size : Nat\n\nabbrev compliant (b : Batch) : Prop := b.size % 4 = 0 ∧ b.size % 6 = 0\n",
+    "battery": [
+      [
+        "⟨8⟩",
+        true
+      ],
+      [
+        "⟨16⟩",
+        true
+      ],
+      [
+        "⟨24⟩",
+        true
+      ],
+      [
+        "⟨12⟩",
+        false
+      ],
+      [
+        "⟨7⟩",
+        false
+      ]
+    ],
+    "note": "A record batch is COMPLIANT if and only if its size is an exact multiple of the 8-record archive block, i.e. size % 8 = 0."
+  },
+  {
+    "domain": "means_test",
+    "family": "must-search",
+    "predicate": "qualifies",
+    "faithful_prelude": "structure Household where\n  incomeK : Nat\n  dependents : Nat\n\nabbrev qualifies (h : Household) : Prop := h.incomeK ≤ 50 ∧ h.dependents ≥ 2\n",
+    "laundered_prelude": "structure Household where\n  incomeK : Nat\n  dependents : Nat\n\nabbrev qualifies (h : Household) : Prop := h.incomeK ≤ 50 + 5 * h.dependents ∧ h.dependents ≥ 2\n",
+    "battery": [
+      [
+        "⟨45,3⟩",
+        true
+      ],
+      [
+        "⟨50,2⟩",
+        true
+      ],
+      [
+        "⟨55,2⟩",
+        false
+      ],
+      [
+        "⟨60,2⟩",
+        false
+      ],
+      [
+        "⟨40,1⟩",
+        false
+      ]
+    ],
+    "note": "A household QUALIFIES for the subsidy if and only if its income is at most $50k (incomeK ≤ 50) AND it has at least 2 dependents (dependents ≥ 2). Income is NOT adjusted for the number of dependents."
+  }
+]
