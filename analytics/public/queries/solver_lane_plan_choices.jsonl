@@ -4,3 +4,54 @@
 {"action": "SOLVE_DIRECT", "reason": "within reach, no decomposition needed.", "target": "n = n"}
 {"action": "ABDUCE", "reason": "an arbitrary opaque proposition is uninhabited from the empty context, so the honest reduction is to expose an inhabitance premise.", "target": "P"}
 {"action": "ABDUCE", "reason": "an arbitrary `P : Prop` has no internal structure, so the missing premise is an inhabitance witness for `P`.", "target": "P"}
+{"action": "TRANSPORT", "reason": "use the finite combinatorial geometry witness as a Finset, then coerce it back to the Set-shaped goal.", "target": "∃ T ⊆ S, T.ncard = 4 ∧ ¬∃ t ∈ T, t ∈ convexHull ℝ (T \\ {t})"}
+{"action": "TRANSPORT", "reason": "use the discrete-geometry extraction as an ordered four-point witness, then package those points as the requested Finset.", "target": "∃ U : Finset (ℝ × ℝ),\n      ↑U ⊆ S ∧\n      U.card = 4 ∧\n      ¬∃ t ∈ (U : Set (ℝ × ℝ)), t ∈ convexHull ℝ ((U : Set (ℝ × "}
+{"action": "DECOMPOSE", "reason": "split the theorem into the universal limsup lower bound and the sharpness construction below any `C > 1`.", "target": "(∀ a, (∀ n, 0 < a n) → P a 1) ∧ (∀ C > 1, ∃ a, (∀ n, 0 < a n) ∧ ¬ P a C)"}
+{"action": "DECOMPOSE", "reason": "prove the bounded case by contradiction: limsup below `1` gives an eventual subcritical drift bound, which contradicts positivity.", "target": "∀ a, (∀ n, 0 < a n) → 1 ≤ limsup (T a) atTop ∨ ¬ BddAbove (range (T a))"}
+{"action": "DECOMPOSE", "reason": "reduce to complement-pair selection, then count one representative from each pair.", "target": "(P.card = 2 ^ (Fintype.card S - 1))"}
+{"action": "DECOMPOSE", "reason": "reduce maximal intersecting families to choosing exactly one member from each complement pair, then count those pairs.", "target": "(P.card = 2 ^ (Fintype.card S - 1))"}
+{"action": "DECOMPOSE", "reason": "split the complement-pair argument from the doubled-count and final arithmetic halving.", "target": "(P.card = 2 ^ (Fintype.card S - 1))"}
+{"action": "SOLVE_DIRECT", "reason": "substituting `h₁`, `h₂`, and `h₃` reduces the goal to `norm_num` arithmetic.", "target": "v = 65"}
+{"action": "SOLVE_DIRECT", "reason": "substituting the three equalities reduces the target to a closed rational arithmetic computation.", "target": "v = 65"}
+{"action": "SOLVE_DIRECT", "reason": "the hypotheses give explicit substitutions for `v`, `b`, and `h`, after which `norm_num` closes the arithmetic.", "target": "v = 65"}
+{"action": "DECOMPOSE", "reason": "reduce the integer equality to a mod-7 obstruction: it would force `x^3 ≡ 2`, but `2` is not a cubic residue mod `7`.", "target": "4 * x ^ 3 - 7 * y ^ 3 ≠ 2003"}
+{"action": "TRANSPORT", "reason": "prove the finite `ZMod 7` cube obstruction once, then transport the integer cube into `ZMod 7`.", "target": "((x ^ 3 : ℤ) : ZMod 7) ≠ 2"}
+{"action": "DECOMPOSE", "reason": "separate the logarithmic product/nonzero facts from the abstract reciprocal-sum algebra.", "target": "Real.log w / Real.log z = 60"}
+{"action": "DECOMPOSE", "reason": "clear the target denominator first, then the quotient goal is an immediate rewrite.", "target": "A / lz = 60"}
+{"action": "SOLVE_DIRECT", "reason": "the concrete finite sum and modulo reduction closes directly by `norm_num`, so a lemma DAG would be artificial.", "target": "(∑ x in Finset.range 10, (x + 1) ^ 2) % 10 = 5"}
+{"action": "DECOMPOSE", "reason": "reduce the finite coherent cosine sum to one nonzero sinusoid, then use the π-spaced zero set of a nontrivial sinusoid.", "target": "∃ t : ℤ, m - n = t * Real.pi"}
+{"action": "DECOMPOSE", "reason": "keep the expansion and nonzero-phasor lemmas, then reduce zero-spacing through a shifted pure cosine rather than restating the original target.", "target": "∃ t : ℤ, m - n = t * Real.pi"}
+{"action": "GENERALIZE", "reason": "prove the identity over an arbitrary finite set of indices, then instantiate it at `Finset.range k`.", "target": "∀ x : ℝ,\n      (∑ i ∈ Finset.range k, Real.cos (a i + x) / (2 : ℝ) ^ i) =\n        (∑ i ∈ Finset.range k, Real.cos (a i) "}
+{"action": "DECOMPOSE", "reason": "use the triangle substitution `a=x+y, b=y+z, c=z+x` to reduce the constrained cyclic inequality to positivity on the positive orthant.", "target": "0 ≤ a ^ 2 * b * (a - b) + b ^ 2 * c * (b - c) + c ^ 2 * a * (c - a)"}
+{"action": "DECOMPOSE", "reason": "algebraic identity reduces the cyclic polynomial to a positive multiple of a cyclic fractional inequality.", "target": "0 ≤ (x + y) ^ 2 * (y + z) * ((x + y) - (y + z)) +\n        (y + z) ^ 2 * (z + x) * ((y + z) - (z + x)) +\n          (z + x"}
+{"action": "SOLVE_DIRECT", "reason": "closed finite arithmetic sum; `Finset.sum_range_id` plus `norm_num` should finish directly.", "target": "(∑ k in Finset.range 101, k) % 6 = 4"}
+{"action": "DECOMPOSE", "reason": "solve the monomial system by first isolating `b`, then deriving `a`, then summing.", "target": "a + b = 8 / 3"}
+{"action": "DECOMPOSE", "reason": "factor the Diophantine equation into a finite divisor classification, then compute the target product from the classified squares.", "target": "3 * (x ^ 2 * y ^ 2) = 588"}
+{"action": "SPECIALIZE", "reason": "prove the stronger unique-solution statement `a = 2 ∧ b = 2 / 3`, then substitute.", "target": "a + b = 8 / 3"}
+{"action": "DECOMPOSE", "reason": "reduce the monomial system to cube identities, then use cubic factorization over `ℝ`.", "target": "a = 2 ∧ b = 2 / 3"}
+{"action": "SPECIALIZE", "reason": "prove the stronger discrete solution statement `x ^ 2 = 4 ∧ y ^ 2 = 49`, then compute the target product.", "target": "3 * (x ^ 2 * y ^ 2) = 588"}
+{"action": "DECOMPOSE", "reason": "", "target": "x ^ 2 = 4 ∧ y ^ 2 = 49"}
+{"action": "TRANSPORT", "reason": "factor the Diophantine equation into a fixed integer product and reduce to divisor classification.", "target": "x ^ 2 = 4 ∧ y ^ 2 = 49"}
+{"action": "DECOMPOSE", "reason": "reduce rational integrality to a divisibility condition, bound `n`, then classify the bounded divisor cases.", "target": "n = 42"}
+{"action": "DECOMPOSE", "reason": "keep the rational-integrality and bound reductions, then finish the bounded divisor residue check in the chain.", "target": "n = 42"}
+{"action": "TRANSPORT", "reason": "reduce the Egyptian-fraction denominator condition to the unreduced normal form `(41*n+42)/(42*n)`.", "target": "42 * n ∣ 41 * n + 42"}
+{"action": "GENERALIZE", "reason": "replace the circular denominator step by the general fact that a natural rational with reduced denominator `1` has original denominator dividing original numerator.", "target": "42 * n ∣ 41 * n + 42"}
+{"action": "FALSIFY", "reason": "counterexample `n = 0`, `p x = x ^ 2 - x + 41` gives `Nat.gcd (p 0) (p 1) = 41 > 1` but not `41 ≤ 0`.", "target": "41 ≤ n"}
+{"action": "GENERALIZE", "reason": "reduce the indexed `a : ℕ → ℝ` goal to a coefficient-level 3-by-3 Z-matrix kernel-trivial lemma.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "separate the M-matrix/Gershgorin nonsingularity step from the algebraic kernel-triviality step.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "split the proof into determinant nonvanishing from the sign/row-sum hypotheses, then kernel triviality from the nonzero determinant.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "the level-4 recurrence reduces immediately once the level-3 closed form is isolated.", "target": "∀ y, f 4 (y + 1) = 2 ^ (f 4 y + 3) - 3"}
+{"action": "DECOMPOSE", "reason": "prove the level-2 linear closed form, then use induction plus the exponential step to obtain level 3.", "target": "∀ y, f 3 y = 2 ^ (y + 3) - 3"}
+{"action": "DECOMPOSE", "reason": "", "target": "60 ≤ m + n"}
+{"action": "DECOMPOSE", "reason": "", "target": "60 ≤ m + n"}
+{"action": "DECOMPOSE", "reason": "eliminate the monomial constraints to isolate `b`, then recover `a` from the second constraint.", "target": "a + b = 8 / 3"}
+{"action": "DECOMPOSE", "reason": "factor the Diophantine equation, then enumerate the integer divisor case to pin down the two squares.", "target": "3 * (x ^ 2 * y ^ 2) = 588"}
+{"action": "DECOMPOSE", "reason": "denominator-one rational arithmetic reduces to a divisibility bound plus a finite divisibility check.", "target": "n = 42"}
+{"action": "FALSIFY", "reason": "n=0 with p x = x^2 - x + 41 satisfies the gcd hypothesis but violates 41 ≤ n.", "target": "41 ≤ n"}
+{"action": "DECOMPOSE", "reason": "reduce the homogeneous system to determinant nonvanishing, then use strict diagonal dominance to supply the nonzero determinant.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "keep the determinant-nonzero rung and replace the circular nullspace lemma with three coordinate-level determinant consequences.", "target": "x = 0 ∧ y = 0 ∧ z = 0"}
+{"action": "DECOMPOSE", "reason": "derive the first three recursion levels, then rewrite level 4 through the closed form for level 3.", "target": "∀ y, f 4 (y + 1) = 2 ^ (f 4 y + 3) - 3"}
+{"action": "DECOMPOSE", "reason": "divide out the gcd to reduce to coprime factor pairs of 21, prove the reduced sum bound, then scale back by 6.", "target": "60 ≤ m + n"}
+{"action": "DECOMPOSE", "reason": "convert the coupled recurrence into the 99-step rotation-dilation endpoint relation, then finish with scalar algebra.", "target": "a 1 + b 1 = 1 / 2 ^ 98"}
+{"action": "SOLVE_DIRECT", "reason": "this is a one-line complex arithmetic identity using `Complex.I_mul_I`/normalization.", "target": "(Complex.I / 2) ^ 2 = -(1 / 4)"}
+{"action": "SOLVE_DIRECT", "reason": "evaluating the polynomial identity at two small points gives the needed coefficient equations, and integer arithmetic closes the goal directly.", "target": "a * b + b = 12"}

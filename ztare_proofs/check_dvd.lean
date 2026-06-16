@@ -1,0 +1,9 @@
+import Mathlib
+#check Nat.dvd_add_iff_right
+#check Nat.dvd_add_iff_left
+#check dvd_add_iff_right
+#check dvd_add_iff_left
+#check Nat.dvd_mul_left
+#check Nat.dvd_mul_right
+#check Nat.le_of_dvd
+#check Nat.dvd_antisymm

@@ -8,3 +8,20 @@
 {"ts": "2026-06-13T20:58:12.017192+00:00", "tool": "groebner", "arg": "x + y = y + x", "exit": 1}
 {"ts": "2026-06-13T20:58:12.193587+00:00", "tool": "sos", "arg": "x**4 - 2*x**2 + 1", "exit": 0}
 {"ts": "2026-06-13T20:58:12.399244+00:00", "tool": "sos", "arg": "x**2 + y**2 - 2*x*y", "exit": 1}
+{"ts": "2026-06-15T19:50:02.449480+00:00", "tool": "search", "arg": "ConvexIndependent subset cardinal 4 finite no three collinear plane", "exit": 0}
+{"ts": "2026-06-15T20:11:01.990563+00:00", "tool": "search", "arg": "harmonic series tends to infinity reals", "exit": 0}
+{"ts": "2026-06-15T21:48:16.485985+00:00", "tool": "search", "arg": "Finset.prod filter range odd doubleFactorial", "exit": 0}
+{"ts": "2026-06-15T21:49:15.645901+00:00", "tool": "goalstate", "arg": "import Mathlib\nset_option maxHeartbeats 0\nopen BigOperators Real Nat Topology Rat\n\ntheorem test : \u2200 n : \u2115, Finset.prod (Finset.filter (fun x => \u00acEven x) (Finset", "exit": 1}
+{"ts": "2026-06-15T21:49:46.279735+00:00", "tool": "goalstate", "arg": "import Mathlib\nset_option maxHeartbeats 0\nopen BigOperators Real Nat Topology Rat\n\ntheorem test : \u2200 n : \u2115, Finset.prod (Finset.filter (fun x => \u00acEven x) (Finset", "exit": 1}
+{"ts": "2026-06-15T21:50:18.330836+00:00", "tool": "goalstate", "arg": "theorem test : \u2200 n : \u2115, Finset.prod (Finset.filter (fun x => \u00acEven x) (Finset.range (2*n))) (id : \u2115 \u2192 \u2115) = Nat.doubleFactorial (2*n - 1) := by sorry", "exit": 1}
+{"ts": "2026-06-15T22:09:34.696816+00:00", "tool": "search", "arg": "Real.sin_eq_zero_iff", "exit": 0}
+{"ts": "2026-06-15T22:12:02.987625+00:00", "tool": "search", "arg": "x^2 + y^2 = 0 -> x = 0", "exit": 0}
+{"ts": "2026-06-15T22:31:47.862937+00:00", "tool": "search", "arg": "sum (fun i => f i ^ 2 / g i)", "exit": 0}
+{"ts": "2026-06-16T05:46:38.144789+00:00", "tool": "certify", "arg": "Or(And(age >= 18, balance >= 1000), vip == 1) \u22a2 Or(vip == 1, And(balance >= 1000, age >= 18)) @ age:int, balance:int, vip:int", "exit": 0}
+{"ts": "2026-06-16T05:46:38.219448+00:00", "tool": "certify", "arg": "Or(And(age >= 18, balance >= 1000), vip == 1) \u22a2 Or(And(age >= 18, balance >= 1000), vip >= 1) @ age:int, balance:int, vip:int", "exit": 0}
+{"ts": "2026-06-16T07:07:31.696103+00:00", "tool": "search", "arg": "Bernoulli inequality real pow one add nsmul", "exit": 0}
+{"ts": "2026-06-16T07:54:59.305998+00:00", "tool": "certify", "arg": "Or(And(age >= 18, balance >= 1000), is_vip == True) \u22a2 Or(is_vip == True, And(balance >= 1000, age >= 18)) @ age:int, balance:int, is_vip:bool", "exit": 0}
+{"ts": "2026-06-16T07:54:59.387172+00:00", "tool": "certify", "arg": "Or(And(age >= 18, balance >= 1000), is_vip == True) \u22a2 And(age >= 18, balance >= 1000) @ age:int, balance:int, is_vip:bool", "exit": 0}
+{"ts": "2026-06-16T07:55:20.202589+00:00", "tool": "search", "arg": "Matrix.det_ne_zero_iff", "exit": 0}
+{"ts": "2026-06-16T15:34:39.294126+00:00", "tool": "search", "arg": "real odd pow injective", "exit": 0}
+{"ts": "2026-06-16T17:54:55.144115+00:00", "tool": "search", "arg": "Nat.gcd n m * Nat.lcm n m = n * m", "exit": 0}

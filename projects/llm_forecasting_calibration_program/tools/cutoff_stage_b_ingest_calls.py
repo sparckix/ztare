@@ -14,6 +14,16 @@ DEFAULT_DB = REPO / "analytics/public/calibration/forecaster_calibration.db"
 WORKSPACE = REPO / "projects/llm_forecasting_calibration_program/cutoff_validity_v1/workspace"
 DEFAULT_CALLS = WORKSPACE / "cutoff_stage_b_panel_v1_calls.jsonl"
 PILOT_ID = "cutoff_stage_b_panel_v1"
+DEFAULT_PILOT_NAME = "GP-245 Law 3 cutoff Stage-B constrained panel"
+DEFAULT_PRIMITIVE = "cutoff_validity_stage_b"
+DEFAULT_CORPUS = "law3_cutoff_matched_panel"
+
+
+def repo_rel(path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(REPO))
+    except ValueError:
+        return str(path)
 
 
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
@@ -49,8 +59,17 @@ def brier(p: float | None, y: int | None) -> float | None:
     return (p - y) ** 2
 
 
-def ensure_pilot_run(con: sqlite3.Connection, calls_path: Path, *, dry_run: bool) -> None:
-    if con.execute("SELECT 1 FROM pilot_runs WHERE pilot_id = ?", (PILOT_ID,)).fetchone():
+def ensure_pilot_run(
+    con: sqlite3.Connection,
+    calls_path: Path,
+    *,
+    pilot_id: str,
+    pilot_name: str,
+    primitive: str,
+    corpus: str,
+    dry_run: bool,
+) -> None:
+    if con.execute("SELECT 1 FROM pilot_runs WHERE pilot_id = ?", (pilot_id,)).fetchone():
         return
     if dry_run:
         return
@@ -61,20 +80,52 @@ def ensure_pilot_run(con: sqlite3.Connection, calls_path: Path, *, dry_run: bool
         VALUES (?, ?, ?, ?, ?, datetime('now'))
         """,
         (
-            PILOT_ID,
-            "GP-245 Law 3 cutoff Stage-B constrained panel",
-            "cutoff_validity_stage_b",
-            "law3_cutoff_matched_panel",
-            str(calls_path.relative_to(REPO)),
+            pilot_id,
+            pilot_name,
+            primitive,
+            corpus,
+            repo_rel(calls_path),
         ),
     )
 
 
-def ingest(calls_path: Path, db: Path, *, dry_run: bool) -> dict[str, Any]:
+def refresh_pilot_counts(con: sqlite3.Connection, *, pilot_id: str) -> None:
+    row = con.execute(
+        """
+        SELECT COUNT(*) AS n_calls, SUM(CASE WHEN schema_ok THEN 1 ELSE 0 END) AS n_schema_ok
+        FROM pilot_calls
+        WHERE pilot_id = ?
+        """,
+        (pilot_id,),
+    ).fetchone()
+    con.execute(
+        "UPDATE pilot_runs SET n_calls = ?, n_schema_ok = ? WHERE pilot_id = ?",
+        (int(row["n_calls"] or 0), int(row["n_schema_ok"] or 0), pilot_id),
+    )
+
+
+def ingest(
+    calls_path: Path,
+    db: Path,
+    *,
+    pilot_id: str,
+    pilot_name: str,
+    primitive: str,
+    corpus: str,
+    dry_run: bool,
+) -> dict[str, Any]:
     rows = load_jsonl(calls_path)
     con = sqlite3.connect(db)
     con.row_factory = sqlite3.Row
-    ensure_pilot_run(con, calls_path, dry_run=dry_run)
+    ensure_pilot_run(
+        con,
+        calls_path,
+        pilot_id=pilot_id,
+        pilot_name=pilot_name,
+        primitive=primitive,
+        corpus=corpus,
+        dry_run=dry_run,
+    )
     y_map = dict(con.execute("SELECT contract_id, y_known FROM contracts"))
     existing = {
         (row["contract_id"], row["family"], row["condition"])
@@ -84,7 +135,7 @@ def ingest(calls_path: Path, db: Path, *, dry_run: bool) -> dict[str, Any]:
             FROM pilot_calls
             WHERE pilot_id = ?
             """,
-            (PILOT_ID,),
+            (pilot_id,),
         )
     }
     insert_sql = """
@@ -98,7 +149,7 @@ def ingest(calls_path: Path, db: Path, *, dry_run: bool) -> dict[str, Any]:
     skipped = 0
     invalid = 0
     for row in rows:
-        if row.get("pilot_id") != PILOT_ID:
+        if row.get("pilot_id") != pilot_id:
             invalid += 1
             continue
         cid = row.get("contract_id")
@@ -115,7 +166,7 @@ def ingest(calls_path: Path, db: Path, *, dry_run: bool) -> dict[str, Any]:
         y = y_map.get(cid)
         parsed = row.get("parsed") if isinstance(row.get("parsed"), dict) else {}
         payload = (
-            PILOT_ID,
+            pilot_id,
             cid,
             row.get("agent_id") or family,
             family,
@@ -137,12 +188,14 @@ def ingest(calls_path: Path, db: Path, *, dry_run: bool) -> dict[str, Any]:
         existing.add(key)
         inserted += 1
     if not dry_run:
+        refresh_pilot_counts(con, pilot_id=pilot_id)
         con.commit()
     con.close()
     return {
         "schema": "gp245-cutoff-stage-b-ingest-v1",
         "db": str(db),
         "calls": str(calls_path),
+        "pilot_id": pilot_id,
         "dry_run": dry_run,
         "rows": len(rows),
         "inserted": inserted,
@@ -155,12 +208,24 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--calls", type=Path, default=DEFAULT_CALLS)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument("--pilot-id", default=PILOT_ID)
+    parser.add_argument("--pilot-name", default=DEFAULT_PILOT_NAME)
+    parser.add_argument("--primitive", default=DEFAULT_PRIMITIVE)
+    parser.add_argument("--corpus", default=DEFAULT_CORPUS)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--commit", action="store_true")
     args = parser.parse_args()
     if not (args.dry_run or args.commit):
         raise SystemExit("Specify --dry-run or --commit.")
-    result = ingest(args.calls, args.db, dry_run=not args.commit)
+    result = ingest(
+        args.calls,
+        args.db,
+        pilot_id=args.pilot_id,
+        pilot_name=args.pilot_name,
+        primitive=args.primitive,
+        corpus=args.corpus,
+        dry_run=not args.commit,
+    )
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 

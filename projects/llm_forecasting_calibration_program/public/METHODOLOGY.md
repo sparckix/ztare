@@ -3,10 +3,10 @@ description: "Methodology, canonical database, and tooling contract for the GP-2
 ---
 # GP-245 Forecasting Calibration — Methodology / DB Contract
 
-Updated 2026-06-04.
+Updated 2026-06-16.
 
 This is the public methodology and database contract for the GP-245 forecasting
-program. Scientific claims and current law status live in `CLAIM_SUMMARY.md`.
+program. Scientific claims and current claim status live in `CLAIM_SUMMARY.md`.
 
 ## Canonical Database
 
@@ -16,16 +16,16 @@ Canonical DB:
 
 Current DB snapshot:
 
-- contracts: `2,183`
-- pilot runs: `158`
-- pilot calls: `20,146`
-- schema-ok calls: `19,502`
-- calls with Brier: `10,945`
-- resolved contracts: `525`
+- contracts: `2,207`
+- pilot runs: `162`
+- pilot calls: `20,294`
+- schema-ok calls: `19,650`
+- calls with Brier: `11,093`
+- resolved contracts: `549`
 
-The DB is public evidence, not private scratch. Raw JSONL files are receipts,
-but law claims must be queryable through the canonical tables unless a report
-explicitly says it is a no-call/no-DB readiness audit.
+The DB is public evidence, not private scratch. Raw JSONL files are supporting records,
+but claims must be queryable through the canonical tables unless a report
+explicitly says it is a stored-row/no-DB readiness audit.
 
 ### Tables
 
@@ -35,7 +35,7 @@ explicitly says it is a no-call/no-DB readiness audit.
   - one row per question/task/event surface;
   - `y_known in {0,1}` only when the outcome is resolved and binary;
   - `y_known = NULL` is allowed for unresolved or non-binary games;
-  - `post_training_cutoff` is a stored flag and can be stale for Law 3 audits.
+  - `post_training_cutoff` is a stored flag and can be stale for source-currency claim audits.
 - `pilot_runs(pilot_id PK, pilot_name, primitive, corpus, source_jsonl_path,
   fired_at, n_calls, n_schema_ok, ...)`
   - one row per dispatch/run.
@@ -44,7 +44,7 @@ explicitly says it is a no-call/no-DB readiness audit.
   parsed_json, fired_at, raw_json, ...)`
   - one row per model-family emission;
   - `brier = (p_success - y_known)^2` when `y_known` is binary;
-  - channel fields such as worry, confidence, sham, bid-ask, action choice, or
+  - channel fields such as worry, confidence, placebo, bid-ask, action choice, or
     effort estimates live in `parsed_json`.
 - `pre_registrations(...)`
   - power commitments and verdict targets fixed before a run.
@@ -68,7 +68,7 @@ Largest DB source buckets:
 | source | contracts | resolved | pre_cutoff flag | post_cutoff flag |
 |---|---:|---:|---:|---:|
 | `f105_effort_estimation` | 510 | 0 | 0 | 0 |
-| `bias_inheritance_ood` | 435 | 0 | 0 | 0 |
+| `bias_transfer_ood` | 435 | 0 | 0 | 0 |
 | `NULL` | 309 | 30 | 0 | 0 |
 | `polymarket` | 168 | 74 | 33 | 127 |
 | `legacy_orphan_backfill` | 163 | 0 | 0 | 0 |
@@ -77,11 +77,11 @@ Largest DB source buckets:
 | `metaculus` | 72 | 0 | 0 | 60 |
 | `premium_public_clean` | 71 | 71 | 0 | 0 |
 | `f105_metacognition` | 45 | 45 | 0 | 0 |
-| `apparatus_effort` | 34 | 34 | 34 | 0 |
-| `apparatus_effort_v4` | 30 | 30 | 30 | 0 |
+| `workflow_effort` | 34 | 34 | 34 | 0 |
+| `workflow_effort_v4` | 30 | 30 | 30 | 0 |
 
 Important implication: the DB already has substantial post-cutoff
-Metaculus/Polymarket material, but the current Law 3 second-source blocker is
+Metaculus/Polymarket material, but the current source-currency claim second-source blocker is
 pre-cutoff **resolution-date** supply, not merely open-date supply.
 
 The 2026-06-02 public Polymarket acquisition probe partly unblocks that supply
@@ -107,7 +107,7 @@ All forecasting games should use the same tables:
 2. create a `pilot_runs` row for the dispatch;
 3. insert one `pilot_calls` row per model-family emission;
 4. compute Brier only from canonical `contracts.y_known`;
-5. keep raw traces/JSONL as receipts, not alternate claim stores.
+5. keep raw traces/JSONL as supporting records, not alternate claim stores.
 
 Nonstandard legacy ledgers must be explicitly mapped through:
 
@@ -140,28 +140,28 @@ Reusable statistics live in `src/ztare/experiment_stats.py`:
 - `power_aware_verdict`
 - `bf_bic_paired_t`
 
-Verdict vocabulary:
+Verdict vocabulary used by the scoring scripts:
 
-- `h1_supported`: clears the predeclared effect and power bar in the predicted
+- supported: clears the predeclared effect and power bar in the predicted
   direction.
-- `h0_kept`: equivalent within the predeclared no-effect bound.
-- `inconclusive_underpowered`: everything else.
+- equivalent: equivalent within the predeclared no-effect bound.
+- underpowered or inconclusive: everything else.
 
 Do not treat `p > 0.05` as no effect.
 
-## Law 3 Cutoff Discipline
+## source-currency claim Cutoff Discipline
 
-For the cutoff/source-currency law:
+For the cutoff/source-currency claim:
 
 - `cutoff_relation` is computed from **resolution date vs model cutoff date**;
 - `freeze_datetime_value` or historical market probability is a base-rate /
   matching field, not the cutoff relation;
 - `market_info_open_datetime` is an adjacent source-exposure/market-age field,
-  not a substitute for the Law 3 resolution-date test;
+  not a substitute for the source-currency claim resolution-date test;
 - stored `contracts.post_training_cutoff` can be stale and must be checked
-  against computed relation in Law 3 reports.
+  against computed relation in source-currency claim reports.
 
-Current Law 3 executable surfaces:
+Current source-currency claim executable surfaces:
 
 ```bash
 PYTHONPATH=. ./venv/bin/python -m src.ztare.cli forecast cutoff-panel-score \
@@ -259,7 +259,7 @@ is `+0.024719`, 90% CI `[+0.007125,+0.043730]`, sign-flip p=`0.02315`.
 Because outcomes were used to construct the balanced diagnostic subset, this
 control is a confound audit rather than a natural-distribution estimate. The
 192 control calls are DB-ingested under `fred_blinded_value_control_v1`.
-A no-call vintage timing audit then queried FRED with real-time
+A stored-row vintage timing audit then queried FRED with real-time
 `realtime_start` / `realtime_end` dates. The first pass found `58/98`
 vintage-scoreable rows before HTTP 429 rate limits. A follow-up bulk-vintage
 repair used FRED `series/observations` with `output_type=2` and
@@ -271,37 +271,37 @@ existing calls on the complete repaired label set gives pair-panel
 post-minus-pre Brier `+0.018721` under vintage labels, with mean Brier
 worsening from `0.226225` current-label to `0.233266`; the blinded-control
 current-label penalty collapses from `+0.024719` to `-0.002989` under vintage
-labels. The DB rows remain queryable current-FRED-label artifacts, but they
+labels. The DB rows remain queryable current-FRED-label records, but they
 should not be used as positive source-currency evidence.
-A reusable dataset-source label-time gate now audits this condition over the
+A reusable dataset-source label-time screen now audits this condition over the
 calibration DB. It finds `165` dataset-source rows, `108` resolved
 dataset-source rows, `83` current-label rows supported by available
-source-specific label-time receipts, and `25` ineligible current-label rows:
+source-specific label-time records, and `25` ineligible current-label rows:
 `15` FRED labels changed under vintage repair, while `10` yfinance/yfinance_etf
-rows lack label-time receipts. The gate does not mutate the model-call tables,
+rows lack label-time records. The screen does not mutate the model-call tables,
 but its row-level eligibility classifications are DB-ingested into
 `dataset_label_time_gate_rows` when run with `--ingest-db`.
 The same refresh also installs two SQL views: `v_label_time_eligible_contracts`
-and `v_policy_scoreable_calls`. The 2026-06-04 F100 calibrator rerun now uses
+and `v_policy_scoreable_calls`. The 2026-06-04 low-probability calibration rerun now uses
 `v_policy_scoreable_calls` by default. This excludes the `10` complete
-yfinance/yfinance_etf panels lacking label-time receipts from the legacy
+yfinance/yfinance_etf panels lacking label-time records from the legacy
 `142`-panel public-domain audit, leaving `132` policy-scoreable panels over
 Manifold, Polymarket, and Kalshi. The verdict is unchanged:
-source-isotonic remains `calibrator_not_promoted` (`-0.005248` Brier vs
-confident-NO, paired p=`0.7099`), while raw mean-panel remains worse than
-confident-NO (`+0.029598`, p=`0.0062`).
-The F100 source-currency stress audit now also computes cutoff relation through
+source-isotonic remains unsupported (`-0.005248` Brier vs
+low-probability adjustment, paired p=`0.7099`), while raw mean-panel remains worse than
+low-probability adjustment (`+0.029598`, p=`0.0062`).
+The low-probability adjustment source-currency stress audit now also computes cutoff relation through
 `classify_forecast_source_currency` rather than local fallback logic. On the
 Stage-B panel this leaves the scores unchanged, but it records
 cutoff-relation provenance and exposes `39 / 240` stored-flag-vs-computed
-relation conflicts. Policy audits should consume the computed receipt when a
+relation conflicts. Policy audits should consume the computed row when a
 resolution date and panel cutoff date are available.
-A reusable source-currency gate now materializes the same primitive into the
+A reusable source-currency screen now materializes the same classifier into the
 calibration DB. On `cutoff_stage_b_panel_v1`, `source_currency_gate_rows`
-contains `240` call-level receipts, with `120` computed pre-cutoff rows, `120`
+contains `240` call-level rows, with `120` computed pre-cutoff rows, `120`
 computed post-cutoff rows, and `39` stored/computed conflicts. It also installs
 `v_source_currency_gate_conflicts` and `v_policy_scoreable_calls_source_currency`
-so downstream audits can join computed cutoff receipts instead of re-consuming
+so downstream audits can join computed cutoff rows instead of re-consuming
 `contracts.post_training_cutoff`.
 
 ### Stage-C Market Baseline
@@ -329,15 +329,54 @@ A scoped market+LLM blend audit is also available:
   `projects/llm_forecasting_calibration_program/truth_continuation_v1/workspace/market_llm_blend_stage_c_2026_06_03/market_llm_blend_stage_c_report.md`
 - baseline source: `v_external_market_baselines`
 - rows: 51 joined contracts, 153 same-contract LLM calls
-- equal-information baseline rows: `0`; not-equal-information rows: `51`
+- equal-information baseline rows in this Stage-C overlap: `0`; not-equal-information rows: `51`
 - market-alone Brier: `0.099673`
 - LLM panel mean-probability Brier: `0.140459`
 - fixed 50/50 blend Brier: `0.094480`
 - leave-one-out tuned-grid blend Brier: `0.097218`
+
+The separate Polymarket equal-information acquisition currently has 4 / 24
+valid requested rows ingested under `equal_information_polymarket_baseline_v1`
+with `equal_information_flag=1`. It is not part of the 51-row Stage-C Manifold
+overlap and is still below the broad comparison threshold. A feasibility audit
+classifies the remaining 20 / 24 rows as
+`market_not_open_by_target_freeze`. A fixed day-horizon sweep over 7, 5, 3, 2,
+1, and 0 days before resolution joins 4, 6, 9, 12, 12, and 12 rows
+respectively; no tested day horizon fully rescues this packet. The next
+equal-information experiment now has a baseline-only replacement packet: the
+2026-06-15 acquisition scanned 800 closed post-cutoff Polymarket markets,
+probed 81 CLOB histories, found 80 eligible candidates, and selected 24
+one-per-event rows at a 2-day horizon. Outcome mix is 14 NO / 10 YES, with 16
+selected freeze prices in `0.00-0.10` and 8 in `0.90-1.00`. The 24 replacement
+market baselines are now ingested under
+`equal_information_replacement_polymarket_baseline_v1`. The completed Claude,
+Codex, Gemini, and DeepSeek model rows are ingested under
+`equal_information_replacement_model_forecast_v1` and score as a same-information
+market comparison favoring the market: Claude mean Brier `0.233184`, Codex mean Brier `0.264409`,
+Gemini mean Brier `0.304696`, DeepSeek mean Brier `0.334775`, all model-call
+mean Brier `0.284266`, four-family mean-probability panel Brier `0.267758`,
+Polymarket mean Brier `0.072964`, panel-minus-market `+0.194794`, paired
+permutation p=`0.0068`, n=`24` contracts / `96` model calls. This is not
+evidence that LLMs beat markets.
+
+A non-Polymarket Manifold acquisition now supplies the independent-source
+comparison. The corrected packet selects 24 post-cutoff Manifold contracts
+from local resolved rows that do not already have equal-information external
+baseline observations: 15 NO / 9 YES. The public Manifold API fill validates
+all 24 rows with a timestamped market-history probability at or before the
+two-day pre-resolution freeze date plus an outcome-mapping record, and the
+rows are DB-ingested under `equal_information_manifold_history_baseline_v1`.
+Mean Manifold market Brier is `0.160977`. Against existing same-contract
+five-family model calls, the selected full-coverage model pilot
+`v28stake_full__v25_external::low` has model-panel Brier `0.198723`, Manifold
+market Brier `0.160977`, panel-minus-market `+0.037746`, paired p=`0.5431`,
+n=`24`. This satisfies the second-source acquisition check, but it is
+post-hoc, favors the market, and is inconclusive; it is not evidence that LLMs beat
+markets.
 - leave-one-out tuned-grid delta vs market: `-0.002455`, paired p=`0.794`,
   CI `[-0.021, +0.0166]`, n_required=`12334`
 - post-cutoff subset: market-only remains best (`0.085272`)
-- verdict: `not_deployable_post_cutoff_prefers_market_only`
+- verdict: `post_cutoff_prefers_market_only`
 
 The companion effective-N audit is:
 
@@ -354,15 +393,15 @@ The companion effective-N audit is:
 
 Interpretation: the aggregate blend is a narrow within-Manifold hypothesis
 generator, not a human/crowd superiority result. The paired test and
-post-cutoff split fail the promotion gate. The market probability
+post-cutoff split fail the support check. The market probability
 aggregates many traders and changing information flows; the LLM comparator is a
 small frozen prompt panel. The post-cutoff split is the deployment-relevant
 warning: in the clean source-valid subset, adding the LLM panel does not improve
 the grid result over market-only.
 
-## Nurture / Intervention Discipline
+## Prompt Intervention Discipline
 
-Broad action prompting is not promoted. N2 failed confirmation:
+Broad action prompting is unsupported. The confirmatory selective-action test failed:
 
 - pilot: `n2_selective_action_confirmatory_v1`
 - rows in DB: 71
@@ -370,62 +409,63 @@ Broad action prompting is not promoted. N2 failed confirmation:
 - paired permutation: `p=0.5649`
 - mean utility: `-0.205882`
 
-Later intervention smokes demote the automatic self-repair path:
+Later intervention checks narrow the automatic self-repair path:
 
-- N3: high-worry action policy exposed construct-validity problems.
-- N4: decision-only action policy failed its first utility smoke.
-- N5: naive base-rate/reference-class repair overcorrected downward.
-- N6: selection-aware repair overcorrected upward on a negative high-tail row.
-- N7: guarded selection-aware repair ran a balanced 16-row smoke; it prevented
-  the N6 overcorrection mode but mostly became a no-op and worsened pooled
+- High-worry action policy exposed construct-validity problems.
+- Decision-only action policy failed its first utility check.
+- Naive base-rate/reference-class repair overcorrected downward.
+- Selection-aware repair overcorrected upward on a negative high-tail row.
+- Guarded selection-aware repair ran a balanced 16-row check; it prevented
+  the earlier overcorrection mode but mostly became a no-op and worsened pooled
   Brier (`+0.031079`, `n=8` paired).
-- F118/N8: diagnostic-triggered allocation over 142 complete-five v28a panels
-  loses to confident-NO mean-panel.
-- N9: carrier-vs-prose ran a 32-row Codex smoke. Free prose worsened Brier
-  (`+0.068441`, p=`0.238`); typed carrier weakly improved Brier
+- Diagnostic-triggered allocation over 142 complete-five panels
+  has higher Brier than the mean-panel with the low-probability adjustment.
+- Structured-fields versus prose ran a 32-row Codex check. Free prose worsened Brier
+  (`+0.068441`, p=`0.238`); structured fields weakly improved Brier
   (`-0.012225`, p=`0.8276`) and beat free prose on mean, but the
-  carrier-to-action arm only tied the threshold-abstain utility control. Treat
-  as underpowered continuation evidence, not a law claim.
-- N10: hard-prompt-break ran paired Codex and Claude smokes. The first two
-  smokes were directionally favorable to structured carrier fields over prose
-  (`0.098425` same-turn typed carrier, `0.103278` hard break, `0.146103` free
+  structured-fields-to-action arm only tied the threshold-abstain utility control. Treat
+  as underpowered continuation evidence, not a supported claim.
+- Hard-prompt-break ran paired Codex and Claude checks. The first two
+  checks were directionally favorable to structured fields over prose
+  (`0.098425` same-turn structured fields, `0.103278` hard break, `0.146103` free
   prose, `0.171038` baseline over 8 rows). The later two-call placebo-control
-  continuation did not replicate that broader intervention story: among 30
+  continuation did not replicate that broader intervention claim: among 30
   schema-valid rows, baseline mean Brier was `0.078000`, two-call prose
-  `0.107254`, same-turn carrier `0.110300`, free prose `0.122767`, and hard
+  `0.107254`, same-turn structured fields `0.110300`, free prose `0.122767`, and hard
   break `0.149921`; 10 Codex rows failed at runtime before forecasts. Treat the
-  carrier lane as a hypothesis only; hard-break-beyond-carrier is not confirmed.
+  structured-fields lane as a hypothesis only; hard-break-beyond-structured-fields is not confirmed.
 
 Current applied rule:
 
 - Do not claim an automatic correction policy from worry/tail-risk.
-- The strongest practical DB rule is confident-NO mean-panel, now exposed by
+- The strongest practical DB rule is mean-panel with the low-probability adjustment, now exposed by
   forecast-pool aggregation as `aggregate.confident_no_adjusted_p_success`
   while preserving the raw `aggregate.p_success`. Treat it as a calibrated view
   for live/source-valid rows with time-valid labels/baselines, not as a
   correction for retrospective or current-label dataset benchmarks.
 - Deterministic rationale compression/NCD was tested as a candidate
-  routing/escalation proxy on paired v28a/v28i external rows. It did not
-  promote: inversion helped mean Brier, but NCD did not explain where it
+  allocation/escalation proxy on paired external rows. It was not
+  supported: inversion helped mean Brier, but NCD did not explain where it
   helped.
-- Graph-family nearest-neighbor weighting was tested on complete-five v28a
-  public-domain panels. It is suggestive but not deployed: graph+confident-NO
-  slightly beat confident-NO, but the lift was small and source/hash-control
+- Graph-family nearest-neighbor weighting was tested on complete-five
+  public-domain panels. It is suggestive but not ready for use as an automated rule:
+  graph plus low-probability adjustment
+  slightly beat low-probability adjustment, but the lift was small and source/hash-control
   fragile.
 - A costed review-allocation audit tested diagnostic channels as triage
-  features rather than probability repair. Oracle-family review shows headroom,
-  but realistic train-fold proxy reviewers do not promote: the best non-oracle
-  policy improves costed Brier by only `0.006156` over F100 and is
+  features rather than probability repair. Best-family review shows headroom,
+  but realistic train-fold proxy reviewers do not yet support an applied rule: the best non-best-family
+  policy improves costed Brier by only `0.006156` over low-probability adjustment and is
   non-significant.
-- Nurture prompt failures are scoped by construct validity. A cross-pilot audit
-  demotes the tested tool-free prompt families, but does not rule out
+- Prompt-intervention failures are scoped by construct validity. A cross-pilot audit
+  narrows the tested tool-free prompt families, but does not rule out
   tool-using, interactive, retrieval-grounded, expert-written, or heldout-tuned
   prompt programs.
 - Use diagnostic channels as behavioral error-readouts unless a costed review
   allocation policy beats explicit controls.
-- Use old stochastic contract rows for no-call policy audits first; spend new
-  N=xx multi-family calls when the no-call audit leaves a discriminating
-  uncertainty and the packet has source-valid rows plus fixed promotion/kill
+- Use old stochastic contract rows for stored-row policy audits first; spend new
+  multi-family calls only when the stored-row audit leaves a discriminating
+  uncertainty and the packet has source-valid rows plus fixed support/stop
   criteria.
 
 Runnable surfaces:
@@ -435,17 +475,9 @@ PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tool
 
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/graph_family_interaction_audit.py
 
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/nurture_prompt_design_audit.py
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/diagnostic_triggered_allocation_audit.py \
-  --out-dir projects/llm_forecasting_calibration_program/nurture_intervention_v1/workspace
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/diagnostic_triggered_allocation_audit.py
 
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/diagnostic_review_allocation_audit.py
-
-PYTHONPATH=. ./venv/bin/python -m src.ztare.cli forecast nurture-score \
-  --pilot-id n7_guarded_selection_aware_repair_v1 \
-  --queue projects/llm_forecasting_calibration_program/nurture_intervention_v1/workspace/n7_guarded_selection_aware_repair_combined_dispatch_queue.jsonl \
-  --out-dir projects/llm_forecasting_calibration_program/nurture_intervention_v1/workspace
 ```
 
 ## Runnable Surfaces
@@ -464,37 +496,32 @@ Public CLI verbs intentionally kept user-facing:
 - `calibration-stats`
 - `calibration-db`
 - `score`
-- `ingest-smoke`
+- `ingest-check`
 - `cutoff-panel-run`
 - `cutoff-panel-ingest`
 - `cutoff-panel-score`
 - `anti-bias-run`
 - `anti-bias-score`
-- `nurture-run`
-- `nurture-ingest`
-- `nurture-score`
 - `elo-refresh`
 - `brier-elo`
 - `resolve-open-metaculus`
 
 Project-local research scripts remain reproducible but are not public CLI
-verbs. Examples include paper-readiness, law-readiness, F105 sibling analysis,
+verbs. Examples include paper-readiness, claim-readiness, objective-effort sibling analysis,
 truth-frontier ranking, packet generation, and construct-validity audits.
-Recent no-call audit surfaces:
+Recent stored-row audit surfaces include pairwise ranking re-audits, source-balanced
+ranking packets, translation-readiness checks, channel-only classifier audits,
+FRED vintage repair/rescoring, label-time screens, source-currency screens, and
+equal-information baseline acquisition. The field-wide validity-audit protocol
+adds the external benchmark-family schema and seed matrix needed before making a
+field-wide prevalence claim. The companion local-evidence script preserves the
+Halawi date-distribution warning from the claim register while marking it as a
+summary only, not a raw-row external audit. The historical script filenames in
+`projects/llm_forecasting_calibration_program/tools/` retain their old
+experiment prefixes; the public claim names above are the canonical reader-facing
+names.
 
 ```bash
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_paired_delta_reaudit.py
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_contrastive_policy_consumer_audit.py
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_source_balanced_consumer_packet.py
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_source_balanced_consumer_dispatch.py --smoke --families gemini,deepseek --max-pairs 2
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_source_balanced_consumer_score.py
-
-PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/f47_production_readiness_audit.py
-
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/channel_only_classifier_reaudit.py
 
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/fred_vintage_bulk_repair.py
@@ -509,9 +536,43 @@ PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tool
 
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_baseline_export_packet.py
 
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_baseline_result_from_post_probe.py
+
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_baseline_result_ingest.py
 
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_freeze_feasibility_audit.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_horizon_sweep.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_replacement_sample_acquire.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_replacement_dispatch_packet.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_replacement_contract_ingest.py --commit
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/equal_information_replacement_score.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_export_packet.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_result_acquire.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_result_ingest.py --ingest-db --replace
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_score.py
+
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/forecasting_science_spine_audit.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/paper_coherence_audit.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/field_wide_validity_audit_protocol.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/field_wide_validity_local_evidence.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/harnessing_thesis_audit.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/independent_equal_information_source_audit.py
+
+PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/manifold_equal_information_reclassification_audit.py
 
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/max_truth_frontier_report.py
 
@@ -530,7 +591,7 @@ Reusable forecast-pool infrastructure lives in:
 
 The public folder is intentionally small:
 
-- `CLAIM_SUMMARY.md` — current science state, law status, non-claims, and next
+- `CLAIM_SUMMARY.md` — current science state, claim status, non-claims, and next
   truth-seeking queue.
 - `METHODOLOGY.md` — this DB/tooling/statistics contract.
 

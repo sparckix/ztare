@@ -116,6 +116,17 @@ REQUIRED_BY_CONDITION = {
         "expected_utility",
         "action_rationale_short",
     },
+    "bare_forecast": {"p_success"},
+    "length_matched_placebo": {"format_check", "p_success"},
+    "expert_training_prompt": {"base_rate", "update_reason", "main_uncertainty", "p_success"},
+    "audit_informed_prompt": {
+        "source_visibility_check",
+        "label_vintage_check",
+        "base_rate",
+        "overconfidence_check",
+        "p_success",
+    },
+    "failure_mode_specific_prompt": {"likely_error", "revision_reason", "p_success"},
 }
 
 ACTION_VALUES = {
@@ -303,6 +314,18 @@ def carrier_schema_ok(condition: str, parsed: dict[str, Any], p_success: float |
         if action not in ACTION_VALUES:
             return False
         parsed["selected_action_normalized"] = "forecast" if action in FORECAST_ACTION_ALIASES else action
+    if condition in {
+        "length_matched_placebo",
+        "expert_training_prompt",
+        "audit_informed_prompt",
+        "failure_mode_specific_prompt",
+    }:
+        for key in REQUIRED_BY_CONDITION[condition] - {"p_success"}:
+            if not str(parsed.get(key) or "").strip():
+                return False
+    if condition in {"expert_training_prompt", "audit_informed_prompt"}:
+        if numeric_probability(parsed.get("base_rate")) is None:
+            return False
     return True
 
 

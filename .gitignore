@@ -505,3 +505,4 @@ ztare_proofs/scratch*.lean
 ztare_proofs/_strategist_lift_work/
 ztare_proofs/closures/
 analytics/public/calibration/forecaster_calibration.db
+analytics/public/leanmill/judge_panel_votes.jsonl

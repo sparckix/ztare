@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """GP-245 law-readiness report.
 
-This is a no-call, no-mutation status report for the forecasting paper spine.
+This is a no-call, no-mutation status report for the forecasting paper.
 It answers: which candidate laws are currently promotable, which are blocked,
 and what exact next test would kill or upgrade them.
 """
@@ -401,14 +401,13 @@ def law3_status(
                 "Write Law 3 with the Stage-B scorer delta, paired-stratum test, "
                 "and Stage-C partial base-rate repair; keep unjoined-row and "
                 "second-source limits explicit. For the second-source continuation, "
-                "Polymarket's reviewed platform-resolver slice is DB-ingested "
-                "and Gemini/DeepSeek live smokes are aggregate-positive on average "
-                "but matched-stratum null/opposite-sign; "
-                "the Polymarket market-price control is not executable yet because "
-                "post-cutoff freeze prices are missing locally and the live probe "
-                "joined 0 rows; "
-                "complete the remaining Metaculus target through bot-benchmarking/"
-                "data-download access or licensed export before model calls. "
+                "the completed Polymarket replacement slice is a same-contract "
+                "negative control: the four-family LLM panel loses to the market. "
+                "Do not treat that as broad human/crowd evidence. The filled "
+                "Manifold history join supplies a second-source, market-ahead but "
+                "inconclusive comparison; obtain prospective or larger "
+                "source-balanced Metaculus/Kalshi/Manifold bars before any broad "
+                "market/human claim. "
                 "Dataset-source rows may open a separate frozen replication design "
                 "but are not a drop-in substitute for the Metaculus target cells."
             )
@@ -781,7 +780,7 @@ def build_report(db_path: Path) -> dict[str, Any]:
         "paper_status": paper_status(laws),
         "void_mining": {
             "highest_yield_negative": "Law 3 matched pre/post corpus fails after acquisition, scoping cutoff-validity to a dataset-audit caveat.",
-            "highest_yield_positive": "Law 3 matched pre/post pass plus Law 2 diagnostic pass would support a source-currency plus channel-surface paper spine.",
+            "highest_yield_positive": "Law 3 matched pre/post pass plus Law 2 diagnostic pass would support a source-currency plus channel-surface paper.",
             "do_not_repeat": [
                 "generic worry-vs-Brier without family/channel controls",
                 "same anti-bias-collapse design without raw-gap matching or randomization",
@@ -808,7 +807,7 @@ def write_outputs(result: dict[str, Any], out_dir: Path) -> None:
     lines = ["# GP-245 Law Readiness Report", ""]
     lines.append(f"- Schema: `{result['schema']}`")
     lines.append(f"- DB: `{result['db']}`")
-    lines.append(f"- Ready for landmark claim: `{result['paper_status']['ready_for_landmark_claim']}`")
+    lines.append(f"- Ready for broad paper claim: `{result['paper_status']['ready_for_landmark_claim']}`")
     lines.append(f"- Ready for diagnostic Law 2 section: `{result['paper_status']['ready_for_diagnostic_law_section']}`")
     lines.append("")
     lines.append("## Law Status")

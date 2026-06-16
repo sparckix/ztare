@@ -1,0 +1,2 @@
+{"ts": "2026-06-15T19:34:53.249870+00:00", "kind": "judge", "orig_nl": "a", "back_nl": "a", "n": 3, "votes": [true, true, true], "raw_verdicts": ["EQUIVALENT", "EQUIVALENT", "EQUIVALENT"], "faithful": true, "model": "gemini-3.1-pro-preview"}
+{"ts": "2026-06-15T19:34:53.250544+00:00", "kind": "judge_panel", "orig_nl": "a", "back_nl": "a", "n": 3, "votes": [true, true, true], "raw_verdicts": ["gemini-3.1-pro-preview:EQUIVALENT", "deepseek-chat:EQUIVALENT", "gemini-2.5-flash:EQUIVALENT"], "faithful": true, "model": "panel:majority"}

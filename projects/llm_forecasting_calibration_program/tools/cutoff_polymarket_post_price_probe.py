@@ -71,6 +71,18 @@ def slug_from_url(url: Any) -> str:
 def gamma_market_by_slug(slug: str) -> tuple[dict[str, Any] | None, str]:
     if not slug:
         return None, "missing_slug"
+    try:
+        data = read_json_url(f"{GAMMA_BASE}/markets/slug/{urllib.parse.quote(slug, safe='')}")
+    except urllib.error.URLError as exc:
+        reason = getattr(exc, "reason", exc)
+        direct_status = f"gamma_direct_fetch_failed:URLError:{reason}"
+    except Exception as exc:
+        direct_status = f"gamma_direct_fetch_failed:{type(exc).__name__}:{exc}"
+    else:
+        if isinstance(data, dict) and str(data.get("slug") or "") == slug:
+            return data, "gamma_slug_direct"
+        direct_status = "gamma_direct_no_exact_market"
+
     params = urllib.parse.urlencode({"slug": slug, "limit": "5"})
     try:
         data = read_json_url(f"{GAMMA_BASE}/markets?{params}")
@@ -87,7 +99,7 @@ def gamma_market_by_slug(slug: str) -> tuple[dict[str, Any] | None, str]:
     for row in data:
         if isinstance(row, dict):
             return row, "gamma_first_result_slug_mismatch"
-    return None, "gamma_no_object_market"
+    return None, direct_status if direct_status else "gamma_no_object_market"
 
 
 def final_yes_outcome(market: dict[str, Any], idx: int) -> int | None:
@@ -129,6 +141,11 @@ def row_probe(row: dict[str, Any], *, freeze_days_before_resolution: int) -> dic
     token_ids = parse_json_array(market.get("clobTokenIds"))
     if idx is None or idx >= len(token_ids):
         return {**out, "join_status": "missing_yes_token", "outcomes": outcomes}
+    no_token_id = None
+    for i, outcome in enumerate(outcomes):
+        if str(outcome).strip().lower() == "no" and i < len(token_ids):
+            no_token_id = str(token_ids[i])
+            break
     resolved = parse_dt(row.get("resolve_date"))
     market_end = parse_dt(market.get("closedTime") or market.get("umaEndDate") or market.get("endDate"))
     target = (resolved or market_end)
@@ -152,10 +169,13 @@ def row_probe(row: dict[str, Any], *, freeze_days_before_resolution: int) -> dic
         "gamma_market_id": market.get("id"),
         "gamma_question": market.get("question"),
         "gamma_slug": market.get("slug"),
+        "gamma_start_date": market.get("startDate"),
+        "gamma_accepting_orders_timestamp": market.get("acceptingOrdersTimestamp"),
         "gamma_closed_time": market.get("closedTime"),
         "gamma_end_date": market.get("endDate"),
         "gamma_volume_num": as_number(market.get("volumeNum")),
         "gamma_final_yes": final_yes,
+        "no_token_id": no_token_id,
         "gamma_final_yes_matches_y_known": (
             final_yes == int(row["y_known"])
             if final_yes is not None and row.get("y_known") in (0, 1)

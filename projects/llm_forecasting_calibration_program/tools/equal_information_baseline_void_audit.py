@@ -36,9 +36,21 @@ DEFAULT_METACULUS_REPROBE = (
     PROGRAM
     / "cutoff_validity_v1/workspace/metaculus_api_access_reprobe_2026_06_03.json"
 )
+DEFAULT_REPLACEMENT_SAMPLE = (
+    PROGRAM
+    / "cutoff_validity_v1/workspace/equal_information_replacement_sample_2026_06_15/equal_information_replacement_sample.json"
+)
+DEFAULT_REPLACEMENT_SCORE = (
+    PROGRAM
+    / "cutoff_validity_v1/workspace/equal_information_replacement_score_2026_06_15/equal_information_replacement_score.json"
+)
 
 
 MARKET_BASELINE_PILOTS = {"market_baseline_stage_c_v1"}
+EQUAL_INFORMATION_BASELINE_PILOTS = {
+    "equal_information_polymarket_baseline_v1",
+    "equal_information_replacement_polymarket_baseline_v1",
+}
 LLM_STAGE_B_PILOT = "cutoff_stage_b_panel_v1"
 
 
@@ -123,6 +135,34 @@ def fetch_rows(db: Path) -> dict[str, Any]:
         )
     ]
 
+    equal_information_rows = [
+        dict(row)
+        for row in con.execute(
+            """
+            SELECT
+              ebo.pilot_id,
+              ebo.contract_id,
+              ebo.p_success,
+              ebo.brier,
+              c.y_known,
+              c.source,
+              c.source_corpus,
+              COALESCE(json_extract(ebo.source_currency_receipt, '$.cutoff_relation'), '') AS cutoff_relation,
+              COALESCE(json_extract(ebo.source_currency_receipt, '$.history_source'), ebo.provenance_url, '') AS provenance
+            FROM external_baseline_observations ebo
+            JOIN contracts c ON c.contract_id = ebo.contract_id
+            WHERE ebo.pilot_id IN (
+                'equal_information_polymarket_baseline_v1',
+                'equal_information_replacement_polymarket_baseline_v1'
+              )
+              AND ebo.equal_information_flag = 1
+              AND ebo.schema_ok = 1
+              AND c.y_known IS NOT NULL
+            ORDER BY ebo.contract_id
+            """
+        )
+    ]
+
     llm_stage_b_rows = [
         dict(row)
         for row in con.execute(
@@ -162,6 +202,7 @@ def fetch_rows(db: Path) -> dict[str, Any]:
         "source_rows": source_rows,
         "pilot_rows": pilot_rows,
         "baseline_rows": baseline_rows,
+        "equal_information_rows": equal_information_rows,
         "llm_stage_b_rows": llm_stage_b_rows,
     }
 
@@ -260,13 +301,27 @@ def source_snapshot(source_rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 def verdict(report: dict[str, Any]) -> dict[str, Any]:
     coverage = report["coverage"]
+    equal_info = report["equal_information_baselines"]["equal_information_polymarket_baseline_v1"]
+    replacement = (report.get("external_target_state") or {}).get("replacement_sample") or {}
+    replacement_score = (report.get("external_target_state") or {}).get("replacement_score") or {}
     broad_sources = [
         source
         for source, row in coverage["by_source"].items()
         if int(row.get("baseline_contracts") or 0) > 0
     ]
     stage_c = report["market_baselines"]["market_baseline_stage_c_v1"]
-    if broad_sources == ["manifold"] and int(stage_c["n_contracts"]) == 51:
+    if replacement_score.get("state") == "market_beats_model_panel_on_replacement_multifamily_slice":
+        state = "replacement_multifamily_market_control_market_ahead"
+    elif str(replacement_score.get("state") or "").startswith("market_beats_model_on_replacement_"):
+        state = "replacement_single_family_market_control_market_ahead"
+    elif (
+        replacement.get("verdict") == "replacement_sample_ready_for_model_packet"
+        and int(equal_info.get("n_contracts") or 0) >= 24
+    ):
+        state = "replacement_equal_information_baseline_ready_for_model_forecasts"
+    elif int(equal_info.get("n_contracts") or 0) > 0 and int(equal_info.get("n_contracts") or 0) < 24:
+        state = "partial_equal_information_baseline_underpowered"
+    elif broad_sources == ["manifold"] and int(stage_c["n_contracts"]) == 51:
         state = "broad_equal_information_baseline_absent"
     elif coverage["matched_overlap_contracts"] < 100:
         state = "baseline_present_but_underpowered_or_narrow"
@@ -281,8 +336,9 @@ def verdict(report: dict[str, Any]) -> dict[str, Any]:
             "leave-one-out blend tests against market-only."
         ),
         "current_action": (
-            "Do not spend more LLM calls for market-comparison claims until "
-            "the missing baseline/export rows are acquired."
+            "Do not make an LLM-beats-market claim; the completed four-family "
+            "replacement slice loses to market. The next broad-claim gate is an "
+            "independent equal-information source, not more calls on this packet."
         ),
     }
 
@@ -292,8 +348,15 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
     cec = load_json(args.cec)
     target_summary = ((cec.get("current_state") or {}).get("target_summary") or {})
     metaculus_verdict = (cec.get("verdict") or {}).get("existing_target_next_step")
+    replacement_sample = load_json(args.replacement_sample)
+    replacement_score = load_json(args.replacement_score) if args.replacement_score.exists() else {}
     market_baselines = {
         "market_baseline_stage_c_v1": summarize_baselines(rows["baseline_rows"])
+    }
+    equal_information_baselines = {
+        "equal_information_polymarket_baseline_v1": summarize_baselines(
+            rows["equal_information_rows"]
+        )
     }
     report: dict[str, Any] = {
         "schema": "gp245-equal-information-baseline-void-v1",
@@ -310,10 +373,21 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
                 if args.metaculus_reprobe.exists()
                 else None
             ),
+            "replacement_sample": (
+                str(args.replacement_sample.relative_to(REPO))
+                if args.replacement_sample.exists()
+                else None
+            ),
+            "replacement_score": (
+                str(args.replacement_score.relative_to(REPO))
+                if args.replacement_score.exists()
+                else None
+            ),
         },
         "source_snapshot": source_snapshot(rows["source_rows"]),
         "resolved_pilot_top": rows["pilot_rows"][:30],
         "market_baselines": market_baselines,
+        "equal_information_baselines": equal_information_baselines,
         "llm_stage_b": summarize_llm_stage_b(rows["llm_stage_b_rows"]),
         "coverage": coverage_matrix(rows["baseline_rows"], rows["llm_stage_b_rows"]),
         "external_target_state": {
@@ -321,6 +395,28 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
             "remaining_target_summary": target_summary,
             "metaculus_probe_exists": args.metaculus_probe.exists(),
             "metaculus_reprobe": load_json(args.metaculus_reprobe),
+            "replacement_sample": {
+                "verdict": replacement_sample.get("verdict"),
+                "candidate_rows": replacement_sample.get("candidate_rows"),
+                "selected_rows": replacement_sample.get("selected_rows"),
+                "selected_counts": replacement_sample.get("selected_counts"),
+                "selection_rule": replacement_sample.get("selection_rule"),
+                "next_action": replacement_sample.get("next_action"),
+                "artifact": (
+                    str(args.replacement_sample.relative_to(REPO))
+                    if args.replacement_sample.exists()
+                    else None
+                ),
+            },
+            "replacement_score": {
+                "state": replacement_score.get("state"),
+                "summary": replacement_score.get("summary"),
+                "artifact": (
+                    str(args.replacement_score.relative_to(REPO))
+                    if args.replacement_score.exists()
+                    else None
+                ),
+            },
         },
         "interpretation": (
             "The local evidence unit for human/market comparison is the matched "
@@ -349,15 +445,52 @@ def write_report(report: dict[str, Any], out_dir: Path) -> None:
         encoding="utf-8",
     )
     stage_c = report["market_baselines"]["market_baseline_stage_c_v1"]
+    equal_info = report["equal_information_baselines"]["equal_information_polymarket_baseline_v1"]
     coverage = report["coverage"]
     llm = report["llm_stage_b"]
     ext = report["external_target_state"]
+    replacement = ext["replacement_sample"]
+    replacement_score = ext["replacement_score"]
+    if replacement_score.get("state"):
+        equal_info_status = (
+            f"{equal_info['n_contracts']} equal-information market rows ingested; "
+            f"replacement score state={replacement_score.get('state')}"
+        )
+        replacement_next_action = (
+            "Completed for the frozen four-family replacement packet; use the "
+            "score section below. The next broad-claim gate is an independent "
+            "equal-information source."
+        )
+    else:
+        equal_info_status = (
+            f"{equal_info['n_contracts']} equal-information market rows ingested; "
+            "model forecasts still missing for the replacement packet"
+        )
+        replacement_next_action = replacement.get("next_action")
+    score_summary = replacement_score.get("summary") or {}
+    score_lines = []
+    if score_summary:
+        family_summary = score_summary.get("family_summary") or {}
+        score_lines = [
+            f"- Model-call rows: `{score_summary.get('row_n')}`",
+            f"- Contracts: `{score_summary.get('contract_n')}`",
+            f"- Families: `{score_summary.get('families')}`",
+            f"- Family Brier summary: `{family_summary}`",
+            f"- Mean model-call Brier: `{fmt(score_summary.get('mean_model_brier'))}`",
+            f"- Four-family panel Brier: `{fmt(score_summary.get('model_panel_mean_p_brier'))}`",
+            f"- Market Brier: `{fmt(score_summary.get('mean_market_brier'))}`",
+            f"- Panel-minus-market Brier: `{fmt(score_summary.get('model_panel_mean_p_minus_market_brier'))}`",
+            f"- Panel-vs-market paired p: `{fmt((score_summary.get('paired_permutation_model_panel_vs_market') or {}).get('p_value'))}`",
+        ]
+    else:
+        score_lines = ["- Summary: `None`"]
     lines = [
         "# Equal-Information Baseline Void Audit",
         "",
         f"- Verdict: `{report['verdict']['state']}`",
         f"- Stage-B LLM contracts: `{llm['n_contracts']}` over `{llm['n_calls']}` calls",
         f"- Ingested market/human baseline contracts: `{stage_c['n_contracts']}`",
+        f"- Partial equal-information Polymarket contracts: `{equal_info['n_contracts']}`",
         f"- Matched Stage-B ∩ baseline contracts: `{coverage['matched_overlap_contracts']}`",
         f"- Baseline sources with matched rows: `{stage_c['sources']}`",
         "",
@@ -370,6 +503,32 @@ def write_report(report: dict[str, Any], out_dir: Path) -> None:
         f"- Mean Brier: `{fmt(stage_c['mean_brier'])}`",
         f"- Rows with market Brier < 0.05: `{stage_c['brier_lt_0_05']}`",
         f"- Provenance: `{stage_c['provenance_counts']}`",
+        "",
+        "## Equal-Information Market Baselines",
+        "",
+        f"- Pilot: `equal_information_polymarket_baseline_v1`",
+        f"- Contracts: `{equal_info['n_contracts']}`",
+        f"- Outcome mix: `{equal_info.get('outcome_yes', 0)}` YES / `{equal_info.get('outcome_no', 0)}` NO",
+        f"- Cutoff relation counts: `{equal_info.get('cutoff_relation_counts', {})}`",
+        f"- Mean Brier: `{fmt(equal_info.get('mean_brier'))}`",
+        f"- Provenance: `{equal_info.get('provenance_counts', {})}`",
+        f"- Status: `{equal_info_status}`",
+        "",
+        "## Replacement Equal-Information Sample",
+        "",
+        f"- Verdict: `{replacement.get('verdict')}`",
+        f"- Candidates: `{replacement.get('candidate_rows')}`",
+        f"- Selected rows: `{replacement.get('selected_rows')}`",
+        f"- Selected counts: `{replacement.get('selected_counts')}`",
+        f"- Selection rule: `{replacement.get('selection_rule')}`",
+        f"- Artifact: `{replacement.get('artifact')}`",
+        f"- Next action: `{replacement_next_action}`",
+        "",
+        "## Replacement Model-vs-Market Score",
+        "",
+        f"- State: `{replacement_score.get('state')}`",
+        *score_lines,
+        f"- Artifact: `{replacement_score.get('artifact')}`",
         "",
         "## Coverage",
         "",
@@ -403,6 +562,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cec", type=Path, default=DEFAULT_CEC)
     parser.add_argument("--metaculus-probe", type=Path, default=DEFAULT_METACULUS_PROBE)
     parser.add_argument("--metaculus-reprobe", type=Path, default=DEFAULT_METACULUS_REPROBE)
+    parser.add_argument("--replacement-sample", type=Path, default=DEFAULT_REPLACEMENT_SAMPLE)
+    parser.add_argument("--replacement-score", type=Path, default=DEFAULT_REPLACEMENT_SCORE)
     parser.add_argument("--out-dir", type=Path, default=DEFAULT_OUT_DIR)
     return parser.parse_args()
 
