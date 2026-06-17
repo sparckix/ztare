@@ -50,9 +50,11 @@ _TOOL_SPECS = [
         "tool": "witness", "move_key": "witness_transport",
         "cli": _cli("witness"),
         "when": "the goal is a COMPUTABLE existential the kernel can re-verify but you cannot guess — a Pell "
-                "equation ∃x y, x²−D·y²=N (the fundamental solution is a 10+-digit number), a large-semiprime "
-                "factoring system ∃x y, x·y=N ∧ x+y=S, or a linear/Diophantine system. SymPy computes the "
-                "witness; you splice ⟨w₀,w₁,…⟩ and the kernel checks the arithmetic.",
+                "equation ∃x y, x²−D·y²=N (the fundamental solution is a 10+-digit number), an INTEGER "
+                "FACTORING existential ∃x y, x·y=N ∧ 1<x ∧ x<N given ONLY the product N (SymPy factors the "
+                "semiprime — a no-tool model genuinely cannot), a semiprime system ∃x y, x·y=N ∧ x+y=S, or a "
+                "linear/Diophantine system. SymPy computes the witness; you splice ⟨w₀,w₁,…⟩ and the kernel "
+                "checks the arithmetic.",
         "confuser": "NOT for a ∀-goal, an inequality with no explicit witness, or anything you can already "
                     "close directly — it returns NONE and you should just write the proof.",
     },
