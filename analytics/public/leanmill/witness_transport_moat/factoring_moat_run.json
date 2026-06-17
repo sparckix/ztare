@@ -1,0 +1,150 @@
+{
+  "substrate": "exogenous-compute existential-arithmetic (pell/kronecker/witness + fresh un-riggable)",
+  "lean_root": "projects/putnambench_substrate/lean4",
+  "timeout_s": 90,
+  "n": 4,
+  "bare_measured_n": 4,
+  "bare_panel": [
+    "deepseek-chat"
+  ],
+  "bare_rows_mode": "all",
+  "seed": 20260616,
+  "fresh_per_family": 0,
+  "fresh_instances": [
+    {
+      "target": "fac_ctrl_6d",
+      "p": 431,
+      "q": 523,
+      "N": 225413,
+      "label": "ctrl_6d"
+    },
+    {
+      "target": "fac_hard_16d",
+      "p": 25644761,
+      "q": 43660447,
+      "N": 1119661728468167,
+      "label": "hard_16d"
+    },
+    {
+      "target": "fac_hard_22d",
+      "p": 45545601229,
+      "q": 30483807953,
+      "N": 1388403360968756774237,
+      "label": "hard_22d"
+    },
+    {
+      "target": "fac_hard_26d",
+      "p": 4719319400407,
+      "q": 5885347579651,
+      "N": 27774835010785345994317957,
+      "label": "hard_26d"
+    }
+  ],
+  "native_closed": 0,
+  "native_wilson95": [
+    0.0,
+    0.49
+  ],
+  "witness_closed": 4,
+  "witness_wilson95": [
+    0.51,
+    1.0
+  ],
+  "bare_per_model_closed": {
+    "deepseek-chat": 1
+  },
+  "bare_best_of_panel_closed": 1,
+  "bare_best_of_panel_wilson95": [
+    0.046,
+    0.699
+  ],
+  "witness_on_measured_rows": 4,
+  "fresh_n": 4,
+  "fresh_bare_best_of_panel": 1,
+  "fresh_witness": 4,
+  "fresh_separation": 3,
+  "exogenous_hard_n": 3,
+  "exogenous_hard_witness_closed": 3,
+  "separation_on_measured_witness_minus_bare": 3,
+  "shell_agent_closed": null,
+  "shell_agent_n": null,
+  "rows": [
+    {
+      "tier": "fresh_factor_onlyN",
+      "target": "fac_ctrl_6d",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "deepseek-chat": {
+          "ok": true,
+          "effective": "deepseek-chat",
+          "out_len": 192,
+          "proof": "theorem fac_ctrl_6d : \u2203 x y : \u2124, x * y = 225413 \u2227 1 < x \u2227 x < 225413 := by   have h : 225413 = 431 * 523 := by norm_num   refine \u27e8431, 523, ?_, by norm_num, by ",
+          "wall": 48.9
+        }
+      },
+      "witness": true,
+      "witness_note": "path=factorization w=['431', '523']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor_onlyN",
+      "target": "fac_hard_16d",
+      "native": false,
+      "bare_any": false,
+      "bare_by_model": {
+        "deepseek-chat": {
+          "ok": false,
+          "effective": "deepseek-chat",
+          "out_len": 178,
+          "proof": "theorem fac_hard_16d : \u2203 x y : \u2124, x * y = 1119661728468167 \u2227 1 < x \u2227 x < 1119661728468167 := by   refine \u27e877447563, 14455909, ?_, by norm_num, by norm_num\u27e9   no",
+          "wall": 44.7
+        }
+      },
+      "witness": true,
+      "witness_note": "path=factorization w=['25644761', '43660447']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor_onlyN",
+      "target": "fac_hard_22d",
+      "native": false,
+      "bare_any": false,
+      "bare_by_model": {
+        "deepseek-chat": {
+          "ok": false,
+          "effective": "deepseek-chat",
+          "out_len": 193,
+          "proof": "theorem fac_hard_22d : \u2203 x y : \u2124, x * y = 1388403360968756774237 \u2227 1 < x \u2227 x < 1388403360968756774237 := by   refine \u27e84483181311, 309703667, ?_, by norm_num, by",
+          "wall": 23.4
+        }
+      },
+      "witness": true,
+      "witness_note": "path=factorization w=['30483807953', '45545601229']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor_onlyN",
+      "target": "fac_hard_26d",
+      "native": false,
+      "bare_any": false,
+      "bare_by_model": {
+        "deepseek-chat": {
+          "ok": false,
+          "effective": "deepseek-chat",
+          "out_len": 205,
+          "proof": "theorem fac_hard_26d : \u2203 x y : \u2124, x * y = 27774835010785345994317957 \u2227 1 < x \u2227 x < 27774835010785345994317957 := by   refine \u27e852841832283, 525685408079, ?_, by ",
+          "wall": 11.8
+        }
+      },
+      "witness": true,
+      "witness_note": "path=factorization w=['4719319400407', '5885347579651']",
+      "shell_agent": null,
+      "shell_wall": null
+    }
+  ],
+  "note": "All arms kernel-verified through _compile_probe on the SAME LEAN_ROOT. closed = compiles warm, no sorry, axiom-clean closer. BARE = pure-text API completion, NO tools/shell/fallback (family sealed) \u2014 the true no-tool baseline; best-of-panel is the most generous reading (a row counts for the baseline if ANY live strong model closed it). SHELL-agent control (codex full-auto) CAN run its own python \u21d2 confirms the capability is exogenous compute (architecture \u00a7line 31), not model weights; leanmill's edge is packaging it AND independent kernel governance. The separation is a STRUCTURAL cliff (factoring/Pell are infeasible by forward token generation at any scale, Rice/Shannon-style), not a search-budget slope."
+}

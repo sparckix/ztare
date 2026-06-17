@@ -1,0 +1,394 @@
+{
+  "substrate": "exogenous-compute existential-arithmetic (pell/kronecker/witness + fresh un-riggable)",
+  "lean_root": "projects/putnambench_substrate/lean4",
+  "timeout_s": 90,
+  "n": 20,
+  "bare_measured_n": 11,
+  "bare_panel": [
+    "gemini-3.1-pro-preview"
+  ],
+  "bare_rows_mode": "fresh+heads",
+  "seed": 20260616,
+  "fresh_per_family": 4,
+  "fresh_instances": [
+    {
+      "target": "fresh_sp_0",
+      "p": 5353597,
+      "q": 2286013,
+      "N": 12238392338761
+    },
+    {
+      "target": "fresh_sp_1",
+      "p": 6442459,
+      "q": 9815231,
+      "N": 63234223293029
+    },
+    {
+      "target": "fresh_sp_2",
+      "p": 1240307,
+      "q": 1402711,
+      "N": 1739792272277
+    },
+    {
+      "target": "fresh_sp_3",
+      "p": 2373907,
+      "q": 5423267,
+      "N": 12874331494169
+    },
+    {
+      "target": "fresh_pell_0",
+      "D": 392
+    },
+    {
+      "target": "fresh_pell_1",
+      "D": 216
+    },
+    {
+      "target": "fresh_pell_2",
+      "D": 326
+    },
+    {
+      "target": "fresh_pell_3",
+      "D": 270
+    }
+  ],
+  "native_closed": 0,
+  "native_wilson95": [
+    -0.0,
+    0.161
+  ],
+  "witness_closed": 20,
+  "witness_wilson95": [
+    0.839,
+    1.0
+  ],
+  "bare_per_model_closed": {
+    "gemini-3.1-pro-preview": 10
+  },
+  "bare_best_of_panel_closed": 10,
+  "bare_best_of_panel_wilson95": [
+    0.623,
+    0.984
+  ],
+  "witness_on_measured_rows": 11,
+  "fresh_n": 8,
+  "fresh_bare_best_of_panel": 7,
+  "fresh_witness": 8,
+  "fresh_separation": 1,
+  "exogenous_hard_n": 1,
+  "exogenous_hard_witness_closed": 1,
+  "separation_on_measured_witness_minus_bare": 1,
+  "shell_agent_closed": null,
+  "shell_agent_n": null,
+  "rows": [
+    {
+      "tier": "pell",
+      "target": "pell_13",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 103,
+          "proof": "theorem pell_13 : \u2203 x y : \u2124, x ^ 2 - 13 * y ^ 2 = 1 \u2227 0 < y := by   use 649, 180   norm_num",
+          "wall": 67.7
+        }
+      },
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['649', '180']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "pell",
+      "target": "pell_61",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['1766319049', '226153980']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "pell",
+      "target": "pell_149",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['25801741449', '2113761020']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "kronecker",
+      "target": "kro_sp_1000003",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 146,
+          "proof": "theorem kro_sp_1000003 : \u2203 x y : \u2124, x * y = 1000036000099 \u2227 x + y = 2000036 := by   exact \u27e81000033, 1000003, by norm_num, by norm_num\u27e9",
+          "wall": 30.1
+        }
+      },
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['1000003', '1000033']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "kronecker",
+      "target": "kro_sp_1000037",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['1000037', '1000081']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "kronecker",
+      "target": "kro_sp_2000003",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['2000003', '3000017']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "kronecker",
+      "target": "kro_sp_10000019",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['10000019', '10000079']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "witness",
+      "target": "wit_sq_1234",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 86,
+          "proof": "theorem wit_sq_1234 : \u2203 x : \u2124, x ^ 2 = 1522756 := by   use 1234   norm_num",
+          "wall": 274.2
+        }
+      },
+      "witness": true,
+      "witness_note": "path=direct_sympy w=['-1234']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "witness",
+      "target": "wit_cube_123",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=direct_sympy w=['123']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "witness",
+      "target": "wit_quad_2017",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=direct_sympy w=['2017']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "witness",
+      "target": "wit_quad_big",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=direct_sympy w=['4444']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "witness",
+      "target": "wit_easy_control",
+      "native": false,
+      "bare_any": null,
+      "bare_by_model": {},
+      "witness": true,
+      "witness_note": "path=direct_sympy w=['-7']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor",
+      "target": "fresh_sp_0",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 159,
+          "proof": "import Mathlib  theorem fresh_sp_0 : \u2203 x y : \u2124, x * y = 12238392338761 \u2227 x + y = 7639610 := by   exact \u27e85353597, 2286013, by norm_num, by norm_num\u27e9",
+          "wall": 152.6
+        }
+      },
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['2286013', '5353597']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor",
+      "target": "fresh_sp_1",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 149,
+          "proof": "theorem fresh_sp_1 : \u2203 x y : \u2124, x * y = 63234223293029 \u2227 x + y = 16257690 := by   use 9815231, 6442459   exact \u27e8by norm_num, by norm_num\u27e9",
+          "wall": 119.9
+        }
+      },
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['6442459', '9815231']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor",
+      "target": "fresh_sp_2",
+      "native": false,
+      "bare_any": false,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": false,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 139,
+          "proof": "import Mathlib  theorem fresh_sp_2 : \u2203 x y : \u2124, x * y = 1739792272277 \u2227 x + y = 2643018 := by   use 1402711, 1240307   norm_num",
+          "wall": 144.1
+        }
+      },
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['1240307', '1402711']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_factor",
+      "target": "fresh_sp_3",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 143,
+          "proof": "theorem fresh_sp_3 : \u2203 x y : \u2124, x * y = 12874331494169 \u2227 x + y = 7797174 := by   exact \u27e85423267, 2373907, by norm_num, by norm_num\u27e9",
+          "wall": 118.3
+        }
+      },
+      "witness": true,
+      "witness_note": "path=kronecker_system w=['2373907', '5423267']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_pell",
+      "target": "fresh_pell_0",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 125,
+          "proof": "theorem fresh_pell_0 : \u2203 x y : \u2124, x ^ 2 - 392 * y ^ 2 = 1 \u2227 0 < y := by   exact \u27e899, 5, by norm_num, by norm_num\u27e9",
+          "wall": 40.4
+        }
+      },
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['99', '5']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_pell",
+      "target": "fresh_pell_1",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 127,
+          "proof": "theorem fresh_pell_1 : \u2203 x y : \u2124, x ^ 2 - 216 * y ^ 2 = 1 \u2227 0 < y := by   exact \u27e8485, 33, by norm_num, by norm_num\u27e9",
+          "wall": 86.7
+        }
+      },
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['485', '33']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_pell",
+      "target": "fresh_pell_2",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 127,
+          "proof": "theorem fresh_pell_2 : \u2203 x y : \u2124, x ^ 2 - 326 * y ^ 2 = 1 \u2227 0 < y := by   exact \u27e8325, 18, by norm_num, by norm_num\u27e9",
+          "wall": 98.1
+        }
+      },
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['325', '18']",
+      "shell_agent": null,
+      "shell_wall": null
+    },
+    {
+      "tier": "fresh_pell",
+      "target": "fresh_pell_3",
+      "native": false,
+      "bare_any": true,
+      "bare_by_model": {
+        "gemini-3.1-pro-preview": {
+          "ok": true,
+          "effective": "gemini-3.1-pro-preview",
+          "out_len": 110,
+          "proof": "theorem fresh_pell_3 : \u2203 x y : \u2124, x ^ 2 - 270 * y ^ 2 = 1 \u2227 0 < y := by   use 5291, 322   norm_num",
+          "wall": 81.0
+        }
+      },
+      "witness": true,
+      "witness_note": "path=pell_diophantine w=['5291', '322']",
+      "shell_agent": null,
+      "shell_wall": null
+    }
+  ],
+  "note": "All arms kernel-verified through _compile_probe on the SAME LEAN_ROOT. closed = compiles warm, no sorry, axiom-clean closer. BARE = pure-text API completion, NO tools/shell/fallback (family sealed) \u2014 the true no-tool baseline; best-of-panel is the most generous reading (a row counts for the baseline if ANY live strong model closed it). SHELL-agent control (codex full-auto) CAN run its own python \u21d2 confirms the capability is exogenous compute (architecture \u00a7line 31), not model weights; leanmill's edge is packaging it AND independent kernel governance. The separation is a STRUCTURAL cliff (factoring/Pell are infeasible by forward token generation at any scale, Rice/Shannon-style), not a search-budget slope."
+}

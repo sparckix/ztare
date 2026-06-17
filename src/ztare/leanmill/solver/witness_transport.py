@@ -350,6 +350,57 @@ def is_pell_existential(goal_text: str) -> "dict | None":
     return None
 
 
+_FACTOR_RE = re.compile(r"(?P<a>\w+)\s*\*\s*(?P<b>\w+)\s*=\s*(?P<N>\d{5,})")
+
+
+def is_factoring_existential(goal_text: str) -> "dict | None":
+    """Gate: an INTEGER-factorization existential `∃ x y : ℤ/ℕ, x * y = N ∧ 1 < x ∧ x < N` (bounds in any
+    order) — the cleanest exogenous-compute niche: given ONLY the product N (composite, ≥5 digits), find a
+    NON-TRIVIAL factor. A pure-text model cannot factor a large semiprime (measured); SymPy `factorint` does it
+    instantly. DISTINCT from `kronecker_system` (which is given x+y=S too ⇒ a quadratic, NOT factoring). The
+    `1<x` / `x<N` bounds are what make it factoring (they exclude the trivial x=1,y=N); we require at least one
+    such bound conjunct so a sumless `x*y=N` alone (trivially witnessed) does NOT fire here.
+    Returns {…info, N, factor_vars} or None."""
+    info = is_computable_existential(goal_text)
+    if not info or len(info["vars"]) != 2 or info["typ"] not in _INT_TYPES:
+        return None
+    conjs = _split_top_level_conjunction(info["body"])
+    prod = None
+    for conj in conjs:
+        m = _FACTOR_RE.search(conj)
+        if m and {m.group("a"), m.group("b")} == set(info["vars"]):
+            prod = int(m.group("N")); break
+    if prod is None:
+        return None
+    # require a non-triviality bound (`1 < x`, `x < N`, `x ≠ 1`, …) so this only fires on genuine factoring
+    has_bound = any(("<" in c or ">" in c or "≠" in c) for c in conjs)
+    if not has_bound:
+        return None
+    from sympy import isprime  # cheap primality (no factoring) — only fire when N is actually composite
+    if prod < 10000 or isprime(prod):
+        return None
+    return {**info, "N": prod, "factor_vars": list(info["vars"])}
+
+
+def solve_factor(N: int, timeout_s: int = 12) -> "list[str] | None":
+    """EXOGENOUS-COMPUTE: SymPy factors N; return a non-trivial factor pair [x, y] with x the smallest prime
+    factor and y = N/x (so 1 < x ≤ y < N). None if N is prime / a unit (no non-trivial factorization). The
+    kernel RE-VERIFIES x*y=N ∧ bounds, so a wrong factor cannot mint a closure — sound by construction."""
+    from sympy import factorint
+    try:
+        fic = factorint(int(N))
+    except Exception:  # noqa: BLE001
+        return None
+    primes = sorted(fic)
+    if not primes or (len(primes) == 1 and fic[primes[0]] == 1):
+        return None  # prime ⇒ no non-trivial factor
+    x = primes[0]                       # smallest prime factor (1 < x < N)
+    y = N // x
+    if x <= 1 or y <= 1 or x * y != N:
+        return None
+    return [str(x), str(y)]
+
+
 def recurrence_specialize_seed(seq: "list", max_order: "int | None" = None) -> "dict | None":
     """Kronecker EXOGENOUS-TRANSPORT for the rational/D-finite SUB-case: given a numeric sequence prefix,
     SymPy recovers the minimal linear recurrence (Hankel rank). Returns {order, coeffs, claim} — a SPECIALIZE
@@ -387,6 +438,16 @@ def solve_witness(goal_text: str, dispatch=None, lean_root=None, timeout_s: int 
                 _vmap = dict(zip(pell["pell_vars"], w))   # reorder to the ∃-binder order for injection
                 witnesses = [_vmap[v] for v in info["vars"]]
                 path = "pell_diophantine"
+    # Factorization route: `∃ x y, x*y = N ∧ 1<x ∧ x<N` — given ONLY the product, find a non-trivial factor.
+    # The cleanest exogenous-compute niche (a pure-text model cannot factor a large semiprime; SymPy does it
+    # instantly). Distinct from kronecker_system (which leaks the answer via the sum). Same gate flag.
+    if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER", "1") != "0":
+        fac = is_factoring_existential(goal_text)
+        if fac:
+            w = solve_factor(fac["N"], timeout_s=timeout_s)
+            if w:
+                witnesses = w
+                path = "factorization"
     # Kronecker / linear-system route (default-OFF parity): a conjunction-bodied existential SymPy can solve as
     # a system, BEFORE spending an LLM call. Only engages when the single-equality direct path found nothing.
     if not witnesses and os.environ.get("ZTARE_LEANMILL_KRONECKER", "1") != "0":
@@ -429,6 +490,17 @@ def _selftest() -> int:
        and ({"6", "-7"} & set(out[1]["witnesses"])))
     ok("e2e: abstract goal → None (no transport)",
        solve_witness("theorem t : ∃ f : ℝ → ℝ, Continuous f := by sorry") is None)
+    # FACTORIZATION route (exogenous compute): given ONLY the product (no sum), find a non-trivial factor of a
+    # composite N. 1000003*1000033 = 1000036000099. A bare text model can't factor; SymPy does.
+    _fc = solve_witness("theorem t : ∃ x y : ℤ, x * y = 1000036000099 ∧ 1 < x ∧ x < 1000036000099 := by sorry")
+    ok("e2e: factorization path finds a non-trivial factor",
+       _fc is not None and _fc[1]["path"] == "factorization"
+       and sorted(int(w) for w in _fc[1]["witnesses"]) == [1000003, 1000033])
+    ok("factoring gate: a PRIME N → None (no non-trivial factorization)",
+       is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000003 ∧ 1 < x ∧ x < 1000003 := by sorry") is None)
+    ok("factoring gate: no non-triviality bound → None (x=1 is a trivial witness, not factoring)",
+       is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000036000099 := by sorry") is None)
+    ok("solve_factor: prime returns None", solve_factor(1000003) is None)
     # looks_false — the falsity signal (router → falsify)
     ok("looks_false: a FALSE ∀ (n+1=n) is detected",
        looks_false("theorem t : ∀ n : ℤ, n + 1 = n := by sorry") is not None)
