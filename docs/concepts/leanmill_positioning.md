@@ -62,7 +62,7 @@ Capability receipts (the *environment* multiplying the leaf — but NOT a capabi
 | capability | result | honest reading |
 |---|---|---|
 | P1 rungs (construct NEW proofs not in Mathlib) | **L0 / RUNG C / RUNG B** kernel-closed, axioms ⊆ {propext, Classical.choice, Quot.sound} | the open-problem regime: builds the proof bottom-up, governance keeps it sound |
-| witness-transport (SymPy → Lean) | 12/12 closure **vs native Lean tactics** (0/12) | a cheap **deterministic** lever the leaf *prefers* over hand-rolling a solver (measured: 5 tool-calls / 0 self-coded). NOT an edge vs a shell-agent, which recalls/self-codes the same compute. |
+| witness-transport (SymPy → Lean) | 12/12 **vs native Lean tactics** (0/12); and only-N factoring **4/4 kernel-verified vs a bare text model** (deepseek 1/4, 6-digit control only) — +3 | a cheap **deterministic** lever the leaf *prefers* over hand-rolling a solver (5 tool-calls / 0 self-coded). The bare-text edge is real (a no-tool model can't factor a 16+ digit semiprime); NOT an edge vs a *shell*-agent, which self-codes the same compute. |
 | QE-abduction (z3 QE → Lean) | 6/6 advance vs blind conjecture | the most-general missing premise (Dillig "Explain"), kernel-admitted — same reliability lever |
 
 `solve_witness` / `qe_abduct_premise` / `default_instance_battery` / `solve_adhoc_governed` are the **real**

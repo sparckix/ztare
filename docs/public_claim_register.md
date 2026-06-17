@@ -180,9 +180,18 @@ harness has repeatedly caught its own agents producing compiling-but-altered
 certificate ledger (`analytics/public/queries/adhoc_closure_certificates.jsonl`,
 `outcome=rejected_governance`, `statement_altered_confirmed`).
 
-**What survived.** Witness-transport closed 12/12 on a controlled corpus
-(Pell / factoring / Diophantine) where the native cascade closed 0/12 — a
-matched A/B, the one move with measured lift. The faithfulness firewall
+**What survived.** Exogenous-compute transport is the one move with a clean,
+independent-oracle lift — but the framing was **corrected 2026-06-16**: the
+original "witness-transport 12/12 vs native 0/12" held only against the *weak*
+deterministic native cascade (fixed tactics cannot construct a witness). Against
+a *strong* bare reasoning model that corpus is **subsumed** (bare 10/11) because
+the Kronecker rows leaked the answer via the sum (`x·y=N ∧ x+y=S` is a quadratic,
+not factoring) and the Pell witnesses were small/memorized. The clean, surviving
+result is **only-N integer factorization**: given just the product, a bare
+pure-text model cannot factor a 16–26-digit semiprime (deepseek **1/4** — the
+6-digit control only), while LeanMill's `factorization` path factors it and the
+kernel re-verifies `x·y=N ∧ 1<x<N` — **4/4, +3** on identical instances
+(`witness_transport_moat/`). The faithfulness firewall
 (round-trip judges + SMT boundary checks) runs on non-mathematical substrates
 (healthcare-privacy, aviation, export-control, DeFi policy text) and caught
 meaning-altering formalizations that passed a human review battery. On the
