@@ -372,9 +372,20 @@ def is_factoring_existential(goal_text: str) -> "dict | None":
             prod = int(m.group("N")); break
     if prod is None:
         return None
-    # require a non-triviality bound (`1 < x`, `x < N`, `x ≠ 1`, …) so this only fires on genuine factoring
-    has_bound = any(("<" in c or ">" in c or "≠" in c) for c in conjs)
-    if not has_bound:
+    # Require a NON-TRIVIAL LOWER BOUND on a factor var (`1 < x`, `x > 1`, `2 ≤ x`, `x ≥ 2`, `x ≠ 1`) — this is
+    # what makes the goal genuine factoring. A weaker bound like `x < y` alone does NOT qualify: `x=1, y=N`
+    # trivially satisfies it (no factoring needed), so we must not claim "factoring" on it (claim integrity —
+    # the kernel would still accept a real factor, but the goal isn't factoring-hard).
+    _vars = set(info["vars"])
+
+    def _excludes_unit(c: str) -> bool:
+        c = c.replace(" ", "")
+        for v in _vars:
+            if c in (f"1<{v}", f"{v}>1", f"2≤{v}", f"2<={v}", f"{v}≥2", f"{v}>=2") or c == f"{v}≠1" or c == f"{v}<>1":
+                return True
+        return False
+
+    if not any(_excludes_unit(c) for c in conjs):
         return None
     from sympy import isprime  # cheap primality (no factoring) — only fire when N is actually composite
     if prod < 10000 or isprime(prod):
@@ -500,6 +511,10 @@ def _selftest() -> int:
        is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000003 ∧ 1 < x ∧ x < 1000003 := by sorry") is None)
     ok("factoring gate: no non-triviality bound → None (x=1 is a trivial witness, not factoring)",
        is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000036000099 := by sorry") is None)
+    ok("factoring gate: `x < y` alone → None (TRIVIAL: x=1,y=N satisfies it; not factoring-hard)",
+       is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000036000099 ∧ x < y := by sorry") is None)
+    ok("factoring gate: `1 < x` lower bound → fires (genuine factoring)",
+       is_factoring_existential("theorem t : ∃ x y : ℤ, x * y = 1000036000099 ∧ 1 < x := by sorry") is not None)
     ok("solve_factor: prime returns None", solve_factor(1000003) is None)
     # looks_false — the falsity signal (router → falsify)
     ok("looks_false: a FALSE ∀ (n+1=n) is detected",
