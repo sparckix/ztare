@@ -44,8 +44,10 @@ Removing the leak (give *only* N) restores the real separation — the +3 above.
 
 - **Claimed:** on only-N integer factorization, a bare pure-text model cannot factor a 16+ digit semiprime
   (measured, with a passing control), while leanmill's exogenous-compute `factorization` path does and the
-  **kernel re-verifies** the result. The closer is axiom-clean (`norm_num`, no `native_decide`), so
-  compile-without-sorry IS the certificate; a wrong factor cannot mint a closure (the kernel rejects it).
+  **kernel re-verifies** the result. Verified **axiom-clean** (not merely compile-clean): leanmill's own
+  `audit_axioms_subset` gate reports the 16- and 26-digit closures depend on exactly
+  `{propext, Classical.choice, Quot.sound}` — no `native_decide`/`ofReduceBool`, no `sorryAx`. A wrong factor
+  cannot mint a closure (the kernel rejects it).
 - **Not claimed:** a general solving advantage, a benchmark SOTA, or that *no* AI system can factor — a
   *tool/code-execution-enabled* agent can run its own factorizer (architecture §line 31). The edge is that the
   **model's weights cannot**, leanmill supplies the computation, and an **independent kernel governs** it.
