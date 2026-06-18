@@ -1,13 +1,59 @@
 ---
-description: "Evidence packet for the [GP-245](../../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) LLM forecasting calibration program."
+description: "Evidence packet for the LLM forecasting calibration program."
 ---
-# GP-245 Forecast Calibration Packet
+# Forecast Calibration Packet
 
 > **Up:** [Evidence Packets](README.md)
 
+## Current Submission Surface
+
+The current paper and TMLR packet are organized under
+`llm-forecast-calibration-cross-corpus/`, with the lean public paper mirror at
+`papers/llm-forecast-calibration-cross-corpus/`. The submission claim is:
+LLM forecasting rows require source-currency, label-time, and equal-information
+receipts before a proper score can support a forecasting comparison. After those
+checks, the current evidence supports a source-currency measurement result,
+same-information market controls that block raw model-panel superiority, and
+scoped uses of model-derived signal in low-probability calibration, pairwise
+relative judgment, and one bounded Gemini prompt result that still needs
+provider replication.
+
+Submission abstract:
+
+> LLM forecasting papers often assign proper scores to rows that are not
+> comparable evidence about future-event prediction. A model may be asked to
+> recover an answer already visible to its generation, an outcome label may use
+> a later data vintage, or a comparison may use a market or human forecast
+> observed under a different information state. We introduce a row-level
+> validity framework requiring source currency, label-time validity, and
+> equal-information baselines. Applying this framework across five model
+> families and more than 20,000 persisted calls materially changes the evidence.
+> In a matched panel of 80 Manifold contracts, post-cutoff rows are
+> substantially harder than pre-cutoff/source-visible rows (`+0.191` Brier in
+> aggregate, paired-stratum delta `+0.216`, permutation `p=0.0004`).
+> Equal-information market controls rule out a raw model-panel superiority claim
+> in the current evidence: on a 24-contract Polymarket slice the four-family
+> panel scores `0.268` Brier versus the market's `0.073` (`p=0.0068`); a
+> separate 24-contract Manifold slice also favors the market, though
+> inconclusively. After validity screening, usable model signal persists but
+> remains narrow and task-specific. A source-valid low-probability calibration
+> rule improves eligible point probabilities; source-balanced pairwise
+> comparisons achieve `0.750` accuracy over 24 non-tie pairs; and one
+> expert-training prompt improves Brier versus bare, length-matched placebo, and
+> same-row calibrated-bare controls in a completed 600-call public-corpus Gemini
+> experiment. Partial Claude and staged Codex+DeepSeek replications do not
+> reproduce the prompt effect. These results do not support market- or
+> human-superiority claims. The paper's contribution is a practical validity
+> layer for LLM forecasting rows, an empirical demonstration that the layer
+> changes conclusions, a scoped inventory of model-derived signals that survive
+> the checks, and a companion benchmark design that treats row validity,
+> same-information comparison, calibration, relative judgment, prompt
+> intervention, family selection, open-weight replication, and public
+> low-overlap replication as distinct evidence tracks.
+
 ## Scoped Claim
 
-The GP-245 program provides DB-backed apparatus evidence for a narrower
+The forecasting-calibration program provides DB-backed apparatus evidence for a narrower
 scientific claim than "LLMs forecast well": LLM forecasting behavior is
 conditional on source currency, representational carrier, and auxiliary
 elicitation channel. The current public surface is a compact
@@ -57,7 +103,7 @@ Mixed L2-L4 internally, depending on finding. Not L5.
 
 ## Primary Sources
 
-- [Public claim register, [GP-245](../../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)](../../public_claim_register.md#gp-245-forecast-calibration-program-llm-forecasting-channels--operationalization)
+- [Public claim register, Forecast Calibration](../../public_claim_register.md#forecast-calibration-program-llm-forecasting-channels--operationalization)
 - [Project claim summary](../../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)
 - [Project methodology architecture](../../../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md)
 - [Forecast pool scorer](../../../scripts/public/control/forecast/pool.py)

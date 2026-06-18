@@ -400,19 +400,27 @@ def _record_attempt(row_id: str, provider: str | None, outcome: str,
     if proof_state is None:
         from ztare.leanmill.solver.proof_state import proof_state_signal
         proof_state = proof_state_signal(0 if compile_ok else 1, notes or "")
-    with _attempts_conn() as con:
-        con.execute(
-            "INSERT INTO attempts (row_id, attempt_at, provider, outcome, compile_ok, "
-            "notes, goals_remaining, error_class, progress, est_p_close, move, wallclock_s, run_tag, carrier_live) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-            (row_id, datetime.now(timezone.utc).isoformat(), provider or "",
-             outcome, 1 if compile_ok else 0,
-             public_notes[-1000:],
-             proof_state.get("goals_remaining"), proof_state.get("error_class"),
-             proof_state.get("progress"), est_p_close, _move_label, wallclock_s, _run_tag,
-             (None if carrier_live is None else (1 if carrier_live else 0))),
-        )
-        con.commit()
+    # BEST-EFFORT telemetry: the attempts DB is calibration/observability, NOT a soundness surface (the kernel
+    # + closure certs are the trust record). A transient sqlite error (e.g. a WAL `disk I/O error`) must NEVER
+    # crash a multi-hour solve — it killed a healthy P1 RUNG-A run mid-decomposition (2026-06-18). Log + carry on.
+    try:
+        with _attempts_conn() as con:
+            con.execute(
+                "INSERT INTO attempts (row_id, attempt_at, provider, outcome, compile_ok, "
+                "notes, goals_remaining, error_class, progress, est_p_close, move, wallclock_s, run_tag, carrier_live) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (row_id, datetime.now(timezone.utc).isoformat(), provider or "",
+                 outcome, 1 if compile_ok else 0,
+                 public_notes[-1000:],
+                 proof_state.get("goals_remaining"), proof_state.get("error_class"),
+                 proof_state.get("progress"), est_p_close, _move_label, wallclock_s, _run_tag,
+                 (None if carrier_live is None else (1 if carrier_live else 0))),
+            )
+            con.commit()
+    except Exception as _attempt_db_err:  # noqa: BLE001 — telemetry write must not be fatal to the solve
+        import sys as _sys
+        print(f"[telemetry] _record_attempt DB write skipped (non-fatal): {_attempt_db_err!r}",
+              file=_sys.stderr, flush=True)
 
 
 
