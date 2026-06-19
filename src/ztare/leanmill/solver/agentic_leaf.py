@@ -155,11 +155,21 @@ _PROVIDER_DEAD_MARKERS = (
 
 
 def _provider_dead(out: str, returncode: int) -> bool:
-    """A quota/auth failure (non-zero exit AND a dead-carrier marker in the output). NOT triggered on a clean
-    run (rc==0) so a healthy provider never fails over — parity when both subscriptions are live."""
-    if returncode == 0:
+    """A quota/auth failure (a non-zero exit whose output IS a brief dead-carrier error). NOT triggered on a
+    clean run (rc==0), NOR on a TIMEOUT (rc==124 — the agent used its FULL time budget, so it was working and is
+    alive-but-slow, never a fast quota death), NOR on a long working log that merely MENTIONS a marker.
+
+    The real quota/auth death (diagnosed 2026-06-10) is a BRIEF error: ~2s, exit-1, the error string IS
+    essentially the whole output (`ERROR: You've hit your usage limit`). So require a dead-carrier marker in a
+    SHORT output. Without these two guards a healthy-but-slow provider (a hard lemma → rc=124, or a transient
+    429 codex retried THROUGH but whose text lingers in a long reasoning log) was misclassified as quota-dead
+    and uselessly failed over to the other subscription, which then also timed out on the same hard lemma
+    (observed 2026-06-18 on a P1 RUNG-A lemma)."""
+    if returncode == 0 or returncode == 124:   # clean, or a TIMEOUT (full budget used) ⇒ alive, never quota-dead
         return False
-    low = (out or "").lower()
+    low = (out or "").strip().lower()
+    if len(low) > 1500:   # a substantial log ⇒ the agent did real work ⇒ a marker is incidental, not a death
+        return False
     return any(m in low for m in _PROVIDER_DEAD_MARKERS)
 
 
