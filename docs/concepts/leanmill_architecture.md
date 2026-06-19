@@ -106,7 +106,12 @@ The agentic-PROPOSE / deterministic-RATIFY engine. The leaf *is* the agent (`age
 **Closure-validation state machine & outcome vocabulary** (`solver_core._validate_and_maybe_close` →
 `_validate_against_contract`). A compiling proof is NOT yet a closure — it must clear a four-receipt gate
 before it is credited. `credit_ready ⇔ kernel_compile ∧ matched_negative_control ∧ governance_kernel ∧ ¬banned_axiom`:
-- **kernel_compile** — the proof elaborates (the v33 REPL/`lake env lean`).
+- **kernel_compile** — the proof elaborates (the v33 REPL/`lake env lean`). Both the compile *and* the
+  `#print axioms` allowlist audit (`audit_axioms_subset`) run warm through the persistent REPL when usable
+  (Mathlib preloaded), with a cold `lake env lean` fallback — the audit's raw output is parsed by the **same**
+  `parse_axiom_output`/`AXIOM_ALLOWLIST` as cold, so the F1/F2 gate is **byte-identical** (warm-vs-cold parity
+  validated incl. `native_decide`→reject; warm only amortizes the ~100s Mathlib re-import the cold audit paid
+  on *every* closure — the recurring verify-starvation cost; 2026-06-19).
 - **matched_negative_control** (`_verify_matched_negative_control`) — restates the goal under bare `import
   Mathlib` (no source prelude). It is **three-valued and ABSTAINS by design**: a proof that compiles bare is
   *undecidable* between "valid pure-Mathlib proof" and "leakage" without the source prelude, so the MNC

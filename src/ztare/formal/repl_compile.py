@@ -273,6 +273,48 @@ def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int 
     return (True, "repl(campaign): clean (compiled + axioms ⊆ allowlist)")
 
 
+def axioms_raw_via_repl(lean_source: str, target_name: str, sandbox, timeout: int = 180) -> "Optional[str]":
+    """Warm fast path for the GOVERNANCE #print-axioms audit (`gates.lean_compile_primitives.audit_axioms_subset`).
+    Elaborate `lean_source` (the closure source carrying the target decl + a `#print axioms <target_name>`
+    directive) against the warm FROZEN base-Mathlib env and return the RAW REPL output — the
+    `'<name>' depends on axioms: [...]` lines — for the CALLER to parse with the SAME `parse_axiom_output` it
+    uses for the cold path. So the soundness gate is byte-IDENTICAL; the warm env only amortizes the ~100s+
+    Mathlib re-import that the cold `lake env lean` pays on EVERY closure audit (the recurring verify-starvation
+    bug — #66 warm-routed `_compile_probe` but this audit leg was missed).
+
+    Returns None ⇒ caller MUST fall back to `lake env lean`: when the REPL is off / toolchain-mismatched / dead,
+    or the probe does not compile cleanly (a real `error:` — let the authoritative cold path decide; fail-open).
+    A `sorry` in the probe is NOT an error here — that is exactly the laundering `#print axioms` must expose as
+    `sorryAx`, which the caller's allowlist check then REJECTS. Base env (env=None) so a self-contained source
+    that inlines the campaign theory still pays only the theory elaboration, never the Mathlib import."""
+    if not _flag_on():
+        return None
+    project = str(Path(sandbox).resolve())
+    if not _toolchain_ok(project):           # drift guard: a mismatched REPL is silently-empty → never trust it
+        return None
+    pl = _get_repl(project)
+    if pl is None:
+        return None
+    src = lean_source if f"#print axioms {target_name}" in (lean_source or "") else (
+        (lean_source or "").rstrip() + f"\n#print axioms {target_name}\n")
+    code = _ALL_IMPORTS_RE.sub("", src).lstrip("\n")   # the base env already has Mathlib (+Aesop/Batteries)
+    if not code.strip():
+        return None
+    try:
+        r = pl.check(code, timeout=min(timeout, _warm_ceiling()), env=None)   # frozen base Mathlib env
+    except Exception:  # noqa: BLE001 — wedged/crashed command: drop + respawn next call, fall back this one
+        _drop_repl(project)
+        return None
+    if not isinstance(r, dict) or "errors" not in r:
+        return None
+    if r.get("errors"):                      # a real compile error ⇒ inconclusive; cold path is authoritative
+        return None
+    raw = str(r.get("raw", "") or r.get("output", ""))
+    # only hand back output that actually carries the #print-axioms verdict (else the caller sees "no line for
+    # target" ⇒ inconclusive ⇒ cold fallback — same fail-open as the cold path when the directive produced nothing).
+    return raw if ("depends on axioms" in raw or "does not depend on any axioms" in raw) else None
+
+
 @atexit.register
 def _cleanup() -> None:
     for project in list(_REPL_CACHE):

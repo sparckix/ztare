@@ -257,12 +257,28 @@ def audit_axioms_subset(lean_source: str, target_name: str, lean_path: Path, lea
     fail-open-on-crash philosophy; a SUCCESSFUL compile always yields the line, so native_decide is caught)."""
     src = lean_source if f"#print axioms {target_name}" in (lean_source or "") else (
         (lean_source or "").rstrip() + f"\n#print axioms {target_name}\n")
+    axioms_by_name: "dict | None" = None
+    # WARM FAST PATH (2026-06-19): the cold `lake env lean` below RE-IMPORTS Mathlib (~100s+) on EVERY closure
+    # audit — the recurring verify-starvation cost on a heavy campaign theory (a sub-lemma proof compiles, then
+    # this audit re-elaborates Mathlib from scratch). #66 warm-routed `_compile_probe`/firewall but this audit
+    # leg (added to composite_ratify + the cascade by #101) was missed. Route through the warm REPL when usable;
+    # the RAW #print-axioms output is parsed by the SAME `parse_axiom_output` as cold ⇒ the F1/F2 allowlist gate
+    # is byte-IDENTICAL (warm only amortizes elaboration, never relaxes the audit). `lean_root` is the sandbox the
+    # warm REPL is keyed on. Falls back to cold on None (flag off / toolchain mismatch / dead REPL / non-compile).
     try:
-        Path(lean_path).write_text(src, encoding="utf-8")
-        rec = run_lake_compile(Path(lean_path), Path(lean_root), timeout_s=timeout_s)
-    except Exception:  # noqa: BLE001 — tooling error ⇒ inconclusive (caller fails OPEN)
-        return (False, False, [])
-    axioms_by_name = rec.get("axioms") or {}
+        from ztare.formal.repl_compile import axioms_raw_via_repl
+        _raw = axioms_raw_via_repl(src, target_name, Path(lean_root), timeout=timeout_s)
+        if _raw is not None:
+            axioms_by_name = parse_axiom_output(_raw)
+    except Exception:  # noqa: BLE001 — warm path is best-effort; a failure just falls through to cold
+        axioms_by_name = None
+    if axioms_by_name is None:                # COLD FALLBACK — authoritative `lake env lean` audit
+        try:
+            Path(lean_path).write_text(src, encoding="utf-8")
+            rec = run_lake_compile(Path(lean_path), Path(lean_root), timeout_s=timeout_s)
+        except Exception:  # noqa: BLE001 — tooling error ⇒ inconclusive (caller fails OPEN)
+            return (False, False, [])
+        axioms_by_name = rec.get("axioms") or {}
     if target_name not in axioms_by_name:
         return (False, False, [])   # the directive produced no line for the target ⇒ inconclusive
     ax = set(axioms_by_name.get(target_name) or [])
