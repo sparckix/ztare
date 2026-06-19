@@ -80,6 +80,33 @@ The agentic-PROPOSE / deterministic-RATIFY engine. The leaf *is* the agent (`age
 - **Agentic-first move ladder.** A free deterministic filter (`native_hammer`) → the warm agent (`claude_warm`, tool-equipped) → decomposition (`conjecture`). The agent decides per node; cold one-shot provers are a fallback. Exogenous moves (witness-transport, abduce/QE, Groebner/nlsat/SOS transport edges, Isabelle hammer) are agent-electable tools (`agent_tools`/`move_cards`), kernel-arbitrated.
 - **Recursive decomposition planner** (`route_and_solve`). On an honest non-closure the warm leaf *generates* a decomposition; the **kernel audits it** (`decomposition_dag_audit`: sorry-free, non-circular, every-lemma-used, proves-G); sub-lemmas solve through `solve_adhoc` (recursion, depth-bounded); the parent closes only via `composite_ratify`'s anti-laundering kernel. A planner sub-lemma proven false (kernel-checked ¬G) triggers a bounded **re-plan** with the agent's correction. The planner is a *contract the fungible leaf fills*, not a separate agent.
 
+**Closure-validation state machine & outcome vocabulary** (`solver_core._validate_and_maybe_close` →
+`_validate_against_contract`). A compiling proof is NOT yet a closure — it must clear a four-receipt gate
+before it is credited. `credit_ready ⇔ kernel_compile ∧ matched_negative_control ∧ governance_kernel ∧ ¬banned_axiom`:
+- **kernel_compile** — the proof elaborates (the v33 REPL/`lake env lean`).
+- **matched_negative_control** (`_verify_matched_negative_control`) — restates the goal under bare `import
+  Mathlib` (no source prelude). It is **three-valued and ABSTAINS by design**: a proof that compiles bare is
+  *undecidable* between "valid pure-Mathlib proof" and "leakage" without the source prelude, so the MNC
+  returns INCONCLUSIVE (never a reject) for that case — the **authoritative kernel** (which *does* receive the
+  original source) is the real leakage organ. (RCA 2026-06-18: this control had a latent `NameError: re` →
+  silent dead instrument; and a pure-Mathlib goal like `(I/2)²=-(1/4)` must *not* be flagged leakage just for
+  compiling bare.)
+- **governance_kernel** — the ONE `run_anti_laundering_kernel` (vacuity / gold-name / single-lemma / leakage /
+  consequence / currency / statement-integrity). Only a **confirmed** organ blocks; advisory flags do not.
+- **axiom_allowlist** — `#print axioms ⊆ {propext, Classical.choice, Quot.sound}`; a confirmed banned axiom
+  (`native_decide`→`Lean.ofReduceBool`) blocks (tiered `true_modulo_banned_axioms`, not a cheat).
+
+**Outcome vocabulary (DERIVED from the failing receipt, never hardcoded** — `_reject_reason_from_validation`):
+`closed` · `rejected_compile` · `rejected_banned_axiom` · `rejected_anti_laundering:<organ>` ·
+`rejected_mnc_leakage` · `uncredited_validated_closure_dropped` (all receipts passed but credit_ready=False ⇒
+a **control-flow bug**, a kernel-valid closure lost — NOT laundering). RCA 2026-06-18: a single hardcoded
+`rejected_negative_control` catch-all previously collapsed all of these, making rejections un-diagnosable and
+**poisoning move-calibration** (every non-closure scored as a "caught cheat" in `_WRONG_TARGET`, driving real
+provers' priors down for closures they produced). Only `rejected_mnc_leakage` / `rejected_anti_laundering` are
+cheats; `rejected_banned_axiom` and the `uncredited_*` flow-bug labels are neutral and bucketed separately.
+The principle generalizes: **a control that cannot decide ABSTAINS (inconclusive); a rejection is labeled by
+the receipt that actually fired.**
+
 ### 4.4 Cross-Substrate Layer (`common/cross_substrate_consensus.py`, Isabelle/SMT)
 Lean is the closure arbiter; Isabelle and SMT are independent peers. **Propose→ratify**: SMT proposes an adversarial boundary, the Lean kernel certifies it. **Consensus**: ≥2 independent substrates (each with its own NL→formal translation) reconcile verdicts on one claim — agreement is trust-lift, disagreement localizes a *translation bug* with no human. An Isabelle verdict is a corroboration signal, never a Lean closure.
 
@@ -113,6 +140,11 @@ flowchart LR
 ```
 
 A producer (notes blueprint, residual-C row, repair) enters at NL/target; everything converges on `solve_adhoc` → kernel → certificate-or-honest-gap. Only the kernel decides whether evidence becomes credit.
+
+**Gaps are first-class, never silently dropped** (Goldilocks: a gap is *never* a closure). An honest non-closure is recorded at three distinct altitudes, each with its own consumer — they are complementary granularities, not duplicates:
+- **Per-statement / tactical** — `no_good_store.jsonl` (CEGIS/CDCL conflict clauses: "don't retry *this* rejected approach"), rendered back into the **leaf prompt** when re-attacking that exact statement.
+- **Machine evidence ledger** — `conjecture_book.jsonl` (open conjectures + evidence events; `obstruction_to_conjecture` turns a refutation into a construction target), consumed by the **self-learning layer**.
+- **Campaign / blueprint status map** — the notes-channel gap ledger (`autoformalize_notes.write_refined_notes` → `## Gaps this run (honest non-closures — NOT proven, NOT citable)`), each gap tagged with a typed `failure_class` (`firewall_rejected` / `admitted_and_exact_gap` / `open` / `deferred:campaign_wall`). This is the **next planner pass**'s view of what is still open and why — distinct in altitude from the per-statement no-good store. It lives in the deterministic governed-facts section the agent cannot author, so a gap can never be laundered into a fake `✅`.
 
 ## 6. Contracts
 

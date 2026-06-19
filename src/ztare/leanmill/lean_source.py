@@ -187,22 +187,36 @@ def wrapped_goal_stub(source: str, name: str, fallback_signature: str = "") -> s
     return f"theorem {name or 'adhoc_probe'} {bg} := by"
 
 
+def attach_proof(head: str, proof_body: str) -> str:
+    """Splice `proof_body` onto a decl `head` ending `:=` or `:= by` → a compilable `theorem … := <proof>`.
+    THE canonical proof-splicer — callers MUST NOT hand-roll `head + body`.
+
+    RCA 2026-06-18 (the mathd_algebra_302 silent-drop): a local splice that stripped only `"by "` (with a
+    SPACE) produced `:= by\\n  by\\n  tac` for a multiline `by\\n` body — a DOUBLE `by` that silently
+    elaborates to `sorry`, so the axiom audit flags `sorryAx` and a VALID proof is rejected as a banned axiom
+    (the closure is dropped). This helper is `by`-TOKEN-aware (never mistakes `by_cases`/`by_contra` for a
+    `by` block), preserves the body's internal indentation VERBATIM, and never doubles `by`."""
+    h = (head or "").rstrip()
+    body = (proof_body or "").strip()
+    body_is_by_block = bool(re.match(r"by(?:\s|\Z)", body))   # `by` + whitespace/EOS, NOT `by_cases`
+    if h.endswith(":= by"):
+        # stub already opened the block: bare tactics go UNDER it; a body that carries its OWN `by` block
+        # REPLACES the stub's `by` (drop it) so the two never double.
+        return (h[:-2].rstrip() + "\n" + body + "\n") if body_is_by_block else (h + "\n  " + body + "\n")
+    if h.endswith(":="):
+        return (h + " " + body + "\n") if body_is_by_block else (h + " by\n  " + body + "\n")
+    return h + "\n" + body + "\n"
+
+
 def swap_sorry(source: str, proof_body: str) -> str:
-    """The real source with the target's trailing `sorry` replaced by `by <proof_body>`."""
+    """The real source with the target's trailing `sorry` replaced by the proof. Delegates the splice to the
+    canonical `attach_proof` (binder/`by`-token-aware) — no local `by` handling re-rolled here."""
     if not source:
         return ""
     i = source.rstrip().rfind("sorry")
     if i < 0:
         return ""
-    head = source[:i].rstrip()
-    body = (proof_body or "").strip()
-    if body.startswith("by "):
-        body = body[3:].strip()
-    if head.endswith(":="):
-        return head + " by\n  " + body + "\n"
-    if head.endswith(":= by"):
-        return head + "\n  " + body + "\n"
-    return ""
+    return attach_proof(source[:i].rstrip(), proof_body)
 
 
 def first_theorem_name(text: str) -> str:
@@ -276,6 +290,20 @@ def _selftest() -> None:
     assert "/-" not in _bl and "-/" not in _bl, _bl                        # no leaked delimiters
     assert _bl.index("True") == _src.index("True"), "offset preserved"     # decl-block span math stays valid
     assert swap_sorry(tricky, "by trivial").rstrip().endswith("trivial")
+    # attach_proof: NEVER double `by` (RCA 2026-06-18, the mathd_algebra_302 silent-`sorry` drop).
+    _stub = "theorem t : (Complex.I / 2) ^ 2 = -(1 / 4) := by"   # stub ends `:= by`
+    # (a) single-line `by ` body → drop stub's `by`, no double
+    assert attach_proof(_stub, "by rw [x]; norm_num").count("by") == 1, attach_proof(_stub, "by rw [x]; norm_num")
+    # (b) MULTILINE `by\n` body — the exact shape that produced `:= by\n  by\n tac` → sorry
+    _multi = attach_proof(_stub, "by\n  rw [x]\n  norm_num")
+    assert _multi.count("by") == 1 and "by\n  by" not in _multi, _multi
+    # (c) bare tactics (no `by`) → run UNDER the stub's `by`
+    assert attach_proof(_stub, "rw [x]").count("by") == 1
+    # (d) `by_cases` is a TACTIC, not a `by` block → must go under the stub's `by` (not be mistaken for one)
+    assert "by\n  by_cases" in attach_proof(_stub, "by_cases h : p")
+    # (e) head ending bare `:=` wraps bare tactics in a fresh `by`
+    assert attach_proof("theorem t : P :=", "exact h").rstrip().endswith(":= by\n  exact h".rstrip()) or \
+           "by" in attach_proof("theorem t : P :=", "exact h")
     assert first_theorem_name("-- preamble\ntheorem bar : True := sorry") == "bar"
     assert strip_decl_prefix("theorem foo (a : Nat) (b : Nat)") == "(a : Nat) (b : Nat)"
     # binder-safe `:=` split: a `let k := 5` inside a hypothesis binder must NOT be read as the proof `:=`

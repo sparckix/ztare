@@ -476,8 +476,24 @@ def move_yield_report(db_path: str | Path, run_tag: str | None = None) -> dict:
 # ZERO false ratifications. This read-model categorizes every attempt's outcome into the cold-review buckets
 # and computes the per-move promotion verdict from the EXOGENOUS attempts DB (never self-scored).
 _USEFUL_EXITS = {"closed", "rung", "falsified", "advanced", "exact_gap"}        # kernel-governed value
-_WRONG_TARGET = {"rejected_negative_control", "rejected_governance", "statement_altered",
-                 "statement_altered_confirmed", "leakage"}                      # caught cheats / mis-targets
+# CAUGHT CHEATS / mis-targets — only a CONFIRMED laundering verdict belongs here. RCA 2026-06-18: the old
+# catch-all `rejected_negative_control` was REMOVED — it conflated banned-axiom rejects, control-flow drops,
+# and genuine leakage into one "cheat" bucket, driving real provers' priors down for closures they produced
+# (claude_warm fell to p=0.113). The truthful labels (`_reject_reason_from_validation`) replace it:
+# `rejected_mnc_leakage` + `rejected_anti_laundering` ARE confirmed cheats; `rejected_banned_axiom` and the
+# `uncredited_*` flow-bug labels are NOT (handled below). The legacy label is kept for back-compat reads of
+# OLD rows, but the re-baseline reclassifies them.
+_WRONG_TARGET = {"rejected_mnc_leakage", "rejected_anti_laundering",
+                 "rejected_governance", "statement_altered", "statement_altered_confirmed", "leakage"}
+# A KERNEL-VALID closure that the dispatch flow dropped, or a banned-axiom (true-modulo-axioms) reject —
+# NEITHER is a cheat. Surfaced as its own bucket so it never poisons the cheat rate AND is loudly visible.
+_FLOW_OR_AXIOM = {"uncredited_validated_closure_dropped", "uncredited_no_validation", "rejected_banned_axiom"}
+# RE-BASELINE (RCA 2026-06-18, dead-instrument admissibility — same discipline as the carrier-liveness
+# filter): every legacy `rejected_negative_control` row predates the truthful labels AND the MNC that
+# supposedly produced it was a silent no-op (the `re` NameError), so the label is an UNRELIABLE catch-all,
+# NOT a confirmed cheat. Excluded from the cheat rate (it would falsely depress real provers' priors —
+# claude_warm was driven to p=0.113 by exactly this). Counted as a neutral, INADMISSIBLE legacy bucket.
+_LEGACY_INADMISSIBLE = {"rejected_negative_control"}
 # everything else (no_witness, no_falsifier, failed_compile, no_rung, open, …) = NO-POSITIVE (cheap miss)
 
 
@@ -506,10 +522,16 @@ def exogenous_move_telemetry(db_path: str | Path, run_tag: str | None = None,
         return {"by_move": {}, "headline": {"promotable": [], "tripwire_false_ratifications": []}}
     for mv, outcome, rat, wc in rows:
         m = by_move.setdefault(mv, {"attempts": 0, "useful_exits": 0, "no_positive": 0, "wrong_target": 0,
-                                    "ratified_closes": 0, "false_ratifications": 0, "budget_s": 0.0})
+                                    "ratified_closes": 0, "false_ratifications": 0, "legacy_inadmissible": 0,
+                                    "budget_s": 0.0})
+        oc = (outcome or "").strip()
+        if oc in _LEGACY_INADMISSIBLE:
+            # RE-BASELINE: dead-MNC-era mislabel — EXCLUDE from every rate (not even an attempt); track it
+            # separately so the de-poisoning is auditable. Without this the row would dilute the denominator.
+            m["legacy_inadmissible"] += 1
+            continue
         m["attempts"] += 1
         m["budget_s"] += float(wc or 0)
-        oc = (outcome or "").strip()
         if oc == "closed" and int(rat) == 0:
             # compiled BUT governance REJECTED it (gamed closure) — a WRONG-target + the tripwire, NOT useful.
             m["wrong_target"] += 1
@@ -881,6 +903,28 @@ def _self_test() -> int:
     # calibrated_priors returns a usable dict over all moves.
     pri = {m: v["p"] for m, v in cal.items()}
     ok("priors_dict_complete", all(isinstance(pri[m], float) for m in MOVE_PRIOR_P_CLOSE))
+
+    # RE-BASELINE regression (RCA 2026-06-18): legacy `rejected_negative_control` rows are dead-instrument
+    # mislabels — they must be EXCLUDED from the cheat rate (not counted as attempts/wrong_target), while the
+    # truthful labels (`rejected_anti_laundering`/`rejected_mnc_leakage`) DO count as cheats. Without this the
+    # contamination drove real provers' priors down (claude_warm → p=0.113).
+    import sqlite3 as _sq, tempfile as _tf, os as _os
+    _td = _tf.mkdtemp(prefix="mc_rebaseline_")
+    _db = _os.path.join(_td, "t.db")
+    _c = _sq.connect(_db)
+    _c.execute("CREATE TABLE attempts(move TEXT, outcome TEXT, ratified INT, wallclock_s REAL)")
+    _c.executemany("INSERT INTO attempts VALUES(?,?,?,?)",
+                   [("claude_warm", "closed", 1, 5.0)] * 3
+                   + [("claude_warm", "rejected_negative_control", 0, 5.0)] * 5   # legacy mislabel → excluded
+                   + [("claude_warm", "rejected_anti_laundering", 0, 5.0)])       # genuine cheat → counted
+    _c.commit(); _c.close()
+    _t = exogenous_move_telemetry(_db, min_attempts=1)["by_move"]["claude_warm"]
+    ok("rebaseline: legacy rejected_negative_control EXCLUDED from attempts",
+       _t["attempts"] == 4 and _t["legacy_inadmissible"] == 5)
+    ok("rebaseline: genuine anti_laundering still counts as wrong_target", _t["wrong_target"] == 1)
+    ok("rebaseline: useful_exit_rate is the TRUE 0.75, not the poisoned 0.33", _t["useful_exit_rate"] == 0.75)
+    import shutil as _sh
+    _sh.rmtree(_td, ignore_errors=True)
 
     # ── per-(move, error_class) nested shrinkage (#18) ──
     # A SPARSE cell sits at the MARGINAL move rate (data-gated → parity with marginal calibration).

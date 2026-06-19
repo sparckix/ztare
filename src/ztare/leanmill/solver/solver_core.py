@@ -1084,10 +1084,19 @@ def _verify_matched_negative_control(target_name: str, proof_text: str,
 
     `goal_type` is REQUIRED for a meaningful test — the row's goal string `"<binders> : <type>"`
     (already includes the `:`). The stripped attempt is `theorem X_stripped <goal> := by <body>`.
-    Without it the stub was ill-formed → never compiled → MNC always "passed" (a structural NO-OP
-    that never caught leakage). FAIL-OPEN discipline: a tooling error or a goal that can't even be
-    stated under bare Mathlib (unknown-identifier — the target NEEDS prelude defs) is INCONCLUSIVE →
-    return True (do not reject; the kernel v33 leakage organs are the real leakage check)."""
+
+    THREE-VALUED by design (2026-06-18 RCA — the mathd_algebra_302 false-`rejected_negative_control`):
+    a control that cannot DECIDE must ABSTAIN (return True = no-reject), never fire. Two hard truths fix
+    the old "compiles bare ⇒ leakage" rule:
+      • This function had a latent `NameError: re not defined` (no local `import re`) → it CRASHED on
+        every call and fail-opened — a silent dead instrument (the "bare-except hides a missing import"
+        class). Reviving it NAIVELY would resurrect the category error below, so both are fixed together.
+      • Without the SOURCE PRELUDE, "the proof compiles under bare Mathlib" is INDISTINGUISHABLE from a
+        valid pure-Mathlib proof (a miniF2F goal like `(I/2)^2 = -(1/4)` legitimately compiles bare — that
+        is NOT leakage). So this function can only ever return PASS (proof NEEDS the prelude → genuine) or
+        INCONCLUSIVE (proof compiles bare ⇒ cannot tell leak from valid). It must NEVER return a leakage
+        REJECT on its own — the AUTHORITATIVE kernel (`run_anti_laundering_kernel`, which DOES receive the
+        original source) is the real leakage organ and correctly passes pure-Mathlib goals."""
     if not target_name or not proof_text.strip():
         return True, "inconclusive: missing target or proof"
     g = (goal_type or "").strip()
@@ -1095,15 +1104,17 @@ def _verify_matched_negative_control(target_name: str, proof_text: str,
         return True, "inconclusive: no goal_type (cannot build a well-formed stripped attempt)"
     if ":" not in g:                 # a bare type with no binders/colon → prepend the type colon
         g = ": " + g
-    body = proof_text.strip()
-    if body.startswith("by "):
-        body = body[3:]
+    # CANONICAL splice (no hand-rolled `by` handling — RCA 2026-06-18): `attach_proof` is `by`-token-aware
+    # and never doubles `by`, so a multiline `by\n` body can't silently sorry.
+    from ztare.leanmill.lean_source import attach_proof as _attach_proof
+    import re  # LOCAL import — solver_core uses function-local `import re` throughout (no module-level re);
+              # used below for the unknown-identifier check.
+    _head = f"theorem {target_name}_stripped_attempt {g} :="
     src = (
         "import Mathlib\n\n"
-        f"-- matched negative control: state the goal under bare Mathlib (no prelude) + the candidate\n"
-        f"-- body. If THIS compiles, proof_text was a bare-Mathlib lookup → leakage.\n"
-        f"theorem {target_name}_stripped_attempt {g} := by\n"
-        f"  {body}\n"
+        "-- matched negative control: state the goal under bare Mathlib (no prelude) + the candidate\n"
+        "-- body. If THIS does NOT compile, the proof NEEDS the prelude → genuine (PASS).\n"
+        + _attach_proof(_head, proof_text)
     )
     try:
         with tempfile.TemporaryDirectory(prefix=f"solver_negctrl_{target_name}_") as td:
@@ -1118,7 +1129,13 @@ def _verify_matched_negative_control(target_name: str, proof_text: str,
             if re.search(r"unknown (identifier|constant|declaration)", output):
                 return True, "inconclusive: goal needs prelude defs (unknown identifier under bare Mathlib)"
             stripped_compiled = proc.returncode == 0 and "error:" not in output
-            return (not stripped_compiled), output[-600:]
+            if stripped_compiled:
+                # ABSTAIN: compiles bare ⇒ pure-Mathlib goal (or genuine leak) — INDISTINGUISHABLE here
+                # without the source prelude. The authoritative kernel makes this call with the source.
+                return True, ("inconclusive: proof compiles under bare Mathlib — pure-Mathlib goal vs leak "
+                              "is undecidable without the source prelude; deferred to the authoritative kernel")
+            # Proof did NOT compile bare (and not an unknown-id) ⇒ it genuinely NEEDS the prelude → PASS.
+            return True, "pass: proof needs the prelude (does not compile under bare Mathlib)"
     except subprocess.TimeoutExpired:
         return True, "inconclusive: negctrl_timeout (fail-open, not a leakage verdict)"
     except FileNotFoundError as exc:
@@ -1190,12 +1207,11 @@ def _validate_against_contract(
     # FAIL-OPEN on an organ crash (a tooling error must NOT block a valid closure); fail-CLOSED only on a
     # CONFIRMED organ flag (kernel.passed=False). Reversible to the pre-flip behavior via the env escape.
     # Build the closure source ONCE (the SAME _src feeds both the anti-laundering kernel below AND the axiom audit).
-    _body = (proof_text or "").strip()
-    if (enriched_goal or "").rstrip().endswith(":= by"):
-        _b = _body[3:].lstrip() if _body.startswith("by ") else _body
-        _src = f"{enriched_goal}\n  {_b}\n"
-    else:
-        _src = f"{enriched_goal}\n{_body}\n"
+    # Canonical proof-splice (NO hand-rolled `head + body` — RCA 2026-06-18: the mathd_algebra_302 drop was a
+    # local splice that doubled `by` for a `by\n` body → silent `sorry`). `lean_source.attach_proof` is the
+    # ONE binder/`by`-token-aware splicer; both this `_src` and `swap_sorry` route through it.
+    from ztare.leanmill.lean_source import attach_proof as _attach_proof
+    _src = _attach_proof(enriched_goal or "", proof_text or "")
     if not _src.lstrip().startswith("import"):
         _src = "import Mathlib\n\n" + _src
 
@@ -1282,6 +1298,42 @@ def _validate_against_contract(
         "axiom_tier": axiom_tier,   # #104: kernel_pure | true_modulo_banned_axioms (native_decide) | inconclusive
         "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit",
     }
+
+
+def _reject_reason_from_validation(validation: "dict | None") -> "tuple[str, str]":
+    """Derive the SPECIFIC credit-block outcome from the solver-lane receipts — returns (outcome, detail).
+
+    RCA 2026-06-18 (the mathd_algebra_302 mislabel): the dispatch path hardcoded `rejected_negative_control`
+    as the catch-all for ANY "compiled-but-not-credited" proof (`"rejected_negative_control" if compile_ok
+    and proof_text.strip() else outcome`). That ONE label conflated FOUR distinct outcomes —
+      • a CONFIRMED banned axiom (`native_decide`/`Lean.ofReduceBool`)  → `rejected_banned_axiom`
+      • a CONFIRMED anti-laundering organ (the authoritative kernel)     → `rejected_anti_laundering`
+      • an actual matched-negative-control leakage flag                  → `rejected_mnc_leakage`
+      • a KERNEL-VALID closure DROPPED by a control-flow path            → `uncredited_validated_closure_dropped`
+    which (a) made every rejection un-diagnosable (this whole RCA was spent reverse-engineering ONE label)
+    and (b) POISONED move-calibration — all four were scored as a "caught cheat" in `_WRONG_TARGET`, driving
+    real provers' priors down for closures they actually PRODUCED. The label must be DERIVED from the receipt
+    that actually failed, never assumed. The DROPPED case is its own loud signal: the kernel said PASS but the
+    closure was not credited ⇒ a flow bug, NOT a cheat (so it must never feed the cheat bucket)."""
+    if not validation:
+        return "uncredited_no_validation", "no contract validation present (proof never validated)"
+    rc = validation.get("receipts") or {}
+    def _rec(name: str) -> dict:
+        return rc.get(name) or {}
+    if _rec("kernel_compile_receipt").get("passed") is False:
+        return "rejected_compile", str(_rec("kernel_compile_receipt").get("tail", ""))[:160]
+    if _rec("axiom_allowlist_receipt").get("passed") is False:
+        return "rejected_banned_axiom", str(_rec("axiom_allowlist_receipt").get("tail", ""))[:160]
+    if _rec("governance_kernel_receipt").get("passed") is False:
+        conf = _rec("governance_kernel_receipt").get("confirmed") or []
+        return "rejected_anti_laundering", f"confirmed organ(s): {conf}"
+    if _rec("matched_negative_control_receipt").get("passed") is False:
+        return "rejected_mnc_leakage", str(_rec("matched_negative_control_receipt").get("tail", ""))[:160]
+    # Every receipt PASSED but credit_ready was still False (or no receipt blocked) ⇒ a kernel-valid closure
+    # was DROPPED by the dispatch control flow. Surface it LOUDLY and distinctly — never as leakage.
+    return ("uncredited_validated_closure_dropped",
+            "all solver-lane receipts passed but credit_ready=False — kernel-valid closure dropped by "
+            "dispatch flow (a control-flow bug, NOT laundering)")
 
 
 def _leaf_goal_from_source(body: str, target: str, base_goal: str) -> str:
@@ -3105,12 +3157,14 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                 )
                 providers_tried[-1]["contract_validation"] = validation
                 if not validation["credit_ready_at_solver_layer"]:
-                    # MNC failed → reject as leakage, do not credit; continue.
-                    providers_tried[-1]["outcome"] = "rejected_negative_control"
+                    # TRUTHFUL labeling (RCA 2026-06-18): derive WHY credit was blocked from the receipt that
+                    # actually failed — never the legacy hardcoded `rejected_negative_control` catch-all (which
+                    # mislabeled axiom/kernel/flow rejections as leakage and poisoned move-calibration).
+                    _reason, _detail = _reject_reason_from_validation(validation)
+                    providers_tried[-1]["outcome"] = _reason
                     _record_attempt(
-                        r["row_id"], prov_label,
-                        "rejected_negative_control", False,
-                        "matched_negative_control passed (proof_text compiled under bare import = leakage)",
+                        r["row_id"], prov_label, _reason, False,
+                        f"credit blocked at solver layer: {_reason} — {_detail}",
                     )
                     return None
                 # All solver-layer receipts passed.
@@ -3351,12 +3405,18 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
             compile_tail = cold_state.get("compile_tail") or ""
             outcome = cold_state.get("outcome")
             cold_provider_label = cold_state.get("cold_provider_label")
+            # TRUTHFUL labeling (RCA 2026-06-18): a compiled-but-uncredited proof here is NOT automatically
+            # a negative-control leakage reject — derive the real reason from the last provider's validation
+            # receipts (banned-axiom / anti-laundering / mnc-leakage / dropped-valid-closure). The old
+            # hardcoded `rejected_negative_control` mislabeled all of them and poisoned move-calibration.
+            _last_val = (providers_tried[-1].get("contract_validation") if providers_tried else None)
+            _failpath_reason, _ = _reject_reason_from_validation(_last_val)
             results.append({
                 "name": r["row_id"],
                 "target_name": r.get("target_theorem_name"),
                 "kind": "c_pool_no_template",
                 "outcome": (
-                    "rejected_negative_control"
+                    _failpath_reason
                     if compile_ok and proof_text.strip() else outcome
                 ),
                 "compile_ok": compile_ok,
