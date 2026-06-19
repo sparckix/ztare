@@ -223,6 +223,18 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     target_closed = bool((out["target"] or {}).get("solved"))
     out["summary"] = (f"{n_ok}/{len(lemmas)} lemmas formalized+closed; shelf={len(out['shelf'])}; "
                       f"target {'closed' if target_closed else 'open'}")
+    # FINAL deterministic write-back — the COMPLETE gap ledger. The incremental writes above are kill-safety
+    # snapshots taken BEFORE the target attack + wall-deferral were known, so they can't carry the TARGET gap
+    # or the `wall_deferred` rungs (the 5 never-attempted lemmas a campaign-wall run leaves). This last write
+    # guarantees EVERY caller (not just main(), which later UPGRADES it with agent synthesis) persists the full
+    # honest gap record. No agent dispatch ⇒ free; main()'s later write with `dispatch` only enriches the
+    # open-frontier decomposition. Best-effort: a write error never changes the run result.
+    if notes_path is not None:
+        try:
+            out["deep_closures"] = deep_closures_since(out["run_started"])
+            write_refined_notes(out, notes_path)
+        except Exception:  # noqa: BLE001
+            pass
     return out
 
 
@@ -372,6 +384,19 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     return out
 
 
+def _gap_class(rec: dict) -> str:
+    """The honest, typed FAILURE CLASS of a non-closing record — the reason it is a GAP, not a closure
+    (Goldilocks: a gap is NEVER a closure). A firewall rejection (unfaithful / vacuous / trivial) is a
+    DIFFERENT gap than an admitted-but-unclosed lemma; recording the class (not a bare "open") is what makes
+    the gap ledger actionable for the next planner pass and keeps the notes taxonomy aligned with the
+    per-statement `no_good_store` (tactical conflict clauses) + `conjecture_book` (evidence ledger) the
+    solver already maintains."""
+    if rec.get("faithful") is not True:
+        reason = " ".join(str(rec.get("faithfulness_reason") or "").split()).strip()
+        return "firewall_rejected" + (f": {reason[:120]}" if reason else "")
+    return str(rec.get("outcome") or "open")
+
+
 def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional[Callable]" = None) -> "Path":
     """The APPARATUS updates its own research notes — the operator should NOT re-draft. GOLDILOCKS split:
       • DETERMINISTIC (this code) owns the GOVERNED FACTS — which lemmas KERNEL-CLOSED + the proven shelf. The
@@ -392,6 +417,34 @@ def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional
     det += ([f"- ✅ {l.get('nl', '')}" for l in closed] or ["- (none kernel-closed this run)"])
     if shelf:
         det += ["", "## Proven shelf (cite these):"] + [f"- {s}" for s in shelf]
+    # ── DETERMINISTIC GAP LEDGER (honest non-closures — recorded, NEVER laundered into a closure). Writes
+    #    WHICH blueprint lemmas/target stayed OPEN this run + their typed FAILURE CLASS (firewall_rejected /
+    #    admitted_and_exact_gap / open / deferred:campaign_wall). This is the CAMPAIGN-level status map the
+    #    NEXT planner pass reads from the blueprint — DISTINCT in granularity from the two machine ledgers the
+    #    leaf already consumes: `no_good_store.jsonl` is per-STATEMENT tactical ("don't retry THIS rejected
+    #    approach", rendered into the leaf prompt at the lemma level) and `conjecture_book.jsonl` is the
+    #    machine evidence ledger. A gap is a GOVERNED FACT (the kernel/governance decided it did not close), so
+    #    it lives here in the deterministic section the agent cannot author — it can never become a fake ✅. ──
+    _seen_gap: set = set()
+    gap_lines: "list[str]" = []
+    def _add_gap(nl: str, cls: str) -> None:
+        key = (nl or "").strip()
+        if not key or key in _seen_gap:
+            return
+        _seen_gap.add(key)
+        gap_lines.append(f"- ⬜ {nl} — gap[{cls}]")
+    for l in open_:
+        _add_gap(l.get("nl", ""), _gap_class(l))
+    _tgt_gap = result.get("target") or {}
+    if _tgt_gap and not _tgt_gap.get("solved"):
+        _tcls = (f"deferred:{_tgt_gap.get('deferred')}" if _tgt_gap.get("deferred") else _gap_class(_tgt_gap))
+        _add_gap("(TARGET) " + (result.get("target_nl") or ""), _tcls)
+    for d in (result.get("wall_deferred") or []):
+        if str(d).strip() == (result.get("target_nl") or "").strip():
+            continue   # the TARGET, if wall-deferred, is already recorded above (don't double-count)
+        _add_gap(str(d)[:200], "deferred:campaign_wall")
+    if gap_lines:
+        det += ["", "## Gaps this run (honest non-closures — NOT proven, NOT citable):"] + gap_lines
     # ── Open-lemma synthesis. PREFER the PLANNER's ACTUAL sub-DAG (route_and_solve's decomposition — the same
     #    agent's mid-proof breakdown, already in the result); deterministically RENDER it (rendering the agent's
     #    own output is not authoring). Only lemmas the planner did NOT decompose get a fresh re-proposal dispatch. ──
@@ -404,7 +457,7 @@ def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional
             sub = dec.get("lemmas") or []
             if sub:                                  # the planner already decomposed this lemma — persist its sub-DAG
                 tag = " [kernel-audited]" if dec.get("audited") else ""
-                open_md.append(f"\n### ⬜ {l.get('nl', '')}{tag} — planner sub-decomposition:")
+                open_md.append(f"\n### ⬜ {l.get('nl', '')}{tag} — gap[{_gap_class(l)}], planner sub-decomposition:")
                 open_md += [f"- {str(s)[:220]}" for s in sub]
             else:
                 no_dag.append(l)
@@ -620,6 +673,50 @@ def _self_test() -> int:
         ok("refined: deep-rungs section rendered",
            "deep rungs" in rt and "iso_lemma1 [sha:abcd1234abcd1234]" in rt)
         ok("refined: unverified rung marked NOT auto-citable", "NOT auto-citable" in rt)
+
+        # --- GAP LEDGER (honest non-closures recorded for the next planner pass; gap≠closure) ---
+        ok("gap_class: outcome for a faithful-but-open record",
+           _gap_class({"faithful": True, "outcome": "admitted_and_exact_gap"}) == "admitted_and_exact_gap")
+        ok("gap_class: firewall_rejected for an unfaithful record",
+           _gap_class({"faithful": False, "faithfulness_reason": "vacuous: hypothesis is False"})
+           .startswith("firewall_rejected:"))
+        r_gap = {"target_nl": "Prove the big thing", "summary": "s",
+                 "lemmas": [{"nl": "L1 closes", "solved": True, "outcome": "closed", "faithful": True},
+                            {"nl": "L2 gaps", "solved": False, "outcome": "admitted_and_exact_gap",
+                             "faithful": True},
+                            {"nl": "L3 unfaithful", "solved": False, "faithful": False,
+                             "faithfulness_reason": "trivial: provable by simp"}],
+                 "shelf": ["theorem l1 : True := trivial"],
+                 "target": {"nl": "Prove the big thing", "solved": False, "outcome": "admitted_and_open",
+                            "faithful": True},
+                 "wall_deferred": ["L4 never attempted"]}
+        gt = write_refined_notes(r_gap, Path(_td) / "gap.md").read_text(encoding="utf-8")
+        ok("gap: honest-non-closure ledger header present",
+           "Gaps this run (honest non-closures" in gt and "NOT proven, NOT citable" in gt)
+        ok("gap: open lemma recorded with its typed failure class",
+           "L2 gaps — gap[admitted_and_exact_gap]" in gt)
+        ok("gap: firewall-rejected lemma recorded as such",
+           "L3 unfaithful — gap[firewall_rejected" in gt)
+        ok("gap: TARGET gap recorded with its class",
+           "(TARGET) Prove the big thing — gap[admitted_and_open]" in gt)
+        ok("gap: wall-deferred lemma recorded as deferred:campaign_wall",
+           "L4 never attempted — gap[deferred:campaign_wall]" in gt)
+        ok("gap: a CLOSED lemma is NOT in the gap ledger (only in ✅ proven)",
+           "L1 closes — gap[" not in gt and "- ✅ L1 closes" in gt)
+        # a wall-deferred TARGET is recorded ONCE (not double-counted via wall_deferred + target)
+        r_wallt = {"target_nl": "Big T", "summary": "s", "lemmas": [],
+                   "target": {"deferred": "campaign_wall", "solved": False}, "wall_deferred": ["Big T"]}
+        rwt = write_refined_notes(r_wallt, Path(_td) / "wallt.md").read_text(encoding="utf-8")
+        ok("gap: wall-deferred TARGET recorded once (no double-count)",
+           rwt.count("— gap[deferred:campaign_wall]") == 1 and "(TARGET) Big T" in rwt)
+        # a fully-closed run renders NO gap ledger (clean output)
+        r_clean = {"target_nl": "T", "summary": "s",
+                   "lemmas": [{"nl": "all good", "solved": True, "outcome": "closed", "faithful": True}],
+                   "shelf": ["theorem g : True := trivial"],
+                   "target": {"nl": "T", "solved": True, "outcome": "closed", "faithful": True}}
+        ok("gap: fully-closed run has NO gap ledger",
+           "Gaps this run" not in write_refined_notes(r_clean, Path(_td) / "clean.md").read_text(encoding="utf-8"))
+
         # compound: only VERIFIED rungs reach the original; accumulates + dedupes by sha across runs
         np.write_text(SEED, encoding="utf-8")
         compound_into_original_notes(dict(decomp, deep_closures=dc), np)
