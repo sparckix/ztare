@@ -227,6 +227,18 @@ def verify_matched_negative_control(
     Returns (negative_control_ok, output_tail). negative_control_ok=True
     means the NEGATIVE control FAILED (which is what we want — the proof
     needs the prelude to compile, so it is NOT just a Mathlib lookup).
+
+    ⚠️ DEAD / SUPERSEDED (2026-06-18 RCA): this builds a TYPELESS stub
+    (`theorem X_stripped_attempt := by <body>` — no `: <type>`), which is a Lean
+    PARSE error, so it ALWAYS "passes" (a structural no-op that can never catch
+    leakage). It is also unreachable: the only caller is contract.py's own
+    `validate_against_contract`, which is imported into solver_core but NEVER
+    called (solver_core uses its OWN goal-type-aware `_verify_matched_negative_control`).
+    The canonical, working MNC is `solver_core._verify_matched_negative_control` (it
+    takes `goal_type`, splices via `lean_source.attach_proof`, and abstains rather
+    than false-rejects). Do not wire this one into a live path; the per-organ
+    `run_standards.organ_liveness_battery` exists so a silently-dead control like
+    this is caught by a test, not by archaeology.
     """
     if not target_name or not proof_text.strip():
         return False, "missing target or proof"

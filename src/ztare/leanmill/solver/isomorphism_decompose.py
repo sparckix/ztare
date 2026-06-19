@@ -190,6 +190,23 @@ _PLAN_ACTIONS = {
     "ABDUCE": "G needs a missing PREMISE A (A ∧ context ⇒ G) — supply it",
     "TRANSPORT": "bring exogenous compute (a witness / hammer / cross-substrate) to G",
 }
+# The DAG-artifact format each PROVES-G action injects (data, not hard-coded prose — so surfacing a SUBSET
+# also trims the format guidance). FALSIFY / SOLVE_DIRECT carry no proves-G DAG ⇒ absent here by design.
+_PLAN_DAG_FORMAT = {
+    "DECOMPOSE": "the intermediate sub-lemmas L₁…Lₙ, chain proves G from them.",
+    "SPECIALIZE": "FIRST lemma = the STRONGER statement B; chain proves G from B.",
+    "GENERALIZE": "FIRST lemma = the MORE GENERAL H; chain instantiates G from H.",
+    "ABDUCE": "FIRST lemma = the missing PREMISE A; chain proves G from A + the goal's context.",
+    "TRANSPORT": "FIRST lemma = the exogenous-compute fact (a witness / hammered premise); chain closes G with it.",
+}
+# SITUATION → applicable move SUBSET (the epistemic-generation "mechanization-placement" discipline: route the
+# moves that EARN their place for THIS situation, do NOT dump the whole catalogue as prompt ballast). Tunable:
+# a caller may pass `enable`/`disable` to `_plan_choice_prefix`. `proof_stuck` (default) = the full menu
+# (byte-parity with the prior always-dump). New situations surface a disciplined subset.
+_SITUATION_ACTIONS = {
+    "proof_stuck": list(_PLAN_ACTIONS.keys()),               # admitted goal, choose how to prove it (default)
+    "target_weakened": ["ABDUCE", "DECOMPOSE", "SPECIALIZE"],  # firewall rejected: agent assumed a hypothesis
+}
 
 
 def _agent_plan_on() -> bool:
@@ -200,24 +217,35 @@ def _agent_plan_on() -> bool:
     return os.environ.get("ZTARE_LEANMILL_AGENT_PLAN", "1") != "0"
 
 
-def _plan_choice_prefix() -> str:
-    opts = "\n".join(f"  {a}: {d}" for a, d in _PLAN_ACTIONS.items())
+def _plan_choice_prefix(situation: str = "proof_stuck", *, enable=None, disable=None) -> str:
+    """Render the PLAN-choice prompt with the move SUBSET applicable to `situation` — the epistemic-generation
+    'mechanization-placement' discipline (route the moves that earn their place for THIS situation, do NOT dump
+    the whole catalogue as prompt ballast). `proof_stuck` (default) = the full menu (byte-parity with the prior
+    always-dump). `enable`/`disable` tune the subset per call (configurable). Data-driven from `_PLAN_ACTIONS`
+    + `_PLAN_DAG_FORMAT` + `_SITUATION_ACTIONS` — surfacing a subset trims BOTH the option list and the format
+    guidance, automatically."""
+    names = list(_SITUATION_ACTIONS.get(situation, list(_PLAN_ACTIONS.keys())))
+    for n in (enable or []):
+        if n in _PLAN_ACTIONS and n not in names:
+            names.append(n)
+    _dis = set(disable or [])
+    names = [n for n in names if n in _PLAN_ACTIONS and n not in _dis]
+    opts = "\n".join(f"  {a}: {_PLAN_ACTIONS[a]}" for a in names)
+    dag_bullets = "".join(f"  • {a:<11} → {_PLAN_DAG_FORMAT[a]}\n" for a in names if a in _PLAN_DAG_FORMAT)
+    nodag = [a for a in ("SOLVE_DIRECT", "FALSIFY") if a in names]
+    tail = ""
+    if nodag:
+        tail = (f"({' and '.join(nodag)} do NOT fit a proves-G DAG. If genuinely your best move, "
+                "declare it on the PLAN line and STOP — produce NO DAG; do NOT fabricate sub-lemmas to satisfy "
+                "the format. The harness then routes the goal to the cascade, which carries BOTH a direct-proof "
+                "path (SOLVE_DIRECT) and a refutation/¬G move (FALSIFY). Only pick a DAG action above when a "
+                "genuine reduction exists. The format serves the proof — never the reverse.)\n")
     return ("FIRST, choose the single best STRUCTURAL ACTION for this goal and state it on ONE line as "
             "`PLAN: <ACTION> — <one-line reason>`, where <ACTION> is EXACTLY one of:\n" + opts +
             "\nThen PRODUCE THE ARTIFACT FOR YOUR CHOSEN ACTION in the DECOMP format below — a sub-lemma DAG "
             "whose sorry-free chain proves the goal G. The SAME kernel audit (sorry-free + non-circular + "
             "every-lemma-load-bearing + proves-G) gates every action, so your CHOICE drives WHICH artifact you "
-            "build (this IS the dispatch — it is no longer recorded-and-ignored):\n"
-            "  • DECOMPOSE   → the intermediate sub-lemmas L₁…Lₙ, chain proves G from them.\n"
-            "  • SPECIALIZE  → FIRST lemma = the STRONGER statement B; chain proves G from B.\n"
-            "  • GENERALIZE  → FIRST lemma = the MORE GENERAL H; chain instantiates G from H.\n"
-            "  • ABDUCE      → FIRST lemma = the missing PREMISE A; chain proves G from A + the goal's context.\n"
-            "  • TRANSPORT   → FIRST lemma = the exogenous-compute fact (a witness / hammered premise); chain closes G with it.\n"
-            "(FALSIFY and SOLVE_DIRECT do NOT fit a proves-G DAG. If EITHER is genuinely your best move, "
-            "declare it on the PLAN line and STOP — produce NO DAG; do NOT fabricate sub-lemmas to satisfy "
-            "the format. The harness then routes the goal to the cascade, which carries BOTH a direct-proof "
-            "path (SOLVE_DIRECT) and a refutation/¬G move (FALSIFY). Only pick a DAG action above when a "
-            "genuine reduction exists. The format serves the proof — never the reverse.)\n"
+            "build (this IS the dispatch — it is no longer recorded-and-ignored):\n" + dag_bullets + tail +
             "Optionally also declare `BUDGET: <seconds>` — the wallclock you want for your NEXT refinement "
             "round (granted up to a hard cap; omit to keep the default).\n\n")
 
@@ -722,6 +750,17 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
                                              lean_root=lean_root, timeout_s=min(180, timeout_s),
                                              original_source=source)
         res["parent_closed"] = bool(res["composite"].get("parent_closed"))
+        # ASSEMBLY-REPAIR (#160, default-OFF until live-validated): the sub-rungs all proved but the up-front
+        # chain did not assemble the parent — give the agent ONE shot to rewrite the chain with the proven
+        # lemmas now citable, re-ratified by the SAME composite_ratify gate (zero new soundness surface).
+        # ZTARE_LEANMILL_ASSEMBLY_REPAIR=1 enables; flip default-on once the live P1 lift is confirmed.
+        if not res["parent_closed"] and os.environ.get("ZTARE_LEANMILL_ASSEMBLY_REPAIR", "0") == "1":
+            _rep = _assembly_repair(result, source, target_name, proofs, lean_root=lean_root,
+                                    timeout_s=min(180, timeout_s), original_source=source)
+            if _rep.get("parent_closed"):
+                res["composite"] = _rep
+                res["parent_closed"] = True
+                res["assembly_repaired"] = True
     return res
 
 
@@ -804,6 +843,48 @@ def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: 
     except Exception as e:  # noqa: BLE001
         return {"parent_closed": False, "composite_source": composite, "target": gname,
                 "reason": f"kernel error: {repr(e)[:120]}"}
+
+
+def _assembly_repair(result: dict, source: str, target_name: str, proofs: dict, *,
+                     lean_root: Path, timeout_s: int = 180, original_source: "str | None" = None,
+                     dispatch_fn=None, ratify_fn=None) -> dict:
+    """ASSEMBLY-REPAIR (#160 — the 2026-06-18 P1 meta lever). The sub-lemmas all PROVED but the chain the agent
+    committed UP FRONT (before any Lᵢ was proven) did not assemble the parent — `composite_ratify` returned
+    parent_closed=False — so closable rungs sit banked with the parent open (P1 lemmas 2–4). Dispatch the agent
+    ONCE to REWRITE the chain proving G with the now-PROVEN lemmas citable, then re-ratify through the SAME
+    `composite_ratify` gate: ZERO new soundness surface — a bad repair just fails to close (the conclusion-match
+    + anti-laundering kernel + axiom audit still gate G). Reuses the canonical `_parse_dag` extractor + the
+    `signature_before_proof` head + `composite_ratify`; no re-rolled Lean parsing. `dispatch_fn`/`ratify_fn`
+    injectable ⇒ hermetic selftest (no live agent, no Lean)."""
+    lemmas = result.get("lemmas") or []
+    lnames = result.get("lnames") or []
+    chain0 = result.get("chain") or ""
+    if not chain0 or not lnames:
+        return {"parent_closed": False, "reason": "assembly-repair: no original chain / lemma names"}
+    from ztare.leanmill.lean_source import signature_before_proof as _sig
+    goal_sig = _sig(chain0).rstrip()
+    proven = "\n".join(f"  • `{nm}` : {_sig(l)}" for l, nm in zip(lemmas, lnames) if nm)
+    prompt = (
+        "ASSEMBLY. These lemmas are ALREADY PROVEN and in scope — cite each by its NAME as an established fact "
+        "(do NOT re-prove them):\n" + proven + "\n\n"
+        "Write a COMPLETE, sorry-free Lean proof of THIS goal, citing the proven lemmas above by name:\n"
+        + goal_sig + "\n\nReturn ONE fenced block exactly like:\n```lean\nDECOMP:\n" + goal_sig
+        + " := by\n  <tactics that cite the lemmas by name; NO sorry>\n```\n")
+    if dispatch_fn is None:
+        from ztare.leanmill.solver.agentic_leaf import default_dispatch as dispatch_fn
+    try:
+        raw = dispatch_fn(prompt, repo=lean_root, timeout=timeout_s) or ""
+    except Exception as e:  # noqa: BLE001 — a failed repair leaves the parent open, never crashes the run
+        return {"parent_closed": False, "reason": f"assembly-repair dispatch error: {repr(e)[:100]}"}
+    _, new_chain, _ = _parse_dag(raw, "DECOMP:")
+    if not new_chain or "sorry" in new_chain.split(":=", 1)[-1] or new_chain.strip() == chain0.strip():
+        return {"parent_closed": False, "reason": "assembly-repair: agent produced no NEW sorry-free chain"}
+    if ratify_fn is None:
+        ratify_fn = composite_ratify
+    out = ratify_fn(dict(result, chain=new_chain), source, target_name, proofs,
+                    lean_root=lean_root, timeout_s=timeout_s, original_source=original_source) or {}
+    out["assembly_repaired"] = bool(out.get("parent_closed"))
+    return out
 
 
 def iso_should_recurse(depth: int, *, soft_bound: int, hard_cap: int,
@@ -1139,6 +1220,49 @@ def _selftest() -> int:
         _src_cr, "tgt", {"L1": "by trivial"}, lean_root=Path("/tmp"))
     ok("composite_ratify refuses a chain proving a DIFFERENT statement (pre-kernel)",
        _bad.get("parent_closed") is False and "DIFFERENT statement" in _bad.get("reason", ""))
+
+    # ── ASSEMBLY-REPAIR (#160): sub-rungs proved but the UP-FRONT chain didn't assemble → re-chain with the
+    #    proven lemmas citable, re-ratified by the SAME gate. Hermetic: mock dispatch + mock ratify (no Lean). ──
+    _rep_result = {"lemmas": ["theorem L1 : P 0 := by sorry", "theorem L2 : P 1 := by sorry"],
+                   "lnames": ["L1", "L2"], "chain": "theorem goalG : P 0 ∧ P 1 := by sorry"}  # FAILED chain
+    _seen: dict = {}
+    def _good_dispatch(prompt, *, repo=None, timeout=None):  # noqa: E306 — agent returns a NEW sorry-free chain
+        _seen["prompt"] = prompt
+        return "theorem goalG : P 0 ∧ P 1 := ⟨L1, L2⟩\n"
+    def _ratify_ok(result, src, tgt, proofs, *, lean_root, timeout_s, original_source=None):  # noqa: E306
+        _seen["chain"] = result.get("chain")
+        return {"parent_closed": "⟨L1, L2⟩" in (result.get("chain") or ""), "target": "goalG"}
+    _r = _assembly_repair(_rep_result, "src", "goalG", {"L1": "by trivial", "L2": "by trivial"},
+                          lean_root=Path("/tmp"), dispatch_fn=_good_dispatch, ratify_fn=_ratify_ok)
+    ok("assembly-repair: a NEW sorry-free chain re-ratifies ⇒ parent CLOSES (banked rungs assembled)",
+       _r.get("parent_closed") is True and _r.get("assembly_repaired") is True
+       and "⟨L1, L2⟩" in _seen.get("chain", ""))
+    ok("assembly-repair: prompt offers the proven lemmas BY NAME (citable, not re-proven)",
+       "ALREADY PROVEN" in _seen.get("prompt", "") and "`L1`" in _seen["prompt"] and "`L2`" in _seen["prompt"])
+    _seen2: dict = {}
+    def _bad_dispatch(prompt, *, repo=None, timeout=None):  # noqa: E306 — agent yields no usable chain
+        return "no fenced block, just prose"
+    def _ratify_spy(result, src, tgt, proofs, **kw):  # noqa: E306
+        _seen2["called"] = True; return {"parent_closed": True}
+    _rb = _assembly_repair(_rep_result, "src", "goalG", {"L1": "by trivial"},
+                           lean_root=Path("/tmp"), dispatch_fn=_bad_dispatch, ratify_fn=_ratify_spy)
+    ok("assembly-repair: no NEW chain ⇒ parent stays open, gate never consulted (no false close)",
+       _rb.get("parent_closed") is False and not _seen2.get("called"))
+
+    # ── SITUATION-ROUTED move surfacing (mechanization-placement, not prompt ballast): the plan prompt
+    #    surfaces the move SUBSET applicable to the situation; data-driven from _PLAN_ACTIONS/_PLAN_DAG_FORMAT. ──
+    _full = _plan_choice_prefix("proof_stuck")
+    ok("plan: proof_stuck surfaces the FULL menu (byte-parity)",
+       all(a in _full for a in _PLAN_ACTIONS) and "TRANSPORT   →" in _full and "ABDUCE" in _full)
+    _weak = _plan_choice_prefix("target_weakened")
+    ok("plan: target_weakened surfaces only the recourse SUBSET (no ballast)",
+       all(a in _weak for a in ("ABDUCE", "DECOMPOSE", "SPECIALIZE"))
+       and "TRANSPORT" not in _weak and "GENERALIZE" not in _weak and "FALSIFY" not in _weak)
+    ok("plan: subset trims the DAG-format guidance too (config is data-driven)",
+       "TRANSPORT   →" not in _weak and "ABDUCE      →" in _weak)
+    ok("plan: enable/disable tune the subset per call",
+       "ABDUCE" not in _plan_choice_prefix("proof_stuck", disable=["ABDUCE"])
+       and "TRANSPORT" in _plan_choice_prefix("target_weakened", enable=["TRANSPORT"]))
 
     # #143/Layer-B — RE-PLAN ON A CONFIRMED-FALSE RUNG. A planner sub-lemma proven FALSE (a dropped hypothesis)
     # must feed the agent's correction back to a bounded re-decomposition, not stall. Inject attack/solve/triage

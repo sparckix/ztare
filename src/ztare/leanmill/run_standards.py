@@ -82,6 +82,54 @@ def run_instrument_standards(lean_root: "Path | str", *, positive_fn=None, negat
                         "GATE DEAD: the canned statement-alteration was NOT rejected"))}
 
 
+_V33_ORGANS = ("vacuity", "gold_name_verbatim", "single_lemma_exact",
+               "indirect_leakage", "consequence_exposure", "currency_mismatch")
+_CLEAN_PROBE = "import Mathlib\n\ntheorem t : ∀ n : ℕ, n + 0 = n := by intro n; ring\n"
+# discriminating cheats a BLOCKING organ MUST catch (passed=False AND the named confirmed flag present).
+_ORGAN_CHEATS = (
+    # (organ, lean_source, original_source, expected_confirmed_flag)
+    ("gold_name_verbatim", "import Mathlib\n\ntheorem t : ∀ (n : ℕ), n + 0 = n := Nat.add_zero\n",
+     None, "gold_name_verbatim_confirmed"),
+    ("statement_integrity", "import Mathlib\n\ntheorem t : (2 : ℕ) = 2 := by rfl\n",
+     "import Mathlib\n\ntheorem t : (2 : ℕ) = 999 := by sorry\n", "statement_altered_confirmed"),
+)
+
+
+def organ_liveness_battery(lean_root: "Path | str" = "ztare_proofs", *, kernel_fn=None) -> dict:
+    """Per-ORGAN liveness — the generalization of `run_instrument_standards`' single-organ negative leg.
+
+    RCA 2026-06-18: TWO anti-laundering organs were found silently DEAD this session (a matched-negative-control
+    that crashed on `NameError: re` and fail-opened), and `run_instrument_standards` only ever exercised the
+    statement_integrity organ — so a dead organ slipped through. This battery closes that gap:
+      (a) REACHABILITY — every v33 organ must run on a clean probe WITHOUT landing in `detail[organ]={'error':…}`
+          or being absent (the dead-MNC class: a crashing organ is caught here, advisory-or-not).
+      (b) DETECTION — each BLOCKING organ must FIRE its `_confirmed` flag (passed=False) on a discriminating
+          cheat (gold-name-verbatim on a verbatim Mathlib citation; statement-integrity on an altered statement).
+    `kernel_fn(src, original_source, target) -> {passed, flags, detail}` is injectable ⇒ hermetic selftest; the
+    real run uses `run_anti_laundering_kernel` (cold Lean — a diagnostic/CI guard, NOT a per-solve tax)."""
+    import tempfile
+    from pathlib import Path as _P
+    if kernel_fn is None:
+        from ztare.gates.lean_proof_gate import run_anti_laundering_kernel as _k
+        root = _P(lean_root).resolve()
+        def kernel_fn(src, orig, tgt):  # noqa: E306
+            return _k(src, _P(tempfile.mkdtemp(prefix="organ_")) / "K.lean", root,
+                      original_source=orig or src, target_name=tgt)
+    clean = kernel_fn(_CLEAN_PROBE, None, "t") or {}
+    det = clean.get("detail", {}) or {}
+    reachable = {o: (o in det and not (isinstance(det.get(o), dict) and "error" in det[o]))
+                 for o in _V33_ORGANS}
+    fires: dict = {}
+    for organ, src, orig, flag in _ORGAN_CHEATS:
+        r = kernel_fn(src, orig, "t") or {}
+        fires[organ] = (flag in (r.get("flags") or [])) and (r.get("passed") is False)
+    dead = [o for o, v in reachable.items() if not v] + [f"{o}(no-fire)" for o, v in fires.items() if not v]
+    return {"ok": not dead, "organs_reachable": reachable, "blockers_fire": fires,
+            "detail": ("all v33 organs reachable + blocking organs fire on a discriminating cheat" if not dead
+                       else "ORGAN-LIVENESS FAILURE (dead/silent organ — the exact class the dead MNC was): "
+                            + ", ".join(dead))}
+
+
 def trust_conservation_audit(since_iso: str, *, run_tag: str = "",
                              db_path=None, ledger=None) -> dict:
     """POST-RUN TRUST-CONSERVATION CHECK (v3 RCA 2026-06-12): assert the trust layers AGREE for this run —
@@ -157,6 +205,29 @@ def _selftest() -> int:
     # the REAL negative leg (deterministic, no Lean): statement_integrity must catch the canned alteration
     caught, via = _default_negative()
     ok(f"real negative standard: canned alteration CAUGHT (via {via})", caught is True)
+
+    # ── per-organ liveness battery (RCA 2026-06-18: catch a silently-dead organ — the dead MNC class).
+    #    Hermetic: a MOCK kernel_fn simulates organ behavior (no Lean), so we test the BATTERY LOGIC. ──
+    def _mk_kernel(*, dead_organ=None, nonfire=None):
+        def k(src, orig, tgt):
+            det = {o: {"ran": True} for o in _V33_ORGANS}
+            if dead_organ:
+                det[dead_organ] = {"error": "simulated organ crash"}   # the dead-MNC class
+            flags, passed = [], True
+            if "Nat.add_zero" in src and nonfire != "gold_name_verbatim":
+                flags, passed = ["gold_name_verbatim_confirmed"], False
+            elif orig and "999" in orig and nonfire != "statement_integrity":
+                flags, passed = ["statement_altered_confirmed"], False
+            return {"passed": passed, "flags": flags, "detail": det}
+        return k
+    ok("organ-liveness: all organs reachable + blockers fire ⇒ ok",
+       organ_liveness_battery(kernel_fn=_mk_kernel())["ok"] is True)
+    _rc = organ_liveness_battery(kernel_fn=_mk_kernel(dead_organ="vacuity"))
+    ok("organ-liveness: a CRASHING organ is CAUGHT (the exact dead-MNC class)",
+       _rc["ok"] is False and _rc["organs_reachable"]["vacuity"] is False and "vacuity" in _rc["detail"])
+    _nf = organ_liveness_battery(kernel_fn=_mk_kernel(nonfire="gold_name_verbatim"))
+    ok("organ-liveness: a blocking organ that does NOT fire is CAUGHT",
+       _nf["ok"] is False and _nf["blockers_fire"]["gold_name_verbatim"] is False)
 
     # ── trust-conservation audit (hermetic: temp DB + temp ledger) ──
     import json
