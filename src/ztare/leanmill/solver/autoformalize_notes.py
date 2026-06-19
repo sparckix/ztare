@@ -71,6 +71,23 @@ def parse_notes(text: str) -> "tuple[str, list[str]]":
     return target, lemmas
 
 
+def _insert_lemmas_section(notes_text: str, bullets: "list[str]") -> str:
+    """Splice `- <bullet>` items at the TOP of the `## Lemmas` section (foundational-first), creating the
+    section if it is ABSENT. The ONE canonical notes-`## Lemmas` editor — callers must NOT re-roll
+    `re.sub`/`re.search` on the heading (RCA 2026-06-18: a theory-first blueprint with no `## Lemmas` anchor
+    silently DROPPED the agent's sorried API work-items, so the built theory was never proven). Line-based,
+    no scattered regex; the heading test mirrors `parse_notes` (`##` then `Lemmas`, flexible spacing)."""
+    if not bullets:
+        return notes_text
+    new = [f"- {b}" for b in bullets]
+    lines = notes_text.splitlines()
+    for i, line in enumerate(lines):
+        s = line.strip()
+        if s.startswith("##") and s[2:].strip() == "Lemmas":      # the `## Lemmas` heading line
+            return "\n".join(lines[:i + 1] + new + lines[i + 1:]) + "\n"
+    return notes_text.rstrip() + "\n\n## Lemmas\n" + "\n".join(new) + "\n"   # absent → append the section
+
+
 def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | None" = None) -> dict:
     """Real apparatus: one NL line → faithfulness firewall → governed solve → compact per-piece record.
     `notes` (the blueprint) threads into the recursive planner when the line does NOT close directly.
@@ -260,6 +277,16 @@ _THEORY_PROMPT = (
     "definitionally equal to the source formula beat `h_compat : a = b` side-conditions — fewer "
     "assumptions to kill later). CREDIT: definitions earn through USE — your proven sanity lemmas count "
     "as rungs now; the definition itself is credited when campaign lemmas cite it.\n"
+    "(5) PIN THE DENOTATION (anti-decoy). Sanity lemmas prove a def is WORKABLE, not that it MEANS the "
+    "intended concept — a self-consistent decoy can pass them all. So for EACH new `def`, anchor it to a "
+    "TRUSTED reference: search Mathlib (Loogle/warm checker) for the concept your def extends, and if one "
+    "exists state `theorem anchor_<def>_agrees_<ref> : ∀ …, <your def> … = <Mathlib concept> …` over the "
+    "OVERLAP domain (where both are defined). These `anchor_…` theorems may be `sorry` — each becomes a "
+    "work item like any API lemma; a kernel-PROVEN anchor pins the def's denotation (a decoy cannot prove "
+    "agreement with the established concept). If your def is genuinely BEYOND Mathlib (no overlapping "
+    "concept), say so honestly in a `-- @no-anchor: <def>: <why no Mathlib overlap>` comment — its "
+    "denotation then rests only on API + composition (the harness reports this as UNDER-DETERMINED, an "
+    "honest gap, never a false certification). Name every such theorem with the `anchor_` prefix.\n"
     "APPEND-ONLY THIS DISPATCH: never modify or delete existing content (governance reverts the round if "
     "existing bytes change). If an EXISTING definition is wrong-shaped, do not edit it — state "
     "`-- SUPERSEDE: <name>: <why>` and the harness routes a governed revision. Verify the file COMPILES "
@@ -575,6 +602,17 @@ def _self_test() -> int:
     ok("parse_no_lemmas_section", parse_notes("## Target\nX.\n")[1] == [])
     ok("parse_multiline_target",
        parse_notes("## Target\nline one\nline two\n## Lemmas\n- L.\n")[0] == "line one line two")
+    # canonical ## Lemmas editor (no scattered regex; the sorried-work-item queueing fix)
+    _il = _insert_lemmas_section("## Target\nT.\n## Lemmas\n- human rung\n", ["theorem c1 : P", "theorem c2 : Q"])
+    ok("insert_lemmas: bullets spliced foundational-FIRST under existing ## Lemmas",
+       _il.index("- theorem c1 : P") < _il.index("- human rung") and "- theorem c2 : Q" in _il
+       and parse_notes(_il)[1][:2] == ["theorem c1 : P", "theorem c2 : Q"])   # parse round-trips
+    _il2 = _insert_lemmas_section("## Target\nT.\n## Theory file\nt.lean\n", ["theorem only : R"])
+    ok("insert_lemmas: NO ## Lemmas anchor ⇒ section CREATED (work-items never dropped)",
+       "## Lemmas" in _il2 and parse_notes(_il2)[1] == ["theorem only : R"]
+       and "## Theory file" in _il2)   # preserves the rest
+    ok("insert_lemmas: empty bullets ⇒ unchanged",
+       _insert_lemmas_section("## Target\nT.\n", []) == "## Target\nT.\n")
 
     # --- hermetic loop: Lemma A closes, Lemma B exact_gaps, target opens ---
     seen_notes: dict = {}
@@ -977,9 +1015,14 @@ def main(argv: "Optional[list[str]]" = None) -> int:
             if _theory_src.strip():   # the substrate rides the notes (formal scaffolding channel, #88)
                 _notes_text += ("\n\n## Theory (campaign substrate — cite, do not re-derive)\n```lean\n"
                                 + _theory_src + "\n```\n")
-            for _s in reversed(_tc.get("sorried_statements", [])):   # API lemmas FIRST (foundational)
-                _notes_text = re.sub(r"(?m)^(##\s*Lemmas\s*)$", r"\1\n- " + _s.replace("\\", "\\\\"),
-                                     _notes_text, count=1)
+            # ROBUST work-item queueing (RCA 2026-06-18): the agent's own sorried API lemmas become solver
+            # work items, foundational-first, via the canonical `_insert_lemmas_section` (creates `## Lemmas`
+            # if absent). A theory-first blueprint with no `## Lemmas` anchor previously DROPPED them — the
+            # theory got built but its crux lemmas were never attacked. These are ALREADY formal Lean (no NL
+            # round-trip), so attacking them sidesteps the target's formalization firewall entirely.
+            _sorried = list(_tc.get("sorried_statements", []))
+            if _sorried:
+                _notes_text = _insert_lemmas_section(_notes_text, _sorried)
     res = autoformalize_from_notes(_notes_text, notes_path=notes_path)  # notes_path ⇒ incremental write-back (timeout-safe)
     res["instrument_standards"] = _std   # traceability: this run's closures carry their instrument certificate
     # v3 RCA: surface kernel closures from the WHOLE recursion tree (the cert ledger), not just the
@@ -988,6 +1031,33 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     if res["deep_closures"]:
         print(f"[notes] deep rungs kernel-closed this run: "
               + ", ".join(str(d.get('target')) for d in res['deep_closures']), flush=True)
+    # DENOTATION-FAITHFULNESS EPILOGUE (#162, theory-first honest catch). For a theory-first run the agent
+    # BUILT new defs (the substrate Mathlib lacks) — the firewall only governs the STATEMENT, so a self-
+    # consistent DECOY def can pass every internal check. We MEASURE (never assert) whether each built def's
+    # denotation is PINNED by a kernel-verified EXTERNAL anchor: an `anchor_…` overlap-agreement the agent
+    # proved (Kalman external output) OR participation in a kernel-closed proof with the shelf (UC). The
+    # verdict (PINNED / UNDERDETERMINED=honest-gap / REFUTED=decoy-caught) is ADVISORY telemetry — it never
+    # gates a closure — so default-on is safe; only pays kernel cost when defs+anchors actually exist.
+    # ZTARE_LEANMILL_DENOTATION_CHECK=0 reverts. See docs/concepts/leanmill_architecture.md §denotation.
+    if _theory_rel and _os.environ.get("ZTARE_LEANMILL_DENOTATION_CHECK", "1") != "0":
+        try:
+            from ztare.leanmill.solver.def_denotation import (
+                certify_def_denotation, kernel_denotation_verifier, mentions_token)
+            _tp2 = LEAN_ROOT_DEFAULT / _theory_rel
+            _theory_final = _tp2.read_text(encoding="utf-8") if _tp2.exists() else ""
+            if _theory_final.strip():
+                from ztare.leanmill import lean_source as _lsd
+                _built = _lsd.def_names(_theory_final)
+                # composition anchor (UC): a built def appearing in a kernel-closed proof composed soundly.
+                _proof_blob = "\n".join((d.get("closure_lean") or "") + "\n" + (d.get("statement") or "")
+                                        for d in res["deep_closures"])
+                _composed = {d for d in _built if mentions_token(_proof_blob, d)}
+                _verify = kernel_denotation_verifier(_theory_final, LEAN_ROOT_DEFAULT)
+                _den = certify_def_denotation(_theory_final, verify_anchor_fn=_verify, composed_defs=_composed)
+                res["denotation"] = _den
+                print(f"[notes] denotation-faithfulness: {_den['verdict']} — {_den['reason']}", flush=True)
+        except Exception as _e:  # noqa: BLE001 — advisory telemetry; never blocks the run
+            print(f"[notes] denotation check skipped: {repr(_e)[:120]}", flush=True)
     # TRUST-CONSERVATION EPILOGUE (v3 RCA): the layers must AGREE — every ratified DB win has a verified,
     # recompilable cert. Read-only, seconds, fail-LOUD (the v3 disease was exactly a silent disagreement
     # between these layers that no layer-local selftest could see).

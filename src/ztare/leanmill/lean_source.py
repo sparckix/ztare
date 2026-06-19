@@ -55,6 +55,16 @@ def theorem_names(source: str) -> list[str]:
     return re.findall(r"(?m)^\s*" + _DECL_PREFIX + r"([A-Za-z_][\w'.]*)", source or "")
 
 
+_DEFKIND_PREFIX = r"(?:noncomputable\s+|private\s+|protected\s+|scoped\s+)*(?:def|abbrev|structure)\s+"
+
+
+def def_names(source: str) -> list[str]:
+    """Every def/abbrev/structure name declared in the source, in order — the canonical counterpart to
+    `theorem_names` (the def-faithfulness / denotation legs key on the OBJECTS the agent introduced, not
+    the lemmas). Comments are stripped first so a commented-out `def` can't surface a phantom name."""
+    return re.findall(r"(?m)^\s*" + _DEFKIND_PREFIX + r"([A-Za-z_][\w'.]*)", strip_comments(source or ""))
+
+
 def _comment_mask(t: str) -> "list[bool]":
     """The ONE canonical Lean-comment scan (single pass, correct precedence): returns a per-char mask
     where `mask[i]` is True iff char `i` is part of a comment. Block comments are NESTED-AWARE
