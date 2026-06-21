@@ -7,13 +7,22 @@ agent genuinely cannot do in its head, with MEASURED lift on the LLM's blind spo
 QE 6/6). The Isabelle `verify` card is the cross-substrate-CONSENSUS leg: a peer-kernel accept/reject the
 agent can elect, NOT a Lean closure (the Lean kernel remains the sole closure arbiter).
 
-The recursive STRATEGY layer (DECOMPOSE a hard goal → sub-lemmas → kernel-audit the plan → prove each
-recursively → composite-ratify) is deliberately NOT a card here — NOT because "the agent does it in its head"
-(that earlier framing was wrong: in-head decomposition gets no soundness audit, no recursion, no composite
-ratification), but because it is a SEPARATE governed mechanism: `isomorphism_decompose.route_and_solve` (the
-warm leaf GENERATES the decomposition, the KERNEL audits it, the apparatus proves the sub-lemmas recursively).
-It fires automatically inside the governed solver (default-ON, `ZTARE_LEANMILL_ISO_ROUTE`) — see `solver_core`.
-Do NOT add a decompose card/tool: that would fork a 4th decomposition path. Cards = exogenous compute only.
+The recursive DECOMPOSE-A-PLAN mechanism (DECOMPOSE a hard goal → sub-lemmas → kernel-audit the plan → prove
+each recursively → composite-ratify) is deliberately NOT a card here — NOT because "the agent does it in its
+head" (that earlier framing was wrong: in-head decomposition gets no soundness audit, no recursion, no
+composite ratification), but because it is a SEPARATE governed mechanism: `isomorphism_decompose.route_and_solve`
+(the warm leaf GENERATES the plan, the KERNEL audits it, the apparatus proves the sub-lemmas recursively). It
+fires automatically inside the governed solver (default-ON, `ZTARE_LEANMILL_ISO_ROUTE`) — see `solver_core`.
+Do NOT add a full-PLAN decompose card/tool here: that would fork a 4th decomposition path.
+
+This module is the EXOGENOUS-TOOL contributor to the unified move registry `solver/move_corpus.py` (the single
+source of truth that also pulls the structural moves, the transportable techniques, and the math research-op
+catalogue). The agent-facing menu is RANKED + RENDERED by `solver/move_atlas.py` (semantic recall over the
+corpus); these tool cards keep their governed WHEN/NOT content + live calibration receipts, and the atlas
+surfaces them in goal-relevant order. `render_tool_block()` remains the TOOL-CARD-only renderer (the static
+fallback when the embedder is down) — strategy/research moves are surfaced through the atlas, not bolted on here
+(the 2026-06-20 de-frankenstein: theory-building / decompose / specialize live in the corpus + atlas, NOT as a
+second appended surface in this file).
 
 Each card REUSES `contracts/action_card.py` (no new schema) and pulls its `evidence_basis` from the LIVE
 `move_calibration` receipts (per-move useful-exit-rate / attempts / cost, learned from RATIFIED governance
@@ -191,7 +200,7 @@ def _evidence_for(move_key: "str | None", tele: dict) -> str:
         from ztare.leanmill.solver import governed_dag_search as _g
         from ztare.leanmill.solver.governed_dag_search import MOVE_COST, MOVE_PRIOR_P_CLOSE
         const = {"witness_transport": _g.MOVE_WITNESS_TRANSPORT, "abduce": _g.MOVE_ABDUCE,
-                 "sledgehammer": _g.MOVE_SLEDGEHAMMER}.get(move_key or "")
+                 "sledgehammer": _g.MOVE_SLEDGEHAMMER, "conjecture_lemma": _g.MOVE_CONJECTURE}.get(move_key or "")
         if const:
             return (f"prior (no receipts yet): P(useful)≈{MOVE_PRIOR_P_CLOSE.get(const)}, "
                     f"cost≈{MOVE_COST.get(const)} budget-units")
@@ -238,22 +247,31 @@ def build_tool_cards(db_path: "str | Path | None" = None) -> list:
     return cards
 
 
+def menu_preamble_lines() -> list:
+    """The shared autonomy + VERBATIM + governance preamble for the agent-facing move menu — reused by BOTH
+    `render_tool_block` (static fallback) and `move_atlas.render_for_goal` (the goal-ranked primary seam) so
+    the framing never drifts between the two."""
+    return ["", "## You are AUTONOMOUS in a workspace-write sandbox — decide your OWN actions.",
+            "Act like a researcher with a terminal: run ANY shell command you judge useful — grep the Mathlib",
+            "source, query Loogle, write candidate Lean and check it against the kernel, iterate, build helper",
+            "lemmas, decompose. NOTHING below is a required step or a prescribed when-to-use; these are the moves",
+            "AVAILABLE if you want them (the kernel re-verifies everything you splice in regardless of how you",
+            "found it):",
+            "VERBATIM CONTRACT: when a tool prints a `===VERBATIM-LEAN-BEGIN===` … `===VERBATIM-LEAN-END===`",
+            "block, copy it into the proof EXACTLY as printed — do NOT paraphrase, reformat, reorder, or add",
+            "type coercions. A single altered digit/token makes the kernel reject it (the tool is not at fault).",
+            *prompts.GOVERNANCE_PROOF_CONSTRAINTS_LINES]   # #104 banned-tactics block (canonical prompts home, #49)
+
+
 def render_tool_block(db_path: "str | Path | None" = None) -> str:
-    """Compact prompt block advertising the exogenous tools to the proving agent (injected into the leaf
-    prompt behind ZTARE_LEANMILL_AGENT_TOOLS). Empty string when the flag is off (byte-parity)."""
+    """Compact prompt block advertising the EXOGENOUS tools to the proving agent (the TOOL-CARD view; injected
+    behind ZTARE_LEANMILL_AGENT_TOOLS). This is the STATIC fallback — the primary agent-facing menu (tools +
+    structural + technique + research moves, goal-ranked) is `move_atlas.render_for_goal`. Empty when the flag
+    is off (byte-parity)."""
     if os.environ.get("ZTARE_LEANMILL_AGENT_TOOLS", "1") == "0":   # DEFAULT-ON (operator 2026-06-10); =0 opts out (keeps an A/B baseline arm)
         return ""
     cards = build_tool_cards(db_path)
-    lines = ["", "## You are AUTONOMOUS in a workspace-write sandbox — decide your OWN actions.",
-             "Act like a researcher with a terminal: run ANY shell command you judge useful — grep the Mathlib",
-             "source, query Loogle, write candidate Lean and check it against the kernel, iterate, build helper",
-             "lemmas, decompose. NOTHING below is a required step or a prescribed when-to-use; these are just",
-             "exogenous-compute helpers AVAILABLE if you want them (they do what you cannot do in your head; the",
-             "Lean kernel re-verifies everything you splice in regardless of how you found it):",
-             "VERBATIM CONTRACT: when a tool prints a `===VERBATIM-LEAN-BEGIN===` … `===VERBATIM-LEAN-END===`",
-             "block, copy it into the proof EXACTLY as printed — do NOT paraphrase, reformat, reorder, or add",
-             "type coercions. A single altered digit/token makes the kernel reject it (the tool is not at fault).",
-             *prompts.GOVERNANCE_PROOF_CONSTRAINTS_LINES]   # #104 banned-tactics block (canonical prompts home, #49)
+    lines = menu_preamble_lines()
     for c in cards:
         tool = c["card_type"].split(":", 1)[1]
         lines.append(f"\n• TOOL `{tool}` — {c['action_program'][0].replace('run: ', '')}")
@@ -294,7 +312,7 @@ def _selftest() -> int:
     assert render_tool_block() == "", "flag=0 must be empty (opt-out baseline arm)"
     os.environ.pop("ZTARE_LEANMILL_AGENT_TOOLS", None)
     assert render_tool_block() != "", "DEFAULT-ON: an absent flag must RENDER the tools (operator 2026-06-10)"
-    print(f"move_cards self-test PASS ({len(cards)} live by default / {len(cards_h)} with hammer enabled; live-gate + parity ok)")
+    print(f"move_cards self-test PASS ({len(cards)} tools by default / {len(cards_h)} with hammer enabled; live-gate + parity ok)")
     return 0
 
 

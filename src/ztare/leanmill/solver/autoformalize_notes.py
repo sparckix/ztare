@@ -1031,6 +1031,26 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     if res["deep_closures"]:
         print(f"[notes] deep rungs kernel-closed this run: "
               + ", ".join(str(d.get('target')) for d in res['deep_closures']), flush=True)
+    # COMPOUNDING-HEALTH EPILOGUE — surface the AMNESIA metric every run via the CANONICAL telemetry
+    # (`scripts/public/control/leanmill/compounding_curve.py`, the task-#110 producer; reporting lives in
+    # scripts/ per the scripts-vs-src rule). A closure of an already-certified rung is a re-derivation; with the
+    # incremental library banking at the cert-write chokepoint (`family_lemma_library` → campaign env) this should
+    # trend → 0. Advisory; never gates. ZTARE_LEANMILL_COMPOUNDING_HEALTH=0 reverts. (Banking itself is NOT here
+    # anymore — it is per-closure at the kernel-ratify site so a run that dies before this epilogue still compounds.)
+    if _os.environ.get("ZTARE_LEANMILL_COMPOUNDING_HEALTH", "1") != "0":
+        try:
+            import importlib.util as _ilu
+            _cc_path = REPO / "scripts/public/control/leanmill/compounding_curve.py"
+            _spec = _ilu.spec_from_file_location("compounding_curve", _cc_path)
+            _cc = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_cc)
+            _rep = _cc.report(REPO)
+            res["rederivation"] = _rep.get("rederivation")
+            _rr = _rep.get("rederivation") or {}
+            print(f"[compounding-health] re-derivation rate = {_rr.get('rederivation_rate')} "
+                  f"({_rr.get('rederived')}/{_rr.get('closures')} closures re-proved known work; → 0 is healthy)",
+                  flush=True)
+        except Exception as _e:  # noqa: BLE001 — telemetry only; never blocks the run
+            print(f"[notes] compounding-health skipped: {repr(_e)[:120]}", flush=True)
     # DENOTATION-FAITHFULNESS EPILOGUE (#162, theory-first honest catch). For a theory-first run the agent
     # BUILT new defs (the substrate Mathlib lacks) — the firewall only governs the STATEMENT, so a self-
     # consistent DECOY def can pass every internal check. We MEASURE (never assert) whether each built def's

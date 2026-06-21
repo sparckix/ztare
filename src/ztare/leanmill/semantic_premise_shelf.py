@@ -11,8 +11,8 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
-from src.ztare.research_director.apn_semantic import apn_semantic_neighbours
-from src.ztare.research_director.mathlib_semantic import (
+from ztare.research_director.apn_semantic import apn_semantic_neighbours
+from ztare.research_director.mathlib_semantic import (
     _cosine as _mathlib_cosine,
     _embed_query_genai,
     mathlib_semantic_neighbours,

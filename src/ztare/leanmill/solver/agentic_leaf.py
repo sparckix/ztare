@@ -351,6 +351,29 @@ def _extract_gap(probe: "str | Path") -> str:
     return " | ".join(g.strip() for g in gaps if g.strip())[:600]
 
 
+def _extract_receipts(probe: "str | Path") -> "list[tuple[str, str]]":
+    """Pull the leaf's a-priori RECEIPT declarations (`-- RECEIPT: <move> — <precondition>`) out of the probe —
+    the move-atlas receipts-a-priori (gap #2, NS-RD `pattern_action_contract` lineage): the technique/move the
+    leaf chose + the structural precondition it instantiated for THIS goal. Mirrors `_extract_gap` (a comment-
+    line extraction, not Lean-structure parsing). Returns [(move, precondition)]."""
+    try:
+        txt = Path(probe).read_text(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001
+        return []
+    out = []
+    for line in re.findall(r"--\s*RECEIPT:\s*(.+)", txt):
+        s = line.strip()
+        if not s:
+            continue
+        mv, pre = s, ""
+        for sep in (" — ", " – ", " - ", ": "):   # the labeled_value-style move/precondition separators
+            if sep in s:
+                mv, pre = s.split(sep, 1)
+                break
+        out.append((mv.strip()[:80], pre.strip()[:300]))
+    return out
+
+
 def _extract_statement_false(probe: "str | Path") -> str:
     """Pull the leaf's REFUTATION (`-- STATEMENT-FALSE: …`) out of the probe — the leaf saying the TARGET as
     stated is FALSE (mis-formalized), with the counterexample + the corrected hypothesis. Distinct from a GAP
@@ -402,11 +425,20 @@ def _leaf_prompt(target: str, goal: str, probe_name: str, *, mode: str = "direct
     # AGENT-ORCHESTRATED TOOL-USE: advertise the exogenous-compute helpers (SymPy / z3 / Isabelle) as tools the
     # agent CALLS itself (autonomy), NOT a hand-wired router; the kernel still re-verifies. Appended at RUNTIME
     # (live-gated), so it stays in render_tool_block, not the static template.
+    # ONE MENU (operator 2026-06-20 de-frankenstein): the agent-facing move menu is the unified `move_corpus`
+    # (tools + structural + technique + math-research moves), semantically RANKED for THIS goal by `move_atlas`
+    # and rendered through the single seam `move_atlas.render_for_goal`. The atlas DRIVES the ordering (the
+    # most relevant moves first); it degrades to the static tool-card block (`move_cards.render_tool_block`)
+    # when the embedder is down — so no regression, never a second appended surface to forget.
     try:
-        from ztare.leanmill.solver.move_cards import render_tool_block
-        common += render_tool_block()
-    except Exception:  # noqa: BLE001 — tool advertising is additive; never break the prompt
-        pass
+        from ztare.leanmill.solver import move_atlas as _matlas
+        common += _matlas.render_for_goal(goal)
+    except Exception:  # noqa: BLE001 — move advertising is additive; never break the prompt
+        try:
+            from ztare.leanmill.solver.move_cards import render_tool_block
+            common += render_tool_block()
+        except Exception:  # noqa: BLE001
+            pass
     # WARM COMPILE: if the harness started the warm REPL (ZTARE_LEANMILL_LEAN_SOCKET — a non-discoverable
     # affordance, so it IS told), point the agent at it (~0.1s) instead of cold `lake env lean` (~30-90s/iter).
     _lean_sock = os.environ.get("ZTARE_LEANMILL_LEAN_SOCKET")
@@ -565,6 +597,12 @@ def solve_leaf(
         res.timeout_retried = True
         ok, why = verify()
     res.reason = why
+    try:   # RECEIPT-a-priori capture (gap #2): log the technique-receipts the leaf declared, joined to atlas rank
+        from ztare.leanmill.solver import move_atlas as _ma
+        for _mv, _pre in _extract_receipts(probe):
+            _ma.log_engagement(goal, _mv, outcome=("closed" if ok else "open"), via="declared")
+    except Exception:  # noqa: BLE001 — receipt telemetry is best-effort
+        pass
     if ok:
         res.closed = True
         return res

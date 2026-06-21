@@ -217,7 +217,22 @@ def _agent_plan_on() -> bool:
     return os.environ.get("ZTARE_LEANMILL_AGENT_PLAN", "1") != "0"
 
 
-def _plan_choice_prefix(situation: str = "proof_stuck", *, enable=None, disable=None) -> str:
+def _plan_research_moves(goal: str = "") -> str:
+    """The 'lever deeper' (operator 2026-06-20): surface the goal-ranked RESEARCH moves (named mathematician
+    moves + transport attacks + structural moves) from the UNIFIED `move_corpus`, via the semantic `move_atlas`,
+    so the planner's structural-action choice is informed by the math catalogue — NOT a parallel surface, the
+    SAME corpus the leaf sees. Graceful: any failure / empty ⇒ '' (the planner keeps the static technique prior
+    below). Domain-general content ⇒ respects the deanchor no-leak discipline."""
+    if not (goal or "").strip():
+        return ""   # goal-CONDITIONED: no goal ⇒ no ranking ⇒ no ballast (keeps the situation-subset clean)
+    try:
+        from ztare.leanmill.solver import move_atlas as _ma
+        return _ma.render_research_moves_for_goal(goal, k=8)
+    except Exception:  # noqa: BLE001 — additive; never break planning
+        return ""
+
+
+def _plan_choice_prefix(situation: str = "proof_stuck", *, enable=None, disable=None, goal: str = "") -> str:
     """Render the PLAN-choice prompt with the move SUBSET applicable to `situation` — the epistemic-generation
     'mechanization-placement' discipline (route the moves that earn their place for THIS situation, do NOT dump
     the whole catalogue as prompt ballast). `proof_stuck` (default) = the full menu (byte-parity with the prior
@@ -240,12 +255,14 @@ def _plan_choice_prefix(situation: str = "proof_stuck", *, enable=None, disable=
                 "the format. The harness then routes the goal to the cascade, which carries BOTH a direct-proof "
                 "path (SOLVE_DIRECT) and a refutation/¬G move (FALSIFY). Only pick a DAG action above when a "
                 "genuine reduction exists. The format serves the proof — never the reverse.)\n")
+    research = _plan_research_moves(goal)   # the math catalogue + transport attacks, goal-ranked (lever deeper)
     return ("FIRST, choose the single best STRUCTURAL ACTION for this goal and state it on ONE line as "
             "`PLAN: <ACTION> — <one-line reason>`, where <ACTION> is EXACTLY one of:\n" + opts +
             "\nThen PRODUCE THE ARTIFACT FOR YOUR CHOSEN ACTION in the DECOMP format below — a sub-lemma DAG "
             "whose sorry-free chain proves the goal G. The SAME kernel audit (sorry-free + non-circular + "
             "every-lemma-load-bearing + proves-G) gates every action, so your CHOICE drives WHICH artifact you "
             "build (this IS the dispatch — it is no longer recorded-and-ignored):\n" + dag_bullets + tail +
+            (research + "\n" if research.strip() else "") +
             "Optionally also declare `BUDGET: <seconds>` — the wallclock you want for your NEXT refinement "
             "round (granted up to a hard cap; omit to keep the default).\n\n")
 
@@ -520,7 +537,7 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
                                          iso_step=_iso_step,
                                          goal_concl=goal_concl, ban=ban + fb, preamble=preamble, goal=goal_decl)
         if _agent_plan_on():                     # #74 step 1: surface the structural-action choice (default-off = parity)
-            prompt = _plan_choice_prefix() + prompt
+            prompt = _plan_choice_prefix(goal=(goal_concl or goal_decl or "")) + prompt
         if _notes_block:                          # #81: prepend the blueprint notes as planner context (parity if none)
             prompt = _notes_block + prompt
         if _warmcheck_block:                      # surface the WARM lean-check at the TOP (most salient steer)
@@ -555,6 +572,17 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
         if _agent_plan_on():                     # #74 step 2: the chosen action DROVE the artifact (the prefix asked for the action-appropriate proves-G DAG); record it for the lift telemetry
             out["plan_action"], out["plan_reason"] = parse_plan_action(raw)
             _record_plan_choice(out["plan_action"], out["plan_reason"], goal_concl)
+            # ENGAGEMENT JOIN (gap #1): tie the agent's A-PRIORI PLAN action (the "plan-before-work helps the
+            # agent think" signal — reusing the existing PLAN: declaration, NOT a new one) to the atlas rank it
+            # held in the research-move menu the planner surfaced. Best-effort telemetry.
+            try:
+                from ztare.leanmill.solver import move_atlas as _ma
+                _pm = {"DECOMPOSE": "conjecture_lemma", "SPECIALIZE": "specialize", "GENERALIZE": "generalize",
+                       "FALSIFY": "falsify", "ABDUCE": "abduce", "TRANSPORT": "transport"}.get(out["plan_action"], out["plan_action"])
+                _ma.log_engagement(goal_concl or "", _pm, outcome="planned", via="plan",
+                                   k=8, kinds={"structural", "technique", "research_op"})
+            except Exception:  # noqa: BLE001
+                pass
             from ztare.leanmill.solver.agent_output import budget_request as _breq   # #103(1): part of the PLAN contract
             _budget_req[0] = _breq(raw, floor=60, cap=_cap)
         return out

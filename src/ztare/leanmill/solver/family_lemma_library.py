@@ -250,6 +250,91 @@ def init_context(context_path: "str | Path", corpus_preamble: str) -> None:
     Path(context_path).write_text(corpus_preamble.rstrip() + "\n", encoding="utf-8")
 
 
+# --- campaign WARM-ENV banking (the cross-run amnesia fix, 2026-06-19) ----------------------------
+# The notes-channel campaign run registers a theory file via `repl_compile.set_campaign_substrate`; the
+# verify seam loads it ONCE into the warm REPL env (`campaign_file_env`, re-opens on mtime change) so the
+# cascade's `exact?`/`aesop` CITE its decls BY TYPE. But nothing appended closed rungs to that file, so it
+# stayed static → every run re-derived (RCA: a root-splitting `iso_lemma1` proved at 18:50 was re-derived
+# byte-identical at 00:02). `bank_decl_to_env` is the missing append — same engine as `bank` (decl_blocks /
+# dedup), with TWO additions justified by the SHARED warm-env (vs `bank`'s provision-as-defs, where a bad
+# decl only fails ITS target's compile): a CONTENT-STABLE name so the planner's GENERIC node names
+# (`iso_lemma1` is ≥3 distinct theorems) don't collide-and-drop, and a whole-file REVERIFY+REVERT so a
+# non-porting rung can't poison every subsequent warm-env verify in the run.
+
+
+def content_stable_name(base_name: str, decl_text: str) -> str:
+    """A decl name UNIQUE to the statement's content (α-key hashed), so generic planner node names don't
+    collide in the shared env and identical statements dedupe to one library decl."""
+    import hashlib
+    from ztare.leanmill.solver.proof_cache import normalize_statement_equiv
+    h = hashlib.sha256(normalize_statement_equiv(decl_text or "").encode("utf-8")).hexdigest()[:8]
+    safe = re.sub(r"[^A-Za-z0-9_]", "_", base_name or "rung").strip("_") or "rung"
+    return f"{safe}__{h}"
+
+
+def _rename_decl_head(decl_text: str, old_name: str, new_name: str) -> str:
+    """Rename ONLY the binding occurrence in the decl head; safe (a decl's name isn't referenced by its own body)."""
+    if not old_name or old_name == new_name:
+        return decl_text
+    return re.sub(r"\b((?:theorem|lemma|def|abbrev)\s+)" + re.escape(old_name) + r"\b",
+                  lambda m: m.group(1) + new_name, decl_text, count=1)
+
+
+def _default_reverify(file_path: "str | Path", lean_root: "str | Path") -> bool:
+    """Reverify the appended campaign file via the PRODUCTION load path (`repl_compile.campaign_file_env`): it
+    re-elaborates the file's decls onto the warm Mathlib env and returns an env id iff the file compiles (None on
+    a hard error / dead REPL / toolchain drift). Read-only on the file — NOT `_compile_probe`, which copies to a
+    temp probe and runs a substrate-hygiene cleanup that DELETED the file (real bug, caught in the real-Lean
+    test 2026-06-19). Faithful: an env here ⇒ the run's verify seam can actually cite the rung."""
+    from ztare.formal.repl_compile import campaign_file_env
+    return campaign_file_env(str(Path(file_path).resolve()), str(Path(lean_root).resolve())) is not None
+
+
+def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: str, lean_root: "str | Path",
+                     *, reverify_fn=None) -> dict:
+    """Bank ONE kernel-closed rung's full decl into the campaign warm-env file, content-stable-renamed, with a
+    reverify+revert via the production load path. Incremental (call at the kernel-ratify site) ⇒ death-robust
+    (you keep what you proved even if the run dies mid-way) AND within-run citable. Reuses `bank` (dedup) and
+    `decl_names`. Returns {banked_as: <name>|None, reason}. Sound: the rung was already axiom-audited; the
+    reverify+revert keeps the shared env compiling (a non-porting rung is dropped, never minted) — and even if a
+    bad rung slipped in, `campaign_file_env` would return None ⇒ the run falls back to inline elaboration, so the
+    worst case is lost compounding, never unsoundness."""
+    p = Path(context_path)
+    if not (decl_text or "").strip() or not p.exists():
+        return {"banked_as": None, "reason": "no_decl_or_no_context"}
+    blocks = dict(decl_blocks(decl_text))
+    block = blocks.get(target_name) or (next(iter(blocks.values()), "") if len(blocks) == 1 else "")
+    if not block or "sorry" in block:
+        return {"banked_as": None, "reason": "no_proven_decl"}
+    new_name = content_stable_name(target_name, block)
+    if new_name in decl_names(p.read_text(encoding="utf-8")):
+        return {"banked_as": None, "reason": "already"}        # identical statement already in the env
+    renamed = _rename_decl_head(block, target_name, new_name)
+    before = p.read_text(encoding="utf-8")
+    _rv = reverify_fn or _default_reverify
+
+    def _try(path) -> bool:
+        try:
+            return bool(_rv(path, lean_root))
+        except Exception:  # noqa: BLE001 — a tooling error ⇒ treat as a failed reverify, never a crash
+            return False
+
+    banked = bank(p, renamed)                                  # reuse the canonical append+dedup+MDL-ledger
+    if new_name not in banked:
+        return {"banked_as": None, "reason": "dedup_or_excluded"}
+    if _try(p):
+        return {"banked_as": new_name, "reason": "banked"}
+    p.write_text(before, encoding="utf-8")                     # REVERT — a non-porting rung must not poison the env
+    # CLASSIFY the failure honestly (positive control on the reverted file): a reverify that returns False for
+    # BOTH "infra is dead" (toolchain-less root / dead REPL / flag off) and "the rung genuinely breaks the env"
+    # is a dead instrument — that conflation hid the wrong-lean_root banking bug for an entire P1 run (every
+    # rung silently mislabeled `reverted_noncompile`). The unmodified `before` file is known-good (it loaded as
+    # the campaign env), so if it ALSO fails to reverify, the reverify apparatus — not the rung — is the
+    # problem. Only paid on the failure path; the common (banked) path stays one elaboration.
+    reason = "reverted_noncompile" if _try(p) else "reverify_unavailable"
+    return {"banked_as": None, "reason": reason}
+
+
 def _self_test() -> int:
     fails = []
 
@@ -317,6 +402,35 @@ def _self_test() -> int:
        mdl_shortest([("b", short), ("a", short)])[0] == "a")
     ok("mdl_shortest_ignores_blank", mdl_shortest([("x", "  "), ("y", short)])[0] == "y")
     ok("mdl_shortest_empty_safe", mdl_shortest([]) == ("", ""))
+
+    # --- campaign warm-env banking: the generic-name-collision + revert behaviour (cross-run amnesia fix) ---
+    env = tempfile.mktemp(suffix=".lean")
+    init_context(env, "import Mathlib\n")
+    # injected reverify (file_path, lean_root) -> bool — file compiles unless it carries the bad-dep marker
+    _rv = lambda path, root: "NoSuchThing" not in Path(path).read_text(encoding="utf-8")
+    a = bank_decl_to_env(env, "iso_lemma1", "theorem iso_lemma1 (n:Nat): n+0=n := by simp", ".", reverify_fn=_rv)
+    b = bank_decl_to_env(env, "iso_lemma1", "theorem iso_lemma1 (n:Nat): n*1=n := by simp", ".", reverify_fn=_rv)
+    ok("env: first generic iso_lemma1 banked under a content name", bool(a["banked_as"]))
+    ok("env: SECOND distinct iso_lemma1 ALSO banked (no name-collision drop)", bool(b["banked_as"]))
+    ok("env: the two distinct lemmas got DIFFERENT content names", a["banked_as"] != b["banked_as"])
+    txt = Path(env).read_text(encoding="utf-8")
+    ok("env: both distinct lemmas live in the file", "n+0=n" in txt and "n*1=n" in txt)
+    c = bank_decl_to_env(env, "iso_lemma1", "theorem iso_lemma1 (m:Nat): m+0=m := by simp", ".", reverify_fn=_rv)
+    ok("env: α-identical statement deduped (not re-banked)", c["banked_as"] is None and c["reason"] == "already")
+    d = bank_decl_to_env(env, "bad", "theorem bad (n:Nat): n=n := NoSuchThing", ".", reverify_fn=_rv)
+    ok("env: non-compiling rung reverted (not banked)", d["banked_as"] is None and d["reason"] == "reverted_noncompile")
+    ok("env: reverted rung is NOT in the file", "NoSuchThing" not in Path(env).read_text(encoding="utf-8"))
+    e = bank_decl_to_env(env, "s", "theorem s : False := by sorry", ".", reverify_fn=_rv)
+    ok("env: sorried rung not banked", e["banked_as"] is None)
+    # DEAD-INFRA classification: a reverify that ALWAYS fails (toolchain-less root / dead REPL — the wrong-root
+    # banking bug, 2026-06-20) must NOT be mislabeled `reverted_noncompile`; the positive control on the
+    # known-good reverted file catches the conflation and reports `reverify_unavailable`.
+    _rv_dead = lambda path, root: False
+    f = bank_decl_to_env(env, "good", "theorem good (n:Nat): n+1=n+1 := by rfl", ".", reverify_fn=_rv_dead)
+    ok("env: dead reverify-infra reported as reverify_unavailable (not a false non-compile)",
+       f["banked_as"] is None and f["reason"] == "reverify_unavailable")
+    os.path.exists(env) and os.remove(env)
+    os.path.exists(env + ".mdl.json") and os.remove(env + ".mdl.json")
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

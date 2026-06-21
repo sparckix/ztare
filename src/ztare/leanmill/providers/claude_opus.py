@@ -59,7 +59,7 @@ class ClaudeOpusProvider(Provider):
         if str(repo) not in sys.path:
             sys.path.insert(0, str(repo))
 
-        from src.ztare.common.subscription_agent_runtime import (  # type: ignore
+        from ztare.common.subscription_agent_runtime import (  # type: ignore
             run_subscription_agent_with_recovery,
         )
 

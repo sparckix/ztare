@@ -58,6 +58,9 @@ httpx>=0.27
 pytest>=8.0
 hypothesis>=6.0    # property-based parser/contract invariants (tests/test_parser_invariants.py — the #49/#80
                    # prevention); absent ⇒ those tests importorskip, so `make gates` can't validate the seams
+pyflakes>=3.0      # F821 undefined-name scan (`make flakes`) — tripwire for the "name bound only in a SIBLING
+                   # function's scope, used here, swallowed by a best-effort except → silently DEAD feature" bug
+                   # class (caught the proposer-pool `_swap` NameError, 2026-06-20). Cheap, pure-Python.
 
 # Optional, per-substrate only (NOT needed for the core apparatus or
 # `make gates`; imported solely by individual project / benchmark

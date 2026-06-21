@@ -477,7 +477,8 @@ def autoformalize(nl: str, *, formalize_fn: "Callable[[str], str]",
     return AutoformalizeResult(nl, lean_statement, verdict)
 
 
-def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str, compile_error: str = "") -> str:
+def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str, compile_error: str = "",
+                             reference_statement: str = "") -> str:
     """Turn the firewall's REJECTION into targeted NL guidance the formalizer can act on — the
     per-leg feedback that makes the refine loop close compile/faithfulness gaps instead of re-rolling.
     `compile_error` (optional, from `default_compile_diagnose`) is the ACTUAL Lean error so a compile-fail
@@ -496,6 +497,16 @@ def _formalize_feedback_hint(verdict: "FaithfulnessVerdict", prior_stmt: str, co
     elif checks.get("structure_preserved") is False or "weaken" in reason or "hypothesis" in reason:
         guide = ("It DROPPED/ADDED a hypothesis or WEAKENED the conclusion. Preserve EVERY hypothesis and "
                  "the EXACT conclusion; keep quantifier order.")
+        # GUIDED weakening repair (2026-06-20): a weakening compiles fine, so there is no Lean error to feed
+        # back — the generic guide above let the formalizer re-weaken (the lemma-2 partial-fraction case: it
+        # dropped the `den/num = P + r/num` conjunct 5×). When a CONFIRMED-FAITHFUL rendering exists (the
+        # faithfulness-store reference the structural check just rejected against), SHOW it so the agent
+        # restores the exact dropped content. Sound: the firewall still re-gates every leg, so copying the
+        # confirmed-faithful STATEMENT (not a proof) can only produce a faithful target, never launder.
+        if (reference_statement or "").strip():
+            guide += ("\n\nA CONFIRMED-FAITHFUL rendering of THIS lemma already exists — match its logical content "
+                      "EXACTLY (every hypothesis AND every conjunct of the conclusion). You dropped/relaxed part of "
+                      "it; restore that part:\n" + reference_statement.strip()[:800])
     elif checks.get("round_trip_faithful") is False or "round-trip" in reason:
         guide = ("Its back-translation did not match the problem. Re-formalize faithfully to the ORIGINAL "
                  "statement — neither weaker nor stronger.")
@@ -513,6 +524,7 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
                          structural_fn: "Optional[Callable[[str, str], bool]]" = None,
                          compile_diagnose_fn: "Optional[Callable[[str], str]]" = None,
                          prior_confirmed_fn: "Optional[Callable[[str, str], bool]]" = None,
+                         reference_statement: str = "",
                          max_refines: int = 2) -> "tuple[AutoformalizeResult, list]":
     """Autoformalize through the shared RefineHandover loop — the compile-fix the one-shot `autoformalize`
     lacks (a real open-problem target produced a faithful-STRUCTURED but uncompiling formalization that the
@@ -543,7 +555,8 @@ def autoformalize_refine(nl: str, *, formalize_fn: "Callable[[str], str]",
                 cerr = compile_diagnose_fn(stmt) or ""    # the ACTUAL Lean error ⇒ guided (not blind) repair
             except Exception:  # noqa: BLE001 — advisory; never break the refine on a diagnose failure
                 cerr = ""
-        return {"nl": nl, "hint": _formalize_feedback_hint(verdict, stmt, cerr)}
+        return {"nl": nl, "hint": _formalize_feedback_hint(verdict, stmt, cerr,
+                                                            reference_statement=reference_statement)}
 
     rh = RefineHandover(generate=_gen, verify=_verify, accept_when=lambda v: bool(v.accepted),
                         build_refine_context=_refine_ctx, max_refines=max_refines)
@@ -558,18 +571,21 @@ def reference_fingerprint(lean_statement: str) -> dict:
     return _parse_lean_statement(lean_statement)
 
 
-def _api_text(prompt: str, *, model: str = "gemini-3.1-pro-preview", label: str, timeout_s: int = 120) -> str:
+def _api_text(prompt: str, *, model: "Optional[str]" = None, label: str, timeout_s: int = 120) -> str:
     """One API completion via the EXISTING `LLMRuntime` (gemini/deepseek allowed; never a metered
-    codex/claude call). For the mechanical legs (back-translate, judge) — NOT for formalize."""
+    codex/claude call). For the mechanical legs (back-translate, judge) — NOT for formalize. The model +
+    fallback are POLICY (solver.yaml `roundtrip_model` / `roundtrip_fallback_model`), NOT hardcoded —
+    `model=None` ⇒ the configured round-trip model."""
+    model = model or _roundtrip_model()
     try:
         from ztare.common.llm_runtime import LLMRuntime
     except Exception:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime  # type: ignore
+            from ztare.common.llm_runtime import LLMRuntime  # type: ignore
         except Exception:
             return ""
     try:
-        resp = LLMRuntime().call_text(prompt, model_id=model, fallback_model_ids=("gemini-2.5-flash",),
+        resp = LLMRuntime().call_text(prompt, model_id=model, fallback_model_ids=_roundtrip_fallback(),
                                       max_tokens=2000, request_label=label, timeout_seconds=timeout_s)
         return getattr(resp, "text", "") or ""
     except Exception:
@@ -733,7 +749,7 @@ def _formalize_via_api(prompt: str, *, model: str = "", timeout_s: int = 120) ->
         from ztare.common.llm_runtime import LLMRuntime, MODEL_MAP
     except Exception:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime, MODEL_MAP  # type: ignore
+            from ztare.common.llm_runtime import LLMRuntime, MODEL_MAP  # type: ignore
         except Exception:
             return ""
     model = MODEL_MAP.get((model or "").strip(), (model or "").strip()) or _api_fallback_model()
@@ -890,7 +906,7 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", time
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
     except Exception:
         try:
-            from src.ztare.leanmill.solver.agentic_leaf import default_dispatch  # type: ignore
+            from ztare.leanmill.solver.agentic_leaf import default_dispatch  # type: ignore
         except Exception:
             return ""
     repo = Path(__file__).resolve().parents[4]
@@ -947,17 +963,50 @@ def default_formalize_multistep(nl: str, *, runtime: str = "", timeout_s: "int |
     return default_formalize(nl, mode="define_then_state", runtime=runtime, timeout_s=timeout_s)
 
 
-def default_backtranslate(lean_statement: str, *, model: str = "gemini-3.1-pro-preview") -> str:
+_ROUNDTRIP_MODEL_DEFAULT = "gemini-3.1-pro-preview"   # a DIFFERENT family from the codex/claude formalizer
+_ROUNDTRIP_FALLBACK_DEFAULT = "gemini-2.5-flash"      # cheap same-family resilience fallback
+
+
+def _roundtrip_fallback() -> "tuple[str, ...]":
+    """The round-trip dispatch fallback model(s) — POLICY (`SolverConfig.roundtrip_fallback_model`), not
+    hardcoded; empty config ⇒ the code default."""
+    try:
+        from ztare.leanmill.solver.config import SolverConfig
+        m = (SolverConfig.load_default().roundtrip_fallback_model or "").strip()
+        if m:
+            return tuple(x.strip() for x in m.split(",") if x.strip())
+    except Exception:  # noqa: BLE001
+        pass
+    return (_ROUNDTRIP_FALLBACK_DEFAULT,)
+
+
+def _roundtrip_model() -> str:
+    """The round-trip back-translate/judge model — NOT hardcoded: it comes from the solver POLICY config
+    (`SolverConfig.roundtrip_model` in solver.yaml, the #49/#140 typed-YAML override layer), falling back to
+    the code default only when unset. Cross-family independence from the formalizer is the soundness-relevant
+    property; the specific id is operator policy, tuned in the YAML, not in code."""
+    try:
+        from ztare.leanmill.solver.config import SolverConfig
+        m = (SolverConfig.load_default().roundtrip_model or "").strip()
+        if m:
+            return m
+    except Exception:  # noqa: BLE001 — a config error never breaks the firewall; fall back to the code default
+        pass
+    return _ROUNDTRIP_MODEL_DEFAULT
+
+
+def default_backtranslate(lean_statement: str, *, model: "Optional[str]" = None) -> str:
     """Lean → NL back-translation — a mechanical rendering (one completion), so it uses `LLMRuntime`
-    (gemini, a DIFFERENT family from a codex formalizer). Returns '' on any failure ⇒ the gate's
-    non-empty guard fails-closed (no admission on a dead back-translator)."""
+    (a DIFFERENT family from a codex formalizer; model is env-overridable via `_roundtrip_model`). Returns ''
+    on any failure ⇒ the gate's non-empty guard fails-closed (no admission on a dead back-translator)."""
+    model = model or _roundtrip_model()
     prompt = prompts.BACKTRANSLATE_PROMPT.format(lean_statement=(lean_statement or ""))
     back = (_api_text(prompt, model=model, label="autoformalize_backtranslate") or "").strip()
     _observe_roundtrip("backtranslate", lean_statement=(lean_statement or ""), back_nl=back, model=model)
     return back
 
 
-def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
+def default_directional_judge(orig_nl: str, back_nl: str, *, model: "Optional[str]" = None) -> bool:
     """DIRECTIONAL-for-proving faithfulness judge: True iff PROVING the back-translation would ESTABLISH the
     original's claim — a stronger-or-equal CONCLUSION (incl. a CONSTRUCTIVE witness for an ∃-goal: exhibiting a
     specific F for "∃F, F'=f" is faithful, never a launder — proving more is harder, not easier) on the
@@ -976,6 +1025,7 @@ def default_directional_judge(orig_nl: str, back_nl: str, *, model: str = "gemin
     the vote) — and the prompt explicitly tells the judge that MORE PRECISION is NOT strengthening. Every
     vote + the raw verdicts are logged via `_observe_roundtrip` so a rejection is never opaque again."""
     import os as _os
+    model = model or _roundtrip_model()   # env-overridable single-model judge id (the panel below ignores it)
     # JUDGE-DIVERSITY PANEL (#116 follow-up, `ZTARE_LEANMILL_JUDGE_PANEL`, default-off = byte-parity): poll K
     # DIFFERENT model families + Dawid–Skene reliability weighting instead of N samples of ONE model — the
     # measured single-judge 5/6-FALSE-REJECT fix (samples of one model share its systematic over-strictness;
@@ -1171,9 +1221,9 @@ def default_triviality(statement: str, sandbox) -> bool:
     sig = _extract_signature(statement)
     if detect_risks(sig).get("vacuity_suspected") is True:
         return True
-    triv = re.sub(r":=\s*(?:by\s+)?sorry",
-                  ":= by first | trivial | rfl | simp_all | omega | decide | tauto | norm_num | aesop",
-                  statement, count=1, flags=re.S)
+    # CANONICAL sorry→tactic splice (binder/by-token aware) instead of a `:=…sorry` regex.
+    from ztare.leanmill.lean_source import swap_sorry as _swap_sorry
+    triv = _swap_sorry(statement, "by first | trivial | rfl | simp_all | omega | decide | tauto | norm_num | aesop") or statement
     body = triv if triv.lstrip().startswith("import") else f"import Mathlib\n\n{triv}"
     cheap = _compile_probe(body, sandbox, "AutoformTriv", 150)
     if cheap is None:
@@ -1225,7 +1275,7 @@ def detect_def_shells(formalization: str) -> "list[tuple[str, str]]":
     return shells
 
 
-def _default_def_judge(nl: str, decl: str, *, model: str = "gemini-3.1-pro-preview") -> bool:
+def _default_def_judge(nl: str, decl: str, *, model: "Optional[str]" = None) -> bool:   # model=None ⇒ config round-trip model
     """Cold cross-family (gemini) judge for ONE Lean definition vs the NL intent. Returns True (faithful)
     unless a STRICT MAJORITY of N votes give a CLEAR `UNFAITHFUL` verdict — FAITHFUL / ambiguous / empty /
     error all → True (admit), so the layer does NOT over-reject faithful defs (detect_def_shells + the
@@ -1381,12 +1431,15 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
     # newly caught (a sound tightening). The firewall's kernel legs remain the sole faithfulness arbiter.
     _fstore = None
     _prior_confirmed_fn = None
+    _ref_stmt = ""   # the CONFIRMED-FAITHFUL reference statement (if any) — fed into the weakening-refine feedback
     if structural_fn is None and os.environ.get("ZTARE_LEANMILL_FAITHFULNESS_STORE", "1") != "0":   # DEFAULT-ON 2026-06-12 (deposit only on CONFIRMED admits; recall only STRENGTHENS the guard; =0 reverts)
         try:
             from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore
             from ztare.leanmill.solver.solver_core import OUT_DIR as _OUT
             _fstore = FaithfulnessStore(_OUT / "solver_lane_faithfulness_store.jsonl")
-            _exp = (_fstore.reference(nl) or {}).get("fingerprint")
+            _ref0 = _fstore.reference(nl) or {}
+            _exp = _ref0.get("fingerprint")
+            _ref_stmt = _ref0.get("statement") or ""
             structural_fn = lambda _nl, _s: structural_faithfulness(_nl, _s, expected=_exp)  # noqa: E731
             # #105: a re-seen statement that EXACTLY matches the stored CONFIRMED rendering skips the flaky
             # round-trip JUDGE (the deterministic legs — incl. the structural reference above — still run, so
@@ -1404,16 +1457,19 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
         backtranslate_fn=backtranslate_fn, judge_fn=judge_fn, structural_fn=structural_fn,
         compile_diagnose_fn=compile_diagnose_fn,   # feed the ACTUAL Lean error into the compile-fix refine (not blind)
         prior_confirmed_fn=_prior_confirmed_fn,
+        reference_statement=_ref_stmt,   # GUIDED weakening-repair: show the confirmed-faithful rendering to restore
         max_refines=max_refines)
     # #88 MULTISTEP ESCALATION: a oneshot formalization the firewall REJECTS may still be faithfully
     # formalizable with more deliberation — MEASURED 2026-06-10: the hard partial-fraction-existence lemma went
     # rejected(oneshot) → admitted+faithful(multistep, real Mathlib `RatFunc` objects, no def-shell). Retry the
     # REJECTED case ONCE with `default_formalize_multistep` (define_then_state). The escalated statement flows
-    # through the SAME downstream gates (def-shell + def-faithfulness below), so it cannot launder. Gated
-    # default-off (`ZTARE_LEANMILL_MULTISTEP_ESCALATE`) — multistep is EXPENSIVE (~7 dispatches/lemma).
+    # through the SAME downstream gates (def-shell + def-faithfulness below), so it cannot launder. DEFAULT-ON
+    # (2026-06-20, operator: it's the MEASURED recovery for exactly the partial-fraction lemma class that the
+    # p1 campaign dead-ended on; it only fires on a REJECTED oneshot, so the ~7-dispatch cost is bounded to the
+    # hard lemmas, not every lemma — sound: re-passes the SAME firewall, never launders). `=0` reverts (A/B).
     from ztare.leanmill.solver.agentic_leaf import INADMISSIBLE_DISPATCH as _INADM
     if (not af.is_target and af.verdict.reason != "INADMISSIBLE_PROVIDER_DEAD" and af.lean_statement != _INADM
-            and os.environ.get("ZTARE_LEANMILL_MULTISTEP_ESCALATE") == "1"):
+            and os.environ.get("ZTARE_LEANMILL_MULTISTEP_ESCALATE", "1") != "0"):
         try:
             _af2, _tr2 = autoformalize_refine(
                 nl, formalize_fn=lambda _nl: default_formalize_multistep(_nl),
@@ -1519,6 +1575,12 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
 
 def _self_test() -> int:
     fails = []
+    # HERMETIC: multistep escalation (now DEFAULT-ON, 2026-06-20) dispatches the REAL `default_formalize_multistep`
+    # agent on a firewall reject — a live, non-hermetic path. The mock-injected suite below uses permissive
+    # compile/triviality/structural fns, so the escalation would admit a mock and flip the reject-path tests.
+    # Force it OFF for the suite (the canonical "default-on live capability must be off in a hermetic test"
+    # fix — see the sledgehammer-live lesson). The escalation's own behaviour is validated live, not here.
+    os.environ["ZTARE_LEANMILL_MULTISTEP_ESCALATE"] = "0"
 
     def ok(name, cond):
         print(f"  [{'PASS' if cond else 'FAIL'}] {name}")

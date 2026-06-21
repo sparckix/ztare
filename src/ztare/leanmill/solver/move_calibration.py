@@ -27,6 +27,7 @@ from __future__ import annotations
 import os
 import sqlite3
 from pathlib import Path
+from typing import Iterable, Optional   # used in string annotations (pyflakes F821 / get_type_hints hygiene)
 
 import math
 
@@ -186,6 +187,23 @@ def _has_column(con: "sqlite3.Connection", table: str, col: str) -> bool:
         return False
 
 
+def _admissibility_clause(con: "sqlite3.Connection", effective: bool) -> "tuple[list[str], list, bool]":
+    """The ONE attempts-DB admissibility WHERE (re-baseline date + apparatus-failure hygiene + dynamic
+    carrier-liveness). Returns (where_terms, params, effective_after_migration_check) — shared by the per-move
+    and per-model aggregations so they cannot drift (DRY; behaviour-identical to the inline clause it replaces)."""
+    if effective and not _has_column(con, "attempts", "ratified"):
+        effective = False  # un-migrated DB (no governance verdicts) → compile_ok (parity)
+    where = ["provider IS NOT NULL"]
+    params: "list" = []
+    if _admissible_filter_on() and _has_column(con, "attempts", "attempt_at"):
+        where.append("attempt_at >= ?"); params.append(_admissible_since())
+        where.append("COALESCE(error_class,'none') NOT IN (%s)" % ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
+        params.extend(_APPARATUS_FAILURE_CLASSES)
+    if _admissible_filter_on() and _has_column(con, "attempts", "carrier_live"):
+        where.append("COALESCE(carrier_live, 1) != 0")
+    return where, params, effective
+
+
 def _cells_from_db(db_path: str | Path, effective: "bool | None" = None) -> "tuple[dict[tuple[str, str], tuple[int, int]], dict[str, tuple[int, int]]]":
     """Aggregate the attempts DB into ({(move, error_class): (closed, total)}, {move: (closed, total)}).
 
@@ -198,22 +216,7 @@ def _cells_from_db(db_path: str | Path, effective: "bool | None" = None) -> "tup
     moves: dict[str, list[int]] = {}
     try:
         with sqlite3.connect(str(db_path)) as con:
-            if effective and not _has_column(con, "attempts", "ratified"):
-                effective = False  # un-migrated DB (no governance verdicts) → compile_ok (parity)
-            where = ["provider IS NOT NULL"]
-            params: "list" = []
-            if _admissible_filter_on() and _has_column(con, "attempts", "attempt_at"):
-                # RE-BASELINE: only attempts from the FIXED apparatus (after the 2026-06-09 carrier+REPL fixes).
-                where.append("attempt_at >= ?"); params.append(_admissible_since())
-                # FORWARD HYGIENE: an instrument failure (probe-never-parsed / cold-reload timeout) is not a
-                # move-quality signal — drop it so it can never poison est_p_close (apparatus_certificate rule).
-                where.append("COALESCE(error_class,'none') NOT IN (%s)" % ",".join("?" * len(_APPARATUS_FAILURE_CLASSES)))
-                params.extend(_APPARATUS_FAILURE_CLASSES)
-            # DYNAMIC carrier-liveness admissibility (#90): drop DEAD-carrier attempts (provider quota/auth-dead,
-            # tagged at write time) regardless of date — a provider outage (codex exhaustion) self-cleans WITHOUT
-            # hand-moving the static date-cutoff. NULL (unknown, pre-#90 rows) and 1 (live) are kept ⇒ back-compat.
-            if _admissible_filter_on() and _has_column(con, "attempts", "carrier_live"):
-                where.append("COALESCE(carrier_live, 1) != 0")
+            where, params, effective = _admissibility_clause(con, effective)
             rows = con.execute(
                 f"SELECT provider, COALESCE(error_class,'none'), COUNT(*), COALESCE(SUM({_close_score_expr(effective)}),0) "
                 f"FROM attempts WHERE {' AND '.join(where)} GROUP BY provider, error_class", params).fetchall()
@@ -227,6 +230,44 @@ def _cells_from_db(db_path: str | Path, effective: "bool | None" = None) -> "tup
         m = moves.setdefault(move, [0, 0]); m[0] += int(closed); m[1] += int(total)
     return ({k: (v[0], v[1]) for k, v in cells.items()},
             {k: (v[0], v[1]) for k, v in moves.items()})
+
+
+# --- PER-MODEL calibration (the NFL-impossibility leg of the governed-proposer-pool, 2026-06-20) ----------
+# The diverse-proposer pool needs ADAPTIVE allocation across MODELS (claude / codex / kimi / …) — NFL proves no
+# STATIC split is optimal. move_calibration is per-MOVE; this is the per-MODEL sibling: P(close | model) by the
+# SAME governed Beta posterior, off the SAME admissible attempts. Pure read; advisory (routes proposer budget,
+# never gates a closure). `stub` is the shared cold prior (no per-model stub table — a new model starts neutral).
+DEFAULT_MODEL_STUB = 0.35
+
+
+def calibrate_by_model(db_path: str | Path, *, stub: float = DEFAULT_MODEL_STUB,
+                       strength: float = DEFAULT_PRIOR_STRENGTH, effective: "bool | None" = None) -> "dict[str, dict]":
+    """{provider/model: {p, p_stub, closed, total, shift}} from the admissible attempts DB — the per-MODEL
+    est_p_close that routes the diverse proposer pool. Reuses `beta_posterior_mean` + `_admissibility_clause`
+    (no re-rolled SQL/posterior). A model with no admissible data sits at `stub` (n=0 posterior == stub).
+    NOT floored (every model costs budget; unlike the free native moves there is nothing to protect from
+    down-weighting) and NOT mapped through PROVIDER_TO_MOVE (we want the raw model identity)."""
+    if effective is None:
+        effective = _score_ratified_default()
+    per_model: "dict[str, list[int]]" = {}
+    try:
+        with sqlite3.connect(str(db_path)) as con:
+            where, params, effective = _admissibility_clause(con, effective)
+            rows = con.execute(
+                f"SELECT provider, COUNT(*), COALESCE(SUM({_close_score_expr(effective)}),0) "
+                f"FROM attempts WHERE {' AND '.join(where)} GROUP BY provider", params).fetchall()
+    except sqlite3.Error:
+        return {}
+    for provider, total, closed in rows:
+        if not provider:
+            continue
+        m = per_model.setdefault(str(provider), [0, 0]); m[0] += int(closed); m[1] += int(total)
+    out: "dict[str, dict]" = {}
+    for model, (closed, total) in per_model.items():
+        p = beta_posterior_mean(stub, closed, total, strength)
+        out[model] = {"p": round(p, 4), "p_stub": stub, "closed": closed, "total": total,
+                      "shift": round(p - stub, 4)}
+    return out
 
 
 # --- BIC model selection: should est_p_close split by error_class, or pool by move? ------------

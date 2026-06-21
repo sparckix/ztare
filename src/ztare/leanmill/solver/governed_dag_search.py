@@ -295,6 +295,14 @@ DEFAULT_DEFER_THRESHOLD = 0.12
 # every non-closure as identical (the measured DAG≈cascade failure mode).
 PROGRESS_WEIGHT = 1.0
 
+# VALUE-BACKUP tunables (MCTS arm; used only when ZTARE_LEANMILL_VALUE_BACKUP=1, default OFF = byte-parity).
+# A move's realized reward is backed UP to its ancestors' `subtree_value`; an OPEN node's frontier score then
+# gains `WEIGHT × (ancestor-chain subtree_value)` so productive branches are expanded first and doomed ones
+# drained last. Env-overridable (no magic literals). FAIL_PENALTY is the small negative reward of a move that
+# made no progress (so a branch of repeated failures self-deprioritises).
+DEFAULT_VALUE_BACKUP_WEIGHT = 0.5     # ZTARE_LEANMILL_VALUE_BACKUP_WEIGHT
+DEFAULT_VALUE_BACKUP_FAIL_PENALTY = 0.1   # ZTARE_LEANMILL_VALUE_BACKUP_FAIL_PENALTY
+
 # UCB-over-moves tunables (used only when ZTARE_LEANMILL_UCB_MOVES=1). Named constants — NOT magic literals
 # — so the default is a single, documented, discoverable source of truth (the convention of the tunables
 # above); each is also OVERRIDABLE per-run via its env var so the A/B can sweep it / an operator can set it.
@@ -360,6 +368,10 @@ class DagNode:
     boost_factor: float = 1.0       # BOOSTING (AdaBoost analog): a per-node budget MULTIPLIER the move runner
     #   applies to this node's per-move cap. 1.0 = no boost (parity); >1 = concentrate budget DEPTH on a
     #   bottleneck rung. Set by the search loop under ZTARE_LEANMILL_BOOST=1; read by solver_core's _cap.
+    subtree_value: float = 0.0      # MCTS value-BACKUP signal: realized reward (close/rung/progress − fail) of
+    #   this node's DESCENDANTS, backed UP via `_backup_value`. Biases frontier selection toward branches whose
+    #   subtree is productive and away from doomed ones (the MCTS arm boosting/UCB-frontier don't cover). Only
+    #   read under ZTARE_LEANMILL_VALUE_BACKUP=1 (default off ⇒ stays 0.0 ⇒ byte-parity). No soundness surface.
 
     def is_finished(self) -> bool:
         return self.status in ("closed", "exact_gap", "falsifier", "rung", "retired")
@@ -1012,14 +1024,49 @@ def _frontier_score(node: DagNode, budget_remaining: float) -> float:
     return (est_p * _node_value(node)) - cost + PROGRESS_WEIGHT * node.best_progress
 
 
-def _frontier_select(open_nodes: list, budget_units: float, total_expansions: int):
+def _backup_value(nodes: "dict[str, DagNode]", node: "DagNode", delta: float) -> None:
+    """MCTS value-BACKUP: add `delta` (the realized reward of the move just applied at `node`) to EVERY
+    ancestor's `subtree_value`, so a branch's track record informs future frontier selection. Walks up
+    `parent_id` (the same chain `_propagate_closure` uses). Pure selection bookkeeping — NEVER touches closure
+    soundness (the kernel still ratifies every close); the worst case is a sub-optimal expansion ORDER."""
+    pid, hops = node.parent_id, 0
+    while pid is not None and hops < 256:        # hop cap = cycle/loop backstop
+        p = nodes.get(pid)
+        if p is None:
+            break
+        p.subtree_value += delta
+        pid, hops = p.parent_id, hops + 1
+
+
+def _branch_value(nodes: "dict[str, DagNode]", node: "DagNode") -> float:
+    """The backed-up reward accumulated along `node`'s ANCESTOR chain — how productive this branch has been."""
+    s, pid, hops = 0.0, node.parent_id, 0
+    while pid is not None and hops < 256:
+        p = nodes.get(pid)
+        if p is None:
+            break
+        s += p.subtree_value
+        pid, hops = p.parent_id, hops + 1
+    return s
+
+
+def _frontier_select(open_nodes: list, budget_units: float, total_expansions: int,
+                     nodes: "Optional[dict]" = None):
     """Choose ONE open node to expand. DEFAULT = greedy argmax of `_frontier_score` (byte-identical to the
     prior `sorted(...)[0]`). Under ZTARE_LEANMILL_UCB_FRONTIER=1 = UCB over the FRONTIER: add an exploration
     bonus that boosts an UNDER-EXPANDED node (node "visits" = len(moves_tried)) so the search explores diverse
     decomposition branches instead of tunneling on the single best-scoring node. The bonus is scaled by the
     frontier-score SPREAD (dimensionless `c`); DEFER-scored nodes (-1e9, no affordable move) are excluded from
-    the UCB pool but remain the greedy fallback. At c=0 (or ≤1 live node) this reduces to greedy."""
+    the UCB pool but remain the greedy fallback. At c=0 (or ≤1 live node) this reduces to greedy.
+
+    VALUE-BACKUP (ZTARE_LEANMILL_VALUE_BACKUP=1, default off; needs `nodes` to walk ancestors): add
+    `WEIGHT × _branch_value` so an open node in a PRODUCTIVE branch (closing/progressing descendants) outranks
+    one in a doomed branch — the MCTS arm boosting (concentrate on a stuck node) and UCB-frontier (explore the
+    under-expanded) do NOT cover. DEFER-scored nodes keep their -1e9 (never resurrected by a branch bonus)."""
     base = [(n, _frontier_score(n, budget_units)) for n in open_nodes]
+    if (nodes is not None and os.environ.get("ZTARE_LEANMILL_VALUE_BACKUP") == "1"):
+        _w = float(os.environ.get("ZTARE_LEANMILL_VALUE_BACKUP_WEIGHT", DEFAULT_VALUE_BACKUP_WEIGHT))
+        base = [(n, sc + (_w * _branch_value(nodes, n) if sc > -1e8 else 0.0)) for n, sc in base]
     if os.environ.get("ZTARE_LEANMILL_UCB_FRONTIER") != "1":
         return max(base, key=lambda nb: nb[1])[0]
     live = [(n, s) for n, s in base if s > -1e8]   # exclude DEFER-scored nodes (no affordable move)
@@ -1366,7 +1413,7 @@ def run_governed_dag_search(
         if not open_nodes:
             trace.append({"event": "stop", "reason": "no_open_nodes"})
             break
-        node = _frontier_select(open_nodes, budget_units, moves_made)
+        node = _frontier_select(open_nodes, budget_units, moves_made, nodes)
 
         # BOOSTING (AdaBoost analog), default-off (ZTARE_LEANMILL_BOOST=1): a node that the frontier keeps
         # re-selecting after _BOOST_AFTER failed moves is a load-bearing BOTTLENECK rung — concentrate budget
@@ -1389,7 +1436,7 @@ def run_governed_dag_search(
             cached = cache.get(node.goal_text)
             if cache_verify is not None:
                 reuse_ok = bool(cache_verify(node.goal_text, cached))
-            elif os.environ.get("ZTARE_LEANMILL_EQUIV_CACHE") == "1":
+            elif os.environ.get("ZTARE_LEANMILL_EQUIV_CACHE", "1") != "0":   # default-on 2026-06-19
                 # MUST-FIX (adversarial review 2026-06-04): the equiv key is α-COLLAPSED and the
                 # normalizer is scope-blind, so a hit can be a FALSE cross-theorem collapse. Without
                 # an in-context re-verify there is no safety net → it would mint a WRONG closure. So an
@@ -1492,6 +1539,17 @@ def run_governed_dag_search(
                 else min(node.min_goals_remaining, result.goals_remaining))
         if result.error_class:
             node.last_error_class = result.error_class   # out-of-span signal for the invent-criterion
+
+        # MCTS VALUE-BACKUP (ZTARE_LEANMILL_VALUE_BACKUP=1, default off ⇒ no-op): credit/debit this move's
+        # realized reward to the ancestor chain so the frontier prefers productive branches. close=+1, rung=
+        # partial-credit, otherwise the progress gained minus a small fail-penalty (so a branch of repeated
+        # no-progress moves self-deprioritises). Pure selection bookkeeping; the kernel still ratifies closes.
+        if os.environ.get("ZTARE_LEANMILL_VALUE_BACKUP") == "1":
+            _fp = float(os.environ.get("ZTARE_LEANMILL_VALUE_BACKUP_FAIL_PENALTY", DEFAULT_VALUE_BACKUP_FAIL_PENALTY))
+            _delta = (1.0 if result.ratified_close
+                      else 0.5 if result.rung
+                      else float(result.progress or 0.0) - _fp)
+            _backup_value(nodes, node, _delta)
 
         if result.falsifier:
             node.status = "falsifier"
@@ -1858,6 +1916,32 @@ def _selftest() -> int:
         for k, v in _saved_f.items():
             _osf.environ.pop(k, None) if v is None else _osf.environ.__setitem__(k, v)
 
+    # --- Test 10c (VALUE-BACKUP — MCTS branch credit): the pure propagation + the gated frontier bonus ---
+    _vr = DagNode(node_id="vr", kind="root_goal", goal_text="vg")
+    _vpg = DagNode(node_id="vpg", kind="sub_goal", goal_text="vgg", parent_id="vr")   # productive branch
+    _vpb = DagNode(node_id="vpb", kind="sub_goal", goal_text="vgb", parent_id="vr")   # doomed branch
+    _vlg = DagNode(node_id="vlg", kind="sub_goal", goal_text="vlg", parent_id="vpg")  # open leaf (good branch)
+    _vlb = DagNode(node_id="vlb", kind="sub_goal", goal_text="vlb", parent_id="vpb")  # open leaf (bad branch)
+    _vnodes = {n.node_id: n for n in (_vr, _vpg, _vpb, _vlg, _vlb)}
+    _backup_value(_vnodes, _vlg, +5.0)   # a descendant of vpg paid off → credit the chain up to root
+    _backup_value(_vnodes, _vlb, -5.0)   # a descendant of vpb failed → debit its chain
+    ok("value_backup_credits_ancestors_only",
+       _vpg.subtree_value == 5.0 and _vpb.subtree_value == -5.0 and _vr.subtree_value == 0.0
+       and _vlg.subtree_value == 0.0)   # the node itself is NOT credited (only ancestors)
+    ok("branch_value_sums_ancestor_chain",
+       _branch_value(_vnodes, _vlg) == 5.0 and _branch_value(_vnodes, _vlb) == -5.0)
+    import os as _osv
+    _saved_vb = _osv.environ.get("ZTARE_LEANMILL_VALUE_BACKUP")
+    try:
+        # the gated frontier bonus tips selection toward the productive branch when base scores tie (both
+        # leaves are structurally identical ⇒ equal _frontier_score). OFF ⇒ no branch term (parity).
+        _osv.environ["ZTARE_LEANMILL_VALUE_BACKUP"] = "1"
+        ok("value_backup_frontier_prefers_productive_branch",
+           _frontier_select([_vlb, _vlg], 100.0, 10, _vnodes) is _vlg)
+    finally:
+        _osv.environ.pop("ZTARE_LEANMILL_VALUE_BACKUP", None) if _saved_vb is None \
+            else _osv.environ.__setitem__("ZTARE_LEANMILL_VALUE_BACKUP", _saved_vb)
+
     # --- Test 10b (BOOSTING — budget-concentration on a bottleneck rung): parity + bite + tunables ---
     import os as _osb
     _bk = ("ZTARE_LEANMILL_BOOST", "ZTARE_LEANMILL_BOOST_AFTER", "ZTARE_LEANMILL_BOOST_MULT")
@@ -2024,7 +2108,11 @@ def _selftest() -> int:
     def runner_never(node, move, budget):   # would never close on its own
         return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
     _reuse_log = []
+    # `cache_verify` is REQUIRED for reuse now that ZTARE_LEANMILL_EQUIV_CACHE is default-ON (2026-06-19): an
+    # α-collapsed hit with NO re-verify is a MISS (can't trust a scope-blind normalized key) — exactly the
+    # production path (solver_core always passes cache_verify). A True re-verify ⇒ the reuse fires + closes.
     res12 = run_governed_dag_search({}, "theorem T : P := by", runner_never, max_moves=20, cache=pc,
+                                    cache_verify=lambda g, p: True,
                                     on_cache_reuse=lambda nid, g, rev, wc: _reuse_log.append((nid, rev)))
     ok("cache_reuse_closes_zero_moves",
        res12["root_status"] == "closed" and res12["moves_made"] == 0

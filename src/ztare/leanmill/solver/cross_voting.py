@@ -82,7 +82,7 @@ class Formalizer:
 DEFAULT_FORMALIZERS = (
     Formalizer("codex", "subscription"),
     Formalizer("claude", "subscription"),
-    Formalizer("gemini", "llm_runtime", "gemini-3.1-pro-preview"),
+    Formalizer("gemini", "llm_runtime"),   # model="" ⇒ the configured round-trip model (solver.yaml), not hardcoded
 )
 
 
@@ -106,7 +106,7 @@ def _formalize_one(nl: str, f: Formalizer, *, mode: str, timeout_s: int) -> str:
         # the SAME banner-stripping extractor so the candidate shape matches the subscription votes.
         from ztare.leanmill.solver.autoformalize import _FORMALIZE_PROMPTS
         prompt = _FORMALIZE_PROMPTS.get(mode, _FORMALIZE_PROMPTS["oneshot"]) + (nl or "")
-        model = f.model or "gemini-3.1-pro-preview"
+        model = f.model or None   # None ⇒ `_api_text` uses the configured round-trip model (solver.yaml), not hardcoded
         try:
             raw = _api_text(prompt, model=model, label="crossvote_formalize", timeout_s=timeout_s) or ""
         except Exception:  # noqa: BLE001

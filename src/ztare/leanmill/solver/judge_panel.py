@@ -47,7 +47,14 @@ def panel_enabled() -> bool:
 
 
 def panel_models() -> "list[str]":
-    raw = os.environ.get("ZTARE_LEANMILL_JUDGE_PANEL_MODELS", _DEFAULT_MODELS)
+    # POLICY precedence: solver.yaml `judge_panel_models` > env override > code default. Not hardcoded-only.
+    cfg = ""
+    try:
+        from ztare.leanmill.solver.config import SolverConfig
+        cfg = (SolverConfig.load_default().judge_panel_models or "").strip()
+    except Exception:  # noqa: BLE001
+        cfg = ""
+    raw = cfg or os.environ.get("ZTARE_LEANMILL_JUDGE_PANEL_MODELS", "") or _DEFAULT_MODELS
     return [m.strip() for m in raw.split(",") if m.strip()]
 
 

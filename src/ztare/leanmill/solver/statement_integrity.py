@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from typing import Callable, Optional   # used in string annotations (pyflakes F821 / get_type_hints hygiene)
 
 # A declaration start: optional attributes/modifiers, a decl keyword, optional name (instances may be
 # anonymous). Allows LEADING WHITESPACE so namespaced/indented decls are seen (review false-closure).
@@ -152,9 +153,19 @@ class IntegrityVerdict:
                              "every other original decl + the target signature must be preserved"}
 
 
-def check(original_source: str, probe_source: str, target_name: str) -> IntegrityVerdict:
+def check(original_source: str, probe_source: str, target_name: str,
+          *, target_type_equiv_fn: "Optional[Callable[[str, str], bool]]" = None) -> IntegrityVerdict:
     """Verify the probe preserved every original declaration the target depends on. The agent may
-    add new decls and replace `target_name`'s proof body; anything else is a violation."""
+    add new decls and replace `target_name`'s proof body; anything else is a violation.
+
+    `target_type_equiv_fn(orig_target_block, probe_target_block) -> bool` (optional): a KERNEL type-equality
+    oracle. The raw signature TEXT diff is BRITTLE — it false-rejects a binders-after-colon `∀`-reformulation
+    (`theorem f (h):Q` vs `theorem f : ∀ h, Q`), which is the SAME Pi type (definitional proof-irrelevance),
+    NOT a weakening (2026-06-20 RCA: this taxed every provable rung the model stated in ∀-form). When the TEXT
+    differs, defer to this oracle: it kernel-checks `@orig = @agent := rfl` and returns True iff the two are the
+    SAME Prop. It can ONLY UPGRADE a text-reject to ACCEPT — a real weakening (dropped/added hyp, altered
+    conclusion) is a TYPE mismatch ⇒ False ⇒ the violation stands, and infra failure ⇒ False (FAIL-CLOSED, the
+    no-false-closure invariant holds). Absent ⇒ pure text behavior (byte-parity; tests + non-campaign paths)."""
     orig = dict(decl_blocks(original_source))
     probe = dict(decl_blocks(probe_source))
     # the target may be namespace-qualified (e.g. `AlmostPeriodic.leaf_X`); match by exact OR suffix.
@@ -167,7 +178,16 @@ def check(original_source: str, probe_source: str, target_name: str) -> Integrit
         if name in _tgt:
             # only the proof BODY may change — the SIGNATURE (statement) must be preserved
             if _norm(_signature(oblock)) != _norm(_signature(probe[name])):
-                violations.append(f"target_signature_altered: `{name}`'s statement was changed")
+                # TEXT differs — but consult the KERNEL type-equality oracle before flagging: a faithful
+                # ∀-reformulation is the same type (accept); a real weakening is a type mismatch (still rejected).
+                _kernel_ok = False
+                if target_type_equiv_fn is not None:
+                    try:
+                        _kernel_ok = bool(target_type_equiv_fn(oblock, probe[name]))
+                    except Exception:  # noqa: BLE001 — oracle failure ⇒ keep the text verdict (fail-closed)
+                        _kernel_ok = False
+                if not _kernel_ok:
+                    violations.append(f"target_signature_altered: `{name}`'s statement was changed")
         else:
             # every OTHER original decl (structures/defs/lemmas) must be byte-identical (mod ws/comments)
             if _norm(oblock) != _norm(probe[name]):

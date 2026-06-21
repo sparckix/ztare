@@ -26,8 +26,22 @@ _WS_RE = re.compile(r"\s+")
 
 
 def normalize_statement(statement: str) -> str:
-    from ztare.leanmill.lean_source import signature_before_proof
-    s = _NAME_RE.sub("theorem _", (statement or "").strip())
+    # CANONICAL-STATEMENT KEY (2026-06-19 amnesia RCA): the cache was keyed on the ENRICHED probe — `import
+    # Mathlib` + per-run `-- candidate premises (semantic shelf…)` comments + the theorem — so the SAME lemma
+    # drifted to a NEW key every run (17 keys for one `iso_lemma1`) and reuse NEVER fired. Strip the comments
+    # (per-run premise noise) and the import header (preamble, not the statement) FIRST, so the enriched stored
+    # key and a clean `goal` lookup canonicalize to the same decl. Soundness unchanged: an over-collapse is only
+    # ever closed after an in-context re-verify (cache_verify), so it is a re-verify miss, never a false closure.
+    from ztare.leanmill.lean_source import signature_before_proof, strip_comments
+    s = strip_comments(statement or "")
+    s = re.sub(r"(?m)^\s*(import|open|set_option|variable)\b.*$", "", s)   # drop preamble lines, not the claim
+    s = _NAME_RE.sub("theorem _", s.strip())
+    # FORMAT-UNIFY (2026-06-19): a BARE signature (e.g. `_extract_target_signature` → `(n:Nat) … : G`, no decl
+    # head) must key IDENTICALLY to the full `theorem name … : G := …` the cache stores — else (b)/governed
+    # cache lookups with a derived goal MISS a banked full-theorem proof (the residual amnesia leak). Give a
+    # head-less signature the same `theorem _` head so both canonicalize to one key.
+    if not re.match(r"(?:theorem|lemma|def|abbrev|example|instance|structure|inductive)\b", s):
+        s = "theorem _ " + s
     s = signature_before_proof(s)              # drop the proof `:=` body, BINDER-SAFE (not first `:=`,
     return _WS_RE.sub(" ", s).strip()          # which truncated a `let k := 5` hypothesis — same key bug)
 
@@ -78,8 +92,13 @@ def normalize_statement_equiv(statement: str) -> str:
 
 
 def _key_for(statement: str) -> str:
-    """Cache key: equivalence-collapsed iff ZTARE_LEANMILL_EQUIV_CACHE=1 (default: exact, parity)."""
-    if os.environ.get("ZTARE_LEANMILL_EQUIV_CACHE") == "1":
+    """Cache key: α-equivalence-collapsed (DEFAULT-ON 2026-06-19; `ZTARE_LEANMILL_EQUIV_CACHE=0` reverts to
+    exact). SOUND by construction: an equiv hit is only ever CLOSED after an in-context re-verify
+    (`governed_dag_search.cache_verify` / the agentic `_cache_reuse` short-circuit), so an over-broad
+    α-collapse is just a re-verify miss, never a false closure. Flipped default-on because the EXACT key was
+    binder-name-sensitive — `iso_lemma1 (hsplit …)` and the banked `iso_lemma_split (hnum …)` got different
+    keys → the planner re-derived banked rungs from scratch (the 2026-06-19 amnesia RCA)."""
+    if os.environ.get("ZTARE_LEANMILL_EQUIV_CACHE", "1") != "0":
         return normalize_statement_equiv(statement)
     return normalize_statement(statement)
 
@@ -100,7 +119,13 @@ class ProofCache:
                     continue
                 try:
                     r = json.loads(line)
-                    self._mem.setdefault(r["key"], r)
+                    # RE-KEY ON LOAD (2026-06-19): the on-disk `key` was computed in whatever EQUIV mode was
+                    # active at write time; recompute from the stored `statement` under the CURRENT mode so a
+                    # default flip (exact→equiv) doesn't orphan every banked entry. Falls back to the stored
+                    # key only if the statement is missing (legacy rows).
+                    k = _key_for(r.get("statement", "")) or r.get("key")
+                    if k:
+                        self._mem.setdefault(k, r)
                 except Exception:
                     continue
 

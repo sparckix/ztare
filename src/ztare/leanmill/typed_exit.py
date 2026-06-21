@@ -11,8 +11,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
-from src.ztare.leanmill.common import read_json
-from src.ztare.research_director.structural_fingerprint import (
+from ztare.leanmill.common import read_json
+from ztare.research_director.structural_fingerprint import (
     RESIDUAL_TO_LEVER,
 )
 

@@ -25,6 +25,13 @@ class SolverConfig(YamlConfig):
     # REPLACES the cascade; a positive floor REPLACES `max(20, …)`.
     native_hammer_tactics: list[str] = []
     native_hammer_per_tactic_floor_s: int = 0   # 0 ⇒ keep the code default (20)
+    # Autoformalize firewall round-trip model (back-translate + directional judge). "" ⇒ the code default
+    # (a cross-family model vs the formalizer). NOT hardcoded in autoformalize.py — set it in solver.yaml when a
+    # model id is deprecated or a different cross-family judge is preferred. Cross-family independence from the
+    # formalizer is the soundness-relevant property; the specific id is operator policy.
+    roundtrip_model: str = ""
+    roundtrip_fallback_model: str = ""   # "" ⇒ code default; comma-separated for multiple fallbacks
+    judge_panel_models: str = ""         # firewall judge-diversity panel families (comma-separated); "" ⇒ code default
 
     @classmethod
     def load_default(cls) -> "SolverConfig":

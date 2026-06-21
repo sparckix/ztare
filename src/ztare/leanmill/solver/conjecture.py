@@ -110,6 +110,23 @@ def _norm_ws(s: str) -> str:
     return re.sub(r"\s+", " ", s or "").strip()
 
 
+def _typecheck_diag(snippet: str, lean_root: Path, timeout_s: int) -> str:
+    """Best-effort SHORT diagnostic suffix for a failed advance probe — the FIRST Lean error, so a
+    `did not typecheck` no_advance is self-classifying (vocabulary FALSE-negative vs genuine non-following).
+    Re-compiles via the diag-returning `compile_probe_via_repl` (the bool `_compile_probe` discards the
+    text). Returns '' when the REPL is unavailable / on any error (never raises into the gate)."""
+    try:
+        from ztare.formal.repl_compile import compile_probe_via_repl   # local import (best-effort writer rule)
+        res = compile_probe_via_repl(snippet, lean_root, int(min(int(timeout_s), 120)))
+        if res is None:
+            return ""
+        diag = (res[1] or "").strip()
+        first = next((ln.strip() for ln in diag.splitlines() if "error" in ln.lower()), diag)
+        return (" :: " + first[:140]) if first else ""
+    except Exception:  # noqa: BLE001 — diagnostics never block the advance verdict
+        return ""
+
+
 def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
                         timeout_s: int, preamble: str = "", goal_conclusion: str = "") -> "tuple[bool, str]":
     """Kernel-checked ADVANCE test: does the ORIGINAL goal follow from the conjectured lemma L?
@@ -143,7 +160,11 @@ def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
         snippet = "import Mathlib\n\n" + snippet
     ok = _compile_probe(snippet, lean_root, "ConjAdvance", timeout_s)
     if ok is not True:
-        return False, "did not typecheck (goal does not follow from L)"
+        # SELF-EXPLAINING no_advance (2026-06-21): surface the FIRST Lean error so a `did not typecheck`
+        # is actionable — `unknown identifier`/`unknown constant` ⇒ a missing-vocabulary FALSE-negative
+        # (the campaign def/banked-lemma was not in scope: check the `preamble` is threaded), whereas
+        # `unsolved goals`/`type mismatch` ⇒ a GENUINE non-following decomposition. Best-effort; never blocks.
+        return False, "did not typecheck (goal does not follow from L)" + _typecheck_diag(snippet, lean_root, timeout_s)
     # LOAD-BEARING check (deterministic, EXOGENOUS — stronger than the advisory LLM reviewer): replace L's
     # TYPE with `True` (a useless lemma) and re-compile the goal-proof. If it STILL compiles, the proof
     # didn't actually NEED L's content (cited-but-spurious — e.g. an unused `have _ := L`); if it now
