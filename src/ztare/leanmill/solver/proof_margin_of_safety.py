@@ -191,18 +191,8 @@ def proof_margin_of_safety(lean_source: str, target_name: str, lean_root: "Path 
 # accumulate toward G instead of being one-offs. SOUND: a fabricated/unrelated bound fails the B-compiles or
 # B⇒G' leg and is never banked; the kernel is the arbiter (reuses conjecture.specialization_is_genuine, the
 # SAME gate shape, no new gate logic). This lives HERE (the quantitative-slack home), not a parallel store.
-_RUNG_TIGHTEN_PROMPT = (
-    "You are a Lean 4 prover doing PROOF MINING. The kernel-verified RUNG below proves a NON-CONSTRUCTIVE "
-    "fact (an existence / a non-explicit bound). Extract the EXPLICIT, STRICTLY STRONGER statement B it "
-    "implies — make a witness/constant/rate CONCRETE (e.g. the rung asserts `∃ N, P N`; B is `P 5` for a "
-    "specific value, or an explicit rate in place of `∃ C`). Then PROVE B completely, and prove that B "
-    "IMPLIES the rung. Output EXACTLY:\n"
-    "BOUND:\n```lean\ntheorem {bname} : <the explicit stronger statement B> := by\n  <full proof, NO sorry>\n```\n"
-    "IMPLIES:\n```lean\ntheorem {bname}_to_rung (hB : <B's conclusion>) : <the rung's conclusion> := by\n"
-    "  <short proof deriving the rung FROM B>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. Both sorry-free. B must be STRICTLY STRONGER "
-    "(more explicit) than the rung — NOT a restatement.\n{pre}RUNG:\n{rung}\n"
-)
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import RUNG_TIGHTEN_PROMPT as _RUNG_TIGHTEN_PROMPT
 
 
 def rung_tighten(rung_block: str, rung_conclusion: str, sname: str, lean_root: "Path",

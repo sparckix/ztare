@@ -7,7 +7,7 @@ first version of the test was flawed; the corrected version below is the real re
 ## The result (clean, matched, identical instances)
 
 Goal form: `∃ x y : ℤ, x * y = N ∧ 1 < x ∧ x < N` — given *only* the product N (a semiprime), find a non-trivial
-factor. Receipt: `factoring_moat_run.json`.
+factor. Receipt: `factoring_separation_run.json`.
 
 | arm | closed | note |
 |---|---|---|
@@ -58,7 +58,7 @@ Removing the leak (give *only* N) restores the real separation — the +3 above.
 ## Reproduce
 ```
 # leanmill arm (free) + bare arm (one API model):
-WVB_OUT=factoring_moat_run.json ZTARE_LEANMILL_KRONECKER=1 PYTHONPATH=src ./venv/bin/python \
+WVB_OUT=factoring_separation_run.json ZTARE_LEANMILL_KRONECKER=1 PYTHONPATH=src ./venv/bin/python \
   projects/leanmill_experiments/public/witness_vs_bare_controlled.py \
   --no-fixed --factoring --bare-models deepseek-chat --bare-rows all
 ```

@@ -20,15 +20,8 @@ from pathlib import Path
 # consequential decision; a `sorry` in a comment/identifier must not false-positive). 2026-06-13 audit.
 from ztare.leanmill.lean_source import has_sorry as _has_sorry, strip_comments as _strip_comments, signature_before_proof
 
-_CONJECTURE_PROMPT = (
-    "You are a Lean 4 prover reasoning BACKWARD. The goal below is hard to prove directly. INVENT "
-    "exactly ONE genuinely-useful intermediate lemma that, if true, makes the goal provable, then "
-    "prove the ORIGINAL goal USING it. Self-contained against `import Mathlib`. Output EXACTLY:\n"
-    "LEMMA:\n```lean\ntheorem {lname} : <your lemma statement> := by sorry\n```\n"
-    "PROOF:\n```lean\n{goal_head} := by\n  <tactics that REFERENCE {lname}>\n```\n"
-    "Rules: the lemma must NOT be trivially true; the PROOF must cite `{lname}` and contain NO `sorry`.\n"
-    "GOAL:\n{goal}\n"
-)
+# Prompts live in the canonical registry (prompts.py); local names preserved for the call sites.
+from ztare.leanmill.solver.prompts import CONJECTURE_PROMPT as _CONJECTURE_PROMPT
 
 
 def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
@@ -182,7 +175,8 @@ def conjecture_advances(lemma: str, proof: str, lname: str, lean_root: Path,
 
 def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list[str]",
                             lean_root: Path, timeout_s: int, preamble: str = "",
-                            goal_conclusion: str = "") -> "tuple[bool, dict]":
+                            goal_conclusion: str = "", goal_source: str = "",
+                            goal_name: str = "") -> "tuple[bool, dict]":
     """Meta-Darwin FITNESS on a DECOMPOSITION — the operator's Step-4 gate (2026-06-05). Generalizes
     `conjecture_advances` from a single edge L⇒G to a multi-lemma DAG: given intermediate lemmas
     L1..Ln as SORRIED signatures (`theorem Lᵢ : … := by sorry`) + a `chain_proof` of the goal G that
@@ -222,6 +216,32 @@ def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list
                 if _norm_ws(_lemma_conclusion(L)) == gc]
         if circ:
             return False, {**v, "killed": f"CIRCULAR — lemma(s) restate the goal (no reduction): {circ}"}
+    # KERNEL circularity (2026-06-22): the textual check above catches a LITERAL / same-name restatement,
+    # but MISSES an α-renamed / definitionally-equal one — exactly the consciousness campaign's `iso_lemma1`,
+    # which was the WHOLE target with `E→q, R→Q` renamed (textually different, the SAME Prop) and so sailed
+    # through as a "sub-lemma," fragmenting a directly-provable goal. Complete the leg the docstring flagged as
+    # "would need the kernel": for each Lᵢ, ask the ONE canonical statement-integrity oracle whether `@Lᵢ` is
+    # the SAME Prop as `@G` (`@G = @Lᵢ := rfl`). Same-Prop ⇒ Lᵢ RESTATES G (no reduction) ⇒ circular → prove
+    # G directly instead of "decomposing G into G". ENHANCEMENT-ONLY + fail-OPEN: `rfl` fires ONLY on a genuine
+    # defeq, so it can NEVER reject a real (strictly-easier) sub-lemma; any oracle/compile error never rejects
+    # (byte-parity with the no-leg path). SCOPE: active only when the caller threads the goal's full statement.
+    if goal_source.strip() and goal_name.strip():
+        try:
+            from ztare.leanmill.solver.statement_integrity import kernel_type_equiv_fn
+            from ztare.leanmill.lean_source import extract_signature as _exsig
+            _eq = kernel_type_equiv_fn(goal_name, lean_root)
+            if _eq is not None:
+                for L, ln in zip(lemmas, (lnames or [None] * len(lemmas))):
+                    _lsig = _exsig(L, ln) if ln else ""
+                    if not _lsig.strip():
+                        continue
+                    # re-emit Lᵢ under the GOAL's name so the oracle (which keys on one name) compares @G vs @Lᵢ
+                    _l_as_goal = f"theorem {goal_name} {_lsig} := by sorry"
+                    if _eq(goal_source, _l_as_goal):
+                        return False, {**v, "killed": f"CIRCULAR (kernel α/defeq) — lemma `{ln}` is the SAME "
+                                       "Prop as the goal G (restates, does not reduce — prove G directly)"}
+        except Exception:  # noqa: BLE001 — fail-OPEN: the kernel leg only ADDS catches; an error never rejects
+            pass
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
     _pre = (preamble.strip() + "\n\n") if preamble.strip() else ""
     body = "\n\n".join(L.strip() for L in lemmas) + "\n\n" + chain_proof.strip()
@@ -262,25 +282,7 @@ def decomposition_dag_audit(lemmas: "list[str]", chain_proof: str, lnames: "list
 # G (`G ⇒ G'` typechecks — so it's weaker, an instance/restriction, not a different/stronger claim),
 # (c) be non-vacuous and ≠ G. The kernel gates all three — the leaf can't launder an unrelated easy
 # theorem as "progress on G".
-_SPECIALIZE_PROMPT = (
-    "You are a Lean 4 prover. The GOAL below may be HARD or OPEN — proving it in full may be infeasible. "
-    "Do the mathematician's first move: produce a GENUINELY PROVABLE SPECIAL CASE G' — a real INSTANCE "
-    "or RESTRICTION of the goal (fix a parameter to a concrete value; restrict to a small case like n=1; "
-    "or add ONE simplifying hypothesis) that is STRICTLY EASIER but NOT vacuous (NOT `True`, not trivially "
-    "satisfiable) — then PROVE G' COMPLETELY (NO sorry). G' must be a logical CONSEQUENCE of the original "
-    "goal.\n"
-    "CRITICAL — make it SUBSTANTIVE, not the TRIVIAL/DEGENERATE CORNER: do NOT set the main object to a "
-    "trivial element (0, ∅, the empty/zero/identity/constant case) — that makes the goal's hypotheses "
-    "VACUOUSLY true and the result shallow (the analogue of the u≡0 solution of a PDE, the all-zeros SAT "
-    "witness, the degenerate fiber). The goal's CHARACTERISTIC HYPOTHESES must remain NON-VACUOUSLY in "
-    "force — pick a genuinely easier but still MEANINGFUL instance (a specific NON-trivial parameter value, "
-    "a non-empty restricted subclass) where the hard hypotheses still do real work. Output EXACTLY:\n"
-    "SPECIAL:\n```lean\ntheorem {sname} : <the special-case statement> := by\n  <full proof, NO sorry>\n```\n"
-    "IMPLIES:\n```lean\ntheorem {sname}_from_general (hG : <the original goal's conclusion>) : "
-    "<the special case's conclusion> := by\n  <short proof deriving the special case FROM the general goal>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. Both theorems must be sorry-free.\n"
-    "{ban}ORIGINAL GOAL to specialize FROM:\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import SPECIALIZE_PROMPT as _SPECIALIZE_PROMPT
 
 
 def specialize_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
@@ -426,22 +428,7 @@ def _closed_goal_prop(goal_text: str) -> str:
     return f"∀ {binders}, {concl}" if binders else concl
 
 
-_FALSIFY_PROMPT = (
-    "You are a Lean 4 prover acting as a SKEPTIC (Popper inversion). The statement below is CONJECTURED "
-    "and MIGHT BE FALSE. Your job is to try to REFUTE it: prove its NEGATION. Do not be diplomatic — if "
-    "the statement is false, exhibit the disproof; if you cannot, say so.\n"
-    "The refutation theorem's SIGNATURE is FIXED for you (you do NOT write it):\n"
-    "    theorem {fname}_refute : ¬ ({gprop}) := <your proof>\n"
-    "Typically: for a ∀-statement, supply a concrete COUNTEREXAMPLE witness and prove the predicate fails "
-    "on it (`by intro h; ...`, `by push_neg`, `by simp`, `by omega`, `by decide`, or a proof TERM like "
-    "`fun h => absurd (h 0) (by decide)`). Output EXACTLY:\n"
-    "HELPERS:\n```lean\n<optional sorry-free helper lemmas/defs, or leave the block empty>\n```\n"
-    "PROOF:\n```lean\n<the COMPLETE proof that goes after `:=` — a `by` tactic block OR a proof term; "
-    "NO `theorem` line, NO sorry>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. If you genuinely cannot refute it, output an "
-    "empty PROOF block (an honest non-refutation, NOT a sorry).\n"
-    "{pre}CONJECTURED statement to REFUTE:\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import FALSIFY_PROMPT as _FALSIFY_PROMPT
 
 
 def falsify_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
@@ -633,24 +620,7 @@ class LeanFalsifier:
 #   * CORROBORATE leg (soft signal + banked lemma): prove K (a verified consequence of G that HOLDS) — never
 #     closes G, but raises confidence + banks K as a reusable lemma toward proving G. (v1 emits the refute
 #     leg as the kernel outcome; the corroborate leg is surfaced in the tail for the selection prior.)
-_CORROBORATE_PROMPT = (
-    "You are a Lean 4 prover acting as a SKEPTIC (Popper inversion via a CONSEQUENCE). The statement G below "
-    "is CONJECTURED and MIGHT BE FALSE. Instead of refuting G directly, find a CONSEQUENCE K of G that is "
-    "EASIER to decide — typically a concrete INSTANCE or a decidable corollary — and try to REFUTE that "
-    "consequence. If `G → K` holds and `¬K` holds, then G is false (modus tollens).\n"
-    "Choose K so that: (1) `G → K` is EASY to prove (K is a weakening/instance of G — apply G to a specific "
-    "witness, project a conjunct, etc.), and (2) `¬K` is provable (K is a decidably/constructively FALSE "
-    "consequence — e.g. evaluate at a counterexample with `by decide`/`by omega`/`by simp`).\n"
-    "Output EXACTLY:\n"
-    "CONSEQUENCE:\n```lean\n<the Prop K — JUST the type expression, e.g. `P 7` or `∀ n, n ≤ f n`; it may "
-    "reference G's binders>\n```\n"
-    "IMPLIES:\n```lean\n<the proof body after `:=` for `({G}) → (K)` — a `by` block or a term; NO theorem "
-    "line, NO sorry>\n```\n"
-    "REFUTE:\n```lean\n<the proof body after `:=` for `¬ (K)` — a `by` block or a term; NO sorry>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. If you cannot find a refutable consequence, "
-    "output an empty REFUTE block (an honest non-refutation, NOT a sorry).\n"
-    "{pre}CONJECTURED statement G:\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import CORROBORATE_PROMPT as _CORROBORATE_PROMPT
 
 
 def corroborate_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
@@ -726,12 +696,7 @@ def claim_of(context: dict) -> str:
 # so the file-edit laundering surface is removed by construction. REPL-`closed` is NEVER the verdict — the
 # caller REASSEMBLES the accepted sequence and re-verifies it through the SAME governance (_verify_compile +
 # kernel + MNC). CALIBRATION-FIRST: a dead/mismatched REPL ⇒ INADMISSIBLE, never a fake negative.
-_TACTIC_STEP_PROMPT = (
-    "You are proving a Lean 4 goal ONE TACTIC AT A TIME. Below is the CURRENT proof state (hypotheses and "
-    "the goal remaining after the tactics applied so far). Emit the SINGLE next tactic that makes the most "
-    "progress — JUST the tactic on one line: NO `by`, NO commentary, NO code fences. If the goal closes in "
-    "one step, emit that closing tactic.{err}\n\nCURRENT PROOF STATE:\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import TACTIC_STEP_PROMPT as _TACTIC_STEP_PROMPT
 
 
 def _next_tactic(goal_pp: str, lean_root: Path, timeout_s: int, last_error: str = "") -> str:
@@ -804,18 +769,7 @@ def tactic_step_solve(row: dict, lean_root: Path, timeout_s: int, preamble: str 
         pl.close()
 
 
-_GENERALIZE_PROMPT = (
-    "You are a Lean 4 prover. The GOAL below is hard, likely because it is TOO SPECIFIC — proving it "
-    "directly gives no inductive leverage. Use the INDUCTION-STRENGTHENING move: inside the proof, first "
-    "establish a STRONGER, more general fact G' (via `have`/`suffices`) that is EASIER to prove because "
-    "the stronger statement yields a stronger inductive hypothesis; then close the ORIGINAL goal as an "
-    "INSTANCE of G'. Output EXACTLY one fenced block — the COMPLETE proof of the original goal AS STATED "
-    "(do NOT change its statement), NO sorry, NO admit:\n"
-    "PROOF:\n```lean\nby\n  -- strengthen: have {gname} : <stronger statement> := by <proof of the stronger fact>\n"
-    "  -- then close the original goal from {gname}\n  <full tactic proof, NO sorry>\n```\n"
-    "The proof body must be self-contained against `import Mathlib` + the PREAMBLE and must fit directly "
-    "after the goal's `:=`.\nORIGINAL GOAL (prove EXACTLY this, do not weaken or restate):\n{goal}\n"
-)
+from ztare.leanmill.solver.prompts import GENERALIZE_PROMPT as _GENERALIZE_PROMPT
 
 
 def generalize_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,
@@ -848,14 +802,7 @@ def generalize_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: i
     return "", gname, (raw or "")[-200:]
 
 
-_REVIEW_PROMPT = (
-    "You are reviewing a proposed proof DECOMPOSITION. The MAIN goal G is:\n{goal}\n\n"
-    "A prover proposes proving G via this intermediate lemma L:\n{lemma}\n\n"
-    "Judge whether L is a GOOD decomposition. YES only if ALL hold: (1) L is STRICTLY EASIER than G "
-    "(a genuine reduction, not the same difficulty); (2) L is NOT a restatement of G or a trivial "
-    "rephrasing (non-circular); (3) proving L plausibly makes G follow. Answer with EXACTLY one token "
-    "on the first line: WORTHY or NOT_WORTHY, then a one-line reason."
-)
+from ztare.leanmill.solver.prompts import REVIEW_PROMPT as _REVIEW_PROMPT
 
 
 def decomposition_review(goal: str, lemma: str, lean_root: Path, timeout_s: int = 90,

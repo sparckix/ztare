@@ -48,9 +48,32 @@ _VENV_PY = _REPO / "venv/bin/python"
 _PY = str(_VENV_PY) if _VENV_PY.exists() else "python3"
 _TOOL_CMD = f"PYTHONPATH={_REPO / 'src'} {_PY} -m ztare.leanmill.agent_tools"
 
+# PORTABLE command prefix for SERIALIZATION. The committed move-atlas artifact must be machine-independent:
+# baking THIS machine's absolute repo/venv path into it (the prior bug) both leaks the operator's home path
+# AND breaks the cache for any other checkout. The LIVE agent prompt still uses `_TOOL_CMD` (absolute, resolved
+# from this machine's repo root via `__file__`, so it runs from any cwd); only the cached atlas stores the
+# relative form, and `render_for_goal` re-derives the absolute prefix from the live corpus at render time.
+_TOOL_CMD_PORTABLE = "PYTHONPATH=src python3 -m ztare.leanmill.agent_tools"
+
 
 def _cli(tool: str, arg: str = "<goal>") -> str:
     return f'{_TOOL_CMD} {tool} "{arg}"'
+
+
+def portable_cli(cli: str) -> str:
+    """Strip the machine-specific absolute prefix from a tool `cli` so it is safe to serialize into a committed
+    artifact (relative `PYTHONPATH=src` + generic `python3`). Idempotent — a cli without the abs prefix (or an
+    empty one) is returned unchanged. Used by `move_corpus.atlas_entries` at the serialization boundary."""
+    return (cli or "").replace(_TOOL_CMD, _TOOL_CMD_PORTABLE)
+
+
+def absolutize_cli(cli: str) -> str:
+    """Inverse of `portable_cli`: re-attach THIS machine's absolute repo/venv prefix to a (portable) tool cli so
+    the agent — whose cwd is the lake project, not the repo, with neither our PYTHONPATH nor the venv on it — can
+    actually run the tool. Applied at RENDER time (the cached atlas stores the portable form; render resolves it
+    for the live machine). Idempotent: an already-absolute cli (the static-fallback path's live-corpus cli) does
+    not contain the portable prefix, so it is returned unchanged."""
+    return (cli or "").replace(_TOOL_CMD_PORTABLE, _TOOL_CMD)
 
 # ── The exogenous tool specs (the agent calls these via Bash; it is already workspace-write) ──────────
 #   move_key  → the move_calibration key (None ⇒ no receipt yet, e.g. the new Mathlib-search tool)

@@ -88,6 +88,7 @@ import time
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Callable
 
 REPO = Path(__file__).resolve().parents[4]
 CONTROL = REPO / "scripts" / "public" / "control"
@@ -1391,45 +1392,19 @@ def _leaf_goal_from_source(body: str, target: str, base_goal: str) -> str:
 _WARM_GOAL_ATTEMPTS: "dict[tuple[str, str], list]" = {}
 
 
-def _campaign_type_equiv_fn(target_name: str, lean_root: Path):
-    """A KERNEL type-equality oracle for `statement_integrity.check` — the WORLD-CLASS faithfulness fix
-    (2026-06-20). The raw signature TEXT diff false-rejects a binders-after-colon `∀`-reformulation
-    (`theorem f (h):Q` vs `theorem f : ∀ h, Q` = the SAME Pi type), taxing every provable rung the model
-    states in ∀-form. This oracle kernel-checks `example : @<orig> = @<agent> := rfl` against the live campaign
-    env: `rfl` holds iff the two are the SAME Prop (definitional proof-irrelevance) — so a faithful
-    reformulation ACCEPTS and any real weakening (dropped/added hyp, altered conclusion) is a TYPE mismatch ⇒
-    rejected. Returns None (⇒ statement_integrity keeps the conservative text verdict) when no campaign env."""
-    try:
-        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
-                                               campaign_namespaces, compile_probe_via_repl)
-        from ztare.leanmill import lean_source as _ls
-        _sub = get_campaign_substrate()
-        if not _sub:
-            return None
-        _env = campaign_file_env(_sub, lean_root)
-        if _env is None:
-            return None
-        _nss = campaign_namespaces()
-        _open, _close = (f"namespace {_nss[0]}\n", f"\nend {_nss[0]}\n") if len(_nss) == 1 else ("", "")
-        _base = target_name.split(".")[-1]
+# KERNEL type-equality oracle — the ONE canonical copy now lives in `statement_integrity.kernel_type_equiv_fn`
+# (2026-06-21 consolidation). It USED to be defined here AND byte-identically in `lean_proof_gate` — the
+# recurring "missed sibling" bug class (two hand-synced copies; fix one, the other rots — that is literally how
+# the campaign's faithful ∀-fronted iff got `target_signature_altered`). `statement_integrity.check` now builds
+# it DEFAULT-ON when handed a `lean_root`, so the solve-time call below just passes `lean_root=` and no longer
+# constructs the oracle by hand. These thin re-export aliases preserve the old names for any external caller.
+def _target_type_equiv_fn(target_name: str, lean_root: Path):
+    """Back-compat shim → the canonical `statement_integrity.kernel_type_equiv_fn` (see the note above)."""
+    from ztare.leanmill.solver.statement_integrity import kernel_type_equiv_fn as _k
+    return _k(target_name, lean_root)
 
-        def _fn(_orig_block: str, _probe_block: str) -> bool:
-            try:
-                # CANONICAL binder-safe signature extraction (NOT a regex on the decl) — same primitive the
-                # warm-goal stub uses. Rebuild a FRESH-named stub from `<binders> : <concl>` so the agent's decl
-                # can coexist with the original (live in the env) for the `rfl` type-equality compare.
-                _sig = _ls.extract_signature(_probe_block, _base)
-                if not _sig.strip():
-                    return False   # extraction failed ⇒ fail-closed (keep the conservative text verdict)
-                _probe = (f"{_open}theorem __agent_zwv_chk {_sig} := by sorry\n"
-                          f"example : @{_base} = @__agent_zwv_chk := rfl\n{_close}")
-                _r = compile_probe_via_repl(_probe, lean_root, 60, env=_env)
-                return bool(isinstance(_r, tuple) and _r[0])
-            except Exception:  # noqa: BLE001 — any failure ⇒ not-confirmed (text verdict stands)
-                return False
-        return _fn
-    except Exception:  # noqa: BLE001
-        return None
+
+_campaign_type_equiv_fn = _target_type_equiv_fn
 
 
 def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_root: Path, timeout_s: int) -> bool:
@@ -1697,8 +1672,9 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
         from ztare.leanmill.solver import statement_integrity as _si
         try:
             _orig_src = Path(row["source_file"]).read_text(encoding="utf-8", errors="replace")
-            _verdict = _si.check(_orig_src, ptxt, target,
-                                 target_type_equiv_fn=_campaign_type_equiv_fn(target, lean_root))
+            # DEFAULT-ON kernel type-equality oracle: hand `check` the `lean_root` and it builds the ONE
+            # canonical `kernel_type_equiv_fn` itself (no per-caller oracle to construct — see the shim note).
+            _verdict = _si.check(_orig_src, ptxt, target, lean_root=lean_root)
         except Exception as _e:  # noqa: BLE001  — integrity tooling failure must not mint a closure
             return False, "", f"statement_integrity ERROR (fail-closed, no closure): {_e!r}"
         if _verdict.ok and _cap and _prior and os.environ.get("ZTARE_LEANMILL_FIX_MEMORY", "1") != "0":
@@ -3656,6 +3632,67 @@ def _extract_target_signature(source_text: str, name: str) -> str:
     return _ls.extract_signature(source_text, name)
 
 
+def _match_closing_probe(cands: "list[tuple]", target_name: str, proof_text: str) -> "tuple":
+    """Pick the probe that ACTUALLY produced this closure, from candidate `(path, text)` pairs, for the
+    statement-integrity comparand. Returns `(path, text, match_kind)`.
+
+    WHY (2026-06-22, detbank_verify residual): governance must diff the ORIGINAL source against THIS
+    closure's probe. A run has several attempts (pool / cold-shot / native) writing probes for the SAME
+    target into the SAME scratch, so the comparand must be disambiguated by the stored `proof_text`. Two
+    bugs lived in the old inline finder:
+      (1) the persisted probe RE-RENDERS the proof with different indentation than the stored proof_text
+          (a pool/cold splice reflows `by <tac>` → `:= by\\n  <tac>`), so a RAW substring test MISSED the
+          real probe and recency-fell-back to a SIBLING — fixed by also matching WHITESPACE-NORMALIZED.
+      (2) when proof_text was present but unmatched, it STILL fell back to the most-recent sibling probe;
+          comparing the original source against a different attempt's signature both FALSE-rejects a clean
+          closure (sibling altered) and risks FALSE-admit (sibling clean, this closure altered). Now we
+          REFUSE the sibling: return `(None, None, 'withheld_unmatched')` so the caller records
+          `integrity_unverified` (fail-CLOSED, ratified withheld) instead of a wrong-comparand verdict.
+    The recency-fallback survives ONLY for the no-proof_text case (legacy runs that stored none). SOUND:
+    this only chooses WHICH probe statement_integrity audits — it never relaxes that audit, so a laundered
+    altered signature is still caught on whichever probe is chosen."""
+    import re as _re   # LOCAL (module has no top-level `re`) — the missing-name silent-no-op lesson
+    from ztare.leanmill.lean_source import has_sorry as _hs
+    def _nrm(s: str) -> str:
+        return _re.sub(r"\s+", " ", s or "").strip()
+    pt = (proof_text or "").strip()
+    pt_n = _nrm(pt)
+    pt_body_n = _nrm(pt[3:]) if pt.startswith("by ") else ""
+    fallback = None
+    for p, t in cands:
+        body = t.split("#print axioms")[0]
+        # COMMENT-ROBUST sorry exclusion + the target must be defined in this probe (canonical check).
+        if target_name not in t or _hs(body):
+            continue
+        t_n = _nrm(t)
+        if pt and (pt in t or (pt_n and pt_n in t_n) or (pt_body_n and pt_body_n in t_n)):
+            return p, t, "matched"
+        if fallback is None:
+            fallback = (p, t)
+    if not pt and fallback is not None:
+        return fallback[0], fallback[1], "fallback_no_prooftext"
+    if pt:
+        return None, None, "withheld_unmatched"   # refuse the sibling comparand (fail-closed)
+    return None, None, "no_candidate"
+
+
+def _selftest_match_closing_probe() -> None:
+    """Probe-comparand selection: reflowed proof pins its OWN probe; sibling never substituted."""
+    sig = "theorem T (n : Nat) : n = n"
+    own = f"import Mathlib\n{sig} := by\n  rfl\n#print axioms T\n"            # reflowed `rfl`
+    sibling_altered = f"import Mathlib\ntheorem T (n : Nat) (h : False) : n = n := by\n  simp\n"  # weakened
+    # (1) whitespace-reflowed proof_text still matches its OWN probe, not the altered sibling
+    p, t, mk = _match_closing_probe([("/sib", sibling_altered), ("/own", own)], "T", "by rfl")
+    assert mk == "matched" and p == "/own", f"reflow match failed: {mk} {p}"
+    # (2) proof_text present but unmatched ⇒ WITHHELD, never the sibling (no wrong-comparand verdict)
+    p2, t2, mk2 = _match_closing_probe([("/sib", sibling_altered)], "T", "by exact rfl")
+    assert mk2 == "withheld_unmatched" and p2 is None, f"sibling refusal failed: {mk2} {p2}"
+    # (3) NO proof_text ⇒ legacy recency-fallback still allowed (back-compat)
+    p3, t3, mk3 = _match_closing_probe([("/sib", sibling_altered)], "T", "")
+    assert mk3 == "fallback_no_prooftext" and p3 == "/sib", f"legacy fallback regressed: {mk3} {p3}"
+    print("  [PASS] _match_closing_probe: reflow-match + sibling-refusal + legacy-fallback")
+
+
 def _reconstruct_recompilable_probe(source_text: str, goal: str, target_name: str, proof_text: str) -> str:
     """Canonically rebuild a SELF-CONTAINED recompilable .lean from (source/goal + proof) when no on-disk
     RobustProbe matched the closure. WHY (2026-06-19): a cert MUST carry recompilable source — it is what the
@@ -3757,10 +3794,52 @@ def _agent_recommends_decompose(goal: str, source_text: str, lean_root, timeout_
         return False
 
 
-_POOL_PROMPT_TMPL = (
-    "Prove this Lean 4 (Mathlib) theorem. Output ONLY the proof — a single `by ...` tactic block — inside ONE "
-    "```lean fenced code block. Do NOT restate the signature and put NO prose inside the fence.\n\n"
-    "{goal} := by\n  sorry\n")
+def _should_decompose_first(*, cited_from_cache: bool, iso_route_on: bool, decompose_first_on: bool,
+                            below_cap: bool, strategy_assess_on: bool,
+                            native_closes: "Callable[[], bool]",
+                            agent_recommends: "Callable[[], bool]") -> bool:
+    """INVARIANT B (agentic-first), made structural + testable (2026-06-21). Decompose-vs-direct is the AGENT's
+    call at EVERY node — `is_top`/`notes` DO NOT APPEAR in this signature, so a top-level blueprinted target can
+    NOT be force-decomposed (the 9612a8c16 bug, where `(_is_top and bool(notes))` short-circuited the agent-ask
+    and gapped a directly-provable nucleus). Order: cheap config gates → the FREE native pre-filter (a
+    trivially-closable goal needs no strategist) → the agent strategy-ask. `native_closes`/`agent_recommends`
+    are LAZY zero-arg callables so the agent dispatch fires ONLY when native misses. True ⇒ run the planner
+    BEFORE the direct cascade. (`is_top` still selects WHICH notes feed an elected decomposition — that is a
+    SEPARATE concern handled at the call site, NOT whether to decompose.)"""
+    if cited_from_cache or not iso_route_on or not decompose_first_on or not below_cap or not strategy_assess_on:
+        return False
+    if native_closes():            # #112: free deterministic filter first — trivial goals skip the strategist
+        return False
+    return agent_recommends()      # the AGENT decides — every node, including top+blueprint
+
+
+def _selftest_invariant_b_agentic_decompose() -> None:
+    """Regression guard for the agentic-first invariant — the foresight that was MISSING when 9612a8c16 shipped
+    an incomplete fix behind an overclaiming comment. Asserts the decompose-vs-direct decision depends ONLY on
+    (agent verdict + free native filter + config kill-switches), NEVER on is_top/notes. FAILS against the old
+    `(_is_top and bool(notes)) or (...agent...)` code. Run: it is called by the module selftest hook below."""
+    base = dict(cited_from_cache=False, iso_route_on=True, decompose_first_on=True, below_cap=True,
+                strategy_assess_on=True)
+    # the nucleus case: agent says SOLVE_DIRECT, native misses → must NOT decompose (used to gap, force-decomposed)
+    assert _should_decompose_first(**base, native_closes=lambda: False, agent_recommends=lambda: False) is False
+    # hard target: agent says DECOMPOSE → decompose
+    assert _should_decompose_first(**base, native_closes=lambda: False, agent_recommends=lambda: True) is True
+    # free native filter closes → skip decompose AND never dispatch the agent strategy-ask
+    _agent_fired = []
+    assert _should_decompose_first(**base, native_closes=lambda: True,
+                                   agent_recommends=lambda: _agent_fired.append(1) or True) is False
+    assert not _agent_fired, "native pre-filter closes ⇒ the agent strategy-ask must NOT fire (wasted dispatch)"
+    # config kill-switches each force direct
+    for off in ("decompose_first_on", "strategy_assess_on", "iso_route_on", "below_cap"):
+        assert _should_decompose_first(**{**base, off: False},
+                                       native_closes=lambda: False, agent_recommends=lambda: True) is False, off
+    assert _should_decompose_first(**{**base, "cited_from_cache": True},
+                                   native_closes=lambda: False, agent_recommends=lambda: True) is False
+    print("[selftest] invariant B (agentic decompose-vs-direct, is_top/notes never force it) OK", flush=True)
+
+
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import POOL_PROMPT_TMPL as _POOL_PROMPT_TMPL
 
 
 def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, timeout_s: int,
@@ -3947,14 +4026,27 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         except Exception:  # noqa: BLE001 — a pre-filter error must never block the strategy path
             return False
 
-    _decomp_first = (not _cited_from_cache   # a pre-attack (cache cite OR governed pool) already spliced a proof
-                     and os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0"
-                     and os.environ.get("ZTARE_LEANMILL_DECOMPOSE_FIRST", "1") != "0"
-                     and _below_cap
-                     and ((_is_top and bool(notes and notes.strip()))  # a seeded blueprint at top → the AGENTIC planner (it works WITH the blueprint); was a brittle `^theorem`×2+`:=sorry` regex that misrouted `lemma`/inlined blueprints (2026-06-13 agency unlock #132), OR
-                          or (os.environ.get("ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS", "1") != "0"   # the AGENT decides — ANY node
-                              and not _native_prefilter_closes()                                   # #112: free filter FIRST
-                              and _agent_recommends_decompose(goal, source_text, sub, timeout_s))))  # asked up front
+    # AGENCY FIX (2026-06-21, invariant B made REAL): the top+blueprint case USED to decompose-first
+    # UNCONDITIONALLY — `(_is_top and bool(notes))` short-circuited the native pre-filter AND the agent
+    # strategy-ask, so a top target with ANY notes was force-decomposed even when it is a clean DIRECT proof
+    # (the substrate-B cyclic-holonomy nucleus: a ~6-line telescoping proof got fragmented into iso_lemmas
+    # because a blueprint was attached). That is determinism-creep into the agent's lane — decompose-vs-direct
+    # is an AGENCY call, not a soundness boundary — AND it CONTRADICTED this block's own comment ("`_is_top` no
+    # longer GATES; the agent decides at EVERY node"). The fix: the agent decides at the top too. `_is_top` now
+    # ONLY chooses WHICH notes feed a decomposition that the agent actually elects (the `notes if _is_top` arg
+    # below) — it no longer FORCES one. A genuinely-hard blueprinted target still decomposes (the agent, asked
+    # "can you close this directly?", says DECOMPOSE on a hard goal); a trivially-closable one is taken by the
+    # FREE native pre-filter; a clean direct proof goes straight to the cascade. ZTARE_LEANMILL_DECOMPOSE_FIRST=0
+    # and ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS=0 still revert. (Soundness unchanged — this only reorders which
+    # PROVING path is tried first; the kernel ratifies every closure regardless.)
+    _decomp_first = _should_decompose_first(
+        cited_from_cache=_cited_from_cache,   # a pre-attack (cache cite OR governed pool) already spliced a proof
+        iso_route_on=os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0",
+        decompose_first_on=os.environ.get("ZTARE_LEANMILL_DECOMPOSE_FIRST", "1") != "0",
+        below_cap=_below_cap,
+        strategy_assess_on=os.environ.get("ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS", "1") != "0",
+        native_closes=_native_prefilter_closes,                                                # #112: FREE filter FIRST
+        agent_recommends=lambda: _agent_recommends_decompose(goal, source_text, sub, timeout_s))  # the AGENT decides
     _iso_pre = None
     try:
         if _decomp_first:
@@ -4009,30 +4101,14 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             # `proof_text`. Falls back to "most-recent sorry-free probe defining the target" only if
             # no body match (older runs / proof_text unavailable). Without the proof_text match the
             # governance organs could run on the WRONG probe (claude vs codex, or a non-closing one).
+            # Pick the probe that ACTUALLY produced this closure (canonical helper — testable, and the
+            # comment-robust sorry/target checks + whitespace-normalized proof match + sibling-refusal live
+            # in ONE place, not inline). _cand_pairs reads each candidate ONCE; the helper disambiguates by
+            # the stored proof_text and never substitutes a sibling attempt's probe (the detbank_verify fix).
             _pt = (r0.get("proof_text") or "").strip()
-            probe_path = probe_txt = None
-            _fallback = None
-            for p in cand:
-                if not p.exists():
-                    continue
-                t = p.read_text(encoding="utf-8", errors="replace")
-                body = t.split("#print axioms")[0]
-                # COMMENT-ROBUST sorry exclusion (2026-06-13 audit): a `-- sorry` comment in the probe body
-                # must NOT exclude the correct closing probe (excluding it drops to a less-precise fallback or
-                # skips the statement_integrity organ ⇒ a governance-COVERAGE gap). Use the canonical check.
-                from ztare.leanmill.lean_source import has_sorry as _hs_gov
-                if target_name not in t or _hs_gov(body):
-                    continue
-                # exact closing probe; for a cascade closure proof_text is `by <tactic>` while the persisted
-                # probe renders `:= by\n  <tactic>` — match the tactic body too (else it always recency-falls-back)
-                if _pt and (_pt in t or (_pt.startswith("by ") and _pt[3:].strip() and _pt[3:].strip() in t)):
-                    probe_path, probe_txt = p, t
-                    break
-                if _fallback is None:
-                    _fallback = (p, t)
-            if probe_txt is None and _fallback is not None:
-                probe_path, probe_txt = _fallback
-                gov["probe_match"] = "fallback (proof_text not found in any probe)"
+            _cand_pairs = [(p, p.read_text(encoding="utf-8", errors="replace")) for p in cand if p.exists()]
+            probe_path, probe_txt, _probe_mk = _match_closing_probe(_cand_pairs, target_name, _pt)
+            gov["probe_match"] = _probe_mk
             # The kernel must recompile the probe against the root it ACTUALLY lives in — a cold-route
             # probe is in ztare_proofs (v4.30), not the sidecar (v4.27); recompiling it against the
             # wrong toolchain would spuriously fail (e.g. a v4.30-only lemma → "unknown constant").
@@ -4104,6 +4180,17 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 r0["governance_blockers"] = blockers
                 res["closure_candidates"] = 0
                 res["rejected_reason"] = "governance blocker(s): " + "; ".join(blockers)
+                # OBSERVABILITY (2026-06-21): surface WHICH organ blocked + the verify root, so a governance
+                # rejection is self-explaining in the log instead of an opaque `rejected_governance` that forces
+                # a multi-source forensic scour (the operator's "the kernel must be improved in terms of
+                # observability"). A false-reject (e.g. a wrong lean_root breaking the oracle) names itself here.
+                try:
+                    _siv = (gov.get("statement_integrity") or {})
+                    print(f"[governance] REJECTED {target_name}: blockers={blockers} | "
+                          f"verify_root={gov.get('verify_root')} | si_ok={_siv.get('ok')} "
+                          f"si_viol={(_siv.get('violations') or [])[:2]}", flush=True)
+                except Exception:  # noqa: BLE001 — a logging helper never breaks governance
+                    pass
                 # CEGIS no-good — close the CROSS-RUN governance loop (default-on; ZTARE_LEANMILL_NOGOOD=0
                 # disables). The kernel CONFIRMED a laundered closure; solve_adhoc previously banked the
                 # witness only to the per-run audit certificate and DISCARDED it, so the same gamed shape

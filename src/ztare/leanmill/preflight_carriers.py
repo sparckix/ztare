@@ -111,6 +111,60 @@ def _check_native_hammer() -> CarrierVerdict:
         return CarrierVerdict("native_hammer", "native_hammer", False, f"{type(e).__name__}: {e}")
 
 
+def _check_leaf(runtime: str) -> CarrierVerdict:
+    """LLM LEAF provider liveness — the solver's prover (the most expensive, most load-bearing carrier). An API
+    leaf (kimi/deepseek) that is rate-limited (429), out of credits, or mis-keyed is a DEAD INSTRUMENT: the
+    dispatch fails over SILENTLY to the CLI subscription, so the run looks alive while the CONFIGURED leaf never
+    ran — a whole campaign can be spent on a degraded prover with no signal. Probe it with a 1-token call BEFORE
+    the run. CLI runtimes (claude/codex subscription) are assumed live (no cheap probe), reported optional."""
+    try:
+        from ztare.leanmill.solver.api_agentic_leaf import is_api_runtime, _client_and_model
+    except Exception as e:  # noqa: BLE001
+        return CarrierVerdict("leaf", "solver_leaf", False, f"import failed: {e}", optional=True)
+    rt = (runtime or "").strip().lower()
+    if not is_api_runtime(rt):
+        return CarrierVerdict(f"leaf:{rt or 'cli'}", "solver_leaf", True,
+                              "CLI/subscription leaf (no API probe)", optional=True)
+    try:
+        client, model = _client_and_model(rt)
+        if client is None:
+            return CarrierVerdict(f"leaf:{rt}", "solver_leaf", False, "no client (missing key?)", optional=True)
+        resp = client.chat.completions.create(model=model,
+                                              messages=[{"role": "user", "content": "ok"}], max_tokens=1)
+        live = getattr(resp, "choices", None) is not None
+        return CarrierVerdict(f"leaf:{rt}", "solver_leaf", bool(live), f"{model} responded", optional=True)
+    except Exception as e:  # noqa: BLE001 — 429 / quota / bad key ⇒ DEAD
+        return CarrierVerdict(f"leaf:{rt}", "solver_leaf", False,
+                              f"{type(e).__name__}: {str(e)[:80]}", optional=True)
+
+
+def resolve_live_leaf_runtime(preferred: str, fallbacks: "tuple[str, ...]" = ("deepseek",)) -> "tuple[str, str]":
+    """Probe the PREFERRED API leaf; if it is DEAD (429/quota/key), walk `fallbacks` to the first LIVE one and
+    return that instead. FAIL-LOUD: prints which leaf was chosen and why — a silent degrade to the CLI is exactly
+    what loses a campaign to a throttled provider. Returns (runtime, reason); an empty runtime means "all API
+    leaves dead — caller should use the CLI subscription leaf". A non-API `preferred` is returned as-is."""
+    try:
+        from ztare.leanmill.solver.api_agentic_leaf import is_api_runtime
+    except Exception:  # noqa: BLE001
+        return preferred, f"could not import api leaf — using '{preferred}' as-is"
+    pref = (preferred or "").strip().lower()
+    if not is_api_runtime(pref):
+        return pref, f"non-API leaf '{pref or 'cli'}' (assumed live)"
+    chain = [pref] + [f.strip().lower() for f in fallbacks if f and f.strip().lower() != pref]
+    tried: list[str] = []
+    for rt in chain:
+        v = _check_leaf(rt)
+        tried.append(f"{rt}={'LIVE' if v.live else 'DEAD'}")
+        if v.live:
+            note = (f"[leaf-liveness] using preferred leaf '{rt}' ({'; '.join(tried)})" if rt == pref
+                    else f"[leaf-liveness] PREFERRED '{pref}' DEAD → AUTO-SWITCHED to '{rt}' ({'; '.join(tried)})")
+            print(note, flush=True)
+            return rt, note
+    note = f"[leaf-liveness] ALL API leaves DEAD ({'; '.join(tried)}) → CLI subscription leaf"
+    print(note, flush=True)
+    return "", note
+
+
 def run_preflight(include_lean: bool = False) -> "list[CarrierVerdict]":
     """All exogenous (Python) carriers always; the Lean carrier only when `include_lean` (it costs a cold
     Mathlib compile and must not run concurrently with another Lean job)."""

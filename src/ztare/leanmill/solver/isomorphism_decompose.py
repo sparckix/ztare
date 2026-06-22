@@ -600,7 +600,8 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
                                    {"elected": _elected})
             return _DagVerdict(False, "no parseable lemma DAG", {})
         passed, v = decomposition_dag_audit(art["lemmas"], art["chain"], art["lnames"], lean_root,
-                                            max(120, timeout_s), preamble=preamble, goal_conclusion=goal_concl)
+                                            max(120, timeout_s), preamble=preamble, goal_conclusion=goal_concl,
+                                            goal_source=goal_decl, goal_name=target_name)  # kernel α/defeq circularity
         return _DagVerdict(passed, (v.get("passed") if passed else v.get("killed")) or "", v)
 
     def _refine_ctx(art, v, ctx):
@@ -778,11 +779,18 @@ def solve_decomposition(result: dict, source: str, target_name: str, *, lean_roo
                                              lean_root=lean_root, timeout_s=min(180, timeout_s),
                                              original_source=source)
         res["parent_closed"] = bool(res["composite"].get("parent_closed"))
-        # ASSEMBLY-REPAIR (#160, default-OFF until live-validated): the sub-rungs all proved but the up-front
-        # chain did not assemble the parent — give the agent ONE shot to rewrite the chain with the proven
-        # lemmas now citable, re-ratified by the SAME composite_ratify gate (zero new soundness surface).
-        # ZTARE_LEANMILL_ASSEMBLY_REPAIR=1 enables; flip default-on once the live P1 lift is confirmed.
-        if not res["parent_closed"] and os.environ.get("ZTARE_LEANMILL_ASSEMBLY_REPAIR", "0") == "1":
+        # ASSEMBLY-REPAIR (#160): the sub-rungs all proved but the up-front chain did not assemble the parent —
+        # give the agent ONE shot to rewrite the chain with the proven lemmas now citable, re-ratified by the
+        # SAME composite_ratify gate (ZERO new soundness surface — the kernel re-verifies the assembled proof).
+        # DEFAULT-ON (2026-06-22, anti-sibling / sound-knob-default-on): this was left default-OFF "pending a P1
+        # lift measurement", which is exactly the recurring under-use failure mode — a SOUND capability gated
+        # off so it never fires. The consciousness stochastic-factorization rung RCA: `comap_measurable` (fwd)
+        # + Doob–Dynkin (bwd) BOTH ratified, but the parent (`iff ∧ corollary`) never assembled because the
+        # up-front chain abstracted `comap_measurable` as its own rung (not the fwd leg) and the repair shot was
+        # OFF → honest-looking `exact_gap` on a fully-proven decomposition. `flag_audit` surfaced this gate. The
+        # lift is now measurable via the A/B baseline (`=0` reverts); soundness is unchanged (composite_ratify
+        # is the only admit path).
+        if not res["parent_closed"] and os.environ.get("ZTARE_LEANMILL_ASSEMBLY_REPAIR", "1") != "0":
             _rep = _assembly_repair(result, source, target_name, proofs, lean_root=lean_root,
                                     timeout_s=min(180, timeout_s), original_source=source)
             if _rep.get("parent_closed"):

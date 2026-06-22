@@ -4,7 +4,7 @@ description: "Public claim register for the ZTARE campaigns: what survived, what
 
 # Public Claim Register
 
-Last refreshed: 2026-06-12
+Last refreshed: 2026-06-19
 
 This is the public claim register for the ZTARE campaigns:
 Navier-Stokes, consciousness-ascription governance, modified gravity, neural
@@ -191,7 +191,7 @@ result is **only-N integer factorization**: given just the product, a bare
 pure-text model cannot factor a 16–26-digit semiprime (deepseek **1/4** — the
 6-digit control only), while LeanMill's `factorization` path factors it and the
 kernel re-verifies `x·y=N ∧ 1<x<N` — **4/4, +3** on identical instances
-(`witness_transport_moat/`). The faithfulness firewall
+(`witness_transport_separation/`). The faithfulness firewall
 (round-trip judges + SMT boundary checks) runs on non-mathematical substrates
 (healthcare-privacy, aviation, export-control, DeFi policy text) and caught
 meaning-altering formalizations that passed a human review battery. On the
@@ -208,9 +208,10 @@ more reliable estimate (the small-N pilot was optimistic) and a **conservative
 floor** — the depth-1 cost cap timed 5 problems out (budget-cut, not clean
 failures). The two use different budget regimes (not apples-to-apples; CIs
 overlap), and the bare arm was off so the JSON `apparatus_lift` field is a
-cosmetic artifact, **not** a real lift. The matched bare-vs-LeanMill apparatus-lift
-A/B is built but **not yet published** (deferred on cost — the bare arm runs
-~13 min/problem); **no apparatus-lift rate is claimed.** (2) *Soundness, adversarial* — a
+cosmetic artifact, **not** a real lift. The matched bare-vs-LeanMill
+proof-search lift A/B is built but **not yet published** (deferred on cost —
+the bare arm runs ~13 min/problem); **no measured lift rate is claimed.** (2)
+*Soundness, adversarial* — a
 governance red-team rejects **5/5** smuggled-unsoundness attacks
 (`sorry`/`admit`/`native_decide`→`ofReduceBool`/false-axiom) and admits genuine
 proofs; re-runnable (`governance_redteam.py`). (3) *Non-math firewall vs. a
@@ -275,7 +276,7 @@ not a solved problem, not a benchmark claim.
 
 **Public claim.** The consciousness work produced a governance and
 identification result, not a consciousness theory. AID-MCVP states that a
-low-concern verdict on a substrate of unknown consciousness is forbidden unless
+low-concern verdict on a system of unknown consciousness is forbidden unless
 the target property is identifiable through intervention access, independent
 replication, an invertible predicate bridge, and adversarial completeness.
 
@@ -288,9 +289,9 @@ work.
 **Retest tag.** *Original-run only (n=1) for the protocol itself; methodology
 / framework claim for the veto structure.* The veto protocol's formal
 properties have been argued; an external replication of the protocol against
-a new substrate of unknown consciousness has not been performed.
+a new system of unknown consciousness has not been performed.
 
-**Evidence pointers.** [multi-substrate validation](multi_substrate_validation.md);
+**Evidence pointers.** [multi-domain validation](multi_substrate_validation.md);
 the formal-adjacent follow-on artifact —
 [`projects/gp211_paper8_lean_proofs/public/CLAIM_SUMMARY.md`](../projects/gp211_paper8_lean_proofs/public/CLAIM_SUMMARY.md)
 (descent invariance under categorical equivalence, sharpening the
@@ -316,7 +317,7 @@ the governance veto for a theory of consciousness.
 
 ## Modified Gravity / AQUAL / RAR
 
-**Public claim.** The gravity campaign produced a substrate-bounded null and a
+**Public claim.** The gravity campaign produced a domain-bounded null and a
 numerical-methods instrument audit. The row-wise RAR campaign across SPARC,
 cluster, and wide-binary data did not unify regimes under the tested form
 families; the structural diagnosis is within-class feature collapse at
@@ -389,7 +390,7 @@ gas-mass-profile slope or a wide-binary perihelion observable),
 independently chosen; or an external physicist's re-evaluation against an
 alternative phenomenological form with the same parameter count.
 
-**Evidence pointers.** [multi-substrate validation](multi_substrate_validation.md);
+**Evidence pointers.** [multi-domain validation](multi_substrate_validation.md);
 [70-day journey](sprint_70day_journey.md). The internal scale-dependence
 candidate has a public summary at
 [`projects/gp163d_unified_accel/public/CLAIM_SUMMARY.md`](../projects/gp163d_unified_accel/public/CLAIM_SUMMARY.md).
@@ -459,7 +460,7 @@ negative campaign is consolidated in the Neural Hunt public summary:
 [`projects/neural_hunt/public/CLAIM_SUMMARY.md`](../projects/neural_hunt/public/CLAIM_SUMMARY.md).
 The summary catalogues H-01 through H-12, the demoted hypotheses, and
 the first gate on any future neural work. Companion context:
-[multi-substrate validation](multi_substrate_validation.md) and the
+[multi-domain validation](multi_substrate_validation.md) and the
 [70-day journey](sprint_70day_journey.md). The earlier `gp154_*`
 per-project links cited in prior drafts are *not* public evidence
 anchors — the substantive evidence lives in the consolidated
@@ -661,9 +662,9 @@ target under a sealed apparatus.*
 
 **What this is not.** Not a demonstration of open-ended scientific discovery.
 The ground-truth form and coefficients were authored by the operator before
-the mutator ran. The mutator solved a very difficult curve-fitting problem
-under extreme external constraint and recovered the exact hidden form; it did
-not derive a physical law from first principles against an unknown target.
+the mutator ran. The mutator fit a difficult curve-fitting target under
+extreme external constraint and recovered the exact hidden form; it did not
+derive a physical law from first principles against an unknown target.
 The result proves the cage is strong enough to force vocabulary escape *when
 the operator knows the answer*. It does not prove the cage is strong enough
 to force convergence on a correct form when the operator does not.
@@ -1023,7 +1024,7 @@ and are listed here so a reader who lands on this register sees them.
   Published on SSRN (6512960). Documents the original nine
   specification-gaming strategies across at least six evaluation
   domains; the live public gaming catalog extends that paper-level
-  taxonomy with later mined cross-substrate vectors and gate status.
+  taxonomy with later mined cross-domain vectors and gate status.
   Cross-mutator replication (Gemini, Claude, GPT-4o) shows that gaming
   is *mutator-family-specific*: Gemini and Claude exhibit strategic
   gaming under adversarial pressure, while GPT-4o oscillates and never
@@ -1057,9 +1058,10 @@ and are listed here so a reader who lands on this register sees them.
   Complements the adversarial-precedent-memory paper.
   *Retest tag: methodology / framework claim.*
 
-- **Adversarial Substrate Prober.** Working paper draft at
-  `adversarial-substrate-prober/draft.md` (~v0.1, April 2026). Argues
-  the substrate-prober framing: LLM-driven symbolic regression that
+- **Scientific Substrate Probing.** Working paper draft at
+  `research_areas/drafts/paper7_operator_supervisor_thesis_2026_04_30.md`
+  (~v0.1, April 2026). Argues
+  the earlier substrate-probing framing: LLM-driven symbolic regression that
   *diagnoses* what data can and cannot answer, rather than claiming a
   positive law. Includes the within-class feature-collapse finding on
   the v2 RAR substrate that triggered the v3 substrate enrichment now
@@ -1133,7 +1135,7 @@ and are listed here so a reader who lands on this register sees them.
   corpus, fine op identity has moderate agreement (Cohen kappa 0.578);
   the full/partial/none level axis is weak (kappa 0.121); and the
   top-1/top-2 gap mostly measures diffuse catalogue fuzziness rather
-  than a solved routing capability. Merging the two largest confusion
+  than proving routing capability. Merging the two largest confusion
   pairs (`core_02/core_03`, `cand_g/core_01`) improves kappa only to
   0.640, while broader automatic merging over-collapses the language.
   The more reliable machine-facing layer is the four obligation
@@ -1228,11 +1230,11 @@ minute.
 
 **Readiness.** Public and reusable.
 
-## Cross-Substrate Methodology
+## Cross-Domain Methodology
 
 **Public claim.** Across the campaigns, the strongest integrative claim
 is methodological: the same operating discipline surfaced bounded positives,
-clean negatives, and self-demotions across structurally different substrates.
+clean negatives, and self-demotions across structurally different domains.
 
 The discipline includes pre-registration, falsification probes, gauge audits,
 multi-model cold-shot diversity, corpus-gradient suppression, source-readiness
@@ -1241,33 +1243,33 @@ checks, explicit non-claims, and documented self-demotion.
 **Status.** Methodology claim, not a domain-solution claim.
 
 **Retest tag.** *Methodology / framework claim.* The discipline has held
-across NS, consciousness, gravity, neural, and experimental-math substrates.
+across NS, consciousness, gravity, neural, and experimental-math domains.
 What has *not* yet been done is a re-run of the *current* meta-architecture
-against a non-NS substrate where the same self-demotion, catch, forecast,
+against a non-NS domain where the same self-demotion, catch, forecast,
 and source-readiness discipline must hold end-to-end under one apparatus
 version. That re-validation is on the roadmap and is named.
 
-**Evidence pointers.** [multi-substrate validation](multi_substrate_validation.md);
+**Evidence pointers.** [multi-domain validation](multi_substrate_validation.md);
 [70-day journey](sprint_70day_journey.md); [priority roadmap](../priority_roadmap.md);
 [experiment track record](../research_areas/EXPERIMENT_TRACK_RECORD.md);
 [insights ledger](../research_areas/insights_ledger.md);
 [evaluation failure cases](concepts/evaluation_failure_cases.md).
 
 **Non-claims.** Does not prove the current NS-era meta-architecture has already
-been revalidated across all non-NS substrates. Does not prove the apparatus
+been revalidated across all non-NS domains. Does not prove the apparatus
 replaces domain experts. Does not prove that a second principal or different
 apparatus stack would reproduce the same outputs.
 
 **Next falsifier or source-design step.** Re-run the current
-meta-architecture on at least one non-NS substrate and require the same
+meta-architecture on at least one non-NS domain and require the same
 self-demotion, catch, forecast, and source-readiness discipline to hold.
 
 **Readiness.** Public as a thesis with explicit single-operator and
 single-apparatus limitations.
 
-## [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) Forecast Calibration Program (LLM Forecasting Channels + Operationalization)
+## Forecast Calibration Program (LLM Forecasting Channels + Operationalization)
 
-**Public claim.** The GP-245 program (a forecaster-skill / multi-channel calibration subsystem of the ZTARE repo) measured 104 documented findings (F1–F104, with F31 reserved) on subscription-class LLM forecasting across a 5-family panel (claude-opus-4.7, codex-gpt-5.5, codex-gpt-5.4-mini, deepseek-chat, gemini-2.5-flash) over apparatus-internal and external ForecastBench corpora. The strongest empirical contributions:
+**Public claim.** The forecasting-calibration program measured 104 documented findings (F1-F104, with F31 reserved) on subscription-class LLM forecasting across a 5-family panel (claude-opus-4.7, codex-gpt-5.5, codex-gpt-5.4-mini, deepseek-chat, gemini-2.5-flash) over apparatus-internal and external ForecastBench corpora. The strongest empirical contributions:
 
 1. **Tail-insurance-premium as a verbalized second-moment channel that predicts per-row Brier** (F8 ρ=+0.36 on v4 N=100; F10 ρ=+0.41 on existing pool n=590; F20 cross-corpus on v10 with |ρ|=0.47; F32 fourth replication on v16 gp225 corpus with pooled ρ=+0.32 and **all three agents same-sign for the first time**). The verbal-confidence comparison (F20) scoped down by F32 to corpus-and-agent-dependent rather than universal: which channel is strongest readout depends on agent family and corpus character, while the per-family vconf sign-flip on `codex_55` reproduces. Specific instrument distinct from Tian-style generic verbal confidence.
 
@@ -1277,7 +1279,7 @@ single-apparatus limitations.
 
 4. **Closed-loop super-judge re-decision on worried cases improves Brier** (F30 N=44, judge Brier 0.21 vs original 0.35, Δ=−0.14; +11 utility lift on asymmetric-favor-yes vs abstention). Pure-LLM autonomy without humans-in-the-loop, on cases the original agent flagged worried.
 
-5. **Failure-mode atlas surface** documented in the [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) research log and current forecasting paper draft: F12 (LLMs predict Lean-proof completability worse than constant baseline), F19/F22 (rationale-only transfer null on single-shot binary forecasting; adversarial framing rescues worst-case anchoring only), F24 (meta-classifier OOD failure remediated), with F23 reconciliation distinguishing where debate-style mechanisms work (code/seam) vs fail (binary forecasting).
+5. **Failure-mode atlas surface** documented in the forecasting research log and current forecasting paper draft: F12 (LLMs predict Lean-proof completability worse than constant baseline), F19/F22 (rationale-only transfer null on single-shot binary forecasting; adversarial framing rescues worst-case anchoring only), F24 (meta-classifier OOD failure remediated), with F23 reconciliation distinguishing where debate-style mechanisms work (code/seam) vs fail (binary forecasting).
 
 **Status.** Methodology + empirical-instrument claims, mostly apparatus-internal-verdict-only. Code/data at `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/` and sibling directories; reproducible scorer at `scripts/public/control/forecast/pool.py` (extended with F8/F10 second-moment-Spearman per F9 v2 landed this session). Full per-finding strength + retest-tag table in `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md`.
 
@@ -1306,7 +1308,7 @@ single-apparatus limitations.
 - F103 (Lane B canonical L1+L2+L3 audit of 8 published AlphaProof Nexus AICollaborator bare-Mathlib proofs, after 4 corrected rounds): *Original-run; methodology claim plus per-target verdicts*; with the helper-vs-top-level distinction enforced (audit code consolidated 2026-05-29), forced sidecar enabled at v4.27 for non-drift compile_failed, and process-group kill discipline on lake subprocesses (orphan-lake leak fix 2026-05-29), the corrected verdict over the 8 top-level published theorems is: **8/8 compile kernel-clean at the pinned v4.27 toolchain** (L1: no `sorry`/`admit`; L2: only allowlisted kernel axioms {propext, Classical.choice, Quot.sound}), and **all 8 are top-level L3-clean** — no headline theorem is a vacuous restatement of a library lemma. The two substantive caveats are **(a) toolchain-pinning** — 5/8 fail native v4.30 compile (P5's native run hit a harness `audit_invocation_failed`, an infra bug, not a falsification) — and **(b) library-composition**: the proofs assemble existing Mathlib lemmas, i.e. limited novel-math content (normal for formalization). 7/8 also carry **helper-level** `gold_name_verbatim` flags (P1 excepted), but these are **advisory**: a helper lemma citing a Mathlib lemma by name is normal library use and near-vacuous as a quality signal when auditing a finished foreign proof. Two earlier framings are both **retracted**: the "laundering caught / 7–8 of 8 clean closures" framing (an auditor Bug-4 conflated helper-blocker passes into "clean") overstated quality, and the interim "1 unqualified-clean + 7 carry blockers" framing overstated a defect by giving helper-level L3 weight it does not carry. We do **NOT** claim DeepMind published anything fake. We do claim the strict L1+L2 stack at the pinned toolchain — with L3 top-level as the only discriminating laundering signal and L3 helper-level demoted to advisory — is the publishable audit discipline; per-target receipts live in `analytics/public/queries/lane_b_apn_audit_receipts.json` and the consolidated table in `analytics/public/queries/lane_b_apn_audit_summary.md`.
 - F104 (Frequency-Inheritance Hypothesis with 3-axis ESCAPE / INHERIT / MIMIC taxonomy, pre-registered ≥8/10 cell-classification bar): *Original-run; inductive theory plus pre-registered confirmatory smoke*; inducted from F100-F102 that LLM bias inheritance partitions by elicitation surface × bias-mechanism class × alignment overlay. Pre-classified 10 biases into the 3 cells; claude-subscription confirmatory at n=15 per arm. **Result: 8 of 10 cells classified correctly** at the pre-registered bar (random-cell baseline 3.3/10). Confirmed: A/B/G ESCAPE; C/E/H/J INHERIT; F MIMIC. Two informative misses both predicted MIMIC: D sunk-cost (gap 0.021) and I in-group (gap 0.017), both fully suppressed on subscription-RLHF claude — consistent with alignment damping stronger than the frame anticipated and refining MIMIC predicate to "systemic motivational + heavy case-study representation + survives alignment damping." Cross-panel n=15 D-and-I over codex/deepseek/gemini fired 2026-05-29 to distinguish "alignment damping" from "framework wrong"; result pending. Receipts: `projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/freq_inheritance_smoke_n15_calls.jsonl` + `freq_inheritance_DI_panel_smoke_n15_calls.jsonl`.
 
-**Evidence pointers.** [research log with all F-findings through F104](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md); [findings completeness ledger](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/findings_completeness_ledger.md); [yield-formula calibration analytic](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/yield_formula_calibration_analytic.md); [LLM forecast calibration paper draft](../papers/llm-forecast-calibration-cross-corpus/draft.md); [GP-245 project methodology](../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md); [GP-245 seam](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md).
+**Evidence pointers.** [research log with all F-findings through F104](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md); [findings completeness ledger](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/findings_completeness_ledger.md); [yield-formula calibration analytic](../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/yield_formula_calibration_analytic.md); [LLM forecast calibration paper draft](../papers/llm-forecast-calibration-cross-corpus/draft.md); [project methodology](../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md); [internal seam provenance](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md).
 
 **Non-claims.** Does NOT claim LLMs cannot forecast in general (positive findings outnumber negatives in the same program). Does NOT claim three independent model families (trio is 1 claude + 2 codex variants — codex errors are correlated; strongest external claim is "consistent across this trio"). Does NOT claim reproducibility-grade methodology (internal-audit-grade with documented external-extension path; zero second-lab submissions to date). Does NOT solve corpus contamination, author-level GT-selection leakage, or estimate API token cost. Does NOT claim novel mechanisms — most are extensions or scoped replications of mechanisms in arXiv:2603.25052 (multi-channel readout), arXiv:2604.01457 (overconfidence circuits), arXiv:2509.25532 (suggestibility), arXiv:2505.21588 (multi-agent herd behavior), Schoenegger 2024 (independent-aggregation ensembles), and Tian 2023 (verbalized confidence). Novelty is in **specific instruments and operationalizations** (F8 tail-premium token, F17 per-agent heterogeneity, F20 channel comparison, F28 abstention-vs-threshold wiring, F30 closed-loop judge), not new mechanisms.
 
@@ -1314,6 +1316,6 @@ single-apparatus limitations.
 - F8/F10/F20 cross-family replication (Gemini / open-weights / reasoning-class) on contamination-clean external corpus.
 - F28/F30 replication under non-synthetic cost structures (operator-measured costs, not assumed regimes).
 - F12 natural-distribution Lean replication (v7.2 pilot built but not yet completed; current stratified-corpus result could collapse).
-- Independent second-lab submission to [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)-CalBench (zero submissions to date; testbed claim depends on this).
+- Independent second-lab submission to Forecast Calibration Benchmark (zero submissions to date; testbed claim depends on this).
 
-**Readiness.** Public as a multi-finding portfolio with explicit strength + retest tags per F-ID. Methodology findings (F3, F4, F9) are high-strength; empirical findings (F8, F10, F15, F17, F20, F28, F30, F32, F33) are apparatus-internal-grade with documented external-extension path. Earlier standalone draft paths were retired; the live public surfaces are the GP-245 project docs and the LLM forecast calibration paper draft. Per-project public surface: [`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md).
+**Readiness.** Public as a multi-finding portfolio with explicit strength + retest tags per F-ID. Methodology findings (F3, F4, F9) are high-strength; empirical findings (F8, F10, F15, F17, F20, F28, F30, F32, F33) are apparatus-internal-grade with documented external-extension path. Earlier standalone draft paths were retired; the live public surfaces are the project docs and the LLM forecast calibration paper draft. Per-project public surface: [`projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md`](../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md).

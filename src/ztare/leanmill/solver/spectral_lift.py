@@ -45,28 +45,8 @@ import re
 from pathlib import Path
 
 # ── 1. LLM generation (mirrors conjecture_generate / specialize_generate) ───────────────────────────
-_FUNCTOR_LIFT_PROMPT = (
-    "You are a Lean 4 + spectral-graph-theory expert. The GOAL below is a DISCRETE / combinatorial claim "
-    "about a FINITE structure (a graph, a finite 0/1 or integer matrix, a finite group's Cayley graph). "
-    "Proving it directly is hard. Use the FUNCTOR LIFT: map the discrete object to a MATRIX, pass to its "
-    "SPECTRUM (eigenvalues / spectral gap), and bound the discrete property with a CONTINUOUS spectral "
-    "bound (Expander Mixing Lemma, Cheeger inequality, Hoffman bound, eigenvalue interlacing).\n"
-    "CRITICAL — the continuous bound must be discharged by an EXISTING Mathlib lemma (the 'bridge'/pullback "
-    "of the spectral statement back to the discrete one). NAME that exact Mathlib lemma; do NOT invent a new "
-    "one (a bridge that does not already exist will be REJECTED — that is not your job here).\n"
-    "Output EXACTLY these four blocks:\n"
-    "MATRIX:\n```json\n{{\"matrix\": [[<row0>], [<row1>], ...], \"kind\": \"adjacency\"}}\n```\n"
-    "   (the concrete finite matrix the discrete object maps to — a rectangular list-of-lists of integers; "
-    "for a graph use its symmetric 0/1 adjacency matrix)\n"
-    "BRIDGE:\n```lean\n<the fully-qualified name of the EXISTING Mathlib bridge lemma, e.g. "
-    "`Matrix.IsHermitian.eigenvalues` — JUST the name, nothing else>\n```\n"
-    "SPECTRAL:\n```lean\n<a one-line Lean comment stating the continuous bound you will instantiate, e.g. "
-    "`-- e(S,T) ≤ (d/n)|S||T| + λ√(|S||T|)` — for the human/audit log only>\n```\n"
-    "PROOF:\n```lean\n{goal_head} := by\n  <tactics that APPLY the BRIDGE lemma to close the goal; NO sorry, "
-    "NO admit; must reference the bridge lemma>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. The PROOF must cite the BRIDGE lemma in real "
-    "tactic text and contain NO sorry.\nGOAL:\n{goal}\n"
-)
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import FUNCTOR_LIFT_PROMPT as _FUNCTOR_LIFT_PROMPT
 
 
 def functor_lift_generate(row: dict, goal_text: str, lean_root: Path, timeout_s: int,

@@ -55,23 +55,48 @@ def rungs_over_time(certs: "list[dict]") -> "list[dict]":
     return curve
 
 
+def _rederivation_key(cert: dict) -> str:
+    """Identity of the THEOREM a cert closed, for the re-derivation metric. Keyed by the α-normalized STATEMENT
+    (binder-name / whitespace invariant), NOT the target NAME — the planner gives DIFFERENT theorems the same
+    generic node name (`iso_lemma1` is ≥3 distinct lemmas), so name-keying FALSELY flags them as re-derivation
+    (2026-06-19 RCA). Reuses the canonical α-key (`proof_cache.normalize_statement_equiv`) + decl parser. Falls
+    back to `goal_sha` (still statement-identity, never name) then the raw target only when no source is present."""
+    probe = cert.get("recompilable_probe") or ""
+    tgt = cert.get("target") or ""
+    if probe.strip():
+        try:
+            import sys, os
+            sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "src"))
+            from ztare.leanmill.solver.statement_integrity import decl_blocks
+            from ztare.leanmill.solver.proof_cache import normalize_statement_equiv
+            blocks = dict(decl_blocks(probe))
+            stmt = blocks.get(tgt) or (next(iter(blocks.values()), "") if len(blocks) == 1 else "")
+            if stmt.strip():
+                return "stmt::" + normalize_statement_equiv(stmt)
+        except Exception:  # noqa: BLE001 — telemetry must never crash; degrade to a statement-identity fallback
+            pass
+    gs = cert.get("goal_sha")
+    return ("sha::" + gs) if gs else ("name::" + tgt)
+
+
 def rederivation_rate(certs: "list[dict]") -> dict:
-    """Closures of an ALREADY-certified target = re-derivation (the amnesia metric). First closure per target is
-    genuine; every later 'closed' cert for the same target re-proved known work. Rejections are excluded —
-    governance refusing a re-proof is the system working, not amnesia."""
+    """Closures of an ALREADY-certified STATEMENT = re-derivation (the amnesia metric). First closure per
+    statement is genuine; every later 'closed' cert for the SAME statement (α-equivalent) re-proved known work.
+    Keyed by statement-identity (see `_rederivation_key`), not the planner's generic target name. Rejections are
+    excluded — governance refusing a re-proof is the system working, not amnesia."""
     first_ts: dict = {}
     redo, total = 0, 0
     by_target: "dict[str, int]" = defaultdict(int)
     for c in certs:
         if c.get("outcome") != "closed":
             continue
-        t = c.get("target") or ""
+        k = _rederivation_key(c)
         total += 1
-        if t in first_ts:
+        if k in first_ts:
             redo += 1
-            by_target[t] += 1
+            by_target[c.get("target") or k] += 1
         else:
-            first_ts[t] = c.get("ts")
+            first_ts[k] = c.get("ts")
     return {"closures": total, "distinct_rungs": len(first_ts), "rederived": redo,
             "rederivation_rate": round(redo / total, 3) if total else None,
             "worst_offenders": sorted(by_target.items(), key=lambda kv: -kv[1])[:5]}

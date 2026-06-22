@@ -1,9 +1,9 @@
 ---
-description: "Evidence packet for transport-to-decidability under a kernel trichotomy: faithfulness/validity routed to a decision theory, every verdict a checkable artifact (CERTIFIED / REFUTED / OUT_OF_FRAGMENT), governed against laundering."
+description: "Review packet for transport-to-decidability: routed decision procedures, checkable trichotomy verdicts, and anti-laundering governance."
 ---
 # Transport-to-Decidability Packet
 
-> **Up:** [Evidence Packets](README.md)
+> **Up:** [Review Packets](README.md)
 
 ## Scoped Claim
 
@@ -22,7 +22,17 @@ real Lean v4.30. **Not** a benchmark, **not** externally reviewed, **not** a pro
 small-to-moderate (N=7 router seed, N=18 policy, N=9 IAM) with wide CIs; the `OUT_OF_FRAGMENT` residue is real and
 reported. The IAM model is toy-scale boolean, **not** the full IAM grammar (see "Honest edge").
 
-## Claims → receipts → how to re-run
+## Evidence Summary
+
+The current evidence is a bounded transport-to-decidability packet: a router,
+typed trichotomy, policy/IAM corpora, transport-laundering red team, and small
+math-transport controls. The strongest supported claim is governance and
+artifact discipline: every positive result must be a certificate or
+kernel-checked witness, every negative result must be a concrete counterexample
+or explicit `OUT_OF_FRAGMENT`, and transport attempts that launder an analogy
+are rejected by the audit gate.
+
+The table below links each claim to its receipt and reproducible anchor.
 
 | Claim | Result | Receipt | Re-run (committable) |
 |---|---|---|---|
@@ -32,7 +42,7 @@ reported. The IAM model is toy-scale boolean, **not** the full IAM grammar (see 
 | IAM/cloud refinement (policy-permissiveness) | **5/5** over-grants caught w/ re-verifiable escalation witnesses (9/9-vs-z3 = consistency, not accuracy) | `results/iam_refinement_run.md` | corpus `scripts/public/control/leanmill/iam_refinement_corpus.json` (engine = `certified_faithfulness.certify_policy_refinement`) |
 | Transport-laundering soundness | red-team **8/8** rejected, **0** false-positive (wrong cofactor / false witness / asserted analogy) | `results/governance_redteam.md` | `projects/leanmill_experiments/public/governance_redteam.py` |
 | Math transport lift (vs native) | Gröbner/SOS **+2** deg-≥3; witness 20/20 vs native 0/20 — *but native is a weak baseline* | `results/transport_lift_controlled.md` | `projects/leanmill_experiments/public/transport_lift_controlled.py` |
-| **Exogenous-compute edge (vs a bare model), kernel-confirmed** | only-N factoring: bare deepseek **1/4** (control only) vs leanmill **4/4** kernel-verified → **+3**; 16/22/26-digit semiprimes the model can't factor, the kernel re-verifies. *Honest correction: the earlier Pell/Kronecker "12/12" was subsumed by a strong reasoning model (sum-leak); only-N factoring is the clean test.* | `witness_transport_moat/` (`factoring_moat_run.json`) | `witness_vs_bare_controlled.py --no-fixed --factoring --bare-models deepseek-chat` |
+| **Exogenous-compute edge (vs a bare model), kernel-confirmed** | only-N factoring: bare deepseek **1/4** (control only) vs leanmill **4/4** kernel-verified → **+3**; 16/22/26-digit semiprimes the model can't factor, the kernel re-verifies. *Honest correction: the earlier Pell/Kronecker "12/12" was subsumed by a strong reasoning model (sum-leak); only-N factoring is the clean test.* | `witness_transport_separation/` (`factoring_separation_run.json`) | `witness_vs_bare_controlled.py --no-fixed --factoring --bare-models deepseek-chat` |
 | Benchmark, honest+bounded | miniF2F **43%** (N=23 bounded) / 67% (N=9 pilot), both kept | `results/minif2f_test_calibration_triage.md` | `minif2f_calibration.py` (env-heavy; not committed) |
 
 **Reproducibility note (honest).** Committable + from-clone runnable: the `--selftest` entrypoints (in `src/`,
@@ -42,6 +52,23 @@ transport-lift — the live ones need warm Lean / a subscription model in the en
 **not** from-clone: the `.md`/`.json` receipts under `analytics/public/leanmill/results/` (gitignored by the
 private-accounting convention) and the env-heavy `minif2f_calibration.py` (needs the PutnamBench substrate). A
 clone reproduces every engine + corpus + governance claim by running the shipped selftests and `public/` runners.
+
+## Runnable Anchors
+
+From-clone, model-free anchors:
+
+```bash
+python -m ztare.leanmill.solver.decidability_router --selftest
+python -m ztare.leanmill.solver.certified_faithfulness --selftest
+```
+
+Public runner anchors, with environment caveats described above:
+
+```bash
+projects/leanmill_experiments/public/certified_faithfulness_demo.py --corpus scripts/public/control/leanmill/certify_policy_corpus.json
+projects/leanmill_experiments/public/governance_redteam.py
+projects/leanmill_experiments/public/transport_lift_controlled.py
+```
 
 ## Primary Sources
 
@@ -61,3 +88,30 @@ firewall** (faithfulness, not formal→formal properties), **domain-generality**
 access-policy / compliance / mathematics, not a bespoke per-domain encoding), and **independent kernel
 re-verification + a transport-laundering red-team**. Same SMT-certificate spirit; different and broader target.
 See `results/iam_refinement_run.md`.
+
+## Non-Claims
+
+- Not a broad theorem-prover performance benchmark.
+- Not a claim that the toy IAM encoding matches a production IAM grammar.
+- Not a claim that z3-vs-z3 consistency proves real-world policy accuracy.
+- Not an externally reviewed result.
+- Not a broad LeanMill measured proof-search lift claim.
+- Not a production deployment claim.
+- Not a claim that `OUT_OF_FRAGMENT` residue is small or ignorable.
+
+## Missing Upgrade
+
+A stronger packet needs:
+
+- committed public receipt exports for the current `.md` and `.json` result
+  files rather than references to gitignored accounting artifacts;
+- a named external baseline for each benchmark-style claim;
+- external review of at least one policy or mathematics transport artifact;
+- a production-grade domain grammar for any policy/IAM accuracy claim;
+- confidence intervals or repeated runs for the small corpus results;
+- a from-clone runnable benchmark packet for the env-heavy miniF2F and
+  PutnamBench-related paths.
+
+Until those exist, this packet supports bounded governance and artifact
+discipline around decidability transport, not broad performance or deployment
+claims.

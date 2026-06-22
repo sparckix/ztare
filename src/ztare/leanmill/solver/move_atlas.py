@@ -57,6 +57,115 @@ _RANK_CACHE: dict = {}   # per-process memo: the ranking is deterministic per (g
 #                          (the embedding API call is the hot cost on a multi-hundred-node P1 run).
 
 
+import re as _re   # channel-2 structural triggers: symbolic matches on the goal's logical FORM
+#
+# DUAL-CHANNEL (HYBRID) MOVE RECALL. Channel 1 = dense embedding (goal-text ↔ card-text cosine, `rank()` above).
+# Channel 2 = structural triggers: deterministic symbolic matches on the goal's LOGICAL FORM, fused with the
+# dense ranking. The motivation is the classic IR vocabulary-mismatch / lexical-gap failure: a formal Lean goal
+# (`∃ x : <built type>, …`, a self-reference impossibility) shares almost no surface tokens with a strategy
+# card's English prose, so a SHAPE-keyed move is effectively unretrievable by cosine alone (2026-06-21 RCA — the
+# witness move never surfaced for abstract ∃ goals; the consciousness Čech target gapped on exactly this). The
+# standard cure is hybrid dense+sparse/structural retrieval; here the structural channel GUARANTEES a shape-keyed
+# move reaches the menu. Adding a strategy move keyed on goal-shape = ONE `(matcher, move_id)` line below — no
+# per-move plumbing. A/B-gated (`ZTARE_LEANMILL_STRUCT_TRIGGER=0`, back-compat `ZTARE_LEANMILL_WITNESS_TRIGGER`)
+# so the closure LIFT is measurable against the research's prior null on the *text* channel (this is the untested
+# *structural* channel; `move_engagement.jsonl` accrues the verdict). Agency-preserving (Goldilocks): a trigger
+# ADDS a menu option (injected just after the top dense hit), never forces a move — the agent still chooses.
+
+
+def _shape_abstract_existence(goal_text: "str | None") -> bool:
+    """Trigger → `instances_first` (reduce-to-minimal-witness). Fires on an ABSTRACT EXISTENCE/IFF over an
+    arbitrary/constructed carrier (`∃` or `↔` with a `Type*`/`Sort` carrier) — where 'exhibit the smallest
+    concrete witness' is the move. Conservative: the abstractness marker is REQUIRED, so it does NOT fire on a
+    concrete numeric `∃ n : ℕ, …`."""
+    g = goal_text or ""
+    if not g.strip() or (("∃" not in g) and ("↔" not in g)):
+        return False
+    return bool(_re.search(r"Type\s*\*|Type\s+[uvw]\b|\bSort\b", g))
+
+
+def _shape_self_reference(goal_text: "str | None") -> bool:
+    """Trigger → `op_spec_02` (Internalization / Self-Reference / Diagonal — the Gödel-Lawvere-Cantor move; the
+    R2 / general-criterion tier: necessity of self-opacity). Fires on a LIMITATIVE / impossibility claim about a
+    system encoding or applying ITSELF: a negated surjection/injection of a self-map into its own power/function
+    space (`¬ Surjective (… : α → (α → …))`, `α → Set α`), a negated faithful self-encoding
+    (`¬ ∃ … (encode|faithful|represent)`), or explicit diagonal/fixed-point vocabulary. Conservative: outside the
+    explicit-vocabulary case it REQUIRES an impossibility marker, so it does not fire on ordinary surjectivity."""
+    g = goal_text or ""
+    if not g.strip():
+        return False
+    if _re.search(r"\b(Cantor|[Dd]iagonal|fixedPoint|fixed_point|Lawvere|G[öo]del|Tarski|halting|incomplete\w*)\b", g):
+        return True
+    neg = ("¬" in g) or ("Not " in g) or ("→ False" in g) or ("≠" in g)
+    if not neg:
+        return False
+    selfmap = bool(_re.search(r"(\w+)\s*→\s*\(\s*\1\s*→|(\w+)\s*→\s*Set\s+\2\b|→\s*\(\s*\w+\s*→\s*(Prop|Bool)\s*\)", g))
+    if ("Surjective" in g or "Injective" in g) and (selfmap or "Set " in g):
+        return True
+    return bool(_re.search(r"(encode|encoding|faithful|represent\w*|self[-_ ]?model|self[-_ ]?refer)", g, _re.I))
+
+
+# CHANNEL-2 registry — (goal-shape matcher, move_id to GUARANTEE-surface). Extend = append one line.
+_STRUCTURAL_TRIGGERS = [
+    (_shape_abstract_existence, "instances_first"),   # abstract ∃/iff over a built carrier → reduce to witness
+    (_shape_self_reference,     "op_spec_02"),         # self-encoding impossibility / fixed-point → diagonal move
+]
+_witness_goal_shape = _shape_abstract_existence        # back-compat alias (earlier callers / tests)
+
+
+def _move_meta(move_id: str) -> "dict | None":
+    """Surfaced-meta for ANY move, built from the ONE corpus (never re-authored here)."""
+    try:
+        from ztare.leanmill.solver.move_corpus import build_corpus
+        for e in build_corpus():
+            if e.move_id == move_id:
+                return {"score": None, "id": e.move_id, "name": e.name, "kind": e.kind,
+                        "when": e.when, "avoid": e.avoid, "cli": e.cli, "source": e.source}
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
+def _struct_trigger_enabled() -> bool:
+    return os.environ.get("ZTARE_LEANMILL_STRUCT_TRIGGER",
+                          os.environ.get("ZTARE_LEANMILL_WITNESS_TRIGGER", "1")) != "0"
+
+
+def _fuse_structural_triggers(metas: list, source: str, goal_text: "str | None", k: int,
+                              kinds: "set | None") -> "tuple[list, str]":
+    """Hybrid fusion: for EACH structural trigger whose goal-shape matcher fires, guarantee its move is on the
+    menu (injected just after the top dense hit, deduped, trimmed to k) — respecting the caller's `kinds` filter
+    via each move's real kind. A/B-gated; agency-preserving (adds options, never forces)."""
+    if not _struct_trigger_enabled():
+        return metas, source
+    fired: list = []
+    for matcher, mid in _STRUCTURAL_TRIGGERS:
+        try:
+            if not matcher(goal_text):
+                continue
+        except Exception:  # noqa: BLE001
+            continue
+        if any(m.get("id") == mid for m in metas) or any(m.get("id") == mid for m in fired):
+            continue
+        meta = _move_meta(mid)
+        if meta is None or (kinds is not None and meta.get("kind") not in kinds):
+            continue
+        fired.append(meta)
+    if not fired:
+        return metas, source
+    fused, seen = [], set()
+    for m in (metas[:1] + fired + metas[1:]):
+        mid = m.get("id")
+        if mid in seen:
+            continue
+        seen.add(mid)
+        fused.append(m)
+    return fused[:k], (source + "+struct_trigger")
+
+
+_fuse_witness_trigger = _fuse_structural_triggers   # back-compat alias (rank() + earlier callers)
+
+
 def rank(goal_text: str, k: int = 12, kinds: "set | None" = None) -> "tuple[list, str]":
     """(ordered move metas, source). source ∈ {"atlas","static"}. ATLAS path queries the embedded corpus for
     goal relevance (DRIVES the order); cached per process. STATIC path returns the corpus in a fixed kind order
@@ -85,7 +194,8 @@ def rank(goal_text: str, k: int = 12, kinds: "set | None" = None) -> "tuple[list
         items = sorted(items, key=lambda e: _STATIC_ORDER.get(e.kind, 9))
         metas = [{"score": None, "id": e.move_id, "name": e.name, "kind": e.kind, "when": e.when,
                   "avoid": e.avoid, "cli": e.cli, "source": e.source} for e in items[:k]]
-        return metas, "static"   # NOT cached — retry the atlas next time the embedder may be back
+        return _fuse_witness_trigger(metas, "static", goal_text, k, kinds)   # NOT cached — retry atlas next time
+    out = _fuse_witness_trigger(out[0], out[1], goal_text, k, kinds)   # channel-2 hybrid fusion (post-dense)
     if len(_RANK_CACHE) > 1024:   # soft bound (distinct goals ≈ node count; clear rather than grow unbounded)
         _RANK_CACHE.clear()
     _RANK_CACHE[ck] = out
@@ -168,7 +278,9 @@ def render_for_goal(goal_text: "str | None" = None, k: int = 12, db_path=None,
     for m in live:
         label = _KIND_LABEL.get(m.get("kind"), "MOVE")
         name = m.get("name", "?")
-        cli = m.get("cli") or ""
+        # The cached atlas stores the PORTABLE cli (machine-independent artifact); re-absolutize it here so the
+        # agent (cwd = the lake project) can actually run it. Idempotent on the static-path's already-abs cli.
+        cli = _mc.absolutize_cli(m.get("cli") or "")
         head = f"\n• {label} `{name}`" + (f" — run: {cli}" if cli else "")
         lines.append(head)
         if m.get("when"):

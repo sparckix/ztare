@@ -255,43 +255,8 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     return out
 
 
-_THEORY_PROMPT = (
-    "THEORY CONSOLIDATION (definitions are first-class deliverables). You own the campaign theory file "
-    "`{path}` in the Lean project `{root}`. The campaign target:\n{target}\n\nBlueprint notes follow at the "
-    "end. Your job THIS dispatch: EXTEND the theory file with the missing FORMAL SUBSTRATE the blueprint "
-    "needs and Mathlib lacks.\n"
-    "DEFINITION DISCIPLINE — a definition has NO kernel oracle; it is judged by WORKABILITY, so work "
-    "like a library designer, not a prover: (1) DIVERGE: for each needed concept draft 2-3 candidate "
-    "formalizations (different shapes: a def via derivatives vs via coefficients vs via an existing "
-    "Mathlib structure). (2) TRIAL: for each candidate, try to prove its MODEL-CASE sanity lemmas "
-    "IMMEDIATELY (e.g. the concept evaluated on the simplest known instance gives the known answer; "
-    "consistency with already-proven campaign rungs). (3) SELECT the candidate whose sanity lemmas "
-    "PROVED — workability evidence, never taste — and ship: the chosen `def`/`structure`, its PROVEN "
-    "sanity lemmas (no sorry on these), and the deeper API lemma STATEMENTS (those may be `sorry`; each "
-    "becomes a solver work item). Prefer Mathlib-idiomatic shapes (typeclasses, existing algebraic "
-    "structures) so library lemmas apply — search before inventing. (4) KILL LEG: if a candidate (or an "
-    "EXISTING campaign structure) resists EVERY sanity instance, suspect it is UNINHABITED — try to PROVE "
-    "`<name>_impossible` (its hypothesis set implies False / no instance exists). A COMPILED impossibility "
-    "is a first-class deliverable: it kernel-certifies the route correction, and nothing may be built on "
-    "that structure afterward. Prefer definitional bundling over compatibility hypotheses (fields "
-    "definitionally equal to the source formula beat `h_compat : a = b` side-conditions — fewer "
-    "assumptions to kill later). CREDIT: definitions earn through USE — your proven sanity lemmas count "
-    "as rungs now; the definition itself is credited when campaign lemmas cite it.\n"
-    "(5) PIN THE DENOTATION (anti-decoy). Sanity lemmas prove a def is WORKABLE, not that it MEANS the "
-    "intended concept — a self-consistent decoy can pass them all. So for EACH new `def`, anchor it to a "
-    "TRUSTED reference: search Mathlib (Loogle/warm checker) for the concept your def extends, and if one "
-    "exists state `theorem anchor_<def>_agrees_<ref> : ∀ …, <your def> … = <Mathlib concept> …` over the "
-    "OVERLAP domain (where both are defined). These `anchor_…` theorems may be `sorry` — each becomes a "
-    "work item like any API lemma; a kernel-PROVEN anchor pins the def's denotation (a decoy cannot prove "
-    "agreement with the established concept). If your def is genuinely BEYOND Mathlib (no overlapping "
-    "concept), say so honestly in a `-- @no-anchor: <def>: <why no Mathlib overlap>` comment — its "
-    "denotation then rests only on API + composition (the harness reports this as UNDER-DETERMINED, an "
-    "honest gap, never a false certification). Name every such theorem with the `anchor_` prefix.\n"
-    "APPEND-ONLY THIS DISPATCH: never modify or delete existing content (governance reverts the round if "
-    "existing bytes change). If an EXISTING definition is wrong-shaped, do not edit it — state "
-    "`-- SUPERSEDE: <name>: <why>` and the harness routes a governed revision. Verify the file COMPILES "
-    "(sorry allowed only on deep API) with the warm checker before finishing. Quality bar: minimal, "
-    "citable, foundational-first — a library others build on.\n\nBLUEPRINT:\n{notes}\n")
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import THEORY_PROMPT as _THEORY_PROMPT
 
 
 def _anti_unify_block(lean_root: Path) -> str:

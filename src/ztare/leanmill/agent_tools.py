@@ -294,13 +294,11 @@ def _tool_verify(theory: str) -> int:
     return 1
 
 
-def _tool_search(query: str) -> int:
-    """Mathlib lemma SEARCH via Loogle (the 'essential' API-discovery tool the prompt advertises but that was
-    NEVER implemented — a dead advert). Returns the REAL matching Mathlib declarations + signatures so the agent
-    uses an EXISTING name instead of GUESSING a non-existent one — the firewall RCA was formalizations failing to
-    typecheck on invented names (`RatFunc`/residue/partial-fraction). Loogle JSON API (reachable from the VPS).
-    Query forms: a name (`Polynomial.roots`), a pattern (`Polynomial.Splits ?f ?p`), or a type. Prints NONE
-    (reason from memory, do NOT invent) on no match / unreachable; never crashes the agent's turn."""
+def loogle_search_text(query: str, max_hits: int = 8) -> str:
+    """THE canonical Loogle Mathlib-search primitive, returning a text result (one home for the HTTP + format).
+    Both the CLI tool (`_tool_search`, prints it) and the API agentic leaf (`api_agentic_leaf._mathlib_search`,
+    returns it) call this — no re-rolled Loogle endpoint. Query forms: a name (`Polynomial.roots`), a pattern
+    (`Polynomial.Splits ?f ?p`), or a type. Returns an honest `NONE`/`unreachable` line on no match / 5xx."""
     import json
     import urllib.parse
     import urllib.request
@@ -309,19 +307,27 @@ def _tool_search(query: str) -> int:
         with urllib.request.urlopen(url, timeout=20) as resp:  # noqa: S310 — fixed trusted host
             data = json.loads(resp.read().decode("utf-8"))
     except Exception as e:  # noqa: BLE001 — offline / 5xx ⇒ honest NONE, never crash
-        print(f"search: NONE (Loogle unreachable: {str(e)[:120]}). Reason from the lemmas you know.")
-        return 0
+        return f"search: NONE (Loogle unreachable: {str(e)[:120]}). Reason from the lemmas you know."
     hits = data.get("hits") or []
     if not hits:
-        print(f"search: NONE — {str(data.get('header', 'no match'))[:200]}. The name/pattern may not exist; do "
-              "NOT invent it — restructure or use a lemma you can confirm.")
-        return 0
-    print(f"search: {data.get('count', len(hits))} Mathlib declarations match `{query}` (top "
-          f"{min(8, len(hits))}; use the EXACT name):")
-    for h in hits[:8]:
+        return (f"search: NONE — {str(data.get('header', 'no match'))[:200]}. The name/pattern may not exist; "
+                "do NOT invent it — restructure or use a lemma you can confirm.")
+    lines = [f"search: {data.get('count', len(hits))} Mathlib declarations match `{query}` (top "
+             f"{min(max_hits, len(hits))}; use the EXACT name):"]
+    for h in hits[:max_hits]:
         name = h.get("name") or "?"
         typ = " ".join(str(h.get("type") or "").split())[:160]
-        print(f"  • {name}" + (f" : {typ}" if typ else ""))
+        lines.append(f"  • {name}" + (f" : {typ}" if typ else ""))
+    return "\n".join(lines)
+
+
+def _tool_search(query: str) -> int:
+    """Mathlib lemma SEARCH via Loogle (the 'essential' API-discovery tool the prompt advertises but that was
+    NEVER implemented — a dead advert). Returns the REAL matching Mathlib declarations + signatures so the agent
+    uses an EXISTING name instead of GUESSING a non-existent one — the firewall RCA was formalizations failing to
+    typecheck on invented names (`RatFunc`/residue/partial-fraction). Delegates to the canonical
+    `loogle_search_text` (shared with the API leaf); never crashes the agent's turn."""
+    print(loogle_search_text(query))
     return 0
 
 

@@ -153,8 +153,96 @@ class IntegrityVerdict:
                              "every other original decl + the target signature must be preserved"}
 
 
+def kernel_type_equiv_fn(target_name: str, lean_root) -> "Optional[Callable[[str, str], bool]]":
+    """THE ONE canonical KERNEL type-equality oracle for the statement-integrity organ — consolidated HERE
+    (2026-06-21) from two byte-identical copies (`lean_proof_gate._kernel_type_equiv_fn`,
+    `solver_core._target_type_equiv_fn`) that had to be hand-synced. That duplication WAS the recurring
+    "missed sibling" bug class: a shared safety check copied per-caller drifts the instant one copy is fixed
+    and the others are not — exactly how the consciousness campaign's faithful ∀-fronted iff got
+    `target_signature_altered` from the governance kernel after the solve-time copy was already fixed. It now
+    lives next to its sole consumer `check`, which builds it DEFAULT-ON, so there is NO per-caller sibling left
+    to forget (the deepest tasteful chokepoint).
+
+    `rfl` on `@orig = @agent` holds iff the two are the SAME Prop (both `sorry`ed ⇒ both `sorryAx P` ⇒ defeq
+    iff same `P`): a faithful REFORMULATION (∀-fronted binders, a `↑(Set.range E)` coercion) ACCEPTS, any real
+    weakening (dropped/added hyp, altered conclusion) is a TYPE mismatch ⇒ rejected (soundness intact). BOTH
+    verify worlds share ONE probe SHAPE — declare the posed-original AND the agent decl as fresh sorried stubs,
+    then rfl-compare — differing ONLY in the ENVIRONMENT: the warm campaign env when a substrate is registered
+    (so the signatures' bespoke campaign defs resolve), else a self-contained `import Mathlib` probe. (The old
+    WORLD-1 shape referenced the live `@<base>`, which is `unknown identifier` for the TARGET-under-proof — it
+    is the goal, not a registered substrate decl — so it fail-closed ⇒ FALSE `statement_altered` on every
+    faithful reformulation of a campaign goal; the worlds were unified 2026-06-21.) Returns None if the
+    canonical parsers can't import (⇒ the conservative text verdict stands); the inner fn fails CLOSED on any
+    compile failure (never fail-OPEN — that would be a laundering hole)."""
+    try:
+        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                               campaign_namespaces, compile_probe_via_repl)
+        from ztare.gates.v33_preflight_risk_detector import _compile_probe
+        from ztare.leanmill import lean_source as _ls
+        from pathlib import Path as _Path
+    except Exception:  # noqa: BLE001
+        return None
+    _base = (target_name or "").split(".")[-1]
+    if not _base:
+        return None
+    # Resolve the lake PROJECT root (the dir with the lakefile) from whatever path we were handed: governance
+    # passes `_probe_root = probe_path.parent` (e.g. `ztare_proofs/.solver_scratch`), a SUBDIR with no lakefile,
+    # so the oracle's compile can't find the toolchain/project → fail-closed → FALSE `statement_altered` on every
+    # faithful reformulation (the 2026-06-21 campaign RCA — same `_probe_root`-is-wrong class as the banking-amnesia
+    # bug). Walk up to the lakefile so a subdir resolves to its project root (`.solver_scratch` → `ztare_proofs`,
+    # which is also the intended toolchain). Fix is HERE at the oracle so EVERY caller is covered, none to forget.
+    def _lake_root(_p):
+        try:
+            _p = _Path(_p).resolve()
+            for _d in [_p, *_p.parents]:
+                if (_d / "lakefile.toml").exists() or (_d / "lakefile.lean").exists():
+                    return _d
+        except Exception:  # noqa: BLE001
+            pass
+        return _p
+    lean_root = _lake_root(lean_root)
+    try:
+        _sub = get_campaign_substrate()
+    except Exception:  # noqa: BLE001
+        _sub = None
+
+    def _fn(_orig_block: str, _probe_block: str) -> bool:
+        try:
+            # ONE probe SHAPE for BOTH worlds, differing ONLY in the ENVIRONMENT (the worlds used to diverge —
+            # that divergence WAS a bug). Declare the posed-original AND the agent decl as FRESH-named sorried
+            # stubs (canonical binder-safe extraction, NOT a regex), then rfl-compare: `rfl` holds iff the two
+            # are the SAME Prop. NEVER reference the live `@<base>` — for the TARGET-under-proof that name is
+            # `unknown identifier` (it is the goal, not a registered decl in the campaign substrate), which made
+            # the old WORLD-1 probe fail-closed ⇒ FALSE `statement_altered` on every faithful ∀-fronted /
+            # `↑(Set.range E)` reformulation (the 2026-06-21 campaign RCA). Declaring the original fresh from
+            # `_orig_block` (the POSED statement) is also the more correct faithfulness comparand.
+            _asig = _ls.extract_signature(_probe_block, _base)
+            _osig = _ls.extract_signature(_orig_block, _base)
+            if not _asig.strip() or not _osig.strip():
+                return False   # extraction failed ⇒ fail-closed (text verdict stands)
+            _body = (f"theorem __orig_zwv_chk {_osig} := by sorry\n"
+                     f"theorem __agent_zwv_chk {_asig} := by sorry\n"
+                     "example : @__orig_zwv_chk = @__agent_zwv_chk := rfl\n")
+            if _sub:           # WORLD 1: campaign env live — SAME body, run IN the env so bespoke campaign defs
+                try:           #          (poleTerm/HasRatDeriv/…) referenced by the signatures resolve.
+                    _env = campaign_file_env(_sub, lean_root)
+                except Exception:  # noqa: BLE001
+                    _env = None
+                if _env is not None:
+                    _nss = campaign_namespaces()
+                    _open, _close = (f"namespace {_nss[0]}\n", f"\nend {_nss[0]}\n") if len(_nss) == 1 else ("", "")
+                    _r = compile_probe_via_repl(f"{_open}{_body}{_close}", lean_root, 60, env=_env)
+                    return bool(isinstance(_r, tuple) and _r[0])
+            # WORLD 2: self-contained (no substrate) — SAME body against base Mathlib.
+            return _compile_probe(f"import Mathlib\n{_body}", lean_root, "TypeEquiv", 60) is True
+        except Exception:  # noqa: BLE001 — any failure ⇒ not-confirmed (text verdict stands)
+            return False
+    return _fn
+
+
 def check(original_source: str, probe_source: str, target_name: str,
-          *, target_type_equiv_fn: "Optional[Callable[[str, str], bool]]" = None) -> IntegrityVerdict:
+          *, target_type_equiv_fn: "Optional[Callable[[str, str], bool]]" = None,
+          lean_root=None) -> IntegrityVerdict:
     """Verify the probe preserved every original declaration the target depends on. The agent may
     add new decls and replace `target_name`'s proof body; anything else is a violation.
 
@@ -165,7 +253,14 @@ def check(original_source: str, probe_source: str, target_name: str,
     differs, defer to this oracle: it kernel-checks `@orig = @agent := rfl` and returns True iff the two are the
     SAME Prop. It can ONLY UPGRADE a text-reject to ACCEPT — a real weakening (dropped/added hyp, altered
     conclusion) is a TYPE mismatch ⇒ False ⇒ the violation stands, and infra failure ⇒ False (FAIL-CLOSED, the
-    no-false-closure invariant holds). Absent ⇒ pure text behavior (byte-parity; tests + non-campaign paths)."""
+    no-false-closure invariant holds).
+
+    DEFAULT-ON (2026-06-21): pass a `lean_root` and `check` builds the canonical `kernel_type_equiv_fn` ITSELF
+    (the deepest chokepoint) so NO caller has to remember to construct it — the structural fix for the recurring
+    missed-sibling bug class (two hand-synced oracle copies). Pass `target_type_equiv_fn` explicitly to override;
+    pass neither (no lean_root) ⇒ pure text behavior (byte-parity; tests + non-Lean callers)."""
+    if target_type_equiv_fn is None and lean_root is not None:
+        target_type_equiv_fn = kernel_type_equiv_fn(target_name, lean_root)
     orig = dict(decl_blocks(original_source))
     probe = dict(decl_blocks(probe_source))
     # the target may be namespace-qualified (e.g. `AlmostPeriodic.leaf_X`); match by exact OR suffix.

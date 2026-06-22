@@ -9,7 +9,7 @@ Separated from lean_repl.py so the capture is OPT-IN — not every project
 needs the pair logged; only those that will pass through G5 audit.
 
 Invocation:
-  from src.ztare.formal.lean_compiler_capture import capture_translation_pair
+  from ztare.formal.lean_compiler_capture import capture_translation_pair
   capture_translation_pair(project_dir)
 
 Safe to call repeatedly. Last capture wins. Requires:

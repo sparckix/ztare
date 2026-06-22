@@ -56,7 +56,7 @@ CORPUS = REPO / "projects/leanmill_experiments/strategist_lift/corpus"
 TIERS = [("pell", CORPUS / "pell_tier.jsonl"),
          ("kronecker", CORPUS / "kronecker_tier.jsonl"),
          ("witness", CORPUS / "witness_tier.jsonl")]
-OUT = REPO / "analytics/public/leanmill/witness_transport_moat" / os.environ.get(
+OUT = REPO / "analytics/public/leanmill/witness_transport_separation" / os.environ.get(
     "WVB_OUT", "witness_vs_bare_run.json")
 
 _LEAN_BLOCK = re.compile(r"```(?:lean4?)?\s*(.*?)```", re.DOTALL)
@@ -114,7 +114,7 @@ def _fresh_rows(k: int, seed: int):
 
 
 def _fresh_factoring_rows(seed: int):
-    """ONLY-N factoring instances (the CLEAN moat — no sum leak): `∃ x y, x*y = N ∧ 1 < x ∧ x < N`, given only
+    """ONLY-N factoring instances (the CLEAN separation — no sum leak): `∃ x y, x*y = N ∧ 1 < x ∧ x < N`, given only
     the product. A pure-text model cannot factor a large semiprime (measured: deepseek burns its budget / guesses
     wrong); SymPy `factorint` does it instantly and the kernel re-verifies. First row is a SMALL control the
     model SHOULD factor (so a failure on the large rows is a capability wall, not a dead instrument)."""
@@ -194,7 +194,7 @@ def _bare_text(goal: str, name: str, model_id: str, timeout_s: int):
 
 def _shell_agent(goal: str, name: str, timeout_s: int):
     """CONTROL (honest, confirms architecture §line 31): a SHELL-ENABLED agent (codex leaf, full-auto) CAN run
-    its own python to compute the witness. So the moat is NOT 'no AI system can' — it is 'the model's weights
+    its own python to compute the witness. So the differentiator is NOT 'no AI system can' — it is 'the model's weights
     can't; the capability is exogenous compute, which leanmill packages AND independently kernel-governs.'"""
     import tempfile
     from ztare.leanmill.solver.agentic_leaf import default_dispatch
@@ -302,7 +302,7 @@ def main() -> int:
             work.append((row["tier"], row))
             fresh_meta.append({"target": row["target_theorem_name"], **row["_meta"]})
 
-    print(f"\n=== WITNESS-TRANSPORT vs BARE FRONTIER MODEL — the exogenous-compute moat ===", flush=True)
+    print(f"\n=== WITNESS-TRANSPORT vs BARE FRONTIER MODEL — the exogenous-compute edge ===", flush=True)
     print(f"timeout={timeout_s}s  bare_panel={bare_models}  shell_control={do_shell}  fixed={use_fixed}  "
           f"fresh={fresh_k}/family  seed={seed}\n", flush=True)
     if fresh_k:
@@ -341,7 +341,7 @@ def main() -> int:
                 b_ok, eff, blen, bproof, bw = _bare_text(goal, name, m, timeout_s)
                 bare_by_model[m] = {"ok": b_ok, "effective": eff, "out_len": blen, "proof": bproof, "wall": bw}
         # best-of-panel baseline (most generous to the baseline): closed iff ANY live model closed it.
-        # None = bare NOT measured on this row (ineligible under --bare-rows) ⇒ excluded from moat/hard counts.
+        # None = bare NOT measured on this row (ineligible under --bare-rows) ⇒ excluded from separation/hard counts.
         bare_any = (any(v["ok"] is True for v in bare_by_model.values()) if bare_by_model else None)
         w_ok, w_note = _witness(goal, name, timeout_s)
         sh_ok = sh_w = None
@@ -350,7 +350,7 @@ def main() -> int:
         rows.append({"tier": tier_name, "target": name, "native": nat, "bare_any": bare_any,
                      "bare_by_model": bare_by_model, "witness": w_ok, "witness_note": w_note,
                      "shell_agent": sh_ok, "shell_wall": sh_w})
-        tag = "  <<< WITNESS-ONLY (moat)" if (w_ok and not nat and bare_any is False) else ""
+        tag = "  <<< WITNESS-ONLY (separation)" if (w_ok and not nat and bare_any is False) else ""
         print(f"{name:<18}{str(nat):<8}{str(bare_any):<8}{str(w_ok):<8} {w_note[:42]}{tag}", flush=True)
 
     n = len(rows)
@@ -399,7 +399,7 @@ def main() -> int:
         print(f"  witness (same {bm_n} rows): {wit_on_measured}/{bm_n}", flush=True)
     if do_shell and shell_rows:
         print(f"  shell-enabled agent   : {shell_c}/{len(shell_rows)} (fresh rows) — CONFIRMS a tool-user CAN "
-              f"compute it; the moat is the BARE-WEIGHTS boundary + self-governance, not 'no AI can'", flush=True)
+              f"compute it; the differentiator is the BARE-WEIGHTS boundary + self-governance, not 'no AI can'", flush=True)
     if do_bare and bm_n:
         print(f"\n  *** FRESH un-riggable subset (N={fresh_n}): bare best-of-panel {fresh_bareany}/{fresh_n}, "
               f"witness {fresh_wit}/{fresh_n}  →  separation +{fresh_wit - fresh_bareany} ***", flush=True)

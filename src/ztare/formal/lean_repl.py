@@ -17,7 +17,7 @@ retry loop has a coarse proof-progress substrate rather than raw stderr
 alone.
 
 Usage:
-    from src.ztare.formal.lean_repl import attempt_proof
+    from ztare.formal.lean_repl import attempt_proof
     result = attempt_proof(lean_stub, max_attempts=10)
 """
 
@@ -29,7 +29,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.llm_runtime import LLMRuntime, resolve_model_id
+from ztare.common.llm_runtime import LLMRuntime, resolve_model_id
 
 
 LEAN_BIN = Path.home() / ".elan" / "bin" / "lean"
@@ -609,7 +609,7 @@ def prove_from_compression(
         print(f"  Lean stub loaded from {lean_stub_path}")
     else:
         try:
-            from src.ztare.formal.lean_compiler import compile_to_lean
+            from ztare.formal.lean_compiler import compile_to_lean
 
             lean_stub = compile_to_lean(project_dir)
             print("  Lean stub generated")

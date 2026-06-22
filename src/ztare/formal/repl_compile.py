@@ -35,6 +35,22 @@ _IMPORT_MATHLIB_RE = re.compile(r"^\s*import\s+Mathlib\s*$", re.MULTILINE)
 # (a dead instrument). SOUND: an import whose decls are NOT already in the base env ⇒ the probe fails with
 # "unknown identifier" (a real failure), never a false PASS — so stripping can only fix, never launder.
 _ALL_IMPORTS_RE = re.compile(r"^\s*import\s+\S+.*$", re.MULTILINE)
+# Explicit `universe …` COMMAND lines (not the `Type u` USES). They COLLIDE with the PERSISTENT warm-REPL
+# environment: a `universe u` re-declared across probes in ONE warm session errors `universe 'u' already
+# declared`, so any probe the formalizer renders with `universe u v w` + `Type u/v/w` FALSE-FAILS on the 2nd+
+# attempt in the session (RCA 2026-06-22: the stochastic-factorization rung — a CORRECT 6-line proof rejected
+# as `did not typecheck :: universe … already declared`, 14/23 attempts poisoned, never the math; the leaf got
+# exactly ONE real shot per warm session). Stripping the COMMAND is SOUND: Lean 4 AUTO-BINDS the now-unbound
+# `Type u/v/w` (each declaration gets fresh LOCAL universes — verified byte-equivalent closure), and a
+# genuinely-missing universe fails `unknown universe`, never a false PASS. Mirrors the import-strip rationale.
+_UNIVERSE_CMD_RE = re.compile(r"^\s*universe\s+\S.*$", re.MULTILINE)
+
+
+def _strip_prelude_for_repl(src: str) -> str:
+    """Strip the file-scope prelude that collides with the persistent warm-REPL env: `import` lines (Mathlib is
+    already in the base env) AND `universe …` command lines (see `_UNIVERSE_CMD_RE`). ONE canonical accessor so
+    the two strips can never drift apart across the four warm-check sites (anti-sibling)."""
+    return _UNIVERSE_CMD_RE.sub("", _ALL_IMPORTS_RE.sub("", src)).lstrip("\n")
 
 
 def _flag_on() -> bool:
@@ -136,7 +152,7 @@ def campaign_file_env(file_path, sandbox, timeout: int = 600) -> "Optional[int]"
         src = fp.read_text(encoding="utf-8", errors="replace")
     except Exception:  # noqa: BLE001
         return None
-    code = _ALL_IMPORTS_RE.sub("", src).lstrip("\n")
+    code = _strip_prelude_for_repl(src)
     if not code.strip():
         return None
     try:
@@ -174,7 +190,7 @@ def compile_probe_via_repl(probe: str, sandbox, timeout: int = 120, *,
     pl = _get_repl(project)
     if pl is None:
         return None
-    code = _ALL_IMPORTS_RE.sub("", probe).lstrip("\n")   # the prelude already has Mathlib (+Aesop/Batteries)
+    code = _strip_prelude_for_repl(probe)   # the prelude already has Mathlib (+Aesop/Batteries)
     if not code.strip():
         code = "example : True := trivial"
     try:
@@ -218,6 +234,40 @@ def get_campaign_substrate() -> "Optional[str]":
     return _CAMPAIGN_SUBSTRATE
 
 
+_CAMPAIGN_NS_CACHE: "dict" = {}   # substrate path -> (mtime, [unique top-level namespaces])
+
+
+def campaign_namespaces() -> "list[str]":
+    """Unique top-level `namespace X` names declared in the ACTIVE campaign substrate theory. A campaign theory
+    typically wraps ALL its decls in one namespace (`namespace P1N1RungA … end P1N1RungA`, repeated); the
+    pre-elaborated env from `campaign_file_env` has that namespace CLOSED (each `end`), so a verify probe that
+    references namespaced sibling defs UNQUALIFIED is `unknown identifier` ⇒ the rung can never close (the
+    2026-06-20 'no closures' RCA). The verify seam re-enters this namespace so names resolve as in-file.
+    Returns [] when no substrate / unreadable. Cached by (path, mtime)."""
+    cs = _CAMPAIGN_SUBSTRATE
+    if not cs:
+        return []
+    try:
+        p = Path(cs)
+        mt = p.stat().st_mtime
+    except Exception:  # noqa: BLE001
+        return []
+    hit = _CAMPAIGN_NS_CACHE.get(cs)
+    if hit and hit[0] == mt:
+        return hit[1]
+    try:
+        src = p.read_text(encoding="utf-8", errors="replace")
+    except Exception:  # noqa: BLE001
+        return []
+    import re as _re_ns
+    ns: "list[str]" = []
+    for m in _re_ns.finditer(r"(?m)^\s*namespace\s+([A-Za-z_][\w.]*)", src):
+        if m.group(1) not in ns:
+            ns.append(m.group(1))
+    _CAMPAIGN_NS_CACHE[cs] = (mt, ns)
+    return ns
+
+
 def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int = 120, *,
                          env: "Optional[int]" = None) -> "Optional[tuple[bool, str]]":
     """SOUND warm verify of a campaign-theory proof against a pre-elaborated env: (1) the probe must compile
@@ -235,7 +285,17 @@ def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int 
     pl = _get_repl(project)
     if pl is None:
         return None
-    code = _ALL_IMPORTS_RE.sub("", probe_code).lstrip("\n")
+    code = _strip_prelude_for_repl(probe_code)
+    # NAMESPACE-CONTEXT (2026-06-20 'no closures' RCA): a campaign theory wraps its decls in `namespace X`,
+    # closed in the env, so a bare probe can't resolve namespaced sibling defs (unknown identifier ⇒ unclosable).
+    # Re-enter the namespace so names resolve as in-file, AND qualify decl_name (X.decl) so the axiom audit below
+    # targets the ACTUAL decl — a mis-targeted audit would print nothing and (pre-2026-06-20) silently PASS.
+    # Only the single-namespace case (the campaign shape) is auto-wrapped; multi-namespace ⇒ no wrap (a miss,
+    # never a false pass), and an already-wrapped probe is left alone.
+    _ns = campaign_namespaces()
+    if len(_ns) == 1 and not code.lstrip().startswith("namespace "):
+        code = f"namespace {_ns[0]}\n{code}\nend {_ns[0]}\n"
+        decl_name = f"{_ns[0]}.{decl_name}"
     try:
         r = pl.check(code, timeout=min(timeout, _warm_ceiling()), env=env)
     except Exception:  # noqa: BLE001
@@ -261,6 +321,11 @@ def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int 
         _drop_repl(project)
         return None
     raw = str((ax or {}).get("raw", "")) if isinstance(ax, dict) else ""
+    # FAIL-CLOSED: the audit MUST produce a recognizable `#print axioms` verdict ("… depends on axioms …" or
+    # "… does not depend on any axioms"). An empty/unknown output (e.g. a mis-qualified decl_name, dead REPL)
+    # must NOT read as clean — that would be a silent false-pass (the no-false-closure invariant). [2026-06-20]
+    if "axioms" not in raw:
+        return (False, f"repl(campaign): AXIOM AUDIT INCONCLUSIVE for {decl_name} (no verdict) — fail-closed")
     if "sorryAx" in raw or "sorry" in raw.lower():
         return (False, f"repl(campaign): AXIOM AUDIT REJECT — sorryAx in {decl_name} (laundered sorried decl)")
     # any axiom outside the allowlist (e.g. native_decide's ofReduceBool) ⇒ reject, same as the cold audit
@@ -297,7 +362,7 @@ def axioms_raw_via_repl(lean_source: str, target_name: str, sandbox, timeout: in
         return None
     src = lean_source if f"#print axioms {target_name}" in (lean_source or "") else (
         (lean_source or "").rstrip() + f"\n#print axioms {target_name}\n")
-    code = _ALL_IMPORTS_RE.sub("", src).lstrip("\n")   # the base env already has Mathlib (+Aesop/Batteries)
+    code = _strip_prelude_for_repl(src)   # the base env already has Mathlib (+Aesop/Batteries)
     if not code.strip():
         return None
     try:

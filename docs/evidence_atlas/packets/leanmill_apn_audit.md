@@ -1,9 +1,9 @@
 ---
-description: "Evidence packet for the LeanMill APN audit and proof-governance discipline."
+description: "Review packet for the LeanMill APN audit and proof-governance discipline."
 ---
 # LeanMill APN Audit Packet
 
-> **Up:** [Evidence Packets](README.md)
+> **Up:** [Review Packets](README.md)
 
 ## Scoped Claim
 

@@ -147,6 +147,17 @@ def leaf_provider_order() -> "tuple[str, str]":
 # from "" (a real empty answer). The formalizer + firewall detect this and mark the outcome inadmissible (#89).
 INADMISSIBLE_DISPATCH = "__LEANMILL_INADMISSIBLE_PROVIDER_DEAD__"
 
+# Process-scoped dead-API-leaf cache (2026-06-22): an API leaf (kimi/deepseek) that 429s / quota-dies stays
+# dead for the rest of a sustained campaign — re-probing it on EVERY dispatch wasted 9 probe-then-failover
+# cycles in consc_camp_0622hard, burning wall-clock the live CLI leaf needed to close the crux. Once an API
+# runtime returns INADMISSIBLE, skip it for THIS process and go straight to the CLI subscription.
+# SCOPE: process-only (a fresh run re-probes, so a recovered quota is picked up next run) and per-runtime
+# (a dead kimi never disables a live deepseek). FAIL-SAFE by construction: the only consequence of caching
+# too eagerly is "use the reliable CLI subscription leaf instead of a maybe-recovered API leaf" — never a
+# broken run (the CLI is what closes anyway). NOT a soundness surface: the kernel re-verifies every closure
+# regardless of which leaf produced it, so this only changes the producer ROUTE, never what is admitted.
+_DEAD_API_RUNTIMES: "set[str]" = set()
+
 _PROVIDER_DEAD_MARKERS = (
     "hit your usage limit", "usage limit", "rate limit", "rate_limit", "quota exceeded", "quota",
     "upgrade to plus", "too many requests", "not authenticated", "authentication failed",
@@ -270,6 +281,26 @@ def default_dispatch(prompt: str, *, runtime: str = "", repo: str | Path, timeou
     once on the ALTERNATE subscription (separate quota) so one exhausted provider doesn't silently zero a run.
     A flushed HEARTBEAT brackets every dispatch (the 'too nested to troubleshoot' fix). `agent_tag` keys a
     per-tag durable session (concurrency-safe parallel sampling, #117); "" = the shared repo session."""
+    # API-AGENTIC LEAF (kimi/deepseek): when the leaf runtime names a metered API model, run OUR own
+    # function-calling tool loop (api_agentic_leaf) instead of a subscription CLI agent. DEFAULT-OFF
+    # (ZTARE_LEANMILL_LEAF_RUNTIME=kimi|deepseek). Spreads leaf load off the rate-limited subscription quota.
+    # The kernel re-verifies every closure ⇒ just another producer, no soundness surface. On a DEAD API
+    # (missing key / quota), fall THROUGH to the CLI subscription — same resilience as the codex↔claude failover.
+    _api_rt = (runtime or os.environ.get("ZTARE_LEANMILL_LEAF_RUNTIME", "")
+               or os.environ.get("ZTARE_DEFAULT_SUBSCRIPTION_RUNTIME", "")).strip().lower()
+    from ztare.leanmill.solver.api_agentic_leaf import is_api_runtime
+    if is_api_runtime(_api_rt):
+        if _api_rt in _DEAD_API_RUNTIMES:
+            # Already INADMISSIBLE earlier this run — don't pay the probe-then-failover tax again, go CLI.
+            print(f"[dispatch] api-leaf {_api_rt} known-dead this run → CLI subscription (probe skipped)", flush=True)
+        else:
+            from ztare.leanmill.solver.api_agentic_leaf import api_agentic_dispatch
+            _aout = api_agentic_dispatch(prompt, runtime=_api_rt, repo=repo, timeout=timeout)
+            if _aout != INADMISSIBLE_DISPATCH:
+                return _aout
+            _DEAD_API_RUNTIMES.add(_api_rt)   # cache dead for THIS process (fresh run re-probes)
+            print(f"[dispatch] api-leaf {_api_rt} INADMISSIBLE (dead/no key) → CLI subscription "
+                  "(cached dead for this run)", flush=True)
     runtime = runtime or leaf_runtime()
     out, rc = _dispatch_once(prompt, runtime, repo, timeout, agent_tag)
     if _provider_dead(out, rc):
@@ -281,6 +312,49 @@ def default_dispatch(prompt: str, *, runtime: str = "", repo: str | Path, timeou
         print("[dispatch] BOTH subscriptions dead (quota/auth) — INADMISSIBLE, not a real negative", flush=True)
         return INADMISSIBLE_DISPATCH
     return out
+
+
+def _selftest_dead_api_cache() -> None:
+    """A dead API leaf (kimi) is probed at MOST ONCE per process, then routes straight to CLI — the
+    consc_camp_0622hard fix (9 wasted probe-then-failover cycles on a 429-dead leaf)."""
+    import os as _os
+    import ztare.leanmill.solver.api_agentic_leaf as _api
+    import ztare.leanmill.solver.agentic_leaf as _self
+    _DEAD_API_RUNTIMES.discard("kimi")
+    calls = {"api": 0, "cli": 0}
+    saved = {"is_api": _api.is_api_runtime, "api_disp": _api.api_agentic_dispatch,
+             "dispatch_once": _self._dispatch_once, "leaf_runtime": _self.leaf_runtime,
+             "env": _os.environ.get("ZTARE_LEANMILL_LEAF_RUNTIME")}
+    try:
+        _os.environ["ZTARE_LEANMILL_LEAF_RUNTIME"] = "kimi"
+        _api.is_api_runtime = lambda rt: rt == "kimi"
+
+        def _fake_api(prompt, runtime, repo, timeout):
+            calls["api"] += 1
+            return INADMISSIBLE_DISPATCH   # always dead (the 429 case)
+        _api.api_agentic_dispatch = _fake_api
+        _self.leaf_runtime = lambda: "codex"
+
+        def _fake_cli(prompt, runtime, repo, timeout, agent_tag):
+            calls["cli"] += 1
+            return ("CLI-OK", 0)
+        _self._dispatch_once = _fake_cli
+        for _ in range(3):
+            out = default_dispatch("p", runtime="", repo=".", timeout=10)
+            assert out == "CLI-OK", f"expected CLI failover, got {out!r}"
+        assert calls["api"] == 1, f"dead API leaf re-probed {calls['api']}× (should be 1 — cache failed)"
+        assert calls["cli"] == 3, f"CLI should run each dispatch, got {calls['cli']}"
+        print("  [PASS] dead-API-leaf cache: kimi probed once, then CLI-direct ×3")
+    finally:
+        _api.is_api_runtime = saved["is_api"]
+        _api.api_agentic_dispatch = saved["api_disp"]
+        _self._dispatch_once = saved["dispatch_once"]
+        _self.leaf_runtime = saved["leaf_runtime"]
+        if saved["env"] is None:
+            _os.environ.pop("ZTARE_LEANMILL_LEAF_RUNTIME", None)
+        else:
+            _os.environ["ZTARE_LEANMILL_LEAF_RUNTIME"] = saved["env"]
+        _DEAD_API_RUNTIMES.discard("kimi")
 
 
 def provider_live(runtime: str, repo: str | Path, dispatch: Callable, timeout: int = 90) -> tuple[bool, str]:
@@ -502,8 +576,25 @@ def probe_dir(project_dir: "str | Path") -> Path:
     """The scratch dir generated probes are written to (created on demand). Shared by the writer (solve_leaf)
     and every readback site (solver_core RobustProbe/AdHoc readback + the governance-organ glob) so the write
     path and the read path can never drift — a drift would silently skip governance (the 2026-06-04 cold-route
-    gap). Returns `<project_dir>/.solver_scratch`."""
-    d = Path(project_dir) / PROBE_SUBDIR
+    gap). Returns `<project_dir>/.solver_scratch`, OR a per-run subdir of it when `ZTARE_LEANMILL_RUN_SCRATCH`
+    is set.
+
+    CONCURRENCY SUPPORT (2026-06-22): two campaigns run concurrently against the SAME lake project collided on
+    the FIXED-name probes here (`FormalizeProbe.lean`, and the generic planner sub-lemma names `iso_lemma1`/…
+    that both runs write under `closures/` + `AdHoc_*`) — run B overwrote run A's probe mid-formalize, so A
+    read B's bytes ⇒ spurious `signature_altered`/compile failures. Because EVERY probe write AND readback goes
+    through this ONE function, namespacing it by run isolates all of them at once. Set
+    `ZTARE_LEANMILL_RUN_SCRATCH=<run_tag>` (the campaign launcher does) ⇒ `.solver_scratch/<run_tag>/`; unset ⇒
+    `.solver_scratch` verbatim (byte-parity for single runs). The token is sanitized to a safe path segment."""
+    import os as _os
+    base = Path(project_dir) / PROBE_SUBDIR
+    _run = (_os.environ.get("ZTARE_LEANMILL_RUN_SCRATCH") or "").strip()
+    if _run:
+        import re as _re
+        _seg = _re.sub(r"[^A-Za-z0-9._-]", "_", _run)[:80]
+        d = base / _seg
+    else:
+        d = base
     d.mkdir(parents=True, exist_ok=True)
     return d
 

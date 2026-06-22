@@ -822,8 +822,18 @@ def formalize_interactive(nl: str, *, lean_root, timeout_s: int = 360, context: 
         return ""
     leancheck = f"PYTHONPATH={repo}/src {_sys.executable} -m ztare.formal.lean_check_server --check {sock} {probe}"
     search = f"PYTHONPATH={repo}/src {_sys.executable} -m ztare.leanmill.agent_tools search '<Mathlib name or type pattern>'"
-    ctx_block = (f"\n\nSURROUNDING CONTEXT (use ONLY to render faithfully; do NOT formalize the context):\n"
-                 f"{context.strip()[:2000]}\n" if (context or "").strip() else "")
+    # CONTEXT framing (2026-06-21): the load-bearing fix is that this context now reaches formalize DEFAULT-ON
+    # (the notes-blind formalizer over-modeled an abstract target onto heavy Mathlib machinery because it never
+    # saw the operator's intended model). The only change here is to UN-GAG: the old "use ONLY to render
+    # faithfully; do NOT formalize the context" implicitly discouraged honoring the blueprint's intended MODEL.
+    # Now the context may steer WHICH model/nucleus to formalize — the operator's lane — while the surrounding
+    # prose is still not itself formalized. NO encoding lecture / no concrete types (that would be us coaching
+    # the formalizer with this example's answer); the firewall is the sole faithfulness arbiter, so honoring the
+    # blueprint's model can never specialise a genuinely-general claim or launder a weakening past the gate.
+    ctx_block = (f"\n\nSURROUNDING CONTEXT — use it to render the INTENDED statement faithfully: its notation, the "
+                 f"intended objects, and (when the blueprint says so) WHICH concrete model / nucleus to formalize. "
+                 f"Do NOT formalize the surrounding prose itself.\n{context.strip()[:2000]}\n"
+                 if (context or "").strip() else "")
     # NOTE: do NOT append render_tool_block here — that surfaces the PROVING tools (witness/abduct/hammer), which
     # are useless for STATING a theorem and would duplicate the inline `search` command. Formalize needs only
     # lean-check + search, both specified in the prompt above.
@@ -886,6 +896,13 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", time
     vacuous theorem typecheck — the opaque-shell problem one level down, harder with no reference). Gate
     the defs (back-translate + cold-judge + #24 non-vacuity per def) BEFORE routing multistep output to
     the solver, or a def-shell launders through. That def-faithfulness gate is the remaining work."""
+    # FORMALIZE/SOLVE RUNTIME DECOUPLING (2026-06-21 RCA): formalize routes through the SAME leaf dispatch as
+    # the solver, so a global `ZTARE_LEANMILL_LEAF_RUNTIME=kimi` (cheap SOLVER leaf) SILENTLY also routed
+    # FORMALIZE to kimi — a weak/slow formalizer that stalled the consciousness campaign ~17min on a single
+    # lemma (codex did the same render in ~30s). This knob lets the operator keep formalize on the proven
+    # codex/claude while the solver leaf is the cheap kimi/deepseek. Unset ⇒ "" ⇒ leaf runtime (byte-parity).
+    import os as _os_fr
+    runtime = runtime or _os_fr.environ.get("ZTARE_LEANMILL_FORMALIZE_RUNTIME", "")
     from pathlib import Path
     if mode not in _FORMALIZE_PROMPTS:
         mode = "oneshot"
@@ -915,8 +932,12 @@ def default_formalize(nl: str, *, mode: str = "oneshot", runtime: str = "", time
     # formalizer was blind to the surrounding notation/objects). The context INFORMS rendering only — the
     # firewall (round-trip + cross-vote + structural + def-faithfulness) is still the SOLE admit arbiter, so an
     # over-helpful context can never launder an unfaithful statement through.
-    ctx_block = ("\n\nSURROUNDING BLUEPRINT CONTEXT — use ONLY to render the statement below faithfully (its "
-                 "notation, the intended objects, how this piece fits); do NOT formalize the context itself:\n"
+    # CONTEXT framing — mirror of formalize_interactive: UN-GAG only (let the blueprint steer WHICH model/nucleus
+    # to formalize, the operator's lane), no encoding lecture / no concrete types. Firewall remains the sole
+    # faithfulness arbiter, so honoring the model can never launder a weakening past the boundary.
+    ctx_block = ("\n\nSURROUNDING BLUEPRINT CONTEXT — use it to render the INTENDED statement faithfully: its "
+                 "notation, the intended objects, how this piece fits, and (when the blueprint says so) WHICH "
+                 "concrete model / nucleus to formalize. Do NOT formalize the surrounding prose itself:\n"
                  + context.strip()[:2000] + "\n\n") if (context or "").strip() else ""
     prompt = _FORMALIZE_PROMPTS[mode] + ctx_block + (nl or "")
     # PROVIDER A — caller named an API model (runtime is not a subscription CLI runtime — e.g. 'deepseek-chat',
@@ -1407,11 +1428,16 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
     formalize_fn = formalize_fn or default_formalize
     if formalize_fn is default_formalize:
         # Thread the LEAN ROOT so the INTERACTIVE formalizer (default-on) can start the warm REPL + the agent can
-        # `lean-check`/`search` to a TYPECHECKING statement. Plus, when ZTARE_LEANMILL_FORMALIZE_NOTES=1, the
-        # blueprint NOTES as render context (#88; it was notes-blind). The firewall still gates faithfulness, so
-        # neither can launder — they only RAISE the faithful-render rate. `extra_context` carries the reformulate
-        # refutation feedback (warm-resumed agent's continuation cue) on a re-entry.
-        _notes_ctx = notes if (os.environ.get("ZTARE_LEANMILL_FORMALIZE_NOTES") == "1" and (notes or "").strip()) else ""
+        # `lean-check`/`search` to a TYPECHECKING statement. Plus the blueprint NOTES as render context (#88; it
+        # was notes-blind). DEFAULT-ON (anti-sibling cure 2026-06-21): the notes-blind formalizer over-modeled an
+        # abstract Čech target onto Mathlib's full Grothendieck-site stack (`PresheafOfGroups.OneCocycle`/`H1`)
+        # because it never saw the blueprint's own "render over the minimal concrete model" encoding guidance —
+        # the ONE instruction that steers it to a tractable encoding was withheld by a default-OFF flag. The
+        # firewall still gates faithfulness, so the notes can NEVER launder an unfaithful statement — they only
+        # RAISE the faithful-AND-tractable render rate. So this is default-on; set ZTARE_LEANMILL_FORMALIZE_NOTES=0
+        # for the notes-blind A/B baseline. `extra_context` carries the reformulate refutation feedback
+        # (warm-resumed agent's continuation cue) on a re-entry.
+        _notes_ctx = notes if (os.environ.get("ZTARE_LEANMILL_FORMALIZE_NOTES", "1") != "0" and (notes or "").strip()) else ""
         _fctx = (_notes_ctx + extra_context).strip()
         formalize_fn = lambda _nl: default_formalize(_nl, lean_root=sandbox, context=_fctx)  # noqa: E731
     compile_fn = compile_fn or (lambda s: default_compile(s, sandbox))

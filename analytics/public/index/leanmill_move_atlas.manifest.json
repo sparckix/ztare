@@ -1,0 +1,7 @@
+{
+  "generated_at": "2026-06-22T17:18:50.195848+00:00",
+  "model": "gemini-embedding-001",
+  "dimensions": 768,
+  "size": 46,
+  "embeddings_file": "analytics/public/index/leanmill_move_atlas.json"
+}

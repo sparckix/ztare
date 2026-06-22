@@ -69,34 +69,8 @@ _NATIVE_DECIDE_ENV = "ZTARE_LEANMILL_REFLECT_NATIVE_DECIDE"
 NATIVE_DECIDE_AXIOM = "Lean.ofReduceBool"
 
 
-_REFLECTION_PROMPT = (
-    "You are a Lean 4 prover using PROOF BY REFLECTION / EVALUATION. The GOAL below is FINITE / DECIDABLE "
-    "(a concrete instance, a bounded `∀ n < N`, an enumerable case split, a fixed numeric/finite-set fact). "
-    "Do NOT prove it by hand. Instead:\n"
-    "  1. Write an EFFICIENT, structurally-recursive Boolean PROGRAM `def {cname} {binders} : Bool := <body>` "
-    "that DECIDES the goal's predicate by COMPUTATION. CRITICAL — the whole point of reflection is a Bool "
-    "program the KERNEL reduces FASTER than the goal's auto-derived `Decidable` instance, so:\n"
-    "     • USE a fold / `.all` / `.any` / `.filter` over `List.range N` (or an `Array`) with cheap `Nat` "
-    "ops (`Nat.ble`, `==`, `%`, `&&`, `||`, binary arithmetic). This avoids the unary `Nat.decidableBallLT` / "
-    "`Finset.decidableBAll` recursion that makes plain `decide` blow up.\n"
-    "     • Do NOT write `def {cname} := decide (<the goal>)` or call `decide`/`Decidable` INSIDE the body — "
-    "that just re-runs the SAME slow instance plain `decide` already uses and gains ZERO lift (it is rejected).\n"
-    "     • The body MUST do real work — NOT the constant `true`/`false`.\n"
-    "  2. Prove its SOUNDNESS: `theorem {sname} {binders} : {cname} {args} = true → <the goal's conclusion> "
-    ":= by <proof>` — i.e. if the program returns `true`, the goal's predicate HOLDS. NO sorry.\n"
-    "  3. Close the ORIGINAL goal by EVALUATION: apply the soundness theorem to a `by decide` proof that the "
-    "program returns `true` on the goal's arguments.\n"
-    "Use plain `by decide` (it is kernel-checked and axiom-clean); do NOT use `native_decide` (it adds the "
-    "Lean.ofReduceBool axiom, which is BANNED here).\n"
-    "Output EXACTLY three fenced blocks:\n"
-    "CHECK:\n```lean\ndef {cname} {binders} : Bool := <decision procedure — NOT a constant>\n```\n"
-    "SOUND:\n```lean\ntheorem {sname} {binders} : {cname} {args} = true → <goal conclusion> := by\n  <proof, NO sorry>\n```\n"
-    "CLOSE:\n```lean\n<the proof body that goes after the goal's `:=` — e.g. `{sname} (by decide)` or "
-    "`by exact {sname} (by decide)` — NO sorry, NO native_decide>\n```\n"
-    "Self-contained against `import Mathlib` + the PREAMBLE. If the goal is NOT finite/decidable (no "
-    "terminating decision procedure exists), output an EMPTY CHECK block (an honest non-attempt, NOT a sorry).\n"
-    "{pre}GOAL to decide by reflection:\n{goal}\n"
-)
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import REFLECTION_PROMPT as _REFLECTION_PROMPT
 
 
 def _name_base(row: dict, default: str) -> str:

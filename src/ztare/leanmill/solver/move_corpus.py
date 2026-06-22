@@ -39,8 +39,14 @@ class MoveEntry:
     aliases: tuple = field(default_factory=tuple)   # cross-catalogue names (research_ops collapse tb_/ps_ ops)
 
     def searchable(self) -> str:
-        """The text the semantic atlas embeds for this move (name + pattern + anti-pattern + mechanism)."""
-        return "  ".join(p for p in (self.name, self.when, self.avoid, self.mechanism) if p).strip()
+        """The text the semantic atlas embeds for this move (name + pattern + anti-pattern + mechanism + the
+        collapsed-ALIAS names). Aliases MUST embed: a primitive collapsed into another op (e.g. `tb_NEW_POLYA
+        Strategic Specialization` → `broad_05` Extremal) carries its OWN trigger vocabulary only in the alias,
+        so omitting it from the embedding makes the recall blind to that trigger forever (2026-06-21 RCA: the
+        witness/instance move never surfaced for abstract ∃/iff goals because its discriminating language lived
+        only in a non-embedded `aliases_collapsed` field)."""
+        parts = (self.name, self.when, self.avoid, self.mechanism) + tuple(self.aliases or ())
+        return "  ".join(p for p in parts if p).strip()
 
 
 # ── STRUCTURAL moves NOT already carried by an exogenous-tool card (these were the AMNESIA: live moves in
@@ -55,6 +61,32 @@ _STRUCTURAL_EXTRAS = [
                 "own rung, BANKS it, and G closes by citing it.",
         "avoid": "NOT when an existing result applies (run `search` first) and NOT a tactic gap (use `goalstate`/"
                  "`hammer`). State it GENERAL + load-bearing or the conjecture_advances kernel gate rejects it.",
+    },
+    {
+        # 2026-06-21 re-mint of the witness/minimal-instance lineage (research: `research_log.md` "constructive
+        # witness extraction"; `pec_e` Sharpness/Failure-Witness Construction; `tb_NEW_POLYA Strategic
+        # Specialization`). The RCA: that lineage was TEXT-COLLAPSED into the generic `broad_05` Extremal Method
+        # and dropped from the live port, so the atlas had NO embedded text expressing "abstract ∃/obstruction →
+        # instantiate the smallest concrete witness" and never surfaced it for abstract goals (consciousness
+        # Čech ∃-goal gapped on exactly this). NOTE the research's prior null: functional-uplift from primitive
+        # prompt TEXT was a measured NULL — which is why the load-bearing channel is the STRUCTURAL trigger
+        # (`move_atlas._witness_goal_shape`), not this card's embedding; the card makes it electable, the
+        # trigger makes it un-missable, and `move_engagement.jsonl` MEASURES whether it actually lifts closure.
+        "move_id": "instances_first", "name": "INSTANCES-FIRST / REDUCE-TO-WITNESS (minimal concrete instance)",
+        "when": "the goal is an ABSTRACT EXISTENCE / obstruction / UNIVERSAL / IFF claim over a CONSTRUCTED or "
+                "arbitrary structure (`∃ x : <built type>, P x`; `∀ … ↔ …` over a built carrier; '∃ a thing with "
+                "no global section / a non-trivial class') and the GENERAL proof is OUT OF REACH — do NOT grind "
+                "the abstract statement. EXHIBIT the MINIMAL CONCRETE WITNESS: the smallest finite instance that "
+                "realizes the phenomenon (a 2-3 element example, a cyclic / degenerate / boundary case, a single "
+                "non-trivial cocycle / `ZMod 2` / `Fin n`). Prove that instance as its own rung, BANK it, then "
+                "LIFT to the general claim. The minimal witness both discharges the existential AND reveals the "
+                "general argument (Polya's decisive special case).",
+        "avoid": "NOT when the general proof is already in reach (don't detour). The witness must REALIZE the "
+                 "phenomenon — a vacuous/degenerate instance that trivializes the claim is laundering (kernel-caught).",
+        "source": "research_op:tb_NEW_POLYA+pec_e (witness/instance lineage, 2026-06-21 re-mint)",
+        "aliases": ("Strategic Specialization", "Constructive Witness Extraction",
+                    "Sharpness / Failure-Witness Construction", "minimal instance", "smallest concrete case",
+                    "decisive special case", "toy example", "construct a witness"),
     },
     {
         "move_id": "specialize", "name": "SPECIALIZE",
@@ -124,7 +156,9 @@ def _structural_entries(seen: set) -> "list[MoveEntry]":
             continue
         out.append(MoveEntry(
             move_id=s["move_id"], name=s["name"], kind="structural",
-            when=s["when"], avoid=s.get("avoid", ""), source="governed_dag_search.MOVE_* / planner _PLAN_ACTIONS",
+            when=s["when"], avoid=s.get("avoid", ""),
+            source=s.get("source", "governed_dag_search.MOVE_* / planner _PLAN_ACTIONS"),
+            aliases=tuple(s.get("aliases", ()) or ()),   # collapsed-primitive names must reach searchable() (RCA)
         ))
     return out
 
@@ -203,11 +237,14 @@ def corpus_by_kind() -> "dict":
 
 
 def atlas_entries() -> "list[dict]":
-    """The corpus shaped for `common.embeddings.build_atlas` (each needs `id` + `text`; other keys → meta)."""
+    """The corpus shaped for `common.embeddings.build_atlas` (each needs `id` + `text`; other keys → meta).
+    The `cli` is serialized in its PORTABLE form (relative `PYTHONPATH=src python3 …`) — the committed atlas
+    artifact must be machine-independent (the live render re-derives the absolute prefix from the local repo)."""
+    from ztare.leanmill.solver.move_cards import portable_cli as _portable_cli  # lazy: avoid an import cycle
     rows = []
     for e in build_corpus():
         rows.append({"id": e.move_id, "text": e.searchable(), "name": e.name, "kind": e.kind,
-                     "when": e.when, "avoid": e.avoid, "cli": e.cli, "source": e.source})
+                     "when": e.when, "avoid": e.avoid, "cli": _portable_cli(e.cli), "source": e.source})
     return rows
 
 

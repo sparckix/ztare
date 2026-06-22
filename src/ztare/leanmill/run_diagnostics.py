@@ -51,6 +51,9 @@ _REFINE = [
     ("target_signature", "governance_block", False),
     ("does not follow", "lemma_no_compose", False),
     ("goal does not follow", "lemma_no_compose", False),
+    # native_hammer SKIPPED a goal it already failed this run — a deterministic no-op, NOT a real failure or a
+    # structural bug. Surfacing it as `other_error` (its old fate) inflated the failure count with noise.
+    ("in-run dedup", "dedup_skip", False),
     # the leaf produced a proof that didn't compile (a genuine proof error, distinct from a scope/context bug)
     ("agentic_leaf open: compile_error", "leaf_proof_compile_error", False),
     ("compile_error", "leaf_proof_compile_error", False),
@@ -102,13 +105,18 @@ def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" 
     try:
         c = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
         cols = [r[1] for r in c.execute("PRAGMA table_info(attempts)")]
-        sel = "move, outcome, error_class, notes, attempt_at" + (", ratified" if "ratified" in cols else "")
+        wanted = ["move", "outcome", "error_class", "notes", "attempt_at"]
+        if "ratified" in cols:
+            wanted.append("ratified")
+        if "row_id" in cols:
+            wanted.append("row_id")   # the per-TARGET key — lets us roll up "which target closed vs gapped"
+        idx = {name: i for i, name in enumerate(wanted)}
         where, args = "", []
         if run_tag and "run_tag" in cols:
             where, args = "WHERE run_tag = ?", [run_tag]
         elif since_iso:
             where, args = "WHERE attempt_at > ?", [since_iso]
-        rows = c.execute(f"SELECT {sel} FROM attempts {where} ORDER BY attempt_at", args).fetchall()
+        rows = c.execute(f"SELECT {', '.join(wanted)} FROM attempts {where} ORDER BY attempt_at", args).fetchall()
         c.close()
     except Exception as e:  # noqa: BLE001
         return {"error": f"query failed: {e}", "total": 0}
@@ -119,30 +127,68 @@ def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" 
     structural = 0
     closed = 0
     ratified = 0
+    dedup_skips = 0
     stamps: list = []
+    per_target: dict = {}   # row_id -> {"closed": bool, "attempts": int, "blocks": Counter}
     for row in rows:
-        move, outcome, ec, notes, at = row[0], row[1], row[2], row[3], row[4]
-        rat = row[5] if len(row) > 5 else None
+        move, outcome, ec, notes, at = (row[idx["move"]], row[idx["outcome"]], row[idx["error_class"]],
+                                        row[idx["notes"]], row[idx["attempt_at"]])
+        rat = row[idx["ratified"]] if "ratified" in idx else None
+        tgt = (row[idx["row_id"]] if "row_id" in idx else None) or "?"
         stamps.append(at)
         by_move_outcome[(move or "?", outcome or "?")] += 1
+        pt = per_target.setdefault(tgt, {"closed": False, "ratified": False, "attempts": 0, "blocks": Counter()})
+        pt["attempts"] += 1
         if outcome == "closed":
             closed += 1
+            pt["closed"] = True
         if rat in (1, "1", True):
             ratified += 1
+            pt["ratified"] = True
         if outcome not in ("closed", "advanced"):
             cls, is_struct = _refine_class(ec, notes)
+            if cls == "dedup_skip":        # a no-op re-attempt, NOT a failure — keep it out of the tally + noise
+                dedup_skips += 1
+                continue
             by_class[cls] += 1
+            pt["blocks"][cls] += 1
             if is_struct:
                 structural += 1
     fails = sum(by_class.values())
     span = _iso_span_minutes(stamps)
     headline, detail = _classify(total, closed, ratified, fails, structural, by_class, span)
+    # PER-TARGET rollup + WATCH list: a target that did NOT close and whose dominant block is a GOVERNANCE
+    # reject (statement_integrity / target_signature_altered) is a likely FALSE-NEGATIVE — the gate rejected a
+    # proof, it is NOT an honest math gap. Surfacing this is what turns "scour 4 sources" into "read the debrief".
+    targets, watch = {}, []
+    for tgt, pt in per_target.items():
+        top_block = pt["blocks"].most_common(1)[0][0] if pt["blocks"] else None
+        # A move-level `closed` is NOT a verified closure — governance can REJECT it post-close (ratified=0).
+        # `ratified` is the truth (kernel + #print-axioms + MNC + statement_integrity all passed).
+        if pt["ratified"]:
+            status = "ratified"
+        elif pt["closed"]:
+            status = "closed-NOT-ratified"
+        else:
+            status = top_block or "open"
+        targets[str(tgt)] = {"closed": pt["closed"], "ratified": pt["ratified"],
+                             "attempts": pt["attempts"], "top_block": top_block, "status": status}
+        if pt["closed"] and not pt["ratified"]:
+            watch.append(f"{str(tgt)[:48]}: a move CLOSED but the closure was NOT RATIFIED — governance rejected "
+                         "it post-close (axiom audit / MNC / consequence-exposure / statement_integrity). 0 verified "
+                         "despite 'closed'. Surface WHICH organ rejected, and whether it is a real catch or a false-reject.")
+        if (not pt["closed"]) and top_block == "governance_block":
+            watch.append(f"{str(tgt)[:48]}: NOT closed; dominant block = governance_block (statement_integrity/"
+                         "signature_altered) ×{} — likely a FALSE-NEGATIVE (gate rejected a proof, not a math gap), "
+                         "ESPECIALLY if a sibling/isomorphic target DID close.".format(pt['blocks']['governance_block']))
     return {
         "total": total, "closed": closed, "ratified": ratified, "failures": fails,
-        "structural_failures": structural, "wall_minutes": (round(span, 1) if span else None),
+        "structural_failures": structural, "dedup_skips": dedup_skips,
+        "wall_minutes": (round(span, 1) if span else None),
         "throughput_per_min": (round(total / span, 2) if span and span > 0 else None),
         "by_move_outcome": {f"{m}/{o}": n for (m, o), n in by_move_outcome.most_common()},
         "by_failure_class": dict(by_class.most_common()),
+        "targets": targets, "watch": watch,
         "headline": headline, "detail": detail,
         "filter": (f"run_tag={run_tag}" if run_tag else (f"since={since_iso}" if since_iso else "ALL")),
     }
@@ -184,9 +230,23 @@ def render(summary: dict) -> str:
         L.append(f"  wall={summary['wall_minutes']}min  throughput={summary['throughput_per_min']}/min")
     if summary.get("by_failure_class"):
         L.append("  failure classes: " + ", ".join(f"{k}×{v}" for k, v in summary["by_failure_class"].items()))
+    if summary.get("dedup_skips"):
+        L.append(f"  (excluded {summary['dedup_skips']} native_hammer dedup-skips — no-ops, not failures)")
     if summary.get("by_move_outcome"):
         top = list(summary["by_move_outcome"].items())[:8]
         L.append("  move/outcome:    " + ", ".join(f"{k}×{v}" for k, v in top))
+    # PER-TARGET rollup — the layer that makes an asymmetry (one twin closed, the other gate-blocked) visible
+    # WITHOUT hand-querying SQLite + logs + certs + closure files.
+    tgts = summary.get("targets") or {}
+    if tgts:
+        L.append(f"  per-target ({len(tgts)}):")
+        for t, info in list(tgts.items())[:12]:
+            st = info.get("status") or ("ratified" if info.get("ratified") else "open")
+            mark = {"ratified": "✓ ratified", "closed-NOT-ratified": "⚠ closed-NOT-ratified (gov rejected)"}.get(
+                st, f"✗ {st}")
+            L.append(f"    {str(t)[:52]:52s} {mark}  ({info['attempts']} attempts)")
+    for w in (summary.get("watch") or []):
+        L.append(f"  ⚠ WATCH: {w}")
     L.append(f"  >> {summary['detail']}")
     L.append("=" * 72)
     return "\n".join(L)

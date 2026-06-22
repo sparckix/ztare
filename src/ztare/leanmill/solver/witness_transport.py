@@ -119,15 +119,8 @@ def inject_witness_tactic(info: dict, witnesses: list, closer: "str | None" = No
 
 
 # ── 4. The move: gate → SymPy (direct, then LLM-script) → inject ──────────────────────────────────
-SCRIPT_PROMPT = (
-    "You are a Python tool-writer. Below is a Lean 4 EXISTENTIAL goal. Do NOT prove it. WRITE A PYTHON SCRIPT "
-    "using ONLY sympy (and json/math) that EXTRACTS the algebraic constraints and FINDS a satisfying witness "
-    "for the existential variables, then prints EXACTLY ONE JSON object to stdout:\n"
-    '  {{"ok": true, "witnesses": ["<v0>", "<v1>", ...]}}\n'
-    "Solve in the goal’s domain (integers for ℕ/ℤ; reals/rationals for ℝ/ℚ). Output integer/rational "
-    'LITERALS (no floats — use 6 or 3/2). If no witness, print {{"ok": false, "witnesses": []}}. Output ONLY '
-    "the script in one ```python block — no prose, no file/network/os access.\nGOAL:\n{goal}\n"
-)
+# Prompt lives in the canonical registry (prompts.py); local name preserved for the call site.
+from ztare.leanmill.solver.prompts import SCRIPT_PROMPT
 
 
 def _solve_via_llm(info: dict, goal_text: str, dispatch, lean_root, timeout_s: int) -> "list[str] | None":
