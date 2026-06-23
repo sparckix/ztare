@@ -1832,8 +1832,17 @@ def compact_claim_support_row(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
+def claim_support_payload_for_project(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or ""
+    if intake:
+        project_intake_path(project, intake, allow_examples=True)
     command = [
         snapshot.PYTHON,
         "-m",
@@ -1856,6 +1865,11 @@ def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
         "schema": CLAIM_SUPPORT_SCHEMA,
         "served_from": "local_api",
         "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "case_key": case_key(project, intake),
+        "support_scope": "project_compiled_evidence",
+        "intake_scoped_command": False,
         "command": f"ztare project claim-support --project {project} --json",
         "returncode": proc.returncode,
         "accepted": proc.returncode == 0,
@@ -2044,7 +2058,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/claim-support":
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
-                self.send_json(claim_support_payload_for_project(project=project))
+                rubric = first_param(params, "rubric", project)
+                intake = first_param(params, "intake", "")
+                self.send_json(claim_support_payload_for_project(project=project, rubric=rubric, intake=intake or None))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

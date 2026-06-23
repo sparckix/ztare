@@ -1108,8 +1108,10 @@ def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_
     raw_path = project_root / "raw" / "source.md"
     packet_path = project_root / "compiled_evidence_packet.json"
     index_path = project_root / "workspace" / "source_index.json"
+    intake_path = project_root / "demo_intake.json"
     raw_path.parent.mkdir(parents=True)
     index_path.parent.mkdir(parents=True)
+    intake_path.write_text(json.dumps({"project": "demo", "bounded_claim": "demo"}), encoding="utf-8")
     commands: list[list[str]] = []
 
     def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
@@ -1141,9 +1143,17 @@ def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_
 
     monkeypatch.setattr(module.snapshot, "run", fake_run)
 
-    payload = module.claim_support_payload_for_project(project="demo")
+    payload = module.claim_support_payload_for_project(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+    )
 
     assert payload["schema"] == "ztare-forensic-workbench-claim-support-v1"
+    assert payload["intake"] == "projects/demo/demo_intake.json"
+    assert payload["case_key"] == "demo::projects/demo/demo_intake.json"
+    assert payload["support_scope"] == "project_compiled_evidence"
+    assert payload["intake_scoped_command"] is False
     assert payload["accepted"] is False
     assert payload["status"] == "missing_packet"
     assert payload["packet_path"] == "projects/demo/compiled_evidence_packet.json"

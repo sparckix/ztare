@@ -504,6 +504,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
         schema: claimSupport.schema || "",
         status: claimSupport.status || "",
         accepted: Boolean(claimSupport.accepted),
+        support_scope: claimSupport.support_scope || "",
+        intake: claimSupport.intake || "",
+        case_key: claimSupport.case_key || "",
         command: claimSupport.command || "",
         claim_count: claimSupport.claim_count || 0,
         weak_or_unsourced_count: claimSupport.weak_or_unsourced_count || 0,
@@ -1941,6 +1944,8 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
   const command = (claimSupport && claimSupport.command) || "";
   const evidenceFilePath = (claimSupport && (claimSupport.evidence_file_path || claimSupport.packet_path)) || "";
   const sourceIndexPath = (claimSupport && claimSupport.source_index_path) || "";
+  const supportScope = displayText((claimSupport && claimSupport.support_scope) || "project_compiled_evidence");
+  const selectedCase = (claimSupport && (claimSupport.case_key || claimSupport.intake)) || "";
   const attention = errors.length > 0 || (claimSupport && claimSupport.accepted === false);
 
   return h(
@@ -1966,7 +1971,9 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
       h("div", null, h("span", null, "Claims"), h("strong", null, String((claimSupport && claimSupport.claim_count) || 0))),
       h("div", null, h("span", null, "Weak/unsourced"), h("strong", null, String((claimSupport && claimSupport.weak_or_unsourced_count) || 0))),
       h("div", null, h("span", null, "Source blockers"), h("strong", null, String((claimSupport && claimSupport.source_context_blocked_count) || 0))),
-      h("div", null, h("span", null, "Sources"), h("strong", null, String(sources.length)))
+      h("div", null, h("span", null, "Sources"), h("strong", null, String(sources.length))),
+      h("div", null, h("span", null, "Scope"), h("strong", null, supportScope)),
+      h("div", null, h("span", null, "Selected case"), h("strong", null, selectedCase || "not bound"))
     ),
     h(
       "div",
@@ -4110,7 +4117,7 @@ function App() {
   const loadClaimSupportContext = (projectParams) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     setClaimSupportMessage("Loading claim support.");
-    return fetch(endpointUrl("/api/claim-support", { project: projectParams.project }), { headers: { Accept: "application/json" } })
+    return fetch(endpointUrl("/api/claim-support", projectParams), { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`claim support fetch failed: ${response.status}`);
         return response.json();
