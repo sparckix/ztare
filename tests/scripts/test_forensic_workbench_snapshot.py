@@ -752,6 +752,36 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     ]
 
 
+def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    (project_root / "workspace").mkdir(parents=True)
+    case_file = {
+        "schema": "ztare-forensic-workbench-case-file-v1",
+        "project": "demo",
+        "rows": [{"label": "Bounded claim"}],
+        "command_queue": [{"command": "ztare project source-check --project demo --json"}],
+        "recent_receipts": [{"kind": "review"}],
+    }
+
+    payload = module.save_case_file_payload(project="demo", case_file=case_file)
+
+    assert payload["schema"] == "ztare-forensic-workbench-case-file-write-receipt-v1"
+    assert payload["path"] == "projects/demo/workspace/forensic_workbench_case_file.json"
+    assert payload["receipt_path"] == "projects/demo/workspace/forensic_workbench_case_files.jsonl"
+    assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_case_file_write.json"
+    saved = json.loads((project_root / "workspace" / "forensic_workbench_case_file.json").read_text(encoding="utf-8"))
+    latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_case_file_write.json").read_text(encoding="utf-8"))
+    ledger_rows = (project_root / "workspace" / "forensic_workbench_case_files.jsonl").read_text(encoding="utf-8").splitlines()
+    assert saved == case_file
+    assert latest["row_count"] == 1
+    assert latest["command_count"] == 1
+    assert latest["receipt_count"] == 1
+    assert latest["case_file_path"] == payload["path"]
+    assert len(ledger_rows) == 1
+
+
 def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)

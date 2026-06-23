@@ -2593,7 +2593,7 @@ code {
 .case-export-actions {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-columns: minmax(0, 1fr) repeat(4, auto);
   gap: 8px;
   align-items: center;
 }
@@ -2607,6 +2607,19 @@ code {
   font-size: 12px;
   line-height: 1.35;
   overflow-wrap: anywhere;
+}
+
+.case-export-save-note {
+  grid-column: 1 / -1;
+  min-width: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.case-export-save-note.attention {
+  color: #8a4b12;
 }
 
 .command-rail {

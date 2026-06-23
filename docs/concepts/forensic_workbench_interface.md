@@ -211,8 +211,8 @@ GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
 GET /api/receipts?project=<project>
--> recent review, row-action, intake-edit, source-import, source-edit, and source-action
-   receipts from project ledgers
+-> recent review, row-action, intake-edit, source-import, source-edit,
+   source-action, and case-file receipts from project ledgers
 
 GET /api/run-history?project=<project>
 -> latest and recent run scores, weakest points, evidence gaps, synthesis
@@ -221,6 +221,10 @@ GET /api/run-history?project=<project>
 GET /api/claim-support?project=<project>
 -> claim-support status, weak/unsourced counts, source-context status, missing
    evidence-file errors, previewable source paths, and copyable support-audit command
+
+POST /api/case-file
+-> write the current case-file JSON into the project workspace, append a
+   case-file receipt, and return the saved artifact path plus receipt paths
 
 POST /api/review
 -> append row-level review receipt and refresh snapshot
@@ -274,12 +278,12 @@ then the user can apply it through the CLI. Live mode calls the local API to
 write the same receipt directly. Either way, the visible trail is file or API
 payload, receipt ledger, receipt history, latest receipt row, and refreshed
 snapshot.
-After a live review, row-action, intake-edit, source import/edit, or
-source/evidence write action, the app should show the stamped receipt schema,
-target, ledger path, latest path, source path, and hash before the user has to
-inspect the full history. The affected live panels should refresh together:
-trace, report/export contract, health, claim support, receipt history, project
-index, and source list when sources changed.
+After a live review, row-action, intake-edit, source import/edit,
+source/evidence write action, or case-file save, the app should show the
+stamped receipt schema, target, ledger path, latest path, source path, and hash
+before the user has to inspect the full history. The affected live panels should
+refresh together: trace, report/export contract, health, claim support, receipt
+history, project index, and source list when sources changed.
 When a row is selected, the review strip should also show the latest saved
 review and row-action state for that same row from the receipt history, so a
 reviewer does not overwrite or duplicate a decision blindly.

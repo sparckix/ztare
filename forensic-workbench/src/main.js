@@ -34,6 +34,7 @@ const ROW_ACTIONS = [
 
 const ROW_ACTION_LABELS = Object.fromEntries(ROW_ACTIONS.map((action) => [action.id, action.label]));
 const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
+const CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1";
 const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"];
 
 const STAGES = [
@@ -1807,7 +1808,7 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow, liveMode, saving, saveEvent, onSave }) {
   const caseFile = buildCaseFile(snapshot, receiptHistory, {
     projectEntry,
     traceContext,
@@ -1861,7 +1862,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       { className: "case-export-copy" },
       h("span", { className: "eyebrow" }, "Export"),
       h("h2", null, "Case file"),
-      h("p", null, "Download or copy the current case as a review file. The browser only creates the file when you click.")
+      h("p", null, "Download, copy, or save the current case file to the project workspace when the local API is running.")
     ),
     h(
       "div",
@@ -1880,7 +1881,8 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       h("div", null, h("span", null, "Run score"), h("strong", null, caseFile.live_context.run_history.summary.latest_score === undefined || caseFile.live_context.run_history.summary.latest_score === null ? "none" : String(caseFile.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(caseFile.live_context.claim_support.status || "not loaded"))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
-      h("div", null, h("span", null, "Schema"), h("strong", null, caseFile.schema))
+      h("div", null, h("span", null, "Schema"), h("strong", null, caseFile.schema)),
+      h("div", null, h("span", null, "Save receipt"), h("strong", null, CASE_FILE_WRITE_SCHEMA))
     ),
     h(
       "div",
@@ -1890,6 +1892,17 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
         "button",
         {
           className: "copy-button primary",
+          type: "button",
+          disabled: !liveMode || saving,
+          onClick: () => onSave && onSave(caseFile),
+          title: liveMode ? "Save the current case file to the project workspace" : "Start the local API to save case files"
+        },
+        saving ? "Saving" : "Save to workspace"
+      ),
+      h(
+        "button",
+        {
+          className: "copy-button",
           type: "button",
           onClick: () => downloadText(filename, caseFileJson),
           title: "Download the current case file JSON"
@@ -1915,7 +1928,16 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
           title: "Copy a short case summary"
         },
         "Copy summary"
-      )
+      ),
+      saveEvent
+        ? h(
+            "small",
+            { className: `case-export-save-note ${saveEvent.error ? "attention" : "ready"}` },
+            saveEvent.error
+              ? `Save failed: ${saveEvent.error}`
+              : `Saved ${saveEvent.path || "case file"}; receipt ${saveEvent.latest || saveEvent.receipt_path || "recorded"}.`
+          )
+        : null
     )
   );
 }
@@ -3003,6 +3025,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   const receipt = result.receipt || {};
   const kindLabels = {
     intake_edit: "Intake edit",
+    case_file: "Case file",
     row_action: "Row action",
     source_action: "Source action",
     source_import: "Source import",
@@ -3013,7 +3036,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   const editedFields = (receipt.updated_fields || []).map(displayFieldName).join(", ");
   const actionLabel = receipt.action || receipt.decision || receipt.status || receipt.binding_mode || receipt.source_type || editedFields || "written";
   const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || receipt.sha256 || "";
-  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || receipt.path || receipt.provenance_path || "";
+  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || receipt.case_file_path || receipt.path || receipt.provenance_path || "";
   const ledgerPath = result.ledger || result.receipt_path || "";
   const latestPath = result.latest || "";
   const receiptJson = JSON.stringify(receipt, null, 2);
@@ -3031,7 +3054,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
     h(
       "div",
       { className: "write-receipt-facts" },
-      h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receiptEvent.row || "none")),
+      h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receipt.case_file_path || receiptEvent.row || "none")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
       h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash)))
@@ -3274,6 +3297,8 @@ function App() {
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
   const [writeReceiptEvent, setWriteReceiptEvent] = useState(null);
+  const [caseFileSaveEvent, setCaseFileSaveEvent] = useState(null);
+  const [caseFileSaving, setCaseFileSaving] = useState(false);
   const [intakeDraft, setIntakeDraft] = useState(null);
   const [intakeMessage, setIntakeMessage] = useState("");
   const [receiptHistory, setReceiptHistory] = useState(null);
@@ -4124,6 +4149,45 @@ function App() {
       .finally(() => setSourceActionRunning(false));
   };
 
+  const saveCaseFileLive = (caseFile) => {
+    if (!snapshot || !liveMode || caseFileSaving) return;
+    const params = liveProjectParams();
+    setCaseFileSaving(true);
+    fetch("/api/case-file", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: params.project,
+        case_file: caseFile
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.error || `case file save failed: ${response.status}`);
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        setCaseFileSaveEvent(payload);
+        setWriteReceiptEvent({
+          kind: "case_file",
+          row: payload.path || "case file",
+          result: payload,
+          snapshotError: ""
+        });
+        return loadReceiptHistory(params);
+      })
+      .catch((err) => {
+        setCaseFileSaveEvent({ error: String(err.message || err) });
+      })
+      .finally(() => setCaseFileSaving(false));
+  };
+
   const loadFilePreview = (item) => {
     if (!liveMode || !item || !item.value) {
       setFilePreview(null);
@@ -4281,7 +4345,27 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, projectEntry: currentProjectEntry, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, {
+        snapshot,
+        receiptHistory,
+        projectEntry: currentProjectEntry,
+        traceContext,
+        reportContext: reportPanelContext,
+        healthContext,
+        preflightEvent,
+        sourceListContext,
+        sourceActionEvent,
+        sourceImportEvent,
+        sourceEditEvent,
+        runHistoryContext,
+        claimSupportContext,
+        writeReceiptEvent,
+        selectedRow,
+        liveMode,
+        saving: caseFileSaving,
+        saveEvent: caseFileSaveEvent,
+        onSave: saveCaseFileLive
+      }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

@@ -32,6 +32,8 @@ SOURCE_LIST_SCHEMA = "ztare-forensic-workbench-source-list-v1"
 SOURCE_FILE_SCHEMA = "ztare-forensic-workbench-source-file-v1"
 SOURCE_EDIT_SCHEMA = "ztare-forensic-workbench-source-edit-v1"
 SOURCE_ACTION_RECEIPT_SCHEMA = "ztare-forensic-workbench-source-action-receipt-v1"
+CASE_FILE_SCHEMA = "ztare-forensic-workbench-case-file-v1"
+CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -498,6 +500,20 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
             f"{display_value(row['label'] or row['action'])} {status}; "
             f"artifact={row['source_path'] or row['source_receipt_path'] or 'not surfaced'}"
         )
+    elif kind == "case_file":
+        row.update(
+            {
+                "case_file_path": str(payload.get("case_file_path") or ""),
+                "row_count": safe_int(payload.get("row_count")),
+                "command_count": safe_int(payload.get("command_count")),
+                "receipt_count": safe_int(payload.get("receipt_count")),
+                "sha256": str(payload.get("case_file_sha256") or ""),
+            }
+        )
+        row["summary"] = (
+            f"Saved case file with {row['row_count']} rows, "
+            f"{row['command_count']} commands, {row['receipt_count']} receipts"
+        )
     else:
         row["summary"] = kind.replace("_", " ")
     return row
@@ -548,6 +564,7 @@ def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
         "source_import": workspace / "forensic_workbench_source_imports.jsonl",
         "source_edit": workspace / "forensic_workbench_source_edits.jsonl",
         "source_action": workspace / "forensic_workbench_source_actions.jsonl",
+        "case_file": workspace / "forensic_workbench_case_files.jsonl",
     }
     receipts: list[dict[str, Any]] = []
     for kind, path in ledgers.items():
@@ -1455,6 +1472,49 @@ def source_action_payload_for_project(
     return payload
 
 
+def save_case_file_payload(*, project: str, case_file: Any) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    if not isinstance(case_file, dict):
+        raise ValueError("case_file must be a JSON object")
+    if str(case_file.get("schema") or "") != CASE_FILE_SCHEMA:
+        raise ValueError(f"case_file schema must be {CASE_FILE_SCHEMA}")
+    if str(case_file.get("project") or "") != project:
+        raise ValueError("case_file project must match request project")
+    project_root = snapshot.REPO / "projects" / project
+    if not project_root.exists():
+        raise FileNotFoundError(f"project does not exist: projects/{project}")
+    workspace = project_root / "workspace"
+    workspace.mkdir(parents=True, exist_ok=True)
+    case_path = workspace / "forensic_workbench_case_file.json"
+    case_bytes = (json.dumps(case_file, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    case_path.write_bytes(case_bytes)
+
+    receipt = {
+        "schema": CASE_FILE_WRITE_SCHEMA,
+        "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "project": project,
+        "case_file_path": repo_rel(case_path),
+        "case_file_sha256": hashlib.sha256(case_bytes).hexdigest(),
+        "row_count": len(case_file.get("rows") or []),
+        "command_count": len(case_file.get("command_queue") or []),
+        "receipt_count": len(case_file.get("recent_receipts") or []),
+    }
+    ledger_path = workspace / "forensic_workbench_case_files.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_case_file_write.json"
+    append_jsonl(ledger_path, receipt)
+    latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return {
+        "schema": CASE_FILE_WRITE_SCHEMA,
+        "served_from": "local_api",
+        "ok": True,
+        "project": project,
+        "path": repo_rel(case_path),
+        "receipt": receipt,
+        "receipt_path": repo_rel(ledger_path),
+        "latest": repo_rel(latest_path),
+    }
+
+
 def compact_eval_payload(payload: dict[str, Any]) -> dict[str, Any]:
     gaps = payload.get("evidence_gaps") or []
     if not isinstance(gaps, list):
@@ -1899,6 +1959,14 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     relative_path=str(request.get("relative_raw_path") or request.get("relative") or ""),
                     source_type=str(request.get("source_type") or ""),
                     body=str(request.get("body") or ""),
+                )
+                self.send_json(response)
+                return
+            if parsed.path == "/api/case-file":
+                request = self.read_json_body()
+                response = save_case_file_payload(
+                    project=str(request.get("project") or ""),
+                    case_file=request.get("case_file"),
                 )
                 self.send_json(response)
                 return

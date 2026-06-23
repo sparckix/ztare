@@ -37,7 +37,7 @@ make forensic-workbench-live
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
 `/api/trace`, `/api/project-create`, `/api/source-import`, `/api/preflight`,
 `/api/sources`, `/api/source-file`, `/api/source-edit`, `/api/source-action`, `/api/run-history`,
-`/api/claim-support`,
+`/api/claim-support`, `/api/case-file`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
@@ -73,7 +73,7 @@ selected project/intake snapshot and live context. The Save action button
 writes a row-action receipt through the same explicit API/ledger path. Intake
 edits write an intake-edit receipt under the project workspace. The
 receipt-history panel reads review, row-action, intake-edit, source-import,
-source-edit, and source-action ledgers through `/api/receipts`, returns
+source-edit, source-action, and case-file ledgers through `/api/receipts`, returns
 `ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
 backing ledger file. The Refresh button reloads the current case from local
 project files. If the API is not running at startup, the app falls back to
@@ -127,16 +127,20 @@ The claim-support endpoint returns `ztare-forensic-workbench-claim-support-v1`:
 claim-support status, weak/unsourced counts, source-context status, missing
 evidence-file errors, and previewable source paths from
 `ztare project claim-support --project <project> --json`.
+The case-file endpoint writes the current `ztare-forensic-workbench-case-file-v1`
+JSON to the project workspace, appends a case-file ledger row, writes the latest
+case-file receipt JSON, and returns the saved artifact path plus receipt paths.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
-The case-file export is client-side and explicit: clicking Download case file
-creates `ztare-forensic-workbench-case-file-v1` JSON from the current
-snapshot, project context, recent receipt history, live trace/report/health
-context, the latest preflight result, latest source/evidence action result,
-run-history context, the claim-support context, raw-source inventory, latest
-source import, latest source edit, command queue, and the latest visible write
-receipt. It
-does not write project files or claim that an unreviewed case is complete.
+The case-file export is explicit: clicking Download case file creates
+`ztare-forensic-workbench-case-file-v1` JSON in the browser, while Save to
+workspace writes the same case file through the local API with a receipt. The
+case file includes the current snapshot, project context, recent receipt
+history, live trace/report/health context, the latest preflight result, latest
+source/evidence action result, run-history context, the claim-support context,
+raw-source inventory, latest source import, latest source edit, command queue,
+and the latest visible write receipt. It does not claim that an unreviewed case
+is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked
@@ -203,10 +207,12 @@ The interface is organized as a local claim-review surface:
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
 - receipt history panel showing recent review, row-action, intake-edit, source-import,
-  source-edit, and source-action ledger rows with previewable backing ledger paths
-- case-file export for downloading or copying the current case, rows,
+  source-edit, source-action, and case-file ledger rows with previewable backing
+  ledger paths
+- case-file export for saving, downloading, or copying the current case, rows,
   project context, evidence refs, live context, preflight result, raw-source
-  inventory, run history, command queue, and recent receipt paths
+  inventory, run history, command queue, recent receipt paths, and the case-file
+  receipt when saved through the local API
 - claim-support panel showing support status, weak/unsourced counts, missing
   evidence-file errors, source context, and the exact support-audit command
 - latest-review receipt row that reads the CLI-applied receipt when present and
