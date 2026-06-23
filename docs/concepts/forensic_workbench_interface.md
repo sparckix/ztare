@@ -282,10 +282,11 @@ path from the local API and display a bounded text preview. It must not crawl
 the filesystem, infer hidden project state, or turn a preview into a write.
 
 Case export should also be explicit. A browser-generated case file may package
-the current snapshot, row evidence refs, live trace/report/health context,
-latest preflight result, raw-source inventory, command queue, latest visible
-write receipt, and recent receipt paths for download or copy, but it must not
-write project files or imply that a blocked case is reviewed.
+the current snapshot, project directory/intake/receipt context, row evidence
+refs, live trace/report/health context, latest preflight result, raw-source
+inventory, command queue, latest visible write receipt, and recent receipt paths
+for download or copy, but it must not write project files or imply that a
+blocked case is reviewed.
 
 Health and action rows are read-only in D4. They may tell the reviewer that a
 project has kernel-health attention, provider-runtime risk, stale source-health

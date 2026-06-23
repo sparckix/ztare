@@ -231,6 +231,8 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const sourceImport = context.sourceImportEvent || null;
   const sourceEdit = context.sourceEditEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
+  const projectEntry = context.projectEntry || {};
+  const intakeRefSummary = projectEntry.intake_ref_summary || {};
   const commandQueue = commandCockpitItems({
     snapshot,
     selectedRow: context.selectedRow || null,
@@ -253,6 +255,22 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
     report_status: snapshot.report_status,
     status_reasons: snapshot.status_reasons || [],
     generated_from: snapshot.served_from === "local_api" ? "local_api_snapshot" : "static_snapshot",
+    project_context: {
+      project_dir: projectEntry.project_dir || snapshot.project_source || "",
+      intake_source: projectEntry.intake_source || snapshot.intake_source || "",
+      intake_editable: projectEntry.intake_editable !== false,
+      intake_ref_summary: {
+        total: intakeRefSummary.total || 0,
+        present: intakeRefSummary.present || 0,
+        missing: intakeRefSummary.missing || 0,
+        unsafe: intakeRefSummary.unsafe || 0,
+        external: intakeRefSummary.external || 0
+      },
+      report_contract: projectEntry.report_contract || "",
+      latest_review: projectEntry.latest_review || snapshot.latest_review_artifact || "",
+      latest_row_action: projectEntry.latest_row_action || snapshot.latest_row_action_artifact || "",
+      latest_intake_edit: snapshot.latest_intake_edit_artifact || ""
+    },
     live_context: {
       trace: {
         schema: trace.schema || "",
@@ -1735,8 +1753,9 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
+    projectEntry,
     traceContext,
     reportContext,
     healthContext,
@@ -1797,6 +1816,8 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Rows with evidence"), h("strong", null, String(rowsWithEvidence))),
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
+      h("div", null, h("span", null, "Project files"), h("strong", null, packet.project_context.project_dir ? "included" : "not recorded")),
+      h("div", null, h("span", null, "Intake mode"), h("strong", null, packet.project_context.intake_editable ? "editable" : "read only")),
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
       h("div", null, h("span", null, "Raw sources"), h("strong", null, String(packet.live_context.sources.source_count || 0))),
       h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
@@ -4154,7 +4175,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, projectEntry: currentProjectEntry, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

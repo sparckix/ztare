@@ -129,10 +129,11 @@ evidence-file errors, and previewable source paths from
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-file export is client-side and explicit: clicking Download case file
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
-snapshot, recent receipt history, live trace/report/health context, the latest
-preflight result, latest source/evidence action result, run-history context, the
-claim-support context, raw-source inventory, latest source import, latest source
-edit, command queue, and the latest visible write receipt. It
+snapshot, project context, recent receipt history, live trace/report/health
+context, the latest preflight result, latest source/evidence action result,
+run-history context, the claim-support context, raw-source inventory, latest
+source import, latest source edit, command queue, and the latest visible write
+receipt. It
 does not write project files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
@@ -201,8 +202,8 @@ The interface is organized as a local claim-review surface:
 - receipt history panel showing recent review, row-action, intake-edit, source-import, and source-edit
   ledger rows with previewable backing ledger paths
 - case-file export for downloading or copying the current case, rows,
-  evidence refs, live context, preflight result, raw-source inventory, run
-  history, command queue, and recent receipt paths
+  project context, evidence refs, live context, preflight result, raw-source
+  inventory, run history, command queue, and recent receipt paths
 - claim-support panel showing support status, weak/unsourced counts, missing
   evidence-file errors, source context, and the exact support-audit command
 - latest-review receipt row that reads the CLI-applied receipt when present and
