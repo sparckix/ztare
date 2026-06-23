@@ -320,6 +320,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Run preflight",
     "source_check",
     "source_index",
+    "evidence_bind",
     "evidence_replay",
     "Run history",
     "Apply review",

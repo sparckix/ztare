@@ -109,10 +109,12 @@ The source-edit endpoint returns `ztare-forensic-workbench-source-edit-v1`:
 edited source path, relative raw path, source type, source-edit receipt path,
 source-check result, and refreshed snapshot/trace when available.
 The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
-for three fixed actions: `source_check`, `source_index`, and
+for four fixed actions: `source_check`, `source_index`, `evidence_bind`, and
 `evidence_replay`. The source-index action uses
 `ztare project source-index --index-only --json`, so the browser can refresh
 source metadata without hiding a model-backed extraction step.
+The evidence-bind action uses `ztare project evidence-bind --project <project> --json`,
+which writes the offline evidence-output binding receipt without compiling new evidence.
 The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
 recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.

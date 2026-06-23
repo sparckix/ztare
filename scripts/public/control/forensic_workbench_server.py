@@ -57,6 +57,13 @@ SOURCE_ACTIONS = {
         "timeout": 90,
         "writes": False,
     },
+    "evidence_bind": {
+        "label": "Bind evidence outputs",
+        "args": ["project", "evidence-bind", "--project", "{project}", "--json"],
+        "display": "ztare project evidence-bind --project {project} --json",
+        "timeout": 90,
+        "writes": True,
+    },
 }
 
 

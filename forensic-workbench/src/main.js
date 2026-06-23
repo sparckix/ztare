@@ -1761,6 +1761,7 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
   const actionButtons = [
     { action: "source_check", label: "Check sources" },
     { action: "source_index", label: "Refresh index" },
+    { action: "evidence_bind", label: "Bind outputs" },
     { action: "evidence_replay", label: "Check replay" }
   ];
 

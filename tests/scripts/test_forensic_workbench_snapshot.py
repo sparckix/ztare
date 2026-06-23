@@ -700,12 +700,18 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     monkeypatch.setattr(module, "snapshot_payload_for_project", lambda **_kwargs: {"project": "demo", "rows": []})
 
     payload = module.source_action_payload_for_project(project="demo", action="source_index")
+    bind_payload = module.source_action_payload_for_project(project="demo", action="evidence_bind")
 
     assert payload["schema"] == "ztare-forensic-workbench-source-action-v1"
     assert payload["accepted"] is True
     assert payload["writes"] is True
     assert payload["command"] == "ztare project source-index --project demo --index-only --json"
-    assert commands == [[module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-index", "--project", "demo", "--index-only", "--json"]]
+    assert bind_payload["writes"] is True
+    assert bind_payload["command"] == "ztare project evidence-bind --project demo --json"
+    assert commands == [
+        [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-index", "--project", "demo", "--index-only", "--json"],
+        [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "evidence-bind", "--project", "demo", "--json"],
+    ]
 
 
 def test_create_project_payload_runs_source_init_then_intake_create(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
