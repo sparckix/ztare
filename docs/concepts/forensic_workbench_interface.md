@@ -175,6 +175,16 @@ POST /api/source-import
 -> write one validated raw source file, update source_type_map, append a
    source-import receipt, run source-check, and return refreshed state
 
+GET /api/sources?project=<project>
+-> list typed raw sources using the same source-check read model
+
+GET /api/source-file?project=<project>&relative=<relative_raw_path>
+-> read one bounded raw source file for editing, including source type and body
+
+POST /api/source-edit
+-> update one existing raw source file, update source_type_map, append a
+   source-edit receipt, run source-check, and return refreshed state
+
 GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 -> fresh single-project workbench snapshot bound to the selected intake
 

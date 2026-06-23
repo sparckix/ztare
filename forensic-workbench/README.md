@@ -36,7 +36,7 @@ make forensic-workbench-live
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
 `/api/trace`, `/api/project-create`, `/api/source-import`, `/api/preflight`,
-`/api/source-action`, `/api/run-history`,
+`/api/sources`, `/api/source-file`, `/api/source-edit`, `/api/source-action`, `/api/run-history`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
@@ -59,6 +59,11 @@ The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
 file under the selected project's `raw/` directory, updates
 `raw/source_type_map.json`, appends a source-import receipt, and runs the
 offline source check.
+The raw-source panel calls `/api/sources` to load the typed source list,
+`/api/source-file` to open one existing source, and `/api/source-edit` to write
+the edited source body/type back to disk. A source edit updates
+`raw/source_type_map.json`, appends a source-edit receipt, reruns source-check,
+and refreshes the case.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -98,6 +103,11 @@ snapshot when available.
 The source-import endpoint returns `ztare-forensic-workbench-source-import-v1`:
 written source path, source type, source-import receipt path, source-check
 result, and refreshed snapshot/trace when available.
+The source-list endpoint returns `ztare-forensic-workbench-source-list-v1`.
+The source-file endpoint returns `ztare-forensic-workbench-source-file-v1`.
+The source-edit endpoint returns `ztare-forensic-workbench-source-edit-v1`:
+edited source path, relative raw path, source type, source-edit receipt path,
+source-check result, and refreshed snapshot/trace when available.
 The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
 for three fixed actions: `source_check`, `source_index`, and
 `evidence_replay`. The source-index action uses
@@ -112,7 +122,7 @@ The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
 preflight result, latest source/evidence action result, run-history context, the
-latest source import, command queue, and the latest visible write receipt. It
+latest source import, latest source edit, command queue, and the latest visible write receipt. It
 does not write project files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
@@ -151,6 +161,8 @@ The interface is organized as a local claim-review surface:
 - project picker showing intake ref counts and read-only vs editable intake mode
 - source/evidence readiness panel showing source index, evidence binding, output
   binding, replay state, backing files, and copyable commands
+- raw-source panel for loading an existing source, editing its text/type, saving
+  the file through the API, and recording a source-edit receipt
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review
@@ -175,7 +187,7 @@ The interface is organized as a local claim-review surface:
   API to run a bounded preflight-only check
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
-- receipt history panel showing recent review, row-action, and intake-edit
+- receipt history panel showing recent review, row-action, intake-edit, source-import, and source-edit
   ledger rows with previewable backing ledger paths
 - case-packet export for downloading or copying the current case, rows,
   evidence refs, live context, preflight result, run history, command queue,

@@ -34,6 +34,7 @@ const ROW_ACTIONS = [
 
 const ROW_ACTION_LABELS = Object.fromEntries(ROW_ACTIONS.map((action) => [action.id, action.label]));
 const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
+const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"];
 
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
@@ -134,6 +135,15 @@ function endpointUrl(path, params) {
   return suffix ? `${path}?${suffix}` : path;
 }
 
+function rawSourceRelative(row) {
+  const direct = String((row && row.relative_raw_path) || "");
+  if (direct) return direct;
+  const path = String((row && row.path) || "");
+  const marker = "/raw/";
+  const markerIndex = path.indexOf(marker);
+  return markerIndex === -1 ? path : path.slice(markerIndex + marker.length);
+}
+
 function activeBlocker(rows) {
   return rows.find((row) => row.kind === "attention") || rows.find((row) => row.status === "blocked") || null;
 }
@@ -191,6 +201,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const runHistory = context.runHistoryContext || {};
   const sourceAction = context.sourceActionEvent || null;
   const sourceImport = context.sourceImportEvent || null;
+  const sourceEdit = context.sourceEditEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -294,6 +305,16 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
             source_type: sourceImport.source_type || "",
             receipt_path: sourceImport.receipt_path || "",
             source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted)
+          }
+        : null,
+      latest_source_edit: sourceEdit
+        ? {
+            schema: sourceEdit.schema || "",
+            source_path: sourceEdit.source_path || "",
+            relative_raw_path: sourceEdit.relative_raw_path || "",
+            source_type: sourceEdit.source_type || "",
+            receipt_path: sourceEdit.receipt_path || "",
+            source_check_accepted: Boolean(sourceEdit.source_check && sourceEdit.source_check.accepted)
           }
         : null,
       latest_write_receipt: latestWrite
@@ -558,7 +579,7 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
         h(
           "select",
           { value: draft.source_type, onChange: (inputEvent) => setField("source_type", inputEvent.target.value) },
-          ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"].map((value) =>
+          SOURCE_TYPES.map((value) =>
             h("option", { key: value, value }, displayText(value))
           )
         )
@@ -598,6 +619,120 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
             )
           )
         : null
+    )
+  );
+}
+
+function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, event, liveMode, onOpenSource, onSave, onReload, onPreview }) {
+  const sources = (sourceList && sourceList.sources) || [];
+  const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  return h(
+    "section",
+    { className: "raw-source-manager", "aria-label": "Raw sources" },
+    h(
+      "div",
+      { className: "raw-source-head" },
+      h("span", { className: "eyebrow" }, "Raw sources"),
+      h("h2", null, "Inspect and edit sources"),
+      h("p", null, message || "Open a project source, edit the text or type, then save a receipt-backed file change.")
+    ),
+    h(
+      "div",
+      { className: "raw-source-list" },
+      h(
+        "div",
+        { className: "raw-source-list-head" },
+        h("span", null, `${sources.length} files`),
+        h(
+          "button",
+          {
+            type: "button",
+            className: "copy-button",
+            disabled: !liveMode,
+            onClick: onReload,
+            title: liveMode ? "Reload source list" : "Start the local API to load raw sources"
+          },
+          "Reload"
+        )
+      ),
+      sources.length
+        ? sources.slice(0, 12).map((row) =>
+            h(
+              "div",
+              { className: "raw-source-row", key: rawSourceRelative(row) || row.path },
+              h("div", null, h("strong", null, rawSourceRelative(row) || row.path || "source"), h("small", null, `${displayText(row.source_type || "untyped")} / ${row.chars || 0} chars`)),
+              h(
+                "div",
+                { className: "raw-source-row-actions" },
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "copy-button",
+                    disabled: !liveMode || !rawSourceRelative(row),
+                    onClick: () => onOpenSource(rawSourceRelative(row)),
+                    title: "Open source for editing"
+                  },
+                  "Edit"
+                ),
+                h(
+                  "button",
+                  {
+                    type: "button",
+                    className: "copy-button",
+                    disabled: !liveMode || !row.path,
+                    onClick: () => onPreview && onPreview({ type: "file", value: row.path }),
+                    title: "Preview source file"
+                  },
+                  "Preview"
+                )
+              )
+            )
+          )
+        : h("p", null, liveMode ? "No raw sources loaded yet." : "Start the local API to inspect raw sources.")
+    ),
+    h(
+      "div",
+      { className: "raw-source-editor" },
+      h(
+        "div",
+        { className: "raw-source-editor-fields" },
+        h("label", null, h("span", null, "File"), h("input", { value: draft.relative_raw_path, onInput: (inputEvent) => setField("relative_raw_path", inputEvent.target.value), placeholder: "source_note.md" })),
+        h(
+          "label",
+          null,
+          h("span", null, "Source type"),
+          h(
+            "select",
+            { value: draft.source_type, onChange: (inputEvent) => setField("source_type", inputEvent.target.value) },
+            SOURCE_TYPES.map((value) => h("option", { key: value, value }, displayText(value)))
+          )
+        ),
+        h("label", { className: "raw-source-body" }, h("span", null, "Text"), h("textarea", { value: draft.body, onInput: (inputEvent) => setField("body", inputEvent.target.value), rows: 8, placeholder: "Open a source to edit it here." }))
+      ),
+      h(
+        "div",
+        { className: "raw-source-save" },
+        h(
+          "button",
+          {
+            type: "button",
+            className: "snapshot-link",
+            disabled: !liveMode || editing || !draft.relative_raw_path || !draft.body.trim(),
+            onClick: onSave,
+            title: liveMode ? "Save source file and write a receipt" : "Start the local API to edit a raw source"
+          },
+          editing ? "Saving" : "Save source"
+        ),
+        event
+          ? h(
+              "div",
+              { className: "raw-source-result" },
+              h("strong", null, event.source_path || "source edited"),
+              h("small", null, `${displayText(event.source_type || "source")} / ${(event.source_check && event.source_check.accepted) ? "check accepted" : "check attention"}`)
+            )
+          : null
+      )
     )
   );
 }
@@ -1379,7 +1514,7 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
@@ -1387,6 +1522,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
     preflightEvent,
     sourceActionEvent,
     sourceImportEvent,
+    sourceEditEvent,
     runHistoryContext,
     writeReceiptEvent,
     selectedRow
@@ -1412,6 +1548,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
     packet.live_context.preflight_result,
     packet.live_context.latest_source_action,
     packet.live_context.latest_source_import,
+    packet.live_context.latest_source_edit,
     packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
@@ -1436,6 +1573,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
       h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
       h("div", null, h("span", null, "Source import"), h("strong", null, packet.live_context.latest_source_import ? displayText(packet.live_context.latest_source_import.source_type) : "none")),
+      h("div", null, h("span", null, "Source edit"), h("strong", null, packet.live_context.latest_source_edit ? displayText(packet.live_context.latest_source_edit.source_type) : "none")),
       h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
@@ -2803,6 +2941,12 @@ function App() {
   const [sourceImportMessage, setSourceImportMessage] = useState("");
   const [sourceImportEvent, setSourceImportEvent] = useState(null);
   const [sourceImporting, setSourceImporting] = useState(false);
+  const [sourceListContext, setSourceListContext] = useState(null);
+  const [sourceListMessage, setSourceListMessage] = useState("");
+  const [sourceEditDraft, setSourceEditDraft] = useState({ relative_raw_path: "", source_type: "source_evidence", body: "" });
+  const [sourceEditMessage, setSourceEditMessage] = useState("");
+  const [sourceEditEvent, setSourceEditEvent] = useState(null);
+  const [sourceEditing, setSourceEditing] = useState(false);
   const [liveMode, setLiveMode] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
@@ -2942,6 +3086,25 @@ function App() {
       });
   };
 
+  const loadSourceListContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setSourceListMessage("Loading raw sources.");
+    return fetch(endpointUrl("/api/sources", { project: projectParams.project }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`source list fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "source list fetch failed");
+        setSourceListContext(payload);
+        setSourceListMessage(`${(payload.sources || []).length} raw sources loaded from ${payload.raw_dir || "project raw"}.`);
+      })
+      .catch((err) => {
+        setSourceListContext(null);
+        setSourceListMessage(`Raw sources unavailable: ${err.message || err}`);
+      });
+  };
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -2972,7 +3135,8 @@ function App() {
             loadHealthContext(liveParams),
             loadIntakeDraft(liveParams),
             loadReceiptHistory(liveParams),
-            loadRunHistoryContext(liveParams)
+            loadRunHistoryContext(liveParams),
+            loadSourceListContext(liveParams)
           ]);
         }
         setTraceContext(null);
@@ -2991,6 +3155,10 @@ function App() {
         setReceiptHistoryMessage("Static mode uses the latest generated snapshot only.");
         setRunHistoryContext(null);
         setRunHistoryMessage("Static mode uses the run-history row from the last generated snapshot only.");
+        setSourceListContext(null);
+        setSourceListMessage("Static mode cannot inspect raw sources.");
+        setSourceEditEvent(null);
+        setSourceEditMessage("Static mode cannot edit raw sources.");
         return null;
       })
       .catch((err) => {
@@ -3140,9 +3308,84 @@ function App() {
         setSourceImportDraft({ filename: "", source_type: "source_evidence", body: "" });
         setSourceImportMessage(`Imported ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
         loadReceiptHistory({ project: snapshot.project });
+        loadSourceListContext({ project: snapshot.project });
       })
       .catch((err) => setSourceImportMessage(String(err.message || err)))
       .finally(() => setSourceImporting(false));
+  };
+
+  const reloadSourceList = () => {
+    if (!snapshot || !liveMode) return;
+    loadSourceListContext({ project: snapshot.project });
+  };
+
+  const openRawSourceForEdit = (relativePath) => {
+    if (!snapshot || !liveMode || !relativePath) return;
+    setSourceEditMessage(`Opening ${relativePath}.`);
+    fetch(endpointUrl("/api/source-file", { project: snapshot.project, relative: relativePath }), { headers: { Accept: "application/json" } })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.error || `source file fetch failed: ${response.status}`);
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        setSourceEditDraft({
+          relative_raw_path: payload.relative_raw_path || relativePath,
+          source_type: payload.source_type || "untyped",
+          body: payload.body || ""
+        });
+        setSourceEditMessage(`Opened ${payload.relative_raw_path || relativePath}.`);
+      })
+      .catch((err) => setSourceEditMessage(String(err.message || err)));
+  };
+
+  const saveRawSourceEdit = () => {
+    if (!snapshot || !liveMode || sourceEditing) return;
+    setSourceEditing(true);
+    setSourceEditMessage(`Saving ${sourceEditDraft.relative_raw_path || "source"}.`);
+    setSourceEditEvent(null);
+    fetch("/api/source-edit", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        renderer: "decision_brief",
+        relative_raw_path: sourceEditDraft.relative_raw_path,
+        source_type: sourceEditDraft.source_type,
+        body: sourceEditDraft.body
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.error || `source edit failed: ${response.status}`);
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.trace) setTraceContext(payload.trace);
+        setSourceEditEvent(payload);
+        setSourceEditDraft({
+          relative_raw_path: payload.relative_raw_path || sourceEditDraft.relative_raw_path,
+          source_type: payload.source_type || sourceEditDraft.source_type,
+          body: sourceEditDraft.body
+        });
+        setSourceEditMessage(`Saved ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
+        loadReceiptHistory({ project: snapshot.project });
+        loadSourceListContext({ project: snapshot.project });
+      })
+      .catch((err) => setSourceEditMessage(String(err.message || err)))
+      .finally(() => setSourceEditing(false));
   };
 
   const counts = useMemo(() => {
@@ -3558,6 +3801,19 @@ function App() {
         onImport: importSourceLive,
         onPreview: loadFilePreview
       }),
+      h(RawSourceManagerPanel, {
+        sourceList: sourceListContext,
+        draft: sourceEditDraft,
+        setDraft: setSourceEditDraft,
+        message: sourceEditMessage || sourceListMessage,
+        editing: sourceEditing,
+        event: sourceEditEvent,
+        liveMode,
+        onOpenSource: openRawSourceForEdit,
+        onSave: saveRawSourceEdit,
+        onReload: reloadSourceList,
+        onPreview: loadFilePreview
+      }),
       h(IntakeEditor, {
         draft: intakeDraft,
         setDraft: setIntakeDraft,
@@ -3601,7 +3857,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

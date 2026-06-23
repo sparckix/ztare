@@ -27,6 +27,9 @@ RUN_HISTORY_SCHEMA = "ztare-forensic-workbench-run-history-v1"
 SOURCE_ACTION_SCHEMA = "ztare-forensic-workbench-source-action-v1"
 PROJECT_CREATE_SCHEMA = "ztare-forensic-workbench-project-create-v1"
 SOURCE_IMPORT_SCHEMA = "ztare-forensic-workbench-source-import-v1"
+SOURCE_LIST_SCHEMA = "ztare-forensic-workbench-source-list-v1"
+SOURCE_FILE_SCHEMA = "ztare-forensic-workbench-source-file-v1"
+SOURCE_EDIT_SCHEMA = "ztare-forensic-workbench-source-edit-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -428,7 +431,7 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
             }
         )
         row["summary"] = f"Updated {', '.join(fields) if fields else 'intake'}"
-    elif kind == "source_import":
+    elif kind in {"source_import", "source_edit"}:
         row.update(
             {
                 "source_path": str(payload.get("source_path") or ""),
@@ -437,7 +440,8 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
                 "sha256": str(payload.get("sha256") or ""),
             }
         )
-        row["summary"] = f"Imported {row['source_path'] or 'source'} as {display_value(row['source_type'])}"
+        verb = "Imported" if kind == "source_import" else "Edited"
+        row["summary"] = f"{verb} {row['source_path'] or 'source'} as {display_value(row['source_type'])}"
     else:
         row["summary"] = kind.replace("_", " ")
     return row
@@ -478,6 +482,7 @@ def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
         "row_action": workspace / "forensic_workbench_row_actions.jsonl",
         "intake_edit": workspace / "forensic_workbench_intake_edits.jsonl",
         "source_import": workspace / "forensic_workbench_source_imports.jsonl",
+        "source_edit": workspace / "forensic_workbench_source_edits.jsonl",
     }
     receipts: list[dict[str, Any]] = []
     for kind, path in ledgers.items():
@@ -902,6 +907,186 @@ def import_source_payload(
         "trace": source_check.get("trace"),
     }
     return payload
+
+
+def source_raw_dir(project: str) -> Path:
+    project = snapshot.validate_project_slug(project)
+    return snapshot.REPO / "projects" / project / "raw"
+
+
+def validate_raw_source_relative(value: str) -> str:
+    value = str(value or "").strip().replace("\\", "/")
+    unsafe_reason = unsafe_local_ref_reason(value)
+    if unsafe_reason is not None:
+        raise ValueError(f"invalid raw source path: {unsafe_reason}")
+    path = PurePosixPath(value)
+    if path.name == "source_type_map.json":
+        raise ValueError("source_type_map.json is edited by the workbench, not as a source")
+    if path.suffix.lower() not in {".md", ".txt"}:
+        raise ValueError("raw source path must end in .md or .txt")
+    return path.as_posix()
+
+
+def raw_source_path(project: str, relative_path: str) -> Path:
+    raw_dir = source_raw_dir(project)
+    relative_path = validate_raw_source_relative(relative_path)
+    path = (raw_dir / relative_path).resolve()
+    if not path_under(path, raw_dir):
+        raise ValueError("raw source path escapes the project raw directory")
+    return path
+
+
+def read_source_type_map(raw_dir: Path) -> dict[str, Any]:
+    path = raw_dir / "source_type_map.json"
+    if not path.exists():
+        return {}
+    return read_json_object(path, repo_rel(path))
+
+
+def write_source_type_map(raw_dir: Path, payload: dict[str, Any]) -> None:
+    path = raw_dir / "source_type_map.json"
+    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+
+def split_source_frontmatter(text: str, *, fallback_source_type: str = "untyped") -> tuple[str, str]:
+    source_type = fallback_source_type if fallback_source_type in SOURCE_IMPORT_TYPES else "untyped"
+    if text.startswith("---\n"):
+        end = text.find("\n---\n", 4)
+        if end != -1:
+            frontmatter = text[4:end].splitlines()
+            for line in frontmatter:
+                key, sep, value = line.partition(":")
+                if sep and key.strip() == "source_type" and value.strip() in SOURCE_IMPORT_TYPES:
+                    source_type = value.strip()
+            body = text[end + len("\n---\n") :]
+            return source_type, body.strip()
+    return source_type, text.strip()
+
+
+def source_list_payload(*, project: str) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    command = [
+        snapshot.PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "project",
+        "source-check",
+        "--project",
+        project,
+        "--json",
+        "--no-fail",
+    ]
+    proc = snapshot.run(command, timeout=90)
+    parsed = snapshot.extract_last_json_object(proc.stdout) if proc.stdout.strip() else {}
+    raw_dir = source_raw_dir(project)
+    return {
+        "schema": SOURCE_LIST_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "raw_dir": repo_rel(raw_dir) if raw_dir.exists() else f"projects/{project}/raw",
+        "command": f"ztare project source-check --project {project} --json --no-fail",
+        "returncode": proc.returncode,
+        "accepted": proc.returncode == 0,
+        "stdout_tail": tail_text(proc.stdout),
+        "stderr_tail": tail_text(proc.stderr),
+        "source_check": parsed,
+        "sources": parsed.get("sources") if isinstance(parsed.get("sources"), list) else [],
+    }
+
+
+def source_file_payload(*, project: str, relative_path: str) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    path = raw_source_path(project, relative_path)
+    if not path.exists():
+        raise FileNotFoundError(f"raw source does not exist: {repo_rel(path)}")
+    raw_dir = source_raw_dir(project)
+    type_map = read_source_type_map(raw_dir)
+    relative_path = str(path.relative_to(raw_dir))
+    fallback_type = str(type_map.get(relative_path) or type_map.get(path.name) or "untyped")
+    source_type, body = split_source_frontmatter(path.read_text(encoding="utf-8"), fallback_source_type=fallback_type)
+    return {
+        "schema": SOURCE_FILE_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "relative_raw_path": relative_path,
+        "source_path": repo_rel(path),
+        "source_type": source_type,
+        "body": body,
+    }
+
+
+def edit_source_payload(
+    *,
+    project: str,
+    relative_path: str,
+    source_type: str,
+    body: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or snapshot.default_intake_for_project(project)
+    project_intake_path(project, intake, allow_examples=True)
+    if source_type not in SOURCE_IMPORT_TYPES:
+        raise ValueError(f"source_type must be one of: {', '.join(sorted(SOURCE_IMPORT_TYPES))}")
+    body = str(body or "").strip()
+    if not body:
+        raise ValueError("source body is required")
+    path = raw_source_path(project, relative_path)
+    if not path.exists():
+        raise FileNotFoundError(f"raw source does not exist: {repo_rel(path)}")
+    raw_dir = source_raw_dir(project)
+    relative_path = str(path.relative_to(raw_dir))
+    source_text = (
+        "---\n"
+        f"source_type: {source_type}\n"
+        "---\n\n"
+        f"{body}\n"
+    )
+    path.write_text(source_text, encoding="utf-8")
+    source_type_map = read_source_type_map(raw_dir)
+    source_type_map[relative_path] = source_type
+    write_source_type_map(raw_dir, source_type_map)
+    sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
+    workspace = snapshot.REPO / "projects" / project / "workspace"
+    receipt = {
+        "schema": SOURCE_EDIT_SCHEMA,
+        "applied_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "project": project,
+        "source_path": repo_rel(path),
+        "relative_raw_path": relative_path,
+        "source_type": source_type,
+        "chars": len(body),
+        "sha256": sha256,
+        "source_type_map": repo_rel(raw_dir / "source_type_map.json"),
+    }
+    receipt_path = workspace / "forensic_workbench_source_edits.jsonl"
+    append_jsonl(receipt_path, receipt)
+    source_check = source_action_payload_for_project(
+        project=project,
+        action="source_check",
+        rubric=rubric,
+        intake=intake,
+        renderer=renderer,
+    )
+    return {
+        "schema": SOURCE_EDIT_SCHEMA,
+        "served_from": "local_api",
+        "ok": True,
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "source_path": repo_rel(path),
+        "relative_raw_path": relative_path,
+        "source_type": source_type,
+        "receipt": receipt,
+        "receipt_path": repo_rel(receipt_path),
+        "source_check": source_check,
+        "snapshot": source_check.get("snapshot"),
+        "trace": source_check.get("trace"),
+    }
 
 
 def create_project_payload(
@@ -1335,6 +1520,17 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 limit = int(first_param(params, "limit", "12"))
                 self.send_json(receipt_history_payload(project=project, limit=limit))
                 return
+            if parsed.path == "/api/sources":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                self.send_json(source_list_payload(project=project))
+                return
+            if parsed.path == "/api/source-file":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                relative_path = first_param(params, "relative", "")
+                self.send_json(source_file_payload(project=project, relative_path=relative_path))
+                return
             if parsed.path == "/api/run-history":
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
@@ -1484,6 +1680,19 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     intake=str(request.get("intake") or "") or None,
                     renderer=str(request.get("renderer") or "") or None,
                     filename=str(request.get("filename") or ""),
+                    source_type=str(request.get("source_type") or ""),
+                    body=str(request.get("body") or ""),
+                )
+                self.send_json(response)
+                return
+            if parsed.path == "/api/source-edit":
+                request = self.read_json_body()
+                response = edit_source_payload(
+                    project=str(request.get("project") or ""),
+                    rubric=str(request.get("rubric") or "") or None,
+                    intake=str(request.get("intake") or "") or None,
+                    renderer=str(request.get("renderer") or "") or None,
+                    relative_path=str(request.get("relative_raw_path") or request.get("relative") or ""),
                     source_type=str(request.get("source_type") or ""),
                     body=str(request.get("body") or ""),
                 )

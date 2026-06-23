@@ -774,6 +774,44 @@ def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, mon
     assert receipt["source_path"] == "projects/demo/raw/source_note.md"
 
 
+def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    raw = project_root / "raw"
+    workspace = project_root / "workspace"
+    raw.mkdir(parents=True)
+    workspace.mkdir()
+    (raw / "source_type_map.json").write_text(json.dumps({"source_note.md": "source_evidence"}) + "\n", encoding="utf-8")
+    (raw / "source_note.md").write_text("---\nsource_type: source_evidence\n---\n\nOld body.\n", encoding="utf-8")
+    intake = project_root / "demo_intake.json"
+    intake.write_text(json.dumps({"project": "demo", "bounded_claim": "demo"}), encoding="utf-8")
+
+    monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
+    monkeypatch.setattr(module, "source_action_payload_for_project", lambda **_kwargs: {"accepted": True, "snapshot": {"project": "demo"}, "trace": {"readiness": "ready"}})
+
+    payload = module.edit_source_payload(
+        project="demo",
+        relative_path="source_note.md",
+        source_type="research_question",
+        body="New body.",
+    )
+
+    source_path = raw / "source_note.md"
+    receipt_path = workspace / "forensic_workbench_source_edits.jsonl"
+    assert payload["schema"] == "ztare-forensic-workbench-source-edit-v1"
+    assert payload["source_path"] == "projects/demo/raw/source_note.md"
+    assert payload["relative_raw_path"] == "source_note.md"
+    edited = source_path.read_text(encoding="utf-8")
+    assert "source_type: research_question" in edited
+    assert "New body." in edited
+    assert json.loads((raw / "source_type_map.json").read_text(encoding="utf-8")) == {"source_note.md": "research_question"}
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8").strip())
+    assert receipt["schema"] == "ztare-forensic-workbench-source-edit-v1"
+    assert receipt["source_path"] == "projects/demo/raw/source_note.md"
+    assert receipt["source_type"] == "research_question"
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

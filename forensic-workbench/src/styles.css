@@ -585,6 +585,134 @@ code {
   font-size: 12px;
 }
 
+.raw-source-manager {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.3fr) minmax(260px, 0.34fr) minmax(0, 0.5fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #4a6f88;
+}
+
+.raw-source-head,
+.raw-source-list,
+.raw-source-editor,
+.raw-source-editor-fields,
+.raw-source-save,
+.raw-source-result {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.raw-source-head h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.raw-source-head p,
+.raw-source-list > p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.raw-source-list-head,
+.raw-source-row,
+.raw-source-row-actions {
+  min-width: 0;
+  display: grid;
+  align-items: center;
+  gap: 8px;
+}
+
+.raw-source-list-head,
+.raw-source-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.raw-source-list-head span,
+.raw-source-editor-fields span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.raw-source-row {
+  padding: 9px;
+  background: #f7f9f8;
+  border-left: 3px solid #4a6f88;
+}
+
+.raw-source-row strong,
+.raw-source-row small,
+.raw-source-result strong,
+.raw-source-result small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.raw-source-row strong,
+.raw-source-result strong {
+  color: #17201d;
+  font-size: 13px;
+}
+
+.raw-source-row small,
+.raw-source-result small {
+  color: #52605a;
+  font-size: 12px;
+}
+
+.raw-source-row-actions {
+  grid-template-columns: repeat(2, minmax(78px, auto));
+}
+
+.raw-source-editor-fields {
+  grid-template-columns: minmax(170px, 0.6fr) minmax(150px, 0.4fr);
+}
+
+.raw-source-body {
+  grid-column: 1 / -1;
+}
+
+.raw-source-editor-fields label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.raw-source-editor-fields input,
+.raw-source-editor-fields select,
+.raw-source-editor-fields textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfd7d4;
+  background: #fbfcfb;
+  color: #17201d;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 8px 9px;
+}
+
+.raw-source-editor-fields textarea {
+  resize: vertical;
+}
+
+.raw-source-result {
+  padding: 9px;
+  background: #f7f9f8;
+  border-left: 3px solid #4a6f88;
+}
+
 .intake-editor {
   min-width: 0;
   display: grid;
@@ -3438,13 +3566,18 @@ code {
   .project-create-grid,
   .source-import-panel,
   .source-import-grid,
+  .raw-source-manager,
+  .raw-source-list-head,
+  .raw-source-row,
+  .raw-source-editor-fields,
   .path-panel,
   .toolbar {
     display: grid;
     grid-template-columns: 1fr;
   }
 
-  .source-import-body {
+  .source-import-body,
+  .raw-source-body {
     grid-column: auto;
   }
 
@@ -3586,6 +3719,7 @@ code {
   }
 
   .receipt-history-row,
+  .raw-source-row-actions,
   .receipt-row-actions,
   .case-export-actions {
     grid-template-columns: 1fr;
