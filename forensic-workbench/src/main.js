@@ -191,6 +191,32 @@ function buildRowActionFile(snapshot, row, actionState) {
   return JSON.stringify(payload, null, 2);
 }
 
+function sourceActionReceiptEvent(payload) {
+  if (!payload || !payload.writes) return null;
+  const parsed = payload.parsed_output || {};
+  const receiptPath = parsed.path || parsed.source_index_receipt || "";
+  const sourcePath = parsed.source_index || parsed.workspace_meta || parsed.provenance_path || parsed.path || "";
+  const receipt = parsed.receipt || {
+    schema: parsed.schema || "ztare-source-action-result-v1",
+    project: parsed.project || payload.project || "",
+    action: payload.action || "",
+    status: parsed.status || parsed.merge_status || (payload.accepted ? "accepted" : "attention"),
+    source_path: sourcePath,
+    source_count: parsed.source_count
+  };
+  return {
+    kind: "source_action",
+    row: payload.label || displayText(payload.action || "source action"),
+    result: {
+      ...payload,
+      receipt,
+      receipt_path: receiptPath,
+      latest: receiptPath
+    },
+    snapshotError: payload.snapshot_error || ""
+  };
+}
+
 function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const rows = (snapshot && snapshot.rows) || [];
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).slice(0, 8);
@@ -2718,15 +2744,16 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   const kindLabels = {
     intake_edit: "Intake edit",
     row_action: "Row action",
+    source_action: "Source action",
     source_import: "Source import",
     source_edit: "Source edit",
     review: "Review"
   };
   const kindLabel = kindLabels[receiptEvent.kind] || displayText(receiptEvent.kind || "write");
   const editedFields = (receipt.updated_fields || []).map(displayFieldName).join(", ");
-  const actionLabel = receipt.action || receipt.decision || receipt.source_type || editedFields || "written";
+  const actionLabel = receipt.action || receipt.decision || receipt.status || receipt.binding_mode || receipt.source_type || editedFields || "written";
   const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || receipt.sha256 || "";
-  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || "";
+  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || receipt.path || receipt.provenance_path || "";
   const ledgerPath = result.ledger || result.receipt_path || "";
   const latestPath = result.latest || "";
   const receiptJson = JSON.stringify(receipt, null, 2);
@@ -3730,6 +3757,10 @@ function App() {
         if (payload.snapshot) installSnapshot(payload.snapshot);
         if (payload.trace) setTraceContext(payload.trace);
         setSourceActionEvent(payload);
+        const writeEvent = sourceActionReceiptEvent(payload);
+        if (writeEvent) setWriteReceiptEvent(writeEvent);
+        loadSourceListContext({ project: snapshot.project });
+        if (payload.writes) loadReceiptHistory({ project: snapshot.project });
         setSourceActionMessage(
           payload.accepted
             ? `${payload.label || displayText(payload.action)} finished and the case was refreshed.`
@@ -3741,6 +3772,10 @@ function App() {
           setSourceActionEvent(err.payload);
           if (err.payload.trace) setTraceContext(err.payload.trace);
           if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
+          const writeEvent = sourceActionReceiptEvent(err.payload);
+          if (writeEvent) setWriteReceiptEvent(writeEvent);
+          loadSourceListContext({ project: snapshot.project });
+          if (err.payload.writes) loadReceiptHistory({ project: snapshot.project });
         }
         setSourceActionMessage(String(err.message || err));
       })

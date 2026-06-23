@@ -115,6 +115,8 @@ for four fixed actions: `source_check`, `source_index`, `evidence_bind`, and
 source metadata without hiding a model-backed extraction step.
 The evidence-bind action uses `ztare project evidence-bind --project <project> --json`,
 which writes the offline evidence-output binding receipt without compiling new evidence.
+Write actions also update the visible last-write receipt panel with the CLI
+receipt path when the command returns one.
 The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
 recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.
