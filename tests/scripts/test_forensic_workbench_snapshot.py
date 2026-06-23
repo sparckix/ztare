@@ -1035,10 +1035,11 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     )
 
     assert payload["schema"] == "ztare-forensic-workbench-case-file-write-receipt-v1"
-    assert payload["path"] == "projects/demo/workspace/forensic_workbench_case_file.json"
+    expected_name = f"{module.case_file_stem('demo', 'projects/demo/demo_intake.json')}.json"
+    assert payload["path"] == f"projects/demo/workspace/{expected_name}"
     assert payload["receipt_path"] == "projects/demo/workspace/forensic_workbench_case_files.jsonl"
     assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_case_file_write.json"
-    saved = json.loads((project_root / "workspace" / "forensic_workbench_case_file.json").read_text(encoding="utf-8"))
+    saved = json.loads((project_root / "workspace" / expected_name).read_text(encoding="utf-8"))
     latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_case_file_write.json").read_text(encoding="utf-8"))
     ledger_rows = (project_root / "workspace" / "forensic_workbench_case_files.jsonl").read_text(encoding="utf-8").splitlines()
     assert saved == {**case_file, "case_key": "demo::projects/demo/demo_intake.json"}

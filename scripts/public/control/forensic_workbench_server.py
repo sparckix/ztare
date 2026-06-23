@@ -462,6 +462,11 @@ def case_key(project: str, intake: str | None) -> str:
     return f"{project}::{intake_value}" if intake_value else project
 
 
+def case_file_stem(project: str, intake: str | None) -> str:
+    digest = hashlib.sha256(case_key(project, intake).encode("utf-8")).hexdigest()[:12]
+    return f"forensic_workbench_case_file_{digest}"
+
+
 def add_case_context(
     receipt: dict[str, Any],
     *,
@@ -1773,7 +1778,8 @@ def save_case_file_payload(
         raise FileNotFoundError(f"project does not exist: projects/{project}")
     workspace = project_root / "workspace"
     workspace.mkdir(parents=True, exist_ok=True)
-    case_path = workspace / "forensic_workbench_case_file.json"
+    case_intake = str(case_file.get("intake") or intake or "")
+    case_path = workspace / f"{case_file_stem(project, case_intake)}.json"
     case_bytes = (json.dumps(case_file, indent=2, sort_keys=True) + "\n").encode("utf-8")
     case_path.write_bytes(case_bytes)
 

@@ -161,6 +161,8 @@ That keeps every visible state tied to a file, command, receipt, or warning.
 The case-file export is explicit: clicking Download case file creates
 `ztare-forensic-workbench-case-file-v1` JSON in the browser, while Save to
 workspace writes the same case file through the local API with a receipt. The
+saved workspace artifact is scoped to the selected case, so two intakes under
+the same project do not overwrite each other.
 case file includes the current snapshot, project context, recent receipt
 history, live trace/report/health context, the latest preflight result, latest
 source/evidence action result, run-history context, the claim-support context,

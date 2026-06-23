@@ -131,6 +131,20 @@ function downloadText(filename, value) {
   URL.revokeObjectURL(url);
 }
 
+function safeFilePart(value) {
+  return String(value || "")
+    .trim()
+    .replace(/[^A-Za-z0-9_.-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 80) || "case";
+}
+
+function caseFileDownloadName(snapshot) {
+  const project = safeFilePart((snapshot && snapshot.project) || "ztare");
+  const intake = safeFilePart((snapshot && snapshot.intake) || "case");
+  return `${project}_${intake}_case_file.json`;
+}
+
 function rowSlug(label) {
   return String(label || "row").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "row";
 }
@@ -2286,7 +2300,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, 
     caseFile.live_context.run_history.schema || Object.keys(caseFile.live_context.run_history.summary || {}).length,
     caseFile.live_context.claim_support.schema || caseFile.live_context.claim_support.status
   ].filter(Boolean).length;
-  const filename = `${snapshot.project || "ztare"}_case_file.json`;
+  const filename = caseFileDownloadName(snapshot);
 
   return h(
     "section",
