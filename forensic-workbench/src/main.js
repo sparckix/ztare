@@ -2040,6 +2040,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       "div",
       { className: "case-export-actions" },
       h("code", null, filename),
+      h("small", { className: "case-export-boundary" }, liveMode ? "Save writes the case file and receipt through the local API. Download and copy only export browser JSON." : "Start the local API to write the case file and receipt; download and copy stay in the browser."),
       h(
         "button",
         {
@@ -4502,7 +4503,20 @@ function App() {
         return refreshLiveContextAfterWrite(params);
       })
       .catch((err) => {
-        setCaseFileSaveEvent({ error: String(err.message || err) });
+        const error = String(err.message || err);
+        setCaseFileSaveEvent({ error });
+        setWriteReceiptEvent({
+          kind: "case_file",
+          row: "case file",
+          result: {
+            receipt: {
+              schema: CASE_FILE_WRITE_SCHEMA,
+              status: "save_failed",
+              error
+            }
+          },
+          snapshotError: error
+        });
       })
       .finally(() => setCaseFileSaving(false));
   };

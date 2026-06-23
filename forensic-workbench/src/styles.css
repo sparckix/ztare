@@ -2695,6 +2695,15 @@ code {
   overflow-wrap: anywhere;
 }
 
+.case-export-boundary {
+  grid-column: 1 / -1;
+  min-width: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .case-export-save-note {
   grid-column: 1 / -1;
   min-width: 0;
