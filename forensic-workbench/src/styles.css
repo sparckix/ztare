@@ -380,6 +380,61 @@ code {
   border-color: #ddc6a7;
 }
 
+.pending-edits-strip {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(150px, 0.35fr) minmax(220px, 1fr) minmax(260px, 0.75fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid #d8bb8f;
+  border-left: 4px solid #bd6a1d;
+  background: #fffaf2;
+  color: #563817;
+}
+
+.pending-edits-copy {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.pending-edits-copy span {
+  font-size: 10px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pending-edits-copy strong {
+  font-size: 16px;
+}
+
+.pending-edits-list {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pending-edits-list span {
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #d8bb8f;
+  background: #ffffff;
+  color: #5a3f1f;
+  font-size: 12px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.pending-edits-strip p {
+  min-width: 0;
+  margin: 0;
+  color: #684923;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
 .project-context-panel {
   min-width: 0;
   display: grid;
@@ -3850,6 +3905,7 @@ code {
 
   .topbar,
   .case-summary,
+  .pending-edits-strip,
   .project-create-panel,
   .project-create-grid,
   .project-switchboard,
@@ -3872,6 +3928,14 @@ code {
 
   .topbar-actions {
     justify-content: stretch;
+  }
+
+  .pending-edits-strip {
+    gap: 8px;
+  }
+
+  .pending-edits-strip p {
+    font-size: 12px;
   }
 
   .project-picker {

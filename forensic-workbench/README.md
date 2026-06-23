@@ -76,6 +76,8 @@ source-edit receipt, writes the latest source-edit receipt JSON, reruns
 source-check, and refreshes the case.
 Project switches, full refreshes, intake reloads, and opening a source from
 disk warn before discarding pending intake or raw-source edits.
+When a local draft is dirty, the first viewport shows an Unsaved edits strip so
+the pending state is visible outside the editor panel.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button

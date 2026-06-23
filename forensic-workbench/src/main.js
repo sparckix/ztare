@@ -678,6 +678,26 @@ function ProjectIdentity({ snapshot }) {
   );
 }
 
+function PendingEditsStrip({ items }) {
+  if (!items || !items.length) return null;
+  return h(
+    "section",
+    { className: "pending-edits-strip", "aria-label": "Unsaved edits" },
+    h(
+      "div",
+      { className: "pending-edits-copy" },
+      h("span", null, "Unsaved edits"),
+      h("strong", null, `${items.length} pending`)
+    ),
+    h(
+      "div",
+      { className: "pending-edits-list" },
+      items.map((item) => h("span", { key: item }, item))
+    ),
+    h("p", null, "Save the related editor before switching projects, refreshing, or reloading from disk.")
+  );
+}
+
 function projectOptionLabel(project) {
   const parts = [project.project];
   if (project.intake_source) parts.push(displayText(project.intake_source));
@@ -4467,6 +4487,7 @@ function App() {
     };
   }, [currentProjectEntry, liveMode, reportContractContext, snapshot]);
 
+  const pendingEditorItems = pendingEditorWarnings({ sourceImport: true });
   const selectedReviewState = (selectedRow && reviewStates[selectedRow.label]) || { decision: "", note: "" };
   const setSelectedReviewState = (label, nextState) => {
     setReviewStates((current) => ({ ...current, [label]: nextState }));
@@ -4871,6 +4892,7 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
+      h(PendingEditsStrip, { items: pendingEditorItems }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(StageRail, { snapshot, setSelectedLabel }),
