@@ -174,6 +174,52 @@ function buildRowActionFile(snapshot, row, actionState) {
   return JSON.stringify(payload, null, 2);
 }
 
+function buildCasePacket(snapshot, receiptHistory) {
+  const rows = (snapshot && snapshot.rows) || [];
+  const receipts = ((receiptHistory && receiptHistory.receipts) || []).slice(0, 8);
+  return {
+    schema: "ztare-forensic-workbench-case-packet-v1",
+    project: snapshot.project,
+    rubric: snapshot.rubric,
+    intake: snapshot.intake,
+    readiness: snapshot.readiness,
+    report_status: snapshot.report_status,
+    status_reasons: snapshot.status_reasons || [],
+    generated_from: snapshot.served_from === "local_api" ? "local_api_snapshot" : "static_snapshot",
+    rows: rows.map((row) => ({
+      label: row.label,
+      status: displayText(row.status),
+      kind: row.kind || "neutral",
+      detail: row.detail || "",
+      evidence_refs: evidenceItems(row).map((item) => ({ type: item.type, value: item.value }))
+    })),
+    recent_receipts: receipts.map((receipt) => ({
+      kind: receipt.kind,
+      applied_at: receipt.applied_at,
+      summary: receipt.summary,
+      path: receipt.path,
+      line: receipt.line,
+      row: receipt.row || "",
+      decision: receipt.decision || "",
+      action: receipt.action || "",
+      updated_fields: receipt.updated_fields || []
+    }))
+  };
+}
+
+function casePacketSummary(snapshot, receiptHistory) {
+  const blocker = activeBlocker((snapshot && snapshot.rows) || []);
+  const receipts = ((receiptHistory && receiptHistory.receipts) || []).length;
+  return [
+    `Project: ${snapshot.project}`,
+    `Readiness: ${displayText(snapshot.readiness)}`,
+    `Export: ${displayText(snapshot.report_status)}`,
+    `Current blocker: ${blocker ? blocker.label : "none"}`,
+    `Recent receipts: ${receipts}`,
+    `Intake: ${snapshot.intake || "not recorded"}`
+  ].join("\n");
+}
+
 function firstPreviewableEvidence(row) {
   return evidenceItems(row || {}).find(canPreviewEvidence) || null;
 }
@@ -628,6 +674,69 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
             )
           )
         : h("p", null, liveMode ? "No receipt rows found for this project." : "Receipt history is available in live mode.")
+    )
+  );
+}
+
+function CaseExportPanel({ snapshot, receiptHistory }) {
+  const packet = buildCasePacket(snapshot, receiptHistory);
+  const packetJson = JSON.stringify(packet, null, 2);
+  const summary = casePacketSummary(snapshot, receiptHistory);
+  const rowsWithEvidence = packet.rows.filter((row) => row.evidence_refs.length).length;
+  const filename = `${snapshot.project || "ztare"}_case_packet.json`;
+
+  return h(
+    "section",
+    { className: "case-export-panel", "aria-label": "Case packet export" },
+    h(
+      "div",
+      { className: "case-export-copy" },
+      h("span", { className: "eyebrow" }, "Export"),
+      h("h2", null, "Case packet"),
+      h("p", null, "Download or copy the current case as a review packet. The browser only creates the file when you click.")
+    ),
+    h(
+      "div",
+      { className: "case-export-facts" },
+      h("div", null, h("span", null, "Rows"), h("strong", null, String(packet.rows.length))),
+      h("div", null, h("span", null, "Rows with evidence"), h("strong", null, String(rowsWithEvidence))),
+      h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
+      h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
+    ),
+    h(
+      "div",
+      { className: "case-export-actions" },
+      h("code", null, filename),
+      h(
+        "button",
+        {
+          className: "copy-button primary",
+          type: "button",
+          onClick: () => downloadText(filename, packetJson),
+          title: "Download the current case packet JSON"
+        },
+        "Download packet"
+      ),
+      h(
+        "button",
+        {
+          className: "copy-button",
+          type: "button",
+          onClick: () => copyText(packetJson),
+          title: "Copy case packet JSON"
+        },
+        "Copy JSON"
+      ),
+      h(
+        "button",
+        {
+          className: "copy-button",
+          type: "button",
+          onClick: () => copyText(summary),
+          title: "Copy a short case summary"
+        },
+        "Copy summary"
+      )
     )
   );
 }
@@ -2056,6 +2165,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
+      h(CaseExportPanel, { snapshot, receiptHistory }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
