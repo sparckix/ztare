@@ -215,6 +215,22 @@ function receiptArtifactPath(receipt) {
   return receipt.review_file_path || receipt.action_file_path || receipt.case_file_path || receipt.source_path || receipt.intake_path || "";
 }
 
+function receiptChangeSummary(receipt, kind = "") {
+  if (!receipt) return "";
+  const parts = [];
+  const fields = (receipt.updated_fields || []).map(displayFieldName).filter(Boolean);
+  if (fields.length) parts.push(`fields: ${fields.join(", ")}`);
+  if (receipt.decision) parts.push(`decision: ${displayText(receipt.decision)}`);
+  if (receipt.action) parts.push(`action: ${displayText(receipt.action)}`);
+  if (receipt.source_type) parts.push(`source type: ${displayText(receipt.source_type)}`);
+  if (receipt.binding_mode) parts.push(`binding: ${displayText(receipt.binding_mode)}`);
+  if (receipt.row_count !== undefined || receipt.command_count !== undefined || receipt.receipt_count !== undefined) {
+    parts.push(`case: ${receipt.row_count || 0} rows, ${receipt.command_count || 0} commands, ${receipt.receipt_count || 0} receipts`);
+  }
+  if (!parts.length && kind) parts.push(displayText(kind));
+  return parts.join(" / ");
+}
+
 function repoPathCandidate(value) {
   return String(value || "").trim().split("#")[0].trim();
 }
@@ -1406,6 +1422,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
         ? receipts.map((item) => {
             const artifactPath = receiptArtifactPath(item);
             const previewableArtifact = isPreviewableRepoPath(artifactPath);
+            const changedSummary = receiptChangeSummary(item, item.kind);
             return h(
               "article",
               { className: `receipt-history-row ${item.kind || "receipt"}`, key: `${item.kind}:${item.path}:${item.line}` },
@@ -1420,11 +1437,8 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                 "div",
                 { className: "receipt-row-meta" },
                 item.row ? h("span", null, item.row) : null,
-                item.decision ? h("span", null, displayText(item.decision)) : null,
-                item.action ? h("span", null, displayText(item.action)) : null,
-                item.source_type ? h("span", null, displayText(item.source_type)) : null,
-                artifactPath ? h("span", null, artifactPath) : null,
-                item.updated_fields && item.updated_fields.length ? h("span", null, item.updated_fields.map(displayFieldName).join(", ")) : null
+                changedSummary ? h("span", null, changedSummary) : null,
+                artifactPath ? h("span", null, artifactPath) : null
               ),
               h(
                 "div",
@@ -3456,6 +3470,7 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
   const previewableSourcePath = isPreviewableRepoPath(sourcePath);
   const ledgerPath = result.ledger || result.receipt_path || "";
   const latestPath = result.latest || "";
+  const changedSummary = receiptChangeSummary(receipt, receiptEvent.kind);
   const receiptJson = JSON.stringify(receipt, null, 2);
 
   return h(
@@ -3474,6 +3489,7 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
       h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receipt.case_file_path || receiptEvent.row || "none")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
+      h("div", null, h("span", null, "Changed"), h("strong", null, changedSummary || "not recorded")),
       h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash))),
       h("div", null, h("span", null, "Refresh"), h("strong", null, refreshRows.length ? `${refreshRows.length - refreshFailures.length}/${refreshRows.length} panels` : "not run"))
     ),
