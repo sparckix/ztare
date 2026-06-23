@@ -328,7 +328,7 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
 
 function intakeDraftFromPayload(payload) {
   const fields = (payload && payload.editable_fields) || {};
-  return {
+  const draft = {
     path: (payload && payload.path) || "",
     bounded_claim: fields.bounded_claim || "",
     next_falsifier: fields.next_falsifier || "",
@@ -339,6 +339,30 @@ function intakeDraftFromPayload(payload) {
     editable: payload ? payload.editable !== false : true,
     reference_status: (payload && payload.reference_status) || null
   };
+  return { ...draft, original: { ...draft } };
+}
+
+function intakeDraftFields(draft) {
+  if (!draft) return {};
+  return {
+    bounded_claim: draft.bounded_claim || "",
+    next_falsifier: draft.next_falsifier || "",
+    notes: draft.notes || "",
+    non_claims_text: draft.non_claims_text || "",
+    source_refs_text: draft.source_refs_text || "",
+    evidence_refs_text: draft.evidence_refs_text || ""
+  };
+}
+
+function intakeChangedFields(draft) {
+  if (!draft || !draft.original) return [];
+  const current = intakeDraftFields(draft);
+  const original = intakeDraftFields(draft.original);
+  return Object.keys(current).filter((key) => current[key] !== original[key]);
+}
+
+function displayFieldName(value) {
+  return String(value || "").replace(/_text$/, "").replace(/_/g, " ");
 }
 
 function IntakeRefStatus({ draft, liveMode, onPreview }) {
@@ -406,6 +430,8 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
     setDraft({ ...(draft || {}), [key]: event.target.value });
   };
   const disabled = !liveMode || !draft || draft.editable === false;
+  const changedFields = intakeChangedFields(draft);
+  const canSave = !disabled && changedFields.length > 0;
   const saveTitle = draft && draft.editable === false ? "Project-local intakes only" : disabled ? "Load a live intake first" : "Write intake edit receipt";
   return h(
     "section",
@@ -489,6 +515,14 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
     ),
     h(IntakeRefStatus, { draft, liveMode, onPreview: onPreviewRef }),
     h(
+      "section",
+      { className: `intake-write-preview ${changedFields.length ? "changed" : ""}`, "aria-label": "Pending intake write" },
+      h("span", null, "Pending write"),
+      h("strong", null, changedFields.length ? `${changedFields.length} changed field${changedFields.length === 1 ? "" : "s"}` : "No changes"),
+      h("p", null, changedFields.length ? changedFields.map(displayFieldName).join(", ") : "Edit project-local fields before writing a receipt."),
+      h("code", null, draft && draft.path ? `target=${draft.path}` : "target=none")
+    ),
+    h(
       "div",
       { className: "intake-editor-actions" },
       h("code", null, draft && draft.path ? draft.path : "No live intake loaded."),
@@ -509,8 +543,8 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
           className: "copy-button primary",
           type: "button",
           onClick: onSave,
-          disabled,
-          title: saveTitle
+          disabled: !canSave,
+          title: changedFields.length ? saveTitle : "No changed fields to write"
         },
         "Save intake"
       )
@@ -1764,6 +1798,10 @@ function App() {
     if (!snapshot || !liveMode || !intakeDraft) return;
     if (intakeDraft.editable === false) {
       setIntakeMessage("This intake is read-only in the local workbench.");
+      return;
+    }
+    if (!intakeChangedFields(intakeDraft).length) {
+      setIntakeMessage("No changed intake fields to write.");
       return;
     }
     setIntakeMessage("Saving intake edit.");

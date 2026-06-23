@@ -264,12 +264,26 @@ def normalize_intake_patch(raw_patch: Any) -> dict[str, Any]:
                 raise ValueError(f"{key} must be a list of non-empty strings")
             patch[key] = [item.strip() for item in value]
             continue
+        if key == "notes":
+            if not isinstance(value, str):
+                raise ValueError("notes must be a string")
+            patch[key] = value.strip()
+            continue
         if not isinstance(value, str) or not value.strip():
             raise ValueError(f"{key} must be a non-empty string")
         patch[key] = value.strip()
     if not patch:
         raise ValueError("no editable intake fields supplied")
     return patch
+
+
+def canonical_intake_value(payload: dict[str, Any], key: str) -> Any:
+    value = payload.get(key)
+    if key in INTAKE_LIST_FIELDS:
+        return [str(item).strip() for item in (value or []) if str(item).strip()]
+    if key == "notes":
+        return str(value or "").strip()
+    return str(value or "").strip()
 
 
 def append_jsonl(path: Path, row: dict[str, Any]) -> None:
@@ -285,9 +299,16 @@ def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> di
     if payload.get("project") and payload.get("project") != project:
         raise ValueError(f"intake project mismatch: expected {project!r}, got {payload.get('project')!r}")
     patch = normalize_intake_patch(raw_patch)
+    changed_patch = {
+        key: value
+        for key, value in patch.items()
+        if canonical_intake_value(payload, key) != value
+    }
+    if not changed_patch:
+        raise ValueError("intake edit has no changed fields")
     intake_rel = repo_rel(path)
-    before_values = {key: payload.get(key) for key in patch}
-    payload.update(patch)
+    before_values = {key: canonical_intake_value(payload, key) for key in changed_patch}
+    payload.update(changed_patch)
     after_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     after_bytes = after_text.encode("utf-8")
     path.write_bytes(after_bytes)
@@ -298,11 +319,11 @@ def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> di
         "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "project": project,
         "intake_path": intake_rel,
-        "updated_fields": sorted(patch),
+        "updated_fields": sorted(changed_patch),
         "before_sha256": hashlib.sha256(before_bytes).hexdigest(),
         "after_sha256": hashlib.sha256(after_bytes).hexdigest(),
         "before_values": before_values,
-        "after_values": {key: payload.get(key) for key in patch},
+        "after_values": {key: payload.get(key) for key in changed_patch},
     }
     ledger_path = workspace / "forensic_workbench_intake_edits.jsonl"
     latest_path = workspace / "forensic_workbench_latest_intake_edit.json"
