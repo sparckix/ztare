@@ -250,9 +250,11 @@ report contract, live trace console, latest-review receipt, latest saved row act
 latest case-file write, and a project switchboard keyed by project plus intake with intake mode,
 source-ref coverage, report-contract presence, recent receipt paths, and any
 per-project intake load error before the user switches cases. It should
-also show bounded-claim status, source/evidence readiness, recent receipt
-history, run history/verdict state, and report/export state before the user
-opens a case.
+put the case-row table and inspector before secondary editing/export panels, so
+the user can select a row, inspect its evidence, and decide an action before
+scrolling into deeper tools. It should also show bounded-claim status,
+source/evidence readiness, recent receipt history, run history/verdict state,
+and report/export state before the user opens a case.
 The claim-support panel should show whether the compiled claim-support evidence file is
 present, how many claims are weak or unsourced, which local sources were
 verified, and the exact command that rebuilds the audit.

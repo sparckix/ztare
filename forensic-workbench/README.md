@@ -202,6 +202,7 @@ The interface is organized as a local claim-review surface:
 - case-file first viewport with one dominant next move: status, why it matters,
   evidence, primary action, and review choices
 - case docket summarizing export decision, evidence path, and review handoff
+- case-row table and inspector near the top, before deeper edit/export tools
 - project file strip showing the selected project directory plus previewable
   intake, report contract, latest review, row-action, intake-edit, source-import,
   source-edit, source-action, and case-file receipt paths

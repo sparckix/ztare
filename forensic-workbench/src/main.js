@@ -4937,6 +4937,15 @@ function App() {
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(StageRail, { snapshot, setSelectedLabel }),
+      h(Toolbar, { filter, query, setFilter, setQuery }),
+      h(
+        "section",
+        { className: "main-grid" },
+        filteredRows.length
+          ? h(WorkbenchTable, { rows: filteredRows, selectedLabel: selectedRow && selectedRow.label, setSelectedLabel })
+          : h(EmptyState),
+        h(Inspector, { row: selectedRow, snapshot, liveMode, loadFilePreview, filePreview, filePreviewMessage })
+      ),
       h(SourceEvidencePanel, {
         snapshot,
         traceContext,
@@ -5049,16 +5058,7 @@ function App() {
         setActionState: setSelectedActionState,
         liveMode,
         applyRowActionLive
-      }),
-      h(Toolbar, { filter, query, setFilter, setQuery }),
-      h(
-        "section",
-        { className: "main-grid" },
-        filteredRows.length
-          ? h(WorkbenchTable, { rows: filteredRows, selectedLabel: selectedRow && selectedRow.label, setSelectedLabel })
-          : h(EmptyState),
-        h(Inspector, { row: selectedRow, snapshot, liveMode, loadFilePreview, filePreview, filePreviewMessage })
-      )
+      })
     )
   );
 }
