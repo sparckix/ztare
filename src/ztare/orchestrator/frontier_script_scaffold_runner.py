@@ -18,14 +18,17 @@ import glob
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import TYPE_CHECKING, Any, Callable
 
-from src.ztare.common.llm_cache import LLMCallCache
-from src.ztare.orchestrator.frontier_script_scaffold import (
+from ztare.common.llm_cache import LLMCallCache
+from ztare.orchestrator.frontier_script_scaffold import (
     FrontierScriptScaffold,
     build_frontier_script_scaffold_prompt,
     parse_frontier_script_scaffold_json,
 )
+
+if TYPE_CHECKING:
+    from ztare.common.llm_runtime import LLMTextResponse
 
 
 DEFAULT_SCRIPT_PATTERNS = (
@@ -254,8 +257,8 @@ def run_frontier_script_meta_cold_shot(
         usage = hit.get("usage", {})
     else:
         if llm_call is None:
-            from src.ztare.common.llm_runtime import LLMRuntime
-            from src.ztare.common.dispatch_model import dispatch_call_text
+            from ztare.common.llm_runtime import LLMRuntime
+            from ztare.common.dispatch_model import dispatch_call_text
 
             runtime = LLMRuntime()
             response = dispatch_call_text(
@@ -316,7 +319,7 @@ def run_frontier_script_meta_cold_shot(
 
 
 def main() -> int:
-    from src.ztare.common.llm_runtime import MODEL_MAP, resolve_model_id
+    from ztare.common.llm_runtime import MODEL_MAP, resolve_model_id
 
     parser = argparse.ArgumentParser(description="Run a cached meta-cold-shot frontier script scaffold.")
     parser.add_argument("--project-dir", required=True, type=Path)

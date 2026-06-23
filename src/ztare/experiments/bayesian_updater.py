@@ -19,7 +19,7 @@ import math
 import argparse
 import os
 from datetime import datetime
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--project", required=True)
@@ -31,6 +31,7 @@ args = parser.parse_args()
 PROJECT_DIR = str(PROJECTS_DIR / args.project)
 PRIMARY_DAG_PATH = f"{PROJECT_DIR}/champion_probability_dag.json"
 FALLBACK_DAG_PATH = f"{PROJECT_DIR}/latest_probability_dag.json"
+DAG_PATH = PRIMARY_DAG_PATH if os.path.exists(PRIMARY_DAG_PATH) else FALLBACK_DAG_PATH
 WEIGHTS_PATH = f"{PROJECT_DIR}/axiom_weights.json"
 AXIOM_PATH = f"{PROJECT_DIR}/verified_axioms.json"
 
@@ -41,12 +42,11 @@ EPSILON = 1e-9
 
 
 def load_dag():
-    dag_path = PRIMARY_DAG_PATH if os.path.exists(PRIMARY_DAG_PATH) else FALLBACK_DAG_PATH
-    if not os.path.exists(dag_path):
+    if not os.path.exists(DAG_PATH):
         print(f"❌ No champion_probability_dag.json or latest_probability_dag.json found in {PROJECT_DIR}")
         print("   Run V1 first: python -m src.ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --dynamic")
         exit(1)
-    with open(dag_path) as f:
+    with open(DAG_PATH) as f:
         return json.load(f)
 
 

@@ -18,10 +18,11 @@ This script:
 No prover. No GNN. LLM used strictly as a classifier.
 """
 from __future__ import annotations
-import argparse, json, sys
+import argparse, json, os, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_TMP = Path(os.environ.get("ZTARE_V32_TMPDIR", tempfile.gettempdir()))
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts/public/control"))
 from gp235_section_4_1_intra_cluster import extract_proof_body  # type: ignore
@@ -75,9 +76,21 @@ def main():
     ap.add_argument("--gold", default=None, help="path to operator labels JSON {row_id: op_id}")
     ap.add_argument("--model", default="gpt-4.1-mini")
     ap.add_argument("--emit-labeling-sheet", action="store_true")
+    ap.add_argument(
+        "--curated",
+        default=str(DEFAULT_TMP / "v32_curated_test_rows.json"),
+        help="curated rows JSON; defaults to $ZTARE_V32_TMPDIR or the platform temp dir",
+    )
+    ap.add_argument(
+        "--scratch-dir",
+        default=str(DEFAULT_TMP),
+        help="directory for operator labeling outputs; defaults to $ZTARE_V32_TMPDIR or the platform temp dir",
+    )
     args = ap.parse_args()
 
-    curated = json.load(open("/tmp/v32_curated_test_rows.json"))
+    scratch_dir = Path(args.scratch_dir)
+    scratch_dir.mkdir(parents=True, exist_ok=True)
+    curated = json.loads(Path(args.curated).read_text(encoding="utf-8"))
     rows = [r for r in curated["rows"] if r.get("resolved_path") and r.get("theorem")]
 
     classified = []
@@ -156,15 +169,15 @@ def main():
             sheet_lines.append(f"\n## {c['row_id']} — {c['theorem']}")
             sheet_lines.append(f"   sig: {c.get('sig','')[:160]}")
             sheet_lines.append(f"   (LLM guessed: {c.get('llm_op','?')} / {c.get('llm_conf','?')})")
-            sheet_lines.append(f"   operator_op_id: ???")
+            sheet_lines.append("   operator_op_id: ???")
             gold_template[c["row_id"]] = "???"
-        sheet_path = Path("/tmp/v32_L2_operator_labeling_sheet.md")
-        sheet_path.write_text("\n".join(sheet_lines))
-        json_template = Path("/tmp/v32_L2_operator_labels_TEMPLATE.json")
-        json_template.write_text(json.dumps(gold_template, indent=2))
+        sheet_path = scratch_dir / "v32_L2_operator_labeling_sheet.md"
+        sheet_path.write_text("\n".join(sheet_lines), encoding="utf-8")
+        json_template = scratch_dir / "v32_L2_operator_labels_TEMPLATE.json"
+        json_template.write_text(json.dumps(gold_template, indent=2), encoding="utf-8")
         print(f"\nOperator labeling sheet → {sheet_path}")
         print(f"Fill-in JSON template → {json_template}")
-        print(f"Then re-run with: --gold /tmp/v32_L2_operator_labels_TEMPLATE.json")
+        print(f"Then re-run with: --gold {json_template}")
 
     out_path = ROOT / "analytics/public/leanmill/results/v32_llm_l2_classifier_results.json"
     out_path.write_text(json.dumps(out_obj, indent=2, default=str))

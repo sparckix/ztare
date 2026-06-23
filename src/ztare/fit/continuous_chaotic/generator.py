@@ -36,16 +36,18 @@ from pathlib import Path
 import numpy as np
 from scipy.integrate import simpson
 
-from src.ztare.fit.continuous_chaotic.lyapunov import (
+from ztare.fit.continuous_chaotic.lyapunov import (
     ERGODIC_MARGIN,
     FLOW_INVARIANT_EPS,
     ergodic_divergence_filter,
     kaplan_yorke_dimension,
     lyapunov_spectrum_approx,
 )
-from src.ztare.fit.continuous_chaotic.autocorrelation import (
+from ztare.fit.continuous_chaotic.autocorrelation import (
     autocorrelation_decorrelation_time,
 )
+
+HERE = Path(__file__).resolve().parent
 
 # Kernel-local basis and polynomial ODE helpers (substrate-agnostic; Lorenz-class
 # degree-2 3D for now; extend registry when new degree/dim targets are added).

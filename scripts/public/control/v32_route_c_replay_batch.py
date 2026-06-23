@@ -12,13 +12,15 @@ This is the v2.1+ strict-replay methodology applied via the integrated
 Route C pipeline (reused lean_fast_compile + archetype classifier +
 semantic-masking LLM + termination guard).
 
-Output: /tmp/v32_route_c_replay_results.json
+Output: analytics/public/leanmill/results/v32_route_c_replay_results.json,
+with per-row scratch files under $ZTARE_V32_TMPDIR or the platform temp dir.
 """
 from __future__ import annotations
-import json, re, sys, subprocess, tempfile
+import json, os, re, sys, subprocess, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_TMP = Path(os.environ.get("ZTARE_V32_TMPDIR", tempfile.gettempdir()))
 
 
 def extract_signature(source_path: str, theorem_name: str) -> str | None:
@@ -69,7 +71,10 @@ def extract_signature(source_path: str, theorem_name: str) -> str | None:
 
 
 def main():
-    curated = json.load(open("/tmp/v32_curated_test_rows.json"))
+    tmp_root = DEFAULT_TMP
+    tmp_root.mkdir(parents=True, exist_ok=True)
+    curated_path = Path(os.environ.get("ZTARE_V32_CURATED_ROWS", tmp_root / "v32_curated_test_rows.json"))
+    curated = json.loads(curated_path.read_text(encoding="utf-8"))
     rows = [r for r in curated["rows"] if not r.get("quarantined") and r.get("resolved_path")]
     print(f"# v32 Route C strict replay — {len(rows)} curated rows\n")
 
@@ -81,22 +86,23 @@ def main():
         print(f"--- {rid}: {thm} ---")
         sig = extract_signature(src, thm)
         if sig is None:
-            print(f"  SIGNATURE EXTRACTION FAILED")
+            print("  SIGNATURE EXTRACTION FAILED")
             results.append({"row_id": rid, "theorem": thm, "status": "sig_extract_failed"})
             continue
         # Synthesize row file
         row_text = f"-- v32 strict replay: {thm} (row_id {rid})\n-- source: {r['source_file']}\nimport Mathlib\nimport Hammer\n\n{sig} := by sorry\n"
-        tmp = tempfile.NamedTemporaryFile(mode="w", suffix=f"_{rid}.lean", delete=False, dir="/tmp")
+        tmp = tempfile.NamedTemporaryFile(mode="w", suffix=f"_{rid}.lean", delete=False, dir=tmp_root)
         tmp.write(row_text)
         tmp.close()
         # Run Route C dispatch (subprocess to isolate; 2 rounds, compile on)
-        out_json = f"/tmp/v32_replay_{rid}.json"
+        out_json = str(tmp_root / f"v32_replay_{rid}.json")
+        proc = None
         # Skip rows whose per-row json already exists (resume support)
         if Path(out_json).exists():
             print(f"  (resume) {out_json} exists — reusing")
         else:
             try:
-                subprocess.run(
+                proc = subprocess.run(
                     ["python3", str(ROOT / "scripts/public/control/route_c_layer_2c_dispatch.py"),
                      "--row", tmp.name, "--max-rounds", "2", "--model", "gpt-4.1-mini",
                      "--compile", "--out", out_json],
@@ -104,7 +110,7 @@ def main():
                 )
             except subprocess.TimeoutExpired:
                 results.append({"row_id": rid, "theorem": thm, "status": "dispatch_timeout_500s"})
-                print(f"  DISPATCH TIMEOUT (500s) — continuing")
+                print("  DISPATCH TIMEOUT (500s) — continuing")
                 continue
         try:
             res = json.load(open(out_json))
@@ -130,14 +136,14 @@ def main():
             print(f"  {mark} | op={op} | rounds={len(rounds_info)}")
         except Exception as e:
             results.append({"row_id": rid, "theorem": thm, "status": f"dispatch_error: {e}",
-                            "stderr_tail": proc.stderr[-300:]})
+                            "stderr_tail": proc.stderr[-300:] if proc is not None else ""})
             print(f"  DISPATCH ERROR: {e}")
 
     n_closed = sum(1 for r in results if r.get("compiled_any"))
     n_gap = sum(1 for r in results if r.get("status") == "ran" and not r.get("compiled_any"))
     n_fail = sum(1 for r in results if r.get("status") != "ran")
 
-    print(f"\n## Aggregate")
+    print("\n## Aggregate")
     print(f"  Closed (LLM re-derived without gold): {n_closed}/{len(rows)}")
     print(f"  Gap report (honest open): {n_gap}/{len(rows)}")
     print(f"  Harness/extraction failures: {n_fail}/{len(rows)}")

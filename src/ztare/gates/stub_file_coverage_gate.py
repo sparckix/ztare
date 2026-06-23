@@ -125,6 +125,10 @@ def run_stub_file_coverage_gate(
     unacknowledged = imported_stub_names - acknowledged
 
     if unacknowledged:
+        top_stubs = ", ".join(
+            f"{stub['file_name']}({stub['n_open']} open)"
+            for stub in stubs[:3]
+        )
         violations.append({
             "type": "imported_stub_not_acknowledged",
             "severity": "advisory" if not enforce_block else "blocking",
@@ -135,7 +139,7 @@ def run_stub_file_coverage_gate(
                 f"(entire-file-open) without acknowledgment: {sorted(unacknowledged)}. "
                 f"Add to rubric `acknowledged_stubs: [...]` with reason, OR provide "
                 f"closing proofs for at least 1 of the stub's open obligations. "
-                f"Top stubs: {', '.join(s['file_name'] + f'({s[\"n_open\"]} open)' for s in stubs[:3])}."
+                f"Top stubs: {top_stubs}."
             ),
         })
         warnings.append(f"{len(unacknowledged)} unacknowledged stub imports")

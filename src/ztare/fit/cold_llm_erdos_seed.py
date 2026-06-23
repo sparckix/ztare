@@ -31,6 +31,7 @@ import json
 import math
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Optional
 
 
@@ -393,7 +394,7 @@ def query_cold_llm_erdos_seed(
             forbidden_domain=forbidden_domain,
         )
     if runtime is None:
-        from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
         runtime = _LLMRuntime()
 
     fp_signature = json.dumps(
@@ -410,7 +411,7 @@ def query_cold_llm_erdos_seed(
     if project_dir is not None:
         try:
             from pathlib import Path as _Path
-            from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+            from ztare.common.llm_cache import LLMCallCache, ttl_30_days
             _cache = LLMCallCache(
                 callsite="cold_llm_erdos_seed",
                 project_dir=_Path(project_dir),
@@ -443,7 +444,7 @@ def query_cold_llm_erdos_seed(
     prompt = _build_cold_seed_prompt(fingerprint, forbidden_domain, k_law_budget)
 
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "cold_llm_erdos_seed",
@@ -587,11 +588,10 @@ def _parse_cold_llm_json(raw: str) -> Optional[dict]:
 
 
 def write_cold_seed_log(
-    workspace_dir: "Path",  # type: ignore
+    workspace_dir: Path,
     response: ColdSeedResponse,
-) -> "Path":  # type: ignore
+) -> Path:
     """Persist the cold-LLM seed response to workspace/cold_llm_seed_iter0.json."""
-    from pathlib import Path
     out_path = Path(workspace_dir) / "cold_llm_seed_iter0.json"
     # 2026-04-26: ensure workspace/ exists (after `make wipe-sandbox`, the
     # workspace dir is deleted; pre-iter-1 dispatch fires before any other

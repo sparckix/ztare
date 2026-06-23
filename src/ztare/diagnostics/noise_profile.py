@@ -49,6 +49,7 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Iterable, Optional
 
 import numpy as np
@@ -711,7 +712,7 @@ def r14_run_post_fit(substrate: "Any", candidate: "Any") -> dict:  # type: ignor
         }
 
     try:
-        from src.ztare.fit.fit_primitive_features import _safe_compile_form
+        from ztare.fit.fit_primitive_features import _safe_compile_form
         fn = _safe_compile_form(form)
     except Exception as exc:
         return {
@@ -798,7 +799,7 @@ def register_r14_gate(cage: "Any") -> None:  # type: ignore  # noqa: F821
     Each phase is its own Gate; they share can_handle.
     """
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return
     pre_gate = Gate(

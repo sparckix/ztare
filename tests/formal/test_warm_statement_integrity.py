@@ -41,7 +41,10 @@ def _run_with_probe(probe_text: str):
         root = Path(td)
         src = root / "src.lean"
         src.write_text(ORIGINAL, encoding="utf-8")
-        (root / "RobustProbe_codex_0.lean").write_text(probe_text, encoding="utf-8")
+        al.probe_dir(root).joinpath("RobustProbe_codex_0.lean").write_text(
+            probe_text,
+            encoding="utf-8",
+        )
         al.solve_robust = lambda *a, **k: SimpleNamespace(
             inadmissible=False, closed=True, reason="ok", rounds=1, decomposed=False,
             calibration={"best_of": {"winner": "codex"}})

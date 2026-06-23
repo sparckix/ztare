@@ -1005,6 +1005,7 @@ def _write_rubric(
     slug: str,
     problem_brief: str,
     variables: list[str],
+    visible_triples: list[tuple] | None = None,
     continuous: bool = False,
     rmse_threshold: float = 0.15,
     composition_stagnation_threshold: int = 3,
@@ -1143,16 +1144,15 @@ def _write_rubric(
     # source) to data-driven probes. Per panel: 'humans lie or make
     # mistakes; the data's shape dictates its routing'.
     try:
-        from src.ztare.scaffold.substrate_probe import (
+        from ztare.scaffold.substrate_probe import (
             classify_substrate as _classify_substrate,
             SubstrateClass as _SubstrateClass,
         )
-        # Extract y-column from visible_triples (already in scope as
-        # `triples`/`visible_triples`; signature varies by code path).
-        # Fall back gracefully if format unknown.
+        # Extract y-column from generated visible rows. Fall back gracefully if
+        # format unknown.
         _y_column: list[float] = []
         try:
-            _y_column = [float(t[-1]) for t in (triples if "triples" in dir() else [])]
+            _y_column = [float(t[-1]) for t in (visible_triples or [])]
         except Exception:
             _y_column = []
         if len(_y_column) >= 5:
@@ -1284,6 +1284,7 @@ def generate_substrate(
     rubric_path = RUBRICS_DIR / f"{slug}.json"
     _write_rubric(
         rubric_path, slug, problem_brief, variables,
+        visible_triples=visible_triples,
         continuous=continuous,
         composition_stagnation_threshold=composition_stagnation_threshold,
         gp103_stagnation_threshold=gp103_stagnation_threshold,
@@ -1370,7 +1371,7 @@ def main():
         print(f"\n{'='*60}")
         print("RUNNING LEAK SENTINEL")
         print(f"{'='*60}")
-        from src.ztare.validator.leak_sentinel import run_sentinel
+        from ztare.validator.leak_sentinel import run_sentinel
         hits = run_sentinel(
             Path(result["project_dir"]),
             Path(result["rubric_path"]),
