@@ -153,6 +153,20 @@ function rawSourceRelative(row) {
   return markerIndex === -1 ? path : path.slice(markerIndex + marker.length);
 }
 
+function sourceBasename(value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const parts = raw.split(/[\\/]/);
+  return parts[parts.length - 1] || "";
+}
+
+function sourceFilenameExists(sourceList, filename) {
+  const target = sourceBasename(filename);
+  if (!target) return false;
+  const sources = (sourceList && sourceList.sources) || [];
+  return sources.some((row) => sourceBasename(rawSourceRelative(row) || row.path) === target);
+}
+
 function activeBlocker(rows) {
   return rows.find((row) => row.kind === "attention") || rows.find((row) => row.status === "blocked") || null;
 }
@@ -773,8 +787,19 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCr
   );
 }
 
-function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, onImport, onPreview }) {
+function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, sourceList, onImport, onPreview }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  const filename = String(draft.filename || "").trim();
+  const hasBody = Boolean(String(draft.body || "").trim());
+  const duplicateFilename = sourceFilenameExists(sourceList, filename);
+  const canImport = Boolean(liveMode && !importing && filename && hasBody && !duplicateFilename);
+  const importTitle = !liveMode
+    ? "Start the local API to import a source"
+    : duplicateFilename
+      ? "This filename already exists. Open it in Raw sources to edit."
+      : !filename || !hasBody
+        ? "Enter a filename and source text"
+        : "Write source file and receipt";
   return h(
     "section",
     { className: "source-import-panel", "aria-label": "Import source" },
@@ -788,7 +813,13 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
     h(
       "div",
       { className: "source-import-grid" },
-      h("label", null, h("span", null, "Filename"), h("input", { value: draft.filename, onInput: (inputEvent) => setField("filename", inputEvent.target.value), placeholder: "source_note.md" })),
+      h(
+        "label",
+        null,
+        h("span", null, "Filename"),
+        h("input", { value: draft.filename, onInput: (inputEvent) => setField("filename", inputEvent.target.value), placeholder: "source_note.md" }),
+        duplicateFilename ? h("small", { className: "source-import-note" }, "Existing source. Open it in Raw sources to edit.") : null
+      ),
       h(
         "label",
         null,
@@ -811,9 +842,9 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
         {
           type: "button",
           className: "snapshot-link",
-          disabled: !liveMode || importing,
+          disabled: !canImport,
           onClick: onImport,
-          title: liveMode ? "Write source file and receipt" : "Start the local API to import a source"
+          title: importTitle
         },
         importing ? "Importing" : "Import source"
       ),
@@ -4525,6 +4556,7 @@ function App() {
         importing: sourceImporting,
         event: sourceImportEvent,
         liveMode,
+        sourceList: sourceListContext,
         onImport: importSourceLive,
         onPreview: loadFilePreview
       }),

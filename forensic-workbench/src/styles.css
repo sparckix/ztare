@@ -664,6 +664,12 @@ code {
   resize: vertical;
 }
 
+.source-import-note {
+  color: #9a3412;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .source-import-result {
   padding: 9px;
   background: #f7f9f8;

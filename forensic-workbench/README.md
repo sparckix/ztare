@@ -59,7 +59,9 @@ project slug, then reloads the project through the same live snapshot flow.
 The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
 file under the selected project's `raw/` directory, updates
 `raw/source_type_map.json`, appends a source-import receipt, writes the latest
-source-import receipt JSON, and runs the offline source check.
+source-import receipt JSON, and runs the offline source check. Import creates
+new raw source files only; existing files must be changed through the raw-source
+editor.
 The raw-source panel calls `/api/sources` to load the typed source list,
 `/api/source-file` to open one existing source, and `/api/source-edit` to write
 the edited source body/type back to disk. The panel shows pending source

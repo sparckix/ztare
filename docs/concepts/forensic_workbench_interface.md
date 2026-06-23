@@ -172,8 +172,9 @@ POST /api/project-create
    refreshed project index, and a first snapshot when available
 
 POST /api/source-import
--> write one validated raw source file, update source_type_map, append a
-   source-import receipt, run source-check, and return refreshed state
+-> write one new validated raw source file, refuse existing filenames, update
+   source_type_map, append a source-import receipt, run source-check, and return
+   refreshed state
 
 GET /api/sources?project=<project>
 -> list typed raw sources using the same source-check read model
