@@ -3470,6 +3470,27 @@ function App() {
       });
   };
 
+  const liveProjectParams = () => ({
+    project: snapshot.project,
+    rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+    intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake
+  });
+
+  const refreshLiveContextAfterWrite = (projectParams, options = {}) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    const tasks = [
+      loadTraceContext(projectParams),
+      loadReportContractContext(projectParams),
+      loadHealthContext(projectParams),
+      loadReceiptHistory(projectParams),
+      loadClaimSupportContext(projectParams),
+      refreshProjectIndex(projectParams.project)
+    ];
+    if (options.sources) tasks.push(loadSourceListContext(projectParams));
+    if (options.runHistory) tasks.push(loadRunHistoryContext(projectParams));
+    return Promise.allSettled(tasks);
+  };
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -3643,6 +3664,7 @@ function App() {
 
   const importSourceLive = () => {
     if (!snapshot || !liveMode || sourceImporting) return;
+    const params = liveProjectParams();
     setSourceImporting(true);
     setSourceImportMessage("Importing source file.");
     setSourceImportEvent(null);
@@ -3653,9 +3675,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         renderer: "decision_brief",
         filename: sourceImportDraft.filename,
         source_type: sourceImportDraft.source_type,
@@ -3682,10 +3704,7 @@ function App() {
           result: payload,
           snapshotError: payload.snapshot_error || ""
         });
-        loadReceiptHistory({ project: snapshot.project });
-        loadSourceListContext({ project: snapshot.project });
-        loadClaimSupportContext({ project: snapshot.project });
-        refreshProjectIndex(snapshot.project);
+        refreshLiveContextAfterWrite(params, { sources: true });
       })
       .catch((err) => setSourceImportMessage(String(err.message || err)))
       .finally(() => setSourceImporting(false));
@@ -3721,6 +3740,7 @@ function App() {
 
   const saveRawSourceEdit = () => {
     if (!snapshot || !liveMode || sourceEditing) return;
+    const params = liveProjectParams();
     setSourceEditing(true);
     setSourceEditMessage(`Saving ${sourceEditDraft.relative_raw_path || "source"}.`);
     setSourceEditEvent(null);
@@ -3731,9 +3751,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         renderer: "decision_brief",
         relative_raw_path: sourceEditDraft.relative_raw_path,
         source_type: sourceEditDraft.source_type,
@@ -3764,10 +3784,7 @@ function App() {
           result: payload,
           snapshotError: payload.snapshot_error || ""
         });
-        loadReceiptHistory({ project: snapshot.project });
-        loadSourceListContext({ project: snapshot.project });
-        loadClaimSupportContext({ project: snapshot.project });
-        refreshProjectIndex(snapshot.project);
+        refreshLiveContextAfterWrite(params, { sources: true });
       })
       .catch((err) => setSourceEditMessage(String(err.message || err)))
       .finally(() => setSourceEditing(false));
@@ -3856,6 +3873,7 @@ function App() {
 
   const applyReviewLive = (rowSlugValue, reviewPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !reviewPayload) return;
+    const params = liveProjectParams();
     setReviewMessage("Applying review.");
     setWriteReceiptEvent(null);
     fetch("/api/review", {
@@ -3865,9 +3883,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         row_slug: rowSlugValue,
         review_file: reviewPayload
       })
@@ -3890,15 +3908,14 @@ function App() {
           result: payload.review,
           snapshotError: payload.snapshot_error || ""
         });
-        loadReceiptHistory({ project: snapshot.project });
-        loadClaimSupportContext({ project: snapshot.project });
-        refreshProjectIndex(snapshot.project);
+        refreshLiveContextAfterWrite(params);
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
   };
 
   const applyRowActionLive = (rowSlugValue, actionPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !actionPayload) return;
+    const params = liveProjectParams();
     setActionMessage("Saving row action.");
     setWriteReceiptEvent(null);
     fetch("/api/row-action", {
@@ -3908,9 +3925,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         row_slug: rowSlugValue,
         action_file: actionPayload
       })
@@ -3933,14 +3950,14 @@ function App() {
           result: payload.action,
           snapshotError: payload.snapshot_error || ""
         });
-        loadReceiptHistory({ project: snapshot.project });
-        refreshProjectIndex(snapshot.project);
+        refreshLiveContextAfterWrite(params);
       })
       .catch((err) => setActionMessage(String(err.message || err)));
   };
 
   const saveIntakeDraft = () => {
     if (!snapshot || !liveMode || !intakeDraft) return;
+    const params = liveProjectParams();
     if (intakeDraft.editable === false) {
       setIntakeMessage("This intake is read-only in the local workbench.");
       return;
@@ -3958,9 +3975,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         fields: {
           bounded_claim: intakeDraft.bounded_claim,
           next_falsifier: intakeDraft.next_falsifier,
@@ -3990,8 +4007,7 @@ function App() {
           result: payload.edit,
           snapshotError: payload.snapshot_error || ""
         });
-        loadReceiptHistory({ project: snapshot.project });
-        refreshProjectIndex(snapshot.project);
+        refreshLiveContextAfterWrite(params);
       })
       .catch((err) => setIntakeMessage(String(err.message || err)));
   };
@@ -4043,6 +4059,7 @@ function App() {
 
   const runSourceActionLive = (action) => {
     if (!snapshot || !liveMode || sourceActionRunning) return;
+    const params = liveProjectParams();
     setSourceActionRunning(true);
     setSourceActionMessage(`Running ${displayText(action)}.`);
     setSourceActionEvent({ action });
@@ -4053,9 +4070,9 @@ function App() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        project: snapshot.project,
-        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
-        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         renderer: "decision_brief",
         action
       })
@@ -4076,11 +4093,11 @@ function App() {
         setSourceActionEvent(payload);
         const writeEvent = sourceActionReceiptEvent(payload);
         if (writeEvent) setWriteReceiptEvent(writeEvent);
-        loadSourceListContext({ project: snapshot.project });
-        loadClaimSupportContext({ project: snapshot.project });
         if (payload.writes) {
-          loadReceiptHistory({ project: snapshot.project });
-          refreshProjectIndex(snapshot.project);
+          refreshLiveContextAfterWrite(params, { sources: true });
+        } else {
+          loadSourceListContext(params);
+          loadClaimSupportContext(params);
         }
         setSourceActionMessage(
           payload.accepted
@@ -4095,11 +4112,11 @@ function App() {
           if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
           const writeEvent = sourceActionReceiptEvent(err.payload);
           if (writeEvent) setWriteReceiptEvent(writeEvent);
-          loadSourceListContext({ project: snapshot.project });
-          loadClaimSupportContext({ project: snapshot.project });
           if (err.payload.writes) {
-            loadReceiptHistory({ project: snapshot.project });
-            refreshProjectIndex(snapshot.project);
+            refreshLiveContextAfterWrite(params, { sources: true });
+          } else {
+            loadSourceListContext(params);
+            loadClaimSupportContext(params);
           }
         }
         setSourceActionMessage(String(err.message || err));
