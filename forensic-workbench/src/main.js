@@ -3235,10 +3235,12 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
   );
 }
 
-function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
+function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }) {
   if (!receiptEvent) return null;
   const result = receiptEvent.result || {};
   const receipt = result.receipt || {};
+  const refreshRows = Array.isArray(refreshResults) ? refreshResults.filter(Boolean) : [];
+  const refreshFailures = refreshRows.filter((row) => row.ok === false);
   const kindLabels = {
     intake_edit: "Intake edit",
     case_file: "Case file",
@@ -3282,8 +3284,22 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
       h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receipt.case_file_path || receiptEvent.row || "none")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
-      h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash)))
+      h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash))),
+      h("div", null, h("span", null, "Refresh"), h("strong", null, refreshRows.length ? `${refreshRows.length - refreshFailures.length}/${refreshRows.length} panels` : "not run"))
     ),
+    refreshRows.length
+      ? h(
+          "div",
+          { className: "write-refresh-strip" },
+          refreshRows.map((row) =>
+            h(
+              "span",
+              { key: row.label, className: row.ok === false ? "attention" : "ready", title: row.error || row.label },
+              row.label
+            )
+          )
+        )
+      : null,
     h(
       "div",
       { className: "write-receipt-paths" },
@@ -3533,6 +3549,7 @@ function App() {
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
   const [writeReceiptEvent, setWriteReceiptEvent] = useState(null);
+  const [lastRefreshResults, setLastRefreshResults] = useState([]);
   const [caseFileSaveEvent, setCaseFileSaveEvent] = useState(null);
   const [caseFileSaving, setCaseFileSaving] = useState(false);
   const [intakeDraft, setIntakeDraft] = useState(null);
@@ -3585,6 +3602,7 @@ function App() {
     setSourceEditEvent(null);
     setSourceEditMessage("");
     setWriteReceiptEvent(null);
+    setLastRefreshResults([]);
     setCaseFileSaveEvent(null);
     setReceiptHistory(null);
     setReceiptHistoryMessage("");
@@ -3808,8 +3826,10 @@ function App() {
     if (options.sources) tasks.push(loadSourceListContext(projectParams));
     if (options.runHistory) tasks.push(loadRunHistoryContext(projectParams));
     return Promise.all(tasks).then((results) => {
-      const failed = results.filter((item) => item && item.ok === false);
-      const refreshed = results.filter((item) => item && item.ok !== false).map((item) => item.label);
+      const compactResults = results.filter(Boolean);
+      setLastRefreshResults(compactResults);
+      const failed = compactResults.filter((item) => item.ok === false);
+      const refreshed = compactResults.filter((item) => item.ok !== false).map((item) => item.label);
       if (failed.length) {
         setModeMessage(
           `Write saved. Refreshed ${refreshed.length} live panels; ${failed.length} need attention: ${failed
@@ -4505,6 +4525,7 @@ function App() {
       .catch((err) => {
         const error = String(err.message || err);
         setCaseFileSaveEvent({ error });
+        setLastRefreshResults([]);
         setWriteReceiptEvent({
           kind: "case_file",
           row: "case file",
@@ -4705,7 +4726,7 @@ function App() {
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
       actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,
-      h(WriteReceiptPanel, { receiptEvent: writeReceiptEvent, liveMode, onPreview: loadFilePreview }),
+      h(WriteReceiptPanel, { receiptEvent: writeReceiptEvent, refreshResults: lastRefreshResults, liveMode, onPreview: loadFilePreview }),
       h(RowActionWorkspace, {
         snapshot,
         row: selectedRow,

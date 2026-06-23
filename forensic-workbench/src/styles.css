@@ -3027,6 +3027,28 @@ code {
   overflow-wrap: anywhere;
 }
 
+.write-refresh-strip {
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.write-refresh-strip span {
+  padding: 5px 7px;
+  background: #eef6f2;
+  border: 1px solid #cfe2d9;
+  color: #1c6552;
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.write-refresh-strip span.attention {
+  background: #fffaf2;
+  border-color: #edc996;
+  color: #8a4b12;
+}
+
 .write-receipt-paths {
   min-width: 0;
   display: grid;
