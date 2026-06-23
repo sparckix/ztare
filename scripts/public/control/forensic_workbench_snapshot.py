@@ -55,6 +55,29 @@ def discover_intake_for_project(project: str) -> str:
     return ""
 
 
+def discover_project_intakes(project: str) -> list[str]:
+    project = validate_project_slug(project)
+    project_dir = REPO / "projects" / project
+    if not project_dir.exists():
+        return []
+    candidates = [
+        project_dir / f"{project}_intake.json",
+        project_dir / "project_intake.json",
+        *sorted(project_dir.glob("*_intake.json")),
+    ]
+    seen: set[str] = set()
+    intakes: list[str] = []
+    for path in candidates:
+        if not path.exists() or not path.is_file():
+            continue
+        intake = rel(path)
+        if intake in seen:
+            continue
+        seen.add(intake)
+        intakes.append(intake)
+    return intakes
+
+
 def project_slug_from_example_intake(path: Path) -> str:
     stem = path.stem
     if not stem.endswith("_intake"):
@@ -90,7 +113,8 @@ def intake_source_for_path(project: str, intake: str | Path | None) -> str:
 
 
 def list_project_entries() -> list[dict[str, Any]]:
-    entries_by_project: dict[str, dict[str, Any]] = {}
+    entries_by_case: dict[str, dict[str, Any]] = {}
+    local_projects: set[str] = set()
 
     def latest_path_for_case(path: Path, *, project: str, intake: str) -> str:
         if not path.exists():
@@ -114,9 +138,10 @@ def list_project_entries() -> list[dict[str, Any]]:
         latest_source_action = latest_source_action_path(project)
         latest_case_file_write = latest_case_file_write_path(project)
         report_contract = project_dir / "synthesis" / "report_support_contract.json"
-        entry = entries_by_project.get(project)
+        entry_key = case_key(project, intake)
+        entry = entries_by_case.get(entry_key)
         if entry is None:
-            entries_by_project[project] = {
+            entries_by_case[entry_key] = {
                 "project": project,
                 "rubric": project,
                 "project_dir": rel(project_dir) if project_dir.exists() else "",
@@ -159,17 +184,23 @@ def list_project_entries() -> list[dict[str, Any]]:
 
     projects_dir = REPO / "projects"
     if not projects_dir.exists():
-        return [entries_by_project[key] for key in sorted(entries_by_project)]
+        return [entries_by_case[key] for key in sorted(entries_by_case)]
     for project_dir in sorted(path for path in projects_dir.iterdir() if path.is_dir()):
         project = project_dir.name
         if not re.fullmatch(r"[A-Za-z0-9_.-]+", project):
             continue
-        intake = discover_intake_for_project(project)
-        if not intake:
+        intakes = discover_project_intakes(project)
+        if not intakes:
             continue
-        intake_source = intake_source_for_path(project, intake)
-        upsert_project_entry(project, intake, source=intake_source)
-    return [entries_by_project[key] for key in sorted(entries_by_project)]
+        local_projects.add(project)
+        for intake in intakes:
+            intake_source = intake_source_for_path(project, intake)
+            upsert_project_entry(project, intake, source=intake_source)
+    return [
+        entry
+        for _key, entry in sorted(entries_by_case.items())
+        if not (entry.get("intake_source") == "public_example_intake" and entry.get("project") in local_projects)
+    ]
 
 
 def run(cmd: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:

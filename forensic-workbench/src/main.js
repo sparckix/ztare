@@ -777,7 +777,8 @@ function PendingEditsStrip({ items }) {
 }
 
 function projectOptionLabel(project) {
-  const parts = [project.project];
+  const intakeName = sourceBasename(project.intake || "");
+  const parts = [intakeName ? `${project.project} / ${intakeName}` : project.project];
   if (project.intake_source) parts.push(displayText(project.intake_source));
   const refSummary = project.intake_ref_summary || {};
   if (refSummary.total) parts.push(`refs ${refSummary.present || 0}/${refSummary.total}`);
@@ -888,7 +889,12 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
         return h(
           "article",
           { key: caseKey, className: `project-tile ${active ? "active" : ""}` },
-          h("div", { className: "project-tile-main" }, h("strong", null, project.project), h("small", null, project.project_dir || "project folder pending")),
+          h(
+            "div",
+            { className: "project-tile-main" },
+            h("strong", null, project.project),
+            h("small", null, project.intake || project.project_dir || "intake pending")
+          ),
           h(
             "div",
             { className: "project-tile-facts" },
@@ -906,7 +912,7 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
               className: active ? "copy-button" : "copy-button primary",
               disabled: loading || active,
               onClick: () => onSelect(caseKey),
-              title: active ? "This case is open" : `Open ${project.project}`
+              title: active ? "This case is open" : `Open ${project.project} / ${sourceBasename(project.intake || "") || "case"}`
             },
             active ? "Open" : "Switch"
           )

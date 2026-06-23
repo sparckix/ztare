@@ -437,6 +437,26 @@ def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monk
     assert entry["latest_case_file_write"] == ""
 
 
+def test_project_index_lists_multiple_project_intakes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    demo = tmp_path / "projects/demo"
+    demo.mkdir(parents=True)
+    (demo / "demo_intake.json").write_text("{}", encoding="utf-8")
+    (demo / "second_intake.json").write_text("{}", encoding="utf-8")
+
+    entries = module.list_project_entries()
+
+    assert [entry["intake"] for entry in entries] == [
+        "projects/demo/demo_intake.json",
+        "projects/demo/second_intake.json",
+    ]
+    assert {module.case_key(entry["project"], entry["intake"]) for entry in entries} == {
+        "demo::projects/demo/demo_intake.json",
+        "demo::projects/demo/second_intake.json",
+    }
+
+
 def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_module()
     monkeypatch.setattr(module, "REPO", tmp_path)
