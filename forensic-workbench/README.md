@@ -133,6 +133,9 @@ evidence-file errors, and previewable source paths from
 The case-file endpoint writes the current `ztare-forensic-workbench-case-file-v1`
 JSON to the project workspace, appends a case-file ledger row, writes the latest
 case-file receipt JSON, and returns the saved artifact path plus receipt paths.
+After any write-backed action, the app reports which live panels refreshed
+successfully and names panels that need attention, so a saved receipt is not
+confused with a fully refreshed case state.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-file export is explicit: clicking Download case file creates

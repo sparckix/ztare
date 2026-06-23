@@ -288,6 +288,8 @@ files. Source/evidence write receipts should stamp the produced artifact hash
 when the underlying command exposes one. The affected live panels should
 refresh together: trace, report/export contract, health, claim support, receipt
 history, project index, and source list when sources changed.
+The UI should name the panels that refreshed and separately name any panel whose
+refresh failed, so a saved receipt is never mistaken for a fully refreshed case.
 When a row is selected, the review strip should also show the latest saved
 review and row-action state for that same row from the receipt history, so a
 reviewer does not overwrite or duplicate a decision blindly.

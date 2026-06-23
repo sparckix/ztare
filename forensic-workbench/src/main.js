@@ -3464,6 +3464,8 @@ function App() {
     setActionStates({});
   };
 
+  const refreshResult = (label, ok, error = "") => ({ label, ok, error: error ? String(error) : "" });
+
   const refreshProjectIndex = (activeProject) =>
     fetch("/api/projects", { headers: { Accept: "application/json" } })
       .then((response) => {
@@ -3477,11 +3479,11 @@ function App() {
         if (activeProject && projectRows.some((row) => row.project === activeProject)) {
           setSelectedProjectKey(activeProject);
         }
-        return payload;
+        return refreshResult("project index", true);
       })
       .catch((err) => {
         setModeMessage(`Project index refresh failed: ${err.message || err}`);
-        return null;
+        return refreshResult("project index", false, err.message || err);
       });
 
   const loadHealthContext = (projectParams) => {
@@ -3495,10 +3497,12 @@ function App() {
       .then((payload) => {
         setHealthContext(payload);
         setHealthMessage("Live health context loaded from the local API.");
+        return refreshResult("health", true);
       })
       .catch((err) => {
         setHealthContext(null);
         setHealthMessage(`Live health context unavailable: ${err.message || err}`);
+        return refreshResult("health", false, err.message || err);
       });
   };
 
@@ -3514,10 +3518,12 @@ function App() {
         if (payload.ok === false) throw new Error(payload.error || "trace fetch failed");
         setTraceContext(payload);
         setTraceMessage("Live autoresearch trace loaded from the local API.");
+        return refreshResult("trace", true);
       })
       .catch((err) => {
         setTraceContext(null);
         setTraceMessage(`Live autoresearch trace unavailable: ${err.message || err}`);
+        return refreshResult("trace", false, err.message || err);
       });
   };
 
@@ -3533,10 +3539,12 @@ function App() {
         if (payload.ok === false && !payload.status) throw new Error(payload.error || "report contract fetch failed");
         setReportContractContext(payload);
         setReportContractMessage("Report support contract loaded from the local API.");
+        return refreshResult("report", true);
       })
       .catch((err) => {
         setReportContractContext(null);
         setReportContractMessage(`Report support contract unavailable: ${err.message || err}`);
+        return refreshResult("report", false, err.message || err);
       });
   };
 
@@ -3552,10 +3560,12 @@ function App() {
         if (payload.ok === false) throw new Error(payload.error || "intake fetch failed");
         setIntakeDraft(intakeDraftFromPayload(payload));
         setIntakeMessage(payload.editable === false ? `Loaded read-only intake: ${payload.path}.` : `Loaded ${payload.path}.`);
+        return refreshResult("intake", true);
       })
       .catch((err) => {
         setIntakeDraft(null);
         setIntakeMessage(`Live intake unavailable: ${err.message || err}`);
+        return refreshResult("intake", false, err.message || err);
       });
   };
 
@@ -3571,10 +3581,12 @@ function App() {
         if (payload.ok === false) throw new Error(payload.error || "receipt history fetch failed");
         setReceiptHistory(payload);
         setReceiptHistoryMessage(`${payload.receipt_count || 0} receipt rows found in project ledgers.`);
+        return refreshResult("receipts", true);
       })
       .catch((err) => {
         setReceiptHistory(null);
         setReceiptHistoryMessage(`Receipt history unavailable: ${err.message || err}`);
+        return refreshResult("receipts", false, err.message || err);
       });
   };
 
@@ -3590,10 +3602,12 @@ function App() {
         if (payload.ok === false) throw new Error(payload.error || "run history fetch failed");
         setRunHistoryContext(payload);
         setRunHistoryMessage(`${(payload.summary || {}).run_rows || 0} run-history rows loaded from project files.`);
+        return refreshResult("run history", true);
       })
       .catch((err) => {
         setRunHistoryContext(null);
         setRunHistoryMessage(`Run history unavailable: ${err.message || err}`);
+        return refreshResult("run history", false, err.message || err);
       });
   };
 
@@ -3613,10 +3627,12 @@ function App() {
             ? `${payload.claim_count || 0} claim-support rows loaded from project files.`
             : `Claim support needs attention: ${payload.status || "attention"}.`
         );
+        return refreshResult("claim support", true);
       })
       .catch((err) => {
         setClaimSupportContext(null);
         setClaimSupportMessage(`Claim support unavailable: ${err.message || err}`);
+        return refreshResult("claim support", false, err.message || err);
       });
   };
 
@@ -3632,10 +3648,12 @@ function App() {
         if (payload.ok === false) throw new Error(payload.error || "source list fetch failed");
         setSourceListContext(payload);
         setSourceListMessage(`${(payload.sources || []).length} raw sources loaded from ${payload.raw_dir || "project raw"}.`);
+        return refreshResult("sources", true);
       })
       .catch((err) => {
         setSourceListContext(null);
         setSourceListMessage(`Raw sources unavailable: ${err.message || err}`);
+        return refreshResult("sources", false, err.message || err);
       });
   };
 
@@ -3657,7 +3675,20 @@ function App() {
     ];
     if (options.sources) tasks.push(loadSourceListContext(projectParams));
     if (options.runHistory) tasks.push(loadRunHistoryContext(projectParams));
-    return Promise.allSettled(tasks);
+    return Promise.all(tasks).then((results) => {
+      const failed = results.filter((item) => item && item.ok === false);
+      const refreshed = results.filter((item) => item && item.ok !== false).map((item) => item.label);
+      if (failed.length) {
+        setModeMessage(
+          `Write saved. Refreshed ${refreshed.length} live panels; ${failed.length} need attention: ${failed
+            .map((item) => item.label)
+            .join(", ")}.`
+        );
+      } else {
+        setModeMessage(`Write saved. Refreshed live panels: ${refreshed.join(", ")}.`);
+      }
+      return results;
+    });
   };
 
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
