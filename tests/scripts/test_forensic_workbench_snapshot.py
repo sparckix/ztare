@@ -403,6 +403,40 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
     ]
 
 
+def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    demo = tmp_path / "projects/demo"
+    demo.mkdir(parents=True)
+    (demo / "demo_intake.json").write_text("{}", encoding="utf-8")
+    workspace = demo / "workspace"
+    workspace.mkdir()
+    other_case = {
+        "schema": "ztare-forensic-workbench-source-import-v1",
+        "project": "demo",
+        "intake": "projects/demo/other_intake.json",
+        "case_key": "demo::projects/demo/other_intake.json",
+    }
+    current_case = {
+        "schema": "ztare-forensic-workbench-source-edit-v1",
+        "project": "demo",
+        "intake": "projects/demo/demo_intake.json",
+        "case_key": "demo::projects/demo/demo_intake.json",
+    }
+    (workspace / "forensic_workbench_latest_source_import.json").write_text(json.dumps(other_case), encoding="utf-8")
+    (workspace / "forensic_workbench_latest_source_edit.json").write_text(json.dumps(current_case), encoding="utf-8")
+    (workspace / "forensic_workbench_latest_case_file_write.json").write_text(
+        json.dumps({**other_case, "schema": "ztare-forensic-workbench-case-file-write-receipt-v1"}),
+        encoding="utf-8",
+    )
+
+    [entry] = module.list_project_entries()
+
+    assert entry["latest_source_import"] == ""
+    assert entry["latest_source_edit"] == "projects/demo/workspace/forensic_workbench_latest_source_edit.json"
+    assert entry["latest_case_file_write"] == ""
+
+
 def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_module()
     monkeypatch.setattr(module, "REPO", tmp_path)

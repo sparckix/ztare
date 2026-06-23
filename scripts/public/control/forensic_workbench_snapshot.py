@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""Render a static local forensic-workbench prototype.
+"""Render a static local forensic-workbench snapshot.
 
-This is a narrow D4 prototype surface: it consumes one selected project's
+This D4 read model consumes one selected project's
 intake, autoresearch trace, review receipt, and report-support contract outputs,
-then renders file-backed snapshot artifacts. It does not add a backend service
-or a chat surface.
+then renders file-backed snapshot artifacts for the local workbench.
 """
 from __future__ import annotations
 
@@ -93,6 +92,17 @@ def intake_source_for_path(project: str, intake: str | Path | None) -> str:
 def list_project_entries() -> list[dict[str, Any]]:
     entries_by_project: dict[str, dict[str, Any]] = {}
 
+    def latest_path_for_case(path: Path, *, project: str, intake: str) -> str:
+        if not path.exists():
+            return ""
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return rel(path)
+        if not isinstance(payload, dict):
+            return rel(path)
+        return rel(path) if receipt_matches_case(payload, project=project, intake=intake) else ""
+
     def upsert_project_entry(project: str, intake: str, *, source: str) -> None:
         project = validate_project_slug(project)
         project_dir = REPO / "projects" / project
@@ -112,13 +122,13 @@ def list_project_entries() -> list[dict[str, Any]]:
                 "project_dir": rel(project_dir) if project_dir.exists() else "",
                 "intake": intake,
                 "intake_source": source,
-                "latest_review": rel(latest_review) if latest_review.exists() else "",
-                "latest_row_action": rel(latest_action) if latest_action.exists() else "",
-                "latest_intake_edit": rel(latest_intake_edit) if latest_intake_edit.exists() else "",
-                "latest_source_import": rel(latest_source_import) if latest_source_import.exists() else "",
-                "latest_source_edit": rel(latest_source_edit) if latest_source_edit.exists() else "",
-                "latest_source_action": rel(latest_source_action) if latest_source_action.exists() else "",
-                "latest_case_file_write": rel(latest_case_file_write) if latest_case_file_write.exists() else "",
+                "latest_review": latest_path_for_case(latest_review, project=project, intake=intake),
+                "latest_row_action": latest_path_for_case(latest_action, project=project, intake=intake),
+                "latest_intake_edit": latest_path_for_case(latest_intake_edit, project=project, intake=intake),
+                "latest_source_import": latest_path_for_case(latest_source_import, project=project, intake=intake),
+                "latest_source_edit": latest_path_for_case(latest_source_edit, project=project, intake=intake),
+                "latest_source_action": latest_path_for_case(latest_source_action, project=project, intake=intake),
+                "latest_case_file_write": latest_path_for_case(latest_case_file_write, project=project, intake=intake),
                 "report_contract": rel(report_contract) if report_contract.exists() else "",
             }
             return
@@ -127,20 +137,20 @@ def list_project_entries() -> list[dict[str, Any]]:
         if source == "project_local_intake":
             entry["intake"] = intake
             entry["intake_source"] = source
-        if latest_review.exists():
-            entry["latest_review"] = rel(latest_review)
-        if latest_action.exists():
-            entry["latest_row_action"] = rel(latest_action)
-        if latest_intake_edit.exists():
-            entry["latest_intake_edit"] = rel(latest_intake_edit)
-        if latest_source_import.exists():
-            entry["latest_source_import"] = rel(latest_source_import)
-        if latest_source_edit.exists():
-            entry["latest_source_edit"] = rel(latest_source_edit)
-        if latest_source_action.exists():
-            entry["latest_source_action"] = rel(latest_source_action)
-        if latest_case_file_write.exists():
-            entry["latest_case_file_write"] = rel(latest_case_file_write)
+        for key, path in (
+            ("latest_review", latest_review),
+            ("latest_row_action", latest_action),
+            ("latest_intake_edit", latest_intake_edit),
+            ("latest_source_import", latest_source_import),
+            ("latest_source_edit", latest_source_edit),
+            ("latest_source_action", latest_source_action),
+            ("latest_case_file_write", latest_case_file_write),
+        ):
+            latest_for_case = latest_path_for_case(path, project=project, intake=str(entry.get("intake") or intake))
+            if latest_for_case:
+                entry[key] = latest_for_case
+            elif str(entry.get("intake") or "") == intake:
+                entry[key] = ""
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
 

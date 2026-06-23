@@ -4196,7 +4196,7 @@ function App() {
       refreshIntakeAfterWrite(),
       loadReceiptHistory(projectParams),
       loadClaimSupportContext(projectParams),
-      refreshProjectIndex(projectParams.project)
+      refreshProjectIndex(projectEntryKey(projectParams))
     ].filter(Boolean);
     if (options.sources) tasks.push(loadSourceListContext(projectParams));
     if (options.runHistory) tasks.push(loadRunHistoryContext(projectParams));
