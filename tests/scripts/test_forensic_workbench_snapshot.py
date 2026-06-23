@@ -626,6 +626,61 @@ def test_preflight_payload_runs_only_preflight_command(monkeypatch: pytest.Monke
     assert command[:5] == [module.snapshot.PYTHON, "-m", "src.ztare.cli", "autoresearch", "run"]
 
 
+def test_run_history_payload_surfaces_latest_verdict_files(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    workspace = project_root / "workspace"
+    synthesis = project_root / "synthesis"
+    workspace.mkdir(parents=True)
+    synthesis.mkdir()
+    (workspace / "eval_history.jsonl").write_text(
+        "\n".join(
+            [
+                json.dumps({"run_id": 1, "iteration": 0, "score": 40, "weakest_point": "too broad"}),
+                json.dumps(
+                    {
+                        "run_id": 2,
+                        "iteration": 1,
+                        "score": 82,
+                        "weakest_point": "missing direct rival test",
+                        "artifact_refs": ["projects/demo/latest_eval_results.json"],
+                    }
+                ),
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (project_root / "latest_eval_results.json").write_text(
+        json.dumps(
+            {
+                "score": 82,
+                "weakest_point": "missing direct rival test",
+                "evidence_gaps": [{"target": "rival", "severity": "degrading", "description": "Need direct test."}],
+                "probability_dag": {"outcome": {"label": "bounded verdict", "probability": 0.72}},
+            }
+        ),
+        encoding="utf-8",
+    )
+    (project_root / "champion_eval_results.json").write_text(json.dumps({"score": 88, "weakest_point": "champion gap"}), encoding="utf-8")
+    (synthesis / "history_summary.json").write_text(
+        json.dumps({"recurring_failures": ["correlation bridge"], "major_pivots": ["bounded scope"]}),
+        encoding="utf-8",
+    )
+
+    payload = module.run_history_payload_for_project(project="demo")
+
+    assert payload["schema"] == "ztare-forensic-workbench-run-history-v1"
+    assert payload["summary"]["run_rows"] == 2
+    assert payload["summary"]["latest_score"] == 82
+    assert payload["summary"]["best_score"] == 88
+    assert payload["latest_eval"]["evidence_gap_count"] == 1
+    assert payload["champion_eval"]["score"] == 88
+    assert payload["recent_runs"][-1]["artifact_refs"] == ["projects/demo/latest_eval_results.json"]
+    assert payload["synthesis_history"]["recurring_failures"] == ["correlation bridge"]
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

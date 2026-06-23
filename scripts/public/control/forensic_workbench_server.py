@@ -23,6 +23,7 @@ INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
 RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
 REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
 PREFLIGHT_SCHEMA = "ztare-forensic-workbench-preflight-v1"
+RUN_HISTORY_SCHEMA = "ztare-forensic-workbench-run-history-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -112,6 +113,28 @@ def read_json_object(path: Path, label: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise ValueError(f"{label} must be a JSON object")
     return payload
+
+
+def read_optional_json_object(path: Path) -> dict[str, Any]:
+    if not path.exists():
+        return {}
+    return read_json_object(path, repo_rel(path))
+
+
+def read_jsonl_objects(path: Path, *, limit: int = 100) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            rows.append(payload)
+    return rows[-limit:]
 
 
 def unsafe_local_ref_reason(ref: str) -> str | None:
@@ -799,6 +822,102 @@ def preflight_payload_for_project(
     return payload
 
 
+def compact_eval_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    gaps = payload.get("evidence_gaps") or []
+    if not isinstance(gaps, list):
+        gaps = []
+    probability = payload.get("probability_dag") or {}
+    outcome = probability.get("outcome") if isinstance(probability, dict) else {}
+    if not isinstance(outcome, dict):
+        outcome = {}
+    return {
+        "score": payload.get("score"),
+        "weakest_point": str(payload.get("weakest_point") or ""),
+        "evidence_gap_count": len(gaps),
+        "evidence_gaps": [
+            {
+                "target": str(row.get("target") or ""),
+                "severity": str(row.get("severity") or ""),
+                "description": str(row.get("description") or ""),
+                "required_surface": str(row.get("required_surface") or ""),
+            }
+            for row in gaps[:5]
+            if isinstance(row, dict)
+        ],
+        "probability_outcome": {
+            "label": str(outcome.get("label") or ""),
+            "probability": outcome.get("probability"),
+        },
+    }
+
+
+def compact_eval_history_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "run_id": row.get("run_id"),
+        "iteration": row.get("iteration"),
+        "score": row.get("score"),
+        "timestamp": str(row.get("timestamp") or ""),
+        "weakest_point": str(row.get("weakest_point") or ""),
+        "gate_failure_count": safe_int(row.get("gate_failure_count")),
+        "worker_capabilities": [str(item) for item in row.get("worker_capability_set") or []],
+        "worker_transports": [str(item) for item in row.get("worker_transport_set") or []],
+        "matched_run_role": str(row.get("matched_run_role") or ""),
+        "artifact_refs": [snapshot.rel(path) for path in (row.get("artifact_refs") or [])[:8]],
+    }
+
+
+def run_history_payload_for_project(*, project: str, limit: int = 8) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    limit = max(1, min(limit, 25))
+    project_root = snapshot.REPO / "projects" / project
+    workspace = project_root / "workspace"
+    eval_history_path = workspace / "eval_history.jsonl"
+    latest_eval_path = project_root / "latest_eval_results.json"
+    champion_eval_path = project_root / "champion_eval_results.json"
+    synthesis_history_path = project_root / "synthesis" / "history_summary.json"
+
+    rows = [compact_eval_history_row(row) for row in read_jsonl_objects(eval_history_path, limit=limit)]
+    latest_eval = compact_eval_payload(read_optional_json_object(latest_eval_path))
+    champion_eval = compact_eval_payload(read_optional_json_object(champion_eval_path))
+    synthesis_history = read_optional_json_object(synthesis_history_path)
+    latest_row = rows[-1] if rows else {}
+    score_candidates = [row.get("score") for row in rows if isinstance(row.get("score"), (int, float))]
+    if isinstance(champion_eval.get("score"), (int, float)):
+        score_candidates.append(champion_eval["score"])
+    best_score = max(score_candidates) if score_candidates else None
+    return {
+        "schema": RUN_HISTORY_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "limit": limit,
+        "paths": {
+            "eval_history": repo_rel(eval_history_path),
+            "latest_eval": repo_rel(latest_eval_path),
+            "champion_eval": repo_rel(champion_eval_path),
+            "synthesis_history": repo_rel(synthesis_history_path),
+        },
+        "summary": {
+            "run_rows": len(rows),
+            "latest_score": latest_eval.get("score") if latest_eval else latest_row.get("score"),
+            "best_score": best_score,
+            "latest_run_id": latest_row.get("run_id"),
+            "latest_iteration": latest_row.get("iteration"),
+            "latest_timestamp": latest_row.get("timestamp"),
+            "latest_weakest_point": latest_eval.get("weakest_point") or latest_row.get("weakest_point") or "",
+            "latest_evidence_gap_count": latest_eval.get("evidence_gap_count") or 0,
+        },
+        "latest_eval": latest_eval,
+        "champion_eval": champion_eval,
+        "recent_runs": rows,
+        "synthesis_history": {
+            "summary_scope": str(synthesis_history.get("summary_scope") or ""),
+            "recurring_failures": [str(item) for item in (synthesis_history.get("recurring_failures") or [])[:5]],
+            "major_pivots": [str(item) for item in (synthesis_history.get("major_pivots") or [])[:5]],
+            "cross_run_patterns": [str(item) for item in (synthesis_history.get("cross_run_patterns") or [])[:5]],
+        },
+    }
+
+
 class WorkbenchHandler(BaseHTTPRequestHandler):
     server_version = "ZTAREForensicWorkbench/0.1"
 
@@ -884,6 +1003,12 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
                 limit = int(first_param(params, "limit", "12"))
                 self.send_json(receipt_history_payload(project=project, limit=limit))
+                return
+            if parsed.path == "/api/run-history":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                limit = int(first_param(params, "limit", "8"))
+                self.send_json(run_history_payload_for_project(project=project, limit=limit))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

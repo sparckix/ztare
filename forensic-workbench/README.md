@@ -35,8 +35,9 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/preflight`, `/api/receipts`, `/api/file`, `/api/review`, and
-`/api/row-action` to the local API. The browser still does not scan `projects/`
+`/api/trace`, `/api/preflight`, `/api/run-history`, `/api/receipts`,
+`/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
+still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
 selected project, using the intake and rubric discovered by the index. The app
 shows the backing project directory, intake, report contract, latest review
@@ -66,8 +67,8 @@ is detected, the app keeps the current case and shows the error instead of
 swapping in stale static data.
 
 Live mode also fetches `/api/trace`, `/api/report-contract`, and `/api/health`
-for the selected project, and it can call `/api/preflight` for an explicit
-preflight-only launch check.
+for the selected project, fetches `/api/run-history` for verdict/run evidence,
+and can call `/api/preflight` for an explicit preflight-only launch check.
 The trace endpoint returns `ztare-forensic-workbench-trace-v1`: carrier chain,
 kernel-entry state, plan steps, loop admission, graph summaries,
 source/evidence statuses, and copyable next commands from
@@ -83,13 +84,17 @@ The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
 exact `ztare autoresearch run ... --preflight-only` command, exit code,
 acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
 available. It is not a general shell runner and it does not start a model run.
+The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
+recent run scores, latest and champion verdict summaries, evidence gaps,
+synthesis patterns, and backing file paths.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
-preflight result, the command queue, and the latest visible write receipt. It
-does not write project files or claim that an unreviewed case is complete.
+preflight result, run-history context, the command queue, and the latest visible
+write receipt. It does not write project files or claim that an unreviewed case
+is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked
@@ -141,6 +146,8 @@ The interface is organized as a local claim-review surface:
   steps, graph carriers, source/evidence paths, and next commands
 - preflight action panel that runs only the local preflight command and shows
   exit status, loop-admission receipt count, and bounded output
+- run-history panel showing latest score, weakest point, evidence gaps, recent
+  runs, synthesis patterns, and previewable backing files
 - report/export contract panel showing blocker reasons, synthesis input-binding
   state, contract file path, and the exact support command
 - current-action rail with the next command or provenance target
@@ -152,8 +159,8 @@ The interface is organized as a local claim-review surface:
 - receipt history panel showing recent review, row-action, and intake-edit
   ledger rows with previewable backing ledger paths
 - case-packet export for downloading or copying the current case, rows,
-  evidence refs, live context, preflight result, command queue, and recent
-  receipt paths
+  evidence refs, live context, preflight result, run history, command queue,
+  and recent receipt paths
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
 - review queue strip showing selected row, decision, evidence count, and receipt readiness

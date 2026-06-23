@@ -189,6 +189,10 @@ GET /api/file?path=<repo-relative-path>
 GET /api/receipts?project=<project>
 -> recent review, row-action, and intake-edit receipts from project ledgers
 
+GET /api/run-history?project=<project>
+-> latest and recent run scores, weakest points, evidence gaps, synthesis
+   patterns, and backing run-history paths
+
 POST /api/review
 -> append row-level review receipt and refresh snapshot
 
@@ -206,8 +210,8 @@ state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
-bounded-claim status, source/evidence readiness, recent receipt history, and
-report/export state before the user opens a case.
+bounded-claim status, source/evidence readiness, recent receipt history, run
+history/verdict state, and report/export state before the user opens a case.
 The source/evidence readiness panel should show source-index status, evidence
 binding, output binding, replay status, source/evidence files, and the commands
 that rebuild those checks.

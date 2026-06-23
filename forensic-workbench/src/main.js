@@ -188,6 +188,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const report = context.reportContext || {};
   const health = context.healthContext || {};
   const preflight = context.preflightEvent || null;
+  const runHistory = context.runHistoryContext || {};
   const latestWrite = context.writeReceiptEvent || null;
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -260,8 +261,17 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
             loop_admission: ((preflight.trace || {}).loop_admission) || {},
             snapshot_error: preflight.snapshot_error || "",
             trace_error: preflight.trace_error || ""
-          }
+        }
         : null,
+      run_history: {
+        schema: runHistory.schema || "",
+        summary: runHistory.summary || {},
+        paths: runHistory.paths || {},
+        latest_eval: runHistory.latest_eval || {},
+        champion_eval: runHistory.champion_eval || {},
+        recent_runs: (runHistory.recent_runs || []).slice(-8),
+        synthesis_history: runHistory.synthesis_history || {}
+      },
       latest_write_receipt: latestWrite
         ? {
             kind: latestWrite.kind,
@@ -1012,6 +1022,126 @@ function PreflightRunPanel({ traceContext, event, message, running, liveMode, on
   );
 }
 
+function RunHistoryPanel({ runHistory, message, liveMode, onPreview }) {
+  const summary = (runHistory && runHistory.summary) || {};
+  const latest = (runHistory && runHistory.latest_eval) || {};
+  const synthesis = (runHistory && runHistory.synthesis_history) || {};
+  const paths = (runHistory && runHistory.paths) || {};
+  const recentRuns = (runHistory && runHistory.recent_runs) || [];
+  const gaps = latest.evidence_gaps || [];
+  const patterns = [
+    ...(synthesis.recurring_failures || []).map((text) => ({ label: "Failure", text })),
+    ...(synthesis.major_pivots || []).map((text) => ({ label: "Pivot", text })),
+    ...(synthesis.cross_run_patterns || []).map((text) => ({ label: "Pattern", text }))
+  ].slice(0, 6);
+
+  return h(
+    "section",
+    { className: "run-history-panel", "aria-label": "Run history and verdict" },
+    h(
+      "div",
+      { className: "run-history-summary" },
+      h("span", { className: "eyebrow" }, "Run history"),
+      h("h2", null, summary.latest_score === undefined || summary.latest_score === null ? "No scored run" : `Score ${summary.latest_score}`),
+      h(
+        "p",
+        null,
+        message ||
+          (liveMode
+            ? "Latest verdict state from project run history and evaluation files."
+            : "Start the local API to inspect run history.")
+      )
+    ),
+    h(
+      "div",
+      { className: "run-history-facts" },
+      h("div", null, h("span", null, "Rows"), h("strong", null, String(summary.run_rows || 0))),
+      h("div", null, h("span", null, "Best"), h("strong", null, summary.best_score === undefined || summary.best_score === null ? "none" : String(summary.best_score))),
+      h("div", null, h("span", null, "Gaps"), h("strong", null, String(summary.latest_evidence_gap_count || 0))),
+      h("div", null, h("span", null, "Run"), h("strong", null, summary.latest_run_id ? `${summary.latest_run_id}/${summary.latest_iteration ?? 0}` : "none"))
+    ),
+    h(
+      "div",
+      { className: "run-history-verdict" },
+      h("span", null, "Weakest point"),
+      h("p", null, latest.weakest_point || summary.latest_weakest_point || "No latest weakest point recorded."),
+      h(
+        "div",
+        { className: "run-history-paths" },
+        ["eval_history", "latest_eval", "champion_eval", "synthesis_history"].map((key) =>
+          h(
+            "button",
+            {
+              key,
+              type: "button",
+              className: "copy-button",
+              disabled: !liveMode || !paths[key],
+              onClick: () => paths[key] && onPreview && onPreview({ type: "file", value: paths[key] }),
+              title: paths[key] ? `Preview ${paths[key]}` : "No backing file recorded"
+            },
+            displayText(key)
+          )
+        )
+      )
+    ),
+    h(
+      "div",
+      { className: "run-history-runs" },
+      h("span", null, "Recent runs"),
+      recentRuns.length
+        ? recentRuns.slice(-5).reverse().map((row) =>
+            h(
+              "div",
+              { className: "run-history-row", key: `${row.run_id}:${row.iteration}:${row.timestamp}` },
+              h("strong", null, `Score ${row.score ?? "none"}`),
+              h("small", null, `${row.run_id || "run"} / iter ${row.iteration ?? 0}`),
+              h("p", null, row.weakest_point || "No weakest point recorded."),
+              (row.artifact_refs || []).slice(0, 2).map((path) =>
+                h(
+                  "button",
+                  {
+                    key: path,
+                    type: "button",
+                    className: "copy-button",
+                    disabled: !liveMode,
+                    onClick: () => onPreview && onPreview({ type: "file", value: path }),
+                    title: `Preview ${path}`
+                  },
+                  "Artifact"
+                )
+              )
+            )
+          )
+        : h("p", null, "No run-history rows found for this project.")
+    ),
+    h(
+      "div",
+      { className: "run-history-patterns" },
+      h("span", null, "Verdict pressure"),
+      gaps.length
+        ? gaps.slice(0, 3).map((gap) =>
+            h(
+              "div",
+              { className: "run-history-gap", key: `${gap.target}:${gap.severity}` },
+              h("strong", null, gap.target || "Evidence gap"),
+              h("small", null, displayText(gap.severity || "gap")),
+              h("p", null, gap.description || gap.required_surface || "No gap detail recorded.")
+            )
+          )
+        : patterns.length
+          ? patterns.map((item) =>
+              h(
+                "div",
+                { className: "run-history-gap", key: `${item.label}:${item.text}` },
+                h("strong", null, item.label),
+                h("p", null, item.text)
+              )
+            )
+          : h("p", null, "No evidence gaps or synthesis patterns surfaced.")
+    )
+  );
+}
+
 function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   const binding = (reportContext && reportContext.synthesis_input_binding) || {};
   const reasons = (reportContext && reportContext.status_reasons) || [];
@@ -1118,12 +1248,13 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
     healthContext,
     preflightEvent,
+    runHistoryContext,
     writeReceiptEvent,
     selectedRow
   });
@@ -1145,7 +1276,8 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       packet.live_context.health.kernel.attention_components.length ||
       Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
       packet.live_context.health.action_intelligence.issues.length,
-    packet.live_context.preflight_result
+    packet.live_context.preflight_result,
+    packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
 
@@ -1167,6 +1299,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
+      h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
     ),
@@ -2469,6 +2602,8 @@ function App() {
   const [preflightEvent, setPreflightEvent] = useState(null);
   const [preflightMessage, setPreflightMessage] = useState("");
   const [preflightRunning, setPreflightRunning] = useState(false);
+  const [runHistoryContext, setRunHistoryContext] = useState(null);
+  const [runHistoryMessage, setRunHistoryMessage] = useState("");
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
   const [reportContractContext, setReportContractContext] = useState(null);
@@ -2595,6 +2730,25 @@ function App() {
       });
   };
 
+  const loadRunHistoryContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setRunHistoryMessage("Loading run history.");
+    return fetch(endpointUrl("/api/run-history", { project: projectParams.project, limit: 8 }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`run history fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "run history fetch failed");
+        setRunHistoryContext(payload);
+        setRunHistoryMessage(`${(payload.summary || {}).run_rows || 0} run-history rows loaded from project files.`);
+      })
+      .catch((err) => {
+        setRunHistoryContext(null);
+        setRunHistoryMessage(`Run history unavailable: ${err.message || err}`);
+      });
+  };
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -2624,7 +2778,8 @@ function App() {
             loadReportContractContext(liveParams),
             loadHealthContext(liveParams),
             loadIntakeDraft(liveParams),
-            loadReceiptHistory(liveParams)
+            loadReceiptHistory(liveParams),
+            loadRunHistoryContext(liveParams)
           ]);
         }
         setTraceContext(null);
@@ -2639,6 +2794,8 @@ function App() {
         setIntakeMessage("Static mode cannot edit the project intake.");
         setReceiptHistory(null);
         setReceiptHistoryMessage("Static mode uses the latest generated snapshot only.");
+        setRunHistoryContext(null);
+        setRunHistoryMessage("Static mode uses the run-history row from the last generated snapshot only.");
         return null;
       })
       .catch((err) => {
@@ -3056,6 +3213,7 @@ function App() {
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(PreflightRunPanel, { traceContext, event: preflightEvent, message: preflightMessage, running: preflightRunning, liveMode, onRun: runPreflightLive }),
+      h(RunHistoryPanel, { runHistory: runHistoryContext, message: runHistoryMessage, liveMode, onPreview: loadFilePreview }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),
@@ -3073,7 +3231,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

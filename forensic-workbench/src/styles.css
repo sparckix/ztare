@@ -1172,6 +1172,119 @@ code {
   overflow-wrap: anywhere;
 }
 
+.run-history-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.38fr) minmax(250px, 0.42fr) minmax(320px, 0.82fr) minmax(320px, 0.95fr) minmax(280px, 0.78fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #1c6552;
+}
+
+.run-history-summary,
+.run-history-verdict,
+.run-history-runs,
+.run-history-patterns {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.run-history-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 21px;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.run-history-summary p,
+.run-history-verdict p,
+.run-history-runs p,
+.run-history-patterns p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.run-history-facts {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.run-history-facts div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #fbfcfb;
+}
+
+.run-history-facts span,
+.run-history-verdict > span,
+.run-history-runs > span,
+.run-history-patterns > span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.run-history-facts strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.run-history-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.run-history-row,
+.run-history-gap {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  background: #f7f9f8;
+  border-left: 3px solid #1c6552;
+}
+
+.run-history-gap {
+  border-left-color: #bd6a1d;
+  background: #fffaf2;
+}
+
+.run-history-row strong,
+.run-history-gap strong {
+  min-width: 0;
+  color: #17201d;
+  font-size: 13px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.run-history-row small,
+.run-history-gap small {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
 .report-contract-panel {
   min-width: 0;
   display: grid;
@@ -3185,6 +3298,7 @@ code {
   .source-evidence-panel,
   .trace-console,
   .review-queue,
+  .run-history-panel,
   .row-action-workspace,
   .write-receipt-panel,
   .review-workspace {
@@ -3234,6 +3348,7 @@ code {
 
   .report-contract-body,
   .preflight-run-facts,
+  .run-history-facts,
   .report-contract-metrics {
     grid-template-columns: 1fr;
   }
