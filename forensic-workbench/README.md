@@ -197,8 +197,8 @@ The interface is organized as a local claim-review surface:
 - review queue strip showing selected row, decision, evidence count, and receipt readiness
 - review workspace for marking a row reviewed, deferred, or blocking export
 - saved-action workspace for writing the next row action to a project ledger
-- last-write receipt panel showing the stamped review/action/intake-edit receipt, ledger
-  path, latest path, source path, hash, and preview/copy controls
+- last-write receipt panel showing the stamped review/action/intake/source
+  receipt, ledger path, latest path, source path, hash, and preview/copy controls
 - review note field plus downloadable/copyable
   `ztare-forensic-workbench-review-v1` review file
 - review JSON preview before download or CLI handoff

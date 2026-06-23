@@ -210,7 +210,8 @@ GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
 GET /api/receipts?project=<project>
--> recent review, row-action, and intake-edit receipts from project ledgers
+-> recent review, row-action, intake-edit, source-import, and source-edit
+   receipts from project ledgers
 
 GET /api/run-history?project=<project>
 -> latest and recent run scores, weakest points, evidence gaps, synthesis

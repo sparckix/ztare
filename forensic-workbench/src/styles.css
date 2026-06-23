@@ -2352,6 +2352,14 @@ code {
   border-left-color: #1c6552;
 }
 
+.receipt-history-row.source_import {
+  border-left-color: #4a6f88;
+}
+
+.receipt-history-row.source_edit {
+  border-left-color: #6c5f35;
+}
+
 .receipt-history-row.unreadable {
   border-left-color: #bd6a1d;
   background: #fffaf2;

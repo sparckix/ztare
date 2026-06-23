@@ -1007,6 +1007,8 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                 item.row ? h("span", null, item.row) : null,
                 item.decision ? h("span", null, displayText(item.decision)) : null,
                 item.action ? h("span", null, displayText(item.action)) : null,
+                item.source_type ? h("span", null, displayText(item.source_type)) : null,
+                item.source_path ? h("span", null, item.source_path) : null,
                 item.updated_fields && item.updated_fields.length ? h("span", null, item.updated_fields.map(displayFieldName).join(", ")) : null
               ),
               h(
