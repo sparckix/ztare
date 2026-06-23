@@ -221,6 +221,8 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     'endpointUrl("/api/intake"',
     "Intake reference status",
     "reference_status",
+    "intake_ref_summary",
+    "Project-local intakes are editable",
     "preview_path",
     '"/workbench_snapshot.json"',
     "Forensic Workbench",

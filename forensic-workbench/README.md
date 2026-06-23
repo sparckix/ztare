@@ -43,6 +43,9 @@ contract, latest review receipt, and latest saved row action before the main
 case file. The intake editor reads and writes the selected project intake
 through `/api/intake`; source and evidence refs are resolved against the intake
 directory and repo root, then shown as present, missing, external, or unsafe.
+The project picker uses the same lightweight intake read to show ref counts
+before a case opens. Project-local intakes are editable; public example intakes
+are readable but not writable from the browser.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -95,6 +98,7 @@ The interface is organized as a local claim-review surface:
   contract, latest review receipt path, and latest saved row action path
 - intake editor showing bounded claim, non-claims, source refs, evidence refs,
   ref status, and intake-edit receipt writes
+- project picker showing intake ref counts and read-only vs editable intake mode
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review

@@ -287,8 +287,11 @@ function ProjectIdentity({ snapshot }) {
 }
 
 function projectOptionLabel(project) {
-  const suffix = project.intake_source ? ` · ${displayText(project.intake_source)}` : "";
-  return `${project.project}${suffix}`;
+  const parts = [project.project];
+  if (project.intake_source) parts.push(displayText(project.intake_source));
+  const refSummary = project.intake_ref_summary || {};
+  if (refSummary.total) parts.push(`refs ${refSummary.present || 0}/${refSummary.total}`);
+  return parts.join(" / ");
 }
 
 function projectLoadParams(entryOrSnapshot) {
@@ -307,11 +310,15 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const latestReview = (projectEntry && projectEntry.latest_review) || snapshot.latest_review_artifact || "";
   const latestAction = (projectEntry && projectEntry.latest_row_action) || snapshot.latest_row_action_artifact || "";
   const latestIntakeEdit = snapshot.latest_intake_edit_artifact || "";
+  const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
+  const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
   return h(
     "section",
     { className: "project-context-panel", "aria-label": "Project files" },
     h("div", null, h("span", null, "Project files"), h("strong", null, projectDir || "not discovered")),
     h("div", null, h("span", null, "Intake"), h("code", null, intake || "not discovered")),
+    h("div", null, h("span", null, "Intake refs"), h("strong", null, refSummary.total ? `${refSummary.present || 0}/${refSummary.total} present` : "not counted")),
+    h("div", null, h("span", null, "Edit mode"), h("strong", null, intakeMode)),
     h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
     h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none")),
     h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none")),
@@ -329,6 +336,7 @@ function intakeDraftFromPayload(payload) {
     non_claims_text: (fields.non_claims || []).join("\n"),
     source_refs_text: (fields.source_refs || []).join("\n"),
     evidence_refs_text: (fields.evidence_refs || []).join("\n"),
+    editable: payload ? payload.editable !== false : true,
     reference_status: (payload && payload.reference_status) || null
   };
 }
@@ -397,7 +405,8 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
   const update = (key) => (event) => {
     setDraft({ ...(draft || {}), [key]: event.target.value });
   };
-  const disabled = !liveMode || !draft;
+  const disabled = !liveMode || !draft || draft.editable === false;
+  const saveTitle = draft && draft.editable === false ? "Project-local intakes only" : disabled ? "Load a live intake first" : "Write intake edit receipt";
   return h(
     "section",
     { className: "intake-editor", "aria-label": "Project intake editor" },
@@ -501,7 +510,7 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
           type: "button",
           onClick: onSave,
           disabled,
-          title: disabled ? "Load a live intake first" : "Write intake edit receipt"
+          title: saveTitle
         },
         "Save intake"
       )
@@ -1468,7 +1477,7 @@ function App() {
       .then((payload) => {
         if (payload.ok === false) throw new Error(payload.error || "intake fetch failed");
         setIntakeDraft(intakeDraftFromPayload(payload));
-        setIntakeMessage(`Loaded ${payload.path}.`);
+        setIntakeMessage(payload.editable === false ? `Loaded read-only intake: ${payload.path}.` : `Loaded ${payload.path}.`);
       })
       .catch((err) => {
         setIntakeDraft(null);
@@ -1693,6 +1702,10 @@ function App() {
 
   const saveIntakeDraft = () => {
     if (!snapshot || !liveMode || !intakeDraft) return;
+    if (intakeDraft.editable === false) {
+      setIntakeMessage("This intake is read-only in the local workbench.");
+      return;
+    }
     setIntakeMessage("Saving intake edit.");
     fetch("/api/intake", {
       method: "POST",

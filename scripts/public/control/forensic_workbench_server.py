@@ -40,6 +40,14 @@ def repo_rel(path: Path) -> str:
     return str(path.resolve().relative_to(snapshot.REPO.resolve()))
 
 
+def path_under(path: Path, root: Path) -> bool:
+    try:
+        path.resolve().relative_to(root.resolve())
+        return True
+    except ValueError:
+        return False
+
+
 def file_preview_payload(path: str) -> dict[str, Any]:
     if not path:
         raise ValueError("path is required")
@@ -74,7 +82,7 @@ def file_preview_payload(path: str) -> dict[str, Any]:
     }
 
 
-def project_intake_path(project: str, intake: str | None = None) -> Path:
+def project_intake_path(project: str, intake: str | None = None, *, allow_examples: bool = False) -> Path:
     project = snapshot.validate_project_slug(project)
     intake_path = intake or snapshot.default_intake_for_project(project)
     candidate = Path(intake_path)
@@ -82,8 +90,10 @@ def project_intake_path(project: str, intake: str | None = None) -> Path:
         raise ValueError("intake path must be relative to the repository")
     resolved = (snapshot.REPO / candidate).resolve()
     project_root = (snapshot.REPO / "projects" / project).resolve()
-    if resolved != project_root and project_root not in resolved.parents:
-        raise ValueError("intake path must stay inside the selected project")
+    examples_root = (snapshot.REPO / "examples" / "project_packets").resolve()
+    if not path_under(resolved, project_root):
+        if not allow_examples or not path_under(resolved, examples_root):
+            raise ValueError("intake path must stay inside the selected project")
     if not resolved.exists():
         raise FileNotFoundError(f"intake path does not exist: {intake_path}")
     if not resolved.is_file():
@@ -191,14 +201,18 @@ def intake_reference_status(payload: dict[str, Any], *, intake_path: Path) -> di
     }
 
 
-def intake_payload_for_project(project: str, intake: str | None = None) -> dict[str, Any]:
-    path = project_intake_path(project, intake)
+def intake_payload_for_project(project: str, intake: str | None = None, *, allow_examples: bool = True) -> dict[str, Any]:
+    path = project_intake_path(project, intake, allow_examples=allow_examples)
     payload = read_json_object(path, "project intake")
+    if payload.get("project") and payload.get("project") != project:
+        raise ValueError(f"intake project mismatch: expected {project!r}, got {payload.get('project')!r}")
+    editable = path_under(path, snapshot.REPO / "projects" / project)
     return {
         "schema": "ztare-forensic-workbench-intake-v1",
         "served_from": "local_api",
         "project": project,
         "path": repo_rel(path),
+        "editable": editable,
         "editable_fields": {
             "bounded_claim": str(payload.get("bounded_claim") or ""),
             "next_falsifier": str(payload.get("next_falsifier") or ""),
@@ -208,6 +222,30 @@ def intake_payload_for_project(project: str, intake: str | None = None) -> dict[
             "evidence_refs": [str(item) for item in payload.get("evidence_refs") or []],
         },
         "reference_status": intake_reference_status(payload, intake_path=path),
+    }
+
+
+def project_index_payload() -> dict[str, Any]:
+    projects = []
+    for entry in snapshot.list_project_entries():
+        row = dict(entry)
+        try:
+            intake_payload = intake_payload_for_project(
+                str(row.get("project") or ""),
+                str(row.get("intake") or "") or None,
+                allow_examples=True,
+            )
+            row["intake_editable"] = bool(intake_payload.get("editable"))
+            row["intake_ref_summary"] = (intake_payload.get("reference_status") or {}).get("summary") or {}
+        except Exception as exc:  # noqa: BLE001 - project index should surface per-project errors.
+            row["intake_editable"] = False
+            row["intake_ref_summary"] = {}
+            row["intake_error"] = str(exc)
+        projects.append(row)
+    return {
+        "schema": "ztare-forensic-workbench-project-index-v1",
+        "default_project": snapshot.DEFAULT_PROJECT,
+        "projects": projects,
     }
 
 
@@ -241,7 +279,7 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
 
 
 def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> dict[str, Any]:
-    path = project_intake_path(project, intake)
+    path = project_intake_path(project, intake, allow_examples=False)
     before_bytes = path.read_bytes()
     payload = read_json_object(path, "project intake")
     if payload.get("project") and payload.get("project") != project:
@@ -272,7 +310,7 @@ def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> di
     latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return {
         "ok": True,
-        "intake": intake_payload_for_project(project, intake_rel),
+        "intake": intake_payload_for_project(project, intake_rel, allow_examples=False),
         "ledger": repo_rel(ledger_path),
         "latest": repo_rel(latest_path),
         "receipt": receipt,
@@ -434,14 +472,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         try:
             if parsed.path == "/api/projects":
-                projects = snapshot.list_project_entries()
-                self.send_json(
-                    {
-                        "schema": "ztare-forensic-workbench-project-index-v1",
-                        "default_project": snapshot.DEFAULT_PROJECT,
-                        "projects": projects,
-                    }
-                )
+                self.send_json(project_index_payload())
                 return
             if parsed.path == "/api/snapshot":
                 params = parse_qs(parsed.query)
@@ -474,7 +505,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
                 intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
-                self.send_json(intake_payload_for_project(project, intake))
+                self.send_json(intake_payload_for_project(project, intake, allow_examples=True))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:
