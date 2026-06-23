@@ -88,6 +88,13 @@ function displayMessage(value) {
     .replace(/\bpacket boundary\b/gi, "intake boundary");
 }
 
+function snapshotRefreshMessage(base, payload) {
+  const snapshotError = displayMessage(payload && payload.snapshot_error);
+  if (snapshotError) return `${base}. Snapshot refresh failed: ${snapshotError}`;
+  if (payload && payload.snapshot) return `${base} and refreshed the case.`;
+  return `${base}. Refresh status was not recorded.`;
+}
+
 function shortDigest(value) {
   const raw = String(value || "");
   if (!raw) return "none";
@@ -4958,7 +4965,11 @@ function App() {
         if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Run readiness", preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         setPreflightEvent(payload);
-        setPreflightMessage(payload.accepted ? "Preflight accepted and the case was refreshed." : "Preflight finished without an acceptance marker.");
+        setPreflightMessage(
+          payload.accepted
+            ? snapshotRefreshMessage("Preflight accepted", payload)
+            : "Preflight finished without an acceptance marker."
+        );
       })
       .catch((err) => {
         if (err.payload) {
@@ -5018,7 +5029,7 @@ function App() {
         }
         setSourceActionMessage(
           payload.accepted
-            ? `${payload.label || displayText(payload.action)} finished and the case was refreshed.`
+            ? snapshotRefreshMessage(`${payload.label || displayText(payload.action)} finished`, payload)
             : `${payload.label || displayText(payload.action)} finished with attention; inspect the command output.`
         );
       })
