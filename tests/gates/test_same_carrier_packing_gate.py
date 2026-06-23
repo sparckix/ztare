@@ -1,4 +1,4 @@
-from src.ztare.gates.same_carrier_packing_gate import (
+from ztare.gates.same_carrier_packing_gate import (
     run_same_carrier_packing_gate,
 )
 

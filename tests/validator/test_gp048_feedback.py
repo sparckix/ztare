@@ -12,7 +12,7 @@ import json
 import re
 from pathlib import Path
 
-from src.ztare.reports.gp048_feedback import (
+from ztare.reports.gp048_feedback import (
     GP048_TELEMETRY_FILENAME,
     GP048_VETO_MAPPING_FILENAME,
     compute_recent_cohort,

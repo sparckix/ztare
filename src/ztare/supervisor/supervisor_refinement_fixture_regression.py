@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     HandoffStatus,
     HumanGateReason,
@@ -13,7 +13,7 @@ from src.ztare.supervisor.supervisor_state import (
     TurnUsageTelemetry,
     TransitionInput,
 )
-from src.ztare.supervisor.supervisor_transitions import apply_transition
+from ztare.supervisor.supervisor_transitions import apply_transition
 
 
 def _a2_status(*, rounds: int, budget_cap: float | None = None, refinement_cost_usd: float = 0.0) -> HandoffStatus:

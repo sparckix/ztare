@@ -12,7 +12,7 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, Field
 
-from src.ztare.research_director.residual_normal_form import evidence_negates_feature
+from ztare.research_director.residual_normal_form import evidence_negates_feature
 
 
 DEFAULT_MODEL_CANDIDATES = ("gpt-5-mini", "gpt-4.1-mini", "gpt-4o-mini")

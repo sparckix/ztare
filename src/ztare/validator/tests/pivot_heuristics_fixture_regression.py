@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from src.ztare.validator.utilities.pivot_heuristics import (
+from ztare.validator.utilities.pivot_heuristics import (
     get_pivot_thresholds,
     resolve_stagnation_pivot_state,
 )

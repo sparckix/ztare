@@ -201,7 +201,7 @@ def detect_stagnation(
         # Triggering Erdős re-query / forced REFRAME on those caps wastes
         # budget pivoting away from a viable candidate.
         try:
-            from src.ztare.orchestrator.cap_kind import classify_cap_kind
+            from ztare.orchestrator.cap_kind import classify_cap_kind
             _last_iter = max(iter_entries.keys())
             _last_reason = iter_entries[_last_iter].get("score_cap_reason") or ""
             _last_kind = classify_cap_kind(_last_reason)
@@ -250,7 +250,7 @@ def detect_stagnation(
             recent_iters = sorted_iters[-qual_thresh:]
             recent = [iter_entries[i] for i in recent_iters]
             try:
-                from src.ztare.orchestrator.forced_reframe import (
+                from ztare.orchestrator.forced_reframe import (
                     _weakest_point_gate_bucket,
                 )
                 gate_buckets = [_weakest_point_gate_bucket(e) for e in recent]
@@ -305,7 +305,7 @@ def detect_stagnation(
                             for e in recent_after
                         )
                         try:
-                            from src.ztare.orchestrator.forced_reframe import (
+                            from ztare.orchestrator.forced_reframe import (
                                 _weakest_point_gate_bucket,
                             )
                             gate_buckets_pl = [_weakest_point_gate_bucket(e)
@@ -426,7 +426,7 @@ def build_current_fingerprint(
 
     # Quantize per Panel-Blindspot-1 before shipping to the cold LLM.
     try:
-        from src.ztare.fit.cold_llm_erdos_seed import quantize_fingerprint
+        from ztare.fit.cold_llm_erdos_seed import quantize_fingerprint
         return quantize_fingerprint(fp)
     except ImportError:
         return fp
@@ -563,7 +563,7 @@ def maybe_requery_cold_seed(
     timeout_s = float(rubric_data.get("cold_llm_seed_timeout_seconds", 30.0))
 
     try:
-        from src.ztare.fit.cold_llm_erdos_seed import (
+        from ztare.fit.cold_llm_erdos_seed import (
             query_cold_llm_erdos_seed,
         )
     except ImportError as exc:

@@ -15,7 +15,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_findings_debate import (
+from ztare.supervisor.supervisor_findings_debate import (
     SENTINEL_NO_NEW_CLAIM,
     DebateState,
     DebateStatus,
@@ -24,7 +24,7 @@ from src.ztare.supervisor.supervisor_findings_debate import (
     parse_debate_log,
     read_debate_state,
 )
-from src.ztare.supervisor.supervisor_findings_runner import (
+from ztare.supervisor.supervisor_findings_runner import (
     AgentMode,
     RunnerStopReason,
     RunnerWriteScopeError,
@@ -36,7 +36,7 @@ from src.ztare.supervisor.supervisor_findings_runner import (
     parse_sentinel_decision,
     validate_findings_write_scope,
 )
-from src.ztare.findings.findings_context import (
+from ztare.findings.findings_context import (
     DEFAULT_TOKEN_BUDGET,
     build_findings_context,
     format_context_tiers,
@@ -237,7 +237,7 @@ def test_single_claude_mode_mixed_seam_defaults_to_author_on_tie() -> None:
 
 def test_validate_findings_write_scope_accepts_private_seam() -> None:
     # Any file under [internal-ref] is allowed
-    from src.ztare.common.paths import REPO_ROOT
+    from ztare.common.paths import REPO_ROOT
     seam = REPO_ROOT / "research_areas" / "private" / "seams" / "GP-036_findings_runner_supervisor_convergence_seam.md"
     validate_findings_write_scope(seam)  # should not raise
 
@@ -255,7 +255,7 @@ def test_validate_findings_write_scope_rejects_outside() -> None:
 
 
 def test_validate_findings_write_scope_rejects_src_path() -> None:
-    from src.ztare.common.paths import REPO_ROOT
+    from ztare.common.paths import REPO_ROOT
     inside_repo_wrong_dir = REPO_ROOT / "src" / "ztare" / "validator" / "supervisor_findings_runner.py"
     raised = False
     try:
@@ -281,7 +281,7 @@ def test_build_findings_context_returns_empty_when_no_refs() -> None:
 def test_build_findings_context_injects_related_seam() -> None:
     # A real seam from the repo referenced by path — the context builder
     # must emit a RELATED_SEAM_EXCERPT tier with the right provenance.
-    from src.ztare.common.paths import REPO_ROOT
+    from ztare.common.paths import REPO_ROOT
     real_related = "GP-031 (internal seam)"
     if not (REPO_ROOT / real_related).exists():
         return  # skip if the referenced file moved
@@ -305,7 +305,7 @@ def test_build_findings_context_injects_related_spec() -> None:
     # must auto-inject a SPEC_EXCERPT tier — this is what makes
     # "debate the spec inside the seam" work without the operator
     # pasting spec excerpts into turn bodies by hand.
-    from src.ztare.common.paths import REPO_ROOT
+    from ztare.common.paths import REPO_ROOT
     real_spec = "GP-036 (internal seam)"
     if not (REPO_ROOT / real_spec).exists():
         return  # skip if the referenced spec moved
@@ -325,7 +325,7 @@ def test_build_findings_context_injects_related_spec() -> None:
 
 
 def test_format_context_tiers_includes_provenance_headers() -> None:
-    from src.ztare.findings.findings_context import ContextTier
+    from ztare.findings.findings_context import ContextTier
     tiers = [
         ContextTier(
             label="BOARD_ROW",
@@ -351,7 +351,7 @@ def test_build_turn_prompt_injects_context_when_seam_path_given() -> None:
             debate_state=state,
             seam_path=seam,
         )
-        from src.ztare.common.paths import REPO_ROOT
+        from ztare.common.paths import REPO_ROOT
         if (REPO_ROOT / "GP-031 (internal seam)").exists():
             assert "--- BEGIN CONTEXT ---" in prompt
             assert "--- END CONTEXT ---" in prompt

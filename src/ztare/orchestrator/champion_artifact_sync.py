@@ -30,12 +30,12 @@ import shutil
 from pathlib import Path
 from typing import Callable
 
-from src.ztare.common.file_io import read_json, write_json
+from ztare.common.file_io import read_json, write_json
 
 # These three are operational primitives the loop already imports
 # from validator/utilities/champion_artifacts. Import once here so
 # the wrappers' call sites stay clean.
-from src.ztare.validator.utilities.champion_artifacts import (
+from ztare.validator.utilities.champion_artifacts import (
     artifact_regime_fingerprint,
     build_champion_eval_from_saved_best,
     build_champion_gap_payload_from_saved_best,

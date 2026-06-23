@@ -22,7 +22,7 @@ import math
 import re
 from typing import Optional
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
 )

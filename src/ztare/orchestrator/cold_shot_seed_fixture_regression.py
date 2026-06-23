@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.cold_shot_seed import (
+from ztare.orchestrator.cold_shot_seed import (
     _build_cold_shot_prompt,
     _collect_cold_shot_anchors,
 )

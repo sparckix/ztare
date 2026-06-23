@@ -19,7 +19,7 @@ import json
 import sys
 import time
 
-from src.ztare.validator.judge_out_of_loop import _STORE, run_request
+from ztare.validator.judge_out_of_loop import _STORE, run_request
 
 REQ = _STORE / "judge_queue" / "requests"
 WST = _STORE / "judge_queue" / "worker_state"

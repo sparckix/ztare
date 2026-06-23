@@ -1,6 +1,6 @@
 """BRIDGE-1 — Substrate-recommender.
 
-Spec: research_areas/private/specs/active/engine/GP-213_BRIDGE1_substrate_recommender_spec.md
+Spec: maintainer-only substrate recommender spec
 
 Operator-confirmed only in v0. No auto-launch. Outputs a markdown
 recommendation file dropped into ztare_workspace/inbox/substrate_recommendations/.
@@ -246,7 +246,7 @@ def _call_gemini_api(prompt: str, model: str = DEFAULT_MODEL) -> str:
 
 
 def call_recommender_model(prompt: str, model: str = DEFAULT_MODEL) -> str:
-    from src.ztare.common.dispatch_model import dispatch_call_text
+    from ztare.common.dispatch_model import dispatch_call_text
 
     response = dispatch_call_text(
         "substrate_recommender",

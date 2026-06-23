@@ -1,4 +1,4 @@
-from src.ztare.gates.moment_ratio_surplus_gate import run_gate
+from ztare.gates.moment_ratio_surplus_gate import run_gate
 
 
 def test_moment_ratio_surplus_passes_when_ratio_overfills():

@@ -30,7 +30,7 @@ Scope
 
 Usage
 -----
-  from src.ztare.gates.circularity_gate import run_circularity_gate
+  from ztare.gates.circularity_gate import run_circularity_gate
   result = run_circularity_gate(Path("projects/foo/champion_probability_dag.json"))
   if not result["passed"]:
       # Dispatch as structural blocker; score → 0

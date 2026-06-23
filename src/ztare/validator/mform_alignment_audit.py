@@ -32,8 +32,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.llm_runtime import LLMRuntime, PRODUCTION_CALL_RETRIES
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.llm_runtime import LLMRuntime, PRODUCTION_CALL_RETRIES
+from ztare.common.paths import REPO_ROOT
 
 _GOODHART_LOG_PATH = REPO_ROOT / "rubrics" / "goodhart_log.jsonl"
 _MFORM_PENDING_FILENAME = "mform_pending.json"
@@ -136,7 +136,7 @@ def run_general_office_audit(
             excerpt_chars=_THESIS_EXCERPT_CHARS,
         )
 
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "mform_alignment_audit",
@@ -164,7 +164,7 @@ def run_general_office_audit(
 
         # Use the shared prose-tolerant parser (handles Claude-style
         # reasoning-before-JSON and embedded code fences).
-        from src.ztare.common.utils import parse_llm_json
+        from ztare.common.utils import parse_llm_json
         try:
             finding = parse_llm_json(raw)
         except Exception:
@@ -397,7 +397,7 @@ def maybe_fire_mform_audit(
     model_id_str = rubric_data.get("general_office_model", "gpt4.1")
     # Import resolve_model_id lazily to avoid circular import at module load
     try:
-        from src.ztare.common.llm_runtime import resolve_model_id
+        from ztare.common.llm_runtime import resolve_model_id
         model_id = resolve_model_id(model_id_str)
     except Exception:
         model_id = model_id_str

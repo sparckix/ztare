@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 class VariationalPromotionFloorProvider(BriefingProvider):
@@ -56,7 +56,7 @@ class VariationalPromotionFloorProvider(BriefingProvider):
         # mutator hit farther-tail per-class or holdout caps — exactly
         # when it was most needed.
         try:
-            from src.ztare.orchestrator.cap_kind import classify_cap_kind
+            from ztare.orchestrator.cap_kind import classify_cap_kind
         except ImportError:
             classify_cap_kind = None  # type: ignore
 

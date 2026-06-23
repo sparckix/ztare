@@ -16,8 +16,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
-from src.ztare.validator.core.charter_parsing import AsymptoticClaimContract
-from src.ztare.fit.fit_primitive import parse_fit_declaration
+from ztare.validator.core.charter_parsing import AsymptoticClaimContract
+from ztare.fit.fit_primitive import parse_fit_declaration
 
 
 LOCAL_TAIL_SURROGATE_CAP = 83

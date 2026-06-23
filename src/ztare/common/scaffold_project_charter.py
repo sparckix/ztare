@@ -1,7 +1,7 @@
 import argparse
 from pathlib import Path
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 
 MODE_DESCRIPTIONS = {

@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.orchestrator import IterContext
+from ztare.orchestrator import IterContext
 
 
 def _make(iteration_index: int = 0, **overrides) -> IterContext:

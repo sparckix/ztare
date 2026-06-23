@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-from src.ztare.supervisor.supervisor_genesis import validate_program_genesis
+from ztare.supervisor.supervisor_genesis import validate_program_genesis
 
 
 def _write_json(path: Path, payload: dict[str, object]) -> None:

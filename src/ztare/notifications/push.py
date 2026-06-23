@@ -7,7 +7,7 @@ the optional tenant overlay.
 
 Usage (unchanged):
 
-    from src.ztare.notifications import push_notification
+    from ztare.notifications import push_notification
 
     push_notification(
         title="Patent #4 gate pending",
@@ -32,7 +32,7 @@ import os
 from pathlib import Path
 from typing import Iterable, Optional
 
-from src.ztare.notifications.telegram import (
+from ztare.notifications.telegram import (
     push_notification as _telegram_push_notification,
 )
 

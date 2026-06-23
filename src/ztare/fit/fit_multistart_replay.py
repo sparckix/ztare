@@ -11,8 +11,8 @@ from typing import Any
 import numpy as np
 from scipy.optimize import curve_fit
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.fit.fit_primitive import (
+from ztare.common.paths import PROJECTS_DIR
+from ztare.fit.fit_primitive import (
     FitDeclaration,
     FitSuccess,
     _build_model_callable,

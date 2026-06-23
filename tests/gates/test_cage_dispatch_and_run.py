@@ -15,7 +15,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.ztare.gates.cage import Cage, Gate
+from ztare.gates.cage import Cage, Gate
 
 
 @dataclass

@@ -6,7 +6,7 @@ import math
 
 import pytest
 
-from src.ztare.scaffold.substrate_probe import (
+from ztare.scaffold.substrate_probe import (
     ClassificationResult,
     SubstrateAmbiguityError,
     SubstrateClass,

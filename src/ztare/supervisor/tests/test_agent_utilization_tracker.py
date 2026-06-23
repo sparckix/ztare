@@ -13,14 +13,14 @@ import pytest
 
 def _force_root(monkeypatch, tmp_path: Path) -> Path:
     """Redirect UTIL_ROOT to a temp directory for test isolation."""
-    from src.ztare.supervisor import agent_utilization_tracker as aut
+    from ztare.supervisor import agent_utilization_tracker as aut
     monkeypatch.setattr(aut, "UTIL_ROOT", tmp_path)
     return tmp_path
 
 
 def test_record_then_get_daily_totals(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import (
+    from ztare.supervisor.agent_utilization_tracker import (
         record_agent_session, get_daily_totals,
     )
     record_agent_session(
@@ -57,7 +57,7 @@ def test_record_then_get_daily_totals(monkeypatch, tmp_path):
 
 def test_check_utilization_allows_session_cap(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import check_utilization_allows
+    from ztare.supervisor.agent_utilization_tracker import check_utilization_allows
     # 10-minute estimate fits the default 90-min session cap
     ok, reasons = check_utilization_allows(
         role_id="research_director", agent_cli="claude",
@@ -80,7 +80,7 @@ def test_check_utilization_allows_daily_accumulation(monkeypatch, tmp_path):
     # Use a synthetic role with no yaml on disk → falls back to module
     # defaults (3-hour daily cap). Isolates from any live role YAML edits.
     monkeypatch.chdir(tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import (
+    from ztare.supervisor.agent_utilization_tracker import (
         record_agent_session, check_utilization_allows,
     )
     # Burn most of the daily duration cap (defaults: 3 hours = 10800s)
@@ -108,7 +108,7 @@ def test_get_utilization_pct(monkeypatch, tmp_path):
     # Synthetic role with no yaml on disk → module default 3-hour daily cap.
     # Isolates from live role YAML edits.
     monkeypatch.chdir(tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import (
+    from ztare.supervisor.agent_utilization_tracker import (
         record_agent_session, get_utilization_pct,
     )
     # 1 hour of duration → 1/3 of 3-hour daily cap
@@ -125,14 +125,14 @@ def test_get_utilization_pct(monkeypatch, tmp_path):
 
 def test_unknown_dimension_raises(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import get_utilization_pct
+    from ztare.supervisor.agent_utilization_tracker import get_utilization_pct
     with pytest.raises(ValueError):
         get_utilization_pct(role_id="manager", dimension="not_a_real_dim")
 
 
 def test_aggregate_totals_in_persisted_payload(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import (
+    from ztare.supervisor.agent_utilization_tracker import (
         record_agent_session, _daily_path,
     )
     record_agent_session(
@@ -174,7 +174,7 @@ agent_utilization:
     cwd = os.getcwd()
     try:
         os.chdir(tmp_path)
-        from src.ztare.supervisor.agent_utilization_tracker import _role_caps
+        from ztare.supervisor.agent_utilization_tracker import _role_caps
         caps = _role_caps("test_role")
         assert caps.daily_duration_seconds == 600.0
         assert caps.daily_output_tokens == 1000
@@ -188,7 +188,7 @@ agent_utilization:
 
 def test_no_role_id_returns_default_caps(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.supervisor.agent_utilization_tracker import _role_caps
+    from ztare.supervisor.agent_utilization_tracker import _role_caps
     caps = _role_caps(None)
     assert caps.daily_duration_seconds == 3 * 3600
     assert caps.daily_output_tokens == 500_000

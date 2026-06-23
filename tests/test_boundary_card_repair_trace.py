@@ -1,4 +1,4 @@
-from src.ztare.research_director.boundary_card_repair_trace import (
+from ztare.research_director.boundary_card_repair_trace import (
     append_repair_trace,
     new_repair_trace,
     validate_repair_trace,

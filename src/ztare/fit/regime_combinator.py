@@ -12,7 +12,7 @@ Panel approved (Munger/Popper/Dijkstra, 2026-04-22):
 - The rank-curve shape is one of 41x41 combinations, not special-cased
 
 Usage:
-    from src.ztare.fit.regime_combinator import find_best_regime_split
+    from ztare.fit.regime_combinator import find_best_regime_split
     result = find_best_regime_split(x_visible, y_visible, x_holdout, y_holdout, var="n")
 """
 

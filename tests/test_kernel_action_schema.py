@@ -1,4 +1,4 @@
-from src.ztare.common.kernel_action_schema import (
+from ztare.common.kernel_action_schema import (
     KernelActionSchema,
     render_action_schema_prompt_lines,
     validate_kernel_action_schema,

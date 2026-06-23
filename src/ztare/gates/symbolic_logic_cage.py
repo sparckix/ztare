@@ -1279,7 +1279,7 @@ def register_symbolic_logic_cage_gate(cage: Any) -> None:
     direct-wire.
     """
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return  # cage module unavailable; gate is unreachable
     gate = Gate(

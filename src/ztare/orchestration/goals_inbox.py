@@ -25,7 +25,7 @@ try:
 except ModuleNotFoundError:  # pragma: no cover - bare Python / product smoke path.
     yaml = None
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 log = logging.getLogger(__name__)
 
@@ -237,7 +237,7 @@ def claim_goal(
 
     # Try to claim via the sessions membrane first; if a conflict exists
     # we refuse rather than silently override.
-    from src.ztare.sessions.claims import claim_task
+    from ztare.sessions.claims import claim_task
     claimed, conflict = claim_task(
         task_id=f"goal:{goal_id}",
         session_id=session_id,
@@ -307,7 +307,7 @@ def mark_goal_done(
     src.unlink()
 
     # Release the claim membrane.
-    from src.ztare.sessions.claims import release_claim
+    from ztare.sessions.claims import release_claim
     release_claim(task_id=f"goal:{goal_id}", session_id=session_id)
 
     return dst

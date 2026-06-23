@@ -7,15 +7,15 @@ from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
+from ztare.supervisor.supervisor_manifest import (
     advance_manifest_packet,
     load_optional_program_manifest,
     next_manifest_packet,
 )
-from src.ztare.supervisor.supervisor_registry import registry_path
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_registry import registry_path
+from ztare.supervisor.supervisor_state import (
     Actor,
     HandoffEvent,
     HumanGateReason,
@@ -26,7 +26,7 @@ from src.ztare.supervisor.supervisor_state import (
     status_to_dict,
     transition_input_from_dict,
 )
-from src.ztare.supervisor.supervisor_transitions import apply_transition
+from ztare.supervisor.supervisor_transitions import apply_transition
 
 TURN_HEADER_RE = re.compile(r"^## Turn (\d+)\b", re.MULTILINE)
 

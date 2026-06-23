@@ -1,5 +1,5 @@
-from src.ztare.common.constraint_isomorphism import SurfacedIsomorphism
-from src.ztare.fit.analogy import query_analogy
+from ztare.common.constraint_isomorphism import SurfacedIsomorphism
+from ztare.fit.analogy import query_analogy
 
 
 def test_structural_analogy_mode_uses_constraint_isomorphism_typed_mapping() -> None:

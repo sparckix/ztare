@@ -8,8 +8,8 @@ specific scientific content); §D ("MANDATORY Python Contract") is
 mechanically rendered from the ABI.
 
 Usage:
-    from src.ztare.orchestrator.contract_table import get_spec_by_class
-    from src.ztare.orchestrator.render_evidence_template import (
+    from ztare.orchestrator.contract_table import get_spec_by_class
+    from ztare.orchestrator.render_evidence_template import (
         render_evidence_set_d,
     )
 
@@ -24,7 +24,7 @@ declared cage_meta.class. Drift = misconfigured substrate.
 
 from __future__ import annotations
 
-from src.ztare.orchestrator.contract_table import ContractSpec, SubstrateABI
+from ztare.orchestrator.contract_table import ContractSpec, SubstrateABI
 
 
 # ── Rendering ─────────────────────────────────────────────────────────────

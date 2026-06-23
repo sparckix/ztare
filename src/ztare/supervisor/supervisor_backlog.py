@@ -6,21 +6,21 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_genesis import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_genesis import (
     genesis_path_for_program,
     load_optional_program_genesis,
 )
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.supervisor.supervisor_manifest import (
     ProgramManifest,
     load_optional_program_manifest,
     manifest_path_for_program,
     manifest_summary,
     validate_program_manifest,
 )
-from src.ztare.supervisor.supervisor_registry import load_program_registry, registry_entry_map
-from src.ztare.supervisor.supervisor_state import Actor, StatusReason, status_from_dict
-from src.ztare.supervisor.supervisor_wrappers import invoke_agent, load_wrapper_configs
+from ztare.supervisor.supervisor_registry import load_program_registry, registry_entry_map
+from ztare.supervisor.supervisor_state import Actor, StatusReason, status_from_dict
+from ztare.supervisor.supervisor_wrappers import invoke_agent, load_wrapper_configs
 
 
 @dataclass(frozen=True)

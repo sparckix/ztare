@@ -251,7 +251,7 @@ def frame(
     canary_payload: Optional[Dict[str, Any]] = None
     if fit_fn is not None:
         try:
-            from src.ztare.framer_gates.framer_helped_canary import run_framer_helped_canary
+            from ztare.framer_gates.framer_helped_canary import run_framer_helped_canary
             canary_payload = run_framer_helped_canary(fit_fn, x, y, framed_x, framed_y, best)
             if canary_payload and not canary_payload.get("framer_helped", True):
                 report = build_framing_report(
@@ -279,7 +279,7 @@ def frame(
 def _r16_parse_evidence_xy(evidence_text: str, independent_vars):
     """Parse (xdata, ydata) from evidence_text using fit_primitive's parser."""
     try:
-        from src.ztare.fit.fit_primitive import parse_evidence_for_fitting
+        from ztare.fit.fit_primitive import parse_evidence_for_fitting
         return parse_evidence_for_fitting(evidence_text, independent_vars)
     except Exception:
         return None
@@ -412,7 +412,7 @@ def register_r16_gate(cage) -> None:
     through that context. Tracked as follow-up.
     """
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return
     g = Gate(

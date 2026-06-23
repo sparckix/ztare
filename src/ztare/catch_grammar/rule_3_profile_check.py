@@ -19,7 +19,7 @@ import json
 import sys
 from typing import Iterable
 
-from src.ztare.validator.utilities.pivot_heuristics import PROFILE_MODULES
+from ztare.validator.utilities.pivot_heuristics import PROFILE_MODULES
 
 RULE = "profile_dependent_claim_as_unconditional"
 

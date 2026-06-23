@@ -12,13 +12,13 @@ Until Phase 4b/4c, this package's job is narrow: provide the typed
 IterContext that future extraction targets can rely on.
 """
 
-from src.ztare.orchestrator.contract_adherence import (
+from ztare.orchestrator.contract_adherence import (
     AdherenceReport,
     check_contract_adherence,
     emit_adherence,
     format_adherence_summary,
 )
-from src.ztare.orchestrator.contract_table import (
+from ztare.orchestrator.contract_table import (
     CONTRACT_REGISTRY,
     ContractSpec,
     SubstrateABI,
@@ -26,19 +26,19 @@ from src.ztare.orchestrator.contract_table import (
     get_spec_by_class,
     list_substrate_classes,
 )
-from src.ztare.orchestrator.protocols import (
+from ztare.orchestrator.protocols import (
     CONTRACT_ERROR_CODES,
     ContractError,
     FeatureModel,
     ScalarModel,
     adapt,
 )
-from src.ztare.orchestrator.render_evidence_template import (
+from ztare.orchestrator.render_evidence_template import (
     render_active_contract_label,
     render_evidence_set_d,
 )
-from src.ztare.orchestrator.iter_context import IterContext
-from src.ztare.orchestrator.parallel_mutator import (
+from ztare.orchestrator.iter_context import IterContext
+from ztare.orchestrator.parallel_mutator import (
     DEFAULT_PARALLEL_PERSONAS,
     MutatorResult,
     MutatorTask,
@@ -46,7 +46,7 @@ from src.ztare.orchestrator.parallel_mutator import (
     pick_best_candidate,
     run_parallel_mutators,
 )
-from src.ztare.orchestrator.evidence_contract import (
+from ztare.orchestrator.evidence_contract import (
     EVIDENCE_ERROR_CODES,
     EvidenceContractError,
     EvidenceFormat,
@@ -54,8 +54,8 @@ from src.ztare.orchestrator.evidence_contract import (
     get_evidence_spec,
     list_evidence_formats,
 )
-from src.ztare.orchestrator.fitted_model import FrozenFittedModel
-from src.ztare.orchestrator.prompt import (
+from ztare.orchestrator.fitted_model import FrozenFittedModel
+from ztare.orchestrator.prompt import (
     active_contract_label,
     needs_override_contract_hint,
     needs_scalar_contract_hint,
@@ -63,13 +63,13 @@ from src.ztare.orchestrator.prompt import (
     verify_class_consistency_with_substrate,
     verify_convention_bridge_in_form,
 )
-from src.ztare.orchestrator.state import (
+from ztare.orchestrator.state import (
     CageRuntime,
     build_cage_runtime,
     cage_init_banner,
     resolve_cage_mode,
 )
-from src.ztare.orchestrator.telemetry import (
+from ztare.orchestrator.telemetry import (
     CageEngagementRecord,
     append_jsonl,
     emit_cage_engagement,

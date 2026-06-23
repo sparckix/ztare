@@ -23,8 +23,8 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.roles.loader import Role
+from ztare.common.paths import REPO_ROOT
+from ztare.roles.loader import Role
 
 log = logging.getLogger(__name__)
 

@@ -1,4 +1,4 @@
-from src.ztare.gates.quotient_minimal_carrier_payment_gate import (
+from ztare.gates.quotient_minimal_carrier_payment_gate import (
     run_quotient_minimal_carrier_payment_gate,
 )
 

@@ -1,4 +1,4 @@
-from src.ztare.gates.provenance_edge_direction_gate import (
+from ztare.gates.provenance_edge_direction_gate import (
     run_provenance_edge_direction_gate,
 )
 

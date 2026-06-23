@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 class ColdLlmSeedBriefingProvider(BriefingProvider):
@@ -54,7 +54,7 @@ class ColdLlmSeedBriefingProvider(BriefingProvider):
         # place to gate the refresh — same channel that delivers iter-0
         # delivers the refreshed candidates.
         try:
-            from src.ztare.orchestrator.cold_llm_seed_requery import (
+            from ztare.orchestrator.cold_llm_seed_requery import (
                 maybe_requery_cold_seed,
                 latest_seed_artifact,
             )
@@ -224,7 +224,7 @@ class ColdLlmSeedBriefingProvider(BriefingProvider):
         subs_dir = workspace_dir / "submissions"
         if subs_dir.is_dir() and out:
             try:
-                from src.ztare.orchestrator.forced_reframe import (
+                from ztare.orchestrator.forced_reframe import (
                     extract_parametric_form_from_source as _extract_form,
                 )
             except ImportError:

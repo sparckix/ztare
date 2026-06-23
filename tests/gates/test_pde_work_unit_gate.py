@@ -1,4 +1,4 @@
-from src.ztare.research_director.pde_work_unit_gate import (
+from ztare.research_director.pde_work_unit_gate import (
     validate_pde_work_units,
 )
 

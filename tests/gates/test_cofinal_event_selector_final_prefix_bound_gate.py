@@ -1,4 +1,4 @@
-from src.ztare.gates.cofinal_event_selector_final_prefix_bound_gate import (
+from ztare.gates.cofinal_event_selector_final_prefix_bound_gate import (
     REQUIRED_FIELDS,
     run_cofinal_event_selector_final_prefix_bound_gate,
 )

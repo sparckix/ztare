@@ -43,7 +43,7 @@ Flip to promote-blocking with `enforce_block=True` after validation.
 
 # Usage
 
-    from src.ztare.gates.closure_leverage_gate import run_closure_leverage_gate
+    from ztare.gates.closure_leverage_gate import run_closure_leverage_gate
     result = run_closure_leverage_gate(
         rubric_data=rubric,
         artifact_graph_path="projects/ns_millennium_hunt/workspace/queries/ns_trackb_artifact_graph.json",

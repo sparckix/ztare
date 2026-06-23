@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from src.ztare.research_director.primitive_family_registry import (
+from ztare.research_director.primitive_family_registry import (
     PrimitiveFamilyCard,
     all_cards,
     build_registry_integrity_audit,
     dispatch_call_sites,
     parent_nodes,
 )
-from src.ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
+from ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
 
 
 def test_primitive_family_registry_is_mece_for_current_cards() -> None:
@@ -58,7 +58,7 @@ def test_primitive_family_registry_entrypoints_are_live() -> None:
 
 
 def test_primitive_family_registry_integrity_audit_catches_stale_card(monkeypatch) -> None:
-    from src.ztare.research_director import primitive_family_registry as registry
+    from ztare.research_director import primitive_family_registry as registry
 
     stale = PrimitiveFamilyCard(
         primitive_id="stale_card",

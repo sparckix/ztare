@@ -1,7 +1,6 @@
 """GP-226 Charter-Critic V1 — post-run closed-loop charter tuning.
 
-Implements the V1 architecture from
-``research_areas/private/seams/reflexive/GP-226_charter_critic_role_seam.md``.
+Implements the V1 architecture from the maintainer-only charter-critic seam.
 
 **V1 scope.** Post-run dispatch only. Fires at run-end after
 ``_finalize_run_telemetry_once()`` from inside ``run_post_loop_analyses``.
@@ -904,7 +903,7 @@ def _llm_classify_fingerprint(
     if not bool(rubric_data.get("enable_llm_fingerprint_classifier", False)):
         return None
     try:
-        from src.ztare.common.llm_runtime import (
+        from ztare.common.llm_runtime import (
             LLMRuntime, get_model_family, resolve_model_id, pick_default_model_id_for_scripts,
         )
     except ImportError:
@@ -979,7 +978,7 @@ def _llm_classify_fingerprint(
     )
     try:
         runtime = LLMRuntime()
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "charter_critic_fingerprint",
@@ -1902,7 +1901,7 @@ def _heavy_patch_via_llm(
     any failure (caller falls back to V1 light template). Never raises.
     """
     try:
-        from src.ztare.common.llm_runtime import LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime
     except ImportError:
         return None
 
@@ -1911,14 +1910,14 @@ def _heavy_patch_via_llm(
         model_id = (runtime_mutator_model_id or "").strip() or "claude-haiku-4-5"
     elif raw_model in ("@cheap", "cheap", ""):
         try:
-            from src.ztare.common.llm_runtime import pick_default_model_id_for_scripts
+            from ztare.common.llm_runtime import pick_default_model_id_for_scripts
             picked = pick_default_model_id_for_scripts()
             model_id = picked or "claude-haiku-4-5"
         except Exception:
             model_id = "claude-haiku-4-5"
     else:
         try:
-            from src.ztare.common.llm_runtime import resolve_model_id
+            from ztare.common.llm_runtime import resolve_model_id
             model_id = resolve_model_id(raw_model)
         except Exception:
             model_id = raw_model
@@ -1951,7 +1950,7 @@ def _heavy_patch_via_llm(
 
     try:
         runtime = LLMRuntime()
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "charter_critic_patch",
@@ -2192,12 +2191,12 @@ def _resolve_reviewer_model_id(rubric_data: dict[str, Any], mutator_model_id: st
         if raw in ("@mutator", "mutator"):
             return (mutator_model_id or "").strip() or "claude-haiku-4-5"
         try:
-            from src.ztare.common.llm_runtime import resolve_model_id
+            from ztare.common.llm_runtime import resolve_model_id
             return resolve_model_id(raw)
         except Exception:
             return raw
     try:
-        from src.ztare.common.llm_runtime import get_model_family
+        from ztare.common.llm_runtime import get_model_family
         gen_family = get_model_family(mutator_model_id or "")
     except Exception:
         gen_family = "openai"
@@ -2265,7 +2264,7 @@ def _review_via_llm(
     None on any failure (caller falls back to skip-on-failure behavior).
     """
     try:
-        from src.ztare.common.llm_runtime import LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime
     except ImportError:
         return None
     operator_policy = str(rubric_data.get("charter_patches_reviewer_policy") or "")
@@ -2273,7 +2272,7 @@ def _review_via_llm(
     prompt = _build_reviewer_prompt(patches_entries, project_dir, operator_policy)
     try:
         runtime = LLMRuntime()
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "charter_critic_reviewer",

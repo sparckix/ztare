@@ -28,7 +28,7 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Optional
 
-from src.ztare.orchestrator.pre_fit_dispatch import (
+from ztare.orchestrator.pre_fit_dispatch import (
     _engage_gates_by_phase_and_name_filter,
 )
 

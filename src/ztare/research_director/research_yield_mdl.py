@@ -27,7 +27,7 @@ try:
     )
     from ztare.validator.core.information_yield import IterationSignal
 except ModuleNotFoundError:
-    from src.ztare.fit.mdl import (
+    from ztare.fit.mdl import (
         DEFAULT_CITATION_COST,
         DEFAULT_MIN_EXPOSURE,
         ItemStat,
@@ -36,10 +36,10 @@ except ModuleNotFoundError:
         RETIRE,
         score_item,
     )
-    from src.ztare.research_director.source_currency_discriminator import (
+    from ztare.research_director.source_currency_discriminator import (
         classify_source_currency,
     )
-    from src.ztare.validator.core.information_yield import IterationSignal
+    from ztare.validator.core.information_yield import IterationSignal
 
 
 _WORD_RE = re.compile(r"[A-Za-z0-9_./:+-]+")

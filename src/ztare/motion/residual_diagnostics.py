@@ -27,7 +27,7 @@ from typing import Callable
 
 import numpy as np
 
-from src.ztare.gates.corrector_library import filter_by_descriptor
+from ztare.gates.corrector_library import filter_by_descriptor
 
 
 DEFAULT_K = 3

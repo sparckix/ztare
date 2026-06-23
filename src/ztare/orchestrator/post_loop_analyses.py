@@ -59,7 +59,7 @@ def run_post_loop_analyses(
     # ---- META-GATE 2C post-run meta-audit ----
     if bool(rubric_data.get("enable_post_run_meta_audit", False)):
         try:
-            from src.ztare.orchestrator.post_run_meta_audit import (
+            from ztare.orchestrator.post_run_meta_audit import (
                 run_post_run_meta_audit as _run_meta_audit,
             )
 
@@ -79,7 +79,7 @@ def run_post_loop_analyses(
                 f"artifact={audit_verdict.get('artifact_path_md')}"
             )
             try:
-                from src.ztare.orchestrator.discriminator_queue import (
+                from ztare.orchestrator.discriminator_queue import (
                     append_discriminators as _append_discriminators,
                     proposals_from_meta_audit as _proposals_from_meta_audit,
                 )
@@ -105,7 +105,7 @@ def run_post_loop_analyses(
     # ---- GP-190 post-run discriminator replay (deterministic, no LLM) ----
     if bool(rubric_data.get("enable_post_run_discriminator_queue", False)):
         try:
-            from src.ztare.orchestrator.operator_replay_audit import (
+            from ztare.orchestrator.operator_replay_audit import (
                 proposals_from_sources as _replay_proposals_from_sources,
                 write_replay_queue as _write_replay_queue,
             )
@@ -138,10 +138,10 @@ def run_post_loop_analyses(
 
     # ---- GP-193 post-run thesis synthesis ----
     # Default ON for qualitative substrates, fail-graceful never aborts the run.
-    # See research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md
+    # See the maintainer-only post-run thesis synthesis seam.
     if bool(rubric_data.get("enable_post_run_thesis_synthesis", True)):
         try:
-            from src.ztare.synthesis.post_run_thesis_synthesizer import (
+            from ztare.synthesis.post_run_thesis_synthesizer import (
                 run_post_run_synthesis as _run_post_run_synth,
             )
 
@@ -241,11 +241,10 @@ def run_post_loop_analyses(
     # ---- GP-226 charter-critic V1 (post-run) ----
     # Closed-loop charter tuning against operator value-vector. Reads
     # debate logs + value-spec + score trajectory; emits structured
-    # patches in advisory or auto mode. See
-    # research_areas/private/seams/reflexive/GP-226_charter_critic_role_seam.md
+    # patches in advisory or auto mode. See the maintainer-only charter-critic seam.
     if bool(rubric_data.get("enable_charter_critic", False)):
         try:
-            from src.ztare.orchestrator.charter_critic import (
+            from ztare.orchestrator.charter_critic import (
                 run_charter_critic_post_run as _run_charter_critic,
             )
             cc_result = _run_charter_critic(

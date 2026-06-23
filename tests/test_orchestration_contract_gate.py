@@ -1,4 +1,4 @@
-from src.ztare.research_director.orchestration_contract_gate import (
+from ztare.research_director.orchestration_contract_gate import (
     validate_orchestration_contract,
 )
 

@@ -19,19 +19,19 @@ import subprocess
 import sys
 from pathlib import Path
 
-from src.ztare.orchestration.core import (
+from ztare.orchestration.core import (
     GoalConfig,
     GoalState,
     GoalStatus,
     validate_transition,
 )
-from src.ztare.orchestration.config_parser import (
+from ztare.orchestration.config_parser import (
     list_available_goal_types,
     load_goal_config,
     parse_goal_config,
 )
-from src.ztare.orchestration.gate_escalation import write_gate_escalation
-from src.ztare.orchestration.persistence import (
+from ztare.orchestration.gate_escalation import write_gate_escalation
+from ztare.orchestration.persistence import (
     GOALS_ROOT,
     append_transition,
     check_artifact_drift,
@@ -43,7 +43,7 @@ from src.ztare.orchestration.persistence import (
     read_transitions,
     write_state,
 )
-from src.ztare.orchestration.adapters.dispatch import (
+from ztare.orchestration.adapters.dispatch import (
     dispatch,
     stage_guidance,
 )

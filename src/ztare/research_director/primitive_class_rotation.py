@@ -357,7 +357,7 @@ def _extract_class_via_llm(
     if cache_key in _PROPOSAL_CLASS_LLM_CACHE:
         return _PROPOSAL_CLASS_LLM_CACHE[cache_key]
     try:
-        from src.ztare.common.llm_runtime import (
+        from ztare.common.llm_runtime import (
             LLMRuntime, pick_default_model_id_for_scripts,
         )
     except Exception:  # noqa: BLE001
@@ -379,7 +379,7 @@ def _extract_class_via_llm(
     )
     try:
         runtime = LLMRuntime()
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         resp = dispatch_call_text(
             "proposal_class_extraction",

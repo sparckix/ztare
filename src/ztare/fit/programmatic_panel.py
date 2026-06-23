@@ -12,7 +12,7 @@ The panel's recurring questions (distilled from 10+ debates this session):
 If all four pass: auto-promote. If any fail: flag for operator review.
 
 Usage:
-    from src.ztare.fit.programmatic_panel import review_grammar_expansion
+    from ztare.fit.programmatic_panel import review_grammar_expansion
     verdict = review_grammar_expansion(
         template_name="parabolic",
         expression="a * (n - b)**2 + c",

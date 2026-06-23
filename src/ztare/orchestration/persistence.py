@@ -18,7 +18,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Optional
 
-from src.ztare.orchestration.core import GoalState, GoalStatus
+from ztare.orchestration.core import GoalState, GoalStatus
 
 GOALS_ROOT = Path("[internal-ref]")
 

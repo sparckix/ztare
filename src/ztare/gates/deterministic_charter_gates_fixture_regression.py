@@ -17,7 +17,7 @@ import tempfile
 import textwrap
 from pathlib import Path
 
-from src.ztare.gates.deterministic_charter_gates import (
+from ztare.gates.deterministic_charter_gates import (
     GATE_FAILURE_SCORE_CAP,
     DeterministicGateSpec,
     declared_gate_names,

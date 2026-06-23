@@ -22,7 +22,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 DEFAULT_LEDGER_DIR = (
     REPO_ROOT / "ztare_workspace" / "supervisor" / "findings_debate" / "usage_ledger"

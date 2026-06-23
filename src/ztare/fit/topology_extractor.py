@@ -5,7 +5,7 @@ proposal's topology, and returns the consensus topology class.
 Phase 2 can then prioritize templates from that class.
 
 Usage:
-    from src.ztare.fit.topology_extractor import extract_dominant_topology
+    from ztare.fit.topology_extractor import extract_dominant_topology
     topo = extract_dominant_topology(project_dir)
     # topo = {"class": "sqrt_log", "confidence": 0.73, "proposals": 15}
 """

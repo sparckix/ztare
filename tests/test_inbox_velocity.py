@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.supervisor import inbox_velocity as iv
+from ztare.supervisor import inbox_velocity as iv
 
 
 @pytest.fixture(autouse=True)

@@ -36,7 +36,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from src.ztare.gates.cage import (
+from ztare.gates.cage import (
     Gate,
     check_feature_coverage_adequacy,
     check_target_convention_homogeneity,

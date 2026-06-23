@@ -14,7 +14,7 @@ from __future__ import annotations
 import math
 import pytest
 
-from src.ztare.fit.fit_engine import (
+from ztare.fit.fit_engine import (
     FitEngine,
     FitEngineResult,
     OneDFitEngine,

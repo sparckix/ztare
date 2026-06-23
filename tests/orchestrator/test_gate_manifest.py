@@ -14,7 +14,7 @@ import math
 
 import pytest
 
-from src.ztare.orchestrator.gate_manifest import (
+from ztare.orchestrator.gate_manifest import (
     GATE_REGISTRY,
     PARAMETER_SCHEMAS,
     EvaluativeGateSpec,

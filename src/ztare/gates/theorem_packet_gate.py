@@ -6,7 +6,7 @@ import unicodedata
 from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 
-from src.ztare.gates.claim_polarity import hard_positive_phrase_group_labels
+from ztare.gates.claim_polarity import hard_positive_phrase_group_labels
 
 
 PhraseGroup = tuple[str, ...]

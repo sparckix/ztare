@@ -5,9 +5,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
-from src.ztare.common.paths import GLOBAL_PRIMITIVES_DIR, REPO_ROOT
-from src.ztare.workspace.compile_evidence import write_json
-from src.ztare.primitives.draft_primitives import render_candidate_markdown
+from ztare.common.paths import GLOBAL_PRIMITIVES_DIR, REPO_ROOT
+from ztare.workspace.compile_evidence import write_json
+from ztare.primitives.draft_primitives import render_candidate_markdown
 
 
 ROOT_DIR = REPO_ROOT

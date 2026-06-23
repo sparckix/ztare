@@ -3,11 +3,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.ztare.common.constraint_isomorphism import (
+from ztare.common.constraint_isomorphism import (
     ConstraintFingerprint,
     SurfacedIsomorphism,
 )
-from src.ztare.common.kernel_action_schema import (
+from ztare.common.kernel_action_schema import (
     KernelActionSchema,
     render_action_schema_prompt_lines,
 )

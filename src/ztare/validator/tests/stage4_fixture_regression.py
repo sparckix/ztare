@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from src.ztare.validator.core.hinge_handoff import (
+from ztare.validator.core.hinge_handoff import (
     ArtifactType,
     HingeAlignmentStatus,
     HingeGroundingPointer,
@@ -13,8 +13,8 @@ from src.ztare.validator.core.hinge_handoff import (
     HingeScopeLevel,
     Stage2Handoff,
 )
-from src.ztare.validator.core.primitive_routing import ExploitFamilyTag
-from src.ztare.validator.committees.shadow_board import BoardAssignment, ShadowBoardRole, assign_shadow_board
+from ztare.validator.core.primitive_routing import ExploitFamilyTag
+from ztare.validator.committees.shadow_board import BoardAssignment, ShadowBoardRole, assign_shadow_board
 
 
 @dataclass(frozen=True)

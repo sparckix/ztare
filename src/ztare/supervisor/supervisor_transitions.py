@@ -3,11 +3,11 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.findings.prose_spec import (
+from ztare.findings.prose_spec import (
     prose_spec_path_has_canonical_shape,
     validate_prose_spec_path,
 )
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     HandoffEvent,
@@ -19,7 +19,7 @@ from src.ztare.supervisor.supervisor_state import (
     TransitionInput,
     TransitionOutcome,
 )
-from src.ztare.supervisor.supervisor_pipeline import actor_for_pipeline_state, build_actor_for_pipeline
+from ztare.supervisor.supervisor_pipeline import actor_for_pipeline_state, build_actor_for_pipeline
 
 MAX_SPEC_REFINEMENT_ROUNDS = 2
 

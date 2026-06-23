@@ -23,12 +23,12 @@ from typing import Iterable, Optional
 
 from pathlib import Path
 
-from src.ztare.sessions.session import (
+from ztare.sessions.session import (
     Session,
     active_sessions,
     open_session,
 )
-from src.ztare.signals import damage
+from ztare.signals import damage
 
 log = logging.getLogger(__name__)
 
@@ -73,11 +73,11 @@ def ensure_session(
     if mandate_path is not None and session.directory is not None:
         mandate_path = Path(mandate_path)
         if not mandate_path.is_absolute():
-            from src.ztare.common.paths import REPO_ROOT
+            from ztare.common.paths import REPO_ROOT
             mandate_path = REPO_ROOT / mandate_path
         # Lazy import avoids circular dep (signals.autoemit is higher in
         # the dependency graph than sessions).
-        from src.ztare.signals import autoemit
+        from ztare.signals import autoemit
         autoemit.check_mandate_drift(
             session_dir=session.directory,
             mandate_path=mandate_path,

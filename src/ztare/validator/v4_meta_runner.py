@@ -8,9 +8,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Literal
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.common.sandboxed_python import run_python_file as _shared_run_python_file
-from src.ztare.reports.forensic_reporter import build_report, write_report
+from ztare.common.paths import PROJECTS_DIR
+from ztare.common.sandboxed_python import run_python_file as _shared_run_python_file
+from ztare.reports.forensic_reporter import build_report, write_report
 
 ContractVerdict = Literal["pass", "fail", "blocked"]
 Priority = Literal["P0", "P1"]
@@ -257,7 +257,7 @@ def _semantic_gate_stabilization_contract(project: str, _: Any) -> ContractResul
             run_id = evidence_runs[-1].get("run_id")
         if run_id:
             try:
-                from src.ztare.common.paths import PROJECTS_DIR
+                from ztare.common.paths import PROJECTS_DIR
                 report = build_report(
                     Path(__file__).resolve().parents[3]
                     / "benchmarks"

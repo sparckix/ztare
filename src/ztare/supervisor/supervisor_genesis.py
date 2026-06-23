@@ -4,13 +4,13 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_registry import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_registry import (
     ProgramStatus,
     load_program_registry,
     registry_entry_map,
 )
-from src.ztare.supervisor.supervisor_seed_registry import (
+from ztare.supervisor.supervisor_seed_registry import (
     SeedStatus,
     load_seed_registry,
     seed_entry_by_spec_path,

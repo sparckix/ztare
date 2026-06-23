@@ -156,7 +156,7 @@ def main() -> int:
     parser.add_argument("--threshold", type=float, default=0.05)
     args = parser.parse_args()
 
-    from src.ztare.common.paths import PROJECTS_DIR
+    from ztare.common.paths import PROJECTS_DIR
     project_dir = PROJECTS_DIR / args.project
 
     # Load evidence as (x, y) pairs

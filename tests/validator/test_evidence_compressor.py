@@ -11,7 +11,7 @@ Plus edge cases: empty evidence, negative Z, near-zero Z.
 import math
 import pytest
 
-from src.ztare.findings.evidence_compressor import (
+from ztare.findings.evidence_compressor import (
     TransformedEvidence,
     enumerate_transforms,
     evaluate_holdout_in_original,

@@ -6,9 +6,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.supervisor.supervisor_attended_autoloop import fresh_input_tokens
-from src.ztare.supervisor.supervisor_backlog import build_what_next
-from src.ztare.supervisor.supervisor_state import status_from_dict
+from ztare.supervisor.supervisor_attended_autoloop import fresh_input_tokens
+from ztare.supervisor.supervisor_backlog import build_what_next
+from ztare.supervisor.supervisor_state import status_from_dict
 
 
 def _read_json(path: Path) -> dict[str, Any]:

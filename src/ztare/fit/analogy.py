@@ -106,7 +106,7 @@ def _compute_residuals_for_topology(
     if not form or not fitted:
         return [], [], []
     try:
-        from src.ztare.fit.fit_primitive_features import _safe_compile_form
+        from ztare.fit.fit_primitive_features import _safe_compile_form
         fn = _safe_compile_form(form)
     except Exception:
         return [], [], []
@@ -680,7 +680,7 @@ class AnalogyResponse:
 
 
 def _constraint_fingerprint_from_residual(fingerprint: dict) -> Any:
-    from src.ztare.common.constraint_isomorphism import ConstraintFingerprint
+    from ztare.common.constraint_isomorphism import ConstraintFingerprint
 
     topology = fingerprint.get("residual_topology") or {}
     asym = fingerprint.get("asymptotic_profile") or {}
@@ -722,11 +722,11 @@ def _query_constraint_isomorphism_analogy(
     """Use the shared constraint-isomorphism engine for structural analogy mode."""
 
     try:
-        from src.ztare.common.constraint_isomorphism import (
+        from ztare.common.constraint_isomorphism import (
             default_llm_query,
             validate_typed_mapping,
         )
-        from src.ztare.common.structural_transfer_action import (
+        from ztare.common.structural_transfer_action import (
             action_schema_from_isomorphism,
         )
     except Exception as exc:
@@ -1171,13 +1171,13 @@ def query_analogy(
     # Lazy import to avoid forcing llm_runtime as a module-level dep
     # when analogy.py is used in a unit-test context.
     if runtime is None:
-        from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
         runtime = _LLMRuntime()
 
     prompt = _build_query_prompt(fingerprint, structural_mode=structural_mode)
 
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "fit_analogy",
@@ -1477,7 +1477,7 @@ def r15_run(substrate, candidate) -> dict:
 def register_r15_gate(cage) -> None:
     """Register R15 ANALOGY gate with a Cage instance. POST_FIT phase."""
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return
     g = Gate(

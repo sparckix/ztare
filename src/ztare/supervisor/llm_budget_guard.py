@@ -20,9 +20,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.spend_tracker import check_budget_allows, record_spend
-from src.ztare.supervisor.supervisor_usage import estimate_cost_usd
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.spend_tracker import check_budget_allows, record_spend
+from ztare.supervisor.supervisor_usage import estimate_cost_usd
 
 
 DEFAULT_TOKEN_CHARS = 3

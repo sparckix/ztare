@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.workspace.compile_evidence import (
+from ztare.workspace.compile_evidence import (
     COMPILE_FAILURE_ARTIFACT,
     CompileEvidenceError,
     clear_compile_failure_artifact,

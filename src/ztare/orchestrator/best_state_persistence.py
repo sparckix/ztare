@@ -34,7 +34,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 
-from src.ztare.common.file_io import write_file
+from ztare.common.file_io import write_file
 
 DEFAULT_BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 DEFAULT_HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")

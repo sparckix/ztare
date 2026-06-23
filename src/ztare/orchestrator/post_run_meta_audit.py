@@ -442,7 +442,7 @@ def run_post_run_meta_audit(
     # LLM call (fail-graceful)
     if runtime is None:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
+            from ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
             runtime = _LLMRuntime()
         except Exception as exc:  # noqa: BLE001
             verdict.error = f"LLMRuntime unavailable: {exc}"
@@ -450,7 +450,7 @@ def run_post_run_meta_audit(
             return verdict.to_dict()
 
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "post_run_meta_audit",
@@ -497,7 +497,7 @@ def run_post_run_meta_audit(
     verdict.succeeded = True
     _persist_artifacts(workspace_dir, project, run_id, verdict, eval_summary)
     try:
-        from src.ztare.orchestrator.discriminator_queue import (
+        from ztare.orchestrator.discriminator_queue import (
             append_discriminators,
             proposals_from_meta_audit,
         )

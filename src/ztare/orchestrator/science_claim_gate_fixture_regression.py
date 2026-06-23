@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.orchestrator.science_claim_gate import assess_science_claim_packet
+from ztare.orchestrator.science_claim_gate import assess_science_claim_packet
 
 
 def _base_science_packet() -> dict[str, object]:

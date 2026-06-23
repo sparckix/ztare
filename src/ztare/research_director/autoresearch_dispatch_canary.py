@@ -12,28 +12,28 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any, Iterator
 
-from src.ztare.common import utils
-from src.ztare.common.dispatch_model import (
+from ztare.common import utils
+from ztare.common.dispatch_model import (
     DispatchTextResponse,
     dispatch_call_text,
 )
-from src.ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
-from src.ztare.common.subscription_sessions import default_subscription_runtime
-from src.ztare.fit.mutation_suite_guard import (
+from ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
+from ztare.common.subscription_sessions import default_subscription_runtime
+from ztare.fit.mutation_suite_guard import (
     validate_python_suite_candidate,
     validate_python_suite_imports,
 )
-from src.ztare.validator.candidate_extraction import extract_best_python_candidate
-from src.ztare.validator.core.mutation_contract import (
+from ztare.validator.candidate_extraction import extract_best_python_candidate
+from ztare.validator.core.mutation_contract import (
     MutationMismatchCode,
     evaluate_mutation_declaration,
     parse_mutation_declaration,
 )
-from src.ztare.validator.core.meta_judge_schema import (
+from ztare.validator.core.meta_judge_schema import (
     coerce_raw_meta_judge_score,
     raw_meta_judge_shape_errors,
 )
-from src.ztare.validator.inverter_agent import _parse_or_salvage_inverter_response
+from ztare.validator.inverter_agent import _parse_or_salvage_inverter_response
 
 
 CANARY_TOKEN = "ZTARE_DISPATCH_CANARY_OK"

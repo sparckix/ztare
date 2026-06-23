@@ -326,7 +326,7 @@ def propose_evidence_gap_enrichment(
     # used the unresolved sentinel + `mutator_model_id` as separate
     # fields, which produced different hashes for callers that handed
     # the resolved id directly vs. via the sentinel.
-    from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+    from ztare.common.llm_cache import LLMCallCache, ttl_30_days
     raw_model_id = str(
         enrichment_model_id
         or rubric_data.get("evidence_gap_model_id")
@@ -388,7 +388,7 @@ def propose_evidence_gap_enrichment(
 
     if runtime is None:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
+            from ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
             runtime = _LLMRuntime()
         except Exception as exc:  # noqa: BLE001
             verdict.error = f"LLMRuntime unavailable: {exc}"
@@ -438,7 +438,7 @@ def propose_evidence_gap_enrichment(
             "tokens_out": 0,
         }
         try:
-            from src.ztare.common.dispatch_model import dispatch_call_text
+            from ztare.common.dispatch_model import dispatch_call_text
 
             response = dispatch_call_text(
                 "evidence_gap_enrichment",
@@ -753,7 +753,7 @@ def propose_per_iter_ege(
 
     if runtime is None:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
+            from ztare.common.llm_runtime import LLMRuntime as _LLMRuntime
             runtime = _LLMRuntime()
         except Exception as exc:  # noqa: BLE001
             verdict.error = f"LLMRuntime unavailable: {exc}"

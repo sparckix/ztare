@@ -1,7 +1,7 @@
 """Research Director role extension (GP-172).
 
-Per the Research Director mandate (`org/roles/research_director.md`,
-`research_areas/private/seams/protocol/GP-172_research_director_mform_role_seam.md`),
+Per the Research Director mandate (`org/roles/research_director.md`
+and the maintainer-only Research Director role seam),
 the Director is responsible for verifying any quantitative claim from
 an offline sub-agent or apparatus iteration against published literature
 anchors before it enters verified_axioms.json.
@@ -16,7 +16,7 @@ PUBLIC API
 ----------
 The Director invokes:
 
-    from src.ztare.role_extensions.research_director import triangulate
+    from ztare.role_extensions.research_director import triangulate
     summary = triangulate(project_dir, anchors)
 
 `triangulate` evaluates the project's just-promoted form (read from

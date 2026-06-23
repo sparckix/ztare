@@ -97,7 +97,7 @@ def build_cage_runtime(
     # point — register_cross_class_gates appends Gate objects to
     # cage.gates and invalidates the topo cache.
     try:
-        from src.ztare.gates.cross_class_extrapolation_gate import (
+        from ztare.gates.cross_class_extrapolation_gate import (
             register_cross_class_gates,
         )
         register_cross_class_gates(instance)
@@ -112,7 +112,7 @@ def build_cage_runtime(
     # provenance-required constraints, trivial-wrapping detector,
     # 15s wall-clock budget, data-belief reconciliation, R1 templates).
     try:
-        from src.ztare.gates.symbolic_logic_cage import (
+        from ztare.gates.symbolic_logic_cage import (
             register_symbolic_logic_cage_gate,
         )
         register_symbolic_logic_cage_gate(instance)
@@ -126,22 +126,22 @@ def build_cage_runtime(
     # Gate(s) to instance.gates with the right phase + can_handle + run
     # adapter. Behavior preserved verbatim by adapter contracts.
     try:
-        from src.ztare.diagnostics.substrate_critic import register_r13_gate
+        from ztare.diagnostics.substrate_critic import register_r13_gate
         register_r13_gate(instance)
     except Exception:
         pass
     try:
-        from src.ztare.diagnostics.noise_profile import register_r14_gate
+        from ztare.diagnostics.noise_profile import register_r14_gate
         register_r14_gate(instance)
     except Exception:
         pass
     try:
-        from src.ztare.fit.analogy import register_r15_gate
+        from ztare.fit.analogy import register_r15_gate
         register_r15_gate(instance)
     except Exception:
         pass
     try:
-        from src.ztare.framer.active_framer import register_r16_gate
+        from ztare.framer.active_framer import register_r16_gate
         register_r16_gate(instance)
     except Exception:
         pass
@@ -150,7 +150,7 @@ def build_cage_runtime(
     # (#137 G-WITHHELD-VALUE-LEAKAGE, #139 G-EFFECTIVE-PARAMETER-COUNT,
     # #146 apparatus-meta-runner, #147 sparse-cell exclusion).
     try:
-        from src.ztare.gates.structural_anti_pattern_gates import (
+        from ztare.gates.structural_anti_pattern_gates import (
             register_structural_anti_pattern_gates,
         )
         register_structural_anti_pattern_gates(instance)
@@ -165,7 +165,7 @@ def build_cage_runtime(
     # zero-risk on existing projects; rubric must explicitly opt in
     # to engage them.
     try:
-        from src.ztare.gates.r8_r9_substrate_validators import (
+        from ztare.gates.r8_r9_substrate_validators import (
             register_r8_r9_gates,
         )
         register_r8_r9_gates(instance)

@@ -41,7 +41,7 @@ def run_filter_independence_gate(
 
     Compute Pearson correlation across the bootstrap_n binary pairs.
     """
-    from src.ztare.framer.symmetry import scan_symmetries
+    from ztare.framer.symmetry import scan_symmetries
 
     rng = np.random.default_rng(seed)
     sym_decisions = []

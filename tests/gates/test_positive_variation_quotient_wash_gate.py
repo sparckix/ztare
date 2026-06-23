@@ -1,4 +1,4 @@
-from src.ztare.gates.positive_variation_quotient_wash_gate import (
+from ztare.gates.positive_variation_quotient_wash_gate import (
     run_positive_variation_quotient_wash_gate,
 )
 

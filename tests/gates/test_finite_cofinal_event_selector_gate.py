@@ -1,4 +1,4 @@
-from src.ztare.gates.finite_cofinal_event_selector_gate import (
+from ztare.gates.finite_cofinal_event_selector_gate import (
     REQUIRED_FIELDS,
     run_finite_cofinal_event_selector_gate,
 )

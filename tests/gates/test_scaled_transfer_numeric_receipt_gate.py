@@ -1,4 +1,4 @@
-from src.ztare.gates.scaled_transfer_numeric_receipt_gate import (
+from ztare.gates.scaled_transfer_numeric_receipt_gate import (
     run_scaled_transfer_numeric_receipt_gate,
 )
 

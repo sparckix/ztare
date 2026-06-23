@@ -5,8 +5,8 @@ import json
 import tempfile
 from pathlib import Path
 
-import src.ztare.supervisor.supervisor_manifest as supervisor_manifest_module
-from src.ztare.supervisor.supervisor_manifest import (
+import ztare.supervisor.supervisor_manifest as supervisor_manifest_module
+from ztare.supervisor.supervisor_manifest import (
     ManifestPacketStatus,
     advance_manifest_packet,
     derive_packet_read_bundle,

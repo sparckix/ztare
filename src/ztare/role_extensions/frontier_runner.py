@@ -29,10 +29,10 @@ The runner is IDEMPOTENT: it advances frontier_state.last_iter_observed
 each tick so the same event is never emitted twice.
 
 Usage from agent_daemon.py tick:
-    from src.ztare.role_extensions.frontier_runner import scan_project
+    from ztare.role_extensions.frontier_runner import scan_project
     events = scan_project("gp154_inversion_alpha_from_dimension")
     for ev in events:
-        from src.ztare.role_extensions.iter_action_policy import dispatch_event
+        from ztare.role_extensions.iter_action_policy import dispatch_event
         dispatch_event(ev)
 """
 from __future__ import annotations
@@ -46,7 +46,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Optional
 
-from src.ztare.role_extensions import frontier_state as fs
+from ztare.role_extensions import frontier_state as fs
 
 log = logging.getLogger(__name__)
 

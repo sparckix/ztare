@@ -22,7 +22,7 @@ future Level-2 daemon invocation.
 
 Usage:
 
-    from src.ztare.supervisor.spend_tracker import (
+    from ztare.supervisor.spend_tracker import (
         record_spend, check_budget_allows, get_daily_total,
     )
 
@@ -86,7 +86,7 @@ def _role_budget(role_id: Optional[str]) -> dict:
     if not role_id:
         return caps
     try:
-        from src.ztare.roles import load_registry
+        from ztare.roles import load_registry
         reg = load_registry(validate=False)
         role = reg.role(role_id)
         b = role.budget
@@ -258,7 +258,7 @@ def _fire_budget_warning(total: float, threshold: float) -> None:
     """Push a warning to principal that daily spend has crossed
     WARN_THRESHOLD_FRAC of the cap."""
     try:
-        from src.ztare.supervisor.escalation_manager import escalate
+        from ztare.supervisor.escalation_manager import escalate
     except ImportError:
         log.warning("escalation_manager unavailable; cannot push budget warning")
         return
@@ -299,8 +299,8 @@ def record_llm_turn(
     Returns None if pricing is disabled or unknown for this model.
     """
     try:
-        from src.ztare.supervisor.supervisor_usage import load_model_pricing
-        from src.ztare.common.llm_runtime import pricing_model_name
+        from ztare.supervisor.supervisor_usage import load_model_pricing
+        from ztare.common.llm_runtime import pricing_model_name
     except ImportError as exc:
         log.warning("supervisor_usage unavailable (%s); cannot price turn", exc)
         return None

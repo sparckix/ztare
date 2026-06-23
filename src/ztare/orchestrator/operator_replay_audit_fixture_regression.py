@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.orchestrator.operator_replay_audit import proposals_from_sources, write_replay_queue
+from ztare.orchestrator.operator_replay_audit import proposals_from_sources, write_replay_queue
 
 
 def run_fixture_regression() -> dict[str, object]:

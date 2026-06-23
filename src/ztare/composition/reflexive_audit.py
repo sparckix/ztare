@@ -44,8 +44,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.llm_runtime import LLMRuntime, PRODUCTION_CALL_RETRIES
-from src.ztare.common.paths import REPO_ROOT, PROJECTS_DIR
+from ztare.common.llm_runtime import LLMRuntime, PRODUCTION_CALL_RETRIES
+from ztare.common.paths import REPO_ROOT, PROJECTS_DIR
 
 _RUNTIME = LLMRuntime()
 _COMMITTEE_MODEL = os.environ.get("ZTARE_REFLEXIVE_AUDIT_MODEL", "gemini-2.5-flash")

@@ -28,7 +28,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Any
 
-from src.ztare.fit.fit_primitive import (
+from ztare.fit.fit_primitive import (
     FitDeclaration,
     FitSuccess,
     _validate_expression,
@@ -36,7 +36,7 @@ from src.ztare.fit.fit_primitive import (
     _ALLOWED_MATH_ATTRS,
     _ALLOWED_DIRECT_CALLS,
 )
-from src.ztare.composition.structural_memory import (
+from ztare.composition.structural_memory import (
     StructuralFamilySignature,
     build_structural_family_signature,
     load_structural_memory,
@@ -443,7 +443,7 @@ def register_composed_primitive(
     iteration_index: int,
 ) -> dict[str, Any]:
     """Register a composed primitive in structural_memory.json with provenance."""
-    from src.ztare.composition.structural_memory import update_structural_memory
+    from ztare.composition.structural_memory import update_structural_memory
 
     memory = update_structural_memory(
         workspace_dir=workspace_dir,
@@ -636,7 +636,7 @@ def _run_ratio_probes(
     When no failure package is available, probes fire unconditionally
     (conservative: never skip a cheap deterministic check).
     """
-    from src.ztare.fit.fit_primitive import fit_parameters
+    from ztare.fit.fit_primitive import fit_parameters
 
     if ind_vars is None:
         ind_vars = [var_name]
@@ -751,7 +751,7 @@ def _run_depth2_pass(
     COMPOSE(d1_result, op, base_primitive) for selected bases and operators.
     Cost: K × |bases| × |ops| ≈ 50 compositions.
     """
-    from src.ztare.fit.fit_primitive import fit_parameters
+    from ztare.fit.fit_primitive import fit_parameters
 
     if ind_vars is None:
         ind_vars = [var_name]
@@ -884,7 +884,7 @@ def run_composition_loop(
     Returns a summary dict with wall_exit_code and composition results.
     Exits early on WALL_LIBRARY_INSUFFICIENT (no point continuing).
     """
-    from src.ztare.fit.fit_primitive import fit_parameters
+    from ztare.fit.fit_primitive import fit_parameters
 
     failure_package = build_failure_package(
         workspace_dir,
@@ -1037,7 +1037,7 @@ def run_composition_loop(
 
     # Stamp last_composition_iteration so the cooldown guard in
     # detect_feynman_wall knows when composition last ran.
-    from src.ztare.composition.structural_memory import load_structural_memory
+    from ztare.composition.structural_memory import load_structural_memory
     _comp_mem = load_structural_memory(workspace_dir)
     _comp_mem["last_composition_iteration"] = iteration_index
     (workspace_dir / "structural_memory.json").write_text(
@@ -1313,7 +1313,7 @@ def run_composition_mutator(
     Returns:
         CompositionMutatorResult with the parsed CompositionRequest or error.
     """
-    from src.ztare.common.llm_runtime import LLMRuntime
+    from ztare.common.llm_runtime import LLMRuntime
 
     if runtime is None:
         runtime = LLMRuntime()

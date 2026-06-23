@@ -7,8 +7,8 @@ import re
 from dataclasses import replace
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_state import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactSnapshot,
     HandoffStatus,
@@ -20,7 +20,7 @@ from src.ztare.supervisor.supervisor_state import (
     status_to_dict,
     transition_input_from_dict,
 )
-from src.ztare.supervisor.supervisor_registry import (
+from ztare.supervisor.supervisor_registry import (
     OwnerMode,
     ProgramStatus,
     derive_closed_programs,
@@ -28,25 +28,25 @@ from src.ztare.supervisor.supervisor_registry import (
     registry_path,
     registry_entry_map,
 )
-from src.ztare.supervisor.supervisor_genesis import (
+from ztare.supervisor.supervisor_genesis import (
     genesis_path_for_program,
     load_optional_program_genesis,
 )
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.supervisor.supervisor_manifest import (
     advance_manifest_packet,
     load_optional_program_manifest,
     manifest_summary,
     next_manifest_packet,
 )
-from src.ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
-from src.ztare.supervisor.supervisor_pipeline import (
+from ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
+from ztare.supervisor.supervisor_pipeline import (
     actor_for_pipeline_state,
     build_actor_for_pipeline,
     derive_pipeline_type,
 )
-from src.ztare.supervisor.supervisor_staging import write_staging_files
-from src.ztare.supervisor.supervisor_transitions import apply_transition
-from src.ztare.supervisor.supervisor_wrappers import (
+from ztare.supervisor.supervisor_staging import write_staging_files
+from ztare.supervisor.supervisor_transitions import apply_transition
+from ztare.supervisor.supervisor_wrappers import (
     launch_staged_request,
     wrapper_config_path,
 )

@@ -25,7 +25,7 @@ import json
 from pathlib import Path
 from typing import Callable
 
-from src.ztare.common.file_io import write_file
+from ztare.common.file_io import write_file
 
 
 def write_latest_information_yield(

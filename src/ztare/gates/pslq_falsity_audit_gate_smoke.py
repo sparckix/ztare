@@ -21,7 +21,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
 
-from src.ztare.gates.pslq_falsity_audit_gate import (  # noqa: E402
+from ztare.gates.pslq_falsity_audit_gate import (  # noqa: E402
     GATE_ID,
     filter_per_claim_for_mutator_prompt,
     required_precision_bits,

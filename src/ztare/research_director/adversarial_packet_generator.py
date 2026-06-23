@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.ztare.research_director.residual_normal_form import (
+from ztare.research_director.residual_normal_form import (
     extract_feature_hits,
     extract_feature_set,
     load_profile,

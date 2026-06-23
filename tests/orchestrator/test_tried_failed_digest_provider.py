@@ -3,11 +3,11 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.briefing_providers.tried_failed_digest import (
+from ztare.orchestrator.briefing_providers.tried_failed_digest import (
     TriedFailedDigestProvider,
 )
-from src.ztare.orchestrator.mutator_briefing import BriefingContext
-from src.ztare.orchestrator.mutator_briefing import default_briefing
+from ztare.orchestrator.mutator_briefing import BriefingContext
+from ztare.orchestrator.mutator_briefing import default_briefing
 
 
 def _append_jsonl(path: Path, rows: list[dict]) -> None:

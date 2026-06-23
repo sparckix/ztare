@@ -60,7 +60,7 @@ def env_hash(imports: tuple[str, ...] | list[str],
 def _probe(code: str, project_dir: str | Path | None,
            timeout: int) -> dict[str, Any]:
     # Read-only consumption of the existing wrapper; never modified.
-    from src.ztare.formal.lean_repl import check_lean
+    from ztare.formal.lean_repl import check_lean
     return check_lean(code, timeout=timeout, project_dir=project_dir)
 
 

@@ -15,7 +15,7 @@ afterthought. Compressed ~3× to keep the briefing budget in check.
 """
 from __future__ import annotations
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 _WORKED_EXAMPLES = r"""

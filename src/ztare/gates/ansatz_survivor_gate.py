@@ -79,7 +79,7 @@ def top_k_lean_proof_shortness(
         }
     project_dir = _Path(project_dir)
     try:
-        from src.ztare.formal.lean_repl import prove_from_compression
+        from ztare.formal.lean_repl import prove_from_compression
     except ImportError as e:
         return {
             "implemented": False,

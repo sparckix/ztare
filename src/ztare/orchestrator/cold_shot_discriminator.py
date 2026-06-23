@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from src.ztare.orchestrator.discriminator_queue import SHORTCUT_LABELS
+from ztare.orchestrator.discriminator_queue import SHORTCUT_LABELS
 
 
 REQUIRED_KEYS = {

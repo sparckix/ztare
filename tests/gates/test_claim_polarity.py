@@ -1,4 +1,4 @@
-from src.ztare.gates.claim_polarity import (
+from ztare.gates.claim_polarity import (
     ast_rejection_string_lines,
     hard_positive_phrase_group_labels,
     positive_phrase_group_labels,

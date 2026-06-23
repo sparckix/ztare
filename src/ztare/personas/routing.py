@@ -24,7 +24,7 @@ import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from src.ztare.personas.registry import (
+from ztare.personas.registry import (
     PersonaDefinition,
     format_many_for_injection,
     list_personas,
@@ -171,7 +171,7 @@ def _call_llm_router(
     max_reviewers: int = _MAX_REVIEWERS,
 ) -> RouteResult:
     """Call the LLM router to select/generate personas."""
-    from src.ztare.common.llm_runtime import LLMRuntime
+    from ztare.common.llm_runtime import LLMRuntime
 
     runtime = LLMRuntime()
     if not runtime.model_is_configured(_ROUTER_MODEL_ID):

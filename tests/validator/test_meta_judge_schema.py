@@ -1,4 +1,4 @@
-from src.ztare.validator.core.meta_judge_schema import (
+from ztare.validator.core.meta_judge_schema import (
     coerce_raw_meta_judge_score,
     raw_meta_judge_shape_errors,
 )

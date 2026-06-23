@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Mapping
 
-from src.ztare.orchestrator.iter_context import IterContext
+from ztare.orchestrator.iter_context import IterContext
 
 
 @dataclass(frozen=True)

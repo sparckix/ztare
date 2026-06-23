@@ -1,4 +1,4 @@
-from src.ztare.research_director.source_currency_discriminator import (
+from ztare.research_director.source_currency_discriminator import (
     classify_forecast_source_currency,
     classify_source_currency,
 )

@@ -288,7 +288,7 @@ def dispatch_mutator_blitz(deps: BlitzDispatchInputs) -> BlitzDispatchResult:
 
     # Stage 1: K parallel mutators
     try:
-        from src.ztare.orchestrator.parallel_mutator import (
+        from ztare.orchestrator.parallel_mutator import (
             MutatorTask, MutatorResult, run_parallel_mutators,
             pick_best_candidate, DEFAULT_PARALLEL_PERSONAS,
         )
@@ -350,7 +350,7 @@ def dispatch_mutator_blitz(deps: BlitzDispatchInputs) -> BlitzDispatchResult:
     fusion_succeeded = False
     if deps.rubric_data.get("enable_recombination", False) and n_originals >= 2:
         try:
-            from src.ztare.orchestrator.recombination import (
+            from ztare.orchestrator.recombination import (
                 recombine, score_candidate_extended, extract_parametric_form,
             )
             # AUDIT FIX (impl audit 2026-04-27): instantiate LLMRuntime
@@ -358,7 +358,7 @@ def dispatch_mutator_blitz(deps: BlitzDispatchInputs) -> BlitzDispatchResult:
             # killed Stage 3 — fusion was theatrical telemetry until
             # this commit.
             try:
-                from src.ztare.common.llm_runtime import LLMRuntime
+                from ztare.common.llm_runtime import LLMRuntime
                 _runtime = LLMRuntime()
             except Exception:
                 _runtime = None
@@ -434,7 +434,7 @@ def dispatch_mutator_blitz(deps: BlitzDispatchInputs) -> BlitzDispatchResult:
         # demanded. Without this, postmortem cannot reconstruct
         # per-candidate score components or "which stage produced winner".
         try:
-            from src.ztare.orchestrator.recombination import (
+            from ztare.orchestrator.recombination import (
                 write_candidate_record, extract_parametric_form,
             )
             for r in blitz_results:

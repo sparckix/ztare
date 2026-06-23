@@ -22,7 +22,7 @@ from typing import Optional, Sequence
 
 import yaml
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 
 # Filesystem locations

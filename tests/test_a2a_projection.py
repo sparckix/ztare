@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.ztare.orchestration import a2a_projection as a2a
+from ztare.orchestration import a2a_projection as a2a
 
 
 def test_a2a_agent_card_projection_from_role_yaml(tmp_path: Path, monkeypatch):

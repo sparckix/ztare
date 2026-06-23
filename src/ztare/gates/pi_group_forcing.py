@@ -41,7 +41,7 @@ supported and returned as such (e.g. ℓ = ν^(1/2) t^(1/2)).
 
 Usage
 -----
-  from src.ztare.gates.pi_group_forcing import run_pi_group_forcing
+  from ztare.gates.pi_group_forcing import run_pi_group_forcing
   res = run_pi_group_forcing(
       quantity_dim={"L": 1},                       # a length
       subset_dims={"nu": {"L": 2, "T": -1},        # kinematic viscosity

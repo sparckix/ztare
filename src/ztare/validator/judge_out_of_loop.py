@@ -83,7 +83,7 @@ class _LLMResponse:
 
 
 def _resolve_api_model(model_id: str) -> str:
-    from src.ztare.common.llm_runtime import MODEL_MAP, resolve_model_id
+    from ztare.common.llm_runtime import MODEL_MAP, resolve_model_id
 
     return resolve_model_id(model_id) if model_id in MODEL_MAP else model_id
 
@@ -95,7 +95,7 @@ def _llm_api(prompt: str, timeout: int = 90) -> _LLMResponse:
     and leave the substantive tick fail-closed unless subscription fallback is
     available.
     """
-    from src.ztare.common.llm_runtime import LLMRuntime
+    from ztare.common.llm_runtime import LLMRuntime
 
     model_id = _resolve_api_model(JUDGE_API_MODEL)
     try:
@@ -128,7 +128,7 @@ def _llm_subscription(prompt: str, timeout: int = 300) -> _LLMResponse:
     bespoke subprocess wrapper here. The prompt asks for JSON-only output and
     disables repo mutation paths as far as each runtime permits.
     """
-    from src.ztare.common.subscription_agent_runtime import (
+    from ztare.common.subscription_agent_runtime import (
         run_subscription_agent_with_recovery,
     )
 
@@ -232,7 +232,7 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
     # from the FROZEN start_tick and binds sha256(it) as prompt_hash
     # — a weakened rubric cannot be fed. Empty => not a real fired
     # obligation.
-    from src.ztare.surfacing.pre_tick_obligation_compiler import (
+    from ztare.surfacing.pre_tick_obligation_compiler import (
         judge_prompt_for)
     judge_prompt = judge_prompt_for(
         goal, transition_type, declared or {}, item_id, witness)
@@ -276,7 +276,7 @@ def _judge_core(*, tick_id: str, contract_id: str, item_id: str,
         "raw_output_hash": raw_output_hash, "verdict": verdict,
     }
     proof_msg = json.dumps(proof, sort_keys=True, ensure_ascii=False)
-    from src.ztare.gates._daemon_sig import judge_sign
+    from ztare.gates._daemon_sig import judge_sign
     try:
         judge_sig = judge_sign(hashlib.sha256(
             proof_msg.encode("utf-8")).hexdigest())
@@ -311,7 +311,7 @@ def run_request(req_path: str) -> int:
     rec = json.loads(open(req_path, encoding="utf-8").read())
     payload = rec.get("payload") or {}
     canonical = json.dumps(payload, sort_keys=True, ensure_ascii=False)
-    from src.ztare.gates._daemon_sig import verify as daemon_verify
+    from ztare.gates._daemon_sig import verify as daemon_verify
     if not daemon_verify(hashlib.sha256(
             canonical.encode("utf-8")).hexdigest(),
             str(rec.get("daemon_sig", ""))):

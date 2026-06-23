@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.frontier_script_scaffold import (
+from ztare.orchestrator.frontier_script_scaffold import (
     build_frontier_script_scaffold_prompt,
     parse_frontier_script_scaffold_json,
 )

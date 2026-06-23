@@ -1,4 +1,4 @@
-from src.ztare.validator.candidate_extraction import (
+from ztare.validator.candidate_extraction import (
     extract_best_python_candidate,
     preserve_theorem_packet_source,
 )

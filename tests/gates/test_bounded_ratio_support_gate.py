@@ -1,4 +1,4 @@
-from src.ztare.gates.bounded_ratio_support_gate import run_gate
+from ztare.gates.bounded_ratio_support_gate import run_gate
 
 
 def test_bounded_ratio_support_passes_when_overfills():

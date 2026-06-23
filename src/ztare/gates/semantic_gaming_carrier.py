@@ -31,7 +31,7 @@ def _norm(text: str) -> str:
 
 def detect_scope_overclaim(thesis_text: str, evidence_text: str, test_model_text: str) -> bool:
     try:
-        from src.ztare.validator.core.hinge_handoff import (
+        from ztare.validator.core.hinge_handoff import (
             HingeAlignmentStatus,
             build_stage2_handoff,
         )

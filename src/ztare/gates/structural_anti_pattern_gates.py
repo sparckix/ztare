@@ -1124,7 +1124,7 @@ def r24_run(substrate: Any, candidate: Any) -> FeatureBumpPatternVerdict:
 def register_structural_anti_pattern_gates(cage: Any) -> None:
     """Register R20-R23 with a Cage instance. Called from build_cage_runtime."""
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return
     gates = [

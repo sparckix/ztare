@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.orchestrator.discriminator_queue import (
+from ztare.orchestrator.discriminator_queue import (
     DebtRatioPoint,
     DiscriminatorProposal,
     append_discriminator,

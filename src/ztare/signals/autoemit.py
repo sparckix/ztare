@@ -30,8 +30,8 @@ import logging
 from pathlib import Path
 from typing import Optional
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.signals import damage
+from ztare.common.paths import REPO_ROOT
+from ztare.signals import damage
 
 log = logging.getLogger(__name__)
 

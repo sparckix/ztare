@@ -20,7 +20,7 @@ import json
 import sys
 from pathlib import Path
 
-from src.ztare.common.llm_runtime import LLMRuntime, MODEL_MAP
+from ztare.common.llm_runtime import LLMRuntime, MODEL_MAP
 
 PROJECTS_DIR = Path("projects")
 RUBRICS_DIR = Path("rubrics")

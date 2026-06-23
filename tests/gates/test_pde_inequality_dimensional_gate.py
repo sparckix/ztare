@@ -1,4 +1,4 @@
-from src.ztare.gates.pde_inequality_dimensional_gate import run_gate
+from ztare.gates.pde_inequality_dimensional_gate import run_gate
 
 
 def test_physical_vector_mode_accepts_balanced_phase_alignment_bound():

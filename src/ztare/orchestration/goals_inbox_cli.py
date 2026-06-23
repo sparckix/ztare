@@ -15,8 +15,8 @@ from __future__ import annotations
 import argparse
 import sys
 
-from src.ztare.orchestration import goals_inbox as gi
-from src.ztare.signals import damage
+from ztare.orchestration import goals_inbox as gi
+from ztare.signals import damage
 
 
 def cmd_list(args: argparse.Namespace) -> int:

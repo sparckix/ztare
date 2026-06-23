@@ -24,7 +24,7 @@ Cap kinds:
   - unknown              Cap reason present but doesn't match any pattern
 
 Usage:
-  from src.ztare.orchestrator.cap_kind import classify_cap_kind
+  from ztare.orchestrator.cap_kind import classify_cap_kind
   kind = classify_cap_kind(eval_record.get("score_cap_reason"))
   if kind == "gaming":
       # fire forced_reframe / Erdős re-query / structural pivot

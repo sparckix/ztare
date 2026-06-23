@@ -16,7 +16,7 @@ import json
 import unittest
 from unittest.mock import patch
 
-from src.ztare.notifications import telegram as tg
+from ztare.notifications import telegram as tg
 
 
 _PATCHABLE_TELEGRAM_TRANSPORT = (

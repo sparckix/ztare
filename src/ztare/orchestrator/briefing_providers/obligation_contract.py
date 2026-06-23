@@ -23,7 +23,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext, BriefingProvider)
 
 
@@ -46,7 +46,7 @@ class ObligationContractProvider(BriefingProvider):
 
     def fragment(self, ctx: BriefingContext) -> str:
         try:
-            from src.ztare.surfacing.pre_tick_obligation_compiler import (
+            from ztare.surfacing.pre_tick_obligation_compiler import (
                 start_tick)
             signals = self._v4_signals(ctx)
             contract = start_tick(

@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.findings.prose_spec import (
+from ztare.findings.prose_spec import (
     ProseAssertionType,
     ProseSpec,
     ProseSpecAssertion,
@@ -13,7 +13,7 @@ from src.ztare.findings.prose_spec import (
     prose_spec_to_dict,
     validate_prose_spec,
 )
-from src.ztare.findings.prose_verifier import verify_prose_file, verify_prose_markdown
+from ztare.findings.prose_verifier import verify_prose_file, verify_prose_markdown
 
 
 def _write_json(path: Path, payload: dict) -> None:

@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import importlib.util
 import json
-from src.ztare.orchestration import task_authorization as ta
-from src.ztare.orchestration import work_discovery as wd
+from ztare.orchestration import task_authorization as ta
+from ztare.orchestration import work_discovery as wd
 
 from pathlib import Path
 

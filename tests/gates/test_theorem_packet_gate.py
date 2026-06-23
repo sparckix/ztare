@@ -1,4 +1,4 @@
-from src.ztare.gates.theorem_packet_gate import (
+from ztare.gates.theorem_packet_gate import (
     FunctionContract,
     TheoremPacketGateSpec,
     canonical_contract_text,

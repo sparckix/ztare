@@ -1,4 +1,4 @@
-from src.ztare.research_director.primitive_tick_surface import (
+from ztare.research_director.primitive_tick_surface import (
     BUCKET_TERMS,
     DEFAULT_QUERY_TERMS,
     SCOPE_QUERY_TERMS,

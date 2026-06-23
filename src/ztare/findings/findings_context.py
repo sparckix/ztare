@@ -24,7 +24,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 
 DEFAULT_TOKEN_BUDGET = 30_000

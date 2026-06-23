@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
-from src.ztare.roles.loader import (
+from ztare.roles.loader import (
     Assignment,
     BudgetConfig,
     Member,

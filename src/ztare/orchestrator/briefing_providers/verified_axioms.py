@@ -18,7 +18,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
 )

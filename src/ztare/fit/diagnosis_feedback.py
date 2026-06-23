@@ -10,7 +10,7 @@ The LLM does what it does well (structural analogy, cross-domain transfer)
 informed by what the deterministic system measured.
 
 Usage:
-    from src.ztare.fit.diagnosis_feedback import build_diagnosis_prompt
+    from ztare.fit.diagnosis_feedback import build_diagnosis_prompt
     prompt = build_diagnosis_prompt(project_dir)
     # Feed to autoresearch_loop as Phase 1b seed
 """

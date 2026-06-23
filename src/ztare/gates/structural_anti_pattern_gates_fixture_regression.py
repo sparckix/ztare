@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.ztare.gates.structural_anti_pattern_gates import run_apparatus_meta_match
+from ztare.gates.structural_anti_pattern_gates import run_apparatus_meta_match
 
 
 def _codes(form: str) -> set[str]:

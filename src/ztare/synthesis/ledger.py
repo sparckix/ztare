@@ -18,7 +18,7 @@ import json
 import csv
 import argparse
 from datetime import datetime
-from src.ztare.common.paths import PROJECTS_DIR as PROJECTS_PATH, REPO_ROOT
+from ztare.common.paths import PROJECTS_DIR as PROJECTS_PATH, REPO_ROOT
 
 LEDGER_PATH = str(REPO_ROOT / "track_record.csv")
 PROJECTS_DIR = str(PROJECTS_PATH)

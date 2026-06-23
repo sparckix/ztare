@@ -12,7 +12,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 _R1_REASON_RE = re.compile(
@@ -272,7 +272,7 @@ def _projection_constraint_bullets(project_dir: Path) -> list[str]:
     """Surface reusable failed-branch constraints from the read-only projection."""
 
     try:
-        from src.ztare.validator.hypothesis_projection import build_projection
+        from ztare.validator.hypothesis_projection import build_projection
 
         projection = build_projection(project_dir)
     except Exception:
@@ -294,7 +294,7 @@ def _projection_constraint_bullets(project_dir: Path) -> list[str]:
 
 def _projection_constraint_records(project_dir: Path) -> list[dict[str, Any]]:
     try:
-        from src.ztare.validator.hypothesis_projection import build_projection
+        from ztare.validator.hypothesis_projection import build_projection
 
         projection = build_projection(project_dir)
     except Exception:
@@ -323,7 +323,7 @@ def _projection_frontier_bullets(project_dir: Path) -> list[str]:
     """Surface the unresolved critique on the current admitted frontier."""
 
     try:
-        from src.ztare.validator.hypothesis_projection import build_projection
+        from ztare.validator.hypothesis_projection import build_projection
 
         projection = build_projection(project_dir)
     except Exception:
@@ -343,7 +343,7 @@ def _projection_frontier_bullets(project_dir: Path) -> list[str]:
 
 def _projection_frontier_records(project_dir: Path) -> list[dict[str, Any]]:
     try:
-        from src.ztare.validator.hypothesis_projection import build_projection
+        from ztare.validator.hypothesis_projection import build_projection
 
         projection = build_projection(project_dir)
     except Exception:

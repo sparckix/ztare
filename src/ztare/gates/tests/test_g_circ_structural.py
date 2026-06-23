@@ -29,7 +29,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.gates.g_circ import (
+from ztare.gates.g_circ import (
     GATE_ID,
     RUBRIC_FLAG,
     can_handle,

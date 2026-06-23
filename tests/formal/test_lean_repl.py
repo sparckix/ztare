@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.ztare.formal import lean_repl
+from ztare.formal import lean_repl
 
 
 def test_extractors_capture_stub_structure() -> None:

@@ -6,17 +6,17 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_manifest import (
     load_optional_program_manifest,
     manifest_summary,
 )
-from src.ztare.supervisor.supervisor_pipeline import (
+from ztare.supervisor.supervisor_pipeline import (
     default_research_draft_path,
     default_research_spec_path,
     default_research_verification_command,
 )
-from src.ztare.supervisor.supervisor_state import Actor, HandoffStatus, SupervisorState
+from ztare.supervisor.supervisor_state import Actor, HandoffStatus, SupervisorState
 
 
 @dataclass(frozen=True)

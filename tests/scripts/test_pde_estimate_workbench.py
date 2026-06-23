@@ -232,7 +232,7 @@ def test_execution_contract_is_ns_plug_over_generic_shapes() -> None:
 
 
 def test_avisc_pushforward_theorem_accepts_source_bound_not_morphology() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -258,7 +258,7 @@ def test_avisc_pushforward_theorem_accepts_source_bound_not_morphology() -> None
 
 
 def test_avisc_pushforward_theorem_rejects_same_source_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -279,7 +279,7 @@ def test_avisc_pushforward_theorem_rejects_same_source_label_only() -> None:
 
 
 def test_avisc_marked_source_variance_requires_pre_scalar_marked_law() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -307,7 +307,7 @@ def test_avisc_marked_source_variance_requires_pre_scalar_marked_law() -> None:
 
 
 def test_avisc_marked_source_variance_rejects_scalar_pushforward_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -329,7 +329,7 @@ def test_avisc_marked_source_variance_rejects_scalar_pushforward_only() -> None:
 
 
 def test_avisc_marked_source_variance_rejects_scalar_marked_variance_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -353,7 +353,7 @@ def test_avisc_marked_source_variance_rejects_scalar_marked_variance_only() -> N
 
 
 def test_pressure_cutoff_carrier_identity_rejects_angular_moment_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -375,7 +375,7 @@ def test_pressure_cutoff_carrier_identity_rejects_angular_moment_only() -> None:
 
 
 def test_pressure_cutoff_carrier_identity_matches_only_typed_identity_rows() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -400,7 +400,7 @@ def test_pressure_cutoff_carrier_identity_matches_only_typed_identity_rows() -> 
 
 
 def test_pressure_cutoff_fresh_annular_morphology_rejects_avisc_only_identity() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -429,7 +429,7 @@ def test_pressure_cutoff_fresh_annular_morphology_rejects_avisc_only_identity() 
 
 
 def test_selected_c7_longitudinal_subclass_rejects_leray_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -458,7 +458,7 @@ def test_selected_c7_longitudinal_subclass_rejects_leray_only() -> None:
 
 
 def test_selected_c7_longitudinal_subclass_matches_cf_free_coercive_packet_class() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -491,7 +491,7 @@ def test_selected_c7_longitudinal_subclass_matches_cf_free_coercive_packet_class
 
 
 def test_angular_pressure_tomography_rejects_l2_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -516,7 +516,7 @@ def test_angular_pressure_tomography_rejects_l2_label_only() -> None:
 
 
 def test_angular_pressure_tomography_rejects_pointwise_frame_without_owner_prefix() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -545,7 +545,7 @@ def test_angular_pressure_tomography_rejects_pointwise_frame_without_owner_prefi
 
 
 def test_angular_pressure_tomography_matches_same_source_stable_frame() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -579,7 +579,7 @@ def test_angular_pressure_tomography_matches_same_source_stable_frame() -> None:
 
 
 def test_selected_c7_angular_no_sheath_rejects_ownership_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -616,7 +616,7 @@ def test_selected_c7_angular_no_sheath_rejects_ownership_only() -> None:
 
 
 def test_selected_c7_angular_no_sheath_matches_strict_dominance_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -644,7 +644,7 @@ def test_selected_c7_angular_no_sheath_matches_strict_dominance_receipt() -> Non
 
 
 def test_selected_c7_cone_mass_rigidity_rejects_assumed_dominance() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -676,7 +676,7 @@ def test_selected_c7_cone_mass_rigidity_rejects_assumed_dominance() -> None:
 
 
 def test_selected_c7_cone_mass_rigidity_matches_no_escape_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -706,7 +706,7 @@ def test_selected_c7_cone_mass_rigidity_matches_no_escape_source() -> None:
 
 
 def test_selected_c7_oriented_cone_asymmetry_rejects_sign_blind_packet() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -735,7 +735,7 @@ def test_selected_c7_oriented_cone_asymmetry_rejects_sign_blind_packet() -> None
 
 
 def test_selected_c7_oriented_cone_asymmetry_matches_presummed_owner_asymmetry() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -769,7 +769,7 @@ def test_selected_c7_oriented_cone_asymmetry_matches_presummed_owner_asymmetry()
 
 
 def test_presummed_angular_packet_owner_carrier_rejects_final_carrier_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -795,7 +795,7 @@ def test_presummed_angular_packet_owner_carrier_rejects_final_carrier_only() -> 
 
 
 def test_presummed_angular_packet_owner_carrier_matches_typed_spend_surface() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -826,7 +826,7 @@ def test_presummed_angular_packet_owner_carrier_matches_typed_spend_surface() ->
 
 
 def test_angular_sample_owner_preimage_exchange_rejects_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -864,7 +864,7 @@ def test_angular_sample_owner_preimage_exchange_rejects_label_only() -> None:
 
 
 def test_angular_sample_owner_preimage_exchange_matches_numeric_surface() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -907,7 +907,7 @@ def test_angular_sample_owner_preimage_exchange_matches_numeric_surface() -> Non
 
 
 def test_tracefree_variation_owner_section_rejects_target_defined_budget() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -936,7 +936,7 @@ def test_tracefree_variation_owner_section_rejects_target_defined_budget() -> No
 
 
 def test_tracefree_variation_owner_section_matches_interpretation_surface() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -967,7 +967,7 @@ def test_tracefree_variation_owner_section_matches_interpretation_surface() -> N
 
 
 def test_tracefree_variation_cofinal_budget_rejects_single_prefix() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1023,7 +1023,7 @@ def test_tracefree_variation_cofinal_budget_rejects_single_prefix() -> None:
 
 
 def test_tracefree_variation_cofinal_budget_matches_prefix_family() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1062,7 +1062,7 @@ def test_tracefree_variation_cofinal_budget_matches_prefix_family() -> None:
 
 
 def test_annular_owner_fiber_disintegration_rejects_source_substitutes() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1088,7 +1088,7 @@ def test_annular_owner_fiber_disintegration_rejects_source_substitutes() -> None
 
 
 def test_annular_owner_fiber_disintegration_matches_exact_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1122,7 +1122,7 @@ def test_annular_owner_fiber_disintegration_matches_exact_receipt() -> None:
 
 
 def test_tracefree_same_carrier_carleson_rejects_label_and_hidden_inputs() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1162,7 +1162,7 @@ def test_tracefree_same_carrier_carleson_rejects_label_and_hidden_inputs() -> No
 
 
 def test_tracefree_same_carrier_carleson_matches_exact_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1198,7 +1198,7 @@ def test_tracefree_same_carrier_carleson_matches_exact_receipt() -> None:
 
 
 def test_tracefree_pointwise_same_carrier_payment_rejects_square_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1238,7 +1238,7 @@ def test_tracefree_pointwise_same_carrier_payment_rejects_square_only() -> None:
 
 
 def test_tracefree_pointwise_same_carrier_payment_matches_numeric_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1270,7 +1270,7 @@ def test_tracefree_pointwise_same_carrier_payment_matches_numeric_receipt() -> N
 
 
 def test_tracefree_heat_lag_geometric_payment_rejects_linear_stub() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1308,7 +1308,7 @@ def test_tracefree_heat_lag_geometric_payment_rejects_linear_stub() -> None:
 
 
 def test_tracefree_heat_lag_geometric_payment_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1342,7 +1342,7 @@ def test_tracefree_heat_lag_geometric_payment_matches_full_receipt() -> None:
 
 
 def test_tracefree_hardy_tent_atomic_payment_rejects_signed_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1377,7 +1377,7 @@ def test_tracefree_hardy_tent_atomic_payment_rejects_signed_only() -> None:
 
 
 def test_tracefree_hardy_tent_atomic_payment_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1407,7 +1407,7 @@ def test_tracefree_hardy_tent_atomic_payment_matches_full_receipt() -> None:
 
 
 def test_tracefree_cone_leakage_payment_rejects_overflow_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1443,7 +1443,7 @@ def test_tracefree_cone_leakage_payment_rejects_overflow_only() -> None:
 
 
 def test_tracefree_cone_leakage_payment_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1478,7 +1478,7 @@ def test_tracefree_cone_leakage_payment_matches_full_receipt() -> None:
 
 
 def test_fixed_window_total_cone_variation_source_rejects_overflow_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1503,7 +1503,7 @@ def test_fixed_window_total_cone_variation_source_rejects_overflow_only() -> Non
 
 
 def test_fixed_window_total_cone_variation_source_rejects_balanced_dini_ladder() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1531,7 +1531,7 @@ def test_fixed_window_total_cone_variation_source_rejects_balanced_dini_ladder()
 
 
 def test_fixed_window_total_cone_variation_source_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1564,7 +1564,7 @@ def test_fixed_window_total_cone_variation_source_matches_full_receipt() -> None
 
 
 def test_balanced_core_sheath_total_cone_gate_rejects_overflow_only_ladder() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1594,7 +1594,7 @@ def test_balanced_core_sheath_total_cone_gate_rejects_overflow_only_ladder() -> 
 
 
 def test_balanced_core_sheath_total_cone_gate_matches_owner_preimage_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1622,7 +1622,7 @@ def test_balanced_core_sheath_total_cone_gate_matches_owner_preimage_receipt() -
 
 
 def test_balanced_core_sheath_dynamic_transversality_rejects_sample_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1653,7 +1653,7 @@ def test_balanced_core_sheath_dynamic_transversality_rejects_sample_only() -> No
 
 
 def test_balanced_core_sheath_trace_zero_positive_net_budget_confuser_rejects_wrong_trajectory() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1678,7 +1678,7 @@ def test_balanced_core_sheath_trace_zero_positive_net_budget_confuser_rejects_wr
 
 
 def test_balanced_core_sheath_trace_zero_positive_net_budget_confuser_matches_local_jet() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1706,7 +1706,7 @@ def test_balanced_core_sheath_trace_zero_positive_net_budget_confuser_matches_lo
 
 
 def test_local_affine_trace_zero_positive_stretching_confuser_rejects_static_or_finite_energy_claims() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1732,7 +1732,7 @@ def test_local_affine_trace_zero_positive_stretching_confuser_rejects_static_or_
 
 
 def test_local_affine_trace_zero_positive_stretching_confuser_matches_time_dependent_local_jet() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1763,7 +1763,7 @@ def test_local_affine_trace_zero_positive_stretching_confuser_matches_time_depen
 
 
 def test_localized_c7_tent_cutoff_invoice_dominance_rejects_local_or_ratio_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1789,7 +1789,7 @@ def test_localized_c7_tent_cutoff_invoice_dominance_rejects_local_or_ratio_only(
 
 
 def test_localized_c7_tent_cutoff_invoice_dominance_matches_paid_nonlocal_invoice() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1821,7 +1821,7 @@ def test_localized_c7_tent_cutoff_invoice_dominance_matches_paid_nonlocal_invoic
 
 
 def test_localized_c7_scaling_leak_certificate_matches_only_strict_fraction_breaker() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1849,7 +1849,7 @@ def test_localized_c7_scaling_leak_certificate_matches_only_strict_fraction_brea
 
 
 def test_localized_c7_scaling_leak_certificate_rejects_ratio_or_dominance() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1872,7 +1872,7 @@ def test_localized_c7_scaling_leak_certificate_rejects_ratio_or_dominance() -> N
 
 
 def test_parabolic_cutoff_invoice_underpaid_leak_model_matches_strict_fraction_case() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1902,7 +1902,7 @@ def test_parabolic_cutoff_invoice_underpaid_leak_model_matches_strict_fraction_c
 
 
 def test_parabolic_cutoff_invoice_underpaid_leak_model_rejects_positive_payment_substitute() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1925,7 +1925,7 @@ def test_parabolic_cutoff_invoice_underpaid_leak_model_rejects_positive_payment_
 
 
 def test_parabolic_cutoff_invoice_model_matches_normalized_small_surplus_case() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1959,7 +1959,7 @@ def test_parabolic_cutoff_invoice_model_matches_normalized_small_surplus_case() 
 
 
 def test_parabolic_cutoff_invoice_model_rejects_missing_normalization() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -1992,7 +1992,7 @@ def test_parabolic_cutoff_invoice_model_rejects_missing_normalization() -> None:
 
 
 def test_proxy_section_absolute_interface_variation_packet_matches_section_mismatch() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2015,7 +2015,7 @@ def test_proxy_section_absolute_interface_variation_packet_matches_section_misma
 
 
 def test_proxy_section_absolute_interface_variation_rejects_same_section_binding() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2038,7 +2038,7 @@ def test_proxy_section_absolute_interface_variation_rejects_same_section_binding
 
 
 def test_section_fixed_absolute_interface_variation_payment_source_matches_positive_target() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2064,7 +2064,7 @@ def test_section_fixed_absolute_interface_variation_payment_source_matches_posit
 
 
 def test_section_fixed_absolute_interface_variation_rejects_post_payoff_positive_part() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2088,7 +2088,7 @@ def test_section_fixed_absolute_interface_variation_rejects_post_payoff_positive
 
 
 def test_post_payoff_section_repair_packet_matches_late_repair_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2110,7 +2110,7 @@ def test_post_payoff_section_repair_packet_matches_late_repair_confuser() -> Non
 
 
 def test_post_payoff_section_repair_rejects_prepaid_selected_identity() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2132,7 +2132,7 @@ def test_post_payoff_section_repair_rejects_prepaid_selected_identity() -> None:
 
 
 def test_selected_section_absolute_interface_variation_identity_source_matches_positive_target() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2157,7 +2157,7 @@ def test_selected_section_absolute_interface_variation_identity_source_matches_p
 
 
 def test_angular_cone_cutoff_boundary_invoice_unpaid_packet_matches_boundary_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2180,7 +2180,7 @@ def test_angular_cone_cutoff_boundary_invoice_unpaid_packet_matches_boundary_con
 
 
 def test_angular_cone_cutoff_boundary_invoice_unpaid_rejects_support_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2202,7 +2202,7 @@ def test_angular_cone_cutoff_boundary_invoice_unpaid_rejects_support_only() -> N
 
 
 def test_cone_localized_affine_packet_geometry_source_matches_paid_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2228,7 +2228,7 @@ def test_cone_localized_affine_packet_geometry_source_matches_paid_receipt() -> 
 
 
 def test_cone_localized_affine_packet_geometry_source_rejects_boundary_ignored() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2250,7 +2250,7 @@ def test_cone_localized_affine_packet_geometry_source_rejects_boundary_ignored()
 
 
 def test_angular_cone_cutoff_boundary_invoice_payment_source_matches_same_owner_payment() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2283,7 +2283,7 @@ def test_angular_cone_cutoff_boundary_invoice_payment_source_matches_same_owner_
 
 
 def test_angular_cone_cutoff_boundary_invoice_payment_source_rejects_declaration_payment() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2310,7 +2310,7 @@ def test_angular_cone_cutoff_boundary_invoice_payment_source_rejects_declaration
 
 
 def test_thin_angular_collar_boundary_amplification_packet_matches_overspend() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2334,7 +2334,7 @@ def test_thin_angular_collar_boundary_amplification_packet_matches_overspend() -
 
 
 def test_thin_angular_collar_boundary_amplification_rejects_width_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2356,7 +2356,7 @@ def test_thin_angular_collar_boundary_amplification_rejects_width_label() -> Non
 
 
 def test_fixed_profile_angular_collar_charge_source_matches_profile_bound() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2391,7 +2391,7 @@ def test_fixed_profile_angular_collar_charge_source_matches_profile_bound() -> N
 
 
 def test_fixed_profile_angular_collar_charge_source_rejects_profile_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2417,7 +2417,7 @@ def test_fixed_profile_angular_collar_charge_source_rejects_profile_label() -> N
 
 
 def test_angular_coarea_collar_selection_source_matches_pre_payoff_selection() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2446,7 +2446,7 @@ def test_angular_coarea_collar_selection_source_matches_pre_payoff_selection() -
 
 
 def test_angular_coarea_collar_selection_source_rejects_posthoc_threshold() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2470,7 +2470,7 @@ def test_angular_coarea_collar_selection_source_rejects_posthoc_threshold() -> N
 
 
 def test_owner_preimage_coarea_collar_charge_source_matches_owner_prefix() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2500,7 +2500,7 @@ def test_owner_preimage_coarea_collar_charge_source_matches_owner_prefix() -> No
 
 
 def test_owner_preimage_coarea_collar_charge_source_rejects_owner_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2525,7 +2525,7 @@ def test_owner_preimage_coarea_collar_charge_source_rejects_owner_label() -> Non
 
 
 def test_preprojection_projected_collar_exchange_source_matches_tail_paid() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2552,7 +2552,7 @@ def test_preprojection_projected_collar_exchange_source_matches_tail_paid() -> N
 
 
 def test_preprojection_projected_collar_exchange_source_rejects_projection_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2574,7 +2574,7 @@ def test_preprojection_projected_collar_exchange_source_rejects_projection_label
 
 
 def test_projection_tail_reserve_unpaid_packet_matches_tail_gap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2597,7 +2597,7 @@ def test_projection_tail_reserve_unpaid_packet_matches_tail_gap() -> None:
 
 
 def test_shared_partition_projected_collar_invoice_source_matches_single_budget() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2624,7 +2624,7 @@ def test_shared_partition_projected_collar_invoice_source_matches_single_budget(
 
 
 def test_two_invoice_projection_loss_packet_matches_factor_two_gap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2646,7 +2646,7 @@ def test_two_invoice_projection_loss_packet_matches_factor_two_gap() -> None:
 
 
 def test_joint_owner_root_collar_tail_partition_source_requires_owner_root_channel() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2680,7 +2680,7 @@ def test_joint_owner_root_collar_tail_partition_source_requires_owner_root_chann
 
 
 def test_collar_tail_overlap_rebilling_packet_blocks_joint_owner_root_channel() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2703,7 +2703,7 @@ def test_collar_tail_overlap_rebilling_packet_blocks_joint_owner_root_channel() 
 
 
 def test_finite_projected_window_no_overlap_assignment_source_matches_limit_route() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2733,7 +2733,7 @@ def test_finite_projected_window_no_overlap_assignment_source_matches_limit_rout
 
 
 def test_projection_window_no_overlap_persistence_failure_packet_matches_limit_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2757,7 +2757,7 @@ def test_projection_window_no_overlap_persistence_failure_packet_matches_limit_c
 
 
 def test_paid_overlap_projected_window_assignment_source_matches_repair_route() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2791,7 +2791,7 @@ def test_paid_overlap_projected_window_assignment_source_matches_repair_route() 
 
 
 def test_finite_projected_window_paid_nonzero_overlap_reserve_source_matches_repair_route() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2833,7 +2833,7 @@ def test_finite_projected_window_paid_nonzero_overlap_reserve_source_matches_rep
 
 
 def test_four_way_owner_root_subpartition_source_matches_no_rebilling_route() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2889,7 +2889,7 @@ def test_four_way_owner_root_subpartition_source_matches_no_rebilling_route() ->
 
 
 def test_four_way_owner_root_rebilling_packet_blocks_subpartition_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2912,7 +2912,7 @@ def test_four_way_owner_root_rebilling_packet_blocks_subpartition_source() -> No
 
 
 def test_pre_payoff_overlap_preimage_source_matches_owner_geometry_route() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2942,7 +2942,7 @@ def test_pre_payoff_overlap_preimage_source_matches_owner_geometry_route() -> No
 
 
 def test_selected_interface_variation_coarea_overlap_lower_payment_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -2986,7 +2986,7 @@ def test_selected_interface_variation_coarea_overlap_lower_payment_source_matche
 
 
 def test_markov_paley_zygmund_size_sum_coarea_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3014,7 +3014,7 @@ def test_markov_paley_zygmund_size_sum_coarea_source_matches() -> None:
 
 
 def test_high_interface_second_moment_known_basin_boundary_blocks_borrowed_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3037,7 +3037,7 @@ def test_high_interface_second_moment_known_basin_boundary_blocks_borrowed_label
 
 
 def test_fixed_profile_threshold_interface_amplitude_cap_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3075,7 +3075,7 @@ def test_fixed_profile_threshold_interface_amplitude_cap_source_matches() -> Non
 
 
 def test_fixed_profile_threshold_interface_amplitude_cap_source_rejects_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3097,7 +3097,7 @@ def test_fixed_profile_threshold_interface_amplitude_cap_source_rejects_label_on
 
 
 def test_same_prefix_interface_second_moment_cap_size_sum_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3132,7 +3132,7 @@ def test_same_prefix_interface_second_moment_cap_size_sum_source_matches() -> No
 
 
 def test_same_prefix_interface_second_moment_cap_rejects_proxy_energy() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3154,7 +3154,7 @@ def test_same_prefix_interface_second_moment_cap_rejects_proxy_energy() -> None:
 
 
 def test_proxy_second_moment_cap_not_same_prefix_packet_blocks_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3176,7 +3176,7 @@ def test_proxy_second_moment_cap_not_same_prefix_packet_blocks_source() -> None:
 
 
 def test_same_prefix_quadratic_coarea_energy_cap_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3202,7 +3202,7 @@ def test_same_prefix_quadratic_coarea_energy_cap_source_matches() -> None:
 
 
 def test_same_prefix_quadratic_coarea_energy_cap_rejects_linear_budget_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3224,7 +3224,7 @@ def test_same_prefix_quadratic_coarea_energy_cap_rejects_linear_budget_label() -
 
 
 def test_owner_prefix_first_moment_budget_no_second_moment_cap_packet_blocks_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3248,7 +3248,7 @@ def test_owner_prefix_first_moment_budget_no_second_moment_cap_packet_blocks_sou
 
 
 def test_owner_prefix_first_moment_budget_rejects_linear_budget_as_quadratic_cap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3270,7 +3270,7 @@ def test_owner_prefix_first_moment_budget_rejects_linear_budget_as_quadratic_cap
 
 
 def test_fixed_profile_amplitude_cap_anti_spike_size_sum_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3305,7 +3305,7 @@ def test_fixed_profile_amplitude_cap_anti_spike_size_sum_source_matches() -> Non
 
 
 def test_fixed_profile_weight_only_no_amplitude_cap_packet_blocks_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3328,7 +3328,7 @@ def test_fixed_profile_weight_only_no_amplitude_cap_packet_blocks_source() -> No
 
 
 def test_fixed_profile_weight_only_no_amplitude_cap_rejects_weight_as_cap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3349,7 +3349,7 @@ def test_fixed_profile_weight_only_no_amplitude_cap_rejects_weight_as_cap() -> N
 
 
 def test_fixed_profile_amplitude_cap_missing_spike_packet_blocks_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3371,7 +3371,7 @@ def test_fixed_profile_amplitude_cap_missing_spike_packet_blocks_source() -> Non
 
 
 def test_interface_second_moment_concentration_spike_packet_blocks_pz_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3398,7 +3398,7 @@ def test_interface_second_moment_concentration_spike_packet_blocks_pz_source() -
 
 
 def test_paley_zygmund_high_interface_debt_packet_blocks_markov_pz_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3420,7 +3420,7 @@ def test_paley_zygmund_high_interface_debt_packet_blocks_markov_pz_source() -> N
 
 
 def test_size_sum_correlated_coarea_high_low_slice_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3448,7 +3448,7 @@ def test_size_sum_correlated_coarea_high_low_slice_source_matches() -> None:
 
 
 def test_high_low_size_sum_intersection_debt_packet_blocks_size_sum_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3469,7 +3469,7 @@ def test_high_low_size_sum_intersection_debt_packet_blocks_size_sum_source() -> 
 
 
 def test_payment_biased_coarea_slice_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3494,7 +3494,7 @@ def test_payment_biased_coarea_slice_source_matches() -> None:
 
 
 def test_payment_biased_coarea_slice_rejects_post_payoff_bias() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3516,7 +3516,7 @@ def test_payment_biased_coarea_slice_rejects_post_payoff_bias() -> None:
 
 
 def test_correlated_coarea_high_low_interface_slice_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3549,7 +3549,7 @@ def test_correlated_coarea_high_low_interface_slice_source_matches() -> None:
 
 
 def test_quadratic_ratio_size_sum_surplus_certificate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3573,7 +3573,7 @@ def test_quadratic_ratio_size_sum_surplus_certificate_matches() -> None:
 
 
 def test_quadratic_ratio_certificate_rejects_finite_cap_without_ratio() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3595,7 +3595,7 @@ def test_quadratic_ratio_certificate_rejects_finite_cap_without_ratio() -> None:
 
 
 def test_quadratic_cap_too_large_no_size_sum_surplus_packet_blocks_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3618,7 +3618,7 @@ def test_quadratic_cap_too_large_no_size_sum_surplus_packet_blocks_source() -> N
 
 
 def test_quadratic_cap_too_large_rejects_finite_cap_as_surplus() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3640,7 +3640,7 @@ def test_quadratic_cap_too_large_rejects_finite_cap_as_surplus() -> None:
 
 
 def test_coarea_low_slice_high_overlap_disjoint_packet_blocks_correlated_slice() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3666,7 +3666,7 @@ def test_coarea_low_slice_high_overlap_disjoint_packet_blocks_correlated_slice()
 
 
 def test_coarea_low_slice_interface_underpayment_packet_blocks_bridge() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3689,7 +3689,7 @@ def test_coarea_low_slice_interface_underpayment_packet_blocks_bridge() -> None:
 
 
 def test_interface_variation_coarea_overlap_unlinked_packet_blocks_bridge() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3713,7 +3713,7 @@ def test_interface_variation_coarea_overlap_unlinked_packet_blocks_bridge() -> N
 
 
 def test_coarea_collar_lower_payment_to_positive_tv_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3749,7 +3749,7 @@ def test_coarea_collar_lower_payment_to_positive_tv_source_matches() -> None:
 
 
 def test_coarea_collar_paid_but_overlap_underpaid_packet_blocks_bridge() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3772,7 +3772,7 @@ def test_coarea_collar_paid_but_overlap_underpaid_packet_blocks_bridge() -> None
 
 
 def test_coarea_positive_kernel_tv_minorant_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3814,7 +3814,7 @@ def test_coarea_positive_kernel_tv_minorant_source_matches() -> None:
 
 
 def test_coarea_upper_only_no_positive_minorant_packet_blocks_shortcut() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3838,7 +3838,7 @@ def test_coarea_upper_only_no_positive_minorant_packet_blocks_shortcut() -> None
 
 
 def test_positive_localized_kernel_tv_coupling_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3875,7 +3875,7 @@ def test_positive_localized_kernel_tv_coupling_source_matches() -> None:
 
 
 def test_signed_pressure_no_positive_tv_minorant_packet_blocks_false_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3899,7 +3899,7 @@ def test_signed_pressure_no_positive_tv_minorant_packet_blocks_false_source() ->
 
 
 def test_same_owner_localized_schur_transport_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3936,7 +3936,7 @@ def test_same_owner_localized_schur_transport_source_matches() -> None:
 
 
 def test_cross_owner_schur_leakage_packet_blocks_global_l1_shortcut() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3961,7 +3961,7 @@ def test_cross_owner_schur_leakage_packet_blocks_global_l1_shortcut() -> None:
 
 
 def test_owner_root_capacitated_transport_coupling_source_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -3998,7 +3998,7 @@ def test_owner_root_capacitated_transport_coupling_source_matches() -> None:
 
 
 def test_capacitated_transport_hall_defect_packet_requires_cut_capacity() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4024,7 +4024,7 @@ def test_capacitated_transport_hall_defect_packet_requires_cut_capacity() -> Non
 
 
 def test_complete_bipartite_kernel_pair_multiplicity_packet_requires_owner_sparse_selection() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4050,7 +4050,7 @@ def test_complete_bipartite_kernel_pair_multiplicity_packet_requires_owner_spars
 
 
 def test_kernel_relation_not_owner_preimage_packet_requires_sparse_domination() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4076,7 +4076,7 @@ def test_kernel_relation_not_owner_preimage_packet_requires_sparse_domination() 
 
 
 def test_annular_kernel_l1_overlap_preimage_gap_packet_blocks_false_payment() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4105,7 +4105,7 @@ def test_annular_kernel_l1_overlap_preimage_gap_packet_blocks_false_payment() ->
 
 
 def test_post_projection_overlap_only_packet_blocks_pre_payoff_overlap_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4129,7 +4129,7 @@ def test_post_projection_overlap_only_packet_blocks_pre_payoff_overlap_source() 
 
 
 def test_paid_nonzero_overlap_reserve_underpaid_packet_blocks_finite_paid_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4157,7 +4157,7 @@ def test_paid_nonzero_overlap_reserve_underpaid_packet_blocks_finite_paid_source
 
 
 def test_unpaid_projected_overlap_reserve_packet_blocks_paid_overlap_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4183,7 +4183,7 @@ def test_unpaid_projected_overlap_reserve_packet_blocks_paid_overlap_source() ->
 
 
 def test_spatial_support_eigencone_mismatch_packet_matches_geometry_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4205,7 +4205,7 @@ def test_spatial_support_eigencone_mismatch_packet_matches_geometry_confuser() -
 
 
 def test_spatial_support_eigencone_mismatch_rejects_direction_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4227,7 +4227,7 @@ def test_spatial_support_eigencone_mismatch_rejects_direction_only() -> None:
 
 
 def test_eigenframe_label_without_selected_cone_inclusion_packet_matches_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4250,7 +4250,7 @@ def test_eigenframe_label_without_selected_cone_inclusion_packet_matches_confuse
 
 
 def test_eigenframe_label_without_selected_cone_inclusion_rejects_labels_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4272,7 +4272,7 @@ def test_eigenframe_label_without_selected_cone_inclusion_rejects_labels_only() 
 
 
 def test_localized_affine_eigenframe_section_binding_source_matches_consumer() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4298,7 +4298,7 @@ def test_localized_affine_eigenframe_section_binding_source_matches_consumer() -
 
 
 def test_localized_affine_eigenframe_section_binding_rejects_labels_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4320,7 +4320,7 @@ def test_localized_affine_eigenframe_section_binding_rejects_labels_only() -> No
 
 
 def test_raw_positive_eigencone_loss_unpaid_packet_matches_geometric_loss_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4343,7 +4343,7 @@ def test_raw_positive_eigencone_loss_unpaid_packet_matches_geometric_loss_confus
 
 
 def test_raw_positive_eigencone_loss_unpaid_rejects_paid_loss() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4365,7 +4365,7 @@ def test_raw_positive_eigencone_loss_unpaid_rejects_paid_loss() -> None:
 
 
 def test_affine_positive_eigencone_loss_paid_interface_variation_source_matches_target() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4393,7 +4393,7 @@ def test_affine_positive_eigencone_loss_paid_interface_variation_source_matches_
 
 
 def test_affine_positive_eigencone_loss_paid_rejects_raw_cone_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4415,7 +4415,7 @@ def test_affine_positive_eigencone_loss_paid_rejects_raw_cone_only() -> None:
 
 
 def test_section_label_only_interface_variation_oracle_ambiguity_matches_old_wall() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4438,7 +4438,7 @@ def test_section_label_only_interface_variation_oracle_ambiguity_matches_old_wal
 
 
 def test_section_label_only_interface_variation_oracle_rejects_extensional_measure() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4460,7 +4460,7 @@ def test_section_label_only_interface_variation_oracle_rejects_extensional_measu
 
 
 def test_selected_section_extensional_interface_variation_measure_source_matches_positive_target() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4485,7 +4485,7 @@ def test_selected_section_extensional_interface_variation_measure_source_matches
 
 
 def test_selected_section_extensional_interface_variation_rejects_scalar_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4508,7 +4508,7 @@ def test_selected_section_extensional_interface_variation_rejects_scalar_only() 
 
 
 def test_selected_section_absolute_interface_variation_rejects_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4532,7 +4532,7 @@ def test_selected_section_absolute_interface_variation_rejects_label_only() -> N
 
 
 def test_signed_transport_commutator_cancellation_packet_matches_positive_variation_gap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4555,7 +4555,7 @@ def test_signed_transport_commutator_cancellation_packet_matches_positive_variat
 
 
 def test_signed_transport_commutator_cancellation_rejects_signed_payment_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4578,7 +4578,7 @@ def test_signed_transport_commutator_cancellation_rejects_signed_payment_only() 
 
 
 def test_proxy_owner_transport_commutator_underpayment_packet_matches_owner_mismatch() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4601,7 +4601,7 @@ def test_proxy_owner_transport_commutator_underpayment_packet_matches_owner_mism
 
 
 def test_proxy_owner_transport_commutator_underpayment_rejects_same_prefix_repair() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4624,7 +4624,7 @@ def test_proxy_owner_transport_commutator_underpayment_rejects_same_prefix_repai
 
 
 def test_localized_affine_euler_core_high_pi_interface_payment_source_matches_commutator_payer() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4648,7 +4648,7 @@ def test_localized_affine_euler_core_high_pi_interface_payment_source_matches_co
 
 
 def test_localized_affine_euler_core_high_pi_interface_payment_rejects_proxy_commutator() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4671,7 +4671,7 @@ def test_localized_affine_euler_core_high_pi_interface_payment_rejects_proxy_com
 
 
 def test_localized_affine_euler_core_high_pi_underpayment_packet_matches_scaling_obstruction() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4695,7 +4695,7 @@ def test_localized_affine_euler_core_high_pi_underpayment_packet_matches_scaling
 
 
 def test_localized_affine_euler_core_high_pi_underpayment_rejects_cutoff_shell_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4718,7 +4718,7 @@ def test_localized_affine_euler_core_high_pi_underpayment_rejects_cutoff_shell_o
 
 
 def test_parabolic_effective_invoice_underpaid_channel_packet_matches_gap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4745,7 +4745,7 @@ def test_parabolic_effective_invoice_underpaid_channel_packet_matches_gap() -> N
 
 
 def test_parabolic_effective_invoice_underpaid_channel_packet_rejects_channel_estimate() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4771,7 +4771,7 @@ def test_parabolic_effective_invoice_underpaid_channel_packet_rejects_channel_es
 
 
 def test_parabolic_channel_coefficient_estimate_source_matches_exact_consumer() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4796,7 +4796,7 @@ def test_parabolic_channel_coefficient_estimate_source_matches_exact_consumer() 
 
 
 def test_parabolic_channel_coefficient_estimate_source_rejects_underpaid_gap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4818,7 +4818,7 @@ def test_parabolic_channel_coefficient_estimate_source_rejects_underpaid_gap() -
 
 
 def test_parabolic_effective_invoice_coefficient_matches_sourced_dynamic_budget() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4861,7 +4861,7 @@ def test_parabolic_effective_invoice_coefficient_matches_sourced_dynamic_budget(
 
 
 def test_parabolic_effective_invoice_coefficient_rejects_tautological_coefficient() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4894,7 +4894,7 @@ def test_parabolic_effective_invoice_coefficient_rejects_tautological_coefficien
 
 
 def test_parabolic_pi_lock_owner_label_only_confuser_matches_missing_source_contract() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4918,7 +4918,7 @@ def test_parabolic_pi_lock_owner_label_only_confuser_matches_missing_source_cont
 
 
 def test_parabolic_pi_lock_owner_label_only_confuser_rejects_actual_source_contract() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4945,7 +4945,7 @@ def test_parabolic_pi_lock_owner_label_only_confuser_rejects_actual_source_contr
 
 
 def test_parabolic_active_scale_pi_lock_matches_reynolds_deficit_bridge() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -4988,7 +4988,7 @@ def test_parabolic_active_scale_pi_lock_matches_reynolds_deficit_bridge() -> Non
 
 
 def test_parabolic_active_scale_pi_lock_rejects_ownership_or_ratio_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5020,7 +5020,7 @@ def test_parabolic_active_scale_pi_lock_rejects_ownership_or_ratio_only() -> Non
 
 
 def test_parabolic_finite_energy_invoice_lower_bound_rejects_final_carrier_substitutes() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5054,7 +5054,7 @@ def test_parabolic_finite_energy_invoice_lower_bound_rejects_final_carrier_subst
 
 
 def test_parabolic_finite_energy_invoice_lower_bound_matches_full_same_owner_payment() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5088,7 +5088,7 @@ def test_parabolic_finite_energy_invoice_lower_bound_matches_full_same_owner_pay
 
 
 def test_balanced_core_sheath_trace_zero_positive_net_budget_exclusion_rejects_scalar_stealth() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5115,7 +5115,7 @@ def test_balanced_core_sheath_trace_zero_positive_net_budget_exclusion_rejects_s
 
 
 def test_balanced_core_sheath_trace_zero_positive_net_budget_exclusion_matches_fixed_frame_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5153,7 +5153,7 @@ def test_balanced_core_sheath_trace_zero_positive_net_budget_exclusion_matches_f
 
 
 def test_pressure_hessian_l2_frame_self_tax_budget_source_rejects_proxy_carrier() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5175,7 +5175,7 @@ def test_pressure_hessian_l2_frame_self_tax_budget_source_rejects_proxy_carrier(
 
 
 def test_pressure_hessian_l2_frame_self_tax_budget_source_matches_cap() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5202,7 +5202,7 @@ def test_pressure_hessian_l2_frame_self_tax_budget_source_matches_cap() -> None:
 
 
 def test_same_window_presummed_pressure_frame_self_tax_rejects_final_carrier() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5225,7 +5225,7 @@ def test_same_window_presummed_pressure_frame_self_tax_rejects_final_carrier() -
 
 
 def test_same_window_presummed_pressure_frame_self_tax_matches_paid_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5258,7 +5258,7 @@ def test_same_window_presummed_pressure_frame_self_tax_matches_paid_receipt() ->
     assert match["concludes"]["TraceZeroPositiveNetBudgetDualPriceFrameReceipt"] is True
 
 def test_pressure_l2_cap_pays_same_source_frame_self_tax_rejects_null_stress() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5281,7 +5281,7 @@ def test_pressure_l2_cap_pays_same_source_frame_self_tax_rejects_null_stress() -
 
 
 def test_pressure_l2_cap_pays_same_source_frame_self_tax_matches_same_window_dual_price() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5313,7 +5313,7 @@ def test_pressure_l2_cap_pays_same_source_frame_self_tax_matches_same_window_dua
 
 
 def test_pressure_l2_cap_pays_same_source_frame_self_tax_rejects_underseparated_channels() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5342,7 +5342,7 @@ def test_pressure_l2_cap_pays_same_source_frame_self_tax_rejects_underseparated_
     assert "no_reuse_channel_missing" in match["rejected_substitutes"]
 
 def test_balanced_core_sheath_dual_price_frame_exclusion_rejects_rank_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5367,7 +5367,7 @@ def test_balanced_core_sheath_dual_price_frame_exclusion_rejects_rank_only() -> 
 
 
 def test_balanced_core_sheath_dual_price_frame_exclusion_matches_dual_product() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5402,7 +5402,7 @@ def test_balanced_core_sheath_dual_price_frame_exclusion_matches_dual_product() 
 
 
 def test_selected_balanced_cone_signed_global_budget_rejects_pressure_visibility() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5428,7 +5428,7 @@ def test_selected_balanced_cone_signed_global_budget_rejects_pressure_visibility
 
 
 def test_selected_balanced_cone_signed_global_budget_matches_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5460,7 +5460,7 @@ def test_selected_balanced_cone_signed_global_budget_matches_receipt() -> None:
     assert match["concludes"]["BalancedCoreSheathSignedGrowthSterilityReceipt"] is True
 
 def test_balanced_core_sheath_sos_gap_certificate_rejects_numeric_sdp_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5484,7 +5484,7 @@ def test_balanced_core_sheath_sos_gap_certificate_rejects_numeric_sdp_only() -> 
 
 
 def test_balanced_core_sheath_sos_gap_certificate_matches_exact_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5511,7 +5511,7 @@ def test_balanced_core_sheath_sos_gap_certificate_matches_exact_source() -> None
 
 
 def test_balanced_core_sheath_signed_growth_sterility_rejects_local_pockets() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5538,7 +5538,7 @@ def test_balanced_core_sheath_signed_growth_sterility_rejects_local_pockets() ->
 
 
 def test_balanced_core_sheath_signed_growth_sterility_matches_same_trajectory_budget() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5563,7 +5563,7 @@ def test_balanced_core_sheath_signed_growth_sterility_matches_same_trajectory_bu
 
 
 def test_balanced_core_sheath_dynamic_transversality_matches_uniform_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5596,7 +5596,7 @@ def test_balanced_core_sheath_dynamic_transversality_matches_uniform_receipt() -
 
 
 def test_tracefree_dimensional_length_payment_rejects_free_pi_group() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5622,7 +5622,7 @@ def test_tracefree_dimensional_length_payment_rejects_free_pi_group() -> None:
 
 
 def test_tracefree_dimensional_length_payment_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5653,7 +5653,7 @@ def test_tracefree_dimensional_length_payment_matches_full_receipt() -> None:
 
 
 def test_tracefree_commutator_nullform_payment_rejects_signed_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5679,7 +5679,7 @@ def test_tracefree_commutator_nullform_payment_rejects_signed_only() -> None:
 
 
 def test_tracefree_cz_endpoint_payment_rejects_weak_endpoint_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5703,7 +5703,7 @@ def test_tracefree_cz_endpoint_payment_rejects_weak_endpoint_only() -> None:
 
 
 def test_tracefree_psd_matrix_defect_payment_rejects_preprojection_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5728,7 +5728,7 @@ def test_tracefree_psd_matrix_defect_payment_rejects_preprojection_only() -> Non
 
 
 def test_tracefree_projected_target_preprojection_identity_rejects_missing_identity() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5753,7 +5753,7 @@ def test_tracefree_projected_target_preprojection_identity_rejects_missing_ident
 
 
 def test_tracefree_projected_target_preprojection_identity_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -5786,7 +5786,7 @@ def test_tracefree_projected_target_preprojection_identity_matches_full_receipt(
 
 
 def test_tracefree_beta_square_transfer_rejects_square_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7120,7 +7120,7 @@ def test_residual_normal_form_uses_live_context_fields() -> None:
 
 
 def test_five_frame_route_tail_exchange_requires_same_prefix_comparison() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7147,7 +7147,7 @@ def test_five_frame_route_tail_exchange_requires_same_prefix_comparison() -> Non
 
 
 def test_five_frame_route_tail_exchange_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7173,7 +7173,7 @@ def test_five_frame_route_tail_exchange_matches_full_receipt() -> None:
 
 
 def test_annular_bandlimited_riesz_l1_psd_trace_payment_rejects_raw_target() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7199,7 +7199,7 @@ def test_annular_bandlimited_riesz_l1_psd_trace_payment_rejects_raw_target() -> 
 
 
 def test_annular_bandlimited_riesz_l1_rejects_route_tail_spent_on_five_frame_pay() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7230,7 +7230,7 @@ def test_annular_bandlimited_riesz_l1_rejects_route_tail_spent_on_five_frame_pay
 
 
 def test_annular_bandlimited_riesz_l1_psd_trace_payment_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7263,7 +7263,7 @@ def test_annular_bandlimited_riesz_l1_psd_trace_payment_matches_full_receipt() -
 
 
 def test_route1_annular_output_packet_source_rejects_downstream_receipt_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7287,7 +7287,7 @@ def test_route1_annular_output_packet_source_rejects_downstream_receipt_only() -
 
 
 def test_route1_annular_output_packet_source_matches_full_source_certificate() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7317,7 +7317,7 @@ def test_route1_annular_output_packet_source_matches_full_source_certificate() -
 
 
 def test_route1_annular_output_identity_rejects_scalar_moment_confuser() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7342,7 +7342,7 @@ def test_route1_annular_output_identity_rejects_scalar_moment_confuser() -> None
 
 
 def test_route1_annular_output_identity_matches_full_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7404,7 +7404,7 @@ def test_linear_observable_coercivity_check_rejects_rank_defect(tmp_path):
 
 
 def test_tick647_wall_scope_log_gate_rejects_bkm_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7426,7 +7426,7 @@ def test_tick647_wall_scope_log_gate_rejects_bkm_label_only() -> None:
 
 
 def test_tick647_wall_scope_log_gate_matches_paid_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7452,7 +7452,7 @@ def test_tick647_wall_scope_log_gate_matches_paid_receipt() -> None:
 
 
 def test_tick647_wall_scope_topology_gate_rejects_helicity_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -7474,7 +7474,7 @@ def test_tick647_wall_scope_topology_gate_rejects_helicity_label_only() -> None:
 
 
 def test_tick647_wall_scope_topology_gate_matches_paid_receipt() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
 
@@ -8263,7 +8263,7 @@ def test_pde_execution_consumes_metric_covering_selection_gate(tmp_path: Path) -
 
 
 def test_heat_scale_carleson_bar_budget_source_gate_matches_and_rejects_substitutes() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8349,7 +8349,7 @@ def test_pde_execution_consumes_persistence_budget_exponent_gate(tmp_path: Path)
     assert checks[1]["result"]["passed"] is True
 
 def test_finite_prefix_boundary_interface_selection_gate_matches_paid_source_contract() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8378,7 +8378,7 @@ def test_finite_prefix_boundary_interface_selection_gate_matches_paid_source_con
 
 
 def test_finite_prefix_boundary_interface_selection_gate_rejects_proxy_prefix() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8408,7 +8408,7 @@ def test_finite_prefix_boundary_interface_selection_gate_rejects_proxy_prefix() 
 
 
 def test_interface_weighted_boundary_paid_floor_correlation_source_gate() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8454,7 +8454,7 @@ def test_interface_weighted_boundary_paid_floor_correlation_source_gate() -> Non
 
 
 def test_selected_prefix_nonnegative_channel_collapse_gate_matches_paid_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8483,7 +8483,7 @@ def test_selected_prefix_nonnegative_channel_collapse_gate_matches_paid_source()
 
 
 def test_selected_prefix_nonnegative_channel_collapse_gate_rejects_signed_misclassification() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8514,7 +8514,7 @@ def test_selected_prefix_nonnegative_channel_collapse_gate_rejects_signed_miscla
 
 
 def test_selected_prefix_unbounded_debit_channel_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8538,7 +8538,7 @@ def test_selected_prefix_unbounded_debit_channel_confuser_gate_matches() -> None
 
 
 def test_selected_coalescent_current_quotient_debit_gate_matches_paid_source() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8570,7 +8570,7 @@ def test_selected_coalescent_current_quotient_debit_gate_matches_paid_source() -
 
 
 def test_selected_coalescent_current_quotient_debit_gate_rejects_unpaid_omission() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8600,7 +8600,7 @@ def test_selected_coalescent_current_quotient_debit_gate_rejects_unpaid_omission
 
 
 def test_many_endpoint_one_current_class_underpaid_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8626,7 +8626,7 @@ def test_many_endpoint_one_current_class_underpaid_confuser_gate_matches() -> No
 
 
 def test_pre_positive_current_annihilation_or_paid_omitted_endpoint_debit_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8657,7 +8657,7 @@ def test_pre_positive_current_annihilation_or_paid_omitted_endpoint_debit_gate_m
 
 
 def test_pre_positive_current_annihilation_gate_rejects_positive_relabel() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8688,7 +8688,7 @@ def test_pre_positive_current_annihilation_gate_rejects_positive_relabel() -> No
 
 
 def test_pre_positive_current_no_annihilation_underpaid_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8714,7 +8714,7 @@ def test_pre_positive_current_no_annihilation_underpaid_confuser_gate_matches() 
 
 
 def test_positive_scalar_endpoint_debit_current_annihilation_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8743,7 +8743,7 @@ def test_positive_scalar_endpoint_debit_current_annihilation_confuser_gate_match
 
 
 def test_positive_scalar_endpoint_debit_current_annihilation_confuser_gate_keeps_pre_scalar_escape() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8774,7 +8774,7 @@ def test_positive_scalar_endpoint_debit_current_annihilation_confuser_gate_keeps
 
 
 def test_lei_native_high_interface_boundary_no_reuse_budget_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8805,7 +8805,7 @@ def test_lei_native_high_interface_boundary_no_reuse_budget_source_gate_matches(
 
 
 def test_lei_native_high_interface_boundary_no_reuse_budget_source_gate_rejects_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8834,7 +8834,7 @@ def test_lei_native_high_interface_boundary_no_reuse_budget_source_gate_rejects_
 
 
 def test_high_interface_boundary_no_reuse_finite_budget_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8859,7 +8859,7 @@ def test_high_interface_boundary_no_reuse_finite_budget_confuser_gate_matches() 
 
 
 def test_coherent_finite_prefix_high_interface_boundary_invoice_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8892,7 +8892,7 @@ def test_coherent_finite_prefix_high_interface_boundary_invoice_source_gate_matc
 
 
 def test_coherent_finite_prefix_high_interface_boundary_invoice_source_gate_rejects_prefixwise_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8921,7 +8921,7 @@ def test_coherent_finite_prefix_high_interface_boundary_invoice_source_gate_reje
 
 
 def test_finite_prefix_high_interface_boundary_invoice_without_coherence_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8947,7 +8947,7 @@ def test_finite_prefix_high_interface_boundary_invoice_without_coherence_confuse
 
 
 def test_high_interface_boundary_metric_covering_prefix_coherence_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -8985,7 +8985,7 @@ def test_high_interface_boundary_metric_covering_prefix_coherence_source_gate_ma
 
 
 def test_high_interface_boundary_metric_covering_prefix_coherence_source_gate_rejects_label_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9021,7 +9021,7 @@ def test_high_interface_boundary_metric_covering_prefix_coherence_source_gate_re
 
 
 def test_high_interface_boundary_nonwhitney_nested_cascade_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9046,7 +9046,7 @@ def test_high_interface_boundary_nonwhitney_nested_cascade_confuser_gate_matches
 
 
 def test_high_interface_boundary_carleson_packing_selection_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9081,7 +9081,7 @@ def test_high_interface_boundary_carleson_packing_selection_source_gate_matches(
 
 
 def test_high_interface_boundary_carleson_packing_selection_source_gate_rejects_finite_measure_only() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9114,7 +9114,7 @@ def test_high_interface_boundary_carleson_packing_selection_source_gate_rejects_
 
 
 def test_finite_boundary_measure_nested_mass_reuse_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9138,7 +9138,7 @@ def test_finite_boundary_measure_nested_mass_reuse_confuser_gate_matches() -> No
 
 
 def test_high_interface_boundary_stopping_tree_energy_decrement_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9174,7 +9174,7 @@ def test_high_interface_boundary_stopping_tree_energy_decrement_source_gate_matc
 
 
 def test_high_interface_boundary_stopping_tree_energy_decrement_source_gate_rejects_energy_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9208,7 +9208,7 @@ def test_high_interface_boundary_stopping_tree_energy_decrement_source_gate_reje
 
 
 def test_boundary_carleson_without_stopping_decrement_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9231,7 +9231,7 @@ def test_boundary_carleson_without_stopping_decrement_confuser_gate_matches() ->
     ] is True
 
 def test_channel_separated_stopping_tree_decrement_reserve_source_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9273,7 +9273,7 @@ def test_channel_separated_stopping_tree_decrement_reserve_source_gate_matches()
 
 
 def test_channel_separated_stopping_tree_decrement_reserve_source_gate_rejects_refill_label() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()
@@ -9313,7 +9313,7 @@ def test_channel_separated_stopping_tree_decrement_reserve_source_gate_rejects_r
 
 
 def test_stopping_tree_decrement_reserve_refill_confuser_gate_matches() -> None:
-    from src.ztare.research_director.theorem_applicability_db import (
+    from ztare.research_director.theorem_applicability_db import (
         match_theorem_applicability,
     )
     module = _load_module()

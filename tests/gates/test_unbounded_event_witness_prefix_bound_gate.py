@@ -1,4 +1,4 @@
-from src.ztare.gates.unbounded_event_witness_prefix_bound_gate import (
+from ztare.gates.unbounded_event_witness_prefix_bound_gate import (
     REQUIRED_FIELDS,
     run_unbounded_event_witness_prefix_bound_gate,
 )

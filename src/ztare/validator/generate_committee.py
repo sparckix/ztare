@@ -3,20 +3,20 @@ import json
 import argparse
 from google import genai
 from google.genai import types
-from src.ztare.common import utils
-from src.ztare.common.dispatch_model import (
+from ztare.common import utils
+from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
     dispatch_model,
     dispatch_result_receipt,
     resolve_dispatch_capability,
 )
-from src.ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES, LLMRuntime, resolve_model_id
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.llm_runtime import PRODUCTION_CALL_RETRIES, LLMRuntime, resolve_model_id
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import time
 import concurrent.futures
-from src.ztare.primitives.primitive_library import format_attack_templates, retrieve_primitives
-from src.ztare.validator.committees.shadow_board import build_shadow_board_committee
-from src.ztare.validator.utilities.v4_family import is_v4_family_project
+from ztare.primitives.primitive_library import format_attack_templates, retrieve_primitives
+from ztare.validator.committees.shadow_board import build_shadow_board_committee
+from ztare.validator.utilities.v4_family import is_v4_family_project
 parser = argparse.ArgumentParser()
 parser.add_argument("--project", required=True)
 parser.add_argument("--use_primitives", action="store_true")

@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from dataclasses import asdict
 
-from src.ztare.research_director.primitive_parent_utility import (
+from ztare.research_director.primitive_parent_utility import (
     build_parent_utility_audit,
     render_parent_utility_audit,
 )
-from src.ztare.research_director.primitive_tick_surface import (
+from ztare.research_director.primitive_tick_surface import (
     build_primitive_tick_surface,
     render_text,
 )

@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
+from ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
 
 
 REPO = Path(__file__).resolve().parents[3]

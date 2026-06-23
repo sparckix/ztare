@@ -25,8 +25,8 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.gates.cage import Cage
-from src.ztare.gates.registry import get_default_cage
+from ztare.gates.cage import Cage
+from ztare.gates.registry import get_default_cage
 
 
 # ── Fixtures: minimal substrate-meta for each substrate class ────────

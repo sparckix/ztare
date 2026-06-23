@@ -44,7 +44,7 @@ def run_symmetry_false_negative_gate(
     """Run G-SYM-FN by generating canary substrates with known symmetries
     and counting how many SymmetryScanner correctly identifies.
     """
-    from src.ztare.framer.symmetry import scan_symmetries
+    from ztare.framer.symmetry import scan_symmetries
 
     correct = 0
     total = 0

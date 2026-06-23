@@ -18,7 +18,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-from src.ztare.orchestrator.discriminator_queue import (
+from ztare.orchestrator.discriminator_queue import (
     DiscriminatorProposal,
     project_dir_from_slug,
 )

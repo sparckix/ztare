@@ -15,7 +15,7 @@ import json
 import re
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
 )
@@ -73,7 +73,7 @@ class IterTrajectoryProvider(BriefingProvider):
         except Exception:
             return ""
         try:
-            from src.ztare.orchestrator.forced_reframe import (
+            from ztare.orchestrator.forced_reframe import (
                 extract_parametric_form_from_source as _extract_form,
             )
         except ImportError:

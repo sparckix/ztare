@@ -5,9 +5,9 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Any, Dict, List
 
-from src.ztare.common import utils
-from src.ztare.common.paths import GLOBAL_PRIMITIVES_DIR, PROMPTS_DIR, REPO_ROOT
-from src.ztare.workspace.compile_evidence import LLMClient, write_json, write_text
+from ztare.common import utils
+from ztare.common.paths import GLOBAL_PRIMITIVES_DIR, PROMPTS_DIR, REPO_ROOT
+from ztare.workspace.compile_evidence import LLMClient, write_json, write_text
 
 
 ROOT_DIR = REPO_ROOT

@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.signals import autoemit, damage
+from ztare.signals import autoemit, damage
 
 
 def _write_meta(session_dir: Path, session_id: str, end_utc=None):

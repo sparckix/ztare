@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from src.ztare.orchestrator.evidence_contract import (
+from ztare.orchestrator.evidence_contract import (
     EvidenceFormat,
     EvidenceSpec,
     EvidenceContractError,

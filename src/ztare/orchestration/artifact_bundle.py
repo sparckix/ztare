@@ -5,7 +5,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT
 
 
 @dataclass

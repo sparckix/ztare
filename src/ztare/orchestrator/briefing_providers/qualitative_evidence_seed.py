@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 ARTIFACT_NAME = "qualitative_evidence_cold_shot.json"
 

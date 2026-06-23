@@ -17,8 +17,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Literal
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.orchestration.transition_log import append_transition
+from ztare.common.paths import REPO_ROOT
+from ztare.orchestration.transition_log import append_transition
 
 
 CHANNELS_DIR = REPO_ROOT / "org" / "channels"

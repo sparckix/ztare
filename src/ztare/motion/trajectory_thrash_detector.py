@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
-from src.ztare.gates.structural_constraint_extractor import (
+from ztare.gates.structural_constraint_extractor import (
     _extract_feature_bag,
     _normalize_family_label,
     _parse_to_ast,

@@ -10,7 +10,7 @@ from __future__ import annotations
 from typing import Any
 
 try:
-    from src.ztare.gates.required_field_semantics import is_semantically_present
+    from ztare.gates.required_field_semantics import is_semantically_present
 except ModuleNotFoundError:  # pragma: no cover - direct script execution fallback
     from required_field_semantics import is_semantically_present
 

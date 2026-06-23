@@ -1,4 +1,4 @@
-from src.ztare.research_director.receipt_strength_audit import (
+from ztare.research_director.receipt_strength_audit import (
     run_receipt_strength_audit,
 )
 

@@ -6,9 +6,9 @@ import re
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.orchestration.arbiter import merge_critic_reports, render_markdown
-from src.ztare.orchestration.artifact_bundle import build_stage1_fail_bundle, bundle_to_dict
+from ztare.common.paths import PROJECTS_DIR
+from ztare.orchestration.arbiter import merge_critic_reports, render_markdown
+from ztare.orchestration.artifact_bundle import build_stage1_fail_bundle, bundle_to_dict
 
 
 DEFAULT_CRITICS = ["critic_a", "critic_b"]

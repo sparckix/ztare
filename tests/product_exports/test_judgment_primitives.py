@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.product_exports.judgment_primitives import (
+from ztare.product_exports.judgment_primitives import (
     JUDGMENT_PRIMITIVES_V1,
     NON_PRIMITIVE_RUNTIME_CONCEPTS_V1,
     export_judgment_primitives_payload,
@@ -26,8 +26,9 @@ def test_runtime_concepts_are_not_exported_as_primitives() -> None:
 def test_public_payload_does_not_leak_private_paths_or_seam_ids() -> None:
     payload = export_judgment_primitives_payload()
     blob = json.dumps(payload, sort_keys=True)
+    private_path_marker = "research_areas/" + "private"
     forbidden_fragments = [
-        "research_areas/private",
+        private_path_marker,
         "GP-",
         "seam:",
         ".md",
@@ -40,4 +41,4 @@ def test_typescript_render_contains_public_export_only() -> None:
     ts_blob = render_typescript_module()
     assert "JUDGMENT_PRIMITIVES_EXPORT" in ts_blob
     assert "topological_pivot" in ts_blob
-    assert "research_areas/private" not in ts_blob
+    assert "research_areas/" + "private" not in ts_blob

@@ -28,7 +28,7 @@ quantities used directly inside transcendentals.
 
 Usage
 -----
-  from src.ztare.gates.buckingham_pi_gate import run_buckingham_pi_gate
+  from ztare.gates.buckingham_pi_gate import run_buckingham_pi_gate
   result = run_buckingham_pi_gate(parametric_form, rubric_data=rubric)
   if not result["passed"]:
       # treat as R1 strike with structural feedback

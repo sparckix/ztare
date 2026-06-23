@@ -155,7 +155,7 @@ def _compute_anonymized_fingerprint(
     }
     # Apply Panel-Blindspot-1 quantization
     try:
-        from src.ztare.fit.cold_llm_erdos_seed import quantize_fingerprint
+        from ztare.fit.cold_llm_erdos_seed import quantize_fingerprint
         return quantize_fingerprint(raw_fp)
     except ImportError:
         return raw_fp
@@ -184,7 +184,7 @@ def dispatch_pre_iter1_cage(
 
     _policy = None
     try:
-        from src.ztare.orchestrator.cold_shot_policy import (
+        from ztare.orchestrator.cold_shot_policy import (
             route_cold_shot_families,
             write_policy_artifacts,
         )
@@ -224,7 +224,7 @@ def dispatch_pre_iter1_cage(
         if not _evidence_selected:
             return
         try:
-            from src.ztare.orchestrator.qualitative_evidence_cold_shot import (
+            from ztare.orchestrator.qualitative_evidence_cold_shot import (
                 run_qualitative_evidence_cold_shot,
             )
             ev_result = run_qualitative_evidence_cold_shot(
@@ -291,7 +291,7 @@ def dispatch_pre_iter1_cage(
     timeout_s = float(rubric_data.get("cold_llm_seed_timeout_seconds", 30.0))
 
     try:
-        from src.ztare.fit.cold_llm_erdos_seed import (
+        from ztare.fit.cold_llm_erdos_seed import (
             query_cold_llm_erdos_seed,
             write_cold_seed_log,
         )

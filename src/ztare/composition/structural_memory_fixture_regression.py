@@ -5,8 +5,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.fit.fit_primitive import FitDeclaration, FitSuccess
-from src.ztare.composition.structural_memory import (
+from ztare.fit.fit_primitive import FitDeclaration, FitSuccess
+from ztare.composition.structural_memory import (
     build_structural_family_signature,
     load_structural_memory,
     render_structural_memory_prompt_section,

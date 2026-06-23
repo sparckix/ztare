@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.gates.derived_constraints import (
+from ztare.gates.derived_constraints import (
     run_derived_constraints_fixture_regression,
 )
 

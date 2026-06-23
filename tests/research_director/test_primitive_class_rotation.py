@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from src.ztare.orchestrator.prompt import primitive_class_history_packet
-from src.ztare.research_director.primitive_class_rotation import (
+from ztare.orchestrator.prompt import primitive_class_history_packet
+from ztare.research_director.primitive_class_rotation import (
     cross_substrate_primitive_class_ledger_path,
     maybe_track_primitive_class_rotation,
     read_cross_substrate_primitive_classes,

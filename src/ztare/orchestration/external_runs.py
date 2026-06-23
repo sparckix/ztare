@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 
 EXTERNAL_RUNS_ROOT = REPO_ROOT / "ztare_workspace" / "external_runs"

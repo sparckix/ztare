@@ -6,10 +6,10 @@ import sys
 import tempfile
 from pathlib import Path
 
-import src.ztare.supervisor.supervisor_wrappers as supervisor_wrappers_module
-from src.ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
-from src.ztare.supervisor.supervisor_staging import write_staging_files
-from src.ztare.supervisor.supervisor_state import (
+import ztare.supervisor.supervisor_wrappers as supervisor_wrappers_module
+from ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
+from ztare.supervisor.supervisor_staging import write_staging_files
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     ArtifactSnapshot,
@@ -17,7 +17,7 @@ from src.ztare.supervisor.supervisor_state import (
     StatusReason,
     SupervisorState,
 )
-from src.ztare.supervisor.supervisor_wrappers import APITransportResult, launch_staged_request
+from ztare.supervisor.supervisor_wrappers import APITransportResult, launch_staged_request
 
 
 def _base_status(*, state: SupervisorState, next_actor: Actor) -> HandoffStatus:

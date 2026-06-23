@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.orchestrator.loop_event_recorder import event_label_for, record_loop_event
+from ztare.orchestrator.loop_event_recorder import event_label_for, record_loop_event
 
 
 class _Profile:

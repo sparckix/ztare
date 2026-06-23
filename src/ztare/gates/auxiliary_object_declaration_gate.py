@@ -22,7 +22,7 @@ field-test data confirms gate semantics. Flip to promote-blocking by setting
 
 # Usage
 
-    from src.ztare.gates.auxiliary_object_declaration_gate import run_auxiliary_object_gate
+    from ztare.gates.auxiliary_object_declaration_gate import run_auxiliary_object_gate
     result = run_auxiliary_object_gate(rubric_data=rubric)
     # advisory: result["advisory_warnings"] reports issues; result["passed"] is True by default
     # blocking: pass enforce_block=True; result["passed"] reflects M1-M3

@@ -179,7 +179,7 @@ def _direct_adapters_for(
     """
     out: list[tuple[str, dict]] = []
     try:
-        from src.ztare.diagnostics.substrate_critic import (
+        from ztare.diagnostics.substrate_critic import (
             r13_can_handle, r13_run_preflight, r13_run_post_fit,
         )
         if phase == "PRE_FIT" and any(s in "R13_substrate_critic_preflight" for s in name_substrings):
@@ -195,7 +195,7 @@ def _direct_adapters_for(
     except ImportError:
         pass
     try:
-        from src.ztare.diagnostics.noise_profile import (
+        from ztare.diagnostics.noise_profile import (
             r14_can_handle, r14_run_preflight, r14_run_post_fit,
         )
         if phase == "PRE_FIT" and any(s in "R14_noise_profile_preflight" for s in name_substrings):
@@ -211,7 +211,7 @@ def _direct_adapters_for(
     except ImportError:
         pass
     try:
-        from src.ztare.fit.analogy import r15_can_handle, r15_run
+        from ztare.fit.analogy import r15_can_handle, r15_run
         if phase == "POST_FIT" and any(s in "R15_analogy" for s in name_substrings):
             out.append((
                 "R15_analogy",
@@ -220,7 +220,7 @@ def _direct_adapters_for(
     except ImportError:
         pass
     try:
-        from src.ztare.framer.active_framer import r16_can_handle, r16_run
+        from ztare.framer.active_framer import r16_can_handle, r16_run
         if phase == "PRE_FIT" and any(s in "R16_framer_pre_fit" for s in name_substrings):
             out.append((
                 "R16_framer_pre_fit",

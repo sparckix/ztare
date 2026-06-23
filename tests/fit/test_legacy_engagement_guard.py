@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.fit.legacy_engagement_guard import (
+from ztare.fit.legacy_engagement_guard import (
     resolve_layer3_stub_target,
     should_engage_legacy_1d_fit_primitive,
 )

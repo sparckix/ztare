@@ -23,7 +23,7 @@ from typing import Callable
 import numpy as np
 from scipy.optimize import minimize_scalar, minimize
 
-from src.ztare.gates.corrector_library import (
+from ztare.gates.corrector_library import (
     CORRECTOR_LIBRARY,
     CorrectorForm,
     filter_by_descriptor,

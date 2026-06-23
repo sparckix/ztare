@@ -20,7 +20,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.ztare.catch_grammar.quote_locality_verifier import (  # noqa: E402
+from ztare.catch_grammar.quote_locality_verifier import (  # noqa: E402
     AuditorHit,
     verify_hit,
 )

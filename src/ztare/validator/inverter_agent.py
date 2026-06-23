@@ -15,7 +15,7 @@ Fires after champion_eval_results is written.
 Results injected into derived_constraints.json.
 
 Usage (called automatically by autoresearch_loop):
-    from src.ztare.validator.inverter_agent import run_inverter
+    from ztare.validator.inverter_agent import run_inverter
     result = run_inverter(project_dir, champion_thesis, champion_score)
 """
 
@@ -27,7 +27,7 @@ import re
 from datetime import datetime
 from pathlib import Path
 
-from src.ztare.common.llm_runtime import LLMRuntime, resolve_model_id
+from ztare.common.llm_runtime import LLMRuntime, resolve_model_id
 
 
 def _default_inverter_model() -> str:
@@ -278,7 +278,7 @@ Output valid JSON matching the schema in your system prompt.
 
     try:
         full_prompt = f"{INVERTER_SYSTEM_PROMPT}\n\n{user_prompt}"
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         llm_response = dispatch_call_text(
             "inverter_review",
@@ -345,7 +345,7 @@ def _persist_inverter_review(project_dir: Path, champion_thesis: str, champion_s
     # queue artifact. The Inverter remains a proposal generator; this
     # deterministic translator makes the proposal replayable and auditable.
     try:
-        from src.ztare.orchestrator.discriminator_queue import (
+        from ztare.orchestrator.discriminator_queue import (
             append_discriminators,
             proposals_from_inverter_result,
         )
@@ -406,12 +406,12 @@ class ThesisInverter:
         self.inverter_model = inverter_model or _default_inverter_model()
 
     def invert(self, claim, context):
-        from src.ztare.common.inversion import CounterHypothesis
+        from ztare.common.inversion import CounterHypothesis
         return CounterHypothesis(statement="the champion thesis is FALSE",
                                  rationale=self.weakest_point or "judge-identified weakest point")
 
     def specify(self, counter, context):
-        from src.ztare.common.inversion import FalsificationTest
+        from ztare.common.inversion import FalsificationTest
         result = _produce_inverter_review(
             self.project_dir, context.get("champion_thesis", ""), self.champion_score,
             self.weakest_point, self.evidence_summary, self.inverter_model)
@@ -424,7 +424,7 @@ class ThesisInverter:
                                  meta={"result": result})
 
     def adjudicate(self, test, context):
-        from src.ztare.common.inversion import Verdict
+        from ztare.common.inversion import Verdict
         result = _persist_inverter_review(
             self.project_dir, context.get("champion_thesis", ""), self.champion_score,
             test.meta.get("result", {}))
@@ -453,7 +453,7 @@ def run_inverter(
             "skipped": True,
             "reason": f"Score {champion_score} < {skip_if_score_below}, not worth falsifying",
         }
-    from src.ztare.common.inversion import run_inversion
+    from ztare.common.inversion import run_inversion
     inverter = ThesisInverter(project_dir, champion_score, champion_weakest_point,
                               evidence_summary, inverter_model)
     verdict = run_inversion(inverter, champion_thesis, {"champion_thesis": champion_thesis,

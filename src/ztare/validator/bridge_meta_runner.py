@@ -8,8 +8,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.common.sandboxed_python import (run_python_file as _shared_run_python_file,
+from ztare.common.paths import PROJECTS_DIR
+from ztare.common.sandboxed_python import (run_python_file as _shared_run_python_file,
                                                run_python_module as _shared_run_python_module)
 
 ContractVerdict = Literal["pass", "fail", "blocked"]

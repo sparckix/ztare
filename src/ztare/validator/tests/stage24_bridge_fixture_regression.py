@@ -5,9 +5,9 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.validator.core.hinge_handoff import HingeAlignmentStatus, build_stage2_handoff
-from src.ztare.validator.core.primitive_routing import ExploitFamilyTag
-from src.ztare.validator.core.stage24_bridge import (
+from ztare.validator.core.hinge_handoff import HingeAlignmentStatus, build_stage2_handoff
+from ztare.validator.core.primitive_routing import ExploitFamilyTag
+from ztare.validator.core.stage24_bridge import (
     BridgeMismatchClass,
     BridgeResolutionStatus,
     build_stage24_bridge_record,

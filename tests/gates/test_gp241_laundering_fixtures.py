@@ -53,7 +53,7 @@ def test_cite_hash_prove_weaker_is_discriminated():
     the Lean proves a weaker toy theorem. The canonical-statement
     hash of the weaker proof MUST differ from the registered target's
     hash (so the daemon's claimed ∈ proven intersection fails)."""
-    from src.ztare.gates.lean_proof_gate import (
+    from ztare.gates.lean_proof_gate import (
         theorem_statement_hashes, canonical_statement)
     import hashlib
     clay_txt = "(u : VectorField) (h : NavierStokes u) : SmoothForever u"
@@ -70,13 +70,13 @@ def test_cite_hash_prove_weaker_is_discriminated():
 def test_binder_colon_not_misparsed():
     """Lived self-MD regression: a `:` inside binders must not split
     the statement (else faithful proofs mis-hash / false-FAIL)."""
-    from src.ztare.gates.lean_proof_gate import theorem_statement_hashes
+    from ztare.gates.lean_proof_gate import theorem_statement_hashes
     got = theorem_statement_hashes(
         "theorem clay (u : VF) (h : NS u) : Smooth u := by sorry")
     assert got and "Smooth u" not in got[0]["statement_sha256"]
     # parity: the same signature text registered by the operator
     # hashes identically (no operator/prover normalization drift)
-    from src.ztare.gates.lean_proof_gate import canonical_statement
+    from ztare.gates.lean_proof_gate import canonical_statement
     import hashlib
     op = hashlib.sha256(canonical_statement(
         " (u : VF) (h : NS u) : Smooth u ").encode()).hexdigest()
@@ -88,7 +88,7 @@ def test_operator_attestation_is_not_a_flag():
     """Lived failure C2: an `i_am_operator` flag / env var the agent
     runtime could carry must NOT authenticate; only a pinned-key
     signature, and an unprovisioned anchor MUST fail closed."""
-    from src.ztare.gates._daemon_sig import (
+    from ztare.gates._daemon_sig import (
         operator_verify, operator_anchor_provisioned)
     # INVARIANT (must hold in EVERY state, provisioned or not): a
     # forged / garbage / absent operator sig never verifies. This is
@@ -126,7 +126,7 @@ def test_c3_blocked_not_passed_without_toolchain_or_on_divergence():
     different statements. (PASS-on-faithful needs a live toolchain and
     is the not-the-builder kill-test; here we assert it never silently
     passes.)"""
-    from src.ztare.gates.lean_statement_identity import statements_defeq
+    from ztare.gates.lean_statement_identity import statements_defeq
     v_empty, _ = statements_defeq("", "")
     assert v_empty == "BLOCKED"
     v, _ = statements_defeq("(a : Nat) : a = a", "(a : Nat) : a = a+1")
@@ -138,7 +138,7 @@ def test_c3_blocked_not_passed_without_toolchain_or_on_divergence():
 def test_full_sha256_required_for_target():
     """Lived failure F6: an 8-hex prefix is collision-weak for a
     Clay-target anchor; only a full 64-hex sha256 is accepted."""
-    from src.ztare.gates.commit_membrane_daemon import _re_hex64
+    from ztare.gates.commit_membrane_daemon import _re_hex64
     assert _re_hex64("a" * 64) is True
     assert _re_hex64("a" * 8) is False
     assert _re_hex64("a" * 63) is False
@@ -151,7 +151,7 @@ def test_faithful_statement_self_parity_is_stable():
     """FP guard: the same statement canonicalizes identically across
     whitespace/comment noise — an honest faithful proof whose text
     matches the registered text must hash-match (no false-FAIL)."""
-    from src.ztare.gates.lean_proof_gate import canonical_statement
+    from ztare.gates.lean_proof_gate import canonical_statement
     a = canonical_statement("  (u : VF)   : P u  ")
     b = canonical_statement("(u : VF) : P u")
     c = canonical_statement("/- c -/ (u : VF) : P u -- t")
@@ -203,7 +203,7 @@ def test_judge_prompt_for_why_not_uses_why_not_rubric():
     """Regression for the TICK649 close jam: a valid why_not discharge
     must be judged as a why_not, not as a successful construction
     witness; arbitrary reasons must not get that treatment."""
-    from src.ztare.surfacing.pre_tick_obligation_compiler import (
+    from ztare.surfacing.pre_tick_obligation_compiler import (
         judge_prompt_for,
     )
 

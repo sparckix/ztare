@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.fit.parsers import (
+from ztare.fit.parsers import (
     EVIDENCE_PARSER_REGISTRY,
     parse_evidence_typed,
 )
-from src.ztare.orchestrator.evidence_contract import (
+from ztare.orchestrator.evidence_contract import (
     EVIDENCE_ERROR_CODES,
     EvidenceContractError,
     EvidenceFormat,

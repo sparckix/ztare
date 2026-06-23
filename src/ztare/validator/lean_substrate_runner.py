@@ -28,7 +28,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any
 
-from src.ztare.gates.lean_proof_gate import run_lean_proof_gate
+from ztare.gates.lean_proof_gate import run_lean_proof_gate
 
 
 # Repo root: <repo>/src/ztare/validator/lean_substrate_runner.py → parents[3].

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.ztare.synthesis.synthesize import (
+from ztare.synthesis.synthesize import (
     aggregated_corpus_digest,
     build_multi_project_history_summary,
     cached_multi_project_ledger_matches_context,

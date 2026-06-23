@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.fit.fit_primitive import FitDeclaration, FitSuccess
+from ztare.fit.fit_primitive import FitDeclaration, FitSuccess
 
 
 STRUCTURAL_MEMORY_FILENAME = "structural_memory.json"

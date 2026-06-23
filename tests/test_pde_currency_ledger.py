@@ -1,4 +1,4 @@
-from src.ztare.research_director.pde_currency_ledger import currency_ledger_template
+from ztare.research_director.pde_currency_ledger import currency_ledger_template
 
 
 def test_dynamic_admissibility_currencies_are_surfaced() -> None:

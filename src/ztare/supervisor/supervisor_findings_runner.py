@@ -68,13 +68,13 @@ from pathlib import Path
 from anthropic import Anthropic
 from google import genai
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.findings.findings_context import (
+from ztare.common.paths import REPO_ROOT
+from ztare.findings.findings_context import (
     DEFAULT_TOKEN_BUDGET,
     build_findings_context,
     format_context_tiers,
 )
-from src.ztare.supervisor.supervisor_findings_debate import (
+from ztare.supervisor.supervisor_findings_debate import (
     DebatePhase,
     DebateState,
     DebateStatus,
@@ -83,8 +83,8 @@ from src.ztare.supervisor.supervisor_findings_debate import (
     append_turn,
     read_debate_state,
 )
-from src.ztare.supervisor.supervisor_state import TurnUsageTelemetry
-from src.ztare.supervisor.supervisor_usage import estimate_cost_usd
+from ztare.supervisor.supervisor_state import TurnUsageTelemetry
+from ztare.supervisor.supervisor_usage import estimate_cost_usd
 
 
 DEFAULT_CLAUDE_MODEL = "claude-sonnet-4-6"
@@ -233,7 +233,7 @@ def load_reviewer_domains(domains: list[str]) -> str:
     if not domains:
         return ""
 
-    from src.ztare.personas.registry import load_personas, format_many_for_injection
+    from ztare.personas.registry import load_personas, format_many_for_injection
 
     personas = load_personas(domains, category="domain")
     return format_many_for_injection(personas, include_focus=False)
@@ -1303,7 +1303,7 @@ def run_findings_debate(
             flush=True,
         )
     elif workspace_dir is not None:
-        from src.ztare.personas.routing import auto_select_from_workspace
+        from ztare.personas.routing import auto_select_from_workspace
         _route_result = auto_select_from_workspace(workspace_dir)
         if not _route_result.is_empty:
             reviewer_domains_text = _route_result.format_for_injection()
@@ -1621,7 +1621,7 @@ def run_findings_debate(
                         notes.append(f"spec revised from converged debate at {spec_file}")
             # GP-079: promote dynamic personas on successful convergence
             if _route_result and _route_result.dynamic_personas:
-                from src.ztare.personas.routing import promote_dynamic_persona
+                from ztare.personas.routing import promote_dynamic_persona
                 for dp in _route_result.dynamic_personas:
                     promoted_path = promote_dynamic_persona(dp)
                     notes.append(f"promoted dynamic persona '{dp.name}' to {promoted_path.name}")

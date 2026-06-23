@@ -1,4 +1,4 @@
-from src.ztare.gates.cofinal_incidence_witness_bound_gate import (
+from ztare.gates.cofinal_incidence_witness_bound_gate import (
     REQUIRED_FIELDS,
     run_cofinal_incidence_witness_bound_gate,
 )

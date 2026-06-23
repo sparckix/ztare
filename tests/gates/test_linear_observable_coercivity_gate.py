@@ -1,4 +1,4 @@
-from src.ztare.gates.linear_observable_coercivity_gate import run_gate
+from ztare.gates.linear_observable_coercivity_gate import run_gate
 
 
 def test_rejects_rank_one_observable_for_five_dimensional_target_without_receipt():

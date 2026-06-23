@@ -37,7 +37,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from src.ztare.role_extensions import frontier_state as fs
+from ztare.role_extensions import frontier_state as fs
 
 log = logging.getLogger(__name__)
 

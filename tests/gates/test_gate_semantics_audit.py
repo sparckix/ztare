@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.ztare.gates.gate_semantics_audit import audit_gate_file
+from ztare.gates.gate_semantics_audit import audit_gate_file
 
 
 def _write(tmp_path: Path, text: str) -> Path:

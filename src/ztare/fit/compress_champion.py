@@ -34,9 +34,9 @@ try:
 except ImportError:
     _SCIPY = False
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.fit.mdl import bic as _mdl_bic  # canonical BIC (was inlined identically 3× below)
-from src.ztare.fit.primitive_library import load_library, save_to_library
+from ztare.common.paths import PROJECTS_DIR
+from ztare.fit.mdl import bic as _mdl_bic  # canonical BIC (was inlined identically 3× below)
+from ztare.fit.primitive_library import load_library, save_to_library
 
 
 # ---------------------------------------------------------------------------
@@ -609,7 +609,7 @@ def compress_champion(
 
     # Phase 1/2 collaboration: prioritize templates matching the LLM's dominant topology
     try:
-        from src.ztare.fit.topology_extractor import extract_dominant_topology
+        from ztare.fit.topology_extractor import extract_dominant_topology
         topo = extract_dominant_topology(project_dir)
         if topo["confidence"] > 0.5 and topo["priority_templates"]:
             priority = topo["priority_templates"]
@@ -953,7 +953,7 @@ def compress_champion(
         gate_passing_final = [r for r in results if r.gates_passed]
         if not gate_passing_final and results:
             try:
-                from src.ztare.fit.statistical_fingerprint import compute_fingerprint
+                from ztare.fit.statistical_fingerprint import compute_fingerprint
                 best_overall = min(results, key=lambda r: r.visible_max_res)
                 best_code = compile(best_overall.expression, "<fingerprint>", "eval")
                 best_fn = _make_model(best_code, list(best_overall.params.keys()), var_name)
@@ -1000,7 +1000,7 @@ def compress_champion(
             y_pred = best_fn(xdata, *best_so_far.params.values())
             residuals = ydata - y_pred
 
-            from src.ztare.fit.residual_grammar_expander import suggest_from_residuals
+            from ztare.fit.residual_grammar_expander import suggest_from_residuals
             suggestions = suggest_from_residuals(residuals, xdata, var=var_name)
 
             if verbose and suggestions:

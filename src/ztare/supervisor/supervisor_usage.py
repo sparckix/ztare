@@ -6,9 +6,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.llm_runtime import pricing_model_name
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_state import TurnUsageTelemetry
+from ztare.common.llm_runtime import pricing_model_name
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_state import TurnUsageTelemetry
 
 
 @dataclass(frozen=True)

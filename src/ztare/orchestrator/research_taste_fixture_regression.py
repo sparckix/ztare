@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.orchestrator.research_taste import (
+from ztare.orchestrator.research_taste import (
     load_research_taste_profile,
     rank_candidates,
     write_ranking_report,

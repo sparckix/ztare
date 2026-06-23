@@ -26,11 +26,11 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.common.structural_transfer_action import (
+from ztare.common.structural_transfer_action import (
     action_schemas_from_legacy_analogy_record,
     render_action_schema_prompt_lines,
 )
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
 )

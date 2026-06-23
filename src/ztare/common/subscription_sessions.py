@@ -13,7 +13,7 @@ import uuid
 from pathlib import Path
 from typing import Any, Callable
 
-from src.ztare.common.subscription_agent_runtime import SUPPORTED_SUBSCRIPTION_RUNTIMES
+from ztare.common.subscription_agent_runtime import SUPPORTED_SUBSCRIPTION_RUNTIMES
 
 
 SUBSCRIPTION_SESSION_SCHEMA = "ztare-subscription-agent-session-v1"

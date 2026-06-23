@@ -26,12 +26,12 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_findings_debate import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_findings_debate import (
     DebateStatus,
     read_debate_state,
 )
-from src.ztare.supervisor.supervisor_seed_registry import (
+from ztare.supervisor.supervisor_seed_registry import (
     SeedPipelineType,
     SeedStatus,
     load_seed_registry,

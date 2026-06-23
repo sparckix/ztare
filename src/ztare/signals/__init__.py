@@ -6,6 +6,6 @@ manager-agent mandate requires listing active damage signals before
 deciding on the next action.
 """
 
-from src.ztare.signals.damage import emit, list_recent, clear
+from ztare.signals.damage import emit, list_recent, clear
 
 __all__ = ["emit", "list_recent", "clear"]

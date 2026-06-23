@@ -15,27 +15,27 @@ from openai import OpenAI
 from pydantic import BaseModel, ConfigDict, Field
 from anthropic import Anthropic
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_manifest import (
     derive_packet_read_bundle,
     load_optional_program_manifest,
     next_manifest_packet,
     packet_for_target,
 )
-from src.ztare.supervisor.supervisor_pipeline import (
+from ztare.supervisor.supervisor_pipeline import (
     default_research_draft_path,
     default_research_spec_path,
     default_research_verification_command,
 )
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     HandoffStatus,
     SupervisorState,
     TurnUsageTelemetry,
     status_to_dict,
 )
-from src.ztare.supervisor.supervisor_usage import estimate_cost_usd
-from src.ztare.supervisor.supervisor_usage import extract_usage_telemetry
+from ztare.supervisor.supervisor_usage import estimate_cost_usd
+from ztare.supervisor.supervisor_usage import extract_usage_telemetry
 
 
 class WrapperMode(str, Enum):

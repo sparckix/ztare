@@ -18,10 +18,10 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.research_director.primitive_family_registry import (
+from ztare.research_director.primitive_family_registry import (
     build_registry_integrity_audit,
 )
-from src.ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
+from ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
 
 
 @dataclass(frozen=True)

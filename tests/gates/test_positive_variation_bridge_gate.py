@@ -1,4 +1,4 @@
-from src.ztare.gates.positive_variation_bridge_gate import run_positive_variation_bridge_gate
+from ztare.gates.positive_variation_bridge_gate import run_positive_variation_bridge_gate
 
 
 def test_positive_variation_bridge_complete_passes():

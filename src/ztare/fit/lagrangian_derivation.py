@@ -402,7 +402,7 @@ def derive_from_action(
     # G-LAGRANGIAN-NONTRIVIAL gate's logic so verdict semantics align.
     triviality_kind = None
     try:
-        from src.ztare.gates.lagrangian_nontrivial_gate import (
+        from ztare.gates.lagrangian_nontrivial_gate import (
             evaluate_lagrangian_nontriviality,
         )
         _lnt = evaluate_lagrangian_nontriviality(

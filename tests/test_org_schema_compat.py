@@ -12,7 +12,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.roles.loader import load_registry
+from ztare.roles.loader import load_registry
 
 FIXTURES_DIR = Path(__file__).parent / "fixtures"
 V1_SNAPSHOT = FIXTURES_DIR / "org_schema_v1"

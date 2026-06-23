@@ -29,16 +29,16 @@ from typing import Callable
 # These four are operational primitives the loop already imports
 # elsewhere; importing them here keeps this module self-contained
 # (no circular dependency with autoresearch_loop).
-from src.ztare.gates.derived_constraints import (
+from ztare.gates.derived_constraints import (
     sanitize_constraint_proposals,
     update_derived_constraints_ledger,
     write_derived_constraints_brief,
 )
-from src.ztare.gates.structural_constraint_extractor import run_structural_extractor
-from src.ztare.motion.trajectory_thrash_detector import (
+from ztare.gates.structural_constraint_extractor import run_structural_extractor
+from ztare.motion.trajectory_thrash_detector import (
     run_trajectory_thrash_detector,
 )
-from src.ztare.gates.negative_space_extractor import (
+from ztare.gates.negative_space_extractor import (
     run_negative_space_extractor,
 )
 

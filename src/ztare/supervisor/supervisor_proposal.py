@@ -7,14 +7,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.supervisor.supervisor_seed_registry import (
+from ztare.common.paths import REPO_ROOT
+from ztare.supervisor.supervisor_seed_registry import (
     SeedPipelineType,
     load_seed_registry,
     seed_entry_map,
 )
-from src.ztare.supervisor.supervisor_state import Actor
-from src.ztare.supervisor.supervisor_wrappers import invoke_agent, load_wrapper_configs
+from ztare.supervisor.supervisor_state import Actor
+from ztare.supervisor.supervisor_wrappers import invoke_agent, load_wrapper_configs
 
 
 MAX_PROPOSED_PACKETS = 5

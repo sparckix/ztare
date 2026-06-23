@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.rubrics.review_rubric import (
+from ztare.rubrics.review_rubric import (
     build_evidence_gaps_payload,
     build_patch_payload,
     evidence_surface_ready,

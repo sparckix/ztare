@@ -26,7 +26,7 @@ import math
 
 import pytest
 
-from src.ztare.fit.fit_primitive_features import (
+from ztare.fit.fit_primitive_features import (
     _SPARSE_INDICATOR_MIN_ROWS_DEFAULT,
     _extract_indicator_bindings,
     detect_sparse_indicator_overfit,

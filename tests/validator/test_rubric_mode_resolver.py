@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.ztare.validator.rubric_mode_resolver import (
+from ztare.validator.rubric_mode_resolver import (
     apply_rubric_mode_defaults,
     describe_rubric_mode,
     validate_rubric_mode_contract,

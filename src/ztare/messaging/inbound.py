@@ -33,7 +33,7 @@ from abc import ABC, abstractmethod
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 # Inbound spool roots. Outside the agent's official-state path on
 # purpose (input ≠ official state). Env-overridable for the VPS.

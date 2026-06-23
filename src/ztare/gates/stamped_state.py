@@ -157,7 +157,7 @@ def chain_valid(rows: list[dict]) -> tuple[list[dict], list[str]]:
         # PINNED public key — only the VPS-only private key can produce
         # it. No/invalid signature ⇒ chain break (fail-closed). This
         # takes endpoint identity OUT of the trust boundary.
-        from src.ztare.gates._daemon_sig import verify as _dsig_verify
+        from ztare.gates._daemon_sig import verify as _dsig_verify
         if not _dsig_verify(r.get("official_state_hash", ""),
                             r.get("daemon_sig")):
             errs.append(f"row {i}: missing/invalid daemon signature "

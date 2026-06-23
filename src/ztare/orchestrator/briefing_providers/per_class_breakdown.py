@@ -35,7 +35,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 class PerClassBreakdownProvider(BriefingProvider):

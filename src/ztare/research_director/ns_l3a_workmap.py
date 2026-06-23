@@ -13,8 +13,8 @@ import re
 from dataclasses import dataclass, asdict
 from pathlib import Path
 
-from src.ztare.motion.set_distance import jaccard_distance
-from src.ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
+from ztare.motion.set_distance import jaccard_distance
+from ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
 
 
 REPO = Path(__file__).resolve().parents[3]

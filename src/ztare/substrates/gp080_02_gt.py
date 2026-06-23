@@ -13,7 +13,7 @@ from __future__ import annotations
 import math
 import random
 
-from src.ztare.substrates.gp080_tacrolimus_gt import (
+from ztare.substrates.gp080_tacrolimus_gt import (
     evidence_grid as _clean_evidence_grid,
     f_true as _f_true_clean,
     holdout_grid as _clean_holdout_grid,
@@ -31,7 +31,7 @@ def f_true(x1: float, x2: float) -> float:
 
 def f_dominant(x1: float, x2: float) -> float:
     """Dominant phase — re-export for residual diagnostics."""
-    from src.ztare.substrates.gp080_tacrolimus_gt import f_dominant as _fd
+    from ztare.substrates.gp080_tacrolimus_gt import f_dominant as _fd
     return _fd(x1, x2)
 
 

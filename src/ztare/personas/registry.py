@@ -78,7 +78,7 @@ def _discover_file_personas() -> dict[str, PersonaDefinition]:
 def _shadow_board_personas() -> dict[str, PersonaDefinition]:
     """Expose shadow-board ROLE_DEFINITIONS as audit personas without file migration."""
     try:
-        from src.ztare.validator.committees.shadow_board import ROLE_DEFINITIONS  # type: ignore
+        from ztare.validator.committees.shadow_board import ROLE_DEFINITIONS  # type: ignore
     except ImportError:
         return {}
     result: dict[str, PersonaDefinition] = {}

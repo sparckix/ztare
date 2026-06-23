@@ -27,17 +27,17 @@ os.chdir(_REPO_ROOT)
 
 import streamlit as st
 
-from src.ztare.orchestration.config_parser import (
+from ztare.orchestration.config_parser import (
     list_available_goal_types,
     load_goal_config,
 )
-from src.ztare.orchestration.core import GoalConfig, GoalStatus
-from src.ztare.orchestration.persistence import (
+from ztare.orchestration.core import GoalConfig, GoalStatus
+from ztare.orchestration.persistence import (
     GOALS_ROOT,
     read_state,
     read_transitions,
 )
-from src.ztare.supervisor.inbox_state import (
+from ztare.supervisor.inbox_state import (
     list_pending,
     load_seam_text,
     reconcile_pending_resolved,

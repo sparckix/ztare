@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 
 QUEUE_FILENAME = "next_discriminator_queue.jsonl"

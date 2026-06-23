@@ -33,7 +33,7 @@ Scope
 
 Usage
 -----
-  from src.ztare.gates.falsifiability_gate import run_falsifiability_gate
+  from ztare.gates.falsifiability_gate import run_falsifiability_gate
   result = run_falsifiability_gate(
       test_model_path=Path("projects/foo/test_model.py"),
       probability_dag_path=Path("projects/foo/champion_probability_dag.json"),

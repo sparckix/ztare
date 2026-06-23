@@ -1,4 +1,4 @@
-from src.ztare.gates.nonadaptive_source_selection_gate import (
+from ztare.gates.nonadaptive_source_selection_gate import (
     run_nonadaptive_source_selection_gate,
 )
 

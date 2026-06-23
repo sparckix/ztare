@@ -34,7 +34,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.fit.fit_primitive_features import (
+from ztare.fit.fit_primitive_features import (
     GATE_TIME_PRIMITIVE_PRELUDE,
     GATE_TIME_PRIMITIVE_SENTINEL,
     _ALLOWED_FUNCTIONS,

@@ -1,4 +1,4 @@
-from src.ztare.gates.typed_appearance_coverage_choice_gate import (
+from ztare.gates.typed_appearance_coverage_choice_gate import (
     REQUIRED_FIELDS,
     run_typed_appearance_coverage_choice_gate,
 )

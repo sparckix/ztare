@@ -63,23 +63,25 @@ from pathlib import Path
 
 # Make repo imports work
 REPO_ROOT = Path(__file__).resolve().parents[3]
+REPO_SRC = REPO_ROOT / "src"
+sys.path.insert(0, str(REPO_SRC))
 sys.path.insert(0, str(REPO_ROOT))
 os.chdir(REPO_ROOT)
 
-from src.ztare.orchestration.work_discovery import discover_all as discover_candidates, Candidate
-from src.ztare.orchestration.command_surface import command_surface_hint
-from src.ztare.orchestration.execution_routing import infer_execution_route, render_route_contract
-from src.ztare.orchestration.task_authorization import authorize_dispatch
-from src.ztare.orchestration.transition_log import append_transition
-from src.ztare.orchestration.daemon_continuity import (
+from ztare.orchestration.work_discovery import discover_all as discover_candidates, Candidate
+from ztare.orchestration.command_surface import command_surface_hint
+from ztare.orchestration.execution_routing import infer_execution_route, render_route_contract
+from ztare.orchestration.task_authorization import authorize_dispatch
+from ztare.orchestration.transition_log import append_transition
+from ztare.orchestration.daemon_continuity import (
     get_or_create_claude_session_id,
     note_tick as continuity_note_tick,
     write_task_checkpoint,
     read_task_checkpoint,
 )
-from src.ztare.signals.damage import emit as emit_damage, list_recent as recent_damage
-from src.ztare.sessions.enforce import ensure_session, require_no_conflict
-from src.ztare.signals.autoemit import check_mandate_drift
+from ztare.signals.damage import emit as emit_damage, list_recent as recent_damage
+from ztare.sessions.enforce import ensure_session, require_no_conflict
+from ztare.signals.autoemit import check_mandate_drift
 
 logging.basicConfig(
     level=logging.INFO,
@@ -129,7 +131,7 @@ def notification_provider_available() -> bool:
         return True
     if provider == "telegram":
         try:
-            from src.ztare.notifications.telegram import _load_creds
+            from ztare.notifications.telegram import _load_creds
             _load_creds()
             return True
         except Exception:
@@ -150,7 +152,7 @@ def send_notification(message: str, priority: str = "normal", gate_id: Optional[
     if not notification_provider_available():
         return False
     try:
-        from src.ztare.notifications import push_notification
+        from ztare.notifications import push_notification
         if gate_id:
             # Compact callback_data: action:gate_id_short (≤64 bytes total).
             short = gate_id[-32:] if len(gate_id) > 32 else gate_id
@@ -175,7 +177,7 @@ def send_telegram(message: str, priority: str = "normal", gate_id: Optional[str]
 
 def poll_telegram() -> list[dict]:
     try:
-        from src.ztare.notifications.telegram import authorized_messages, poll_inbound
+        from ztare.notifications.telegram import authorized_messages, poll_inbound
         messages = poll_inbound(consume=True)
         for msg in messages:
             if not getattr(msg, "authorized", False):
@@ -321,7 +323,7 @@ def _proactive_rd_candidates() -> list[Candidate]:
 
     # Source 1: pending_actions queues
     try:
-        from src.ztare.role_extensions.frontier_state import (
+        from ztare.role_extensions.frontier_state import (
             STATE_ROOT, load_state, _validate_slug,
         )
         if STATE_ROOT.exists():
@@ -882,7 +884,7 @@ def pre_tick_checks(
     # ── Orbit chat — process pending principal messages for THIS role ──
     # Cheap-tier subscription LLM, idempotent (no reply if no pending).
     try:
-        from src.ztare.orchestration.chat_handler import generate_and_store_reply
+        from ztare.orchestration.chat_handler import generate_and_store_reply
         reply = generate_and_store_reply(role_id)
         if reply:
             warnings.append(
@@ -1259,7 +1261,7 @@ def _claim_candidate_task(
     goal_id = str(candidate.metadata.get("goal_id") or "")
     if not goal_id:
         return None
-    from src.ztare.orchestration.goals_inbox import claim_goal
+    from ztare.orchestration.goals_inbox import claim_goal
 
     claimed = claim_goal(
         goal_id=goal_id,
@@ -1391,7 +1393,7 @@ def _close_candidate_task(
             message_id = str(candidate.metadata.get("message_id") or "")
             to_role = str(candidate.metadata.get("to_role") or "")
             if message_id and to_role:
-                from src.ztare.orchestration.agent_channels import update_agent_message_status
+                from ztare.orchestration.agent_channels import update_agent_message_status
 
                 update_agent_message_status(
                     role_id=to_role,
@@ -1404,7 +1406,7 @@ def _close_candidate_task(
     goal_id = str(candidate.metadata.get("goal_id") or "")
     if not goal_id:
         return
-    from src.ztare.orchestration.goals_inbox import mark_goal_blocked, mark_goal_done
+    from ztare.orchestration.goals_inbox import mark_goal_blocked, mark_goal_done
 
     summary = (
         result.get("stdout")
@@ -1484,8 +1486,8 @@ def tick(
     # even if the agent is busy on a different project.
     if role_id == "research_director":
         try:
-            from src.ztare.role_extensions.frontier_runner import scan_all_active_projects
-            from src.ztare.role_extensions.iter_action_policy import dispatch_event
+            from ztare.role_extensions.frontier_runner import scan_all_active_projects
+            from ztare.role_extensions.iter_action_policy import dispatch_event
             scope = _scope_norm(tick_scope)
             project_slugs = None
             if scope and scope not in {"all", "global"}:

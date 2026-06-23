@@ -24,7 +24,7 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from src.ztare.common.file_io import read_file, write_file
+from ztare.common.file_io import read_file, write_file
 
 
 def capture_project_state(paths: tuple[str, ...]) -> dict[str, str | None]:

@@ -27,7 +27,7 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from src.ztare.gates.negative_space_extractor import (
+from ztare.gates.negative_space_extractor import (
     detect_negative_space,
     extract_generalized_feature_matrix,
     _parse_to_ast,

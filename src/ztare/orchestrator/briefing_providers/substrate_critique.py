@@ -31,7 +31,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 class SubstrateCritiqueBriefingProvider(BriefingProvider):

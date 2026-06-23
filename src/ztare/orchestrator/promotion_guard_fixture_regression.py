@@ -4,8 +4,8 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.orchestrator.discriminator_queue import DiscriminatorProposal, append_discriminator
-from src.ztare.orchestrator.promotion_guard import assess_promotion_readiness
+from ztare.orchestrator.discriminator_queue import DiscriminatorProposal, append_discriminator
+from ztare.orchestrator.promotion_guard import assess_promotion_readiness
 
 
 def _proposal(*, severity: int, license_stage: str, status: str, evidence: bool = False) -> DiscriminatorProposal:

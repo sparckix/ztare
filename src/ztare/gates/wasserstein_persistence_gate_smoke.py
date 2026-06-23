@@ -21,7 +21,7 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
 
-from src.ztare.gates.wasserstein_persistence_gate import (  # noqa: E402
+from ztare.gates.wasserstein_persistence_gate import (  # noqa: E402
     GATE_ID,
     filter_per_candidate_for_mutator_prompt,
     run_gate,

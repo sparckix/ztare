@@ -4,7 +4,7 @@ from __future__ import annotations
 import math
 import pytest
 
-from src.ztare.gates.substrate_evaluation import (
+from ztare.gates.substrate_evaluation import (
     EvalResult,
     evaluate_set,
     assert_or_propagate_defect,

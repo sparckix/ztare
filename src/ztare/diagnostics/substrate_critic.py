@@ -855,7 +855,7 @@ def refresh_critique_post_fit(
         return base_critique
 
     try:
-        from src.ztare.fit.fit_primitive_features import _safe_compile_form
+        from ztare.fit.fit_primitive_features import _safe_compile_form
         fn = _safe_compile_form(form)
     except Exception:
         return base_critique
@@ -1200,7 +1200,7 @@ def register_r13_gate(cage: "Any") -> None:  # type: ignore  # noqa: F821
     them in the right slot. Both share the same can_handle predicate.
     """
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return
     pre_gate = Gate(

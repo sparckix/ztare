@@ -148,7 +148,7 @@ def _build_active_pressures_summary(
     on this project, with cross-run counts and the PRIMITIVE-CEILING
     status. Returns a 300-700 byte markdown block."""
     try:
-        from src.ztare.orchestrator.charter_critic import (
+        from ztare.orchestrator.charter_critic import (
             SUBSTRATE_TAXONOMIES,
             PRIMITIVE_DERIVE,
             PRIMITIVE_BOUND,
@@ -163,7 +163,7 @@ def _build_active_pressures_summary(
     substrate_class = "qualitative_thesis"
     if spec_path.exists():
         try:
-            from src.ztare.orchestrator.charter_critic import load_value_spec
+            from ztare.orchestrator.charter_critic import load_value_spec
             spec = load_value_spec(project_dir, rubric_data=rubric_data, auto_generate=False)
             if spec:
                 substrate_class = str(spec.get("substrate_class") or substrate_class)
@@ -259,10 +259,10 @@ def _select_blocks_to_keep(
     # Backfill primitive from reframe_type via taxonomy for legacy ledger
     # entries that predate the `primitive` field on fingerprint_match.
     try:
-        from src.ztare.orchestrator.charter_critic import (
+        from ztare.orchestrator.charter_critic import (
             SUBSTRATE_TAXONOMIES, primitive_for_bucket,
         )
-        from src.ztare.orchestrator.charter_critic import load_value_spec as _load_vs
+        from ztare.orchestrator.charter_critic import load_value_spec as _load_vs
         _vs = _load_vs(project_dir, rubric_data=rubric_data, auto_generate=False)
         _substrate = (_vs or {}).get("substrate_class", "qualitative_thesis")
         _taxonomy = SUBSTRATE_TAXONOMIES.get(_substrate, {})

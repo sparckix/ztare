@@ -9,7 +9,7 @@ The discovery: a low-complexity generator whose eigenvalues match
 a target spectrum IS the operator (e.g., Hilbert-Pólya for RH).
 
 Usage:
-    from src.ztare.fit.operator_backend import fit_operator
+    from ztare.fit.operator_backend import fit_operator
     result = fit_operator(
         generator_fn=berry_keating_generator,
         target_spectrum=riemann_zeros[:100],

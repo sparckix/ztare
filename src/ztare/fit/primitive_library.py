@@ -10,7 +10,7 @@ if sqrt(n/log(n)) worked on prime partitions AND abundant density, it probably
 encodes something structural — try it on the next substrate too.
 
 Usage:
-    from src.ztare.fit.primitive_library import load_library, save_to_library
+    from ztare.fit.primitive_library import load_library, save_to_library
 
     # After successful compression:
     save_to_library(expression, params, substrate_name, bic)

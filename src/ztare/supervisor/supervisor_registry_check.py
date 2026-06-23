@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_registry import validate_program_registry
+from ztare.supervisor.supervisor_registry import validate_program_registry
 
 
 def main() -> int:

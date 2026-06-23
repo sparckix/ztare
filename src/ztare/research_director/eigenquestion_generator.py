@@ -1,7 +1,7 @@
 """Frontier-eigenquestion generator — LLM-drafted advisory eigenquestion.
 
-Spec: research_areas/private/specs/active/engine/eigenquestion_generator_spec.md
-Seam: research_areas/private/seams/reflexive/GP-228_substrate_portfolio_v05_v3_seam.md
+Spec: maintainer-only eigenquestion generator spec
+Seam: maintainer-only substrate portfolio seam
 Parent: GP-213 (director-mechanization)
 
 Replaces a fixed substrate eigenquestion with a per-run LLM-generated
@@ -329,14 +329,14 @@ def generate_eigenquestion(project_slug: str, model_id: str | None = None,
     current_eq = _extract_current_eigenquestion(project_dir / "project_charter.md")
     prompt = _build_prompt(project_slug, current_eq, evidence_summary, explored_summary)
 
-    from src.ztare.common.llm_runtime import LLMRuntime, pick_default_model_id_for_scripts
+    from ztare.common.llm_runtime import LLMRuntime, pick_default_model_id_for_scripts
     chosen_model = model_id or pick_default_model_id_for_scripts()
     if chosen_model is None:
         raise RuntimeError(
             "no LLM provider — set ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY"
     )
     runtime = LLMRuntime()
-    from src.ztare.common.dispatch_model import dispatch_call_text
+    from ztare.common.dispatch_model import dispatch_call_text
 
     resp = dispatch_call_text(
         "eigenquestion_generator",

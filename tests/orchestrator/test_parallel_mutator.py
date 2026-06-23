@@ -6,7 +6,7 @@ import time
 
 import pytest
 
-from src.ztare.orchestrator.parallel_mutator import (
+from ztare.orchestrator.parallel_mutator import (
     DEFAULT_PARALLEL_PERSONAS,
     MutatorResult,
     MutatorTask,

@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     ArtifactSnapshot,
@@ -14,12 +14,12 @@ from src.ztare.supervisor.supervisor_state import (
     SupervisorState,
     TransitionInput,
 )
-from src.ztare.supervisor.supervisor_staging import (
+from ztare.supervisor.supervisor_staging import (
     build_staging_context,
     build_staging_template,
     staging_filename,
 )
-from src.ztare.supervisor.supervisor_transitions import apply_transition
+from ztare.supervisor.supervisor_transitions import apply_transition
 
 
 def _base_status(*, state: SupervisorState, next_actor: Actor) -> HandoffStatus:

@@ -45,7 +45,7 @@ def populate_weakest_class(signal):
     if signal.weakest_class or not signal.weakest_point:
         return signal
     try:
-        from src.ztare.validator.weakest_link_classifier import classify_weakest_point
+        from ztare.validator.weakest_link_classifier import classify_weakest_point
         cls = classify_weakest_point(signal.weakest_point)
     except Exception:
         return signal

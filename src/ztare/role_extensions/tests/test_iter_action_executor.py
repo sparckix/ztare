@@ -9,7 +9,7 @@ import pytest
 
 def _setup(monkeypatch, tmp_path):
     """Redirect frontier_state + signals + working dir to tmp."""
-    from src.ztare.role_extensions import frontier_state as fs
+    from ztare.role_extensions import frontier_state as fs
     monkeypatch.setattr(fs, "STATE_ROOT", tmp_path / "frontier_state")
     monkeypatch.chdir(tmp_path)
     return tmp_path
@@ -17,7 +17,7 @@ def _setup(monkeypatch, tmp_path):
 
 def test_unknown_action_kind_returns_error(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     out = execute_action({"action_kind": "not_a_real_kind", "params": {}})
     assert out["ok"] is False
     assert "unknown action_kind" in out["outcome"]
@@ -25,7 +25,7 @@ def test_unknown_action_kind_returns_error(monkeypatch, tmp_path):
 
 def test_create_lean_cage_writes_stub(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     action = {
         "action_kind": "create_lean_cage",
         "params": {"cage_dir": "ztare_proofs/cages"},
@@ -47,10 +47,10 @@ def test_create_lean_cage_writes_stub(monkeypatch, tmp_path):
 
 def test_demote_route_when_in_ranking(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, update_route_ranking, RouteEntry,
     )
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     s = load_state("test_proj")
     update_route_ranking(s, [
         RouteEntry(route_id="route_A", label="A", rank=1),
@@ -67,8 +67,8 @@ def test_demote_route_when_in_ranking(monkeypatch, tmp_path):
 
 def test_demote_route_missing_returns_failure(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import load_state
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.frontier_state import load_state
+    from ztare.role_extensions.iter_action_executor import execute_action
     s = load_state("test_proj")  # empty ranking
     out = execute_action({
         "action_kind": "demote_route_in_packet",
@@ -83,7 +83,7 @@ def test_mutate_evidence_appends(monkeypatch, tmp_path):
     project_dir = tmp_path / "projects" / "test_proj"
     project_dir.mkdir(parents=True)
     (project_dir / "evidence.txt").write_text("# header\n")
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     out = execute_action({
         "action_kind": "mutate_evidence",
         "params": {
@@ -104,7 +104,7 @@ def test_mutate_charter_appends_section(monkeypatch, tmp_path):
     project_dir = tmp_path / "projects" / "test_proj"
     project_dir.mkdir(parents=True)
     (project_dir / "project_charter.md").write_text("# Charter\n")
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     out = execute_action({
         "action_kind": "mutate_charter",
         "params": {
@@ -124,7 +124,7 @@ def test_fork_substrate_writes_spec(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
     project_dir = tmp_path / "projects" / "test_proj"
     project_dir.mkdir(parents=True)
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     out = execute_action({
         "action_kind": "fork_substrate",
         "params": {
@@ -147,7 +147,7 @@ def test_queue_cold_shot_writes_packet(monkeypatch, tmp_path):
     _setup(monkeypatch, tmp_path)
     project_dir = tmp_path / "projects" / "test_proj"
     project_dir.mkdir(parents=True)
-    from src.ztare.role_extensions.iter_action_executor import execute_action
+    from ztare.role_extensions.iter_action_executor import execute_action
     out = execute_action({
         "action_kind": "queue_cold_shot",
         "params": {
@@ -171,8 +171,8 @@ def test_drain_pending_executes_in_order(monkeypatch, tmp_path):
     project_dir.mkdir(parents=True)
     (project_dir / "evidence.txt").write_text("# header\n")
     (project_dir / "project_charter.md").write_text("# Charter\n")
-    from src.ztare.role_extensions.frontier_state import load_state, queue_action
-    from src.ztare.role_extensions.iter_action_executor import drain_pending
+    from ztare.role_extensions.frontier_state import load_state, queue_action
+    from ztare.role_extensions.iter_action_executor import drain_pending
     s = load_state("test_proj")
     queue_action(s, {
         "action_kind": "mutate_charter",
@@ -195,7 +195,7 @@ def test_safety_rail_blocks_excess_spend(monkeypatch, tmp_path):
     """If spend_tracker says no, executor must return blocked_by_safety_rail."""
     _setup(monkeypatch, tmp_path)
     # Stub check_budget_allows to deny
-    import src.ztare.role_extensions.iter_action_executor as iax
+    import ztare.role_extensions.iter_action_executor as iax
 
     def _denied(**kwargs):
         return False

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.reports.blitz_survival_report import (
+from ztare.reports.blitz_survival_report import (
     build_blitz_survival_report,
     render_blitz_survival_markdown,
 )

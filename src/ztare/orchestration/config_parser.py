@@ -9,8 +9,8 @@ import yaml
 from pathlib import Path
 from typing import Any
 
-from src.ztare.orchestration.core import GoalConfig, StageDefinition, validate_stage_graph
-from src.ztare.orchestration.predicates import validate_predicate_schema
+from ztare.orchestration.core import GoalConfig, StageDefinition, validate_stage_graph
+from ztare.orchestration.predicates import validate_predicate_schema
 
 GOAL_TYPES_DIR = Path("[internal-ref]")
 

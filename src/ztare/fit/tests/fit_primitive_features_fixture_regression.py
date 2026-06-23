@@ -24,7 +24,7 @@ import random
 
 import pytest
 
-from src.ztare.fit.fit_primitive_features import (
+from ztare.fit.fit_primitive_features import (
     fit_features,
     extract_form_declaration,
     extract_referenced_feature_keys,

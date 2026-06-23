@@ -27,7 +27,7 @@ field-test confirms gate semantics. Flip to promote-blocking with `enforce_block
 
 # Usage
 
-    from src.ztare.gates.threshold_dichotomy_branch_coverage_gate import run_threshold_dichotomy_gate
+    from ztare.gates.threshold_dichotomy_branch_coverage_gate import run_threshold_dichotomy_gate
     result = run_threshold_dichotomy_gate(rubric_data=rubric)
 """
 from __future__ import annotations

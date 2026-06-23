@@ -11,7 +11,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains  # noqa: E402
+from ztare.catch_grammar.rule_3_profile_check import check_profile_contains  # noqa: E402
 
 GP023_REQUIRED_MODULES = [
     "state_incompatibility",

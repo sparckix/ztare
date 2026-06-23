@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.orchestration import goals_inbox as gi
+from ztare.orchestration import goals_inbox as gi
 
 
 @pytest.fixture
@@ -80,7 +80,7 @@ def test_filter_by_assigned_to(tmp_goals: Path):
 
 def test_claim_moves_to_active(tmp_goals: Path, tmp_path: Path, monkeypatch):
     # Isolate claims dir so we don't touch the real one
-    from src.ztare.sessions import claims as claims_mod
+    from ztare.sessions import claims as claims_mod
     monkeypatch.setattr(claims_mod, "CLAIMS_DIR", tmp_path / "_claims")
 
     _write_goal(tmp_goals, "gx", priority="high")
@@ -103,7 +103,7 @@ def test_claim_nonexistent_returns_none(tmp_goals: Path):
 
 
 def test_double_claim_fails_via_membrane(tmp_goals: Path, tmp_path: Path, monkeypatch):
-    from src.ztare.sessions import claims as claims_mod
+    from ztare.sessions import claims as claims_mod
     monkeypatch.setattr(claims_mod, "CLAIMS_DIR", tmp_path / "_claims")
     monkeypatch.setattr(claims_mod.damage, "emit", lambda **kwargs: None)
 
@@ -126,7 +126,7 @@ def test_double_claim_fails_via_membrane(tmp_goals: Path, tmp_path: Path, monkey
 def test_mark_done_moves_to_done_and_appends_result(
     tmp_goals: Path, tmp_path: Path, monkeypatch,
 ):
-    from src.ztare.sessions import claims as claims_mod
+    from ztare.sessions import claims as claims_mod
     monkeypatch.setattr(claims_mod, "CLAIMS_DIR", tmp_path / "_claims")
 
     _write_goal(tmp_goals, "gz")
@@ -151,7 +151,7 @@ def test_mark_done_moves_to_done_and_appends_result(
 
 
 def test_mark_blocked_stays_in_active(tmp_goals: Path, tmp_path: Path, monkeypatch):
-    from src.ztare.sessions import claims as claims_mod
+    from ztare.sessions import claims as claims_mod
     monkeypatch.setattr(claims_mod, "CLAIMS_DIR", tmp_path / "_claims")
 
     _write_goal(tmp_goals, "gb")

@@ -1,4 +1,4 @@
-from src.ztare.research_director.pde_estimate_skeleton import (
+from ztare.research_director.pde_estimate_skeleton import (
     generate_estimate_skeletons,
 )
 

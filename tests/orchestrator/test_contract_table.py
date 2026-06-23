@@ -8,7 +8,7 @@ from typing import Mapping, Optional
 
 import pytest
 
-from src.ztare.orchestrator.contract_table import (
+from ztare.orchestrator.contract_table import (
     CONTRACT_REGISTRY,
     ContractSpec,
     SubstrateABI,
@@ -16,14 +16,14 @@ from src.ztare.orchestrator.contract_table import (
     get_spec_by_class,
     list_substrate_classes,
 )
-from src.ztare.orchestrator.protocols import (
+from ztare.orchestrator.protocols import (
     CONTRACT_ERROR_CODES,
     ContractError,
     FeatureModel,
     ScalarModel,
     adapt,
 )
-from src.ztare.orchestrator.render_evidence_template import (
+from ztare.orchestrator.render_evidence_template import (
     render_active_contract_label,
     render_evidence_set_d,
 )

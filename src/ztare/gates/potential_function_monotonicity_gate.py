@@ -26,7 +26,7 @@ Failure modes caught:
 
 Usage
 -----
-  from src.ztare.gates.potential_function_monotonicity_gate import run_potential_gate
+  from ztare.gates.potential_function_monotonicity_gate import run_potential_gate
   result = run_potential_gate(iteration_history, rubric_data=rubric)
   if not result["passed"]:
       # treat as gate-strike; record violation type

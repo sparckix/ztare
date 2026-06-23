@@ -19,7 +19,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.gates.symbolic_logic_cage import (
+from ztare.gates.symbolic_logic_cage import (
     ConstraintCheckResult,
     check_algebraic_constraints,
     declare_symbols_with_assumptions,

@@ -432,7 +432,7 @@ def fire_cold_shot_seed(
     verdict.model_id_used = resolved
 
     # Cache lookup
-    from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+    from ztare.common.llm_cache import LLMCallCache, ttl_30_days
     verdict.substrate_feature_keys = list(substrate_sig.get("feature_keys") or [])
 
     cache = LLMCallCache(
@@ -500,7 +500,7 @@ def fire_cold_shot_seed(
 
     if runtime is None:
         try:
-            from src.ztare.common.llm_runtime import LLMRuntime as _Runtime
+            from ztare.common.llm_runtime import LLMRuntime as _Runtime
             runtime = _Runtime()
         except Exception as exc:                                        # noqa: BLE001
             verdict.error = f"LLMRuntime unavailable: {exc}"
@@ -510,7 +510,7 @@ def fire_cold_shot_seed(
     timeout_s = float(rubric_data.get("cold_shot_seed_timeout_seconds", 240.0))
     max_tokens = int(rubric_data.get("cold_shot_seed_max_tokens", 12000))
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "cold_shot_seed",

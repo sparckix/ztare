@@ -9,7 +9,7 @@ Each strategy is lightweight and deterministic. No LLM. The results
 feed back into the compression pipeline for a re-attempt.
 
 Usage:
-    from src.ztare.fit.post_underidentified import run_post_underidentified
+    from ztare.fit.post_underidentified import run_post_underidentified
     results = run_post_underidentified(project_dir)
 """
 
@@ -307,7 +307,7 @@ def run_post_underidentified(project_dir: Path) -> dict:
     # Strategy D: regime combinator (sigmoid-switched two-regime search)
     print(f"  [D] Regime combinator (two-regime grid search)...")
     try:
-        from src.ztare.fit.regime_combinator import find_best_regime_split
+        from ztare.fit.regime_combinator import find_best_regime_split
         x_vis = np.array([p[0] for p in visible])
         y_vis = np.array([p[1] for p in visible])
         x_ho = np.array([p[0] for p in holdout]) if holdout else None
@@ -375,7 +375,7 @@ def run_post_underidentified(project_dir: Path) -> dict:
 
             # Run compression on rotated evidence
             try:
-                from src.ztare.fit.compress_champion import compress_champion
+                from ztare.fit.compress_champion import compress_champion
                 rot_result = compress_champion(
                     project_dir,
                     evidence_override_path=rot_ev_path,

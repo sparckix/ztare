@@ -6,28 +6,28 @@ from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.validator.utilities.document_assembler import (
+from ztare.common.paths import REPO_ROOT
+from ztare.validator.utilities.document_assembler import (
     assemble_document_from_manifest,
     load_document_manifest,
 )
-from src.ztare.supervisor.supervisor_attended_autoloop import cmd_attended_autoloop
-from src.ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
-from src.ztare.supervisor.supervisor_gate_resolution import (
+from ztare.supervisor.supervisor_attended_autoloop import cmd_attended_autoloop
+from ztare.supervisor.supervisor_backlog import sync_program_plan_markdown
+from ztare.supervisor.supervisor_gate_resolution import (
     _append_human_turn,
     _append_jsonl,
     _update_registry_entry,
 )
-from src.ztare.supervisor.supervisor_loop import cmd_init
-from src.ztare.supervisor.supervisor_manifest import (
+from ztare.supervisor.supervisor_loop import cmd_init
+from ztare.supervisor.supervisor_manifest import (
     derive_packet_read_bundle,
     load_optional_program_manifest,
     next_manifest_packet,
     advance_manifest_packet,
     should_auto_promote_contract_promotion,
 )
-from src.ztare.supervisor.supervisor_registry import registry_path
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_registry import registry_path
+from ztare.supervisor.supervisor_state import (
     Actor,
     HandoffEvent,
     HumanGateReason,
@@ -38,7 +38,7 @@ from src.ztare.supervisor.supervisor_state import (
     status_from_dict,
     status_to_dict,
 )
-from src.ztare.supervisor.supervisor_wrappers import load_wrapper_configs, wrapper_config_path
+from ztare.supervisor.supervisor_wrappers import load_wrapper_configs, wrapper_config_path
 
 
 def _read_json(path: Path) -> dict:

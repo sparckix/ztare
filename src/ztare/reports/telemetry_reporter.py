@@ -32,7 +32,7 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 
 # ---------------------------------------------------------------------------

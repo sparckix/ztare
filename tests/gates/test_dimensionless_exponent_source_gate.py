@@ -1,4 +1,4 @@
-from src.ztare.gates.dimensionless_exponent_source_gate import run_gate
+from ztare.gates.dimensionless_exponent_source_gate import run_gate
 
 
 def test_dimensionless_square_requires_analytic_source_receipt():

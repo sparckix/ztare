@@ -1,4 +1,4 @@
-from src.ztare.gates.pi_group_forcing import run_pi_group_forcing
+from ztare.gates.pi_group_forcing import run_pi_group_forcing
 
 
 def test_dimensionless_target_with_dimensionless_subset_is_ambiguous_not_crash() -> None:

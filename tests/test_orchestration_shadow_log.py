@@ -1,4 +1,4 @@
-from src.ztare.research_director.orchestration_shadow_log import (
+from ztare.research_director.orchestration_shadow_log import (
     append_shadow_event,
     new_shadow_event,
     validate_shadow_event,

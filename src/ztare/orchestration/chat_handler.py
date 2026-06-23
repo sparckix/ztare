@@ -214,7 +214,7 @@ def generate_and_store_reply(role_id: str, max_pending: int = 5) -> Optional[dic
     )
 
     try:
-        from src.ztare.common.llm_runtime import LLMRuntime, pick_model_for_tier
+        from ztare.common.llm_runtime import LLMRuntime, pick_model_for_tier
         model_id = pick_model_for_tier("cheap")
         if model_id is None:
             log.warning("chat_handler: no LLM provider available — cannot reply")

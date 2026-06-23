@@ -5,7 +5,7 @@ from enum import Enum
 import re
 from typing import Optional
 
-from src.ztare.validator.core.primitive_routing import ExploitFamilyTag, derive_exploit_family_tag
+from ztare.validator.core.primitive_routing import ExploitFamilyTag, derive_exploit_family_tag
 
 
 class HingeScopeLevel(str, Enum):

@@ -93,7 +93,7 @@ def dispatch_gp180_lagrangian(
     result.engaged = True
 
     try:
-        from src.ztare.fit.lagrangian_derivation import (
+        from ztare.fit.lagrangian_derivation import (
             derive_from_submission, to_jsonable, substitute_derived_parametric_form,
         )
     except ImportError as exc:
@@ -128,7 +128,7 @@ def dispatch_gp180_lagrangian(
         # false-positive class — they pass the legacy success check but
         # contain no derivation content beyond syntactic substitution.
         try:
-            from src.ztare.gates.lagrangian_nontrivial_gate import (
+            from ztare.gates.lagrangian_nontrivial_gate import (
                 evaluate_lagrangian_nontriviality, GATE_ID as _LNT_ID,
             )
             _bg_syms = list(gp180.steady_state.keys()) if hasattr(gp180, "steady_state") else []
@@ -177,7 +177,7 @@ def dispatch_gp180_lagrangian(
             # (X-X, X/X, X*0, X**0). Keep "weak" (params-only) — they
             # contribute zero to the loss anyway.
             try:
-                from src.ztare.gates.noether_nondegeneracy_gate import filter_invariants
+                from ztare.gates.noether_nondegeneracy_gate import filter_invariants
                 kept, audit_entries = filter_invariants(gp180.noether)
             except Exception as exc:                                    # noqa: BLE001
                 print(f"🧮             noether non-degeneracy gate error: {exc}")
@@ -273,7 +273,7 @@ def dispatch_gp180_lagrangian(
               f"Noether invariants dropped/weak. Mutator likely "
               f"gaming the variance penalty via trivial Lagrangians.")
         try:
-            from src.ztare.signals.damage import emit as emit_damage
+            from ztare.signals.damage import emit as emit_damage
             emit_damage(
                 source="autoresearch.noether_streak",
                 kind="noether_gaming_streak",

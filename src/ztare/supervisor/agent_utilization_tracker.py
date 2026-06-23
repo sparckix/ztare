@@ -46,7 +46,7 @@ Three primitives:
 
 Usage:
 
-    from src.ztare.supervisor.agent_utilization_tracker import (
+    from ztare.supervisor.agent_utilization_tracker import (
         record_agent_session, check_utilization_allows, get_utilization_pct,
     )
 
@@ -512,7 +512,7 @@ def _emit_warn_notification(*, role_id: str, agent_cli: str,
     # Channel 1: notification push
     push_ok = False
     try:
-        from src.ztare.notifications import push_notification
+        from ztare.notifications import push_notification
         push_notification(
             title=title,
             message=body,
@@ -643,7 +643,7 @@ def record_override_event(*, kind: str,
 
     # Channel 3: best-effort notification push.
     try:
-        from src.ztare.notifications import push_notification
+        from ztare.notifications import push_notification
         delta_str = ""
         if old_value is not None and new_value is not None:
             delta_str = f" ({old_value:g} → {new_value:g})"

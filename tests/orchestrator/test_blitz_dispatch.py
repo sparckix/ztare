@@ -1,4 +1,4 @@
-from src.ztare.orchestrator.blitz_dispatch import (
+from ztare.orchestrator.blitz_dispatch import (
     _baseline_candidate_score,
     _requires_lagrangian_contract,
     should_run_parallel,

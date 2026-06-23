@@ -32,7 +32,7 @@ own use cases. It is the principal-facing layer ABOVE them.
 
 Usage:
 
-    from src.ztare.supervisor.escalation_manager import escalate
+    from ztare.supervisor.escalation_manager import escalate
 
     escalate(
         title="Patent #4 filing gate",
@@ -162,7 +162,7 @@ def escalate(
     # Before writing a gate, verify any claimed session_id corresponds to
     # a live session. Lazy import to avoid circular dep.
     if session_id is not None:
-        from src.ztare.signals import autoemit
+        from ztare.signals import autoemit
         autoemit.check_session_id_authenticity(
             session_id=session_id,
             context=f"escalate call, title={title!r}, urgent={urgent}",
@@ -219,7 +219,7 @@ def escalate(
             # Lazy import so the supervisor module doesn't take a hard
             # dependency on the notifications module (which itself is
             # optional — ntfy may be unreachable in some environments).
-            from src.ztare.notifications.push import push_notification
+            from ztare.notifications.push import push_notification
 
             body_parts = [reason]
             if notes_list:
@@ -266,7 +266,7 @@ def escalate_gate_file_also_push(
         log.warning("gate file does not exist, cannot push: %s", gate_json_path)
         return False
     try:
-        from src.ztare.notifications.push import push_from_gate_json
+        from ztare.notifications.push import push_from_gate_json
     except ImportError:
         log.warning("notifications module not importable")
         return False

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT
 
 
 BENCH_ROOT = REPO_ROOT / "benchmarks" / "constraint_memory"

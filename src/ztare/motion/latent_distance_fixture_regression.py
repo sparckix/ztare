@@ -14,7 +14,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from src.ztare.motion.latent_distance import (
+from ztare.motion.latent_distance import (
     LATENT_DISTANCE_FILENAME,
     IterSignature,
     classify_motion,

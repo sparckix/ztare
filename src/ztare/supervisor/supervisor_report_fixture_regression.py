@@ -5,11 +5,11 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_report import (
+from ztare.supervisor.supervisor_report import (
     build_supervisor_report,
     render_supervisor_report_markdown,
 )
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     HandoffStatus,

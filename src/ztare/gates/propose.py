@@ -168,7 +168,7 @@ def _remote_verdict(pid: str, ts: str,
     legacy_sha = _seg("S", "Q")
     quar = _seg("Q", "E").strip()
 
-    from src.ztare.gates.stamped_state import verify_fetched
+    from ztare.gates.stamped_state import verify_fetched
     if verify_fetched(ledger_text, legacy_txt or None, legacy_sha or None,
                       proposal_id=pid, body_sha256=body_sha256):
         return "OFFICIAL", ("locally chain-verified against the "
@@ -181,8 +181,8 @@ def _remote_verdict(pid: str, ts: str,
 
 def _local_verdict(pid: str, ts: str,
                    body_sha256: str) -> tuple[str, str]:
-    from src.ztare.gates.stamped_state import verify_fetched
-    from src.ztare.gates.stamped_state import (
+    from ztare.gates.stamped_state import verify_fetched
+    from ztare.gates.stamped_state import (
         LEDGER, _LEGACY_TXT, _LEGACY_SHA)
     try:
         lt = _LEGACY_TXT.read_text(encoding="utf-8")
@@ -319,7 +319,7 @@ def main() -> int:
         # endpoint verdict. REFUSE unless the verifier+anchor are
         # demonstrably agent-unwritable (install them root-owned, like
         # /srv/ztare_gate on the VPS). Fail-closed, never silent-trust.
-        from src.ztare.gates._daemon_sig import anchor_tamperproof
+        from ztare.gates._daemon_sig import anchor_tamperproof
         _tp_ok, _tp_why = anchor_tamperproof()
         if not _tp_ok:
             print(json.dumps({

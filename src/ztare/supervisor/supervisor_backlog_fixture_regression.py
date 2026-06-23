@@ -5,13 +5,13 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_backlog import (
+from ztare.supervisor.supervisor_backlog import (
     build_backlog_context,
     build_backlog_prompt,
     render_program_plan_markdown,
     run_backlog,
 )
-from src.ztare.supervisor.supervisor_manifest import load_optional_program_manifest
+from ztare.supervisor.supervisor_manifest import load_optional_program_manifest
 
 
 def run_supervisor_backlog_fixture_regression() -> dict[str, object]:

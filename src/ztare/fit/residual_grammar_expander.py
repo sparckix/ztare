@@ -6,7 +6,7 @@ missing templates mechanically. No LLM, no operator judgment.
 The residual signature IS the specification for the missing template.
 
 Usage:
-    from src.ztare.fit.residual_grammar_expander import suggest_from_residuals
+    from ztare.fit.residual_grammar_expander import suggest_from_residuals
     suggestions = suggest_from_residuals(residuals, x_values, var="n")
 """
 

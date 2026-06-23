@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.composition.structural_memory import (
+from ztare.composition.structural_memory import (
     ExpressionParseError,
     PRIMITIVE_LABELS,
     extract_primitives,

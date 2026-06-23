@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.fit.mutation_suite_guard import (
+from ztare.fit.mutation_suite_guard import (
     NO_SUITE_SENTINEL,
     validate_python_suite_candidate,
 )

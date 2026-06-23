@@ -7,4 +7,4 @@ directly.
 """
 from __future__ import annotations
 
-from src.ztare.composition.symbolic_regression_synthesizer import *  # noqa: F401,F403
+from ztare.composition.symbolic_regression_synthesizer import *  # noqa: F401,F403

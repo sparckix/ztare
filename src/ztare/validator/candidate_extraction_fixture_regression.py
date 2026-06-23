@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.validator.candidate_extraction import extract_best_python_candidate
+from ztare.validator.candidate_extraction import extract_best_python_candidate
 
 
 def run_fixture_regression() -> dict[str, object]:

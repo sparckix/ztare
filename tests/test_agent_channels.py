@@ -5,9 +5,9 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.orchestration import agent_channels as ac
-from src.ztare.orchestration import work_discovery as wd
-from src.ztare.orchestration.work_discovery import Candidate
+from ztare.orchestration import agent_channels as ac
+from ztare.orchestration import work_discovery as wd
+from ztare.orchestration.work_discovery import Candidate
 
 
 _AGENT_DAEMON_SPEC = importlib.util.spec_from_file_location(

@@ -16,7 +16,7 @@ import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.supervisor.inbox_state import (
+from ztare.supervisor.inbox_state import (
     list_pending,
     reconcile_pending_resolved,
     resolve_gate,

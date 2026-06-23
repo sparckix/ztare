@@ -1,4 +1,4 @@
-from src.ztare.gates.bounded_natural_event_enumeration_gate import (
+from ztare.gates.bounded_natural_event_enumeration_gate import (
     REQUIRED_FIELDS,
     run_bounded_natural_event_enumeration_gate,
 )

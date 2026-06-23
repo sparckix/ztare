@@ -31,8 +31,8 @@ def test_lean_falsifier_conforms():
 def test_thesis_inverter_conforms_and_run_inverter_output_preserved(tmp_path, monkeypatch):
     """The refactored run_inverter must (1) delegate through the contract and (2) return the SAME dict
     shape + write inverter_review.json, for a fixed LLM response — the regression lock."""
-    import src.ztare.validator.inverter_agent as ia
-    from src.ztare.common.inversion import Inverter
+    import ztare.validator.inverter_agent as ia
+    from ztare.common.inversion import Inverter
 
     # ThesisInverter conforms to the shared protocol.
     inv = ia.ThesisInverter(tmp_path, champion_score=80)
@@ -75,7 +75,7 @@ def test_thesis_inverter_conforms_and_run_inverter_output_preserved(tmp_path, mo
 
 
 def test_run_inverter_skip_path(tmp_path):
-    import src.ztare.validator.inverter_agent as ia
+    import ztare.validator.inverter_agent as ia
     out = ia.run_inverter(tmp_path, "thesis", champion_score=10, skip_if_score_below=50)
     assert out.get("skipped") is True
 

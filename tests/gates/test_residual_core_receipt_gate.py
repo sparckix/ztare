@@ -1,4 +1,4 @@
-from src.ztare.gates.residual_core_receipt_gate import (
+from ztare.gates.residual_core_receipt_gate import (
     run_residual_core_receipt_gate,
 )
 

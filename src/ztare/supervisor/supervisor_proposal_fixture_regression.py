@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_proposal import (
+from ztare.supervisor.supervisor_proposal import (
     build_proposal_context,
     build_proposal_prompt,
     planning_debate_path,

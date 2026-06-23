@@ -12,7 +12,7 @@ import pytest
 
 from pathlib import Path
 
-from src.ztare.orchestrator.prompt import (
+from ztare.orchestrator.prompt import (
     needs_override_contract_hint,
     needs_scalar_contract_hint,
     select_substrate_contract_hint,

@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 import tempfile
 
-from src.ztare.orchestrator.cold_shot_policy import (
+from ztare.orchestrator.cold_shot_policy import (
     route_cold_shot_families,
     write_policy_artifacts,
 )

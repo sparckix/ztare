@@ -244,7 +244,7 @@ def _regression_invert_connector(request: CognitiveGymRequest) -> Optional[Cogni
     if not ("project_dir" in ctx and "champion_thesis" in ctx):
         return None
     try:
-        from src.ztare.validator.inverter_agent import run_inverter
+        from ztare.validator.inverter_agent import run_inverter
         result = run_inverter(Path(ctx["project_dir"]), ctx["champion_thesis"], ctx.get("champion_score", 0))
         return CognitiveGymResponse(leg=request.leg, suggestion=str(result.get("falsification_tests", ""))[:600],
                                     rationale="dispatched to inverter_agent (GP-119)", confidence="high")

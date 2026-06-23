@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.gates.corrector_library import CORRECTOR_LIBRARY, CorrectorForm
+from ztare.gates.corrector_library import CORRECTOR_LIBRARY, CorrectorForm
 
 SAMPLE_VS = list(range(1, 51))
 SAMPLE_KS = [0.08, 0.5, 1.0, 2.0, 5.0, 12.0]

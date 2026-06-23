@@ -47,7 +47,7 @@ def test_embedding_field_is_not_auxiliary_from_source_target_name():
 
 
 def test_section_prefix_identity_routes_to_auxiliary_construction():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -59,7 +59,7 @@ def test_section_prefix_identity_routes_to_auxiliary_construction():
 
 
 def test_extensional_measure_missing_routes_to_auxiliary_construction():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -71,7 +71,7 @@ def test_extensional_measure_missing_routes_to_auxiliary_construction():
 
 
 def test_loss_projection_missing_routes_to_auxiliary_construction():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -83,7 +83,7 @@ def test_loss_projection_missing_routes_to_auxiliary_construction():
 
 
 def test_eigenframe_cone_inclusion_missing_routes_to_auxiliary_construction():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -95,7 +95,7 @@ def test_eigenframe_cone_inclusion_missing_routes_to_auxiliary_construction():
 
 
 def test_sparse_carleson_pair_to_owner_routes_to_packing():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -106,7 +106,7 @@ def test_sparse_carleson_pair_to_owner_routes_to_packing():
     assert result["gap_type"] == "PACKING"
 
 def test_second_moment_anticoncentration_routes_to_coercivity():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -119,7 +119,7 @@ def test_second_moment_anticoncentration_routes_to_coercivity():
 
 
 def test_amplitude_cap_missing_routes_to_coercivity():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",
@@ -130,7 +130,7 @@ def test_amplitude_cap_missing_routes_to_coercivity():
     assert result["gap_type"] == "COERCIVITY"
 
 def test_m2_over_q_size_sum_surplus_routes_to_coercivity():
-    from src.ztare.research_director.gap_typing import heuristic_gap_type
+    from ztare.research_director.gap_typing import heuristic_gap_type
 
     result = heuristic_gap_type(
         "Prop",

@@ -5,7 +5,7 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.validator.core.mutation_contract import (
+from ztare.validator.core.mutation_contract import (
     ClaimDeltaType,
     MutationArtifact,
     MutationDeclaration,

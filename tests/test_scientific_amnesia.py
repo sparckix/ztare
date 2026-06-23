@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from src.ztare.research_director.scientific_amnesia import run_scientific_amnesia_check
+from ztare.research_director.scientific_amnesia import run_scientific_amnesia_check
 
 
 def test_scientific_amnesia_accepts_repo_relative_output_path():

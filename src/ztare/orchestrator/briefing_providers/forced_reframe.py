@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 # Hardcoded fallback alien-math alternatives (from GP-164 seam appendix).
@@ -93,7 +93,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         """Classify the most recent capped iter's cap_kind. Returns 'none'
         when no prior caps exist or all are non-cap (cap_inactive_*)."""
         try:
-            from src.ztare.orchestrator.cap_kind import classify_cap_kind
+            from ztare.orchestrator.cap_kind import classify_cap_kind
         except ImportError:
             return "unknown"
         for rec in reversed(eh):
@@ -107,7 +107,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
 
     def fragment(self, ctx: BriefingContext) -> str:
         try:
-            from src.ztare.orchestrator.forced_reframe import (
+            from ztare.orchestrator.forced_reframe import (
                 detect_forced_reframe_trigger,
                 build_forced_reframe_briefing_block,
             )
@@ -190,7 +190,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         block = build_forced_reframe_briefing_block(decision, alts)
         # Persist decision for telemetry / iter-history tagging
         try:
-            from src.ztare.orchestrator.forced_reframe import (
+            from ztare.orchestrator.forced_reframe import (
                 write_forced_reframe_decision,
             )
             write_forced_reframe_decision(
@@ -221,7 +221,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         mutator knows which dimension to extend.
         """
         try:
-            from src.ztare.orchestrator.cap_kind import find_best_honest_iter
+            from ztare.orchestrator.cap_kind import find_best_honest_iter
         except ImportError:
             return ""
         best = find_best_honest_iter(eh)
@@ -345,7 +345,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         subs_dir = ws / "submissions"
         if subs_dir.is_dir() and out:
             try:
-                from src.ztare.orchestrator.forced_reframe import (
+                from ztare.orchestrator.forced_reframe import (
                     extract_parametric_form_from_source as _extract_form,
                 )
             except ImportError:
@@ -377,7 +377,7 @@ class ForcedReframeBriefingProvider(BriefingProvider):
         # REFRAME steer physics substrates toward variational/Lagrangian
         # derivation) instead of generic alien-math families.
         try:
-            from src.ztare.orchestrator.alien_math_seam_loader import (
+            from ztare.orchestrator.alien_math_seam_loader import (
                 load_alien_math_alternatives,
             )
             domain = None

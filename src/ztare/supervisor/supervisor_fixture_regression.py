@@ -6,13 +6,13 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.findings.prose_spec import (
+from ztare.findings.prose_spec import (
     ProseAssertionType,
     ProseSpec,
     ProseSpecAssertion,
     prose_spec_to_dict,
 )
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactSnapshot,
     HandoffStatus,
@@ -20,7 +20,7 @@ from src.ztare.supervisor.supervisor_state import (
     SupervisorState,
     TransitionInput,
 )
-from src.ztare.supervisor.supervisor_transitions import apply_transition
+from ztare.supervisor.supervisor_transitions import apply_transition
 
 
 @dataclass(frozen=True)

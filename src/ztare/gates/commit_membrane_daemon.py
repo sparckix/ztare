@@ -30,8 +30,8 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.gates.commit_membrane_gate import evaluate
-from src.ztare.common.paths import REPO_ROOT
+from ztare.gates.commit_membrane_gate import evaluate
+from ztare.common.paths import REPO_ROOT
 
 STORE = Path(os.environ.get(
     "ZTARE_OFFICIAL_STORE", str(Path.home() / "ztare_official_store")))
@@ -135,7 +135,7 @@ def _registered_targets() -> set[str]:
     (that path is removed from the gate). Empty if unavailable ⇒
     closure claims fail-closed."""
     try:
-        from src.ztare.gates.stamped_state import chain_valid, _rows
+        from ztare.gates.stamped_state import chain_valid, _rows
         valid, _ = chain_valid(_rows())
     except Exception:
         return set()
@@ -151,7 +151,7 @@ def _registered_target_row(stmt_sha256: str) -> dict | None:
     env_hash for the Lean-kernel defeq probe. None ⇒ not registered
     (caller fail-closes)."""
     try:
-        from src.ztare.gates.stamped_state import chain_valid, _rows
+        from ztare.gates.stamped_state import chain_valid, _rows
         valid, _ = chain_valid(_rows())
     except Exception:
         return None
@@ -176,7 +176,7 @@ def _manifest_receipt_ok(tick_id: str, kind: str,
     valid sig on a row whose body/parent was tampered must NOT count.
     Fail-closed if chain_valid is unavailable."""
     try:
-        from src.ztare.gates.stamped_state import chain_valid, _rows
+        from ztare.gates.stamped_state import chain_valid, _rows
         valid, _errs = chain_valid(_rows())
     except Exception:
         return False
@@ -207,7 +207,7 @@ def _already_judged(tick_id: str, contract_id: str, item_id: str,
     resolver trusts), not raw rows — a bad raw row must not suppress
     request emission while the resolver still refuses discharge."""
     try:
-        from src.ztare.gates.stamped_state import chain_valid, _rows
+        from ztare.gates.stamped_state import chain_valid, _rows
         rows, _ = chain_valid(_rows())
     except Exception:
         rows = []
@@ -233,7 +233,7 @@ def _emit_judge_request(*, tick_id: str, contract_id: str,
     request per (tick,contract,item,witness). Returns a status str."""
     wsha = _canon_wsha(witness)
     try:
-        from src.ztare.surfacing.pre_tick_obligation_compiler import (
+        from ztare.surfacing.pre_tick_obligation_compiler import (
             judge_prompt_for,
         )
         _prompt = judge_prompt_for(
@@ -263,7 +263,7 @@ def _emit_judge_request(*, tick_id: str, contract_id: str,
         "witness_sha": wsha,
     }
     canonical = json.dumps(payload, sort_keys=True, ensure_ascii=False)
-    from src.ztare.gates._daemon_sig import sign as _sgn
+    from ztare.gates._daemon_sig import sign as _sgn
     rec = {"payload": payload,
            "daemon_sig": _sgn(hashlib.sha256(
                canonical.encode("utf-8")).hexdigest())}
@@ -311,7 +311,7 @@ def _ingest_verdicts() -> None:
             pid = ("20260101T000000_"
                    + hashlib.sha256(f.stem.encode()).hexdigest()[:8])
             try:
-                from src.ztare.gates.stamped_state import (
+                from ztare.gates.stamped_state import (
                     chain_valid as _cv, _rows as _rw)
                 _vrows, _ = _cv(_rw())
             except Exception:
@@ -446,7 +446,7 @@ def process_one(proposal_path: Path) -> dict:
         # Both families are COMMITTED anchors (deploy/
         # gp241_family_anchors.json), same trust class as the judge
         # pubkey. None => fail-closed (anchors missing/invalid/equal).
-        from src.ztare.gates._daemon_sig import (
+        from ztare.gates._daemon_sig import (
             canon_family, load_family_anchors)
         _anchors = load_family_anchors()
         bad = list(miss)
@@ -468,7 +468,7 @@ def process_one(proposal_path: Path) -> dict:
         # proof's prompt_hash MUST match (no weakened-rubric feed).
         if not miss:
             try:
-                from src.ztare.gates._daemon_sig import judge_verify
+                from ztare.gates._daemon_sig import judge_verify
                 pm = str(jv.get("proof_msg", ""))
                 ok_sig = judge_verify(hashlib.sha256(
                     pm.encode("utf-8")).hexdigest(),
@@ -523,7 +523,7 @@ def process_one(proposal_path: Path) -> dict:
                 # (the agent cannot weaken it), NOT agent-supplied
                 # goal. judged_witness is the agent's discharge content
                 # (legitimately agent-authored, pinned by witness_sha).
-                from src.ztare.gates._daemon_sig import verify as _vs
+                from ztare.gates._daemon_sig import verify as _vs
                 _sr = None
                 for _r in _ledger_rows_raw():
                     if (_r.get("transition_type") == "start_tick"
@@ -566,7 +566,7 @@ def process_one(proposal_path: Path) -> dict:
                                    "witness_sha (judge saw a "
                                    "different witness than the one "
                                    "discharged)")
-                    from src.ztare.surfacing\
+                    from ztare.surfacing\
                         .pre_tick_obligation_compiler \
                         import judge_prompt_for
                     exp = judge_prompt_for(
@@ -615,7 +615,7 @@ def process_one(proposal_path: Path) -> dict:
         _b = json.dumps(jrow, sort_keys=True)
         jrow["official_state_hash"] = hashlib.sha256(
             (parent + _b).encode()).hexdigest()[:32]
-        from src.ztare.gates._daemon_sig import sign as _jsgn
+        from ztare.gates._daemon_sig import sign as _jsgn
         jrow["daemon_sig"] = _jsgn(jrow["official_state_hash"])
         with LEDGER.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(jrow) + "\n")
@@ -665,7 +665,7 @@ def process_one(proposal_path: Path) -> dict:
         # daemon-minted signed `start_tick` row. A close REQUIRES a
         # chain-valid, daemon-SIGNED start_tick row whose tick_id ==
         # this close's tick_id. Kills the skip-start-tick attack.
-        from src.ztare.gates._daemon_sig import verify as _vsig
+        from ztare.gates._daemon_sig import verify as _vsig
         _tid = str(close["tick_id"])
         # cold review bxu2w8voa R4: one STAMPED tick_close per tick_id
         # (ledger hygiene). A quarantined first attempt leaves NO
@@ -673,7 +673,7 @@ def process_one(proposal_path: Path) -> dict:
         # unaffected; only a SECOND official close of an
         # already-closed tick is refused.
         try:
-            from src.ztare.gates.stamped_state import (
+            from ztare.gates.stamped_state import (
                 chain_valid as _cvc, _rows as _rwc)
             _cl_rows, _ = _cvc(_rwc())
         except Exception:
@@ -739,7 +739,7 @@ def process_one(proposal_path: Path) -> dict:
         # start_tick would let a corrupt agent mint a WEAKER frozen
         # contract over a strong one, then close against it. Reject any
         # start_tick whose tick_id already has a signed start row.
-        from src.ztare.gates._daemon_sig import verify as _vs0
+        from ztare.gates._daemon_sig import verify as _vs0
         if any(r.get("transition_type") == "start_tick"
                and str(r.get("tick_id")) == s_tid
                and _vs0(str(r.get("official_state_hash", "")),
@@ -851,7 +851,7 @@ def process_one(proposal_path: Path) -> dict:
                 # substrate not in registry ⇒ degrade to named +
                 # recorded (flagged) — generic, no NS coupling.
                 _rt_unreg = True
-        from src.ztare.surfacing.pre_tick_obligation_compiler import (
+        from ztare.surfacing.pre_tick_obligation_compiler import (
             start_tick as _compile, merge_signals as _ms)
         _sig_in = _ms(p.get("declared_signals"),
                       f"{p.get('transition_text','')} {s_goal}")
@@ -999,7 +999,7 @@ def process_one(proposal_path: Path) -> dict:
         _blob = json.dumps(srow, sort_keys=True)
         srow["official_state_hash"] = hashlib.sha256(
             (parent + _blob).encode()).hexdigest()[:32]
-        from src.ztare.gates._daemon_sig import sign as _sgn
+        from ztare.gates._daemon_sig import sign as _sgn
         srow["daemon_sig"] = _sgn(srow["official_state_hash"])
         with LEDGER.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(srow) + "\n")
@@ -1121,7 +1121,7 @@ def process_one(proposal_path: Path) -> dict:
         _mblob = json.dumps(mrow, sort_keys=True)
         mrow["official_state_hash"] = hashlib.sha256(
             (parent + _mblob).encode()).hexdigest()[:32]
-        from src.ztare.gates._daemon_sig import sign as _sgn
+        from ztare.gates._daemon_sig import sign as _sgn
         mrow["daemon_sig"] = _sgn(mrow["official_state_hash"])
         with LEDGER.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(mrow) + "\n")
@@ -1146,7 +1146,7 @@ def process_one(proposal_path: Path) -> dict:
     # flag), loud, and ledgered, NOT cryptographically operator-only
     # (that needs keys outside the agent boundary; deploy layer).
     if str(p.get("transition_type", "")) == "target_register":
-        from src.ztare.gates._daemon_sig import (
+        from ztare.gates._daemon_sig import (
             operator_anchor_provisioned, operator_verify)
         st = p.get("close") if isinstance(p.get("close"), dict) else {}
         # Self-MD round-3 (B): prefer close.statement_text and compute
@@ -1158,7 +1158,7 @@ def process_one(proposal_path: Path) -> dict:
         _tsha = str(st.get("statement_sha256", "")).strip().lower()
         if _stext.strip():
             try:
-                from src.ztare.gates.lean_proof_gate import (
+                from ztare.gates.lean_proof_gate import (
                     canonical_statement as _canon)
                 _tsha = hashlib.sha256(
                     _canon(_stext).encode("utf-8")).hexdigest()
@@ -1228,7 +1228,7 @@ def process_one(proposal_path: Path) -> dict:
         _tblob = json.dumps(trow, sort_keys=True)
         trow["official_state_hash"] = hashlib.sha256(
             (parent + _tblob).encode()).hexdigest()[:32]
-        from src.ztare.gates._daemon_sig import sign as _sgn
+        from ztare.gates._daemon_sig import sign as _sgn
         trow["daemon_sig"] = _sgn(trow["official_state_hash"])
         with LEDGER.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(trow) + "\n")
@@ -1251,7 +1251,7 @@ def process_one(proposal_path: Path) -> dict:
     # That precondition is C4's first-class not-the-builder acceptance
     # criterion (the deploy triad check), not asserted here.
     if str(p.get("transition_type", "")) == "tick_retire":
-        from src.ztare.gates._daemon_sig import (
+        from ztare.gates._daemon_sig import (
             operator_anchor_provisioned, operator_verify)
         st = p.get("close") if isinstance(p.get("close"), dict) else {}
         _ro = str(st.get("owner", "")).strip()
@@ -1325,7 +1325,7 @@ def process_one(proposal_path: Path) -> dict:
         _rblob = json.dumps(rrow, sort_keys=True)
         rrow["official_state_hash"] = hashlib.sha256(
             (parent + _rblob).encode()).hexdigest()[:32]
-        from src.ztare.gates._daemon_sig import sign as _sgn
+        from ztare.gates._daemon_sig import sign as _sgn
         rrow["daemon_sig"] = _sgn(rrow["official_state_hash"])
         with LEDGER.open("a", encoding="utf-8") as fh:
             fh.write(json.dumps(rrow) + "\n")
@@ -1359,7 +1359,7 @@ def process_one(proposal_path: Path) -> dict:
     # obligation discharged by a witness OR a verifiable why_not.
     oblig_fail: list[str] = []
     goal = str(p.get("goal", "")).strip()
-    from src.ztare.surfacing.pre_tick_obligation_compiler import (
+    from ztare.surfacing.pre_tick_obligation_compiler import (
         start_tick, validate_tick_contract, merge_signals)
     _tt = str(p.get("transition_type", ""))
     # sev-5 fix: do NOT trust agent-declared signals alone. The
@@ -1848,7 +1848,7 @@ def process_one(proposal_path: Path) -> dict:
                                             "statement_text", "") or "")
                                         break
                         if _reg_txt and _prov_txt:
-                            from src.ztare.gates.lean_statement_identity \
+                            from ztare.gates.lean_statement_identity \
                                 import statements_defeq
                             _verdict, _detail = statements_defeq(
                                 _reg_txt, _prov_txt)
@@ -2031,7 +2031,7 @@ def process_one(proposal_path: Path) -> dict:
     # forged self-consistent one) is rejected. Signed AFTER the hash ⇒
     # daemon_sig is NOT part of the hashed blob (chain_valid excludes
     # it). A signing failure MUST be loud (no unsigned official row).
-    from src.ztare.gates._daemon_sig import sign as _sign
+    from ztare.gates._daemon_sig import sign as _sign
     row["daemon_sig"] = _sign(row["official_state_hash"])
     with LEDGER.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(row) + "\n")

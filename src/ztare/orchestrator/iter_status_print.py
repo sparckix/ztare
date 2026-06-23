@@ -22,7 +22,7 @@ from __future__ import annotations
 
 from typing import Callable
 
-from src.ztare.validator.utilities.champion_artifacts import artifact_regime_fingerprint
+from ztare.validator.utilities.champion_artifacts import artifact_regime_fingerprint
 
 
 def print_latest_artifact_status(

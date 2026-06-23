@@ -1,4 +1,4 @@
-from src.ztare.gates.finite_prefix_selection_gate import run_gate
+from ztare.gates.finite_prefix_selection_gate import run_gate
 
 
 def test_finite_prefix_selection_passes_with_paid_source_contract():

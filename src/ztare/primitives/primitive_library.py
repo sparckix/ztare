@@ -2,7 +2,7 @@ import json
 import re
 from typing import Any, Dict, Iterable, List, Optional, Set
 
-from src.ztare.common.paths import GLOBAL_PRIMITIVES_DIR, REPO_ROOT
+from ztare.common.paths import GLOBAL_PRIMITIVES_DIR, REPO_ROOT
 
 ROOT_DIR = REPO_ROOT
 APPROVED_DIR = GLOBAL_PRIMITIVES_DIR / "approved"

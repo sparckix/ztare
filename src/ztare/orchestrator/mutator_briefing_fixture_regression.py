@@ -4,7 +4,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
     MutatorBriefing,

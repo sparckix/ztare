@@ -33,7 +33,7 @@ from __future__ import annotations
 import json
 import re
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 # Numeric-redaction helpers (2026-04-26). The substrate critic

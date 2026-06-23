@@ -1,4 +1,4 @@
-from src.ztare.gates.quadratic_quotient_descent_gate import (
+from ztare.gates.quadratic_quotient_descent_gate import (
     run_quadratic_quotient_descent_gate,
 )
 

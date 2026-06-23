@@ -6,7 +6,7 @@ per panel verdict 2026-04-21: absolute thresholds conflate structural failure
 with calibration imprecision on large-scale observables.
 
 Usage in gate_harness.py:
-    from src.ztare.gates.residual_norm import normalized_max_residual
+    from ztare.gates.residual_norm import normalized_max_residual
     mx = normalized_max_residual(predictions, observations)
     results["gates"]["holdout"] = {"value": mx, "threshold": 0.005, "pass": mx < 0.005}
 

@@ -40,7 +40,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 PATTERNS_DIR = REPO_ROOT / "org" / "patterns"
 ANTIPATTERNS_DIR = REPO_ROOT / "org" / "anti-patterns"

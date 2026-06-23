@@ -53,7 +53,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from src.ztare.motion.set_distance import jaccard_distance
+from ztare.motion.set_distance import jaccard_distance
 
 
 LATENT_DISTANCE_FILENAME = "latent_distance.jsonl"

@@ -5,11 +5,11 @@ import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.gates.bridge_scope_contract import (
+from ztare.gates.bridge_scope_contract import (
     BridgeScopeMismatchCode,
     evaluate_bridge_scope,
 )
-from src.ztare.validator.core.mutation_contract import (
+from ztare.validator.core.mutation_contract import (
     ClaimDeltaType,
     MutationArtifact,
     MutationDeclaration,

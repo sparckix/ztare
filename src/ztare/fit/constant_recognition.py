@@ -19,7 +19,7 @@ Pipeline:
   3. recognize_constants() → algebraic identifications
 
 Usage:
-    from src.ztare.fit.constant_recognition import (
+    from ztare.fit.constant_recognition import (
         precision_polish, recognize_constants, full_pipeline,
     )
     # After AdamW fit:

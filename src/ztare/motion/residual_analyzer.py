@@ -6,4 +6,4 @@ scripts while new code imports the named capability directly.
 """
 from __future__ import annotations
 
-from src.ztare.motion.residual_diagnostics import *  # noqa: F401,F403
+from ztare.motion.residual_diagnostics import *  # noqa: F401,F403

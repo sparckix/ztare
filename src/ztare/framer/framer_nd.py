@@ -38,7 +38,7 @@ from typing import Any, Iterable, Optional
 
 import numpy as np
 
-from src.ztare.framer.active_framer import frame as _frame_1d
+from ztare.framer.active_framer import frame as _frame_1d
 
 
 def _pick_primary_feature(

@@ -23,9 +23,9 @@ import json
 import sys
 from typing import Any, Callable
 
-from src.ztare.roles.loader import Registry, load_registry
-from src.ztare.sessions.session import active_sessions
-from src.ztare.signals.damage import list_recent as list_damage
+from ztare.roles.loader import Registry, load_registry
+from ztare.sessions.session import active_sessions
+from ztare.signals.damage import list_recent as list_damage
 
 
 # ---------------------------------------------------------------------

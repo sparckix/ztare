@@ -8,10 +8,10 @@ from contextlib import redirect_stdout
 from pathlib import Path
 from types import SimpleNamespace
 
-import src.ztare.supervisor.supervisor_program_autoloop as program_autoloop_module
-from src.ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
-from src.ztare.supervisor.supervisor_registry import registry_path
-from src.ztare.supervisor.supervisor_state import (
+import ztare.supervisor.supervisor_program_autoloop as program_autoloop_module
+from ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
+from ztare.supervisor.supervisor_registry import registry_path
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     HandoffStatus,

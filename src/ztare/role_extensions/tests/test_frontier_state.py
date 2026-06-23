@@ -5,13 +5,13 @@ import pytest
 
 
 def _force_root(monkeypatch, tmp_path):
-    from src.ztare.role_extensions import frontier_state as fs
+    from ztare.role_extensions import frontier_state as fs
     monkeypatch.setattr(fs, "STATE_ROOT", tmp_path)
 
 
 def test_invalid_slug_rejected(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import _validate_slug
+    from ztare.role_extensions.frontier_state import _validate_slug
     with pytest.raises(ValueError):
         _validate_slug("../etc/passwd")
     with pytest.raises(ValueError):
@@ -20,7 +20,7 @@ def test_invalid_slug_rejected(monkeypatch, tmp_path):
 
 def test_load_save_roundtrip(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, save_state, FrontierState,
     )
     s = load_state("test_proj")
@@ -35,7 +35,7 @@ def test_load_save_roundtrip(monkeypatch, tmp_path):
 
 def test_increment_obstruction_advances_counter(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, increment_obstruction,
     )
     s = load_state("test_proj")
@@ -48,7 +48,7 @@ def test_increment_obstruction_advances_counter(monkeypatch, tmp_path):
 
 def test_reset_obstruction_clears_counter(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, increment_obstruction, reset_obstruction,
     )
     s = load_state("test_proj")
@@ -63,7 +63,7 @@ def test_reset_obstruction_clears_counter(monkeypatch, tmp_path):
 
 def test_queue_and_pop_actions(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, queue_action, pop_pending_actions,
     )
     s = load_state("test_proj")
@@ -80,7 +80,7 @@ def test_queue_and_pop_actions(monkeypatch, tmp_path):
 
 def test_history_capped_at_500(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, save_state,
     )
     s = load_state("test_proj")
@@ -94,7 +94,7 @@ def test_history_capped_at_500(monkeypatch, tmp_path):
 
 def test_resolve_escape_marks_status(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, add_escape, resolve_escape, EscapeEntry,
     )
     s = load_state("test_proj")
@@ -109,7 +109,7 @@ def test_resolve_escape_marks_status(monkeypatch, tmp_path):
 
 def test_resolve_escape_invalid_verdict_raises(monkeypatch, tmp_path):
     _force_root(monkeypatch, tmp_path)
-    from src.ztare.role_extensions.frontier_state import (
+    from ztare.role_extensions.frontier_state import (
         load_state, resolve_escape,
     )
     s = load_state("test_proj")

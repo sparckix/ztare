@@ -24,7 +24,7 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-from src.ztare.composition.structural_memory import (
+from ztare.composition.structural_memory import (
     ExpressionParseError,
     extract_primitives,
     normalize_expression,

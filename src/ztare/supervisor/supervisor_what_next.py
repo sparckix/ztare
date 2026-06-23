@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_backlog import build_what_next
+from ztare.supervisor.supervisor_backlog import build_what_next
 
 
 def main() -> int:

@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import Enum
 
-from src.ztare.validator.core.mutation_contract import (
+from ztare.validator.core.mutation_contract import (
     MutationArtifact,
     MutationDeclaration,
     MutationScopeDelta,

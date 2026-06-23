@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from src.ztare.orchestrator.frontier_script_scaffold_runner import (
+from ztare.orchestrator.frontier_script_scaffold_runner import (
     build_artifact_packet,
     run_frontier_script_meta_cold_shot,
 )

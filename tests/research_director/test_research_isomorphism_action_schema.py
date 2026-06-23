@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 
-from src.ztare.common.constraint_isomorphism import SurfacedIsomorphism
-from src.ztare.common.kernel_action_schema import validate_kernel_action_schema
-from src.ztare.research_director.research_isomorphism import (
+from ztare.common.constraint_isomorphism import SurfacedIsomorphism
+from ztare.common.kernel_action_schema import validate_kernel_action_schema
+from ztare.research_director.research_isomorphism import (
     ResearchDomain,
     surface_for_research_ceiling,
 )

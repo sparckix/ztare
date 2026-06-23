@@ -6,7 +6,7 @@ from types import MappingProxyType
 
 import pytest
 
-from src.ztare.orchestrator.fitted_model import FrozenFittedModel
+from ztare.orchestrator.fitted_model import FrozenFittedModel
 
 
 def _example_imodel(d: float, params=None) -> float:

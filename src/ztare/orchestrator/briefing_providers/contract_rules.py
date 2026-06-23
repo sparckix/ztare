@@ -21,8 +21,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
-from src.ztare.orchestrator.submission_path_helpers import requires_i_model_submission
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.submission_path_helpers import requires_i_model_submission
 
 
 def _declared_rubric_mode(rubric: dict) -> str:

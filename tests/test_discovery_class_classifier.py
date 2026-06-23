@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.ztare.findings.discovery_class_classifier import classify
+from ztare.findings.discovery_class_classifier import classify
 
 
 def test_calibration_flag_overrides_everything():

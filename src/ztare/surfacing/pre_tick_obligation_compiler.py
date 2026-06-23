@@ -27,7 +27,7 @@ from pathlib import Path
 
 import yaml
 
-from src.ztare.common.paths import REPO_ROOT
+from ztare.common.paths import REPO_ROOT
 
 ROUTING = REPO_ROOT / "org" / "catalog_routing"
 MANIFEST = (REPO_ROOT / "projects" / "ns_millennium_hunt" / "workspace"
@@ -460,7 +460,7 @@ def _resolve_provenance(ref: str, *, item_id: str | None = None,
                     f"{item_id}; use judge provenance")
             if not expect_tick_id or not expect_contract_id:
                 return False, "receipt binding missing tick_id/contract_id"
-            from src.ztare.gates.stamped_state import chain_valid, _rows
+            from ztare.gates.stamped_state import chain_valid, _rows
             valid, _ = chain_valid(_rows())
             start = next((r for r in valid
                           if r.get("transition_type") == "start_tick"
@@ -503,7 +503,7 @@ def _resolve_provenance(ref: str, *, item_id: str | None = None,
             # chain-valid PASS judge_verdict that binds this exact
             # (item_id, tick_id, contract_id, witness_sha). Id-free, so
             # there is no agent-coordination channel to game.
-            from src.ztare.gates.stamped_state import chain_valid, _rows
+            from ztare.gates.stamped_state import chain_valid, _rows
 
             def _judge_row_ok(r: dict) -> tuple[bool, str]:
                 if r.get("transition_type") != "judge_verdict":
@@ -568,7 +568,7 @@ def _resolve_provenance(ref: str, *, item_id: str | None = None,
                            f"only, not a discharge — cold-review "
                            f"b9is0a1fx fix #2)")
         if kind == "stamped":
-            from src.ztare.gates.stamped_state import chain_valid, _rows
+            from ztare.gates.stamped_state import chain_valid, _rows
             valid, _ = chain_valid(_rows())
             if any(str(r.get("proposal_id")) == val
                    or str(r.get("official_state_hash")) == val
@@ -576,7 +576,7 @@ def _resolve_provenance(ref: str, *, item_id: str | None = None,
                 return True, f"stamped:{val} chain-valid signed row"
             return False, f"stamped:{val} not a chain-valid signed row"
         if kind == "catch":
-            from src.ztare.common.paths import REPO_ROOT
+            from ztare.common.paths import REPO_ROOT
             cl = (REPO_ROOT / "analytics/public/ledgers/catch/"
                   "catch_ledger.jsonl")
             for ln in cl.read_text(encoding="utf-8",
@@ -594,7 +594,7 @@ def _resolve_provenance(ref: str, *, item_id: str | None = None,
                                    f"or empty (self-attest)")
             return False, f"catch:{val} not in catch ledger"
         if kind == "file":
-            from src.ztare.common.paths import REPO_ROOT
+            from ztare.common.paths import REPO_ROOT
             p = (REPO_ROOT / val)
             if p.is_file() and p.stat().st_size >= 400:
                 return True, f"file:{val} ({p.stat().st_size}B)"

@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 import tempfile
 
-from src.ztare.supervisor.supervisor_attended_autoloop import (
+from ztare.supervisor.supervisor_attended_autoloop import (
     _commit_preview,
     _effective_token_limits,
     _pending_request_paths,
@@ -12,7 +12,7 @@ from src.ztare.supervisor.supervisor_attended_autoloop import (
     fresh_input_tokens,
     format_turn_cost_label,
 )
-from src.ztare.supervisor.supervisor_state import (
+from ztare.supervisor.supervisor_state import (
     Actor,
     ArtifactPaths,
     DeclaredScope,
@@ -24,7 +24,7 @@ from src.ztare.supervisor.supervisor_state import (
     TransitionInput,
     TurnUsageTelemetry,
 )
-from src.ztare.supervisor.supervisor_wrappers import WrapperLaunchResult, WrapperMode
+from ztare.supervisor.supervisor_wrappers import WrapperLaunchResult, WrapperMode
 
 
 def _status(*, state: SupervisorState, next_actor: Actor) -> HandoffStatus:
@@ -305,8 +305,8 @@ def run_supervisor_attended_autoloop_fixture_regression() -> dict[str, object]:
     original_manifest_loader = __import__(
         "src.ztare.supervisor.supervisor_attended_autoloop", fromlist=["load_optional_program_manifest"]
     ).load_optional_program_manifest
-    import src.ztare.supervisor.supervisor_attended_autoloop as autoloop_module
-    from src.ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
+    import ztare.supervisor.supervisor_attended_autoloop as autoloop_module
+    from ztare.supervisor.supervisor_manifest import ManifestPacket, ManifestPacketStatus, ProgramManifest
 
     autoloop_module.load_optional_program_manifest = lambda _program_id: ProgramManifest(
         program_id="paper4_manuscript",

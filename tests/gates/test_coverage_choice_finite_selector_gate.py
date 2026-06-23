@@ -1,4 +1,4 @@
-from src.ztare.gates.coverage_choice_finite_selector_gate import (
+from ztare.gates.coverage_choice_finite_selector_gate import (
     REQUIRED_FIELDS,
     run_coverage_choice_finite_selector_gate,
 )

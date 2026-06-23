@@ -146,7 +146,7 @@ class OneDFitEngine:
         `isinstance(_fit_result, FitSuccess)`) continues to work
         unchanged. The FitEngineResult unification ships in a separate
         commit when downstream consumers migrate."""
-        from src.ztare.fit.fit_primitive import fit_parameters
+        from ztare.fit.fit_primitive import fit_parameters
         return fit_parameters(declaration, evidence, **kwargs)
 
     def write_result(self, workspace_dir: Any, result: FitEngineResult) -> None:
@@ -171,7 +171,7 @@ class OneDFitEngine:
         # we re-export the formatted block as the canonical diagnostic.
         # Lazy import.
         try:
-            from src.ztare.fit.fit_primitive import (
+            from ztare.fit.fit_primitive import (
                 diagnose_residual_pattern,
                 format_diagnostic_for_prompt,
             )
@@ -221,7 +221,7 @@ class FeatureVectorFitEngine:
         candidate_text = OneDFitEngine._extract_candidate_text(candidate)
         if not candidate_text:
             return False, "no candidate text"
-        from src.ztare.fit.fit_primitive_features import extract_form_declaration
+        from ztare.fit.fit_primitive_features import extract_form_declaration
         decl = extract_form_declaration(candidate_text)
         if decl is None:
             return False, "candidate did not declare PARAMETRIC_FORM + PARAMETER_NAMES"
@@ -235,7 +235,7 @@ class FeatureVectorFitEngine:
     ) -> Any:
         """L70 authoritative wire-in: drop-in for `fit_features()`.
         Returns native fit_features result for downstream compat."""
-        from src.ztare.fit.fit_primitive_features import fit_features
+        from ztare.fit.fit_primitive_features import fit_features
         if isinstance(declaration, tuple) and len(declaration) >= 2:
             form, names = declaration[0], declaration[1]
             init_range = declaration[2] if len(declaration) > 2 else None
@@ -332,7 +332,7 @@ class TensorTargetFitEngine:
 def _onedfit_to_common(result: Any) -> FitEngineResult:
     """Convert FitSuccess / FitFailure (1D) → FitEngineResult."""
     import math
-    from src.ztare.fit.fit_primitive import FitFailure, FitSuccess
+    from ztare.fit.fit_primitive import FitFailure, FitSuccess
     if isinstance(result, FitSuccess):
         n = getattr(result, "n_rows_used", 0)
         k = len(result.fitted_params or {})

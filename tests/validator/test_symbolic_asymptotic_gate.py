@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.ztare.validator.core.symbolic_asymptotic_gate import (
+from ztare.validator.core.symbolic_asymptotic_gate import (
     TextRejector,
     evaluate_asymptotic_terms,
 )

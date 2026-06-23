@@ -1,4 +1,4 @@
-from src.ztare.research_director.boundary_card_gate import validate_boundary_card
+from ztare.research_director.boundary_card_gate import validate_boundary_card
 
 
 def _paid_card():

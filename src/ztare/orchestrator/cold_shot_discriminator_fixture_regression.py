@@ -4,11 +4,11 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.cold_shot_discriminator import (
+from ztare.orchestrator.cold_shot_discriminator import (
     build_cold_shot_discriminator_prompt,
     parse_cold_shot_discriminator_json,
 )
-from src.ztare.orchestrator.discriminator_queue import proposals_from_cold_shot_result
+from ztare.orchestrator.discriminator_queue import proposals_from_cold_shot_result
 
 
 def run_cold_shot_discriminator_fixture_regression() -> dict[str, object]:

@@ -40,7 +40,7 @@ import json
 import re
 from typing import Optional
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 
 _FEATURE_REF_RE = re.compile(r"""features\[['"]([^'"]+)['"]\]""")

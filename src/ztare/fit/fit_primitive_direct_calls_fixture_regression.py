@@ -5,7 +5,7 @@ import math
 
 import numpy as np
 
-from src.ztare.fit.fit_primitive import FitDeclaration, _build_model_callable
+from ztare.fit.fit_primitive import FitDeclaration, _build_model_callable
 
 
 def run_fixture_regression() -> dict[str, object]:

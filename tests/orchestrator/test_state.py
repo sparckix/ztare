@@ -6,7 +6,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.ztare.orchestrator import (
+from ztare.orchestrator import (
     CageRuntime,
     build_cage_runtime,
     cage_init_banner,

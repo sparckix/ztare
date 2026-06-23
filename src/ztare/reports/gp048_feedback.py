@@ -42,7 +42,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from src.ztare.composition.structural_memory import (
+from ztare.composition.structural_memory import (
     ExpressionParseError,
     PRIMITIVE_LABELS,
     extract_primitives,

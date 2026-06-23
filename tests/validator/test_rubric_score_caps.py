@@ -1,4 +1,4 @@
-from src.ztare.validator.core.rubric_score_caps import apply_evidence_gap_score_caps
+from ztare.validator.core.rubric_score_caps import apply_evidence_gap_score_caps
 
 
 def test_evidence_gap_score_cap_clamps_proof_grade_gap() -> None:

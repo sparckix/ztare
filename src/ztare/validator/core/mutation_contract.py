@@ -4,8 +4,8 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
-from src.ztare.primitives.primitive_library import load_approved_primitives_index
-from src.ztare.validator.core.information_yield import ThesisControlMode
+from ztare.primitives.primitive_library import load_approved_primitives_index
+from ztare.validator.core.information_yield import ThesisControlMode
 
 
 class MutationScopeDelta(str, Enum):

@@ -1,4 +1,4 @@
-from src.ztare.gates.classical_choose_bound_gate import (
+from ztare.gates.classical_choose_bound_gate import (
     REQUIRED_FIELDS,
     run_classical_choose_bound_gate,
 )

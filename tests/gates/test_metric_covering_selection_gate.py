@@ -1,4 +1,4 @@
-from src.ztare.gates.metric_covering_selection_gate import (
+from ztare.gates.metric_covering_selection_gate import (
     run_metric_covering_selection_gate,
 )
 

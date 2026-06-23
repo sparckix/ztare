@@ -14,7 +14,7 @@ from __future__ import annotations
 import pytest
 from collections import ChainMap
 
-from src.ztare.gates.cage import (
+from ztare.gates.cage import (
     Cage,
     EngagementMatrix,
     Gate,

@@ -1,4 +1,4 @@
-from src.ztare.research_director.research_yield_mdl import (
+from ztare.research_director.research_yield_mdl import (
     ResearchAvenue,
     score_research_avenue,
     score_research_avenues,

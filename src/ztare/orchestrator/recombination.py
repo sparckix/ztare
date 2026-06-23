@@ -790,7 +790,7 @@ def persona_fusion(
     prompt = _FUSION_PROMPT.replace("{candidate_block}", "\n".join(block_lines))
 
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "recombination_fusion",
@@ -1005,7 +1005,7 @@ def recombine(
     }
     # Lazy-import the dataclass so a missing parallel_mutator module
     # surfaces here rather than at autoresearch_loop import time.
-    from src.ztare.orchestrator.parallel_mutator import MutatorResult
+    from ztare.orchestrator.parallel_mutator import MutatorResult
 
     # ── Stage 0: tag originals with stage_origin and run R1 sanity ────
     expanded: list = []

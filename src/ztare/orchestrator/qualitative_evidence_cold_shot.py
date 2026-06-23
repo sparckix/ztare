@@ -241,9 +241,9 @@ def run_qualitative_evidence_cold_shot(
 
     try:
         if runtime is None:
-            from src.ztare.common.llm_runtime import LLMRuntime
+            from ztare.common.llm_runtime import LLMRuntime
             runtime = LLMRuntime()
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "qualitative_evidence_cold_shot",

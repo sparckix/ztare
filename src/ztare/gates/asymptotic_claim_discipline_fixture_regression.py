@@ -4,11 +4,11 @@ from __future__ import annotations
 
 import sys
 
-from src.ztare.gates.asymptotic_claim_discipline import (
+from ztare.gates.asymptotic_claim_discipline import (
     LOCAL_TAIL_SURROGATE_CAP,
     assess_asymptotic_claim_discipline,
 )
-from src.ztare.validator.core.charter_parsing import (
+from ztare.validator.core.charter_parsing import (
     AsymptoticClaimContract,
     extract_asymptotic_claim_contract_from_charter,
 )

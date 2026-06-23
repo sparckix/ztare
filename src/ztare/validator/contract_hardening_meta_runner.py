@@ -11,7 +11,7 @@ queue.
 """
 from __future__ import annotations
 
-from src.ztare.validator.v4_meta_runner import (  # noqa: F401
+from ztare.validator.v4_meta_runner import (  # noqa: F401
     CONTRACT_REGISTRY,
     DEFAULT_QUEUE,
     ContractResult,

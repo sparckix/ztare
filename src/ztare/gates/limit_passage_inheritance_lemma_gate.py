@@ -30,7 +30,7 @@ field-test confirms gate semantics. Flip to promote-blocking with `enforce_block
 
 # Usage
 
-    from src.ztare.gates.limit_passage_inheritance_lemma_gate import run_limit_passage_gate
+    from ztare.gates.limit_passage_inheritance_lemma_gate import run_limit_passage_gate
     result = run_limit_passage_gate(rubric_data=rubric)
 """
 from __future__ import annotations

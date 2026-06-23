@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.reports.rubric_mode_corpus_audit import (
+from ztare.reports.rubric_mode_corpus_audit import (
     audit_rubric_mode_corpus,
     main,
     render_text,
@@ -355,6 +355,6 @@ def test_main_fail_on_attention_returns_one(tmp_path, monkeypatch):
     )
     _write_charter(tmp_path, "newton_secondary_gap", "# Charter\n")
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr("src.ztare.reports.rubric_mode_corpus_audit.REPO", tmp_path)
+    monkeypatch.setattr("ztare.reports.rubric_mode_corpus_audit.REPO", tmp_path)
 
     assert main(["--freshness-days", "14", "--fail-on-attention"]) == 1

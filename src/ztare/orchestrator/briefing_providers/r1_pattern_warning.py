@@ -16,7 +16,7 @@ import re
 from pathlib import Path
 from typing import Optional
 
-from src.ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext, BriefingProvider
 
 # ── Pattern classifiers ──────────────────────────────────────────────────────
 

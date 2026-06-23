@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.ztare.common.worker_metadata import (
+from ztare.common.worker_metadata import (
     aggregate_autoresearch_worker_metadata,
     autoresearch_worker_metadata,
     autoresearch_worker_metadata_by_call_site,

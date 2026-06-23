@@ -49,7 +49,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional
 
-from src.ztare.role_extensions import frontier_state as fs
+from ztare.role_extensions import frontier_state as fs
 
 log = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def _check_safety_rails(action: dict, *, role_id: str = "research_director") -> 
     # USD gate
     if estimated_cost > 0:
         try:
-            from src.ztare.supervisor.spend_tracker import check_budget_allows
+            from ztare.supervisor.spend_tracker import check_budget_allows
             allowed = check_budget_allows(
                 estimated_cost_usd=estimated_cost,
                 action=action.get("action_kind") or "<unknown>",
@@ -82,7 +82,7 @@ def _check_safety_rails(action: dict, *, role_id: str = "research_director") -> 
     # Agent utilization gate
     if estimated_seconds > 0:
         try:
-            from src.ztare.supervisor.agent_utilization_tracker import (
+            from ztare.supervisor.agent_utilization_tracker import (
                 check_utilization_allows,
             )
             ok, reasons = check_utilization_allows(
@@ -322,7 +322,7 @@ def _handle_escalate_to_principal(action: dict) -> dict:
     )
     pushed = False
     try:
-        from src.ztare.notifications import push_notification
+        from ztare.notifications import push_notification
         push_notification(title=title, message=body, priority="high",
                           tags=["rd_co_drive", severity])
         pushed = True

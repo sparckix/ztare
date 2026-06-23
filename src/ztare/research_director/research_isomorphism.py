@@ -23,13 +23,13 @@ from pathlib import Path
 from typing import Callable, Optional
 
 try:
-    from src.ztare.common.constraint_isomorphism import (
+    from ztare.common.constraint_isomorphism import (
         ConstraintFingerprint, IsomorphismLoop, SurfacedIsomorphism)
 except Exception:  # pragma: no cover - installed package fallback
     from ztare.common.constraint_isomorphism import (
         ConstraintFingerprint, IsomorphismLoop, SurfacedIsomorphism)
 try:
-    from src.ztare.common.structural_transfer_action import action_schema_from_isomorphism
+    from ztare.common.structural_transfer_action import action_schema_from_isomorphism
 except Exception:  # pragma: no cover - installed package fallback
     from ztare.common.structural_transfer_action import action_schema_from_isomorphism
 

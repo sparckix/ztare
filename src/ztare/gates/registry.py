@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from typing import Any, Callable, Optional
 
-from src.ztare.gates.cage import Cage, Gate
+from ztare.gates.cage import Cage, Gate
 
 
 # ── Per-substrate-class engagement predicates ────────────────────────
@@ -84,7 +84,7 @@ def _g_circ_structural_can_handle(substrate: Any, candidate: Any) -> tuple[bool,
     Cage construction does not pay the sympy import cost when the gate
     is dormant.
     """
-    from src.ztare.gates.g_circ import can_handle as _ch
+    from ztare.gates.g_circ import can_handle as _ch
     return _ch(substrate, candidate)
 
 

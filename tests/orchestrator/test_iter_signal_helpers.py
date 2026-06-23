@@ -1,5 +1,5 @@
-from src.ztare.orchestrator.iter_signal_helpers import weakest_point_text
-from src.ztare.validator.core.information_yield import IterationSignal
+from ztare.orchestrator.iter_signal_helpers import weakest_point_text
+from ztare.validator.core.information_yield import IterationSignal
 
 
 def test_weakest_point_text_reads_current_iteration_signal_dataclass() -> None:

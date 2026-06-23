@@ -1,4 +1,4 @@
-from src.ztare.research_director.single_spend_carrier_audit import (
+from ztare.research_director.single_spend_carrier_audit import (
     run_single_spend_carrier_audit,
 )
 

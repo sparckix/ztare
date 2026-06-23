@@ -72,7 +72,7 @@ Storage
 Usage (procedural — no decorator, opt-in per call site)
 -------------------------------------------------------
 
-  from src.ztare.common.llm_cache import LLMCallCache, ttl_30_days
+  from ztare.common.llm_cache import LLMCallCache, ttl_30_days
 
   cache = LLMCallCache(
       callsite="evidence_gap_enrichment",

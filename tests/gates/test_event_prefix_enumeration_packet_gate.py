@@ -1,4 +1,4 @@
-from src.ztare.gates.event_prefix_enumeration_packet_gate import (
+from ztare.gates.event_prefix_enumeration_packet_gate import (
     REQUIRED_FIELDS,
     run_event_prefix_enumeration_packet_gate,
 )

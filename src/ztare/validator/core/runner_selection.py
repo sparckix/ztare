@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from enum import Enum
 import re
 
-from src.ztare.validator.core.mutation_contract import (
+from ztare.validator.core.mutation_contract import (
     MutationMismatchCode,
     MutationValidationRecord,
 )

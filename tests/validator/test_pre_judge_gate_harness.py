@@ -4,7 +4,7 @@ import json
 import sys
 from pathlib import Path
 
-from src.ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
+from ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
 
 
 def _write_harness(project: Path, body: str) -> None:

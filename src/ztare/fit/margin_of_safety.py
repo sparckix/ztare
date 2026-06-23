@@ -38,7 +38,7 @@ from typing import Any
 import numpy as np
 from scipy.optimize import curve_fit
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 
 # ---------------------------------------------------------------------------
@@ -731,7 +731,7 @@ def run_margin_of_safety(project_dir: Path,
 
             # GP-115 Layer 1: residual-driven grammar suggestions
             try:
-                from src.ztare.fit.residual_grammar_expander import suggest_from_residuals
+                from ztare.fit.residual_grammar_expander import suggest_from_residuals
                 gp115_suggestions = suggest_from_residuals(resid_all, x_all_arr, var)
                 if gp115_suggestions:
                     print(f"  GP-115: {len(gp115_suggestions)} grammar suggestions from residuals:")

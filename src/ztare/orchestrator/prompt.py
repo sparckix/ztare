@@ -56,7 +56,7 @@ import re
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from src.ztare.research_director.primitive_class_rotation import (
+from ztare.research_director.primitive_class_rotation import (
     PrimitiveClassRotationDeclaration,
     PrimitiveClassTrackingResult,
     append_explored_primitive_class,

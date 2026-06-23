@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.orchestrator.cold_shot_seed import _sanitize_prompt_for_denylist
+from ztare.orchestrator.cold_shot_seed import _sanitize_prompt_for_denylist
 
 
 def run_fixture_regression() -> dict[str, object]:

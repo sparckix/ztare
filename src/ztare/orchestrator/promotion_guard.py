@@ -12,9 +12,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from src.ztare.common.paths import PROJECTS_DIR
-from src.ztare.orchestrator.discriminator_queue import QUEUE_FILENAME
-from src.ztare.orchestrator.operator_replay_audit import REPLAY_FILENAME
+from ztare.common.paths import PROJECTS_DIR
+from ztare.orchestrator.discriminator_queue import QUEUE_FILENAME
+from ztare.orchestrator.operator_replay_audit import REPLAY_FILENAME
 
 
 CLOSED_PASS_STATUSES = {

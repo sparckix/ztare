@@ -33,7 +33,7 @@ from pathlib import Path
 # Imported once here so the v4 stage check is self-contained.
 # `is_v4_family_project` is a substrate-naming convention helper
 # the loop already uses elsewhere.
-from src.ztare.validator.utilities.v4_family import is_v4_family_project
+from ztare.validator.utilities.v4_family import is_v4_family_project
 
 
 def load_v4_stage_index(project_name: str) -> int | None:

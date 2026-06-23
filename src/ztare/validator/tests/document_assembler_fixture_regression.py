@@ -5,7 +5,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.validator.utilities.document_assembler import (
+from ztare.validator.utilities.document_assembler import (
     assemble_document_from_manifest,
     load_document_manifest,
 )

@@ -1,11 +1,11 @@
-from src.ztare.research_director.pde_estimate_craft_ops import (
+from ztare.research_director.pde_estimate_craft_ops import (
     CROSS_VOCABULARY_MAPPING,
     PORTABLE_RECEIPT_OVERLAP_MAP,
     get,
     portable_receipt_candidates,
     render_vocabulary_summary,
 )
-from src.ztare.research_director.structural_fingerprint import (
+from ztare.research_director.structural_fingerprint import (
     build_structural_fingerprint,
 )
 

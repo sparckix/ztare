@@ -2,12 +2,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_seed_registry import (
+from ztare.supervisor.supervisor_seed_registry import (
     SeedPipelineType,
     load_seed_registry,
     seed_entry_by_spec_path,
 )
-from src.ztare.supervisor.supervisor_state import Actor, SupervisorState
+from ztare.supervisor.supervisor_state import Actor, SupervisorState
 
 
 def derive_pipeline_type(seed_spec_path: str | None) -> str:

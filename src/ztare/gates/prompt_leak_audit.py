@@ -22,7 +22,7 @@ Design per external panel review (2026-04-23):
 
 Usage:
 
-    from src.ztare.gates.prompt_leak_audit import audit_prompt_for_leak
+    from ztare.gates.prompt_leak_audit import audit_prompt_for_leak
     verdict = audit_prompt_for_leak(
         built_prompt=prompt_text,
         evidence_path=Path("projects/gp090_01/evidence.txt"),
@@ -127,7 +127,7 @@ def _call_auditor(
     Lazily imports runtime to avoid circular imports when this gate is loaded at
     apparatus boot.
     """
-    from src.ztare.common.llm_runtime import LLMRuntime, resolve_model_id
+    from ztare.common.llm_runtime import LLMRuntime, resolve_model_id
 
     model_id = resolve_model_id(auditor_model)
 

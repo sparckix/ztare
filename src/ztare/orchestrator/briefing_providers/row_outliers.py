@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
-from src.ztare.orchestrator.mutator_briefing import (
+from ztare.orchestrator.mutator_briefing import (
     BriefingContext,
     BriefingProvider,
 )

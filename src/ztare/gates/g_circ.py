@@ -96,7 +96,7 @@ import re
 from pathlib import Path
 from typing import Any, Optional
 
-from src.ztare.orchestrator.forced_reframe import (
+from ztare.orchestrator.forced_reframe import (
     extract_parametric_form_from_source,
     parametric_form_ast_bucket,
 )

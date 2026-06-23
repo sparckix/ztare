@@ -1,4 +1,4 @@
-from src.ztare.gates.ambiguous_pi_pinning_gate import run_gate
+from ztare.gates.ambiguous_pi_pinning_gate import run_gate
 
 
 def test_nonambiguous_pi_needs_no_pinning_receipt():

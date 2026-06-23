@@ -11,7 +11,7 @@ Five synthetic validation substrates per spec:
 import math
 import pytest
 
-from src.ztare.composition.manifold_compressor import (
+from ztare.composition.manifold_compressor import (
     CompressedManifold,
     EntanglementWall,
     compress,

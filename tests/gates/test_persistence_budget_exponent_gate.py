@@ -1,4 +1,4 @@
-from src.ztare.gates.persistence_budget_exponent_gate import (
+from ztare.gates.persistence_budget_exponent_gate import (
     run_persistence_budget_exponent_gate,
 )
 
