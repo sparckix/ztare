@@ -166,7 +166,12 @@ def list_project_entries() -> list[dict[str, Any]]:
                     project=project,
                     intake=intake,
                 ),
-                "latest_intake_edit": latest_path_for_case(latest_intake_edit, project=project, intake=intake),
+                "latest_intake_edit": latest_receipt_path_for_case(
+                    latest_intake_edit,
+                    intake_edit_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
                 "latest_source_import": latest_receipt_path_for_case(
                     latest_source_import,
                     source_import_ledger_path(project),
@@ -200,14 +205,10 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["intake"] = intake
             entry["intake_source"] = source
         entry_intake = str(entry.get("intake") or intake)
-        latest_intake_edit_for_case = latest_path_for_case(latest_intake_edit, project=project, intake=entry_intake)
-        if latest_intake_edit_for_case:
-            entry["latest_intake_edit"] = latest_intake_edit_for_case
-        elif entry_intake == intake:
-            entry["latest_intake_edit"] = ""
         for key, primary, ledger in (
             ("latest_review", latest_review, review_ledger_path(project)),
             ("latest_row_action", latest_action, row_action_ledger_path(project)),
+            ("latest_intake_edit", latest_intake_edit, intake_edit_ledger_path(project)),
             ("latest_source_import", latest_source_import, source_import_ledger_path(project)),
             ("latest_source_edit", latest_source_edit, source_edit_ledger_path(project)),
             ("latest_source_action", latest_source_action, source_action_ledger_path(project)),
@@ -475,6 +476,10 @@ def row_action_ledger_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_row_actions.jsonl"
 
 
+def intake_edit_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_intake_edits.jsonl"
+
+
 def source_import_ledger_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_source_imports.jsonl"
 
@@ -615,7 +620,7 @@ def load_latest_intake_edit(project: str, intake: str | Path | None = None) -> t
     path = latest_intake_edit_path(project)
     rel_path = rel(path)
     if not path.exists():
-        return None, rel_path
+        return latest_receipt_from_ledger(intake_edit_ledger_path(project), project=project, intake=intake)
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -631,7 +636,12 @@ def load_latest_intake_edit(project: str, intake: str | Path | None = None) -> t
             "error": "latest intake edit receipt must be a JSON object",
         }, rel_path
     if not receipt_matches_case(payload, project=project, intake=intake):
-        return None, rel_path
+        fallback, fallback_path = latest_receipt_from_ledger(
+            intake_edit_ledger_path(project),
+            project=project,
+            intake=intake,
+        )
+        return fallback, fallback_path if fallback else rel_path
     return payload, rel_path
 
 

@@ -446,8 +446,10 @@ def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monk
     (workspace / "forensic_workbench_latest_source_edit.json").write_text(json.dumps(current_case), encoding="utf-8")
     (workspace / "forensic_workbench_latest_review.json").write_text(json.dumps(other_case), encoding="utf-8")
     (workspace / "forensic_workbench_latest_row_action.json").write_text(json.dumps(other_case), encoding="utf-8")
+    (workspace / "forensic_workbench_latest_intake_edit.json").write_text(json.dumps(other_case), encoding="utf-8")
     (workspace / "forensic_workbench_reviews.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
     (workspace / "forensic_workbench_row_actions.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
+    (workspace / "forensic_workbench_intake_edits.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
     (workspace / "forensic_workbench_source_imports.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
     (workspace / "forensic_workbench_source_actions.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
     (workspace / "forensic_workbench_case_files.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
@@ -458,6 +460,7 @@ def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monk
 
     [entry] = module.list_project_entries()
 
+    assert entry["latest_intake_edit"] == "projects/demo/workspace/forensic_workbench_intake_edits.jsonl"
     assert entry["latest_source_import"] == "projects/demo/workspace/forensic_workbench_source_imports.jsonl"
     assert entry["latest_source_edit"] == "projects/demo/workspace/forensic_workbench_latest_source_edit.json"
     assert entry["latest_source_action"] == "projects/demo/workspace/forensic_workbench_source_actions.jsonl"
