@@ -180,6 +180,11 @@ POST /api/preflight
 -> run the bounded `ztare autoresearch run ... --preflight-only` check and
    return the command, exit code, loop-admission trace, and refreshed snapshot
 
+POST /api/source-action
+-> run one allowlisted source/evidence action (`source_check`, `source_index`,
+   or `evidence_replay`) and return the command, exit code, output tail, parsed
+   JSON when available, and refreshed snapshot
+
 GET /api/report-contract?project=<project>&renderer=<renderer>
 -> report/export status, blocker reasons, synthesis input binding, contract path, and command
 

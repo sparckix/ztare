@@ -35,8 +35,8 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/preflight`, `/api/run-history`, `/api/receipts`,
-`/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
+`/api/trace`, `/api/preflight`, `/api/source-action`, `/api/run-history`,
+`/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
 selected project, using the intake and rubric discovered by the index. The app
@@ -84,6 +84,11 @@ The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
 exact `ztare autoresearch run ... --preflight-only` command, exit code,
 acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
 available. It is not a general shell runner and it does not start a model run.
+The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
+for three fixed actions: `source_check`, `source_index`, and
+`evidence_replay`. The source-index action uses
+`ztare project source-index --index-only --json`, so the browser can refresh
+source metadata without hiding a model-backed extraction step.
 The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
 recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.
@@ -92,9 +97,9 @@ That keeps every visible state tied to a file, command, receipt, or warning.
 The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
-preflight result, run-history context, the command queue, and the latest visible
-write receipt. It does not write project files or claim that an unreviewed case
-is complete.
+preflight result, latest source/evidence action result, run-history context, the
+command queue, and the latest visible write receipt. It does not write project
+files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked

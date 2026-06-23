@@ -189,6 +189,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const health = context.healthContext || {};
   const preflight = context.preflightEvent || null;
   const runHistory = context.runHistoryContext || {};
+  const sourceAction = context.sourceActionEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -272,6 +273,19 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
         recent_runs: (runHistory.recent_runs || []).slice(-8),
         synthesis_history: runHistory.synthesis_history || {}
       },
+      latest_source_action: sourceAction
+        ? {
+            schema: sourceAction.schema || "",
+            action: sourceAction.action || "",
+            label: sourceAction.label || "",
+            writes: Boolean(sourceAction.writes),
+            command: sourceAction.command || "",
+            returncode: sourceAction.returncode,
+            accepted: Boolean(sourceAction.accepted),
+            stdout_tail: sourceAction.stdout_tail || "",
+            stderr_tail: sourceAction.stderr_tail || ""
+          }
+        : null,
       latest_write_receipt: latestWrite
         ? {
             kind: latestWrite.kind,
@@ -1248,12 +1262,13 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
     healthContext,
     preflightEvent,
+    sourceActionEvent,
     runHistoryContext,
     writeReceiptEvent,
     selectedRow
@@ -1277,6 +1292,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
       packet.live_context.health.action_intelligence.issues.length,
     packet.live_context.preflight_result,
+    packet.live_context.latest_source_action,
     packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
@@ -1299,6 +1315,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
+      h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
       h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
@@ -1441,7 +1458,7 @@ function CaseDocket({ snapshot, selectedRow }) {
   );
 }
 
-function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setSelectedLabel }) {
+function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setSelectedLabel, sourceActionEvent, sourceActionMessage, sourceActionRunning, onRunSourceAction }) {
   const rows = snapshot.rows || [];
   const sourceRow = rowByLabel(rows, "Source readiness") || {};
   const evidenceRow = rowByLabel(rows, "Evidence readiness") || {};
@@ -1460,6 +1477,11 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
     evidenceRow.command ? { label: "Evidence command", value: evidenceRow.command, row: "Evidence readiness" } : null
   ].filter(Boolean);
   const readinessRows = [sourceRow, evidenceRow].filter((row) => row.label);
+  const actionButtons = [
+    { action: "source_check", label: "Check sources" },
+    { action: "source_index", label: "Refresh index" },
+    { action: "evidence_replay", label: "Check replay" }
+  ];
 
   return h(
     "section",
@@ -1553,6 +1575,40 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
               )
             )
           : h("p", null, "No source/evidence commands surfaced.")
+      ),
+      h(
+        "div",
+        { className: "source-evidence-section source-evidence-actions" },
+        h("span", null, "Actions"),
+        h(
+          "div",
+          { className: "source-evidence-action-buttons" },
+          actionButtons.map((item) =>
+            h(
+              "button",
+              {
+                key: item.action,
+                className: "copy-button",
+                type: "button",
+                disabled: !liveMode || sourceActionRunning,
+                onClick: () => onRunSourceAction && onRunSourceAction(item.action),
+                title: liveMode ? item.label : "Start the local API to run source actions"
+              },
+              sourceActionRunning && sourceActionEvent && sourceActionEvent.action === item.action ? "Running" : item.label
+            )
+          )
+        ),
+        h("p", null, sourceActionMessage || "Run a fixed local check or source-index refresh; the command and result stay visible."),
+        sourceActionEvent
+          ? h(
+              "div",
+              { className: `source-evidence-action-result ${sourceActionEvent.accepted ? "ready" : "attention"}` },
+              h("strong", null, `${sourceActionEvent.label || displayText(sourceActionEvent.action)}: ${sourceActionEvent.accepted ? "accepted" : "attention"}`),
+              h("code", null, sourceActionEvent.command || "No command recorded."),
+              sourceActionEvent.stdout_tail ? h("pre", null, sourceActionEvent.stdout_tail) : null,
+              sourceActionEvent.stderr_tail ? h("pre", null, sourceActionEvent.stderr_tail) : null
+            )
+          : null
       )
     )
   );
@@ -2602,6 +2658,9 @@ function App() {
   const [preflightEvent, setPreflightEvent] = useState(null);
   const [preflightMessage, setPreflightMessage] = useState("");
   const [preflightRunning, setPreflightRunning] = useState(false);
+  const [sourceActionEvent, setSourceActionEvent] = useState(null);
+  const [sourceActionMessage, setSourceActionMessage] = useState("");
+  const [sourceActionRunning, setSourceActionRunning] = useState(false);
   const [runHistoryContext, setRunHistoryContext] = useState(null);
   const [runHistoryMessage, setRunHistoryMessage] = useState("");
   const [healthContext, setHealthContext] = useState(null);
@@ -2786,6 +2845,8 @@ function App() {
         setTraceMessage("Static mode uses the last generated snapshot only.");
         setPreflightEvent(null);
         setPreflightMessage("Static mode cannot run live preflight.");
+        setSourceActionEvent(null);
+        setSourceActionMessage("Static mode cannot run live source/evidence actions.");
         setReportContractContext(null);
         setReportContractMessage("Static mode uses the report/export row from the last generated snapshot only.");
         setHealthContext(null);
@@ -3117,6 +3178,56 @@ function App() {
       .finally(() => setPreflightRunning(false));
   };
 
+  const runSourceActionLive = (action) => {
+    if (!snapshot || !liveMode || sourceActionRunning) return;
+    setSourceActionRunning(true);
+    setSourceActionMessage(`Running ${displayText(action)}.`);
+    setSourceActionEvent({ action });
+    fetch("/api/source-action", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        renderer: "decision_brief",
+        action
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok) {
+            const error = new Error(payload.error || payload.stderr_tail || payload.stdout_tail || `source action failed: ${response.status}`);
+            error.payload = payload;
+            throw error;
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.trace) setTraceContext(payload.trace);
+        setSourceActionEvent(payload);
+        setSourceActionMessage(
+          payload.accepted
+            ? `${payload.label || displayText(payload.action)} finished and the case was refreshed.`
+            : `${payload.label || displayText(payload.action)} finished with attention; inspect the command output.`
+        );
+      })
+      .catch((err) => {
+        if (err.payload) {
+          setSourceActionEvent(err.payload);
+          if (err.payload.trace) setTraceContext(err.payload.trace);
+          if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
+        }
+        setSourceActionMessage(String(err.message || err));
+      })
+      .finally(() => setSourceActionRunning(false));
+  };
+
   const loadFilePreview = (item) => {
     if (!liveMode || !item || !item.value) {
       setFilePreview(null);
@@ -3207,7 +3318,17 @@ function App() {
         onReload: refreshCurrentIntake,
         onPreviewRef: loadFilePreview
       }),
-      h(SourceEvidencePanel, { snapshot, traceContext, liveMode, onPreview: loadFilePreview, setSelectedLabel }),
+      h(SourceEvidencePanel, {
+        snapshot,
+        traceContext,
+        liveMode,
+        onPreview: loadFilePreview,
+        setSelectedLabel,
+        sourceActionEvent,
+        sourceActionMessage,
+        sourceActionRunning,
+        onRunSourceAction: runSourceActionLive
+      }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, setSelectedLabel }),
       h(CaseDocket, { snapshot, selectedRow }),
@@ -3231,7 +3352,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

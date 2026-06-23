@@ -24,9 +24,33 @@ RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
 REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
 PREFLIGHT_SCHEMA = "ztare-forensic-workbench-preflight-v1"
 RUN_HISTORY_SCHEMA = "ztare-forensic-workbench-run-history-v1"
+SOURCE_ACTION_SCHEMA = "ztare-forensic-workbench-source-action-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
+SOURCE_ACTIONS = {
+    "source_check": {
+        "label": "Check sources",
+        "args": ["project", "source-check", "--project", "{project}", "--json"],
+        "display": "ztare project source-check --project {project} --json",
+        "timeout": 90,
+        "writes": False,
+    },
+    "source_index": {
+        "label": "Refresh source index",
+        "args": ["project", "source-index", "--project", "{project}", "--index-only", "--json"],
+        "display": "ztare project source-index --project {project} --index-only --json",
+        "timeout": 120,
+        "writes": True,
+    },
+    "evidence_replay": {
+        "label": "Check evidence replay",
+        "args": ["project", "evidence-replay", "--project", "{project}", "--json"],
+        "display": "ztare project evidence-replay --project {project} --json",
+        "timeout": 90,
+        "writes": False,
+    },
+}
 
 
 def json_bytes(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
@@ -822,6 +846,67 @@ def preflight_payload_for_project(
     return payload
 
 
+def source_action_payload_for_project(
+    *,
+    project: str,
+    action: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    spec = SOURCE_ACTIONS.get(action)
+    if spec is None:
+        raise ValueError(f"unknown source action: {action}")
+    rubric = rubric or project
+    intake = intake or snapshot.default_intake_for_project(project)
+    project_intake_path(project, intake, allow_examples=True)
+    command_args = [part.format(project=project) for part in spec["args"]]
+    command = [snapshot.PYTHON, "-m", "src.ztare.cli", *command_args]
+    proc = snapshot.run(command, timeout=int(spec["timeout"]))
+    parsed_output: dict[str, Any] = {}
+    try:
+        parsed_output = snapshot.extract_last_json_object(proc.stdout)
+    except Exception:
+        parsed_output = {}
+    payload: dict[str, Any] = {
+        "schema": SOURCE_ACTION_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "action": action,
+        "label": str(spec["label"]),
+        "writes": bool(spec["writes"]),
+        "command": str(spec["display"]).format(project=project),
+        "returncode": proc.returncode,
+        "accepted": proc.returncode == 0,
+        "stdout_tail": tail_text(proc.stdout),
+        "stderr_tail": tail_text(proc.stderr),
+        "parsed_output": parsed_output,
+        "trace": None,
+        "snapshot": None,
+    }
+    try:
+        payload["trace"] = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
+    except SystemExit as exc:
+        payload["trace_error"] = str(exc)
+    except Exception as exc:  # noqa: BLE001 - action result should still be inspectable.
+        payload["trace_error"] = str(exc)
+    try:
+        payload["snapshot"] = snapshot_payload_for_project(
+            project=project,
+            rubric=rubric,
+            intake=intake,
+            renderer=renderer,
+        )
+    except SystemExit as exc:
+        payload["snapshot_error"] = str(exc)
+    except Exception as exc:  # noqa: BLE001 - action result should still be inspectable.
+        payload["snapshot_error"] = str(exc)
+    return payload
+
+
 def compact_eval_payload(payload: dict[str, Any]) -> dict[str, Any]:
     gaps = payload.get("evidence_gaps") or []
     if not isinstance(gaps, list):
@@ -1112,6 +1197,22 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     renderer=renderer,
                 )
                 self.send_json(response, status=200 if response.get("returncode") == 0 else 400)
+                return
+            if parsed.path == "/api/source-action":
+                request = self.read_json_body()
+                project = str(request.get("project") or "")
+                rubric = str(request.get("rubric") or "") or None
+                intake = str(request.get("intake") or "") or None
+                renderer = str(request.get("renderer") or "") or None
+                action = str(request.get("action") or "")
+                response = source_action_payload_for_project(
+                    project=project,
+                    action=action,
+                    rubric=rubric,
+                    intake=intake,
+                    renderer=renderer,
+                )
+                self.send_json(response)
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

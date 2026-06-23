@@ -681,6 +681,33 @@ def test_run_history_payload_surfaces_latest_verdict_files(tmp_path: Path, monke
     assert payload["synthesis_history"]["recurring_failures"] == ["correlation bridge"]
 
 
+def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    project_root.mkdir(parents=True)
+    intake = project_root / "demo_intake.json"
+    intake.write_text(json.dumps({"project": "demo", "bounded_claim": "demo"}), encoding="utf-8")
+    commands: list[list[str]] = []
+
+    def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        return subprocess.CompletedProcess(command, 0, stdout='{"ok": true, "status": "fresh"}\n', stderr="")
+
+    monkeypatch.setattr(module.snapshot, "run", fake_run)
+    monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
+    monkeypatch.setattr(module, "trace_payload_for_project", lambda **_kwargs: {"readiness": "ready"})
+    monkeypatch.setattr(module, "snapshot_payload_for_project", lambda **_kwargs: {"project": "demo", "rows": []})
+
+    payload = module.source_action_payload_for_project(project="demo", action="source_index")
+
+    assert payload["schema"] == "ztare-forensic-workbench-source-action-v1"
+    assert payload["accepted"] is True
+    assert payload["writes"] is True
+    assert payload["command"] == "ztare project source-index --project demo --index-only --json"
+    assert commands == [[module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-index", "--project", "demo", "--index-only", "--json"]]
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
