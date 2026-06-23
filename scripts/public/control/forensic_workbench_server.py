@@ -59,6 +59,85 @@ def snapshot_payload_for_project(
     return payload
 
 
+def health_payload_for_project(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or snapshot.default_intake_for_project(project)
+    kernel_command = [
+        "make",
+        "autoresearch-kernel-health",
+        f"PROJECT={project}",
+        f"RUBRIC={rubric}",
+        f"INTAKE={intake}",
+        "JSON=1",
+    ]
+    kernel_proc = snapshot.run(kernel_command)
+    if kernel_proc.returncode != 0:
+        raise SystemExit(
+            "kernel health command failed\n"
+            f"command: {snapshot.shell_join(kernel_command)}\n"
+            f"STDOUT:\n{kernel_proc.stdout}\nSTDERR:\n{kernel_proc.stderr}"
+        )
+    kernel_payload = snapshot.extract_last_json_object(kernel_proc.stdout)
+
+    action_command = [
+        snapshot.PYTHON,
+        "scripts/public/control/action_intelligence.py",
+        "health",
+        "--json",
+    ]
+    action_proc = snapshot.run(action_command)
+    if action_proc.returncode != 0:
+        raise SystemExit(
+            "action-intelligence health command failed\n"
+            f"command: {snapshot.shell_join(action_command)}\n"
+            f"STDOUT:\n{action_proc.stdout}\nSTDERR:\n{action_proc.stderr}"
+        )
+    action_payload = snapshot.extract_last_json_object(action_proc.stdout)
+
+    attention_components = [
+        {
+            "component": row.get("component"),
+            "status": row.get("status"),
+            "action": row.get("action"),
+            "next_command": row.get("next_command"),
+        }
+        for row in kernel_payload.get("components", [])
+        if row.get("status") != "ok"
+    ]
+    action_issues = [
+        {
+            "issue_type": issue.get("issue_type"),
+            "severity": issue.get("severity"),
+            "scope": issue.get("scope"),
+            "recommended_action": issue.get("recommended_action"),
+        }
+        for issue in action_payload.get("issues", [])
+    ]
+    return {
+        "schema": "ztare-forensic-workbench-health-v1",
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "kernel": {
+            "summary": kernel_payload.get("summary") or {},
+            "attention_components": attention_components,
+            "component_count": len(kernel_payload.get("components", [])),
+        },
+        "action_intelligence": {
+            "counts": action_payload.get("counts") or {},
+            "issues": action_issues,
+            "source_paths": action_payload.get("source_paths") or {},
+        },
+    }
+
+
 class WorkbenchHandler(BaseHTTPRequestHandler):
     server_version = "ZTAREForensicWorkbench/0.1"
 
@@ -112,6 +191,14 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 )
                 self.send_json(payload)
                 return
+            if parsed.path == "/api/health":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                rubric = first_param(params, "rubric", project)
+                intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
+                payload = health_payload_for_project(project=project, rubric=rubric, intake=intake)
+                self.send_json(payload)
+                return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:
             self.send_json({"ok": False, "error": str(exc)}, status=400)
@@ -124,6 +211,8 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/review":
                 request = self.read_json_body()
                 project = str(request.get("project") or "")
+                rubric = str(request.get("rubric") or "") or None
+                intake = str(request.get("intake") or "") or None
                 row = str(request.get("row_slug") or "")
                 review_file = request.get("review_file")
                 if not isinstance(review_file, dict):
@@ -140,7 +229,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     "snapshot": None,
                 }
                 try:
-                    response["snapshot"] = snapshot_payload_for_project(project=project)
+                    response["snapshot"] = snapshot_payload_for_project(project=project, rubric=rubric, intake=intake)
                 except SystemExit as exc:
                     response["snapshot_error"] = str(exc)
                 except Exception as exc:  # noqa: BLE001 - receipt write already succeeded.

@@ -380,6 +380,42 @@ code {
   border-color: #ddc6a7;
 }
 
+.project-context-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.75fr) minmax(260px, 1.25fr) minmax(220px, 1fr) minmax(220px, 1fr);
+  gap: 1px;
+  background: #ccd8d3;
+  border: 1px solid #ccd8d3;
+}
+
+.project-context-panel div {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  min-height: 66px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.project-context-panel span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.project-context-panel strong,
+.project-context-panel code {
+  min-width: 0;
+  color: #26342f;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .next-move-panel {
   min-width: 0;
   display: grid;
@@ -519,6 +555,105 @@ code {
   overflow: hidden;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+}
+
+.health-actions-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.62fr) minmax(320px, 0.78fr) minmax(360px, 1fr);
+  gap: 12px;
+  padding: 14px;
+  background: #f7fbfa;
+  border: 1px solid #bdd4ce;
+  border-left: 4px solid #1c6552;
+}
+
+.health-actions-panel.attention {
+  background: #fffaf2;
+  border-color: #ddc6a7;
+  border-left-color: #bd6a1d;
+}
+
+.health-summary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.health-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 22px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.health-summary p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.health-metrics {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.health-metrics div,
+.health-findings > div {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 11px 12px;
+  background: #ffffff;
+}
+
+.health-metrics span,
+.health-findings span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.health-metrics strong,
+.health-findings strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.health-findings {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.health-findings p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.health-findings code {
+  padding: 7px;
+  background: #f5f7f6;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
 }
 
 .text-link {
@@ -1638,8 +1773,10 @@ code {
   .blocker-panel,
   .case-summary,
   .command-rail,
+  .health-actions-panel,
   .next-move-panel,
   .path-panel,
+  .project-context-panel,
   .review-queue,
   .review-workspace {
     grid-template-columns: 1fr;
@@ -1660,6 +1797,10 @@ code {
   }
 
   .command-card {
+    grid-template-columns: 1fr;
+  }
+
+  .health-findings {
     grid-template-columns: 1fr;
   }
 
@@ -1711,6 +1852,14 @@ code {
   }
 
   .provenance-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .project-context-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .health-metrics {
     grid-template-columns: 1fr;
   }
 

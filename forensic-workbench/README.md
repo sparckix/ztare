@@ -35,15 +35,23 @@ make forensic-workbench-api
 npm --prefix forensic-workbench run dev
 ```
 
-Vite proxies `/api/projects`, `/api/snapshot`, and `/api/review` to the local
-API. The browser still does not scan `projects/` directly. It asks the local API
-for a project index and a fresh snapshot for the selected project. When the
-local API is running, the Apply button writes the same review receipt that the
-CLI writes, then refreshes the snapshot. The Refresh button reloads the current
-case from local project files. If the API is not running at startup, the app
-falls back to `public/workbench_snapshot.json`; if a live project refresh fails
-after the API is detected, the app keeps the current case and shows the error
-instead of swapping in stale static data.
+Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, and `/api/review`
+to the local API. The browser still does not scan `projects/` directly. It asks
+the local API for a project index and a fresh snapshot for the selected project,
+using the intake and rubric discovered by the index. The app shows the backing
+project directory, intake, report contract, and latest review receipt before the
+main case file. When the local API is running, the Apply button writes the same
+review receipt that the CLI writes, then refreshes the same selected
+project/intake snapshot. The Refresh button reloads the current case from local
+project files. If the API is not running at startup, the app falls back to
+`public/workbench_snapshot.json`; if a live project refresh fails after the API
+is detected, the app keeps the current case and shows the error instead of
+swapping in stale static data.
+
+Live mode also fetches `/api/health` for the selected project. That endpoint
+summarizes kernel-health attention components and action-intelligence source
+health issues so the workbench can show advisory blockers without promoting
+them into control authority.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The project index includes project-local intakes and public example intakes, so
@@ -69,6 +77,8 @@ The interface is organized as a local claim-review surface:
 - case-file first viewport with one dominant next move: status, why it matters,
   evidence, primary action, and review choices
 - case docket summarizing export decision, evidence path, and review handoff
+- project file strip showing the selected project directory, intake, report
+  contract, and latest review receipt path
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review
@@ -76,6 +86,8 @@ The interface is organized as a local claim-review surface:
 - status metrics for run readiness, export state, evidence rows, and attention rows
 - blocker panel showing the current blocking row, blocker reasons, and a direct
   review action
+- health and actions panel showing live kernel-health status,
+  action-intelligence source-health warnings, and copyable next commands
 - current-action rail with the next command or provenance target
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files

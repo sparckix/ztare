@@ -101,9 +101,21 @@ function rowSlug(label) {
 
 function snapshotJsonHref(snapshot, liveMode) {
   if (liveMode && snapshot && snapshot.project) {
-    return `/api/snapshot?project=${encodeURIComponent(snapshot.project)}`;
+    const params = new URLSearchParams({ project: snapshot.project });
+    if (snapshot.rubric) params.set("rubric", snapshot.rubric);
+    if (snapshot.intake) params.set("intake", snapshot.intake);
+    return `/api/snapshot?${params.toString()}`;
   }
   return "/workbench_snapshot.json";
+}
+
+function endpointUrl(path, params) {
+  const query = new URLSearchParams();
+  Object.entries(params || {}).forEach(([key, value]) => {
+    if (value) query.set(key, value);
+  });
+  const suffix = query.toString();
+  return suffix ? `${path}?${suffix}` : path;
 }
 
 function activeBlocker(rows) {
@@ -171,6 +183,30 @@ function ProjectIdentity({ snapshot }) {
 function projectOptionLabel(project) {
   const suffix = project.intake_source ? ` · ${displayText(project.intake_source)}` : "";
   return `${project.project}${suffix}`;
+}
+
+function projectLoadParams(entryOrSnapshot) {
+  if (!entryOrSnapshot) return {};
+  return {
+    project: entryOrSnapshot.project,
+    rubric: entryOrSnapshot.rubric || entryOrSnapshot.project,
+    intake: entryOrSnapshot.intake || ""
+  };
+}
+
+function ProjectContextPanel({ projectEntry, snapshot }) {
+  const intake = (projectEntry && projectEntry.intake) || snapshot.intake || "";
+  const projectDir = (projectEntry && projectEntry.project_dir) || snapshot.project_source || "";
+  const reportContract = (projectEntry && projectEntry.report_contract) || "";
+  const latestReview = (projectEntry && projectEntry.latest_review) || snapshot.latest_review_artifact || "";
+  return h(
+    "section",
+    { className: "project-context-panel", "aria-label": "Project files" },
+    h("div", null, h("span", null, "Project files"), h("strong", null, projectDir || "not discovered")),
+    h("div", null, h("span", null, "Intake"), h("code", null, intake || "not discovered")),
+    h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
+    h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none"))
+  );
 }
 
 function rowByLabel(rows, label) {
@@ -572,6 +608,78 @@ function ReviewQueue({ row, reviewState, liveMode }) {
   );
 }
 
+function HealthActionsPanel({ healthContext, healthMessage, liveMode }) {
+  const kernel = (healthContext && healthContext.kernel) || {};
+  const kernelSummary = kernel.summary || {};
+  const action = (healthContext && healthContext.action_intelligence) || {};
+  const actionCounts = action.counts || {};
+  const attention = kernel.attention_components || [];
+  const issues = action.issues || [];
+  const sourcePaths = action.source_paths || {};
+  const primaryAttention = attention[0] || null;
+  const primaryIssue = issues[0] || null;
+  const status = kernelSummary.overall_status || (liveMode ? "loading" : "static mode");
+
+  return h(
+    "section",
+    { className: `health-actions-panel ${status === "attention" || issues.length ? "attention" : "ready"}`, "aria-label": "Health and action context" },
+    h(
+      "div",
+      { className: "health-summary" },
+      h("span", { className: "eyebrow" }, "Health & actions"),
+      h("h2", null, displayText(status)),
+      h(
+        "p",
+        null,
+        healthMessage ||
+          (liveMode
+            ? "Live kernel-health and action-intelligence context for this project."
+            : "Start the local API to inspect live kernel-health and action-intelligence context.")
+      )
+    ),
+    h(
+      "div",
+      { className: "health-metrics" },
+      h("div", null, h("span", null, "Kernel"), h("strong", null, displayText(kernelSummary.component_status || status))),
+      h("div", null, h("span", null, "Attention"), h("strong", null, String((kernelSummary.component_counts || {}).attention || attention.length || 0))),
+      h("div", null, h("span", null, "Action issues"), h("strong", null, String(actionCounts.issues || issues.length || 0))),
+      h("div", null, h("span", null, "Warnings"), h("strong", null, String(actionCounts.warning || 0)))
+    ),
+    h(
+      "div",
+      { className: "health-findings" },
+      h(
+        "div",
+        null,
+        h("span", null, "Kernel next action"),
+        h("strong", null, primaryAttention ? primaryAttention.component : "No kernel attention component"),
+        h("p", null, primaryAttention ? primaryAttention.action || "Inspect component." : "Kernel health has no active attention component."),
+        primaryAttention && primaryAttention.next_command
+          ? h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(primaryAttention.next_command)
+              },
+              "Copy command"
+            )
+          : null
+      ),
+      h(
+        "div",
+        null,
+        h("span", null, "Action-intelligence source health"),
+        h("strong", null, primaryIssue ? displayText(primaryIssue.issue_type) : "No source-health issue"),
+        h("p", null, primaryIssue ? `${displayText(primaryIssue.scope)} -> ${displayText(primaryIssue.recommended_action)}` : "Action-intelligence health has no issue rows."),
+        sourcePaths.source_health
+          ? h("code", null, sourcePaths.source_health)
+          : null
+      )
+    )
+  );
+}
+
 function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode, applyReviewLive }) {
   const decision = reviewState.decision || "unreviewed";
   const reviewFile = buildReviewFile(snapshot, row, reviewState);
@@ -806,7 +914,10 @@ function App() {
   const [snapshot, setSnapshot] = useState(null);
   const [error, setError] = useState("");
   const [modeMessage, setModeMessage] = useState("");
+  const [healthContext, setHealthContext] = useState(null);
+  const [healthMessage, setHealthMessage] = useState("");
   const [projects, setProjects] = useState([]);
+  const [selectedProjectKey, setSelectedProjectKey] = useState("");
   const [liveMode, setLiveMode] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
@@ -823,11 +934,33 @@ function App() {
     setSelectedLabel((firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "");
   };
 
-  const loadSnapshot = (project, useLiveApi, options = {}) => {
+  const loadHealthContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setHealthMessage("Loading live health context.");
+    return fetch(endpointUrl("/api/health", projectParams), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`health fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        setHealthContext(payload);
+        setHealthMessage("Live health context loaded from the local API.");
+      })
+      .catch((err) => {
+        setHealthContext(null);
+        setHealthMessage(`Live health context unavailable: ${err.message || err}`);
+      });
+  };
+
+  const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
+    const loadParams =
+      typeof projectInput === "string"
+        ? { project: projectInput, rubric: projectInput }
+        : projectLoadParams(projectInput);
     setLoadingSnapshot(true);
     setError("");
-    const url = useLiveApi && project ? `/api/snapshot?project=${encodeURIComponent(project)}` : "/workbench_snapshot.json";
+    const url = useLiveApi && loadParams.project ? endpointUrl("/api/snapshot", loadParams) : "/workbench_snapshot.json";
     return fetch(url, { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`snapshot fetch failed: ${response.status}`);
@@ -840,6 +973,13 @@ function App() {
             ? `Live project snapshot loaded from the local API: ${payload.project}.`
             : `Static snapshot loaded from ${payload.html_output || "workbench_snapshot.json"}.`
         );
+        if (useLiveApi) {
+          setSelectedProjectKey(payload.project);
+          return loadHealthContext({ ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake });
+        }
+        setHealthContext(null);
+        setHealthMessage("Static mode uses the last generated snapshot only.");
+        return null;
       })
       .catch((err) => {
         if (useLiveApi && allowStaticFallback) {
@@ -864,7 +1004,8 @@ function App() {
         setProjects(projectRows);
         setLiveMode(true);
         const preferred = projectRows.find((row) => row.project === payload.default_project) || projectRows[0];
-        return loadSnapshot(preferred.project, true, { allowStaticFallback: true });
+        setSelectedProjectKey(preferred.project);
+        return loadSnapshot(preferred, true, { allowStaticFallback: true });
       })
       .catch(() =>
         loadSnapshot("", false).catch((err) => setError(String(err.message || err)))
@@ -874,14 +1015,17 @@ function App() {
   const handleProjectChange = (event) => {
     const project = event.target.value;
     if (!project || !liveMode) return;
-    loadSnapshot(project, true).catch((err) =>
+    const entry = projects.find((row) => row.project === project) || { project, rubric: project };
+    setSelectedProjectKey(project);
+    loadSnapshot(entry, true).catch((err) =>
       setModeMessage(`Could not load live project snapshot for ${project}: ${err.message || err}`)
     );
   };
 
   const refreshCurrentProject = () => {
     if (!snapshot || !liveMode) return;
-    loadSnapshot(snapshot.project, true).catch((err) =>
+    const entry = projects.find((row) => row.project === snapshot.project) || snapshot;
+    loadSnapshot(entry, true).catch((err) =>
       setModeMessage(`Could not refresh live project snapshot for ${snapshot.project}: ${err.message || err}`)
     );
   };
@@ -929,6 +1073,11 @@ function App() {
     return visibleSelected || filteredRows[0] || null;
   }, [filteredRows, selectedLabel, snapshot]);
 
+  const currentProjectEntry = useMemo(() => {
+    if (!snapshot) return null;
+    return projects.find((row) => row.project === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
+  }, [projects, selectedProjectKey, snapshot]);
+
   const selectedReviewState = (selectedRow && reviewStates[selectedRow.label]) || { decision: "", note: "" };
   const setSelectedReviewState = (label, nextState) => {
     setReviewStates((current) => ({ ...current, [label]: nextState }));
@@ -945,6 +1094,8 @@ function App() {
       },
       body: JSON.stringify({
         project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
         row_slug: rowSlugValue,
         review_file: reviewPayload
       })
@@ -999,7 +1150,7 @@ function App() {
                 h("span", null, loadingSnapshot ? "Refreshing" : "Project"),
                 h(
                   "select",
-                  { value: snapshot.project, onChange: handleProjectChange, disabled: loadingSnapshot },
+                  { value: selectedProjectKey || snapshot.project, onChange: handleProjectChange, disabled: loadingSnapshot },
                   projects.map((project) => h("option", { key: project.project, value: project.project }, projectOptionLabel(project)))
                 )
               )
@@ -1021,8 +1172,10 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
+      h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
+      h(HealthActionsPanel, { healthContext, healthMessage, liveMode }),
       h(StageRail, { snapshot, setSelectedLabel }),
       h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),
       h(ClaimSummary, { snapshot }),

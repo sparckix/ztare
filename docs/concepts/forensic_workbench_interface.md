@@ -167,8 +167,11 @@ Live read mode wraps the same builder in a local API:
 GET /api/projects
 -> project index from project-local intakes and public example intakes
 
-GET /api/snapshot?project=<project>
--> fresh single-project workbench snapshot
+GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
+-> fresh single-project workbench snapshot bound to the selected intake
+
+GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
+-> kernel-health summary plus action-intelligence source-health warnings
 
 POST /api/review
 -> append row-level review receipt and refresh snapshot
@@ -182,9 +185,9 @@ swapping in stale static data.
 That is deliberate. Browser-side filesystem discovery would hide which project
 state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
-and example intakes. It can show each project's bounded-claim status,
-source/evidence readiness, latest-review receipt, and report/export state
-before the user opens a case.
+and example intakes. It should show the selected project directory, intake,
+report contract, latest-review receipt, bounded-claim status, source/evidence
+readiness, and report/export state before the user opens a case.
 
 The index must include both first-run demos:
 
@@ -201,6 +204,11 @@ Writes should stay explicit. Static mode saves a review file, applies it
 through the CLI, then refreshes the snapshot. Live mode may call a local API to
 write the same receipt directly. Either way, the visible trail is file or API
 payload, receipt ledger, latest-review receipt, and refreshed snapshot.
+
+Health and action rows are read-only in D4. They may tell the reviewer that a
+project has kernel-health attention, provider-runtime risk, stale source-health
+inputs, or advisory action-intelligence warnings. They do not make release
+claims stronger and do not become hidden control authority.
 
 ## Acceptance Tests
 
