@@ -36,6 +36,32 @@ from drowning out the repo's actual contribution.
       released, superseded, or intentionally excluded.
 - [ ] Case studies and science tracks state their maturity and prohibited claims.
 - [ ] Internal docs are labeled as internal/audit support, not first-read paths.
+- [ ] `CHANGELOG.md`, `priority_roadmap.md`, and
+      `docs/public_claim_register.md` agree on the latest tag and the
+      post-tag release slice.
+- [ ] Public review packets linked from release notes contain a claim,
+      evidence pointer, command or inspection path, non-claims, and next
+      falsifier.
+
+## Claim-Class Membrane
+
+- [ ] Governance evidence is described as governance evidence: axiom/status
+      audits, statement-integrity checks, certificate checks, policy gates, or
+      anti-laundering receipts.
+- [ ] Benchmark evidence names the benchmark, sample size or fixture count,
+      comparator, timeout/cost boundary, and whether the result is a floor,
+      lift claim, or negative result.
+- [ ] Paper evidence names the paper packet and distinguishes corpus evidence,
+      replay/synthetic evidence, methodology claims, and future validation.
+- [ ] Maintainer-only planning evidence stays out of public release notes unless
+      it has been promoted into a public packet or claim-register entry.
+- [ ] LeanMill proof-search results are not upgraded into measured lift unless
+      a matched baseline and discriminating proof slice are present.
+- [ ] Forecasting results are not upgraded into market/human superiority claims
+      unless source timing, label timing, comparator information, and row
+      validity are checked.
+- [ ] Public release notes include explicit non-claims for any result that could
+      be overread.
 
 ## Runtime Reality
 
@@ -46,6 +72,8 @@ from drowning out the repo's actual contribution.
 - [ ] Quickstart commands use verified Make/script parameters, not remembered
       aliases.
 - [ ] Known limitations are documented near the command that triggers them.
+- [ ] `make gates` has passed before commit and before push.
+- [ ] `make docs-check` has passed after any public-doc or review-packet edit.
 
 ## Current Release Notes
 
@@ -53,3 +81,15 @@ from drowning out the repo's actual contribution.
   but tree hygiene not push-ready. Immediate repairs: unstage all prior partial
   staging, delete local `.DS_Store` files, delete root `nohup.out`, add docs
   map, add this checklist, and remove one tracked pre-audit snapshot.
+- 2026-06-19: release stewardship now requires explicit claim-class separation
+  for governance, benchmark, paper, and maintainer-planning evidence. This keeps
+  post-tag LeanMill, forecasting, and evaluator-hardening work from being
+  overread as broader system-performance claims.
+- 2026-06-22: the next public release slice is the local claim-governance
+  workbench path: first-run, project intake, source/evidence readiness,
+  autoresearch trace, report/export support contracts, action-intelligence and
+  kernel-health read models, release-slice audit, public positioning, and the
+  narrow forensic-workbench prototype. LeanMill source, paper/submission churn,
+  proof-audit artifacts, forecasting-program churn, HBR/roadshow work, and
+  neuralese-writing rubric work remain holdbacks unless directly needed for
+  that path.
