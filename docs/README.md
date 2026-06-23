@@ -134,7 +134,7 @@ tenant notification provider as part of the generic kernel.
 
 **Sub-folders**
 
-- [`concepts/`](concepts/) - 37 file(s)
+- [`concepts/`](concepts/) - 36 file(s)
 - [`evidence_atlas/`](evidence_atlas/) - 14 file(s)
 - [`guides/`](guides/) - 14 file(s)
 - [`landings/`](landings/) - 2 file(s)
