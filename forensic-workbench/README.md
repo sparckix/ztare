@@ -35,7 +35,8 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/project-create`, `/api/preflight`, `/api/source-action`, `/api/run-history`,
+`/api/trace`, `/api/project-create`, `/api/source-import`, `/api/preflight`,
+`/api/source-action`, `/api/run-history`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
@@ -54,6 +55,10 @@ means the file actually changed.
 The New case panel calls `/api/project-create`, which runs the fixed
 `ztare project source-init` and `ztare project intake create` path for a new
 project slug, then reloads the project through the same live snapshot flow.
+The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
+file under the selected project's `raw/` directory, updates
+`raw/source_type_map.json`, appends a source-import receipt, and runs the
+offline source check.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -90,6 +95,9 @@ available. It is not a general shell runner and it does not start a model run.
 The project-create endpoint returns `ztare-forensic-workbench-project-create-v1`:
 source-init result, intake-create result, refreshed project index, and the first
 snapshot when available.
+The source-import endpoint returns `ztare-forensic-workbench-source-import-v1`:
+written source path, source type, source-import receipt path, source-check
+result, and refreshed snapshot/trace when available.
 The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
 for three fixed actions: `source_check`, `source_index`, and
 `evidence_replay`. The source-index action uses
@@ -104,8 +112,8 @@ The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
 preflight result, latest source/evidence action result, run-history context, the
-command queue, and the latest visible write receipt. It does not write project
-files or claim that an unreviewed case is complete.
+latest source import, command queue, and the latest visible write receipt. It
+does not write project files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked

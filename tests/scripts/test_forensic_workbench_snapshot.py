@@ -741,6 +741,39 @@ def test_create_project_payload_runs_source_init_then_intake_create(tmp_path: Pa
     assert "--non-claim" in commands[1]
 
 
+def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    raw = project_root / "raw"
+    workspace = project_root / "workspace"
+    raw.mkdir(parents=True)
+    workspace.mkdir()
+    (raw / "source_type_map.json").write_text("{}\n", encoding="utf-8")
+    intake = project_root / "demo_intake.json"
+    intake.write_text(json.dumps({"project": "demo", "bounded_claim": "demo"}), encoding="utf-8")
+
+    monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
+    monkeypatch.setattr(module, "source_action_payload_for_project", lambda **_kwargs: {"accepted": True, "snapshot": {"project": "demo"}, "trace": {"readiness": "ready"}})
+
+    payload = module.import_source_payload(
+        project="demo",
+        filename="source_note.md",
+        source_type="source_evidence",
+        body="Observed failure mode.",
+    )
+
+    source_path = raw / "source_note.md"
+    receipt_path = workspace / "forensic_workbench_source_imports.jsonl"
+    assert payload["schema"] == "ztare-forensic-workbench-source-import-v1"
+    assert payload["source_path"] == "projects/demo/raw/source_note.md"
+    assert "source_type: source_evidence" in source_path.read_text(encoding="utf-8")
+    assert json.loads((raw / "source_type_map.json").read_text(encoding="utf-8")) == {"source_note.md": "source_evidence"}
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8").strip())
+    assert receipt["schema"] == "ztare-forensic-workbench-source-import-v1"
+    assert receipt["source_path"] == "projects/demo/raw/source_note.md"
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

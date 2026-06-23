@@ -487,6 +487,104 @@ code {
   justify-content: flex-end;
 }
 
+.source-import-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.34fr) minmax(0, 1fr) minmax(210px, 0.34fr);
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #1c6552;
+}
+
+.source-import-head {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.source-import-head h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.source-import-head p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.source-import-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(180px, 0.6fr) minmax(180px, 0.4fr);
+  gap: 8px;
+}
+
+.source-import-grid label,
+.source-import-actions,
+.source-import-result {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.source-import-body {
+  grid-column: 1 / -1;
+}
+
+.source-import-grid span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.source-import-grid input,
+.source-import-grid select,
+.source-import-grid textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfd7d4;
+  background: #fbfcfb;
+  color: #17201d;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 8px 9px;
+}
+
+.source-import-grid textarea {
+  resize: vertical;
+}
+
+.source-import-result {
+  padding: 9px;
+  background: #f7f9f8;
+  border-left: 3px solid #1c6552;
+}
+
+.source-import-result strong,
+.source-import-result small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.source-import-result strong {
+  color: #17201d;
+  font-size: 13px;
+}
+
+.source-import-result small {
+  color: #52605a;
+  font-size: 12px;
+}
+
 .intake-editor {
   min-width: 0;
   display: grid;
@@ -3338,10 +3436,16 @@ code {
   .case-summary,
   .project-create-panel,
   .project-create-grid,
+  .source-import-panel,
+  .source-import-grid,
   .path-panel,
   .toolbar {
     display: grid;
     grid-template-columns: 1fr;
+  }
+
+  .source-import-body {
+    grid-column: auto;
   }
 
   .topbar-actions {

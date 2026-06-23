@@ -171,6 +171,10 @@ POST /api/project-create
 -> create a local source project and project intake, then return command results,
    refreshed project index, and a first snapshot when available
 
+POST /api/source-import
+-> write one validated raw source file, update source_type_map, append a
+   source-import receipt, run source-check, and return refreshed state
+
 GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 -> fresh single-project workbench snapshot bound to the selected intake
 

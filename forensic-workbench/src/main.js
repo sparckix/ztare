@@ -190,6 +190,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const preflight = context.preflightEvent || null;
   const runHistory = context.runHistoryContext || {};
   const sourceAction = context.sourceActionEvent || null;
+  const sourceImport = context.sourceImportEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -284,6 +285,15 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
             accepted: Boolean(sourceAction.accepted),
             stdout_tail: sourceAction.stdout_tail || "",
             stderr_tail: sourceAction.stderr_tail || ""
+          }
+        : null,
+      latest_source_import: sourceImport
+        ? {
+            schema: sourceImport.schema || "",
+            source_path: sourceImport.source_path || "",
+            source_type: sourceImport.source_type || "",
+            receipt_path: sourceImport.receipt_path || "",
+            source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted)
           }
         : null,
       latest_write_receipt: latestWrite
@@ -521,6 +531,73 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCr
         },
         creating ? "Creating" : "Create case"
       )
+    )
+  );
+}
+
+function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, onImport, onPreview }) {
+  const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  return h(
+    "section",
+    { className: "source-import-panel", "aria-label": "Import source" },
+    h(
+      "div",
+      { className: "source-import-head" },
+      h("span", { className: "eyebrow" }, "Source import"),
+      h("h2", null, "Add a raw source"),
+      h("p", null, message || "Write one source file into this project, record a receipt, then check source readiness.")
+    ),
+    h(
+      "div",
+      { className: "source-import-grid" },
+      h("label", null, h("span", null, "Filename"), h("input", { value: draft.filename, onInput: (inputEvent) => setField("filename", inputEvent.target.value), placeholder: "source_note.md" })),
+      h(
+        "label",
+        null,
+        h("span", null, "Source type"),
+        h(
+          "select",
+          { value: draft.source_type, onChange: (inputEvent) => setField("source_type", inputEvent.target.value) },
+          ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"].map((value) =>
+            h("option", { key: value, value }, displayText(value))
+          )
+        )
+      ),
+      h("label", { className: "source-import-body" }, h("span", null, "Text"), h("textarea", { value: draft.body, onInput: (inputEvent) => setField("body", inputEvent.target.value), rows: 5 }))
+    ),
+    h(
+      "div",
+      { className: "source-import-actions" },
+      h(
+        "button",
+        {
+          type: "button",
+          className: "snapshot-link",
+          disabled: !liveMode || importing,
+          onClick: onImport,
+          title: liveMode ? "Write source file and receipt" : "Start the local API to import a source"
+        },
+        importing ? "Importing" : "Import source"
+      ),
+      event
+        ? h(
+            "div",
+            { className: "source-import-result" },
+            h("strong", null, event.source_path || "source imported"),
+            h("small", null, `${displayText(event.source_type || "source")} / ${(event.source_check && event.source_check.accepted) ? "check accepted" : "check attention"}`),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "copy-button",
+                disabled: !liveMode || !event.source_path,
+                onClick: () => onPreview && onPreview({ type: "file", value: event.source_path }),
+                title: "Preview imported source"
+              },
+              "Preview"
+            )
+          )
+        : null
     )
   );
 }
@@ -1302,13 +1379,14 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
     healthContext,
     preflightEvent,
     sourceActionEvent,
+    sourceImportEvent,
     runHistoryContext,
     writeReceiptEvent,
     selectedRow
@@ -1333,6 +1411,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       packet.live_context.health.action_intelligence.issues.length,
     packet.live_context.preflight_result,
     packet.live_context.latest_source_action,
+    packet.live_context.latest_source_import,
     packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
@@ -1356,6 +1435,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
       h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
+      h("div", null, h("span", null, "Source import"), h("strong", null, packet.live_context.latest_source_import ? displayText(packet.live_context.latest_source_import.source_type) : "none")),
       h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
@@ -2719,6 +2799,10 @@ function App() {
   });
   const [projectCreateMessage, setProjectCreateMessage] = useState("");
   const [projectCreating, setProjectCreating] = useState(false);
+  const [sourceImportDraft, setSourceImportDraft] = useState({ filename: "", source_type: "source_evidence", body: "" });
+  const [sourceImportMessage, setSourceImportMessage] = useState("");
+  const [sourceImportEvent, setSourceImportEvent] = useState(null);
+  const [sourceImporting, setSourceImporting] = useState(false);
   const [liveMode, setLiveMode] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
@@ -3018,6 +3102,47 @@ function App() {
       })
       .catch((err) => setProjectCreateMessage(String(err.message || err)))
       .finally(() => setProjectCreating(false));
+  };
+
+  const importSourceLive = () => {
+    if (!snapshot || !liveMode || sourceImporting) return;
+    setSourceImporting(true);
+    setSourceImportMessage("Importing source file.");
+    setSourceImportEvent(null);
+    fetch("/api/source-import", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        renderer: "decision_brief",
+        filename: sourceImportDraft.filename,
+        source_type: sourceImportDraft.source_type,
+        body: sourceImportDraft.body
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.error || `source import failed: ${response.status}`);
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.trace) setTraceContext(payload.trace);
+        setSourceImportEvent(payload);
+        setSourceImportDraft({ filename: "", source_type: "source_evidence", body: "" });
+        setSourceImportMessage(`Imported ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
+        loadReceiptHistory({ project: snapshot.project });
+      })
+      .catch((err) => setSourceImportMessage(String(err.message || err)))
+      .finally(() => setSourceImporting(false));
   };
 
   const counts = useMemo(() => {
@@ -3423,6 +3548,16 @@ function App() {
         onCreate: createProjectLive
       }),
       h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
+      h(SourceImportPanel, {
+        draft: sourceImportDraft,
+        setDraft: setSourceImportDraft,
+        message: sourceImportMessage,
+        importing: sourceImporting,
+        event: sourceImportEvent,
+        liveMode,
+        onImport: importSourceLive,
+        onPreview: loadFilePreview
+      }),
       h(IntakeEditor, {
         draft: intakeDraft,
         setDraft: setIntakeDraft,
@@ -3466,7 +3601,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
