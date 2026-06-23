@@ -2825,6 +2825,30 @@ code {
   word-break: break-word;
 }
 
+.review-queue-receipt {
+  grid-column: span 2;
+}
+
+.review-queue-receipt code {
+  min-width: 0;
+  padding: 7px;
+  background: #f6f8f7;
+  border: 1px solid #dce3e0;
+  color: #2f3d38;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.review-queue-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 0;
+  background: transparent;
+}
+
 .review-queue.attention {
   background: #e0bd91;
   border-color: #e0bd91;

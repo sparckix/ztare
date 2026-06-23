@@ -2637,13 +2637,49 @@ function ProvenanceStrip({ rows }) {
   );
 }
 
-function ReviewQueue({ row, reviewState, receiptHistory, liveMode }) {
+function ReviewQueue({ row, reviewState, receiptHistory, liveMode, onPreview }) {
   const decision = reviewState.decision || "unreviewed";
   const decisionLabel = (REVIEW_ACTIONS.find((action) => action.id === decision) || { label: "Unreviewed" }).label;
   const evidenceCount = row ? evidenceItems(row).length : 0;
   const lastReview = latestReceiptForRow(receiptHistory, row, "review");
   const lastAction = latestReceiptForRow(receiptHistory, row, "row_action");
+  const lastReviewPath = receiptArtifactPath(lastReview);
+  const lastActionPath = receiptArtifactPath(lastAction);
   const receiptState = row && decision !== "unreviewed" ? (liveMode ? "ready to apply" : "file ready") : "decision needed";
+  const renderReceiptCell = (label, receipt, path, stateText) =>
+    h(
+      "div",
+      { className: "review-queue-receipt" },
+      h("span", null, label),
+      h("strong", null, receipt ? displayText(stateText || "recorded") : "none"),
+      h("code", null, path || "no artifact path"),
+      h(
+        "div",
+        { className: "review-queue-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !path,
+            onClick: () => copyText(path),
+            title: path ? `Copy ${label.toLowerCase()} artifact path` : "No artifact path recorded"
+          },
+          "Copy path"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !liveMode || !path,
+            onClick: () => onPreview && onPreview({ type: "file", value: path }),
+            title: liveMode && path ? `Preview ${label.toLowerCase()} artifact` : "Start the local API to preview artifact files"
+          },
+          "Preview"
+        )
+      )
+    );
   return h(
     "section",
     { className: `review-queue ${row && row.kind === "attention" ? "attention" : ""}`, "aria-label": "Review queue" },
@@ -2651,8 +2687,8 @@ function ReviewQueue({ row, reviewState, receiptHistory, liveMode }) {
     h("div", null, h("span", null, "Decision"), h("strong", null, decisionLabel)),
     h("div", null, h("span", null, "Evidence"), h("strong", null, String(evidenceCount))),
     h("div", null, h("span", null, "Receipt"), h("strong", null, receiptState)),
-    h("div", null, h("span", null, "Last review"), h("strong", null, lastReview ? displayText(lastReview.decision || "recorded") : "none")),
-    h("div", null, h("span", null, "Last action"), h("strong", null, lastAction ? displayText(lastAction.action || "recorded") : "none"))
+    renderReceiptCell("Last review", lastReview, lastReviewPath, lastReview && lastReview.decision),
+    renderReceiptCell("Last action", lastAction, lastActionPath, lastAction && lastAction.action)
   );
 }
 
@@ -4465,7 +4501,7 @@ function App() {
         saveEvent: caseFileSaveEvent,
         onSave: saveCaseFileLive
       }),
-      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode }),
+      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode, onPreview: loadFilePreview }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
       actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,
