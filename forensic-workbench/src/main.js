@@ -200,11 +200,23 @@ function coverageSummary(rows) {
   return { total, rowsWithArtifacts, commandRows, receiptRows, reviewRows };
 }
 
-function latestReceiptForRow(receiptHistory, row, kind) {
+function receiptMatchesCase(receipt, context) {
+  if (!receipt || !context) return true;
+  const project = String(context.project || "").trim();
+  const intake = String(context.intake || "").trim();
+  const caseKey = projectEntryKey(context);
+  if (receipt.project && project && receipt.project !== project) return false;
+  if (receipt.case_key) return receipt.case_key === caseKey;
+  if (receipt.intake && intake) return receipt.intake === intake;
+  return true;
+}
+
+function latestReceiptForRow(receiptHistory, row, kind, context) {
   if (!row) return null;
   const slug = rowSlug(row.label);
   return ((receiptHistory && receiptHistory.receipts) || []).find((receipt) => {
     if (receipt.kind !== kind) return false;
+    if (!receiptMatchesCase(receipt, context)) return false;
     if (receipt.row_slug === slug) return true;
     return rowSlug(receipt.row || "") === slug;
   }) || null;
@@ -2958,12 +2970,12 @@ function ProvenanceStrip({ rows }) {
   );
 }
 
-function ReviewQueue({ row, reviewState, receiptHistory, liveMode, onPreview }) {
+function ReviewQueue({ row, reviewState, receiptHistory, snapshot, liveMode, onPreview }) {
   const decision = reviewState.decision || "unreviewed";
   const decisionLabel = (REVIEW_ACTIONS.find((action) => action.id === decision) || { label: "Unreviewed" }).label;
   const evidenceCount = row ? evidenceItems(row).length : 0;
-  const lastReview = latestReceiptForRow(receiptHistory, row, "review");
-  const lastAction = latestReceiptForRow(receiptHistory, row, "row_action");
+  const lastReview = latestReceiptForRow(receiptHistory, row, "review", snapshot);
+  const lastAction = latestReceiptForRow(receiptHistory, row, "row_action", snapshot);
   const lastReviewPath = receiptArtifactPath(lastReview);
   const lastActionPath = receiptArtifactPath(lastAction);
   const receiptState = row && decision !== "unreviewed" ? (liveMode ? "ready to apply" : "file ready") : "decision needed";
@@ -5155,7 +5167,7 @@ function App() {
         saveEvent: caseFileSaveEvent,
         onSave: saveCaseFileLive
       }),
-      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode, onPreview: loadFilePreview }),
+      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, snapshot, liveMode, onPreview: loadFilePreview }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
       h(WriteReceiptPanel, { receiptEvent: writeReceiptEvent, refreshResults: lastRefreshResults, liveMode, onPreview: loadFilePreview }),
