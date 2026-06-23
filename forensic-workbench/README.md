@@ -208,7 +208,8 @@ The interface is organized as a local claim-review surface:
   evidence-file errors, source context, and the exact support-audit command
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
-- review queue strip showing selected row, decision, evidence count, and receipt readiness
+- review queue strip showing selected row, decision, evidence count, receipt
+  readiness, latest saved review, and latest saved row action
 - review workspace for marking a row reviewed, deferred, or blocking export
 - saved-action workspace for writing the next row action to a project ledger
 - last-write receipt panel showing the stamped review/action/intake/source

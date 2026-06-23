@@ -161,6 +161,16 @@ function coverageSummary(rows) {
   return { total, rowsWithArtifacts, commandRows, receiptRows, reviewRows };
 }
 
+function latestReceiptForRow(receiptHistory, row, kind) {
+  if (!row) return null;
+  const slug = rowSlug(row.label);
+  return ((receiptHistory && receiptHistory.receipts) || []).find((receipt) => {
+    if (receipt.kind !== kind) return false;
+    if (receipt.row_slug === slug) return true;
+    return rowSlug(receipt.row || "") === slug;
+  }) || null;
+}
+
 function buildReviewFile(snapshot, row, reviewState) {
   if (!row) return "";
   const payload = {
@@ -2522,10 +2532,12 @@ function ProvenanceStrip({ rows }) {
   );
 }
 
-function ReviewQueue({ row, reviewState, liveMode }) {
+function ReviewQueue({ row, reviewState, receiptHistory, liveMode }) {
   const decision = reviewState.decision || "unreviewed";
   const decisionLabel = (REVIEW_ACTIONS.find((action) => action.id === decision) || { label: "Unreviewed" }).label;
   const evidenceCount = row ? evidenceItems(row).length : 0;
+  const lastReview = latestReceiptForRow(receiptHistory, row, "review");
+  const lastAction = latestReceiptForRow(receiptHistory, row, "row_action");
   const receiptState = row && decision !== "unreviewed" ? (liveMode ? "ready to apply" : "file ready") : "decision needed";
   return h(
     "section",
@@ -2533,7 +2545,9 @@ function ReviewQueue({ row, reviewState, liveMode }) {
     h("div", null, h("span", null, "Selected"), h("strong", null, row ? row.label : "No row")),
     h("div", null, h("span", null, "Decision"), h("strong", null, decisionLabel)),
     h("div", null, h("span", null, "Evidence"), h("strong", null, String(evidenceCount))),
-    h("div", null, h("span", null, "Receipt"), h("strong", null, receiptState))
+    h("div", null, h("span", null, "Receipt"), h("strong", null, receiptState)),
+    h("div", null, h("span", null, "Last review"), h("strong", null, lastReview ? displayText(lastReview.decision || "recorded") : "none")),
+    h("div", null, h("span", null, "Last action"), h("strong", null, lastAction ? displayText(lastAction.action || "recorded") : "none"))
   );
 }
 
@@ -4176,7 +4190,7 @@ function App() {
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
       h(CaseExportPanel, { snapshot, receiptHistory, projectEntry: currentProjectEntry, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }),
-      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
+      h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
       actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,

@@ -276,6 +276,9 @@ refreshed snapshot.
 After a live review, row-action, or intake-edit write, the app should show the
 stamped receipt schema, target, ledger path, latest path, source path, and hash
 before the user has to inspect the full history.
+When a row is selected, the review strip should also show the latest saved
+review and row-action state for that same row from the receipt history, so a
+reviewer does not overwrite or duplicate a decision blindly.
 
 File inspection is read-only. The browser may request one repository-relative
 path from the local API and display a bounded text preview. It must not crawl

@@ -292,6 +292,8 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "make forensic-workbench-live",
     "Suggested action",
     "Use suggestion",
+    "Last review",
+    "Last action",
     "Edit intake state",
     "Save intake",
     "Source refs",
