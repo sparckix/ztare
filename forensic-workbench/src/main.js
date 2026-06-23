@@ -181,6 +181,10 @@ function parseReviewFile(value) {
   }
 }
 
+function canPreviewEvidence(item) {
+  return ["file", "source", "evidence", "review"].includes(item.type);
+}
+
 function Metric({ label, value, tone }) {
   return h(
     "div",
@@ -425,12 +429,26 @@ function EvidenceType({ type }) {
   return h("span", { className: `evidence-type ${type}` }, type);
 }
 
-function EvidenceBlock({ item }) {
+function EvidenceBlock({ item, onPreview, liveMode }) {
+  const previewable = canPreviewEvidence(item);
   return h(
     "div",
     { className: `evidence-block ${item.type}` },
     h("div", { className: "evidence-block-head" }, h(EvidenceType, { type: item.type }), h("span", null, item.label)),
     h("code", null, item.value),
+    previewable
+      ? h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            title: liveMode ? "Preview file through local API" : "Start local API to preview files",
+            onClick: () => onPreview && onPreview(item),
+            disabled: !liveMode
+          },
+          "Preview"
+        )
+      : null,
     item.type === "command"
       ? h(
           "button",
@@ -1005,7 +1023,29 @@ function WorkbenchTable({ rows, selectedLabel, setSelectedLabel }) {
   );
 }
 
-function Inspector({ row, snapshot }) {
+function FilePreview({ filePreview, filePreviewMessage }) {
+  return h(
+    "section",
+    { className: "file-preview", "aria-label": "File preview" },
+    h("h3", null, "File preview"),
+    filePreviewMessage ? h("p", null, filePreviewMessage) : null,
+    filePreview
+      ? h(
+          "div",
+          { className: "file-preview-body" },
+          h(
+            "div",
+            { className: "file-preview-meta" },
+            h("span", null, filePreview.path),
+            h("span", null, `${filePreview.bytes} bytes${filePreview.truncated ? " (truncated)" : ""}`)
+          ),
+          h("pre", null, filePreview.text || "")
+        )
+      : null
+  );
+}
+
+function Inspector({ row, snapshot, liveMode, loadFilePreview, filePreview, filePreviewMessage }) {
   if (!row) {
     return h("aside", { className: "inspector" }, h("p", null, "Select a row to inspect evidence."));
   }
@@ -1032,8 +1072,18 @@ function Inspector({ row, snapshot }) {
       "section",
       { className: "evidence-stack", "aria-label": "Evidence" },
       h("h3", null, "Evidence"),
-      items.length ? items.map((item) => h(EvidenceBlock, { key: item.label, item })) : h("p", null, "No evidence recorded.")
-    )
+      items.length
+        ? items.map((item) =>
+            h(EvidenceBlock, {
+              key: `${item.type}:${item.value}`,
+              item,
+              onPreview: loadFilePreview,
+              liveMode
+            })
+          )
+        : h("p", null, "No evidence recorded.")
+    ),
+    h(FilePreview, { filePreview, filePreviewMessage })
   );
 }
 
@@ -1058,6 +1108,8 @@ function App() {
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
+  const [filePreview, setFilePreview] = useState(null);
+  const [filePreviewMessage, setFilePreviewMessage] = useState("");
   const [selectedLabel, setSelectedLabel] = useState("");
   const [reviewStates, setReviewStates] = useState({});
   const [actionStates, setActionStates] = useState({});
@@ -1212,6 +1264,11 @@ function App() {
     return visibleSelected || filteredRows[0] || null;
   }, [filteredRows, selectedLabel, snapshot]);
 
+  useEffect(() => {
+    setFilePreview(null);
+    setFilePreviewMessage("");
+  }, [selectedRow && selectedRow.label]);
+
   const currentProjectEntry = useMemo(() => {
     if (!snapshot) return null;
     return projects.find((row) => row.project === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
@@ -1290,6 +1347,30 @@ function App() {
         );
       })
       .catch((err) => setActionMessage(String(err.message || err)));
+  };
+
+  const loadFilePreview = (item) => {
+    if (!liveMode || !item || !item.value) {
+      setFilePreview(null);
+      setFilePreviewMessage("Start the local API to preview repository files.");
+      return;
+    }
+    setFilePreview(null);
+    setFilePreviewMessage(`Loading ${item.value}.`);
+    fetch(endpointUrl("/api/file", { path: item.value }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`file preview failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "file preview failed");
+        setFilePreview(payload);
+        setFilePreviewMessage(payload.truncated ? "Preview truncated to the first 200 KB." : "Preview loaded from the local API.");
+      })
+      .catch((err) => {
+        setFilePreview(null);
+        setFilePreviewMessage(String(err.message || err));
+      });
   };
 
   if (error) {
@@ -1385,7 +1466,7 @@ function App() {
         filteredRows.length
           ? h(WorkbenchTable, { rows: filteredRows, selectedLabel: selectedRow && selectedRow.label, setSelectedLabel })
           : h(EmptyState),
-        h(Inspector, { row: selectedRow, snapshot })
+        h(Inspector, { row: selectedRow, snapshot, liveMode, loadFilePreview, filePreview, filePreviewMessage })
       )
     )
   );

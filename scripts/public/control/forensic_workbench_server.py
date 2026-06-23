@@ -15,6 +15,7 @@ import forensic_workbench_review as review
 
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
+MAX_PREVIEW_BYTES = 200_000
 
 
 def json_bytes(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
@@ -26,6 +27,40 @@ def first_param(params: dict[str, list[str]], key: str, default: str) -> str:
     if not values:
         return default
     return values[0] or default
+
+
+def file_preview_payload(path: str) -> dict[str, Any]:
+    if not path:
+        raise ValueError("path is required")
+    candidate = Path(path)
+    if candidate.is_absolute():
+        raise ValueError("path must be relative to the repository")
+    resolved = (snapshot.REPO / candidate).resolve()
+    repo = snapshot.REPO.resolve()
+    if resolved != repo and repo not in resolved.parents:
+        raise ValueError("path escapes the repository")
+    if not resolved.exists():
+        raise FileNotFoundError(f"path does not exist: {path}")
+    if not resolved.is_file():
+        raise ValueError(f"path is not a file: {path}")
+    raw = resolved.read_bytes()
+    truncated = len(raw) > MAX_PREVIEW_BYTES
+    preview_bytes = raw[:MAX_PREVIEW_BYTES]
+    try:
+        text = preview_bytes.decode("utf-8")
+        encoding = "utf-8"
+    except UnicodeDecodeError:
+        text = preview_bytes.decode("utf-8", errors="replace")
+        encoding = "utf-8-replacement"
+    return {
+        "schema": "ztare-forensic-workbench-file-preview-v1",
+        "served_from": "local_api",
+        "path": snapshot.rel(resolved),
+        "bytes": len(raw),
+        "truncated": truncated,
+        "encoding": encoding,
+        "text": text,
+    }
 
 
 def snapshot_payload_for_project(
@@ -209,6 +244,11 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
                 payload = health_payload_for_project(project=project, rubric=rubric, intake=intake)
                 self.send_json(payload)
+                return
+            if parsed.path == "/api/file":
+                params = parse_qs(parsed.query)
+                path = first_param(params, "path", "")
+                self.send_json(file_preview_payload(path))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

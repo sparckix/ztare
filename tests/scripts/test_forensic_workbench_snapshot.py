@@ -395,6 +395,23 @@ def test_project_slug_rejects_path_traversal() -> None:
         module.validate_project_slug("../private")
 
 
+def test_file_preview_api_reads_repo_relative_text_only(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    target = tmp_path / "projects/demo/source.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("claim source\nline two\n", encoding="utf-8")
+
+    payload = module.file_preview_payload("projects/demo/source.md")
+
+    assert payload["schema"] == "ztare-forensic-workbench-file-preview-v1"
+    assert payload["path"] == "projects/demo/source.md"
+    assert payload["truncated"] is False
+    assert "claim source" in payload["text"]
+    with pytest.raises(ValueError):
+        module.file_preview_payload("../outside.md")
+
+
 def test_validate_rows_rejects_missing_provenance() -> None:
     module = load_module()
 

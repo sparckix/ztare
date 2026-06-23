@@ -1635,6 +1635,63 @@ code {
   word-break: break-word;
 }
 
+.file-preview {
+  display: grid;
+  gap: 10px;
+  padding: 0 18px 18px;
+}
+
+.file-preview h3 {
+  margin: 0;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.file-preview p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.file-preview-body {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+  background: #d1dbd7;
+  border: 1px solid #d1dbd7;
+}
+
+.file-preview-meta {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 9px 10px;
+  background: #ffffff;
+  color: #52605a;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.file-preview-meta span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.file-preview pre {
+  max-height: 320px;
+  margin: 0;
+  padding: 12px;
+  overflow: auto;
+  background: #f7faf8;
+  color: #17201d;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
 .copy-button {
   align-self: start;
   min-height: 30px;
@@ -1913,6 +1970,10 @@ code {
   }
 
   .evidence-block {
+    grid-template-columns: 1fr;
+  }
+
+  .file-preview-meta {
     grid-template-columns: 1fr;
   }
 }

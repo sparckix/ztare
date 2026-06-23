@@ -173,6 +173,9 @@ GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 -> kernel-health summary plus action-intelligence source-health warnings
 
+GET /api/file?path=<repo-relative-path>
+-> read-only bounded text preview for a selected file/evidence path
+
 POST /api/review
 -> append row-level review receipt and refresh snapshot
 
@@ -208,6 +211,10 @@ Writes should stay explicit. Static mode saves a review or row-action file,
 applies it through the CLI, then refreshes the snapshot. Live mode may call a
 local API to write the same receipt directly. Either way, the visible trail is
 file or API payload, receipt ledger, latest receipt row, and refreshed snapshot.
+
+File inspection is read-only. The browser may request one repository-relative
+path from the local API and display a bounded text preview. It must not crawl
+the filesystem, infer hidden project state, or turn a preview into a write.
 
 Health and action rows are read-only in D4. They may tell the reviewer that a
 project has kernel-health attention, provider-runtime risk, stale source-health
