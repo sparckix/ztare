@@ -46,6 +46,7 @@ const STAGES = [
 
 const DISPLAY_OVERRIDES = {
   valid_packet: "valid intake",
+  missing_packet: "missing evidence file",
   ready_for_in_loop_candidate: "ready for run",
   ready_for_evidence_prepare: "ready for evidence prep",
   report_blockers_present: "report blockers present",
@@ -68,6 +69,13 @@ function kindLabel(kind) {
 function displayText(value) {
   const raw = String(value || "none");
   return DISPLAY_OVERRIDES[raw] || raw.replace(/_/g, " ");
+}
+
+function displayMessage(value) {
+  return String(value || "")
+    .replace(/\bcompiled evidence packet\b/gi, "compiled evidence file")
+    .replace(/\bevidence packet\b/gi, "evidence file")
+    .replace(/\bpacket boundary\b/gi, "intake boundary");
 }
 
 function shortDigest(value) {
@@ -346,11 +354,11 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             command: preflight.command || "",
             returncode: preflight.returncode,
             accepted: Boolean(preflight.accepted),
-            stdout_tail: preflight.stdout_tail || "",
-            stderr_tail: preflight.stderr_tail || "",
+            stdout_tail: displayMessage(preflight.stdout_tail || ""),
+            stderr_tail: displayMessage(preflight.stderr_tail || ""),
             loop_admission: ((preflight.trace || {}).loop_admission) || {},
-            snapshot_error: preflight.snapshot_error || "",
-            trace_error: preflight.trace_error || ""
+            snapshot_error: displayMessage(preflight.snapshot_error || ""),
+            trace_error: displayMessage(preflight.trace_error || "")
         }
         : null,
       run_history: {
@@ -370,7 +378,7 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
         claim_count: claimSupport.claim_count || 0,
         weak_or_unsourced_count: claimSupport.weak_or_unsourced_count || 0,
         source_context_blocked_count: claimSupport.source_context_blocked_count || 0,
-        errors: (claimSupport.errors || []).slice(0, 8),
+        errors: (claimSupport.errors || []).slice(0, 8).map(displayMessage),
         evidence_file_path: claimSupport.evidence_file_path || claimSupport.packet_path || "",
         source_index_path: claimSupport.source_index_path || "",
         source_context: (claimSupport.source_context || []).slice(0, 12)
@@ -400,8 +408,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             receipt_path: sourceAction.receipt_path || "",
             latest: sourceAction.latest || "",
             receipt: sourceAction.receipt || {},
-            stdout_tail: sourceAction.stdout_tail || "",
-            stderr_tail: sourceAction.stderr_tail || ""
+            stdout_tail: displayMessage(sourceAction.stdout_tail || ""),
+            stderr_tail: displayMessage(sourceAction.stderr_tail || "")
           }
         : null,
       latest_source_import: sourceImport
@@ -1422,9 +1430,9 @@ function PreflightRunPanel({ traceContext, event, message, running, liveMode, on
   const canRun = Boolean(liveMode && command && !running);
   const accepted = event && event.accepted;
   const status = running ? "running" : event ? (accepted ? "accepted" : "blocked") : command ? "ready" : "missing";
-  const outputTail = event ? (event.stderr_tail || event.stdout_tail || "").trim() : "";
-  const snapshotNote = event && event.snapshot_error ? `Snapshot refresh failed: ${event.snapshot_error}` : "";
-  const traceNote = event && event.trace_error ? `Trace refresh failed: ${event.trace_error}` : "";
+  const outputTail = event ? displayMessage(event.stderr_tail || event.stdout_tail || "").trim() : "";
+  const snapshotNote = event && event.snapshot_error ? `Snapshot refresh failed: ${displayMessage(event.snapshot_error)}` : "";
+  const traceNote = event && event.trace_error ? `Trace refresh failed: ${displayMessage(event.trace_error)}` : "";
 
   return h(
     "section",
@@ -1656,7 +1664,7 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
       { className: "run-history-verdict" },
       h("span", null, "Audit result"),
       errors.length
-        ? errors.slice(0, 4).map((error) => h("p", { key: error }, error))
+        ? errors.slice(0, 4).map((error) => h("p", { key: error }, displayMessage(error)))
         : h("p", null, rows.length ? `${rows.length} support rows loaded.` : "No weak or unsourced support rows surfaced."),
       h(
         "div",
@@ -2215,8 +2223,8 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
               { className: `source-evidence-action-result ${sourceActionEvent.accepted ? "ready" : "attention"}` },
               h("strong", null, `${sourceActionEvent.label || displayText(sourceActionEvent.action)}: ${sourceActionEvent.accepted ? "accepted" : "attention"}`),
               h("code", null, sourceActionEvent.command || "No command recorded."),
-              sourceActionEvent.stdout_tail ? h("pre", null, sourceActionEvent.stdout_tail) : null,
-              sourceActionEvent.stderr_tail ? h("pre", null, sourceActionEvent.stderr_tail) : null
+              sourceActionEvent.stdout_tail ? h("pre", null, displayMessage(sourceActionEvent.stdout_tail)) : null,
+              sourceActionEvent.stderr_tail ? h("pre", null, displayMessage(sourceActionEvent.stderr_tail)) : null
             )
           : null
       )
