@@ -1026,6 +1026,32 @@ def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monk
     assert latest["source_type"] == "research_question"
 
 
+def test_edit_source_payload_rejects_noop_write(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    raw = project_root / "raw"
+    workspace = project_root / "workspace"
+    raw.mkdir(parents=True)
+    workspace.mkdir()
+    (raw / "source_type_map.json").write_text(json.dumps({"source_note.md": "source_evidence"}) + "\n", encoding="utf-8")
+    (raw / "source_note.md").write_text("---\nsource_type: source_evidence\n---\n\nSame body.\n", encoding="utf-8")
+    intake = project_root / "demo_intake.json"
+    intake.write_text(json.dumps({"project": "demo", "bounded_claim": "demo"}), encoding="utf-8")
+
+    monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
+
+    with pytest.raises(ValueError, match="no changed fields"):
+        module.edit_source_payload(
+            project="demo",
+            relative_path="source_note.md",
+            source_type="source_evidence",
+            body="Same body.",
+        )
+
+    assert not (workspace / "forensic_workbench_source_edits.jsonl").exists()
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

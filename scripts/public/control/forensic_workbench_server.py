@@ -1147,6 +1147,12 @@ def edit_source_payload(
         raise FileNotFoundError(f"raw source does not exist: {repo_rel(path)}")
     raw_dir = source_raw_dir(project)
     relative_path = str(path.relative_to(raw_dir))
+    before_text = path.read_text(encoding="utf-8")
+    existing_type_map = read_source_type_map(raw_dir)
+    fallback_type = str(existing_type_map.get(relative_path) or existing_type_map.get(path.name) or "untyped")
+    existing_source_type, existing_body = split_source_frontmatter(before_text, fallback_source_type=fallback_type)
+    if existing_source_type == source_type and existing_body == body:
+        raise ValueError("source edit has no changed fields")
     source_text = (
         "---\n"
         f"source_type: {source_type}\n"
@@ -1154,7 +1160,7 @@ def edit_source_payload(
         f"{body}\n"
     )
     path.write_text(source_text, encoding="utf-8")
-    source_type_map = read_source_type_map(raw_dir)
+    source_type_map = dict(existing_type_map)
     source_type_map[relative_path] = source_type
     write_source_type_map(raw_dir, source_type_map)
     sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()

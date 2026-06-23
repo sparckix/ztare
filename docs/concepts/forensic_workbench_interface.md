@@ -182,8 +182,9 @@ GET /api/source-file?project=<project>&relative=<relative_raw_path>
 -> read one bounded raw source file for editing, including source type and body
 
 POST /api/source-edit
--> update one existing raw source file, update source_type_map, append a
-   source-edit receipt, run source-check, and return refreshed state
+-> update one existing raw source file only when body or type changed, update
+   source_type_map, append a source-edit receipt, run source-check, and return
+   refreshed state
 
 GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 -> fresh single-project workbench snapshot bound to the selected intake
@@ -255,6 +256,8 @@ verified, and the exact command that rebuilds the audit.
 The source/evidence readiness panel should show source-index status, evidence
 binding, output binding, replay status, source/evidence files, and the commands
 that rebuild those checks.
+The raw-source editor should show pending body/type changes and refuse no-op
+saves, so source-edit receipts correspond to actual file or metadata changes.
 The report/export panel should show the blocker reasons, synthesis input-binding
 status, contract file path, and exact support command.
 The command cockpit should collect selected-row, trace, report, health, and row

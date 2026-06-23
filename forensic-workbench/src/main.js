@@ -843,6 +843,9 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
 function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, event, liveMode, onOpenSource, onSave, onReload, onPreview }) {
   const sources = (sourceList && sourceList.sources) || [];
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  const changedFields = sourceChangedFields(draft);
+  const hasLoadedSource = Boolean(draft && draft.original && draft.relative_raw_path);
+  const canSave = Boolean(liveMode && hasLoadedSource && changedFields.length && draft.body && draft.body.trim() && !editing);
   return h(
     "section",
     { className: "raw-source-manager", "aria-label": "Raw sources" },
@@ -928,6 +931,14 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
         h("label", { className: "raw-source-body" }, h("span", null, "Text"), h("textarea", { value: draft.body, onInput: (inputEvent) => setField("body", inputEvent.target.value), rows: 8, placeholder: "Open a source to edit it here." }))
       ),
       h(
+        "section",
+        { className: `raw-source-pending ${changedFields.length ? "changed" : ""}`, "aria-label": "Pending source write" },
+        h("span", null, "Pending write"),
+        h("strong", null, changedFields.length ? `${changedFields.length} changed field${changedFields.length === 1 ? "" : "s"}` : "No changes"),
+        h("p", null, changedFields.length ? changedFields.map(displayFieldName).join(", ") : "Open a source and edit body or type before writing a receipt."),
+        h("code", null, draft.relative_raw_path ? `target=${draft.relative_raw_path}` : "target=none")
+      ),
+      h(
         "div",
         { className: "raw-source-save" },
         h(
@@ -935,9 +946,9 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
           {
             type: "button",
             className: "snapshot-link",
-            disabled: !liveMode || editing || !draft.relative_raw_path || !draft.body.trim(),
+            disabled: !canSave,
             onClick: onSave,
-            title: liveMode ? "Save source file and write a receipt" : "Start the local API to edit a raw source"
+            title: canSave ? "Save source file and write a receipt" : "Open a source and make a change before saving"
           },
           editing ? "Saving" : "Save source"
         ),
@@ -991,6 +1002,22 @@ function intakeChangedFields(draft) {
 
 function displayFieldName(value) {
   return String(value || "").replace(/_text$/, "").replace(/_/g, " ");
+}
+
+function sourceDraftFields(draft) {
+  if (!draft) return {};
+  return {
+    relative_raw_path: draft.relative_raw_path || "",
+    source_type: draft.source_type || "",
+    body: draft.body || ""
+  };
+}
+
+function sourceChangedFields(draft) {
+  if (!draft || !draft.original) return [];
+  const current = sourceDraftFields(draft);
+  const original = sourceDraftFields(draft.original);
+  return Object.keys(current).filter((key) => current[key] !== original[key]);
 }
 
 function IntakeRefStatus({ draft, liveMode, onPreview }) {
@@ -3933,10 +3960,14 @@ function App() {
         })
       )
       .then((payload) => {
-        setSourceEditDraft({
+        const nextDraft = {
           relative_raw_path: payload.relative_raw_path || relativePath,
           source_type: payload.source_type || "untyped",
           body: payload.body || ""
+        };
+        setSourceEditDraft({
+          ...nextDraft,
+          original: { ...nextDraft }
         });
         setSourceEditMessage(`Opened ${payload.relative_raw_path || relativePath}.`);
       })
@@ -3977,11 +4008,12 @@ function App() {
         if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Source readiness", preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         setSourceEditEvent(payload);
-        setSourceEditDraft({
+        const nextDraft = {
           relative_raw_path: payload.relative_raw_path || sourceEditDraft.relative_raw_path,
           source_type: payload.source_type || sourceEditDraft.source_type,
           body: sourceEditDraft.body
-        });
+        };
+        setSourceEditDraft({ ...nextDraft, original: { ...sourceDraftFields(nextDraft) } });
         setSourceEditMessage(`Saved ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
         setWriteReceiptEvent({
           kind: "source_edit",

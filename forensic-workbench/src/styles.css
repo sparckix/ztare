@@ -814,6 +814,51 @@ code {
   border-left: 3px solid #4a6f88;
 }
 
+.raw-source-pending {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 9px;
+  background: #f3f5f4;
+  border: 1px solid #d7dfdc;
+}
+
+.raw-source-pending.changed {
+  border-color: #c58a47;
+  background: #fff8ef;
+}
+
+.raw-source-pending span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.raw-source-pending strong,
+.raw-source-pending p,
+.raw-source-pending code {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.raw-source-pending strong {
+  color: #17201d;
+  font-size: 13px;
+}
+
+.raw-source-pending p {
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.raw-source-pending code {
+  color: #3a4b45;
+  font-size: 11px;
+}
+
 .intake-editor {
   min-width: 0;
   display: grid;

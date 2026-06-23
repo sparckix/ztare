@@ -62,9 +62,11 @@ file under the selected project's `raw/` directory, updates
 source-import receipt JSON, and runs the offline source check.
 The raw-source panel calls `/api/sources` to load the typed source list,
 `/api/source-file` to open one existing source, and `/api/source-edit` to write
-the edited source body/type back to disk. A source edit updates
-`raw/source_type_map.json`, appends a source-edit receipt, writes the latest
-source-edit receipt JSON, reruns source-check, and refreshes the case.
+the edited source body/type back to disk. The panel shows pending source
+changes and refuses no-op saves, so a source-edit receipt means the file or type
+actually changed. A source edit updates `raw/source_type_map.json`, appends a
+source-edit receipt, writes the latest source-edit receipt JSON, reruns
+source-check, and refreshes the case.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -187,7 +189,8 @@ The interface is organized as a local claim-review surface:
 - source/evidence readiness panel showing source index, evidence binding, output
   binding, replay state, backing files, and copyable commands
 - raw-source panel for loading an existing source, editing its text/type, saving
-  the file through the API, and recording a source-edit receipt
+  the file through the API, showing pending changes, and recording a
+  source-edit receipt only when the file or type changed
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review
