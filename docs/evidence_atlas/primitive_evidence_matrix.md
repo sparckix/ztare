@@ -8,7 +8,7 @@ description: "Evidence matrix for ZTARE agentic engineering patterns, anti-patte
 This matrix separates three things that are easy to conflate:
 
 - a construct being named in a catalog;
-- a construct being implemented or wired into the apparatus;
+- a construct being implemented or wired into the workbench;
 - a construct having evidence that it changed outcomes.
 
 ## Reflexive Primitives Registry
@@ -33,7 +33,7 @@ still conceptual or partially mechanized.
 | Token-Optimized Self-Modeling | Implemented pattern family; machine registry via RP-001 sibling map | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-1-token-optimized-self-modeling), [agentic pattern 9](../concepts/agentic_engineering_patterns.md#pattern-9-token-optimized-self-modeling) |
 | Inception / environment model | Documented, partially instantiated through architecture maps and gates | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-2-inception-machine-readable-environment-model) |
 | Hybrid Persona Router | Documented, evidence depends on specific review loops | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-3-hybrid-persona-router-cache-route-generate-promote) |
-| Residual Isomorphism | Documented, historically linked to grammar expansion and farther-tail residuals | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-4-residual-isomorphism-solving-for-the-shape-of-ignorance) |
+| Residual-to-Primitive Discovery | Documented, historically linked to grammar expansion, primitive amnesia, and action contracts | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-4-residual-to-primitive-discovery) |
 | Reflexive Orchestration | Conceptual in the public doc | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-5-reflexive-orchestration-orchestration-isomorphism) |
 | Procedural Self-Audit | Implemented discipline validator surface | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-6-procedural-self-audit-discipline-isomorphism) |
 | Operator-Replay Mechanization | Implemented in orchestration modules, evidence depends on recovered discriminator queues | [reflexive engineering](../concepts/reflexive_engineering.md#primitive-7-operator-replay-mechanization) |
@@ -91,4 +91,3 @@ stratification:
 
 That distribution is normal for a research repo of this size, but it should be
 visible in public claims.
-

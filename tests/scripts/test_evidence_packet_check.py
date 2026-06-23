@@ -88,6 +88,74 @@ def test_claim_card_checker_rejects_missing_fields_and_bad_evidence_level(tmp_pa
     assert "Evidence level value" in row["missing_fields"]
 
 
+def test_claim_card_checker_rejects_numbering_gaps(tmp_path, monkeypatch):
+    module = _load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    linked = tmp_path / "source.md"
+    linked.write_text("# Source\n", encoding="utf-8")
+    cards = tmp_path / "claim_cards.md"
+    cards.write_text(
+        """# Claim Cards
+
+## Card 2: Demo
+
+**Claim.** A scoped claim.
+
+**Evidence level.** L3 as claim-governance evidence.
+
+**Primary sources.**
+
+- [Source](source.md)
+
+**Runnable anchor.**
+
+```bash
+echo ok
+```
+
+**Non-claims.** Not externally replicated.
+
+**Next falsifier.** Add a controlled comparison.
+""",
+        encoding="utf-8",
+    )
+
+    report = module._check_claim_cards(cards)
+
+    assert report["ok"] is False
+    assert report["sequence_ok"] is False
+    assert report["actual_sequence"] == [2]
+    assert report["expected_sequence"] == [1]
+
+
+def test_packet_readme_checker_rejects_stale_packet_list(tmp_path, monkeypatch):
+    module = _load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    packet_dir = tmp_path / "docs" / "evidence_atlas" / "packets"
+    packet_dir.mkdir(parents=True)
+    packet_a = packet_dir / "a.md"
+    packet_b = packet_dir / "b.md"
+    packet_a.write_text("# A\n", encoding="utf-8")
+    packet_b.write_text("# B\n", encoding="utf-8")
+    readme = packet_dir / "README.md"
+    readme.write_text(
+        """# Evidence Packets
+
+## Packets
+
+- [A](a.md)
+""",
+        encoding="utf-8",
+    )
+
+    report = module._check_packet_readme([packet_a, packet_b], readme)
+
+    assert report["ok"] is False
+    assert report["missing_packets"] == ["b.md"]
+    assert report["extra_packets"] == []
+    assert report["duplicate_packets"] == []
+
+
 def test_packet_checker_rejects_missing_evidence_level_value(tmp_path, monkeypatch):
     module = _load_module()
     monkeypatch.setattr(module, "REPO", tmp_path)

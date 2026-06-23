@@ -25,6 +25,17 @@ FALSE_EXACT_MATCHES = {
     "unpaid",
 }
 
+FALSE_PREFIX_MATCHES = (
+    "absent:",
+    "missing:",
+    "not provided:",
+    "not supplied:",
+    "owed:",
+    "todo:",
+    "unknown:",
+    "unpaid:",
+)
+
 PROOF_BEARING_FIELD_TOKENS = (
     "bound",
     "card",
@@ -53,7 +64,11 @@ NON_CLAIM_PHRASES = (
 
 def is_present(value: Any) -> bool:
     if isinstance(value, str):
-        return value.strip().lower() not in FALSE_EXACT_MATCHES
+        lowered = " ".join(value.strip().lower().split())
+        return (
+            lowered not in FALSE_EXACT_MATCHES
+            and not lowered.startswith(FALSE_PREFIX_MATCHES)
+        )
     return value not in (None, "", [], {}, False)
 
 
@@ -79,7 +94,19 @@ def is_semantically_present(value: Any, *, field: str = "") -> bool:
 
 def self_test() -> None:
     assert not is_semantically_present("missing", field="injective_on_domain")
+    assert not is_semantically_present(
+        "missing: no injection map supplied",
+        field="injective_on_domain",
+    )
+    assert not is_semantically_present(
+        "not supplied: overlap proof owed",
+        field="no_rebilling_same_atom",
+    )
     assert is_semantically_present("missing lemma", field="artifact_note")
+    assert is_semantically_present(
+        "not a scalar threshold proxy",
+        field="no_proxy_family",
+    )
     assert not is_semantically_present(
         "no injectivity is claimed; multiplicity is explicit",
         field="injective_on_domain",
@@ -92,4 +119,3 @@ def self_test() -> None:
         "Finset.card_image_of_injective h",
         field="card_image_eq_domain_card",
     )
-

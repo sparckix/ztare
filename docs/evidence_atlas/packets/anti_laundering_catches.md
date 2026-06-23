@@ -1,9 +1,9 @@
 ---
-description: "Evidence packet: the governance kernel rejecting compiling-but-laundered closures produced by its own agents, with ledger receipts and a runnable check."
+description: "Review packet: the governance kernel rejecting compiling-but-laundered closures produced by its own agents, with ledger receipts and a runnable check."
 ---
 # Anti-Laundering Catches Packet
 
-> **Up:** [Evidence Packets](README.md)
+> **Up:** [Review Packets](README.md)
 
 ## Scoped Claim
 
@@ -13,7 +13,7 @@ Each rejection is recorded in the append-only closure-certificate ledger with th
 probe context, and the rejected attempt earns no credit anywhere downstream (no ratification, no proof
 cache entry, no rung in the notes). The claim is narrow: the gates catch this laundering class when it
 occurs; it is not a claim of completeness over all laundering classes (the
-[specification-gaming catalog](../../cheating_catalog.md) tracks the known classes and their gates).
+[specification-gaming catalog](../../gaming_behavior_catalog.md) tracks the known classes and their gates).
 
 ## Evidence Level
 

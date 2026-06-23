@@ -32,7 +32,7 @@ This page says which layer owns which fact.
 
 ## Current Status
 
-As of 2026-06-07, the live registry has 17 rows: 17 `gated`, 0 `open`.
+As of 2026-06-20, the live registry has 18 rows: 18 `gated`, 0 `open`.
 
 Open rows:
 
@@ -42,7 +42,7 @@ Intermediate notes such as "11 vectors, 8 gated, 3 open" or "9 gated, 8 open" ar
 
 ## Literature Positioning
 
-Do not present the 17 live rows as a complete taxonomy of reward hacking. The
+Do not present the 18 live rows as a complete taxonomy of reward hacking. The
 claim is narrower:
 
 ```text
@@ -54,7 +54,7 @@ public literature: broader reward-hacking / specification-gaming family
 The broad phenomenon is already public: objective misspecification, reward hacking, specification gaming,
 Goodhart pressure, and reward-model overoptimization. The ZTARE contribution is operational and empirical:
 rows are tied to concrete incidents, reproductions, promotion receipts, or runtime gates. Some rows are
-plain variants of known families; some formal-substrate rows, especially Lean proof-context vectors, are
+plain variants of known families; some formal-proof rows, especially Lean proof-context vectors, are
 more specific than the public taxonomies usually name.
 
 Relevant public anchors:
@@ -74,12 +74,29 @@ Use this wording publicly:
 > rows extend the operational registry and are grouped by enforcement surface rather than claimed as
 > mutually exclusive theoretical kinds.
 
+## Name Policy And Invariant Axis
+
+The public catalog name is the human-readable row name used in docs, papers, and
+navigation. The invariant axis is the audit handle: the property that the row
+violates and therefore the property the gate must test. Historical names from
+older artifacts are aliases only; do not use them as the current taxonomy. The
+public catalog must keep an explicit historical-alias column so older evidence
+packets remain findable without promoting the old labels back into the naming
+scheme.
+
+Use the nearest literature family as a grounding aid, not as an equivalence
+claim. For example, Tolerance Laundering is a test-harness gaming / numerical
+tolerance case, Fake Learning Curve overlaps with leakage and visible-test
+overfitting, Tuned-Constant Laundering overlaps with target leakage and overfit
+calibration, and Strawman Comparator overlaps with weak-baseline bias.
+
 ## What To Open
 
 | Question | Open this |
 |---|---|
 | What is the current status of a vector? | `analytics/public/queries/gaming_vector_catalog.jsonl` |
-| What does the behavior mean in plain English? | `docs/cheating_catalog.md` |
+| What does the behavior mean in plain English? | `docs/gaming_behavior_catalog.md` |
+| Do the catalog, map, registry, declared promotion evidence, and executable anchors agree? | Run `make gaming-catalog-audit` |
 | Where is the gate actually enforced? | `src/ztare/gates/`, `src/ztare/validator/*`, `src/ztare/leanmill/solver/*` |
 | How did a vector get promoted? | `analytics/public/queries/gaming_vector_promotion_evidence/*.json` |
 | What was the old V4 hardening-board state? | `projects/epistemic_engine_v4/meta_runner_state.json`, `projects/epistemic_engine_v4/README.md` |
@@ -105,11 +122,12 @@ Precedence when files disagree:
 
 ## Current Coverage Snapshot
 
-This checkout currently has 17 registry rows: 11 autoresearch rows and 6 LeanMill/proof-kernel rows. All 17 are marked `gated`, so the generated gaming-vector hardening board has an empty queue. Verify that instead of trusting this prose:
+This checkout currently has 18 registry rows: 12 autoresearch rows and 6 LeanMill/proof-kernel rows. All 18 are marked `gated`, so the generated gaming-vector hardening board has an empty queue. `make gaming-catalog-audit` also checks the current executable anchor set: five autoresearch fixtures must trigger their detector and hard-fail through the declared runtime gate, while a benign control must pass. Verify that instead of trusting this prose:
 
 ```bash
 make gaming-vector-hardening-check-plan
 make gaming-vector-hardening-show
+make gaming-catalog-audit
 ```
 
 If either command reports drift, refresh the materialized queue with:
@@ -118,17 +136,17 @@ If either command reports drift, refresh the materialized queue with:
 make gaming-vector-hardening-sync-plan
 ```
 
-Do not edit the materialized board to change status. The registry row plus promotion evidence owns status; the board is only the operator-facing queue for still-open rows.
+Do not edit the materialized board to change status. The registry row plus promotion evidence owns status; the board is only the reviewer-facing queue for still-open rows.
 
 ## Layer Ownership
 
 | Layer | Purpose | Canonical files |
 |---|---|---|
-| Public incident catalog | Explains named behaviors and audit patterns. | `docs/cheating_catalog.md` |
+| Public incident catalog | Explains named behaviors and audit patterns. | `docs/gaming_behavior_catalog.md` |
 | Live vector registry | One row per vector; owns `open` / `gated` / `wontfix`. | `analytics/public/queries/gaming_vector_catalog.jsonl` |
 | Discovery modes | Standard (`factory`) mode is tight evaluation; honeypot/bounty is red-team search for missed vectors. | `research_areas/seams/gaming/GP-058_bug_bounty_factory_integration_seam.md`, `rubrics/honeypot_minimal.json`, `docs/reference/make_targets.md` |
 | Mining/checkpoint | Finds candidate vectors and avoids re-mining unchanged artifacts. | `src/ztare/common/kernel_hardener.py`, `analytics/public/queries/gaming_mine_manifest.jsonl` |
-| Substrate miners | Convert artifacts into candidate `GamingVector`s. | `src/ztare/validator/autoresearch_hardener.py`, `src/ztare/leanmill/solver/leanmill_hardener.py`, `src/ztare/validator/sandbox_gaming_extractor.py` |
+| Surface miners | Convert artifacts into candidate `GamingVector`s. | `src/ztare/validator/autoresearch_hardener.py`, `src/ztare/leanmill/solver/leanmill_hardener.py`, `src/ztare/validator/sandbox_gaming_extractor.py` |
 | Promotion governance | Validates that a fix blocks a named vector before registry status changes. The default board queue is a generated view of registry-open autoresearch rows. | `src/ztare/validator/gaming_vector_meta_runner.py`, promotion evidence JSON |
 | Historical hardening board | Governed staged V4 evaluator-hardening projects. | `src/ztare/validator/v4_meta_runner.py`, `projects/epistemic_engine_v4/*benchmark_evidence.json` |
 | Runtime enforcement | Gates that affect future autoresearch / leanmill runs. | `src/ztare/gates/global_gates.py`, `src/ztare/gates/autoresearch_gaming_gates.py`, `src/ztare/gates/semantic_gaming_carrier.py`, leanmill organs |
@@ -138,12 +156,12 @@ Do not edit the materialized board to change status. The registry row plus promo
 
 | File or surface | Input | Output | Owner role |
 |---|---|---|---|
-| `docs/cheating_catalog.md` | Stable, human-readable behavior classes and public audit patterns | Explanations, examples, and citations | Public explanation only; no live status authority |
-| `analytics/public/queries/gaming_vector_catalog.jsonl` | Accepted mined vectors | One row per vector with status, lineage, substrate, current gate/proposed action | Live status authority |
+| `docs/gaming_behavior_catalog.md` | Stable, human-readable behavior classes and public audit patterns | Explanations, examples, and citations | Public explanation only; no live status authority |
+| `analytics/public/queries/gaming_vector_catalog.jsonl` | Accepted mined vectors | One row per vector with status, lineage, project/domain surface, current gate/proposed action, and `evidence_tiers` | Live status authority |
 | `analytics/public/queries/gaming_vector_promotion_evidence/*.json` | Promotion receipt for one open vector | Evidence that the fix blocks the vector and passes controls | Status-change evidence |
 | `analytics/public/queries/gaming_vector_hardening_board/meta_runner_plan.json` | Generated from registry-open autoresearch rows | Operator queue for pending promotion contracts | Projection only |
 | `analytics/public/queries/gaming_mine_manifest.jsonl` | Artifact path, content hash, miner version | Incremental mining checkpoint | Mining cache; not status |
-| `src/ztare/common/kernel_hardener.py` | Substrate hardener implementation | Shared mine-record-reproduce-promote contract | Cross-substrate interface |
+| `src/ztare/common/kernel_hardener.py` | Shared hardener implementation | Shared mine-record-reproduce-promote contract | Cross-surface interface |
 | `src/ztare/validator/autoresearch_hardener.py` | Debate logs, code fixtures, project artifacts | Autoresearch `GamingVector` candidates | Autoresearch miner |
 | `src/ztare/gates/autoresearch_gaming_gates.py` | `test_model.py` AST/source | Deterministic global-gate results for syntactic vectors | Autoresearch runtime enforcement |
 | `src/ztare/gates/semantic_gaming_carrier.py` | Thesis/evidence/test-model text | Deterministic carrier selection for semantic review | Autoresearch runtime enforcement |
@@ -152,14 +170,14 @@ Do not edit the materialized board to change status. The registry row plus promo
 ## SOP
 
 1. **Discover a candidate vector.** Source may be honeypot/bounty output, sandbox debate logs, closure certificates, or a targeted audit. If it is only an idea, keep it out of the live registry until there is an exposing artifact or accepted review record.
-2. **Mine or record the candidate.** Use the substrate hardener (`AutoresearchHardener` for autoresearch, the LeanMill hardener for proof-context vectors) so the row has a `GamingVector` shape. Mining may be neural, lexical, or manual-review assisted; the promoted gate must still be deterministic or receipt-backed.
-3. **Add or update the registry row.** The row in `gaming_vector_catalog.jsonl` owns `status`, `already_gated_by`, `proposed_gate`, `substrate`, and lineage fields. Do not encode live status in the public catalog prose.
+2. **Mine or record the candidate.** Use the appropriate hardener (`AutoresearchHardener` for autoresearch, the LeanMill hardener for proof-context vectors) so the row has a `GamingVector` shape. Mining may be neural, lexical, or manual-review assisted; the promoted gate must still be deterministic or receipt-backed.
+3. **Add or update the registry row.** The row in `gaming_vector_catalog.jsonl` owns `status`, `already_gated_by`, `proposed_gate`, `substrate`, `evidence_tiers`, and lineage fields. Do not encode live status in the public catalog prose.
 4. **Refresh/check the promotion queue.** Run `make gaming-vector-hardening-sync-plan` after adding open autoresearch rows, then `make gaming-vector-hardening-check-plan`. The board should be treated as generated output over open rows.
 5. **Implement enforcement.** Add the narrow deterministic gate, config fix, or semantic carrier. Runtime opt-outs must be auditable: a disable flag needs a non-empty reason and must leave a visible gate payload.
 6. **Write promotion evidence.** Add `gaming_vector_promotion_evidence/<vector>.json` with exposing artifacts, hashes, runtime-enforcement fields, regression controls, scoped vector-only claim, test result, and promotion recommendation.
 7. **Run the promotion contract.** Use `make gaming-vector-hardening-run-vector VECTOR=<name> [SUBSTRATE=autoresearch]`. A PASS permits an explicit registry status change; it does not edit the registry for you.
 8. **Verify the surfaces.** Run the targeted gate tests, `make gaming-vector-hardening-check-plan`, and docs checks if any public docs changed.
-9. **Update public explanation only when needed.** Add or edit `docs/cheating_catalog.md` only when the vector introduces a stable behavior class or public-facing explanation. Link back to this SOP for operational mechanics.
+9. **Update public explanation only when needed.** Add or edit `docs/gaming_behavior_catalog.md` only when the vector introduces a stable behavior class or public-facing explanation. Link back to this SOP for operational mechanics.
 
 ## Discovery Modes
 
@@ -246,7 +264,7 @@ candidate hardening thesis / test model
 
 That is the same governance discipline now used for vectors, but the unit changed from "V4 stage" to "one catalog row."
 
-The original nine public cheat patterns were also separate from the V4 board. They are field-documented numeric self-certification strategies and primitive precedents. [GP-086](../../research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md) mined recurring debate-log signals from that broader evidence base and promoted a smaller set into runtime enforcement. The older route was:
+The original nine public gaming behavior patterns were also separate from the V4 board. They are field-documented numeric self-certification strategies and primitive precedents. [GP-086](../../research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md) mined recurring debate-log signals from that broader evidence base and promoted a smaller set into runtime enforcement. The older route was:
 
 ```text
 catalog incidents
@@ -272,7 +290,7 @@ Current mechanism classes:
 |---|---|
 | Proof-context integrity | `proof_instance_shadowing`, `decidable_fintype_instance_shadow`, `subsingleton_proofirrel_collapse`, `abbrev_def_shadows_mathlib_name`, `added_axiom_dependence`, `open_scoped_instance_hijack` |
 | Declared-complexity/accounting | `structural_param_smuggle_body`, `parsimony_violation`, `uniqueness_gap`, `extrapolation_gap` |
-| Evidence/provenance | `fabricated_calibration_set_threshold_laundering`, `assumption_as_evidence_relabeling`, `audit_partition_seed_fingerprint` |
+| Evidence/provenance | `fabricated_calibration_set_threshold_laundering`, `assumption_as_evidence_relabeling`, `audit_partition_seed_fingerprint`, `receipt_replay_absence_static_asserts` |
 | Metric/test self-confirmation | `definitional_tautology_self_confirming_metric` |
 | Scope/transfer | `scope_overclaim_local_to_systemic`, `abstraction_stripping_invariance_laundering` |
 | Rigor allocation | `selective_rigor_displacement` |
@@ -281,10 +299,10 @@ Known overlaps:
 
 - Lean `category_type_smuggle` and `semantic_degeneracy` both sit under proof-context integrity.
 - `scope_overclaim_local_to_systemic` and `abstraction_stripping_invariance_laundering` both sit under scope/transfer.
-- `fabricated_calibration_set_threshold_laundering` is related to the original Gravity Constant cheat, but the constant is laundered through a calibration procedure.
+- `fabricated_calibration_set_threshold_laundering` is related to the original Tuned-Constant Laundering pattern, but the constant is laundered through a calibration procedure.
 - `audit_partition_seed_fingerprint` is a config/process vulnerability, not a Cage gate; it is closed by per-run audit-partition salting.
 
-Implication: do not count the 17 rows as 17 mutually exclusive scientific kinds. Count them as 17 registry
+Implication: do not count the 18 rows as 18 mutually exclusive scientific kinds. Count them as 18 registry
 rows with lineage and enforcement status.
 
 ## Current Next Step

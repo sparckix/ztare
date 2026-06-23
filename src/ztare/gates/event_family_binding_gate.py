@@ -9,6 +9,11 @@ from __future__ import annotations
 
 from typing import Any
 
+try:  # pragma: no cover - fallback keeps direct script execution usable
+    from ztare.gates.required_field_semantics import is_semantically_present
+except ModuleNotFoundError:  # pragma: no cover
+    from required_field_semantics import is_semantically_present
+
 
 GATE_ID = "G-EVENT-FAMILY-BINDING"
 
@@ -57,27 +62,7 @@ WEAK_SUBSTITUTES = (
 
 
 def _present(value: Any) -> bool:
-    if isinstance(value, str):
-        text = value.strip()
-        lowered = text.lower()
-        if not text:
-            return False
-        false_exact_matches = {
-            "missing",
-            "absent",
-            "unknown",
-            "todo",
-            "owed",
-            "unpaid",
-            "not supplied",
-            "not provided",
-            "none",
-            "null",
-            "false",
-            "0",
-        }
-        return lowered not in false_exact_matches
-    return value not in (None, "", [], {}, False)
+    return is_semantically_present(value)
 
 
 def run_event_family_binding_gate(
@@ -110,7 +95,10 @@ def run_event_family_binding_gate(
 
     relation_type = str(receipt.get("relation_type") or "identity").strip().lower().replace("-", "_")
     required_fields = RELATION_REQUIRED_FIELDS.get(relation_type, IDENTITY_REQUIRED_FIELDS)
-    missing = [field for field in required_fields if not _present(receipt.get(field))]
+    missing = [
+        field for field in required_fields
+        if not is_semantically_present(receipt.get(field), field=field)
+    ]
     if relation_type not in RELATION_REQUIRED_FIELDS:
         violations.append({
             "type": "event_family_binding_unknown_relation_type",

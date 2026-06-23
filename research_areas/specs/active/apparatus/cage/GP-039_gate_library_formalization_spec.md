@@ -19,7 +19,7 @@ Does not cover:
 
 ## Decision
 
-Build a private two-layer inventory at `research_areas/private/gate_library/`. Layer 1 catalogs executable controls grouped by enforcement surface. Layer 2 catalogs failure-family precedents that motivated each control. The two layers are explicitly cross-linked. This is the compounding asset GP-032 identifies as the moat — the controls are the GAAP analog, the precedents are the case-law analog.
+Build a private two-layer inventory at the maintainer-only gate-library workspace. Layer 1 catalogs executable controls grouped by enforcement surface. Layer 2 catalogs failure-family precedents that motivated each control. The two layers are explicitly cross-linked. This is the compounding asset GP-032 identifies as the moat — the controls are the GAAP analog, the precedents are the case-law analog.
 
 ## Problem
 
@@ -43,7 +43,7 @@ There is no single artifact that lists what gates exist, what each one checks, w
 From converged seam debate (GP-039 Turns 1-3):
 
 1. **Two layers, not a flat list.** Deterministic charter gates, score caps, runner guards, promotion guards, and prompt-level contracts are related but not commensurable. A flat JSON list that pretends they are one object hides the actual architecture. The right structure is: controls catalog + precedent catalog, linked.
-2. **Private first.** A catalog that no runtime code reads has no business in `src/ztare/`. First slice lives in `research_areas/private/gate_library/`. Move to `src/` only if/when runtime code needs to consume it.
+2. **Private first.** A catalog that no runtime code reads has no business in `src/ztare/`. First slice lives in the maintainer-only gate-library workspace. Move to `src/` only if/when runtime code needs to consume it.
 3. **Inventory what exists, not what we wish existed.** Every control entry must point to an existing enforcement surface, file, or code path. Every precedent entry must point to a real incident, seam, or postmortem. If the first slice drifts into aspirational controls, it stops being audit infrastructure and becomes strategy documentation.
 4. **Do not wait on GP-037.** GP-037 may add entries but does not change the need for the catalog.
 
@@ -74,7 +74,7 @@ Rejected (Codex Turn 1).
 
 **Description**
 
-Two linked markdown files in `research_areas/private/gate_library/`:
+Two linked markdown files in the maintainer-only gate-library workspace:
 - `control_catalog.md` — executable controls grouped by enforcement surface
 - `precedent_catalog.md` — failure families and case law linked to controls
 
@@ -123,7 +123,7 @@ Option B. Private two-layer markdown inventory.
 ### File structure
 
 ```
-research_areas/private/gate_library/
+maintainer-only gate-library workspace/
   control_catalog.md
   precedent_catalog.md
 ```
@@ -179,7 +179,7 @@ Enforcement surface: prompt templates in `autoresearch_loop.py`
 - **Controls motivated:** quarantine_laundering_cap
 - **Evidence:** [link to seam, debate log, or postmortem]
 
-### Float Masking (Paper 1)
+### Tolerance Laundering (Paper 1)
 - **What:** Apply round() before assertion to destroy precision difference
 - **First observed:** recursive_bayesian_claude_gemini run
 - **Controls motivated:** deterministic_score_gates (GP-030)
@@ -254,8 +254,8 @@ The core design is still right. But the spec is not yet honest enough on provena
 
 Slice 1 is now implemented as a private documentary inventory:
 
-- [control_catalog.md](/research_areas/private/gate_library/control_catalog.md)
-- [precedent_catalog.md](/research_areas/private/gate_library/precedent_catalog.md)
+- control catalog
+- precedent catalog
 
 The implementation follows the seam constraints:
 

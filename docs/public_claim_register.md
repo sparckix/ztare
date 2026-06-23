@@ -4,7 +4,7 @@ description: "Public claim register for the ZTARE campaigns: what survived, what
 
 # Public Claim Register
 
-Last refreshed: 2026-06-19
+Last refreshed: 2026-06-22
 
 This is the public claim register for the ZTARE campaigns:
 Navier-Stokes, consciousness-ascription governance, modified gravity, neural
@@ -37,12 +37,26 @@ positive results. That is the scope of the public claim, no wider.
 The repository should not claim that Navier-Stokes is solved, consciousness is
 solved, modified gravity or dark matter is adjudicated, neural scaling laws are
 universal, the current meta-architecture has been independently replicated, or
-a non-expert principal plus LLMs replaces domain experts.
+a maintainer plus LLMs replaces domain experts.
 
 Public evidence also means intentionally public evidence. Many live project
-surfaces are private or ignored working areas. Those may guide the operator,
+surfaces are private or ignored working areas. Those may guide the maintainer,
 but they are not public support until their relevant source packet, claim,
 non-claim, and next falsifier are moved into a public document.
+
+## Current Release Slice
+
+The post-`v0.2.0` public release slice is the local claim-governance workbench
+path: first-run value, project intake, source/evidence readiness,
+autoresearch trace, report/export support contracts, action-intelligence and
+kernel-health read models, release-slice audit, public positioning, and the
+narrow forensic-workbench prototype.
+
+That slice is adoption and inspection work. It does not upgrade any campaign
+claim below. LeanMill proof-search work, forecasting-program findings, paper
+edits, proof-audit artifacts, HBR/roadshow work, and private writing-rubric
+work remain separate lanes unless a bounded public artifact explicitly
+promotes them.
 
 ## Confidence and Retest Discipline
 
@@ -84,10 +98,11 @@ The general posture: a single sealed run is real evidence, but it is the
 *weakest* defensible category, and the register should say so out loud
 rather than letting prose-volume substitute for replication.
 
-**Self-report epistemology caveat (2026-05-31).** The [GP-166](../research_areas/seams/mission/meta/GP-166_self_enacted_procedural_compliance_seam.md) noise-profile
-critic was turned inward on the apparatus's own metric series (the same critic
-that refuses to trust a substrate fit until it measures the residual's
-statistics). Two results the reader should hold: (1) the per-iteration
+**Self-report epistemology caveat (2026-05-31).** The self-report
+noise-profile critic ([GP-166](../research_areas/seams/mission/meta/GP-166_self_enacted_procedural_compliance_seam.md))
+was turned inward on the apparatus's own metric series (the same critic that
+refuses to trust a substrate fit until it measures the residual's statistics).
+Two results the reader should hold: (1) the per-iteration
 champion-score series (n=2000) is **non-i.i.d. — autocorrelated and
 non-Gaussian** — so any aggregate "the score improved" statement inherits
 momentum/drift and is not a sequence of independent samples; treat score
@@ -640,7 +655,7 @@ surface.
 (charter-committed gate battery, sealed farther-tail holdout, exact-fitter
 audit, post-identifiability reparameterization, hardening seam R1–R6), a
 general-purpose LLM mutator converged from a naive monotonic power-law seed
-onto an operator-authored non-elementary transcendental ground-truth functional
+onto a maintainer-authored non-elementary transcendental ground-truth functional
 form
 
   `I(φ, ψ) = A · φᵖ / (exp((γ·φ/ψ)^q) − 1) + offset`
@@ -657,17 +672,17 @@ regression-toolbox repertoire. The mutator was forced into it by the
 hidden-gate residual landscape under the apparatus.
 
 **Status.** Sealed sandbox calibration result. The honest category for this
-result is *vocabulary-escape recovery of an operator-committed non-elementary
+result is *vocabulary-escape recovery of a maintainer-committed non-elementary
 target under a sealed apparatus.*
 
 **What this is not.** Not a demonstration of open-ended scientific discovery.
-The ground-truth form and coefficients were authored by the operator before
+The ground-truth form and coefficients were authored by the maintainer before
 the mutator ran. The mutator fit a difficult curve-fitting target under
 extreme external constraint and recovered the exact hidden form; it did not
 derive a physical law from first principles against an unknown target.
 The result proves the cage is strong enough to force vocabulary escape *when
-the operator knows the answer*. It does not prove the cage is strong enough
-to force convergence on a correct form when the operator does not.
+the maintainer knows the answer*. It does not prove the cage is strong enough
+to force convergence on a correct form when the maintainer does not.
 
 **Retest tag.** *Successor-run partial demotion (axis-specific).* The frozen
 sandbox_06 result is the calibration baseline. Successor sandboxes on the
@@ -699,12 +714,12 @@ that vocabulary escape is a general property of the mutator; it is a
 property of *this* apparatus under sealed sandbox_06 conditions.
 
 **Next falsifier or source-design step.** Promote vocabulary-escape recovery
-from sandbox_06 (operator-authored target) to a blinded-oracle successor
-(unknown target, operator-oracle coupling removed). That experiment is the
-H-SP2-04 thread.
+from sandbox_06 (maintainer-authored target) to a blinded-oracle successor
+(unknown target, known-answer coupling removed). That experiment is the H-SP2-04
+thread.
 
-**Readiness.** Public as a calibration result with the explicit "operator
-knew the answer" caveat. Not ready as a discovery claim.
+**Readiness.** Public as a calibration result with the explicit "known answer"
+caveat. Not ready as a discovery claim.
 
 ## Polymer Stress-Relaxation Blind Fit
 
@@ -724,7 +739,7 @@ polystyrene ring polymer melt (molecular weight 198 kDa), reported as the
 blue curve in figure 1 of the source paper. The source paper's Eqn. 1 gives
 the *a priori theoretical expectation* (not a fit) for this regime, and the
 engine's blind three-parameter recovery is close to that theoretical
-expectation. The operator did not name the substrate or the source paper to
+expectation. The maintainer did not name the substrate or the source paper to
 the engine.
 
 **Status.** A blind recovery of a known physical form on a single dataset,
@@ -748,7 +763,7 @@ the discriminator-test framing:
 [`projects/gp096_sandbox_20/public/CLAIM_SUMMARY.md`](../projects/gp096_sandbox_20/public/CLAIM_SUMMARY.md).
 The working directory (`projects/gp096_sandbox_20/`) is private; the
 source paper is named in the project's narrative but is *not republished
-here* and is identified only via the operator's external comparison.
+here* and is identified only via the maintainer's external comparison.
 This work was developed in collaboration with an external scientist;
 attribution is held pending source-paper context being released alongside.
 
@@ -770,14 +785,14 @@ n=1 status. Not ready as a polymer-physics claim.
 These are sealed, per-substrate calibrations and curve-fit recoveries that
 support the campaign claims above. Each is *original-run only (n=1)* unless
 noted; together they document the apparatus's behavior across a range of
-operator-authored or literature-sourced targets. Project directories under
+maintainer-authored or literature-sourced targets. Project directories under
 `projects/gp*` and `projects/oeis_*` are private working areas; the public
 evidence is the per-project thesis and the champion-eval verdict.
 
 - **`gp023_crucial_01` — Wien-class structural discovery at low cost.**
   Score 97/100, sealed champion. A cheap-tier mutator under the validated
   cage identified the Wien exponential family for an
-  operator-authored Planck-adjacent target; total spend ~$1.01.
+  maintainer-authored Planck-adjacent target; total spend ~$1.01.
   *Retest tag: original-run only (n=1); farther-tail gate pending and
   expected to fail on the non-Wien asymptotic, per project notes.*
   The recorded finding is that the selection pressure came from the
@@ -833,12 +848,12 @@ evidence is the per-project thesis and the champion-eval verdict.
   Score 98 across all seven gates at machine precision (hidden global
   residual 10⁻⁶; farther-tail at 4× the visible t-range also at 10⁻⁶).
   Recovered form `a·exp(−b·t^c) + d` with `a = 2.810, b = 0.396,
-  c = 0.630, d = 0.470`; structural equivalence to the operator-authored
+  c = 0.630, d = 0.470`; structural equivalence to the maintainer-authored
   KWW ground truth confirmed (`b = 1/τ^β` match to 0.0002%). The score
   plateau at 98 corresponds to a Prony-series objection that is
   mathematically a correct unfalsifiable ceiling, not a gap.
   *Retest tag: original-run only (n=1) under cold variable names;
-  operator-authored ground truth so this is a calibration win.* Public
+  maintainer-authored ground truth so this is a calibration win.* Public
   summary:
   [`projects/gp096_kww_sandbox_17/public/CLAIM_SUMMARY.md`](../projects/gp096_kww_sandbox_17/public/CLAIM_SUMMARY.md).
 
@@ -996,7 +1011,7 @@ private; the summary records the claim, score, and retest tag).
   Summary:
   [`projects/gp161_mdl_anti_goodhart/public/CLAIM_SUMMARY.md`](../projects/gp161_mdl_anti_goodhart/public/CLAIM_SUMMARY.md).
 
-- **[GP-233](../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md) — research-yield decomposition with zero-false-ratify
+- **Research-yield decomposition ([GP-233](../research_areas/seams/apparatus/instrumentation/GP-233_research_yield_decomposition_seam.md)) — zero-false-ratify
   governance gate.** A seam contract decomposes scientific yield into
   named factors (candidate supply, eligibility rate,
   verification-compile rate, residual-or-closure rate, decision impact,
@@ -1088,15 +1103,15 @@ and are listed here so a reader who lands on this register sees them.
   designs: catalogue dumps, single-primitive prompts, route-then-solve
   prompts, and pairwise route-answer probes do not improve
   Humanity's-Last-Exam exact-answer performance, native route choice,
-  external operator transfer, or downstream execution. Placebo-
+  external scaffold transfer, or downstream execution. Placebo-
   structured routing absorbs much of the apparent benefit; generic
   "pause and structure" effects cannot be counted as primitive
   effects.
 
   *Surviving positives — three replicated findings, narrowly framed.*
-  (a) **Compact operator-card scaffolding on hard external source
+  (a) **Compact move-card scaffolding on hard external source
   packets.** Under no-hidden-gold pairwise judging, compact primitive
-  operator cards beat no-card free-text artifacts ~23-4 across 27
+  move cards beat no-card free-text artifacts ~23-4 across 27
   paired comparisons on hard external source packets, and beat
   shuffled-semantics placebo cards ~17-9. (b) **Typed
   evidence-carrier contracts as an artifact-transfer mechanism.** On
@@ -1120,9 +1135,9 @@ and are listed here so a reader who lands on this register sees them.
   *Operational implication.* The strongest current claim is *not*
   that primitives improve agent answers in general — that framing is
   too blunt. It is the narrower placement claim: primitive language
-  becomes an executable research operator when (1) the correct
-  operator is supplied (wrong operators *actively misroute* the
-  evidence path), and (2) the operator is rendered as a
+  becomes an executable research move when (1) the correct
+  move is supplied (wrong moves *actively misroute* the evidence path),
+  and (2) the move is rendered as a
   source-bound, action-constraint-carrying contract rather than as
   passive prose. Recognition / routing is the bottleneck — direct
   primitive-label classifiers and full-menu disambiguators do not
@@ -1257,14 +1272,14 @@ version. That re-validation is on the roadmap and is named.
 
 **Non-claims.** Does not prove the current NS-era meta-architecture has already
 been revalidated across all non-NS domains. Does not prove the apparatus
-replaces domain experts. Does not prove that a second principal or different
+replaces domain experts. Does not prove that a second reviewer or different
 apparatus stack would reproduce the same outputs.
 
 **Next falsifier or source-design step.** Re-run the current
 meta-architecture on at least one non-NS domain and require the same
 self-demotion, catch, forecast, and source-readiness discipline to hold.
 
-**Readiness.** Public as a thesis with explicit single-operator and
+**Readiness.** Public as a thesis with explicit single-maintainer and
 single-apparatus limitations.
 
 ## Forecast Calibration Program (LLM Forecasting Channels + Operationalization)
@@ -1314,7 +1329,7 @@ single-apparatus limitations.
 
 **Next falsifier or source-design step.**
 - F8/F10/F20 cross-family replication (Gemini / open-weights / reasoning-class) on contamination-clean external corpus.
-- F28/F30 replication under non-synthetic cost structures (operator-measured costs, not assumed regimes).
+- F28/F30 replication under non-synthetic cost structures (measured costs, not assumed regimes).
 - F12 natural-distribution Lean replication (v7.2 pilot built but not yet completed; current stratified-corpus result could collapse).
 - Independent second-lab submission to Forecast Calibration Benchmark (zero submissions to date; testbed claim depends on this).
 

@@ -19,7 +19,7 @@ reduce self-certifying evaluator failures on the benchmark families tested.
 
 - [Benchmark evidence](../../benchmarks/benchmark_evidence.md)
 - [Constraint-memory benchmark](../../benchmarks/constraint_memory/README.md)
-- [Cheating catalog](../cheating_catalog.md)
+- [Gaming behavior catalog](../gaming_behavior_catalog.md)
 - [Cognitive Camouflage paper](../../papers/cognitive-camouflage/draft.md)
 - [Adversarial Precedent Memory paper](../../papers/adversarial-precedent-memory/draft.md)
 
@@ -30,7 +30,7 @@ make benchmark-evidence
 make demo
 ```
 
-**Non-claims.** Not a global SOTA claim. Not evidence that ZTARE is the best
+**Non-claims.** Not a global best-system claim. Not evidence that ZTARE is the best
 general-purpose reasoning system. Not evidence that null-returning gates are
 sufficient for discovery.
 
@@ -38,7 +38,37 @@ sufficient for discovery.
 review, rubric-only review, deterministic gates, and gates-plus-precedent as
 separate conditions.
 
-## Card 2: Public Claim Register And Project Claim Summaries
+## Card 2: Gaming Catalog And Hardening Registry
+
+**Claim.** The public gaming behavior catalog separates the original 9
+benchmarked self-certification strategies from later live registry rows, and
+the live rows are tied to gate status plus promotion evidence where declared.
+
+**Evidence level.** L3-L4: paper-linked taxonomy for the original nine, with
+registry and promotion-contract evidence for later gated rows.
+
+**Primary sources.**
+
+- [Gaming catalog packet](packets/gaming_catalog.md)
+- [LLM Gaming Behavior Catalog](../gaming_behavior_catalog.md)
+- [Gaming Behavior Catalog Map](../concepts/gaming_behavior_catalog_map.md)
+- [Live vector registry](../../analytics/public/queries/gaming_vector_catalog.jsonl)
+- [Cognitive Camouflage paper](../../papers/cognitive-camouflage/draft.md)
+
+**Runnable anchor.**
+
+```bash
+make gaming-catalog-audit
+```
+
+**Non-claims.** Not a complete ontology. Not MECE. Not a benchmark or
+leaderboard. Not evidence that rows 10-17 are part of the original
+9-strategy paper taxonomy.
+
+**Next falsifier.** Add public minimal reproducers for every live vector, then
+test whether ordinary review misses entries that the declared gates catch.
+
+## Card 3: Public Claim Register And Project Claim Summaries
 
 **Claim.** The repository has a public claim register that separates claims,
 non-claims, evidence pointers, retest tags, and next falsifiers across
@@ -60,14 +90,14 @@ find projects -path '*/public/CLAIM_SUMMARY.md' | sort
 ```
 
 **Non-claims.** A linked claim summary is not external validation. Some
-project claims remain original-run-only, apparatus-internal, or explicitly
+project claims remain original-run-only, system-internal, or explicitly
 demoted.
 
 **Next falsifier.** Add machine-readable claim-card rows and a validator that
 fails when a public claim lacks evidence pointer, non-claim, status, and next
 falsifier fields.
 
-## Card 3: Agentic Engineering Patterns
+## Card 4: Agentic Engineering Patterns
 
 **Claim.** The repo has a portable pattern catalog for LLM-mediated pipelines:
 stub replay, pre-flight assertion batteries, canonical hashing, provenance
@@ -102,7 +132,7 @@ improves outcomes. Improvement claims require per-pattern evidence rows.
 failure, implementation artifact, validator or test, observed prevented
 failure, and demotion criterion.
 
-## Card 4: Reflexive Primitives
+## Card 5: Reflexive Primitives
 
 **Claim.** ZTARE has a small registry of self-referential primitives: the
 apparatus using its own infrastructure or epistemic rules to govern its own
@@ -132,9 +162,9 @@ causally useful. The registry itself marks falsifiers and demotion criteria.
 test whether CEC fields predict realized capability yield better than prior
 operator belief.
 
-## Card 5: Forecast Pool And Action Intelligence
+## Card 6: Forecast Pool And Action Intelligence
 
-**Claim.** The apparatus has a forecast-pool and action-intelligence layer for
+**Claim.** ZTARE has a forecast-pool and action-intelligence layer for
 sealed forecasts, scored outcomes, decision-use logging, calibration surfaces,
 and action-impact rows.
 
@@ -162,7 +192,7 @@ and routing evidence unless tied to objective outcomes and decision-use rows.
 contracts to estimate per-agent calibration and decision-use lift with
 confidence intervals.
 
-## Card 6: LeanMill Governance And Formal-Audit Discipline
+## Card 7: LeanMill Governance And Formal-Audit Discipline
 
 **Claim.** LeanMill is a station workflow and audit substrate for Lean proof
 work, with leak-tight benchmarking, matched negative controls, proof-governance
@@ -197,7 +227,7 @@ as the external-review anchors.
 **Next falsifier.** Submit or externally review at least one audit-clean proof
 artifact, and run a public calibration benchmark against named baselines.
 
-## Card 7: Navier-Stokes Residual Localization
+## Card 8: Navier-Stokes Residual Localization
 
 **Claim.** The NS campaign has produced proof infrastructure, residual
 localization, route demotions, and typed scaffolding that are public as an
@@ -226,7 +256,7 @@ construction. No claim that typed wrappers close analytic PDE obligations.
 **Next falsifier.** Route only through named residual frontiers with explicit
 target axiom, amnesia check, tool-depth loop, and formal/source receipts.
 
-## Card 8: [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) LLM Forecasting Calibration Program
+## Card 9: LLM Forecasting Calibration Program
 
 **Claim.** The forecasting program measured many forecasting-channel,
 herding, abstention, judge-loop, and bias-inheritance findings across a
@@ -238,7 +268,7 @@ second-lab-replicated.
 
 **Primary sources.**
 
-- [Public claim register, GP-245](../public_claim_register.md#gp-245-forecast-calibration-program-llm-forecasting-channels--operationalization)
+- [Public claim register, Forecast Calibration](../public_claim_register.md#forecast-calibration-program-llm-forecasting-channels--operationalization)
 - [Research log](../../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md)
 - [Forecast pool scorer](../../scripts/public/control/forecast/pool.py)
 - [Working paper draft](../../papers/llm-forecast-calibration-cross-corpus/draft.md)
@@ -259,7 +289,7 @@ author-selection leakage.
 **Next falsifier.** Second-lab submission or clean external corpus replication
 with model cutoffs strictly before resolution dates.
 
-## Card 9: Evaluation-Design Case Studies
+## Card 10: Evaluation-Design Case Studies
 
 **Claim.** The repo contains small, reproducible case studies showing common
 evaluation failures: rank-deficient bootstrap, evidence-grid
@@ -279,12 +309,12 @@ make demo
 ```
 
 **Non-claims.** These are not exhaustive failure modes and do not benchmark
-the current full apparatus.
+the current full workbench.
 
 **Next falsifier.** Add only case studies with one-minute reproducers and
 clear expected output.
 
-## Card 10: Cross-Substrate Methodology
+## Card 11: Cross-Domain Methodology
 
 **Claim.** Across campaigns, the integrative claim is not that ZTARE solved
 each domain, but that the same discipline repeatedly demoted overclaims,
@@ -294,8 +324,8 @@ preserved nulls, and surfaced next falsifiers.
 
 **Primary sources.**
 
-- [Cross-substrate methodology in the public claim register](../public_claim_register.md#cross-substrate-methodology)
-- [Multi-substrate validation](../multi_substrate_validation.md)
+- [Cross-domain methodology in the public claim register](../public_claim_register.md#cross-domain-methodology)
+- [Multi-domain validation](../multi_substrate_validation.md)
 - [Experiment track record](../../research_areas/EXPERIMENT_TRACK_RECORD.md)
 - [Public claim register](../public_claim_register.md)
 

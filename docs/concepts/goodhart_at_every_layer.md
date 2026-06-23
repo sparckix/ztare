@@ -28,12 +28,12 @@ of a verification stack:
 
 | Layer | What gets gamed | Who games it | Example |
 |-------|----------------|-------------|---------|
-| **Thesis** | The thesis optimizes a narrow proxy of the rubric | LLM mutator | Suite Omission, Straw Man Design (*Cognitive Camouflage* taxonomy) |
+| **Thesis** | The thesis optimizes a narrow proxy of the rubric | LLM mutator | Suite Omission, Strawman Comparator (*Cognitive Camouflage* taxonomy) |
 | **Judge** | The judge anchors on surface features instead of substance | LLM judge | High prose quality masking analytical gaps (seattle run) |
-| **Rubric** | The rubric drops charter requirements | Rubric designer (human or generator) | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md): seattle rubric had no counterfactual discipline gate, mutator scored 94 without one |
-| **Evidence** | The evidence grid is too narrow to discriminate structural classes | Grid designer | [GP-083](../../research_areas/seams/mission/treatise/GP-083_inference_type_boundary_seam.md): 97/100 on the wrong functional family because the grid didn't reach the regime where families disagree |
-| **Parameter** | The optimizer overfits a structural parameter to the training window | curve_fit (numerical) | [GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md): d=0.562 instead of d=0.5 because correction terms bias the L2 minimum |
-| **Apparatus** | The apparatus itself has blind spots in its search topology | Architecture | GP-088: grammar-guided symbolic regression could only compose additively, could not nest exp(sqrt(n)); stagnation counter stayed 0 for qualitative projects |
+| **Rubric** | The rubric drops charter requirements | Rubric designer (human or generator) | M-form alignment audit ([GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md)): seattle rubric had no counterfactual discipline gate, mutator scored 94 without one |
+| **Evidence** | The evidence grid is too narrow to discriminate structural classes | Grid designer | Inference-type boundary check ([GP-083](../../research_areas/seams/mission/treatise/GP-083_inference_type_boundary_seam.md)): 97/100 on the wrong functional family because the grid didn't reach the regime where families disagree |
+| **Parameter** | The optimizer overfits a structural parameter to the training window | curve_fit (numerical) | Ansatz-to-proof surface ([GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md)): d=0.562 instead of d=0.5 because correction terms bias the L2 minimum |
+| **Apparatus** | The apparatus itself has blind spots in its search topology | Architecture | Ansatz-to-proof surface ([GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md)): grammar-guided symbolic regression could only compose additively, could not nest exp(sqrt(n)); stagnation counter stayed 0 for qualitative projects |
 
 The pattern: each layer looks correct from the layer above it. The
 thesis passes the rubric. The rubric satisfies the charter. The charter
@@ -124,7 +124,7 @@ pivoting.
 **Receipts:** GP-088 calibration_a01 (topology). Seattle iteration
 telemetry (stagnation). Both fixed 2026-04-20.
 
-**Gate that caught it:** No gate caught it. The operator caught it by
+**Gate that caught it:** No gate caught it. A human reviewer caught it by
 reading the telemetry. This is the layer where the apparatus itself is
 the specification being gamed, and external human review is the only
 current detector. GP-105b (ex-post goal-orchestration scanner) is the
@@ -135,14 +135,14 @@ proposed structural fix.
 ## 3. What ZTARE has NOT caught
 
 - **ZTARE has not produced a scientific discovery unknown to the
-  operator at seal time.** All closed sandboxes are reproductions of
+  human reviewer at seal time.** All closed sandboxes are reproductions of
   known targets. The gap between "recovers a known target under
   discipline" and "discovers an unknown target" is the entire gap that
   would make the word "breakthrough" apply.
 
 - **The apparatus has never caught its own specification failure in
   real time.** Every specification-layer fix (GP-105, stagnation bug,
-  exponent grid) was diagnosed by the human operator reading logs
+  exponent grid) was diagnosed by a human reviewer reading logs
   after the fact. GP-105b proposes automated ex-post detection; it is
   unbuilt.
 
@@ -181,11 +181,11 @@ GP-105b proposes a structural fix: a cron-triggered scanner that reads
 completed-run telemetry, detects systematic patterns (stagnation stuck,
 pivot never fires, score oscillation), and generates Supervisor Goals
 for apparatus improvement. This closes the PDCA loop: the apparatus
-acts, the scanner checks, the supervisor plans, the operator
+acts, the scanner checks, the supervisor plans, the reviewer
 approves. Whether this actually works is an open question.
 
 The philosophical limit: the scanner cannot scan itself. Recursive
-self-improvement of the scanner requires operator intervention, by
+self-improvement of the scanner requires human intervention, by
 design (constraint 5 in the GP-105b seam: no recursive depth > 1).
 Somewhere in the stack, a human must be the final verifier. *Epistemic Verification*
 calls this the Peircean Residual: the claim that one verification step
@@ -197,12 +197,12 @@ stays human.
 
 Three thresholds, in escalating order:
 
-1. **Novel reproduction under discipline.** An independent operator
+1. **Novel reproduction under discipline.** An independent reviewer
    reproduces a closed sandbox outcome on a fresh charter fingerprint
-   without operator-side tuning, on a target whose form the operator
+   without maintainer-side tuning, on a target whose form the reviewer
    did not know at seal time. Currently unmet.
 
-2. **Novel discovery on a pre-registered unknown.** The operator seals
+2. **Novel discovery on a pre-registered unknown.** The reviewer seals
    a pre-registration describing an unknown physical relationship, runs
    ZTARE, and the apparatus surfaces a functional form that independent
    review agrees is novel and correct. Partially met: sandbox_20
@@ -232,8 +232,8 @@ Useful. Important, maybe. A breakthrough, not yet.
 - `papers/paper5/draft.md`, the principles (all-layer Goodhart theory)
 - `docs/concepts/evaluation_failure_cases.md`, evidence-layer lesson
 - `research_areas/EXPERIMENT_TRACK_RECORD.md`, receipts for every claim
-- `GP-105 (internal seam)`, rubric-layer Goodhart
-- `docs/internal/architectural_maps/information_yield_architectural_map.md`, apparatus-layer: signal flow and bug history
-- `AGENTS.md`, standing operator discipline
+- `GP-105`, rubric-layer Goodhart
+- information-yield architecture map, apparatus-layer signal flow and bug history
+- `AGENTS.md`, standing reviewer discipline
 
 *, Daniel, 2026-04-20. Rewritten from is_this_a_breakthrough.md (2026-04-15).*

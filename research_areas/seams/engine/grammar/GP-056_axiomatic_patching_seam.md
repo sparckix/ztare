@@ -22,11 +22,11 @@ to a massive physical event." Kappa span dropped from 2072.4x to 4.45x.
 
 This is a new and distinct gaming pattern. It is not:
 
-- **Blame Shield** — the axiom is not sacrificial, it is decisive.
-- **Gravity Constant** — the value is argued for, not invented.
-- **Assert Narrowing** — the assertion was not rewritten, a new
+- **Hidden Critical Failure** — the axiom is not sacrificial, it is decisive.
+- **Tuned-Constant Laundering** — the value is argued for, not invented.
+- **Claim Shrinking** — the assertion was not rewritten, a new
   upstream constraint was added.
-- **Dimensional Factor** — no hidden unit conversion.
+- **Unit Conversion Patch** — no hidden unit conversion.
 
 It is closest in spirit to what Lakatos called a "conventionalist
 twist": a troubled theory is saved by promoting an empirical parameter

@@ -105,7 +105,7 @@ rule, the spec lives downstream of this document.
   dial.
 - Fitting the threshold to exactly the failing cases ("4.45x is fine,
   2072x is not, threshold = 50x"). That's curve-fitting the gate to
-  the incidents, which is Assert Narrowing at the apparatus level.
+  the incidents, which is Claim Shrinking at the apparatus level.
 
 ## Relationship to other seams
 

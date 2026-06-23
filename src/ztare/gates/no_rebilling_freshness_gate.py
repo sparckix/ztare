@@ -9,6 +9,11 @@ from __future__ import annotations
 
 from typing import Any
 
+try:  # pragma: no cover - fallback keeps direct script execution usable
+    from ztare.gates.required_field_semantics import is_semantically_present
+except ModuleNotFoundError:  # pragma: no cover
+    from required_field_semantics import is_semantically_present
+
 REQUIRED_FIELDS = {
     "selected_units",
     "payment_atoms",
@@ -33,32 +38,14 @@ WEAK_SUBSTITUTES = {
 
 
 def _truthy(value: Any) -> bool:
-    if isinstance(value, str):
-        text = value.strip()
-        lowered = text.lower()
-        if not text:
-            return False
-        false_exact_matches = {
-            "missing",
-            "absent",
-            "unknown",
-            "todo",
-            "owed",
-            "unpaid",
-            "not supplied",
-            "not provided",
-            "none",
-            "null",
-            "false",
-            "0",
-            "no",
-        }
-        return lowered not in false_exact_matches
-    return bool(value)
+    return is_semantically_present(value)
 
 
 def run_no_rebilling_freshness_gate(receipt: dict[str, Any]) -> dict[str, Any]:
-    missing = sorted(field for field in REQUIRED_FIELDS if not _truthy(receipt.get(field)))
+    missing = sorted(
+        field for field in REQUIRED_FIELDS
+        if not is_semantically_present(receipt.get(field), field=field)
+    )
     weak_hits = sorted(field for field in WEAK_SUBSTITUTES if _truthy(receipt.get(field)))
     violations: list[dict[str, Any]] = []
     if missing:

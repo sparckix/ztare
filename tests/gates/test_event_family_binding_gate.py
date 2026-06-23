@@ -1,4 +1,4 @@
-from src.ztare.gates.event_family_binding_gate import (
+from ztare.gates.event_family_binding_gate import (
     run_event_family_binding_gate,
 )
 

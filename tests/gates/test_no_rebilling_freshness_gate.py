@@ -1,4 +1,4 @@
-from src.ztare.gates.no_rebilling_freshness_gate import (
+from ztare.gates.no_rebilling_freshness_gate import (
     run_no_rebilling_freshness_gate,
 )
 

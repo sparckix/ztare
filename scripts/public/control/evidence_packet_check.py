@@ -4,12 +4,14 @@ from __future__ import annotations
 
 import json
 import re
+from collections import Counter
 from pathlib import Path
 from urllib.parse import unquote
 
 
 REPO = Path(__file__).resolve().parents[3]
 PACKET_DIR = REPO / "docs/evidence_atlas/packets"
+PACKET_README = PACKET_DIR / "README.md"
 CLAIM_CARDS = REPO / "docs/evidence_atlas/claim_cards.md"
 
 REQUIRED_SECTIONS = (
@@ -112,12 +114,18 @@ def _section_text(text: str, heading: str) -> str:
     return match.group(1).strip() if match else ""
 
 
-def _claim_card_chunks(text: str) -> list[tuple[str, str]]:
-    matches = list(re.finditer(r"^##\s+(Card\s+\d+:[^\n]+)\s*$", text, re.MULTILINE))
-    chunks: list[tuple[str, str]] = []
+def _claim_card_chunks(text: str) -> list[tuple[int, str, str]]:
+    matches = list(re.finditer(r"^##\s+Card\s+(\d+):\s*([^\n]+)\s*$", text, re.MULTILINE))
+    chunks: list[tuple[int, str, str]] = []
     for idx, match in enumerate(matches):
         end = matches[idx + 1].start() if idx + 1 < len(matches) else len(text)
-        chunks.append((match.group(1).strip(), text[match.end():end]))
+        chunks.append(
+            (
+                int(match.group(1)),
+                f"Card {match.group(1)}: {match.group(2).strip()}",
+                text[match.end():end],
+            )
+        )
     return chunks
 
 
@@ -150,8 +158,11 @@ def _check_claim_cards(path: Path | None = None) -> dict[str, object]:
         path = CLAIM_CARDS
     text = path.read_text(encoding="utf-8")
     cards = _claim_card_chunks(text)
+    actual_sequence = [number for number, _title, _chunk in cards]
+    expected_sequence = list(range(1, len(cards) + 1))
+    sequence_ok = actual_sequence == expected_sequence
     results: list[dict[str, object]] = []
-    for title, chunk in cards:
+    for _number, title, chunk in cards:
         missing = [field for field in REQUIRED_CARD_FIELDS if not _field_present(chunk, field)]
         evidence_text = ""
         match = re.search(
@@ -177,10 +188,77 @@ def _check_claim_cards(path: Path | None = None) -> dict[str, object]:
         )
     failures = [row for row in results if not row["ok"]]
     return {
-        "ok": bool(cards) and not failures,
+        "ok": bool(cards) and sequence_ok and not failures,
         "card_count": len(cards),
-        "failure_count": len(failures),
+        "failure_count": len(failures) + int(not sequence_ok),
+        "sequence_ok": sequence_ok,
+        "actual_sequence": actual_sequence,
+        "expected_sequence": expected_sequence,
         "results": results,
+    }
+
+
+def _packets_section(text: str) -> str:
+    pattern = re.compile(r"^##\s+Packets\s*$([\s\S]*?)(?=^##\s+|\Z)", re.MULTILINE)
+    match = pattern.search(text)
+    return match.group(1).strip() if match else ""
+
+
+def _check_packet_readme(
+    packet_paths: list[Path],
+    path: Path | None = None,
+) -> dict[str, object]:
+    if path is None:
+        path = PACKET_README
+    expected = sorted(p.name for p in packet_paths)
+    if not path.exists():
+        return {
+            "ok": False,
+            "path": str(path.relative_to(REPO)),
+            "listed_packets": [],
+            "expected_packets": expected,
+            "missing_packets": expected,
+            "extra_packets": [],
+            "duplicate_packets": [],
+            "bad_links": [str(path.relative_to(REPO))],
+        }
+
+    text = path.read_text(encoding="utf-8")
+    packet_section = _packets_section(text)
+    listed: list[str] = []
+    bad_links: list[str] = []
+    for _label, target in LINK_RE.findall(packet_section):
+        resolved = _link_path(path, target)
+        if resolved is None:
+            continue
+        packet_name = Path(target.split("#", 1)[0]).name
+        if packet_name == "README.md":
+            continue
+        if packet_name.endswith(".md"):
+            listed.append(packet_name)
+        try:
+            resolved.relative_to(REPO)
+        except ValueError:
+            bad_links.append(f"{target} -> outside repo")
+            continue
+        if not resolved.exists():
+            bad_links.append(target)
+
+    counts = Counter(listed)
+    listed_unique = sorted(counts)
+    duplicate_packets = sorted(name for name, count in counts.items() if count > 1)
+    missing_packets = sorted(set(expected) - set(listed_unique))
+    extra_packets = sorted(set(listed_unique) - set(expected))
+    ok = not missing_packets and not extra_packets and not duplicate_packets and not bad_links
+    return {
+        "ok": ok,
+        "path": str(path.relative_to(REPO)),
+        "listed_packets": listed,
+        "expected_packets": expected,
+        "missing_packets": missing_packets,
+        "extra_packets": extra_packets,
+        "duplicate_packets": duplicate_packets,
+        "bad_links": bad_links,
     }
 
 
@@ -191,12 +269,18 @@ def build_payload() -> dict[str, object]:
     results = [_check_packet(path) for path in packet_paths]
     failures = [row for row in results if not row["ok"]]
     claim_cards = _check_claim_cards()
+    packet_readme = _check_packet_readme(packet_paths)
     return {
-        "ok": not failures and bool(claim_cards["ok"]),
+        "ok": not failures and bool(claim_cards["ok"]) and bool(packet_readme["ok"]),
         "packet_count": len(results),
-        "failure_count": len(failures) + int(claim_cards["failure_count"]),
+        "failure_count": (
+            len(failures)
+            + int(claim_cards["failure_count"])
+            + int(not packet_readme["ok"])
+        ),
         "results": results,
         "claim_cards": claim_cards,
+        "packet_readme": packet_readme,
     }
 
 

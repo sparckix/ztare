@@ -1,9 +1,9 @@
 ---
-description: "Evidence packet for ZTARE public claim governance: claim register, project summaries, non-claims, and next falsifiers."
+description: "Review packet for ZTARE public claim governance: claim register, project summaries, non-claims, and next falsifiers."
 ---
 # Public Claim Governance Packet
 
-> **Up:** [Evidence Packets](README.md)
+> **Up:** [Review Packets](README.md)
 
 ## Scoped Claim
 
@@ -43,7 +43,7 @@ demotion, a source-blocked state, or a next falsifier.
 
 - A public summary is not external replication.
 - A large number of summaries is not evidence that every project is strong.
-- Some project claims remain apparatus-internal, original-run-only, partial,
+- Some project claims remain system-internal, original-run-only, partial,
   or explicitly demoted.
 - The current summaries are not yet normalized into a machine-readable schema.
 

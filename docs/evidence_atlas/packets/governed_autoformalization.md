@@ -1,9 +1,9 @@
 ---
-description: "Evidence packet for governed autoformalization: a checker-agnostic faithfulness firewall with kernel-grade ground-truth checks."
+description: "Review packet for governed autoformalization: a checker-agnostic faithfulness firewall with kernel-grade ground-truth checks."
 ---
 # Governed Autoformalization Packet
 
-> **Up:** [Evidence Packets](README.md)
+> **Up:** [Review Packets](README.md)
 
 ## Scoped Claim
 
@@ -21,7 +21,7 @@ an LLM's opinion.
 
 L2 — runnable demonstration with positive **and** negative controls, validated locally on real Lean
 (v4.30) and real z3 (4.16). **Not** a benchmark, **not** externally reviewed, **not** a production
-deployment. The faithfulness firewall is opt-in apparatus, not wired into a live loop.
+deployment. The faithfulness firewall is opt-in tooling, not wired into a live loop.
 
 ## Primary Sources
 
@@ -70,7 +70,7 @@ probe is rejected, a swapped non-Lean MockChecker flows through unchanged).
 - **No benchmark claim.** There is no labelled corpus of faithful-vs-laundered formalizations measured
   against baselines; the substrates here are small and illustrative.
 - **No production / regulatory claim.** The AML/sanctions rules are illustrative, not a compliance product.
-- **No live-loop claim.** Autoformalization is opt-in apparatus.
+- **No live-loop claim.** Autoformalization is opt-in tooling.
 
 ## Missing Upgrade
 
@@ -85,7 +85,7 @@ A stronger packet needs one or more of:
   deferred operations (set-level redundancy/shadowing, unsat-core diagnostics, string/CIDR types,
   quantitative model-counting) are built only as real consumers appear; the genuinely-distinct direction —
   using the SMT solver to **auto-generate the boundary labels the Lean instance-battery hand-codes**
-  (cross-substrate test generation) — remains future work;
+  (cross-domain formal test generation) — remains future work;
 - one **externally reviewed** non-math case study on a real operational rule set with complete receipts.
 
 Until then, claims should stay scoped to *demonstrated, locally-validated, checker-agnostic faithfulness

@@ -1,4 +1,4 @@
-from src.ztare.gates.owner_preimage_prefix_gate import (
+from ztare.gates.owner_preimage_prefix_gate import (
     run_owner_preimage_prefix_gate,
 )
 

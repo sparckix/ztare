@@ -328,7 +328,7 @@ Four sequential apparatus-proposed formulas, four math errors. Pattern is recurr
 
 The 10× threshold has no derivation; it's a round number chosen to look approximately right.
 
-**Avoidance:** Any threshold the apparatus proposes must trace to a stated principle (Wilson interval at given confidence, Heisenberg estimator's noise floor, Chebyshev / quantile bound), not a round number. If the apparatus cannot derive a threshold, the operator should derive it before implementing.
+**Avoidance:** Any threshold the apparatus proposes must trace to a stated principle (Wilson interval at given confidence, Heisenberg estimator's noise floor, Chebyshev / quantile bound), not a round number. If the apparatus cannot derive a threshold, the reviewer should derive it before implementing.
 
 **Failure family:** `parameter_sensitivity` (CB-5 refinement, recursive within the apparatus's own self-corrections).
 

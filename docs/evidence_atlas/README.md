@@ -14,7 +14,7 @@ known caveats into one traversable surface.
 
 The problem it solves is simple: the repository already has evidence, but a
 cold reader has to know where to look. The atlas makes the evidence graph
-inspectable without asking the reader to absorb the whole apparatus first.
+inspectable without asking the reader to absorb the whole system first.
 
 ## Evidence Levels
 
@@ -40,16 +40,16 @@ layers rather than general evidence levels.
 ## Reading The Evidence Through Five Questions
 
 The public introduction uses five release questions. The atlas is where those
-questions should be grounded. Read each answer through the source packets and
-claim register, not through general repo scale.
+questions should be grounded. Read each answer through source artifacts, review
+packets, and the claim register, not through general repo scale.
 
 | Question | Current public evidence | What is still missing |
 |---|---|---|
 | Can a bounded loop produce measurable research improvement under a hardened evaluator? | Claim-specific. Evaluator-hardening and self-certification failures have L4 controlled benchmark evidence; scientific and methodology campaigns have project summaries, retest tags, demotions, and packetized evidence where available. | No blanket system-level benchmark claim. Stronger external-facing work is a small number of frozen packet suites or benchmarks tied to specific claims. |
-| Does the kernel make fake progress visible before it becomes a claim? | Strong public route: cheating catalog, evaluator-hardening packet, anti-laundering catches, public claim governance, demotion history, and non-claim fields. | Larger frozen comparison suites that separate ordinary review, rubric-only review, deterministic gates, and precedent/gate combinations. |
+| Does the kernel make fake progress visible before it becomes a claim? | Strong public route: gaming-catalog packet, evaluator-hardening packet, anti-laundering catches, public claim governance, demotion history, and non-claim fields. | Larger frozen comparison suites that separate ordinary review, rubric-only review, deterministic gates, and precedent/gate combinations. |
 | Does research state survive across in-loop runs and out-of-loop agent work? | Partial public route: public claim register, experiment track record, action/forecast surfaces, primitive matrix, reflexive primitives, and operations-intelligence artifacts. | More packetized evidence that state reuse changes later routing or outcomes, not only that state is stored. |
 | Can API calls, subscription agents, and local workers share the same typed artifact contract? | Implemented and testable in the kernel surfaces, with dispatch and subscription outcome audits. Treat this as implementation evidence unless a run packet links it to outcomes. | More matched API/subscription runs on substantive substrates before making transport-quality claims. |
-| Can an outside reader reproduce the evidence path from command to artifact to gate? | Evidence packets, executable review pack, public claim register, benchmark evidence, and packet checker provide a review path for selected claims. | Uniform machine-readable claim packets and validators across all public claims. |
+| Can an outside reader reproduce the evidence path from command to artifact to gate? | Review packets, executable review pack, public claim register, benchmark evidence, and packet checker provide a review path for selected claims. | Uniform machine-readable claim packets and validators across all public claims. |
 
 ## Files
 
@@ -61,7 +61,7 @@ claim register, not through general repo scale.
 - [Packet Coverage](packet_coverage.md): what is already packetized, what is
   only partially packetized, and which external-facing experiment packets are
   still missing.
-- [Evidence Packets](packets/README.md): concrete reviewer-facing packets
+- [Review Packets](packets/README.md): concrete reviewer-facing packets
   assembled from existing public artifacts.
 - [Executable Review Pack](executable_review_pack.md): commands a skeptical
   reader can run first, plus the current caveats observed in this checkout.
@@ -94,7 +94,7 @@ This atlas does not claim:
 - that a large evidence graph is the same thing as a small externally validated
   result.
 
-The correct public posture is: ZTARE has a large evidence-linked apparatus for
+The correct public posture is: ZTARE has a large evidence-linked workbench for
 falsification-native AI research, with explicit confidence levels, non-claims,
 and demotion history across claims, patterns, primitives, and project
 experiments.
@@ -105,13 +105,13 @@ experiments.
 
 **Sub-folders**
 
-- [`packets/`](packets/) - 6 file(s)
+- [`packets/`](packets/) - 10 file(s)
 
 **Documents**
 
 - [Claim Cards](claim_cards.md) - Curated claim cards linking ZTARE public claims to evidence sources, commands, non-claims, and next falsifiers.
 - [Executable Review Pack](executable_review_pack.md) - Small command set for reviewing ZTARE evidence without traversing the whole repository.
-- [Packet Coverage](packet_coverage.md) - Coverage map for ZTARE evidence packets: what exists, what is partial, and which experiment packets are still missing.
+- [Packet Coverage](packet_coverage.md) - Coverage map for ZTARE review packets: what exists, what is partial, and which experiment packets are still missing.
 - [Primitive Evidence Matrix](primitive_evidence_matrix.md) - Evidence matrix for ZTARE agentic engineering patterns, anti-patterns, and reflexive primitives.
 
 <sub>1 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>

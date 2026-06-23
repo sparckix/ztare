@@ -183,7 +183,7 @@ This is not a one-liner. The non-V4 prompt at `:538-571` bakes in a single epist
 3. Write `test_model.py` with assertions that would fail if the prediction is wrong
 4. Use `pint` for physics or strict financial logic for business
 
-This contract is correct for quantifiable domains. It is what caught Cooked Book RNG, Float Masking, and the other gaming strategies in Papers 1-2. Relaxing it universally would reopen the gaming surface.
+This contract is correct for quantifiable domains. It is what caught Fake Learning Curve, Tolerance Laundering, and the other gaming strategies in Papers 1-2. Relaxing it universally would reopen the gaming surface.
 
 But for causal-historical theses like `eu_union_stability`, the contract forces the mutator to invent a numerical bridge to satisfy it. The IRR overreach was exactly this: the model manufactured a quantitative threshold because the prompt demanded one, not because the evidence supported one.
 
@@ -3434,7 +3434,7 @@ Active-bundle auto-snapshot: correct. The `.active_bundle.json` + snapshot-on-pr
 
 Implementation order (proxy extraction → active bundle → failure taxonomy → inversion) is correct.
 
-#### The derived-constraints inception: fully specified in `research_areas/private/kernel/derived_constraints_lane.md`
+#### The derived-constraints inception: fully specified in the maintainer-only derived-constraints lane note
 
 I wrote the full spec. The core decisions:
 
@@ -4511,7 +4511,7 @@ It is an upstream project-scoping / operator-architecture issue.
 
 That is why it was split into:
 
-- `research_areas/private/kernel/project_typing_vs_supervisor.md`
+- the maintainer-only project-typing architecture note
 
 instead of being left buried in this file.
 
@@ -4779,7 +4779,7 @@ Verification on the live seed:
 
 Canonical architecture discussion now lives in:
 
-- `research_areas/private/kernel/project_typing_vs_supervisor.md`
+- the maintainer-only project-typing architecture note
 
 This mutator thread should keep project-typing discussion brief from here onward:
 
@@ -4822,7 +4822,7 @@ This is the desired asymmetry:
 
 Canonical architectural discussion remains in:
 
-- `research_areas/private/kernel/project_typing_vs_supervisor.md`
+- the maintainer-only project-typing architecture note
 
 Mutator-thread takeaway only:
 
@@ -4851,7 +4851,7 @@ What I changed:
 
 Canonical design discussion remains in:
 
-- `research_areas/private/kernel/project_typing_vs_supervisor.md`
+- the maintainer-only project-typing architecture note
 
 Mutator-thread takeaway only:
 
@@ -4885,7 +4885,7 @@ Key design decisions in the spec:
 |---|---|---|---|
 | GP-017 | `inception` | RAM layer + meta-judge contract + firing squad contract | Automated evidence fetch: evidence-boundary ceilings emit structured gap objects from the firing squad; fetch agent sources adversarial comparators; compile_evidence.py updates the evidence frontier; regime fingerprint bumps; ZTARE resumes |
 
-Canonical note: `research_areas/private/kernel/evidence_feedback_loop.md`
+Canonical note: the maintainer-only evidence-feedback note
 
 Cross-reference: GP-011 (derived constraints lane) — both are RAM-layer knowledge accumulation mechanisms. GP-017 expands the evidence boundary; GP-011 narrows the claim space within it. A fetch result can seed constraint extraction.
 
@@ -4906,7 +4906,7 @@ The only additional live result that matters is the post-patch GP-016 validation
 
 Canonical writeup for that result now lives only in:
 
-- `research_areas/private/kernel/project_typing_vs_supervisor.md`
+- the maintainer-only project-typing architecture note
 
 Per the boundary rule, this mutator file should stop there and not duplicate the architecture/run narrative.
 
@@ -4919,9 +4919,9 @@ No new mutator-hardening implementation followed from the latest typing/spec dis
 Adopted boundary:
 
 - charter generalization and authoring guidance now live in:
-  - `research_areas/private/kernel/project_charter_spec.md`
+  - the maintainer-only project-charter note
 - the adjacent evidence-compilation handoff problem now lives in:
-  - `research_areas/private/kernel/evidence_feedback_loop.md`
+  - the maintainer-only evidence-feedback note
 
 Neither introduces a new score-affecting mutator seam by itself.
 
@@ -4933,7 +4933,7 @@ So this file remains unchanged in substance and only records the cross-reference
 
 ### GP-020 added: supervising-agent closure discipline. The EU "stop at 0" episode is not a one-off operator error — it is a missing kernel surface, and it follows the same soft-surface failure pattern as GP-016 v1.
 
-The product-philosophy doc now explicitly names the EU stop recommendation as **epistemologically arrogant**: a single hard local failure was treated as global basin exhaustion, and a 2–3 iteration probe later found a real `83`. The narrative version of the lesson is in `research_areas/private/product-strategy/ztare_product_philosophy.md`. This turn converts that lesson into a kernel-level seam.
+The product-philosophy doc now explicitly names the EU stop recommendation as **epistemologically arrogant**: a single hard local failure was treated as global basin exhaustion, and a 2–3 iteration probe later found a real `83`. The narrative version of the lesson is in the maintainer-only product-philosophy note. This turn converts that lesson into a kernel-level seam.
 
 #### Why this is a kernel item, not a documentation item
 
@@ -4991,7 +4991,7 @@ Two anti-patterns to forbid in advance:
 
 #### Cross-references
 
-- **Philosophy backing**: `research_areas/private/product-strategy/ztare_product_philosophy.md` — "Confronting assistant overconfidence" section is the narrative version
+- **Philosophy backing**: the maintainer-only product-philosophy note — "Confronting assistant overconfidence" section is the narrative version
 - **Same-pattern prior fix**: GP-016 v2 (Anchor Proxies replacing LLM drift_detected) — GP-020 follows the identical deterministic-counterpart-to-soft-surface template
 - **Adjacent surface**: GP-013 (score regime fingerprinting) — a closed verdict belongs to a regime; on regime change, closure must be reclaimed, never inherited
 - **Roadmap interaction**: GP-019 (champion vs latest artifact split) is a strict prerequisite — closure can't be enforced against the wrong baseline

@@ -105,24 +105,6 @@ def run_residual_core_receipt_gate(
             })
             continue
 
-        missing = [
-            field for field in required_fields
-            if not _present(receipt.get(field))
-        ]
-        if missing:
-            violations.append({
-                "type": f"{receipt_label}_receipt_incomplete",
-                "receipt_index": i,
-                "receipt_name": receipt.get("name", "<unnamed>"),
-                "missing_fields": missing,
-                "severity": "blocking" if enforce_block else "advisory",
-                "reason": str(profile.get("incomplete_reason") or ""),
-            })
-            warnings.append(
-                f"{receipt_key}[{i}] missing: " + ", ".join(missing)
-            )
-            continue
-
         confuser_hit = False
         for confuser in confuser_sets:
             fields = list(confuser.get("fields") or [])
@@ -146,6 +128,25 @@ def run_residual_core_receipt_gate(
                 })
                 confuser_hit = True
                 break
+
+        missing = [
+            field for field in required_fields
+            if not _present(receipt.get(field))
+        ]
+        if missing:
+            violations.append({
+                "type": f"{receipt_label}_receipt_incomplete",
+                "receipt_index": i,
+                "receipt_name": receipt.get("name", "<unnamed>"),
+                "missing_fields": missing,
+                "severity": "blocking" if enforce_block else "advisory",
+                "reason": str(profile.get("incomplete_reason") or ""),
+            })
+            warnings.append(
+                f"{receipt_key}[{i}] missing: " + ", ".join(missing)
+            )
+            continue
+
         if confuser_hit:
             continue
 

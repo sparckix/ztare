@@ -8,6 +8,11 @@ from __future__ import annotations
 
 from typing import Any
 
+try:  # pragma: no cover - fallback keeps direct script execution usable
+    from ztare.gates.required_field_semantics import is_semantically_present
+except ModuleNotFoundError:  # pragma: no cover
+    from required_field_semantics import is_semantically_present
+
 
 REQUIRED_RECEIPT_FIELDS = (
     "owner_map",
@@ -32,27 +37,7 @@ WEAK_SUBSTITUTE_FIELDS = (
 
 
 def _present(value: Any) -> bool:
-    if isinstance(value, str):
-        text = value.strip()
-        lowered = text.lower()
-        if not text:
-            return False
-        false_exact_matches = {
-            "missing",
-            "absent",
-            "unknown",
-            "todo",
-            "owed",
-            "unpaid",
-            "not supplied",
-            "not provided",
-            "none",
-            "null",
-            "false",
-            "0",
-        }
-        return lowered not in false_exact_matches
-    return value not in (None, "", [], {}, False)
+    return is_semantically_present(value)
 
 
 def run_owner_preimage_prefix_gate(
@@ -110,7 +95,7 @@ def run_owner_preimage_prefix_gate(
 
         missing = [
             field for field in REQUIRED_RECEIPT_FIELDS
-            if not _present(receipt.get(field))
+            if not is_semantically_present(receipt.get(field), field=field)
         ]
         if missing:
             violations.append({
