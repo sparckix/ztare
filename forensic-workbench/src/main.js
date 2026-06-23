@@ -822,7 +822,9 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
       h("label", null, h("span", null, "Task"), h("input", { value: draft.task, onInput: (event) => setField("task", event.target.value), placeholder: "Check whether..." })),
       h("label", null, h("span", null, "Bounded claim"), h("textarea", { value: draft.bounded_claim, onInput: (event) => setField("bounded_claim", event.target.value), rows: 2 })),
       h("label", null, h("span", null, "Next falsifier"), h("textarea", { value: draft.next_falsifier, onInput: (event) => setField("next_falsifier", event.target.value), rows: 2 })),
+      h("label", null, h("span", null, "Notes"), h("textarea", { value: draft.notes, onInput: (event) => setField("notes", event.target.value), rows: 2, placeholder: "optional context" })),
       h("label", null, h("span", null, "Source refs"), h("textarea", { value: draft.source_refs_text, onInput: (event) => setField("source_refs_text", event.target.value), rows: 2, placeholder: "one path per line" })),
+      h("label", null, h("span", null, "Evidence refs"), h("textarea", { value: draft.evidence_refs_text, onInput: (event) => setField("evidence_refs_text", event.target.value), rows: 2, placeholder: "one path per line" })),
       h("label", null, h("span", null, "Non-claims"), h("textarea", { value: draft.non_claims_text, onInput: (event) => setField("non_claims_text", event.target.value), rows: 2, placeholder: "one caveat per line" }))
     ),
     h(
@@ -3650,7 +3652,9 @@ function App() {
     task: "",
     bounded_claim: "",
     next_falsifier: "",
+    notes: "",
     source_refs_text: "",
+    evidence_refs_text: "",
     non_claims_text: ""
   });
   const [projectCreateMessage, setProjectCreateMessage] = useState("");
@@ -4099,7 +4103,9 @@ function App() {
         task: projectCreateDraft.task,
         bounded_claim: projectCreateDraft.bounded_claim,
         next_falsifier: projectCreateDraft.next_falsifier,
+        notes: projectCreateDraft.notes,
         source_refs: linesFromText(projectCreateDraft.source_refs_text),
+        evidence_refs: linesFromText(projectCreateDraft.evidence_refs_text),
         non_claims: linesFromText(projectCreateDraft.non_claims_text),
         renderer: "decision_brief"
       })
@@ -4131,7 +4137,9 @@ function App() {
           task: "",
           bounded_claim: "",
           next_falsifier: "",
+          notes: "",
           source_refs_text: "",
+          evidence_refs_text: "",
           non_claims_text: ""
         });
         setProjectCreateMessage(`Created ${payload.project} and opened the live case.`);

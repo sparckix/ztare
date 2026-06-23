@@ -57,7 +57,8 @@ The New case panel calls `/api/project-create`, which runs the fixed
 `ztare project source-init` and `ztare project intake create` path for a new
 project slug, then reloads the project through the same live snapshot flow. The
 form requires a fresh slug, task, bounded claim, and next falsifier before it
-can write files.
+can write files, and can include notes, source refs, evidence refs, and caveats
+when those are already known.
 The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
 file under the selected project's `raw/` directory, updates
 `raw/source_type_map.json`, appends a source-import receipt, writes the latest
