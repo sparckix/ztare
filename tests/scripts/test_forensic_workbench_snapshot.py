@@ -1298,6 +1298,45 @@ def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, mon
     assert latest["source_path"] == "projects/demo/raw/source_note.md"
 
 
+def test_import_source_payload_preserves_write_when_source_check_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    raw = project_root / "raw"
+    workspace = project_root / "workspace"
+    raw.mkdir(parents=True)
+    workspace.mkdir()
+    (raw / "source_type_map.json").write_text("{}\n", encoding="utf-8")
+    (project_root / "demo_intake.json").write_text(
+        json.dumps({"project": "demo", "bounded_claim": "demo"}),
+        encoding="utf-8",
+    )
+
+    monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
+
+    def failing_source_check(**_kwargs: object) -> dict[str, object]:
+        raise RuntimeError("source check unavailable")
+
+    monkeypatch.setattr(module, "source_action_payload_for_project", failing_source_check)
+
+    payload = module.import_source_payload(
+        project="demo",
+        filename="source_note.md",
+        source_type="source_evidence",
+        body="Observed failure mode.",
+    )
+
+    assert payload["ok"] is True
+    assert payload["source_path"] == "projects/demo/raw/source_note.md"
+    assert payload["source_check"]["accepted"] is False
+    assert payload["source_check"]["error"] == "source check unavailable"
+    assert (raw / "source_note.md").exists()
+    assert (workspace / "forensic_workbench_source_imports.jsonl").exists()
+    assert (workspace / "forensic_workbench_latest_source_import.json").exists()
+
+
 def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)

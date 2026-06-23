@@ -1095,6 +1095,46 @@ def command_result_payload(proc: Any) -> dict[str, Any]:
     }
 
 
+def source_check_after_write(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    try:
+        return source_action_payload_for_project(
+            project=project,
+            action="source_check",
+            rubric=rubric,
+            intake=intake,
+            renderer=renderer,
+        )
+    except SystemExit as exc:
+        error = display_text(exc)
+    except Exception as exc:  # noqa: BLE001 - the source write already succeeded.
+        error = display_text(exc)
+    return {
+        "schema": SOURCE_ACTION_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric or project,
+        "intake": intake or "",
+        "action": "source_check",
+        "label": SOURCE_ACTIONS["source_check"]["label"],
+        "writes": False,
+        "command": SOURCE_ACTIONS["source_check"]["display"].format(project=project),
+        "returncode": None,
+        "accepted": False,
+        "error": error,
+        "stdout_tail": "",
+        "stderr_tail": "",
+        "parsed_output": {},
+        "trace": None,
+        "snapshot": None,
+    }
+
+
 def import_source_payload(
     *,
     project: str,
@@ -1162,9 +1202,8 @@ def import_source_payload(
     append_jsonl(receipt_path, receipt)
     latest_path.parent.mkdir(parents=True, exist_ok=True)
     latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    source_check = source_action_payload_for_project(
+    source_check = source_check_after_write(
         project=project,
-        action="source_check",
         rubric=rubric,
         intake=intake,
         renderer=renderer,
@@ -1358,9 +1397,8 @@ def edit_source_payload(
     append_jsonl(receipt_path, receipt)
     latest_path.parent.mkdir(parents=True, exist_ok=True)
     latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    source_check = source_action_payload_for_project(
+    source_check = source_check_after_write(
         project=project,
-        action="source_check",
         rubric=rubric,
         intake=intake,
         renderer=renderer,
