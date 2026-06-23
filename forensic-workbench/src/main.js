@@ -36,6 +36,7 @@ const ROW_ACTION_LABELS = Object.fromEntries(ROW_ACTIONS.map((action) => [action
 const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
 const CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1";
 const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"];
+const PROJECT_SLUG_RE = /^[A-Za-z0-9_.-]+$/;
 
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
@@ -165,6 +166,12 @@ function sourceFilenameExists(sourceList, filename) {
   if (!target) return false;
   const sources = (sourceList && sourceList.sources) || [];
   return sources.some((row) => sourceBasename(rawSourceRelative(row) || row.path) === target);
+}
+
+function projectSlugExists(projects, slug) {
+  const target = String(slug || "").trim();
+  if (!target) return false;
+  return (projects || []).some((row) => row.project === target);
 }
 
 function activeBlocker(rows) {
@@ -747,8 +754,31 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
   );
 }
 
-function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCreate }) {
+function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, projects, onCreate }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  const project = String(draft.project || "").trim();
+  const validProject = Boolean(project && PROJECT_SLUG_RE.test(project));
+  const duplicateProject = projectSlugExists(projects, project);
+  const hasRequiredFields = Boolean(
+    String(draft.task || "").trim()
+      && String(draft.bounded_claim || "").trim()
+      && String(draft.next_falsifier || "").trim()
+  );
+  const canCreate = Boolean(liveMode && !creating && validProject && !duplicateProject && hasRequiredFields);
+  const createTitle = !liveMode
+    ? "Start the local API to create a project"
+    : duplicateProject
+      ? "This project already exists. Open it from Local cases."
+      : !validProject
+        ? "Use letters, numbers, dot, dash, or underscore"
+        : !hasRequiredFields
+          ? "Enter task, bounded claim, and next falsifier"
+          : "Create local project and intake";
+  const projectNote = duplicateProject
+    ? "Existing case. Open it from Local cases."
+    : project && !validProject
+      ? "Use letters, numbers, dot, dash, or underscore."
+      : "";
   return h(
     "section",
     { className: "project-create-panel", "aria-label": "Create case" },
@@ -762,7 +792,13 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCr
     h(
       "div",
       { className: "project-create-grid" },
-      h("label", null, h("span", null, "Project slug"), h("input", { value: draft.project, onInput: (event) => setField("project", event.target.value), placeholder: "my_project" })),
+      h(
+        "label",
+        null,
+        h("span", null, "Project slug"),
+        h("input", { value: draft.project, onInput: (event) => setField("project", event.target.value), placeholder: "my_project" }),
+        projectNote ? h("small", { className: "project-create-note" }, projectNote) : null
+      ),
       h("label", null, h("span", null, "Task"), h("input", { value: draft.task, onInput: (event) => setField("task", event.target.value), placeholder: "Check whether..." })),
       h("label", null, h("span", null, "Bounded claim"), h("textarea", { value: draft.bounded_claim, onInput: (event) => setField("bounded_claim", event.target.value), rows: 2 })),
       h("label", null, h("span", null, "Next falsifier"), h("textarea", { value: draft.next_falsifier, onInput: (event) => setField("next_falsifier", event.target.value), rows: 2 })),
@@ -777,9 +813,9 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCr
         {
           type: "button",
           className: "snapshot-link",
-          disabled: !liveMode || creating,
+          disabled: !canCreate,
           onClick: onCreate,
-          title: liveMode ? "Create local project and intake" : "Start the local API to create a project"
+          title: createTitle
         },
         creating ? "Creating" : "Create case"
       )
@@ -4547,6 +4583,7 @@ function App() {
         message: projectCreateMessage,
         creating: projectCreating,
         liveMode,
+        projects,
         onCreate: createProjectLive
       }),
       h(SourceImportPanel, {
