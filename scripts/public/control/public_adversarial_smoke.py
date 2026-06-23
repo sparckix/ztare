@@ -93,8 +93,10 @@ REQUIRED_MAKE_SNIPPETS = [
     "forensic-workbench-build:",
     "forensic-workbench-dev:",
     "forensic-workbench-api:",
+    "forensic-workbench-live:",
     "scripts/public/control/forensic_workbench_snapshot.py",
     "scripts/public/control/forensic_workbench_server.py",
+    "scripts/public/control/forensic_workbench_live.py",
 ]
 
 FORBIDDEN_MAKEFILE_SNIPPETS = [
@@ -136,6 +138,7 @@ REQUIRED_REFERENCE_DOC_SNIPPETS = [
     "make forensic-workbench-build",
     "make forensic-workbench-dev",
     "make forensic-workbench-api",
+    "make forensic-workbench-live",
     "make gates",
 ]
 
@@ -225,6 +228,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "first-five-minute path: open the case, inspect the claim, check evidence,",
     "The refreshed app should show the latest-review receipt row.",
     "make forensic-workbench-api",
+    "make forensic-workbench-live",
     "/api/projects",
     "/api/snapshot",
     "/api/health",

@@ -111,8 +111,7 @@ For a local web view over one project, use the forensic workbench:
 
 ```bash
 make forensic-workbench-data WORKBENCH_PROJECT=ops_root_cause_diagnosis_demo
-make forensic-workbench-api
-make forensic-workbench-dev
+make forensic-workbench-live
 ```
 
 The React app reads a generated snapshot in static mode. With the local API

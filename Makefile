@@ -127,7 +127,7 @@ endif
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show experiment-loop autoresearch-route autoresearch-projection autoresearch-trace autoresearch-dispatch-validate autoresearch-dispatch-canary autoresearch-dispatch-parity autoresearch-subscription-outcome-audit autoresearch-matched-transport-pair autoresearch-hillclimb-audit autoresearch-consequence-audit autoresearch-rubric-mode-audit autoresearch-evidence-trace autoresearch-kernel-health operations-intelligence autoresearch-substrate-recommend blitz-survival-report inloop-fixture-validate autoresearch-control-demo eigenquestion-propose eigenquestion-validate eigenquestion-status _preflight_eigenquestion_review seal wipe-sandbox \
 	action-intel-smoke action-intel-materialize-dry \
-	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-build forensic-workbench-dev forensic-workbench-api \
+	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-build forensic-workbench-dev forensic-workbench-api forensic-workbench-live \
 	leanmill-certify-demo
 
 # LeanMill one-command demo: plain-English rule → z3 finds the adversarial boundary → Lean kernel certifies
@@ -196,6 +196,7 @@ help:
 	@echo "  make forensic-workbench-build                                           # build React forensic workbench"
 	@echo "  make forensic-workbench-api                                             # run local read API for project switching"
 	@echo "  make forensic-workbench-dev                                             # run React forensic workbench server"
+	@echo "  make forensic-workbench-live                                            # run API + React forensic workbench together"
 	@echo "  make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [NO_MARKDOWN=1]  # build the read-only RD operations report"
 	@echo "  make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]  # RD substrate/workbench recommendation"
 	@echo "  make blitz-survival-report PROJECT=<project> [OUT=<json>] [MD_OUT=<md>] # join blitz winners to downstream eval/gate survival"
@@ -1149,6 +1150,9 @@ forensic-workbench-dev:
 
 forensic-workbench-api:
 	$(PYTHON) scripts/public/control/forensic_workbench_server.py
+
+forensic-workbench-live:
+	$(PYTHON) scripts/public/control/forensic_workbench_live.py
 
 committee:
 	$(PYTHON) -m src.ztare.validator.generate_committee --project $(PROJECT)

@@ -102,6 +102,7 @@ promoting a completed ordinary-review run into frozen-suite metadata.
   make forensic-workbench-build
   make forensic-workbench-api
   make forensic-workbench-dev
+  make forensic-workbench-live
   ztare forensic-workbench apply-review --project <project> --row <row_slug> --from <project>_<row_slug>_review.json
   make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [FRESHNESS_DAYS=14] [MAX_PROJECTS=30] [NO_MARKDOWN=1] [JSON=1]
   make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]

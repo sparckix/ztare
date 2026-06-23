@@ -31,8 +31,7 @@ Live mode uses a thin local API around the same snapshot builder and review
 receipt writer:
 
 ```bash
-make forensic-workbench-api
-npm --prefix forensic-workbench run dev
+make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/file`,
@@ -63,10 +62,17 @@ the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked
 `report_support_unavailable` export row.
 
-Run locally:
+Run the live local workbench:
 
 ```bash
-npm --prefix forensic-workbench run dev
+make forensic-workbench-live
+```
+
+Run the API and React dev server separately when debugging:
+
+```bash
+make forensic-workbench-api
+make forensic-workbench-dev
 ```
 
 Build:
