@@ -399,7 +399,27 @@ def latest_case_file_write_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_case_file_write.json"
 
 
-def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:
+def case_key(project: str, intake: str | Path | None) -> str:
+    intake_value = str(intake or "").strip()
+    return f"{project}::{intake_value}" if intake_value else project
+
+
+def receipt_matches_case(payload: dict[str, Any], *, project: str, intake: str | Path | None = None) -> bool:
+    if payload.get("project") and payload.get("project") != project:
+        return False
+    intake_value = str(intake or "").strip()
+    if not intake_value:
+        return True
+    payload_case_key = str(payload.get("case_key") or "").strip()
+    if payload_case_key:
+        return payload_case_key == case_key(project, intake_value)
+    payload_intake = str(payload.get("intake") or "").strip()
+    if payload_intake:
+        return payload_intake == intake_value
+    return True
+
+
+def load_latest_review(project: str, intake: str | Path | None = None) -> tuple[dict[str, Any] | None, str]:
     path = latest_review_path(project)
     rel_path = rel(path)
     if not path.exists():
@@ -418,10 +438,12 @@ def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:
             "status": "unreadable",
             "error": "latest review receipt must be a JSON object",
         }, rel_path
+    if not receipt_matches_case(payload, project=project, intake=intake):
+        return None, rel_path
     return payload, rel_path
 
 
-def load_latest_row_action(project: str) -> tuple[dict[str, Any] | None, str]:
+def load_latest_row_action(project: str, intake: str | Path | None = None) -> tuple[dict[str, Any] | None, str]:
     path = latest_row_action_path(project)
     rel_path = rel(path)
     if not path.exists():
@@ -440,10 +462,12 @@ def load_latest_row_action(project: str) -> tuple[dict[str, Any] | None, str]:
             "status": "unreadable",
             "error": "latest row action receipt must be a JSON object",
         }, rel_path
+    if not receipt_matches_case(payload, project=project, intake=intake):
+        return None, rel_path
     return payload, rel_path
 
 
-def load_latest_intake_edit(project: str) -> tuple[dict[str, Any] | None, str]:
+def load_latest_intake_edit(project: str, intake: str | Path | None = None) -> tuple[dict[str, Any] | None, str]:
     path = latest_intake_edit_path(project)
     rel_path = rel(path)
     if not path.exists():
@@ -462,6 +486,8 @@ def load_latest_intake_edit(project: str) -> tuple[dict[str, Any] | None, str]:
             "status": "unreadable",
             "error": "latest intake edit receipt must be a JSON object",
         }, rel_path
+    if not receipt_matches_case(payload, project=project, intake=intake):
+        return None, rel_path
     return payload, rel_path
 
 
@@ -981,9 +1007,9 @@ def build_snapshot(
     intake = intake or default_intake_for_project(project)
     trace, trace_command = collect_trace(project, rubric, intake)
     report_contract, report_command = collect_report_contract(project, renderer)
-    latest_review, latest_review_artifact_path = load_latest_review(project)
-    latest_action, latest_action_artifact_path = load_latest_row_action(project)
-    latest_intake_edit, latest_intake_edit_artifact_path = load_latest_intake_edit(project)
+    latest_review, latest_review_artifact_path = load_latest_review(project, intake)
+    latest_action, latest_action_artifact_path = load_latest_row_action(project, intake)
+    latest_intake_edit, latest_intake_edit_artifact_path = load_latest_intake_edit(project, intake)
     rows = build_rows(
         trace,
         report_contract,

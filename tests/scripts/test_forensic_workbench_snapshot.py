@@ -245,6 +245,59 @@ def test_snapshot_loads_latest_review_from_project_workspace(tmp_path: Path, mon
     assert receipt_row["status"] == "applied"
 
 
+def test_snapshot_ignores_latest_review_from_other_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    latest = tmp_path / "projects/demo/workspace/forensic_workbench_latest_review.json"
+    latest.parent.mkdir(parents=True)
+    latest.write_text(
+        json.dumps(
+            {
+                "schema": "ztare-forensic-workbench-review-receipt-v1",
+                "project": "demo",
+                "intake": "projects/demo/other_intake.json",
+                "case_key": "demo::projects/demo/other_intake.json",
+                "row": "Report/export",
+                "row_slug": "report_export",
+                "decision": "blocked",
+                "review_file_sha256": "b" * 64,
+                "evidence_ref_count": 2,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload, path = module.load_latest_review("demo", "projects/demo/demo_intake.json")
+
+    assert path == "projects/demo/workspace/forensic_workbench_latest_review.json"
+    assert payload is None
+
+
+def test_snapshot_keeps_unscoped_legacy_latest_review(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_module()
+    monkeypatch.setattr(module, "REPO", tmp_path)
+    latest = tmp_path / "projects/demo/workspace/forensic_workbench_latest_review.json"
+    latest.parent.mkdir(parents=True)
+    latest.write_text(
+        json.dumps(
+            {
+                "schema": "ztare-forensic-workbench-review-receipt-v1",
+                "project": "demo",
+                "row": "Report/export",
+                "row_slug": "report_export",
+                "decision": "blocked",
+                "review_file_sha256": "b" * 64,
+                "evidence_ref_count": 2,
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    payload, _path = module.load_latest_review("demo", "projects/demo/demo_intake.json")
+
+    assert payload["decision"] == "blocked"
+
+
 def test_snapshot_html_renders_static_workbench_contract(tmp_path: Path) -> None:
     module = load_module()
     rows = module.build_rows(
