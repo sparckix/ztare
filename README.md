@@ -91,14 +91,19 @@ Bad fits:
 
 ## Choose The Path
 
-Choose the route before choosing a model. Most mistakes come from launching the
-loop before the project surface is ready.
+Choose what you are trying to inspect before choosing a model. Most bad runs
+start too late in the process: a model is launched before the sources, claim,
+evidence, and expected output are clear.
+
+If you are unsure, start with **Project intake**. It is the lowest-cost way to
+find missing source files, vague claims, unsupported evidence, or a task that
+belongs outside the validation loop for now.
 
 | Route | Use it when | First surface |
 |---|---|---|
-| **Project intake** | You have a project, source, paper, dataset, repo, or claim that is not yet ready for a loop | `ztare project walkthrough` |
-| **In-loop autoresearch** | A bounded claim, stable evaluator/gate, rubric, and artifact output are ready | `ztare autoresearch trace --brief`, then its `recommended first command` |
-| **Out-of-loop research operations** | The work is source gathering, proof decomposition, reproduction setup, synthesis, or one-off agent work | `ztare autoresearch route` plus action-intelligence rows |
+| **Project intake** | You have a project, source, paper, dataset, repo, or claim that is not yet ready for a run | `ztare project walkthrough` |
+| **In-loop autoresearch** | A bounded claim, stable evaluator, rubric, and artifact output are ready | `ztare autoresearch trace --brief`, then its `recommended first command` |
+| **Out-of-loop research work** | The work is source gathering, proof decomposition, reproduction setup, synthesis, or one-off agent work | `ztare autoresearch route` plus action-intelligence rows |
 | **Proof work** | The target is Lean formalization, proof search, or proof-credit governance | `ztare leanmill ...` and [leanmill_architecture.md](docs/concepts/leanmill_architecture.md) |
 | **Reflexive/ops review** | You want to know whether the system's own routing, forecasts, catches, or instruments are improving | `make first-run`, `ztare autoresearch trace`, and the evidence atlas |
 
@@ -111,16 +116,16 @@ make forensic-workbench-dev
 ```
 
 The React app reads a generated snapshot in static mode. With the local API
-running, it can list available projects and refresh the selected case from the
-repo without giving the browser raw filesystem access. Review decisions can be
-applied through the local API, which writes the same receipt shape as the CLI.
-Static mode still lets you download or copy the review JSON and apply it with
-`ztare forensic-workbench apply-review`.
+running, it can list projects and refresh the selected case from the repo
+without giving the browser raw filesystem access. Review decisions can be
+applied through the local API. Static mode still lets you download or copy the
+review JSON and apply it with `ztare forensic-workbench apply-review`.
 
-The validation engine is appropriate only after the four prerequisites in the
-second row are ready. Project intake and out-of-loop work create or repair the
-surfaces the loop later consumes; they are not lesser versions of the loop.
-That boundary is inspectable through these commands:
+The validation engine is appropriate only after the in-loop prerequisites are
+ready. Project intake and out-of-loop work create or repair the inputs the loop
+later consumes; they are not lesser versions of the loop. The commands below
+are reference examples. You do not need to read them all before running
+`make hello` or `ztare project walkthrough`.
 
 | Need | Command |
 |---|---|

@@ -32,12 +32,12 @@ will do. If a claim appears in a paper, the machinery that supports it should
 exist in the repository at a path the paper can name. Empirical sections cite
 artifacts. Speculative sections are marked speculative.
 
-**2. Public work-in-progress over private polish.** The kernel hardening
-history, seam documents, debate logs, and failure taxonomies are visible as
-they are produced, not backfilled for a launch. Readers who want the cleanest
-story can read the papers; readers who want the operating record can inspect
-the artifacts. The audit surface is the point: I would not trust a system that
-only reveals its final state, and I am not going to ask readers to trust one.
+**2. Public work-in-progress over private polish.** The hardening history,
+design notes, debate logs, and failure taxonomies are visible as they are
+produced, not backfilled for a launch. Readers who want the cleanest story can
+read the papers; readers who want the operating record can inspect the
+artifacts. The audit surface is the point: I would not trust a system that only
+reveals its final state, and I am not going to ask readers to trust one.
 
 **3. Maintain the merge boundary.** The maintainer job is deciding what does not
 enter: gamed champions, overbroad theses, unsupported claims, and patches that
@@ -77,8 +77,8 @@ cosmetic novelty, or a report that cites a result it no longer holds.
 
 **3. Design the environment.** Model capability matters, but the environment
 decides what the model can get away with. Constraints, feedback, separated
-roles, receipts, and fail-closed checks often improve output more reliably than
-swapping one frontier model for another.
+roles, review records, and fail-closed checks often improve output more
+reliably than swapping one frontier model for another.
 
 These rules are not ZTARE-specific. They apply to any system where an AI works
 under optimization pressure and a human needs to trust the output: compress the
@@ -90,9 +90,9 @@ claim, invert the failure, and design the environment that forces better work.
 
 **What ZTARE is.** ZTARE is a local workbench for checking claims. A generator
 can propose a thesis, but the claim has to pass through source binding,
-counter-tests, receipts, and deterministic checks where those checks exist. The
-important rule is separation: the checker is not the same process that is
-trying to win the check.
+counter-tests, review records, and deterministic checks where those checks
+exist. The important rule is separation: the checker is not the same process
+that is trying to win the check.
 
 **What ZTARE does.** It makes bad claims cheaper to catch. A useful system
 should make it easy to reject a weak thesis, narrow an overbroad claim, or name

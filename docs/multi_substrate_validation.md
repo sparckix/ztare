@@ -19,7 +19,9 @@ missing evidence, unstable measurements, old obstructions, or source problems.
 
 ## Bottom Line
 
-Treat this page as an evidence memo, not as a victory lap.
+Treat this page as an evidence memo, not as a victory lap. It tells you where
+the same discipline showed up in different domains, and where that discipline
+was not enough to support the larger claim someone might want to make.
 
 | Domain | What the repo can defend | What it cannot defend | Next check |
 |---|---|---|---|
@@ -51,7 +53,8 @@ If you only have ten minutes, inspect the demotions:
 | Navier-Stokes closure language became named residuals | Proof-search progress was not allowed to become a global-regularity claim. |
 
 Those four cases are the point of the page. The project is interesting here
-because it records where claims got smaller.
+because it records where claims got smaller, not because the domains became
+finished.
 
 ## Domain Notes
 
@@ -148,8 +151,8 @@ hypotheses, and the ten-proposition bucket around Atom 1. That is evidence of
 better problem localization, not of a solved problem.
 
 **What blocks promotion.** Global regularity is not proved. Any stronger claim
-requires a target-residual artifact with recurrence checks, tool-depth receipts,
-formal/source receipts, and external mathematical review.
+requires a named blocker, recurrence checks, tool-depth records, formal/source
+review records, and external mathematical review.
 
 ## Cross-Domain Lesson
 
