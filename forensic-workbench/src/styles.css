@@ -1,8 +1,26 @@
 :root {
   color-scheme: light;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #17201d;
-  background: #e9edf0;
+  color: #18211e;
+  background: #edf0f2;
+  --bg: #edf0f2;
+  --surface: #ffffff;
+  --surface-soft: #f7f9f8;
+  --line: #cfd7d4;
+  --line-strong: #b8c5c0;
+  --ink: #18211e;
+  --muted: #5f6d68;
+  --subtle: #87948f;
+  --nav: #101615;
+  --nav-panel: #1a2522;
+  --accent: #2563a6;
+  --accent-strong: #174a80;
+  --ready: #167a57;
+  --attention: #b35c12;
+  --danger: #9f3428;
+  --radius: 6px;
+  --shadow: 0 14px 34px rgba(18, 30, 26, 0.08);
+  --shadow-soft: 0 8px 18px rgba(18, 30, 26, 0.06);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -29,6 +47,15 @@ button {
   cursor: pointer;
 }
 
+button:focus-visible,
+a:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 166, 0.28);
+  outline-offset: 2px;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   overflow-wrap: anywhere;
@@ -37,8 +64,8 @@ code {
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: 232px minmax(0, 1fr);
-  background: #e9edf0;
+  grid-template-columns: 244px minmax(0, 1fr);
+  background: var(--bg);
 }
 
 .sidebar {
@@ -48,8 +75,8 @@ code {
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   gap: 16px;
-  padding: 18px 14px;
-  background: #111816;
+  padding: 18px 14px 16px;
+  background: var(--nav);
   color: #f4f7f5;
   border-right: 1px solid #0c1210;
 }
@@ -67,8 +94,9 @@ code {
   display: grid;
   place-items: center;
   border: 1px solid #3f514b;
-  background: #20302b;
-  color: #d9efe5;
+  border-radius: var(--radius);
+  background: #23322e;
+  color: #e7f4ee;
   font-weight: 900;
 }
 
@@ -104,6 +132,7 @@ code {
   color: #c9d5d0;
   text-decoration: none;
   border: 1px solid transparent;
+  border-radius: var(--radius);
 }
 
 .nav-icon {
@@ -111,8 +140,9 @@ code {
   height: 24px;
   display: grid;
   place-items: center;
-  background: #22312d;
+  background: var(--nav-panel);
   border: 1px solid #354741;
+  border-radius: 5px;
 }
 
 .nav-icon::before {
@@ -178,18 +208,24 @@ code {
   max-width: 100%;
   display: grid;
   grid-template-rows: auto auto auto auto auto 1fr;
-  gap: 14px;
-  padding: 18px;
+  gap: 16px;
+  padding: 18px 20px 28px;
 }
 
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 18px;
-  padding: 18px;
-  background: #ffffff;
-  border: 1px solid #cfd7d4;
+  padding: 16px 18px;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(10px);
 }
 
 .topbar-copy {
@@ -221,16 +257,17 @@ code {
   width: 100%;
   min-height: 38px;
   padding: 0 34px 0 11px;
-  border: 1px solid #8aa197;
-  background: #f7faf8;
-  color: #143f34;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface-soft);
+  color: var(--ink);
   font-weight: 800;
 }
 
 .eyebrow {
   display: block;
   margin-bottom: 7px;
-  color: #5d6c66;
+  color: var(--muted);
   font-size: 11px;
   font-weight: 900;
   text-transform: uppercase;
@@ -238,8 +275,8 @@ code {
 
 .topbar h1 {
   margin: 0;
-  font-size: 28px;
-  line-height: 1.05;
+  font-size: 26px;
+  line-height: 1.08;
 }
 
 .case-summary {
@@ -249,8 +286,10 @@ code {
   gap: 12px;
   align-items: stretch;
   padding: 16px;
-  background: #ffffff;
-  border: 1px solid #cfd7d4;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
 }
 
 .claim-panel {
@@ -262,7 +301,7 @@ code {
 .claim-panel p {
   max-width: 96ch;
   margin: 0;
-  color: #17201d;
+  color: var(--ink);
   font-size: 17px;
   line-height: 1.45;
 }
@@ -274,6 +313,8 @@ code {
   gap: 1px;
   background: #dce3e0;
   border: 1px solid #dce3e0;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .case-facts div {
@@ -342,16 +383,19 @@ code {
   align-items: center;
   justify-content: center;
   padding: 0 14px;
-  border: 1px solid #8aa197;
+  border: 1px solid #aac0b7;
+  border-radius: var(--radius);
   background: #f7faf8;
   color: #143f34;
   text-decoration: none;
   font-weight: 800;
   white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .snapshot-link:hover {
   background: #edf5f1;
+  border-color: #7ba093;
 }
 
 .snapshot-link:disabled {
@@ -362,12 +406,14 @@ code {
 .mode-banner {
   min-width: 0;
   padding: 10px 12px;
-  border: 1px solid #cfd7d4;
-  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
   color: #41504a;
   font-size: 13px;
   font-weight: 750;
   overflow-wrap: anywhere;
+  box-shadow: var(--shadow-soft);
 }
 
 .mode-banner.live {
@@ -389,8 +435,10 @@ code {
   padding: 12px 14px;
   border: 1px solid #d8bb8f;
   border-left: 4px solid #bd6a1d;
+  border-radius: var(--radius);
   background: #fffaf2;
   color: #563817;
+  box-shadow: var(--shadow-soft);
 }
 
 .pending-edits-copy {
@@ -442,6 +490,8 @@ code {
   gap: 1px;
   background: #ccd8d3;
   border: 1px solid #ccd8d3;
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
 .project-context-panel div {
@@ -496,8 +546,10 @@ code {
   grid-template-columns: minmax(220px, 0.3fr) minmax(0, 1fr);
   gap: 14px;
   padding: 14px;
-  border: 1px solid #cfd7d4;
-  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
 }
 
 .project-switchboard-head {
@@ -534,12 +586,20 @@ code {
   align-items: center;
   padding: 12px;
   border: 1px solid #d8e0dd;
+  border-radius: var(--radius);
   background: #f8faf9;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .project-tile.active {
   border-color: #8ab39f;
   background: #eef7f2;
+  box-shadow: inset 3px 0 0 var(--ready);
+}
+
+.project-tile:hover {
+  border-color: #aac0b7;
+  box-shadow: var(--shadow-soft);
 }
 
 .project-tile-main {
@@ -575,6 +635,7 @@ code {
   align-items: center;
   padding: 0 8px;
   border: 1px solid #dbe4e0;
+  border-radius: 999px;
   background: #ffffff;
   color: #3f4f49;
   font-size: 11px;
@@ -604,8 +665,10 @@ code {
   align-items: start;
   padding: 14px;
   background: #ffffff;
-  border: 1px solid #cfd7d4;
+  border: 1px solid var(--line);
   border-left: 4px solid #2f5f87;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
 }
 
 .project-create-head {
@@ -3828,9 +3891,129 @@ code {
   min-height: 30px;
   padding: 0 10px;
   border: 1px solid #9eb7ad;
+  border-radius: var(--radius);
   background: #eef6f2;
   color: #143f34;
   font-weight: 900;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.copy-button:hover:not(:disabled),
+.copy-button:focus-visible:not(:disabled),
+.filter-tabs button:hover,
+.filter-tabs button.active,
+.review-actions button:hover:not(:disabled),
+.review-actions button.active {
+  box-shadow: inset 0 0 0 1px rgba(22, 122, 87, 0.18);
+}
+
+.copy-button:disabled,
+.snapshot-link:disabled,
+.filter-tabs button:disabled {
+  cursor: not-allowed;
+}
+
+.source-import-panel,
+.raw-source-manager,
+.intake-editor,
+.next-move-panel,
+.docket-item,
+.health-actions-panel,
+.trace-console,
+.preflight-run-panel,
+.run-history-panel,
+.report-contract-panel,
+.source-evidence-panel,
+.stage-card,
+.path-panel,
+.metric,
+.blocker-panel,
+.toolbar,
+.table-shell,
+.inspector,
+.empty-state {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+}
+
+.trace-metrics,
+.trace-body,
+.health-metrics,
+.health-findings,
+.preflight-run-facts,
+.run-history-facts,
+.report-contract-metrics,
+.report-contract-body,
+.source-evidence-metrics,
+.source-evidence-body,
+.path-steps,
+.inspector-facts,
+.file-preview-body {
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.project-create-grid input,
+.project-create-grid textarea,
+.source-import-grid input,
+.source-import-grid select,
+.source-import-grid textarea,
+.raw-source-editor-fields input,
+.raw-source-editor-fields select,
+.raw-source-editor-fields textarea,
+.intake-editor textarea,
+.toolbar input,
+.filter-tabs button,
+.review-actions button,
+.source-evidence-row,
+.source-evidence-file,
+.source-evidence-command,
+.source-evidence-action-result,
+.source-evidence-action-card,
+.trace-section code,
+.trace-plan-row,
+.trace-carrier-row,
+.trace-file-row,
+.trace-graph-row,
+.health-finding-row,
+.health-source-row,
+.health-evidence-ref,
+.run-history-row,
+.run-history-gap,
+.report-contract-section code,
+.report-contract-section strong,
+.evidence-block,
+.file-preview pre,
+.signal-cell,
+.evidence-type {
+  border-radius: 5px;
+}
+
+.table-row {
+  transition: background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.table-row:hover {
+  box-shadow: inset 0 0 0 1px #c3d7cf;
+}
+
+.next-move-panel,
+.source-evidence-panel,
+.trace-console,
+.preflight-run-panel,
+.run-history-panel,
+.report-contract-panel,
+.health-actions-panel {
+  box-shadow: var(--shadow);
+}
+
+.attention .eyebrow,
+.next-move-panel.attention .eyebrow,
+.report-contract-panel.attention .eyebrow,
+.trace-console.attention .eyebrow,
+.preflight-run-panel.attention .eyebrow,
+.health-actions-panel.attention .eyebrow {
+  color: #8a4b12;
 }
 
 .empty-state {
