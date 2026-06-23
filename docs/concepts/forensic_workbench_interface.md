@@ -276,9 +276,9 @@ not a reason to hide the project.
 
 Writes should stay explicit. Static mode saves a review or row-action file,
 then the user can apply it through the CLI. Live mode calls the local API to
-write the same receipt directly. Either way, the visible trail is file or API
-payload, receipt ledger, receipt history, latest receipt row, and refreshed
-snapshot.
+persist the same review or row-action JSON under the project workspace before
+writing the receipt. Either way, the visible trail is file, receipt ledger,
+receipt history, latest receipt row, and refreshed snapshot.
 After a live review, row-action, intake-edit, source import/edit,
 source/evidence write action, or case-file save, the app should show the
 stamped receipt schema, target, ledger path, latest path, source path, and hash

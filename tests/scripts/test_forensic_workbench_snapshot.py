@@ -547,8 +547,11 @@ def test_apply_review_payload_writes_same_receipt_shape(tmp_path: Path, monkeypa
     assert receipt["evidence_ref_count"] == 1
 
 
-def test_review_api_preserves_receipt_when_snapshot_refresh_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_review_api_preserves_receipt_when_snapshot_refresh_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
 
     def fake_apply_review_payload(
         payload: dict,
@@ -560,7 +563,11 @@ def test_review_api_preserves_receipt_when_snapshot_refresh_fails(monkeypatch: p
         assert payload["schema"] == "ztare-forensic-workbench-review-v1"
         assert project == "demo"
         assert row == "report_export"
-        assert review_file_path == "local-api:demo/report_export"
+        assert review_file_path.startswith("projects/demo/workspace/forensic_workbench_applied/")
+        assert "_report_export_review_" in review_file_path
+        persisted = tmp_path / review_file_path
+        assert persisted.exists()
+        assert json.loads(persisted.read_text(encoding="utf-8")) == payload
         return {"ok": True, "receipt": {"project": project, "row_slug": row}}
 
     def fake_snapshot_payload_for_project(*, project: str, **_kwargs: object) -> dict:

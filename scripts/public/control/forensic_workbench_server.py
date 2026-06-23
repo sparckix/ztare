@@ -117,6 +117,23 @@ def display_data(value: Any) -> Any:
     return value
 
 
+def persist_live_row_payload(*, project: str, row: str, kind: str, payload: dict[str, Any]) -> tuple[str, bytes]:
+    project = snapshot.validate_project_slug(project)
+    if not re.fullmatch(r"[a-z0-9_]+", row):
+        raise ValueError(f"invalid row slug: {row!r}")
+    if kind not in {"review", "action"}:
+        raise ValueError(f"invalid live row payload kind: {kind!r}")
+    payload_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    payload_bytes = payload_text.encode("utf-8")
+    digest = hashlib.sha256(payload_bytes).hexdigest()
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    workspace = snapshot.REPO / "projects" / project / "workspace" / "forensic_workbench_applied"
+    path = workspace / f"{stamp}_{row}_{kind}_{digest[:12]}.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(payload_bytes)
+    return repo_rel(path), payload_bytes
+
+
 def path_under(path: Path, root: Path) -> bool:
     try:
         path.resolve().relative_to(root.resolve())
@@ -1859,11 +1876,20 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 review_file = request.get("review_file")
                 if not isinstance(review_file, dict):
                     raise ValueError("review_file must be a JSON object")
+                review_errors = review.validate_review_file(review_file, project=project, row=row)
+                if review_errors:
+                    raise ValueError("invalid review file: " + "; ".join(review_errors))
+                review_file_path, _review_file_bytes = persist_live_row_payload(
+                    project=project,
+                    row=row,
+                    kind="review",
+                    payload=review_file,
+                )
                 review_result = review.apply_review_payload(
                     review_file,
                     project=project,
                     row=row,
-                    review_file_path=f"local-api:{project}/{row}",
+                    review_file_path=review_file_path,
                 )
                 response = {
                     "ok": True,
@@ -1911,11 +1937,20 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 action_file = request.get("action_file")
                 if not isinstance(action_file, dict):
                     raise ValueError("action_file must be a JSON object")
+                action_errors = review.validate_action_file(action_file, project=project, row=row)
+                if action_errors:
+                    raise ValueError("invalid row action file: " + "; ".join(action_errors))
+                action_file_path, _action_file_bytes = persist_live_row_payload(
+                    project=project,
+                    row=row,
+                    kind="action",
+                    payload=action_file,
+                )
                 action_result = review.apply_action_payload(
                     action_file,
                     project=project,
                     row=row,
-                    action_file_path=f"local-api:{project}/{row}",
+                    action_file_path=action_file_path,
                 )
                 response = {
                     "ok": True,

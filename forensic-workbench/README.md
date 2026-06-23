@@ -68,10 +68,11 @@ source-edit receipt JSON, reruns source-check, and refreshes the case.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
-writes the same review receipt that the CLI writes, then refreshes the same
-selected project/intake snapshot and live context. The Save action button
-writes a row-action receipt through the same explicit API/ledger path. Intake
-edits write an intake-edit receipt under the project workspace. The
+persists the review JSON under the project workspace, writes the same review
+receipt that the CLI writes, then refreshes the same selected project/intake
+snapshot and live context. The Save action button persists the row-action JSON
+and writes a row-action receipt through the same explicit API/ledger path.
+Intake edits write an intake-edit receipt under the project workspace. The
 receipt-history panel reads review, row-action, intake-edit, source-import,
 source-edit, source-action, and case-file ledgers through `/api/receipts`, returns
 `ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
