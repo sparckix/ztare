@@ -574,7 +574,11 @@ function linesFromText(value) {
 }
 
 function canPreviewEvidence(item) {
-  return ["file", "source", "evidence", "review"].includes(item.type);
+  if (!["file", "source", "evidence", "receipt", "review"].includes(item.type)) return false;
+  const value = String(item.value || "");
+  if (!isPreviewableRepoPath(value) || !value.includes("/")) return false;
+  const filename = value.split("/").pop() || "";
+  return filename.includes(".");
 }
 
 function Metric({ label, value, tone }) {
@@ -2332,6 +2336,7 @@ function EvidenceType({ type }) {
 
 function EvidenceBlock({ item, onPreview, liveMode }) {
   const previewable = canPreviewEvidence(item);
+  const isCommand = item.type === "command";
   return h(
     "div",
     { className: `evidence-block ${item.type}` },
@@ -2350,18 +2355,16 @@ function EvidenceBlock({ item, onPreview, liveMode }) {
           "Preview"
         )
       : null,
-    item.type === "command"
-      ? h(
-          "button",
-          {
-            className: "copy-button",
-            type: "button",
-            title: "Copy command",
-            onClick: () => copyText(item.value)
-          },
-          "Copy"
-        )
-      : null
+    h(
+      "button",
+      {
+        className: "copy-button",
+        type: "button",
+        title: isCommand ? "Copy command" : "Copy evidence value",
+        onClick: () => copyText(item.value)
+      },
+      isCommand ? "Copy" : "Copy value"
+    )
   );
 }
 
