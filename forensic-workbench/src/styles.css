@@ -913,6 +913,156 @@ code {
   flex-wrap: wrap;
 }
 
+.trace-console {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.5fr) minmax(320px, 0.58fr) minmax(0, 1.42fr);
+  gap: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #1c6552;
+}
+
+.trace-console.attention {
+  background: #fffaf2;
+  border-color: #ddc6a7;
+  border-left-color: #bd6a1d;
+}
+
+.trace-summary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.trace-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 22px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.trace-summary p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.trace-metrics {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.trace-metrics div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #fbfcfb;
+}
+
+.trace-metrics span,
+.trace-section > span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.trace-metrics strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.trace-body {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.trace-section {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.trace-commands {
+  grid-column: span 2;
+}
+
+.trace-section p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.trace-section code {
+  min-width: 0;
+  padding: 7px;
+  background: #f5f7f6;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.trace-plan-row,
+.trace-carrier-row,
+.trace-file-row,
+.trace-graph-row {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border-left: 3px solid #1c6552;
+  background: #f7f9f8;
+}
+
+.trace-plan-row.model,
+.trace-carrier-row.attention {
+  border-left-color: #bd6a1d;
+  background: #fffaf2;
+}
+
+.trace-plan-row strong,
+.trace-carrier-row strong,
+.trace-file-row strong,
+.trace-graph-row strong {
+  min-width: 0;
+  color: #17201d;
+  font-size: 13px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.trace-plan-row small,
+.trace-carrier-row small,
+.trace-graph-row small {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
 .text-link {
   min-height: 34px;
   display: inline-flex;
@@ -2407,6 +2557,7 @@ code {
   .path-panel,
   .project-context-panel,
   .receipt-history,
+  .trace-console,
   .review-queue,
   .row-action-workspace,
   .review-workspace {
@@ -2448,6 +2599,15 @@ code {
 
   .health-findings {
     grid-template-columns: 1fr;
+  }
+
+  .trace-body,
+  .trace-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .trace-commands {
+    grid-column: auto;
   }
 
   .handoff-card {

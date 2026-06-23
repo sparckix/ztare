@@ -678,6 +678,170 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
   );
 }
 
+function TraceConsolePanel({ traceContext, message, liveMode, onPreviewSource }) {
+  const kernel = (traceContext && traceContext.kernel_entry) || {};
+  const plan = (traceContext && traceContext.plan_preview) || {};
+  const surfaces = (traceContext && traceContext.surfaces) || {};
+  const carrierRows = (traceContext && traceContext.carrier_chain) || [];
+  const planRows = plan.dependency_order || [];
+  const graphRows = (traceContext && traceContext.graph_carriers) || [];
+  const nextCommands = (traceContext && traceContext.next_commands) || [];
+  const sourcePaths = [
+    surfaces.source_index_receipt_path ? { label: "Source receipt", value: surfaces.source_index_receipt_path } : null,
+    surfaces.compile_provenance_path ? { label: "Compile provenance", value: surfaces.compile_provenance_path } : null
+  ].filter(Boolean);
+  const status = (traceContext && traceContext.readiness) || "loading";
+
+  return h(
+    "section",
+    { className: `trace-console ${kernel.can_enter_kernel ? "ready" : "attention"}`, "aria-label": "Autoresearch trace console" },
+    h(
+      "div",
+      { className: "trace-summary" },
+      h("span", { className: "eyebrow" }, "Trace"),
+      h("h2", null, displayText(status)),
+      h(
+        "p",
+        null,
+        message ||
+          (liveMode
+            ? "Live autoresearch trace for this project, summarized from the local CLI."
+            : "Start the local API to inspect the live autoresearch trace.")
+      )
+    ),
+    h(
+      "div",
+      { className: "trace-metrics" },
+      h("div", null, h("span", null, "Kernel"), h("strong", null, displayText(kernel.status || "unknown"))),
+      h("div", null, h("span", null, "Can run"), h("strong", null, kernel.can_enter_kernel ? "yes" : "no")),
+      h("div", null, h("span", null, "Evidence"), h("strong", null, displayText(surfaces.evidence_status || "unknown"))),
+      h("div", null, h("span", null, "Plan"), h("strong", null, displayText(plan.status || "unknown")))
+    ),
+    h(
+      "div",
+      { className: "trace-body" },
+      h(
+        "div",
+        { className: "trace-section trace-commands" },
+        h("span", null, "Commands"),
+        h("code", null, (traceContext && traceContext.trace_command) || "No trace command loaded."),
+        nextCommands.length
+          ? nextCommands.slice(0, 3).map((command, index) =>
+              h(
+                "button",
+                {
+                  className: "copy-button",
+                  type: "button",
+                  key: `${index}:${command}`,
+                  onClick: () => copyText(command),
+                  title: "Copy trace next command"
+                },
+                index === 0 ? "Copy first command" : `Copy command ${index + 1}`
+              )
+            )
+          : h("p", null, "No next commands surfaced.")
+      ),
+      h(
+        "div",
+        { className: "trace-section" },
+        h("span", null, "Plan steps"),
+        planRows.length
+          ? planRows.map((row) =>
+              h(
+                "div",
+                { className: `trace-plan-row ${row.model_calls ? "model" : "local"}`, key: row.id || row.description },
+                h("strong", null, displayText(row.id || "step")),
+                h("small", null, row.model_calls ? "model call" : "local"),
+                h("p", null, row.description || displayText(row.status || "pending")),
+                row.command
+                  ? h(
+                      "button",
+                      {
+                        className: "copy-button",
+                        type: "button",
+                        onClick: () => copyText(row.command),
+                        title: "Copy plan command"
+                      },
+                      "Copy"
+                    )
+                  : null
+              )
+            )
+          : h("p", null, "No plan steps surfaced.")
+      ),
+      h(
+        "div",
+        { className: "trace-section trace-carriers" },
+        h("span", null, "Carrier chain"),
+        carrierRows.length
+          ? carrierRows.slice(0, 8).map((row) =>
+              h(
+                "div",
+                { className: `trace-carrier-row ${row.blocking ? "attention" : "ready"}`, key: row.surface },
+                h("strong", null, displayText(row.surface || "surface")),
+                h("small", null, displayText(row.status || "unknown")),
+                row.next_command
+                  ? h(
+                      "button",
+                      {
+                        className: "copy-button",
+                        type: "button",
+                        onClick: () => copyText(row.next_command),
+                        title: "Copy carrier next command"
+                      },
+                      "Copy"
+                    )
+                  : null
+              )
+            )
+          : h("p", null, "No carrier chain loaded.")
+      ),
+      h(
+        "div",
+        { className: "trace-section" },
+        h("span", null, "Trace files"),
+        sourcePaths.length
+          ? sourcePaths.map((item) =>
+              h(
+                "div",
+                { className: "trace-file-row", key: item.label },
+                h("strong", null, item.label),
+                h("code", null, item.value),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !liveMode,
+                    onClick: () => onPreviewSource && onPreviewSource({ type: "file", value: item.value }),
+                    title: liveMode ? "Preview trace source file" : "Start the local API to preview files"
+                  },
+                  "Preview"
+                )
+              )
+            )
+          : h("p", null, "No source file paths surfaced.")
+      ),
+      h(
+        "div",
+        { className: "trace-section trace-graphs" },
+        h("span", null, "Graphs"),
+        graphRows.length
+          ? graphRows.map((row) =>
+              h(
+                "div",
+                { className: "trace-graph-row", key: row.graph_id || row.graph_kind },
+                h("strong", null, displayText(row.graph_kind || "graph")),
+                h("small", null, `${row.node_count || 0} nodes / ${row.edge_count || 0} edges`),
+                (row.source_artifacts || []).slice(0, 1).map((path) => h("code", { key: path }, path))
+              )
+            )
+          : h("p", null, "No graph carriers surfaced.")
+      )
+    )
+  );
+}
+
 function CaseExportPanel({ snapshot, receiptHistory }) {
   const packet = buildCasePacket(snapshot, receiptHistory);
   const packetJson = JSON.stringify(packet, null, 2);
@@ -1704,6 +1868,8 @@ function App() {
   const [snapshot, setSnapshot] = useState(null);
   const [error, setError] = useState("");
   const [modeMessage, setModeMessage] = useState("");
+  const [traceContext, setTraceContext] = useState(null);
+  const [traceMessage, setTraceMessage] = useState("");
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
   const [projects, setProjects] = useState([]);
@@ -1748,6 +1914,25 @@ function App() {
       .catch((err) => {
         setHealthContext(null);
         setHealthMessage(`Live health context unavailable: ${err.message || err}`);
+      });
+  };
+
+  const loadTraceContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setTraceMessage("Loading autoresearch trace.");
+    return fetch(endpointUrl("/api/trace", projectParams), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`trace fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "trace fetch failed");
+        setTraceContext(payload);
+        setTraceMessage("Live autoresearch trace loaded from the local API.");
+      })
+      .catch((err) => {
+        setTraceContext(null);
+        setTraceMessage(`Live autoresearch trace unavailable: ${err.message || err}`);
       });
   };
 
@@ -1813,8 +1998,10 @@ function App() {
         if (useLiveApi) {
           const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
           setSelectedProjectKey(payload.project);
-          return Promise.allSettled([loadHealthContext(liveParams), loadIntakeDraft(liveParams), loadReceiptHistory(liveParams)]);
+          return Promise.allSettled([loadTraceContext(liveParams), loadHealthContext(liveParams), loadIntakeDraft(liveParams), loadReceiptHistory(liveParams)]);
         }
+        setTraceContext(null);
+        setTraceMessage("Static mode uses the last generated snapshot only.");
         setHealthContext(null);
         setHealthMessage("Static mode uses the last generated snapshot only.");
         setIntakeDraft(null);
@@ -2149,6 +2336,7 @@ function App() {
       }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
+      h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),
       h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),

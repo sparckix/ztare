@@ -35,13 +35,14 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local
-API. The browser still does not scan `projects/` directly. It asks the local API
-for a project index and a fresh snapshot for the selected project, using the
-intake and rubric discovered by the index. The app shows the backing project
-directory, intake, report contract, latest review receipt, latest saved row
-action, and recent receipt history before the main case file. The intake editor
-reads and writes the selected project intake
+`/api/trace`, `/api/receipts`, `/api/file`, `/api/review`, and
+`/api/row-action` to the local API. The browser still does not scan `projects/`
+directly. It asks the local API for a project index and a fresh snapshot for the
+selected project, using the intake and rubric discovered by the index. The app
+shows the backing project directory, intake, report contract, latest review
+receipt, latest saved row action, recent receipt history, and the live
+autoresearch trace before the main case file. The intake editor reads and writes
+the selected project intake
 through `/api/intake`; source and evidence refs are resolved against the intake
 directory and repo root, then shown as present, missing, external, or unsafe.
 The project picker uses the same lightweight intake read to show ref counts
@@ -64,11 +65,15 @@ project files. If the API is not running at startup, the app falls back to
 is detected, the app keeps the current case and shows the error instead of
 swapping in stale static data.
 
-Live mode also fetches `/api/health` for the selected project. That endpoint
-returns kernel-health attention components, action-intelligence source-health
-issues, and source-health file paths. The workbench shows them as read-only
-rows with copyable commands and previewable source files, so advisory blockers
-are inspectable without becoming hidden browser writes.
+Live mode also fetches `/api/trace` and `/api/health` for the selected project.
+The trace endpoint returns `ztare-forensic-workbench-trace-v1`: carrier chain,
+kernel-entry state, plan steps, loop admission, graph summaries,
+source/evidence statuses, and copyable next commands from
+`ztare autoresearch trace`. The health endpoint returns kernel-health attention
+components, action-intelligence source-health issues, and source-health file
+paths. The workbench shows both as read-only rows with copyable commands and
+previewable source files, so advisory blockers are inspectable without becoming
+hidden browser writes.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-packet export is client-side and explicit: clicking Download packet
@@ -120,6 +125,8 @@ The interface is organized as a local claim-review surface:
 - health and actions panel showing live kernel-health rows,
   action-intelligence source-health rows, source files, and copyable next
   commands
+- autoresearch trace console showing carrier chain, kernel-entry status, plan
+  steps, graph carriers, source/evidence paths, and next commands
 - current-action rail with the next command or provenance target
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files

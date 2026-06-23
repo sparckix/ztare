@@ -173,6 +173,9 @@ GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 -> kernel-health summary plus action-intelligence source-health warnings
 
+GET /api/trace?project=<project>&rubric=<rubric>&intake=<intake>
+-> autoresearch trace summary: carrier chain, run gate, plan, graph, and commands
+
 GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
@@ -195,9 +198,9 @@ That is deliberate. Browser-side filesystem discovery would hide which project
 state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
-report contract, latest-review receipt, latest saved row action, bounded-claim
-status, source/evidence readiness, recent receipt history, and report/export
-state before the user opens a case.
+report contract, live trace console, latest-review receipt, latest saved row action,
+bounded-claim status, source/evidence readiness, recent receipt history, and
+report/export state before the user opens a case.
 
 The index must include both first-run demos:
 

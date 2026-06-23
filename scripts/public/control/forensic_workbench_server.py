@@ -507,6 +507,112 @@ def snapshot_payload_for_project(
     return payload
 
 
+def trace_payload_for_project(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or snapshot.default_intake_for_project(project)
+    trace, trace_command = snapshot.collect_trace(project, rubric, intake)
+    kernel = trace.get("kernel_entry") or {}
+    plan = trace.get("plan_preview") or {}
+    surfaces = trace.get("surfaces") or {}
+    readiness = surfaces.get("evidence_readiness") or {}
+    source_receipt = surfaces.get("source_index_receipt") or {}
+    prediction = trace.get("prediction_summary") or {}
+    return {
+        "schema": "ztare-forensic-workbench-trace-v1",
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "trace_command": trace_command,
+        "readiness": trace.get("readiness_canonical") or trace.get("readiness") or "unknown",
+        "blocking_missing": trace.get("blocking_missing") or trace.get("missing") or [],
+        "next_commands": trace.get("next_commands") or [],
+        "carrier_chain": [
+            {
+                "surface": row.get("surface"),
+                "status": row.get("status"),
+                "blocking": bool(row.get("blocking")),
+                "next_command": row.get("next_command"),
+                "count": row.get("count"),
+                "receipt_count": row.get("receipt_count"),
+            }
+            for row in trace.get("carrier_chain", [])
+            if isinstance(row, dict)
+        ],
+        "kernel_entry": {
+            "schema": kernel.get("schema"),
+            "status": kernel.get("status"),
+            "can_enter_kernel": kernel.get("can_enter_kernel"),
+            "readiness": kernel.get("readiness_canonical") or kernel.get("readiness"),
+            "entry_surface": kernel.get("entry_surface"),
+            "preflight_command": kernel.get("preflight_command"),
+            "run_command": kernel.get("run_command"),
+            "inspection_command": kernel.get("inspection_command"),
+            "blockers": kernel.get("blockers") or [],
+            "allowed_work_modes": kernel.get("allowed_work_modes") or [],
+            "disallowed_work_modes": kernel.get("disallowed_work_modes") or [],
+        },
+        "plan_preview": {
+            "schema": plan.get("schema"),
+            "status": plan.get("status"),
+            "available": bool(plan.get("available")),
+            "recommended_first_command": plan.get("recommended_first_command"),
+            "model_calls_before_confirmation": plan.get("model_calls_before_confirmation"),
+            "largest_quality_drop_risk": plan.get("largest_quality_drop_risk"),
+            "risk_reason": plan.get("risk_reason"),
+            "worker_count": plan.get("worker_count"),
+            "dependency_order": [
+                {
+                    "id": row.get("id"),
+                    "status": row.get("status"),
+                    "model_calls": bool(row.get("model_calls")),
+                    "command": row.get("command"),
+                    "description": row.get("description"),
+                }
+                for row in plan.get("dependency_order", [])
+                if isinstance(row, dict)
+            ],
+        },
+        "loop_admission": trace.get("loop_admission") or {},
+        "recent_loop": trace.get("recent_loop") or {},
+        "surfaces": {
+            "source_preflight_status": surfaces.get("source_preflight_status"),
+            "raw_file_count": surfaces.get("raw_file_count"),
+            "source_index_status": readiness.get("source_index_status"),
+            "evidence_status": readiness.get("status"),
+            "output_binding_status": readiness.get("output_binding_status"),
+            "replay_status": readiness.get("replay_status"),
+            "source_index_receipt_path": source_receipt.get("path"),
+            "compile_provenance_path": snapshot.rel(surfaces.get("compile_provenance_path")),
+        },
+        "graph_carriers": [
+            {
+                "graph_id": row.get("graph_id"),
+                "graph_kind": row.get("graph_kind"),
+                "node_count": row.get("node_count"),
+                "edge_count": row.get("edge_count"),
+                "source_artifacts": [snapshot.rel(path) for path in (row.get("source_artifacts") or [])],
+                "validation_ok": (row.get("validation") or {}).get("ok"),
+            }
+            for row in trace.get("graph_carriers", [])
+            if isinstance(row, dict)
+        ],
+        "prediction_summary": {
+            "available": bool(prediction.get("available")),
+            "status": prediction.get("status"),
+            "row_count": prediction.get("row_count"),
+            "scoreable_count": prediction.get("scoreable_count"),
+            "measurement_policy": prediction.get("measurement_policy"),
+        },
+    }
+
+
 def health_payload_for_project(
     *,
     project: str,
@@ -638,6 +744,14 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 rubric = first_param(params, "rubric", project)
                 intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
                 payload = health_payload_for_project(project=project, rubric=rubric, intake=intake)
+                self.send_json(payload)
+                return
+            if parsed.path == "/api/trace":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                rubric = first_param(params, "rubric", project)
+                intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
+                payload = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
                 self.send_json(payload)
                 return
             if parsed.path == "/api/file":
