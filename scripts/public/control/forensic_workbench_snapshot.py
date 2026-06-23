@@ -545,16 +545,18 @@ def render_row(row: dict[str, str], output_path: Path) -> str:
     receipt = f"<code>{esc(row['receipt'])}</code>" if row.get("receipt") else ""
     warning = f"<span>{esc(row['warning'])}</span>" if row.get("warning") else ""
     evidence = " ".join(part for part in (*path_links, command, receipt, warning) if part)
-    return f"""
-      <article class="row {esc(row['kind'])}" data-provenance="{esc(row['provenance'])}">
-        <div class="row-main">
-          <div class="row-label">{esc(row['label'])}</div>
-          <div class="row-detail">{esc(row['detail'])}</div>
-          <div class="row-evidence">{evidence}</div>
-        </div>
-        <div class="status">{esc(display_status(row['status']))}</div>
-      </article>
-    """
+    return "\n".join(
+        [
+            f'      <article class="row {esc(row["kind"])}" data-provenance="{esc(row["provenance"])}">',
+            '        <div class="row-main">',
+            f'          <div class="row-label">{esc(row["label"])}</div>',
+            f'          <div class="row-detail">{esc(row["detail"])}</div>',
+            f'          <div class="row-evidence">{evidence}</div>',
+            "        </div>",
+            f'        <div class="status">{esc(display_status(row["status"]))}</div>',
+            "      </article>",
+        ]
+    )
 
 
 def snapshot_payload(
@@ -598,7 +600,7 @@ def render_html(
     readiness = str(trace.get("readiness_canonical") or trace.get("readiness") or "unknown")
     report_status = str(report_contract.get("status") or "unknown")
     blockers = report_contract.get("status_reasons") or []
-    row_html = "\n".join(render_row(row, output_path) for row in rows)
+    row_html = "\n".join(render_row(row, output_path).strip("\n") for row in rows)
     blocker_html = "".join(f"<li>{esc(item)}</li>" for item in blockers)
     return f"""<!doctype html>
 <html lang="en">
@@ -760,7 +762,7 @@ def render_html(
     <section>
       <h2>First Five-Minute Path</h2>
       <div class="path">
-        {row_html}
+{row_html}
       </div>
     </section>
   </main>

@@ -158,7 +158,6 @@
     <section>
       <h2>First Five-Minute Path</h2>
       <div class="path">
-
       <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo">
         <div class="row-main">
           <div class="row-label">Project</div>
@@ -167,8 +166,6 @@
         </div>
         <div class="status">present</div>
       </article>
-
-
       <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
         <div class="row-main">
           <div class="row-label">Bounded claim</div>
@@ -177,8 +174,6 @@
         </div>
         <div class="status">valid intake</div>
       </article>
-
-
       <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
         <div class="row-main">
           <div class="row-label">Non-claims</div>
@@ -187,8 +182,6 @@
         </div>
         <div class="status">4 recorded</div>
       </article>
-
-
       <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | source=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=ztare-source-index-receipt-v1">
         <div class="row-main">
           <div class="row-label">Source readiness</div>
@@ -197,8 +190,6 @@
         </div>
         <div class="status">ready for evidence prep</div>
       </article>
-
-
       <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json | source=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | evidence=projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json | command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json">
         <div class="row-main">
           <div class="row-label">Evidence readiness</div>
@@ -207,8 +198,6 @@
         </div>
         <div class="status">fresh</div>
       </article>
-
-
       <article class="row ready" data-provenance="command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=ztare-kernel-entry-contract-v1">
         <div class="row-main">
           <div class="row-label">Run readiness</div>
@@ -217,8 +206,6 @@
         </div>
         <div class="status">ready</div>
       </article>
-
-
       <article class="row ready" data-provenance="command=ztare autoresearch run --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --iters 1 --mutator kimi --judge grok --inverter deepseek --llm-timeout-seconds 240 --llm-retries 1 --preflight-only | receipt=loop admission preflight path">
         <div class="row-main">
           <div class="row-label">Preflight</div>
@@ -227,8 +214,6 @@
         </div>
         <div class="status">available</div>
       </article>
-
-
       <article class="row ready" data-provenance="command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=loop_admission">
         <div class="row-main">
           <div class="row-label">Loop admission</div>
@@ -237,8 +222,6 @@
         </div>
         <div class="status">available</div>
       </article>
-
-
       <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl | evidence=projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl">
         <div class="row-main">
           <div class="row-label">Run history</div>
@@ -247,8 +230,6 @@
         </div>
         <div class="status">available</div>
       </article>
-
-
       <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
         <div class="row-main">
           <div class="row-label">Next falsifier</div>
@@ -257,8 +238,6 @@
         </div>
         <div class="status">passed</div>
       </article>
-
-
       <article class="row attention" data-provenance="file=projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json | evidence=projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json | command=make synth-contract PROJECT=ops_root_cause_diagnosis_demo RENDERER=decision_brief PYTHON=./venv/bin/python | receipt=ztare-synthesis-input-binding-status-v1 | review_artifact=projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json">
         <div class="row-main">
           <div class="row-label">Report/export</div>
@@ -267,8 +246,6 @@
         </div>
         <div class="status">blocked</div>
       </article>
-
-
       <article class="row ready" data-provenance="receipt=ztare-forensic-workbench-review-receipt-v1 | warning=no applied review receipt">
         <div class="row-main">
           <div class="row-label">Latest review receipt</div>
@@ -277,7 +254,6 @@
         </div>
         <div class="status">no review applied</div>
       </article>
-
       </div>
     </section>
   </main>
