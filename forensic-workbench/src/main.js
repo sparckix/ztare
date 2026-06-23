@@ -32,6 +32,8 @@ const ROW_ACTIONS = [
   { id: "export_blocker", label: "Export blocker" }
 ];
 
+const ROW_ACTION_LABELS = Object.fromEntries(ROW_ACTIONS.map((action) => [action.id, action.label]));
+
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
   { id: "evidence", label: "Evidence", rowLabel: "Evidence readiness" },
@@ -170,6 +172,77 @@ function buildRowActionFile(snapshot, row, actionState) {
     evidence_refs: evidenceItems(row).map((item) => ({ type: item.type, value: item.value }))
   };
   return JSON.stringify(payload, null, 2);
+}
+
+function firstPreviewableEvidence(row) {
+  return evidenceItems(row || {}).find(canPreviewEvidence) || null;
+}
+
+function firstEvidenceText(row) {
+  const item = firstPreviewableEvidence(row) || evidenceItems(row || {})[0];
+  return item ? `${item.label}: ${item.value}` : "No evidence file recorded.";
+}
+
+function rowActionSuggestion(snapshot, row) {
+  if (!row) {
+    return {
+      action: "next_step",
+      title: "Select a row",
+      note: "Select a row before saving an action.",
+      evidence: "No row selected.",
+      command: ""
+    };
+  }
+
+  const rowName = row.label;
+  const status = displayText(row.status);
+  const evidence = firstEvidenceText(row);
+  const command = row.command || "";
+  const warning = row.warning ? ` Warning: ${row.warning}.` : "";
+  const reportBlocked = row.label === "Report/export" && snapshot.report_status === "blocked";
+  const missingish = /missing|unknown|unavailable|unbound|not discovered|no_action|no_review/i.test(
+    `${row.status} ${row.detail} ${row.warning}`
+  );
+
+  if (reportBlocked || row.status === "blocked" || row.kind === "attention") {
+    return {
+      action: "export_blocker",
+      title: "Resolve before export",
+      note: `Hold export on ${rowName}. Inspect ${evidence}.${warning}${command ? ` Re-run or inspect: ${command}` : ""}`.trim(),
+      evidence,
+      command
+    };
+  }
+
+  if (missingish) {
+    return {
+      action: "needs_source",
+      title: "Fill the missing input",
+      note: `Update ${rowName} before relying on this case. Inspect ${evidence}.${warning}`.trim(),
+      evidence,
+      command
+    };
+  }
+
+  if (row.label === "Run readiness" || row.label === "Preflight" || /ready|available/.test(row.status)) {
+    return {
+      action: command ? "ready_to_run" : "next_step",
+      title: command ? "Run the surfaced command" : "Keep this row as evidence",
+      note: command
+        ? `Run the surfaced command for ${rowName}: ${command}`
+        : `${rowName} is ${status}. Keep ${evidence} attached to the case.`,
+      evidence,
+      command
+    };
+  }
+
+  return {
+    action: "next_step",
+    title: "Record the next move",
+    note: `${rowName} is ${status}. Inspect ${evidence} and decide the next project action.`,
+    evidence,
+    command
+  };
 }
 
 function parseReviewFile(value) {
@@ -841,6 +914,7 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
 }
 
 function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMode, applyRowActionLive }) {
+  const suggestion = rowActionSuggestion(snapshot, row);
   const action = actionState.action || "next_step";
   const rowActionFile = buildRowActionFile(snapshot, row, actionState);
   const rowActionPayload = parseReviewFile(rowActionFile);
@@ -860,6 +934,11 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
   const updateNote = (event) => {
     if (!row) return;
     setActionState(row.label, { ...actionState, note: event.target.value });
+  };
+
+  const useSuggestion = () => {
+    if (!row) return;
+    setActionState(row.label, { action: suggestion.action, note: suggestion.note });
   };
 
   return h(
@@ -887,6 +966,40 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
           },
           item.label
         )
+      )
+    ),
+    h(
+      "div",
+      { className: "action-suggestion" },
+      h("span", null, "Suggested action"),
+      h("strong", null, suggestion.title),
+      h("p", null, `${ROW_ACTION_LABELS[suggestion.action] || "Next step"}: ${suggestion.note}`),
+      h("code", null, suggestion.evidence),
+      h(
+        "div",
+        { className: "action-suggestion-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button primary",
+            type: "button",
+            onClick: useSuggestion,
+            disabled: !row,
+            title: row ? "Use the suggested action and note" : "Select a row first"
+          },
+          "Use suggestion"
+        ),
+        suggestion.command
+          ? h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(suggestion.command)
+              },
+              "Copy command"
+            )
+          : null
       )
     ),
     h("textarea", {

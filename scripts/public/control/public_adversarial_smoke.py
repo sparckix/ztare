@@ -229,6 +229,8 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "The refreshed app should show the latest-review receipt row.",
     "make forensic-workbench-api",
     "make forensic-workbench-live",
+    "Suggested action",
+    "Use suggestion",
     "/api/projects",
     "/api/snapshot",
     "/api/health",

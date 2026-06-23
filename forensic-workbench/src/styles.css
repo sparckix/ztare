@@ -1177,12 +1177,14 @@ code {
 
 .review-actions button:disabled,
 .handoff-card button:disabled,
-.review-workspace textarea:disabled {
+.review-workspace textarea:disabled,
+.row-action-workspace textarea:disabled {
   cursor: not-allowed;
   opacity: 0.55;
 }
 
-.review-workspace textarea {
+.review-workspace textarea,
+.row-action-workspace textarea {
   min-width: 0;
   min-height: 114px;
   width: 100%;
@@ -1192,6 +1194,49 @@ code {
   background: #ffffff;
   color: #17201d;
   line-height: 1.45;
+}
+
+.action-suggestion {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 11px;
+  background: #f5f8f7;
+  border: 1px solid #c8d8d3;
+}
+
+.action-suggestion span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.action-suggestion strong {
+  color: #17201d;
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.action-suggestion p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.action-suggestion code {
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.action-suggestion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .handoff-card {
