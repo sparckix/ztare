@@ -19,7 +19,8 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 MAX_PREVIEW_BYTES = 200_000
 INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
-INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims")
+INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
+INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 
 
 def json_bytes(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
@@ -111,6 +112,8 @@ def intake_payload_for_project(project: str, intake: str | None = None) -> dict[
             "next_falsifier": str(payload.get("next_falsifier") or ""),
             "notes": str(payload.get("notes") or ""),
             "non_claims": [str(item) for item in payload.get("non_claims") or []],
+            "source_refs": [str(item) for item in payload.get("source_refs") or []],
+            "evidence_refs": [str(item) for item in payload.get("evidence_refs") or []],
         },
     }
 
@@ -123,11 +126,11 @@ def normalize_intake_patch(raw_patch: Any) -> dict[str, Any]:
         if key not in raw_patch:
             continue
         value = raw_patch[key]
-        if key == "non_claims":
+        if key in INTAKE_LIST_FIELDS:
             if isinstance(value, str):
                 value = [line.strip() for line in value.splitlines() if line.strip()]
             if not isinstance(value, list) or not all(isinstance(item, str) and item.strip() for item in value):
-                raise ValueError("non_claims must be a list of non-empty strings")
+                raise ValueError(f"{key} must be a list of non-empty strings")
             patch[key] = [item.strip() for item in value]
             continue
         if not isinstance(value, str) or not value.strip():

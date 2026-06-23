@@ -254,6 +254,13 @@ function parseReviewFile(value) {
   }
 }
 
+function linesFromText(value) {
+  return String(value || "")
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
 function canPreviewEvidence(item) {
   return ["file", "source", "evidence", "review"].includes(item.type);
 }
@@ -319,7 +326,9 @@ function intakeDraftFromPayload(payload) {
     bounded_claim: fields.bounded_claim || "",
     next_falsifier: fields.next_falsifier || "",
     notes: fields.notes || "",
-    non_claims_text: (fields.non_claims || []).join("\n")
+    non_claims_text: (fields.non_claims || []).join("\n"),
+    source_refs_text: (fields.source_refs || []).join("\n"),
+    evidence_refs_text: (fields.evidence_refs || []).join("\n")
   };
 }
 
@@ -335,7 +344,7 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload }) 
       "div",
       { className: "intake-editor-head" },
       h("span", { className: "eyebrow" }, "Project intake"),
-      h("h2", null, "Edit the claim boundary"),
+      h("h2", null, "Edit intake state"),
       h("p", null, message || (liveMode ? "Live edits write to the project intake and create an intake-edit receipt." : "Start the local API to edit the project intake."))
     ),
     h(
@@ -383,6 +392,28 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload }) 
           onChange: update("non_claims_text"),
           disabled,
           "aria-label": "Non-claims"
+        })
+      ),
+      h(
+        "label",
+        null,
+        h("span", null, "Source refs"),
+        h("textarea", {
+          value: (draft && draft.source_refs_text) || "",
+          onChange: update("source_refs_text"),
+          disabled,
+          "aria-label": "Source refs"
+        })
+      ),
+      h(
+        "label",
+        null,
+        h("span", null, "Evidence refs"),
+        h("textarea", {
+          value: (draft && draft.evidence_refs_text) || "",
+          onChange: update("evidence_refs_text"),
+          disabled,
+          "aria-label": "Evidence refs"
         })
       )
     ),
@@ -1600,10 +1631,6 @@ function App() {
 
   const saveIntakeDraft = () => {
     if (!snapshot || !liveMode || !intakeDraft) return;
-    const nonClaims = (intakeDraft.non_claims_text || "")
-      .split(/\r?\n/)
-      .map((line) => line.trim())
-      .filter(Boolean);
     setIntakeMessage("Saving intake edit.");
     fetch("/api/intake", {
       method: "POST",
@@ -1619,7 +1646,9 @@ function App() {
           bounded_claim: intakeDraft.bounded_claim,
           next_falsifier: intakeDraft.next_falsifier,
           notes: intakeDraft.notes,
-          non_claims: nonClaims
+          non_claims: linesFromText(intakeDraft.non_claims_text),
+          source_refs: linesFromText(intakeDraft.source_refs_text),
+          evidence_refs: linesFromText(intakeDraft.evidence_refs_text)
         }
       })
     })
