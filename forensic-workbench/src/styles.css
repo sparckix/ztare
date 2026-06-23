@@ -1063,6 +1063,144 @@ code {
   text-transform: uppercase;
 }
 
+.report-contract-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.46fr) minmax(300px, 0.5fr) minmax(0, 1.28fr);
+  gap: 12px;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #1c6552;
+}
+
+.report-contract-panel.attention {
+  background: #fffaf2;
+  border-color: #ddc6a7;
+  border-left-color: #bd6a1d;
+}
+
+.report-contract-summary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.report-contract-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 22px;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.report-contract-summary p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.report-contract-metrics {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.report-contract-metrics div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #fbfcfb;
+}
+
+.report-contract-metrics span,
+.report-contract-section > span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.report-contract-metrics strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 14px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.report-contract-body {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(160px, 0.62fr) minmax(220px, 0.86fr) minmax(220px, 1fr) minmax(220px, 1fr);
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.report-contract-section {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  padding: 10px;
+  background: #ffffff;
+}
+
+.report-contract-section p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.report-contract-section strong {
+  min-width: 0;
+  padding: 6px 8px;
+  background: #fff7eb;
+  border: 1px solid #dfc29d;
+  color: #78400f;
+  font-size: 12px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.report-contract-section code {
+  min-width: 0;
+  padding: 7px;
+  background: #f5f7f6;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.report-contract-file,
+.report-contract-command {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.report-contract-file > span,
+.report-contract-command > span,
+.report-contract-file code,
+.report-contract-command code {
+  grid-column: 1 / -1;
+}
+
+.report-contract-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
 .text-link {
   min-height: 34px;
   display: inline-flex;
@@ -2557,6 +2695,7 @@ code {
   .path-panel,
   .project-context-panel,
   .receipt-history,
+  .report-contract-panel,
   .trace-console,
   .review-queue,
   .row-action-workspace,
@@ -2598,6 +2737,11 @@ code {
   }
 
   .health-findings {
+    grid-template-columns: 1fr;
+  }
+
+  .report-contract-body,
+  .report-contract-metrics {
     grid-template-columns: 1fr;
   }
 

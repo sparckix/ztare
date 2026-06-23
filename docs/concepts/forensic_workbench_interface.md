@@ -176,6 +176,9 @@ GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 GET /api/trace?project=<project>&rubric=<rubric>&intake=<intake>
 -> autoresearch trace summary: carrier chain, run gate, plan, graph, and commands
 
+GET /api/report-contract?project=<project>&renderer=<renderer>
+-> report/export status, blocker reasons, synthesis input binding, contract path, and command
+
 GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
@@ -201,6 +204,8 @@ and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
 bounded-claim status, source/evidence readiness, recent receipt history, and
 report/export state before the user opens a case.
+The report/export panel should show the blocker reasons, synthesis input-binding
+status, contract file path, and exact support command.
 
 The index must include both first-run demos:
 

@@ -65,13 +65,17 @@ project files. If the API is not running at startup, the app falls back to
 is detected, the app keeps the current case and shows the error instead of
 swapping in stale static data.
 
-Live mode also fetches `/api/trace` and `/api/health` for the selected project.
+Live mode also fetches `/api/trace`, `/api/report-contract`, and `/api/health`
+for the selected project.
 The trace endpoint returns `ztare-forensic-workbench-trace-v1`: carrier chain,
 kernel-entry state, plan steps, loop admission, graph summaries,
 source/evidence statuses, and copyable next commands from
-`ztare autoresearch trace`. The health endpoint returns kernel-health attention
+`ztare autoresearch trace`. The report endpoint returns
+`ztare-forensic-workbench-report-contract-v1`: report/export status, blocker
+reasons, synthesis input-binding state, the backing contract path, and the
+copyable `make synth-contract` command. The health endpoint returns kernel-health attention
 components, action-intelligence source-health issues, and source-health file
-paths. The workbench shows both as read-only rows with copyable commands and
+paths. The workbench shows these as read-only rows with copyable commands and
 previewable source files, so advisory blockers are inspectable without becoming
 hidden browser writes.
 
@@ -127,6 +131,8 @@ The interface is organized as a local claim-review surface:
   commands
 - autoresearch trace console showing carrier chain, kernel-entry status, plan
   steps, graph carriers, source/evidence paths, and next commands
+- report/export contract panel showing blocker reasons, synthesis input-binding
+  state, contract file path, and the exact support command
 - current-action rail with the next command or provenance target
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files

@@ -21,6 +21,7 @@ DEFAULT_PORT = 8765
 MAX_PREVIEW_BYTES = 200_000
 INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
 RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
+REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -507,6 +508,39 @@ def snapshot_payload_for_project(
     return payload
 
 
+def report_contract_payload_for_project(
+    *,
+    project: str,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    renderer = renderer or snapshot.DEFAULT_RENDERER
+    payload, command = snapshot.collect_report_contract(project, renderer)
+    binding = payload.get("synthesis_input_binding") or {}
+    reasons = [str(reason) for reason in payload.get("status_reasons") or []]
+    report_path = snapshot.rel(payload.get("report_support_contract"))
+    return {
+        "schema": REPORT_CONTRACT_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "renderer": renderer,
+        "command": command,
+        "ok": bool(payload.get("ok")),
+        "status": payload.get("status") or "unknown",
+        "status_reasons": reasons,
+        "report_support_contract": report_path,
+        "synthesis_input_binding": {
+            "schema": binding.get("schema"),
+            "ok": bool(binding.get("ok")),
+            "status": binding.get("status") or "unknown",
+            "reason": binding.get("reason") or "",
+            "artifact_count": binding.get("artifact_count"),
+            "current_digest": binding.get("current_digest"),
+            "ledger_digest": binding.get("ledger_digest"),
+        },
+    }
+
+
 def trace_payload_for_project(
     *,
     project: str,
@@ -752,6 +786,13 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 rubric = first_param(params, "rubric", project)
                 intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
                 payload = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
+                self.send_json(payload)
+                return
+            if parsed.path == "/api/report-contract":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                renderer = first_param(params, "renderer", snapshot.DEFAULT_RENDERER)
+                payload = report_contract_payload_for_project(project=project, renderer=renderer)
                 self.send_json(payload)
                 return
             if parsed.path == "/api/file":

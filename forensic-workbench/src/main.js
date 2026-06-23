@@ -33,6 +33,7 @@ const ROW_ACTIONS = [
 ];
 
 const ROW_ACTION_LABELS = Object.fromEntries(ROW_ACTIONS.map((action) => [action.id, action.label]));
+const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
 
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
@@ -65,6 +66,12 @@ function kindLabel(kind) {
 function displayText(value) {
   const raw = String(value || "none");
   return DISPLAY_OVERRIDES[raw] || raw.replace(/_/g, " ");
+}
+
+function shortDigest(value) {
+  const raw = String(value || "");
+  if (!raw) return "none";
+  return raw.length > 16 ? `${raw.slice(0, 12)}...${raw.slice(-4)}` : raw;
 }
 
 function evidenceItems(row) {
@@ -837,6 +844,112 @@ function TraceConsolePanel({ traceContext, message, liveMode, onPreviewSource })
               )
             )
           : h("p", null, "No graph carriers surfaced.")
+      )
+    )
+  );
+}
+
+function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
+  const binding = (reportContext && reportContext.synthesis_input_binding) || {};
+  const reasons = (reportContext && reportContext.status_reasons) || [];
+  const contractPath = (reportContext && reportContext.report_support_contract) || "";
+  const command = (reportContext && reportContext.command) || "";
+  const schema = (reportContext && reportContext.schema) || REPORT_CONTRACT_SCHEMA;
+  const status = (reportContext && reportContext.status) || "loading";
+  const isBlocked = status === "blocked" || reasons.length > 0 || binding.status === "unbound";
+
+  return h(
+    "section",
+    { className: `report-contract-panel ${isBlocked ? "attention" : "ready"}`, "aria-label": "Report/export contract" },
+    h(
+      "div",
+      { className: "report-contract-summary" },
+      h("span", { className: "eyebrow" }, "Report/export"),
+      h("h2", null, displayText(status)),
+      h(
+        "p",
+        null,
+        message ||
+          (liveMode
+            ? "Report support contract loaded from the local API."
+            : "Start the local API to inspect the report support contract.")
+      )
+    ),
+    h(
+      "div",
+      { className: "report-contract-metrics" },
+      h("div", null, h("span", null, "Binding"), h("strong", null, displayText(binding.status || "unknown"))),
+      h("div", null, h("span", null, "Artifacts"), h("strong", null, String(binding.artifact_count ?? "none"))),
+      h("div", null, h("span", null, "Current digest"), h("strong", null, shortDigest(binding.current_digest))),
+      h("div", null, h("span", null, "Ledger digest"), h("strong", null, shortDigest(binding.ledger_digest)))
+    ),
+    h(
+      "div",
+      { className: "report-contract-body" },
+      h(
+        "div",
+        { className: "report-contract-section" },
+        h("span", null, "Blockers"),
+        reasons.length
+          ? reasons.map((reason) => h("strong", { key: reason }, displayText(reason)))
+          : h("p", null, "No report blockers surfaced.")
+      ),
+      h(
+        "div",
+        { className: "report-contract-section" },
+        h("span", null, "Input binding"),
+        h("p", null, binding.reason || "No binding reason loaded."),
+        binding.schema ? h("code", null, binding.schema) : null
+      ),
+      h(
+        "div",
+        { className: "report-contract-section report-contract-file" },
+        h("span", null, "Contract file"),
+        h("code", null, contractPath || "No report contract path loaded."),
+        h(
+          "div",
+          { className: "report-contract-actions" },
+          h(
+            "button",
+            {
+              className: "copy-button",
+              type: "button",
+              disabled: !liveMode || !contractPath,
+              onClick: () => onPreview && onPreview({ type: "report", value: contractPath }),
+              title: liveMode ? "Preview the report contract JSON" : "Start the local API to preview files"
+            },
+            "Preview"
+          ),
+          h(
+            "button",
+            {
+              className: "copy-button",
+              type: "button",
+              disabled: !contractPath,
+              onClick: () => copyText(contractPath),
+              title: "Copy report contract path"
+            },
+            "Copy path"
+          )
+        )
+      ),
+      h(
+        "div",
+        { className: "report-contract-section report-contract-command" },
+        h("span", null, "Command"),
+        h("code", null, schema),
+        h("code", null, command || "No report command loaded."),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !command,
+            onClick: () => copyText(command),
+            title: "Copy report contract command"
+          },
+          "Copy command"
+        )
       )
     )
   );
@@ -1872,6 +1985,8 @@ function App() {
   const [traceMessage, setTraceMessage] = useState("");
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
+  const [reportContractContext, setReportContractContext] = useState(null);
+  const [reportContractMessage, setReportContractMessage] = useState("");
   const [projects, setProjects] = useState([]);
   const [selectedProjectKey, setSelectedProjectKey] = useState("");
   const [liveMode, setLiveMode] = useState(false);
@@ -1933,6 +2048,25 @@ function App() {
       .catch((err) => {
         setTraceContext(null);
         setTraceMessage(`Live autoresearch trace unavailable: ${err.message || err}`);
+      });
+  };
+
+  const loadReportContractContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setReportContractMessage("Loading report support contract.");
+    return fetch(endpointUrl("/api/report-contract", projectParams), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`report contract fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false && !payload.status) throw new Error(payload.error || "report contract fetch failed");
+        setReportContractContext(payload);
+        setReportContractMessage("Report support contract loaded from the local API.");
+      })
+      .catch((err) => {
+        setReportContractContext(null);
+        setReportContractMessage(`Report support contract unavailable: ${err.message || err}`);
       });
   };
 
@@ -1998,10 +2132,18 @@ function App() {
         if (useLiveApi) {
           const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
           setSelectedProjectKey(payload.project);
-          return Promise.allSettled([loadTraceContext(liveParams), loadHealthContext(liveParams), loadIntakeDraft(liveParams), loadReceiptHistory(liveParams)]);
+          return Promise.allSettled([
+            loadTraceContext(liveParams),
+            loadReportContractContext(liveParams),
+            loadHealthContext(liveParams),
+            loadIntakeDraft(liveParams),
+            loadReceiptHistory(liveParams)
+          ]);
         }
         setTraceContext(null);
         setTraceMessage("Static mode uses the last generated snapshot only.");
+        setReportContractContext(null);
+        setReportContractMessage("Static mode uses the report/export row from the last generated snapshot only.");
         setHealthContext(null);
         setHealthMessage("Static mode uses the last generated snapshot only.");
         setIntakeDraft(null);
@@ -2117,6 +2259,25 @@ function App() {
     if (!snapshot) return null;
     return projects.find((row) => row.project === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
   }, [projects, selectedProjectKey, snapshot]);
+
+  const reportPanelContext = useMemo(() => {
+    if (reportContractContext) return reportContractContext;
+    const rows = (snapshot && snapshot.rows) || [];
+    const reportRow = rowByLabel(rows, "Report/export") || {};
+    return {
+      schema: REPORT_CONTRACT_SCHEMA,
+      status: (snapshot && snapshot.report_status) || reportRow.status || "unknown",
+      status_reasons: (snapshot && snapshot.status_reasons) || [],
+      report_support_contract: (currentProjectEntry && currentProjectEntry.report_contract) || reportRow.file || reportRow.evidence || "",
+      command: reportRow.command || "",
+      synthesis_input_binding: {
+        status: liveMode ? "loading" : "snapshot",
+        reason: liveMode
+          ? "The live report support contract is still loading."
+          : "Static mode shows the report/export row from the last generated snapshot."
+      }
+    };
+  }, [currentProjectEntry, liveMode, reportContractContext, snapshot]);
 
   const selectedReviewState = (selectedRow && reviewStates[selectedRow.label]) || { decision: "", note: "" };
   const setSelectedReviewState = (label, nextState) => {
@@ -2337,6 +2498,7 @@ function App() {
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
+      h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),
       h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),
