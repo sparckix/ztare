@@ -67,8 +67,8 @@ editor.
 The raw-source panel calls `/api/sources` to load the typed source list,
 `/api/source-file` to open one existing source, and `/api/source-edit` to write
 the edited source body/type back to disk. The panel shows pending source
-changes and refuses no-op saves, so a source-edit receipt means the file or type
-actually changed. A source edit updates `raw/source_type_map.json`, appends a
+changes and refuses no-op saves, so a source-edit receipt means the source text
+or type actually changed. A source edit updates `raw/source_type_map.json`, appends a
 source-edit receipt, writes the latest source-edit receipt JSON, reruns
 source-check, and refreshes the case.
 The inspector can preview a selected intake ref or row file/source/evidence/review

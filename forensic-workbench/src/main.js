@@ -1012,7 +1012,17 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
       h(
         "div",
         { className: "raw-source-editor-fields" },
-        h("label", null, h("span", null, "File"), h("input", { value: draft.relative_raw_path, onInput: (inputEvent) => setField("relative_raw_path", inputEvent.target.value), placeholder: "source_note.md" })),
+        h(
+          "label",
+          null,
+          h("span", null, "File"),
+          h("input", {
+            value: draft.relative_raw_path,
+            disabled: true,
+            placeholder: "Open a source from the list",
+            title: "Source paths are selected from the list. Use Source import to add a new file."
+          })
+        ),
         h(
           "label",
           null,
@@ -1030,7 +1040,7 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
         { className: `raw-source-pending ${changedFields.length ? "changed" : ""}`, "aria-label": "Pending source write" },
         h("span", null, "Pending write"),
         h("strong", null, changedFields.length ? `${changedFields.length} changed field${changedFields.length === 1 ? "" : "s"}` : "No changes"),
-        h("p", null, changedFields.length ? changedFields.map(displayFieldName).join(", ") : "Open a source and edit body or type before writing a receipt."),
+        h("p", null, changedFields.length ? changedFields.map(displayFieldName).join(", ") : "Open a source and edit text or type before writing a receipt."),
         h("code", null, draft.relative_raw_path ? `target=${draft.relative_raw_path}` : "target=none")
       ),
       h(
@@ -1102,7 +1112,6 @@ function displayFieldName(value) {
 function sourceDraftFields(draft) {
   if (!draft) return {};
   return {
-    relative_raw_path: draft.relative_raw_path || "",
     source_type: draft.source_type || "",
     body: draft.body || ""
   };
