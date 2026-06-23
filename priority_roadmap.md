@@ -352,7 +352,8 @@ Early constraints:
   inspect intake, source paths, compiled evidence, blockers, review decisions,
   saved review files, and receipts. The current prototype covers this as a
   React/Vite shell with live local project switching, explicit local API review
-  apply, static review-file download/copy fallback, and refreshed receipt
+  apply, explicit row-action save, health finding to row-action staging,
+  static review/action-file download/copy fallback, and refreshed receipt
   visibility. Live mode opens the live snapshot JSON for the selected project;
   static mode remains the fallback when the local API is absent. Focused
   regressions cover the downloaded review file -> CLI apply path and the local

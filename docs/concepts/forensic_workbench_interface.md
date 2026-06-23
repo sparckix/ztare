@@ -324,10 +324,13 @@ receipt, latest write-refresh result, pending intake draft edits, and recent
 receipt paths for download or copy, but it must not write project files or
 imply that a blocked case is reviewed.
 
-Health and action rows are read-only in D4. They may tell the reviewer that a
+Health and action rows are advisory in D4. They may tell the reviewer that a
 project has kernel-health attention, provider-runtime risk, stale source-health
-inputs, or advisory action-intelligence warnings. They do not make release
-claims stronger and do not become hidden control authority.
+inputs, or action-intelligence warnings. A reviewer may stage one of those
+warnings as a row action on the affected case row. Saving that action uses the
+same explicit row-action receipt path as any manual action note. The warning
+itself does not make release claims stronger and does not become hidden control
+authority.
 
 ## Acceptance Tests
 
