@@ -125,6 +125,17 @@ Test: can the operator look up this row 30 days later and tell whether the predi
 
 One principal, solo. **90% of value for 20% of effort, while still meeting a high bar.** No team-cadences. Cathedrals collapse to 90/20.
 
+## 1a. Code-to-test balance
+
+Default engineering ratio: roughly 80% implementation/product/docs and 20%
+tests/fixtures/verification. Tests must earn their place by guarding real
+integration risk, public contracts, safety boundaries, or high-blast-radius
+logic. Do not grow fixture farms or mirror every implementation branch just to
+raise counts. Prefer focused changed-surface checks, one real-input smoke, and
+head-simulated edge cases; reserve broad suites for commits, pushes, shared
+contracts, migrations, and high-risk changes. If a test costs more code than
+the behavior it protects, justify it or delete/simplify it.
+
 ## 2. Opportunistic archival
 
 When you read repo state and notice a `closed` program (per `supervisor/program_registry.json` or `PRINCIPAL_MANUAL.md` §10) still has artifacts in `research_areas/seeds/active/`, `specs/active/`, `drafts/`, `program_plans/`, flag to principal before finishing response. On "archive foo" → execute `git mv` per `PRINCIPAL_MANUAL.md` §1b. No script, no Makefile.
