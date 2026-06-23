@@ -4338,7 +4338,7 @@ function App() {
       setSourceEditDraft(emptySourceEditDraft());
       setSourceEditMessage("Raw source draft cleared by refresh.");
     }
-    const entry = projects.find((row) => row.project === snapshot.project) || snapshot;
+    const entry = currentProjectEntry || snapshot;
     loadSnapshot(entry, true, { preserveSelection: true }).catch((err) =>
       setModeMessage(`Could not refresh live project snapshot for ${snapshot.project}: ${err.message || err}`)
     );
@@ -4620,7 +4620,13 @@ function App() {
 
   const currentProjectEntry = useMemo(() => {
     if (!snapshot) return null;
-    return projects.find((row) => projectEntryKey(row) === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
+    const snapshotKey = projectEntryKey(snapshot);
+    return (
+      projects.find((row) => projectEntryKey(row) === selectedProjectKey) ||
+      projects.find((row) => projectEntryKey(row) === snapshotKey) ||
+      projects.find((row) => row.project === snapshot.project) ||
+      null
+    );
   }, [projects, selectedProjectKey, snapshot]);
 
   const reportPanelContext = useMemo(() => {
