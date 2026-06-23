@@ -1,0 +1,130 @@
+{
+  "reviews": [
+    {
+      "specimen_id": "self_referential_falsification",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "f5c94ee60f2f5de900301d4c2592c88f0dae16dd27744a86e7cc4da517a379a1",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "unidirectional_decay",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "9baa752d5aa1c7542b37a7d2e4543f1a5abe6ab92dafba237d6607863402d053",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "deterministic_score_contract",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "00c7f3767da616fb5771e6d39391561f01c219cabce5523d6d8e4fd3667d5152",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "fail_closed_test_status",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "d4c7c4b75fa03bd769bb0fb718a2c79ae9c74dd6cfcfb675b4130b59d84b6fc5",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "t1_recursive_bayesian",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "4d78b2effe69fde4207b69289341dd43a4968738bc73e0c2fac612602806566c",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "t2_ai_inference",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "736e329d6fb6e46ff1a1b3fd8c26943c26f19efbebd0364e2e47f4ad3cf85c8d",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "t3_tsmc",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "770fb02fa80ffcfcb9056db22b46e269442248f0bde74a35a3993d16d312d895",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "t4_simulation_god",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "ebab485f533f66e3a516a23abf82ed92c5bb6a5a8f5862e061bd0a838ce38919",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    },
+    {
+      "specimen_id": "t5_epistemic_engine",
+      "model": "<ordinary-reviewer-model>",
+      "timestamp": "<ISO-8601 review timestamp>",
+      "prompt_sha256": "3801408c0151cf6941da10aff00d871ff3b1123cb0a5bf3e06770e17aac2d30c",
+      "provider_runtime": "<provider/runtime>",
+      "review": {
+        "accept_claim_as_stated": "<boolean>",
+        "score": "<number from 0 to 100>",
+        "fatal_flaw_identified": "<boolean>",
+        "flaw_summary": "<string>",
+        "confidence": "<low|medium|high>"
+      }
+    }
+  ]
+}

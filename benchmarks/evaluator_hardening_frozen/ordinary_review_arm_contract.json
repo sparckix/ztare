@@ -1,0 +1,51 @@
+{
+  "arm_id": "D_ordinary_review",
+  "label": "ordinary unstructured LLM review",
+  "status": "specified_not_frozen",
+  "date": "2026-06-18",
+  "source_suite": "benchmarks/constraint_memory/runs/20260404_195100",
+  "specimen_set_rule": "Use the same specimen ids, labels, pass_threshold, and good/bad split as the frozen source suite. If a specimen differs, the row must mark specimen_set_difference and cannot be merged into the four-arm claim.",
+  "review_prompt_contract": {
+    "allowed_context": [
+      "specimen thesis",
+      "specimen evidence",
+      "public rubric name",
+      "question: should this claim be accepted as stated?"
+    ],
+    "forbidden_context": [
+      "deterministic score-gate outputs",
+      "mined primitive or precedent labels",
+      "expected_exploit fields",
+      "detection_keywords fields",
+      "structural_expected_flags fields",
+      "prior condition outputs from A/B/C"
+    ],
+    "required_output_schema": {
+      "accept_claim_as_stated": "boolean",
+      "score": "number from 0 to 100",
+      "fatal_flaw_identified": "boolean",
+      "flaw_summary": "string",
+      "confidence": "low | medium | high"
+    }
+  },
+  "metric_mapping": {
+    "false_accept_rate": "bad rows where accept_claim_as_stated is true or score >= pass_threshold",
+    "false_reject_rate": "good rows where accept_claim_as_stated is false and score < pass_threshold",
+    "structural_detection_rate": "bad rows where fatal_flaw_identified is true under the same semantic adjudication rule used by the frozen benchmark",
+    "exploit_detection_rate": "alias of structural_detection_rate for suite compatibility"
+  },
+  "required_import_provenance": {
+    "model": "non-empty model identifier for the ordinary reviewer",
+    "timestamp": "one of timestamp, reviewed_at, or created_at",
+    "prompt": "one of prompt_sha256, prompt_hash, prompt_path, or prompt",
+    "provider_runtime": "one of provider, runtime, or provider_runtime"
+  },
+  "prompt_binding_rule": "Imported rows must bind to the exact reviewer prompt generated for the selected specimen and source run. A prompt_sha256 or prompt_hash must match the runner-generated prompt hash; a prompt literal or readable prompt_path must hash to the same value. Relative prompt_path values are resolved from the import JSON file directory first.",
+  "upgrade_rule": "Only add D_ordinary_review to artifact_backed_arms after results.json, metrics_summary.json, ordinary_review_freeze_manifest.json, review prompt text, prompt hash binding, model id, review timestamp, and provider/runtime provenance are frozen under benchmarks/constraint_memory/runs/<run_id>, and ordinary_review_freeze_manifest.json reports can_promote_to_frozen_suite=true.",
+  "demotion_rule": "If D_ordinary_review matches the hardened arms on false accepts, false rejects, and structural detection, demote the evaluator-hardening claim to claim-discipline/read-model evidence rather than reviewer-strength evidence.",
+  "non_claims": [
+    "this contract is not a completed run",
+    "this contract is not evidence that ordinary review is weaker than deterministic gates",
+    "this contract does not make the current suite a four-arm benchmark"
+  ]
+}

@@ -11,6 +11,7 @@ The question is narrow and empirical:
 - `A_baseline_soft_judge`: rubric-only judge, no deterministic gates, no primitives
 - `B_deterministic_gates`: deterministic Python score gates, no primitives
 - `C_gates_plus_primitives`: deterministic gates plus approved attacker/judge-side primitives
+- `D_ordinary_review`: opt-in ordinary unstructured LLM review, no deterministic gates, no mined primitive context, no exploit labels, and no prior A/B/C outputs
 
 ## Specimens
 Each specimen is a fixed thesis package:
@@ -24,7 +25,7 @@ Each specimen is a fixed thesis package:
 For each specimen and each condition, the runner:
 1. stages a temporary benchmark project under `projects/`
 2. copies the specimen files into the project
-3. runs `python -m src.ztare.validator.test_thesis`
+3. runs `python -m ztare.validator.test_thesis`
 4. saves `eval_results.json`, stdout, stderr, and the debate log into `benchmarks/constraint_memory/runs/<run_id>/`
 5. computes summary metrics
 
@@ -82,6 +83,41 @@ python benchmarks/constraint_memory/run_benchmark.py --judge-model gemini --adju
 ```
 
 This adds a second lightweight LLM pass that decides whether the evaluator semantically caught the exploit family, even if it used different wording than the keyword list.
+
+Export ordinary-review prompts without calling a provider:
+
+```bash
+make benchmark-ordinary-review-prompts BENCH_ORDINARY_EXPORT=/tmp/ztare_ordinary_review_prompt_packet
+```
+
+This writes one prompt per selected specimen, a manifest with prompt hashes,
+and an import template. The prompt packet omits specimen labels, expected
+exploit metadata, detection keywords, and prior A/B/C condition outputs. The
+Make target binds the packet to the frozen evaluator-hardening source run by
+default; use `BENCH_ORDINARY_SOURCE_RUN=<run-dir>` only for a deliberately
+different comparison population.
+
+Run the opt-in ordinary-review arm from imported rows:
+
+```bash
+python benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review --match-source-run benchmarks/constraint_memory/runs/20260404_195100 --ordinary-review-import-results path/to/ordinary_review_rows.json
+```
+
+Imported rows must include model, timestamp, prompt hash/path/literal,
+provider/runtime provenance, and row-level review decisions. The prompt
+provenance must bind to the exact runner-generated prompt for that specimen;
+relative prompt paths resolve from the import JSON file directory first. The
+runner fails closed if selected specimens are missing, provenance is incomplete,
+or prompt hashes do not match.
+
+Preflight imported rows without creating a benchmark run:
+
+```bash
+make benchmark-ordinary-review-validate-import BENCH_ORDINARY_IMPORT=path/to/ordinary_review_rows.json
+```
+
+This validates selected-specimen coverage, review schema, provenance, and exact
+prompt binding before any live/frozen benchmark run.
 
 ## Safe Harbor
 Good controls are intentionally narrow local components. The benchmark rubric and prompt include an evidentiary safe harbor:
@@ -146,9 +182,9 @@ This suite is for controlled adversarial variants, not historical corpus reprodu
 
 **Sub-folders**
 
-- [`auxiliary_historical/`](auxiliary_historical/) - 25 file(s)
+- [`auxiliary_historical/`](auxiliary_historical/) - 19 file(s)
 - [`claim_test_mismatch/`](claim_test_mismatch/) - 19 file(s)
-- [`derived_subtle/`](derived_subtle/) - 15 file(s)
+- [`derived_subtle/`](derived_subtle/) - 16 file(s)
 - [`specimens/`](specimens/) - 72 file(s)
 - [`stage1_ood/`](stage1_ood/) - 12 file(s)
 - [`stage3_ood/`](stage3_ood/) - 4 file(s)

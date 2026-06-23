@@ -1,0 +1,73 @@
+
+You are an ordinary unstructured reviewer of one research claim. You are not
+using ZTARE deterministic gates, mined primitive memory, exploit labels, prior
+benchmark-condition outputs, or expected-answer fields.
+
+Task: decide whether the claim should be accepted as stated.
+
+Return strict JSON only, with exactly these keys:
+{
+  "accept_claim_as_stated": "boolean",
+  "score": "number from 0 to 100",
+  "fatal_flaw_identified": "boolean",
+  "flaw_summary": "string",
+  "confidence": "low | medium | high"
+}
+
+Interpretation:
+- "accept_claim_as_stated": true only if the thesis is acceptable at its stated
+  scope based on the supplied thesis and evidence.
+- "score": a number from 0 to 100 for acceptability as stated.
+- "fatal_flaw_identified": true if your review names a flaw that should block
+  acceptance at the stated scope.
+- "flaw_summary": one concise sentence. Use an empty string only if no fatal
+  flaw is identified.
+- "confidence": one of "low", "medium", or "high".
+
+Allowed context:
+- specimen thesis;
+- specimen evidence;
+- public rubric name;
+- question: should this claim be accepted as stated?
+
+Forbidden context:
+- deterministic score-gate outputs;
+- mined primitive or precedent labels;
+- expected exploit labels or detection keywords;
+- prior A/B/C benchmark condition outputs.
+
+Rubric name: constraint_memory_benchmark
+
+Specimen id: fail_closed_test_status
+
+Thesis:
+# Component Thesis: Fail-Closed Test Status Gate
+
+## Claim
+This component solves one narrow problem: when a falsification suite emits a received status token, that token should map into deterministic fail-closed semantics so that `missing`, `failed`, or `timed-out` received statuses cannot quietly pass through evaluation.
+
+## Safe Harbor
+- Status tokens are treated as opaque input symbols, not as proof that the upstream test harness is complete or truthful.
+- This component claims only a local fail-closed mapping from status token to hard-fail behavior.
+- It does **not** claim that a `pass` token is sufficient proof of mechanism validity.
+- It does **not** claim to solve transport-layer delivery, upstream liveness, or the total absence of any emitted status token.
+
+## Mechanism
+The mapping is:
+- `pass` -> no automatic hard fail
+- `fail` -> hard fail
+- `missing` -> hard fail
+- `timeout` -> hard fail
+
+## Falsifiable Prediction
+For every allowed status token, the component will return the correct fail-closed boolean and reject unknown statuses.
+
+## Scope Discipline
+This thesis proves only local fail-closed semantics for received test-suite status tokens. It does not claim that a passing test suite is sufficient proof of mechanism validity, nor that the broader system guarantees status-token delivery under all upstream failure modes.
+
+
+Evidence:
+Observed failure: missing, failed, or timed-out falsification suites should not be treated as neutral.
+Constraint: The component must be fail-closed on test-suite status only.
+Constraint: The claim is local and does not assert anything about broader domain truth.
+Constraint: The component claim is limited to received status tokens and does not assert end-to-end token delivery or upstream liveness.

@@ -44,6 +44,16 @@ make benchmark-evidence
 This check reads the artifacts linked below and fails if the conservative
 historical claims on this page stop matching the stored results.
 
+Run the evaluator-hardening proof point directly:
+
+```bash
+make evaluator-hardening-frozen-check
+```
+
+This check reads the frozen constraint-memory run and verifies the current
+public proof point. It also reports that the ordinary unstructured-review arm is
+still missing, so the benchmark is not overread as a completed four-arm suite.
+
 ## PySR Baseline
 
 The PySR comparison lives in the experimental-math letter and its raw result
@@ -92,6 +102,7 @@ The constraint-memory benchmark tests evaluator discipline rather than the
 full mutator loop:
 
 - [constraint-memory benchmark](constraint_memory/README.md)
+- [frozen evaluator-hardening suite](evaluator_hardening_frozen/README.md)
 - [run script](constraint_memory/run_benchmark.py)
 - [representative metrics summary](constraint_memory/runs/20260404_195100/metrics_summary.json)
 
@@ -127,7 +138,7 @@ These benchmarks do not support a global public ranking claim.
 They do not establish:
 
 - that ZTARE beats all symbolic-regression systems;
-- that ZTARE is the best autonomous mathematical research system;
+- not that ZTARE is the best autonomous mathematical research system;
 - that ZTARE is the best general-purpose reasoning engine;
 - that ZTARE is the best scientific generation or validation engine;
 - that the current hard-problem campaigns are externally benchmarked;

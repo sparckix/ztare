@@ -1,0 +1,50 @@
+{
+  "suite_id": "evaluator_hardening_frozen_v0",
+  "source_run": "benchmarks/constraint_memory/runs/20260404_195100",
+  "pass_threshold": 60,
+  "claim": "bounded public evidence that deterministic gates and evaluator primitives improve claim discipline on the frozen constraint-memory benchmark",
+  "artifact_backed_arms": [
+    {
+      "id": "A_baseline_soft_judge",
+      "label": "rubric-only judge",
+      "required": true,
+      "artifact_status": "frozen"
+    },
+    {
+      "id": "B_deterministic_gates",
+      "label": "deterministic gates",
+      "required": true,
+      "artifact_status": "frozen"
+    },
+    {
+      "id": "C_gates_plus_primitives",
+      "label": "deterministic gates plus mined precedent/primitives",
+      "required": true,
+      "artifact_status": "frozen"
+    }
+  ],
+  "required_future_arms": [
+    {
+      "id": "D_ordinary_review",
+      "label": "ordinary unstructured LLM review",
+      "artifact_status": "blocked_not_run",
+      "reason": "not present in the frozen 20260404_195100 run; the runner has an opt-in ordinary-review condition, but no frozen outputs for this arm exist yet",
+      "contract": "benchmarks/evaluator_hardening_frozen/ordinary_review_arm_contract.json",
+      "blocker": "benchmarks/evaluator_hardening_frozen/D_ordinary_review_blocker.json"
+    }
+  ],
+  "checks": {
+    "baseline_false_accept_rate_gt": 0.0,
+    "deterministic_false_accept_rate_eq": 0.0,
+    "gates_plus_primitives_false_accept_rate_eq": 0.0,
+    "gates_plus_primitives_false_reject_rate_eq": 0.0,
+    "hardened_detection_rate_gte_baseline": true
+  },
+  "non_claims": [
+    "not a broad autonomous-research ranking",
+    "not a theorem-prover benchmark",
+    "not a completed four-arm comparison until D_ordinary_review is frozen",
+    "not a full-system benchmark"
+  ],
+  "next_falsifier": "Run D_ordinary_review on the same frozen claim packets and demote the claim if ordinary review matches hardened arms on false accepts, false rejects, and structural detection."
+}

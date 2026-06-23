@@ -16,11 +16,12 @@ claim.
 
 **Sub-folders**
 
-- [`constraint_memory/`](constraint_memory/) - 3656 file(s)
+- [`constraint_memory/`](constraint_memory/) - 3651 file(s)
+- [`evaluator_hardening_frozen/`](evaluator_hardening_frozen/) - 3 file(s)
 
 **Documents**
 
 - [Benchmark Evidence](benchmark_evidence.md) - Conservative benchmark evidence for ZTARE claim discipline and comparison baselines.
 
-<sub>1 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>2 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

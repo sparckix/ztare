@@ -9,7 +9,7 @@ from typing import Any
 
 
 REPO = Path(__file__).resolve().parents[3]
-PYSR_FULL = REPO / "papers/experimental_math_letter/pysr_baseline_full.json"
+PYSR_FULL = REPO / "papers/experimental_math_letter/evidence/pysr_baseline_full.json"
 CONSTRAINT_MEMORY_SUMMARY = (
     REPO / "benchmarks/constraint_memory/runs/20260404_195100/metrics_summary.json"
 )
@@ -113,7 +113,7 @@ def build_payload() -> dict[str, Any]:
         "pysr": check_pysr(),
         "constraint_memory": check_constraint_memory(),
         "non_claims": [
-            "not a global SOTA claim",
+            "not a global best-system claim",
             "not evidence that ZTARE beats all symbolic-regression systems",
             "not evidence that hard-problem campaigns are externally benchmarked",
             "not a benchmark of the current in-loop plus out-of-loop system",

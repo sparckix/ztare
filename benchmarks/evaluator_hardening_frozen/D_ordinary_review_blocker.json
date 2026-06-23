@@ -1,0 +1,23 @@
+{
+  "arm_id": "D_ordinary_review",
+  "status": "blocked_not_run",
+  "date": "2026-06-18",
+  "blocker": "No frozen ordinary unstructured review outputs exist for the source run. The runner has an opt-in D_ordinary_review condition, reviewer-safe prompt export, and a fail-closed import path, but the arm is not artifact-backed until live provider outputs are generated or equivalent frozen review rows are imported.",
+  "why_a_is_not_d": "A_baseline_soft_judge still uses the ZTARE evaluator path and rubric machinery. D_ordinary_review is a plain reviewer judgment without deterministic gates, mined primitive context, exploit labels, or prior condition outputs.",
+  "missing_dependencies": [
+    "live provider credentials or externally supplied frozen review outputs that cover every selected specimen with model, timestamp, runner-matching prompt hash/path/literal, and provider/runtime provenance",
+    "metrics_summary.json, results.json, and ordinary_review_freeze_manifest.json for the exact same specimen set",
+    "ordinary_review_freeze_manifest.json with can_promote_to_frozen_suite=true"
+  ],
+  "allowed_next_actions": [
+    "run benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review on the same specimen set",
+    "export reviewer-safe prompts with make benchmark-ordinary-review-prompts before collecting external rows",
+    "import externally supplied ordinary-review outputs only if prompt provenance binds to the exact runner-generated prompt and model id, timestamp, provider/runtime, and row-level decisions are present",
+    "keep the public proof point at three artifact-backed arms until the D arm is frozen"
+  ],
+  "non_claims": [
+    "ordinary review was not run in this execution slice",
+    "the frozen evaluator-hardening suite is not a completed four-arm comparison",
+    "A_baseline_soft_judge must not be relabeled as D_ordinary_review"
+  ]
+}

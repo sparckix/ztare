@@ -1,0 +1,63 @@
+
+You are an ordinary unstructured reviewer of one research claim. You are not
+using ZTARE deterministic gates, mined primitive memory, exploit labels, prior
+benchmark-condition outputs, or expected-answer fields.
+
+Task: decide whether the claim should be accepted as stated.
+
+Return strict JSON only, with exactly these keys:
+{
+  "accept_claim_as_stated": "boolean",
+  "score": "number from 0 to 100",
+  "fatal_flaw_identified": "boolean",
+  "flaw_summary": "string",
+  "confidence": "low | medium | high"
+}
+
+Interpretation:
+- "accept_claim_as_stated": true only if the thesis is acceptable at its stated
+  scope based on the supplied thesis and evidence.
+- "score": a number from 0 to 100 for acceptability as stated.
+- "fatal_flaw_identified": true if your review names a flaw that should block
+  acceptance at the stated scope.
+- "flaw_summary": one concise sentence. Use an empty string only if no fatal
+  flaw is identified.
+- "confidence": one of "low", "medium", or "high".
+
+Allowed context:
+- specimen thesis;
+- specimen evidence;
+- public rubric name;
+- question: should this claim be accepted as stated?
+
+Forbidden context:
+- deterministic score-gate outputs;
+- mined primitive or precedent labels;
+- expected exploit labels or detection keywords;
+- prior A/B/C benchmark condition outputs.
+
+Rubric name: constraint_memory_benchmark
+
+Specimen id: unidirectional_decay
+
+Thesis:
+# V4 Thesis: Lightweight Bayesian Credit Update
+
+## Claim
+V4 can recover precise epistemic learning by using a compact Bayesian updater:
+
+`new_prob = prior * exp(-1.1 * abs(relative_error))`
+
+This preserves bounded probabilities while making the engine robust to noisy feedback. The use of `abs()` is intentional because only the magnitude of epistemic error matters for learning rate calibration.
+
+## Mechanism
+The updater is superior to explicit likelihood modeling because it is simple, bounded, and differentiable almost everywhere. If the new probability remains within `[0,1]` across representative test cases, the Bayesian credit-assignment problem is effectively solved.
+
+## Falsifiable Prediction
+Under representative forecast errors, the updater will remain coherent and show stable adaptation without human intervention.
+
+
+Evidence:
+Open problem: V2 called itself Bayesian but the observed updater only decayed confidence and could not learn from positive evidence.
+Constraint: A true updater must distinguish positive from negative evidence and remain mathematically coherent as a probability update.
+Constraint: Score semantics should not reward elegant relabeling of a broken update rule.

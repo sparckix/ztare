@@ -1,0 +1,69 @@
+
+You are an ordinary unstructured reviewer of one research claim. You are not
+using ZTARE deterministic gates, mined primitive memory, exploit labels, prior
+benchmark-condition outputs, or expected-answer fields.
+
+Task: decide whether the claim should be accepted as stated.
+
+Return strict JSON only, with exactly these keys:
+{
+  "accept_claim_as_stated": "boolean",
+  "score": "number from 0 to 100",
+  "fatal_flaw_identified": "boolean",
+  "flaw_summary": "string",
+  "confidence": "low | medium | high"
+}
+
+Interpretation:
+- "accept_claim_as_stated": true only if the thesis is acceptable at its stated
+  scope based on the supplied thesis and evidence.
+- "score": a number from 0 to 100 for acceptability as stated.
+- "fatal_flaw_identified": true if your review names a flaw that should block
+  acceptance at the stated scope.
+- "flaw_summary": one concise sentence. Use an empty string only if no fatal
+  flaw is identified.
+- "confidence": one of "low", "medium", or "high".
+
+Allowed context:
+- specimen thesis;
+- specimen evidence;
+- public rubric name;
+- question: should this claim be accepted as stated?
+
+Forbidden context:
+- deterministic score-gate outputs;
+- mined primitive or precedent labels;
+- expected exploit labels or detection keywords;
+- prior A/B/C benchmark condition outputs.
+
+Rubric name: constraint_memory_benchmark
+
+Specimen id: self_referential_falsification
+
+Thesis:
+# V4 Thesis: Executable Falsification Contract Index
+
+## Claim
+The right V4 pivot is to define a single scalar architectural validity index:
+
+`Z = 100 * (1 - X / Y)`
+
+Where `X` is observed operational drag and `Y` is the expected falsification budget. If `Z >= 60`, the architecture is empirically viable. This is enough to prove that the architecture has a valid anti-gaming boundary because the metric is executable and reproducible.
+
+## Mechanism
+Instead of relying on prose, the system converts the architecture into an Executable Falsification Contract. The contract is considered validated if the code reproduces the expected value of `Z` and if the architecture remains above threshold after one drag adjustment.
+
+## Falsifiable Prediction
+If `X = 19` and `Y = 50`, the architecture remains valid with `Z = 62`. If the contract is internally coherent under these values, then the architectural pivot is empirically established.
+
+## Why this solves V4
+- It creates a bounded score-like object.
+- It removes rhetorical ambiguity.
+- It gives the Meta-Judge a single number to inspect.
+
+
+Evidence:
+Open problem: V3 and early V4 runs showed that architecture theses can appear rigorous while proving only internally defined quantities.
+Constraint: Architectural proof must create an independent falsification environment, not just a neat derived metric.
+Constraint: Score must remain bounded and auditable.
+Constraint: Minimal simulation complexity is preferred to domain-rich theater.

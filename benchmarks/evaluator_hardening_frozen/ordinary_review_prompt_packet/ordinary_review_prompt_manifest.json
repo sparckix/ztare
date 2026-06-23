@@ -1,0 +1,148 @@
+{
+  "arm_id": "D_ordinary_review",
+  "source_contract": "benchmarks/evaluator_hardening_frozen/ordinary_review_arm_contract.json",
+  "source_run": "benchmarks/constraint_memory/runs/20260404_195100",
+  "specimen_count": 9,
+  "prompts": [
+    {
+      "specimen_id": "self_referential_falsification",
+      "prompt_path": "prompts/self_referential_falsification.txt",
+      "prompt_sha256": "f5c94ee60f2f5de900301d4c2592c88f0dae16dd27744a86e7cc4da517a379a1",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "unidirectional_decay",
+      "prompt_path": "prompts/unidirectional_decay.txt",
+      "prompt_sha256": "9baa752d5aa1c7542b37a7d2e4543f1a5abe6ab92dafba237d6607863402d053",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "deterministic_score_contract",
+      "prompt_path": "prompts/deterministic_score_contract.txt",
+      "prompt_sha256": "00c7f3767da616fb5771e6d39391561f01c219cabce5523d6d8e4fd3667d5152",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "fail_closed_test_status",
+      "prompt_path": "prompts/fail_closed_test_status.txt",
+      "prompt_sha256": "d4c7c4b75fa03bd769bb0fb718a2c79ae9c74dd6cfcfb675b4130b59d84b6fc5",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "t1_recursive_bayesian",
+      "prompt_path": "prompts/t1_recursive_bayesian.txt",
+      "prompt_sha256": "4d78b2effe69fde4207b69289341dd43a4968738bc73e0c2fac612602806566c",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "t2_ai_inference",
+      "prompt_path": "prompts/t2_ai_inference.txt",
+      "prompt_sha256": "736e329d6fb6e46ff1a1b3fd8c26943c26f19efbebd0364e2e47f4ad3cf85c8d",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "t3_tsmc",
+      "prompt_path": "prompts/t3_tsmc.txt",
+      "prompt_sha256": "770fb02fa80ffcfcb9056db22b46e269442248f0bde74a35a3993d16d312d895",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "t4_simulation_god",
+      "prompt_path": "prompts/t4_simulation_god.txt",
+      "prompt_sha256": "ebab485f533f66e3a516a23abf82ed92c5bb6a5a8f5862e061bd0a838ce38919",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    },
+    {
+      "specimen_id": "t5_epistemic_engine",
+      "prompt_path": "prompts/t5_epistemic_engine.txt",
+      "prompt_sha256": "3801408c0151cf6941da10aff00d871ff3b1123cb0a5bf3e06770e17aac2d30c",
+      "rubric": "constraint_memory_benchmark",
+      "review_schema": {
+        "accept_claim_as_stated": "boolean",
+        "score": "number from 0 to 100",
+        "fatal_flaw_identified": "boolean",
+        "flaw_summary": "string",
+        "confidence": "low | medium | high"
+      }
+    }
+  ],
+  "provenance_required_for_import": {
+    "model": "non-empty model identifier for the ordinary reviewer",
+    "timestamp": "one of timestamp, reviewed_at, or created_at",
+    "prompt": "one of prompt_sha256, prompt_hash, prompt_path, or prompt",
+    "provider_runtime": "one of provider, runtime, or provider_runtime"
+  },
+  "forbidden_context": [
+    "deterministic score-gate outputs",
+    "mined primitive or precedent labels",
+    "expected_exploit fields",
+    "detection_keywords fields",
+    "structural_expected_flags fields",
+    "prior condition outputs from A/B/C"
+  ],
+  "answer_key_fields_omitted": [
+    "label",
+    "expected_exploit",
+    "detection_keywords",
+    "structural_detection_keywords",
+    "expected_flags",
+    "structural_expected_flags",
+    "prior condition outputs from A/B/C"
+  ]
+}

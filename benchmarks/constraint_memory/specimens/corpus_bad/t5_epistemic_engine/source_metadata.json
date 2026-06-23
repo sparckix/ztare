@@ -4,7 +4,7 @@
   "thesis_file": "1775133604_iter2_score_370_epistemic_engine_v3_evolved.md",
   "firing_squad_score": 370,
   "gaming_documented": [
-    "Unidirectional Decay (formula asymmetry)",
+    "Out-of-Bounds Probability",
     "Boundary clamping creating flat gradients"
   ],
   "firing_squad_summary": "Thesis scored 370 on an 8-criterion rubric \u2014 the highest in the corpus. Firing Squad documented that the Bayesian update formula only tested with positive errors; negative relative errors generate probabilities > 1.0. The sophisticated architecture description (MLP, Adam optimizer, Brier Skill Score) provided maximum cognitive camouflage.",

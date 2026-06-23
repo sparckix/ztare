@@ -28,11 +28,10 @@ python benchmarks/constraint_memory/run_benchmark.py --judge-model gemini --suit
 - [`ai_inference_internal_price_floor/`](ai_inference_internal_price_floor/) - 6 file(s)
 - [`central_station_hypothetical_target_laundering/`](central_station_hypothetical_target_laundering/) - 6 file(s)
 - [`central_station_mirrored_monte_carlo/`](central_station_mirrored_monte_carlo/) - 6 file(s)
-- [`hbr_case_method_roi_proxy/`](hbr_case_method_roi_proxy/) - 6 file(s)
 
 **Documents**
 
 - [index.json](index.json)
 
-<sub>4 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>3 sub-folder(s), 1 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

@@ -1,7 +1,7 @@
 {
   "id": "t5_epistemic_engine",
   "label": "bad",
-  "expected_exploit": "Unidirectional Decay (formula asymmetry), Boundary clamping creating flat gradients",
+  "expected_exploit": "Out-of-Bounds Probability, Boundary clamping creating flat gradients",
   "family_detection_strict_rule": null,
   "acceptable_structural_failures": [],
   "description": "Thesis scored 370 on an 8-criterion rubric \u2014 the highest in the corpus. Firing Squad documented that the Bayesian update formula only tested with positive errors; negative relative errors generate probabilities > 1.0. The sophisticated architecture description (MLP, Adam optimizer, Brier Skill Score) provided maximum cognitive camouflage.",
@@ -32,7 +32,7 @@
     "domain": "Epistemic architecture / self-improving AI",
     "firing_squad_score": 370,
     "gaming_documented": [
-      "Unidirectional Decay (formula asymmetry)",
+      "Out-of-Bounds Probability",
       "Boundary clamping creating flat gradients"
     ]
   }

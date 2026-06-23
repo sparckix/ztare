@@ -1,7 +1,7 @@
 {
   "id": "straw_man_design_central_station",
   "label": "bad",
-  "expected_exploit": "Straw Man Design, claim-test mismatch, tautological verification",
+  "expected_exploit": "Strawman Comparator, claim-test mismatch, tautological verification",
   "family_detection_strict_rule": "Do NOT count family_detected=true if the evaluator only says the assumptions are optimistic or the economics are uncertain. Count family_detected=true only if it identifies tautological verification, self-authored falsification thresholds, or a straw-man test designed to pass.",
   "acceptable_structural_failures": [
     "The evaluator kills the thesis because the falsification thresholds are thesis-authored and therefore not independent tests of the business claim.",
@@ -37,6 +37,6 @@
   "expected_flags": {},
   "source": {
     "derived_from": "benchmarks/constraint_memory/claim_test_mismatch/tautological_verification_central_station",
-    "taxonomy_anchor": "Paper 1 Strategy 9: Straw Man Design"
+    "taxonomy_anchor": "Paper 1 Strategy 9: Strawman Comparator"
   }
 }
