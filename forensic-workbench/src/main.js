@@ -845,7 +845,7 @@ function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, proj
   );
 }
 
-function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, sourceList, onImport, onPreview }) {
+function SourceImportPanel({ draft, setDraft, message, importing, event, liveMode, sourceList, onImport, onPreview, onAddToIntake }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
   const filename = String(draft.filename || "").trim();
   const hasBody = Boolean(String(draft.body || "").trim());
@@ -930,6 +930,17 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
                 title: "Preview imported source"
               },
               "Preview"
+            ),
+            h(
+              "button",
+              {
+                type: "button",
+                className: "copy-button",
+                disabled: !liveMode || !event.source_path,
+                onClick: () => onAddToIntake && onAddToIntake(event.source_path),
+                title: "Stage this source path in the intake draft"
+              },
+              "Add to intake draft"
             )
           )
         : null
@@ -4196,6 +4207,28 @@ function App() {
       .finally(() => setSourceImporting(false));
   };
 
+  const addImportedSourceToIntakeDraft = (sourcePath) => {
+    const path = String(sourcePath || "").trim();
+    if (!path) return;
+    if (!intakeDraft) {
+      setSourceImportMessage("Load a live intake before staging source refs.");
+      return;
+    }
+    if (intakeDraft.editable === false) {
+      setSourceImportMessage("This intake is read-only; the source path was not staged.");
+      return;
+    }
+    const refs = linesFromText(intakeDraft.source_refs_text);
+    if (refs.includes(path)) {
+      setSourceImportMessage(`${path} is already in the intake draft.`);
+      return;
+    }
+    const nextRefs = [...refs, path].join("\n");
+    setIntakeDraft({ ...intakeDraft, source_refs_text: nextRefs });
+    setSourceImportMessage(`Staged ${path} in source refs. Save intake to write the receipt.`);
+    setIntakeMessage(`Staged ${path} in source refs. Save intake to write the receipt.`);
+  };
+
   const reloadSourceList = () => {
     if (!snapshot || !liveMode) return;
     loadSourceListContext({ project: snapshot.project });
@@ -4802,7 +4835,8 @@ function App() {
         liveMode,
         sourceList: sourceListContext,
         onImport: importSourceLive,
-        onPreview: loadFilePreview
+        onPreview: loadFilePreview,
+        onAddToIntake: addImportedSourceToIntakeDraft
       }),
       h(RawSourceManagerPanel, {
         sourceList: sourceListContext,

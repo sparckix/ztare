@@ -64,7 +64,9 @@ file under the selected project's `raw/` directory, updates
 `raw/source_type_map.json`, appends a source-import receipt, writes the latest
 source-import receipt JSON, and runs the offline source check. Import creates
 new raw source files only; existing files must be changed through the raw-source
-editor.
+editor. After import, the result can stage the new source path in the intake
+draft; the intake file is not written until Save intake records the edit
+receipt.
 The raw-source panel calls `/api/sources` to load the typed source list,
 `/api/source-file` to open one existing source, and `/api/source-edit` to write
 the edited source body/type back to disk. The panel shows pending source

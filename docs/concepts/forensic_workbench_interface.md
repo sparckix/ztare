@@ -174,7 +174,8 @@ POST /api/project-create
 POST /api/source-import
 -> write one new validated raw source file, refuse existing filenames, update
    source_type_map, append a source-import receipt, run source-check, and return
-   refreshed state
+   refreshed state; the UI may stage the returned source path in the intake
+   draft, but the intake write still requires Save intake
 
 GET /api/sources?project=<project>
 -> list typed raw sources using the same source-check read model
@@ -258,6 +259,8 @@ verified, and the exact command that rebuilds the audit.
 The source/evidence readiness panel should show source-index status, evidence
 binding, output binding, replay status, source/evidence files, and the commands
 that rebuild those checks.
+Source import should let the user stage the new source path into intake refs
+without writing the intake file until Save intake records the edit receipt.
 The raw-source editor should show pending body/type changes and refuse no-op
 saves, so source-edit receipts correspond to actual file or metadata changes.
 The report/export panel should show the blocker reasons, synthesis input-binding
