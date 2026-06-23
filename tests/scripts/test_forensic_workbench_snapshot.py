@@ -521,6 +521,8 @@ def test_apply_review_payload_writes_same_receipt_shape(tmp_path: Path, monkeypa
         "schema": "ztare-forensic-workbench-review-v1",
         "project": "demo",
         "rubric": "demo",
+        "intake": "projects/demo/demo_intake.json",
+        "case_key": "demo::projects/demo/demo_intake.json",
         "row": "Report/export",
         "row_status": "blocked",
         "decision": "blocked",
@@ -545,6 +547,8 @@ def test_apply_review_payload_writes_same_receipt_shape(tmp_path: Path, monkeypa
     assert receipt == ledger_row
     assert receipt["review_file_path"] == "local-api:demo/report_export"
     assert receipt["evidence_ref_count"] == 1
+    assert receipt["intake"] == "projects/demo/demo_intake.json"
+    assert receipt["case_key"] == "demo::projects/demo/demo_intake.json"
 
 
 def test_review_api_preserves_receipt_when_snapshot_refresh_fails(

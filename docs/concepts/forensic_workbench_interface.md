@@ -295,9 +295,9 @@ writing the receipt. Either way, the visible trail is file, receipt ledger,
 receipt history, latest receipt row, and refreshed snapshot.
 After a live review, row-action, intake-edit, source import/edit,
 source/evidence write action, or case-file save, the app should show the
-stamped receipt schema, target, changed fields or action summary, ledger path,
-latest path, source path, and hash before the user has to inspect the full
-history. Ledger, latest-receipt, and written-artifact paths should be
+stamped receipt schema, target, case context, changed fields or action summary,
+ledger path, latest path, source path, and hash before the user has to inspect
+the full history. Ledger, latest-receipt, and written-artifact paths should be
 previewable when they point to repository files. Source/evidence write receipts
 should stamp the produced artifact hash when the underlying command exposes
 one. The affected live panels should

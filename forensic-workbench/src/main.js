@@ -259,6 +259,8 @@ function buildReviewFile(snapshot, row, reviewState) {
     schema: "ztare-forensic-workbench-review-v1",
     project: snapshot.project,
     rubric: snapshot.rubric,
+    intake: snapshot.intake || "",
+    case_key: projectEntryKey(snapshot),
     row: row.label,
     row_status: displayText(row.status),
     decision: reviewState.decision || "unreviewed",
@@ -274,6 +276,8 @@ function buildRowActionFile(snapshot, row, actionState) {
     schema: "ztare-forensic-workbench-row-action-v1",
     project: snapshot.project,
     rubric: snapshot.rubric,
+    intake: snapshot.intake || "",
+    case_key: projectEntryKey(snapshot),
     row: row.label,
     row_status: displayText(row.status),
     action: actionState.action || "next_step",
@@ -3484,6 +3488,11 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
   const ledgerPath = result.ledger || result.receipt_path || "";
   const latestPath = result.latest || "";
   const changedSummary = receiptChangeSummary(receipt, receiptEvent.kind);
+  const caseContext = [
+    receipt.project ? `project ${receipt.project}` : "",
+    receipt.intake ? `intake ${receipt.intake}` : "",
+    receipt.case_key ? `case ${receipt.case_key}` : ""
+  ].filter(Boolean).join(" / ");
   const receiptJson = JSON.stringify(receipt, null, 2);
 
   return h(
@@ -3500,6 +3509,7 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
       "div",
       { className: "write-receipt-facts" },
       h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receipt.case_file_path || receiptEvent.row || "none")),
+      h("div", null, h("span", null, "Case"), h("strong", null, caseContext || receipt.project || "not recorded")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
       h("div", null, h("span", null, "Changed"), h("strong", null, changedSummary || "not recorded")),

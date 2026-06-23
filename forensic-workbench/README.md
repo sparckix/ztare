@@ -84,7 +84,10 @@ to a bounded text preview. When the local API is running, the Apply button
 persists the review JSON under the project workspace, writes the same review
 receipt that the CLI writes, then refreshes the same selected project/intake
 snapshot and live context. The Save action button persists the row-action JSON
-and writes a row-action receipt through the same explicit API/ledger path.
+and writes a row-action receipt through the same explicit API/ledger path. Row
+review and row-action receipts preserve the selected project, intake, and case
+key when those fields are present, so a later reader can tell which case the
+write belonged to.
 Intake edits write an intake-edit receipt under the project workspace. The
 receipt-history panel reads review, row-action, intake-edit, source-import,
 source-edit, source-action, and case-file ledgers through `/api/receipts`, returns

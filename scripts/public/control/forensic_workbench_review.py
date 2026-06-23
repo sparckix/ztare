@@ -89,6 +89,14 @@ def display_path(path: Path) -> str:
         return str(path)
 
 
+def add_case_context(receipt: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
+    for key in ("rubric", "intake", "case_key"):
+        value = str(payload.get(key) or "").strip()
+        if value:
+            receipt[key] = value
+    return receipt
+
+
 def receipt_for_payload(
     payload: dict[str, Any],
     *,
@@ -112,7 +120,7 @@ def receipt_for_payload(
         "review_file_sha256": hashlib.sha256(review_file_bytes).hexdigest(),
         "evidence_ref_count": len(payload.get("evidence_refs") or []),
     }
-    return receipt
+    return add_case_context(receipt, payload)
 
 
 def write_review_receipt(
@@ -147,7 +155,7 @@ def receipt_for_action_payload(
     errors = validate_action_file(payload, project=project, row=row)
     if errors:
         raise SystemExit("invalid forensic-workbench row action file:\n- " + "\n- ".join(errors))
-    return {
+    receipt = {
         "schema": "ztare-forensic-workbench-row-action-receipt-v1",
         "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "project": project,
@@ -159,6 +167,7 @@ def receipt_for_action_payload(
         "action_file_sha256": hashlib.sha256(action_file_bytes).hexdigest(),
         "evidence_ref_count": len(payload.get("evidence_refs") or []),
     }
+    return add_case_context(receipt, payload)
 
 
 def write_action_receipt(
