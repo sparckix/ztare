@@ -2011,7 +2011,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 review_file = request.get("review_file")
                 if not isinstance(review_file, dict):
                     raise ValueError("review_file must be a JSON object")
-                review_errors = review.validate_review_file(review_file, project=project, row=row)
+                review_errors = review.validate_review_file(review_file, project=project, row=row, intake=intake)
                 if review_errors:
                     raise ValueError("invalid review file: " + "; ".join(review_errors))
                 review_file_path, _review_file_bytes = persist_live_row_payload(
@@ -2073,7 +2073,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 action_file = request.get("action_file")
                 if not isinstance(action_file, dict):
                     raise ValueError("action_file must be a JSON object")
-                action_errors = review.validate_action_file(action_file, project=project, row=row)
+                action_errors = review.validate_action_file(action_file, project=project, row=row, intake=intake)
                 if action_errors:
                     raise ValueError("invalid row action file: " + "; ".join(action_errors))
                 action_file_path, _action_file_bytes = persist_live_row_payload(

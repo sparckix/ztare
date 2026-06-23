@@ -32,12 +32,31 @@ def read_review_file(path: Path) -> dict[str, Any]:
     return payload
 
 
-def validate_review_file(payload: dict[str, Any], *, project: str, row: str) -> list[str]:
+def case_key(project: str, intake: str) -> str:
+    intake_value = str(intake or "").strip()
+    return f"{project}::{intake_value}" if intake_value else project
+
+
+def validate_payload_case(payload: dict[str, Any], *, project: str, intake: str | None) -> list[str]:
+    if not intake:
+        return []
+    errors: list[str] = []
+    payload_case_key = str(payload.get("case_key") or "").strip()
+    if payload_case_key and payload_case_key != case_key(project, intake):
+        errors.append(f"case_key mismatch: expected {case_key(project, intake)!r}, got {payload_case_key!r}")
+    payload_intake = str(payload.get("intake") or "").strip()
+    if payload_intake and payload_intake != intake:
+        errors.append(f"intake mismatch: expected {intake!r}, got {payload_intake!r}")
+    return errors
+
+
+def validate_review_file(payload: dict[str, Any], *, project: str, row: str, intake: str | None = None) -> list[str]:
     errors: list[str] = []
     if payload.get("schema") != SCHEMA:
         errors.append(f"schema must be {SCHEMA}")
     if payload.get("project") != project:
         errors.append(f"project mismatch: expected {project!r}, got {payload.get('project')!r}")
+    errors.extend(validate_payload_case(payload, project=project, intake=intake))
     review_row = str(payload.get("row") or "")
     if row_slug(review_row) != row:
         errors.append(f"row mismatch: expected slug {row!r}, got row {review_row!r}")
@@ -50,12 +69,13 @@ def validate_review_file(payload: dict[str, Any], *, project: str, row: str) -> 
     return errors
 
 
-def validate_action_file(payload: dict[str, Any], *, project: str, row: str) -> list[str]:
+def validate_action_file(payload: dict[str, Any], *, project: str, row: str, intake: str | None = None) -> list[str]:
     errors: list[str] = []
     if payload.get("schema") != ACTION_SCHEMA:
         errors.append(f"schema must be {ACTION_SCHEMA}")
     if payload.get("project") != project:
         errors.append(f"project mismatch: expected {project!r}, got {payload.get('project')!r}")
+    errors.extend(validate_payload_case(payload, project=project, intake=intake))
     action_row = str(payload.get("row") or "")
     if row_slug(action_row) != row:
         errors.append(f"row mismatch: expected slug {row!r}, got row {action_row!r}")

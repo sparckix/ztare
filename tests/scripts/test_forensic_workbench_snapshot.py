@@ -658,6 +658,46 @@ def test_apply_review_payload_writes_same_receipt_shape(tmp_path: Path, monkeypa
     assert receipt["case_key"] == "demo::projects/demo/demo_intake.json"
 
 
+def test_review_validation_rejects_other_case_when_intake_is_supplied() -> None:
+    module = load_review_module()
+    review_file = {
+        "schema": "ztare-forensic-workbench-review-v1",
+        "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/other_intake.json",
+        "case_key": "demo::projects/demo/other_intake.json",
+        "row": "Report/export",
+        "row_status": "blocked",
+        "decision": "blocked",
+        "note": "Need source binding before export.",
+        "evidence_refs": [
+            {"type": "evidence", "value": "projects/demo/synthesis/report_support_contract.json"},
+        ],
+    }
+    legacy_review_file = {
+        key: value
+        for key, value in review_file.items()
+        if key not in {"intake", "case_key"}
+    }
+
+    errors = module.validate_review_file(
+        review_file,
+        project="demo",
+        row="report_export",
+        intake="projects/demo/demo_intake.json",
+    )
+    legacy_errors = module.validate_review_file(
+        legacy_review_file,
+        project="demo",
+        row="report_export",
+        intake="projects/demo/demo_intake.json",
+    )
+
+    assert any("case_key mismatch" in error for error in errors)
+    assert any("intake mismatch" in error for error in errors)
+    assert legacy_errors == []
+
+
 def test_review_api_preserves_receipt_when_snapshot_refresh_fails(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
