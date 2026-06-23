@@ -35,13 +35,10 @@ def run_live(args: argparse.Namespace) -> int:
         "--port",
         str(args.api_port),
     ]
-    dev_cmd = ["npm", "--prefix", "forensic-workbench", "run", "dev"]
+    dev_cmd = ["npm", "--prefix", "forensic-workbench", "run", "dev", "--", "--strictPort"]
     if args.host:
-        dev_cmd.extend(["--", "--host", args.host])
+        dev_cmd.extend(["--host", args.host])
     if args.port:
-        separator = "--" if "--" not in dev_cmd else None
-        if separator:
-            dev_cmd.append(separator)
         dev_cmd.extend(["--port", str(args.port)])
 
     print("forensic workbench live mode", flush=True)
