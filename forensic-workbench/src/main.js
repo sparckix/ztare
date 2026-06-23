@@ -3362,13 +3362,22 @@ function App() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
-  const installSnapshot = (payload) => {
+  const defaultSnapshotLabel = (rows) => {
+    const firstAttention = rows.find((row) => row.kind === "attention");
+    return (firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "";
+  };
+
+  const installSnapshot = (payload, options = {}) => {
     setSnapshot(payload);
     setReviewMessage("");
     setActionMessage("");
     const rows = payload.rows || [];
-    const firstAttention = rows.find((row) => row.kind === "attention");
-    setSelectedLabel((firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "");
+    const labels = new Set(rows.map((row) => row.label));
+    setSelectedLabel((currentLabel) => {
+      if (options.preferredLabel && labels.has(options.preferredLabel)) return options.preferredLabel;
+      if (options.preserveSelection && currentLabel && labels.has(currentLabel)) return currentLabel;
+      return defaultSnapshotLabel(rows);
+    });
   };
 
   const refreshProjectIndex = (activeProject) =>
@@ -3582,7 +3591,10 @@ function App() {
         return response.json();
       })
       .then((payload) => {
-        installSnapshot(payload);
+        installSnapshot(payload, {
+          preserveSelection: options.preserveSelection === true,
+          preferredLabel: options.preferredLabel || ""
+        });
         setModeMessage(
           useLiveApi
             ? `Live project snapshot loaded from the local API: ${payload.project}.`
@@ -3671,7 +3683,7 @@ function App() {
   const refreshCurrentProject = () => {
     if (!snapshot || !liveMode) return;
     const entry = projects.find((row) => row.project === snapshot.project) || snapshot;
-    loadSnapshot(entry, true).catch((err) =>
+    loadSnapshot(entry, true, { preserveSelection: true }).catch((err) =>
       setModeMessage(`Could not refresh live project snapshot for ${snapshot.project}: ${err.message || err}`)
     );
   };
@@ -3769,7 +3781,7 @@ function App() {
         })
       )
       .then((payload) => {
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Source readiness" });
         if (payload.trace) setTraceContext(payload.trace);
         setSourceImportEvent(payload);
         setSourceImportDraft({ filename: "", source_type: "source_evidence", body: "" });
@@ -3845,7 +3857,7 @@ function App() {
         })
       )
       .then((payload) => {
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Source readiness", preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         setSourceEditEvent(payload);
         setSourceEditDraft({
@@ -3972,7 +3984,7 @@ function App() {
       })
       .then((payload) => {
         if (!payload.ok) throw new Error(payload.error || "review apply failed");
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: reviewPayload.row, preserveSelection: true });
         setReviewMessage(
           payload.snapshot_error
             ? `Applied review for ${reviewPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
@@ -4014,7 +4026,7 @@ function App() {
       })
       .then((payload) => {
         if (!payload.ok) throw new Error(payload.error || "row action save failed");
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: actionPayload.row, preserveSelection: true });
         setActionMessage(
           payload.snapshot_error
             ? `Saved action for ${actionPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
@@ -4071,7 +4083,7 @@ function App() {
       .then((payload) => {
         if (!payload.ok) throw new Error(payload.error || "intake save failed");
         if (payload.intake) setIntakeDraft(intakeDraftFromPayload(payload.intake));
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preserveSelection: true });
         setIntakeMessage(
           payload.snapshot_error
             ? `Saved intake edit. Snapshot refresh failed: ${payload.snapshot_error}`
@@ -4117,7 +4129,7 @@ function App() {
         })
       )
       .then((payload) => {
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: "Run readiness", preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         setPreflightEvent(payload);
         setPreflightMessage(payload.accepted ? "Preflight accepted and the case was refreshed." : "Preflight finished without an acceptance marker.");
@@ -4126,12 +4138,15 @@ function App() {
         if (err.payload) {
           setPreflightEvent(err.payload);
           if (err.payload.trace) setTraceContext(err.payload.trace);
-          if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
+          if (err.payload.snapshot) installSnapshot(err.payload.snapshot, { preferredLabel: "Run readiness", preserveSelection: true });
         }
         setPreflightMessage(String(err.message || err));
       })
       .finally(() => setPreflightRunning(false));
   };
+
+  const sourceActionTargetLabel = (action) =>
+    action === "evidence_bind" || action === "evidence_replay" ? "Evidence readiness" : "Source readiness";
 
   const runSourceActionLive = (action) => {
     if (!snapshot || !liveMode || sourceActionRunning) return;
@@ -4164,7 +4179,7 @@ function App() {
         })
       )
       .then((payload) => {
-        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.snapshot) installSnapshot(payload.snapshot, { preferredLabel: sourceActionTargetLabel(action), preserveSelection: true });
         if (payload.trace) setTraceContext(payload.trace);
         setSourceActionEvent(payload);
         const writeEvent = sourceActionReceiptEvent(payload);
@@ -4185,7 +4200,7 @@ function App() {
         if (err.payload) {
           setSourceActionEvent(err.payload);
           if (err.payload.trace) setTraceContext(err.payload.trace);
-          if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
+          if (err.payload.snapshot) installSnapshot(err.payload.snapshot, { preferredLabel: sourceActionTargetLabel(action), preserveSelection: true });
           const writeEvent = sourceActionReceiptEvent(err.payload);
           if (writeEvent) setWriteReceiptEvent(writeEvent);
           if (err.payload.writes) {
