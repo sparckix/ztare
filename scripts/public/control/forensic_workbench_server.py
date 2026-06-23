@@ -1547,6 +1547,7 @@ def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
     except Exception:
         parsed = {}
     source_context = parsed.get("source_context") if isinstance(parsed.get("source_context"), dict) else {}
+    evidence_file_path = display_path(parsed.get("packet_path"))
     return {
         "schema": CLAIM_SUPPORT_SCHEMA,
         "served_from": "local_api",
@@ -1566,7 +1567,8 @@ def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
             else {}
         ),
         "errors": display_text_lines(parsed.get("errors") or [], limit=8),
-        "packet_path": display_path(parsed.get("packet_path")),
+        "evidence_file_path": evidence_file_path,
+        "packet_path": evidence_file_path,
         "source_index_path": display_path(parsed.get("source_index_path")),
         "rows": [compact_claim_support_row(row) for row in (parsed.get("rows") or [])[:12] if isinstance(row, dict)],
         "source_context": [

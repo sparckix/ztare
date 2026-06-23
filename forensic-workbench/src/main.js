@@ -358,7 +358,7 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
         weak_or_unsourced_count: claimSupport.weak_or_unsourced_count || 0,
         source_context_blocked_count: claimSupport.source_context_blocked_count || 0,
         errors: (claimSupport.errors || []).slice(0, 8),
-        packet_path: claimSupport.packet_path || "",
+        evidence_file_path: claimSupport.evidence_file_path || claimSupport.packet_path || "",
         source_index_path: claimSupport.source_index_path || "",
         source_context: (claimSupport.source_context || []).slice(0, 12)
       },
@@ -1596,7 +1596,7 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
   const sources = (claimSupport && claimSupport.source_context) || [];
   const rows = (claimSupport && claimSupport.rows) || [];
   const command = (claimSupport && claimSupport.command) || "";
-  const packetPath = (claimSupport && claimSupport.packet_path) || "";
+  const evidenceFilePath = (claimSupport && (claimSupport.evidence_file_path || claimSupport.packet_path)) || "";
   const sourceIndexPath = (claimSupport && claimSupport.source_index_path) || "";
   const attention = errors.length > 0 || (claimSupport && claimSupport.accepted === false);
 
@@ -1636,7 +1636,7 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
         "div",
         { className: "run-history-paths" },
         [
-          { label: "Evidence file", path: packetPath },
+          { label: "Evidence file", path: evidenceFilePath },
           { label: "Source index", path: sourceIndexPath }
         ].map((item) =>
           h(

@@ -798,6 +798,7 @@ def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_
     assert payload["accepted"] is False
     assert payload["status"] == "missing_packet"
     assert payload["packet_path"] == "projects/demo/compiled_evidence_packet.json"
+    assert payload["evidence_file_path"] == "projects/demo/compiled_evidence_packet.json"
     assert payload["source_index_path"] == "projects/demo/workspace/source_index.json"
     assert payload["source_context"][0]["path"] == "projects/demo/raw/source.md"
     assert payload["errors"] == ["missing compiled evidence packet: projects/demo/compiled_evidence_packet.json"]
