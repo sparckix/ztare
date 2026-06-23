@@ -481,6 +481,15 @@ code {
   padding: 5px 9px;
 }
 
+.project-context-panel .project-context-attention {
+  border-left: 3px solid #bd6a1d;
+  background: #fffaf2;
+}
+
+.project-context-panel .project-context-attention strong {
+  color: #6b4016;
+}
+
 .project-switchboard {
   min-width: 0;
   display: grid;
@@ -570,6 +579,21 @@ code {
   color: #3f4f49;
   font-size: 11px;
   font-weight: 800;
+}
+
+.project-tile-facts span.attention {
+  border-color: #d8bb8f;
+  background: #fffaf2;
+  color: #6b4016;
+}
+
+.project-tile-error {
+  grid-column: 1 / -1;
+  margin: -2px 0 0;
+  color: #6b4016;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
 }
 
 .project-create-panel {

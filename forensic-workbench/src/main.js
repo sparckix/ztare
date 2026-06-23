@@ -360,6 +360,7 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       project_dir: projectEntry.project_dir || snapshot.project_source || "",
       intake_source: projectEntry.intake_source || snapshot.intake_source || "",
       intake_editable: projectEntry.intake_editable !== false,
+      intake_error: projectEntry.intake_error || "",
       intake_ref_summary: {
         total: intakeRefSummary.total || 0,
         present: intakeRefSummary.present || 0,
@@ -743,6 +744,7 @@ function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
   const latestSourceAction = (projectEntry && projectEntry.latest_source_action) || "";
   const latestCaseFileWrite = (projectEntry && projectEntry.latest_case_file_write) || "";
   const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
+  const intakeError = (projectEntry && projectEntry.intake_error) || "";
   const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
   const pathRows = [
     { label: "Intake", value: intake },
@@ -778,6 +780,7 @@ function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
     { className: "project-context-panel", "aria-label": "Project files" },
     h("div", null, h("span", null, "Project files"), h("strong", null, projectDir || "not discovered")),
     h("div", null, h("span", null, "Intake refs"), h("strong", null, refSummary.total ? `${refSummary.present || 0}/${refSummary.total} present` : "not counted")),
+    h("div", { className: intakeError ? "project-context-attention" : "" }, h("span", null, "Intake check"), h("strong", null, intakeError ? displayMessage(intakeError) : "checked")),
     h("div", null, h("span", null, "Edit mode"), h("strong", null, intakeMode)),
     pathRows.map(renderPathRow)
   );
@@ -801,8 +804,9 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
       { className: "project-switchboard-grid" },
       projects.map((project) => {
         const refSummary = project.intake_ref_summary || {};
+        const intakeError = project.intake_error || "";
         const active = project.project === activeKey;
-        const intakeMode = project.intake_editable === false ? "read-only intake" : "editable intake";
+        const intakeMode = intakeError ? "intake attention" : project.intake_editable === false ? "read-only intake" : "editable intake";
         const receiptCount = [
           project.latest_review,
           project.latest_row_action,
@@ -820,11 +824,12 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
             "div",
             { className: "project-tile-facts" },
             h("span", null, displayText(project.intake_source || "unknown_intake_source")),
-            h("span", null, intakeMode),
+            h("span", { className: intakeError ? "attention" : "" }, intakeMode),
             h("span", null, refSummary.total ? `${refSummary.present || 0}/${refSummary.total} refs` : "refs not counted"),
             h("span", null, project.report_contract ? "report contract" : "no report contract"),
             h("span", null, receiptCount ? `${receiptCount} receipt paths` : "no recent receipts")
           ),
+          intakeError ? h("p", { className: "project-tile-error" }, displayMessage(intakeError)) : null,
           h(
             "button",
             {
