@@ -372,6 +372,34 @@ function sourceActionReceiptEvent(payload) {
   };
 }
 
+function sourceCheckDetail(payload) {
+  const check = (payload && payload.source_check) || {};
+  return {
+    accepted: Boolean(check.accepted),
+    command: check.command || "",
+    returncode: check.returncode,
+    error: displayMessage(check.error || ""),
+    stdout_tail: displayMessage(check.stdout_tail || ""),
+    stderr_tail: displayMessage(check.stderr_tail || "")
+  };
+}
+
+function SourceCheckDetail({ event }) {
+  if (!event || !event.source_check) return null;
+  const detail = sourceCheckDetail(event);
+  const output = detail.error || detail.stderr_tail || detail.stdout_tail || "";
+  return h(
+    "div",
+    { className: `source-check-detail ${detail.accepted ? "ready" : "attention"}` },
+    h("span", null, detail.accepted ? "Source check accepted" : "Source check needs attention"),
+    detail.command ? h("code", null, detail.command) : null,
+    output ? h("p", null, output) : null,
+    detail.returncode === null || detail.returncode === undefined
+      ? null
+      : h("small", null, `exit ${detail.returncode}`)
+  );
+}
+
 function buildCaseFile(snapshot, receiptHistory, context = {}) {
   const rows = (snapshot && snapshot.rows) || [];
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).slice(0, 8);
@@ -570,7 +598,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             latest: sourceImport.latest || "",
             sha256: (sourceImport.receipt || {}).sha256 || "",
             receipt: sourceImport.receipt || {},
-            source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted)
+            source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted),
+            source_check: sourceCheckDetail(sourceImport)
           }
         : null,
       latest_source_edit: sourceEdit
@@ -583,7 +612,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             latest: sourceEdit.latest || "",
             sha256: (sourceEdit.receipt || {}).sha256 || "",
             receipt: sourceEdit.receipt || {},
-            source_check_accepted: Boolean(sourceEdit.source_check && sourceEdit.source_check.accepted)
+            source_check_accepted: Boolean(sourceEdit.source_check && sourceEdit.source_check.accepted),
+            source_check: sourceCheckDetail(sourceEdit)
           }
         : null,
       latest_write_receipt: latestWrite
@@ -1104,6 +1134,7 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
             { className: "source-import-result" },
             h("strong", null, event.source_path || "source imported"),
             h("small", null, `${displayText(event.source_type || "source")} / ${(event.source_check && event.source_check.accepted) ? "check accepted" : "check attention"}`),
+            h(SourceCheckDetail, { event }),
             h(
               "button",
               {
@@ -1259,7 +1290,8 @@ function RawSourceManagerPanel({ sourceList, draft, setDraft, message, editing, 
               "div",
               { className: "raw-source-result" },
               h("strong", null, event.source_path || "source edited"),
-              h("small", null, `${displayText(event.source_type || "source")} / ${(event.source_check && event.source_check.accepted) ? "check accepted" : "check attention"}`)
+              h("small", null, `${displayText(event.source_type || "source")} / ${(event.source_check && event.source_check.accepted) ? "check accepted" : "check attention"}`),
+              h(SourceCheckDetail, { event })
             )
           : null
       )

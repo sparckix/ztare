@@ -840,6 +840,44 @@ code {
   font-size: 12px;
 }
 
+.source-check-detail {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #d9e1de;
+}
+
+.source-check-detail.attention {
+  border-left: 3px solid #b45309;
+}
+
+.source-check-detail.ready {
+  border-left: 3px solid #1c6552;
+}
+
+.source-check-detail span {
+  color: #17201d;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.source-check-detail code {
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.source-check-detail p,
+.source-check-detail small {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .raw-source-manager {
   min-width: 0;
   display: grid;

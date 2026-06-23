@@ -165,8 +165,9 @@ case file includes the current snapshot, project context, recent receipt
 history, live trace/report/health context, the latest preflight result, latest
 source/evidence action result, run-history context, the claim-support context,
 raw-source inventory, action-intelligence advisory recommendations, latest
-source import/edit receipts and hashes, command queue, and the latest visible
-write receipt with its write-refresh results. It also records pending intake
+source import/edit receipts, hashes, and follow-up source-check diagnostics,
+command queue, and the latest visible write receipt with its write-refresh
+results. It also records pending intake
 draft edits as unsaved state when the editor has changes that have not been
 written yet. It does not claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
