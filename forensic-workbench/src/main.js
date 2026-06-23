@@ -1954,10 +1954,11 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   if (!receiptEvent) return null;
   const result = receiptEvent.result || {};
   const receipt = result.receipt || {};
-  const kindLabel = receiptEvent.kind === "row_action" ? "Row action" : "Review";
-  const actionLabel = receipt.action || receipt.decision || "written";
-  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || "";
-  const sourcePath = receipt.review_file_path || receipt.action_file_path || "";
+  const kindLabel = receiptEvent.kind === "intake_edit" ? "Intake edit" : receiptEvent.kind === "row_action" ? "Row action" : "Review";
+  const editedFields = (receipt.updated_fields || []).map(displayFieldName).join(", ");
+  const actionLabel = receipt.action || receipt.decision || editedFields || "written";
+  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || "";
+  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || "";
   const receiptJson = JSON.stringify(receipt, null, 2);
 
   return h(
@@ -1973,7 +1974,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
     h(
       "div",
       { className: "write-receipt-facts" },
-      h("div", null, h("span", null, "Row"), h("strong", null, receipt.row || receiptEvent.row || "none")),
+      h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.intake_path || receiptEvent.row || "none")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
       h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash)))
@@ -2574,6 +2575,7 @@ function App() {
       return;
     }
     setIntakeMessage("Saving intake edit.");
+    setWriteReceiptEvent(null);
     fetch("/api/intake", {
       method: "POST",
       headers: {
@@ -2607,6 +2609,12 @@ function App() {
             ? `Saved intake edit. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Saved intake edit receipt: ${(payload.edit && payload.edit.latest) || "recorded"}.`
         );
+        setWriteReceiptEvent({
+          kind: "intake_edit",
+          row: "Project intake",
+          result: payload.edit,
+          snapshotError: payload.snapshot_error || ""
+        });
         loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setIntakeMessage(String(err.message || err)));

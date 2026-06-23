@@ -290,6 +290,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Review note",
     "Row action note",
     "Last write receipt",
+    "Intake edit",
     "write-receipt-panel",
     "Preview latest",
     "Download file",

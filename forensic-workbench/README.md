@@ -147,7 +147,7 @@ The interface is organized as a local claim-review surface:
 - review queue strip showing selected row, decision, evidence count, and receipt readiness
 - review workspace for marking a row reviewed, deferred, or blocking export
 - saved-action workspace for writing the next row action to a project ledger
-- last-write receipt panel showing the stamped review/action receipt, ledger
+- last-write receipt panel showing the stamped review/action/intake-edit receipt, ledger
   path, latest path, source path, hash, and preview/copy controls
 - review note field plus downloadable/copyable
   `ztare-forensic-workbench-review-v1` review file
@@ -185,8 +185,8 @@ reviewed.
 
 The refreshed app should also show the latest-row-action row. If no action has
 been saved, it should say so explicitly rather than implying a next step exists.
-After a live review or row-action write, the app should show the stamped receipt
-paths and hash immediately.
+After a live review, row-action, or intake-edit write, the app should show the
+stamped receipt paths and hash immediately.
 
 This prototype is intentionally separate from Orbit. Orbit is the organizational
 overlay; this app is the individual claim-review workbench.
