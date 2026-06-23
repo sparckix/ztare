@@ -204,14 +204,18 @@ function buildRowActionFile(snapshot, row, actionState) {
 function sourceActionReceiptEvent(payload) {
   if (!payload || !payload.writes) return null;
   const parsed = payload.parsed_output || {};
-  const receiptPath = parsed.path || parsed.source_index_receipt || "";
+  const receiptPath = payload.receipt_path || parsed.receipt_path || parsed.path || parsed.source_index_receipt || "";
+  const latestPath = payload.latest || receiptPath;
   const sourcePath = parsed.source_index || parsed.workspace_meta || parsed.provenance_path || parsed.path || "";
-  const receipt = parsed.receipt || {
-    schema: parsed.schema || "ztare-source-action-result-v1",
+  const receipt = payload.receipt || parsed.receipt || {
+    schema: "ztare-forensic-workbench-source-action-receipt-v1",
     project: parsed.project || payload.project || "",
     action: payload.action || "",
     status: parsed.status || parsed.merge_status || (payload.accepted ? "accepted" : "attention"),
+    accepted: Boolean(payload.accepted),
+    returncode: payload.returncode,
     source_path: sourcePath,
+    source_receipt_path: parsed.source_index_receipt || parsed.receipt_path || parsed.path || "",
     source_count: parsed.source_count
   };
   return {
@@ -221,7 +225,7 @@ function sourceActionReceiptEvent(payload) {
       ...payload,
       receipt,
       receipt_path: receiptPath,
-      latest: receiptPath
+      latest: latestPath
     },
     snapshotError: payload.snapshot_error || ""
   };
@@ -281,7 +285,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       latest_row_action: projectEntry.latest_row_action || snapshot.latest_row_action_artifact || "",
       latest_intake_edit: projectEntry.latest_intake_edit || snapshot.latest_intake_edit_artifact || "",
       latest_source_import: projectEntry.latest_source_import || "",
-      latest_source_edit: projectEntry.latest_source_edit || ""
+      latest_source_edit: projectEntry.latest_source_edit || "",
+      latest_source_action: projectEntry.latest_source_action || ""
     },
     live_context: {
       trace: {
@@ -379,6 +384,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             command: sourceAction.command || "",
             returncode: sourceAction.returncode,
             accepted: Boolean(sourceAction.accepted),
+            receipt_path: sourceAction.receipt_path || "",
+            latest: sourceAction.latest || "",
+            receipt: sourceAction.receipt || {},
             stdout_tail: sourceAction.stdout_tail || "",
             stderr_tail: sourceAction.stderr_tail || ""
           }
@@ -589,6 +597,7 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const latestIntakeEdit = (projectEntry && projectEntry.latest_intake_edit) || snapshot.latest_intake_edit_artifact || "";
   const latestSourceImport = (projectEntry && projectEntry.latest_source_import) || "";
   const latestSourceEdit = (projectEntry && projectEntry.latest_source_edit) || "";
+  const latestSourceAction = (projectEntry && projectEntry.latest_source_action) || "";
   const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
   const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
   return h(
@@ -603,7 +612,8 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
     h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none")),
     h("div", null, h("span", null, "Latest intake edit"), h("code", null, latestIntakeEdit || "none")),
     h("div", null, h("span", null, "Latest source import"), h("code", null, latestSourceImport || "none")),
-    h("div", null, h("span", null, "Latest source edit"), h("code", null, latestSourceEdit || "none"))
+    h("div", null, h("span", null, "Latest source edit"), h("code", null, latestSourceEdit || "none")),
+    h("div", null, h("span", null, "Latest source action"), h("code", null, latestSourceAction || "none"))
   );
 }
 
@@ -632,7 +642,8 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
           project.latest_row_action,
           project.latest_intake_edit,
           project.latest_source_import,
-          project.latest_source_edit
+          project.latest_source_edit,
+          project.latest_source_action
         ].filter(Boolean).length;
         return h(
           "article",

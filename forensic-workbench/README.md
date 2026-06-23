@@ -201,8 +201,8 @@ The interface is organized as a local claim-review surface:
   API to run a bounded preflight-only check
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
-- receipt history panel showing recent review, row-action, intake-edit, source-import, and source-edit
-  ledger rows with previewable backing ledger paths
+- receipt history panel showing recent review, row-action, intake-edit, source-import,
+  source-edit, and source-action ledger rows with previewable backing ledger paths
 - case-file export for downloading or copying the current case, rows,
   project context, evidence refs, live context, preflight result, raw-source
   inventory, run history, command queue, and recent receipt paths

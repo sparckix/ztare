@@ -31,6 +31,7 @@ SOURCE_IMPORT_SCHEMA = "ztare-forensic-workbench-source-import-v1"
 SOURCE_LIST_SCHEMA = "ztare-forensic-workbench-source-list-v1"
 SOURCE_FILE_SCHEMA = "ztare-forensic-workbench-source-file-v1"
 SOURCE_EDIT_SCHEMA = "ztare-forensic-workbench-source-edit-v1"
+SOURCE_ACTION_RECEIPT_SCHEMA = "ztare-forensic-workbench-source-action-receipt-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -481,6 +482,22 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
         )
         verb = "Imported" if kind == "source_import" else "Edited"
         row["summary"] = f"{verb} {row['source_path'] or 'source'} as {display_value(row['source_type'])}"
+    elif kind == "source_action":
+        row.update(
+            {
+                "action": str(payload.get("action") or ""),
+                "label": str(payload.get("label") or ""),
+                "accepted": bool(payload.get("accepted")),
+                "returncode": safe_int(payload.get("returncode")),
+                "source_path": str(payload.get("source_path") or ""),
+                "source_receipt_path": str(payload.get("source_receipt_path") or ""),
+            }
+        )
+        status = "accepted" if row["accepted"] else "attention"
+        row["summary"] = (
+            f"{display_value(row['label'] or row['action'])} {status}; "
+            f"artifact={row['source_path'] or row['source_receipt_path'] or 'not surfaced'}"
+        )
     else:
         row["summary"] = kind.replace("_", " ")
     return row
@@ -530,6 +547,7 @@ def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
         "intake_edit": workspace / "forensic_workbench_intake_edits.jsonl",
         "source_import": workspace / "forensic_workbench_source_imports.jsonl",
         "source_edit": workspace / "forensic_workbench_source_edits.jsonl",
+        "source_action": workspace / "forensic_workbench_source_actions.jsonl",
     }
     receipts: list[dict[str, Any]] = []
     for kind, path in ledgers.items():
@@ -1332,6 +1350,21 @@ def preflight_payload_for_project(
     return payload
 
 
+def source_action_artifact_paths(parsed_output: dict[str, Any]) -> tuple[str, str]:
+    source_receipt_path = display_path(
+        parsed_output.get("source_index_receipt")
+        or parsed_output.get("receipt_path")
+        or parsed_output.get("path")
+    )
+    source_path = display_path(
+        parsed_output.get("source_index")
+        or parsed_output.get("workspace_meta")
+        or parsed_output.get("provenance_path")
+        or parsed_output.get("path")
+    )
+    return source_receipt_path, source_path
+
+
 def source_action_payload_for_project(
     *,
     project: str,
@@ -1373,6 +1406,35 @@ def source_action_payload_for_project(
         "trace": None,
         "snapshot": None,
     }
+    if spec["writes"]:
+        source_receipt_path, source_path = source_action_artifact_paths(parsed_output)
+        workspace = snapshot.REPO / "projects" / project / "workspace"
+        ledger_path = workspace / "forensic_workbench_source_actions.jsonl"
+        latest_path = workspace / "forensic_workbench_latest_source_action.json"
+        receipt = {
+            "schema": SOURCE_ACTION_RECEIPT_SCHEMA,
+            "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "project": project,
+            "action": action,
+            "label": str(spec["label"]),
+            "command": payload["command"],
+            "returncode": proc.returncode,
+            "accepted": proc.returncode == 0,
+            "source_action_schema": SOURCE_ACTION_SCHEMA,
+            "source_receipt_path": source_receipt_path,
+            "source_path": source_path,
+            "parsed_schema": str(parsed_output.get("schema") or ""),
+            "parsed_status": str(parsed_output.get("status") or ""),
+        }
+        append_jsonl(ledger_path, receipt)
+        latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        payload.update(
+            {
+                "receipt_path": repo_rel(ledger_path),
+                "latest": repo_rel(latest_path),
+                "receipt": receipt,
+            }
+        )
     try:
         payload["trace"] = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
     except SystemExit as exc:

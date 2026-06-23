@@ -101,6 +101,7 @@ def list_project_entries() -> list[dict[str, Any]]:
         latest_intake_edit = latest_intake_edit_path(project)
         latest_source_import = latest_source_import_path(project)
         latest_source_edit = latest_source_edit_path(project)
+        latest_source_action = latest_source_action_path(project)
         report_contract = project_dir / "synthesis" / "report_support_contract.json"
         entry = entries_by_project.get(project)
         if entry is None:
@@ -115,6 +116,7 @@ def list_project_entries() -> list[dict[str, Any]]:
                 "latest_intake_edit": rel(latest_intake_edit) if latest_intake_edit.exists() else "",
                 "latest_source_import": rel(latest_source_import) if latest_source_import.exists() else "",
                 "latest_source_edit": rel(latest_source_edit) if latest_source_edit.exists() else "",
+                "latest_source_action": rel(latest_source_action) if latest_source_action.exists() else "",
                 "report_contract": rel(report_contract) if report_contract.exists() else "",
             }
             return
@@ -133,6 +135,8 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["latest_source_import"] = rel(latest_source_import)
         if latest_source_edit.exists():
             entry["latest_source_edit"] = rel(latest_source_edit)
+        if latest_source_action.exists():
+            entry["latest_source_action"] = rel(latest_source_action)
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
 
@@ -381,6 +385,10 @@ def latest_source_import_path(project: str) -> Path:
 
 def latest_source_edit_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_source_edit.json"
+
+
+def latest_source_action_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_source_action.json"
 
 
 def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:

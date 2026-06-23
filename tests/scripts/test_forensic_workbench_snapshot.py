@@ -324,6 +324,7 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
     workspace.mkdir()
     (workspace / "forensic_workbench_latest_source_import.json").write_text("{}", encoding="utf-8")
     (workspace / "forensic_workbench_latest_source_edit.json").write_text("{}", encoding="utf-8")
+    (workspace / "forensic_workbench_latest_source_action.json").write_text("{}", encoding="utf-8")
     (tmp_path / "projects/no_intake").mkdir()
     (tmp_path / "projects/bad/project").mkdir(parents=True)
 
@@ -341,6 +342,7 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
             "latest_intake_edit": "",
             "latest_source_import": "projects/demo/workspace/forensic_workbench_latest_source_import.json",
             "latest_source_edit": "projects/demo/workspace/forensic_workbench_latest_source_edit.json",
+            "latest_source_action": "projects/demo/workspace/forensic_workbench_latest_source_action.json",
             "report_contract": "",
         }
     ]
@@ -367,6 +369,7 @@ def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatc
             "latest_intake_edit": "",
             "latest_source_import": "",
             "latest_source_edit": "",
+            "latest_source_action": "",
             "report_contract": "",
         }
     ]
@@ -399,6 +402,7 @@ def test_project_index_prefers_project_local_intake_over_public_example(
             "latest_intake_edit": "",
             "latest_source_import": "",
             "latest_source_edit": "",
+            "latest_source_action": "",
             "report_contract": "",
         }
     ]
@@ -428,6 +432,7 @@ def test_project_index_keeps_example_intake_source_when_project_dir_has_no_intak
             "latest_intake_edit": "",
             "latest_source_import": "",
             "latest_source_edit": "",
+            "latest_source_action": "",
             "report_contract": "",
         }
     ]
@@ -730,6 +735,15 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     assert bind_payload["writes"] is True
     assert bind_payload["command"] == "ztare project evidence-bind --project demo --json"
     assert payload["parsed_output"]["path"] == "projects/demo/workspace/source_index.json"
+    assert payload["receipt_path"] == "projects/demo/workspace/forensic_workbench_source_actions.jsonl"
+    assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_source_action.json"
+    assert payload["receipt"]["schema"] == "ztare-forensic-workbench-source-action-receipt-v1"
+    assert payload["receipt"]["action"] == "source_index"
+    assert payload["receipt"]["source_path"] == "projects/demo/workspace/source_index.json"
+    latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_source_action.json").read_text(encoding="utf-8"))
+    ledger_rows = (project_root / "workspace" / "forensic_workbench_source_actions.jsonl").read_text(encoding="utf-8").splitlines()
+    assert latest["action"] == "evidence_bind"
+    assert len(ledger_rows) == 2
     assert str(tmp_path) not in payload["stdout_tail"]
     assert str(tmp_path) not in json.dumps(payload)
     assert commands == [
