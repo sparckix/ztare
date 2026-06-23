@@ -96,6 +96,24 @@ def display_path(value: Any) -> str:
     return raw
 
 
+def display_text(value: Any) -> str:
+    text = str(value or "")
+    if not text:
+        return ""
+    repo = str(snapshot.REPO.resolve())
+    return text.replace(repo + "/", "").replace(repo, ".")
+
+
+def display_data(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(key): display_data(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [display_data(item) for item in value]
+    if isinstance(value, str):
+        return display_text(value)
+    return value
+
+
 def path_under(path: Path, root: Path) -> bool:
     try:
         path.resolve().relative_to(root.resolve())
@@ -318,7 +336,7 @@ def project_index_payload() -> dict[str, Any]:
         except Exception as exc:  # noqa: BLE001 - project index should surface per-project errors.
             row["intake_editable"] = False
             row["intake_ref_summary"] = {}
-            row["intake_error"] = str(exc)
+            row["intake_error"] = display_text(exc)
         projects.append(row)
     return {
         "schema": "ztare-forensic-workbench-project-index-v1",
@@ -486,12 +504,20 @@ def tail_text(value: str, *, max_chars: int = 4000) -> str:
     return value[-max_chars:]
 
 
+def tail_display_text(value: str, *, max_chars: int = 4000) -> str:
+    return display_text(tail_text(value, max_chars=max_chars))
+
+
 def text_lines(value: Any, *, limit: int = 20) -> list[str]:
     if isinstance(value, list):
         raw = value
     else:
         raw = str(value or "").splitlines()
     return [str(item).strip() for item in raw if str(item).strip()][:limit]
+
+
+def display_text_lines(value: Any, *, limit: int = 20) -> list[str]:
+    return [display_text(item) for item in text_lines(value, limit=limit)]
 
 
 def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
@@ -839,9 +865,9 @@ def command_result_payload(proc: Any) -> dict[str, Any]:
     return {
         "returncode": proc.returncode,
         "accepted": proc.returncode == 0,
-        "stdout_tail": tail_text(proc.stdout),
-        "stderr_tail": tail_text(proc.stderr),
-        "parsed_output": parsed_output,
+        "stdout_tail": tail_display_text(proc.stdout),
+        "stderr_tail": tail_display_text(proc.stderr),
+        "parsed_output": display_data(parsed_output),
     }
 
 
@@ -1008,10 +1034,10 @@ def source_list_payload(*, project: str) -> dict[str, Any]:
         "command": f"ztare project source-check --project {project} --json --no-fail",
         "returncode": proc.returncode,
         "accepted": proc.returncode == 0,
-        "stdout_tail": tail_text(proc.stdout),
-        "stderr_tail": tail_text(proc.stderr),
-        "source_check": parsed,
-        "sources": parsed.get("sources") if isinstance(parsed.get("sources"), list) else [],
+        "stdout_tail": tail_display_text(proc.stdout),
+        "stderr_tail": tail_display_text(proc.stderr),
+        "source_check": display_data(parsed),
+        "sources": display_data(parsed.get("sources")) if isinstance(parsed.get("sources"), list) else [],
     }
 
 
@@ -1220,7 +1246,7 @@ def create_project_payload(
         try:
             payload["project_index"] = project_index_payload()
         except Exception as exc:  # noqa: BLE001 - creation result should still be inspectable.
-            payload["project_index_error"] = str(exc)
+            payload["project_index_error"] = display_text(exc)
         try:
             payload["snapshot"] = snapshot_payload_for_project(
                 project=project,
@@ -1229,7 +1255,7 @@ def create_project_payload(
                 renderer=renderer,
             )
         except Exception as exc:  # noqa: BLE001 - creation result should still be inspectable.
-            payload["snapshot_error"] = str(exc)
+            payload["snapshot_error"] = display_text(exc)
     return payload
 
 
@@ -1273,17 +1299,17 @@ def preflight_payload_for_project(
         "command": display_command,
         "returncode": proc.returncode,
         "accepted": accepted,
-        "stdout_tail": tail_text(proc.stdout),
-        "stderr_tail": tail_text(proc.stderr),
+        "stdout_tail": tail_display_text(proc.stdout),
+        "stderr_tail": tail_display_text(proc.stderr),
         "trace": None,
         "snapshot": None,
     }
     try:
         payload["trace"] = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
     except SystemExit as exc:
-        payload["trace_error"] = str(exc)
+        payload["trace_error"] = display_text(exc)
     except Exception as exc:  # noqa: BLE001 - preflight result should still be inspectable.
-        payload["trace_error"] = str(exc)
+        payload["trace_error"] = display_text(exc)
     try:
         payload["snapshot"] = snapshot_payload_for_project(
             project=project,
@@ -1292,9 +1318,9 @@ def preflight_payload_for_project(
             renderer=renderer,
         )
     except SystemExit as exc:
-        payload["snapshot_error"] = str(exc)
+        payload["snapshot_error"] = display_text(exc)
     except Exception as exc:  # noqa: BLE001 - preflight result should still be inspectable.
-        payload["snapshot_error"] = str(exc)
+        payload["snapshot_error"] = display_text(exc)
     return payload
 
 
@@ -1333,18 +1359,18 @@ def source_action_payload_for_project(
         "command": str(spec["display"]).format(project=project),
         "returncode": proc.returncode,
         "accepted": proc.returncode == 0,
-        "stdout_tail": tail_text(proc.stdout),
-        "stderr_tail": tail_text(proc.stderr),
-        "parsed_output": parsed_output,
+        "stdout_tail": tail_display_text(proc.stdout),
+        "stderr_tail": tail_display_text(proc.stderr),
+        "parsed_output": display_data(parsed_output),
         "trace": None,
         "snapshot": None,
     }
     try:
         payload["trace"] = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
     except SystemExit as exc:
-        payload["trace_error"] = str(exc)
+        payload["trace_error"] = display_text(exc)
     except Exception as exc:  # noqa: BLE001 - action result should still be inspectable.
-        payload["trace_error"] = str(exc)
+        payload["trace_error"] = display_text(exc)
     try:
         payload["snapshot"] = snapshot_payload_for_project(
             project=project,
@@ -1353,9 +1379,9 @@ def source_action_payload_for_project(
             renderer=renderer,
         )
     except SystemExit as exc:
-        payload["snapshot_error"] = str(exc)
+        payload["snapshot_error"] = display_text(exc)
     except Exception as exc:  # noqa: BLE001 - action result should still be inspectable.
-        payload["snapshot_error"] = str(exc)
+        payload["snapshot_error"] = display_text(exc)
     return payload
 
 
@@ -1469,7 +1495,7 @@ def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
             if isinstance(parsed.get("source_context_status_counts"), dict)
             else {}
         ),
-        "errors": text_lines(parsed.get("errors") or [], limit=8),
+        "errors": display_text_lines(parsed.get("errors") or [], limit=8),
         "packet_path": display_path(parsed.get("packet_path")),
         "source_index_path": display_path(parsed.get("source_index_path")),
         "rows": [compact_claim_support_row(row) for row in (parsed.get("rows") or [])[:12] if isinstance(row, dict)],
@@ -1478,8 +1504,8 @@ def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
             for row in list(source_context.values())[:12]
             if isinstance(row, dict)
         ],
-        "stdout_tail": tail_text(proc.stdout),
-        "stderr_tail": tail_text(proc.stderr),
+        "stdout_tail": tail_display_text(proc.stdout),
+        "stderr_tail": tail_display_text(proc.stderr),
     }
 
 
@@ -1645,9 +1671,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:
-            self.send_json({"ok": False, "error": str(exc)}, status=400)
+            self.send_json({"ok": False, "error": display_text(exc)}, status=400)
         except Exception as exc:  # noqa: BLE001 - API should return inspectable JSON errors.
-            self.send_json({"ok": False, "error": str(exc)}, status=400)
+            self.send_json({"ok": False, "error": display_text(exc)}, status=400)
 
     def do_POST(self) -> None:
         parsed = urlparse(self.path)
@@ -1675,9 +1701,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 try:
                     response["snapshot"] = snapshot_payload_for_project(project=project, rubric=rubric, intake=intake)
                 except SystemExit as exc:
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 except Exception as exc:  # noqa: BLE001 - receipt write already succeeded.
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 self.send_json(response)
                 return
             if parsed.path == "/api/intake":
@@ -1699,9 +1725,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 try:
                     response["snapshot"] = snapshot_payload_for_project(project=project, rubric=rubric, intake=intake)
                 except SystemExit as exc:
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 except Exception as exc:  # noqa: BLE001 - intake write already succeeded.
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 self.send_json(response)
                 return
             if parsed.path == "/api/row-action":
@@ -1727,9 +1753,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 try:
                     response["snapshot"] = snapshot_payload_for_project(project=project, rubric=rubric, intake=intake)
                 except SystemExit as exc:
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 except Exception as exc:  # noqa: BLE001 - receipt write already succeeded.
-                    response["snapshot_error"] = str(exc)
+                    response["snapshot_error"] = display_text(exc)
                 self.send_json(response)
                 return
             if parsed.path == "/api/preflight":
@@ -1806,9 +1832,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:
-            self.send_json({"ok": False, "error": str(exc)}, status=400)
+            self.send_json({"ok": False, "error": display_text(exc)}, status=400)
         except Exception as exc:  # noqa: BLE001 - API should return inspectable JSON errors.
-            self.send_json({"ok": False, "error": str(exc)}, status=400)
+            self.send_json({"ok": False, "error": display_text(exc)}, status=400)
 
 
 def build_parser() -> argparse.ArgumentParser:

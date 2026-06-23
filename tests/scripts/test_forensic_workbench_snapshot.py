@@ -692,7 +692,12 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
 
     def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
         commands.append(command)
-        return subprocess.CompletedProcess(command, 0, stdout='{"ok": true, "status": "fresh"}\n', stderr="")
+        payload = {
+            "ok": True,
+            "status": "fresh",
+            "path": str(project_root / "workspace" / "source_index.json"),
+        }
+        return subprocess.CompletedProcess(command, 0, stdout=json.dumps(payload) + "\n", stderr="")
 
     monkeypatch.setattr(module.snapshot, "run", fake_run)
     monkeypatch.setattr(module.snapshot, "default_intake_for_project", lambda project: f"projects/{project}/{project}_intake.json")
@@ -708,6 +713,9 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     assert payload["command"] == "ztare project source-index --project demo --index-only --json"
     assert bind_payload["writes"] is True
     assert bind_payload["command"] == "ztare project evidence-bind --project demo --json"
+    assert payload["parsed_output"]["path"] == "projects/demo/workspace/source_index.json"
+    assert str(tmp_path) not in payload["stdout_tail"]
+    assert str(tmp_path) not in json.dumps(payload)
     assert commands == [
         [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-index", "--project", "demo", "--index-only", "--json"],
         [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "evidence-bind", "--project", "demo", "--json"],
@@ -762,6 +770,9 @@ def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_
     assert payload["packet_path"] == "projects/demo/compiled_evidence_packet.json"
     assert payload["source_index_path"] == "projects/demo/workspace/source_index.json"
     assert payload["source_context"][0]["path"] == "projects/demo/raw/source.md"
+    assert payload["errors"] == ["missing compiled evidence packet: projects/demo/compiled_evidence_packet.json"]
+    assert str(tmp_path) not in payload["stdout_tail"]
+    assert str(tmp_path) not in json.dumps(payload)
     assert commands == [[module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "claim-support", "--project", "demo", "--json"]]
 
 
