@@ -181,9 +181,25 @@ function buildRowActionFile(snapshot, row, actionState) {
   return JSON.stringify(payload, null, 2);
 }
 
-function buildCasePacket(snapshot, receiptHistory) {
+function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const rows = (snapshot && snapshot.rows) || [];
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).slice(0, 8);
+  const trace = context.traceContext || {};
+  const report = context.reportContext || {};
+  const health = context.healthContext || {};
+  const latestWrite = context.writeReceiptEvent || null;
+  const commandQueue = commandCockpitItems({
+    snapshot,
+    selectedRow: context.selectedRow || null,
+    traceContext: trace,
+    reportContext: report,
+    healthContext: health
+  }).map((item) => ({
+    label: item.label,
+    source: item.source || "",
+    row_label: item.rowLabel || "",
+    command: item.command
+  }));
   return {
     schema: "ztare-forensic-workbench-case-packet-v1",
     project: snapshot.project,
@@ -193,6 +209,57 @@ function buildCasePacket(snapshot, receiptHistory) {
     report_status: snapshot.report_status,
     status_reasons: snapshot.status_reasons || [],
     generated_from: snapshot.served_from === "local_api" ? "local_api_snapshot" : "static_snapshot",
+    live_context: {
+      trace: {
+        schema: trace.schema || "",
+        readiness: trace.readiness || "",
+        trace_command: trace.trace_command || "",
+        next_commands: (trace.next_commands || []).slice(0, 6),
+        carrier_chain: (trace.carrier_chain || []).slice(0, 8),
+        plan_preview: {
+          schema: (trace.plan_preview || {}).schema || "",
+          status: (trace.plan_preview || {}).status || "",
+          recommended_first_command: (trace.plan_preview || {}).recommended_first_command || "",
+          model_calls_before_confirmation: (trace.plan_preview || {}).model_calls_before_confirmation
+        }
+      },
+      report_contract: {
+        schema: report.schema || "",
+        status: report.status || "",
+        status_reasons: report.status_reasons || [],
+        report_support_contract: report.report_support_contract || "",
+        command: report.command || "",
+        synthesis_input_binding: {
+          schema: (report.synthesis_input_binding || {}).schema || "",
+          status: (report.synthesis_input_binding || {}).status || "",
+          reason: (report.synthesis_input_binding || {}).reason || "",
+          artifact_count: (report.synthesis_input_binding || {}).artifact_count
+        }
+      },
+      health: {
+        schema: health.schema || "",
+        kernel: {
+          summary: ((health.kernel || {}).summary) || {},
+          attention_components: ((health.kernel || {}).attention_components || []).slice(0, 8)
+        },
+        action_intelligence: {
+          counts: ((health.action_intelligence || {}).counts) || {},
+          issues: ((health.action_intelligence || {}).issues || []).slice(0, 8),
+          source_paths: ((health.action_intelligence || {}).source_paths) || {}
+        }
+      },
+      latest_write_receipt: latestWrite
+        ? {
+            kind: latestWrite.kind,
+            row: latestWrite.row,
+            snapshot_error: latestWrite.snapshotError || "",
+            ledger: (latestWrite.result || {}).ledger || "",
+            latest: (latestWrite.result || {}).latest || "",
+            receipt: (latestWrite.result || {}).receipt || {}
+          }
+        : null
+    },
+    command_queue: commandQueue,
     rows: rows.map((row) => ({
       label: row.label,
       status: displayText(row.status),
@@ -214,7 +281,7 @@ function buildCasePacket(snapshot, receiptHistory) {
   };
 }
 
-function casePacketSummary(snapshot, receiptHistory) {
+function casePacketSummary(snapshot, receiptHistory, packet) {
   const blocker = activeBlocker((snapshot && snapshot.rows) || []);
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).length;
   return [
@@ -223,6 +290,7 @@ function casePacketSummary(snapshot, receiptHistory) {
     `Export: ${displayText(snapshot.report_status)}`,
     `Current blocker: ${blocker ? blocker.label : "none"}`,
     `Recent receipts: ${receipts}`,
+    `Command queue: ${packet ? packet.command_queue.length : 0}`,
     `Intake: ${snapshot.intake || "not recorded"}`
   ].join("\n");
 }
@@ -955,11 +1023,33 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory }) {
-  const packet = buildCasePacket(snapshot, receiptHistory);
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, writeReceiptEvent, selectedRow }) {
+  const packet = buildCasePacket(snapshot, receiptHistory, {
+    traceContext,
+    reportContext,
+    healthContext,
+    writeReceiptEvent,
+    selectedRow
+  });
   const packetJson = JSON.stringify(packet, null, 2);
-  const summary = casePacketSummary(snapshot, receiptHistory);
+  const summary = casePacketSummary(snapshot, receiptHistory, packet);
   const rowsWithEvidence = packet.rows.filter((row) => row.evidence_refs.length).length;
+  const liveContextCount = [
+    packet.live_context.trace.schema ||
+      packet.live_context.trace.readiness ||
+      packet.live_context.trace.trace_command ||
+      packet.live_context.trace.next_commands.length ||
+      packet.live_context.trace.carrier_chain.length,
+    packet.live_context.report_contract.schema ||
+      packet.live_context.report_contract.status ||
+      packet.live_context.report_contract.report_support_contract ||
+      packet.live_context.report_contract.command,
+    packet.live_context.health.schema ||
+      Object.keys(packet.live_context.health.kernel.summary || {}).length ||
+      packet.live_context.health.kernel.attention_components.length ||
+      Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
+      packet.live_context.health.action_intelligence.issues.length
+  ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
 
   return h(
@@ -978,6 +1068,8 @@ function CaseExportPanel({ snapshot, receiptHistory }) {
       h("div", null, h("span", null, "Rows"), h("strong", null, String(packet.rows.length))),
       h("div", null, h("span", null, "Rows with evidence"), h("strong", null, String(rowsWithEvidence))),
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
+      h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
+      h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
     ),
     h(
@@ -2832,7 +2924,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
