@@ -1,19 +1,19 @@
 ---
-description: "Interface contract for the first ZTARE forensic workbench prototype: users, boundaries, controller surfaces, and acceptance tests."
+description: "Interface contract for the D4 ZTARE forensic workbench: users, boundaries, controller surfaces, and acceptance tests."
 ---
 
 # Forensic Workbench Interface
 
 > **Up:** [`docs/concepts/README.md`](README.md)
 
-This page is the public interface-positioning contract for the first local
-ZTARE workbench prototype. It is narrower than the full architecture and more
-concrete than a product pitch. Its job is to prevent a future UI from becoming
-a generic chat surface or dashboard.
+This page is the public interface-positioning contract for the D4 local ZTARE
+workbench. It is narrower than the full architecture and more concrete than a
+product pitch. Its job is to keep the UI centered on local claim review instead
+of generic chat or dashboards.
 
-The first prototype is allowed only if it preserves the review boundary:
-bounded claim, local sources, evidence state, run readiness, trace, preflight,
-verdict or demotion, next falsifier, and exportable review artifact.
+D4 is useful only if it preserves the review boundary: bounded claim, local
+sources, evidence state, run readiness, trace, preflight, verdict or demotion,
+next falsifier, and exportable review artifact.
 
 ## First User
 
@@ -58,8 +58,8 @@ The first five-minute outcome should be:
 7. apply the review file through the CLI and refresh the snapshot;
 8. leave knowing the next falsifier or missing surface.
 
-This is the first prototype's benchmark. A pretty screen that cannot complete
-this path is not progress.
+This is D4's first-use benchmark. A polished screen that cannot complete this
+path is not release-ready.
 
 ## First Screen
 
@@ -95,7 +95,7 @@ inspect or do.
 
 ## Controller Surfaces
 
-The prototype should consume existing CLI/read-model surfaces before adding new
+The workbench should consume existing CLI/read-model surfaces before adding new
 backend abstractions:
 
 | UI need | Existing surface |
@@ -144,14 +144,14 @@ claim/evidence lifecycle, it belongs outside v1.
 
 ## Local Data Boundary
 
-The prototype is local-first. It should read repository files and launch local
+The workbench is local-first. It should read repository files and launch local
 commands. It should not require private cloud state to render truth. If a row
 uses unavailable private data, the row must say so and show the missing path or
 receipt rather than filling the gap with a model-written explanation.
 
 ## Project List Model
 
-The v0.4 D4 prototype consumes explicit read models, not raw browser access to
+The v0.4 D4 workbench consumes explicit read models, not raw browser access to
 the repository. Static mode renders one generated project snapshot:
 
 ```text
@@ -291,7 +291,7 @@ claims stronger and do not become hidden control authority.
 
 ## Acceptance Tests
 
-Any prototype must pass these before it is treated as release-relevant:
+Any D4 release candidate must pass these checks:
 
 1. A user can open `demo_claims` or `ops_root_cause_diagnosis_demo`.
 2. A blocked intake disables launch and names the missing surface.
@@ -306,4 +306,4 @@ Any prototype must pass these before it is treated as release-relevant:
 9. Supervisor, multi-role, multi-user, hosted, billing, and background-agent
    controls are absent.
 
-The prototype can be incomplete and still useful. It may not be opaque.
+D4 can grow incrementally. It may not be opaque.

@@ -21,7 +21,7 @@ _Folder index. Prose may be added above the auto-index block._
 - [Cross-Scale Fractal Map](cross_scale_fractal_map.md) - Empirical observation that the same failure shapes recur across scales in mature LLM systems.
 - [Epistemic Supervision Principles](epistemic_principles.md) - Epistemic supervision principles: the rules the gates enforce and why they exist.
 - [Evaluation Failure Cases](evaluation_failure_cases.md) - Three compact examples of evaluation checks that pass while missing their intent.
-- [Forensic Workbench Interface](forensic_workbench_interface.md) - Interface contract for the first ZTARE forensic workbench prototype: users, boundaries, controller surfaces, and acceptance tests.
+- [Forensic Workbench Interface](forensic_workbench_interface.md) - Interface contract for the D4 ZTARE forensic workbench: users, boundaries, controller surfaces, and acceptance tests.
 - [Gaming Behavior Catalog Map](gaming_behavior_catalog_map.md) - Source-of-truth map for gaming behavior lifecycle: incident catalog, vector registry, promotion governance, runtime gates, and primitive precedents.
 - [ZTARE Glossary](glossary.md) - Plain-English definitions for every ZTARE term that matters.
 - [Goodhart at Every Layer](goodhart_at_every_layer.md) - How optimization pressure corrupts measurement at each architectural layer, and the counters.

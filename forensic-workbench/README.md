@@ -1,6 +1,6 @@
-# ZTARE Forensic Workbench Prototype
+# ZTARE Forensic Workbench
 
-React/Vite local webserver prototype for the forensic-workbench lane.
+React/Vite local webserver app for the D4 forensic-workbench lane.
 
 The app reads `public/workbench_snapshot.json`, which is generated from the
 existing project intake, autoresearch trace, and report-support contract:
@@ -218,7 +218,7 @@ The interface is organized as a local claim-review surface:
 - read-only file preview for selected intake refs and evidence paths when the
   local API is running
 
-The current prototype is file-backed. Static mode downloads an inspectable
+The current workbench is file-backed. Static mode downloads an inspectable
 review file and makes the CLI handoff explicit:
 
 ```bash
@@ -250,5 +250,5 @@ been saved, it should say so explicitly rather than implying a next step exists.
 After a live review, row-action, or intake-edit write, the app should show the
 stamped receipt paths and hash immediately.
 
-This prototype is intentionally separate from Orbit. Orbit is the organizational
+This workbench is intentionally separate from Orbit. Orbit is the organizational
 overlay; this app is the individual claim-review workbench.

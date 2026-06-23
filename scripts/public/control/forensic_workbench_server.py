@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local API for the forensic workbench prototype."""
+"""Local API for the D4 forensic workbench."""
 from __future__ import annotations
 
 import argparse
