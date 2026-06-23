@@ -4585,7 +4585,6 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
-      h(ProjectSwitchboard, { projects, selectedProjectKey, snapshot, liveMode, loading: loadingSnapshot, onSelect: openProject }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(StageRail, { snapshot, setSelectedLabel }),
@@ -4612,6 +4611,7 @@ function App() {
       h(ClaimSummary, { snapshot }),
       h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, claimSupportContext, setSelectedLabel }),
       h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview }),
+      h(ProjectSwitchboard, { projects, selectedProjectKey, snapshot, liveMode, loading: loadingSnapshot, onSelect: openProject }),
       h(ProjectCreatePanel, {
         draft: projectCreateDraft,
         setDraft: setProjectCreateDraft,
