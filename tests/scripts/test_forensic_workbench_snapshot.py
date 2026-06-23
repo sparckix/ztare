@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import sys
 import threading
 from argparse import Namespace
@@ -572,6 +573,57 @@ def test_review_api_preserves_receipt_when_snapshot_refresh_fails(monkeypatch: p
     assert payload["review"]["ok"] is True
     assert payload["snapshot"] is None
     assert payload["snapshot_error"] == "trace refresh failed"
+
+
+def test_preflight_payload_runs_only_preflight_command(monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    seen: dict[str, object] = {}
+
+    def fake_project_intake_path(project: str, intake: str | None = None, *, allow_examples: bool = False) -> Path:
+        assert project == "demo"
+        assert intake == "projects/demo/demo_intake.json"
+        assert allow_examples is True
+        return Path("projects/demo/demo_intake.json")
+
+    def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+        seen["command"] = command
+        seen["timeout"] = timeout
+        return subprocess.CompletedProcess(
+            args=command,
+            returncode=0,
+            stdout="checks ok\nautoresearch preflight-only: launch inputs and packet boundary accepted\n",
+            stderr="",
+        )
+
+    monkeypatch.setattr(module, "project_intake_path", fake_project_intake_path)
+    monkeypatch.setattr(module.snapshot, "run", fake_run)
+    monkeypatch.setattr(
+        module,
+        "trace_payload_for_project",
+        lambda **_kwargs: {"schema": "ztare-forensic-workbench-trace-v1", "loop_admission": {"receipt_count": 1}},
+    )
+    monkeypatch.setattr(
+        module,
+        "snapshot_payload_for_project",
+        lambda **_kwargs: {"schema": "ztare-forensic-workbench-snapshot-v1", "project": "demo"},
+    )
+
+    payload = module.preflight_payload_for_project(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+    )
+
+    assert payload["schema"] == "ztare-forensic-workbench-preflight-v1"
+    assert payload["accepted"] is True
+    assert payload["returncode"] == 0
+    assert payload["trace"]["loop_admission"]["receipt_count"] == 1
+    assert payload["snapshot"]["project"] == "demo"
+    assert seen["timeout"] == 120
+    command = seen["command"]
+    assert isinstance(command, list)
+    assert "--preflight-only" in command
+    assert command[:5] == [module.snapshot.PYTHON, "-m", "src.ztare.cli", "autoresearch", "run"]
 
 
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(

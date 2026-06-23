@@ -917,6 +917,87 @@ function TraceConsolePanel({ traceContext, message, liveMode, onPreviewSource })
   );
 }
 
+function PreflightRunPanel({ traceContext, event, message, running, liveMode, onRun }) {
+  const kernel = (traceContext && traceContext.kernel_entry) || {};
+  const loop = (event && event.trace && event.trace.loop_admission) || (traceContext && traceContext.loop_admission) || {};
+  const command = kernel.preflight_command || (event && event.command) || "";
+  const canRun = Boolean(liveMode && command && !running);
+  const accepted = event && event.accepted;
+  const status = running ? "running" : event ? (accepted ? "accepted" : "blocked") : command ? "ready" : "missing";
+  const outputTail = event ? (event.stderr_tail || event.stdout_tail || "").trim() : "";
+  const snapshotNote = event && event.snapshot_error ? `Snapshot refresh failed: ${event.snapshot_error}` : "";
+  const traceNote = event && event.trace_error ? `Trace refresh failed: ${event.trace_error}` : "";
+
+  return h(
+    "section",
+    { className: `preflight-run-panel ${accepted ? "ready" : event ? "attention" : ""}`, "aria-label": "Preflight action" },
+    h(
+      "div",
+      { className: "preflight-run-summary" },
+      h("span", { className: "eyebrow" }, "Preflight"),
+      h("h2", null, displayText(status)),
+      h(
+        "p",
+        null,
+        message ||
+          (liveMode
+            ? "Run the local preflight only. This checks launch inputs and writes the normal loop-admission receipt; it does not start a model run."
+            : "Start the local API to run preflight from the workbench.")
+      )
+    ),
+    h(
+      "div",
+      { className: "preflight-run-command" },
+      h("span", null, "Command"),
+      h("code", null, command || "No preflight command surfaced for this case."),
+      h(
+        "div",
+        { className: "preflight-run-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button primary",
+            type: "button",
+            disabled: !canRun,
+            onClick: onRun,
+            title: canRun ? "Run local preflight only" : "Preflight requires live mode and a surfaced command"
+          },
+          running ? "Running" : "Run preflight"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !command,
+            onClick: () => command && copyText(command),
+            title: "Copy preflight command"
+          },
+          "Copy"
+        )
+      )
+    ),
+    h(
+      "div",
+      { className: "preflight-run-facts" },
+      h("div", null, h("span", null, "Exit"), h("strong", null, event ? String(event.returncode) : "not run")),
+      h("div", null, h("span", null, "Accepted"), h("strong", null, event ? (accepted ? "yes" : "no") : "not run")),
+      h("div", null, h("span", null, "Receipts"), h("strong", null, String(loop.receipt_count ?? 0))),
+      h("div", null, h("span", null, "Hash check"), h("strong", null, loop.intake_hash_verified === undefined ? "unknown" : loop.intake_hash_verified ? "verified" : "not verified"))
+    ),
+    outputTail || snapshotNote || traceNote
+      ? h(
+          "div",
+          { className: "preflight-run-output" },
+          h("span", null, "Result"),
+          snapshotNote ? h("p", null, snapshotNote) : null,
+          traceNote ? h("p", null, traceNote) : null,
+          outputTail ? h("pre", null, outputTail) : null
+        )
+      : null
+  );
+}
+
 function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   const binding = (reportContext && reportContext.synthesis_input_binding) || {};
   const reasons = (reportContext && reportContext.status_reasons) || [];
@@ -2368,6 +2449,9 @@ function App() {
   const [modeMessage, setModeMessage] = useState("");
   const [traceContext, setTraceContext] = useState(null);
   const [traceMessage, setTraceMessage] = useState("");
+  const [preflightEvent, setPreflightEvent] = useState(null);
+  const [preflightMessage, setPreflightMessage] = useState("");
+  const [preflightRunning, setPreflightRunning] = useState(false);
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
   const [reportContractContext, setReportContractContext] = useState(null);
@@ -2528,6 +2612,8 @@ function App() {
         }
         setTraceContext(null);
         setTraceMessage("Static mode uses the last generated snapshot only.");
+        setPreflightEvent(null);
+        setPreflightMessage("Static mode cannot run live preflight.");
         setReportContractContext(null);
         setReportContractMessage("Static mode uses the report/export row from the last generated snapshot only.");
         setHealthContext(null);
@@ -2812,6 +2898,51 @@ function App() {
       .catch((err) => setIntakeMessage(String(err.message || err)));
   };
 
+  const runPreflightLive = () => {
+    if (!snapshot || !liveMode || preflightRunning) return;
+    setPreflightRunning(true);
+    setPreflightMessage("Running local preflight.");
+    setPreflightEvent(null);
+    fetch("/api/preflight", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        renderer: "decision_brief"
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok) {
+            const error = new Error(payload.error || payload.stderr_tail || payload.stdout_tail || `preflight failed: ${response.status}`);
+            error.payload = payload;
+            throw error;
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        if (payload.trace) setTraceContext(payload.trace);
+        setPreflightEvent(payload);
+        setPreflightMessage(payload.accepted ? "Preflight accepted and the case was refreshed." : "Preflight finished without an acceptance marker.");
+      })
+      .catch((err) => {
+        if (err.payload) {
+          setPreflightEvent(err.payload);
+          if (err.payload.trace) setTraceContext(err.payload.trace);
+          if (err.payload.snapshot) installSnapshot(err.payload.snapshot);
+        }
+        setPreflightMessage(String(err.message || err));
+      })
+      .finally(() => setPreflightRunning(false));
+  };
+
   const loadFilePreview = (item) => {
     if (!liveMode || !item || !item.value) {
       setFilePreview(null);
@@ -2907,6 +3038,7 @@ function App() {
       h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, setSelectedLabel }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
+      h(PreflightRunPanel, { traceContext, event: preflightEvent, message: preflightMessage, running: preflightRunning, liveMode, onRun: runPreflightLive }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),

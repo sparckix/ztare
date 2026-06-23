@@ -35,7 +35,7 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/receipts`, `/api/file`, `/api/review`, and
+`/api/trace`, `/api/preflight`, `/api/receipts`, `/api/file`, `/api/review`, and
 `/api/row-action` to the local API. The browser still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
 selected project, using the intake and rubric discovered by the index. The app
@@ -66,7 +66,8 @@ is detected, the app keeps the current case and shows the error instead of
 swapping in stale static data.
 
 Live mode also fetches `/api/trace`, `/api/report-contract`, and `/api/health`
-for the selected project.
+for the selected project, and it can call `/api/preflight` for an explicit
+preflight-only launch check.
 The trace endpoint returns `ztare-forensic-workbench-trace-v1`: carrier chain,
 kernel-entry state, plan steps, loop admission, graph summaries,
 source/evidence statuses, and copyable next commands from
@@ -78,13 +79,17 @@ components, action-intelligence source-health issues, and source-health file
 paths. The workbench shows these as read-only rows with copyable commands and
 previewable source files, so advisory blockers are inspectable without becoming
 hidden browser writes.
+The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
+exact `ztare autoresearch run ... --preflight-only` command, exit code,
+acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
+available. It is not a general shell runner and it does not start a model run.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-packet export is client-side and explicit: clicking Download packet
-creates `ztare-forensic-workbench-case-packet-v1` JSON from the current snapshot
-recent receipt history, live trace/report/health context, the command queue, and
-the latest visible write receipt. It does not write project files or claim that
-an unreviewed case is complete.
+creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
+snapshot, recent receipt history, live trace/report/health context, the command
+queue, and the latest visible write receipt. It does not write project files or
+claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked
@@ -134,11 +139,14 @@ The interface is organized as a local claim-review surface:
   commands
 - autoresearch trace console showing carrier chain, kernel-entry status, plan
   steps, graph carriers, source/evidence paths, and next commands
+- preflight action panel that runs only the local preflight command and shows
+  exit status, loop-admission receipt count, and bounded output
 - report/export contract panel showing blocker reasons, synthesis input-binding
   state, contract file path, and the exact support command
 - current-action rail with the next command or provenance target
 - command cockpit collecting the selected-row, trace, report, health, and row
-  commands into one copy-only queue; the browser never runs shell commands
+  commands into one queue; only the dedicated preflight panel can ask the local
+  API to run a bounded preflight-only check
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
 - receipt history panel showing recent review, row-action, and intake-edit

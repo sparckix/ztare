@@ -22,6 +22,7 @@ MAX_PREVIEW_BYTES = 200_000
 INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
 RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
 REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
+PREFLIGHT_SCHEMA = "ztare-forensic-workbench-preflight-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -392,6 +393,13 @@ def safe_int(value: Any) -> int:
         return 0
 
 
+def tail_text(value: str, *, max_chars: int = 4000) -> str:
+    value = value or ""
+    if len(value) <= max_chars:
+        return value
+    return value[-max_chars:]
+
+
 def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     limit = max(1, min(limit, 50))
@@ -726,6 +734,71 @@ def health_payload_for_project(
     }
 
 
+def preflight_payload_for_project(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or snapshot.default_intake_for_project(project)
+    project_intake_path(project, intake, allow_examples=True)
+    command = [
+        snapshot.PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "autoresearch",
+        "run",
+        "--project",
+        project,
+        "--rubric",
+        rubric,
+        "--intake",
+        intake,
+        "--preflight-only",
+    ]
+    display_command = (
+        "ztare autoresearch run "
+        f"--project {project} --rubric {rubric} --intake {intake} --preflight-only"
+    )
+    proc = snapshot.run(command, timeout=120)
+    accepted = proc.returncode == 0 and "autoresearch preflight-only" in proc.stdout
+    payload: dict[str, Any] = {
+        "schema": PREFLIGHT_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "command": display_command,
+        "returncode": proc.returncode,
+        "accepted": accepted,
+        "stdout_tail": tail_text(proc.stdout),
+        "stderr_tail": tail_text(proc.stderr),
+        "trace": None,
+        "snapshot": None,
+    }
+    try:
+        payload["trace"] = trace_payload_for_project(project=project, rubric=rubric, intake=intake)
+    except SystemExit as exc:
+        payload["trace_error"] = str(exc)
+    except Exception as exc:  # noqa: BLE001 - preflight result should still be inspectable.
+        payload["trace_error"] = str(exc)
+    try:
+        payload["snapshot"] = snapshot_payload_for_project(
+            project=project,
+            rubric=rubric,
+            intake=intake,
+            renderer=renderer,
+        )
+    except SystemExit as exc:
+        payload["snapshot_error"] = str(exc)
+    except Exception as exc:  # noqa: BLE001 - preflight result should still be inspectable.
+        payload["snapshot_error"] = str(exc)
+    return payload
+
+
 class WorkbenchHandler(BaseHTTPRequestHandler):
     server_version = "ZTAREForensicWorkbench/0.1"
 
@@ -900,6 +973,20 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 except Exception as exc:  # noqa: BLE001 - receipt write already succeeded.
                     response["snapshot_error"] = str(exc)
                 self.send_json(response)
+                return
+            if parsed.path == "/api/preflight":
+                request = self.read_json_body()
+                project = str(request.get("project") or "")
+                rubric = str(request.get("rubric") or "") or None
+                intake = str(request.get("intake") or "") or None
+                renderer = str(request.get("renderer") or "") or None
+                response = preflight_payload_for_project(
+                    project=project,
+                    rubric=rubric,
+                    intake=intake,
+                    renderer=renderer,
+                )
+                self.send_json(response, status=200 if response.get("returncode") == 0 else 400)
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

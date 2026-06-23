@@ -1063,6 +1063,115 @@ code {
   text-transform: uppercase;
 }
 
+.preflight-run-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.46fr) minmax(320px, 0.74fr) minmax(260px, 0.7fr) minmax(0, 1fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #294f88;
+}
+
+.preflight-run-panel.ready {
+  border-left-color: #1c6552;
+}
+
+.preflight-run-panel.attention {
+  background: #fffaf2;
+  border-color: #ddc6a7;
+  border-left-color: #bd6a1d;
+}
+
+.preflight-run-summary,
+.preflight-run-command,
+.preflight-run-output {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.preflight-run-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 21px;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.preflight-run-summary p,
+.preflight-run-output p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.preflight-run-command span,
+.preflight-run-output span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.preflight-run-command code,
+.preflight-run-output pre {
+  min-width: 0;
+  max-height: 180px;
+  margin: 0;
+  padding: 8px;
+  overflow: auto;
+  background: #f5f7f6;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.preflight-run-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.preflight-run-facts {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.preflight-run-facts div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #fbfcfb;
+}
+
+.preflight-run-facts span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.preflight-run-facts strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 15px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
 .report-contract-panel {
   min-width: 0;
   display: grid;
@@ -3069,6 +3178,7 @@ code {
   .intake-editor,
   .next-move-panel,
   .path-panel,
+  .preflight-run-panel,
   .project-context-panel,
   .receipt-history,
   .report-contract-panel,
@@ -3123,6 +3233,7 @@ code {
   }
 
   .report-contract-body,
+  .preflight-run-facts,
   .report-contract-metrics {
     grid-template-columns: 1fr;
   }

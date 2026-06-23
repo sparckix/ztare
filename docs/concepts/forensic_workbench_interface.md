@@ -176,6 +176,10 @@ GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 GET /api/trace?project=<project>&rubric=<rubric>&intake=<intake>
 -> autoresearch trace summary: carrier chain, run gate, plan, graph, and commands
 
+POST /api/preflight
+-> run the bounded `ztare autoresearch run ... --preflight-only` check and
+   return the command, exit code, loop-admission trace, and refreshed snapshot
+
 GET /api/report-contract?project=<project>&renderer=<renderer>
 -> report/export status, blocker reasons, synthesis input binding, contract path, and command
 
@@ -210,7 +214,10 @@ that rebuild those checks.
 The report/export panel should show the blocker reasons, synthesis input-binding
 status, contract file path, and exact support command.
 The command cockpit should collect selected-row, trace, report, health, and row
-commands into one copy-only queue. The browser should never run shell commands.
+commands into one queue for inspection and copy. The browser should not run
+arbitrary shell commands; the only live launch action in D4 is the dedicated
+preflight panel, which calls the local API to run the bounded preflight-only
+command surfaced by the trace.
 
 The index must include both first-run demos:
 
