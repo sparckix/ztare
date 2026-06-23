@@ -37,7 +37,7 @@ const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
 const CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1";
 const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"];
 const PROJECT_SLUG_RE = /^[A-Za-z0-9_.-]+$/;
-const SOURCE_IMPORT_FILENAME_RE = /^[A-Za-z0-9_.-]+\.(md|txt)$/;
+const SOURCE_IMPORT_FILENAME_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(md|txt)$/;
 
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
@@ -2213,11 +2213,32 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
     evidenceRow.command ? { label: "Evidence command", value: evidenceRow.command, row: "Evidence readiness" } : null
   ].filter(Boolean);
   const readinessRows = [sourceRow, evidenceRow].filter((row) => row.label);
+  const project = (snapshot && snapshot.project) || "<project>";
   const actionButtons = [
-    { action: "source_check", label: "Check sources" },
-    { action: "source_index", label: "Refresh index" },
-    { action: "evidence_bind", label: "Bind outputs" },
-    { action: "evidence_replay", label: "Check replay" }
+    {
+      action: "source_check",
+      label: "Check sources",
+      command: `ztare project source-check --project ${project} --json`,
+      writes: false
+    },
+    {
+      action: "source_index",
+      label: "Refresh index",
+      command: `ztare project source-index --project ${project} --index-only --json`,
+      writes: true
+    },
+    {
+      action: "evidence_bind",
+      label: "Bind outputs",
+      command: `ztare project evidence-bind --project ${project} --json`,
+      writes: true
+    },
+    {
+      action: "evidence_replay",
+      label: "Check replay",
+      command: `ztare project evidence-replay --project ${project} --json`,
+      writes: false
+    }
   ];
 
   return h(
@@ -2322,16 +2343,21 @@ function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setS
           { className: "source-evidence-action-buttons" },
           actionButtons.map((item) =>
             h(
-              "button",
-              {
-                key: item.action,
-                className: "copy-button",
-                type: "button",
-                disabled: !liveMode || sourceActionRunning,
-                onClick: () => onRunSourceAction && onRunSourceAction(item.action),
-                title: liveMode ? item.label : "Start the local API to run source actions"
-              },
-              sourceActionRunning && sourceActionEvent && sourceActionEvent.action === item.action ? "Running" : item.label
+              "div",
+              { className: `source-evidence-action-card ${item.writes ? "writes" : ""}`, key: item.action },
+              h(
+                "button",
+                {
+                  className: "copy-button",
+                  type: "button",
+                  disabled: !liveMode || sourceActionRunning,
+                  onClick: () => onRunSourceAction && onRunSourceAction(item.action),
+                  title: liveMode ? item.command : "Start the local API to run source actions"
+                },
+                sourceActionRunning && sourceActionEvent && sourceActionEvent.action === item.action ? "Running" : item.label
+              ),
+              h("small", null, item.writes ? "Writes project receipt" : "Read-only check"),
+              h("code", null, item.command)
             )
           )
         ),

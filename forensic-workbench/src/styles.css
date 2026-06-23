@@ -2048,9 +2048,38 @@ code {
 }
 
 .source-evidence-action-buttons {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 6px;
+}
+
+.source-evidence-action-card {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 8px;
+  background: #f7f9f8;
+  border-left: 3px solid #8da099;
+}
+
+.source-evidence-action-card.writes {
+  border-left-color: #1c6552;
+}
+
+.source-evidence-action-card small,
+.source-evidence-action-card code {
+  min-width: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.source-evidence-action-card code {
+  padding: 6px;
+  background: #ffffff;
+  border: 1px solid #dce3e0;
+  color: #26342f;
 }
 
 .source-evidence-action-result {
