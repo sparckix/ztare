@@ -268,6 +268,8 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "live_context",
     "command_queue",
     "preflight_result",
+    "source_count",
+    "relative_raw_path",
     "latest_source_action",
     "latest_source_edit",
     "run_history",

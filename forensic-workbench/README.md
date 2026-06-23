@@ -122,7 +122,8 @@ The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
 preflight result, latest source/evidence action result, run-history context, the
-latest source import, latest source edit, command queue, and the latest visible write receipt. It
+raw-source inventory, latest source import, latest source edit, command queue,
+and the latest visible write receipt. It
 does not write project files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
@@ -190,8 +191,8 @@ The interface is organized as a local claim-review surface:
 - receipt history panel showing recent review, row-action, intake-edit, source-import, and source-edit
   ledger rows with previewable backing ledger paths
 - case-packet export for downloading or copying the current case, rows,
-  evidence refs, live context, preflight result, run history, command queue,
-  and recent receipt paths
+  evidence refs, live context, preflight result, raw-source inventory, run
+  history, command queue, and recent receipt paths
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
 - review queue strip showing selected row, decision, evidence count, and receipt readiness

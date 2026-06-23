@@ -199,6 +199,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const health = context.healthContext || {};
   const preflight = context.preflightEvent || null;
   const runHistory = context.runHistoryContext || {};
+  const sourceList = context.sourceListContext || {};
   const sourceAction = context.sourceActionEvent || null;
   const sourceImport = context.sourceImportEvent || null;
   const sourceEdit = context.sourceEditEvent || null;
@@ -285,6 +286,19 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
         recent_runs: (runHistory.recent_runs || []).slice(-8),
         synthesis_history: runHistory.synthesis_history || {}
       },
+      sources: {
+        schema: sourceList.schema || "",
+        accepted: Boolean(sourceList.accepted),
+        raw_dir: sourceList.raw_dir || "",
+        source_count: ((sourceList.sources || []).length),
+        sources: (sourceList.sources || []).slice(0, 16).map((source) => ({
+          path: source.path || "",
+          relative_raw_path: rawSourceRelative(source),
+          source_type: source.source_type || "",
+          chars: source.chars,
+          sha256: source.sha256 || ""
+        }))
+      },
       latest_source_action: sourceAction
         ? {
             schema: sourceAction.schema || "",
@@ -343,6 +357,8 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
       path: receipt.path,
       line: receipt.line,
       row: receipt.row || "",
+      source_path: receipt.source_path || "",
+      source_type: receipt.source_type || "",
       decision: receipt.decision || "",
       action: receipt.action || "",
       updated_fields: receipt.updated_fields || []
@@ -1516,12 +1532,13 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
     healthContext,
     preflightEvent,
+    sourceListContext,
     sourceActionEvent,
     sourceImportEvent,
     sourceEditEvent,
@@ -1548,6 +1565,9 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
       packet.live_context.health.action_intelligence.issues.length,
     packet.live_context.preflight_result,
+    packet.live_context.sources.schema ||
+      packet.live_context.sources.source_count ||
+      packet.live_context.sources.raw_dir,
     packet.live_context.latest_source_action,
     packet.live_context.latest_source_import,
     packet.live_context.latest_source_edit,
@@ -1573,6 +1593,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
       h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
+      h("div", null, h("span", null, "Raw sources"), h("strong", null, String(packet.live_context.sources.source_count || 0))),
       h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
       h("div", null, h("span", null, "Source import"), h("strong", null, packet.live_context.latest_source_import ? displayText(packet.live_context.latest_source_import.source_type) : "none")),
       h("div", null, h("span", null, "Source edit"), h("strong", null, packet.live_context.latest_source_edit ? displayText(packet.live_context.latest_source_edit.source_type) : "none")),
@@ -3880,7 +3901,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
