@@ -4320,6 +4320,32 @@ function App() {
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
       h(ProjectSwitchboard, { projects, selectedProjectKey, snapshot, liveMode, loading: loadingSnapshot, onSelect: openProject }),
+      h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
+      h(CaseDocket, { snapshot, selectedRow }),
+      h(StageRail, { snapshot, setSelectedLabel }),
+      h(SourceEvidencePanel, {
+        snapshot,
+        traceContext,
+        liveMode,
+        onPreview: loadFilePreview,
+        setSelectedLabel,
+        sourceActionEvent,
+        sourceActionMessage,
+        sourceActionRunning,
+        onRunSourceAction: runSourceActionLive
+      }),
+      h(
+        "section",
+        { className: "metrics", "aria-label": "Snapshot status" },
+        h(Metric, { label: "Run readiness", value: snapshot.readiness, tone: "ready" }),
+        h(Metric, { label: "Export", value: snapshot.report_status, tone: snapshot.report_status === "blocked" ? "attention" : "ready" }),
+        h(Metric, { label: "Evidence rows", value: String(counts.total) }),
+        h(Metric, { label: "Needs review", value: String(counts.attention), tone: counts.attention ? "attention" : "ready" })
+      ),
+      h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),
+      h(ClaimSummary, { snapshot }),
+      h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, claimSupportContext, setSelectedLabel }),
+      h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview }),
       h(ProjectCreatePanel, {
         draft: projectCreateDraft,
         setDraft: setProjectCreateDraft,
@@ -4328,7 +4354,6 @@ function App() {
         liveMode,
         onCreate: createProjectLive
       }),
-      h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview }),
       h(SourceImportPanel, {
         draft: sourceImportDraft,
         setDraft: setSourceImportDraft,
@@ -4361,37 +4386,12 @@ function App() {
         onReload: refreshCurrentIntake,
         onPreviewRef: loadFilePreview
       }),
-      h(SourceEvidencePanel, {
-        snapshot,
-        traceContext,
-        liveMode,
-        onPreview: loadFilePreview,
-        setSelectedLabel,
-        sourceActionEvent,
-        sourceActionMessage,
-        sourceActionRunning,
-        onRunSourceAction: runSourceActionLive
-      }),
-      h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
-      h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, claimSupportContext, setSelectedLabel }),
-      h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(PreflightRunPanel, { traceContext, event: preflightEvent, message: preflightMessage, running: preflightRunning, liveMode, onRun: runPreflightLive }),
       h(RunHistoryPanel, { runHistory: runHistoryContext, message: runHistoryMessage, liveMode, onPreview: loadFilePreview }),
       h(ClaimSupportPanel, { claimSupport: claimSupportContext, message: claimSupportMessage, liveMode, onPreview: loadFilePreview }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
-      h(StageRail, { snapshot, setSelectedLabel }),
-      h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),
-      h(ClaimSummary, { snapshot }),
-      h(
-        "section",
-        { className: "metrics", "aria-label": "Snapshot status" },
-        h(Metric, { label: "Run readiness", value: snapshot.readiness, tone: "ready" }),
-        h(Metric, { label: "Export", value: snapshot.report_status, tone: snapshot.report_status === "blocked" ? "attention" : "ready" }),
-        h(Metric, { label: "Evidence rows", value: String(counts.total) }),
-        h(Metric, { label: "Needs review", value: String(counts.attention), tone: counts.attention ? "attention" : "ready" })
-      ),
       h(BlockerPanel, { snapshot, setSelectedLabel }),
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
