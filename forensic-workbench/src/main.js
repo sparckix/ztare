@@ -310,6 +310,110 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   );
 }
 
+function intakeDraftFromPayload(payload) {
+  const fields = (payload && payload.editable_fields) || {};
+  return {
+    path: (payload && payload.path) || "",
+    bounded_claim: fields.bounded_claim || "",
+    next_falsifier: fields.next_falsifier || "",
+    notes: fields.notes || "",
+    non_claims_text: (fields.non_claims || []).join("\n")
+  };
+}
+
+function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload }) {
+  const update = (key) => (event) => {
+    setDraft({ ...(draft || {}), [key]: event.target.value });
+  };
+  const disabled = !liveMode || !draft;
+  return h(
+    "section",
+    { className: "intake-editor", "aria-label": "Project intake editor" },
+    h(
+      "div",
+      { className: "intake-editor-head" },
+      h("span", { className: "eyebrow" }, "Project intake"),
+      h("h2", null, "Edit the claim boundary"),
+      h("p", null, message || (liveMode ? "Live edits write to the project intake and create an intake-edit receipt." : "Start the local API to edit the project intake."))
+    ),
+    h(
+      "div",
+      { className: "intake-editor-grid" },
+      h(
+        "label",
+        null,
+        h("span", null, "Bounded claim"),
+        h("textarea", {
+          value: (draft && draft.bounded_claim) || "",
+          onChange: update("bounded_claim"),
+          disabled,
+          "aria-label": "Bounded claim"
+        })
+      ),
+      h(
+        "label",
+        null,
+        h("span", null, "Next falsifier"),
+        h("textarea", {
+          value: (draft && draft.next_falsifier) || "",
+          onChange: update("next_falsifier"),
+          disabled,
+          "aria-label": "Next falsifier"
+        })
+      ),
+      h(
+        "label",
+        null,
+        h("span", null, "Notes"),
+        h("textarea", {
+          value: (draft && draft.notes) || "",
+          onChange: update("notes"),
+          disabled,
+          "aria-label": "Notes"
+        })
+      ),
+      h(
+        "label",
+        null,
+        h("span", null, "Non-claims"),
+        h("textarea", {
+          value: (draft && draft.non_claims_text) || "",
+          onChange: update("non_claims_text"),
+          disabled,
+          "aria-label": "Non-claims"
+        })
+      )
+    ),
+    h(
+      "div",
+      { className: "intake-editor-actions" },
+      h("code", null, draft && draft.path ? draft.path : "No live intake loaded."),
+      h(
+        "button",
+        {
+          className: "copy-button",
+          type: "button",
+          onClick: onReload,
+          disabled: !liveMode,
+          title: liveMode ? "Reload intake from disk" : "Start the local API first"
+        },
+        "Reload"
+      ),
+      h(
+        "button",
+        {
+          className: "copy-button primary",
+          type: "button",
+          onClick: onSave,
+          disabled,
+          title: disabled ? "Load a live intake first" : "Write intake edit receipt"
+        },
+        "Save intake"
+      )
+    )
+  );
+}
+
 function rowByLabel(rows, label) {
   return rows.find((row) => row.label === label) || null;
 }
@@ -1221,6 +1325,8 @@ function App() {
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
+  const [intakeDraft, setIntakeDraft] = useState(null);
+  const [intakeMessage, setIntakeMessage] = useState("");
   const [filePreview, setFilePreview] = useState(null);
   const [filePreviewMessage, setFilePreviewMessage] = useState("");
   const [selectedLabel, setSelectedLabel] = useState("");
@@ -1256,6 +1362,25 @@ function App() {
       });
   };
 
+  const loadIntakeDraft = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setIntakeMessage("Loading project intake.");
+    return fetch(endpointUrl("/api/intake", projectParams), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`intake fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "intake fetch failed");
+        setIntakeDraft(intakeDraftFromPayload(payload));
+        setIntakeMessage(`Loaded ${payload.path}.`);
+      })
+      .catch((err) => {
+        setIntakeDraft(null);
+        setIntakeMessage(`Live intake unavailable: ${err.message || err}`);
+      });
+  };
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -1278,11 +1403,14 @@ function App() {
             : `Static snapshot loaded from ${payload.html_output || "workbench_snapshot.json"}.`
         );
         if (useLiveApi) {
+          const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
           setSelectedProjectKey(payload.project);
-          return loadHealthContext({ ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake });
+          return Promise.allSettled([loadHealthContext(liveParams), loadIntakeDraft(liveParams)]);
         }
         setHealthContext(null);
         setHealthMessage("Static mode uses the last generated snapshot only.");
+        setIntakeDraft(null);
+        setIntakeMessage("Static mode cannot edit the project intake.");
         return null;
       })
       .catch((err) => {
@@ -1332,6 +1460,12 @@ function App() {
     loadSnapshot(entry, true).catch((err) =>
       setModeMessage(`Could not refresh live project snapshot for ${snapshot.project}: ${err.message || err}`)
     );
+  };
+
+  const refreshCurrentIntake = () => {
+    if (!snapshot || !liveMode) return;
+    const entry = currentProjectEntry || snapshot;
+    loadIntakeDraft(projectLoadParams(entry));
   };
 
   const counts = useMemo(() => {
@@ -1462,6 +1596,48 @@ function App() {
       .catch((err) => setActionMessage(String(err.message || err)));
   };
 
+  const saveIntakeDraft = () => {
+    if (!snapshot || !liveMode || !intakeDraft) return;
+    const nonClaims = (intakeDraft.non_claims_text || "")
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+    setIntakeMessage("Saving intake edit.");
+    fetch("/api/intake", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        fields: {
+          bounded_claim: intakeDraft.bounded_claim,
+          next_falsifier: intakeDraft.next_falsifier,
+          notes: intakeDraft.notes,
+          non_claims: nonClaims
+        }
+      })
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`intake save failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (!payload.ok) throw new Error(payload.error || "intake save failed");
+        if (payload.intake) setIntakeDraft(intakeDraftFromPayload(payload.intake));
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        setIntakeMessage(
+          payload.snapshot_error
+            ? `Saved intake edit. Snapshot refresh failed: ${payload.snapshot_error}`
+            : `Saved intake edit receipt: ${(payload.edit && payload.edit.latest) || "recorded"}.`
+        );
+      })
+      .catch((err) => setIntakeMessage(String(err.message || err)));
+  };
+
   const loadFilePreview = (item) => {
     if (!liveMode || !item || !item.value) {
       setFilePreview(null);
@@ -1543,6 +1719,7 @@ function App() {
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
       h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
+      h(IntakeEditor, { draft: intakeDraft, setDraft: setIntakeDraft, liveMode, message: intakeMessage, onSave: saveIntakeDraft, onReload: refreshCurrentIntake }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode }),
