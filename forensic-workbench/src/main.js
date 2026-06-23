@@ -241,6 +241,20 @@ function receiptCaseSummary(receipt) {
   return parts.join(" / ");
 }
 
+function actionIntelligenceNote(row, fallback = "Inspect action-intelligence row") {
+  if (!row) return fallback;
+  const refs = Array.isArray(row.evidence_refs) ? row.evidence_refs.filter(Boolean) : [];
+  const parts = [
+    row.recommended_action || row.issue_type || fallback,
+    row.blocking_rule ? `rule: ${row.blocking_rule}` : "",
+    row.scope ? `scope: ${row.scope}` : "",
+    row.domain ? `domain: ${row.domain}` : "",
+    row.rationale ? `rationale: ${row.rationale}` : "",
+    refs.length ? `evidence: ${refs.slice(0, 4).join(", ")}` : ""
+  ].filter(Boolean);
+  return parts.join(" | ");
+}
+
 function repoPathCandidate(value) {
   return String(value || "").trim().split("#")[0].trim();
 }
@@ -3124,6 +3138,16 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
             affectedDomains.length
               ? h("p", { className: "health-action-domains" }, `Affects: ${affectedDomains.map(displayText).join(", ")}`)
               : null,
+            h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(actionIntelligenceNote(row, "Inspect source-health issue")),
+                title: "Copy this issue as a row-action note"
+              },
+              "Copy action note"
+            ),
             renderEvidenceRefs(evidenceRefs)
           );
         }
@@ -3152,6 +3176,16 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
               ? h("p", { className: "health-action-domains" }, [pSuccess, cost, row.effective_n ? `n ${row.effective_n}` : ""].filter(Boolean).join(" | "))
               : null,
             row.decision_id ? h("code", null, row.decision_id) : null,
+            h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(actionIntelligenceNote(row, "Inspect advisory recommendation")),
+                title: "Copy this recommendation as a row-action note"
+              },
+              "Copy action note"
+            ),
             renderEvidenceRefs(evidenceRefs)
           );
         }
