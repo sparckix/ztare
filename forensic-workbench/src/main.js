@@ -187,6 +187,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const trace = context.traceContext || {};
   const report = context.reportContext || {};
   const health = context.healthContext || {};
+  const preflight = context.preflightEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -248,6 +249,19 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
           source_paths: ((health.action_intelligence || {}).source_paths) || {}
         }
       },
+      preflight_result: preflight
+        ? {
+            schema: preflight.schema || "",
+            command: preflight.command || "",
+            returncode: preflight.returncode,
+            accepted: Boolean(preflight.accepted),
+            stdout_tail: preflight.stdout_tail || "",
+            stderr_tail: preflight.stderr_tail || "",
+            loop_admission: ((preflight.trace || {}).loop_admission) || {},
+            snapshot_error: preflight.snapshot_error || "",
+            trace_error: preflight.trace_error || ""
+          }
+        : null,
       latest_write_receipt: latestWrite
         ? {
             kind: latestWrite.kind,
@@ -1104,11 +1118,12 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
     healthContext,
+    preflightEvent,
     writeReceiptEvent,
     selectedRow
   });
@@ -1129,7 +1144,8 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       Object.keys(packet.live_context.health.kernel.summary || {}).length ||
       packet.live_context.health.kernel.attention_components.length ||
       Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
-      packet.live_context.health.action_intelligence.issues.length
+      packet.live_context.health.action_intelligence.issues.length,
+    packet.live_context.preflight_result
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
 
@@ -1150,6 +1166,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Rows with evidence"), h("strong", null, String(rowsWithEvidence))),
       h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
       h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
+      h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
     ),
@@ -3056,7 +3073,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

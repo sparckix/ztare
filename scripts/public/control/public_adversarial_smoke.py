@@ -251,6 +251,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "ztare-forensic-workbench-case-packet-v1",
     "live_context",
     "command_queue",
+    "preflight_result",
     "Live context",
     '"/workbench_snapshot.json"',
     "Forensic Workbench",
