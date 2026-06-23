@@ -420,11 +420,10 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
   const sourceImportDraft = context.sourceImportDraft || null;
   const sourceEditDraft = context.sourceEditDraft || null;
   const pendingIntakeFields = intakeChangedFields(intakeDraft);
-  const sourceImportDirty = Boolean(
+  const sourceImportStarted = Boolean(
     sourceImportDraft &&
       (String(sourceImportDraft.filename || "").trim() ||
-        String(sourceImportDraft.body || "").trim() ||
-        String(sourceImportDraft.source_type || "").trim())
+        String(sourceImportDraft.body || "").trim())
   );
   const pendingSourceEditFields = sourceChangedFields(sourceEditDraft);
   const intakeRefSummary = projectEntry.intake_ref_summary || {};
@@ -646,9 +645,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             loaded_reference_status: intakeDraft.reference_status || null
           }
         : null,
-      pending_source_import: sourceImportDraft
+      pending_source_import: sourceImportStarted
         ? {
-            status: sourceImportDirty ? "pending_unsaved" : "clean",
+            status: "pending_unsaved",
             filename: sourceImportDraft.filename || "",
             source_type: sourceImportDraft.source_type || "",
             body_chars: String(sourceImportDraft.body || "").length
