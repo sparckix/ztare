@@ -320,6 +320,10 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
     demo = tmp_path / "projects/demo"
     demo.mkdir(parents=True)
     (demo / "demo_intake.json").write_text("{}", encoding="utf-8")
+    workspace = demo / "workspace"
+    workspace.mkdir()
+    (workspace / "forensic_workbench_latest_source_import.json").write_text("{}", encoding="utf-8")
+    (workspace / "forensic_workbench_latest_source_edit.json").write_text("{}", encoding="utf-8")
     (tmp_path / "projects/no_intake").mkdir()
     (tmp_path / "projects/bad/project").mkdir(parents=True)
 
@@ -334,6 +338,9 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
             "intake_source": "project_local_intake",
             "latest_review": "",
             "latest_row_action": "",
+            "latest_intake_edit": "",
+            "latest_source_import": "projects/demo/workspace/forensic_workbench_latest_source_import.json",
+            "latest_source_edit": "projects/demo/workspace/forensic_workbench_latest_source_edit.json",
             "report_contract": "",
         }
     ]
@@ -357,6 +364,9 @@ def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatc
             "intake_source": "public_example_intake",
             "latest_review": "",
             "latest_row_action": "",
+            "latest_intake_edit": "",
+            "latest_source_import": "",
+            "latest_source_edit": "",
             "report_contract": "",
         }
     ]
@@ -386,6 +396,9 @@ def test_project_index_prefers_project_local_intake_over_public_example(
             "intake_source": "project_local_intake",
             "latest_review": "",
             "latest_row_action": "",
+            "latest_intake_edit": "",
+            "latest_source_import": "",
+            "latest_source_edit": "",
             "report_contract": "",
         }
     ]
@@ -412,6 +425,9 @@ def test_project_index_keeps_example_intake_source_when_project_dir_has_no_intak
             "intake_source": "public_example_intake",
             "latest_review": "",
             "latest_row_action": "",
+            "latest_intake_edit": "",
+            "latest_source_import": "",
+            "latest_source_edit": "",
             "report_contract": "",
         }
     ]
@@ -833,13 +849,17 @@ def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, mon
 
     source_path = raw / "source_note.md"
     receipt_path = workspace / "forensic_workbench_source_imports.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_source_import.json"
     assert payload["schema"] == "ztare-forensic-workbench-source-import-v1"
     assert payload["source_path"] == "projects/demo/raw/source_note.md"
+    assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_source_import.json"
     assert "source_type: source_evidence" in source_path.read_text(encoding="utf-8")
     assert json.loads((raw / "source_type_map.json").read_text(encoding="utf-8")) == {"source_note.md": "source_evidence"}
     receipt = json.loads(receipt_path.read_text(encoding="utf-8").strip())
     assert receipt["schema"] == "ztare-forensic-workbench-source-import-v1"
     assert receipt["source_path"] == "projects/demo/raw/source_note.md"
+    latest = json.loads(latest_path.read_text(encoding="utf-8"))
+    assert latest["source_path"] == "projects/demo/raw/source_note.md"
 
 
 def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -867,9 +887,11 @@ def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monk
 
     source_path = raw / "source_note.md"
     receipt_path = workspace / "forensic_workbench_source_edits.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_source_edit.json"
     assert payload["schema"] == "ztare-forensic-workbench-source-edit-v1"
     assert payload["source_path"] == "projects/demo/raw/source_note.md"
     assert payload["relative_raw_path"] == "source_note.md"
+    assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_source_edit.json"
     edited = source_path.read_text(encoding="utf-8")
     assert "source_type: research_question" in edited
     assert "New body." in edited
@@ -878,6 +900,9 @@ def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monk
     assert receipt["schema"] == "ztare-forensic-workbench-source-edit-v1"
     assert receipt["source_path"] == "projects/demo/raw/source_note.md"
     assert receipt["source_type"] == "research_question"
+    latest = json.loads(latest_path.read_text(encoding="utf-8"))
+    assert latest["source_path"] == "projects/demo/raw/source_note.md"
+    assert latest["source_type"] == "research_question"
 
 
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(

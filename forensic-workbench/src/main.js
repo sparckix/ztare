@@ -279,7 +279,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       report_contract: projectEntry.report_contract || "",
       latest_review: projectEntry.latest_review || snapshot.latest_review_artifact || "",
       latest_row_action: projectEntry.latest_row_action || snapshot.latest_row_action_artifact || "",
-      latest_intake_edit: snapshot.latest_intake_edit_artifact || ""
+      latest_intake_edit: projectEntry.latest_intake_edit || snapshot.latest_intake_edit_artifact || "",
+      latest_source_import: projectEntry.latest_source_import || "",
+      latest_source_edit: projectEntry.latest_source_edit || ""
     },
     live_context: {
       trace: {
@@ -584,7 +586,9 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const reportContract = (projectEntry && projectEntry.report_contract) || "";
   const latestReview = (projectEntry && projectEntry.latest_review) || snapshot.latest_review_artifact || "";
   const latestAction = (projectEntry && projectEntry.latest_row_action) || snapshot.latest_row_action_artifact || "";
-  const latestIntakeEdit = snapshot.latest_intake_edit_artifact || "";
+  const latestIntakeEdit = (projectEntry && projectEntry.latest_intake_edit) || snapshot.latest_intake_edit_artifact || "";
+  const latestSourceImport = (projectEntry && projectEntry.latest_source_import) || "";
+  const latestSourceEdit = (projectEntry && projectEntry.latest_source_edit) || "";
   const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
   const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
   return h(
@@ -597,7 +601,9 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
     h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
     h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none")),
     h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none")),
-    h("div", null, h("span", null, "Latest intake edit"), h("code", null, latestIntakeEdit || "none"))
+    h("div", null, h("span", null, "Latest intake edit"), h("code", null, latestIntakeEdit || "none")),
+    h("div", null, h("span", null, "Latest source import"), h("code", null, latestSourceImport || "none")),
+    h("div", null, h("span", null, "Latest source edit"), h("code", null, latestSourceEdit || "none"))
   );
 }
 
@@ -621,7 +627,13 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
         const refSummary = project.intake_ref_summary || {};
         const active = project.project === activeKey;
         const intakeMode = project.intake_editable === false ? "read-only intake" : "editable intake";
-        const receiptCount = [project.latest_review, project.latest_row_action].filter(Boolean).length;
+        const receiptCount = [
+          project.latest_review,
+          project.latest_row_action,
+          project.latest_intake_edit,
+          project.latest_source_import,
+          project.latest_source_edit
+        ].filter(Boolean).length;
         return h(
           "article",
           { key: project.project, className: `project-tile ${active ? "active" : ""}` },

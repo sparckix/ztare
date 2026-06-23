@@ -98,6 +98,9 @@ def list_project_entries() -> list[dict[str, Any]]:
         project_dir = REPO / "projects" / project
         latest_review = latest_review_path(project)
         latest_action = latest_row_action_path(project)
+        latest_intake_edit = latest_intake_edit_path(project)
+        latest_source_import = latest_source_import_path(project)
+        latest_source_edit = latest_source_edit_path(project)
         report_contract = project_dir / "synthesis" / "report_support_contract.json"
         entry = entries_by_project.get(project)
         if entry is None:
@@ -109,6 +112,9 @@ def list_project_entries() -> list[dict[str, Any]]:
                 "intake_source": source,
                 "latest_review": rel(latest_review) if latest_review.exists() else "",
                 "latest_row_action": rel(latest_action) if latest_action.exists() else "",
+                "latest_intake_edit": rel(latest_intake_edit) if latest_intake_edit.exists() else "",
+                "latest_source_import": rel(latest_source_import) if latest_source_import.exists() else "",
+                "latest_source_edit": rel(latest_source_edit) if latest_source_edit.exists() else "",
                 "report_contract": rel(report_contract) if report_contract.exists() else "",
             }
             return
@@ -121,6 +127,12 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["latest_review"] = rel(latest_review)
         if latest_action.exists():
             entry["latest_row_action"] = rel(latest_action)
+        if latest_intake_edit.exists():
+            entry["latest_intake_edit"] = rel(latest_intake_edit)
+        if latest_source_import.exists():
+            entry["latest_source_import"] = rel(latest_source_import)
+        if latest_source_edit.exists():
+            entry["latest_source_edit"] = rel(latest_source_edit)
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
 
@@ -361,6 +373,14 @@ def latest_row_action_path(project: str) -> Path:
 
 def latest_intake_edit_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_intake_edit.json"
+
+
+def latest_source_import_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_source_import.json"
+
+
+def latest_source_edit_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_source_edit.json"
 
 
 def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:

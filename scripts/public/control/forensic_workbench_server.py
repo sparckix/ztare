@@ -929,7 +929,10 @@ def import_source_payload(
         "source_type_map": repo_rel(source_type_map_path),
     }
     receipt_path = workspace / "forensic_workbench_source_imports.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_source_import.json"
     append_jsonl(receipt_path, receipt)
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     source_check = source_action_payload_for_project(
         project=project,
         action="source_check",
@@ -949,6 +952,7 @@ def import_source_payload(
         "source_type_map": repo_rel(source_type_map_path),
         "receipt": receipt,
         "receipt_path": repo_rel(receipt_path),
+        "latest": repo_rel(latest_path),
         "source_check": source_check,
         "snapshot": source_check.get("snapshot"),
         "trace": source_check.get("trace"),
@@ -1110,7 +1114,10 @@ def edit_source_payload(
         "source_type_map": repo_rel(raw_dir / "source_type_map.json"),
     }
     receipt_path = workspace / "forensic_workbench_source_edits.jsonl"
+    latest_path = workspace / "forensic_workbench_latest_source_edit.json"
     append_jsonl(receipt_path, receipt)
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     source_check = source_action_payload_for_project(
         project=project,
         action="source_check",
@@ -1130,6 +1137,7 @@ def edit_source_payload(
         "source_type": source_type,
         "receipt": receipt,
         "receipt_path": repo_rel(receipt_path),
+        "latest": repo_rel(latest_path),
         "source_check": source_check,
         "snapshot": source_check.get("snapshot"),
         "trace": source_check.get("trace"),

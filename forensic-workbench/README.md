@@ -58,13 +58,13 @@ The New case panel calls `/api/project-create`, which runs the fixed
 project slug, then reloads the project through the same live snapshot flow.
 The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
 file under the selected project's `raw/` directory, updates
-`raw/source_type_map.json`, appends a source-import receipt, and runs the
-offline source check.
+`raw/source_type_map.json`, appends a source-import receipt, writes the latest
+source-import receipt JSON, and runs the offline source check.
 The raw-source panel calls `/api/sources` to load the typed source list,
 `/api/source-file` to open one existing source, and `/api/source-edit` to write
 the edited source body/type back to disk. A source edit updates
-`raw/source_type_map.json`, appends a source-edit receipt, reruns source-check,
-and refreshes the case.
+`raw/source_type_map.json`, appends a source-edit receipt, writes the latest
+source-edit receipt JSON, reruns source-check, and refreshes the case.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -102,13 +102,14 @@ The project-create endpoint returns `ztare-forensic-workbench-project-create-v1`
 source-init result, intake-create result, refreshed project index, and the first
 snapshot when available.
 The source-import endpoint returns `ztare-forensic-workbench-source-import-v1`:
-written source path, source type, source-import receipt path, source-check
-result, and refreshed snapshot/trace when available.
+written source path, source type, source-import receipt path, latest receipt
+path, source-check result, and refreshed snapshot/trace when available.
 The source-list endpoint returns `ztare-forensic-workbench-source-list-v1`.
 The source-file endpoint returns `ztare-forensic-workbench-source-file-v1`.
 The source-edit endpoint returns `ztare-forensic-workbench-source-edit-v1`:
 edited source path, relative raw path, source type, source-edit receipt path,
-source-check result, and refreshed snapshot/trace when available.
+latest receipt path, source-check result, and refreshed snapshot/trace when
+available.
 The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
 for four fixed actions: `source_check`, `source_index`, `evidence_bind`, and
 `evidence_replay`. The source-index action uses
@@ -166,7 +167,8 @@ The interface is organized as a local claim-review surface:
   evidence, primary action, and review choices
 - case docket summarizing export decision, evidence path, and review handoff
 - project file strip showing the selected project directory, intake, report
-  contract, latest review receipt path, and latest saved row action path
+  contract, latest review receipt path, latest saved row action path, and
+  latest source write receipt paths
 - intake editor showing bounded claim, non-claims, source refs, evidence refs,
   ref status, pending changed fields, and intake-edit receipt writes
 - project switchboard showing local cases, intake mode, source-ref coverage,
