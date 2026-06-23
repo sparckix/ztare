@@ -35,12 +35,13 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser still does
-not scan `projects/` directly. It asks the local API for a project index and a
-fresh snapshot for the selected project, using the intake and rubric discovered
-by the index. The app shows the backing project directory, intake, report
-contract, latest review receipt, and latest saved row action before the main
-case file. The intake editor reads and writes the selected project intake
+`/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local
+API. The browser still does not scan `projects/` directly. It asks the local API
+for a project index and a fresh snapshot for the selected project, using the
+intake and rubric discovered by the index. The app shows the backing project
+directory, intake, report contract, latest review receipt, latest saved row
+action, and recent receipt history before the main case file. The intake editor
+reads and writes the selected project intake
 through `/api/intake`; source and evidence refs are resolved against the intake
 directory and repo root, then shown as present, missing, external, or unsafe.
 The project picker uses the same lightweight intake read to show ref counts
@@ -54,11 +55,14 @@ to a bounded text preview. When the local API is running, the Apply button
 writes the same review receipt that the CLI writes, then refreshes the same
 selected project/intake snapshot. The Save action button writes a row-action
 receipt through the same explicit API/ledger path. Intake edits write an
-intake-edit receipt under the project workspace. The Refresh button reloads the
-current case from local project files. If the API is not running at startup, the
-app falls back to `public/workbench_snapshot.json`; if a live project refresh
-fails after the API is detected, the app keeps the current case and shows the
-error instead of swapping in stale static data.
+intake-edit receipt under the project workspace. The receipt-history panel reads
+the review, row-action, and intake-edit ledgers through `/api/receipts`, returns
+`ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
+backing ledger file. The Refresh button reloads the current case from local
+project files. If the API is not running at startup, the app falls back to
+`public/workbench_snapshot.json`; if a live project refresh fails after the API
+is detected, the app keeps the current case and shows the error instead of
+swapping in stale static data.
 
 Live mode also fetches `/api/health` for the selected project. That endpoint
 returns kernel-health attention components, action-intelligence source-health
@@ -115,6 +119,8 @@ The interface is organized as a local claim-review surface:
 - current-action rail with the next command or provenance target
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
+- receipt history panel showing recent review, row-action, and intake-edit
+  ledger rows with previewable backing ledger paths
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
 - review queue strip showing selected row, decision, evidence count, and receipt readiness

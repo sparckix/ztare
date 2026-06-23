@@ -20,6 +20,7 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 MAX_PREVIEW_BYTES = 200_000
 INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
+RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -292,6 +293,128 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def read_receipt_ledger(path: Path, *, kind: str) -> list[dict[str, Any]]:
+    if not path.exists():
+        return []
+    rows: list[dict[str, Any]] = []
+    rel_path = repo_rel(path)
+    for line_number, line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError as exc:
+            rows.append(
+                {
+                    "kind": "unreadable",
+                    "source_kind": kind,
+                    "applied_at": "",
+                    "path": rel_path,
+                    "line": line_number,
+                    "summary": f"Unreadable receipt line: {exc}",
+                }
+            )
+            continue
+        if not isinstance(payload, dict):
+            rows.append(
+                {
+                    "kind": "unreadable",
+                    "source_kind": kind,
+                    "applied_at": "",
+                    "path": rel_path,
+                    "line": line_number,
+                    "summary": "Receipt line is not a JSON object.",
+                }
+            )
+            continue
+        rows.append(normalize_receipt_row(payload, kind=kind, path=rel_path, line=line_number))
+    return rows
+
+
+def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line: int) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "kind": kind,
+        "schema": str(payload.get("schema") or ""),
+        "applied_at": str(payload.get("applied_at") or ""),
+        "project": str(payload.get("project") or ""),
+        "path": path,
+        "line": line,
+        "summary": "",
+    }
+    if kind == "review":
+        row.update(
+            {
+                "row": str(payload.get("row") or ""),
+                "row_slug": str(payload.get("row_slug") or ""),
+                "decision": str(payload.get("decision") or ""),
+                "note": str(payload.get("note") or ""),
+                "evidence_ref_count": safe_int(payload.get("evidence_ref_count")),
+                "sha256": str(payload.get("review_file_sha256") or ""),
+            }
+        )
+        row["summary"] = f"{display_value(row['decision'])} on {row['row'] or row['row_slug'] or 'row'}"
+    elif kind == "row_action":
+        row.update(
+            {
+                "row": str(payload.get("row") or ""),
+                "row_slug": str(payload.get("row_slug") or ""),
+                "action": str(payload.get("action") or ""),
+                "note": str(payload.get("note") or ""),
+                "evidence_ref_count": safe_int(payload.get("evidence_ref_count")),
+                "sha256": str(payload.get("action_file_sha256") or ""),
+            }
+        )
+        row["summary"] = f"{display_value(row['action'])} on {row['row'] or row['row_slug'] or 'row'}"
+    elif kind == "intake_edit":
+        fields = [str(item) for item in payload.get("updated_fields") or []]
+        row.update(
+            {
+                "intake_path": str(payload.get("intake_path") or ""),
+                "updated_fields": fields,
+                "sha256": str(payload.get("after_sha256") or ""),
+            }
+        )
+        row["summary"] = f"Updated {', '.join(fields) if fields else 'intake'}"
+    else:
+        row["summary"] = kind.replace("_", " ")
+    return row
+
+
+def display_value(value: Any) -> str:
+    return str(value or "recorded").replace("_", " ")
+
+
+def safe_int(value: Any) -> int:
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    limit = max(1, min(limit, 50))
+    workspace = snapshot.REPO / "projects" / project / "workspace"
+    ledgers = {
+        "review": workspace / "forensic_workbench_reviews.jsonl",
+        "row_action": workspace / "forensic_workbench_row_actions.jsonl",
+        "intake_edit": workspace / "forensic_workbench_intake_edits.jsonl",
+    }
+    receipts: list[dict[str, Any]] = []
+    for kind, path in ledgers.items():
+        receipts.extend(read_receipt_ledger(path, kind=kind))
+    receipts.sort(key=lambda row: (str(row.get("applied_at") or ""), str(row.get("kind") or ""), int(row.get("line") or 0)), reverse=True)
+    return {
+        "schema": RECEIPT_HISTORY_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "limit": limit,
+        "receipt_count": len(receipts),
+        "receipts": receipts[:limit],
+        "paths": {kind: repo_rel(path) for kind, path in ledgers.items()},
+    }
+
+
 def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> dict[str, Any]:
     path = project_intake_path(project, intake, allow_examples=False)
     before_bytes = path.read_bytes()
@@ -527,6 +650,12 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
                 intake = first_param(params, "intake", snapshot.default_intake_for_project(project))
                 self.send_json(intake_payload_for_project(project, intake, allow_examples=True))
+                return
+            if parsed.path == "/api/receipts":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                limit = int(first_param(params, "limit", "12"))
+                self.send_json(receipt_history_payload(project=project, limit=limit))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

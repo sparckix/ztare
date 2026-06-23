@@ -552,6 +552,86 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, on
   );
 }
 
+function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
+  const receipts = (history && history.receipts) || [];
+  const latest = receipts[0] && receipts[0].applied_at ? receipts[0].applied_at : "none";
+  const paths = (history && history.paths) || {};
+  const ledgerCount = Object.values(paths).filter(Boolean).length;
+
+  return h(
+    "section",
+    { className: "receipt-history", "aria-label": "Receipt history" },
+    h(
+      "div",
+      { className: "receipt-history-head" },
+      h("span", { className: "eyebrow" }, "Receipts"),
+      h("h2", null, "Receipt history"),
+      h("p", null, message || (liveMode ? "Recent project writes from the local receipt ledgers." : "Start the local API to read receipt ledgers."))
+    ),
+    h(
+      "div",
+      { className: "receipt-history-stats" },
+      h("div", null, h("span", null, "Recent"), h("strong", null, String(receipts.length))),
+      h("div", null, h("span", null, "Latest"), h("strong", null, displayText(latest))),
+      h("div", null, h("span", null, "Ledgers"), h("strong", null, String(ledgerCount)))
+    ),
+    h(
+      "div",
+      { className: "receipt-history-list" },
+      receipts.length
+        ? receipts.map((item) =>
+            h(
+              "article",
+              { className: `receipt-history-row ${item.kind || "receipt"}`, key: `${item.kind}:${item.path}:${item.line}` },
+              h(
+                "div",
+                { className: "receipt-row-main" },
+                h("strong", null, displayText(item.kind || "receipt")),
+                h("small", null, item.applied_at || `line ${item.line || "?"}`),
+                h("p", null, item.summary || "Receipt recorded.")
+              ),
+              h(
+                "div",
+                { className: "receipt-row-meta" },
+                item.row ? h("span", null, item.row) : null,
+                item.decision ? h("span", null, displayText(item.decision)) : null,
+                item.action ? h("span", null, displayText(item.action)) : null,
+                item.updated_fields && item.updated_fields.length ? h("span", null, item.updated_fields.map(displayFieldName).join(", ")) : null
+              ),
+              h(
+                "div",
+                { className: "receipt-row-actions" },
+                h("code", null, `${item.path || "no ledger"}${item.line ? `:${item.line}` : ""}`),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !liveMode || !item.path,
+                    onClick: () => onPreview && onPreview({ type: "receipt", value: item.path }),
+                    title: liveMode ? "Preview the receipt ledger" : "Start the local API to preview ledgers"
+                  },
+                  "Preview"
+                ),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !item.path,
+                    onClick: () => copyText(item.path),
+                    title: "Copy ledger path"
+                  },
+                  "Copy path"
+                )
+              )
+            )
+          )
+        : h("p", null, liveMode ? "No receipt rows found for this project." : "Receipt history is available in live mode.")
+    )
+  );
+}
+
 function rowByLabel(rows, label) {
   return rows.find((row) => row.label === label) || null;
 }
@@ -1525,6 +1605,8 @@ function App() {
   const [actionMessage, setActionMessage] = useState("");
   const [intakeDraft, setIntakeDraft] = useState(null);
   const [intakeMessage, setIntakeMessage] = useState("");
+  const [receiptHistory, setReceiptHistory] = useState(null);
+  const [receiptHistoryMessage, setReceiptHistoryMessage] = useState("");
   const [filePreview, setFilePreview] = useState(null);
   const [filePreviewMessage, setFilePreviewMessage] = useState("");
   const [selectedLabel, setSelectedLabel] = useState("");
@@ -1579,6 +1661,25 @@ function App() {
       });
   };
 
+  const loadReceiptHistory = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setReceiptHistoryMessage("Loading receipt history.");
+    return fetch(endpointUrl("/api/receipts", { project: projectParams.project, limit: 12 }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`receipt history fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false) throw new Error(payload.error || "receipt history fetch failed");
+        setReceiptHistory(payload);
+        setReceiptHistoryMessage(`${payload.receipt_count || 0} receipt rows found in project ledgers.`);
+      })
+      .catch((err) => {
+        setReceiptHistory(null);
+        setReceiptHistoryMessage(`Receipt history unavailable: ${err.message || err}`);
+      });
+  };
+
   const loadSnapshot = (projectInput, useLiveApi, options = {}) => {
     const allowStaticFallback = options.allowStaticFallback === true;
     const loadParams =
@@ -1603,12 +1704,14 @@ function App() {
         if (useLiveApi) {
           const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
           setSelectedProjectKey(payload.project);
-          return Promise.allSettled([loadHealthContext(liveParams), loadIntakeDraft(liveParams)]);
+          return Promise.allSettled([loadHealthContext(liveParams), loadIntakeDraft(liveParams), loadReceiptHistory(liveParams)]);
         }
         setHealthContext(null);
         setHealthMessage("Static mode uses the last generated snapshot only.");
         setIntakeDraft(null);
         setIntakeMessage("Static mode cannot edit the project intake.");
+        setReceiptHistory(null);
+        setReceiptHistoryMessage("Static mode uses the latest generated snapshot only.");
         return null;
       })
       .catch((err) => {
@@ -1757,6 +1860,7 @@ function App() {
             ? `Applied review for ${reviewPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Applied review for ${reviewPayload.row}.`
         );
+        loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
   };
@@ -1790,6 +1894,7 @@ function App() {
             ? `Saved action for ${actionPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Saved action for ${actionPayload.row}.`
         );
+        loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setActionMessage(String(err.message || err)));
   };
@@ -1838,6 +1943,7 @@ function App() {
             ? `Saved intake edit. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Saved intake edit receipt: ${(payload.edit && payload.edit.latest) || "recorded"}.`
         );
+        loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setIntakeMessage(String(err.message || err)));
   };
@@ -1949,6 +2055,7 @@ function App() {
       h(BlockerPanel, { snapshot, setSelectedLabel }),
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
+      h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

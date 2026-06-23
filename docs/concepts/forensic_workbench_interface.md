@@ -176,6 +176,9 @@ GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
+GET /api/receipts?project=<project>
+-> recent review, row-action, and intake-edit receipts from project ledgers
+
 POST /api/review
 -> append row-level review receipt and refresh snapshot
 
@@ -193,8 +196,8 @@ state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
 report contract, latest-review receipt, latest saved row action, bounded-claim
-status, source/evidence readiness, and report/export state before the user
-opens a case.
+status, source/evidence readiness, recent receipt history, and report/export
+state before the user opens a case.
 
 The index must include both first-run demos:
 
@@ -210,7 +213,8 @@ not a reason to hide the project.
 Writes should stay explicit. Static mode saves a review or row-action file,
 applies it through the CLI, then refreshes the snapshot. Live mode may call a
 local API to write the same receipt directly. Either way, the visible trail is
-file or API payload, receipt ledger, latest receipt row, and refreshed snapshot.
+file or API payload, receipt ledger, receipt history, latest receipt row, and
+refreshed snapshot.
 
 File inspection is read-only. The browser may request one repository-relative
 path from the local API and display a bounded text preview. It must not crawl
