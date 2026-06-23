@@ -416,6 +416,16 @@ code {
   word-break: break-word;
 }
 
+.project-context-panel .project-context-path {
+  align-content: start;
+}
+
+.project-context-panel .project-context-path .copy-button {
+  width: fit-content;
+  min-height: 28px;
+  padding: 5px 9px;
+}
+
 .project-switchboard {
   min-width: 0;
   display: grid;

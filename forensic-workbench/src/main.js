@@ -588,7 +588,7 @@ function projectLoadParams(entryOrSnapshot) {
   };
 }
 
-function ProjectContextPanel({ projectEntry, snapshot }) {
+function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
   const intake = (projectEntry && projectEntry.intake) || snapshot.intake || "";
   const projectDir = (projectEntry && projectEntry.project_dir) || snapshot.project_source || "";
   const reportContract = (projectEntry && projectEntry.report_contract) || "";
@@ -600,20 +600,41 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const latestSourceAction = (projectEntry && projectEntry.latest_source_action) || "";
   const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
   const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
+  const pathRows = [
+    { label: "Intake", value: intake },
+    { label: "Report contract", value: reportContract },
+    { label: "Latest review", value: latestReview },
+    { label: "Latest action", value: latestAction },
+    { label: "Latest intake edit", value: latestIntakeEdit },
+    { label: "Latest source import", value: latestSourceImport },
+    { label: "Latest source edit", value: latestSourceEdit },
+    { label: "Latest source action", value: latestSourceAction }
+  ];
+  const renderPathRow = (item) =>
+    h(
+      "div",
+      { className: "project-context-path", key: item.label },
+      h("span", null, item.label),
+      h("code", null, item.value || "none"),
+      h(
+        "button",
+        {
+          className: "copy-button",
+          type: "button",
+          disabled: !liveMode || !item.value,
+          onClick: () => onPreview && onPreview({ type: "file", value: item.value }),
+          title: liveMode ? `Preview ${item.label.toLowerCase()}` : "Start the local API to preview project files"
+        },
+        "Preview"
+      )
+    );
   return h(
     "section",
     { className: "project-context-panel", "aria-label": "Project files" },
     h("div", null, h("span", null, "Project files"), h("strong", null, projectDir || "not discovered")),
-    h("div", null, h("span", null, "Intake"), h("code", null, intake || "not discovered")),
     h("div", null, h("span", null, "Intake refs"), h("strong", null, refSummary.total ? `${refSummary.present || 0}/${refSummary.total} present` : "not counted")),
     h("div", null, h("span", null, "Edit mode"), h("strong", null, intakeMode)),
-    h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
-    h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none")),
-    h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none")),
-    h("div", null, h("span", null, "Latest intake edit"), h("code", null, latestIntakeEdit || "none")),
-    h("div", null, h("span", null, "Latest source import"), h("code", null, latestSourceImport || "none")),
-    h("div", null, h("span", null, "Latest source edit"), h("code", null, latestSourceEdit || "none")),
-    h("div", null, h("span", null, "Latest source action"), h("code", null, latestSourceAction || "none"))
+    pathRows.map(renderPathRow)
   );
 }
 
@@ -4175,7 +4196,7 @@ function App() {
         liveMode,
         onCreate: createProjectLive
       }),
-      h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
+      h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot, liveMode, onPreview: loadFilePreview }),
       h(SourceImportPanel, {
         draft: sourceImportDraft,
         setDraft: setSourceImportDraft,
