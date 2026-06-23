@@ -271,14 +271,15 @@ The current workbench is file-backed. Static mode downloads an inspectable
 review file and makes the CLI handoff explicit:
 
 ```bash
-ztare forensic-workbench apply-review --project <project> --row <row> --from <project>_<row>_review.json
+ztare forensic-workbench apply-review --project <project> --intake <intake> --row <row> --from <project>_<row>_review.json
 ```
 
-That command appends a receipt under the project workspace. Row actions use the
-same pattern:
+That command appends a receipt under the project workspace. `--intake` is
+optional for old files, but it is the safer handoff for a selected case because
+it rejects mismatched case files. Row actions use the same pattern:
 
 ```bash
-ztare forensic-workbench save-action --project <project> --row <row> --from <project>_<row>_action.json
+ztare forensic-workbench save-action --project <project> --intake <intake> --row <row> --from <project>_<row>_action.json
 ```
 
 Live mode calls the local API to append the same receipts and refresh the case.

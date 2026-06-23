@@ -109,11 +109,21 @@ def display_path(path: Path) -> str:
         return str(path)
 
 
-def add_case_context(receipt: dict[str, Any], payload: dict[str, Any]) -> dict[str, Any]:
+def add_case_context(
+    receipt: dict[str, Any],
+    payload: dict[str, Any],
+    *,
+    project: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
     for key in ("rubric", "intake", "case_key"):
         value = str(payload.get(key) or "").strip()
         if value:
             receipt[key] = value
+    if intake and not receipt.get("intake"):
+        receipt["intake"] = intake
+    if project and receipt.get("intake") and not receipt.get("case_key"):
+        receipt["case_key"] = case_key(project, str(receipt["intake"]))
     return receipt
 
 
@@ -124,8 +134,9 @@ def receipt_for_payload(
     row: str,
     review_file_bytes: bytes,
     review_file_path: str,
+    intake: str | None = None,
 ) -> dict[str, Any]:
-    errors = validate_review_file(payload, project=project, row=row)
+    errors = validate_review_file(payload, project=project, row=row, intake=intake)
     if errors:
         raise SystemExit("invalid forensic-workbench review file:\n- " + "\n- ".join(errors))
     receipt = {
@@ -140,7 +151,7 @@ def receipt_for_payload(
         "review_file_sha256": hashlib.sha256(review_file_bytes).hexdigest(),
         "evidence_ref_count": len(payload.get("evidence_refs") or []),
     }
-    return add_case_context(receipt, payload)
+    return add_case_context(receipt, payload, project=project, intake=intake)
 
 
 def write_review_receipt(
@@ -171,8 +182,9 @@ def receipt_for_action_payload(
     row: str,
     action_file_bytes: bytes,
     action_file_path: str,
+    intake: str | None = None,
 ) -> dict[str, Any]:
-    errors = validate_action_file(payload, project=project, row=row)
+    errors = validate_action_file(payload, project=project, row=row, intake=intake)
     if errors:
         raise SystemExit("invalid forensic-workbench row action file:\n- " + "\n- ".join(errors))
     receipt = {
@@ -187,7 +199,7 @@ def receipt_for_action_payload(
         "action_file_sha256": hashlib.sha256(action_file_bytes).hexdigest(),
         "evidence_ref_count": len(payload.get("evidence_refs") or []),
     }
-    return add_case_context(receipt, payload)
+    return add_case_context(receipt, payload, project=project, intake=intake)
 
 
 def write_action_receipt(
@@ -219,6 +231,7 @@ def apply_review_payload(
     review_file_path: str,
     ledger: str | None = None,
     latest: str | None = None,
+    intake: str | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
     review_file_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -228,6 +241,7 @@ def apply_review_payload(
         row=row,
         review_file_bytes=review_file_text.encode("utf-8"),
         review_file_path=review_file_path,
+        intake=intake,
     )
     return write_review_receipt(receipt, project=project, ledger=ledger, latest=latest)
 
@@ -240,6 +254,7 @@ def apply_action_payload(
     action_file_path: str,
     ledger: str | None = None,
     latest: str | None = None,
+    intake: str | None = None,
 ) -> dict[str, Any]:
     validate_project_slug(project)
     action_file_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
@@ -249,6 +264,7 @@ def apply_action_payload(
         row=row,
         action_file_bytes=action_file_text.encode("utf-8"),
         action_file_path=action_file_path,
+        intake=intake,
     )
     return write_action_receipt(receipt, project=project, ledger=ledger, latest=latest)
 
@@ -265,6 +281,7 @@ def apply_review(args: argparse.Namespace) -> dict[str, Any]:
         row=args.row,
         review_file_bytes=review_file_path.read_bytes(),
         review_file_path=str(review_file_path),
+        intake=getattr(args, "intake", None),
     )
     return write_review_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
 
@@ -281,6 +298,7 @@ def save_action(args: argparse.Namespace) -> dict[str, Any]:
         row=args.row,
         action_file_bytes=action_file_path.read_bytes(),
         action_file_path=str(action_file_path),
+        intake=getattr(args, "intake", None),
     )
     return write_action_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
 
@@ -290,6 +308,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project", required=True, help="Project slug under projects/.")
     parser.add_argument("--row", required=True, help="Slug for the reviewed row, e.g. report_export.")
     parser.add_argument("--from", dest="review_file_path", required=True, help="Review file JSON saved from the workbench.")
+    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched case files and stamps legacy files.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
     parser.add_argument("--latest", help="Optional latest-receipt JSON override, mainly for tests.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
@@ -301,6 +320,7 @@ def build_action_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project", required=True, help="Project slug under projects/.")
     parser.add_argument("--row", required=True, help="Slug for the acted-on row, e.g. report_export.")
     parser.add_argument("--from", dest="action_file_path", required=True, help="Row action JSON saved from the workbench.")
+    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched case files and stamps legacy files.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
     parser.add_argument("--latest", help="Optional latest-action JSON override, mainly for tests.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")

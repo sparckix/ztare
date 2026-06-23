@@ -3385,8 +3385,9 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
   const reviewPayload = parseReviewFile(reviewFile);
   const rowKey = row ? rowSlug(row.label) : "";
   const reviewFilename = row ? `${snapshot.project}_${rowKey}_review.json` : "review.json";
+  const intakeArg = snapshot.intake ? ` --intake ${snapshot.intake}` : "";
   const command = row
-    ? `ztare forensic-workbench apply-review --project ${snapshot.project} --row ${rowKey} --from ${reviewFilename}`
+    ? `ztare forensic-workbench apply-review --project ${snapshot.project}${intakeArg} --row ${rowKey} --from ${reviewFilename}`
     : "";
   const reviewReady = Boolean(row && REVIEW_ACTIONS.some((action) => action.id === decision));
   const liveReady = Boolean(liveMode && reviewReady && reviewPayload);
@@ -3505,8 +3506,9 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
   const rowActionPayload = parseReviewFile(rowActionFile);
   const rowKey = row ? rowSlug(row.label) : "";
   const actionFilename = row ? `${snapshot.project}_${rowKey}_action.json` : "row_action.json";
+  const intakeArg = snapshot.intake ? ` --intake ${snapshot.intake}` : "";
   const command = row
-    ? `ztare forensic-workbench save-action --project ${snapshot.project} --row ${rowKey} --from ${actionFilename}`
+    ? `ztare forensic-workbench save-action --project ${snapshot.project}${intakeArg} --row ${rowKey} --from ${actionFilename}`
     : "";
   const actionReady = Boolean(row && actionState.note && actionState.note.trim());
   const liveReady = Boolean(liveMode && actionReady && rowActionPayload);

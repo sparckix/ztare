@@ -609,6 +609,7 @@ def test_apply_review_file_writes_file_backed_receipt(tmp_path: Path) -> None:
             project="demo",
             row="report_export",
             review_file_path=str(review_file_path),
+            intake="projects/demo/demo_intake.json",
             ledger=str(ledger),
             latest=str(latest),
         )
@@ -618,6 +619,8 @@ def test_apply_review_file_writes_file_backed_receipt(tmp_path: Path) -> None:
     rows = [json.loads(line) for line in ledger.read_text(encoding="utf-8").splitlines()]
     assert rows[0]["decision"] == "blocked"
     assert rows[0]["row_slug"] == "report_export"
+    assert rows[0]["intake"] == "projects/demo/demo_intake.json"
+    assert rows[0]["case_key"] == "demo::projects/demo/demo_intake.json"
     assert json.loads(latest.read_text(encoding="utf-8"))["review_file_sha256"] == rows[0]["review_file_sha256"]
 
 
