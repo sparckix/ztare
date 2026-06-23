@@ -74,6 +74,8 @@ changes and refuses no-op saves, so a source-edit receipt means the source text
 or type actually changed. A source edit updates `raw/source_type_map.json`, appends a
 source-edit receipt, writes the latest source-edit receipt JSON, reruns
 source-check, and refreshes the case.
+Project switches, full refreshes, intake reloads, and opening a source from
+disk warn before discarding pending intake or raw-source edits.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button

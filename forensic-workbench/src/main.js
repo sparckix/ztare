@@ -39,6 +39,14 @@ const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question",
 const PROJECT_SLUG_RE = /^[A-Za-z0-9_.-]+$/;
 const SOURCE_IMPORT_FILENAME_RE = /^[A-Za-z0-9][A-Za-z0-9_.-]{0,120}\.(md|txt)$/;
 
+function emptySourceImportDraft() {
+  return { filename: "", source_type: "source_evidence", body: "" };
+}
+
+function emptySourceEditDraft() {
+  return { relative_raw_path: "", source_type: "source_evidence", body: "" };
+}
+
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
   { id: "evidence", label: "Evidence", rowLabel: "Evidence readiness" },
@@ -3698,13 +3706,13 @@ function App() {
   });
   const [projectCreateMessage, setProjectCreateMessage] = useState("");
   const [projectCreating, setProjectCreating] = useState(false);
-  const [sourceImportDraft, setSourceImportDraft] = useState({ filename: "", source_type: "source_evidence", body: "" });
+  const [sourceImportDraft, setSourceImportDraft] = useState(emptySourceImportDraft());
   const [sourceImportMessage, setSourceImportMessage] = useState("");
   const [sourceImportEvent, setSourceImportEvent] = useState(null);
   const [sourceImporting, setSourceImporting] = useState(false);
   const [sourceListContext, setSourceListContext] = useState(null);
   const [sourceListMessage, setSourceListMessage] = useState("");
-  const [sourceEditDraft, setSourceEditDraft] = useState({ relative_raw_path: "", source_type: "source_evidence", body: "" });
+  const [sourceEditDraft, setSourceEditDraft] = useState(emptySourceEditDraft());
   const [sourceEditMessage, setSourceEditMessage] = useState("");
   const [sourceEditEvent, setSourceEditEvent] = useState(null);
   const [sourceEditing, setSourceEditing] = useState(false);
@@ -3763,11 +3771,17 @@ function App() {
     setReportContractMessage("");
     setSourceImportEvent(null);
     setSourceImportMessage("");
+    setSourceImportDraft(emptySourceImportDraft());
+    setSourceListContext(null);
+    setSourceListMessage("");
     setSourceEditEvent(null);
     setSourceEditMessage("");
+    setSourceEditDraft(emptySourceEditDraft());
     setWriteReceiptEvent(null);
     setLastRefreshResults([]);
     setCaseFileSaveEvent(null);
+    setIntakeDraft(null);
+    setIntakeMessage("");
     setReceiptHistory(null);
     setReceiptHistoryMessage("");
     setFilePreview(null);
@@ -3977,6 +3991,34 @@ function App() {
     intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake
   });
 
+  const pendingEditorWarnings = (options = {}) => {
+    const warnings = [];
+    if (options.intake !== false) {
+      const fields = intakeChangedFields(intakeDraft);
+      if (fields.length) warnings.push(`intake draft (${fields.map(displayFieldName).join(", ")})`);
+    }
+    if (options.sourceEdit !== false) {
+      const fields = sourceChangedFields(sourceEditDraft);
+      if (fields.length) {
+        warnings.push(`raw source ${sourceEditDraft.relative_raw_path || "draft"} (${fields.map(displayFieldName).join(", ")})`);
+      }
+    }
+    if (options.sourceImport === true) {
+      const hasImportDraft = Boolean(String(sourceImportDraft.filename || "").trim() || String(sourceImportDraft.body || "").trim());
+      if (hasImportDraft) warnings.push("source import draft");
+    }
+    return warnings;
+  };
+
+  const confirmDiscardPendingEditors = (action, options = {}) => {
+    const warnings = pendingEditorWarnings(options);
+    if (!warnings.length) return true;
+    const message = `${action} will discard unsaved ${warnings.join(" and ")}. Save first, or continue to discard.`;
+    if (window.confirm(message)) return true;
+    setModeMessage(`Kept current case. Save or discard unsaved edits before ${action.toLowerCase()}.`);
+    return false;
+  };
+
   const refreshLiveContextAfterWrite = (projectParams, options = {}) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     const tasks = [
@@ -4102,6 +4144,7 @@ function App() {
 
   const openProject = (project) => {
     if (!project || !liveMode) return;
+    if (!confirmDiscardPendingEditors(`Opening ${project}`, { sourceImport: true })) return;
     const entry = projects.find((row) => row.project === project) || { project, rubric: project };
     resetCaseSessionState();
     setModeMessage(`Opening ${project} from local project files.`);
@@ -4114,6 +4157,12 @@ function App() {
 
   const refreshCurrentProject = () => {
     if (!snapshot || !liveMode) return;
+    const sourceDraftWasDirty = sourceChangedFields(sourceEditDraft).length > 0;
+    if (!confirmDiscardPendingEditors("Refreshing this project")) return;
+    if (sourceDraftWasDirty) {
+      setSourceEditDraft(emptySourceEditDraft());
+      setSourceEditMessage("Raw source draft cleared by refresh.");
+    }
     const entry = projects.find((row) => row.project === snapshot.project) || snapshot;
     loadSnapshot(entry, true, { preserveSelection: true }).catch((err) =>
       setModeMessage(`Could not refresh live project snapshot for ${snapshot.project}: ${err.message || err}`)
@@ -4122,6 +4171,7 @@ function App() {
 
   const refreshCurrentIntake = () => {
     if (!snapshot || !liveMode) return;
+    if (!confirmDiscardPendingEditors("Reloading the intake", { sourceEdit: false })) return;
     const entry = currentProjectEntry || snapshot;
     loadIntakeDraft(projectLoadParams(entry));
   };
@@ -4264,6 +4314,9 @@ function App() {
 
   const openRawSourceForEdit = (relativePath) => {
     if (!snapshot || !liveMode || !relativePath) return;
+    if (sourceEditDraft.relative_raw_path && sourceChangedFields(sourceEditDraft).length) {
+      if (!confirmDiscardPendingEditors(`Opening ${relativePath}`, { intake: false, sourceImport: false })) return;
+    }
     setSourceEditMessage(`Opening ${relativePath}.`);
     fetch(endpointUrl("/api/source-file", { project: snapshot.project, relative: relativePath }), { headers: { Accept: "application/json" } })
       .then((response) =>

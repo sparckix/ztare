@@ -263,6 +263,8 @@ Source import should let the user stage the new source path into intake refs
 without writing the intake file until Save intake records the edit receipt.
 The raw-source editor should show pending body/type changes and refuse no-op
 saves, so source-edit receipts correspond to actual file or metadata changes.
+Project switches, full refreshes, intake reloads, and opening a source from
+disk should warn before replacing pending intake or raw-source edits.
 The report/export panel should show the blocker reasons, synthesis input-binding
 status, contract file path, and exact support command.
 The command cockpit should collect selected-row, trace, report, health, and row
