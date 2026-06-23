@@ -135,6 +135,22 @@ def persist_live_row_payload(*, project: str, row: str, kind: str, payload: dict
     return repo_rel(path), payload_bytes
 
 
+def live_row_payload_with_case(
+    payload: dict[str, Any],
+    *,
+    project: str,
+    rubric: str | None,
+    intake: str | None,
+) -> dict[str, Any]:
+    scoped_payload = dict(payload)
+    if rubric and not scoped_payload.get("rubric"):
+        scoped_payload["rubric"] = rubric
+    if intake:
+        scoped_payload.setdefault("intake", intake)
+        scoped_payload.setdefault("case_key", case_key(project, intake))
+    return scoped_payload
+
+
 def path_under(path: Path, root: Path) -> bool:
     try:
         path.resolve().relative_to(root.resolve())
@@ -2014,6 +2030,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 review_errors = review.validate_review_file(review_file, project=project, row=row, intake=intake)
                 if review_errors:
                     raise ValueError("invalid review file: " + "; ".join(review_errors))
+                review_file = live_row_payload_with_case(review_file, project=project, rubric=rubric, intake=intake)
                 review_file_path, _review_file_bytes = persist_live_row_payload(
                     project=project,
                     row=row,
@@ -2076,6 +2093,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 action_errors = review.validate_action_file(action_file, project=project, row=row, intake=intake)
                 if action_errors:
                     raise ValueError("invalid row action file: " + "; ".join(action_errors))
+                action_file = live_row_payload_with_case(action_file, project=project, rubric=rubric, intake=intake)
                 action_file_path, _action_file_bytes = persist_live_row_payload(
                     project=project,
                     row=row,

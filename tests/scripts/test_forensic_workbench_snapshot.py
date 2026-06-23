@@ -712,6 +712,8 @@ def test_review_api_preserves_receipt_when_snapshot_refresh_fails(
         review_file_path: str,
     ) -> dict:
         assert payload["schema"] == "ztare-forensic-workbench-review-v1"
+        assert payload["intake"] == "projects/demo/demo_intake.json"
+        assert payload["case_key"] == "demo::projects/demo/demo_intake.json"
         assert project == "demo"
         assert row == "report_export"
         assert review_file_path.startswith("projects/demo/workspace/forensic_workbench_applied/")
@@ -721,8 +723,9 @@ def test_review_api_preserves_receipt_when_snapshot_refresh_fails(
         assert json.loads(persisted.read_text(encoding="utf-8")) == payload
         return {"ok": True, "receipt": {"project": project, "row_slug": row}}
 
-    def fake_snapshot_payload_for_project(*, project: str, **_kwargs: object) -> dict:
+    def fake_snapshot_payload_for_project(*, project: str, intake: str | None = None, **_kwargs: object) -> dict:
         assert project == "demo"
+        assert intake == "projects/demo/demo_intake.json"
         raise SystemExit("trace refresh failed")
 
     monkeypatch.setattr(module.review, "apply_review_payload", fake_apply_review_payload)
@@ -734,10 +737,13 @@ def test_review_api_preserves_receipt_when_snapshot_refresh_fails(
         body = json.dumps(
             {
                 "project": "demo",
+                "rubric": "demo",
+                "intake": "projects/demo/demo_intake.json",
                 "row_slug": "report_export",
                 "review_file": {
                     "schema": "ztare-forensic-workbench-review-v1",
                     "project": "demo",
+                    "rubric": "demo",
                     "row": "Report/export",
                     "decision": "blocked",
                     "evidence_refs": [{"type": "evidence", "value": "x"}],
