@@ -247,7 +247,7 @@ state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
-latest case-file write, and a project switchboard with intake mode,
+latest case-file write, and a project switchboard keyed by project plus intake with intake mode,
 source-ref coverage, report-contract presence, recent receipt paths, and any
 per-project intake load error before the user switches cases. It should
 also show bounded-claim status, source/evidence readiness, recent receipt

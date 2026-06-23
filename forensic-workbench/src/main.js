@@ -723,6 +723,13 @@ function projectOptionLabel(project) {
   return parts.join(" / ");
 }
 
+function projectEntryKey(entry) {
+  if (!entry) return "";
+  const project = String(entry.project || "").trim();
+  const intake = String(entry.intake || "").trim();
+  return intake ? `${project}::${intake}` : project;
+}
+
 function projectLoadParams(entryOrSnapshot) {
   if (!entryOrSnapshot) return {};
   return {
@@ -788,7 +795,7 @@ function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
 
 function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, loading, onSelect }) {
   if (!liveMode || !projects.length) return null;
-  const activeKey = selectedProjectKey || (snapshot && snapshot.project) || "";
+  const activeKey = selectedProjectKey || projectEntryKey(snapshot);
   return h(
     "section",
     { className: "project-switchboard", "aria-label": "Local cases" },
@@ -803,9 +810,10 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
       "div",
       { className: "project-switchboard-grid" },
       projects.map((project) => {
+        const caseKey = projectEntryKey(project);
         const refSummary = project.intake_ref_summary || {};
         const intakeError = project.intake_error || "";
-        const active = project.project === activeKey;
+        const active = caseKey === activeKey;
         const intakeMode = intakeError ? "intake attention" : project.intake_editable === false ? "read-only intake" : "editable intake";
         const receiptCount = [
           project.latest_review,
@@ -818,7 +826,7 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
         ].filter(Boolean).length;
         return h(
           "article",
-          { key: project.project, className: `project-tile ${active ? "active" : ""}` },
+          { key: caseKey, className: `project-tile ${active ? "active" : ""}` },
           h("div", { className: "project-tile-main" }, h("strong", null, project.project), h("small", null, project.project_dir || "project folder pending")),
           h(
             "div",
@@ -836,7 +844,7 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
               type: "button",
               className: active ? "copy-button" : "copy-button primary",
               disabled: loading || active,
-              onClick: () => onSelect(project.project),
+              onClick: () => onSelect(caseKey),
               title: active ? "This case is open" : `Open ${project.project}`
             },
             active ? "Open" : "Switch"
@@ -3845,8 +3853,9 @@ function App() {
         const projectRows = payload.projects || [];
         if (!projectRows.length) throw new Error("project index is empty");
         setProjects(projectRows);
-        if (activeProject && projectRows.some((row) => row.project === activeProject)) {
-          setSelectedProjectKey(activeProject);
+        const activeRow = projectRows.find((row) => projectEntryKey(row) === activeProject) || projectRows.find((row) => row.project === activeProject);
+        if (activeRow) {
+          setSelectedProjectKey(projectEntryKey(activeRow));
         }
         return refreshResult("project index", true);
       })
@@ -4124,7 +4133,7 @@ function App() {
         );
         if (useLiveApi) {
           const liveParams = { ...loadParams, project: payload.project, rubric: payload.rubric || loadParams.rubric, intake: payload.intake || loadParams.intake };
-          setSelectedProjectKey(payload.project);
+          setSelectedProjectKey(projectEntryKey(liveParams));
           return Promise.allSettled([
             loadTraceContext(liveParams),
             loadReportContractContext(liveParams),
@@ -4183,7 +4192,7 @@ function App() {
         setProjects(projectRows);
         setLiveMode(true);
         const preferred = projectRows.find((row) => row.project === payload.default_project) || projectRows[0];
-        setSelectedProjectKey(preferred.project);
+        setSelectedProjectKey(projectEntryKey(preferred));
         return loadSnapshot(preferred, true, { allowStaticFallback: true });
       })
       .catch(() =>
@@ -4191,14 +4200,14 @@ function App() {
       );
   }, []);
 
-  const openProject = (project) => {
-    if (!project || !liveMode) return;
-    if (!confirmDiscardPendingEditors(`Opening ${project}`, { sourceImport: true })) return;
-    const entry = projects.find((row) => row.project === project) || { project, rubric: project };
+  const openProject = (caseKey) => {
+    if (!caseKey || !liveMode) return;
+    const entry = projects.find((row) => projectEntryKey(row) === caseKey) || projects.find((row) => row.project === caseKey) || { project: caseKey, rubric: caseKey };
+    if (!confirmDiscardPendingEditors(`Opening ${entry.project}`, { sourceImport: true })) return;
     resetCaseSessionState();
-    setModeMessage(`Opening ${project} from local project files.`);
+    setModeMessage(`Opening ${entry.project} from local project files.`);
     loadSnapshot(entry, true).catch((err) =>
-      setModeMessage(`Could not load live project snapshot for ${project}: ${err.message || err}`)
+      setModeMessage(`Could not load live project snapshot for ${entry.project}: ${err.message || err}`)
     );
   };
 
@@ -4263,7 +4272,7 @@ function App() {
         }
         const projectRows = (payload.project_index && payload.project_index.projects) || [];
         if (projectRows.length) setProjects(projectRows);
-        setSelectedProjectKey(payload.project);
+        setSelectedProjectKey(projectEntryKey(payload));
         resetCaseSessionState();
         if (payload.snapshot) installSnapshot(payload.snapshot);
         setLiveMode(true);
@@ -4494,7 +4503,7 @@ function App() {
 
   const currentProjectEntry = useMemo(() => {
     if (!snapshot) return null;
-    return projects.find((row) => row.project === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
+    return projects.find((row) => projectEntryKey(row) === selectedProjectKey) || projects.find((row) => row.project === snapshot.project) || null;
   }, [projects, selectedProjectKey, snapshot]);
 
   const reportPanelContext = useMemo(() => {
@@ -4899,8 +4908,11 @@ function App() {
                 h("span", null, loadingSnapshot ? "Refreshing" : "Project"),
                 h(
                   "select",
-                  { value: selectedProjectKey || snapshot.project, onChange: handleProjectChange, disabled: loadingSnapshot },
-                  projects.map((project) => h("option", { key: project.project, value: project.project }, projectOptionLabel(project)))
+                  { value: selectedProjectKey || projectEntryKey(snapshot), onChange: handleProjectChange, disabled: loadingSnapshot },
+                  projects.map((project) => {
+                    const caseKey = projectEntryKey(project);
+                    return h("option", { key: caseKey, value: caseKey }, projectOptionLabel(project));
+                  })
                 )
               )
             : null,

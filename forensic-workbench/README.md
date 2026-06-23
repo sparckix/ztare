@@ -41,14 +41,14 @@ Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
-selected project, using the intake and rubric discovered by the index. The app
+selected case, using the project, intake, and rubric discovered by the index. The app
 shows the backing project directory, intake, report contract, latest review
 receipt, latest saved row action, latest case-file write, recent receipt
 history, and the live autoresearch trace before the main case file. The intake editor reads and writes
 the selected project intake
 through `/api/intake`; source and evidence refs are resolved against the intake
 directory and repo root, then shown as present, missing, external, or unsafe.
-The project picker uses the same lightweight intake read to show ref counts
+The project picker keys each live case by project plus intake and uses the same lightweight intake read to show ref counts
 before a case opens. Project-local intakes are editable; public example intakes
 are readable but not writable from the browser. The editor shows pending
 changed fields before saving and refuses no-op writes, so an intake-edit receipt
