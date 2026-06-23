@@ -2858,9 +2858,52 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
   const actionCounts = action.counts || {};
   const attention = kernel.attention_components || [];
   const issues = action.issues || [];
+  const recommendations = action.recommendations || [];
   const sourcePaths = action.source_paths || {};
   const status = kernelSummary.overall_status || (liveMode ? "loading" : "static mode");
   const previewableSourcePaths = Object.entries(sourcePaths).filter(([_key, value]) => value);
+  const renderEvidenceRefs = (evidenceRefs) =>
+    evidenceRefs.length
+      ? h(
+          "div",
+          { className: "health-evidence-refs" },
+          evidenceRefs.map((ref) =>
+            h(
+              "div",
+              { className: "health-evidence-ref", key: ref },
+              h("code", null, ref),
+              h(
+                "div",
+                { className: "health-source-actions" },
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    onClick: () => copyText(ref),
+                    title: "Copy evidence ref"
+                  },
+                  "Copy"
+                ),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !liveMode || !isPreviewableRepoPath(ref),
+                    onClick: () => onPreviewSource && onPreviewSource({ type: "file", value: ref }),
+                    title:
+                      liveMode && isPreviewableRepoPath(ref)
+                        ? "Preview evidence ref"
+                        : "Start the local API to preview repository files"
+                  },
+                  "Preview"
+                )
+              )
+            )
+          )
+        )
+      : null;
 
   return h(
     "section",
@@ -2885,6 +2928,7 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
       h("div", null, h("span", null, "Kernel"), h("strong", null, displayText(kernelSummary.component_status || status))),
       h("div", null, h("span", null, "Attention"), h("strong", null, String((kernelSummary.component_counts || {}).attention || attention.length || 0))),
       h("div", null, h("span", null, "Action issues"), h("strong", null, String(actionCounts.issues || issues.length || 0))),
+      h("div", null, h("span", null, "Recommendations"), h("strong", null, String(recommendations.length || 0))),
       h("div", null, h("span", null, "Warnings"), h("strong", null, String(actionCounts.warning || 0)))
     ),
     h(
@@ -2938,47 +2982,35 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
             affectedDomains.length
               ? h("p", { className: "health-action-domains" }, `Affects: ${affectedDomains.map(displayText).join(", ")}`)
               : null,
-            evidenceRefs.length
-              ? h(
-                  "div",
-                  { className: "health-evidence-refs" },
-                  evidenceRefs.map((ref) =>
-                    h(
-                      "div",
-                      { className: "health-evidence-ref", key: ref },
-                      h("code", null, ref),
-                      h(
-                        "div",
-                        { className: "health-source-actions" },
-                        h(
-                          "button",
-                          {
-                            className: "copy-button",
-                            type: "button",
-                            onClick: () => copyText(ref),
-                            title: "Copy evidence ref"
-                          },
-                          "Copy"
-                        ),
-                        h(
-                          "button",
-                          {
-                            className: "copy-button",
-                            type: "button",
-                            disabled: !liveMode || !isPreviewableRepoPath(ref),
-                            onClick: () => onPreviewSource && onPreviewSource({ type: "file", value: ref }),
-                            title:
-                              liveMode && isPreviewableRepoPath(ref)
-                                ? "Preview evidence ref"
-                                : "Start the local API to preview repository files"
-                          },
-                          "Preview"
-                        )
-                      )
-                    )
-                  )
-                )
-              : null
+            renderEvidenceRefs(evidenceRefs)
+          );
+        }
+      }),
+      h(HealthFindingList, {
+        title: "Advisory recommendations",
+        emptyText: "No action-intelligence recommendations surfaced.",
+        rows: recommendations,
+        renderRow: (row, index) => {
+          const evidenceRefs = Array.isArray(row.evidence_refs) ? row.evidence_refs.filter(Boolean).slice(0, 3) : [];
+          const pSuccess = typeof row.p_success === "number" ? `p ${Math.round(row.p_success * 100)}%` : "";
+          const cost = typeof row.expected_cost_agent_minutes === "number" ? `${row.expected_cost_agent_minutes} min` : "";
+          return h(
+            "div",
+            { className: "health-finding-row recommendation", key: `${row.recommendation_id || "recommendation"}:${index}` },
+            h("strong", null, displayText(row.recommended_action || "recommendation")),
+            h(
+              "small",
+              null,
+              [row.domain ? displayText(row.domain) : "", row.confidence ? displayText(row.confidence) : "", row.execution_authority ? displayText(row.execution_authority) : ""]
+                .filter(Boolean)
+                .join(" | ")
+            ),
+            h("p", null, row.rationale || "Inspect the backing recommendation before acting."),
+            pSuccess || cost || row.effective_n
+              ? h("p", { className: "health-action-domains" }, [pSuccess, cost, row.effective_n ? `n ${row.effective_n}` : ""].filter(Boolean).join(" | "))
+              : null,
+            row.decision_id ? h("code", null, row.decision_id) : null,
+            renderEvidenceRefs(evidenceRefs)
           );
         }
       }),

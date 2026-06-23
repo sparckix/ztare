@@ -34,6 +34,7 @@ SOURCE_EDIT_SCHEMA = "ztare-forensic-workbench-source-edit-v1"
 SOURCE_ACTION_RECEIPT_SCHEMA = "ztare-forensic-workbench-source-action-receipt-v1"
 CASE_FILE_SCHEMA = "ztare-forensic-workbench-case-file-v1"
 CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1"
+ACTION_INTELLIGENCE_STATE_DIR = Path("analytics/public/action_intelligence/state")
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -834,6 +835,49 @@ def trace_payload_for_project(
     }
 
 
+def action_intelligence_recommendations(limit: int = 6) -> dict[str, Any]:
+    path = snapshot.REPO / ACTION_INTELLIGENCE_STATE_DIR / "shadow_recommendations.json"
+    if not path.exists():
+        return {"generated_at": None, "counts": {}, "recommendations": [], "source_path": snapshot.rel(path)}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("shadow recommendations read model must be a JSON object")
+    rows = payload.get("recommendations") or []
+    if not isinstance(rows, list):
+        rows = []
+    recommendations = []
+    for row in rows[:limit]:
+        if not isinstance(row, dict):
+            continue
+        externality = row.get("externality_checks") or {}
+        gp230 = row.get("gp230") or {}
+        recommendations.append(
+            {
+                "recommendation_id": row.get("recommendation_id"),
+                "decision_id": row.get("decision_id"),
+                "domain": row.get("domain"),
+                "recommended_action": row.get("recommended_action"),
+                "confidence": row.get("confidence"),
+                "execution_authority": row.get("execution_authority"),
+                "rationale": row.get("rationale"),
+                "blocking_checks": row.get("blocking_checks") or [],
+                "evidence_refs": row.get("evidence_refs") or [],
+                "source": row.get("source"),
+                "p_success": gp230.get("p_success"),
+                "expected_cost_agent_minutes": gp230.get("expected_cost_agent_minutes"),
+                "effective_n": gp230.get("effective_n"),
+                "goodhart_risk": externality.get("goodhart_risk"),
+                "sample_size": externality.get("sample_size"),
+            }
+        )
+    return {
+        "generated_at": payload.get("generated_at"),
+        "counts": payload.get("counts") or {},
+        "recommendations": recommendations,
+        "source_path": snapshot.rel(path),
+    }
+
+
 def health_payload_for_project(
     *,
     project: str,
@@ -874,6 +918,7 @@ def health_payload_for_project(
             f"STDOUT:\n{action_proc.stdout}\nSTDERR:\n{action_proc.stderr}"
         )
     action_payload = snapshot.extract_last_json_object(action_proc.stdout)
+    recommendation_payload = action_intelligence_recommendations()
 
     attention_components = [
         {
@@ -917,6 +962,10 @@ def health_payload_for_project(
         "action_intelligence": {
             "counts": action_payload.get("counts") or {},
             "issues": action_issues,
+            "recommendations": recommendation_payload.get("recommendations") or [],
+            "recommendation_counts": recommendation_payload.get("counts") or {},
+            "recommendations_generated_at": recommendation_payload.get("generated_at"),
+            "recommendations_source_path": recommendation_payload.get("source_path"),
             "source_paths": action_payload.get("source_paths") or {},
         },
     }

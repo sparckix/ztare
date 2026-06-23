@@ -192,7 +192,7 @@ GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 
 GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 -> kernel-health summary plus action-intelligence source-health warnings,
-   blocking rules, counts, and evidence refs
+   advisory recommendations, blocking rules, counts, and evidence refs
 
 GET /api/trace?project=<project>&rubric=<rubric>&intake=<intake>
 -> autoresearch trace summary: carrier chain, run gate, plan, graph, and commands

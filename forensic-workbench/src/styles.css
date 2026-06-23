@@ -1307,7 +1307,7 @@ code {
 .health-findings {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 1px;
   background: #d5dfdc;
   border: 1px solid #d5dfdc;
@@ -1337,6 +1337,10 @@ code {
 .health-finding-row.kernel,
 .health-finding-row.action {
   border-left-color: #bd6a1d;
+}
+
+.health-finding-row.recommendation {
+  border-left-color: #2e6f89;
 }
 
 .health-finding-row small {
