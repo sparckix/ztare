@@ -385,6 +385,10 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
         action_intelligence: {
           counts: ((health.action_intelligence || {}).counts) || {},
           issues: ((health.action_intelligence || {}).issues || []).slice(0, 8),
+          recommendations: ((health.action_intelligence || {}).recommendations || []).slice(0, 8),
+          recommendation_counts: ((health.action_intelligence || {}).recommendation_counts) || {},
+          recommendations_generated_at: ((health.action_intelligence || {}).recommendations_generated_at) || "",
+          recommendations_source_path: ((health.action_intelligence || {}).recommendations_source_path) || "",
           source_paths: ((health.action_intelligence || {}).source_paths) || {}
         }
       },
@@ -2002,7 +2006,8 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       Object.keys(caseFile.live_context.health.kernel.summary || {}).length ||
       caseFile.live_context.health.kernel.attention_components.length ||
       Object.keys(caseFile.live_context.health.action_intelligence.counts || {}).length ||
-      caseFile.live_context.health.action_intelligence.issues.length,
+      caseFile.live_context.health.action_intelligence.issues.length ||
+      caseFile.live_context.health.action_intelligence.recommendations.length,
     caseFile.live_context.preflight_result,
     caseFile.live_context.sources.schema ||
       caseFile.live_context.sources.source_count ||
@@ -2041,6 +2046,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       h("div", null, h("span", null, "Source edit"), h("strong", null, caseFile.live_context.latest_source_edit ? displayText(caseFile.live_context.latest_source_edit.source_type) : "none")),
       h("div", null, h("span", null, "Run score"), h("strong", null, caseFile.live_context.run_history.summary.latest_score === undefined || caseFile.live_context.run_history.summary.latest_score === null ? "none" : String(caseFile.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(caseFile.live_context.claim_support.status || "not loaded"))),
+      h("div", null, h("span", null, "Advisory rows"), h("strong", null, String(caseFile.live_context.health.action_intelligence.recommendations.length || 0))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, caseFile.schema)),
       h("div", null, h("span", null, "Save receipt"), h("strong", null, CASE_FILE_WRITE_SCHEMA))
