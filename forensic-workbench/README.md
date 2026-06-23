@@ -123,11 +123,11 @@ recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.
 The claim-support endpoint returns `ztare-forensic-workbench-claim-support-v1`:
 claim-support status, weak/unsourced counts, source-context status, missing
-packet errors, and previewable source paths from
+evidence-file errors, and previewable source paths from
 `ztare project claim-support --project <project> --json`.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
-The case-packet export is client-side and explicit: clicking Download packet
+The case-file export is client-side and explicit: clicking Download case file
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
 preflight result, latest source/evidence action result, run-history context, the
@@ -199,11 +199,11 @@ The interface is organized as a local claim-review surface:
   review files
 - receipt history panel showing recent review, row-action, intake-edit, source-import, and source-edit
   ledger rows with previewable backing ledger paths
-- case-packet export for downloading or copying the current case, rows,
+- case-file export for downloading or copying the current case, rows,
   evidence refs, live context, preflight result, raw-source inventory, run
   history, command queue, and recent receipt paths
 - claim-support panel showing support status, weak/unsourced counts, missing
-  packet errors, source context, and the exact support-audit command
+  evidence-file errors, source context, and the exact support-audit command
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
 - review queue strip showing selected row, decision, evidence count, and receipt readiness

@@ -1513,7 +1513,7 @@ function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
         "div",
         { className: "run-history-paths" },
         [
-          { label: "Packet", path: packetPath },
+          { label: "Evidence file", path: packetPath },
           { label: "Source index", path: sourceIndexPath }
         ].map((item) =>
           h(
@@ -1727,17 +1727,17 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
     packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length,
     packet.live_context.claim_support.schema || packet.live_context.claim_support.status
   ].filter(Boolean).length;
-  const filename = `${snapshot.project || "ztare"}_case_packet.json`;
+  const filename = `${snapshot.project || "ztare"}_case_file.json`;
 
   return h(
     "section",
-    { className: "case-export-panel", "aria-label": "Case packet export" },
+    { className: "case-export-panel", "aria-label": "Case file export" },
     h(
       "div",
       { className: "case-export-copy" },
       h("span", { className: "eyebrow" }, "Export"),
-      h("h2", null, "Case packet"),
-      h("p", null, "Download or copy the current case as a review packet. The browser only creates the file when you click.")
+      h("h2", null, "Case file"),
+      h("p", null, "Download or copy the current case as a review file. The browser only creates the file when you click.")
     ),
     h(
       "div",
@@ -1766,9 +1766,9 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
           className: "copy-button primary",
           type: "button",
           onClick: () => downloadText(filename, packetJson),
-          title: "Download the current case packet JSON"
+          title: "Download the current case file JSON"
         },
-        "Download packet"
+        "Download case file"
       ),
       h(
         "button",
@@ -1776,7 +1776,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
           className: "copy-button",
           type: "button",
           onClick: () => copyText(packetJson),
-          title: "Copy case packet JSON"
+          title: "Copy case file JSON"
         },
         "Copy JSON"
       ),

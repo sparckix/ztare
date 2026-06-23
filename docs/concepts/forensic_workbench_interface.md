@@ -219,7 +219,7 @@ GET /api/run-history?project=<project>
 
 GET /api/claim-support?project=<project>
 -> claim-support status, weak/unsourced counts, source-context status, missing
-   packet errors, previewable source paths, and copyable support-audit command
+   evidence-file errors, previewable source paths, and copyable support-audit command
 
 POST /api/review
 -> append row-level review receipt and refresh snapshot
@@ -240,7 +240,7 @@ and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
 bounded-claim status, source/evidence readiness, recent receipt history, run
 history/verdict state, and report/export state before the user opens a case.
-The claim-support panel should show whether the compiled claim-support packet is
+The claim-support panel should show whether the compiled claim-support evidence file is
 present, how many claims are weak or unsourced, which local sources were
 verified, and the exact command that rebuilds the audit.
 The source/evidence readiness panel should show source-index status, evidence
@@ -278,7 +278,7 @@ File inspection is read-only. The browser may request one repository-relative
 path from the local API and display a bounded text preview. It must not crawl
 the filesystem, infer hidden project state, or turn a preview into a write.
 
-Case export should also be explicit. A browser-generated case packet may package
+Case export should also be explicit. A browser-generated case file may package
 the current snapshot, row evidence refs, live trace/report/health context,
 latest preflight result, raw-source inventory, command queue, latest visible
 write receipt, and recent receipt paths for download or copy, but it must not
