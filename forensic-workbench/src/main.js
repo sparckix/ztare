@@ -4315,7 +4315,7 @@ function App() {
           result: payload,
           snapshotError: ""
         });
-        return loadReceiptHistory(params);
+        return refreshLiveContextAfterWrite(params);
       })
       .catch((err) => {
         setCaseFileSaveEvent({ error: String(err.message || err) });
