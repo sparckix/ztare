@@ -204,6 +204,9 @@ and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
 bounded-claim status, source/evidence readiness, recent receipt history, and
 report/export state before the user opens a case.
+The source/evidence readiness panel should show source-index status, evidence
+binding, output binding, replay status, source/evidence files, and the commands
+that rebuild those checks.
 The report/export panel should show the blocker reasons, synthesis input-binding
 status, contract file path, and exact support command.
 

@@ -119,6 +119,8 @@ The interface is organized as a local claim-review surface:
 - intake editor showing bounded claim, non-claims, source refs, evidence refs,
   ref status, pending changed fields, and intake-edit receipt writes
 - project picker showing intake ref counts and read-only vs editable intake mode
+- source/evidence readiness panel showing source index, evidence binding, output
+  binding, replay state, backing files, and copyable commands
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review

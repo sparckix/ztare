@@ -1118,6 +1118,123 @@ function CaseDocket({ snapshot, selectedRow }) {
   );
 }
 
+function SourceEvidencePanel({ snapshot, traceContext, liveMode, onPreview, setSelectedLabel }) {
+  const rows = snapshot.rows || [];
+  const sourceRow = rowByLabel(rows, "Source readiness") || {};
+  const evidenceRow = rowByLabel(rows, "Evidence readiness") || {};
+  const surfaces = (traceContext && traceContext.surfaces) || {};
+  const sourceStatus = surfaces.source_index_status || sourceRow.status || "unknown";
+  const evidenceStatus = surfaces.evidence_status || evidenceRow.status || "unknown";
+  const outputBinding = surfaces.output_binding_status || "unknown";
+  const replayStatus = surfaces.replay_status || "unknown";
+  const attention = sourceRow.kind === "attention" || evidenceRow.kind === "attention";
+  const files = [
+    surfaces.source_index_receipt_path ? { label: "Source receipt", value: surfaces.source_index_receipt_path } : null,
+    surfaces.compile_provenance_path ? { label: "Compile provenance", value: surfaces.compile_provenance_path } : null
+  ].filter(Boolean);
+  const commands = [
+    sourceRow.command ? { label: "Source command", value: sourceRow.command, row: "Source readiness" } : null,
+    evidenceRow.command ? { label: "Evidence command", value: evidenceRow.command, row: "Evidence readiness" } : null
+  ].filter(Boolean);
+  const readinessRows = [sourceRow, evidenceRow].filter((row) => row.label);
+
+  return h(
+    "section",
+    { className: `source-evidence-panel ${attention ? "attention" : "ready"}`, "aria-label": "Source and evidence readiness" },
+    h(
+      "div",
+      { className: "source-evidence-summary" },
+      h("span", { className: "eyebrow" }, "Sources and evidence"),
+      h("h2", null, `${displayText(sourceStatus)} / ${displayText(evidenceStatus)}`),
+      h("p", null, "Inspect source indexing, evidence binding, replay state, and the files behind them.")
+    ),
+    h(
+      "div",
+      { className: "source-evidence-metrics" },
+      h("div", null, h("span", null, "Source index"), h("strong", null, displayText(sourceStatus))),
+      h("div", null, h("span", null, "Evidence"), h("strong", null, displayText(evidenceStatus))),
+      h("div", null, h("span", null, "Output binding"), h("strong", null, displayText(outputBinding))),
+      h("div", null, h("span", null, "Replay"), h("strong", null, displayText(replayStatus)))
+    ),
+    h(
+      "div",
+      { className: "source-evidence-body" },
+      h(
+        "div",
+        { className: "source-evidence-section" },
+        h("span", null, "Rows"),
+        readinessRows.length
+          ? readinessRows.map((row) =>
+              h(
+                "button",
+                {
+                  key: row.label,
+                  type: "button",
+                  className: `source-evidence-row ${row.kind === "attention" ? "attention" : "ready"}`,
+                  onClick: () => setSelectedLabel(row.label),
+                  title: `Inspect ${row.label}`
+                },
+                h("strong", null, row.label),
+                h("small", null, row.detail || displayText(row.status))
+              )
+            )
+          : h("p", null, "No source/evidence rows loaded yet.")
+      ),
+      h(
+        "div",
+        { className: "source-evidence-section" },
+        h("span", null, "Files"),
+        files.length
+          ? files.map((item) =>
+              h(
+                "div",
+                { className: "source-evidence-file", key: item.label },
+                h("strong", null, item.label),
+                h("code", null, item.value),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !liveMode,
+                    onClick: () => onPreview && onPreview({ type: "file", value: item.value }),
+                    title: liveMode ? "Preview source/evidence file" : "Start the local API to preview files"
+                  },
+                  "Preview"
+                )
+              )
+            )
+          : h("p", null, "No source/evidence files loaded yet.")
+      ),
+      h(
+        "div",
+        { className: "source-evidence-section source-evidence-commands" },
+        h("span", null, "Commands"),
+        commands.length
+          ? commands.map((item) =>
+              h(
+                "div",
+                { className: "source-evidence-command", key: item.label },
+                h("strong", null, item.label),
+                h("code", null, item.value),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    onClick: () => copyText(item.value),
+                    title: "Copy readiness command"
+                  },
+                  "Copy"
+                )
+              )
+            )
+          : h("p", null, "No source/evidence commands surfaced.")
+      )
+    )
+  );
+}
+
 function rowSignal(row) {
   if (row.kind === "attention") return "Blocker";
   if (row.kind === "ready") return "Ready";
@@ -2495,6 +2612,7 @@ function App() {
         onReload: refreshCurrentIntake,
         onPreviewRef: loadFilePreview
       }),
+      h(SourceEvidencePanel, { snapshot, traceContext, liveMode, onPreview: loadFilePreview, setSelectedLabel }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
