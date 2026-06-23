@@ -109,7 +109,7 @@ source/evidence statuses, and copyable next commands from
 `ztare autoresearch trace`. The report endpoint returns
 `ztare-forensic-workbench-report-contract-v1`: report/export status, blocker
 reasons, synthesis input-binding state, the backing contract path, and the
-copyable `make synth-contract` command. The health endpoint returns kernel-health attention
+copyable `make synth-contract` command. The health endpoint returns run-health attention
 components, action-intelligence source-health issues, advisory recommendations,
 blocking rules, observed and expected counts, evidence refs, and source-health
 file paths. The workbench shows these as read-only rows with copyable commands
@@ -228,7 +228,7 @@ The interface is organized as a local claim-review surface:
 - status metrics for run readiness, export state, evidence rows, and attention rows
 - blocker panel showing the current blocking row, blocker reasons, and a direct
   review action
-- health and actions panel showing live kernel-health rows,
+- health and actions panel showing live run-health rows,
   action-intelligence source-health rows, source files, and copyable next
   commands
 - autoresearch trace console showing carrier chain, kernel-entry status, plan

@@ -249,7 +249,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "No changed intake fields to write.",
     "intakeChangedFields",
     "preview_path",
-    "Kernel findings",
+    "Run findings",
     "Action-intelligence rows",
     "Health source files",
     "Sources and evidence",

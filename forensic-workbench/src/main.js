@@ -1696,7 +1696,7 @@ function TraceConsolePanel({ traceContext, message, liveMode, onPreviewSource })
     h(
       "div",
       { className: "trace-metrics" },
-      h("div", null, h("span", null, "Kernel"), h("strong", null, displayText(kernel.status || "unknown"))),
+      h("div", null, h("span", null, "Run check"), h("strong", null, displayText(kernel.status || "unknown"))),
       h("div", null, h("span", null, "Can run"), h("strong", null, kernel.can_enter_kernel ? "yes" : "no")),
       h("div", null, h("span", null, "Evidence"), h("strong", null, displayText(surfaces.evidence_status || "unknown"))),
       h("div", null, h("span", null, "Plan"), h("strong", null, displayText(plan.status || "unknown")))
@@ -2904,7 +2904,7 @@ function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContex
   add({ label: "Report support", command: reportContext && reportContext.command, source: "Report/export contract", rowLabel: "Report/export", priority: 30 });
   add({ label: "Claim support", command: claimSupportContext && claimSupportContext.command, source: "Claim support audit", rowLabel: "Evidence readiness", priority: 35 });
   (((healthContext && healthContext.kernel) || {}).attention_components || []).forEach((row, index) =>
-    add({ label: "Health next command", command: row.next_command, source: row.component || "Kernel health", rowLabel: "Kernel health", priority: 40 + index })
+    add({ label: "Run-health command", command: row.next_command, source: row.component || "Run health", rowLabel: "Run health", priority: 40 + index })
   );
   rows.forEach((row, index) => add({ label: "Row command", command: row.command, source: row.label, rowLabel: row.label, priority: 60 + index }));
   return items.sort((left, right) => left.priority - right.priority).slice(0, 8);
@@ -3224,14 +3224,14 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
         null,
         healthMessage ||
           (liveMode
-            ? "Live kernel-health and action-intelligence context for this project."
-            : "Start the local API to inspect live kernel-health and action-intelligence context.")
+            ? "Live run health and action recommendations for this project."
+            : "Start the local API to inspect live run health and action recommendations.")
       )
     ),
     h(
       "div",
       { className: "health-metrics" },
-      h("div", null, h("span", null, "Kernel"), h("strong", null, displayText(kernelSummary.component_status || status))),
+      h("div", null, h("span", null, "Run health"), h("strong", null, displayText(kernelSummary.component_status || status))),
       h("div", null, h("span", null, "Attention"), h("strong", null, String((kernelSummary.component_counts || {}).attention || attention.length || 0))),
       h("div", null, h("span", null, "Action issues"), h("strong", null, String(actionCounts.issues || issues.length || 0))),
       h("div", null, h("span", null, "Recommendations"), h("strong", null, String(recommendations.length || 0))),
@@ -3241,14 +3241,14 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
       "div",
       { className: "health-findings" },
       h(HealthFindingList, {
-        title: "Kernel findings",
-        emptyText: "Kernel health has no active attention component.",
+        title: "Run findings",
+        emptyText: "Run health has no active attention component.",
         rows: attention,
         renderRow: (row, index) =>
           h(
             "div",
             { className: "health-finding-row kernel", key: `${row.component || "kernel"}:${index}` },
-            h("strong", null, row.component || "kernel component"),
+            h("strong", null, row.component || "run component"),
             h("small", null, displayText(row.status || "attention")),
             h("p", null, row.action || "Inspect component."),
             row.next_command
@@ -3258,7 +3258,7 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
                     className: "copy-button",
                     type: "button",
                     onClick: () => copyText(row.next_command),
-                    title: "Copy kernel-health next command"
+                    title: "Copy run-health next command"
                   },
                   "Copy command"
                 )
