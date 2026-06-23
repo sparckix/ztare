@@ -69,10 +69,11 @@ The inspector can preview a selected intake ref or row file/source/evidence/revi
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
 writes the same review receipt that the CLI writes, then refreshes the same
-selected project/intake snapshot. The Save action button writes a row-action
-receipt through the same explicit API/ledger path. Intake edits write an
-intake-edit receipt under the project workspace. The receipt-history panel reads
-the review, row-action, and intake-edit ledgers through `/api/receipts`, returns
+selected project/intake snapshot and live context. The Save action button
+writes a row-action receipt through the same explicit API/ledger path. Intake
+edits write an intake-edit receipt under the project workspace. The
+receipt-history panel reads review, row-action, intake-edit, source-import,
+source-edit, and source-action ledgers through `/api/receipts`, returns
 `ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
 backing ledger file. The Refresh button reloads the current case from local
 project files. If the API is not running at startup, the app falls back to
@@ -117,8 +118,8 @@ for four fixed actions: `source_check`, `source_index`, `evidence_bind`, and
 source metadata without hiding a model-backed extraction step.
 The evidence-bind action uses `ztare project evidence-bind --project <project> --json`,
 which writes the offline evidence-output binding receipt without compiling new evidence.
-Write actions also update the visible last-write receipt panel with the CLI
-receipt path when the command returns one.
+Write actions also append a source-action ledger row, write the latest
+source-action receipt JSON, and update the visible last-write receipt panel.
 The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
 recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.

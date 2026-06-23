@@ -201,7 +201,8 @@ POST /api/preflight
 POST /api/source-action
 -> run one allowlisted source/evidence action (`source_check`, `source_index`,
    `evidence_bind`, or `evidence_replay`) and return the command, exit code,
-   output tail, parsed JSON when available, and refreshed snapshot
+   output tail, parsed JSON when available, refreshed snapshot, and a D4
+   source-action receipt for write-producing actions
 
 GET /api/report-contract?project=<project>&renderer=<renderer>
 -> report/export status, blocker reasons, synthesis input binding, contract path, and command
@@ -210,7 +211,7 @@ GET /api/file?path=<repo-relative-path>
 -> read-only bounded text preview for a selected file/evidence path
 
 GET /api/receipts?project=<project>
--> recent review, row-action, intake-edit, source-import, and source-edit
+-> recent review, row-action, intake-edit, source-import, source-edit, and source-action
    receipts from project ledgers
 
 GET /api/run-history?project=<project>
@@ -269,13 +270,16 @@ instead of failing the whole workbench. A missing report is a reviewable state,
 not a reason to hide the project.
 
 Writes should stay explicit. Static mode saves a review or row-action file,
-applies it through the CLI, then refreshes the snapshot. Live mode may call a
-local API to write the same receipt directly. Either way, the visible trail is
-file or API payload, receipt ledger, receipt history, latest receipt row, and
-refreshed snapshot.
-After a live review, row-action, or intake-edit write, the app should show the
-stamped receipt schema, target, ledger path, latest path, source path, and hash
-before the user has to inspect the full history.
+then the user can apply it through the CLI. Live mode calls the local API to
+write the same receipt directly. Either way, the visible trail is file or API
+payload, receipt ledger, receipt history, latest receipt row, and refreshed
+snapshot.
+After a live review, row-action, intake-edit, source import/edit, or
+source/evidence write action, the app should show the stamped receipt schema,
+target, ledger path, latest path, source path, and hash before the user has to
+inspect the full history. The affected live panels should refresh together:
+trace, report/export contract, health, claim support, receipt history, project
+index, and source list when sources changed.
 When a row is selected, the review strip should also show the latest saved
 review and row-action state for that same row from the receipt history, so a
 reviewer does not overwrite or duplicate a decision blindly.
