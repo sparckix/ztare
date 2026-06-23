@@ -151,7 +151,9 @@ JSON to the project workspace, appends a case-file ledger row, writes the latest
 case-file receipt JSON, and returns the saved artifact path plus receipt paths.
 After any write-backed action, the app reports which live panels refreshed
 successfully and names panels that need attention, so a saved receipt is not
-confused with a fully refreshed case state.
+confused with a fully refreshed case state. The intake editor refreshes with
+the same write cycle unless it has unsaved local edits; in that case the app
+keeps the draft and reports the skipped refresh.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-file export is explicit: clicking Download case file creates

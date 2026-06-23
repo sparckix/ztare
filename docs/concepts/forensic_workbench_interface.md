@@ -300,7 +300,9 @@ previewable when they point to repository files. Source/evidence write receipts
 should stamp the produced artifact hash when the underlying command exposes
 one. The affected live panels should
 refresh together: trace, report/export contract, health, claim support, receipt
-history, project index, and source list when sources changed.
+history, intake editor, project index, and source list when sources changed.
+If the intake editor has unsaved local edits, the refresh should preserve the
+draft and report the skipped intake refresh rather than overwriting it.
 The UI should name the panels that refreshed and separately name any panel whose
 refresh failed, so a saved receipt is never mistaken for a fully refreshed case.
 When a row is selected, the review strip should also show the latest saved

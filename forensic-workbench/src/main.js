@@ -4062,14 +4062,22 @@ function App() {
 
   const refreshLiveContextAfterWrite = (projectParams, options = {}) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
+    const refreshIntakeAfterWrite = () => {
+      if (options.intake === false) return null;
+      if (intakeChangedFields(intakeDraft).length) {
+        return Promise.resolve(refreshResult("intake", false, "unsaved intake draft preserved"));
+      }
+      return loadIntakeDraft(projectParams);
+    };
     const tasks = [
       loadTraceContext(projectParams),
       loadReportContractContext(projectParams),
       loadHealthContext(projectParams),
+      refreshIntakeAfterWrite(),
       loadReceiptHistory(projectParams),
       loadClaimSupportContext(projectParams),
       refreshProjectIndex(projectParams.project)
-    ];
+    ].filter(Boolean);
     if (options.sources) tasks.push(loadSourceListContext(projectParams));
     if (options.runHistory) tasks.push(loadRunHistoryContext(projectParams));
     return Promise.all(tasks).then((results) => {
@@ -4654,7 +4662,7 @@ function App() {
           result: payload.edit,
           snapshotError: payload.snapshot_error || ""
         });
-        refreshLiveContextAfterWrite(params);
+        refreshLiveContextAfterWrite(params, { intake: false });
       })
       .catch((err) => setIntakeMessage(String(err.message || err)));
   };
