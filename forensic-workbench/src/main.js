@@ -263,6 +263,15 @@ function actionIntelligenceAction(row) {
   return "next_step";
 }
 
+function rowForActionNote(rows, action, selectedRow) {
+  if (action === "needs_source") {
+    return rowByLabel(rows, "Source readiness") || rowByLabel(rows, "Evidence readiness") || selectedRow;
+  }
+  if (action === "export_blocker") return rowByLabel(rows, "Report/export") || activeBlocker(rows) || selectedRow;
+  if (action === "ready_to_run") return rowByLabel(rows, "Run readiness") || rowByLabel(rows, "Preflight") || selectedRow;
+  return selectedRow || activeBlocker(rows) || rowByLabel(rows, "Report/export") || rowByLabel(rows, "Run readiness") || rows[0] || null;
+}
+
 function repoPathCandidate(value) {
   return String(value || "").trim().split("#")[0].trim();
 }
@@ -4627,13 +4636,7 @@ function App() {
   const useHealthActionNote = (note, action = "next_step") => {
     if (!snapshot || !note) return;
     const rows = snapshot.rows || [];
-    const target =
-      activeBlocker(rows) ||
-      rowByLabel(rows, "Report/export") ||
-      rowByLabel(rows, "Run readiness") ||
-      selectedRow ||
-      rows[0] ||
-      null;
+    const target = rowForActionNote(rows, action, selectedRow);
     if (!target) return;
     setSelectedLabel(target.label);
     setActionStates((current) => ({ ...current, [target.label]: { action, note } }));
