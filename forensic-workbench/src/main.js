@@ -1426,6 +1426,106 @@ function CommandRail({ snapshot, selectedRow }) {
   );
 }
 
+function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext }) {
+  const items = [];
+  const seen = new Set();
+  const add = ({ label, command, source, rowLabel, priority = 50 }) => {
+    const value = String(command || "").trim();
+    if (!value || seen.has(value)) return;
+    seen.add(value);
+    items.push({ label, command: value, source, rowLabel, priority });
+  };
+  const rows = (snapshot && snapshot.rows) || [];
+  const blocker = activeBlocker(rows);
+  if (blocker) add({ label: "Current blocker", command: blocker.command, source: blocker.label, rowLabel: blocker.label, priority: 5 });
+  if (selectedRow) add({ label: "Selected row", command: selectedRow.command, source: selectedRow.label, rowLabel: selectedRow.label, priority: 10 });
+  const plan = (traceContext && traceContext.plan_preview) || {};
+  add({ label: "Recommended first command", command: plan.recommended_first_command, source: "Trace plan", rowLabel: "Run readiness", priority: 15 });
+  ((traceContext && traceContext.next_commands) || []).slice(0, 4).forEach((command, index) =>
+    add({ label: index === 0 ? "Trace next command" : `Trace command ${index + 1}`, command, source: "Autoresearch trace", rowLabel: "Run readiness", priority: 20 + index })
+  );
+  add({ label: "Report support", command: reportContext && reportContext.command, source: "Report/export contract", rowLabel: "Report/export", priority: 30 });
+  (((healthContext && healthContext.kernel) || {}).attention_components || []).forEach((row, index) =>
+    add({ label: "Health next command", command: row.next_command, source: row.component || "Kernel health", rowLabel: "Kernel health", priority: 40 + index })
+  );
+  rows.forEach((row, index) => add({ label: "Row command", command: row.command, source: row.label, rowLabel: row.label, priority: 60 + index }));
+  return items.sort((left, right) => left.priority - right.priority).slice(0, 8);
+}
+
+function CommandCockpit({ snapshot, selectedRow, traceContext, reportContext, healthContext, setSelectedLabel }) {
+  const commands = commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext });
+  const firstCommand = commands[0] || null;
+  return h(
+    "section",
+    { className: "command-cockpit", "aria-label": "Command cockpit" },
+    h(
+      "div",
+      { className: "command-cockpit-summary" },
+      h("span", { className: "eyebrow" }, "Command cockpit"),
+      h("h2", null, firstCommand ? firstCommand.label : "No command loaded"),
+      h("p", null, "Copy commands from the case context. The browser never runs shell commands.")
+    ),
+    h(
+      "div",
+      { className: "command-cockpit-primary" },
+      h("span", null, "Primary command"),
+      h("code", null, firstCommand ? firstCommand.command : "No command surfaced for this case."),
+      h(
+        "div",
+        { className: "command-cockpit-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button primary",
+            type: "button",
+            disabled: !firstCommand,
+            onClick: () => firstCommand && copyText(firstCommand.command),
+            title: "Copy primary command"
+          },
+          "Copy primary"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !firstCommand || !firstCommand.rowLabel,
+            onClick: () => firstCommand && firstCommand.rowLabel && setSelectedLabel(firstCommand.rowLabel),
+            title: "Inspect the row behind this command"
+          },
+          "Inspect row"
+        )
+      )
+    ),
+    h(
+      "div",
+      { className: "command-cockpit-list" },
+      h("span", null, "Command queue"),
+      commands.length
+        ? commands.map((item) =>
+            h(
+              "div",
+              { className: "command-cockpit-row", key: item.command },
+              h("strong", null, item.label),
+              h("small", null, item.source || "case context"),
+              h("code", null, item.command),
+              h(
+                "button",
+                {
+                  className: "copy-button",
+                  type: "button",
+                  onClick: () => copyText(item.command),
+                  title: "Copy command"
+                },
+                "Copy"
+              )
+            )
+          )
+        : h("p", null, "No command surfaced. Inspect evidence and receipt paths instead.")
+    )
+  );
+}
+
 function NextMovePanel({ snapshot, selectedRow, setSelectedLabel, liveMode }) {
   const rows = snapshot.rows || [];
   const blocker = activeBlocker(rows);
@@ -2712,6 +2812,7 @@ function App() {
       }),
       h(SourceEvidencePanel, { snapshot, traceContext, liveMode, onPreview: loadFilePreview, setSelectedLabel }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
+      h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, setSelectedLabel }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),

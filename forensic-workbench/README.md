@@ -136,6 +136,8 @@ The interface is organized as a local claim-review surface:
 - report/export contract panel showing blocker reasons, synthesis input-binding
   state, contract file path, and the exact support command
 - current-action rail with the next command or provenance target
+- command cockpit collecting the selected-row, trace, report, health, and row
+  commands into one copy-only queue; the browser never runs shell commands
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files
 - receipt history panel showing recent review, row-action, and intake-edit

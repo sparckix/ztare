@@ -209,6 +209,8 @@ binding, output binding, replay status, source/evidence files, and the commands
 that rebuild those checks.
 The report/export panel should show the blocker reasons, synthesis input-binding
 status, contract file path, and exact support command.
+The command cockpit should collect selected-row, trace, report, health, and row
+commands into one copy-only queue. The browser should never run shell commands.
 
 The index must include both first-run demos:
 

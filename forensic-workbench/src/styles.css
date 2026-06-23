@@ -1958,6 +1958,120 @@ code {
   gap: 10px;
 }
 
+.command-cockpit {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.42fr) minmax(320px, 0.72fr) minmax(0, 1.06fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #294f88;
+}
+
+.command-cockpit-summary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.command-cockpit-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 21px;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.command-cockpit-summary p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.command-cockpit-primary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 11px;
+  background: #f5f8f7;
+  border: 1px solid #c8d8d3;
+}
+
+.command-cockpit-primary span,
+.command-cockpit-list > span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.command-cockpit-primary code,
+.command-cockpit-row code {
+  min-width: 0;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.command-cockpit-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.command-cockpit-list {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.command-cockpit-list > p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.command-cockpit-row {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: start;
+  padding: 8px;
+  background: #f7f9f8;
+  border-left: 3px solid #294f88;
+}
+
+.command-cockpit-row strong,
+.command-cockpit-row small,
+.command-cockpit-row code {
+  grid-column: 1 / -1;
+}
+
+.command-cockpit-row strong {
+  color: #17201d;
+  font-size: 13px;
+  line-height: 1.2;
+}
+
+.command-cockpit-row small {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
 .next-action,
 .command-card {
   min-width: 0;
@@ -2948,6 +3062,7 @@ code {
 
   .blocker-panel,
   .case-summary,
+  .command-cockpit,
   .command-rail,
   .case-export-panel,
   .health-actions-panel,
@@ -2996,6 +3111,10 @@ code {
   }
 
   .command-card {
+    grid-template-columns: 1fr;
+  }
+
+  .command-cockpit-row {
     grid-template-columns: 1fr;
   }
 
