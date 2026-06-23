@@ -485,6 +485,46 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   );
 }
 
+function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCreate }) {
+  const setField = (field, value) => setDraft({ ...draft, [field]: value });
+  return h(
+    "section",
+    { className: "project-create-panel", "aria-label": "Create case" },
+    h(
+      "div",
+      { className: "project-create-head" },
+      h("span", { className: "eyebrow" }, "New case"),
+      h("h2", null, "Create a bounded project"),
+      h("p", null, message || "Create local project folders and an intake before running checks.")
+    ),
+    h(
+      "div",
+      { className: "project-create-grid" },
+      h("label", null, h("span", null, "Project slug"), h("input", { value: draft.project, onInput: (event) => setField("project", event.target.value), placeholder: "my_project" })),
+      h("label", null, h("span", null, "Task"), h("input", { value: draft.task, onInput: (event) => setField("task", event.target.value), placeholder: "Check whether..." })),
+      h("label", null, h("span", null, "Bounded claim"), h("textarea", { value: draft.bounded_claim, onInput: (event) => setField("bounded_claim", event.target.value), rows: 2 })),
+      h("label", null, h("span", null, "Next falsifier"), h("textarea", { value: draft.next_falsifier, onInput: (event) => setField("next_falsifier", event.target.value), rows: 2 })),
+      h("label", null, h("span", null, "Source refs"), h("textarea", { value: draft.source_refs_text, onInput: (event) => setField("source_refs_text", event.target.value), rows: 2, placeholder: "one path per line" })),
+      h("label", null, h("span", null, "Non-claims"), h("textarea", { value: draft.non_claims_text, onInput: (event) => setField("non_claims_text", event.target.value), rows: 2, placeholder: "one caveat per line" }))
+    ),
+    h(
+      "div",
+      { className: "project-create-actions" },
+      h(
+        "button",
+        {
+          type: "button",
+          className: "snapshot-link",
+          disabled: !liveMode || creating,
+          onClick: onCreate,
+          title: liveMode ? "Create local project and intake" : "Start the local API to create a project"
+        },
+        creating ? "Creating" : "Create case"
+      )
+    )
+  );
+}
+
 function intakeDraftFromPayload(payload) {
   const fields = (payload && payload.editable_fields) || {};
   const draft = {
@@ -2669,6 +2709,16 @@ function App() {
   const [reportContractMessage, setReportContractMessage] = useState("");
   const [projects, setProjects] = useState([]);
   const [selectedProjectKey, setSelectedProjectKey] = useState("");
+  const [projectCreateDraft, setProjectCreateDraft] = useState({
+    project: "",
+    task: "",
+    bounded_claim: "",
+    next_falsifier: "",
+    source_refs_text: "",
+    non_claims_text: ""
+  });
+  const [projectCreateMessage, setProjectCreateMessage] = useState("");
+  const [projectCreating, setProjectCreating] = useState(false);
   const [liveMode, setLiveMode] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
@@ -2912,6 +2962,62 @@ function App() {
     if (!snapshot || !liveMode) return;
     const entry = currentProjectEntry || snapshot;
     loadIntakeDraft(projectLoadParams(entry));
+  };
+
+  const createProjectLive = () => {
+    if (!liveMode || projectCreating) return;
+    setProjectCreating(true);
+    setProjectCreateMessage("Creating local project and intake.");
+    fetch("/api/project-create", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: projectCreateDraft.project,
+        rubric: projectCreateDraft.project,
+        task: projectCreateDraft.task,
+        bounded_claim: projectCreateDraft.bounded_claim,
+        next_falsifier: projectCreateDraft.next_falsifier,
+        source_refs: linesFromText(projectCreateDraft.source_refs_text),
+        non_claims: linesFromText(projectCreateDraft.non_claims_text),
+        renderer: "decision_brief"
+      })
+    })
+      .then((response) =>
+        response.json().then((payload) => {
+          if (!response.ok || payload.ok === false) {
+            throw new Error(payload.error || `project create failed: ${response.status}`);
+          }
+          return payload;
+        })
+      )
+      .then((payload) => {
+        if (!payload.accepted) {
+          setProjectCreateMessage("Create command finished with attention; inspect the server response.");
+          return;
+        }
+        const projectRows = (payload.project_index && payload.project_index.projects) || [];
+        if (projectRows.length) setProjects(projectRows);
+        setSelectedProjectKey(payload.project);
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        setLiveMode(true);
+        loadSnapshot({ project: payload.project, rubric: payload.rubric, intake: payload.intake }, true).catch((err) =>
+          setProjectCreateMessage(`Created ${payload.project}, but live reload failed: ${err.message || err}`)
+        );
+        setProjectCreateDraft({
+          project: "",
+          task: "",
+          bounded_claim: "",
+          next_falsifier: "",
+          source_refs_text: "",
+          non_claims_text: ""
+        });
+        setProjectCreateMessage(`Created ${payload.project} and opened the live case.`);
+      })
+      .catch((err) => setProjectCreateMessage(String(err.message || err)))
+      .finally(() => setProjectCreating(false));
   };
 
   const counts = useMemo(() => {
@@ -3308,6 +3414,14 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
+      h(ProjectCreatePanel, {
+        draft: projectCreateDraft,
+        setDraft: setProjectCreateDraft,
+        message: projectCreateMessage,
+        creating: projectCreating,
+        liveMode,
+        onCreate: createProjectLive
+      }),
       h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
       h(IntakeEditor, {
         draft: intakeDraft,

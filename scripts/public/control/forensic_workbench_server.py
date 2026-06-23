@@ -25,6 +25,7 @@ REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
 PREFLIGHT_SCHEMA = "ztare-forensic-workbench-preflight-v1"
 RUN_HISTORY_SCHEMA = "ztare-forensic-workbench-run-history-v1"
 SOURCE_ACTION_SCHEMA = "ztare-forensic-workbench-source-action-v1"
+PROJECT_CREATE_SCHEMA = "ztare-forensic-workbench-project-create-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
 EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
@@ -447,6 +448,14 @@ def tail_text(value: str, *, max_chars: int = 4000) -> str:
     return value[-max_chars:]
 
 
+def text_lines(value: Any, *, limit: int = 20) -> list[str]:
+    if isinstance(value, list):
+        raw = value
+    else:
+        raw = str(value or "").splitlines()
+    return [str(item).strip() for item in raw if str(item).strip()][:limit]
+
+
 def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     limit = max(1, min(limit, 50))
@@ -779,6 +788,144 @@ def health_payload_for_project(
             "source_paths": action_payload.get("source_paths") or {},
         },
     }
+
+
+def command_result_payload(proc: Any) -> dict[str, Any]:
+    parsed_output: dict[str, Any] = {}
+    try:
+        parsed_output = snapshot.extract_last_json_object(proc.stdout)
+    except Exception:
+        parsed_output = {}
+    return {
+        "returncode": proc.returncode,
+        "accepted": proc.returncode == 0,
+        "stdout_tail": tail_text(proc.stdout),
+        "stderr_tail": tail_text(proc.stderr),
+        "parsed_output": parsed_output,
+    }
+
+
+def create_project_payload(
+    *,
+    project: str,
+    rubric: str | None = None,
+    task: str = "",
+    bounded_claim: str = "",
+    next_falsifier: str = "",
+    notes: str = "",
+    source_refs: Any = None,
+    evidence_refs: Any = None,
+    non_claims: Any = None,
+    renderer: str | None = None,
+) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    rubric = snapshot.validate_project_slug(rubric or project)
+    task = str(task or "").strip()
+    bounded_claim = str(bounded_claim or "").strip()
+    next_falsifier = str(next_falsifier or "").strip()
+    notes = str(notes or "").strip()
+    if not task:
+        raise ValueError("task is required")
+    if not bounded_claim:
+        raise ValueError("bounded_claim is required")
+    if not next_falsifier:
+        raise ValueError("next_falsifier is required")
+    project_root = snapshot.REPO / "projects" / project
+    if project_root.exists():
+        raise ValueError(f"project already exists: {project}")
+    intake = f"projects/{project}/{project}_intake.json"
+    expected_command = (
+        "ztare autoresearch run "
+        f"--project {project} --rubric {rubric} --intake {intake} --iters 1"
+    )
+    source_init_command = [
+        snapshot.PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "project",
+        "source-init",
+        "--project",
+        project,
+        "--rubric",
+        rubric,
+        "--json",
+    ]
+    intake_command = [
+        snapshot.PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "project",
+        "intake",
+        "create",
+        "--path",
+        intake,
+        "--project",
+        project,
+        "--rubric",
+        rubric,
+        "--task",
+        task,
+        "--bounded-claim",
+        bounded_claim,
+        "--next-falsifier",
+        next_falsifier,
+        "--expected-command",
+        expected_command,
+        "--json",
+    ]
+    if notes:
+        intake_command.extend(["--notes", notes])
+    for ref in text_lines(source_refs):
+        intake_command.extend(["--source-ref", ref])
+    for ref in text_lines(evidence_refs):
+        intake_command.extend(["--evidence-ref", ref])
+    for item in text_lines(non_claims):
+        intake_command.extend(["--non-claim", item])
+
+    source_proc = snapshot.run(source_init_command, timeout=90)
+    intake_result: dict[str, Any] | None = None
+    if source_proc.returncode == 0:
+        intake_proc = snapshot.run(intake_command, timeout=90)
+        intake_result = {
+            "command": (
+                "ztare project intake create "
+                f"--path {intake} --project {project} --rubric {rubric} "
+                "--task <task> --bounded-claim <claim> --next-falsifier <falsifier> "
+                "--expected-command <command> --json"
+            ),
+            **command_result_payload(intake_proc),
+        }
+    accepted = source_proc.returncode == 0 and bool(intake_result and intake_result["accepted"])
+    payload: dict[str, Any] = {
+        "schema": PROJECT_CREATE_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "accepted": accepted,
+        "source_init": {
+            "command": f"ztare project source-init --project {project} --rubric {rubric} --json",
+            **command_result_payload(source_proc),
+        },
+        "intake_create": intake_result,
+        "project_index": None,
+        "snapshot": None,
+    }
+    if accepted:
+        try:
+            payload["project_index"] = project_index_payload()
+        except Exception as exc:  # noqa: BLE001 - creation result should still be inspectable.
+            payload["project_index_error"] = str(exc)
+        try:
+            payload["snapshot"] = snapshot_payload_for_project(
+                project=project,
+                rubric=rubric,
+                intake=intake,
+                renderer=renderer,
+            )
+        except Exception as exc:  # noqa: BLE001 - creation result should still be inspectable.
+            payload["snapshot_error"] = str(exc)
+    return payload
 
 
 def preflight_payload_for_project(
@@ -1211,6 +1358,22 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     rubric=rubric,
                     intake=intake,
                     renderer=renderer,
+                )
+                self.send_json(response)
+                return
+            if parsed.path == "/api/project-create":
+                request = self.read_json_body()
+                response = create_project_payload(
+                    project=str(request.get("project") or ""),
+                    rubric=str(request.get("rubric") or "") or None,
+                    task=str(request.get("task") or ""),
+                    bounded_claim=str(request.get("bounded_claim") or ""),
+                    next_falsifier=str(request.get("next_falsifier") or ""),
+                    notes=str(request.get("notes") or ""),
+                    source_refs=request.get("source_refs"),
+                    evidence_refs=request.get("evidence_refs"),
+                    non_claims=request.get("non_claims"),
+                    renderer=str(request.get("renderer") or "") or None,
                 )
                 self.send_json(response)
                 return

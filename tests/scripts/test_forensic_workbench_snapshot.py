@@ -708,6 +708,39 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     assert commands == [[module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-index", "--project", "demo", "--index-only", "--json"]]
 
 
+def test_create_project_payload_runs_source_init_then_intake_create(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    commands: list[list[str]] = []
+
+    def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        if "source-init" in command:
+            (tmp_path / "projects" / "fresh").mkdir(parents=True)
+        return subprocess.CompletedProcess(command, 0, stdout='{"ok": true}\n', stderr="")
+
+    monkeypatch.setattr(module.snapshot, "run", fake_run)
+    monkeypatch.setattr(module, "project_index_payload", lambda: {"projects": [{"project": "fresh"}]})
+    monkeypatch.setattr(module, "snapshot_payload_for_project", lambda **_kwargs: {"project": "fresh", "rows": []})
+
+    payload = module.create_project_payload(
+        project="fresh",
+        task="Check a bounded claim",
+        bounded_claim="A narrow claim.",
+        next_falsifier="Find a contrary source.",
+        source_refs=["raw/source.md"],
+        non_claims=["not a broad claim"],
+    )
+
+    assert payload["schema"] == "ztare-forensic-workbench-project-create-v1"
+    assert payload["accepted"] is True
+    assert payload["intake"] == "projects/fresh/fresh_intake.json"
+    assert commands[0][:6] == [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "source-init", "--project"]
+    assert commands[1][:6] == [module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "intake", "create"]
+    assert "--source-ref" in commands[1]
+    assert "--non-claim" in commands[1]
+
+
 def test_review_file_handoff_surfaces_in_refreshed_snapshot(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:

@@ -167,6 +167,10 @@ Live read mode wraps the same builder in a local API:
 GET /api/projects
 -> project index from project-local intakes and public example intakes
 
+POST /api/project-create
+-> create a local source project and project intake, then return command results,
+   refreshed project index, and a first snapshot when available
+
 GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>
 -> fresh single-project workbench snapshot bound to the selected intake
 

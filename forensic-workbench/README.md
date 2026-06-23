@@ -35,7 +35,7 @@ make forensic-workbench-live
 ```
 
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/preflight`, `/api/source-action`, `/api/run-history`,
+`/api/trace`, `/api/project-create`, `/api/preflight`, `/api/source-action`, `/api/run-history`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
@@ -51,6 +51,9 @@ before a case opens. Project-local intakes are editable; public example intakes
 are readable but not writable from the browser. The editor shows pending
 changed fields before saving and refuses no-op writes, so an intake-edit receipt
 means the file actually changed.
+The New case panel calls `/api/project-create`, which runs the fixed
+`ztare project source-init` and `ztare project intake create` path for a new
+project slug, then reloads the project through the same live snapshot flow.
 The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
@@ -84,6 +87,9 @@ The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
 exact `ztare autoresearch run ... --preflight-only` command, exit code,
 acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
 available. It is not a general shell runner and it does not start a model run.
+The project-create endpoint returns `ztare-forensic-workbench-project-create-v1`:
+source-init result, intake-create result, refreshed project index, and the first
+snapshot when available.
 The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
 for three fixed actions: `source_check`, `source_index`, and
 `evidence_replay`. The source-index action uses

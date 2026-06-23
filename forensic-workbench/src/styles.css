@@ -416,6 +416,77 @@ code {
   word-break: break-word;
 }
 
+.project-create-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.36fr) minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+  padding: 14px;
+  background: #ffffff;
+  border: 1px solid #cfd7d4;
+  border-left: 4px solid #2f5f87;
+}
+
+.project-create-head {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.project-create-head h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 20px;
+  line-height: 1.15;
+}
+
+.project-create-head p {
+  margin: 0;
+  color: #52605a;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.project-create-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.project-create-grid label {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.project-create-grid span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.project-create-grid input,
+.project-create-grid textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #cfd7d4;
+  background: #fbfcfb;
+  color: #17201d;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 8px 9px;
+  resize: vertical;
+}
+
+.project-create-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .intake-editor {
   min-width: 0;
   display: grid;
@@ -3265,9 +3336,12 @@ code {
 
   .topbar,
   .case-summary,
+  .project-create-panel,
+  .project-create-grid,
   .path-panel,
   .toolbar {
     display: grid;
+    grid-template-columns: 1fr;
   }
 
   .topbar-actions {
@@ -3385,7 +3459,8 @@ code {
   .source-evidence-body,
   .source-evidence-metrics,
   .source-evidence-file,
-  .source-evidence-command {
+  .source-evidence-command,
+  .source-evidence-action-result {
     grid-template-columns: 1fr;
   }
 
