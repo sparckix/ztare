@@ -601,7 +601,22 @@ def display_text_lines(value: Any, *, limit: int = 20) -> list[str]:
     return [display_text(item) for item in text_lines(value, limit=limit)]
 
 
-def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
+def receipt_matches_case(row: dict[str, Any], *, project: str, intake: str | None = None) -> bool:
+    if row.get("project") and row.get("project") != project:
+        return False
+    intake_value = str(intake or "").strip()
+    if not intake_value:
+        return True
+    row_case_key = str(row.get("case_key") or "").strip()
+    if row_case_key:
+        return row_case_key == case_key(project, intake_value)
+    row_intake = str(row.get("intake") or "").strip()
+    if row_intake:
+        return row_intake == intake_value
+    return True
+
+
+def receipt_history_payload(*, project: str, limit: int = 12, intake: str | None = None) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     limit = max(1, min(limit, 50))
     workspace = snapshot.REPO / "projects" / project / "workspace"
@@ -617,13 +632,17 @@ def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
     receipts: list[dict[str, Any]] = []
     for kind, path in ledgers.items():
         receipts.extend(read_receipt_ledger(path, kind=kind))
+    total_receipt_count = len(receipts)
+    receipts = [row for row in receipts if receipt_matches_case(row, project=project, intake=intake)]
     receipts.sort(key=lambda row: (str(row.get("applied_at") or ""), str(row.get("kind") or ""), int(row.get("line") or 0)), reverse=True)
     return {
         "schema": RECEIPT_HISTORY_SCHEMA,
         "served_from": "local_api",
         "project": project,
+        "intake": str(intake or ""),
         "limit": limit,
         "receipt_count": len(receipts),
+        "total_receipt_count": total_receipt_count,
         "receipts": receipts[:limit],
         "paths": {kind: repo_rel(path) for kind, path in ledgers.items()},
     }
@@ -1948,8 +1967,9 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/receipts":
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                intake = first_param(params, "intake", "")
                 limit = int(first_param(params, "limit", "12"))
-                self.send_json(receipt_history_payload(project=project, limit=limit))
+                self.send_json(receipt_history_payload(project=project, limit=limit, intake=intake or None))
                 return
             if parsed.path == "/api/sources":
                 params = parse_qs(parsed.query)

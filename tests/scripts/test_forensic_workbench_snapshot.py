@@ -873,6 +873,55 @@ def test_receipt_history_preserves_review_and_action_artifact_paths() -> None:
     assert action["action_file_path"] == "projects/demo/workspace/source_readiness_action.json"
 
 
+def test_receipt_history_filters_case_scoped_rows(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    workspace = tmp_path / "projects" / "demo" / "workspace"
+    workspace.mkdir(parents=True)
+    rows = [
+        {
+            "schema": "ztare-forensic-workbench-review-receipt-v1",
+            "applied_at": "2026-06-23T00:00:03Z",
+            "project": "demo",
+            "intake": "projects/demo/other_intake.json",
+            "case_key": "demo::projects/demo/other_intake.json",
+            "row": "Report/export",
+            "row_slug": "report_export",
+            "decision": "blocked",
+            "evidence_ref_count": 1,
+        },
+        {
+            "schema": "ztare-forensic-workbench-review-receipt-v1",
+            "applied_at": "2026-06-23T00:00:02Z",
+            "project": "demo",
+            "intake": "projects/demo/demo_intake.json",
+            "case_key": "demo::projects/demo/demo_intake.json",
+            "row": "Report/export",
+            "row_slug": "report_export",
+            "decision": "reviewed",
+            "evidence_ref_count": 1,
+        },
+        {
+            "schema": "ztare-forensic-workbench-review-receipt-v1",
+            "applied_at": "2026-06-23T00:00:01Z",
+            "project": "demo",
+            "row": "Legacy row",
+            "row_slug": "legacy_row",
+            "decision": "deferred",
+            "evidence_ref_count": 1,
+        },
+    ]
+    ledger = workspace / "forensic_workbench_reviews.jsonl"
+    ledger.write_text("\n".join(json.dumps(row, sort_keys=True) for row in rows) + "\n", encoding="utf-8")
+
+    payload = module.receipt_history_payload(project="demo", intake="projects/demo/demo_intake.json", limit=10)
+
+    assert payload["receipt_count"] == 2
+    assert payload["total_receipt_count"] == 3
+    assert [row["row_slug"] for row in payload["receipts"]] == ["report_export", "legacy_row"]
+    assert all(row.get("intake") != "projects/demo/other_intake.json" for row in payload["receipts"])
+
+
 def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)

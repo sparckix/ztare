@@ -4061,7 +4061,7 @@ function App() {
   const loadReceiptHistory = (projectParams) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     setReceiptHistoryMessage("Loading receipt history.");
-    return fetch(endpointUrl("/api/receipts", { project: projectParams.project, limit: 12 }), { headers: { Accept: "application/json" } })
+    return fetch(endpointUrl("/api/receipts", { project: projectParams.project, intake: projectParams.intake, limit: 12 }), { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`receipt history fetch failed: ${response.status}`);
         return response.json();
