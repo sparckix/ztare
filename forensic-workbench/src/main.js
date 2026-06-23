@@ -5041,6 +5041,7 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
+      actionMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, actionMessage) : null,
       h(PendingEditsStrip, { items: pendingEditorItems }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
@@ -5157,7 +5158,6 @@ function App() {
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, receiptHistory, liveMode, onPreview: loadFilePreview }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
-      actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,
       h(WriteReceiptPanel, { receiptEvent: writeReceiptEvent, refreshResults: lastRefreshResults, liveMode, onPreview: loadFilePreview }),
       h(RowActionWorkspace, {
         snapshot,
