@@ -167,10 +167,30 @@ def list_project_entries() -> list[dict[str, Any]]:
                     intake=intake,
                 ),
                 "latest_intake_edit": latest_path_for_case(latest_intake_edit, project=project, intake=intake),
-                "latest_source_import": latest_path_for_case(latest_source_import, project=project, intake=intake),
-                "latest_source_edit": latest_path_for_case(latest_source_edit, project=project, intake=intake),
-                "latest_source_action": latest_path_for_case(latest_source_action, project=project, intake=intake),
-                "latest_case_file_write": latest_path_for_case(latest_case_file_write, project=project, intake=intake),
+                "latest_source_import": latest_receipt_path_for_case(
+                    latest_source_import,
+                    source_import_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
+                "latest_source_edit": latest_receipt_path_for_case(
+                    latest_source_edit,
+                    source_edit_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
+                "latest_source_action": latest_receipt_path_for_case(
+                    latest_source_action,
+                    source_action_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
+                "latest_case_file_write": latest_receipt_path_for_case(
+                    latest_case_file_write,
+                    case_file_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
                 "report_contract": rel(report_contract) if report_contract.exists() else "",
             }
             return
@@ -179,22 +199,19 @@ def list_project_entries() -> list[dict[str, Any]]:
         if source == "project_local_intake":
             entry["intake"] = intake
             entry["intake_source"] = source
-        for key, path in (
-            ("latest_intake_edit", latest_intake_edit),
-            ("latest_source_import", latest_source_import),
-            ("latest_source_edit", latest_source_edit),
-            ("latest_source_action", latest_source_action),
-            ("latest_case_file_write", latest_case_file_write),
-        ):
-            latest_for_case = latest_path_for_case(path, project=project, intake=str(entry.get("intake") or intake))
-            if latest_for_case:
-                entry[key] = latest_for_case
-            elif str(entry.get("intake") or "") == intake:
-                entry[key] = ""
         entry_intake = str(entry.get("intake") or intake)
+        latest_intake_edit_for_case = latest_path_for_case(latest_intake_edit, project=project, intake=entry_intake)
+        if latest_intake_edit_for_case:
+            entry["latest_intake_edit"] = latest_intake_edit_for_case
+        elif entry_intake == intake:
+            entry["latest_intake_edit"] = ""
         for key, primary, ledger in (
             ("latest_review", latest_review, review_ledger_path(project)),
             ("latest_row_action", latest_action, row_action_ledger_path(project)),
+            ("latest_source_import", latest_source_import, source_import_ledger_path(project)),
+            ("latest_source_edit", latest_source_edit, source_edit_ledger_path(project)),
+            ("latest_source_action", latest_source_action, source_action_ledger_path(project)),
+            ("latest_case_file_write", latest_case_file_write, case_file_ledger_path(project)),
         ):
             latest_for_case = latest_receipt_path_for_case(
                 primary,
@@ -456,6 +473,22 @@ def review_ledger_path(project: str) -> Path:
 
 def row_action_ledger_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_row_actions.jsonl"
+
+
+def source_import_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_source_imports.jsonl"
+
+
+def source_edit_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_source_edits.jsonl"
+
+
+def source_action_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_source_actions.jsonl"
+
+
+def case_file_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_case_files.jsonl"
 
 
 def latest_intake_edit_path(project: str) -> Path:
