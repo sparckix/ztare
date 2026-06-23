@@ -451,6 +451,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       },
       report_contract: {
         schema: report.schema || "",
+        report_scope: report.report_scope || "",
+        intake: report.intake || "",
+        case_key: report.case_key || "",
         status: report.status || "",
         status_reasons: report.status_reasons || [],
         report_support_contract: report.report_support_contract || "",
@@ -493,6 +496,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
         : null,
       run_history: {
         schema: runHistory.schema || "",
+        run_scope: runHistory.run_scope || "",
+        intake: runHistory.intake || "",
+        case_key: runHistory.case_key || "",
         summary: runHistory.summary || {},
         paths: runHistory.paths || {},
         latest_eval: runHistory.latest_eval || {},
@@ -1822,6 +1828,8 @@ function RunHistoryPanel({ runHistory, message, liveMode, onPreview }) {
   const synthesis = (runHistory && runHistory.synthesis_history) || {};
   const paths = (runHistory && runHistory.paths) || {};
   const recentRuns = (runHistory && runHistory.recent_runs) || [];
+  const runScope = displayText((runHistory && runHistory.run_scope) || "project_run_history");
+  const selectedCase = (runHistory && (runHistory.case_key || runHistory.intake)) || "";
   const gaps = latest.evidence_gaps || [];
   const patterns = [
     ...(synthesis.recurring_failures || []).map((text) => ({ label: "Failure", text })),
@@ -1852,7 +1860,9 @@ function RunHistoryPanel({ runHistory, message, liveMode, onPreview }) {
       h("div", null, h("span", null, "Rows"), h("strong", null, String(summary.run_rows || 0))),
       h("div", null, h("span", null, "Best"), h("strong", null, summary.best_score === undefined || summary.best_score === null ? "none" : String(summary.best_score))),
       h("div", null, h("span", null, "Gaps"), h("strong", null, String(summary.latest_evidence_gap_count || 0))),
-      h("div", null, h("span", null, "Run"), h("strong", null, summary.latest_run_id ? `${summary.latest_run_id}/${summary.latest_iteration ?? 0}` : "none"))
+      h("div", null, h("span", null, "Run"), h("strong", null, summary.latest_run_id ? `${summary.latest_run_id}/${summary.latest_iteration ?? 0}` : "none")),
+      h("div", null, h("span", null, "Scope"), h("strong", null, runScope)),
+      h("div", null, h("span", null, "Selected case"), h("strong", null, selectedCase || "not bound"))
     ),
     h(
       "div",
@@ -2058,6 +2068,8 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   const command = (reportContext && reportContext.command) || "";
   const schema = (reportContext && reportContext.schema) || REPORT_CONTRACT_SCHEMA;
   const status = (reportContext && reportContext.status) || "loading";
+  const reportScope = displayText((reportContext && reportContext.report_scope) || "project_report_support");
+  const selectedCase = (reportContext && (reportContext.case_key || reportContext.intake)) || "";
   const isBlocked = status === "blocked" || reasons.length > 0 || binding.status === "unbound";
 
   return h(
@@ -2083,7 +2095,9 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
       h("div", null, h("span", null, "Binding"), h("strong", null, displayText(binding.status || "unknown"))),
       h("div", null, h("span", null, "Artifacts"), h("strong", null, String(binding.artifact_count ?? "none"))),
       h("div", null, h("span", null, "Current digest"), h("strong", null, shortDigest(binding.current_digest))),
-      h("div", null, h("span", null, "Ledger digest"), h("strong", null, shortDigest(binding.ledger_digest)))
+      h("div", null, h("span", null, "Ledger digest"), h("strong", null, shortDigest(binding.ledger_digest))),
+      h("div", null, h("span", null, "Scope"), h("strong", null, reportScope)),
+      h("div", null, h("span", null, "Selected case"), h("strong", null, selectedCase || "not bound"))
     ),
     h(
       "div",
@@ -4096,7 +4110,7 @@ function App() {
   const loadRunHistoryContext = (projectParams) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     setRunHistoryMessage("Loading run history.");
-    return fetch(endpointUrl("/api/run-history", { project: projectParams.project, limit: 8 }), { headers: { Accept: "application/json" } })
+    return fetch(endpointUrl("/api/run-history", { ...projectParams, limit: 8 }), { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`run history fetch failed: ${response.status}`);
         return response.json();

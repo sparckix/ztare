@@ -824,6 +824,7 @@ def test_run_history_payload_surfaces_latest_verdict_files(tmp_path: Path, monke
     synthesis = project_root / "synthesis"
     workspace.mkdir(parents=True)
     synthesis.mkdir()
+    (project_root / "demo_intake.json").write_text(json.dumps({"project": "demo"}), encoding="utf-8")
     (workspace / "eval_history.jsonl").write_text(
         "\n".join(
             [
@@ -859,9 +860,17 @@ def test_run_history_payload_surfaces_latest_verdict_files(tmp_path: Path, monke
         encoding="utf-8",
     )
 
-    payload = module.run_history_payload_for_project(project="demo")
+    payload = module.run_history_payload_for_project(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+    )
 
     assert payload["schema"] == "ztare-forensic-workbench-run-history-v1"
+    assert payload["intake"] == "projects/demo/demo_intake.json"
+    assert payload["case_key"] == "demo::projects/demo/demo_intake.json"
+    assert payload["run_scope"] == "project_run_history"
+    assert payload["intake_scoped_files"] is False
     assert payload["summary"]["run_rows"] == 2
     assert payload["summary"]["latest_score"] == 82
     assert payload["summary"]["best_score"] == 88
@@ -869,6 +878,57 @@ def test_run_history_payload_surfaces_latest_verdict_files(tmp_path: Path, monke
     assert payload["champion_eval"]["score"] == 88
     assert payload["recent_runs"][-1]["artifact_refs"] == ["projects/demo/latest_eval_results.json"]
     assert payload["synthesis_history"]["recurring_failures"] == ["correlation bridge"]
+
+
+def test_report_contract_payload_surfaces_project_scope_with_selected_case(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    project_root.mkdir(parents=True)
+    (project_root / "demo_intake.json").write_text(json.dumps({"project": "demo"}), encoding="utf-8")
+    contract_path = project_root / "synthesis" / "report_support_contract.json"
+    contract_path.parent.mkdir()
+
+    def fake_collect_report_contract(project: str, renderer: str) -> tuple[dict, str]:
+        assert project == "demo"
+        assert renderer == "decision_brief"
+        return (
+            {
+                "ok": False,
+                "status": "blocked",
+                "status_reasons": ["synthesis_input_binding_unbound"],
+                "report_support_contract": str(contract_path),
+                "synthesis_input_binding": {
+                    "schema": "ztare-synthesis-input-binding-v1",
+                    "ok": False,
+                    "status": "unbound",
+                    "reason": "no bound inputs",
+                    "artifact_count": 0,
+                    "current_digest": "abc",
+                    "ledger_digest": "def",
+                },
+            },
+            "make synth-contract PROJECT=demo RENDERER=decision_brief",
+        )
+
+    monkeypatch.setattr(module.snapshot, "collect_report_contract", fake_collect_report_contract)
+
+    payload = module.report_contract_payload_for_project(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+        renderer="decision_brief",
+    )
+
+    assert payload["schema"] == "ztare-forensic-workbench-report-contract-v1"
+    assert payload["intake"] == "projects/demo/demo_intake.json"
+    assert payload["case_key"] == "demo::projects/demo/demo_intake.json"
+    assert payload["report_scope"] == "project_report_support"
+    assert payload["intake_scoped_command"] is False
+    assert payload["status"] == "blocked"
+    assert payload["report_support_contract"] == "projects/demo/synthesis/report_support_contract.json"
 
 
 def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:

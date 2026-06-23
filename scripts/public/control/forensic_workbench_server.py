@@ -797,9 +797,15 @@ def snapshot_payload_for_project(
 def report_contract_payload_for_project(
     *,
     project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
     renderer: str | None = None,
 ) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or ""
+    if intake:
+        project_intake_path(project, intake, allow_examples=True)
     renderer = renderer or snapshot.DEFAULT_RENDERER
     payload, command = snapshot.collect_report_contract(project, renderer)
     binding = payload.get("synthesis_input_binding") or {}
@@ -809,6 +815,11 @@ def report_contract_payload_for_project(
         "schema": REPORT_CONTRACT_SCHEMA,
         "served_from": "local_api",
         "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "case_key": case_key(project, intake),
+        "report_scope": "project_report_support",
+        "intake_scoped_command": False,
         "renderer": renderer,
         "command": command,
         "ok": bool(payload.get("ok")),
@@ -1899,8 +1910,18 @@ def claim_support_payload_for_project(
     }
 
 
-def run_history_payload_for_project(*, project: str, limit: int = 8) -> dict[str, Any]:
+def run_history_payload_for_project(
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+    limit: int = 8,
+) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
+    rubric = rubric or project
+    intake = intake or ""
+    if intake:
+        project_intake_path(project, intake, allow_examples=True)
     limit = max(1, min(limit, 25))
     project_root = snapshot.REPO / "projects" / project
     workspace = project_root / "workspace"
@@ -1922,6 +1943,11 @@ def run_history_payload_for_project(*, project: str, limit: int = 8) -> dict[str
         "schema": RUN_HISTORY_SCHEMA,
         "served_from": "local_api",
         "project": project,
+        "rubric": rubric,
+        "intake": intake,
+        "case_key": case_key(project, intake),
+        "run_scope": "project_run_history",
+        "intake_scoped_files": False,
         "limit": limit,
         "paths": {
             "eval_history": repo_rel(eval_history_path),
@@ -2016,8 +2042,15 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/report-contract":
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                rubric = first_param(params, "rubric", project)
+                intake = first_param(params, "intake", "")
                 renderer = first_param(params, "renderer", snapshot.DEFAULT_RENDERER)
-                payload = report_contract_payload_for_project(project=project, renderer=renderer)
+                payload = report_contract_payload_for_project(
+                    project=project,
+                    rubric=rubric,
+                    intake=intake or None,
+                    renderer=renderer,
+                )
                 self.send_json(payload)
                 return
             if parsed.path == "/api/file":
@@ -2052,8 +2085,10 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
             if parsed.path == "/api/run-history":
                 params = parse_qs(parsed.query)
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                rubric = first_param(params, "rubric", project)
+                intake = first_param(params, "intake", "")
                 limit = int(first_param(params, "limit", "8"))
-                self.send_json(run_history_payload_for_project(project=project, limit=limit))
+                self.send_json(run_history_payload_for_project(project=project, rubric=rubric, intake=intake or None, limit=limit))
                 return
             if parsed.path == "/api/claim-support":
                 params = parse_qs(parsed.query)
