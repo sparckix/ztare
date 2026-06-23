@@ -313,7 +313,8 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       latest_intake_edit: projectEntry.latest_intake_edit || snapshot.latest_intake_edit_artifact || "",
       latest_source_import: projectEntry.latest_source_import || "",
       latest_source_edit: projectEntry.latest_source_edit || "",
-      latest_source_action: projectEntry.latest_source_action || ""
+      latest_source_action: projectEntry.latest_source_action || "",
+      latest_case_file_write: projectEntry.latest_case_file_write || ""
     },
     live_context: {
       trace: {
@@ -629,6 +630,7 @@ function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
   const latestSourceImport = (projectEntry && projectEntry.latest_source_import) || "";
   const latestSourceEdit = (projectEntry && projectEntry.latest_source_edit) || "";
   const latestSourceAction = (projectEntry && projectEntry.latest_source_action) || "";
+  const latestCaseFileWrite = (projectEntry && projectEntry.latest_case_file_write) || "";
   const refSummary = (projectEntry && projectEntry.intake_ref_summary) || {};
   const intakeMode = projectEntry && projectEntry.intake_editable === false ? "read-only" : "editable";
   const pathRows = [
@@ -639,7 +641,8 @@ function ProjectContextPanel({ projectEntry, snapshot, liveMode, onPreview }) {
     { label: "Latest intake edit", value: latestIntakeEdit },
     { label: "Latest source import", value: latestSourceImport },
     { label: "Latest source edit", value: latestSourceEdit },
-    { label: "Latest source action", value: latestSourceAction }
+    { label: "Latest source action", value: latestSourceAction },
+    { label: "Latest case file", value: latestCaseFileWrite }
   ];
   const renderPathRow = (item) =>
     h(
@@ -695,7 +698,8 @@ function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, 
           project.latest_intake_edit,
           project.latest_source_import,
           project.latest_source_edit,
-          project.latest_source_action
+          project.latest_source_action,
+          project.latest_case_file_write
         ].filter(Boolean).length;
         return h(
           "article",

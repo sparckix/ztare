@@ -43,8 +43,8 @@ still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
 selected project, using the intake and rubric discovered by the index. The app
 shows the backing project directory, intake, report contract, latest review
-receipt, latest saved row action, recent receipt history, and the live
-autoresearch trace before the main case file. The intake editor reads and writes
+receipt, latest saved row action, latest case-file write, recent receipt
+history, and the live autoresearch trace before the main case file. The intake editor reads and writes
 the selected project intake
 through `/api/intake`; source and evidence refs are resolved against the intake
 directory and repo root, then shown as present, missing, external, or unsafe.
@@ -174,7 +174,7 @@ The interface is organized as a local claim-review surface:
 - case docket summarizing export decision, evidence path, and review handoff
 - project file strip showing the selected project directory plus previewable
   intake, report contract, latest review, row-action, intake-edit, source-import,
-  source-edit, and source-action receipt paths
+  source-edit, source-action, and case-file receipt paths
 - intake editor showing bounded claim, non-claims, source refs, evidence refs,
   ref status, pending changed fields, and intake-edit receipt writes
 - project switchboard showing local cases, intake mode, source-ref coverage,

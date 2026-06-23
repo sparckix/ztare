@@ -325,6 +325,7 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
     (workspace / "forensic_workbench_latest_source_import.json").write_text("{}", encoding="utf-8")
     (workspace / "forensic_workbench_latest_source_edit.json").write_text("{}", encoding="utf-8")
     (workspace / "forensic_workbench_latest_source_action.json").write_text("{}", encoding="utf-8")
+    (workspace / "forensic_workbench_latest_case_file_write.json").write_text("{}", encoding="utf-8")
     (tmp_path / "projects/no_intake").mkdir()
     (tmp_path / "projects/bad/project").mkdir(parents=True)
 
@@ -343,6 +344,7 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
             "latest_source_import": "projects/demo/workspace/forensic_workbench_latest_source_import.json",
             "latest_source_edit": "projects/demo/workspace/forensic_workbench_latest_source_edit.json",
             "latest_source_action": "projects/demo/workspace/forensic_workbench_latest_source_action.json",
+            "latest_case_file_write": "projects/demo/workspace/forensic_workbench_latest_case_file_write.json",
             "report_contract": "",
         }
     ]
@@ -370,6 +372,7 @@ def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatc
             "latest_source_import": "",
             "latest_source_edit": "",
             "latest_source_action": "",
+            "latest_case_file_write": "",
             "report_contract": "",
         }
     ]
@@ -403,6 +406,7 @@ def test_project_index_prefers_project_local_intake_over_public_example(
             "latest_source_import": "",
             "latest_source_edit": "",
             "latest_source_action": "",
+            "latest_case_file_write": "",
             "report_contract": "",
         }
     ]
@@ -433,6 +437,7 @@ def test_project_index_keeps_example_intake_source_when_project_dir_has_no_intak
             "latest_source_import": "",
             "latest_source_edit": "",
             "latest_source_action": "",
+            "latest_case_file_write": "",
             "report_contract": "",
         }
     ]
