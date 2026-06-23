@@ -226,6 +226,9 @@ applies it through the CLI, then refreshes the snapshot. Live mode may call a
 local API to write the same receipt directly. Either way, the visible trail is
 file or API payload, receipt ledger, receipt history, latest receipt row, and
 refreshed snapshot.
+After a live review or row-action write, the app should show the stamped receipt
+schema, row, ledger path, latest path, source path, and hash before the user has
+to inspect the full history.
 
 File inspection is read-only. The browser may request one repository-relative
 path from the local API and display a bounded text preview. It must not crawl

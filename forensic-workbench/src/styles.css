@@ -2057,6 +2057,106 @@ code {
   overflow-wrap: anywhere;
 }
 
+.write-receipt-panel {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.45fr) minmax(300px, 0.65fr) minmax(320px, 0.9fr);
+  gap: 12px;
+  align-items: stretch;
+  padding: 14px;
+  background: #f7fbfa;
+  border: 1px solid #bdd4ce;
+  border-left: 4px solid #1c6552;
+}
+
+.write-receipt-summary {
+  min-width: 0;
+  display: grid;
+  align-content: start;
+  gap: 7px;
+}
+
+.write-receipt-summary h2 {
+  margin: 0;
+  color: #17201d;
+  font-size: 21px;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+
+.write-receipt-summary p {
+  margin: 0;
+  color: #52605a;
+  font-size: 13px;
+  line-height: 1.42;
+}
+
+.write-receipt-facts {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  background: #d5dfdc;
+  border: 1px solid #d5dfdc;
+}
+
+.write-receipt-facts div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px;
+  background: #ffffff;
+}
+
+.write-receipt-facts span,
+.write-receipt-paths span {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.write-receipt-facts strong {
+  min-width: 0;
+  color: #26342f;
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.write-receipt-paths {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 7px;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #d5dfdc;
+}
+
+.write-receipt-paths div {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.write-receipt-paths code {
+  min-width: 0;
+  padding: 7px;
+  background: #f5f7f6;
+  border: 1px solid #dce3e0;
+  color: #26342f;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.write-receipt-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
 .review-workspace {
   display: grid;
   grid-template-columns: minmax(260px, 0.9fr) minmax(240px, 0.75fr) minmax(320px, 1.15fr);
@@ -2861,6 +2961,7 @@ code {
   .trace-console,
   .review-queue,
   .row-action-workspace,
+  .write-receipt-panel,
   .review-workspace {
     grid-template-columns: 1fr;
   }
@@ -2911,6 +3012,10 @@ code {
   .source-evidence-metrics,
   .source-evidence-file,
   .source-evidence-command {
+    grid-template-columns: 1fr;
+  }
+
+  .write-receipt-facts {
     grid-template-columns: 1fr;
   }
 

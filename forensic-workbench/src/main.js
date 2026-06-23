@@ -1950,6 +1950,81 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
   );
 }
 
+function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
+  if (!receiptEvent) return null;
+  const result = receiptEvent.result || {};
+  const receipt = result.receipt || {};
+  const kindLabel = receiptEvent.kind === "row_action" ? "Row action" : "Review";
+  const actionLabel = receipt.action || receipt.decision || "written";
+  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || "";
+  const sourcePath = receipt.review_file_path || receipt.action_file_path || "";
+  const receiptJson = JSON.stringify(receipt, null, 2);
+
+  return h(
+    "section",
+    { className: "write-receipt-panel", "aria-label": "Last write receipt" },
+    h(
+      "div",
+      { className: "write-receipt-summary" },
+      h("span", { className: "eyebrow" }, "Last write receipt"),
+      h("h2", null, `${kindLabel}: ${displayText(actionLabel)}`),
+      h("p", null, receiptEvent.snapshotError ? `Receipt written. Snapshot refresh failed: ${receiptEvent.snapshotError}` : "Receipt written and the case was refreshed.")
+    ),
+    h(
+      "div",
+      { className: "write-receipt-facts" },
+      h("div", null, h("span", null, "Row"), h("strong", null, receipt.row || receiptEvent.row || "none")),
+      h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
+      h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
+      h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash)))
+    ),
+    h(
+      "div",
+      { className: "write-receipt-paths" },
+      h("div", null, h("span", null, "Ledger"), h("code", null, result.ledger || "no ledger path")),
+      h("div", null, h("span", null, "Latest"), h("code", null, result.latest || "no latest path")),
+      h("div", null, h("span", null, "Source"), h("code", null, sourcePath || "no source path")),
+      h(
+        "div",
+        { className: "write-receipt-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !liveMode || !result.ledger,
+            onClick: () => onPreview && onPreview({ type: "receipt", value: result.ledger }),
+            title: liveMode ? "Preview the receipt ledger" : "Start the local API to preview files"
+          },
+          "Preview ledger"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !liveMode || !result.latest,
+            onClick: () => onPreview && onPreview({ type: "receipt", value: result.latest }),
+            title: liveMode ? "Preview the latest receipt file" : "Start the local API to preview files"
+          },
+          "Preview latest"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !receipt.schema,
+            onClick: () => copyText(receiptJson),
+            title: "Copy stamped receipt JSON"
+          },
+          "Copy receipt"
+        )
+      )
+    )
+  );
+}
+
 function Toolbar({ filter, query, setFilter, setQuery }) {
   return h(
     "div",
@@ -2110,6 +2185,7 @@ function App() {
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
   const [actionMessage, setActionMessage] = useState("");
+  const [writeReceiptEvent, setWriteReceiptEvent] = useState(null);
   const [intakeDraft, setIntakeDraft] = useState(null);
   const [intakeMessage, setIntakeMessage] = useState("");
   const [receiptHistory, setReceiptHistory] = useState(null);
@@ -2408,6 +2484,7 @@ function App() {
   const applyReviewLive = (rowSlugValue, reviewPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !reviewPayload) return;
     setReviewMessage("Applying review.");
+    setWriteReceiptEvent(null);
     fetch("/api/review", {
       method: "POST",
       headers: {
@@ -2434,6 +2511,12 @@ function App() {
             ? `Applied review for ${reviewPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Applied review for ${reviewPayload.row}.`
         );
+        setWriteReceiptEvent({
+          kind: "review",
+          row: reviewPayload.row,
+          result: payload.review,
+          snapshotError: payload.snapshot_error || ""
+        });
         loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
@@ -2442,6 +2525,7 @@ function App() {
   const applyRowActionLive = (rowSlugValue, actionPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !actionPayload) return;
     setActionMessage("Saving row action.");
+    setWriteReceiptEvent(null);
     fetch("/api/row-action", {
       method: "POST",
       headers: {
@@ -2468,6 +2552,12 @@ function App() {
             ? `Saved action for ${actionPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
             : `Saved action for ${actionPayload.row}.`
         );
+        setWriteReceiptEvent({
+          kind: "row_action",
+          row: actionPayload.row,
+          result: payload.action,
+          snapshotError: payload.snapshot_error || ""
+        });
         loadReceiptHistory({ project: snapshot.project });
       })
       .catch((err) => setActionMessage(String(err.message || err)));
@@ -2638,6 +2728,7 @@ function App() {
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
       actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,
+      h(WriteReceiptPanel, { receiptEvent: writeReceiptEvent, liveMode, onPreview: loadFilePreview }),
       h(RowActionWorkspace, {
         snapshot,
         row: selectedRow,
