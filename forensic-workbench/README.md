@@ -59,9 +59,10 @@ fails after the API is detected, the app keeps the current case and shows the
 error instead of swapping in stale static data.
 
 Live mode also fetches `/api/health` for the selected project. That endpoint
-summarizes kernel-health attention components and action-intelligence source
-health issues so the workbench can show advisory blockers without promoting
-them into control authority.
+returns kernel-health attention components, action-intelligence source-health
+issues, and source-health file paths. The workbench shows them as read-only
+rows with copyable commands and previewable source files, so advisory blockers
+are inspectable without becoming hidden browser writes.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The project index includes project-local intakes and public example intakes, so
@@ -106,8 +107,9 @@ The interface is organized as a local claim-review surface:
 - status metrics for run readiness, export state, evidence rows, and attention rows
 - blocker panel showing the current blocking row, blocker reasons, and a direct
   review action
-- health and actions panel showing live kernel-health status,
-  action-intelligence source-health warnings, and copyable next commands
+- health and actions panel showing live kernel-health rows,
+  action-intelligence source-health rows, source files, and copyable next
+  commands
 - current-action rail with the next command or provenance target
 - artifact coverage strip showing rows with artifacts, commands, receipts, and
   review files

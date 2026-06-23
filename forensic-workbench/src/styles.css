@@ -776,7 +776,8 @@ code {
 }
 
 .health-metrics div,
-.health-findings > div {
+.health-finding-list,
+.health-source-list {
   min-width: 0;
   display: grid;
   gap: 6px;
@@ -785,7 +786,8 @@ code {
 }
 
 .health-metrics span,
-.health-findings span {
+.health-findings span,
+.health-source-list > span {
   color: #64726c;
   font-size: 11px;
   font-weight: 900;
@@ -804,10 +806,43 @@ code {
 .health-findings {
   min-width: 0;
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 1px;
   background: #d5dfdc;
   border: 1px solid #d5dfdc;
+}
+
+.health-finding-rows,
+.health-source-list {
+  align-content: start;
+}
+
+.health-finding-rows {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.health-finding-row,
+.health-source-row {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  border-left: 3px solid #aebbb6;
+  background: #f7f9f8;
+}
+
+.health-finding-row.kernel,
+.health-finding-row.action {
+  border-left-color: #bd6a1d;
+}
+
+.health-finding-row small {
+  color: #64726c;
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .health-findings p {
@@ -824,6 +859,12 @@ code {
   color: #26342f;
   font-size: 12px;
   line-height: 1.35;
+}
+
+.health-source-actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .text-link {

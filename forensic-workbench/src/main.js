@@ -931,7 +931,18 @@ function ReviewQueue({ row, reviewState, liveMode }) {
   );
 }
 
-function HealthActionsPanel({ healthContext, healthMessage, liveMode }) {
+function HealthFindingList({ title, emptyText, rows, renderRow }) {
+  return h(
+    "div",
+    { className: "health-finding-list" },
+    h("span", null, title),
+    rows.length
+      ? h("div", { className: "health-finding-rows" }, rows.map(renderRow))
+      : h("p", null, emptyText)
+  );
+}
+
+function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewSource }) {
   const kernel = (healthContext && healthContext.kernel) || {};
   const kernelSummary = kernel.summary || {};
   const action = (healthContext && healthContext.action_intelligence) || {};
@@ -939,9 +950,8 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode }) {
   const attention = kernel.attention_components || [];
   const issues = action.issues || [];
   const sourcePaths = action.source_paths || {};
-  const primaryAttention = attention[0] || null;
-  const primaryIssue = issues[0] || null;
   const status = kernelSummary.overall_status || (liveMode ? "loading" : "static mode");
+  const previewableSourcePaths = Object.entries(sourcePaths).filter(([_key, value]) => value);
 
   return h(
     "section",
@@ -971,33 +981,83 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode }) {
     h(
       "div",
       { className: "health-findings" },
+      h(HealthFindingList, {
+        title: "Kernel findings",
+        emptyText: "Kernel health has no active attention component.",
+        rows: attention,
+        renderRow: (row, index) =>
+          h(
+            "div",
+            { className: "health-finding-row kernel", key: `${row.component || "kernel"}:${index}` },
+            h("strong", null, row.component || "kernel component"),
+            h("small", null, displayText(row.status || "attention")),
+            h("p", null, row.action || "Inspect component."),
+            row.next_command
+              ? h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    onClick: () => copyText(row.next_command),
+                    title: "Copy kernel-health next command"
+                  },
+                  "Copy command"
+                )
+              : null
+          )
+      }),
+      h(HealthFindingList, {
+        title: "Action-intelligence rows",
+        emptyText: "Action-intelligence health has no issue rows.",
+        rows: issues,
+        renderRow: (row, index) =>
+          h(
+            "div",
+            { className: "health-finding-row action", key: `${row.issue_type || "issue"}:${row.scope || index}` },
+            h("strong", null, displayText(row.issue_type || "source-health issue")),
+            h("small", null, displayText(row.severity || "warning")),
+            h("p", null, `${displayText(row.scope || "unknown scope")}: ${displayText(row.recommended_action || "inspect source health")}`)
+          )
+      }),
       h(
         "div",
-        null,
-        h("span", null, "Kernel next action"),
-        h("strong", null, primaryAttention ? primaryAttention.component : "No kernel attention component"),
-        h("p", null, primaryAttention ? primaryAttention.action || "Inspect component." : "Kernel health has no active attention component."),
-        primaryAttention && primaryAttention.next_command
-          ? h(
-              "button",
-              {
-                className: "copy-button",
-                type: "button",
-                onClick: () => copyText(primaryAttention.next_command)
-              },
-              "Copy command"
+        { className: "health-source-list" },
+        h("span", null, "Health source files"),
+        previewableSourcePaths.length
+          ? previewableSourcePaths.map(([key, value]) =>
+              h(
+                "div",
+                { className: "health-source-row", key },
+                h("strong", null, displayText(key)),
+                h("code", null, value),
+                h(
+                  "div",
+                  { className: "health-source-actions" },
+                  h(
+                    "button",
+                    {
+                      className: "copy-button",
+                      type: "button",
+                      onClick: () => copyText(value),
+                      title: "Copy source path"
+                    },
+                    "Copy"
+                  ),
+                  h(
+                    "button",
+                    {
+                      className: "copy-button",
+                      type: "button",
+                      disabled: !liveMode,
+                      onClick: () => onPreviewSource && onPreviewSource({ type: "file", value }),
+                      title: liveMode ? "Preview source file" : "Start the local API to preview files"
+                    },
+                    "Preview"
+                  )
+                )
+              )
             )
-          : null
-      ),
-      h(
-        "div",
-        null,
-        h("span", null, "Action-intelligence source health"),
-        h("strong", null, primaryIssue ? displayText(primaryIssue.issue_type) : "No source-health issue"),
-        h("p", null, primaryIssue ? `${displayText(primaryIssue.scope)} -> ${displayText(primaryIssue.recommended_action)}` : "Action-intelligence health has no issue rows."),
-        sourcePaths.source_health
-          ? h("code", null, sourcePaths.source_health)
-          : null
+          : h("p", null, "No source-health files reported.")
       )
     )
   );
@@ -1836,7 +1896,7 @@ function App() {
       }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
-      h(HealthActionsPanel, { healthContext, healthMessage, liveMode }),
+      h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),
       h(FirstFiveMinutePath, { snapshot, setSelectedLabel }),
       h(ClaimSummary, { snapshot }),
