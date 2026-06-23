@@ -127,6 +127,13 @@ def list_project_entries() -> list[dict[str, Any]]:
             return rel(path)
         return rel(path) if receipt_matches_case(payload, project=project, intake=intake) else ""
 
+    def latest_receipt_path_for_case(primary: Path, ledger: Path, *, project: str, intake: str) -> str:
+        primary_path = latest_path_for_case(primary, project=project, intake=intake)
+        if primary_path:
+            return primary_path
+        payload, ledger_rel = latest_receipt_from_ledger(ledger, project=project, intake=intake)
+        return ledger_rel if payload else ""
+
     def upsert_project_entry(project: str, intake: str, *, source: str) -> None:
         project = validate_project_slug(project)
         project_dir = REPO / "projects" / project
@@ -147,8 +154,18 @@ def list_project_entries() -> list[dict[str, Any]]:
                 "project_dir": rel(project_dir) if project_dir.exists() else "",
                 "intake": intake,
                 "intake_source": source,
-                "latest_review": latest_path_for_case(latest_review, project=project, intake=intake),
-                "latest_row_action": latest_path_for_case(latest_action, project=project, intake=intake),
+                "latest_review": latest_receipt_path_for_case(
+                    latest_review,
+                    review_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
+                "latest_row_action": latest_receipt_path_for_case(
+                    latest_action,
+                    row_action_ledger_path(project),
+                    project=project,
+                    intake=intake,
+                ),
                 "latest_intake_edit": latest_path_for_case(latest_intake_edit, project=project, intake=intake),
                 "latest_source_import": latest_path_for_case(latest_source_import, project=project, intake=intake),
                 "latest_source_edit": latest_path_for_case(latest_source_edit, project=project, intake=intake),
@@ -163,8 +180,6 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["intake"] = intake
             entry["intake_source"] = source
         for key, path in (
-            ("latest_review", latest_review),
-            ("latest_row_action", latest_action),
             ("latest_intake_edit", latest_intake_edit),
             ("latest_source_import", latest_source_import),
             ("latest_source_edit", latest_source_edit),
@@ -175,6 +190,21 @@ def list_project_entries() -> list[dict[str, Any]]:
             if latest_for_case:
                 entry[key] = latest_for_case
             elif str(entry.get("intake") or "") == intake:
+                entry[key] = ""
+        entry_intake = str(entry.get("intake") or intake)
+        for key, primary, ledger in (
+            ("latest_review", latest_review, review_ledger_path(project)),
+            ("latest_row_action", latest_action, row_action_ledger_path(project)),
+        ):
+            latest_for_case = latest_receipt_path_for_case(
+                primary,
+                ledger,
+                project=project,
+                intake=entry_intake,
+            )
+            if latest_for_case:
+                entry[key] = latest_for_case
+            elif entry_intake == intake:
                 entry[key] = ""
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
@@ -420,6 +450,14 @@ def latest_row_action_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_row_action.json"
 
 
+def review_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_reviews.jsonl"
+
+
+def row_action_ledger_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_row_actions.jsonl"
+
+
 def latest_intake_edit_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_intake_edit.json"
 
@@ -460,11 +498,33 @@ def receipt_matches_case(payload: dict[str, Any], *, project: str, intake: str |
     return True
 
 
+def latest_receipt_from_ledger(
+    ledger_path: Path,
+    *,
+    project: str,
+    intake: str | Path | None = None,
+) -> tuple[dict[str, Any] | None, str]:
+    rel_path = rel(ledger_path)
+    if not ledger_path.exists():
+        return None, rel_path
+    rows = ledger_path.read_text(encoding="utf-8").splitlines()
+    for line in reversed(rows):
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and receipt_matches_case(payload, project=project, intake=intake):
+            return payload, rel_path
+    return None, rel_path
+
+
 def load_latest_review(project: str, intake: str | Path | None = None) -> tuple[dict[str, Any] | None, str]:
     path = latest_review_path(project)
     rel_path = rel(path)
     if not path.exists():
-        return None, rel_path
+        return latest_receipt_from_ledger(review_ledger_path(project), project=project, intake=intake)
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -480,7 +540,12 @@ def load_latest_review(project: str, intake: str | Path | None = None) -> tuple[
             "error": "latest review receipt must be a JSON object",
         }, rel_path
     if not receipt_matches_case(payload, project=project, intake=intake):
-        return None, rel_path
+        fallback, fallback_path = latest_receipt_from_ledger(
+            review_ledger_path(project),
+            project=project,
+            intake=intake,
+        )
+        return fallback, fallback_path if fallback else rel_path
     return payload, rel_path
 
 
@@ -488,7 +553,7 @@ def load_latest_row_action(project: str, intake: str | Path | None = None) -> tu
     path = latest_row_action_path(project)
     rel_path = rel(path)
     if not path.exists():
-        return None, rel_path
+        return latest_receipt_from_ledger(row_action_ledger_path(project), project=project, intake=intake)
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
     except json.JSONDecodeError:
@@ -504,7 +569,12 @@ def load_latest_row_action(project: str, intake: str | Path | None = None) -> tu
             "error": "latest row action receipt must be a JSON object",
         }, rel_path
     if not receipt_matches_case(payload, project=project, intake=intake):
-        return None, rel_path
+        fallback, fallback_path = latest_receipt_from_ledger(
+            row_action_ledger_path(project),
+            project=project,
+            intake=intake,
+        )
+        return fallback, fallback_path if fallback else rel_path
     return payload, rel_path
 
 

@@ -245,7 +245,7 @@ def test_snapshot_loads_latest_review_from_project_workspace(tmp_path: Path, mon
     assert receipt_row["status"] == "applied"
 
 
-def test_snapshot_ignores_latest_review_from_other_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_snapshot_recovers_latest_review_from_case_ledger(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_module()
     monkeypatch.setattr(module, "REPO", tmp_path)
     latest = tmp_path / "projects/demo/workspace/forensic_workbench_latest_review.json"
@@ -266,11 +266,30 @@ def test_snapshot_ignores_latest_review_from_other_case(tmp_path: Path, monkeypa
         ),
         encoding="utf-8",
     )
+    ledger = tmp_path / "projects/demo/workspace/forensic_workbench_reviews.jsonl"
+    ledger.write_text(
+        json.dumps(
+            {
+                "schema": "ztare-forensic-workbench-review-receipt-v1",
+                "project": "demo",
+                "intake": "projects/demo/demo_intake.json",
+                "case_key": "demo::projects/demo/demo_intake.json",
+                "row": "Source readiness",
+                "row_slug": "source_readiness",
+                "decision": "approved",
+                "review_file_sha256": "a" * 64,
+                "evidence_ref_count": 1,
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
     payload, path = module.load_latest_review("demo", "projects/demo/demo_intake.json")
 
-    assert path == "projects/demo/workspace/forensic_workbench_latest_review.json"
-    assert payload is None
+    assert path == "projects/demo/workspace/forensic_workbench_reviews.jsonl"
+    assert payload["decision"] == "approved"
+    assert payload["case_key"] == "demo::projects/demo/demo_intake.json"
 
 
 def test_snapshot_keeps_unscoped_legacy_latest_review(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -425,6 +444,10 @@ def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monk
     }
     (workspace / "forensic_workbench_latest_source_import.json").write_text(json.dumps(other_case), encoding="utf-8")
     (workspace / "forensic_workbench_latest_source_edit.json").write_text(json.dumps(current_case), encoding="utf-8")
+    (workspace / "forensic_workbench_latest_review.json").write_text(json.dumps(other_case), encoding="utf-8")
+    (workspace / "forensic_workbench_latest_row_action.json").write_text(json.dumps(other_case), encoding="utf-8")
+    (workspace / "forensic_workbench_reviews.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
+    (workspace / "forensic_workbench_row_actions.jsonl").write_text(json.dumps(current_case) + "\n", encoding="utf-8")
     (workspace / "forensic_workbench_latest_case_file_write.json").write_text(
         json.dumps({**other_case, "schema": "ztare-forensic-workbench-case-file-write-receipt-v1"}),
         encoding="utf-8",
@@ -434,6 +457,8 @@ def test_project_index_filters_latest_paths_to_current_case(tmp_path: Path, monk
 
     assert entry["latest_source_import"] == ""
     assert entry["latest_source_edit"] == "projects/demo/workspace/forensic_workbench_latest_source_edit.json"
+    assert entry["latest_review"] == "projects/demo/workspace/forensic_workbench_reviews.jsonl"
+    assert entry["latest_row_action"] == "projects/demo/workspace/forensic_workbench_row_actions.jsonl"
     assert entry["latest_case_file_write"] == ""
 
 
