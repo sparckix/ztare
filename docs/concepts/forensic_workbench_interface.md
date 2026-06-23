@@ -238,8 +238,11 @@ state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
-bounded-claim status, source/evidence readiness, recent receipt history, run
-history/verdict state, and report/export state before the user opens a case.
+and a project switchboard with intake mode, source-ref coverage, report-contract
+presence, and recent receipt paths before the user switches cases. It should
+also show bounded-claim status, source/evidence readiness, recent receipt
+history, run history/verdict state, and report/export state before the user
+opens a case.
 The claim-support panel should show whether the compiled claim-support evidence file is
 present, how many claims are weak or unsourced, which local sources were
 verified, and the exact command that rebuilds the audit.

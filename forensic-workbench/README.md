@@ -168,7 +168,8 @@ The interface is organized as a local claim-review surface:
   contract, latest review receipt path, and latest saved row action path
 - intake editor showing bounded claim, non-claims, source refs, evidence refs,
   ref status, pending changed fields, and intake-edit receipt writes
-- project picker showing intake ref counts and read-only vs editable intake mode
+- project switchboard showing local cases, intake mode, source-ref coverage,
+  report-contract presence, and recent receipt paths before switching
 - source/evidence readiness panel showing source index, evidence binding, output
   binding, replay state, backing files, and copyable commands
 - raw-source panel for loading an existing source, editing its text/type, saving

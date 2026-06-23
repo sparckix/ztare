@@ -416,6 +416,97 @@ code {
   word-break: break-word;
 }
 
+.project-switchboard {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.3fr) minmax(0, 1fr);
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #cfd7d4;
+  background: #ffffff;
+}
+
+.project-switchboard-head {
+  min-width: 0;
+  align-self: start;
+}
+
+.project-switchboard-head h2 {
+  margin: 0 0 6px;
+  color: #17231f;
+  font-size: 18px;
+  letter-spacing: 0;
+}
+
+.project-switchboard-head p {
+  margin: 0;
+  color: #52615b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.project-switchboard-grid {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.project-tile {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #d8e0dd;
+  background: #f8faf9;
+}
+
+.project-tile.active {
+  border-color: #8ab39f;
+  background: #eef7f2;
+}
+
+.project-tile-main {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.project-tile-main strong {
+  min-width: 0;
+  color: #17231f;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.project-tile-main small {
+  min-width: 0;
+  color: #64726c;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.project-tile-facts {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.project-tile-facts span {
+  min-height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 8px;
+  border: 1px solid #dbe4e0;
+  background: #ffffff;
+  color: #3f4f49;
+  font-size: 11px;
+  font-weight: 800;
+}
+
 .project-create-panel {
   min-width: 0;
   display: grid;
@@ -3572,6 +3663,7 @@ code {
   .case-summary,
   .project-create-panel,
   .project-create-grid,
+  .project-switchboard,
   .source-import-panel,
   .source-import-grid,
   .raw-source-manager,
@@ -3641,6 +3733,7 @@ code {
   .path-panel,
   .preflight-run-panel,
   .project-context-panel,
+  .project-switchboard,
   .receipt-history,
   .report-contract-panel,
   .source-evidence-panel,
@@ -3781,6 +3874,10 @@ code {
   }
 
   .project-context-panel {
+    grid-template-columns: 1fr;
+  }
+
+  .project-tile {
     grid-template-columns: 1fr;
   }
 

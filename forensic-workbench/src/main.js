@@ -573,6 +573,57 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   );
 }
 
+function ProjectSwitchboard({ projects, selectedProjectKey, snapshot, liveMode, loading, onSelect }) {
+  if (!liveMode || !projects.length) return null;
+  const activeKey = selectedProjectKey || (snapshot && snapshot.project) || "";
+  return h(
+    "section",
+    { className: "project-switchboard", "aria-label": "Local cases" },
+    h(
+      "div",
+      { className: "project-switchboard-head" },
+      h("span", { className: "eyebrow" }, "Local cases"),
+      h("h2", null, "Open workbench state"),
+      h("p", null, "Inspect available project folders before switching.")
+    ),
+    h(
+      "div",
+      { className: "project-switchboard-grid" },
+      projects.map((project) => {
+        const refSummary = project.intake_ref_summary || {};
+        const active = project.project === activeKey;
+        const intakeMode = project.intake_editable === false ? "read-only intake" : "editable intake";
+        const receiptCount = [project.latest_review, project.latest_row_action].filter(Boolean).length;
+        return h(
+          "article",
+          { key: project.project, className: `project-tile ${active ? "active" : ""}` },
+          h("div", { className: "project-tile-main" }, h("strong", null, project.project), h("small", null, project.project_dir || "project folder pending")),
+          h(
+            "div",
+            { className: "project-tile-facts" },
+            h("span", null, displayText(project.intake_source || "unknown_intake_source")),
+            h("span", null, intakeMode),
+            h("span", null, refSummary.total ? `${refSummary.present || 0}/${refSummary.total} refs` : "refs not counted"),
+            h("span", null, project.report_contract ? "report contract" : "no report contract"),
+            h("span", null, receiptCount ? `${receiptCount} receipt paths` : "no recent receipts")
+          ),
+          h(
+            "button",
+            {
+              type: "button",
+              className: active ? "copy-button" : "copy-button primary",
+              disabled: loading || active,
+              onClick: () => onSelect(project.project),
+              title: active ? "This case is open" : `Open ${project.project}`
+            },
+            active ? "Open" : "Switch"
+          )
+        );
+      })
+    )
+  );
+}
+
 function ProjectCreatePanel({ draft, setDraft, message, creating, liveMode, onCreate }) {
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
   return h(
@@ -3410,8 +3461,7 @@ function App() {
       );
   }, []);
 
-  const handleProjectChange = (event) => {
-    const project = event.target.value;
+  const openProject = (project) => {
     if (!project || !liveMode) return;
     const entry = projects.find((row) => row.project === project) || { project, rubric: project };
     setSelectedProjectKey(project);
@@ -3419,6 +3469,8 @@ function App() {
       setModeMessage(`Could not load live project snapshot for ${project}: ${err.message || err}`)
     );
   };
+
+  const handleProjectChange = (event) => openProject(event.target.value);
 
   const refreshCurrentProject = () => {
     if (!snapshot || !liveMode) return;
@@ -4025,6 +4077,7 @@ function App() {
         )
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
+      h(ProjectSwitchboard, { projects, selectedProjectKey, snapshot, liveMode, loading: loadingSnapshot, onSelect: openProject }),
       h(ProjectCreatePanel, {
         draft: projectCreateDraft,
         setDraft: setProjectCreateDraft,

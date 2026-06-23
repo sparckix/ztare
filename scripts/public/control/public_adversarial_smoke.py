@@ -242,6 +242,8 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "reference_status",
     "intake_ref_summary",
     "Project-local intakes are editable",
+    "project-switchboard",
+    "Open workbench state",
     "No changed intake fields to write.",
     "intakeChangedFields",
     "preview_path",
