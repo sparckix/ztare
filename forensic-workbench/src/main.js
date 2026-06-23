@@ -3499,7 +3499,7 @@ function App() {
   const openProject = (project) => {
     if (!project || !liveMode) return;
     const entry = projects.find((row) => row.project === project) || { project, rubric: project };
-    setSelectedProjectKey(project);
+    setModeMessage(`Opening ${project} from local project files.`);
     loadSnapshot(entry, true).catch((err) =>
       setModeMessage(`Could not load live project snapshot for ${project}: ${err.message || err}`)
     );
