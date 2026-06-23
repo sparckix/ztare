@@ -2691,11 +2691,20 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   if (!receiptEvent) return null;
   const result = receiptEvent.result || {};
   const receipt = result.receipt || {};
-  const kindLabel = receiptEvent.kind === "intake_edit" ? "Intake edit" : receiptEvent.kind === "row_action" ? "Row action" : "Review";
+  const kindLabels = {
+    intake_edit: "Intake edit",
+    row_action: "Row action",
+    source_import: "Source import",
+    source_edit: "Source edit",
+    review: "Review"
+  };
+  const kindLabel = kindLabels[receiptEvent.kind] || displayText(receiptEvent.kind || "write");
   const editedFields = (receipt.updated_fields || []).map(displayFieldName).join(", ");
-  const actionLabel = receipt.action || receipt.decision || editedFields || "written";
-  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || "";
-  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || "";
+  const actionLabel = receipt.action || receipt.decision || receipt.source_type || editedFields || "written";
+  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || receipt.sha256 || "";
+  const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || "";
+  const ledgerPath = result.ledger || result.receipt_path || "";
+  const latestPath = result.latest || "";
   const receiptJson = JSON.stringify(receipt, null, 2);
 
   return h(
@@ -2711,7 +2720,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
     h(
       "div",
       { className: "write-receipt-facts" },
-      h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.intake_path || receiptEvent.row || "none")),
+      h("div", null, h("span", null, "Target"), h("strong", null, receipt.row || receipt.relative_raw_path || receipt.intake_path || receiptEvent.row || "none")),
       h("div", null, h("span", null, "Schema"), h("strong", null, receipt.schema || "none")),
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
       h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash)))
@@ -2719,8 +2728,8 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
     h(
       "div",
       { className: "write-receipt-paths" },
-      h("div", null, h("span", null, "Ledger"), h("code", null, result.ledger || "no ledger path")),
-      h("div", null, h("span", null, "Latest"), h("code", null, result.latest || "no latest path")),
+      h("div", null, h("span", null, "Ledger"), h("code", null, ledgerPath || "no ledger path")),
+      h("div", null, h("span", null, "Latest"), h("code", null, latestPath || "no latest path")),
       h("div", null, h("span", null, "Source"), h("code", null, sourcePath || "no source path")),
       h(
         "div",
@@ -2730,8 +2739,8 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
           {
             className: "copy-button",
             type: "button",
-            disabled: !liveMode || !result.ledger,
-            onClick: () => onPreview && onPreview({ type: "receipt", value: result.ledger }),
+            disabled: !liveMode || !ledgerPath,
+            onClick: () => onPreview && onPreview({ type: "receipt", value: ledgerPath }),
             title: liveMode ? "Preview the receipt ledger" : "Start the local API to preview files"
           },
           "Preview ledger"
@@ -2741,8 +2750,8 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
           {
             className: "copy-button",
             type: "button",
-            disabled: !liveMode || !result.latest,
-            onClick: () => onPreview && onPreview({ type: "receipt", value: result.latest }),
+            disabled: !liveMode || !latestPath,
+            onClick: () => onPreview && onPreview({ type: "receipt", value: latestPath }),
             title: liveMode ? "Preview the latest receipt file" : "Start the local API to preview files"
           },
           "Preview latest"
@@ -3307,6 +3316,12 @@ function App() {
         setSourceImportEvent(payload);
         setSourceImportDraft({ filename: "", source_type: "source_evidence", body: "" });
         setSourceImportMessage(`Imported ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
+        setWriteReceiptEvent({
+          kind: "source_import",
+          row: payload.relative_raw_path || payload.source_path,
+          result: payload,
+          snapshotError: payload.snapshot_error || ""
+        });
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
       })
@@ -3381,6 +3396,12 @@ function App() {
           body: sourceEditDraft.body
         });
         setSourceEditMessage(`Saved ${payload.source_path}. Source check ${payload.source_check && payload.source_check.accepted ? "accepted" : "needs attention"}.`);
+        setWriteReceiptEvent({
+          kind: "source_edit",
+          row: payload.relative_raw_path || payload.source_path,
+          result: payload,
+          snapshotError: payload.snapshot_error || ""
+        });
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
       })
