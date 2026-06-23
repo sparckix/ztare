@@ -145,6 +145,13 @@ function caseFileDownloadName(snapshot) {
   return `${project}_${intake}_case_file.json`;
 }
 
+function caseScopedDownloadName(snapshot, rowKey, suffix) {
+  const project = safeFilePart((snapshot && snapshot.project) || "ztare");
+  const intake = safeFilePart((snapshot && snapshot.intake) || "case");
+  const row = safeFilePart(rowKey || "row");
+  return `${project}_${intake}_${row}_${suffix}.json`;
+}
+
 function rowSlug(label) {
   return String(label || "row").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "") || "row";
 }
@@ -3397,7 +3404,7 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
   const reviewFile = buildReviewFile(snapshot, row, reviewState);
   const reviewPayload = parseReviewFile(reviewFile);
   const rowKey = row ? rowSlug(row.label) : "";
-  const reviewFilename = row ? `${snapshot.project}_${rowKey}_review.json` : "review.json";
+  const reviewFilename = row ? caseScopedDownloadName(snapshot, rowKey, "review") : "review.json";
   const intakeArg = snapshot.intake ? ` --intake ${snapshot.intake}` : "";
   const command = row
     ? `ztare forensic-workbench apply-review --project ${snapshot.project}${intakeArg} --row ${rowKey} --from ${reviewFilename}`
@@ -3518,7 +3525,7 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
   const rowActionFile = buildRowActionFile(snapshot, row, actionState);
   const rowActionPayload = parseReviewFile(rowActionFile);
   const rowKey = row ? rowSlug(row.label) : "";
-  const actionFilename = row ? `${snapshot.project}_${rowKey}_action.json` : "row_action.json";
+  const actionFilename = row ? caseScopedDownloadName(snapshot, rowKey, "action") : "row_action.json";
   const intakeArg = snapshot.intake ? ` --intake ${snapshot.intake}` : "";
   const command = row
     ? `ztare forensic-workbench save-action --project ${snapshot.project}${intakeArg} --row ${rowKey} --from ${actionFilename}`
