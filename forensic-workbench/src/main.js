@@ -37,6 +37,7 @@ const REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1";
 const CASE_FILE_WRITE_SCHEMA = "ztare-forensic-workbench-case-file-write-receipt-v1";
 const SOURCE_TYPES = ["source_evidence", "seed_hypothesis", "research_question", "collection_todo", "untyped"];
 const PROJECT_SLUG_RE = /^[A-Za-z0-9_.-]+$/;
+const SOURCE_IMPORT_FILENAME_RE = /^[A-Za-z0-9_.-]+\.(md|txt)$/;
 
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
@@ -827,15 +828,23 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
   const setField = (field, value) => setDraft({ ...draft, [field]: value });
   const filename = String(draft.filename || "").trim();
   const hasBody = Boolean(String(draft.body || "").trim());
+  const validFilename = Boolean(filename && SOURCE_IMPORT_FILENAME_RE.test(filename));
   const duplicateFilename = sourceFilenameExists(sourceList, filename);
-  const canImport = Boolean(liveMode && !importing && filename && hasBody && !duplicateFilename);
+  const canImport = Boolean(liveMode && !importing && validFilename && hasBody && !duplicateFilename);
   const importTitle = !liveMode
     ? "Start the local API to import a source"
     : duplicateFilename
       ? "This filename already exists. Open it in Raw sources to edit."
-      : !filename || !hasBody
+      : !validFilename
+        ? "Use a flat .md or .txt filename"
+        : !hasBody
         ? "Enter a filename and source text"
         : "Write source file and receipt";
+  const filenameNote = duplicateFilename
+    ? "Existing source. Open it in Raw sources to edit."
+    : filename && !validFilename
+      ? "Use a flat .md or .txt filename."
+      : "";
   return h(
     "section",
     { className: "source-import-panel", "aria-label": "Import source" },
@@ -854,7 +863,7 @@ function SourceImportPanel({ draft, setDraft, message, importing, event, liveMod
         null,
         h("span", null, "Filename"),
         h("input", { value: draft.filename, onInput: (inputEvent) => setField("filename", inputEvent.target.value), placeholder: "source_note.md" }),
-        duplicateFilename ? h("small", { className: "source-import-note" }, "Existing source. Open it in Raw sources to edit.") : null
+        filenameNote ? h("small", { className: "source-import-note" }, filenameNote) : null
       ),
       h(
         "label",
