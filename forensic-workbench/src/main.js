@@ -3380,6 +3380,37 @@ function App() {
     });
   };
 
+  const resetCaseSessionState = () => {
+    setTraceContext(null);
+    setTraceMessage("");
+    setPreflightEvent(null);
+    setPreflightMessage("");
+    setSourceActionEvent(null);
+    setSourceActionMessage("");
+    setRunHistoryContext(null);
+    setRunHistoryMessage("");
+    setClaimSupportContext(null);
+    setClaimSupportMessage("");
+    setHealthContext(null);
+    setHealthMessage("");
+    setReportContractContext(null);
+    setReportContractMessage("");
+    setSourceImportEvent(null);
+    setSourceImportMessage("");
+    setSourceEditEvent(null);
+    setSourceEditMessage("");
+    setWriteReceiptEvent(null);
+    setCaseFileSaveEvent(null);
+    setReceiptHistory(null);
+    setReceiptHistoryMessage("");
+    setFilePreview(null);
+    setFilePreviewMessage("");
+    setReviewMessage("");
+    setActionMessage("");
+    setReviewStates({});
+    setActionStates({});
+  };
+
   const refreshProjectIndex = (activeProject) =>
     fetch("/api/projects", { headers: { Accept: "application/json" } })
       .then((response) => {
@@ -3672,6 +3703,7 @@ function App() {
   const openProject = (project) => {
     if (!project || !liveMode) return;
     const entry = projects.find((row) => row.project === project) || { project, rubric: project };
+    resetCaseSessionState();
     setModeMessage(`Opening ${project} from local project files.`);
     loadSnapshot(entry, true).catch((err) =>
       setModeMessage(`Could not load live project snapshot for ${project}: ${err.message || err}`)
@@ -3731,6 +3763,7 @@ function App() {
         const projectRows = (payload.project_index && payload.project_index.projects) || [];
         if (projectRows.length) setProjects(projectRows);
         setSelectedProjectKey(payload.project);
+        resetCaseSessionState();
         if (payload.snapshot) installSnapshot(payload.snapshot);
         setLiveMode(true);
         loadSnapshot({ project: payload.project, rubric: payload.rubric, intake: payload.intake }, true).catch((err) =>
