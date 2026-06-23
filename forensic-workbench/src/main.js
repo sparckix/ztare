@@ -3251,6 +3251,26 @@ function App() {
     setSelectedLabel((firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "");
   };
 
+  const refreshProjectIndex = (activeProject) =>
+    fetch("/api/projects", { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`project index fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        const projectRows = payload.projects || [];
+        if (!projectRows.length) throw new Error("project index is empty");
+        setProjects(projectRows);
+        if (activeProject && projectRows.some((row) => row.project === activeProject)) {
+          setSelectedProjectKey(activeProject);
+        }
+        return payload;
+      })
+      .catch((err) => {
+        setModeMessage(`Project index refresh failed: ${err.message || err}`);
+        return null;
+      });
+
   const loadHealthContext = (projectParams) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     setHealthMessage("Loading live health context.");
@@ -3621,6 +3641,7 @@ function App() {
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
         loadClaimSupportContext({ project: snapshot.project });
+        refreshProjectIndex(snapshot.project);
       })
       .catch((err) => setSourceImportMessage(String(err.message || err)))
       .finally(() => setSourceImporting(false));
@@ -3702,6 +3723,7 @@ function App() {
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
         loadClaimSupportContext({ project: snapshot.project });
+        refreshProjectIndex(snapshot.project);
       })
       .catch((err) => setSourceEditMessage(String(err.message || err)))
       .finally(() => setSourceEditing(false));
@@ -3826,6 +3848,7 @@ function App() {
         });
         loadReceiptHistory({ project: snapshot.project });
         loadClaimSupportContext({ project: snapshot.project });
+        refreshProjectIndex(snapshot.project);
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
   };
@@ -3867,6 +3890,7 @@ function App() {
           snapshotError: payload.snapshot_error || ""
         });
         loadReceiptHistory({ project: snapshot.project });
+        refreshProjectIndex(snapshot.project);
       })
       .catch((err) => setActionMessage(String(err.message || err)));
   };
@@ -3923,6 +3947,7 @@ function App() {
           snapshotError: payload.snapshot_error || ""
         });
         loadReceiptHistory({ project: snapshot.project });
+        refreshProjectIndex(snapshot.project);
       })
       .catch((err) => setIntakeMessage(String(err.message || err)));
   };
@@ -4009,7 +4034,10 @@ function App() {
         if (writeEvent) setWriteReceiptEvent(writeEvent);
         loadSourceListContext({ project: snapshot.project });
         loadClaimSupportContext({ project: snapshot.project });
-        if (payload.writes) loadReceiptHistory({ project: snapshot.project });
+        if (payload.writes) {
+          loadReceiptHistory({ project: snapshot.project });
+          refreshProjectIndex(snapshot.project);
+        }
         setSourceActionMessage(
           payload.accepted
             ? `${payload.label || displayText(payload.action)} finished and the case was refreshed.`
@@ -4025,7 +4053,10 @@ function App() {
           if (writeEvent) setWriteReceiptEvent(writeEvent);
           loadSourceListContext({ project: snapshot.project });
           loadClaimSupportContext({ project: snapshot.project });
-          if (err.payload.writes) loadReceiptHistory({ project: snapshot.project });
+          if (err.payload.writes) {
+            loadReceiptHistory({ project: snapshot.project });
+            refreshProjectIndex(snapshot.project);
+          }
         }
         setSourceActionMessage(String(err.message || err));
       })
