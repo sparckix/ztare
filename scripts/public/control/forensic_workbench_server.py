@@ -446,6 +446,7 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
                 "row_slug": str(payload.get("row_slug") or ""),
                 "decision": str(payload.get("decision") or ""),
                 "note": str(payload.get("note") or ""),
+                "review_file_path": display_path(payload.get("review_file_path")),
                 "evidence_ref_count": safe_int(payload.get("evidence_ref_count")),
                 "sha256": str(payload.get("review_file_sha256") or ""),
             }
@@ -458,6 +459,7 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
                 "row_slug": str(payload.get("row_slug") or ""),
                 "action": str(payload.get("action") or ""),
                 "note": str(payload.get("note") or ""),
+                "action_file_path": display_path(payload.get("action_file_path")),
                 "evidence_ref_count": safe_int(payload.get("evidence_ref_count")),
                 "sha256": str(payload.get("action_file_sha256") or ""),
             }

@@ -174,7 +174,14 @@ function latestReceiptForRow(receiptHistory, row, kind) {
 
 function receiptArtifactPath(receipt) {
   if (!receipt) return "";
-  return receipt.case_file_path || receipt.source_path || receipt.intake_path || "";
+  return receipt.review_file_path || receipt.action_file_path || receipt.case_file_path || receipt.source_path || receipt.intake_path || "";
+}
+
+function isPreviewableRepoPath(value) {
+  const raw = String(value || "").trim();
+  if (!raw || raw.startsWith("/") || raw.includes("..")) return false;
+  if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(raw)) return false;
+  return true;
 }
 
 function buildReviewFile(snapshot, row, reviewState) {
@@ -1178,6 +1185,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
       receipts.length
         ? receipts.map((item) => {
             const artifactPath = receiptArtifactPath(item);
+            const previewableArtifact = isPreviewableRepoPath(artifactPath);
             return h(
               "article",
               { className: `receipt-history-row ${item.kind || "receipt"}`, key: `${item.kind}:${item.path}:${item.line}` },
@@ -1215,15 +1223,15 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                 ),
                 h(
                   "button",
-                  {
-                    className: "copy-button",
-                    type: "button",
-                    disabled: !liveMode || !artifactPath,
-                    onClick: () => onPreview && onPreview({ type: "file", value: artifactPath }),
-                    title: liveMode ? "Preview the written artifact" : "Start the local API to preview files"
-                  },
-                  "Preview file"
-                ),
+                    {
+                      className: "copy-button",
+                      type: "button",
+                      disabled: !liveMode || !previewableArtifact,
+                      onClick: () => onPreview && onPreview({ type: "file", value: artifactPath }),
+                      title: previewableArtifact ? "Preview the written artifact" : "Written artifact is not a repository file"
+                    },
+                    "Preview file"
+                  ),
                 h(
                   "button",
                   {
@@ -3054,6 +3062,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   const actionLabel = receipt.action || receipt.decision || receipt.status || receipt.binding_mode || receipt.source_type || editedFields || "written";
   const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || receipt.sha256 || "";
   const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || receipt.case_file_path || receipt.path || receipt.provenance_path || "";
+  const previewableSourcePath = isPreviewableRepoPath(sourcePath);
   const ledgerPath = result.ledger || result.receipt_path || "";
   const latestPath = result.latest || "";
   const receiptJson = JSON.stringify(receipt, null, 2);
@@ -3112,9 +3121,9 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
           {
             className: "copy-button",
             type: "button",
-            disabled: !liveMode || !sourcePath,
+            disabled: !liveMode || !previewableSourcePath,
             onClick: () => onPreview && onPreview({ type: "file", value: sourcePath }),
-            title: liveMode ? "Preview the written artifact" : "Start the local API to preview files"
+            title: previewableSourcePath ? "Preview the written artifact" : "Written artifact is not a repository file"
           },
           "Preview file"
         ),

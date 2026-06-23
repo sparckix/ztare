@@ -782,6 +782,44 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     assert len(ledger_rows) == 1
 
 
+def test_receipt_history_preserves_review_and_action_artifact_paths() -> None:
+    module = load_server_module()
+
+    review = module.normalize_receipt_row(
+        {
+            "schema": "ztare-forensic-workbench-review-receipt-v1",
+            "project": "demo",
+            "row": "Report/export",
+            "row_slug": "report_export",
+            "decision": "blocked",
+            "review_file_path": "local-api:demo/report_export",
+            "review_file_sha256": "abc",
+            "evidence_ref_count": 2,
+        },
+        kind="review",
+        path="projects/demo/workspace/forensic_workbench_reviews.jsonl",
+        line=1,
+    )
+    action = module.normalize_receipt_row(
+        {
+            "schema": "ztare-forensic-workbench-row-action-receipt-v1",
+            "project": "demo",
+            "row": "Source readiness",
+            "row_slug": "source_readiness",
+            "action": "needs_source",
+            "action_file_path": "projects/demo/workspace/source_readiness_action.json",
+            "action_file_sha256": "def",
+            "evidence_ref_count": 1,
+        },
+        kind="row_action",
+        path="projects/demo/workspace/forensic_workbench_row_actions.jsonl",
+        line=2,
+    )
+
+    assert review["review_file_path"] == "local-api:demo/report_export"
+    assert action["action_file_path"] == "projects/demo/workspace/source_readiness_action.json"
+
+
 def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
