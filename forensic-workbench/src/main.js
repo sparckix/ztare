@@ -207,11 +207,20 @@ function receiptArtifactPath(receipt) {
   return receipt.review_file_path || receipt.action_file_path || receipt.case_file_path || receipt.source_path || receipt.intake_path || "";
 }
 
+function repoPathCandidate(value) {
+  return String(value || "").trim().split("#")[0].trim();
+}
+
 function isPreviewableRepoPath(value) {
-  const raw = String(value || "").trim();
+  const raw = repoPathCandidate(value);
   if (!raw || raw.startsWith("/") || raw.includes("..")) return false;
   if (/^[A-Za-z][A-Za-z0-9+.-]*:/.test(raw)) return false;
   return true;
+}
+
+function previewableRepoPath(value) {
+  const path = repoPathCandidate(value);
+  return isPreviewableRepoPath(path) ? path : "";
 }
 
 function previewFileTitle(liveMode, previewable, readyTitle = "Preview the written artifact") {
@@ -4597,14 +4606,20 @@ function App() {
   };
 
   const loadFilePreview = (item) => {
-    if (!liveMode || !item || !item.value) {
+    const previewPath = item && previewableRepoPath(item.value);
+    if (!liveMode) {
       setFilePreview(null);
       setFilePreviewMessage("Start the local API to preview repository files.");
       return;
     }
+    if (!previewPath) {
+      setFilePreview(null);
+      setFilePreviewMessage("Selected ref is not a previewable repository file.");
+      return;
+    }
     setFilePreview(null);
-    setFilePreviewMessage(`Loading ${item.value}.`);
-    fetch(endpointUrl("/api/file", { path: item.value }), { headers: { Accept: "application/json" } })
+    setFilePreviewMessage(`Loading ${previewPath}.`);
+    fetch(endpointUrl("/api/file", { path: previewPath }), { headers: { Accept: "application/json" } })
       .then((response) => {
         if (!response.ok) throw new Error(`file preview failed: ${response.status}`);
         return response.json();
