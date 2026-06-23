@@ -1353,6 +1353,27 @@ code {
   line-height: 1.35;
 }
 
+.health-action-next,
+.health-action-domains {
+  color: #35453f;
+  font-weight: 760;
+}
+
+.health-evidence-refs {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.health-evidence-ref {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+  padding: 7px;
+  background: #ffffff;
+  border: 1px solid #dce3e0;
+}
+
 .health-findings code {
   padding: 7px;
   background: #f5f7f6;

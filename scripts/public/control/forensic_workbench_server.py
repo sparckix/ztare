@@ -887,9 +887,18 @@ def health_payload_for_project(
     ]
     action_issues = [
         {
+            "issue_id": issue.get("issue_id"),
             "issue_type": issue.get("issue_type"),
             "severity": issue.get("severity"),
             "scope": issue.get("scope"),
+            "domain": issue.get("domain"),
+            "affected_domains": issue.get("affected_domains") or [],
+            "blocking_rule": issue.get("blocking_rule"),
+            "denominator": issue.get("denominator"),
+            "observed_count": issue.get("observed_count"),
+            "expected_count": issue.get("expected_count"),
+            "freshness_window_days": issue.get("freshness_window_days"),
+            "evidence_refs": issue.get("evidence_refs") or [],
             "recommended_action": issue.get("recommended_action"),
         }
         for issue in action_payload.get("issues", [])

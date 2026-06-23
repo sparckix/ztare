@@ -2910,14 +2910,68 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
         title: "Action-intelligence rows",
         emptyText: "Action-intelligence health has no issue rows.",
         rows: issues,
-        renderRow: (row, index) =>
-          h(
+        renderRow: (row, index) => {
+          const evidenceRefs = Array.isArray(row.evidence_refs) ? row.evidence_refs.filter(Boolean) : [];
+          const affectedDomains = Array.isArray(row.affected_domains) ? row.affected_domains.filter(Boolean) : [];
+          const countText =
+            row.observed_count !== undefined && row.expected_count !== undefined
+              ? `${row.observed_count}/${row.expected_count}`
+              : "";
+          return h(
             "div",
-            { className: "health-finding-row action", key: `${row.issue_type || "issue"}:${row.scope || index}` },
+            { className: "health-finding-row action", key: `${row.issue_id || row.issue_type || "issue"}:${row.scope || index}` },
             h("strong", null, displayText(row.issue_type || "source-health issue")),
-            h("small", null, displayText(row.severity || "warning")),
-            h("p", null, `${displayText(row.scope || "unknown scope")}: ${displayText(row.recommended_action || "inspect source health")}`)
-          )
+            h("small", null, [displayText(row.severity || "warning"), row.scope ? displayText(row.scope) : "", countText].filter(Boolean).join(" | ")),
+            h("p", null, displayText(row.blocking_rule || row.recommended_action || "Inspect source health.")),
+            row.recommended_action
+              ? h("p", { className: "health-action-next" }, `Next: ${displayText(row.recommended_action)}`)
+              : null,
+            affectedDomains.length
+              ? h("p", { className: "health-action-domains" }, `Affects: ${affectedDomains.map(displayText).join(", ")}`)
+              : null,
+            evidenceRefs.length
+              ? h(
+                  "div",
+                  { className: "health-evidence-refs" },
+                  evidenceRefs.map((ref) =>
+                    h(
+                      "div",
+                      { className: "health-evidence-ref", key: ref },
+                      h("code", null, ref),
+                      h(
+                        "div",
+                        { className: "health-source-actions" },
+                        h(
+                          "button",
+                          {
+                            className: "copy-button",
+                            type: "button",
+                            onClick: () => copyText(ref),
+                            title: "Copy evidence ref"
+                          },
+                          "Copy"
+                        ),
+                        h(
+                          "button",
+                          {
+                            className: "copy-button",
+                            type: "button",
+                            disabled: !liveMode || !isPreviewableRepoPath(ref),
+                            onClick: () => onPreviewSource && onPreviewSource({ type: "file", value: ref }),
+                            title:
+                              liveMode && isPreviewableRepoPath(ref)
+                                ? "Preview evidence ref"
+                                : "Start the local API to preview repository files"
+                          },
+                          "Preview"
+                        )
+                      )
+                    )
+                  )
+                )
+              : null
+          );
+        }
       }),
       h(
         "div",

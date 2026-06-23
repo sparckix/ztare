@@ -99,10 +99,11 @@ source/evidence statuses, and copyable next commands from
 `ztare-forensic-workbench-report-contract-v1`: report/export status, blocker
 reasons, synthesis input-binding state, the backing contract path, and the
 copyable `make synth-contract` command. The health endpoint returns kernel-health attention
-components, action-intelligence source-health issues, and source-health file
-paths. The workbench shows these as read-only rows with copyable commands and
-previewable source files, so advisory blockers are inspectable without becoming
-hidden browser writes.
+components, action-intelligence source-health issues, blocking rules, observed
+and expected counts, evidence refs, and source-health file paths. The workbench
+shows these as read-only rows with copyable commands and previewable source
+files, so advisory blockers are inspectable without becoming hidden browser
+writes.
 The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
 exact `ztare autoresearch run ... --preflight-only` command, exit code,
 acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
