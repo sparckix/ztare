@@ -409,6 +409,7 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
     project: snapshot.project,
     rubric: snapshot.rubric,
     intake: snapshot.intake,
+    case_key: projectEntryKey(snapshot),
     readiness: snapshot.readiness,
     report_status: snapshot.report_status,
     status_reasons: snapshot.status_reasons || [],
@@ -4935,6 +4936,8 @@ function App() {
       },
       body: JSON.stringify({
         project: params.project,
+        rubric: params.rubric,
+        intake: params.intake,
         case_file: caseFile
       })
     })

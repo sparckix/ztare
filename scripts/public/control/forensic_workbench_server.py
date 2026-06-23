@@ -151,6 +151,38 @@ def live_row_payload_with_case(
     return scoped_payload
 
 
+def case_file_payload_with_case(
+    payload: dict[str, Any],
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
+    scoped_payload = dict(payload)
+    if str(scoped_payload.get("project") or "") != project:
+        raise ValueError("case_file project must match request project")
+
+    rubric_value = str(rubric or scoped_payload.get("rubric") or "").strip()
+    existing_rubric = str(scoped_payload.get("rubric") or "").strip()
+    if rubric and existing_rubric and existing_rubric != rubric:
+        raise ValueError("case_file rubric must match request rubric")
+    if rubric_value:
+        scoped_payload["rubric"] = rubric_value
+
+    intake_value = str(intake or scoped_payload.get("intake") or "").strip()
+    existing_intake = str(scoped_payload.get("intake") or "").strip()
+    if intake and existing_intake and existing_intake != intake:
+        raise ValueError("case_file intake must match request intake")
+    if intake_value:
+        expected_case_key = case_key(project, intake_value)
+        existing_case_key = str(scoped_payload.get("case_key") or "").strip()
+        if existing_case_key and existing_case_key != expected_case_key:
+            raise ValueError("case_file case_key must match request case")
+        scoped_payload["intake"] = intake_value
+        scoped_payload["case_key"] = expected_case_key
+    return scoped_payload
+
+
 def path_under(path: Path, root: Path) -> bool:
     try:
         path.resolve().relative_to(root.resolve())
@@ -1674,14 +1706,19 @@ def source_action_payload_for_project(
     return payload
 
 
-def save_case_file_payload(*, project: str, case_file: Any) -> dict[str, Any]:
+def save_case_file_payload(
+    *,
+    project: str,
+    case_file: Any,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     if not isinstance(case_file, dict):
         raise ValueError("case_file must be a JSON object")
     if str(case_file.get("schema") or "") != CASE_FILE_SCHEMA:
         raise ValueError(f"case_file schema must be {CASE_FILE_SCHEMA}")
-    if str(case_file.get("project") or "") != project:
-        raise ValueError("case_file project must match request project")
+    case_file = case_file_payload_with_case(case_file, project=project, rubric=rubric, intake=intake)
     project_root = snapshot.REPO / "projects" / project
     if not project_root.exists():
         raise FileNotFoundError(f"project does not exist: projects/{project}")
@@ -1703,8 +1740,8 @@ def save_case_file_payload(*, project: str, case_file: Any) -> dict[str, Any]:
             "receipt_count": len(case_file.get("recent_receipts") or []),
         },
         project=project,
-        rubric=str(case_file.get("rubric") or ""),
-        intake=str(case_file.get("intake") or ""),
+        rubric=str(case_file.get("rubric") or rubric or ""),
+        intake=str(case_file.get("intake") or intake or ""),
     )
     ledger_path = workspace / "forensic_workbench_case_files.jsonl"
     latest_path = workspace / "forensic_workbench_latest_case_file_write.json"
@@ -2195,6 +2232,8 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 request = self.read_json_body()
                 response = save_case_file_payload(
                     project=str(request.get("project") or ""),
+                    rubric=str(request.get("rubric") or "") or None,
+                    intake=str(request.get("intake") or "") or None,
                     case_file=request.get("case_file"),
                 )
                 self.send_json(response)

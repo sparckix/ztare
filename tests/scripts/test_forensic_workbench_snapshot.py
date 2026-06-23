@@ -964,7 +964,12 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
         "recent_receipts": [{"kind": "review"}],
     }
 
-    payload = module.save_case_file_payload(project="demo", case_file=case_file)
+    payload = module.save_case_file_payload(
+        project="demo",
+        rubric="demo",
+        intake="projects/demo/demo_intake.json",
+        case_file=case_file,
+    )
 
     assert payload["schema"] == "ztare-forensic-workbench-case-file-write-receipt-v1"
     assert payload["path"] == "projects/demo/workspace/forensic_workbench_case_file.json"
@@ -973,7 +978,7 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     saved = json.loads((project_root / "workspace" / "forensic_workbench_case_file.json").read_text(encoding="utf-8"))
     latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_case_file_write.json").read_text(encoding="utf-8"))
     ledger_rows = (project_root / "workspace" / "forensic_workbench_case_files.jsonl").read_text(encoding="utf-8").splitlines()
-    assert saved == case_file
+    assert saved == {**case_file, "case_key": "demo::projects/demo/demo_intake.json"}
     assert latest["row_count"] == 1
     assert latest["command_count"] == 1
     assert latest["receipt_count"] == 1
@@ -981,6 +986,27 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     assert latest["intake"] == "projects/demo/demo_intake.json"
     assert latest["case_key"] == "demo::projects/demo/demo_intake.json"
     assert len(ledger_rows) == 1
+
+
+def test_save_case_file_payload_rejects_other_case(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    (tmp_path / "projects" / "demo" / "workspace").mkdir(parents=True)
+    case_file = {
+        "schema": "ztare-forensic-workbench-case-file-v1",
+        "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/other_intake.json",
+        "case_key": "demo::projects/demo/other_intake.json",
+    }
+
+    with pytest.raises(ValueError, match="case_file intake must match request intake"):
+        module.save_case_file_payload(
+            project="demo",
+            rubric="demo",
+            intake="projects/demo/demo_intake.json",
+            case_file=case_file,
+        )
 
 
 def test_receipt_history_preserves_review_and_action_artifact_paths() -> None:
