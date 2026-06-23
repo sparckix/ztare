@@ -311,9 +311,9 @@ the current snapshot, project directory/intake/receipt context, row evidence
 refs, live trace/report/health context, latest preflight result, raw-source
 inventory, latest source import/edit receipts and hashes, advisory
 action-intelligence recommendations, command queue, latest visible write
-receipt, latest write-refresh result, and recent receipt paths for download or
-copy, but it must not write project files or imply that a blocked case is
-reviewed.
+receipt, latest write-refresh result, pending intake draft edits, and recent
+receipt paths for download or copy, but it must not write project files or
+imply that a blocked case is reviewed.
 
 Health and action rows are read-only in D4. They may tell the reviewer that a
 project has kernel-health attention, provider-runtime risk, stale source-health
