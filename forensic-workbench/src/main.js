@@ -172,6 +172,11 @@ function latestReceiptForRow(receiptHistory, row, kind) {
   }) || null;
 }
 
+function receiptArtifactPath(receipt) {
+  if (!receipt) return "";
+  return receipt.case_file_path || receipt.source_path || receipt.intake_path || "";
+}
+
 function buildReviewFile(snapshot, row, reviewState) {
   if (!row) return "";
   const payload = {
@@ -1171,8 +1176,9 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
       "div",
       { className: "receipt-history-list" },
       receipts.length
-        ? receipts.map((item) =>
-            h(
+        ? receipts.map((item) => {
+            const artifactPath = receiptArtifactPath(item);
+            return h(
               "article",
               { className: `receipt-history-row ${item.kind || "receipt"}`, key: `${item.kind}:${item.path}:${item.line}` },
               h(
@@ -1189,7 +1195,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                 item.decision ? h("span", null, displayText(item.decision)) : null,
                 item.action ? h("span", null, displayText(item.action)) : null,
                 item.source_type ? h("span", null, displayText(item.source_type)) : null,
-                item.source_path ? h("span", null, item.source_path) : null,
+                artifactPath ? h("span", null, artifactPath) : null,
                 item.updated_fields && item.updated_fields.length ? h("span", null, item.updated_fields.map(displayFieldName).join(", ")) : null
               ),
               h(
@@ -1205,7 +1211,18 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                     onClick: () => onPreview && onPreview({ type: "receipt", value: item.path }),
                     title: liveMode ? "Preview the receipt ledger" : "Start the local API to preview ledgers"
                   },
-                  "Preview"
+                  "Preview ledger"
+                ),
+                h(
+                  "button",
+                  {
+                    className: "copy-button",
+                    type: "button",
+                    disabled: !liveMode || !artifactPath,
+                    onClick: () => onPreview && onPreview({ type: "file", value: artifactPath }),
+                    title: liveMode ? "Preview the written artifact" : "Start the local API to preview files"
+                  },
+                  "Preview file"
                 ),
                 h(
                   "button",
@@ -1219,8 +1236,8 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                   "Copy path"
                 )
               )
-            )
-          )
+            );
+          })
         : h("p", null, liveMode ? "No receipt rows found for this project." : "Receipt history is available in live mode.")
     )
   );
@@ -3089,6 +3106,17 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
             title: liveMode ? "Preview the latest receipt file" : "Start the local API to preview files"
           },
           "Preview latest"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            disabled: !liveMode || !sourcePath,
+            onClick: () => onPreview && onPreview({ type: "file", value: sourcePath }),
+            title: liveMode ? "Preview the written artifact" : "Start the local API to preview files"
+          },
+          "Preview file"
         ),
         h(
           "button",

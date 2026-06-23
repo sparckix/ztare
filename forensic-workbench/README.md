@@ -75,8 +75,9 @@ edits write an intake-edit receipt under the project workspace. The
 receipt-history panel reads review, row-action, intake-edit, source-import,
 source-edit, source-action, and case-file ledgers through `/api/receipts`, returns
 `ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
-backing ledger file. The Refresh button reloads the current case from local
-project files. If the API is not running at startup, the app falls back to
+backing ledger file and the written artifact when the receipt names one. The
+Refresh button reloads the current case from local project files. If the API is
+not running at startup, the app falls back to
 `public/workbench_snapshot.json`; if a live project refresh fails after the API
 is detected, the app keeps the current case and shows the error instead of
 swapping in stale static data.
@@ -208,7 +209,7 @@ The interface is organized as a local claim-review surface:
   review files
 - receipt history panel showing recent review, row-action, intake-edit, source-import,
   source-edit, source-action, and case-file ledger rows with previewable backing
-  ledger paths
+  ledger and written-artifact paths
 - case-file export for saving, downloading, or copying the current case, rows,
   project context, evidence refs, live context, preflight result, raw-source
   inventory, run history, command queue, recent receipt paths, and the case-file
