@@ -462,7 +462,11 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             schema: sourceImport.schema || "",
             source_path: sourceImport.source_path || "",
             source_type: sourceImport.source_type || "",
+            source_type_map: sourceImport.source_type_map || "",
             receipt_path: sourceImport.receipt_path || "",
+            latest: sourceImport.latest || "",
+            sha256: (sourceImport.receipt || {}).sha256 || "",
+            receipt: sourceImport.receipt || {},
             source_check_accepted: Boolean(sourceImport.source_check && sourceImport.source_check.accepted)
           }
         : null,
@@ -473,6 +477,9 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             relative_raw_path: sourceEdit.relative_raw_path || "",
             source_type: sourceEdit.source_type || "",
             receipt_path: sourceEdit.receipt_path || "",
+            latest: sourceEdit.latest || "",
+            sha256: (sourceEdit.receipt || {}).sha256 || "",
+            receipt: sourceEdit.receipt || {},
             source_check_accepted: Boolean(sourceEdit.source_check && sourceEdit.source_check.accepted)
           }
         : null,
