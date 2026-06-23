@@ -3022,6 +3022,7 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
       "div",
       { className: "handoff-card" },
       h("div", null, h("span", null, "Review receipt"), h("code", null, command || "No row selected")),
+      h("p", null, liveMode ? "Apply writes the review receipt through the local API. Download and copy only export the JSON." : "Start the local API to write the review receipt; download and copy stay in the browser."),
       h(
         "div",
         { className: "handoff-actions" },
@@ -3030,22 +3031,22 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
           {
             className: "copy-button primary",
             type: "button",
-            title: reviewReady ? "Download review file" : "Choose a review decision first",
-            onClick: () => downloadText(reviewFilename, reviewFile),
-            disabled: !reviewReady
+            title: liveReady ? "Apply review through local API" : "Run local API and choose a decision first",
+            onClick: () => liveReady && applyReviewLive(rowKey, reviewPayload),
+            disabled: !liveReady
           },
-          "Download file"
+          "Apply"
         ),
         h(
           "button",
           {
             className: "copy-button",
             type: "button",
-            title: liveReady ? "Apply review through local API" : "Run local API and choose a decision first",
-            onClick: () => liveReady && applyReviewLive(rowKey, reviewPayload),
-            disabled: !liveReady
+            title: reviewReady ? "Download review file" : "Choose a review decision first",
+            onClick: () => downloadText(reviewFilename, reviewFile),
+            disabled: !reviewReady
           },
-          "Apply"
+          "Download file"
         ),
         h(
           "button",
@@ -3180,6 +3181,7 @@ function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMo
       "div",
       { className: "handoff-card" },
       h("div", null, h("span", null, "Action receipt"), h("code", null, command || "No row selected")),
+      h("p", null, liveMode ? "Save action writes the row-action receipt through the local API. Download and copy only export the JSON." : "Start the local API to write the row-action receipt; download and copy stay in the browser."),
       h(
         "div",
         { className: "handoff-actions" },
