@@ -778,6 +778,8 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     assert payload["latest"] == "projects/demo/workspace/forensic_workbench_latest_source_action.json"
     assert payload["receipt"]["schema"] == "ztare-forensic-workbench-source-action-receipt-v1"
     assert payload["receipt"]["action"] == "source_index"
+    assert payload["receipt"]["intake"] == "projects/demo/demo_intake.json"
+    assert payload["receipt"]["case_key"] == "demo::projects/demo/demo_intake.json"
     assert payload["receipt"]["source_path"] == "projects/demo/workspace/source_index.json"
     assert payload["receipt"]["source_sha256"] == module.hashlib.sha256(b'{"sources": []}\n').hexdigest()
     latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_source_action.json").read_text(encoding="utf-8"))
@@ -802,6 +804,8 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     case_file = {
         "schema": "ztare-forensic-workbench-case-file-v1",
         "project": "demo",
+        "rubric": "demo",
+        "intake": "projects/demo/demo_intake.json",
         "rows": [{"label": "Bounded claim"}],
         "command_queue": [{"command": "ztare project source-check --project demo --json"}],
         "recent_receipts": [{"kind": "review"}],
@@ -821,6 +825,8 @@ def test_save_case_file_payload_writes_workspace_artifact_and_receipt(tmp_path: 
     assert latest["command_count"] == 1
     assert latest["receipt_count"] == 1
     assert latest["case_file_path"] == payload["path"]
+    assert latest["intake"] == "projects/demo/demo_intake.json"
+    assert latest["case_key"] == "demo::projects/demo/demo_intake.json"
     assert len(ledger_rows) == 1
 
 
@@ -983,6 +989,8 @@ def test_import_source_payload_writes_raw_source_and_receipt(tmp_path: Path, mon
     receipt = json.loads(receipt_path.read_text(encoding="utf-8").strip())
     assert receipt["schema"] == "ztare-forensic-workbench-source-import-v1"
     assert receipt["source_path"] == "projects/demo/raw/source_note.md"
+    assert receipt["intake"] == "projects/demo/demo_intake.json"
+    assert receipt["case_key"] == "demo::projects/demo/demo_intake.json"
     latest = json.loads(latest_path.read_text(encoding="utf-8"))
     assert latest["source_path"] == "projects/demo/raw/source_note.md"
 
@@ -1025,6 +1033,8 @@ def test_edit_source_payload_updates_raw_source_and_receipt(tmp_path: Path, monk
     assert receipt["schema"] == "ztare-forensic-workbench-source-edit-v1"
     assert receipt["source_path"] == "projects/demo/raw/source_note.md"
     assert receipt["source_type"] == "research_question"
+    assert receipt["intake"] == "projects/demo/demo_intake.json"
+    assert receipt["case_key"] == "demo::projects/demo/demo_intake.json"
     latest = json.loads(latest_path.read_text(encoding="utf-8"))
     assert latest["source_path"] == "projects/demo/raw/source_note.md"
     assert latest["source_type"] == "research_question"

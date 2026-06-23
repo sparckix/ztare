@@ -409,6 +409,28 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+def case_key(project: str, intake: str | None) -> str:
+    intake_value = str(intake or "").strip()
+    return f"{project}::{intake_value}" if intake_value else project
+
+
+def add_case_context(
+    receipt: dict[str, Any],
+    *,
+    project: str,
+    rubric: str | None = None,
+    intake: str | None = None,
+) -> dict[str, Any]:
+    rubric_value = str(rubric or "").strip()
+    intake_value = str(intake or "").strip()
+    if rubric_value:
+        receipt["rubric"] = rubric_value
+    if intake_value:
+        receipt["intake"] = intake_value
+    receipt["case_key"] = case_key(project, intake_value)
+    return receipt
+
+
 def read_receipt_ledger(path: Path, *, kind: str) -> list[dict[str, Any]]:
     if not path.exists():
         return []
@@ -453,6 +475,9 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
         "schema": str(payload.get("schema") or ""),
         "applied_at": str(payload.get("applied_at") or ""),
         "project": str(payload.get("project") or ""),
+        "rubric": str(payload.get("rubric") or ""),
+        "intake": str(payload.get("intake") or payload.get("intake_path") or ""),
+        "case_key": str(payload.get("case_key") or ""),
         "path": path,
         "line": line,
         "summary": "",
@@ -604,8 +629,9 @@ def receipt_history_payload(*, project: str, limit: int = 12) -> dict[str, Any]:
     }
 
 
-def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> dict[str, Any]:
+def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any, rubric: str | None = None) -> dict[str, Any]:
     path = project_intake_path(project, intake, allow_examples=False)
+    rubric = rubric or project
     before_bytes = path.read_bytes()
     payload = read_json_object(path, "project intake")
     if payload.get("project") and payload.get("project") != project:
@@ -626,17 +652,22 @@ def apply_intake_edit(*, project: str, intake: str | None, raw_patch: Any) -> di
     path.write_bytes(after_bytes)
 
     workspace = snapshot.REPO / "projects" / project / "workspace"
-    receipt = {
-        "schema": INTAKE_EDIT_SCHEMA,
-        "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "project": project,
-        "intake_path": intake_rel,
-        "updated_fields": sorted(changed_patch),
-        "before_sha256": hashlib.sha256(before_bytes).hexdigest(),
-        "after_sha256": hashlib.sha256(after_bytes).hexdigest(),
-        "before_values": before_values,
-        "after_values": {key: payload.get(key) for key in changed_patch},
-    }
+    receipt = add_case_context(
+        {
+            "schema": INTAKE_EDIT_SCHEMA,
+            "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "project": project,
+            "intake_path": intake_rel,
+            "updated_fields": sorted(changed_patch),
+            "before_sha256": hashlib.sha256(before_bytes).hexdigest(),
+            "after_sha256": hashlib.sha256(after_bytes).hexdigest(),
+            "before_values": before_values,
+            "after_values": {key: payload.get(key) for key in changed_patch},
+        },
+        project=project,
+        rubric=rubric,
+        intake=intake_rel,
+    )
     ledger_path = workspace / "forensic_workbench_intake_edits.jsonl"
     latest_path = workspace / "forensic_workbench_latest_intake_edit.json"
     append_jsonl(ledger_path, receipt)
@@ -1033,16 +1064,21 @@ def import_source_payload(
     source_type_map[filename] = source_type
     source_type_map_path.write_text(json.dumps(source_type_map, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
-    receipt = {
-        "schema": SOURCE_IMPORT_SCHEMA,
-        "applied_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "project": project,
-        "source_path": repo_rel(source_path),
-        "source_type": source_type,
-        "chars": len(body),
-        "sha256": sha256,
-        "source_type_map": repo_rel(source_type_map_path),
-    }
+    receipt = add_case_context(
+        {
+            "schema": SOURCE_IMPORT_SCHEMA,
+            "applied_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "project": project,
+            "source_path": repo_rel(source_path),
+            "source_type": source_type,
+            "chars": len(body),
+            "sha256": sha256,
+            "source_type_map": repo_rel(source_type_map_path),
+        },
+        project=project,
+        rubric=rubric,
+        intake=intake,
+    )
     receipt_path = workspace / "forensic_workbench_source_imports.jsonl"
     latest_path = workspace / "forensic_workbench_latest_source_import.json"
     append_jsonl(receipt_path, receipt)
@@ -1223,17 +1259,22 @@ def edit_source_payload(
     write_source_type_map(raw_dir, source_type_map)
     sha256 = hashlib.sha256(source_text.encode("utf-8")).hexdigest()
     workspace = snapshot.REPO / "projects" / project / "workspace"
-    receipt = {
-        "schema": SOURCE_EDIT_SCHEMA,
-        "applied_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "project": project,
-        "source_path": repo_rel(path),
-        "relative_raw_path": relative_path,
-        "source_type": source_type,
-        "chars": len(body),
-        "sha256": sha256,
-        "source_type_map": repo_rel(raw_dir / "source_type_map.json"),
-    }
+    receipt = add_case_context(
+        {
+            "schema": SOURCE_EDIT_SCHEMA,
+            "applied_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "project": project,
+            "source_path": repo_rel(path),
+            "relative_raw_path": relative_path,
+            "source_type": source_type,
+            "chars": len(body),
+            "sha256": sha256,
+            "source_type_map": repo_rel(raw_dir / "source_type_map.json"),
+        },
+        project=project,
+        rubric=rubric,
+        intake=intake,
+    )
     receipt_path = workspace / "forensic_workbench_source_edits.jsonl"
     latest_path = workspace / "forensic_workbench_latest_source_edit.json"
     append_jsonl(receipt_path, receipt)
@@ -1547,23 +1588,28 @@ def source_action_payload_for_project(
         workspace = snapshot.REPO / "projects" / project / "workspace"
         ledger_path = workspace / "forensic_workbench_source_actions.jsonl"
         latest_path = workspace / "forensic_workbench_latest_source_action.json"
-        receipt = {
-            "schema": SOURCE_ACTION_RECEIPT_SCHEMA,
-            "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-            "project": project,
-            "action": action,
-            "label": str(spec["label"]),
-            "command": payload["command"],
-            "returncode": proc.returncode,
-            "accepted": proc.returncode == 0,
-            "source_action_schema": SOURCE_ACTION_SCHEMA,
-            "source_receipt_path": source_receipt_path,
-            "source_receipt_sha256": source_receipt_sha256,
-            "source_path": source_path,
-            "source_sha256": source_sha256,
-            "parsed_schema": str(parsed_output.get("schema") or ""),
-            "parsed_status": str(parsed_output.get("status") or ""),
-        }
+        receipt = add_case_context(
+            {
+                "schema": SOURCE_ACTION_RECEIPT_SCHEMA,
+                "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+                "project": project,
+                "action": action,
+                "label": str(spec["label"]),
+                "command": payload["command"],
+                "returncode": proc.returncode,
+                "accepted": proc.returncode == 0,
+                "source_action_schema": SOURCE_ACTION_SCHEMA,
+                "source_receipt_path": source_receipt_path,
+                "source_receipt_sha256": source_receipt_sha256,
+                "source_path": source_path,
+                "source_sha256": source_sha256,
+                "parsed_schema": str(parsed_output.get("schema") or ""),
+                "parsed_status": str(parsed_output.get("status") or ""),
+            },
+            project=project,
+            rubric=rubric,
+            intake=intake,
+        )
         append_jsonl(ledger_path, receipt)
         latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         payload.update(
@@ -1610,16 +1656,21 @@ def save_case_file_payload(*, project: str, case_file: Any) -> dict[str, Any]:
     case_bytes = (json.dumps(case_file, indent=2, sort_keys=True) + "\n").encode("utf-8")
     case_path.write_bytes(case_bytes)
 
-    receipt = {
-        "schema": CASE_FILE_WRITE_SCHEMA,
-        "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "project": project,
-        "case_file_path": repo_rel(case_path),
-        "case_file_sha256": hashlib.sha256(case_bytes).hexdigest(),
-        "row_count": len(case_file.get("rows") or []),
-        "command_count": len(case_file.get("command_queue") or []),
-        "receipt_count": len(case_file.get("recent_receipts") or []),
-    }
+    receipt = add_case_context(
+        {
+            "schema": CASE_FILE_WRITE_SCHEMA,
+            "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+            "project": project,
+            "case_file_path": repo_rel(case_path),
+            "case_file_sha256": hashlib.sha256(case_bytes).hexdigest(),
+            "row_count": len(case_file.get("rows") or []),
+            "command_count": len(case_file.get("command_queue") or []),
+            "receipt_count": len(case_file.get("recent_receipts") or []),
+        },
+        project=project,
+        rubric=str(case_file.get("rubric") or ""),
+        intake=str(case_file.get("intake") or ""),
+    )
     ledger_path = workspace / "forensic_workbench_case_files.jsonl"
     latest_path = workspace / "forensic_workbench_latest_case_file_write.json"
     append_jsonl(ledger_path, receipt)
@@ -1977,6 +2028,7 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                     project=project,
                     intake=intake,
                     raw_patch=request.get("fields"),
+                    rubric=rubric,
                 )
                 response = {
                     "ok": True,
