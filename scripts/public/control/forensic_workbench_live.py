@@ -8,6 +8,8 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.error import HTTPError, URLError
+from urllib.request import Request, urlopen
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -24,6 +26,28 @@ def terminate(proc: subprocess.Popen[object]) -> None:
     except subprocess.TimeoutExpired:
         proc.kill()
         proc.wait(timeout=5)
+
+
+def api_ready(api_url: str, *, timeout: float) -> bool:
+    request = Request(f"{api_url.rstrip('/')}/api/projects", headers={"Accept": "application/json"})
+    try:
+        with urlopen(request, timeout=timeout) as response:  # noqa: S310 - local dev server readiness check.
+            return 200 <= response.status < 500
+    except HTTPError as exc:
+        return 200 <= exc.code < 500
+    except (OSError, URLError):
+        return False
+
+
+def wait_for_api(api_url: str, proc: subprocess.Popen[object], *, startup_timeout: float, poll_interval: float) -> bool:
+    deadline = time.monotonic() + startup_timeout
+    while time.monotonic() < deadline:
+        if proc.poll() is not None:
+            return False
+        if api_ready(api_url, timeout=min(0.5, max(0.05, poll_interval))):
+            return True
+        time.sleep(poll_interval)
+    return False
 
 
 def run_live(args: argparse.Namespace) -> int:
@@ -48,8 +72,15 @@ def run_live(args: argparse.Namespace) -> int:
 
     api_proc = subprocess.Popen(api_cmd, cwd=REPO)
     try:
-        time.sleep(args.api_startup_delay)
-        if api_proc.poll() is not None:
+        if not wait_for_api(
+            args.api_url,
+            api_proc,
+            startup_timeout=args.api_startup_timeout,
+            poll_interval=args.api_poll_interval,
+        ):
+            if api_proc.poll() is not None:
+                return api_proc.returncode or 1
+            print(f"API did not become ready within {args.api_startup_timeout:.1f}s: {args.api_url}", file=sys.stderr, flush=True)
             return api_proc.returncode or 1
         dev_proc = subprocess.Popen(dev_cmd, cwd=REPO)
         try:
@@ -68,7 +99,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--api-port", type=int, default=8765)
     parser.add_argument("--host", default="", help="Optional Vite host override.")
     parser.add_argument("--port", type=int, default=0, help="Optional Vite port override.")
-    parser.add_argument("--api-startup-delay", type=float, default=0.6)
+    parser.add_argument("--api-startup-timeout", type=float, default=8.0)
+    parser.add_argument("--api-poll-interval", type=float, default=0.2)
     return parser
 
 

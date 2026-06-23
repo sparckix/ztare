@@ -178,9 +178,10 @@ Run the live local workbench:
 make forensic-workbench-live
 ```
 
-The live launcher prints the API URL and app URL it starts. The app port is
-strict: if `127.0.0.1:5174` is already in use, the command exits instead of
-silently moving the UI to a different port.
+The live launcher prints the API URL and app URL it starts, waits for the API
+to answer, then starts the UI. The app port is strict: if `127.0.0.1:5174` is
+already in use, the command exits instead of silently moving the UI to a
+different port.
 
 Run the API and React dev server separately when debugging:
 
