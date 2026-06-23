@@ -153,7 +153,8 @@ history, live trace/report/health context, the latest preflight result, latest
 source/evidence action result, run-history context, the claim-support context,
 raw-source inventory, action-intelligence advisory recommendations, latest
 source import, latest source edit, command queue, and the latest visible write
-receipt. It does not claim that an unreviewed case is complete.
+receipt with its write-refresh results. It does not claim that an unreviewed
+case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
 case has no report-support context yet, it still opens with a blocked

@@ -305,6 +305,7 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
   const sourceImport = context.sourceImportEvent || null;
   const sourceEdit = context.sourceEditEvent || null;
   const latestWrite = context.writeReceiptEvent || null;
+  const latestRefreshResults = Array.isArray(context.refreshResults) ? context.refreshResults.filter(Boolean) : [];
   const projectEntry = context.projectEntry || {};
   const intakeRefSummary = projectEntry.intake_ref_summary || {};
   const commandQueue = commandCockpitItems({
@@ -482,7 +483,12 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             snapshot_error: latestWrite.snapshotError || "",
             ledger: (latestWrite.result || {}).ledger || "",
             latest: (latestWrite.result || {}).latest || "",
-            receipt: (latestWrite.result || {}).receipt || {}
+            receipt: (latestWrite.result || {}).receipt || {},
+            refresh_results: latestRefreshResults.map((row) => ({
+              label: row.label || "",
+              ok: row.ok !== false,
+              error: row.error || ""
+            }))
           }
         : null
     },
@@ -1973,7 +1979,7 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow, liveMode, saving, saveEvent, onSave }) {
+function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, refreshResults, selectedRow, liveMode, saving, saveEvent, onSave }) {
   const caseFile = buildCaseFile(snapshot, receiptHistory, {
     projectEntry,
     traceContext,
@@ -1987,11 +1993,14 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
     runHistoryContext,
     claimSupportContext,
     writeReceiptEvent,
+    refreshResults,
     selectedRow
   });
   const caseFileJson = JSON.stringify(caseFile, null, 2);
   const summary = caseFileSummary(snapshot, receiptHistory, caseFile);
   const rowsWithEvidence = caseFile.rows.filter((row) => row.evidence_refs.length).length;
+  const writeRefreshRows = (((caseFile.live_context.latest_write_receipt || {}).refresh_results) || []).filter(Boolean);
+  const writeRefreshOk = writeRefreshRows.filter((row) => row.ok !== false).length;
   const liveContextCount = [
     caseFile.live_context.trace.schema ||
       caseFile.live_context.trace.readiness ||
@@ -2015,6 +2024,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
     caseFile.live_context.latest_source_action,
     caseFile.live_context.latest_source_import,
     caseFile.live_context.latest_source_edit,
+    caseFile.live_context.latest_write_receipt,
     caseFile.live_context.run_history.schema || Object.keys(caseFile.live_context.run_history.summary || {}).length,
     caseFile.live_context.claim_support.schema || caseFile.live_context.claim_support.status
   ].filter(Boolean).length;
@@ -2044,6 +2054,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
       h("div", null, h("span", null, "Source action"), h("strong", null, caseFile.live_context.latest_source_action ? displayText(caseFile.live_context.latest_source_action.action) : "not run")),
       h("div", null, h("span", null, "Source import"), h("strong", null, caseFile.live_context.latest_source_import ? displayText(caseFile.live_context.latest_source_import.source_type) : "none")),
       h("div", null, h("span", null, "Source edit"), h("strong", null, caseFile.live_context.latest_source_edit ? displayText(caseFile.live_context.latest_source_edit.source_type) : "none")),
+      h("div", null, h("span", null, "Write refresh"), h("strong", null, writeRefreshRows.length ? `${writeRefreshOk}/${writeRefreshRows.length} panels` : "not run")),
       h("div", null, h("span", null, "Run score"), h("strong", null, caseFile.live_context.run_history.summary.latest_score === undefined || caseFile.live_context.run_history.summary.latest_score === null ? "none" : String(caseFile.live_context.run_history.summary.latest_score))),
       h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(caseFile.live_context.claim_support.status || "not loaded"))),
       h("div", null, h("span", null, "Advisory rows"), h("strong", null, String(caseFile.live_context.health.action_intelligence.recommendations.length || 0))),
@@ -4823,6 +4834,7 @@ function App() {
         runHistoryContext,
         claimSupportContext,
         writeReceiptEvent,
+        refreshResults: lastRefreshResults,
         selectedRow,
         liveMode,
         saving: caseFileSaving,
