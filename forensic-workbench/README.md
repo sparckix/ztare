@@ -128,7 +128,7 @@ evidence-file errors, and previewable source paths from
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-file export is client-side and explicit: clicking Download case file
-creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
+creates `ztare-forensic-workbench-case-file-v1` JSON from the current
 snapshot, project context, recent receipt history, live trace/report/health
 context, the latest preflight result, latest source/evidence action result,
 run-history context, the claim-support context, raw-source inventory, latest

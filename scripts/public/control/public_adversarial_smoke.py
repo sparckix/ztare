@@ -262,7 +262,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "ztare-forensic-workbench-receipt-history-v1",
     "Case file",
     "Download case file",
-    "ztare-forensic-workbench-case-packet-v1",
+    "ztare-forensic-workbench-case-file-v1",
     "ztare-forensic-workbench-project-create-v1",
     "ztare-forensic-workbench-source-import-v1",
     "ztare-forensic-workbench-source-edit-v1",

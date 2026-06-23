@@ -227,7 +227,7 @@ function sourceActionReceiptEvent(payload) {
   };
 }
 
-function buildCasePacket(snapshot, receiptHistory, context = {}) {
+function buildCaseFile(snapshot, receiptHistory, context = {}) {
   const rows = (snapshot && snapshot.rows) || [];
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).slice(0, 8);
   const trace = context.traceContext || {};
@@ -257,7 +257,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
     command: item.command
   }));
   return {
-    schema: "ztare-forensic-workbench-case-packet-v1",
+    schema: "ztare-forensic-workbench-case-file-v1",
     project: snapshot.project,
     rubric: snapshot.rubric,
     intake: snapshot.intake,
@@ -435,7 +435,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   };
 }
 
-function casePacketSummary(snapshot, receiptHistory, packet) {
+function caseFileSummary(snapshot, receiptHistory, caseFile) {
   const blocker = activeBlocker((snapshot && snapshot.rows) || []);
   const receipts = ((receiptHistory && receiptHistory.receipts) || []).length;
   return [
@@ -444,7 +444,7 @@ function casePacketSummary(snapshot, receiptHistory, packet) {
     `Export: ${displayText(snapshot.report_status)}`,
     `Current blocker: ${blocker ? blocker.label : "none"}`,
     `Recent receipts: ${receipts}`,
-    `Command queue: ${packet ? packet.command_queue.length : 0}`,
+    `Command queue: ${caseFile ? caseFile.command_queue.length : 0}`,
     `Intake: ${snapshot.intake || "not recorded"}`
   ].join("\n");
 }
@@ -1764,7 +1764,7 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
 }
 
 function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }) {
-  const packet = buildCasePacket(snapshot, receiptHistory, {
+  const caseFile = buildCaseFile(snapshot, receiptHistory, {
     projectEntry,
     traceContext,
     reportContext,
@@ -1779,33 +1779,33 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
     writeReceiptEvent,
     selectedRow
   });
-  const packetJson = JSON.stringify(packet, null, 2);
-  const summary = casePacketSummary(snapshot, receiptHistory, packet);
-  const rowsWithEvidence = packet.rows.filter((row) => row.evidence_refs.length).length;
+  const caseFileJson = JSON.stringify(caseFile, null, 2);
+  const summary = caseFileSummary(snapshot, receiptHistory, caseFile);
+  const rowsWithEvidence = caseFile.rows.filter((row) => row.evidence_refs.length).length;
   const liveContextCount = [
-    packet.live_context.trace.schema ||
-      packet.live_context.trace.readiness ||
-      packet.live_context.trace.trace_command ||
-      packet.live_context.trace.next_commands.length ||
-      packet.live_context.trace.carrier_chain.length,
-    packet.live_context.report_contract.schema ||
-      packet.live_context.report_contract.status ||
-      packet.live_context.report_contract.report_support_contract ||
-      packet.live_context.report_contract.command,
-    packet.live_context.health.schema ||
-      Object.keys(packet.live_context.health.kernel.summary || {}).length ||
-      packet.live_context.health.kernel.attention_components.length ||
-      Object.keys(packet.live_context.health.action_intelligence.counts || {}).length ||
-      packet.live_context.health.action_intelligence.issues.length,
-    packet.live_context.preflight_result,
-    packet.live_context.sources.schema ||
-      packet.live_context.sources.source_count ||
-      packet.live_context.sources.raw_dir,
-    packet.live_context.latest_source_action,
-    packet.live_context.latest_source_import,
-    packet.live_context.latest_source_edit,
-    packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length,
-    packet.live_context.claim_support.schema || packet.live_context.claim_support.status
+    caseFile.live_context.trace.schema ||
+      caseFile.live_context.trace.readiness ||
+      caseFile.live_context.trace.trace_command ||
+      caseFile.live_context.trace.next_commands.length ||
+      caseFile.live_context.trace.carrier_chain.length,
+    caseFile.live_context.report_contract.schema ||
+      caseFile.live_context.report_contract.status ||
+      caseFile.live_context.report_contract.report_support_contract ||
+      caseFile.live_context.report_contract.command,
+    caseFile.live_context.health.schema ||
+      Object.keys(caseFile.live_context.health.kernel.summary || {}).length ||
+      caseFile.live_context.health.kernel.attention_components.length ||
+      Object.keys(caseFile.live_context.health.action_intelligence.counts || {}).length ||
+      caseFile.live_context.health.action_intelligence.issues.length,
+    caseFile.live_context.preflight_result,
+    caseFile.live_context.sources.schema ||
+      caseFile.live_context.sources.source_count ||
+      caseFile.live_context.sources.raw_dir,
+    caseFile.live_context.latest_source_action,
+    caseFile.live_context.latest_source_import,
+    caseFile.live_context.latest_source_edit,
+    caseFile.live_context.run_history.schema || Object.keys(caseFile.live_context.run_history.summary || {}).length,
+    caseFile.live_context.claim_support.schema || caseFile.live_context.claim_support.status
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_file.json`;
 
@@ -1822,21 +1822,21 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
     h(
       "div",
       { className: "case-export-facts" },
-      h("div", null, h("span", null, "Rows"), h("strong", null, String(packet.rows.length))),
+      h("div", null, h("span", null, "Rows"), h("strong", null, String(caseFile.rows.length))),
       h("div", null, h("span", null, "Rows with evidence"), h("strong", null, String(rowsWithEvidence))),
-      h("div", null, h("span", null, "Receipts"), h("strong", null, String(packet.recent_receipts.length))),
-      h("div", null, h("span", null, "Commands"), h("strong", null, String(packet.command_queue.length))),
-      h("div", null, h("span", null, "Project files"), h("strong", null, packet.project_context.project_dir ? "included" : "not recorded")),
-      h("div", null, h("span", null, "Intake mode"), h("strong", null, packet.project_context.intake_editable ? "editable" : "read only")),
-      h("div", null, h("span", null, "Preflight"), h("strong", null, packet.live_context.preflight_result ? displayText(packet.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
-      h("div", null, h("span", null, "Raw sources"), h("strong", null, String(packet.live_context.sources.source_count || 0))),
-      h("div", null, h("span", null, "Source action"), h("strong", null, packet.live_context.latest_source_action ? displayText(packet.live_context.latest_source_action.action) : "not run")),
-      h("div", null, h("span", null, "Source import"), h("strong", null, packet.live_context.latest_source_import ? displayText(packet.live_context.latest_source_import.source_type) : "none")),
-      h("div", null, h("span", null, "Source edit"), h("strong", null, packet.live_context.latest_source_edit ? displayText(packet.live_context.latest_source_edit.source_type) : "none")),
-      h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
-      h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(packet.live_context.claim_support.status || "not loaded"))),
+      h("div", null, h("span", null, "Receipts"), h("strong", null, String(caseFile.recent_receipts.length))),
+      h("div", null, h("span", null, "Commands"), h("strong", null, String(caseFile.command_queue.length))),
+      h("div", null, h("span", null, "Project files"), h("strong", null, caseFile.project_context.project_dir ? "included" : "not recorded")),
+      h("div", null, h("span", null, "Intake mode"), h("strong", null, caseFile.project_context.intake_editable ? "editable" : "read only")),
+      h("div", null, h("span", null, "Preflight"), h("strong", null, caseFile.live_context.preflight_result ? displayText(caseFile.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
+      h("div", null, h("span", null, "Raw sources"), h("strong", null, String(caseFile.live_context.sources.source_count || 0))),
+      h("div", null, h("span", null, "Source action"), h("strong", null, caseFile.live_context.latest_source_action ? displayText(caseFile.live_context.latest_source_action.action) : "not run")),
+      h("div", null, h("span", null, "Source import"), h("strong", null, caseFile.live_context.latest_source_import ? displayText(caseFile.live_context.latest_source_import.source_type) : "none")),
+      h("div", null, h("span", null, "Source edit"), h("strong", null, caseFile.live_context.latest_source_edit ? displayText(caseFile.live_context.latest_source_edit.source_type) : "none")),
+      h("div", null, h("span", null, "Run score"), h("strong", null, caseFile.live_context.run_history.summary.latest_score === undefined || caseFile.live_context.run_history.summary.latest_score === null ? "none" : String(caseFile.live_context.run_history.summary.latest_score))),
+      h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(caseFile.live_context.claim_support.status || "not loaded"))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
-      h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
+      h("div", null, h("span", null, "Schema"), h("strong", null, caseFile.schema))
     ),
     h(
       "div",
@@ -1847,7 +1847,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
         {
           className: "copy-button primary",
           type: "button",
-          onClick: () => downloadText(filename, packetJson),
+          onClick: () => downloadText(filename, caseFileJson),
           title: "Download the current case file JSON"
         },
         "Download case file"
@@ -1857,7 +1857,7 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, traceContext,
         {
           className: "copy-button",
           type: "button",
-          onClick: () => copyText(packetJson),
+          onClick: () => copyText(caseFileJson),
           title: "Copy case file JSON"
         },
         "Copy JSON"
