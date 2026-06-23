@@ -255,6 +255,14 @@ function actionIntelligenceNote(row, fallback = "Inspect action-intelligence row
   return parts.join(" | ");
 }
 
+function actionIntelligenceAction(row) {
+  const text = `${(row && row.recommended_action) || ""} ${(row && row.issue_type) || ""}`.toLowerCase();
+  if (/source|ledger|archive|surfacing|evidence/.test(text)) return "needs_source";
+  if (/block|export/.test(text)) return "export_blocker";
+  if (/ready|run/.test(text)) return "ready_to_run";
+  return "next_step";
+}
+
 function repoPathCandidate(value) {
   return String(value || "").trim().split("#")[0].trim();
 }
@@ -3007,7 +3015,7 @@ function HealthFindingList({ title, emptyText, rows, renderRow }) {
   );
 }
 
-function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewSource }) {
+function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewSource, onUseActionNote }) {
   const kernel = (healthContext && healthContext.kernel) || {};
   const kernelSummary = kernel.summary || {};
   const action = (healthContext && healthContext.action_intelligence) || {};
@@ -3126,6 +3134,7 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
             row.observed_count !== undefined && row.expected_count !== undefined
               ? `${row.observed_count}/${row.expected_count}`
               : "";
+          const actionNote = actionIntelligenceNote(row, "Inspect source-health issue");
           return h(
             "div",
             { className: "health-finding-row action", key: `${row.issue_id || row.issue_type || "issue"}:${row.scope || index}` },
@@ -3143,7 +3152,17 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
               {
                 className: "copy-button",
                 type: "button",
-                onClick: () => copyText(actionIntelligenceNote(row, "Inspect source-health issue")),
+                onClick: () => onUseActionNote && onUseActionNote(actionNote, actionIntelligenceAction(row)),
+                title: "Stage this issue in the row-action editor"
+              },
+              "Use as action"
+            ),
+            h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(actionNote),
                 title: "Copy this issue as a row-action note"
               },
               "Copy action note"
@@ -3160,6 +3179,7 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
           const evidenceRefs = Array.isArray(row.evidence_refs) ? row.evidence_refs.filter(Boolean).slice(0, 3) : [];
           const pSuccess = typeof row.p_success === "number" ? `p ${Math.round(row.p_success * 100)}%` : "";
           const cost = typeof row.expected_cost_agent_minutes === "number" ? `${row.expected_cost_agent_minutes} min` : "";
+          const actionNote = actionIntelligenceNote(row, "Inspect advisory recommendation");
           return h(
             "div",
             { className: "health-finding-row recommendation", key: `${row.recommendation_id || "recommendation"}:${index}` },
@@ -3181,7 +3201,17 @@ function HealthActionsPanel({ healthContext, healthMessage, liveMode, onPreviewS
               {
                 className: "copy-button",
                 type: "button",
-                onClick: () => copyText(actionIntelligenceNote(row, "Inspect advisory recommendation")),
+                onClick: () => onUseActionNote && onUseActionNote(actionNote, actionIntelligenceAction(row)),
+                title: "Stage this recommendation in the row-action editor"
+              },
+              "Use as action"
+            ),
+            h(
+              "button",
+              {
+                className: "copy-button",
+                type: "button",
+                onClick: () => copyText(actionNote),
                 title: "Copy this recommendation as a row-action note"
               },
               "Copy action note"
@@ -4594,6 +4624,21 @@ function App() {
   const setSelectedActionState = (label, nextState) => {
     setActionStates((current) => ({ ...current, [label]: nextState }));
   };
+  const useHealthActionNote = (note, action = "next_step") => {
+    if (!snapshot || !note) return;
+    const rows = snapshot.rows || [];
+    const target =
+      activeBlocker(rows) ||
+      rowByLabel(rows, "Report/export") ||
+      rowByLabel(rows, "Run readiness") ||
+      selectedRow ||
+      rows[0] ||
+      null;
+    if (!target) return;
+    setSelectedLabel(target.label);
+    setActionStates((current) => ({ ...current, [target.label]: { action, note } }));
+    setActionMessage(`Staged health action on ${target.label}. Review and save the row action.`);
+  };
 
   const applyReviewLive = (rowSlugValue, reviewPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !reviewPayload) return;
@@ -5078,7 +5123,7 @@ function App() {
       h(RunHistoryPanel, { runHistory: runHistoryContext, message: runHistoryMessage, liveMode, onPreview: loadFilePreview }),
       h(ClaimSupportPanel, { claimSupport: claimSupportContext, message: claimSupportMessage, liveMode, onPreview: loadFilePreview }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
-      h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
+      h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview, onUseActionNote: useHealthActionNote }),
       h(BlockerPanel, { snapshot, setSelectedLabel }),
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
