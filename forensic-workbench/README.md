@@ -37,6 +37,7 @@ make forensic-workbench-live
 Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
 `/api/trace`, `/api/project-create`, `/api/source-import`, `/api/preflight`,
 `/api/sources`, `/api/source-file`, `/api/source-edit`, `/api/source-action`, `/api/run-history`,
+`/api/claim-support`,
 `/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
 still does not scan `projects/`
 directly. It asks the local API for a project index and a fresh snapshot for the
@@ -120,14 +121,18 @@ receipt path when the command returns one.
 The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
 recent run scores, latest and champion verdict summaries, evidence gaps,
 synthesis patterns, and backing file paths.
+The claim-support endpoint returns `ztare-forensic-workbench-claim-support-v1`:
+claim-support status, weak/unsourced counts, source-context status, missing
+packet errors, and previewable source paths from
+`ztare project claim-support --project <project> --json`.
 
 That keeps every visible state tied to a file, command, receipt, or warning.
 The case-packet export is client-side and explicit: clicking Download packet
 creates `ztare-forensic-workbench-case-packet-v1` JSON from the current
 snapshot, recent receipt history, live trace/report/health context, the latest
 preflight result, latest source/evidence action result, run-history context, the
-raw-source inventory, latest source import, latest source edit, command queue,
-and the latest visible write receipt. It
+claim-support context, raw-source inventory, latest source import, latest source
+edit, command queue, and the latest visible write receipt. It
 does not write project files or claim that an unreviewed case is complete.
 The project index includes project-local intakes and public example intakes, so
 the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
@@ -197,6 +202,8 @@ The interface is organized as a local claim-review surface:
 - case-packet export for downloading or copying the current case, rows,
   evidence refs, live context, preflight result, raw-source inventory, run
   history, command queue, and recent receipt paths
+- claim-support panel showing support status, weak/unsourced counts, missing
+  packet errors, source context, and the exact support-audit command
 - latest-review receipt row that reads the CLI-applied receipt when present and
   otherwise shows an explicit no-receipt state
 - review queue strip showing selected row, decision, evidence count, and receipt readiness

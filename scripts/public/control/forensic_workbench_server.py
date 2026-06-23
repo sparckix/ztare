@@ -24,6 +24,7 @@ RECEIPT_HISTORY_SCHEMA = "ztare-forensic-workbench-receipt-history-v1"
 REPORT_CONTRACT_SCHEMA = "ztare-forensic-workbench-report-contract-v1"
 PREFLIGHT_SCHEMA = "ztare-forensic-workbench-preflight-v1"
 RUN_HISTORY_SCHEMA = "ztare-forensic-workbench-run-history-v1"
+CLAIM_SUPPORT_SCHEMA = "ztare-forensic-workbench-claim-support-v1"
 SOURCE_ACTION_SCHEMA = "ztare-forensic-workbench-source-action-v1"
 PROJECT_CREATE_SCHEMA = "ztare-forensic-workbench-project-create-v1"
 SOURCE_IMPORT_SCHEMA = "ztare-forensic-workbench-source-import-v1"
@@ -80,6 +81,19 @@ def first_param(params: dict[str, list[str]], key: str, default: str) -> str:
 
 def repo_rel(path: Path) -> str:
     return str(path.resolve().relative_to(snapshot.REPO.resolve()))
+
+
+def display_path(value: Any) -> str:
+    raw = str(value or "")
+    if not raw:
+        return ""
+    path = Path(raw)
+    if path.is_absolute():
+        try:
+            return repo_rel(path)
+        except ValueError:
+            return raw
+    return raw
 
 
 def path_under(path: Path, root: Path) -> bool:
@@ -1389,6 +1403,86 @@ def compact_eval_history_row(row: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def compact_claim_support_source(row: dict[str, Any]) -> dict[str, Any]:
+    preview = row.get("preview") if isinstance(row.get("preview"), dict) else {}
+    return {
+        "source_id": str(row.get("source_id") or ""),
+        "status": str(row.get("status") or ""),
+        "source_type": str(row.get("source_type") or ""),
+        "path": display_path(row.get("path")),
+        "relative_raw_path": str(row.get("relative_raw_path") or ""),
+        "line_count": safe_int(row.get("line_count")),
+        "hash_matches_index": row.get("hash_matches_index"),
+        "preview": {
+            "line_start": safe_int(preview.get("line_start")),
+            "line_end": safe_int(preview.get("line_end")),
+            "text": str(preview.get("text") or "")[:800],
+            "truncated": bool(preview.get("truncated")),
+        },
+    }
+
+
+def compact_claim_support_row(row: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "claim_id": str(row.get("claim_id") or row.get("id") or ""),
+        "status": str(row.get("status") or ""),
+        "source_id": str(row.get("source_id") or ""),
+        "support_level": str(row.get("support_level") or ""),
+        "issue": str(row.get("issue") or row.get("reason") or ""),
+    }
+
+
+def claim_support_payload_for_project(*, project: str) -> dict[str, Any]:
+    project = snapshot.validate_project_slug(project)
+    command = [
+        snapshot.PYTHON,
+        "-m",
+        "src.ztare.cli",
+        "project",
+        "claim-support",
+        "--project",
+        project,
+        "--json",
+    ]
+    proc = snapshot.run(command, timeout=90)
+    parsed: dict[str, Any] = {}
+    try:
+        parsed = snapshot.extract_last_json_object(proc.stdout)
+    except Exception:
+        parsed = {}
+    source_context = parsed.get("source_context") if isinstance(parsed.get("source_context"), dict) else {}
+    return {
+        "schema": CLAIM_SUPPORT_SCHEMA,
+        "served_from": "local_api",
+        "project": project,
+        "command": f"ztare project claim-support --project {project} --json",
+        "returncode": proc.returncode,
+        "accepted": proc.returncode == 0,
+        "ok": bool(parsed.get("ok")),
+        "status": str(parsed.get("status") or ("ok" if proc.returncode == 0 else "attention")),
+        "claim_count": safe_int(parsed.get("claim_count")),
+        "weak_or_unsourced_count": safe_int(parsed.get("weak_or_unsourced_count")),
+        "source_context_blocked_count": safe_int(parsed.get("source_context_blocked_count")),
+        "status_counts": parsed.get("status_counts") if isinstance(parsed.get("status_counts"), dict) else {},
+        "source_context_status_counts": (
+            parsed.get("source_context_status_counts")
+            if isinstance(parsed.get("source_context_status_counts"), dict)
+            else {}
+        ),
+        "errors": text_lines(parsed.get("errors") or [], limit=8),
+        "packet_path": display_path(parsed.get("packet_path")),
+        "source_index_path": display_path(parsed.get("source_index_path")),
+        "rows": [compact_claim_support_row(row) for row in (parsed.get("rows") or [])[:12] if isinstance(row, dict)],
+        "source_context": [
+            compact_claim_support_source(row)
+            for row in list(source_context.values())[:12]
+            if isinstance(row, dict)
+        ],
+        "stdout_tail": tail_text(proc.stdout),
+        "stderr_tail": tail_text(proc.stderr),
+    }
+
+
 def run_history_payload_for_project(*, project: str, limit: int = 8) -> dict[str, Any]:
     project = snapshot.validate_project_slug(project)
     limit = max(1, min(limit, 25))
@@ -1543,6 +1637,11 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
                 limit = int(first_param(params, "limit", "8"))
                 self.send_json(run_history_payload_for_project(project=project, limit=limit))
+                return
+            if parsed.path == "/api/claim-support":
+                params = parse_qs(parsed.query)
+                project = first_param(params, "project", snapshot.DEFAULT_PROJECT)
+                self.send_json(claim_support_payload_for_project(project=project))
                 return
             self.send_json({"ok": False, "error": "unknown endpoint"}, status=404)
         except SystemExit as exc:

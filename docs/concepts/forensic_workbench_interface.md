@@ -217,6 +217,10 @@ GET /api/run-history?project=<project>
 -> latest and recent run scores, weakest points, evidence gaps, synthesis
    patterns, and backing run-history paths
 
+GET /api/claim-support?project=<project>
+-> claim-support status, weak/unsourced counts, source-context status, missing
+   packet errors, previewable source paths, and copyable support-audit command
+
 POST /api/review
 -> append row-level review receipt and refresh snapshot
 
@@ -236,6 +240,9 @@ and example intakes. It should show the selected project directory, intake,
 report contract, live trace console, latest-review receipt, latest saved row action,
 bounded-claim status, source/evidence readiness, recent receipt history, run
 history/verdict state, and report/export state before the user opens a case.
+The claim-support panel should show whether the compiled claim-support packet is
+present, how many claims are weak or unsourced, which local sources were
+verified, and the exact command that rebuilds the audit.
 The source/evidence readiness panel should show source-index status, evidence
 binding, output binding, replay status, source/evidence files, and the commands
 that rebuild those checks.

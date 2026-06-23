@@ -225,6 +225,7 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
   const health = context.healthContext || {};
   const preflight = context.preflightEvent || null;
   const runHistory = context.runHistoryContext || {};
+  const claimSupport = context.claimSupportContext || {};
   const sourceList = context.sourceListContext || {};
   const sourceAction = context.sourceActionEvent || null;
   const sourceImport = context.sourceImportEvent || null;
@@ -235,7 +236,8 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
     selectedRow: context.selectedRow || null,
     traceContext: trace,
     reportContext: report,
-    healthContext: health
+    healthContext: health,
+    claimSupportContext: claimSupport
   }).map((item) => ({
     label: item.label,
     source: item.source || "",
@@ -311,6 +313,19 @@ function buildCasePacket(snapshot, receiptHistory, context = {}) {
         champion_eval: runHistory.champion_eval || {},
         recent_runs: (runHistory.recent_runs || []).slice(-8),
         synthesis_history: runHistory.synthesis_history || {}
+      },
+      claim_support: {
+        schema: claimSupport.schema || "",
+        status: claimSupport.status || "",
+        accepted: Boolean(claimSupport.accepted),
+        command: claimSupport.command || "",
+        claim_count: claimSupport.claim_count || 0,
+        weak_or_unsourced_count: claimSupport.weak_or_unsourced_count || 0,
+        source_context_blocked_count: claimSupport.source_context_blocked_count || 0,
+        errors: (claimSupport.errors || []).slice(0, 8),
+        packet_path: claimSupport.packet_path || "",
+        source_index_path: claimSupport.source_index_path || "",
+        source_context: (claimSupport.source_context || []).slice(0, 12)
       },
       sources: {
         schema: sourceList.schema || "",
@@ -1452,6 +1467,117 @@ function RunHistoryPanel({ runHistory, message, liveMode, onPreview }) {
   );
 }
 
+function ClaimSupportPanel({ claimSupport, message, liveMode, onPreview }) {
+  const status = (claimSupport && claimSupport.status) || "loading";
+  const errors = (claimSupport && claimSupport.errors) || [];
+  const sources = (claimSupport && claimSupport.source_context) || [];
+  const rows = (claimSupport && claimSupport.rows) || [];
+  const command = (claimSupport && claimSupport.command) || "";
+  const packetPath = (claimSupport && claimSupport.packet_path) || "";
+  const sourceIndexPath = (claimSupport && claimSupport.source_index_path) || "";
+  const attention = errors.length > 0 || (claimSupport && claimSupport.accepted === false);
+
+  return h(
+    "section",
+    { className: `claim-support-panel run-history-panel ${attention ? "attention" : "ready"}`, "aria-label": "Claim support audit" },
+    h(
+      "div",
+      { className: "run-history-summary" },
+      h("span", { className: "eyebrow" }, "Claim support"),
+      h("h2", null, displayText(status)),
+      h(
+        "p",
+        null,
+        message ||
+          (liveMode
+            ? "Support summary loaded from the local project claim-support audit."
+            : "Start the local API to inspect claim-support state.")
+      )
+    ),
+    h(
+      "div",
+      { className: "run-history-facts" },
+      h("div", null, h("span", null, "Claims"), h("strong", null, String((claimSupport && claimSupport.claim_count) || 0))),
+      h("div", null, h("span", null, "Weak/unsourced"), h("strong", null, String((claimSupport && claimSupport.weak_or_unsourced_count) || 0))),
+      h("div", null, h("span", null, "Source blockers"), h("strong", null, String((claimSupport && claimSupport.source_context_blocked_count) || 0))),
+      h("div", null, h("span", null, "Sources"), h("strong", null, String(sources.length)))
+    ),
+    h(
+      "div",
+      { className: "run-history-verdict" },
+      h("span", null, "Audit result"),
+      errors.length
+        ? errors.slice(0, 4).map((error) => h("p", { key: error }, error))
+        : h("p", null, rows.length ? `${rows.length} support rows loaded.` : "No weak or unsourced support rows surfaced."),
+      h(
+        "div",
+        { className: "run-history-paths" },
+        [
+          { label: "Packet", path: packetPath },
+          { label: "Source index", path: sourceIndexPath }
+        ].map((item) =>
+          h(
+            "button",
+            {
+              key: item.label,
+              type: "button",
+              className: "copy-button",
+              disabled: !liveMode || !item.path,
+              onClick: () => item.path && onPreview && onPreview({ type: "file", value: item.path }),
+              title: item.path ? `Preview ${item.path}` : "No backing file recorded"
+            },
+            item.label
+          )
+        )
+      )
+    ),
+    h(
+      "div",
+      { className: "run-history-runs" },
+      h("span", null, "Source context"),
+      sources.length
+        ? sources.slice(0, 5).map((source) =>
+            h(
+              "div",
+              { className: "run-history-row", key: source.source_id || source.path },
+              h("strong", null, source.source_id || source.relative_raw_path || "source"),
+              h("small", null, `${displayText(source.status || "unknown")} / ${displayText(source.source_type || "untyped")}`),
+              h("p", null, ((source.preview || {}).text) || source.path || "No source preview recorded."),
+              h(
+                "button",
+                {
+                  type: "button",
+                  className: "copy-button",
+                  disabled: !liveMode || !source.path,
+                  onClick: () => source.path && onPreview && onPreview({ type: "file", value: source.path }),
+                  title: source.path ? `Preview ${source.path}` : "No source file recorded"
+                },
+                "Preview"
+              )
+            )
+          )
+        : h("p", null, "No source context loaded.")
+    ),
+    h(
+      "div",
+      { className: "run-history-patterns" },
+      h("span", null, "Command"),
+      h("code", null, command || "No claim-support command loaded."),
+      h(
+        "button",
+        {
+          className: "copy-button",
+          type: "button",
+          disabled: !command,
+          onClick: () => copyText(command),
+          title: "Copy claim-support command"
+        },
+        "Copy command"
+      )
+    )
+  );
+}
+
 function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   const binding = (reportContext && reportContext.synthesis_input_binding) || {};
   const reasons = (reportContext && reportContext.status_reasons) || [];
@@ -1558,7 +1684,7 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }) {
+function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }) {
   const packet = buildCasePacket(snapshot, receiptHistory, {
     traceContext,
     reportContext,
@@ -1569,6 +1695,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
     sourceImportEvent,
     sourceEditEvent,
     runHistoryContext,
+    claimSupportContext,
     writeReceiptEvent,
     selectedRow
   });
@@ -1597,7 +1724,8 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
     packet.live_context.latest_source_action,
     packet.live_context.latest_source_import,
     packet.live_context.latest_source_edit,
-    packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length
+    packet.live_context.run_history.schema || Object.keys(packet.live_context.run_history.summary || {}).length,
+    packet.live_context.claim_support.schema || packet.live_context.claim_support.status
   ].filter(Boolean).length;
   const filename = `${snapshot.project || "ztare"}_case_packet.json`;
 
@@ -1624,6 +1752,7 @@ function CaseExportPanel({ snapshot, receiptHistory, traceContext, reportContext
       h("div", null, h("span", null, "Source import"), h("strong", null, packet.live_context.latest_source_import ? displayText(packet.live_context.latest_source_import.source_type) : "none")),
       h("div", null, h("span", null, "Source edit"), h("strong", null, packet.live_context.latest_source_edit ? displayText(packet.live_context.latest_source_edit.source_type) : "none")),
       h("div", null, h("span", null, "Run score"), h("strong", null, packet.live_context.run_history.summary.latest_score === undefined || packet.live_context.run_history.summary.latest_score === null ? "none" : String(packet.live_context.run_history.summary.latest_score))),
+      h("div", null, h("span", null, "Claim support"), h("strong", null, displayText(packet.live_context.claim_support.status || "not loaded"))),
       h("div", null, h("span", null, "Live context"), h("strong", null, String(liveContextCount))),
       h("div", null, h("span", null, "Schema"), h("strong", null, packet.schema))
     ),
@@ -2113,7 +2242,7 @@ function CommandRail({ snapshot, selectedRow }) {
   );
 }
 
-function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext }) {
+function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext, claimSupportContext }) {
   const items = [];
   const seen = new Set();
   const add = ({ label, command, source, rowLabel, priority = 50 }) => {
@@ -2132,6 +2261,7 @@ function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContex
     add({ label: index === 0 ? "Trace next command" : `Trace command ${index + 1}`, command, source: "Autoresearch trace", rowLabel: "Run readiness", priority: 20 + index })
   );
   add({ label: "Report support", command: reportContext && reportContext.command, source: "Report/export contract", rowLabel: "Report/export", priority: 30 });
+  add({ label: "Claim support", command: claimSupportContext && claimSupportContext.command, source: "Claim support audit", rowLabel: "Evidence readiness", priority: 35 });
   (((healthContext && healthContext.kernel) || {}).attention_components || []).forEach((row, index) =>
     add({ label: "Health next command", command: row.next_command, source: row.component || "Kernel health", rowLabel: "Kernel health", priority: 40 + index })
   );
@@ -2139,8 +2269,8 @@ function commandCockpitItems({ snapshot, selectedRow, traceContext, reportContex
   return items.sort((left, right) => left.priority - right.priority).slice(0, 8);
 }
 
-function CommandCockpit({ snapshot, selectedRow, traceContext, reportContext, healthContext, setSelectedLabel }) {
-  const commands = commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext });
+function CommandCockpit({ snapshot, selectedRow, traceContext, reportContext, healthContext, claimSupportContext, setSelectedLabel }) {
+  const commands = commandCockpitItems({ snapshot, selectedRow, traceContext, reportContext, healthContext, claimSupportContext });
   const firstCommand = commands[0] || null;
   return h(
     "section",
@@ -2981,6 +3111,8 @@ function App() {
   const [sourceActionRunning, setSourceActionRunning] = useState(false);
   const [runHistoryContext, setRunHistoryContext] = useState(null);
   const [runHistoryMessage, setRunHistoryMessage] = useState("");
+  const [claimSupportContext, setClaimSupportContext] = useState(null);
+  const [claimSupportMessage, setClaimSupportMessage] = useState("");
   const [healthContext, setHealthContext] = useState(null);
   const [healthMessage, setHealthMessage] = useState("");
   const [reportContractContext, setReportContractContext] = useState(null);
@@ -3146,6 +3278,29 @@ function App() {
       });
   };
 
+  const loadClaimSupportContext = (projectParams) => {
+    if (!projectParams || !projectParams.project) return Promise.resolve();
+    setClaimSupportMessage("Loading claim support.");
+    return fetch(endpointUrl("/api/claim-support", { project: projectParams.project }), { headers: { Accept: "application/json" } })
+      .then((response) => {
+        if (!response.ok) throw new Error(`claim support fetch failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (payload.ok === false && !payload.status) throw new Error(payload.error || "claim support fetch failed");
+        setClaimSupportContext(payload);
+        setClaimSupportMessage(
+          payload.accepted
+            ? `${payload.claim_count || 0} claim-support rows loaded from project files.`
+            : `Claim support needs attention: ${payload.status || "attention"}.`
+        );
+      })
+      .catch((err) => {
+        setClaimSupportContext(null);
+        setClaimSupportMessage(`Claim support unavailable: ${err.message || err}`);
+      });
+  };
+
   const loadSourceListContext = (projectParams) => {
     if (!projectParams || !projectParams.project) return Promise.resolve();
     setSourceListMessage("Loading raw sources.");
@@ -3196,6 +3351,7 @@ function App() {
             loadIntakeDraft(liveParams),
             loadReceiptHistory(liveParams),
             loadRunHistoryContext(liveParams),
+            loadClaimSupportContext(liveParams),
             loadSourceListContext(liveParams)
           ]);
         }
@@ -3215,6 +3371,8 @@ function App() {
         setReceiptHistoryMessage("Static mode uses the latest generated snapshot only.");
         setRunHistoryContext(null);
         setRunHistoryMessage("Static mode uses the run-history row from the last generated snapshot only.");
+        setClaimSupportContext(null);
+        setClaimSupportMessage("Static mode uses the source/evidence rows from the last generated snapshot only.");
         setSourceListContext(null);
         setSourceListMessage("Static mode cannot inspect raw sources.");
         setSourceEditEvent(null);
@@ -3375,6 +3533,7 @@ function App() {
         });
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
+        loadClaimSupportContext({ project: snapshot.project });
       })
       .catch((err) => setSourceImportMessage(String(err.message || err)))
       .finally(() => setSourceImporting(false));
@@ -3455,6 +3614,7 @@ function App() {
         });
         loadReceiptHistory({ project: snapshot.project });
         loadSourceListContext({ project: snapshot.project });
+        loadClaimSupportContext({ project: snapshot.project });
       })
       .catch((err) => setSourceEditMessage(String(err.message || err)))
       .finally(() => setSourceEditing(false));
@@ -3578,6 +3738,7 @@ function App() {
           snapshotError: payload.snapshot_error || ""
         });
         loadReceiptHistory({ project: snapshot.project });
+        loadClaimSupportContext({ project: snapshot.project });
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
   };
@@ -3760,6 +3921,7 @@ function App() {
         const writeEvent = sourceActionReceiptEvent(payload);
         if (writeEvent) setWriteReceiptEvent(writeEvent);
         loadSourceListContext({ project: snapshot.project });
+        loadClaimSupportContext({ project: snapshot.project });
         if (payload.writes) loadReceiptHistory({ project: snapshot.project });
         setSourceActionMessage(
           payload.accepted
@@ -3775,6 +3937,7 @@ function App() {
           const writeEvent = sourceActionReceiptEvent(err.payload);
           if (writeEvent) setWriteReceiptEvent(writeEvent);
           loadSourceListContext({ project: snapshot.project });
+          loadClaimSupportContext({ project: snapshot.project });
           if (err.payload.writes) loadReceiptHistory({ project: snapshot.project });
         }
         setSourceActionMessage(String(err.message || err));
@@ -3915,11 +4078,12 @@ function App() {
         onRunSourceAction: runSourceActionLive
       }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
-      h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, setSelectedLabel }),
+      h(CommandCockpit, { snapshot, selectedRow, traceContext, reportContext: reportPanelContext, healthContext, claimSupportContext, setSelectedLabel }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(TraceConsolePanel, { traceContext, message: traceMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(PreflightRunPanel, { traceContext, event: preflightEvent, message: preflightMessage, running: preflightRunning, liveMode, onRun: runPreflightLive }),
       h(RunHistoryPanel, { runHistory: runHistoryContext, message: runHistoryMessage, liveMode, onPreview: loadFilePreview }),
+      h(ClaimSupportPanel, { claimSupport: claimSupportContext, message: claimSupportMessage, liveMode, onPreview: loadFilePreview }),
       h(ReportContractPanel, { reportContext: reportPanelContext, message: reportContractMessage, liveMode, onPreview: loadFilePreview }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode, onPreviewSource: loadFilePreview }),
       h(StageRail, { snapshot, setSelectedLabel }),
@@ -3937,7 +4101,7 @@ function App() {
       h(CommandRail, { snapshot, selectedRow }),
       h(ProvenanceStrip, { rows: snapshot.rows || [] }),
       h(ReceiptHistoryPanel, { history: receiptHistory, message: receiptHistoryMessage, liveMode, onPreview: loadFilePreview }),
-      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, writeReceiptEvent, selectedRow }),
+      h(CaseExportPanel, { snapshot, receiptHistory, traceContext, reportContext: reportPanelContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, selectedRow }),
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),

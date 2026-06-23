@@ -714,6 +714,57 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     ]
 
 
+def test_claim_support_payload_uses_bounded_command_and_repo_relative_paths(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    module = load_server_module()
+    monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
+    project_root = tmp_path / "projects" / "demo"
+    raw_path = project_root / "raw" / "source.md"
+    packet_path = project_root / "compiled_evidence_packet.json"
+    index_path = project_root / "workspace" / "source_index.json"
+    raw_path.parent.mkdir(parents=True)
+    index_path.parent.mkdir(parents=True)
+    commands: list[list[str]] = []
+
+    def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
+        commands.append(command)
+        payload = {
+            "ok": False,
+            "status": "missing_packet",
+            "project": "demo",
+            "claim_count": 0,
+            "weak_or_unsourced_count": 0,
+            "source_context_blocked_count": 0,
+            "packet_path": str(packet_path),
+            "source_index_path": str(index_path),
+            "errors": [f"missing compiled evidence packet: {packet_path}"],
+            "source_context": {
+                "demo_source": {
+                    "source_id": "demo_source",
+                    "status": "verified",
+                    "source_type": "source_evidence",
+                    "path": str(raw_path),
+                    "relative_raw_path": "source.md",
+                    "line_count": 3,
+                    "hash_matches_index": True,
+                    "preview": {"line_start": 1, "line_end": 2, "text": "source text", "truncated": False},
+                }
+            },
+        }
+        return subprocess.CompletedProcess(command, 1, stdout=json.dumps(payload), stderr="")
+
+    monkeypatch.setattr(module.snapshot, "run", fake_run)
+
+    payload = module.claim_support_payload_for_project(project="demo")
+
+    assert payload["schema"] == "ztare-forensic-workbench-claim-support-v1"
+    assert payload["accepted"] is False
+    assert payload["status"] == "missing_packet"
+    assert payload["packet_path"] == "projects/demo/compiled_evidence_packet.json"
+    assert payload["source_index_path"] == "projects/demo/workspace/source_index.json"
+    assert payload["source_context"][0]["path"] == "projects/demo/raw/source.md"
+    assert commands == [[module.snapshot.PYTHON, "-m", "src.ztare.cli", "project", "claim-support", "--project", "demo", "--json"]]
+
+
 def test_create_project_payload_runs_source_init_then_intake_create(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_server_module()
     monkeypatch.setattr(module.snapshot, "REPO", tmp_path)
