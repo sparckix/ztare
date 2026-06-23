@@ -837,6 +837,9 @@ def test_receipt_history_preserves_review_and_action_artifact_paths() -> None:
         {
             "schema": "ztare-forensic-workbench-review-receipt-v1",
             "project": "demo",
+            "rubric": "demo",
+            "intake": "projects/demo/demo_intake.json",
+            "case_key": "demo::projects/demo/demo_intake.json",
             "row": "Report/export",
             "row_slug": "report_export",
             "decision": "blocked",
@@ -865,6 +868,8 @@ def test_receipt_history_preserves_review_and_action_artifact_paths() -> None:
     )
 
     assert review["review_file_path"] == "local-api:demo/report_export"
+    assert review["intake"] == "projects/demo/demo_intake.json"
+    assert review["case_key"] == "demo::projects/demo/demo_intake.json"
     assert action["action_file_path"] == "projects/demo/workspace/source_readiness_action.json"
 
 

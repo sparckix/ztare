@@ -231,6 +231,16 @@ function receiptChangeSummary(receipt, kind = "") {
   return parts.join(" / ");
 }
 
+function receiptCaseSummary(receipt) {
+  if (!receipt) return "";
+  const parts = [];
+  if (receipt.case_key) parts.push(`case ${receipt.case_key}`);
+  else if (receipt.project) parts.push(`project ${receipt.project}`);
+  if (receipt.intake) parts.push(`intake ${receipt.intake}`);
+  if (receipt.rubric && receipt.rubric !== receipt.project) parts.push(`rubric ${receipt.rubric}`);
+  return parts.join(" / ");
+}
+
 function repoPathCandidate(value) {
   return String(value || "").trim().split("#")[0].trim();
 }
@@ -559,6 +569,10 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
       summary: receipt.summary,
       path: receipt.path,
       line: receipt.line,
+      project: receipt.project || "",
+      rubric: receipt.rubric || "",
+      intake: receipt.intake || "",
+      case_key: receipt.case_key || "",
       row: receipt.row || "",
       source_path: receipt.source_path || "",
       source_type: receipt.source_type || "",
@@ -1440,6 +1454,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
             const artifactPath = receiptArtifactPath(item);
             const previewableArtifact = isPreviewableRepoPath(artifactPath);
             const changedSummary = receiptChangeSummary(item, item.kind);
+            const caseSummary = receiptCaseSummary(item);
             return h(
               "article",
               { className: `receipt-history-row ${item.kind || "receipt"}`, key: `${item.kind}:${item.path}:${item.line}` },
@@ -1454,6 +1469,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                 "div",
                 { className: "receipt-row-meta" },
                 item.row ? h("span", null, item.row) : null,
+                caseSummary ? h("span", null, caseSummary) : null,
                 changedSummary ? h("span", null, changedSummary) : null,
                 artifactPath ? h("span", null, artifactPath) : null
               ),
