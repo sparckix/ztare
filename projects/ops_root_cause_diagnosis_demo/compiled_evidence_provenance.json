@@ -1,0 +1,145 @@
+{
+  "audit_copy_path": "projects/ops_root_cause_diagnosis_demo/compiled_evidence.txt",
+  "audit_copy_sha256": "d7e0b7eeed1e7af65a10b3d7c7e95fb2bc4e47ba621f352173c6063e280b6c0b",
+  "evidence_gap_action_path": "projects/ops_root_cause_diagnosis_demo/workspace/evidence_gap_action.json",
+  "evidence_gap_brief_path": "projects/ops_root_cause_diagnosis_demo/workspace/evidence_gap_brief.md",
+  "evidence_gap_count": 0,
+  "evidence_replay_manifest_path": "projects/ops_root_cause_diagnosis_demo/compiled_evidence_replay_manifest.json",
+  "evidence_replay_manifest_sha256": "d6523c1d45cda3fe9b4b585df949c01cdcb1dd034cb8b123519eec9aeabedb62",
+  "generated_on": "June 22, 2026",
+  "input_binding_sha256": "5f8a82a1f78095377275519d71c9b48fc7fa2a77ba523d1a36a08f50cb93aa37",
+  "mode": "workspace",
+  "output_path": "projects/ops_root_cause_diagnosis_demo/evidence.txt",
+  "output_sha256": "d7e0b7eeed1e7af65a10b3d7c7e95fb2bc4e47ba621f352173c6063e280b6c0b",
+  "packet_output_path": "projects/ops_root_cause_diagnosis_demo/compiled_evidence_packet.json",
+  "packet_output_sha256": "ca81df2bc3c32ea90ca9ba14d63a8f06aaf58005c355715bf6305894a0f00405",
+  "project_dir": "projects/ops_root_cause_diagnosis_demo",
+  "source_count": 10,
+  "sources": [
+    {
+      "chars_used": 1651,
+      "kind": "md",
+      "note_path": "source_notes/S009.json",
+      "path": "cache_isolation_check.md",
+      "sha256": "bd33d94d54d32648c65494f10b2cafc6e94765cc7c95e98c2180cb1b8257f24b",
+      "source_id": "S009",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1635,
+      "kind": "md",
+      "note_path": "source_notes/S001.json",
+      "path": "change_and_staffing_notes.md",
+      "sha256": "1d188cb0ad28df177e43b445a8d774d7738c2b80e2362bd3fa183c5bbc46d395",
+      "source_id": "S001",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2374,
+      "kind": "md",
+      "note_path": "source_notes/S010.json",
+      "path": "chg_142_design_note.md",
+      "sha256": "95065b95670ecffe177f3e41fb4c712881e5dc66da845d0e8c95566d934298bb",
+      "source_id": "S010",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2174,
+      "kind": "md",
+      "note_path": "source_notes/S002.json",
+      "path": "counter_hypotheses.md",
+      "sha256": "fab450f5ba187065b2966ab48f8af0cf7f617b6e6cccc50fd672379ccad82c11",
+      "source_id": "S002",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1831,
+      "kind": "md",
+      "note_path": "source_notes/S005.json",
+      "path": "export_worker_logs.md",
+      "sha256": "a43631828a4750493e040d9f8c536aa8a0331f78f9012af45d82a0639c8cc041",
+      "source_id": "S005",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1818,
+      "kind": "md",
+      "note_path": "source_notes/S003.json",
+      "path": "incident_log.md",
+      "sha256": "a371cae95679ee81bde331c4fa742c01563275e7b96f4726df5268176a911935",
+      "source_id": "S003",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 811,
+      "kind": "csv",
+      "note_path": "source_notes/S006.json",
+      "path": "previous_period_baselines.csv",
+      "sha256": "7be29f9d47c8ee52187ba01c3927048b4c07909f5234d835cb7c62b42d058bdf",
+      "source_id": "S006",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 761,
+      "kind": "csv",
+      "note_path": "source_notes/S004.json",
+      "path": "queue_metrics.csv",
+      "sha256": "145a0db03f5366bda1af1f80c0c9bc865effda2b1bac2742ba5333a29867d459",
+      "source_id": "S004",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1374,
+      "kind": "md",
+      "note_path": "source_notes/S007.json",
+      "path": "support_console_cache.md",
+      "sha256": "c00207ee010aac938e2f5a3789449821f370859108836e6c0a1f7d6329a0379f",
+      "source_id": "S007",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1617,
+      "kind": "md",
+      "note_path": "source_notes/S008.json",
+      "path": "ticket_samples.md",
+      "sha256": "ff31b4123f1983be1ff3968362b713cff51524e72c1cb2aee9f5716f3cc9799d",
+      "source_id": "S008",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ],
+  "support_binding_sha256": "078dadc5c5265b8c1850779e208fa95c5f65fa106e6a8c27b5c30d03586c2d55",
+  "warnings": [
+    "champion_evidence_gaps.json contains no active evidence gaps.",
+    "latest_evidence_gaps.json contains no active evidence gaps."
+  ],
+  "workspace_dir": "projects/ops_root_cause_diagnosis_demo/workspace",
+  "workspace_meta": {
+    "changed_sources": 0,
+    "deleted_sources": [],
+    "generated_on": "June 22, 2026",
+    "merge_only": false,
+    "merge_status": "index_only",
+    "model_family": "gemini",
+    "model_id": "gemini-3.1-pro-preview",
+    "project": "ops_root_cause_diagnosis_demo",
+    "prompts": {
+      "extract_source_note": "config/prompts/extract_source_note.md",
+      "merge_workspace": "config/prompts/merge_workspace.md"
+    },
+    "raw_dir": "projects/ops_root_cause_diagnosis_demo/raw",
+    "reused_sources": 10,
+    "source_count": 10,
+    "warnings": [],
+    "workspace_dir": "projects/ops_root_cause_diagnosis_demo/workspace"
+  }
+}

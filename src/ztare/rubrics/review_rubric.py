@@ -1,12 +1,9 @@
 """
-GP-054 — Pre-run Rubric Review
+Pre-run rubric review
 
 Runs a pre-flight rubric review against a project's current charter, compiled
 workspace summary, and rubric JSON. Writes a durable review artifact and an
 optional patch proposal artifact.
-
-Spec: GP-054 (internal seam)
-Seam: GP-054 (internal seam)
 """
 
 from __future__ import annotations
@@ -17,9 +14,9 @@ import time
 from pathlib import Path
 from typing import Any
 
-from src.ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
-from src.ztare.common.utils import parse_llm_json
+from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.utils import parse_llm_json
 
 
 CHECK_NAMES = (
@@ -407,7 +404,7 @@ def run_rubric_review(
     runtime = LLMRuntime()
     model_id = MODEL_MAP[model_family]
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         response = dispatch_call_text(
             "rubric_review",
@@ -509,7 +506,7 @@ def run_rubric_review(
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Run GP-054 pre-run rubric review.")
+    parser = argparse.ArgumentParser(description="Run pre-run rubric review.")
     parser.add_argument("--project", required=True, help="Project name under projects/ or explicit path.")
     parser.add_argument("--rubric", default=None, help="Rubric name under rubrics/ or explicit path (defaults to --project).")
     parser.add_argument("--model", default="gemini", choices=sorted(MODEL_MAP.keys()))

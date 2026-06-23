@@ -1,0 +1,137 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The lease conflict on billing_status_index is sufficient to produce both duplicate_payment_warning and downstream_console_index_missing errors in the synthetic dataset.",
+      "depends_on": [
+        "CHG-142 design note",
+        "access to synthetic operations dataset"
+      ],
+      "priority": "high",
+      "why_testable": "Can be tested by replaying the CHG-142 change in a controlled environment and observing error sequences."
+    },
+    {
+      "claim": "Batches with fewer than 18,000 invoice rows would not trigger the merged-batch path and thus would not produce the lease conflict.",
+      "depends_on": [
+        "CHG-142 design note",
+        "ability to control invoice-row counts"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by running invoice shards below the threshold and checking for errors."
+    },
+    {
+      "claim": "Rollback of CHG-142 eliminates both error types for any batch size.",
+      "depends_on": [
+        "CHG-142 design note",
+        "access to deployment rollback capability"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by rolling back and running batches of various sizes to confirm no errors."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "No real-world data is provided in this source.",
+      "unknown": "Whether the same lease conflict mechanism occurs in non-synthetic production environments.",
+      "why_it_matters": "The note explicitly limits its claim to the synthetic dataset; real-world deployment may differ."
+    },
+    {
+      "blocking": "No cache-related data is provided in this source.",
+      "unknown": "Cache behavior during healthy export windows.",
+      "why_it_matters": "The note states it does not remove the need to verify cache behavior during healthy export windows, implying cache may affect outcomes but is not characterized."
+    },
+    {
+      "blocking": "No data on typical invoice-row counts per shard is provided.",
+      "unknown": "Whether the 18,000-21,000 invoice-row range for merging is typical or variable.",
+      "why_it_matters": "Determines whether failures would occur for other batch sizes."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "CHG-142 enabled the invoice_export_batching_v2 flag for us-east billing-export workers at 2026-06-11T22:30:00Z.",
+      "strength": "high"
+    },
+    {
+      "statement": "The flag merged adjacent customer-account shards into one batch when the invoice-row count was between 18,000 and 21,000.",
+      "strength": "high"
+    },
+    {
+      "statement": "The flag deferred the downstream index write until the merged batch finalized.",
+      "strength": "high"
+    },
+    {
+      "statement": "The flag ran the duplicate-payment warning check before the deferred index commit.",
+      "strength": "high"
+    },
+    {
+      "statement": "The lease conflict on billing_status_index produced a sequence of failures: invoice rows written, duplicate-payment warning attempted before index commit, downstream-index waited for same lease, worker retried until 900-second timeout.",
+      "strength": "high"
+    },
+    {
+      "statement": "Early retries emitted duplicate_payment_warning; later attempts emitted downstream_console_index_missing because the support-console index had not been committed.",
+      "strength": "high"
+    },
+    {
+      "statement": "Rolling back CHG-142 restored per-shard export commits and moved the duplicate-payment warning check after each shard-level index commit.",
+      "strength": "high"
+    },
+    {
+      "statement": "Batches b-7108, b-7109, and b-7110 completed below 400 seconds with no error code after rollback.",
+      "strength": "high"
+    },
+    {
+      "statement": "This note supports a common mechanism for duplicate_payment_warning and downstream_console_index_missing in this fixture.",
+      "strength": "medium"
+    },
+    {
+      "statement": "The note does not claim the same mechanism applies outside the synthetic operations dataset.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "invoice-row count threshold for merging shards",
+      "notes": "CHG-142 merged adjacent shards only when invoice-row count fell within this range.",
+      "units": "invoice rows",
+      "value_or_range": "18000 to 21000"
+    },
+    {
+      "kind": "exact",
+      "name": "job timeout",
+      "notes": "Worker retried until 900-second job timeout.",
+      "units": "seconds",
+      "value_or_range": "900"
+    },
+    {
+      "kind": "range",
+      "name": "batch completion time after rollback",
+      "notes": "Batches b-7108, b-7109, b-7110 completed below 400 seconds after rollback.",
+      "units": "seconds",
+      "value_or_range": "below 400"
+    },
+    {
+      "kind": "exact",
+      "name": "flag enablement timestamp",
+      "notes": "CHG-142 enabled the flag at this time.",
+      "units": "date-time",
+      "value_or_range": "2026-06-11T22:30:00Z"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "A lease conflict on billing_status_index because of deferred index commit is the common mechanism for both errors in this fixture.",
+      "strength": "high",
+      "topic": "mechanism for duplicate_payment_warning and downstream_console_index_missing errors"
+    },
+    {
+      "assertion": "The note does not claim the same mechanism applies outside the synthetic operations dataset.",
+      "strength": "high",
+      "topic": "applicability outside synthetic dataset"
+    }
+  ],
+  "source_id": "S010",
+  "source_kind": "md",
+  "source_path": "chg_142_design_note.md",
+  "source_summary": "CHG-142 enabled invoice_export_batching_v2 for us-east billing-export workers at 2026-06-11T22:30:00Z, merging customer-account shards into batches of 18,000-21,000 invoice rows, deferring the downstream index write until batch finalization, and running the duplicate-payment warning check before the deferred index commit. A lease conflict on the billing_status_index caused failures: the duplicate-warning branch and downstream-index branch both attempted to hold the same lease, leading to retries until a 900-second timeout. Rollback restored per-shard commits, and batches b-7108, b-7109, b-7110 completed below 400 seconds with no error code. The note supports a common mechanism for duplicate_payment_warning and downstream_console_index_missing in this fixture, but does not claim the mechanism applies outside the synthetic dataset.",
+  "source_type": "source_evidence"
+}

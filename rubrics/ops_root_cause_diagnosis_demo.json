@@ -1,0 +1,65 @@
+{
+  "rubric_version": "1.0",
+  "project": "ops_root_cause_diagnosis_demo",
+  "description": "Qualitative operational-diagnosis substrate: evaluate whether a bounded root-cause claim over a small synthetic operations dataset preserves source evidence, counter-hypotheses, and falsifiers.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Structured causal diagnosis over local operational facts, not numeric law discovery.",
+  "falsification_mode": "bounded_discriminator",
+  "substrate_domain": "organizational operations diagnosis",
+  "cage_meta": {
+    "class": "operational_diagnosis"
+  },
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Synthetic qualitative pilot; no hidden numeric holdout.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Local typed evidence describes incidents, metrics, changes, alternatives, and falsifiers rather than an I_model dataset.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No sequence or fit-uniqueness claim applies.",
+  "require_i_model_in_submission": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric extrapolation domain.",
+  "enable_post_run_thesis_synthesis": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "enable_primitive_class_rotation": true,
+  "persona": "You are an adversarial evaluator for bounded operational diagnosis. Grade whether the thesis ties each root-cause assertion to the local sources, compares billing-export failure against staffing, seasonality, pricing-page, and support-console alternatives, and states what evidence would demote the claim. Penalize broad organizational claims, customer-deployment claims, and diagnoses that ignore unresolved local-verification gaps.",
+  "dimensions": [
+    {
+      "name": "Claim boundary",
+      "weight": 20,
+      "description": "Keeps the diagnosis limited to the synthetic fixture and does not generalize to real customer operations or a full RCA product."
+    },
+    {
+      "name": "Evidence traceability",
+      "weight": 25,
+      "description": "Links the diagnosis to incident rows, queue metrics, change notes, and counter-hypothesis sources without inventing unsupported facts."
+    },
+    {
+      "name": "Alternative explanations",
+      "weight": 25,
+      "description": "Explicitly compares billing-export failure against staffing shortage, seasonality, pricing-page change, and support-console cache explanations."
+    },
+    {
+      "name": "Uncertainty and local gaps",
+      "weight": 15,
+      "description": "Preserves unresolved local-verification gaps, especially export-worker logs and support-console cache misses."
+    },
+    {
+      "name": "Next falsifier",
+      "weight": 15,
+      "description": "Names the next evidence request that would reject or demote the diagnosis."
+    }
+  ],
+  "criteria": {
+    "1_Claim_boundary": "The candidate stays within the synthetic fixture and does not claim real customer deployment.",
+    "2_Evidence_traceability": "The candidate cites or preserves the incident, metrics, change, and counter-hypothesis sources.",
+    "3_Alternative_explanations": "The candidate compares all listed alternatives and does not omit the strongest unresolved one.",
+    "4_Uncertainty_gaps": "The candidate carries unresolved local-verification gaps instead of smoothing them away.",
+    "5_Next_falsifier": "The candidate states a concrete next falsifier that could demote the diagnosis."
+  }
+}

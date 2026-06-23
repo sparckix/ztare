@@ -1,0 +1,19 @@
+{
+  "changed_sources": 0,
+  "deleted_sources": [],
+  "generated_on": "June 22, 2026",
+  "merge_only": false,
+  "merge_status": "index_only",
+  "model_family": "gemini",
+  "model_id": "gemini-3.1-pro-preview",
+  "project": "ops_root_cause_diagnosis_demo",
+  "prompts": {
+    "extract_source_note": "config/prompts/extract_source_note.md",
+    "merge_workspace": "config/prompts/merge_workspace.md"
+  },
+  "raw_dir": "projects/ops_root_cause_diagnosis_demo/raw",
+  "reused_sources": 10,
+  "source_count": 10,
+  "warnings": [],
+  "workspace_dir": "projects/ops_root_cause_diagnosis_demo/workspace"
+}

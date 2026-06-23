@@ -7,12 +7,11 @@ description: "The canonical problem-class taxonomy consumed by the gate-package 
 
 **Status:** scaffold v0.1, 2026-05-04. Per-class hit rates are NOT YET populated and will be filled by Phase 2 mining ([GP-212](../../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md) spec, Phase B). Until then, this file is a documented taxonomy for charter authoring; it is not yet the empirical input to the gate-package recommender.
 
-**Source seam:** `research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md`
-**Source spec:** `research_areas/private/specs/active/engine/GP-212_meta_solver_kernel_spec.md`
+**Provenance:** GP-212 meta-solver kernel seam and active spec. Public readers should treat this document as the maintained contract.
 
 This file is the canonical taxonomy used by `src/ztare/validator/gate_package_recommender.py` to classify substrates and recommend gate packages. Each class lists its definition, canonical example, default rubric_mode, recommended gate flags, and anti-pattern emphasis.
 
-The recommender's classification step uses embedding-based cosine similarity over the class definitions in §2 below. Operator-curated; do not let an LLM modify this file unsupervised.
+The recommender's classification step uses embedding-based cosine similarity over the class definitions in §2 below. Maintainer-curated; do not let an LLM modify this file unsupervised.
 
 ---
 
@@ -184,7 +183,7 @@ When the gate-package recommender runs against this taxonomy, classes with `stab
 
 **Definition:** Substrates whose target is the methodology itself, applied across distinct scientific or governance domains, where the deliverable is the operating-regime claim ("the apparatus discipline produces analogous structural results across N substrates with no shared physical content"). Composition of multiple domain-specific substrates under one organizing claim.
 
-**Canonical example:** *Operator-Supervisor Mechanization* (cross-domain ZTARE substrate-prober: neural scaling, Navier-Stokes, gravity, consciousness)
+**Canonical example:** *Maintainer-supervisor mechanization* (cross-domain ZTARE substrate-probing corpus: neural scaling, Navier-Stokes, gravity, consciousness)
 
 **Default rubric_mode:** kepler (descriptive cross-substrate; no Generative Yield expected at the meta-level)
 
@@ -208,13 +207,13 @@ When the gate-package recommender runs against this taxonomy, classes with `stab
 
 ## 3. Composition
 
-A substrate may combine two classes (e.g., `gp211_paper8_lean_proofs` is BOTH `formal_proof_lean` AND `qualitative_thesis_governance` since the Lean proof links to a governance corollary). The recommender returns a composition when the top-2 classes both score above the match threshold AND together cover ≥ 80% of the charter's structural language. In composition mode the recommended gates are the union; conflicts are surfaced to the operator for resolution.
+A substrate may combine two classes (e.g., `gp211_paper8_lean_proofs` is BOTH `formal_proof_lean` AND `qualitative_thesis_governance` since the Lean proof links to a governance corollary). The recommender returns a composition when the top-2 classes both score above the match threshold AND together cover ≥ 80% of the charter's structural language. In composition mode the recommended gates are the union; conflicts are surfaced to a maintainer for resolution.
 
 ---
 
 ## 4. Refresh policy
 
-This taxonomy is operator-curated. Refresh triggers:
+This taxonomy is maintainer-curated. Refresh triggers:
 
 - New substrate class encountered (≥ 3 projects share a structural pattern not covered by current classes)
 - Mining run produces hit-rate evidence that an existing class's recommended gates underperform, flagged for re-evaluation
@@ -232,7 +231,7 @@ Each refresh bumps the file's version stamp at the top. The gate-package recomme
 
 3. **N=1 classes.** `cross_domain_methodology` has N=1 currently. Should the recommender deploy at N=1 with `low` confidence, or refuse until N ≥ some minimum?
 
-4. **Historical re-classification.** All 84 existing projects need to be classified into this taxonomy for the mining hit-rate populator to work. Is that a separate operator task, or auto-attempt with operator review?
+4. **Historical re-classification.** All 84 existing projects need to be classified into this taxonomy for the mining hit-rate populator to work. Is that a separate maintainer task, or auto-attempt with maintainer review?
 
 5. **Sub-class granularity.** `qualitative_thesis_governance` has 4-6 examples. Are sub-classes useful (e.g., `governance_protocol` vs `identification_theorem` vs `corpus_gradient_recapitulation_at_score_98`)? Or is the parent class sufficient?
 

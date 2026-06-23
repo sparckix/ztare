@@ -1,347 +1,169 @@
 ---
-description: "Companion evidence to the journey: how the same epistemic discipline held across the NS, Planck, consciousness and gravity substrates."
+description: "Evidence inventory for what ZTARE's claim discipline has and has not shown across several research domains."
 ---
-# Multi-Substrate Validation — Companion to JOURNEY.md
+# Multi-Domain Evidence Inventory
 
-_Public synthesis. Anti-laundering vigilance per session catch ledger
-(catches #17 vocabulary projection, #26 vocabulary smuggling, #32 charity-
-grade inflation, #34 three-leg verification): substrate inclusion is gated
-on **in-repo evidence triplet** (project directory + memory entry +
-paper/seam reference). "Tackled" is reserved for substrates with all three;
-"explored" is the honest label for evidence-thin work. See §4 for substrate-
-specific honest-residual notes._
+Use this page to answer one question:
 
-## §1 — TL;DR
+```text
+Has ZTARE only worked on one research domain, or has its checking discipline
+started to travel?
+```
 
-Over the 60-day window, four structurally unrelated substrates were
-exercised: **modified-gravity / AQUAL with GPU-deployed PDE sandboxes,
-consciousness-ascription governance, neural mechanistic interpretability
-+ scaling-law morphology, and Navier–Stokes Track B Lean formalization**.
-The cross-substrate evidence is consolidated in `papers/paper7/draft.md`
-("An Adversarial Substrate-Prober for Scientific Domains: Cross-Domain
-Results from Neural Scaling, Navier-Stokes, Modified Gravity, and
-Consciousness Governance") plus the four substrate-specific project trees
-inventoried below.
+The honest answer is: it has started to travel, but the current v0.4 workbench
+has not yet been validated as one repeatable product path across all domains.
 
-**Honest scope on what was validated where.** The earlier-era substrates
-(gravity-AQUAL, consciousness, neural) ran on the **ZTARE experiment-loop**
-— substrate / mutator / judge, `autoresearch_loop.py`, iter loops — and
-they demonstrate the experiment-loop's substrate-generality. The
-**current meta-architecture** (catch ledger with ratified-row gating, the
-nine-entry anti-pattern catalog, the Meta-Darwin, the
-architecture-index meta-graph, reflexive primitives, the Claude-Code
-agent-orchestration regime) crystallized later, during the NS Track B
-sprint specifically, and has been validated on **one substrate (NS) so
-far**. It is designed to be substrate-general; that empirical test is
-pending — re-running it on a non-NS substrate is on the next-sprint list.
+The useful evidence is not that any domain was solved. The useful evidence is
+that several tempting claims were narrowed after checks forced the repo to name
+missing evidence, unstable measurements, old obstructions, or source problems.
 
-What the artifact base supports is **not** "Clay closure on NS," **not**
-"consciousness solved," and **not** "current meta-architecture validated
-across four substrates." It is: a single non-expert principal, operating
-under one anti-laundering discipline, produced Tier-1 / Tier-2
-substrate-prober results on four structurally unrelated substrates (the
-earlier-era experiment-loop era) and built a meta-architecture during NS
-Track B (current era) that demotes its own wrong causal stories.
+## Bottom Line
 
-## §2 — Per-substrate dossier
+Treat this page as an evidence memo, not as a victory lap.
 
-### §2.1 Modified gravity / AQUAL with GPUs (TACKLED)
+| Domain | What the repo can defend | What it cannot defend | Next check |
+|---|---|---|---|
+| Modified gravity / AQUAL | Bounded nulls, numerical-method warnings, and an ambiguity audit around 3-D field-slice experiments | A new MOND law, a gravity unification claim, or a physical orientation law | Higher-resolution tensor boundary-condition sweep with matched off-diagonal tidal boundaries |
+| Consciousness-ascription governance | A measurement-governance rule for when low-concern verdicts are not admissible | A theory of consciousness or a definition of consciousness | Keep the governance result separate from denotation claims, then test whether the rule ports to another governance domain |
+| Neural interpretability and scaling | A measurement-artifact diagnosis, cross-layer orthogonality evidence, and clean negative scaling results | A universal scaling law or a named-constant law | Keep endpoint-free validation and external replication separate |
+| Navier-Stokes Track B | Residual localization, formal smoke checks, and a record of demoted closure language | Clay closure or proof of global regularity | Attack the named residuals without renaming old obstructions |
 
-**Project locations.** Eight in-repo project directories form the gravity
-track: `projects/gp163_accel_interpolation/` (the original 1-D RAR
-interpolation substrate, Charter visible-vs-withheld discipline, ~2576 (x,y)
-pairs across ≥4 decades); `projects/gp163d_unified_accel/`,
-`projects/gp163d_DM/`, `projects/gp163d_MG/` (the three pre-commit
-hypothesis arms — universality vs scale-dependence vs class-conditional);
-`projects/gp163d_susceptibility_regime_law/`,
-`projects/gp163d_alien_invariant_bridge/`,
-`projects/gp163d_admsr_attack_and_cleanroom_bridge/`,
-`projects/gp163d_science_promotion_bridge/`. The 3-D PDE sandbox lives at
-`projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/` with
-`GPU_RUNBOOK.md`, `SPEC.md`, `GRAVITY_STATUS_2026-04-30.md`, and an
-`admsr_*` family of clean-room ambiguity-audit packets. Paper artifact:
-`papers/paper7/gravity_science_bridge_evidence.md` and
-`papers/paper7/gravity_invariance_threshold.svg`. Working paper:
-`papers/gravity_susceptibility_working_paper/` (60+ debate logs).
+What you can take from this: one maintained repo used a consistent checking
+discipline across several unrelated campaigns and recorded where claims became
+smaller.
 
-**Architecture primitives used.** Substrate-specific gates:
-`src/ztare/gates/gravity_ppn_gates.py` (G-CASSINI-PPN: |γ−1| < 2.3e-5
-Bertotti-Iess-Tortora; G-MERCURY-PRECESSION: 0.5% bound on Mercury
-perihelion advance) — these gates fire only when the rubric declares
-`enable_solar_system_ppn_gates: true` and are pure-analytic. Domain-general
-primitives applied: ZTARE pre-commit Newton-mode (universality vs
-scale-dependence as a charter-locked binary), Buckingham-π gate
-(`src/ztare/gates/buckingham_pi_gate.py`), holdout + farther-tail tiered
-gates (MRE < 0.35 / < 0.50), GPU-remote dispatch via
-`deploy_and_launch_gpu_batch.sh` to Hetzner / 141.148.130.171, JAX-backed
-field-slice solver, ADMSR ambiguity-audit clean-room.
+What you should not take from this: solved Millennium problems, consciousness
+solved, a new gravity law, a universal neural-scaling law, or proof that the
+current v0.4 workbench has already generalized across all four domains.
 
-**Substrate-specific findings.** A row-wise RAR campaign across 17
-candidate functional families on SPARC + cluster + wide-binary data
-returned a **substrate-bounded null** — within-class feature collapse at
-cross-class joints, no joint interpolation form passed MAE < 0.5 (*Operator-Supervisor Mechanization* §3.3). On the 3-D AQUAL-style PDE sandbox (the GPU track), a diffuse
-UDG-like source exhibits a tensor-orientation susceptibility well-compressed
-by `χ(θ) = χ₀ + χ₄ cos(4θ)`, while a compact binary control is essentially
-flat — but the result is bounded as an **instrument-audit / numerical-
-methods finding**, not a MOND orientation law (catch demotion: changed-stencil
-phase instability flagged in `next_discriminator_queue.jsonl`). A five-model
-cold-shot panel (Claude, GPT, Gemini, Grok, second Gemini) converged on a
-PMOND v5 structural attractor (Hill-saturated MOND + multiplicative EFE),
-which is reported as evidence of a substrate attractor — explicitly
-**not** as evidence of correctness.
+The filename is retained for historical links. The reader-facing claim is
+"multi-domain evidence inventory," not completed validation.
 
-**Honest residual.** No unification. The live science object is a
-representation-stable diffuse susceptibility amplitude in an internal-share
-observable family, not a law. The L5-decisive promotion blocker is open
-(`Run a full tensor boundary-condition sweep at higher resolution with
-analytically matched off-diagonal tidal boundaries`).
+## What To Inspect First
 
-### §2.2 Consciousness-ascription governance (TACKLED, scope-limited)
+If you only have ten minutes, inspect the demotions:
 
-**Project locations.** Three in-repo project directories:
-`projects/gp169_consciousness_ascription_audit/` (40+ debate logs,
-v2 exogenous-substrate de-anchor reframe after iter-1 pluralism artifact),
-`projects/gp210_consciousness_theory/` (causal-graph H-node theory,
-explicit anti-tautology charter constraint), and
-`projects/gp212_consciousness_omega_audit/` (Omega-gaming auditable
-classifier, adversarial completeness target). Paper integration:
-*Operator-Supervisor Mechanization* §3.4. Memory entries trace the trajectory:
-`feedback_charter_contamination.md`, `feedback_skeptic_director_seam.md`.
+| Demotion | Why it matters |
+|---|---|
+| Gravity scalar-boost story became an instrument audit | A tempting physical story was narrowed when the numerical setup was not stable enough. |
+| Consciousness pluralism became a training-corpus warning | A plausible governance thesis was narrowed when the source of the idea looked contaminated. |
+| Neural `beta = 1 / phi` was retired | A named-constant story lost to cross-modality testing. |
+| Navier-Stokes closure language became named residuals | Proof-search progress was not allowed to become a global-regularity claim. |
 
-**Architecture primitives used.** Domain-general: exogenous-substrate de-anchor
-(stripping anthropic asymmetry as charter constraint), no-citation reframe
-(the cold-shot's forbidden-domain list excluded "consciousness philosophy,
-philosophy of mind, formal epistemology, identification theory" to force
-algebraic topology / gauge theory / statistical physics as structural
-source fields), Omega-gaming taxonomy with adversarial completeness
-attempt, ZTARE qualitative-substrate mode (`cage_observe_mode +
-disable_evidence_fit_gate + cage_meta` per
-`feedback_rubric_canonical_format.md`).
+Those four cases are the point of the page. The project is interesting here
+because it records where claims got smaller.
 
-**Substrate-specific findings.** [GP-169](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) produced the **AID-MCVP** result
-(Adversarial Identification Certificate for the Measurement-Channel Veto
-Protocol): a low-concern verdict on a substrate of unknown consciousness
-is forbidden unless intervention access, independent replication, an
-invertible predicate bridge, and an adversarial completeness certificate
-make the target property identifiable from admissible measurements. This
-is a **causal-identification governance theorem**, not a theory of
-consciousness (*Operator-Supervisor Mechanization* §3.4). GP-210 attempts the formal H-characterization
-upstream (P1–P4 properties → necessary non-identifiability → "consciousness"
-denotation), with anti-tautology gate explicitly imposed in the charter.
-[GP-212](../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md) builds an Omega-gaming classifier (under-specification, strategic
-exclusion, conservative/non-conservative misclassification, post-hoc
-revision, residual epistemic blindness).
+## Domain Notes
 
-**Honest residual.** Not a theory of consciousness. The strongest claim is
-governance (AID-MCVP) plus a partial structural conjecture (GP-210 P1–P4)
-that explicitly admits its sufficiency direction may be exogenous to the
-formal framework. iter-1 of GP-169 produced a pluralism thesis later
-diagnosed as **training-corpus overdetermination** — an early canonical
-example of catch #17-class vocabulary projection caught and demoted.
+Each note names where to inspect, what mattered, what survived, and what still
+blocks a stronger claim.
 
-### §2.3 Neural mechanistic interpretability + scaling (TACKLED)
+### Modified Gravity / AQUAL
 
-**Project locations.** Two artifact families. **Mechanistic-interpretability**:
-`papers/paper6_neural_scaling/draft.md` (~10K-word standalone paper
-"The Illusion of the Bottleneck: Architectural Invariance and Learned
-Coordination in Deep Residual Networks" — Pythia / GPT-2 / OPT / Mamba-370M
-empirical work, BOS-contamination diagnosis at 35× norm ratio, cross-layer
-orthogonality finding, Cancellation Ratio, untrained null model 70.2%
-cancellation). **Scaling-law morphology**: `projects/gp154_phase_flow_law/`,
-`projects/gp154_scaling_law_normalized/`,
-`projects/gp154_scaling_law_raw/`,
-`projects/gp154_scaling_law_exponents/`,
-`projects/gp154_inversion_alpha_from_dimension/`,
-`projects/gp154_d_int_measurement/` (six gp154-* directories), plus
-`projects/neural_hunt/` (out-of-loop audit opened 2026-05-08 with explicit
-prefix-endpoint null-audit gate, 20+ workspace audit packets). Memory:
-`project_gp154_session_2026_04_25.md`,
-`project_gp154_lit_review.md`.
+**Where to inspect.** Start with the gravity entries in
+[the public claim register](public_claim_register.md#modified-gravity--aqual--rar)
+and the project directories named there, including the modified-gravity
+campaign directories and the
+[3-D unified-acceleration field-slice sandbox](../projects/gp163d_unified_accel/).
+The
+historical run postmortem is the
+[unified-acceleration field-slice audit](../research_areas/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md).
 
-**Architecture primitives used.** Per-token effective-rank measurement,
-spectral-entropy gauge-invariance audit, cross-architecture replication
-(four model families), untrained null-model construction, prefix-endpoint
-null-audit gate, leave-one-run-out trajectory templating, integrated-segment
-MAE on gauge-removed training-loss trajectories, adversarial cold-shot
-panel for the slope-anchor candidate (β = 1/φ refuted by cross-modality
-testing — explicit catch).
+**What mattered.** The repo tested universality versus scale-dependence as a
+pre-committed split, checked solar-system constraints only when the rubric
+enabled the gravity-specific checks, and treated the 3-D AQUAL-style result as
+numerical evidence, not physics law.
 
-**Substrate-specific findings.** The **BOS-contamination measurement
-artifact** (*Neural Scaling*): the published "low-rank bottleneck" finding in
-Pythia is a measurement artifact — mean-pooling lets the BOS token
-(35× norm ratio) collapse apparent effective rank from ~105 to 1.8;
-per-token effective rank with BOS excluded is 103-106. **Cross-layer
-orthogonality** as architectural invariant (cosine 0.05-0.19 across
-adjacent layers, 72% Cancellation Ratio, 70.2% in untrained null,
-replicated on Mamba-370M state-space model). **Neural scaling-law
-trajectory morphology** (*Operator-Supervisor Mechanization* §3.1): OLMo2 7B / 13B production
-telemetry collapses onto a power-family shape law (point-MAE 0.054,
-six-of-six holdout splits beating baseline at 2.4×); β ≈ 0.486 ± 0.083
-SEM across 14 (study, modality, scaling-variable) groups.
+**What survived.** The row-wise RAR campaign returned a bounded null: no joint
+interpolation form passed the stated cross-class threshold. The 3-D sandbox
+showed a diffuse-source susceptibility pattern, but the result is held as an
+instrument and numerical-methods finding.
 
-**Honest residual.** Two **clean negative results** are reported as
-central findings: (1) the optimizer-control phase-flow law derived from
-toy-transformer grids **anti-transfers** to production training (+18%
-to +23,684% MAE on holdout splits); (2) exact OLMo2 1B raw history
-**closes the slope-anchor promotion path negatively** under the
-endpoint-free validation packet. The retired β = 1/φ "named-constant
-law" is an explicit catch in `feedback_verify_llm_claims_against_source.md`
-lineage. The neural_hunt project is **out-of-loop** (no `make loop`
-until pre-registration is met) — this is the catch-discipline cost.
+**What blocks promotion.** The field-slice result needs a higher-resolution
+tensor boundary-condition sweep before it can be treated as anything stronger
+than an instrument audit.
 
-### §2.4 Navier–Stokes Track B (TACKLED — depth in JOURNEY.md)
+### Consciousness-Ascription Governance
 
-**Project location.** `projects/ns_millennium_hunt/` plus 22 sibling
-`projects/ns_proofsearch_*` and `projects/ns_*` directories
-(spike_lifecycle_discriminator, eviction_discriminator,
-trackb_closure_recursive_strategy, twelve proofsearch decompositions
-covering pressure-channel, square-law-exhaust, low-high operator-norm,
-fractional-bridge, gain-tax-tether, residual-defect-packet-certificate,
-resupply-pincer, signed-leray-escape, stationary-euler-escape). Lean
-substrate: `ztare_proofs/ZtareProofs/` (~22+ sorry-free files).
+**Where to inspect.** Start with the consciousness entries in
+[the public claim register](public_claim_register.md#consciousness-ascription-governance)
+and the project directories named there:
+[consciousness-ascription audit](../projects/gp169_consciousness_ascription_audit/),
+[consciousness-theory workbench](../projects/gp210_consciousness_theory/),
+and
+[Omega-gaming consciousness audit](../projects/gp212_consciousness_omega_audit/).
 
-**Architecture primitives used.** Typed-companion + 4-way swarm pattern
-(`feedback_typed_companion_swarm_decomposition.md`); Unified Categorical
-Compactness 12-route enumeration; Meta-Darwin self-demotion;
-9-entry anti-pattern catalog; impact-weighted catch ledger with
-ratified-row gating; reflexive primitives (RP-001 architecture-index
-typed object); Lean lake build as smoke-test gate; cold-shot adversarial
-panels.
+**What mattered.** The useful result is a governance rule: a low-concern
+verdict about a system of unknown consciousness is not admissible unless the
+measurement channel can actually identify the target property. The
+human-readable name is the measurement-channel veto protocol. Historical
+provenance lives at
+[the cold-LLM consciousness seam](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md)
+and [the Omega-gaming classifier seam](../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md).
 
-**Substrate-specific findings + honest residual.** See `JOURNEY.md`
-§§3-7 for the full substrate dossier. Headline: precise localization of
-the residual to (a) Wall W6 Liouvillian Bohr-coefficient Diophantine
-question, (b) Atom 8c Onsager-1/3 Buckmaster–Vicol Clay-class regime,
-(c) PR-A1 four-sorry transitive obligation, (d) atoms 3/4/5 Galerkin-substrate
-liminf-eq hypotheses, (e) atom 1 Galerkin ten-Prop bucket. **NOT Clay
-closure** — catch #34 demotion language preserved.
+**What survived.** The measurement-governance rule survived better than the
+early pluralism thesis. That matters: the repo kept the part it could inspect
+and demoted the part that looked source-contaminated.
 
-## §3 — Cross-substrate architectural learnings
+**What blocks promotion.** This is not a theory of consciousness. The next
+honest test is whether the governance rule ports to another setting where
+measurement access is limited, without smuggling in the same assumptions.
 
-_Scope qualifier: the patterns / anti-patterns / disciplines listed below
-were extracted into `org/` over the full 60-day window and exercised
-across the substrates noted. They fired through the ZTARE experiment-loop
-(gravity / consciousness / neural era) and through the NS Track B
-Claude-Code orchestration era. The CURRENT meta-architecture as a whole
-(catch ledger with ratified-row gating + anti-pattern catalog as binary
-falsifiable tests + Meta-Darwin + architecture-index meta-graph +
-reflexive primitives) crystallized during NS Track B and has not yet
-been re-tested as a unit on a non-NS substrate._
+### Neural Interpretability And Scaling
 
-The following architecture primitives **fired across ≥3 substrates** —
-this is what makes the experiment-loop validation cross-substrate
-rather than four parallel tracks:
+**Where to inspect.** Start with the neural entries in
+[the public claim register](public_claim_register.md#neural-scaling-and-mechanistic-audits),
+`papers/paper6_neural_scaling/draft.md`, the neural-scaling project
+directories, and [`projects/neural_hunt/`](../projects/neural_hunt/).
 
-- **PATTERN-005 falsifiable_asymmetry** (`org/patterns/falsifiable_asymmetry.md`)
-  fired on gravity (the universality-vs-scale-dependence Newton-mode
-  pre-commit), neural (the prefix-endpoint null-audit; the β = 1/φ
-  cross-modality refutation), and NS (the W6 attack files registering
-  failure-mode preconditions). Solved-regime / classical-system asymmetry
-  is the canonical detection vector.
-- **ANTI-PATTERN-001 citation_laundering** (`org/anti-patterns/citation_laundering.md`)
-  fired on gravity (model-family cold-shot misattributions caught in cleanroom
-  ADMSR audits), consciousness (early literature mis-citation in iter-1 [GP-169](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md)
-  pluralism artifact), neural (β = 1/φ from PSLQ on a small sample explicitly
-  retired), and NS (DiPerna–Majda / Lions IV.4 / Alibert–Bouchitté / Tartar /
-  Duchon–Robert citations checked at every Atom 1 wiring step). The catalog
-  entry is multi-substrate-derived.
-- **ANTI-PATTERN-003 vocabulary_smuggling** fired on consciousness (iter-1
-  GP-169 pluralism diagnosed as training-corpus overdetermination), neural
-  (β = 1/φ named-constant claim), and NS (catch #26 "Onsager-1/3-open →
-  uncontroversial" reduction, demoted).
-- **PATTERN-002 darwin_idea_killer + PATTERN-007 smuggling_audit** are
-  current-meta-architecture catalog entries (`org/patterns/`) that
-  crystallized during NS Track B. Their predecessor adversarial-review
-  habits — debate-log skepticism, cold-shot panels, ZTARE judge friction —
-  fired across all four substrates throughout the 60-day window, but the
-  named PATTERN-002 / PATTERN-007 catalog entries themselves have only
-  been exercised as the standing review machinery on NS so far.
-- **ZTARE pre-commit charter discipline** (Newton-mode + visible/withheld
-  + farther-tail) fired on gravity (`gp163_accel_interpolation` charter),
-  neural (gp154 + neural_hunt out-of-loop charter), NS (substrate-prober
-  framing), and on consciousness in adapted qualitative form
-  (`cage_observe_mode + disable_evidence_fit_gate`).
-- **Cold-shot adversarial panel** (5+ model families, forbidden-domain
-  list) fired on gravity (5-model PMOND v5 attractor), consciousness
-  (forbidden-domain: philosophy of mind), NS (cold_shot_centrifugal_lemma,
-  cold_shot_inverse_antiblowup_eviction, cold_shot_phase5ax_trajectory_admissibility),
-  and partially on neural (slope-anchor cold-shots).
+**What mattered.** The checks separated measurement artifacts from model
+behavior. In the interpretability work, mean pooling made a bottleneck look
+stronger than it was because the BOS token dominated the norm. In the scaling
+work, endpoint-free validation blocked a clean promotion of the named-constant
+story.
 
-## §4 — Substrate-specific catches
+**What survived.** The BOS-contamination diagnosis and cross-layer
+orthogonality result are stronger than the original bottleneck story. The
+scaling-law work produced useful trajectory morphology, but it also produced
+clean negative results: a toy-transformer optimizer-control law did not
+transfer, and the `beta = 1 / phi` anchor was retired.
 
-Some primitives are **structurally critical on exactly one substrate** — these
-are the honest substrate-conditional architecture deltas:
+**What blocks promotion.** The work needs external replication and clean
+separation between measurement choices, endpoint choices, and claimed laws.
 
-- **`gravity_ppn_gates.py` (G-CASSINI-PPN, G-MERCURY-PRECESSION)**:
-  gravity-only. The gates fire under `enable_solar_system_ppn_gates: true`
-  and explicitly skip non-gravitational substrates. The 2.3e-5 Bertotti
-  bound is hard-coded gravity physics.
-- **GPU-remote PDE field-slice sandbox**: gravity-only at present
-  (`projects/gp163d_unified_accel/raw/three_d_gravity_sandbox/`,
-  `deploy_and_launch_gpu_batch.sh`). The neural mechanistic-interp work
-  in *Neural Scaling* is CPU/single-GPU local; the NS Lean work is CPU `lake`.
-  Cross-substrate transfer of the GPU dispatch primitive is **not yet
-  realized**.
-- **AID-MCVP (Adversarial Identification Certificate)**: consciousness-only.
-  The four-component identification certificate (intervention access +
-  independent replication + invertible predicate bridge + adversarial
-  completeness) is a governance-substrate primitive. Whether it ports
-  to other governance substrates (AI safety, biosecurity) is open.
-- **BOS-contamination per-position norm audit**: neural-only. The 35×
-  norm-ratio diagnostic is specific to transformer hidden-state geometry.
-- **UCC 12-route + atom-decomposition + Meta-Darwin + Bohr-Fourier
-  formalism**: NS-only (Track B specific).
-- **Cybernetic-evolution log per domain** (`papers/paper7/draft.md`
-  Appendix A): cross-substrate, but the specific demotions are
-  substrate-specific (gravity scalar-boost → instrument-audit; neural
-  optimizer-control phase-flow → anti-transfer; consciousness pluralism
-  → corpus overdetermination; NS bounded-near-miss → Galerkin
-  truncation).
+### Navier-Stokes Track B
 
-## §5 — What the artifact base shows about the work
+**Where to inspect.** Start with
+`projects/ns_millennium_hunt/`, the public Navier-Stokes entries in
+[the public claim register](public_claim_register.md#navier-stokes-track-b),
+and the Lean project under `ztare_proofs/ZtareProofs/`.
 
-This is **not** the artifact base of a math-PhD candidate narrowly
-attacking a single Clay problem. The artifact base is consistent with a
-research-engineer / principal-orchestrator profile:
+**What mattered.** The main value is residual localization. The work names
+specific formal and mathematical blockers instead of converting near-misses
+into closure language.
 
-- **Cross-substrate apparatus deployment (experiment-loop era).** The
-  same operating discipline and same cold-shot panel methodology were
-  applied across (i) PDE-and-galaxy-data modified gravity with GPU
-  numerical work, (ii) qualitative governance theory in consciousness
-  studies, (iii) deep-learning empirical research on transformer +
-  state-space-model internals, (iv) Lean-formalized PDE proof
-  scaffolding. The current meta-architecture (catch ledger + anti-pattern
-  catalog + Meta-Darwin + architecture-index + reflexive primitives)
-  emerged from NS Track B specifically and has been validated on one
-  substrate so far — designed substrate-general, empirical multi-substrate
-  re-test pending.
-- **Self-demotion record.** Each substrate has at least one major demotion
-  documented in-repo (gravity scalar-boost → instrument-audit; consciousness
-  pluralism → training-corpus artifact; neural β = 1/φ → cross-modality
-  refuted; NS Clay-closure language → "structural decomposition with
-  named axioms"). The catch ledger records these demotions; no single
-  positive claim stands without it.
-- **Tooling shipped.** Substrate-specific gates (`gravity_ppn_gates.py`),
-  GPU-dispatch infrastructure, anti-pattern catalog (9 entries),
-  pattern catalog (11+ entries), reflexive primitive class, ADMSR
-  ambiguity-audit clean-rooms, Lean tactic + smoke-test discipline.
-- **Non-claim discipline.** *Operator-Supervisor Mechanization* §6 ("limits and non-claims") names
-  each substrate's residual at the maturity it has reached — not above.
+**What survived.** Several proof-search paths became sharper residuals:
+Wall W6, Atom 8c, PR-A1 transitive obligations, Galerkin-level liminf-equality
+hypotheses, and the ten-proposition bucket around Atom 1. That is evidence of
+better problem localization, not of a solved problem.
 
-What this artifact base does **not** show: that any one substrate is
-solved, or that the current meta-architecture has been
-multi-substrate-validated as a unit. What it does show: that one
-principal, under one operating discipline, produced Tier-1/Tier-2
-substrate-prober output on four structurally unrelated substrates (the
-experiment-loop era) and built a current meta-architecture during NS
-Track B that is designed substrate-general and awaits non-NS empirical
-re-test. The substrate-generality of that meta-architecture is a
-hypothesis the next sprint will test.
+**What blocks promotion.** Global regularity is not proved. Any stronger claim
+requires a target-residual artifact with recurrence checks, tool-depth receipts,
+formal/source receipts, and external mathematical review.
 
----
+## Cross-Domain Lesson
 
-_See `JOURNEY.md` for the meta-architecture story (six-phase
-architectural evolution focused on NS Track B). This document is the
-cross-substrate companion. If a reader finds inflation in any §2 dossier
-or any §3 cross-substrate claim, that is a falsification of the catch
-ledger and should be filed against the next ledger row._
+Across the four domains, the recurring behavior is simple:
+
+```text
+make the claim inspectable -> run a check that can fail
+-> narrow or block the claim -> record the next check
+```
+
+That behavior has appeared in more than one domain. The current release still
+owes a fresh non-NS pass through the v0.4 workbench path before it can claim
+repeatable cross-domain product validation.
+
+For the claim-by-claim version, read
+[the public claim register](public_claim_register.md). For the evidence-level
+map, read [the evidence atlas](evidence_atlas/README.md).

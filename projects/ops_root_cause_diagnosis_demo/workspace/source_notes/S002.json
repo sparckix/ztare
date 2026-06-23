@@ -1,0 +1,155 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "Billing-export failure is the root cause of the backlog spike.",
+      "depends_on": [
+        "export-worker error logs",
+        "support-console cache miss data"
+      ],
+      "priority": "high",
+      "why_testable": "Can test by inspecting export-worker error logs for 2026-06-12 to 2026-06-14 and checking support-console cache misses."
+    },
+    {
+      "claim": "Staffing shortage caused backlog spike via effective capacity drop.",
+      "depends_on": [
+        "absence records",
+        "queue-assignment records"
+      ],
+      "priority": "medium",
+      "why_testable": "Can test by examining absence records and queue-assignment records for the period."
+    },
+    {
+      "claim": "Seasonality (weekend volume shift) caused backlog spike.",
+      "depends_on": [
+        "previous-month billing queue data"
+      ],
+      "priority": "medium",
+      "why_testable": "Can test by comparing same weekday and previous-month billing queues."
+    },
+    {
+      "claim": "Pricing-page copy change caused backlog spike.",
+      "depends_on": [
+        "sales/pricing-page ticket tag data"
+      ],
+      "priority": "medium",
+      "why_testable": "Can test by checking if sales or pricing-page ticket tags rose before billing tags."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Cannot confirm or reject the billing-export failure hypothesis without these logs.",
+      "unknown": "Whether export-worker error logs show health or failure for 2026-06-12 to 2026-06-14.",
+      "why_it_matters": "The decisive falsifier for the billing-export failure hypothesis depends on inspecting these logs."
+    },
+    {
+      "blocking": "Blocks bounded diagnosis conclusion.",
+      "unknown": "Whether support-console cache misses can independently explain the missing billing status.",
+      "why_it_matters": "This is part of the decisive falsifier: if export worker was healthy and cache misses explain the issue, billing-export failure is rejected."
+    },
+    {
+      "blocking": "Cannot confirm or reject the staffing shortage hypothesis.",
+      "unknown": "Whether absence or queue-assignment records show effective capacity dropped despite planned hours (for staffing shortage hypothesis).",
+      "why_it_matters": "This is the decisive next falsifier for the staffing shortage hypothesis."
+    },
+    {
+      "blocking": "Cannot confirm or reject the seasonality hypothesis.",
+      "unknown": "Whether same weekday and previous-month billing queues show evidence of seasonality (for seasonality hypothesis).",
+      "why_it_matters": "This is the decisive next falsifier for the seasonality hypothesis."
+    },
+    {
+      "blocking": "Cannot confirm or reject the pricing-page copy change hypothesis.",
+      "unknown": "Whether sales or pricing-page ticket tags rose before billing tags (for pricing-page copy change hypothesis).",
+      "why_it_matters": "This is the decisive next falsifier for the pricing-page copy change hypothesis."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "The source lists four candidate explanations for the backlog spike: billing-export failure, staffing shortage, seasonality, and pricing-page copy change.",
+      "strength": "high"
+    },
+    {
+      "statement": "The highest-confidence conclusion permitted by this fixture is a bounded diagnosis: billing-export failure is the best-supported explanation in the provided synthetic evidence.",
+      "strength": "high"
+    },
+    {
+      "statement": "Support-console cache behavior remains an unresolved local-verification gap.",
+      "strength": "high"
+    },
+    {
+      "statement": "Reject the diagnosis if new logs show the export worker stayed healthy while support-console cache misses independently explain the missing billing status.",
+      "strength": "high"
+    },
+    {
+      "statement": "For the billing-export failure hypothesis: supporting facts include INC-2306-11-B, INC-2306-12-C, CHG-142, billing tag share rose from 0.25 to 0.61-0.64, p95 first response rose after export retries; weakening facts include missing user-level export error logs and support-console cache defect remains possible.",
+      "strength": "medium"
+    },
+    {
+      "statement": "For the staffing shortage hypothesis: supporting fact is high p95 response time could reflect capacity shortage; weakening fact is staffed hours stayed flat or rose during the peak.",
+      "strength": "medium"
+    },
+    {
+      "statement": "For the seasonality hypothesis: supporting fact is weekend days can shift volume; weakening facts include baseline Sunday before incident was 118 tickets and 42 minutes p95, Sunday during recovery was 221 tickets and 167 minutes p95 with billing-specific tags elevated.",
+      "strength": "medium"
+    },
+    {
+      "statement": "For the pricing-page copy change hypothesis: CHG-141 occurred before spike; weakening facts include pricing-page change did not touch billing-export or support-console, billing-tag share moved sharply not generic sales traffic.",
+      "strength": "medium"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "exact",
+      "name": "billing tag share pre-incident",
+      "notes": "Billing tag share at incident start, from source table.",
+      "units": "proportion",
+      "value_or_range": "0.25"
+    },
+    {
+      "kind": "range",
+      "name": "billing tag share during incident",
+      "notes": "Billing tag share at peak of backlog spike.",
+      "units": "proportion",
+      "value_or_range": "0.61-0.64"
+    },
+    {
+      "kind": "exact",
+      "name": "baseline Sunday ticket count (before incident)",
+      "notes": "From seasonality hypothesis.",
+      "units": "tickets",
+      "value_or_range": "118"
+    },
+    {
+      "kind": "exact",
+      "name": "baseline Sunday p95 response time (before incident)",
+      "notes": "From seasonality hypothesis.",
+      "units": "minutes",
+      "value_or_range": "42"
+    },
+    {
+      "kind": "exact",
+      "name": "Sunday during recovery ticket count",
+      "notes": "From seasonality hypothesis.",
+      "units": "tickets",
+      "value_or_range": "221"
+    },
+    {
+      "kind": "exact",
+      "name": "Sunday during recovery p95 response time",
+      "notes": "From seasonality hypothesis.",
+      "units": "minutes",
+      "value_or_range": "167"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The highest-confidence conclusion permitted is a bounded diagnosis: billing-export failure is the best-supported explanation in the provided synthetic evidence, while support-console cache behavior remains an unresolved local-verification gap.",
+      "strength": "high",
+      "topic": "root cause boundedness"
+    }
+  ],
+  "source_id": "S002",
+  "source_kind": "md",
+  "source_path": "counter_hypotheses.md",
+  "source_summary": "This source lists four alternative hypotheses for the backlog spike, each with supporting facts, weakening facts, and a decisive next falsifier. The highest-confidence conclusion permitted is a bounded diagnosis favoring billing-export failure, while support-console cache behavior remains an unresolved local-verification gap. The diagnosis should be rejected if export worker logs show health and support-console cache misses independently explain missing billing status.",
+  "source_type": "source_evidence"
+}

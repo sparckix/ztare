@@ -32,6 +32,11 @@ from pathlib import Path
 from typing import Any
 
 REPO = Path(__file__).resolve().parents[3]
+from src.ztare.orchestrator.contract_table import get_spec_by_class
+from src.ztare.orchestrator.submission_path_helpers import (
+    requires_i_model_submission,
+    submission_contract_kind,
+)
 from src.ztare.validator.rubric_mode_resolver import validate_rubric_mode_contract
 
 KNOWN_FALSIFICATION_MODES = {
@@ -52,6 +57,13 @@ def _warn(msg: str) -> str:
 
 def _ok(msg: str) -> str:
     return f"  ✅ {msg}"
+
+
+def _rel(path: Path, repo: Path = REPO) -> str:
+    try:
+        return str(path.relative_to(repo))
+    except ValueError:
+        return str(path)
 
 
 def _secondary_observable_contract_errors(rubric: dict[str, Any]) -> list[str]:
@@ -291,7 +303,12 @@ def _check_rubric(rubric: dict[str, Any], rubric_path: Path, project_slug: str) 
     return errors + info
 
 
-def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) -> list[str]:
+def _check_project(
+    project_dir: Path,
+    rubric: dict[str, Any],
+    rubric_mode: str,
+    repo: Path = REPO,
+) -> list[str]:
     """Returns list of error strings."""
     errors: list[str] = []
     info: list[str] = []
@@ -305,11 +322,11 @@ def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) 
         path = project_dir / name
         if kind == "file" and not path.is_file():
             errors.append(_err(
-                f"missing required file: {path.relative_to(REPO)} (rubric_authoring_map.md §2)"
+                f"missing required file: {_rel(path, repo)} (rubric_authoring_map.md §2)"
             ))
         elif kind == "dir" and not path.is_dir():
             errors.append(_err(
-                f"missing required directory: {path.relative_to(REPO)} (rubric_authoring_map.md §2)"
+                f"missing required directory: {_rel(path, repo)} (rubric_authoring_map.md §2)"
             ))
         else:
             info.append(_ok(f"{name} present"))
@@ -319,7 +336,7 @@ def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) 
             path = project_dir / name
             if not path.is_file():
                 errors.append(_err(
-                    f"holdout_hard_gate=true requires {path.relative_to(REPO)} "
+                    f"holdout_hard_gate=true requires {_rel(path, repo)} "
                     "(rubric_specification.md §2, §5, §15)"
                 ))
             else:
@@ -385,11 +402,11 @@ def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) 
                 if missing:
                     errors.append(_err(
                         f"theorem_packet_contract declares {missing!r}, but "
-                        f"{path.relative_to(REPO)} does not expose/mention them."
+                        f"{_rel(path, repo)} does not expose/mention them."
                     ))
                 elif required_functions:
                     info.append(_ok(
-                        f"theorem-packet contract mirrored in {path.relative_to(REPO)}"
+                        f"theorem-packet contract mirrored in {_rel(path, repo)}"
                     ))
 
     # Newton-mode charter must have "Secondary observable" field per §18
@@ -413,6 +430,118 @@ def _check_project(project_dir: Path, rubric: dict[str, Any], rubric_mode: str) 
     return errors + info
 
 
+def _launch_contract_summary(rubric: dict[str, Any]) -> dict[str, Any]:
+    """Return the active launch-time submission contract for a rubric.
+
+    This is intentionally observational. The loop and briefing providers still
+    own enforcement; the validator exposes the same decision so trace/userland
+    can show the contract before an in-loop run starts.
+    """
+    cage_meta = rubric.get("cage_meta") if isinstance(rubric.get("cage_meta"), dict) else {}
+    cage_meta_class = str(cage_meta.get("class") or "").strip()
+    spec = get_spec_by_class(cage_meta_class) if cage_meta_class else None
+    contract_kind = submission_contract_kind(rubric)
+    requires_i_model = requires_i_model_submission(rubric)
+    theorem_contract = rubric.get("theorem_packet_contract")
+    if not isinstance(theorem_contract, dict):
+        theorem_contract = {}
+    required_functions = [
+        str(name)
+        for name in theorem_contract.get("required_top_level_functions") or []
+        if isinstance(name, str)
+    ]
+    if contract_kind == "theorem_packet":
+        expected_surface = "theorem-packet top-level functions"
+    elif contract_kind == "assertion_suite":
+        expected_surface = "plain Python assertion suite"
+    else:
+        expected_surface = "numeric I_model submission"
+    return {
+        "schema": "ztare-launch-contract-summary-v1",
+        "submission_contract_kind": contract_kind,
+        "expected_submission_surface": expected_surface,
+        "requires_i_model": requires_i_model,
+        "rubric_mode": str(rubric.get("rubric_mode") or "").strip().lower() or None,
+        "falsification_mode": str(rubric.get("falsification_mode") or "").strip().lower() or None,
+        "fit_score_mode": str(rubric.get("fit_score_mode") or "").strip().lower() or None,
+        "enable_fit_primitive": bool(rubric.get("enable_fit_primitive", True)),
+        "enable_fit_primitive_features": bool(rubric.get("enable_fit_primitive_features", False)),
+        "holdout_hard_gate": bool(rubric.get("holdout_hard_gate", False)),
+        "cage_meta_class": cage_meta_class or None,
+        "registered_substrate_abi": spec.abi.name.lower() if spec is not None else None,
+        "registered_signature": spec.signature_str if spec is not None else None,
+        "theorem_required_functions": required_functions,
+        "numeric_cross_class_diagnostic_eligible": cage_meta_class in {"nd_features", "time_series"},
+    }
+
+
+def validate_rubric_project(
+    project_slug: str,
+    *,
+    rubric: str | Path | None = None,
+    repo: str | Path = REPO,
+    rubric_only: bool = False,
+) -> dict[str, Any]:
+    repo_path = Path(repo).resolve()
+    rubric_path = Path(rubric) if rubric else repo_path / "rubrics" / f"{project_slug}.json"
+    if not rubric_path.is_absolute():
+        rubric_path = repo_path / rubric_path
+    project_dir = repo_path / "projects" / project_slug
+
+    if not rubric_path.is_file():
+        return {
+            "ok": False,
+            "exit_code": 2,
+            "rubric_path": _rel(rubric_path, repo_path),
+            "project_dir": _rel(project_dir, repo_path),
+            "messages": [],
+            "errors": [_err(f"rubric not found: {_rel(rubric_path, repo_path)}")],
+            "warnings": [],
+            "successes": [],
+            "launch_contract": None,
+        }
+    try:
+        rubric_data = json.loads(rubric_path.read_text())
+    except json.JSONDecodeError as exc:
+        return {
+            "ok": False,
+            "exit_code": 2,
+            "rubric_path": _rel(rubric_path, repo_path),
+            "project_dir": _rel(project_dir, repo_path),
+            "messages": [],
+            "errors": [_err(f"rubric JSON malformed: {exc}")],
+            "warnings": [],
+            "successes": [],
+            "launch_contract": None,
+        }
+
+    rubric_msgs = _check_rubric(rubric_data, rubric_path, project_slug)
+    project_msgs: list[str] = []
+    if not rubric_only:
+        project_msgs = _check_project(
+            project_dir,
+            rubric_data,
+            (rubric_data.get("rubric_mode") or "kepler").lower(),
+            repo=repo_path,
+        )
+
+    all_msgs = rubric_msgs + project_msgs
+    errors = [m for m in all_msgs if m.startswith("  ❌")]
+    warnings = [m for m in all_msgs if m.startswith("  ⚠️")]
+    successes = [m for m in all_msgs if m.startswith("  ✅")]
+    return {
+        "ok": not errors,
+        "exit_code": 1 if errors else 0,
+        "rubric_path": _rel(rubric_path, repo_path),
+        "project_dir": _rel(project_dir, repo_path),
+        "messages": all_msgs,
+        "errors": errors,
+        "warnings": warnings,
+        "successes": successes,
+        "launch_contract": _launch_contract_summary(rubric_data),
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Deterministic rubric + project pre-flight validator."
@@ -423,34 +552,25 @@ def main() -> int:
     parser.add_argument("--rubric-only", action="store_true", help="Skip project-dir checks")
     args = parser.parse_args()
 
-    rubric_path = Path(args.rubric) if args.rubric else REPO / "rubrics" / f"{args.project_slug}.json"
-    if not rubric_path.is_absolute():
-        rubric_path = REPO / rubric_path
-    project_dir = REPO / "projects" / args.project_slug
-
-    if not rubric_path.is_file():
-        print(f"  ❌ rubric not found: {rubric_path.relative_to(REPO)}", file=sys.stderr)
-        return 2
-    try:
-        rubric = json.loads(rubric_path.read_text())
-    except json.JSONDecodeError as exc:
-        print(f"  ❌ rubric JSON malformed: {exc}", file=sys.stderr)
-        return 2
-
     print(f"validate_rubric: {args.project_slug}")
-    print(f"  rubric: {rubric_path.relative_to(REPO)}")
+    result = validate_rubric_project(
+        args.project_slug,
+        rubric=args.rubric,
+        repo=REPO,
+        rubric_only=args.rubric_only,
+    )
+    print(f"  rubric: {result['rubric_path']}")
     if not args.rubric_only:
-        print(f"  project: {project_dir.relative_to(REPO)}")
+        print(f"  project: {result['project_dir']}")
 
-    rubric_msgs = _check_rubric(rubric, rubric_path, args.project_slug)
-    project_msgs: list[str] = []
-    if not args.rubric_only:
-        project_msgs = _check_project(project_dir, rubric, (rubric.get("rubric_mode") or "kepler").lower())
+    errors = list(result["errors"])
+    warnings = list(result["warnings"])
+    successes = list(result["successes"])
 
-    all_msgs = rubric_msgs + project_msgs
-    errors = [m for m in all_msgs if m.startswith("  ❌")]
-    warnings = [m for m in all_msgs if m.startswith("  ⚠️")]
-    successes = [m for m in all_msgs if m.startswith("  ✅")]
+    if result["exit_code"] == 2:
+        for m in errors:
+            print(m, file=sys.stderr)
+        return 2
 
     if args.verbose or errors or warnings:
         for m in successes if args.verbose else []:

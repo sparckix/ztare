@@ -5,6 +5,7 @@ You will receive:
 - thesis iterations
 - a final hardened thesis
 - optional evidence or assumptions file
+- optional `autoresearch_review_context.json` trace metadata
 
 Your task is to extract only the highest-signal strategic insights that were surfaced through repeated adversarial pressure.
 
@@ -14,6 +15,10 @@ Important rules:
 - Do not introduce outside frameworks unless directly supported by the input materials.
 - Do not present hypotheses as market truth.
 - Treat the materials as adversarially filtered hypothesis prioritization, not proof of reality.
+- Treat `autoresearch_review_context.json`, when present, as admissibility and
+  review metadata: use it to preserve readiness, unresolved blockers, graph
+  focus, provider failures, and next actions, but do not turn trace fields into
+  substantive claims.
 - Only include conclusions that were repeated, survived attack, or emerged as the strongest remaining explanation after alternatives failed.
 - If the materials do not support a conclusion, omit it.
 - Avoid house jargon or internal workflow terms in output fields. Do not use phrases like `adversarial pressure`, `surviving thesis`, `failed variant`, `baseline`, `champion`, `branch`, `underidentified`, or similar internal labels when a plain-language equivalent exists.
@@ -131,6 +136,19 @@ Return valid JSON only using this schema:
   "overclaim_boundary": [
     "string"
   ],
+  "review_status": {
+    "readiness": "string",
+    "blockers": [
+      "string"
+    ],
+    "runtime_risks": [
+      "string"
+    ],
+    "next_actions": [
+      "string"
+    ],
+    "interpretation": "string"
+  },
   "key_takeaways": [
     "string"
   ],
@@ -163,6 +181,7 @@ Extraction guidance:
 - "quantitative_anchors" should preserve the few numeric bounds or thresholds that materially constrain interpretation. Do not omit them just because the top-line thesis remains partially unresolved.
 - "working_priors" should explicitly surface bounded or illustrative ranges when they materially shape the object under study. If the top-level probability or forecast is not yet earned, still extract the working ranges and mark them as bounded or illustrative rather than dropping them.
 - "overclaim_boundary" should list the claims or phrasings the final artifact must explicitly avoid because they outrun the current evidentiary status.
+- "review_status" should be populated only when `autoresearch_review_context.json` is present. Translate readiness, blockers, provider/runtime risks, graph-focus gaps, and next actions into reader-facing language. Do not treat scores, trace fields, or readiness status as proof of the substantive thesis.
 - "epistemic_note" must explicitly clarify that these are prioritized hypotheses, not proof of market truth.
 
 Output JSON only. No prose before or after.

@@ -1,0 +1,11 @@
+{
+  "name": "ztare-forensic-workbench",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node ../analytics/public/dashboard/node_modules/vite/bin/vite.js",
+    "build": "node ../analytics/public/dashboard/node_modules/vite/bin/vite.js build",
+    "preview": "node ../analytics/public/dashboard/node_modules/vite/bin/vite.js preview"
+  }
+}

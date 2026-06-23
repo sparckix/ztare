@@ -17,12 +17,12 @@ from urllib.parse import unquote
 REPO = Path(__file__).resolve().parents[3]
 LINK_RE = re.compile(r"(?<!!)\[[^\]]+\]\(([^)]+)\)")
 SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
-DEFAULT_ROOTS = ["README.md", "docs"]
+DEFAULT_ROOTS = ["README.md", "docs", "examples"]
 
 
-def tracked_markdown(roots: list[str]) -> list[Path]:
+def public_markdown(roots: list[str]) -> list[Path]:
     result = subprocess.run(
-        ["git", "ls-files", *roots],
+        ["git", "ls-files", "--cached", "--others", "--exclude-standard", *roots],
         cwd=REPO,
         text=True,
         stdout=subprocess.PIPE,
@@ -76,7 +76,8 @@ def main() -> int:
     args = parser.parse_args()
 
     failures: list[str] = []
-    for path in tracked_markdown(args.roots):
+    markdown_files = public_markdown(args.roots)
+    for path in markdown_files:
         failures.extend(check_file(path))
 
     if failures:
@@ -84,7 +85,7 @@ def main() -> int:
         for failure in failures:
             print(f"  - {failure}")
         return 1
-    print(f"markdown links OK ({len(tracked_markdown(args.roots))} files)")
+    print(f"markdown links OK ({len(markdown_files)} files)")
     return 0
 
 

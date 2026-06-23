@@ -1,0 +1,198 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The billing-export failure (INC-2306-11-B) caused the subsequent support-console outage (INC-2306-13-D) via missing downstream data.",
+      "depends_on": [
+        "S003",
+        "System architecture for billing-export and support-console data flow"
+      ],
+      "priority": "high",
+      "why_testable": "Temporal ordering and symptom match (billing status unavailable) are documented; can be tested against system architecture dependencies."
+    },
+    {
+      "claim": "The helpdesk-router queue delay (INC-2306-08-A) is unrelated to the billing-export and support-console incidents.",
+      "depends_on": [
+        "S003",
+        "Infrastructure dependency map"
+      ],
+      "priority": "medium",
+      "why_testable": "It occurred 3 days earlier, involved a different service, and resolved quickly; can be tested by checking for shared infrastructure or dependencies."
+    },
+    {
+      "claim": "The backlog spike that began after INC-2306-11-B and peaked during INC-2306-12-C was entirely attributable to billing-export failures.",
+      "depends_on": [
+        "S003",
+        "Backlog metrics"
+      ],
+      "priority": "medium",
+      "why_testable": "The observation is explicitly stated; can be tested by correlating backlog metrics with incident timelines from other sources."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Establishing whether INC-2306-11-B was a trigger for subsequent incidents.",
+      "unknown": "Root cause of INC-2306-11-B nightly invoice export retries and duplicate-payment warning codes.",
+      "why_it_matters": "Without understanding why the export retried 7 times, any causal chain remains incomplete."
+    },
+    {
+      "blocking": "Distinguishing between independent faults and cascading failures.",
+      "unknown": "What caused the INC-2306-12-C invoice export worker to stall.",
+      "why_it_matters": "The stall was severity 1 and longest incident; its cause determines whether it is related to INC-2306-11-B or an independent failure."
+    },
+    {
+      "blocking": "Mapping the full causal chain across all incidents.",
+      "unknown": "Whether the helpdesk-router queue delay (INC-2306-08-A) is connected to the later incidents.",
+      "why_it_matters": "It occurred 3 days before the billing-export issues; temporal proximity does not prove causation."
+    },
+    {
+      "blocking": "Assessing whether the root cause was permanently resolved.",
+      "unknown": "Why queue rules were hotfixed in INC-2306-15-E and what the hotfix entailed.",
+      "why_it_matters": "The hotfix resolution could indicate a known vulnerability or a temporary workaround."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "This dataset is synthetic, not customer data, and does not describe a real organization.",
+      "strength": "high"
+    },
+    {
+      "statement": "Only us-east region is represented in this pilot fixture.",
+      "strength": "high"
+    },
+    {
+      "statement": "The fixture is intentionally small; any broad organizational diagnosis must stay out of scope.",
+      "strength": "high"
+    },
+    {
+      "statement": "INC-2306-08-A: opened 2026-06-08T09:20:00Z, closed 2026-06-08T10:05:00Z, service helpdesk-router, region us-east, severity 3, observation 'short queue delay after a scheduled analytics export'.",
+      "strength": "high"
+    },
+    {
+      "statement": "INC-2306-11-B: opened 2026-06-11T23:50:00Z, closed 2026-06-12T03:20:00Z, service billing-export, region us-east, severity 2, observation 'nightly invoice export retried 7 times and emitted duplicate-payment warning codes'.",
+      "strength": "high"
+    },
+    {
+      "statement": "INC-2306-12-C: opened 2026-06-12T09:05:00Z, closed 2026-06-13T18:40:00Z, service billing-export, region us-east, severity 1, observation 'invoice export worker stalled; customer invoices were visible in app but missing from downstream support console'.",
+      "strength": "high"
+    },
+    {
+      "statement": "INC-2306-13-D: opened 2026-06-13T13:10:00Z, closed 2026-06-14T01:30:00Z, service support-console, region us-east, severity 2, observation 'agents reported \"billing status unavailable\" on 41% of sampled tickets'.",
+      "strength": "high"
+    },
+    {
+      "statement": "INC-2306-15-E: opened 2026-06-15T08:40:00Z, closed 2026-06-15T09:15:00Z, service helpdesk-router, region us-east, severity 3, observation 'queue rules hotfixed after backlog normalized'.",
+      "strength": "high"
+    },
+    {
+      "statement": "The backlog spike began after INC-2306-11-B and peaked during INC-2306-12-C.",
+      "strength": "high"
+    },
+    {
+      "statement": "The support-console incident followed the billing-export failure and reported a billing-status-specific symptom.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "exact",
+      "name": "duration INC-2306-08-A",
+      "notes": "opened 09:20, closed 10:05 on 2026-06-08",
+      "units": "minutes",
+      "value_or_range": "45 minutes"
+    },
+    {
+      "kind": "exact",
+      "name": "duration INC-2306-11-B",
+      "notes": "opened 23:50 2026-06-11, closed 03:20 2026-06-12",
+      "units": "hours:minutes",
+      "value_or_range": "3 hours 30 minutes"
+    },
+    {
+      "kind": "exact",
+      "name": "duration INC-2306-12-C",
+      "notes": "opened 09:05 2026-06-12, closed 18:40 2026-06-13",
+      "units": "hours:minutes",
+      "value_or_range": "33 hours 35 minutes"
+    },
+    {
+      "kind": "exact",
+      "name": "duration INC-2306-13-D",
+      "notes": "opened 13:10 2026-06-13, closed 01:30 2026-06-14",
+      "units": "hours:minutes",
+      "value_or_range": "12 hours 20 minutes"
+    },
+    {
+      "kind": "exact",
+      "name": "duration INC-2306-15-E",
+      "notes": "opened 08:40, closed 09:15 on 2026-06-15",
+      "units": "minutes",
+      "value_or_range": "35 minutes"
+    },
+    {
+      "kind": "exact",
+      "name": "severity INC-2306-08-A",
+      "notes": "helpdesk-router",
+      "units": "",
+      "value_or_range": "3"
+    },
+    {
+      "kind": "exact",
+      "name": "severity INC-2306-11-B",
+      "notes": "billing-export",
+      "units": "",
+      "value_or_range": "2"
+    },
+    {
+      "kind": "exact",
+      "name": "severity INC-2306-12-C",
+      "notes": "billing-export",
+      "units": "",
+      "value_or_range": "1"
+    },
+    {
+      "kind": "exact",
+      "name": "severity INC-2306-13-D",
+      "notes": "support-console",
+      "units": "",
+      "value_or_range": "2"
+    },
+    {
+      "kind": "exact",
+      "name": "severity INC-2306-15-E",
+      "notes": "helpdesk-router",
+      "units": "",
+      "value_or_range": "3"
+    },
+    {
+      "kind": "exact",
+      "name": "retries on INC-2306-11-B",
+      "notes": "nightly invoice export retried 7 times",
+      "units": "retries",
+      "value_or_range": "7"
+    },
+    {
+      "kind": "exact",
+      "name": "agents reporting billing status unavailable",
+      "notes": "for INC-2306-13-D",
+      "units": "percent of sampled tickets",
+      "value_or_range": "41%"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The backlog spike began after INC-2306-11-B and peaked during INC-2306-12-C.",
+      "strength": "medium",
+      "topic": "causal ordering of incidents"
+    },
+    {
+      "assertion": "The support-console incident followed the billing-export failure and reported a billing-status-specific symptom.",
+      "strength": "medium",
+      "topic": "temporal relationship between billing-export and support-console incidents"
+    }
+  ],
+  "source_id": "S003",
+  "source_kind": "md",
+  "source_path": "incident_log.md",
+  "source_summary": "A synthetic incident log for a ZTARE starter pilot fixture containing five incidents in us-east between June 8-15, 2026, involving helpdesk-router, billing-export, and support-console services, with documented timing, severity, and observations.",
+  "source_type": "source_evidence"
+}

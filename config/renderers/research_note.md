@@ -33,6 +33,7 @@ Writing guidance:
 - If the ledger includes "forecast_status", state clearly whether the top-line forecast is fully earned, bounded only as a working range, or still only component-level.
 - If the ledger includes "quantitative_anchors" or "working_priors", include a compact Working Ranges section. Do not omit bounded or illustrative ranges when they materially constrain interpretation.
 - If the top-level percentage is not earned, say that directly while still surfacing any bounded or illustrative ranges that the ledger does support.
+- If the ledger includes "review_status", use it to calibrate readiness, blockers, runtime risks, and next actions. Do not quote internal field names, model names, run ids, or trace labels unless they are necessary to avoid ambiguity.
 - Preserve the dependency chain explicitly as a short ordered section. Do not just imply it across paragraphs.
 - If the current evidence points to a stage-gate research path, make that explicit.
 - Keep the note concise and rigorous.

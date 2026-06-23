@@ -6,8 +6,8 @@ description: "Recipes for running experiments; run make seal before make experim
 
 > **Up:** [Documentation map](../README.md)
 
-**Provenance:** Distilled from the private sealed pre-registration discipline and AGENTS.md sealed-pre-registration rules.
-**Canonical for:** pre-run procedure, `make seal` workflow, Division A/B protocol.
+**Provenance:** Distilled from the sealed pre-registration discipline and AGENTS.md sealed-pre-registration rules.
+**Canonical for:** pre-run procedure, `make seal` workflow, and visible/held-out information isolation.
 **Supersedes:** the older manual pre-run checklist; this cookbook is the entry point.
 
 ---
@@ -22,16 +22,18 @@ description: "Recipes for running experiments; run make seal before make experim
 
 | Track | When | Entry |
 |---|---|---|
-| **New substrate** | New GT, new domain | Start at Division A/B |
-| **Grammar extension or rubric variant on existing substrate** | Same GT, different grammar/rubric | Skip to scaffold Division B |
-| **Re-run / replication** | Same GT, same rubric, different model pair | Skip to seal |
-| **Qualitative thesis (policy, philosophy, social science)** | Text evidence, no GT | See qualitative projects, then seal |
+| **New controlled sandbox** | New sealed ground truth, new domain | Start at visible/held-out isolation |
+| **Grammar extension or rubric variant on existing sandbox** | Same sealed ground truth, different grammar/rubric | Skip to public-facing artifact scaffold |
+| **Re-run / replication** | Same sealed ground truth, same rubric, different model pair | Skip to seal |
+| **Qualitative thesis (policy, philosophy, social science)** | Text evidence, no sealed ground truth | See qualitative projects, then seal |
 
 ---
 
 ## 0A. Qualitative Projects, `make generate-gp` ([GP-104](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md))
 
-For qualitative projects (text evidence, no numerical GT), use `generate-gp` instead of the Division A/B substrate pipeline. The generator scaffolds the project with correct gate configuration and an LLM-drafted adversarial rubric.
+For qualitative projects (text evidence, no numerical ground truth), use `generate-gp`
+instead of the sealed synthetic-sandbox pipeline. The generator scaffolds the
+project with correct gate configuration and an LLM-drafted adversarial rubric.
 
 ```bash
 make generate-gp \
@@ -69,7 +71,10 @@ Qualitative projects require three non-obvious configuration keys that must be p
 **Evidence: two paths:**
 
 - **Curated-evidence route** (small projects): edit `evidence.txt` directly, one observation per line.
-- **Source-ingest route** (large projects, many source documents): drop PDFs/markdown into `raw/`, optionally type them via `raw/source_type_map.json`, then `make evidence-compile PROJECT=<slug> MODEL=gpt4.1`.
+- **Source-ingest route** (large projects, many source documents): drop converted
+  text/markdown sources into `raw/`, type them via frontmatter or
+  `raw/source_type_map.json`, run `ztare project source-check --project <slug>
+  --json`, then `make evidence-prepare PROJECT=<slug> MODEL=gpt4.1`.
 
 **After generating:**
 
@@ -85,15 +90,17 @@ make loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 \
 
 ---
 
-## 1. Division A, GT selection and sealed artifacts
+## 1. Ground-truth side, sealed artifacts
 
-> Division A knows the GT. Division A must not write files the mutator sees.
+The ground-truth side knows the answer. It must not write files the mutator
+sees. Older docs call this side "Division A"; the invariant is information
+isolation between answer-bearing files and proposer-visible files.
 
 **What Division A produces:**
 
 | Artifact | Location | Mutator-visible? |
 |---|---|---|
-| GT module (`gp0NN_*_gt.py`) | `src/ztare/substrates/` | No |
+| Ground-truth module (`<slug>_*_gt.py`) | `src/ztare/substrates/` | No |
 | `evidence.txt` | `projects/<slug>/` | Yes, no GT names |
 | `evidence_holdout.txt` | `projects/<slug>/` | Yes, no GT names |
 | `evidence_farther_tail.txt` | `projects/<slug>/` | Yes, no GT names |
@@ -101,21 +108,27 @@ make loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=10 \
 | `sealed_assertions.py` | `projects/<slug>/` | No (black-box import by harness) |
 | Pre-registration | private sealed area | No |
 
-**Use the substrate generator, not manual Python:**
+**Use the project generator, not manual Python:**
 
 ```bash
 # For integer-sequence substrates
-python generate_substrate.py --project <slug> --gt-module <module>
+ztare project new --help
 
 # For science substrates with continuous GT
-python -m src.ztare.substrates.render_evidence --project <slug> --gt-class <class>
+ztare project new --help
 ```
 
-Do not generate evidence by writing inline Python in a chat session. The generator scripts enforce the [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) Division A boundary and are the auditable path. If no generator script exists for your substrate type, create one under `src/ztare/substrates/` before generating evidence, do not bypass with one-off scripts.
+Do not generate evidence by writing inline Python in a chat session. The
+generator path enforces the Division A boundary (historical seam:
+[GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md))
+and is the auditable path. If no generator script exists for your substrate
+type, create one under `src/ztare/substrates/` before generating evidence; do
+not bypass with one-off scripts.
 
-**Custom substrate three-file alignment (gp159/160/161 lessons, 2026-04-25):**
+**Custom substrate three-file alignment (historical lessons, 2026-04-25):**
 
-When building a custom substrate (not using `generate_substrate.py`), evidence.txt, test_model.py, and gate_harness.py must agree on the I_model contract:
+When building a custom substrate outside `ztare project new`, evidence.txt,
+test_model.py, and gate_harness.py must agree on the I_model contract:
 
 1. **gate_harness.py** is the authority, contains GT, holdout splits, gate logic. It dynamically imports test_model.py and calls `I_model(d)`.
 2. **test_model.py** is the mutator's submission, starts as a NaN-returning stub. The mutator overwrites it. **Must NOT be a copy of gate_harness.py** (causes infinite import recursion).
@@ -248,10 +261,10 @@ Mandatory in the same session:
 3. **Evaluate for F-row and INS-row.** F-row if the result changes what to believe or build next. INS-row if paper-grade.
 4. **Run telemetry reporter:**
    ```bash
-   python -m src.ztare.validator.telemetry_reporter --write-cost-summary --update-run-summary
+   python -m ztare.reports.telemetry_reporter --write-cost-summary --update-run-summary
    ```
 5. **Update thesis.md** with best-iteration marker (or null result note).
-6. **Advance goal state** if tracked by [GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md): `python -m src.ztare.orchestration.cli advance <slug>`.
+6. **Advance goal state** if tracked by [GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md): `python -m ztare.orchestration.cli advance <slug>`.
 
 ---
 
@@ -260,24 +273,21 @@ Mandatory in the same session:
 ```
 # Full happy path for a new science sandbox
 
-# Division A (GT-aware):
-python -m src.ztare.substrates.render_evidence --project gp0NN_<name> --gt-class <class>
-# (generates evidence.txt, holdout, farther_tail, .denylist, sealed_assertions.py)
-
-# Division B (GT-blind):
-# Write project_charter.md, rubrics/gp0NN_<name>_01.json, test_model.py, thesis.md, gate_harness.py
+# Visible/held-out setup:
+ztare project new --help
+# Generates the project/rubric/gate harness surfaces and the opaque ground-truth stub.
 
 # Smoke gate:
-python projects/gp0NN_<name>/gate_harness.py --run-smoke-test
+python projects/<slug>/gate_harness.py --run-smoke-test
 
 # Seal:
-make seal PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json
+make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
 
 # Pre-reg (manual write), then dry-run:
-make experiment-loop PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json ITERS=0
+make experiment-loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=0
 
 # Launch:
-make experiment-loop PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json ITERS=15 \
+make experiment-loop PROJECT=<slug> RUBRIC=rubrics/<slug>.json ITERS=15 \
   MUTATOR_MODEL=gemini-2.5-flash JUDGE_MODEL=gpt4.1
 ```
 
@@ -285,10 +295,10 @@ make experiment-loop PROJECT=gp0NN_<name> RUBRIC=rubrics/gp0NN_<name>_01.json IT
 
 ## Cross-references
 
-- Full leak taxonomy + denylist construction: `docs/guides/for_researchers.md` §2 (charter contamination) and AGENTS.md §7
-- Strip test procedure: `docs/guides/for_researchers.md` §2
-- Identifiability + pre-registration protocol: `docs/guides/for_researchers.md` §4 and AGENTS.md §7
-- [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) full 7-phase spec: `GP-072 (internal seam)`
+- Full leak taxonomy + denylist construction: `docs/guides/for_researchers.md` §4 (charter contamination) and AGENTS.md hard rules
+- Strip test procedure: `docs/guides/for_researchers.md` §4
+- Identifiability + pre-registration protocol: `docs/guides/for_researchers.md` §4 and §6 plus AGENTS.md hard rules
+- [Sandbox-construction discipline](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) full 7-phase spec. Historical seam: `GP-072`.
 - Operational philosophy: `docs/concepts/epistemic_principles.md`
 - Three-leg/reflexive framing: `docs/concepts/reflexive_engineering.md`
 - Enforcement principles (P13, P14): `docs/concepts/epistemic_principles.md`

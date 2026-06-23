@@ -5,22 +5,22 @@ description: "Driving the repo via the manual console without the autonomous run
 
 > **Up:** [Documentation map](../README.md)
 
-**Purpose:** open a direct human-operated Claude/Codex terminal session in this
-repo without starting the autonomous org runtime.
+**Purpose:** open a direct human-run Claude/Codex terminal session in this repo
+without starting the autonomous org runtime.
 
 This is the path for work like a normal Claude Code or Codex collaboration:
 the human reviewer is present, the agent can ask clarifying questions, and no
 background work-discovery loop is running.
 
-The script name still uses `operator_console`, but the human-facing role is
-plainly a reviewer. In this guide:
+Older checkouts may still use `operator_console.sh` as a compatibility alias.
+The public command name is `manual_console.sh`.
 
 - **Human reviewer** means the accountable person supervising the
   session.
 - **Agentic worker** means the tool-using Claude/Codex process that can
   inspect files, run commands, edit artifacts, and report back.
 
-The manual console is a human-operated session with an agentic worker inside
+The manual console is a human-run session with an agentic worker inside
 it. It is not the same as a role daemon, where the agentic worker continues
 under a standing mandate without the human reviewer present.
 
@@ -32,7 +32,7 @@ Do not collapse these:
 
 | Lane | Command surface | What it is for |
 |---|---|---|
-| **Manual console** | `scripts/public/control/operator_console.sh claude` | Direct human-agent collaboration. No daemon, no automatic task discovery, no validator loop. |
+| **Manual console** | `scripts/public/control/manual_console.sh claude` | Direct human-agent collaboration. No daemon, no automatic task discovery, no validator loop. |
 | **Role daemon** | `python scripts/public/control/agent_daemon.py ...` or Docker daemon profile | Persistent role-bound work with gates, claims, transitions, and closure. |
 | **ZTARE validator** | `make experiment-loop ...` | Formal adversarial validation: mutator, judge, hard gates, telemetry, synthesis. |
 
@@ -53,7 +53,7 @@ claude
 Then start a direct console from the repo:
 
 ```bash
-scripts/public/control/operator_console.sh claude
+scripts/public/control/manual_console.sh claude
 ```
 
 The script verifies the repo context files exist and then opens `claude`
@@ -67,7 +67,7 @@ does not touch the executive inbox.
 If Codex CLI is installed and authenticated:
 
 ```bash
-scripts/public/control/operator_console.sh codex
+scripts/public/control/manual_console.sh codex
 ```
 
 This is equivalent to opening Codex in the repo, with an explicit banner that
@@ -80,7 +80,7 @@ the session is Mode A.
 If you want the console in a container:
 
 ```bash
-scripts/public/control/operator_console.sh docker-claude
+scripts/public/control/manual_console.sh docker-claude
 ```
 
 Equivalent direct command:

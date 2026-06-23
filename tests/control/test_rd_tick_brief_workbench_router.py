@@ -20,8 +20,31 @@ def _load_module():
     return module
 
 
-def test_workbench_router_surface_recommends_autoresearch_for_ready_surface(capsys) -> None:
+def test_workbench_router_surface_recommends_autoresearch_for_ready_surface(
+    tmp_path: Path,
+    capsys,
+) -> None:
     module = _load_module()
+    module.REPO = tmp_path
+    project = tmp_path / "projects" / "ns_proofsearch_resupply_pincer"
+    rubric = tmp_path / "rubrics" / "ns_proofsearch_resupply_pincer.json"
+    project.mkdir(parents=True)
+    rubric.parent.mkdir(parents=True)
+    (project / "current_iteration.md").write_text("bounded claim artifact\n", encoding="utf-8")
+    rubric.write_text(
+        json.dumps(
+            {
+                "dimensions": [
+                    {
+                        "name": "gate",
+                        "description": "deterministic theorem-attempt discriminator",
+                        "weight": 100,
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
 
     rc = module.autoresearch_workbench_router_surface(
         task="bounded theorem-attempt discriminator",
@@ -39,8 +62,28 @@ def test_workbench_router_surface_recommends_autoresearch_for_ready_surface(caps
     assert "workbench_evidence_ref=<autoresearch-run-or-projection-artifact>" in out
     assert "ztare autoresearch route" in out
     assert "ztare action-intel record-agentic-route" in out
-    assert "--route-json /tmp/autoresearch_route.json --decision-id DECISION_ID" in out
+    assert "/tmp/autoresearch_route.json" not in out
+    assert "--route-json autoresearch_route.json --decision-id DECISION_ID" in out
     assert "--selected-action run_out_of_loop_agent" in out
+
+
+def test_pattern_action_contract_surface_prints_card_route_receipts(
+    monkeypatch,
+    capsys,
+) -> None:
+    module = _load_module()
+    monkeypatch.setenv(
+        "ZTARE_TICK_GOAL",
+        "claim-boundary split with explicit answer object and success criterion",
+    )
+
+    rc = module.pattern_action_contract_surface(scope="primitive catalog")
+
+    out = capsys.readouterr().out
+    assert rc == 0
+    assert "operator card route receipts:" in out
+    assert "OP-CBM-01" in out
+    assert "lexical_fallback" in out or "semantic_atlas" in out
 
 
 def test_workbench_router_surface_logs_prepare_surface_action(capsys) -> None:

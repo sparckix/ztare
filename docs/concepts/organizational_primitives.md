@@ -61,7 +61,7 @@ primitives now compose the firm's current operational schema.
 
 **Biological analog:** The immune system does not ask "is this self or non-self?" It asks "is this dangerous?" Matzinger's danger model (2002) separates identity (who are you?) from damage (are you hurting the host?).
 
-**The M-form problem it solves:** Identity-based authorization (`src/ztare/roles/authorization.py`) answers "is this actor allowed here?" It does NOT answer "is this action damaging the host?" An authorized agent can damage the system legally, specification gaming is precisely this failure mode.
+**The M-form problem it solves:** Identity-based authorization (`src/ztare/roles/authorization.py`) answers "is this actor allowed here?" It does not answer "is this action damaging the host?" An authorized agent can damage the system legally; specification gaming is precisely this failure mode.
 
 **How it works:**
 - Any code can `emit()` a damage signal with a kind (e.g., `cost_spike`, `quality_regression`, `handoff_conflict`, `evidence_contradiction`)
@@ -132,7 +132,7 @@ visible.
 - Flags steps with only one qualified agent (fragile) or zero (broken)
 - Reports as a CLI output for operator inspection
 
-**Code:** `python -m src.ztare.cli_org closure-map`
+**Code:** `python -m ztare.cli_org closure-map`
 
 **Any-LLM applicability:** Any multi-agent workflow with a defined process. Map the process steps, list who can do each, flag the bottlenecks. This is organizational design 101 applied to agent workflows.
 
@@ -179,7 +179,7 @@ constraints available.
 at closure: `(world-measured KRs with non-null last_measured_utc in the
 closure window) / (total world-measured KRs)`. If <0.5 across two consecutive
 Objective closures, daemon posts: *"OKR honesty score declining. The system
-may have collapsed into empty process."* This is the kill signal for the case where
+may have collapsed into empty process."* This is the stop signal for the case where
 the work-item tree keeps closing Objectives whose KRs were never measured.
 
 **Code:** `scripts/public/control/closure_daemon.py`, gates at `ztare_workspace/gates/pending/`,
@@ -480,16 +480,16 @@ surface.
 
 This boundary matters. A market price or action-impact score can route
 attention, ask for another independent agent, split a contract, defer a branch,
-or kill a weak line. It does not grant authority by itself. Authority still
+or retire a weak line. It does not grant authority by itself. Authority still
 comes from roles, mandates, claims, gates, and budgets.
 
 ---
 
-## Where This Does NOT Belong
+## Boundaries
 
-- **Not Cognitive Firm itself.** *Cognitive Firm* is the theory; this doc is the implementation. A sentence here should not be cited as "*Cognitive Firm* says X", it should be cited as "the implementation of *Cognitive Firm*'s M-form in this repo does X."
-- **Not the reflexive engineering doc.** The reflexive primitives (`docs/concepts/reflexive_engineering.md`) are about the engine improving its OWN infrastructure. The organizational primitives are about agents coordinating with EACH OTHER. Different problem, different solution, same philosophical roots.
-- **Not AGENTS.md.** AGENTS.md is the standing rules; this doc explains WHY those rules exist and WHAT code enforces them.
+- **Cognitive Firm.** *Cognitive Firm* is the theory; this doc is the implementation. A sentence here should be cited as "the implementation of *Cognitive Firm*'s M-form in this repo does X," not as a general theoretical claim.
+- **Reflexive engineering.** The reflexive primitives (`docs/concepts/reflexive_engineering.md`) are about the system improving its own infrastructure. The organizational primitives are about agents coordinating with one another.
+- **AGENTS.md.** AGENTS.md is the standing rule file; this doc explains why those rules exist and what code enforces them.
 
 ---
 

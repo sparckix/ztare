@@ -1,0 +1,502 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "Cache miss rates amplify as a consequence of export lag rather than acting as an independent root cause.",
+      "depends_on": [
+        "time-series data on export lag and cache miss rates",
+        "controlled experiment or natural experiment"
+      ],
+      "priority": "high",
+      "source_ids": [
+        "S009",
+        "S007"
+      ],
+      "why_testable": "Can be tested by inducing export lag and measuring subsequent cache miss rates, or analyzing time-series correlations."
+    },
+    {
+      "claim": "The lease conflict on billing_status_index is sufficient to produce both duplicate_payment_warning and downstream_console_index_missing errors in the synthetic dataset.",
+      "depends_on": [
+        "CHG-142 design note",
+        "access to synthetic operations dataset"
+      ],
+      "priority": "high",
+      "source_ids": [
+        "S010"
+      ],
+      "why_testable": "Can be tested by replaying the CHG-142 change in a controlled environment and observing error sequences."
+    },
+    {
+      "claim": "The rolled-back export batching flag was the root cause, and CHG-143 was not a contributing factor.",
+      "depends_on": [
+        "availability of old batching flag configuration",
+        "staging environment"
+      ],
+      "priority": "high",
+      "source_ids": [
+        "S007"
+      ],
+      "why_testable": "Can be tested by re-applying the batching flag change in a staging environment while CHG-143 remains active."
+    },
+    {
+      "claim": "Whether the same lease conflict mechanism occurs in non-synthetic production environments.",
+      "depends_on": [
+        "access to production telemetry",
+        "export batch logs"
+      ],
+      "priority": "high",
+      "source_ids": [
+        "S010",
+        "S009"
+      ],
+      "why_testable": "Can be tested by reviewing real-world production logs for similar error patterns and temporal correlations with batching flag configurations."
+    },
+    {
+      "claim": "Batches with fewer than 18,000 invoice rows would not trigger the merged-batch path and thus would not produce the lease conflict.",
+      "depends_on": [
+        "CHG-142 design note",
+        "ability to control invoice-row counts"
+      ],
+      "priority": "medium",
+      "source_ids": [
+        "S010"
+      ],
+      "why_testable": "Can be tested by running invoice shards below the threshold and checking for errors."
+    },
+    {
+      "claim": "The cache miss rate threshold beyond which billing status lookup degrades significantly is approximately 0.34.",
+      "depends_on": [
+        "ability to generate cache misses artificially"
+      ],
+      "priority": "medium",
+      "source_ids": [
+        "S007"
+      ],
+      "why_testable": "Data shows 0.34 cache_miss_rate associated with 1410ms latency; can test with controlled load on support-console cache."
+    },
+    {
+      "claim": "The two error codes (duplicate_payment_warning and downstream_console_index_missing) share a common root cause: a lease conflict on billing_status_index caused by CHG-142's deferred index commit.",
+      "depends_on": [
+        "CHG-142 design note",
+        "access to synthetic operations dataset"
+      ],
+      "priority": "high",
+      "source_ids": [
+        "S010",
+        "S005"
+      ],
+      "why_testable": "Can be tested by replaying CHG-142 in a controlled environment and observing if both error types appear with the same causal mechanism."
+    }
+  ],
+  "compiler_summary": "Synthetic dataset merging incident logs, queue metrics, export logs, cache data, change notes, and ticket samples. Strong evidence points to CHG-142 (billing-export batching flag) as the root cause of export failures, subsequent cache miss amplification, and support-console billing-status unavailability. Cache behavior is consistently identified as a symptom/amplifier rather than an independent root cause. All data is synthetic and limited to us-east; real-world applicability remains untested. Staffing-hour constancy rules out staffing as a primary cause. The cache-defect hypothesis is weakened in the synthetic fixture but not ruled out in production.",
+  "epistemic_voids": [
+    {
+      "blocking": "Only local synthetic evidence is provided; no customer telemetry is included.",
+      "unknown": "Whether cache miss rates can exceed 0.10 during healthy exports in real customer telemetry.",
+      "why_it_matters": "Would determine if cache is an independent root cause or only a symptom/amplifier in production."
+    },
+    {
+      "blocking": "No temporal or causal analysis linking export lag to cache miss rates is provided.",
+      "unknown": "The mechanism by which export lag might amplify cache miss rates.",
+      "why_it_matters": "The interpretation suggests cache behavior follows export lag, but causal pathway is unspecified."
+    },
+    {
+      "blocking": "Determination of independent root cause.",
+      "unknown": "What caused the export batch failures (b-7104, b-7105, b-7106) beyond the lease conflict described for CHG-142.",
+      "why_it_matters": "Without knowing the export failure cause, root cause remains unresolved."
+    },
+    {
+      "blocking": "No real-world data is provided.",
+      "unknown": "Whether the same lease conflict mechanism occurs in non-synthetic production environments.",
+      "why_it_matters": "The note explicitly limits its claim to the synthetic dataset; real-world deployment may differ."
+    },
+    {
+      "blocking": "Technical root cause identification for export failures.",
+      "unknown": "What caused the missing downstream index in export batch b-7105.",
+      "why_it_matters": "The missing index is a concrete technical failure but its cause is not specified."
+    }
+  ],
+  "identified_contradictions": [
+    {
+      "claim_a": "Cache miss rates amplify as a consequence of export lag rather than acting as an independent root cause.",
+      "claim_b": "A future row showing high cache misses during healthy exports would reopen the cache-defect hypothesis.",
+      "source_ids_a": [
+        "S007",
+        "S009"
+      ],
+      "source_ids_b": [
+        "S009"
+      ],
+      "topic": "cache defect as independent root cause vs. symptom/amplifier",
+      "why_it_matters": "Determines whether the support-console cache is an independent failure mode or merely a downstream effect of export failures, which changes remediation priorities."
+    },
+    {
+      "claim_a": "The two error codes (duplicate_payment_warning and downstream_console_index_missing) share a common root cause: a lease conflict on billing_status_index caused by CHG-142's deferred index commit.",
+      "claim_b": "The two error codes may represent independent failures; batch b-7103 first retried then failed with duplicate_payment_warning, while other batches failed with downstream_console_index_missing.",
+      "source_ids_a": [
+        "S010"
+      ],
+      "source_ids_b": [
+        "S005"
+      ],
+      "topic": "causal mechanism for duplicate_payment_warning and downstream_console_index_missing errors",
+      "why_it_matters": "If errors share a common mechanism, fixing one (rollback of CHG-142) resolves both; if independent, separate root cause analysis is needed for each error type."
+    },
+    {
+      "claim_a": "The local verifier weakens the independent-cache-defect hypothesis for this synthetic dataset.",
+      "claim_b": "The note does not claim the same mechanism applies outside the synthetic operations dataset.",
+      "source_ids_a": [
+        "S009"
+      ],
+      "source_ids_b": [
+        "S010",
+        "S009"
+      ],
+      "topic": "applicability of synthetic evidence to real operations",
+      "why_it_matters": "Whether findings from this synthetic fixture can be generalized to production environments directly affects the validity of any real-world remediation plan."
+    },
+    {
+      "claim_a": "CHG-143 (timeout tolerance change) is weaker as a root-cause explanation than the rolled-back export batching flag (CHG-142).",
+      "claim_b": "CHG-143 (support-console read-timeout increase) may have contributed to or masked the backlog.",
+      "source_ids_a": [
+        "S007"
+      ],
+      "source_ids_b": [
+        "S001"
+      ],
+      "topic": "relative explanatory power of CHG-143 vs. CHG-142",
+      "why_it_matters": "If CHG-143 contributed significantly, reverting it could be part of the solution; if not, focus should remain on the batching flag."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "source_ids": [
+        "S001"
+      ],
+      "statement": "CHG-142 (billing-export invoice export batching flag enabled for us-east) was rolled back on 2026-06-14T00:10:00Z.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S001",
+        "S007"
+      ],
+      "statement": "CHG-143 (support-console read-timeout increased from 5s to 15s for billing-status lookups) was retained.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S001",
+        "S004",
+        "S006"
+      ],
+      "statement": "Staffed hours matched planned hours (73-76 hours) for all listed dates from 2026-06-07 to 2026-06-15, with no drop during the backlog peak.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S003"
+      ],
+      "statement": "INC-2306-12-C (severity 1, billing-export worker stalled) opened 2026-06-12T09:05:00Z and closed 2026-06-13T18:40:00Z.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S003"
+      ],
+      "statement": "INC-2306-13-D (severity 2, support-console agents reported 'billing status unavailable' on 41% of sampled tickets) opened 2026-06-13T13:10:00Z and closed 2026-06-14T01:30:00Z.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S004"
+      ],
+      "statement": "On June 12, 2026, new tickets in billing us-east were 244 with p95 first response time of 211 minutes and billing tag share of 0.61.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S004"
+      ],
+      "statement": "On June 13, 2026, new tickets in billing us-east were 268 with p95 first response time of 238 minutes and billing tag share of 0.64.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S010"
+      ],
+      "statement": "CHG-142 enabled invoice_export_batching_v2 flag, merging adjacent shards into batches of 18,000-21,000 invoice rows, deferring the downstream index write until batch finalization, and running the duplicate-payment warning check before the deferred index commit.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S010"
+      ],
+      "statement": "A lease conflict on billing_status_index, caused by the deferred index commit under CHG-142, produced duplicate_payment_warning and downstream_console_index_missing errors in the synthetic fixture.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S005",
+        "S010"
+      ],
+      "statement": "Post-rollback batches b-7108, b-7109, and b-7110 completed below 400 seconds with no error code.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S007"
+      ],
+      "statement": "Cache miss rate rose from 0.07 (baseline) to 0.42 (peak) as export batch lag increased from 12 to 603 minutes.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S009"
+      ],
+      "statement": "The synthetic fixture contains no isolation row where cache_miss_rate > 0.10 while export_duration_seconds < 400 and export_batch_lag_minutes < 30.",
+      "strength": "high"
+    },
+    {
+      "source_ids": [
+        "S003",
+        "S009",
+        "S010"
+      ],
+      "statement": "All data is synthetic and limited to us-east; it does not describe a real organization.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "cache_miss_rate",
+      "notes": "S007 range spans baseline to peak during export failures. S009 observed range 0.07-0.09 in healthy export rows.",
+      "source_ids": [
+        "S007",
+        "S009"
+      ],
+      "units": "proportion",
+      "value_or_range": "0.07 to 0.42"
+    },
+    {
+      "kind": "range",
+      "name": "export_batch_lag_minutes",
+      "notes": "S007 range from baseline to peak during b-7106 failure. S009 observed range 12-28 in healthy rows.",
+      "source_ids": [
+        "S007",
+        "S009"
+      ],
+      "units": "minutes",
+      "value_or_range": "12 to 603"
+    },
+    {
+      "kind": "range",
+      "name": "billing_status_lookup_p95_ms",
+      "notes": "S007 from baseline to peak. S009 observed range 205-260 in healthy rows.",
+      "source_ids": [
+        "S007",
+        "S009"
+      ],
+      "units": "milliseconds",
+      "value_or_range": "180 to 1740"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_pre-incident",
+      "notes": "Combined baseline from S004 (0.18-0.25) and S006 (May 0.19-0.24, June 0.18-0.22).",
+      "source_ids": [
+        "S004",
+        "S006"
+      ],
+      "units": "proportion",
+      "value_or_range": "0.18 to 0.25"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_during_peak",
+      "notes": "Peak values on June 12-13.",
+      "source_ids": [
+        "S002",
+        "S004"
+      ],
+      "units": "proportion",
+      "value_or_range": "0.61 to 0.64"
+    },
+    {
+      "kind": "range",
+      "name": "invoice_rows_for_failed_batches",
+      "notes": "All failed/retry batches had invoice rows in this range.",
+      "source_ids": [
+        "S005"
+      ],
+      "units": "rows",
+      "value_or_range": "18401 to 20110"
+    },
+    {
+      "kind": "exact",
+      "name": "duration_for_failed_and_retry_batches",
+      "notes": "All non-ok batches had exactly 900 second duration.",
+      "source_ids": [
+        "S005"
+      ],
+      "units": "seconds",
+      "value_or_range": "900"
+    },
+    {
+      "kind": "range",
+      "name": "duration_for_successful_batches_post_rollback",
+      "notes": "Successful batches after rollback.",
+      "source_ids": [
+        "S005",
+        "S009"
+      ],
+      "units": "seconds",
+      "value_or_range": "327 to 352"
+    },
+    {
+      "kind": "range",
+      "name": "new_tickets_during_peak",
+      "notes": "Peak values on June 12 and 13.",
+      "source_ids": [
+        "S004"
+      ],
+      "units": "tickets",
+      "value_or_range": "244 to 268"
+    },
+    {
+      "kind": "range",
+      "name": "p95_first_response_during_peak",
+      "notes": "Peak response times on June 12 and 13.",
+      "source_ids": [
+        "S004"
+      ],
+      "units": "minutes",
+      "value_or_range": "211 to 238"
+    },
+    {
+      "kind": "range",
+      "name": "staffed_hours",
+      "notes": "Staffed hours remained constant through the period.",
+      "source_ids": [
+        "S001",
+        "S004",
+        "S006"
+      ],
+      "units": "hours",
+      "value_or_range": "73 to 76"
+    },
+    {
+      "kind": "range",
+      "name": "invoice-row count threshold for merging shards (CHG-142)",
+      "notes": "CHG-142 merged adjacent shards only when invoice-row count fell within this range.",
+      "source_ids": [
+        "S010"
+      ],
+      "units": "invoice rows",
+      "value_or_range": "18000 to 21000"
+    },
+    {
+      "kind": "constraint",
+      "name": "support-console read-timeout (CHG-143)",
+      "notes": "Applied for billing-status lookups; change retained.",
+      "source_ids": [
+        "S001"
+      ],
+      "units": "seconds",
+      "value_or_range": "increased from 5s to 15s"
+    },
+    {
+      "kind": "exact",
+      "name": "agents reporting billing status unavailable (INC-2306-13-D)",
+      "notes": "",
+      "source_ids": [
+        "S003"
+      ],
+      "units": "percent of sampled tickets",
+      "value_or_range": "41%"
+    },
+    {
+      "kind": "constraint",
+      "name": "export lag (ticket T-8916)",
+      "notes": "Reported for invoice_export_delay ticket.",
+      "source_ids": [
+        "S008"
+      ],
+      "units": "hours",
+      "value_or_range": "> 10 hours"
+    }
+  ],
+  "project": "ops_root_cause_diagnosis_demo",
+  "provenance": [
+    {
+      "kind": "md",
+      "path": "change_and_staffing_notes.md",
+      "source_id": "S001",
+      "source_type": "source_evidence",
+      "summary": "Synthetic change and staffing notes. Staffing hours matched plan (73-76 hours) with no drop during backlog peak. Three system changes listed: CHG-141, CHG-142 (rolled back), CHG-143 (retained)."
+    },
+    {
+      "kind": "md",
+      "path": "counter_hypotheses.md",
+      "source_id": "S002",
+      "source_type": "source_evidence",
+      "summary": "Lists four alternative hypotheses for the backlog spike with supporting/weakening facts and decisive falsifiers. Highest-confidence conclusion is bounded diagnosis favoring billing-export failure."
+    },
+    {
+      "kind": "md",
+      "path": "incident_log.md",
+      "source_id": "S003",
+      "source_type": "source_evidence",
+      "summary": "Synthetic incident log with five incidents (June 8-15) involving helpdesk-router, billing-export, and support-console services."
+    },
+    {
+      "kind": "csv",
+      "path": "queue_metrics.csv",
+      "source_id": "S004",
+      "source_type": "source_evidence",
+      "summary": "Daily queue metrics for billing us-east (June 7-16) showing disruption peaking June 12-13 with recovery by June 15-16."
+    },
+    {
+      "kind": "md",
+      "path": "export_worker_logs.md",
+      "source_id": "S005",
+      "source_type": "source_evidence",
+      "summary": "Synthetic export-worker logs showing failure sequence June 11-15, with error codes duplicate_payment_warning and downstream_console_index_missing, temporally linked to batching flag and rollback."
+    },
+    {
+      "kind": "csv",
+      "path": "previous_period_baselines.csv",
+      "source_id": "S006",
+      "source_type": "source_evidence",
+      "summary": "CSV with daily metrics for billing us-east for two baseline periods (May 8-14, June 5-7) with different temporal alignment strategies."
+    },
+    {
+      "kind": "md",
+      "path": "support_console_cache.md",
+      "source_id": "S007",
+      "source_type": "source_evidence",
+      "summary": "Synthetic support-console cache metrics showing correlation between cache miss rate, latency, and export lag. States cache is symptom/amplifier, not root cause."
+    },
+    {
+      "kind": "md",
+      "path": "ticket_samples.md",
+      "source_id": "S008",
+      "source_type": "source_evidence",
+      "summary": "Synthetic ticket samples June 12-15 showing invoice issues, export delays, and recovery confirmation. Not a full customer-impact dataset."
+    },
+    {
+      "kind": "md",
+      "path": "cache_isolation_check.md",
+      "source_id": "S009",
+      "source_type": "source_evidence",
+      "summary": "Local synthetic fixture evidence: cache miss rates remained below 0.10 during healthy exports. Weakens independent cache-defect hypothesis for this dataset but does not rule it out in production."
+    },
+    {
+      "kind": "md",
+      "path": "chg_142_design_note.md",
+      "source_id": "S010",
+      "source_type": "source_evidence",
+      "summary": "CHG-142 design note: batching flag merged shards (18k-21k rows), deferred index commit, causing lease conflict on billing_status_index. Rollback restored per-shard commits. Mechanism limited to synthetic dataset."
+    }
+  ]
+}

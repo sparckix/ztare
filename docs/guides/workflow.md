@@ -17,80 +17,134 @@ Most current work starts one step earlier: decide what kind of object you are
 holding before you choose a tool.
 
 ```text
-choose work object -> choose route -> use the workbench or validator -> write outcome -> feed reflexive intelligence
+choose work object -> choose route -> run in-loop, work out-of-loop, or prepare project intake
+-> write outcome -> feed reflexive intelligence
 ```
 
-For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). This is the operator-facing reference. It does **not** replace `README.md`.
+For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). This is the reviewer-facing reference. It does **not** replace `README.md`.
 
 ---
 
 ## 0. Route Before You Run
 
-ZTARE has two mature workflows and one developer workflow. Pick the workflow
-before launching a loop. This prevents a common failure: using the validator
-because it is available, even when the task is actually source work, proof
-decomposition, or project setup.
+Pick the route before launching a loop. This prevents a common failure: using
+the in-loop validator because it is available, even when the task is actually
+source work, proof decomposition, project setup, or human-agent co-work.
 
-1. **Workbench workflow**
-   - Use when a Research Director, operator, or agent needs to do research
-     work: read sources, split a proof, write a probe, mine a trajectory, ask
-     another agent, prepare a synthesis, or route a human bottleneck.
-   - ZTARE is the bench of callable primitives. Agents and humans use those
-     primitives; they are not forced through one validator loop.
-
-2. **Substrate-prober workflow**
-   - Use when the question is: what can this body of evidence, data, or
-     decision process actually answer?
-   - This is the original autoresearch path:
-     `raw -> workspace -> evidence -> validator -> synthesis`.
-   - It is strongest for bounded claims, empirical-law searches, evidence
+1. **In-loop autoresearch**
+   - Use when the task has the four required surfaces: bounded claim, stable
+     evaluator or gate, rubric, and artifact output.
+   - This is the validator path:
+     `raw -> workspace -> evidence -> autoresearch loop -> synthesis`.
+   - It is strongest for bounded claim tests, empirical-law searches, evidence
      ceilings, and adversarial falsification of a declared thesis.
 
-3. **Program hardening workflow**
-   - Use when the object is the apparatus itself: kernel behavior, source
-     connectors, ledgers, gates, control-plane code, or public docs.
+2. **Out-of-loop research operations**
+   - Use when a researcher, maintainer, or agent needs to do research work
+     before a loop is justified: read sources, split a proof, write a probe,
+     mine a trajectory, ask another agent, prepare a synthesis, or route a
+     human bottleneck.
+   - ZTARE provides callable primitives and ledgers for this work, but the work
+     is not automatically an autoresearch iteration.
+
+3. **Project intake**
+   - Use when the next job is to prepare the boundary object for a future
+     in-loop run: project/rubric, bounded task, source refs, evidence refs,
+     non-claims, expected command, and next falsifier.
+   - The optional prep ledger is only an append-only record for missing intake
+     surfaces. It is not an autoresearch scheduler and not the out-of-loop RD
+     execution layer.
+
+4. **Program hardening workflow**
+   - Use when the object is ZTARE itself: kernel behavior, source connectors,
+     ledgers, gates, control-plane code, or public docs.
    - The path is `seed spec -> genesis -> debate/build/verify -> gates`.
 
-The substrate-prober path asks: "What can this evidence packet actually answer?"
-The workbench path asks: "What is the next useful operation?" Those are different
-questions. Autoresearch is strong when the claim is bounded and the gates are
-defined. The workbench is better when the next step is proof work, coding, source
-acquisition, panel review, or human-agent co-work.
+The in-loop path asks: "What can this bounded claim and evidence surface
+actually answer?" The out-of-loop path asks: "What is the next useful
+operation?" Project intake asks: "What surfaces are missing before this task
+can enter the loop?"
+Those are different questions. Autoresearch is strong when the claim is
+bounded and the gates are defined. Out-of-loop operations are better when the
+next step is proof work, coding, source acquisition, panel review, or
+human-agent co-work.
+
+Intake readiness is intentionally explicit. A ready intake file has a bounded
+claim, source references, evidence references, non-claims, an expected in-loop command,
+and a next falsifier:
+
+```bash
+ztare project intake create --path demo_intake.json \
+  --project demo --rubric demo \
+  --task "test bounded claim X" \
+  --bounded-claim "claim X holds on fixture Y" \
+  --source-ref README.md \
+  --evidence-ref docs/guides/workflow.md \
+  --non-claim "not a full replication" \
+  --next-falsifier "run the setup from a clean checkout" \
+  --expected-command "ztare autoresearch route --task 'test bounded claim X' --project demo --rubric demo"
+ztare project intake validate --path demo_intake.json --json
+```
+
+A malformed intake file fails before it enters the intake ledger. For example,
+one with no `evidence_refs` returns `ok: false` with
+`missing required non-empty list: evidence_refs`; fix the intake file instead of
+queuing it. Use `ztare project prep-ledger add ...` only for follow-up prep work
+whose acceptance check is clear.
+Local `source_refs` and `evidence_refs` are checked relative to the intake
+directory and repo root; use an explicit URI for external references, or put
+missing local artifacts in the prep ledger until they exist. The expected
+command must also name the intake file's project and rubric so ready intake cannot
+silently point at a different in-loop surface.
+When the intake project already exists under `projects/`, validation also runs
+the offline raw/source typing preflight. Use
+`ztare project intake validate --path demo_intake.json --source-preflight` when
+you want that source surface to be required even before the project exists.
+`ztare project intake enqueue` always requires the source preflight because the
+intake ledger is for source-ready intake; missing source/evidence prep belongs
+in `ztare project prep-ledger ...` instead.
 
 ## 0a. Routing Table
 
 | If the work object is... | Use... | Durable output |
 | --- | --- | --- |
-| A claim against a bounded evidence packet | substrate-prober workflow | `evidence.txt`, validator outputs, synthesis |
-| A data or decision substrate whose limits are unknown | substrate-prober workflow | gates, ceilings, demotions, allowed claims |
-| A proof branch, Lean packet, theorem split, or symbolic calculation | workbench workflow | proof files, proof notes, residual state |
-| A frontier research question where the next move is unclear | workbench workflow | brief, plan, probes, decision rows, synthesis |
-| A human task blocking agent work | workbench workflow | handoff artifact, attestation, delegated subtask |
+| A claim with bounded intake and an evidence surface | in-loop autoresearch | `evidence.txt`, validator outputs, synthesis |
+| A data, decision, or domain project whose limits are unknown | in-loop autoresearch, once intake and evidence surfaces exist | gates, ceilings, demotions, allowed claims |
+| Missing source/evidence/rubric surfaces for a future loop | project intake | intake JSON, prep-ledger row, acceptance check |
+| A proof branch, Lean obligation, theorem split, or symbolic calculation | out-of-loop research operations | proof files, proof notes, residual state |
+| A frontier research question where the next move is unclear | out-of-loop research operations | brief, plan, probes, decision rows, synthesis |
+| A human task blocking agent work | out-of-loop research operations | handoff artifact, attestation, delegated subtask |
 | A code, kernel, or docs improvement | program hardening workflow | seam/spec if needed, patch, tests, docs |
-| A metric-bearing operational decision | workbench workflow plus reflexive ledgers | forecast, action-impact row, outcome row |
+| A metric-bearing operational decision | out-of-loop operations plus reflexive ledgers | forecast, action-impact row, outcome row |
 | A tiny one-off check | manual workflow | short note only if it should become durable memory |
 
 Rules:
 
 - do not force everything through the supervisor;
-- do not force every research move through the old validator;
-- do not leave high-rigor kernel work in chat-only routing once the packet is stable.
+- do not force every research move through the autoresearch loop;
+- do not leave high-rigor kernel work in chat-only routing once the boundary
+  object is stable.
 
 ## 0b. Two Audiences
 
 This repo now serves two distinct readers. If you can identify which one you are, you can skip most of the document.
 
-1. **General-purpose engine users**: you want to test a thesis or a claim on a domain (startup, activist target, strategy question, research area). You do not care about kernel internals, benchmarks, or the supervisor.
+1. **Project users**: you want to test a thesis or a claim on a domain
+   (startup, activist target, strategy question, research area). You do not
+   care about kernel internals, benchmarks, or the supervisor.
    - Read: section 0 routing, section 1 (When to use), section 2 (Mental model), section 3 (Operating loops), section 3a (Rerun cadence), section 4 commands for `workspace-update` / `evidence-compile` / `loop` / `synth`, section 5 (Human role), and whichever of sections 6-8 matches your project type.
    - Skip: section 15 (Program hardening), the supervisor-specific command blocks.
    - If your work is a bounded claim test, your loop is: `raw -> workspace -> evidence -> validator -> synthesis`.
-   - If your work is exploratory frontier research, use the workbench loop first and invoke the validator only when a bounded evidence packet exists.
+   - If your work is exploratory frontier research, work out of loop first and
+     invoke the validator only when a bounded intake/evidence surface exists.
 
-2. **Developers / researchers playing with the engine**: you are modifying the validator, the workspace compiler, the V4 kernel, primitives, or the supervisor control plane.
+2. **Kernel and workflow developers**: you are modifying the validator, the
+   workspace compiler, primitives, public gates, or the supervisor control
+   plane.
    - Read everything, but pay special attention to section 0 routing, section 14 (primitive workflow), section 15 (program hardening workflow), and the supervisor command surface. Pair this doc with `docs/concepts/architecture.md`.
    - The hardening path and supervisor-routed programs are for you, not for the general-purpose user.
 
-If you are not sure which you are, start as a general-purpose engine user. You
+If you are not sure which you are, start as a project user. You
 almost certainly do not need the hardening machinery on day one.
 
 Inside the supervisor path:
@@ -107,10 +161,10 @@ Inside the supervisor path:
 - cross-model `A1/A2` debate and optional manual ZTARE passes remain outside the runtime for now
 - active runs should live under `supervisor/active_runs/<run_id>/` rather than `/tmp/` so wrapper sandboxes can access staging files reliably
 
-## 0c. Workbench Discipline
+## 0c. Out-Of-Loop Discipline
 
-The workbench workflow is not lower rigor. It means the unit of work is not
-always a validator iteration. A serious workbench run still needs:
+Out-of-loop work is not lower rigor. It means the unit of work is not always a
+validator iteration. A serious out-of-loop run still needs:
 
 - a named object of work;
 - a current residual or bottleneck;
@@ -120,8 +174,8 @@ always a validator iteration. A serious workbench run still needs:
 - a durable ledger row when the result changes routing.
 
 The public sprint narrative in [../sprint_70day_journey.md](../sprint_70day_journey.md)
-explains the shift from "ZTARE versus agents" to "ZTARE as workbench, agents
-and humans as workforce." This guide uses that frame.
+explains the shift from "ZTARE versus agents" to "ZTARE as a workbench, agents
+and humans as the workforce." This guide uses that frame.
 
 ## 0d. Researcher Discipline (Read If You Care Whether A Run Counts As Evidence)
 
@@ -133,7 +187,9 @@ If you are running ZTARE as a cited experiment rather than a loose domain pressu
 
 3. **Honeypot mode is bug-bounty, not discovery-proof.** `rubrics/honeypot_minimal.json` uses a loose discovery rubric (max 115 including +15 gaming bonus). A high honeypot score is a bug report: it names something the standard gate suite missed. Those bugs are candidates for new deterministic gates. A 115 honeypot run does *not* mean discovery; read the judge's weakest-point note and treat it as the handle to grab next. Honeypot scores are not comparable to standard-run scores.
 
-If you are a general-purpose engine user (section 0b path 1), you can skip this section. If you are running experiments whose outcomes will be cited, read `docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
+If you are a project user (section 0b path 1), you can skip this section. If you
+are running experiments whose outcomes will be cited, read
+`docs/guides/for_researchers.md` end-to-end before sealing your first pre-reg.
 
 ---
 
@@ -168,6 +224,13 @@ There are four layers:
 4. ZTARE + synthesis
    - adversarial validation and final artifacts
 
+The evidence layer should behave like a source-grounded project wiki, not a
+chat transcript. Accepted source fetches are the only rows remembered as
+duplicates; rejected provider attempts stay in manifests as retry/debug state
+and do not poison future runs. Public-source recovery records the web-search
+backend separately from the model used for workspace update, evidence compile,
+or the in-loop validator.
+
 In one line:
 
 ```text
@@ -191,13 +254,13 @@ For a real project, the loop is:
 
 ---
 
-## 3a. Rerun Cadence (General-Purpose Engine Users)
+## 3a. Rerun Cadence (Project Users)
 
 The most common question for general-purpose users is "which step do I have to rerun when X changes?" This table answers it. The rule is: only rerun downstream of what changed; upstream artifacts stay valid.
 
 | Trigger                                                         | Rerun starting at                                   | Why                                                                                                 |
 |-----------------------------------------------------------------|-----------------------------------------------------|-----------------------------------------------------------------------------------------------------|
-| You added or edited files under `projects/<project>/raw/`      | `workspace-update`                                  | Workspace is derived from raw. Anything downstream is stale until the workspace reflects new sources. |
+| You added or edited files under `projects/<project>/raw/`      | `ztare project source-check --project <project> --json`, then `make evidence-prepare PROJECT=<project> MODEL=gemini` | Source typing should fail before any model-backed workspace/evidence call. `evidence-prepare` repeats the preflight, updates workspace memory, and compiles evidence. |
 | `contradictions.md` / `facts.md` / `open_questions.md` changed from a workspace update | `evidence-compile`                          | Evidence snapshot is derived from workspace memory.                                                 |
 | `compiled_evidence.txt` changed (new bounded snapshot)          | promote to `evidence.txt`, then `loop`              | Promotion is a rebaseline event: score regime fingerprints the bytes of `evidence.txt`; prior champions become `regime_mismatch` by design. |
 | You changed the rubric, model pairing, or iteration budget      | `loop`                                              | Validator is stateless. No upstream rerun needed; workspace and evidence are independent of rubric. |
@@ -218,20 +281,20 @@ Two rules to keep rerun cost bounded:
 All operational commands now run as Python modules from repo root:
 
 ```bash
-python -m src.ztare.<area>.<module> ...
+python -m ztare.<area>.<module> ...
 ```
 
 For common tasks, you can also use the repo `Makefile`:
 
 ```bash
 make help
-make workspace-update PROJECT=<project> MODEL=gemini
-make evidence-compile PROJECT=<project> MODEL=gemini
+ztare project source-check --project <project> --json
+make evidence-prepare PROJECT=<project> MODEL=gemini
 make loop PROJECT=<project> RUBRIC=<rubric> ITERS=10 MUTATOR_MODEL=gemini JUDGE_MODEL=gemini
-make autoresearch-projection PROJECT=<project> OUT=/tmp/<project>_projection.json
+make autoresearch-projection PROJECT=<project> OUT=<project>_projection.json
 make autoresearch-kernel-health JSON=1
-make operations-intelligence OUT=/tmp/ztare_intel.json MD_OUT=/tmp/ztare_intel.md
-make blitz-survival-report PROJECT=<project> OUT=/tmp/<project>_blitz_survival.json
+make operations-intelligence OUT=ztare_intel.json MD_OUT=ztare_intel.md
+make blitz-survival-report PROJECT=<project> OUT=<project>_blitz_survival.json
 make action-intel-materialize-dry
 make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo
 make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3
@@ -265,9 +328,13 @@ Pre-registered falsification runs (blind law recovery with sealed GT) additional
 
 Use `make experiment-loop` / `ztare autoresearch run` when the task has a
 bounded claim, stable evaluator, rubric surface, and artifact surface. After a
-run, use `make autoresearch-projection PROJECT=<slug>` or
-`ztare autoresearch projection --project <slug>` to inspect the read-only
-hypothesis/evidence projection over `eval_history`.
+run, use `make autoresearch-trace PROJECT=<slug> RUBRIC=<slug> INTAKE=<slug>_intake.json JSON=1`
+or `ztare autoresearch trace --project <slug> --rubric <slug> --intake <slug>_intake.json --json`
+to inspect the read-only trace over the intake boundary, raw/source carriers,
+evidence/provenance, projection, health gaps, and next commands. Historical
+projects can still be inspected without an intake file, but first-run candidates
+should carry one. Use `ztare autoresearch projection --project <slug>` only
+when you specifically need the projection carrier over `eval_history`.
 
 Do not use autoresearch as a replacement for every model or agent call. Use a
 cold-shot model call when the main need is a fresh frame or a quick
@@ -288,7 +355,23 @@ audit uses the rubric's effective pivot threshold, so a run that only reaches
 the threshold on its final row is not treated as an overdue control failure.
 The report separates active controls from advisory and diagnostic surfaces:
 pending eigenquestions and survival reports are visible, but they do not count
-as a recorded breadth-control activation. It also reports a three-iteration
+as a recorded breadth-control activation. For direct recovery work, use
+`ztare autoresearch hillclimb-audit --recovery-queue --json`; that emits only
+the loop-control episode queue, aggregate counts, project-intake status, and
+the next recovery command for each row. Add
+`--recovery-intake-status ready` to inspect rows that already have a project
+intake file. Intake-present does not mean the row can enter the in-loop
+kernel: queue rows also report `kernel_entry_status`, kernel blockers, and the
+next trace-derived repair command. A compiled evidence artifact is reported
+separately when present; it is not itself a loop intake file. If review shows
+that intake should be drafted from an existing compiled artifact, run
+`ztare project intake draft-from-compiled --project <project> --path projects/<project>/<project>_intake.json`
+and then validate the intake file before using it in `autoresearch run`. If review
+shows that no follow-up should run,
+record the decision with
+`ztare autoresearch hillclimb-audit --record-resolution --workspace <workspace> --iteration <n> --last-control-iteration <n> --outcome-status <status> --reason "<why>"`.
+That receipt clears the active recovery queue row but does not count as
+post-control success. The audit also reports a three-iteration
 post-control outcome window: score improvement, champion promotion, or reduced
 stagnation after an active control fires. This is an evidence-coverage check
 and an observational follow-up metric, not a claim that any specific escape
@@ -299,13 +382,19 @@ compact loop-control signal: pending action, stagnant window, and the evaluator
 reason. This keeps breadth controls at the proposal boundary instead of only in
 post-run telemetry.
 
-For a first-page preflight, use `ztare autoresearch health --json` or
-`make autoresearch-kernel-health JSON=1`. The aggregate health report reuses
-the narrower audits and prints each component's owning drill-down command, so
-the next repair path stays visible. It also prints advisory `evidence_gaps`
-when a comparative claim is under-supported by current run history. These gaps
-do not fail strict preflight by themselves; use the named drill-down command to
-collect the missing evidence before making a transport or mechanism-lift claim.
+For a first-page preflight, use
+`ztare autoresearch health --project <project> --json` or
+`make autoresearch-kernel-health PROJECT=<project> JSON=1`. The project-scoped
+health report includes raw/source typing preflight alongside the narrower
+dispatch, catalog, fixture, rubric, and control audits, and prints each
+component's owning drill-down command. It prints advisory `evidence_gaps` when
+a comparative claim is under-supported by current run history, and
+`coverage_opportunities` when optional controls are wired but dormant in the
+selected scope. Evidence gaps do not fail strict preflight by themselves; use
+the named drill-down command to collect the missing evidence before making a
+transport or mechanism-lift claim. Coverage opportunities are weaker: they say
+what to exercise before making a coverage claim, not that the current project
+verdict is under-supported.
 The corpus-wide rubric-mode audit reports legacy unset rubrics as a measured
 count, not a global blocker. When you scope health or the audit to a specific
 rubric, a missing `rubric_mode` becomes attention: choose `newton`, `kepler`,
@@ -324,7 +413,7 @@ unless they become blocking, but they should be reviewed before relying on the
 operations packet for allocation claims.
 Use `make operations-intelligence` for the full read-only packet.
 The equivalent CLI form is
-`ztare autoresearch operations-intelligence --out /tmp/ztare_intel.json --markdown /tmp/ztare_intel.md`.
+`ztare autoresearch operations-intelligence --out ztare_intel.json --markdown ztare_intel.md`.
 For dormant in-loop mechanisms, run `ztare autoresearch fixtures --json` or
 `make inloop-fixture-validate JSON=1`; the fixture matrix names each mechanism,
 what the fixture proves, the command to try next, and the focused test
@@ -340,7 +429,7 @@ When a run uses the blitz/parallel-mutator path, use
 `make blitz-survival-report PROJECT=<slug>` to join the tournament winner to
 downstream evaluation, gate failures, and champion promotion. This is the
 quick check for whether the cheap candidate selector is producing candidates
-that survive the normal apparatus. The loop also materializes
+that survive the normal gate stack. The loop also materializes
 `workspace/blitz_survival_report.json` and `.md` at run end whenever blitz
 artifacts are present; the Make target reruns the same read-only join.
 
@@ -364,10 +453,31 @@ project/rubric context when possible; use `--bounded-claim`,
 `--stable-evaluator`, `--rubric-ready`, and `--artifact-surface` only as
 overrides. When the decision is `prepare_autoresearch_surface` or
 `stay_out_of_loop`, the JSON includes `surface_scaffold`: the missing artifact,
-required fields, and acceptance check for each absent prerequisite. Use scoped subscription flags only after the route says the
-workbench surface exists, for example `ZTARE_AGENT_DISPATCH_MUTATOR=agent`;
-avoid the global flag for first measurements because it promotes every wired
-call site.
+required fields, and acceptance check for each absent prerequisite. Use scoped
+subscription flags only after the route says the workbench surface exists, for
+example `ZTARE_AGENT_DISPATCH_MUTATOR=agent`; avoid the global flag for first
+measurements because it promotes every wired call site.
+
+For `prepare_autoresearch_surface`, record the missing surface work in the
+project/data prep ledger instead of chat memory. The one-command path records
+the route/action row and appends the scaffolded surface prep:
+
+```bash
+ztare autoresearch route --task "<task description>" --project <project> --rubric <rubric> \
+  --record-decision-id <decision_id> --queue-missing-surface
+```
+
+If you already have a route JSON, append it directly:
+
+```bash
+ztare autoresearch route --task "<task description>" --project <project> --rubric <rubric> \
+  > autoresearch_route.json
+ztare project prep-ledger add-from-route --route-json autoresearch_route.json
+```
+
+Do not use the project/data prep ledger for `stay_out_of_loop`; that decision
+means the Research Director should do agent work outside the autoresearch kernel
+until there is a bounded claim/evaluator surface to route again.
 
 The Make surface exposes the same scoped knobs:
 
@@ -418,8 +528,11 @@ It prints the API row, subscription row, and follow-up audit command. Add
 `MATCHED_RUN_ID` is omitted, the wrapper uses a UTC timestamp plus shell-PID id
 so repeated wrapper invocations do not collide. The equivalent CLI surface is
 `ztare autoresearch matched-transport-pair --project <project> --rubric
-<rubric> [--run]`; pass `--pair-id <id>` only when you deliberately want a
-specific id.
+<rubric> --intake <project_intake.json> --mutator kimi --judge grok --inverter
+deepseek --llm-timeout-seconds 240 --llm-retries 1 [--agent-timeout 240]
+[--run]`. Pass `--pair-id <id>` only when you deliberately want a specific id.
+Do not omit `--intake` for project-intake-backed runs; otherwise the comparison
+will not exercise the same run-readiness surface as the normal loop command.
 
 Fresh `eval_history.jsonl` rows record both an aggregate transport and
 `worker_metadata_by_call_site` for mutator, judge, committee, and inverter
@@ -495,7 +608,9 @@ For depth-sensitive RD closes, carry the same decision into
 the pattern-action contract selects `OP-AWR-01`. The receipt fields are owned
 by `src/ztare/research_director/pattern_action_contract.py`; the close scaffold
 only creates the placeholder object. Always include `route_json_ref` and
-`action_impact_ref` from the recorded route. If the router chooses
+`action_impact_ref` from the recorded route; the route/action row should also
+carry `operator_card_routes[]` and `operator_card_ids[]` so later mining can
+tell which workbench card selected the route. If the router chooses
 `stay_out_of_loop`, include `why_not_autoresearch` and set
 `workbench_evidence_ref` to the action-intelligence row. If it chooses
 `invoke_autoresearch`, set `workbench_evidence_ref` to the run/projection
@@ -519,7 +634,7 @@ make benchmark-supervisor-report
 Before the first serious run on a broad project, scaffold and edit a charter:
 
 ```bash
-python -m src.ztare.common.scaffold_project_charter \
+python -m ztare.common.scaffold_project_charter \
   --project <project> \
   --mode broad
 ```
@@ -584,13 +699,13 @@ If `champion_*` artifacts are missing or stale relative to the project's saved-b
 This migration path is covered by a local regression:
 
 ```bash
-python -m src.ztare.validator.champion_artifacts_fixture_regression
+python -m ztare.validator.tests.champion_artifacts_fixture_regression
 ```
 
 ### Step 1: Update The Workspace
 
 ```bash
-python -m src.ztare.workspace.update_workspace --project <project> --model gemini
+python -m ztare.workspace.update_workspace --project <project> --model gemini
 ```
 
 This reads `projects/<project>/raw/` and updates:
@@ -616,7 +731,10 @@ The minimum useful files to inspect are:
 - `projects/<project>/workspace/latest_evidence_gaps.json` (if present)
 - `projects/<project>/workspace/derived_constraints.json` (confirmed structural limits)
 - `projects/<project>/workspace/latest_constraint_proposals.json` (fresh candidate constraints from the latest run)
-- `projects/<project>/workspace/evidence_gap_brief.md` (after compile, if present)
+- `projects/<project>/workspace/evidence_gap_brief.md` (after compile; read
+  `## Next Action` first when active rows are present)
+- `projects/<project>/workspace/evidence_gap_action.json` (same selected action
+  in machine-readable form)
 
 Human job here:
 
@@ -629,7 +747,7 @@ Human job here:
 ### Step 3: Compile Evidence
 
 ```bash
-python -m src.ztare.workspace.compile_evidence --project <project> --mode workspace
+python -m ztare.workspace.compile_evidence --project <project> --mode workspace
 ```
 
 Default outputs:
@@ -637,14 +755,37 @@ Default outputs:
 - `projects/<project>/compiled_evidence.txt`
 - `projects/<project>/compiled_evidence_packet.json`
 - `projects/<project>/compiled_evidence_provenance.json`
-- `projects/<project>/workspace/evidence_gap_brief.md` (if champion/latest gap artifacts exist)
+- `projects/<project>/compiled_evidence_replay_manifest.json`
+- `projects/<project>/workspace/evidence_gap_brief.md` (always refreshed; it
+  either selects the next active gap action or states that current rows are
+  inactive/resolved)
+- `projects/<project>/workspace/evidence_gap_action.json` (the selected action
+  contract for scripts and UI surfaces)
 - `projects/<project>/workspace/latest_compile_failure.json` (only on fail-closed compile errors)
 
 If the compiler hits a provider outage or other compile-time exception, it now fails closed:
 
 - exit code is `1`
-- no Python traceback is required for the operator path
+- no Python traceback is required for the local user path
 - a structured failure artifact is written to `workspace/latest_compile_failure.json`
+
+The replay manifest is the stable evidence identity surface. It records source
+bindings, workspace-snapshot or raw-cache replay mode, packet/support hashes,
+and output artifact hashes. Use it when a script, report, or UI needs to know
+whether the same source bundle still supports the same compiled evidence
+surface.
+Run `ztare project evidence-replay --project <project> --json` to verify that
+the compiled evidence still matches the current project files. Run
+`ztare project claim-support --project <project> --json` when a report, review,
+or UI needs to know which compiled claims are directly source-bound,
+synthesized across sources, local/seed-only, mixed, missing refs, or unsourced.
+Claim support is a source-binding audit, not a semantic entailment proof. It
+also verifies that source-index rows still point at the current raw source bytes
+and returns bounded source previews for review. A stale or missing raw source
+blocks the audit before a report treats the row as source-backed.
+`ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json`
+also surfaces this replay status. If the manifest is present and stale, trace
+blocks run readiness until evidence is refreshed or the stale artifact is fixed.
 - recovery is: retry later or switch model, then rerun `compile_evidence.py`
 
 ### Step 4: Promote The Snapshot For The Current Validator
@@ -660,14 +801,16 @@ Important:
 - the active score regime fingerprints the byte content of `evidence.txt`
 - promoting `compiled_evidence.txt` into `evidence.txt` is therefore a rebaseline event
 - old champions from the prior evidence frontier are intentionally treated as `regime_mismatch` after promotion
-- the evidence compiler prefers `champion_evidence_gaps.json` when present and falls back to `latest_evidence_gaps.json`
+- the evidence compiler prefers `champion_evidence_gaps.json` only when it
+  contains active rows; if champion rows are all resolved, justified, or waived,
+  it falls back to active rows in `latest_evidence_gaps.json`
 
 ### Step 5: Run ZTARE
 
 Example:
 
 ```bash
-python -m src.ztare.validator.autoresearch_loop \
+python -m ztare.validator.autoresearch_loop \
   --project <project> \
   --rubric <rubric> \
   --iters 10 \
@@ -688,8 +831,8 @@ Stagnation handling is now explicit:
 - on non-V4 Kepler, calibration, and legacy-unspecified projects, the default structural-pivot profile starts at `stagnation_count >= 3`
 - one count after the pivot threshold, the loop also purges visible axiom context and forces a blank-slate reset unless the rubric overrides the threshold
 - on V4-family projects, the generic structural pivot is intentionally suppressed; `stagnation_count >= 3` injects a bounded mutation override instead of a free-form pivot
-- these modes are now announced in loop stdout so the operator can see when the prompt contract changes
-- loop-event JSON keeps legacy `event_type` ids for dashboard compatibility and adds `event_label` for the operator-facing name
+- these modes are now announced in loop stdout so the reviewer can see when the prompt contract changes
+- loop-event JSON keeps legacy `event_type` ids for dashboard compatibility and adds `event_label` for the reviewer-facing name
 
 ## Runtime Notes
 
@@ -723,7 +866,7 @@ Use a short additional probe budget (`2-3` iterations) before declaring the curr
 Why:
 
 - the mutator may still discover a different basin inside the same charter and evidence frontier
-- the operator's "there is nothing here" instinct can itself be wrong
+- the maintainer's "there is nothing here" instinct can itself be wrong
 
 Do **not** turn this into open-ended grinding.
 
@@ -761,7 +904,7 @@ Why:
 
 - the active thesis and active falsification suite must travel together
 - copying only a new `thesis.md` can leave a stale `test_model.py` evaluating the wrong object
-- `workspace/` is machine-owned and should not hold operator exploration notes
+- `workspace/` is machine-owned and should not hold maintainer exploration notes
 
 Recommended workflow:
 
@@ -775,7 +918,7 @@ For `eu_union_stability`, use:
 
 ```bash
 python projects/eu_union_stability/promote_hypothesis.py <candidate_name> --clear-status
-python -m src.ztare.validator.autoresearch_loop \
+python -m ztare.validator.autoresearch_loop \
   --project eu_union_stability \
   --rubric eu_union_integration \
   --iters 3 \
@@ -792,7 +935,7 @@ python -m src.ztare.validator.autoresearch_loop \
 
 Optional:
 
-- `--clear-status` archives stale workspace status files for operator clarity
+- `--clear-status` archives stale workspace status files for maintainer clarity
 
 This is a project workflow convention, not a supervisor feature.
 
@@ -811,20 +954,40 @@ make v4-debate-merge TASK_ID=<task_id>
 Founder pack:
 
 ```bash
-python -m src.ztare.synthesis.synthesize --project <project> --model gemini --pack founder
+python -m ztare.synthesis.synthesize --project <project> --model gemini --pack founder
 ```
 
 Single artifact:
 
 ```bash
-python -m src.ztare.synthesis.synthesize --project <project> --model gemini --renderer-type founder_memo
+python -m ztare.synthesis.synthesize --project <project> --model gemini --renderer-type founder_memo
 ```
 
 Multi-project artifact:
 
 ```bash
-python -m src.ztare.synthesis.synthesize --projects p1,p2 --model gemini --renderer-type research_note
+python -m ztare.synthesis.synthesize --projects p1,p2 --model gemini --renderer-type research_note
 ```
+
+When a project has autoresearch run artifacts, synthesis also creates
+`projects/<project>/synthesis/autoresearch_review_context.json` from
+`ztare autoresearch trace` and feeds that compact context into the renderer.
+It also writes `synthesis/report_support_contract.json`, which carries trace
+readiness, run-readiness blockers, evidence replay/output/provenance status,
+graph/evidence-gap actions, and next commands into render/refine/QA. If replay
+is stale or required-but-unverified, the report contract must caveat evidence
+backed conclusions rather than smoothing the issue away. The contract also has
+top-level `ok`, `status`, and `status_reasons` fields so a reviewer can tell
+whether the report surface is `ready`, needs `attention`, or is `blocked`
+without reverse-engineering nested trace fields. The top-level
+`source_claim_support` section summarizes how many intake/source claims were
+directly source-backed, synthesized across sources, weak, or blocked by source
+context, with compact sample rows and problem rows for review. Normal iteration
+budget endings appear under `runtime_caveats`; provider failures, stale
+evidence, and launch-preflight errors appear under `runtime_risks`. Use it for
+reporting and review only. Post-run thesis composition is handled by
+`src/ztare/synthesis/post_run_thesis_synthesizer.py`, which is a separate
+state-changing path with its own audit log and promotion threshold.
 
 ---
 
@@ -877,7 +1040,7 @@ Goal:
 Loop:
 
 1. add founder notes, customer interviews, pricing, and pilot metrics to `raw/`
-2. run `python -m src.ztare.workspace.update_workspace`
+2. run `python -m ztare.workspace.update_workspace`
 3. inspect:
    - contradictions between founder narrative and user behavior
    - unresolved unknowns such as real conversion or retention
@@ -920,11 +1083,11 @@ What the human is actually doing:
 
 ---
 
-## 8. Example: Engine / Architecture Project
+## 8. Example: Kernel / Architecture Project
 
 Goal:
 
-- evolve the epistemic engine using its own failure logs and constraints
+- evolve the kernel using its own failure logs and constraints
 
 Loop:
 
@@ -1003,9 +1166,12 @@ For an existing project:
 
 ---
 
-## 12. Sandbox Construction: [GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) Division A/B Protocol
+## 12. Sandbox Construction: Visible/Held-Out Isolation Protocol ([GP-072](../../research_areas/seams/protocol/GP-072_role_separation_sandbox_construction_seam.md))
 
-When setting up a science sandbox (closed experiment with known GT), use the Division A / Division B information isolation protocol. **Do not** have a single agent that knows GT also write mutator-visible files. Contamination is an information flow problem, not a discipline problem.
+When setting up a science sandbox (closed experiment with known ground truth),
+use the Division A / Division B information-isolation protocol. **Do not** have
+a single agent that knows the answer also write mutator-visible files.
+Contamination is an information-flow problem, not a discipline problem.
 
 ### Division A (Lab Tech, knows GT)
 
@@ -1029,7 +1195,7 @@ Receives only the abstract problem brief and evidence data. Produces:
 ### Pre-Seal Gate: Leak Sentinel
 
 ```bash
-python -m src.ztare.validator.leak_sentinel \
+python -m ztare.validator.leak_sentinel \
     projects/<project> \
     rubrics/<rubric>.json \
     --denylist-file projects/<project>/.denylist
@@ -1069,29 +1235,29 @@ Use the primitive workflow only after you have enough run history for repeated a
 
 1. extract incidents from prior runs
 ```bash
-python -m src.ztare.workspace.extract_incidents
+python -m ztare.workspace.extract_incidents
 ```
 
 2. draft candidate primitives
 ```bash
-python -m src.ztare.primitives.draft_primitives --model gemini --skip-existing
+python -m ztare.primitives.draft_primitives --model gemini --skip-existing
 ```
 
 3. review and promote selectively
 ```bash
-python -m src.ztare.primitives.approve_primitive --primitive-key cooked_books --decision approved
+python -m ztare.primitives.approve_primitive --primitive-key cooked_books --decision approved
 ```
 
 4. arm the validator with approved precedents
 ```bash
-python -m src.ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --use_primitives
+python -m ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --use_primitives
 ```
 
 Default usage is attacker/judge-side only. That is the non-overfitting setting.
 
 Only expose primitives to the mutator when you explicitly want transfer hypotheses:
 ```bash
-python -m src.ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --use_primitives --use_transfer_hypotheses
+python -m ztare.validator.autoresearch_loop --project <project> --rubric <rubric> --use_primitives --use_transfer_hypotheses
 ```
 
 That second mode is stronger but riskier. Keep it off unless you want the mutator to explore cross-project pattern transfer explicitly.
@@ -1141,7 +1307,7 @@ Only after human acceptance:
 
 Optional pre-registry planning tools:
 
-- `python -m src.ztare.validator.supervisor_proposal ...`
+- `python -m ztare.supervisor.supervisor_proposal ...`
 - outputs:
   - `supervisor/proposed_manifests/`
   - `research_areas/proposal_plans/`
@@ -1156,13 +1322,13 @@ See:
 Core commands:
 
 ```bash
-python -m src.ztare.validator.supervisor_what_next ...
-python -m src.ztare.validator.supervisor_backlog ...
-python -m src.ztare.validator.supervisor_loop init ...
-python -m src.ztare.validator.supervisor_loop emit-staging ...
-python -m src.ztare.validator.supervisor_loop launch-staging ...
-python -m src.ztare.validator.supervisor_loop commit-staging ...
-python -m src.ztare.validator.supervisor_attended_autoloop ...
+python -m ztare.supervisor.supervisor_what_next ...
+python -m ztare.supervisor.supervisor_backlog ...
+python -m ztare.supervisor.supervisor_loop init ...
+python -m ztare.supervisor.supervisor_loop emit-staging ...
+python -m ztare.supervisor.supervisor_loop launch-staging ...
+python -m ztare.supervisor.supervisor_loop commit-staging ...
+python -m ztare.supervisor.supervisor_attended_autoloop ...
 ```
 
 Notes:
@@ -1229,7 +1395,11 @@ When the program finishes:
 
 ## 16. Scientific Experiment Workflow: Law Recovery from Synthetic Data
 
-Use this when the goal is to test whether ZTARE can recover a known mathematical law from evidence, with a sealed ground truth for verification. This workflow is distinct from general-purpose domain projects: the GT is known, the sandbox is constructed under Division A/B information isolation, and the gate is deterministic (RMSE or exact-match).
+Use this when the goal is to test whether ZTARE can recover a known mathematical
+law from evidence, with a sealed ground truth for verification. This workflow is
+distinct from general-purpose domain projects: the answer is known, the sandbox
+is constructed under visible/held-out information isolation, and the gate is
+deterministic (RMSE or exact-match).
 
 ### When to use
 
@@ -1249,17 +1419,18 @@ def evidence_grid() -> list[tuple[float, float]]: ...   # visible training point
 def holdout_grid() -> list[tuple[float, float]]: ...    # hidden evaluation points
 ```
 
-For discrete 1-variable substrates, `evidence_grid()` / `holdout_grid()` are optional; generate_substrate uses integer ranges instead.
+For discrete 1-variable substrates, `evidence_grid()` / `holdout_grid()` are
+optional; the substrate generator uses integer ranges instead.
 
 **2. Generate substrate artifacts**
 
 ```bash
-# Substrate scaffolding is a script, not a make target. See its arguments:
-python -m src.ztare.scaffold.generate_substrate --help
+# Project/data surface scaffolding is exposed through the CLI wrapper. See its arguments:
+ztare project new --help
 # Provide the slug, the GT script (src/ztare/substrates/<slug>_gt.py),
 # the input variables, and the problem brief per --help, following the
-# GP-072 sandbox-construction discipline (AGENTS.md §"Don't hand-build
-# sandboxes").
+# sandbox-construction discipline (historical seam: GP-072; AGENTS.md
+# "Don't hand-build sandboxes").
 ```
 
 This writes Division B artifacts (rubric, gate_harness.py, test_model.py, evidence files, charter) and an opaque re-export stub at `src/ztare/substrates/<slug>_gt.py`. The rubric field `residual_diagnostics_gt_module` points to the stub, not the Division A script; `component_c_gt_module` remains accepted only as a legacy alias for old rubrics.
@@ -1267,7 +1438,7 @@ This writes Division B artifacts (rubric, gate_harness.py, test_model.py, eviden
 **3. Seal the sandbox**
 
 ```bash
-make seal PROJECT=<slug> RUBRIC=rubrics/<slug>.json
+ztare project seal --project <slug> --rubric rubrics/<slug>.json
 ```
 
 Runs the leak sentinel (sentinel must pass), integration tests (smoke-test + gates must produce valid JSON), and writes `projects/<slug>/sandbox_seal.json`. **Must run before the loop. Never skip.**
@@ -1317,13 +1488,13 @@ If `harness_ok: true` on the zero model, tighten the threshold. For noiseless sy
 | `projects/<slug>/test_model.py` | B | Yes (mutator rewrites this) |
 | `rubrics/<slug>.json` | B | No |
 
-Slug must be opaque (`gp080_01`, not `gp080_tacrolimus_01`). The slug leaks into rubric `project` field and charter; a domain name in the slug is a semantic hint to the mutator.
+Slug must be opaque (`exp080_01`, not `exp080_tacrolimus_01`). The slug leaks into rubric `project` field and charter; a domain name in the slug is a semantic hint to the mutator.
 
 ### Boundary: This Is Not Rebuilding ZTARE
 
 This organization of labor does **not** replace ZTARE or replicate the old V4 hardening path if the boundary is kept clean.
 
-- ZTARE remains the epistemic engine for adversarial reasoning, attack/defense pressure, and truth-sensitive thesis work.
+- ZTARE remains the zero-trust workbench for attack/defense pressure, claim discipline, and truth-sensitive thesis work.
 - V4 hardening remains the kernel/program hardening path for core system integrity.
 - The supervisor research pipeline is narrower:
   - form the bounded contract
@@ -1332,4 +1503,6 @@ This organization of labor does **not** replace ZTARE or replicate the old V4 ha
   - verify deterministic conformance
   - stop at human gates
 
-If semantic truth judgment, novelty scoring, or open-ended epistemic attack gets pushed into supervisor `C`, that would be a bad duplicate of ZTARE. The current intent is organization of labor, not a second epistemic engine.
+If semantic truth judgment, novelty scoring, or open-ended epistemic attack gets
+pushed into supervisor `C`, that would be a bad duplicate of ZTARE. The current
+intent is organization of labor, not a second claim-auditing system.

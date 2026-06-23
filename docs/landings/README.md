@@ -13,6 +13,7 @@ HTML demo.
 
 | File | What it shows |
 |---|---|
+| [`forensic_workbench_prototype.html`](forensic_workbench_prototype.html) | Static D4 prototype for inspecting a local claim/evidence project, readiness blockers, preflight state, and report/export authority. |
 | [`org_runtime_landing.html`](org_runtime_landing.html) | One-page walkthrough of the org-runtime concept: persistent roles, mandates, transition logs, the cognitive-firm productization path. |
 
 <!-- AUTO-INDEX:START (managed by scripts/public/gen_folder_index.py — edit prose OUTSIDE this block) -->

@@ -14,6 +14,10 @@ directly, and any earlier robustness percentages should be read as
 graph-version-scoped rather than canonical.
 **One-liner:** Run independent graph-theoretic diagnostics on the same artifact, hand the output to a domain-expert agent, ask it which beliefs it actually changed. The diagnostics earn their keep iff the agent's strategy changes.
 
+Canonical graph-record fields, decision receipts, and the registry of current
+graph families live
+in [`graph_interfaces.md`](graph_interfaces.md).
+
 ---
 
 ## What this pattern is
@@ -209,7 +213,7 @@ Two-tier honest assessment after a full day of apparatus + GPU experiments:
 - Diagnostic suite: `scripts/public/projects/ns/ns_constraint_basin_graph.py` (10 base methods + 5 extensions, `--strip-plumbing` default-on, `--all-analytics` runs the base 10)
   - Extension flags: `--composite N`, `--robustness N`, `--counterfactual N`, `--workmap PATH`, `--frow-temporal`, `--link-prediction N`, `--role-clustering K`
 - Unified entry: `scripts/public/projects/ns/ns_graphs.py all` (wraps artifact + constraint extractors)
-- Architecture-map entry: `docs/internal/architectural_maps/cage_v5_super_architecture_map.md` §Standalone Gate-Pipeline Harness
+- Architecture-map entry: Cage v5 super-architecture map, §Standalone Gate-Pipeline Harness
 - Director duty: `org/mandates/research_director_mandate.md` §Per-closure-attempt review (graph-derived, advisory)
 
 ---

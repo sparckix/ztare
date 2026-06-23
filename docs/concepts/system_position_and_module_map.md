@@ -5,10 +5,14 @@ description: "How ZTARE positions itself among related AI research systems and h
 
 > **Up:** [Documentation map](../README.md)
 
-ZTARE is a socio-technical research system for AI-assisted scientific work.
-The technical machinery matters, but it is not the whole object. The system is
-the combination of a human reviewer, agentic workers, role offices, source
-boundaries, verification tools, governance gates, public/private membranes,
+ZTARE is a local workbench for checking reasoning before it becomes a claim.
+It turns sources, code, proofs, data, model outputs, checks, failures,
+forecasts, reports, and review decisions into claim states a reviewer can
+inspect.
+
+The technical machinery matters, but it is not the whole object. The workbench
+also includes a human reviewer, agentic workers, role offices, source
+boundaries, verification tools, governance gates, public/private boundaries,
 ledgers, and publication discipline.
 
 The repo contains theorem-proving, symbolic-regression, agent-dashboard, and
@@ -20,13 +24,87 @@ artifacts are allowed to mean.
 The shortest accurate summary is:
 
 ```text
-ZTARE turns human-agent research activity into auditable claims.
+ZTARE turns sources, artifacts, and agent work into claim states a reviewer can
+inspect.
 ```
+
+Term boundaries matter here:
+
+- **Workbench** is the user-facing product: repo, CLI, docs, review surfaces,
+  and D4.
+- **Kernel** is the trusted boundary: checks, contracts, demotions, source
+  readiness, and ledger/read-model rules.
+- **Engine** is runnable machinery: validation, proof search, evidence
+  compile/fetch, report export, mining, routing, or materialization.
+- **Apparatus** is an experiment setup: prompts, rubrics, agents, datasets,
+  scripts, costs, and records from a run.
+
+The long-term idea is simple: code has compilers; reasoning needs similar
+discipline. A code compiler does not make a program useful. It gives source
+code a form that other tools can parse, check, reject, and inspect. ZTARE
+borrows that shape for reasoning work: proposals become bounded claims,
+source/evidence objects, checks, receipts, demotions, reports, and next
+falsifiers. This is a design direction, not a claim that the current repo
+compiles all reasoning.
+
+## Product Boundary
+
+Existing AI systems cover important parts of the workflow. ChatGPT, Claude,
+Codex, Claude Code, Kimi-style swarms, LangSmith, AI co-scientist systems, and
+formal proof tools all matter here. ZTARE should be compared against them at
+the right boundary.
+
+The boundary is the durable claim lifecycle. A chat or agent product can
+generate, edit, search, code, summarize, or run tools. An observability system
+can trace an application. A proof assistant can check a formal artifact. ZTARE
+owns the local state that decides what a claim is allowed to mean after those
+systems have acted:
+
+```text
+bounded claim -> source intake -> attempt -> adversarial check
+-> deterministic or evidence-backed gate -> verdict / demotion / next falsifier
+-> ledgered state that the next run must inherit
+```
+
+This makes outside models and agent products workers, judges, or input
+channels inside the workbench. They are useful when they produce files,
+proposals, critiques, traces, forecasts, proof fragments, or source summaries
+that ZTARE can bind to a claim and inspect. They are insufficient when the
+project needs a defensible record of what was checked, what failed, what was
+demoted, and what the next run is forbidden to forget.
+
+The practical test for positioning is simple:
+
+- If the user wants a fluent answer, use a model interface.
+- If the user wants a coding task executed in a repository, use a coding
+  agent.
+- If the user wants traces and evaluations for an LLM application, use an
+  observability/eval platform.
+- If the user wants to stand behind a bounded claim using local sources,
+  explicit weakest links, replayable checks, demotions, and next falsifiers,
+  ZTARE is the workbench.
 
 That means the repo has several modules that look different on the surface but
 serve one architecture: make research moves explicit enough that another
 agentic worker, the human reviewer, or a future model can inspect, reuse,
 refute, or demote them.
+
+## Neuro-Symbolic Boundary
+
+ZTARE can be described as neuro-symbolic, but the useful split is operational:
+
+- neural systems propose, search, summarize, critique, rank, translate, and
+  route work;
+- symbolic and file-backed systems define the objects that survive a run:
+  bounded claims, source references, intake files, evidence hashes, gates,
+  receipts, forecasts, ledgers, verdicts, demotions, and next falsifiers;
+- the human reviewer owns public accountability and strategic risk.
+
+No layer self-certifies. A model-produced sentence is not a claim until it is
+bound to sources and checked. A gate result is not a user-facing answer until
+its claim boundary, non-claims, and next falsifier are visible. A forecast or
+action recommendation is not control authority until decision-use and outcome
+evidence justify that promotion.
 
 For a claim-first review path, use the
 [evidence atlas](../evidence_atlas/README.md). This document positions the
@@ -50,9 +128,8 @@ ZTARE sits at the intersection of six related system families:
 - **Research-operations systems:** systems that allocate attention, forecast
   branch value, track outcomes, and learn from organizational behavior.
 
-ZTARE is not trying to reduce itself to any one of those categories. It is
-trying to compose them into one auditable research institution. The
-distinctive object is the **claim lifecycle**, not any single model call,
+ZTARE is not trying to reduce itself to any one of those categories. It
+composes them around one public object: the **claim lifecycle**, not any single model call,
 tool invocation, dashboard, or proof script:
 
 ```text
@@ -93,22 +170,18 @@ repo's center of gravity is the broader socio-technical claim lifecycle.
 **AI co-scientist and automated-research systems.** ZTARE is closer in spirit
 to systems that generate hypotheses, design experiments, criticize claims, and
 iterate on evidence. The difference is its insistence on a filesystem-backed
-institution: claims must land in source packets, public registers, ledgers,
-gates, forecasts, or demotion records before they count as durable knowledge.
+institution: claims must land in project-intake files, review artifacts, public
+registers, ledgers, gates, forecasts, or demotion records before they count as
+durable knowledge.
 
-**Formal proof factories.** ZTARE has a formal/proof module, but this is one
-subsystem inside the larger workbench. It includes Lean sources, proof gates,
-LeanSearch-style queues, GNN/graph diagnostics, closure-utility tests, and
-internal-for-now LeanMill work. The LeanMill engine's importable kernel lives
-at [`src/ztare/leanmill/`](../../src/ztare/leanmill/README.md) (work queue,
-paths, policy, common helpers, source-query contract); public control scripts under
-`scripts/public/control/leanmill_*` are thin shims that re-export from the
-kernel. LeanMill should be described publicly only at the architectural level:
-a source-qualified proof workflow for turning candidate proof rows into
-intake queues, source-quality decisions, repair canaries, and status packets.
-Do not make public performance claims about LeanMill, or link internal
-operating surfaces as evidence, until its benchmark, source boundary, and
-leakage controls are separately written up.
+**Formal proof factories.** ZTARE has a formal/proof subsystem inside the
+larger workbench. This map records the public interface only:
+source-qualified proof workflows, candidate proof rows, source-quality
+decisions, governed receipts, and benchmark artifacts. The detailed LeanMill
+design lives in [leanmill_architecture.md](leanmill_architecture.md), which owns
+proof-search policy, queue topology, worker stations, move catalogs, benchmark
+contracts, and proof-credit mechanics. Public performance claims belong in
+evidence-backed LeanMill docs and review artifacts, not in this orientation map.
 The public proof-search loop is summarized in
 [closure_claim_governance.md](closure_claim_governance.md): Proof Execution,
 Governance Gate, Residual Compiler, and the closure-credit boundary.
@@ -142,14 +215,15 @@ evidence, adversaries, gates, ledgers, and publication boundaries.
 The workbench is the surface a human or agent uses to operate the research
 system. It includes:
 
-- [Orbit](../../orbit/README.md), a browser projection over governance state;
+- [Orbit](../../orbit/README.md), a browser projection over governance state
+  for the wider cognitive-firm style control plane;
 - [supervisor](../../supervisor/USER_MANUAL.md), typed program routing,
   revision checks, human gates, and commit control;
-- [manual console](../guides/operator_console.md), the direct
+- [manual console](../guides/workflow.md), the direct live
   human-agent collaboration rail;
 - [`ztare` CLI](../guides/cli.md), the single command entry point
-  (`ztare forecast`, `ztare leanmill`, `ztare bundle`, `ztare doctor`,
-  `ztare version`, `ztare completion`, …) that wraps the underlying
+  (`ztare project`, `ztare autoresearch`, `ztare forecast`, `ztare leanmill`,
+  `ztare bundle`, `ztare doctor`, `ztare version`, `ztare completion`, …) that wraps the underlying
   control scripts;
 - `ztare_workspace/gates/`, the filesystem executive inbox;
 - `org/`, the ZTARE tenant overlay for roles, mandates, preferences,
@@ -157,22 +231,27 @@ system. It includes:
 - `projects/*/workspace/`, the live project work surface;
 - `analytics/public/`, the derived audit and intelligence surface.
 
-These are not separate products glued together. They are different views of
-the same control principle:
+The deferred local ZTARE workbench UI, if built, should sit over the in-loop
+claim/evidence path: project intake, trace readiness, run-readiness contracts,
+loop admission, run history, verdict/demotion, and review artifacts. It should
+not absorb the org/task-management control plane.
+
+The composition rule is simple:
 
 ```text
 many projections, one filesystem-backed source of truth
 ```
 
-Orbit can make state legible. The supervisor can route bounded programs. The
-console session can handle live ambiguity. The validator can attack a bounded
-claim. None of those surfaces is allowed to become the whole system.
+Orbit makes governance state legible. The supervisor routes bounded programs.
+The console session handles live ambiguity. The validator attacks a bounded
+claim. Each surface must point back to the files, commands, receipts, or ledgers
+that own the state it displays.
 
 This doc uses two research-actor classes:
 
 - **Human reviewer:** the accountable person who sets priorities,
   accepts risk, decides what can be public, and supplies taste or direction
-  when the substrate is ambiguous.
+  when the project surface is ambiguous.
 - **Agentic worker:** a tool-using AI agent, such as Codex, Claude Code, or a
   role-bound Research Director, that can inspect files, run probes, edit
   artifacts, and leave a trace.
@@ -186,7 +265,7 @@ direction unless a specific role mandate says otherwise.
 
 ### 1. Evidence And Claim Kernel
 
-The evidence kernel owns bounded source material and claim discipline:
+The claim-governance kernel owns bounded source material and claim discipline:
 
 - [workflow.md](../guides/workflow.md)
 - [rubric_specification.md](rubric_specification.md)
@@ -195,7 +274,7 @@ The evidence kernel owns bounded source material and claim discipline:
 - [epistemic_principles.md](epistemic_principles.md)
 
 Its job is to stop memory, persuasive prose, or private context from becoming
-public truth without a bounded evidence packet.
+public truth without a bounded intake and evidence surface.
 
 ### 2. In-Loop Validator
 
@@ -208,28 +287,31 @@ Key code and docs:
 - [cognitive_gym.md](cognitive_gym.md)
 - [src/ztare/validator/README.md](../../src/ztare/validator/README.md)
 - [src/ztare/gates/README.md](../../src/ztare/gates/README.md)
-- [scripts/public/control/current_engine_demo.py](../../scripts/public/control/current_engine_demo.py)
+- [scripts/public/control/claim_discipline_demo.py](../../scripts/public/control/claim_discipline_demo.py)
 
 This is where bounded claims get attacked under declared constraints.
 
 ### 3. Formal Proof And Automated Proof Search
 
-The proof layer includes Lean sources, theorem-writing loops, proof gates,
-typed endpoint packs, LeanSearch-style adapters, and source-quality checks.
+This section is a routing index for proof work inside the larger ZTARE
+architecture. LeanMill owns the proof-engine architecture; this map only names
+the surfaces that other ZTARE layers need to call or inspect.
 
 Key surfaces:
 
-- [leanmill_architecture.md](leanmill_architecture.md) — the current frontier: the governed DAG proof-search
-  solver ([GP-246](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md)), its move space, the one governance kernel, and the capability-discipline lift ledger
+- [leanmill_architecture.md](leanmill_architecture.md) — the proof-engine
+  boundary, governed closure model, and current proof-search policy
+  ([governed DAG proof-search seam](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md))
 - [ztare_proofs/README.md](../../ztare_proofs/README.md)
 - [closed_loop_theorem_writer_workflow.md](closed_loop_theorem_writer_workflow.md)
 - [closure_utility_test_workflow.md](closure_utility_test_workflow.md)
 - [closure_claim_governance.md](closure_claim_governance.md)
 - [scripts/public/lean/README.md](../../scripts/public/lean/README.md)
 
-Its honest role is not "automatic theorem solving." Its role is to turn proof
-attempts into typed artifacts: verified fragments, failed fragments,
-unresolved identifiers, missing primitives, and closure-utility evidence.
+The cross-system contract is typed proof evidence: verified fragments, failed
+fragments, unresolved identifiers, missing primitives, closure-utility results,
+and proof-credit receipts. Queue design, worker specialization, move selection,
+and benchmark policy remain in the LeanMill architecture document.
 
 ### 4. Graph, GNN, And Novelty Diagnostics
 
@@ -295,8 +377,10 @@ Key surfaces:
 - [scripts/public/mining/README.md](../../scripts/public/mining/README.md) —
   canonical weekly pipeline at the top level;
   [`research_mode/`](../../scripts/public/mining/research_mode/) holds the
-  one-shot ticket analyses ([GP-148](../../research_areas/seams/engine/discovery/GP-148_void_mining_seam.md)/149 weakest-link, closure/process miners,
-  substrate audits) that are not on the weekly path.
+  one-shot ticket analyses, including the
+  [void-mining seam](../../research_areas/seams/engine/discovery/GP-148_void_mining_seam.md),
+  weakest-link refreshes, closure/process miners, and domain audits that are
+  not on the weekly path.
 - [scripts/public/mining/mine_recursive_gain_candidates.py](../../scripts/public/mining/mine_recursive_gain_candidates.py)
 
 This is the core difference between a one-off agent session and a research
@@ -326,27 +410,29 @@ licensing a domain-level claim.
 Use this if someone asks what ZTARE is:
 
 ```text
-ZTARE is a public, filesystem-first research workbench for AI-assisted science.
-It combines adversarial validation, proof/search tooling, role-bound agents,
-forecast markets, graph diagnostics, and reflexive mining so that research
-claims can be promoted, demoted, or blocked with an auditable trace.
+ZTARE is a local workbench for checking high-stakes reasoning before it becomes
+a claim.
+It binds sources, code, proofs, data, model outputs, agent work, checks,
+forecasts, reports, and review decisions into claim states a reviewer can
+inspect: promoted, demoted, blocked, deferred, or ready for the next falsifier.
 ```
 
 Use this if someone asks how it relates to math-agent systems:
 
 ```text
-ZTARE overlaps with AI math workbenches in its proof-search and theorem-writing
-modules, but its larger contribution is the governance layer around research:
-evidence boundaries, non-claims, demotions, forecasts, source readiness, and
-organizational learning across domains.
+ZTARE overlaps with AI math workbenches when proof-search or theorem-writing
+is the active project surface.
+The broader contribution is the governance layer around claims: source
+readiness, evidence boundaries, non-claims, demotions, forecasts, report
+support contracts, and reusable lessons across domains.
 ```
 
 Use this if someone asks whether it is a technical tool or an organization:
 
 ```text
-ZTARE is a technical research stack with an organizational layer. The technical
-modules make evidence, verification, proof attempts, forecasts, and ledgers
-executable. The organizational layer decides authority: what can be acted on,
-what can be published, what must be demoted, and what remains private or
-source-blocked.
+ZTARE is a technical stack with an organizational layer.
+The technical modules make source intake, verification, proof attempts,
+forecasts, reports, and ledgers executable.
+The organizational layer decides authority: what can be acted on, what can be
+published, what must be demoted, and what remains private or source-blocked.
 ```

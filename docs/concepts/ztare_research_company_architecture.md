@@ -1,7 +1,7 @@
 ---
-description: "How ZTARE instantiates cognitive-firm primitives as a research company."
+description: "How the ZTARE tenant instantiates cognitive-firm primitives."
 ---
-# ZTARE Research Company Architecture
+# ZTARE Tenant Architecture
 
 > **Up:** [Documentation map](../README.md)
 
@@ -9,7 +9,7 @@ description: "How ZTARE instantiates cognitive-firm primitives as a research com
 **Last revised:** 2026-05-20
 
 > **How this relates to the sibling org docs.** This doc owns the ZTARE-specific
-> research-company architecture: how the generic cognitive-firm primitives are
+> tenant architecture: how the generic cognitive-firm primitives are
 > instantiated around scientific work, evidence, gates, forecasts, action
 > impact, and human-agent collaboration. The code primitives it uses are
 > summarized in [organizational_primitives.md](organizational_primitives.md);
@@ -30,7 +30,7 @@ intervenes only at key decision points?
 ```
 
 If not, the ZTARE overlay is not using the cognitive-firm kernel cleanly enough
-to be a credible research-company deployment.
+to be a credible research deployment.
 
 ---
 
@@ -54,7 +54,7 @@ closure.
 
 The goal is not to imitate consumer automation. The goal is to make research
 execution governable: roles decide what can act, gates decide when evidence
-licenses promotion, ledgers preserve what happened, and the principal
+licenses promotion, ledgers preserve what happened, and the accountable human
 intervenes where authority, taste, or non-digitized work is required. The easy
 surface matters because adoption matters; the durable asset is the control
 plane behind it.
@@ -63,10 +63,10 @@ There are two easy surfaces, not one:
 
 | Surface | Command | Use case |
 |---|---|---|
-| Operator console | `scripts/public/control/operator_console.sh claude` | Principal-operated interactive Claude/Codex session. No daemon, no work discovery, no validator loop. |
+| Manual console | `scripts/public/control/manual_console.sh claude` | Direct human-run Claude/Codex session. No daemon, no work discovery, no validator loop. |
 | Role daemon | `docker compose --env-file .env --profile daemons up research-director-daemon` | Persistent role-bound background work with gates, claims, transition logs, and closure. |
 
-This split is intentional. The product should not force a principal to boot the
+This split is intentional. The product should not force a reviewer to boot the
 whole governance machine just to talk to a Claude Code instance. Direct
 collaboration remains a first-class Mode A path; the governance layer starts
 when work needs persistence, delegation, or unattended execution.
@@ -82,7 +82,7 @@ Do not conflate backend, audit, and interface.
 | `org/` | Canonical organizational state: roles, mandates, preferences, tasks, objectives, key results, sessions, directives, controls, damage signals. |
 | `ztare_workspace/gates/` | Canonical executive inbox: pending and resolved decisions. |
 | `ztare_workspace/transitions.jsonl` | Append-only event log for state transitions. |
-| `projects/` + `research_areas/` | Research artifacts, experiment ledgers, substrate workspaces, evidence. |
+| `projects/` + `research_areas/` | Research artifacts, experiment ledgers, project workspaces, evidence. |
 | Git | Audit, versioning, rollback, sync. Not the low-latency coordination backend. |
 | Orbit | Primary governance UI projection over the backend. |
 | Notification / phone channel | Push/digest/ack channel, not the system of record. Tenant overlays may use Telegram, Slack, email, or another provider. |
@@ -397,8 +397,8 @@ debugging tools, not the intended governance experience.
   delegation/escalation links.
 - Orbit renders open agent-channel inbox messages alongside gates.
 - Unattended daemon execution is blocked for non-principal-task candidates;
-  channel/damage/TODO candidates must be converted to a task or approved via
-  gate before execution.
+  channel messages, damage signals, and discovered TODO notes must be converted
+  to a task or approved via gate before execution.
 - Accountability is layered: human/org ultimate accountability, role-office
   operational accountability, transition-log causal accountability, model-call
   artifact attribution.
@@ -576,7 +576,7 @@ Verification:
 Changes made after GPU-run and early org-runtime failures:
 
 - Added RD-1.5 GPU checkpoint/telemetry mandate: external GPU/API runs must
-  declare run root, launch packet, checkpoint cadence, telemetry bundle, hard
+  declare run root, launch manifest, checkpoint cadence, telemetry bundle, hard
   gates, download manifest, and closure artifacts.
 - Patched the gp163d GPU runner to send remote-side ntfy start and
   interrupted notifications, and to terminate child solves on ordinary

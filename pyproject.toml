@@ -4,19 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ztare"
-version = "0.1.0"
-description = "ZTARE: zero-trust adversarial validation for claims, theses, and strategic logic"
+version = "0.2.0"
+description = "ZTARE: zero-trust workbench for generating, stress-testing, and auditing research and project claims"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
 authors = [{ name = "Daniel Alami" }]
 keywords = [
-  "adversarial-reasoning",
-  "scientific-validation",
+  "zero-trust",
+  "claim-generation",
+  "claim-auditing",
+  "claim-governance",
+  "agent-evaluation",
+  "research-agents",
+  "research-kernel",
   "deterministic-gates",
+  "audit-trails",
   "symbolic-regression",
   "lean-proofs",
-  "research-engine",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -34,6 +39,7 @@ dependencies = [
   "google-genai>=1.0.0",
   "anthropic>=0.25.0",
   "openai>=1.0.0",
+  "PyYAML>=6.0",
 ]
 
 [project.optional-dependencies]

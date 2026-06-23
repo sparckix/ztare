@@ -1,0 +1,123 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "In real operations, cache miss rates above 0.10 will never co-occur with billing export durations under 400 seconds and batch lags under 30 minutes.",
+      "depends_on": [
+        "production monitoring data",
+        "definition of healthy exports"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by monitoring cache miss rates and export health in production telemetry."
+    },
+    {
+      "claim": "Cache miss rates amplify as a consequence of export lag rather than acting as an independent root cause.",
+      "depends_on": [
+        "time-series data on export lag and cache miss rates",
+        "controlled experiment or natural experiment"
+      ],
+      "priority": "high",
+      "why_testable": "Can be tested by inducing export lag and measuring subsequent cache miss rates, or analyzing time-series correlations."
+    },
+    {
+      "claim": "A future row showing high cache misses during healthy exports would reopen the cache-defect hypothesis.",
+      "depends_on": [
+        "production monitoring data"
+      ],
+      "priority": "low",
+      "why_testable": "Testable by observing any production row where cache_miss_rate > 0.10 while export_duration_seconds < 400 and export_batch_lag_minutes < 30."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Only local synthetic evidence is provided; no customer telemetry is included.",
+      "unknown": "Whether cache miss rates can exceed 0.10 during healthy exports in real customer telemetry.",
+      "why_it_matters": "Would determine if cache is an independent root cause or only a symptom/amplifier in production."
+    },
+    {
+      "blocking": "No diagnostic data on cache composition or eviction patterns.",
+      "unknown": "What caused the cache miss rates in the 0.07-0.09 range during these observations.",
+      "why_it_matters": "Without root cause of baseline cache miss rates, cannot distinguish normal fluctuation from defect."
+    },
+    {
+      "blocking": "No temporal or causal analysis linking export lag to cache miss rates is provided.",
+      "unknown": "The mechanism by which export lag might amplify cache miss rates.",
+      "why_it_matters": "The interpretation suggests cache behavior follows export lag, but causal pathway is unspecified."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "Four isolation rows were recorded between 2026-06-14T02:30:00Z and 2026-06-15T10:00:00Z in the synthetic fixture.",
+      "strength": "high"
+    },
+    {
+      "statement": "Export batch IDs b-7108, b-7109, and b-7110 had export_status 'ok'; one row had 'no_export_due' with batch_id 'none'.",
+      "strength": "high"
+    },
+    {
+      "statement": "chg_143_retained is 'true' for all four rows.",
+      "strength": "high"
+    },
+    {
+      "statement": "The fixture contains no isolation row where cache_miss_rate > 0.10 while export_duration_seconds < 400 and export_batch_lag_minutes < 30.",
+      "strength": "high"
+    },
+    {
+      "statement": "The rows are local synthetic evidence, not customer telemetry.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "cache_miss_rate",
+      "notes": "Observed values: 0.09, 0.08, 0.07, 0.08 across four rows.",
+      "units": "ratio",
+      "value_or_range": "0.07 to 0.09"
+    },
+    {
+      "kind": "range",
+      "name": "export_duration_seconds",
+      "notes": "Observed for ok exports: 344, 352, 327. Zero for no_export_due row.",
+      "units": "seconds",
+      "value_or_range": "327 to 352"
+    },
+    {
+      "kind": "range",
+      "name": "export_batch_lag_minutes",
+      "notes": "Observed values: 28, 18, 15, 12.",
+      "units": "minutes",
+      "value_or_range": "12 to 28"
+    },
+    {
+      "kind": "range",
+      "name": "billing_status_lookup_p95_ms",
+      "notes": "Observed values: 260, 230, 205, 210.",
+      "units": "milliseconds",
+      "value_or_range": "205 to 260"
+    },
+    {
+      "kind": "constraint",
+      "name": "cache_miss_rate > 0.10 while export_duration_seconds < 400 and export_batch_lag_minutes < 30",
+      "notes": "Local verifier: no row in fixture satisfies these simultaneous conditions.",
+      "units": "none",
+      "value_or_range": "none"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The rows support cache behavior as a symptom or amplifier after export lag, not as an independently sufficient root cause in this fixture.",
+      "strength": "medium",
+      "topic": "cache defect as independent root cause"
+    },
+    {
+      "assertion": "The local verifier weakens the independent-cache-defect hypothesis for this synthetic dataset. It does not prove that cache defects are impossible in a real operations environment.",
+      "strength": "high",
+      "topic": "real-world applicability"
+    }
+  ],
+  "source_id": "S009",
+  "source_kind": "md",
+  "source_path": "cache_isolation_check.md",
+  "source_summary": "Local synthetic fixture evidence showing cache miss rates remained below 0.10 during healthy billing exports with durations under 400 seconds and batch lags under 30 minutes. This weakens the independent cache-defect hypothesis for this synthetic dataset but does not rule it out in real operations.",
+  "source_type": "source_evidence"
+}

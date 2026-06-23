@@ -6,15 +6,18 @@ description: "The current ZTARE architecture: in-loop validation, out-of-loop re
 
 > **Up:** [Documentation map](../README.md)
 
-ZTARE is no longer only an autoresearch loop. The original loop still matters:
-it is the zero-trust validator that tests a bounded claim against bounded
-evidence. The current system is larger. It is a research operating stack with
-three cooperating layers:
+ZTARE is a filesystem-first research workbench for claim generation,
+adversarial review, proof work, project evidence, and organizational learning.
+The original autoresearch loop still matters: it is the in-loop validator that
+tests a bounded claim against bounded evidence. The current architecture is
+larger, with four cooperating planes:
 
-1. **In-loop validation**: adversarial claim testing under deterministic gates.
-2. **Out-of-loop research operations**: roles, mandates, tasks, gates,
+1. **Evidence and artifacts**: source material, bounded evidence, project
+   workspaces, receipts, and review packets.
+2. **In-loop validation**: adversarial claim testing under deterministic gates.
+3. **Out-of-loop research operations**: roles, mandates, tasks, gates,
    ledgers, projects, and human-agent work outside a single validator run.
-3. **Reflexive intelligence**: forecasts, action-impact records, trajectory
+4. **Reflexive intelligence**: forecasts, action-impact records, trajectory
    mining, experiment ledgers, catch ledgers, and dashboards that help the
    organization learn from its own behavior.
 
@@ -38,8 +41,9 @@ caveats.
 ## Contents
 
 **Orientation** — [Model capability is not the unit](#model-capability-is-not-the-unit-of-analysis) ·
-[Training flywheel](#frontier-labs-and-the-training-flywheel) ·
-[Architecture at a glance](#architecture-at-a-glance)
+[Research trace flywheel](#research-trace-flywheel) ·
+[Architecture at a glance](#architecture-at-a-glance) ·
+[Work item lifecycle](#work-item-lifecycle)
 
 **Where things live** — [Repository topology](#repository-topology) ·
 [Cross-cutting invariants](#cross-cutting-invariants) ·
@@ -47,7 +51,7 @@ caveats.
 
 **The four layers** — [1 · Evidence & artifacts](#layer-1-project-evidence-and-artifacts) ·
 [2 · In-loop validator](#layer-2-the-in-loop-validator) ·
-[3 · Out-of-loop research ops (LeanMill)](#layer-3-out-of-loop-research-operations) ·
+[3 · Out-of-loop research ops](#layer-3-out-of-loop-research-operations) ·
 [4 · Reflexive intelligence (capability catalog)](#layer-4-reflexive-intelligence)
 
 **Operating model** — [Human reviewers & agentic workers](#human-reviewers-and-agentic-workers) ·
@@ -60,37 +64,34 @@ caveats.
 
 > **Deeper maps:** this page is the *navigable overview*. For the module-level
 > family map see [system_position_and_module_map.md](system_position_and_module_map.md);
-> for the LeanMill engine see [leanmill_architecture.md](leanmill_architecture.md);
+> for the LeanMill proof subsystem see [leanmill_architecture.md](leanmill_architecture.md);
 > for the reflexive layer see [reflexive_engineering.md](reflexive_engineering.md).
 
 ## Model Capability Is Not The Unit Of Analysis
 
 ZTARE is built around a model-environment thesis. Frontier model capability
-matters, and the surrounding research environment decides whether that
+matters, but the surrounding research environment decides whether that
 capability becomes durable evidence. A stronger model can search more space,
-generate better analogies, and find sharper candidate arguments.
-It can also find more persuasive shortcuts through weak evaluation surfaces,
-misattribute prior work, and close too early.
+generate better analogies, and find sharper candidate arguments. The same
+capability can also exploit weak evaluation surfaces, misattribute prior work,
+or close a branch before the evidence supports it.
 
-The claim is not anti-scaling. Bigger models help. The claim is that raw
-capability becomes durable research progress only when the surrounding
-environment is designed well: bounded evidence, separate judges, deterministic
-checks, source-readiness gates, persistent ledgers, explicit non-claims, and
-fast demotion of attractive wrong stories.
+The architecture assumes stronger models help. It also assumes that stronger
+models need a stronger environment around them: bounded evidence, separate
+judges, deterministic checks, source-readiness gates, persistent ledgers,
+explicit non-claims, and fast demotion of attractive wrong stories.
 
 The model supplies capability. The repository supplies the environment around
 it: the evidence bounds, separate judges, ledgers, gates, and memory that
 decide whether model output becomes auditable work.
 
-## Frontier Labs And The Training Flywheel
+## Research Trace Flywheel
 
-Frontier labs almost certainly run internal versions of parts of this loop:
-agents generate candidate work, tools test it, human experts review it, and
-the resulting traces can feed evaluation, post-training, or future model
-development. ZTARE should not pretend that this idea is unavailable to labs.
-The public contribution is different.
-
-ZTARE makes the flywheel explicit at the repository and institution layer:
+Many research organizations already run fragments of this loop: agents
+generate candidate work, tools test it, human experts review it, and the
+resulting traces can feed evaluation, post-training, or future model
+development. ZTARE's contribution is to make that loop explicit at the
+repository and institution layer.
 
 ```text
 research act -> artifact -> adversarial review -> gate / demotion / null
@@ -98,13 +99,14 @@ research act -> artifact -> adversarial review -> gate / demotion / null
 -> better future routing, prompts, gates, rubrics, and training/eval data
 ```
 
-For a frontier lab, the useful lesson is not "use ZTARE instead of training."
-It is: preserve the full epistemic trace of research work before collapsing it
-into model weights. A failed proof attempt, a source-blocked claim, an
-attribution correction, a demoted causal story, or a next-falsifier packet is
-often more valuable as supervision than a polished final answer.
+For any research organization, the useful lesson is to preserve the full
+epistemic trace before collapsing work into a polished answer, dashboard row,
+or model update. A failed proof attempt, a source-blocked claim, an attribution
+correction, a demoted causal story, or a next-falsifier record can be more
+valuable as supervision than the final answer alone.
 
-The lab-facing use case is therefore to produce labeled traces of research judgment:
+The research-organization use case is therefore to produce labeled traces of
+research judgment:
 
 - generate hard research attempts under bounded evidence;
 - force independent critique and deterministic checks where possible;
@@ -113,11 +115,10 @@ The lab-facing use case is therefore to produce labeled traces of research judgm
 - train or evaluate future systems on those labeled traces and on final
   solutions.
 
-This is also why public ZTARE remains useful even if frontier labs already do
-the private version. A model weight update hides the institution that produced
-the judgment. A filesystem-first repo exposes it: the artifacts, the failed
-claims, the gates, the demotions, the source gaps, and the human decisions
-remain inspectable.
+This is why a public workbench is useful even when private labs have their own
+agent loops. A model weight update hides the institution that produced the
+judgment. A filesystem-first repo exposes the artifacts, failed claims, gates,
+demotions, source gaps, and human decisions.
 
 For plain-language definitions, see [glossary.md](glossary.md).
 
@@ -148,7 +149,7 @@ For plain-language definitions, see [glossary.md](glossary.md).
                     experiment ledger, dashboards
                                |
                                v
-                   next action / kill / split / defer
+                   next action / stop / split / defer
 ```
 
 The old mental model was:
@@ -157,7 +158,20 @@ The old mental model was:
 raw -> evidence -> adversarial loop -> synthesis
 ```
 
-The current mental model is:
+The current mental model is broader, but the product path should stay narrow:
+
+```text
+project intake -> trace readiness -> preflight when needed -> bounded run
+-> review/report export
+```
+
+Other modules attach to that path as instruments: proof work, graph diagnostics,
+forecast rows, synthesis, reflexive mining, and org-runtime handoffs. A new
+instrument should either consume an existing object on the path, write a receipt
+that trace can read, or replace an older surface. If it creates a second way to
+name the same state, it should be folded back before release.
+
+The organizational mental model is:
 
 ```text
 research organization -> chooses work
@@ -166,26 +180,77 @@ outcomes enter ledgers
 ledgers update forecasts, routing, primitives, and future work selection
 ```
 
+## Work Item Lifecycle
+
+Most ZTARE work crosses the same interfaces even when the destination differs.
+The point of the architecture is to make those interfaces explicit enough that a
+reader can replay the decision.
+
+```text
+intake / source surface
+-> route decision
+-> bounded execution
+-> recorded outcome
+-> reflexive update
+```
+
+1. **Intake names the boundary.** A project-intake file or project workspace
+   states the claim, sources, evidence references, non-claims, next falsifier,
+   and launch command. If the source/evidence surface is not ready, the system
+   should say so before any model call.
+2. **Routing chooses the next instrument.** A task may enter the in-loop
+   validator, stay in source repair, go to proof work, become a human-agent
+   task, or stop. Primitive surfacing asks what code already exists. Operator
+   cards name the action family and nearest confuser. Pattern contracts name
+   the fields that must exist before the route counts.
+3. **Execution stays bounded.** In-loop work runs through mutator, reviewer,
+   deterministic gates, and run artifacts. Out-of-loop work runs through role
+   mandates, scripts, proof workflows, or explicit human-agent handoffs.
+4. **Outcomes become artifacts, not memory.** Claims, demotions, source gaps,
+   prediction-contract summaries, action-intelligence rows, proof receipts, and
+   review packets are written as files or ledgers that can be inspected later.
+5. **The reflexive layer updates future routing.** Forecasts, catch ledgers,
+   primitive audits, graph diagnostics, and trajectory mining can recommend a
+   next action or expose a repeated miss. They do not grant authority by
+   themselves.
+
+Two rules keep this lifecycle sane:
+
+- A route row is not evidence; it is a contract for what evidence or artifact
+  must appear next.
+- A dashboard or trace is not authority; it is a read model over files, ledgers,
+  receipts, and signed store rows.
+
 ---
 
 ## Repository Topology
 
-The system is a **kernel** (`src/ztare/`, ~30 subpackages, importable and unit-testable)
-plus **public control scripts** (`scripts/public/`, thin shims that orchestrate the kernel)
-plus **canonical state** (files/ledgers) and **projections** (dashboards/UIs). The kernel
-subpackages, grouped by the four layers, with size as a scale signal:
+The system has four kinds of moving parts:
+
+- **Kernel code** in `src/ztare/`: importable, unit-testable behavior.
+- **Public control scripts** in `scripts/public/`: thin workflow entry points
+  over the kernel.
+- **Canonical state**: files, ledgers, receipts, project workspaces, and daemon
+  stores that can be replayed.
+- **Projections**: dashboards, summaries, UIs, notifications, and reports that
+  help people read the state but do not own it.
+
+The generated capability catalog at
+`analytics/public/index/architecture_index.jsonl` is the source for current
+module counts; this table is the functional map.
 
 | Layer | Kernel subpackages (`src/ztare/…`) | Role |
 |---|---|---|
-| Cross-cutting | `gates/` (147), `common/` (9), `primitives/`, `notifications/` | deterministic gates + shared primitives + rails |
-| L2 — Validation | `validator/` (28), `framer/` (11), `framer_gates/`, `rubrics/`, `scaffold/` | adversarial claim testing under rubrics |
-| L3 — Formal/proof | `leanmill/` (7), `formal/` (10), `motion/` (6) | Lean queue/engine, compile/REPL, distance metrics |
-| L3 — Research ops | `research_director/` (45), `orchestrator/` (74), `supervisor/` (48), `orchestration/` (25), `substrates/` (29), `roles/`, `sessions/`, `composition/` | mandates, dispatch, role daemons, substrate plugins |
-| L4 — Reflexive | `forecasting/`, `fit/` (25), `synthesis/`, `signals/`, `experiments/`, `findings/` | forecasts, calibration, mining, learning |
+| Cross-cutting | `gates/`, `common/`, `primitives/`, `notifications/` | deterministic gates, shared primitives, provider adapters, notification hooks |
+| L2 — Validation | `validator/`, `framer/`, `framer_gates/`, `rubrics/`, `scaffold/` | adversarial claim testing under rubrics |
+| L3 — Formal/proof | `leanmill/`, `formal/`, `motion/` | proof-work handoff boundary, compile/REPL interfaces, distance metrics; LeanMill internals live in [leanmill_architecture.md](leanmill_architecture.md) |
+| L3 — Research ops | `research_director/`, `orchestrator/`, `supervisor/`, `orchestration/`, `substrates/`, `roles/`, `sessions/`, `composition/` | mandates, dispatch, role daemons, project and domain plugins |
+| L4 — Reflexive | `forecasting/`, `fit/`, `synthesis/`, `signals/`, `experiments/`, `findings/` | forecasts, calibration, mining, learning |
 
-Operator scripts: `scripts/public/control/` (303 — lane workers, daemons, runners),
-`mining/` (36 — reflexive mining), `lean/` (26 — proof providers/tooling),
-`validators/` (14 — discipline linters), `analytics_shared/`, `audits/`, `utilities/`.
+Operator script families: `scripts/public/control/` for lane workers, daemons,
+and runners; `mining/` for reflexive mining; `lean/` for proof
+providers/tooling; `validators/` for discipline linters; plus
+`analytics_shared/`, `audits/`, and `utilities/`.
 
 > The **module-level** family map (what each module does, by function) is
 > [system_position_and_module_map.md](system_position_and_module_map.md). This table is
@@ -197,14 +262,14 @@ Beyond [the four hard boundaries](#the-four-hard-boundaries), four invariants ho
 every layer. They are what keep the system from drifting into the failure modes below.
 
 1. **Kernel/script dependency direction is one-way.** `src/ztare/` never imports from
-   `scripts/`. Durable, substrate-generic logic lives in the kernel (testable in
+   `scripts/`. Durable, domain-neutral logic lives in the kernel (testable in
    isolation); `scripts/public/control/` holds only workflow-specific
    orchestration. A primitive that surfaces a reusable capability belongs in the kernel.
 
-2. **Substrate-agnostic core; substrate specifics plug in.** Shared runners/gates carry
-   no NS/Clay/PDE/APN logic. Substrate behavior enters via config/registry/plugin
-   (`org/structural_anchors/registry.yaml`, policy `domain_atlases`, the substrate
-   `contract`) — never hardcoded in shared code. The generic organization kernel itself
+2. **Domain-neutral core; project specifics plug in.** Shared runners/gates carry
+   no NS/Clay/PDE/APN logic. Domain behavior enters via config/registry/plugin
+   (`org/structural_anchors/registry.yaml`, policy `domain_atlases`, and the
+   project/domain contract) — never hardcoded in shared code. The generic organization kernel itself
    lives in [cognitive-firm](https://github.com/sparckix/cognitive-firm); `org/` is the
    ZTARE tenant overlay.
 
@@ -212,14 +277,25 @@ every layer. They are what keep the system from drifting into the failure modes 
    operations, analytical/statistical utilities) are registered in
    `analytics/public/index/architecture_index.jsonl` and surfaced by
    `primitive_tick_surface.py` into the RD brief, plus a semantic precheck
-   (`research_director/primitive_amnesia.py` — gemini-embedding atlas, vocabulary-invariant
-   query, category tiers) so a task surfaces the capabilities that already exist instead of
-   reinventing them. Anti-patterns/patterns surface from the
+   (`research_director/primitive_amnesia.py` — Gemini embedding atlas,
+   semantic query, category tiers) so a task surfaces the capabilities that
+   already exist instead of reinventing them. Anti-patterns/patterns surface from the
    [anti-pattern catalog](anti_pattern_catalog.md) via `build_context_primer.py`.
 
-4. **Generation never ratifies itself.** Across layers, the actor that proposes is never
-   the actor that grants credit (validator adversarial review panel; LeanMill solver proposes /
-   governance ratifies; the [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) commit membrane as sole writer of the official store).
+4. **One owner for every public read model.** Project intake owns the bounded
+   pre-kernel handoff. `ztare autoresearch trace` owns the readiness and review
+   read model. Synthesis reads trace context for reports and writes a
+   deterministic `synthesis/report_support_contract.json` before rendering; it
+   does not redefine readiness. Projection and carrier replay audit historical
+   state; they do not launch work. UI or dashboard surfaces must display those
+   objects, link to the file/command/receipt underneath, and avoid inventing
+   private state.
+
+5. **Generation never ratifies itself.** Across layers, the actor that proposes
+   is never the actor that grants credit: validator workers face an adversarial
+   review panel; proof solvers propose while governance ratifies; the commit
+   membrane is the sole writer of the official store
+   ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)).
 
 ## The Four Hard Boundaries
 
@@ -229,9 +305,9 @@ separations should not.
 | Boundary | What it prevents | Canonical surface |
 |---|---|---|
 | Evidence vs. memory | accumulated notes becoming trusted truth | project `raw/`, workspace, `evidence.txt`, provenance |
-| Proposal vs. verification | the generator grading itself | validator, adversarial review panel, deterministic gates; [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) commit-membrane daemon as the sole writer of the official evidence ledger |
+| Proposal vs. verification | the generator grading itself | validator, adversarial review panel, deterministic gates; commit-membrane daemon as the sole writer of the official evidence ledger ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)) |
 | Authority vs. notification | chat, Orbit, or a phone rail owning state | `ztare_workspace/gates/`, transition log, role mandates |
-| Intelligence vs. action | dashboards and forecasts silently becoming authority | [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) forecasts, [GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) action impact, [GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md) intelligence surface |
+| Intelligence vs. action | dashboards and forecasts silently becoming authority | forecast contracts ([GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md)), action-impact records ([GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md)), and the operations-intelligence surface ([GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md)) |
 
 A projection can be useful without being authoritative. Orbit is a projection.
 A notification provider is a projection. A dashboard is a projection. The
@@ -241,7 +317,7 @@ authority lives in files and ledgers that can be replayed.
 
 ## Layer 1: Project Evidence And Artifacts
 
-Projects hold domain work. A project can be a validator substrate, a Lean
+Projects hold domain work. A project can be a validator surface, a Lean
 formalization campaign, a scientific experiment, a research paper, or an
 out-of-loop human-agent investigation.
 
@@ -254,6 +330,24 @@ Canonical project surfaces:
 - `project_charter.md`: the local question, scope, and success conditions when
   a project is formalized.
 - `evidence.txt`: the bounded evidence snapshot for validator runs.
+- `compiled_evidence.txt`, `compile_provenance.json`, source-index receipts,
+  evidence-output bindings, and evidence-gap resolution receipts: the
+  source-to-evidence chain used before a project is allowed into the in-loop
+  validator. Source-index and compile-provenance freshness rows also carry a
+  `ztare-artifact-source-binding-contract-v1` contract. The old `ok` field only
+  means "not proven stale"; run readiness and source-claim graph routing require
+  `kernel_entry_ok=true`, which means the artifact is byte/hash-bound to the
+  current raw source preflight. The source preflight itself is also part of the
+  entry contract: if the checker is unavailable or errors, trace blocks run
+  readiness and points back to `ztare project source-check`. Launch preflight uses
+  the same rule: projects outside the repo-local `projects/` surface, missing
+  launch files, or verifier errors block run readiness instead of being treated
+  as a warning.
+- `project_intake` JSON: the bounded intake object that records the task,
+  source/evidence references, non-claims, next falsifiers, and optional launch
+  defaults for a later autoresearch run. Older receipts may still expose the
+  same object under `project_packet`; new docs and tools should use
+  `project_intake`.
 - `latest_*` and `champion_*` artifacts: run outputs when the project uses the
   original in-loop validator.
 
@@ -264,15 +358,15 @@ bounded when the validator is asked to judge a claim.
 
 ## Layer 2: The In-Loop Validator
 
-The in-loop validator is the original ZTARE engine. It exists for cases where a
+The in-loop validator is the original ZTARE loop. It exists for cases where a
 claim should be attacked under a declared rubric and deterministic checks.
 
 Typical flow:
 
 ```text
-raw/workspace -> evidence snapshot -> mutator proposal
--> adversarial review -> deterministic execution/gates
--> score/champion -> synthesis or failure report
+raw/workspace -> source preflight/index -> evidence/provenance/output receipts
+-> project intake JSON -> mutator proposal -> adversarial review
+-> deterministic execution/gates -> score/champion -> synthesis or failure report
 ```
 
 Core responsibilities:
@@ -283,21 +377,122 @@ Core responsibilities:
 - preserve run artifacts so later readers can see why a claim survived or died;
 - stop honestly when the evidence, grammar, or gates cannot support the claim.
 
+`ztare autoresearch trace` is the read-side trace chain for this boundary. It
+joins project-intake readiness, source preflight, source-index receipts,
+compile-provenance freshness, evidence-output binding, active evidence gaps,
+launch-preflight receipts, loop admission, mutator-briefing records, prediction
+contract summaries, and recent evaluation history. `readiness_canonical` is the
+current intake-facing status; legacy `readiness` ids remain readable for older
+receipts. Source-index receipts are only valid while both
+`workspace/source_index.json` and `workspace/workspace_meta.json` still exist and
+match the frozen hashes. A missing or stale receipt should name the recovery
+command when recovery is mechanically available; otherwise the trace should say
+which surface is still unfit for in-loop use.
+
+Evidence gaps use a typed recovery contract at this boundary. A
+`public_evidence` row means the next action is out-of-loop source, dataset,
+comparator, or threshold recovery. A `local_verification` row means the next
+action is a local verifier, fixture, code/log check, preflight, receipt, or
+in-loop discriminator. The canonical fields are `recovery_kind`,
+`recovery_channel`, `required_surface`, `can_public_fetch`, and
+`in_loop_consumable`. Each active row also carries a
+`ztare-evidence-gap-recovery-contract-v1` object with the gap hash, active
+state, classification source, route booleans, and conflict warnings. Consumers
+should read that contract rather than re-classifying prose. Older rows are
+inferred for compatibility; when that happens the contract marks
+`classification_strength=fallback_inference` and sets
+`schema_promotion_required`, so the compatibility path is visible instead of
+being mistaken for producer-declared routing. Automated evidence fetch skips
+schema-promotion rows by default; `ALLOW_INFERRED_PUBLIC=1` is only for
+intentional legacy replay. New producers should emit the
+route fields directly. The loop persistence boundary also normalizes newly written
+`latest_evidence_gaps.json` rows through the same contract interface before
+trace, evidence-fetch, synthesis, or graph routing can consume them.
+Hash-bound evidence-gap resolutions are append/replace receipts over the exact
+persisted gap row. The project CLI can target the latest, champion, or currently
+active gap source, and receipt writes are serialized with a project-local lock
+and same-directory atomic replace so parallel prep agents do not drop each
+other's rows.
+The source-claim graph is a read model over that same contract and over source
+preflight; if source-check is unavailable or blocking, graph routing demotes
+itself instead of selecting a recovery action.
+
+The same trace now emits `plan_preview`, a read-before-run contract over the
+route handoff. It is deterministic: no model call, no scheduling, no hidden
+worker launch. The preview names the first command to run, dependency order,
+worker roles, spend boundary, fallback policy, expected workspace outputs, and
+the largest quality risk. If the intake has no fresh admission, the preview
+starts with the model-free preflight. Once trace sees a fresh, hash-verified
+admission for the current intake and run-readiness bytes, `next_commands`
+advances to the bounded run while the dependency order still records preflight
+as the completed spend gate. Recent provider telemetry can also change the risk label:
+charged input with no model output is treated as a provider/runtime failure,
+not as a research result.
+
+Evidence replay is required only when a replay manifest exists or compile
+provenance names one. Optional absence is normalized to `not_required` in
+human-facing trace and health summaries while the raw carrier status remains
+available for audit. Required stale or invalid replay manifests remain
+run-readiness blockers.
+
+`ztare autoresearch carrier-replay` is the batch read-side audit for the same
+boundary. It replays trace records over selected projects and reports
+whether latest-eval state, artifact refs, worker provenance, transport, failure
+signatures, and action-intelligence links are still present. The report
+separates aggregate historical carrier debt from `current_carrier`, the latest
+materialized projection node. A project can therefore show legacy missing
+artifact refs while still proving that the current row carries the fields future
+replay needs. It checks trace integrity rather than outcome quality.
+
+Project-intake files can also carry an `expected_command`.
+`ztare autoresearch run --intake ... --preflight-only` verifies that launch
+contract without spending model calls, and a later `run --intake ...` inherits
+bounded defaults unless the operator explicitly overrides them.
+
+Report generation is a read model over the same boundary. `make synth` /
+`src/ztare/synthesis/synthesize.py` writes
+`synthesis/report_support_contract.json` before the renderer call. The contract
+names supported claims, unsupported or unresolved claims, blockers, runtime
+caveats, graph/evidence-gap actions, and next actions. Renderer, refine, and QA
+prompts receive that contract, so trace readiness and provider failures remain
+review metadata instead of being promoted into substantive evidence. QA blocks
+high-severity issues such as unsupported additions, unsupported actions,
+distortions, and overclaims; the renderer gets a bounded QA-guided repair loop
+before the report fails closed. QA cannot promote a report past a blocked
+support contract: blocked evidence readiness, blockers, or stale synthesis
+inputs leave only candidate artifacts and QA metadata for inspection. The
+support contract also carries
+`synthesis_input_binding`: a content digest over the exact artifact files used
+to extract the ledger. If the digest is missing or no longer matches the current
+artifact set, the report is blocked as stale instead of silently reusing an old
+model-produced ledger after evidence changes. The support contract also carries
+`report_action_authority`: typed `allowed_now`, `conditional`, `deferred`, and
+`forbidden_upgrades` rows. That gives renderers and QA a concrete action
+boundary instead of asking them to infer authority from narrative prose. The
+cross-project synthesis path now resolves domain buckets from explicit project
+metadata, rubric fields, or `project_charter.md` before falling back to slug
+heuristics, so example project names do not silently define a promotion
+taxonomy. The
+separate `post_run_thesis_synthesizer.py` path is still state-changing and can
+only promote a candidate thesis through its own audit trail, judge check, and
+margin over the full positive-score run baseline, not just over the filtered
+records used for synthesis.
+
 This layer is documented in more detail by:
 
 - [cognitive_gym.md](cognitive_gym.md), the constraint-stack theory;
 - [workflow.md](../guides/workflow.md), the user workflow;
-- [rubric_specification.md](rubric_specification.md), the substrate/rubric
+- [rubric_specification.md](rubric_specification.md), the validator/rubric
   contract.
 
-The validator is not the whole organization. It is one instrument.
+The validator is one instrument in the broader workbench.
 
 ---
 
 ## Layer 3: Out-Of-Loop Research Operations
 
 Much of ZTARE’s current work does not begin as a validator run. The research
-organization needs to decide what to inspect, what to delegate, what to kill,
+organization needs to decide what to inspect, what to delegate, what to stop,
 what to formalize, and when the human must work alongside an agent.
 
 The out-of-loop layer owns:
@@ -308,70 +503,34 @@ The out-of-loop layer owns:
 - transition events under `ztare_workspace/transitions.jsonl`;
 - project-level scripts, proof work, notebooks, handoffs, and research notes;
 - role daemons and manual-console workflows;
-- substrate-specific execution engines, currently dominated by **LeanMill**
-  (see below).
+- subsystem handoffs for proof work, including the LeanMill boundary.
 
 This layer exists because chat is not durable state. A human-agent conversation
 may discover a decisive test, but the test only compounds when it becomes a
 task, gate, script, forecast contract, action-impact row, finding, or paper
-artifact.
+artifact. The reusable organization-kernel version of the role/mandate/gate
+model lives in [cognitive-firm](https://github.com/sparckix/cognitive-firm).
+In this repo, `org/` is the ZTARE tenant overlay and compatibility surface.
 
-### LeanMill — the substrate engine for Lean proof work
+### LeanMill Boundary
 
-LeanMill (`src/ztare/leanmill/`) is ZTARE's durable proof-execution bus, sized
-for the [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) Carleson-premise-selection substrate but reusable beyond it. It owns a SQLite `WorkItem` queue, an append-only JSONL event
-ledger, a typed source-query contract (`schema:
-leanmill-source-query-contract-v1`), a folder-local policy loader, and a
-canonical set of path constants. The control surface includes station
-scheduling, source scouting, family-spec YAML repair, family birth, target
-resolution, source materialization, source-mined static candidates,
-governed-static confirmation, proof probes, C-supply growth, benchmark prep
-and execution, typed exits, and factory intelligence. Worker scripts dispatch
-into the queue; the engine is the single source of truth for what each
-worker has tried and what each tried-thing returned. LeanMill never imports
-from `scripts/` — the dependency direction is fixed so the engine can be
-tested in isolation and so public control scripts at the surface remain thin
-orchestration shims. Spec and seam live at
-`research_areas/seams/engine/lean/GP-225_leanmill_vnext_station_factory_seam.md`
-and the matching active spec; the pre-registered four-arm evaluation
-harness contract is at
-`analytics/public/leanmill/dashboard_data/evaluation_harness_contract.json`.
-Operationally, LeanMill is what makes "proof attempt at this lemma" a
-first-class artifact rather than a transient subprocess.
+LeanMill (`src/ztare/leanmill/`) has its own architecture document. This
+overview treats it as a subsystem boundary inside the larger ZTARE workbench,
+not as machinery to restate here. Three interfaces matter to the general
+architecture:
 
-The current LeanMill credit boundary is stricter than raw closure count. A
-strict C row needs target-safe family-template evidence, completed public and
-governed static arms with no positive signal, and a governed family-spec probe
-with positive proof-value evidence plus matched negative-control failure. The
-policy target is 20 strict C rows, with separate family and source-breadth
-diagnostics so repeated variants of one family or one source aperture stay
-visible as breadth debt. Source-mined rows now pass through a temporary
-candidate selection and governed-static confirmation before template backfill,
-and singleton family-token matches remain diagnostics only. This prevents
-public-only no-signal evidence or weak family matches from being counted or
-silently stranded. Tiny benchmark runs are claim-classified as wiring smokes;
-internal or publishable benchmark claims require the policy's completed row
-thresholds and clean preflight receipts.
+- proof-work handoff: Lean work enters through LeanMill-specific queues
+  and receipts;
+- proof-credit boundary: benchmark and closure credit comes from governed
+  receipts, not raw solver output;
+- orchestration boundary: public scripts can launch LeanMill work while the
+  subsystem preserves durable proof-work state and verification interfaces.
 
-Queue priority and recommendation ordering are policy-owned in
-`leanmill_factory_policy.json`. The policy states that higher integer priority
-wins, and explains the rationale: credit-integrity, target binding,
-governance, and benchmark-readiness blockers outrank throughput because they
-can invalidate downstream evidence; supply-generation work outranks advisory
-observability only after the credit boundary is safe. Scripts may read policy
-values and emit receipts, but proof credit still comes only from governed
-receipts.
-
-See the LeanMill-specific architecture note for lane details, handoffs, and
-credit boundaries: [leanmill_architecture.md](leanmill_architecture.md). That
-note is also the current process-flow view: stations, worker specialization,
-queue buffers, bottleneck resources, policy-owned worker counts, and the main
-conflict points between source breadth, family breadth, heavy-Lean slots, and
-credit governance.
-
-The reusable organization-kernel version of these ideas lives in
-[cognitive-firm](https://github.com/sparckix/cognitive-firm). In this repo,
-`org/` is the ZTARE tenant overlay and compatibility surface.
+The detailed LeanMill architecture lives in
+[leanmill_architecture.md](leanmill_architecture.md). That doc owns proof-search
+policy, station design, worker specialization, move catalogs, proof-credit
+mechanics, benchmark contracts, source breadth, family breadth, and bottleneck
+analysis. This overview only records the integration boundary.
 
 See:
 
@@ -390,14 +549,18 @@ work, not only whether any single output looks good.
 It reads from:
 
 - the experiment track record;
-- [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) forecast contracts, outcomes, scores, and decision-use rows;
-- [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) (a child seam of GP-230) forecaster-calibration rules and the
-  ex-post tail/abstention/judge-routing measurements that justify them;
-- [GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) action-impact records;
-- [GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md) research-operations intelligence outputs;
+- forecast contracts, outcomes, scores, and decision-use rows
+  ([GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md));
+- forecaster-calibration rules and the ex-post tail/abstention/judge-routing
+  measurements that justify them
+  ([GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md));
+- action-impact records
+  ([GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md));
+- research-operations intelligence outputs
+  ([GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md));
 - trajectory-mining artifacts;
 - catch and anti-pattern ledgers;
-- LeanMill event-ledger rows;
+- LeanMill proof-attempt event rows exposed to the wider workbench;
 - proof/project residuals and summaries;
 - decision rows, gates, and transition logs when available.
 
@@ -412,132 +575,187 @@ It should answer operational questions:
 - Which primitive should be promoted, demoted, or retired?
 
 The reflexive layer can route attention. It can recommend `run now`, `split`,
-`ask another independent agent`, `defer`, or `kill branch`. It does not grant
+`ask another independent agent`, `defer`, or `stop branch`. It does not grant
 authority by itself. Authority still runs through roles, mandates, gates,
 budgets, and claims.
 
 ### Capability catalog and primitive surfacing
 
-A recurring failure of an agent-driven system is **capability amnesia**: an agent
-reinvents (or ignores) a primitive that already exists. The reflexive layer counters
-this with a single catalog and two surfacing paths:
+A recurring failure of an agent-driven system is **capability amnesia**: an
+agent reinvents a primitive that already exists, or misses the tool that should
+have been used first. ZTARE handles this with one catalog and two surfacing
+paths.
 
-- **Catalog (single source):** `analytics/public/index/architecture_index.jsonl` —
-  every registered gate, operation, reflexive primitive, and reusable analytical/utility
-  primitive (id · path · description · `applicability` tags · impact · generated
-  `source_category` · generated `semantic_family`).
-- **Generated taxonomy:** `primitive_catalog_taxonomy.py` normalizes moved paths,
-  derives the source-location axis and the research-role axis, reports duplicate
-  ids/signatures, stale atlas/rendered-index outputs, and full-catalog semantic
-  parent nodes. This is generated metadata over the catalog, not hand-reorganized
-  row identity.
-- **Proactive surface:** `primitive_tick_surface.py` scopes the catalog into the RD
-  tick brief, so relevant primitives appear *before* work starts. Patterns/anti-patterns
-  surface in parallel from the [anti-pattern catalog](anti_pattern_catalog.md) via
-  `build_context_primer.py`.
-- **LLM-mediated parent nodes:** `primitive_family_registry.py` groups dispatchable
-  worker/helper child primitives into MECE parent families (`core_workbench_worker`,
-  `external_perspective_generator`, `review_governance_helper`,
-  `composition_helper`). This narrower overlay covers worker transport and dispatch
-  semantics; the full catalog taxonomy covers the 789-row primitive graph.
-  `make primitive-parent-utility JSON=1` checks both held-out routing usefulness
-  and registry integrity, including stale module paths or entrypoint names.
-- **Reactive query (semantic):** `research_director/primitive_amnesia.py` answers "what
-  exists for *this* task?" over a **gemini-embedding-001 atlas** of the catalog
-  (`primitive_atlas_embeddings.json`). Semantic is primary (vocabulary-invariant — "two
-  sets overlap" finds `jaccard_distance` with no shared tokens); lexical is a
-  parameter-free tiebreaker; a `category` taxonomy makes 500+ primitives navigable.
-  `--populate-catalog` registers new primitives; `--build-atlas` re-embeds.
+The catalog is `analytics/public/index/architecture_index.jsonl`. It registers
+gates, operations, reflexive primitives, and reusable analytical utilities with
+ids, paths, descriptions, applicability tags, and generated taxonomy metadata.
+Generated taxonomy code checks that moved modules, duplicate rows, stale atlas
+outputs, and parent-family groupings stay coherent.
 
-Design honesty: a hand-tuned keyword-alias scheme was tried first and **overfit** (it
-surfaced a primitive only for queries phrased in its tuned words); the semantic atlas
-replaced it because it generalizes. The retrieval is **measured**, not asserted. The
-current live check on 2026-06-13 after solver-scope hardening reports
-`n=29`, `resolvable=29`, `k=5`, lexical recall@5 `0.793` / MRR `0.659`, and
-semantic recall@5 `1.0` / MRR `0.931` (`primitive_amnesia.py --eval --top-k 5`).
-That is not the old headline lift; quote the fresh eval, inspect misses, and treat
-a row without an atlas embedding as surfacing debt. `--eval --record-misses`
-appends deduped repair rows to
-`analytics/public/queries/primitive_amnesia_miss_queue.jsonl`, including the task
-query, intended target, top returned candidates, and catalog/benchmark digests. A
-noise filter drops low-value utility/IO helpers. Remaining work:
-usage/impact-weighted ranking (the field exists, the blend doesn't yet use it), a
-larger less author-written benchmark, and miss-driven catalog repair.
+There are two ways to use the catalog:
 
-### Research-move surfacing: capabilities, cards, contracts
+- **Before work starts:** `primitive_tick_surface.py` renders relevant
+  primitives into the RD brief. Patterns and anti-patterns surface in parallel
+  from the [anti-pattern catalog](anti_pattern_catalog.md).
+- **On demand:** `primitive_amnesia.py` answers "what already exists for this
+  task?" using the primitive atlas plus lexical fallback.
 
-Primitive amnesia, operator cards, the orchestration menu, and the pattern-action
-contract are related, but they are not the same layer.
+The architecture rule is simple: the catalog finds existing capabilities. Route
+authority, receipt validation, and project-memory updates belong to their own
+contracts.
+Measured retrieval quality, miss queues, and parent-family audits belong in
+[capabilities.md](capabilities.md) and the primitive audit reports, not in this
+overview.
 
-| Layer | Owns | Does not own |
+### Research Move Routing: Capabilities, Cards, Contracts
+
+This layer answers a concrete question before a worker starts: **given this
+task, what existing capability should be used, what move is owed, and what
+record must exist before the move counts?**
+
+The stack is deliberately split so one component cannot invent its own answer.
+Capability discovery finds existing code. Move routing chooses an action family.
+The contract names the fields that downstream checks expect. The brief renders
+the obligation before work begins.
+
+| Layer | Owns | Out of scope |
 |---|---|---|
-| `primitive_amnesia.py` / `primitive_tick_surface.py` | Capability discovery over `architecture_index.jsonl` + the primitive atlas: "what reusable code/tool already exists for this task?" | Research-route authority, receipt schema truth, or project-memory recurrence decisions |
-| `primitive_catalog_taxonomy.py` | Generated full-catalog source categories, semantic families, path normalization, duplicate/staleness health, and catalog parent nodes | Model-invented ontology, manual row ownership, or replacement of the catalog |
-| `primitive_family_registry.py` | Call-site-to-family coverage for LLM-mediated workers and helpers; live-symbol integrity for those cards | Catalog generation, embedding rows, or implementation ownership |
-| `primitive_operator_cards.py` | Compact recognition/routing handles for RD moves: problem surface, confuser, next action, required receipt family | Full evidence payloads or close-time validation |
-| `org/menu/orchestration_menu.yaml` + pattern catalog | Coarser research-pattern classes and sequencing options | Proof that selecting a menu label improves first-action quality |
-| `pattern_action_contract.py` | The checked carrier: required fields, nearest-confuser rejection, source-cue receipts, action-program fields, and close payload expectations | A claim that pattern prose or labels alone improve science |
-| `rd_tick_brief.py` | Presentation/orchestration: render the above surfaces before work starts | Independent trigger vocabularies or a fourth source of routing truth |
+| [`primitive_amnesia.py`](../../src/ztare/research_director/primitive_amnesia.py) / [`primitive_tick_surface.py`](../../src/ztare/research_director/primitive_tick_surface.py) | Capability discovery over `architecture_index.jsonl` + the primitive atlas: "what reusable code/tool already exists for this task?" | Research-route authority, receipt schema truth, or project-memory recurrence decisions |
+| [`primitive_catalog_taxonomy.py`](../../src/ztare/research_director/primitive_catalog_taxonomy.py) | Generated full-catalog source categories, semantic families, path normalization, duplicate/staleness health, and catalog parent nodes | Model-invented ontology, manual row ownership, or replacement of the catalog |
+| [`primitive_family_registry.py`](../../src/ztare/research_director/primitive_family_registry.py) | Call-site-to-family coverage for LLM-mediated workers and helpers; live-symbol integrity for those cards | Catalog generation, embedding rows, or implementation ownership |
+| [`primitive_operator_cards.py`](../../src/ztare/research_director/primitive_operator_cards.py) | Compact move cards: problem surface, nearest confuser, next action, required receipt family | Full evidence payloads or close-time validation |
+| [`orchestration_menu.yaml`](../../org/menu/orchestration_menu.yaml) + pattern catalog | Coarser research-pattern classes and sequencing options | Evidence that selecting a menu label improves first-action quality |
+| [`pattern_action_contract.py`](../../src/ztare/research_director/pattern_action_contract.py) | Checked action contract: required fields, nearest-confuser rejection, source-cue receipts, action-program fields, and close payload expectations | Claims that pattern prose or labels alone improve outcomes |
+| [`rd_tick_brief.py`](../../scripts/public/control/rd_tick_brief.py) | Presentation: render the selected capability, move card, and action contract before work starts | Independent trigger vocabularies or another source of routing truth |
 
-This means primitive amnesia may surface `build_pattern_action_contract()` or
-`route_operator_cards()` as reusable capabilities, because those are real code
-primitives. It must not become the card router. If a new research move needs lexical
-or semantic recognition, the trigger/candidate logic belongs in the card/router or
-menu layer; the contract consumes the selected routed id and compiles the evidence
-fields; the brief renders the result. Duplicating phrase lists across amnesia, cards,
-contracts, and the brief is routing drift.
+A move card is a small routing record. It should be understandable without
+knowing the implementation: "this looks like a PDE estimate task; the nearest
+confuser is a generic analogy task; fill the estimate-receipt fields before
+claiming progress." Evidence arrives later through the artifact selected by the
+contract.
 
-The evidence from `epistemic-generation/research_log.md` constrains how this layer is
-used:
+Move-card routing has one job: translate a task surface into the next
+owed action. It is not a claim verifier, a benchmark, or a proof of lift. A
+good route row says:
 
-- Passive labels, long menus, and operator prose were weak or easy to imitate.
+- why this action family was selected;
+- which near-miss route was rejected;
+- which artifact slot or receipt schema must be filled; and
+- which audit can later show whether the route improved the next decision.
+
+The normal path is:
+
+```text
+task / project surface
+-> primitive surfacing asks what code or tool already exists
+-> move card names the action family and nearest confuser
+-> action contract materializes the required fields
+-> RD brief shows the owed action before work starts
+-> trace / close tooling checks whether the fields exist
+```
+
+Primitive amnesia may surface `build_pattern_action_contract()` or
+`route_operator_cards()` as existing tools; card routing stays in the
+card/router layer. The action contract consumes the selected card and checks
+the required fields; the brief renders the selection before work starts.
+
+Ownership is intentionally narrow:
+
+- recognition belongs in the card/router or menu layer;
+- validation belongs in the contract and resulting artifact;
+- presentation belongs in the brief.
+
+If amnesia, cards, contracts, and briefs each maintain their own trigger
+phrases, the same task can route differently in different places. Hard-residual
+and PDE recognition follow the same rule through `OP-HRD-01` and `OP-PDE-01`;
+`pattern_action_contract.py` should not grow local route tables or branch on
+move-card matched terms. Matched terms are route provenance. Activation
+uses selected card ids, typed receipt fields, and strong semantic receipts only
+when the atlas contract is fresh enough to count.
+
+The release check for this boundary is `ztare audit move-card-router --json`
+or `make move-card-router-audit`. The legacy Make target
+`make operator-card-router-audit` remains a compatibility alias. The
+default path is offline and deterministic over a fixed paraphrase set. The
+optional `SEMANTIC=1` path exercises the embedding atlas and reports
+`semantic_error_count` if live provider access is unavailable, so fallback
+routing is visible rather than counted as successful semantic routing. The
+audit also checks the atlas contract offline: embedded row ids must match the
+current move-card catalog content hashes and manifest metadata. A stale
+atlas is treated as lexical fallback until `make move-card-atlas-build`
+refreshes it.
+
+Internal epistemic-generation runs constrain how this layer is used:
+
+- Passive labels, long menus, and free-form human prose were unreliable routing
+  mechanisms.
 - Correct compact cards can help when the relevant candidate is already surfaced, but
-  card selection is not itself payment.
+  card selection is not validation.
 - The strongest current unit is source-bound action content: required receipts,
   nearest-confuser separation, source-cue checks, and deterministic action-program /
   program-counter fields.
 - Free-form program synthesis and unchecked wrong-contract obedience failed; source
   alignment helps but is not enough without order/stop checks.
-- Production uplift is not assumed. New enforcement should be preceded by shadow logs,
-  miss audits, and held-out or naturalistic checks.
+- Operational lift must be measured. New enforcement should be preceded by
+  shadow logs, miss audits, and held-out or naturalistic checks.
 
-For the autoresearch/RD boundary, the same rule applies. `OP-AWR-01` is the compact
-operator card for deciding whether a bounded task should use in-loop autoresearch, a
-subscription worker, or manual RD work. `pattern_action_contract.py` consumes that card
-and requires the routing artifact fields; `rd_tick_brief.py` renders the card plus the
-router decision; `action_intelligence.py` records out-of-loop agentic work so bypasses
-become evidence instead of private memory. Aggregate in-loop vs out-of-loop volume is
-owned by reflexive mining and the public dashboard (`bifurcation_report.json` folded by
-`build_dashboard_bundle.py`); the workbench action rows explain individual route choices
-under that aggregate, rather than defining a second counter. Route-row coverage gaps,
-dashboard shares, and portfolio-attention questions belong to `OP-RMI-01`; `OP-AWR-01`
-is reserved for bounded-task routing decisions.
+For the autoresearch/RD boundary, `OP-AWR-01` decides whether a bounded task
+should use in-loop autoresearch, a subscription worker, or manual RD work.
+[`pattern_action_contract.py`](../../src/ztare/research_director/pattern_action_contract.py)
+requires the routing fields;
+[`rd_tick_brief.py`](../../scripts/public/control/rd_tick_brief.py) renders the
+card plus the router decision;
+[`action_intelligence.py`](../../scripts/public/control/action_intelligence.py)
+records out-of-loop agentic work so bypasses become explicit action evidence
+instead of private memory. Aggregate in-loop vs out-of-loop volume is owned by
+reflexive mining and the public dashboard (`bifurcation_report.json` folded by
+[`build_dashboard_bundle.py`](../../scripts/public/mining/build_dashboard_bundle.py)).
+The workbench action rows explain individual route choices under that aggregate.
+Route-row coverage gaps, dashboard shares, and portfolio-attention questions
+belong to `OP-RMI-01`; `OP-AWR-01` is reserved for bounded-task routing
+decisions.
 
-The autoresearch hypothesis projection follows the same rule. It is read-only
-accounting over `eval_history` and steering logs: admitted nodes, pruned nodes,
-repeated branch cues, and reusable negative constraints. The loop remains canonical.
+The autoresearch hypothesis projection is read-only accounting over
+`eval_history` and steering logs: admitted nodes, pruned nodes, repeated branch
+cues, and reusable negative constraints. The loop remains canonical.
+The default launch path preserves the requested model family; cross-model
+provider fallback is opt-in for continuity tests, not the normal experiment
+contract.
 The useful feedback path is through the mutator briefing, where repeated failed-branch
 constraints are surfaced as externalized memory for the next worker.
+The replay audit checks that this read model keeps enough fields to be useful
+across projects before any UI or dashboard treats it as a stable surface.
 
-**Canonical embedding engine (2026-06-04).** Embedding atlases proliferated — primitives,
-Mathlib, APN, NS, and now seams/specs — each builder copy-pasting the same Gemini embed call,
-retry/backoff, content-hash cache, and cosine query. These are now ONE engine,
-`src/ztare/common/embeddings.py` (`embed_batch` / `build_atlas` / `query_atlas`), with each
-corpus a thin CONSUMER that supplies only its harvest (`[{id, text, …meta}]`) + config
-(model / dimensions / output paths) — the engine/consumer invariant (§6n.12) applied to
-embeddings. Atlases share the `gemini-embedding-001` space (asymmetric `RETRIEVAL_DOCUMENT`
-build / `RETRIEVAL_QUERY` query). To create or maintain an atlas: write a harvest, call
-`build_atlas(entries, out_emb, out_manifest, model=…, dimensions=…)` (content-hash cached, so
-re-runs only re-embed changed docs); to query, `query_atlas(path, text, k=…)`. New corpora MUST
-consume this engine, never re-implement the embed call; the existing per-corpus builders
-(`build_apn/mathlib/ns_atlas_embeddings.py`, the primitive atlas) are migrating their local
-copies onto it (APN done; the rest incremental, dual-path, regression-checked per §3b). The
-**seam/spec atlas** (`scripts/public/mining/build_seam_atlas_embeddings.py` →
-`analytics/public/index/seam_atlas_embeddings.json`, queried by
-`research_director/seam_semantic.py`) embeds all 336 seams + specs so a capability description
-maps SEMANTICALLY to the seam that already owns it — the embedding complement to the structural
-seam-interaction map, and the mechanized form of the "find the canonical home before building"
-rule (§6n.13).
+### Graph And Prediction Read Models
+
+Graph diagnostics and forecast scores are read models. They can improve the
+next decision, but only after their authority boundary is explicit.
+
+Graph records enter the loop through typed action rows:
+
+- source-claim graph gaps with `recovery_kind=public_evidence` become exact
+  gap ids and targets for out-of-loop source repair;
+- source-claim graph gaps with `recovery_kind=local_verification` become
+  in-loop focus receipts for the next mutator;
+- probability-DAG rows reach the prompt only when the rubric enables DAG
+  steering; and
+- a graph diagnostic with no decision effect records `no_strategy_change`
+  instead of pretending that a metric is a route.
+
+Forecast and prediction rows are stricter. `autoresearch trace` can report
+provenance, scoreability, Brier-vs-baseline status, and timing validity. Those
+rows do not route autoresearch iterations, allocate workers, or override the
+rubric. If a prediction row claims control authority without a validated
+forecast lifecycle and downstream decision receipt, readiness blocks it. This
+keeps measurement from silently becoming control.
+
+**Canonical embedding engine.** Several subsystems need semantic retrieval:
+primitive discovery, proof/source atlases, graph/card routing, and seam/spec
+lookup. They share one embedding engine:
+[`embeddings.py`](../../src/ztare/common/embeddings.py). Corpus-specific code
+harvests rows; the common engine owns client construction, retry behavior,
+content-hash caching, atlas manifests, and cosine query. New corpora should
+consume this engine rather than reimplementing provider calls.
 
 See:
 
@@ -551,22 +769,21 @@ See:
 
 ## Human Reviewers And Agentic Workers
 
-ZTARE should not collapse every research actor into one role. There are two
-classes:
+ZTARE distinguishes two research actors:
 
 - **Human reviewer.** The accountable person who sets priorities,
   accepts external risk, decides what can be public, supplies taste, and makes
-  strategic calls when the substrate is underdetermined.
+  strategic calls when the project surface is underdetermined.
 - **Agentic worker.** A tool-using AI agent that can inspect files, run
   probes, write scripts, edit docs, repair proofs, and leave a dense artifact
   trace. Codex-style and Claude Code-style sessions are agentic workers.
 
-ZTARE does not assume the human is only a gatekeeper. Sometimes the human is
-the worker, the source of taste, the experimental reviewer, or the only actor
-who can choose among live research bets. It also does not assume an agentic
-worker is merely a chat responder. When a live substrate is underspecified,
-an agentic worker may be the correct unit of agency: inspect the filesystem,
-probe the runtime, repair the source packet, and leave receipts.
+The human role is broader than gatekeeping. The human may be the worker, the
+source of taste, the experimental reviewer, or the only actor who can choose
+among live research bets. An agentic worker is broader than a chat responder.
+When a live project surface is underspecified, the useful unit of agency is often a
+tool-using session that inspects the filesystem, probes the runtime, repairs
+the source/evidence surface, and leaves receipts.
 
 The authority boundary remains different. Agentic workers can execute,
 recommend, and close bounded tasks within mandate. The human reviewer owns
@@ -577,13 +794,13 @@ The architecture supports four human roles:
 
 | Human role | System support |
 |---|---|
-| Accountable reviewer | preferences, gates, objectives, kill/split/defer authority |
+| Accountable reviewer | preferences, gates, objectives, stop/split/defer authority |
 | Collaborator | console session, project notes, human-agent handoff artifacts |
 | Source of non-digitized work | explicit receipts, summaries, evidence promotion, action-impact rows |
-| Bottleneck to route around | closure pressure, forecasts, independent-agent review, unattended in-mandate work |
+| Attention bottleneck | closure pressure, forecasts, independent-agent review, unattended in-mandate work |
 
-The goal is not to remove the human from research. The goal is to stop making
-the human the only memory, only router, and only closure mechanism.
+The target operating model keeps the human accountable for judgment while
+moving memory, routing, and closure into durable artifacts.
 
 ---
 
@@ -596,13 +813,13 @@ the human the only memory, only router, and only closure mechanism.
 | `org/` | ZTARE tenant roles, tasks, channels, objectives | yes for local org state |
 | `ztare_workspace/gates/` | pending/resolved decisions | yes |
 | `ztare_workspace/transitions.jsonl` | transition events | yes |
-| LeanMill SQLite queue + JSONL event ledger | proof-attempt bus | yes |
-| `/srv/ztare_official_store/official/` (VPS) | [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) daemon-owned F-row + stamped-transition ledger | yes; the in-repo `research_areas/EXPERIMENT_TRACK_RECORD.md` is a generated export of this |
+| LeanMill queue + event ledger | proof-attempt bus; subsystem details live in [leanmill_architecture.md](leanmill_architecture.md) | yes |
+| `/srv/ztare_official_store/official/` (VPS) | daemon-owned F-row + stamped-transition ledger; commit-membrane provenance in [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) | yes; the in-repo `research_areas/EXPERIMENT_TRACK_RECORD.md` is a generated export of this |
 | `analytics/public/` | public analytics outputs | derived |
 | Orbit | governance UI | projection |
 | notification provider | push/ack rail | projection |
 | dashboard HTML | human-readable intelligence surface | projection |
-| agent chat transcript | useful context | not canonical unless summarized into artifacts |
+| agent chat transcript | context only | not canonical unless summarized into artifacts |
 
 This distinction is the guardrail against accidental architecture drift.
 
@@ -635,10 +852,12 @@ rewritten as a public abstraction or moved out of the public entry path.
 |---|---|
 | Test a bounded claim against evidence | in-loop validator |
 | Prove or formalize a theorem fragment | project proof workflow / Lean tooling |
-| Schedule and run many Lean proof attempts under a stable contract | LeanMill (`src/ztare/leanmill/`) — durable SQLite queue + JSONL event ledger |
-| Decide which scientific branch deserves attention | [GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) forecasts + RD/human review |
-| Learn whether an action changed outcomes | [GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) action-impact rows |
-| Inspect operating health across projects | [GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md) intelligence surface |
+| Schedule and run many Lean proof attempts under a stable contract | LeanMill proof subsystem; see [leanmill_architecture.md](leanmill_architecture.md) |
+| Decide which scientific branch deserves attention | forecast contracts plus RD/human review ([GP-230](../../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md)) |
+| Learn whether an action changed outcomes | action-impact rows ([GP-243](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md)) |
+| Inspect operating health across projects | operations-intelligence surface ([GP-244](../../research_areas/seams/apparatus/instrumentation/GP-244_research_operations_intelligence_cockpit_seam.md)) |
+| Turn a graph diagnostic into a reviewable action | [graph_interfaces.md](graph_interfaces.md) + `graph_rd_actions[]` in `ztare autoresearch trace` |
+| Read forecast/prediction signals without granting authority | `prediction_contract.py` read model + [capabilities.md](capabilities.md#forecast-pool-and-prediction-market) |
 | Run persistent role-bound work | org runtime / role daemon |
 | Work interactively with a human and agent | console session + project artifacts |
 | Extract reusable failure patterns | reflexive audit workflow + anti-pattern catalog |
@@ -668,7 +887,7 @@ rewritten as a public abstraction or moved out of the public entry path.
   damaging scientific yield or external validity.
 
 The architecture does not claim to eliminate these failures. It makes them
-observable enough to be fought.
+observable enough to debug, test, and demote.
 
 ---
 
@@ -676,20 +895,22 @@ observable enough to be fought.
 
 | Area | Status |
 |---|---|
-| In-loop validator | mature research instrument, still substrate-dependent |
+| In-loop validator | usable research instrument, still project/rubric dependent |
 | Evidence/rubric workflows | usable, public docs available |
-| Org runtime | working prototype, dogfooded locally |
+| Org runtime | working prototype, exercised locally |
 | Notification abstraction | filesystem default, tenant providers optional |
-| Forecast market | mechanized; [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) child seam adds calibration rules |
-| LeanMill substrate engine | dogfooded on [GP-225](../../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md); queue/policy/contracts and common helpers are kernel-backed, while LeanMill-specific orchestration remains in `scripts/public/control/`; current focus is strict C-supply growth, target-safe benchmarking, and family/source breadth |
-| [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md) commit-membrane daemon | live on VPS as sole writer of the official store |
+| Forecast contracts | mechanized contracts, scoring, and decision-use rows; calibration rules are tracked in [GP-245](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) |
+| Graph action interface | live graph-record and decision-receipt interface; source-claim graphs and probability-DAG receipts can lower into `graph_rd_actions[]`; broader graph-algorithm claims require [graph_interfaces.md](graph_interfaces.md), `make graph-capability-audit`, and evidence that a diagnostic changed a route, prep decision, or claim boundary |
+| Research move routing | live recognition-to-action interface; a move card names the action family, nearest confuser, artifact slot, and checked receipt fields; deterministic routing is covered by the publish gate; optional semantic routing is provider-backed and must report provider failures; the next maturity step is miss logging plus held-out paraphrases |
+| LeanMill proof subsystem | live governed proof subsystem with queues, receipts, and benchmark artifacts; this overview records only the integration boundary, and [leanmill_architecture.md](leanmill_architecture.md) owns the subsystem design |
+| Commit-membrane daemon | live on VPS as sole writer of the official store ([GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)) |
 | Action intelligence | early but wired into public smoke checks |
-| Research intelligence dashboard | active private instrumentation track |
+| Research intelligence dashboard | active instrumentation track; public exports stay bounded by claim registers and evidence-atlas artifacts |
 | Multi-tenant enterprise control plane | design direction, not the public default |
 
-The honest state is that ZTARE is strongest as a research operating system for
-one serious reviewer and a small set of agents. The direction of travel is a
-cleaner separation between the public validator/research stack, the generic
+The current shape is a single-maintainer public research workbench with enough
+kernel structure for small-team use. The next architecture step is cleaner
+separation between the public validator/research stack, the generic
 cognitive-firm kernel, and tenant-specific overlays.
 
 ---
@@ -701,7 +922,7 @@ This page is the overview. Read next by intent:
 | If you want to… | Read |
 |---|---|
 | See every module by function | [system_position_and_module_map.md](system_position_and_module_map.md) |
-| Understand the LeanMill proof engine | [leanmill_architecture.md](leanmill_architecture.md) |
+| Understand the LeanMill proof subsystem | [leanmill_architecture.md](leanmill_architecture.md) |
 | Understand the reflexive/learning layer | [reflexive_engineering.md](reflexive_engineering.md) · [reflexive_mining_methodology.md](reflexive_mining_methodology.md) |
 | Understand the validator's theory | [cognitive_gym.md](cognitive_gym.md) · [rubric_specification.md](rubric_specification.md) · [harness_specification.md](harness_specification.md) |
 | Understand the epistemic stance | [epistemic_principles.md](epistemic_principles.md) · [goodhart_at_every_layer.md](goodhart_at_every_layer.md) |
@@ -714,5 +935,6 @@ Seams/specs (governance of in-flight work) live under `research_areas/seams/` an
 `research_areas/specs/active/`; the canonical experiment record is the [GP-241](../../research_areas/seams/apparatus/cage/GP-241_canonical_membrane_first_opener_spec.md)
 daemon-owned store, exported to `research_areas/EXPERIMENT_TRACK_RECORD.md`.
 
-When this overview and a deeper doc disagree, the deeper doc wins for its subsystem;
-fix the drift here so the overview stays trustworthy.
+When this overview and a deeper subsystem doc disagree, the subsystem doc wins
+for its internals; fix the drift here so the overview remains a trustworthy
+map rather than a competing architecture spec.

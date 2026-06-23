@@ -15,7 +15,10 @@ Important rules:
 - Preserve the hard conclusion, but do not sound theatrical or sloppy.
 - Avoid "doom language" by default. Do not use phrases like "existential", "terminal", "survival depends", "no middle ground", "cease operations", or similar escalatory rhetoric unless the planning brief explicitly contains that severity and there is no plainer way to state the management implication.
 - Follow the sequence and emphasis of the planning brief unless doing so would conflict with the ledger.
-- Do not fabricate dates. If you include a date line, use the provided "Run date". If no date is needed, omit it.
+- Omit date, To/From, and Subject blocks unless the planning brief explicitly requires them. If a date line is explicitly required, use the provided "Run date"; otherwise do not include one.
+- Preserve tense. Do not turn a historical fact from the ledger into a future recommendation.
+- Match the ledger's epistemic status exactly. If confirmation is directional, deferred, bounded, or mechanism-incomplete, recommendations must preserve that status and must not upgrade the result to completion or proof.
+- Recommend only actions authorized by the report support contract. Conditional actions must keep their condition; deferred actions must be named only as deferred.
 - Do not include unexplained acronyms, codenames, or internal labels in headings or signatures.
 
 Use this structure:

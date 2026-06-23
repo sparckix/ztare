@@ -1,0 +1,40 @@
+{
+  "cage_meta": {
+    "class": "document_review"
+  },
+  "criteria": {
+    "1_Bounded_claim": "Does the candidate keep the claim limited to the demo packet fixture?",
+    "2_Source_discipline": "Does the candidate preserve source and evidence references rather than inventing new support?",
+    "3_Scope_discipline": "Does the candidate preserve the non-claims and next falsifier?"
+  },
+  "dimensions": [
+    {
+      "description": "Keeps the claim bounded to packet readiness and does not turn it into a run result.",
+      "name": "Bounded claim",
+      "weight": 40
+    },
+    {
+      "description": "Uses the listed source and evidence references without replacing them with unsupported claims.",
+      "name": "Source discipline",
+      "weight": 35
+    },
+    {
+      "description": "Preserves non-claims and the next falsifier.",
+      "name": "Scope discipline",
+      "weight": 25
+    }
+  ],
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "public packet-readiness fixture; no numeric fit contract",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "document review fixture; uniqueness keyword gate does not apply",
+  "discovery_mode": false,
+  "enable_fit_primitive": false,
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "holdout_hard_gate": false,
+  "persona": "Evaluate whether the demo packet stays inside its bounded source/evidence and non-claim contract.",
+  "require_i_model_in_submission": false,
+  "rubric_mode": "calibration",
+  "rubric_mode_reason": "public first-run readiness fixture, not a discovery run"
+}

@@ -30,4 +30,5 @@ Writing guidance:
 - If the system is still in a mechanism-validation stage, say so directly.
 - If the current evidence supports only a narrow architectural next step, do not broaden it.
 - If there is an upstream mechanism and downstream architectural ambitions depend on it, make that the centerpiece.
+- If the ledger includes "review_status", separate product/kernel readiness from substantive proof. Runtime risks and missing blockers should appear as engineering follow-up, not as evidence against the thesis.
 - Keep the memo concise and technically serious.

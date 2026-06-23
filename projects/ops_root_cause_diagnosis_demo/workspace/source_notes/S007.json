@@ -1,0 +1,126 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "Cache miss rate increase is a consequence of export batch lag, not an independent cause of billing status unavailability.",
+      "depends_on": [
+        "causal timing analysis",
+        "controlled experiment where export lag is induced"
+      ],
+      "priority": "high",
+      "why_testable": "Temporal ordering in data shows cache miss rises after export lag rises; can test with higher-resolution timestamps or controlled experiments."
+    },
+    {
+      "claim": "The rolled-back export batching flag was the root cause, and CHG-143 was not a contributing factor.",
+      "depends_on": [
+        "availability of old batching flag configuration",
+        "staging environment"
+      ],
+      "priority": "high",
+      "why_testable": "Can be tested by re-applying the batching flag change in a staging environment and observing billing status behavior, while CHG-143 remains active."
+    },
+    {
+      "claim": "The cache miss rate threshold beyond which billing status lookup degrades significantly is approximately 0.34.",
+      "depends_on": [
+        "ability to generate cache misses artificially"
+      ],
+      "priority": "medium",
+      "why_testable": "Data shows 0.34 cache_miss_rate associated with 1410ms latency; can test with controlled load on support-console cache."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Determination of independent root cause.",
+      "unknown": "What caused the export batch failures (b-7104, b-7105, b-7106)?",
+      "why_it_matters": "Without knowing the export failure cause, root cause remains unresolved."
+    },
+    {
+      "blocking": "Confidence in cache as amplifier mechanism.",
+      "unknown": "Whether cache miss rate rise is entirely explained by export lag or if other unobserved factors contributed.",
+      "why_it_matters": "This source only establishes temporal correlation (rise after export lag), not causation."
+    },
+    {
+      "blocking": "Understanding the actual failure mechanism.",
+      "unknown": "What specific change was made in the export batching flag that was rolled back?",
+      "why_it_matters": "The rolled-back change is identified as a stronger root-cause candidate than CHG-143, but its details are absent."
+    },
+    {
+      "blocking": "Assessing impact of cache behavior.",
+      "unknown": "Whether the cache miss rate exceeded any operational threshold or caused user-facing issues independently.",
+      "why_it_matters": "Amplifier claim depends on whether cache degradation itself caused problems."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "On 2026-06-11T20:00:00Z pre-change baseline: cache_miss_rate=0.07, billing_status_lookup_p95_ms=180, export_batch_lag_minutes=12 for support-console service.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-12T02:00:00Z with export retries active: cache_miss_rate=0.11, billing_status_lookup_p95_ms=240, export_batch_lag_minutes=59.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-12T10:00:00Z with export batch b-7104 failed: cache_miss_rate=0.34, billing_status_lookup_p95_ms=1410, export_batch_lag_minutes=393.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-12T18:00:00Z with export batch b-7105 failed: cache_miss_rate=0.39, billing_status_lookup_p95_ms=1680, export_batch_lag_minutes=517.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-13T10:00:00Z with export batch b-7106 failed: cache_miss_rate=0.42, billing_status_lookup_p95_ms=1740, export_batch_lag_minutes=603.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-14T02:00:00Z after rollback completed, export ok: cache_miss_rate=0.18, billing_status_lookup_p95_ms=520, export_batch_lag_minutes=72.",
+      "strength": "high"
+    },
+    {
+      "statement": "On 2026-06-15T10:00:00Z near baseline: cache_miss_rate=0.08, billing_status_lookup_p95_ms=210, export_batch_lag_minutes=15.",
+      "strength": "high"
+    },
+    {
+      "statement": "The support-console change CHG-143 increased timeout tolerance but was retained after recovery.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "cache_miss_rate range",
+      "notes": "From pre-change baseline to peak during export batch failures.",
+      "units": "proportion",
+      "value_or_range": "0.07 to 0.42"
+    },
+    {
+      "kind": "range",
+      "name": "billing_status_lookup_p95_ms range",
+      "notes": "From baseline to peak during b-7106 failure.",
+      "units": "ms",
+      "value_or_range": "180 to 1740"
+    },
+    {
+      "kind": "range",
+      "name": "export_batch_lag_minutes range",
+      "notes": "From baseline to peak during b-7106 failure.",
+      "units": "minutes",
+      "value_or_range": "12 to 603"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "This source states cache behavior is a symptom or amplifier, not the independent root cause.",
+      "strength": "high",
+      "topic": "Root cause vs symptom"
+    },
+    {
+      "assertion": "CHG-143 (timeout tolerance change) is weaker as a root-cause explanation than the rolled-back export batching flag.",
+      "strength": "medium",
+      "topic": "Relative explanatory power of CHG-143 vs export batching flag"
+    }
+  ],
+  "source_id": "S007",
+  "source_kind": "md",
+  "source_path": "support_console_cache.md",
+  "source_summary": "Synthetic support-console cache metrics showing correlation between cache miss rate, billing status lookup latency, and export batch lag over a period from June 11-15, 2026. Cache miss rate rises after export lag rises. The note states cache behavior is a symptom/amplifier, not independent root cause. CHG-143 increased timeout tolerance but retained; weaker explanation than rolled-back export batching flag.",
+  "source_type": "source_evidence"
+}

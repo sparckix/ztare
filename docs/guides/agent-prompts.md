@@ -10,7 +10,7 @@ A short, opinionated set of prompts for a person using their own Codex,
 Claude, or other coding agent on ZTARE. Each prompt covers a real
 use case for a *new arrival* — understanding what's here, deciding what
 to look at, inspecting a claim, having a claim adversarially reviewed,
-or running the engine on their own substrate. Paste one prompt at a time
+or running the workbench on their own substrate. Paste one prompt at a time
 and replace bracketed text.
 
 Ground rules for every prompt:
@@ -27,7 +27,7 @@ Ground rules for every prompt:
 ```text
 You are helping me understand the ZTARE repository. Read README.md, docs/README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/primitive_evidence_matrix.md, docs/concepts/capabilities.md, docs/concepts/architecture.md, docs/concepts/glossary.md, docs/public_claim_register.md, and docs/guides/cli.md. Then give me a concise map of:
 
-1. ZTARE's scope boundary: the adversarial-reasoning kernel here versus the reusable governance kernel in cognitive-firm;
+1. ZTARE's scope boundary: the zero-trust research workbench here versus the reusable governance kernel in cognitive-firm;
 2. the three architectural layers (in-loop validator, operating discipline, named primitives) and one concrete capability inside each;
 3. where the conservative public claims live, which evidence level each currently reaches, and what non-claims or caveats attach to them;
 4. the single CLI entry point (`ztare`) and the subcommands worth knowing;
@@ -39,7 +39,7 @@ Do not summarize every file. Describe how the parts fit together: the validator 
 ## 2. Pick what to look at — your first session
 
 ```text
-I have about an hour with the ZTARE repo and I want to spend it well on [my goal — e.g. evaluate a specific claim, understand the apparatus, decide whether to use the engine on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
+I have about an hour with the ZTARE repo and I want to spend it well on [my goal — e.g. evaluate a specific claim, understand the workbench, decide whether to use it on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
 
 1. point me at the 3–5 files that are highest-yield for my stated goal;
 2. name which sealed claims (in the public claim register) are most relevant, and which "held privately" items I would otherwise be tempted to chase;
@@ -69,21 +69,21 @@ Do not invent results that are not in the public summary. If something is held p
 Review [project, claim, or sealed sandbox] adversarially. Read its public/CLAIM_SUMMARY.md, its entry in docs/public_claim_register.md, the relevant gate library (src/ztare/gates/) entries, and docs/concepts/anti_pattern_catalog.md + docs/concepts/goodhart_at_every_layer.md. Assume the claim overclaims; find the hole. Answer:
 
 1. What can this substrate actually answer at the stated gate thresholds, and what would it take to discriminate the claim from its nearest structural rival?
-2. Is the binding constraint data coverage, gate looseness, grammar ceiling (the form is unreachable), space ceiling (the mutator did not enter the right category), contamination, or operator anchor?
+2. Is the binding constraint data coverage, gate looseness, grammar ceiling (the form is unreachable), space ceiling (the mutator did not enter the right category), contamination, or human anchoring?
 3. Which specification-gaming strategy from the catalogue would best produce this claim *if* it were laundered? Test the claim against that strategy.
 4. What would falsify the current interpretation? Name the cheapest concrete falsifier.
 
-Keep the output calibrated. A high apparatus-internal score is not a discovery unless the artifacts and retest tags license that reading.
+Keep the output calibrated. A high internal score is not a discovery unless the artifacts and retest tags license that reading.
 ```
 
-## 5. Operate the engine on your substrate
+## 5. Operate the workbench on your substrate
 
 ```text
 You are helping me use ZTARE on my own substrate for [my task]. Read docs/guides/cli.md, docs/guides/workflow.md, docs/concepts/capabilities.md, src/ztare/cli.py, and the relevant control scripts under scripts/public/control/ for the `ztare` subcommand I would use (e.g. autoresearch / forecast / leanmill / bundle / charter / routine-review / action-intel). Then:
 
-1. confirm which subcommand is the right entry for my task, and which step of the apparatus loop it covers;
+1. confirm which subcommand is the right entry for my task, and which step of the workbench flow it covers;
 2. if I am about to use Codex/Claude or another persistent agent out of loop, run the workbench-routing analysis first and tell me whether to invoke autoresearch, prepare a missing evaluator/rubric/artifact surface, or stay out of loop;
-3. show the exact invocation with the operator flags I need, including how to pass `--help` through to see the underlying script's full surface;
+3. show the exact invocation with the command flags I need, including how to pass `--help` through to see the underlying script's full surface;
 4. explain what the run reads (charter, rubric, evidence files, route JSON) and what it writes (ledger row, bundle verdict, action-intel delta, projection);
 5. name the side effects I should check after the run;
 6. if my task requires governance-side primitives (roles, mandates, role daemons, OKR closure), route me to cognitive-firm — they deliberately do not live in `ztare`.

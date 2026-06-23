@@ -1,5 +1,5 @@
 ---
-description: "How every reflexive primitive was discovered, the principal-led audit loop."
+description: "How every reflexive primitive was discovered, and how the maintainer review loop works."
 ---
 
 # Reflexive Audit Workflow
@@ -14,9 +14,9 @@ description: "How every reflexive primitive was discovered, the principal-led au
 
 ## Purpose
 
-Every reflexive engineering primitive in the catalog was discovered the same way: the principal observed a failure, recognized it as infrastructure (not science), and incepted a fix. The engine discovered none of them.
+Every reflexive engineering primitive in the catalog was discovered the same way: a maintainer observed a failure, recognized it as infrastructure rather than science, and proposed a fix. The engine discovered none of them.
 
-The reflexive audit mechanizes the *detection* half of that pattern. It cannot invent a new primitive; applying a ZTARE leg to a stuck layer requires judgment. It can detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for principal review.
+The reflexive audit mechanizes the *detection* half of that pattern. It cannot invent a new primitive; applying a ZTARE leg to a stuck layer requires judgment. It can detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for maintainer review.
 
 **The key distinction the audit makes:** Is the project stagnating because the *science is hard* (a genuinely difficult substrate with high-variance failures across many gates) or because the *machinery is broken* (the same gate failing with similar residual across K+ iterations, the Groundhog Day signature)?
 
@@ -78,7 +78,7 @@ Intervening on common-cause variation (the engine exploring a hard substrate) ge
 
 **Dry-run (no LLM, deterministic stages only):**
 ```bash
-python -m src.ztare.composition.reflexive_audit \
+python -m ztare.composition.reflexive_audit \
     --projects-dir projects/ \
     --primitives-catalog <private_primitives_catalog> \
     --skip-llm
@@ -87,7 +87,7 @@ Use this first. It scans all projects, runs the discriminator, and classifies fa
 
 **Full run (LLM inception committee fires for flagged projects):**
 ```bash
-python -m src.ztare.composition.reflexive_audit \
+python -m ztare.composition.reflexive_audit \
     --projects-dir projects/ \
     --primitives-catalog <private_primitives_catalog> \
     --science-token-budget 5000000
@@ -115,7 +115,7 @@ The audit writes to the configured private audit output directory after each run
 
 ```json
 {
-  "project_id": "gp023_planck_sandbox_05",
+  "project_id": "demo_planck_sandbox",
   "verdict": "machinery_broken",
   "failure_mode": "primitive_exhaustion",
   "stuck_layer": "Grammar / Tail Law",
@@ -155,7 +155,7 @@ The audit writes to the configured private audit output directory after each run
 
 **Step 2: Check the primitives catalog.** Is an existing primitive already designed for this failure mode? If yes, the question is why it hasn't fired, that's a wiring issue, not a new primitive gap.
 
-**Step 3 (if LLM run): Review the seam draft.** The inception committee writes a seam to the private audit output directory with `SENTINEL_DECISION: hold`. This means the seam cannot be promoted without explicit principal action. Check:
+**Step 3 (if LLM run): Review the seam draft.** The inception committee writes a seam to the private audit output directory with `SENTINEL_DECISION: hold`. This means the seam cannot be promoted without explicit maintainer action. Check:
 - [ ] Does the proposed primitive address a failure class not covered by the existing catalog?
 - [ ] Is the ZTARE leg applied correctly (reflexive inward application)?
 - [ ] Meta-parsimony: does the proposal identify an existing primitive it supersedes, or justify why complexity must increase? If neither, it should be `NO_NEW_PRIMITIVE`.
@@ -173,9 +173,9 @@ The audit is designed against the "self-licking ice cream cone" failure mode, wh
 
 **P2, 20:1 meta-budget ratio:** The inception committee (LLM call) only fires if the science token budget is at least 20× the audit's estimated cost. This prevents the audit from consuming more than 5% of total token budget. Auto-computed from disk when not explicitly set.
 
-**P3, Retroactive falsification gate:** Every seam draft includes a mandatory target sandbox. The primitive is not promoted until the principal re-runs that sandbox with the primitive in effect and observes reduced stagnation. A primitive that doesn't fix its motivating case is discarded.
+**P3, Retroactive falsification gate:** Every seam draft includes a mandatory target sandbox. The primitive is not promoted until the maintainer re-runs that sandbox with the primitive in effect and observes reduced stagnation. A primitive that doesn't fix its motivating case is discarded.
 
-**P4, Hardware air-gap:** The audit can only write to its configured private output directory. It has no write path to the primitives catalog, the orchestrator configs, or any implementation. Manual copy-to-commit by the principal is the only promotion path.
+**P4, Hardware air-gap:** The audit can only write to its configured private output directory. It has no write path to the primitives catalog, the orchestrator configs, or any implementation. Manual copy-to-commit by the maintainer is the only promotion path.
 
 ---
 

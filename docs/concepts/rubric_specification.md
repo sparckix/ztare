@@ -95,11 +95,11 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | `composition_min_families` | int |, | Minimum structural families the mutator must propose before stagnation applies. |
 | `composition_budget` | int |, | Maximum composition budget for the run. |
 | `confirmation_threshold_runs` | int |, | Runs needed to confirm a constraint. |
-| `gp103_stagnation_threshold` | int | ≈3 | [GP-103](../../research_areas/seams/engine/GP-103_topology_induction_gap.md) Compression-Gap-aware stagnation window. |
+| `gp103_stagnation_threshold` | int | ≈3 | Compression-gap-aware stagnation window ([GP-103](../../research_areas/seams/engine/GP-103_topology_induction_gap.md)). |
 | `discovery_mode` | bool | `false` | Enables Phase-C discovery affordances (different gate semantics). |
 | `falsification_mode` | string | `"continuous"` | `"bounded_discriminator"` is the qualitative-thesis variant. |
-| `require_i_model_in_submission` | bool | inferred, legacy default `true` | Set `false` for qualitative/assertion-suite substrates. If omitted, the runner infers `false` only for unambiguous theorem-packet or qualitative bounded-discriminator rubrics with fitting and holdout disabled. |
-| `epistemic_alignment` | object |, | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-form alignment audit configuration. |
+| `require_i_model_in_submission` | bool | inferred, legacy default `true` | Set `false` for qualitative/assertion-suite substrates. If omitted, the runner infers `false` for theorem-packet rubrics and for fully declared qualitative bounded-discriminator rubrics with fitting disabled, holdout disabled, and qualitative gate opt-outs present. |
+| `epistemic_alignment` | object |, | M-form alignment audit configuration ([GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md)). |
 | `cold_residual_successor_mode` | bool | `false` | Enables [GP-045](../../research_areas/seams/substrates/corrector/GP-045_cold_residual_01_pre_registration.md)-style cold-residual treatment. |
 
 ---
@@ -111,8 +111,8 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | `enable_fit_primitive` | bool | `true` | Whether to run the fit primitive. `false` for qualitative. |
 | `enable_residual_diagnostics` | bool | `false` | Enables residual diagnostics ([GP-074](../../research_areas/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md)). |
 | `enable_component_c` | bool | `false` | Legacy alias for `enable_residual_diagnostics`; accepted for old rubrics. |
-| `enable_mform_audit` | bool | `false` | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) M-Form alignment audit (qualitative rubrics typically enable this). |
-| `enable_lean_proof` | bool | `false` | [GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md) Lean-4 proof gate, requires `lean_prover_model`. |
+| `enable_mform_audit` | bool | `false` | M-form alignment audit ([GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md)); qualitative rubrics typically enable this. |
+| `enable_lean_proof` | bool | `false` | Lean-4 proof gate ([GP-088](../../research_areas/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md)), requires `lean_prover_model`. |
 | `residual_diagnostics_gt_module` | string | none | Sealed GT module used by residual diagnostics when enabled. |
 | `residual_diagnostics_stagnation_k` | int | none | Residual-diagnostics stagnation threshold. |
 | `component_c_gt_module` | string | none | Legacy alias for `residual_diagnostics_gt_module`; accepted for old rubrics. |
@@ -124,7 +124,7 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 
 | Field | Valid values | Default | Notes |
 |---|---|---|---|
-| `general_office_model` | `"gemini"` \| `"gemini-pro"` \| `"claude"` \| `"claude-opus"` \| `"gpt4o"` \| `"gpt4.1"` \| `"gpt4.1-mini"` | set via flag | [GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md) auditor model, must differ from judge + mutator per Chandler separation. |
+| `general_office_model` | `"gemini"` \| `"gemini-pro"` \| `"claude"` \| `"claude-opus"` \| `"gpt4o"` \| `"gpt4.1"` \| `"gpt4.1-mini"` | set via flag | M-form audit model ([GP-105](../../research_areas/seams/reflexive/GP-105_mform_alignment_audit_seam.md)); must differ from judge + mutator per Chandler separation. |
 | `lean_prover_model` | same vocabulary | `"gpt4.1"` | Lean-proof gate model when `enable_lean_proof: true`. |
 
 **Model labels are NOT raw API model IDs.** Valid labels are the ZTARE aliases enumerated above. `gemini-2.5-pro-preview-*` or similar raw IDs WILL fail the argparse `choices=` check.
@@ -136,7 +136,7 @@ Any `disable_*` flag WITHOUT its paired reason string should fail in review.
 | Field | Type | Notes |
 |---|---|---|
 | `synthesis_renderer` | string | Which synth renderer to use (`founder_memo`, `policy_essay`, etc.). See `src/ztare/synthesis/`. |
-| `reviewer_domains` | list of strings | [GP-079](../../research_areas/seams/protocol/GP-079_persona_library_unification_seam.md) domain lenses to inject into the skeptic persona. Read by findings runner; NOT by autoresearch_loop. |
+| `reviewer_domains` | list of strings | Reviewer-domain lenses ([GP-079](../../research_areas/seams/protocol/GP-079_persona_library_unification_seam.md)) to inject into the skeptic persona. Read by findings runner; NOT by autoresearch_loop. |
 
 ---
 
@@ -193,6 +193,10 @@ unless it is promoted into a normal scoring rubric.
 }
 ```
 
+The explicit `require_i_model_in_submission: false` pin is recommended for
+readability. The runner also infers the same assertion-suite contract when the
+full qualitative bounded-discriminator pattern above is present.
+
 ### 11b. Minimum quantitative-discovery rubric (blind GT)
 
 ```json
@@ -247,9 +251,9 @@ Run `make validate-rubric PROJECT=<slug> RUBRIC=<slug>` before launch. The same 
 
 ## 14. Historical context
 
-- **[GP-054](../../research_areas/seams/protocol/GP-054_rubric_quality_and_generation_seam.md)** (Rubric Quality and Generation Spec) governs how rubrics are generated and reviewed, ties to `make rubric-review`.
-- **[GP-075](../../research_areas/seams/protocol/GP-075_rubric_for_unknowns_seam.md)** (Rubric Generation for Unknown Domains) governs taxonomy of GT-independent vs GT-dependent criteria in discovery mode.
-- **[GP-104](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md) / `make generate-gp`** is the standard tool for fresh qualitative scaffolding; it produces Type-B rubric scaffolds that comply with this spec.
+- **[Pre-run rubric review](../../research_areas/seams/protocol/GP-054_rubric_quality_and_generation_seam.md)** governs how rubrics are generated and reviewed, and ties to `make rubric-review`.
+- **[Rubric for unknown domains](../../research_areas/seams/protocol/GP-075_rubric_for_unknowns_seam.md)** governs the taxonomy of GT-independent versus GT-dependent criteria in discovery mode. Historical seam: `GP-075`.
+- **[Qualitative scaffold generator](../../research_areas/seams/protocol/GP-104_qualitative_rubric_gate_configuration_seam.md) / `make generate-gp`** is the standard tool for fresh qualitative scaffolding; it produces Type-B rubric scaffolds that comply with this spec. Historical seam: `GP-104`.
 
 ---
 
@@ -285,7 +289,7 @@ When a rubric sets `fit_expression_grammar: "py_exec"`, two additional fields ar
 | `py_exec_authorized_by` | non-empty string | **Required.** Seam ID (e.g. `"GP-133-Round-4"`) or principal signoff string. Provenance for why this substrate qualifies for py_exec grammar. Missing/empty → fail-closed. |
 | `expression_byte_budget` | positive int, default 200 | If missing, emits warning and defaults to 200. If present but non-positive-int, fail-closed. Anti-lookup-table defense, ternary-chain lookups pass parsimony but explode on byte length. |
 
-**py_exec is never a default** in `make generate-gp` or any scaffolding tool. Explicit operator action only.
+**py_exec is never a default** in `make generate-gp` or any scaffolding tool. Explicit maintainer action only.
 
 ---
 
@@ -320,7 +324,7 @@ preflight requires all four fields below to be non-empty:
 Project charters targeted by Newton-mode rubrics should also require each
 primitive to include a `Secondary observable` field in the thesis format. The
 rubric-level contract is the durable run surface; the charter is the
-operator-facing local version. Launch preflight accepts a valid rubric-level
+reviewer-facing local version. Launch preflight accepts a valid rubric-level
 contract or a project charter that contains `Secondary observable`; malformed
 rubric-level contracts fail even if the charter contains the heading.
 
@@ -352,7 +356,7 @@ must satisfy ALL of:
 - **Panel review entry** appended to `GP-133 (internal seam)` (or successor discovery-panel seam) covering: epistemic framing, anti-gaming defenses, scope containment, governance implications.
 - **Rubric-spec doc update** (this file) with the new mode/grammar documented in the appropriate section.
 - **Rubric-loader gate update** in `autoresearch_loop.py` enforcing any required-field discipline for the new grammar or mode.
-- **Architectural-map update** in `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` if the gate changes region structure or exit taxonomy.
+- **Architecture-map update** in the maintained autoresearch architecture map if the gate changes region structure or exit taxonomy; public behavior changes also update the public architecture/capability docs.
 - **Principal signoff** in the PR description for any default-behavior change.
 
 Retroactive: [GP-133](../../research_areas/seams/mission/discovery/GP-133_R4_py_exec_sandbox_review.md) Round 4 itself is the first application of this checklist. Future PRs follow the checklist prospectively.
@@ -383,7 +387,7 @@ Per [GP-157](../../research_areas/seams/apparatus/cage/GP-157_R10_R16_backport_s
 
 R10 (cross-class extrapolation diagnostic, POST_FIT) always runs when Cage is active and substrate has `cage_meta.class` set. R11 (per-class MRE ceiling, PRE_JUDGE) only enforces when `enforce_per_class_farther_tail=true`.
 
-### 21.3 [GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md) Forced-REFRAME flags
+### 21.3 Forced-REFRAME flags ([GP-168](../../research_areas/seams/mission/org/GP-168_org_design_unfalsifiability_seam.md))
 
 | Field | Default | Read by |
 |---|---|---|
@@ -394,17 +398,17 @@ R10 (cross-class extrapolation diagnostic, POST_FIT) always runs when Cage is ac
 
 Forced-REFRAME injects mandatory disjoint-architecture alternatives parsed from `GP-164 (internal seam)*.md` §Appendix (loader: `orchestrator/alien_math_seam_loader.py`); falls back to a hardcoded list of 3 framings (RG-flow / multifractal Legendre / modular q-expansion) if the seam file is unavailable.
 
-### 21.4 [GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) Cold-LLM Erdős seed flags (Phase 1: iter-0 baseline)
+### 21.4 Cold-LLM Erdős seed flags ([GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md), Phase 1: iter-0 baseline)
 
 | Field | Default | Read by |
 |---|---|---|
 | `enable_cold_llm_erdos_seed` | `false` | `orchestrator/pre_iter1_dispatch.py::dispatch_pre_iter1_cage` (iter-0 baseline) + `briefing_providers/cold_llm_seed.py::ColdLlmSeedBriefingProvider.applies` (per-iter render) |
-| `cold_llm_seed_model_id` | **OPTIONAL**, defaults to the runtime mutator model when omitted or set to `"@mutator"` | same. Default behavior (since 2026-04-26): use whatever `MUTATOR_MODEL_ID` resolved to at run start. Set to a literal model id (e.g. `"claude-opus-4-6"`) only when the operator wants strict cross-family hygiene; the default trades cross-family for cost. The fallback flows through `pre_iter1_dispatch.dispatch_pre_iter1_cage(..., mutator_model_id=...)` and `cold_llm_seed_requery.maybe_requery_cold_seed(..., mutator_model_id=...)`. |
+| `cold_llm_seed_model_id` | **OPTIONAL**, defaults to the runtime mutator model when omitted or set to `"@mutator"` | same. Default behavior (since 2026-04-26): use whatever `MUTATOR_MODEL_ID` resolved to at run start. Set to a literal model id (e.g. `"claude-opus-4-6"`) only when a maintainer wants strict cross-family hygiene; the default trades cross-family for cost. The fallback flows through `pre_iter1_dispatch.dispatch_pre_iter1_cage(..., mutator_model_id=...)` and `cold_llm_seed_requery.maybe_requery_cold_seed(..., mutator_model_id=...)`. |
 | `cold_llm_seed_forbidden_domain` | `null` | same. Free-form string injected into the cold-LLM prompt as a forbidden-domain clause; e.g. `"astrophysics"` for gp163d, `"machine learning, deep learning, neural-network scaling, AI"` for gp154. |
 | `cold_llm_seed_k_law_budget` | `7` | same, max K per candidate form |
 | `cold_llm_seed_timeout_seconds` | `30` | same, hard wall-clock budget; on timeout the seed mechanism degrades cleanly (iter-1 proceeds without the cold seed) |
 
-### 21.5 [GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md) Phase 2, Erdős re-query on stagnation (2026-04-26)
+### 21.5 Erdős re-query on stagnation ([GP-169](../../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md), Phase 2, 2026-04-26)
 
 When stagnation triggers fire, the cold LLM is re-queried with the **current** residual fingerprint (computed from `noise_profile_post_fit_iter_*.json` + latest `analogy_log.jsonl` + `substrate_critique.json`). The refreshed candidates replace the iter-0 seed in the briefing via the same provider channel. Idempotent within a stagnation event (signature-cached); capped per run.
 
@@ -437,9 +441,9 @@ These are not new in this wave but are now read by R10/R11/R13-R16 and so must b
 - Regime-break magnitudes → bucketed; exact `split_at_x` held by gate harness, not surfaced
 - `feature_dimensionality_collapses.relative_range` → bucketed (`"essentially constant (< 0.1%)"`, ...)
 
-Numerics remain in `workspace/substrate_critique.json` for operator audit; only the briefing-rendered text is redacted. No rubric flag, unconditional protection against RH-13 / RH-18 mutator-side numeric memorization.
+Numerics remain in `workspace/substrate_critique.json` for maintainer audit; only the briefing-rendered text is redacted. No rubric flag, unconditional protection against RH-13 / RH-18 mutator-side numeric memorization.
 
-### 21.8 [GP-170](../../research_areas/seams/engine/lean/GP-170_symbolic_logic_cage_seam.md) Symbolic Logic Cage (R12)
+### 21.8 Symbolic Logic Cage ([GP-170](../../research_areas/seams/engine/lean/GP-170_symbolic_logic_cage_seam.md), R12)
 
 R12 runs as a Cage-routed PRE_FIT gate that reduces `PARAMETRIC_FORM` via SymPy + AST-rewrite (`where()` → `Piecewise`, `sigmoid()` → closed form) and checks declared `cage_meta.algebraic_constraints` before the fit primitive sees the form. No additional rubric flag, engagement is gated by `cage_meta.algebraic_constraints` being a non-empty list.
 
@@ -484,12 +488,12 @@ Post-run hook that calls a cross-family LLM to read the run's trace
 + iteration_telemetry.jsonl`) and identify what apparatus-side detection
 would have moved the needle when the run capped below the Newton-step
 threshold. Default OFF, opt-in for production runs. The audit is a
-PROPOSAL; the operator decides whether to act.
+PROPOSAL; the maintainer decides whether to act.
 
 | Field | Default | Read by |
 |---|---|---|
 | `enable_post_run_meta_audit` | `false` | `validator/autoresearch_loop.py` (post-loop hook) → `orchestrator/post_run_meta_audit.py::run_post_run_meta_audit` |
-| `meta_audit_model_id` | `claude-haiku-4-5` | same. Cross-family from mutator AND judge by convention. Override only when the operator wants to swap audit models. |
+| `meta_audit_model_id` | `claude-haiku-4-5` | same. Cross-family from mutator AND judge by convention. Override only when the maintainer wants to swap audit models. |
 
 Cost contract: hard 30s wall-clock, ~5K input tokens, ~2K output tokens
 per audit. On failure: log + continue. Writes
@@ -507,13 +511,13 @@ Pre-iter-1 trigger that fires when R26
 ceiling. For each `(class, feature)` collapse, an LLM proposes
 literature sources that publish per-system values of the collapsed
 feature for the class's system_ids. The output is a list of
-PROPOSALS; the operator reviews and (separately) decides whether to
+PROPOSALS; the maintainer reviews and (separately) decides whether to
 run `make enrich-substrate`. EGE never auto-edits substrates.
 
 | Field | Default | Read by |
 |---|---|---|
 | `enable_evidence_gap_enrichment_proposals` | `false` | `validator/autoresearch_loop.py` (post pre-iter-1 hook) → `orchestrator/evidence_gap_enrichment.py::propose_evidence_gap_enrichment` |
-| `evidence_gap_model_id` | `@mutator` | same. The `@mutator` sentinel resolves to the runtime mutator model. Set to a literal model id (e.g. `claude-opus-4-6`) for cross-family hygiene, operators with WebSearch-capable model runtimes prefer Anthropic claude-opus or claude-sonnet here. |
+| `evidence_gap_model_id` | `@mutator` | same. The `@mutator` sentinel resolves to the runtime mutator model. Set to a literal model id (e.g. `claude-opus-4-6`) for cross-family hygiene, reviewers with WebSearch-capable model runtimes prefer Anthropic claude-opus or claude-sonnet here. |
 
 Cost contract: hard 60s wall-clock per gap, ~3K input tokens, ~3K
 output tokens. On failure: log + continue. Writes
@@ -521,7 +525,7 @@ output tokens. On failure: log + continue. Writes
 
 EGE separates two bottleneck types: the apparatus handles the
 compute/search side, and EGE flags the cases where the limit is missing
-data the apparatus cannot synthesize. The operator-side decision (do
+data the apparatus cannot synthesize. The maintainer-side decision (do
 these proposals fit? does the substrate enrichment generalize?) stays
 human.
 

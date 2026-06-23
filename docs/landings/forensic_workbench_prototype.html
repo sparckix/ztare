@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ZTARE Forensic Workbench Prototype</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17201c;
+      --muted: #5e6a64;
+      --line: #ccd8d1;
+      --ready: #176b4d;
+      --attention: #9a4f11;
+      --panel: #f7f9f6;
+      --paper: #ffffff;
+      --rail: #24483d;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #eef3ef;
+      letter-spacing: 0;
+    }
+    main {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(260px, 340px) 1fr;
+    }
+    aside {
+      background: #dfe9e3;
+      border-right: 1px solid var(--line);
+      padding: 24px;
+    }
+    section {
+      padding: 24px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+      line-height: 1.1;
+    }
+    h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+    p {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    .summary {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .metric {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.52);
+      padding: 10px;
+    }
+    .metric b {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .metric span {
+      display: block;
+      margin-top: 4px;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+    .path {
+      display: grid;
+      gap: 10px;
+    }
+    .row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(120px, 190px);
+      gap: 16px;
+      align-items: start;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      padding: 14px;
+      border-left: 6px solid var(--rail);
+    }
+    .row.ready { border-left-color: var(--ready); }
+    .row.attention { border-left-color: var(--attention); }
+    .row-label {
+      font-weight: 750;
+      font-size: 16px;
+    }
+    .row-detail {
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .row-evidence {
+      display: grid;
+      gap: 5px;
+      margin-top: 9px;
+      font-size: 12px;
+    }
+    .status {
+      justify-self: end;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+      max-width: 190px;
+    }
+    .blockers {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      margin-top: 18px;
+      padding: 14px;
+    }
+    .blockers ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+    a { color: #14513e; }
+    @media (max-width: 860px) {
+      main { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      .row { grid-template-columns: 1fr; }
+      .status { justify-self: start; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <aside>
+      <h1>Forensic Workbench Prototype</h1>
+      <p>Local claim/evidence state for one bounded project. Every row exposes a file, command, receipt, or explicit warning.</p>
+      <div class="summary">
+        <div class="metric"><b>Project</b><span>ops_root_cause_diagnosis_demo</span></div>
+        <div class="metric"><b>Rubric</b><span>ops_root_cause_diagnosis_demo</span></div>
+        <div class="metric"><b>Run readiness</b><span>ready_for_in_loop_candidate</span></div>
+        <div class="metric"><b>Report/export</b><span>blocked</span></div>
+      </div>
+      <div class="blockers">
+        <h2>Export Blockers</h2>
+        <ul><li>report_blockers_present</li><li>synthesis_input_binding_unbound</li><li>runtime_risks_present</li></ul>
+      </div>
+    </aside>
+    <section>
+      <h2>First Five-Minute Path</h2>
+      <div class="path">
+
+      <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo">
+        <div class="row-main">
+          <div class="row-label">Project</div>
+          <div class="row-detail">ops_root_cause_diagnosis_demo with rubric ops_root_cause_diagnosis_demo</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo">projects/ops_root_cause_diagnosis_demo</a></div>
+        </div>
+        <div class="status">present</div>
+      </article>
+
+
+      <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
+        <div class="row-main">
+          <div class="row-label">Bounded claim</div>
+          <div class="row-detail">In the synthetic fixture, the best-supported explanation for the Week 23 billing-support backlog spike is the us-east billing-export failure between 2026-06-11 and 2026-06-14; staffing shortage, seasonality, the pricing-page copy change, and support-console cache behavior are weaker on the provided evidence. Support-console cache misses are a symptom or amplifier unless they are shown to precede the export failures.</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a> <span>source</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a></div>
+        </div>
+        <div class="status">valid intake</div>
+      </article>
+
+
+      <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
+        <div class="row-main">
+          <div class="row-label">Non-claims</div>
+          <div class="row-detail">Non-claim count is read from the intake boundary object.</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a> <span>source</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a></div>
+        </div>
+        <div class="status">4 recorded</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | source=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=ztare-source-index-receipt-v1">
+        <div class="row-main">
+          <div class="row-label">Source readiness</div>
+          <div class="row-detail">raw files=10; untyped=0</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json">projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json</a> <span>source</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json">projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json</a> <code>ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json</code> <code>ztare-source-index-receipt-v1</code></div>
+        </div>
+        <div class="status">ready for evidence prep</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json | source=projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json | evidence=projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json | command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json">
+        <div class="row-main">
+          <div class="row-label">Evidence readiness</div>
+          <div class="row-detail">source_index=fresh; output_binding=fresh; replay=ok</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json">projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json</a> <span>source</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json">projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json</a> <span>evidence</span><a href="../../projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json">projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json</a> <code>ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json</code></div>
+        </div>
+        <div class="status">fresh</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=ztare-kernel-entry-contract-v1">
+        <div class="row-main">
+          <div class="row-label">Run readiness</div>
+          <div class="row-detail">ready_for_run=True; readiness=ready_for_in_loop_candidate</div>
+          <div class="row-evidence"><code>ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json</code> <code>ztare-kernel-entry-contract-v1</code></div>
+        </div>
+        <div class="status">ready</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="command=ztare autoresearch run --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --iters 1 --mutator kimi --judge grok --inverter deepseek --llm-timeout-seconds 240 --llm-retries 1 --preflight-only | receipt=loop admission preflight path">
+        <div class="row-main">
+          <div class="row-label">Preflight</div>
+          <div class="row-detail">ztare autoresearch run --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --iters 1 --mutator kimi --judge grok --inverter deepseek --llm-timeout-seconds 240 --llm-retries 1 --preflight-only</div>
+          <div class="row-evidence"><code>ztare autoresearch run --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --iters 1 --mutator kimi --judge grok --inverter deepseek --llm-timeout-seconds 240 --llm-retries 1 --preflight-only</code> <code>loop admission preflight path</code></div>
+        </div>
+        <div class="status">available</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="command=ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json | receipt=loop_admission">
+        <div class="row-main">
+          <div class="row-label">Loop admission</div>
+          <div class="row-detail">receipt_count=1; intake_hash_verified=True</div>
+          <div class="row-evidence"><code>ztare autoresearch trace --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json --json</code> <code>loop_admission</code></div>
+        </div>
+        <div class="status">available</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="file=projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl | evidence=projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl">
+        <div class="row-main">
+          <div class="row-label">Run history</div>
+          <div class="row-detail">eval_history_rows=6; latest_exit=budget_exhausted</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl">projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl</a> <span>evidence</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl">projects/ops_root_cause_diagnosis_demo/workspace/eval_history.jsonl</a></div>
+        </div>
+        <div class="status">available</div>
+      </article>
+
+
+      <article class="row neutral" data-provenance="file=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json | source=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">
+        <div class="row-main">
+          <div class="row-label">Next falsifier</div>
+          <div class="row-detail">evidence_refs[1] local path does not exist</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a> <span>source</span><a href="../../projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json">projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json</a></div>
+        </div>
+        <div class="status">passed</div>
+      </article>
+
+
+      <article class="row attention" data-provenance="file=projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json | evidence=projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json | command=make synth-contract PROJECT=ops_root_cause_diagnosis_demo RENDERER=decision_brief PYTHON=./venv/bin/python | receipt=ztare-synthesis-input-binding-status-v1 | review_artifact=projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json">
+        <div class="row-main">
+          <div class="row-label">Report/export</div>
+          <div class="row-detail">support contract blocks stale reports</div>
+          <div class="row-evidence"><span>file</span><a href="../../projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json">projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json</a> <span>evidence</span><a href="../../projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json">projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json</a> <span>review</span><a href="../../projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json">projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json</a> <code>make synth-contract PROJECT=ops_root_cause_diagnosis_demo RENDERER=decision_brief PYTHON=./venv/bin/python</code> <code>ztare-synthesis-input-binding-status-v1</code></div>
+        </div>
+        <div class="status">blocked</div>
+      </article>
+
+
+      <article class="row ready" data-provenance="receipt=ztare-forensic-workbench-review-receipt-v1 | warning=no applied review receipt">
+        <div class="row-main">
+          <div class="row-label">Latest review receipt</div>
+          <div class="row-detail">No saved review receipt has been applied for this project snapshot.</div>
+          <div class="row-evidence"><code>ztare-forensic-workbench-review-receipt-v1</code> <span>no applied review receipt</span></div>
+        </div>
+        <div class="status">no review applied</div>
+      </article>
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -140,12 +140,12 @@ python -m ztare.research_director.primitive_amnesia --build-atlas --embedder gem
 # 5. refresh the rendered human/lexical index (routinely hours stale):
 python scripts/public/control/render_architecture_index.py
 # 6. refresh the proactive cold-RD briefing surface:
-python -c "from src.ztare.research_director.primitive_tick_surface import write_primitive_tick_surface; write_primitive_tick_surface()"
+python -c "from ztare.research_director.primitive_tick_surface import write_primitive_tick_surface; write_primitive_tick_surface()"
 ```
 
 #### If it is also a named CAPABILITY or an RD MOVE
 - **Capability:** hand-add a subsection to `docs/concepts/capabilities.md` (name, one-line, module link, role). Entirely hand-written; no generator.
-- **RD MOVE:** create `org/patterns/PATTERN-NNN_name.md` (frontmatter: `id`,`name`,`version`,`triggers`,`problem_classes`,`spawn`) → `python -m src.ztare.orchestration.pattern_catalog_indexer` (writes `org/runtime/pattern_catalog.yaml`; do not hand-edit the generated file) → hand-wire the trigger into `org/menu/orchestration_menu.yaml`.
+- **RD MOVE:** create `org/patterns/PATTERN-NNN_name.md` (frontmatter: `id`,`name`,`version`,`triggers`,`problem_classes`,`spawn`) → `python -m ztare.orchestration.pattern_catalog_indexer` (writes `org/runtime/pattern_catalog.yaml`; do not hand-edit the generated file) → hand-wire the trigger into `org/menu/orchestration_menu.yaml`.
 
 #### Verification
 
@@ -168,7 +168,7 @@ Regen commands: jsonl/taxonomy fields → `--repopulate`; atlas → `--build-atl
 |---|---|---|
 | `architecture_index.jsonl` | semi-auto (curated + populate) | a `PRIMITIVE_MODULES`/dir primitive is absent (`grep`) |
 | generated taxonomy fields | auto (`primitive_catalog_taxonomy.enrich_row` via `--repopulate`) | rows lack `source_category` / `semantic_family`, or `primitive_catalog_taxonomy` reports duplicates/missing paths |
-| `primitive_atlas_embeddings.json` | auto (`--build-atlas`) | jsonl newer than atlas, a row has no embedding, `--semantic-live` fails, or `--eval` misses point to absent/stale catalog rows |
+| `primitive_atlas_embeddings.json` | auto (`--build-atlas`) | jsonl newer than atlas, catalog digest mismatch, a row has no embedding, `--semantic-live` fails, or `--eval` misses point to absent/stale catalog rows |
 | `rd_tick_primitive_surface.json` | auto (`write_primitive_tick_surface`) | mtime < jsonl mtime |
 | `INDEX.md` | auto (`render_architecture_index`) | mtime < jsonl mtime (routinely ~2h behind) |
 | `graph.yaml` | MANUAL append-only | `last_updated` field vs live work |
@@ -207,13 +207,19 @@ The experimental evidence in `epistemic-generation/research_log.md` favors small
 candidate sets and checked receipt/action fields over broad menus or labels. When a new
 move is added, put recognition logic in the card/router layer, have contracts consume
 the routed id, and let primitive amnesia surface only the implementation primitives. If
-the same keyword list appears in multiple layers, consolidate it.
+the same keyword list appears in multiple layers, consolidate it. The release gate
+`scripts/public/control/research_move_routing_drift_audit.py` prevents
+top-level route phrase lists in `pattern_action_contract.py`, requires the
+hard-residual and PDE route-owner cards to exist, requires RD briefs to use
+semantic-with-fallback operator-card routing, and checks that shared graph
+carrier primitives are declared in primitive amnesia before they are treated as
+reusable kernel surfaces.
 
 ### 4. Gotchas
 
 1. **`src/ztare/common/` is NOT auto-swept** — add the module to `PRIMITIVE_MODULES` by hand (done for `constraint_isomorphism.py`). Same for `framer/`, `product_exports/`, top-level files.
 2. **Lexical fallback is silent in both consumers.** A dead embedder produces a degraded ranking with no error. Always `--semantic-live` before trusting a negative.
-3. **A row added without re-embedding is lexically visible but NOT semantically ranked.** Always pair `--repopulate`/`--populate-catalog` with `--build-atlas`.
+3. **A row added or edited without re-embedding is lexically visible but NOT semantically current.** `--atlas-status` checks the catalog digest, not only row count. Always pair `--repopulate`/`--populate-catalog` with `--build-atlas`.
 4. **`INDEX.md` ≠ `jsonl`.** INDEX.md is an auto-rendered, hours-stale human view; the precheck reads the jsonl + atlas. Never judge "is my primitive registered?" from INDEX.md.
 5. **Noise filter silently drops generic names** unless they have a `WHEN_TO_USE` alias.
 6. **Curated outranks swept by design** (`impact_factor_expost=3` for aliased primitives vs `1`).

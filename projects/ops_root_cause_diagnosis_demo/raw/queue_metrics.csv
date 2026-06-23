@@ -1,0 +1,11 @@
+date,queue,region,new_tickets,p95_first_response_minutes,billing_tag_share,staffed_hours,notes
+2026-06-07,billing,us-east,118,42,0.18,74,baseline Sunday volume
+2026-06-08,billing,us-east,126,51,0.21,75,minor delay after analytics export
+2026-06-09,billing,us-east,122,44,0.19,74,baseline weekday
+2026-06-10,billing,us-east,130,48,0.22,75,baseline weekday
+2026-06-11,billing,us-east,141,63,0.25,75,export retries started late UTC
+2026-06-12,billing,us-east,244,211,0.61,76,billing export stalled
+2026-06-13,billing,us-east,268,238,0.64,74,support console missing billing status
+2026-06-14,billing,us-east,221,167,0.52,73,recovery in progress
+2026-06-15,billing,us-east,137,58,0.26,75,backlog normalized
+2026-06-16,billing,us-east,129,46,0.23,75,baseline restored

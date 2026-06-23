@@ -1,0 +1,198 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The disruption was caused by a failure in the billing export pipeline that started on June 11 with retries and escalated on June 12 into a stall.",
+      "depends_on": [
+        "Export pipeline logs",
+        "Job scheduler records",
+        "Error tracking system data"
+      ],
+      "priority": "high",
+      "why_testable": "Can be tested against export system logs, job execution histories, and error monitoring."
+    },
+    {
+      "claim": "The support console's inability to display billing status (noted June 13) was a downstream effect of the export stalling, not an independent failure.",
+      "depends_on": [
+        "Support console logs",
+        "API call trace data",
+        "Service dependency map"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by analyzing service dependencies and checking if console errors correlate with export status."
+    },
+    {
+      "claim": "Staffing levels were insufficient to handle the increased ticket volume during the disruption, contributing to the elevated p95 response times.",
+      "depends_on": [
+        "Staffing model",
+        "Agent productivity data",
+        "Incident response protocols"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by comparing response times against staffing models and determining if additional staff could have reduced response times."
+    },
+    {
+      "claim": "The spike in billing tag share indicates that the majority of the increased volume during the disruption was from billing-related issues specifically, not a general queue overflow.",
+      "depends_on": [
+        "Ticket categorization system",
+        "Customer complaint logs",
+        "Category-tag correlation data"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by examining ticket categorization data and customer problem descriptions."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "No data on export system logs, error messages, or upstream dependencies.",
+      "unknown": "What specifically caused the billing export to stall on June 12?",
+      "why_it_matters": "Identifying the root cause of the stalling is necessary to prevent recurrence."
+    },
+    {
+      "blocking": "No breakdown of ticket categories or customer impact data.",
+      "unknown": "What caused the billing tag share to rise from baseline (0.18-0.25) to peak (0.61-0.64)?",
+      "why_it_matters": "A higher billing tag share suggests a higher proportion of tickets were billing-related, which might indicate a widespread billing issue rather than just a queue backlog."
+    },
+    {
+      "blocking": "No details on what changed or was deployed.",
+      "unknown": "Were there any changes to the support console or billing status system mentioned on June 13?",
+      "why_it_matters": "The note 'support console missing billing status' suggests a UI or data availability issue, but the cause is unknown."
+    },
+    {
+      "blocking": "No customer experience or downstream business data in this source.",
+      "unknown": "What was the customer impact (e.g., satisfaction, churn, escalation) during the disruption?",
+      "why_it_matters": "Operational metrics alone do not capture business impact."
+    },
+    {
+      "blocking": "This source only covers billing queue in us-east.",
+      "unknown": "Were other queues or regions affected during the same period?",
+      "why_it_matters": "Without cross-region or cross-queue comparison, the scope of the incident remains unclear."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "The billing queue in us-east experienced a disruption event from approximately June 11 to June 14, 2026, peaking on June 12-13.",
+      "strength": "high"
+    },
+    {
+      "statement": "On June 12, 2026, new tickets in billing us-east were 244 with p95 first response time of 211 minutes and billing tag share of 0.61.",
+      "strength": "high"
+    },
+    {
+      "statement": "On June 13, 2026, new tickets in billing us-east were 268 with p95 first response time of 238 minutes and billing tag share of 0.64.",
+      "strength": "high"
+    },
+    {
+      "statement": "Baseline new ticket volume for billing us-east in the observed period was between approximately 118 and 141 tickets per day.",
+      "strength": "medium"
+    },
+    {
+      "statement": "Baseline p95 first response time for billing us-east in the observed period was between approximately 42 and 51 minutes.",
+      "strength": "medium"
+    },
+    {
+      "statement": "Baseline billing tag share for billing us-east in the observed period was between approximately 0.18 and 0.25.",
+      "strength": "medium"
+    },
+    {
+      "statement": "The note for June 11 states 'export retries started late UTC'.",
+      "strength": "high"
+    },
+    {
+      "statement": "The note for June 12 states 'billing export stalled'.",
+      "strength": "high"
+    },
+    {
+      "statement": "The note for June 13 states 'support console missing billing status'.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "new_tickets_during_peak",
+      "notes": "Peak values on June 12 and 13, well above baseline.",
+      "units": "tickets",
+      "value_or_range": "244 to 268"
+    },
+    {
+      "kind": "range",
+      "name": "p95_first_response_during_peak",
+      "notes": "Peak response times on June 12 and 13.",
+      "units": "minutes",
+      "value_or_range": "211 to 238"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_during_peak",
+      "notes": "Peak billing tag share on June 12 and 13.",
+      "units": "proportion",
+      "value_or_range": "0.61 to 0.64"
+    },
+    {
+      "kind": "range",
+      "name": "staffed_hours_range",
+      "notes": "Staffed hours remained relatively constant through the period.",
+      "units": "hours",
+      "value_or_range": "73 to 76"
+    },
+    {
+      "kind": "range",
+      "name": "new_tickets_baseline",
+      "notes": "Observed on June 7-11 and June 15-16, excluding peak days.",
+      "units": "tickets",
+      "value_or_range": "118 to 141"
+    },
+    {
+      "kind": "range",
+      "name": "p95_first_response_baseline",
+      "notes": "Observed on June 7-10 and June 15-16, excluding peak and recovery days.",
+      "units": "minutes",
+      "value_or_range": "42 to 51"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_baseline",
+      "notes": "Observed on June 7-11 and June 15-16, excluding peak days.",
+      "units": "proportion",
+      "value_or_range": "0.18 to 0.25"
+    },
+    {
+      "kind": "exact",
+      "name": "recovery_metrics_June_14",
+      "notes": "Metrics on June 14 show recovery in progress but still elevated above baseline.",
+      "units": "various",
+      "value_or_range": "new_tickets=221, p95=167, tag_share=0.52"
+    },
+    {
+      "kind": "exact",
+      "name": "recovery_metrics_June_15",
+      "notes": "Metrics on June 15 show near-baseline levels, labeled 'backlog normalized'.",
+      "units": "various",
+      "value_or_range": "new_tickets=137, p95=58, tag_share=0.26"
+    },
+    {
+      "kind": "constraint",
+      "name": "staffed_hours_constancy",
+      "notes": "Staffed hours did not significantly change during the disruption, suggesting the issue was not due to reduced staffing.",
+      "units": "hours",
+      "value_or_range": "73-76 hours"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The notes suggest a sequence: export retries started late UTC (June 11) -> billing export stalled (June 12) -> support console missing billing status (June 13). This implies an export/data pipeline failure as the root cause.",
+      "strength": "medium",
+      "topic": "root cause of disruption"
+    },
+    {
+      "assertion": "Staffed hours remained essentially constant (73-76 hours) even as ticket volume tripled, which could indicate inadequate scaling or that staffing was not the primary issue.",
+      "strength": "medium",
+      "topic": "staffing adequacy"
+    }
+  ],
+  "source_id": "S004",
+  "source_kind": "csv",
+  "source_path": "queue_metrics.csv",
+  "source_summary": "Daily queue metrics for billing queue in us-east from June 7 to June 16, 2026, including new ticket volume, p95 first response time, billing tag share, and staffed hours. Shows a disruption event peaking June 12-13 with recovery by June 15-16.",
+  "source_type": "source_evidence"
+}

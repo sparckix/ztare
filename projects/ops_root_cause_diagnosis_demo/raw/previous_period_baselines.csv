@@ -1,0 +1,11 @@
+date,queue,region,new_tickets,p95_first_response_minutes,billing_tag_share,staffed_hours,period_note
+2026-05-08,billing,us-east,124,47,0.20,74,same weekday minus five weeks
+2026-05-09,billing,us-east,132,49,0.21,75,same weekday minus five weeks
+2026-05-10,billing,us-east,119,43,0.19,74,same weekday minus five weeks
+2026-05-11,billing,us-east,127,46,0.22,75,same weekday minus five weeks
+2026-05-12,billing,us-east,134,52,0.24,75,same weekday minus five weeks
+2026-05-13,billing,us-east,128,45,0.20,74,same weekday minus five weeks
+2026-05-14,billing,us-east,121,44,0.19,73,same weekday minus five weeks
+2026-06-05,billing,us-east,117,41,0.18,74,previous week same weekday
+2026-06-06,billing,us-east,126,48,0.22,75,previous week same weekday
+2026-06-07,billing,us-east,118,42,0.18,74,previous week same weekday

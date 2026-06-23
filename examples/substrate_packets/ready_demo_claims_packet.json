@@ -1,0 +1,24 @@
+{
+  "bounded_claim": "the demo claim intake has source and evidence references that validate in a clean checkout",
+  "created_at": "2026-06-19T00:00:00Z",
+  "evidence_refs": [
+    "docs/evidence_atlas/README.md"
+  ],
+  "execution_boundary": "in_loop_autoresearch_candidate",
+  "expected_command": "ztare autoresearch route --task 'test whether the demo claim has enough evidence for in-loop review' --project demo_claims --rubric demo_claims",
+  "next_falsifier": "remove the evidence atlas reference and validation must fail before in-loop routing",
+  "non_claims": [
+    "not a full project reproduction",
+    "not evidence that the claim is true",
+    "not an autoresearch run"
+  ],
+  "notes": "Public fixture for project intake. The file is ready only as an intake artifact.",
+  "packet_id": "pp_80ba605f9bee0d3f",
+  "project": "demo_claims",
+  "rubric": "demo_claims",
+  "schema_version": 1,
+  "source_refs": [
+    "projects/demo_claims/raw/source.md"
+  ],
+  "task": "test whether the demo claim has enough evidence for in-loop review"
+}

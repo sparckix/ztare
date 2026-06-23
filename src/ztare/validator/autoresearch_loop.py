@@ -16,9 +16,10 @@ import sys
 from datetime import datetime, timezone
 import concurrent.futures
 from google.genai import types
-from src.ztare.common import utils
-from src.ztare.common.llm_runtime import (
+from ztare.common import utils
+from ztare.common.llm_runtime import (
     LLMRuntime,
+    MODEL_FAMILY_CHOICES,
     PRODUCTION_CALL_RETRIES,
     drain_failed_retry_tracker,
     resolve_model_id,
@@ -26,28 +27,28 @@ from src.ztare.common.llm_runtime import (
     pricing_model_name,
     get_model_family,
 )
-from src.ztare.common.dispatch_model import (
+from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
     dispatch_model,
     dispatch_result_receipt,
     resolve_dispatch_capability,
 )
-from src.ztare.common.paths import DOCS_DIR, PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
-from src.ztare.validator.mform_alignment_audit import (
+from ztare.common.paths import DOCS_DIR, PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.validator.mform_alignment_audit import (
     apply_mform_pending,
     maybe_fire_mform_audit,
 )
 import re
-from src.ztare.primitives.primitive_library import format_transfer_hypotheses, retrieve_primitives
-from src.ztare.validator.core.mutation_contract import (
+from ztare.primitives.primitive_library import format_transfer_hypotheses, retrieve_primitives
+from ztare.validator.core.mutation_contract import (
     MutationMismatchCode,
     approved_primitive_keys,
     evaluate_mutation_declaration,
     parse_mutation_declaration,
 )
-from src.ztare.validator.core.runner_selection import CandidateScopeVerdict, evaluate_candidate_selection
-from src.ztare.validator.utilities.v4_family import is_v4_family_project
-from src.ztare.validator.core.information_yield import (
+from ztare.validator.core.runner_selection import CandidateScopeVerdict, evaluate_candidate_selection
+from ztare.validator.utilities.v4_family import is_v4_family_project
+from ztare.validator.core.information_yield import (
     IterationSignal,
     LoopControlAction,
     apply_latent_motion_veto,
@@ -55,52 +56,56 @@ from src.ztare.validator.core.information_yield import (
     render_loop_control_prompt_context,
     select_thesis_control_mode,
 )
-from src.ztare.validator.utilities.pivot_heuristics import (
+from ztare.validator.utilities.pivot_heuristics import (
+    PivotState,
     resolve_stagnation_pivot_state,
 )
-from src.ztare.catch_grammar.rule_3_profile_check import check_profile_contains
-from src.ztare.gates.structural_constraint_extractor import (
+from ztare.validator.dag_steering_context import (
+    compute_dag_steering_context as _compute_dag_steering_context_impl,
+)
+from ztare.catch_grammar.rule_3_profile_check import check_profile_contains
+from ztare.gates.structural_constraint_extractor import (
     run_structural_extractor,
 )
-from src.ztare.motion.trajectory_thrash_detector import (
+from ztare.motion.trajectory_thrash_detector import (
     run_trajectory_thrash_detector,
 )
-from src.ztare.gates.negative_space_extractor import (
+from ztare.gates.negative_space_extractor import (
     run_negative_space_extractor,
 )
-from src.ztare.gates.derived_constraints import (
+from ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
     update_derived_constraints_ledger,
     write_derived_constraints_brief,
 )
-from src.ztare.fit.mutation_suite_guard import (
+from ztare.fit.mutation_suite_guard import (
     validate_python_suite_candidate,
     validate_python_suite_imports,
     attest_visible_mre,
 )
-from src.ztare.orchestrator.submission_path_helpers import (
+from ztare.orchestrator.submission_path_helpers import (
     detect_submission_contract,
     format_r1_retry_skeleton,
     requires_i_model_submission,
 )
-from src.ztare.validator.core.charter_parsing import (
+from ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_forecast_type_from_charter,
 )
-from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
-from src.ztare.validator.utilities.champion_artifacts import (
+from ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
+from ztare.validator.utilities.champion_artifacts import (
     artifact_regime_fingerprint,
     build_champion_eval_from_saved_best,
     build_champion_gap_payload_from_saved_best,
     champion_artifacts_out_of_sync_with_saved_best,
     set_artifact_role,
 )
-from src.ztare.motion.latent_distance import (
+from ztare.motion.latent_distance import (
     record_latent_distance,
     summarize_recent_latent_motion,
 )
-from src.ztare.fit.fit_primitive import (
+from ztare.fit.fit_primitive import (
     FitDeclaration,
     FitFailure,
     FitSuccess,
@@ -113,25 +118,25 @@ from src.ztare.fit.fit_primitive import (
     parse_fit_declaration,
     substitute_fitted_params,
 )
-from src.ztare.composition.structural_memory import (
+from ztare.composition.structural_memory import (
     detect_additive_composite_opportunity,
     generate_additive_composite_seeds,
     render_structural_memory_prompt_section,
     update_structural_memory,
 )
-from src.ztare.composition.symbolic_regression_synthesizer import (
+from ztare.composition.symbolic_regression_synthesizer import (
     detect_feynman_wall,
     run_composition_loop,
 )
-from src.ztare.fit.fit_declaration_retry import (
+from ztare.fit.fit_declaration_retry import (
     validate_and_retry_fit_declaration,
 )
-from src.ztare.reports.gp048_feedback import (
+from ztare.reports.gp048_feedback import (
     render_farther_tail_veto_prompt_section,
     render_primitive_cohort_prompt_section,
     write_telemetry_line,
 )
-from src.ztare.motion.residual_diagnostics import (
+from ztare.motion.residual_diagnostics import (
     ShapeDescriptor,
     analyze_residual,
     format_descriptor_for_prompt,
@@ -140,12 +145,16 @@ from src.ztare.motion.residual_diagnostics import (
     residual_diagnostics_stagnation_k,
     reset_stagnation_on_holdout_pass,
 )
-from src.ztare.gates.corrector_library import filter_by_descriptor
-from src.ztare.validator.predictive_divergence_sweep import (
+from ztare.gates.corrector_library import filter_by_descriptor
+from ztare.validator.predictive_divergence_sweep import (
     run_sweep as run_divergence_sweep,
 )
-from src.ztare.rubrics.review_rubric import review_exit_code, run_rubric_review
-from src.ztare.gates.global_gates import run_global_gates, merge_into_score_contract
+from ztare.rubrics.review_rubric import review_exit_code, run_rubric_review
+from ztare.gates.global_gates import run_global_gates, merge_into_score_contract
+from ztare.orchestrator.control_followup_policy import (
+    evaluate_control_followup,
+    record_control_followup_decision,
+)
 
 # GP-157 v5.0 Phase 3b — Cage observe-mode wire-in (2026-04-25).
 # ADDITIVE ONLY: Cage runs alongside existing dispatch logic, logs
@@ -155,10 +164,65 @@ from src.ztare.gates.global_gates import run_global_gates, merge_into_score_cont
 # Phase 3c (later) will replace existing dispatch with Cage when
 # observe-mode validates parity across substrates.
 try:
-    from src.ztare.gates.registry import get_default_cage as _v5_get_default_cage
+    from ztare.gates.registry import get_default_cage as _v5_get_default_cage
     _V5_CAGE_AVAILABLE = True
 except Exception:  # noqa: BLE001
     _V5_CAGE_AVAILABLE = False
+
+
+def _ensure_canonical_model_aliases(code: str) -> str:
+    """Guarantee that test_model.py exposes f, model, and I_model names."""
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return code
+
+    top_level_names = {
+        node.name
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    top_level_names.add(target.id)
+
+    has_f = "f" in top_level_names
+    has_model = "model" in top_level_names
+    has_i_model = "I_model" in top_level_names
+    if has_f and has_model and has_i_model:
+        return code
+
+    canonical_name: str | None = None
+    for preferred in ("I_model", "f", "model"):
+        if preferred in top_level_names:
+            canonical_name = preferred
+            break
+    if canonical_name is None:
+        skip_prefixes = ("test", "assert", "check", "verify", "_")
+        for node in tree.body:
+            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                if not any(node.name.startswith(prefix) for prefix in skip_prefixes):
+                    canonical_name = node.name
+                    break
+    if canonical_name is None:
+        return code
+
+    suffix_lines = [
+        "",
+        "# Canonical aliases — gate harnesses may call f(), model(), or I_model()",
+    ]
+    if not has_f and canonical_name != "f":
+        suffix_lines.append(f"f = {canonical_name}")
+    if not has_model and canonical_name != "model":
+        suffix_lines.append(f"model = {canonical_name}")
+    if not has_i_model and canonical_name != "I_model":
+        suffix_lines.append(f"I_model = {canonical_name}")
+    if len(suffix_lines) <= 2:
+        return code
+    return code.rstrip() + "\n" + "\n".join(suffix_lines) + "\n"
+
 
 SESSION_TOKENS = 0
 SESSION_MUTATOR_USAGE = {
@@ -171,8 +235,11 @@ SESSION_MUTATOR_USAGE = {
     "cost_known": False,
 }
 SESSION_MUTATOR_MODELS_USED: set[str] = set()
+SESSION_MUTATOR_MODEL_EVENTS: list[str] = []
 SESSION_MUTATOR_FALLBACK_EVENTS: list[dict[str, str]] = []
 SESSION_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
+_CURRENT_ITERATION_MUTATOR_MODEL_EVENT_START = 0
+_CURRENT_ITERATION_FALLBACK_EVENT_START = 0
 
 # WAR Guard C (2026-04-27): rail-off pattern detection. Consecutive iters
 # where R1 exhausted all 3 strikes indicate the mutator has gone off-rails
@@ -184,7 +251,7 @@ SESSION_WORKER_DISPATCH_RECEIPTS: list[dict[str, object]] = []
 # Threshold lives in `src/ztare/orchestrator/r1_retry` per Phase 4g extraction
 # (2026-05-06); the session counter is still kept here because it's
 # loop-iteration state, not retry mechanics.
-from src.ztare.orchestrator.r1_retry import (
+from ztare.orchestrator.r1_retry import (
     R1_EXHAUSTION_WARN_THRESHOLD as SESSION_R1_EXHAUSTION_WARN_THRESHOLD,
     R1ExhaustionTracker,
     log_r1_attempt as _log_r1_attempt_impl,
@@ -241,21 +308,33 @@ parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
+    choices=MODEL_FAMILY_CHOICES,
     help="Model family to use as Mutator.",
 )
 parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
+    choices=MODEL_FAMILY_CHOICES,
     help="Model family to use as Verification Panel and Meta-Judge.",
+)
+parser.add_argument(
+    "--llm_timeout_seconds",
+    type=int,
+    default=int(os.environ.get("ZTARE_AUTORESEARCH_LLM_TIMEOUT_SECONDS", "600")),
+    help="Per-call LLM timeout for in-loop mutator and judge calls.",
+)
+parser.add_argument(
+    "--llm_retries",
+    type=int,
+    default=int(os.environ.get("ZTARE_AUTORESEARCH_LLM_RETRIES", str(PRODUCTION_CALL_RETRIES))),
+    help="Per-call retry budget for in-loop mutator and judge calls.",
 )
 parser.add_argument(
     "--committee_model",
     type=str,
     default=None,
-    choices=[None, "gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
+    choices=(None, *MODEL_FAMILY_CHOICES),
     help=(
         "Model family for committee (--dynamic) generation. Defaults "
         "to --judge_model when --dynamic is set; ignored when --dynamic "
@@ -332,23 +411,138 @@ parser.add_argument(
     default="factory",
     dest="run_mode",
     help=(
-        "Declared operating mode for this run: 'factory' (tight rubric, GP-054 pre-run, "
+        "Declared operating mode for this run: 'factory' (tight rubric, pre-run rubric review, "
         "short iteration budget) or 'honeypot' (loose rubric, no pre-run, long iteration "
         "budget for discovery). Written to run_start telemetry. Accepts any string so "
         "future modes (e.g. 'sandbox') work without code changes."
     ),
 )
 parser.add_argument(
+    "--intake",
+    "--packet",
+    dest="packet",
+    default="",
+    help=(
+        "Optional project-intake JSON boundary. When provided, the loop rechecks "
+        "the run-readiness contract before iteration 1 and stamps the accepted "
+        "intake into run_start telemetry. --packet is kept as a compatibility alias."
+    ),
+)
+parser.add_argument(
+    "--preflight-only",
+    action="store_true",
+    help=(
+        "Validate launch inputs and the optional project-intake boundary, write "
+        "run_start/run_end telemetry, then exit before baseline judge evaluation "
+        "or pre-iteration model hooks."
+    ),
+)
+parser.add_argument(
     "--rubric_review_before_run",
     action="store_true",
     help=(
-        "Run GP-054 pre-run rubric review before iteration 1 and abort the loop "
+        "Run pre-run rubric review before iteration 1 and abort the loop "
         "if scenario validity fails or any structural rubric checks fail."
     ),
 )
 args = parser.parse_args()
 if args.rubric is None:
     args.rubric = args.project
+
+
+def _packet_kernel_entry_contract_or_exit(packet: str) -> dict[str, object]:
+    packet = str(packet or "").strip()
+    if not packet:
+        return {}
+    from ztare.reports.autoresearch_trace import build_autoresearch_trace
+
+    trace = build_autoresearch_trace(
+        project=args.project,
+        rubric=args.rubric,
+        packet=packet,
+        repo=REPO_ROOT,
+        full_health=False,
+    )
+    kernel_entry = trace.get("kernel_entry") if isinstance(trace, dict) else {}
+    if not isinstance(kernel_entry, dict) or kernel_entry.get("can_enter_kernel") is not True:
+        print(
+            "ztare: `autoresearch_loop --intake` blocked by run-readiness contract",
+            file=sys.stderr,
+        )
+        print(
+            f"readiness: {kernel_entry.get('readiness') or trace.get('readiness')}",
+            file=sys.stderr,
+        )
+        blockers = kernel_entry.get("blockers") if isinstance(kernel_entry, dict) else []
+        if blockers:
+            print("blockers:", file=sys.stderr)
+            for blocker in blockers:
+                if not isinstance(blocker, dict):
+                    continue
+                label = str(blocker.get("id") or "unknown")
+                channel = str(blocker.get("recovery_channel") or "unknown")
+                command = str(blocker.get("next_command") or "").strip()
+                suffix = f"; next: {command}" if command else ""
+                print(f"  - {label} ({channel}){suffix}", file=sys.stderr)
+        else:
+            print(f"blocking_missing: {trace.get('blocking_missing')}", file=sys.stderr)
+        raise SystemExit(2)
+
+    project_packet = trace.get("project_packet") if isinstance(trace, dict) else {}
+    if not isinstance(project_packet, dict):
+        project_packet = {}
+    packet_path = str(project_packet.get("path") or packet)
+    packet_sha256 = ""
+    try:
+        packet_candidate = Path(packet_path)
+        if not packet_candidate.is_absolute():
+            packet_candidate = REPO_ROOT / packet_path
+        if packet_candidate.exists() and packet_candidate.is_file():
+            packet_sha256 = hashlib.sha256(packet_candidate.read_bytes()).hexdigest()
+    except OSError:
+        packet_sha256 = ""
+    kernel_entry_sha256 = hashlib.sha256(
+        json.dumps(kernel_entry, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return {
+        key: value
+        for key, value in {
+            "packet_path": packet_path,
+            "packet_sha256": packet_sha256,
+            "packet_id": str(project_packet.get("packet_id") or ""),
+            "packet_status": str(project_packet.get("status") or ""),
+            "readiness": str(kernel_entry.get("readiness") or trace.get("readiness") or ""),
+            "kernel_entry_status": str(kernel_entry.get("status") or ""),
+            "kernel_entry_sha256": kernel_entry_sha256,
+        }.items()
+        if value
+    }
+
+
+RUN_PACKET_CONTRACT = _packet_kernel_entry_contract_or_exit(args.packet)
+
+
+def _load_run_project_packet_payload() -> dict[str, object] | None:
+    packet_path = str((RUN_PACKET_CONTRACT or {}).get("packet_path") or "").strip()
+    if not packet_path:
+        return None
+    candidate = Path(packet_path)
+    if not candidate.is_absolute():
+        candidate = REPO_ROOT / packet_path
+    try:
+        payload = json.loads(candidate.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict):
+        return None
+    payload = dict(payload)
+    payload["_ztare_packet_path"] = str((RUN_PACKET_CONTRACT or {}).get("packet_path") or packet_path)
+    payload["_ztare_packet_sha256"] = str((RUN_PACKET_CONTRACT or {}).get("packet_sha256") or "")
+    payload["_ztare_packet_id"] = str((RUN_PACKET_CONTRACT or {}).get("packet_id") or "")
+    return payload
+
+
+RUN_PROJECT_PACKET_PAYLOAD = _load_run_project_packet_payload()
 if args.no_model_fallback:
     os.environ["ZTARE_DISABLE_MODEL_FALLBACK"] = "1"
     print(
@@ -369,8 +563,9 @@ if is_v4_family_project(args.project) and not args.runner_r1_contract:
 
 RUNTIME = LLMRuntime()
 
-# Keep legacy `client` pointing to Gemini — Verification Panel and Meta-Judge always use it
-client = RUNTIME.require_gemini_client()
+# Keep legacy `client` pointing to Gemini for downstream verification panels.
+# Preflight-only exits before those panels and must not require API credentials.
+client = None if args.preflight_only else RUNTIME.require_gemini_client()
 
 
 # Phase 4g extraction (2026-05-06 PM): startup recovery hooks
@@ -378,7 +573,7 @@ client = RUNTIME.require_gemini_client()
 # baseline_restore_and_champion_archive) live in
 # src/ztare/orchestrator/startup_recovery. Wrappers fill in
 # project name + paths.
-from src.ztare.orchestrator.startup_recovery import (
+from ztare.orchestrator.startup_recovery import (
     load_v4_stage_index as _load_v4_stage_index_impl,
     axiom_restore_from_bak as _axiom_restore_from_bak_impl,
     baseline_restore_and_champion_archive as _baseline_restore_impl,
@@ -444,6 +639,8 @@ DERIVED_CONSTRAINTS_BRIEF_PATH = f"{PROJECT_DIR}/workspace/derived_constraints_b
 MAIN_RUBRIC_PATH = RUBRICS_DIR / f"{args.rubric}.json"
 BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
+workspace_dir = Path(PROJECT_DIR) / "workspace"
+workspace_dir.mkdir(parents=True, exist_ok=True)
 
 # Phase 4g extraction (2026-05-06): the five file-IO primitives live
 # in src/ztare/common/file_io. Re-aliased here so existing call sites
@@ -451,7 +648,7 @@ HISTORY_SCORE_RE = re.compile(r"_score_(\d+)_")
 # means sibling orchestrator modules can use the same helpers via
 # `from src.ztare.common.file_io import append_jsonl` without a
 # circular dependency back through autoresearch_loop.
-from src.ztare.common.file_io import (
+from ztare.common.file_io import (
     read_file,
     write_file,
     read_json,
@@ -463,7 +660,7 @@ from src.ztare.common.file_io import (
 # Phase 4g extraction (2026-05-06 PM): _pop_seed_queue body lives in
 # src/ztare/orchestrator/composition_seed. Re-aliased; pure helper,
 # no wrapper needed.
-from src.ztare.orchestrator.composition_seed import (
+from ztare.orchestrator.composition_seed import (
     pop_seed_queue as _pop_seed_queue,
 )
 
@@ -471,7 +668,7 @@ from src.ztare.orchestrator.composition_seed import (
 # Phase 4g extraction (2026-05-06): _format_sweep_context lives in
 # src/ztare/orchestrator/divergence_sweep_context. Re-aliased so
 # existing call sites are unchanged.
-from src.ztare.orchestrator.divergence_sweep_context import (
+from ztare.orchestrator.divergence_sweep_context import (
     format_sweep_context as _format_sweep_context,
 )
 
@@ -482,7 +679,7 @@ from src.ztare.orchestrator.divergence_sweep_context import (
 # verbatim; the extracted module is unit-testable in isolation. The
 # import block re-aliases the public names back to the private ones
 # autoresearch_loop's call sites use, so no call-site change is needed.
-from src.ztare.orchestrator.iteration_telemetry import (
+from ztare.orchestrator.iteration_telemetry import (
     utc_now_iso as _utc_now_iso,
     usage_bucket_snapshot as _usage_bucket_snapshot,
     usage_delta as _usage_delta,
@@ -547,6 +744,7 @@ def _append_iteration_telemetry(
     information_yield_rationale: str | None = None,
     raw_judge_score: int | None = None,
     score_cap_reason: str | None = None,
+    score_cap_source: str | None = None,
     gp180_telemetry: dict | None = None,
 ) -> None:
     """Project-scoped wrapper that fills in RUN_ID for the extracted helper.
@@ -579,8 +777,150 @@ def _append_iteration_telemetry(
         information_yield_rationale=information_yield_rationale,
         raw_judge_score=raw_judge_score,
         score_cap_reason=score_cap_reason,
+        score_cap_source=score_cap_source,
+        mutator_effective_model_ids=_current_iteration_mutator_effective_models(),
+        mutator_fallback_events=_current_iteration_mutator_fallback_events(),
         gp180_telemetry=gp180_telemetry,
     )
+
+
+def _current_iteration_mutator_effective_models() -> list[str]:
+    """Effective mutator model ids observed since the current iteration began."""
+    events = SESSION_MUTATOR_MODEL_EVENTS[_CURRENT_ITERATION_MUTATOR_MODEL_EVENT_START:]
+    seen: set[str] = set()
+    effective_models: list[str] = []
+    for model_id in events:
+        if not model_id or model_id in seen:
+            continue
+        seen.add(model_id)
+        effective_models.append(model_id)
+    return effective_models
+
+
+def _record_mutator_effective_model(model_id: str) -> None:
+    """Record an effective mutator model call for session and iteration telemetry."""
+    normalized = str(model_id or "").strip()
+    if not normalized:
+        return
+    SESSION_MUTATOR_MODELS_USED.add(normalized)
+    SESSION_MUTATOR_MODEL_EVENTS.append(normalized)
+
+
+def _current_iteration_mutator_fallback_events() -> list[dict[str, str]]:
+    """Provider fallback events observed since the current iteration began."""
+    events = SESSION_MUTATOR_FALLBACK_EVENTS[_CURRENT_ITERATION_FALLBACK_EVENT_START:]
+    return [dict(item) for item in events if isinstance(item, dict)]
+
+
+def _coerce_score(value) -> int | None:
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _raw_judge_score_from_eval(evaluation: dict) -> int | None:
+    cap_meta = evaluation.get("score_cap_applied")
+    if isinstance(cap_meta, dict):
+        raw = _coerce_score(cap_meta.get("original_judge_score"))
+        if raw is not None:
+            return raw
+    return _coerce_score(evaluation.get("score"))
+
+
+def _score_cap_reason_from_eval(evaluation: dict) -> str | None:
+    cap_meta = evaluation.get("score_cap_applied")
+    if not isinstance(cap_meta, dict):
+        return None
+    reason = str(cap_meta.get("reason") or "").strip()
+    return reason or None
+
+
+def _score_cap_source_from_eval(evaluation: dict) -> str | None:
+    cap_meta = evaluation.get("score_cap_applied")
+    if not isinstance(cap_meta, dict):
+        return None
+    source = str(cap_meta.get("source") or "").strip()
+    return source or None
+
+
+def _eval_history_artifact_refs(*paths) -> list[str]:
+    refs: list[str] = []
+    seen: set[str] = set()
+    for raw_path in paths:
+        if not raw_path:
+            continue
+        path = Path(raw_path)
+        if not path.is_absolute():
+            path = (REPO_ROOT / path).resolve()
+        else:
+            path = path.resolve()
+        try:
+            ref = str(path.relative_to(REPO_ROOT))
+        except ValueError:
+            ref = str(path)
+        if ref in seen:
+            continue
+        seen.add(ref)
+        refs.append(ref)
+    return refs
+
+
+def _worker_metadata_for_eval_history(rubric: dict) -> dict:
+    try:
+        from ztare.common.worker_metadata import (
+            aggregate_autoresearch_worker_metadata as _aggregate_worker_metadata,
+            autoresearch_worker_metadata_by_call_site as _worker_metadata_by_call_site,
+        )
+
+        worker_meta_by_call_site = _worker_metadata_by_call_site(rubric)
+        return _aggregate_worker_metadata(worker_meta_by_call_site)
+    except Exception:
+        return {
+            "worker_archetype": "fungible_llm_call",
+            "worker_capability": "llm",
+            "worker_state": "stateless_externalized_briefing",
+            "worker_identity": "fungible",
+            "transport": "api",
+            "worker_metadata_source": "autoresearch_loop_fallback",
+            "worker_transport_set": ["api"],
+            "worker_capability_set": ["llm"],
+            "worker_metadata_by_call_site": {},
+        }
+
+
+def _append_eval_history_record(workspace: Path, row: dict) -> None:
+    path = workspace / "eval_history.jsonl"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(row) + "\n")
+
+
+def _record_deterministic_score_override(
+    evaluation: dict,
+    *,
+    original_score: int | None,
+    gated_score: int,
+    reason: str,
+    source: str,
+    failed_gate_ids: list[str],
+) -> None:
+    """Preserve the judge score when deterministic gates override it."""
+    previous = evaluation.get("score_cap_applied")
+    raw = original_score
+    if isinstance(previous, dict):
+        raw = _coerce_score(previous.get("original_judge_score")) or raw
+    payload = {
+        "original_judge_score": raw,
+        "capped_score": gated_score,
+        "capped_to": gated_score,
+        "reason": reason,
+        "source": source,
+        "failed_gate_ids": list(failed_gate_ids),
+    }
+    if isinstance(previous, dict) and previous:
+        payload["previous_score_cap_applied"] = previous
+    evaluation["score_cap_applied"] = payload
 
 
 def _track_primitive_class_rotation_candidate(
@@ -601,7 +941,7 @@ def _track_primitive_class_rotation_candidate(
     """
 
     try:
-        from src.ztare.orchestrator.prompt import (
+        from ztare.orchestrator.prompt import (
             maybe_track_primitive_class_rotation,
         )
 
@@ -630,7 +970,7 @@ def _track_primitive_class_rotation_candidate(
 # HISTORY_SCORE_RE so existing call sites are unchanged. The write
 # side (`_persist_best_candidate`) stays inline for now — it touches
 # more apparatus state.
-from src.ztare.orchestrator.best_state_persistence import (
+from ztare.orchestrator.best_state_persistence import (
     strip_best_iteration_marker as _strip_best_iteration_marker,
     score_regime_fingerprint_from_score_contract as _score_regime_fingerprint_from_score_contract,
     score_regime_fingerprint_from_meta as _score_regime_fingerprint_from_meta,
@@ -677,7 +1017,7 @@ def _saved_best_comparison_anchor(current_eval: dict) -> dict:
 # module as the read accessors. The wrapper fills in the module-level
 # globals (HISTORY_DIR / THESIS_PATH / WORKING_PATH /
 # LATEST_PROBABILITY_DAG_PATH / SESSION_*) and forwards the rest.
-from src.ztare.orchestrator.best_state_persistence import (
+from ztare.orchestrator.best_state_persistence import (
     persist_best_candidate as _persist_best_candidate_impl,
 )
 
@@ -717,7 +1057,7 @@ def _persist_best_candidate(
 # Phase 4g extraction (2026-05-06 PM): _project_state_paths body
 # lives in src/ztare/orchestrator/project_state_snapshot. Wrapped to
 # fill in THESIS_PATH / WORKING_PATH / EVIDENCE_PATH / AXIOM_PATH.
-from src.ztare.orchestrator.project_state_snapshot import (
+from ztare.orchestrator.project_state_snapshot import (
     project_state_paths as _project_state_paths_impl,
 )
 
@@ -738,7 +1078,7 @@ def _project_state_paths(project_dir: str) -> tuple[str, ...]:
 # stays inline — it depends on module-globals (THESIS_PATH, etc.)
 # and is the appropriate boundary between "where paths come from"
 # (autoresearch_loop) and "what we do with them" (the extracted module).
-from src.ztare.orchestrator.project_state_snapshot import (
+from ztare.orchestrator.project_state_snapshot import (
     capture_project_state as _capture_project_state,
     restore_project_state as _restore_project_state,
     latest_debate_log_text as _latest_debate_log_text,
@@ -752,7 +1092,7 @@ def _champion_eval_payload() -> dict | None:
 # Phase 4g extraction (2026-05-06 PM): _saved_best_history_payload
 # body lives in src/ztare/orchestrator/best_state_persistence as
 # `saved_best_history_payload`. Wrapped to fill in module globals.
-from src.ztare.orchestrator.best_state_persistence import (
+from ztare.orchestrator.best_state_persistence import (
     saved_best_history_payload as _saved_best_history_payload_impl,
 )
 
@@ -767,7 +1107,7 @@ def _saved_best_history_payload() -> tuple[str | None, dict | None]:
 # (reconstruct/out_of_sync/promote_latest) lives in
 # src/ztare/orchestrator/champion_artifact_sync. Wrappers fill in the
 # module-level paths + args.* + MODEL_ID globals.
-from src.ztare.orchestrator.champion_artifact_sync import (
+from ztare.orchestrator.champion_artifact_sync import (
     reconstruct_champion_artifacts_from_saved_best as _reconstruct_champion_impl,
     champion_artifacts_out_of_sync as _champion_out_of_sync_impl,
     promote_latest_artifacts_to_champion as _promote_latest_impl,
@@ -815,7 +1155,7 @@ def _promote_latest_artifacts_to_champion() -> dict:
 # Phase 4g extraction (2026-05-06 PM): _format_gate_surface_for_prompt
 # body lives in src/ztare/orchestrator/gate_surface_format. Pure
 # helper, direct re-alias.
-from src.ztare.orchestrator.gate_surface_format import (
+from ztare.orchestrator.gate_surface_format import (
     format_gate_surface_for_prompt as _format_gate_surface_for_prompt,
 )
 
@@ -830,7 +1170,7 @@ from src.ztare.orchestrator.gate_surface_format import (
 # re-alias. The function takes all its inputs as args (eval_results,
 # workspace_dir, rubric_data, iteration_index, stagnation_count) so
 # no wrapper is needed.
-from src.ztare.orchestrator.gp087_tail_correction import (
+from ztare.orchestrator.gp087_tail_correction import (
     propose_tail_correction_seeds as _gp087_propose_tail_correction_seeds,
     GP087_TAIL_CORRECTION_PRIMITIVES as _GP087_TAIL_CORRECTION_PRIMITIVES,
 )
@@ -841,7 +1181,7 @@ from src.ztare.orchestrator.gp087_tail_correction import (
 # src/ztare/orchestrator/iter_status_print. The latest-artifact
 # wrapper threads the score_regime_fingerprint callable through;
 # the other two are direct re-aliases.
-from src.ztare.orchestrator.iter_status_print import (
+from ztare.orchestrator.iter_status_print import (
     print_champion_artifact_status as _print_champion_artifact_status,
     print_champion_reconstruction_status as _print_champion_reconstruction_status,
     is_catastrophic_failure as _is_catastrophic_failure_impl,
@@ -864,7 +1204,7 @@ def _print_latest_artifact_status(
 # Phase 4g extraction (2026-05-06 PM): _refresh_latest_evidence_gaps_from_eval
 # body lives in src/ztare/orchestrator/evidence_gap_persistence; wrapped
 # to fill in args.project, LATEST_EVIDENCE_GAPS_PATH, score_regime callable.
-from src.ztare.orchestrator.evidence_gap_persistence import (
+from ztare.orchestrator.evidence_gap_persistence import (
     refresh_latest_evidence_gaps_from_eval as _refresh_latest_evidence_gaps_impl,
 )
 
@@ -885,7 +1225,7 @@ def _refresh_latest_evidence_gaps_from_eval(
 # body lives in src/ztare/orchestrator/derived_constraints_refresh. Coordinates
 # 4 sub-extractors (judge / GP-061 / GP-062 / GP-061.B) over the same
 # ledger. Wrapped to fill in module globals + the score-regime callable.
-from src.ztare.orchestrator.derived_constraints_refresh import (
+from ztare.orchestrator.derived_constraints_refresh import (
     refresh_derived_constraints_from_eval as _refresh_derived_constraints_impl,
 )
 
@@ -919,7 +1259,7 @@ def _refresh_derived_constraints_from_eval(
 
 # Phase 4g extraction (2026-05-06 PM): dynamic-rubric helpers live in
 # src/ztare/orchestrator/dynamic_rubric. Wrapped to fill in RUBRICS_DIR.
-from src.ztare.orchestrator.dynamic_rubric import (
+from ztare.orchestrator.dynamic_rubric import (
     dynamic_rubric_path as _dynamic_rubric_path_impl,
     load_current_committee_digest as _load_current_committee_digest_impl,
 )
@@ -953,7 +1293,7 @@ _is_catastrophic_failure = _is_catastrophic_failure_impl
 # Phase 4g extraction (2026-05-06 PM): _write_latest_information_yield
 # body lives in src/ztare/orchestrator/post_eval_loop_control. Pure
 # helper, direct re-alias.
-from src.ztare.orchestrator.post_eval_loop_control import (
+from ztare.orchestrator.post_eval_loop_control import (
     write_latest_information_yield as _write_latest_information_yield,
 )
 
@@ -961,7 +1301,7 @@ from src.ztare.orchestrator.post_eval_loop_control import (
 # Phase 4g extraction (2026-05-06 PM): _stagnation_trigger_mode body
 # lives in src/ztare/orchestrator/iter_signal_helpers; wrapped to fill
 # in module-level rubric_data.
-from src.ztare.orchestrator.iter_signal_helpers import (
+from ztare.orchestrator.iter_signal_helpers import (
     stagnation_trigger_mode as _stagnation_trigger_mode_impl,
 )
 
@@ -973,7 +1313,7 @@ def _stagnation_trigger_mode() -> str:
 # Phase 4g extraction (2026-05-06 PM): _populate_weakest_class lives
 # in src/ztare/orchestrator/iter_signal_helpers. Pure helper, direct
 # re-alias.
-from src.ztare.orchestrator.iter_signal_helpers import (
+from ztare.orchestrator.iter_signal_helpers import (
     populate_weakest_class as _populate_weakest_class,
     weakest_point_text as _weakest_point_text,
 )
@@ -983,7 +1323,7 @@ from src.ztare.orchestrator.iter_signal_helpers import (
 # body lives in src/ztare/orchestrator/post_eval_loop_control. Wrapped
 # to fill in the module-level iteration_history list, args.underidentified_after,
 # PROJECT_DIR, and the four imported helper callables.
-from src.ztare.orchestrator.post_eval_loop_control import (
+from ztare.orchestrator.post_eval_loop_control import (
     evaluate_post_eval_loop_control as _evaluate_post_eval_loop_control_impl,
 )
 
@@ -1012,7 +1352,7 @@ def _evaluate_post_eval_loop_control(
 # src/ztare/orchestrator/loop_event_recorder. The recorder takes
 # RUN_ID + project name as explicit args (was reading module globals);
 # the wrapper fills them in.
-from src.ztare.orchestrator.loop_event_recorder import (
+from ztare.orchestrator.loop_event_recorder import (
     record_loop_event as _record_loop_event_impl,
     latest_low_yield_tail as _latest_low_yield_tail,
 )
@@ -1174,7 +1514,7 @@ def _prepare_mutation_candidate(
     runner_allowed_imports: tuple[str, ...] | None = None,
     project_dir: str | None = None,
 ):
-    from src.ztare.validator.candidate_extraction import (
+    from ztare.validator.candidate_extraction import (
         extract_best_python_candidate,
         preserve_theorem_packet_source,
     )
@@ -1361,7 +1701,9 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID, max_tokens=16000
             timeout_seconds=int(os.environ.get("ZTARE_AUTORESEARCH_AGENT_TIMEOUT_SECONDS", "600")),
             enabled_env=dispatch_env_for_call_site("mutator"),
         )
-        SESSION_MUTATOR_MODELS_USED.add(f"{result.transport}:{result.command[0] if result.command else 'agent'}")
+        _record_mutator_effective_model(
+            f"{result.transport}:{result.command[0] if result.command else 'agent'}"
+        )
         if result.returncode != 0:
             raise RuntimeError(
                 "subscription mutator dispatch failed "
@@ -1387,8 +1729,8 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID, max_tokens=16000
             model_id=model_id,
             config=config,
             max_tokens=max_tokens,
-            retries=PRODUCTION_CALL_RETRIES,
-            timeout_seconds=600,
+            retries=args.llm_retries,
+            timeout_seconds=args.llm_timeout_seconds,
             request_label="Mutator request",
             progress_printer=print,
             transient_wait_seconds=20,
@@ -1417,7 +1759,7 @@ def safe_mutate(prompt, config=None, model_id=MUTATOR_MODEL_ID, max_tokens=16000
             )
     effective_model_name = response.usage.model_name or response.effective_model_id or model_id
     canonical_effective_model = pricing_model_name(effective_model_name) or effective_model_name
-    SESSION_MUTATOR_MODELS_USED.add(canonical_effective_model)
+    _record_mutator_effective_model(canonical_effective_model)
     if response.fallback_from_model_id:
         fallback_event = {
             "from": response.fallback_from_model_id,
@@ -1476,138 +1818,12 @@ def compute_dag_steering_context(
     rubric_data: dict,
     workspace_dir: "str | Path",
 ) -> str:
-    """GP-134 / Gemini-Pro DAG-steering primitive.
-
-    If rubric declares `enable_dag_steering: true`, parse the project's
-    latest_probability_dag.json, compute per-node urgency = edge_weight
-    × node_probability, and return a prompt fragment naming the
-    highest-urgency node's watch_signal. Hysteresis: if the same node
-    has been #1 for 3+ iters, bump to #2. If 5+ iters stuck, emit a
-    damage signal of kind `dag_stagnation`.
-
-    Returns empty string when steering is disabled, DAG is missing/
-    malformed, or no actionable node exists. Per-iter steering
-    decisions logged to workspace/dag_steering_log.jsonl for audit.
-    """
-    if not rubric_data.get("enable_dag_steering"):
-        return ""
-
-    project_dir = Path(project_dir)
-    workspace_dir = Path(workspace_dir)
-    dag_path = project_dir / "latest_probability_dag.json"
-    if not dag_path.exists():
-        return ""
-
-    try:
-        dag = json.loads(dag_path.read_text(encoding="utf-8"))
-    except Exception as exc:                                     # noqa: BLE001
-        print(f"[dag-steering] malformed DAG, skipping: {exc}")
-        return ""
-
-    nodes = dag.get("nodes") or []
-    edges = dag.get("edges") or []
-    if not nodes or not edges:
-        return ""
-
-    # Node probabilities + edges keyed by from-node
-    node_by_id = {n.get("id"): n for n in nodes if n.get("id")}
-    outgoing = {}
-    for e in edges:
-        src = e.get("from")
-        if src not in outgoing or (e.get("weight", 0) or 0) > outgoing[src].get("weight", 0):
-            outgoing[src] = e
-
-    scored = []
-    for nid, n in node_by_id.items():
-        p = float(n.get("probability", 0.0) or 0.0)
-        edge = outgoing.get(nid)
-        if edge is None:
-            continue
-        w = float(edge.get("weight", 0.0) or 0.0)
-        urgency = w * p
-        scored.append((urgency, nid, n))
-    if not scored:
-        return ""
-
-    # Sort by urgency desc, then by node_id for deterministic ties
-    scored.sort(key=lambda t: (-t[0], t[1]))
-
-    # Hysteresis: read the last 3 steering-log entries. If same top node,
-    # bump to #2. If 5+ consecutive at top, emit damage signal.
-    log_path = workspace_dir / "dag_steering_log.jsonl"
-    recent_top: list[str] = []
-    if log_path.exists():
-        try:
-            lines = log_path.read_text(encoding="utf-8").strip().splitlines()
-            for line in lines[-5:]:
-                try:
-                    rec = json.loads(line)
-                    recent_top.append(rec.get("selected_node_id", ""))
-                except Exception:                                # noqa: BLE001
-                    continue
-        except Exception:                                        # noqa: BLE001
-            pass
-
-    pick = scored[0]
-    if len(scored) >= 2 and len(recent_top) >= 3 and all(t == scored[0][1] for t in recent_top[-3:]):
-        pick = scored[1]
-        hysteresis_bumped = True
-    else:
-        hysteresis_bumped = False
-
-    if len(recent_top) >= 5 and all(t == scored[0][1] for t in recent_top[-5:]):
-        try:
-            from src.ztare.signals import damage as _damage
-            _damage.emit(
-                source=f"dag_steering:{Path(project_dir).name}",
-                kind="dag_stagnation",
-                detail=(
-                    f"DAG node {scored[0][1]!r} has been top-urgency for 5+ iters; "
-                    f"mutator may be unable to resolve within current grammar. "
-                    f"Consider rubric/charter revision or scope change."
-                ),
-                severity="warn",
-            )
-        except Exception as exc:                                 # noqa: BLE001
-            print(f"[dag-steering] damage-signal emit failed: {exc}")
-
-    urgency, nid, node = pick
-    watch = node.get("watch_signal", "").strip()
-    label = node.get("label", "").strip()
-
-    steering_block = (
-        "\n\n--- GP-134 / DAG STEERING (priority focus) ---\n"
-        f"The Bayesian DAG currently identifies node {nid!r} as highest-urgency "
-        f"(urgency={urgency:.3f}, probability={node.get('probability')}, "
-        f"edge_weight={outgoing[nid].get('weight')}"
-        f"{'; hysteresis-bumped from #1 to #2 due to 3 consecutive iters at same top' if hysteresis_bumped else ''}).\n"
-        f"Node label: {label}\n"
-        f"Watch signal: {watch}\n"
-        "Weight ~50% of your mutation effort on resolving this specific watch signal. "
-        "You may pursue other improvements in parallel, but the next iteration's thesis "
-        "should produce specific progress on the named node. "
-        "Do NOT treat this as an exclusive override — continue addressing other gaps.\n"
-        "--- END DAG STEERING ---\n"
+    """Compatibility wrapper for the import-safe DAG steering primitive."""
+    return _compute_dag_steering_context_impl(
+        project_dir=project_dir,
+        rubric_data=rubric_data,
+        workspace_dir=workspace_dir,
     )
-
-    # Log the decision
-    try:
-        log_path.parent.mkdir(parents=True, exist_ok=True)
-        rec = {
-            "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-            "selected_node_id": nid,
-            "selected_urgency": urgency,
-            "selected_probability": node.get("probability"),
-            "selected_edge_weight": outgoing[nid].get("weight"),
-            "hysteresis_bumped": hysteresis_bumped,
-            "all_scored": [(u, i) for (u, i, _) in scored],
-        }
-        with log_path.open("a", encoding="utf-8") as f:
-            f.write(json.dumps(rec) + "\n")
-    except Exception as exc:                                     # noqa: BLE001
-        print(f"[dag-steering] log write failed: {exc}")
-
-    return steering_block
 
 
 def mutate_thesis(
@@ -1641,18 +1857,18 @@ def mutate_thesis(
     axioms = []
     project_charter = read_file(PROJECT_CHARTER_PATH) if os.path.exists(PROJECT_CHARTER_PATH) else ""
 
-    # GP-134 DAG steering: if rubric has enable_dag_steering=true, compute
-    # the highest-urgency node in latest_probability_dag.json and inject
-    # its watch_signal into the mutator prompt. Opt-in, no-op otherwise.
+    # Probability-DAG context is one prompt block. The vulnerable-assumption
+    # view is always allowed when a DAG exists; priority steering and logging
+    # remain gated by enable_dag_steering.
     try:
-        _dag_steering_context = compute_dag_steering_context(
+        probability_dag_context = compute_dag_steering_context(
             project_dir=PROJECT_DIR,
             rubric_data=rubric_data,
             workspace_dir=Path(PROJECT_DIR) / "workspace",
         )
     except Exception as _exc:                                    # noqa: BLE001
         print(f"[dag-steering] compute failed, skipping: {_exc}")
-        _dag_steering_context = ""
+        probability_dag_context = ""
     anchor_proxies = extract_anchor_proxies_from_charter(project_charter)
     forecast_type = extract_forecast_type_from_charter(project_charter)
     confirmed_constraint_context = render_confirmed_constraints_prompt_section(
@@ -1680,7 +1896,7 @@ def mutate_thesis(
         # universal operation class inferred from the latest weakest-point text.
         # This does not alter pivot control flow; it only sharpens the prompt.
         try:
-            from src.ztare.validator.utilities.gap_to_op_class_integration import (
+            from ztare.validator.utilities.gap_to_op_class_integration import (
                 enrich_pivot_instruction_with_op_class,
             )
 
@@ -1794,8 +2010,8 @@ def mutate_thesis(
     # iteration's weakest_point classifies as catastrophic_fit_failure (the only
     # class with cross-LLM stability >= 0.50 in the GP-149 §10 audit).
     try:
-        from src.ztare.research_director.pattern_bank_injector import evaluate_injection
-        from src.ztare.validator.weakest_link_classifier import classify_weakest_point
+        from ztare.research_director.pattern_bank_injector import evaluate_injection
+        from ztare.validator.weakest_link_classifier import classify_weakest_point
 
         _last_weakest_class = (
             classify_weakest_point(weakest_point) if weakest_point else None
@@ -2192,33 +2408,6 @@ def mutate_thesis(
     {confirmed_constraint_context}
     """
 
-    # GP-123: DAG steering context — read the probability DAG and inject
-    # the weakest nodes so the mutator knows WHERE to improve
-    dag_steering_context = ""
-    try:
-        _dag_path = Path(PROJECT_DIR) / "latest_probability_dag.json"
-        if _dag_path.exists():
-            _dag = json.loads(_dag_path.read_text())
-            _dag_nodes = _dag.get("nodes", [])
-            if _dag_nodes:
-                _dag_nodes_sorted = sorted(_dag_nodes, key=lambda n: n.get("probability", 1.0))
-                _dag_outcome = _dag.get("outcome", {})
-                _lines = [
-                    "### PROBABILITY DAG — YOUR THESIS'S VULNERABLE ASSUMPTIONS",
-                    f"Overall outcome probability: {_dag_outcome.get('probability', '?')}",
-                    "Nodes ranked by vulnerability (WEAKEST FIRST):",
-                ]
-                for _dn in _dag_nodes_sorted[:3]:  # top 3 weakest
-                    _lines.append(
-                        f"  - {_dn.get('id', '?')}: \"{_dn.get('label', '?')}\" "
-                        f"(p={_dn.get('probability', '?')}) "
-                        f"— watch: {_dn.get('watch_signal', 'none')}"
-                    )
-                _lines.append("Your next thesis MUST strengthen the weakest node above.")
-                dag_steering_context = "\n".join(_lines)
-    except Exception:
-        pass
-
     # GP-035: fit primitive prompt contract (opt-in via rubric)
     fit_primitive_context = ""
     fit_primitive_features_context = ""
@@ -2234,9 +2423,9 @@ def mutate_thesis(
     _briefing_block = ""
 
     try:
-        from src.ztare.orchestrator.mutator_briefing import (
+        from ztare.orchestrator.mutator_briefing import (
             BriefingContext,
-            default_briefing,
+            render_default_briefing_context,
         )
         _briefing_ctx = BriefingContext(
             project_dir=Path(PROJECT_DIR),
@@ -2245,14 +2434,12 @@ def mutate_thesis(
             workspace_dir=Path(PROJECT_DIR) / "workspace",
             mutator_model_id=MUTATOR_MODEL_ID,
             stagnation_count=int(stagnation_count),
+            project_packet=RUN_PROJECT_PACKET_PAYLOAD,
         )
-        _briefing_obj = default_briefing()
-        _briefing_block = _briefing_obj.render(_briefing_ctx)
-        _active = [
-            p.name for p in sorted(_briefing_obj.providers, key=lambda p: (p.priority, p.name))
-            if p.passes_tier_gate(_briefing_ctx) and p.applies(_briefing_ctx)
-        ]
-        _diag = getattr(_briefing_obj, "_last_render_diagnostics", {}) or {}
+        _briefing_render = render_default_briefing_context(_briefing_ctx)
+        _briefing_block = str(_briefing_render.get("body") or "")
+        _active = list(_briefing_render.get("active_providers") or [])
+        _diag = dict(_briefing_render.get("diagnostics") or {})
         _gated = _diag.get("tier_gated", [])
         _trimmed = _diag.get("budget_trimmed", [])
         print(
@@ -2959,11 +3146,11 @@ def mutate_thesis(
     # string in all other cases, so existing prompts are not perturbed.
     # Surfaced by gp159 mutator-empty-Python failure. See
     # src/ztare/orchestrator/prompt.py for the conditional logic + tests.
-    from src.ztare.orchestrator import (
+    from ztare.orchestrator import (
         active_contract_label as _active_contract_label,
         select_substrate_contract_hint as _select_substrate_contract_hint,
     )
-    from src.ztare.orchestrator.prompt import (
+    from ztare.orchestrator.prompt import (
         parametric_form_theorem_packet as _parametric_form_theorem_packet,
         primitive_class_history_packet as _primitive_class_history_packet,
     )
@@ -3016,7 +3203,6 @@ def mutate_thesis(
     {failure_context}
     {loop_control_context}
     {primitive_context}
-    {_dag_steering_context}
 
     ---
 
@@ -3024,7 +3210,7 @@ def mutate_thesis(
     {active_contract_top_line}
     "THIS IS THE WEAKEST LINK IN THE CURRENT LOGIC CHAIN: {weakest_point}"
 
-    {dag_steering_context}
+    {probability_dag_context}
 
     {mutator_briefing_context}
     {residual_mode_prompt}
@@ -3427,7 +3613,7 @@ if __name__ == "__main__":
     # Noether + DAG steering). Operator-set flags win. Owns the mapping in
     # one file (rubric_mode_resolver) so autoresearch doesn't grow new
     # branches per mode.
-    from src.ztare.validator.rubric_mode_resolver import (
+    from ztare.validator.rubric_mode_resolver import (
         apply_rubric_mode_defaults,
         describe_rubric_mode,
         validate_rubric_mode_contract,
@@ -3460,7 +3646,7 @@ if __name__ == "__main__":
     # GP-157 v5.0 Phase 4c: Cage runtime resolution moved to
     # src/ztare/orchestrator/state.py with 13 unit tests. Mode resolution +
     # factory failure handling are now testable in isolation.
-    from src.ztare.orchestrator import (
+    from ztare.orchestrator import (
         build_cage_runtime as _build_cage_runtime,
         cage_init_banner as _cage_init_banner,
     )
@@ -3556,8 +3742,42 @@ if __name__ == "__main__":
             )
     # --- end Epistemic Airgap ---
 
+    if args.preflight_only:
+        workspace_dir = Path(PROJECT_DIR) / "workspace"
+        workspace_dir.mkdir(parents=True, exist_ok=True)
+        _preflight_start = {
+            "record_type": "run_start",
+            "run_id": RUN_ID,
+            "project": args.project,
+            "timestamp_utc": _utc_now_iso(),
+            "rubric": args.rubric,
+            "run_mode": args.run_mode,
+            "iteration_budget": ITERATIONS,
+            "mutator_model": MUTATOR_MODEL_ID,
+            "judge_model": JUDGE_MODEL_ID,
+            "audit_partition_salt_sha256": AUDIT_PARTITION_SALT_SHA256,
+            "preflight_only": True,
+        }
+        if RUN_PACKET_CONTRACT:
+            _preflight_start["project_packet"] = RUN_PACKET_CONTRACT
+        _append_run_boundary_telemetry(workspace_dir, _preflight_start)
+        _append_run_boundary_telemetry(
+            workspace_dir,
+            {
+                "record_type": "run_end",
+                "run_id": RUN_ID,
+                "timestamp_utc": _utc_now_iso(),
+                "final_iteration": 0,
+                "final_score": None,
+                "run_exit_reason": "preflight_only",
+                "preflight_only": True,
+            },
+        )
+        print("✅ autoresearch preflight-only: launch inputs and packet boundary accepted")
+        raise SystemExit(0)
+
     if args.rubric_review_before_run:
-        print("🛂 GP-054 preflight: running rubric review before iteration 1...")
+        print("🛂 Pre-run rubric review: running before iteration 1...")
         rubric_review_result = run_rubric_review(
             project=args.project,
             rubric=args.rubric,
@@ -3566,7 +3786,7 @@ if __name__ == "__main__":
         rubric_review_payload = rubric_review_result["review_payload"]
         rubric_review_code = review_exit_code(rubric_review_payload)
         print(
-            "🛂 GP-054 preflight result: "
+            "🛂 Pre-run rubric review result: "
             f"scenario={rubric_review_payload['scenario_validity']['status']} "
             f"checks_failed={len(rubric_review_payload['checks_failed'])}/{len(rubric_review_payload['checks'])}"
         )
@@ -3575,12 +3795,13 @@ if __name__ == "__main__":
             print(f"🧾 Rubric patch artifact: {rubric_review_result['patch_path']}")
         if rubric_review_code != 0:
             print(
-                "🛑 Aborting before iteration 1 because GP-054 rubric review did not pass. "
+                "🛑 Aborting before iteration 1 because pre-run rubric review did not pass. "
                 "Revise the rubric/charter or rerun without --rubric_review_before_run."
             )
             raise SystemExit(rubric_review_code)
 
     evidence_text = read_file(EVIDENCE_PATH) if os.path.exists(EVIDENCE_PATH) else ""
+    project_charter = read_file(PROJECT_CHARTER_PATH) if os.path.exists(PROJECT_CHARTER_PATH) else ""
 
     # GP-226 L2+L3 briefing compression (2026-05-06). Opt-in via rubric
     # flag `enable_briefing_compression: true`. Suppresses expired and
@@ -3589,16 +3810,15 @@ if __name__ == "__main__":
     # disk artifacts unchanged. Default off → legacy behavior.
     if bool(rubric_data.get("enable_briefing_compression", False)):
         try:
-            from src.ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
+            from ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
             _ev_compressed, _charter_compressed, _comp_telemetry = _compress_briefing(
                 evidence_text=evidence_text,
-                charter_text=project_charter if 'project_charter' in dir() else "",
+                charter_text=project_charter,
                 project_dir=Path(PROJECT_DIR),
                 rubric_data=rubric_data,
             )
             evidence_text = _ev_compressed
-            if 'project_charter' in dir():
-                project_charter = _charter_compressed
+            project_charter = _charter_compressed
             saved = _comp_telemetry.get("bytes_saved", 0)
             sup_e = _comp_telemetry.get("suppressed_expired", 0)
             sup_s = _comp_telemetry.get("suppressed_superseded", 0)
@@ -3646,6 +3866,8 @@ if __name__ == "__main__":
         "--rubric", args.rubric,
         "--judge_model", args.judge_model,
         "--mutator_model", args.mutator_model,
+        "--llm_timeout_seconds", str(args.llm_timeout_seconds),
+        "--llm_retries", str(args.llm_retries),
         "--eval_results_path", LATEST_EVAL_RESULTS_PATH,
     ]
     if args.dynamic:
@@ -3722,8 +3944,65 @@ if isinstance(judge_usage, dict):
         direct_cost_usd=judge_usage.get("estimated_cost_usd") if judge_usage.get("cost_known") else None,
     )
 
+try:
+    _baseline_gate_engagement, _baseline_gate_failure_count, _baseline_failed_gate_ids = _extract_iteration_gate_metrics(res)
+    _baseline_sc = res.get("score_contract") or {}
+    _baseline_dcg = _baseline_sc.get("deterministic_charter_gates", {}).get("results", {})
+    _baseline_gate_verdicts = (
+        {g: r.get("passed", None) for g, r in _baseline_dcg.items()}
+        if isinstance(_baseline_dcg, dict)
+        else {}
+    )
+    _baseline_dispatch_receipts = res.get("worker_dispatch_receipts")
+    if isinstance(_baseline_dispatch_receipts, list):
+        _baseline_dispatch_receipts = [
+            dict(item) for item in _baseline_dispatch_receipts if isinstance(item, dict)
+        ]
+    else:
+        _baseline_dispatch_receipts = []
+    _baseline_worker_meta = _worker_metadata_for_eval_history(rubric_data)
+    _baseline_matched_run_id = os.environ.get("ZTARE_AUTORESEARCH_MATCHED_RUN_ID", "").strip()
+    if _baseline_matched_run_id:
+        _baseline_worker_meta["matched_run_id"] = _baseline_matched_run_id
+        _baseline_matched_run_role = os.environ.get("ZTARE_AUTORESEARCH_MATCHED_RUN_ROLE", "").strip().lower()
+        if _baseline_matched_run_role:
+            _baseline_worker_meta["matched_run_role"] = _baseline_matched_run_role
+    _append_eval_history_record(
+        workspace_dir,
+        {
+            "run_id": RUN_ID,
+            "iteration": 0,
+            "score": res.get("score"),
+            "raw_judge_score": _raw_judge_score_from_eval(res),
+            "score_cap_reason": _score_cap_reason_from_eval(res),
+            "score_cap_source": _score_cap_source_from_eval(res),
+            "mutator_requested_model_id": MUTATOR_MODEL_ID,
+            "mutator_effective_model_ids": [],
+            "mutator_fallback_events": [],
+            "parametric_form": "",
+            "weakest_point": res.get("weakest_point") or "",
+            "gate_verdicts": _baseline_gate_verdicts,
+            "gate_failure_count": _baseline_gate_failure_count,
+            "failed_gate_ids": _baseline_failed_gate_ids,
+            "timestamp": datetime.now().isoformat(),
+            "artifact_refs": _eval_history_artifact_refs(
+                LATEST_EVAL_RESULTS_PATH,
+                LATEST_PROBABILITY_DAG_PATH,
+                LATEST_EVIDENCE_GAPS_PATH,
+                DERIVED_CONSTRAINTS_PATH,
+                THESIS_PATH,
+                baseline_test_model_path,
+            ),
+            "worker_dispatch_receipts": _baseline_dispatch_receipts,
+            **_baseline_worker_meta,
+        },
+    )
+except Exception as _eval_history_exc:  # noqa: BLE001
+    print(f"⚠️ eval_history baseline append error (non-fatal): {_eval_history_exc}")
+
 best_score = res["score"]
 best_weakest_point = res["weakest_point"]
+best_eval = dict(res) if isinstance(res, dict) else {}
 # Two-tier champion promotion (2026-04-27). The capped score
 # alone collapses iter-8 raw=100 down to 50 alongside iter-5 raw=50,
 # so champion logic cannot tell breakthrough from plateau and the iter-8
@@ -3786,7 +4065,7 @@ if saved_best_score is None or res["score"] > saved_best_score:
     # GP-119: Post-champion Inverter review (Munger inversion + Popper tests)
     if res["score"] >= 50:
         try:
-            from src.ztare.validator.inverter_agent import run_inverter
+            from ztare.validator.inverter_agent import run_inverter
             _inverter_result = run_inverter(
                 project_dir=Path(PROJECT_DIR),
                 champion_thesis=read_file(THESIS_PATH),
@@ -3811,8 +4090,8 @@ if saved_best_score is None or res["score"] > saved_best_score:
     _sbe_mode = str(rubric_data.get("structural_blocker_enforcement") or "prompt").lower().strip()
     if _sbe_mode in ("gate", "both"):
         try:
-            from src.ztare.gates.circularity_gate import run_circularity_gate
-            from src.ztare.gates.falsifiability_gate import run_falsifiability_gate
+            from ztare.gates.circularity_gate import run_circularity_gate
+            from ztare.gates.falsifiability_gate import run_falsifiability_gate
 
             _dag_path = Path(PROJECT_DIR) / "champion_probability_dag.json"
             _circ = run_circularity_gate(_dag_path)
@@ -3855,7 +4134,7 @@ if saved_best_score is None or res["score"] > saved_best_score:
     # GP-122: Post-champion Lean proof attempt (if compression gates passed)
     if res["score"] >= 70 and rubric_data.get("enable_lean_proof"):
         try:
-            from src.ztare.formal.lean_repl import prove_from_compression
+            from ztare.formal.lean_repl import prove_from_compression
             print(f"  📐📐📐 GP-122 Lean REPL: attempting proof...")
             _lean_result = prove_from_compression(
                 project_dir=Path(PROJECT_DIR),
@@ -3886,7 +4165,7 @@ if saved_best_score is None or res["score"] > saved_best_score:
     # Legacy scalar path unchanged.
     if res["score"] >= 70 and rubric_data.get("fit_score_mode") == "dynamical_lattice":
         try:
-            from src.ztare.fit.continuous_chaotic import run_pipeline as _cc_run_pipeline
+            from ztare.fit.continuous_chaotic import run_pipeline as _cc_run_pipeline
             cc_params = rubric_data.get("dynamical_lattice") or {}
             _cc_holdout_dir = Path(PROJECT_DIR) / "_holdout_locked"
             _cc_truth_path = _cc_holdout_dir / "truth.json"
@@ -3948,7 +4227,7 @@ if saved_best_score is None or res["score"] > saved_best_score:
         and bool(rubric_data.get("enable_fom"))
     ):
         try:
-            from src.ztare.fit.continuous_chaotic.fractional_operator import (
+            from ztare.fit.continuous_chaotic.fractional_operator import (
                 compute_fractional_derivative,
             )
             # Gate-stack precondition check: G1 continuum_limit_gate full impl
@@ -4171,7 +4450,7 @@ def _compute_holdout_audit_mre_for_run() -> dict | None:
                 "audit_fraction": _audit_frac,
             }
 
-        from src.ztare.orchestrator.holdout_audit import (
+        from ztare.orchestrator.holdout_audit import (
             compute_audit_mre as _compute_audit_mre,
         )
         _result = _compute_audit_mre(_audit_rows, _i_model)
@@ -4191,7 +4470,7 @@ def _materialize_blitz_survival_report_for_run() -> dict | None:
     if not (workspace_dir / "parallel_blitz_log.jsonl").exists():
         return None
     try:
-        from src.ztare.reports.blitz_survival_report import (
+        from ztare.reports.blitz_survival_report import (
             build_blitz_survival_report as _build_blitz_survival_report,
             render_blitz_survival_markdown as _render_blitz_survival_markdown,
         )
@@ -4266,21 +4545,21 @@ def _handle_sigint(signum, frame):
 
 atexit.register(_finalize_run_telemetry_once)
 signal.signal(signal.SIGINT, _handle_sigint)
-_append_run_boundary_telemetry(
-    workspace_dir,
-    {
-        "record_type": "run_start",
-        "run_id": RUN_ID,
-        "project": args.project,
-        "timestamp_utc": _utc_now_iso(),
-        "rubric": args.rubric,
-        "run_mode": args.run_mode,
-        "iteration_budget": ITERATIONS,
-        "mutator_model": MUTATOR_MODEL_ID,
-        "judge_model": JUDGE_MODEL_ID,
-        "audit_partition_salt_sha256": AUDIT_PARTITION_SALT_SHA256,
-    },
-)
+_run_start_payload = {
+    "record_type": "run_start",
+    "run_id": RUN_ID,
+    "project": args.project,
+    "timestamp_utc": _utc_now_iso(),
+    "rubric": args.rubric,
+    "run_mode": args.run_mode,
+    "iteration_budget": ITERATIONS,
+    "mutator_model": MUTATOR_MODEL_ID,
+    "judge_model": JUDGE_MODEL_ID,
+    "audit_partition_salt_sha256": AUDIT_PARTITION_SALT_SHA256,
+}
+if RUN_PACKET_CONTRACT:
+    _run_start_payload["project_packet"] = RUN_PACKET_CONTRACT
+_append_run_boundary_telemetry(workspace_dir, _run_start_payload)
 
 # ── GP-157 §3a backport (2026-04-26) ──
 # R13 substrate_critic + R14 noise_profile preflight gates dispatched via
@@ -4289,7 +4568,7 @@ _append_run_boundary_telemetry(
 # under workspace/, and noise_profile auto-routes solver flags
 # (operator-set flags always win — auto-route only fills in absent keys).
 try:
-    from src.ztare.orchestrator.pre_fit_dispatch import (
+    from ztare.orchestrator.pre_fit_dispatch import (
         dispatch_preflight_cage as _dispatch_preflight,
     )
     _preflight_verdict = _dispatch_preflight(
@@ -4315,7 +4594,7 @@ except Exception as _pre_exc:
 # renders MANDATORY-CONSIDER. Future once-per-run hooks register inside
 # orchestrator/pre_iter1_dispatch.py — no inline accretion here.
 try:
-    from src.ztare.orchestrator.pre_iter1_dispatch import (
+    from ztare.orchestrator.pre_iter1_dispatch import (
         dispatch_pre_iter1_cage as _dispatch_pre_iter1,
     )
     _pre_iter1_verdict = _dispatch_pre_iter1(
@@ -4334,7 +4613,7 @@ except ImportError:
 # (which the preflight Cage dispatch above writes). Fail-graceful.
 if bool(rubric_data.get("enable_evidence_gap_enrichment_proposals", False)):
     try:
-        from src.ztare.orchestrator.evidence_gap_enrichment import (
+        from ztare.orchestrator.evidence_gap_enrichment import (
             propose_evidence_gap_enrichment as _propose_ege,
         )
         _ege_verdict = _propose_ege(
@@ -4358,7 +4637,7 @@ if bool(rubric_data.get("enable_evidence_gap_enrichment_proposals", False)):
 # wrong instrument. Cached via LLMCallCache (paper 7 §11.14, GP-184).
 _physics_cold_shot_selected = bool(rubric_data.get("enable_cold_shot_seed", False))
 try:
-    from src.ztare.orchestrator.cold_shot_policy import family_selected as _cold_family_selected
+    from ztare.orchestrator.cold_shot_policy import family_selected as _cold_family_selected
 
     _physics_cold_shot_selected = _cold_family_selected(
         family_id="physics_lagrangian_seed",
@@ -4372,7 +4651,7 @@ except Exception as _csp_exc:  # noqa: BLE001
 
 if _physics_cold_shot_selected:
     try:
-        from src.ztare.orchestrator.cold_shot_seed import fire_cold_shot_seed
+        from ztare.orchestrator.cold_shot_seed import fire_cold_shot_seed
         _css_verdict = fire_cold_shot_seed(
             project_dir=Path(PROJECT_DIR),
             rubric_data=rubric_data,
@@ -4400,6 +4679,8 @@ for i in range(ITERATIONS):
     print(
         f"\n--- Iteration {i + 1} (Score: {best_score} | Stagnation: {stagnation_count}) ---"
     )
+    _CURRENT_ITERATION_MUTATOR_MODEL_EVENT_START = len(SESSION_MUTATOR_MODEL_EVENTS)
+    _CURRENT_ITERATION_FALLBACK_EVENT_START = len(SESSION_MUTATOR_FALLBACK_EVENTS)
     _iteration_worker_receipt_start = len(SESSION_WORKER_DISPATCH_RECEIPTS)
     # GP-182 evidence-reload-per-iter (2026-04-28). When the operator
     # updates `evidence.txt` mid-run (long runs benefit from corrective
@@ -4414,7 +4695,7 @@ for i in range(ITERATIONS):
         if _new_sha != _prior_sha:
             print(f"📄 evidence.txt changed mid-run: SHA {_prior_sha} → {_new_sha}")
             try:
-                from src.ztare.signals.damage import emit as _emit_damage
+                from ztare.signals.damage import emit as _emit_damage
                 _emit_damage(
                     source="autoresearch.evidence_reload",
                     kind="evidence_changed_mid_run",
@@ -4429,7 +4710,7 @@ for i in range(ITERATIONS):
             # suppression of expired/superseded blocks.
             if bool(rubric_data.get("enable_briefing_compression", False)):
                 try:
-                    from src.ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
+                    from ztare.orchestrator.briefing_compression import compress_briefing as _compress_briefing
                     _ev_recomp, _, _ = _compress_briefing(
                         evidence_text=evidence_text,
                         charter_text="",
@@ -4447,7 +4728,7 @@ for i in range(ITERATIONS):
     # Populated additively from existing per-iter locals; Phase 3c will switch
     # the Cage dispatch block + future orchestrator/{telemetry,state} extracts
     # to read fields off ctx instead of module-level globals.
-    from src.ztare.orchestrator import IterContext as _IterContext
+    from ztare.orchestrator import IterContext as _IterContext
     ctx = _IterContext(
         iteration_index=i,
         run_id=RUN_ID,
@@ -4478,7 +4759,7 @@ for i in range(ITERATIONS):
                 )
                 _v5_run_results = {}
             # Phase 4b: emission + summary moved to orchestrator/telemetry.py.
-            from src.ztare.orchestrator import (
+            from ztare.orchestrator import (
                 emit_cage_engagement as _emit_cage_engagement,
                 format_cage_observe_summary as _format_cage_observe_summary,
             )
@@ -4557,6 +4838,34 @@ for i in range(ITERATIONS):
         rubric_stagnation_override=_rubric_stag_override,
     )
     current_pivot_profile = current_pivot_state.profile
+    if current_pivot_state.event_type == "topological_pivot_profile_injected":
+        _pivot_followup_decision = evaluate_control_followup(
+            workspace_dir,
+            current_iteration=i + 1,
+            rubric_data=rubric_data,
+            candidate_control_kind="stagnation_pivot",
+        )
+        record_control_followup_decision(
+            workspace_dir,
+            _pivot_followup_decision,
+            run_id=str(RUN_ID),
+            project=args.project,
+            iteration_index=i + 1,
+        )
+        if not _pivot_followup_decision.allowed:
+            print(
+                "🧭 Control follow-up: observing prior control before another "
+                f"stagnation pivot ({_pivot_followup_decision.reason})"
+            )
+            current_pivot_state = PivotState(
+                profile=None,
+                loop_control_action="control_followup_observe",
+                event_type="control_followup_observe",
+                pivot_threshold=current_pivot_state.pivot_threshold,
+                emergency_threshold=current_pivot_state.emergency_threshold,
+            )
+            current_pivot_profile = None
+            current_loop_control_action = "control_followup_observe"
 
     # GP-149 I-2 / I-3: observe-mode telemetry for mining-derived pivot routing.
     # Gated by rubric flags. Default: off. First rollout is OBSERVE-ONLY to
@@ -4564,7 +4873,7 @@ for i in range(ITERATIONS):
     # Once operator confirms classifier accuracy on live data, the "suppress"
     # mode can be enabled by changing the rubric flag values.
     try:
-        from src.ztare.validator.weakest_link_classifier import (
+        from ztare.validator.weakest_link_classifier import (
             classify_weakest_point,
             is_pivot_ineffective_class,
             PIVOT_INEFFECTIVE_CLASSES,
@@ -4682,6 +4991,19 @@ for i in range(ITERATIONS):
         _record_loop_event(
             workspace_dir,
             event_type="topological_pivot_profile_injected",
+            iteration_index=i + 1,
+            stagnation_count=stagnation_count,
+            falsification_mode=current_falsification_mode,
+            is_v4_project=current_is_v4_project,
+            pivot_profile=current_pivot_profile,
+            pending_loop_action=pending_loop_action.value,
+            mutator_model_id=current_mutator,
+            judge_model_id=JUDGE_MODEL_ID,
+        )
+    elif current_pivot_state.event_type == "control_followup_observe":
+        _record_loop_event(
+            workspace_dir,
+            event_type="control_followup_observe",
             iteration_index=i + 1,
             stagnation_count=stagnation_count,
             falsification_mode=current_falsification_mode,
@@ -4978,7 +5300,7 @@ for i in range(ITERATIONS):
                         and bool(_seed.get("proposed_parameter_names"))
                     )
                     if _ok:
-                        from src.ztare.orchestrator.cold_shot_seed import (
+                        from ztare.orchestrator.cold_shot_seed import (
                             synthesize_thesis_from_seed as _synthesize_seed_thesis,
                         )
                         new_content = _synthesize_seed_thesis(_seed)
@@ -5001,7 +5323,7 @@ for i in range(ITERATIONS):
             # src/ztare/orchestrator/blitz_dispatch.py to keep this loop
             # readable. K=1 default (single mutate) — K=K only when
             # rubric flag set AND stagnation/force trigger fires.
-            from src.ztare.orchestrator.blitz_dispatch import (
+            from ztare.orchestrator.blitz_dispatch import (
                 BlitzDispatchInputs, dispatch_mutator_blitz, should_run_parallel,
             )
 
@@ -5015,7 +5337,7 @@ for i in range(ITERATIONS):
                     # without a per-worker prompt addition. The suffix
                     # bank lives in blitz_dispatch.PERSONA_PRIVATE_SUFFIX.
                     try:
-                        from src.ztare.orchestrator.blitz_dispatch import PERSONA_PRIVATE_SUFFIX
+                        from ztare.orchestrator.blitz_dispatch import PERSONA_PRIVATE_SUFFIX
                         _bias = PERSONA_PRIVATE_SUFFIX.get(persona_extra, "")
                     except Exception:
                         _bias = ""
@@ -5056,6 +5378,27 @@ for i in range(ITERATIONS):
                 iter_idx=i + 1,
                 rubric_data=rubric_data,
             )
+            if _run_parallel_mutator:
+                _blitz_followup_decision = evaluate_control_followup(
+                    workspace_dir,
+                    current_iteration=i + 1,
+                    rubric_data=rubric_data,
+                    candidate_control_kind="parallel_blitz",
+                )
+                record_control_followup_decision(
+                    workspace_dir,
+                    _blitz_followup_decision,
+                    run_id=str(RUN_ID),
+                    project=args.project,
+                    iteration_index=i + 1,
+                )
+                if not _blitz_followup_decision.allowed:
+                    _run_parallel_mutator = False
+                    _parallel_k = 1
+                    _parallel_reason = (
+                        "control_followup_policy: "
+                        f"{_blitz_followup_decision.reason}"
+                    )
             if not _run_parallel_mutator:
                 print(
                     "⚔️  Parallel mutator skipped: "
@@ -5119,7 +5462,7 @@ for i in range(ITERATIONS):
                 # ValueError so the existing R1 retry path re-prompts the mutator.
                 # Free retry, iter not consumed (same as R1 behavior).
                 try:
-                    from src.ztare.orchestrator.contract_adherence import (
+                    from ztare.orchestrator.contract_adherence import (
                         check_contract_adherence as _adherence_check,
                         runtime_check_imodel as _runtime_check_imodel,
                     )
@@ -5197,7 +5540,7 @@ for i in range(ITERATIONS):
                 # and reaches for variants of the banned family. Free retry,
                 # iter not consumed (same as R1 behavior).
                 try:
-                    from src.ztare.orchestrator.forced_reframe import (
+                    from ztare.orchestrator.forced_reframe import (
                         check_forced_reframe_compliance as _fr_compliance,
                     )
                     # Extract PARAMETRIC_FORM from python_code (string literal).
@@ -5301,7 +5644,7 @@ for i in range(ITERATIONS):
                 # to AST-eval the form against the whitelist. Catching this at
                 # R1-time turns the wasted iter into a free retry.
                 try:
-                    from src.ztare.fit.fit_primitive_features import (
+                    from ztare.fit.fit_primitive_features import (
                         extract_form_declaration as _ffp_extract_form,
                         _safe_compile_form as _ffp_safe_compile,
                     )
@@ -5535,7 +5878,7 @@ for i in range(ITERATIONS):
                     # routing now goes through can_handle (rubric.enable_framer +
                     # cage_meta.class) instead of an inline rubric flag check.
                     try:
-                        from src.ztare.orchestrator.pre_fit_dispatch import (
+                        from ztare.orchestrator.pre_fit_dispatch import (
                             dispatch_pre_fit_cage as _dispatch_pre_fit,
                         )
                         _pre_fit_verdict = _dispatch_pre_fit(
@@ -5566,7 +5909,7 @@ for i in range(ITERATIONS):
                     # the substrate class), fall back to the legacy direct
                     # call as a safety net. After full substrate-class
                     # coverage validates, the fallback is removed.
-                    from src.ztare.fit.fit_engine import select_adapter as _select_adapter
+                    from ztare.fit.fit_engine import select_adapter as _select_adapter
                     from types import SimpleNamespace as _SubNS
                     _l70_substrate = _SubNS(meta=rubric_data.get("cage_meta") or {"class": "1d"})
                     # Pass python_code (raw mutator text containing FIT_DECLARATION
@@ -5617,7 +5960,7 @@ for i in range(ITERATIONS):
                             # if the mutator wrote `where(...)` or `sigmoid(x,c,w)`
                             # in their FIT_DECLARATION expression, gate harness
                             # needs them at module scope too.
-                            from src.ztare.fit.fit_primitive_features import (
+                            from ztare.fit.fit_primitive_features import (
                                 inject_gate_time_primitives as _inject_prims,
                             )
                             python_code = _inject_prims(python_code)
@@ -5712,7 +6055,7 @@ for i in range(ITERATIONS):
             print(f"🧮   DECISION: SKIP — no python_code from mutator this iter")
         else:
             try:
-                from src.ztare.fit.fit_primitive_features import (
+                from ztare.fit.fit_primitive_features import (
                     should_engage as _ffp_should_engage,
                     extract_form_declaration as _ffp_extract,
                     load_visible_from_substrate as _ffp_load_visible,
@@ -5753,7 +6096,7 @@ for i in range(ITERATIONS):
                         # telemetry, gaming-streak detection, and PARAMETRIC_FORM
                         # substitution. Falls back transparently if derivation
                         # fails (no LAGRANGIAN declared, sympy timeout, etc.).
-                        from src.ztare.orchestrator.gp180_dispatch import (
+                        from ztare.orchestrator.gp180_dispatch import (
                             dispatch_gp180_lagrangian,
                         )
                         _gp180_result = dispatch_gp180_lagrangian(
@@ -5777,7 +6120,7 @@ for i in range(ITERATIONS):
                         _bk_blocked = False
                         if bool(rubric_data.get("enable_buckingham_pi_gate", False)):
                             try:
-                                from src.ztare.gates.buckingham_pi_gate import (
+                                from ztare.gates.buckingham_pi_gate import (
                                     run_buckingham_pi_gate,
                                 )
                                 _bk_result = run_buckingham_pi_gate(_form, rubric_data=rubric_data)
@@ -5811,7 +6154,7 @@ for i in range(ITERATIONS):
                         # with the RD-tick / external-prover §5.2 path.
                         if bool(rubric_data.get("enable_pi_group_forcing", False)):
                             try:
-                                from src.ztare.gates.pi_group_forcing import (
+                                from ztare.gates.pi_group_forcing import (
                                     run_pi_group_forcing,
                                 )
                                 _pg_targets = rubric_data.get("pi_group_targets") or []
@@ -5849,7 +6192,7 @@ for i in range(ITERATIONS):
                         # Default-off; strict mode skips fit on violation.
                         if bool(rubric_data.get("enable_linear_observable_coercivity_gate", False)):
                             try:
-                                from src.ztare.gates.linear_observable_coercivity_gate import (
+                                from ztare.gates.linear_observable_coercivity_gate import (
                                     format_report as _format_linear_obs_report,
                                     run_gate as _run_linear_obs_gate,
                                 )
@@ -6130,7 +6473,7 @@ for i in range(ITERATIONS):
                                 # without re-loading from disk. Behavior preserved
                                 # verbatim by adapter contracts.
                                 try:
-                                    from src.ztare.orchestrator.post_fit_dispatch import (
+                                    from ztare.orchestrator.post_fit_dispatch import (
                                         dispatch_post_fit_cage as _dispatch_post_fit,
                                     )
                                     _post_fit_fit_json = {
@@ -6181,7 +6524,7 @@ for i in range(ITERATIONS):
                                 # separation-of-concerns as 1D.
                                 if rubric_data.get("enable_framer", False):
                                     try:
-                                        from src.ztare.framer.framer_nd import frame_nd as _fr_nd
+                                        from ztare.framer.framer_nd import frame_nd as _fr_nd
                                         _fr_primary = rubric_data.get("framer_primary_feature_key")
                                         # GP-164 wMDL: when the substrate is
                                         # heteroscedastic and the operator
@@ -6552,7 +6895,7 @@ for i in range(ITERATIONS):
     # src/ztare/fit/legacy_engagement_guard.py with regression tests.
     # Surfaced on gp159 nd_features run by parallel agent: legacy 1D
     # primitive's loud-fail stub overwrote authored test_model.py.
-    from src.ztare.fit.legacy_engagement_guard import (
+    from ztare.fit.legacy_engagement_guard import (
         resolve_layer3_stub_target as _resolve_layer3_stub_target,
         should_engage_legacy_1d_fit_primitive as _should_engage_legacy_1d_fit_primitive,
     )
@@ -6752,7 +7095,7 @@ for i in range(ITERATIONS):
     # ~15 prompt sections — empirical signal lives in
     # workspace/contract_violations.jsonl per iter.
     try:
-        from src.ztare.orchestrator.contract_adherence import (
+        from ztare.orchestrator.contract_adherence import (
             emit_adherence as _emit_adherence,
             format_adherence_summary as _format_adherence_summary,
         )
@@ -6770,7 +7113,7 @@ for i in range(ITERATIONS):
     iteration_test_cmd = list(test_cmd)
 
     if rubric_data.get("pre_judge_gate_harness"):
-        from src.ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
+        from ztare.validator.core.pre_judge_gate import run_pre_judge_gate_harness
 
         pre_judge_gate_result = run_pre_judge_gate_harness(
             enabled=True,
@@ -6797,6 +7140,7 @@ for i in range(ITERATIONS):
         # gate_harness.py is unchanged.  Hard-fail gates zero new_eval["score"];
         # soft penalties are subtracted from it (floor 0).
         try:
+            _pre_global_gate_score = _coerce_score(new_eval.get("score"))
             _global_gate_payload = run_global_gates(
                 project_dir=Path(PROJECT_DIR),
                 rubric_data=rubric_data,
@@ -6816,27 +7160,53 @@ for i in range(ITERATIONS):
                     f"🚨 Global gate HARD FAIL: {_global_gate_payload['failed_gate_ids']}"
                 )
                 # Hard fail zeros the score — the gate overrides test_thesis.py output
+                _gate_fail_str = (
+                    f"Global Gate Hard Fail: "
+                    f"{', '.join(_global_gate_payload['failed_gate_ids'])}"
+                )
+                _record_deterministic_score_override(
+                    new_eval,
+                    original_score=_pre_global_gate_score,
+                    gated_score=0,
+                    reason=_gate_fail_str,
+                    source="global_gates.hard_fail",
+                    failed_gate_ids=list(_global_gate_payload["failed_gate_ids"]),
+                )
                 new_eval["score"] = 0
                 # Append blind gate failure to the judge's critique (do NOT replace it).
                 # The mutator needs: (1) the judge's scientific reasoning, (2) that the
                 # system zeroed its score for a gate violation — but NOT which specific
                 # terms triggered the gate (revealing that enables cognitive camouflage).
                 _original_weakest = new_eval.get("weakest_point", "")
-                _gate_fail_str = (
-                    f"SYSTEM OVERRIDE: Score zeroed due to Global Gate Hard Fail: "
-                    f"{', '.join(_global_gate_payload['failed_gate_ids'])}"
-                )
                 new_eval["weakest_point"] = (
-                    f"{_original_weakest}\n\n🚨 {_gate_fail_str}"
+                    f"{_original_weakest}\n\n🚨 SYSTEM OVERRIDE: Score zeroed due to {_gate_fail_str}"
                     if _original_weakest
-                    else f"🚨 {_gate_fail_str}"
+                    else f"🚨 SYSTEM OVERRIDE: Score zeroed due to {_gate_fail_str}"
                 )
             elif _global_gate_payload.get("failure_count", 0) > 0:
-                _penalty = _global_gate_payload.get("total_penalty", 0)
+                _penalty = _coerce_score(_global_gate_payload.get("total_penalty", 0)) or 0
                 print(
                     f"⚠️  Global gate soft fail/penalty: {_global_gate_payload['failed_gate_ids']} "
                     f"penalty={_penalty}"
                 )
+                if _penalty != 0:
+                    _base_score = _pre_global_gate_score
+                    if _base_score is None:
+                        _base_score = _coerce_score(new_eval.get("score")) or 0
+                    _adjusted_score = max(0, _base_score + _penalty)
+                    _gate_fail_str = (
+                        f"Global Gate Soft Penalty ({_penalty}): "
+                        f"{', '.join(_global_gate_payload['failed_gate_ids'])}"
+                    )
+                    _record_deterministic_score_override(
+                        new_eval,
+                        original_score=_base_score,
+                        gated_score=_adjusted_score,
+                        reason=_gate_fail_str,
+                        source="global_gates.soft_penalty",
+                        failed_gate_ids=list(_global_gate_payload["failed_gate_ids"]),
+                    )
+                    new_eval["score"] = _adjusted_score
 
             # GP-157 Cage post-harness dispatch.
             # All Cage-routed post-harness gates (R10, R11 today; GP-170 symbolic
@@ -6845,7 +7215,7 @@ for i in range(ITERATIONS):
             # in src/ztare/orchestrator/post_harness_dispatch.py — autoresearch_loop
             # stays a coordinator, no per-gate if-block accretion.
             try:
-                from src.ztare.orchestrator.post_harness_dispatch import (
+                from ztare.orchestrator.post_harness_dispatch import (
                     dispatch_post_harness_cage as _dispatch_post_harness,
                     apply_verdict_to_eval as _apply_verdict,
                 )
@@ -6861,9 +7231,6 @@ for i in range(ITERATIONS):
                 _apply_verdict(_verdict, new_eval)
             except ImportError:
                 pass
-                # Apply soft penalty to the eval score (floor at 0)
-                if _penalty != 0:
-                    new_eval["score"] = max(0, int(new_eval.get("score", 0)) + _penalty)
         except Exception as _gg_exc:
             print(f"⚠️  Global gates error (non-fatal): {_gg_exc}")
         champion_fingerprint_before_iteration = artifact_regime_fingerprint(
@@ -6945,40 +7312,22 @@ for i in range(ITERATIONS):
         # path was the critical bug behind the gp163d v3 phantom-REFRAME
         # cascade in run_id 1777250273.
         try:
-            _eval_hist_path = workspace_dir / "eval_history.jsonl"
             gate_engagement, gate_failure_count, failed_gate_ids = _extract_iteration_gate_metrics(new_eval)
             _sc = new_eval.get("score_contract") or {}
             _dcg = _sc.get("deterministic_charter_gates", {}).get("results", {})
             _gate_verdicts = {g: r.get("passed", None) for g, r in _dcg.items()} if isinstance(_dcg, dict) else {}
             _form_str = ""
             try:
-                from src.ztare.orchestrator.forced_reframe import (
+                from ztare.orchestrator.forced_reframe import (
                     extract_parametric_form_from_source as _extract_form,
                 )
                 _form_str = _extract_form(python_code or "") or ""
             except Exception:
                 _form_str = ""
-            _cap_meta = new_eval.get("score_cap_applied") or {}
-            _raw_judge_score = _cap_meta.get("original_judge_score")
-            try:
-                from src.ztare.common.worker_metadata import (
-                    aggregate_autoresearch_worker_metadata as _aggregate_worker_metadata,
-                    autoresearch_worker_metadata_by_call_site as _worker_metadata_by_call_site,
-                )
-                _worker_meta_by_call_site = _worker_metadata_by_call_site(rubric_data)
-                _worker_meta = _aggregate_worker_metadata(_worker_meta_by_call_site)
-            except Exception:
-                _worker_meta = {
-                    "worker_archetype": "fungible_llm_call",
-                    "worker_capability": "llm",
-                    "worker_state": "stateless_externalized_briefing",
-                    "worker_identity": "fungible",
-                    "transport": "api",
-                    "worker_metadata_source": "autoresearch_loop_fallback",
-                    "worker_transport_set": ["api"],
-                    "worker_capability_set": ["llm"],
-                    "worker_metadata_by_call_site": {},
-                }
+            _raw_judge_score = _raw_judge_score_from_eval(new_eval)
+            _score_cap_reason = _score_cap_reason_from_eval(new_eval)
+            _score_cap_source = _score_cap_source_from_eval(new_eval)
+            _worker_meta = _worker_metadata_for_eval_history(rubric_data)
             _matched_run_id = os.environ.get("ZTARE_AUTORESEARCH_MATCHED_RUN_ID", "").strip()
             if _matched_run_id:
                 _worker_meta["matched_run_id"] = _matched_run_id
@@ -6997,25 +7346,41 @@ for i in range(ITERATIONS):
                 _worker_dispatch_receipts.extend(
                     _load_current_committee_dispatch_receipts(args.project)
                 )
-            _eval_hist_path.open("a").write(
-                json.dumps({
+            _append_eval_history_record(
+                workspace_dir,
+                {
                     "run_id": RUN_ID,
                     "iteration": i + 1,
                     "score": new_eval.get("score"),
                     "raw_judge_score": _raw_judge_score,
-                    "score_cap_reason": _cap_meta.get("reason") if isinstance(_cap_meta, dict) else None,
+                    "score_cap_reason": _score_cap_reason,
+                    "score_cap_source": _score_cap_source,
+                    "mutator_requested_model_id": current_mutator,
+                    "mutator_effective_model_ids": _current_iteration_mutator_effective_models(),
+                    "mutator_fallback_events": _current_iteration_mutator_fallback_events(),
                     "parametric_form": _form_str,
-                    "weakest_point": (new_eval.get("weakest_point") or "")[:200],
+                    "weakest_point": new_eval.get("weakest_point") or "",
                     "gate_verdicts": _gate_verdicts,
                     "gate_failure_count": gate_failure_count,
                     "failed_gate_ids": failed_gate_ids,
                     "timestamp": datetime.now().isoformat(),
+                    "artifact_refs": _eval_history_artifact_refs(
+                        LATEST_EVAL_RESULTS_PATH,
+                        LATEST_PROBABILITY_DAG_PATH,
+                        LATEST_EVIDENCE_GAPS_PATH,
+                        LATEST_CONSTRAINT_PROPOSALS_PATH,
+                        DERIVED_CONSTRAINTS_PATH,
+                        WORKING_PATH,
+                        THESIS_PATH,
+                        test_model_path,
+                        _submission_snapshot_py_path,
+                    ),
                     "worker_dispatch_receipts": _worker_dispatch_receipts,
                     **_worker_meta,
-                }) + "\n"
+                },
             )
-        except Exception:
-            pass  # fail-silent telemetry
+        except Exception as _eval_history_exc:  # noqa: BLE001
+            print(f"⚠️ eval_history iteration append error (non-fatal): {_eval_history_exc}")
 
         # GP-029 first slice — passive latent-distance observability.
         # Fires for every iter, including rejected candidates, because the
@@ -7085,6 +7450,9 @@ for i in range(ITERATIONS):
                 ),
                 pending_loop_action=pending_loop_action.value,
                 information_yield_rationale=yield_decision.rationale,
+                raw_judge_score=_raw_judge_score_from_eval(new_eval),
+                score_cap_reason=_score_cap_reason_from_eval(new_eval),
+                score_cap_source=_score_cap_source_from_eval(new_eval),
             )
             last_completed_iteration = i + 1
             _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -7099,10 +7467,7 @@ for i in range(ITERATIONS):
         #       gate failure count does not regress (the latent gradient).
         # See gp163d run 1777250273 iter 8 (raw 100 capped 50, lost in iter 9).
         _new_cap_meta = new_eval.get("score_cap_applied") or {}
-        _new_raw_score = (
-            _new_cap_meta.get("original_judge_score")
-            if isinstance(_new_cap_meta, dict) else None
-        )
+        _new_raw_score = _raw_judge_score_from_eval(new_eval)
         if _new_raw_score is None:
             # 2026-05-02 hotfix: judge JSON sometimes lacks 'score'
             # (logged a few lines above as a warning). Fall back to 0
@@ -7182,7 +7547,7 @@ for i in range(ITERATIONS):
             # consumption counters on every active LLM cache: the
             # cached payload contributed to a successful iter.
             try:
-                from src.ztare.common.llm_cache import update_caches_post_iter
+                from ztare.common.llm_cache import update_caches_post_iter
                 _cache_updates = update_caches_post_iter(
                     Path(PROJECT_DIR), iter_index=i,
                     champion_improved=True,
@@ -7198,7 +7563,7 @@ for i in range(ITERATIONS):
             # Library-call form (no argv hack); the audit's CLI wraps
             # this same function.
             try:
-                from src.ztare.validator.epistemic_coherence_audit import (
+                from ztare.validator.epistemic_coherence_audit import (
                     run_audit as _run_eca, _print_summary as _eca_print,
                 )
                 _eca_report = _run_eca(
@@ -7222,6 +7587,7 @@ for i in range(ITERATIONS):
             best_raw_score = _new_raw_score
             best_gate_failure_count = _new_gate_failure_count
             best_weakest_point = new_eval["weakest_point"]  # GP-002: best-state memory
+            best_eval = dict(new_eval) if isinstance(new_eval, dict) else {}
             current_target_weakest_point = new_eval["weakest_point"]  # GP-002: control signal
             stagnation_count = yield_decision.stagnant_window
             last_failure_reason = None
@@ -7247,7 +7613,7 @@ for i in range(ITERATIONS):
             # GP-119: Post-champion Inverter (in-loop promotion path)
             if best_score >= 50:
                 try:
-                    from src.ztare.validator.inverter_agent import run_inverter
+                    from ztare.validator.inverter_agent import run_inverter
                     run_inverter(
                         project_dir=Path(PROJECT_DIR),
                         champion_thesis=new_content,
@@ -7261,7 +7627,7 @@ for i in range(ITERATIONS):
             # GP-122: Post-champion Lean proof (in-loop promotion path)
             if best_score >= 70 and rubric_data.get("enable_lean_proof"):
                 try:
-                    from src.ztare.formal.lean_repl import prove_from_compression
+                    from ztare.formal.lean_repl import prove_from_compression
                     print(f"  📐📐📐 GP-122 Lean REPL: attempting proof...")
                     _lean_result = prove_from_compression(
                         project_dir=Path(PROJECT_DIR),
@@ -7451,6 +7817,8 @@ for i in range(ITERATIONS):
                     new_rubric_name,
                     "--judge_model", args.judge_model,
                     "--mutator_model", args.mutator_model,
+                    "--llm_timeout_seconds", str(args.llm_timeout_seconds),
+                    "--llm_retries", str(args.llm_retries),
                     "--eval_results_path", LATEST_EVAL_RESULTS_PATH,
                 ]
                 if args.dynamic:
@@ -7471,10 +7839,6 @@ for i in range(ITERATIONS):
                 iteration_start_utc=iteration_start_utc,
                 loop_control_action=current_loop_control_action,
                 score=new_eval.get("score", 0),
-                raw_judge_score=_new_raw_score,
-                score_cap_reason=(
-                    _new_cap_meta.get("reason") if isinstance(_new_cap_meta, dict) else None
-                ),
                 score_improved=True,
                 champion_promoted=True,
                 stagnation_count=stagnation_count,
@@ -7495,6 +7859,9 @@ for i in range(ITERATIONS):
                 ),
                 pending_loop_action=pending_loop_action.value,
                 information_yield_rationale=yield_decision.rationale,
+                raw_judge_score=_new_raw_score,
+                score_cap_reason=_score_cap_reason_from_eval(new_eval),
+                score_cap_source=_score_cap_source_from_eval(new_eval),
             )
             last_completed_iteration = i + 1
 
@@ -7508,7 +7875,7 @@ for i in range(ITERATIONS):
             # constraint. Fail-graceful — never blocks the loop.
             if bool(rubric_data.get("enable_evidence_gap_enrichment_proposals", False)):
                 try:
-                    from src.ztare.orchestrator.evidence_gap_enrichment import (
+                    from ztare.orchestrator.evidence_gap_enrichment import (
                         detect_per_iter_ege_trigger as _detect_ege,
                         propose_per_iter_ege as _per_iter_ege,
                     )
@@ -7567,7 +7934,7 @@ for i in range(ITERATIONS):
                     import re as _re_comp
                     _champion_k = len(_re_comp.findall(r'^\s+\w+\s*=\s*[-+]?\d', _champion_test, _re_comp.MULTILINE))
                     if _champion_k >= 3:  # fire on any non-trivial champion; BIC decides
-                        from src.ztare.fit.compress_champion import compress_champion as _compress
+                        from ztare.fit.compress_champion import compress_champion as _compress
                         print(f"\n    🔬 GP-103 in-loop compression (champion k={_champion_k})...")
                         _comp_results = _compress(Path(PROJECT_DIR), k_max=_champion_k - 1, verbose=False)
                         _comp_passing = [r for r in _comp_results if r.gates_passed]
@@ -7575,7 +7942,7 @@ for i in range(ITERATIONS):
                             _comp_best = _comp_passing[0]
                             if _comp_best.k < _champion_k:
                                 # Install compressed form
-                                from src.ztare.fit.compress_champion import _write_test_model as _comp_write
+                                from ztare.fit.compress_champion import _write_test_model as _comp_write
                                 # Detect variable from current test_model
                                 _var_match = _re_comp.search(r'def f\((\w+)', _champion_test)
                                 _comp_var = _var_match.group(1) if _var_match else "n"
@@ -7603,8 +7970,8 @@ for i in range(ITERATIONS):
                 _sapg_new = new_eval.get("cage_r20_r23", {}) or {}
                 if (bool(_sapg_new.get("any_flag")) is False
                         and best_score >= 80
-                        and isinstance(current_eval, dict)
-                        and "cage_r20_r23" not in (current_eval or {})):
+                        and isinstance(best_eval, dict)
+                        and "cage_r20_r23" not in (best_eval or {})):
                     print(
                         f"⚖️  Retroactive champion invalidation: "
                         f"champion (score={best_score}) predates the R20-R23 "
@@ -7621,7 +7988,7 @@ for i in range(ITERATIONS):
             # every active cache; after max_unsuccessful_consumptions
             # strikes, lookups will miss and force a fresh LLM call.
             try:
-                from src.ztare.common.llm_cache import update_caches_post_iter
+                from ztare.common.llm_cache import update_caches_post_iter
                 _cache_updates = update_caches_post_iter(
                     Path(PROJECT_DIR), iter_index=i,
                     champion_improved=False,
@@ -7667,6 +8034,9 @@ for i in range(ITERATIONS):
                 ),
                 pending_loop_action=pending_loop_action.value,
                 information_yield_rationale=yield_decision.rationale,
+                raw_judge_score=_new_raw_score,
+                score_cap_reason=_score_cap_reason_from_eval(new_eval),
+                score_cap_source=_score_cap_source_from_eval(new_eval),
             )
             last_completed_iteration = i + 1
             _pop_seed_queue(workspace_dir, _comp_seed_injected)
@@ -7745,7 +8115,7 @@ for i in range(ITERATIONS):
                                     try:
                                         _fp_data = json.loads(_fp_persisted.read_text())
                                         if _fp_data.get("status") == "emitted" and _fp_data.get("descriptor"):
-                                            from src.ztare.validator.core.information_yield import ShapeDescriptor
+                                            from ztare.validator.core.information_yield import ShapeDescriptor
                                             _cc_active_descriptor = ShapeDescriptor(**_fp_data["descriptor"])
                                     except Exception:
                                         pass
@@ -8255,7 +8625,7 @@ for i in range(ITERATIONS):
     _checkpoint_specs = rubric_data.get("checkpoint_iters") or []
     if _checkpoint_specs:
         try:
-            from src.ztare.orchestrator.run_checkpoints import (
+            from ztare.orchestrator.run_checkpoints import (
                 evaluate_checkpoints as _evaluate_checkpoints,
             )
             _eh_records_cp: list[dict] = []
@@ -8322,7 +8692,7 @@ _finalize_run_telemetry_once()
 # GP-193 thesis synthesis) live in
 # src/ztare/orchestrator/post_loop_analyses. All three are
 # rubric-gated + fail-graceful; none can abort the run.
-from src.ztare.orchestrator.post_loop_analyses import run_post_loop_analyses
+from ztare.orchestrator.post_loop_analyses import run_post_loop_analyses
 
 run_post_loop_analyses(
     rubric_data=rubric_data,

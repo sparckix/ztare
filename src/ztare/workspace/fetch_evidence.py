@@ -2,9 +2,10 @@
 GP-051 — Bounded Evidence-Collection Agent
 
 Reads evidence gaps from workspace/latest_evidence_gaps.json, fetches public sources
-for degrading gaps (or operator-specified severity), appends stamped provenance blocks
-to evidence.txt, saves raw fetch content to raw/, writes a machine-readable manifest,
-and optionally runs workspace-update + evidence-compile so the operator doesn't have to.
+for degrading gaps (or operator-specified severity), appends accepted provenance
+blocks to evidence.txt, saves accepted raw fetch content to raw/, writes a
+machine-readable manifest for all attempts, and optionally runs source-check +
+workspace-update + evidence-compile so the operator doesn't have to.
 
 Spec: GP-051 (internal seam)
 Seam: GP-051 (internal seam)
@@ -14,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 import time
@@ -22,7 +24,8 @@ from typing import Any
 
 import anthropic
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
+from ztare.workspace.evidence_gaps import evidence_gap_recovery_contract
 
 
 # ---------------------------------------------------------------------------
@@ -34,6 +37,8 @@ RAW_FILE_PREFIX = "evidence_fetch"
 DEFAULT_SEVERITY = "degrading"
 DEFAULT_MAX_FETCHES = 3
 ANTHROPIC_SEARCH_MODEL = "claude-sonnet-4-6"
+DEFAULT_OPENAI_SEARCH_MODEL = "gpt-4.1"
+WEB_SEARCH_BACKENDS = {"auto", "openai", "anthropic"}
 
 
 # ---------------------------------------------------------------------------
@@ -75,8 +80,24 @@ def load_evidence_gaps(workspace_dir: Path) -> list[dict[str, Any]]:
     raise ValueError(f"Unexpected evidence gaps schema at {gaps_path}")
 
 
-def filter_gaps(gaps: list[dict], severity: str) -> list[dict]:
-    return [g for g in gaps if g.get("severity") == severity]
+def filter_gaps(
+    gaps: list[dict],
+    severity: str,
+    *,
+    project_dir: Path | None = None,
+    allow_inferred_public: bool = False,
+) -> list[dict]:
+    filtered: list[dict] = []
+    for gap in gaps:
+        if gap.get("severity") != severity:
+            continue
+        contract = evidence_gap_recovery_contract(gap, project_dir=project_dir)
+        if not contract.get("can_public_fetch"):
+            continue
+        if contract.get("schema_promotion_required") and not allow_inferred_public:
+            continue
+        filtered.append(gap)
+    return filtered
 
 
 def already_fetched_queries(evidence_txt: Path) -> set[str]:
@@ -90,6 +111,11 @@ def already_fetched_queries(evidence_txt: Path) -> set[str]:
             try:
                 manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
                 for entry in manifest.get("fetches", []):
+                    status = str(entry.get("status") or "").strip().lower()
+                    if status and status not in {"accepted", "fetched"}:
+                        continue
+                    if not status and int(entry.get("content_chars") or 0) <= 0:
+                        continue
                     q = (entry.get("gap_query") or entry.get("query") or "").strip()
                     if q:
                         seen.add(q)
@@ -102,6 +128,50 @@ def already_fetched_queries(evidence_txt: Path) -> set[str]:
         seen.update(re.findall(r"^Gap query: (.+)$", text, re.MULTILINE))
 
     return seen
+
+
+def classify_fetch_error(error_message: str) -> dict[str, Any]:
+    """Classify provider-search failures for retry and operator recovery."""
+    text = str(error_message or "").strip()
+    lowered = text.lower()
+    if any(marker in lowered for marker in ("insufficient_quota", "credit balance", "quota")):
+        return {
+            "failure_kind": "provider_quota",
+            "retryable": False,
+            "recovery_hint": "change billing state or choose another search backend",
+        }
+    if any(marker in lowered for marker in ("invalid_api_key", "authentication", "unauthorized", "401")):
+        return {
+            "failure_kind": "provider_auth",
+            "retryable": False,
+            "recovery_hint": "check the API key for the selected search backend",
+        }
+    if any(marker in lowered for marker in ("rate_limit", "rate limit", "429")):
+        return {
+            "failure_kind": "provider_rate_limit",
+            "retryable": True,
+            "recovery_hint": "retry later or choose another search backend",
+        }
+    if any(
+        marker in lowered
+        for marker in ("connection error", "timeout", "timed out", "network", "dns")
+    ):
+        return {
+            "failure_kind": "provider_connection",
+            "retryable": True,
+            "recovery_hint": "retry the same search backend after network recovery",
+        }
+    if not text:
+        return {
+            "failure_kind": "provider_empty_error",
+            "retryable": True,
+            "recovery_hint": "retry with debug logging enabled",
+        }
+    return {
+        "failure_kind": "provider_error",
+        "retryable": True,
+        "recovery_hint": "inspect provider error and retry or choose another search backend",
+    }
 
 
 def build_provenance_header(
@@ -128,20 +198,75 @@ def build_provenance_header(
 
 
 # ---------------------------------------------------------------------------
-# Web fetch via Anthropic web_search tool
+# Web fetch via provider web-search tools
 # ---------------------------------------------------------------------------
 
-def fetch_via_web_search(query: str, model: str = "") -> tuple[str, str]:
+def web_search_backend_for_model(model: str, *, backend: str = "auto") -> str:
+    """Return the web-search backend used by evidence-fetch.
+
+    This path uses provider-native web-search tools, not the general text
+    runtime. OpenAI-family models route to OpenAI Responses web_search_preview;
+    every other model label uses the Anthropic web_search tool in auto mode
+    until that provider exposes a compatible search tool here. Pass an explicit
+    backend when source search and compile model should be different.
+    """
+    backend_label = str(backend or "auto").strip().lower()
+    if backend_label not in WEB_SEARCH_BACKENDS:
+        raise ValueError(
+            f"Unsupported evidence search backend: {backend!r}. "
+            "Expected one of: auto, openai, anthropic."
+        )
+    if backend_label in {"openai", "anthropic"}:
+        return backend_label
+    model_label = (model or "").strip()
+    if not model_label:
+        return "anthropic"
+    try:
+        from ztare.common.llm_runtime import get_model_family, resolve_model_id
+
+        family = get_model_family(resolve_model_id(model_label))
+        return "openai" if family == "openai" else "anthropic"
+    except Exception:
+        model_lower = model_label.lower()
+        if model_lower.startswith(("gpt", "openai", "o1", "o3", "o4")):
+            return "openai"
+        return "anthropic"
+
+
+def fetch_via_web_search(
+    query: str,
+    model: str = "",
+    *,
+    search_backend: str = "auto",
+) -> tuple[str, str]:
     """
     Fetch and summarize content for a query using web search.
-    Routes to OpenAI (web_search_preview) when the model param starts with "gpt",
+    Routes to OpenAI (web_search_preview) for OpenAI-family model labels;
     otherwise uses Anthropic's web_search tool.
     Returns (content, source_note). Raises RuntimeError on failure.
     """
-    model_lower = (model or "").strip().lower()
-    if model_lower.startswith("gpt") or model_lower.startswith("openai"):
+    if web_search_backend_for_model(model, backend=search_backend) == "openai":
         return _fetch_via_openai_web_search(query, model)
-    return _fetch_via_anthropic_web_search(query)
+    return _fetch_via_anthropic_web_search(query, requested_model=model)
+
+
+def _openai_search_model_id(model: str) -> str:
+    """Return an OpenAI model id suitable for web search."""
+    model_label = (model or "").strip()
+    if not model_label:
+        return DEFAULT_OPENAI_SEARCH_MODEL
+    try:
+        from ztare.common.llm_runtime import get_model_family, resolve_model_id
+
+        resolved = resolve_model_id(model_label)
+        if get_model_family(resolved) == "openai":
+            return resolved
+    except Exception:
+        pass
+    model_lower = model_label.lower()
+    if model_lower.startswith(("gpt", "openai", "o1", "o3", "o4")):
+        return model_label
+    return DEFAULT_OPENAI_SEARCH_MODEL
 
 
 def _fetch_via_openai_web_search(query: str, model: str) -> tuple[str, str]:
@@ -159,13 +284,7 @@ def _fetch_via_openai_web_search(query: str, model: str) -> tuple[str, str]:
         f"and sources where available. Focus on information that would be useful as evidence "
         f"for an analytical model or thesis."
     )
-    # Resolve model ID
-    model_id = model if "." in model or "-" in model else "gpt-4.1"
-    try:
-        from src.ztare.common.llm_runtime import resolve_model_id
-        model_id = resolve_model_id(model)
-    except Exception:
-        pass
+    model_id = _openai_search_model_id(model)
 
     try:
         response = client.responses.create(
@@ -185,12 +304,17 @@ def _fetch_via_openai_web_search(query: str, model: str) -> tuple[str, str]:
         if not content:
             raise RuntimeError("Empty response from OpenAI web search")
         source_note = f"web_search via {model_id}"
+        if model and _openai_search_model_id(model) == DEFAULT_OPENAI_SEARCH_MODEL:
+            source_note += f" (requested MODEL={model})"
         return content, source_note
     except Exception as e:
         raise RuntimeError(f"OpenAI API error during web search: {e}") from e
 
 
-def _fetch_via_anthropic_web_search(query: str) -> tuple[str, str]:
+def _fetch_via_anthropic_web_search(
+    query: str,
+    requested_model: str = "",
+) -> tuple[str, str]:
     """Fetch via Anthropic's web_search tool (original implementation)."""
     client = anthropic.Anthropic()
     prompt = (
@@ -215,6 +339,8 @@ def _fetch_via_anthropic_web_search(query: str) -> tuple[str, str]:
         if not content:
             raise RuntimeError("Empty response from web search")
         source_note = "web_search via claude-sonnet-4-6"
+        if requested_model and requested_model not in {"claude", ANTHROPIC_SEARCH_MODEL}:
+            source_note += f" (requested MODEL={requested_model})"
         return content, source_note
     except anthropic.APIError as e:
         raise RuntimeError(f"Anthropic API error during web search: {e}") from e
@@ -232,6 +358,8 @@ def run_fetch(
     auto_compile: bool,
     model: str,
     dry_run: bool,
+    search_backend: str = "auto",
+    allow_inferred_public: bool = False,
 ) -> dict[str, Any]:
     workspace_dir = project_dir / "workspace"
     evidence_txt = project_dir / "evidence.txt"
@@ -260,7 +388,16 @@ def run_fetch(
 
     # Load and filter gaps
     gaps = load_evidence_gaps(workspace_dir)
-    filtered = filter_gaps(gaps, severity)
+    filtered = filter_gaps(
+        gaps,
+        severity,
+        project_dir=project_dir,
+        allow_inferred_public=allow_inferred_public,
+    )
+    resolved_search_backend = web_search_backend_for_model(
+        model,
+        backend=search_backend,
+    )
 
     if not filtered:
         print(f"No evidence gaps with severity='{severity}' found. Nothing to fetch.")
@@ -275,6 +412,7 @@ def run_fetch(
     skipped_duplicates = 0
     total_attempted = 0
     total_accepted = 0
+    failure_counts: dict[str, int] = {}
 
     candidates = filtered[:max_fetches]
     if len(filtered) > max_fetches:
@@ -296,6 +434,7 @@ def run_fetch(
                 "gap_query": query,
                 "run_timestamp": str(run_timestamp),
                 "status": "skipped_duplicate",
+                "search_backend": resolved_search_backend,
             })
             continue
 
@@ -306,17 +445,28 @@ def run_fetch(
             content = "[DRY RUN — no actual fetch performed]"
             source_note = "dry_run"
             status = "dry_run"
+            error_message = ""
         else:
             try:
-                content, source_note = fetch_via_web_search(query, model=model)
+                content, source_note = fetch_via_web_search(
+                    query,
+                    model=model,
+                    search_backend=search_backend,
+                )
                 status = "accepted"
+                error_message = ""
                 total_accepted += 1
                 already_seen.add(query)
                 print(f"    -> accepted ({len(content)} chars)")
             except RuntimeError as e:
-                content = f"[FETCH FAILED: {e}]"
+                error_message = str(e)
+                content = ""
                 source_note = "fetch_failed"
                 status = "rejected"
+                failure = classify_fetch_error(error_message)
+                failure_counts[str(failure["failure_kind"])] = (
+                    failure_counts.get(str(failure["failure_kind"]), 0) + 1
+                )
                 print(f"    -> rejected: {e}")
 
         header = build_provenance_header(
@@ -327,11 +477,14 @@ def run_fetch(
             status=status,
             source_note=source_note,
         )
-        block = f"{header}\n\n{content}\n\n---"
-        appended_blocks.append(block)
-        raw_sections.append(f"### Gap {idx} — {gap.get('target', 'unnamed')}\n\n{header}\n\n{content}")
+        if status == "accepted":
+            block = f"{header}\n\n{content}\n\n---"
+            appended_blocks.append(block)
+            raw_sections.append(
+                f"### Gap {idx} — {gap.get('target', 'unnamed')}\n\n{header}\n\n{content}"
+            )
 
-        manifest_entries.append({
+        manifest_entry = {
             "gap_index": idx,
             "gap_severity": gap.get("severity"),
             "gap_target": gap.get("target"),
@@ -340,8 +493,13 @@ def run_fetch(
             "fetch_timestamp": fetch_ts,
             "status": status,
             "source_note": source_note,
+            "search_backend": resolved_search_backend,
             "content_chars": len(content),
-        })
+        }
+        if error_message:
+            manifest_entry["error_message"] = error_message
+            manifest_entry.update(classify_fetch_error(error_message))
+        manifest_entries.append(manifest_entry)
 
     # Write to evidence.txt
     if appended_blocks and not dry_run:
@@ -373,6 +531,9 @@ def run_fetch(
         "fetched_at": fetch_ts,
         "project": project_dir.name,
         "severity_filter": severity,
+        "search_backend": resolved_search_backend,
+        "search_backend_selector": search_backend,
+        "allow_inferred_public": allow_inferred_public,
         "run_timestamp": str(run_timestamp),
         "max_fetches": max_fetches,
         "dry_run": dry_run,
@@ -380,6 +541,7 @@ def run_fetch(
         "skipped_duplicates": skipped_duplicates,
         "total_attempted": total_attempted,
         "total_accepted": total_accepted,
+        "failure_counts": failure_counts,
     }
     if not dry_run:
         manifest_path = workspace_dir / f"{MANIFEST_PREFIX}_{_ts_file()}.json"
@@ -394,26 +556,41 @@ def run_fetch(
 # ---------------------------------------------------------------------------
 
 def run_auto_compile(*, project_dir: Path, model: str) -> bool:
-    """Run workspace-update then evidence-compile. Returns True on success."""
+    """Run source-check, workspace-update, then evidence-compile. Returns True on success."""
     import subprocess
 
     project_name = project_dir.name
+    print(f"\nRunning source-check for {project_name}...")
+    r0 = subprocess.run(
+        [sys.executable, "-m", "ztare.scaffold.source_check",
+         "--project", project_name],
+        capture_output=False,
+    )
+    if r0.returncode != 0:
+        print(
+            f"source-check failed (exit {r0.returncode}) — "
+            "skipping workspace-update and evidence-compile."
+        )
+        print("Fix raw source typing, then run manually:")
+        print(f"  ztare project source-check --project {project_name} --json")
+        print(f"  make evidence-prepare PROJECT={project_name} MODEL={model}")
+        return False
+
     print(f"\nRunning workspace-update for {project_name}...")
     r1 = subprocess.run(
-        [sys.executable, "-m", "src.ztare.workspace.update_workspace",
+        [sys.executable, "-m", "ztare.workspace.update_workspace",
          "--project", project_name, "--model", model],
         capture_output=False,
     )
     if r1.returncode != 0:
         print(f"workspace-update failed (exit {r1.returncode}) — skipping evidence-compile.")
         print("Fix the error above, then run manually:")
-        print(f"  make workspace-update PROJECT={project_name} MODEL={model}")
-        print(f"  make evidence-compile PROJECT={project_name} MODEL={model}")
+        print(f"  make evidence-prepare PROJECT={project_name} MODEL={model}")
         return False
 
     print(f"\nRunning evidence-compile for {project_name}...")
     r2 = subprocess.run(
-        [sys.executable, "-m", "src.ztare.workspace.compile_evidence",
+        [sys.executable, "-m", "ztare.workspace.compile_evidence",
          "--project", project_name, "--mode", "workspace", "--model", model],
         capture_output=False,
     )
@@ -454,18 +631,36 @@ def main() -> int:
     parser.add_argument(
         "--model",
         default="gemini",
-        help="Model family for workspace-update and evidence-compile (if --auto-compile). Default: gemini",
+        help="Model family for workspace-update and evidence-compile after source-check (if --auto-compile). Default: gemini",
+    )
+    parser.add_argument(
+        "--search-backend",
+        default=os.environ.get("ZTARE_EVIDENCE_SEARCH_BACKEND", "auto"),
+        choices=sorted(WEB_SEARCH_BACKENDS),
+        help=(
+            "Web-search backend for evidence fetching. 'auto' follows the "
+            "model family; use openai or anthropic when search and compile "
+            "providers should differ. Env: ZTARE_EVIDENCE_SEARCH_BACKEND."
+        ),
     )
     parser.add_argument(
         "--auto-compile",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="Automatically run workspace-update + evidence-compile after fetching. Default: on.",
+        help="Automatically run source-check + workspace-update + evidence-compile after fetching. Default: on.",
     )
     parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Print what would be fetched without making any API calls or file writes.",
+    )
+    parser.add_argument(
+        "--allow-inferred-public",
+        action="store_true",
+        help=(
+            "Allow legacy rows classified as public by fallback inference to drive "
+            "web fetch. Default requires an explicit public recovery contract."
+        ),
     )
     args = parser.parse_args()
 
@@ -477,6 +672,11 @@ def main() -> int:
 
     print(f"Project: {project_dir}")
     print(f"Severity: {args.severity} | Max fetches: {args.max_fetches} | Auto-compile: {args.auto_compile}")
+    print(
+        "Search backend: "
+        f"{web_search_backend_for_model(args.model, backend=args.search_backend)} "
+        f"(selector={args.search_backend})"
+    )
     if args.dry_run:
         print("DRY RUN — no files will be written.\n")
 
@@ -487,6 +687,8 @@ def main() -> int:
             max_fetches=args.max_fetches,
             auto_compile=args.auto_compile,
             model=args.model,
+            search_backend=args.search_backend,
+            allow_inferred_public=args.allow_inferred_public,
             dry_run=args.dry_run,
         )
     except (FileNotFoundError, ValueError) as e:

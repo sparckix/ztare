@@ -1,0 +1,22 @@
+{
+  "bounded_claim": "the malformed intake file should not enter the in-loop kernel",
+  "created_at": "2026-06-19T00:00:00Z",
+  "evidence_refs": [],
+  "execution_boundary": "in_loop_autoresearch_candidate",
+  "expected_command": "ztare autoresearch route --task 'test whether a missing evidence reference is rejected' --project demo_claims --rubric demo_claims",
+  "next_falsifier": "add an existing evidence reference and validation should move to the next schema check",
+  "non_claims": [
+    "not a full project reproduction",
+    "not evidence that the claim is true",
+    "not an autoresearch run"
+  ],
+  "notes": "Intentionally invalid public fixture. It should fail because evidence_refs is empty.",
+  "packet_id": "pp_5b951b5771ac3a6b",
+  "project": "demo_claims",
+  "rubric": "demo_claims",
+  "schema_version": 1,
+  "source_refs": [
+    "README.md"
+  ],
+  "task": "test whether a missing evidence reference is rejected"
+}

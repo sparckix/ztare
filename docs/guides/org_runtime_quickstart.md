@@ -6,28 +6,28 @@ description: "Quickstart for the autonomous org runtime."
 
 > **Up:** [Documentation map](../README.md)
 
-**Audience:** operators or enterprise engineers who want persistent AI roles,
-not just one-off chat sessions.
+**Audience:** maintainers or enterprise engineers who already understand the
+first-run ZTARE workbench and want persistent AI roles, mandates, gates, and
+runtime logs.
 
-**Status:** productization path for the *Cognitive Firm* organizational primitives.
-All code in this repo is MIT-licensed. See `README.md` §License and
-`docs/concepts/ztare_research_company_architecture.md` for the 24×7 unattended
-architecture.
+**Status:** advanced runtime overlay. Start with
+[`first-30-minutes.md`](first-30-minutes.md) or [`quickstart.md`](quickstart.md)
+before using this guide.
 
 The reusable kernel is the separate public repo
 [`sparckix/cognitive-firm`](https://github.com/sparckix/cognitive-firm).
 `org/` in ZTARE is the tenant overlay and compatibility surface for this
-research company: local role files, mandates, gates, channels, and runtime
+research workbench: local role files, mandates, gates, channels, and runtime
 projection docs. Generic primitives should move upstream only when they are not
 ZTARE-specific policy.
 
 ---
 
-## RD-1.12 Live Co-Drive (default operating mode, 2026-05-02)
+## Runtime Action Loop
 
 Live co-drive is **standard operating mode** for the Research Director.
-The daemon runs the full detection → policy → execution chain on every
-tick, there is no opt-in flag.
+The daemon runs the detection, policy, and execution chain on every tick; there
+is no opt-in flag.
 
 The chain:
 
@@ -74,16 +74,16 @@ Tracked daily totals live at `ztare_workspace/agent_utilization/<date>.json`.
 Warn-threshold trips emit a notification-provider message **and** a damage
 signal at `org/signals/damage/` (idempotent, one alert per role/cli/dim/UTC-day).
 
-**Warn-threshold jitter (gp168 v3 run-2 finding F2, 2026-05-02).** The
+**Warn-threshold jitter (utilization audit finding, 2026-05-02).** The
 effective warn-threshold is jittered by ±10% per `(role, agent_cli,
 UTC-date)` so agents cannot game by staying just below a static
-threshold. With `warn_threshold_frac: 0.80`, the apparatus actually
+threshold. With `warn_threshold_frac: 0.80`, the workbench
 warns at a uniform-random fraction in `[0.70, 0.80]` each day, seeded
 by `(role_id, agent_cli, date)` so reproducible within a day but
 unpredictable across days. Set `agent_utilization_jitter_window: 0.0`
 in the rubric to disable for deterministic operation.
 
-**Override events (gp168 v3 run-2 finding F1, 2026-05-02).** When the
+**Override events (utilization audit finding, 2026-05-02).** When the
 principal extends a cap, postpones a closure, delays an approval,
 skips an audit, or raises the absolute ceiling, the event is recorded
 to `ztare_workspace/agent_utilization/overrides/<date>.jsonl` AND
@@ -96,7 +96,7 @@ target, reason)` from `src.ztare.supervisor.agent_utilization_tracker`.
 
 Configure caps from Orbit by clicking ⚙ **Settings** in the top bar.
 
-### Agent-CLI rotation (optional, gp168 v3 run-2 finding F3, 2026-05-02)
+### Agent-CLI rotation (optional utilization audit finding, 2026-05-02)
 
 A role yaml may carry an `agent_rotation` block to rotate the role's
 primary member across multiple CLIs (Claude / Codex / Gemini) on a
@@ -178,9 +178,9 @@ For a VPS or Docker deployment, you must choose a state strategy:
 Do not assume a daemon running on a VPS can see a task created only on your
 laptop. Filesystem state is local unless you replicate it.
 
-If you want a direct principal-operated Claude/Codex terminal session instead
-of the autonomous org runtime, use
-[`docs/guides/operator_console.md`](operator_console.md). That path starts no
+If you want a direct human-run Claude/Codex terminal session instead of the
+autonomous org runtime, use the
+[`manual console`](manual_console.md). That path starts no
 daemon and runs no work-discovery loop.
 
 ---
@@ -421,7 +421,7 @@ The current research-taste axes are:
 Candidate next moves are ranked from JSONL queues:
 
 ```bash
-python -m src.ztare.orchestrator.research_taste \
+python -m ztare.orchestrator.research_taste \
   --queue projects/<project>/workspace/next_discriminator_queue.jsonl \
   --out projects/<project>/workspace/research_taste_ranking.json
 ```
@@ -429,7 +429,7 @@ python -m src.ztare.orchestrator.research_taste \
 For frontier projects, build or refresh the queue from durable artifacts:
 
 ```bash
-python -m src.ztare.orchestrator.operator_replay_audit \
+python -m ztare.orchestrator.operator_replay_audit \
   --project <project_slug> \
   research_areas/EXPERIMENT_TRACK_RECORD.md \
   <private_research_notes_or_catalog>

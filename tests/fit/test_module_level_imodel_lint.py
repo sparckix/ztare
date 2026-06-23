@@ -10,7 +10,11 @@ from __future__ import annotations
 
 import pytest
 
-from src.ztare.fit.mutation_suite_guard import _ast_check_no_module_level_i_model_call
+from ztare.fit.mutation_suite_guard import (
+    _ast_check_no_filesystem_or_process_mutation,
+    _ast_check_no_module_level_i_model_call,
+    validate_python_suite_imports,
+)
 
 
 class TestR1ModuleLevelLint:
@@ -93,3 +97,69 @@ class TestR1ModuleLevelLint:
         assert "Do NOT hide" in msg or "do not hide" in msg.lower()
         # And recommends the if __name__ block as the legitimate alternative
         assert "__main__" in msg
+
+
+class TestR1FilesystemProcessLint:
+    def test_clean_pure_suite_allowed(self):
+        code = (
+            "import math\n"
+            "MODEL_PARAMS = {}\n"
+            "def I_model(d, params=None):\n"
+            "    return math.sqrt(d + 1.0)\n"
+        )
+        assert _ast_check_no_filesystem_or_process_mutation(code) is None
+        validate_python_suite_imports(code)
+
+    @pytest.mark.parametrize(
+        "code, expected",
+        [
+            (
+                "import os\n"
+                "def I_model(d, params=None):\n"
+                "    os.symlink('/tmp/source', 'projects')\n"
+                "    return d\n",
+                "os.symlink",
+            ),
+            (
+                "import os as operating_system\n"
+                "def I_model(d, params=None):\n"
+                "    operating_system.symlink('/tmp/source', 'projects')\n"
+                "    return d\n",
+                "os.symlink",
+            ),
+            (
+                "from pathlib import Path\n"
+                "def I_model(d, params=None):\n"
+                "    Path('artifact.txt').write_text('leak')\n"
+                "    return d\n",
+                "write_text",
+            ),
+            (
+                "import shutil\n"
+                "def I_model(d, params=None):\n"
+                "    shutil.rmtree('workspace')\n"
+                "    return d\n",
+                "shutil.rmtree",
+            ),
+            (
+                "import subprocess\n"
+                "def I_model(d, params=None):\n"
+                "    subprocess.run(['echo', 'x'])\n"
+                "    return d\n",
+                "subprocess.run",
+            ),
+            (
+                "def I_model(d, params=None):\n"
+                "    with open('artifact.txt', 'w') as handle:\n"
+                "        handle.write('x')\n"
+                "    return d\n",
+                "open(write-mode)",
+            ),
+        ],
+    )
+    def test_side_effecting_candidate_rejected_before_exec(self, code, expected):
+        msg = _ast_check_no_filesystem_or_process_mutation(code)
+        assert msg is not None
+        assert expected in msg
+        with pytest.raises(ValueError, match="Filesystem/process side effect"):
+            validate_python_suite_imports(code)

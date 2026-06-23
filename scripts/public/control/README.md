@@ -4,19 +4,33 @@
 
 The control plane and the largest scripts tree: agent dispatch,
 org-runtime CLIs, discipline linters, the tick lifecycle, forecast-pool
-control, and the GP-225 / Route-C / gp235 experiment pipelines. Treat
+control, and the LeanMill / Route-C / proof-route-fingerprint experiment
+pipelines. Treat
 anything named `route_c`, `rung`, `pin_delta`, `gap_ledger`, `v32`,
 `v33`, or `gp235` as active research tooling, not dead code; several
 files are recent in-flight work and must not be archived on a name-grep
 miss.
 
+## Public first-run gates
+
+These scripts are public because they define the clean-clone contract for a
+reviewer or fork. They should use only public fixtures, local state, and
+offline checks. Private publish-safety scanners remain under `scripts/private/`.
+
+| Script | What it does |
+|---|---|
+| `hello_value_demo.py` | Offline first-run demo: ready project intake has a missing-reference falsifier, malformed intake blocks, and a broad claim is demoted to bounded wording with missing evidence and next-falsifier output. |
+| `public_adversarial_smoke.py` | Public entry-path drift check: verifies `make first-run`, public docs, CLI help, project-intake fixtures, smoke cleanup, public terminology, and copyable commands. |
+| `claim_discipline_demo.py` | Small public claim-discipline demonstration used by `make demo-claim-discipline`. |
+| `gaming_catalog_audit.py` | Checks that the public gaming behavior catalog, vector registry, promotion evidence, runtime-gate wording, and executable fixture anchors stay synchronized. |
+
 ## Agent and org runtime
 
 | Script | What it does |
 |---|---|
-| `agent_daemon.py` | GP-128 Level-2 persistent autonomous agent: the sleepless tick loop, runs on a VPS or locally. |
+| `agent_daemon.py` | Persistent autonomous-agent tick loop; runs on a VPS or locally. Historical seam: `GP-128`. |
 | `agent_channel.py` | Small CLI for the local persistent-agent channel (devops/debug surface, not the product UI). |
-| `closure_daemon.py` | GP-168 exogenous-pressure enforcer: stateless poller over the OKR tree. |
+| `closure_daemon.py` | Closure-pressure enforcer: stateless poller over the OKR tree. Historical seam: `GP-168`. |
 | `external_run_monitor.py` | Project-agnostic watchdog for external GPU/API runs (watches a PID file + result file). |
 | `poll_telegram.py` | Optional tenant Telegram inbound poller; public runtime does not require it. |
 | `telegram_setup.py` | Optional tenant Telegram setup wizard; filesystem gates are the public default. |
@@ -28,6 +42,7 @@ miss.
 | `forked_org_smoke.py` | Fresh-fork smoke test of the org kernel (RD-1.12 detection in a tempdir). |
 | `check_org_independence.py` | CI lint: `org/` source must not import ZTARE-specific modules. |
 | `export_a2a_agent_cards.py` | Export local A2A-style agent cards for the persistent role offices. |
+| `manual_console.sh` | Direct human-agent console launcher for Claude/Codex; starts no daemon and no validator loop. |
 
 ## Tick lifecycle and close-out gates
 
@@ -49,24 +64,24 @@ miss.
 | `closure_claim_discipline_linter.py` | Tier-1 deterministic discipline linter for closure-claim artifacts. |
 | `closure_claim_discipline_linter_tier2.py` | Tier-2 LLM semantic check (companion to the deterministic Tier-1). |
 | `closure_claim_discipline_linter_tier3.py` | Tier-3 multi-LLM cross-validation of the same artifact. |
-| `predispatch_check.py` | Mechanical pre-dispatch discipline gate (operator catch 2026-05-09). |
-| `proof_source_integrity_lint.py` | Advisory proof-source integrity lint for a bundle `proofs.json` (apparatus risks R1-R4). |
+| `predispatch_check.py` | Mechanical pre-dispatch discipline gate (maintainer catch 2026-05-09). |
+| `proof_source_integrity_lint.py` | Advisory proof-source integrity lint for a bundle `proofs.json` (closure-risk classes R1-R4). |
 | `scientific_amnesia_precheck.py` | Generic scientific-amnesia history-overlap precheck (run before any new tick). |
 | `formalization_sequence_classifier.py` | Run the formalization-sequencing precheck. |
-| `preflight_charter_patches.py` | GP-226 charter-patch pre-iter-1 confirmation hook (a `make loop` prerequisite). |
-| `charter_commit.py` | GP-226: apply an advisory-mode charter-critic patch candidate. |
+| `preflight_charter_patches.py` | Charter-patch pre-iter-1 confirmation hook (a `make loop` prerequisite). Historical seam: `GP-226`. |
+| `charter_commit.py` | Apply an advisory-mode charter-critic patch candidate. Historical seam: `GP-226`. |
 | `restore_baseline_test_model.py` | Restore a project's `test_model.py` to an iter-0 placeholder (detects substrate type). |
-| `safe_lean_runner.py` | Operator-mandated resource-limited Lean test runner (use instead of ad-hoc parallel bash). |
+| `safe_lean_runner.py` | Maintainer-mandated resource-limited Lean test runner (use instead of ad-hoc parallel bash). |
 
 ## Forecast pool and calibration
 
 | Script | What it does |
 |---|---|
 | `forecast_pool.py` | The sealed forecast-pool primitive for macro/meso/micro routing. |
-| `p0_calibration.py` | Emit the one stable GP-236 calibration block (composes existing forecast-pool outputs). |
+| `p0_calibration.py` | Emit the stable calibration block that composes existing forecast-pool outputs. Historical seam: `GP-236`. |
 | `pattern_026_calibration_audit.py` | Tertiary calibration test for PATTERN-026 (primitive-before-architecture gate). |
 
-## GP-225 / LeanMill Harnesses
+## LeanMill Harnesses
 
 | Script | What it does |
 |---|---|
@@ -76,7 +91,7 @@ miss.
 | `leanmill_24x7_runner.py` | Safe LeanMill station runner: refreshes deterministic state, seeds queue work, drains bounded workers, and writes the 24x7 status receipt. |
 | `leanmill_work_queue.py` | SQLite WorkItem queue plus append-only event ledger used by the LeanMill station workers. |
 | `leanmill_observability.py` | Central LeanMill observability report over queue status, event tail, source-search quality, source-binding rejections, LLM spend/fallbacks, and bottleneck classes. |
-| `leanmill_operator_contracts.py` | Compact checked operator-contract helpers for LeanMill worker lanes; C-supply template backfill uses this to carry source-cue checks, action-program order, and terminal-attempt rules into warm agents. |
+| `leanmill_operator_contracts.py` | Compact checked lane-contract helpers for LeanMill worker lanes; C-supply template backfill uses this to carry source-cue checks, action-program order, and terminal-attempt rules into warm agents. |
 | `leanmill_learning_feedback_contract.py` | Compatibility shim for canonical learning-feedback contracts under `src/ztare/leanmill/contracts/learning_feedback.py`; normalizes learning exits, malformed negative-control detection, and bounded non-credit feedback entries. |
 | `leanmill_dead_letter_triage.py` | Bounded operational triage for retryable dead-lettered WorkItems; currently requeues only proposal-validation items with explicit retry budget. |
 | `leanmill_retryable_failure_recovery.py` | Requeues failed proposal/decomposition WorkItems after recoverable control-plane defects such as parser or artifact-path failures are fixed. |
@@ -115,7 +130,7 @@ miss.
 | `leanmill_family_birth_miner.py` | Dormant ex-post miner for missed multi-row repair-family candidates; default is plan-only/no enqueue/no proof credit. |
 | `leanmill_family_spec_gate.py` | Validates repair-family YAML structure, template evidence, and control expectations before use. |
 | `leanmill_family_specs.py` | Shared parser/index helpers for repair-family specs and template inventories. |
-| `leanmill_gm_operator_lane.py` | Bounded no-credit operator/GM review lane for heldout and source decisions that should not block queues silently. |
+| `leanmill_gm_operator_lane.py` | Bounded no-credit GM review lane for heldout and source decisions that should not block queues silently. |
 | `leanmill_governance_sentinel_suite.py` | Sentinel tests for governance behavior, including negative controls and false-positive guardrails. |
 | `leanmill_handoff_integrity_gate.py` | Checks queue/artifact handoff points for stale, missing, or malformed cross-worker state. |
 | `leanmill_heldout_independence_scout.py` | Finds heldout sibling rows for repair-family validation without using final benchmark rows as design feedback. |
@@ -146,9 +161,9 @@ miss.
 | `leanmill_station_scheduler.py` | Schedules station refresh/probe/source/governance work from policy and current queue state. |
 | `leanmill_vnext_coverage_gate.py` | Coverage/self-test gate for LeanMill vNext control-plane surfaces. |
 | `leanmill_watchdog.py` | Tmux watchdog for local/VPS LeanMill daemons; restarts bounded sessions, refreshes intelligence, and honors shutdown markers. |
-| `gp230_solve.py` | GP-230 / Route-C solver harness CLI (Day-7 operator deliverable). |
-| `route_c_archetype_runner.py` | GP-230 Layer-4 archetype-catalog 5-mode ablation harness over Carleson sandbox rows. |
-| `route_c_layer_2c_dispatch.py` | Route-C Layer-2c LLM dispatch with semantic masking (GP-235-aligned wiring). |
+| `gp230_solve.py` | Forecast-contract / Route-C solver harness CLI. Historical seam: `GP-230`. |
+| `route_c_archetype_runner.py` | Route-C archetype-catalog 5-mode ablation harness over Carleson sandbox rows. Historical seam: `GP-230`. |
+| `route_c_layer_2c_dispatch.py` | Route-C Layer-2c LLM dispatch with semantic masking. Historical provenance: `GP-235`. |
 | `analyze_ablation_results.py` | Report on a `route_c_archetype_runner` JSON trace (per-mode closure breakdown). |
 | `rung1_kernel_grounded_rerank.py` | Rung-1 kernel-grounded candidate-action rerank: the cheapest falsifier of the Path-A thesis (no training, no GNN). |
 | `build_pin_delta_corpus.py` | Corrected pin-delta OOD corpus builder (bucketed `rung1_corpus.json`). |
@@ -162,11 +177,11 @@ miss.
 | `dispatch_external_prover.py` | PATTERN-014 independent-CAS-verification deployer over the OpenAI API (the cold cross-provider pass). |
 | `archetype_classifier.py` | Predict the L4 Lean tactic archetype + L2 op + L3 flags from the archetype catalog. |
 | `test_archetype_classifier_accuracy.py` | Measure `archetype_classifier.py` precision on the v3 ground-truth catalog. |
-| `proof_route_fingerprint.py` | Surface proof-route fingerprint extractor (GP-235 §4 primitive validation step 1). |
+| `proof_route_fingerprint.py` | Surface proof-route fingerprint extractor. Historical provenance: `GP-235` §4 primitive validation step 1. |
 | `proof_route_fingerprint_v2.py` | Augmented fingerprint with signature features (surface-only could not pass §4.2). |
 | `proof_route_fingerprint_v3_kernel.py` | v3 fingerprint with kernel features from v28B artifacts (anti-amnesia reuse). |
 
-## gp235 §4 series and v3x corpus / leakage gates
+## Proof-Route Fingerprint Series And V3x Corpus / Leakage Gates
 
 | Script | What it does |
 |---|---|
@@ -193,18 +208,18 @@ miss.
 | `v33_paraphrase_gate.py` | Second forward gate: gold-name-verbatim / paraphrase organ. |
 | `v33_preflight_risk_detector.py` | The governance harness's missing organ: catches tick541/carleman vacuity before, not after. |
 | `v33_single_lemma_exact_gate.py` | Third forward gate: leakage-independent single-lemma-exact organ (the v26/v27 subsumption class). |
-| `gp233_adversary_yield_decomp.py` | GP-233 scientific-yield decomposition of the non-gamed adversary-corpus run. |
+| `gp233_adversary_yield_decomp.py` | Research-yield decomposition of the non-gamed adversary-corpus run. Historical seam: `GP-233`. |
 | `ns_governance_gate.py` | v36 NS governance integration: forces every live NS attempt through the v35 forward-evidence schema. |
 
 ## Index / catalog / query helpers
 
 | Script | What it does |
 |---|---|
-| `build_gp_index.py` | GP-XXX index builder (Linus MAINTAINERS-style auto-generated index). |
-| `query_graph.py` | GP-216d/f Director graph-query helper: traversal queries over the knowledge graph (replaces grep). |
+| `build_gp_index.py` | Seam/spec index builder (MAINTAINERS-style auto-generated index). |
+| `query_graph.py` | Director graph-query helper: traversal queries over the knowledge graph (replaces grep). Historical provenance: `GP-216d/f`. |
 | `render_architecture_index.py` | Render `architecture_index.jsonl` into the discoverability meta-graph `INDEX.md`. |
 | `render_structural_language_catalog.py` | Render the RD structural-language registries into a human-readable catalog. |
-| `export_structural_language_catalog.py` | Export GP-216/GP-219 structural language as machine-readable JSON. |
+| `export_structural_language_catalog.py` | Export structural-language and PDE estimate-craft vocabularies as machine-readable JSON. Historical seams: `GP-216`, `GP-219`. |
 | `classify_substrate.py` | Pre-launch substrate fingerprint + recommended-flags generator (built after gp163d). |
 | `catch_graph_edge_advisory.py` | Conservative leakage-free advisory deriving the `surfaced_catch` graph edge from the catch ledger. |
 | `remediate_catch_ledger.py` | Integrity-preserving remediation of the catch ledger (SOX §1220: never null a concurring agent). |

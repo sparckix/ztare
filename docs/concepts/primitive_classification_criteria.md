@@ -65,7 +65,7 @@ The "≥2" criteria below apply the same minimum-evidence-bar discipline this re
 | **REP-3** | The primitive **abstracts over a class** of failure-driven engineering moves, it's a pattern, not a specific gate or one-off mechanism. | "Strip out the proper nouns (file paths, project names, function names). Does the description still make sense as a recurring meta-move? If it collapses, it's an instantiation, not a primitive." |
 | **REP-4** | Discovery happened via **principal-inception**, not first-principles design, a failure occurred, was recognized as infrastructure (not science), and a leg was applied reflexively. | "Can I name the failure that motivated this? Or is this a primitive somebody dreamt up because it sounded clever?" |
 | **REP-5** | The primitive is **testable against the failure class it addresses**. | "Can I describe a falsifying observation? An empirical signal that would say 'this primitive isn't actually working'?" |
-| **REP-6** | The primitive has been observed **in ≥2 substrates / ≥2 contexts**. One observation is a hypothesis; two earn promotion. | "Has the same shape of move been useful on at least two distinct surfaces? Or is this a one-substrate observation generalizing prematurely?" |
+| **REP-6** | The primitive has been observed **in ≥2 substrates / ≥2 contexts**. One observation is a hypothesis; two earn promotion. | "Has this move been useful on at least two distinct surfaces? Or is this a one-substrate observation generalizing prematurely?" |
 
 ### AEP-1 through AEP-6 (Agentic Engineering Pattern)
 
@@ -84,7 +84,7 @@ If a proposed entry **fails ≥1 REP criterion AND ≥1 AEP criterion**, it's ne
 
 - `src/ztare/gates/`, for Cage gates
 - `scripts/public/`, for standalone tools
-- `research_areas/private/seams/`, for architectural commitments awaiting empirical validation
+- maintainer seam records, for architectural commitments awaiting empirical validation
 
 ---
 
@@ -118,7 +118,7 @@ If a proposed entry **fails ≥1 REP criterion AND ≥1 AEP criterion**, it's ne
 
 ### Example 3: Endpoint-Type Compression (proposed but rejected, 2026-05-06)
 
-A specific gate for typed_endpoint_pack (NS Track B): before invoking the LLM to patch a CANNOT-PATCH endpoint, check whether the endpoint's type is a projection of a carried receipt. If yes, synthesize a projection constructor instead of buying fresh proof work. Detailed in `research_areas/private/seams/protocol/GP-223_endpoint_type_compression_gate_seam.md`.
+A specific gate for typed_endpoint_pack (NS Track B): before invoking the LLM to patch a CANNOT-PATCH endpoint, check whether the endpoint's type is a projection of a carried receipt. If yes, synthesize a projection constructor instead of buying fresh proof work. This was recorded under GP-223.
 
 | Test | Verdict |
 |---|---|
@@ -174,5 +174,5 @@ These are NOT REPs or AEPs, even if they sound like they could be:
 - `docs/concepts/reflexive_engineering.md`, the REP catalog
 - `docs/concepts/agentic_engineering_patterns.md`, the AEP catalog
 - `docs/guides/reflexive_audit_workflow.md`, the discovery mechanism that surfaces candidate REPs from telemetry
-- `research_areas/private/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md`, the periodic-audit primitive that proposes new REPs
+- GP-102, the periodic-audit primitive that proposes new REPs
 - `org/signals/SIGNAL_KINDS.md`, the same minimum-evidence-bar discipline applied to damage-signal reservations

@@ -1,0 +1,122 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The batching flag enabled by CHG-142 caused export worker failures with the observed error patterns.",
+      "depends_on": [
+        "Details of CHG-142 configuration change",
+        "Access to test environment"
+      ],
+      "priority": "high",
+      "why_testable": "Can be tested by examining whether reverting the flag change in a controlled environment eliminates the failures, or by reproducing with the flag enabled independently."
+    },
+    {
+      "claim": "Batches with >18k invoice rows are more likely to fail under the batching flag configuration.",
+      "depends_on": [
+        "More complete log data with varied batch sizes"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by comparing invoice row counts across successful and failed batches in a larger dataset, and/or by stress-testing the system at various batch sizes."
+    },
+    {
+      "claim": "The 900-second timeout threshold is being hit during export failures, suggesting a runtime constraint issue rather than an immediate error.",
+      "depends_on": [
+        "Export worker timeout settings",
+        "Detailed performance traces for failed batches"
+      ],
+      "priority": "medium",
+      "why_testable": "Can be tested by checking export timeout configurations and correlating whether incomplete operations at 900 seconds cause the observed error codes."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Correlates with batching flag and rollback but no causal mechanism is provided.",
+      "unknown": "Why the export worker failed during this period",
+      "why_it_matters": "Determining root cause requires understanding the mechanism, not just the temporal pattern."
+    },
+    {
+      "blocking": "Logs only show the error codes, no diagnostic context about what triggered them.",
+      "unknown": "Whether the two error codes (duplicate_payment_warning and downstream_console_index_missing) share a common root cause or are independent failures",
+      "why_it_matters": "Different error codes could indicate separate issues or a cascade from one underlying problem."
+    },
+    {
+      "blocking": "Requires cross-reference with change documentation or code.",
+      "unknown": "What CHG-142's batching flag actually did or how it interacts with export workers",
+      "why_it_matters": "The temporal link suggests a possible causal connection but the nature of the change is not described here."
+    },
+    {
+      "blocking": "Referenced in another document not in this source.",
+      "unknown": "What the rollback timestamp or rollback content was",
+      "why_it_matters": "Failures stopped after rollback timeframe, so rollback content may indicate the fix."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "Batch b-7103 was retried at 2026-06-11T23:47:52Z and later failed at 2026-06-12T00:03:05Z, both with duplicate_payment_warning error and 18401 invoice rows.",
+      "strength": "high"
+    },
+    {
+      "statement": "Batches b-7104, b-7105, b-7106 all failed with downstream_console_index_missing error and durations of 900 seconds.",
+      "strength": "high"
+    },
+    {
+      "statement": "Batches b-7108 and b-7109 succeeded with no error code, durations of 344 and 352 seconds respectively.",
+      "strength": "high"
+    },
+    {
+      "statement": "All failed or retried batches had duration_seconds of 900.",
+      "strength": "high"
+    },
+    {
+      "statement": "The first failed/retry rows begin after CHG-142 enabled a batching flag.",
+      "strength": "medium"
+    },
+    {
+      "statement": "Failed rows continue until shortly after a rollback timestamp referenced in change_and_staffing_notes.md.",
+      "strength": "medium"
+    },
+    {
+      "statement": "This data is synthetic and used for a public demo.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "invoice_rows_for_failed_batches",
+      "notes": "All failed/retry batches had invoice rows in this range; no exact threshold identified.",
+      "units": "rows",
+      "value_or_range": "18401-20110"
+    },
+    {
+      "kind": "exact",
+      "name": "duration_for_failed_and_retry_batches",
+      "notes": "All non-ok batches had exactly 900 second duration. Successful batches had 318-352 seconds.",
+      "units": "seconds",
+      "value_or_range": "900"
+    },
+    {
+      "kind": "range",
+      "name": "duration_for_successful_batches",
+      "notes": "Only three successful batches present in this log excerpt.",
+      "units": "seconds",
+      "value_or_range": "327-352"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The logs show export failures occurring after CHG-142 enabled a batching flag and continuing until a rollback timeframe, suggesting a temporal correlation.",
+      "strength": "medium",
+      "topic": "cause_of_export_failures"
+    },
+    {
+      "assertion": "Batch b-7103 first retried then failed with duplicate_payment_warning, while other batches failed with downstream_console_index_missing - potentially distinct failure modes.",
+      "strength": "high",
+      "topic": "duplicate_payment_warning_error_in_federation"
+    }
+  ],
+  "source_id": "S005",
+  "source_kind": "md",
+  "source_path": "export_worker_logs.md",
+  "source_summary": "Synthetic export-worker logs showing a sequence of billing export batch statuses from June 11-15, 2026. Contains multiple failures and retries between June 12-13, with error codes duplicate_payment_warning and downstream_console_index_missing. Some later batches succeeded. The source does not prove root cause but shows a failure pattern temporally linked to a batching flag and rollback timeframe from another document.",
+  "source_type": "source_evidence"
+}

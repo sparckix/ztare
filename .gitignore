@@ -32,6 +32,41 @@ projects/*/*
 !projects/*/public/
 !projects/*/public/**
 
+# Public demo project-intake fixture. Keep the minimal source surface tracked so
+# clean checkouts can validate `examples/project_packets/ready_demo_claims_packet.json`.
+!projects/demo_claims/
+projects/demo_claims/*
+!projects/demo_claims/raw/
+!projects/demo_claims/raw/source.md
+!projects/demo_claims/raw/source_type_map.json
+
+# Public operational diagnosis starter. Track only the deterministic source,
+# evidence, intake, and receipt surface; paid-run iteration artifacts stay
+# ignored under the general project-output rules.
+!projects/ops_root_cause_diagnosis_demo/
+projects/ops_root_cause_diagnosis_demo/*
+!projects/ops_root_cause_diagnosis_demo/project_charter.md
+!projects/ops_root_cause_diagnosis_demo/thesis.md
+!projects/ops_root_cause_diagnosis_demo/evidence.txt
+!projects/ops_root_cause_diagnosis_demo/compiled_evidence.txt
+!projects/ops_root_cause_diagnosis_demo/compiled_evidence_packet.json
+!projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json
+!projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_packet.json
+!projects/ops_root_cause_diagnosis_demo/raw/
+projects/ops_root_cause_diagnosis_demo/raw/*
+!projects/ops_root_cause_diagnosis_demo/raw/*.md
+!projects/ops_root_cause_diagnosis_demo/raw/*.csv
+!projects/ops_root_cause_diagnosis_demo/raw/source_type_map.json
+!projects/ops_root_cause_diagnosis_demo/workspace/
+projects/ops_root_cause_diagnosis_demo/workspace/*
+!projects/ops_root_cause_diagnosis_demo/workspace/source_index.json
+!projects/ops_root_cause_diagnosis_demo/workspace/source_index_receipt.json
+!projects/ops_root_cause_diagnosis_demo/workspace/workspace_meta.json
+!projects/ops_root_cause_diagnosis_demo/workspace/workspace_snapshot.json
+!projects/ops_root_cause_diagnosis_demo/workspace/source_notes/
+projects/ops_root_cause_diagnosis_demo/workspace/source_notes/*
+!projects/ops_root_cause_diagnosis_demo/workspace/source_notes/*.json
+
 # Forecasting program reproducibility tools (project-local, not global control).
 !projects/llm_forecasting_calibration_program/tools/
 !projects/llm_forecasting_calibration_program/tools/**

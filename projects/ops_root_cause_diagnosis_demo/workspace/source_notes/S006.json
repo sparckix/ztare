@@ -1,0 +1,125 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The p95 first response time in the billing queue (us-east) was lower during the June baseline period than the May baseline period.",
+      "depends_on": [
+        "interpretation of period note semantics"
+      ],
+      "priority": "medium",
+      "why_testable": "Direct comparison of the numerical ranges shows June max (48 min) < May max (52 min) and June mean approximately 43.7 min vs May mean approximately 46.6 min."
+    },
+    {
+      "claim": "New ticket volume in the billing queue (us-east) was similar between the May baseline (mean ~126.4/day) and June baseline (mean ~120.3/day).",
+      "depends_on": [
+        "confirmation that periods are comparable"
+      ],
+      "priority": "low",
+      "why_testable": "Means from the two periods overlap within standard deviation ranges; statistical test (e.g., t-test) could be performed."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Interpreting whether these baselines are appropriate controls.",
+      "unknown": "What event or date the baseline periods are relative to is not specified.",
+      "why_it_matters": "Without the reference event, the temporal logic of baseline selection cannot be evaluated."
+    },
+    {
+      "blocking": "Confidence in using these as ground truth baselines.",
+      "unknown": "Whether these data represent a normal or atypical operational period is not indicated.",
+      "why_it_matters": "The baselines may themselves be anomalous, undermining their use as a reference."
+    },
+    {
+      "blocking": "Accurate use of this column in root cause analysis.",
+      "unknown": "What the 'billing_tag_share' column measures (e.g., share of tickets tagged as billing, share of time spent on billing, etc.) is undefined.",
+      "why_it_matters": "The metric's interpretation is ambiguous for analysis."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "The dataset provides daily records for the billing queue in us-east region for two distinct baseline windows: May 8\u201314, 2026 and June 5\u20137, 2026.",
+      "strength": "high"
+    },
+    {
+      "statement": "The May 8\u201314 period is annotated as 'same weekday minus five weeks' relative to an unspecified reference point.",
+      "strength": "high"
+    },
+    {
+      "statement": "The June 5\u20137 period is annotated as 'previous week same weekday' relative to an unspecified reference point.",
+      "strength": "high"
+    },
+    {
+      "statement": "All records have a non-null value for new_tickets, p95_first_response_minutes, billing_tag_share, and staffed_hours.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "new_tickets_per_day_billing_us_east_may_period",
+      "notes": "May 8-14, 2026 baseline period.",
+      "units": "tickets per day",
+      "value_or_range": "119 to 134"
+    },
+    {
+      "kind": "range",
+      "name": "new_tickets_per_day_billing_us_east_june_period",
+      "notes": "June 5-7, 2026 baseline period.",
+      "units": "tickets per day",
+      "value_or_range": "117 to 126"
+    },
+    {
+      "kind": "range",
+      "name": "p95_first_response_minutes_billing_us_east_may_period",
+      "notes": "May 8-14, 2026 baseline period.",
+      "units": "minutes",
+      "value_or_range": "43 to 52"
+    },
+    {
+      "kind": "range",
+      "name": "p95_first_response_minutes_billing_us_east_june_period",
+      "notes": "June 5-7, 2026 baseline period.",
+      "units": "minutes",
+      "value_or_range": "41 to 48"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_may_period",
+      "notes": "May 8-14, 2026 baseline period.",
+      "units": "proportion",
+      "value_or_range": "0.19 to 0.24"
+    },
+    {
+      "kind": "range",
+      "name": "billing_tag_share_june_period",
+      "notes": "June 5-7, 2026 baseline period.",
+      "units": "proportion",
+      "value_or_range": "0.18 to 0.22"
+    },
+    {
+      "kind": "range",
+      "name": "staffed_hours_billing_us_east_may_period",
+      "notes": "May 8-14, 2026 baseline period.",
+      "units": "hours",
+      "value_or_range": "73 to 75"
+    },
+    {
+      "kind": "range",
+      "name": "staffed_hours_billing_us_east_june_period",
+      "notes": "June 5-7, 2026 baseline period.",
+      "units": "hours",
+      "value_or_range": "74 to 75"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "The May baseline uses 'same weekday minus five weeks' while the June baseline uses 'previous week same weekday', implying different temporal alignment strategies.",
+      "strength": "high",
+      "topic": "baseline period selection methodology"
+    }
+  ],
+  "source_id": "S006",
+  "source_kind": "csv",
+  "source_path": "previous_period_baselines.csv",
+  "source_summary": "CSV containing daily metrics for the billing queue in us-east region for two baseline periods: one period labeled 'same weekday minus five weeks' (2026-05-08 to 2026-05-14) and one period labeled 'previous week same weekday' (2026-06-05 to 2026-06-07). Columns include new tickets per day, p95 first response time in minutes, billing tag share, and staffed hours.",
+  "source_type": "source_evidence"
+}

@@ -1,0 +1,36 @@
+{
+  "bounded_claim": "In the synthetic fixture, the best-supported explanation for the Week 23 billing-support backlog spike is the us-east billing-export failure between 2026-06-11 and 2026-06-14; staffing shortage, seasonality, the pricing-page copy change, and support-console cache behavior are weaker on the provided evidence. Support-console cache misses are a symptom or amplifier unless they are shown to precede the export failures.",
+  "created_at": "2026-06-21T15:51:32Z",
+  "evidence_refs": [
+    "projects/ops_root_cause_diagnosis_demo/evidence.txt",
+    "projects/ops_root_cause_diagnosis_demo/compiled_evidence_packet.json",
+    "projects/ops_root_cause_diagnosis_demo/compiled_evidence_provenance.json"
+  ],
+  "execution_boundary": "in_loop_autoresearch_candidate",
+  "expected_command": "ztare autoresearch run --project ops_root_cause_diagnosis_demo --rubric ops_root_cause_diagnosis_demo --intake projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_packet.json --iters 1 --mutator kimi --judge grok --inverter deepseek --llm-timeout-seconds 240 --llm-retries 1",
+  "next_falsifier": "Reject or demote the claim if export-worker logs show healthy exports during the spike, if support-console cache misses precede export failures, or if ticket samples show the spike was mainly pricing-page confusion rather than billing-status unavailability.",
+  "non_claims": [
+    "not a real customer incident",
+    "not proof of general organizational diagnosis",
+    "not a replacement for cognitive-firm workflow management",
+    "not a complete root-cause automation product"
+  ],
+  "notes": "Synthetic public starter pilot for ZTARE-style operational diagnosis over typed local evidence.",
+  "packet_id": "pp_6a489744e422dedb",
+  "project": "ops_root_cause_diagnosis_demo",
+  "rubric": "ops_root_cause_diagnosis_demo",
+  "schema_version": 1,
+  "source_refs": [
+    "projects/ops_root_cause_diagnosis_demo/raw/incident_log.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/queue_metrics.csv",
+    "projects/ops_root_cause_diagnosis_demo/raw/change_and_staffing_notes.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/counter_hypotheses.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/export_worker_logs.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/chg_142_design_note.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/support_console_cache.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/cache_isolation_check.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/ticket_samples.md",
+    "projects/ops_root_cause_diagnosis_demo/raw/previous_period_baselines.csv"
+  ],
+  "task": "verify a bounded root-cause diagnosis over a synthetic operations dataset"
+}

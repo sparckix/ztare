@@ -1,83 +1,116 @@
 ---
-description: "One-page pilot brief: the cost of confidently-wrong AI analysis."
+description: "One-page pilot brief: using ZTARE to audit AI-assisted decision work."
 ---
-# ZTARE Epistemic Verification, Pilot Brief
+# ZTARE Pilot Brief
 
 > **Up:** [Documentation map](../README.md)
 
 ## The Problem
 
 AI-generated analysis is fast and cheap, and it produces confident errors at a
-rate human review does not reliably catch under time pressure. As generation cost
-falls, output volume grows faster than manual verification capacity. An
-organization that generates faster than it verifies accumulates undetected errors
-in its decision record.
+rate human review does not reliably catch under time pressure. As generation
+cost falls, output volume grows faster than manual verification capacity. An
+organization that generates faster than it verifies accumulates unsupported
+claims, missing sources, weak comparisons, and stale assumptions in its decision
+record.
 
 ## What ZTARE Is
 
-ZTARE is a verification engine for AI-augmented knowledge work. It runs a
-structured loop: an AI generates a thesis, a second AI and a battery of
-deterministic gates verify it, failures are recorded as constraints, and the
-next iteration must respect every prior failure. The output is a thesis that
-passed the gates under pre-registered criteria, or a declaration that the
-evidence is insufficient.
+ZTARE is a zero-trust workbench for generating, stress-testing, and auditing
+claims from agents. It separates proposal, critique, deterministic gates,
+ledgers, review packets, and explicit non-claims so a reviewer can inspect what
+survived, what was demoted, and what should be tested next.
 
-ZTARE is not a model. It is a control layer applied to models.
+ZTARE is not a model and not a replacement for domain review. It is a control
+layer around models and human workflows.
+
+Run the smallest public demo with:
+
+```bash
+make hello
+```
+
+The demo feeds an overbroad claim through the claim-discipline surface and
+returns bounded wording, missing evidence, and a next falsifier.
 
 ## What the Pilot Measures
 
-We instrument one decision pipeline (e.g., due diligence memo, market research
-report, compliance review) and measure four metrics for 30 days before and 90
-days during:
+Pick one bounded decision pipeline, such as a due diligence memo, market
+research report, compliance review, source-gathering workflow, or research
+agent evaluation. The pilot measures whether ZTARE makes unsupported claims
+visible earlier and leaves a better audit trail.
 
-| Metric | Before (baseline) | After (pilot) |
-|--------|-------------------|---------------|
-| **Error rate** | % of decisions later identified as wrong | Target: 30%+ reduction |
-| **Time to decision** | Calendar days, request to final memo | Target: 20%+ reduction OR 50%+ error reduction |
-| **Cost per decision** | Analyst + reviewer hours | Target: stable or decreasing |
-| **Rework rate** | % of memos sent back for revision | Tracked as secondary signal |
+For organizational diagnosis, start with one repeated question over existing
+operations data: "why did this metric degrade?", "which workflow step creates
+the delay?", or "what root-cause claim would change the next management
+action?" ZTARE should not be pointed at the whole organization at once. It is
+best used to turn one agentic diagnosis into a bounded claim with declared
+data, explicit non-claims, adversarial challenges, deterministic or
+evidence-backed checks, and a ledgered status. The surrounding workflow can
+live in a tenant or the reusable cognitive-firm runtime; ZTARE supplies the
+verification discipline for claims that should not be accepted on narrative
+plausibility alone.
 
-Success criteria are pre-registered before the pilot starts.
+| Metric | Baseline | Pilot signal |
+|---|---|---|
+| Unsupported claims | Claims later found to lack source, baseline, or scope support | Fewer unsupported claims reach final review |
+| Time to first useful critique | Time from draft to first actionable objection | Earlier missing-evidence or weak-comparison findings |
+| Rework quality | Revision cycles caused by unclear evidence, missing sources, or overclaiming | Rework points to named gates or falsifiers |
+| Auditability | Can a reviewer trace the claim to sources, checks, non-claims, and next tests? | More decisions have inspectable review packets |
 
-## What It Costs
+Success criteria should be pre-registered before the pilot starts. A pilot can
+be useful even if it returns a negative result: the point is to learn whether
+the workbench catches consequential failure modes in that pipeline.
 
-- **Setup**: 2-4 weeks to build the rubric, gate harness, and workflow integration
-- **Per-decision overhead**: ~30 minutes additional for gate checks + dual review
-- **Training**: 1-day workshop on the seven verification principles
-- **Infrastructure**: Cloud compute for LLM calls (~$1-5 per verified decision)
+## What It Requires
 
-## What It Replaces
+- A bounded work object: memo, claim, reproduction task, proof obligation, or
+  agent output.
+- A project-intake file or equivalent intake record: task, bounded claim, sources,
+  evidence refs, non-claims, expected command, and next falsifier.
+- A small rubric or contract that says what counts as support.
+- One or more deterministic checks, plus a human or independent-agent review
+  path for cases the checks cannot decide.
+- A baseline record of how the current workflow catches or misses these
+  failures.
 
-Nothing. ZTARE augments existing workflow. Analysts still write memos. Reviewers
-still review. The difference: before review, the memo passes through a gate
-battery that catches structural errors (missing counterfactual, unsupported
-causal claim, contradicted by withheld data) that human review routinely misses
-under time pressure.
+## What It Does Not Replace
 
-## The Seven Principles (from Epistemic Verification)
+Analysts still write memos. Reviewers still review. Domain experts still own
+domain judgments. ZTARE adds claim boundaries, gate checks, evidence trails,
+and explicit non-claims before a result is promoted.
 
-1. **Separation**: The person who writes the thesis does not grade it
-2. **Statelessness**: The reviewer sees only the current memo and rubric, no anchoring to prior work
-3. **Pre-registration**: Pass/fail criteria are written before generation, not after
-4. **Deterministic gates**: At least 3 binary checks (completeness, consistency, source verification)
-5. **Pre-registered holdout**: 20% of source material withheld; memo must not contradict it
-6. **Structural memory**: Named failure patterns from prior memos become constraints on future ones
-7. **Adversarial disagreement**: Two independent reviewers; a meta-reviewer resolves disagreement
+## Operating Principles
 
-## The Evidence
+1. The proposer does not grade itself.
+2. Pass/fail criteria are written before the result is inspected.
+3. Deterministic checks catch what can be made mechanical.
+4. Source, baseline, and scope failures are recorded as first-class results.
+5. Repeated failure modes become reusable checks only after evidence justifies
+   promotion.
+6. Every promoted claim carries non-claims and a next falsifier.
 
-ZTARE has been tested on 15+ pre-registered scientific discovery sandboxes:
-- Recovered a 6-parameter transcendental physics law from raw data under sealed gates
-- Recovered fractional-exponent decay laws at machine precision
-- Produced a 453-entry labeled taxonomy of how AI optimizers game scored rubrics
-- Detected specification-layer Goodhart's Law (the rubric itself was wrong) in qualitative analysis
-- All results published with full iteration logs, debate transcripts, and gate harness code
+## Public Evidence To Inspect First
+
+Start with the public, runnable artifacts:
+
+- `make hello` — smallest claim-demotion demo.
+- `make first-run` — offline public review path.
+- [LLM Gaming Behavior Catalog](../gaming_behavior_catalog.md) — observed
+  self-certification and specification-gaming behaviors, with catch patterns
+  and evidence tiers.
+- [Evidence atlas](../evidence_atlas/README.md) — claim-by-claim evidence
+  crosswalk, non-claims, commands, and caveats.
+- [Evaluator-hardening packet](../evidence_atlas/packets/evaluator_hardening.md)
+  — bounded public proof point with a frozen three-arm suite and an explicit
+  ordinary-review blocker before any four-arm upgrade.
 
 ## The Ask
 
-One decision pipeline. 90 days. Pre-registered success criteria. We measure
-before and after. If it works, you have the case study. If it doesn't, you have
-a well-documented negative result and we stop.
+One bounded decision or research pipeline. Pre-register the failure modes and
+success criteria. Run the current workflow and the ZTARE-assisted workflow on a
+small sample. Compare whether unsupported claims are caught earlier and whether
+the review trail is easier to inspect.
 
 ## Contact
 

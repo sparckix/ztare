@@ -1,0 +1,118 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "The billing-export delay (export lag > 10 hours on T-8916) caused the 'invoice_missing' and 'billing_status_unavailable' symptoms observed in June 12-13 tickets.",
+      "depends_on": [
+        "full ticket data for billing queue",
+        "export batch logs"
+      ],
+      "priority": "high",
+      "why_testable": "Check if all symptomatic tickets (T-8841, T-8849, T-8873, T-8904, T-8916) share a common export batch or timing pattern."
+    },
+    {
+      "claim": "Recovery (T-8977) occurred when export batch b-7109 succeeded, indicating a resolved batch-processing issue.",
+      "depends_on": [
+        "ticket timestamps after June 14",
+        "export batch b-7109 and subsequent batch statuses"
+      ],
+      "priority": "high",
+      "why_testable": "Cross-check if no further billing-status or invoice-missing tickets appear after b-7109 was marked 'ok'."
+    },
+    {
+      "claim": "T-8849's 'duplicate_payment_warning' is indirectly caused by the same export delay that caused other billing symptoms.",
+      "depends_on": [
+        "duplicate-payment warning code logic",
+        "export batch history"
+      ],
+      "priority": "medium",
+      "why_testable": "Verify if duplicate payment warnings correlate with export batch failures or missing index events."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Scaling analysis or root cause attribution.",
+      "unknown": "The total number of tickets or full customer-impact dataset.",
+      "why_it_matters": "Without full data, we cannot assess severity or distribution of symptoms across the billing queue."
+    },
+    {
+      "blocking": "Root cause hypothesis for duplicate payment warnings.",
+      "unknown": "Whether the 'duplicate_payment_warning' (T-8849) is causally linked to the export delay or billing status issues.",
+      "why_it_matters": "Determining if duplicate-payment warnings are a separate failure or a consequence of the export problem."
+    },
+    {
+      "blocking": "Technical root cause identification for export failures.",
+      "unknown": "What caused the missing downstream index in export batch b-7105.",
+      "why_it_matters": "The missing index is a concrete technical failure but its cause is not specified."
+    },
+    {
+      "blocking": "Excluding broader platform-level symptoms.",
+      "unknown": "Whether pricing-page confusion or sales-copy tags appeared before billing tags during the spike.",
+      "why_it_matters": "Absence in samples may indicate a focused billing issue, but samples are not comprehensive."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "Ticket T-8841 opened on 2026-06-12 with tag 'invoice_missing'; agent note says 'console billing lookup empty'.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-8849 opened on 2026-06-12 with tag 'duplicate_payment_warning'; linked to duplicate-payment warning code.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-8873 opened on 2026-06-12 with tag 'invoice_export_delay'; agent note says 'export batch b-7105 missing downstream index'.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-8904 opened on 2026-06-13 with tag 'billing_status_unavailable'; agent note says 'cache miss observed after export lag'.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-8916 opened on 2026-06-13 with tag 'invoice_export_delay'; agent note says 'export lag > 10 hours'.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-8977 opened on 2026-06-14 with tag 'recovery_confirmation'; agent note says 'export batch b-7109 ok'.",
+      "strength": "high"
+    },
+    {
+      "statement": "Ticket T-9002 opened on 2026-06-15 with tag 'account_question'; agent note says 'ordinary account question, no export symptom'.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "ticket timestamps (opened_at_utc)",
+      "notes": "Samples span June 12\u201315, 2026.",
+      "units": "ISO 8601 UTC",
+      "value_or_range": "2026-06-12T09:40:00Z to 2026-06-15T12:02:00Z"
+    },
+    {
+      "kind": "constraint",
+      "name": "export lag (T-8916)",
+      "notes": "Reported for invoice_export_delay ticket T-8916.",
+      "units": "hours",
+      "value_or_range": "> 10 hours"
+    },
+    {
+      "kind": "exact",
+      "name": "export batch IDs",
+      "notes": "Two batch IDs mentioned: b-7105 missing downstream index, b-7109 ok.",
+      "units": "no unit",
+      "value_or_range": "b-7105 (missing index), b-7109 (ok)"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "Cache miss was observed after export lag (T-8904).",
+      "strength": "medium",
+      "topic": "billing_status_unavailable"
+    }
+  ],
+  "source_id": "S008",
+  "source_kind": "md",
+  "source_path": "ticket_samples.md",
+  "source_summary": "Synthetic ticket samples from the billing queue between June 12\u201315, 2026, showing invoice-related issues, export delays, and recovery confirmation. The samples indicate a temporal symptom pattern but are explicitly not a full customer-impact dataset.",
+  "source_type": "source_evidence"
+}

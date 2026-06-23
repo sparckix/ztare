@@ -1,0 +1,117 @@
+{
+  "candidate_claims_to_test": [
+    {
+      "claim": "Enabling the billing-export batching flag (CHG-142) caused the backlog spike.",
+      "depends_on": [
+        "incident timeline data",
+        "system logs for billing-export"
+      ],
+      "priority": "high",
+      "why_testable": "CHG-142 is temporally adjacent to the spike and touches the system named in the highest-severity incident. Can be tested by correlating enable/rollback timestamps with incident data or by reproducing the change in a non-production environment."
+    },
+    {
+      "claim": "The support-console read-timeout increase (CHG-143) contributed to or masked the backlog.",
+      "depends_on": [
+        "support-console logs",
+        "billing-service response-time data"
+      ],
+      "priority": "medium",
+      "why_testable": "Timeout increase could have hidden failures in billing-status lookups. Can be tested by analyzing timeout behavior before and after the change."
+    },
+    {
+      "claim": "Staffing shortages were not a contributing factor to the backlog.",
+      "depends_on": [
+        "staffing records",
+        "incident response assignments"
+      ],
+      "priority": "low",
+      "why_testable": "Planned and actual staffed hours matched for the entire period. Can be verified by cross-referencing with incident response logs or shift schedules."
+    }
+  ],
+  "epistemic_voids": [
+    {
+      "blocking": "Not included in this source.",
+      "unknown": "Customer chat transcripts",
+      "why_it_matters": "Could contain user-reported issues or complaints related to the backlog."
+    },
+    {
+      "blocking": "Not included in this source.",
+      "unknown": "Revenue impact or user-level error logs",
+      "why_it_matters": "Would help assess severity and scope of the incident."
+    },
+    {
+      "blocking": "Source cannot distinguish without additional logs.",
+      "unknown": "Whether delayed invoice export or a downstream support-console cache defect caused the backlog",
+      "why_it_matters": "Different root causes would require different remediation."
+    }
+  ],
+  "immutable_ground_truth": [
+    {
+      "statement": "Staffed hours matched planned hours for all listed dates from 2026-06-07 to 2026-06-15, with no drop during the backlog peak.",
+      "strength": "high"
+    },
+    {
+      "statement": "CHG-142 (billing-export invoice export batching flag enabled for us-east) was rolled back on 2026-06-14T00:10:00Z.",
+      "strength": "high"
+    },
+    {
+      "statement": "CHG-143 (support-console read-timeout increased from 5s to 15s for billing-status lookups) was retained.",
+      "strength": "high"
+    },
+    {
+      "statement": "CHG-141 (pricing-page copy update for annual-plan offer) was not rolled back.",
+      "strength": "high"
+    },
+    {
+      "statement": "CHG-142 is the only listed change immediately preceding the backlog spike and touches the system named in the highest-severity incident.",
+      "strength": "high"
+    }
+  ],
+  "numerical_ranges_and_constraints": [
+    {
+      "kind": "range",
+      "name": "weekly staffed hours",
+      "notes": "Actual staffed hours matched planned hours for each date; range reflects planned values.",
+      "units": "hours",
+      "value_or_range": "73-76"
+    },
+    {
+      "kind": "constraint",
+      "name": "support-console read-timeout",
+      "notes": "Applied for billing-status lookups; change retained.",
+      "units": "seconds",
+      "value_or_range": "increased from 5s to 15s"
+    },
+    {
+      "kind": "exact",
+      "name": "CHG-142 rollback timestamp",
+      "notes": "Rollback performed for billing-export change.",
+      "units": "datetime (UTC)",
+      "value_or_range": "2026-06-14T00:10:00Z"
+    },
+    {
+      "kind": "exact",
+      "name": "CHG-142 enable timestamp",
+      "notes": "Batching flag enabled for us-east.",
+      "units": "datetime (UTC)",
+      "value_or_range": "2026-06-11T22:30:00Z"
+    }
+  ],
+  "potentially_conflicting_assertions": [
+    {
+      "assertion": "CHG-142 is the only listed change immediately preceding the spike and touches the system named in the highest-severity incident.",
+      "strength": "high",
+      "topic": "root cause of backlog spike"
+    },
+    {
+      "assertion": "Staffed-hour series does not show a staffing drop during the backlog peak.",
+      "strength": "high",
+      "topic": "staffing as contributing factor"
+    }
+  ],
+  "source_id": "S001",
+  "source_kind": "md",
+  "source_path": "change_and_staffing_notes.md",
+  "source_summary": "Synthetic change and staffing notes for ops diagnosis pilot. Staffing hours matched plan (73-76 hours) with no drop during backlog peak. Three system changes listed: CHG-141 (pricing-page copy update, not rolled back), CHG-142 (billing-export invoice export batching flag, rolled back), CHG-143 (support-console read-timeout increase, retained). CHG-142 is the only change immediately preceding the backlog spike and touches the system named in the highest-severity incident.",
+  "source_type": "source_evidence"
+}

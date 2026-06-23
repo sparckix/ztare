@@ -3,7 +3,7 @@ import json
 import tempfile
 from pathlib import Path
 
-from src.ztare.workspace import compile_evidence as ce
+from ztare.workspace import compile_evidence as ce
 
 
 def _packet_for(path: str) -> dict[str, object]:
@@ -39,7 +39,7 @@ def run_compile_evidence_cache_fixture_regression() -> dict[str, object]:
         call_count = 0
         responses: list[str] = []
 
-        def __init__(self, model_family: str):
+        def __init__(self, model_family: str, **_kwargs):
             self.model_family = model_family
             self.model_id = ce.MODEL_MAP[model_family]
 
