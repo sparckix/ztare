@@ -3679,6 +3679,14 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
   const receipt = result.receipt || {};
   const refreshRows = Array.isArray(refreshResults) ? refreshResults.filter(Boolean) : [];
   const refreshFailures = refreshRows.filter((row) => row.ok === false);
+  const refreshSuccesses = refreshRows.length - refreshFailures.length;
+  const receiptSummary = receiptEvent.snapshotError
+    ? `Receipt written. Snapshot refresh failed: ${receiptEvent.snapshotError}`
+    : refreshFailures.length
+      ? `Receipt written. Refreshed ${refreshSuccesses}/${refreshRows.length} panels; ${refreshFailures.length} need attention.`
+      : refreshRows.length
+        ? `Receipt written. Refreshed ${refreshRows.length} live panels.`
+        : "Receipt written. Refresh status was not recorded.";
   const kindLabels = {
     intake_edit: "Intake edit",
     case_file: "Case file",
@@ -3720,7 +3728,7 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
       { className: "write-receipt-summary" },
       h("span", { className: "eyebrow" }, "Last write receipt"),
       h("h2", null, `${kindLabel}: ${displayText(actionLabel)}`),
-      h("p", null, receiptEvent.snapshotError ? `Receipt written. Snapshot refresh failed: ${receiptEvent.snapshotError}` : "Receipt written and the case was refreshed.")
+      h("p", null, receiptSummary)
     ),
     h(
       "div",
@@ -3731,7 +3739,7 @@ function WriteReceiptPanel({ receiptEvent, refreshResults, liveMode, onPreview }
       h("div", null, h("span", null, "Applied"), h("strong", null, receipt.applied_at || "none")),
       h("div", null, h("span", null, "Changed"), h("strong", null, changedSummary || "not recorded")),
       h("div", null, h("span", null, "Hash"), h("strong", null, shortDigest(hash))),
-      h("div", null, h("span", null, "Refresh"), h("strong", null, refreshRows.length ? `${refreshRows.length - refreshFailures.length}/${refreshRows.length} panels` : "not run"))
+      h("div", null, h("span", null, "Refresh"), h("strong", null, refreshRows.length ? `${refreshSuccesses}/${refreshRows.length} panels` : "not run"))
     ),
     refreshRows.length
       ? h(
