@@ -192,6 +192,12 @@ function isPreviewableRepoPath(value) {
   return true;
 }
 
+function previewFileTitle(liveMode, previewable, readyTitle = "Preview the written artifact") {
+  if (!liveMode) return "Start the local API to preview files";
+  if (!previewable) return "Written artifact is not a repository file";
+  return readyTitle;
+}
+
 function buildReviewFile(snapshot, row, reviewState) {
   if (!row) return "";
   const payload = {
@@ -1236,7 +1242,7 @@ function ReceiptHistoryPanel({ history, message, liveMode, onPreview }) {
                       type: "button",
                       disabled: !liveMode || !previewableArtifact,
                       onClick: () => onPreview && onPreview({ type: "file", value: artifactPath }),
-                      title: previewableArtifact ? "Preview the written artifact" : "Written artifact is not a repository file"
+                      title: previewFileTitle(liveMode, previewableArtifact)
                     },
                     "Preview file"
                   ),
@@ -3131,7 +3137,7 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
             type: "button",
             disabled: !liveMode || !previewableSourcePath,
             onClick: () => onPreview && onPreview({ type: "file", value: sourcePath }),
-            title: previewableSourcePath ? "Preview the written artifact" : "Written artifact is not a repository file"
+            title: previewFileTitle(liveMode, previewableSourcePath)
           },
           "Preview file"
         ),
