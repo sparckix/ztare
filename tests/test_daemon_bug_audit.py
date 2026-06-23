@@ -64,7 +64,7 @@ class TestSubprocessEnvScrub(unittest.TestCase):
 
     def test_subscription_agent_preserves_claude_auth_token(self):
         """Claude Code token auth is subscription CLI state, not a metered API key."""
-        from src.ztare.common.subscription_agent_runtime import subscription_agent_env
+        from ztare.common.subscription_agent_runtime import subscription_agent_env
 
         scrubbed = subscription_agent_env(
             "claude",
@@ -82,7 +82,7 @@ class TestSubprocessEnvScrub(unittest.TestCase):
 # ── 2. work_discovery scope filter ─────────────────────────────────────────
 class TestScopeFilter(unittest.TestCase):
     def setUp(self):
-        from src.ztare.orchestration.work_discovery import _is_in_role_scope, Candidate
+        from ztare.orchestration.work_discovery import _is_in_role_scope, Candidate
         self.is_in_scope = _is_in_role_scope
         self.Candidate = Candidate
 
@@ -140,7 +140,7 @@ class TestScopeFilter(unittest.TestCase):
 # ── 3. substrate_portfolio registry loader ─────────────────────────────────
 class TestSubstratePortfolio(unittest.TestCase):
     def test_load_missing_file_raises(self):
-        from src.ztare.research_director.substrate_portfolio import load_registry
+        from ztare.research_director.substrate_portfolio import load_registry
         with tempfile.NamedTemporaryFile(suffix=".yaml", delete=True) as fp:
             missing = Path(fp.name)
         # File does not exist now (NamedTemporaryFile auto-deletes on close)
@@ -148,7 +148,7 @@ class TestSubstratePortfolio(unittest.TestCase):
             load_registry(missing)
 
     def test_load_empty_yaml_returns_empty_list(self):
-        from src.ztare.research_director.substrate_portfolio import load_registry
+        from ztare.research_director.substrate_portfolio import load_registry
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as fp:
             fp.write("")  # empty file
             tmp_path = Path(fp.name)
@@ -159,7 +159,7 @@ class TestSubstratePortfolio(unittest.TestCase):
             tmp_path.unlink()
 
     def test_load_well_formed_returns_members(self):
-        from src.ztare.research_director.substrate_portfolio import load_registry
+        from ztare.research_director.substrate_portfolio import load_registry
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as fp:
             fp.write(textwrap.dedent("""
                 schema_version: 1
@@ -183,7 +183,7 @@ class TestSubstratePortfolio(unittest.TestCase):
             tmp_path.unlink()
 
     def test_load_members_must_be_list(self):
-        from src.ztare.research_director.substrate_portfolio import load_registry
+        from ztare.research_director.substrate_portfolio import load_registry
         with tempfile.NamedTemporaryFile(mode="w", suffix=".yaml", delete=False) as fp:
             fp.write("members: not_a_list\n")  # invalid
             tmp_path = Path(fp.name)
@@ -197,12 +197,12 @@ class TestSubstratePortfolio(unittest.TestCase):
 # ── 4. eigenquestion_generator argument paths ──────────────────────────────
 class TestEigenquestionGenerator(unittest.TestCase):
     def test_missing_project_raises(self):
-        from src.ztare.research_director.eigenquestion_generator import generate_eigenquestion
+        from ztare.research_director.eigenquestion_generator import generate_eigenquestion
         with self.assertRaises(FileNotFoundError):
             generate_eigenquestion("nonexistent_project_xyz_12345")
 
     def test_validate_explored_missing_project_returns_two(self):
-        from src.ztare.research_director import eigenquestion_generator
+        from ztare.research_director import eigenquestion_generator
 
         rc = eigenquestion_generator.main([
             "--project",
@@ -213,12 +213,12 @@ class TestEigenquestionGenerator(unittest.TestCase):
         self.assertEqual(rc, 2)
 
     def test_summarize_explored_classes_empty(self):
-        from src.ztare.research_director.eigenquestion_generator import _summarize_explored_classes
+        from ztare.research_director.eigenquestion_generator import _summarize_explored_classes
         result = _summarize_explored_classes([])
         self.assertIn("no primitive classes explored yet", result)
 
     def test_summarize_explored_classes_with_data(self):
-        from src.ztare.research_director.eigenquestion_generator import _summarize_explored_classes
+        from ztare.research_director.eigenquestion_generator import _summarize_explored_classes
         explored = [
             {"class_name": "ACRR", "score": 90, "run_id": "run1"},
             {"class_name": "ACRR", "score": 92, "run_id": "run2"},
@@ -231,14 +231,14 @@ class TestEigenquestionGenerator(unittest.TestCase):
         self.assertLess(result.index("ACRR"), result.index("PECVP"))
 
     def test_summarize_handles_missing_score(self):
-        from src.ztare.research_director.eigenquestion_generator import _summarize_explored_classes
+        from ztare.research_director.eigenquestion_generator import _summarize_explored_classes
         # Score missing or None should not raise
         explored = [{"class_name": "X", "run_id": "r"}]
         result = _summarize_explored_classes(explored)
         self.assertIn("X", result)
 
     def test_available_evidence_summary_is_workspace_aware_and_general(self):
-        from src.ztare.research_director.eigenquestion_generator import _summarize_available_evidence
+        from ztare.research_director.eigenquestion_generator import _summarize_available_evidence
 
         with tempfile.TemporaryDirectory() as td:
             project_dir = Path(td) / "projects" / "arbitrary_substrate"
@@ -312,7 +312,7 @@ class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
                 try:
                     # Re-import to trigger module-level bootstrap, but we test
                     # the function directly to avoid import caching weirdness
-                    from src.ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
+                    from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
                     _bootstrap_dotenv_if_needed()
                     self.assertEqual(
                         os.environ.get("ANTHROPIC_API_KEY"),
@@ -348,7 +348,7 @@ class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
                 old_cwd = os.getcwd()
                 os.chdir(td_path)
                 try:
-                    from src.ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
+                    from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
                     _bootstrap_dotenv_if_needed()
                     self.assertEqual(
                         os.environ["ANTHROPIC_API_KEY"],
@@ -366,10 +366,12 @@ class TestLLMRuntimeDotenvBootstrap(unittest.TestCase):
 
 class TestPrincipalProviderPreference(unittest.TestCase):
     def setUp(self):
-        # Reset cache so tests are independent
-        from src.ztare.common import llm_runtime
-        if hasattr(llm_runtime._read_principal_preferred_provider, "_cached"):
-            del llm_runtime._read_principal_preferred_provider._cached
+        # Reset caches so tests are independent (both the scalar preference and the ordered chain)
+        from ztare.common import llm_runtime
+        for _fn in (llm_runtime._read_principal_preferred_provider,
+                    llm_runtime._read_principal_provider_order):
+            if hasattr(_fn, "_cached"):
+                del _fn._cached
 
     def test_principal_pref_google_reorders_default(self):
         """When principal.yaml says google, and all 3 keys are set,
@@ -392,9 +394,11 @@ class TestPrincipalProviderPreference(unittest.TestCase):
             os.environ.pop("LLM_DISPATCH_PREF", None)
             try:
                 # Reset cache after env mutation
-                from src.ztare.common import llm_runtime
-                if hasattr(llm_runtime._read_principal_preferred_provider, "_cached"):
-                    del llm_runtime._read_principal_preferred_provider._cached
+                from ztare.common import llm_runtime
+                for _fn in (llm_runtime._read_principal_preferred_provider,
+                            llm_runtime._read_principal_provider_order):
+                    if hasattr(_fn, "_cached"):
+                        del _fn._cached
                 model = llm_runtime.pick_default_model_id_for_scripts()
                 self.assertEqual(
                     model, "gemini-3.1-pro-preview",
@@ -427,9 +431,11 @@ class TestPrincipalProviderPreference(unittest.TestCase):
             os.environ["GEMINI_API_KEY"] = "z"
             os.environ["LLM_DISPATCH_PREF"] = "anthropic"
             try:
-                from src.ztare.common import llm_runtime
-                if hasattr(llm_runtime._read_principal_preferred_provider, "_cached"):
-                    del llm_runtime._read_principal_preferred_provider._cached
+                from ztare.common import llm_runtime
+                for _fn in (llm_runtime._read_principal_preferred_provider,
+                            llm_runtime._read_principal_provider_order):
+                    if hasattr(_fn, "_cached"):
+                        del _fn._cached
                 model = llm_runtime.pick_default_model_id_for_scripts()
                 self.assertEqual(
                     model, "claude-sonnet-4-6",
@@ -443,12 +449,83 @@ class TestPrincipalProviderPreference(unittest.TestCase):
                     elif k in os.environ:
                         del os.environ[k]
 
+    def test_kimi_dispatch_pref_is_supported(self):
+        """LLM_DISPATCH_PREF=kimi should select Kimi when its API key exists."""
+        with tempfile.TemporaryDirectory() as td:
+            td_path = Path(td)
+            (td_path / "org" / "preferences").mkdir(parents=True)
+            (td_path / "org" / "preferences" / "principal.yaml").write_text(
+                "preferences:\n  preferred_llm_provider: google\n"
+            )
+            old_cwd = os.getcwd()
+            os.chdir(td_path)
+            saved = {
+                k: os.environ.get(k)
+                for k in (
+                    "ANTHROPIC_API_KEY",
+                    "OPENAI_API_KEY",
+                    "GEMINI_API_KEY",
+                    "KIMI_API_KEY",
+                    "MOONSHOT_API_KEY",
+                    "LLM_DISPATCH_PREF",
+                )
+            }
+            os.environ["ANTHROPIC_API_KEY"] = "x"
+            os.environ["OPENAI_API_KEY"] = "y"
+            os.environ["GEMINI_API_KEY"] = "z"
+            os.environ["KIMI_API_KEY"] = "k"
+            os.environ.pop("MOONSHOT_API_KEY", None)
+            os.environ["LLM_DISPATCH_PREF"] = "kimi"
+            try:
+                from ztare.common import llm_runtime
+                for _fn in (llm_runtime._read_principal_preferred_provider,
+                            llm_runtime._read_principal_provider_order):
+                    if hasattr(_fn, "_cached"):
+                        del _fn._cached
+                model = llm_runtime.pick_default_model_id_for_scripts()
+                self.assertEqual(model, "kimi-k2.6")
+            finally:
+                os.chdir(old_cwd)
+                for k, v in saved.items():
+                    if v is not None:
+                        os.environ[k] = v
+                    elif k in os.environ:
+                        del os.environ[k]
+
+    def test_kimi_is_available_when_only_kimi_key_exists(self):
+        """Kimi should be usable as the sole API-backed provider."""
+        saved = {
+            k: os.environ.get(k)
+            for k in (
+                "ANTHROPIC_API_KEY",
+                "OPENAI_API_KEY",
+                "GEMINI_API_KEY",
+                "GOOGLE_API_KEY",
+                "KIMI_API_KEY",
+                "MOONSHOT_API_KEY",
+                "LLM_DISPATCH_PREF",
+            )
+        }
+        for key in saved:
+            os.environ.pop(key, None)
+        os.environ["KIMI_API_KEY"] = "k"
+        try:
+            from ztare.common import llm_runtime
+            model = llm_runtime.pick_default_model_id_for_scripts()
+            self.assertEqual(model, "kimi-k2.6")
+        finally:
+            for k, v in saved.items():
+                if v is not None:
+                    os.environ[k] = v
+                elif k in os.environ:
+                    del os.environ[k]
+
 
 # ── 8. Model economy / tier resolution ─────────────────────────────────────
 
 class TestModelEconomy(unittest.TestCase):
     def setUp(self):
-        from src.ztare.common import llm_runtime
+        from ztare.common import llm_runtime
         for fn_name in ("_read_principal_preferred_provider", "_read_principal_model_economy"):
             fn = getattr(llm_runtime, fn_name, None)
             if fn and hasattr(fn, "_cached"):
@@ -484,7 +561,7 @@ model_economy:
             saved = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY","OPENAI_API_KEY","GEMINI_API_KEY")}
             os.environ["ANTHROPIC_API_KEY"]="x"; os.environ["OPENAI_API_KEY"]="y"; os.environ["GEMINI_API_KEY"]="z"
             try:
-                from src.ztare.common import llm_runtime
+                from ztare.common import llm_runtime
                 # Reset caches
                 for fn in (llm_runtime._read_principal_preferred_provider, llm_runtime._read_principal_model_economy):
                     if hasattr(fn, "_cached"): del fn._cached
@@ -504,7 +581,7 @@ model_economy:
             saved = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY","OPENAI_API_KEY","GEMINI_API_KEY")}
             os.environ["ANTHROPIC_API_KEY"]="x"; os.environ["OPENAI_API_KEY"]="y"; os.environ["GEMINI_API_KEY"]="z"
             try:
-                from src.ztare.common import llm_runtime
+                from ztare.common import llm_runtime
                 for fn in (llm_runtime._read_principal_preferred_provider, llm_runtime._read_principal_model_economy):
                     if hasattr(fn, "_cached"): del fn._cached
                 self.assertEqual(llm_runtime.pick_model_for_tier("mid"), "gemini-pro-fixture")
@@ -523,7 +600,7 @@ model_economy:
             saved = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY","OPENAI_API_KEY","GEMINI_API_KEY")}
             os.environ["ANTHROPIC_API_KEY"]="x"; os.environ["OPENAI_API_KEY"]="y"; os.environ["GEMINI_API_KEY"]="z"
             try:
-                from src.ztare.common import llm_runtime
+                from ztare.common import llm_runtime
                 for fn in (llm_runtime._read_principal_preferred_provider, llm_runtime._read_principal_model_economy):
                     if hasattr(fn, "_cached"): del fn._cached
                 # Pro tier only has anthropic in fixture → must return that
@@ -544,7 +621,7 @@ model_economy:
             saved = {k: os.environ.get(k) for k in ("ANTHROPIC_API_KEY","OPENAI_API_KEY","GEMINI_API_KEY")}
             os.environ["ANTHROPIC_API_KEY"]="x"; os.environ["OPENAI_API_KEY"]="y"; os.environ["GEMINI_API_KEY"]="z"
             try:
-                from src.ztare.common import llm_runtime
+                from ztare.common import llm_runtime
                 for fn in (llm_runtime._read_principal_preferred_provider, llm_runtime._read_principal_model_economy):
                     if hasattr(fn, "_cached"): del fn._cached
                 self.assertEqual(
@@ -557,8 +634,51 @@ model_economy:
                     if v is not None: os.environ[k]=v
                     elif k in os.environ: del os.environ[k]
 
+    def test_model_economy_can_select_deepseek_provider(self):
+        with tempfile.TemporaryDirectory() as td:
+            td_path = Path(td)
+            (td_path / "org" / "preferences").mkdir(parents=True)
+            (td_path / "org" / "preferences" / "principal.yaml").write_text(
+                """
+preferences:
+  preferred_llm_provider: deepseek
+model_economy:
+  tiers:
+    cheap:
+      providers:
+        deepseek: deepseek-chat-fixture
+        grok: grok-fixture
+"""
+            )
+            old = os.getcwd(); os.chdir(td_path)
+            saved = {
+                k: os.environ.get(k)
+                for k in ("DEEPSEEK_API_KEY", "XAI_API_KEY", "GROK_API_KEY")
+            }
+            os.environ["DEEPSEEK_API_KEY"] = "x"
+            os.environ["XAI_API_KEY"] = "y"
+            try:
+                from ztare.common import llm_runtime
+                for fn in (
+                    llm_runtime._read_principal_preferred_provider,
+                    llm_runtime._read_principal_model_economy,
+                ):
+                    if hasattr(fn, "_cached"):
+                        del fn._cached
+                self.assertEqual(
+                    llm_runtime.pick_model_for_tier("cheap"),
+                    "deepseek-chat-fixture",
+                )
+            finally:
+                os.chdir(old)
+                for k, v in saved.items():
+                    if v is not None:
+                        os.environ[k] = v
+                    elif k in os.environ:
+                        del os.environ[k]
+
     def test_invalid_tier_raises(self):
-        from src.ztare.common.llm_runtime import pick_model_for_tier
+        from ztare.common.llm_runtime import pick_model_for_tier
         with self.assertRaises(ValueError):
             pick_model_for_tier("ultra")
 

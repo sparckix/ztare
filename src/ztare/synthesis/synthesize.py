@@ -8,9 +8,9 @@ import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
-from src.ztare.common import utils
-from src.ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
-from src.ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common import utils
+from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
+from ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT, RUBRICS_DIR
 
 
 ROOT_DIR = REPO_ROOT
@@ -23,14 +23,31 @@ HISTORY_SUMMARY_FILENAME = "history_summary.json"
 QA_FILENAME = "qa.json"
 CANDIDATE_REPORT_FILENAME = "Report.candidate.md"
 FINAL_REPORT_FILENAME = "Report.md"
+AUTORESEARCH_REVIEW_CONTEXT_FILENAME = "autoresearch_review_context.json"
+REPORT_SUPPORT_CONTRACT_FILENAME = "report_support_contract.json"
 BEST_ITERATION_RE = re.compile(r"best_iteration:\s*([A-Za-z0-9_.-]+)")
 HISTORY_FAMILY_RE = re.compile(r"^\d+_iter\d+_score_[^_]+_(.+)$")
 
 DEFAULT_QA_THRESHOLD = 85
+DEFAULT_QA_REPAIR_ATTEMPTS = 2
 ACTIVE_LLM: Optional["LLMClient"] = None
 ACTIVE_QA_LLM: Optional["LLMClient"] = None
 ACTIVE_QA_THRESHOLD = DEFAULT_QA_THRESHOLD
+ACTIVE_QA_REPAIR_ATTEMPTS = DEFAULT_QA_REPAIR_ATTEMPTS
 DEBUG = False
+
+QA_BLOCKING_ISSUE_TYPES = {
+    "unsupported_addition",
+    "unsupported_action",
+    "unsupported_claim",
+    "unsupported_metadata",
+    "distortion",
+    "overclaim",
+    "generic_advice",
+    "fabrication",
+    "hallucination",
+    "contradiction",
+}
 
 PROJECT_TYPE_DEFAULTS = {
     "startup": {
@@ -224,6 +241,33 @@ def normalize_qa_payload(qa: Dict[str, Any]) -> Dict[str, Any]:
     return normalized
 
 
+def qa_blocking_issues(qa: Dict[str, Any]) -> List[Dict[str, Any]]:
+    issues = qa.get("issues")
+    if not isinstance(issues, list):
+        return []
+    blocking: List[Dict[str, Any]] = []
+    for issue in issues:
+        if not isinstance(issue, dict):
+            continue
+        issue_type = str(issue.get("type") or "").strip().lower()
+        severity = str(issue.get("severity") or "").strip().lower()
+        if issue_type in QA_BLOCKING_ISSUE_TYPES or severity in {"fatal", "blocking", "high"}:
+            blocking.append(issue)
+    return blocking
+
+
+def qa_passes_for_report_write(qa: Dict[str, Any], *, threshold: int) -> bool:
+    if not qa.get("faithful"):
+        return False
+    try:
+        score = int(qa.get("score", 0))
+    except (TypeError, ValueError):
+        return False
+    if score < threshold:
+        return False
+    return not qa_blocking_issues(qa)
+
+
 def resolve_project_dir(project_arg: str) -> Path:
     candidate = Path(project_arg)
     if candidate.exists():
@@ -245,6 +289,8 @@ def synthesis_paths(project_dir: Path) -> Dict[str, Path]:
         "qa": synth_dir / QA_FILENAME,
         "candidate_report": synth_dir / CANDIDATE_REPORT_FILENAME,
         "final_report": project_dir / FINAL_REPORT_FILENAME,
+        "autoresearch_review_context": synth_dir / AUTORESEARCH_REVIEW_CONTEXT_FILENAME,
+        "report_support_contract": synth_dir / REPORT_SUPPORT_CONTRACT_FILENAME,
     }
 
 
@@ -387,6 +433,198 @@ def best_iteration_rubric(project_dir: Path) -> Optional[str]:
     return None
 
 
+def project_arg_for_trace(project_dir: Path) -> str:
+    try:
+        return str(project_dir.resolve().relative_to(PROJECTS_DIR.resolve()))
+    except ValueError:
+        return str(project_dir)
+
+
+def default_rubric_for_trace(project_dir: Path) -> Optional[str]:
+    rubric = best_iteration_rubric(project_dir)
+    if rubric:
+        return rubric
+    direct = RUBRICS_DIR / f"{project_dir.name}.json"
+    if direct.exists():
+        return project_dir.name
+    return None
+
+
+def default_project_intake_path(project_dir: Path) -> Optional[Path]:
+    candidates = [
+        project_dir / f"{project_dir.name}_intake.json",
+        project_dir / f"{project_dir.name}_packet.json",
+    ]
+    candidates.extend(sorted(project_dir.glob("*_intake.json")))
+    candidates.extend(sorted(project_dir.glob("*_packet.json")))
+    for path in candidates:
+        if path.exists() and path.is_file():
+            return path
+    return None
+
+
+def compact_graph_actions_for_synthesis(actions: Any) -> List[Dict[str, Any]]:
+    compact: List[Dict[str, Any]] = []
+    if not isinstance(actions, list):
+        return compact
+    for action in actions:
+        if not isinstance(action, dict):
+            continue
+        compact.append(
+            {
+                "action_type": action.get("action_type"),
+                "work_mode": action.get("work_mode"),
+                "recommended_actor": action.get("recommended_actor"),
+                "targets": action.get("targets"),
+                "reason": action.get("reason"),
+            }
+        )
+    return compact
+
+
+def compact_next_actions_for_synthesis(commands: Any) -> List[Dict[str, str]]:
+    compact: List[Dict[str, str]] = []
+    if not isinstance(commands, list):
+        return compact
+    for command in commands[:8]:
+        item = str(command or "").strip()
+        if not item:
+            continue
+        if "--preflight-only" in item:
+            label = "Run the model-free launch preflight."
+        elif " autoresearch run " in f" {item} ":
+            label = "Run the bounded in-loop validation."
+        elif " autoresearch projection " in f" {item} ":
+            label = "Inspect the projection over prior loop results."
+        elif " autoresearch health " in f" {item} ":
+            label = "Inspect autoresearch health."
+        else:
+            label = "Inspect or repair the next trace surface."
+        compact.append({"label": label, "command": item})
+    return compact
+
+
+def compact_autoresearch_trace_for_synthesis(report: Dict[str, Any]) -> Dict[str, Any]:
+    kernel_entry = report.get("kernel_entry") or {}
+    recent_loop = report.get("recent_loop") or {}
+    surfaces = report.get("surfaces") or {}
+    evidence_replay = surfaces.get("evidence_replay")
+    evidence_replay_required = (
+        bool(evidence_replay.get("required")) if isinstance(evidence_replay, dict) else False
+    )
+    evidence_replay_ok = (
+        bool(evidence_replay.get("ok")) if evidence_replay_required else True
+    )
+    evidence_readiness_status = "fresh"
+    for surface_name in (
+        "source_index_freshness",
+        "evidence_compile_freshness",
+        "evidence_output_binding",
+    ):
+        surface = surfaces.get(surface_name)
+        if isinstance(surface, dict) and str(surface.get("status") or "") not in {
+            "",
+            "fresh",
+        }:
+            evidence_readiness_status = "blocked"
+    if evidence_replay_required and not evidence_replay_ok:
+        evidence_readiness_status = "blocked"
+    return {
+        "schema": "ztare-synthesis-autoresearch-review-context-v1",
+        "project": report.get("project"),
+        "readiness": report.get("readiness_canonical") or report.get("readiness"),
+        "status": report.get("status"),
+        "missing": report.get("missing", []),
+        "blocking_missing": report.get("blocking_missing", []),
+        "review_artifacts": report.get("review_artifacts", []),
+        "kernel_entry": {
+            "status": kernel_entry.get("status"),
+            "can_enter_kernel": kernel_entry.get("can_enter_kernel"),
+            "blockers": kernel_entry.get("blockers", []),
+        },
+        "recent_loop": {
+            "available": recent_loop.get("available"),
+            "latest_iteration": recent_loop.get("latest_iteration"),
+            "latest_iteration_score": recent_loop.get("latest_score"),
+            "run_final_score": recent_loop.get("latest_run_final_score"),
+            "latest_run_exit_reason": recent_loop.get("latest_run_exit_reason"),
+            "latest_information_yield_rationale": recent_loop.get("latest_information_yield_rationale"),
+            "latest_failed_gate_ids": recent_loop.get("latest_failed_gate_ids", []),
+            "latest_provider_failure_observed": recent_loop.get("latest_provider_failure_observed"),
+            "provider_failure_observed": recent_loop.get("provider_failure_observed"),
+        },
+        "surfaces": {
+            "raw_file_count": surfaces.get("raw_file_count"),
+            "evidence_exists": surfaces.get("evidence_exists"),
+            "evidence_readiness": {
+                "status": evidence_readiness_status,
+                "source_index_status": _surface_status(surfaces.get("source_index_freshness")),
+                "compile_provenance_status": _surface_status(
+                    surfaces.get("evidence_compile_freshness")
+                ),
+                "output_binding_status": _surface_status(
+                    surfaces.get("evidence_output_binding")
+                ),
+                "replay_required": evidence_replay_required,
+                "replay_status": _surface_status(evidence_replay),
+                "replay_ok": evidence_replay_ok,
+            },
+            "evidence_compile_freshness": surfaces.get("evidence_compile_freshness"),
+            "evidence_output_binding": surfaces.get("evidence_output_binding"),
+            "evidence_replay": surfaces.get("evidence_replay"),
+            "claim_support": surfaces.get("claim_support"),
+            "workspace_source_count": surfaces.get("workspace_source_count"),
+            "source_index_count": surfaces.get("source_index_count"),
+            "source_index_freshness": surfaces.get("source_index_freshness"),
+            "source_preflight_ok": surfaces.get("source_preflight_ok"),
+            "source_preflight_blocking": surfaces.get("source_preflight_blocking", []),
+            "launch_preflight_ok": surfaces.get("launch_preflight_ok"),
+            "launch_preflight_errors": surfaces.get("launch_preflight_errors", []),
+            "eval_history_exists": surfaces.get("eval_history_exists"),
+            "eval_history_rows": surfaces.get("eval_history_rows"),
+            "confirmed_constraint_count": surfaces.get("confirmed_constraint_count"),
+            "provisional_constraint_count": surfaces.get("provisional_constraint_count"),
+        },
+        "projection": report.get("projection", {}),
+        "graph_rd_actions": compact_graph_actions_for_synthesis(report.get("graph_rd_actions", [])),
+        "health_evidence_gaps": report.get("health_evidence_gaps", []),
+        "recovery_actions": report.get("recovery_actions", []),
+        "next_actions": compact_next_actions_for_synthesis(report.get("next_commands", [])),
+    }
+
+
+def maybe_write_autoresearch_review_context(project_dir: Path) -> Optional[Path]:
+    workspace = project_dir / "workspace"
+    has_autoresearch_surface = any(
+        path.exists()
+        for path in (
+            workspace / "eval_history.jsonl",
+            workspace / "iteration_telemetry.jsonl",
+            workspace / "latest_evidence_gaps.json",
+            project_dir / "latest_eval_results.json",
+        )
+    )
+    packet_path = default_project_intake_path(project_dir)
+    rubric = default_rubric_for_trace(project_dir)
+    if not has_autoresearch_surface and packet_path is None:
+        return None
+    try:
+        from ztare.reports.autoresearch_trace import build_autoresearch_trace
+
+        report = build_autoresearch_trace(
+            project=project_arg_for_trace(project_dir),
+            rubric=rubric,
+            packet=str(packet_path) if packet_path else None,
+            full_health=False,
+        )
+        out = synthesis_paths(project_dir)["autoresearch_review_context"]
+        write_json(out, compact_autoresearch_trace_for_synthesis(report))
+        return out
+    except Exception as exc:  # noqa: BLE001
+        dbg(f"Autoresearch review context unavailable: {type(exc).__name__}: {exc}")
+        return None
+
+
 def startup_history_files(project_dir: Path, limit: int) -> List[Path]:
     all_history = latest_history_files(project_dir, limit=50)
     if not all_history:
@@ -455,6 +693,15 @@ def select_artifact_paths(
     renderer_type: str,
 ) -> List[str]:
     base = core_artifact_paths(project_dir)
+    review_context = maybe_write_autoresearch_review_context(project_dir)
+    if review_context is not None:
+        base.append(str(review_context))
+    for review_artifact in (
+        project_dir / "public" / "CLAIM_SUMMARY.md",
+        project_dir / "README.md",
+    ):
+        if review_artifact.exists():
+            base.append(str(review_artifact))
     selected_history = [str(path) for path in selected_history_paths(project_dir, project_type, history_mode, renderer_type)]
     paths = list(base)
     paths.extend(selected_history)
@@ -619,6 +866,7 @@ def sniff_context(
     merged["history_mode"] = history_mode_override or default_history_mode(merged["renderer_type"])
     merged["history_source_paths"] = [str(path) for path in all_relevant_history_paths(project_dir, project_type)]
     merged["artifact_paths"] = select_artifact_paths(project_dir, project_type, merged["history_mode"], merged["renderer_type"])
+    merged["artifact_input_binding"] = build_artifact_input_binding(merged["artifact_paths"])
     merged["history_summary_prompt_hash"] = prompt_hash(PROMPTS_DIR / "summarize_history.md")
     merged["ledger_prompt_hash"] = prompt_hash(PROMPTS_DIR / "extract_ledger.md")
 
@@ -660,6 +908,38 @@ def load_artifact_bundle(artifact_paths: List[str]) -> str:
             continue
         sections.append(f"# Artifact: {path.name}\n\n{read_text(path)}")
     return "\n\n".join(sections)
+
+
+def artifact_file_binding(path: Path) -> Dict[str, Any]:
+    """Return a portable content binding for one synthesis input artifact."""
+    row: Dict[str, Any] = {
+        "path": str(path),
+        "exists": path.exists(),
+    }
+    if not path.exists() or not path.is_file():
+        row["sha256"] = None
+        row["size_bytes"] = None
+        return row
+    data = path.read_bytes()
+    row["sha256"] = hashlib.sha256(data).hexdigest()
+    row["size_bytes"] = len(data)
+    return row
+
+
+def build_artifact_input_binding(artifact_paths: List[str]) -> Dict[str, Any]:
+    artifacts = [artifact_file_binding(Path(str(path))) for path in artifact_paths]
+    payload = {
+        "schema": "ztare-synthesis-artifact-input-binding-v1",
+        "artifacts": artifacts,
+    }
+    payload["digest"] = hashlib.sha256(
+        json.dumps(payload["artifacts"], sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    return payload
+
+
+def artifact_input_binding_for_context(context: Dict[str, Any]) -> Dict[str, Any]:
+    return build_artifact_input_binding([str(path) for path in context.get("artifact_paths", [])])
 
 
 def summarize_history(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]:
@@ -755,6 +1035,7 @@ def refresh_context_artifacts(project_dir: Path, context: Dict[str, Any]) -> Dic
         updated["history_mode"],
         updated["renderer_type"],
     )
+    updated["artifact_input_binding"] = build_artifact_input_binding(updated["artifact_paths"])
     # Keep both renderer-scoped and latest-run context pointers updated.
     scoped_context = Path(updated.get("output_paths", {}).get("context") or synthesis_paths(project_dir)["context"])
     write_json(scoped_context, updated)
@@ -771,7 +1052,10 @@ def cached_ledger_matches_context(cached: Dict[str, Any], context: Dict[str, Any
         return False
     if meta.get("prompt_hash") != context.get("ledger_prompt_hash"):
         return False
-    return [str(path) for path in cached_paths] == [str(path) for path in context.get("artifact_paths", [])]
+    if [str(path) for path in cached_paths] != [str(path) for path in context.get("artifact_paths", [])]:
+        return False
+    current_binding = artifact_input_binding_for_context(context)
+    return meta.get("artifact_input_digest") == current_binding.get("digest")
 
 
 def cached_multi_project_ledger_matches_context(cached: Dict[str, Any], context: Dict[str, Any]) -> bool:
@@ -826,10 +1110,13 @@ def extract_ledger(project_dir: Path, context: Dict[str, Any]) -> Dict[str, Any]
         cache_validator=lambda cached: cached_ledger_matches_context(cached, context),
     )
     dbg("Extract ledger: parsed ledger.json")
+    artifact_binding = artifact_input_binding_for_context(context)
     ledger["_meta"] = {
         "project_name": context["project_name"],
         "project_type": context["project_type"],
         "artifact_paths": context["artifact_paths"],
+        "artifact_input_binding": artifact_binding,
+        "artifact_input_digest": artifact_binding.get("digest"),
         "prompt_hash": context.get("ledger_prompt_hash"),
     }
     # Ledger is canonical and shared across renderers for the same project snapshot.
@@ -953,9 +1240,92 @@ def derive_brief(project_dir: Path, ledger: Dict[str, Any], context: Dict[str, A
     return brief
 
 
-def derive_project_domain(project_name: str) -> str:
-    # Cheap heuristic: collapse a project name to a coarse domain bucket so the
-    # provenance counter can compute "distinct domains" for Confirmed promotion.
+def _normalize_domain_label(value: Any) -> str:
+    if not isinstance(value, str):
+        return ""
+    cleaned = value.strip().lower()
+    if not cleaned:
+        return ""
+    cleaned = re.sub(r"[^a-z0-9]+", "_", cleaned).strip("_")
+    return cleaned[:80]
+
+
+def _domain_from_project_metadata(project_dir: Path) -> str:
+    metadata_path = project_dir / "project_metadata.json"
+    if not metadata_path.exists():
+        return ""
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return ""
+    if not isinstance(metadata, dict):
+        return ""
+    for key in ("project_domain", "domain", "research_domain", "application_domain"):
+        label = _normalize_domain_label(metadata.get(key))
+        if label:
+            return label
+    return ""
+
+
+def _domain_from_rubric(project_dir: Path) -> str:
+    rubric_names = [best_iteration_rubric(project_dir), project_dir.name]
+    for rubric_name in rubric_names:
+        if not rubric_name:
+            continue
+        rubric_path = RUBRICS_DIR / f"{rubric_name}.json"
+        if not rubric_path.exists():
+            continue
+        try:
+            rubric = json.loads(rubric_path.read_text(encoding="utf-8"))
+        except Exception:  # noqa: BLE001
+            continue
+        if not isinstance(rubric, dict):
+            continue
+        for key in ("project_domain", "domain", "research_domain", "application_domain"):
+            label = _normalize_domain_label(rubric.get(key))
+            if label:
+                return label
+    return ""
+
+
+def _domain_from_project_charter(project_dir: Path) -> str:
+    charter_path = project_dir / "project_charter.md"
+    if not charter_path.exists():
+        return ""
+    try:
+        text = charter_path.read_text(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        return ""
+    for pattern in (
+        r"(?im)^\s*\*\*Domain:\*\*\s*(.+?)\s*$",
+        r"(?im)^\s*Domain:\s*(.+?)\s*$",
+    ):
+        match = re.search(pattern, text)
+        if match:
+            label = _normalize_domain_label(match.group(1))
+            if label:
+                return label
+    return ""
+
+
+def derive_project_domain(project_name: str, project_dir: Optional[Path] = None) -> str:
+    """Return the synthesis domain bucket for cross-project promotion checks.
+
+    Explicit project metadata wins. Slug heuristics are only a fallback, so a
+    project name used as an example cannot silently define the domain taxonomy.
+    """
+    if project_dir is not None:
+        for resolver in (
+            _domain_from_project_metadata,
+            _domain_from_rubric,
+            _domain_from_project_charter,
+        ):
+            label = resolver(project_dir)
+            if label:
+                return label
+
+    # Fallback: collapse a project name to a coarse bucket so the provenance
+    # counter can compute "distinct domains" for Confirmed promotion.
     # Anything not matched falls back to the first underscore-separated token.
     name = project_name.lower()
     if name.startswith("eu_") or "european" in name or "_eu_" in name:
@@ -1043,7 +1413,7 @@ def aggregate_multi_project_corpus(
     projects_payload: List[Dict[str, Any]] = []
     for project_dir in project_dirs:
         project_name = project_dir.name
-        domain = derive_project_domain(project_name)
+        domain = derive_project_domain(project_name, project_dir)
         project_context = sniff_context(
             project_dir,
             renderer_override=renderer_type,
@@ -1098,7 +1468,7 @@ def aggregate_field_manual_corpus(project_dirs: List[Path]) -> Dict[str, Any]:
 
     for project_dir in project_dirs:
         project_name = project_dir.name
-        domain = derive_project_domain(project_name)
+        domain = derive_project_domain(project_name, project_dir)
         history_summary_path = synthesis_paths(project_dir)["history_summary"]
 
         if not history_summary_path.exists():
@@ -1182,6 +1552,619 @@ def load_history_summary_for_context(context: Dict[str, Any]) -> Optional[Dict[s
     return None
 
 
+def load_autoresearch_review_context_for_context(context: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    """Load the compact autoresearch trace context selected for this render."""
+    candidates: List[Path] = []
+    for artifact in context.get("artifact_paths", []):
+        path = Path(str(artifact))
+        if path.name == AUTORESEARCH_REVIEW_CONTEXT_FILENAME:
+            candidates.append(path)
+    project_dir_raw = context.get("project_dir")
+    if project_dir_raw:
+        candidates.append(synthesis_paths(Path(project_dir_raw))["autoresearch_review_context"])
+
+    seen: set[Path] = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except Exception:  # noqa: BLE001
+            resolved = candidate
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        payload = load_json_if_valid(candidate)
+        if payload is not None:
+            return payload
+    return None
+
+
+def _compact_list(value: Any, limit: int = 8) -> List[Any]:
+    if not isinstance(value, list):
+        return []
+    return value[:limit]
+
+
+def _claim_rows(rows: Any, *, limit: int = 5) -> List[Dict[str, Any]]:
+    if not isinstance(rows, list):
+        return []
+    out: List[Dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        claim = str(row.get("claim") or "").strip()
+        if not claim:
+            continue
+        out.append(
+            {
+                "claim": claim,
+                "confidence": row.get("confidence"),
+                "evidence_summary": row.get("evidence_summary"),
+            }
+        )
+        if len(out) >= limit:
+            break
+    return out
+
+
+def _surface_status(surface: Any) -> Optional[str]:
+    if not isinstance(surface, dict):
+        return None
+    status = str(surface.get("status") or "").strip()
+    return status or None
+
+
+def _compact_text(value: Any, *, limit: int = 360) -> str:
+    text = str(value or "").strip()
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1].rstrip() + "…"
+
+
+def _compact_int(value: Any) -> int:
+    try:
+        return int(value or 0)
+    except (TypeError, ValueError):
+        return 0
+
+
+def _compact_claim_support_row(row: Any) -> Dict[str, Any]:
+    if not isinstance(row, dict):
+        return {}
+    return {
+        "claim_id": row.get("claim_id"),
+        "claim": row.get("claim"),
+        "field": row.get("field"),
+        "support_status": row.get("support_status"),
+        "source_context_status": row.get("source_context_status"),
+        "source_ids": _compact_list(row.get("source_ids"), 6),
+        "source_paths": _compact_list(row.get("source_paths"), 6),
+        "missing_source_ids": _compact_list(row.get("missing_source_ids"), 6),
+        "reason": row.get("reason"),
+    }
+
+
+def _claim_support_summary(claim_support: Dict[str, Any]) -> Dict[str, Any]:
+    rows = claim_support.get("rows") if isinstance(claim_support.get("rows"), list) else []
+    source_supported_statuses = {
+        "direct_source_support",
+        "synthesized_source_support",
+        "synthesized_across_sources",
+    }
+    problem_rows: List[Dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        support_status = str(row.get("support_status") or "").strip()
+        source_context_status = str(row.get("source_context_status") or "").strip()
+        if (
+            support_status not in source_supported_statuses
+            or source_context_status in {"blocked", "stale", "unverified"}
+            or row.get("missing_source_ids")
+        ):
+            compact = _compact_claim_support_row(row)
+            if compact:
+                problem_rows.append(compact)
+    sample_rows = [
+        compact
+        for compact in (_compact_claim_support_row(row) for row in rows[:8])
+        if compact
+    ]
+    return {
+        "status": claim_support.get("status"),
+        "ok": claim_support.get("ok"),
+        "claim_count": _compact_int(claim_support.get("claim_count")),
+        "weak_or_unsourced_count": _compact_int(
+            claim_support.get("weak_or_unsourced_count")
+        ),
+        "source_context_blocked_count": _compact_int(
+            claim_support.get("source_context_blocked_count")
+        ),
+        "status_counts": claim_support.get("status_counts", {}),
+        "source_context_status_counts": claim_support.get(
+            "source_context_status_counts",
+            {},
+        ),
+        "sample_rows": sample_rows,
+        "problem_rows": problem_rows[:8],
+    }
+
+
+def _stable_action_id(prefix: str, text: str) -> str:
+    digest = hashlib.sha1(text.encode("utf-8")).hexdigest()[:10]
+    return f"{prefix}:{digest}"
+
+
+def _append_action_row(
+    rows: List[Dict[str, Any]],
+    *,
+    text: Any,
+    source: str,
+    action_type: str,
+    condition: Optional[str] = None,
+) -> None:
+    label = _compact_text(text)
+    if not label:
+        return
+    row = {
+        "action_id": _stable_action_id(action_type, f"{source}\n{condition or ''}\n{label}"),
+        "action_type": action_type,
+        "source": source,
+        "label": label,
+    }
+    if condition:
+        row["condition"] = _compact_text(condition)
+    rows.append(row)
+
+
+def _report_action_authority(
+    *,
+    ledger: Dict[str, Any],
+    brief: Dict[str, Any],
+    graph_actions: List[Any],
+    next_actions: List[Any],
+    unsupported: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    """Build a typed action surface for report renderers.
+
+    This is a read model, not an executor. It gives renderers and QA a compact
+    list of what can be recommended now, what is only conditional, what should
+    be deferred, and what must not be upgraded.
+    """
+    allowed_now: List[Dict[str, Any]] = []
+    conditional: List[Dict[str, Any]] = []
+    deferred: List[Dict[str, Any]] = []
+    forbidden_upgrades: List[Dict[str, Any]] = []
+
+    _append_action_row(
+        allowed_now,
+        text=brief.get("prerequisite_action"),
+        source="planning_brief.prerequisite_action",
+        action_type="allowed_now",
+    )
+    _append_action_row(
+        allowed_now,
+        text=brief.get("main_test_or_choice"),
+        source="planning_brief.main_test_or_choice",
+        action_type="allowed_now",
+    )
+
+    for item in _compact_list(next_actions, 12):
+        _append_action_row(
+            allowed_now,
+            text=item,
+            source="support_contract.next_actions",
+            action_type="allowed_now",
+        )
+
+    for action in graph_actions:
+        if isinstance(action, dict):
+            label = action.get("reason") or action.get("targets") or action.get("action_type")
+            _append_action_row(
+                allowed_now,
+                text=label,
+                source="trace.graph_rd_actions",
+                action_type=str(action.get("action_type") or "graph_action"),
+            )
+
+    decision_rule = brief.get("decision_rule_plain")
+    if isinstance(decision_rule, dict):
+        for condition, text in decision_rule.items():
+            _append_action_row(
+                conditional,
+                text=text,
+                source="planning_brief.decision_rule_plain",
+                action_type="conditional_action",
+                condition=str(condition),
+            )
+
+    ledger_decision_rule = ledger.get("decision_rule")
+    if isinstance(ledger_decision_rule, dict):
+        for condition, text in ledger_decision_rule.items():
+            _append_action_row(
+                conditional,
+                text=text,
+                source="ledger.decision_rule",
+                action_type="conditional_action",
+                condition=str(condition),
+            )
+
+    for item in _compact_list(brief.get("what_to_defer"), 10):
+        _append_action_row(
+            deferred,
+            text=item,
+            source="planning_brief.what_to_defer",
+            action_type="deferred_action",
+        )
+    for item in _compact_list(ledger.get("premature_focus_areas"), 10):
+        if isinstance(item, dict):
+            text = item.get("area") or item.get("claim") or item.get("why_premature")
+        else:
+            text = item
+        _append_action_row(
+            deferred,
+            text=text,
+            source="ledger.premature_focus_areas",
+            action_type="deferred_action",
+        )
+
+    for row in unsupported[:12]:
+        if not isinstance(row, dict):
+            continue
+        _append_action_row(
+            forbidden_upgrades,
+            text=row.get("claim"),
+            source="support_contract.unsupported_or_unresolved",
+            action_type="forbidden_upgrade",
+        )
+
+    for value in (
+        ledger.get("confirmation_status"),
+        ledger.get("forecast_status"),
+        ledger.get("epistemic_note"),
+    ):
+        if value:
+            _append_action_row(
+                forbidden_upgrades,
+                text=value,
+                source="ledger.claim_strength_boundary",
+                action_type="forbidden_upgrade",
+            )
+
+    return {
+        "schema": "ztare-report-action-authority-v1",
+        "policy": (
+            "A report may recommend allowed_now rows, may present conditional "
+            "rows only under their stated condition, may name deferred rows only "
+            "as deferred, and must not turn forbidden_upgrades into supported "
+            "claims or recommendations."
+        ),
+        "allowed_now": allowed_now,
+        "conditional": conditional,
+        "deferred": deferred,
+        "forbidden_upgrades": forbidden_upgrades,
+    }
+
+
+def _synthesis_input_binding_status(
+    ledger: Dict[str, Any],
+    context: Dict[str, Any],
+) -> Dict[str, Any]:
+    artifact_paths = [str(path) for path in context.get("artifact_paths", [])]
+    current_binding = build_artifact_input_binding(artifact_paths)
+    meta = ledger.get("_meta") if isinstance(ledger.get("_meta"), dict) else {}
+    ledger_paths = meta.get("artifact_paths") if isinstance(meta, dict) else None
+    ledger_digest = meta.get("artifact_input_digest") if isinstance(meta, dict) else None
+    status = "fresh"
+    reason = "Ledger artifact binding matches the current synthesis inputs."
+    ok = True
+    if not artifact_paths:
+        status = "not_applicable"
+        reason = "No artifact paths were supplied for this support contract."
+    elif not meta or not ledger_paths or not ledger_digest:
+        status = "unbound"
+        ok = False
+        reason = (
+            "Ledger has no content-hash binding for the artifact inputs; regenerate "
+            "synthesis before treating the report as current."
+        )
+    elif [str(path) for path in ledger_paths] != artifact_paths:
+        status = "path_mismatch"
+        ok = False
+        reason = "Ledger artifact path set differs from the current synthesis context."
+    elif ledger_digest != current_binding.get("digest"):
+        status = "digest_mismatch"
+        ok = False
+        reason = "Ledger artifact content hash differs from the current synthesis inputs."
+    return {
+        "schema": "ztare-synthesis-input-binding-status-v1",
+        "ok": ok,
+        "status": status,
+        "reason": reason,
+        "current_digest": current_binding.get("digest"),
+        "ledger_digest": ledger_digest,
+        "artifact_count": len(artifact_paths),
+    }
+
+
+def build_report_support_contract(
+    *,
+    ledger: Dict[str, Any],
+    brief: Dict[str, Any],
+    context: Dict[str, Any],
+    history_summary: Optional[Dict[str, Any]] = None,
+    autoresearch_review_context: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Deterministic read-model that constrains post-iteration reports.
+
+    The renderer remains free to write well, but this contract carries the
+    authority boundary: what may be stated as supported, what must be caveated,
+    and which trace facts are operational readiness rather than substantive
+    evidence.
+    """
+    review_status = ledger.get("review_status")
+    if not isinstance(review_status, dict):
+        review_status = {}
+    trace = autoresearch_review_context if isinstance(autoresearch_review_context, dict) else {}
+    trace_recent_loop = trace.get("recent_loop") if isinstance(trace.get("recent_loop"), dict) else {}
+    trace_surfaces = trace.get("surfaces") if isinstance(trace.get("surfaces"), dict) else {}
+    latest_provider_failure = bool(trace_recent_loop.get("latest_provider_failure_observed"))
+
+    runtime_risks: List[Any] = []
+    runtime_caveats: List[Any] = []
+    for item in _compact_list(review_status.get("runtime_risks"), 8):
+        text = str(item or "")
+        if "budget exhausted" in text.lower():
+            runtime_caveats.append(
+                "Iteration budget ended on recent runs; treat conclusions as bounded by the configured iteration count."
+            )
+        elif (
+            not latest_provider_failure
+            and ("provider" in text.lower() or "timeout" in text.lower())
+        ):
+            runtime_caveats.append(item)
+        else:
+            runtime_risks.append(item)
+    latest_exit_reason = str(trace_recent_loop.get("latest_run_exit_reason") or "").strip()
+    if latest_exit_reason == "budget_exhausted":
+        runtime_caveats.append(
+            "Latest loop ended at the configured iteration budget; this is a run-scope caveat, not a provider failure."
+        )
+    if latest_provider_failure:
+        runtime_risks.append("Provider/runtime failure observed in the latest autoresearch trace; do not treat an incomplete run as substantive falsification.")
+    elif trace_recent_loop.get("provider_failure_observed"):
+        runtime_caveats.append(
+            "Historical provider/runtime failures exist in the run history; separate those rows from the current trace before drawing substantive conclusions."
+        )
+    runtime_risks.extend(_compact_list(trace_surfaces.get("launch_preflight_errors"), 5))
+    evidence_compile_status = _surface_status(trace_surfaces.get("evidence_compile_freshness"))
+    evidence_output_status = _surface_status(trace_surfaces.get("evidence_output_binding"))
+    evidence_replay = trace_surfaces.get("evidence_replay")
+    evidence_replay_status = _surface_status(evidence_replay)
+    evidence_replay_required = (
+        bool(evidence_replay.get("required")) if isinstance(evidence_replay, dict) else False
+    )
+    evidence_replay_ok = (
+        bool(evidence_replay.get("ok")) if evidence_replay_required else True
+    )
+    evidence_readiness_status = "fresh"
+    if evidence_compile_status in {"stale", "unverified", "missing_provenance"}:
+        evidence_readiness_status = "blocked"
+    if evidence_output_status in {"stale", "unverified", "unverified_missing_output_hash"}:
+        evidence_readiness_status = "blocked"
+    if evidence_replay_required and not evidence_replay_ok:
+        evidence_readiness_status = "blocked"
+    evidence_readiness = {
+        "status": evidence_readiness_status,
+        "compile_provenance_status": evidence_compile_status,
+        "output_binding_status": evidence_output_status,
+        "replay_required": evidence_replay_required,
+        "replay_status": evidence_replay_status,
+        "replay_ok": evidence_replay_ok,
+    }
+    claim_support = (
+        trace_surfaces.get("claim_support")
+        if isinstance(trace_surfaces.get("claim_support"), dict)
+        else {}
+    )
+    if evidence_compile_status in {"stale", "unverified", "missing_provenance"}:
+        runtime_risks.append(
+            f"Compiled-evidence provenance is {evidence_compile_status}; do not treat the rendered report evidence as fresh."
+        )
+    if evidence_output_status in {"stale", "unverified", "unverified_missing_output_hash"}:
+        runtime_risks.append(
+            f"Compiled-evidence output binding is {evidence_output_status}; do not present the rendered evidence as a fresh replay."
+        )
+    if evidence_replay_required and evidence_replay_status != "ok":
+        runtime_risks.append(
+            "Evidence readiness is blocked: compiled-evidence replay is "
+            f"{evidence_replay_status or 'missing'}."
+        )
+    synthesis_input_binding = _synthesis_input_binding_status(ledger, context)
+    if not synthesis_input_binding["ok"]:
+        runtime_risks.append(synthesis_input_binding["reason"])
+
+    blockers = list(_compact_list(review_status.get("blockers"), 8))
+    kernel_entry = trace.get("kernel_entry") if isinstance(trace.get("kernel_entry"), dict) else {}
+    blockers.extend(_compact_list(kernel_entry.get("blockers"), 8))
+    blockers.extend(_compact_list(trace.get("blocking_missing"), 8))
+    if evidence_replay_required and evidence_replay_status != "ok":
+        blockers.append(
+            {
+                "id": "evidence_readiness",
+                "surface": "evidence_replay",
+                "status": evidence_replay_status or "missing",
+                "reason": (
+                    "Evidence readiness is blocked because compiled evidence "
+                    "replay is required but not verified."
+                ),
+            }
+        )
+    if not synthesis_input_binding["ok"]:
+        blockers.append(
+            {
+                "id": "synthesis_input_binding",
+                "status": synthesis_input_binding["status"],
+                "reason": synthesis_input_binding["reason"],
+            }
+        )
+
+    next_actions = list(_compact_list(review_status.get("next_actions"), 8))
+    for action in _compact_list(trace.get("next_actions"), 8):
+        if isinstance(action, dict):
+            command = str(action.get("command") or "").strip()
+            label = str(action.get("label") or "").strip()
+            if command:
+                next_actions.append(f"{label}: {command}" if label else command)
+        elif action:
+            next_actions.append(action)
+
+    unsupported = []
+    for row in _compact_list(ledger.get("unsupported_narratives"), 8):
+        if isinstance(row, dict):
+            unsupported.append(
+                {
+                    "claim": row.get("claim"),
+                    "why_unsupported": row.get("why_unsupported"),
+                    "confidence": row.get("confidence"),
+                }
+            )
+    for claim in _compact_list(ledger.get("overclaim_boundary"), 10):
+        unsupported.append({"claim": claim, "why_unsupported": "Listed as an overclaim boundary."})
+
+    graph_actions = _compact_list(trace.get("graph_rd_actions"), 8)
+    health_gaps = _compact_list(trace.get("health_evidence_gaps"), 8)
+    recovery_actions = _compact_list(trace.get("recovery_actions"), 8)
+    action_authority = _report_action_authority(
+        ledger=ledger,
+        brief=brief,
+        graph_actions=graph_actions,
+        next_actions=next_actions,
+        unsupported=unsupported,
+    )
+    compact_blockers = _compact_list(blockers, 12)
+    compact_runtime_risks = _compact_list(runtime_risks, 12)
+    compact_runtime_caveats = _compact_list(runtime_caveats, 12)
+    weak_or_unsourced_count = _compact_int(claim_support.get("weak_or_unsourced_count"))
+    source_context_blocked_count = _compact_int(
+        claim_support.get("source_context_blocked_count")
+    )
+    source_claim_support = _claim_support_summary(claim_support)
+    status_reasons: list[str] = []
+    if compact_blockers:
+        status_reasons.append("report_blockers_present")
+    if evidence_readiness_status != "fresh":
+        status_reasons.append(f"evidence_readiness_{evidence_readiness_status}")
+    if not synthesis_input_binding["ok"]:
+        status_reasons.append(f"synthesis_input_binding_{synthesis_input_binding['status']}")
+    if compact_runtime_risks:
+        status_reasons.append("runtime_risks_present")
+    if weak_or_unsourced_count:
+        status_reasons.append("weak_or_unsourced_claim_support_present")
+    if source_context_blocked_count:
+        status_reasons.append("claim_support_source_context_blocked")
+    trace_status = str(trace.get("status") or "").strip()
+    if trace_status and trace_status not in {"ok", "ready", "complete_trace"}:
+        status_reasons.append(f"trace_status_{trace_status}")
+    status = "ready"
+    if compact_blockers:
+        status = "blocked"
+    elif status_reasons:
+        status = "attention"
+    return {
+        "schema": "ztare-synthesis-report-support-contract-v1",
+        "ok": status != "blocked",
+        "status": status,
+        "status_reasons": status_reasons,
+        "project": context.get("project_name"),
+        "renderer_type": context.get("renderer_type"),
+        "trace_status": trace_status or None,
+        "trace_readiness": trace.get("readiness"),
+        "synthesis_input_binding": synthesis_input_binding,
+        "evidence_readiness_status": evidence_readiness_status,
+        "source_claim_support": source_claim_support,
+        "source_artifact_paths": context.get("artifact_paths", []),
+        "claim_strength": {
+            "confirmation_status": ledger.get("confirmation_status"),
+            "forecast_status": ledger.get("forecast_status"),
+            "epistemic_note": ledger.get("epistemic_note"),
+        },
+        "supported_claims": _claim_rows(ledger.get("supported_hypotheses")),
+        "hardest_conclusion": ledger.get("hardest_conclusion"),
+        "unsupported_or_unresolved": unsupported,
+        "review_readiness": {
+            "ledger_readiness": review_status.get("readiness"),
+            "trace_readiness": trace.get("readiness"),
+            "trace_status": trace.get("status"),
+            "kernel_entry": trace.get("kernel_entry"),
+            "source_preflight_ok": trace_surfaces.get("source_preflight_ok"),
+            "source_preflight_blocking": trace_surfaces.get("source_preflight_blocking", []),
+            "evidence_readiness": evidence_readiness,
+            "claim_support": {
+                "status": source_claim_support["status"],
+                "claim_count": source_claim_support["claim_count"],
+                "weak_or_unsourced_count": source_claim_support[
+                    "weak_or_unsourced_count"
+                ],
+                "source_context_blocked_count": source_claim_support[
+                    "source_context_blocked_count"
+                ],
+                "status_counts": source_claim_support["status_counts"],
+                "source_context_status_counts": source_claim_support[
+                    "source_context_status_counts"
+                ],
+            },
+            "launch_preflight_ok": trace_surfaces.get("launch_preflight_ok"),
+            "eval_history_rows": trace_surfaces.get("eval_history_rows"),
+        },
+        "blockers": compact_blockers,
+        "runtime_risks": compact_runtime_risks,
+        "runtime_caveats": compact_runtime_caveats,
+        "graph_and_gap_actions": {
+            "graph_rd_actions": graph_actions,
+            "health_evidence_gaps": health_gaps,
+            "recovery_actions": recovery_actions,
+        },
+        "report_action_authority": action_authority,
+        "next_actions": _compact_list(next_actions, 12),
+        "history_scope": (history_summary or {}).get("summary_scope"),
+        "required_report_rules": [
+            "Only present ledger-supported claims as supported.",
+            "Mention unresolved blockers or source-preflight failures when they affect interpretation.",
+            "Mention runtime/provider failures as execution caveats, not as evidence against the substantive claim.",
+            "Treat normal iteration-budget exhaustion as run scope, not as a provider failure.",
+            "Mention stale or unbound synthesis inputs before presenting a generated report as current.",
+            "Mention blocked evidence readiness before making evidence-backed conclusions.",
+            "Mention weak or unsourced claim-support rows before presenting a claim as source-backed.",
+            "Mention stale or unverified claim-support source context before presenting a claim as source-backed.",
+            "Treat trace readiness, kernel-entry status, graph actions, and health gaps as review metadata, not proof of the thesis.",
+            "Demote or omit any claim listed in unsupported_or_unresolved.",
+            "Preserve tense and epistemic status: do not convert historical facts into future recommendations, and do not upgrade directional or deferred findings into completion or proof.",
+            "Only recommend actions authorized by report_action_authority.allowed_now or conditionally authorized under report_action_authority.conditional.",
+            "Preserve the next decisive test or next action when the claim remains unresolved.",
+        ],
+    }
+
+
+def write_report_support_contract(
+    project_dir: Path,
+    *,
+    ledger: Dict[str, Any],
+    brief: Dict[str, Any],
+    context: Dict[str, Any],
+    history_summary: Optional[Dict[str, Any]] = None,
+    autoresearch_review_context: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    contract = build_report_support_contract(
+        ledger=ledger,
+        brief=brief,
+        context=context,
+        history_summary=history_summary,
+        autoresearch_review_context=autoresearch_review_context,
+    )
+    write_json(synthesis_paths(project_dir)["report_support_contract"], contract)
+    return contract
+
+
 def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict[str, Any]) -> str:
     if ACTIVE_LLM is None:
         raise RuntimeError("ACTIVE_LLM is not configured.")
@@ -1191,6 +2174,15 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
     run_date = time.strftime("%B %d, %Y")
     dbg(f"Render artifact: renderer_type={context['renderer_type']} run_date={run_date}")
     history_summary = load_history_summary_for_context(context) or {}
+    autoresearch_review_context = load_autoresearch_review_context_for_context(context)
+    report_support_contract = write_report_support_contract(
+        project_dir,
+        ledger=ledger,
+        brief=brief,
+        context=context,
+        history_summary=history_summary,
+        autoresearch_review_context=autoresearch_review_context,
+    )
     aggregated_corpus = context.get("aggregated_corpus")
     prompt_parts = [
         renderer_prompt,
@@ -1204,6 +2196,8 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
         json.dumps(ledger, indent=2, sort_keys=True),
         "History summary JSON:",
         json.dumps(history_summary, indent=2, sort_keys=True),
+        "Report support contract JSON (deterministic authority boundary; obey this when it is stricter than the prose prompt):",
+        json.dumps(report_support_contract, indent=2, sort_keys=True),
     ]
     # Inject project charter so the renderer knows the required output structure.
     charter_path = project_dir / "project_charter.md"
@@ -1239,6 +2233,8 @@ def refine_artifact(report: str, ledger: Dict[str, Any], brief: Dict[str, Any], 
     if not prompt_path.exists():
         return report
     dbg(f"Refine artifact: renderer_type={renderer_type} prompt={prompt_path}")
+    project_dir = Path(context["project_dir"])
+    report_support_contract = load_json_if_valid(synthesis_paths(project_dir)["report_support_contract"]) or {}
     prompt = "\n\n".join(
         [
             load_prompt(prompt_path),
@@ -1249,6 +2245,8 @@ def refine_artifact(report: str, ledger: Dict[str, Any], brief: Dict[str, Any], 
             json.dumps(brief, indent=2, sort_keys=True),
             "Insight ledger JSON:",
             json.dumps(ledger, indent=2, sort_keys=True),
+            "Report support contract JSON:",
+            json.dumps(report_support_contract, indent=2, sort_keys=True),
             "Draft artifact:",
             report,
         ]
@@ -1270,6 +2268,16 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
     dbg(f"QA artifact: renderer_type={context['renderer_type']} threshold={ACTIVE_QA_THRESHOLD}")
     history_summary = load_history_summary_for_context(context) or {}
     aggregated_corpus = context.get("aggregated_corpus")
+    report_support_contract = load_json_if_valid(synthesis_paths(project_dir)["report_support_contract"])
+    if report_support_contract is None:
+        report_support_contract = write_report_support_contract(
+            project_dir,
+            ledger=ledger,
+            brief=brief,
+            context=context,
+            history_summary=history_summary,
+            autoresearch_review_context=load_autoresearch_review_context_for_context(context),
+        )
     qa_parts = [
         load_prompt(PROMPTS_DIR / "qa_artifact.md"),
         f"Renderer type: {context['renderer_type']}",
@@ -1279,6 +2287,8 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
         json.dumps(ledger, indent=2, sort_keys=True),
         "History summary JSON:",
         json.dumps(history_summary, indent=2, sort_keys=True),
+        "Report support contract JSON:",
+        json.dumps(report_support_contract, indent=2, sort_keys=True),
     ]
     if aggregated_corpus is not None:
         qa_parts.append("Aggregated corpus JSON (multi-project mode):")
@@ -1301,16 +2311,124 @@ def qa_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], report: str, cont
         "qa_threshold": ACTIVE_QA_THRESHOLD,
         "candidate_report_path": str(Path(context["output_paths"]["candidate_report"])),
         "final_report_path": str(final_path),
+        "report_support_contract_status": report_support_contract.get("status"),
+        "report_support_contract_ok": report_support_contract.get("ok"),
+        "report_support_contract_status_reasons": report_support_contract.get("status_reasons", []),
     }
 
-    if qa.get("faithful") and int(qa.get("score", 0)) >= ACTIVE_QA_THRESHOLD:
+    blocking_issues = qa_blocking_issues(qa)
+    qa["_meta"]["blocking_issue_count"] = len(blocking_issues)
+    if blocking_issues:
+        qa["_meta"]["blocking_issues"] = blocking_issues
+
+    contract_allows_write = report_support_contract.get("ok") is not False
+    if qa_passes_for_report_write(qa, threshold=ACTIVE_QA_THRESHOLD) and contract_allows_write:
         write_text(final_path, report)
         qa["_meta"]["report_written"] = True
+        qa["_meta"]["existing_final_report_unmodified"] = False
     else:
         qa["_meta"]["report_written"] = False
+        qa["_meta"]["existing_final_report_unmodified"] = final_path.exists()
+        if not contract_allows_write:
+            qa["_meta"]["report_write_blocked_by_support_contract"] = True
 
     write_json(qa_output_path, qa)
     return qa
+
+
+def repair_artifact_after_qa(
+    *,
+    report: str,
+    qa: Dict[str, Any],
+    ledger: Dict[str, Any],
+    brief: Dict[str, Any],
+    context: Dict[str, Any],
+) -> str:
+    if ACTIVE_LLM is None:
+        raise RuntimeError("ACTIVE_LLM is not configured.")
+    project_dir = Path(context["project_dir"])
+    report_support_contract = load_json_if_valid(synthesis_paths(project_dir)["report_support_contract"]) or {}
+    prompt = "\n\n".join(
+        [
+            "Revise the rendered artifact so it passes the QA verdict.",
+            "Return the complete revised artifact only. Do not add commentary.",
+            "Preserve the renderer structure and reader-facing tone.",
+            "Fix every QA issue directly; do not merely add vague caveats.",
+            "Obey the report support contract when it is stricter than the planning brief.",
+            "Do not introduce any new claims, dates, actions, thresholds, or mechanisms.",
+            "If QA flags an unsupported action, remove it unless the inputs explicitly support it.",
+            f"Renderer type: {context['renderer_type']}",
+            f"Audience: {context['audience']}",
+            f"Tone: {context['tone']}",
+            "QA verdict JSON:",
+            json.dumps(qa, indent=2, sort_keys=True),
+            "Planning brief JSON:",
+            json.dumps(brief, indent=2, sort_keys=True),
+            "Insight ledger JSON:",
+            json.dumps(ledger, indent=2, sort_keys=True),
+            "Report support contract JSON:",
+            json.dumps(report_support_contract, indent=2, sort_keys=True),
+            "Artifact to revise:",
+            report,
+        ]
+    )
+    try:
+        return ACTIVE_LLM.call(prompt).strip()
+    except Exception as exc:  # noqa: BLE001
+        raise SynthesisStepError(
+            "repair_artifact_after_qa",
+            f"Could not repair artifact after QA for renderer '{context['renderer_type']}': {exc}",
+            output_path=Path(context["output_paths"]["candidate_report"]),
+        ) from exc
+
+
+def qa_artifact_with_repair(
+    ledger: Dict[str, Any],
+    brief: Dict[str, Any],
+    report: str,
+    context: Dict[str, Any],
+) -> Dict[str, Any]:
+    repair_attempts = max(0, int(ACTIVE_QA_REPAIR_ATTEMPTS))
+    current_report = report
+    qa = qa_artifact(ledger, brief, report, context)
+    if qa_passes_for_report_write(qa, threshold=ACTIVE_QA_THRESHOLD):
+        qa["_meta"]["qa_repair_attempted"] = False
+        qa["_meta"]["qa_repair_attempts"] = 0
+        qa["_meta"]["qa_repair_attempt_limit"] = repair_attempts
+        write_json(Path(context["output_paths"]["qa"]), qa)
+        return qa
+
+    repair_history: List[Dict[str, Any]] = []
+    previous_qa = qa
+    for attempt in range(1, repair_attempts + 1):
+        repair_history.append(
+            {
+                "attempt": attempt,
+                "source_score": previous_qa.get("score"),
+                "source_issue_count": len(
+                    previous_qa.get("issues") if isinstance(previous_qa.get("issues"), list) else []
+                ),
+                "source_blocking_issue_count": len(qa_blocking_issues(previous_qa)),
+            }
+        )
+        current_report = repair_artifact_after_qa(
+            report=current_report,
+            qa=previous_qa,
+            ledger=ledger,
+            brief=brief,
+            context=context,
+        )
+        write_text(Path(context["output_paths"]["candidate_report"]), current_report)
+        previous_qa = qa_artifact(ledger, brief, current_report, context)
+        previous_qa["_meta"]["qa_repair_attempted"] = True
+        previous_qa["_meta"]["qa_repair_attempts"] = attempt
+        previous_qa["_meta"]["qa_repair_attempt_limit"] = repair_attempts
+        previous_qa["_meta"]["qa_repair_history"] = repair_history
+        write_json(Path(context["output_paths"]["qa"]), previous_qa)
+        if qa_passes_for_report_write(previous_qa, threshold=ACTIVE_QA_THRESHOLD):
+            return previous_qa
+
+    return previous_qa
 
 
 def suggest_renderer_template(project_dir: Path, context: Dict[str, Any], llm: LLMClient) -> None:
@@ -1367,6 +2485,78 @@ def write_consolidated_report(project_dir: Path, memo_path: Path, appendix_path:
     content = "\n\n".join([memo, "---", appendix, ""])
     write_text(consolidated, content)
     return consolidated
+
+
+def _load_support_contract_context(project_dir: Path, renderer_type: Optional[str]) -> Optional[Dict[str, Any]]:
+    candidates: List[Path] = []
+    if renderer_type:
+        candidates.append(renderer_scoped_paths(project_dir, renderer_type)["context"])
+    candidates.append(synthesis_paths(project_dir)["context"])
+    candidates.extend(sorted((project_dir / SYNTHESIS_DIRNAME).glob("context.*.json")))
+    seen: set[Path] = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except Exception:  # noqa: BLE001
+            resolved = candidate
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        payload = load_json_if_valid(candidate)
+        if payload is not None:
+            return payload
+    return None
+
+
+def run_support_contract_only(args: argparse.Namespace) -> int:
+    if args.projects:
+        print("--support-contract-only is only supported with --project.", file=sys.stderr)
+        return 2
+    if args.pack:
+        print("--support-contract-only is not supported with --pack.", file=sys.stderr)
+        return 2
+    project_dir = resolve_project_dir(args.project)
+    paths = synthesis_paths(project_dir)
+    paths["dir"].mkdir(parents=True, exist_ok=True)
+    maybe_write_autoresearch_review_context(project_dir)
+    context = _load_support_contract_context(project_dir, args.renderer_type)
+    if context is None:
+        print(
+            "No synthesis context found. Run make synth once, then use --support-contract-only "
+            "to refresh the deterministic report authority check.",
+            file=sys.stderr,
+        )
+        return 2
+    context = refresh_context_artifacts(project_dir, context)
+    ledger_path = Path(context.get("output_paths", {}).get("ledger") or paths["ledger"])
+    ledger = load_json_if_valid(ledger_path)
+    if ledger is None:
+        print(f"No usable ledger found at {ledger_path}.", file=sys.stderr)
+        return 2
+    brief_path = Path(context.get("output_paths", {}).get("brief") or paths["brief"])
+    brief = load_json_if_valid(brief_path) or {}
+    history_summary = load_history_summary_for_context(context)
+    autoresearch_review_context = load_autoresearch_review_context_for_context(context)
+    contract = write_report_support_contract(
+        project_dir,
+        ledger=ledger,
+        brief=brief,
+        context=context,
+        history_summary=history_summary,
+        autoresearch_review_context=autoresearch_review_context,
+    )
+    print(json.dumps(
+        {
+            "status": contract.get("status"),
+            "ok": contract.get("ok"),
+            "status_reasons": contract.get("status_reasons", []),
+            "synthesis_input_binding": contract.get("synthesis_input_binding"),
+            "report_support_contract": str(paths["report_support_contract"]),
+        },
+        indent=2,
+        sort_keys=True,
+    ))
+    return 0 if contract.get("ok") else 1
 
 
 def run_multi_project_field_manual(project_names: List[str], args: argparse.Namespace) -> int:
@@ -1430,10 +2620,10 @@ def run_multi_project_field_manual(project_names: List[str], args: argparse.Name
         print(f"Multi-project render failed: {exc}", file=sys.stderr)
         return 2
 
-    qa = qa_artifact(ledger, brief, report, context)
+    qa = qa_artifact_with_repair(ledger, brief, report, context)
 
     distribution_path = REPO_ROOT / "research_areas" / "private" / "distribution" / "field_manual_auto.md"
-    if qa.get("faithful") and int(qa.get("score", 0)) >= ACTIVE_QA_THRESHOLD:
+    if qa_passes_for_report_write(qa, threshold=ACTIVE_QA_THRESHOLD):
         write_text(distribution_path, report)
         print(f"Multi-project field manual: QA passed with score {qa.get('score')}.")
         print(f"Written to: {distribution_path}")
@@ -1489,9 +2679,9 @@ def run_multi_project_renderer(project_names: List[str], args: argparse.Namespac
         print(f"Multi-project render failed: {exc}", file=sys.stderr)
         return 2
 
-    qa = qa_artifact(ledger, brief, report, context)
+    qa = qa_artifact_with_repair(ledger, brief, report, context)
     final_path = Path(context["output_paths"]["final_report"])
-    if qa.get("faithful") and int(qa.get("score", 0)) >= ACTIVE_QA_THRESHOLD:
+    if qa_passes_for_report_write(qa, threshold=ACTIVE_QA_THRESHOLD):
         write_text(final_path, report)
         print(f"Multi-project render: QA passed with score {qa.get('score')}.")
         print(f"Written to: {final_path}")
@@ -1510,7 +2700,7 @@ def run_multi_project_renderer(project_names: List[str], args: argparse.Namespac
 def _humanize_project_name(project_name: str) -> str:
     """Convert project directory name to a short readable title and filename stem.
 
-    'hormuz_oil_shock_2026' -> title='Hormuz Oil Shock 2026', stem='hormuz-oil-shock-2026'
+    'sample_research_project' -> title='Sample Research Project', stem='sample-research-project'
     """
     words = project_name.replace("-", "_").split("_")
     title = " ".join(w.capitalize() for w in words)
@@ -1591,6 +2781,15 @@ def main() -> int:
         help="Minimum QA score required to write the final Report.md.",
     )
     parser.add_argument(
+        "--qa-repair-attempts",
+        type=int,
+        default=DEFAULT_QA_REPAIR_ATTEMPTS,
+        help=(
+            "Maximum number of QA-guided repair attempts before failing closed. "
+            "Set to 0 to disable repair."
+        ),
+    )
+    parser.add_argument(
         "--renderer-type",
         default=None,
         help="Optional renderer override, e.g. founder_memo or decision_brief.",
@@ -1617,15 +2816,31 @@ def main() -> int:
         action="store_true",
         help="Generate a styled PDF from the final report using pandoc + eisvogel. Requires pandoc and xelatex.",
     )
+    parser.add_argument(
+        "--support-contract-only",
+        action="store_true",
+        help=(
+            "Refresh synthesis/report_support_contract.json from existing synthesis "
+            "artifacts without model calls or report rendering."
+        ),
+    )
     args = parser.parse_args()
 
-    global ACTIVE_LLM, ACTIVE_QA_LLM, ACTIVE_QA_THRESHOLD
+    if args.support_contract_only:
+        return run_support_contract_only(args)
+
+    global ACTIVE_LLM, ACTIVE_QA_LLM, ACTIVE_QA_THRESHOLD, ACTIVE_QA_REPAIR_ATTEMPTS
     global DEBUG
     DEBUG = bool(args.debug)
     ACTIVE_LLM = LLMClient(args.model)
     ACTIVE_QA_LLM = LLMClient(args.qa_model or args.model)
     ACTIVE_QA_THRESHOLD = args.qa_threshold
-    dbg(f"Models: model={args.model} qa_model={args.qa_model or args.model} qa_threshold={args.qa_threshold}")
+    ACTIVE_QA_REPAIR_ATTEMPTS = max(0, int(args.qa_repair_attempts))
+    dbg(
+        "Models: "
+        f"model={args.model} qa_model={args.qa_model or args.model} "
+        f"qa_threshold={args.qa_threshold} qa_repair_attempts={ACTIVE_QA_REPAIR_ATTEMPTS}"
+    )
 
     if args.projects:
         if args.pack:
@@ -1668,7 +2883,7 @@ def main() -> int:
             ledger = extract_ledger(project_dir, memo_context)
             memo_brief = derive_brief(project_dir, ledger, memo_context)
             memo_report = render_artifact(ledger, memo_brief, memo_context)
-            memo_qa = qa_artifact(ledger, memo_brief, memo_report, memo_context)
+            memo_qa = qa_artifact_with_repair(ledger, memo_brief, memo_report, memo_context)
 
             # Step 2: Quantitative appendix, scoped by the memo brief.
             appendix_context = sniff_context(
@@ -1682,7 +2897,7 @@ def main() -> int:
             ledger = extract_ledger(project_dir, appendix_context)
             appendix_brief = derive_brief(project_dir, ledger, appendix_context)
             appendix_report = render_artifact(ledger, appendix_brief, appendix_context)
-            appendix_qa = qa_artifact(ledger, appendix_brief, appendix_report, appendix_context)
+            appendix_qa = qa_artifact_with_repair(ledger, appendix_brief, appendix_report, appendix_context)
 
             print_status("Memo", Path(memo_context["output_paths"]["final_report"]))
             print_status("Appendix", Path(appendix_context["output_paths"]["final_report"]))
@@ -1711,7 +2926,7 @@ def main() -> int:
         ledger = extract_ledger(project_dir, context)
         brief = derive_brief(project_dir, ledger, context)
         report = render_artifact(ledger, brief, context)
-        qa = qa_artifact(ledger, brief, report, context)
+        qa = qa_artifact_with_repair(ledger, brief, report, context)
 
         print_status("Context", Path(context["output_paths"]["context"]))
         print_status("History summary", base_paths["history_summary"])

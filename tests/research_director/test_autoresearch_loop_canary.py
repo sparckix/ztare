@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import shutil
@@ -9,7 +10,10 @@ from typing import Any
 
 import pytest
 
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.reports.autoresearch_trace import build_autoresearch_trace
+from ztare.scaffold.substrate_queue import build_project_packet, write_project_packet
+from ztare.workspace.update_workspace import checkpoint_source_index
 
 
 def _slug() -> str:
@@ -175,6 +179,224 @@ def test_loop_canary_dry_fixture_validates_and_cleans_up() -> None:
     assert report["cleanup_ok"] is True
     assert not (REPO_ROOT / Path(report["project_path"])).exists()
     assert not (REPO_ROOT / Path(report["rubric_path"])).exists()
+
+
+def test_autoresearch_loop_help_accepts_deepseek_model_aliases() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-m",
+            "src.ztare.validator.autoresearch_loop",
+            "--help",
+        ],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+
+    assert proc.returncode == 0
+    assert "deepseek-chat" in proc.stdout
+    assert "deepseek-reasoner" in proc.stdout
+    assert "--packet" in proc.stdout
+    assert "--preflight-only" in proc.stdout
+
+
+def test_loop_preflight_only_does_not_require_gemini_key_or_write_eval() -> None:
+    slug = _slug()
+    project_dir = PROJECTS_DIR / slug
+    rubric_path = RUBRICS_DIR / f"{slug}.json"
+    try:
+        _write_fixture(project_dir, rubric_path, slug)
+        fixture = _validate_fixture(slug, rubric_path)
+        assert fixture.returncode == 0
+        env = os.environ.copy()
+        env["PYTHONPATH"] = (
+            str(REPO_ROOT / "src")
+            if not env.get("PYTHONPATH")
+            else f"{REPO_ROOT / 'src'}{os.pathsep}{env['PYTHONPATH']}"
+        )
+        env.pop("GEMINI_API_KEY", None)
+        env.pop("GOOGLE_API_KEY", None)
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "src.ztare.validator.autoresearch_loop",
+                "--project",
+                slug,
+                "--rubric",
+                slug,
+                "--iters",
+                "1",
+                "--preflight-only",
+                "--disable_attacker_tools",
+            ],
+            cwd=REPO_ROOT,
+            env=env,
+            text=True,
+            capture_output=True,
+            timeout=60,
+            check=False,
+        )
+        telemetry_path = project_dir / "workspace" / "iteration_telemetry.jsonl"
+        telemetry_rows = [
+            json.loads(line)
+            for line in telemetry_path.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        ]
+
+        assert proc.returncode == 0, proc.stderr
+        assert "preflight-only" in proc.stdout
+        assert "GEMINI_API_KEY is not set" not in proc.stderr
+        assert not (project_dir / "latest_eval_results.json").exists()
+        assert [row["record_type"] for row in telemetry_rows] == ["run_start", "run_end"]
+        assert telemetry_rows[0]["preflight_only"] is True
+        assert telemetry_rows[1]["run_exit_reason"] == "preflight_only"
+        assert telemetry_rows[1]["final_score"] is None
+    finally:
+        for path in (project_dir, rubric_path):
+            if path.is_dir():
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
+
+
+def test_loop_preflight_only_records_packet_admission_digest() -> None:
+    slug = f"ztare_loop_canary_{int(time.time())}_{os.getpid()}"
+    project_dir = PROJECTS_DIR / slug
+    rubric_path = RUBRICS_DIR / f"{slug}.json"
+    packet_path = project_dir / "project_packet.json"
+    try:
+        _write_fixture(project_dir, rubric_path, slug)
+        source_path = project_dir / "raw" / "source.md"
+        source_path.write_text(
+            "---\nsource_type: source_evidence\n---\n"
+            "Visible canary rows:\n- x=0 -> y=1\n- x=1 -> y=2\n",
+            encoding="utf-8",
+        )
+        checkpoint_source_index(
+            project_dir=project_dir,
+            raw_dir=project_dir / "raw",
+            workspace_dir=project_dir / "workspace",
+            model_family="gemini",
+            max_files=10,
+            max_chars_per_file=1000,
+            max_total_chars=5000,
+        )
+        source_index = json.loads(
+            (project_dir / "workspace" / "source_index.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        evidence_path = project_dir / "evidence.txt"
+        evidence_sha = hashlib.sha256(evidence_path.read_bytes()).hexdigest()
+        (project_dir / "compiled_evidence_provenance.json").write_text(
+            json.dumps(
+                {
+                    "mode": "raw",
+                    "source_count": len(source_index["sources"]),
+                    "sources": source_index["sources"],
+                    "output_path": str(evidence_path),
+                    "output_sha256": evidence_sha,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        write_project_packet(
+            packet_path,
+            build_project_packet(
+                project=slug,
+                rubric=slug,
+                task="test packet-bound preflight",
+                bounded_claim="preflight can bind packet-backed launch state",
+                source_refs=[f"projects/{slug}/raw/source.md"],
+                evidence_refs=[f"projects/{slug}/evidence.txt"],
+                non_claims=["not a substantive research result"],
+                next_falsifier="edit packet or evidence after trace and rerun preflight",
+                expected_command=(
+                    "ztare autoresearch route --task 'test packet-bound preflight' "
+                    f"--project {slug} --rubric {slug}"
+                ),
+            ),
+        )
+        fixture = _validate_fixture(slug, rubric_path)
+        assert fixture.returncode == 0
+
+        packet_arg = str(packet_path.relative_to(REPO_ROOT))
+        trace = build_autoresearch_trace(
+            project=slug,
+            rubric=slug,
+            packet=packet_arg,
+            repo=REPO_ROOT,
+            full_health=False,
+        )
+        assert trace["kernel_entry"]["can_enter_kernel"] is True
+        expected_kernel_entry_sha = hashlib.sha256(
+            json.dumps(
+                trace["kernel_entry"],
+                sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")
+        ).hexdigest()
+        expected_packet_sha = hashlib.sha256(packet_path.read_bytes()).hexdigest()
+
+        env = os.environ.copy()
+        env["PYTHONPATH"] = (
+            str(REPO_ROOT / "src")
+            if not env.get("PYTHONPATH")
+            else f"{REPO_ROOT / 'src'}{os.pathsep}{env['PYTHONPATH']}"
+        )
+        env.pop("GEMINI_API_KEY", None)
+        env.pop("GOOGLE_API_KEY", None)
+        proc = subprocess.run(
+            [
+                sys.executable,
+                "-m",
+                "src.ztare.validator.autoresearch_loop",
+                "--project",
+                slug,
+                "--rubric",
+                slug,
+                "--packet",
+                packet_arg,
+                "--iters",
+                "1",
+                "--preflight-only",
+                "--disable_attacker_tools",
+            ],
+            cwd=REPO_ROOT,
+            env=env,
+            text=True,
+            capture_output=True,
+            timeout=60,
+            check=False,
+        )
+        telemetry_rows = [
+            json.loads(line)
+            for line in (project_dir / "workspace" / "iteration_telemetry.jsonl")
+            .read_text(encoding="utf-8")
+            .splitlines()
+            if line.strip()
+        ]
+
+        assert proc.returncode == 0, proc.stderr
+        admission = telemetry_rows[0]["project_packet"]
+        assert admission["packet_path"] == packet_arg
+        assert admission["packet_sha256"] == expected_packet_sha
+        assert admission["packet_status"] == "valid_packet"
+        assert admission["readiness"] == "ready_for_first_in_loop_run"
+        assert admission["kernel_entry_status"] == "ready"
+        assert admission["kernel_entry_sha256"] == expected_kernel_entry_sha
+    finally:
+        for path in (project_dir, rubric_path):
+            if path.is_dir():
+                shutil.rmtree(path)
+            elif path.exists():
+                path.unlink()
 
 
 @pytest.mark.skipif(

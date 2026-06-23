@@ -1,7 +1,7 @@
 """Private ZTARE intelligence surface.
 
 This module composes existing ledgers and durable work surfaces into a private,
-read-only packet. Source ledgers remain authoritative; this surface only joins,
+read-only report. Source ledgers remain authoritative; this surface only joins,
 summarizes, and names observer-only learning candidates.
 """
 from __future__ import annotations
@@ -16,6 +16,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from ztare.research_director.learning_promotion_contract import (
+    build_learning_promotion_contract,
+    validate_learning_promotion_contract,
+)
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -51,6 +56,7 @@ STATUS_NAME_RE = re.compile(
     r"(research-log|research_log|residual|manifest|summary|status|decision|README|CHARTER|charter)",
     re.IGNORECASE,
 )
+EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 
 FOCUS_TRACKS: dict[str, dict[str, Any]] = {
     "ns_millennium_hunt": {
@@ -836,6 +842,7 @@ def summarize_agentic_workbench(
     decision_counts: Counter[str] = Counter()
     selected_counts: Counter[str] = Counter()
     worker_transport_counts: Counter[str] = Counter()
+    operator_card_counts: Counter[str] = Counter()
     bypass_reason_counts: Counter[str] = Counter()
     missing_surface_counts: Counter[str] = Counter()
     recent: list[dict[str, Any]] = []
@@ -850,9 +857,25 @@ def summarize_agentic_workbench(
         selected = str(row.get("selected_action") or "unknown")
         reason = str(context.get("why_not_autoresearch") or "")
         worker = context.get("worker") if isinstance(context.get("worker"), dict) else {}
+        raw_card_ids = context.get("operator_card_ids")
+        card_ids = [
+            str(card_id)
+            for card_id in raw_card_ids
+            if str(card_id).strip()
+        ] if isinstance(raw_card_ids, list) else []
+        if not card_ids:
+            raw_routes = context.get("operator_card_routes")
+            if isinstance(raw_routes, list):
+                for route in raw_routes:
+                    if not isinstance(route, dict):
+                        continue
+                    card_id = str(route.get("card_id") or "").strip()
+                    if card_id:
+                        card_ids.append(card_id)
         decision_counts[decision] += 1
         selected_counts[selected] += 1
         worker_transport_counts[str(worker.get("transport") or "unknown")] += 1
+        operator_card_counts.update(dict.fromkeys(card_ids, 1))
         if decision == "invoke_autoresearch" and selected != "invoke_autoresearch":
             ready_workbench_bypasses += 1
             bypass_reason_counts["ready_workbench_bypassed"] += 1
@@ -886,6 +909,7 @@ def summarize_agentic_workbench(
             "selected_action": selected,
             "why_not_autoresearch": reason,
             "worker_transport": worker.get("transport"),
+            "operator_card_ids": card_ids,
             "source_refs": (row.get("source_refs") or {}).get("source_refs") or [],
         })
     bifurcation = _bifurcation_snapshot(bifurcation_report)
@@ -896,6 +920,7 @@ def summarize_agentic_workbench(
         "decision_counts": dict(decision_counts.most_common()),
         "selected_action_counts": dict(selected_counts.most_common()),
         "worker_transport_counts": dict(worker_transport_counts.most_common()),
+        "operator_card_counts": dict(operator_card_counts.most_common()),
         "ready_workbench_bypasses": ready_workbench_bypasses,
         "ready_workbench_bypasses_without_reason": ready_workbench_bypasses_without_reason,
         "missing_surface_preparations": missing_surface_preps,
@@ -912,7 +937,7 @@ def summarize_agentic_workbench(
 
 
 def summarize_subscription_outcomes(repo: Path) -> dict[str, Any]:
-    from src.ztare.reports.subscription_outcome_audit import audit_subscription_outcomes
+    from ztare.reports.subscription_outcome_audit import audit_subscription_outcomes
 
     report = audit_subscription_outcomes(repo=repo)
     return {
@@ -1363,24 +1388,65 @@ def source_improvement_backlog(source_map: dict[str, Any]) -> list[dict[str, Any
     return backlog
 
 
-def build_source_readiness(payload: dict[str, Any]) -> dict[str, Any]:
+def _clean_source_refs(values: list[Any]) -> list[str]:
+    return [str(value).strip() for value in values if str(value or "").strip()]
+
+
+def _source_ref_status(source_refs: list[Any], *, repo: Path) -> dict[str, Any]:
+    present: list[str] = []
+    missing: list[str] = []
+    external: list[str] = []
+    for ref in _clean_source_refs(source_refs):
+        if EXTERNAL_REF_RE.match(ref):
+            external.append(ref)
+            continue
+        path = Path(ref)
+        candidate = path if path.is_absolute() else repo / path
+        if candidate.exists():
+            present.append(ref)
+        else:
+            missing.append(ref)
+    return {
+        "present": present,
+        "missing": missing,
+        "external": external,
+        "present_count": len(present),
+        "missing_count": len(missing),
+        "external_count": len(external),
+    }
+
+
+def build_source_readiness(payload: dict[str, Any], *, repo: Path = REPO) -> dict[str, Any]:
     source_map = payload.get("source_map") or {}
     backlog = payload.get("source_improvement_backlog") or []
     validation_issues = ((payload.get("etl_manifest") or {}).get("validate") or {}).get("issues") or []
+    promotion_contracts = payload.get("learning_promotion_contracts") or []
     backlog_by_source: dict[str, list[dict[str, Any]]] = {}
     blocking_by_source = Counter()
+    contracts_by_source: dict[str, list[dict[str, Any]]] = {}
     for row in backlog:
         backlog_by_source.setdefault(str(row.get("source_id")), []).append(row)
     for issue in validation_issues:
         if issue.get("severity") == "blocking":
             blocking_by_source[str(issue.get("source_id"))] += 1
+    for contract in promotion_contracts:
+        source_id = _source_id_for_promotion_contract(contract)
+        if source_id:
+            contracts_by_source.setdefault(source_id, []).append(contract)
 
     rows: list[dict[str, Any]] = []
     for row in source_map.get("rows") or []:
         source_id = str(row.get("source_id"))
         gaps = row.get("source_gaps") or []
+        source_refs = _clean_source_refs(row.get("source_refs") or [])
+        ref_status = _source_ref_status(source_refs, repo=repo)
         source_backlog = backlog_by_source.get(source_id, [])
-        blocking_count = blocking_by_source.get(source_id, 0)
+        source_contracts = contracts_by_source.get(source_id, [])
+        valid_contracts = [
+            contract for contract in source_contracts
+            if (contract.get("validation") or {}).get("ok")
+        ]
+        blocking_count = blocking_by_source.get(source_id, 0) + int(ref_status["missing_count"])
         if blocking_count:
             readiness = "blocked"
             score = 0.0
@@ -1399,9 +1465,19 @@ def build_source_readiness(payload: dict[str, Any]) -> dict[str, Any]:
             "readiness_score": score,
             "use_now": use_now,
             "feeds": row.get("feeds") or [],
-            "source_refs": row.get("source_refs") or [],
+            "source_refs": source_refs,
+            "present_source_refs": ref_status["present"],
+            "external_source_refs": ref_status["external"],
+            "missing_source_refs": ref_status["missing"],
             "gap_count": len(gaps),
             "blocking_validation_issues": blocking_count,
+            "missing_source_ref_count": ref_status["missing_count"],
+            "promotion_contract_count": len(source_contracts),
+            "valid_promotion_contract_count": len(valid_contracts),
+            "promotion_contract_ids": [
+                str(contract.get("candidate_id"))
+                for contract in valid_contracts[:5]
+            ],
             "next_source_fix": (source_backlog[0].get("gap") if source_backlog else None),
             "recommended_action": (source_backlog[0].get("recommended_action") if source_backlog else "keep_emitter_stable"),
         })
@@ -1413,10 +1489,29 @@ def build_source_readiness(payload: dict[str, Any]) -> dict[str, Any]:
             "ready": status_counts.get("ready", 0),
             "partial": status_counts.get("partial", 0),
             "blocked": status_counts.get("blocked", 0),
+            "missing_source_ref_count": sum(
+                int(row.get("missing_source_ref_count") or 0) for row in rows
+            ),
             "mean_readiness_score": round(sum(float(row.get("readiness_score") or 0.0) for row in rows) / max(1, len(rows)), 3),
         },
         "rows": rows,
     }
+
+
+def _source_id_for_promotion_contract(contract: dict[str, Any]) -> str | None:
+    source_kind = str(contract.get("source_kind") or "")
+    typed_carrier = str(contract.get("typed_carrier") or "")
+    if typed_carrier == "forecast_decision_use_source_repair":
+        return "gp230_forecast_pool"
+    if source_kind == "agentic_workbench" or typed_carrier == "agentic_workbench_route_accounting":
+        return "action_intelligence"
+    if source_kind == "forecast_market":
+        return "gp230_forecast_pool"
+    if source_kind == "scientific_yield":
+        return "gp233_scientific_yield"
+    if source_kind == "source_health":
+        return "action_intelligence"
+    return None
 
 
 def build_executive_brief(payload: dict[str, Any]) -> dict[str, Any]:
@@ -1552,6 +1647,17 @@ def summarize_source_health(source_health: dict[str, Any], repo: Path) -> dict[s
     blocking = [issue for issue in issues if issue.get("severity") == "blocking"]
     warnings = [issue for issue in issues if issue.get("severity") == "warning"]
     issue_type_counts = Counter(str(issue.get("issue_type") or "unknown") for issue in issues)
+    issue_sample = [
+        {
+            "severity": issue.get("severity"),
+            "scope": issue.get("scope"),
+            "issue_type": issue.get("issue_type"),
+            "blocking_rule": issue.get("blocking_rule"),
+            "recommended_action": issue.get("recommended_action"),
+            "evidence_refs": list(issue.get("evidence_refs") or []),
+        }
+        for issue in issues[:8]
+    ]
     path = repo / ACTION_HEALTH
     latest = iso_from_mtime(path)
     return {
@@ -1560,6 +1666,7 @@ def summarize_source_health(source_health: dict[str, Any], repo: Path) -> dict[s
         "blocking_count": len(blocking),
         "warning_count": len(warnings),
         "issue_type_counts": dict(issue_type_counts.most_common()),
+        "issue_sample": issue_sample,
         "latest_touch": latest,
         "blocker_days_proxy": None if not blocking else 0,
         "caveat": "Blocker age is a proxy until source-health issues carry first_seen timestamps.",
@@ -1742,6 +1849,31 @@ def learning_candidates(payload: dict[str, Any]) -> list[dict[str, Any]]:
             "observer_only": True,
         })
     fm = payload.get("forecast_market") or {}
+    if fm.get("decision_use_gap"):
+        candidates.append({
+            "candidate_id": candidate_id("forecast_decision_use_gap", str(fm.get("decision_use_gap"))),
+            "transition_kind": "source_repair",
+            "severity": "normal",
+            "rationale": (
+                "Forecast aggregates without decision-use rows cannot support allocation "
+                "or causal-use claims."
+            ),
+            "source_kind": "forecast_market",
+            "object_ref": "decision_use_gap",
+            "suggested_owner_role": "research_director",
+            "review_question": (
+                "Which forecast aggregates changed a decision before resolution, and "
+                "which should be closed as no-decision-use?"
+            ),
+            "source_refs": fm.get("source_health_refs") or [],
+            "proposed_payload": {
+                "decision_use_gap": fm.get("decision_use_gap"),
+                "decision_use_rows": fm.get("decision_use_rows"),
+                "aggregates": fm.get("aggregates"),
+                "decision_use_rate": fm.get("decision_use_rate"),
+            },
+            "observer_only": True,
+        })
     if fm.get("unresolved_contracts"):
         candidates.append({
             "candidate_id": candidate_id("forecast_contract", "unresolved_contracts"),
@@ -1918,6 +2050,20 @@ def learning_candidates(payload: dict[str, Any]) -> list[dict[str, Any]]:
     return candidates[:16]
 
 
+def attach_learning_promotion_contracts(candidates: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    contracts: list[dict[str, Any]] = []
+    for candidate in candidates:
+        contract = build_learning_promotion_contract(candidate)
+        ok, missing = validate_learning_promotion_contract(contract)
+        contract["validation"] = {"ok": ok, "missing": missing}
+        candidate["promotion_decision"] = contract.get("promotion_decision")
+        candidate["promotion_contract_id"] = contract.get("candidate_id")
+        if contract.get("promotion_decision") != "review_only":
+            candidate["promotion_contract"] = contract
+        contracts.append(contract)
+    return contracts
+
+
 def build(repo: Path = REPO, *, freshness_days: int = 14, max_projects: int = 30) -> dict[str, Any]:
     gp233 = parse_gp233(repo)
     experiment_ledger = parse_experiment_ledger(repo)
@@ -1995,11 +2141,12 @@ def build(repo: Path = REPO, *, freshness_days: int = 14, max_projects: int = 30
     }
     payload["attention"] = build_attention(payload)
     payload["learning_candidates"] = learning_candidates(payload)
+    payload["learning_promotion_contracts"] = attach_learning_promotion_contracts(payload["learning_candidates"])
     payload["learning_candidate_lifecycle"] = summarize_learning_candidate_lifecycle(repo, payload["learning_candidates"])
     payload["source_map"] = build_source_map(payload)
     payload["source_improvement_backlog"] = source_improvement_backlog(payload["source_map"])
     payload["etl_manifest"] = build_etl_manifest(payload)
-    payload["source_readiness"] = build_source_readiness(payload)
+    payload["source_readiness"] = build_source_readiness(payload, repo=repo)
     payload["process_input_metrics"] = build_process_input_metrics(payload)
     payload["executive_brief"] = build_executive_brief(payload)
     return payload
@@ -2038,8 +2185,22 @@ def write_markdown(payload: dict[str, Any], path: Path) -> None:
     for item in payload.get("learning_candidates") or []:
         lines.append(
             f"- `{item.get('transition_kind')}` `{item.get('candidate_id')}`: {item.get('review_question')} "
-            f"(observer_only={item.get('observer_only')})"
+            f"(observer_only={item.get('observer_only')}, promotion={item.get('promotion_decision')})"
         )
+    lines.extend(["", "## Learning Promotion Contracts", ""])
+    for contract in payload.get("learning_promotion_contracts") or []:
+        if contract.get("promotion_decision") == "review_only":
+            continue
+        validation = contract.get("validation") or {}
+        lines.append(
+            f"- `{contract.get('typed_carrier')}` `{contract.get('candidate_id')}`: "
+            f"decision=`{contract.get('promotion_decision')}` "
+            f"validator=`{contract.get('deterministic_validator')}` "
+            f"ok={validation.get('ok')}"
+        )
+        lines.append(f"  - nearest confuser: {contract.get('nearest_confuser')}")
+        lines.append(f"  - ex-post usage: {contract.get('ex_post_usage_criterion')}")
+        lines.append(f"  - non-claim: {contract.get('non_claim')}")
     lines.extend(["", "## Focus Tracks", ""])
     lines.append("| Track | State | Linkage | Forecast | GP-233 | Experiments | Actions | Latest |")
     lines.append("|---|---|---|---:|---:|---:|---:|---|")
@@ -2064,6 +2225,7 @@ def write_markdown(payload: dict[str, Any], path: Path) -> None:
     lines.append(f"- decision counts: `{aw.get('decision_counts')}`")
     lines.append(f"- selected action counts: `{aw.get('selected_action_counts')}`")
     lines.append(f"- missing surface counts: `{aw.get('missing_surface_counts')}`")
+    lines.append(f"- operator-card counts: `{aw.get('operator_card_counts')}`")
     for example in (aw.get("missing_surface_examples") or [])[:3]:
         lines.append(
             "- missing surface example: "
@@ -2146,12 +2308,14 @@ def write_markdown(payload: dict[str, Any], path: Path) -> None:
     lines.extend(["", "## Source Readiness", ""])
     source_readiness = payload.get("source_readiness") or {}
     lines.append(f"- summary: `{source_readiness.get('summary')}`")
-    lines.append("| Source | Readiness | Use Now | Gaps | Blocking | Next Source Fix |")
-    lines.append("|---|---|---|---:|---:|---|")
+    lines.append("| Source | Readiness | Use Now | Gaps | Missing Refs | Blocking | Valid Promotion Contracts | Next Source Fix |")
+    lines.append("|---|---|---|---:|---:|---:|---:|---|")
     for row in source_readiness.get("rows", []):
         lines.append(
             f"| `{row.get('source_id')}` | {row.get('readiness')} | {row.get('use_now')} | "
-            f"{row.get('gap_count')} | {row.get('blocking_validation_issues')} | {row.get('next_source_fix') or ''} |"
+            f"{row.get('gap_count')} | {row.get('missing_source_ref_count')} | "
+            f"{row.get('blocking_validation_issues')} | "
+            f"{row.get('valid_promotion_contract_count')} | {row.get('next_source_fix') or ''} |"
         )
     lines.extend(["", "## ETL Manifest", ""])
     etl = payload.get("etl_manifest") or {}
@@ -2328,7 +2492,7 @@ function brief() {{
   const firstAction = (data.attention || [])[0] || {{}};
   return `
     <section class="grid">
-      ${{card("Operating status", eb.operating_status || "unknown", eb.status_reason || "read the source packet", "wide")}}
+      ${{card("Operating status", eb.operating_status || "unknown", eb.status_reason || "read the source artifact", "wide")}}
       ${{card("Source readiness", `${{sr.ready ?? 0}} ready / ${{sr.partial ?? 0}} partial / ${{sr.blocked ?? 0}} blocked`, "read-model source state", "wide")}}
       ${{card("Decision-use rate", pct(h.forecast_decision_use_rate), "forecast aggregates with logged action")}}
       ${{card("Blocking issues", validation.blocking_count ?? 0, "must fix before trusting recommendations")}}
@@ -2344,7 +2508,7 @@ function brief() {{
       ${{item("Market signal is not yet allocation evidence", decisionRate < 0.05 ? "p0" : "p1", "Forecasts exist, but logged decision use is too sparse. The immediate operational gain is source-side decision-use logging.", decisionRate < 0.05 ? "p0" : "p1")}}
       ${{item("Brief first action", `${{fa.priority || "p1"}} / ${{fa.kind || "attention"}}`, fa.action ? `${{fa.action}} - ${{fa.why}}` : "No brief action emitted.", fa.priority || "p1")}}
       ${{item("First action", `${{firstAction.priority || "p1"}} / ${{firstAction.kind || "attention"}}`, firstAction.title ? `${{firstAction.title}} - ${{firstAction.why}}` : "No attention row emitted.", firstAction.priority || "p1")}}
-      ${{item("Agentic workbench boundary", `${{aw.rows ?? 0}} rows`, `decisions=${{JSON.stringify(aw.decision_counts || {{}})}}; missing=${{JSON.stringify(aw.missing_surface_counts || {{}})}}; bypass=${{JSON.stringify(aw.bypass_reason_counts || {{}})}}; out_of_loop=${{pct(aw.reflexive_bifurcation?.out_of_loop_share)}}; coverage=${{aw.route_row_coverage?.status || "unknown"}}; route_rows_needed=${{aw.route_row_coverage?.additional_route_rows_needed ?? 0}}`, aw.route_row_coverage?.needs_logging_attention ? "p0" : (aw.ready_workbench_bypasses ? "p1" : "p2"))}}
+      ${{item("Agentic workbench boundary", `${{aw.rows ?? 0}} rows`, `decisions=${{JSON.stringify(aw.decision_counts || {{}})}}; missing=${{JSON.stringify(aw.missing_surface_counts || {{}})}}; bypass=${{JSON.stringify(aw.bypass_reason_counts || {{}})}}; cards=${{JSON.stringify(aw.operator_card_counts || {{}})}}; out_of_loop=${{pct(aw.reflexive_bifurcation?.out_of_loop_share)}}; coverage=${{aw.route_row_coverage?.status || "unknown"}}; route_rows_needed=${{aw.route_row_coverage?.additional_route_rows_needed ?? 0}}`, aw.route_row_coverage?.needs_logging_attention ? "p0" : (aw.ready_workbench_bypasses ? "p1" : "p2"))}}
       ${{item("Subscription outcome evidence", subOut.status || "unknown", `clean_groups=${{subOut.summary?.clean_matched_run_group_count ?? 0}}; weak_groups=${{subOut.summary?.weak_matched_run_group_count ?? 0}}; next=${{(subOut.matched_run_plan || [])[0]?.api_command || subOut.next_command || "make autoresearch-subscription-outcome-audit JSON=1"}}`, subOut.ok ? "p2" : "p1")}}
       ${{item("Eigenquestion rotation", `${{eq.pending_projects ?? 0}} pending projects`, `review command: ztare eigenquestion validate --project <project>; proposals are advisory and do not rewrite charters`, eq.pending_projects ? "p1" : "p2")}}
       ${{item("Activity vs yield", data.activity_yield?.verdict || "unknown", `activity ${{pct(data.activity_yield?.activity_delta_pct)}} vs yield ${{pct(data.activity_yield?.yield_delta_pct)}}`, data.activity_yield?.verdict)}}
@@ -2442,7 +2606,7 @@ function risks() {{
   `;
 }}
 function raw() {{
-  return `<h2>Raw Packet</h2><pre>${{esc(JSON.stringify(data, null, 2))}}</pre>`;
+  return `<h2>Raw JSON</h2><pre>${{esc(JSON.stringify(data, null, 2))}}</pre>`;
 }}
 function render() {{
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === active));

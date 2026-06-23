@@ -1,4 +1,4 @@
-"""R10 + R11 — mechanized cross-class extrapolation diagnostic.
+"""Cross-class extrapolation and per-class holdout gates (R10/R11).
 
 Replaces the manual backtest workflow (load champion form, fit on visible,
 evaluate on held-out, compute per-class Spearman residual-vs-feature,
@@ -43,6 +43,7 @@ from __future__ import annotations
 import math
 import statistics
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, Callable, Optional
 
 
@@ -315,30 +316,34 @@ def r10_can_handle(substrate: Any, candidate: Any) -> tuple[bool, str]:
     cage_class = str(meta.get("class", "") or "").strip().lower()
     if cage_class not in {"nd_features", "time_series"}:
         return False, (
-            f"R10 refused: cage_meta.class={cage_class!r} is not "
+            f"Cross-class extrapolation diagnostic (R10) skipped: "
+            f"cage_meta.class={cage_class!r} is not "
             f"in {{nd_features, time_series}}; cross-class diagnostic "
             f"only meaningful for multi-class substrates."
         )
     primary_key = rubric.get("framer_primary_feature_key")
     if not primary_key:
         return False, (
-            "R10 refused: rubric.framer_primary_feature_key not declared. "
-            "R10 needs a designated bridge feature to compute "
+            "Cross-class extrapolation diagnostic (R10) skipped: "
+            "rubric.framer_primary_feature_key not declared. "
+            "The diagnostic needs a designated bridge feature to compute "
             "Spearman(per-row error, primary feature) within each class."
         )
     class_key = rubric.get("substrate_class_key")
     if not class_key:
         return False, (
-            "R10 refused: rubric.substrate_class_key not declared. "
-            "R10 needs a categorical key to partition held-out rows."
+            "Cross-class extrapolation diagnostic (R10) skipped: "
+            "rubric.substrate_class_key not declared. "
+            "The diagnostic needs a categorical key to partition held-out rows."
         )
     farther_count = int(getattr(candidate, "farther_tail_row_count", 0))
     if farther_count < 4:
         return False, (
-            f"R10 refused: only {farther_count} held-out rows; "
+            f"Cross-class extrapolation diagnostic (R10) skipped: "
+            f"only {farther_count} held-out rows; "
             f"per-class diagnostic needs ≥4 rows per class for Spearman."
         )
-    return True, "R10 engaged"
+    return True, "Cross-class extrapolation diagnostic (R10) engaged"
 
 
 def r10_run(substrate: Any, candidate: Any) -> CrossClassDiagnostic:
@@ -361,15 +366,19 @@ def r11_can_handle(substrate: Any, candidate: Any) -> tuple[bool, str]:
     on would break existing runs)."""
     ok, reason = r10_can_handle(substrate, candidate)
     if not ok:
-        return False, f"R11 refused: R10 prerequisites failed — {reason}"
+        return False, (
+            "Per-class holdout ceiling (R11) skipped: "
+            f"cross-class prerequisites failed — {reason}"
+        )
     rubric = getattr(substrate, "rubric_flags", {}) or {}
     if not bool(rubric.get("enforce_per_class_farther_tail", False)):
         return False, (
-            "R11 refused: rubric.enforce_per_class_farther_tail is not "
-            "true. R11 is hard-fail; opt-in flag required during "
-            "validation window. Cross-class diagnostic (R10) still runs."
+            "Per-class holdout ceiling (R11) skipped: "
+            "rubric.enforce_per_class_farther_tail is not true. "
+            "R11 is hard-fail; opt-in flag required during validation "
+            "window. Cross-class diagnostic (R10) still runs."
         )
-    return True, "R11 engaged"
+    return True, "Per-class holdout ceiling (R11) engaged"
 
 
 def r11_run(substrate: Any, candidate: Any) -> PerClassCeilingResult:
@@ -390,7 +399,7 @@ def r11_run(substrate: Any, candidate: Any) -> PerClassCeilingResult:
 
 
 def dispatch_r10_r11_from_harness_json(
-    project_dir: "Path",  # type: ignore
+    project_dir: Path,
     rubric_data: dict,
     iter_index: int,
 ) -> dict:
@@ -400,6 +409,7 @@ def dispatch_r10_r11_from_harness_json(
     summary dict for embedding in eval payload + briefing.
 
     Returns dict with keys:
+        - gate_aliases (legacy id -> human-readable gate name)
         - r10_engaged (bool)
         - r10_diagnostic (CrossClassDiagnostic.to_dict() or None)
         - r10_flags (list of flag dicts)
@@ -409,18 +419,31 @@ def dispatch_r10_r11_from_harness_json(
         - r11_per_class_mre (dict)
         - error (str|None)
     """
-    from pathlib import Path
     import json
     out: dict = {
+        "gate_aliases": {
+            "r10": "cross_class_extrapolation_diagnostic",
+            "r11": "per_class_holdout_ceiling",
+        },
         "r10_engaged": False, "r10_diagnostic": None, "r10_flags": [],
         "r11_engaged": False, "r11_passed": True, "r11_failed_classes": [],
         "r11_per_class_mre": {}, "error": None,
     }
     proj = Path(project_dir)
+    cage_meta = rubric_data.get("cage_meta") or {}
+    cage_class = str(cage_meta.get("class", "") if isinstance(cage_meta, dict) else "").strip().lower()
+    if cage_class not in {"nd_features", "time_series"}:
+        out["skipped_reason"] = (
+            f"cage_meta.class={cage_class!r} is not a multi-class numeric substrate"
+        )
+        return out
     primary_key = rubric_data.get("framer_primary_feature_key")
     class_key = rubric_data.get("substrate_class_key")
     if not primary_key or not class_key:
-        out["error"] = "framer_primary_feature_key or substrate_class_key not declared in rubric"
+        out["error"] = (
+            "cross-class diagnostic requires framer_primary_feature_key "
+            "and substrate_class_key in rubric"
+        )
         return out
     harness_path = proj / "workspace" / "gate_harness_result.json"
     if not harness_path.exists():
@@ -494,7 +517,10 @@ def dispatch_r10_r11_from_harness_json(
             r10_path = proj / "workspace" / f"cross_class_extrapolation_iter_{iter_index:03d}.json"
             r10_path.write_text(json.dumps(diag.to_dict(), indent=2), encoding="utf-8")
         except Exception as exc:
-            out["error"] = f"R10 dispatch failed: {type(exc).__name__}: {exc}"
+            out["error"] = (
+                f"cross-class extrapolation diagnostic (R10) failed: "
+                f"{type(exc).__name__}: {exc}"
+            )
 
     # R11 runs only when rubric opts in
     if bool(rubric_data.get("enforce_per_class_farther_tail", False)) and farther_features:
@@ -518,7 +544,10 @@ def dispatch_r10_r11_from_harness_json(
             r11_path = proj / "workspace" / f"per_class_mre_ceiling_iter_{iter_index:03d}.json"
             r11_path.write_text(json.dumps(res.to_dict(), indent=2), encoding="utf-8")
         except Exception as exc:
-            err_str = f"R11 dispatch failed: {type(exc).__name__}: {exc}"
+            err_str = (
+                f"per-class holdout ceiling (R11) failed: "
+                f"{type(exc).__name__}: {exc}"
+            )
             out["error"] = (out["error"] + "; " + err_str) if out["error"] else err_str
     return out
 
@@ -535,7 +564,7 @@ def register_cross_class_gates(cage: Any) -> None:
     is forbidden for new gates.
     """
     try:
-        from src.ztare.gates.cage import Gate
+        from ztare.gates.cage import Gate
     except ImportError:
         return  # cage module unavailable; gates will be unreachable
     r10 = Gate(

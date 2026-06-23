@@ -32,7 +32,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
 
+from ztare.common.google_genai_client import build_google_genai_client
+
 DEFAULT_MODEL = "gemini-embedding-001"
+REPO = Path(__file__).resolve().parents[3]
 
 
 def content_id(*parts: str) -> str:
@@ -56,7 +59,7 @@ def make_client(api_key: "str | None" = None):
     if not api_key:
         raise SystemExit("GEMINI_API_KEY or GOOGLE_API_KEY required to build/query an embedding atlas")
     from google import genai
-    return genai.Client(api_key=api_key)
+    return build_google_genai_client(genai.Client, api_key=api_key)
 
 
 def embed_batch(client, texts: list, *, model: str = DEFAULT_MODEL, dimensions: int = 768,
@@ -103,6 +106,15 @@ def load_cached(path: Path, model: str, dimensions: int) -> dict:
             if isinstance(row, dict) and "id" in row}
 
 
+def _manifest_path(path: Path) -> str:
+    """Return a publish-safe manifest path for repo-owned atlas artifacts."""
+    p = Path(path)
+    try:
+        return p.resolve().relative_to(REPO.resolve()).as_posix()
+    except ValueError:
+        return str(p)
+
+
 def build_atlas(entries: list, out_emb: Path, out_manifest: "Path | None" = None, *,
                 model: str = DEFAULT_MODEL, dimensions: int = 768, batch_size: int = 32,
                 rebuild: bool = False, sleep: float = 0.05, client=None,
@@ -129,7 +141,7 @@ def build_atlas(entries: list, out_emb: Path, out_manifest: "Path | None" = None
     out_emb.write_text(json.dumps(atlas, ensure_ascii=False), encoding="utf-8")
     if out_manifest:
         man = {"generated_at": atlas["generated_at"], "model": model, "dimensions": dimensions,
-               "size": len(entries), "embeddings_file": str(out_emb)}
+               "size": len(entries), "embeddings_file": _manifest_path(out_emb)}
         man.update(extra_manifest or {})
         Path(out_manifest).write_text(json.dumps(man, indent=2), encoding="utf-8")
     print(f"[embeddings] wrote {out_emb}")

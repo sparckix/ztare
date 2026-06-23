@@ -14,8 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable
 
-from src.ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
-from src.ztare.common.subscription_sessions import (
+from ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
+from ztare.common.subscription_sessions import (
     default_subscription_runtime,
     get_or_create_warm_session,
     persist_warm_session,
@@ -243,11 +243,18 @@ def _agent_dispatch_enabled(env_var: str) -> bool:
 
 
 def _compose_agent_prompt(prompt: str, briefing: str | None) -> str:
+    preamble = (
+        "You are a bounded worker called by an automated parser. Return the typed "
+        "contract requested by the caller in your final answer. Do not replace the "
+        "contract with a summary, file list, status note, or description of edits. "
+        "Do not write or modify repository files unless the task explicitly asks "
+        "for file edits; most dispatch calls are stdout-only.\n\n"
+    )
     if not briefing:
-        return prompt
+        return preamble + "=== TASK ===\n" + prompt
     return (
-        "You are a bounded tool-using worker. Use the briefing as externalized state; "
-        "return only the typed contract requested by the caller.\n\n"
+        preamble
+        + "Use the briefing as externalized state.\n\n"
         "=== EXTERNALIZED BRIEFING ===\n"
         f"{briefing.rstrip()}\n\n"
         "=== TASK ===\n"

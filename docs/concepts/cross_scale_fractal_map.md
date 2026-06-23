@@ -55,11 +55,11 @@ The same underlying structural move appears at multiple scales with scale-specif
 | Underlying move | Coordinate scale | Iteration scale | Research-arc scale |
 |---|---|---|---|
 | Translate to other domain | `log` / `signed_log` (transform) | `coordinate_compression` (pivot module) | `core_01 Problem Reformulation` |
-| Iterate with monotone potential | (n/a) | `failure_topology` (with bounded steps) | `core_02 Iterative Refinement Loop` |
-| Decompose canonically | `power_2` / `power_0.5` (split) | `entropy_stripping` (peel narrative) | `core_03 Decomposition` |
-| Reduce to extremal case | `reciprocal` (inversion) | `fixed_point_scan`, `inversion` | `core_05 Extremal Case Analysis` |
-| Import external framework | `arctan` / `sigmoid` (bounded transforms) | `interface_discipline` | `core_06 External Framework Importation` |
-| Generalize / abstract | `signed_log` / `softplus` (broaden domain) | `dimensional_shift`, `category_switch` | `core_07 Generalization` |
+| Iterate with monotone potential | (n/a) | `failure_topology` (with bounded steps) | `broad_01 Iterative Refinement` |
+| Decompose canonically | `power_2` / `power_0.5` (split) | `entropy_stripping` (peel narrative) | `core_03 Decomposition & Recomposition` |
+| Reduce to extremal case | `reciprocal` (inversion) | `fixed_point_scan`, `inversion` | `broad_05 Extremal Method` |
+| Import external framework | `arctan` / `sigmoid` (bounded transforms) | `interface_discipline` | `core_06 Cross-Domain Translation` |
+| Generalize / abstract | `signed_log` / `softplus` (broaden domain) | `dimensional_shift`, `category_switch` | `core_02 Generalization & Abstraction` |
 
 The same column entry has different *names* at different scales but the same *underlying structural move*. The aliases are what make the system coherent across scales rather than fragmenting into 7 disconnected vocabularies.
 

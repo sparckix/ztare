@@ -160,3 +160,97 @@ KEPLER = "Kepler-mode rubric"
 
     assert result.passed is True
     assert result.evidence["missing"] == {}
+
+
+def _write_hill_climb_support_files(tmp_path: Path, monkeypatch, module):
+    information_yield = tmp_path / "information_yield.py"
+    eigen = tmp_path / "eigenquestion_generator.py"
+    information_yield.write_text(
+        'RENDERED = "thesis_control_mode:"\n',
+        encoding="utf-8",
+    )
+    eigen.write_text(
+        'ADVISORY = "This is an ADVISORY proposal. manually merge"\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "INFORMATION_YIELD", information_yield)
+    monkeypatch.setattr(module, "EIGENQUESTION_GENERATOR", eigen)
+
+
+def test_hill_climb_fixture_accepts_briefing_wrapper_before_feature_branch(
+    tmp_path, monkeypatch
+) -> None:
+    module = _load_module()
+    _write_hill_climb_support_files(tmp_path, monkeypatch, module)
+    loop = tmp_path / "loop.py"
+    loop.write_text(
+        '''
+def main():
+    project_charter = read_file(PROJECT_CHARTER_PATH)
+    current_thesis = read_file(WORKING_PATH)
+    pivot_state = resolve_stagnation_pivot_state()
+    primitive_class_history = _primitive_class_history_packet()
+    _briefing_render = render_default_briefing_context(ctx)
+    _briefing_block = str(_briefing_render.get("body") or "")
+    mutator_briefing_context = ""
+    if _briefing_block and not fit_primitive_features_enabled:
+        mutator_briefing_context = _briefing_block
+    if fit_primitive_features_enabled:
+        pass
+    prompt = f"""
+PROJECT CHARTER (MANDATORY CONTEXT):
+### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)
+{mutator_briefing_context}
+`thesis_control_mode`
+"""
+    saved = {"thesis_control_mode": mutation_declaration.thesis_control_mode.value}
+    write_file(WORKING_PATH, full_candidate)
+''',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "AUTORESEARCH_LOOP", loop)
+
+    result = module._fixture_hill_climb_prompt_boundary()
+
+    assert result.passed is True
+    assert result.evidence["mutator_briefing_before_feature_contract"] is True
+
+
+def test_hill_climb_fixture_rejects_briefing_wrapper_after_feature_branch(
+    tmp_path, monkeypatch
+) -> None:
+    module = _load_module()
+    _write_hill_climb_support_files(tmp_path, monkeypatch, module)
+    loop = tmp_path / "loop.py"
+    loop.write_text(
+        '''
+def main():
+    project_charter = read_file(PROJECT_CHARTER_PATH)
+    current_thesis = read_file(WORKING_PATH)
+    pivot_state = resolve_stagnation_pivot_state()
+    primitive_class_history = _primitive_class_history_packet()
+    mutator_briefing_context = ""
+    if fit_primitive_features_enabled:
+        pass
+    _briefing_render = render_default_briefing_context(ctx)
+    _briefing_block = str(_briefing_render.get("body") or "")
+    if _briefing_block and not fit_primitive_features_enabled:
+        mutator_briefing_context = _briefing_block
+    prompt = f"""
+PROJECT CHARTER (MANDATORY CONTEXT):
+### CURRENT SYSTEM STATE (FOR ANALYSIS ONLY)
+{mutator_briefing_context}
+`thesis_control_mode`
+"""
+    saved = {"thesis_control_mode": mutation_declaration.thesis_control_mode.value}
+    write_file(WORKING_PATH, full_candidate)
+''',
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(module, "AUTORESEARCH_LOOP", loop)
+
+    result = module._fixture_hill_climb_prompt_boundary()
+
+    assert result.passed is False
+    assert result.evidence["mutator_briefing_before_feature_contract"] is False
+    assert "mutator_briefing_not_nested_under_feature_fit" in result.evidence["missing"]

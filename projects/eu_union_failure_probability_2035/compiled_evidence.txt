@@ -1,140 +1,139 @@
-EU_UNION_FAILURE_PROBABILITY_2035 — COMPILED EVIDENCE (April 11, 2026)
+EU_UNION_FAILURE_PROBABILITY_2035 — COMPILED EVIDENCE (June 21, 2026)
 
 This file is a structured evidence brief for adversarial validation.
 It preserves contradictions and unknowns instead of smoothing them away.
 
 # 1. IMMUTABLE GROUND TRUTH
-- The euro area's aggregate automatic fiscal stabilizer is estimated at 0.48 (ESCB semi-elasticity approach) or 0.56 (European Commission estimate). [Strength: high; Sources: S005]
-- Euro-area automatic stabilizers cushion approximately 10% to 30% of a standard GDP shock according to ECB model simulations. [Strength: high; Sources: S005]
-- During COVID-19, euro-area automatic stabilizers were expected to account for approximately 2.8% of GDP out of an 8.5% GDP deficit in 2020, rising to 5.2% of GDP cumulatively over 2020–21. [Strength: high; Sources: S005]
-- In three studied mature federations (US, Canada, Australia), fiscal transfers offset roughly 4–11% of idiosyncratic regional shocks and 13–24% of permanent shocks, operating mainly through automatic stabilizers embedded in a central budget rather than discretionary center-to-subnational transfers. [Strength: high; Sources: S004]
-- EU legal primacy is a principle developed through CJEU jurisprudence, not anchored in an explicit primary treaty text; national constitutional courts have in a number of cases refused to draw the consequences of CJEU judgments. [Strength: high; Sources: S006]
-- The vast majority of national courts still apply the EU primacy principle despite documented challenges. [Strength: high; Sources: S006]
-- Germany's Basic Law Article 31 states federal law takes precedence over Land law, anchoring supremacy in primary constitutional text rather than jurisprudential doctrine alone. [Strength: high; Sources: S007]
-- Monetary accommodation by a union-wide central bank can sustain a currency union for a while but not permanently when sufficiently large asymmetric shocks occur; fiscal transfers are modeled as the more effective long-run retention tool. [Strength: high; Sources: S008]
-- The Latin Monetary Union, Scandinavian Monetary Union, and Austro-Hungarian Monetary Union all failed to withstand the shock of World War I, attributed in part to missing common institutions including a common central bank and unified fiscal policy. [Strength: high; Sources: S009, S017]
-- Brexit is identified in the literature as the clearest sign of European disintegration to date; the Schengen crisis displayed considerable disintegrative features; disintegration largely did not unfold during the Eurozone crisis. [Strength: high; Sources: S013]
-- A standard definition of European disintegration is still lacking in the scholarly literature. [Strength: high; Sources: S013]
-- Differentiated disintegration, as defined by Schimmelfennig, is the selective reduction of a state's level and scope of integration; it is analytically distinct from full exit and full collapse of formal intactness. [Strength: high; Sources: S014]
-- Euro-area sovereign spread differentials during the crisis were shaped by a dynamic, common time-varying factor and increasingly by country-specific solvency concerns from October 2008 onward. [Strength: high; Sources: S016]
-- Redenomination and fragmentation risk in the euro area are state-dependent and responsive to ECB policy announcements, not a stable background constant. [Strength: high; Sources: S018]
-- The ECB's Transmission Protection Instrument (TPI) can be activated against unwarranted, disorderly market dynamics threatening monetary-policy transmission across the euro area. [Strength: high; Sources: S020]
-- Differentiated integration and disintegration in the EU—including opt-outs and outer-core arrangements—can coexist with continuing formal Union membership and a still-functioning legal order. [Strength: high; Sources: S019]
+- Primacy is a core principle of EU law developed through CJEU jurisprudence. [Strength: high; Sources: S006]
+- National constitutional courts have, in a number of cases, refused to draw the consequences of CJEU judgments. [Strength: high; Sources: S006]
+- A standard definition of European disintegration is still lacking as of 2019. [Strength: high; Sources: S013]
+- The paper studies three existing federations: the United States, Canada, and Australia. [Strength: high; Sources: S004]
+- Fiscal transfers offset roughly 4-11% of idiosyncratic regional shocks in these federations. [Strength: high; Sources: S004]
+- Fiscal transfers offset roughly 13-24% of permanent shocks in these federations. [Strength: high; Sources: S004]
+- ECB staff estimate the euro-area aggregate automatic fiscal stabilizer at 0.48 using the ESCB semi-elasticity approach. [Strength: high; Sources: S005]
+- The European Commission estimate for the euro-area aggregate automatic fiscal stabilizer is 0.56. [Strength: high; Sources: S005]
+- The paper's central result is that monetary accommodation alone can sustain the union only for a while, not permanently. [Strength: high; Sources: S008]
+- The paper's logic implies that central-bank action can buy time, but a sequence of large asymmetric shocks can still eventually break the union if fiscal transfer capacity is absent. [Strength: high; Sources: S008]
+- The paper examines the Latin Monetary Union, the Scandinavian Monetary Union, and the Austro-Hungarian Monetary Union. [Strength: high; Sources: S009]
+- The three early monetary unions could not withstand the shock of World War I. [Strength: high; Sources: S009]
+- Eichengreen argued in 2007 that one or more members leaving the euro area in the next ten years was unlikely. [Strength: high; Sources: S011]
+- Eichengreen argued in 2007 that total disintegration of the euro area was even more unlikely. [Strength: high; Sources: S011]
+- Euro-area sovereign spread movements during the crisis were an episode of unusually high volatility. [Strength: high; Sources: S016]
+- Spread movements were first driven strongly by common global risk repricing and then increasingly by country-specific solvency concerns. [Strength: high; Sources: S016]
+- Differentiated integration/disintegration is a central legal and political feature of the EU after the euro crisis and Brexit. [Strength: high; Sources: S019]
+- Substantial variation, opt-outs, and differentiated participation can coexist with continuing formal Union membership and a still-functioning legal order. [Strength: high; Sources: S019]
+- The modern EMU has a materially different and more developed resilience architecture than earlier monetary unions. [Strength: high; Sources: S020]
+- Fragmentation and redenomination risk are state-dependent and responsive to policy announcements. [Strength: high; Sources: S018]
 
-# 2. NUMERICAL RANGES & CONSTRAINTS (LOAD-BEARING VARIABLES / CONSTRAINTS)
-- euro_area_automatic_stabilizer_semi_elasticity: 0.48 (ESCB) or 0.56 (European Commission) dimensionless semi-elasticity | Kind: range | Sources: S005 | Notes: Two estimates from different methodologies; not averaged here per non-reconciliation rule.
-- euro_area_automatic_stabilizer_gdp_shock_cushion: 10–30 percent of standard GDP shock absorbed | Kind: range | Sources: S005 | Notes: ECB model simulations; applies to a standard shock, not a tail shock.
-- covid_automatic_stabilizer_contribution_2020: 2.8 percent of GDP | Kind: exact | Sources: S005 | Notes: Out of 8.5% of GDP total deficit in 2020.
-- covid_automatic_stabilizer_contribution_cumulative_2020_21: 5.2 percent of GDP | Kind: exact | Sources: S005 | Notes: Cumulative over 2020–21.
-- mature_federation_idiosyncratic_shock_absorption: 4–11 percent of idiosyncratic regional shock offset | Kind: range | Sources: S004 | Notes: Across US, Canada, Australia; primarily through automatic stabilizers, not discretionary transfers.
-- mature_federation_permanent_shock_absorption: 13–24 percent of permanent regional shock offset | Kind: range | Sources: S004 | Notes: Same three federations; same mechanism.
-- severe_systemic_shock_multiplier_candidate_range: [1.30, 1.70] (cited in S020 as a range being interrogated, not validated) dimensionless multiplier | Kind: constraint | Sources: S020 | Notes: S020 explicitly states this range is not defensible as a direct transfer from pre-WWI monetary union collapse episodes. Must be adjusted downward for modern EU resilience architecture. No source validates the specific bounds.
-- legal_break_multiplier: non-zero but unquantified dimensionless multiplier on base failure probability | Kind: qualitative | Sources: S006, S007 | Notes: S006 establishes the channel is real. S007 provides a lower-risk comparator baseline. No source provides a numerical range.
-- discretionary_backstop_reduction: constrained to be smaller or scenario-contingent or explicitly temporary dimensionless reduction factor | Kind: qualitative | Sources: S004, S005, S008 | Notes: S005 supports a meaningful term. S004 constrains it: mature-federation resilience is not built primarily on ad hoc transfers. S008 is the hardest constraint: central-bank action buys time but does not permanently eliminate tail risk without fiscal transfer capacity.
-- base_failure_probability: clearly non-zero, not modal outcome; no numerical bound from sources probability | Kind: qualitative | Sources: S011, S009, S017 | Notes: S011 (pre-crisis 2007) argues exit/disintegration over ten years was unlikely and formidably costly; supports non-high prior. S009/S017 warn that historical failure reference class is dominated by severe external shocks and cannot be imported as unconditional hazard rate without double-counting risk with stress multiplier.
-- expert_elicitation_recommended_starting_method: begin with outer ranges first, then move inward; do not start with single best value procedural constraint | Kind: qualitative | Sources: S010 | Notes: Operational rule from National Academies on structured expert elicitation. Applies to all model multipliers currently set by freehand judgment.
+# 2. NUMERICAL RANGES & CONSTRAINTS (KEY VARIABLES / CONSTRAINTS)
+- fiscal_transfer_shock_absorption_idiosyncratic: 4-11 percent | Kind: range | Sources: S004 | Notes: Fraction of idiosyncratic regional shocks offset by fiscal transfers in US, Canada, Australia.
+- fiscal_transfer_shock_absorption_permanent: 13-24 percent | Kind: range | Sources: S004 | Notes: Fraction of permanent shocks offset by fiscal transfers in US, Canada, Australia.
+- primary_mechanism: automatic stabilizers (federal taxes and transfers to individuals) N/A | Kind: qualitative | Sources: S004 | Notes: Main channel for shock absorption identified in the study, not discretionary transfers to subnational budgets.
+- euro_area_aggregate_automatic_fiscal_stabilizer_ESCB_estimate: 0.48 unitless (semi-elasticity) | Kind: exact | Sources: S005 | Notes: ECB staff estimate using ESCB semi-elasticity approach.
+- euro_area_aggregate_automatic_fiscal_stabilizer_EC_estimate: 0.56 unitless (semi-elasticity) | Kind: exact | Sources: S005 | Notes: European Commission estimate.
+- cushioning_of_standard_GDP_shock_by_automatic_stabilizers: 10% to 30% percent | Kind: range | Sources: S005 | Notes: Based on ECB model simulations.
+- COVID_2020_GDP_deficit: 8.5% percent of GDP | Kind: exact | Sources: S005 | Notes: Expected deficit in 2020 during COVID-19 crisis.
+- COVID_2020_automatic_stabilizers_contribution: 2.8% percent of GDP | Kind: exact | Sources: S005 | Notes: Expected contribution of automatic stabilizers to the 2020 deficit.
+- COVID_2020_2021_cumulative_automatic_stabilizers_contribution: 5.2% percent of GDP | Kind: exact | Sources: S005 | Notes: Expected cumulative contribution of automatic stabilizers over 2020-21.
+- sample_size_for_reference_class: 3 monetary unions | Kind: exact | Sources: S009 | Notes: The paper examines three historical monetary unions: Latin, Scandinavian, and Austro-Hungarian.
+- failure_outcome_for_reference_class: 3 out of 3 unions | Kind: qualitative | Sources: S009 | Notes: All three unions could not withstand the shock of World War I.
+- duration_of_monetary_accommodation_efficacy: temporary, not permanent | Kind: qualitative | Sources: S008 | Notes: The paper states monetary accommodation alone can sustain the union 'only for a while, not permanently'.
+- material_union_failure boundary: durable rupture of core legal/institutional intactness | Kind: qualitative | Sources: S019 | Notes: Reversible or treaty-contained differentiation should remain on the formal_intactness side of the boundary.
+- hazard rate behavior for euro breakup: state-dependent, not constant | Kind: qualitative | Sources: S018 | Notes: The source says hazard is not constant, but does not specify a functional form or numerical bounds.
+- severe_shock_multiplier_comparability: historical union failures are upper-tail comparators, not direct rate-transfer anchors qualitative | Kind: qualitative | Sources: S020 | Notes: Historical monetary union failure episodes are not cleanly transferable failure-rate anchors for the modern EU.
+- stress_escalation_multiplier_historical_comparator: observed spread blowouts and sovereign-risk repricing episodes during the euro-area crisis qualitative | Kind: qualitative | Sources: S016 | Notes: The source provides a historical template for stress escalation that is dynamic, episode-bound, and market-observable.
+- base_rate_double_counting_constraint: historical failure cases may already be conditioned on severe political or war shocks | Kind: qualitative | Sources: S017 | Notes: Using historical monetary-union failure rates as an unconditional base_failure_probability while also applying a stress_escalation_multiplier risks double-counting.
 
 # 3. IDENTIFIED CONTRADICTIONS
-- Whether discretionary crisis mechanisms provide durable or only temporary survival benefit
-  - Claim A: Euro-area automatic stabilizers and ECB policy tools provide meaningful cushioning (10–30% of GDP shock) and second-generation automatic stabilizers can deliver larger, more rules-based responses than ordinary discretionary action; this supports a meaningful discretionary_backstop_reduction term. [Sources: S005]
-  - Claim B: Central-bank monetary accommodation can sustain a currency union only for a while, not permanently; a sequence of large asymmetric shocks can still eventually break the union if fiscal transfer capacity is absent; therefore discretionary_backstop_reduction should be smaller, scenario-contingent, or explicitly temporary. [Sources: S008]
-  - Why it matters: The magnitude and durability of the discretionary_backstop_reduction term is a primary driver of the failure probability estimate through 2035. If S005's cushioning is treated as durable, the probability is materially lower; if S008's temporariness constraint binds, the discount must shrink or be conditioned on fiscal-transfer capacity that the EU currently lacks.
-- Whether historical monetary union failure cases are usable as a direct base-rate anchor
-  - Claim A: Historical monetary unions (Latin, Scandinavian, Austro-Hungarian) are usable as a reference class that keeps failure risk above zero and informs the prior, with lessons explicitly framed for EMU. [Sources: S009]
-  - Claim B: These same historical cases are dominated by severe external-shock conditions (WWI) and are not cleanly transferable as unconditional hazard rates; the modern EMU has a materially different resilience architecture. Using them as a base rate and then applying a separate stress multiplier risks double-counting the same shock channel. [Sources: S017, S020]
-  - Why it matters: If the historical reference class already embeds severe-shock conditioning, importing it as base_failure_probability and then multiplying by a stress_escalation_multiplier inflates the estimate. The model structure (base × multiplier independence) is not supported unless the base is drawn from a calmer reference class or the terms are explicitly conditioned.
-- Durability of discretionary vs. standing fiscal stabilization in supporting union survival
-  - Claim A: Durable survival in mature federations is supported by embedded, standing automatic stabilizers in a central budget, not primarily by discretionary center-to-subnational transfers. [Sources: S004]
-  - Claim B: The euro area does possess meaningful automatic stabilizers (0.48–0.56 semi-elasticity) and second-generation instruments that can deliver larger crisis responses than ordinary discretion. [Sources: S005]
-  - Why it matters: S004 establishes that the EU's reliance on discretionary crisis response rather than a standing central fiscal mechanism is a genuine fragility relative to mature federations. S005 shows non-trivial existing stabilizers. The tension is whether the EU's existing automatic stabilizers are sufficient to close the gap or whether the absence of a standing central budget transfers risks that cannot be discretionarily offset. Neither source resolves this quantitatively for the 2035 horizon.
+- transferability_of_historical_union_failure_rates
+  - Claim A: The historical failure rate (3/3) of pre-WWI monetary unions provides a defensible upper bound for EMU failure probability. [Sources: S009]
+  - Claim B: Historical monetary union failure episodes are not quantitatively transferable to the modern EU as direct rate anchors; they are upper-tail comparators requiring discounting for modern institutional resilience. [Sources: S020, S017]
+  - Why it matters: Directly affects the base failure probability prior: one side suggests a high prior from historical data, the other argues such a transfer would be invalid without a large discount.
+- stability_of_intermediate_states
+  - Claim A: Differentiation alone does not constitute material union failure; durable legal/institutional rupture is required. [Sources: S019]
+  - Claim B: The most stable post-Brexit outcome may be an indeterminate arrangement rather than either pole, implying intermediate states can be sticky. [Sources: S015]
+  - Why it matters: If intermediate states are stable, the binary failure event may require a multi-state model rather than a simple probability of one terminal event.
+- cushioning_effect_vs_GDP_deficit_contribution
+  - Claim A: ECB model simulations indicate euro-area automatic stabilizers cushion about 10% to 30% of a standard GDP shock. [Sources: S005]
+  - Claim B: During the COVID-19 crisis, automatic stabilizers were expected to account for about 2.8% of GDP out of an 8.5% GDP deficit in 2020 (approx. 33% of the deficit). [Sources: S005]
+  - Why it matters: The two metrics (shock cushioning vs. deficit contribution) could suggest different magnitudes; resolving the discrepancy is needed for calibrating the survival mechanism term.
 
 # 4. EPISTEMIC VOIDS (OPEN PROBLEMS / UNKNOWNS)
-- Formal, operationally precise definition of material_union_failure that is defensible against the multiple-modes-of-disintegration critique.
-  - Why it matters: Without a precise event boundary, P(material_union_failure by 2035-01-01) is not a well-formed probability object. Intermediate states—differentiated disintegration, selective opt-outs, outer-core arrangements, Schengen-style rollbacks—may or may not satisfy the target event depending on the definition chosen.
-  - Blocking effect: All numerical outputs are uninterpretable until the event boundary is specified. Sources S012, S013, S014, S015, S019 collectively establish this is unresolved.
-- An unconditional base hazard rate for material_union_failure drawn from a reference class that is not already conditioned on severe external shocks.
-  - Why it matters: The available historical reference class (S009, S017) is dominated by WWI-era cases. Using it as base_failure_probability while also applying a stress_escalation_multiplier double-counts the stress channel. A calmer-period reference class or an explicitly conditional model structure is needed.
-  - Blocking effect: base_failure_probability cannot be set without resolving whether the reference-class conditioning is compatible with the intended model structure.
-- The hazard function shape over the 2026–2035 horizon: whether failure hazard is constant, front-loaded around crisis episodes, or reduced by post-2012 institutional reforms and post-pandemic policy responses.
-  - Why it matters: Horizon extrapolation from a 2007 ten-year assessment to 2035 is not defensible without an explicit hazard-rate assumption. Fragmentation and redenomination risk are documented as state-dependent and policy-sensitive (S018), not a stable background constant.
-  - Blocking effect: Any point probability for 2035 implicitly assumes a hazard function. Without making that function explicit, the estimate cannot be validated or updated as conditions change.
-- Quantitative bounds for stress_escalation_multiplier grounded in historically observed euro-area stress regimes.
-  - Why it matters: S003 flags this as the dominant variance driver in the model. S016 shows sovereign stress is episode-bound and dynamic, not a scalar, but does not yield the multiplier itself. The [1.30, 1.70] candidate range cited in S020 is explicitly not validated.
-  - Blocking effect: The multiplier is currently the main free parameter in the model. Without bounded calibration, any probability output is dominated by this unconstrained term.
-- Structured expert elicitation for all model multipliers (stress_escalation_multiplier, legal_break_multiplier, discretionary_backstop_reduction, base_failure_probability).
-  - Why it matters: S010 establishes that mapping qualitative fragility evidence to numerical probability objects requires a disciplined elicitation protocol with outer-range-first sequencing, quantified verbal terms, and explicit sensitivity checks. No such protocol has been conducted.
-  - Blocking effect: Without elicitation or a clearly bounded sensitivity protocol, all multiplier values are freehand judgments that cannot be defended against a validator.
-- Whether the EU's existing automatic stabilizers (documented in S005) are sufficient to substitute for the standing central-budget mechanism that mature federations rely on (S004), or whether a material fiscal-transfer gap remains open through 2035.
-  - Why it matters: The discretionary_backstop_reduction term depends on resolving this. If the gap is large and unclosed, the reduction is bounded downward by S008's temporariness constraint. If the EU's instruments are closer to a standing mechanism than S004's comparator implies, the reduction could be larger.
-  - Blocking effect: Sizing the survival-mechanism discount requires a quantitative comparison between the EU's stabilizer architecture and the mature-federation benchmark, which no source in this collection provides directly.
-- Whether any of the documented disintegrative features (primacy challenges, Schengen rollbacks, selective opt-outs) would individually or cumulatively satisfy the material_union_failure event boundary if that boundary were formally specified.
-  - Why it matters: The legal_break_multiplier depends on knowing whether observable legal-contestation events (S006) cross the event boundary or remain on the formal_intactness side per the ontology established in S014 and S019.
-  - Blocking effect: legal_break_multiplier calibration is blocked until event ontology is resolved.
+- What exactly counts as 'material union failure by 2035-01-01'?
+  - Why it matters: The entire probability estimate depends on a settled event ontology; without it, all evidence collection and modeling are misaligned.
+  - Blocking effect: All downstream modeling, probability assignment, and scenario classification.
+- What reference class justifies the base failure probability?
+  - Why it matters: Determines whether the prior is empirically grounded or arbitrary.
+  - Blocking effect: Base_failure_probability assignment.
+- Whether discretionary resilience constitutes a durable equilibrium or whether the current EU status is genuinely fragile.
+  - Why it matters: Determines the direction and magnitude of survival mechanism adjustments in the model.
+  - Blocking effect: Scenario construction and classification of EU trajectory.
+- The exact numerical value of stress_escalation_multiplier for 2035 scenarios.
+  - Why it matters: The stress term is identified as the dominant variance driver in the latest model run.
+  - Blocking effect: Calibrating the upward trigger channel in failure models.
+- Whether the euro-area aggregate stabilizer estimate applies uniformly across all member states or masks significant heterogeneity.
+  - Why it matters: Failure probability may be driven by asymmetric shocks hitting weaker member states with smaller stabilizers.
+  - Blocking effect: Assessing whether the aggregate cushioning is sufficient to prevent a member-state-level failure event.
+- Which specific policy announcements or institutional responses reduce fragmentation risk and by how much.
+  - Why it matters: Affects the magnitude and timing of hazard rate changes over the 2007-2035 window.
+  - Blocking effect: Calibrating a time-varying hazard model.
 
 # 5. PROVENANCE
 - S001 | 00_collection_plan.md | md | untyped
-  - Summary: Collection plan specifying five evidence targets: event ontology, reference classes, trigger scenarios, base-rate calibration, and survival mechanisms. Establishes working rules for source collection. Treated conservatively; contributes framing constraints only.
+  - Summary: Collection plan outlining evidence-gathering strategy for P(material_union_failure by 2035-01-01): event ontology, reference classes, trigger scenarios, base rates/calibration, and mitigation/survival mechanisms. Imposes working rule to avoid one-sided sourcing.
 - S002 | 10_inherited_directional_constraints.md | md | seed_hypothesis
-  - Summary: Inherited prior from eu_union_load_bearing_pillars project. EU classified as fragile_but_intact rather than durable_equilibrium. Continued formal intactness directionally more plausible than material_union_failure through 2035. Main unresolved rival: whether discretionary resilience counts as durable equilibrium. Contributes starting prior ordering and constraint against fake precision only.
+  - Summary: Inherited constraints from eu_union_load_bearing_pillars project: EU classified as fragile_but_intact; continued formal intactness directionally more plausible than failure; unresolved rival is whether discretionary resilience counts as durable equilibrium.
 - S003 | 11_failure_probability_model_questions.md | md | research_question
-  - Summary: Open modeling questions for the project. Identifies four model parameters requiring sourced calibration: base_failure_probability, stress_escalation_multiplier, legal_break_multiplier, discretionary_backstop_reduction. Flags stress multiplier as dominant variance driver. Contributes candidate claims and epistemic void framing only.
+  - Summary: Enumerates open modeling questions for a credible failure probability percentage: event definition, base rate, upward triggers, downward survival mechanisms, and specific model parameters (legal_break_multiplier, discretionary_backstop_reduction) whose evidence basis is unresolved.
 - S004 | 12_imf_existing_federations_risk_sharing.md | md | source_evidence
-  - Summary: IMF WP on fiscal transfers in US, Canada, Australia. Key quantitative finding: fiscal transfers offset 4–11% of idiosyncratic and 13–24% of permanent regional shocks, operating through automatic stabilizers not discretionary transfers. Constrains discretionary_backstop_reduction and supports treating weak standing fiscal risk-sharing as a persistent fragility above the failure-probability floor.
+  - Summary: IMF WP (2016) on fiscal transfers as shock absorbers in US, Canada, Australia: 4-11% of idiosyncratic shocks, 13-24% of permanent shocks offset via automatic stabilizers (federal taxes/transfers), not discretionary transfers to subnational budgets.
 - S005 | 13_ecb_automatic_stabilisers_and_survival_mechanisms.md | md | source_evidence
-  - Summary: ECB Economic Bulletin on euro-area automatic fiscal stabilizers and COVID-19. Provides semi-elasticity estimates (0.48/0.56), shock-cushioning range (10–30% of GDP shock), and COVID-specific figures. Supports a meaningful survival-mechanism discount against crude collapse narratives.
+  - Summary: ECB article (2020) estimating euro area automatic fiscal stabilizers: ECB estimate 0.48, EC estimate 0.56; cushion 10-30% of standard GDP shock; COVID-19 specific contributions (2.8% of 8.5% GDP deficit in 2020, 5.2% cumulative 2020-21).
 - S006 | 14_eu_primacy_contestation_official.md | md | source_evidence
-  - Summary: European Parliament report on EU law primacy implementation. Confirms primacy is jurisprudential not treaty-textual; documents national court refusals to apply CJEU judgments; notes vast majority still apply primacy. Establishes non-zero legal_break_multiplier channel without implying imminent breakdown.
+  - Summary: EP document (2023) on EU primacy principle: primacy is challenged in certain member states but vast majority of courts still apply it; national constitutional courts have refused to follow CJEU in a number of cases; recommends explicit treaty provision on primacy.
 - S007 | 15_germany_basic_law_supremacy_comparator.md | md | source_evidence
-  - Summary: Germany Basic Law Article 31 as mature-federation legal comparator. Federal law textually takes precedence over Land law. Establishes lower-legal-risk baseline against which EU primacy contestation is a real fragility differential.
+  - Summary: Article 31 of Germany's Basic Law provides textual constitutional supremacy hierarchy (federal over Land law), serving as mature-federation comparator for EU legal-order fragility.
 - S008 | 16_discretionary_resilience_buys_time_not_permanence.md | md | source_evidence
-  - Summary: Banque de France WP850 on political economy of currency unions. Central result: monetary accommodation sustains union only temporarily; fiscal transfers are the more effective long-run retention tool. Constrains discretionary_backstop_reduction to be smaller, scenario-contingent, or explicitly temporary absent fiscal transfer capacity.
+  - Summary: Models currency union with exit option: union-wide central bank can prevent breakup temporarily via tilting policy, but monetary accommodation alone cannot sustain union permanently; fiscal transfers more effective for large asymmetric shocks.
 - S009 | 17_historical_monetary_unions_reference_class.md | md | source_evidence
-  - Summary: Springer paper on Latin, Scandinavian, and Austro-Hungarian monetary unions. All failed under WWI shock due to missing common institutions. Frames cases explicitly as lessons not direct forecasts. Informs reference-class construction but warns against direct failure-rate import.
+  - Summary: Examines Latin, Scandinavian, Austro-Hungarian monetary unions: all failed under WWI shock due to weak common institutions and national rivalries; framed as lessons for EMU, not identical analogues.
 - S010 | 18_structured_expert_judgment_for_probability_calibration.md | md | source_evidence
-  - Summary: National Academies on structured expert elicitation. Key operational rules: use genuinely relevant experts, quantify verbal uncertainty, start with outer ranges not point estimates, make priors/likelihoods explicit. Establishes that freehand multiplier assignment is methodologically indefensible without a structured protocol.
+  - Summary: National Academies summary on expert elicitation: one-on-one interviews; use only genuinely relevant experts, quantify verbal uncertainty terms, guard against biases; begin with outer ranges before moving inward.
 - S011 | 19_euro_breakup_low_prior_but_not_zero.md | md | source_evidence
-  - Summary: Eichengreen 2007 NBER WP13393. Pre-crisis argument that euro exit over ten years was unlikely, total disintegration even more unlikely, and technical costs formidable. Provides counterweight against exaggerated collapse priors. Pre-dates later crises and 2035 horizon; should not dominate the model.
+  - Summary: NBER WP (2007) arguing euro-area exit or total disintegration unlikely over ten-year horizon due to formidable technical and political costs; pre-crisis counterweight against exaggerated collapse priors.
 - S012 | 20_european_disintegration_modes_not_binary.md | md | source_evidence
-  - Summary: Politics and Governance editorial on causes and modes of European disintegration. Argues disintegration has multiple modes (temporary opt-outs, Schengen suspension, etc.) that are not equivalent to total EU collapse. Supports the need for a non-binary event ontology.
+  - Summary: Editorial (2023) arguing European disintegration has multiple modes (temporary Schengen opt-outs, Brexit, differentiated integration, non-compliance), not just binary intact/failure; questions of modes largely overlooked in literature.
 - S013 | 21_standard_definition_lacking_schengen_not_equal_total_failure.md | md | source_evidence
-  - Summary: CEPOB brief on European disintegration as a new feature of EU politics. Documents that standard definition is lacking; Schengen crisis showed disintegrative features without full failure; Eurozone crisis largely did not produce disintegration; Brexit is the clearest disintegration instance. Supports a non-binary, graduated event ontology.
+  - Summary: States standard definition of European disintegration still lacking (2019); distinguishes Eurozone crisis (little disintegration), Schengen crisis (considerable disintegrative features), Brexit (clearest sign); notes high political risks.
 - S014 | 22_differentiated_disintegration_internal_external.md | md | source_evidence
-  - Summary: Schimmelfennig on Brexit as differentiated disintegration. Defines differentiated disintegration as selective reduction of integration level/scope. Distinguishes internal from external differentiation. Disintegration demands are often moderated in negotiation rather than proceeding to maximal rupture. Provides cleanest taxonomic basis for event boundary definition.
+  - Summary: Schimmelfennig (2018) defines differentiated disintegration as selective reduction of integration; distinguishes internal differentiation (state stays in EU, exits specific policies) from external differentiation (state exits EU, continues selected policy participation).
 - S015 | 23_relative_stability_of_indeterminacy.md | md | source_evidence
-  - Summary: Comparative federalism study of post-Brexit EU-UK arrangements. Identifies four safeguards and argues most stable outcome may be an indeterminate arrangement rather than either integration or total breakdown pole. Supports modeling intermediate institutional states as potentially durable.
+  - Summary: Uses comparative federalism to argue post-Brexit EU-UK arrangements can occupy relatively stable indeterminate positions; identifies four safeguards (structural, judicial, partisan, socio-cultural); most stable outcome may be indeterminate.
 - S016 | 24_stress_escalation_reference_class.md | md | source_evidence
-  - Summary: IMF WP on euro-area sovereign risk during the crisis. Documents stress as dynamic, episode-bound, common-factor-plus-idiosyncratic, not a static background. Constrains stress_escalation_multiplier to historically observed spread blowout regimes rather than unconstrained scalar.
+  - Summary: IMF WP (2009) on euro-area sovereign spread movements during crisis: initially driven by common global risk repricing, then country-specific solvency concerns; stress is dynamic and episode-bound.
 - S017 | 25_unconditional_base_rate_vs_conditional_failure.md | md | source_evidence
-  - Summary: Same Springer article as S009 accessed for a different modeling question: whether historical failure cases can be used as unconditional base rates. Conclusion: they cannot without risking double-counting with stress multiplier because the cases are already conditioned on extreme external shocks. Supports requiring either a calmer base-rate anchor or an explicitly conditional model structure.
+  - Summary: Examines historical monetary unions as conditionally informative under severe stress (WWI), not clean unconditional hazard rates; warns against double-counting by using these as base rates plus a stress multiplier.
 - S018 | 26_horizon_extrapolation_hazard_rate.md | md | source_evidence
-  - Summary: Banque de France note on fragmentation risks and the euro. Documents that redenomination and fragmentation risk are state-dependent and policy-sensitive, not a stable hazard rate. Challenges implicit constant-hazard extrapolation from any pre-2035 assessment to the 2035 horizon.
+  - Summary: Banque de France note: ECB policy influences euro and sovereign spreads; fragmentation/redenomination risk is state-dependent and policy-sensitive, not constant; undermines extending 2007 ten-year assessment to 2035 without explicit hazard model.
 - S019 | 27_material_failure_boundary_requires_durable_legal_rupture.md | md | source_evidence
-  - Summary: Markakis (2020) JIEL article on differentiated integration and disintegration after Brexit and Eurozone crisis. Argues differentiation and opt-outs are central legal features that can coexist with formal intactness. Supports reserving material_union_failure for durable rupture of core legal/institutional order rather than any differentiation episode.
+  - Summary: Markakis (2020): differentiated integration is central to EU; substantial opt-outs can coexist with formal membership; material union failure requires durable rupture of core legal/institutional intactness, not differentiation alone.
 - S020 | 28_historical_unions_are_upper_tail_comparators_not_direct_rate_transfers.md | md | source_evidence
-  - Summary: Claeys (2017) on missing pieces of euro architecture plus ECB TPI documentation. Central argument: modern EMU has materially more developed resilience architecture than pre-WWI unions while retaining fragilities; historical unions are upper-tail comparators requiring a comparability discount, not direct rate-transfer anchors. Explicitly challenges [1.30, 1.70] severe-shock multiplier as unjustified direct transfer from historical analogues.
+  - Summary: Claeys (2017) plus ECB (2022): modern EMU has materially different resilience architecture (TPI, ESM, OMT, banking union) than historical unions; historical failures are upper-tail comparators requiring discounting, not direct rate-transfer anchors.
 
 # 6. CANDIDATE CLAIMS TO TEST
-1. The EU's existing automatic fiscal stabilizers (semi-elasticity 0.48–0.56; absorbing 10–30% of a standard GDP shock) are insufficient to substitute for the standing central-budget mechanism that mature federations rely on for permanent shock absorption.
-   Why testable: S004 provides a quantitative benchmark for mature-federation stabilizer performance. S005 provides EU stabilizer magnitudes. The gap between EU stabilizer output and mature-federation benchmarks can be computed. Testable by comparing the EU's 2.8% / 5.2% GDP COVID contribution against the 13–24% permanent shock absorption found in US/Canada/Australia.
-   Depends on: mature_federation_permanent_shock_absorption, euro_area_automatic_stabilizer_gdp_shock_cushion, formal definition of what counts as a standing vs. discretionary mechanism
-   Priority: high | Sources: S004, S005
-2. The historical monetary union reference class (Latin, Scandinavian, Austro-Hungarian) cannot be used as an unconditional base_failure_probability while a separate stress_escalation_multiplier is also present in the model, because both terms partially capture the same severe-shock channel.
-   Why testable: Testable by examining whether the historical failure cases are conditioned on extreme shocks (WWI) and whether the proposed stress_escalation_multiplier also captures extreme shocks; if both are true, the model structure produces double-counting. Resolution requires either a calmer reference class or explicit conditioning.
-   Depends on: base_failure_probability specification, stress_escalation_multiplier definition, whether historical union failures are treated as unconditional draws or conditional on severe shock
-   Priority: high | Sources: S009, S017, S020
-3. Discretionary and ECB-led crisis management reduces near-term EU failure probability materially but does not provide a durable reduction through the full 2035 horizon absent a fiscal-transfer capacity increase.
-   Why testable: S008 provides the theoretical mechanism (accommodation is temporary). S005 provides the magnitude of existing stabilizers. Testable by examining whether any post-2012 institutional reforms have materially closed the fiscal-transfer capacity gap identified in S004 and S008. Can be partially falsified if standing fiscal capacity has increased enough to change the durability assessment.
-   Depends on: discretionary_backstop_reduction magnitude, whether post-2012 reforms (ESM, NGEU, TPI) constitute a standing or discretionary mechanism, fiscal transfer capacity relative to S004 benchmark
-   Priority: high | Sources: S005, S008, S004, S020
-4. The EU primacy contestation channel (documented in S006) does not by itself justify a large legal_break_multiplier because the vast majority of national courts still apply primacy and documented refusals have not yet produced a durable rupture of the legal order.
-   Why testable: S006 provides both the evidence of contestation and the countervailing evidence that most courts comply. Testable by examining whether any observed primacy refusal has escalated to a systemic legal rupture or durable non-compliance. Can be falsified if new cases cross from episodic refusal to institutionalized non-application.
-   Depends on: material_union_failure event boundary definition, legal_break_multiplier calibration, whether episodic non-compliance maps to failure event
-   Priority: medium | Sources: S006, S007, S019
-5. A binary intact/failure event boundary for material_union_failure by 2035 is defensible only if it explicitly accounts for the documented spectrum of differentiated disintegration modes and specifies why intermediate states (selective opt-outs, outer-core arrangements, Schengen suspensions) remain on the formal_intactness side.
-   Why testable: S012, S013, S014, S019 collectively document multiple disintegration modes that fall short of total collapse. Testable by checking whether any proposed event definition explicitly maps each documented mode to either material_union_failure or formal_intactness. Falsifiable if a proposed definition leaves ambiguous cases unclassified.
-   Depends on: material_union_failure event boundary definition, whether the model tracks intermediate state families before collapsing to binary
-   Priority: high | Sources: S012, S013, S014, S015, S019
-6. Redenomination and fragmentation risk should be modeled as a time-varying, policy-responsive hazard rather than a constant background rate when extrapolating from any pre-2026 assessment to the 2035 horizon.
-   Why testable: S018 directly documents the state-dependency and policy-sensitivity of redenomination risk. Testable by examining whether the proposed model specifies a hazard function (constant, front-loaded, post-reform-reduced) or implicitly assumes constancy. Falsifiable if the model explicitly specifies a non-constant hazard function with a defended shape.
-   Depends on: hazard function shape over 2026–2035, whether post-2012 institutional reforms are modeled as reducing hazard rate, TPI and post-pandemic instruments as time-varying backstops
-   Priority: medium | Sources: S018, S020, S011
+1. Legal contestation of primacy in specific member states raises the probability of EU failure, independent of fiscal or economic channels.
+   Why testable: Can be evaluated by comparing EU failure probabilities in models with and without legal_break_multiplier, or by cross-referencing with member-state-level legal challenge data.
+   Depends on: S002, S004, S005
+   Priority: high | Sources: S006
+2. The probability of Eurozone breakup by 2035 is higher than implied by a model that assumes discretionary central-bank action provides a durable, long-run reduction in breakup risk.
+   Why testable: This source claims central-bank action is temporary, so any thesis assigning a durable reduction factor should be challenged.
+   Depends on: Detailed modeling of monetary accommodation time horizon
+   Priority: high | Sources: S008
+3. A monetary union lacking a common central bank and unified fiscal policy has a high probability of failure when subjected to a large external shock.
+   Why testable: Can be tested by comparing the institutional setups and survival outcomes of historical monetary unions, and by assessing EMU's current institutional setup against this pattern.
+   Depends on: Classification of EMU's current fiscal and central banking institutions as robust or not, Definition of 'large external shock'
+   Priority: high | Sources: S009
+4. The existence of intermediate disintegration modes (e.g., temporary Schengen opt-outs) makes a strict binary intact/failure event inadequate for probability estimation by 2035.
+   Why testable: One can attempt to map each mode to either `formal_intactness` or `material_union_failure` and see if any mode is irreducible to the binary.
+   Depends on: S012, ontology definitions for formal_intactness and material_union_failure
+   Priority: high | Sources: S012

@@ -7,7 +7,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from src.ztare.common.dispatch_model import (
+from ztare.common.dispatch_model import (
     DispatchTextResponse,
     dispatch_call_text,
     dispatch_env_for_call_site,
@@ -16,7 +16,7 @@ from src.ztare.common.dispatch_model import (
     resolve_agent_timeout_seconds,
     resolve_dispatch_capability,
 )
-from src.ztare.research_director.autoresearch_dispatch_canary import (
+from ztare.research_director.autoresearch_dispatch_canary import (
     run_dispatch_canary,
     run_dispatch_parity_benchmark,
 )
@@ -64,6 +64,35 @@ def test_dispatch_model_agent_uses_subscription_runner(monkeypatch: pytest.Monke
     assert "EXTERNALIZED BRIEFING" in seen["prompt"]
     assert "prior failure" in seen["prompt"]
     assert "emit mutation" in seen["prompt"]
+
+
+def test_dispatch_model_agent_wraps_stdout_contract_without_briefing(
+    monkeypatch: pytest.MonkeyPatch,
+    tmp_path,
+) -> None:
+    monkeypatch.setenv("ZTARE_AGENT_DISPATCH", "agent")
+    seen: dict[str, str] = {}
+
+    def fake_runner(**kwargs):
+        seen["prompt"] = kwargs["prompt"]
+        return SimpleNamespace(
+            result=subprocess.CompletedProcess(["codex"], 0, stdout="typed contract", stderr=""),
+            final_command=["codex", "exec", "redacted"],
+            recovery_note=None,
+        )
+
+    dispatch_model(
+        "RESUBMIT THE COMPLETE SUBMISSION: thesis prose plus test_model.py.",
+        capability="agent",
+        backend="codex",
+        repo=tmp_path,
+        runner=fake_runner,
+    )
+
+    assert "automated parser" in seen["prompt"]
+    assert "Do not write or modify repository files" in seen["prompt"]
+    assert "Do not replace the contract with a summary" in seen["prompt"]
+    assert "=== TASK ===" in seen["prompt"]
 
 
 def test_dispatch_result_receipt_omits_full_command_prompt(

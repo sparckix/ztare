@@ -133,10 +133,6 @@ def infer_execution_route(
         route = explicit
         confidence = "frontmatter"
         rationale = f"task frontmatter selected {route}"
-    elif rd_default_co_drive:
-        route = "frontier_co_drive"
-        confidence = "role_default"
-        rationale = "RD-1.12: research_director defaults to live frontier co-drive"
     elif any(
         k in text
         for k in (
@@ -175,6 +171,10 @@ def infer_execution_route(
         route = "docs_records"
         confidence = "medium"
         rationale = "task is primarily prose, public/private sync, or recording"
+    elif rd_default_co_drive:
+        route = "frontier_co_drive"
+        confidence = "role_default"
+        rationale = "RD-1.12: research_director defaults to live frontier co-drive"
     else:
         route = "direct_work"
         confidence = "low"

@@ -3,7 +3,7 @@
     "forecast_ops": 25,
     "trajectory_surfacing": 10
   },
-  "generated_at": "2026-06-13T16:18:57Z",
+  "generated_at": "2026-06-22T16:38:57Z",
   "recommendations": [
     {
       "blocking_checks": [
@@ -26,7 +26,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 195.0,
@@ -34,7 +34,7 @@
         "p_success": 0.1697658291072176
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_852a0f2657749de7",
+      "recommendation_id": "sr_91f514ac53a38cb3",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -60,7 +60,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 38.5,
@@ -68,7 +68,7 @@
         "p_success": 0.4463327300805155
       },
       "rationale": "large cross-forecaster disagreement",
-      "recommendation_id": "sr_c18d678b7da30df3",
+      "recommendation_id": "sr_93497d289f0a9698",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -94,7 +94,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 3,
         "expected_cost_agent_minutes": 36.0,
@@ -102,7 +102,7 @@
         "p_success": 0.5133587075721221
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_e8d9a41b2d7f5563",
+      "recommendation_id": "sr_bae34f12deba442b",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -128,7 +128,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 29.0,
@@ -136,7 +136,7 @@
         "p_success": 0.45894196372880147
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_20a99cdddb6b10f6",
+      "recommendation_id": "sr_459e258fc38711e2",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -162,7 +162,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 51.5,
@@ -170,7 +170,7 @@
         "p_success": 0.3679584233351364
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_98d45903872ebc51",
+      "recommendation_id": "sr_d5bbc9e81aae89c7",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -196,7 +196,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 3,
         "expected_cost_agent_minutes": 17120.0,
@@ -204,7 +204,7 @@
         "p_success": 0.12811027996197352
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_43fb1dbebdcd0f35",
+      "recommendation_id": "sr_2e4deed5214c291e",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -230,7 +230,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 36.75,
@@ -238,7 +238,7 @@
         "p_success": 0.4449944320643648
       },
       "rationale": "large cross-forecaster disagreement",
-      "recommendation_id": "sr_de3184d7f7962637",
+      "recommendation_id": "sr_f0aa368e0eb02834",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -264,7 +264,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 25.0,
@@ -272,7 +272,7 @@
         "p_success": 0.7713820414894621
       },
       "rationale": "positive expected value and high success probability",
-      "recommendation_id": "sr_707bd87bf5eb5981",
+      "recommendation_id": "sr_4470d1d97856b74f",
       "recommended_action": "run_now",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -298,7 +298,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 31.375,
@@ -306,7 +306,7 @@
         "p_success": 0.3537051415930706
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_ea3caf08e7aad91b",
+      "recommendation_id": "sr_05aaeddab96d9d38",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -332,7 +332,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": 32.0,
@@ -340,7 +340,7 @@
         "p_success": 0.17999999999999997
       },
       "rationale": "fewer than two independent usable forecasts",
-      "recommendation_id": "sr_8167be16c0e14d1e",
+      "recommendation_id": "sr_90b2bf974770cb80",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -366,7 +366,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 605.0,
@@ -374,7 +374,7 @@
         "p_success": 0.22632608231571438
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_83da769e116f4bf5",
+      "recommendation_id": "sr_381d213a5974b318",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -400,7 +400,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 420.0,
@@ -408,7 +408,7 @@
         "p_success": 0.2683622323599068
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_1fccccacb0990659",
+      "recommendation_id": "sr_89227edee95683ba",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -434,7 +434,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 510.0,
@@ -442,7 +442,7 @@
         "p_success": 0.3240165287061081
       },
       "rationale": "negative expected value; keep as later option unless new evidence arrives",
-      "recommendation_id": "sr_d903c09f4f99eedc",
+      "recommendation_id": "sr_b872b351c4669e9c",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -468,7 +468,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 640.0,
@@ -476,7 +476,7 @@
         "p_success": 0.45329983228431997
       },
       "rationale": "uncertainty is concentrated enough to price a smaller branch",
-      "recommendation_id": "sr_37041d62afb161a9",
+      "recommendation_id": "sr_9fe4d1035ecdfc5c",
       "recommended_action": "split_contract",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -502,7 +502,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 417.5,
@@ -510,7 +510,7 @@
         "p_success": 0.4167997809419332
       },
       "rationale": "large cross-forecaster disagreement",
-      "recommendation_id": "sr_a8e2496ef9308ee2",
+      "recommendation_id": "sr_ad6352925e94d382",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -536,7 +536,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": 38.375,
@@ -544,7 +544,7 @@
         "p_success": 0.2594996871087636
       },
       "rationale": "market is not decisive enough to run now; wait for sharper evidence or smaller split",
-      "recommendation_id": "sr_723062609c2145a6",
+      "recommendation_id": "sr_a2f1bfbff78b3c42",
       "recommended_action": "defer",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -570,7 +570,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -578,7 +578,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_63959ed4accb85f5",
+      "recommendation_id": "sr_4e371d852d1486eb",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -604,7 +604,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": null,
@@ -612,7 +612,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_2109a7276c136a13",
+      "recommendation_id": "sr_fec689127f061f34",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -638,7 +638,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 2,
         "expected_cost_agent_minutes": null,
@@ -646,7 +646,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_aff30b0224635590",
+      "recommendation_id": "sr_c996b81ac42f4ee9",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -672,7 +672,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -680,7 +680,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_36ed7fec52b50175",
+      "recommendation_id": "sr_6edd9a44d0925550",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -706,7 +706,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -714,7 +714,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_280437053657f540",
+      "recommendation_id": "sr_09c588208ec48cc9",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -740,7 +740,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -748,7 +748,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_797ae29718d38a0a",
+      "recommendation_id": "sr_d56c9a4b30d884b0",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -774,7 +774,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -782,7 +782,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_07adfb0ab2e587d5",
+      "recommendation_id": "sr_10908c4ec2ee7ff3",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -808,7 +808,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -816,7 +816,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_405ee6da26554df0",
+      "recommendation_id": "sr_07bdc9cf0f306df2",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -842,7 +842,7 @@
         "sample_size": 2,
         "uncertainty_note": "diagnostic-only until decision-use/action-impact sample is populated"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "gp230": {
         "effective_n": 1,
         "expected_cost_agent_minutes": null,
@@ -850,7 +850,7 @@
         "p_success": null
       },
       "rationale": "aggregate lacks p_success",
-      "recommendation_id": "sr_1129bd5b7e6f04ac",
+      "recommendation_id": "sr_5526b1dba7bb98f0",
       "recommended_action": "ask_another_independent_agent",
       "schema_version": 1,
       "source": "gp230_read_model"
@@ -874,9 +874,9 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_5837fff431b83a6a",
+      "recommendation_id": "sr_14669711812b3cc2",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
@@ -905,9 +905,9 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_a24053be9b0a526f",
+      "recommendation_id": "sr_1fd27405ae3dda28",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
@@ -936,9 +936,9 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_960ecb4f75b5a2ca",
+      "recommendation_id": "sr_79c1d295511782f8",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
@@ -967,9 +967,9 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_c319084275f954d1",
+      "recommendation_id": "sr_6b56c00e31808e49",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
@@ -998,9 +998,9 @@
         "sample_size": 0,
         "uncertainty_note": "structured GP-233 identifiers required for stronger claims"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "GP-233 next-lever row is available but markdown linkage keeps it diagnostic",
-      "recommendation_id": "sr_545d21b46b3fb685",
+      "recommendation_id": "sr_6a0c9ccc3d9b0fd6",
       "recommended_action": "surface_gp233_next_lever",
       "schema_version": 1,
       "surface": {
@@ -1030,9 +1030,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "TICK643 strain-eigenframe observable lane resolved FALSE (calibrated sharp-negative; H6)",
-      "recommendation_id": "sr_88e1df9e38e724ca",
+      "recommendation_id": "sr_9680f5925e507dcf",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -1061,9 +1061,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "TICK644 Lagrangian deformation-history class EXCLUDED (calibrated sharp-negative; H6)",
-      "recommendation_id": "sr_5e3115e2bf6d4f17",
+      "recommendation_id": "sr_c2866817ead946dd",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -1092,9 +1092,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "TICK644 contract tick644-lagrangian-vortexline-history-observable resolved FALSE (H6 reference; calibrated sharp-negative)",
-      "recommendation_id": "sr_fd9bdb0d6f2422d0",
+      "recommendation_id": "sr_7bd61f7eb36ba49a",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -1124,9 +1124,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "tick645-biotsavart-commutator-defect-nonlocality / F-NS-TICK645-BIOTSAVART-COMMUTATOR-DEFECT-NONLOCALITY-20260519 resolved FALSE (calibrated; CF_global_extension target; homogeneity-0 sharpening + operator-caught amnesia)",
-      "recommendation_id": "sr_3eb32aac60ba0e58",
+      "recommendation_id": "sr_e32ee58d21dacdb8",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {
@@ -1157,9 +1157,9 @@
         "sample_size": 0,
         "uncertainty_note": "catch consumption is not yet linked to action-impact rows"
       },
-      "generated_at": "2026-06-13T16:18:57Z",
+      "generated_at": "2026-06-22T16:38:57Z",
       "rationale": "tick652-c7-split-excess-fresh-radius-invoice / F-NS-TICK652-C7-SPLIT-EXCESS-FRESH-RADIUS-INVOICE-20260519 resolved FALSE: split-excess projection is not a same-tree fresh-radius invoice",
-      "recommendation_id": "sr_140770df39f73309",
+      "recommendation_id": "sr_bd133473415a3a98",
       "recommended_action": "surface_catch_preconditioner",
       "schema_version": 1,
       "surface": {

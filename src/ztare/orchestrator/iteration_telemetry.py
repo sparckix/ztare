@@ -34,8 +34,12 @@ from typing import Any
 
 
 def utc_now_iso() -> str:
-    """Current ISO-8601 UTC timestamp with explicit timezone offset."""
-    return datetime.now(timezone.utc).isoformat()
+    """Current ISO-8601 UTC timestamp with explicit timezone offset.
+
+    Delegates to the shared `common.telemetry` core so autoresearch + leanmill share ONE canonical timestamp
+    (re-export shim; behavior unchanged)."""
+    from ztare.common.telemetry import utc_now_iso as _shared
+    return _shared()
 
 
 def usage_bucket_snapshot(bucket: dict) -> dict:
@@ -267,15 +271,14 @@ def normalize_eval_payload(
 
 
 def _append_json_dict(path: Path, payload: dict) -> None:
-    """Internal: serialize one dict and append it to ``path`` as one JSON line.
+    """Internal: append one dict to ``path`` as one JSON line.
 
-    Mirrors autoresearch_loop's local ``append_jsonl(filepath, payload)`` —
-    same shape, different home. Path-shaped (autoresearch_loop's accepts
-    str). Both produce identical files on disk.
+    Delegates to the canonical `common.file_io.append_jsonl` — the SINGLE dict→JSONL primitive (this was one of
+    four siblings; now shared across autoresearch + leanmill). Behavior preserved exactly: parent-dir auto-create
+    + ``json.dumps`` (ensure_ascii default True) + trailing newline.
     """
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(payload) + "\n")
+    from ztare.common.file_io import append_jsonl as _shared
+    _shared(path, payload)
 
 
 def append_run_boundary_telemetry(
@@ -315,6 +318,9 @@ def append_iteration_telemetry(
     information_yield_rationale: str | None = None,
     raw_judge_score: int | None = None,
     score_cap_reason: str | None = None,
+    score_cap_source: str | None = None,
+    mutator_effective_model_ids: list[str] | None = None,
+    mutator_fallback_events: list[dict[str, str]] | None = None,
     gp180_telemetry: dict | None = None,
 ) -> None:
     """Append one per-iteration record to ``iteration_telemetry.jsonl``
@@ -358,6 +364,7 @@ def append_iteration_telemetry(
         "score": score,
         "raw_judge_score": raw_judge_score,
         "score_cap_reason": score_cap_reason,
+        "score_cap_source": score_cap_source or "",
         # GP-183 phase A5: cap-kind classification (gaming /
         # physics_violation / generalization_gap / holdout_miss /
         # numerical_failure / none / unknown). Computed inline so
@@ -382,6 +389,8 @@ def append_iteration_telemetry(
         "escalation_flags": escalation_flags,
         "falsification_mode": falsification_mode,
         "mutator_model_id": mutator_model_id,
+        "mutator_effective_model_ids": list(mutator_effective_model_ids or []),
+        "mutator_fallback_events": list(mutator_fallback_events or []),
         "judge_model_id": judge_model_id,
         "mutator_usage": {
             "input_tokens": mutator_usage["input_tokens"],
@@ -424,6 +433,7 @@ def append_iteration_telemetry(
             "score": score,
             "raw_judge_score": raw_judge_score,
             "score_cap_reason": score_cap_reason,
+            "score_cap_source": score_cap_source or "",
             "cap_kind": payload.get("cap_kind"),
             "champion_promoted": champion_promoted,
             "score_improved": score_improved,

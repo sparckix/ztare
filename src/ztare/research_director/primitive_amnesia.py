@@ -31,11 +31,11 @@ from dataclasses import dataclass, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.ztare.research_director.primitive_catalog_taxonomy import (
+from ztare.research_director.primitive_catalog_taxonomy import (
     enrich_row,
     source_category_for_path,
 )
-from src.ztare.research_director.scientific_amnesia import tokenize, _score
+from ztare.research_director.scientific_amnesia import tokenize, _score
 
 REPO = Path(__file__).resolve().parents[3]
 ARCH_INDEX = REPO / "analytics" / "public" / "index" / "architecture_index.jsonl"
@@ -87,8 +87,17 @@ PRIMITIVE_MODULES = [
     "src/ztare/product_exports/judgment_primitives.py",
     "src/ztare/research_director/problem_solving_ops.py",
     "src/ztare/research_director/theory_building_ops.py",
+    "src/ztare/research_director/graph_carrier_actions.py",
     "src/ztare/leanmill/semantic_premise_shelf.py",
     "src/ztare/common/constraint_isomorphism.py",  # strange loop (common/ not auto-swept)
+    "src/ztare/common/graph_carrier.py",           # graph diagnostic carrier schema/receipt guard
+    "src/ztare/workspace/source_freshness.py",     # source-bound artifact freshness / stale-provenance guard
+    "src/ztare/forecasting/prediction_contract.py",  # neutral forecast/prediction contract read model
+    "src/ztare/reports/forecast_capability_audit.py",  # forecast lifecycle / scratch / decision-use audit
+    "src/ztare/validator/autoresearch_prediction_contract.py",  # in-loop adapter over neutral prediction contracts
+    "src/ztare/validator/probability_dag_carrier.py",  # autoresearch probability-DAG scoring/carriers
+    "src/ztare/validator/source_claim_graph_carrier.py",  # source/evidence/gap graph carriers
+    "src/ztare/workspace/evidence_gaps.py",  # public evidence vs local verifier gap routing
     "src/ztare/common/sandboxed_python.py",          # the ONE sandboxed-python exec home (2026-06-07)
     "src/ztare/common/symbolic_witness.py",          # SymPy witness/recurrence/linear-system builders
     "src/ztare/fit/analogy.py",                      # GP-164 curve-fit analogy (the specialization)
@@ -130,6 +139,31 @@ WHEN_TO_USE = {
     "score_research_avenue": "research route rank avenue MDL information yield per complexity amnesia penalty source currency next lever what to pursue",
     "score_research_avenues": "portfolio rank research avenues MDL information yield density amnesia recurrence source currency proof route priority",
     "ResearchAvenue": "candidate research route avenue receipts kill conditions expected reuse exposure amnesia hits novelty hints MDL score",
+    "canonical_graph_kind_specs": "graph carrier registry context graph probability DAG primitive capability graph constraint basin source claim code dependency graph registered graph kinds",
+    "validate_graph_carrier": "graph carrier schema receipt provenance diagnostics baseline noise filter decision effect strategy change no strategy change misleading graph metric route selection",
+    "artifact_source_freshness": "source provenance freshness compare current raw source preflight rows to source index compiled evidence provenance stale count-only missing hash unverified kernel entry graph carrier",
+    "raw_relative_path": "normalize source artifact path project raw relative absolute repo-relative raw directory compiled evidence source index provenance",
+    "score_probability_dag_nodes": "autoresearch probability DAG steering score nodes urgency edge weight probability highest urgency watch signal graph diagnostic",
+    "render_probability_dag_vulnerability_prompt": "autoresearch probability DAG prompt vulnerable assumptions weakest nodes thesis mutation watch signal",
+    "build_probability_dag_graph_carrier": "autoresearch probability DAG graph carrier receipt latest_probability_dag dag steering log decision receipt trace",
+    "summarize_probability_dag_graph_carrier": "autoresearch trace graph carrier compact summary decision receipt validation",
+    "build_source_claim_graph_carrier": "autoresearch source claim graph carrier evidence provenance source index compiled evidence gaps recovery action decision receipt",
+    "summarize_source_claim_graph_carrier": "autoresearch source claim graph carrier compact summary evidence gap decision receipt validation",
+    "graph_carrier_action_rows": "research director graph carrier decision receipt out-of-loop evidence recovery in-loop focus advisory action rows",
+    "evidence_gap_activity": "evidence gap active inactive resolved local artifact public source recovery state compile fetch trace",
+    "evidence_gap_recovery": "evidence gap recovery kind classify public evidence versus local verification in-loop focus out-of-loop fetch schema first",
+    "explicit_evidence_gap_recovery_kind": "schema first evidence gap recovery_kind recovery_channel action_type classify local verifier public evidence",
+    "evidence_gap_is_local_verification": "local verifier evidence gap source preflight verification path integrity kernel runtime not public fetch",
+    "evidence_gap_is_active": "active evidence gap state resolved waived justified missing artifact project local recovery",
+    "normalize_prediction_contract": "forecast pool scratch prediction ledger autoresearch normalize contract provenance p_success question event horizon resolution",
+    "validate_prediction_contract": "forecast pool scratch contract prediction ledger validate p_success tier provenance source surface seal",
+    "score_binary_prediction_contract": "forecast Brier score p_success actual_success binary prediction constant baseline calibration",
+    "summarize_prediction_contract_rows": "forecast prediction contracts measurement lane scratch forecast pool prediction ledger provenance counts Brier baseline",
+    "read_prediction_rows": "prediction receipts JSONL forecast contract parser scratch forecast prediction ledger iteration predictions",
+    "validate_prediction_row": "autoresearch adapter per-iteration prediction contract validate p_success horizon resolution tier seal forecast Brier",
+    "score_prediction_row": "autoresearch adapter prediction Brier score p_success actual_success constant baseline calibration",
+    "summarize_prediction_contracts": "autoresearch trace prediction receipts adapter measurement lane forecast Brier baseline scoreable rows",
+    "build_forecast_capability_audit": "forecast pool lifecycle scratch forecast decision use calibration read model capability audit hidden scheduler boundary",
 }
 
 
@@ -159,6 +193,9 @@ class AtlasFreshnessStatus:
     atlas_n: int
     embeddings_count: int
     backend: str
+    catalog_digest: str
+    atlas_catalog_digest: str
+    catalog_digest_matches: bool
     missing_embeddings: int
     extra_embeddings: int
     invalid_embeddings: int
@@ -176,6 +213,12 @@ class AtlasFreshnessStatus:
             f"embeddings={self.embeddings_count}",
             f"backend={self.backend or 'unknown'}",
         ]
+        if self.catalog_digest_matches:
+            bits.append(f"catalog_digest={self.catalog_digest[:12]}")
+        elif self.atlas_catalog_digest:
+            bits.append("catalog_digest_mismatch=true")
+        else:
+            bits.append("catalog_digest_missing=true")
         if self.missing_embeddings:
             bits.append(f"missing={self.missing_embeddings}")
         if self.extra_embeddings:
@@ -191,6 +234,32 @@ class AtlasFreshnessStatus:
         return " ".join(bits)
 
 
+def _primitive_embedding_key(primitive: Primitive) -> str:
+    return primitive.signature or primitive.name
+
+
+def _primitive_embedding_text(primitive: Primitive) -> str:
+    return f"{primitive.name}. {primitive.doc} {primitive.when_to_use}".strip()
+
+
+def primitive_catalog_digest(inventory: list[Primitive]) -> str:
+    """Digest the catalog rows that determine primitive atlas embeddings."""
+    rows = [
+        {
+            "key": _primitive_embedding_key(p),
+            "name": p.name,
+            "module": p.module,
+            "kind": p.kind,
+            "text": _primitive_embedding_text(p),
+            "category": p.category,
+        }
+        for p in inventory
+    ]
+    rows.sort(key=lambda row: (row["key"], row["module"], row["name"], row["kind"]))
+    payload = json.dumps(rows, sort_keys=True, ensure_ascii=False, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
 def atlas_freshness_status(
     *,
     catalog_path: Path = ARCH_INDEX,
@@ -204,11 +273,13 @@ def atlas_freshness_status(
     """
     warnings: list[str] = []
     inventory = _extract_from_arch_index(catalog_path)
-    expected_key_counts = Counter(p.signature or p.name for p in inventory)
+    catalog_digest = primitive_catalog_digest(inventory)
+    expected_key_counts = Counter(_primitive_embedding_key(p) for p in inventory)
     expected_keys = set(expected_key_counts)
     duplicate_embedding_keys = sum(1 for count in expected_key_counts.values() if count > 1)
     atlas_n = 0
     backend = ""
+    atlas_catalog_digest = ""
     embeddings: dict[str, object] = {}
     if not atlas_path.exists():
         warnings.append(f"atlas missing: {atlas_path}")
@@ -220,6 +291,7 @@ def atlas_freshness_status(
             warnings.append(f"atlas unreadable: {type(exc).__name__}: {str(exc)[:160]}")
         if isinstance(payload, dict):
             backend = str(payload.get("backend") or "")
+            atlas_catalog_digest = str(payload.get("catalog_digest") or "")
             raw_embeddings = payload.get("embeddings") or {}
             if isinstance(raw_embeddings, dict):
                 embeddings = raw_embeddings
@@ -247,6 +319,11 @@ def atlas_freshness_status(
         warnings.append(f"atlas n {atlas_n} != catalog capability count {len(inventory)}")
     if len(embeddings) != atlas_n:
         warnings.append(f"embedding count {len(embeddings)} != atlas n {atlas_n}")
+    catalog_digest_matches = bool(atlas_catalog_digest) and atlas_catalog_digest == catalog_digest
+    if not atlas_catalog_digest:
+        warnings.append("atlas is missing catalog_digest")
+    elif not catalog_digest_matches:
+        warnings.append("atlas catalog_digest does not match current catalog")
     if duplicate_embedding_keys:
         warnings.append(f"{duplicate_embedding_keys} catalog embedding keys are ambiguous")
     if missing:
@@ -277,6 +354,9 @@ def atlas_freshness_status(
         atlas_n=atlas_n,
         embeddings_count=len(embeddings),
         backend=backend,
+        catalog_digest=catalog_digest,
+        atlas_catalog_digest=atlas_catalog_digest,
+        catalog_digest_matches=catalog_digest_matches,
         missing_embeddings=len(missing),
         extra_embeddings=len(extra),
         invalid_embeddings=invalid_embeddings,
@@ -413,7 +493,7 @@ def _llm_quality_filter(items: "list[tuple]",
     if not names:
         return set()
     try:
-        from src.ztare.common.llm_runtime import LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime
     except Exception:
         try:
             from ztare.common.llm_runtime import LLMRuntime
@@ -439,7 +519,7 @@ def _llm_quality_filter(items: "list[tuple]",
         "transform, selector, assembler, router, or anything you are even slightly unsure about → KEEP.\n"
         "Return ONLY a JSON object mapping each exact name to \"keep\" or \"drop\".\nITEMS:\n" + listing + "\n")
     try:
-        from src.ztare.common.dispatch_model import dispatch_call_text
+        from ztare.common.dispatch_model import dispatch_call_text
 
         runtime = LLMRuntime()
         resp = dispatch_call_text(
@@ -561,7 +641,7 @@ def _embed(text: str, *, role: str = "query", backend: str = "gemini-code") -> "
             try:
                 from ztare.common.embeddings import embed_batch, make_client
             except ModuleNotFoundError:
-                from src.ztare.common.embeddings import embed_batch, make_client
+                from ztare.common.embeddings import embed_batch, make_client
             return embed_batch(make_client(key), [text], model="gemini-embedding-001",
                                dimensions=768, task_type=tt)[0]
         except SystemExit as exc:
@@ -592,7 +672,8 @@ def build_primitive_atlas(path: Path = ATLAS_PATH, backend: str = "gemini-code")
     backend by default. This is what makes semantic retrieval scale + generalize
     (vocabulary-invariant), removing the hand-tuned aliases as the mechanism."""
     inv = build_inventory()
-    expected = {p.signature or p.name for p in inv}
+    expected = {_primitive_embedding_key(p) for p in inv}
+    catalog_digest = primitive_catalog_digest(inv)
     vecs: dict[str, list[float]] = {}
     if path.exists():
         try:
@@ -607,16 +688,26 @@ def build_primitive_atlas(path: Path = ATLAS_PATH, backend: str = "gemini-code")
         except Exception:
             vecs = {}
     for p in inv:
-        key = p.signature or p.name
+        key = _primitive_embedding_key(p)
         if key in vecs:
             continue
-        v = _embed(f"{p.name}. {p.doc} {p.when_to_use}".strip(), role="document", backend=backend)
+        v = _embed(_primitive_embedding_text(p), role="document", backend=backend)
         if _valid_embedding_vector(v, backend=backend):
             vecs[key] = v
     if inv and len(vecs) != len(inv):
         return 0
-    path.write_text(json.dumps({"backend": backend, "n": len(vecs), "embeddings": vecs}),
-                    encoding="utf-8")
+    path.write_text(
+        json.dumps(
+            {
+                "backend": backend,
+                "n": len(vecs),
+                "catalog_digest": catalog_digest,
+                "embeddings": vecs,
+            },
+            ensure_ascii=False,
+        ),
+        encoding="utf-8",
+    )
     return len(vecs)
 
 
@@ -1009,6 +1100,115 @@ def record_miss_queue(eval_result: dict, path: Path = MISS_QUEUE_PATH) -> dict:
     }
 
 
+def _compact_candidate_ref(row: dict) -> str:
+    name = str(row.get("name") or "").strip()
+    signature = str(row.get("signature") or "").strip()
+    module = str(row.get("module") or "").strip()
+    parts = [part for part in (name, signature, module) if part]
+    return " | ".join(parts) if parts else "none"
+
+
+def _miss_queue_promotion_review(row: dict) -> dict:
+    """Classify one primitive-amnesia miss as a repair/promotion review.
+
+    This is a read-only review contract. It does not register a primitive or
+    close the miss; it names the next auditable action so open misses do not
+    sit as undifferentiated debt.
+    """
+    miss_kind = str(row.get("miss_kind") or "unknown")
+    target_resolution = row.get("target_resolution")
+    if not isinstance(target_resolution, dict):
+        target_resolution = {}
+    top_candidates = [
+        candidate for candidate in row.get("top_candidates") or []
+        if isinstance(candidate, dict)
+    ]
+    nearest_confuser = _compact_candidate_ref(top_candidates[0]) if top_candidates else "none"
+    resolved_matches = [
+        _compact_candidate_ref(match)
+        for match in target_resolution.get("matches") or []
+        if isinstance(match, dict)
+    ]
+    target_resolved = bool(target_resolution.get("resolved"))
+    if miss_kind == "retrieval_miss" or target_resolved:
+        promotion_decision = "close_as_catalog_retrieval_repair"
+        typed_carrier = "primitive_catalog_alias_or_atlas_repair"
+        nearest_existing_surface = (
+            "; ".join(resolved_matches[:3])
+            or "architecture_index primitive exists but retrieval did not surface it"
+        )
+        kill_criterion = (
+            "Do not add a new primitive while the target already exists; repair "
+            "aliases, applicability tags, ranking, or stale atlas embeddings first."
+        )
+        non_claim = (
+            "This miss is not evidence that a new primitive is needed; it is "
+            "retrieval/catalog debt until the existing target fails a direct test."
+        )
+    elif miss_kind == "benchmark_target_unresolved":
+        promotion_decision = "review_missing_catalog_or_benchmark_target"
+        typed_carrier = "primitive_catalog_candidate_or_benchmark_repair"
+        nearest_existing_surface = "no matching target primitive found in the catalog"
+        kill_criterion = (
+            "Do not promote until the benchmark target label is checked against "
+            "existing primitives, duplicate/confuser candidates are ruled out, "
+            "and a deterministic self-test proves the gap."
+        )
+        non_claim = (
+            "This is not a promoted primitive; it is a candidate catalog or "
+            "benchmark repair requiring duplicate and confuser checks."
+        )
+    else:
+        promotion_decision = "review_only"
+        typed_carrier = "primitive_amnesia_miss_review"
+        nearest_existing_surface = "primitive_amnesia miss queue"
+        kill_criterion = "Classify miss_kind before promotion or closure."
+        non_claim = "Unclassified miss rows are review-only."
+    review = {
+        "schema_version": "primitive-amnesia-promotion-review-v1",
+        "record_type": "primitive_amnesia_promotion_review",
+        "miss_id": row.get("miss_id"),
+        "case_id": row.get("case_id"),
+        "miss_kind": miss_kind,
+        "query": row.get("query"),
+        "targets": row.get("targets") or [],
+        "promotion_decision": promotion_decision,
+        "nearest_existing_surface": nearest_existing_surface,
+        "nearest_confuser": nearest_confuser,
+        "typed_carrier": typed_carrier,
+        "deterministic_validator": (
+            "python -m ztare.research_director.primitive_amnesia --eval "
+            "--record-misses"
+        ),
+        "ex_post_usage_criterion": (
+            "A later primitive-amnesia eval surfaces the intended target within "
+            "top-k, or the row is closed with a catalog/benchmark repair note."
+        ),
+        "primitive_amnesia_note": str(row.get("repair_policy") or ""),
+        "non_claim": non_claim,
+        "kill_criterion": kill_criterion,
+        "top_candidates": [_compact_candidate_ref(candidate) for candidate in top_candidates[:5]],
+    }
+    required = (
+        "miss_id",
+        "case_id",
+        "promotion_decision",
+        "nearest_existing_surface",
+        "nearest_confuser",
+        "typed_carrier",
+        "deterministic_validator",
+        "ex_post_usage_criterion",
+        "non_claim",
+        "kill_criterion",
+    )
+    missing = [
+        field for field in required
+        if not str(review.get(field) or "").strip()
+    ]
+    review["validation"] = {"ok": not missing, "missing": missing}
+    return review
+
+
 def miss_queue_status(path: Path = MISS_QUEUE_PATH) -> dict:
     """Summarize primitive-amnesia repair debt from the JSONL miss queue."""
     rows: list[dict] = []
@@ -1033,6 +1233,11 @@ def miss_queue_status(path: Path = MISS_QUEUE_PATH) -> dict:
         if str(row.get("status") or "open").lower() not in {"closed", "resolved", "retired"}
     ]
     open_rows.sort(key=lambda row: str(row.get("recorded_at") or ""), reverse=True)
+    promotion_reviews = [_miss_queue_promotion_review(row) for row in open_rows]
+    promotion_review_counts = Counter(
+        str(review.get("promotion_decision") or "review_only")
+        for review in promotion_reviews
+    )
     return {
         "path": str(path),
         "exists": path.exists(),
@@ -1040,6 +1245,7 @@ def miss_queue_status(path: Path = MISS_QUEUE_PATH) -> dict:
         "open_count": len(open_rows),
         "malformed_count": malformed,
         "status_counts": dict(status_counts),
+        "promotion_review_counts": dict(promotion_review_counts),
         "latest_open": [
             {
                 "miss_id": row.get("miss_id"),
@@ -1050,6 +1256,7 @@ def miss_queue_status(path: Path = MISS_QUEUE_PATH) -> dict:
                 "ranker": row.get("ranker"),
                 "recorded_at": row.get("recorded_at"),
                 "repair_hint": row.get("repair_hint"),
+                "promotion_review": _miss_queue_promotion_review(row),
             }
             for row in open_rows[:5]
         ],
@@ -1089,7 +1296,7 @@ def semantic_live() -> "tuple[bool, str]":
     try:
         from ztare.common.embedder_liveness import embedder_live
     except ModuleNotFoundError:  # supports `python -m src.ztare...` from repo root
-        from src.ztare.common.embedder_liveness import embedder_live
+        from ztare.common.embedder_liveness import embedder_live
     atlas, backend = _load_atlas()
     live, why = embedder_live(lambda t: _embed(t, role="query", backend=backend),
                               atlas_nonempty=bool(atlas))

@@ -631,19 +631,27 @@ def _gate_extrapolation_gap(
     by at least one std dev of training spacing in that dimension.
 
     Class-aware bypass (2026-04-25): for cage_meta.class in
-    {"audit", "literature", "proof_target", "closed_form_constant"} the
+    {"audit", "literature", "document_review", "proof_target", "closed_form_constant"} the
     gate auto-skips because those substrate classes have no numeric
     extrapolation regime by definition (audit = critique of artifact;
     literature = textual review; proof_target = formal-proof; closed-
-    form = constant discovery). Without this bypass the gate hard-fails
-    every audit run that legitimately has no farther_tail_region — a
-    class-routing bug surfaced by gp165.
+    form = constant discovery). Document-review substrates audit bounded
+    source/evidence contracts rather than numeric generalization regions.
+    Without this bypass the gate hard-fails every non-numeric run that
+    legitimately has no farther_tail_region — a class-routing bug first
+    surfaced by audit runs and later by public packet-readiness fixtures.
     """
     name = "global_extrapolation_gap"
 
     cage_meta = rubric_data.get("cage_meta") or {}
     cage_class = (cage_meta.get("class") or "").strip().lower() if isinstance(cage_meta, dict) else ""
-    NO_EXTRAPOLATION_CLASSES = {"audit", "literature", "proof_target", "closed_form_constant"}
+    NO_EXTRAPOLATION_CLASSES = {
+        "audit",
+        "literature",
+        "document_review",
+        "proof_target",
+        "closed_form_constant",
+    }
     if cage_class in NO_EXTRAPOLATION_CLASSES:
         return _gate(
             name, passed=True, actual=None, threshold=None,
@@ -837,6 +845,153 @@ def _gate_audit_mock_bypass(
 
 
 # ---------------------------------------------------------------------------
+# Phase 1: local verifier receipt coverage gate
+# ---------------------------------------------------------------------------
+
+def _active_local_verification_gap_count(project_dir: Path) -> int:
+    gaps_path = project_dir / "workspace" / "latest_evidence_gaps.json"
+    if not gaps_path.exists():
+        return 0
+    try:
+        import json
+
+        payload = json.loads(gaps_path.read_text(encoding="utf-8"))
+    except Exception:
+        return 0
+    gaps = payload.get("evidence_gaps")
+    if not isinstance(gaps, list):
+        return 0
+    try:
+        from ztare.workspace.evidence_gaps import (
+            evidence_gap_recovery_contract,
+        )
+    except Exception:
+        return 0
+    count = 0
+    for gap in gaps:
+        if not isinstance(gap, dict):
+            continue
+        contract = evidence_gap_recovery_contract(gap, project_dir=project_dir)
+        if contract.get("in_loop_consumable", False):
+            count += 1
+    return count
+
+
+def _packet_falsifier_receipt(project_dir: Path) -> dict[str, Any] | None:
+    receipt_path = project_dir / "workspace" / "packet_falsifier_receipt.json"
+    if not receipt_path.exists():
+        return None
+    try:
+        import json
+
+        payload = json.loads(receipt_path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
+def _gate_local_verifier_receipt_coverage(
+    rubric_data: dict,
+    project_dir: Path,
+) -> dict[str, Any]:
+    """Require candidate tests to consume local verifier receipts when present.
+
+    If the loop has an active local-verification evidence gap and a machine
+    receipt already exists for that verifier, the candidate must assert against
+    receipt fields in ``test_model.py``. Naming the gap in prose or rechecking
+    packet strings is not enough.
+    """
+    name = "global_local_verifier_receipt_coverage"
+
+    if rubric_data.get("disable_local_verifier_receipt_gate"):
+        reason = str(rubric_data.get("disable_local_verifier_receipt_gate_reason") or "").strip()
+        if not reason:
+            return _gate(
+                name,
+                passed=False,
+                actual="disabled_without_reason",
+                threshold="non-empty disable_local_verifier_receipt_gate_reason",
+                reason="disable_local_verifier_receipt_gate requires an explicit reason",
+                hard_fail=True,
+            )
+        return _gate(
+            name,
+            passed=True,
+            actual="disabled",
+            threshold=None,
+            reason=f"DISABLED by rubric config — reason: {reason}",
+        )
+
+    local_gap_count = _active_local_verification_gap_count(project_dir)
+    if local_gap_count <= 0:
+        return _gate(
+            name,
+            passed=True,
+            actual="no_active_local_verification_gap",
+            threshold=None,
+            reason="no active local-verification evidence gap — receipt coverage gate skipped",
+        )
+
+    receipt = _packet_falsifier_receipt(project_dir)
+    if receipt is None:
+        return _gate(
+            name,
+            passed=True,
+            actual="no_local_verifier_receipt",
+            threshold=None,
+            reason="active local-verification gap has no known local verifier receipt — gate skipped",
+        )
+
+    test_model_path = project_dir / "test_model.py"
+    try:
+        test_model_text = test_model_path.read_text(encoding="utf-8")
+    except Exception:
+        test_model_text = ""
+
+    receipt_ref_hit = "packet_falsifier_receipt.json" in test_model_text
+    field_hits = [
+        field
+        for field in ("status", "command", "remove_ref", "removed_ref", "expected_failure", "enforced_by")
+        if field in test_model_text
+    ]
+    value_hits: list[str] = []
+    for field in ("remove_ref", "removed_ref", "expected_failure"):
+        value = str(receipt.get(field) or "").strip()
+        if value and value in test_model_text:
+            value_hits.append(field)
+    passed = receipt_ref_hit and (len(field_hits) >= 2 or bool(value_hits))
+    actual = {
+        "active_local_gap_count": local_gap_count,
+        "receipt_ref_hit": receipt_ref_hit,
+        "field_hits": field_hits,
+        "value_hits": value_hits,
+    }
+    if not passed:
+        return _gate(
+            name,
+            passed=False,
+            actual=str(actual),
+            threshold="test_model.py references receipt path and asserts receipt fields",
+            reason=(
+                "active local-verification gap has a machine receipt, but the "
+                "candidate test_model.py does not consume the receipt fields. "
+                "Assert status/command/remove_ref/expected_failure/enforced_by "
+                "from workspace/packet_falsifier_receipt.json; packet string "
+                "matching alone does not close the local verifier gap."
+            ),
+            penalty=-25,
+            hard_fail=False,
+        )
+    return _gate(
+        name,
+        passed=True,
+        actual=str(actual),
+        threshold="test_model.py references receipt path and asserts receipt fields",
+        reason="candidate test_model.py consumes local verifier receipt fields: PASS",
+    )
+
+
+# ---------------------------------------------------------------------------
 # Main entry point
 # ---------------------------------------------------------------------------
 
@@ -909,11 +1064,18 @@ def run_global_gates(
         # Encode cap-at-50 as a -50 penalty on a base of 100
         total_penalty += am.get("penalty", -50)
 
+    lvr = _gate_local_verifier_receipt_coverage(rubric_data, project_dir)
+    gates.append(lvr)
+    if not lvr["passed"] and lvr.get("hard_fail"):
+        any_hard_fail = True
+    if not lvr["passed"]:
+        total_penalty += lvr.get("penalty", 0)
+
     # Autoresearch gaming gates (GP-086 follow-on). These are deterministic
     # AST/provenance checks for fixture-backed autoresearch vectors. Semantic
     # transfer/rigor vectors remain outside this syntactic gate and route
     # through their own carriers.
-    from src.ztare.gates.autoresearch_gaming_gates import run_autoresearch_gaming_gates
+    from ztare.gates.autoresearch_gaming_gates import run_autoresearch_gaming_gates
 
     psg_results = run_autoresearch_gaming_gates(project_dir, rubric_data)
     gates.extend(psg_results)
@@ -926,7 +1088,7 @@ def run_global_gates(
     # Semantic gaming carrier gates. These do not claim syntactic proof of
     # semantic failure; they select the appropriate scope/transfer/rigor review
     # carrier and fail closed when that risk is present.
-    from src.ztare.gates.semantic_gaming_carrier import run_semantic_gaming_carrier_gates
+    from ztare.gates.semantic_gaming_carrier import run_semantic_gaming_carrier_gates
 
     sgc_results = run_semantic_gaming_carrier_gates(project_dir, rubric_data, thesis_text, evidence_text)
     gates.extend(sgc_results)

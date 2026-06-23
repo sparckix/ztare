@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.research_director.primitive_catalog_taxonomy import (
+from ztare.research_director.primitive_catalog_taxonomy import (
     catalog_health,
     catalog_parent_nodes,
     enrich_row,
@@ -94,6 +94,40 @@ def test_catalog_parent_nodes_are_full_catalog_families() -> None:
     assert by_id["model_fit_structure_probe"].child_count == 1
     assert by_id["pattern_memory"].child_count == 1
     assert "gate" in by_id["evidence_governance_gate"].matched_terms
+
+
+def test_catalog_parent_examples_are_query_relevant_not_alphabetical() -> None:
+    rows = [
+        {
+            "id": "AAA-GENERIC-RD-HELPER",
+            "path": "src/ztare/research_director/generic_helper.py",
+            "kind": "primitive",
+            "description": "Generic research director helper.",
+            "impact_factor_expost": 5,
+        },
+        {
+            "id": "ZZZ-EIGENQUESTION-GENERATOR",
+            "path": "src/ztare/research_director/eigenquestion_generator.py",
+            "kind": "primitive",
+            "description": "Generates the eigenquestion for an orthogonal thesis rotation.",
+            "applicability": ["eigenquestion", "orthogonal_question", "thesis_rotation"],
+            "impact_factor_expost": 1,
+        },
+    ]
+
+    nodes = catalog_parent_nodes(
+        rows,
+        [
+            "pending eigenquestions",
+            "eigenquestion",
+            "orthogonal question",
+            "thesis rotation",
+        ],
+        examples_per_family=1,
+    )
+    by_id = {node.family_id: node for node in nodes}
+
+    assert by_id["research_move_operator"].example_ids == ("ZZZ-EIGENQUESTION-GENERATOR",)
 
 
 def test_catalog_health_reports_duplicates_and_stale_outputs(tmp_path: Path) -> None:

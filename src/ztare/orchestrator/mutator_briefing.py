@@ -74,6 +74,10 @@ class BriefingContext:
     # autoresearch_loop sets this from the run's stagnation tracker;
     # callers that don't care about tiering can leave it at 0.
     stagnation_count: int = 0
+    # Optional admitted project-intake metadata from autoresearch_loop
+    # `--intake`. Providers may use this to consume the exact launch packet
+    # rather than guessing a conventional project-local filename.
+    project_packet: Optional[dict[str, Any]] = None
 
     def __post_init__(self) -> None:
         if self.workspace_dir is None:
@@ -240,6 +244,7 @@ class MutatorBriefing:
         self._last_render_diagnostics = {
             "tier_gated": tier_gated,
             "budget_trimmed": budget_trimmed,
+            "active_providers": [name for name, _ in fragments],
             "budget_chars": budget,
             "running_chars": running_chars,
             "stagnation_count": ctx.stagnation_count,
@@ -291,6 +296,23 @@ class MutatorBriefing:
         return body
 
 
+def render_default_briefing_context(ctx: BriefingContext) -> dict[str, Any]:
+    """Render the standard in-loop briefing and expose audit diagnostics.
+
+    This is the integration surface used by ``autoresearch_loop`` and tests.
+    Keeping the active-provider accounting here prevents drift between the
+    prompt carrier and cheap no-model seam tests.
+    """
+    briefing = default_briefing()
+    body = briefing.render(ctx)
+    diagnostics = getattr(briefing, "_last_render_diagnostics", {}) or {}
+    return {
+        "body": body,
+        "active_providers": list(diagnostics.get("active_providers") or []),
+        "diagnostics": diagnostics,
+    }
+
+
 # ── Convenience: default registry seeded with shipped providers ─────────
 
 
@@ -301,67 +323,70 @@ def default_briefing() -> MutatorBriefing:
     own file. Adding a new provider to the default set is a 1-line
     edit here plus a new file under briefing_providers/.
     """
-    from src.ztare.orchestrator.briefing_providers.fit_telemetry import (
+    from ztare.orchestrator.briefing_providers.fit_telemetry import (
         FitTelemetryProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.gate_gap import (
+    from ztare.orchestrator.briefing_providers.gate_gap import (
         GateGapProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.iter_trajectory import (
+    from ztare.orchestrator.briefing_providers.iter_trajectory import (
         IterTrajectoryProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.row_outliers import (
+    from ztare.orchestrator.briefing_providers.row_outliers import (
         RowOutlierProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.asymptote_deviation import (
+    from ztare.orchestrator.briefing_providers.asymptote_deviation import (
         AsymptoteDeviationProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.analogy_candidates import (
+    from ztare.orchestrator.briefing_providers.analogy_candidates import (
         AnalogyCandidatesProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.framer_recommendation import (
+    from ztare.orchestrator.briefing_providers.framer_recommendation import (
         FramerRecommendationProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.per_class_breakdown import (
+    from ztare.orchestrator.briefing_providers.per_class_breakdown import (
         PerClassBreakdownProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.noise_profile_brief import (
+    from ztare.orchestrator.briefing_providers.noise_profile_brief import (
         NoiseProfileBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.contamination_defense import (
+    from ztare.orchestrator.briefing_providers.contamination_defense import (
         ContaminationDefenseBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.data_diagnostics import (
+    from ztare.orchestrator.briefing_providers.data_diagnostics import (
         DataDiagnosticsBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.cold_llm_seed import (
+    from ztare.orchestrator.briefing_providers.cold_llm_seed import (
         ColdLlmSeedBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.cold_shot_seed import (
+    from ztare.orchestrator.briefing_providers.cold_shot_seed import (
         ColdShotSeedBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.qualitative_evidence_seed import (
+    from ztare.orchestrator.briefing_providers.qualitative_evidence_seed import (
         QualitativeEvidenceSeedProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.forced_reframe import (
+    from ztare.orchestrator.briefing_providers.forced_reframe import (
         ForcedReframeBriefingProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.verified_axioms import (
+    from ztare.orchestrator.briefing_providers.verified_axioms import (
         VerifiedAxiomsProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.variational_promotion_floor import (
+    from ztare.orchestrator.briefing_providers.variational_promotion_floor import (
         VariationalPromotionFloorProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.contract_rules import (
+    from ztare.orchestrator.briefing_providers.contract_rules import (
         ContractRulesProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.r1_pattern_warning import (
+    from ztare.orchestrator.briefing_providers.graph_focus_receipt import (
+        GraphFocusReceiptProvider,
+    )
+    from ztare.orchestrator.briefing_providers.r1_pattern_warning import (
         R1PatternWarningProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.tried_failed_digest import (
+    from ztare.orchestrator.briefing_providers.tried_failed_digest import (
         TriedFailedDigestProvider,
     )
-    from src.ztare.orchestrator.briefing_providers.lagrangian_worked_example import (
+    from ztare.orchestrator.briefing_providers.lagrangian_worked_example import (
         LagrangianWorkedExampleProvider,
     )
 
@@ -386,6 +411,8 @@ def default_briefing() -> MutatorBriefing:
     _p = TriedFailedDigestProvider(); _p.tier = 2
     b.register(_p)
     _p = ContractRulesProvider(); _p.tier = 0
+    b.register(_p)
+    _p = GraphFocusReceiptProvider(); _p.tier = 1
     b.register(_p)
     _p = FitTelemetryProvider(); _p.tier = 2
     b.register(_p)
@@ -480,7 +507,7 @@ def default_briefing() -> MutatorBriefing:
     # Tier 3 (stagnation-only) so it doesn't burden the every-iter
     # briefing budget; iter_trajectory remains the always-on channel.
     try:
-        from src.ztare.orchestrator.briefing_providers.embedding_history import (
+        from ztare.orchestrator.briefing_providers.embedding_history import (
             EmbeddingHistoryProvider,
         )
         _p = EmbeddingHistoryProvider(); _p.tier = 3
@@ -493,7 +520,7 @@ def default_briefing() -> MutatorBriefing:
     # observe-mode (renders+persists; enforcing close-gate pending cold
     # review). Degrades safe (fragment→"" on any error).
     try:
-        from src.ztare.orchestrator.briefing_providers.obligation_contract import (
+        from ztare.orchestrator.briefing_providers.obligation_contract import (
             ObligationContractProvider,
         )
         _p = ObligationContractProvider()  # tier=0 set on the class

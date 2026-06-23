@@ -251,7 +251,7 @@ def independent_verify(statement: str, imports: list[str], sandbox: Path,
         return {"verified": None, "error": str(e)}
 
 
-def _compile_probe(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool | None":
+def _compile_probe_standalone(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool | None":
     """Compile a Lean snippet in the sandbox; True=clean, False=error, None=infra failure."""
     sandbox = Path(sandbox).resolve()
     if not sandbox.exists():
@@ -294,6 +294,37 @@ def _compile_probe(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool |
         return None
     except Exception:
         return None
+
+
+def _compile_probe(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool | None":
+    """STRICT-SAFE CAMPAIGN-AWARE compile (2026-06-20). Standalone first (self-contained probes pass here ⇒
+    zero regression, byte-parity when no campaign substrate is registered); ONLY on a standalone compile
+    FAILURE, retry the probe against the registered campaign theory ENV (namespace-wrapped) so a probe that
+    references campaign-theory defs resolves instead of `unknown identifier`. This is the campaign-blind
+    `_compile_probe` bug class (it killed the proposer pool on every namespaced P1 rung). It can ONLY turn a
+    false-FAIL into a pass — never breaks a passing probe — and the downstream sorry-free / anti-laundering /
+    #print-axioms gates are UNCHANGED (this is compile reachability, not a closure gate; `sorry` stays allowed
+    on both paths since this probe audits sorried decomposition DAGs)."""
+    r = _compile_probe_standalone(probe, sandbox, tag, timeout)
+    if r is not False:
+        return r                                   # clean / infra-unavailable ⇒ standalone verdict stands
+    try:
+        from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                               campaign_namespaces, compile_probe_via_repl)
+        _sub = get_campaign_substrate()
+        if _sub:
+            _sb = Path(sandbox).resolve()
+            _env = campaign_file_env(_sub, _sb)
+            if _env is not None:
+                _nss = campaign_namespaces()
+                _wp = (f"namespace {_nss[0]}\n{probe}\nend {_nss[0]}\n"
+                       if (len(_nss) == 1 and "namespace " not in probe) else probe)
+                _rr = compile_probe_via_repl(_wp, _sb, timeout, env=_env)
+                if isinstance(_rr, tuple):
+                    return _rr[0]
+    except Exception:  # noqa: BLE001 — env rescue is best-effort; the standalone False stands (fail-closed)
+        pass
+    return False
 
 
 def nondegenerate_instance_probe(statement: str, sandbox: Path, imports: "list[str] | None" = None,

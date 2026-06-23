@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 
-from src.ztare.reports.subscription_outcome_audit import (
+from ztare.reports.subscription_outcome_audit import (
     audit_subscription_outcomes,
     render_text,
 )
@@ -110,15 +110,17 @@ def test_subscription_outcome_audit_reports_missing_subscription_evidence(tmp_pa
     assert candidate["matched_run_id"] == "pair_api_only_001"
     assert candidate["matched_pair_command"] == (
         "make autoresearch-matched-transport-pair PROJECT=api_only "
-        "RUBRIC=api_only ITERS=1 MATCHED_RUN_ID=pair_api_only_001 "
+        "RUBRIC=api_only ITERS=1 MODEL_FALLBACK=0 "
+        "MATCHED_RUN_ID=pair_api_only_001 "
         "AGENT_TIMEOUT=240"
     )
     assert candidate["api_command"] == (
         "make experiment-loop PROJECT=api_only RUBRIC=api_only ITERS=1 "
-        "MATCHED_RUN_ID=pair_api_only_001 MATCHED_RUN_ROLE=api"
+        "MODEL_FALLBACK=0 MATCHED_RUN_ID=pair_api_only_001 MATCHED_RUN_ROLE=api"
     )
     assert "AGENT_MUTATOR=1" in candidate["subscription_command"]
     assert "AGENT_TIMEOUT=240" in candidate["subscription_command"]
+    assert "MODEL_FALLBACK=0" in candidate["subscription_command"]
     assert "MATCHED_RUN_ID=pair_api_only_001 MATCHED_RUN_ROLE=subscription" in (
         candidate["subscription_command"]
     )
@@ -132,6 +134,41 @@ def test_subscription_outcome_audit_reports_missing_subscription_evidence(tmp_pa
     assert "  subscription: make experiment-loop PROJECT=api_only RUBRIC=api_only" in text
     assert "  audit: make autoresearch-subscription-outcome-audit PROJECT=api_only JSON=1" in text
     assert "  caution: Run the pair under the same project/rubric/iteration budget" in text
+
+
+def test_subscription_outcome_audit_plan_preserves_project_intake(tmp_path):
+    project = tmp_path / "projects" / "packet_ready"
+    project.mkdir(parents=True)
+    _write_rubric(tmp_path / "rubrics" / "packet_ready.json")
+    (project / "packet_ready_packet.json").write_text(
+        json.dumps({"schema": "ztare-project-intake-v1"}),
+        encoding="utf-8",
+    )
+    _write_eval_history(
+        project,
+        [
+            {
+                "iteration": 1,
+                "score": 11,
+                "weakest_point": "baseline",
+                "transport": "api",
+            }
+        ],
+    )
+
+    report = audit_subscription_outcomes(repo=tmp_path, project="packet_ready")
+    candidate = report["matched_run_plan"][0]
+
+    assert (
+        "INTAKE=projects/packet_ready/packet_ready_packet.json"
+        in candidate["matched_pair_command"]
+    )
+    assert "INTAKE=projects/packet_ready/packet_ready_packet.json" in candidate["api_command"]
+    assert (
+        "INTAKE=projects/packet_ready/packet_ready_packet.json"
+        in candidate["subscription_command"]
+    )
+    assert "MODEL_FALLBACK=0" in candidate["matched_pair_command"]
 
 
 def test_subscription_outcome_audit_counts_call_site_subscription_metadata(tmp_path):

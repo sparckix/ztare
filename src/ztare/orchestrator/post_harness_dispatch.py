@@ -5,8 +5,8 @@ loop's job is to coordinate the iter; gate dispatch logic lives here so
 each new Cage-routed gate adds at most a registration line, not an
 inline if-block.
 
-Today this dispatches R10 (cross-class extrapolation diagnostic,
-non-blocking) and R11 (per-class farther-tail MRE ceiling, hard-fail
+Today this dispatches the cross-class extrapolation diagnostic (R10,
+non-blocking) and per-class farther-tail MRE ceiling (R11, hard-fail
 when rubric.enforce_per_class_farther_tail). Future post-harness gates
 register here without touching autoresearch_loop.
 
@@ -58,8 +58,8 @@ def dispatch_post_harness_cage(
     """Run every registered post-harness Cage gate.
 
     Currently:
-        - R10 cross-class extrapolation diagnostic (non-blocking)
-        - R11 per-class farther-tail MRE ceiling (hard-fail when opted in)
+        - cross-class extrapolation diagnostic (R10, non-blocking)
+        - per-class farther-tail MRE ceiling (R11, hard-fail when opted in)
 
     Future gates (substrate_critic post-fit refresh, GP-170 symbolic logic
     cage when implemented, GP-168 forced-reframe trigger) register here.
@@ -69,11 +69,11 @@ def dispatch_post_harness_cage(
 
     # R10 + R11 — both implemented in cross_class_extrapolation_gate.
     try:
-        from src.ztare.gates.cross_class_extrapolation_gate import (
+        from ztare.gates.cross_class_extrapolation_gate import (
             dispatch_r10_r11_from_harness_json as _r1011_dispatch,
         )
     except ImportError as exc:
-        verdict.error = f"R10/R11 module unavailable: {exc}"
+        verdict.error = f"cross-class/per-class gate module unavailable: {exc}"
         return verdict
 
     try:
@@ -83,24 +83,31 @@ def dispatch_post_harness_cage(
             iter_index=iter_index,
         )
     except Exception as exc:
-        verdict.error = f"R10/R11 dispatch crashed: {type(exc).__name__}: {exc}"
+        verdict.error = (
+            f"cross-class/per-class gate dispatch crashed: "
+            f"{type(exc).__name__}: {exc}"
+        )
         return verdict
 
     verdict.payload["cage_r10_r11"] = payload
 
     if payload.get("error"):
-        verdict.log_lines.append(f"🦴 R10/R11 dispatch note: {payload['error']}")
+        verdict.log_lines.append(
+            f"🦴 Cross-class/per-class gate note (R10/R11): {payload['error']}"
+        )
 
     if payload.get("r10_engaged"):
         flags = payload.get("r10_flags") or []
         diag = payload.get("r10_diagnostic") or {}
         per_class = diag.get("per_class_mre", {})
         verdict.log_lines.append(
-            f"🦴 Cage R10 engaged: per_class_mre={per_class} flags={len(flags)}"
+            f"🦴 Cross-class extrapolation diagnostic engaged (R10): "
+            f"per_class_mre={per_class} flags={len(flags)}"
         )
         for flag in flags:
             verdict.log_lines.append(
-                f"🦴   R10 flag [{flag.get('kind')}] class={flag.get('class')}"
+                f"🦴   Cross-class flag (R10) [{flag.get('kind')}] "
+                f"class={flag.get('class')}"
             )
 
     if payload.get("r11_engaged"):
@@ -108,23 +115,25 @@ def dispatch_post_harness_cage(
             failed = payload.get("r11_failed_classes", [])
             per_class = payload.get("r11_per_class_mre", {})
             verdict.log_lines.append(
-                f"🚫 Cage R11 hard-fail: per-class MRE ceiling exceeded on "
+                f"🚫 Per-class holdout ceiling hard-fail (R11): "
+                f"per-class MRE ceiling exceeded on "
                 f"classes={failed} (per_class_mre={per_class})"
             )
             verdict.score_zero_required = True
             verdict.score_zero_reason = (
-                f"Cage R11 per-class MRE ceiling failure on class(es) {failed}"
+                f"Per-class holdout ceiling (R11) failure on class(es) {failed}"
             )
             verdict.weakest_point_addendum = (
-                f"SYSTEM OVERRIDE: Score zeroed due to Cage R11 per-class "
-                f"MRE ceiling failure on class(es) {failed}. Combined-class "
+                f"SYSTEM OVERRIDE: Score zeroed due to per-class holdout "
+                f"ceiling (R11) failure on class(es) {failed}. Combined-class "
                 f"farther-tail no longer hides per-class blowups. Refine "
                 f"the form so each held-out class independently passes its "
                 f"MRE threshold."
             )
         else:
             verdict.log_lines.append(
-                f"🦴 Cage R11 engaged + passed: {payload.get('r11_per_class_mre')}"
+                f"🦴 Per-class holdout ceiling engaged and passed (R11): "
+                f"{payload.get('r11_per_class_mre')}"
             )
 
     # R20-R23 structural anti-pattern gates (#137/#139/#146/#147).
@@ -133,7 +142,7 @@ def dispatch_post_harness_cage(
     # known Goodhart patterns (RH-13/17/18) without iter-blocking
     # hard-fail (which is reserved for R11 + R12 boundary violation).
     try:
-        from src.ztare.gates.structural_anti_pattern_gates import (
+        from ztare.gates.structural_anti_pattern_gates import (
             dispatch_structural_anti_pattern_gates as _sapg_dispatch,
         )
         sapg = _sapg_dispatch(
@@ -214,7 +223,7 @@ def dispatch_post_harness_cage(
     if rubric_data.get("enable_solar_system_ppn_gates"):
         try:
             import ast as _ppn_ast
-            from src.ztare.gates.gravity_ppn_gates import (
+            from ztare.gates.gravity_ppn_gates import (
                 check_cassini_ppn,
                 check_mercury_perihelion,
             )

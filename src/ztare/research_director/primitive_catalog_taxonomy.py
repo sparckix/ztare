@@ -261,13 +261,48 @@ def catalog_parent_nodes(
     examples_per_family: int = 8,
 ) -> tuple[CatalogParentNode, ...]:
     query = tuple(str(term).lower() for term in query_terms if str(term).strip())
-    grouped: dict[str, list[ClassifiedCatalogRow]] = defaultdict(list)
+    grouped: dict[str, list[tuple[ClassifiedCatalogRow, dict[str, Any]]]] = defaultdict(list)
     for row in rows:
         classified = classify_row(row)
-        grouped[classified.semantic_family].append(classified)
+        grouped[classified.semantic_family].append((classified, row))
+
+    def impact(row: dict[str, Any]) -> float:
+        try:
+            return float(row.get("impact_factor_expost") or 0.0)
+        except (TypeError, ValueError):
+            return 0.0
+
+    def query_weight(term: str) -> int:
+        if len(term) < 4:
+            return 0
+        if " " in term or "_" in term:
+            return 4
+        if len(term) >= 10:
+            return 3
+        if len(term) >= 6:
+            return 2
+        return 1
+
+    def example_sort_key(item: tuple[ClassifiedCatalogRow, dict[str, Any]]) -> tuple[float, float, str]:
+        child, raw = item
+        row_text = _text(raw)
+        child_id = child.id.lower()
+        child_id_words = child_id.replace("-", " ").replace("_", " ")
+        score = 0
+        for term in query:
+            weight = query_weight(term)
+            if not weight:
+                continue
+            if term in row_text:
+                score += weight
+            term_id = term.replace(" ", "-").replace("_", "-")
+            if term in child_id_words or term_id in child_id:
+                score += weight + 2
+        return (-float(score), -impact(raw), child.id)
 
     nodes: list[CatalogParentNode] = []
-    for family_id, children in grouped.items():
+    for family_id, children_with_rows in grouped.items():
+        children = [child for child, _ in children_with_rows]
         purpose = SEMANTIC_FAMILIES.get(family_id, "")
         haystack = " ".join(
             [
@@ -278,7 +313,10 @@ def catalog_parent_nodes(
             ]
         ).lower()
         matched = tuple(term for term in query if term in haystack)
-        examples = tuple(child.id for child in sorted(children, key=lambda child: child.id)[:examples_per_family])
+        examples = tuple(
+            child.id
+            for child, _ in sorted(children_with_rows, key=example_sort_key)[:examples_per_family]
+        )
         source_categories = tuple(sorted({child.source_category for child in children}))
         nodes.append(
             CatalogParentNode(

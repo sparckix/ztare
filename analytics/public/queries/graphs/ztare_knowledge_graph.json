@@ -6,20 +6,21 @@
       "@type": "seam",
       "title": "Seams cabinet structure",
       "status": "unknown",
-      "path": "research_areas/private/seams/README.md",
+      "path": "private-seam-ref:README",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-172"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-058",
       "@type": "seam",
       "title": "GP-058 Bug-bounty + factory integration seam",
       "status": "open",
-      "path": "research_areas/private/seams/gaming/GP-058_bug_bounty_factory_integration_seam.md",
+      "path": "private-seam-ref:GP-058",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-055",
@@ -27,47 +28,51 @@
         "seam:GP-057"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-073",
       "@type": "seam",
       "title": "GP-073 \u2014 Subliminal Learning Reproduction Protocol (Cloud et al. 2026, Nature)",
       "status": "unknown",
-      "path": "research_areas/private/seams/gaming/GP-073_subliminal_learning_reproduction_seam.md",
+      "path": "private-seam-ref:GP-073",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-154",
       "@type": "seam",
       "title": "T14 \u2014 v4 Conversion-Transform External Validation Charter",
       "status": "active",
-      "path": "research_areas/private/seams/charters/GP-154_T14_v4_external_validation_charter.md",
+      "path": "private-seam-ref:GP-154",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-106",
       "@type": "seam",
       "title": "GP-106 \u2014 Proportionality and Precautionary Principle for Model Treatment",
       "status": "active",
-      "path": "research_areas/private/seams/reflexive/GP-106_proportionality_precautionary_principle_seam.md",
+      "path": "private-seam-ref:GP-106",
       "depends_on": [
         "seam:GP-088",
         "seam:GP-105"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-105",
       "@type": "seam",
       "title": "GP-105 \u2014 M-Form Alignment Audit: Catching Goodhart's Law in Qualitative Rubrics",
       "status": "open",
-      "path": "research_areas/private/seams/reflexive/GP-105_mform_alignment_audit_seam.md",
+      "path": "private-seam-ref:GP-105",
       "depends_on": [
         "seam:GP-054",
         "seam:GP-072",
@@ -76,108 +81,119 @@
         "seam:GP-106"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-172",
       "@type": "seam",
       "title": "GP-172 \u2014 Research Director as M-form Role (post-ZTARE diagnostic + intervention mandate)",
       "status": "unknown",
-      "path": "research_areas/private/seams/protocol/GP-172_research_director_mform_role_seam.md",
+      "path": "private-seam-ref:GP-172",
       "depends_on": [
         "seam:GP-070",
         "seam:GP-072",
         "seam:GP-168"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-072",
       "@type": "seam",
       "title": "GP-072 Sandbox 14 \u2014 Debate Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/protocol/GP-072_sandbox_14_debate_seam.md",
+      "path": "private-seam-ref:GP-072",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-076",
       "@type": "seam",
       "title": "GP-076 \u2014 Predictive Divergence Sweep: Breaking Corrector Degeneracy Without Oracle Access",
       "status": "unknown",
-      "path": "research_areas/private/seams/protocol/GP-076_predictive_divergence_sweep_seam.md",
+      "path": "private-seam-ref:GP-076",
       "depends_on": [
         "seam:GP-074"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-193",
       "@type": "seam",
       "title": "GP-193 \u2014 Post-Run Thesis Synthesizer Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md",
+      "path": "private-seam-ref:GP-193",
       "depends_on": [
         "seam:GP-168",
-        "seam:GP-169",
-        "seam:GP-193b"
+        "seam:GP-169"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-193b"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-189",
       "@type": "seam",
       "title": "GP-189 \u2014 NS Continuation Criterion After Bounded Near-Miss",
       "status": "open",
-      "path": "research_areas/private/seams/protocol/GP-189_ns_continuation_criterion_after_bounded_near_miss_seam.md",
+      "path": "private-seam-ref:GP-189",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-128b",
       "@type": "seam",
       "title": "GP-128b \u2014 Inbound Principal Directives (Telegram channel)",
       "status": "active",
-      "path": "research_areas/private/seams/protocol/GP-128b_inbound_principal_directives.md",
+      "path": "private-seam-ref:GP-128b",
       "depends_on": [
         "seam:GP-128"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-188",
       "@type": "seam",
       "title": "GP-188 \u2014 Research Director Primitive-Compilation Boundary",
       "status": "open",
-      "path": "research_areas/private/seams/protocol/GP-188_research_director_primitive_compilation_boundary_seam.md",
+      "path": "private-seam-ref:GP-188",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-192",
       "@type": "seam",
       "title": "GP-192 \u2014 Enterprise-Grade Org Runtime Requirements",
       "status": "open",
-      "path": "research_areas/private/seams/protocol/GP-192_enterprise_grade_org_runtime_seam.md",
+      "path": "private-seam-ref:GP-192",
       "depends_on": [
         "seam:GP-191"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-075",
       "@type": "seam",
       "title": "GP-075 \u2014 Rubric Generation for Unknown Domains",
       "status": "unknown",
-      "path": "research_areas/private/seams/protocol/GP-075_rubric_for_unknowns_seam.md",
+      "path": "private-seam-ref:GP-075",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-045",
@@ -187,14 +203,15 @@
         "seam:GP-077"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-079",
       "@type": "seam",
       "title": "GP-079 Persona Library Unification",
       "status": "open",
-      "path": "research_areas/private/seams/protocol/GP-079_persona_library_unification_seam.md",
+      "path": "private-seam-ref:GP-079",
       "depends_on": [
         "seam:GP-054",
         "seam:GP-070",
@@ -203,14 +220,15 @@
         "seam:GP-101"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-191",
       "@type": "seam",
       "title": "GP-191 \u2014 Org Kernel / Policy Boundary",
       "status": "open",
-      "path": "research_areas/private/seams/protocol/GP-191_org_kernel_policy_boundary_seam.md",
+      "path": "private-seam-ref:GP-191",
       "depends_on": [
         "seam:GP-070",
         "seam:GP-086",
@@ -220,14 +238,15 @@
         "seam:GP-190"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-096",
       "@type": "seam",
       "title": "GP-096 \u2014 Science Programme Decomposition: Four Phases from Cage to Discovery",
       "status": "active",
-      "path": "research_areas/private/seams/mission/GP-096_science_programme_decomposition_seam.md",
+      "path": "private-seam-ref:GP-096",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-075",
@@ -240,14 +259,15 @@
         "seam:GP-133"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:ztare_mission_hypothesis_ledger_seam",
       "@type": "seam",
       "title": "ZTARE Mission Hypothesis Ledger Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/ztare_mission_hypothesis_ledger_seam.md",
+      "path": "private-seam-ref:ztare_mission_hypothesis_ledger_seam",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-028",
@@ -258,101 +278,111 @@
         "seam:GP-154"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:SESSION_HANDOFF_2026-05-01_three_frontier_tracks",
       "@type": "seam",
       "title": "Session Handoff: Three Frontier Tracks",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/SESSION_HANDOFF_2026-05-01_three_frontier_tracks.md",
+      "path": "private-seam-ref:SESSION_HANDOFF_2026-05-01_three_frontier_tracks",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-136",
       "@type": "seam",
       "title": "GP-136 \u2014 pMDL Threshold Hardening (narrower substrate post-GP-135)",
       "status": "active",
-      "path": "research_areas/private/seams/mission/GP-136_pmdl_threshold_hardening_seam.md",
+      "path": "private-seam-ref:GP-136",
       "depends_on": [
         "seam:GP-134",
         "seam:GP-135"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-168",
       "@type": "seam",
       "title": "GP-168 Org Design Discovery \u2014 Unfalsifiability Without Exogenous Closure",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-168_org_design_unfalsifiability_seam.md",
+      "path": "private-seam-ref:GP-168",
       "depends_on": [
         "seam:GP-070",
-        "seam:GP-132",
         "seam:GP-172"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-132"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-049",
       "@type": "seam",
       "title": "GP-049 Epistemic Verification Decomposition Validation Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-049_epistemic_verification_decomposition_validation_seam.md",
+      "path": "private-seam-ref:GP-049",
       "depends_on": [
         "seam:GP-032"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-133",
       "@type": "seam",
       "title": "GP-133 Round 4 \u2014 `py_exec` Sandbox Engineering Review",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-133_R4_py_exec_sandbox_review.md",
+      "path": "private-seam-ref:GP-133",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-135",
       "@type": "seam",
       "title": "GP-135 \u2014 Meta-Law Hypothesis Family Program",
       "status": "active",
-      "path": "research_areas/private/seams/mission/GP-135_meta_law_hypothesis_family_program_seam.md",
+      "path": "private-seam-ref:GP-135",
       "depends_on": [
         "seam:GP-096",
         "seam:GP-133",
         "seam:GP-134"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-082",
       "@type": "seam",
       "title": "GP-082: Substrate Scope Boundary \u2014 Where Abductive Compression Works and Where It Breaks",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-082_substrate_scope_boundary_seam.md",
+      "path": "private-seam-ref:GP-082",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-080",
         "seam:GP-081"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-050",
       "@type": "seam",
       "title": "GP-050 \u2014 Post-Treatise Philosophy Anchors Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-050_post_treatise_philosophy_anchors_seam.md",
+      "path": "private-seam-ref:GP-050",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-027",
@@ -364,27 +394,29 @@
         "seam:GP-074"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-129",
       "@type": "seam",
       "title": "GP-129 \u2014 Biological & Multidisciplinary Panel on AI-Native Org Design",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-129_biological_org_design_panel_seam.md",
+      "path": "private-seam-ref:GP-129",
       "depends_on": [
         "seam:GP-128",
         "seam:GP-130"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-128",
       "@type": "seam",
       "title": "GP-128 Persistent Manager Agent \u2014 Org Design Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-128_persistent_manager_agent_seam.md",
+      "path": "private-seam-ref:GP-128",
       "depends_on": [
         "seam:GP-070",
         "seam:GP-105",
@@ -394,86 +426,93 @@
         "seam:GP-131"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-140",
       "@type": "seam",
       "title": "GP-140 Seam \u2014 ZTARE-on-ZTARE Discovery Inversion",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-140_ztare_discovery_seam.md",
+      "path": "private-seam-ref:GP-140",
       "depends_on": [
         "seam:GP-135"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-169",
       "@type": "seam",
       "title": "GP-169 \u2014 Consciousness Decision Protocol Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-169_consciousness_decision_protocol_seam.md",
+      "path": "private-seam-ref:GP-169",
       "depends_on": [
         "seam:GP-168"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-141",
       "@type": "seam",
       "title": "GP-141 Seam \u2014 Continuous A+B reference implementation lineage",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-141_continuous_A_plus_B_reference_implementation_seam.md",
+      "path": "private-seam-ref:GP-141",
       "depends_on": [
         "seam:GP-140"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-166",
       "@type": "seam",
       "title": "GP-166 \u2014 Self-Enacted Procedural Compliance: The Homeostasis Problem",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-166_self_enacted_procedural_compliance_seam.md",
+      "path": "private-seam-ref:GP-166",
       "depends_on": [
         "seam:GP-129",
         "seam:GP-164"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-127",
       "@type": "seam",
       "title": "GP-127: Falsify-Before-Patent Discipline",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-127_falsify_before_patent_seam.md",
+      "path": "private-seam-ref:GP-127",
       "depends_on": [
         "seam:GP-108",
         "seam:GP-116"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-085",
       "@type": "seam",
       "title": "GP-085 \u2014 Grammar Ceiling Hypothesis: Static vs. Dynamic Dictionary",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-085_grammar_ceiling_hypothesis_seam.md",
+      "path": "private-seam-ref:GP-085",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-131",
       "@type": "seam",
       "title": "GP-131 \u2014 Work-Discovery Loop (Level 2 Daemon Bridge)",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-131_work_discovery_loop_seam.md",
+      "path": "private-seam-ref:GP-131",
       "depends_on": [
         "seam:GP-105",
         "seam:GP-105b",
@@ -482,14 +521,15 @@
         "seam:GP-130"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-083",
       "@type": "seam",
       "title": "GP-083: Inference Type Boundary \u2014 Kepler, Newton, and the Limits of Abduction",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/GP-083_inference_type_boundary_seam.md",
+      "path": "private-seam-ref:GP-083",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-046",
@@ -498,14 +538,15 @@
         "seam:GP-082"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-130",
       "@type": "seam",
       "title": "GP-130 \u2014 Non-LLM Substrate in the ZTARE Loop",
       "status": "open",
-      "path": "research_areas/private/seams/mission/GP-130_non_llm_substrate_seam.md",
+      "path": "private-seam-ref:GP-130",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-085",
@@ -514,14 +555,15 @@
         "seam:GP-129"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-134",
       "@type": "seam",
       "title": "GP-134 \u2014 ZTARE-on-ZTARE: Self-Recursive Architectural Discovery",
       "status": "active",
-      "path": "research_areas/private/seams/mission/GP-134_ztare_on_ztare_self_recursive_seam.md",
+      "path": "private-seam-ref:GP-134",
       "depends_on": [
         "seam:GP-021",
         "seam:GP-101",
@@ -529,28 +571,30 @@
         "seam:GP-133"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-167",
       "@type": "seam",
       "title": "GP-167 \u2014 Multi-Agent Interface Form Factor",
       "status": "active",
-      "path": "research_areas/private/seams/mission/GP-167_multi_agent_interface_form_factor_seam.md",
+      "path": "private-seam-ref:GP-167",
       "depends_on": [
         "seam:GP-128",
         "seam:GP-129",
         "seam:GP-166"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:ztare_operational_mode_seam",
       "@type": "seam",
       "title": "ZTARE Operational Mode Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/mission/ztare_operational_mode_seam.md",
+      "path": "private-seam-ref:ztare_operational_mode_seam",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-028",
@@ -563,26 +607,28 @@
         "seam:GP-054"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-173",
       "@type": "seam",
       "title": "GP-173 \u2014 Comparative Closure-Clock Substrate (org-design v2)",
       "status": "open",
-      "path": "research_areas/private/seams/substrates/GP-173_comparative_closure_clock_substrate_seam.md",
+      "path": "private-seam-ref:GP-173",
       "depends_on": [
         "seam:GP-168"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-143",
       "@type": "seam",
       "title": "GP-143 \u2014 Continuous-Chaotic Kernel Integration (Seam)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-143_continuous_chaotic_kernel_integration_seam.md",
+      "path": "private-seam-ref:GP-143",
       "depends_on": [
         "seam:GP-035",
         "seam:GP-053",
@@ -592,28 +638,30 @@
         "seam:GP-119"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-149",
       "@type": "seam",
       "title": "GP-149 Phase 2 \u2014 Mining Refresh (2026-05-04)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-149_phase2_refresh_2026-05-04.md",
+      "path": "private-seam-ref:GP-149",
       "depends_on": [
         "seam:GP-151",
         "seam:GP-212",
         "seam:GP-213"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-145",
       "@type": "seam",
       "title": "GP-145 \u2014 SAW Connective Constant \u03bc_sq (Conjecture Refinement Seam)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-145_saw_mu_square_seam.md",
+      "path": "private-seam-ref:GP-145",
       "depends_on": [
         "seam:GP-086",
         "seam:GP-122",
@@ -623,17 +671,17 @@
         "seam:GP-148"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216",
       "@type": "seam",
       "title": "GP-216 \u2014 Theory-Building Operations: Mining, Validation, ZTARE Integration",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-216_theory_building_operations_seam.md",
+      "path": "private-seam-ref:GP-216",
       "depends_on": [
         "seam:GP-180",
-        "seam:GP-181",
         "seam:GP-215"
       ],
       "instantiates_op": [
@@ -644,54 +692,63 @@
         "op:tb_07",
         "op:tb_10",
         "op:tb_11",
-        "op:tb_12",
         "op:tb_LAK1",
         "op:tb_LAK2",
         "op:tb_NEW_HOF",
         "op:tb_NEW_POLYA"
       ],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-181"
+      ],
+      "archival_op_mentions": [
+        "op:tb_12"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-162",
       "@type": "seam",
       "title": "GP-162 \u2014 Convention Homogeneity Enforcement (3-Layer Design)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-162_convention_homogeneity_enforcement_seam.md",
+      "path": "private-seam-ref:GP-162",
       "depends_on": [
         "seam:GP-154",
         "seam:GP-157",
         "seam:GP-158"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216e",
       "@type": "seam",
       "title": "GP-216e \u2014 Reflexive Engineering Primitives Map to GP-216 Universal Ops",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-216e_reflexive_primitives_to_v5_ops_mapping.md",
+      "path": "private-seam-ref:GP-216e",
       "depends_on": [
         "seam:GP-216"
       ],
       "instantiates_op": [
+        "op:broad_01",
+        "op:broad_05",
         "op:core_01",
         "op:core_02",
         "op:core_03",
         "op:core_04",
         "op:core_05",
-        "op:core_06",
-        "op:core_07"
+        "op:core_06"
       ],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216d",
       "@type": "seam",
       "title": "GP-216d \u2014 Knowledge-Graph Representation for ZTARE Artifacts",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-216d_knowledge_graph_proposal.md",
+      "path": "private-seam-ref:GP-216d",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-035",
@@ -713,54 +770,56 @@
         "op:core_03",
         "op:core_05",
         "op:core_06",
-        "op:core_07",
-        "op:spec_01_graph"
+        "op:spec_01"
       ],
       "references_gate": [
         "gate:BoundChainConsistencyGate",
         "gate:PotentialFunctionMonotonicityGate",
         "gate:StagnationSpecialCaseHintGate"
-      ]
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216f",
       "@type": "seam",
       "title": "GP-216f \u2014 The Cross-Scale Fractal: 7 Scales, 82 Moves, 1 Shape",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-216f_cross_scale_fractal_map.md",
+      "path": "private-seam-ref:GP-216f",
       "depends_on": [
         "seam:GP-216",
         "seam:GP-216e"
       ],
       "instantiates_op": [
+        "op:broad_01",
+        "op:broad_05",
         "op:core_01",
         "op:core_02",
         "op:core_03",
         "op:core_04",
-        "op:core_05",
-        "op:core_06",
-        "op:core_07"
+        "op:core_06"
       ],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-171",
       "@type": "seam",
       "title": "GP-171 \u2014 Tier-3 Mechanism Search via Lean-Audited Lagrangian Generation",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-171_tier3_mechanism_search_via_lean_lagrangian.md",
+      "path": "private-seam-ref:GP-171",
       "depends_on": [
         "seam:GP-170"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-170",
       "@type": "seam",
       "title": "GP-170 \u2014 Symbolic Logic Cage (deductive cage on PARAMETRIC_FORM)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-170_symbolic_logic_cage_seam.md",
+      "path": "private-seam-ref:GP-170",
       "depends_on": [
         "seam:GP-157",
         "seam:GP-164",
@@ -768,14 +827,15 @@
         "seam:GP-169"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216b",
       "@type": "seam",
       "title": "GP-216b \u2014 Mechanization Roadmap: Two-Cultures Ops as Gates vs Director Judgment",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-216b_mechanization_roadmap.md",
+      "path": "private-seam-ref:GP-216b",
       "depends_on": [
         "seam:GP-180",
         "seam:GP-215",
@@ -804,28 +864,36 @@
       "references_gate": [
         "gate:BoundChainConsistencyGate",
         "gate:PotentialFunctionMonotonicityGate",
-        "gate:StagnationSpecialCaseHintGate",
-        "gate:TacitPatternRecurrenceDetector"
-      ]
+        "gate:StagnationSpecialCaseHintGate"
+      ],
+      "gate_reference_status": [
+        {
+          "gate": "gate:TacitPatternRecurrenceDetector",
+          "status": "deferred",
+          "reason": "documented as a proposed or deferred detector, not an implemented gate"
+        }
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-109",
       "@type": "seam",
       "title": "GP-109 \u2014 Residual Periodicity Detector (Self-Recursive Improvement)",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-109_residual_periodicity_detector_seam.md",
+      "path": "private-seam-ref:GP-109",
       "depends_on": [
         "seam:GP-088"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-164",
       "@type": "seam",
       "title": "GP-164 \u2014 ZTARE v2.0 Meta-Architecture: REFRAME + ANALOGY",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md",
+      "path": "private-seam-ref:GP-164",
       "depends_on": [
         "seam:GP-085",
         "seam:GP-103",
@@ -835,56 +903,62 @@
         "seam:GP-159"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-116",
       "@type": "seam",
       "title": "GP-116 \u2014 Compression as Architecture Discovery (Karpathy Connection)",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-116_compression_as_architecture_discovery.md",
+      "path": "private-seam-ref:GP-116",
       "depends_on": [
         "seam:GP-080",
         "seam:GP-088"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-190",
       "@type": "seam",
       "title": "GP-190 \u2014 Post-Run Discriminator Daemon and Background-Debt Ladder",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-190_post_run_discriminator_daemon_seam.md",
+      "path": "private-seam-ref:GP-190",
       "depends_on": [
         "seam:GP-035",
         "seam:GP-119",
         "seam:GP-120",
-        "seam:GP-184",
         "seam:GP-188"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-184"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-081",
       "@type": "seam",
       "title": "GP-081 \u2014 ZTARE \u2192 Lean 4 Formal Bridge",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-081_lean_formal_bridge_seam.md",
+      "path": "private-seam-ref:GP-081",
       "depends_on": [
         "seam:GP-088",
         "seam:GP-103"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-115",
       "@type": "seam",
       "title": "GP-115 \u2014 Residual-Driven Grammar Expansion",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-115_residual_driven_grammar_expansion.md",
+      "path": "private-seam-ref:GP-115",
       "depends_on": [
         "seam:GP-088",
         "seam:GP-103",
@@ -893,14 +967,15 @@
         "seam:GP-116"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-216c",
       "@type": "seam",
       "title": "GP-216c \u2014 Apply Two-Cultures Insights to NS Track B Push to Closure",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-216c_ns_trackb_application.md",
+      "path": "private-seam-ref:GP-216c",
       "depends_on": [
         "seam:GP-216"
       ],
@@ -927,28 +1002,36 @@
       "references_gate": [
         "gate:BoundChainConsistencyGate",
         "gate:PotentialFunctionMonotonicityGate",
-        "gate:StagnationSpecialCaseHintGate",
-        "gate:TacitPatternRecurrenceDetector"
-      ]
+        "gate:StagnationSpecialCaseHintGate"
+      ],
+      "gate_reference_status": [
+        {
+          "gate": "gate:TacitPatternRecurrenceDetector",
+          "status": "deferred",
+          "reason": "documented as a proposed or deferred detector, not an implemented gate"
+        }
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-211",
       "@type": "seam",
       "title": "GP-211 \u2014 Lean-Proof Substrate Class",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-211_lean_proof_substrate_class_seam.md",
+      "path": "private-seam-ref:GP-211",
       "depends_on": [
         "seam:GP-135"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-213",
       "@type": "seam",
       "title": "GP-213 \u2014 Operator-Role Mechanization Frontier (Seam)",
       "status": "active",
-      "path": "research_areas/private/seams/engine/GP-213_operator_role_mechanization_seam.md",
+      "path": "private-seam-ref:GP-213",
       "depends_on": [
         "seam:GP-103",
         "seam:GP-104",
@@ -960,14 +1043,15 @@
         "seam:GP-212"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-151",
       "@type": "seam",
       "title": "GP-151 \u2014 Classifier Telemetry Downgrade & Super-Class Routing",
       "status": "closed",
-      "path": "research_areas/private/seams/engine/GP-151_classifier_telemetry_downgrade_seam.md",
+      "path": "private-seam-ref:GP-151",
       "depends_on": [
         "seam:GP-145b",
         "seam:GP-146",
@@ -975,14 +1059,15 @@
         "seam:GP-149"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-215",
       "@type": "seam",
       "title": "GP-215 \u2014 Meta-arc mining and self-recursive pattern application",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-215_meta_arc_mining_seam.md",
+      "path": "private-seam-ref:GP-215",
       "depends_on": [
         "seam:GP-060",
         "seam:GP-148",
@@ -993,14 +1078,15 @@
         "seam:GP-214"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-212",
       "@type": "seam",
       "title": "GP-212 \u2014 Meta-Solver Kernel (Seam)",
       "status": "active",
-      "path": "research_areas/private/seams/engine/GP-212_meta_solver_kernel_seam.md",
+      "path": "private-seam-ref:GP-212",
       "depends_on": [
         "seam:GP-053",
         "seam:GP-086",
@@ -1011,36 +1097,39 @@
         "seam:GP-151"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-111",
       "@type": "seam",
       "title": "GP-111 \u2014 Proactive Closure: Automated Post-Discovery Test Generation",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-111_proactive_closure_seam.md",
+      "path": "private-seam-ref:GP-111",
       "depends_on": [
         "seam:GP-088"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-114",
       "@type": "seam",
       "title": "GP-114 \u2014 Spectral Dynamics of Neural Network Training (Paper 6 Candidate)",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-114_neural_scaling_spectral_dynamics.md",
+      "path": "private-seam-ref:GP-114",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-148",
       "@type": "seam",
       "title": "GP-148 \u2014 Mining the Void (Seam)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-148_void_mining_seam.md",
+      "path": "private-seam-ref:GP-148",
       "depends_on": [
         "seam:GP-053",
         "seam:GP-086",
@@ -1048,53 +1137,57 @@
         "seam:GP-133"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-112",
       "@type": "seam",
       "title": "GP-112 \u2014 Margin of Safety Gate (Post-Discovery Stress Testing)",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-112_margin_of_safety_gate.md",
+      "path": "private-seam-ref:GP-112",
       "depends_on": [
         "seam:GP-088",
         "seam:GP-111",
         "seam:GP-113"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-110",
       "@type": "seam",
       "title": "GP-110 \u2014 Statistical Fingerprint Result Class",
       "status": "active",
-      "path": "research_areas/private/seams/engine/GP-110_statistical_fingerprint_seam.md",
+      "path": "private-seam-ref:GP-110",
       "depends_on": [
         "seam:GP-088"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-113",
       "@type": "seam",
       "title": "GP-113 \u2014 Diagnosis-Informed LLM Feedback Loop",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-113_diagnosis_feedback_loop.md",
+      "path": "private-seam-ref:GP-113",
       "depends_on": [
         "seam:GP-111",
         "seam:GP-112"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-117",
       "@type": "seam",
       "title": "GP-117 \u2014 Why Does the Pipeline Kill But Never Discover?",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-117_why_only_kills.md",
+      "path": "private-seam-ref:GP-117",
       "depends_on": [
         "seam:GP-112",
         "seam:GP-113",
@@ -1102,28 +1195,30 @@
         "seam:GP-116"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-103",
       "@type": "seam",
       "title": "GP-103 \u2014 The Topology Induction Gap (DFDO Sandbox_18)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-103_topology_induction_gap.md",
+      "path": "private-seam-ref:GP-103",
       "depends_on": [
         "seam:GP-048",
         "seam:GP-087",
         "seam:GP-088"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-144",
       "@type": "seam",
       "title": "GP-144 \u2014 New-Science Claim Discipline (Seam)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-144_new_science_claim_discipline_seam.md",
+      "path": "private-seam-ref:GP-144",
       "depends_on": [
         "seam:GP-086",
         "seam:GP-088",
@@ -1135,83 +1230,93 @@
         "seam:GP-146"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-214",
       "@type": "seam",
       "title": "GP-214 \u2014 Pattern-bank kernel injection (I-5 promotion)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/GP-214_pattern_bank_kernel_injection_seam.md",
+      "path": "private-seam-ref:GP-214",
       "depends_on": [
         "seam:GP-149",
         "seam:GP-151"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-055",
       "@type": "seam",
       "title": "GP-055 Meta-judge parse robustness seam",
       "status": "open",
-      "path": "research_areas/private/seams/engine/GP-055_meta_judge_parse_robustness_seam.md",
+      "path": "private-seam-ref:GP-055",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:D4_distribution_form_factor_seam",
       "@type": "seam",
       "title": "D4 Distribution Form-Factor Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/interfaces/D4_distribution_form_factor_seam.md",
+      "path": "private-seam-ref:D4_distribution_form_factor_seam",
       "depends_on": [
-        "seam:GP-0",
         "seam:GP-031",
         "seam:GP-036",
         "seam:GP-070",
         "seam:GP-071"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-0"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:D3_layer3_surfacing_seam",
       "@type": "seam",
       "title": "D3 Layer 3 Surfacing Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/interfaces/D3_layer3_surfacing_seam.md",
+      "path": "private-seam-ref:D3_layer3_surfacing_seam",
       "depends_on": [
-        "seam:GP-012",
-        "seam:GP-014",
-        "seam:GP-017",
         "seam:GP-021",
         "seam:GP-022"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-012",
+        "seam:GP-014",
+        "seam:GP-017"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-099",
       "@type": "seam",
       "title": "GP-099 \u2014 Vocabulary Floor: Expanding the Primitive Library Without Combinatorial Death",
       "status": "open",
-      "path": "research_areas/private/seams/engine/grammar/GP-099_vocabulary_floor_seam.md",
+      "path": "private-seam-ref:GP-099",
       "depends_on": [
         "seam:GP-078",
         "seam:GP-097",
         "seam:GP-098"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-035",
       "@type": "seam",
       "title": "GP-035 Mutator Missing Fit Primitive Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md",
+      "path": "private-seam-ref:GP-035",
       "depends_on": [
         "seam:GP-011",
         "seam:GP-023",
@@ -1219,14 +1324,15 @@
         "seam:GP-034"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-095",
       "@type": "seam",
       "title": "GP-095 \u2014 Post-Fit Residual Ambiguity: Distinguish Convergence Failure, Ill-Conditioning, and Grammar Ceiling",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/grammar/GP-095_post_fit_residual_ambiguity_seam.md",
+      "path": "private-seam-ref:GP-095",
       "depends_on": [
         "seam:GP-035",
         "seam:GP-074",
@@ -1236,14 +1342,15 @@
         "seam:GP-089"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-060",
       "@type": "seam",
       "title": "GP-060 Parallel Champion Synthesis \u2014 Seam",
       "status": "open",
-      "path": "research_areas/private/seams/engine/grammar/GP-060_parallel_champion_synthesis_seam.md",
+      "path": "private-seam-ref:GP-060",
       "depends_on": [
         "seam:GP-034",
         "seam:GP-042",
@@ -1251,27 +1358,29 @@
         "seam:GP-059"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-087",
       "@type": "seam",
       "title": "GP-087 \u2014 Residual-Driven Primitive Generation",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/grammar/GP-087_residual_driven_primitive_generation_seam.md",
+      "path": "private-seam-ref:GP-087",
       "depends_on": [
         "seam:GP-082",
         "seam:GP-085"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-078",
       "@type": "seam",
       "title": "GP-078 \u2014 Component D: Topology Synthesizer via AST Composition",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md",
+      "path": "private-seam-ref:GP-078",
       "depends_on": [
         "seam:GP-021",
         "seam:GP-035",
@@ -1284,14 +1393,15 @@
         "seam:GP-103"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-174",
       "@type": "seam",
       "title": "GP-174 \u2014 Parallel Recombination Pipeline (closes GP-060)",
       "status": "open",
-      "path": "research_areas/private/seams/engine/grammar/GP-174_parallel_recombination_pipeline_seam.md",
+      "path": "private-seam-ref:GP-174",
       "depends_on": [
         "seam:GP-060",
         "seam:GP-157",
@@ -1300,27 +1410,29 @@
         "seam:GP-168"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-056",
       "@type": "seam",
       "title": "GP-056 Axiomatic patching seam",
       "status": "open",
-      "path": "research_areas/private/seams/engine/grammar/GP-056_axiomatic_patching_seam.md",
+      "path": "private-seam-ref:GP-056",
       "depends_on": [
         "seam:GP-057",
         "seam:GP-058"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-097",
       "@type": "seam",
       "title": "GP-097 \u2014 N-D Manifold Compressor: Dimensional Reduction Before Synthesis",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/grammar/GP-097_nd_manifold_compressor_seam.md",
+      "path": "private-seam-ref:GP-097",
       "depends_on": [
         "seam:GP-074",
         "seam:GP-076",
@@ -1328,43 +1440,48 @@
         "seam:GP-090"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-069",
       "@type": "seam",
       "title": "GP-069 \u2014 Champion nesting-audit gate seam (draft)",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/mutator/GP-069_champion_nesting_audit_gate_seam.md",
+      "path": "private-seam-ref:GP-069",
       "depends_on": [
         "seam:GP-061"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-030",
       "@type": "seam",
       "title": "GP-030 Deterministic Charter-Gate Lane Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/mutator/GP-030_deterministic_charter_gate_seam.md",
+      "path": "private-seam-ref:GP-030",
       "depends_on": [
-        "seam:GP-012",
-        "seam:GP-013",
-        "seam:GP-014",
         "seam:GP-023",
         "seam:GP-028",
         "seam:GP-029"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-012",
+        "seam:GP-013",
+        "seam:GP-014"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-034",
       "@type": "seam",
       "title": "GP-034 Loop Control Blind to Latent Distance Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/mutator/GP-034_loop_control_blind_to_latent_distance_seam.md",
+      "path": "private-seam-ref:GP-034",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-028",
@@ -1372,39 +1489,42 @@
         "seam:GP-037"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-100",
       "@type": "seam",
       "title": "GP-100 \u2014 Epistemic Decoupling: Separating Topology Generation from Thesis Writing",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/mutator/GP-100_epistemic_decoupling_seam.md",
+      "path": "private-seam-ref:GP-100",
       "depends_on": [
         "seam:GP-099"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-062",
       "@type": "seam",
       "title": "GP-062 Trajectory-Level Thrash Detection \u2014 Seam",
       "status": "open",
-      "path": "research_areas/private/seams/engine/mutator/GP-062_trajectory_thrash_detection_seam.md",
+      "path": "private-seam-ref:GP-062",
       "depends_on": [
         "seam:GP-034",
         "seam:GP-061"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-042",
       "@type": "seam",
       "title": "GP-042 Mutator Structural Diversity",
       "status": "unknown",
-      "path": "research_areas/private/seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md",
+      "path": "private-seam-ref:GP-042",
       "depends_on": [
         "seam:GP-034",
         "seam:GP-035",
@@ -1412,178 +1532,195 @@
         "seam:GP-041"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-057",
       "@type": "seam",
       "title": "GP-057 Ratio-finiteness gate seam",
       "status": "open",
-      "path": "research_areas/private/seams/engine/mutator/GP-057_ratio_finiteness_gate_seam.md",
+      "path": "private-seam-ref:GP-057",
       "depends_on": [
         "seam:GP-056",
         "seam:GP-058"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-023",
       "@type": "seam",
       "title": "Sandbox_10 (Kepler) \u2014 Nesting-Collapse Audit",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/planck/GP-023_sandbox_10_nesting_collapse_audit.md",
+      "path": "private-seam-ref:GP-023",
       "depends_on": [
         "seam:GP-061"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-084",
       "@type": "seam",
       "title": "GP-084 Crucial Experiment \u2014 Pre-Registration",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/planck/GP-084_crucial_experiment_pre_registration.md",
+      "path": "private-seam-ref:GP-084",
       "depends_on": [
         "seam:GP-080",
         "seam:GP-083"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-061",
       "@type": "seam",
       "title": "GP-061 Phase 2 \u2014 Large-Modulus Cubic Substrate Pre-Registration",
       "status": "closed",
-      "path": "research_areas/private/seams/substrates/corrector/GP-061_sandbox_13_pre_registration.md",
+      "path": "private-seam-ref:GP-061",
       "depends_on": [
         "seam:GP-072"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-080",
       "@type": "seam",
       "title": "GP-080 \u2014 Tacrolimus Pharmacokinetics: Component D Test on a Continuous Clinical Domain",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md",
+      "path": "private-seam-ref:GP-080",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-078",
         "seam:GP-083"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-090",
       "@type": "seam",
       "title": "GP-090 \u2014 Dark Sequence Discovery: A001414 (sopfr) Pre-Registration",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/erdos/GP-090_erdos_dark_sequence_pre_registration.md",
+      "path": "private-seam-ref:GP-090",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-075",
         "seam:GP-086"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-089",
       "@type": "seam",
       "title": "GP-089 \u2014 Dark Sequence Discovery: A000009 (q(n)) Pre-Registration",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/erdos/GP-089_erdos_dark_sequence_pre_registration.md",
+      "path": "private-seam-ref:GP-089",
       "depends_on": [
         "seam:GP-072",
         "seam:GP-075",
         "seam:GP-086"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-077",
       "@type": "seam",
       "title": "GP-077 \u2014 OEIS Sequence Law Recovery: ZTARE as a Machine Scientist for Dark Sequences",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/erdos/GP-077_oeis_sequence_law_recovery_seam.md",
+      "path": "private-seam-ref:GP-077",
       "depends_on": [
         "seam:GP-061",
         "seam:GP-076"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-074",
       "@type": "seam",
       "title": "GP-074 \u2014 Component C: Residual Fingerprinting Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md",
+      "path": "private-seam-ref:GP-074",
       "depends_on": [
         "seam:GP-035",
         "seam:GP-073"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-157",
       "@type": "seam",
       "title": "GP-157 \u2014 Cage Orchestrator (Substrate-Agnostic Gate Dispatch)",
       "status": "active",
-      "path": "research_areas/private/seams/apparatus/cage/GP-157_cage_orchestrator_substrate_agnostic_dispatch.md",
+      "path": "private-seam-ref:GP-157",
       "depends_on": [
         "seam:GP-143",
         "seam:GP-144",
         "seam:GP-152",
         "seam:GP-153",
-        "seam:GP-156",
-        "seam:GP-156s"
+        "seam:GP-156"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-156s"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-086",
       "@type": "seam",
       "title": "GP-086 \u2014 Cage & Kernel Hardening: Automated Promotion of Gaming Patterns",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md",
+      "path": "private-seam-ref:GP-086",
       "depends_on": [
         "seam:GP-077"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-039",
       "@type": "seam",
       "title": "GP-039 Gate Library Formalization Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/cage/GP-039_gate_library_formalization_seam.md",
+      "path": "private-seam-ref:GP-039",
       "depends_on": [
-        "seam:GP-012",
-        "seam:GP-014",
         "seam:GP-023",
         "seam:GP-030",
         "seam:GP-032",
         "seam:GP-037"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-012",
+        "seam:GP-014"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-040",
       "@type": "seam",
       "title": "GP-040 Throughput & Cost Instrumentation Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-040_throughput_instrumentation_seam.md",
+      "path": "private-seam-ref:GP-040",
       "depends_on": [
         "seam:GP-031",
         "seam:GP-032",
@@ -1592,44 +1729,45 @@
         "seam:GP-038"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-088",
       "@type": "seam",
       "title": "GP-081 \u2014 Peircean Pipeline: Abductive Discovery \u2192 Deductive Verification",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-088_ansatz_to_prover_seam.md",
+      "path": "private-seam-ref:GP-088",
       "depends_on": [
         "seam:GP-050",
         "seam:GP-080",
         "seam:GP-081"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-098",
       "@type": "seam",
       "title": "GP-098 \u2014 Evidence Compressor: Preprocessing Warps for Dynamical Systems and Heteroscedastic Noise",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-098_evidence_compressor_seam.md",
+      "path": "private-seam-ref:GP-098",
       "depends_on": [
         "seam:GP-097",
         "seam:GP-099"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-038",
       "@type": "seam",
       "title": "GP-038 Tail Cycle-Time Instrumentation Seam",
       "status": "closed",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-038_tail_cycle_time_instrumentation_seam.md",
+      "path": "private-seam-ref:GP-038",
       "depends_on": [
-        "seam:GP-008",
-        "seam:GP-017",
         "seam:GP-023",
         "seam:GP-030",
         "seam:GP-032",
@@ -1637,54 +1775,62 @@
         "seam:GP-040"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-008",
+        "seam:GP-017"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-183",
       "@type": "seam",
       "title": "GP-183 \u2014 Mechanizing the Research Director's falsification tests",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-183_falsification_mechanization_plan.md",
+      "path": "private-seam-ref:GP-183",
       "depends_on": [
         "seam:GP-180"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-032",
       "@type": "seam",
       "title": "GP-032 Epistemic Throughput & Unit Economics Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-032_epistemic_throughput_unit_economics_seam.md",
+      "path": "private-seam-ref:GP-032",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-030",
         "seam:GP-031"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-101",
       "@type": "seam",
       "title": "GP-101 \u2014 Agent-Native Self-Model Format: What Representation Minimizes Agent Error Rate?",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md",
+      "path": "private-seam-ref:GP-101",
       "depends_on": [
         "seam:GP-035",
         "seam:GP-100",
         "seam:GP-133"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-102",
       "@type": "seam",
       "title": "GP-102 \u2014 Reflexive Primitive Discovery: Mechanizing the Inception Move",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md",
+      "path": "private-seam-ref:GP-102",
       "depends_on": [
         "seam:GP-029",
         "seam:GP-053",
@@ -1694,77 +1840,85 @@
         "seam:GP-101"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-024",
       "@type": "seam",
       "title": "GP-024 Persistent Research Workspace / Librarian Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-024_persistent_research_workspace_seam.md",
+      "path": "private-seam-ref:GP-024",
       "depends_on": [
-        "seam:GP-011",
-        "seam:GP-017"
+        "seam:GP-011"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-017"
+      ],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-033",
       "@type": "seam",
       "title": "GP-033 Multi-Project Synthesis Generalization Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/instrumentation/GP-033_multi_project_synthesis_generalization_seam.md",
+      "path": "private-seam-ref:GP-033",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-036",
       "@type": "seam",
       "title": "GP-036 Findings Runner / Supervisor Convergence Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/supervisor/GP-036_findings_runner_supervisor_convergence_seam.md",
+      "path": "private-seam-ref:GP-036",
       "depends_on": [
         "seam:GP-031",
         "seam:GP-034",
         "seam:GP-035"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-070",
       "@type": "seam",
       "title": "GP-070 Meta-Supervisor Goal Orchestrator Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md",
+      "path": "private-seam-ref:GP-070",
       "depends_on": [
         "seam:GP-031",
         "seam:GP-036"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-031",
       "@type": "seam",
       "title": "GP-031 Findings-Birth Bridge Seam",
       "status": "active",
-      "path": "research_areas/private/seams/apparatus/supervisor/GP-031_findings_birth_bridge_seam.md",
+      "path": "private-seam-ref:GP-031",
       "depends_on": [
         "seam:GP-023",
         "seam:GP-030"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-071",
       "@type": "seam",
       "title": "GP-071 Executive Inbox Seam",
       "status": "unknown",
-      "path": "research_areas/private/seams/apparatus/supervisor/GP-071_executive_inbox_seam.md",
+      "path": "private-seam-ref:GP-071",
       "depends_on": [
         "seam:GP-031",
         "seam:GP-036",
@@ -1772,166 +1926,181 @@
         "seam:GP-070"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_arnold_cat_map",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 Arnold Cat Map Lyapunov",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_arnold_cat_map.md",
+      "path": "private-seam-ref:cold_llm_null_arnold_cat_map",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_lucky_validity_horizon",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 Lucky number validity horizon",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_validity_horizon.md",
+      "path": "private-seam-ref:cold_llm_null_lucky_validity_horizon",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:substrate_classifier_v1",
       "@type": "seam",
       "title": "Substrate Classifier v1 \u2014 pre-launch rubric configuration",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/substrate_classifier_v1.md",
+      "path": "private-seam-ref:substrate_classifier_v1",
       "depends_on": [
         "seam:GP-157"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_saw_pslq_bound",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 SAW PSLQ kappa-bound argument",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_pslq_bound.md",
+      "path": "private-seam-ref:cold_llm_null_saw_pslq_bound",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:alien_math_null_hypothesis_backtest",
       "@type": "seam",
       "title": "Alien-Math Null Hypothesis \u2014 Backtest Design",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/alien_math_null_hypothesis_backtest.md",
+      "path": "private-seam-ref:alien_math_null_hypothesis_backtest",
       "depends_on": [
         "seam:GP-078",
         "seam:GP-103",
         "seam:GP-164"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_ulam_steinerberger_gpt41",
       "@type": "seam",
       "title": "Cold-LLM null \u2014 Ulam/Steinerberger reciprocal-rotation, GPT-4.1",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_ulam_steinerberger_gpt41.md",
+      "path": "private-seam-ref:cold_llm_null_ulam_steinerberger_gpt41",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_kww_polymer",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 KWW polymer relaxation",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_kww_polymer.md",
+      "path": "private-seam-ref:cold_llm_null_kww_polymer",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_lucky_horizon_gpt41",
       "@type": "seam",
       "title": "Cold-LLM null \u2014 Lucky number validity horizon, GPT-4.1",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_lucky_horizon_gpt41.md",
+      "path": "private-seam-ref:cold_llm_null_lucky_horizon_gpt41",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:2026_04_25_v2_1_meta_architecture_session_postmortem",
       "@type": "seam",
       "title": "2026-04-25 v2.1 Meta-Architecture Session Postmortem",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_v2_1_meta_architecture_session_postmortem.md",
+      "path": "private-seam-ref:2026_04_25_v2_1_meta_architecture_session_postmortem",
       "depends_on": [
         "seam:GP-166"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:2026_04_25_novelty_audit_vs_cold_llm",
       "@type": "seam",
       "title": "ZTARE Novelty Audit vs Cold-LLM Null",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_novelty_audit_vs_cold_llm.md",
+      "path": "private-seam-ref:2026_04_25_novelty_audit_vs_cold_llm",
       "depends_on": [
         "seam:GP-088",
         "seam:GP-103",
         "seam:GP-149"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_saw_mu_square",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 SAW \u03bc_square closed-form null",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_saw_mu_square.md",
+      "path": "private-seam-ref:cold_llm_null_saw_mu_square",
       "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-163d",
       "@type": "seam",
       "title": "GP-163d Unified Accel \u2014 Run Postmortem (10-iter all-zero)",
       "status": "closed",
-      "path": "research_areas/private/seams/audits/2026_04_25/GP-163d_unified_accel_run_postmortem.md",
+      "path": "private-seam-ref:GP-163d",
       "depends_on": [
         "seam:GP-156"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:cold_llm_null_gp023_planck_gpt41",
       "@type": "seam",
       "title": "Cold-LLM null test \u2014 GP-023 Planck substrate, GPT-4.1",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/cold_llm_null_gp023_planck_gpt41.md",
+      "path": "private-seam-ref:cold_llm_null_gp023_planck_gpt41",
       "depends_on": [
         "seam:GP-023"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:2026_04_25_deep_audit_findings",
       "@type": "seam",
       "title": "Deep Audit Findings \u2014 2026-04-25 night",
       "status": "unknown",
-      "path": "research_areas/private/seams/audits/2026_04_25/2026_04_25_deep_audit_findings.md",
+      "path": "private-seam-ref:2026_04_25_deep_audit_findings",
       "depends_on": [
         "seam:GP-166",
         "seam:GP-167"
       ],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "source_visibility": "private_path_redacted"
     },
     {
       "@id": "seam:GP-104",
@@ -1971,11 +2140,12 @@
       "title": "GP-022 Forecast Project Typing Spec",
       "status": "unknown",
       "path": "research_areas/specs/active/apparatus/instrumentation/GP-022_forecast_project_typing_spec.md",
-      "depends_on": [
-        "seam:GP-014"
-      ],
+      "depends_on": [],
       "instantiates_op": [],
-      "references_gate": []
+      "references_gate": [],
+      "archival_mentions": [
+        "seam:GP-014"
+      ]
     },
     {
       "@id": "seam:GP-027",
@@ -3603,91 +3773,91 @@
     {
       "@id": "op:core_01",
       "@type": "research_op",
-      "name": "Problem Domain Translation",
+      "name": "Problem Reformulation & Reduction",
       "tier": "shared_core"
     },
     {
       "@id": "op:core_02",
       "@type": "research_op",
-      "name": "Iterative Refinement Loop",
+      "name": "Generalization & Abstraction",
       "tier": "shared_core"
     },
     {
       "@id": "op:core_03",
       "@type": "research_op",
-      "name": "Canonical Decomposition",
+      "name": "Decomposition & Recomposition",
       "tier": "shared_core"
     },
     {
       "@id": "op:core_04",
       "@type": "research_op",
-      "name": "Local-to-Global Inference",
+      "name": "Local-to-Global Assembly",
       "tier": "shared_core"
     },
     {
       "@id": "op:core_05",
       "@type": "research_op",
-      "name": "Extremal Case Analysis",
+      "name": "Canonical Form & Invariance",
       "tier": "shared_core"
     },
     {
       "@id": "op:core_06",
       "@type": "research_op",
-      "name": "External Framework Importation",
-      "tier": "shared_core"
-    },
-    {
-      "@id": "op:core_07",
-      "@type": "research_op",
-      "name": "Framework Generalization",
+      "name": "Cross-Domain Translation",
       "tier": "shared_core"
     },
     {
       "@id": "op:broad_01",
       "@type": "research_op",
-      "name": "Duality Framing",
+      "name": "Iterative Refinement",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_02",
       "@type": "research_op",
-      "name": "Probabilistic Existence Proof",
+      "name": "Recursive Decomposition",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_03",
       "@type": "research_op",
-      "name": "Dimensional Lifting",
+      "name": "Duality & Adversarial Framing",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_04",
       "@type": "research_op",
-      "name": "Bounding via Surrogate",
+      "name": "Layered Approximation & Convergence",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_05",
       "@type": "research_op",
-      "name": "Forcing via Constraint",
+      "name": "Extremal Method",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_06",
       "@type": "research_op",
-      "name": "Property Bootstrapping",
+      "name": "Probabilistic & Stochastic Methods",
       "tier": "broadly_shared"
     },
     {
       "@id": "op:broad_07",
       "@type": "research_op",
-      "name": "Systematic Cataloging",
+      "name": "Dimensional & Structural Lifting",
       "tier": "broadly_shared"
     },
     {
-      "@id": "op:sub_01_graph",
+      "@id": "op:broad_08",
       "@type": "research_op",
-      "name": "Characterization by Exclusion",
+      "name": "Constraint Imposition & Propagation",
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:spec_01",
+      "@type": "research_op",
+      "name": "Characterization by Obstruction",
       "tier": "subfield_specific"
     },
     {

@@ -1,0 +1,1933 @@
+{
+  "@context": "ztare://kg/v2",
+  "@graph": [
+    {
+      "@id": "module:orchestrator_protocols",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_protocols_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_protocols.scalar_model_proto",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "class ScalarModel",
+      "instantiates_op": [],
+      "lines": "25-30",
+      "module": "module:orchestrator_protocols",
+      "name": "scalar_model_proto",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_protocols.feature_model_proto",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "class FeatureModel",
+      "instantiates_op": [],
+      "lines": "33-37",
+      "module": "module:orchestrator_protocols",
+      "name": "feature_model_proto",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_protocols.contract_error",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "class ContractError",
+      "instantiates_op": [],
+      "lines": "43-72",
+      "module": "module:orchestrator_protocols",
+      "name": "contract_error",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_protocols.error_codes",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "CONTRACT_ERROR_CODES",
+      "instantiates_op": [],
+      "lines": "75-84",
+      "module": "module:orchestrator_protocols",
+      "name": "error_codes",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_protocols.signature_match",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "def _signature_matches",
+      "instantiates_op": [],
+      "lines": "90-115",
+      "module": "module:orchestrator_protocols",
+      "name": "signature_match",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_protocols.adapt",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "entry": "def adapt",
+      "instantiates_op": [],
+      "lines": "118-185",
+      "module": "module:orchestrator_protocols",
+      "name": "adapt",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_protocols.adapt",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_protocols",
+      "name": "adapt",
+      "references_gate": [],
+      "sig": "(module, spec) -> Callable"
+    },
+    {
+      "@id": "func:orchestrator_protocols._signature_matches",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_protocols"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_protocols",
+      "name": "_signature_matches",
+      "references_gate": [],
+      "sig": "(observed, abi) -> bool"
+    },
+    {
+      "@id": "module:orchestrator_prompt",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_prompt_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_prompt.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "60-65",
+      "module": "module:orchestrator_prompt",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.override_classes",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "_OVERRIDE_CONTRACT_CLASSES",
+      "instantiates_op": [],
+      "lines": "60-79",
+      "module": "module:orchestrator_prompt",
+      "name": "override_classes",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.scalar_classes",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "_SCALAR_OVERRIDE_CONTRACT_CLASSES",
+      "instantiates_op": [],
+      "lines": "80-80",
+      "module": "module:orchestrator_prompt",
+      "name": "scalar_classes",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.scalar_hint_text",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "_I_MODEL_SCALAR_CONTRACT_HINT",
+      "instantiates_op": [],
+      "lines": "83-142",
+      "module": "module:orchestrator_prompt",
+      "name": "scalar_hint_text",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.contract_hint_text",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "_I_MODEL_OVERRIDE_CONTRACT_HINT",
+      "instantiates_op": [],
+      "lines": "144-192",
+      "module": "module:orchestrator_prompt",
+      "name": "contract_hint_text",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.needs_check",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "def needs_override_contract_hint",
+      "instantiates_op": [],
+      "lines": "210-225",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_check",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.needs_scalar_check",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "def needs_scalar_contract_hint",
+      "instantiates_op": [],
+      "lines": "227-265",
+      "module": "module:orchestrator_prompt",
+      "name": "needs_scalar_check",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.select",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "def select_substrate_contract_hint",
+      "instantiates_op": [],
+      "lines": "267-285",
+      "module": "module:orchestrator_prompt",
+      "name": "select",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_prompt.verify_consistency",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "entry": "def verify_class_consistency_with_substrate",
+      "instantiates_op": [],
+      "lines": "383-470",
+      "module": "module:orchestrator_prompt",
+      "name": "verify_consistency",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_prompt.needs_override_contract_hint",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_prompt",
+      "name": "needs_override_contract_hint",
+      "references_gate": [],
+      "sig": "(rubric_data: Mapping[str, Any]) -> bool"
+    },
+    {
+      "@id": "func:orchestrator_prompt.needs_scalar_contract_hint",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_prompt",
+      "name": "needs_scalar_contract_hint",
+      "references_gate": [],
+      "sig": "(rubric_data, project_dir=None) -> bool"
+    },
+    {
+      "@id": "func:orchestrator_prompt.select_substrate_contract_hint",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_prompt",
+      "name": "select_substrate_contract_hint",
+      "references_gate": [],
+      "sig": "(rubric_data, project_dir=None) -> str"
+    },
+    {
+      "@id": "func:orchestrator_prompt.verify_class_consistency_with_substrate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_prompt"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_prompt",
+      "name": "verify_class_consistency_with_substrate",
+      "references_gate": [],
+      "sig": "(cage_meta_class: str, project_dir: Path) -> Optional[str]"
+    },
+    {
+      "@id": "module:orchestrator_contract_adherence",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_contract_adherence_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "21-30",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.violation_codes",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "VIOLATION_CODES",
+      "instantiates_op": [],
+      "lines": "33-40",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "violation_codes",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.adherence_report",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "43-60",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "adherence_report",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.resolve_active_contract",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "def _resolve_active_contract",
+      "instantiates_op": [],
+      "lines": "65-85",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "resolve_active_contract",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.check_contract_adherence",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "def check_contract_adherence",
+      "instantiates_op": [],
+      "lines": "88-180",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "check_contract_adherence",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.runtime_check",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "def runtime_check_imodel",
+      "instantiates_op": [],
+      "lines": "184-291",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "runtime_check",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.emit_adherence",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "def emit_adherence",
+      "instantiates_op": [],
+      "lines": "294-318",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "emit_adherence",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_adherence.format_summary",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "entry": "def format_adherence_summary",
+      "instantiates_op": [],
+      "lines": "321-333",
+      "module": "module:orchestrator_contract_adherence",
+      "name": "format_summary",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence._resolve_active_contract",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "_resolve_active_contract",
+      "references_gate": [],
+      "sig": "(rubric_data, project_dir) -> str"
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.check_contract_adherence",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "check_contract_adherence",
+      "references_gate": [],
+      "sig": "(test_model_text, rubric_data, project_dir) -> list[str]"
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.runtime_check_imodel",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "runtime_check_imodel",
+      "references_gate": [],
+      "sig": "(test_model_path: Path, *, sample_count: int = 3) -> list[str]"
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.emit_adherence",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "emit_adherence",
+      "references_gate": [],
+      "sig": "(ctx: IterContext, test_model_text: str) -> AdherenceReport"
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.format_adherence_summary",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "format_adherence_summary",
+      "references_gate": [],
+      "sig": "(report: AdherenceReport) -> Optional[str]"
+    },
+    {
+      "@id": "func:orchestrator_contract_adherence.to_jsonl_line",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_adherence"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_adherence",
+      "name": "to_jsonl_line",
+      "references_gate": [],
+      "sig": "(self) -> str"
+    },
+    {
+      "@id": "module:orchestrator_state",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_state_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_state.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "19-22",
+      "module": "module:orchestrator_state",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_state.cage_runtime",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "25-46",
+      "module": "module:orchestrator_state",
+      "name": "cage_runtime",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_state.resolve_cage_mode",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "entry": "def resolve_cage_mode",
+      "instantiates_op": [],
+      "lines": "49-60",
+      "module": "module:orchestrator_state",
+      "name": "resolve_cage_mode",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_state.build_cage_runtime",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "entry": "def build_cage_runtime",
+      "instantiates_op": [],
+      "lines": "63-174",
+      "module": "module:orchestrator_state",
+      "name": "build_cage_runtime",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_state.cage_init_banner",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "entry": "def cage_init_banner",
+      "instantiates_op": [],
+      "lines": "177-194",
+      "module": "module:orchestrator_state",
+      "name": "cage_init_banner",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_state.resolve_cage_mode",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_state",
+      "name": "resolve_cage_mode",
+      "references_gate": [],
+      "sig": "(rubric_data: Mapping[str, Any]) -> str"
+    },
+    {
+      "@id": "func:orchestrator_state.build_cage_runtime",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_state",
+      "name": "build_cage_runtime",
+      "references_gate": [],
+      "sig": "(rubric_data, *, cage_factory, cage_available) -> CageRuntime"
+    },
+    {
+      "@id": "func:orchestrator_state.cage_init_banner",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_state"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_state",
+      "name": "cage_init_banner",
+      "references_gate": [],
+      "sig": "(runtime: CageRuntime) -> Optional[str]"
+    },
+    {
+      "@id": "module:autoresearch_loop",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/autoresearch_loop_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:autoresearch_loop.cli_args",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "parser.add_argument",
+      "instantiates_op": [],
+      "lines": "190-341",
+      "module": "module:autoresearch_loop",
+      "name": "cli_args",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.globals",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "RUNTIME, MUTATOR_MODEL_ID, paths",
+      "instantiates_op": [],
+      "lines": "342-422",
+      "module": "module:autoresearch_loop",
+      "name": "globals",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.artifact_mgmt",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "_pop_seed_queue, _persist_best_candidate",
+      "instantiates_op": [],
+      "lines": "551-700",
+      "module": "module:autoresearch_loop",
+      "name": "artifact_mgmt",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.gate_telemetry",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "_extract_iteration_gate_metrics",
+      "instantiates_op": [],
+      "lines": "704-1920",
+      "module": "module:autoresearch_loop",
+      "name": "gate_telemetry",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.prepare_candidate",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "def _prepare_mutation_candidate",
+      "instantiates_op": [],
+      "lines": "1962-2110",
+      "module": "module:autoresearch_loop",
+      "name": "prepare_candidate",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.llm_call",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "def safe_mutate",
+      "instantiates_op": [],
+      "lines": "2162-2294",
+      "module": "module:autoresearch_loop",
+      "name": "llm_call",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.prompt_assembly",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "def compute_dag_steering_context",
+      "instantiates_op": [],
+      "lines": "2293-4135",
+      "module": "module:autoresearch_loop",
+      "name": "prompt_assembly",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.grammar_helpers",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "def build_model_grammar_failure_code",
+      "instantiates_op": [],
+      "lines": "4099-4156",
+      "module": "module:autoresearch_loop",
+      "name": "grammar_helpers",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.init",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "if __name__ == \"__main__\"",
+      "instantiates_op": [],
+      "lines": "4111-4191",
+      "module": "module:autoresearch_loop",
+      "name": "init",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.rubric_preflight",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "# --- GP-133 Round 4",
+      "instantiates_op": [],
+      "lines": "4186-4461",
+      "module": "module:autoresearch_loop",
+      "name": "rubric_preflight",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.postloop_helpers",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "def _finalize_run_telemetry_once",
+      "instantiates_op": [],
+      "lines": "4894-4976",
+      "module": "module:autoresearch_loop",
+      "name": "postloop_helpers",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.main_loop",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "--- Iteration {i + 1}",
+      "instantiates_op": [],
+      "lines": "5066-8821",
+      "module": "module:autoresearch_loop",
+      "name": "main_loop",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.postloop",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "print(\"\ud83c\udfc1 OPTIMIZATION LOOP COMPLETE\")",
+      "instantiates_op": [],
+      "lines": "8945-8979",
+      "module": "module:autoresearch_loop",
+      "name": "postloop",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.fit_primitive_features_dispatch",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "print(f\"\ud83e\uddee \u2500\u2500\u2500 GP-156 fit_primitive_features dispatch \u2500\u2500\u2500\")",
+      "instantiates_op": [],
+      "lines": "6359-6915",
+      "module": "module:autoresearch_loop",
+      "name": "fit_primitive_features_dispatch",
+      "references_gate": []
+    },
+    {
+      "@id": "region:autoresearch_loop.fit_primitive_features_dispatch",
+      "@type": "code_region",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "entry": "print(f\"\ud83e\uddee \u2500\u2500\u2500 GP-156 fit_primitive_features dispatch \u2500\u2500\u2500\")",
+      "instantiates_op": [],
+      "lines": "6359-6915",
+      "module": "module:autoresearch_loop",
+      "name": "fit_primitive_features_dispatch",
+      "references_gate": []
+    },
+    {
+      "@id": "func:autoresearch_loop._pop_seed_queue",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_pop_seed_queue",
+      "references_gate": [],
+      "sig": "(workspace_dir:Path, injected:bool) \u2192 None"
+    },
+    {
+      "@id": "func:autoresearch_loop._prepare_mutation_candidate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_prepare_mutation_candidate",
+      "references_gate": [],
+      "sig": "(raw_text, current_thesis, current_test_model, falsification_mode) \u2192 (decl, validation, thesis, python, full)"
+    },
+    {
+      "@id": "func:autoresearch_loop.safe_mutate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "safe_mutate",
+      "references_gate": [],
+      "sig": "(prompt, config=None, model_id=MUTATOR_MODEL_ID) \u2192 str"
+    },
+    {
+      "@id": "func:autoresearch_loop.mutate_thesis",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "mutate_thesis",
+      "references_gate": [],
+      "sig": "(current_content, current_test_model, weakest_point, evidence, persona, stagnation_count, ...) \u2192 str"
+    },
+    {
+      "@id": "func:autoresearch_loop._persist_best_candidate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_persist_best_candidate",
+      "references_gate": [],
+      "sig": "(thesis_content, *, score, weakest_point, iteration, run_id, ...) \u2192 str"
+    },
+    {
+      "@id": "func:autoresearch_loop._promote_latest_artifacts_to_champion",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_promote_latest_artifacts_to_champion",
+      "references_gate": [],
+      "sig": "() \u2192 dict"
+    },
+    {
+      "@id": "func:autoresearch_loop._restore_project_state",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_restore_project_state",
+      "references_gate": [],
+      "sig": "(snapshot:dict) \u2192 None"
+    },
+    {
+      "@id": "func:autoresearch_loop._capture_project_state",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_capture_project_state",
+      "references_gate": [],
+      "sig": "(paths:tuple) \u2192 dict"
+    },
+    {
+      "@id": "func:autoresearch_loop._saved_best_comparison_anchor",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_saved_best_comparison_anchor",
+      "references_gate": [],
+      "sig": "(current_eval:dict) \u2192 dict"
+    },
+    {
+      "@id": "func:autoresearch_loop._gp087_propose_tail_correction_seeds",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_gp087_propose_tail_correction_seeds",
+      "references_gate": [],
+      "sig": "(eval_results:dict, workspace_dir:Path, rubric_data:dict, iteration_index:int, stagnation_count:int=0) \u2192 list[dict]|None"
+    },
+    {
+      "@id": "func:autoresearch_loop._finalize_run_telemetry_once",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_finalize_run_telemetry_once",
+      "references_gate": [],
+      "sig": "() \u2192 None"
+    },
+    {
+      "@id": "func:autoresearch_loop._refresh_latest_evidence_gaps_from_eval",
+      "@type": "code_function",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "module": "module:autoresearch_loop",
+      "name": "_refresh_latest_evidence_gaps_from_eval",
+      "references_gate": [],
+      "sig": "(evaluation:dict, artifact_role:str) \u2192 None  # writes LATEST_EVIDENCE_GAPS_PATH; no-op if no gaps"
+    },
+    {
+      "@id": "exit:autoresearch_loop.R1_exception",
+      "@type": "code_exit",
+      "cause": "_prepare_mutation_candidate raises",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 3566,
+      "module": "module:autoresearch_loop",
+      "name": "R1_exception",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.R1_mismatch",
+      "@type": "code_exit",
+      "cause": "mutation_declaration scope/claim check",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 3641,
+      "module": "module:autoresearch_loop",
+      "name": "R1_mismatch",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.R3_rejection",
+      "@type": "code_exit",
+      "cause": "candidate not admissible",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 3941,
+      "module": "module:autoresearch_loop",
+      "name": "R3_rejection",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.subprocess_crash",
+      "@type": "code_exit",
+      "cause": "test_thesis.py crashes",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 4341,
+      "module": "module:autoresearch_loop",
+      "name": "subprocess_crash",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.UNDERIDENTIFIED",
+      "@type": "code_exit",
+      "cause": "pending_loop_action == UNDERIDENTIFIED \u2192 break",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 3356,
+      "module": "module:autoresearch_loop",
+      "name": "UNDERIDENTIFIED",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.budget_exhausted",
+      "@type": "code_exit",
+      "cause": "default `run_exit_reason = \"budget_exhausted\"` set before main_loop; only changed if a structured ex",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 4251,
+      "module": "module:autoresearch_loop",
+      "name": "budget_exhausted",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:autoresearch_loop.GP133_R4_gate",
+      "@type": "code_exit",
+      "cause": "rubric-preflight refuses: py_exec missing auth/budget, or rubric_mode='newton' without Generative Yi",
+      "depends_on": [
+        "module:autoresearch_loop"
+      ],
+      "instantiates_op": [],
+      "line": 4220,
+      "module": "module:autoresearch_loop",
+      "name": "GP133_R4_gate",
+      "references_gate": []
+    },
+    {
+      "@id": "module:orchestrator_telemetry",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_telemetry_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_telemetry.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "17-23",
+      "module": "module:orchestrator_telemetry",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_telemetry.cage_engagement_record",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "26-55",
+      "module": "module:orchestrator_telemetry",
+      "name": "cage_engagement_record",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_telemetry.append_jsonl",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "entry": "def append_jsonl",
+      "instantiates_op": [],
+      "lines": "58-67",
+      "module": "module:orchestrator_telemetry",
+      "name": "append_jsonl",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_telemetry.emit_cage_engagement",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "entry": "def emit_cage_engagement",
+      "instantiates_op": [],
+      "lines": "70-99",
+      "module": "module:orchestrator_telemetry",
+      "name": "emit_cage_engagement",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_telemetry.format_cage_observe_summary",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "entry": "def format_cage_observe_summary",
+      "instantiates_op": [],
+      "lines": "102-114",
+      "module": "module:orchestrator_telemetry",
+      "name": "format_cage_observe_summary",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_telemetry.append_jsonl",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_telemetry",
+      "name": "append_jsonl",
+      "references_gate": [],
+      "sig": "(path: Path, line: str) -> None"
+    },
+    {
+      "@id": "func:orchestrator_telemetry.emit_cage_engagement",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_telemetry",
+      "name": "emit_cage_engagement",
+      "references_gate": [],
+      "sig": "(ctx: IterContext, *, utc: str, engagement_matrix: Any) -> CageEngagementRecord"
+    },
+    {
+      "@id": "func:orchestrator_telemetry.format_cage_observe_summary",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_telemetry",
+      "name": "format_cage_observe_summary",
+      "references_gate": [],
+      "sig": "(record: CageEngagementRecord) -> str"
+    },
+    {
+      "@id": "func:orchestrator_telemetry.to_jsonl_line",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_telemetry"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_telemetry",
+      "name": "to_jsonl_line",
+      "references_gate": [],
+      "sig": "(self) -> str"
+    },
+    {
+      "@id": "module:orchestrator_contract_table",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_contract_table_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_contract_table.substrate_abi_enum",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "class SubstrateABI(Enum)",
+      "instantiates_op": [],
+      "lines": "35-65",
+      "module": "module:orchestrator_contract_table",
+      "name": "substrate_abi_enum",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_table.contract_spec",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "68-110",
+      "module": "module:orchestrator_contract_table",
+      "name": "contract_spec",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_table.scalar_skeleton",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "_SCALAR_1D_SKELETON",
+      "instantiates_op": [],
+      "lines": "130-155",
+      "module": "module:orchestrator_contract_table",
+      "name": "scalar_skeleton",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_table.feature_skeleton",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "_FEATURE_DICT_SKELETON",
+      "instantiates_op": [],
+      "lines": "157-180",
+      "module": "module:orchestrator_contract_table",
+      "name": "feature_skeleton",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_table.contract_registry",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "CONTRACT_REGISTRY",
+      "instantiates_op": [],
+      "lines": "185-240",
+      "module": "module:orchestrator_contract_table",
+      "name": "contract_registry",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_contract_table.public_api",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "entry": "def get_spec",
+      "instantiates_op": [],
+      "lines": "245-265",
+      "module": "module:orchestrator_contract_table",
+      "name": "public_api",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_contract_table.get_spec",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_table",
+      "name": "get_spec",
+      "references_gate": [],
+      "sig": "(abi: SubstrateABI) -> ContractSpec"
+    },
+    {
+      "@id": "func:orchestrator_contract_table.get_spec_by_class",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_table",
+      "name": "get_spec_by_class",
+      "references_gate": [],
+      "sig": "(cage_meta_class: str) -> Optional[ContractSpec]"
+    },
+    {
+      "@id": "func:orchestrator_contract_table.list_substrate_classes",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_contract_table"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_contract_table",
+      "name": "list_substrate_classes",
+      "references_gate": [],
+      "sig": "() -> tuple[str, ...]"
+    },
+    {
+      "@id": "module:information_yield",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/information_yield_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "module:orchestrator_parallel_mutator",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_parallel_mutator_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "39-43",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.default_personas",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "DEFAULT_PARALLEL_PERSONAS",
+      "instantiates_op": [],
+      "lines": "46-55",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "default_personas",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.mutator_task",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "58-67",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "mutator_task",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.mutator_result",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "class MutatorResult",
+      "instantiates_op": [],
+      "lines": "69-83",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "mutator_result",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.run_parallel_mutators",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "def run_parallel_mutators",
+      "instantiates_op": [],
+      "lines": "86-130",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "run_parallel_mutators",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.pick_best_candidate",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "def pick_best_candidate",
+      "instantiates_op": [],
+      "lines": "133-160",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "pick_best_candidate",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_parallel_mutator.build_default_tasks",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "entry": "def build_default_tasks",
+      "instantiates_op": [],
+      "lines": "163-180",
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "build_default_tasks",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.run_parallel_mutators",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "run_parallel_mutators",
+      "references_gate": [],
+      "sig": "(tasks, mutator_fn, *, max_workers=None) -> list[MutatorResult]"
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.pick_best_candidate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "pick_best_candidate",
+      "references_gate": [],
+      "sig": "(results, scoring_fn=None) -> Optional[MutatorResult]"
+    },
+    {
+      "@id": "func:orchestrator_parallel_mutator.build_default_tasks",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_parallel_mutator"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_parallel_mutator",
+      "name": "build_default_tasks",
+      "references_gate": [],
+      "sig": "(k: int = 3) -> list[MutatorTask]"
+    },
+    {
+      "@id": "module:orchestrator_render_evidence_template",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_render_evidence_template_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_evidence_set_d",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "entry": "def render_evidence_set_d",
+      "instantiates_op": [],
+      "lines": "32-42",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_evidence_set_d",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_imodel",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "entry": "def _render_imodel",
+      "instantiates_op": [],
+      "lines": "45-100",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_imodel",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_non_imodel",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "entry": "def _render_non_imodel",
+      "instantiates_op": [],
+      "lines": "102-115",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_non_imodel",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_render_evidence_template.render_active_label",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "entry": "def render_active_contract_label",
+      "instantiates_op": [],
+      "lines": "118-130",
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_active_label",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_render_evidence_template.render_evidence_set_d",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_evidence_set_d",
+      "references_gate": [],
+      "sig": "(spec: ContractSpec) -> str"
+    },
+    {
+      "@id": "func:orchestrator_render_evidence_template.render_active_contract_label",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_render_evidence_template"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_render_evidence_template",
+      "name": "render_active_contract_label",
+      "references_gate": [],
+      "sig": "(spec: ContractSpec) -> str"
+    },
+    {
+      "@id": "module:orchestrator_gate_manifest",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_gate_manifest_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_type_enum",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "class GateType(Enum)",
+      "instantiates_op": [],
+      "lines": "43-106",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_type_enum",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.evaluative_gate_spec",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "class EvaluativeGateSpec",
+      "instantiates_op": [],
+      "lines": "109-135",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluative_gate_spec",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.parameter_schemas",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "PARAMETER_SCHEMAS:",
+      "instantiates_op": [],
+      "lines": "142-184",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "parameter_schemas",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_contract_error",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "class GateContractError",
+      "instantiates_op": [],
+      "lines": "187-207",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_contract_error",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.validate_gate_spec",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def validate_gate_spec",
+      "instantiates_op": [],
+      "lines": "210-263",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "validate_gate_spec",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_context_protocol",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "class GateContext(Protocol)",
+      "instantiates_op": [],
+      "lines": "270-281",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_context_protocol",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.bounds_check_impl",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def _eval_bounds_check",
+      "instantiates_op": [],
+      "lines": "284-306",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "bounds_check_impl",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.holdout_mre_impl",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def _eval_holdout_mre",
+      "instantiates_op": [],
+      "lines": "309-341",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "holdout_mre_impl",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.anti_retrieval_impl",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def _eval_anti_retrieval",
+      "instantiates_op": [],
+      "lines": "344-365",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "anti_retrieval_impl",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.gate_registry",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "GATE_REGISTRY:",
+      "instantiates_op": [],
+      "lines": "375-379",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "gate_registry",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.evaluate_gate_dispatcher",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def evaluate_gate",
+      "instantiates_op": [],
+      "lines": "382-391",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluate_gate_dispatcher",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_gate_manifest.list_helpers",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "entry": "def list_gate_types",
+      "instantiates_op": [],
+      "lines": "394-400",
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_helpers",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.validate_gate_spec",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_gate_manifest",
+      "name": "validate_gate_spec",
+      "references_gate": [],
+      "sig": "(spec_dict: Mapping[str, Any]) -> EvaluativeGateSpec"
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.evaluate_gate",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_gate_manifest",
+      "name": "evaluate_gate",
+      "references_gate": [],
+      "sig": "(ctx: GateContext, spec: EvaluativeGateSpec) -> dict"
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.list_gate_types",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_gate_types",
+      "references_gate": [],
+      "sig": "() -> tuple[str, ...]"
+    },
+    {
+      "@id": "func:orchestrator_gate_manifest.list_registered_gate_types",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_gate_manifest"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_gate_manifest",
+      "name": "list_registered_gate_types",
+      "references_gate": [],
+      "sig": "() -> tuple[str, ...]"
+    },
+    {
+      "@id": "module:orchestrator_iter_context",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_iter_context_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_iter_context.imports",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "entry": "from __future__ import annotations",
+      "instantiates_op": [],
+      "lines": "22-26",
+      "module": "module:orchestrator_iter_context",
+      "name": "imports",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_iter_context.dataclass",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "28-93",
+      "module": "module:orchestrator_iter_context",
+      "name": "dataclass",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_iter_context.helpers",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "entry": "def with_iteration",
+      "instantiates_op": [],
+      "lines": "80-94",
+      "module": "module:orchestrator_iter_context",
+      "name": "helpers",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_iter_context.with_iteration",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_iter_context",
+      "name": "with_iteration",
+      "references_gate": [],
+      "sig": "(iteration_index: int) -> IterContext"
+    },
+    {
+      "@id": "func:orchestrator_iter_context.cage_engagement_log_path",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_iter_context",
+      "name": "cage_engagement_log_path",
+      "references_gate": [],
+      "sig": "(self) -> Path"
+    },
+    {
+      "@id": "func:orchestrator_iter_context.__post_init__",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_iter_context",
+      "name": "__post_init__",
+      "references_gate": [],
+      "sig": "(self) -> None"
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.iteration_index_negative",
+      "@type": "code_exit",
+      "cause": "ValueError when iteration_index < 0",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "line": 91,
+      "module": "module:orchestrator_iter_context",
+      "name": "iteration_index_negative",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.run_id_negative",
+      "@type": "code_exit",
+      "cause": "ValueError when run_id < 0",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "line": 93,
+      "module": "module:orchestrator_iter_context",
+      "name": "run_id_negative",
+      "references_gate": []
+    },
+    {
+      "@id": "exit:orchestrator_iter_context.workspace_dir_not_path",
+      "@type": "code_exit",
+      "cause": "TypeError when workspace_dir is not a pathlib.Path",
+      "depends_on": [
+        "module:orchestrator_iter_context"
+      ],
+      "instantiates_op": [],
+      "line": 95,
+      "module": "module:orchestrator_iter_context",
+      "name": "workspace_dir_not_path",
+      "references_gate": []
+    },
+    {
+      "@id": "module:orchestrator_evidence_contract",
+      "@type": "module",
+      "arch_map_path": "docs/internal/architectural_maps/orchestrator_evidence_contract_architectural_map.md",
+      "depends_on": [],
+      "instantiates_op": [],
+      "references_gate": [],
+      "source_path": null
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_format_enum",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "entry": "class EvidenceFormat(Enum)",
+      "instantiates_op": [],
+      "lines": "25-65",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_format_enum",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_spec",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "entry": "@dataclass(frozen=True)",
+      "instantiates_op": [],
+      "lines": "68-115",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_spec",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.evidence_contract_error",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "entry": "class EvidenceContractError",
+      "instantiates_op": [],
+      "lines": "118-150",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "evidence_contract_error",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.get_evidence_spec",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "entry": "def get_evidence_spec",
+      "instantiates_op": [],
+      "lines": "158-180",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "get_evidence_spec",
+      "references_gate": []
+    },
+    {
+      "@id": "region:orchestrator_evidence_contract.list_evidence_formats",
+      "@type": "code_region",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "entry": "def list_evidence_formats",
+      "instantiates_op": [],
+      "lines": "182-186",
+      "module": "module:orchestrator_evidence_contract",
+      "name": "list_evidence_formats",
+      "references_gate": []
+    },
+    {
+      "@id": "func:orchestrator_evidence_contract.get_evidence_spec",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_evidence_contract",
+      "name": "get_evidence_spec",
+      "references_gate": [],
+      "sig": "(rubric_data: Mapping[str, Any]) -> Optional[EvidenceSpec]"
+    },
+    {
+      "@id": "func:orchestrator_evidence_contract.list_evidence_formats",
+      "@type": "code_function",
+      "depends_on": [
+        "module:orchestrator_evidence_contract"
+      ],
+      "instantiates_op": [],
+      "module": "module:orchestrator_evidence_contract",
+      "name": "list_evidence_formats",
+      "references_gate": [],
+      "sig": "() -> tuple[str, ...]"
+    }
+  ]
+}

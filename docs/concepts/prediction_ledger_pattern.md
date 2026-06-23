@@ -108,6 +108,44 @@ Atom 3 and catch ratification are the high-leverage moves; the other two are MED
 - **Pre-registration discipline (P15/P17).** The prediction ledger IS pre-registration, just with explicit calibration tracking added. Every pre-registered claim should generate a prediction ledger row.
 - **Meta-Darwin strange loop (P18).** Predictions are themselves gameable, under-confident predictions to look "calibrated," padded effort estimates to look "humble." The strange-loop applies: if the predictor consistently shows a calibration bias (e.g., Brier score worse than chance, or agent-effort estimates 10× too high), the pattern catches that and demotes the predictor's authority to make further predictions.
 
+## Forecast contract read model
+
+The durable cross-project ledger remains
+`analytics/public/ledgers/prediction/prediction_ledger.jsonl`. The forecast
+pool already has two producer surfaces:
+`analytics/public/forecast_pool/contracts/*.json` for GP-230 contracts and
+`forecast_pool.py scratch-forecast` for uncertified RD/principal self-bets. A
+scratch forecast may mirror into the prediction ledger with the existing fields
+`prediction_id`, `predicted_at`, `predictor`, `substrate`, `question`,
+`p_success`, `pre_registered_thresholds`, `prediction_artifact_path`,
+`linked_scratch_id`, and `forecast_pool_semantics`.
+
+[`src/ztare/forecasting/prediction_contract.py`](../../src/ztare/forecasting/prediction_contract.py)
+is the shared read model over those existing rows plus project-local
+autoresearch rows. It normalizes `question` to event, `substrate`/`domain` to
+subject, `pre_registered_thresholds` or `resolution_predicate` to resolution
+rule, and preserves provenance as `prediction_ledger`, `forecast_pool`,
+`scratch_contract`, or `autoresearch_workspace`. Scratch rows remain marked by
+their existing semantics: uncertified, excluded from GP-230 calibration, and not
+eligible for membrane close. The shared read model enforces that boundary:
+`certified` and `can_satisfy_membrane` only count for forecast-pool rows in
+`forecast_pool` provenance mode, and membrane eligibility additionally requires
+a resolved row. It also rejects non-causal timing: `predicted_at`/`forecasted_at`
+must name the forecast instant, the seal cannot precede the forecast, and both
+the forecast and seal must strictly precede `resolved_at`. Local autoresearch
+rows and scratch rows may be scored as sealed measurement receipts, but they
+cannot self-promote into close evidence.
+
+[`src/ztare/validator/autoresearch_prediction_contract.py`](../../src/ztare/validator/autoresearch_prediction_contract.py)
+is only an adapter for `ztare autoresearch trace`; it reads
+`workspace/iteration_predictions.jsonl` or `workspace/prediction_contracts.jsonl`
+through the shared model. When `resolved_at` plus `actual_success` or
+`actual_outcome` lands, the read model computes binary Brier and a constant-0.5
+baseline. This is a measurement receipt, not a scheduler: forecast, Elo, or
+Brier scores should not steer DAG focus, mutator routing, or worker allocation
+until repeated resolved rows beat simple baselines and carry a downstream
+decision receipt.
+
 ## Positive externality: forecasts can improve execution
 
 A forecast is not only a number to score later. It can also be a failure-mode

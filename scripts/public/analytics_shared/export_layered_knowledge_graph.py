@@ -13,7 +13,14 @@ from pathlib import Path
 
 
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_GRAPH = REPO / "analytics" / "public" / "queries" / "ztare_knowledge_graph.json"
+DEFAULT_GRAPH = (
+    REPO
+    / "analytics"
+    / "public"
+    / "queries"
+    / "graphs"
+    / "ztare_knowledge_graph.json"
+)
 DEFAULT_OUT_DIR = REPO / "exports" / "layered_graphs"
 
 

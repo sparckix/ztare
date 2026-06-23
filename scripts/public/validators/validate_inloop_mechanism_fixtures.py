@@ -79,6 +79,13 @@ MECHANISM_STATUS: dict[str, dict[str, str]] = {
         "try_command": "make blitz-survival-report PROJECT=<project>",
         "test_reference": "tests/reports/test_blitz_survival_report.py",
     },
+    "control_followup_policy": {
+        "mechanism": "control follow-up cooldown",
+        "status": "active",
+        "proves": "ordinary pivots and blitzes wait for follow-up evidence before firing again",
+        "try_command": "make inloop-fixture-validate JSON=1",
+        "test_reference": "tests/orchestrator/test_control_followup_policy.py",
+    },
     "eigenquestion_negative_evidence_validation": {
         "mechanism": "eigenquestion negative-evidence check",
         "status": "advisory",
@@ -370,6 +377,88 @@ def _fixture_blitz_survival_report() -> FixtureResult:
         "blitz tournament winners join to downstream eval/gate survival metrics",
         summary=summary,
         rows=report.get("rows", []),
+    )
+
+
+def _fixture_control_followup_policy() -> FixtureResult:
+    from src.ztare.orchestrator.control_followup_policy import (
+        evaluate_control_followup,
+        record_control_followup_decision,
+    )
+
+    with tempfile.TemporaryDirectory() as td:
+        workspace = Path(td)
+        loop_events = workspace / "loop_events.jsonl"
+        loop_events.write_text(
+            json.dumps(
+                {
+                    "event_type": "topological_pivot_profile_injected",
+                    "iteration_index": 4,
+                }
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        blocked = evaluate_control_followup(
+            workspace,
+            current_iteration=5,
+            rubric_data={},
+            candidate_control_kind="stagnation_pivot",
+        )
+        allowed = evaluate_control_followup(
+            workspace,
+            current_iteration=8,
+            rubric_data={},
+            candidate_control_kind="stagnation_pivot",
+        )
+        emergency = evaluate_control_followup(
+            workspace,
+            current_iteration=5,
+            rubric_data={},
+            candidate_control_kind="emergency_pivot",
+            emergency=True,
+        )
+        record_control_followup_decision(
+            workspace,
+            blocked,
+            run_id="fixture-run",
+            project="fixture_project",
+            iteration_index=5,
+        )
+        record_control_followup_decision(
+            workspace,
+            allowed,
+            run_id="fixture-run",
+            project="fixture_project",
+            iteration_index=8,
+        )
+        decision_log = workspace / "control_followup_policy.jsonl"
+        decision_log_text = (
+            decision_log.read_text(encoding="utf-8") if decision_log.exists() else ""
+        )
+        blocked_decision_logged = "observe_prior_control_followup" in decision_log_text
+        allowed_decision_logged = "allow_followup_window_observed" in decision_log_text
+
+    passed = (
+        not blocked.allowed
+        and blocked.decision == "observe_prior_control_followup"
+        and blocked.remaining_followup_iterations == 3
+        and allowed.allowed
+        and allowed.decision == "allow_followup_window_observed"
+        and emergency.allowed
+        and emergency.decision == "allow_emergency_or_bounded_override"
+        and blocked_decision_logged
+        and allowed_decision_logged
+    )
+    return (_ok if passed else _fail)(
+        "control_followup_policy",
+        "ordinary controls are cooled down until follow-up evidence can be observed",
+        blocked_decision=blocked.decision,
+        blocked_remaining=blocked.remaining_followup_iterations,
+        allowed_decision=allowed.decision,
+        emergency_decision=emergency.decision,
+        blocked_decision_logged=blocked_decision_logged,
+        allowed_decision_logged=allowed_decision_logged,
     )
 
 
@@ -695,14 +784,46 @@ def _fixture_hill_climb_prompt_boundary() -> FixtureResult:
     writes_charter = any(
         pattern in eigen_text for pattern in forbidden_charter_write_patterns
     )
+    loop_tree = ast.parse(loop_text, filename=str(AUTORESEARCH_LOOP))
+
+    def _call_lineno(names: set[str]) -> int | None:
+        lines = [
+            int(node.lineno)
+            for node in ast.walk(loop_tree)
+            if isinstance(node, ast.Call)
+            and (
+                (isinstance(node.func, ast.Name) and node.func.id in names)
+                or (
+                    isinstance(node.func, ast.Attribute)
+                    and node.func.attr in names
+                )
+            )
+        ]
+        return min(lines) if lines else None
+
+    def _feature_fit_branch_lineno() -> int | None:
+        lines: list[int] = []
+        for node in ast.walk(loop_tree):
+            if not isinstance(node, ast.If):
+                continue
+            for child in ast.walk(node.test):
+                if isinstance(child, ast.Name) and child.id == "fit_primitive_features_enabled":
+                    lines.append(int(node.lineno))
+                    break
+        return min(lines) if lines else None
+
+    briefing_render_lineno = _call_lineno(
+        {"render_default_briefing_context", "default_briefing"}
+    )
+    feature_fit_branch_lineno = _feature_fit_branch_lineno()
     briefing_before_feature_contract = (
-        loop_text.find("default_briefing()") != -1
-        and loop_text.find("if fit_primitive_features_enabled:") != -1
-        and loop_text.find("default_briefing()") < loop_text.find("if fit_primitive_features_enabled:")
+        briefing_render_lineno is not None
+        and feature_fit_branch_lineno is not None
+        and briefing_render_lineno < feature_fit_branch_lineno
     )
     if not briefing_before_feature_contract:
         missing["mutator_briefing_not_nested_under_feature_fit"] = (
-            "default_briefing() must render before the feature-fit-only branch"
+            "default briefing must render before the feature-fit-only branch"
         )
     passed = not missing and not writes_charter
     return (_ok if passed else _fail)(
@@ -711,6 +832,8 @@ def _fixture_hill_climb_prompt_boundary() -> FixtureResult:
         missing=missing,
         eigenquestion_writes_charter=writes_charter,
         mutator_briefing_before_feature_contract=briefing_before_feature_contract,
+        mutator_briefing_render_lineno=briefing_render_lineno,
+        feature_fit_branch_lineno=feature_fit_branch_lineno,
     )
 
 
@@ -815,6 +938,7 @@ FIXTURES = (
     _fixture_parallel_mutator,
     _fixture_recombination_r1,
     _fixture_blitz_survival_report,
+    _fixture_control_followup_policy,
     _fixture_eigenquestion_validation,
     _fixture_eigenquestion_launch_preflight,
     _fixture_tried_failed_digest_provider,

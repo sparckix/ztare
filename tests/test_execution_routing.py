@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from src.ztare.orchestration.execution_routing import infer_execution_route, render_route_contract
+from ztare.orchestration.execution_routing import infer_execution_route, render_route_contract
 
 
 def test_explicit_route_only_blocks_live_work():

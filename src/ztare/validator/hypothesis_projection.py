@@ -19,10 +19,11 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from src.ztare.common.paths import PROJECTS_DIR
+from ztare.common.paths import PROJECTS_DIR
 
 
 HELD_OUT_KEYS = ("heldout", "held_out", "holdout", "admission")
+ACTION_IMPACT_REL = Path("analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl")
 
 
 @dataclass(frozen=True)
@@ -52,6 +53,7 @@ class ProjectionNode:
     gate_failure_count: int
     failed_gate_ids: list[str]
     held_out_evidence_present: bool
+    action_intelligence_refs: list[dict[str, Any]]
 
 
 @dataclass(frozen=True)
@@ -68,6 +70,7 @@ class ProjectionSummary:
     repeated_branch_cue_count: int
     repeated_failure_signature_count: int
     held_out_admission_evidence_count: int
+    action_intelligence_link_count: int
     negative_constraint_count: int
     open_frontier_constraint_count: int
 
@@ -87,6 +90,7 @@ class HypothesisProjection:
     projection_kind: str
     source_note: str
     summary: ProjectionSummary
+    latest_eval_overlay: dict[str, Any]
     nodes: list[ProjectionNode]
     negative_constraints: list[NegativeConstraint]
     open_frontier_constraints: list[NegativeConstraint]
@@ -101,9 +105,15 @@ class HypothesisProjection:
 def build_projection(project_dir: Path) -> HypothesisProjection:
     project_dir = project_dir.resolve()
     project = project_dir.name
-    rows = _read_eval_rows(project_dir)
+    try:
+        rows = _read_eval_rows(project_dir)
+    except FileNotFoundError:
+        if not _latest_eval_path(project_dir):
+            raise
+        rows = []
     telemetry_rows = _read_iteration_telemetry_rows(project_dir / "workspace" / "iteration_telemetry.jsonl")
     branch_cues = _read_branch_cues(project_dir / "workspace" / "dag_steering_log.jsonl")
+    action_rows = _read_action_intelligence_rows(_repo_root_for_project(project_dir))
 
     nodes: list[ProjectionNode] = []
     best_score: float | None = None
@@ -122,6 +132,7 @@ def build_projection(project_dir: Path) -> HypothesisProjection:
         telemetry_row = _match_telemetry_row(row, telemetry_rows)
         gate_failure_count = _gate_failure_count(row, telemetry_row)
         failed_gate_ids = _failed_gate_ids(row, telemetry_row)
+        artifact_refs = _artifact_refs(project_dir, iteration, score, row)
         node = ProjectionNode(
             node_id=node_id,
             parent_id=parent_id,
@@ -143,11 +154,16 @@ def build_projection(project_dir: Path) -> HypothesisProjection:
             worker_dispatch_receipts=_dispatch_receipts(row),
             matched_run_id=_optional_str(row.get("matched_run_id")),
             matched_run_role=_optional_str(row.get("matched_run_role")),
-            artifact_refs=_artifact_refs(project_dir, iteration, score, row),
+            artifact_refs=artifact_refs,
             gate_verdicts=dict(row.get("gate_verdicts") or {}),
             gate_failure_count=gate_failure_count,
             failed_gate_ids=failed_gate_ids,
             held_out_evidence_present=_has_held_out_evidence(row),
+            action_intelligence_refs=_action_intelligence_links(
+                project,
+                artifact_refs,
+                action_rows,
+            ),
         )
         nodes.append(node)
         if admitted:
@@ -160,9 +176,11 @@ def build_projection(project_dir: Path) -> HypothesisProjection:
         projection_kind="ztare_autoresearch_hypothesis_projection_v0",
         source_note=(
             "Read-only projection over existing eval_history/dag_steering or legacy history records; "
+            "latest_eval_results is exposed as an overlay when it is not represented in history; "
             "canonical run state and artifact promotion remain owned by the run loop."
         ),
         summary=summary,
+        latest_eval_overlay=_latest_eval_overlay(project_dir, rows),
         nodes=nodes,
         negative_constraints=_negative_constraints(nodes),
         open_frontier_constraints=_open_frontier_constraints(nodes),
@@ -192,6 +210,123 @@ def _read_json(path: Path) -> dict[str, Any]:
     except (OSError, json.JSONDecodeError):
         return {}
     return parsed if isinstance(parsed, dict) else {}
+
+
+def _relative_to_repo(project_dir: Path, path: Path) -> str:
+    try:
+        return str(path.relative_to(project_dir.parent.parent))
+    except ValueError:
+        return str(path)
+
+
+def _latest_eval_path(project_dir: Path) -> Path | None:
+    for path in (
+        project_dir / "latest_eval_results.json",
+        project_dir / "workspace" / "latest_eval_results.json",
+    ):
+        if path.exists():
+            return path
+    return None
+
+
+def _latest_eval_overlay(project_dir: Path, history_rows: list[dict[str, Any]]) -> dict[str, Any]:
+    path = _latest_eval_path(project_dir)
+    if path is None:
+        return {
+            "available": False,
+            "status": "missing",
+            "path": None,
+            "history_row_count": len(history_rows),
+            "matches_history": None,
+            "warnings": [],
+        }
+    latest = _read_json(path)
+    if not latest:
+        return {
+            "available": True,
+            "status": "unreadable",
+            "path": _relative_to_repo(project_dir, path),
+            "history_row_count": len(history_rows),
+            "matches_history": False,
+            "warnings": ["latest_eval_results is present but not readable as a JSON object"],
+        }
+    match = _latest_eval_matches_history(latest, history_rows)
+    if not history_rows:
+        status = "latest_eval_without_eval_history"
+        warnings = [
+            "latest_eval_results exists but eval_history has no rows; projection nodes are empty"
+        ]
+    elif match:
+        status = "covered_by_eval_history"
+        warnings = []
+    else:
+        status = "latest_eval_not_in_eval_history"
+        warnings = [
+            "latest_eval_results is not represented by eval_history; treat projection nodes as stale"
+        ]
+    return {
+        "available": True,
+        "status": status,
+        "path": _relative_to_repo(project_dir, path),
+        "history_row_count": len(history_rows),
+        "matches_history": bool(match),
+        "iteration": _as_int(latest.get("iteration")),
+        "score": _as_number(latest.get("score")),
+        "timestamp": str(latest.get("timestamp") or latest.get("timestamp_utc") or ""),
+        "weakest_point": str(latest.get("weakest_point") or ""),
+        "gate_failure_count": _gate_failure_count(latest, {}),
+        "failed_gate_ids": _failed_gate_ids(latest, {}),
+        "warnings": warnings,
+    }
+
+
+def _latest_eval_matches_history(
+    latest: dict[str, Any],
+    history_rows: list[dict[str, Any]],
+) -> bool:
+    latest_iteration = _as_int(latest.get("iteration"))
+    latest_score = _as_number(latest.get("score"))
+    latest_weakest = str(latest.get("weakest_point") or "")
+    latest_timestamp = str(latest.get("timestamp") or latest.get("timestamp_utc") or "")
+    for row in history_rows:
+        iteration_matches = (
+            latest_iteration is not None
+            and _as_int(row.get("iteration")) == latest_iteration
+        )
+        score_matches = (
+            latest_score is not None
+            and _as_number(row.get("score")) == latest_score
+        )
+        weakest_matches = (
+            bool(latest_weakest)
+            and str(row.get("weakest_point") or "") == latest_weakest
+        )
+        weakest_prefix_matches = _text_prefix_matches(
+            latest_weakest,
+            str(row.get("weakest_point") or ""),
+        )
+        timestamp_matches = (
+            bool(latest_timestamp)
+            and str(row.get("timestamp") or row.get("timestamp_utc") or "") == latest_timestamp
+        )
+        if iteration_matches and (
+            score_matches
+            or weakest_matches
+            or weakest_prefix_matches
+            or timestamp_matches
+        ):
+            return True
+        if score_matches and (weakest_matches or weakest_prefix_matches):
+            return True
+    return False
+
+
+def _text_prefix_matches(left: str, right: str, *, min_chars: int = 80) -> bool:
+    left_clean = " ".join(str(left or "").split())
+    right_clean = " ".join(str(right or "").split())
+    if len(left_clean) < min_chars or len(right_clean) < min_chars:
+        return False
+    return left_clean.startswith(right_clean) or right_clean.startswith(left_clean)
 
 
 def _read_eval_rows(project_dir: Path) -> list[dict[str, Any]]:
@@ -261,6 +396,62 @@ def _read_iteration_telemetry_rows(path: Path) -> list[dict[str, Any]]:
     except (FileNotFoundError, ValueError):
         return []
     return [row for row in rows if row.get("record_type") == "iteration"]
+
+
+def _repo_root_for_project(project_dir: Path) -> Path:
+    parts = project_dir.resolve().parts
+    for idx, part in enumerate(parts):
+        if part == "projects":
+            if idx == 0:
+                return Path("/")
+            return Path(*parts[:idx])
+    return project_dir.parent.parent
+
+
+def _read_action_intelligence_rows(repo_root: Path) -> list[dict[str, Any]]:
+    path = repo_root / ACTION_IMPACT_REL
+    if not path.exists():
+        return []
+    try:
+        return _read_jsonl(path)
+    except ValueError:
+        return []
+
+
+def _source_refs_from_action_row(row: dict[str, Any]) -> list[str]:
+    refs = (row.get("source_refs") or {}).get("source_refs")
+    if not isinstance(refs, list):
+        return []
+    return [str(ref) for ref in refs if str(ref).strip()]
+
+
+def _action_intelligence_links(
+    project: str,
+    artifact_refs: list[str],
+    action_rows: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    artifact_ref_set = set(artifact_refs)
+    links: list[dict[str, Any]] = []
+    for row in action_rows:
+        decision = row.get("decision_point") or {}
+        context = row.get("context_features") or {}
+        source_refs = _source_refs_from_action_row(row)
+        ref_matches = sorted(artifact_ref_set.intersection(source_refs))
+        project_match = (
+            str(decision.get("project_id") or "") == project
+            or str(context.get("project_family") or "") == project
+        )
+        if not ref_matches and not project_match:
+            continue
+        links.append({
+            "action_impact_id": row.get("action_impact_id"),
+            "decision_id": decision.get("decision_id"),
+            "selected_action": row.get("selected_action"),
+            "workbench_router_decision": context.get("workbench_router_decision"),
+            "match_kind": "artifact_ref" if ref_matches else "project",
+            "matched_refs": ref_matches,
+        })
+    return links[:5]
 
 
 def _match_telemetry_row(row: dict[str, Any], telemetry_rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -490,6 +681,9 @@ def _summarize(project: str, nodes: list[ProjectionNode]) -> ProjectionSummary:
         repeated_failure_signature_count=repeated_failures,
         held_out_admission_evidence_count=sum(
             1 for node in nodes if node.held_out_evidence_present
+        ),
+        action_intelligence_link_count=sum(
+            1 for node in nodes if node.action_intelligence_refs
         ),
         negative_constraint_count=len(_negative_constraints(nodes)),
         open_frontier_constraint_count=len(_open_frontier_constraints(nodes)),

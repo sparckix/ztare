@@ -11,6 +11,7 @@
   "fit_score_mode": "none",
   "discovery_mode": false,
   "falsification_mode": "bounded_discriminator",
+  "require_i_model_in_submission": false,
   "composition_stagnation_threshold": 5,
   "confirmation_threshold_runs": 1,
   "gp103_stagnation_threshold": 3,
@@ -21,32 +22,32 @@
   "dimensions": [
     {
       "name": "Net Verdict Quality",
-      "weight": 25,
+      "weight": 20,
       "description": "Does the thesis deliver a structured net verdict: aggregate direction + distributional structure + which strata were net beneficiaries and which were net harmed? Full points if the verdict names specific income deciles, demographic groups, and geographic neighborhoods. Penalize any verdict that collapses aggregate and distributional outcomes — 'Seattle benefited' or 'Seattle was harmed' without a distributional breakdown earns at most half points."
     },
     {
       "name": "rival_externality_accounting",
-      "weight": 25,
+      "weight": 20,
       "description": "Does the thesis engage both positive AND negative externalities with at least one quantified or bounded estimate on each side? Positive: Moretti multiplier (non-tech job creation), fiscal dividend (JumpStart, property tax, B&O), innovation spillovers, resident optionality. Negative: housing cost inflation, middle-class purchasing power erosion, fiscal concentration risk, community irreversibility. Full points if both sides are engaged and the verdict emerges from their comparison. Penalize if positive externalities are assumed away ('tech is obviously harmful') or if negative externalities are assumed away ('aggregate growth is sufficient'). This is the dimension that catches boosterism and reflexive anti-tech criticism in equal measure."
     },
     {
       "name": "Counterfactual Discipline",
-      "weight": 25,
+      "weight": 20,
       "description": "Does the thesis compare Seattle's trajectory to a credible counterfactual — not an idealized alternative but the plausible no-tech-boom trajectory? At minimum: reference to Seattle's 2010 starting position (Boeing deindustrialization, 40% employment peak) and comparison to one peer city (Portland, Denver, Minneapolis, or similar) that did not experience a comparable tech boom. Full points if the comparison shows which metric (middle-class wages, housing costs, civic fiscal capacity, demographic stability) moved differently in Seattle vs. the peer city and why. Penalize any verdict on tech's net impact that does not engage the counterfactual — a thesis that says 'tech harmed Seattle's middle class' without asking 'was the middle class trajectory better in comparable cities without tech growth?' is not making a causal claim."
     },
     {
       "name": "Dynamic and Second-Order Modeling",
-      "weight": 20,
+      "weight": 15,
       "description": "Does the thesis model at least one dynamic second-order effect rather than static first-order arithmetic? Examples: (a) construction cost inflation under a large capital injection — the $400k/unit figure is not fixed if $6.4B enters a geographically constrained market; (b) fiscal dependency trajectory — what happens to Seattle services if tech employment contracts 20%; (c) hourglass vs. rising-tide dynamics — does service employment follow tech growth at the Moretti rate, and if so, does it produce middle-income or low-income jobs? Full points if a sensitivity analysis or scenario comparison is included. Penalize any thesis that treats a cost figure, a wage figure, or a displacement count as a fixed law of physics when the evidence surface contains information that would allow dynamic modeling."
     },
     {
       "name": "Proxy Triangulation and Civic Externality Ledger",
-      "weight": 15,
+      "weight": 10,
       "description": "Does the thesis (a) use proxy triangulation when direct stratum microdata is unavailable — teacher wage-to-rent ratios, nurse/healthcare retention signals, service-sector employment share trends, affordable-unit coverage gap — rather than halting at 'microdata is absent'? And (b) produce a civic externality balance sheet with at least order-of-magnitude dollar ranges on both the credit side (JumpStart revenue, Moretti-multiplier jobs, property tax base) and the debit side (displacement cost, affordable unit coverage gap, middle-class purchasing power loss)? Full points if the thesis closes the ledger with a net balance verdict expressed as a dollar range with stated uncertainty. Zero points if the thesis treats missing microdata as a reason to produce no quantitative estimate at all — proxies exist and must be used. Penalize any thesis that outputs 'evidence is insufficient' as its final answer without first attempting proxy triangulation."
     },
     {
       "name": "Concrete Policy Proposal",
-      "weight": 20,
+      "weight": 15,
       "description": "Does the thesis conclude with a specific, named, mechanistically-complete policy proposal? Required elements — all three must be present for full points: (a) MECHANISM: the exact instrument (e.g., 'expand JumpStart payroll tax from $231M/yr to $400M/yr targeting displacement bond fund', 'mandatory civic externality contribution of $X per net new tech employee above 500 headcount', 'zoning upzone conditioned on employer-funded affordable unit contribution at $Y/unit'); (b) DOLLAR SCALE: estimated annual or total cost of the intervention, with a stated range; (c) NAMED GAP: which specific documented gap or harm it closes (e.g., 'closes the $Xbn affordable unit coverage gap', 'offsets wage-to-rent deterioration for teachers/nurses by Z%'). Zero points for: research agendas, vague 'levy' or 'reform' language without a mechanism, dollar figures without a mechanism, or mechanisms without a dollar scale. Half points if two of three elements are present. Full points only with all three. This is a hard gate — a thesis that does not name a concrete instrument with a scale earns zero on this dimension regardless of quality elsewhere."
     }
   ],

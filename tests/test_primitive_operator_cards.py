@@ -2,16 +2,18 @@ from pathlib import Path
 import importlib.util
 import json
 
-from src.ztare.research_director.primitive_operator_cards import (
+from ztare.research_director.primitive_operator_cards import (
     CARDS,
     OBLIGATION_CLASSES,
     operator_card_to_kernel_action_schema,
+    operator_card_catalog_entries,
     render_operator_cards,
+    route_operator_cards_semantic,
     route_obligation_classes,
     route_operator_cards,
     write_operator_cards,
 )
-from src.ztare.common.kernel_action_schema import validate_kernel_action_schema
+from ztare.common.kernel_action_schema import validate_kernel_action_schema
 
 
 def test_operator_card_term_lists_have_no_internal_duplicates() -> None:
@@ -48,6 +50,18 @@ def test_routes_analogy_to_cross_frame_transfer_card() -> None:
     assert "analogy" in cards[0].matched_terms
 
 
+def test_analogy_transfer_rejects_one_sided_cues() -> None:
+    for text in ("source only", "target only", "state only", "pricing only"):
+        assert not any(
+            card.card_id == "OP-XFT-01"
+            for card in route_operator_cards(context=text, top_n=4)
+        )
+    assert route_operator_cards(
+        context="cross domain transfer by Hall representation",
+        top_n=1,
+    )[0].card_id == "OP-XFT-01"
+
+
 def test_operator_card_exports_common_kernel_action_schema() -> None:
     card = route_operator_cards(
         context=(
@@ -79,6 +93,53 @@ def test_routes_surplus_lift_projection_certificate_card() -> None:
     assert "surplus" in cards[0].matched_terms
     assert "project" in cards[0].matched_terms
     assert "target-size" in " ".join(cards[0].required_output)
+
+
+def test_surplus_lift_projection_requires_both_sides() -> None:
+    assert not any(
+        card.card_id == "OP-SLP-01"
+        for card in route_operator_cards(context="loss budget only", top_n=4)
+    )
+    assert not any(
+        card.card_id == "OP-SLP-01"
+        for card in route_operator_cards(context="class number only", top_n=4)
+    )
+    assert route_operator_cards(
+        context="ambient lift with entropy surplus and projection",
+        top_n=1,
+    )[0].card_id == "OP-SLP-01"
+
+
+def test_routes_portable_estimate_receipt_card() -> None:
+    cards = route_operator_cards(
+        context=(
+            "Use a pec_a auxiliary object or pec_e failure witness, then reject "
+            "the nearest confuser with typed receipt fields."
+        ),
+        top_n=3,
+    )
+    assert cards
+    by_id = {card.card_id: card for card in cards}
+    assert "OP-PER-01" in by_id
+    assert {"pec_a", "auxiliary object", "pec_e", "failure witness"} <= set(by_id["OP-PER-01"].matched_terms)
+    assert "selected_receipt_family" in by_id["OP-PER-01"].required_schema_fields
+
+
+def test_routes_meta_language_edge_carrier_card() -> None:
+    cards = route_operator_cards(
+        context=(
+            "mm_02 quotient surface to evidence-path graph, then mm_03 promotes "
+            "the live residual into the causal edge selecting the required check"
+        ),
+        top_n=4,
+    )
+    assert cards
+    by_id = {card.card_id: card for card in cards}
+    assert "OP-MME-01" in by_id
+    assert {"mm_02", "mm_03", "evidence-path graph", "causal edge", "live residual"} <= set(
+        by_id["OP-MME-01"].matched_terms
+    )
+    assert "required_check" in by_id["OP-MME-01"].required_schema_fields
 
 
 def test_no_context_returns_no_cards() -> None:
@@ -180,6 +241,107 @@ def test_routes_reflexive_portfolio_measurement_to_instrument_card() -> None:
     assert "artifact volume alone" in cards[0].breaker
     assert obligations
     assert obligations[0].class_id == "bound"
+
+
+def test_routes_graph_diagnostic_to_graph_carrier_card() -> None:
+    context = (
+        "A context graph over the probability DAG and constraint basin used "
+        "PageRank, min-cut, and graph disagreement; lower it into a graph "
+        "receipt before it selects the next artifact."
+    )
+    cards = route_operator_cards(context=context, top_n=1)
+
+    assert cards
+    assert cards[0].card_id == "OP-GDC-01"
+    assert "graph" in cards[0].matched_terms
+    assert "decision_receipt" in " ".join(cards[0].required_schema_fields)
+    assert "standard algorithm" in cards[0].breaker
+
+
+def test_operator_card_catalog_entries_include_graph_card() -> None:
+    entries = operator_card_catalog_entries()
+    by_card = {entry["card_id"]: entry for entry in entries}
+
+    assert "OP-GDC-01" in by_card
+    assert "graph diagnostic" in by_card["OP-GDC-01"]["text"].lower()
+    assert "decision_receipt" in by_card["OP-GDC-01"]["required_schema_fields"]
+    assert "OP-HRD-01" in by_card
+    assert "OP-PDE-01" in by_card
+    assert "kill_condition" in by_card["OP-HRD-01"]["required_schema_fields"]
+    assert "estimate_target" in by_card["OP-PDE-01"]["required_schema_fields"]
+
+
+def test_routes_hard_residual_and_pde_cards() -> None:
+    cards = route_operator_cards(
+        context=(
+            "area ns\n"
+            "goal hard mathematical residual formal frontier PDE Duhamel estimate"
+        ),
+        top_n=6,
+    )
+    by_id = {card.card_id: card for card in cards}
+
+    assert "OP-HRD-01" in by_id
+    assert "OP-PDE-01" in by_id
+    assert "hard mathematical residual" in by_id["OP-HRD-01"].matched_terms
+    assert "area ns" in by_id["OP-PDE-01"].matched_terms
+    assert "verification_command_or_gate" in by_id["OP-HRD-01"].required_schema_fields
+    assert "constructor_map_or_why_not" in by_id["OP-PDE-01"].required_schema_fields
+
+
+def test_semantic_operator_card_router_uses_atlas_hits(tmp_path: Path, monkeypatch) -> None:
+    from ztare.common import embeddings
+
+    atlas = tmp_path / "operator_cards.json"
+    atlas.write_text("{}", encoding="utf-8")
+
+    def fake_query_atlas(_atlas_path: Path, query: str, *, k: int = 8):
+        assert "network shaped obstruction map" in query
+        return [{"card_id": "OP-GDC-01", "score": 0.91}]
+
+    monkeypatch.setattr(embeddings, "query_atlas", fake_query_atlas)
+
+    cards = route_operator_cards_semantic(
+        context="network shaped obstruction map should choose the next artifact",
+        atlas_path=atlas,
+        top_n=1,
+    )
+
+    assert cards
+    assert cards[0].card_id == "OP-GDC-01"
+    assert cards[0].matched_terms == ("semantic:0.9100",)
+
+
+def test_semantic_operator_card_router_backfills_exact_lexical_matches(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    from ztare.common import embeddings
+
+    atlas = tmp_path / "operator_cards.json"
+    atlas.write_text("{}", encoding="utf-8")
+
+    def fake_query_atlas(_atlas_path: Path, query: str, *, k: int = 8):
+        assert "hard mathematical residual" in query
+        return [{"card_id": "OP-GDC-01", "score": 0.77}]
+
+    monkeypatch.setattr(embeddings, "query_atlas", fake_query_atlas)
+
+    cards = route_operator_cards_semantic(
+        context=(
+            "area ns\n"
+            "goal hard mathematical residual formal frontier PDE Duhamel estimate"
+        ),
+        atlas_path=atlas,
+        top_n=1,
+    )
+    by_id = {card.card_id: card for card in cards}
+
+    assert cards[0].card_id == "OP-GDC-01"
+    assert "OP-HRD-01" in by_id
+    assert "OP-PDE-01" in by_id
+    assert by_id["OP-HRD-01"].matched_terms
+    assert by_id["OP-PDE-01"].matched_terms
 
 
 def test_routes_encoding_representatives_to_cross_frame_family() -> None:

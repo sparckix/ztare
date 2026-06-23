@@ -39,9 +39,12 @@ import json
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterable
 
-from src.ztare.common.kernel_action_schema import KernelActionSchema
+from ztare.common.kernel_action_schema import KernelActionSchema
+from ztare.research_director.primitive_operator_cards import (
+    operator_card_route_receipts,
+    render_operator_card_route_summary,
+)
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -67,6 +70,7 @@ class PatternActionContract:
     pattern_chain: list[str]
     anti_patterns: list[str]
     obligation_spine: list[str] = field(default_factory=list)
+    operator_card_routes: list[dict] = field(default_factory=list)
     route_tests: list[str] = field(default_factory=list)
     evidence_carriers: list[EvidenceCarrier] = field(default_factory=list)
     stop_rule: str = ""
@@ -75,165 +79,12 @@ class PatternActionContract:
     kernel_action_schemas: list[dict] = field(default_factory=list)
 
 
-HARD_RESIDUAL_TOKENS = {
-    "research_depth_required",
-    "recursive_research_required",
-    "pde",
-    "lean",
-    "formal",
-    "theorem",
-    "lemma",
-    "estimate",
-}
-
-HARD_RESIDUAL_PHRASES = (
-    "hard_mathematical_residual",
-    "hard mathematical residual",
-    "hard_research_residual",
-    "hard research residual",
-    "proof_frontier",
-    "proof frontier",
-    "formal_frontier",
-    "formal frontier",
-    "research_depth_required",
-    "research depth required",
-    "recursive_research_required",
-    "recursive research required",
-)
-
-PDE_TOKENS = {
-    "pde",
-    "navier",
-    "stokes",
-    "ns",
-    "vorticity",
-    "duhamel",
-    "de giorgi",
-    "carleson",
-    "bkm",
-    "prodi",
-    "serrin",
-    "c7",
-    "cv",
-}
-
-ANALOGY_TOKENS = {
-    "analogy",
-    "isomorphism",
-    "isomorphic",
-    "cross",
-    "transfer",
-    "translation",
-    "state",
-    "pricing",
-    "superhedging",
-    "max",
-    "flow",
-    "min",
-    "cut",
-    "hall",
-    "metalanguage",
-}
-
-SURPLUS_LIFT_TOKENS = {
-    "ambient",
-    "bounded",
-    "class",
-    "denominator",
-    "dimension",
-    "dimensional",
-    "entropy",
-    "fiber",
-    "fibres",
-    "frattini",
-    "frobenius",
-    "golod",
-    "injective",
-    "lattice",
-    "lift",
-    "lifting",
-    "loss",
-    "minkowski",
-    "multiplicity",
-    "norm",
-    "pigeonhole",
-    "packing",
-    "projection",
-    "quotient",
-    "root",
-    "shafarevich",
-    "split",
-    "splitting",
-    "surplus",
-    "tower",
-    "unit",
-    "window",
-}
-
-CLAIM_BOUNDARY_PHRASES = (
-    "claim boundary",
-    "claim_boundary",
-    "claim-boundary",
-    "claim_boundary_split",
-    "overclaim",
-    "broad claim",
-    "narrow claim",
-    "narrower claim",
-    "broader claim",
-    "answer object",
-    "success criterion",
-    "usable answer object",
-    "old question",
-    "new question",
-)
-
-META_LANGUAGE_PHRASES = (
-    "mm_01",
-    "mm_02",
-    "mm_03",
-    "meta-language",
-    "meta language",
-    "evidence-path graph",
-    "evidence path graph",
-    "causal edge",
-    "residual-to-check",
-    "residual to check",
-    "surface quotient",
-    "quotient surface",
-    "live residual",
-    "recurring residual",
-)
-
-PORTABLE_ESTIMATE_RECEIPT_PHRASES = (
-    "auxiliary object",
-    "comparison object",
-    "engineered object",
-    "scope contract",
-    "regime contract",
-    "class scoping",
-    "sharpness witness",
-    "failure witness",
-    "hostile witness",
-    "counterexample",
-    "representation reformulation",
-    "coordinate reformulation",
-    "same formal system",
-    "pec_a",
-    "pec_b",
-    "pec_e",
-    "cand_g",
-)
-
 def _tokens(text: str | None) -> set[str]:
     raw = (text or "").lower().replace("_", " ").replace("-", " ")
     toks = set(raw.split())
     if "de giorgi" in raw:
         toks.add("de giorgi")
     return toks
-
-
-def _has_any(haystack: Iterable[str], needles: set[str]) -> bool:
-    return any(item in needles for item in haystack)
 
 
 def _nearest_confuser_from_tests(route_tests: list[str]) -> str:
@@ -305,92 +156,61 @@ def build_pattern_action_contract(
     scope_tokens = _tokens(scope)
     goal_tokens = _tokens(goal)
     all_tokens = scope_tokens | goal_tokens
-    scope_l = (scope or "").lower()
-    goal_l = (goal or "").lower()
-
-    hard = (
-        any(phrase in scope_l or phrase in goal_l for phrase in HARD_RESIDUAL_PHRASES)
-        or _has_any(all_tokens, HARD_RESIDUAL_TOKENS)
-        or "millennium" in goal_l
-    )
-    pressure_is_pde = "pressure" in all_tokens and (
-        _has_any(all_tokens, PDE_TOKENS)
-        or "navier" in all_tokens
-        or "stokes" in all_tokens
-        or "ns" in scope_tokens
-    )
-    pde = _has_any(all_tokens, PDE_TOKENS) or pressure_is_pde or "ns" in scope_tokens
     formal = bool({"lean", "formal", "theorem", "lemma"} & all_tokens)
-    analogy = (
-        _has_any(all_tokens, ANALOGY_TOKENS)
-        or "state pricing" in goal_l
-        or "max-flow" in goal_l
-        or "min-cut" in goal_l
-        or "cross-domain" in goal_l
-    )
-    surplus_lift = (
-        _has_any(all_tokens, SURPLUS_LIFT_TOKENS)
-        and (
-            bool({"surplus", "entropy", "pigeonhole", "fiber", "fibres"} & all_tokens)
-            or "class number" in goal_l
-            or "many choices" in goal_l
+    context = "\n".join(
+        part
+        for part in (
+            f"area {scope}" if scope else "",
+            f"goal {goal}" if goal else "",
         )
-        and (
-            bool({"lift", "lifting", "ambient", "projection", "quotient", "lattice", "tower"} & all_tokens)
-            or "higher-dimensional" in goal_l
-            or "high-dimensional" in goal_l
-        )
-    )
-    claim_boundary = any(
-        phrase in scope_l or phrase in goal_l for phrase in CLAIM_BOUNDARY_PHRASES
-    )
-    meta_language = any(
-        phrase in scope_l or phrase in goal_l for phrase in META_LANGUAGE_PHRASES
-    )
-    portable_estimate_receipt = any(
-        phrase in scope_l or phrase in goal_l
-        for phrase in PORTABLE_ESTIMATE_RECEIPT_PHRASES
+        if part
     )
     try:
-        from src.ztare.research_director.primitive_operator_cards import (
+        from ztare.research_director.primitive_operator_cards import (
             route_operator_cards,
+            route_operator_cards_semantic,
             route_obligation_classes,
         )
-        context = " ".join(part for part in (scope or "", goal or "") if part)
         obligation_spine = [
             item.class_id for item in route_obligation_classes(
                 context=context,
                 top_n=2,
             )
         ]
-        routed_operator_cards = route_operator_cards(context=context, top_n=8)
+        routed_operator_cards = route_operator_cards_semantic(context=context, top_n=12)
+        exact_operator_cards = route_operator_cards(context=context, top_n=12)
     except Exception:  # noqa: BLE001
         obligation_spine = []
         routed_operator_cards = []
-    primary_card_id = routed_operator_cards[0].card_id if routed_operator_cards else ""
-    matched_by_card = {
-        card.card_id: {term.lower() for term in card.matched_terms}
-        for card in routed_operator_cards
+        exact_operator_cards = []
+    operator_card_routes = operator_card_route_receipts(routed_operator_cards)
+    exact_card_ids = {card.card_id for card in exact_operator_cards}
+    strong_semantic_card_ids = {
+        str(route.get("card_id") or "")
+        for route in operator_card_routes
+        if str(route.get("route_mode") or "") == "semantic_atlas"
+        and float(route.get("score") or 0.0) >= 75.0
     }
-    reflexive_mining = (
-        primary_card_id == "OP-RMI-01"
-        or bool(
-            matched_by_card.get("OP-RMI-01", set())
-            & {"reflexive mining", "reflexive mine", "primitive roi", "capability roi", "operations intelligence"}
-        )
+    active_card_ids = exact_card_ids | strong_semantic_card_ids
+    hard = "OP-HRD-01" in active_card_ids
+    pde = "OP-PDE-01" in active_card_ids
+    claim_boundary = "OP-CBM-01" in active_card_ids
+    surplus_lift = "OP-SLP-01" in active_card_ids
+    analogy = "OP-XFT-01" in active_card_ids
+    portable_estimate_receipt = "OP-PER-01" in active_card_ids
+    meta_language = "OP-MME-01" in active_card_ids
+    primary_card_id = (
+        exact_operator_cards[0].card_id
+        if exact_operator_cards
+        else (routed_operator_cards[0].card_id if routed_operator_cards else "")
     )
-    autoresearch_workbench = (
-        primary_card_id == "OP-AWR-01"
-        or (
-            primary_card_id != "OP-RMI-01"
-            and bool(
-                matched_by_card.get("OP-AWR-01", set())
-                & {"autoresearch", "auto research", "workbench", "agentic workbench"}
-            )
-        )
-    )
+    reflexive_mining = "OP-RMI-01" in active_card_ids
+    autoresearch_workbench = "OP-AWR-01" in active_card_ids
+    graph_diagnostic = "OP-GDC-01" in active_card_ids
     if primary_card_id == "OP-AWR-01":
         reflexive_mining = False
+    if primary_card_id == "OP-RMI-01":
+        autoresearch_workbench = False
 
     surfaces: list[str] = []
     chain: list[str] = []
@@ -409,11 +229,13 @@ def build_pattern_action_contract(
         "If a receipt fails, what exact repair or stop rule follows before more research is allowed?",
         "What downstream consumer check would prove the handoff was executable rather than decorative?",
         "If an anti-pattern is raised, what clean-proceed condition prevents block-everything skepticism?",
+        "Which operator-card routes came from semantic_atlas vs lexical_fallback, and what matched terms or scores justify the selected route?",
     ]
 
     if hard:
         surfaces.append("hard_mathematical_residual")
         chain.extend([
+            "OP-HRD-01:hard_residual_research_contract",
             "PATTERN-025:gowers_first_formalize_second",
             "META-PATTERN-022:gowers_first_with_content_layer_composition",
             "PATTERN-011:swarm_dispatch",
@@ -541,8 +363,16 @@ def build_pattern_action_contract(
 
     if pde:
         surfaces.append("pde_estimate_or_carrier_residual")
+        if "OP-PDE-01:pde_estimate_or_carrier_contract" not in chain:
+            insert_at = 1 if chain and chain[0] == "OP-HRD-01:hard_residual_research_contract" else 0
+            chain.insert(insert_at, "OP-PDE-01:pde_estimate_or_carrier_contract")
         if "GP-219:pde_estimate_craft_ops" not in chain:
-            chain.insert(1 if chain else 0, "GP-219:pde_estimate_craft_ops")
+            insert_at = (
+                chain.index("OP-PDE-01:pde_estimate_or_carrier_contract") + 1
+                if "OP-PDE-01:pde_estimate_or_carrier_contract" in chain
+                else (1 if chain else 0)
+            )
+            chain.insert(insert_at, "GP-219:pde_estimate_craft_ops")
         anti.append("ANTI-PATTERN-013:lean_closure_laundering")
         carriers.append(
             EvidenceCarrier(
@@ -727,6 +557,8 @@ def build_pattern_action_contract(
 
     if meta_language:
         surfaces.append("meta_language_edge_carrier")
+        if "OP-MME-01:meta_language_edge_carrier" not in chain:
+            chain.append("OP-MME-01:meta_language_edge_carrier")
         for item in (
             "mm_02:surface_quotient_to_evidence_path_graph",
             "mm_03:promote_live_residual_edge",
@@ -771,8 +603,8 @@ def build_pattern_action_contract(
 
     if portable_estimate_receipt:
         surfaces.append("portable_estimate_receipt_schema")
-        if "GP-219:portable_receipt_candidate" not in chain:
-            chain.append("GP-219:portable_receipt_candidate")
+        if "OP-PER-01:portable_estimate_receipt_schema" not in chain:
+            chain.append("OP-PER-01:portable_estimate_receipt_schema")
         anti.extend([
             "ANTI-PATTERN-003:vocabulary_smuggling",
             "ANTI-PATTERN-012:vocabulary_chain_laundering",
@@ -807,6 +639,50 @@ def build_pattern_action_contract(
                     "confuser_rejection_reason",
                     "artifact_change",
                     "decision_consequence",
+                ],
+            )
+        )
+
+    if graph_diagnostic:
+        surfaces.append("graph_diagnostic_carrier")
+        if "OP-GDC-01:graph_diagnostic_carrier" not in chain:
+            chain.append("OP-GDC-01:graph_diagnostic_carrier")
+        anti.extend([
+            "ANTI-PATTERN-005:narrative_inflation",
+            "ANTI-PATTERN-012:vocabulary_chain_laundering",
+        ])
+        route_tests.append(
+            "Which graph algorithm is standard-library backed, and which layer is ZTARE-specific extraction, conditioning, disagreement, perturbation, or receipt?"
+        )
+        route_tests.append(
+            "What downstream gate, pattern-action carrier, next artifact slot, or explicit non-use receipt did the graph select?"
+        )
+        carriers.append(
+            EvidenceCarrier(
+                name="graph_diagnostic_carrier",
+                required=True,
+                artifact_slot="graph_carrier_artifact",
+                acceptance_check=(
+                    "artifact validates against the graph-carrier schema, names "
+                    "the standard library or method family for each diagnostic, "
+                    "states the substrate-specific extraction/filtering layer, "
+                    "and records a decision receipt: strategy_change, "
+                    "no_strategy_change, or misleading_or_noise. A metric "
+                    "without a selected action card, gate, artifact slot, or "
+                    "non-use/retraction reason does not satisfy the carrier"
+                ),
+                required_fields=[
+                    "graph_id",
+                    "graph_kind",
+                    "producer",
+                    "source_artifacts",
+                    "consumer",
+                    "freshness_rule",
+                    "diagnostics",
+                    "noise_filter",
+                    "decision_receipt",
+                    "selected_action_card_or_gate",
+                    "non_use_or_retraction",
                 ],
             )
         )
@@ -881,7 +757,7 @@ def build_pattern_action_contract(
 
     if (
         hard or pde or analogy or surplus_lift or claim_boundary
-        or meta_language or portable_estimate_receipt or formal
+        or meta_language or portable_estimate_receipt or graph_diagnostic or formal
         or autoresearch_workbench or reflexive_mining
     ):
         carriers.insert(
@@ -902,6 +778,7 @@ def build_pattern_action_contract(
                     "selected_operator",
                     "nearest_confuser",
                     "action_constraint_fields",
+                    "operator_card_route_provenance",
                     "action_target_source",
                     "source_contract_alignment_check",
                     "required_receipts",
@@ -1005,6 +882,7 @@ def build_pattern_action_contract(
         goal_excerpt=(goal or "")[:500],
         problem_surfaces=problem_surfaces,
         obligation_spine=obligation_spine,
+        operator_card_routes=operator_card_routes,
         pattern_chain=pattern_chain,
         anti_patterns=anti_patterns,
         route_tests=route_tests,
@@ -1108,6 +986,8 @@ def render_contract_receipt(contract: PatternActionContract, out_path: Path) -> 
             f"wrote pattern action contract: {out_path}",
             f"problem_surfaces={','.join(contract.problem_surfaces) or 'none'}",
             f"pattern_chain={','.join(contract.pattern_chain[:5]) or 'none'}",
+            "operator_card_routes="
+            f"{render_operator_card_route_summary(contract.operator_card_routes)}",
             f"required_carriers={','.join(required_slots[:8]) or 'none'}",
             f"route_tests={len(contract.route_tests)}",
         ]

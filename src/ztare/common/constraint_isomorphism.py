@@ -254,7 +254,7 @@ def _dispatch_text(prompt: str, *, provider: str = "gemini", model: "str | None"
         from pathlib import Path as _P
         repo = _P(__file__).resolve().parents[3]
         try:
-            from src.ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
+            from ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
         except Exception:
             try:
                 from ztare.common.subscription_agent_runtime import run_subscription_agent_with_recovery
@@ -271,14 +271,22 @@ def _dispatch_text(prompt: str, *, provider: str = "gemini", model: "str | None"
     # API providers (gemini/deepseek allowed). Fallback stays within the same family → never a
     # metered OpenAI/Anthropic call.
     try:
-        from src.ztare.common.llm_runtime import LLMRuntime
+        from ztare.common.llm_runtime import LLMRuntime
     except Exception:
         try:
             from ztare.common.llm_runtime import LLMRuntime
         except Exception:
             return ""
-    mid = model or ("deepseek-chat" if provider == "deepseek" else "gemini-3.1-pro-preview")
-    fb = () if provider == "deepseek" else ("gemini-3.1-flash-lite-preview",)
+    # Resolve through the central registry (MODEL_MAP, policy-overridable via principal.yaml `model_map`) so a
+    # stale version id is retargeted in ONE place, not hardcoded here.
+    def _rid(alias: str, default: str) -> str:
+        try:
+            from ztare.common.llm_runtime import resolve_model_id
+            return resolve_model_id(alias)
+        except Exception:  # noqa: BLE001
+            return default
+    mid = model or (_rid("deepseek", "deepseek-chat") if provider == "deepseek" else _rid("gemini", "gemini-3.1-pro-preview"))
+    fb = () if provider == "deepseek" else (_rid("gemini-lite", "gemini-3.1-flash-lite-preview"),)
     try:
         resp = LLMRuntime().call_text(prompt, model_id=mid, fallback_model_ids=fb,
                                       max_tokens=2000, request_label="constraint_isomorphism_query",

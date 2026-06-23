@@ -1,0 +1,69 @@
+{
+  "@context": "ztare://kg/v2",
+  "@graph": [
+    {
+      "@id": "gate_fn:run_global_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/global_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_bound_chain_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/bound_chain_consistency_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_falsifiability_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/falsifiability_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_buckingham_pi_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/buckingham_pi_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_circularity_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/circularity_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_stagnation_hint_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/stagnation_special_case_hint_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_potential_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/potential_function_monotonicity_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate_fn:run_lean_proof_gate",
+      "@type": "gate_function",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/lean_proof_gate.py",
+      "references_gate": []
+    }
+  ]
+}

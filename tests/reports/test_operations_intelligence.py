@@ -5,8 +5,8 @@ import os
 import time
 from pathlib import Path
 
-from src.ztare.reports import operations_intelligence as ops
-from src.ztare.reports.operations_intelligence import build, parse_markdown_table
+from ztare.reports import operations_intelligence as ops
+from ztare.reports.operations_intelligence import build, parse_markdown_table
 
 
 def write(path: Path, text: str) -> None:
@@ -117,6 +117,18 @@ def test_build_extracts_focus_track_intelligence_and_source_health(tmp_path: Pat
     assert payload["source_health_summary"]["blocking_count"] == 1
     assert payload["source_health_summary"]["warning_count"] == 0
     assert payload["source_health_summary"]["issue_type_counts"]["missing_decision_use"] == 1
+    assert payload["source_health_summary"]["issue_sample"] == [
+        {
+            "severity": "blocking",
+            "scope": None,
+            "issue_type": "missing_decision_use",
+            "blocking_rule": "repair decision-use emitter",
+            "recommended_action": None,
+            "evidence_refs": [
+                "analytics/public/forecast_pool/decision_use/decision_use_ledger.jsonl"
+            ],
+        }
+    ]
     assert payload["headline"]["forecast_decision_use_rate"] == 0.0
     track = next(row for row in payload["focus_tracks"]["rows"] if row["track_id"] == "ns_millennium_hunt")
     assert track["linkage_quality"] == "strong"
@@ -125,7 +137,19 @@ def test_build_extracts_focus_track_intelligence_and_source_health(tmp_path: Pat
     assert track["signals"]["experiment_refs"] == 1
     assert payload["attention"][0]["kind"] == "source_health"
     assert payload["learning_candidates"][0]["observer_only"] is True
+    assert payload["learning_candidates"][0]["promotion_decision"] == "close_as_source_repair_not_primitive"
+    decision_contract = payload["learning_candidates"][0]["promotion_contract"]
+    assert decision_contract["typed_carrier"] == "forecast_decision_use_source_repair"
+    assert decision_contract["validation"]["ok"] is True
+    assert "PREDICTION-LOGGING-DISCRIMINATOR" in decision_contract["nearest_existing_surface"]
+    assert "new primitive" in decision_contract["non_claim"]
     assert payload["forecast_market"]["decision_use_gap"] == 1
+    forecast_gap_candidate = next(
+        row for row in payload["learning_candidates"]
+        if row["source_kind"] == "forecast_market"
+        and row["object_ref"] == "decision_use_gap"
+    )
+    assert forecast_gap_candidate["promotion_decision"] == "close_as_source_repair_not_primitive"
     assert payload["activity_yield"]["verdict"] == "activity_outpacing_yield"
     assert payload["source_map"]["gap_count"] >= 1
     assert payload["source_improvement_backlog"]
@@ -133,6 +157,12 @@ def test_build_extracts_focus_track_intelligence_and_source_health(tmp_path: Pat
     assert payload["etl_manifest"]["validate"]["issue_count"] >= 1
     assert payload["source_readiness"]["schema"] == "ztare-source-readiness-v1"
     assert payload["source_readiness"]["summary"]["blocked"] >= 1
+    forecast_readiness = next(
+        row for row in payload["source_readiness"]["rows"]
+        if row["source_id"] == "gp230_forecast_pool"
+    )
+    assert forecast_readiness["valid_promotion_contract_count"] >= 1
+    assert decision_contract["candidate_id"] in forecast_readiness["promotion_contract_ids"]
     assert payload["executive_brief"]["schema"] == "ztare-intelligence-executive-brief-v1"
     assert payload["executive_brief"]["operating_status"] == "blocked_for_allocation"
     assert "forecast-market allocation claims" in " ".join(payload["executive_brief"]["do_not_use_for"])
@@ -140,6 +170,51 @@ def test_build_extracts_focus_track_intelligence_and_source_health(tmp_path: Pat
     assert areas["schema"] == "ztare-research-ops-metric-areas-v1"
     assert {area["area_id"] for area in areas["areas"]} >= {"information_yield", "decision_use", "recursive_learning"}
     assert "implemented_source_blocked" in areas["status_counts"]
+
+
+def test_source_readiness_blocks_missing_local_source_refs(tmp_path: Path) -> None:
+    repo = tmp_path
+    write(repo / "present.json", "{}\n")
+    payload = {
+        "source_map": {
+            "rows": [
+                {
+                    "source_id": "present_source",
+                    "source_refs": ["present.json"],
+                    "feeds": ["demo"],
+                    "source_gaps": [],
+                },
+                {
+                    "source_id": "missing_source",
+                    "source_refs": ["missing.json"],
+                    "feeds": ["demo"],
+                    "source_gaps": [],
+                },
+                {
+                    "source_id": "external_source",
+                    "source_refs": ["https://example.test/artifact.json"],
+                    "feeds": ["demo"],
+                    "source_gaps": [],
+                },
+            ]
+        },
+        "source_improvement_backlog": [],
+        "etl_manifest": {"validate": {"issues": []}},
+        "learning_promotion_contracts": [],
+    }
+
+    readiness = ops.build_source_readiness(payload, repo=repo)
+
+    rows = {row["source_id"]: row for row in readiness["rows"]}
+    assert rows["present_source"]["readiness"] == "ready"
+    assert rows["present_source"]["present_source_refs"] == ["present.json"]
+    assert rows["missing_source"]["readiness"] == "blocked"
+    assert rows["missing_source"]["use_now"] == "do_not_use_for_allocation"
+    assert rows["missing_source"]["missing_source_refs"] == ["missing.json"]
+    assert rows["missing_source"]["missing_source_ref_count"] == 1
+    assert rows["external_source"]["readiness"] == "ready"
+    assert rows["external_source"]["external_source_refs"] == ["https://example.test/artifact.json"]
+    assert readiness["summary"]["missing_source_ref_count"] == 1
 
 
 def test_build_tracks_agentic_workbench_action_rows(tmp_path: Path) -> None:
@@ -180,6 +255,7 @@ def test_build_tracks_agentic_workbench_action_rows(tmp_path: Path) -> None:
                         "stable_evaluator": False,
                         "rubric_ready": True,
                         "artifact_surface": False,
+                        "operator_card_ids": ["OP-AWR-01"],
                         "worker": {
                             "worker_archetype": "persistent_agent",
                             "transport": "subscription_cli",
@@ -218,6 +294,12 @@ def test_build_tracks_agentic_workbench_action_rows(tmp_path: Path) -> None:
                         "stable_evaluator": True,
                         "rubric_ready": True,
                         "artifact_surface": True,
+                        "operator_card_routes": [
+                            {
+                                "card_id": "OP-AWR-01",
+                                "route_mode": "lexical_fallback",
+                            }
+                        ],
                         "worker": {"transport": "subscription_cli"},
                     },
                     "outcome": {"known": False},
@@ -255,6 +337,8 @@ def test_build_tracks_agentic_workbench_action_rows(tmp_path: Path) -> None:
     assert summary["decision_counts"]["prepare_autoresearch_surface"] == 1
     assert summary["decision_counts"]["invoke_autoresearch"] == 1
     assert summary["selected_action_counts"]["run_out_of_loop_agent"] == 2
+    assert summary["operator_card_counts"]["OP-AWR-01"] == 2
+    assert summary["recent_rows"][0]["operator_card_ids"] == ["OP-AWR-01"]
     assert summary["ready_workbench_bypasses"] == 1
     assert summary["ready_workbench_bypasses_without_reason"] == 0
     assert summary["missing_surface_preparations"] == 1
@@ -296,15 +380,47 @@ def test_build_tracks_agentic_workbench_action_rows(tmp_path: Path) -> None:
         row for row in payload["learning_candidates"]
         if row["object_ref"] == "missing_surface_preparations"
     )
+    assert missing_candidate["promotion_decision"] == "promote_to_typed_carrier_candidate"
+    contract = missing_candidate["promotion_contract"]
+    assert contract["typed_carrier"] == "agentic_workbench_route_accounting"
+    assert contract["validation"]["ok"] is True
+    assert "OP-AWR-01" in contract["nearest_existing_surface"]
+    assert "model lift" in contract["non_claim"]
+    assert "action_impact_ref" in contract["carrier_required_fields"]
+    assert "workbench_evidence_ref" in contract["carrier_required_fields"]
+    assert "worker_metadata" in contract["carrier_required_fields"]
+    assert contract["kernel_action_schema"]["action_name"] == "agentic_workbench_route_accounting"
+    assert payload["learning_promotion_contracts"]
+    assert any(
+        row["promotion_decision"] == "promote_to_typed_carrier_candidate"
+        and row["typed_carrier"] == "agentic_workbench_route_accounting"
+        and row["validation"]["ok"] is True
+        for row in payload["learning_promotion_contracts"]
+    )
+    readiness = next(
+        row for row in payload["source_readiness"]["rows"]
+        if row["source_id"] == "action_intelligence"
+    )
+    assert readiness["valid_promotion_contract_count"] >= 1
+    assert missing_candidate["candidate_id"] in readiness["promotion_contract_ids"]
     assert missing_candidate["proposed_payload"]["missing_surface_preparations"] == 1
     assert missing_candidate["proposed_payload"]["missing_surface_examples"][0]["decision_id"] == "agentic_fixture"
     out = repo / "ops.md"
     ops.write_markdown(payload, out)
     rendered = out.read_text(encoding="utf-8")
     assert "route rows needed: `3`" in rendered
+    assert "operator-card counts: `{'OP-AWR-01': 2}`" in rendered
     assert "route logging command: `ztare autoresearch route --task" in rendered
     assert "ready workbench bypasses without reason: 0" in rendered
     assert "missing surface example: `decision_id=agentic_fixture`" in rendered
+    assert "## Learning Promotion Contracts" in rendered
+    assert "`agentic_workbench_route_accounting`" in rendered
+    assert "non-claim: Does not claim autoresearch output quality" in rendered
+    html_out = repo / "ops.html"
+    ops.write_html(payload, html_out)
+    html_rendered = html_out.read_text(encoding="utf-8")
+    assert '"operator_card_counts": {"OP-AWR-01": 2}' in html_rendered
+    assert "cards=${JSON.stringify(aw.operator_card_counts || {})}" in html_rendered
 
 
 def test_ready_workbench_non_invoke_actions_count_as_bypasses(tmp_path: Path) -> None:
@@ -441,6 +557,9 @@ def test_build_flags_ready_workbench_bypass_without_reason(tmp_path: Path) -> No
         if row["object_ref"] == "ready_workbench_bypasses_without_reason"
     )
     assert candidate["source_kind"] == "agentic_workbench"
+    assert candidate["promotion_decision"] == "promote_to_typed_carrier_candidate"
+    assert candidate["promotion_contract"]["validation"]["ok"] is True
+    assert candidate["promotion_contract"]["typed_carrier"] == "agentic_workbench_route_accounting"
     assert candidate["proposed_payload"]["ready_workbench_bypasses_without_reason"] == 1
     out = repo / "ops.md"
     ops.write_markdown(payload, out)

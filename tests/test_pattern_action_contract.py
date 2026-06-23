@@ -1,10 +1,12 @@
+from dataclasses import replace
 from pathlib import Path
-from src.ztare.common.kernel_action_schema import validate_kernel_action_schema
-from src.ztare.research_director.pattern_action_contract import (
+from ztare.common.kernel_action_schema import validate_kernel_action_schema
+from ztare.research_director import primitive_operator_cards
+from ztare.research_director.pattern_action_contract import (
     build_pattern_action_contract,
     main,
 )
-from src.ztare.research_director.primitive_operator_cards import route_operator_cards
+from ztare.research_director.primitive_operator_cards import route_operator_cards
 
 
 def test_hard_pde_formal_contract_forces_action_slots():
@@ -16,6 +18,8 @@ def test_hard_pde_formal_contract_forces_action_slots():
     assert "hard_mathematical_residual" in contract.problem_surfaces
     assert "pde_estimate_or_carrier_residual" in contract.problem_surfaces
     assert "formal_frontier" in contract.problem_surfaces
+    assert "OP-HRD-01:hard_residual_research_contract" in contract.pattern_chain
+    assert "OP-PDE-01:pde_estimate_or_carrier_contract" in contract.pattern_chain
     assert "PATTERN-028:recursive_tool_depth_loop" in contract.pattern_chain
     assert "ANTI-PATTERN-018:tool_underuse_formal_satisficing" in contract.anti_patterns
     assert "ANTI-PATTERN-014:premature_settled_negative" in contract.anti_patterns
@@ -38,6 +42,10 @@ def test_hard_pde_formal_contract_forces_action_slots():
         "positive_constructor_attempt_artifact",
     } <= required_slots
     assert any("nearest confuser" in test for test in contract.route_tests)
+    assert {
+        "OP-HRD-01",
+        "OP-PDE-01",
+    } <= {route["card_id"] for route in contract.operator_card_routes}
     assert "V54/MM-V7/V55/MM-V8" in contract.evidence_basis
     assert "epistemic-generation/research_log.md" in contract.evidence_basis
 
@@ -82,12 +90,50 @@ def test_general_contract_is_lightweight_when_no_hard_surface():
     assert contract.kernel_action_schemas == []
 
 
+def test_pattern_contract_records_operator_card_route_provenance(monkeypatch):
+    semantic_card = replace(
+        primitive_operator_cards.CARDS[0],
+        score=91.0,
+        matched_terms=("semantic:0.9100",),
+    )
+    monkeypatch.setattr(
+        primitive_operator_cards,
+        "route_operator_cards_semantic",
+        lambda **_: [semantic_card],
+    )
+
+    contract = build_pattern_action_contract(
+        scope="claim boundary",
+        goal="narrow a broad claim with explicit answer object and success criterion",
+    )
+
+    assert contract.operator_card_routes == [
+        {
+            "card_id": semantic_card.card_id,
+            "name": semantic_card.name,
+            "score": 91.0,
+            "matched_terms": ["semantic:0.9100"],
+            "route_mode": "semantic_atlas",
+        }
+    ]
+    gate = next(
+        carrier
+        for carrier in contract.evidence_carriers
+        if carrier.artifact_slot == "operator_receipt_gate_artifact"
+    )
+    assert "operator_card_route_provenance" in gate.required_fields
+    assert any(
+        "semantic_atlas vs lexical_fallback" in test
+        for test in contract.route_tests
+    )
+
+
 def test_cli_out_prints_compact_receipt_not_full_payload(tmp_path, capsys):
     out = tmp_path / "contract.json"
 
     rc = main([
         "--goal",
-        "hard residual with stale repeated branches",
+        "claim-boundary split with explicit answer object and success criterion",
         "--out",
         str(out),
     ])
@@ -97,6 +143,8 @@ def test_cli_out_prints_compact_receipt_not_full_payload(tmp_path, capsys):
     assert out.exists()
     assert "wrote pattern action contract:" in captured.out
     assert "problem_surfaces=" in captured.out
+    assert "operator_card_routes=" in captured.out
+    assert "OP-CBM-01" in captured.out
     assert "evidence_basis" not in captured.out
 
 
@@ -211,6 +259,33 @@ def test_route_row_coverage_gap_is_reflexive_instrument_not_workbench_route():
     assert "OP-RMI-01:reflexive_mining_instrument_check" in contract.pattern_chain
 
 
+def test_graph_context_requires_graph_carrier_and_action_lowering():
+    contract = build_pattern_action_contract(
+        scope="graph diagnostic carrier",
+        goal=(
+            "use a context graph with PageRank, min-cut, graph disagreement, "
+            "and probability DAG steering to select the next artifact"
+        ),
+    )
+
+    assert "graph_diagnostic_carrier" in contract.problem_surfaces
+    assert "OP-GDC-01:graph_diagnostic_carrier" in contract.pattern_chain
+    carrier = next(
+        carrier
+        for carrier in contract.evidence_carriers
+        if carrier.artifact_slot == "graph_carrier_artifact"
+    )
+    assert {
+        "graph_id",
+        "graph_kind",
+        "diagnostics",
+        "decision_receipt",
+        "selected_action_card_or_gate",
+        "non_use_or_retraction",
+    } <= set(carrier.required_fields)
+    assert any("standard-library" in test for test in contract.route_tests)
+
+
 def test_pde_only_contract_still_requires_receipt_gate():
     contract = build_pattern_action_contract(
         scope="ns",
@@ -256,6 +331,10 @@ def test_claim_boundary_surface_requires_action_constraint_rows():
     assert "claim_boundary_schema_receipt" in contract.problem_surfaces
     assert "OP-CBM-01:claim_boundary_mutation" in contract.pattern_chain
     assert any(
+        route["card_id"] == "OP-CBM-01"
+        for route in contract.operator_card_routes
+    )
+    assert any(
         carrier.artifact_slot == "claim_boundary_schema_artifact"
         for carrier in contract.evidence_carriers
     )
@@ -290,8 +369,13 @@ def test_meta_language_surface_requires_edge_carrier_not_label():
     )
 
     assert "meta_language_edge_carrier" in contract.problem_surfaces
+    assert "OP-MME-01:meta_language_edge_carrier" in contract.pattern_chain
     assert "mm_02:surface_quotient_to_evidence_path_graph" in contract.pattern_chain
     assert "mm_03:promote_live_residual_edge" in contract.pattern_chain
+    assert any(
+        route["card_id"] == "OP-MME-01"
+        for route in contract.operator_card_routes
+    )
     assert any(
         carrier.artifact_slot == "meta_language_edge_artifact"
         for carrier in contract.evidence_carriers
@@ -327,7 +411,11 @@ def test_portable_estimate_receipt_surface_is_schema_not_pde_only():
     )
 
     assert "portable_estimate_receipt_schema" in contract.problem_surfaces
-    assert "GP-219:portable_receipt_candidate" in contract.pattern_chain
+    assert "OP-PER-01:portable_estimate_receipt_schema" in contract.pattern_chain
+    assert any(
+        route["card_id"] == "OP-PER-01"
+        for route in contract.operator_card_routes
+    )
     carrier = next(
         carrier
         for carrier in contract.evidence_carriers

@@ -8,18 +8,17 @@ file, leaving the loop reading stale gaps).
 
 Pure-ish — takes paths + project name + score-regime callable as
 explicit args. The autoresearch_loop wrapper fills in the
-module-globals it needs.
-
-Behaviour preserved verbatim from the prior inline implementation
-(autoresearch_loop.py 2026-05-05 git history).
+module-globals it needs. Rows are normalized through the recovery-contract
+interface before they become shared trace/fetch/graph state.
 """
 from __future__ import annotations
 
 import time
 from pathlib import Path
-from typing import Callable
+from typing import Any, Callable
 
-from src.ztare.common.file_io import write_json
+from ztare.common.file_io import write_json
+from ztare.workspace.evidence_gaps import canonicalize_evidence_gap_recovery_contract
 
 
 def refresh_latest_evidence_gaps_from_eval(
@@ -41,7 +40,7 @@ def refresh_latest_evidence_gaps_from_eval(
     No-op when the eval payload has no evidence_gaps (don't overwrite
     a stale-but-valid file with nothing).
     """
-    gaps = evaluation.get("evidence_gaps")
+    gaps = _canonical_evidence_gap_rows(evaluation.get("evidence_gaps"))
     if not gaps:
         return
     score_contract = evaluation.get("score_contract") or {}
@@ -64,3 +63,24 @@ def refresh_latest_evidence_gaps_from_eval(
         "evidence_gaps": gaps,
     }
     write_json(output_path, payload)
+
+
+def _canonical_evidence_gap_rows(raw_gaps: Any) -> list[dict[str, Any]]:
+    """Normalize producer rows before they become the shared gap surface."""
+    if not isinstance(raw_gaps, list):
+        return []
+    rows: list[dict[str, Any]] = []
+    for item in raw_gaps:
+        if not isinstance(item, dict):
+            continue
+        rows.append(
+            canonicalize_evidence_gap_recovery_contract(
+                item,
+                recovery_kind=str(item.get("recovery_kind") or "").strip() or None,
+                recovery_channel=str(item.get("recovery_channel") or "").strip() or None,
+                required_surface=str(item.get("required_surface") or "").strip() or None,
+                can_public_fetch=item.get("can_public_fetch"),
+                in_loop_consumable=item.get("in_loop_consumable"),
+            )
+        )
+    return rows

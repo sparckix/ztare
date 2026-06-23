@@ -4,17 +4,18 @@
 Mirrors `scripts/public/validators/validate_autoresearch_arch_map.py` (GP-101) but for the
 artifact-network knowledge graph instead of code-internal arch maps.
 
-Drift checks performed on `analytics/public/queries/graphs/ztare_knowledge_graph_prototype.json`
+Drift checks performed on `analytics/public/queries/graphs/ztare_knowledge_graph.json`
 (or any path passed via --graph):
 
   C1. Every seam node corresponds to an existing .md file in the seams or specs
       directories.
-  C2. Every depends_on edge target resolves to a node that exists in the graph
-      AND a corresponding .md file on disk.
+  C2. Every depends_on edge target resolves to a node, seam/spec file, or
+      non-seam GP-backed artifact on disk.
   C3. Every instantiates_op reference resolves to a real op_id in the canonical
       VOCABULARY_V4 from src/ztare/research_director/universal_research_ops.py.
   C4. Every references_gate target corresponds to a real gate class in
       src/ztare/gates/.
+  C5. Every non-implemented gate reference has an explicit status and reason.
 
 Same exit-code semantics as the GP-101 validator:
   0 — validation passed
@@ -22,9 +23,8 @@ Same exit-code semantics as the GP-101 validator:
   2 — validator error (graph or source unreadable)
 
 Usage:
-    python -m scripts.validate_knowledge_graph
-    python -m scripts.validate_knowledge_graph --graph analytics/public/queries/graphs/foo.json
-    python -m scripts.validate_knowledge_graph --regenerate  # also re-run extractor first
+    python scripts/public/validators/validate_knowledge_graph.py
+    python scripts/public/validators/validate_knowledge_graph.py --graph analytics/public/queries/graphs/foo.json
 
 Per Pattern 10: the graph is regenerable; this validator is a safety net for
 when the graph drifts from the underlying artifacts (e.g., a seam was renamed
@@ -46,14 +46,31 @@ DEFAULT_GRAPH_PATH = (
     / "public"
     / "queries"
     / "graphs"
-    / "ztare_knowledge_graph_prototype.json"
+    / "ztare_knowledge_graph.json"
 )
 SEAMS_DIRS = [
+    REPO / "research_areas" / "seams",
     REPO / "research_areas" / "private" / "seams",
     REPO / "research_areas" / "specs" / "active",
 ]
 GATES_DIR = REPO / "src" / "ztare" / "gates"
 UNIVERSAL_OPS_PATH = REPO / "src" / "ztare" / "research_director" / "universal_research_ops.py"
+ARTIFACT_REF_ROOTS = [
+    REPO / "research_areas",
+    REPO / "projects",
+    REPO / "rubrics",
+    REPO / "src" / "ztare",
+    REPO / "ztare_proofs",
+]
+GP_REF_RE = re.compile(r"gp[-_]?0*(\d+[a-z]?)", re.IGNORECASE)
+GATE_REFERENCE_STATUS_VALUES = {
+    "planned",
+    "proposed",
+    "deferred",
+    "rejected",
+    "superseded",
+}
+PRIVATE_PATH_MARKER = "research_areas/" + "private"
 
 
 @dataclass
@@ -62,6 +79,8 @@ class DriftReport:
     unresolved_depends_on: list[tuple[str, str]]  # (from_node, missing_target)
     unresolved_op_refs: list[tuple[str, str]]      # (node_id, op_id_not_in_vocab)
     unresolved_gate_refs: list[tuple[str, str]]    # (node_id, gate_class_not_found)
+    invalid_gate_status_refs: list[tuple[str, str, str]]  # (node_id, gate_id, reason)
+    private_path_refs: list[tuple[str, str]]
     n_nodes: int
     n_edges: int
 
@@ -71,6 +90,8 @@ class DriftReport:
             + len(self.unresolved_depends_on)
             + len(self.unresolved_op_refs)
             + len(self.unresolved_gate_refs)
+            + len(self.invalid_gate_status_refs)
+            + len(self.private_path_refs)
         )
 
 
@@ -170,12 +191,40 @@ def find_seam_files() -> dict[str, Path]:
     return out
 
 
+def _gp_ref_key(value: str) -> str | None:
+    """Normalize GP references across `GP-180`, `gp180`, and `GP_180`."""
+    m = GP_REF_RE.search(value)
+    if not m:
+        return None
+    return f"gp{m.group(1).lower()}"
+
+
+def find_gp_artifact_refs() -> dict[str, list[Path]]:
+    """Index non-seam GP artifacts by id.
+
+    The graph began as a seam graph, but current public artifacts also point at
+    project directories, rubrics, source primitives, and pre-registrations. A
+    `depends_on` edge to one of those should not be reported as a missing seam
+    file; it is a resolvable artifact reference with a narrower type.
+    """
+    refs: dict[str, list[Path]] = {}
+    for root in ARTIFACT_REF_ROOTS:
+        if not root.exists():
+            continue
+        for path in root.rglob("*"):
+            key = _gp_ref_key(path.name)
+            if key:
+                refs.setdefault(key, []).append(path)
+    return refs
+
+
 def validate(graph: dict) -> DriftReport:
     """Run all 4 drift checks; collect violations."""
     nodes = graph.get("@graph", [])
     canonical_ops = extract_canonical_op_ids()
     gate_classes = find_gate_classes()
     seam_files = find_seam_files()
+    gp_artifact_refs = find_gp_artifact_refs()
 
     # Build node id index
     node_ids = {n["@id"]: n for n in nodes if "@id" in n}
@@ -185,6 +234,8 @@ def validate(graph: dict) -> DriftReport:
         unresolved_depends_on=[],
         unresolved_op_refs=[],
         unresolved_gate_refs=[],
+        invalid_gate_status_refs=[],
+        private_path_refs=[],
         n_nodes=len(nodes),
         n_edges=0,
     )
@@ -192,6 +243,9 @@ def validate(graph: dict) -> DriftReport:
     for node in nodes:
         nid = node.get("@id", "")
         ntype = node.get("@type", "")
+        path_ref = node.get("path")
+        if isinstance(path_ref, str) and PRIVATE_PATH_MARKER in path_ref:
+            report.private_path_refs.append((nid, path_ref))
 
         # C1: seam node → file existence
         if ntype == "seam":
@@ -203,7 +257,12 @@ def validate(graph: dict) -> DriftReport:
         for target in node.get("depends_on", []):
             report.n_edges += 1
             target_id = target.removeprefix("seam:")
-            if target_id not in seam_files:
+            target_key = _gp_ref_key(target_id)
+            if (
+                target not in node_ids
+                and target_id not in seam_files
+                and (not target_key or target_key not in gp_artifact_refs)
+            ):
                 report.unresolved_depends_on.append((nid, target))
 
         # C3: instantiates_op resolution
@@ -219,6 +278,34 @@ def validate(graph: dict) -> DriftReport:
             gate_id = gate_ref.removeprefix("gate:")
             if gate_id not in gate_classes:
                 report.unresolved_gate_refs.append((nid, gate_id))
+
+        for idx, status_ref in enumerate(node.get("gate_reference_status", [])):
+            report.n_edges += 1
+            if not isinstance(status_ref, dict):
+                report.invalid_gate_status_refs.append(
+                    (nid, f"gate_reference_status[{idx}]", "row must be an object")
+                )
+                continue
+            gate_ref = status_ref.get("gate")
+            status = status_ref.get("status")
+            reason = status_ref.get("reason")
+            gate_id = str(gate_ref or "").removeprefix("gate:")
+            if not isinstance(gate_ref, str) or not gate_ref.startswith("gate:"):
+                report.invalid_gate_status_refs.append(
+                    (nid, f"gate_reference_status[{idx}]", "gate must be a gate:<Name> string")
+                )
+            if status not in GATE_REFERENCE_STATUS_VALUES:
+                report.invalid_gate_status_refs.append(
+                    (
+                        nid,
+                        gate_id or f"gate_reference_status[{idx}]",
+                        "status must be planned, proposed, deferred, rejected, or superseded",
+                    )
+                )
+            if not isinstance(reason, str) or not reason.strip():
+                report.invalid_gate_status_refs.append(
+                    (nid, gate_id or f"gate_reference_status[{idx}]", "reason is required")
+                )
 
     return report
 
@@ -240,9 +327,9 @@ def print_report(report: DriftReport, verbose: bool = True) -> int:
         print()
 
     if report.unresolved_depends_on:
-        print(f"DRIFT C2: {len(report.unresolved_depends_on)} depends_on edges target missing seams:")
+        print(f"DRIFT C2: {len(report.unresolved_depends_on)} depends_on edges target unresolved artifacts:")
         for src, target in (report.unresolved_depends_on[:10] if not verbose else report.unresolved_depends_on):
-            print(f"  - {src} → {target}  (target file does not exist)")
+            print(f"  - {src} → {target}  (target node/file/artifact does not resolve)")
         if not verbose and len(report.unresolved_depends_on) > 10:
             print(f"  ... ({len(report.unresolved_depends_on) - 10} more)")
         print()
@@ -261,6 +348,20 @@ def print_report(report: DriftReport, verbose: bool = True) -> int:
             print(f"  - {src} → {gate}")
         print()
 
+    if report.invalid_gate_status_refs:
+        print(f"DRIFT C5: {len(report.invalid_gate_status_refs)} gate_reference_status rows are malformed:")
+        for src, gate, reason in report.invalid_gate_status_refs:
+            print(f"  - {src} → {gate}  ({reason})")
+        print()
+
+    if report.private_path_refs:
+        print(f"DRIFT C6: {len(report.private_path_refs)} public graph nodes expose private paths:")
+        for src, path in report.private_path_refs[:20]:
+            print(f"  - {src} path={path}")
+        if len(report.private_path_refs) > 20:
+            print(f"  ... ({len(report.private_path_refs) - 20} more)")
+        print()
+
     if report.total_drifts() == 0:
         print("All drift checks passed.")
         return 0
@@ -270,16 +371,16 @@ def print_report(report: DriftReport, verbose: bool = True) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--graph", type=Path, default=DEFAULT_GRAPH_PATH)
-    parser.add_argument("--regenerate", action="store_true",
-                          help="re-run the extractor before validating (currently calls /tmp/gp216_graph_db_prototype.py)")
+    parser.add_argument(
+        "--regenerate",
+        action="store_true",
+        help="reserved; graph regeneration is not wired to this validator",
+    )
     parser.add_argument("--quiet", action="store_true")
     args = parser.parse_args()
 
     if args.regenerate:
-        import subprocess
-        extractor = REPO / ".." / ".." / "tmp" / "gp216_graph_db_prototype.py"
-        # Just note: regeneration via this CLI is a future feature; for now manual
-        print("(regenerate flag: re-run /tmp/gp216_graph_db_prototype.py manually before validating)")
+        print("(regenerate flag is reserved; validate the supplied checked-in graph)")
 
     graph = load_graph(args.graph)
     report = validate(graph)

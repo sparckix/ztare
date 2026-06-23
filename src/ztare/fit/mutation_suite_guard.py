@@ -210,6 +210,167 @@ def _ast_check_no_module_level_i_model_call(python_code: str) -> Optional[str]:
     )
 
 
+_FILESYSTEM_MUTATION_ATTRS = {
+    "chmod",
+    "hardlink_to",
+    "lchmod",
+    "mkdir",
+    "rename",
+    "replace",
+    "rmdir",
+    "symlink_to",
+    "touch",
+    "unlink",
+    "write_bytes",
+    "write_text",
+}
+
+_FORBIDDEN_MODULE_CALLS = {
+    "os.chmod",
+    "os.chown",
+    "os.execl",
+    "os.execle",
+    "os.execlp",
+    "os.execlpe",
+    "os.execv",
+    "os.execve",
+    "os.execvp",
+    "os.execvpe",
+    "os.fork",
+    "os.kill",
+    "os.link",
+    "os.makedirs",
+    "os.mkdir",
+    "os.popen",
+    "os.remove",
+    "os.removedirs",
+    "os.rename",
+    "os.replace",
+    "os.rmdir",
+    "os.spawnl",
+    "os.spawnle",
+    "os.spawnlp",
+    "os.spawnlpe",
+    "os.spawnv",
+    "os.spawnve",
+    "os.spawnvp",
+    "os.spawnvpe",
+    "os.symlink",
+    "os.system",
+    "os.unlink",
+    "shutil.copy",
+    "shutil.copy2",
+    "shutil.copyfile",
+    "shutil.copytree",
+    "shutil.move",
+    "shutil.rmtree",
+    "subprocess.call",
+    "subprocess.check_call",
+    "subprocess.check_output",
+    "subprocess.Popen",
+    "subprocess.run",
+}
+
+_FORBIDDEN_BUILTIN_CALLS = {
+    "__import__",
+    "compile",
+    "eval",
+}
+
+
+def _ast_check_no_filesystem_or_process_mutation(python_code: str) -> Optional[str]:
+    """Reject candidate suites that mutate the filesystem or spawn processes.
+
+    R1 executes candidate code in-process to verify importability. That
+    dry-run must treat the candidate as hostile: syntax and import checks
+    may inspect it, but candidate code cannot create files, symlinks, shell
+    commands, or project-local side effects as part of validation.
+    """
+    try:
+        tree = ast.parse(python_code)
+    except SyntaxError:
+        return None
+
+    module_aliases: dict[str, str] = {}
+    imported_names: dict[str, str] = {}
+    for node in tree.body:
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                root = alias.name.split(".", 1)[0]
+                module_aliases[alias.asname or root] = root
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            root = node.module.split(".", 1)[0]
+            for alias in node.names:
+                imported_names[alias.asname or alias.name] = f"{root}.{alias.name}"
+
+    def call_name(func: ast.AST) -> str | None:
+        if isinstance(func, ast.Name):
+            return imported_names.get(func.id, func.id)
+        if isinstance(func, ast.Attribute):
+            if isinstance(func.value, ast.Name):
+                root = module_aliases.get(func.value.id, imported_names.get(func.value.id, func.value.id))
+                return f"{root}.{func.attr}"
+            parent = call_name(func.value)
+            if parent:
+                return f"{parent}.{func.attr}"
+        return None
+
+    def const_string(node: ast.AST | None) -> str | None:
+        if isinstance(node, ast.Constant) and isinstance(node.value, str):
+            return node.value
+        return None
+
+    def open_mode(call: ast.Call, *, path_method: bool) -> str | None:
+        if path_method:
+            mode_node = call.args[0] if call.args else None
+        else:
+            mode_node = call.args[1] if len(call.args) >= 2 else None
+        for keyword in call.keywords:
+            if keyword.arg == "mode":
+                mode_node = keyword.value
+                break
+        return const_string(mode_node)
+
+    def mode_is_mutating(mode: str | None) -> bool:
+        if mode is None:
+            return False
+        return any(flag in mode for flag in ("w", "a", "x", "+"))
+
+    findings: list[str] = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+        func = node.func
+        name = call_name(func)
+        if name in _FORBIDDEN_BUILTIN_CALLS:
+            findings.append(name or "dynamic builtin")
+            continue
+        if name in _FORBIDDEN_MODULE_CALLS:
+            findings.append(name)
+            continue
+        if isinstance(func, ast.Attribute):
+            if func.attr in _FILESYSTEM_MUTATION_ATTRS:
+                findings.append(func.attr)
+                continue
+            if func.attr == "open" and mode_is_mutating(open_mode(node, path_method=True)):
+                findings.append("Path.open(write-mode)")
+                continue
+        if name in {"open", "io.open"} and mode_is_mutating(open_mode(node, path_method=False)):
+            findings.append("open(write-mode)")
+
+    if not findings:
+        return None
+    sample = ", ".join(sorted(set(findings))[:8])
+    return (
+        "Filesystem/process side effect detected in submitted test_model.py: "
+        f"{sample}. Candidate suites are validated by in-process import "
+        "dry-run before scoring, so they must be pure: no file writes, "
+        "symlinks, directory mutation, shell/process launch, dynamic import, "
+        "eval, or compile. Encode falsifiers as in-memory assertions and "
+        "pure functions only."
+    )
+
+
 def _ast_check_lagrangian_source_asymptote(python_code: str) -> Optional[str]:
     """GP-180 variational/Lagrangian asymptotic-divergence guard (2026-05-02).
 
@@ -365,6 +526,13 @@ def validate_python_suite_imports(
     _violation = _ast_check_no_module_level_i_model_call(code)
     if _violation is not None:
         raise ValueError(_violation)
+
+    # Candidate suites run through an in-process dry-run below. Reject
+    # filesystem and process side effects before any mutator-authored code
+    # can execute.
+    _side_effect_violation = _ast_check_no_filesystem_or_process_mutation(code)
+    if _side_effect_violation is not None:
+        raise ValueError(_side_effect_violation)
 
     # Stage 1c: GP-156 Bug #14 — params[...] requires either fit-contract
     # opt-in (PARAMETRIC_FORM + PARAMETER_NAMES) OR hardcoded MODEL_PARAMS.

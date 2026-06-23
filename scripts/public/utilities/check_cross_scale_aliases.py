@@ -55,16 +55,16 @@ DOCUMENTED_ALIASES: list[Alias] = [
         ],
     ),
     Alias(
-        description="Iterate with monotone potential (core_02 Iterative Refinement)",
+        description="Iterate with monotone potential (broad_01 Iterative Refinement)",
         artifacts=[
             ("pivot_module", "failure_topology"),
-            ("v5_op", "core_02"),
+            ("v5_op", "broad_01"),
             ("gate_class", "PotentialFunctionMonotonicityGate"),
             ("reflexive_primitive", "Reflexive Orchestration"),
         ],
     ),
     Alias(
-        description="Decompose into canonical pieces (core_03 Decomposition)",
+        description="Decompose into canonical pieces (core_03 Decomposition & Recomposition)",
         artifacts=[
             ("framer_sigma", "power_2"),
             ("pivot_module", "entropy_stripping"),
@@ -73,18 +73,18 @@ DOCUMENTED_ALIASES: list[Alias] = [
         ],
     ),
     Alias(
-        description="Reduce to extremal case (core_05 Extremal Case Analysis)",
+        description="Reduce to extremal case (broad_05 Extremal Method)",
         artifacts=[
             ("framer_sigma", "reciprocal"),
             ("pivot_module", "fixed_point_scan"),
             ("pivot_module", "inversion"),
-            ("v5_op", "core_05"),
+            ("v5_op", "broad_05"),
             ("gate_class", "StagnationSpecialCaseHintGate"),
             ("reflexive_primitive", "Inception"),
         ],
     ),
     Alias(
-        description="Import external framework (core_06 External Framework Importation)",
+        description="Import external framework (core_06 Cross-Domain Translation)",
         artifacts=[
             ("framer_sigma", "arctan"),
             ("pivot_module", "interface_discipline"),
@@ -94,13 +94,13 @@ DOCUMENTED_ALIASES: list[Alias] = [
         ],
     ),
     Alias(
-        description="Generalize / abstract (core_07 Generalization)",
+        description="Generalize / abstract (core_02 Generalization & Abstraction)",
         artifacts=[
             ("framer_sigma", "signed_log"),
             ("framer_sigma", "softplus"),
             ("pivot_module", "dimensional_shift"),
             ("pivot_module", "category_switch"),
-            ("v5_op", "core_07"),
+            ("v5_op", "core_02"),
             ("reflexive_primitive", "Token-Optimized Self-Modeling"),
             ("reflexive_primitive", "Research Taste Router"),
         ],

@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.reports.mechanism_consequence_audit import (
+from ztare.reports.mechanism_consequence_audit import (
     audit_mechanism_consequences,
     render_text,
 )
@@ -40,7 +40,9 @@ def test_audit_classifies_observed_and_unobserved_mechanisms(tmp_path):
     assert mutation["evidence_status"] == "observed"
     assert mutation["usable_evidence_count"] >= 1
     assert "projects/demo/workspace/latest_mutation_declaration.json" in mutation["evidence_paths"]
-    assert _row_by_id(report, "parallel_blitz")["evidence_status"] == "not_triggered"
+    parallel = _row_by_id(report, "parallel_blitz")
+    assert parallel["evidence_status"] == "not_triggered"
+    assert "parallel_mutator_k=1" in parallel["activation_hint"]
 
 
 def test_parallel_blitz_unobserved_when_rubric_trigger_fires_without_evidence(tmp_path):
@@ -60,6 +62,131 @@ def test_parallel_blitz_unobserved_when_rubric_trigger_fires_without_evidence(tm
     report = audit_mechanism_consequences(repo=tmp_path, project="demo")
 
     assert _row_by_id(report, "parallel_blitz")["evidence_status"] == "unobserved_in_scope"
+
+
+def test_primitive_class_rotation_not_triggered_without_candidate_declaration(tmp_path):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"enable_primitive_class_rotation": True}) + "\n",
+    )
+    _write(
+        tmp_path / "projects/demo/workspace/submissions/iter_001.md",
+        "ordinary candidate without a structural class declaration\n",
+    )
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    row = _row_by_id(report, "primitive_class_rotation")
+    assert row["evidence_status"] == "not_triggered"
+    assert "no candidate declared a primitive-class move" in row["activation_hint"]
+
+
+def test_primitive_class_rotation_unobserved_when_candidate_declaration_has_no_ledger(
+    tmp_path,
+):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"enable_primitive_class_rotation": True}) + "\n",
+    )
+    _write(
+        tmp_path / "projects/demo/workspace/submissions/iter_001.md",
+        "## Scaling Law: sparse tail curve\n",
+    )
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    row = _row_by_id(report, "primitive_class_rotation")
+    assert row["evidence_status"] == "unobserved_in_scope"
+    assert row["activation_hint"] == ""
+
+
+def test_control_followup_policy_tracks_typed_policy_log(tmp_path):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"control_followup_window": 3}) + "\n",
+    )
+    _write(
+        tmp_path / "projects/demo/workspace/control_followup_policy.jsonl",
+        json.dumps(
+            {
+                "record_type": "control_followup_policy_decision",
+                "decision": "observe_prior_control_followup",
+                "allowed": False,
+            }
+        )
+        + "\n",
+    )
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    row = _row_by_id(report, "control_followup_policy")
+    assert row["evidence_status"] == "observed"
+    assert row["usable_evidence_count"] == 1
+    assert row["evidence_paths"] == (
+        "projects/demo/workspace/control_followup_policy.jsonl",
+    )
+
+
+def test_control_followup_policy_not_triggered_when_disabled(tmp_path):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"control_followup_window": 0}) + "\n",
+    )
+    (tmp_path / "projects/demo/workspace").mkdir(parents=True, exist_ok=True)
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    row = _row_by_id(report, "control_followup_policy")
+    assert row["evidence_status"] == "not_triggered"
+    assert "no eligible recent pivot/blitz control" in row["activation_hint"]
+
+
+def test_control_followup_policy_not_triggered_without_prior_control(tmp_path):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"control_followup_window": 3}) + "\n",
+    )
+    _write(
+        tmp_path / "projects/demo/workspace/iteration_telemetry.jsonl",
+        json.dumps(
+            {
+                "record_type": "iteration",
+                "iteration_index": 2,
+                "loop_control_action": "normal",
+                "stagnation_count": 2,
+            }
+        )
+        + "\n",
+    )
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    row = _row_by_id(report, "control_followup_policy")
+    assert row["evidence_status"] == "not_triggered"
+    assert "no eligible recent pivot/blitz control" in row["activation_hint"]
+
+
+def test_control_followup_policy_unobserved_after_prior_control_without_log(tmp_path):
+    _write(
+        tmp_path / "rubrics/demo.json",
+        json.dumps({"control_followup_window": 3}) + "\n",
+    )
+    _write(
+        tmp_path / "projects/demo/workspace/iteration_telemetry.jsonl",
+        json.dumps(
+            {
+                "record_type": "iteration",
+                "iteration_index": 2,
+                "loop_control_action": "stagnation_pivot",
+                "stagnation_count": 3,
+            }
+        )
+        + "\n",
+    )
+
+    report = audit_mechanism_consequences(repo=tmp_path, project="demo")
+
+    assert _row_by_id(report, "control_followup_policy")["evidence_status"] == "unobserved_in_scope"
 
 
 def test_subscription_dispatch_requires_dispatch_evidence_not_route_only(tmp_path):
@@ -137,6 +264,7 @@ def test_eigenquestion_preflight_requires_proposal_not_charter_only(tmp_path):
     row = _row_by_id(report, "eigenquestion_preflight")
     assert row["evidence_status"] == "not_triggered"
     assert row["evidence_count"] == 0
+    assert "no proposed_eigenquestion" in row["activation_hint"]
 
 
 def test_eigenquestion_preflight_observed_when_proposal_exists(tmp_path):
@@ -165,3 +293,4 @@ def test_render_text_names_consequence_and_counterfactual(tmp_path):
     assert "evidence_quality=" in rendered
     assert "placeholders=" in rendered
     assert "prevents=" in rendered
+    assert "activation=" in rendered

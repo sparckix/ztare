@@ -1,0 +1,9 @@
+{
+  "generated_at": "2026-06-21T00:10:01.541193+00:00",
+  "model": "gemini-embedding-001",
+  "dimensions": 768,
+  "size": 13,
+  "embeddings_file": "analytics/public/index/operator_card_atlas_embeddings.json",
+  "corpus": "operator_cards",
+  "source": "ztare.research_director.primitive_operator_cards"
+}

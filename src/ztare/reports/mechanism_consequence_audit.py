@@ -19,9 +19,20 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from ztare.research_director.primitive_class_rotation import (
+    should_track_primitive_class_proposal,
+)
+
 
 REPO = Path(__file__).resolve().parents[3]
 MAX_EVIDENCE_PATHS = 12
+PIVOT_EVENT_TYPES = {
+    "topological_pivot_profile_injected",
+    "topological_pivot_emergency",
+    "v4_bounded_mutation_override",
+    "pivot_skipped_gp149_i3",
+}
+PIVOT_ACTIONS = {"stagnation_pivot", "emergency_pivot"}
 
 
 @dataclass(frozen=True)
@@ -51,6 +62,7 @@ class MechanismAuditRow:
     evidence_paths: tuple[str, ...]
     placeholder_evidence_paths: tuple[str, ...]
     ceremony_risk: str
+    activation_hint: str = ""
 
 
 MECHANISMS: tuple[MechanismDefinition, ...] = (
@@ -169,6 +181,19 @@ MECHANISMS: tuple[MechanismDefinition, ...] = (
             "workspace/iteration_telemetry.jsonl",
             "workspace/loop_events.jsonl",
             "workspace/latest_information_yield.json",
+        ),
+    ),
+    MechanismDefinition(
+        mechanism_id="control_followup_policy",
+        label="Control follow-up policy",
+        consequence="route",
+        trigger="A non-emergency pivot or blitz is eligible soon after a prior control fired.",
+        consumer="autoresearch loop-control state, blitz dispatcher, hill-climb audit, kernel health.",
+        counterfactual_failure=(
+            "A stagnant loop fires another control before observing whether the previous control helped."
+        ),
+        evidence_globs=(
+            "workspace/control_followup_policy.jsonl",
         ),
     ),
     MechanismDefinition(
@@ -357,13 +382,61 @@ def _max_stagnation(workspace: Path) -> int:
     return max_seen
 
 
-def _optional_mechanism_not_triggered(
+def _control_followup_policy_triggered(workspace: Path, rubric: dict[str, Any]) -> bool:
+    try:
+        window = int(rubric.get("control_followup_window", 3) or 0)
+    except (TypeError, ValueError):
+        window = 3
+    if window <= 0:
+        return False
+    telemetry = _jsonl_rows(workspace / "iteration_telemetry.jsonl")
+    if any(str(row.get("loop_control_action") or "") in PIVOT_ACTIONS for row in telemetry):
+        return True
+    loop_events = _jsonl_rows(workspace / "loop_events.jsonl")
+    if any(str(row.get("event_type") or "") in PIVOT_EVENT_TYPES for row in loop_events):
+        return True
+    for row in _jsonl_rows(workspace / "parallel_blitz_log.jsonl"):
+        try:
+            if int(row.get("k", 1) or 1) > 1:
+                return True
+        except (TypeError, ValueError):
+            continue
+    return False
+
+
+def _primitive_class_rotation_triggered(workspace: Path) -> bool:
+    """Return whether this workspace contains a candidate that should be tracked."""
+
+    candidate_paths = sorted((workspace / "submissions").glob("iter_*.*"))
+    candidate_paths.extend(
+        sorted(
+            path
+            for path in (
+                workspace / "latest_mutation_declaration.json",
+                workspace / "latest_candidate_selection.json",
+            )
+            if path.exists()
+        )
+    )
+    for path in candidate_paths:
+        if not path.is_file():
+            continue
+        try:
+            text = path.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if should_track_primitive_class_proposal(text):
+            return True
+    return False
+
+
+def _optional_mechanism_activation_hint(
     mechanism_id: str,
     *,
     repo: Path,
     scope_root: Path,
     project: str | None,
-) -> bool:
+) -> str:
     rubric = _project_rubric(repo, scope_root, project)
     workspace = _workspace_dir(scope_root)
     if mechanism_id == "parallel_blitz":
@@ -377,12 +450,30 @@ def _optional_mechanism_not_triggered(
             min_stag = int(rubric.get("parallel_mutator_min_stagnation", 1) or 1)
         except (TypeError, ValueError):
             min_stag = 1
-        return not (k > 1 and (force or force_iters or _max_stagnation(workspace) >= min_stag))
+        max_stag = _max_stagnation(workspace)
+        active = k > 1 and (force or force_iters or max_stag >= min_stag)
+        if active:
+            return ""
+        return (
+            "not triggered because parallel_mutator_k="
+            f"{k}, force={force}, force_iters={force_iters}, "
+            f"max_stagnation={max_stag}, min_stagnation={min_stag}"
+        )
     if mechanism_id == "primitive_class_rotation":
-        return not bool(rubric.get("enable_primitive_class_rotation", False))
+        if not bool(rubric.get("enable_primitive_class_rotation", False)):
+            return "not triggered because rubric enable_primitive_class_rotation=false"
+        if _primitive_class_rotation_triggered(workspace):
+            return ""
+        return "not triggered because no candidate declared a primitive-class move"
     if mechanism_id == "eigenquestion_preflight":
-        return not any(scope_root.glob("proposed_eigenquestion_*.md"))
-    return False
+        if any(scope_root.glob("proposed_eigenquestion_*.md")):
+            return ""
+        return "not triggered because no proposed_eigenquestion_*.md exists in scope"
+    if mechanism_id == "control_followup_policy":
+        if _control_followup_policy_triggered(workspace, rubric):
+            return ""
+        return "not triggered because no eligible recent pivot/blitz control needs follow-up"
+    return ""
 
 
 def audit_mechanism_consequences(
@@ -412,6 +503,12 @@ def audit_mechanism_consequences(
         placeholders = tuple(_relative(path, repo) for path in placeholder_paths)
         evidence_paths = usable[:MAX_EVIDENCE_PATHS]
         placeholder_evidence_paths = placeholders[:MAX_EVIDENCE_PATHS]
+        activation_hint = _optional_mechanism_activation_hint(
+            mechanism.mechanism_id,
+            repo=repo,
+            scope_root=scope_root,
+            project=project,
+        )
         if mechanism.consequence == "decorate":
             status = "decorative_by_definition"
             risk = "high"
@@ -424,12 +521,7 @@ def audit_mechanism_consequences(
             status = "placeholder_only"
             risk = "medium"
             quality = "placeholder_only"
-        elif _optional_mechanism_not_triggered(
-            mechanism.mechanism_id,
-            repo=repo,
-            scope_root=scope_root,
-            project=project,
-        ):
+        elif activation_hint:
             status = "not_triggered"
             risk = "low"
             quality = "not_triggered"
@@ -451,6 +543,7 @@ def audit_mechanism_consequences(
             evidence_paths=evidence_paths,
             placeholder_evidence_paths=placeholder_evidence_paths,
             ceremony_risk=risk,
+            activation_hint=activation_hint,
         )
         rows.append(row)
         consequence_counts[row.consequence] = consequence_counts.get(row.consequence, 0) + 1
@@ -495,16 +588,19 @@ def render_text(report: dict[str, Any]) -> str:
         "ceremony_risk=" + json.dumps(summary["ceremony_risk_counts"], sort_keys=True),
     ]
     for row in report["rows"]:
+        activation = str(row.get("activation_hint") or "").strip()
+        activation_suffix = f"; activation={activation}" if activation else ""
         lines.append(
             "- {mechanism_id} [{consequence}/{evidence_status}/risk={ceremony_risk}]: "
             "{label}; consumer={consumer}; prevents={counterfactual_failure}; "
-            "evidence={evidence}; placeholders={placeholders}".format(
+            "evidence={evidence}; placeholders={placeholders}{activation_suffix}".format(
                 evidence=", ".join(row["evidence_paths"][:3]) + (
                     f" (+{row['evidence_count'] - 3} more)" if row["evidence_count"] > 3 else ""
                 )
                 if row["evidence_paths"]
                 else "none",
                 placeholders=", ".join(row.get("placeholder_evidence_paths", [])[:3]) or "none",
+                activation_suffix=activation_suffix,
                 **row,
             )
         )

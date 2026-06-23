@@ -23,7 +23,7 @@ from ztare.gates.semantic_gaming_carrier import (
     detect_semantic_carriers,
     run_semantic_gaming_carrier_gates,
 )
-from src.ztare.gates.global_gates import run_global_gates
+from ztare.gates.global_gates import run_global_gates
 from ztare.validator.autoresearch_hardener import AutoresearchHardener
 from ztare.validator.gaming_vector_meta_runner import (
     EXPECTED_PROMOTION_CONTRACT,
@@ -95,6 +95,48 @@ def test_autoresearch_gaming_gate_blocks_fixture_shape(tmp_path: Path) -> None:
 
     assert any(
         result["name"] == "global_project_sweep_definitional_tautology"
+        and result["hard_fail"]
+        and not result["passed"]
+        for result in results
+    )
+
+
+def test_autoresearch_gaming_gate_blocks_static_receipt_replay_absence(tmp_path: Path) -> None:
+    source = (
+        "import json\nimport os\n"
+        "RECEIPT_PATH = 'workspace/packet_falsifier_receipt.json'\n"
+        "EXPECTED_TYPE = 'project_packet_falsifier'\n"
+        "EXPECTED_STATUS = 'resolved'\n"
+        "EXPECTED_REF = 'evidence_refs[1]'\n"
+        "EXPECTED_PATH_SAFETY = {'parent_traversal_allowed': False}\n"
+        "def _load_receipt():\n"
+        "    return json.load(open(RECEIPT_PATH))\n"
+        "def test_receipt():\n"
+        "    receipt = _load_receipt()\n"
+        "    assert receipt.get('type') == EXPECTED_TYPE\n"
+        "    assert receipt.get('status') == EXPECTED_STATUS\n"
+        "    assert receipt.get('remove_ref') == EXPECTED_REF\n"
+        "    assert 'expected_failure' in receipt\n"
+        "    assert 'enforced_by' in receipt\n"
+        "    assert receipt.get('path_safety') == EXPECTED_PATH_SAFETY\n"
+        "def test_trace():\n"
+        "    trace_path = 'workspace/falsifier_cli.trace'\n"
+        "    if os.path.exists(trace_path):\n"
+        "        assert 'validate_project_packet_falsifier' in open(trace_path).read()\n"
+        "    else:\n"
+        "        pass\n"
+    )
+    found = {spec.vector for spec in detect_autoresearch_gaming_vectors(source)}
+
+    assert "receipt_replay_absence_static_asserts" in found
+
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "test_model.py").write_text(source, encoding="utf-8")
+    results = run_autoresearch_gaming_gates(project)
+
+    assert any(
+        result["name"] == "global_project_sweep_receipt_replay_absence"
         and result["hard_fail"]
         and not result["passed"]
         for result in results
@@ -205,6 +247,148 @@ def test_global_gates_run_under_src_package_import(tmp_path: Path) -> None:
 
     assert payload["source"] == "global_gates"
     assert payload["harness_invoked"] is True
+
+
+def test_document_review_substrates_skip_numeric_extrapolation_gate(tmp_path: Path) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    (project / "test_model.py").write_text("MODEL_PARAMS = {}\n", encoding="utf-8")
+
+    payload = run_global_gates(
+        project,
+        {
+            "cage_meta": {"class": "document_review"},
+            "disable_evidence_fit_gate": True,
+            "disable_evidence_fit_gate_reason": "document review fixture has no numeric fit",
+            "disable_uniqueness_gap_gate": True,
+            "disable_uniqueness_gap_gate_reason": "document review fixture has no uniqueness claim",
+            "disable_autoresearch_gaming_gates": True,
+            "disable_autoresearch_gaming_gates_reason": "class-routing regression fixture",
+            "disable_semantic_gaming_carrier": True,
+            "disable_semantic_gaming_carrier_reason": "class-routing regression fixture",
+        },
+        thesis_text="The packet stays inside its bounded source contract.",
+        evidence_text="Source/evidence contract text, not numeric rows.",
+    )
+
+    extrapolation = next(
+        item for item in payload["results"] if item["name"] == "global_extrapolation_gap"
+    )
+    assert extrapolation["passed"] is True
+    assert "document_review" in extrapolation["reason"]
+    assert "global_extrapolation_gap" not in payload["failed_gate_ids"]
+    assert payload["any_hard_fail"] is False
+
+
+def _document_review_gate_config() -> dict:
+    return {
+        "cage_meta": {"class": "document_review"},
+        "disable_evidence_fit_gate": True,
+        "disable_evidence_fit_gate_reason": "document review fixture has no numeric fit",
+        "disable_uniqueness_gap_gate": True,
+        "disable_uniqueness_gap_gate_reason": "document review fixture has no uniqueness claim",
+        "disable_autoresearch_gaming_gates": True,
+        "disable_autoresearch_gaming_gates_reason": "local verifier receipt regression fixture",
+        "disable_semantic_gaming_carrier": True,
+        "disable_semantic_gaming_carrier_reason": "local verifier receipt regression fixture",
+    }
+
+
+def _write_local_verifier_gap_and_receipt(project: Path) -> None:
+    workspace = project / "workspace"
+    workspace.mkdir(parents=True, exist_ok=True)
+    (workspace / "latest_evidence_gaps.json").write_text(
+        json.dumps(
+            {
+                "evidence_gaps": [
+                    {
+                        "target": "Preflight Routing Engine",
+                        "description": "preflight verifier receipt must be consumed",
+                        "severity": "degrading",
+                        "producer": "meta_judge",
+                    }
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )
+    (workspace / "packet_falsifier_receipt.json").write_text(
+        json.dumps(
+            {
+                "status": "resolved",
+                "command": "ztare project intake falsify --path packet.json --remove-ref 'evidence_refs[1]'",
+                "remove_ref": "evidence_refs[1]",
+                "removed_ref": "docs/evidence_atlas/README.md",
+                "expected_failure": "evidence_refs[1] local path does not exist",
+                "enforced_by": [
+                    "src/ztare/scaffold/substrate_queue.py::validate_project_packet_falsifier"
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+
+
+def test_local_verifier_receipt_gate_penalizes_string_matching_candidate(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    _write_local_verifier_gap_and_receipt(project)
+    (project / "test_model.py").write_text(
+        "packet = {'evidence_refs': ['README.md']}\n"
+        "assert 'README.md' in packet['evidence_refs']\n",
+        encoding="utf-8",
+    )
+
+    payload = run_global_gates(
+        project,
+        _document_review_gate_config(),
+        thesis_text="Bounded calibration claim with rival coverage.",
+        evidence_text="Source/evidence contract text, not numeric rows.",
+    )
+
+    gate = next(
+        item for item in payload["results"]
+        if item["name"] == "global_local_verifier_receipt_coverage"
+    )
+    assert gate["passed"] is False
+    assert gate["penalty"] == -25
+    assert payload["total_penalty"] == -25
+    assert "global_local_verifier_receipt_coverage" in payload["failed_gate_ids"]
+    assert payload["any_hard_fail"] is False
+
+
+def test_local_verifier_receipt_gate_accepts_machine_field_assertions(
+    tmp_path: Path,
+) -> None:
+    project = tmp_path / "project"
+    project.mkdir()
+    _write_local_verifier_gap_and_receipt(project)
+    (project / "test_model.py").write_text(
+        "import json\n"
+        "from pathlib import Path\n"
+        "receipt = json.loads(Path('workspace/packet_falsifier_receipt.json').read_text())\n"
+        "assert receipt['status'] == 'resolved'\n"
+        "assert receipt['remove_ref'] == 'evidence_refs[1]'\n"
+        "assert 'local path does not exist' in receipt['expected_failure']\n",
+        encoding="utf-8",
+    )
+
+    payload = run_global_gates(
+        project,
+        _document_review_gate_config(),
+        thesis_text="Bounded calibration claim with rival coverage.",
+        evidence_text="Source/evidence contract text, not numeric rows.",
+    )
+
+    gate = next(
+        item for item in payload["results"]
+        if item["name"] == "global_local_verifier_receipt_coverage"
+    )
+    assert gate["passed"] is True
+    assert "global_local_verifier_receipt_coverage" not in payload["failed_gate_ids"]
+    assert payload["total_penalty"] == 0
 
 
 def test_autoresearch_hardener_uses_incremental_manifest(tmp_path: Path) -> None:

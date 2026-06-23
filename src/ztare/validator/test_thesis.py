@@ -9,50 +9,52 @@ import concurrent.futures
 import sys
 from pathlib import Path
 from google.genai import types
-from src.ztare.common import utils
-from src.ztare.common.llm_runtime import (
+from ztare.common import utils
+from ztare.common.llm_runtime import (
     LLMTextResponse,
     LLMRuntime,
     LLMUsage,
+    MODEL_FAMILY_CHOICES,
     PRODUCTION_CALL_RETRIES,
+    get_model_family,
     pricing_model_name,
     resolve_model_id,
 )
-from src.ztare.common.dispatch_model import (
+from ztare.common.dispatch_model import (
     dispatch_env_for_call_site,
     dispatch_model,
     dispatch_result_receipt,
     resolve_dispatch_capability,
 )
-from src.ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
+from ztare.common.paths import PROJECTS_DIR, REPO_ROOT, RUBRICS_DIR
 import re
-from src.ztare.primitives.primitive_library import (
+from ztare.primitives.primitive_library import (
     format_attack_templates,
     format_judge_guardrail,
     retrieve_primitives,
     retrieve_primitives_by_keys,
 )
-from src.ztare.validator.core.primitive_routing import route_primitives_for_v4
-from src.ztare.gates.semantic_gate_stabilization import (
+from ztare.validator.core.primitive_routing import route_primitives_for_v4
+from ztare.gates.semantic_gate_stabilization import (
     derive_self_reference_gate,
     persist_semantic_gate_analysis,
 )
-from src.ztare.findings.proxy_signature import compute_anchor_proxy_coverage
-from src.ztare.validator.core.charter_parsing import (
+from ztare.findings.proxy_signature import compute_anchor_proxy_coverage
+from ztare.validator.core.charter_parsing import (
     extract_anchor_proxies_from_charter,
     extract_asymptotic_claim_contract_from_charter,
     extract_forecast_type_from_charter,
 )
-from src.ztare.gates.asymptotic_claim_discipline import (
+from ztare.gates.asymptotic_claim_discipline import (
     assess_asymptotic_claim_discipline,
 )
-from src.ztare.gates.deterministic_charter_gates import (
+from ztare.gates.deterministic_charter_gates import (
     declared_gate_names,
     evaluate_deterministic_charter_gates,
     gate_results_to_dicts,
     soft_cap_entries_for_evaluation,
 )
-from src.ztare.validator.utilities.harness_failure_mode import (
+from ztare.validator.utilities.harness_failure_mode import (
     FAIL_ASSERT,
     FAIL_OTHER,
     FAIL_RUNTIME,
@@ -60,20 +62,23 @@ from src.ztare.validator.utilities.harness_failure_mode import (
     harness_defect_banner,
     sanitize_stderr_for_mutator,
 )
-from src.ztare.validator.core.meta_judge_schema import (
+from ztare.validator.core.meta_judge_schema import (
     RAW_META_JUDGE_REQUIRED_FIELDS,
     coerce_raw_meta_judge_score as _coerce_raw_meta_judge_score,
     raw_meta_judge_shape_errors as _raw_meta_judge_shape_errors,
 )
-from src.ztare.gates.derived_constraints import (
+from ztare.gates.derived_constraints import (
     render_confirmed_constraints_prompt_section,
     sanitize_constraint_proposals,
 )
-from src.ztare.validator.core.rubric_score_caps import (
+from ztare.validator.core.rubric_score_caps import (
     apply_evidence_gap_score_caps,
 )
-from src.ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
-from src.ztare.validator.utilities.v4_family import is_v4_family_project
+from ztare.workspace.evidence_gaps import (
+    canonicalize_evidence_gap_recovery_contract,
+)
+from ztare.supervisor.supervisor_usage import estimate_cost_usd, load_model_pricing
+from ztare.validator.utilities.v4_family import is_v4_family_project
 
 # 1. Setup & Args
 parser = argparse.ArgumentParser()
@@ -84,13 +89,13 @@ parser.add_argument(
     "--judge_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
+    choices=MODEL_FAMILY_CHOICES,
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
     default="gemini",
-    choices=["gemini", "gemini-lite", "gemini-pro", "claude", "claude-opus", "gpt4o", "gpt4.1", "gpt4.1-mini", "gpt5.5", "o1", "o3", "o3-mini", "o3-pro", "o4-mini"],
+    choices=MODEL_FAMILY_CHOICES,
 )
 parser.add_argument("--use_primitives", action="store_true")
 parser.add_argument(
@@ -122,6 +127,18 @@ parser.add_argument(
     help="Path to write the final evaluation JSON. Defaults to eval_results.json in the current working directory.",
 )
 parser.add_argument(
+    "--llm_timeout_seconds",
+    type=int,
+    default=int(os.environ.get("ZTARE_AUTORESEARCH_LLM_TIMEOUT_SECONDS", "300")),
+    help="Per-call LLM timeout for judge calls.",
+)
+parser.add_argument(
+    "--llm_retries",
+    type=int,
+    default=int(os.environ.get("ZTARE_AUTORESEARCH_LLM_RETRIES", str(PRODUCTION_CALL_RETRIES))),
+    help="Per-call retry budget for judge calls.",
+)
+parser.add_argument(
     "--thesis_path_override",
     default=None,
     help="If set, read thesis from this path instead of current_iteration.md. "
@@ -137,6 +154,7 @@ if args.use_mutator_primitives:
     args.use_primitives = True
 
 JUDGE_MODEL_ID = resolve_model_id(args.judge_model)
+JUDGE_PROVIDER_FAMILY = get_model_family(JUDGE_MODEL_ID)
 MUTATOR_MODEL_ID = args.mutator_model
 print(f"⚖️  Judge: {JUDGE_MODEL_ID}")
 print(f"🧬 Mutator: {MUTATOR_MODEL_ID}")
@@ -268,6 +286,11 @@ def _build_evidence_gap(
     producer_rationale: str = "",
     fetch_query: str | None = None,
     adversarial_direction: bool = True,
+    recovery_kind: str | None = None,
+    recovery_channel: str | None = None,
+    required_surface: str | None = None,
+    can_public_fetch: bool | None = None,
+    in_loop_consumable: bool | None = None,
 ) -> dict:
     target = (target or "").strip() or "unspecified_target"
     description = (description or "").strip() or "No description provided."
@@ -275,7 +298,7 @@ def _build_evidence_gap(
     gap_type = _normalize_evidence_gap_type(gap_type)
     severity = _normalize_evidence_gap_severity(severity)
     producer = _normalize_evidence_gap_producer(producer)
-    return {
+    gap = {
         "gap_type": gap_type,
         "target": target,
         "description": description,
@@ -285,6 +308,14 @@ def _build_evidence_gap(
         "fetch_query": (fetch_query or _infer_fetch_query(gap_type, target, description)).strip(),
         "adversarial_direction": bool(adversarial_direction),
     }
+    return canonicalize_evidence_gap_recovery_contract(
+        gap,
+        recovery_kind=recovery_kind,
+        recovery_channel=recovery_channel,
+        required_surface=required_surface,
+        can_public_fetch=can_public_fetch,
+        in_loop_consumable=in_loop_consumable,
+    )
 
 
 def _judge_format_error_evaluation(malformed_payload: object, errors: list[str]) -> dict:
@@ -426,6 +457,11 @@ def sanitize_evidence_gaps(evaluation: dict) -> list[dict]:
                     producer_rationale=str(item.get("producer_rationale", "") or ""),
                     fetch_query=str(item.get("fetch_query", "") or "") or None,
                     adversarial_direction=bool(item.get("adversarial_direction", True)),
+                    recovery_kind=str(item.get("recovery_kind", "") or "") or None,
+                    recovery_channel=str(item.get("recovery_channel", "") or "") or None,
+                    required_surface=str(item.get("required_surface", "") or "") or None,
+                    can_public_fetch=item.get("can_public_fetch"),
+                    in_loop_consumable=item.get("in_loop_consumable"),
                 )
             )
     if not cleaned:
@@ -490,6 +526,11 @@ def _evidence_gap_response_schema() -> dict:
                 "producer_rationale": {"type": "STRING"},
                 "fetch_query": {"type": "STRING"},
                 "adversarial_direction": {"type": "BOOLEAN"},
+                "recovery_kind": {"type": "STRING"},
+                "recovery_channel": {"type": "STRING"},
+                "required_surface": {"type": "STRING"},
+                "can_public_fetch": {"type": "BOOLEAN"},
+                "in_loop_consumable": {"type": "BOOLEAN"},
             },
             "required": [
                 "gap_type",
@@ -500,6 +541,11 @@ def _evidence_gap_response_schema() -> dict:
                 "producer_rationale",
                 "fetch_query",
                 "adversarial_direction",
+                "recovery_kind",
+                "recovery_channel",
+                "required_surface",
+                "can_public_fetch",
+                "in_loop_consumable",
             ],
         },
     }
@@ -687,8 +733,8 @@ def safe_generate(prompt, config=None, model_id=None):
         prompt,
         model_id=model_id,
         config=config,
-        retries=PRODUCTION_CALL_RETRIES,
-        timeout_seconds=300,
+        retries=args.llm_retries,
+        timeout_seconds=args.llm_timeout_seconds,
         request_label="request",
         progress_printer=print,
         transient_wait_seconds=20,
@@ -899,8 +945,13 @@ def run_specialized_attacker(thesis_text, evidence_text, attacker_profile):
     ```
     """
 
-    # Only pass Gemini config if judge is Gemini; other models ignore config
-    config = types.GenerateContentConfig(temperature=0.2) if not JUDGE_MODEL_ID.startswith(("claude", "gpt", "o1", "o3")) else None
+    # Only pass Gemini config if judge is Gemini; other providers receive
+    # schema/format instructions through the shared runtime prompt contract.
+    config = (
+        types.GenerateContentConfig(temperature=0.2)
+        if JUDGE_PROVIDER_FAMILY == "google"
+        else None
+    )
 
     print(f"\n🚀 ATTACKER LAUNCHED: {attacker_profile['role']}")
     print(f"🎯 FOCUS: {attacker_profile['focus_area']}")
@@ -1354,13 +1405,20 @@ You must also output a structured evidence-gap assessment:
   - `producer_rationale`: short string for why this is an evidence gap rather than a pure logic flaw
   - `fetch_query`: adversarial search string aimed at finding evidence that could test or break the relevant claim
   - `adversarial_direction`: boolean
+  - `recovery_kind`: one of `public_evidence|local_verification`
+  - `recovery_channel`: `out_of_loop_evidence_recovery` for public evidence, `in_loop_focus_receipt` for local verification
+  - `required_surface`: short string naming the needed surface, such as `public_source`, `public_or_local_source`, or `local_verifier_or_fixture`
+  - `can_public_fetch`: boolean
+  - `in_loop_consumable`: boolean
 
 Evidence-gap rule:
-- include only missing evidence that could plausibly be reduced by new sources, datasets, comparators, or threshold-grounding material
+- include missing evidence that could plausibly be reduced by either new public sources/datasets/comparators/threshold material OR a local verifier, fixture, code/log check, preflight, receipt, or discriminator needed by the autoresearch loop
 - do NOT put pure logic defects, evaluator design flaws, or project-drift complaints into `evidence_gaps` unless the missing evidence is the actual blocker
 - if the current weakest point is "the boundary is thesis-authored because there is no external comparator / taxonomy / threshold grounding", that belongs in `evidence_gaps`
 - `producer` records which layer surfaced the gap; it does not change the artifact schema
 - regardless of producer, `fetch_query` must be adversarially phrased toward testing the claim, not confirmatory phrasing like "evidence supporting X"
+- set `recovery_kind=public_evidence`, `recovery_channel=out_of_loop_evidence_recovery`, `can_public_fetch=true`, and `in_loop_consumable=false` only when the next step is to collect or cite an external/public source, dataset, benchmark, comparator, or threshold grounding
+- set `recovery_kind=local_verification`, `recovery_channel=in_loop_focus_receipt`, `can_public_fetch=false`, and `in_loop_consumable=true` when the next step is to extend a fixture, inspect local logs/code, add a preflight, run a verifier, create a receipt, or sharpen an in-loop discriminator
 - if no evidence-solvable gap exists, return an empty array
 
 You must also output a structured derived-constraint proposal lane:
@@ -1421,8 +1479,8 @@ For such bounded local components:
 Hard rule:
 - If the thesis is falsified, computationally infeasible, anti-gaming is not preserved, or an infallible aggregator is present, say so explicitly. Python will convert those gates into the final score.
 """
-    # For non-Gemini judges, append JSON schema as instructions
-    is_non_gemini = JUDGE_MODEL_ID.startswith(("claude", "gpt", "o1", "o3"))
+    # For non-Gemini judges, append JSON schema as instructions.
+    is_non_gemini = JUDGE_PROVIDER_FAMILY != "google"
     if is_non_gemini:
         if args.deterministic_score_gates:
             prompt += """
@@ -1480,7 +1538,12 @@ Required fields:
       "producer": <string>,
       "producer_rationale": <string>,
       "fetch_query": <string>,
-      "adversarial_direction": <boolean>
+      "adversarial_direction": <boolean>,
+      "recovery_kind": <string>,
+      "recovery_channel": <string>,
+      "required_surface": <string>,
+      "can_public_fetch": <boolean>,
+      "in_loop_consumable": <boolean>
     }
   ],
   "derived_constraints": [
@@ -1523,7 +1586,12 @@ Required fields:
       "producer": <string>,
       "producer_rationale": <string>,
       "fetch_query": <string>,
-      "adversarial_direction": <boolean>
+      "adversarial_direction": <boolean>,
+      "recovery_kind": <string>,
+      "recovery_channel": <string>,
+      "required_surface": <string>,
+      "can_public_fetch": <boolean>,
+      "in_loop_consumable": <boolean>
     }
   ],
   "derived_constraints": [
@@ -1976,7 +2044,7 @@ def identify_crux_analysis(text, evidence, main_rubric_data, aggregated_critique
     --- EVIDENCE ---
     {evidence}
 """
-    is_non_gemini = JUDGE_MODEL_ID.startswith(("claude", "gpt", "o1", "o3"))
+    is_non_gemini = JUDGE_PROVIDER_FAMILY != "google"
     if is_non_gemini:
         prompt += """
 
@@ -2515,7 +2583,7 @@ if __name__ == "__main__":
             # --- FIXED: Robust Extraction & Assignment ---
             prompt = f"Identify the single most catastrophic assumption in this thesis using tools if needed: {thesis}"
             attacker_config = None
-            if not JUDGE_MODEL_ID.startswith(("claude", "gpt", "o1", "o3")):
+            if JUDGE_PROVIDER_FAMILY == "google":
                 attacker_config = (
                     ATTACKER_NO_TOOL_CONFIG if args.disable_attacker_tools else ATTACKER_CONFIG
                 )
@@ -2546,7 +2614,7 @@ if __name__ == "__main__":
         # mutator's ```lean fenced block in thesis.md. Closes the iter-1/iter-2
         # fake-95 path where Lean-shaped prose + a Python tautology scored as
         # "validated" because the judge can't run Lean.
-        from src.ztare.validator.lean_substrate_runner import (
+        from ztare.validator.lean_substrate_runner import (
             is_lean_proof_substrate,
             run_lean_substrate_iteration,
         )
@@ -2585,25 +2653,11 @@ if __name__ == "__main__":
                     run_cmd = [sys.executable, frozen_harness_path, "--run-visible-assertions"]
                 else:
                     run_cmd = [sys.executable, test_path]
-                # GP-PATH-NORM (2026-04-24): mutator occasionally writes
-                # test_model.py with relative paths like 'projects/<other>/...'
-                # that assume CWD=repo_root. Since we run with cwd=PROJECT_DIR,
-                # those resolve to PROJECT_DIR/projects/<other>/... which does
-                # not exist. Fix: materialize a symlink PROJECT_DIR/projects ->
-                # REPO_ROOT/projects so 'projects/<other>' resolves transparently.
-                # Does not affect workspace/... paths (those are already
-                # project-relative and remain correct).
-                try:
-                    _repo_root = Path(__file__).resolve().parents[3]
-                    _projects_shim = Path(PROJECT_DIR) / "projects"
-                    _repo_projects = _repo_root / "projects"
-                    if _repo_projects.is_dir() and not _projects_shim.exists():
-                        _projects_shim.symlink_to(_repo_projects)
-                except Exception:
-                    # Non-fatal; if symlink creation fails, the mutator's
-                    # relative-path bug still surfaces as harness defect and
-                    # the judge correctly flags it. Better than a crash.
-                    pass
+                # Run from the project directory. Candidate suites may use
+                # project-relative paths such as workspace/... or raw/...
+                # but repo-root paths like projects/<slug>/... are a
+                # contract miss. Do not materialize a projects/ symlink here:
+                # it leaks the repo tree into the project and hides that miss.
                 res = subprocess.run(
                     run_cmd, capture_output=True, text=True, timeout=15,
                     cwd=PROJECT_DIR,

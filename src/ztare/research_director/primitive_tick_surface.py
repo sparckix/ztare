@@ -40,6 +40,7 @@ _QUERY_STOPWORDS = {
     "into",
     "itself",
     "little",
+    "may",
     "more",
     "need",
     "needs",
@@ -97,6 +98,14 @@ def expand_query_terms(query_terms: list[str] | tuple[str, ...]) -> list[str]:
         ]
         for token in tokens:
             add(token)
+            if token.endswith("ies") and len(token) > 5:
+                add(token[:-3] + "y")
+            elif (
+                token.endswith("s")
+                and len(token) > 4
+                and not token.endswith(("ss", "us", "is"))
+            ):
+                add(token[:-1])
             if "_" in token:
                 add(token.replace("_", " "))
         for left, right in zip(tokens, tokens[1:]):
@@ -561,7 +570,7 @@ def build_primitive_tick_surface(
     graph_bonus, graph_warnings = _load_graph_bonus()
     warnings.extend(graph_warnings)
     try:
-        from src.ztare.research_director.primitive_amnesia import atlas_freshness_status
+        from ztare.research_director.primitive_amnesia import atlas_freshness_status
         atlas_status = atlas_freshness_status()
         if not atlas_status.ok:
             warnings.append("primitive atlas stale: " + "; ".join(atlas_status.warnings[:3]))
@@ -575,7 +584,7 @@ def build_primitive_tick_surface(
     # ranking. Falls back to lexical ranking when no atlas/embedder is available.
     sem_scores: dict[str, float] = {}
     try:
-        from src.ztare.research_director.primitive_amnesia import precheck as _amnesia_precheck
+        from ztare.research_director.primitive_amnesia import precheck as _amnesia_precheck
         q = " ".join(terms)
         for h in _amnesia_precheck(q, top_k=max(len(rows), 1)):
             sem_scores[str(h.get("name") or h.get("signature"))] = float(h.get("score") or 0.0)
@@ -629,8 +638,8 @@ def build_primitive_tick_surface(
 
     parent_node_payloads: list[dict[str, Any]] = []
     try:
-        from src.ztare.research_director.primitive_catalog_taxonomy import catalog_parent_nodes
-        from src.ztare.research_director.primitive_family_registry import parent_nodes
+        from ztare.research_director.primitive_catalog_taxonomy import catalog_parent_nodes
+        from ztare.research_director.primitive_family_registry import parent_nodes
 
         parent_node_payloads = [
             {**asdict(node), "scope": "catalog"}

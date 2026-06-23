@@ -6,8 +6,7 @@ and gp169 v3 (calibration-veto + ERP + Trigger Table protocol).
 Per AGENTS.md mechanization guide: recurring valuable hand-procedures
 become deterministic primitives.
 
-Reference seam:
-  research_areas/private/seams/protocol/GP-193_post_run_thesis_synthesizer_seam.md
+Reference seam: GP-193 post-run thesis synthesis.
 
 How it works (narrow scope, opt-in to promotion):
 
@@ -45,7 +44,7 @@ from typing import Callable, Optional
 
 # Shared primitive — single source of truth for iter extraction
 # (per GP-193 seam Architecture-Coherence debate, Option A).
-from src.ztare.synthesis.iter_extraction import (
+from ztare.synthesis.iter_extraction import (
     IterRecord,
     read_iter_records,
     detect_complementary_pairs,
@@ -303,8 +302,13 @@ def run_post_run_synthesis(*,
     # designed for sparse-history loops; synthesis always wants the full set.
     records = read_iter_records(project_dir, min_records_before_supplement=999)
     # Filter score-0 iters — they carry no structural content worth merging.
-    records = [r for r in records if r.score > 0]
-    records = _filter_records_for_synthesis(records, rubric_data)
+    positive_records = [r for r in records if r.score > 0]
+    if not positive_records:
+        log.info("post-run synthesis: no positive-score iters available")
+        _write_attempts_log(workspace, attempts, note="no_positive_scored_iters")
+        return attempts
+    promotion_baseline_score = max(r.score for r in positive_records)
+    records = _filter_records_for_synthesis(positive_records, rubric_data)
     if len(records) < 2:
         log.info("post-run synthesis: <2 scored iters available, nothing to compose")
         _write_attempts_log(workspace, attempts,
@@ -338,8 +342,6 @@ def run_post_run_synthesis(*,
     log.info("post-run synthesis: %d clusters detected, trying top %d",
              len(clusters), len(clusters_to_try))
 
-    overall_champion_score = max(r.score for r in records)
-
     for cluster in clusters_to_try:
         candidate_path, base = compose_candidate_thesis(cluster, records_by_iter)
         attempt = SynthesisAttempt(
@@ -355,7 +357,7 @@ def run_post_run_synthesis(*,
         try:
             candidate_score = int(judge_invoker(candidate_path))
             attempt.candidate_score = candidate_score
-            attempt.margin = candidate_score - overall_champion_score
+            attempt.margin = candidate_score - promotion_baseline_score
             if attempt.margin >= margin_threshold:
                 attempt.promoted = True
                 attempt.reason = f"promoted: margin {attempt.margin} >= {margin_threshold}"

@@ -11,7 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from src.ztare.orchestrator.contract_adherence import (
+from ztare.orchestrator.contract_adherence import (
     AdherenceReport,
     VIOLATION_CODES,
     _resolve_active_contract,
@@ -20,7 +20,7 @@ from src.ztare.orchestrator.contract_adherence import (
     format_adherence_summary,
     runtime_check_imodel,
 )
-from src.ztare.orchestrator.iter_context import IterContext
+from ztare.orchestrator.iter_context import IterContext
 
 
 # ── Active-contract resolution ───────────────────────────────────────────
@@ -160,6 +160,25 @@ class TestAdherenceMisc:
         violations = check_contract_adherence("", rubric, tmp_path)
         assert "missing_imodel_def" in violations
 
+    def test_non_imodel_qualitative_contract_allows_runnable_harness_without_imodel(self, tmp_path):
+        rubric = {
+            "falsification_mode": "bounded_discriminator",
+            "require_i_model_in_submission": False,
+            "enable_fit_primitive": False,
+            "disable_evidence_fit_gate": True,
+            "cage_meta": {"class": "writing_quality"},
+        }
+        text = """
+def evaluate(text):
+    return {"ok": "claim" in text and "falsifier" in text}
+
+if __name__ == "__main__":
+    print(evaluate("claim plus falsifier"))
+"""
+        violations = check_contract_adherence(text, rubric, tmp_path)
+        assert "missing_imodel_def" not in violations
+        assert violations == []
+
     def test_violation_codes_referenced_have_descriptions(self):
         # Sanity: any violation a checker emits must be in VIOLATION_CODES.
         emitted = {
@@ -192,7 +211,7 @@ class TestRuntimeCheckImodel:
             "def I_model(d, params=None):\n"
             "    return 2.0 * d\n"
         )
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         assert runtime_check_imodel(tm) == []
 
     def test_nan_return_caught_at_runtime(self, tmp_path):
@@ -203,7 +222,7 @@ class TestRuntimeCheckImodel:
             "def I_model(d, params=None):\n"
             "    return float('nan')\n"
         )
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         violations = runtime_check_imodel(tm)
         assert "runtime_nan_return" in violations
 
@@ -215,7 +234,7 @@ class TestRuntimeCheckImodel:
             "def I_model(d, params=None):\n"
             "    return float('inf')\n"
         )
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         assert "runtime_nan_return" in runtime_check_imodel(tm)
 
     def test_imodel_raises_caught(self, tmp_path):
@@ -226,17 +245,17 @@ class TestRuntimeCheckImodel:
             "def I_model(d, params=None):\n"
             "    raise ValueError('nope')\n"
         )
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         assert "runtime_imodel_raises" in runtime_check_imodel(tm)
 
     def test_module_import_failure_caught(self, tmp_path):
         tm = tmp_path / "test_model.py"
         tm.write_text("syntax error\n")
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         assert "runtime_import_failure" in runtime_check_imodel(tm)
 
     def test_nonexistent_path_returns_empty(self, tmp_path):
-        from src.ztare.orchestrator.contract_adherence import runtime_check_imodel
+        from ztare.orchestrator.contract_adherence import runtime_check_imodel
         assert runtime_check_imodel(tmp_path / "missing.py") == []
 
 

@@ -13,11 +13,13 @@ from dataclasses import asdict, dataclass, field, replace
 from pathlib import Path
 from typing import Iterable
 
-from src.ztare.common.kernel_action_schema import KernelActionSchema
+from ztare.common.kernel_action_schema import KernelActionSchema
 
 
 REPO = Path(__file__).resolve().parents[3]
 OUT_PATH = REPO / "analytics" / "public" / "queries" / "rd_operator_cards_experimental.json"
+OPERATOR_CARD_ATLAS_PATH = REPO / "analytics" / "public" / "index" / "operator_card_atlas_embeddings.json"
+OPERATOR_CARD_ATLAS_MANIFEST_PATH = REPO / "analytics" / "public" / "index" / "operator_card_atlas_manifest.json"
 
 
 @dataclass(frozen=True)
@@ -49,6 +51,7 @@ class OperatorCard:
     disambiguators: tuple[str, ...] = field(default_factory=tuple)
     fine_handles: tuple[str, ...] = field(default_factory=tuple)
     required_schema_fields: tuple[str, ...] = field(default_factory=tuple)
+    route_required_match_groups: tuple[tuple[str, ...], ...] = field(default_factory=tuple)
     score: float = 0.0
     matched_terms: tuple[str, ...] = field(default_factory=tuple)
 
@@ -295,6 +298,149 @@ CARDS: tuple[OperatorCard, ...] = (
         boundary="This supports only the named claim update, not the broader thesis.",
     ),
     OperatorCard(
+        card_id="OP-HRD-01",
+        name="Hard Residual Research Contract",
+        source_ops=("PATTERN-011", "PATTERN-025", "PATTERN-028"),
+        trigger_terms=(
+            "hard mathematical residual",
+            "hard research residual",
+            "hard residual",
+            "proof frontier",
+            "formal frontier",
+            "research depth required",
+            "recursive research required",
+            "millennium problem",
+            "millennium",
+        ),
+        obligation_classes=("decompose", "construct", "bound"),
+        problem_classes=(
+            "hard_mathematical_residual",
+            "hard_research_residual",
+            "proof_frontier",
+            "formal_frontier",
+            "research_depth_required",
+            "recursive_research_required",
+        ),
+        entry_conditions=(
+            "The task declares a hard residual, proof frontier, or recursive-depth requirement.",
+            "A close would be unsafe without orientation, independent attack lanes, and a tool or primitive pass.",
+        ),
+        steps=(
+            "Name the residual and the exact claim boundary.",
+            "Produce a pencil/orientation artifact before formal or code edits.",
+            "Select independent attack lanes and their kill conditions.",
+            "Run the class-matched tool, primitive, graph, or workbench surface.",
+            "Record the post-edit stress pass and remaining live vectors.",
+        ),
+        required_output=(
+            "orientation artifact with eigenquestion, candidate theorem or obstruction, and kill condition.",
+            "tool-or-primitive pass receipt or why_not for every class-matched tool skipped.",
+            "artifact edit plus verification receipt.",
+            "stop/update rule for recurrence, terminal negative, or next attack lane.",
+        ),
+        breaker="A prior manifest, graph basin, primitive, or amnesia surface shows this is only a renamed known gap.",
+        stop_update_rule=(
+            "Do not close or widen the claim until orientation, tool pass, artifact edit, "
+            "and post-edit stress receipt are present."
+        ),
+        boundary="This routes hard research execution; it does not certify the mathematical or scientific claim.",
+        disambiguators=(
+            "Prefer this card when the task declares a hard residual or recursive-depth requirement.",
+            "Prefer evidence-carrier routing for ordinary claim updates that only need a receipt.",
+            "Prefer graph diagnostics when the immediate action is selecting or validating a graph carrier.",
+        ),
+        fine_handles=(
+            "hard_residual_antipattern_guard: prior overlap, object identity, clean-proceed condition.",
+            "orientation_artifact: eigenquestion, candidate theorem or obstruction, kill condition.",
+            "stress_test_artifact: class-matched tool, primitive, graph, or workbench result.",
+            "verification_artifact: compile/check/tool pass after artifact edit.",
+        ),
+        required_schema_fields=(
+            "eigenquestion",
+            "candidate_theorem_or_obstruction",
+            "kill_condition",
+            "tool_or_primitive",
+            "residual_delta",
+            "verification_command_or_gate",
+            "remaining_failure_mode",
+        ),
+    ),
+    OperatorCard(
+        card_id="OP-PDE-01",
+        name="PDE Estimate or Carrier Contract",
+        source_ops=("GP-219", "PATTERN-028"),
+        trigger_terms=(
+            "area ns",
+            "pde",
+            "pde estimate",
+            "pde workbench",
+            "navier",
+            "stokes",
+            "navier stokes",
+            "vorticity",
+            "duhamel",
+            "de giorgi",
+            "carleson",
+            "bkm",
+            "prodi",
+            "serrin",
+            "conditional source law",
+            "source law",
+            "bounded carrier",
+            "selectable carrier",
+            "dimensional endpoint",
+        ),
+        obligation_classes=("bound", "construct", "decompose"),
+        problem_classes=(
+            "pde_estimate_or_carrier_residual",
+            "pde_estimate",
+            "pde_carrier_residual",
+            "navier_stokes",
+            "pde_workbench",
+        ),
+        entry_conditions=(
+            "The task touches a PDE estimate, Navier-Stokes surface, or PDE carrier/source law.",
+            "A claim update depends on a PDE workbench, dimensional check, endpoint check, or constructor attempt.",
+        ),
+        steps=(
+            "Name the PDE estimate target and carrier.",
+            "Run the relevant workbench, dimensional, endpoint, single-spend, or pi/Buckingham check.",
+            "Attempt the estimate route or produce a sharp hostile witness.",
+            "If a bounded/selectable carrier is visible, record the positive constructor attempt or the tested blocker.",
+        ),
+        required_output=(
+            "PDE tool/gate receipt with estimate target and pass/fail result.",
+            "theorem-or-counterexample attempt with proof layers and kill condition.",
+            "constructor attempt receipt when source law and bounded/selectable carrier are visible.",
+        ),
+        breaker="The visible surface is not a PDE inequality/carrier problem, or the carrier is not selectable in the claimed regime.",
+        stop_update_rule=(
+            "Do not proceed on obstruction-only prose when a conditional source law and bounded/selectable "
+            "carrier require a constructor attempt."
+        ),
+        boundary="This routes PDE estimate and carrier work; it does not replace the domain workbench or proof checker.",
+        disambiguators=(
+            "Prefer this card when the task area explicitly says ns or the goal names a PDE object.",
+            "Reject this card for generic pressure, endpoint, or source words without a PDE context.",
+            "Prefer portable estimate receipts when the receipt schema is reused outside PDE.",
+        ),
+        fine_handles=(
+            "pde_tool_or_gate: workbench, dimensional, endpoint, single-spend, pi/Buckingham, or why_not.",
+            "estimate_target: the exact inequality, carrier, or source law under test.",
+            "constructor_map_or_why_not: positive turn when a bounded/selectable carrier is visible.",
+        ),
+        required_schema_fields=(
+            "pde_tool_or_gate",
+            "estimate_target",
+            "passed_or_failed",
+            "theorem_or_counterexample",
+            "proof_layers",
+            "conditional_source_law",
+            "target_carrier",
+            "constructor_map_or_why_not",
+        ),
+    ),
+    OperatorCard(
         card_id="OP-BCG-01",
         name="Branch-Coverage Gate",
         source_ops=("core_03", "broad_08"),
@@ -453,6 +599,29 @@ CARDS: tuple[OperatorCard, ...] = (
             "target_domain_falsifier",
             "decision_consequence",
         ),
+        route_required_match_groups=(
+            (
+                "analogy",
+                "isomorphism",
+                "isomorphic",
+                "translation",
+                "transfer",
+                "cross-domain",
+                "state pricing",
+                "state price",
+                "superhedging",
+                "max-flow",
+                "min-cut",
+                "hall",
+                "representation",
+                "mapping",
+                "invariant",
+                "bridge",
+                "transport",
+                "reduction",
+                "encoding",
+            ),
+        ),
     ),
     OperatorCard(
         card_id="OP-SLP-01",
@@ -543,6 +712,117 @@ CARDS: tuple[OperatorCard, ...] = (
             "target_size_or_packing_bound",
             "constants_before_limit_rule",
             "target_domain_falsifier",
+        ),
+        route_required_match_groups=(
+            (
+                "surplus",
+                "entropy",
+                "fiber",
+                "class number",
+                "class group",
+                "chebotarev",
+                "frobenius",
+                "golod",
+                "pigeonhole",
+                "packing",
+                "unit distance",
+            ),
+            (
+                "ambient",
+                "high-dimensional",
+                "lift",
+                "project",
+                "projection",
+                "quotient",
+                "injective",
+                "multiplicity",
+                "bounded multiplicity",
+                "lattice",
+                "tower",
+            ),
+        ),
+    ),
+    OperatorCard(
+        card_id="OP-PER-01",
+        name="Portable Estimate Receipt Schema",
+        source_ops=("GP-219", "core_03", "core_05"),
+        trigger_terms=(
+            "portable receipt",
+            "portable estimate",
+            "estimate receipt",
+            "auxiliary object",
+            "comparison object",
+            "engineered object",
+            "scope contract",
+            "regime contract",
+            "class scoping",
+            "sharpness witness",
+            "failure witness",
+            "hostile witness",
+            "counterexample",
+            "representation reformulation",
+            "coordinate reformulation",
+            "same formal system",
+            "pec_a",
+            "pec_b",
+            "pec_e",
+            "cand_g",
+        ),
+        obligation_classes=("bound", "decompose", "transfer"),
+        problem_classes=(
+            "portable_estimate_receipt",
+            "typed_receipt_schema",
+            "estimate_craft_receipt",
+        ),
+        entry_conditions=(
+            "A PDE or non-PDE estimate move is being reused as a portable receipt.",
+            "The move is unsafe unless it names the receipt family and the fields that separate it from its nearest confuser.",
+        ),
+        steps=(
+            "Select the receipt family: pec_a, pec_b, pec_e, cand_g, or another explicitly named portable receipt.",
+            "Name the substrate or domain where the receipt is being used.",
+            "Fill the receipt's action-constraint fields with checkable content.",
+            "Name the nearest pec/cand confuser and the field that rejects it.",
+            "State the artifact change and the decision consequence.",
+        ),
+        required_output=(
+            "Portable receipt row: selected_receipt_family, substrate_or_domain, action_constraint_fields.",
+            "Typed-field completion row: typed_fields_filled, nearest_confuser, confuser_rejection_reason.",
+            "Artifact and decision row: artifact_change, decision_consequence.",
+            "One boundary sentence forbidding pec/cand labels as payment without field content.",
+        ),
+        breaker=(
+            "Show that the artifact only names pec_a/pec_b/pec_e/cand_g or a witness label, "
+            "without the fields that distinguish that receipt from its nearest confuser."
+        ),
+        stop_update_rule=(
+            "Do not accept a portable estimate move until selected family, typed fields, "
+            "nearest-confuser rejection, artifact change, and decision consequence are present."
+        ),
+        boundary=(
+            "Portable receipt names are routing handles. They become evidence only through "
+            "filled action-constraint fields and a downstream artifact or decision change."
+        ),
+        disambiguators=(
+            "Prefer portable-estimate receipt over evidence-carrier routing when pec/cand families or estimate-craft receipt names are visible.",
+            "Prefer source-target transfer when the live issue is preserving an invariant across representations rather than filling a known portable receipt family.",
+            "Prefer branch coverage when the work is paying every regime before aggregation, not selecting a receipt schema.",
+        ),
+        fine_handles=(
+            "pec_a: auxiliary comparison object with comparison_map and target_quantity fields.",
+            "pec_b: regime/class scoping with scope_breaker and boundary condition fields.",
+            "pec_e: sharpness or failure witness with claim_boundary_update fields.",
+            "cand_g: same-formal-system representation reformulation with translation_rule fields.",
+        ),
+        required_schema_fields=(
+            "selected_receipt_family",
+            "substrate_or_domain",
+            "action_constraint_fields",
+            "typed_fields_filled",
+            "nearest_confuser",
+            "confuser_rejection_reason",
+            "artifact_change",
+            "decision_consequence",
         ),
     ),
     OperatorCard(
@@ -767,6 +1047,172 @@ CARDS: tuple[OperatorCard, ...] = (
         ),
     ),
     OperatorCard(
+        card_id="OP-GDC-01",
+        name="Graph Diagnostic Carrier",
+        source_ops=("core_01", "core_03", "core_05"),
+        trigger_terms=(
+            "graph",
+            "context graph",
+            "graph carrier",
+            "graph diagnostic",
+            "probability dag",
+            "constraint basin",
+            "constraint-basin",
+            "source claim graph",
+            "code dependency graph",
+            "primitive capability graph",
+            "dag steering",
+            "min cut",
+            "min-cut",
+            "dominators",
+            "pagerank",
+            "hits",
+            "k core",
+            "k-core",
+            "louvain",
+            "edge betweenness",
+            "counterfactual edge",
+            "graph perturbation",
+            "graph disagreement",
+            "graph receipt",
+        ),
+        obligation_classes=("bound", "decompose", "transfer"),
+        problem_classes=(
+            "graph_diagnostic_carrier",
+            "graph_receipt",
+            "context_graph_routing",
+            "research_state_graph",
+        ),
+        entry_conditions=(
+            "A graph-shaped artifact is being used to orient research, select a route, or demote a route.",
+            "The metric is unsafe unless it names its producer, baseline, noise filter, and downstream decision effect.",
+        ),
+        steps=(
+            "Name the graph kind, producer, source artifacts, and consumer.",
+            "Name the standard library or method family behind each diagnostic.",
+            "State the substrate-specific extraction or filtering layer.",
+            "Record whether the graph changed a route, selected a check, was ignored, or was misleading.",
+            "Compile the selected graph result into a gate, pattern-action carrier, or explicit non-use receipt.",
+        ),
+        required_output=(
+            "Graph carrier row: graph_id, graph_kind, producer, source_artifacts, consumer, freshness_rule.",
+            "Diagnostic rows with method, baseline, result summary, and library or literature anchor.",
+            "Noise-filter row naming plumbing, aliases, generated binders, or low-signal edges removed.",
+            "Decision receipt: strategy_change, no_strategy_change, or misleading_or_noise.",
+            "Selected action card, gate, or next artifact slot, or a non-use reason.",
+        ),
+        breaker=(
+            "Show that the graph metric is a standard algorithm reported without provenance, "
+            "without a baseline/noise filter, or without changing any downstream check."
+        ),
+        stop_update_rule=(
+            "Do not treat a graph metric as evidence until it validates as a graph carrier "
+            "and either selects a next check/artifact or records a no-use/misleading receipt."
+        ),
+        boundary=(
+            "The graph layer supplies orientation and route accounting. It does not replace the "
+            "domain gate, proof check, source audit, or evaluator."
+        ),
+        disambiguators=(
+            "Prefer this card over evidence-carrier routing when the carrier is explicitly graph-shaped.",
+            "Prefer source-target transfer when the live risk is invariant preservation across a map rather than graph metric interpretation.",
+            "Prefer reflexive mining when the live question is portfolio measurement and the graph is only one inspected source.",
+        ),
+        fine_handles=(
+            "graph_carrier_schema: graph_id, graph_kind, producer, source_artifacts, consumer, freshness_rule, vocabularies, diagnostics, noise_filter, decision_receipt.",
+            "algorithm_boundary: standard framework method versus ZTARE extraction, conditioning, disagreement, perturbation, and receipt layer.",
+            "action_card_lowering: selected graph finding compiles to a pattern-action carrier, gate, next artifact slot, or explicit non-use.",
+        ),
+        required_schema_fields=(
+            "graph_id",
+            "graph_kind",
+            "producer",
+            "source_artifacts",
+            "consumer",
+            "freshness_rule",
+            "diagnostics",
+            "noise_filter",
+            "decision_receipt",
+            "selected_action_card_or_gate",
+            "non_use_or_retraction",
+        ),
+    ),
+    OperatorCard(
+        card_id="OP-MME-01",
+        name="Meta-Language Edge Carrier",
+        source_ops=("mm_02", "mm_03", "core_01"),
+        trigger_terms=(
+            "mm_01",
+            "mm_02",
+            "mm_03",
+            "meta-language",
+            "meta language",
+            "evidence-path graph",
+            "evidence path graph",
+            "causal edge",
+            "residual-to-check",
+            "residual to check",
+            "surface quotient",
+            "quotient surface",
+            "live residual",
+            "recurring residual",
+        ),
+        obligation_classes=("bound", "transfer"),
+        problem_classes=(
+            "meta_language_edge_carrier",
+            "residual_to_check_edge",
+            "surface_quotient_edge",
+        ),
+        entry_conditions=(
+            "A meta-language or mm surface is being used to select the next check.",
+            "The route is unsafe unless the surface is lowered into a causal edge from observed state to required artifact.",
+        ),
+        steps=(
+            "State the observed state.",
+            "Name the quotient-hidden surface wording.",
+            "Name the evidence-path graph or residual edge.",
+            "State the candidate edge and required check.",
+            "Name the forbidden sibling and the stop rule.",
+        ),
+        required_output=(
+            "Meta-language edge row: observed_state, quotient_hidden_surface, evidence_path_graph.",
+            "Residual edge row: live_residual_or_blocker, candidate_edge, required_check.",
+            "Boundary row: forbidden_sibling, permitted_update_if_paid, stop_rule.",
+            "One sentence forbidding mm labels as payment without edge content.",
+        ),
+        breaker=(
+            "Show that the artifact only names an mm label, graph family, or residual family "
+            "without the observed-state-to-required-check edge."
+        ),
+        stop_update_rule=(
+            "Do not accept a meta-language move until the causal edge and required check are explicit."
+        ),
+        boundary=(
+            "The mm surface is a compiler handle. The accepted artifact is the edge from observed state "
+            "to required check, not the label."
+        ),
+        disambiguators=(
+            "Prefer meta-language edge over graph diagnostic when mm labels, quotient surfaces, or residual-to-check wording select the next artifact.",
+            "Prefer graph diagnostic when the live issue is algorithm provenance, graph producer, diagnostics, or non-use receipt.",
+            "Prefer portable receipt when the visible obligation is pec/cand typed fields rather than a residual-to-check edge.",
+        ),
+        fine_handles=(
+            "mm_02: surface quotient to evidence-path graph.",
+            "mm_03: promote live residual or blocker into the required-check edge.",
+        ),
+        required_schema_fields=(
+            "observed_state",
+            "quotient_hidden_surface",
+            "evidence_path_graph",
+            "live_residual_or_blocker",
+            "candidate_edge",
+            "required_check",
+            "forbidden_sibling",
+            "permitted_update_if_paid",
+            "stop_rule",
+        ),
+    ),
+    OperatorCard(
         card_id="OP-AWR-01",
         name="Autoresearch Workbench Routing",
         source_ops=("core_01", "core_05", "broad_08"),
@@ -883,20 +1329,28 @@ def route_operator_cards(
     """Route visible context to compact operator cards."""
     haystacks = _normalize_context(context)
     routed: list[OperatorCard] = []
+
+    def matches(term: str) -> bool:
+        needle = term.replace("_", " ").replace("-", " ").lower()
+        return any(needle in hay for hay in haystacks)
+
     for card in CARDS:
         matched: list[str] = []
         score = 0.0
         for term in card.trigger_terms:
-            needle = term.replace("_", " ").replace("-", " ").lower()
-            if any(needle in hay for hay in haystacks):
+            if matches(term):
                 matched.append(term)
                 score += 2.0
         for problem_class in card.problem_classes:
-            needle = problem_class.replace("_", " ").replace("-", " ").lower()
-            if any(needle in hay for hay in haystacks):
+            if matches(problem_class):
                 matched.append(problem_class)
                 score += 3.0
         if score > 0:
+            if card.route_required_match_groups and not all(
+                any(matches(term) for term in group)
+                for group in card.route_required_match_groups
+            ):
+                continue
             routed.append(
                 replace(
                     card,
@@ -906,6 +1360,315 @@ def route_operator_cards(
             )
     routed.sort(key=lambda card: (-card.score, card.card_id))
     return routed[:top_n]
+
+
+def operator_card_catalog_entries() -> list[dict]:
+    """Return atlas-ready rows for individual operator-card selection."""
+
+    try:
+        from ztare.common.embeddings import content_id
+    except Exception:  # noqa: BLE001
+        content_id = None
+
+    rows: list[dict] = []
+    for card in CARDS:
+        parts = [
+            card.card_id,
+            card.name,
+            "problem classes: " + ", ".join(card.problem_classes),
+            "entry: " + " ".join(card.entry_conditions),
+            "steps: " + " ".join(card.steps),
+            "outputs: " + " ".join(card.required_output),
+            "breaker: " + card.breaker,
+            "boundary: " + card.boundary,
+            "fields: " + ", ".join(card.required_schema_fields),
+            "handles: " + " ".join(card.fine_handles),
+            "disambiguators: " + " ".join(card.disambiguators),
+        ]
+        text = "\n".join(part for part in parts if part.strip())
+        row_id = (
+            f"operator_card:{card.card_id}:{content_id(card.card_id, text)}"
+            if content_id
+            else f"operator_card:{card.card_id}"
+        )
+        rows.append(
+            {
+                "id": row_id,
+                "text": text,
+                "card_id": card.card_id,
+                "name": card.name,
+                "source_ops": list(card.source_ops),
+                "problem_classes": list(card.problem_classes),
+                "obligation_classes": list(card.obligation_classes),
+                "required_schema_fields": list(card.required_schema_fields),
+            }
+        )
+    return rows
+
+
+def _card_id_from_atlas_row(row_id: str, row: object) -> str:
+    if isinstance(row, dict) and isinstance(row.get("card_id"), str):
+        return str(row["card_id"])
+    parts = str(row_id).split(":")
+    return parts[1] if len(parts) >= 2 and parts[0] == "operator_card" else str(row_id)
+
+
+def _card_ids_for_atlas_rows(row_ids: set[str], meta: dict[str, object], current_by_id: dict[str, str]) -> list[str]:
+    card_ids: set[str] = set()
+    for row_id in row_ids:
+        card_ids.add(current_by_id.get(row_id) or _card_id_from_atlas_row(row_id, meta.get(row_id)))
+    return sorted(card_ids)
+
+
+def operator_card_atlas_freshness(
+    *,
+    atlas_path: Path = OPERATOR_CARD_ATLAS_PATH,
+    manifest_path: Path = OPERATOR_CARD_ATLAS_MANIFEST_PATH,
+) -> dict:
+    """Return an offline contract check between the card catalog and atlas rows.
+
+    The semantic route is only trustworthy when the embedded row ids match the
+    current catalog rows. This check deliberately avoids provider calls.
+    """
+
+    expected_rows = operator_card_catalog_entries()
+    expected_ids = {str(row["id"]) for row in expected_rows}
+    current_by_id = {str(row["id"]): str(row["card_id"]) for row in expected_rows}
+    base = {
+        "atlas_path": str(atlas_path),
+        "manifest_path": str(manifest_path),
+        "atlas_exists": Path(atlas_path).exists(),
+        "manifest_exists": Path(manifest_path).exists(),
+        "expected_count": len(expected_rows),
+        "expected_card_ids": sorted({str(row["card_id"]) for row in expected_rows}),
+        "next_command": "make move-card-atlas-build",
+    }
+    if not Path(atlas_path).exists():
+        return {
+            **base,
+            "status": "absent",
+            "fresh": False,
+            "routing_mode": "lexical_fallback",
+            "semantic_deployed": False,
+            "reason": "move-card semantic atlas file is absent",
+        }
+    try:
+        atlas = json.loads(Path(atlas_path).read_text(encoding="utf-8"))
+    except Exception as exc:  # noqa: BLE001
+        return {
+            **base,
+            "status": "invalid",
+            "fresh": False,
+            "routing_mode": "lexical_fallback",
+            "semantic_deployed": False,
+            "reason": f"move-card atlas is unreadable: {type(exc).__name__}",
+        }
+    embeddings = atlas.get("embeddings")
+    meta = atlas.get("meta")
+    if not isinstance(embeddings, list) or not embeddings:
+        return {
+            **base,
+            "status": "empty",
+            "fresh": False,
+            "routing_mode": "lexical_fallback",
+            "semantic_deployed": False,
+            "model": atlas.get("model"),
+            "dimensions": atlas.get("dimensions"),
+            "declared_size": atlas.get("size"),
+            "embedding_count": len(embeddings) if isinstance(embeddings, list) else 0,
+            "meta_count": len(meta) if isinstance(meta, dict) else 0,
+            "reason": "move-card atlas has no embeddings",
+        }
+    if not isinstance(meta, dict) or not meta:
+        return {
+            **base,
+            "status": "invalid",
+            "fresh": False,
+            "routing_mode": "lexical_fallback",
+            "semantic_deployed": False,
+            "model": atlas.get("model"),
+            "dimensions": atlas.get("dimensions"),
+            "declared_size": atlas.get("size"),
+            "embedding_count": len(embeddings),
+            "meta_count": len(meta) if isinstance(meta, dict) else 0,
+            "reason": "move-card atlas is missing metadata rows",
+        }
+    embedding_ids = {
+        str(row.get("id"))
+        for row in embeddings
+        if isinstance(row, dict) and isinstance(row.get("id"), str)
+    }
+    meta_ids = {str(row_id) for row_id in meta.keys()}
+    missing_ids = expected_ids - meta_ids
+    extra_ids = meta_ids - expected_ids
+    missing_embedding_ids = expected_ids - embedding_ids
+    extra_embedding_ids = embedding_ids - expected_ids
+    declared_size = atlas.get("size")
+    size_matches = isinstance(declared_size, int) and declared_size == len(expected_ids)
+
+    manifest: dict = {}
+    manifest_size_matches = False
+    manifest_source_matches = False
+    if Path(manifest_path).exists():
+        try:
+            loaded = json.loads(Path(manifest_path).read_text(encoding="utf-8"))
+            manifest = loaded if isinstance(loaded, dict) else {}
+        except Exception:
+            manifest = {}
+    manifest_size_matches = manifest.get("size") == len(expected_ids)
+    manifest_source_matches = manifest.get("source") == __name__
+
+    fresh = (
+        not missing_ids
+        and not extra_ids
+        and not missing_embedding_ids
+        and not extra_embedding_ids
+        and size_matches
+        and Path(manifest_path).exists()
+        and manifest_size_matches
+        and manifest_source_matches
+    )
+    status = "fresh" if fresh else "stale"
+    reason = (
+        "move-card semantic atlas matches the current card catalog"
+        if fresh
+        else "rebuild move-card atlas; embedded row ids or manifest metadata do not match the current catalog"
+    )
+    return {
+        **base,
+        "status": status,
+        "fresh": fresh,
+        "routing_mode": "semantic_atlas" if fresh else "lexical_fallback",
+        "semantic_deployed": fresh,
+        "model": atlas.get("model"),
+        "dimensions": atlas.get("dimensions"),
+        "declared_size": declared_size,
+        "embedding_count": len(embedding_ids),
+        "meta_count": len(meta_ids),
+        "manifest_size": manifest.get("size") if isinstance(manifest, dict) else None,
+        "size_matches_expected": size_matches,
+        "manifest_size_matches_expected": manifest_size_matches,
+        "manifest_source_matches": manifest_source_matches,
+        "missing_card_ids": _card_ids_for_atlas_rows(missing_ids, meta, current_by_id),
+        "extra_card_ids": _card_ids_for_atlas_rows(extra_ids, meta, current_by_id),
+        "missing_embedding_card_ids": _card_ids_for_atlas_rows(missing_embedding_ids, meta, current_by_id),
+        "extra_embedding_card_ids": _card_ids_for_atlas_rows(extra_embedding_ids, meta, current_by_id),
+        "next_command": None if fresh else "make move-card-atlas-build",
+        "reason": reason,
+    }
+
+
+def build_operator_card_atlas(
+    *,
+    out_emb: Path = OPERATOR_CARD_ATLAS_PATH,
+    out_manifest: Path = OPERATOR_CARD_ATLAS_MANIFEST_PATH,
+) -> dict:
+    """Build the optional semantic atlas for operator-card selection."""
+
+    from ztare.common.embeddings import build_atlas
+
+    return build_atlas(
+        operator_card_catalog_entries(),
+        out_emb,
+        out_manifest,
+        extra_manifest={"corpus": "operator_cards", "source": __name__},
+    )
+
+
+def route_operator_cards_semantic(
+    *,
+    context: str | Iterable[str] | None = None,
+    top_n: int = 2,
+    atlas_path: Path = OPERATOR_CARD_ATLAS_PATH,
+    raise_on_semantic_error: bool = False,
+) -> list[OperatorCard]:
+    """Route operator cards through the optional card atlas, with lexical backfill."""
+
+    haystacks = _normalize_context(context)
+    lexical_cards = route_operator_cards(context=context, top_n=len(CARDS))
+    if not haystacks or not Path(atlas_path).exists():
+        return lexical_cards
+
+    try:
+        from ztare.common.embeddings import query_atlas
+
+        hits = query_atlas(Path(atlas_path), " ".join(haystacks), k=max(top_n * 3, top_n))
+    except (Exception, SystemExit):
+        if raise_on_semantic_error:
+            raise
+        return lexical_cards
+
+    by_id = {card.card_id: card for card in CARDS}
+    routed: list[OperatorCard] = []
+    seen: set[str] = set()
+    for hit in hits:
+        card_id = str(hit.get("card_id") or "")
+        if not card_id or card_id in seen or card_id not in by_id:
+            continue
+        seen.add(card_id)
+        score = float(hit.get("score") or 0.0)
+        routed.append(
+            replace(
+                by_id[card_id],
+                score=round(score * 100, 4),
+                matched_terms=(f"semantic:{score:.4f}",),
+            )
+        )
+        if len(routed) >= top_n:
+            break
+
+    for card in lexical_cards:
+        if card.card_id in seen:
+            continue
+        routed.append(card)
+        seen.add(card.card_id)
+
+    return routed or lexical_cards
+
+
+def operator_card_route_receipts(routed_operator_cards: Iterable[object]) -> list[dict]:
+    """Return compact, serializable provenance for routed operator cards."""
+    receipts: list[dict] = []
+    for card in routed_operator_cards:
+        matched_terms = [str(term) for term in getattr(card, "matched_terms", ())]
+        receipts.append(
+            {
+                "card_id": str(getattr(card, "card_id", "")),
+                "name": str(getattr(card, "name", "")),
+                "score": float(getattr(card, "score", 0.0) or 0.0),
+                "matched_terms": matched_terms,
+                "route_mode": (
+                    "semantic_atlas"
+                    if any(term.startswith("semantic:") for term in matched_terms)
+                    else "lexical_fallback"
+                ),
+            }
+        )
+    return receipts
+
+
+def render_operator_card_route_summary(
+    routes: list[dict],
+    *,
+    limit: int = 5,
+) -> str:
+    """Render compact route provenance for CLI and RD receipts."""
+    if not routes:
+        return "none"
+    chunks: list[str] = []
+    for route in routes[:limit]:
+        card_id = str(route.get("card_id") or "unknown")
+        route_mode = str(route.get("route_mode") or "unknown")
+        matched_terms = [
+            str(term)
+            for term in route.get("matched_terms", [])
+            if str(term).strip()
+        ][:3]
+        term_suffix = f"[{','.join(matched_terms)}]" if matched_terms else ""
+        chunks.append(f"{card_id}:{route_mode}{term_suffix}")
+    if len(routes) > limit:
+        chunks.append(f"+{len(routes) - limit} more")
+    return ";".join(chunks)
 
 
 def route_obligation_classes(

@@ -1,6 +1,38 @@
 {
   "falsification_mode": "bounded_discriminator",
   "persona": "You are a skeptical political economist and probabilistic forecaster evaluating whether an institutional failure probability claim is actually earned. You reject fake percentages, naked scenario theater, and any attempt to relabel a directional tilt as a calibrated forecast. You want explicit event ontology, horizon discipline, a transparent modeling basis, and a defensible relation between fragility evidence and point-probability output.",
+  "dimensions": [
+    {
+      "name": "Event Ontology Clarity",
+      "weight": 20,
+      "description": "Does the thesis define `material_union_failure by 2035-01-01` tightly enough that a reader can tell what counts as failure and what does not? Maximum score 40 if the failure event is vague, rhetorical, or collapses multiple different events into one undefined bucket."
+    },
+    {
+      "name": "Probability Model Basis",
+      "weight": 20,
+      "description": "Does the thesis explain how the probability is being generated: reference class, scenario weighting, bounded prior, or another explicit model basis? Penalize any percentage that appears without a named modeling logic."
+    },
+    {
+      "name": "Calibration and Reference Class Discipline",
+      "weight": 20,
+      "description": "Does the thesis use defensible calibration discipline for rare institutional failures and explain why the chosen comparators or scenarios are relevant? Maximum score 50 if the thesis gives a number with no reference-class logic or calibration story."
+    },
+    {
+      "name": "Upward and Downward Drivers",
+      "weight": 15,
+      "description": "Does the thesis identify the main channels that should raise failure probability and the main mechanisms that should lower it, rather than treating fragility as a one-way path to breakdown?"
+    },
+    {
+      "name": "Complementarity and Horizon Discipline",
+      "weight": 15,
+      "description": "Does the thesis keep the horizon fixed at 2035-01-01 and maintain a clean relation between `P(material_union_failure)` and `P(formal_intactness)`? Penalize moving horizons, hidden third buckets, or complementarity violations."
+    },
+    {
+      "name": "Overclaim Control",
+      "weight": 10,
+      "description": "Does the thesis avoid false precision, unsupported confidence, and point-probability theater? Maximum score 50 if the percentage is effectively a dressed-up directional tilt or if the thesis claims stronger calibration than the evidence supports."
+    }
+  ],
   "criteria": {
     "1_Event_Ontology_Clarity": "Does the thesis define `material_union_failure by 2035-01-01` tightly enough that a reader can tell what counts as failure and what does not? Maximum score 40 if the failure event is vague, rhetorical, or collapses multiple different events into one undefined bucket.",
     "2_Probability_Model_Basis": "Does the thesis explain how the probability is being generated: reference class, scenario weighting, bounded prior, or another explicit model basis? Penalize any percentage that appears without a named modeling logic.",

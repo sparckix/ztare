@@ -12,7 +12,7 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
-from src.ztare.validator.hypothesis_projection import ProjectionNode, build_projection
+from ztare.validator.hypothesis_projection import ProjectionNode, build_projection
 
 
 REPO = Path(__file__).resolve().parents[3]
@@ -146,6 +146,33 @@ def _shell_value(value: str) -> str:
     return "'" + value.replace("'", "'\"'\"'") + "'"
 
 
+def _rel_to_repo(repo: Path, path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(repo.resolve()))
+    except ValueError:
+        return str(path)
+
+
+def _first_existing_intake(repo: Path, project_dir: Path, slug: str) -> str | None:
+    candidates = [
+        project_dir / "project_packet.json",
+        project_dir / f"{slug}_intake.json",
+        project_dir / f"{slug}_packet.json",
+        repo / f"{slug}_intake.json",
+        repo / f"{slug}_packet.json",
+        repo / "examples" / "project_packets" / f"{slug}_packet.json",
+        repo / "examples" / "project_packets" / f"ready_{slug}_packet.json",
+        repo / "examples" / "substrate_packets" / f"{slug}_packet.json",
+        repo / "examples" / "substrate_packets" / f"ready_{slug}_packet.json",
+    ]
+    candidates.extend(sorted(project_dir.glob("*_intake.json")))
+    candidates.extend(sorted(project_dir.glob("*_packet.json")))
+    for path in candidates:
+        if path.exists() and path.is_file():
+            return _rel_to_repo(repo, path)
+    return None
+
+
 def _safe_id(value: str) -> str:
     return "".join(ch if ch.isalnum() or ch in {"-", "_"} else "_" for ch in value).strip("_")
 
@@ -262,7 +289,7 @@ def _matched_run_plan(
     project: str | None,
     limit: int = 5,
 ) -> list[MatchedRunCandidate]:
-    from src.ztare.reports.rubric_mode_corpus_audit import audit_rubric_mode_corpus
+    from ztare.reports.rubric_mode_corpus_audit import audit_rubric_mode_corpus
 
     rubric_report = audit_rubric_mode_corpus(repo=repo)
     candidates: list[MatchedRunCandidate] = []
@@ -297,20 +324,26 @@ def _matched_run_plan(
             node_count=len(nodes),
         )
         matched_run_id = _next_matched_run_id(slug, nodes)
+        intake = _first_existing_intake(repo, repo / project_path, slug)
+        intake_arg = f" INTAKE={_shell_value(intake)}" if intake else ""
+        no_fallback_arg = " MODEL_FALLBACK=0"
         api_command = (
             f"make experiment-loop PROJECT={_shell_value(slug)} "
-            f"RUBRIC={_shell_value(rubric_name)} ITERS=1 "
+            f"RUBRIC={_shell_value(rubric_name)} ITERS=1"
+            f"{intake_arg}{no_fallback_arg} "
             f"MATCHED_RUN_ID={_shell_value(matched_run_id)} MATCHED_RUN_ROLE=api"
         )
         matched_pair_command = (
             f"make autoresearch-matched-transport-pair PROJECT={_shell_value(slug)} "
-            f"RUBRIC={_shell_value(rubric_name)} ITERS=1 "
+            f"RUBRIC={_shell_value(rubric_name)} ITERS=1"
+            f"{intake_arg}{no_fallback_arg} "
             f"MATCHED_RUN_ID={_shell_value(matched_run_id)} "
             f"AGENT_TIMEOUT={DEFAULT_MATCHED_AGENT_TIMEOUT_SECONDS}"
         )
         subscription_command = (
             f"make experiment-loop PROJECT={_shell_value(slug)} "
-            f"RUBRIC={_shell_value(rubric_name)} ITERS=1 "
+            f"RUBRIC={_shell_value(rubric_name)} ITERS=1"
+            f"{intake_arg}{no_fallback_arg} "
             f"MATCHED_RUN_ID={_shell_value(matched_run_id)} MATCHED_RUN_ROLE=subscription "
             "AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 "
             "AGENT_INVERTER=1 AGENT_RUNTIME=codex "

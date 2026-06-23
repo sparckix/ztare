@@ -29,15 +29,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable, Optional
 
-from src.ztare.common.paths import REPO_ROOT
-from src.ztare.orchestration.execution_routing import infer_execution_route
-from src.ztare.research_director.primitive_class_rotation import (
+from ztare.common.paths import REPO_ROOT
+from ztare.orchestration.execution_routing import infer_execution_route
+from ztare.research_director.primitive_class_rotation import (
     cross_substrate_primitive_class_ledger_path_for_repo,
 )
-from src.ztare.signals import damage
+from ztare.signals import damage
 
 
-SEAMS_ROOT = REPO_ROOT / "research_areas" / "private" / "seams" / "mission"
+SEAMS_ROOT = REPO_ROOT / "research_areas" / "seams" / "mission"
 TODO_PATTERN = re.compile(r"^\s*-\s*\[\s*\]\s+(.+)$", re.MULTILINE)
 
 
@@ -178,7 +178,7 @@ def discover_principal_goals(
     These are the HIGHEST-priority discovery source because they carry
     explicit principal intent — not inferred from artifacts, but stated.
     """
-    from src.ztare.orchestration.goals_inbox import list_pending_goals
+    from ztare.orchestration.goals_inbox import list_pending_goals
     goals = list_pending_goals(assigned_to=assigned_to)
     out: list[Candidate] = []
     for g in goals[:max_per_source]:
@@ -230,7 +230,7 @@ def discover_agent_channel_messages(
     if not assigned_to or not assigned_to.startswith("role."):
         return []
     role_id = assigned_to.split(".", 1)[1]
-    from src.ztare.orchestration.agent_channels import list_agent_messages
+    from ztare.orchestration.agent_channels import list_agent_messages
 
     out: list[Candidate] = []
     for msg in list_agent_messages(role_id=role_id, status="open", limit=max_per_source):
@@ -375,7 +375,7 @@ def discover_open_debates(
     cutoff = datetime.now(timezone.utc) - timedelta(hours=idle_threshold_hours)
 
     try:
-        from src.ztare.supervisor.supervisor_findings_debate import read_debate_state  # type: ignore
+        from ztare.supervisor.supervisor_findings_debate import read_debate_state  # type: ignore
     except Exception:  # noqa: BLE001
         # Legacy layout missing — return empty rather than crash; the role
         # remains scaffolded and the daemon discovers nothing for it.

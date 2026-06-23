@@ -4,7 +4,7 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.supervisor.supervisor_usage import extract_usage_telemetry
+from ztare.supervisor.supervisor_usage import extract_usage_telemetry
 
 
 def run_supervisor_usage_fixture_regression() -> dict[str, object]:
@@ -83,6 +83,36 @@ def run_supervisor_usage_fixture_regression() -> dict[str, object]:
                 and text_usage.input_tokens == 4200
                 and text_usage.output_tokens == 800
                 and text_usage.model_name == "fixture-model"
+            ),
+        }
+    )
+
+    kimi_usage = extract_usage_telemetry(
+        stdout_text='{"usage":{"model_name":"kimi-k2.6-20260620","input_tokens":1000000,"output_tokens":1000000}}\n',
+        stderr_text="",
+    )
+    cases.append(
+        {
+            "case_id": "kimi_usage_routes_to_pricing_table",
+            "passed": (
+                kimi_usage.telemetry_captured is True
+                and kimi_usage.model_name == "kimi-k2.6-20260620"
+                and kimi_usage.estimated_cost_usd == 4.95
+            ),
+        }
+    )
+
+    grok_usage = extract_usage_telemetry(
+        stdout_text='{"usage":{"model_name":"grok-4.3-20260620","input_tokens":1000000,"output_tokens":1000000}}\n',
+        stderr_text="",
+    )
+    cases.append(
+        {
+            "case_id": "grok_usage_routes_to_pricing_table",
+            "passed": (
+                grok_usage.telemetry_captured is True
+                and grok_usage.model_name == "grok-4.3-20260620"
+                and grok_usage.estimated_cost_usd == 3.75
             ),
         }
     )

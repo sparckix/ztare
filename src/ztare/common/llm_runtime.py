@@ -1,11 +1,16 @@
 from __future__ import annotations
 
 import concurrent.futures
+import json
 import os
+import queue
+import threading
 import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Optional
+
+from ztare.common.google_genai_client import build_google_genai_client
 
 try:
     from openai import OpenAI
@@ -43,7 +48,12 @@ def _bootstrap_dotenv_if_needed() -> None:
     No-op if all provider keys already present in env (the local developer flow where
     keys are exported in shell). Reads .env quietly; no override of present env.
     """
-    if (all(os.environ.get(k) for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY"))
+    if (all(
+            os.environ.get(k)
+            for k in ("ANTHROPIC_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY")
+        )
+            and (os.environ.get("KIMI_API_KEY") or os.environ.get("MOONSHOT_API_KEY"))
+            and (os.environ.get("XAI_API_KEY") or os.environ.get("GROK_API_KEY"))
             and (os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))):
         # GEMINI/GOOGLE included so the embedding engine (semantic shelf / atlases) gets its key too —
         # omitting it let the gate pass while the shelf was silently dead ("no GOOGLE_API_KEY").
@@ -91,12 +101,33 @@ MODEL_MAP = {
     "o4-mini": "o4-mini",
     # DeepSeek family (2026-05-26): added as cross-family verification option
     # for adversarial review and committee panels per AGENTS.md §6n.3.
-    # OpenAI-API-compatible endpoint (base_url=api.deepseek.com/v1).
+    # Chat Completions transport endpoint (base_url=api.deepseek.com/v1).
     # `deepseek` = V3 chat (fast, ~1-2s). `deepseek-reasoner` = R1 (slow,
     # ~30-90s, needs 8K+ output budget for internal reasoning tokens).
     "deepseek": "deepseek-chat",
     "deepseek-chat": "deepseek-chat",
     "deepseek-reasoner": "deepseek-reasoner",
+    # Kimi / Moonshot family (Chat Completions transport).
+    # `kimi` is the current general agent/reasoning model. Keep deprecated
+    # `kimi-latest` / `kimi-k2-*-preview` out of the alias table.
+    "kimi": "kimi-k2.6",
+    "kimi-k2.6": "kimi-k2.6",
+    "kimi-k2.5": "kimi-k2.5",
+    "kimi-code": "kimi-k2.7-code",
+    "kimi-code-fast": "kimi-k2.7-code-highspeed",
+    "kimi-k2.7-code": "kimi-k2.7-code",
+    "kimi-k2.7-code-highspeed": "kimi-k2.7-code-highspeed",
+    "moonshot-v1-8k": "moonshot-v1-8k",
+    "moonshot-v1-32k": "moonshot-v1-32k",
+    "moonshot-v1-128k": "moonshot-v1-128k",
+    # Grok / xAI family (Chat Completions transport).
+    # `grok` follows xAI's current stable alias for the general text model.
+    "grok": "grok-4.3",
+    "xai": "grok-4.3",
+    "grok-4.3": "grok-4.3",
+    "grok-build": "grok-build-0.1",
+    "grok-code": "grok-build-0.1",
+    "grok-build-0.1": "grok-build-0.1",
 }
 
 DIRECTOR_MODEL_MAP = {
@@ -114,7 +145,28 @@ DIRECTOR_MODEL_MAP = {
     "o3-mini": "o3-mini",
     "o3-pro": "o3-pro",
     "o4-mini": "o4-mini",
+    "deepseek": "deepseek-chat",
+    "deepseek-chat": "deepseek-chat",
+    "deepseek-reasoner": "deepseek-reasoner",
+    "kimi": "kimi-k2.6",
+    "kimi-k2.6": "kimi-k2.6",
+    "kimi-k2.5": "kimi-k2.5",
+    "kimi-code": "kimi-k2.7-code",
+    "kimi-code-fast": "kimi-k2.7-code-highspeed",
+    "kimi-k2.7-code": "kimi-k2.7-code",
+    "kimi-k2.7-code-highspeed": "kimi-k2.7-code-highspeed",
+    "moonshot-v1-8k": "moonshot-v1-8k",
+    "moonshot-v1-32k": "moonshot-v1-32k",
+    "moonshot-v1-128k": "moonshot-v1-128k",
+    "grok": "grok-4.3",
+    "xai": "grok-4.3",
+    "grok-4.3": "grok-4.3",
+    "grok-build": "grok-build-0.1",
+    "grok-code": "grok-build-0.1",
+    "grok-build-0.1": "grok-build-0.1",
 }
+
+MODEL_FAMILY_CHOICES = tuple(MODEL_MAP.keys())
 
 # Retry budget for production mutator/judge calls.
 # 2026-04-15: bumped 12 -> 25 after a gemini 503 flap.
@@ -208,6 +260,12 @@ FALLBACK_MODEL_CHAINS = {
     "o3-mini": ("gpt-4.1", "claude-sonnet-4-6"),
     "o3-pro": ("o3", "claude-sonnet-4-6"),
     "o4-mini": ("o3-mini", "gpt-4.1", "claude-sonnet-4-6"),
+    "kimi-k2.6": ("claude-sonnet-4-6", "gpt-4.1", "gemini-3.1-pro-preview"),
+    "kimi-k2.5": ("kimi-k2.6", "claude-sonnet-4-6", "gpt-4.1"),
+    "kimi-k2.7-code": ("kimi-k2.6", "claude-sonnet-4-6", "gpt-4.1"),
+    "kimi-k2.7-code-highspeed": ("kimi-k2.7-code", "kimi-k2.6", "gpt-4.1"),
+    "grok-4.3": ("gemini-3.1-pro-preview", "gpt-4.1", "kimi-k2.6"),
+    "grok-build-0.1": ("grok-4.3", "gemini-3.1-pro-preview", "gpt-4.1"),
 }
 
 
@@ -229,6 +287,14 @@ def is_claude_model(model_id: str) -> bool:
 
 def is_deepseek_model(model_id: str) -> bool:
     return model_id.startswith("deepseek")
+
+
+def is_kimi_model(model_id: str) -> bool:
+    return model_id.startswith("kimi-") or model_id.startswith("moonshot-v1")
+
+
+def is_grok_model(model_id: str) -> bool:
+    return model_id.startswith("grok-")
 
 
 def is_openai_model(model_id: str) -> bool:
@@ -253,10 +319,17 @@ def is_reasoning_openai_model(model_id: str) -> bool:
 def get_model_family(model_id: str) -> str:
     """Return provider family for a canonical model ID.
 
-    Returns one of ``"openai"``, ``"anthropic"``, or ``"google"``.
+    Returns one of ``"openai"``, ``"anthropic"``, ``"deepseek"``,
+    ``"kimi"``, ``"grok"``, or ``"google"``.
     """
     if is_claude_model(model_id):
         return "anthropic"
+    if is_deepseek_model(model_id):
+        return "deepseek"
+    if is_kimi_model(model_id):
+        return "kimi"
+    if is_grok_model(model_id):
+        return "grok"
     if is_openai_model(model_id):
         return "openai"
     return "google"
@@ -279,8 +352,23 @@ def get_model_family(model_id: str) -> str:
 _SCRIPT_DEFAULT_PER_PROVIDER = {
     "anthropic": "claude-sonnet-4-6",
     "openai": "gpt-4.1",
+    "kimi": "kimi-k2.6",
+    "deepseek": "deepseek-chat",
+    "grok": "grok-4.3",
     "google": "gemini-3.1-pro-preview",
 }
+
+
+def _provider_has_key(provider: str) -> bool:
+    env_keys = {
+        "anthropic": ("ANTHROPIC_API_KEY",),
+        "openai": ("OPENAI_API_KEY",),
+        "kimi": ("KIMI_API_KEY", "MOONSHOT_API_KEY"),
+        "deepseek": ("DEEPSEEK_API_KEY",),
+        "grok": ("XAI_API_KEY", "GROK_API_KEY"),
+        "google": ("GEMINI_API_KEY", "GOOGLE_API_KEY"),
+    }
+    return any(os.environ.get(key) for key in env_keys.get(provider, ()))
 
 
 def _read_principal_model_economy() -> dict | None:
@@ -320,6 +408,47 @@ def _read_principal_model_economy() -> dict | None:
     return None
 
 
+def _read_principal_model_map() -> "dict | None":
+    """The `model_map` POLICY override block from org/preferences/principal.yaml: `{alias: model_id}` merged
+    OVER the code `MODEL_MAP` so a deprecated/retargeted version id (e.g. gemini-3.1-pro-preview → a successor)
+    is changed in ONE policy file, not N code spots. Same cwd-up search as the model_economy reader; cached;
+    absent file/block ⇒ None ⇒ the code defaults stand (byte-parity)."""
+    if hasattr(_read_principal_model_map, "_cached"):
+        return _read_principal_model_map._cached  # type: ignore[attr-defined]
+    out = None
+    try:
+        import yaml
+        cwd = Path.cwd()
+        cands = [d / "org" / "preferences" / "principal.yaml" for d in [cwd] + list(cwd.parents)]
+        try:
+            cands.append(Path(__file__).resolve().parents[3] / "org" / "preferences" / "principal.yaml")
+        except Exception:  # noqa: BLE001
+            pass
+        for path in cands:
+            if not path.is_file():
+                continue
+            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+            mm = data.get("model_map")
+            if isinstance(mm, dict) and mm:
+                out = {str(k): str(v) for k, v in mm.items()}
+                break
+    except Exception:  # noqa: BLE001 — a broken policy file must never brick resolution; fall back to code defaults
+        out = None
+    _read_principal_model_map._cached = out  # type: ignore[attr-defined]
+    return out
+
+
+# Apply the policy override at import (after MODEL_MAP/DIRECTOR_MODEL_MAP are defined above): retarget any
+# alias whose hardcoded version went stale, from principal.yaml — no code edit. Absent ⇒ no-op (byte-parity).
+try:
+    _MODEL_OVERRIDES = _read_principal_model_map() or {}
+    if _MODEL_OVERRIDES:
+        MODEL_MAP.update(_MODEL_OVERRIDES)
+        DIRECTOR_MODEL_MAP.update(_MODEL_OVERRIDES)
+except Exception:  # noqa: BLE001
+    pass
+
+
 def pick_model_for_tier(tier: str = "cheap", *, prefer_provider: str | None = None) -> str | None:
     """Return a model id for the requested tier (cheap | mid | pro), honoring
     `model_economy` from principal.yaml + the API key the env actually has.
@@ -328,7 +457,7 @@ def pick_model_for_tier(tier: str = "cheap", *, prefer_provider: str | None = No
       1. Read model_economy.tiers[<tier>].providers from principal.yaml
       2. If `prefer_provider` is set and has API key → use that
       3. Else use principal's preferred_llm_provider (if set + key present)
-      4. Else fall through providers in google/openai/anthropic order
+      4. Else fall through the configured provider families in a stable order
       5. If no model_economy in yaml, fall back to the legacy
          pick_default_model_id_for_scripts() → cheap-tier-equivalent.
 
@@ -350,24 +479,19 @@ def pick_model_for_tier(tier: str = "cheap", *, prefer_provider: str | None = No
     tier_block = (econ.get("tiers") or {}).get(tier) or {}
     providers = tier_block.get("providers") or {}
 
-    # Try in order: explicit prefer, principal's preferred, then alphabetical
+    # Try in order: explicit prefer, principal's preferred, then stable family order.
     candidate_order = []
     if prefer_provider and prefer_provider in providers:
         candidate_order.append(prefer_provider)
     principal_pref = _read_principal_preferred_provider()
     if principal_pref and principal_pref in providers and principal_pref not in candidate_order:
         candidate_order.append(principal_pref)
-    for p in ("google", "openai", "anthropic"):
+    for p in ("google", "openai", "anthropic", "kimi", "deepseek", "grok"):
         if p in providers and p not in candidate_order:
             candidate_order.append(p)
 
-    env_keys = {
-        "anthropic": "ANTHROPIC_API_KEY",
-        "openai": "OPENAI_API_KEY",
-        "google": "GEMINI_API_KEY",
-    }
     for provider in candidate_order:
-        if os.environ.get(env_keys.get(provider, "")):
+        if _provider_has_key(provider):
             return providers[provider]
     return None
 
@@ -375,7 +499,7 @@ def pick_model_for_tier(tier: str = "cheap", *, prefer_provider: str | None = No
 def _read_principal_preferred_provider() -> str | None:
     """Walk cwd-up looking for org/preferences/principal.yaml; return its
     `preferences.preferred_llm_provider` if set. Returns one of
-    'anthropic' | 'openai' | 'google' | None.
+    'anthropic' | 'openai' | 'kimi' | 'deepseek' | 'grok' | 'google' | None.
 
     Single point of truth for provider preference. Cheap (one file read,
     cached for process lifetime). Walks up the tree the same way
@@ -403,7 +527,7 @@ def _read_principal_preferred_provider() -> str | None:
             data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
             prefs = data.get("preferences") or {}
             provider = prefs.get("preferred_llm_provider")
-            if provider in ("anthropic", "openai", "google"):
+            if provider in _SCRIPT_DEFAULT_PER_PROVIDER:
                 _read_principal_preferred_provider._cached = provider  # type: ignore[attr-defined]
                 return provider
         except Exception:  # noqa: BLE001
@@ -412,16 +536,57 @@ def _read_principal_preferred_provider() -> str | None:
     return None
 
 
+def _read_principal_provider_order() -> "list[str] | None":
+    """Optional `preferences.preferred_llm_provider_order` list from principal.yaml — an ORDERED
+    fallback chain (e.g. ``[kimi, deepseek]`` = kimi primary, deepseek secondary). Mirrors the
+    comma-separated ``LLM_DISPATCH_PREF`` env var but as durable org policy. Absent ⇒ None (the
+    single-scalar `preferred_llm_provider` path stays in force; byte-parity when neither is set).
+    Only known provider families are kept (silently drops typos/unsupported names).
+    """
+    if hasattr(_read_principal_provider_order, "_cached"):
+        return _read_principal_provider_order._cached  # type: ignore[attr-defined]
+    try:
+        import yaml  # PyYAML is in requirements
+    except ImportError:
+        _read_principal_provider_order._cached = None  # type: ignore[attr-defined]
+        return None
+    cwd = Path.cwd()
+    candidates = [d / "org" / "preferences" / "principal.yaml" for d in [cwd] + list(cwd.parents)]
+    try:
+        candidates.append(Path(__file__).resolve().parents[3] / "org" / "preferences" / "principal.yaml")
+    except Exception:  # noqa: BLE001
+        pass
+    # Anchor to the FIRST principal.yaml found walking up from cwd (same authoritative file the
+    # scalar reader resolves). Read its order key — None if absent. Do NOT fall through to a
+    # different file just because this one lacks the key (that would silently mix two configs).
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+        except Exception:  # noqa: BLE001
+            continue
+        prefs = data.get("preferences") or {}
+        raw = prefs.get("preferred_llm_provider_order")
+        order = [p for p in raw if p in _SCRIPT_DEFAULT_PER_PROVIDER] if isinstance(raw, (list, tuple)) else []
+        result = order or None
+        _read_principal_provider_order._cached = result  # type: ignore[attr-defined]
+        return result
+    _read_principal_provider_order._cached = None  # type: ignore[attr-defined]
+    return None
+
+
 def pick_default_model_id_for_scripts(
     *,
-    preference_order: tuple[str, ...] = ("anthropic", "openai", "google"),
+    preference_order: tuple[str, ...] = ("anthropic", "openai", "google", "kimi", "deepseek", "grok"),
 ) -> str | None:
     """Return a configured model ID based on which API keys are set.
 
     Resolution priority (highest wins):
       1. ``LLM_DISPATCH_PREF`` env var (comma-separated, e.g. "google,openai")
-      2. ``preferences.preferred_llm_provider`` in principal.yaml
-      3. ``preference_order`` argument (default: anthropic, openai, google)
+      2. ``preferences.preferred_llm_provider_order`` list in principal.yaml (ordered chain)
+      3. ``preferences.preferred_llm_provider`` scalar in principal.yaml
+      4. ``preference_order`` argument (default: anthropic, openai, google, kimi, deepseek, grok)
 
     Within whichever order wins, returns the default cheap-tier model for
     the first provider whose env key is set. Returns None if none configured.
@@ -430,7 +595,13 @@ def pick_default_model_id_for_scripts(
     if env_pref:
         # Map external names ("claude" / "gpt" / "gemini") onto canonical
         # family names used here.
-        alias_map = {"claude": "anthropic", "gpt": "openai", "gemini": "google"}
+        alias_map = {
+            "claude": "anthropic",
+            "gpt": "openai",
+            "gemini": "google",
+            "moonshot": "kimi",
+            "xai": "grok",
+        }
         order = []
         for raw in env_pref.split(","):
             name = raw.strip().lower()
@@ -439,20 +610,19 @@ def pick_default_model_id_for_scripts(
                 order.append(family)
         preference_order = tuple(order) if order else preference_order
     else:
-        # Honor principal.yaml preference if no env override
+        # Honor principal.yaml preference if no env override. An explicit ORDERED list
+        # (preferred_llm_provider_order) wins over the single-scalar preference; both move
+        # their families to the front and keep the remaining defaults as tail fallbacks.
+        principal_order = _read_principal_provider_order()
         principal_pref = _read_principal_preferred_provider()
-        if principal_pref:
-            # Move principal's preferred provider to the front, keep others
-            others = [p for p in preference_order if p != principal_pref]
-            preference_order = (principal_pref,) + tuple(others)
+        front = principal_order or ([principal_pref] if principal_pref else [])
+        if front:
+            others = [p for p in preference_order if p not in front]
+            preference_order = tuple(front) + tuple(others)
 
     for family in preference_order:
-        if family == "anthropic" and os.environ.get("ANTHROPIC_API_KEY"):
-            return _SCRIPT_DEFAULT_PER_PROVIDER["anthropic"]
-        if family == "openai" and os.environ.get("OPENAI_API_KEY"):
-            return _SCRIPT_DEFAULT_PER_PROVIDER["openai"]
-        if family == "google" and os.environ.get("GEMINI_API_KEY"):
-            return _SCRIPT_DEFAULT_PER_PROVIDER["google"]
+        if family in _SCRIPT_DEFAULT_PER_PROVIDER and _provider_has_key(family):
+            return _SCRIPT_DEFAULT_PER_PROVIDER[family]
     return None
 
 
@@ -510,7 +680,57 @@ def pricing_model_name(model_name: str | None) -> str | None:
         return "deepseek-reasoner"
     if lowered.startswith("deepseek"):
         return "deepseek-chat"
+    if lowered.startswith("kimi-k2.7-code-highspeed"):
+        return "kimi-k2.7-code-highspeed"
+    if lowered.startswith("kimi-k2.7-code"):
+        return "kimi-k2.7-code"
+    if lowered.startswith("kimi-k2.6"):
+        return "kimi-k2.6"
+    if lowered.startswith("kimi-k2.5"):
+        return "kimi-k2.5"
+    if lowered.startswith("grok-build-0.1"):
+        return "grok-build-0.1"
+    if lowered.startswith("grok-4.3"):
+        return "grok-4.3"
     return normalized
+
+
+def _response_contract_parts(config: Any) -> tuple[str | None, Any]:
+    if config is None or isinstance(config, dict):
+        return None, None
+    return (
+        getattr(config, "response_mime_type", None),
+        getattr(config, "response_schema", None),
+    )
+
+
+def _prompt_with_response_contract(prompt: str, config: Any) -> str:
+    response_mime, response_schema = _response_contract_parts(config)
+    if not response_mime and response_schema is None:
+        return prompt
+    try:
+        schema_text = json.dumps(response_schema, default=str, indent=2) if response_schema is not None else ""
+    except TypeError:
+        schema_text = str(response_schema)
+    return (
+        prompt.rstrip()
+        + "\n\nRESPONSE CONTRACT:\n"
+        + (f"- MIME/type expectation: {response_mime}\n" if response_mime else "")
+        + (
+            "- Return only one JSON value matching this schema. No markdown, "
+            "no prose preamble, no code fences.\n"
+            f"{schema_text}\n"
+            if schema_text
+            else "- Return only one JSON value. No markdown, no prose preamble, no code fences.\n"
+        )
+    )
+
+
+def _chat_completion_response_params(config: Any) -> dict[str, Any]:
+    response_mime, _response_schema = _response_contract_parts(config)
+    if response_mime == "application/json":
+        return {"response_format": {"type": "json_object"}}
+    return {}
 
 
 @dataclass(frozen=True)
@@ -556,6 +776,8 @@ class LLMRuntime:
         self._anthropic_client = None
         self._openai_client = None
         self._deepseek_client = None
+        self._kimi_client = None
+        self._grok_client = None
 
     def gemini_client(self):
         gemini_api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
@@ -565,7 +787,10 @@ class LLMRuntime:
                     "Gemini provider requested but google-genai is not "
                     "installed (optional dependency). Install google-genai "
                     "or use the anthropic/openai providers.")
-            self._gemini_client = genai.Client(api_key=gemini_api_key)
+            self._gemini_client = build_google_genai_client(
+                genai.Client,
+                api_key=gemini_api_key,
+            )
         return self._gemini_client
 
     def anthropic_client(self):
@@ -592,14 +817,46 @@ class LLMRuntime:
         if self._deepseek_client is None and os.environ.get("DEEPSEEK_API_KEY"):
             if OpenAI is None:
                 raise RuntimeError(
-                    "DeepSeek provider requested but openai is not installed "
-                    "(DeepSeek uses the OpenAI-compatible SDK path)."
+                    "DeepSeek provider requested but the Chat Completions "
+                    "transport dependency is not installed."
                 )
             self._deepseek_client = OpenAI(
                 api_key=os.environ.get("DEEPSEEK_API_KEY"),
                 base_url="https://api.deepseek.com/v1",
             )
         return self._deepseek_client
+
+    def kimi_client(self):
+        kimi_api_key = os.environ.get("KIMI_API_KEY") or os.environ.get("MOONSHOT_API_KEY")
+        if self._kimi_client is None and kimi_api_key:
+            if OpenAI is None:
+                raise RuntimeError(
+                    "Kimi provider requested but the Chat Completions "
+                    "transport dependency is not installed."
+                )
+            self._kimi_client = OpenAI(
+                api_key=kimi_api_key,
+                base_url=(
+                    os.environ.get("KIMI_BASE_URL")
+                    or os.environ.get("MOONSHOT_BASE_URL")
+                    or "https://api.moonshot.ai/v1"
+                ),
+            )
+        return self._kimi_client
+
+    def grok_client(self):
+        grok_api_key = os.environ.get("XAI_API_KEY") or os.environ.get("GROK_API_KEY")
+        if self._grok_client is None and grok_api_key:
+            if OpenAI is None:
+                raise RuntimeError(
+                    "Grok provider requested but the Chat Completions "
+                    "transport dependency is not installed."
+                )
+            self._grok_client = OpenAI(
+                api_key=grok_api_key,
+                base_url=os.environ.get("XAI_BASE_URL") or "https://api.x.ai/v1",
+            )
+        return self._grok_client
 
     def require_gemini_client(self):
         client = self.gemini_client()
@@ -612,9 +869,13 @@ class LLMRuntime:
             return bool(os.environ.get("ANTHROPIC_API_KEY")) and anthropic is not None
         if is_deepseek_model(model_id):
             return bool(os.environ.get("DEEPSEEK_API_KEY")) and OpenAI is not None
+        if is_kimi_model(model_id):
+            return bool(os.environ.get("KIMI_API_KEY") or os.environ.get("MOONSHOT_API_KEY")) and OpenAI is not None
+        if is_grok_model(model_id):
+            return bool(os.environ.get("XAI_API_KEY") or os.environ.get("GROK_API_KEY")) and OpenAI is not None
         if is_openai_model(model_id):
             return bool(os.environ.get("OPENAI_API_KEY")) and OpenAI is not None
-        return bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
+        return bool(os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")) and genai is not None
 
     def default_fallback_model_ids(self, model_id: str) -> tuple[str, ...]:
         configured: list[str] = []
@@ -641,6 +902,8 @@ class LLMRuntime:
         status_code = self._error_status_code(exc)
         if status_code in {408, 409, 429, 500, 502, 503, 504}:
             return True
+        if self.is_provider_unavailable_error(exc):
+            return True
         message = str(exc).upper()
         transient_markers = [
             "UNAVAILABLE",
@@ -658,21 +921,46 @@ class LLMRuntime:
         ]
         return any(marker in message for marker in transient_markers)
 
+    def is_provider_unavailable_error(self, exc: Exception) -> bool:
+        message = str(exc).upper()
+        unavailable_markers = (
+            "CREDIT BALANCE",
+            "INSUFFICIENT CREDIT",
+            "INSUFFICIENT CREDITS",
+            "INSUFFICIENT_QUOTA",
+            "QUOTA EXCEEDED",
+            "BILLING",
+            "PURCHASE CREDITS",
+        )
+        return any(marker in message for marker in unavailable_markers)
+
     def retry_delay_seconds(self, attempt: int, exc: Exception, *, base_delay: int = 20) -> int:
         if self.is_transient_error(exc):
             return min(120, base_delay * attempt)
         return min(15, 2 * attempt)
 
-    def _call_once(self, prompt: str, model_id: str, *, config: Any = None, max_tokens: int = 16000):
+    def _call_once(
+        self,
+        prompt: str,
+        model_id: str,
+        *,
+        config: Any = None,
+        max_tokens: int = 16000,
+        timeout_seconds: int | None = None,
+    ):
+        provider_prompt = _prompt_with_response_contract(prompt, config)
         if is_claude_model(model_id):
             client = self.anthropic_client()
             if client is None:
                 raise RuntimeError("ANTHROPIC_API_KEY is not set.")
-            return client.messages.create(
-                model=model_id,
-                max_tokens=max_tokens,
-                messages=[{"role": "user", "content": prompt}],
-            )
+            kwargs = {
+                "model": model_id,
+                "max_tokens": max_tokens,
+                "messages": [{"role": "user", "content": provider_prompt}],
+            }
+            if timeout_seconds is not None:
+                kwargs["timeout"] = timeout_seconds
+            return client.messages.create(**kwargs)
 
         if is_deepseek_model(model_id):
             client = self.deepseek_client()
@@ -680,13 +968,16 @@ class LLMRuntime:
                 raise RuntimeError("DEEPSEEK_API_KEY is not set.")
             kwargs = {
                 "model": model_id,
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [{"role": "user", "content": provider_prompt}],
                 "max_tokens": max(max_tokens, 8192) if model_id == "deepseek-reasoner" else max_tokens,
             }
+            kwargs.update(_chat_completion_response_params(config))
             if isinstance(config, dict):
                 for key in ("response_format", "temperature"):
                     if key in config and config[key] is not None:
                         kwargs[key] = config[key]
+            if timeout_seconds is not None:
+                kwargs["timeout"] = timeout_seconds
             return client.chat.completions.create(**kwargs)
 
         if is_openai_model(model_id):
@@ -695,8 +986,9 @@ class LLMRuntime:
                 raise RuntimeError("OPENAI_API_KEY is not set.")
             kwargs = {
                 "model": model_id,
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": [{"role": "user", "content": provider_prompt}],
             }
+            kwargs.update(_chat_completion_response_params(config))
             if is_reasoning_openai_model(model_id):
                 kwargs["max_completion_tokens"] = max_tokens
             else:
@@ -705,6 +997,44 @@ class LLMRuntime:
                 for key in ("reasoning_effort", "verbosity", "response_format", "temperature"):
                     if key in config and config[key] is not None:
                         kwargs[key] = config[key]
+            if timeout_seconds is not None:
+                kwargs["timeout"] = timeout_seconds
+            return client.chat.completions.create(**kwargs)
+
+        if is_kimi_model(model_id):
+            client = self.kimi_client()
+            if client is None:
+                raise RuntimeError("KIMI_API_KEY or MOONSHOT_API_KEY is not set.")
+            kwargs = {
+                "model": model_id,
+                "messages": [{"role": "user", "content": provider_prompt}],
+                "max_tokens": max(max_tokens, 256),
+            }
+            kwargs.update(_chat_completion_response_params(config))
+            if isinstance(config, dict):
+                for key in ("response_format", "temperature", "top_p", "thinking"):
+                    if key in config and config[key] is not None:
+                        kwargs[key] = config[key]
+            if timeout_seconds is not None:
+                kwargs["timeout"] = timeout_seconds
+            return client.chat.completions.create(**kwargs)
+
+        if is_grok_model(model_id):
+            client = self.grok_client()
+            if client is None:
+                raise RuntimeError("XAI_API_KEY or GROK_API_KEY is not set.")
+            kwargs = {
+                "model": model_id,
+                "messages": [{"role": "user", "content": provider_prompt}],
+                "max_tokens": max_tokens,
+            }
+            kwargs.update(_chat_completion_response_params(config))
+            if isinstance(config, dict):
+                for key in ("response_format", "temperature", "top_p", "reasoning_effort"):
+                    if key in config and config[key] is not None:
+                        kwargs[key] = config[key]
+            if timeout_seconds is not None:
+                kwargs["timeout"] = timeout_seconds
             return client.chat.completions.create(**kwargs)
 
         client = self.gemini_client()
@@ -752,7 +1082,12 @@ class LLMRuntime:
                 fallback_from_model_id=fallback_from_model_id,
             )
 
-        if is_openai_model(requested_model_id) or is_deepseek_model(requested_model_id):
+        if (
+            is_openai_model(requested_model_id)
+            or is_deepseek_model(requested_model_id)
+            or is_kimi_model(requested_model_id)
+            or is_grok_model(requested_model_id)
+        ):
             usage = getattr(response, "usage", None)
             input_tokens = 0
             output_tokens = 0
@@ -779,7 +1114,7 @@ class LLMRuntime:
                 refusal = getattr(message, "refusal", None) if message is not None else None
                 annotations = getattr(message, "annotations", None) if message is not None else None
                 raise RuntimeError(
-                    "OpenAI-compatible response contained empty message content "
+                    "Chat Completions response contained empty message content "
                     f"(model={model_name}, finish_reason={finish_reason}, "
                     f"refusal={refusal!r}, annotations={annotations!r})."
                 )
@@ -823,6 +1158,59 @@ class LLMRuntime:
             fallback_from_model_id=fallback_from_model_id,
         )
 
+    def _call_once_with_deadline(
+        self,
+        prompt: str,
+        model_id: str,
+        *,
+        config: Any,
+        max_tokens: int,
+        timeout_seconds: float,
+    ) -> Any:
+        """Run one provider call with a process-exit-safe deadline."""
+        result_queue: queue.Queue[tuple[str, Any]] = queue.Queue(maxsize=1)
+
+        def _target() -> None:
+            try:
+                response = self._call_once(
+                    prompt,
+                    model_id,
+                    config=config,
+                    max_tokens=max_tokens,
+                    timeout_seconds=timeout_seconds,
+                )
+            except BaseException as exc:  # noqa: BLE001
+                try:
+                    result_queue.put_nowait(("error", exc))
+                except queue.Full:
+                    pass
+            else:
+                try:
+                    result_queue.put_nowait(("ok", response))
+                except queue.Full:
+                    pass
+
+        # ThreadPoolExecutor workers are non-daemon. If an SDK ignores its own
+        # timeout, future.result(timeout=...) returns control but the worker can
+        # keep the process open after the loop writes run_end. A daemon worker
+        # preserves the caller-visible timeout without pinning process exit.
+        worker = threading.Thread(
+            target=_target,
+            name=f"ztare-llm-call-{model_id}",
+            daemon=True,
+        )
+        worker.start()
+        worker.join(timeout_seconds)
+        if worker.is_alive():
+            raise concurrent.futures.TimeoutError()
+        try:
+            kind, payload = result_queue.get_nowait()
+        except queue.Empty as exc:
+            raise RuntimeError("LLM provider worker exited without a result") from exc
+        if kind == "error":
+            raise payload
+        return payload
+
     def call_text(
         self,
         prompt: str,
@@ -862,24 +1250,22 @@ class LLMRuntime:
                 progress_printer(
                     "🔁 Provider fallback engaged for "
                     f"{request_label}: {model_id} -> {active_model_id}"
-                )
+            )
             for attempt in range(1, retries + 1):
                 last_attempted_model_id = active_model_id
-                executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)
                 try:
                     if progress_printer is not None:
                         progress_printer(
                             f"📡 [DEBUG] Dispatching {request_label} to {active_model_id}... (Attempt {attempt})"
                         )
                     start_time = time.time()
-                    future = executor.submit(
-                        self._call_once,
+                    response = self._call_once_with_deadline(
                         prompt,
                         active_model_id,
                         config=config,
                         max_tokens=max_tokens,
+                        timeout_seconds=timeout_seconds,
                     )
-                    response = future.result(timeout=timeout_seconds)
                     elapsed = time.time() - start_time
                     if progress_printer is not None:
                         progress_printer(f"✅ [DEBUG] Response received in {elapsed:.1f}s")
@@ -908,6 +1294,14 @@ class LLMRuntime:
                     last_error = exc
                     error_str = str(exc)
                     status_code = self._error_status_code(exc)
+                    if self.is_provider_unavailable_error(exc):
+                        _record_failed_retry(prompt, active_model_id)
+                        if progress_printer is not None:
+                            progress_printer(
+                                "⚠️ Provider unavailable for "
+                                f"{request_label}: {error_str[:120]}"
+                            )
+                        break
                     if status_code in {400, 404}:
                         if progress_printer is not None:
                             progress_printer(f"❌ Configuration/Model Error: {exc}")
@@ -941,8 +1335,6 @@ class LLMRuntime:
                             transient=False,
                             status_code=status_code,
                         ) from exc
-                finally:
-                    executor.shutdown(wait=False, cancel_futures=True)
 
             if model_index < len(candidate_model_ids) - 1 and progress_printer is not None:
                 progress_printer(

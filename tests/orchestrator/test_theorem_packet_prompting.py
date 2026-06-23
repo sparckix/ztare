@@ -1,9 +1,9 @@
 import json
 from pathlib import Path
 
-from src.ztare.orchestrator.briefing_providers.contract_rules import ContractRulesProvider
-from src.ztare.orchestrator.mutator_briefing import BriefingContext
-from src.ztare.orchestrator.submission_path_helpers import (
+from ztare.orchestrator.briefing_providers.contract_rules import ContractRulesProvider
+from ztare.orchestrator.mutator_briefing import BriefingContext
+from ztare.orchestrator.submission_path_helpers import (
     detect_submission_contract,
     format_r1_retry_skeleton,
     requires_i_model_submission,
@@ -69,6 +69,23 @@ def test_qualitative_retry_uses_assertion_suite_not_scalar_paths():
 
 def test_qualitative_contract_inferred_without_explicit_imodel_flag():
     rubric = _qualitative_rubric()
+
+    assert requires_i_model_submission(rubric) is False
+    assert submission_contract_kind(rubric) == "assertion_suite"
+
+
+def test_qualitative_contract_inferred_without_rubric_mode():
+    rubric = _qualitative_rubric()
+    rubric.pop("rubric_mode")
+
+    assert requires_i_model_submission(rubric) is False
+    assert submission_contract_kind(rubric) == "assertion_suite"
+
+
+def test_qualitative_newton_contract_inferred_as_assertion_suite():
+    rubric = _qualitative_rubric()
+    rubric["rubric_mode"] = "newton"
+    rubric.pop("require_i_model_in_submission", None)
 
     assert requires_i_model_submission(rubric) is False
     assert submission_contract_kind(rubric) == "assertion_suite"

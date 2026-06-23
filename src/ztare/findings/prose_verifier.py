@@ -6,7 +6,7 @@ import re
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from src.ztare.findings.prose_spec import (
+from ztare.findings.prose_spec import (
     ProseAssertionType,
     ProseSpec,
     ProseSpecAssertion,
@@ -154,7 +154,7 @@ def _check_assertion(
                     f"section_word_count_out_of_range:{section_word_count}:"
                     f"{assertion.target_min}-{assertion.target_max}"
                 ),
-            )
+        )
         return None
 
     if assertion.assertion_type == ProseAssertionType.ABSENT_PHRASE:

@@ -7,7 +7,7 @@ in mutator-prompt construction.
 
 USAGE in autoresearch_loop.py:
 
-    from src.ztare.validator.utilities.gap_to_op_class_integration import (
+    from ztare.validator.utilities.gap_to_op_class_integration import (
         enrich_pivot_instruction_with_op_class,
     )
 
@@ -24,11 +24,10 @@ USAGE in autoresearch_loop.py:
         )
         # ... use enriched_instruction in mutator prompt construction
 
-The shim is a one-line change at the call site. It is opt-in because GP-216's
-paper result is primarily a Director/workbench vocabulary. If
-`rubric_data["enable_v5_op_class_injection"]` is not true, the shim returns
-base_instruction unchanged. The old `disable_v5_op_class_injection` escape
-hatch is still honored.
+The shim is a one-line change at the call site. It is enabled by default and
+can be disabled with `rubric_data["disable_v5_op_class_injection"]`. The older
+`enable_v5_op_class_injection` flag remains accepted for callers that set it
+explicitly.
 """
 from __future__ import annotations
 
@@ -137,17 +136,15 @@ def enrich_pivot_instruction_with_op_class(
 ) -> str:
     """Append v5 op-class suggestion to the existing pivot instruction.
 
-    If `rubric_data["enable_v5_op_class_injection"]` is not True, returns
-    base_instruction unchanged. The old `disable_v5_op_class_injection` flag
-    also returns the base instruction unchanged.
+    Default behavior appends an advisory v5 op-class suggestion. The old
+    `disable_v5_op_class_injection` flag returns the base instruction
+    unchanged.
 
     Otherwise: infers gap_type from latest judge verdict, looks up op-class
     suggestion, appends rendered directive to base_instruction.
     """
     rubric_data = rubric_data or {}
     if rubric_data.get("disable_v5_op_class_injection"):
-        return base_instruction
-    if not rubric_data.get("enable_v5_op_class_injection"):
         return base_instruction
 
     # Infer gap from latest judge verdict (or from iteration_history's last entry)

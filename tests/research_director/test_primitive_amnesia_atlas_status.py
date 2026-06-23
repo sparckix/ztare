@@ -1,16 +1,17 @@
 import json
 
-from src.ztare.research_director.primitive_amnesia import (
+from ztare.research_director.primitive_amnesia import (
     AtlasFreshnessStatus,
     Primitive,
     atlas_freshness_status,
     build_primitive_atlas,
     evaluate,
     miss_queue_status,
+    primitive_catalog_digest,
     record_miss_queue,
 )
-from src.ztare.research_director import primitive_amnesia
-from src.ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
+from ztare.research_director import primitive_amnesia
+from ztare.research_director.primitive_tick_surface import build_primitive_tick_surface
 
 
 def _vec(value: float) -> list[float]:
@@ -31,6 +32,10 @@ def _write_catalog(path, signatures):
     path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
 
 
+def _digest_for_catalog(path) -> str:
+    return primitive_catalog_digest(primitive_amnesia._extract_from_arch_index(path))
+
+
 def test_atlas_freshness_status_passes_when_catalog_and_atlas_match(tmp_path) -> None:
     catalog = tmp_path / "architecture_index.jsonl"
     atlas = tmp_path / "primitive_atlas_embeddings.json"
@@ -40,6 +45,7 @@ def test_atlas_freshness_status_passes_when_catalog_and_atlas_match(tmp_path) ->
                 {
                     "backend": "gemini-code",
                     "n": 2,
+                    "catalog_digest": _digest_for_catalog(catalog),
                     "embeddings": {"alpha": _vec(0.1), "beta": _vec(0.3)},
                 }
             ),
@@ -52,7 +58,31 @@ def test_atlas_freshness_status_passes_when_catalog_and_atlas_match(tmp_path) ->
     assert status.catalog_count == 2
     assert status.atlas_n == 2
     assert status.embeddings_count == 2
+    assert status.catalog_digest_matches is True
     assert status.warnings == []
+
+
+def test_atlas_freshness_status_flags_catalog_digest_mismatch(tmp_path) -> None:
+    catalog = tmp_path / "architecture_index.jsonl"
+    atlas = tmp_path / "primitive_atlas_embeddings.json"
+    _write_catalog(catalog, ["alpha"])
+    atlas.write_text(
+        json.dumps(
+            {
+                "backend": "gemini-code",
+                "n": 1,
+                "catalog_digest": "stale-digest",
+                "embeddings": {"alpha": _vec(0.1)},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    status = atlas_freshness_status(catalog_path=catalog, atlas_path=atlas)
+
+    assert status.ok is False
+    assert status.catalog_digest_matches is False
+    assert any("catalog_digest does not match" in warning for warning in status.warnings)
 
 
 def test_atlas_freshness_status_flags_missing_embedding(tmp_path) -> None:
@@ -64,6 +94,7 @@ def test_atlas_freshness_status_flags_missing_embedding(tmp_path) -> None:
             {
                 "backend": "gemini-code",
                 "n": 1,
+                "catalog_digest": _digest_for_catalog(catalog),
                 "embeddings": {"alpha": [0.1, 0.2]},
             }
         ),
@@ -86,6 +117,7 @@ def test_atlas_freshness_status_flags_malformed_embeddings(tmp_path) -> None:
             {
                 "backend": "gemini-code",
                 "n": 1,
+                "catalog_digest": _digest_for_catalog(catalog),
                 "embeddings": {"alpha": []},
             }
         ),
@@ -108,6 +140,7 @@ def test_atlas_freshness_status_flags_wrong_embedding_dimension(tmp_path) -> Non
             {
                 "backend": "gemini-code",
                 "n": 1,
+                "catalog_digest": _digest_for_catalog(catalog),
                 "embeddings": {"alpha": [0.1, 0.2]},
             }
         ),
@@ -131,6 +164,9 @@ def test_primitive_tick_surface_warns_when_atlas_status_is_stale(monkeypatch) ->
             atlas_n=1,
             embeddings_count=1,
             backend="gemini-code",
+            catalog_digest="digest",
+            atlas_catalog_digest="stale",
+            catalog_digest_matches=False,
             missing_embeddings=1,
             extra_embeddings=0,
             invalid_embeddings=0,
@@ -473,6 +509,23 @@ def test_miss_queue_status_counts_open_and_malformed_rows(tmp_path) -> None:
                         "miss_kind": "retrieval_miss",
                         "ranker": "semantic",
                         "recorded_at": "2026-06-13T00:00:00+00:00",
+                        "target_resolution": {
+                            "resolved": True,
+                            "matches": [
+                                {
+                                    "name": "jaccard_distance",
+                                    "module": "src/ztare/motion/set_distance.py",
+                                    "signature": "jaccard_distance(a, b)",
+                                }
+                            ],
+                        },
+                        "top_candidates": [
+                            {
+                                "name": "set_overlap_ratio",
+                                "module": "src/ztare/motion/set_distance.py",
+                                "signature": "set_overlap_ratio(a, b)",
+                            }
+                        ],
                     }
                 ),
                 json.dumps({"miss_id": "done1", "status": "closed"}),
@@ -490,6 +543,50 @@ def test_miss_queue_status_counts_open_and_malformed_rows(tmp_path) -> None:
     assert status["open_count"] == 1
     assert status["malformed_count"] == 1
     assert status["latest_open"][0]["miss_id"] == "open1"
+    assert status["promotion_review_counts"] == {
+        "close_as_catalog_retrieval_repair": 1
+    }
+    review = status["latest_open"][0]["promotion_review"]
+    assert review["validation"]["ok"] is True
+    assert review["promotion_decision"] == "close_as_catalog_retrieval_repair"
+    assert review["typed_carrier"] == "primitive_catalog_alias_or_atlas_repair"
+    assert "jaccard_distance" in review["nearest_existing_surface"]
+    assert "set_overlap_ratio" in review["nearest_confuser"]
+
+
+def test_miss_queue_status_classifies_unresolved_target_as_review_candidate(tmp_path) -> None:
+    queue = tmp_path / "primitive_amnesia_miss_queue.jsonl"
+    queue.write_text(
+        json.dumps(
+            {
+                "miss_id": "missing-target",
+                "status": "open",
+                "case_id": "case-missing",
+                "query": "compile residual failure into graph operator",
+                "targets": ["residual_graph_compiler"],
+                "miss_kind": "benchmark_target_unresolved",
+                "ranker": "semantic",
+                "recorded_at": "2026-06-13T00:00:00+00:00",
+                "target_resolution": {"resolved": False, "matches": []},
+                "top_candidates": [],
+                "repair_policy": "check duplicate before adding anything",
+            }
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    status = miss_queue_status(queue)
+
+    assert status["promotion_review_counts"] == {
+        "review_missing_catalog_or_benchmark_target": 1
+    }
+    review = status["latest_open"][0]["promotion_review"]
+    assert review["validation"]["ok"] is True
+    assert review["promotion_decision"] == "review_missing_catalog_or_benchmark_target"
+    assert review["typed_carrier"] == "primitive_catalog_candidate_or_benchmark_repair"
+    assert "not a promoted primitive" in review["non_claim"]
+    assert "duplicate" in review["kill_criterion"]
 
 
 def test_precheck_demotes_substrate_artifacts_for_generic_queries(monkeypatch) -> None:

@@ -12,7 +12,7 @@
     "surfacing_event_rows": 0,
     "warning": 3
   },
-  "generated_at": "2026-06-13T16:18:57Z",
+  "generated_at": "2026-06-22T16:38:57Z",
   "issues": [
     {
       "affected_domains": [
@@ -38,16 +38,16 @@
       "affected_domains": [
         "trajectory_surfacing"
       ],
-      "blocking_rule": "trajectory/primitives surfacing remains diagnostic until shown surfaces are logged",
-      "denominator": "surfacing event rows",
+      "blocking_rule": "stale trajectory outputs force diagnostic-only surfacing",
+      "denominator": "trajectory archive freshness <=14d",
       "domain": null,
       "evidence_refs": [
-        "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl"
+        "analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl"
       ],
       "expected_count": 1,
       "freshness_window_days": 14,
-      "issue_id": "sh_d8a6616ab7d141f1",
-      "issue_type": "unconsumed_surface",
+      "issue_id": "sh_a64f3c6974144a64",
+      "issue_type": "stale_trajectory_output",
       "observed_count": 0,
       "recommended_action": "repair_source_emitter",
       "scope": "trajectory_surfacing",
@@ -57,16 +57,15 @@
       "affected_domains": [
         "trajectory_surfacing"
       ],
-      "blocking_rule": "trajectory/primitives surfacing recommendations are diagnostic until consumption is recorded",
-      "denominator": "surfacing consumption action-impact rows",
+      "blocking_rule": "trajectory/primitives surfacing remains diagnostic until shown surfaces are logged",
+      "denominator": "surfacing event rows",
       "domain": null,
       "evidence_refs": [
-        "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl",
-        "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl"
+        "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl"
       ],
       "expected_count": 1,
       "freshness_window_days": 14,
-      "issue_id": "sh_0add7c2f5a0e50df",
+      "issue_id": "sh_d8a6616ab7d141f1",
       "issue_type": "unconsumed_surface",
       "observed_count": 0,
       "recommended_action": "repair_source_emitter",

@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 import tempfile
 import uuid
 from collections import Counter
@@ -48,6 +49,7 @@ TRAJECTORY_ARCHIVE_ENRICHED = (
     REPO / "analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl"
 )
 PRIMITIVE_SURFACE = REPO / "analytics/public/queries/rd/rd_tick_primitive_surface.json"
+PRIMITIVE_MISS_QUEUE = REPO / "analytics/public/queries/primitive_amnesia_miss_queue.jsonl"
 RECURSIVE_GAIN = REPO / "analytics/public/queries/trajectory/recursive_gain_candidates.json"
 CLOSURE_PATTERNS = REPO / "analytics/public/queries/reflexive/closure_patterns.json"
 BIFURCATION_REPORT = REPO / "analytics/public/ledgers/reflexive/bifurcation_report.json"
@@ -68,6 +70,7 @@ SURFACING_ACTIONS = [
     "surface_trajectory_cluster",
     "surface_gp233_next_lever",
     "surface_catch_preconditioner",
+    "surface_primitive_promotion_review",
     "suppress_surface_as_low_voi",
     "repair_source_emitter",
 ]
@@ -85,6 +88,7 @@ SURFACE_KIND_TO_ACTION = {
     "trajectory_cluster": "surface_trajectory_cluster",
     "gp233_next_lever": "surface_gp233_next_lever",
     "catch_preconditioner": "surface_catch_preconditioner",
+    "primitive_promotion_review": "surface_primitive_promotion_review",
 }
 GP230_USED_FOR_TO_GP243 = {
     "run": "run_now",
@@ -156,6 +160,17 @@ def relpath(path: Path) -> str:
 def stable_id(prefix: str, payload: Any) -> str:
     raw = json.dumps(payload, sort_keys=True, separators=(",", ":"))
     return f"{prefix}_{hashlib.sha256(raw.encode('utf-8')).hexdigest()[:16]}"
+
+
+def recommendation_id(payload: dict[str, Any]) -> str:
+    """Stable identity for an advisory recommendation across rematerializations."""
+
+    stable_payload = {
+        key: value
+        for key, value in payload.items()
+        if key not in {"generated_at", "recommendation_id"}
+    }
+    return stable_id("sr", stable_payload)
 
 
 def as_float(value: Any) -> float | None:
@@ -384,6 +399,19 @@ def surfacing_event_to_action_impact(row: dict[str, Any]) -> dict[str, Any] | No
     selected = str(row.get("selected_action") or "")
     if selected not in SURFACING_ACTIONS:
         selected = "suppress_surface_as_low_voi" if suppressed else SURFACE_KIND_TO_ACTION.get(str(row.get("surface_kind")), "repair_source_emitter")
+    surface_kind = row.get("surface_kind")
+    surface_payload_ref = row.get("surface_payload_ref")
+    trajectory_refs = (
+        [surface_payload_ref]
+        if surface_kind in {
+            "trajectory_cluster",
+            "pattern",
+            "anti_pattern",
+            "primitive_promotion_review",
+        }
+        and surface_payload_ref
+        else []
+    )
     impact = {
         "schema_version": 1,
         "action_impact_id": stable_id("ai", {"surface_id": surface_id}),
@@ -412,10 +440,11 @@ def surfacing_event_to_action_impact(row: dict[str, Any]) -> dict[str, Any] | No
             "surfacing_event_path": relpath(SURFACING_EVENT_LEDGER),
             "forecast_aggregate_path": None,
             "forecast_score_path": None,
-            "gp233_evidence_ref": row.get("surface_payload_ref") if row.get("surface_kind") == "gp233_next_lever" else None,
-            "catch_ids": [row.get("surface_payload_ref")] if row.get("surface_kind") == "catch_preconditioner" else [],
-            "trajectory_refs": [row.get("surface_payload_ref")] if row.get("surface_kind") in {"trajectory_cluster", "pattern", "anti_pattern"} else [],
+            "gp233_evidence_ref": surface_payload_ref if surface_kind == "gp233_next_lever" else None,
+            "catch_ids": [surface_payload_ref] if surface_kind == "catch_preconditioner" else [],
+            "trajectory_refs": trajectory_refs,
             "prediction_ids": [],
+            "source_refs": [surface_payload_ref] if surface_payload_ref else [],
         },
         "context_features": {
             "p_success": None,
@@ -424,9 +453,12 @@ def surfacing_event_to_action_impact(row: dict[str, Any]) -> dict[str, Any] | No
             "top_failure_mode": None,
             "current_bottleneck": None,
             "next_lever": None,
-            "surface_kind": row.get("surface_kind"),
+            "surface_kind": surface_kind,
             "surface_rank": row.get("rank"),
             "project_family": row.get("project_family"),
+            "promotion_decision": row.get("promotion_decision"),
+            "typed_carrier": row.get("typed_carrier"),
+            "nearest_confuser": row.get("nearest_confuser"),
         },
         "outcome": {
             "known": bool(row.get("outcome_known")),
@@ -479,6 +511,22 @@ def validate_agentic_workbench_impact(row: dict[str, Any]) -> list[str]:
     explicit_out_of_loop = selected in {"run_out_of_loop_agent", "stay_out_of_loop"}
     if (bypassed_ready_workbench or explicit_out_of_loop) and not str(context.get("why_not_autoresearch") or "").strip():
         errors.append(f"{selected} requires context_features.why_not_autoresearch")
+    operator_card_routes = context.get("operator_card_routes")
+    if operator_card_routes is not None:
+        if not isinstance(operator_card_routes, list):
+            errors.append("context_features.operator_card_routes must be a list when present")
+        else:
+            for idx, route in enumerate(operator_card_routes, start=1):
+                if not isinstance(route, dict):
+                    errors.append(f"context_features.operator_card_routes[{idx}] must be an object")
+                    continue
+                if not str(route.get("card_id") or "").strip():
+                    errors.append(f"context_features.operator_card_routes[{idx}] missing card_id")
+                if not str(route.get("route_mode") or "").strip():
+                    errors.append(f"context_features.operator_card_routes[{idx}] missing route_mode")
+    operator_card_ids = context.get("operator_card_ids")
+    if operator_card_ids is not None and not isinstance(operator_card_ids, list):
+        errors.append("context_features.operator_card_ids must be a list when present")
     source_refs = (row.get("source_refs") or {}).get("source_refs")
     if not isinstance(source_refs, list):
         source_refs = []
@@ -508,6 +556,7 @@ def agentic_workbench_impact_from_args(args: argparse.Namespace) -> dict[str, An
         "worker_identity": args.worker_identity,
         "transport": args.transport,
     }
+    operator_card_routes = _operator_card_routes_from_args(args)
     payload = {
         "schema_version": 1,
         "action_impact_id": args.action_impact_id,
@@ -552,6 +601,8 @@ def agentic_workbench_impact_from_args(args: argparse.Namespace) -> dict[str, An
             "rubric_ready": args.rubric_ready,
             "artifact_surface": args.artifact_surface,
             "worker": worker,
+            "operator_card_routes": operator_card_routes,
+            "operator_card_ids": _operator_card_ids(operator_card_routes),
         },
         "outcome": {
             "known": bool(args.outcome_known),
@@ -631,10 +682,94 @@ def _worker_metadata_from_route(route: dict[str, Any], fallback: dict[str, str])
     return resolved
 
 
+def _operator_card_routes_from_args(args: argparse.Namespace) -> list[dict[str, Any]]:
+    raw = getattr(args, "operator_card_routes", None)
+    if isinstance(raw, list):
+        return [row for row in raw if isinstance(row, dict)]
+    raw_json = getattr(args, "operator_card_routes_json", None)
+    if isinstance(raw_json, str) and raw_json.strip():
+        try:
+            payload = json.loads(raw_json)
+        except json.JSONDecodeError as exc:
+            raise SystemExit("--operator-card-routes-json must be a JSON list") from exc
+        if not isinstance(payload, list):
+            raise SystemExit("--operator-card-routes-json must be a JSON list")
+        return [row for row in payload if isinstance(row, dict)]
+    return []
+
+
+def _operator_card_ids(routes: list[dict[str, Any]]) -> list[str]:
+    ids: list[str] = []
+    for route in routes:
+        card_id = str(route.get("card_id") or "").strip()
+        if card_id and card_id not in ids:
+            ids.append(card_id)
+    return ids
+
+
+ROUTE_PREREQUISITE_FIELDS = (
+    "bounded_claim",
+    "stable_evaluator",
+    "rubric_ready",
+    "artifact_surface",
+)
+
+
+def validate_agentic_route_json_contract(route: dict[str, Any]) -> list[str]:
+    """Validate the source route JSON before it becomes an action row."""
+
+    errors: list[str] = []
+    decision = str(route.get("decision") or "not_evaluated")
+    if decision not in ROUTER_DECISION_TO_AGENTIC_ACTION:
+        errors.append(f"unknown route decision: {decision!r}")
+    for field in ROUTE_PREREQUISITE_FIELDS:
+        if field not in route:
+            errors.append(f"route JSON missing {field}")
+        elif not isinstance(route.get(field), bool):
+            errors.append(f"route JSON {field} must be boolean")
+    if errors:
+        return errors
+
+    ready = all(bool(route.get(field)) for field in ROUTE_PREREQUISITE_FIELDS)
+    any_partial_surface = any(
+        bool(route.get(field))
+        for field in ("bounded_claim", "stable_evaluator", "rubric_ready")
+    )
+    missing = route.get("missing")
+    missing_count = len(missing) if isinstance(missing, list) else 0
+
+    if decision == "invoke_autoresearch":
+        if not ready:
+            errors.append(
+                "route decision invoke_autoresearch requires bounded_claim, "
+                "stable_evaluator, rubric_ready, and artifact_surface all true"
+            )
+        if missing_count:
+            errors.append("route decision invoke_autoresearch requires empty missing list")
+    elif decision == "prepare_autoresearch_surface":
+        if ready:
+            errors.append("ready route should use invoke_autoresearch, not prepare_autoresearch_surface")
+        if not any_partial_surface:
+            errors.append(
+                "prepare_autoresearch_surface requires at least one bounded/evaluator/rubric surface"
+            )
+        if missing_count == 0:
+            errors.append("prepare_autoresearch_surface requires non-empty missing list")
+    elif decision == "stay_out_of_loop":
+        if ready:
+            errors.append("ready route should use invoke_autoresearch, not stay_out_of_loop")
+        if missing_count == 0:
+            errors.append("stay_out_of_loop requires non-empty missing list")
+    return errors
+
+
 def agentic_workbench_impact_from_route_args(args: argparse.Namespace) -> dict[str, Any]:
     route = read_json(args.route_json, None)
     if not isinstance(route, dict):
         raise SystemExit("--route-json must point to a router JSON object")
+    route_errors = validate_agentic_route_json_contract(route)
+    if route_errors:
+        raise SystemExit("invalid agentic route JSON: " + "; ".join(route_errors))
     decision = str(route.get("decision") or "not_evaluated")
     if decision not in ROUTER_DECISION_TO_AGENTIC_ACTION:
         raise SystemExit(f"unknown route decision in {args.route_json}: {decision!r}")
@@ -683,6 +818,9 @@ def agentic_workbench_impact_from_route_args(args: argparse.Namespace) -> dict[s
         worker_state=args.worker_state or worker_defaults["worker_state"],
         worker_identity=args.worker_identity or worker_defaults["worker_identity"],
         transport=args.transport or worker_defaults["transport"],
+        operator_card_routes=route.get("operator_card_routes")
+        if isinstance(route.get("operator_card_routes"), list)
+        else [],
         forecast_contract_id=args.forecast_contract_id,
         gp233_evidence_ref=args.gp233_evidence_ref,
         route_json_ref=None,
@@ -855,15 +993,27 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
             evidence_refs=[relpath(SURFACING_EVENT_LEDGER)],
             affected_domains=["trajectory_surfacing"],
         )
-    if not surfacing_rows:
+    elif not consumed_surfacing_events:
         add_issue(
             severity="warning",
             scope="trajectory_surfacing",
             issue_type="unconsumed_surface",
             expected_count=1,
-            observed_count=len(consumed_surfacing_events),
+            observed_count=0,
             denominator="surfacing consumption action-impact rows",
-            blocking_rule="trajectory/primitives surfacing recommendations are diagnostic until consumption is recorded",
+            blocking_rule="trajectory/primitives surfacing recommendations are diagnostic until at least one surfacing event is consumed or suppressed",
+            evidence_refs=[relpath(SURFACING_EVENT_LEDGER), relpath(ACTION_IMPACT_LEDGER)],
+            affected_domains=["trajectory_surfacing"],
+        )
+    elif not surfacing_rows:
+        add_issue(
+            severity="warning",
+            scope="trajectory_surfacing",
+            issue_type="unmaterialized_surfacing_consumption",
+            expected_count=len(consumed_surfacing_events),
+            observed_count=0,
+            denominator="materialized surfacing action-impact rows",
+            blocking_rule="consumed surfacing events remain diagnostic until action-impact rows are materialized",
             evidence_refs=[relpath(SURFACING_EVENT_LEDGER), relpath(ACTION_IMPACT_LEDGER)],
             affected_domains=["trajectory_surfacing"],
         )
@@ -1021,7 +1171,7 @@ def repair_recommendation(scope: str, issue: dict[str, Any]) -> dict[str, Any]:
         "blocking_checks": [issue.get("issue_type") or "source_compilation_defect"],
         "execution_authority": "none_advisory_only",
     }
-    payload["recommendation_id"] = stable_id("sr", payload)
+    payload["recommendation_id"] = recommendation_id(payload)
     return payload
 
 
@@ -1089,7 +1239,7 @@ def forecast_ops_recommendations(
                 "meets_two_independent_agents": fast.get("meets_two_independent_agents"),
             },
         }
-        rec["recommendation_id"] = stable_id("sr", rec)
+        rec["recommendation_id"] = recommendation_id(rec)
         rows.append(rec)
         if len(rows) >= limit:
             break
@@ -1100,6 +1250,125 @@ def trajectory_rows(limit: int = 500) -> list[dict[str, Any]]:
     path = TRAJECTORY_ARCHIVE_ENRICHED if TRAJECTORY_ARCHIVE_ENRICHED.exists() else TRAJECTORY_ARCHIVE
     rows = read_jsonl(path)
     return rows[-limit:] if limit and len(rows) > limit else rows
+
+
+def primitive_miss_queue_status(path: Path | None = None) -> dict[str, Any]:
+    """Read primitive-amnesia promotion reviews through the canonical classifier."""
+
+    queue_path = path or PRIMITIVE_MISS_QUEUE
+    try:
+        from ztare.research_director.primitive_amnesia import miss_queue_status
+    except ModuleNotFoundError:
+        src_path = str(REPO / "src")
+        if src_path not in sys.path:
+            sys.path.insert(0, src_path)
+        from ztare.research_director.primitive_amnesia import miss_queue_status
+    return miss_queue_status(queue_path)
+
+
+def primitive_promotion_recommendations(
+    *,
+    action_rows: list[dict[str, Any]],
+    limit: int = 25,
+) -> list[dict[str, Any]]:
+    """Surface open primitive-amnesia reviews as diagnostic action recommendations.
+
+    This is deliberately not a promotion path. The recommendation is only a
+    downstream consumer for the review row; a later surfacing event must record
+    whether the review was consumed, suppressed, or closed as a non-promotion.
+    """
+
+    try:
+        status = primitive_miss_queue_status()
+    except Exception as exc:
+        rec = {
+            "schema_version": 1,
+            "generated_at": now_iso(),
+            "domain": "trajectory_surfacing",
+            "decision_id": stable_id("primitive_miss_queue_unreadable", str(exc)),
+            "recommended_action": "repair_source_emitter",
+            "confidence": "diagnostic_only",
+            "rationale": f"primitive-amnesia miss queue unreadable: {type(exc).__name__}: {str(exc)[:160]}",
+            "evidence_refs": [relpath(PRIMITIVE_MISS_QUEUE)],
+            "externality_checks": {
+                "negative_externality_risk": "unknown",
+                "goodhart_risk": "medium",
+                "sample_size": 0,
+                "min_sample_size_met": False,
+                "confidence_interval": None,
+                "uncertainty_note": "repair queue source before consuming primitive-promotion reviews",
+            },
+            "blocking_checks": ["primitive_amnesia_miss_queue_unreadable"],
+            "execution_authority": "none_advisory_only",
+            "source": "primitive_amnesia_miss_queue",
+        }
+        rec["recommendation_id"] = recommendation_id(rec)
+        return [rec]
+
+    latest_open = [
+        row for row in (status.get("latest_open") or [])
+        if isinstance(row, dict) and isinstance(row.get("promotion_review"), dict)
+    ]
+    if not latest_open:
+        return []
+    sample_size = len([
+        row for row in action_rows
+        if (
+            (row.get("decision_point") or {}).get("domain") == "trajectory_surfacing"
+            and (row.get("context_features") or {}).get("surface_kind") == "primitive_promotion_review"
+        )
+    ])
+    rows: list[dict[str, Any]] = []
+    for row in latest_open[:limit]:
+        review = row["promotion_review"]
+        miss_id = str(review.get("miss_id") or row.get("miss_id") or "")
+        payload_ref = f"{relpath(PRIMITIVE_MISS_QUEUE)}#{miss_id}" if miss_id else relpath(PRIMITIVE_MISS_QUEUE)
+        promotion_decision = str(review.get("promotion_decision") or "review_only")
+        selected_action = "surface_primitive_promotion_review"
+        if promotion_decision == "close_as_catalog_retrieval_repair":
+            selected_action = "repair_source_emitter"
+        rationale_parts = [
+            promotion_decision,
+            str(review.get("non_claim") or "").strip(),
+            str(review.get("kill_criterion") or "").strip(),
+        ]
+        rec = {
+            "schema_version": 1,
+            "generated_at": now_iso(),
+            "domain": "trajectory_surfacing",
+            "decision_id": stable_id("primitive_review", {"miss_id": miss_id, "decision": promotion_decision}),
+            "recommended_action": selected_action,
+            "confidence": "diagnostic_only",
+            "rationale": " | ".join(part for part in rationale_parts if part),
+            "evidence_refs": [relpath(PRIMITIVE_MISS_QUEUE)],
+            "externality_checks": {
+                "negative_externality_risk": "medium",
+                "goodhart_risk": "medium",
+                "sample_size": sample_size,
+                "min_sample_size_met": False,
+                "confidence_interval": None,
+                "uncertainty_note": (
+                    "primitive-amnesia reviews are advisory until a surfacing "
+                    "event records consumption, suppression, or closure"
+                ),
+            },
+            "blocking_checks": ["primitive_promotion_review_unconsumed"],
+            "execution_authority": "none_advisory_only",
+            "source": "primitive_amnesia_miss_queue",
+            "surface": {
+                "surface_kind": "primitive_promotion_review",
+                "surface_payload_ref": payload_ref,
+                "miss_id": miss_id,
+                "case_id": review.get("case_id"),
+                "promotion_decision": promotion_decision,
+                "typed_carrier": review.get("typed_carrier"),
+                "nearest_existing_surface": review.get("nearest_existing_surface"),
+                "nearest_confuser": review.get("nearest_confuser"),
+            },
+        }
+        rec["recommendation_id"] = recommendation_id(rec)
+        rows.append(rec)
+    return rows
 
 
 def trajectory_recommendations(
@@ -1159,7 +1428,7 @@ def trajectory_recommendations(
                 "support_count": count,
             },
         }
-        rec["recommendation_id"] = stable_id("sr", rec)
+        rec["recommendation_id"] = recommendation_id(rec)
         rows.append(rec)
 
     gp233 = gp233_rows()
@@ -1190,7 +1459,7 @@ def trajectory_recommendations(
                 "decision_changed": gp_row.get("decision_changed"),
             },
         }
-        rec["recommendation_id"] = stable_id("sr", rec)
+        rec["recommendation_id"] = recommendation_id(rec)
         rows.append(rec)
 
     catches = [
@@ -1223,9 +1492,10 @@ def trajectory_recommendations(
                 "category": catch.get("category"),
             },
         }
-        rec["recommendation_id"] = stable_id("sr", rec)
+        rec["recommendation_id"] = recommendation_id(rec)
         rows.append(rec)
 
+    rows.extend(primitive_promotion_recommendations(action_rows=action_rows, limit=limit))
     return rows[:limit]
 
 
@@ -1688,6 +1958,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p = sub.add_parser("health")
     p.add_argument("--write", action="store_true")
+    p.add_argument("--json", action="store_true", help="Accepted for command-surface consistency; output is always JSON.")
     p.set_defaults(func=cmd_health)
 
     p = sub.add_parser("smoke")

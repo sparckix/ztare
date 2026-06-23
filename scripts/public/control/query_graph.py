@@ -5,16 +5,16 @@ Pattern 10 deliverable: traversal-based queries on the ZTARE knowledge graph.
 Replaces grep+manual cross-referencing for common Director synthesis-turn questions.
 
 Usage:
-    python -m scripts.query_graph --depends-on GP-216
-    python -m scripts.query_graph --instantiates core_07
-    python -m scripts.query_graph --hubs 10                    # top-N most-referenced seams
-    python -m scripts.query_graph --connects GP-148 GP-216     # all paths from src → dst
-    python -m scripts.query_graph --orphans                    # seams with no incoming edges
-    python -m scripts.query_graph --json                       # output as JSON instead of text
+    python scripts/public/control/query_graph.py --depends-on GP-216
+    python scripts/public/control/query_graph.py --instantiates core_02
+    python scripts/public/control/query_graph.py --hubs 10
+    python scripts/public/control/query_graph.py --connects GP-148 GP-216
+    python scripts/public/control/query_graph.py --orphans
+    python scripts/public/control/query_graph.py --json
 
 Builds on:
   - scripts/public/validators/validate_knowledge_graph.py (drift validator) — same data source
-  - /tmp/gp216_graph_db_prototype.py (extractor) — regenerate graph if needed
+  - analytics/public/queries/graphs/ztare_knowledge_graph.json
 
 This is the decision-critical tool for Pattern 10 to actually deliver Director-leverage.
 Until this exists, the graph is just data; with this, the graph is queryable infrastructure.
@@ -34,7 +34,7 @@ DEFAULT_GRAPH = (
     / "public"
     / "queries"
     / "graphs"
-    / "ztare_knowledge_graph_prototype.json"
+    / "ztare_knowledge_graph.json"
 )
 
 

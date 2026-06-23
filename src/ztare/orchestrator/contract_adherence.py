@@ -24,8 +24,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
-from src.ztare.orchestrator.iter_context import IterContext
-from src.ztare.orchestrator.prompt import (
+from ztare.orchestrator.iter_context import IterContext
+from ztare.orchestrator.prompt import (
     needs_override_contract_hint,
     needs_scalar_contract_hint,
 )
@@ -103,11 +103,15 @@ def check_contract_adherence(
         return ["missing_imodel_def"]
 
     contract = _resolve_active_contract(rubric_data, project_dir)
+    imodel_required = contract in {"A", "B", "C"}
 
-    # Universal: must define I_model
+    # I_model is required only for active I_model contracts. Qualitative
+    # discriminator substrates can still own a runnable test_model.py without
+    # exposing the numeric model ABI.
     if not re.search(r"\bdef\s+I_model\s*\(", test_model_text):
-        violations.append("missing_imodel_def")
-        return violations  # other checks meaningless without the def
+        if imodel_required:
+            violations.append("missing_imodel_def")
+        return violations  # I_model-specific checks meaningless without the def
 
     # Universal: NO module-level I_model(...) calls.
     # Track whether we are inside an `if __name__ == "__main__":` block —

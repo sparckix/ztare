@@ -86,7 +86,7 @@ PROBLEM_SOLVING_OPS = REPO / "src/ztare/research_director/problem_solving_ops.py
 PDE_ESTIMATE_CRAFT_OPS = REPO / "src/ztare/research_director/pde_estimate_craft_ops.py"
 TWO_CULTURES = REPO / "src/ztare/research_director/two_cultures.py"
 SCORER_SCRIPT = REPO / "scripts/public/analytics_shared/score_pattern_deployment_diversity.py"
-ZTARE_TENANT_ROOT = REPO.parent / "ztare-research-co" / "tenants" / "ztare"
+ZTARE_TENANT_ROOT = Path(os.environ.get("ZTARE_TENANT_ROOT", str(REPO / "org"))).expanduser()
 EXTERNAL_RUNS_KERNEL = REPO / "src/ztare/orchestration/external_runs.py"
 EXTERNAL_RUN_MONITOR = REPO / "scripts/public/control/external_run_monitor.py"
 GPU_UTILITIES = REPO / "scripts/public/utilities/gpu"
@@ -1243,15 +1243,16 @@ def pattern_action_contract_surface(scope: str | None = None) -> int:
         )
         from src.ztare.research_director.primitive_operator_cards import (
             render_obligation_classes,
+            render_operator_card_route_summary,
             render_operator_cards,
             route_obligation_classes,
-            route_operator_cards,
+            route_operator_cards_semantic,
         )
         goal = os.environ.get("ZTARE_TICK_GOAL") or os.environ.get("RD_TICK_GOAL")
         contract = build_pattern_action_contract(scope=scope, goal=goal)
         context = " ".join(part for part in (scope or "", goal or "") if part)
         obligations = route_obligation_classes(context=context, top_n=2)
-        cards = route_operator_cards(context=context, top_n=2)
+        cards = route_operator_cards_semantic(context=context, top_n=2)
     except Exception as exc:
         print(f"  ERROR: pattern action contract unavailable: {exc}")
         return 1
@@ -1267,6 +1268,10 @@ def pattern_action_contract_surface(scope: str | None = None) -> int:
     print("    pattern chain:")
     for item in contract.pattern_chain[:8]:
         print(f"      - {item}")
+    print(
+        "    operator card route receipts: "
+        f"{render_operator_card_route_summary(contract.operator_card_routes)}"
+    )
     if contract.anti_patterns:
         print("    anti-pattern guards:")
         for item in contract.anti_patterns[:8]:
@@ -1604,7 +1609,7 @@ def neural_hunt_graph_precheck() -> int:
 
 def ns_amnesia_anchor_module_precheck() -> int:
     """RD-role substrate MODULE (loaded because role=RD-for-NS in the
-    ztare-research-co tenant overlay): NS amnesia basin + vocabulary-
+    configured ZTARE tenant overlay): NS amnesia basin + vocabulary-
     drift-proof structural anchor + O(1) residual manifest +
     pre-hard-claim gate. Kernel/role-module split (product thinking):
     the UNIVERSAL micro-forecast/MECE pre-post protocol lives in §8
@@ -1815,7 +1820,7 @@ def autoresearch_workbench_router_surface(
         )
         from src.ztare.research_director.primitive_operator_cards import (
             render_operator_cards,
-            route_operator_cards,
+            route_operator_cards_semantic,
         )
     except Exception as exc:
         print(f"  ERROR: autoresearch workbench router unavailable: {exc}")
@@ -1911,7 +1916,7 @@ def autoresearch_workbench_router_surface(
         if part
     )
     print("  typed operator-card surface:")
-    print(render_operator_cards(route_operator_cards(context=card_context, top_n=2)))
+    print(render_operator_cards(route_operator_cards_semantic(context=card_context, top_n=2)))
     if decision.decision == "invoke_autoresearch" and project and rubric:
         print("  run surface:")
         print(f"    ztare autoresearch run --project {project} --rubric {rubric}")
@@ -1964,9 +1969,9 @@ def autoresearch_workbench_router_surface(
         print(f"      --project {shlex.quote(project)} \\")
     if rubric:
         print(f"      --rubric {shlex.quote(rubric)} \\")
-    print("      > /tmp/autoresearch_route.json")
+    print("      > autoresearch_route.json")
     print("    ztare action-intel record-agentic-route \\")
-    print("      --route-json /tmp/autoresearch_route.json --decision-id DECISION_ID \\")
+    print("      --route-json autoresearch_route.json --decision-id DECISION_ID \\")
     print(f"      --selected-action {selected_action} \\")
     print(f"      --why-not-autoresearch {shlex.quote(why_hint)}")
     if workbench_summary:

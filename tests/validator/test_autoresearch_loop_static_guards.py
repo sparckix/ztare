@@ -8,6 +8,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 AUTORESEARCH_LOOP = REPO_ROOT / "src" / "ztare" / "validator" / "autoresearch_loop.py"
 TEST_THESIS = REPO_ROOT / "src" / "ztare" / "validator" / "test_thesis.py"
 GENERATE_COMMITTEE = REPO_ROOT / "src" / "ztare" / "validator" / "generate_committee.py"
+MAKEFILE = REPO_ROOT / "Makefile"
 
 
 def _main_iteration_loops(tree: ast.AST) -> list[ast.For]:
@@ -123,6 +124,22 @@ def test_mutator_safe_mutate_routes_through_dispatch_model_before_api_call() -> 
     assert dispatch_pos < api_call_pos
 
 
+def test_mutator_effective_model_telemetry_uses_call_events_not_set_delta() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    assert "SESSION_MUTATOR_MODEL_EVENTS: list[str] = []" in source
+    assert "_CURRENT_ITERATION_MUTATOR_MODEL_EVENT_START = len(SESSION_MUTATOR_MODEL_EVENTS)" in source
+    assert "def _record_mutator_effective_model(model_id: str)" in source
+    assert "SESSION_MUTATOR_MODEL_EVENTS.append(normalized)" in source
+
+    helper_start = source.index("def _current_iteration_mutator_effective_models()")
+    helper_end = source.index("def _record_mutator_effective_model", helper_start)
+    helper_source = source[helper_start:helper_end]
+    assert "SESSION_MUTATOR_MODEL_EVENTS[_CURRENT_ITERATION_MUTATOR_MODEL_EVENT_START:]" in helper_source
+    assert "SESSION_MUTATOR_MODELS_USED" not in helper_source
+    assert "current - prior" not in helper_source
+
+
 def test_r1_retry_prompt_receives_same_iteration_error_history() -> None:
     source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
     assert "_r1_error_history: list[str] = []" in source
@@ -148,6 +165,83 @@ def test_single_mutator_route_avoids_parallel_wrapper_until_rubric_triggers() ->
     assert direct_single_pos < dispatch_pos
 
 
+def test_make_autoresearch_loop_disables_model_fallback_by_default() -> None:
+    source = MAKEFILE.read_text(encoding="utf-8")
+
+    assert "MODEL_FALLBACK ?= 0" in source
+    assert "AUTORESEARCH_MODEL_FALLBACK_FLAG := $(if $(filter 1 true yes,$(MODEL_FALLBACK)),,--no_model_fallback)" in source
+    assert "MODEL_FALLBACK_ENV := ZTARE_DISABLE_MODEL_FALLBACK=$(if $(filter 1 true yes,$(MODEL_FALLBACK)),0,1)" in source
+    assert "EVIDENCE_SEARCH_BACKEND ?= auto" in source
+    assert "$(AUTORESEARCH_MODEL_FALLBACK_FLAG)" in source
+    assert "$(MODEL_FALLBACK_ENV) $(PYTHON) -m ztare.workspace.compile_evidence" in source
+    assert "$(MODEL_FALLBACK_ENV) $(PYTHON) -m ztare.workspace.fetch_evidence" in source
+    assert "--search-backend $(EVIDENCE_SEARCH_BACKEND)" in source
+    assert "MODEL_FALLBACK=$(MODEL_FALLBACK)" in source
+
+
+def test_control_followup_records_allow_and_block_decisions() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    pivot_decision_pos = source.index(
+        "_pivot_followup_decision = evaluate_control_followup("
+    )
+    pivot_record_pos = source.index(
+        "record_control_followup_decision(",
+        pivot_decision_pos,
+    )
+    pivot_block_pos = source.index(
+        "if not _pivot_followup_decision.allowed:",
+        pivot_decision_pos,
+    )
+    assert pivot_decision_pos < pivot_record_pos < pivot_block_pos
+
+    blitz_decision_pos = source.index(
+        "_blitz_followup_decision = evaluate_control_followup("
+    )
+    blitz_record_pos = source.index(
+        "record_control_followup_decision(",
+        blitz_decision_pos,
+    )
+    blitz_block_pos = source.index(
+        "if not _blitz_followup_decision.allowed:",
+        blitz_decision_pos,
+    )
+    assert blitz_decision_pos < blitz_record_pos < blitz_block_pos
+
+
+def test_baseline_eval_materializes_eval_history_before_iteration_loop() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    baseline_eval_pos = source.index('context_label="baseline latest_eval_results.json"')
+    baseline_append_pos = source.index("_append_eval_history_record(", baseline_eval_pos)
+    iteration_loop_pos = source.index("for i in range(ITERATIONS):", baseline_eval_pos)
+    baseline_block = source[
+        baseline_append_pos:source.index("best_score = res", baseline_append_pos)
+    ]
+
+    assert baseline_eval_pos < baseline_append_pos < iteration_loop_pos
+    assert '"iteration": 0' in baseline_block
+    assert '"artifact_refs": _eval_history_artifact_refs(' in baseline_block
+    assert "LATEST_EVAL_RESULTS_PATH" in baseline_block
+
+
+def test_eval_history_writer_carries_artifact_refs_and_reports_errors() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    loop_pos = source.index("for i in range(ITERATIONS):")
+    per_iter_pos = source.index("_append_eval_history_record(", loop_pos)
+    per_iter_block = source[per_iter_pos:source.index("record_latent_distance(", per_iter_pos)]
+
+    assert "_eval_history_artifact_refs(" in per_iter_block
+    assert '"artifact_refs": _eval_history_artifact_refs(' in per_iter_block
+    assert "test_model_path" in per_iter_block
+    assert "_submission_snapshot_py_path" in per_iter_block
+    assert "eval_history iteration append error" in per_iter_block
+    assert "pass  # fail-silent telemetry" not in per_iter_block
+    assert '"weakest_point": new_eval.get("weakest_point") or ""' in per_iter_block
+    assert 'weakest_point") or "")[:200]' not in source
+
+
 def test_judge_safe_generate_routes_through_dispatch_model_before_api_call() -> None:
     source = TEST_THESIS.read_text(encoding="utf-8")
     assert "dispatch_env_for_call_site" in source
@@ -160,6 +254,14 @@ def test_judge_safe_generate_routes_through_dispatch_model_before_api_call() -> 
     dispatch_pos = source.index("result = dispatch_model(", safe_generate_start)
     api_call_pos = source.index("response = RUNTIME.call_text(", safe_generate_start)
     assert dispatch_pos < api_call_pos
+
+
+def test_test_thesis_does_not_materialize_projects_symlink_shim() -> None:
+    source = TEST_THESIS.read_text(encoding="utf-8")
+
+    assert "symlink_to" not in source
+    assert "PROJECT_DIR/projects" not in source
+    assert "projects/<slug>/... are a" in source
 
 
 def test_committee_generation_routes_through_dispatch_model_before_api_call() -> None:
@@ -195,3 +297,23 @@ def test_primitive_class_rotation_tracks_judged_candidates_not_only_champions() 
     assert judged_track_pos < champion_branch_pos
     assert '"non_improving_candidate"' in source[judged_track_pos:champion_branch_pos]
     assert '"champion_promoted"' in source[judged_track_pos:champion_branch_pos]
+
+
+def test_global_soft_penalties_apply_before_post_harness_import_fallback() -> None:
+    source = AUTORESEARCH_LOOP.read_text(encoding="utf-8")
+
+    soft_branch_pos = source.index(
+        'elif _global_gate_payload.get("failure_count", 0) > 0:'
+    )
+    score_mutation_pos = source.index('new_eval["score"] = _adjusted_score', soft_branch_pos)
+    score_cap_pos = source.index(
+        '_record_deterministic_score_override(',
+        soft_branch_pos,
+    )
+    post_harness_pos = source.index("# GP-157 Cage post-harness dispatch.", soft_branch_pos)
+    assert soft_branch_pos < score_cap_pos < score_mutation_pos < post_harness_pos
+
+    post_harness_block = source[
+        post_harness_pos:source.index("except Exception as _gg_exc:", post_harness_pos)
+    ]
+    assert 'new_eval["score"] = max(0, int(new_eval.get("score", 0)) + _penalty)' not in post_harness_block

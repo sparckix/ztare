@@ -3,7 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from src.ztare.validator.hypothesis_projection import build_projection
+from ztare.validator.hypothesis_projection import build_projection
 
 
 def _append_jsonl(path: Path, rows: list[dict]) -> None:
@@ -265,6 +265,57 @@ def test_hypothesis_projection_recovers_gate_failures_from_iteration_telemetry(
     ]
 
 
+def test_hypothesis_projection_links_action_intelligence_rows(tmp_path: Path):
+    project = tmp_path / "projects" / "demo_project"
+    history = project / "history"
+    history.mkdir(parents=True)
+    artifact = "projects/demo_project/history/100_iter1_score_40_demo_project.md"
+    (tmp_path / artifact).write_text("candidate", encoding="utf-8")
+    _append_jsonl(
+        project / "workspace" / "eval_history.jsonl",
+        [
+            {
+                "iteration": 1,
+                "score": 40,
+                "weakest_point": "Route needs a recorded downstream decision.",
+                "artifact_refs": [artifact],
+            }
+        ],
+    )
+    _append_jsonl(
+        tmp_path / "analytics/public/ledgers/action_intelligence/action_impact_ledger.jsonl",
+        [
+            {
+                "action_impact_id": "ai_projection_demo",
+                "selected_action": "invoke_autoresearch",
+                "decision_point": {
+                    "decision_id": "decision_projection_demo",
+                    "project_id": "demo_project",
+                },
+                "context_features": {
+                    "project_family": "demo_project",
+                    "workbench_router_decision": "invoke_autoresearch",
+                },
+                "source_refs": {"source_refs": [artifact]},
+            }
+        ],
+    )
+
+    projection = build_projection(project)
+
+    assert projection.summary.action_intelligence_link_count == 1
+    assert projection.nodes[0].action_intelligence_refs == [
+        {
+            "action_impact_id": "ai_projection_demo",
+            "decision_id": "decision_projection_demo",
+            "selected_action": "invoke_autoresearch",
+            "workbench_router_decision": "invoke_autoresearch",
+            "match_kind": "artifact_ref",
+            "matched_refs": [artifact],
+        }
+    ]
+
+
 def test_hypothesis_projection_prefers_eval_history_gate_failures(
     tmp_path: Path,
 ):
@@ -416,3 +467,112 @@ def test_hypothesis_projection_falls_back_to_legacy_history_meta(tmp_path: Path)
     assert projection.nodes[0].artifact_refs == [
         "projects/legacy_project/history/200_iter0_score_30_legacy_project.md"
     ]
+
+
+def test_hypothesis_projection_reports_latest_eval_without_history(tmp_path: Path):
+    project = tmp_path / "projects" / "latest_only_project"
+    (project).mkdir(parents=True)
+    (project / "latest_eval_results.json").write_text(
+        json.dumps(
+            {
+                "iteration": 0,
+                "score": 41,
+                "weakest_point": "Baseline claim lacks a source-bound falsifier.",
+                "gate_failure_count": 1,
+                "failed_gate_ids": ["source_bound_falsifier_missing"],
+                "timestamp": "2026-06-20T00:00:00Z",
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    projection = build_projection(project)
+
+    assert projection.summary.node_count == 0
+    assert projection.latest_eval_overlay["available"] is True
+    assert projection.latest_eval_overlay["status"] == "latest_eval_without_eval_history"
+    assert projection.latest_eval_overlay["matches_history"] is False
+    assert projection.latest_eval_overlay["score"] == 41.0
+    assert projection.latest_eval_overlay["gate_failure_count"] == 1
+    assert projection.latest_eval_overlay["failed_gate_ids"] == [
+        "source_bound_falsifier_missing"
+    ]
+    assert "projection nodes are empty" in projection.latest_eval_overlay["warnings"][0]
+
+
+def test_hypothesis_projection_warns_when_latest_eval_is_not_in_history(
+    tmp_path: Path,
+):
+    project = tmp_path / "projects" / "stale_history_project"
+    _append_jsonl(
+        project / "workspace" / "eval_history.jsonl",
+        [
+            {
+                "iteration": 1,
+                "score": 20,
+                "weakest_point": "Earlier source gap.",
+                "timestamp": "2026-06-20T00:00:00Z",
+            }
+        ],
+    )
+    (project / "latest_eval_results.json").write_text(
+        json.dumps(
+            {
+                "iteration": 2,
+                "score": 55,
+                "weakest_point": "New claim survived source preflight but failed holdout.",
+                "timestamp": "2026-06-20T00:10:00Z",
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    projection = build_projection(project)
+
+    assert projection.summary.node_count == 1
+    assert projection.summary.best_score == 20.0
+    assert projection.latest_eval_overlay["status"] == "latest_eval_not_in_eval_history"
+    assert projection.latest_eval_overlay["matches_history"] is False
+    assert projection.latest_eval_overlay["iteration"] == 2
+    assert projection.latest_eval_overlay["score"] == 55.0
+    assert "nodes as stale" in projection.latest_eval_overlay["warnings"][0]
+
+
+def test_hypothesis_projection_matches_latest_eval_against_truncated_history_weakest_point(
+    tmp_path: Path,
+):
+    project = tmp_path / "projects" / "truncated_history_project"
+    full_weakest = (
+        "The thesis depends on deterministic filesystem path resolution for a "
+        "missing reference and therefore needs source-code evidence that the "
+        "preflight fails closed instead of logging and continuing."
+    )
+    _append_jsonl(
+        project / "workspace" / "eval_history.jsonl",
+        [
+            {
+                "iteration": 1,
+                "score": 72,
+                "weakest_point": full_weakest[:120],
+                "timestamp": "2026-06-20T00:00:00Z",
+            }
+        ],
+    )
+    (project / "latest_eval_results.json").write_text(
+        json.dumps(
+            {
+                "score": 72,
+                "weakest_point": full_weakest,
+            },
+            sort_keys=True,
+        ),
+        encoding="utf-8",
+    )
+
+    projection = build_projection(project)
+
+    assert projection.latest_eval_overlay["status"] == "covered_by_eval_history"
+    assert projection.latest_eval_overlay["matches_history"] is True
+    assert projection.latest_eval_overlay["warnings"] == []

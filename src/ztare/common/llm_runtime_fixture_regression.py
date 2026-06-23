@@ -4,8 +4,9 @@ import argparse
 import json
 from pathlib import Path
 
-from src.ztare.common.llm_runtime import (
+from ztare.common.llm_runtime import (
     LLMRuntime,
+    get_model_family,
     pricing_model_name,
     resolve_director_model_id,
     resolve_model_id,
@@ -25,7 +26,15 @@ class _FallbackRuntime(LLMRuntime):
     def model_is_configured(self, model_id: str) -> bool:
         return model_id in {"gemini-2.5-flash", "claude-sonnet-4-6"}
 
-    def _call_once(self, prompt: str, model_id: str, *, config=None, max_tokens: int = 16000):
+    def _call_once(
+        self,
+        prompt: str,
+        model_id: str,
+        *,
+        config=None,
+        max_tokens: int = 16000,
+        timeout_seconds: int | None = None,
+    ):
         self.calls.append(model_id)
         if model_id == "gemini-2.5-flash":
             raise RuntimeError("503 UNAVAILABLE")
@@ -44,9 +53,75 @@ class _FallbackRuntime(LLMRuntime):
         return "503" in str(exc)
 
 
+class _TimeoutRecordingRuntime(LLMRuntime):
+    def __init__(self) -> None:
+        super().__init__()
+        self.seen_timeout_seconds: int | None = None
+
+    def _call_once(
+        self,
+        prompt: str,
+        model_id: str,
+        *,
+        config=None,
+        max_tokens: int = 16000,
+        timeout_seconds: int | None = None,
+    ):
+        self.seen_timeout_seconds = timeout_seconds
+        return _Obj(
+            model="grok-4.3",
+            choices=[_Obj(message=_Obj(content="timeout checked"))],
+            usage=_Obj(prompt_tokens=1, completion_tokens=1),
+        )
+
+
+class _SchemaConfig:
+    response_mime_type = "application/json"
+    response_schema = {
+        "type": "OBJECT",
+        "properties": {"score": {"type": "NUMBER"}},
+        "required": ["score"],
+    }
+
+
+class _RecordingCompletions:
+    def __init__(self, model_name: str = "grok-4.3") -> None:
+        self.kwargs: dict[str, object] = {}
+        self.model_name = model_name
+
+    def create(self, **kwargs):
+        self.kwargs = kwargs
+        return _Obj(
+            model=self.model_name,
+            choices=[_Obj(message=_Obj(content='{"score": 1}'))],
+            usage=_Obj(prompt_tokens=1, completion_tokens=1),
+        )
+
+
+class _RecordingGrokRuntime(LLMRuntime):
+    def __init__(self) -> None:
+        super().__init__()
+        self.completions = _RecordingCompletions()
+
+    def grok_client(self):
+        return _Obj(chat=_Obj(completions=self.completions))
+
+
+class _RecordingKimiRuntime(LLMRuntime):
+    def __init__(self) -> None:
+        super().__init__()
+        self.completions = _RecordingCompletions("kimi-k2.6")
+
+    def kimi_client(self):
+        return _Obj(chat=_Obj(completions=self.completions))
+
+
 def run_llm_runtime_fixture_regression() -> dict[str, object]:
     runtime = LLMRuntime()
     fallback_runtime = _FallbackRuntime()
+    timeout_runtime = _TimeoutRecordingRuntime()
+    recording_grok_runtime = _RecordingGrokRuntime()
+    recording_kimi_runtime = _RecordingKimiRuntime()
 
     gemini_response = _Obj(
         text="gemini text",
@@ -74,6 +149,24 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
             completion_tokens=85,
         ),
     )
+    kimi_response = _Obj(
+        model="kimi-k2.6",
+        choices=[_Obj(message=_Obj(content="kimi text"))],
+        usage=_Obj(
+            prompt_tokens=510,
+            completion_tokens=95,
+            prompt_tokens_details=_Obj(cached_tokens=30),
+        ),
+    )
+    grok_response = _Obj(
+        model="grok-4.3",
+        choices=[_Obj(message=_Obj(content="grok text"))],
+        usage=_Obj(
+            prompt_tokens=610,
+            completion_tokens=105,
+            prompt_tokens_details=_Obj(cached_tokens=40),
+        ),
+    )
     claude_response = _Obj(
         model="claude-sonnet-4-6-20260401",
         content=[_Obj(text="claude text")],
@@ -88,6 +181,8 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
     gemini_result = runtime._response_to_text_result(gemini_response, "gemini-2.5-flash")  # noqa: SLF001
     openai_result = runtime._response_to_text_result(openai_response, "gpt-4o")  # noqa: SLF001
     deepseek_result = runtime._response_to_text_result(deepseek_response, "deepseek-reasoner")  # noqa: SLF001
+    kimi_result = runtime._response_to_text_result(kimi_response, "kimi-k2.6")  # noqa: SLF001
+    grok_result = runtime._response_to_text_result(grok_response, "grok-4.3")  # noqa: SLF001
     claude_result = runtime._response_to_text_result(claude_response, "claude-sonnet-4-6")  # noqa: SLF001
     fallback_result = fallback_runtime.call_text(
         "fallback prompt",
@@ -97,6 +192,26 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
         transient_wait_seconds=0,
         timeout_wait_seconds=0,
     )
+    timeout_result = timeout_runtime.call_text(
+        "timeout prompt",
+        model_id="grok-4.3",
+        retries=1,
+        timeout_seconds=17,
+        transient_wait_seconds=0,
+        timeout_wait_seconds=0,
+    )
+    recording_grok_runtime._call_once(  # noqa: SLF001
+        "score this",
+        "grok-4.3",
+        config=_SchemaConfig(),
+        timeout_seconds=19,
+    )
+    recording_kimi_runtime._call_once(  # noqa: SLF001
+        "short visible answer",
+        "kimi-k2.6",
+        max_tokens=8,
+        timeout_seconds=19,
+    )
 
     cases = [
         {
@@ -105,7 +220,17 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
                 resolve_model_id("gemini") == "gemini-3.1-pro-preview"
                 and resolve_model_id("gemini-pro") == "gemini-3.1-pro-preview"
                 and resolve_model_id("deepseek-reasoner") == "deepseek-reasoner"
+                and resolve_model_id("kimi") == "kimi-k2.6"
+                and resolve_model_id("kimi-code") == "kimi-k2.7-code"
+                and resolve_model_id("grok") == "grok-4.3"
+                and resolve_model_id("grok-code") == "grok-build-0.1"
                 and resolve_director_model_id("gpt4o") == "o1"
+                and resolve_director_model_id("deepseek") == "deepseek-chat"
+                and resolve_director_model_id("kimi-code-fast") == "kimi-k2.7-code-highspeed"
+                and resolve_director_model_id("xai") == "grok-4.3"
+                and get_model_family("deepseek-chat") == "deepseek"
+                and get_model_family("kimi-k2.6") == "kimi"
+                and get_model_family("grok-4.3") == "grok"
             ),
         },
         {
@@ -115,6 +240,10 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
                 and pricing_model_name("claude-sonnet-4-6-20260401") == "claude-sonnet-4-6"
                 and pricing_model_name("gpt-4o-2026-04-01") == "gpt-4o"
                 and pricing_model_name("deepseek-reasoner-v1") == "deepseek-reasoner"
+                and pricing_model_name("kimi-k2.7-code-highspeed") == "kimi-k2.7-code-highspeed"
+                and pricing_model_name("kimi-k2.6-20260620") == "kimi-k2.6"
+                and pricing_model_name("grok-4.3-20260620") == "grok-4.3"
+                and pricing_model_name("grok-build-0.1") == "grok-build-0.1"
             ),
         },
         {
@@ -138,12 +267,32 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
             ),
         },
         {
-            "case_id": "deepseek_usage_is_extracted_from_openai_compatible_response",
+            "case_id": "deepseek_usage_is_extracted_from_chat_completions_response",
             "passed": (
                 deepseek_result.text == "deepseek text"
                 and deepseek_result.usage.input_tokens == 410
                 and deepseek_result.usage.output_tokens == 85
                 and deepseek_result.model_name == "deepseek-reasoner"
+            ),
+        },
+        {
+            "case_id": "kimi_usage_is_extracted_from_chat_completions_response",
+            "passed": (
+                kimi_result.text == "kimi text"
+                and kimi_result.usage.input_tokens == 510
+                and kimi_result.usage.output_tokens == 95
+                and kimi_result.usage.cache_read_input_tokens == 30
+                and kimi_result.model_name == "kimi-k2.6"
+            ),
+        },
+        {
+            "case_id": "grok_usage_is_extracted_from_chat_completions_response",
+            "passed": (
+                grok_result.text == "grok text"
+                and grok_result.usage.input_tokens == 610
+                and grok_result.usage.output_tokens == 105
+                and grok_result.usage.cache_read_input_tokens == 40
+                and grok_result.model_name == "grok-4.3"
             ),
         },
         {
@@ -166,6 +315,25 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
                 and fallback_result.fallback_from_model_id == "gemini-2.5-flash"
                 and fallback_runtime.calls == ["gemini-2.5-flash", "claude-sonnet-4-6"]
             ),
+        },
+        {
+            "case_id": "transport_receives_call_timeout_budget",
+            "passed": (
+                timeout_result.text == "timeout checked"
+                and timeout_runtime.seen_timeout_seconds == 17
+            ),
+        },
+        {
+            "case_id": "chat_completion_transport_receives_json_contract",
+            "passed": (
+                recording_grok_runtime.completions.kwargs.get("response_format") == {"type": "json_object"}
+                and recording_grok_runtime.completions.kwargs.get("timeout") == 19
+                and "RESPONSE CONTRACT:" in str(recording_grok_runtime.completions.kwargs["messages"][0]["content"])
+            ),
+        },
+        {
+            "case_id": "kimi_transport_applies_visible_output_floor",
+            "passed": recording_kimi_runtime.completions.kwargs.get("max_tokens") == 256,
         },
     ]
 

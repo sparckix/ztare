@@ -23,7 +23,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from src.ztare.common.file_io import write_json, append_jsonl
+from ztare.common.file_io import write_json, append_jsonl
 
 
 _EVENT_LABELS: dict[str, str] = {
@@ -31,6 +31,7 @@ _EVENT_LABELS: dict[str, str] = {
     "topological_pivot_emergency": "emergency_structural_pivot",
     "v4_bounded_mutation_override": "v4_bounded_mutation_override",
     "pivot_skipped_gp149_i3": "pivot_skipped_by_weakest_link_class",
+    "control_followup_observe": "control_followup_observe",
 }
 
 

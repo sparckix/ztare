@@ -38,9 +38,9 @@ def requires_i_model_submission(rubric_data: dict | None) -> bool:
 
     Explicit ``require_i_model_in_submission`` remains authoritative.  When it
     is absent, infer only the narrow non-scalar cases that the apparatus can
-    identify from rubric metadata: theorem packets and calibration/qualitative
-    bounded-discriminator runs with fitting disabled.  Legacy rubrics still
-    default to the scalar contract.
+    identify from rubric metadata: theorem packets and fully declared
+    qualitative bounded-discriminator runs with fitting disabled. Legacy
+    rubrics still default to the scalar contract.
     """
     rubric = rubric_data or {}
     if "require_i_model_in_submission" in rubric:
@@ -52,7 +52,6 @@ def requires_i_model_submission(rubric_data: dict | None) -> bool:
     if theorem_required:
         return False
 
-    rubric_mode = str(rubric.get("rubric_mode") or "").strip().lower()
     falsification_mode = str(rubric.get("falsification_mode") or "").strip().lower()
     fit_score_mode = str(rubric.get("fit_score_mode") or "").strip().lower()
     fit_disabled = (
@@ -70,8 +69,7 @@ def requires_i_model_submission(rubric_data: dict | None) -> bool:
         or bool(rubric.get("disable_uniqueness_gap_gate", False))
     )
     if (
-        rubric_mode in {"calibration", "kepler"}
-        and falsification_mode == "bounded_discriminator"
+        falsification_mode == "bounded_discriminator"
         and fit_disabled
         and no_holdout
         and qualitative_gates

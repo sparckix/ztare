@@ -1,0 +1,431 @@
+{
+  "@context": "ztare://kg/v2",
+  "@graph": [
+    {
+      "@id": "op:core_01",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Problem Reformulation & Reduction",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_02",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Generalization & Abstraction",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_03",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Decomposition & Recomposition",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_04",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Local-to-Global Assembly",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_05",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Canonical Form & Invariance",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:core_06",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Cross-Domain Translation",
+      "references_gate": [],
+      "tier": "shared_core"
+    },
+    {
+      "@id": "op:broad_01",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Iterative Refinement",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_02",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Recursive Decomposition",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_03",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Duality & Adversarial Framing",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_04",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Layered Approximation & Convergence",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_05",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Extremal Method",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_06",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Probabilistic & Stochastic Methods",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_07",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Dimensional & Structural Lifting",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:broad_08",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Constraint Imposition & Propagation",
+      "references_gate": [],
+      "tier": "broadly_shared"
+    },
+    {
+      "@id": "op:spec_01",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Characterization by Obstruction",
+      "references_gate": [],
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_02_geom",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Evolution to Equilibrium",
+      "references_gate": [],
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_03_compl",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Hardness Propagation",
+      "references_gate": [],
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "op:sub_04_addcomb",
+      "@type": "research_op",
+      "depends_on": [],
+      "instantiates_op": [],
+      "name": "Universal Regularity Partition",
+      "references_gate": [],
+      "tier": "subfield_specific"
+    },
+    {
+      "@id": "gate:SharedSkeleton",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_constraint_extractor.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:StructuralDiagnostic",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_constraint_extractor.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:SelfReferenceEvidence",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:UnresolvedDiagnosis",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:DiagnosticSummary",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:SemanticGateAnalysis",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/semantic_gate_stabilization.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:CorrectorForm",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/corrector_library.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:DeterministicGateSpec",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:DeterministicGateResult",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:DeterministicGateEvaluation",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/deterministic_charter_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:EvalResult",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/substrate_evaluation.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:WithheldValueLeakageVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:EffectiveParameterCountVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:MetaRunnerVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:SparseCellExclusionVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:FeatureBumpPatternVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/structural_anti_pattern_gates.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:injection",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/circularity_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:_BudgetGuard",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:ConstraintVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:ConstraintCheckResult",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/symbolic_logic_cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:CrossClassDiagnostic",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/cross_class_extrapolation_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:PerClassCeilingResult",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/cross_class_extrapolation_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:LeakAuditVerdict",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/prompt_leak_audit.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:Gate",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:EngagementMatrix",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:Cage",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/cage.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:NegativeSpaceDiagnostic",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/negative_space_extractor.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:BridgeScopeMismatchCode",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/bridge_scope_contract.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:BridgeScopeValidationRecord",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/bridge_scope_contract.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:FunctionContract",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/theorem_packet_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:TheoremPacketGateSpec",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/theorem_packet_gate.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:AsymptoticClaimAssessment",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/asymptotic_claim_discipline.py",
+      "references_gate": []
+    },
+    {
+      "@id": "gate:LeanProofGateResult",
+      "@type": "gate",
+      "depends_on": [],
+      "instantiates_op": [],
+      "module_path": "src/ztare/gates/lean_proof_gate.py",
+      "references_gate": []
+    }
+  ]
+}

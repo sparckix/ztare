@@ -1,4 +1,4 @@
-from src.ztare.validator.utilities.gap_to_op_class_integration import (
+from ztare.validator.utilities.gap_to_op_class_integration import (
     enrich_pivot_instruction_with_op_class,
     infer_gap_type_from_judge_verdict,
 )

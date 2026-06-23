@@ -1,36 +1,76 @@
 ---
-description: "Canonical methodology, root-cause analysis, and prevention checklist for the weekly reflexive-mining and taste-rating practice."
+description: "Weekly procedure for checking whether ZTARE produced reusable research structure, not just more files."
 ---
 
-# Reflexive Mining & Taste-Rating — Canonical Methodology + RCA
+# Reflexive Mining And Taste-Rating Methodology
 
 > **Up:** [Documentation map](../README.md)
 
-**Status:** authoritative. Read this BEFORE running the weekly reflexive-mining
-practice or any taste-rating. Supersedes scattered docstring/ledger-implicit
-guidance. Created 2026-05-16 after a procedure-inversion incident (RCA §3).
-
-This single file is the source of truth (consolidated on purpose — see §5).
+**Status:** authoritative. Read this before running the weekly mining cycle or
+any taste-rating. The command path below supersedes scattered docstrings and
+ledger-only guidance.
 
 ---
 
-## 1. What the reflexive practice is
+## 1. What This Practice Checks
 
-A weekly cadence: re-mine every artifact the project produced, score a
-de-biased sample for *insight density* (not volume), rebuild the dashboard,
-and read the week-over-week delta. The point is to separate **volume**
-(always rises) from **insight** (the thing recursive gain would actually
-move). The dashboard reports the same metrics the pipeline produces.
+The weekly cycle has one job:
 
-## 2. Canonical procedure (run in this order)
+> Did the system produce more useful research structure this week, or only more
+> files?
 
-All scripts live in `scripts/public/mining/`. Paths below are the canonical
-post-reorg locations (see §4 for the path bugs that were fixed to make these
-true).
+It re-mines authored files, rates a contextualized sample, rebuilds the
+dashboard, and compares movement inside one rater series. File count rises
+automatically. The useful question is whether the new files changed what the
+system can do next: a better check, a cleaner route, a reusable primitive, a
+stronger falsifier, or a demoted claim.
+
+The mining cycle is a measurement surface. It can surface dead instruments,
+coverage gaps, candidate primitives, and dashboard deltas. It does not grant
+public-claim authority by itself; public claims still need the evidence atlas,
+claim register, review artifacts, or the relevant subsystem gate.
+
+### Measurement Contract
+
+Treat the mining cycle as an instrument, not as the state of the system. A valid
+cycle must preserve four boundaries:
+
+| Boundary | Rule |
+|---|---|
+| Rater identity | Compare only rows from the same `rater_id` series. Cold, contextualized, and cross-family scores are different instruments. |
+| Sample scope | A weekly sample can reveal a signal or a gap; it cannot certify the whole repository. |
+| Authority | Mining can recommend a primitive, repair, demotion, or audit. It cannot promote a public claim without the owning evidence surface. |
+| Action | A dashboard movement should name the next inspection or repair, not become the repair itself. |
+
+The strongest outcome of the cycle is not a higher score. It is a named
+follow-up that a later agent can execute from files alone.
+
+### Quick Command Choices
+
+| Need | Command | Use this when |
+|---|---|---|
+| Free coverage and split check | `python3 scripts/public/mining/run_reflexive_mine.py --index-only` | You need to know what authored files exist and how much work was in-loop vs out-of-loop. |
+| Full weekly cycle | `python3 scripts/public/mining/run_reflexive_mine.py` | You have the required rating setup and want the dashboard refreshed. |
+| Resume after ratings | `python3 scripts/public/mining/run_reflexive_mine.py --resume-after-rating` | Sampling/rating already happened and you need gate, aggregate, and dashboard. |
+| Skip dashboard build | `python3 scripts/public/mining/run_reflexive_mine.py --skip-dashboard` | You want the mined outputs without rebuilding the frontend bundle. |
+
+The canonical rater is `cold_subagent_contextualized`. Cold and cross-family
+ratings are controls; they are never pooled into the primary curve.
+
+## 2. Canonical Procedure
+
+The normal command is the orchestrator:
+
+```bash
+python3 scripts/public/mining/run_reflexive_mine.py
+```
+
+Use the table below when debugging a phase or reviewing the contract. All
+scripts live in `scripts/public/mining/`; the orchestrator is the product path.
 
 | # | Step | Command | Output |
 |---|------|---------|--------|
-| 1 | Snapshot prior archive | `cp analytics/public/ledgers/trajectory/trajectory_archive*.jsonl /tmp/mine_baseline_<date>/` | baseline for the delta |
+| 1 | Snapshot prior archive | `cp analytics/public/ledgers/trajectory/trajectory_archive*.jsonl mine_baseline_<date>/` | baseline for the delta |
 | 2 | Stage-1 extract | `python3 scripts/public/mining/mine_trajectories.py` | `analytics/public/ledgers/trajectory/trajectory_archive.jsonl` |
 | 3 | Stage-1 enrich | `python3 scripts/public/mining/mine_trajectories_enrich.py` | `…/trajectory_archive_enriched.jsonl` |
 | 4 | Trajectory curves | `python3 scripts/public/mining/mine_trajectory_curves.py` | `queries/trajectory/trajectory_curves.json` |
@@ -40,36 +80,57 @@ true).
 | 8 | Context primer | `python3 scripts/public/mining/build_context_primer.py` | `queries/taste/_taste_context_primer.md` |
 | 9 | Recursive-gain candidates | `python3 scripts/public/mining/mine_recursive_gain_candidates.py` | `queries/trajectory/recursive_gain_candidates.json` |
 | 10 | Sample for taste | `python3 scripts/public/mining/sample_artifacts_for_taste.py` | `queries/taste/_taste_sample.md` + `_taste_metadata.json` |
-| 11 | **Rate — PRIMARY: contextualized/warm** | warm agent reads primer + sample → ratings | `queries/taste/_taste_ratings_contextualized.md` |
-| 12 | Rate — CONTROLS only | cold (no primer) + cross-family (codex) | `_taste_ratings.md`, `_taste_ratings_crossfamily.md` |
+| 11 | Rate: primary contextualized/warm series | warm agent reads primer + sample → ratings | `queries/taste/_taste_ratings_contextualized.md` |
+| 12 | Rate: controls only | cold (no primer) + cross-family (codex) | `_taste_ratings.md`, `_taste_ratings_crossfamily.md` |
 | 13 | Aggregate (segregated) | `python3 scripts/public/mining/aggregate_taste.py --rater-id cold_subagent_contextualized` | `queries/taste/taste_weighted_insight.json` |
 | 14 | Dashboard | `cd analytics/public/dashboard && bash scripts/refresh-data.sh && npm run build` | `dist/index.html` |
 | 15 | Delta | compare step-13 output **within the same `rater_id` series** vs prior week | the recursive-gain read |
 
-### 2.1 THE RATER RULE (the rule that was broken)
+### 2.1 Rater Rule
 
-- **The canonical rater is the CONTEXTUALIZED (warm) rater.** It is given
-  `_taste_context_primer.md` so it can tell domain-significant work
-  (meta-architecture, NS/Clay residual structure, pre-GNN/proof-composition,
-  recursive-gain machinery) from generic-looking prose. The historical
-  series in `taste_ledger.json` is `rater_id = cold_subagent_contextualized`
-  (154 entries as of 2026-05-16). **Week-over-week gain is judged on this
-  series and only this series.**
-- The **cold** rater (no primer) and the **cross-family** rater (codex/GPT)
-  are **CONTROLS**: they bound rater bias and confirm a signal is not a
-  single-model artifact. They are NOT the primary series and must NOT be
-  aggregated into it.
-- `build_context_primer.py`'s own docstring states the cold rater is
-  deficient ("never gives ≥5 because it has no codebase context"). Cold is
-  the floor, not the measurement.
-- `aggregate_taste.py --rater-id` **defaults to `cold_subagent`** and the
-  script pools all ledger rows regardless of `rater_id`. ALWAYS pass
-  `--rater-id cold_subagent_contextualized` for the canonical run. Never run
-  it bare.
+- The primary series is `rater_id = cold_subagent_contextualized`.
+- The contextualized rater reads `_taste_context_primer.md` before rating.
+- Cold and cross-family raters are controls. They bound rater bias; they do not
+  enter the primary curve.
+- Never compare a cold series to a contextualized series as if they were the
+  same instrument.
+- When calling `aggregate_taste.py` directly, pass
+  `--rater-id cold_subagent_contextualized`. Do not run it bare.
+
+### 2.2 Decision Boundary
+
+The weekly output can justify four kinds of follow-up:
+
+| Output | Valid follow-up |
+|---|---|
+| Dead instrument or stale ledger | repair the instrument or demote the metric |
+| Repeated residual or catch category | open a primitive/card/contract promotion review |
+| Coverage gap | add a miner, sampler, or review artifact only if the missing region affects decisions |
+| Rising or falling taste series | inspect the underlying sample before making a roadmap claim |
+
+Avoid two shortcuts: treating a dashboard curve as public proof, and treating a
+single rater score as a product decision. The mining cycle points to work; it
+does not replace review.
+
+### 2.3 What The Cycle Must Emit
+
+A useful run leaves a compact trail:
+
+- coverage: what authored regions entered the index and what was excluded;
+- ratings: which rater series was used and what sample it rated;
+- deltas: what changed versus the prior comparable cycle;
+- candidates: repeated residuals, candidate primitives, dead instruments, or
+  source gaps worth inspecting;
+- decision boundary: which findings are only measurements and which have an
+  owning gate, evidence atlas entry, or roadmap item.
+
+If a run cannot name at least one of "no material change", "repair this
+instrument", "inspect this residual", or "promote/demote this claim through its
+owner", the result is not decision-useful yet.
 
 ---
 
-## 3. RCA — taste-rating procedure inversion (2026-05-16)
+## 3. Incident: Taste-Rating Procedure Inversion (2026-05-16)
 
 **Incident.** During the weekly reflexive run, the cold rater was used as the
 primary instrument and `aggregate_taste` was run with no `--rater-id`,
@@ -86,27 +147,19 @@ wrong, contaminated instrument before being retracted.
 3. No data loss (append-only ledger intact); remediation is re-aggregation,
    not ledger rewrite.
 
-**Five whys.**
-1. Verdict used the wrong instrument → cold rater was run as primary.
-2. Why cold → followed `rate_artifacts_for_taste.py --mode cold-agent`, the
-   most discoverable codified path, whose instruction string asserts
-   "You are deliberately a COLD agent" as if that were canonical.
-3. Why that path and not the canonical procedure → the saved methodology was
-   not retrieved before acting; no 3-source check (primer docstring + ledger
-   `rater_id` history + prior `_taste_*_contextualized` artifacts), each of
-   which independently says contextualized is canonical.
-4. Why skipped → under rapid multi-directive execution pressure, anchored on
-   the first codified script path and constructed a plausible "de-biasing"
-   justification. This is the scientific-amnesia / anchoring failure already
-   named in operator memory.
-5. Why possible & undetected → **systemic, not just operator error**: there
-   was no authoritative methodology doc; the wrong path is more discoverable
-   than the right one; `aggregate_taste` silently pools across `rater_id`.
+**Why it happened.** The wrong path was more discoverable than the right one.
+`rate_artifacts_for_taste.py --mode cold-agent` looked like the obvious
+procedure, while the canonical contextualized series was implicit in prior
+artifacts and ledger history. The aggregate command also allowed mixed rater
+series.
 
-**Root cause.** Documentation/tooling gap (§5 G7, G8): the canonical
-procedure was implicit and the wrong path was the path of least resistance.
+**Root cause.** The method was not encoded as one authoritative runbook, and
+the tooling did not force the rater boundary.
 
-## 4. Code/doc gaps found this session (and fix status)
+**Prevention.** The orchestrator and this document now own the path. The cold
+path is a control, not the primary instrument.
+
+## 4. Code And Documentation Gaps Found In That Audit
 
 | ID | Gap | Status |
 |----|-----|--------|
@@ -116,13 +169,13 @@ procedure was implicit and the wrong path was the path of least resistance.
 | G4 | `dashboard/scripts/refresh-data.sh` `REPO_ROOT` off-by-one (`../..` from `analytics/public/dashboard` → `analytics`, not repo root). Silent placeholder fallback → **served stale dashboards undetected** | FIXED → `../../..` |
 | G5 | `rate_artifacts_for_taste.py` `--mode parse-existing` branch exists in code but absent from argparse `choices` → unreachable via CLI | OPEN (non-blocking; `aggregate_taste` reads `.md` directly) |
 | G6 | `reference_graph.json` writer path vs `graphs/` reader path inconsistency | MITIGATED (sync copy); structural fix OPEN |
-| G7 | No authoritative methodology doc; canonical procedure implicit; `--mode cold-agent` instruction string asserts coldness as if canonical | FIXED by THIS doc; instruction-string correction recommended |
+| G7 | No authoritative methodology doc; canonical procedure implicit; `--mode cold-agent` instruction string asserts coldness as if canonical | FIXED by this doc; instruction-string correction recommended |
 | G8 | `aggregate_taste.py --rater-id` defaults to `cold_subagent`; pools all `rater_id`s into one curve | OPEN — recommend: require explicit `--rater-id`; segregate weekly curve by `rater_id` |
 
-## 5. Consolidation plan (operator preference: fewer files)
+## 5. Consolidation Plan
 
-The pipeline is ~13 scripts writing ~10 query JSONs. The path-bug class (G1–G4,
-G6) exists *because* paths are duplicated across many scripts. Recommended:
+The pipeline has many scripts and output contracts. The path-bug class (G1-G4,
+G6) came from duplicated path knowledge. Keep the run path consolidated:
 
 - **One orchestrator** `scripts/public/mining/run_reflexive_mine.py` that runs
   steps 2–13 in order, owns the canonical paths in one place, defaults the
@@ -132,8 +185,8 @@ G6) exists *because* paths are duplicated across many scripts. Recommended:
 - **Fewer outputs**: the dashboard's six core JSONs can be emitted as one
   `dashboard_bundle.json` by the orchestrator; `refresh-data.sh` then copies
   one file. Reduces the contract surface that drifts.
-- This methodology doc stays the single source of truth (do not re-scatter
-  into per-script docstrings; point docstrings here instead).
+- This methodology doc stays the single source of truth. Per-script docstrings
+  should point here rather than re-stating the procedure.
 
 ## 5b. The orchestrator (built 2026-05-16)
 
@@ -200,7 +253,7 @@ they are not rediscovered:
   consumer, so candidates reflect current work (was stale-by-construction: month-old scorecards, 0
   leanmill mentions).
 
-## 5d. The per-graph "so what" (operator-mandated 2026-05-16)
+## 5d. The per-graph "so what" (review-mandated 2026-05-16)
 
 Raw charts mislead — a *cumulative* line always rises; that is arithmetic,
 not progress. Every graph carries a one-line **"so what"** takeaway,
@@ -231,7 +284,7 @@ is not a P0 autonomy metric.** The real autonomous-activity signal is the
 out-of-loop artifact volume (Bifurcation panel). Tracked under the P0
 metrics rollup seam task.
 
-## 6. Prevention checklist (run before every reflexive cycle)
+## 6. Pre-Cycle Checklist
 
 1. Read this file.
 2. 3-source check that the rater is `cold_subagent_contextualized`
