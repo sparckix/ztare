@@ -34,22 +34,26 @@ receipt writer:
 make forensic-workbench-live
 ```
 
-Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/file`,
-`/api/review`, and `/api/row-action` to the local API. The browser still does
+Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
+`/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser still does
 not scan `projects/` directly. It asks the local API for a project index and a
 fresh snapshot for the selected project, using the intake and rubric discovered
 by the index. The app shows the backing project directory, intake, report
 contract, latest review receipt, and latest saved row action before the main
-case file. The inspector can preview a selected file/source/evidence/review
+case file. The intake editor reads and writes the selected project intake
+through `/api/intake`; source and evidence refs are resolved against the intake
+directory and repo root, then shown as present, missing, external, or unsafe.
+The inspector can preview a selected intake ref or row file/source/evidence/review
 path through `/api/file`, which is read-only, repository-contained, and capped
 to a bounded text preview. When the local API is running, the Apply button
 writes the same review receipt that the CLI writes, then refreshes the same
 selected project/intake snapshot. The Save action button writes a row-action
-receipt through the same explicit API/ledger path. The Refresh button reloads
-the current case from local project files. If the API is not running at startup,
-the app falls back to `public/workbench_snapshot.json`; if a live project
-refresh fails after the API is detected, the app keeps the current case and
-shows the error instead of swapping in stale static data.
+receipt through the same explicit API/ledger path. Intake edits write an
+intake-edit receipt under the project workspace. The Refresh button reloads the
+current case from local project files. If the API is not running at startup, the
+app falls back to `public/workbench_snapshot.json`; if a live project refresh
+fails after the API is detected, the app keeps the current case and shows the
+error instead of swapping in stale static data.
 
 Live mode also fetches `/api/health` for the selected project. That endpoint
 summarizes kernel-health attention components and action-intelligence source
@@ -89,6 +93,8 @@ The interface is organized as a local claim-review surface:
 - case docket summarizing export decision, evidence path, and review handoff
 - project file strip showing the selected project directory, intake, report
   contract, latest review receipt path, and latest saved row action path
+- intake editor showing bounded claim, non-claims, source refs, evidence refs,
+  ref status, and intake-edit receipt writes
 - first-screen stage rail for sources, evidence, run readiness, and export state
 - first-five-minute path: open the case, inspect the claim, check evidence,
   run preflight, resolve the blocker, and apply the review
@@ -110,7 +116,8 @@ The interface is organized as a local claim-review surface:
   `ztare-forensic-workbench-review-v1` review file
 - review JSON preview before download or CLI handoff
 - searchable audit table plus inspector panel for row-level evidence
-- read-only file preview for selected evidence paths when the local API is running
+- read-only file preview for selected intake refs and evidence paths when the
+  local API is running
 
 The current prototype is file-backed. Static mode downloads an inspectable
 review file and makes the CLI handoff explicit:

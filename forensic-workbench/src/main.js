@@ -328,11 +328,72 @@ function intakeDraftFromPayload(payload) {
     notes: fields.notes || "",
     non_claims_text: (fields.non_claims || []).join("\n"),
     source_refs_text: (fields.source_refs || []).join("\n"),
-    evidence_refs_text: (fields.evidence_refs || []).join("\n")
+    evidence_refs_text: (fields.evidence_refs || []).join("\n"),
+    reference_status: (payload && payload.reference_status) || null
   };
 }
 
-function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload }) {
+function IntakeRefStatus({ draft, liveMode, onPreview }) {
+  const status = (draft && draft.reference_status) || {};
+  const summary = status.summary || {};
+  const groups = [
+    { key: "source_refs", label: "Source refs", rows: status.source_refs || [], type: "source" },
+    { key: "evidence_refs", label: "Evidence refs", rows: status.evidence_refs || [], type: "evidence" }
+  ];
+
+  return h(
+    "section",
+    { className: "intake-ref-status", "aria-label": "Intake reference status" },
+    h(
+      "div",
+      { className: "intake-ref-summary" },
+      h("span", null, "Refs"),
+      h("strong", null, `${summary.present || 0}/${summary.total || 0} present`),
+      h("small", null, `${summary.external || 0} external / ${summary.missing || 0} missing / ${summary.unsafe || 0} unsafe`)
+    ),
+    groups.map((group) =>
+      h(
+        "div",
+        { className: "intake-ref-group", key: group.key },
+        h("span", null, group.label),
+        group.rows.length
+          ? group.rows.map((row) =>
+              h(
+                "div",
+                { className: `intake-ref-row ${row.status}`, key: `${group.key}:${row.index}:${row.ref}` },
+                h("code", null, row.ref),
+                h("strong", null, displayText(row.status)),
+                row.previewable
+                  ? h(
+                      "button",
+                      {
+                        className: "copy-button",
+                        type: "button",
+                        disabled: !liveMode,
+                        onClick: () => onPreview && onPreview({ type: group.type, value: row.preview_path }),
+                        title: liveMode ? "Preview this repository file" : "Start the local API to preview files"
+                      },
+                      "Preview"
+                    )
+                  : h(
+                      "button",
+                      {
+                        className: "copy-button",
+                        type: "button",
+                        onClick: () => copyText(row.ref),
+                        title: "Copy reference"
+                      },
+                      "Copy"
+                    )
+              )
+            )
+          : h("p", null, "No refs recorded.")
+      )
+    )
+  );
+}
+
+function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload, onPreviewRef }) {
   const update = (key) => (event) => {
     setDraft({ ...(draft || {}), [key]: event.target.value });
   };
@@ -417,6 +478,7 @@ function IntakeEditor({ draft, setDraft, liveMode, message, onSave, onReload }) 
         })
       )
     ),
+    h(IntakeRefStatus, { draft, liveMode, onPreview: onPreviewRef }),
     h(
       "div",
       { className: "intake-editor-actions" },
@@ -1750,7 +1812,15 @@ function App() {
       ),
       modeMessage ? h("div", { className: `mode-banner ${liveMode ? "live" : "static"}` }, modeMessage) : null,
       h(ProjectContextPanel, { projectEntry: currentProjectEntry, snapshot }),
-      h(IntakeEditor, { draft: intakeDraft, setDraft: setIntakeDraft, liveMode, message: intakeMessage, onSave: saveIntakeDraft, onReload: refreshCurrentIntake }),
+      h(IntakeEditor, {
+        draft: intakeDraft,
+        setDraft: setIntakeDraft,
+        liveMode,
+        message: intakeMessage,
+        onSave: saveIntakeDraft,
+        onReload: refreshCurrentIntake,
+        onPreviewRef: loadFilePreview
+      }),
       h(NextMovePanel, { snapshot, selectedRow, setSelectedLabel, liveMode }),
       h(CaseDocket, { snapshot, selectedRow }),
       h(HealthActionsPanel, { healthContext, healthMessage, liveMode }),

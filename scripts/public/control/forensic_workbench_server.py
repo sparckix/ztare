@@ -5,9 +5,10 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import re
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
@@ -21,6 +22,7 @@ MAX_PREVIEW_BYTES = 200_000
 INTAKE_EDIT_SCHEMA = "ztare-forensic-workbench-intake-edit-receipt-v1"
 INTAKE_EDIT_FIELDS = ("bounded_claim", "next_falsifier", "notes", "non_claims", "source_refs", "evidence_refs")
 INTAKE_LIST_FIELDS = {"non_claims", "source_refs", "evidence_refs"}
+EXTERNAL_REF_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*://")
 
 
 def json_bytes(payload: dict[str, Any], status: int = 200) -> tuple[int, bytes]:
@@ -99,6 +101,96 @@ def read_json_object(path: Path, label: str) -> dict[str, Any]:
     return payload
 
 
+def unsafe_local_ref_reason(ref: str) -> str | None:
+    raw = str(ref or "").strip().replace("\\", "/")
+    if not raw:
+        return "empty reference"
+    path = PurePosixPath(raw)
+    if path.is_absolute():
+        return "absolute paths are not allowed"
+    if any(part in {"", ".", ".."} for part in path.parts):
+        return "path traversal or empty path segment is not allowed"
+    return None
+
+
+def inside_any_root(path: Path, roots: list[Path]) -> bool:
+    try:
+        resolved = path.resolve()
+    except OSError:
+        return False
+    for root in roots:
+        try:
+            resolved.relative_to(root)
+            return True
+        except ValueError:
+            continue
+    return False
+
+
+def intake_ref_status(ref: str, *, key: str, index: int, intake_path: Path) -> dict[str, Any]:
+    ref = str(ref or "").strip()
+    row: dict[str, Any] = {
+        "key": key,
+        "index": index,
+        "ref": ref,
+        "kind": "local",
+        "status": "missing",
+        "previewable": False,
+        "preview_path": "",
+        "reason": "",
+    }
+    if EXTERNAL_REF_RE.match(ref):
+        row.update({"kind": "external", "status": "external", "reason": "external reference"})
+        return row
+    unsafe_reason = unsafe_local_ref_reason(ref)
+    if unsafe_reason is not None:
+        row.update({"status": "unsafe", "reason": unsafe_reason})
+        return row
+    raw = Path(ref)
+    candidates = [intake_path.parent / raw, snapshot.REPO / raw]
+    roots = [intake_path.parent.resolve(), snapshot.REPO.resolve()]
+    for candidate in candidates:
+        if not candidate.exists():
+            continue
+        if not inside_any_root(candidate, roots):
+            row.update({"status": "unsafe", "reason": "resolved path escapes allowed roots"})
+            return row
+        row.update(
+            {
+                "status": "present",
+                "previewable": candidate.is_file(),
+                "preview_path": repo_rel(candidate) if candidate.is_file() else "",
+                "reason": "file found" if candidate.is_file() else "path is not a file",
+            }
+        )
+        return row
+    row.update({"reason": "local path does not exist"})
+    return row
+
+
+def intake_reference_status(payload: dict[str, Any], *, intake_path: Path) -> dict[str, Any]:
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for key in ("source_refs", "evidence_refs"):
+        refs = [str(item) for item in payload.get(key) or []]
+        groups[key] = [
+            intake_ref_status(ref, key=key, index=index, intake_path=intake_path)
+            for index, ref in enumerate(refs, start=1)
+        ]
+    rows = [row for group in groups.values() for row in group]
+    return {
+        "schema": "ztare-forensic-workbench-intake-ref-status-v1",
+        "source_refs": groups["source_refs"],
+        "evidence_refs": groups["evidence_refs"],
+        "summary": {
+            "total": len(rows),
+            "present": sum(1 for row in rows if row["status"] == "present"),
+            "missing": sum(1 for row in rows if row["status"] == "missing"),
+            "external": sum(1 for row in rows if row["status"] == "external"),
+            "unsafe": sum(1 for row in rows if row["status"] == "unsafe"),
+        },
+    }
+
+
 def intake_payload_for_project(project: str, intake: str | None = None) -> dict[str, Any]:
     path = project_intake_path(project, intake)
     payload = read_json_object(path, "project intake")
@@ -115,6 +207,7 @@ def intake_payload_for_project(project: str, intake: str | None = None) -> dict[
             "source_refs": [str(item) for item in payload.get("source_refs") or []],
             "evidence_refs": [str(item) for item in payload.get("evidence_refs") or []],
         },
+        "reference_status": intake_reference_status(payload, intake_path=path),
     }
 
 
