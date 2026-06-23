@@ -389,7 +389,16 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
   const latestRefreshResults = Array.isArray(context.refreshResults) ? context.refreshResults.filter(Boolean) : [];
   const projectEntry = context.projectEntry || {};
   const intakeDraft = context.intakeDraft || null;
+  const sourceImportDraft = context.sourceImportDraft || null;
+  const sourceEditDraft = context.sourceEditDraft || null;
   const pendingIntakeFields = intakeChangedFields(intakeDraft);
+  const sourceImportDirty = Boolean(
+    sourceImportDraft &&
+      (String(sourceImportDraft.filename || "").trim() ||
+        String(sourceImportDraft.body || "").trim() ||
+        String(sourceImportDraft.source_type || "").trim())
+  );
+  const pendingSourceEditFields = sourceChangedFields(sourceEditDraft);
   const intakeRefSummary = projectEntry.intake_ref_summary || {};
   const commandQueue = commandCockpitItems({
     snapshot,
@@ -605,6 +614,23 @@ function buildCaseFile(snapshot, receiptHistory, context = {}) {
             source_refs: linesFromText(intakeDraft.source_refs_text),
             evidence_refs: linesFromText(intakeDraft.evidence_refs_text),
             loaded_reference_status: intakeDraft.reference_status || null
+          }
+        : null,
+      pending_source_import: sourceImportDraft
+        ? {
+            status: sourceImportDirty ? "pending_unsaved" : "clean",
+            filename: sourceImportDraft.filename || "",
+            source_type: sourceImportDraft.source_type || "",
+            body_chars: String(sourceImportDraft.body || "").length
+          }
+        : null,
+      pending_source_edit: sourceEditDraft && sourceEditDraft.relative_raw_path
+        ? {
+            status: pendingSourceEditFields.length ? "pending_unsaved" : "clean",
+            changed_fields: pendingSourceEditFields,
+            relative_raw_path: sourceEditDraft.relative_raw_path || "",
+            source_type: sourceEditDraft.source_type || "",
+            body_chars: String(sourceEditDraft.body || "").length
           }
         : null
     },
@@ -2171,10 +2197,12 @@ function ReportContractPanel({ reportContext, message, liveMode, onPreview }) {
   );
 }
 
-function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, refreshResults, selectedRow, liveMode, saving, saveEvent, onSave }) {
+function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, sourceImportDraft, sourceEditDraft, traceContext, reportContext, healthContext, preflightEvent, sourceListContext, sourceActionEvent, sourceImportEvent, sourceEditEvent, runHistoryContext, claimSupportContext, writeReceiptEvent, refreshResults, selectedRow, liveMode, saving, saveEvent, onSave }) {
   const caseFile = buildCaseFile(snapshot, receiptHistory, {
     projectEntry,
     intakeDraft,
+    sourceImportDraft,
+    sourceEditDraft,
     traceContext,
     reportContext,
     healthContext,
@@ -2195,6 +2223,8 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, 
   const writeRefreshRows = (((caseFile.live_context.latest_write_receipt || {}).refresh_results) || []).filter(Boolean);
   const writeRefreshOk = writeRefreshRows.filter((row) => row.ok !== false).length;
   const pendingIntake = caseFile.live_context.pending_intake_edit;
+  const pendingSourceImport = caseFile.live_context.pending_source_import;
+  const pendingSourceEdit = caseFile.live_context.pending_source_edit;
   const liveContextCount = [
     caseFile.live_context.trace.schema ||
       caseFile.live_context.trace.readiness ||
@@ -2220,6 +2250,8 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, 
     caseFile.live_context.latest_source_edit,
     caseFile.live_context.latest_write_receipt,
     pendingIntake,
+    pendingSourceImport,
+    pendingSourceEdit,
     caseFile.live_context.run_history.schema || Object.keys(caseFile.live_context.run_history.summary || {}).length,
     caseFile.live_context.claim_support.schema || caseFile.live_context.claim_support.status
   ].filter(Boolean).length;
@@ -2245,6 +2277,8 @@ function CaseExportPanel({ snapshot, receiptHistory, projectEntry, intakeDraft, 
       h("div", null, h("span", null, "Project files"), h("strong", null, caseFile.project_context.project_dir ? "included" : "not recorded")),
       h("div", null, h("span", null, "Intake mode"), h("strong", null, caseFile.project_context.intake_editable ? "editable" : "read only")),
       h("div", null, h("span", null, "Pending intake"), h("strong", null, pendingIntake ? (pendingIntake.changed_fields.length ? `${pendingIntake.changed_fields.length} fields` : "clean") : "not loaded")),
+      h("div", null, h("span", null, "Pending import"), h("strong", null, pendingSourceImport ? (pendingSourceImport.status === "pending_unsaved" ? "draft" : "clean") : "not started")),
+      h("div", null, h("span", null, "Pending source edit"), h("strong", null, pendingSourceEdit ? (pendingSourceEdit.changed_fields.length ? `${pendingSourceEdit.changed_fields.length} fields` : "clean") : "not loaded")),
       h("div", null, h("span", null, "Preflight"), h("strong", null, caseFile.live_context.preflight_result ? displayText(caseFile.live_context.preflight_result.accepted ? "accepted" : "blocked") : "not run")),
       h("div", null, h("span", null, "Raw sources"), h("strong", null, String(caseFile.live_context.sources.source_count || 0))),
       h("div", null, h("span", null, "Source action"), h("strong", null, caseFile.live_context.latest_source_action ? displayText(caseFile.live_context.latest_source_action.action) : "not run")),
@@ -5185,6 +5219,8 @@ function App() {
         receiptHistory,
         projectEntry: currentProjectEntry,
         intakeDraft,
+        sourceImportDraft,
+        sourceEditDraft,
         traceContext,
         reportContext: reportPanelContext,
         healthContext,
