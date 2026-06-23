@@ -359,6 +359,10 @@ def latest_row_action_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_row_action.json"
 
 
+def latest_intake_edit_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_intake_edit.json"
+
+
 def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:
     path = latest_review_path(project)
     rel_path = rel(path)
@@ -403,6 +407,28 @@ def load_latest_row_action(project: str) -> tuple[dict[str, Any] | None, str]:
     return payload, rel_path
 
 
+def load_latest_intake_edit(project: str) -> tuple[dict[str, Any] | None, str]:
+    path = latest_intake_edit_path(project)
+    rel_path = rel(path)
+    if not path.exists():
+        return None, rel_path
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {
+            "schema": "invalid-json",
+            "status": "unreadable",
+            "error": "latest intake edit receipt is not valid JSON",
+        }, rel_path
+    if not isinstance(payload, dict):
+        return {
+            "schema": "invalid-json",
+            "status": "unreadable",
+            "error": "latest intake edit receipt must be a JSON object",
+        }, rel_path
+    return payload, rel_path
+
+
 def build_rows(
     trace: dict[str, Any],
     report_contract: dict[str, Any],
@@ -413,6 +439,8 @@ def build_rows(
     latest_review_artifact_path: str | Path | None = None,
     latest_action: dict[str, Any] | None = None,
     latest_action_artifact_path: str | Path | None = None,
+    latest_intake_edit: dict[str, Any] | None = None,
+    latest_intake_edit_artifact_path: str | Path | None = None,
 ) -> list[dict[str, str]]:
     project = str(trace.get("project") or "")
     intake = trace.get("project_intake") or {}
@@ -434,6 +462,10 @@ def build_rows(
     action_artifact_path = rel(
         latest_action_artifact_path
         or f"projects/{project}/workspace/forensic_workbench_latest_row_action.json"
+    )
+    intake_edit_artifact_path = rel(
+        latest_intake_edit_artifact_path
+        or f"projects/{project}/workspace/forensic_workbench_latest_intake_edit.json"
     )
     review_receipt_schema = str((latest_review or {}).get("schema") or "ztare-forensic-workbench-review-receipt-v1")
     if latest_review:
@@ -473,6 +505,25 @@ def build_rows(
         action_status = "no_action_saved"
         action_detail = "No saved row action has been applied for this project snapshot."
         action_warning = "no saved row action"
+    intake_edit_receipt_schema = str((latest_intake_edit or {}).get("schema") or "ztare-forensic-workbench-intake-edit-receipt-v1")
+    if latest_intake_edit:
+        updated_fields = latest_intake_edit.get("updated_fields") or []
+        if not isinstance(updated_fields, list):
+            updated_fields = []
+        intake_edit_status = (
+            "applied"
+            if intake_edit_receipt_schema == "ztare-forensic-workbench-intake-edit-receipt-v1"
+            else str(latest_intake_edit.get("status") or "unreadable")
+        )
+        intake_edit_detail = (
+            f"updated_fields={','.join(str(item) for item in updated_fields) or 'none'}; "
+            f"after_sha256={latest_intake_edit.get('after_sha256', 'missing')}"
+        )
+        intake_edit_warning = str(latest_intake_edit.get("error") or "")
+    else:
+        intake_edit_status = "no_intake_edit_saved"
+        intake_edit_detail = "No saved intake edit receipt has been applied for this project snapshot."
+        intake_edit_warning = "no saved intake edit"
 
     bounded_claim = str(intake.get("bounded_claim") or "bounded claim unavailable")
     next_falsifier = intake.get("missing_ref_falsifier") or {}
@@ -590,6 +641,14 @@ def build_rows(
             receipt=action_receipt_schema,
             warning=action_warning,
         ),
+        make_row(
+            "Latest intake edit",
+            intake_edit_status,
+            intake_edit_detail,
+            file=intake_edit_artifact_path if latest_intake_edit else None,
+            receipt=intake_edit_receipt_schema,
+            warning=intake_edit_warning,
+        ),
     ]
     return rows
 
@@ -632,6 +691,8 @@ def snapshot_payload(
     latest_review_artifact_path: str | Path | None = None,
     latest_action: dict[str, Any] | None = None,
     latest_action_artifact_path: str | Path | None = None,
+    latest_intake_edit: dict[str, Any] | None = None,
+    latest_intake_edit_artifact_path: str | Path | None = None,
 ) -> dict[str, Any]:
     project = str(trace.get("project") or DEFAULT_PROJECT)
     intake = (trace.get("project_intake") or {}).get("intake_path") or (trace.get("project_intake") or {}).get("path") or ""
@@ -650,6 +711,8 @@ def snapshot_payload(
         "latest_review_artifact": rel(latest_review_artifact_path) if latest_review_artifact_path else "",
         "latest_row_action": latest_action or None,
         "latest_row_action_artifact": rel(latest_action_artifact_path) if latest_action_artifact_path else "",
+        "latest_intake_edit": latest_intake_edit or None,
+        "latest_intake_edit_artifact": rel(latest_intake_edit_artifact_path) if latest_intake_edit_artifact_path else "",
         "rows": rows,
         "html_output": rel(output_path),
     }
@@ -875,6 +938,8 @@ def build_snapshot(
     str,
     dict[str, Any] | None,
     str,
+    dict[str, Any] | None,
+    str,
 ]:
     project = validate_project_slug(project)
     intake = intake or default_intake_for_project(project)
@@ -882,6 +947,7 @@ def build_snapshot(
     report_contract, report_command = collect_report_contract(project, renderer)
     latest_review, latest_review_artifact_path = load_latest_review(project)
     latest_action, latest_action_artifact_path = load_latest_row_action(project)
+    latest_intake_edit, latest_intake_edit_artifact_path = load_latest_intake_edit(project)
     rows = build_rows(
         trace,
         report_contract,
@@ -891,6 +957,8 @@ def build_snapshot(
         latest_review_artifact_path=latest_review_artifact_path,
         latest_action=latest_action,
         latest_action_artifact_path=latest_action_artifact_path,
+        latest_intake_edit=latest_intake_edit,
+        latest_intake_edit_artifact_path=latest_intake_edit_artifact_path,
     )
     errors = validate_rows(rows)
     if errors:
@@ -905,6 +973,8 @@ def build_snapshot(
         latest_review_artifact_path,
         latest_action,
         latest_action_artifact_path,
+        latest_intake_edit,
+        latest_intake_edit_artifact_path,
     )
 
 
@@ -936,6 +1006,8 @@ def main(argv: list[str] | None = None) -> int:
         latest_review_artifact_path,
         latest_action,
         latest_action_artifact_path,
+        latest_intake_edit,
+        latest_intake_edit_artifact_path,
     ) = build_snapshot(
         args.project,
         args.rubric,
@@ -967,6 +1039,8 @@ def main(argv: list[str] | None = None) -> int:
                 latest_review_artifact_path=latest_review_artifact_path,
                 latest_action=latest_action,
                 latest_action_artifact_path=latest_action_artifact_path,
+                latest_intake_edit=latest_intake_edit,
+                latest_intake_edit_artifact_path=latest_intake_edit_artifact_path,
             )
             json_path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(payload, indent=2, sort_keys=True))

@@ -234,6 +234,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Use suggestion",
     "Edit the claim boundary",
     "Save intake",
+    "Latest intake edit",
     "/api/projects",
     "/api/snapshot",
     "/api/health",

@@ -180,6 +180,34 @@ def test_snapshot_rows_surface_applied_review_receipt() -> None:
     assert "evidence_refs=3" in receipt_row["detail"]
 
 
+def test_snapshot_rows_surface_applied_intake_edit_receipt() -> None:
+    module = load_module()
+    latest_intake_edit = {
+        "schema": "ztare-forensic-workbench-intake-edit-receipt-v1",
+        "applied_at": "2026-06-22T00:00:00Z",
+        "project": "demo",
+        "intake_path": "projects/demo/demo_intake.json",
+        "updated_fields": ["bounded_claim", "next_falsifier"],
+        "after_sha256": "c" * 64,
+    }
+
+    rows = module.build_rows(
+        fixture_trace(),
+        fixture_report_contract(),
+        trace_command="ztare autoresearch trace --project demo --json",
+        report_command="make synth-contract PROJECT=demo RENDERER=decision_brief",
+        latest_intake_edit=latest_intake_edit,
+        latest_intake_edit_artifact_path="projects/demo/workspace/forensic_workbench_latest_intake_edit.json",
+    )
+
+    receipt_row = next(row for row in rows if row["label"] == "Latest intake edit")
+    assert receipt_row["status"] == "applied"
+    assert receipt_row["kind"] == "ready"
+    assert receipt_row["file"] == "projects/demo/workspace/forensic_workbench_latest_intake_edit.json"
+    assert "updated_fields=bounded_claim,next_falsifier" in receipt_row["detail"]
+    assert "after_sha256=" in receipt_row["detail"]
+
+
 def test_snapshot_loads_latest_review_from_project_workspace(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     module = load_module()
     monkeypatch.setattr(module, "REPO", tmp_path)

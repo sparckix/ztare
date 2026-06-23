@@ -2,6 +2,8 @@
   "html_output": "docs/landings/forensic_workbench_prototype.html",
   "intake": "projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json",
   "intake_source": "project_local_intake",
+  "latest_intake_edit": null,
+  "latest_intake_edit_artifact": "projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_intake_edit.json",
   "latest_review": null,
   "latest_review_artifact": "projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json",
   "latest_row_action": null,
@@ -192,6 +194,20 @@
       "source": "",
       "status": "no_action_saved",
       "warning": "no saved row action"
+    },
+    {
+      "command": "",
+      "detail": "No saved intake edit receipt has been applied for this project snapshot.",
+      "evidence": "",
+      "file": "",
+      "kind": "neutral",
+      "label": "Latest intake edit",
+      "provenance": "receipt=ztare-forensic-workbench-intake-edit-receipt-v1 | warning=no saved intake edit",
+      "receipt": "ztare-forensic-workbench-intake-edit-receipt-v1",
+      "review_artifact": "",
+      "source": "",
+      "status": "no_intake_edit_saved",
+      "warning": "no saved intake edit"
     }
   ],
   "rubric": "ops_root_cause_diagnosis_demo",

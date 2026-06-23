@@ -204,6 +204,8 @@ def snapshot_payload_for_project(
         latest_review_path,
         latest_action,
         latest_action_path,
+        latest_intake_edit,
+        latest_intake_edit_path,
     ) = snapshot.build_snapshot(
         project,
         rubric,
@@ -220,6 +222,8 @@ def snapshot_payload_for_project(
         latest_review_artifact_path=latest_review_path,
         latest_action=latest_action,
         latest_action_artifact_path=latest_action_path,
+        latest_intake_edit=latest_intake_edit,
+        latest_intake_edit_artifact_path=latest_intake_edit_path,
     )
     payload["served_from"] = "local_api"
     return payload

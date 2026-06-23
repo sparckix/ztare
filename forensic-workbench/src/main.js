@@ -299,6 +299,7 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const reportContract = (projectEntry && projectEntry.report_contract) || "";
   const latestReview = (projectEntry && projectEntry.latest_review) || snapshot.latest_review_artifact || "";
   const latestAction = (projectEntry && projectEntry.latest_row_action) || snapshot.latest_row_action_artifact || "";
+  const latestIntakeEdit = snapshot.latest_intake_edit_artifact || "";
   return h(
     "section",
     { className: "project-context-panel", "aria-label": "Project files" },
@@ -306,7 +307,8 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
     h("div", null, h("span", null, "Intake"), h("code", null, intake || "not discovered")),
     h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
     h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none")),
-    h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none"))
+    h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none")),
+    h("div", null, h("span", null, "Latest intake edit"), h("code", null, latestIntakeEdit || "none"))
   );
 }
 
