@@ -243,6 +243,8 @@ function sourceActionReceiptEvent(payload) {
     returncode: payload.returncode,
     source_path: sourcePath,
     source_receipt_path: parsed.source_index_receipt || parsed.receipt_path || parsed.path || "",
+    source_sha256: parsed.source_sha256 || parsed.sha256 || "",
+    source_receipt_sha256: parsed.source_receipt_sha256 || "",
     source_count: parsed.source_count
   };
   return {
@@ -3117,7 +3119,15 @@ function WriteReceiptPanel({ receiptEvent, liveMode, onPreview }) {
   const kindLabel = kindLabels[receiptEvent.kind] || displayText(receiptEvent.kind || "write");
   const editedFields = (receipt.updated_fields || []).map(displayFieldName).join(", ");
   const actionLabel = receipt.action || receipt.decision || receipt.status || receipt.binding_mode || receipt.source_type || editedFields || "written";
-  const hash = receipt.review_file_sha256 || receipt.action_file_sha256 || receipt.after_sha256 || receipt.sha256 || "";
+  const hash =
+    receipt.review_file_sha256 ||
+    receipt.action_file_sha256 ||
+    receipt.after_sha256 ||
+    receipt.source_sha256 ||
+    receipt.source_receipt_sha256 ||
+    receipt.case_file_sha256 ||
+    receipt.sha256 ||
+    "";
   const sourcePath = receipt.review_file_path || receipt.action_file_path || receipt.intake_path || receipt.source_path || receipt.case_file_path || receipt.path || receipt.provenance_path || "";
   const previewableSourcePath = isPreviewableRepoPath(sourcePath);
   const ledgerPath = result.ledger || result.receipt_path || "";

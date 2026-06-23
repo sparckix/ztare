@@ -495,6 +495,9 @@ def normalize_receipt_row(payload: dict[str, Any], *, kind: str, path: str, line
                 "returncode": safe_int(payload.get("returncode")),
                 "source_path": str(payload.get("source_path") or ""),
                 "source_receipt_path": str(payload.get("source_receipt_path") or ""),
+                "source_sha256": str(payload.get("source_sha256") or ""),
+                "source_receipt_sha256": str(payload.get("source_receipt_sha256") or ""),
+                "sha256": str(payload.get("source_sha256") or payload.get("source_receipt_sha256") or ""),
             }
         )
         status = "accepted" if row["accepted"] else "attention"
@@ -1369,7 +1372,36 @@ def preflight_payload_for_project(
     return payload
 
 
-def source_action_artifact_paths(parsed_output: dict[str, Any]) -> tuple[str, str]:
+def file_sha256_for_display_path(value: Any) -> str:
+    path_text = display_path(value)
+    if not path_text:
+        return ""
+    path = Path(path_text)
+    if not path.is_absolute():
+        path = snapshot.REPO / path
+    try:
+        resolved = path.resolve()
+        if not path_under(resolved, snapshot.REPO.resolve()) or not resolved.is_file():
+            return ""
+        return hashlib.sha256(resolved.read_bytes()).hexdigest()
+    except (OSError, ValueError):
+        return ""
+
+
+def first_bound_artifact(receipt: dict[str, Any]) -> tuple[str, str]:
+    artifacts = receipt.get("artifacts") or []
+    for artifact in artifacts:
+        if not isinstance(artifact, dict):
+            continue
+        artifact_path = display_path(artifact.get("path"))
+        if artifact_path:
+            return artifact_path, str(artifact.get("sha256") or "")
+    return "", ""
+
+
+def source_action_artifact_paths(parsed_output: dict[str, Any]) -> tuple[str, str, str, str]:
+    nested_receipt = parsed_output.get("receipt") if isinstance(parsed_output.get("receipt"), dict) else {}
+    bound_artifact_path, bound_artifact_sha256 = first_bound_artifact(nested_receipt)
     source_receipt_path = display_path(
         parsed_output.get("source_index_receipt")
         or parsed_output.get("receipt_path")
@@ -1378,10 +1410,14 @@ def source_action_artifact_paths(parsed_output: dict[str, Any]) -> tuple[str, st
     source_path = display_path(
         parsed_output.get("source_index")
         or parsed_output.get("workspace_meta")
+        or bound_artifact_path
         or parsed_output.get("provenance_path")
+        or nested_receipt.get("provenance_path")
         or parsed_output.get("path")
     )
-    return source_receipt_path, source_path
+    source_sha256 = bound_artifact_sha256 or file_sha256_for_display_path(source_path)
+    source_receipt_sha256 = file_sha256_for_display_path(source_receipt_path)
+    return source_receipt_path, source_path, source_sha256, source_receipt_sha256
 
 
 def source_action_payload_for_project(
@@ -1426,7 +1462,7 @@ def source_action_payload_for_project(
         "snapshot": None,
     }
     if spec["writes"]:
-        source_receipt_path, source_path = source_action_artifact_paths(parsed_output)
+        source_receipt_path, source_path, source_sha256, source_receipt_sha256 = source_action_artifact_paths(parsed_output)
         workspace = snapshot.REPO / "projects" / project / "workspace"
         ledger_path = workspace / "forensic_workbench_source_actions.jsonl"
         latest_path = workspace / "forensic_workbench_latest_source_action.json"
@@ -1441,7 +1477,9 @@ def source_action_payload_for_project(
             "accepted": proc.returncode == 0,
             "source_action_schema": SOURCE_ACTION_SCHEMA,
             "source_receipt_path": source_receipt_path,
+            "source_receipt_sha256": source_receipt_sha256,
             "source_path": source_path,
+            "source_sha256": source_sha256,
             "parsed_schema": str(parsed_output.get("schema") or ""),
             "parsed_status": str(parsed_output.get("status") or ""),
         }

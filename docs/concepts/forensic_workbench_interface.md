@@ -284,9 +284,10 @@ source/evidence write action, or case-file save, the app should show the
 stamped receipt schema, target, ledger path, latest path, source path, and hash
 before the user has to inspect the full history. Ledger, latest-receipt, and
 written-artifact paths should be previewable when they point to repository
-files. The affected live panels should refresh together: trace, report/export
-contract, health, claim support, receipt history, project index, and source list
-when sources changed.
+files. Source/evidence write receipts should stamp the produced artifact hash
+when the underlying command exposes one. The affected live panels should
+refresh together: trace, report/export contract, health, claim support, receipt
+history, project index, and source list when sources changed.
 When a row is selected, the review strip should also show the latest saved
 review and row-action state for that same row from the receipt history, so a
 reviewer does not overwrite or duplicate a decision blindly.

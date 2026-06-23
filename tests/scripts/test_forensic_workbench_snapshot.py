@@ -718,11 +718,34 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
 
     def fake_run(command: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
         commands.append(command)
-        payload = {
-            "ok": True,
-            "status": "fresh",
-            "path": str(project_root / "workspace" / "source_index.json"),
-        }
+        workspace = project_root / "workspace"
+        workspace.mkdir(parents=True, exist_ok=True)
+        if "evidence-bind" in command:
+            artifact = project_root / "evidence.txt"
+            artifact.write_text("compiled evidence\n", encoding="utf-8")
+            payload = {
+                "path": str(workspace / "evidence_output_binding_receipt.json"),
+                "receipt": {
+                    "schema": "ztare-evidence-output-binding-receipt-v1",
+                    "status": "bound",
+                    "provenance_path": "projects/demo/compiled_evidence_provenance.json",
+                    "artifacts": [
+                        {
+                            "artifact_id": "evidence_output",
+                            "path": "projects/demo/evidence.txt",
+                            "sha256": module.hashlib.sha256(b"compiled evidence\n").hexdigest(),
+                        }
+                    ],
+                },
+            }
+        else:
+            source_index = workspace / "source_index.json"
+            source_index.write_text('{"sources": []}\n', encoding="utf-8")
+            payload = {
+                "ok": True,
+                "status": "fresh",
+                "path": str(source_index),
+            }
         return subprocess.CompletedProcess(command, 0, stdout=json.dumps(payload) + "\n", stderr="")
 
     monkeypatch.setattr(module.snapshot, "run", fake_run)
@@ -745,9 +768,12 @@ def test_source_action_payload_uses_bounded_source_index_command(tmp_path: Path,
     assert payload["receipt"]["schema"] == "ztare-forensic-workbench-source-action-receipt-v1"
     assert payload["receipt"]["action"] == "source_index"
     assert payload["receipt"]["source_path"] == "projects/demo/workspace/source_index.json"
+    assert payload["receipt"]["source_sha256"] == module.hashlib.sha256(b'{"sources": []}\n').hexdigest()
     latest = json.loads((project_root / "workspace" / "forensic_workbench_latest_source_action.json").read_text(encoding="utf-8"))
     ledger_rows = (project_root / "workspace" / "forensic_workbench_source_actions.jsonl").read_text(encoding="utf-8").splitlines()
     assert latest["action"] == "evidence_bind"
+    assert latest["source_path"] == "projects/demo/evidence.txt"
+    assert latest["source_sha256"] == module.hashlib.sha256(b"compiled evidence\n").hexdigest()
     assert len(ledger_rows) == 2
     assert str(tmp_path) not in payload["stdout_tail"]
     assert str(tmp_path) not in json.dumps(payload)
