@@ -4,6 +4,8 @@
   "intake_source": "project_local_intake",
   "latest_review": null,
   "latest_review_artifact": "projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_review.json",
+  "latest_row_action": null,
+  "latest_row_action_artifact": "projects/ops_root_cause_diagnosis_demo/workspace/forensic_workbench_latest_row_action.json",
   "project": "ops_root_cause_diagnosis_demo",
   "project_source": "projects/ops_root_cause_diagnosis_demo",
   "readiness": "ready_for_in_loop_candidate",
@@ -176,6 +178,20 @@
       "source": "",
       "status": "no_review_applied",
       "warning": "no applied review receipt"
+    },
+    {
+      "command": "",
+      "detail": "No saved row action has been applied for this project snapshot.",
+      "evidence": "",
+      "file": "",
+      "kind": "neutral",
+      "label": "Latest row action",
+      "provenance": "receipt=ztare-forensic-workbench-row-action-receipt-v1 | warning=no saved row action",
+      "receipt": "ztare-forensic-workbench-row-action-receipt-v1",
+      "review_artifact": "",
+      "source": "",
+      "status": "no_action_saved",
+      "warning": "no saved row action"
     }
   ],
   "rubric": "ops_root_cause_diagnosis_demo",

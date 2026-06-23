@@ -203,7 +203,9 @@ class VerbRouterTests(unittest.TestCase):
         self.assertEqual(rc, 0)
         self.assertIn("ztare forensic-workbench <verb>", out)
         self.assertIn("apply-review", out)
+        self.assertIn("save-action", out)
         self.assertIn("scripts/public/control/forensic_workbench_review.py", out)
+        self.assertIn("scripts/public/control/forensic_workbench_action.py", out)
 
     def test_autoresearch_run_requires_project_and_rubric(self) -> None:
         rc, _, err = _run(["autoresearch", "run"])

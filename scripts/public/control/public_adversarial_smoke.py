@@ -170,10 +170,12 @@ REQUIRED_FORENSIC_WORKBENCH_SNIPPETS = [
     "GET /api/snapshot?project=<project>&rubric=<rubric>&intake=<intake>",
     "GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>",
     "POST /api/review",
+    "POST /api/row-action",
     "A blocked intake disables launch and names the missing surface.",
     "Source-ready, evidence-ready, and loop-ready are visually distinct.",
     "A stale or unsupported report remains blocked when the support contract",
     "latest-review receipt row",
+    "latest saved row action",
     "Supervisor, multi-role, multi-user, hosted, billing, and background-agent",
 ]
 
@@ -199,6 +201,7 @@ REQUIRED_FORENSIC_WORKBENCH_SNAPSHOT_SNIPPETS = [
     "Loop admission",
     "Report/export",
     "Latest review receipt",
+    "Latest row action",
     "support contract blocks stale reports",
     "synthesis_input_binding_unbound",
 ]
@@ -224,7 +227,9 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "/api/snapshot",
     "/api/health",
     "/api/review",
+    "/api/row-action",
     "Apply",
+    "Save action",
     "Open case",
     "Apply review",
     "path-panel",
@@ -235,12 +240,15 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Review JSON preview",
     "Review decision",
     "Review note",
+    "Row action note",
     "Download file",
     "Copy JSON",
     "Copy command",
     "Review queue",
     "ztare-forensic-workbench-review-v1",
+    "ztare-forensic-workbench-row-action-v1",
     "ztare forensic-workbench apply-review --project",
+    "ztare forensic-workbench save-action --project",
     "--row",
     "--from",
     "Export decision",
@@ -254,6 +262,7 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "ops_root_cause_diagnosis_demo",
     "Report/export",
     "Latest review receipt",
+    "Latest row action",
 ]
 
 REQUIRED_SYSTEM_POSITION_SNIPPETS = [
@@ -617,6 +626,17 @@ REQUIRED_CLI_COMMAND_CONTRACTS = [
             "--from REVIEW_FILE_PATH",
             "Review file JSON saved from the workbench",
             "latest-receipt JSON",
+        ),
+    ),
+    (
+        ("forensic-workbench", "save-action", "--help"),
+        (
+            "Apply a file-backed forensic-workbench row action file",
+            "--project PROJECT",
+            "--row ROW",
+            "--from ACTION_FILE_PATH",
+            "Row action JSON saved from the workbench",
+            "latest-action JSON",
         ),
     ),
     (

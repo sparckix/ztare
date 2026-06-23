@@ -304,6 +304,7 @@ def test_project_index_lists_projects_with_intakes(tmp_path: Path, monkeypatch: 
             "intake": "projects/demo/demo_intake.json",
             "intake_source": "project_local_intake",
             "latest_review": "",
+            "latest_row_action": "",
             "report_contract": "",
         }
     ]
@@ -326,6 +327,7 @@ def test_project_index_includes_public_example_intake(tmp_path: Path, monkeypatc
             "intake": "examples/project_packets/ready_demo_claims_intake.json",
             "intake_source": "public_example_intake",
             "latest_review": "",
+            "latest_row_action": "",
             "report_contract": "",
         }
     ]
@@ -354,6 +356,7 @@ def test_project_index_prefers_project_local_intake_over_public_example(
             "intake": "projects/demo_claims/demo_claims_intake.json",
             "intake_source": "project_local_intake",
             "latest_review": "",
+            "latest_row_action": "",
             "report_contract": "",
         }
     ]
@@ -379,6 +382,7 @@ def test_project_index_keeps_example_intake_source_when_project_dir_has_no_intak
             "intake": "examples/project_packets/ready_demo_claims_intake.json",
             "intake_source": "public_example_intake",
             "latest_review": "",
+            "latest_row_action": "",
             "report_contract": "",
         }
     ]

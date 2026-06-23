@@ -97,6 +97,7 @@ def list_project_entries() -> list[dict[str, Any]]:
         project = validate_project_slug(project)
         project_dir = REPO / "projects" / project
         latest_review = latest_review_path(project)
+        latest_action = latest_row_action_path(project)
         report_contract = project_dir / "synthesis" / "report_support_contract.json"
         entry = entries_by_project.get(project)
         if entry is None:
@@ -107,6 +108,7 @@ def list_project_entries() -> list[dict[str, Any]]:
                 "intake": intake,
                 "intake_source": source,
                 "latest_review": rel(latest_review) if latest_review.exists() else "",
+                "latest_row_action": rel(latest_action) if latest_action.exists() else "",
                 "report_contract": rel(report_contract) if report_contract.exists() else "",
             }
             return
@@ -117,6 +119,8 @@ def list_project_entries() -> list[dict[str, Any]]:
             entry["intake_source"] = source
         if latest_review.exists():
             entry["latest_review"] = rel(latest_review)
+        if latest_action.exists():
+            entry["latest_row_action"] = rel(latest_action)
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
 
@@ -351,6 +355,10 @@ def latest_review_path(project: str) -> Path:
     return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_review.json"
 
 
+def latest_row_action_path(project: str) -> Path:
+    return REPO / "projects" / project / "workspace" / "forensic_workbench_latest_row_action.json"
+
+
 def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:
     path = latest_review_path(project)
     rel_path = rel(path)
@@ -373,6 +381,28 @@ def load_latest_review(project: str) -> tuple[dict[str, Any] | None, str]:
     return payload, rel_path
 
 
+def load_latest_row_action(project: str) -> tuple[dict[str, Any] | None, str]:
+    path = latest_row_action_path(project)
+    rel_path = rel(path)
+    if not path.exists():
+        return None, rel_path
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return {
+            "schema": "invalid-json",
+            "status": "unreadable",
+            "error": "latest row action receipt is not valid JSON",
+        }, rel_path
+    if not isinstance(payload, dict):
+        return {
+            "schema": "invalid-json",
+            "status": "unreadable",
+            "error": "latest row action receipt must be a JSON object",
+        }, rel_path
+    return payload, rel_path
+
+
 def build_rows(
     trace: dict[str, Any],
     report_contract: dict[str, Any],
@@ -381,6 +411,8 @@ def build_rows(
     report_command: str,
     latest_review: dict[str, Any] | None = None,
     latest_review_artifact_path: str | Path | None = None,
+    latest_action: dict[str, Any] | None = None,
+    latest_action_artifact_path: str | Path | None = None,
 ) -> list[dict[str, str]]:
     project = str(trace.get("project") or "")
     intake = trace.get("project_intake") or {}
@@ -398,6 +430,10 @@ def build_rows(
     review_artifact_path = rel(
         latest_review_artifact_path
         or f"projects/{project}/workspace/forensic_workbench_latest_review.json"
+    )
+    action_artifact_path = rel(
+        latest_action_artifact_path
+        or f"projects/{project}/workspace/forensic_workbench_latest_row_action.json"
     )
     review_receipt_schema = str((latest_review or {}).get("schema") or "ztare-forensic-workbench-review-receipt-v1")
     if latest_review:
@@ -418,6 +454,25 @@ def build_rows(
         review_status = "no_review_applied"
         review_detail = "No saved review receipt has been applied for this project snapshot."
         review_warning = "no applied review receipt"
+    action_receipt_schema = str((latest_action or {}).get("schema") or "ztare-forensic-workbench-row-action-receipt-v1")
+    if latest_action:
+        action_name = str(latest_action.get("action") or "unknown")
+        action_row = str(latest_action.get("row") or "unknown row")
+        action_status = (
+            "applied"
+            if action_receipt_schema == "ztare-forensic-workbench-row-action-receipt-v1"
+            else str(latest_action.get("status") or "unreadable")
+        )
+        action_detail = (
+            f"{action_row}: {action_name}; "
+            f"evidence_refs={latest_action.get('evidence_ref_count', 0)}; "
+            f"sha256={latest_action.get('action_file_sha256', 'missing')}"
+        )
+        action_warning = str(latest_action.get("error") or "")
+    else:
+        action_status = "no_action_saved"
+        action_detail = "No saved row action has been applied for this project snapshot."
+        action_warning = "no saved row action"
 
     bounded_claim = str(intake.get("bounded_claim") or "bounded claim unavailable")
     next_falsifier = intake.get("missing_ref_falsifier") or {}
@@ -527,6 +582,14 @@ def build_rows(
             receipt=review_receipt_schema,
             warning=review_warning,
         ),
+        make_row(
+            "Latest row action",
+            action_status,
+            action_detail,
+            file=action_artifact_path if latest_action else None,
+            receipt=action_receipt_schema,
+            warning=action_warning,
+        ),
     ]
     return rows
 
@@ -567,6 +630,8 @@ def snapshot_payload(
     output_path: Path,
     latest_review: dict[str, Any] | None = None,
     latest_review_artifact_path: str | Path | None = None,
+    latest_action: dict[str, Any] | None = None,
+    latest_action_artifact_path: str | Path | None = None,
 ) -> dict[str, Any]:
     project = str(trace.get("project") or DEFAULT_PROJECT)
     intake = (trace.get("project_intake") or {}).get("intake_path") or (trace.get("project_intake") or {}).get("path") or ""
@@ -583,6 +648,8 @@ def snapshot_payload(
         "status_reasons": report_contract.get("status_reasons") or [],
         "latest_review": latest_review or None,
         "latest_review_artifact": rel(latest_review_artifact_path) if latest_review_artifact_path else "",
+        "latest_row_action": latest_action or None,
+        "latest_row_action_artifact": rel(latest_action_artifact_path) if latest_action_artifact_path else "",
         "rows": rows,
         "html_output": rel(output_path),
     }
@@ -799,12 +866,22 @@ def build_snapshot(
     intake: str,
     renderer: str,
     output_path: Path,
-) -> tuple[str, list[dict[str, str]], dict[str, Any], dict[str, Any], dict[str, Any] | None, str]:
+) -> tuple[
+    str,
+    list[dict[str, str]],
+    dict[str, Any],
+    dict[str, Any],
+    dict[str, Any] | None,
+    str,
+    dict[str, Any] | None,
+    str,
+]:
     project = validate_project_slug(project)
     intake = intake or default_intake_for_project(project)
     trace, trace_command = collect_trace(project, rubric, intake)
     report_contract, report_command = collect_report_contract(project, renderer)
     latest_review, latest_review_artifact_path = load_latest_review(project)
+    latest_action, latest_action_artifact_path = load_latest_row_action(project)
     rows = build_rows(
         trace,
         report_contract,
@@ -812,12 +889,23 @@ def build_snapshot(
         report_command=report_command,
         latest_review=latest_review,
         latest_review_artifact_path=latest_review_artifact_path,
+        latest_action=latest_action,
+        latest_action_artifact_path=latest_action_artifact_path,
     )
     errors = validate_rows(rows)
     if errors:
         raise SystemExit("forensic workbench snapshot contract failed: " + "; ".join(errors))
     html_text = render_html(trace, report_contract, rows, output_path=output_path)
-    return html_text, rows, trace, report_contract, latest_review, latest_review_artifact_path
+    return (
+        html_text,
+        rows,
+        trace,
+        report_contract,
+        latest_review,
+        latest_review_artifact_path,
+        latest_action,
+        latest_action_artifact_path,
+    )
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -839,7 +927,16 @@ def main(argv: list[str] | None = None) -> int:
     except ValueError as exc:
         raise SystemExit(str(exc)) from exc
     output_path = (REPO / args.out).resolve() if not Path(args.out).is_absolute() else Path(args.out)
-    html_text, rows, trace, report_contract, latest_review, latest_review_artifact_path = build_snapshot(
+    (
+        html_text,
+        rows,
+        trace,
+        report_contract,
+        latest_review,
+        latest_review_artifact_path,
+        latest_action,
+        latest_action_artifact_path,
+    ) = build_snapshot(
         args.project,
         args.rubric,
         args.intake,
@@ -868,6 +965,8 @@ def main(argv: list[str] | None = None) -> int:
                 output_path=output_path,
                 latest_review=latest_review,
                 latest_review_artifact_path=latest_review_artifact_path,
+                latest_action=latest_action,
+                latest_action_artifact_path=latest_action_artifact_path,
             )
             json_path.write_text(json.dumps(data, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print(json.dumps(payload, indent=2, sort_keys=True))

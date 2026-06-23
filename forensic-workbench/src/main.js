@@ -25,6 +25,13 @@ const REVIEW_ACTIONS = [
   { id: "blocked", label: "Block export" }
 ];
 
+const ROW_ACTIONS = [
+  { id: "next_step", label: "Next step" },
+  { id: "needs_source", label: "Needs source" },
+  { id: "ready_to_run", label: "Ready to run" },
+  { id: "export_blocker", label: "Export blocker" }
+];
+
 const STAGES = [
   { id: "sources", label: "Sources", rowLabel: "Source readiness" },
   { id: "evidence", label: "Evidence", rowLabel: "Evidence readiness" },
@@ -150,6 +157,21 @@ function buildReviewFile(snapshot, row, reviewState) {
   return JSON.stringify(payload, null, 2);
 }
 
+function buildRowActionFile(snapshot, row, actionState) {
+  if (!row) return "";
+  const payload = {
+    schema: "ztare-forensic-workbench-row-action-v1",
+    project: snapshot.project,
+    rubric: snapshot.rubric,
+    row: row.label,
+    row_status: displayText(row.status),
+    action: actionState.action || "next_step",
+    note: actionState.note || "",
+    evidence_refs: evidenceItems(row).map((item) => ({ type: item.type, value: item.value }))
+  };
+  return JSON.stringify(payload, null, 2);
+}
+
 function parseReviewFile(value) {
   if (!value) return null;
   try {
@@ -199,13 +221,15 @@ function ProjectContextPanel({ projectEntry, snapshot }) {
   const projectDir = (projectEntry && projectEntry.project_dir) || snapshot.project_source || "";
   const reportContract = (projectEntry && projectEntry.report_contract) || "";
   const latestReview = (projectEntry && projectEntry.latest_review) || snapshot.latest_review_artifact || "";
+  const latestAction = (projectEntry && projectEntry.latest_row_action) || snapshot.latest_row_action_artifact || "";
   return h(
     "section",
     { className: "project-context-panel", "aria-label": "Project files" },
     h("div", null, h("span", null, "Project files"), h("strong", null, projectDir || "not discovered")),
     h("div", null, h("span", null, "Intake"), h("code", null, intake || "not discovered")),
     h("div", null, h("span", null, "Report contract"), h("code", null, reportContract || "not generated")),
-    h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none"))
+    h("div", null, h("span", null, "Latest review"), h("code", null, latestReview || "none")),
+    h("div", null, h("span", null, "Latest action"), h("code", null, latestAction || "none"))
   );
 }
 
@@ -798,6 +822,118 @@ function ReviewWorkspace({ snapshot, row, reviewState, setReviewState, liveMode,
   );
 }
 
+function RowActionWorkspace({ snapshot, row, actionState, setActionState, liveMode, applyRowActionLive }) {
+  const action = actionState.action || "next_step";
+  const rowActionFile = buildRowActionFile(snapshot, row, actionState);
+  const rowActionPayload = parseReviewFile(rowActionFile);
+  const rowKey = row ? rowSlug(row.label) : "";
+  const actionFilename = row ? `${snapshot.project}_${rowKey}_action.json` : "row_action.json";
+  const command = row
+    ? `ztare forensic-workbench save-action --project ${snapshot.project} --row ${rowKey} --from ${actionFilename}`
+    : "";
+  const actionReady = Boolean(row && actionState.note && actionState.note.trim());
+  const liveReady = Boolean(liveMode && actionReady && rowActionPayload);
+
+  const updateAction = (nextAction) => {
+    if (!row) return;
+    setActionState(row.label, { ...actionState, action: nextAction });
+  };
+
+  const updateNote = (event) => {
+    if (!row) return;
+    setActionState(row.label, { ...actionState, note: event.target.value });
+  };
+
+  return h(
+    "section",
+    { className: `row-action-workspace ${row && row.kind === "attention" ? "attention" : ""}`, "aria-label": "Row action" },
+    h(
+      "div",
+      { className: "review-copy" },
+      h("span", { className: "eyebrow" }, "Saved action"),
+      h("h2", null, row ? row.label : "Select a row"),
+      h("p", null, row ? "Save the next project-backed action for this row." : "No evidence row selected.")
+    ),
+    h(
+      "div",
+      { className: "review-actions", role: "group", "aria-label": "Row actions" },
+      ROW_ACTIONS.map((item) =>
+        h(
+          "button",
+          {
+            key: item.id,
+            type: "button",
+            className: action === item.id ? "active" : "",
+            onClick: () => updateAction(item.id),
+            disabled: !row
+          },
+          item.label
+        )
+      )
+    ),
+    h("textarea", {
+      value: actionState.note || "",
+      onChange: updateNote,
+      disabled: !row,
+      placeholder: "Concrete next action, source need, or export blocker",
+      "aria-label": "Row action note"
+    }),
+    h(
+      "div",
+      { className: "handoff-card" },
+      h("div", null, h("span", null, "Action receipt"), h("code", null, command || "No row selected")),
+      h(
+        "div",
+        { className: "handoff-actions" },
+        h(
+          "button",
+          {
+            className: "copy-button primary",
+            type: "button",
+            title: actionReady ? "Apply row action through local API" : "Write an action note first",
+            onClick: () => liveReady && applyRowActionLive(rowKey, rowActionPayload),
+            disabled: !liveReady
+          },
+          "Save action"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            title: actionReady ? "Download row action JSON" : "Write an action note first",
+            onClick: () => downloadText(actionFilename, rowActionFile),
+            disabled: !actionReady
+          },
+          "Download file"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            title: actionReady ? "Copy row action JSON" : "Write an action note first",
+            onClick: () => copyText(rowActionFile),
+            disabled: !actionReady
+          },
+          "Copy JSON"
+        ),
+        h(
+          "button",
+          {
+            className: "copy-button",
+            type: "button",
+            title: row ? "Copy save-action command" : "Select a row first",
+            onClick: () => copyText(command),
+            disabled: !row
+          },
+          "Copy command"
+        )
+      )
+    )
+  );
+}
+
 function Toolbar({ filter, query, setFilter, setQuery }) {
   return h(
     "div",
@@ -921,14 +1057,17 @@ function App() {
   const [liveMode, setLiveMode] = useState(false);
   const [loadingSnapshot, setLoadingSnapshot] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
+  const [actionMessage, setActionMessage] = useState("");
   const [selectedLabel, setSelectedLabel] = useState("");
   const [reviewStates, setReviewStates] = useState({});
+  const [actionStates, setActionStates] = useState({});
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
 
   const installSnapshot = (payload) => {
     setSnapshot(payload);
     setReviewMessage("");
+    setActionMessage("");
     const rows = payload.rows || [];
     const firstAttention = rows.find((row) => row.kind === "attention");
     setSelectedLabel((firstAttention && firstAttention.label) || (rows[0] && rows[0].label) || "");
@@ -1082,6 +1221,10 @@ function App() {
   const setSelectedReviewState = (label, nextState) => {
     setReviewStates((current) => ({ ...current, [label]: nextState }));
   };
+  const selectedActionState = (selectedRow && actionStates[selectedRow.label]) || { action: "next_step", note: "" };
+  const setSelectedActionState = (label, nextState) => {
+    setActionStates((current) => ({ ...current, [label]: nextState }));
+  };
 
   const applyReviewLive = (rowSlugValue, reviewPayload) => {
     if (!snapshot || !liveMode || !rowSlugValue || !reviewPayload) return;
@@ -1114,6 +1257,39 @@ function App() {
         );
       })
       .catch((err) => setReviewMessage(String(err.message || err)));
+  };
+
+  const applyRowActionLive = (rowSlugValue, actionPayload) => {
+    if (!snapshot || !liveMode || !rowSlugValue || !actionPayload) return;
+    setActionMessage("Saving row action.");
+    fetch("/api/row-action", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        project: snapshot.project,
+        rubric: (currentProjectEntry && currentProjectEntry.rubric) || snapshot.rubric,
+        intake: (currentProjectEntry && currentProjectEntry.intake) || snapshot.intake,
+        row_slug: rowSlugValue,
+        action_file: actionPayload
+      })
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`row action save failed: ${response.status}`);
+        return response.json();
+      })
+      .then((payload) => {
+        if (!payload.ok) throw new Error(payload.error || "row action save failed");
+        if (payload.snapshot) installSnapshot(payload.snapshot);
+        setActionMessage(
+          payload.snapshot_error
+            ? `Saved action for ${actionPayload.row}. Snapshot refresh failed: ${payload.snapshot_error}`
+            : `Saved action for ${actionPayload.row}.`
+        );
+      })
+      .catch((err) => setActionMessage(String(err.message || err)));
   };
 
   if (error) {
@@ -1193,6 +1369,15 @@ function App() {
       h(ReviewQueue, { row: selectedRow, reviewState: selectedReviewState, liveMode }),
       reviewMessage ? h("div", { className: "review-message" }, reviewMessage) : null,
       h(ReviewWorkspace, { snapshot, row: selectedRow, reviewState: selectedReviewState, setReviewState: setSelectedReviewState, liveMode, applyReviewLive }),
+      actionMessage ? h("div", { className: "review-message" }, actionMessage) : null,
+      h(RowActionWorkspace, {
+        snapshot,
+        row: selectedRow,
+        actionState: selectedActionState,
+        setActionState: setSelectedActionState,
+        liveMode,
+        applyRowActionLive
+      }),
       h(Toolbar, { filter, query, setFilter, setQuery }),
       h(
         "section",

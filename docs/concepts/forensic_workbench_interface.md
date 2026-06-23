@@ -175,6 +175,9 @@ GET /api/health?project=<project>&rubric=<rubric>&intake=<intake>
 
 POST /api/review
 -> append row-level review receipt and refresh snapshot
+
+POST /api/row-action
+-> append row-level action receipt and refresh snapshot
 ```
 
 If the API is absent at startup, the app may fall back to the last generated
@@ -186,8 +189,9 @@ That is deliberate. Browser-side filesystem discovery would hide which project
 state was inspected and which command produced it. The project browser should
 therefore keep using generated or API-served read models built from `projects/*`
 and example intakes. It should show the selected project directory, intake,
-report contract, latest-review receipt, bounded-claim status, source/evidence
-readiness, and report/export state before the user opens a case.
+report contract, latest-review receipt, latest saved row action, bounded-claim
+status, source/evidence readiness, and report/export state before the user
+opens a case.
 
 The index must include both first-run demos:
 
@@ -200,10 +204,10 @@ The report/export row should be blocked with `report_support_unavailable`
 instead of failing the whole workbench. A missing report is a reviewable state,
 not a reason to hide the project.
 
-Writes should stay explicit. Static mode saves a review file, applies it
-through the CLI, then refreshes the snapshot. Live mode may call a local API to
-write the same receipt directly. Either way, the visible trail is file or API
-payload, receipt ledger, latest-review receipt, and refreshed snapshot.
+Writes should stay explicit. Static mode saves a review or row-action file,
+applies it through the CLI, then refreshes the snapshot. Live mode may call a
+local API to write the same receipt directly. Either way, the visible trail is
+file or API payload, receipt ledger, latest receipt row, and refreshed snapshot.
 
 Health and action rows are read-only in D4. They may tell the reviewer that a
 project has kernel-health attention, provider-runtime risk, stale source-health

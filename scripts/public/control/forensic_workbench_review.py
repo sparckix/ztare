@@ -14,6 +14,8 @@ from typing import Any
 
 REPO = Path(__file__).resolve().parents[3]
 SCHEMA = "ztare-forensic-workbench-review-v1"
+ACTION_SCHEMA = "ztare-forensic-workbench-row-action-v1"
+ACTION_CHOICES = {"next_step", "needs_source", "ready_to_run", "export_blocker"}
 
 
 def row_slug(label: str) -> str:
@@ -42,6 +44,26 @@ def validate_review_file(payload: dict[str, Any], *, project: str, row: str) -> 
     decision = payload.get("decision")
     if decision not in {"reviewed", "deferred", "blocked"}:
         errors.append("decision must be reviewed, deferred, or blocked")
+    evidence_refs = payload.get("evidence_refs")
+    if not isinstance(evidence_refs, list) or not evidence_refs:
+        errors.append("evidence_refs must be a non-empty list")
+    return errors
+
+
+def validate_action_file(payload: dict[str, Any], *, project: str, row: str) -> list[str]:
+    errors: list[str] = []
+    if payload.get("schema") != ACTION_SCHEMA:
+        errors.append(f"schema must be {ACTION_SCHEMA}")
+    if payload.get("project") != project:
+        errors.append(f"project mismatch: expected {project!r}, got {payload.get('project')!r}")
+    action_row = str(payload.get("row") or "")
+    if row_slug(action_row) != row:
+        errors.append(f"row mismatch: expected slug {row!r}, got row {action_row!r}")
+    if payload.get("action") not in ACTION_CHOICES:
+        errors.append("action must be next_step, needs_source, ready_to_run, or export_blocker")
+    note = str(payload.get("note") or "").strip()
+    if not note:
+        errors.append("note must be non-empty")
     evidence_refs = payload.get("evidence_refs")
     if not isinstance(evidence_refs, list) or not evidence_refs:
         errors.append("evidence_refs must be a non-empty list")
@@ -114,6 +136,52 @@ def write_review_receipt(
     return {"ok": True, "ledger": display_path(ledger_path), "latest": display_path(latest_path), "receipt": receipt}
 
 
+def receipt_for_action_payload(
+    payload: dict[str, Any],
+    *,
+    project: str,
+    row: str,
+    action_file_bytes: bytes,
+    action_file_path: str,
+) -> dict[str, Any]:
+    errors = validate_action_file(payload, project=project, row=row)
+    if errors:
+        raise SystemExit("invalid forensic-workbench row action file:\n- " + "\n- ".join(errors))
+    return {
+        "schema": "ztare-forensic-workbench-row-action-receipt-v1",
+        "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
+        "project": project,
+        "row": payload["row"],
+        "row_slug": row,
+        "action": payload["action"],
+        "note": str(payload.get("note") or ""),
+        "action_file_path": action_file_path,
+        "action_file_sha256": hashlib.sha256(action_file_bytes).hexdigest(),
+        "evidence_ref_count": len(payload.get("evidence_refs") or []),
+    }
+
+
+def write_action_receipt(
+    receipt: dict[str, Any],
+    *,
+    project: str,
+    ledger: str | None = None,
+    latest: str | None = None,
+) -> dict[str, Any]:
+    validate_project_slug(project)
+    workspace = REPO / "projects" / project / "workspace"
+    ledger_path = Path(ledger) if ledger else workspace / "forensic_workbench_row_actions.jsonl"
+    latest_path = Path(latest) if latest else workspace / "forensic_workbench_latest_row_action.json"
+    if not ledger_path.is_absolute():
+        ledger_path = (REPO / ledger_path).resolve()
+    if not latest_path.is_absolute():
+        latest_path = (REPO / latest_path).resolve()
+    append_jsonl(ledger_path, receipt)
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
+    latest_path.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    return {"ok": True, "ledger": display_path(ledger_path), "latest": display_path(latest_path), "receipt": receipt}
+
+
 def apply_review_payload(
     payload: dict[str, Any],
     *,
@@ -135,6 +203,27 @@ def apply_review_payload(
     return write_review_receipt(receipt, project=project, ledger=ledger, latest=latest)
 
 
+def apply_action_payload(
+    payload: dict[str, Any],
+    *,
+    project: str,
+    row: str,
+    action_file_path: str,
+    ledger: str | None = None,
+    latest: str | None = None,
+) -> dict[str, Any]:
+    validate_project_slug(project)
+    action_file_text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
+    receipt = receipt_for_action_payload(
+        payload,
+        project=project,
+        row=row,
+        action_file_bytes=action_file_text.encode("utf-8"),
+        action_file_path=action_file_path,
+    )
+    return write_action_receipt(receipt, project=project, ledger=ledger, latest=latest)
+
+
 def apply_review(args: argparse.Namespace) -> dict[str, Any]:
     validate_project_slug(args.project)
     review_file_path = Path(args.review_file_path)
@@ -151,6 +240,22 @@ def apply_review(args: argparse.Namespace) -> dict[str, Any]:
     return write_review_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
 
 
+def save_action(args: argparse.Namespace) -> dict[str, Any]:
+    validate_project_slug(args.project)
+    action_file_path = Path(args.action_file_path)
+    if not action_file_path.is_absolute():
+        action_file_path = (Path.cwd() / action_file_path).resolve()
+    payload = read_review_file(action_file_path)
+    receipt = receipt_for_action_payload(
+        payload,
+        project=args.project,
+        row=args.row,
+        action_file_bytes=action_file_path.read_bytes(),
+        action_file_path=str(action_file_path),
+    )
+    return write_action_receipt(receipt, project=args.project, ledger=args.ledger, latest=args.latest)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", required=True, help="Project slug under projects/.")
@@ -160,6 +265,31 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--latest", help="Optional latest-receipt JSON override, mainly for tests.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
     return parser
+
+
+def build_action_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Apply a file-backed forensic-workbench row action file.")
+    parser.add_argument("--project", required=True, help="Project slug under projects/.")
+    parser.add_argument("--row", required=True, help="Slug for the acted-on row, e.g. report_export.")
+    parser.add_argument("--from", dest="action_file_path", required=True, help="Row action JSON saved from the workbench.")
+    parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
+    parser.add_argument("--latest", help="Optional latest-action JSON override, mainly for tests.")
+    parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
+    return parser
+
+
+def action_main(argv: list[str] | None = None) -> int:
+    parser = build_action_parser()
+    args = parser.parse_args(argv)
+    try:
+        result = save_action(args)
+    except SystemExit:
+        raise
+    except Exception as exc:  # pragma: no cover - defensive CLI boundary
+        print(f"forensic workbench row action failed: {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps(result, indent=2, sort_keys=True))
+    return 0
 
 
 def main(argv: list[str] | None = None) -> int:

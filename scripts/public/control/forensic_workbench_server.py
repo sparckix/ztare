@@ -40,7 +40,16 @@ def snapshot_payload_for_project(
     intake = intake or snapshot.default_intake_for_project(project)
     renderer = renderer or snapshot.DEFAULT_RENDERER
     output_path = snapshot.REPO / snapshot.DEFAULT_OUT
-    _html, rows, trace, report_contract, latest_review, latest_review_path = snapshot.build_snapshot(
+    (
+        _html,
+        rows,
+        trace,
+        report_contract,
+        latest_review,
+        latest_review_path,
+        latest_action,
+        latest_action_path,
+    ) = snapshot.build_snapshot(
         project,
         rubric,
         intake,
@@ -54,6 +63,8 @@ def snapshot_payload_for_project(
         output_path=output_path,
         latest_review=latest_review,
         latest_review_artifact_path=latest_review_path,
+        latest_action=latest_action,
+        latest_action_artifact_path=latest_action_path,
     )
     payload["served_from"] = "local_api"
     return payload
@@ -226,6 +237,34 @@ class WorkbenchHandler(BaseHTTPRequestHandler):
                 response = {
                     "ok": True,
                     "review": review_result,
+                    "snapshot": None,
+                }
+                try:
+                    response["snapshot"] = snapshot_payload_for_project(project=project, rubric=rubric, intake=intake)
+                except SystemExit as exc:
+                    response["snapshot_error"] = str(exc)
+                except Exception as exc:  # noqa: BLE001 - receipt write already succeeded.
+                    response["snapshot_error"] = str(exc)
+                self.send_json(response)
+                return
+            if parsed.path == "/api/row-action":
+                request = self.read_json_body()
+                project = str(request.get("project") or "")
+                rubric = str(request.get("rubric") or "") or None
+                intake = str(request.get("intake") or "") or None
+                row = str(request.get("row_slug") or "")
+                action_file = request.get("action_file")
+                if not isinstance(action_file, dict):
+                    raise ValueError("action_file must be a JSON object")
+                action_result = review.apply_action_payload(
+                    action_file,
+                    project=project,
+                    row=row,
+                    action_file_path=f"local-api:{project}/{row}",
+                )
+                response = {
+                    "ok": True,
+                    "action": action_result,
                     "snapshot": None,
                 }
                 try:

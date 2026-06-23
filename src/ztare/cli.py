@@ -2425,8 +2425,14 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         _cmd_autoresearch_router,
     ),
     "forensic-workbench": (
-        "Local review workbench: apply-review.",
-        _make_verb_router("forensic-workbench", {"apply-review": "forensic_workbench_review.py"}),
+        "Local review workbench: apply-review | save-action.",
+        _make_verb_router(
+            "forensic-workbench",
+            {
+                "apply-review": "forensic_workbench_review.py",
+                "save-action": "forensic_workbench_action.py",
+            },
+        ),
     ),
     "project": (
         "Project userland: walkthrough | source-init | source-check | source-index | evidence-bind | evidence-replay | evidence-gap | new | prepare | seal | intake | prep-ledger.",
@@ -2490,7 +2496,7 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "forensic-workbench": (
         _SUBCOMMANDS["forensic-workbench"][0],
         _SUBCOMMANDS["forensic-workbench"][1],
-        ("forensic_workbench_review.py",),
+        ("forensic_workbench_review.py", "forensic_workbench_action.py"),
     ),
     "project": (_SUBCOMMANDS["project"][0], _SUBCOMMANDS["project"][1], ()),
     "substrate": (_SUBCOMMANDS["substrate"][0], _SUBCOMMANDS["substrate"][1], ()),
