@@ -75,14 +75,10 @@ def _tracked_status_receipt() -> dict[str, Any]:
 
 
 def _read_policy(path: str | Path = FACTORY_POLICY) -> dict[str, Any]:
-    p = Path(path)
-    if not p.exists():
-        return {}
-    try:
-        obj = json.loads(p.read_text(errors="ignore"))
-    except json.JSONDecodeError:
-        return {}
-    return obj if isinstance(obj, dict) else {}
+    # Delegates to the canonical `policy.read_policy` (was a byte-identical copy — the forgotten-sibling shape,
+    # de-duplicated 2026-06-22). Lazy import keeps work_queue ↔ policy cycle-free.
+    from ztare.leanmill.policy import read_policy as _rp
+    return _rp(path)
 
 
 def _policy_paths_from_globs(*, glob_key: str, fallback_globs: list[str], files_key: str, fallback_files: list[str]) -> list[Path]:

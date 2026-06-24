@@ -247,7 +247,12 @@ def structural_equivalent(ref_stmt: str, cand_stmt: str) -> "tuple[bool, str]":
     if _norm(_signature(ref_stmt or "")) == _norm(_signature(cand_stmt or "")):
         return True, "byte-identical signatures (mod whitespace/comments)"
     try:
-        from ztare.leanmill.solver.autoformalize import _parse_lean_statement
+        # SINGLE DOOR (2026-06-24 sweep): fingerprint the TARGET theorem, not the raw blob. `_parse_lean_statement`
+        # on a multi-decl `define_then_state` formalization parses its LEADING def (the GATE3 sibling bug) — so a
+        # cross-vote could call two formalizations "structurally equal" by comparing their shared leading defs while
+        # the TARGET theorems differ (a silent-weakening false-negative). `statement_fingerprint` routes through
+        # `_target_signature` (canonical last theorem/lemma) — the one door every gate/decision already uses.
+        from ztare.leanmill.solver.autoformalize import statement_fingerprint as _parse_lean_statement
     except Exception:  # noqa: BLE001
         return False, "no structural parser available"
     a, b = _parse_lean_statement(ref_stmt or ""), _parse_lean_statement(cand_stmt or "")

@@ -37,6 +37,20 @@ from typing import Callable, Optional
 from ztare.gates.lean_compile_primitives import AXIOM_ALLOWLIST  # F3: single source of truth (was a local literal)
 _AXIOM_LINE = re.compile(r"depends on axioms:\s*\[([^\]]*)\]")
 
+# Phase-timing seam (cycle/lead-time observability) — the AGENT DISPATCH is the documented "dominant cost" yet
+# was the ONE major phase never wrapped (the others — formalize / native / pool / govern.mnc — already emit), so
+# phase_timing under-counted wall-clock ~14x (it saw the Lean-compile phases, never the LLM reasoning). Wrapping
+# the SINGLE dispatch chokepoint `default_dispatch` makes the `leaf.dispatch` phase observable. Same shared
+# ledger (common.telemetry via phase_timing), not a parallel surface; nullcontext fallback so it can NEVER break
+# a dispatch if telemetry is unavailable.
+try:  # noqa: E402
+    from ztare.leanmill.phase_timing import phase_timer as _phase_timer
+except Exception:  # noqa: BLE001
+    import contextlib as _ctxlib_pt
+
+    def _phase_timer(*_a, **_k):  # type: ignore
+        return _ctxlib_pt.nullcontext()
+
 
 # ── independent kernel gate (agent self-report is never trusted) ─────────────
 def verify_lean_proof(probe_path: str | Path, target: str, *, lake_bin: str,
@@ -281,6 +295,15 @@ def default_dispatch(prompt: str, *, runtime: str = "", repo: str | Path, timeou
     once on the ALTERNATE subscription (separate quota) so one exhausted provider doesn't silently zero a run.
     A flushed HEARTBEAT brackets every dispatch (the 'too nested to troubleshoot' fix). `agent_tag` keys a
     per-tag durable session (concurrency-safe parallel sampling, #117); "" = the shared repo session."""
+    # PHASE TIMING (observability): wrap the WHOLE dispatch (api-leaf + CLI + failover) at this single chokepoint
+    # so the `leaf.dispatch` phase — the dominant, previously-uninstrumented wall-clock — is emitted; advisory,
+    # never alters the dispatch result. target=agent_tag so it slices by caller (planner vs leaf vs sample).
+    with _phase_timer("leaf.dispatch", target=agent_tag):
+        return _default_dispatch_impl(prompt, runtime=runtime, repo=repo, timeout=timeout, agent_tag=agent_tag)
+
+
+def _default_dispatch_impl(prompt: str, *, runtime: str = "", repo: str | Path, timeout: int,
+                           agent_tag: str = "") -> str:
     # API-AGENTIC LEAF (kimi/deepseek): when the leaf runtime names a metered API model, run OUR own
     # function-calling tool loop (api_agentic_leaf) instead of a subscription CLI agent. DEFAULT-OFF
     # (ZTARE_LEANMILL_LEAF_RUNTIME=kimi|deepseek). Spreads leaf load off the rate-limited subscription quota.
@@ -357,14 +380,73 @@ def _selftest_dead_api_cache() -> None:
         _DEAD_API_RUNTIMES.discard("kimi")
 
 
+def _selftest_scratch_drift_recovery() -> None:
+    """The PATH-DRIFT visibility net (scoped to THIS run + SAME-statement, 2026-06-23): a sorry-free,
+    same-signature proof of the target at a DIFFERENT probe in the run's OWN scratch dir is recovered; a sorried
+    sibling and a same-NAME-but-DIFFERENT-statement sibling (the generic-`iso_lemma1` cross-run/round false
+    positive) are BOTH refused (no false closure, no noise)."""
+    import tempfile
+    from pathlib import Path as _P
+    rundir = _P(tempfile.mkdtemp()) / PROBE_SUBDIR / "runA"
+    rundir.mkdir(parents=True)
+    probe = rundir / "RobustProbe_T_codex_0.lean"
+    probe.write_text("import Mathlib\ntheorem T : True := by sorry\n", encoding="utf-8")
+    # a DIFFERENT-named probe in the SAME run dir, SAME statement, sorry-free → a within-run path drift
+    (rundir / "RobustProbe_T_claude_0.lean").write_text("import Mathlib\ntheorem T : True := by trivial\n", encoding="utf-8")
+
+    def _verify():   # kernel stand-in: "closed iff the probe carries no sorry"
+        t = probe.read_text(encoding="utf-8")
+        return ("sorry" not in t, "ok" if "sorry" not in t else "sorry")
+
+    got = _scan_scratch_for_drifted_proof(probe, "T", _verify)
+    assert got and "trivial" in got, "should recover a same-statement sorry-free sibling in the run dir"
+    assert "sorry" not in probe.read_text(encoding="utf-8"), "probe must now hold the recovered proof"
+    # negative 1: a sorried sibling is never recovered (the kernel net can't manufacture a closure)
+    probe.write_text("import Mathlib\ntheorem U : True := by sorry\n", encoding="utf-8")
+    (rundir / "RobustProbe_U_codex_0.lean").write_text("import Mathlib\ntheorem U : True := by sorry\n", encoding="utf-8")
+    assert not _scan_scratch_for_drifted_proof(probe, "U", _verify), "a sorried sibling is not a closure"
+    # negative 2: a same-NAME sibling with a DIFFERENT statement is NOT a drift (the generic-name false positive)
+    probe.write_text("import Mathlib\ntheorem V (n : Nat) : n = n := by sorry\n", encoding="utf-8")
+    (rundir / "RobustProbe_V_codex_0.lean").write_text("import Mathlib\ntheorem V : True := by trivial\n", encoding="utf-8")
+    assert not _scan_scratch_for_drifted_proof(probe, "V", _verify), "different-statement same-name sibling must NOT recover"
+    print("  [PASS] path-drift net: same-statement sibling recovered; sorried + different-statement refused")
+
+
+# Per-runtime liveness cache (monotonic_ts, live, sample). Only POSITIVE (live) results are cached, for a short
+# TTL — a campaign solves many leaves and re-probing "reply ALIVE" before EVERY one was a full extra dispatch per
+# leaf (the second-biggest per-leaf drain after cold lakes). SAFETY PRESERVED (the dead-codex lesson stands): a
+# DEAD/hung provider is NEVER cached, so it is re-detected on every leaf; a provider that dies mid-window is still
+# caught by the proof dispatch's own empty-output → inadmissible path, and the cache self-heals after the TTL.
+_PROVIDER_LIVE_CACHE: dict[str, tuple[float, bool, str]] = {}
+
+
 def provider_live(runtime: str, repo: str | Path, dispatch: Callable, timeout: int = 90) -> tuple[bool, str]:
     """Positive control: does the provider return a live trivial answer? (never read a
-    'could not prove' off a dead/hung provider — the dead-codex lesson)."""
+    'could not prove' off a dead/hung provider — the dead-codex lesson).
+
+    TTL-cached per runtime (default 300s; `ZTARE_LEANMILL_PROVIDER_LIVE_TTL_S=0` reverts to probe-every-leaf,
+    byte-parity): a live provider stays live for the window so a multi-leaf campaign pays ONE calibration
+    dispatch per runtime per window instead of one per leaf. Only live results are cached — deadness is always
+    freshly probed, so fail-closed safety is unchanged."""
+    import time as _time
+    try:
+        _ttl = float(os.environ.get("ZTARE_LEANMILL_PROVIDER_LIVE_TTL_S", "300") or 300)
+    except Exception:  # noqa: BLE001
+        _ttl = 300.0
+    now = _time.monotonic()
+    if _ttl > 0:
+        hit = _PROVIDER_LIVE_CACHE.get(runtime)
+        if hit and hit[1] and (now - hit[0]) < _ttl:  # reuse a fresh POSITIVE only; re-probe dead/expired
+            return True, hit[2]
     try:
         out = dispatch("Reply with exactly the word: ALIVE", runtime=runtime, repo=repo, timeout=timeout)
-        return ("ALIVE" in (out or "").upper()), (out or "")[:80]
+        live = "ALIVE" in (out or "").upper()
+        sample = (out or "")[:80]
     except Exception as e:
-        return False, f"dispatch error: {str(e)[:80]}"
+        live, sample = False, f"dispatch error: {str(e)[:80]}"
+    if _ttl > 0 and live:
+        _PROVIDER_LIVE_CACHE[runtime] = (now, live, sample)
+    return live, sample
 
 
 # ── the loop ─────────────────────────────────────────────────────────────────
@@ -383,6 +465,13 @@ class LeafResult:
     #                              lemma(s) it could not prove; the most useful signal a non-closure gives
     statement_false: str = ""    # the leaf's REFUTATION (`-- STATEMENT-FALSE: …`) — the TARGET is mis-formalized
     #                              (counterexample + the corrected hypothesis); the SOFT reformulation trigger
+    statement_false_confirmed: bool = False  # True ⇒ a statement_false flag was KERNEL-confirmed (¬goal compiles)
+    #                              at flag-time → short-circuit decompose/best-of-N (no point proving a false goal)
+    recovered_from_drift: bool = False  # True ⇒ a kernel-verifying proof was recovered from a SIBLING scratch
+    # path (the path-drift net) — the harness verified a non-closing probe but a correct proof existed elsewhere
+    recovered_from_response: bool = False  # True ⇒ the proof was salvaged from the agent's RESPONSE because it
+    #                              left the probe FILE sorried (the 2026-06-23 "leaf solved it but didn't write
+    #                              the file" RCA — a correct proof was about to be discarded as uses_sorry)
 
 
 # Timeout-aware retry (adaptive budget, 2026-06-03): when an agent dispatch RUNS OUT OF TIME
@@ -458,7 +547,17 @@ def _extract_statement_false(probe: "str | Path") -> str:
     except Exception:  # noqa: BLE001
         return ""
     hits = re.findall(r"--\s*STATEMENT-FALSE:\s*(.+)", txt)
-    return " | ".join(h.strip() for h in hits if h.strip())[:600]
+    out = [h.strip() for h in hits if h.strip()]
+    # SECONDARY signal (2026-06-23 iso_lemma1 RCA): a frontier agent often PROVES the counterexample as a
+    # decl (`theorem <name>_statement_false …` / `…_counterexample …`) instead of leaving the `-- STATEMENT-FALSE:`
+    # comment the prompt asks for — so the comment-only scan saw nothing and the malformed sub-lemma was recorded
+    # `failed_compile` instead of routing to the governed reformulation. Catching the refutation-named decl here
+    # restores the trigger. SOUND: the claim is still kernel-gated downstream (`verify_statement_false_claim`
+    # PROVES ¬G before it counts), so a spurious trigger only costs one verify that then declines to promote.
+    _m = re.search(r"(?m)^\s*(?:theorem|lemma|example)\s+([\w'.]*(?:statement_false|statementfalse|counterexample)[\w'.]*)", txt)
+    if _m:
+        out.append(f"agent-proved refutation decl `{_m.group(1)}` present (¬G kernel-reverified downstream)")
+    return " | ".join(out)[:600]
 
 
 def scan_probes_for_statement_false(scratch_dir: "str | Path", *, limit: int = 16) -> str:
@@ -517,7 +616,14 @@ def _leaf_prompt(target: str, goal: str, probe_name: str, *, mode: str = "direct
     # affordance, so it IS told), point the agent at it (~0.1s) instead of cold `lake env lean` (~30-90s/iter).
     _lean_sock = os.environ.get("ZTARE_LEANMILL_LEAN_SOCKET")
     if _lean_sock:
-        common += _p.LEAF_WARMCHECK_HINT.format(socket=_lean_sock, probe=probe_name)
+        # MODE-TARGETED sorry rejection (2026-06-23 RCA — THE "agent thinks the file is proven" bug): the warm
+        # check defaults to ACCEPTING `sorry` ("OK — zero errors (1 sorry)"), so in DIRECT mode the agent read its
+        # own checker as "compiled cleanly" on the sorried stub and stopped — leaving the sorry, which the harness
+        # verify then rejected. In DIRECT mode the agent's checker must AGREE with the harness (reject sorry) so it
+        # keeps going until the FILE holds a complete proof. DECOMPOSE keeps sorry-allowed (intentional `-- GAP:`
+        # sub-lemmas); the formalizer/iso paths are untouched (their `:= by sorry` is by design).
+        _sorry_flag = "" if mode == "decompose" else " --reject-sorry"
+        common += _p.LEAF_WARMCHECK_HINT.format(socket=_lean_sock, probe=probe_name, sorry_flag=_sorry_flag)
     if mode == "decompose":
         # RETRY FEEDBACK: hand back the direct attempt's honest-gap diagnosis so the decomposition targets
         # exactly what the leaf already identified as missing (not a blind retry).
@@ -599,6 +705,164 @@ def probe_dir(project_dir: "str | Path") -> Path:
     return d
 
 
+def _probe_target_seg(target: str) -> str:
+    """The sanitized per-target filename segment. ONE definition (was inlined at the writer only)."""
+    return re.sub(r"[^A-Za-z0-9_.-]+", "_", target or "leaf")[:40]
+
+
+def robust_probe_name(target: str, provider: str, attempt: int) -> str:
+    """THE canonical `RobustProbe_*` filename — the SINGLE SOURCE OF TRUTH for solve_robust's per-attempt probe,
+    consumed by the writer (solve_robust), the recorder (`winner_probe`), AND every reader (solver_core readback
+    + glob). It exists for the SAME reason as `probe_dir`: so the write-name and the read-name can NEVER drift.
+
+    The 2026-06-23 `winner_probe` bug WAS that drift — the writer gained a per-target segment
+    (`RobustProbe_<target>_<provider>_<i>`) to stop sub-lemmas clobbering each other, but the recorder/reader
+    kept the old `RobustProbe_<provider>_<i>`, so a closure's probe became 'unreadable' and a kernel-VALID proof
+    was discarded (fail-closed). The cure for the CLASS, not the instance: route every name through here."""
+    return f"RobustProbe_{_probe_target_seg(target)}_{provider}_{attempt}.lean"
+
+
+def robust_probe_glob(target: str, provider: str = "*") -> str:
+    """Canonical glob mirroring `robust_probe_name` — a fallback search for a target's probes (a winner, or all
+    providers via the default `*`) can never miss the dynamically-named file. Same segment, same shape."""
+    return f"RobustProbe_{_probe_target_seg(target)}_{provider}_*.lean"
+
+
+def _recover_proof_from_response(out: str, probe: Path, target: str, verify: Callable) -> str:
+    """RECOVERY (2026-06-23 RCA): the warm leaf sometimes emits a CORRECT proof in its RESPONSE but never writes
+    the probe file — claude opus reports "the file already implements this" when it does not — so the harness
+    verifies the untouched `sorry` probe and DISCARDS a solved lemma as `uses_sorry` (observed on the Topkis
+    `iso_lemma2`, a 7-line proof). The leaf must not trust the agent to write the file. So when the file-based
+    verify has FAILED, extract the agent's Lean from `out`, splice it into the probe, and RE-VERIFY.
+
+    SOUND: the kernel re-verifies the spliced source — a bogus / incomplete / sorried text proof just fails
+    again and the original probe is restored (no soundness surface, never a false closure). Returns the recovered
+    proof text (TRUTHY) iff it verifies — and the probe now holds it, so downstream cert capture sees the real
+    proof; returns "" (falsy) otherwise. The proof string is returned so a caller never has to RE-PARSE the file
+    with a hand-rolled regex (the canonical-parser rule)."""
+    try:
+        from ztare.leanmill.solver.agent_output import fenced_block
+        from ztare.leanmill.lean_source import swap_sorry
+    except Exception:  # noqa: BLE001
+        return ""
+    block = ""
+    for _lang in ("lean", None):
+        block = (fenced_block(out or "", "", lang=_lang) or "").strip()
+        if block:
+            break
+    if not block or "sorry" in block or "admit" in block:   # nothing usable, or the response is itself sorried
+        return ""
+    try:
+        cur = probe.read_text(encoding="utf-8")
+    except Exception:  # noqa: BLE001
+        return ""
+    # A full file/theorem in the block ⇒ use it as the probe (self-contained: imports+defs+theorem);
+    # a bare proof body (`by …`/tactics) ⇒ splice it into the current sorried probe via the canonical swap.
+    if "theorem " in block or "lemma " in block:
+        candidate = ensure_import_header(block)
+    else:
+        candidate = swap_sorry(cur, block)
+    if not candidate.strip() or candidate.strip() == cur.strip():
+        return ""
+    try:
+        probe.write_text(candidate, encoding="utf-8")
+        ok, _why = verify()
+        if ok:
+            print(f"[leaf-recovery] {target}: proof recovered from the agent RESPONSE (file was left sorried) "
+                  "— spliced + kernel re-verified", flush=True)
+            return block
+        probe.write_text(cur, encoding="utf-8")   # restore the sorried probe; leave no broken file behind
+        return ""
+    except Exception:  # noqa: BLE001
+        try:
+            probe.write_text(cur, encoding="utf-8")
+        except Exception:  # noqa: BLE001
+            pass
+        return ""
+
+
+def _scan_scratch_for_drifted_proof(probe: Path, target: str, verify: Callable) -> str:
+    """VISIBILITY + self-heal for the PATH-DRIFT bug class (2026-06-23). When the verified probe is NOT closed
+    but a sorry-free, kernel-verifying proof of the SAME target sits at a SIBLING scratch path (a different
+    run-subdir, a stale probe name) — the exact signature of a probe-path drift — surface it LOUDLY and recover.
+
+    THE LESSON the operator named: the engine ran for hours silently discarding CORRECT proofs because the agent
+    wrote them to one path and the harness verified another, and the telemetry only ever said `failed_compile`/
+    `uses_sorry` (reads as "the agent can't prove it"). There was no signal for "a correct proof exists, just not
+    where we looked." `probe_ref` is now derived from `probe` so the original drift is impossible — but this turns
+    ANY future path mismatch from a silent discard into a visible, self-healing event. SOUND: the kernel
+    re-verifies the candidate at the canonical probe before trusting it (a non-verifying sibling is restored,
+    never a false closure). Returns the recovered proof text (truthy) or ''."""
+    try:
+        from ztare.leanmill.lean_source import (strip_comments as _strip_c, _decl_body as _db,
+                                                extract_signature as _sig)
+        probe = Path(probe)
+        # SCOPE to THIS run's scratch dir only (`probe.parent`), NOT the whole `.solver_scratch` root. Scanning
+        # the root swept EVERY prior run's subdir, and the generic planner names (`iso_lemma1/2/…`) are reused
+        # across runs (and rounds) for DIFFERENT statements — so a cross-run same-NAME file is a FALSE drift
+        # signal (2026-06-23: 19 stale cardinal `iso_lemma1` from topkis_v4/truer fired the net mid-general-run).
+        # probe_ref is now derived from `probe` (+ the CI guard), so within-this-run is the only live drift case.
+        root = probe.parent
+        probe_real = probe.resolve()
+        # SAME-STATEMENT, not just same NAME: read the expected signature from the (sorried) canonical probe and
+        # require a candidate's `target` decl to carry the SAME signature — a sibling proving a DIFFERENT `iso_lemma1`
+        # is not a drift of THIS goal. This is the precise filter (the generic-name collision is the noise source).
+        try:
+            _want_sig = _sig(probe.read_text(encoding="utf-8", errors="replace"), target) if probe.exists() else ""
+        except Exception:  # noqa: BLE001
+            _want_sig = ""
+        def _norm(s: str) -> str:
+            return re.sub(r"\s+", " ", s or "").strip()
+        frag = re.sub(r"[^A-Za-z0-9_.-]+", "_", target)[:40]
+        cands: list[tuple[float, Path, str]] = []
+        for cand in root.rglob("*.lean"):
+            try:
+                if cand.resolve() == probe_real or frag not in cand.name:
+                    continue
+                txt = cand.read_text(encoding="utf-8", errors="replace")
+            except Exception:  # noqa: BLE001
+                continue
+            if _db(txt, target) is None:                 # must contain THIS target's decl (canonical parser)
+                continue
+            if _want_sig and _norm(_sig(txt, target)) != _norm(_want_sig):
+                continue                                 # same name but DIFFERENT statement ⇒ not a drift
+            sc = _strip_c(txt)
+            if "sorry" in sc or "admit" in sc:           # a real open proof ⇒ not a closure
+                continue
+            try:
+                cands.append((cand.stat().st_mtime, cand, txt))
+            except Exception:  # noqa: BLE001
+                continue
+        if not cands:
+            return ""
+        cands.sort(key=lambda t: t[0], reverse=True)     # newest first — the most likely real attempt
+        print(f"[leaf][PATH-DRIFT?] {len(cands)} sorry-free proof file(s) of '{target}' exist at SIBLING scratch "
+              f"path(s) while the harness verified a NON-closing probe:\n    {probe}\n  This is the discard-a-"
+              f"correct-proof signature — check probe_ref/probe_dir alignment (2026-06-23 RCA). Re-verifying the "
+              f"newest: {cands[0][1]}", flush=True)
+        _mt, cand, txt = cands[0]
+        saved = ""
+        try:
+            saved = probe.read_text(encoding="utf-8", errors="replace") if probe.exists() else ""
+            probe.write_text(txt, encoding="utf-8")      # recover at the CANONICAL probe + ONE kernel re-verify
+            ok, _why = verify()
+            if ok:
+                print(f"[leaf][PATH-DRIFT RECOVERED] kernel-verified the sibling proof of '{target}' at the "
+                      f"canonical probe — a correct proof would otherwise have been silently discarded.", flush=True)
+                return txt
+            if saved:
+                probe.write_text(saved, encoding="utf-8")   # restore on a non-verifying candidate
+        except Exception:  # noqa: BLE001
+            try:
+                if saved:
+                    probe.write_text(saved, encoding="utf-8")
+            except Exception:  # noqa: BLE001
+                pass
+    except Exception:  # noqa: BLE001 — a best-effort visibility net; never block the solve
+        pass
+    return ""
+
+
 def solve_leaf(
     goal: str,
     *,
@@ -614,6 +878,7 @@ def solve_leaf(
     dispatch: Callable = default_dispatch,
     verify: Optional[Callable] = None,
     substrate_calibrate: Optional[Callable] = None,
+    statement_false_verifier: Optional[Callable] = None,
 ) -> LeafResult:
     """Solve one Lean leaf with the agentic loop. SUBSTRATE-NEUTRAL: pass the project's `defs`
     (in-scope declarations, no imports — base env carries Mathlib), `project_dir`, `lake_bin`.
@@ -653,10 +918,25 @@ def solve_leaf(
             pass
 
     probe = probe_dir(project_dir) / probe_name
-    # The agent's cwd is `project_dir` (the lake root), so it must reference the probe by its path RELATIVE to
-    # that root — `.solver_scratch/<probe_name>` — not the bare basename (which would make it edit/compile a
-    # NEW file at the root, re-cluttering). Mirrors the warm-leaf prompt, which hands the agent the explicit path.
-    probe_ref = f"{PROBE_SUBDIR}/{probe_name}"
+    # The agent's cwd is `project_dir` (the lake root), so it edits the probe by its path RELATIVE to that root.
+    # CRITICAL (2026-06-23 RCA — the root of the whole "agent can't close a trivial target" saga): probe_ref MUST
+    # be derived from `probe` (the file the harness actually writes the stub to AND verifies), NOT hard-coded as
+    # `.solver_scratch/<name>`. With ZTARE_LEANMILL_RUN_SCRATCH set, `probe_dir` adds a run subdir
+    # (`.solver_scratch/<run>/`), but the old probe_ref OMITTED it — so the agent wrote a CORRECT, sorry-free
+    # proof to `.solver_scratch/<name>` while the harness read the sorried stub at `.solver_scratch/<run>/<name>`
+    # and silently discarded EVERY proof (failed_compile/uses_sorry; the agent's "file passes" was true — of the
+    # wrong file). Forgotten sibling of the 2026-06-22 run-scratch isolation (probe_dir updated, probe_ref not).
+    # Deriving it from `probe` makes the path the agent edits and the path the harness verifies impossible to drift.
+    probe_ref = os.path.relpath(str(probe), str(project_dir))
+    # PER-TARGET warm session (2026-06-23 RCA — "the agent thinks the file is already proven"). Tag the agent
+    # session by (target, probe) so warm-resume gives continuity WITHIN this target's attempts
+    # (direct→timeout-retry→decompose) but a FRESH session PER TARGET. Without a tag the session is repo-scoped
+    # (`_leaf_agent_id` only), i.e. SHARED across every target in the run — so claude resumes a conversation from a
+    # DIFFERENT target and asserts "intact from the previous turn" while THIS target's probe is still `sorry`, the
+    # real proof never gets written, and the leaf discards a solved goal. This keeps the warm REPL + intra-target
+    # resume (the good warm capability); it only stops the cross-target session bleed. Uses the existing #117
+    # `agent_tag` seam (a non-empty tag keys its OWN durable session beside the repo-scoped one).
+    _agent_tag = re.sub(r"[^A-Za-z0-9_.-]+", "_", f"{target}__{probe_name}")[:80]
     if verify is None:
         from ztare.common.timeouts import timeout_s   # central budget factory (byte-parity: leaf_verify defaults to the prior 250)
         verify = lambda: verify_lean_proof(probe, target, lake_bin=lake_bin,
@@ -675,18 +955,20 @@ def solve_leaf(
     # 2) direct agentic attempt
     probe.write_text(_probe_text(defs, goal, target), encoding="utf-8")
     direct = _leaf_prompt(target, goal, probe_ref, mode="direct")
-    out = dispatch(direct, runtime=runtime, repo=repo, timeout=max(_MIN_DISPATCH_S, _budget()))
+    out = dispatch(direct, runtime=runtime, repo=repo, timeout=max(_MIN_DISPATCH_S, _budget()), agent_tag=_agent_tag)
     _dump_transcript(target, "direct", out)
     res.rounds = 1
     ok, why = verify()
     # Timeout-aware retry: an OPEN result whose dispatch RAN OUT OF TIME is under-budget, not a real
     # negative — retry with the budget that REMAINS (capped at the retry factor), only if any is left.
     if not ok and _dispatch_timed_out(out) and _budget() >= _MIN_DISPATCH_S:
-        dispatch(direct, runtime=runtime, repo=repo,
+        dispatch(direct, runtime=runtime, repo=repo, agent_tag=_agent_tag,
                  timeout=min(int(timeout * _timeout_retry_factor()), _budget()))
         res.rounds += 1
         res.timeout_retried = True
         ok, why = verify()
+    if not ok and _recover_proof_from_response(out, probe, target, verify):
+        ok, why, res.recovered_from_response = True, "recovered: proof salvaged from the agent response (file left sorried)", True
     res.reason = why
     try:   # RECEIPT-a-priori capture (gap #2): log the technique-receipts the leaf declared, joined to atlas rank
         from ztare.leanmill.solver import move_atlas as _ma
@@ -700,28 +982,52 @@ def solve_leaf(
     res.gap = _extract_gap(probe)   # capture the leaf's own diagnosis from the direct attempt
     res.statement_false = _extract_statement_false(probe)   # SOFT reformulation trigger (target mis-formalized)
 
+    # SHORT-CIRCUIT a KERNEL-CONFIRMED false target (2026-06-23 iso_lemma1 loop). The agent flagged
+    # STATEMENT-FALSE; if the kernel confirms ¬goal NOW, decomposing or retrying is pure waste — a false
+    # statement has no proof. Previously the verify ran only in solve_adhoc's END epilogue, so the leaf burned
+    # the whole decompose + best-of-N (claude timing out ~545s each) on a provably-false lemma before the
+    # re-plan could fire. This is NOT a closure and NOT a soundness call — the downstream governance re-verifies
+    # ¬goal before any re-plan (the kernel stays the gate); this only stops the wasted dispatches.
+    if res.statement_false and statement_false_verifier is not None:
+        try:
+            if statement_false_verifier():
+                res.statement_false_confirmed = True
+                res.reason = "statement-false (kernel-confirmed ¬goal) — skipped decompose/retry"
+                return res
+        except Exception:  # noqa: BLE001 — a verifier failure falls through to the normal decompose path
+            pass
+
     # 3) decomposition fallback (the conjecture-DAG move): ask for helper lemmas, reassemble — only if
     #    budget remains (else the direct attempt already consumed this move's time). RETRY FEEDBACK: hand
     #    the direct attempt's honest-gap diagnosis to the decomposition so it targets what the leaf found
     #    missing (not a blind retry).
     if decompose and _budget() >= _MIN_DISPATCH_S:
         decomp = _leaf_prompt(target, goal, probe_ref, mode="decompose", prior_gap=res.gap)
-        out = dispatch(decomp, runtime=runtime, repo=repo, timeout=_budget())
+        out = dispatch(decomp, runtime=runtime, repo=repo, timeout=_budget(), agent_tag=_agent_tag)
         _dump_transcript(target, "decompose", out)
         res.rounds += 1
         res.decomposed = True
         ok, why = verify()
         if not ok and _dispatch_timed_out(out) and _budget() >= _MIN_DISPATCH_S:
-            dispatch(decomp, runtime=runtime, repo=repo,
+            dispatch(decomp, runtime=runtime, repo=repo, agent_tag=_agent_tag,
                      timeout=min(int(timeout * TIMEOUT_RETRY_FACTOR), _budget()))
             res.rounds += 1
             res.timeout_retried = True
             ok, why = verify()
+        if not ok and _recover_proof_from_response(out, probe, target, verify):
+            ok, why, res.recovered_from_response = True, "recovered: proof salvaged from the agent response (file left sorried)", True
         res.reason = why
         res.closed = ok
         if not ok:
             res.gap = _extract_gap(probe) or res.gap   # refresh with the decomposition's diagnosis
             res.statement_false = _extract_statement_false(probe) or res.statement_false
+    # PATH-DRIFT visibility net (2026-06-23): about to report NOT closed — but did a correct proof land at a
+    # SIBLING scratch path (the silent-discard signature)? Surface + recover it. probe_ref derivation makes the
+    # original drift impossible; this catches ANY future path mismatch loudly instead of silently losing a proof.
+    if not res.closed and _scan_scratch_for_drifted_proof(probe, target, verify):
+        res.closed = True
+        res.recovered_from_drift = True
+        res.reason = "recovered: kernel-verifying proof found at a SIBLING scratch path (path-drift net)"
     return res
 
 
@@ -740,6 +1046,7 @@ def solve_robust(
     dispatch: Callable = default_dispatch,
     verify: Optional[Callable] = None,
     substrate_calibrate: Optional[Callable] = None,
+    statement_false_verifier: Optional[Callable] = None,
 ) -> LeafResult:
     """Best-of-N agentic solve across providers × attempts. The agentic leaf is STOCHASTIC
     (codex closed P1 d0 in ~1 of 3 runs); retrying and crossing providers (codex/claude/
@@ -756,6 +1063,9 @@ def solve_robust(
     deadline = time.time() + max(_MIN_DISPATCH_S, timeout)
     attempts: list[LeafResult] = []
     stop = False
+    # PER-TARGET probe name (2026-06-23): include the target so two solves in the same run can't clobber each
+    # other's file — `RobustProbe_<provider>_<i>.lean` was a FIXED name reused for the top target AND every
+    # sub-lemma, so one solve overwrote another's proof (and the agent then read the wrong file's contents).
     for provider in providers:
         if stop:
             break
@@ -764,18 +1074,33 @@ def solve_robust(
             if attempts and remaining < _MIN_DISPATCH_S:   # budget spent → keep best-of-what-we-have
                 stop = True
                 break
+            # ONE canonical name (anti-sibling): the SAME string written by solve_leaf is recorded as
+            # winner_probe below and reconstructed by the reader — they cannot drift (2026-06-23 winner_probe bug).
+            _probe_name = robust_probe_name(target, provider, i)
             r = solve_leaf(goal, defs=defs, project_dir=project_dir, repo=repo, lake_bin=lake_bin,
-                           probe_name=f"RobustProbe_{provider}_{i}.lean", target=target,
+                           probe_name=_probe_name, target=target,
                            runtime=provider, timeout=max(_MIN_DISPATCH_S, remaining), decompose=decompose,
-                           dispatch=dispatch, verify=verify, substrate_calibrate=substrate_calibrate)
+                           dispatch=dispatch, verify=verify, substrate_calibrate=substrate_calibrate,
+                           statement_false_verifier=statement_false_verifier)
             attempts.append(r)
             if r.closed:
                 # carry the EXACT winning probe filename (2026-06-13 audit A1): the reader must not
                 # reconstruct it from a `_0` guess + lexical glob (wrong when the win is on attempt i>0,
-                # and `sorted()[-1]` mis-orders `_10`<`_9`). We know `i` here — record it.
+                # and `sorted()[-1]` mis-orders `_10`<`_9`). It is the SAME `_probe_name` the leaf wrote.
                 r.calibration["best_of"] = {"attempts_tried": len(attempts), "winner": provider,
-                                            "winner_probe": f"RobustProbe_{provider}_{i}.lean"}
+                                            "winner_probe": _probe_name}
                 return r
+            # KERNEL-CONFIRMED false target ⇒ stop the best-of-N: no provider can prove a false statement, and the
+            # downstream governance re-verifies ¬goal and the planner re-plans. (solve_leaf set the flag if its
+            # direct attempt flagged + the kernel confirmed; catch a DECOMPOSE-phase flag here too, cached.)
+            if not r.statement_false_confirmed and r.statement_false and statement_false_verifier is not None:
+                try:
+                    r.statement_false_confirmed = bool(statement_false_verifier())
+                except Exception:  # noqa: BLE001
+                    pass
+            if r.statement_false_confirmed:
+                stop = True
+                break
     # none closed: prefer an admissible attempt (real negative) over an inadmissible one
     admissible = [a for a in attempts if not a.inadmissible]
     best = (admissible[-1] if admissible else (attempts[-1] if attempts else
@@ -830,6 +1155,13 @@ def _self_test() -> int:
     if _extract_statement_false(_f.name + ".nope") != "":
         fails.append("missing probe must yield empty statement_false (fail-safe)")
     os.remove(_f.name)
+    # the agent PROVED the refutation as a theorem (no comment) — must still trigger (2026-06-23 iso_lemma1)
+    _f2 = _tf.NamedTemporaryFile("w", suffix=".lean", delete=False)
+    _f2.write("import Mathlib\ntheorem iso_lemma1_statement_false : ∃ x : Bool, x = x := ⟨true, rfl⟩\n")
+    _f2.close()
+    if "refutation decl" not in _extract_statement_false(_f2.name):
+        fails.append("a proved `*_statement_false` theorem must trigger the refutation signal (not just the comment)")
+    os.remove(_f2.name)
     # scan_probes_for_statement_false (solve_adhoc's single capture point): finds the marker across a scratch dir
     _d = _tf.mkdtemp()
     Path(_d, "clean.lean").write_text("theorem a : T := by\n  sorry\n", encoding="utf-8")
@@ -857,6 +1189,9 @@ def _self_test() -> int:
     if not r.closed or r.calibration.get("best_of", {}).get("attempts_tried") != 1:
         fails.append("solve_robust must return first closing attempt")
     # solve_robust: all providers dead ⇒ inadmissible best (never a fake negative)
+    _PROVIDER_LIVE_CACHE.clear()   # test isolation: the prior LIVE cases cached these runtimes (TTL); a dead
+    #                                probe must re-check, not see a stale cached "live" (prod backstops via the
+    #                                dispatch's own dead-detection — only the mock makes live/dead inconsistent)
     r = solve_robust("True", defs="", project_dir=".", repo=".", lake_bin="lake",
                      providers=("codex", "claude"), dispatch=lambda *a, **k: "",
                      verify=lambda: (True, "x"))
@@ -887,6 +1222,11 @@ def _self_test() -> int:
                    verify=lambda: (False, "uses_sorry"), decompose=False)
     if r.closed or r.timeout_retried or r.rounds != 1:
         fails.append("a genuine failure must NOT trigger the timeout-retry")
+    # PATH-DRIFT visibility net (the 2026-06-23 RCA): a correct proof at a sibling scratch path is recovered
+    try:
+        _selftest_scratch_drift_recovery()
+    except AssertionError as _e:
+        fails.append(f"path-drift recovery net: {_e}")
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1
 

@@ -55,6 +55,21 @@ def decl_names(text: str) -> "set[str]":
     return {n for n, _ in decl_blocks(text)}
 
 
+def _open_namespaces(text: str) -> "list[str]":
+    """Distinct namespaces the env DECLARES (its defs live inside them), first-seen order. A banked rung is
+    appended at EOF — OUTSIDE those namespaces — so without re-opening them its short-name references to the
+    campaign defs autobind as local variables ⇒ `Function expected` / `not a proposition` ⇒ noncompile ⇒ silent
+    revert. This was why the pari-passu feasibility (298-line proof citing `namespace AbsolutePriorityWaterfall`
+    defs) could never bank while pure-NNReal lemmas (no namespaced refs) banked fine. RCA 2026-06-24."""
+    from ztare.leanmill.lean_source import strip_comments   # canonical comment stripper — no `namespace` in a comment false-matches
+    seen: "list[str]" = []
+    for raw in strip_comments(text or "").splitlines():
+        parts = raw.split()                                  # token split, NOT a Lean regex: a `namespace X` command
+        if len(parts) >= 2 and parts[0] == "namespace" and parts[1] not in seen:
+            seen.append(parts[1])                            # `X` or `X.Y` — the declared namespace
+    return seen
+
+
 def bankable_helpers(proof_text: str, context_names: "set[str]",
                      exclude_prefixes=("leaf_", "lift_", "barr", "AgenticLeafProbe")) -> "list[tuple[str, str]]":
     """Invented helpers worth banking from a closure: decls NOT already in the family context
@@ -85,9 +100,19 @@ def bank(context_path: "str | Path", proof_text: str) -> "list[str]":
     new = bankable_helpers(proof_text, existing_names)
     if not new:
         return []
+    # NAMESPACED ENV: re-open the env's namespaces in a SECTION so the appended flat rungs can resolve the campaign
+    # defs by short name (the decls themselves persist top-level — `section` scopes only the `open`, not the decls,
+    # so a later rung still cites them flat). Non-namespaced env ⇒ nss empty ⇒ bare append (byte-parity). 2026-06-24.
+    nss = _open_namespaces(existing)
     with p.open("a", encoding="utf-8") as f:
+        if nss:
+            f.write("\nsection  -- [family-lemma-library] banked rungs (re-open env namespaces for short-name refs)\n")
+            for n in nss:
+                f.write(f"open {n}\n")
         for name, block in new:
             f.write(f"\n-- [family-lemma-library] banked: {name}\n{block}\n")
+        if nss:
+            f.write("\nend\n")
     led = _load_ledger(context_path)
     for name, _ in new:
         _ensure_ledger(led, name)
@@ -309,7 +334,14 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
     new_name = content_stable_name(target_name, block)
     if new_name in decl_names(p.read_text(encoding="utf-8")):
         return {"banked_as": None, "reason": "already"}        # identical statement already in the env
-    renamed = _rename_decl_head(block, target_name, new_name)
+    # CARRY THE INLINE HELPERS (RCA 2026-06-24): rename the target's head IN THE FULL PROBE so `bank()` appends the
+    # renamed headline AND the inline helper lemmas its proof cites — TOGETHER. Extracting the target block ALONE
+    # (the old bug) dropped those helpers, so the headline failed to recompile standalone in the env → silent
+    # `reverted_noncompile` → NEVER citable. That zeroed reuse for exactly the substantial (helper-using) proofs —
+    # the direct cause of the pari-passu AP `exact_gap` (the AP headline couldn't cite its own just-proved
+    # sub-lemmas). `bankable_helpers` dedups NEW decls by name against the env, so the probe's def preamble +
+    # already-banked helpers are skipped (no duplicate-definition failure); reverify+revert still guards soundness.
+    renamed = _rename_decl_head(decl_text, target_name, new_name)
     before = p.read_text(encoding="utf-8")
     _rv = reverify_fn or _default_reverify
 
@@ -323,7 +355,8 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
     if new_name not in banked:
         return {"banked_as": None, "reason": "dedup_or_excluded"}
     if _try(p):
-        return {"banked_as": new_name, "reason": "banked"}
+        return {"banked_as": new_name, "reason": "banked",
+                "helpers_banked": [n for n in banked if n != new_name]}
     p.write_text(before, encoding="utf-8")                     # REVERT — a non-porting rung must not poison the env
     # CLASSIFY the failure honestly (positive control on the reverted file): a reverify that returns False for
     # BOTH "infra is dead" (toolchain-less root / dead REPL / flag off) and "the rung genuinely breaks the env"
@@ -429,6 +462,29 @@ def _self_test() -> int:
     f = bank_decl_to_env(env, "good", "theorem good (n:Nat): n+1=n+1 := by rfl", ".", reverify_fn=_rv_dead)
     ok("env: dead reverify-infra reported as reverify_unavailable (not a false non-compile)",
        f["banked_as"] is None and f["reason"] == "reverify_unavailable")
+    # MULTI-HELPER CARRY (RCA 2026-06-24): a proof citing a LOCAL helper must bank the helper too, else the renamed
+    # headline can't recompile standalone → silent revert (the bug that zeroed reuse + caused the pari-passu AP gap).
+    # _rv_dep models 'unknown identifier': fails iff the target uses `helper_aux` but no `helper_aux` decl is present.
+    _rv_dep = lambda path, root: not (
+        "helper_aux n" in (_t := Path(path).read_text(encoding="utf-8")) and "theorem helper_aux" not in _t)
+    multi = ("theorem helper_aux (n : Nat) : n + 0 = n := by simp\n"
+             "theorem multi_target (n : Nat) : n + 0 = n := helper_aux n")
+    g = bank_decl_to_env(env, "multi_target", multi, ".", reverify_fn=_rv_dep)
+    ok("env: multi-helper proof BANKS (inline helper carried, not dropped → no silent revert)", bool(g["banked_as"]))
+    ok("env: the inline helper was carried (reported in helpers_banked)", "helper_aux" in (g.get("helpers_banked") or []))
+    ok("env: helper_aux decl present in the banked env (citable next run)",
+       "theorem helper_aux" in Path(env).read_text(encoding="utf-8"))
+    # NAMESPACED ENV (RCA 2026-06-24): a flat rung citing a namespaced def must bank WITH `open NS`, else its
+    # short-name refs autobind as locals → noncompile → silent revert (why the pari-passu feasibility, citing
+    # `namespace AbsolutePriorityWaterfall` defs, never banked while pure-NNReal lemmas did).
+    nsenv = tempfile.mktemp(suffix=".lean")
+    init_context(nsenv, "import Mathlib\nnamespace NS\ndef foo : Nat := 0\nend NS\n")
+    _rv_ns = lambda path, root: ("uses_foo" not in (_t := Path(path).read_text(encoding="utf-8"))) or ("open NS" in _t)
+    h = bank_decl_to_env(nsenv, "uses_foo", "theorem uses_foo : foo = foo := rfl", ".", reverify_fn=_rv_ns)
+    ok("env: namespaced-env rung banks WITH open (flat refs to namespaced defs resolve)", bool(h["banked_as"]))
+    ok("env: banked block re-opens the env namespace", "open NS" in Path(nsenv).read_text(encoding="utf-8"))
+    os.path.exists(nsenv) and os.remove(nsenv)
+    os.path.exists(nsenv + ".mdl.json") and os.remove(nsenv + ".mdl.json")
     os.path.exists(env) and os.remove(env)
     os.path.exists(env + ".mdl.json") and os.remove(env + ".mdl.json")
 

@@ -55,6 +55,19 @@ def parse_theory_file(text: str) -> "Optional[str]":
     return m.group(1) if m else None
 
 
+def parse_domain(text: str) -> "Optional[str]":
+    """Parse the optional `## Domain` line → the campaign-class label (e.g. `math`, `formalization-nonmath`) used
+    by the factory time-to-closure read model to segment avg-time-to-closure by domain. First non-blank line of
+    the section; None if absent (the caller falls back to ZTARE_SOLVER_DOMAIN, then 'unspecified')."""
+    m = re.search(r"(?ms)^##\s*Domain\s*\n(.+?)(?=^##|\Z)", text)
+    if not m:
+        return None
+    for ln in m.group(1).splitlines():
+        if ln.strip():
+            return ln.strip()
+    return None
+
+
 def parse_notes(text: str) -> "tuple[str, list[str]]":
     """Parse the `## Target` paragraph + the `- ` bullets under `## Lemmas`. Deterministic markdown-STRUCTURE
     parsing (not agent-output parsing — those use `agent_output`); the value is the formalize+attack loop, not
@@ -88,7 +101,8 @@ def _insert_lemmas_section(notes_text: str, bullets: "list[str]") -> str:
     return notes_text.rstrip() + "\n\n## Lemmas\n" + "\n".join(new) + "\n"   # absent → append the section
 
 
-def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | None" = None) -> dict:
+def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | None" = None,
+                    shelf_prelude: str = "") -> dict:
     """Real apparatus: one NL line → faithfulness firewall → governed solve → compact per-piece record.
     `notes` (the blueprint) threads into the recursive planner when the line does NOT close directly.
     `solved` is True ONLY when the governed outcome is `closed`. (`autoformalize_and_solve` puts the per-
@@ -96,7 +110,8 @@ def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | N
     would mark an unproven gap as solved. That false-positive is fixed here at the source.)"""
     from ztare.leanmill.solver.autoformalize import autoformalize_and_solve
     from ztare.leanmill.contracts.kernel import AttackRecord   # #49: typed record — `solved` is a BOOL, decided
-    r = autoformalize_and_solve(nl, sandbox=lean_root, timeout_s=timeout_s, notes=notes)   # ONCE (outcome=="closed")
+    r = autoformalize_and_solve(nl, sandbox=lean_root, timeout_s=timeout_s, notes=notes,
+                                shelf_prelude=shelf_prelude)   # ONCE (outcome=="closed")
     # `.model_dump()` re-emits the exact legacy keys (nl/lean_statement/faithful/outcome/solved + the firewall
     # verdict reason/checks + the planner sub-DAG), so the notes loop + write-back are unchanged — but the
     # gap-as-solved false positive (`bool("exact_gap")` ⇒ True) is now impossible by construction.
@@ -217,19 +232,80 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                         except Exception:  # noqa: BLE001
                             pass
 
+    # SELF-CORRECTION (supersession-acting, 2026-06-23): if lemmas remain OPEN and a lemma was kernel-CONFIRMED
+    # FALSE (a `-- STATEMENT-FALSE:` marker survives in this run's scratch), a DEFINITION it cites is too WEAK.
+    # Run ONE governed def-revision round — the agent STRENGTHENS the implicated def, GATED so only a kernel-
+    # proven strengthening passes (never a laundering) — then re-attack the open lemmas with the strengthened
+    # theory. Bounded (one round → can't loop), default-on (sound: the gate + kernel are the boundary), wall-
+    # respecting, fail-safe (never breaks the campaign). ZTARE_LEANMILL_SELF_CORRECT_DEFS=0 reverts.
+    _theory_rel_sc = parse_theory_file(notes_text)
+    if (_os_w.environ.get("ZTARE_LEANMILL_SELF_CORRECT_DEFS", "1") != "0" and _theory_rel_sc
+            and not _wall_exceeded()):
+        _open_sc = [i for i, l in enumerate(out["lemmas"]) if not l.get("solved")]
+        _marker = ""
+        if _open_sc:
+            try:
+                from ztare.leanmill.solver.agentic_leaf import (scan_probes_for_statement_false,
+                                                                probe_dir as _pdir_sc, default_dispatch as _dd_sc)
+                _marker = scan_probes_for_statement_false(_pdir_sc(lean_root))
+            except Exception:  # noqa: BLE001
+                _marker = ""
+        if _open_sc and _marker:
+            log(f"[notes] SELF-CORRECT: a lemma was kernel-confirmed FALSE (marker: {_marker[:80]!r}) → governed "
+                f"def-revision (strengthen the too-weak def; gated — only a proven strengthening passes)")
+            try:
+                _rev = governed_def_revision(_theory_rel_sc, lean_root=lean_root, dispatch=_dd_sc,
+                                             false_lemma=str(lemmas[_open_sc[0]]), counterexample=_marker)
+            except Exception as _e:  # noqa: BLE001 — self-correction is best-effort; never break the campaign
+                _rev = {"ok": False, "reason": f"revision error: {repr(_e)[:120]}"}
+            out["def_revision"] = _rev
+            log(f"[notes] def-revision: ok={_rev.get('ok')} revised={_rev.get('revised_def')} — "
+                f"{str(_rev.get('reason',''))[:170]}")
+            if _rev.get("ok") and not _wall_exceeded():
+                try:   # the theory file changed → re-register the warm-env substrate before re-attacking
+                    from ztare.formal.repl_compile import set_campaign_substrate
+                    _tp_sc = lean_root / _theory_rel_sc
+                    if _tp_sc.exists():
+                        set_campaign_substrate(str(_tp_sc.resolve()))
+                except Exception:  # noqa: BLE001
+                    pass
+                for i in _open_sc:
+                    if _wall_exceeded():
+                        break
+                    rec_sc = attack_fn(lemmas[i], lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
+                    if rec_sc.get("solved"):
+                        out["lemmas"][i] = rec_sc
+                        out["shelf"].append(rec_sc.get("lean_statement") or "")
+                        log(f"[notes] *** SELF-CORRECT CLOSED lemma {i + 1}/{len(lemmas)} after strengthening "
+                            f"`{_rev.get('revised_def')}` ***")
+
     # the TARGET gets the blueprint PLUS the proven shelf — the planner sees which lemmas are already citable
     target_notes = notes_text
     if out["shelf"]:
         target_notes = (notes_text.rstrip() + "\n\n## Proven lemmas (citable):\n"
                         + "\n".join(f"- {s}" for s in out["shelf"] if s))
+    # COMPOSITION FIX (2026-06-23): put the proven shelf lemmas IN COMPILE SCOPE for the target solve, so the
+    # agent can CITE them by name (a true dependency graph) instead of re-deriving them inline — the dead-code
+    # gap on FTAP. Before this, "Proven lemmas (citable)" was text-only; the standalone target probe never had
+    # the names in scope, so inlining was the agent's ONLY compiling option. Name-filtered to THIS run (a
+    # concurrent campaign shares the cert ledger).
+    target_shelf_prelude = ""
+    if out["shelf"]:
+        try:
+            target_shelf_prelude = _run_shelf_prelude(out, out.get("run_started", ""))
+        except Exception:  # noqa: BLE001 — composition is additive; never break the target attack
+            target_shelf_prelude = ""
     if target and _wall_exceeded():
         log("[notes] *** CAMPAIGN WALL reached — deferring the TARGET attack (proven rungs are written "
             "back; the target stays HONESTLY OPEN, never a fake closure) ***")
         out["wall_deferred"].append(str(target))
         out["target"] = {"deferred": "campaign_wall", "solved": False}
     else:
-        log(f"[notes] TARGET: {target!r}")
-        out["target"] = (attack_fn(target, lean_root=lean_root, timeout_s=target_timeout_s, notes=target_notes)
+        log(f"[notes] TARGET: {target!r}"
+            + (f" (shelf in scope: {target_shelf_prelude.count('theorem ') + target_shelf_prelude.count('lemma ')} proven lemmas citable)"
+               if target_shelf_prelude.strip() else ""))
+        out["target"] = (attack_fn(target, lean_root=lean_root, timeout_s=target_timeout_s, notes=target_notes,
+                                   shelf_prelude=target_shelf_prelude)
                          if target else None)
     if out["target"]:
         t = out["target"]
@@ -374,6 +450,131 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     if supersede:
         out["supersession_requests"] = supersede
     return out
+
+
+def governed_def_revision_gate(before_src: str, after_src: str, def_name: str, *,
+                               verify_fn: "Callable[[str], bool]") -> "tuple[bool, str]":
+    """ANTI-GAMING gate for SUPERSESSION-ACTING (the governed def-revision the `-- SUPERSEDE` request was queued
+    for). When a kernel-CONFIRMED-false theorem traces to a too-weak `def <D>`, the agent may STRENGTHEN it —
+    but only soundly. `after_src` is accepted iff:
+      (1) the OLD def is preserved VERBATIM, renamed `<D>__pre` (so the witness can name it);
+      (2) a NEW `def <D>` exists (same name → existing usages rebind to it);
+      (3) a `witness_strengthen_<D>` theorem is present AND `verify_fn` KERNEL-confirms it — it proves
+          `∀ …, <D> … → <D>__pre …`, i.e. the new def IMPLIES the old = a STRENGTHENING. A weakening /
+          trivialization / sideways-change cannot prove this, so it is rejected;
+      (4) every OTHER prior decl is UNCHANGED (append-only — only <D>, <D>__pre, the witness are new/changed).
+    Goldilocks: the AGENT authors the stronger def + proves the implication (upstream agency); the KERNEL gates
+    that it is genuinely a strengthening (the boundary). Reuses the canonical `decl_blocks`/`lean_source` parser
+    and the SAME witness verifier the denotation leg uses — no new oracle, no parallel machinery. The goal and
+    every other def are untouched, so a revision can only RESTRICT <D> (it cannot launder a false theorem)."""
+    from ztare.leanmill.solver.statement_integrity import decl_blocks
+    from ztare.leanmill import lean_source as _ls
+    pre, witness = f"{def_name}__pre", f"witness_strengthen_{def_name}"
+
+    def _norm(s: str) -> str:
+        return " ".join((s or "").split())
+
+    def _value(src: str, name: str) -> str:   # the def's value (after `:=`), whitespace-normalized
+        body = _ls.def_body(src, name) or ""
+        v = _ls.split_at_proof(body)[1]
+        return _norm(v[2:] if v.startswith(":=") else v)
+
+    if def_name not in _ls.def_names(before_src):
+        return False, f"{def_name} is not a prior definition"
+    if pre not in _ls.def_names(after_src):
+        return False, f"old def not preserved as `{pre}` (the strengthening witness must reference it)"
+    if _value(after_src, pre) != _value(before_src, def_name):
+        return False, f"`{pre}` body is not the verbatim original `{def_name}` body"
+    if def_name not in _ls.def_names(after_src):
+        return False, f"revised `{def_name}` missing"
+    if witness not in _ls.theorem_names(after_src):
+        return False, f"missing strengthening witness `{witness}` (∀ …, {def_name} … → {pre} …)"
+    # (4) NO laundering of any OTHER decl. A non-superseded CONCEPT def (Prop-valued — the meaning surface) must
+    # stay BYTE-IDENTICAL; a THEOREM/instance/term may keep its STATEMENT/type but ADAPT its proof/body to the
+    # strengthened def (a structure-field def like single-crossing forces its instances, e.g. `const`, to
+    # re-prove — forbidding that would make the whole mechanism unusable). Statements (signatures) are the
+    # laundering boundary; the kernel re-verifies the adapted proofs, and every downstream closure is re-governed.
+    bb, ab = dict(decl_blocks(before_src)), dict(decl_blocks(after_src))
+    before_defs = set(_ls.def_names(before_src))
+    for n, blk in bb.items():
+        short = n.split(".")[-1]
+        if short == def_name:
+            continue   # the superseded def may change its meaning (gated by the strengthening witness above)
+        if n not in ab:
+            return False, f"prior decl removed: `{n}` (not allowed)"
+        if short in before_defs and _ls.def_is_prop_valued(before_src, short):
+            if " ".join(ab[n].split()) != " ".join(blk.split()):   # a CONCEPT def must be byte-identical
+                return False, f"a non-superseded CONCEPT def changed: `{n}` (only `{def_name}` may change its meaning)"
+        elif _norm(_ls.signature_before_proof(ab[n])) != _norm(_ls.signature_before_proof(blk)):
+            return False, f"prior decl SIGNATURE/type changed: `{n}` (statements are append-only; only proofs/instance-bodies may adapt)"
+    # (5) the strengthening must be KERNEL-confirmed — new `<D>` IMPLIES old `<D>__pre` (a decoy/weakening can't)
+    try:
+        if not verify_fn(witness):
+            return False, f"`{witness}` not kernel-verified — the revision is not a proven strengthening (rejected)"
+    except Exception as _e:  # noqa: BLE001
+        return False, f"witness verify error: {_e!r}"
+    return True, f"`{def_name}` soundly strengthened — `{witness}` kernel-verified; goal + other defs untouched"
+
+
+def _detect_revised_def(after_src: str) -> "str | None":
+    """The def the agent revised: a `def <D>` for which BOTH `<D>__pre` (preserved old) and
+    `witness_strengthen_<D>` (the strengthening proof) were written. None if no revision pattern present."""
+    from ztare.leanmill import lean_source as _ls
+    defs, thms = set(_ls.def_names(after_src)), set(_ls.theorem_names(after_src))
+    for d in defs:
+        if f"{d}__pre" in defs and f"witness_strengthen_{d}" in thms:
+            return d
+    return None
+
+
+def governed_def_revision(theory_rel: str, *, lean_root: Path, dispatch: "Callable",
+                          false_lemma: str, counterexample: str = "",
+                          compile_fn: "Optional[Callable]" = None,
+                          verify_fn_factory: "Optional[Callable]" = None,
+                          timeout_s: "int | None" = None) -> dict:
+    """SUPERSESSION-ACTING orchestrator — the self-correction the `-- SUPERSEDE` request was queued for. A
+    campaign lemma was KERNEL-confirmed false because a def it cites is too WEAK; dispatch the agent to
+    STRENGTHEN that def (preserve old as `<D>__pre`, prove `witness_strengthen_<D>`), then gate via
+    `governed_def_revision_gate` (only a kernel-proven strengthening passes — no laundering). The theory file is
+    REVERTED on any failure (never poison the substrate). Returns {ok, revised_def?, reverted?, reason}. Reuses
+    the v33 compile probe + the SAME witness verifier the denotation leg uses — no parallel machinery."""
+    from ztare.gates.v33_preflight_risk_detector import _compile_probe
+    from ztare.leanmill.solver import prompts as _p
+    from ztare.common.timeouts import timeout_s as _ts
+    theory_path = (lean_root / theory_rel) if not Path(theory_rel).is_absolute() else Path(theory_rel)
+    before = theory_path.read_text(encoding="utf-8") if theory_path.exists() else ""
+    if not before.strip():
+        return {"ok": False, "reason": "no theory file to revise"}
+    prompt = _p.REVISE_DEF_PROMPT.format(path=str(theory_path), false_lemma=(false_lemma or "")[:700],
+                                         counterexample=(counterexample or "(no explicit counterexample text)")[:700])
+    try:
+        dispatch(prompt, repo=lean_root, timeout=timeout_s or _ts("notes_lemma"))
+    except TypeError:                              # injected fakes may omit the timeout kw
+        dispatch(prompt, repo=lean_root)
+    except Exception as e:                         # noqa: BLE001 — failed dispatch leaves the file; gates below decide
+        return {"ok": False, "reason": f"dispatch error: {repr(e)[:120]}"}
+    after = theory_path.read_text(encoding="utf-8") if theory_path.exists() else ""
+    if after == before:
+        return {"ok": False, "reason": "no revision written"}
+    cf = compile_fn or _compile_probe
+    if cf(after, lean_root, "DefRevision", _ts("cold_compile")) is not True:
+        theory_path.write_text(before, encoding="utf-8")
+        return {"ok": False, "reverted": True, "reason": "revised theory does not compile"}
+    dname = _detect_revised_def(after)
+    if not dname:
+        theory_path.write_text(before, encoding="utf-8")
+        return {"ok": False, "reverted": True,
+                "reason": "no `<D>__pre` + `witness_strengthen_<D>` revision pattern (agent did not follow the governed-revision protocol)"}
+    if verify_fn_factory is not None:
+        _verify = verify_fn_factory(after, lean_root)
+    else:
+        from ztare.leanmill.solver.def_denotation import kernel_denotation_verifier
+        _verify = kernel_denotation_verifier(after, lean_root)
+    okg, why = governed_def_revision_gate(before, after, dname, verify_fn=_verify)
+    if not okg:
+        theory_path.write_text(before, encoding="utf-8")
+        return {"ok": False, "reverted": True, "revised_def": dname, "reason": why}
+    return {"ok": True, "revised_def": dname, "reason": why}
 
 
 def _gap_class(rec: dict) -> str:
@@ -551,6 +752,58 @@ def deep_closures_since(since_iso: str, *, ledger: "Optional[Path]" = None) -> "
     return out
 
 
+def _run_shelf_prelude(out: dict, since_iso: str, *, ledger: "Optional[Path]" = None) -> str:
+    """Assemble THIS run's proven sibling lemmas into a compile prelude so the TARGET solve has them IN SCOPE
+    and can CITE them (a true dependency graph) rather than re-deriving inline — the composition fix
+    (2026-06-23, after Gemini flagged the FTAP target re-proving its lemmas as dead code).
+
+    Source = the closure-cert ledger's `recompilable_probe` (the full proven `theorem … := <proof>`), the same
+    ledger `deep_closures_since` reads. FILTERED to this run's own closed-lemma decl names (a concurrent
+    campaign shares the ledger, so a since-`ts` window alone would import a neighbour's lemmas). Imports are
+    stripped (the assembled target body supplies exactly one). Canonical decl parser (`statement_integrity.
+    decl_blocks`) — never a re-rolled regex. Returns "" when nothing applies (⇒ byte-identical to the old body)."""
+    from ztare.leanmill.solver.statement_integrity import decl_blocks
+    names: set = set()
+    for lem in out.get("lemmas", []):
+        if not lem.get("solved"):
+            continue
+        try:
+            for nm, _blk in decl_blocks(lem.get("lean_statement") or ""):
+                if nm:
+                    names.add(nm)
+        except Exception:  # noqa: BLE001
+            continue
+    if not names:
+        return ""
+    if ledger is None:
+        from ztare.leanmill.solver.solver_core import ADHOC_CLOSURE_CERTIFICATES as _L
+        ledger = _L
+    pieces: "list[str]" = []
+    seen: set = set()
+    try:
+        lines = Path(ledger).read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return ""
+    for ln in lines:
+        try:
+            c = json.loads(ln)
+        except ValueError:
+            continue
+        if c.get("outcome") != "closed" or str(c.get("ts") or "") < (since_iso or ""):
+            continue
+        tgt = c.get("target") or ""
+        if tgt not in names or tgt in seen:
+            continue
+        probe = c.get("recompilable_probe") or ""
+        if not probe.strip():
+            continue
+        seen.add(tgt)
+        body = "\n".join(l for l in probe.splitlines() if not l.lstrip().startswith("import")).strip()
+        if body:
+            pieces.append(body)
+    return "\n\n".join(pieces)
+
+
 def _self_test() -> int:
     fails: "list[str]" = []
 
@@ -581,9 +834,11 @@ def _self_test() -> int:
 
     # --- hermetic loop: Lemma A closes, Lemma B exact_gaps, target opens ---
     seen_notes: dict = {}
+    seen_prelude: dict = {}
 
-    def mock_attack(nl, *, lean_root, timeout_s, notes=None):
+    def mock_attack(nl, *, lean_root, timeout_s, notes=None, shelf_prelude=""):
         seen_notes[nl] = notes
+        seen_prelude[nl] = shelf_prelude
         closed = nl == "Lemma A."
         return {"nl": nl, "lean_statement": f"theorem t : {nl} := by sorry", "faithful": True,
                 "outcome": "admitted_and_closed" if closed else "admitted_and_exact_gap",
@@ -599,9 +854,11 @@ def _self_test() -> int:
     ok("target_notes_carry_shelf",
        "Proven lemmas (citable)" in (seen_notes.get("For all n, P n.") or "")
        and "theorem t : Lemma A." in (seen_notes.get("For all n, P n.") or ""))
+    # composition fix: the target attack is invoked WITH the shelf_prelude kwarg (in scope, not just notes text)
+    ok("target_gets_shelf_prelude_kwarg", "For all n, P n." in seen_prelude)
 
     # --- the false-positive guard: a non-'closed' truthy outcome must NOT count as solved ---
-    def gap_attack(nl, *, lean_root, timeout_s, notes=None):
+    def gap_attack(nl, *, lean_root, timeout_s, notes=None, shelf_prelude=""):
         return {"nl": nl, "lean_statement": "", "faithful": True,
                 "outcome": "admitted_and_exact_gap", "solved": False}
 
@@ -793,6 +1050,62 @@ def _self_test() -> int:
             _os.environ["ZTARE_LEANMILL_COMPOUND_ORIGINAL"] = _prev
         _sh.rmtree(_td, ignore_errors=True)
 
+    # ── governed_def_revision_gate (supersession-ACTING anti-gaming, 2026-06-23) ──
+    _before = "import Mathlib\ndef D (n : Nat) : Prop := n ≥ 0\ntheorem other : True := trivial\n"
+    _after_ok = ("import Mathlib\n"
+                 "def D__pre (n : Nat) : Prop := n ≥ 0\n"                          # old preserved verbatim
+                 "def D (n : Nat) : Prop := n ≥ 0 ∧ n ≤ 100\n"                     # STRENGTHENED
+                 "theorem witness_strengthen_D : ∀ n, D n → D__pre n := fun _ h => h.1\n"  # new → old
+                 "theorem other : True := trivial\n")                              # untouched
+    _ok, _ = governed_def_revision_gate(_before, _after_ok, "D", verify_fn=lambda w: w == "witness_strengthen_D")
+    ok("revision gate: strengthening + KERNEL-verified witness ⇒ ACCEPTED", _ok)
+    _ok2, _ = governed_def_revision_gate(_before, _after_ok, "D", verify_fn=lambda w: False)
+    ok("revision gate: witness NOT kernel-verified ⇒ REJECTED (anti-gaming core)", not _ok2)
+    _after_other = _after_ok.replace("theorem other : True := trivial", "theorem other : False := sorry")
+    _ok3, _ = governed_def_revision_gate(_before, _after_other, "D", verify_fn=lambda w: True)
+    ok("revision gate: changing a NON-superseded decl ⇒ REJECTED (append-only stands)", not _ok3)
+    _after_nopre = _after_ok.replace("def D__pre (n : Nat) : Prop := n ≥ 0\n", "")
+    _ok4, _ = governed_def_revision_gate(_before, _after_nopre, "D", verify_fn=lambda w: True)
+    ok("revision gate: old def not preserved as __pre ⇒ REJECTED", not _ok4)
+    _after_nowit = _after_ok.replace("theorem witness_strengthen_D : ∀ n, D n → D__pre n := fun _ h => h.1\n", "")
+    _ok5, _ = governed_def_revision_gate(_before, _after_nowit, "D", verify_fn=lambda w: True)
+    ok("revision gate: missing strengthening witness ⇒ REJECTED", not _ok5)
+    # a non-superseded CONCEPT def (Prop-valued) changed ⇒ REJECTED (the meaning/laundering surface stays fixed)
+    _before_e = "import Mathlib\ndef E (n : Nat) : Prop := True\ndef D (n : Nat) : Prop := n ≥ 0\ntheorem other : True := trivial\n"
+    _after_e = ("import Mathlib\ndef E (n : Nat) : Prop := False\n"   # CONCEPT def E changed
+                "def D__pre (n : Nat) : Prop := n ≥ 0\ndef D (n : Nat) : Prop := n ≥ 0 ∧ n ≤ 100\n"
+                "theorem witness_strengthen_D : ∀ n, D n → D__pre n := fun _ h => h.1\ntheorem other : True := trivial\n")
+    _ok6, _ = governed_def_revision_gate(_before_e, _after_e, "D", verify_fn=lambda w: True)
+    ok("revision gate: a non-superseded CONCEPT def changed ⇒ REJECTED", not _ok6)
+    # a THEOREM proof ADAPTS (signature unchanged) ⇒ ACCEPTED (a structure instance/dependent may re-prove)
+    _after_padapt = _after_ok.replace("theorem other : True := trivial", "theorem other : True := by trivial")
+    _ok7, _ = governed_def_revision_gate(_before, _after_padapt, "D", verify_fn=lambda w: w == "witness_strengthen_D")
+    ok("revision gate: a theorem PROOF adapts (signature same) ⇒ ACCEPTED", _ok7)
+
+    # governed_def_revision orchestrator (mock dispatch + injected compile/verify — no live Lean)
+    import tempfile as _tfr, shutil as _shr
+    _lr3 = Path(_tfr.mkdtemp())
+    _orig3 = "import Mathlib\ndef D (n : Nat) : Prop := True\ntheorem t : True := trivial\n"
+    (_lr3 / "T.lean").write_text(_orig3, encoding="utf-8")
+    def _disp_strong(prompt, *, repo=None, timeout=None):
+        (_lr3 / "T.lean").write_text(
+            "import Mathlib\ndef D__pre (n : Nat) : Prop := True\n"
+            "def D (n : Nat) : Prop := n ≥ 0\n"
+            "theorem witness_strengthen_D : ∀ n, D n → D__pre n := fun _ _ => trivial\n"
+            "theorem t : True := trivial\n", encoding="utf-8")
+    _rv = governed_def_revision("T.lean", lean_root=_lr3, dispatch=_disp_strong, false_lemma="thm", counterexample="cex",
+                                compile_fn=lambda *a: True,
+                                verify_fn_factory=lambda src, root: (lambda w: w == "witness_strengthen_D"))
+    ok("governed_def_revision: agent strengthening + gate ⇒ revised", _rv.get("ok") and _rv.get("revised_def") == "D")
+    (_lr3 / "T.lean").write_text(_orig3, encoding="utf-8")
+    def _disp_garbage(prompt, *, repo=None, timeout=None):
+        (_lr3 / "T.lean").write_text("import Mathlib\ndef D (n : Nat) : Prop := n = n\ntheorem t : True := trivial\n", encoding="utf-8")
+    _rv2 = governed_def_revision("T.lean", lean_root=_lr3, dispatch=_disp_garbage, false_lemma="t", counterexample="c",
+                                 compile_fn=lambda *a: True, verify_fn_factory=lambda src, root: (lambda w: True))
+    ok("governed_def_revision: no __pre/witness pattern ⇒ reverted + file restored",
+       (not _rv2.get("ok")) and _rv2.get("reverted") and (_lr3 / "T.lean").read_text(encoding="utf-8") == _orig3)
+    _shr.rmtree(str(_lr3), ignore_errors=True)
+
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1
 
@@ -906,6 +1219,9 @@ def regenerate_dashboard(repo_root, runner=None) -> "str | None":
 
 
 def main(argv: "Optional[list[str]]" = None) -> int:
+    import os as _os   # FUNCTION-SCOPE binding: the embedder-liveness preflight (below) reads _os BEFORE the old
+    #   later `import os as _os` bound it — Python made _os local throughout main(), so the early read raised
+    #   UnboundLocalError and aborted the run at start. One import, at the top, is the fix (no shadowing sibling).
     argv = list(sys.argv[1:] if argv is None else argv)
     if argv and argv[0] == "--selftest":
         return _self_test()
@@ -924,17 +1240,48 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     if not _std.get("ok"):
         print("[notes] ABORT — instrument standards FAILED (fail-closed: fix the instrument, do not burn the run)")
         return 3
+    # COMPOUNDING-RETRIEVER LIVENESS (2026-06-24): the semantic premise shelf (own-ledger + Mathlib recall) is the
+    # compounding READ path — it surfaces "this is ALREADY proven, cite it, do not re-derive". It embeds via gemini;
+    # on a dead key/quota it SILENTLY returns nothing (the shelf's `except → []`), so a "no prior work" reads as a
+    # REAL absence and the run re-derives — the exact treadmill the amnesia firewall exists to prevent, and the
+    # measured cause of low cross-run lemma reuse (a starved embedder = invisible 5% reuse). This wires the EXISTING
+    # `embedder_liveness` guard (it was built for this and had ZERO callers) as a LOUD run-start positive control: a
+    # null from the shelf is INADMISSIBLE while the embedder is dead. Advisory (never blocks — the shelf degrades to
+    # lexical/empty), but now VISIBLE. ZTARE_LEANMILL_EMBEDDER_LIVENESS=0 skips.
+    if _os.environ.get("ZTARE_LEANMILL_EMBEDDER_LIVENESS", "1") != "0":
+        try:
+            from ztare.common.embedder_liveness import embedder_live, liveness_banner
+            from ztare.research_director.mathlib_semantic import _embed_query_genai as _eq
+            from ztare.leanmill.semantic_premise_shelf import own_ledger_corpus as _olc
+            _emb_live, _emb_why = embedder_live(_eq, atlas_nonempty=bool(_olc()))
+            print(f"[notes] compounding-retriever (semantic premise shelf) embedder: "
+                  f"{'LIVE — ' + _emb_why if _emb_live else 'DEAD'}", flush=True)
+            if not _emb_live:
+                print(liveness_banner(_emb_live, _emb_why, instrument="compounding premise-shelf embedder"), flush=True)
+        except Exception as _e:  # noqa: BLE001 — liveness probe is advisory; never block the run
+            print(f"[notes] embedder-liveness probe skipped: {repr(_e)[:120]}", flush=True)
     notes_path = Path(argv[0])
     # RUN ATTRIBUTION: tag this run's attempts-DB rows + forecast ledger so the compounder/forecast-router can
     # SLICE by run — the DB showed run_tag=NULL for notes runs (#92 said it should feed the substrate, but the
     # notes entry never set the env), making a run unattributable. setdefault RESPECTS an explicit A/B arm
     # (ZTARE_SOLVER_RUN_TAG=<arm>); otherwise defaults to the notes stem + a per-run stamp.
-    import os as _os
     from datetime import datetime as _dt, timezone as _tz
     _os.environ.setdefault("ZTARE_SOLVER_RUN_TAG", f"notes_{notes_path.stem}_{_dt.now().strftime('%m%dT%H%M')}")
     print(f"[notes] run_tag = {_os.environ['ZTARE_SOLVER_RUN_TAG']}", flush=True)
     _since = _dt.now(_tz.utc).isoformat()   # cert-ledger watermark (same format solve_adhoc stamps `ts` with)
     _notes_text = notes_path.read_text(encoding="utf-8")
+    # CAMPAIGN DOMAIN STAMP (factory time-to-closure segmentation): label this run math vs non-math formalization
+    # so the cycle-time read model can report avg-time-to-closure per domain. Source: `## Domain` in the blueprint,
+    # else ZTARE_SOLVER_DOMAIN, else 'unspecified'. ONE canonical emitter (phase_timing.record_campaign); the stamp
+    # is best-effort telemetry and NEVER blocks the campaign.
+    try:
+        from ztare.leanmill.phase_timing import record_campaign as _record_campaign
+        _domain = (parse_domain(_notes_text) or _os.environ.get("ZTARE_SOLVER_DOMAIN", "") or "unspecified").strip()
+        _record_campaign(_domain, run_tag=_os.environ.get("ZTARE_SOLVER_RUN_TAG", ""),
+                         target=(parse_notes(_notes_text)[0] or "")[:80])
+        print(f"[notes] campaign domain = {_domain!r} (time-to-closure segmentation)", flush=True)
+    except Exception:  # noqa: BLE001 — telemetry stamp never blocks the campaign
+        pass
     # PHASE 0 — THEORY CONSOLIDATION (#123, theory-first campaigns): when the notes declare a campaign
     # theory file, the agent EXTENDS it (defs + sorried API statements — the substrate Mathlib lacks;
     # serves the BUILDS-not-lookup invariant) behind the append-only + compile gates; each new sorried
@@ -943,7 +1290,17 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     _theory_rel = parse_theory_file(_notes_text)
     if _theory_rel:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch as _dd0
-        _tc = theory_consolidation(_notes_text, _theory_rel, lean_root=LEAN_ROOT_DEFAULT, dispatch=_dd0)
+        if _os.environ.get("ZTARE_LEANMILL_SKIP_CONSOLIDATION") == "1":
+            # FAST-DEBUG (2026-06-23): skip the ~225s theory_consolidation DISPATCH when the substrate file
+            # already exists — it is still registered as the warm-env substrate + ridden into the notes below,
+            # so the TARGET attack runs against the full theory without re-paying consolidation. For iterating on
+            # the target/firewall/reformulation path cheaply; NEVER for a fresh blueprint (which needs the theory
+            # BUILT). No-op fields so the downstream register/ride/lemma-queue logic is byte-identical.
+            _tc = {"ok": True, "new_decls": [], "sorried_statements": [], "reason": "skipped (fast-debug)"}
+            print("[notes] theory consolidation SKIPPED (ZTARE_LEANMILL_SKIP_CONSOLIDATION=1) — reusing the "
+                  "existing substrate file", flush=True)
+        else:
+            _tc = theory_consolidation(_notes_text, _theory_rel, lean_root=LEAN_ROOT_DEFAULT, dispatch=_dd0)
         print(f"[notes] theory consolidation: ok={_tc.get('ok')} new_decls={_tc.get('new_decls', [])} "
               f"sorried={len(_tc.get('sorried_statements', []))} {_tc.get('reason', '')}", flush=True)
         for _sr in _tc.get("supersession_requests", []):
@@ -980,6 +1337,10 @@ def main(argv: "Optional[list[str]]" = None) -> int:
             if _theory_src.strip():   # the substrate rides the notes (formal scaffolding channel, #88)
                 _notes_text += ("\n\n## Theory (campaign substrate — cite, do not re-derive)\n```lean\n"
                                 + _theory_src + "\n```\n")
+            # (2026-06-23: the advisory `_supersession_steer` formalize-time nudge was REMOVED here — empirically
+            # it didn't bind the formalizer against the literal NL, and it is SUBSUMED by the self-correction LOOP:
+            # solve_adhoc now kernel-falsifies a stalled target → `autoformalize_and_solve`'s reformulation re-entry
+            # has the agent STRENGTHEN + re-attack. One surface (the loop), not two — no parallel steer to drift.)
             # ROBUST work-item queueing (RCA 2026-06-18): the agent's own sorried API lemmas become solver
             # work items, foundational-first, via the canonical `_insert_lemmas_section` (creates `## Lemmas`
             # if absent). A theory-first blueprint with no `## Lemmas` anchor previously DROPPED them — the
@@ -1010,12 +1371,49 @@ def main(argv: "Optional[list[str]]" = None) -> int:
             _cc = _ilu.module_from_spec(_spec); _spec.loader.exec_module(_cc)
             _rep = _cc.report(REPO)
             res["rederivation"] = _rep.get("rederivation")
+            res["reuse"] = _rep.get("reuse")
+            res["recent"] = _rep.get("recent")
             _rr = _rep.get("rederivation") or {}
-            print(f"[compounding-health] re-derivation rate = {_rr.get('rederivation_rate')} "
-                  f"({_rr.get('rederived')}/{_rr.get('closures')} closures re-proved known work; → 0 is healthy)",
-                  flush=True)
+            _rc = _rep.get("recent") or {}
+            _ru = _rep.get("reuse") or {}
+            # HEADLINE = the CLEAN-REGIME window (forward-looking, since `clean_since`; the all-time rate is a
+            # cumulative ghost — this session's fixed-bug noise + test probes dominate it, so it tracks history,
+            # not the engine running now). Accrues as clean runs land.
+            _cn = _rc.get("clean_closures")
+            print(f"[compounding-health] CLEAN (since {_rc.get('clean_since')}, {_cn} closures): "
+                  f"re-derivation={_rc.get('rederivation_rate')} ({_rc.get('rederived')}/{_cn}), "
+                  f"proof-reuse={_rc.get('proof_reuse_rate')} ({_rc.get('proofs_citing_a_banked_lemma')}/{_cn}); "
+                  "→ re-derivation 0 / reuse 1 is healthy", flush=True)
+            print(f"[compounding-health] all-time (context, NOT the live engine): "
+                  f"re-derivation={_rr.get('rederivation_rate')} ({_rr.get('rederived')}/{_rr.get('closures')}), "
+                  f"lemma-reuse={_ru.get('lemma_reuse_rate')} ({_ru.get('lemmas_reused')}/{_ru.get('banked_lemmas')}); "
+                  "name-match lower bound", flush=True)
+            _co = _rep.get("cost") or {}
+            # INFER-VIA-USE (no paid A/B): bank-served closures (direct attribution) + does closing get CHEAPER as
+            # the corpus grows (median wall_s early→recent). Observational/confounded — a trend to watch, not a causal claim.
+            print(f"[compounding-health] infer-via-use: bank-served={_co.get('bank_served_rate')} "
+                  f"({_co.get('bank_served_closures')}/{_co.get('closed')} closures cited a banked rung instead of re-deriving); "
+                  f"median wall_s early→recent = {_co.get('median_wall_s_early')}→{_co.get('median_wall_s_recent')} "
+                  "(↓ = closing cheaper as the bank grows; confounded by difficulty mix)", flush=True)
         except Exception as _e:  # noqa: BLE001 — telemetry only; never blocks the run
             print(f"[notes] compounding-health skipped: {repr(_e)[:120]}", flush=True)
+    # TRAINING-CORPUS EXPORT (the expert-iteration flywheel tap, 2026-06-24): refresh the kernel-verified training
+    # corpus (prover (stmt,proof) + autoformalization NL↔Lean + falsification) from the run's closures so the
+    # inference→pretrain bridge stays current — our defensible "void" data that no public corpus has. Forward-
+    # looking (clean-regime) by default; best-effort, never blocks. ZTARE_LEANMILL_EXPORT_TRAINING_CORPUS=0 skips.
+    if _os.environ.get("ZTARE_LEANMILL_EXPORT_TRAINING_CORPUS", "1") != "0":
+        try:
+            import importlib.util as _ilu2
+            _ec = REPO / "scripts/public/control/leanmill/export_training_corpus.py"
+            _sp = _ilu2.spec_from_file_location("export_training_corpus", _ec)
+            _m = _ilu2.module_from_spec(_sp); _sp.loader.exec_module(_m)
+            _man = _m.export(REPO)
+            res["training_corpus"] = _man
+            print(f"[training-corpus] refreshed: {_man.get('prover_pairs')} prover "
+                  f"({_man.get('prover_void_novel')} void-novel) + {_man.get('autoformalization_pairs')} NL↔Lean "
+                  f"+ {_man.get('falsification_pairs')} falsification (clean since {_man.get('clean_since')})", flush=True)
+        except Exception as _e:  # noqa: BLE001 — flywheel tap is best-effort; never blocks the run
+            print(f"[notes] training-corpus export skipped: {repr(_e)[:120]}", flush=True)
     # DENOTATION-FAITHFULNESS EPILOGUE (#162, theory-first honest catch). For a theory-first run the agent
     # BUILT new defs (the substrate Mathlib lacks) — the firewall only governs the STATEMENT, so a self-
     # consistent DECOY def can pass every internal check. We MEASURE (never assert) whether each built def's
@@ -1041,8 +1439,16 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                 _den = certify_def_denotation(_theory_final, verify_anchor_fn=_verify, composed_defs=_composed)
                 res["denotation"] = _den
                 print(f"[notes] denotation-faithfulness: {_den['verdict']} — {_den['reason']}", flush=True)
+                # VACUITY-faithfulness (sibling leg): a ∀-over-membership Prop def is vacuously true on ∅, so a
+                # theorem concluding it of a constructed set can be true-but-empty. Reuses the SAME kernel
+                # verifier; advisory telemetry, never gates. ZTARE_LEANMILL_VACUITY_CHECK=0 reverts.
+                if _os.environ.get("ZTARE_LEANMILL_VACUITY_CHECK", "1") != "0":
+                    from ztare.leanmill.solver.def_denotation import certify_nonvacuity
+                    _vac = certify_nonvacuity(_theory_final, verify_fn=_verify)
+                    res["nonvacuity"] = _vac
+                    print(f"[notes] vacuity-faithfulness: {_vac['verdict']} — {_vac['reason']}", flush=True)
         except Exception as _e:  # noqa: BLE001 — advisory telemetry; never blocks the run
-            print(f"[notes] denotation check skipped: {repr(_e)[:120]}", flush=True)
+            print(f"[notes] denotation/vacuity check skipped: {repr(_e)[:120]}", flush=True)
     # TRUST-CONSERVATION EPILOGUE (v3 RCA): the layers must AGREE — every ratified DB win has a verified,
     # recompilable cert. Read-only, seconds, fail-LOUD (the v3 disease was exactly a silent disagreement
     # between these layers that no layer-local selftest could see).

@@ -53,20 +53,10 @@ _DEGEN_SIG = re.compile(r"\b(?:sorry|admit)\b")
 _SORT_CONCL = re.compile(r"^\(?\s*(?:Sort|Type)\b")
 
 
-def _top_colon(sig: str) -> int:
-    """Index of the binder/type-separating top-level `:` (bracket-depth 0; binder colons are nested →
-    ignored). Local copy (statement_integrity must not import conjecture — that would cycle)."""
-    depth = 0
-    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "⦃": "⦄"}
-    closes = set(pairs.values())
-    for i, c in enumerate(sig):
-        if c in pairs:
-            depth += 1
-        elif c in closes:
-            depth = max(0, depth - 1)
-        elif depth == 0 and c == ":":
-            return i
-    return -1
+# `_top_colon` is the canonical `lean_source.top_level_colon` (no cycle — lean_source imports neither
+# statement_integrity nor conjecture). It used to be a byte-identical copy here AND in conjecture — the
+# forgotten-sibling shape, de-duplicated 2026-06-22.
+from ztare.leanmill.lean_source import top_level_colon as _top_colon
 
 
 def _strip_comments(text: str) -> str:

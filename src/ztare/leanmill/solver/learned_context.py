@@ -10,9 +10,12 @@ leaf reads, so the agent's own orchestration is informed by what compounded — 
 PURE COMPOSITION (the interface verdict: a shared READ interface, NOT a unified store): it reuses
 `no_good_store.NoGoodStore.prompt_block` + reads `move_calibration` — it reimplements nothing and adds no store.
 The ≥2-consumer bar is met (no-good memo + the move track-record were already two independent prompt-injectors
-at the `agentic_leaf` seam; this gives them one contract). DEFAULT-OFF (`ZTARE_LEANMILL_LEARNED_CONTEXT`) is
-byte-identical to today's bare no-good injection (the move-stats block is added only flag-on), so it cannot
-regress the prompt; flag-on adds the per-error-class (or marginal) move close-rates the agent was blind to.
+at the `agentic_leaf` seam; this gives them one contract). DEFAULT-ON (`ZTARE_LEANMILL_LEARNED_CONTEXT`, flipped
+2026-06-23 — advisory/upstream + fail-open ⇒ sound knob, default-on at the chokepoint; opt out =0), but it
+remains byte-identical to the bare no-good injection until `ZTARE_LEANMILL_CALIBRATION_TRUSTED=1` asserts the
+attempts DB was re-baselined off the carrier bug — so it cannot regress the prompt and cannot teach the agent a
+dead-instrument 0/N until the learning data is trusted; once trusted it adds the per-error-class (or marginal)
+move close-rates the agent was blind to.
 """
 from __future__ import annotations
 
@@ -21,9 +24,12 @@ from typing import Optional
 
 
 def _stats_on() -> bool:
-    # The NEW agent-facing move-stats surfacing. Default-OFF = byte-parity with the current no-good-only
-    # injection; flip =1 to give the agent the apparatus's own kernel-arbitrated move track-record.
-    return os.environ.get("ZTARE_LEANMILL_LEARNED_CONTEXT", "0") == "1"
+    # The agent-facing move-stats surfacing. DEFAULT-ON (2026-06-23, operator "sound knob ⇒ default-on going
+    # forward"): it is advisory/UPSTREAM (a prompt prior the leaf reads, never a constraint — the kernel still
+    # gates every closure) and fail-open, so it cannot regress soundness. Opt out with =0. IMPORTANT: it stays
+    # INERT (byte-parity) until `ZTARE_LEANMILL_CALIBRATION_TRUSTED=1` asserts the attempts DB was re-baselined
+    # off the carrier bug — so default-ON does NOTHING until the learning data is trusted (no contamination leak).
+    return os.environ.get("ZTARE_LEANMILL_LEARNED_CONTEXT", "1") != "0"
 
 
 def _move_stats_block(db_path, error_class: "Optional[str]", max_moves: int = 8) -> str:
@@ -35,11 +41,16 @@ def _move_stats_block(db_path, error_class: "Optional[str]", max_moves: int = 8)
     was LIVE for those attempts. The attempts DB is contaminated by pre-carrier-fix rows where native_hammer /
     cold_shot_fanout / external_frontier_prover fed the kernel a never-parsing probe and recorded 0/N as
     DEAD-INSTRUMENT artifacts, not genuine losses (the carrier bug, fixed 2026-06-08; the rows persist).
-    Surfacing that would TEACH THE AGENT THE BUG ("never use native_hammer"). So this is SUPPRESSED unless
-    `ZTARE_LEANMILL_CALIBRATION_TRUSTED=1` asserts the DB was re-baselined on the fixed apparatus — the
-    apparatus_certificate "a negative is inadmissible without calibration" rule, applied to the LEARNING DATA."""
-    if os.environ.get("ZTARE_LEANMILL_CALIBRATION_TRUSTED") != "1":
-        return ""                                  # contaminated DB ⇒ never teach the agent dead-instrument 0/Ns
+    Surfacing that would TEACH THE AGENT THE BUG ("never use native_hammer"). 2026-06-24 — DEFAULT-ON: the
+    contamination this gate guarded is now excluded at the DB layer by the ADMISSIBILITY clause in
+    `move_calibration._cells_from_db` (`_admissibility_clause`, DEFAULT-ON: cuts pre-2026-06-09 carrier rows +
+    parse_error/timeout classes, scores the RATIFIED verdict). With the real guard load-bearing one layer down,
+    keeping the calibrated (novel Brier-tuned) priors hidden from the agent was a sound-but-default-OFF knob — the
+    self-learning→agent loop left open. So this is now default-ON (the priors reach the agent); the data stays
+    admissible by construction. `ZTARE_LEANMILL_CALIBRATION_TRUSTED=0` reverts to suppression (A/B baseline);
+    `ZTARE_LEANMILL_CALIBRATION_ADMISSIBLE=0` (separately) is the real way to get contaminated counts back."""
+    if os.environ.get("ZTARE_LEANMILL_CALIBRATION_TRUSTED", "1") == "0":
+        return ""                                  # explicit opt-out ⇒ suppress (the admissibility clause is the real guard)
     try:
         from ztare.leanmill.solver.move_calibration import _cells_from_db
         per_cell, per_move = _cells_from_db(db_path)
@@ -103,11 +114,11 @@ def _selftest() -> int:
     per_move = {"claude_warm": (11, 29), "native_hammer": (0, 29)}
     _orig = MC._cells_from_db
     MC._cells_from_db = lambda db: (per_cell, per_move)                 # type: ignore
-    os.environ.pop("ZTARE_LEANMILL_CALIBRATION_TRUSTED", None)
+    os.environ["ZTARE_LEANMILL_CALIBRATION_TRUSTED"] = "0"              # explicit opt-out (A/B baseline)
     try:
-        ok("contaminated DB (no CALIBRATION_TRUSTED) ⇒ move-stats SUPPRESSED (don't teach the agent a bug)",
+        ok("explicit CALIBRATION_TRUSTED=0 ⇒ move-stats SUPPRESSED (A/B baseline)",
            LC._move_stats_block("X", "exact_gap") == "")
-        os.environ["ZTARE_LEANMILL_CALIBRATION_TRUSTED"] = "1"          # assert re-baselined (test only)
+        os.environ.pop("ZTARE_LEANMILL_CALIBRATION_TRUSTED", None)      # DEFAULT-ON (admissibility clause is the real guard)
         blk = LC._move_stats_block("X", "exact_gap")
         ok("move-stats renders the per-class close-rates (when DB trusted)", "claude_warm: 11/29 closed (38%)" in blk
            and "native_hammer: 0/29 closed (0%)" in blk)
@@ -115,8 +126,9 @@ def _selftest() -> int:
         ok("unknown class ⇒ falls back to the marginal (non-empty)",
            "all attempts so far" in LC._move_stats_block("X", "no_such_class"))
 
-        # PARITY: with LEARNED_CONTEXT off, render returns EXACTLY the no-good block (the move-stats are absent)
-        os.environ.pop("ZTARE_LEANMILL_LEARNED_CONTEXT", None)
+        # PARITY: with LEARNED_CONTEXT explicitly OFF, render returns EXACTLY the no-good block (move-stats absent).
+        # (The flag is DEFAULT-ON since 2026-06-23, so the off case must SET =0 — absence now means ON.)
+        os.environ["ZTARE_LEANMILL_LEARNED_CONTEXT"] = "0"
         import ztare.leanmill.solver.no_good_store as NG
         _op = NG.NoGoodStore.prompt_block
         NG.NoGoodStore.prompt_block = lambda self, g, max_items=4: "-- ⚠ PRIOR REFUTED: x"   # type: ignore

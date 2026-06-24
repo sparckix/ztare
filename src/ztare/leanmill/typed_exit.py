@@ -45,26 +45,10 @@ def _read_json(path: str | Path) -> Any:
 
 
 def _public_path(value: str | Path | None) -> str:
-    if value is None:
-        return ""
-    s = str(value)
-    if not s:
-        return ""
-    try:
-        p = Path(s)
-        if not p.is_absolute():
-            return s
-        try:
-            return str(p.resolve().relative_to(REPO))
-        except Exception:
-            pass
-        try:
-            return f"<home>/{p.resolve().relative_to(Path.home())}"
-        except Exception:
-            pass
-        return f"<external>/{p.name}"
-    except Exception:
-        return s
+    # Delegates to the canonical `common.public_path` (was a byte-identical copy in solver_core — the
+    # forgotten-sibling shape, de-duplicated 2026-06-22). Passes this module's REPO so the base is unchanged.
+    from ztare.leanmill.common import public_path as _pp
+    return _pp(value, REPO)
 
 
 def _as_bool(value: Any) -> bool:

@@ -69,15 +69,28 @@ def proven_statements(*, ledger: "Optional[object]" = None) -> "list[str]":
         return []
 
 
-def render_adjacency_block(proven_stmts: "list[str]", *, k: int = 8) -> str:
+def render_adjacency_block(proven_stmts: "list[str]", *, goal: str = "", k: int = 8) -> str:
     """ADVISORY planner-prompt block: name the proven attachment sites so the agent can decompose TOWARD
-    them (it still decides). Empty string when there is nothing proven (byte-parity)."""
+    them (it still decides). Empty string when there is nothing proven (byte-parity).
+
+    RELEVANCE-RANKED (2026-06-24): surface the proven rungs whose identifiers most OVERLAP the GOAL — the
+    attachment sites the agent is actually likely to cite — instead of merely the k most RECENT, which silently
+    HID the relevant banked atoms behind newer unrelated closures (the APR `waterfallDistribution_*` lemmas were
+    banked all-time but never surfaced, so the planner re-derived from scratch). Reuses the module's own
+    `identifier_tokens` overlap signal (same one driving attack-order); falls back to recency (last-k) when no
+    goal is supplied — byte-parity. Still advisory + deterministic: it only changes WHICH proven sites are NAMED;
+    the agent decides the decomposition and the kernel audits every lemma."""
     if not proven_stmts:
         return ""
-    vocab: "set[str]" = set()
-    for s in proven_stmts:
-        vocab |= identifier_tokens(s)
-    heads = [s[:140] for s in proven_stmts[-k:]]
+    gtok = identifier_tokens(goal) if goal else set()
+    if gtok:
+        ranked = sorted(enumerate(proven_stmts),
+                        key=lambda iz: (-len(identifier_tokens(iz[1]) & gtok), iz[0]))
+        relevant = [s for _i, s in ranked if identifier_tokens(s) & gtok]
+        chosen = (relevant or list(proven_stmts[-k:]))[:k]
+    else:
+        chosen = list(proven_stmts[-k:])
+    heads = [s[:140] for s in chosen]
     return ("PROVEN-RUNG ATTACHMENT SITES (kernel-closed infrastructure you can CITE; prefer sub-lemmas "
             "that attach to these over isolated deep ones — proven neighbours lower the barrier):\n"
             + "\n".join(f"  • {h}" for h in heads) + "\n\n")

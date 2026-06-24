@@ -52,6 +52,9 @@ FAILURE_CLASSES = (
     "vacuous_closure",           # nondegenerate_instance_probe / v33: the statement is vacuously true
     "sz_falsified",              # randomized differential probe: a mutant closed (proof not genuine)
     "kernel_laundering",         # v33 anti-laundering: leakage / paraphrase / single-lemma
+    "statement_false",           # the STATEMENT itself is kernel-FALSE (¬G proven) — a mis-formalization, not a
+    #                              bad proof; recorded so the faithfulness reference() never gates a strengthened
+    #                              reformalization against a refuted rendering (2026-06-23, the single ledger).
     "other",
 )
 
@@ -156,6 +159,14 @@ class NoGoodStore:
     def matches(self, statement: str) -> "list[dict]":
         """All confirmed no-goods recorded for this statement's normalized key (possibly empty)."""
         return list(self._mem.get(_key_for(statement), []))
+
+    def statement_false_keys(self) -> set:
+        """The set of normalized-statement KEYS recorded as kernel-FALSE (failure class `statement_false`, i.e.
+        ¬G proven — a mis-formalization, not a bad proof). The faithfulness store's `reference()` consults THIS
+        (the single refutation ledger) so a refuted rendering never gates a strengthened reformalization — one
+        ledger + one canonical key, no parallel surface. Keys only (the consumer just needs membership)."""
+        return {k for k, recs in self._mem.items()
+                if any(r.get("failure_class") == "statement_false" for r in recs)}
 
     def prompt_block(self, statement: str, max_items: int = 4) -> str:
         """READ-side: render the recorded no-goods as a leaf-prompt block. Empty string if none — so a

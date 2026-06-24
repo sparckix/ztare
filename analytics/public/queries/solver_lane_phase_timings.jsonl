@@ -1,0 +1,319 @@
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 25.0335, "run_tag": "topkis_v4", "outcome": "", "ts": "2026-06-23T04:37:52.670228+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 15.205, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "topkis_monotone_unique_maximizers"}, "ts": "2026-06-23T04:38:14.497061+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 23.4835, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "topkis_monotone_unique_maximizers"}, "ts": "2026-06-23T04:38:22.773889+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T04:44:15.525689+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 5.0783, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T04:44:20.605200+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T04:50:23.679877+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-23T04:56:34.733864+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.166, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-23T04:56:35.900064+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-23T04:56:43.123885+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.5395, "run_tag": "topkis_v4", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-23T04:56:44.663564+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0731, "run_tag": "", "outcome": "", "tags": {"target": "topkis_monotone_unique_maximizers"}, "ts": "2026-06-23T05:19:09.516231+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 36.2856, "run_tag": "topkis_truer_0623", "outcome": "", "ts": "2026-06-23T05:39:15.442200+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 9.7636, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "supermodular_argmaxSet_isSublatticeSet"}, "ts": "2026-06-23T05:40:00.741389+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 166.0487, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "supermodular_argmaxSet_isSublatticeSet"}, "ts": "2026-06-23T05:42:37.025302+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T05:48:59.263334+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.887, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T05:49:01.151828+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T05:53:20.923464+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 40.2886, "run_tag": "topkis_truer_0623", "outcome": "", "ts": "2026-06-23T06:02:29.639565+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.4565, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "topkis_argmaxSet_strongSetLE"}, "ts": "2026-06-23T06:03:13.308623+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 181.6102, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "topkis_argmaxSet_strongSetLE"}, "ts": "2026-06-23T06:06:13.462248+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0068, "run_tag": "topkis_truer_0623", "outcome": "", "tags": {"target": "topkis_argmaxSet_strongSetLE"}, "ts": "2026-06-23T06:06:13.470133+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 55.8013, "run_tag": "topkis_truer2_0623", "outcome": "", "ts": "2026-06-23T16:07:18.192460+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.2085, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T16:08:29.635836+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 80.6314, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T16:09:40.056937+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0084, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T16:09:40.066166+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:11:03.038516+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 6.7107, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:11:09.749464+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0585, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:12:44.469716+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0289, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T16:13:55.676643+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 53.7978, "run_tag": "topkis_truer2_0623", "outcome": "", "ts": "2026-06-23T16:14:55.633720+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.0674, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_strongSetMonotone"}, "ts": "2026-06-23T16:15:49.712999+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 12.9159, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_strongSetMonotone"}, "ts": "2026-06-23T16:16:01.561355+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0008, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_strongSetMonotone"}, "ts": "2026-06-23T16:16:01.562624+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:17:47.000501+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.951, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:17:48.951743+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:19:12.597033+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0496, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T16:20:29.940648+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-23T16:20:37.087392+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0444, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-23T16:24:18.448827+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0257, "run_tag": "topkis_truer2_0623", "outcome": "", "tags": {"target": "topkisObjective_parametricArgmaxSet_strongSetMonotone"}, "ts": "2026-06-23T16:26:02.626283+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 53.0559, "run_tag": "topkis_general_0623", "outcome": "", "ts": "2026-06-23T17:17:06.566880+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 9.7882, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "quasiSupermodular_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T17:18:26.061277+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 99.0048, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "quasiSupermodular_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T17:19:55.275987+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0268, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "quasiSupermodular_parametricArgmaxSet_isSublatticeSet"}, "ts": "2026-06-23T17:21:19.053815+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 42.5415, "run_tag": "topkis_general_0623", "outcome": "", "ts": "2026-06-23T17:22:08.160193+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.3538, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "strongSetLE_parametricArgmaxSet"}, "ts": "2026-06-23T17:23:16.208287+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 178.3253, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "strongSetLE_parametricArgmaxSet"}, "ts": "2026-06-23T17:26:13.179749+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0012, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "strongSetLE_parametricArgmaxSet"}, "ts": "2026-06-23T17:26:13.181794+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T17:27:32.164616+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 3.5688, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T17:27:35.733666+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "topkis_general_0623", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-23T17:29:00.802988+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 46.7931, "run_tag": "topkis_selfcorrect_0623", "outcome": "", "ts": "2026-06-23T19:06:38.819123+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 9.7527, "run_tag": "topkis_selfcorrect_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T19:08:01.266987+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 17.5945, "run_tag": "topkis_selfcorrect_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T19:08:09.107024+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0005, "run_tag": "topkis_selfcorrect_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T19:08:09.108077+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.008, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T19:51:53.197511+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0079, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:04:34.178260+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0073, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:05:24.099554+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0144, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:06:12.081976+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0072, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:07:03.916089+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0076, "run_tag": "topkis_strong_ratify_0623", "outcome": "", "tags": {"target": "existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:15:49.358670+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 74.3186, "run_tag": "topkis_binding_0623", "outcome": "", "ts": "2026-06-23T20:37:27.879500+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 62.5613, "run_tag": "topkis_binding_0623", "outcome": "", "ts": "2026-06-23T20:39:27.161070+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 37.0399, "run_tag": "topkis_binding_0623", "outcome": "", "ts": "2026-06-23T20:41:44.847319+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 28.5249, "run_tag": "topkis_binding_0623", "outcome": "", "ts": "2026-06-23T20:43:53.543159+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 59.0448, "run_tag": "topkis_binding2_0623", "outcome": "", "ts": "2026-06-23T20:44:32.304964+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 70.0651, "run_tag": "topkis_binding2_0623", "outcome": "", "ts": "2026-06-23T20:47:04.713154+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.4304, "run_tag": "topkis_binding2_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:48:14.970066+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 102.9414, "run_tag": "topkis_binding2_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:49:47.479769+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0005, "run_tag": "topkis_binding2_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T20:49:47.481137+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 38.3076, "run_tag": "topkis_selfcorr_0623", "outcome": "", "ts": "2026-06-23T21:11:28.010884+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.6846, "run_tag": "topkis_selfcorr_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:11:46.093830+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 16.679, "run_tag": "topkis_selfcorr_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:11:52.086857+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0009, "run_tag": "topkis_selfcorr_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:11:52.088206+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 53.8005, "run_tag": "topkis_goldilocks_0623", "outcome": "", "ts": "2026-06-23T21:43:31.217162+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.7952, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:44:59.922075+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 17.1969, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:45:06.322497+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0002, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:45:06.322943+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 41.0369, "run_tag": "topkis_goldilocks_0623", "outcome": "", "ts": "2026-06-23T21:46:28.235635+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0003, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:47:25.225705+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 5.6482, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:47:30.873527+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0006, "run_tag": "topkis_goldilocks_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:47:30.874528+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 39.792, "run_tag": "topkis_reform_0623", "outcome": "", "ts": "2026-06-23T21:58:16.111979+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.7562, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:58:35.847099+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 60.7665, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:59:25.856126+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0009, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T21:59:25.857822+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 35.7825, "run_tag": "topkis_reform_0623", "outcome": "", "ts": "2026-06-23T22:00:29.636311+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0003, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:01:51.606891+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 15.4015, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:02:07.008050+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0005, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:02:07.008898+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 39.0358, "run_tag": "topkis_reform_0623", "outcome": "", "ts": "2026-06-23T22:03:12.469795+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 6.5513, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:04:29.180636+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 20.4671, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:04:43.096308+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0004, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:04:43.097165+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 45.2917, "run_tag": "topkis_reform_0623", "outcome": "", "ts": "2026-06-23T22:05:19.724630+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 16.4098, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:05:45.873836+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 27.7057, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:05:57.167721+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0008, "run_tag": "topkis_reform_0623", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-23T22:05:57.168946+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 81.0759, "run_tag": "topkis_route_0623", "outcome": "", "ts": "2026-06-23T22:58:42.983574+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 79.3126, "run_tag": "topkis_route_0623", "outcome": "", "ts": "2026-06-23T23:00:34.605975+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 100.5855, "run_tag": "topkis_route_0623", "outcome": "", "ts": "2026-06-23T23:02:21.957355+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 28.5283, "run_tag": "topkis_route_0623", "outcome": "", "ts": "2026-06-23T23:02:56.171513+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 63.0559, "run_tag": "topkis_ledger_0623", "outcome": "", "ts": "2026-06-23T23:41:31.690876+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 75.5699, "run_tag": "topkis_ledger_0623", "outcome": "", "ts": "2026-06-23T23:42:57.247085+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 53.3036, "run_tag": "topkis_ledger_0623", "outcome": "", "ts": "2026-06-23T23:43:54.258827+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 19.2672, "run_tag": "topkis_ledger_0623", "outcome": "", "ts": "2026-06-23T23:44:17.327143+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 58.555, "run_tag": "topkis_disc_0623", "outcome": "", "ts": "2026-06-24T00:07:03.478549+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 81.0732, "run_tag": "topkis_disc_0623", "outcome": "", "ts": "2026-06-24T00:08:34.039771+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 54.7985, "run_tag": "topkis_disc_0623", "outcome": "", "ts": "2026-06-24T00:09:32.858732+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 21.0188, "run_tag": "topkis_disc_0623", "outcome": "", "ts": "2026-06-24T00:09:57.855341+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 75.5693, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T00:53:01.414625+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 51.5468, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T00:54:01.413268+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 11.1967, "run_tag": "topkis_litfirst", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-24T00:54:17.707717+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 323.6683, "run_tag": "topkis_litfirst", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-24T00:59:30.176560+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0011, "run_tag": "topkis_litfirst", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone"}, "ts": "2026-06-24T00:59:30.178185+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 45.2927, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T01:00:46.168706+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 56.8026, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T01:01:47.139501+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 55.0511, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T01:02:46.608391+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 14.7644, "run_tag": "topkis_litfirst", "outcome": "", "ts": "2026-06-24T01:03:05.789687+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 50.5499, "run_tag": "topkis_litfirst2", "outcome": "", "ts": "2026-06-24T02:57:51.388547+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 46.0477, "run_tag": "topkis_litfirst2", "outcome": "", "ts": "2026-06-24T02:58:47.727856+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 84.3264, "run_tag": "topkis_litfirst2", "outcome": "", "ts": "2026-06-24T03:00:16.562385+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 11.4543, "run_tag": "topkis_litfirst2", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone_explicit"}, "ts": "2026-06-24T03:00:33.965132+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 68.5836, "run_tag": "topkis_litfirst2", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone_explicit"}, "ts": "2026-06-24T03:01:31.092558+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0709, "run_tag": "topkis_litfirst2", "outcome": "", "tags": {"target": "ordinalTopkis_compact_existence_and_strongSetMonotone_explicit"}, "ts": "2026-06-24T03:08:38.475027+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 55.5512, "run_tag": "apr_waterfall", "outcome": "", "ts": "2026-06-24T03:46:19.591729+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 10.3153, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T03:47:18.365815+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 66.7341, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T03:48:14.782791+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0005, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T03:48:14.783717+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T03:49:59.051524+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.1813, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T03:50:00.233002+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.0654, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T03:50:32.248371+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T03:51:01.388408+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 6.1123, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T03:51:07.501398+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T03:52:29.441552+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0553, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:09:47.293010+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0341, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:11:46.316569+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0139, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T04:15:31.075280+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 30.0394, "run_tag": "apr_waterfall", "outcome": "", "ts": "2026-06-24T04:16:09.178106+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.3227, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_absolutePriority_of_linearOrder"}, "ts": "2026-06-24T04:16:54.401109+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 12.675, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_absolutePriority_of_linearOrder"}, "ts": "2026-06-24T04:17:05.753462+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0004, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_absolutePriority_of_linearOrder"}, "ts": "2026-06-24T04:17:05.754362+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:18:18.892994+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 3.6464, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:18:22.539592+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0365, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:19:41.832122+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:19:48.852090+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 5.1342, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:19:53.986968+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:21:20.166343+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0197, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:22:30.942277+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:22:38.173936+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0349, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:25:20.398577+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:25:27.542477+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0207, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:27:17.052056+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0541, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:28:17.068701+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0173, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "waterfallDistribution_absolutePriority_of_linearOrder"}, "ts": "2026-06-24T04:29:46.370143+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 97.8332, "run_tag": "apr_waterfall", "outcome": "", "ts": "2026-06-24T04:31:31.048230+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 3.5697, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "exists_waterfallDistribution_feasible_and_absolutePriority"}, "ts": "2026-06-24T04:32:54.062997+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 65.7105, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "exists_waterfallDistribution_feasible_and_absolutePriority"}, "ts": "2026-06-24T04:33:56.203707+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0005, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "exists_waterfallDistribution_feasible_and_absolutePriority"}, "ts": "2026-06-24T04:33:56.204754+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:35:40.353304+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 5.8888, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:35:46.242317+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:38:39.809810+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.1179, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:38:55.305720+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:39:01.116892+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1103, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:48:01.590902+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:48:09.259089+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 1.028, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:49:25.759100+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:49:28.286767+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.12, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:49:29.406931+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1263, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma3"}, "ts": "2026-06-24T04:49:40.319113+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:49:42.061256+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 5.8141, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T04:49:47.875600+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:51:23.278130+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0492, "run_tag": "apr_waterfall", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T04:59:52.673757+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 39.5432, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:31:36.426064+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 42.5914, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:32:59.192701+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 31.0373, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:34:08.126271+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 52.0513, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:35:00.593947+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 38.5419, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:36:12.878557+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 51.2932, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:37:41.073893+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 29.5371, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:38:10.768098+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 39.2928, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:39:33.113607+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 31.0335, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:40:31.331355+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 49.298, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:42:22.187501+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 44.5458, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:43:40.219329+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 56.3046, "run_tag": "apr_waterfall_vocab", "outcome": "", "ts": "2026-06-24T15:45:09.823016+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.8401, "run_tag": "apr_target_close", "outcome": "", "tags": {"target": "apr_target_close"}, "ts": "2026-06-24T15:55:45.040075+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 96.0061, "run_tag": "apr_target_close", "outcome": "", "tags": {"target": "apr_target_close"}, "ts": "2026-06-24T15:57:20.204284+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0001, "run_tag": "apr_target_close", "outcome": "", "tags": {"target": "apr_target_close"}, "ts": "2026-06-24T15:57:20.204643+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 39.2932, "run_tag": "", "outcome": "", "ts": "2026-06-24T15:57:26.463351+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 35.819, "run_tag": "apr_vocab2", "outcome": "", "ts": "2026-06-24T16:04:30.692551+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 15.8057, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T16:05:31.400194+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 295.7155, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T16:10:11.308664+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0042, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T16:10:11.313209+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_pool_le_raw_witness"}, "ts": "2026-06-24T16:13:59.447311+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 47.5802, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_pool_le_raw_witness"}, "ts": "2026-06-24T16:14:47.027814+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_ranked_greedy_allocation"}, "ts": "2026-06-24T16:16:26.789642+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1747, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_ranked_greedy_allocation"}, "ts": "2026-06-24T16:23:54.111313+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_exists_strict_rank"}, "ts": "2026-06-24T16:24:16.167230+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0177, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_exists_strict_rank"}, "ts": "2026-06-24T16:25:46.201145+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.092, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_pool_le_raw_witness"}, "ts": "2026-06-24T16:29:20.025760+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_raw_implication_to_apr"}, "ts": "2026-06-24T16:29:27.823956+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.0308, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_raw_implication_to_apr"}, "ts": "2026-06-24T16:29:28.854949+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_sum_claims_eq_min_of_total_le"}, "ts": "2026-06-24T16:29:41.119095+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.1607, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_sum_claims_eq_min_of_total_le"}, "ts": "2026-06-24T16:29:42.280051+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_full_payment_apr"}, "ts": "2026-06-24T16:29:54.039516+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.9155, "run_tag": "apr_vocab2", "outcome": "", "tags": {"target": "iso_lemma_full_payment_apr"}, "ts": "2026-06-24T16:29:54.955227+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 36.0424, "run_tag": "apr_vocab3", "outcome": "", "ts": "2026-06-24T17:13:54.281067+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 14.303, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:14:11.616316+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 91.7543, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:15:29.065800+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0007, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:15:29.066983+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_full_payment_apr"}, "ts": "2026-06-24T17:17:12.861214+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.8122, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_full_payment_apr"}, "ts": "2026-06-24T17:17:13.673646+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0204, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_full_payment_apr"}, "ts": "2026-06-24T17:17:24.846725+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_sum_claims_eq_min_of_total_le"}, "ts": "2026-06-24T17:17:27.607622+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.1652, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_sum_claims_eq_min_of_total_le"}, "ts": "2026-06-24T17:17:28.773033+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_exists_strict_rank"}, "ts": "2026-06-24T17:17:40.969001+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.0868, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_exists_strict_rank"}, "ts": "2026-06-24T17:17:42.056052+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.9592, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_exists_strict_rank"}, "ts": "2026-06-24T17:17:51.483540+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_ranked_greedy_allocation"}, "ts": "2026-06-24T17:18:14.619347+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 45.8713, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_ranked_greedy_allocation"}, "ts": "2026-06-24T17:19:00.490922+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_vocab3", "outcome": "", "tags": {"target": "iso_lemma_injective_order_greedy_allocation"}, "ts": "2026-06-24T17:20:38.629986+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 39.0371, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:28:21.647372+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 74.7057, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:28:57.314161+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0011, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:28:57.315683+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:30:53.347133+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 29.3726, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:31:22.719974+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0273, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:33:01.008156+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma2_waterfall_sum_eq_min"}, "ts": "2026-06-24T17:33:04.952617+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 17.3869, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma2_waterfall_sum_eq_min"}, "ts": "2026-06-24T17:33:22.339731+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.2196, "run_tag": "auto_reuse_test", "outcome": "", "tags": {"target": "iso_lemma2_waterfall_sum_eq_min"}, "ts": "2026-06-24T17:33:50.710848+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 39.5231, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:40:06.635828+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 57.6893, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:40:24.798674+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0006, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:40:24.799448+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:41:50.406743+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 29.1487, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:42:19.555627+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.051, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1_waterfall_cap"}, "ts": "2026-06-24T17:43:12.874974+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma2_waterfall_sum_eq_min"}, "ts": "2026-06-24T17:43:16.751970+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 17.645, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma2_waterfall_sum_eq_min"}, "ts": "2026-06-24T17:43:34.397216+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0597, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:45:49.597009+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 38.9959, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:48:17.160850+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 229.0139, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:51:27.177011+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0016, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:51:27.179351+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:52:41.114844+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 29.1192, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:53:10.234282+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0356, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T17:54:36.244104+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T17:54:40.222069+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 17.4195, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T17:54:57.641727+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0163, "run_tag": "cite_confirm", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T17:56:19.671343+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0018, "run_tag": "cite_confirm2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T18:02:52.158357+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 29.0681, "run_tag": "cite_confirm2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T18:03:21.226737+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0506, "run_tag": "cite_confirm2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T18:04:09.527722+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0271, "run_tag": "cite_confirm3", "outcome": "", "tags": {"target": "waterfallDistribution_feasible_of_linearOrder"}, "ts": "2026-06-24T18:10:07.140916+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 36.2955, "run_tag": "apr_target_close2", "outcome": "", "ts": "2026-06-24T18:28:32.241545+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 47.4144, "run_tag": "apr_target_close2", "outcome": "", "tags": {"target": "waterfallDistribution_conclusion"}, "ts": "2026-06-24T18:30:12.611554+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 73.8449, "run_tag": "apr_target_close2", "outcome": "", "tags": {"target": "waterfallDistribution_conclusion"}, "ts": "2026-06-24T18:30:39.040315+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.3606, "run_tag": "apr_target_close2", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T18:35:20.673706+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.2598, "run_tag": "apr_target_close2", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T18:36:04.344480+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 59.3035, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T19:47:09.210867+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 1.1698, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible"}, "ts": "2026-06-24T19:48:04.976582+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 25.7794, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible"}, "ts": "2026-06-24T19:48:29.584287+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.001, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible"}, "ts": "2026-06-24T19:48:29.585807+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T19:50:01.333384+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 4.5148, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T19:50:05.848432+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T19:51:57.331005+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1568, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T19:54:07.862543+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T19:54:12.084636+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1948, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T19:56:18.048957+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1618, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T19:58:23.224957+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T19:58:25.042657+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 5.9231, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T19:58:30.966105+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T20:00:20.251158+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.3585, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T20:06:42.573447+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T20:07:47.787820+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.1188, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma1"}, "ts": "2026-06-24T20:11:52.954056+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.4479, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma2"}, "ts": "2026-06-24T20:14:57.229797+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0236, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible"}, "ts": "2026-06-24T20:24:49.104116+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 60.8225, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T20:27:04.030803+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 2.9363, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_rankedAbsolutePriority"}, "ts": "2026-06-24T20:27:58.641704+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 17.283, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_rankedAbsolutePriority"}, "ts": "2026-06-24T20:28:12.988286+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.0012, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_rankedAbsolutePriority"}, "ts": "2026-06-24T20:28:12.989978+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_positive_junior_forces_senior_level_full"}, "ts": "2026-06-24T20:30:19.601511+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 2.1162, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_positive_junior_forces_senior_level_full"}, "ts": "2026-06-24T20:30:21.718001+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_positive_payment_implies_prefix_lt_pool"}, "ts": "2026-06-24T20:32:32.457191+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0483, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_positive_payment_implies_prefix_lt_pool"}, "ts": "2026-06-24T20:35:24.985508+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_senior_level_lies_before_junior"}, "ts": "2026-06-24T20:36:37.827756+00:00"}
+{"kind": "phase_timing", "phase": "campaign", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "general pari-passu pro-rata APR", "domain": "formalization-nonmath"}, "ts": "2026-06-24T20:40:09.941112+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0774, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_senior_level_lies_before_junior"}, "ts": "2026-06-24T20:40:44.458053+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_prefix_cover_saturates_level"}, "ts": "2026-06-24T20:42:04.320572+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_full_level_payment_pays_tranche_claim"}, "ts": "2026-06-24T20:44:22.719560+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 3.7256, "run_tag": "apr_paripassu", "outcome": "", "tags": {"target": "iso_lemma_full_level_payment_pays_tranche_claim"}, "ts": "2026-06-24T20:44:26.445858+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 6.5255, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T20:46:39.785185+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 2.5058, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T20:46:42.291391+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 4.5256, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T20:46:47.050273+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 3.2574, "run_tag": "apr_paripassu", "outcome": "", "ts": "2026-06-24T20:46:50.308538+00:00"}
+{"kind": "phase_timing", "phase": "campaign", "duration_s": 0.0, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "The strict-total-order special case is ALREADY PROVEN AND BANKED (`waterfallDist", "domain": "formalization-nonmath"}, "ts": "2026-06-24T21:45:41.168851+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 66.3088, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:46:47.653930+00:00"}
+{"kind": "phase_timing", "phase": "formalize", "duration_s": 66.3346, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:46:47.656831+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 2.5426, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority"}, "ts": "2026-06-24T21:48:30.479186+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 7.01, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pool_codex"}, "ts": "2026-06-24T21:48:37.513852+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 6.7578, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pool_codex"}, "ts": "2026-06-24T21:48:44.273527+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 16.5104, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority"}, "ts": "2026-06-24T21:48:44.444218+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 0.001, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority"}, "ts": "2026-06-24T21:48:44.445850+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 35.7883, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:49:20.234510+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 96.0731, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:51:24.477917+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.3344, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_positive_payment_implies_prefix_lt_pool"}, "ts": "2026-06-24T21:52:01.657325+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 2.115, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_senior_level_lies_before_junior"}, "ts": "2026-06-24T21:54:26.985667+00:00"}
+{"kind": "phase_timing", "phase": "pool", "duration_s": 0.0, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_full_level_pays_tranche"}, "ts": "2026-06-24T21:56:22.389560+00:00"}
+{"kind": "phase_timing", "phase": "native", "duration_s": 6.8361, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_full_level_pays_tranche"}, "ts": "2026-06-24T21:56:29.226474+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 9.5148, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:56:38.741840+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 3.255, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T21:57:10.908495+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 117.0929, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_full_level_pays_tranche__RobustProbe_iso_lemma_full_level_pays_tranche"}, "ts": "2026-06-24T21:59:08.499906+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.217, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_full_level_pays_tranche"}, "ts": "2026-06-24T22:00:19.462072+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 96.5795, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_feasible__RobustProbe_iso_lemma_feasible_codex_0.lean"}, "ts": "2026-06-24T22:02:33.212257+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.1337, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "iso_lemma_feasible"}, "ts": "2026-06-24T22:03:46.006470+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 11.0156, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T22:05:15.974896+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 3.755, "run_tag": "apr_paripassu_v2", "outcome": "", "ts": "2026-06-24T22:05:58.872645+00:00"}
+{"kind": "phase_timing", "phase": "leaf.dispatch", "duration_s": 115.0874, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority__RobustProbe"}, "ts": "2026-06-24T22:07:54.336052+00:00"}
+{"kind": "phase_timing", "phase": "govern.mnc", "duration_s": 0.0588, "run_tag": "apr_paripassu_v2", "outcome": "", "tags": {"target": "pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority"}, "ts": "2026-06-24T22:09:13.312098+00:00"}

@@ -31,7 +31,7 @@ When `gate is None` (the DEFAULT), this module behaves EXACTLY as the inline
 Layer 3-4 dispatch did before the split: warm agent first, then cold-shot
 fan-out, with no skip. The default path is behavior-preserving.
 
-Design note (WRAP, not MOVE): the warm agent (`_warm_agent_solve`) and the
+Design note (WRAP, not MOVE): the warm agent (`_agentic_leaf_warm_solve`, the single leaf entry) and the
 cold-shot fan-out are deeply interleaved with the worker's credit/validation
 machinery — the contract validation gate, the matched-negative-control check,
 the carrier-receipt ledger, and the attempts-DB writes. The task constraint is

@@ -1129,6 +1129,46 @@ def _build_subprocess_metrics(rows: list[sqlite3.Row], events: list[dict[str, An
     }
 
 
+def _phase_timing_read_model() -> dict[str, Any]:
+    """Time-to-insight decomposition: WHERE the wall-clock went inside a campaign, per phase
+    (formalize / pool / native / verify / govern.mnc / decompose / bank / ...), plus a per-run lead time. Sourced
+    from the SHARED phase-timing ledger (`common.telemetry`, emitted by the solver). Pure read; this stays a
+    read-model (no Lean, no models, no mutation). Empty shape if the ledger is absent (telemetry off / fresh repo)."""
+    try:
+        from src.ztare.leanmill.phase_timing import summarize_phase_timings
+        return summarize_phase_timings()
+    except Exception:  # noqa: BLE001 — surfacing must never break the read model
+        return {"phases": {}, "runs": {}, "total_wall_s": 0.0, "total_events": 0}
+
+
+_EMPTY_CYCLE_TIME = {"schema": "leanmill-campaign-cycle-time-v1", "campaigns": {}, "by_domain": {}, "campaign_count": 0}
+
+
+def _campaign_cycle_time_read_model() -> dict[str, Any]:
+    """Per-campaign TIME-TO-CLOSURE — the factory 'time to insight on closures' metric, segmented by DOMAIN
+    (math vs non-math formalization). Joins the solver attempts ledger (sqlite: run_tag / attempt_at / outcome /
+    wallclock_s — the closure timing + compute cost) with the phase ledger's `campaign` domain markers. Pure
+    read, fail-soft (empty shape if a source is absent); the computation lives in `phase_timing` (single door)."""
+    try:
+        db = REPO / "analytics" / "public" / "queries" / "solver_lane_attempts.db"
+        if not db.exists():
+            return dict(_EMPTY_CYCLE_TIME)
+        cx = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+        try:
+            cols = {r[1] for r in cx.execute("PRAGMA table_info(attempts)").fetchall()}
+            if not {"run_tag", "attempt_at", "outcome", "wallclock_s"}.issubset(cols):
+                return dict(_EMPTY_CYCLE_TIME)
+            rows = [dict(zip(("run_tag", "attempt_at", "outcome", "ratified", "wallclock_s"), r))
+                    for r in cx.execute(
+                        "SELECT run_tag, attempt_at, outcome, ratified, wallclock_s FROM attempts").fetchall()]
+        finally:
+            cx.close()
+        from src.ztare.leanmill.phase_timing import summarize_campaign_cycle_time
+        return summarize_campaign_cycle_time(rows)
+    except Exception as _e:  # noqa: BLE001 — surfacing must never break the read model
+        return {**_EMPTY_CYCLE_TIME, "error": repr(_e)[:160]}
+
+
 def _extract_scoreboard_from_stdout(text: str) -> dict[str, int]:
     obj: Any = None
     try:
@@ -4621,6 +4661,25 @@ def _write_markdown(path: str | Path, payload: dict[str, Any]) -> None:
             f"- gaming_guard: {meta_loop.get('gaming_guard')}",
             "",
         ])
+    cct = payload.get("campaign_cycle_time") or {}
+    if isinstance(cct, dict) and cct.get("campaigns"):
+        lines.extend(["## Campaign Cycle-Time (time to closure)", ""])
+        for dom in sorted(cct.get("by_domain") or {}):
+            d = (cct["by_domain"])[dom]
+            lines.append(f"- domain `{dom}`: avg time-to-closure `{d.get('avg_time_to_closure_s')}s` "
+                         f"over `{d.get('closures')}` closure(s) across `{d.get('campaigns')}` campaign(s)")
+        lines.extend([
+            "",
+            "| campaign | domain | closures | first TTC (s) | mean TTC (s) | p95 TTC (s) | first cost-to-close (s) | span (s) |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- |",
+        ])
+        for rt in sorted(cct["campaigns"]):
+            c = cct["campaigns"][rt]
+            ttc = c.get("time_to_closure_s") or {}
+            ctc = c.get("cost_to_closure_s") or {}
+            lines.append(f"| `{rt}` | {c.get('domain')} | {c.get('closures')} | {ttc.get('first')} | "
+                         f"{ttc.get('mean')} | {ttc.get('p95')} | {ctc.get('first')} | {c.get('span_s')} |")
+        lines.append("")
     lines.extend([
         "## Learning-Unit Flow",
         "",
@@ -4990,6 +5049,8 @@ def build(args: argparse.Namespace) -> dict[str, Any]:
         "contract_recommended_next_action": (contract or {}).get("recommended_next_action"),
         "intelligence_policy": intelligence_policy,
         "subprocess_metrics": _build_subprocess_metrics(rows, events, trailing_window_s=args.window_s),
+        "phase_timing": _phase_timing_read_model(),
+        "campaign_cycle_time": _campaign_cycle_time_read_model(),
         "learning_unit_flow": _learning_unit_flow(rows, events, trailing_window_s=args.window_s),
         "learning_feedback_read_model": _learning_feedback_read_model(rows, trailing_window_s=args.window_s),
         "target_resolution_read_model": _target_resolution_read_model(rows),

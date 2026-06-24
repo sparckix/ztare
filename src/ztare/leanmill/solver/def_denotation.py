@@ -125,6 +125,83 @@ def certify_def_denotation(theory_src: str, *,
             "reason": reason}
 
 
+WITNESS_PREFIX = "witness_"
+WITNESSED = "WITNESSED"
+VACUITY_SCOPED = "VACUITY_SCOPED"
+VACUITY_EXPOSED = "VACUITY_EXPOSED"
+
+
+def vacuity_prone_defs(theory_src: str) -> "list[str]":
+    """Built `Prop` defs that universally quantify over SET MEMBERSHIP with no non-emptiness guard — i.e. a
+    property that is VACUOUSLY TRUE on the empty set (`StrongSetLE`, `IsSublatticeSet`, an argmax predicate …).
+    Grounded in the def BODY via the canonical `lean_source` parser (NOT a surface match on the theorem), so it
+    sees vacuity that hides behind a def. A def guarded by an explicit `Nonempty`/`∃`/`≠ ∅` is not flagged."""
+    prone: "list[str]" = []
+    for d in _ls.def_names(theory_src):
+        body = _ls.def_body(theory_src, d) or ""        # def-aware (canonical; `_decl_body` is theorem-only)
+        val = _ls.split_at_proof(body)[1]               # binder-safe split at the def's `:=`
+        val = val[2:] if val.startswith(":=") else val
+        # the ∀-over-membership classification lives in lean_source (canonical parser), not a hand-rolled
+        # regex here — `prop_quantifies_over_membership` is comment-stripped + Nonempty-guard aware.
+        if _ls.prop_quantifies_over_membership(val):
+            prone.append(d)
+    return prone
+
+
+def certify_nonvacuity(theory_src: str, *, verify_fn: "Callable[[str], bool]") -> dict:
+    """The VACUITY sibling of `certify_def_denotation` — same anti-self-deception stance, one axis over. A
+    `Prop` def that ∀-quantifies over set membership is vacuously true on `∅`, so a theorem concluding that
+    property of a CONSTRUCTED set (an argmax, a fixed-point set) can be kernel-true while asserting NOTHING when
+    the set is empty (Gemini's 2026-06-23 critique: the parametric argmax can be `∅`, making `StrongSetMonotone`
+    vacuous). The agent PINS each vacuity-prone def with a kernel-checked `witness_<def>_…` theorem (a relevant
+    non-emptiness / non-vacuous instance — possibly under the existence conditions the result needs, e.g.
+    completeness + order-continuity) OR honestly flags `-- @vacuity-scope: <def>: …`. 3-valued + ADVISORY (never
+    gates a closure); the kernel work is the SAME injected `verify_fn` the denotation leg uses (no new surface).
+    A wrong/empty witness audits as unproven ⇒ stays VACUITY_EXPOSED, never laundered to WITNESSED."""
+    prone = vacuity_prone_defs(theory_src)
+    if not prone:
+        return {"verdict": NOT_APPLICABLE, "prone_defs": [], "per_def": {}, "witnesses": [],
+                "reason": "no vacuously-on-empty set-property defs — vacuity-faithfulness N/A"}
+    witness_names = [t for t in _ls.theorem_names(theory_src) if t.startswith(WITNESS_PREFIX)]
+    witness_stmt = {w: (_ls.extract_signature(theory_src, w) or w) for w in witness_names}
+    witness_state: "dict[str, str]" = {}
+    for w in witness_names:
+        try:
+            witness_state[w] = "verified" if verify_fn(w) else "pending"
+        except Exception:  # noqa: BLE001 — a tooling failure is PENDING (never silently a pass)
+            witness_state[w] = "pending"
+    scoped = set(re.findall(r"--\s*@vacuity-scope:\s*([\w'.]+)", theory_src or ""))
+    def _witness_targets(w: str, d: str) -> bool:
+        # a witness protects def `d` if its STATEMENT names d, OR it follows the `witness_<d>_…` naming
+        # convention (the non-emptiness witness is often about the SET d is applied to, not d itself).
+        if mentions_token(witness_stmt[w], d):
+            return True
+        tail = w[len(WITNESS_PREFIX):] if w.startswith(WITNESS_PREFIX) else w
+        return tail == d or tail.startswith(d + "_")
+
+    per_def: "dict[str, dict]" = {}
+    for d in prone:
+        v = [w for w in witness_names if witness_state[w] == "verified" and _witness_targets(w, d)]
+        status = WITNESSED if v else (VACUITY_SCOPED if d in scoped else VACUITY_EXPOSED)
+        per_def[d] = {"status": status, "verified_witnesses": v, "scoped": d in scoped}
+    exposed = [d for d, x in per_def.items() if x["status"] == VACUITY_EXPOSED]
+    if exposed:
+        verdict = VACUITY_EXPOSED
+    elif all(x["status"] == WITNESSED for x in per_def.values()):
+        verdict = WITNESSED
+    else:
+        verdict = VACUITY_SCOPED
+    reason = {
+        WITNESSED: f"all {len(prone)} vacuity-prone def(s) carry a kernel-verified non-emptiness witness",
+        VACUITY_SCOPED: ("vacuity-prone def(s) honestly scope-flagged (disclosed, no witness): "
+                         + str([d for d, x in per_def.items() if x["status"] == VACUITY_SCOPED])),
+        VACUITY_EXPOSED: ("vacuity-prone def(s) with NO non-emptiness witness and NO scope flag — true-but-"
+                          f"possibly-vacuous (HONEST GAP, never a false certification): {exposed}"),
+    }[verdict]
+    return {"verdict": verdict, "prone_defs": prone, "per_def": per_def,
+            "witnesses": [{"name": w, "state": witness_state[w]} for w in witness_names], "reason": reason}
+
+
 def kernel_denotation_verifier(theory_src: str, lean_root: "Path | str", *, timeout_s: int = 180):
     """Wire the real boundary: returns `verify_anchor_fn(anchor_name)->bool` that compiles the theory file
     ONCE (cached) and per-anchor audits axioms — VERIFIED iff the file typechecks AND the anchor's proof is
@@ -212,6 +289,33 @@ def _selftest() -> int:
         raise RuntimeError("kernel down")
     r4 = certify_def_denotation(theory, verify_anchor_fn=_boom, composed_defs=set())
     ok("verify exception ⇒ UNDERDETERMINED (fail-honest)", r4["verdict"] == UNDERDETERMINED)
+
+    # ── vacuity-faithfulness sibling (Gemini's empty-set critique, 2026-06-23) ──
+    vac_theory = (
+        "import Mathlib\n\n"
+        "def StrongSetLE {X : Type*} [SemilatticeSup X] [SemilatticeInf X] (s u : Set X) : Prop :=\n"
+        "  ∀ ⦃x y : X⦄, x ∈ s → y ∈ u → x ⊓ y ∈ s ∧ x ⊔ y ∈ u\n\n"
+        "def NonemptyGuarded {X : Type*} (s : Set X) : Prop := s.Nonempty ∧ ∀ ⦃x⦄, x ∈ s → True\n\n")
+    # StrongSetLE is vacuity-prone (∀-over-∈, no guard); NonemptyGuarded is NOT (has `.Nonempty`).
+    ok("vacuity_prone detects ∀-over-membership def", "StrongSetLE" in vacuity_prone_defs(vac_theory))
+    ok("vacuity_prone skips a Nonempty-guarded def", "NonemptyGuarded" not in vacuity_prone_defs(vac_theory))
+    # no witness, no scope flag ⇒ VACUITY_EXPOSED (honest gap, never laundered)
+    rv0 = certify_nonvacuity(vac_theory, verify_fn=lambda w: True)
+    ok("prone def, no witness ⇒ VACUITY_EXPOSED", rv0["verdict"] == VACUITY_EXPOSED)
+    # a VERIFIED witness mentioning the def ⇒ WITNESSED
+    vac_w = vac_theory + ("theorem witness_StrongSetLE_nonvacuous {X : Type*} [SemilatticeSup X] "
+                          "[SemilatticeInf X] : ∃ s u : Set X, s.Nonempty ∧ StrongSetLE s u := by sorry\n")
+    rv1 = certify_nonvacuity(vac_w, verify_fn=lambda w: w.startswith("witness_StrongSetLE"))
+    ok("verified non-emptiness witness ⇒ WITNESSED", rv1["verdict"] == WITNESSED)
+    # an UNVERIFIED (sorried) witness ⇒ still VACUITY_EXPOSED (no false certification)
+    rv2 = certify_nonvacuity(vac_w, verify_fn=lambda w: False)
+    ok("pending witness ⇒ VACUITY_EXPOSED (fail-honest)", rv2["verdict"] == VACUITY_EXPOSED)
+    # an honest @vacuity-scope flag (no witness) ⇒ VACUITY_SCOPED (disclosed, not exposed)
+    rv3 = certify_nonvacuity(vac_theory + "-- @vacuity-scope: StrongSetLE: vacuous when either set is ∅\n",
+                             verify_fn=lambda w: False)
+    ok("scope-flagged prone def ⇒ VACUITY_SCOPED", rv3["verdict"] == VACUITY_SCOPED)
+    ok("no prone defs ⇒ NOT_APPLICABLE",
+       certify_nonvacuity("import Mathlib\ndef f : Nat := 0\n", verify_fn=lambda w: True)["verdict"] == NOT_APPLICABLE)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

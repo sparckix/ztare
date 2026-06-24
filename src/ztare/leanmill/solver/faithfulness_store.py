@@ -99,14 +99,69 @@ class FaithfulnessStore:
                              "source": source})
 
     def reference(self, nl: str) -> "dict | None":
-        """The stored faithful reference for an NL (the most recent confirmed correspondence): {statement,
-        fingerprint}. Feeds `structural_faithfulness(expected=...)` so its silent-weakening guard runs
-        LOAD-BEARING (vs the production no-op) and lets a re-seen NL skip re-formalization. None if unseen."""
+        """The stored faithful reference for an NL (the most-recent confirmed correspondence NOT marked
+        kernel-FALSE): {statement, fingerprint}. Feeds `structural_faithfulness(expected=...)` so its silent-
+        weakening guard runs LOAD-BEARING (vs the production no-op) and lets a re-seen NL skip re-formalization.
+        EXCLUDES any rendering the ONE refutation ledger (`NoGoodStore`, failure class `statement_false`, keyed by
+        the canonical statement normalizer) marked kernel-FALSE — a refuted faithful-but-false reference must
+        never gate a STRENGTHENED reformalization (else the firewall rejects the corrected statement: the
+        operator-caught false-negative). Single source of refutations — NO parallel store here. None if unseen or
+        every confirmed rendering has since been refuted."""
         recs = [r for r in self._mem.get(nl_key(nl), []) if r.get("kind") == "faithful"]
         if not recs:
             return None
-        r = recs[-1]
-        return {"statement": r.get("statement"), "fingerprint": r.get("fingerprint")}
+        _refuted = self._refuted_keys()
+        if not _refuted:
+            r = recs[-1]
+            return {"statement": r.get("statement"), "fingerprint": r.get("fingerprint")}
+        try:
+            from ztare.leanmill.solver.proof_cache import _key_for as _kf
+        except Exception:  # noqa: BLE001 — no normalizer ⇒ can't exclude; return the latest (advisory store)
+            r = recs[-1]
+            return {"statement": r.get("statement"), "fingerprint": r.get("fingerprint")}
+        for r in reversed(recs):                       # most-recent confirmed correspondence not refuted
+            if _kf(r.get("statement") or "") not in _refuted:
+                return {"statement": r.get("statement"), "fingerprint": r.get("fingerprint")}
+        return None
+
+    def refuted_literal(self, nl: str) -> str:
+        """The kernel-REFUTED literal rendering for an NL — a correspondence once admitted faithful, now marked
+        `statement_false` in the one refutation ledger. This is BOTH the LICENSE (its existence proves the
+        literal NL claim is kernel-false) AND the comparand for a disclosed strengthening (the firewall checks
+        the strengthened candidate ADDS hypotheses + preserves the conclusion vs THIS). "" when the literal was
+        never refuted (⇒ no license ⇒ the firewall stays strict). The license is non-fakeable: it exists only
+        because a kernel ¬G was recorded at the single refutation chokepoint."""
+        recs = [r for r in self._mem.get(nl_key(nl), []) if r.get("kind") == "faithful"]
+        if not recs:
+            return ""
+        refuted = self._refuted_keys()
+        if not refuted:
+            return ""
+        try:
+            from ztare.leanmill.solver.proof_cache import _key_for as _kf
+        except Exception:  # noqa: BLE001
+            return ""
+        for r in reversed(recs):
+            if _kf(r.get("statement") or "") in refuted:
+                return r.get("statement") or ""
+        return ""
+
+    def _refuted_keys(self) -> set:
+        """The normalized-statement keys the ONE refutation ledger (`NoGoodStore`) marked kernel-FALSE (failure
+        class `statement_false`) — consulted by `reference()` so a refuted rendering never gates. Lazy + cached;
+        fail-open to empty (the consult is advisory). Same store + canonical key the proof_cache uses — one
+        ledger, no parallel surface."""
+        cached = getattr(self, "_refuted_cache", None)
+        if cached is not None:
+            return cached
+        keys: set = set()
+        try:
+            from ztare.leanmill.solver.no_good_store import NoGoodStore
+            keys = NoGoodStore(self.path.parent / "solver_lane_no_good_store.jsonl").statement_false_keys()
+        except Exception:  # noqa: BLE001 — refutation-ledger consult is advisory; never break the reference
+            keys = set()
+        self._refuted_cache = keys
+        return keys
 
     def conflicts(self, nl: str) -> "list[dict]":
         return [r for r in self._mem.get(nl_key(nl), []) if r.get("kind") == "conflict"]

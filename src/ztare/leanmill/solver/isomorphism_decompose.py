@@ -436,6 +436,43 @@ def _richest(pairs):
     return max(pairs, key=lambda av: len(av[0].get("lemmas") or []))
 
 
+def _planner_semantic_shelf_on() -> bool:
+    # DEFAULT-ON A/B knob (the embedding-premise-steering twin of ZTARE_LEANMILL_RUNG_ADJACENCY): =0 ⇒
+    # byte-parity (the block is empty, the planner sees only the LEXICAL rung_adjacency advisory it saw
+    # before). Mirrors `rung_adjacency.enabled()`.
+    return os.environ.get("ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF", "1") != "0"
+
+
+def _render_semantic_shelf_block(goal: str, *, top_k: int = 4) -> str:
+    """EMBEDDING-based premise steering for the PLANNER (#semantic-shelf): surface the OWN-LEDGER banked
+    lemmas most COSINE-SIMILAR to the goal — the semantic complement to the LEXICAL `rung_adjacency`
+    advisory (identifier-overlap). A lemma can be the right attachment site yet share NO surface tokens
+    with the goal; embedding retrieval names it where token-overlap is blind.
+
+    REUSES `semantic_premise_shelf.own_ledger_hits` + `_cached_embedder` (the SAME retrieval the LEAF
+    already gets) — no re-rolled retrieval, no re-rolled embedding. ADVISORY only: the kernel audits every
+    cited/decomposed lemma, so this can never launder; it does NOT force or pin any lemma. Default-on with
+    `ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF` (=0 ⇒ '' = byte-parity). Graceful-degrade to '' on ANY
+    embedder/import failure (no GOOGLE_API_KEY, offline, empty ledger) — never breaks prompt assembly."""
+    if not _planner_semantic_shelf_on() or not (goal or "").strip():
+        return ""
+    try:
+        from ztare.leanmill import semantic_premise_shelf as _sps
+        hits, _size, _skip = _sps.own_ledger_hits(
+            goal, embedder=_sps._cached_embedder(), top_k=top_k)
+        # PROVEN rungs only — the steer is "decompose/cite TOWARD these kernel-closed lemmas". (The shelf
+        # also returns open-gap diagnoses; those are a leaf concern, not a planner attachment site.)
+        lines = [f"  • {h.get('name') or '?'} : {' '.join(str(h.get('preview') or '').split())[:160]}"
+                 for h in hits if isinstance(h, dict) and h.get("kind") == "proven_rung"]
+        if not lines:
+            return ""
+        return ("SEMANTICALLY-RELATED PROVEN LEMMAS (kernel-closed; consider citing/decomposing toward "
+                "these — embedding-retrieved, so relevant even with NO shared surface tokens):\n"
+                + "\n".join(lines) + "\n\n")
+    except Exception:  # noqa: BLE001 — advisory; never break planner-prompt assembly
+        return ""
+
+
 def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 180,
            banned_terms: "list[str] | None" = None, dispatch_fn=None, max_refines: "int | None" = None,
            notes: "str | None" = None) -> dict:
@@ -500,7 +537,21 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
     try:
         from ztare.leanmill.solver import rung_adjacency as _radj_mod
         if _radj_mod.enabled():
-            _notes_block = _radj_mod.render_adjacency_block(_radj_mod.proven_statements()) + _notes_block
+            # pass the GOAL so the advisory names the proven rungs most RELEVANT to it (identifier-overlap), not
+            # merely the most recent — the decomposition-steering that makes the planner attach to banked atoms.
+            _notes_block = _radj_mod.render_adjacency_block(
+                _radj_mod.proven_statements(), goal=(goal_concl or goal_decl or "")) + _notes_block
+    except Exception:  # noqa: BLE001 — advisory; never break planner-prompt assembly
+        pass
+
+    # SEMANTIC-SHELF ADVISORY (embedding-based premise steering): COMPLEMENT the LEXICAL rung_adjacency
+    # above with the OWN-LEDGER banked lemmas most COSINE-SIMILAR to the goal — so the planner can attach
+    # to proven infrastructure that is semantically relevant even when it shares NO surface tokens (the gap
+    # identifier-overlap is blind to). Same ONE injection point + same advisory contract as rung_adjacency;
+    # reuses the LEAF's own retrieval (own_ledger_hits) — not a new surface. Empty when off / no API key /
+    # nothing similar (byte-parity); the kernel audit gates every lemma regardless.
+    try:
+        _notes_block = _render_semantic_shelf_block(goal_concl or goal_decl or "") + _notes_block
     except Exception:  # noqa: BLE001 — advisory; never break planner-prompt assembly
         pass
 
@@ -1353,6 +1404,45 @@ def _selftest() -> int:
                 os.environ.pop(k, None)
             else:
                 os.environ[k] = _envp[k]
+
+    # ── EMBEDDING-based premise steering for the PLANNER (semantic shelf) — hermetic: patch the shelf's
+    #    own_ledger_hits + _cached_embedder so NO network/API key/ledger is touched. The block must (a) name
+    #    PROVEN rungs as the advisory, (b) be byte-parity '' under the =0 A/B knob, (c) graceful-degrade to ''
+    #    on any retrieval failure, (d) emit nothing when no proven hit / empty goal. ──
+    import ztare.leanmill.semantic_premise_shelf as _sps_mod
+    _sps_saved = (_sps_mod.own_ledger_hits, _sps_mod._cached_embedder)
+    _shelf_prev = os.environ.get("ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF")
+    try:
+        _sps_mod._cached_embedder = lambda: (lambda q: [1.0, 0.0])   # no real embedder
+        _sps_mod.own_ledger_hits = lambda query, **kw: (
+            [{"source": "own_ledger", "name": "banked_residue_lemma", "kind": "proven_rung",
+              "score": 0.91, "preview": "theorem banked_residue_lemma : residue p = 0"},
+             {"source": "own_ledger", "name": "some_gap", "kind": "open_gap",
+              "score": 0.88, "preview": "missing partial-fraction API"}], 2, None)
+        os.environ.pop("ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF", None)   # default-on
+        _blk = _render_semantic_shelf_block("residue vanishing at a simple root")
+        ok("semantic shelf: default-on renders the PROVEN-LEMMA advisory, names the banked rung",
+           "SEMANTICALLY-RELATED PROVEN LEMMAS" in _blk and "banked_residue_lemma" in _blk)
+        ok("semantic shelf: open-gap hits are NOT surfaced as planner attachment sites (proven only)",
+           "some_gap" not in _blk and "partial-fraction" not in _blk)
+        os.environ["ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF"] = "0"
+        ok("semantic shelf: =0 is byte-parity (empty block, A/B off)",
+           _render_semantic_shelf_block("residue vanishing at a simple root") == "")
+        os.environ.pop("ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF", None)
+        ok("semantic shelf: empty goal ⇒ empty block (no ballast)",
+           _render_semantic_shelf_block("") == "" and _render_semantic_shelf_block("   ") == "")
+        _sps_mod.own_ledger_hits = lambda query, **kw: (_ for _ in ()).throw(RuntimeError("embedder dead"))
+        ok("semantic shelf: graceful-degrade to '' on any retrieval failure (never breaks assembly)",
+           _render_semantic_shelf_block("residue") == "")
+        _sps_mod.own_ledger_hits = lambda query, **kw: ([], 0, "no GOOGLE_API_KEY")
+        ok("semantic shelf: no proven hits ⇒ empty block (parity)",
+           _render_semantic_shelf_block("residue") == "")
+    finally:
+        _sps_mod.own_ledger_hits, _sps_mod._cached_embedder = _sps_saved
+        if _shelf_prev is None:
+            os.environ.pop("ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF", None)
+        else:
+            os.environ["ZTARE_LEANMILL_PLANNER_SEMANTIC_SHELF"] = _shelf_prev
 
     if _radj_prev is None:
         os.environ["ZTARE_LEANMILL_RUNG_ADJACENCY"] = "0"   # keep hermetic until process exit (suite-local)

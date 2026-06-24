@@ -195,6 +195,33 @@ def file_ref(path: str | Path, *, root: str | Path | None = None) -> dict[str, A
     }
 
 
+def public_path(value, repo: "str | Path | None" = None) -> str:
+    """Repo-relative path for public artifacts; no local home-directory leaks. THE canonical home (2026-06-22
+    de-duplication): `solver_core._public_path` and `typed_exit._public_path` were byte-identical copies (the
+    forgotten-sibling shape) and now both delegate here. `repo` defaults to this checkout's root."""
+    if value is None:
+        return ""
+    s = str(value)
+    if not s:
+        return ""
+    _repo = Path(repo) if repo is not None else Path(__file__).resolve().parents[3]
+    try:
+        p = Path(s)
+        if not p.is_absolute():
+            return s
+        try:
+            return str(p.resolve().relative_to(_repo))
+        except Exception:
+            pass
+        try:
+            return f"<home>/{p.resolve().relative_to(Path.home())}"
+        except Exception:
+            pass
+        return f"<external>/{p.name}"
+    except Exception:
+        return s
+
+
 def display_cmd(cmd: Iterable[str]) -> list[str]:
     """Collapse the host's Python in ``cmd[0]`` to ``"<python>"`` so logs
     are readable across hosts and venvs. Other arguments are returned

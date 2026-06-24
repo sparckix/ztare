@@ -62,13 +62,32 @@ _REFINE = [
 ]
 
 
-def _refine_class(error_class: "str | None", notes: "str | None") -> "tuple[str, bool]":
-    """(refined_class, is_structural). Use the notes text to split the catch-all `other_error` into an actionable
-    class; fall back to the recorded error_class."""
+_HONEST_NONCLOSE_OUTCOMES = {
+    # the agent got a clean shot and the PROOF did not land — an honest non-closure, NOT an unclassified error.
+    # Bucketing these as `other_error` (the old fate) made an honest-gap run read as a crash (the 2026-06-23
+    # consciousness RCA: faithful=True + admitted_and_exact_gap rendered as `✗ other_error`).
+    "failed_compile": ("proof_compile_error", False),   # a proof attempt that did not typecheck
+    "compile_error": ("proof_compile_error", False),
+    "exact_gap": ("unproven", False),                   # the agent honestly admitted it could not close
+    "admitted_and_exact_gap": ("unproven", False),
+    "open": ("unproven", False),
+    "no_close": ("unproven", False),
+    "deferred": ("deferred_wall", False),               # campaign wall reached → honestly deferred, not a failure
+}
+
+
+def _refine_class(error_class: "str | None", notes: "str | None",
+                  outcome: "str | None" = None) -> "tuple[str, bool]":
+    """(refined_class, is_structural). Split the catch-all `other_error` into an actionable class: first the notes
+    text (specific Lean errors), then the OUTCOME itself (an honest non-closure like `failed_compile`/`exact_gap`
+    is NOT an unclassified error), then the recorded error_class. Reserve `other_error` for the genuinely
+    unknown — so honest gaps stop masquerading as crashes (the 2026-06-23 consciousness telemetry RCA)."""
     blob = ((notes or "") + " " + (error_class or "")).lower()
     for sub, cls, structural in _REFINE:
         if sub in blob:
             return cls, structural
+    if outcome and outcome in _HONEST_NONCLOSE_OUTCOMES:
+        return _HONEST_NONCLOSE_OUTCOMES[outcome]
     ec = (error_class or "other_error").strip() or "other_error"
     # honest unproven goals are NOT structural; everything genuinely unknown stays "other_error" (structural-ish:
     # we couldn't even classify it, which itself is worth surfacing).
@@ -146,7 +165,7 @@ def summarize_run(*, db_path: "str | Path | None" = None, run_tag: "str | None" 
             ratified += 1
             pt["ratified"] = True
         if outcome not in ("closed", "advanced"):
-            cls, is_struct = _refine_class(ec, notes)
+            cls, is_struct = _refine_class(ec, notes, outcome)
             if cls == "dedup_skip":        # a no-op re-attempt, NOT a failure — keep it out of the tally + noise
                 dedup_skips += 1
                 continue

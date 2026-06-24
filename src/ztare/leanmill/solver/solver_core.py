@@ -32,11 +32,13 @@ leanmill_architectural_map.md for the apparatus map):
             elementary goals on Mathlib.
 
   Layer 3 — Warm agent (iterative, Bash + Edit + Read enabled).
-            `_warm_agent_solve()` spawns Claude in a scratch dir under
-            `lean_root/.solver_scratch/<row_id>/`. The agent edits target.lean
-            and runs `lake env lean` itself, iterating up to 5 verifications.
-            One warm-agent run has substantially higher P(close) than any
-            single one-shot LLM call. Grounded in LeanAgent (Yang et al.
+            `_agentic_leaf_warm_solve()` (the SINGLE leaf entry → best-of-N
+            `solve_robust` → `agentic_leaf.solve_leaf`) dispatches the agent in
+            the warm Lean project: it edits the probe, warm-checks, iterates,
+            and — if it leaves the proof in its RESPONSE rather than the file —
+            the leaf recovers it (`_recover_proof_from_response`). One warm-agent
+            run has substantially higher P(close) than any single one-shot LLM
+            call. Grounded in LeanAgent (Yang et al.
             2024) and APN/AlphaProof Nexus AICollaborator (DeepMind 2025)
             EVOLVE-BLOCK iteration. WebSearch/WebFetch stay disallowed for
             contamination hygiene.
@@ -136,27 +138,11 @@ ADHOC_CLOSURE_CERTIFICATES = OUT_DIR / "adhoc_closure_certificates.jsonl"
 
 
 def _public_path(value) -> str:
-    """Repo-relative path for public artifacts; no local home directory leaks."""
-    if value is None:
-        return ""
-    s = str(value)
-    if not s:
-        return ""
-    try:
-        p = Path(s)
-        if not p.is_absolute():
-            return s
-        try:
-            return str(p.resolve().relative_to(REPO))
-        except Exception:
-            pass
-        try:
-            return f"<home>/{p.resolve().relative_to(Path.home())}"
-        except Exception:
-            pass
-        return f"<external>/{p.name}"
-    except Exception:
-        return s
+    """Repo-relative path for public artifacts; no local home-directory leaks. Delegates to the canonical
+    `common.public_path` (was a byte-identical copy in typed_exit — the forgotten-sibling shape, de-duplicated
+    2026-06-22). Passes this module's REPO so the relativization base is unchanged."""
+    from ztare.leanmill.common import public_path as _pp
+    return _pp(value, REPO)
 
 
 def _public_text(value: str) -> str:
@@ -919,9 +905,18 @@ from ztare.leanmill.solver.contract import (  # noqa: E402
     DEFAULT_ANTI_PATTERNS as _DEFAULT_ANTI_PATTERNS,
     build_solver_action_contract as _canonical_build_solver_action_contract,
     source_cue_check as _canonical_source_cue_check,
-    validate_against_contract as _canonical_validate_against_contract,
-    verify_matched_negative_control as _canonical_verify_matched_negative_control,
-)
+)  # (`validate_against_contract` / `verify_matched_negative_control` removed 2026-06-23 — dead siblings)
+
+# Phase-timing seam (cycle/lead-time observability) — `with _phase_timer("govern.mnc", target=name): ...` emits a
+# per-phase duration to the SHARED telemetry ledger (common.telemetry, read by factory_intelligence). Defensive
+# import + nullcontext fallback so telemetry can never break the solver if the module is unavailable.
+try:  # noqa: E402
+    from ztare.leanmill.phase_timing import phase_timer as _phase_timer
+except Exception:  # noqa: BLE001
+    import contextlib as _ctxlib_pt
+
+    def _phase_timer(*_a, **_k):  # type: ignore
+        return _ctxlib_pt.nullcontext()
 # Layer seam (task #42): Layer 2 (deterministic, free) is split from Layers 3-4
 # (LLM, expensive) so a caller can run the free layer first and only escalate to
 # the expensive LLM provers if a gate (the Agentic Circuit Breaker, F108/task #74)
@@ -1143,6 +1138,26 @@ def _verify_matched_negative_control(target_name: str, proof_text: str,
         "-- body. If THIS does NOT compile, the proof NEEDS the prelude → genuine (PASS).\n"
         + _attach_proof(_head, proof_text)
     )
+    # WARM MNC (kills the cold-`lake env lean` antipattern on the governance critical path — ~0.1s vs ~60-90s):
+    # elaborate the bare-Mathlib probe against the FROZEN BASE env (`env=None` ⇒ Mathlib only, NO campaign
+    # prelude — which is the MNC's whole point). SOUND/PARITY: base-Mathlib REPL elaboration is byte-equivalent
+    # to a cold `lake env lean` over the SAME prelude-free probe (no prelude can leak in via env=None), and
+    # `reject_sorry=False` matches the cold verdict (`sorry` is a warning, not `error:`). The unknown-identifier
+    # and compiled-bare branches mirror the cold logic exactly. `None` ⇒ REPL unusable (flag off / toolchain
+    # mismatch / dead) ⇒ fall through to the authoritative cold compile below (byte-parity when warm is off).
+    try:
+        from ztare.formal.repl_compile import compile_probe_via_repl as _warm_negctrl
+        _rr = _warm_negctrl(src, lean_root, timeout_s, reject_sorry=False, env=None)
+    except Exception:  # noqa: BLE001 — warm is an optimization; never let it break the negative control
+        _rr = None
+    if _rr is not None:
+        _ok, _diag = _rr
+        if re.search(r"unknown (identifier|constant|declaration)", _diag or ""):
+            return True, "inconclusive: goal needs prelude defs (unknown identifier under bare Mathlib)"
+        if _ok:
+            return True, ("inconclusive: proof compiles under bare Mathlib — pure-Mathlib goal vs leak "
+                          "is undecidable without the source prelude; deferred to the authoritative kernel")
+        return True, "pass: proof needs the prelude (does not compile under bare Mathlib)"
     try:
         with tempfile.TemporaryDirectory(prefix=f"solver_negctrl_{target_name}_") as td:
             probe = Path(td) / "NegCtrl.lean"
@@ -1181,6 +1196,8 @@ def _validate_against_contract(
     kernel_compile_ok: bool,
     kernel_compile_tail: str,
     goal_type: str | None = None,
+    closure_source: "str | None" = None,
+    posed_source: "str | None" = None,
 ) -> dict:
     """Run every required receipt named in the contract and return a structured
     verdict. A closure is credit-ready iff every required receipt passes.
@@ -1196,9 +1213,10 @@ def _validate_against_contract(
     }
     # MNC: only meaningful if compile passed (no point negctrl-ing a non-closure)
     if kernel_compile_ok:
-        mnc_ok, mnc_tail = _verify_matched_negative_control(
-            target_name, proof_text, lean_root, timeout_s, goal_type=goal_type
-        )
+        with _phase_timer("govern.mnc", target=target_name):
+            mnc_ok, mnc_tail = _verify_matched_negative_control(
+                target_name, proof_text, lean_root, timeout_s, goal_type=goal_type
+            )
         receipts["matched_negative_control_receipt"] = {
             "passed": mnc_ok,
             "tail": mnc_tail[-300:],
@@ -1238,7 +1256,12 @@ def _validate_against_contract(
     # local splice that doubled `by` for a `by\n` body → silent `sorry`). `lean_source.attach_proof` is the
     # ONE binder/`by`-token-aware splicer; both this `_src` and `swap_sorry` route through it.
     from ztare.leanmill.lean_source import attach_proof as _attach_proof
-    _src = _attach_proof(enriched_goal or "", proof_text or "")
+    # `closure_source` (when supplied) is the COMPLETE proof-carrying source to govern verbatim — used by the
+    # pre-verified-champion path, which must audit the EXACT mode-agnostic `swap_sorry(source, champion)` artifact
+    # the proposer verified (a TERM-mode champion that swap_sorry splices after `:=` is mangled by the layered
+    # `attach_proof(enriched_goal-ending-`:= by`, …)` forcing — the two-verify-worlds split that left the pool's
+    # champion unratifiable). Default None ⇒ the layered reconstruction (byte-parity for every existing caller).
+    _src = closure_source if (closure_source and closure_source.strip()) else _attach_proof(enriched_goal or "", proof_text or "")
     if not _src.lstrip().startswith("import"):
         _src = "import Mathlib\n\n" + _src
 
@@ -1251,13 +1274,25 @@ def _validate_against_contract(
             # anti-laundering verdict is dispatched through the ONE Cage orchestrator (`leanmill_cage`);
             # behavior-IDENTICAL by construction (the routed gate IS run_anti_laundering_kernel — regression-
             # checked), so the flip is reversible. Off ⇒ the direct kernel call (byte-parity).
+            # ANTI-LAUNDERING BASELINE (RCA 2026-06-23, theory-first strong-Topkis ratify): the gate's
+            # `original_source` is the POSED baseline the probe (`_src`) is diffed against (statement-integrity
+            # def-alteration + canonical_reelaboration hijack-strip). `enriched_goal` is the LLM context, which
+            # `_build_solver_context` TRUNCATES to the last `_MAX_CONTEXT_CHARS` — so for a theory-first target
+            # whose statement uses defs living >12k chars before it, those defs are ABSENT from `enriched_goal`
+            # but PRESENT in the full `closure_source` probe → canonical_reelaboration strips them as "added
+            # shadow defs" → FALSE `context_hijack_confirmed` (it stripped the substrate's OWN `def
+            # ParametricArgmaxNonempty/StrongSetMonotone/ParametricArgmaxSet`). The baseline MUST be the
+            # COMPLETE posed source. `posed_source` (the row's verbatim sorried file) is that; fall back to
+            # `enriched_goal` for callers that don't pass it (byte-parity — their probe is ALSO built from
+            # `enriched_goal`, so probe and baseline stay consistent and no false strip occurs).
+            _orig_for_gate = posed_source if (posed_source and posed_source.strip()) else enriched_goal
             if os.environ.get("ZTARE_LEANMILL_CAGE_ROUTING") == "1":
                 from ztare.leanmill.solver.leanmill_cage import govern_via_cage as _gvc
                 _k = _gvc(_src, lean_root / "_kernel.lean", lean_root,
-                          original_source=enriched_goal, target_name=target_name)
+                          original_source=_orig_for_gate, target_name=target_name)
             else:
                 _k = _kernel(_src, lean_root / "_kernel.lean", lean_root,
-                             original_source=enriched_goal, target_name=target_name)
+                             original_source=_orig_for_gate, target_name=target_name)
             kernel_passed = bool(_k.get("passed"))
             receipts["governance_kernel_receipt"] = {
                 "passed": kernel_passed, "confirmed": _k.get("confirmed"), "flags": _k.get("flags"),
@@ -1578,9 +1613,28 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
             except Exception:  # noqa: BLE001 — memory is advisory; never fail the solve
                 pass
         defs = "\n".join(_fb_lines) + "\n\n" + defs
+    # FLAG-TIME statement-false short-circuit (2026-06-23 iso_lemma1 loop): hand the best-of-N a CACHED kernel
+    # ¬goal verifier. When an agent flags STATEMENT-FALSE, the leaf/best-of-N verify ¬goal ONCE and stop —
+    # instead of burning the whole decompose + portfolio (claude ~545s × N) before solve_adhoc's END epilogue
+    # ever runs the same verify. Same kernel check + same gate as the epilogue; soundness unchanged (the
+    # downstream governance re-confirms ¬goal before any re-plan — this only stops wasted dispatches).
+    _sf_cache: dict = {}
+    def _sf_verifier() -> bool:
+        if os.environ.get("ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE", "1") == "0":
+            return False
+        if "v" not in _sf_cache:
+            _sf_cache["v"] = False
+            try:
+                from ztare.leanmill.solver.conjecture import verify_statement_false_claim
+                _src = Path(row["source_file"]).read_text(encoding="utf-8", errors="replace")
+                _conf, _, _ = verify_statement_false_claim(target, _src, goal, lean_root, 180)
+                _sf_cache["v"] = bool(_conf)
+            except Exception:  # noqa: BLE001 — a verifier failure ⇒ no short-circuit (normal best-of-N path)
+                _sf_cache["v"] = False
+        return _sf_cache["v"]
     r = solve_robust(goal, defs=defs, project_dir=str(lean_root), repo=str(lean_root),
                      lake_bin="lake", providers=leaf_provider_order(), target=target,
-                     timeout=timeout_s, decompose=True)
+                     timeout=timeout_s, decompose=True, statement_false_verifier=_sf_verifier)
     if r.inadmissible:
         return False, "", f"INADMISSIBLE (uncalibrated instrument, not a real negative): {r.reason}"
 
@@ -1634,11 +1688,15 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
     _pdir = probe_dir(lean_root)   # readback MUST match solve_leaf's write dir
     # Use the EXACT winning probe the leaf recorded (2026-06-13 audit A1/B2 — no `_0` guess, no
     # lexically-mis-ordered glob). Fall back to `_0` only for an older leaf that didn't carry it.
-    _wp = _best.get("winner_probe") or f"RobustProbe_{winner}_0.lean"
+    # CANONICAL name (anti-sibling, 2026-06-23): build the fallback through the SAME helper the writer uses, so
+    # the reader can never look for `RobustProbe_<winner>_0` while the writer wrote `RobustProbe_<target>_<winner>_0`
+    # (the winner_probe-drift bug that discarded a kernel-valid proof as 'probe unreadable').
+    from ztare.leanmill.solver.agentic_leaf import robust_probe_name as _rpn, robust_probe_glob as _rpg
+    _wp = _best.get("winner_probe") or _rpn(target, winner, 0)
     probe = _pdir / _wp
     if not probe.exists():
         # last resort (old leaf / cleaned dir): the highest NUMERIC attempt suffix, not lexical
-        _cands = list(_pdir.glob(f"RobustProbe_{winner}_*.lean"))
+        _cands = list(_pdir.glob(_rpg(target, winner)))
         if _cands:
             def _idx(p):
                 try:
@@ -1650,8 +1708,12 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
     ptxt = ""
     if probe.exists():
         ptxt = probe.read_text(encoding="utf-8", errors="replace")
-        pm = _re.search(rf"(?ms)theorem\s+{_re.escape(target)}\b.*?:=\s*(by.*?)(?:\n#print|\Z)", ptxt)
-        proof = pm.group(1).strip() if pm else ""
+        # CANONICAL proof-body extraction (NO hand-rolled decl regex — `lean_source` exists for exactly this):
+        # fence the named decl, then binder-safe split at the proof `:=`. Handles TERM proofs too (the old
+        # `(by.*?)` regex silently missed them) and is never truncated by a `:=` inside a binder.
+        from ztare.leanmill.lean_source import _decl_body as _ls_decl_body, split_at_proof as _ls_split_at_proof
+        _proof_part = _ls_split_at_proof(_ls_decl_body(ptxt, target) or "")[1].lstrip()
+        proof = (_proof_part[2:].lstrip() if _proof_part.startswith(":=") else _proof_part)
     # FAIL-CLOSED on an unverifiable closure (2026-06-13 audit): the warm path is THE move that trusts a
     # SELF-EDITED probe file, so the statement-integrity diff below is the ONLY thing standing between it and
     # statement-laundering. If the winning probe is unreadable we cannot run that diff — so we must NOT credit
@@ -1720,136 +1782,10 @@ def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tupl
     return True, proof, f"agentic_leaf closed by {winner} (rounds={r.rounds}, decomposed={r.decomposed})"
 
 
-def _warm_agent_solve(row: dict, lean_root: Path, timeout_s: int) -> tuple[bool, str, str]:
-    """Warm-agent solver: Claude with Bash+Edit+Read enabled, working in a
-    scratch dir under `lean_root/.solver_scratch/<row_id>/`, asked to write
-    a proof body into target.lean and verify it by running `lake env lean`.
-
-    Unlike the one-shot ClaudeOpus provider (text-trust), the warm agent
-    sees its own kernel verdicts and can iterate on errors. WebSearch and
-    WebFetch stay disallowed to keep contamination-free.
-
-    Returns (compile_ok, proof_text, transcript_tail).
-    """
-    base_goal = (row.get("goal") or "").strip()
-    target_name = row.get("target_theorem_name") or ""
-    src_path_str = ProofTarget.from_row(row).source_file   # source-only BY INTENT (not source_path's fallback)
-    if not base_goal or not target_name or not src_path_str:
-        return False, "", "missing row fields (goal / target / source_file)"
-    src_path = Path(src_path_str)
-    if not src_path.exists():
-        return False, "", f"source_file does not exist: {src_path}"
-    # §6n FLIP 2026-06-02 (operator-authorized): route the warm solve through the validated
-    # agentic_leaf primitive by DEFAULT. It adds calibration-first (provider+substrate liveness,
-    # so a dead instrument can't masquerade as a real negative) + best-of-N across codex+claude +
-    # independent axiom-allowlist gating. The agentic leaf is the frontier move generator (a SOTA
-    # general model iterating against the kernel); the governed harness itself is the frontier
-    # prover. Reversible: ZTARE_AGENTIC_LEAF=0 falls back to the legacy one-shot warm agent below.
-    if os.environ.get("ZTARE_AGENTIC_LEAF", "1") != "0":
-        return _agentic_leaf_warm_solve(row, lean_root, timeout_s)
-    # Per-row scratch dir under lean_root so `lake env lean` works.
-    scratch_root = lean_root / ".solver_scratch"
-    scratch_root.mkdir(parents=True, exist_ok=True)
-    scratch_dir = scratch_root / row.get("row_id", "anon")
-    scratch_dir.mkdir(parents=True, exist_ok=True)
-    target_file = scratch_dir / "target.lean"
-    # Seed target.lean with the full source file (preludes + helper lemmas)
-    # and a `by sorry` placeholder for the target theorem. The agent edits
-    # this file in place, then runs lake env lean on it.
-    try:
-        full_text = src_path.read_text(encoding="utf-8", errors="replace")
-    except Exception as exc:
-        return False, "", f"could not read source_file: {exc!r}"
-    # Replace `<target> := <anything>` with `<target> := by sorry` so the
-    # agent has a clean stub to edit. Keep the rest of the file unchanged.
-    import re as _re
-    stub_pattern = _re.compile(
-        rf"(theorem|lemma)\s+{_re.escape(target_name)}\b.*?:=\s*by\s*sorry",
-        _re.DOTALL,
-    )
-    if not stub_pattern.search(full_text):
-        # Fall back: append our own stub at end of file if not already present
-        if f"theorem {target_name}" not in full_text:
-            full_text = full_text.rstrip() + f"\n\n{base_goal}\n  sorry\n"
-    target_file.write_text(full_text, encoding="utf-8")
-
-    abs_target = str(target_file)
-    abs_lean_root = str(lean_root)
-    prompt = (
-        f"You are a Lean 4 theorem prover. The Lean project root (lakefile present) is "
-        f"`{abs_lean_root}`. Your scratch file is `{abs_target}`. "
-        f"Inside it there is a theorem named `{target_name}` whose proof body is "
-        f"currently `by sorry`. Replace `sorry` with a tactic block that closes the goal "
-        f"so that the command `cd {abs_lean_root} && lake env lean {abs_target}` returns "
-        f"exit code 0 with no `error:` lines.\n\n"
-        f"WORKFLOW (use Bash + Read + Edit tools):\n"
-        f"1. Read `{abs_target}` to see the prelude (imports, definitions, helper lemmas) and the target.\n"
-        f"2. Edit the proof body. Try `by exact?`, `by aesop`, `by simp_all`, `by omega`, "
-        f"`by decide`, `by linear_combination …`, or a hand-written tactic block, depending on the goal "
-        f"shape. (NOTE: `polyrith` is DEAD — its external service was shut down. For a polynomial identity "
-        f"that follows from equation hypotheses, use the `groebner` tool to get the exact `linear_combination`.)\n"
-        f"3. Verify by running: `cd {abs_lean_root} && lake env lean {abs_target}`\n"
-        f"4. If the kernel reports errors, read the error, refine the proof, verify again.\n"
-        f"5. STOP when either (a) the kernel returns exit 0 with no `error:` lines, or (b) you have made 5 verification attempts.\n\n"
-        f"FINAL OUTPUT (must be the last line you print): 'DONE' on success or 'GIVE_UP <one-line reason>' on failure.\n"
-        f"Do not modify any other files. Do not use WebSearch or WebFetch."
-    )
-
-    import sys
-    repo = Path(__file__).resolve().parents[4]
-    if str(repo) not in sys.path:
-        sys.path.insert(0, str(repo))
-    try:
-        from ztare.common.subscription_agent_runtime import (  # type: ignore
-            run_subscription_agent_with_recovery,
-        )
-    except Exception as exc:
-        return False, "", f"subscription_agent_runtime import failed: {exc!r}"
-    try:
-        run = run_subscription_agent_with_recovery(
-            runtime="claude",
-            prompt=prompt,
-            agent_id=f"leanmill::solver_lane::warm::{row.get('row_id', 'anon')}",
-            repo=repo,
-            session_state=None,
-            timeout_seconds=timeout_s,
-            claude_disallowed_tools=["WebSearch", "WebFetch"],
-        )
-    except Exception as exc:
-        return False, "", f"warm agent exception: {exc!r}"
-    stdout = (getattr(run.result, "stdout", "") or "") if run else ""
-    stderr = (getattr(run.result, "stderr", "") or "") if run else ""
-    # After the agent exits, kernel-verify the final state of target.lean.
-    final_text = target_file.read_text(encoding="utf-8", errors="replace")
-    # Extract proof body for the typed-exit record.
-    proof_match = _re.search(
-        rf"(theorem|lemma)\s+{_re.escape(target_name)}\b.*?:=\s*by\b(.*?)(?=\n\s*(theorem|lemma|def|instance|end|namespace|#|/-)\b|\Z)",
-        final_text,
-        _re.DOTALL,
-    )
-    proof_body = (proof_match.group(2).strip() if proof_match else "")
-    try:
-        proc = run_lake_subprocess(
-            ["lake", "env", "lean", str(target_file)],
-            str(lean_root), timeout_s=timeout_s,
-        )
-        output = (proc.stdout or "") + "\n" + (proc.stderr or "")
-        # _is_compile_ok rejects sorry/admit/bare-error: `lake env lean` exits 0 on a
-        # `sorry` (it's a warning), so the old `rc==0 and "error:" not in output` minted
-        # FALSE `closed` verdicts for abandoned-with-sorry rows into the governance ledger
-        # (caught by the 2-row smoke 2026-05-30). Use the hardened oracle.
-        kernel_ok = _is_compile_ok(proc.returncode, output)
-        tail = (
-            f"[agent stdout tail]\n{stdout[-400:]}\n"
-            f"[kernel verify exit={proc.returncode}]\n{output[-600:]}"
-        )
-    except subprocess.TimeoutExpired:
-        kernel_ok = False
-        tail = "kernel verify timed out"
-    except FileNotFoundError as exc:
-        kernel_ok = False
-        tail = f"lake not on PATH: {exc!s}"
-    return kernel_ok, proof_body, tail[-1200:]
+# NOTE: `_warm_agent_solve` was REMOVED 2026-06-23 — ONE leaf entry point. Its live path already delegated
+# to `_agentic_leaf_warm_solve` (→ best-of-N `solve_robust` → `solve_leaf`); the only other branch was the
+# dead-by-default legacy one-shot baseline (`ZTARE_AGENTIC_LEAF=0`). Callers now invoke
+# `_agentic_leaf_warm_solve` directly, so there is no parallel leaf path and a fix lands in ONE place.
 
 
 @dataclass
@@ -2255,7 +2191,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
          cold-shot fan-out / frontier slot),
       2. governs the emitted proof through the EXISTING `_validate_against_contract`
          (kernel-compile receipt + matched-negative-control receipt; reuses
-         `_is_compile_ok` via `_verify_compile` / `_warm_agent_solve`),
+         `_is_compile_ok` via `_verify_compile` / `_agentic_leaf_warm_solve`),
       3. returns a typed MoveResult whose `kernel_clean` / `mnc_passed` are read
          straight off the governance receipts — the search NEVER self-credits.
 
@@ -2382,8 +2318,8 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             from ztare.leanmill.solver.proof_state import extract_unsolved_goals
 
             def _warm_gen(_ctx):
-                _o, _p, _t = _warm_agent_solve(_ctx["row"], (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
-                                               _cap("warm", max(180, verify_timeout * 2)))
+                _o, _p, _t = _agentic_leaf_warm_solve(_ctx["row"], (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
+                                                      _cap("warm", max(180, verify_timeout * 2)))
                 return {"ok": _o, "proof": _p, "tail": _t}
 
             def _warm_verify(_a):
@@ -3253,10 +3189,15 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
 
             def _validate_and_maybe_close(prov_label: str, compile_ok: bool,
                                           proof_text: str, compile_tail: str,
-                                          start_t: float) -> dict | None:
+                                          start_t: float,
+                                          closure_source: "str | None" = None,
+                                          posed_source: "str | None" = None) -> dict | None:
                 """Run contract validation; if credit_ready, build the
                 closed-result dict and return it (caller appends + continues).
-                If not credit_ready, return None and the dispatcher walks on."""
+                If not credit_ready, return None and the dispatcher walks on.
+                `closure_source` (optional) = the COMPLETE proof-carrying source to govern verbatim — the
+                pre-verified-champion path passes the mode-agnostic `swap_sorry(source, champion)` so a TERM
+                champion is governed as the proposer verified it (not re-forced into `:= by`)."""
                 if not compile_ok or not proof_text.strip():
                     return None
                 validation = _validate_against_contract(
@@ -3269,6 +3210,8 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     kernel_compile_ok=compile_ok,
                     kernel_compile_tail=compile_tail,
                     goal_type=r.get("goal"),
+                    closure_source=closure_source,
+                    posed_source=posed_source,
                 )
                 providers_tried[-1]["contract_validation"] = validation
                 if not validation["credit_ready_at_solver_layer"]:
@@ -3342,6 +3285,71 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                     },
                 }
 
+            # --- Layer 1.5: PRE-VERIFIED CHAMPION (governed proposer pool) ──────────────────────────────
+            # A proposer (the governed pool, via solve_adhoc) already produced a proof that passed its own
+            # compile-verify and handed it over in row["_preverified_proof"]. Route it through the SAME governance
+            # every move uses — kernel compile + MNC + anti-laundering + axiom audit, via _validate_and_maybe_close
+            # — BEFORE re-deriving. ROOT-CAUSE FIX (2026-06-22): previously the pool spliced the champion into the
+            # source FILE and relied on the DAG/cascade to "re-verify + govern", but those build from the GOAL
+            # signature and RE-DERIVE, so a VALID champion was silently discarded → target read closed-NOT-ratified.
+            # credit_ready ⇒ a real ratified closure + cert; rejected ⇒ a proper rejected_* (recorded by
+            # _validate_and_maybe_close); neither ⇒ fall through to the cascade (re-derive). No new soundness surface
+            # — the SAME _validate_against_contract every move routes through. (Only solve_adhoc sets this field,
+            # and it runs mode="cascade", so the cascade-path placement covers every current caller.)
+            _pvp = (r.get("_preverified_proof") or "").strip()
+            if _pvp:
+                _pv_prov = r.get("_preverified_provider") or "proposer_pool"
+                _pv_start = time.time()
+                # Splice + verify the champion the SAME MODE-AGNOSTIC way the proposer did: `swap_sorry(source,
+                # champion)` handles a TERM proof (placed after `:=`) AND a tactic `by` body; the layered
+                # `enriched_goal` ends `:= by`, which mangles a TERM champion (the two-verify-worlds split that
+                # left the pool's valid champion unratifiable). Compile via `_campaign_aware_proof_compiles` (the
+                # SAME check the pool used) and govern the EXACT spliced artifact via `closure_source`.
+                from ztare.leanmill.lean_source import swap_sorry as _swap_pv
+                _pv_root = (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY)
+                _pv_srctext = ""
+                try:
+                    _pv_sp = ProofTarget.from_row(r).source_path()
+                    if _pv_sp and Path(_pv_sp).exists():
+                        _pv_srctext = Path(_pv_sp).read_text(encoding="utf-8", errors="replace")
+                except Exception:  # noqa: BLE001 — missing source ⇒ treat as a non-compile, fall to cascade
+                    _pv_srctext = ""
+                _pv_full = _swap_pv(_pv_srctext, _pvp) if _pv_srctext else ""
+                _pv_ok = bool(_pv_full) and "sorry" not in _pv_full and _campaign_aware_proof_compiles(
+                    _pv_srctext, _pvp, _pv_root, verify_timeout)
+                providers_tried.append({
+                    "provider": _pv_prov,
+                    "outcome": "compiled" if _pv_ok else "failed_compile",
+                    "compile_ok": _pv_ok,
+                    "provider_wallclock_s": round(time.time() - _pv_start, 2),
+                    "agent_kind": "preverified_champion",
+                })
+                if _pv_ok:
+                    _pv_closed = _validate_and_maybe_close(
+                        _pv_prov, True, _pvp, "pre-verified champion (mode-agnostic splice)", _pv_start,
+                        closure_source=_pv_full, posed_source=_pv_srctext)
+                    if _pv_closed is not None:
+                        # Record the closed (compile_ok=1) attempt on THIS row_id — the row the post-solve
+                        # governance stamp (`_record_governance_verdict`) and the closure cert anchor on. Without
+                        # it the closure was genuine (full governance passed inside `_validate_and_maybe_close`)
+                        # but left NO ratified=1 row and NO cert — a telemetry UNDER-report (and the conservation
+                        # guard would read green for the wrong reason, having no `closed` row to check).
+                        # A closure via the proof_cache cite IS reuse — record it under the CANONICAL `cache_reuse`
+                        # move (the DAG path's label), so reuse telemetry + campaign_cycle_time count it instead of
+                        # the raw `proof_cache` provider label that read as 0 cites. Other pre-verified providers
+                        # (proposer_pool / external) keep their own move (auto-derived from the provider).
+                        _record_attempt(r["row_id"], _pv_prov, "closed", True,
+                                        "pre-verified champion ratified (mode-agnostic splice)",
+                                        move=("cache_reuse" if _pv_prov == "proof_cache" else None))
+                        results.append(_pv_closed)
+                        continue
+                    # governance rejected the champion → _validate_and_maybe_close already recorded the
+                    # rejected_* outcome; fall through to the cascade so the target still gets a genuine attempt.
+                else:
+                    _record_attempt(
+                        r["row_id"], _pv_prov, "failed_compile", False,
+                        "pre-verified champion did not recompile (mode-agnostic) in solve context")
+
             # --- Layer 2: native hammer (FREE, deterministic, ranked by hit
             # rate on Mathlib targets — Magnushammer-style first attack).
             # Dispatched through the split deterministic module (task #42); the
@@ -3395,7 +3403,7 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                 # iterating against `lake env lean` directly). Higher P(close)
                 # than a one-shot LLM call.
                 warm_start = time.time()
-                warm_ok, warm_proof_text, warm_tail = _warm_agent_solve(
+                warm_ok, warm_proof_text, warm_tail = _agentic_leaf_warm_solve(
                     r, (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY), max(180, timeout_s),
                 )
                 warm_outcome = "closed" if warm_ok else "failed_compile"
@@ -3773,13 +3781,18 @@ def _decomposition_closed_result(target_name: str, goal: str, iso_result: dict) 
     return res
 
 
-def _agent_recommends_decompose(goal: str, source_text: str, lean_root, timeout_s: int) -> bool:
-    """AGENT-AS-STRATEGIST (#106 follow-up, the operator's 'the agent should NOTICE it can't close this
-    directly' point): ONE cheap up-front question — can this goal be closed DIRECTLY, or does it need
-    DECOMPOSITION? — so the apparatus decomposes FIRST when the AGENT judges a direct proof doomed, even WITHOUT
-    a human-seeded blueprint. The direct cascade only ever prompts the agent to PROVE; this gives it the SAME
-    strategic judgment the iso planner has, BEFORE it grinds. Fail-safe: any error / parse-miss → False → the
-    normal cascade (no behaviour change); CONSERVATIVE — True only on a clear DECOMPOSE verdict."""
+def _agent_strategy_verdict(goal: str, source_text: str, lean_root, timeout_s: int) -> str:
+    """AGENT-AS-STRATEGIST (#106 follow-up, the operator's 'the agent should NOTICE it can't close this directly'
+    point) — the up-front strategic fork the iso planner has, framed MECE over TWO ORTHOGONAL dimensions (docs
+    §4.3a): **Dim A — TRUTH** (is the goal TRUE → prove, or FALSE → falsify; a clean ME+CE binary) and **Dim B —
+    proof-HOW** (SOLVE_DIRECT vs DECOMPOSE, the sub-choice under 'prove'). Returns ONE of
+    'SOLVE_DIRECT' | 'DECOMPOSE' | 'FALSIFY'.
+
+    The FALSIFY branch is the AGENCY that lets the agent NOTICE a goal is FALSE (its context/substrate may already
+    refute a too-weak formulation) and ELECT to prove ¬G — instead of the harness DETERMINISTICALLY falsifying for
+    it (the creep that was tried + reverted 2026-06-23). Goldilocks: the DECISION is the agent's (a move/strategy,
+    upstream agency); the kernel only VERIFIES the ¬G it elects (the soundness boundary). Fail-safe: any error /
+    parse-miss → 'SOLVE_DIRECT' (the conservative default = the normal direct cascade, byte-parity)."""
     try:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch
         from ztare.leanmill.solver import prompts as _p
@@ -3787,11 +3800,13 @@ def _agent_recommends_decompose(goal: str, source_text: str, lean_root, timeout_
         prompt = _p.STRATEGY_ASSESSMENT_PROMPT.format(goal=((goal or "").strip() or (source_text or ""))[:1500])
         raw = (default_dispatch(prompt, repo=lean_root, timeout=min(int(timeout_s), _tb("provider_live"))) or "").strip()
         first = raw.upper().splitlines()[0] if raw else ""
-        decided = ("DECOMPOSE" in first) and ("SOLVE_DIRECT" not in first)
-        print(f"[solve_adhoc] agent strategy assessment → {'DECOMPOSE' if decided else 'SOLVE_DIRECT/unclear'}", flush=True)
-        return decided
+        verdict = ("FALSIFY" if "FALSIFY" in first
+                   else "DECOMPOSE" if ("DECOMPOSE" in first and "SOLVE_DIRECT" not in first)
+                   else "SOLVE_DIRECT")
+        print(f"[solve_adhoc] agent strategy assessment → {verdict}", flush=True)
+        return verdict
     except Exception:  # noqa: BLE001 — never let the assessment break the solve
-        return False
+        return "SOLVE_DIRECT"
 
 
 def _should_decompose_first(*, cited_from_cache: bool, iso_route_on: bool, decompose_first_on: bool,
@@ -3847,9 +3862,10 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
     """GOVERNED PROPOSER POOL pre-attack (the isomorphism-surfaced diverse-propose move; default-on,
     `ZTARE_LEANMILL_PROPOSER_POOL=0` reverts to the single leaf). If the FREE native cascade misses, fan a
     DIVERSE portfolio (claude/codex/kimi), EV-champion-select by per-model prior, serial KERNEL-verify in EV
-    order, and on a verified champion return the source with the proof spliced in — for `solve()` to RE-verify
-    + govern + bank, the SAME splice pattern as the proof_cache pre-attack. None on miss / disabled / native-
-    already-closes. PURE proposer: the kernel still ratifies every closure downstream (no soundness surface); the
+    order, and on a verified champion return the champion PROOF (the body) for `solve_adhoc` to route through
+    governance (`solve()` ratifies it via `_validate_and_maybe_close` BEFORE re-deriving — the fix for the pool-
+    closure-drop where a spliced-into-the-file champion was ignored by the DAG/cascade). None on miss / disabled /
+    native-already-closes. PURE proposer: the kernel still ratifies every closure downstream (no soundness surface); the
     only price is k model dispatches, gated on a native-miss so trivial goals never pay it (Haldane/Graham)."""
     from ztare.leanmill.solver.proposer_pool import pool_enabled
     if not pool_enabled():   # ONE source of truth for the default (was a raw env-check here that DUPLICATED
@@ -3863,10 +3879,12 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
     _max_d = int(os.environ.get("ZTARE_LEANMILL_PROPOSER_POOL_MAX_DEPTH", "0") or 0)
     if _iso_depth is not None and int(_iso_depth) > _max_d:
         return None
+    target_name = str(row.get("target_theorem_name") or row.get("row_id") or "pool")
     try:
         # cost discipline: a goal the FREE native cascade closes needs no portfolio (don't burn k models).
         if os.environ.get("ZTARE_LEANMILL_POOL_NATIVE_GATE", "1") != "0":
-            ok_nh, _, _ = _native_hammer_probe(row, sub, min(int(timeout_s), 120))
+            with _phase_timer("native", target=target_name):
+                ok_nh, _, _ = _native_hammer_probe(row, sub, min(int(timeout_s), 120))
             if ok_nh:
                 return None
         from ztare.leanmill.solver.proposer_pool import attack_node, model_priors
@@ -3877,8 +3895,7 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
             # was dead weight on P1). Route through the shared seam that uses the theory env + namespace when a
             # campaign substrate is set — the SAME path the warm leaf closes through.
             return _campaign_aware_proof_compiles(source_text, prop.proof_text, sub, tcap)
-        _tgt = row.get("target_theorem_name") or row.get("row_id", "pool")
-        out = attack_node(_tgt, _POOL_PROMPT_TMPL.format(goal=goal), _verify,
+        out = attack_node(target_name, _POOL_PROMPT_TMPL.format(goal=goal), _verify,
                           repo=str(sub), timeout=tcap, priors=model_priors())
         # PER-MODEL ATTRIBUTION (the missing learning leg): record each KERNEL-VERIFIED pool proposal as a
         # per-MODEL attempt, so `calibrate_by_model` builds REAL diverse-model priors (currently the DB has no
@@ -3891,23 +3908,30 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
             _n = len(out.verified_order)
             for _i, _m in enumerate(out.verified_order):
                 _is_closer = bool(out.closed and _i == _n - 1)
-                _record_attempt(_tgt, _m, "closed" if _is_closer else "failed",
+                # CONSERVATION (2026-06-22): the pool VERIFY only proves the champion COMPILES sorry-free — it is
+                # NOT a ratified closure (governance/MNC/axiom-audit have not run). Recording "closed" here was the
+                # misleading telemetry row that made the target read closed-NOT-ratified. Record the honest per-
+                # model signal (`compiled_unratified`); the REAL closure outcome (ratified | rejected_*) is recorded
+                # by solve()'s _validate_and_maybe_close once the champion is routed through governance below.
+                _record_attempt(target_name, _m, "compiled_unratified" if _is_closer else "failed",
                                 compile_ok=_is_closer, notes="governed_pool", move="proposer_pool")
         except Exception:  # noqa: BLE001 — telemetry is best-effort; never block the solve
             pass
         if out.closed and out.committed:
-            # FIX (2026-06-20, bug-hunt): `_swap` is bound only in `solve_adhoc`'s scope, NOT here — its absence
-            # raised NameError → swallowed by the outer bare-except (line below) → EVERY kernel-verified pool
-            # champion was silently DISCARDED (the pool's close path was dead; the DB "closed" at 3808 is the
-            # telemetry written BEFORE the splice). Import locally, mirroring the proof_cache splice. Sound: the
-            # spliced source is RE-verified + governed + banked by solve() downstream (no soundness surface).
-            from ztare.leanmill.lean_source import swap_sorry as _swap
-            spliced = _swap(source_text, out.committed.proof_text)
-            if spliced and "sorry" not in spliced:
-                print(f"[solve_adhoc] GOVERNED POOL closed '{row.get('target_theorem_name')}' via "
+            # ROOT-CAUSE FIX (2026-06-22): RETURN THE CHAMPION PROOF, not a spliced source. The old path spliced the
+            # proof into source_text and relied on solve() to "re-verify + govern + bank" — but solve()'s DAG/cascade
+            # builds from the GOAL signature and RE-DERIVES (native_hammer's compile_stub even strips a no-sorry
+            # source back to `:= by`), so it never compiled the spliced source-as-given. A VALID champion was thus
+            # silently dropped and the target read closed-NOT-ratified (pool telemetry said "closed", governance
+            # never ran on it). Now solve_adhoc puts the champion in row["_preverified_proof"] and solve() routes it
+            # through the SAME governance every move uses (_validate_and_maybe_close) BEFORE re-deriving: it ratifies
+            # (real closure + cert) or records a proper rejected_* — never a silent drop. No new soundness surface.
+            _champion = (out.committed.proof_text or "").strip()
+            if _champion and "sorry" not in _champion:
+                print(f"[solve_adhoc] GOVERNED POOL champion for '{row.get('target_theorem_name')}' via "
                       f"{out.committed.model} (EV order {out.verified_order}; cross-model agreement "
-                      f"{out.agreement}) — spliced for governance + banking", flush=True)
-                return spliced
+                      f"{out.agreement}) — routing to governance for ratification", flush=True)
+                return _champion
     except Exception:  # noqa: BLE001 — best-effort; any failure → the normal single-leaf path (never blocks a solve)
         return None
     return None
@@ -3916,7 +3940,9 @@ def _governed_pool_preattack(row: dict, source_text: str, goal: str, sub: Path, 
 def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 provider: str | None = None, timeout_s: int = 500,
                 mode: str = "cascade", substrate: "Path | None" = None,
-                notes: "str | None" = None, _iso_depth: "int | None" = None) -> dict:
+                notes: "str | None" = None, _iso_depth: "int | None" = None,
+                preverified_proof: "str | None" = None,
+                preverified_provider: "str | None" = None) -> dict:
     """Ad-hoc-target entry — run a ONE-OFF lemma through the FULL governed pipeline (the gap that
     bred the bespoke harnesses). `source_text` is a complete .lean file whose `target_name`
     declaration ends in `sorry`; it is written into `substrate`, wrapped in the reference-leakage
@@ -3947,41 +3973,92 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     src.write_text(source_text, encoding="utf-8")
     if not goal:  # derive the goal signature from source ROBUSTLY (verbatim; not the brittle first-`:=`)
         goal = _extract_target_signature(source_text, target_name) or target_name
+    # FORMALIZATION-QUALITY lint (2026-06-23 iso_lemma1 RCA): a bare order instance subsumed by an Order class on
+    # the same type (`[LE α]` under `[Preorder α]`) is an instance DIAMOND that makes the statement UNPROVABLE —
+    # and the symptom (failed_compile / a spurious STATEMENT-FALSE) hides the real cause. Surface it LOUDLY up
+    # front so a malformed sub-lemma is diagnosed before the solve burns on it. Advisory (never blocks); the cure
+    # is re-formalizing without the redundant binder. The planner's `iso_lemma1` carried `[LE α] [Preorder α]`.
+    _redundant_instances: "list[str]" = []
+    try:
+        from ztare.leanmill.lean_source import redundant_subsumed_instances as _rsi
+        _redundant_instances = _rsi(source_text, target_name)
+        if _redundant_instances:
+            print(f"[solve_adhoc][FORMALIZATION-LINT] '{target_name}' has REDUNDANT subsumed instance(s): "
+                  f"{_redundant_instances} — an instance diamond that typically makes the statement UNPROVABLE "
+                  f"(2026-06-23 iso_lemma1 RCA). Re-formalize WITHOUT the bare binder.", flush=True)
+    except Exception:  # noqa: BLE001 — advisory only; never block a solve
+        _redundant_instances = []
     row = {"row_id": f"adhoc::{target_name}", "target_theorem_name": target_name,
            "source_file": str(src), "sorried_file": str(src), "goal": goal,
            "rejection_reasons": ["no_positive_family_template"], "target_resolution_ok": True}
     prov = provider or _policy_model()
-    # (b) PRE-ATTACK LIBRARY CHECK (amnesia RCA 2026-06-19): BEFORE the native pre-filter / planner re-derive a
-    # lemma we ALREADY proved, consult the proof_cache (α-equiv keyed, default-on) + RE-VERIFY the banked proof
-    # IN-CONTEXT. A hit splices the cited proof into the source (`swap_sorry`) so the NORMAL solve() pipeline
-    # compiles + governs + banks it — instant cited closure instead of re-deriving banked plumbing (the
-    # iso_lemma1≡iso_lemma_split waste). SOUND: re-verified against THIS goal here AND re-governed by solve()
-    # downstream; a non-porting hit is a MISS (source unchanged, normal path). ZTARE_LEANMILL_PROOF_CACHE_PREATTACK=0
-    # reverts. Reuses ProofCache + _verify_compile + lean_source.swap_sorry — no re-rolled closure/cert logic.
-    _cited_from_cache = False
-    if (os.environ.get("ZTARE_LEANMILL_PROOF_CACHE_PREATTACK", "1") != "0"
+    # EXTERNALLY-PRODUCED PROOF (operator hand-off / recovered artifact): route a COMPLETE compiling proof
+    # STRAIGHT to governance via the SAME `_preverified_proof` seam the proposer-pool champion uses — kernel
+    # compile + MNC + axiom audit + statement_integrity + closure cert, with NO re-derivation. The proof is
+    # spliced into `source_text` (swap_sorry) inside solve(), so a theory-building target's bespoke helpers
+    # (not in Mathlib) stay in scope. NO new soundness surface — identical to every move's
+    # _validate_against_contract; a bogus/sorried proof fails compile or governance and falls through.
+    _external_pv = bool((preverified_proof or "").strip())
+    if _external_pv:
+        row["_preverified_proof"] = preverified_proof.strip()
+        row["_preverified_provider"] = preverified_provider or "external"
+    # (b) PRE-ATTACK LIBRARY CHECK (amnesia RCA 2026-06-19; SINGLE-DOOR routing 2026-06-24): BEFORE the native
+    # pre-filter / planner re-derive a lemma we ALREADY proved, consult the proof_cache (Expr-hash keyed, default-on);
+    # a hit hands the banked proof to the ONE preverified-proof governance seam (`_pvp` in solve()) — the SAME door
+    # the proposer pool and external proofs use — which splices into the FULL source (defs in scope), compiles
+    # campaign-aware, and runs the complete kernel+MNC+axiom governance + banking. NO bespoke splice/verify here (the
+    # class of bug that put us here: a private re-verify against the BARE goal had the inlined defs out of scope →
+    # `unknown identifier` → silent cite skip → re-derive even on a HIT). ZTARE_LEANMILL_PROOF_CACHE_PREATTACK=0
+    # reverts. `_cited_from_cache=True` is the existing "have a candidate, ratify it first, don't re-derive" signal
+    # the pool sets; an explicit external proof skips cache/pool/decompose-first → straight to the same `_pvp` door.
+    _cited_from_cache = _external_pv
+    # CANONICAL CACHE KEY (2026-06-24): the kernel `Expr.hash` of the target's de-Bruijn TYPE — α-/∀-fronting-
+    # invariant where the text key is not (the multi-decl define_then_state probe keyed on its leading def's `:=`,
+    # and `(h):Q` vs `:∀h,Q` never matched). Computed ONCE here from the warm REPL (a byproduct of the verify we
+    # already run) and REUSED at the deposit below so deposit-key == lookup-key for the SAME statement. None ⇒
+    # the text key still works (graceful degrade). SOUND regardless: every cache hit is re-verified in-context.
+    _canon_key = None
+    try:
+        from ztare.formal.repl_compile import canonical_type_hash_via_repl as _cth
+        _canon_key = _cth(source_text, target_name, sub)
+    except Exception:  # noqa: BLE001 — best-effort; text key is the fallback
+        _canon_key = None
+    if (not _cited_from_cache
+            and os.environ.get("ZTARE_LEANMILL_PROOF_CACHE_PREATTACK", "1") != "0"
             and os.environ.get("ZTARE_PROOF_CACHE", "1") != "0"):
         try:
             from ztare.leanmill.solver.proof_cache import ProofCache as _PCpre
-            _banked = _PCpre(OUT_DIR / "solver_lane_proof_cache.jsonl").get(goal)
-            if _banked and _verify_compile(row["row_id"], goal, _banked, sub, min(int(timeout_s), 180))[0]:
-                from ztare.leanmill.lean_source import swap_sorry as _swap
-                _cited_src = _swap(source_text, _banked)
-                if _cited_src and "sorry" not in _cited_src:
-                    src.write_text(_cited_src, encoding="utf-8"); source_text = _cited_src
-                    _cited_from_cache = True
-                    print(f"[solve_adhoc] CITED banked rung from proof_cache (re-verified in-context) — "
-                          f"skipped re-derivation of '{target_name}'", flush=True)
+            _banked = _PCpre(OUT_DIR / "solver_lane_proof_cache.jsonl").get(goal, key=_canon_key)
+            if _banked:
+                # SINGLE DOOR (2026-06-24): hand the banked proof to the ONE preverified-proof governance seam
+                # (`_pvp` below — the SAME door the proposer pool and external proofs use), NOT a bespoke splice +
+                # re-verify here. That door splices into the FULL source (defs in scope), compiles campaign-aware,
+                # and runs the complete kernel + MNC + axiom governance + banking. Routing through it means the
+                # cache cite can never DRIFT from the pool/external path, and the class of bug it just had — the
+                # re-verify ran against the BARE goal (inlined defs out of scope → `unknown identifier` → silent cite
+                # skip → 526s re-derive even on a cache HIT) — cannot recur, because there is only one verify site.
+                # `_cited_from_cache` skips the pool + decompose-first; `solve()`'s `_pvp` block does the rest.
+                row["_preverified_proof"] = _banked
+                row["_preverified_provider"] = "proof_cache"
+                _cited_from_cache = True
+                print(f"[solve_adhoc] CITED banked rung from proof_cache → preverified-proof governance door "
+                      f"(full-context verify, single seam) for '{target_name}'", flush=True)
         except Exception:  # noqa: BLE001 — best-effort; any failure → normal derive path (never blocks a solve)
             _cited_from_cache = False
     # GOVERNED PROPOSER POOL pre-attack (isomorphism-surfaced diverse-propose; default-on). After the cache
     # cite, before the single-leaf native/planner attack: fan a diverse portfolio → EV champion → serial kernel
     # verify → splice the verified champion so solve() RE-verifies + governs + banks it (same splice as the cache).
     if not _cited_from_cache:
-        _pooled = _governed_pool_preattack(row, source_text, goal, sub, timeout_s, _iso_depth=_iso_depth)
+        with _phase_timer("pool", target=target_name):
+            _pooled = _governed_pool_preattack(row, source_text, goal, sub, timeout_s, _iso_depth=_iso_depth)
         if _pooled:
-            src.write_text(_pooled, encoding="utf-8"); source_text = _pooled
-            _cited_from_cache = True
+            # The pool returns a verified champion PROOF (not a spliced source). Hand it to solve() via the row;
+            # solve() ratifies it through the SAME governance every move uses (_validate_and_maybe_close) BEFORE
+            # re-deriving. This is the fix for the pool-closure-drop: a champion merely spliced into the file was
+            # ignored by the DAG/cascade (which re-derive from the goal), so a valid proof was silently discarded.
+            row["_preverified_proof"] = _pooled
+            row["_preverified_provider"] = "proposer_pool"
+            _cited_from_cache = True   # have a candidate → skip decompose-first; solve() ratifies it first
     _prev_refchk = os.environ.get("ZTARE_CLOSURE_REF_CHECK")
     os.environ["ZTARE_CLOSURE_REF_CHECK"] = "1"  # capability entry: record the in-repo-ref receipt
     # Hard one-off targets may need DEEP recursive decomposition (conjecture-DAG spawning + banking
@@ -4018,7 +4095,8 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         if os.environ.get("ZTARE_LEANMILL_NATIVE_PREFILTER", "1") == "0":
             return False
         try:
-            ok_nh, _tac, _tail = _native_hammer_probe(row, sub, min(int(timeout_s), 300))
+            with _phase_timer("native", target=target_name):
+                ok_nh, _tac, _tail = _native_hammer_probe(row, sub, min(int(timeout_s), 300))
             if ok_nh:
                 print("[solve_adhoc] native pre-filter CLOSED the goal — skipping the agent "
                       "strategy-ask + planner (the cascade mints it through full governance)", flush=True)
@@ -4039,6 +4117,14 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
     # FREE native pre-filter; a clean direct proof goes straight to the cascade. ZTARE_LEANMILL_DECOMPOSE_FIRST=0
     # and ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS=0 still revert. (Soundness unchanged — this only reorders which
     # PROVING path is tried first; the kernel ratifies every closure regardless.)
+    # The agent's strategy verdict — computed ONCE, lazily (the `_should_decompose_first` ordering fires it ONLY
+    # when config-on AND the free native pre-filter MISSES), then SHARED by the decompose decision (Dim B) and the
+    # FALSIFY route (Dim A) below — so there is exactly one strategist dispatch, never two.
+    _strategy: "dict[str, str]" = {}
+    def _strategy_verdict() -> str:
+        if "v" not in _strategy:
+            _strategy["v"] = _agent_strategy_verdict(goal, source_text, sub, timeout_s)
+        return _strategy["v"]
     _decomp_first = _should_decompose_first(
         cited_from_cache=_cited_from_cache,   # a pre-attack (cache cite OR governed pool) already spliced a proof
         iso_route_on=os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0",
@@ -4046,9 +4132,37 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         below_cap=_below_cap,
         strategy_assess_on=os.environ.get("ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS", "1") != "0",
         native_closes=_native_prefilter_closes,                                                # #112: FREE filter FIRST
-        agent_recommends=lambda: _agent_recommends_decompose(goal, source_text, sub, timeout_s))  # the AGENT decides
+        agent_recommends=lambda: _strategy_verdict() == "DECOMPOSE")    # Dim B (proof-HOW): the AGENT decides
     _iso_pre = None
     try:
+        # FALSIFY route — Dim A (TRUTH), AGENCY not determinism. The agent ELECTED to prove ¬GOAL (it judged the
+        # goal FALSE — e.g. its context/substrate refutes a too-weak formulation). Fires ONLY when the agent was
+        # actually asked (`_strategy` populated ⇒ config-on + native missed) AND chose FALSIFY. Run the falsify
+        # move; a kernel-CONFIRMED ¬G is a real refutation → emit outcome="falsified" so the caller's
+        # `_solve_refutation` drives the governed reformulation re-entry (the agent STRENGTHENS + re-attacks). NOT
+        # confirmed ⇒ the agent mis-judged (true-but-hard) → fall through to the normal cascade. Sound + non-
+        # spurious: ONLY a kernel ¬G refutes (the v7-trap can't fire). Inside `try` so the `finally` env-restore
+        # runs on the early return. The DECISION is the agent's; the kernel is the only deterministic part.
+        if not _decomp_first and _strategy.get("v") == "FALSIFY":
+            try:
+                from ztare.leanmill.solver.conjecture import verify_statement_false_claim as _vsf
+                from ztare.common.timeouts import timeout_s as _tbf
+                _cf, _wf, _bf = _vsf(target_name, source_text, goal, sub, _tbf("leaf_verify"))
+                if _cf:
+                    print("[solve_adhoc] agent elected FALSIFY → kernel-confirmed ¬G → routing to governed "
+                          "reformulation (strengthen + re-attack)", flush=True)
+                    _fres = {"results": [{"row_id": f"adhoc::{target_name}", "target_theorem_name": target_name,
+                                          "goal": goal, "outcome": "falsified",
+                                          "falsifier": (_bf or _wf or "kernel-checked ¬G (agent-elected FALSIFY)")[:600]}],
+                             "statement_false_verified": True, "quarantined_references": [],
+                             "closure_certificate": None}
+                    if _redundant_instances:
+                        _fres["redundant_instances"] = _redundant_instances
+                    return _fres
+                print("[solve_adhoc] agent elected FALSIFY but ¬G NOT kernel-confirmed → true-but-hard; "
+                      "proceeding to prove", flush=True)
+            except Exception:  # noqa: BLE001 — falsify-route error ⇒ normal cascade (never block a solve)
+                pass
         if _decomp_first:
             try:
                 from ztare.leanmill.solver.isomorphism_decompose import route_and_solve as _ras_pre
@@ -4282,6 +4396,10 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 "substrate": _public_path(sub),
                 "checker": active_proof_checker_name(),    # WHICH checker ratified — auditable across substrates
                 "wall_s": r0.get("provider_wallclock_s"),
+                # INFER-VIA-USE compounding provenance (2026-06-24): True ⇒ the proof-cache/pool pre-attack SERVED
+                # this closure (cited a banked rung, re-verified in-context) instead of re-deriving — the direct,
+                # benchmark-free attribution of a compounding win, read later by `compounding_curve.cost_to_close_trend`.
+                "cited_from_cache": bool(_cited_from_cache),
             }
             # (b) tracked, durable, append-only audit ledger (survives even if the substrate is wiped).
             ADHOC_CLOSURE_CERTIFICATES.parent.mkdir(parents=True, exist_ok=True)
@@ -4291,6 +4409,20 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
             res["closure_lean"] = _public_path(_closure_lean) if _closure_lean else None
         except Exception as _e:
             res["closure_certificate_error"] = repr(_e)[:120]
+    # PROOF-CACHE DEPOSIT (2026-06-24, the cross-run reuse fix): EVERY clean adhoc closure banks its proof to the
+    # canonical proof_cache, keyed by the canonical `Expr.hash` (`_canon_key`) so a FUTURE run's pre-attack lookup
+    # CITES it instead of re-deriving. THE single deposit door — native-pre-filter / warm-direct / decompose all
+    # flow through here, where the scattered dag-search-only deposit missed them (the banked APR lemmas were in the
+    # cert ledger but NEVER in the proof_cache → zero reuse). Dual-indexed (Expr key + text key); re-verified on use.
+    if (r0.get("outcome") == "closed" and (r0.get("proof_text") or "").strip()
+            and os.environ.get("ZTARE_PROOF_CACHE", "1") != "0"):
+        try:
+            from ztare.leanmill.solver.proof_cache import ProofCache as _PCdep
+            _PCdep(OUT_DIR / "solver_lane_proof_cache.jsonl").put(
+                goal, r0.get("proof_text") or "", source=f"adhoc_closure:{target_name}",
+                key=locals().get("_canon_key"))
+        except Exception:  # noqa: BLE001 — banking is best-effort; never fail a closure on a cache write
+            pass
     # compounding: on a clean closure, bank the proof's invented helpers for siblings. Bank from the
     # closure's PROOF_TEXT (the leaf proves in its own probe file; the original `src` keeps its
     # `sorry`, so re-reading src banked nothing — cold-review-adjacent catch 2026-06-03).
@@ -4323,8 +4455,17 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                     res["rung_banked_to_env"] = _br.get("banked_as")
                     res["rung_bank_reason"] = _br.get("reason")
                     if _br.get("banked_as"):
+                        _hb = _br.get("helpers_banked") or []
                         print(f"[compounding] LIBRARY grew — rung '{target_name}' banked to the campaign env "
-                              f"as {_br['banked_as']} (now exact?/aesop-citable, cross-run)", flush=True)
+                              f"as {_br['banked_as']}"
+                              + (f" (+{len(_hb)} helper lemma(s) carried)" if _hb else "")
+                              + " (now exact?/aesop-citable, cross-run)", flush=True)
+                    elif _br.get("reason") not in ("already", None):
+                        # LOUD non-bank (anti-regression 2026-06-24): a SILENT revert hid the helper-drop banking
+                        # bug across many runs (reuse=0, the pari-passu AP gap). Surface every non-trivial non-bank
+                        # so a reverted_noncompile / reverify_unavailable can't masquerade as "no banking happened".
+                        print(f"[compounding] rung '{target_name}' NOT banked (reason={_br.get('reason')}) — "
+                              f"not citable next run; investigate bank_decl_to_env on `reverted_noncompile`", flush=True)
             except Exception as _e:  # noqa: BLE001 — compounding is best-effort; never blocks the closure
                 res["rung_bank_error"] = repr(_e)[:120]
     # MECHANIZED apparatus-vs-math tag on EVERY non-closure (convergent eigenquestion, gemini+codex
@@ -4420,6 +4561,10 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                 # flagging a TRUE, tractable lemma false with a counterexample that fails a structure-field
                 # hypothesis, deadlocking reformulation on a provable statement. =0 reverts to the old
                 # unverified behaviour (for the A/B baseline only).
+                # NB (2026-06-23, Goldilocks): the DECISION to falsify is the AGENT's (it elects PLAN: FALSIFY at
+                # the strategy fork, seeing its context/substrate refutations) — NOT a deterministic harness
+                # "falsify-on-stall" (that creep was tried + reverted). This epilogue only kernel-VERIFIES a leaf's
+                # explicit CLAIM (the soundness boundary); it does not decide strategy.
                 if os.environ.get("ZTARE_LEANMILL_VERIFY_STATEMENT_FALSE", "1") != "0":
                     try:
                         from ztare.leanmill.solver.conjecture import (verify_statement_false_claim,
@@ -4444,6 +4589,8 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
                     _r0sf["statement_false"] = _sf
         except Exception:  # noqa: BLE001 — advisory surface; never break the solve
             pass
+    if _redundant_instances:   # formalization-lint diagnosis on the result (telemetry; the cure is re-formalize)
+        res["redundant_instances"] = _redundant_instances
     return res
 
 

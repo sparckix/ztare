@@ -86,16 +86,23 @@ LEAF_SOLVE_COMMON = (
 # the agent can't know the socket path; this is environment, not hand-holding). `{socket}` / `{probe}` filled.
 LEAF_WARMCHECK_HINT = (
     "\n\nFAST COMPILE — check EVERY iteration against the WARM Lean REPL (not cold `lake env lean`):\n"
-    "  python -m ztare.formal.lean_check_server --check {socket} {probe}\n"
-    "It returns in ~0.1s (warm Mathlib) and prints the EXACT `error:` lines to fix. Iterate against it "
-    "rapidly; only use `lake env lean` if it prints 'server unreachable'.")
+    "  python -m ztare.formal.lean_check_server --check {socket} {probe}{sorry_flag}\n"
+    "It returns in ~0.1s (warm Mathlib), reads the FILE on disk, and prints the EXACT `error:` lines to fix. "
+    "Iterate write→check→fix until it is clean; only use `lake env lean` if it prints 'server unreachable'. A "
+    "`sorry` does NOT count as done — the harness REJECTS any `sorry`, so keep going until the check shows zero "
+    "errors AND the proof is complete (the `--reject-sorry` flag, when present, surfaces a remaining `sorry` in "
+    "the file as an `error:` to fix — a bare `sorry` stub will NOT pass).")
 
-LEAF_DIRECT_PREFIX = "Prove `{target}` : {goal} in {probe} (currently `sorry`). "
+LEAF_DIRECT_PREFIX = (
+    "Prove `{target}` : {goal} by EDITING the file {probe} (currently `sorry`): WRITE the complete proof into "
+    "that file, replacing the `sorry`. The SAVED file with no `sorry` is the deliverable — do NOT merely "
+    "describe the proof or claim it is already done; the harness verifies the file ON DISK, not your message. ")
 
 LEAF_DECOMPOSE_PREFIX = (
     "The theorem `{target}` : {goal} in {probe} is hard. {gap_fb}Work BACKWARD like a mathematician: "
     "identify the intermediate lemmas the real proof needs; prove each, or leave a `-- GAP:` on the ones you "
-    "genuinely cannot; then assemble `{target}` from them. ")
+    "genuinely cannot; then assemble `{target}` from them. WRITE the full DAG (helper lemmas + the assembled "
+    "`{target}`) into the file {probe} — the saved file is the deliverable, not your message. ")
 
 LEAF_DECOMPOSE_GAP_FB = ("Your direct attempt diagnosed this missing piece: «{gap}». Build the decomposition "
                          "toward proving it. ")
@@ -115,15 +122,84 @@ LEAF_LEGACY_DIRECT_PROMPT = (
 # decides decompose-vs-direct on ANY target, even without a human-seeded blueprint (the operator's "the agent
 # should NOTICE it can't close this directly" point). `{goal}` filled at the call site.
 STRATEGY_ASSESSMENT_PROMPT = (
-    "You are a Lean 4 proof strategist. Assess the GOAL below and choose the BEST FIRST move:\n"
-    "  • SOLVE_DIRECT — it can plausibly be closed by a SHORT direct proof (a handful of tactics / Mathlib "
-    "lemmas).\n"
-    "  • DECOMPOSE — it is a multi-step or research-level result; a one-shot direct proof would FAIL, and the "
-    "right first move is to break it into intermediate sub-lemmas.\n"
-    "Be honest and decisive: if a direct proof is unlikely to succeed, choose DECOMPOSE — do NOT waste effort "
-    "grinding a doomed direct attempt (that is exactly the failure we are avoiding). Judge the MATHEMATICAL "
-    "depth, not the surface length.\n"
-    "Answer with EXACTLY one token on the FIRST line: SOLVE_DIRECT or DECOMPOSE.\n\nGOAL:\n{goal}\n"
+    # MECE framing (2026-06-23): two ORTHOGONAL dimensions, asked truth-FIRST. Dim A (truth: TRUE→prove vs
+    # FALSE→falsify) is a clean ME+CE binary; Dim B (proof-HOW: direct vs decompose) is a sub-choice under
+    # "prove". FALSIFY is the truth-dimension OTHER-branch, NOT a flat peer of direct/decompose — see
+    # docs/concepts/leanmill_architecture.md §4.3a. The "context may already refute it" cue is GENERAL (any goal
+    # can be false; any context can hold a refutation) — not a target-specific hint, so it does not overfit.
+    "You are a Lean 4 proof strategist. FIRST decide whether the GOAL is even TRUE, THEN how to act:\n"
+    "  1. Is the goal plausibly TRUE? If so, choose HOW to prove it:\n"
+    "     • SOLVE_DIRECT — a SHORT direct proof (a handful of tactics / Mathlib lemmas).\n"
+    "     • DECOMPOSE — multi-step / research-level; a one-shot direct proof would FAIL → break it into "
+    "intermediate sub-lemmas.\n"
+    "  2. Or is the goal FALSE as stated? Before assuming you must prove it, judge whether it is even true — "
+    "your CONTEXT / SUBSTRATE may ALREADY REFUTE this formulation (an impossibility theorem, or a counterexample "
+    "to a too-weak hypothesis). If it is false:\n"
+    "     • FALSIFY — prove ¬GOAL (a kernel-checked counterexample). Do NOT grind a proof that cannot exist; the "
+    "engine will then reformulate toward the intended TRUE statement.\n"
+    "Be honest and decisive: do NOT grind a doomed direct attempt (choose DECOMPOSE), and do NOT grind a proof "
+    "of a FALSE statement (choose FALSIFY). Judge the MATHEMATICAL content, not the surface length.\n"
+    "Answer with EXACTLY one token on the FIRST line: SOLVE_DIRECT, DECOMPOSE, or FALSIFY.\n\nGOAL:\n{goal}\n"
+)
+
+# Reformulation re-entry feedback (general-purpose; assembled by `autoformalize._reformulate_feedback`). Fires
+# AFTER a formalization is KERNEL-REFUTED (¬G proven). ADVISORY, not coercive — it orients the agent to
+# strengthen the too-weak hypothesis and OFFERS its own already-proven substrate results to cite IF one matches;
+# the agent judges relevance and the kernel re-verifies every citation (a wrong `exact` simply fails to compile),
+# so it cannot launder or mislead into a false close. No domain specifics. `{shelf_block}` is empty unless the
+# substrate has proven theorems. Filled VALUES may contain Lean braces — that is safe (`str.format` only expands
+# the template's own `{…}` placeholders, never the substituted values).
+REFORMULATE_FEEDBACK = (
+    "\n\n[REFORMULATE] A prior formalization of this target was REFUTED as FALSE during proving:\n"
+    "  {prior_stmt}\n"
+    "Refutation (the case that BREAKS it — read it to see WHICH hypothesis is too weak):\n"
+    "  {refutation}\n"
+    "The refutation means the literal reading is FALSE: a hypothesis is too weak for the conclusion to hold. "
+    "Produce the INTENDED, TRUE statement — which usually needs a STRONGER hypothesis than the most literal "
+    "reading of the prose (a named order / complementarity / regularity condition typically means the version "
+    "under which the result is actually true).{shelf_block} STRENGTHEN the offending hypothesis to exclude the "
+    "refuting case; do not weaken the conclusion, and do not re-emit a hypothesis as weak as the refuted one. The "
+    "faithfulness firewall re-checks against the original problem: a strengthening toward the intended mathematics "
+    "is faithful; a different or weaker theorem is not."
+)
+# Offered ONLY when the substrate has proven results — advisory ("IF one matches … else prove it yourself"), so
+# it routes the agent to its own correction without forcing a (kernel-gated) wrong cite.
+REFORMULATE_SHELF_BLOCK = (
+    " If one of these ALREADY-PROVEN (sorry-free, kernel-checked) results from your substrate IS the intended "
+    "theorem, formalize the target to match it and CITE it (e.g. `exact <name> …`) instead of re-deriving; if "
+    "none matches, state and prove the strengthened version yourself:\n{shelf}"
+)
+
+# ESTABLISHED VOCABULARY (2026-06-24, the orphaned-shelf / def-drift cure). Surfaces the campaign's CANONICAL
+# definition BODIES (the proven lemmas were checked against THESE) so a fresh formalizer reuses them by reference
+# instead of re-deriving a divergent same-named def from the prose — the drift that silently orphans the shelf at
+# compose time (the proven lemmas can't be cited against a different body, so the target solves bare → exact_gap).
+# AGENCY-preserving: it supplies vocabulary + a norm; the agent still chooses (reuse, or extend under a NEW name +
+# bridge). The faithfulness firewall + the compose conflict-check remain the only deterministic boundary.
+ESTABLISHED_DEFS_NOTE = (
+    "\n\n## Established definitions (reuse VERBATIM — do NOT redefine)\n"
+    "The campaign's already-proven lemmas were checked against these EXACT definitions. When your statement "
+    "uses any of these concepts, COPY the definition verbatim into your probe; do NOT re-derive it from the prose. "
+    "A same-named definition with a DIFFERENT body silently orphans the proven lemmas (they cannot be cited against "
+    "it), forcing everything to be re-proved from scratch. If the intended theorem genuinely needs a STRONGER "
+    "notion than one of these, introduce a NEW name (e.g. `FooStrict`) plus a bridge lemma relating it to the "
+    "established `Foo` — never shadow an established name with a different body.\n```lean\n{defs}\n```"
+)
+
+# LITERAL-FIRST cue (general-purpose; the INVERSE of REFORMULATE_FEEDBACK). Injected on the ONE bounded re-entry
+# after the firewall REJECTED a first formalization as a silent STRENGTHENING of the literal claim (round-trip-
+# unfaithful + extra hypotheses) with no ¬G license yet. The honest, non-gamable order is truth-FIRST: render the
+# claim EXACTLY as the text states it, let the engine establish its truth-status with the KERNEL (prove or refute),
+# and only THEN — if it is false — propose the strengthened, true version as a DISCLOSED correction (the existing
+# reformulation path). This cue is purely a FAITHFULNESS instruction (the firewall's own contract), so it can feed
+# no answer and launder nothing; the firewall re-checks the result. No domain specifics.
+LITERAL_FIRST_CUE = (
+    "\n\n[LITERAL-FIRST] Formalize the claim EXACTLY as the natural-language text states it — its most literal "
+    "reading. Do NOT pre-emptively add hypotheses you believe are needed to make it true, and do NOT substitute a "
+    "stronger corrected theorem even if your context/substrate already contains one: render the LITERAL claim here. "
+    "If the literal claim turns out to be false, that is expected and fine — the engine establishes its truth-status "
+    "with the kernel and will then invite you to propose the strengthened, true version as a disclosed correction. "
+    "State the literal claim now."
 )
 
 # GOVERNANCE proof-constraint lines injected into the PROVING leaf prompt (via move_cards.render_tool_block).
@@ -173,6 +249,28 @@ DEF_JUDGE_PROMPT = (
     "PLACEHOLDER / SHELL / WRONG object (a constant stand-in, an opaque parameter, or a DIFFERENT notion "
     "than intended)? Answer with EXACTLY one token on the first line: FAITHFUL or UNFAITHFUL, then a "
     "one-line reason."
+)
+
+# GENERALITY-FIDELITY judge (the neural half of the typeclass-generality leg, `autoformalize.typeclass_generality_audit`).
+# The model knows the Lean instance hierarchy + mathematical generality — so it replaces a hardcoded class/keyword
+# registry (which was overfit + brittle). Majority-of-N, advisory (FLAG only on a strict majority of NARROWER).
+GENERALITY_JUDGE_PROMPT = (
+    "You are checking GENERALITY FIDELITY of a Lean 4 formalization against its informal intent: does the formal "
+    "statement assume a MORE SPECIAL / STRONGER mathematical structure than the intent's stated generality, thereby "
+    "silently NARROWING the claim?\n\n"
+    "The statement assumes these typeclass instances: {classes}\n"
+    "Formal statement (signature): {stmt}\n\n"
+    "Informal intent (may be a blueprint that states the GENERAL form AND also mentions special cases):\n{nl}\n\n"
+    "The Lean instance hierarchy is a STRENGTH order — a stronger instance is a stronger hypothesis, hence a NARROWER "
+    "theorem. NARROWING examples: intent says 'partial order / pari-passu / incomparable allowed' but the statement "
+    "assumes `[LinearOrder]` (a strict TOTAL order — prohibits incomparable elements); intent 'arbitrary ring' but "
+    "`[Field]`; intent gives no finiteness/decidability but the statement adds `[Fintype]`/`[DecidableEq]`. It is "
+    "FAITHFUL when the intent EXPLICITLY restricts to the strong structure ('linear/total order', 'field', 'finite'), "
+    "or when the assumed instances are no stronger than the intent implies. When the intent states a general form AND "
+    "names a special case, shipping ONLY the special case is NARROWER.\n\n"
+    "Answer on the FIRST line EXACTLY one of:\n"
+    "  NARROWER: <which assumed instance is too strong; what more-general structure the intent implied>\n"
+    "  FAITHFUL"
 )
 
 # The API agentic leaf's TASK-NEUTRAL system prompt (kimi/deepseek via the OpenAI-compatible tool loop —
@@ -387,15 +485,37 @@ THEORY_PROMPT = (
     "assumptions to kill later). CREDIT: definitions earn through USE — your proven sanity lemmas count "
     "as rungs now; the definition itself is credited when campaign lemmas cite it.\n"
     "(5) PIN THE DENOTATION (anti-decoy). Sanity lemmas prove a def is WORKABLE, not that it MEANS the "
-    "intended concept — a self-consistent decoy can pass them all. So for EACH new `def`, anchor it to a "
-    "TRUSTED reference: search Mathlib (Loogle/warm checker) for the concept your def extends, and if one "
-    "exists state `theorem anchor_<def>_agrees_<ref> : ∀ …, <your def> … = <Mathlib concept> …` over the "
-    "OVERLAP domain (where both are defined). These `anchor_…` theorems may be `sorry` — each becomes a "
-    "work item like any API lemma; a kernel-PROVEN anchor pins the def's denotation (a decoy cannot prove "
-    "agreement with the established concept). If your def is genuinely BEYOND Mathlib (no overlapping "
-    "concept), say so honestly in a `-- @no-anchor: <def>: <why no Mathlib overlap>` comment — its "
-    "denotation then rests only on API + composition (the harness reports this as UNDER-DETERMINED, an "
-    "honest gap, never a false certification). Name every such theorem with the `anchor_` prefix.\n"
+    "intended concept — a self-consistent decoy can pass them all. So for EACH new `def`, state a kernel-"
+    "checkable `anchor_<def>_…`-named theorem tying it to a TRUSTED Mathlib concept (Loogle/warm checker to "
+    "find names). A FULL Mathlib equivalent is the easy case, but you almost NEVER need one — a built concept "
+    "Mathlib lacks is still pinnable by a WEAKER anchor, and you should ALWAYS find one of these before "
+    "reaching for `@no-anchor`:\n"
+    "   • OVERLAP-AGREEMENT: `<def> … = <Mathlib concept> …` on the domain where both are defined.\n"
+    "   • SPECIAL-CASE REDUCTION: your def on a CANONICAL special case equals/iff a Mathlib concept — e.g. a "
+    "set/relation order on SINGLETONS reduces to the element order (`yourSetLE {{a}} {{b}} ↔ a ≤ b`); an operation "
+    "at a unit reduces to identity; a parametric family at a constant reduces to a known object. This pins a "
+    "concept (a strong set order, a refinement, a divergence) that has NO single Mathlib equal.\n"
+    "   • CHARACTERIZATION: `<def> ↔ <property expressible with Mathlib primitives>` (e.g. an increasing-"
+    "differences predicate ↔ `∀ x≤x', Monotone (fun t => f x' t - f x t)`).\n"
+    "These `anchor_…` theorems may be `sorry` — each becomes a work item like any API lemma; a kernel-PROVEN "
+    "anchor pins the def (a decoy cannot prove agreement/reduction/characterization with the established "
+    "concept). Reserve `-- @no-anchor: <def>: <why NONE of overlap/reduction/characterization reaches any "
+    "Mathlib concept>` for a def that is GENUINELY unanchorable, and justify why each of the three routes "
+    "fails — 'Mathlib has no equal' is NOT sufficient when a reduction or characterization exists. An "
+    "unanchored def is reported UNDER-DETERMINED (an honest gap, never a false certification). Name every "
+    "such theorem with the `anchor_` prefix.\n"
+    "(6) GUARD AGAINST VACUOUS TRUTH. A `Prop` def that universally quantifies over set MEMBERSHIP "
+    "(`∀ x ∈ s, …` / `∀ ⦃x⦄, x ∈ s → …`) is VACUOUSLY TRUE when the set is EMPTY — so a theorem concluding that "
+    "property of a CONSTRUCTED set (an argmax set, a solution/fixed-point set, a correspondence's value) can be "
+    "kernel-true while asserting NOTHING. For each such def, either prove a kernel-checked "
+    "`theorem witness_<def>_nonvacuous …` establishing the relevant set is NON-EMPTY in a stated meaningful "
+    "instance — or under the existence conditions the result actually needs (e.g. a complete lattice + order-"
+    "continuity / compactness for an argmax to be inhabited) — OR honestly flag "
+    "`-- @vacuity-scope: <def>: <when the set is ∅, and what existence requires>`. The harness reports an "
+    "unwitnessed set-property as VACUITY-EXPOSED (an honest gap, never a false certification). Name witnesses "
+    "with the `witness_` prefix. This is the existence half of monotone-comparative-statics-style results: state "
+    "the comparative statics, and EITHER establish existence OR scope it explicitly — never let `∅` pass as a "
+    "theorem.\n"
     "APPEND-ONLY THIS DISPATCH: never modify or delete existing content (governance reverts the round if "
     "existing bytes change). If an EXISTING definition is wrong-shaped, do not edit it — state "
     "`-- SUPERSEDE: <name>: <why>` and the harness routes a governed revision. Verify the file COMPILES "
@@ -407,6 +527,24 @@ POOL_PROMPT_TMPL = (
     "Prove this Lean 4 (Mathlib) theorem. Output ONLY the proof — a single `by ...` tactic block — inside ONE "
     "```lean fenced code block. Do NOT restate the signature and put NO prose inside the fence.\n\n"
     "{goal} := by\n  sorry\n")
+
+# From autoformalize_notes.py (REVISE_DEF_PROMPT): SUPERSESSION-ACTING — governed strengthening of a too-weak def.
+REVISE_DEF_PROMPT = (
+    "A theorem in the campaign theory file `{path}` was KERNEL-CONFIRMED FALSE — a DEFINITION it depends on is "
+    "too WEAK (it admits a counterexample). The false theorem:\n  {false_lemma}\nThe kernel-confirmed refutation "
+    "/ counterexample:\n  {counterexample}\n\n"
+    "Identify the too-weak definition and STRENGTHEN it so the intended theorem becomes TRUE — under STRICT "
+    "governance (this is the ONLY sanctioned way to change an existing def; a free edit is auto-rejected). Call "
+    "the def D. Do ALL THREE, changing nothing else:\n"
+    "  1. PRESERVE the current definition VERBATIM, only renaming it to `D__pre` (identical body).\n"
+    "  2. Write the STRENGTHENED `def D` — SAME signature, a STRONGER body (add the missing hypothesis/clause "
+    "the counterexample exploits; e.g. a single-crossing condition needs BOTH its weak AND its strict half).\n"
+    "  3. PROVE the strengthening: `theorem witness_strengthen_D : <binders>, D <args> -> D__pre <args> := <proof>` "
+    "(the new def IMPLIES the old). The kernel verifies this; a weakening or trivialization cannot prove it and is "
+    "rejected.\n"
+    "Append-only for EVERYTHING else: every other definition and theorem must stay byte-identical, and you must "
+    "NOT alter any theorem's statement. The strengthened def must remain FAITHFUL to the intended concept "
+    "(re-checked). If no strengthening makes the theorem true, leave the file unchanged and say why.\n")
 
 # From witness_transport.py (SCRIPT_PROMPT): MOVE_WITNESS_TRANSPORT — SymPy witness-finding script writer.
 SCRIPT_PROMPT = (

@@ -263,8 +263,26 @@ def propose_with_model(model: str, prompt: str, *, repo: str, timeout: int, agen
                 return None
         else:
             from ztare.common.llm_runtime import LLMRuntime, MODEL_MAP
-            resp = LLMRuntime().call_text(prompt, model_id=MODEL_MAP.get(model, model))
-            raw = getattr(resp, "text", None) or (resp if isinstance(resp, str) else "")
+            # SIBLING of the dead-API-leaf cache (2026-06-22): the pool's API proposers call llm_runtime
+            # DIRECTLY, so the dead-API protection in `agentic_leaf.default_dispatch` never covered this path —
+            # a dead/slow API model (kimi 429 / no-key grok) hung the whole proposer WAVE because `call_text`
+            # defaults to timeout_seconds=300 WITH cross-model fallback (so it compounds). The exact dead-API
+            # class, the forgotten sibling. Fix: (1) skip a known-dead model (shared process cache); (2) a HARD
+            # short timeout; (3) NO cross-model fallback / retries — we want THIS model or nothing; (4) cache a
+            # failure as dead for the process (a fresh run re-probes). The kernel re-verifies every closure, so
+            # dropping a hung proposer only changes the producer route, never soundness.
+            from ztare.leanmill.solver.agentic_leaf import _DEAD_API_RUNTIMES
+            if model in _DEAD_API_RUNTIMES:
+                return None
+            _api_to = max(20, min(int(timeout),
+                                  int(os.environ.get("ZTARE_LEANMILL_POOL_API_TIMEOUT_S", "90") or 90)))
+            try:
+                resp = LLMRuntime().call_text(prompt, model_id=MODEL_MAP.get(model, model),
+                                              timeout_seconds=_api_to, retries=0, fallback_model_ids=())
+                raw = getattr(resp, "text", None) or (resp if isinstance(resp, str) else "")
+            except Exception:  # noqa: BLE001 — a hung/erroring API proposer is dead for this process round
+                _DEAD_API_RUNTIMES.add(model)
+                return None
     except Exception:  # noqa: BLE001 — a dead proposer is a miss, never a crash of the round
         return None
     return _extract_proposal(model, raw or "")

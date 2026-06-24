@@ -19,9 +19,7 @@ check + deterministic lowering = 1.0 accuracy. H37 closed-menu forcing hurts
 at the boundary; open_set_refusal_status is required.
 """
 from __future__ import annotations
-import subprocess
 import sys
-import tempfile
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -214,125 +212,7 @@ def build_solver_action_contract(row: dict, lean_root: Path, repo: Path) -> dict
     }
 
 
-def verify_matched_negative_control(
-    target_name: str,
-    proof_text: str,
-    lean_root: Path,
-    timeout_s: int,
-) -> tuple[bool, str]:
-    """Run the matched negative control: does proof_text close the goal
-    under bare `import Mathlib` (i.e. WITHOUT the source file's prelude)?
-    If yes, the proof was a paraphrase of an existing Mathlib lemma — leakage.
-
-    Returns (negative_control_ok, output_tail). negative_control_ok=True
-    means the NEGATIVE control FAILED (which is what we want — the proof
-    needs the prelude to compile, so it is NOT just a Mathlib lookup).
-
-    ⚠️ DEAD / SUPERSEDED (2026-06-18 RCA): this builds a TYPELESS stub
-    (`theorem X_stripped_attempt := by <body>` — no `: <type>`), which is a Lean
-    PARSE error, so it ALWAYS "passes" (a structural no-op that can never catch
-    leakage). It is also unreachable: the only caller is contract.py's own
-    `validate_against_contract`, which is imported into solver_core but NEVER
-    called (solver_core uses its OWN goal-type-aware `_verify_matched_negative_control`).
-    The canonical, working MNC is `solver_core._verify_matched_negative_control` (it
-    takes `goal_type`, splices via `lean_source.attach_proof`, and abstains rather
-    than false-rejects). Do not wire this one into a live path; the per-organ
-    `run_standards.organ_liveness_battery` exists so a silently-dead control like
-    this is caught by a test, not by archaeology.
-    """
-    if not target_name or not proof_text.strip():
-        return False, "missing target or proof"
-    body = proof_text.strip()
-    if body.startswith("by "):
-        body = body[3:]
-    src = (
-        "import Mathlib\n\n"
-        f"theorem {target_name}_negctrl : True := by\n"
-        f"  trivial\n\n"
-        f"theorem {target_name}_stripped_attempt := by\n"
-        f"  {body}\n"
-    )
-    try:
-        with tempfile.TemporaryDirectory(prefix=f"solver_negctrl_{target_name}_") as td:
-            probe = Path(td) / "NegCtrl.lean"
-            probe.write_text(src, encoding="utf-8")
-            proc = subprocess.run(
-                ["lake", "env", "lean", str(probe)],
-                cwd=str(lean_root), text=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                timeout=timeout_s,
-            )
-            output = (proc.stdout or "") + "\n" + (proc.stderr or "")
-            stripped_compiled = proc.returncode == 0 and "error:" not in output
-            return (not stripped_compiled), output[-600:]
-    except subprocess.TimeoutExpired:
-        return False, "negctrl_timeout"
-    except FileNotFoundError as exc:
-        return False, f"lake_not_on_PATH: {exc!s}"
-    except Exception as exc:  # noqa: BLE001
-        return False, f"negctrl_exception: {exc!r}"
-
-
-def validate_against_contract(
-    contract: dict,
-    proof_text: str,
-    target_name: str,
-    lean_root: Path,
-    timeout_s: int,
-    kernel_compile_ok: bool,
-    kernel_compile_tail: str,
-) -> dict:
-    """Run every required receipt named in the contract and return a structured
-    verdict. A closure is credit-ready iff every required receipt passes.
-
-    The MNC check runs here (not deferred to governance) so the solver lane
-    rejects laundering at solve-time, not after the typed-exit propagated.
-    """
-    receipts: dict[str, dict] = {}
-    receipts["kernel_compile_receipt"] = {
-        "passed": bool(kernel_compile_ok),
-        "tail": (kernel_compile_tail or "")[-400:],
-    }
-    if kernel_compile_ok:
-        mnc_ok, mnc_tail = verify_matched_negative_control(
-            target_name, proof_text, lean_root, timeout_s,
-        )
-        receipts["matched_negative_control_receipt"] = {
-            "passed": mnc_ok,
-            "tail": mnc_tail[-300:],
-            "interpretation": (
-                "PASS = bare-Mathlib stripped attempt did NOT compile → proof needs the prelude → genuine"
-                if mnc_ok else
-                "FAIL = bare-Mathlib stripped attempt DID compile → proof_text was a Mathlib lookup → leakage"
-            ),
-        }
-    else:
-        receipts["matched_negative_control_receipt"] = {
-            "passed": False,
-            "tail": "skipped (kernel_compile_receipt failed)",
-            "interpretation": "skipped: no closure to negative-control",
-        }
-    receipts["axiom_allowlist_receipt"] = {
-        "passed": None,
-        "tail": "deferred to governance: leanmill_proof_audit emits #print axioms",
-    }
-    receipts["l3_anti_pattern_receipt"] = {
-        "passed": None,
-        "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit",
-    }
-    all_required_pass = all(
-        bool(receipts[r["name"]]["passed"]) is True
-        for r in contract.get("required_receipts", [])
-        if r.get("required") and receipts[r["name"]]["passed"] is not None
-    )
-    credit_ready = (
-        kernel_compile_ok
-        and receipts["matched_negative_control_receipt"]["passed"] is True
-    )
-    return {
-        "contract_schema": contract.get("schema"),
-        "receipts": receipts,
-        "credit_ready_at_solver_layer": bool(credit_ready),
-        "required_receipts_all_passed_at_solver_layer": bool(all_required_pass),
-        "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit",
-    }
+# NOTE: `verify_matched_negative_control` + `validate_against_contract` were REMOVED 2026-06-23 —
+# both were dead/superseded (the typeless-stub MNC RCA'd 2026-06-18) with no live caller. The canonical,
+# goal-type-aware MNC + contract validation live in `solver_core._verify_matched_negative_control` /
+# `solver_core._validate_against_contract`. Removing the siblings kills the dup-class at the source.

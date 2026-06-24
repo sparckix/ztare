@@ -18,7 +18,8 @@ from pathlib import Path
 
 # Canonical comment-stripping sorry/admit check (the ONE primitive — never substring-match raw Lean for a
 # consequential decision; a `sorry` in a comment/identifier must not false-positive). 2026-06-13 audit.
-from ztare.leanmill.lean_source import has_sorry as _has_sorry, strip_comments as _strip_comments, signature_before_proof
+from ztare.leanmill.lean_source import (has_sorry as _has_sorry, strip_comments as _strip_comments,
+                                         signature_before_proof, top_level_colon as _top_level_colon)
 
 # Prompts live in the canonical registry (prompts.py); local names preserved for the call sites.
 from ztare.leanmill.solver.prompts import CONJECTURE_PROMPT as _CONJECTURE_PROMPT
@@ -62,20 +63,10 @@ def conjecture_generate(row: dict, goal_text: str, lean_root: Path,
     return lemma, proof, lname, (raw or "")[-200:]
 
 
-def _top_level_colon(sig: str) -> int:
-    """Index of the binder/type-separating `:` at bracket depth 0 (binder colons are nested → ignored).
-    `sig` is a signature WITHOUT the `:=` body (use statement_integrity._signature first)."""
-    depth = 0
-    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "⦃": "⦄"}
-    closes = set(pairs.values())
-    for i, c in enumerate(sig):
-        if c in pairs:
-            depth += 1
-        elif c in closes:
-            depth = max(0, depth - 1)
-        elif depth == 0 and c == ":":
-            return i
-    return -1
+# `_top_level_colon` is the canonical `lean_source.top_level_colon` (re-exported above). It used to be a
+# byte-identical copy here AND in statement_integrity — the forgotten-sibling shape, now de-duplicated
+# (2026-06-22). External callers (`abduction`, `reflection`, `proof_margin_of_safety`, `solver_core`) import it
+# from here unchanged.
 
 
 def _lemma_conclusion(block: str) -> str:

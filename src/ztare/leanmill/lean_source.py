@@ -65,6 +65,49 @@ def def_names(source: str) -> list[str]:
     return re.findall(r"(?m)^\s*" + _DEFKIND_PREFIX + r"([A-Za-z_][\w'.]*)", strip_comments(source or ""))
 
 
+def def_body(source: str, name: str) -> "str | None":
+    """The named def/abbrev/structure's text from just AFTER `def <name>` to the next top-level decl (or EOF) —
+    the def-keyword counterpart to `_decl_body` (which is `theorem`/`lemma`-only). `None` if not declared. The
+    vacuity-faithfulness leg reads a def's BODY through this to see the vacuous-on-empty `∀`-over-membership
+    that hides inside a `def` (`_decl_body` returned `None` for defs, so vacuity-prone detection saw nothing)."""
+    m = re.compile(_DEFKIND_PREFIX + re.escape(name) + r"\b").search(source or "")
+    if not m:
+        return None
+    rest = source[m.end():]
+    nxt = _TOPLEVEL_DECL.search(rest)
+    return rest[:nxt.start()] if nxt else rest
+
+
+def def_is_prop_valued(source: str, name: str) -> bool:
+    """True iff `def <name>`'s RETURN type is `Prop` — a CONCEPT / predicate definition (`StrongSetLE`,
+    `IncreasingDifferences`), vs a TERM / instance definition (`const : OrdinalTopkisObjective`). The
+    governed-revision gate uses this: a CONCEPT def is the laundering surface (must stay byte-identical unless
+    it IS the def being strengthened); a term/instance def's body is effectively a PROOF (a structure's fields)
+    and MAY adapt to a strengthened def. Binder-safe (the return-type `:` is the depth-0 colon, never a binder's)."""
+    body = def_body(source, name)
+    if not body:
+        return False
+    sig = signature_before_proof(body)            # ` <binders> : <rettype>` (def_body drops the `def <name>`)
+    c = top_level_colon(sig)
+    return c >= 0 and "Prop" in sig[c + 1:]
+
+
+def prop_quantifies_over_membership(value: str) -> bool:
+    """True iff `value` (a Prop — e.g. a def's body after `:=`) UNIVERSALLY quantifies over SET MEMBERSHIP with
+    no explicit non-emptiness guard — the shape `∀ ⦃x⦄, x ∈ s → …` / `∀ x ∈ s, …` that is VACUOUSLY TRUE on the
+    empty set. The canonical home for the vacuity leg's candidate detector (kept here, not hand-rolled at the
+    call site): comment-stripped, and a `Nonempty` conjunct disqualifies it. It is only a CANDIDATE signal —
+    `def_denotation.certify_nonvacuity` backstops it with a kernel-verified non-emptiness witness, so a false
+    positive merely asks the agent for a witness that the kernel then checks (no soundness surface)."""
+    v = strip_comments(value or "")
+    if not v.strip():
+        return False
+    has_universal = ("∀" in v) or ("⦃" in v)
+    has_membership = "∈" in v
+    guarded_nonempty = "Nonempty" in v       # an explicit `s.Nonempty`/`Set.Nonempty` conjunct guards the ∀-over-∈
+    return has_universal and has_membership and not guarded_nonempty
+
+
 def _comment_mask(t: str) -> "list[bool]":
     """The ONE canonical Lean-comment scan (single pass, correct precedence): returns a per-char mask
     where `mask[i]` is True iff char `i` is part of a comment. Block comments are NESTED-AWARE
@@ -239,6 +282,24 @@ _OPEN_BRACKETS = "([{⟨⦃"
 _CLOSE_BRACKETS = ")]}⟩⦄"
 
 
+def top_level_colon(sig: str) -> int:
+    """Index of the binder/type-separating `:` at bracket depth 0 (binder colons inside (…)/[…]/{…}/⟨…⟩/⦃…⦄
+    are nested → ignored). `sig` is a signature WITHOUT the `:=` body. -1 if none. THE canonical home for this
+    primitive (2026-06-22 de-duplication): `conjecture._top_level_colon` and `statement_integrity._top_colon`
+    were byte-identical copies — the forgotten-sibling shape — and now both re-export this one."""
+    depth = 0
+    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "⦃": "⦄"}
+    closes = set(pairs.values())
+    for i, c in enumerate(sig):
+        if c in pairs:
+            depth += 1
+        elif c in closes:
+            depth = max(0, depth - 1)
+        elif depth == 0 and c == ":":
+            return i
+    return -1
+
+
 def split_at_proof(text: str) -> "tuple[str, str]":
     """Split a decl at the PROOF `:=` — the canonical binder-safe replacement for `text.split(":=", 1)`
     / `re.split(r":=", text, 1)`, which truncate at a `:=` INSIDE a binder (a `let k := 5` in a
@@ -270,6 +331,36 @@ def strip_decl_prefix(head: str) -> str:
     (for callers that already split off the conclusion and need just `(a) (b) …`)."""
     m = re.match(r"\s*(?:theorem|lemma|example)\s+[\w'.]*\s*(.*)$", head or "", re.S)
     return (m.group(1).strip() if m else (head or "").strip())
+
+
+def redundant_subsumed_instances(source: str, name: "str | None" = None) -> "list[str]":
+    """Detect a BARE order-instance binder that a RICHER binder on the SAME type ALREADY provides — the classic
+    `[LE α]` (or `[LT α]`) declared ALONGSIDE `[Preorder α]`/`[PartialOrder α]`/`[LinearOrder α]`/any `*Order…`.
+
+    This is NOT harmless redundancy: the bare class adds a SECOND, axiom-free `≤`/`<` instance on the type, so
+    Lean may resolve the goal's `≤` to it while the order lemmas use the Order's `≤` — an instance DIAMOND that
+    makes the statement UNPROVABLE (sometimes false). RCA 2026-06-23: the planner formalized `iso_lemma1` with
+    `[Add α] [LE α] [Preorder α] …`; the same statement WITHOUT the `[LE α]` proves cleanly, WITH it fails with a
+    type mismatch — and the agent (correctly) flagged it STATEMENT-FALSE. A pure detector (the canonical parser's
+    job): returns the offending bare classes (e.g. `"LE α (subsumed by Preorder α)"`), or `[]` when clean. It
+    only flags ORDER subsumption (LE/LT ⊂ an Order class) — unambiguous; `[Add α]` next to `[Preorder α]` is NOT
+    flagged (Preorder does not provide Add)."""
+    body = (_decl_body(source, name) if name else None) or source
+    head = signature_before_proof(body)
+    # instance-implicit binders only: `[ClassName <type-args>]` (skip `()`/`{}`/`⦃⦄` value/implicit binders)
+    binders = re.findall(r"\[\s*([A-Za-z_][\w'.]*)\s+([^\]\[]+?)\s*\]", head)
+    by_typevar: "dict[str, set[str]]" = {}
+    for cls, args in binders:
+        by_typevar.setdefault(args.strip(), set()).add(cls)
+    offenders: "list[str]" = []
+    for tv, classes in by_typevar.items():
+        order_cls = sorted(c for c in classes if "order" in c.lower())   # Preorder/PartialOrder/LinearOrder/*Order
+        if not order_cls:
+            continue
+        for bare in ("LE", "LT"):
+            if bare in classes:
+                offenders.append(f"{bare} {tv} (subsumed by {order_cls[0]} {tv})")
+    return offenders
 
 
 def _selftest() -> None:
@@ -358,6 +449,21 @@ def _selftest() -> None:
     assert extract_signature(multi_sorried_aux, "target2").strip() == "(n : Nat) : 0 + n = n", \
         extract_signature(multi_sorried_aux, "target2")
     assert compile_stub(multi_sorried_aux, "target2").rstrip().endswith("0 + n = n := by")
+    # redundant_subsumed_instances: the 2026-06-23 iso_lemma1 diamond ([LE α] under [Preorder α])
+    _diamond = ("theorem iso_lemma1 {α : Type*} [Add α] [LE α] [Preorder α] [AddLeftMono α] "
+                "[AddRightReflectLE α] {a b c d : α} (h : a + b ≤ c + d) (hd : d ≤ b) : a ≤ c := by sorry")
+    _off = redundant_subsumed_instances(_diamond, "iso_lemma1")
+    assert any(o.startswith("LE α") for o in _off), _off          # flags the redundant [LE α]
+    _clean = ("theorem ok {α : Type*} [Add α] [Preorder α] [AddLeftMono α] "
+              "[AddRightReflectLE α] {a b : α} (h : a ≤ b) : a ≤ b := by sorry")
+    assert redundant_subsumed_instances(_clean, "ok") == [], redundant_subsumed_instances(_clean, "ok")  # clean
+    # [Add α] next to [Preorder α] is NOT a subsumption (Preorder doesn't provide Add) → no false positive
+    assert redundant_subsumed_instances(_clean, "ok") == []
+    # prop_quantifies_over_membership: the vacuity-leg candidate detector (Gemini empty-set critique)
+    assert prop_quantifies_over_membership("∀ ⦃x y : X⦄, x ∈ s → y ∈ u → x ⊓ y ∈ s ∧ x ⊔ y ∈ u")  # StrongSetLE shape
+    assert not prop_quantifies_over_membership("s.Nonempty ∧ ∀ ⦃x⦄, x ∈ s → True")                 # guarded
+    assert not prop_quantifies_over_membership("∀ x y : X, x ⊓ y = y ⊓ x")                          # no membership
+    assert not prop_quantifies_over_membership("-- ∀ x ∈ s, foo\n0")                                # comment-only ∀/∈
     print("lean_source selftest OK")
 
 

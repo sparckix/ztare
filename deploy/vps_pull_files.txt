@@ -15,6 +15,16 @@ analytics/public/forecast_pool/forecasts/
 analytics/public/forecast_pool/outcomes/
 analytics/public/forecast_pool/scores/
 analytics/public/queries/scientific_amnesia/
+# leanmill learning state — VPS-authoritative compounding telemetry; lost if the VPS dies. The dashboards under
+# analytics/public/leanmill/dashboard_data/ are RENDERED views; these are the RAW state the factory read-models +
+# per-campaign cycle-time metrics are computed from, plus the cross-run proof cache, the closure certs, and the
+# faithfulness store. (The promoted proofs live in git as ztare_proofs/ZtareProofs/strategy/*.lean; the campaign
+# warm-env .lean files are reconstructible from these + the certs, so they are NOT pulled to avoid the 33GB tree.)
+analytics/public/queries/solver_lane_attempts.db
+analytics/public/queries/adhoc_closure_certificates.jsonl
+analytics/public/queries/solver_lane_proof_cache.jsonl
+analytics/public/queries/solver_lane_phase_timings.jsonl
+analytics/public/queries/solver_lane_faithfulness_store.jsonl
 analytics/public/pretick/
 analytics/public/posttick/
 projects/ns_millennium_hunt/public/

@@ -105,10 +105,56 @@ def _shape_self_reference(goal_text: "str | None") -> bool:
     return bool(_re.search(r"(encode|encoding|faithful|represent\w*|self[-_ ]?model|self[-_ ]?refer)", g, _re.I))
 
 
+def _shape_extremal(goal_text: "str | None") -> bool:
+    """Trigger → `op_broad_05` (Extremal Method). Fires on an OPTIMIZATION / extremal goal — a maximizer or
+    minimizer set, a lattice join/meet, a greatest/least element / `LUB`/`GLB` — where the move is to
+    characterize via the extremal structure. The Topkis/argmax family lives here: a formal `argmax`/`IsGreatest`/
+    `⊔`/`⊓` goal shares almost no prose with the 'extremal method' card, so cosine alone misses it. Conservative:
+    requires an explicit extremal/optimization token (not an arbitrary inequality)."""
+    g = goal_text or ""
+    if not g.strip():
+        return False
+    # optimization vocabulary is case-insensitive (Argmax in `ParametricArgmaxSet`, Maximize, Optimal, …)
+    if _re.search(r"argmax|arg\s*max|maximiz|minimiz|optimal", g, _re.I):
+        return True
+    # exact OPTIMIZATION/extremal identifiers (case-sensitive). NOTE: the BINARY join/meet `⊔`/`⊓` are
+    # deliberately EXCLUDED — they are lattice *algebra* (`a ⊔ b = b ⊔ a`), not optimization, and would
+    # over-fire on every lattice goal. The indexed `⨆`/`⨅`/`sSup`/`sInf` (sup/inf over a set) are the
+    # extremal forms and are kept. (Anti-overfit: all tokens are general Mathlib vocabulary, none Topkis-specific.)
+    return bool(_re.search(r"IsGreatest|IsLeast|IsMax\b|IsMin\b|Maximal|Minimal|IsLUB|IsGLB|⨆|⨅|sSup|sInf", g))
+
+
+def _shape_uniqueness_forcing(goal_text: "str | None") -> bool:
+    """Trigger → `op_broad_08` (Constraint Imposition & Propagation — 'establishing required conditions and
+    deriving the necessary consequences, often FORCING A UNIQUE STRUCTURE or revealing a contradiction'; the
+    'what does this hypothesis secretly force?' / hidden-consequence move). Fires on a UNIQUENESS / forced-
+    structure claim (`∃!`, `Unique`, `Subsingleton`, 'exactly one') — broad_08's own canonical shape.
+    Conservative: requires a uniqueness/forcing marker."""
+    g = goal_text or ""
+    if not g.strip():
+        return False
+    return bool(_re.search(r"∃!|\bUnique\b|\bSubsingleton\b|exactly one|at most one|uniquely", g))
+
+
+def _shape_decidable(goal_text: "str | None") -> bool:
+    """Trigger → `reflection` (decision procedure). Fires on a goal plausibly DECIDABLE by computation —
+    explicit `Decidable`/`DecidableEq`/`DecidablePred`, or a finite domain (`Fintype`/`Finset`) the leaf can
+    discharge with a verified decidable checker / `decide`. Conservative: requires a decidability/finiteness
+    token (NOT any goal over ℕ — most are not `decide`-able)."""
+    g = goal_text or ""
+    if not g.strip():
+        return False
+    return bool(_re.search(r"\bDecidable\b|DecidableEq|\bDecidablePred\b|\bFintype\b|\bFinset\b", g))
+
+
 # CHANNEL-2 registry — (goal-shape matcher, move_id to GUARANTEE-surface). Extend = append one line.
+# Each fires only when the goal's logical SHAPE keys the move, and only ADDS a menu option (agency-preserving).
 _STRUCTURAL_TRIGGERS = [
     (_shape_abstract_existence, "instances_first"),   # abstract ∃/iff over a built carrier → reduce to witness
     (_shape_self_reference,     "op_spec_02"),         # self-encoding impossibility / fixed-point → diagonal move
+    (_shape_extremal,           "op_broad_05"),        # argmax / sup / inf / greatest element → Extremal Method
+    (_shape_uniqueness_forcing, "op_broad_08"),        # uniqueness / forced structure → Constraint Imposition & Propagation
+    (_shape_decidable,          "reflection"),          # Decidable / Fintype / Finset → decision-procedure reflection
 ]
 _witness_goal_shape = _shape_abstract_existence        # back-compat alias (earlier callers / tests)
 

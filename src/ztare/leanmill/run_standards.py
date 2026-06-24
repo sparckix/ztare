@@ -181,6 +181,61 @@ def trust_conservation_audit(since_iso: str, *, run_tag: str = "",
             "counts": {"ratified_attempts": len(ratified), "closed_certs_in_window": len(certs)}}
 
 
+def closure_telemetry_conservation_audit(since_iso: str, *, run_tag: str = "",
+                                         db_path=None, ledger=None) -> dict:
+    """POST-RUN CLOSURE-CONSERVATION CHECK (2026-06-22) — the INVERSE of `trust_conservation_audit`, and the net
+    that would have caught the proposer-pool closure-drop. `trust_conservation_audit` asserts ratified=1 ⟹ a real
+    cert; THIS asserts the other direction: every `closed` (compile_ok=1) attempt must be traceable to a
+    RATIFICATION — its target has a `ratified=1` row OR a closed certificate in the window. A `closed` with NEITHER
+    is a producer that recorded a closure it NEVER put through governance — exactly the pool's bare-name
+    `closed/ratified=NULL/no-cert` rows that read closed-NOT-ratified. The class is otherwise invisible in the
+    summaries (which read these very rows as wins), so it must be a mechanical post-run guard, not vigilance.
+    Read-only, fail-LOUD (the run is over — report, never mask). `db_path`/`ledger` injectable ⇒ hermetic selftest."""
+    import json
+    import sqlite3
+    if db_path is None or ledger is None:
+        from ztare.leanmill.solver.solver_core import ATTEMPTS_DB as _DB, ADHOC_CLOSURE_CERTIFICATES as _L
+        db_path = db_path or _DB
+        ledger = ledger or _L
+    viol: "list[str]" = []
+    try:
+        con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+        _w = " and run_tag=?" if run_tag else ""
+        _a: tuple = (since_iso, run_tag) if run_tag else (since_iso,)
+        # closure CLAIMS this run (a compile_ok 'closed' row), keyed by bare target (row_id = '<mode>::<target>').
+        # A row that is ALREADY ratified=1 is conserved by definition, so exclude it from the claim set.
+        claims: dict = {}
+        for r in con.execute(
+                f"select row_id, move from attempts where outcome='closed' and compile_ok=1 "
+                f"and (ratified IS NULL or ratified=0) and attempt_at>=?{_w}", _a):
+            claims.setdefault(str(r[0]).split("::")[-1], []).append((str(r[0]), r[1]))
+        ratified = {str(r[0]).split("::")[-1] for r in con.execute(
+                f"select row_id from attempts where ratified=1 and attempt_at>=?{_w}", _a)}
+    except Exception as e:  # noqa: BLE001 — an unreadable trust layer IS a violation, never a silent pass
+        return {"ok": False, "violations": [f"attempts DB unreadable: {repr(e)[:120]}"], "counts": {}}
+    certs: set = set()
+    try:
+        for ln in Path(ledger).read_text(encoding="utf-8").splitlines():
+            try:
+                c = json.loads(ln)
+            except ValueError:
+                continue
+            if str(c.get("ts") or "") >= since_iso and c.get("outcome") == "closed":
+                certs.add(c.get("target"))
+    except OSError:
+        certs = set()
+    for tgt, rows in claims.items():
+        if tgt in ratified or tgt in certs:
+            continue   # the closure was ratified (stamped) or has a cert → conserved
+        _mv = ", ".join(sorted({str(m) for (_rid, m) in rows if m}))
+        viol.append(f"closed-but-unratified '{tgt}': {len(rows)} 'closed' attempt(s) (move={_mv or '?'}) with NO "
+                    f"ratified=1 row and NO closure cert — a producer recorded a closure that never went through "
+                    f"governance (the proposer-pool-drop signature).")
+    return {"ok": not viol, "violations": viol,
+            "counts": {"unratified_closed_targets": len(claims), "ratified_targets": len(ratified),
+                       "closed_certs_in_window": len(certs)}}
+
+
 def _selftest() -> int:
     fails: "list[str]" = []
 
