@@ -304,7 +304,31 @@ def _compile_probe(probe: str, sandbox: Path, tag: str, timeout: int) -> "bool |
     `_compile_probe` bug class (it killed the proposer pool on every namespaced P1 rung). It can ONLY turn a
     false-FAIL into a pass — never breaks a passing probe — and the downstream sorry-free / anti-laundering /
     #print-axioms gates are UNCHANGED (this is compile reachability, not a closure gate; `sorry` stays allowed
-    on both paths since this probe audits sorried decomposition DAGs)."""
+    on both paths since this probe audits sorried decomposition DAGs).
+
+    WARM-FIRST when a substrate is registered (2026-06-25, the single warm-compile door): a campaign probe
+    references substrate defs absent from bare Mathlib, so standalone-first ALWAYS fails first → a doomed
+    ~73-156s cold Mathlib re-import before the warm retry (the cold-Lake tax). Try the warm env FIRST (~0.1s)
+    and SHORT-CIRCUIT only on warm-SUCCESS; a warm-fail/miss falls through to the authoritative standalone, so a
+    self-contained probe the namespace-wrap might perturb is still judged cold (no regression — strictly ≥ the
+    old path, which paid cold THEN warm on every campaign probe). ZTARE_LEANMILL_WARM_COMPILE=0 reverts."""
+    if os.environ.get("ZTARE_LEANMILL_WARM_COMPILE", "1") != "0":
+        try:
+            from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                                   campaign_namespaces, compile_probe_via_repl)
+            _sub = get_campaign_substrate()
+            if _sub:
+                _sb = Path(sandbox).resolve()
+                _env = campaign_file_env(_sub, _sb)
+                if _env is not None:
+                    _nss = campaign_namespaces()
+                    _wp = (f"namespace {_nss[0]}\n{probe}\nend {_nss[0]}\n"
+                           if (len(_nss) == 1 and "namespace " not in probe) else probe)
+                    _rr = compile_probe_via_repl(_wp, _sb, timeout, env=_env)
+                    if isinstance(_rr, tuple) and _rr[0] is True:
+                        return True                # warm CONFIRMED — skip the doomed cold compile
+        except Exception:  # noqa: BLE001 — warm is best-effort; the standalone path below is the fallback
+            pass
     r = _compile_probe_standalone(probe, sandbox, tag, timeout)
     if r is not False:
         return r                                   # clean / infra-unavailable ⇒ standalone verdict stands

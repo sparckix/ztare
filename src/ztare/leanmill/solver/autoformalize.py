@@ -1138,8 +1138,14 @@ _ROUNDTRIP_FALLBACK_DEFAULT = "gemini-2.5-flash"      # cheap same-family resili
 
 
 def _roundtrip_fallback() -> "tuple[str, ...]":
-    """The round-trip dispatch fallback model(s) — POLICY (`SolverConfig.roundtrip_fallback_model`), not
-    hardcoded; empty config ⇒ the code default."""
+    """The round-trip dispatch fallback model(s). Precedence: ENV `ZTARE_LEANMILL_ROUNDTRIP_FALLBACK`
+    (comma-separated) > POLICY (`SolverConfig.roundtrip_fallback_model`) > code default. Env-first so the
+    fallback can be a DIFFERENT family from the primary (e.g. primary=deepseek, fallback=kimi) — cross-family
+    resilience so one dead provider can't manufacture an empty-backtranslation false-reject."""
+    import os as _os
+    env = (_os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_FALLBACK") or "").strip()
+    if env:
+        return tuple(x.strip() for x in env.split(",") if x.strip())
     try:
         from ztare.leanmill.solver.config import SolverConfig
         m = (SolverConfig.load_default().roundtrip_fallback_model or "").strip()
@@ -1151,10 +1157,15 @@ def _roundtrip_fallback() -> "tuple[str, ...]":
 
 
 def _roundtrip_model() -> str:
-    """The round-trip back-translate/judge model — NOT hardcoded: it comes from the solver POLICY config
-    (`SolverConfig.roundtrip_model` in solver.yaml, the #49/#140 typed-YAML override layer), falling back to
-    the code default only when unset. Cross-family independence from the formalizer is the soundness-relevant
-    property; the specific id is operator policy, tuned in the YAML, not in code."""
+    """The round-trip back-translate/judge model. Precedence: ENV `ZTARE_LEANMILL_ROUNDTRIP_MODEL` > solver
+    POLICY config (`SolverConfig.roundtrip_model` in solver.yaml) > code default. Env-first so the judge family
+    can be swapped per-run without a config/code change (e.g. away from a flaky gemini to deepseek/kimi).
+    Cross-family independence FROM the formalizer (codex/claude) is the soundness-relevant property; the specific
+    id is operator policy."""
+    import os as _os
+    env = (_os.environ.get("ZTARE_LEANMILL_ROUNDTRIP_MODEL") or "").strip()
+    if env:
+        return env
     try:
         from ztare.leanmill.solver.config import SolverConfig
         m = (SolverConfig.load_default().roundtrip_model or "").strip()
@@ -1169,10 +1180,25 @@ def default_backtranslate(lean_statement: str, *, model: "Optional[str]" = None)
     """Lean → NL back-translation — a mechanical rendering (one completion), so it uses `LLMRuntime`
     (a DIFFERENT family from a codex formalizer; model is env-overridable via `_roundtrip_model`). Returns ''
     on any failure ⇒ the gate's non-empty guard fails-closed (no admission on a dead back-translator)."""
-    model = model or _roundtrip_model()
+    primary = model or _roundtrip_model()
     prompt = prompts.BACKTRANSLATE_PROMPT.format(lean_statement=(lean_statement or ""))
-    back = (_api_text(prompt, model=model, label="autoformalize_backtranslate") or "").strip()
-    _observe_roundtrip("backtranslate", lean_statement=(lean_statement or ""), back_nl=back, model=model)
+    back = (_api_text(prompt, model=primary, label="autoformalize_backtranslate") or "").strip()
+    used = primary
+    # LIVENESS RESILIENCE (RCA 2026-06-25): an EMPTY back-translation means the judge MODEL is dead/flaky
+    # (quota, rate-limit) — NOT that the statement is unfaithful — yet the gate's non-empty guard then
+    # FALSE-REJECTS a faithful target ("round-trip … or empty/degenerate"). That manufactured the v4 vs v4b
+    # NON-DETERMINISM: the identical target was admitted one run, rejected the next. Retry the fallback model(s)
+    # before yielding empty, so a transiently-flaky primary can't fabricate an unfaithful verdict. (Soundness
+    # unchanged: a recovered back-translation is still JUDGED; only a genuinely dead translator yields empty.)
+    if not back and model is None:
+        for fb in _roundtrip_fallback():
+            if not fb or fb == primary:
+                continue
+            back = (_api_text(prompt, model=fb, label="autoformalize_backtranslate_fallback") or "").strip()
+            if back:
+                used = fb
+                break
+    _observe_roundtrip("backtranslate", lean_statement=(lean_statement or ""), back_nl=back, model=used)
     return back
 
 
@@ -1582,8 +1608,14 @@ def _degenerate_def_body(block: str) -> "str | None":
     body = raw
     if body.startswith(("fun ", "fun\t", "λ")) and "=>" in body:   # strip a leading λ head: `fun _ => 0` ⇒ `0`
         body = body.split("=>", 1)[1].strip()
-    tok = body.split()[0] if body.split() else body
-    is_const = (body in _SHELL_CONST or tok in _SHELL_CONST
+    # DEGENERATE = the WHOLE body is a single bare constant (after the λ-head strip): `:= 0` / `:= True` /
+    # `fun _ => ∅` / `:= 5` / `:= sorry`. CONSERVATIVE BY CONTRACT — only an UNAMBIGUOUS bare constant flags, so a
+    # real predicate/expression is NEVER false-rejected. RCA 2026-06-24: a first-TOKEN match (`tok in _SHELL_CONST`)
+    # flagged any body STARTING with a constant — `0 < x ∧ 0 < y`, `1 + n`, `True ∧ p` — as a "shell", silently
+    # rejecting every lemma over a simple well-formedness predicate (the AMM `PoolWellFormed` stall). The semantic
+    # decoy notion is "the body ignores the def's inputs"; this cheap pre-gate stays strictly whole-body to honor
+    # its own conservatism, and the LLM denotation/anchor layer (def_denotation) catches the non-obvious decoys.
+    is_const = (body in _SHELL_CONST
                 or re.fullmatch(r"-?\d+(\.\d+)?", body) is not None   # numeric LITERAL value-check, not decl parsing
                 or body.startswith("sorry"))
     return raw if is_const else None
@@ -1809,6 +1841,7 @@ def _substrate_proven_shelf(substrate_src: str) -> str:
         from ztare.leanmill.lean_source import extract_signature
     except Exception:  # noqa: BLE001 — never block the reformulation on a parser import
         return ""
+    from ztare.leanmill.lean_source import signature_before_proof as _sig_of_block, first_theorem_name, has_sorry
     out: "list[str]" = []
     seen: "set[str]" = set()
     for name, block in decl_blocks(substrate_src):
@@ -1816,16 +1849,24 @@ def _substrate_proven_shelf(substrate_src: str) -> str:
         # keyword against `_DEF_KINDS`; a NON-definition WITH a name is a theorem/lemma RESULT (an `example` is
         # anonymous ⇒ excluded by the name check). PROVEN only (skip sorried/admitted); skip the engine's own
         # non-result scaffolding (`anchor_`/`witness_`).
-        if not name or name in seen or _decl_is_definition(block):
+        if not name or _decl_is_definition(block):
             continue
-        if "sorry" in block or "admit" in block:
-            continue   # PROVEN only (advisory list; the kernel re-verifies any actual cite)
-        if name.startswith(("anchor_", "witness_")):
+        if has_sorry(block):   # comment-ROBUST (RCA 2026-06-25: `"sorry" in block` is a SUBSTRING that dropped
+            continue           # proven theorems whose COMMENT mentioned sorry; the kernel re-verifies any cite)
+        # NAMESPACE-QUALIFIED-NAME BUG (RCA 2026-06-25, the AMM re-proof): `decl_blocks` returns the FQ name
+        # (`AMMConstantProduct.roundTripXReturn_le_input`) for a theory wrapped in `namespace …`, but the decl is
+        # WRITTEN short (`theorem roundTripXReturn_le_input`) — so `extract_signature(src, fq_name)` searched for
+        # `theorem AMMConstantProduct.…` (a string that does not exist) → empty sig → EVERY namespaced theorem was
+        # silently dropped → the shelf was EMPTY → the planner re-proved already-banked lemmas. Cure: take the
+        # signature from the BLOCK we already hold (canonical `signature_before_proof`, robust to qualification),
+        # exactly as the working `_substrate_established_defs` sibling renders its blocks verbatim — no re-search.
+        short = first_theorem_name(block) or str(name).split(".")[-1]
+        if not short or short in seen or short.startswith(("anchor_", "witness_")):
             continue
-        sig = " ".join((extract_signature(substrate_src, name) or "").split())[:200]
+        sig = " ".join((_sig_of_block(block) or "").split())[:240]   # `theorem <short> <binders> : <concl>`
         if sig:
-            out.append(f"  • `{name}` : {sig}")
-            seen.add(name)
+            out.append(f"  • {sig}")
+            seen.add(short)
         if len(out) >= 40:
             break
     return "\n".join(out)
@@ -2285,6 +2326,21 @@ def _self_test() -> int:
        (_planner_subdag(_iso) or {}).get("lemmas") == ["theorem L1 : P := by sorry"])
     ok("planner_subdag: no iso_route ⇒ None (fail-safe, compound no-ops)", _planner_subdag({"outcome": "x"}) is None)
     ok("planner_subdag: non-dict ⇒ None", _planner_subdag(None) is None)
+
+    # DEF-SHELL gate (anti-decoy) — must FLAG bare-constant shells AND must NOT flag real predicates/expressions.
+    # RCA 2026-06-24 (the AMM stall): a first-token match flagged `0 < x ∧ 0 < y` as a "shell", silently rejecting
+    # every lemma over a simple well-formedness predicate. A reject-gate MUST be tested on the GOOD inputs it has to
+    # PASS, not only the bad ones it catches — this dual corpus is that anti-regression battery.
+    _shell = lambda d: bool(detect_def_shells(d))
+    ok("def-shell: `:= 0` flagged", _shell("def Genus := 0"))
+    ok("def-shell: `:= True` flagged", _shell("abbrev X := True"))
+    ok("def-shell: `fun _ => 0` flagged", _shell("def f (n : Nat) := fun _ => 0"))
+    ok("def-shell: `:= sorry` flagged", _shell("def g := sorry"))
+    ok("def-shell: predicate `0 < a ∧ 0 < b` NOT flagged (the AMM PoolWellFormed false-reject)",
+       not _shell("def PoolWellFormed (p : Pool) : Prop := 0 < p.reserveX ∧ 0 < p.reserveY"))
+    ok("def-shell: predicate `0 ≤ x` NOT flagged", not _shell("def NonNeg (x : NNReal) : Prop := 0 ≤ x"))
+    ok("def-shell: expression `1 + n` NOT flagged", not _shell("def succ (n : Nat) := 1 + n"))
+    ok("def-shell: predicate `True ∧ p` NOT flagged", not _shell("def P (p : Prop) : Prop := True ∧ p"))
 
     NL = "For Hermitian matrices A, B, if B - A is positive semidefinite then each sorted eigenvalue of A is ≤ that of B."
     GOOD = "theorem t {A B : Matrix n n ℝ} (hA : A.IsHermitian) (hB : B.IsHermitian) (h : (B-A).PosSemidef) (i) : hA.ev i ≤ hB.ev i := by sorry"

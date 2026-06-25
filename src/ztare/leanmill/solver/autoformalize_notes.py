@@ -170,21 +170,80 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                  # cert-ledger watermark for the KILL-SAFE incremental deep-rung surfacing (same ISO-UTC
                  # format solve_adhoc stamps cert `ts` with — lexicographic compare is valid)
                  "run_started": _dt2.now(_tz2.utc).isoformat()}
+    # PHASE B (opt-in): multi-node lemma partitioning over the shared work bus (work_queue). Default-off
+    # ⇒ this block is inert and the loop is byte-identical to single-node. When on, each node leases a
+    # lemma before attacking it and skips lemmas a peer owns — peers' proofs converge via the fact-log
+    # merge (state_convergence), so a skip is never lossy. Safety is already guaranteed by that merge;
+    # this only removes the redundant re-proving. See solver/campaign_coordination.py.
+    from ztare.leanmill.solver import campaign_coordination as _coord
+    _dist = _coord.distributed_enabled()
+    _campaign_id = _os_w.environ.get("ZTARE_SOLVER_RUN_TAG") or "campaign"
+    if _dist:
+        log(f"[notes] DISTRIBUTED lemma mode ON (node={_coord.node()}, campaign={_campaign_id!r}) — "
+            f"lemmas leased via the work bus; peers' results converge via the fact-log merge")
+    out["distributed"] = _dist
     out["wall_deferred"] = []
+    # CAMPAIGN-START P0 FORECAST (2026-06-25): before spending the wall, PREDICT expected yield + time-to-closure
+    # from the DOMAIN's historical P0 (phase_timing read-models) via the Brier-calibrated forecast router — an
+    # admissibility/budget signal AND a prediction PRE-REGISTERED to a ledger, scored ex-post against the actual
+    # (the self-learning loop; forecast_router.reweight recalibrates). v1 uses the domain close-rate as a flat
+    # per-lemma prior (full per-candidate price() is a refinement). Best-effort; never blocks the campaign.
+    try:
+        from ztare.leanmill.solver.forecast_router import forecast_campaign_p0, domain_p0_history
+        _dom = (parse_domain(notes_text) or _os_w.environ.get("ZTARE_SOLVER_DOMAIN", "") or "unspecified").strip()
+        _hist = domain_p0_history(_dom)
+        _cr = _hist.get("close_rate")
+        _p = [(_cr if _cr is not None else 0.5)] * max(1, len(lemmas))
+        _fc = forecast_campaign_p0(_p, domain=_dom, domain_mean_ttc_s=_hist.get("mean_ttc_s"),
+                                   domain_mean_cost_s=_hist.get("mean_cost_s"))
+        out["p0_forecast"] = _fc
+        log(f"[notes] P0 FORECAST (domain={_dom!r}, {_hist.get('n_campaigns', 0)} prior campaigns): "
+            f"expected yield {_fc['expected_yield']}/{_fc['n_candidates']}"
+            + (f" · ~{_fc['expected_time_to_closure_s']}s to close" if _fc.get('expected_time_to_closure_s')
+               else " · no time-history yet (cold start)")
+            + (f" · hardest lemma #{(_fc['hardest_lemma_index'] or 0) + 1}"
+               if _fc.get('hardest_lemma_index') is not None else ""))
+        try:                                  # PRE-REGISTER the prediction (scored ex-post — the learning loop)
+            import json as _j0
+            _led = LEAN_ROOT_DEFAULT.parent / "analytics" / "public" / "queries" / "campaign_p0_forecasts.jsonl"
+            _led.parent.mkdir(parents=True, exist_ok=True)
+            with _led.open("a", encoding="utf-8") as _f0:
+                _f0.write(_j0.dumps({"run_tag": _campaign_id, "ts": out["run_started"], **_fc}) + "\n")
+        except Exception:  # noqa: BLE001
+            pass
+    except Exception:  # noqa: BLE001 — the forecast is advisory; never block the campaign
+        pass
     for i, lem in enumerate(lemmas):
         if _wall_exceeded():
             log(f"[notes] *** CAMPAIGN WALL reached — deferring lemma {i + 1}/{len(lemmas)} and the rest "
                 f"(earned rungs already written back; not a failure) ***")
             out["wall_deferred"] = [str(x) for x in lemmas[i:]]
             break
+        if _dist:
+            try:
+                _owned = _coord.claim_lemma(_campaign_id, str(lem), lease_s=2 * lemma_timeout_s)
+            except Exception:  # noqa: BLE001 — queue unavailable ⇒ prove it (the merge dedups redundant work)
+                _owned = True
+            if not _owned:
+                log(f"[notes] lemma {i + 1}/{len(lemmas)} owned by another node — skipping (converges via merge)")
+                continue
         log(f"[notes] lemma {i + 1}/{len(lemmas)}: {lem!r}")
         # the WHOLE blueprint is the planner context for each lemma (the surrounding lemmas are scaffold)
         rec = attack_fn(lem, lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
         out["lemmas"].append(rec)
         if rec.get("solved"):
             out["shelf"].append(rec.get("lean_statement") or "")
+        if _dist:
+            try:                                  # done → terminal; unsolved → released for a peer to retry
+                _coord.complete_lemma(_campaign_id, str(lem), solved=bool(rec.get("solved")))
+            except Exception:  # noqa: BLE001 — coordination is best-effort, never breaks the solve
+                pass
         log(f"  -> faithful={rec.get('faithful')} outcome={rec.get('outcome')} solved={rec.get('solved')}"
-            + (f" | reason={str(rec.get('faithfulness_reason'))[:200]}" if rec.get('faithful') is not True else ""))
+            # OBSERVABILITY (2026-06-24): show the reason on ANY non-closure, not only when faithful≠True — a
+            # firewall reject with faithful=True (e.g. a def-shell / triviality verdict) was previously SILENT, so
+            # a gate false-positive hid across a whole campaign instead of surfacing on the first lemma.
+            + (f" | reason={str(rec.get('faithfulness_reason'))[:240]}"
+               if (not rec.get('solved') and rec.get('faithfulness_reason')) else ""))
         if notes_path is not None:               # INCREMENTAL write-back — survive a timeout/kill. The end-of-run
             try:                                 # write was LOST when the 100-min budget killed the run mid-solve;
                 # KILL-SAFE deep rungs (v3/v4 lesson: killed runs are the NORM, not the exception): surface
@@ -310,7 +369,35 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
     if out["target"]:
         t = out["target"]
         log(f"  -> faithful={t.get('faithful')} outcome={t.get('outcome')} solved={t.get('solved')}"
-            + (f" | reason={str(t.get('faithfulness_reason'))[:200]}" if t.get('faithful') is not True else ""))
+            # OBSERVABILITY (2026-06-24): reason on ANY non-closure (see the per-lemma log above).
+            + (f" | reason={str(t.get('faithfulness_reason'))[:240]}"
+               if (not t.get('solved') and t.get('faithfulness_reason')) else ""))
+
+    # FINAL-TARGET PERSISTENCE AUDIT (RCA 2026-06-25, fix #3): the per-rung bank guard already audits the target
+    # in the persisted env, but make the campaign DOUBLY honest — re-`#print axioms` the target's banked decl
+    # against the FULL theory file. A `sorryAx` here (the assembled proof bound to a still-sorried sibling in the
+    # persistence world, which the probe-world audit can miss — the two-verify-worlds class) DOWNGRADES
+    # "closed" → an honest gap, loudly. Never a false-clean. Backstops #1 (supersession) + #2 (bank guard).
+    _theory_rel_final = parse_theory_file(notes_text)
+    if (out.get("target") or {}).get("solved") and _theory_rel_final:
+        try:
+            from ztare.leanmill.solver.family_lemma_library import _default_axiom_audit, decl_names as _dn
+            _tname = str((out["target"].get("target_theorem_name") or "")).strip()
+            _tp = (lean_root / _theory_rel_final)
+            if _tname and _tp.exists():
+                _names = _dn(_tp.read_text(encoding="utf-8"))
+                _banked = _tname if _tname in _names else next((n for n in _names if n.startswith(_tname + "__")), "")
+                if _banked:
+                    _clean, _areason = _default_axiom_audit(str(_tp), str(LEAN_ROOT_DEFAULT), _banked)
+                    if not _clean:
+                        log(f"[notes] *** TARGET AXIOM-TAINT in the persisted theory ({_areason}) — DOWNGRADING "
+                            f"'closed' → HONEST GAP (the assembled proof bound to a sorried sibling, not the "
+                            f"proof) — never a false-clean ***")
+                        out["target"]["solved"] = False
+                        out["target"]["outcome"] = "axiom_taint_gap"
+                        out["target"]["faithfulness_reason"] = f"persisted-theory {_areason}"
+        except Exception:  # noqa: BLE001 — defense-in-depth backstop; never break the run
+            pass
 
     n_ok = sum(1 for l in out["lemmas"] if l.get("solved"))
     target_closed = bool((out["target"] or {}).get("solved"))
@@ -374,6 +461,34 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     theory_path = (lean_root / theory_rel) if not Path(theory_rel).is_absolute() else Path(theory_rel)
     theory_path.parent.mkdir(parents=True, exist_ok=True)
     before = theory_path.read_text(encoding="utf-8") if theory_path.exists() else ""
+    # THEORY-IDENTITY GUARD (2026-06-25 AMM RCA): the vocab-swap that orphaned a proven theory
+    # (`ConstantProductPool`→`PoolState`) required the substrate to be RESET first — then a fresh genAI
+    # consolidation re-formalized the prose in a NEW vocabulary, and the old proofs (keyed on the old vocab)
+    # no longer matched (the α-cache is binder-axis only, not def-vocab; see proof_cache). The append-only
+    # gate below can only block EDITS, never a rebuild-from-empty. So: if this substrate has prior BANKED
+    # (proven) facts but the file is now empty/trivial, it was reset — REFUSE to silently re-formalize
+    # (which would orphan the proven theory in a new vocab). Fail LOUD so the operator recovers (rederive /
+    # restore) instead of compounding the loss. Default-on; ZTARE_LEANMILL_THEORY_IDENTITY_GUARD=0 reverts.
+    import os as _os_ti
+    if _os_ti.environ.get("ZTARE_LEANMILL_THEORY_IDENTITY_GUARD", "1") != "0":
+        try:
+            from ztare.leanmill.solver.family_lemma_library import read_bank_events as _rbe
+            _prior = [e for e in _rbe() if e.get("substrate") == theory_path.name
+                      and (e.get("decl_text") or "").strip()]
+        except Exception:  # noqa: BLE001 — guard is best-effort; a lookup failure never blocks the run
+            _prior = []
+        _n_thm = before.count("theorem ") + before.count("lemma ")
+        # a RESET substrate has NO theorems/lemmas (empty or import-only); an established one always has them.
+        # Keying on "zero results" (not a char-length heuristic) is the robust reset signal.
+        _trivial = (_n_thm == 0)
+        if _prior and _trivial:
+            return {"ok": False, "reverted": False, "theory_reset_detected": True,
+                    "new_decls": [], "sorried_statements": [],
+                    "reason": (f"THEORY-IDENTITY GUARD: substrate {theory_path.name!r} has {len(_prior)} banked "
+                               f"(proven) facts but the file is empty/trivial ({_n_thm} theorems) — it was RESET. "
+                               f"Refusing to re-formalize from prose (would orphan the proven theory in a NEW "
+                               f"vocabulary — the AMM ConstantProductPool→PoolState RCA). Recover the proven theory "
+                               f"(rederive_library_from_events / restore a backup) BEFORE re-running.")}
     if dispatch is not None:
         target, _ = parse_notes(notes_text)
         # ANTI-UNIFICATION LEADS (#124 consumer wiring): the library editor is exactly where mined schema
@@ -584,10 +699,13 @@ def _gap_class(rec: dict) -> str:
     the gap ledger actionable for the next planner pass and keeps the notes taxonomy aligned with the
     per-statement `no_good_store` (tactical conflict clauses) + `conjecture_book` (evidence ledger) the
     solver already maintains."""
+    reason = " ".join(str(rec.get("faithfulness_reason") or "").split()).strip()
     if rec.get("faithful") is not True:
-        reason = " ".join(str(rec.get("faithfulness_reason") or "").split()).strip()
-        return "firewall_rejected" + (f": {reason[:120]}" if reason else "")
-    return str(rec.get("outcome") or "open")
+        return "firewall_rejected" + (f": {reason[:160]}" if reason else "")
+    # faithful=True but still a non-closure: surface the outcome AND any gate reason (e.g. a def-shell / triviality
+    # verdict on an admitted statement) — previously dropped, which hid the cause across a whole campaign (the AMM
+    # def-shell stall: 16 `gap[rejected_by_firewall]` lines with no reason). Observability, 2026-06-24.
+    return str(rec.get("outcome") or "open") + (f": {reason[:160]}" if reason else "")
 
 
 def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional[Callable]" = None) -> "Path":

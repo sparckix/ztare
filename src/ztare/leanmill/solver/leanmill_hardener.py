@@ -66,7 +66,7 @@ class LeanmillHardener:
             if _has_core_instance(probe) and "proof_instance_shadowing" not in vectors:
                 vectors["proof_instance_shadowing"] = GamingVector(
                     name="proof_instance_shadowing", substrate="leanmill",
-                    category="NOVEL:context_semantic_hijack",
+                    category="NOVEL:definition_shadowing",
                     mechanism="agent ADDS a typeclass instance shadowing a core operation (e.g. HAdd) so a "
                               "verbatim statement is semantically hijacked (n+1 ≡ n); signature unchanged, "
                               "#print axioms clean — escapes statement_integrity's added-helper allowance",
@@ -138,7 +138,7 @@ def leanmill_cage_gates() -> list:
     gates = []
     for name, run in (("proof_statement_integrity", _si_run), ("proof_canonical_reelaboration", _reelab_run)):
         gates.append(to_cage_gate(GamingVector(
-            name=name, substrate="leanmill", category="NOVEL:context_semantic_hijack", mechanism="",
+            name=name, substrate="leanmill", category="NOVEL:definition_shadowing", mechanism="",
             substrate_class="proof_target", cage_phase="POST_JUDGE", gate_name=name), run=run))
     return gates
 

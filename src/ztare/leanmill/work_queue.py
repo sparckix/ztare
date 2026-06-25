@@ -1161,6 +1161,62 @@ def claim_matching(
     return None
 
 
+def claim_specific(
+    cx: sqlite3.Connection,
+    *,
+    work_id: str,
+    worker_id: str,
+    lease_s: int,
+) -> bool:
+    """Atomically lease ONE specific work item by id. Returns True iff THIS worker now owns it.
+
+    The compare-and-set lease primitive for partitioning a known, finite work-list across nodes
+    (vs `claim`, which pulls the next-by-priority item). A node wins iff the item is `queued`, or
+    already held by this same worker (idempotent re-claim within a run). If another node holds an
+    unexpired lease, this returns False and the caller skips it — its result converges via the
+    fact-log merge (state_convergence). Expired leases are reclaimed first, so a dead node's items
+    become claimable again."""
+    reclaim_expired(cx)
+    now = _now()
+    cur = cx.execute(
+        """
+        UPDATE work_items
+        SET status='claimed', attempts=attempts+1, claimed_by=?, lease_until=?, updated_at=?
+        WHERE work_id=?
+          AND (status='queued' OR (status='claimed' AND claimed_by=?))
+        """,
+        (worker_id, now + int(lease_s), now, work_id, worker_id),
+    )
+    cx.commit()
+    if int(cur.rowcount or 0) == 1:
+        record_worker_heartbeat(cx, worker_id=worker_id, claimed_work_id=work_id, worker_kind="campaign_lemma")
+        return True
+    return False
+
+
+def finish_specific(
+    cx: sqlite3.Connection,
+    *,
+    work_id: str,
+    worker_id: str,
+    done: bool,
+) -> None:
+    """Release a claimed item: `done=True` → terminal `done`; `done=False` → back to `queued`
+    (so another node — possibly with a larger proven shelf — can retry it). The lease is cleared
+    either way. Only acts on an item this worker holds (or any claimed item, for crash recovery)."""
+    now = _now()
+    status = "done" if done else "queued"
+    cx.execute(
+        """
+        UPDATE work_items
+        SET status=?, claimed_by=NULL, lease_until=NULL, updated_at=?
+        WHERE work_id=? AND (claimed_by=? OR status='claimed')
+        """,
+        (status, now, work_id, worker_id),
+    )
+    cx.commit()
+
+
 def _apply_terminal_payload_defaults(payload: dict[str, Any], *, status: str) -> None:
     if status != "dead_letter":
         return

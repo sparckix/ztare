@@ -190,6 +190,88 @@ class ProofCache:
                 "by_source": dict(Counter(r.get("source", "") for r in self._mem.values()))}
 
 
+# ── SEMANTIC reuse tier (2026-06-25, the AMM vocab-orphan RCA) ────────────────────────────────────────────
+# The cache key above is α-equivalence — it collapses bound-VARIABLE renaming (`∀x,Px ≡ ∀y,Py`) but NOT
+# definitional VOCABULARY (`PoolState.WellFormed` vs `PoolWellFormed`). So a re-formalization in a new vocab is
+# a guaranteed MISS and the proof is re-derived (the AMM orphaning). The cross-vocab axis needs the SOTA
+# retrieve-then-verify pattern (ReProver/Magnushammer), which lives HERE as the SEMANTIC tier of the same reuse
+# store (no new module — one reuse home): RETRIEVE candidates by embedding (semantic, vocab-agnostic — the
+# `semantic_premise_shelf`) → VERIFY `@goal = @candidate := rfl` with the KERNEL
+# (`statement_integrity.kernel_type_equiv_fn`) before citing. Cosine similarity NEVER closes a goal — only the
+# kernel does — so ZERO new soundness surface. Three tiers by distance: α-cache (binder axis, above) →
+# theory-identity (same theory, `autoformalize_notes`) → this (semantic, cross-corpus). DEFAULT-OFF
+# (`ZTARE_LEANMILL_SEMANTIC_REUSE=1`) so it is a pure A/B knob with byte-parity when off; lift is MEASURED.
+
+def semantic_reuse_enabled() -> bool:
+    # DEFAULT-ON (2026-06-25): sound by construction (the kernel-defeq gate means cosine similarity NEVER
+    # closes — a non-defeq "similar" hit is simply not a reuse; a defeq hit is the SAME Prop, so the cited
+    # banked proof is re-verified by governance like any cite → no false-closure surface). Cheap on the warm
+    # env (probes capped). Consistent with the α-cache / equiv-cache, which are default-on. Per the
+    # infer-via-use rule, default-on + telemetry MEASURES lift (an off-by-default A/B never runs).
+    # ZTARE_LEANMILL_SEMANTIC_REUSE=0 reverts to off (byte-parity — the consumer skips the defeq probes).
+    return os.environ.get("ZTARE_LEANMILL_SEMANTIC_REUSE", "1") != "0"
+
+
+def defeq_reuse_candidate(goal_source: str, target_name: str, candidates: "list[dict]", lean_root,
+                          *, equiv_fn=None, max_check: int = 8) -> "dict | None":
+    """The VERIFY half of retrieve-then-verify: find an embedding-retrieved banked lemma whose STATEMENT is
+    kernel-DEFEQ to the goal. `candidates` are the shelf hits ({name, statement} — `statement` = the candidate's
+    decl signature, possibly in another vocabulary). Re-state each under the GOAL's name and ask the canonical
+    one-name-keyed oracle whether `@goal = @candidate := rfl` (the SAME Prop), capped at `max_check` probes. The
+    first defeq hit → {name, statement, reuse_proof="by exact @<name>"} (defeq ⇒ the banked term inhabits the
+    goal type; governance re-verifies the spliced cite, so a mis-citation just fails to close — never a false
+    closure). None ⇒ no defeq match (fall through to the normal solve). `equiv_fn` injectable for a hermetic
+    test; production default = `statement_integrity.kernel_type_equiv_fn` (None ⇒ no reuse, never fail-open)."""
+    if not goal_source or not target_name or not candidates:
+        return None
+    eq = equiv_fn
+    if eq is None:
+        try:
+            from ztare.leanmill.solver.statement_integrity import kernel_type_equiv_fn
+            eq = kernel_type_equiv_fn(target_name, lean_root)
+        except Exception:  # noqa: BLE001 — oracle import/build failure ⇒ no reuse (never fail-open)
+            eq = None
+        if eq is None:
+            return None
+    checked = 0
+    for c in candidates:
+        if checked >= max(1, max_check):
+            break
+        name = (c.get("name") or "").strip() if isinstance(c, dict) else ""
+        stmt = (c.get("statement") or "").strip() if isinstance(c, dict) else ""
+        if not name or not stmt:
+            continue
+        cand_as_goal = _restate_under(stmt, target_name)   # re-key under the goal's name for the oracle
+        if not cand_as_goal:
+            continue
+        checked += 1
+        try:
+            same = bool(eq(goal_source, cand_as_goal))
+        except Exception:  # noqa: BLE001 — a probe error is a no-match (fail-closed), never a reuse
+            same = False
+        if same:
+            return {"name": name, "statement": stmt, "reuse_proof": f"by exact @{name}",
+                    "reason": f"kernel-defeq to banked `{name}` (retrieve→verify; cite re-verified by governance)"}
+    return None
+
+
+def _restate_under(candidate_stmt: str, goal_name: str) -> str:
+    """Re-emit the candidate's signature as a fresh sorried decl under `goal_name` (so the one-name-keyed defeq
+    oracle compares the two as the SAME name). Canonical `lean_source` parsing — NO decl regex."""
+    try:
+        from ztare.leanmill import lean_source as _ls
+    except Exception:  # noqa: BLE001
+        return ""
+    nm = _ls.first_theorem_name(candidate_stmt)
+    sig = _ls.extract_signature(candidate_stmt, nm) if nm else ""
+    if not sig.strip():
+        body = candidate_stmt.strip()
+        if body.lstrip().startswith(("theorem", "lemma", "example")):
+            return ""   # a decl head with no extractable signature ⇒ skip (conservative)
+        sig = body     # a bare `<binders> : <concl>` ⇒ use verbatim
+    return f"theorem {goal_name} {sig} := by sorry"
+
+
 def _selftest() -> int:
     import tempfile, os
     fails = []
@@ -272,6 +354,28 @@ def _selftest() -> int:
         os.remove(db3)
     finally:
         del os.environ["ZTARE_LEANMILL_EQUIV_CACHE"]
+
+    # ── SEMANTIC reuse tier (retrieve→kernel-defeq-verify) ──
+    _GOAL = "theorem g (x y : Nat) : x + y = y + x := by sorry"
+    _cands = [{"name": "addComm_banked",
+               "statement": "theorem addComm_banked (a b : Nat) : a + b = b + a := by simp [Nat.add_comm]"},
+              {"name": "unrelated", "statement": "theorem unrelated (n : Nat) : n * 0 = 0 := by simp"}]
+    def _fake_eq(orig, agent):   # stub for the kernel oracle: defeq iff α-collapsed conclusions match
+        def concl(s):
+            s = s.split(":=", 1)[0]; i = s.rfind(":")
+            return re.sub(r"[a-zA-Z]\b", "v", " ".join((s[i + 1:] if i >= 0 else s).split()))
+        return concl(orig) == concl(agent)
+    _hit = defeq_reuse_candidate(_GOAL, "g", _cands, lean_root=None, equiv_fn=_fake_eq)
+    ok("semantic_reuse: defeq candidate found + cites it",
+       bool(_hit) and _hit["name"] == "addComm_banked" and _hit["reuse_proof"] == "by exact @addComm_banked")
+    ok("semantic_reuse: no defeq match → None (no spurious reuse)",
+       defeq_reuse_candidate(_GOAL, "g", [_cands[1]], lean_root=None, equiv_fn=_fake_eq) is None)
+    ok("semantic_reuse: oracle None → None (fail-closed)",
+       defeq_reuse_candidate(_GOAL, "g", _cands, lean_root=None, equiv_fn=None) is None)
+    _probes = {"n": 0}
+    defeq_reuse_candidate(_GOAL, "g", _cands * 50, lean_root=None,
+                          equiv_fn=lambda o, a: _probes.__setitem__("n", _probes["n"] + 1) or False, max_check=3)
+    ok("semantic_reuse: max_check caps kernel probes", _probes["n"] <= 3)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED {fails}")
     return 1 if fails else 0

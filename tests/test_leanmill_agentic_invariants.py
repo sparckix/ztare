@@ -1124,3 +1124,61 @@ def test_firewall_gates_validated_on_production_shape_not_toys():
     fp_door = A.statement_fingerprint(DD + "theorem t {X:Type*}[Preorder X](f:X→X)(h:D f)(g:D f):(∀ x:X, x≤x) := by sorry")
     assert (fp_door.get("n_explicit_binders") or 0) >= 2, \
         "statement_fingerprint must count the TARGET theorem's binders (≥2), not the leading def's"
+
+
+# ── METAMORPHIC guards (2026-06-25, the AMM vocab-orphan RCA) ─────────────────────────────────────────────
+# The recurring class = a check correct for the SHAPE it was authored against, silently wrong on an
+# equivalent RE-ENCODING (research_isomorphism named it: read the invariant, not the coordinate). The cure
+# is a METAMORPHIC assertion: the output must be INVARIANT under a content-preserving transformation. These
+# FAIL on the pre-fix code (so they are non-iatrogenic — they encode a real invariant, not a tautology).
+
+def test_proven_shelf_invariant_under_namespace_wrap():
+    """METAMORPHIC: the proven-shelf must surface the SAME theorems whether or not the theory is wrapped in
+    `namespace N … end N`. The pre-2026-06-25 code re-extracted signatures by the decl_blocks-QUALIFIED name
+    (`extract_signature(src, 'N.foo')`), which finds nothing in a source that writes `theorem foo` short →
+    EMPTY shelf on every namespaced theory → the planner re-proved already-banked lemmas (the AMM
+    ConstantProductPool→PoolState orphaning). Cure: render the signature from the BLOCK we already hold."""
+    from ztare.leanmill.solver.autoformalize import _substrate_proven_shelf
+    flat = ("import Mathlib\n\n"
+            "theorem foo_lemma (n : Nat) : n + 0 = n := by simp\n\n"
+            "theorem bar_lemma (n : Nat) : 0 + n = n := by simp\n")
+    wrapped = ("import Mathlib\n\nnamespace Demo\n\n"
+               "theorem foo_lemma (n : Nat) : n + 0 = n := by simp\n\n"
+               "theorem bar_lemma (n : Nat) : 0 + n = n := by simp\n\nend Demo\n")
+    sf, sw = _substrate_proven_shelf(flat), _substrate_proven_shelf(wrapped)
+    assert "foo_lemma" in sf and "bar_lemma" in sf, "shelf must surface flat-file theorems"
+    # the invariant: namespacing is a content-preserving re-encoding → identical theorems surfaced
+    assert "foo_lemma" in sw and "bar_lemma" in sw, \
+        "proven-shelf must be INVARIANT under namespace-wrap (pre-fix: returned EMPTY → re-proved banked lemmas)"
+
+
+def test_proven_shelf_excludes_directly_sorried_but_keeps_comment_mentioning_sorry():
+    """The 'proven' filter must key on the INVARIANT (a real `sorry` in the proof), not the PROXY
+    (`"sorry" in block`, a substring that dropped a proven theorem whose COMMENT said 'sorry')."""
+    from ztare.leanmill.solver.autoformalize import _substrate_proven_shelf
+    src = ("import Mathlib\n\n"
+           "-- this proof avoids sorry entirely\n"
+           "theorem clean_one (n : Nat) : n + 0 = n := by simp\n\n"
+           "theorem open_one (n : Nat) : n + 0 = n := by sorry\n")
+    sh = _substrate_proven_shelf(src)
+    assert "clean_one" in sh, "a proven theorem whose COMMENT mentions sorry must still surface (comment-robust)"
+    assert "open_one" not in sh, "a genuinely sorried theorem must NOT surface as proven"
+
+
+def test_theory_identity_guard_refuses_reset_with_prior_banked(monkeypatch, tmp_path):
+    """A RESET substrate (no theorems) WITH prior banked facts must REFUSE to re-formalize from prose — the
+    trigger that orphaned the AMM proofs in a new vocabulary. FAILS the pre-2026-06-25 code (which would
+    dispatch the agent and rebuild fresh)."""
+    import ztare.leanmill.solver.family_lemma_library as fll
+    import ztare.leanmill.solver.autoformalize_notes as an
+    monkeypatch.setattr(fll, "read_bank_events",
+                        lambda *a, **k: [{"substrate": "t.lean", "name": "x",
+                                          "decl_text": "theorem x : True := trivial"}])
+    (tmp_path / "t.lean").write_text("import Mathlib\n")           # reset: no theorems
+    r = an.theory_consolidation("## Theory file\nt.lean\n", "t.lean", lean_root=tmp_path,
+                                dispatch=lambda *a, **k: None)
+    assert r.get("theory_reset_detected") is True and r.get("ok") is False, \
+        "reset+prior-banked must REFUSE re-formalization (theory-identity guard)"
+    (tmp_path / "t.lean").write_text("import Mathlib\n\ntheorem a : True := trivial\n")  # established
+    r2 = an.theory_consolidation("## Theory file\nt.lean\n", "t.lean", lean_root=tmp_path, dispatch=None)
+    assert not r2.get("theory_reset_detected"), "an established theory (has theorems) must NOT trip the guard"

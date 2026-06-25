@@ -9,7 +9,12 @@ factory_intelligence uses (phase_timing.summarize_campaign_cycle_time / summariz
 DB), plus #print axioms from a compile. Reusable for ANY campaign closure, not this one specifically.
 
   PYTHONPATH=src python scripts/.../promote_campaign_artifact.py \
-      --run-tag <rt> --target <closure_name> --dest ztare_proofs/ZtareProofs/strategy/<file>.lean [--log <run.log>]
+      --run-tag <rt> --target <closure_name> \
+      --dest ztare_proofs/leanmill-formalizations/strategy/<file>.lean [--log <run.log>]
+
+  CANONICAL dest = ztare_proofs/leanmill-formalizations/{strategy,finance}/ (the curated, GitHub-public
+  formalizations home, alongside leanmill-formalizations/blueprints/). NOT ztare_proofs/ZtareProofs/strategy/
+  (a stale auto-default). The local repo is master; the VPS is a mirror — file artifacts into the LOCAL repo.
 """
 from __future__ import annotations
 

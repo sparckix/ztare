@@ -71,6 +71,28 @@ def verify_lean_proof(probe_path: str | Path, target: str, *, lake_bin: str,
         print(f"[verify] prepended `import Mathlib` to import-less probe {p.name} "
               f"(warm-checker had Mathlib pre-loaded; standalone verify needs the header)", flush=True)
         txt = txt2
+    # WARM-FIRST (2026-06-25, the single warm-compile door): the leaf RATIFY gate is the hot-path cold-`lake
+    # env lean` site — the documented 592-1016s heavy-substrate tax (leaf_verify budget) and the recurring
+    # "cold Lake" the operator flagged ~11×. When a campaign substrate is registered, verify against the
+    # PRE-ELABORATED warm env (~0.1s) via `warm_verify_campaign`, which runs the SAME compile + #print-axioms
+    # gate (fail-CLOSED: a laundered sorried-cite carries sorryAx and is rejected), so it can only return the
+    # SAME verdict faster — never relaxes the audit. None ⇒ no warm env / REPL unusable ⇒ the cold path below
+    # stands (byte-parity). ZTARE_LEANMILL_WARM_VERIFY=0 reverts to cold-only.
+    if os.environ.get("ZTARE_LEANMILL_WARM_VERIFY", "1") != "0":
+        try:
+            from ztare.formal.repl_compile import (get_campaign_substrate, campaign_file_env,
+                                                   warm_verify_campaign)
+            _sub = get_campaign_substrate()
+            if _sub:
+                _env = campaign_file_env(_sub, Path(project_dir))
+                if _env is not None:
+                    _wv = warm_verify_campaign(txt, target, Path(project_dir), timeout, env=_env)
+                    if _wv is not None:
+                        print(f"[verify] WARM campaign-env verify ({p.name}, target={target}): "
+                              f"{'clean' if _wv[0] else 'reject'} — skipped cold `lake env lean`", flush=True)
+                        return _wv
+        except Exception:  # noqa: BLE001 — warm is best-effort; the cold path below is the sound fallback
+            pass
     if f"#print axioms {target}" not in txt:
         txt = txt + f"\n#print axioms {target}\n"
     p.write_text(txt, encoding="utf-8")

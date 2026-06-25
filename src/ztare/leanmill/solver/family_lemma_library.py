@@ -305,6 +305,42 @@ def _rename_decl_head(decl_text: str, old_name: str, new_name: str) -> str:
                   lambda m: m.group(1) + new_name, decl_text, count=1)
 
 
+def _sorried_placeholder_present(text: str, name: str) -> bool:
+    """True iff `text` holds a decl named `name` whose body is a `sorry` work-item placeholder. This is the
+    SUPERSESSION trigger (RCA 2026-06-25): the consolidation seeds `theorem name … := by sorry` as the canonical
+    work-item; once proven, the proof must TAKE OVER that canonical name, not bank under a mangled sibling that
+    leaves the sorried placeholder owning the name (downstream `exact?`/short-name citations then bind to the
+    sorry → sorryAx)."""
+    for n, block in decl_blocks(text):
+        if n == name and re.search(r"\bsorry\b", block):
+            return True
+    return False
+
+
+def _strip_named_decl(text: str, name: str) -> str:
+    """Remove the (first) top-level decl named `name`, together with an immediately-preceding doc/`--` comment
+    block (a dangling `/-- … -/` would otherwise mis-attach or error). Span logic mirrors `decl_blocks` — no
+    Lean re-parse, canonical `_DECL_START`/`_TERMINATORS`."""
+    lines = text.splitlines(keepends=True)
+    starts = [(i, m.group(2)) for i, ln in enumerate(lines) if (m := _DECL_START.match(ln))]
+    for k, (i, n) in enumerate(starts):
+        if n != name:
+            continue
+        end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
+        for j in range(i + 1, end):
+            if _TERMINATORS.match(lines[j]):
+                end = j
+                break
+        # absorb a contiguous preceding comment/blank block (its doc comment belonged to this decl)
+        s = i
+        while s - 1 >= 0 and (lines[s - 1].lstrip().startswith(("--", "/-", "-/")) or not lines[s - 1].strip()
+                              or "-/" in lines[s - 1]):
+            s -= 1
+        del lines[s:end]
+        return "".join(lines)
+    return text
+
+
 def _default_reverify(file_path: "str | Path", lean_root: "str | Path") -> bool:
     """Reverify the appended campaign file via the PRODUCTION load path (`repl_compile.campaign_file_env`): it
     re-elaborates the file's decls onto the warm Mathlib env and returns an env id iff the file compiles (None on
@@ -315,8 +351,73 @@ def _default_reverify(file_path: "str | Path", lean_root: "str | Path") -> bool:
     return campaign_file_env(str(Path(file_path).resolve()), str(Path(lean_root).resolve())) is not None
 
 
+def _default_axiom_audit(file_path: "str | Path", lean_root: "str | Path", decl_name: str) -> "tuple[bool, str]":
+    """Persistence-context axiom audit for a just-banked decl: `(clean_or_unknown, reason)`.
+
+    THE GUARD (2026-06-25 RCA): a banked rung must be `#print axioms`-clean IN THE FILE it is persisted in,
+    not just in the isolated probe. The bank reverify only checked COMPILE (`campaign_file_env`), so a rung
+    that cites a still-`sorry` decl by its canonical name (the proven proof was banked under a MANGLED name,
+    leaving the canonical name owned by the sorried work-item placeholder) compiled fine and was banked —
+    `sorryAx` only surfaced when the assembled target was re-elaborated standalone (probe-world vs
+    persistence-world). This audits the persisted env via the SAME warm `#print axioms` path the cold
+    governance audit uses.
+
+    Returns `(False, …)` ONLY when a `sorryAx` is DETECTED in the persisted env — that is fail-CLOSED (revert
+    the bank). Infra-dead / inconclusive ⇒ `(True, 'unavailable')` — fail-OPEN at the per-rung gate so flaky
+    REPL infra never blocks compounding; the campaign's final-target audit and the cold governance audit remain
+    as the backstops for that case."""
+    try:
+        from ztare.formal.repl_compile import campaign_file_decl_axiom_clean
+        res = campaign_file_decl_axiom_clean(str(file_path), str(lean_root), decl_name)
+    except Exception:  # noqa: BLE001 — audit infra error ⇒ unavailable (fail-open), not a taint verdict
+        return (True, "axiom_audit_unavailable")
+    if res is None:                                  # inconclusive / infra unusable ⇒ fail-open at this gate
+        return (True, "axiom_audit_unavailable")
+    clean, diag = res
+    return (clean, diag if not clean else "axiom_clean")
+
+
+def _supersede_in_place(text: str, target_name: str, decl_text: str):
+    """IN-PLACE supersession (RCA 2026-06-25, the v3 reverted_noncompile fix): replace the sorried placeholder
+    `target_name` with its PROOF *where it sits* — keeping its namespace position and qualified name
+    `NS.target_name` — so COMPOSITE proofs that cite it by that name still resolve. (Strip + re-bank-at-EOF
+    RELOCATES the decl to top-level, changing `NS.F` → `F`, which broke every composite lemma citing `F` →
+    reverted_noncompile.) The proof's NEW inline helpers are content-stable-renamed (no cross-lemma generic-name
+    collision) and inserted right BEFORE the proof (in scope + ordered). Returns (new_text, banked_names) or
+    (None, []) when the placeholder span can't be located cleanly (caller then keeps the mangled path)."""
+    lines = text.splitlines(keepends=True)
+    starts = [(i, m.group(2)) for i, ln in enumerate(lines) if (m := _DECL_START.match(ln))]
+    span = None
+    for k, (i, n) in enumerate(starts):
+        if n != target_name:
+            continue
+        end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
+        for j in range(i + 1, end):
+            if _TERMINATORS.match(lines[j]):
+                end = j
+                break
+        span = (i, end)
+        break
+    if span is None:
+        return (None, [])
+    existing = decl_names(text)
+    blocks = decl_blocks(decl_text)
+    target_block = next((b for n, b in blocks if n == target_name), None)
+    if not target_block:
+        return (None, [])
+    helpers = [(n, b) for n, b in blocks if n != target_name and n not in existing
+               and not any(n.startswith(pre) for pre in ("leaf_", "lift_", "barr", "AgenticLeafProbe"))]
+    rename = {n: content_stable_name(n, b) for n, b in helpers}   # collision-safe helper names
+    def _apply(s: str) -> str:
+        for old, new in rename.items():
+            s = re.sub(r"\b" + re.escape(old) + r"\b", new, s)
+        return s
+    replacement = "".join(_apply(b).rstrip() + "\n\n" for _n, b in helpers) + _apply(target_block).rstrip() + "\n"
+    return ("".join(lines[:span[0]] + [replacement] + lines[span[1]:]), [rename[n] for n, _ in helpers] + [target_name])
+
+
 def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: str, lean_root: "str | Path",
-                     *, reverify_fn=None) -> dict:
+                     *, reverify_fn=None, axiom_audit_fn=None) -> dict:
     """Bank ONE kernel-closed rung's full decl into the campaign warm-env file, content-stable-renamed, with a
     reverify+revert via the production load path. Incremental (call at the kernel-ratify site) ⇒ death-robust
     (you keep what you proved even if the run dies mid-way) AND within-run citable. Reuses `bank` (dedup) and
@@ -331,18 +432,33 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
     block = blocks.get(target_name) or (next(iter(blocks.values()), "") if len(blocks) == 1 else "")
     if not block or "sorry" in block:
         return {"banked_as": None, "reason": "no_proven_decl"}
-    new_name = content_stable_name(target_name, block)
-    if new_name in decl_names(p.read_text(encoding="utf-8")):
-        return {"banked_as": None, "reason": "already"}        # identical statement already in the env
-    # CARRY THE INLINE HELPERS (RCA 2026-06-24): rename the target's head IN THE FULL PROBE so `bank()` appends the
-    # renamed headline AND the inline helper lemmas its proof cites — TOGETHER. Extracting the target block ALONE
-    # (the old bug) dropped those helpers, so the headline failed to recompile standalone in the env → silent
-    # `reverted_noncompile` → NEVER citable. That zeroed reuse for exactly the substantial (helper-using) proofs —
-    # the direct cause of the pari-passu AP `exact_gap` (the AP headline couldn't cite its own just-proved
-    # sub-lemmas). `bankable_helpers` dedups NEW decls by name against the env, so the probe's def preamble +
-    # already-banked helpers are skipped (no duplicate-definition failure); reverify+revert still guards soundness.
-    renamed = _rename_decl_head(decl_text, target_name, new_name)
     before = p.read_text(encoding="utf-8")
+    # SUPERSESSION (RCA 2026-06-25): if `target_name` is a sorried work-item PLACEHOLDER in the env, the proof
+    # must TAKE OVER that canonical name so downstream short-name / `exact?` citations bind to the PROOF, not the
+    # sorry (the laundered-sorried-decl class). Done IN PLACE (`_supersede_in_place`) — the body is swapped where
+    # the placeholder sits, KEEPING its namespace + qualified name `NS.F`, so COMPOSITE proofs citing `F` still
+    # resolve. (The earlier strip+rebank-at-EOF RELOCATED `F` to top-level → `NS.F` vanished → every composite
+    # citing it failed reverted_noncompile — the v3 bug.) Otherwise (a generic planner node name, no placeholder)
+    # keep the content-stable mangling that disambiguates distinct same-name theorems. The reverify + axiom-guard
+    # backstop either path (a non-porting / sorry-tainted bank reverts to `before`, restoring the placeholder).
+    _superseded, _superseded_names, _new_text = False, [], None
+    if _sorried_placeholder_present(before, target_name):
+        _new_text, _superseded_names = _supersede_in_place(before, target_name, decl_text)
+        _superseded = _new_text is not None
+    if _superseded:
+        new_name = target_name
+        renamed = decl_text                                    # (for the event log)
+        p.write_text(_new_text, encoding="utf-8")
+    else:
+        if target_name in decl_names(before) and not _sorried_placeholder_present(before, target_name):
+            return {"banked_as": None, "reason": "already"}    # canonical proof already banked (superseded)
+        new_name = content_stable_name(target_name, block)
+        if new_name in decl_names(before):
+            return {"banked_as": None, "reason": "already"}        # identical statement already in the env
+        # CARRY THE INLINE HELPERS (RCA 2026-06-24): rename the target's head IN THE FULL PROBE so `bank()` appends
+        # the renamed headline AND the inline helper lemmas its proof cites — TOGETHER. `bankable_helpers` dedups
+        # NEW decls by name, so the probe's def preamble + already-banked helpers are skipped (no duplicate-def).
+        renamed = _rename_decl_head(decl_text, target_name, new_name)
     _rv = reverify_fn or _default_reverify
 
     def _try(path) -> bool:
@@ -351,12 +467,33 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
         except Exception:  # noqa: BLE001 — a tooling error ⇒ treat as a failed reverify, never a crash
             return False
 
-    banked = bank(p, renamed)                                  # reuse the canonical append+dedup+MDL-ledger
+    banked = _superseded_names if _superseded else bank(p, renamed)   # in-place supersede, else EOF append+dedup+MDL
     if new_name not in banked:
         return {"banked_as": None, "reason": "dedup_or_excluded"}
     if _try(p):
-        return {"banked_as": new_name, "reason": "banked",
-                "helpers_banked": [n for n in banked if n != new_name]}
+        # THE GUARD (RCA 2026-06-25): persistence-context axiom audit — a banked rung must be #print-axioms
+        # clean IN THE FILE, not just compile. Catches a rung that cites a still-`sorry` canonical name (the
+        # proven proof banked under a MANGLED name, the sorried work-item placeholder still owning the canonical
+        # namespaced name reachable via the `open`). Skipped only under an injected reverify_fn (unit tests, no
+        # live REPL) unless an explicit axiom_audit_fn is supplied. Fail-CLOSED on a detected sorryAx (revert).
+        _aa = axiom_audit_fn if axiom_audit_fn is not None else (_default_axiom_audit if reverify_fn is None else None)
+        if _aa is not None:
+            _clean, _areason = _aa(p, lean_root, new_name)
+            if not _clean:
+                p.write_text(before, encoding="utf-8")   # REVERT a sorry-tainted bank (no false-clean rung)
+                return {"banked_as": None, "reason": f"reverted_axiom_taint:{_areason}"}
+        _helpers = [n for n in banked if n != new_name]
+        # EVENT-SOURCING (the derived-view leg, 2026-06-25): also emit the bank as a durable, node-stamped event
+        # to the mergeable bank-events log. The .lean file is the live MATERIALIZED VIEW (cited this run); the
+        # event log is the SOURCE OF TRUTH a merged or fresh node re-derives the view from (see
+        # `rederive_library_from_events`). This makes the compounding library node-agnostic and dissolves the
+        # concurrent-append race (each node appends to a content-addressed log; the union re-materializes
+        # deterministically). Non-fatal: a telemetry failure must never break banking.
+        try:
+            record_bank_event(p.name, new_name, renamed, helpers=_helpers)
+        except Exception:  # noqa: BLE001
+            pass
+        return {"banked_as": new_name, "reason": "banked", "helpers_banked": _helpers}
     p.write_text(before, encoding="utf-8")                     # REVERT — a non-porting rung must not poison the env
     # CLASSIFY the failure honestly (positive control on the reverted file): a reverify that returns False for
     # BOTH "infra is dead" (toolchain-less root / dead REPL / flag off) and "the rung genuinely breaks the env"
@@ -366,6 +503,109 @@ def bank_decl_to_env(context_path: "str | Path", target_name: str, decl_text: st
     # problem. Only paid on the failure path; the common (banked) path stays one elaboration.
     reason = "reverted_noncompile" if _try(p) else "reverify_unavailable"
     return {"banked_as": None, "reason": reason}
+
+
+# --- event-sourcing: the bank-events log + view re-derivation (the derived-view leg, 2026-06-25) ----
+# DDIA: the .lean library is a MATERIALIZED VIEW; the source of truth is an append-only log of bank
+# events. Each event is one kernel-verified rung (content-stable name + its full renamed probe, helpers
+# carried). The log is a CvRDT (grow-only set keyed by (substrate, name)) — two nodes' logs union
+# cleanly, and `rederive_library_from_events` folds the union back into a node-agnostic .lean view. This
+# is what makes compounding distributed-safe; the live incremental append (in `bank`/`bank_decl_to_env`)
+# is unchanged and remains the per-run cache.
+
+
+def _repo_root() -> Path:
+    # src/ztare/leanmill/solver/family_lemma_library.py → parents[4] == repo root
+    return Path(__file__).resolve().parents[4]
+
+
+def bank_events_path() -> Path:
+    """Canonical bank-events log, co-located with the other solver-lane stores (env-overridable)."""
+    import os
+    env = os.environ.get("ZTARE_LEANMILL_BANK_EVENTS")
+    if env:
+        return Path(env)
+    return _repo_root() / "analytics" / "public" / "queries" / "solver_lane_bank_events.jsonl"
+
+
+def record_bank_event(substrate: str, name: str, decl_text: str,
+                      *, helpers=None, path: "str | Path | None" = None) -> None:
+    """Append a durable, node-stamped bank event — the source of truth the .lean view is folded from.
+
+    `substrate` is the theory file BASENAME (node-agnostic id); `name` is the content-stable rung name;
+    `decl_text` is the full renamed probe that was banked (helpers carried), so a replay reproduces the
+    exact decls. Append-only; identity for the merge is (substrate, name) — see
+    `state_convergence.STORE_SPECS`. Best-effort: callers wrap in try/except so telemetry never breaks
+    banking."""
+    p = Path(path) if path else bank_events_path()
+    p.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        from ztare.leanmill.state_convergence import stamp_provenance
+        rec = stamp_provenance({"substrate": substrate, "name": name,
+                                "decl_text": decl_text, "helpers": list(helpers or [])})
+    except Exception:  # noqa: BLE001 — provenance is optional; the fact still records
+        rec = {"substrate": substrate, "name": name, "decl_text": decl_text,
+               "helpers": list(helpers or [])}
+    with p.open("a", encoding="utf-8") as f:
+        f.write(json.dumps(rec, ensure_ascii=True) + "\n")
+
+
+def read_bank_events(path: "str | Path | None" = None) -> "list[dict]":
+    p = Path(path) if path else bank_events_path()
+    if not p.exists():
+        return []
+    out = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            obj = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(obj, dict):
+            out.append(obj)
+    return out
+
+
+def rederive_library_from_events(context_path: "str | Path", lean_root: "str | Path",
+                                 events: "list[dict] | None" = None,
+                                 *, reverify_fn=None) -> dict:
+    """Rebuild a substrate's banked section from the union of bank events (the materialized-view fold).
+
+    Node-agnostic and idempotent: the same event set re-materializes the same library (events deduped by
+    name, replayed in name order for a reproducible, diff-clean file). The SOUNDNESS boundary is the SAME
+    reverify+revert as incremental banking — a view that does not compile is rejected and the prior
+    known-good .lean is kept. This is the reconcile step after a cross-node merge / on a fresh node; the
+    live per-run path still appends incrementally (this is not auto-run, to avoid churn).
+
+    Returns {rederived: <n>, reason}. The corpus preamble (the original theory, non-banked) is preserved.
+    """
+    p = Path(context_path)
+    if not p.exists():
+        return {"rederived": 0, "reason": "no_context"}
+    substrate = p.name
+    evs = [e for e in (events if events is not None else read_bank_events())
+           if e.get("substrate") == substrate and (e.get("decl_text") or "").strip()]
+    # dedup by content-stable name (the union may carry the same fact from N nodes)
+    by_name: "dict[str, dict]" = {}
+    for e in evs:
+        by_name.setdefault(e["name"], e)
+    ordered = [by_name[n] for n in sorted(by_name)]
+    before = p.read_text(encoding="utf-8")
+    preamble, _ = _split_banked(before)
+    p.write_text(preamble.rstrip() + "\n", encoding="utf-8")
+    for e in ordered:
+        bank(p, e["decl_text"])               # reuse the canonical append+dedup+namespace-open+MDL-ledger
+    _rv = reverify_fn or _default_reverify
+    try:
+        ok = bool(_rv(p, lean_root))
+    except Exception:  # noqa: BLE001
+        ok = False
+    if not ok:
+        p.write_text(before, encoding="utf-8")  # never ship a non-compiling view; keep the known-good one
+        return {"rederived": 0, "reason": "reverify_failed", "kept_previous": True}
+    return {"rederived": len(ordered), "reason": "ok"}
 
 
 def _self_test() -> int:
@@ -483,10 +723,88 @@ def _self_test() -> int:
     h = bank_decl_to_env(nsenv, "uses_foo", "theorem uses_foo : foo = foo := rfl", ".", reverify_fn=_rv_ns)
     ok("env: namespaced-env rung banks WITH open (flat refs to namespaced defs resolve)", bool(h["banked_as"]))
     ok("env: banked block re-opens the env namespace", "open NS" in Path(nsenv).read_text(encoding="utf-8"))
+    # AXIOM GUARD (RCA 2026-06-25): a rung that COMPILES but is sorry-tainted in the PERSISTED env must be
+    # REVERTED, not banked — the laundered-sorried-canonical-name class (proven proof under a mangled name; the
+    # sorried work-item placeholder still owning the canonical namespaced name reachable via the `open`).
+    gtaint = bank_decl_to_env(nsenv, "tainted_rung", "theorem tainted_rung (n:Nat) : n = n := rfl", ".",
+                              reverify_fn=_rv_ns, axiom_audit_fn=lambda f, r, n: (False, "sorryAx_in_persisted_env"))
+    ok("env: axiom-guard REVERTS a sorry-tainted bank (compiles but #print axioms dirty)",
+       gtaint["banked_as"] is None and "axiom_taint" in gtaint["reason"])
+    ok("env: reverted-by-axiom-guard rung is NOT in the file", "tainted_rung" not in Path(nsenv).read_text(encoding="utf-8"))
+    gclean = bank_decl_to_env(nsenv, "clean_rung", "theorem clean_rung (n:Nat) : n + 0 = n := by simp", ".",
+                              reverify_fn=_rv_ns, axiom_audit_fn=lambda f, r, n: (True, "axiom_clean"))
+    ok("env: axiom-guard ALLOWS a clean bank", bool(gclean["banked_as"]))
+    # SUPERSESSION (RCA 2026-06-25): a proof for a work-item with a sorried placeholder must TAKE OVER the
+    # canonical name (strip placeholder, bank un-mangled) so downstream citations bind to the proof, not the sorry.
+    supenv = tempfile.mktemp(suffix=".lean")
+    init_context(supenv, "import Mathlib\n\n/-- work item -/\ntheorem wf (n : Nat) : n = n := by sorry\n")
+    _rv_sup = lambda path, root: "sorry" not in Path(path).read_text(encoding="utf-8")  # compiles iff no sorry remains
+    sup = bank_decl_to_env(supenv, "wf", "theorem wf (n : Nat) : n = n := rfl", ".",
+                           reverify_fn=_rv_sup, axiom_audit_fn=lambda f, r, n: (True, "axiom_clean"))
+    _suptxt = Path(supenv).read_text(encoding="utf-8")
+    ok("supersede: proof banked under the CANONICAL name (un-mangled)", sup["banked_as"] == "wf")
+    ok("supersede: sorried placeholder removed (no sorry remains)", "sorry" not in _suptxt)
+    ok("supersede: exactly one `theorem wf` (the proof, not a sibling)", _suptxt.count("theorem wf") == 1 and ":= rfl" in _suptxt)
+    # a generic (non-placeholder) name still mangles, as before
+    gen = bank_decl_to_env(supenv, "iso_lemma1", "theorem iso_lemma1 (n:Nat) : n+0=n := by simp", ".",
+                           reverify_fn=_rv_sup, axiom_audit_fn=lambda f, r, n: (True, "axiom_clean"))
+    ok("supersede: generic name without a placeholder still gets a content-stable __hash", (gen["banked_as"] or "").startswith("iso_lemma1__"))
+    # IN-PLACE composite (RCA 2026-06-25, the v3 reverted_noncompile fix): a NAMESPACED placeholder superseded
+    # must STAY in the namespace (qualified name `NS.F` kept) so COMPOSITE proofs citing it resolve — NOT
+    # relocated to EOF (which changed `NS.F`→`F` and broke every composite → reverted_noncompile).
+    _nstext = "import Mathlib\n\nnamespace NS\n\ntheorem F : True := by sorry\n\ntheorem G : True := by sorry\n\nend NS\n"
+    _nt, _nm = _supersede_in_place(_nstext, "F", "theorem F : True := trivial")
+    ok("supersede in-place: F kept INSIDE the namespace (not relocated to EOF)",
+       _nt is not None and _nt.index("theorem F : True := trivial") < _nt.index("end NS"))
+    _nt2, _ = _supersede_in_place(_nt, "G", "theorem G : True := F")
+    ok("supersede in-place: composite G cites F and both stay in scope",
+       _nt2 is not None and "theorem G : True := F" in _nt2 and "theorem F : True := trivial" in _nt2)
+    _nt3, _nm3 = _supersede_in_place(_nstext, "F", "theorem aux : True := trivial\ntheorem F : True := aux")
+    ok("supersede in-place: inline helper content-stable-renamed (no cross-lemma collision)",
+       _nt3 is not None and any(n.startswith("aux__") for n in _nm3) and "aux__" in _nt3)
+    os.path.exists(supenv) and os.remove(supenv); os.path.exists(supenv + ".mdl.json") and os.remove(supenv + ".mdl.json")
     os.path.exists(nsenv) and os.remove(nsenv)
     os.path.exists(nsenv + ".mdl.json") and os.remove(nsenv + ".mdl.json")
     os.path.exists(env) and os.remove(env)
     os.path.exists(env + ".mdl.json") and os.remove(env + ".mdl.json")
+
+    # --- event-sourcing: bank events log + view re-derivation (the derived-view leg) ---
+    be = tempfile.mktemp(suffix=".bank_events.jsonl")
+    os.environ["ZTARE_LEANMILL_BANK_EVENTS"] = be
+    try:
+        esv = tempfile.mktemp(suffix=".lean")
+        init_context(esv, "import Mathlib\n")
+        _rv_ok = lambda path, root: "NoSuchThing" not in Path(path).read_text(encoding="utf-8")
+        r1 = bank_decl_to_env(esv, "es_lemma", "theorem es_lemma (n:Nat): n+0=n := by simp", ".", reverify_fn=_rv_ok)
+        ok("es: bank emitted to event log", bool(r1["banked_as"]))
+        evs = read_bank_events(be)
+        ok("es: one event recorded with substrate+name", len(evs) == 1
+           and evs[0]["substrate"] == Path(esv).name and evs[0]["name"] == r1["banked_as"])
+        ok("es: event carries node provenance (underscore-prefixed)", "_node" in evs[0])
+        ok("es: event decl_text replays the rung", "n+0=n" in evs[0]["decl_text"])
+        # rederive into a FRESH context (simulating a fresh node / post-merge reconcile)
+        fresh = tempfile.mktemp(suffix=".lean")
+        # the fresh node must use the SAME substrate basename for events to match → copy name via symlink-ish
+        fresh = str(Path(fresh).with_name(Path(esv).name))
+        init_context(fresh, "import Mathlib\n")
+        rr = rederive_library_from_events(fresh, ".", evs, reverify_fn=_rv_ok)
+        ok("es: rederive rebuilt the rung from the event log", rr["rederived"] == 1)
+        ok("es: rederived .lean contains the banked rung", "n+0=n" in Path(fresh).read_text(encoding="utf-8"))
+        # idempotent: a second rederive from the same events yields the same library
+        body1 = Path(fresh).read_text(encoding="utf-8")
+        rederive_library_from_events(fresh, ".", evs, reverify_fn=_rv_ok)
+        ok("es: rederive is idempotent", Path(fresh).read_text(encoding="utf-8") == body1)
+        # a non-compiling view is rejected; the prior known-good .lean is kept
+        bad_ev = [{"substrate": Path(fresh).name, "name": "bad__x", "decl_text": "theorem bad__x : True := NoSuchThing"}]
+        rr_bad = rederive_library_from_events(fresh, ".", evs + bad_ev, reverify_fn=_rv_ok)
+        ok("es: non-compiling rederive rejected, previous kept",
+           rr_bad["reason"] == "reverify_failed"
+           and Path(fresh).read_text(encoding="utf-8") == body1)
+        for f in (esv, fresh, esv + ".mdl.json", fresh + ".mdl.json"):
+            os.path.exists(f) and os.remove(f)
+    finally:
+        os.environ.pop("ZTARE_LEANMILL_BANK_EVENTS", None)
+        os.path.exists(be) and os.remove(be)
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

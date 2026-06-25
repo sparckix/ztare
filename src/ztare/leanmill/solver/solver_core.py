@@ -488,6 +488,29 @@ def _build_solver_context(row: dict) -> str:
                 commented = "\n".join(("-- " + ln) if ln.strip() else "--"
                                       for ln in rendered.splitlines())
                 shelf_block = f"-- candidate premises (semantic shelf, cosine-similar to goal):\n{commented}\n"
+                # SEMANTIC-REUSE defeq tier (2026-06-25, retrieve→VERIFY): the shelf RETRIEVED these by
+                # embedding (vocab-agnostic); now KERNEL-VERIFY whether the goal is DEFEQ to a banked hit
+                # (`@goal=@cand:=rfl`) and, if so, surface a STRONG cite signal — the cross-vocab reuse the
+                # α-cache can't see (`PoolState.WellFormed` ≡ `PoolWellFormed`). Advisory only (the agent cites,
+                # the kernel re-verifies — zero new soundness surface); fail-safe + BOUNDED (top hits, capped
+                # probes) so it never breaks or slows the context build. Default-on (sound + cheap on the warm
+                # env); ZTARE_LEANMILL_SEMANTIC_REUSE=0 reverts.
+                try:
+                    from ztare.leanmill.solver.proof_cache import (semantic_reuse_enabled,
+                                                                   defeq_reuse_candidate)
+                    if semantic_reuse_enabled() and isinstance(shelf, dict):
+                        _cands = [{"name": h.get("name", ""), "statement": h.get("preview", "")}
+                                  for h in (shelf.get("hits") or [])[:5]
+                                  if h.get("name") and h.get("preview")]
+                        _gp = _enriched_goal_stub(source_text, target_name, base_goal, row) or base_goal
+                        _hit = defeq_reuse_candidate(_gp, (target_name or "adhoc_probe"), _cands,
+                                                     shelf_lean_root, max_check=3)
+                        if _hit:
+                            shelf_block = (f"-- ★ KERNEL-DEFEQ reuse: the goal is the SAME Prop as banked "
+                                           f"`{_hit['name']}` — close directly with `exact @{_hit['name']}`.\n"
+                                           + shelf_block)
+                except Exception:  # noqa: BLE001 — the defeq tier is advisory; never break the context build
+                    pass
     except Exception:
         shelf_block = ""
     # The GOAL piece must be a COMPILE-VALID theorem stub ending `:= by` (the kernel verifies the
@@ -714,6 +737,15 @@ _NATIVE_HAMMER_TACTICS = (
     "ring",
     "field_simp; ring",
     "linarith",
+    # STRUCTURAL conjunction-assembler (2026-06-25): a target that is `C₁ ∧ … ∧ Cₙ` where each conjunct is
+    # (defeq to) an in-scope PROVEN shelf lemma is closed MECHANICALLY here — `And.intro`-split, then cite the
+    # shelf per conjunct — instead of falling through to a slow agentic decompose (the "why is assembling the
+    # already-proven lemmas slow" RCA: `aesop`/`exact?` don't crack a wide, ∀-fronted `∧`, so it reached the LLM
+    # solve). Deterministic structural closer, NOT a move: there is no discovery in And-intro + cite, so putting
+    # it behind agency would be agency-creep. `repeat' apply And.intro` is N-agnostic (right-nested `∧`) and a
+    # no-op on a non-conjunction (fails-fast → just the trailing cite); a conjunct that genuinely COMBINES shelf
+    # lemmas (needs a real bridge) fails here and falls through to the agent — the Goldilocks split intact.
+    "(repeat' apply And.intro) <;> (first | assumption | exact?)",
     # ── expensive library / analysis / heavy search (reserve the remaining budget) ──
     "exact?",                    # Lean library search — cite an existing/imported lemma (RCA 2026-06-04)
     "gcongr",                    # analysis/measure-theory automation for NS Track-B goals (RCA 2026-06-04)
@@ -1322,8 +1354,14 @@ def _validate_against_contract(
         try:
             from ztare.gates.lean_compile_primitives import audit_axioms_subset as _aax, AXIOM_ALLOWLIST as _AXAL
             from ztare.common.timeouts import timeout_s as _budget
-            _clean, axiom_confirmed_bad, _axs = _aax(
-                _src, target_name, lean_root / "_axiom_audit.lean", lean_root, timeout_s=_budget("axiom_audit"))
+            # WARM-FIRST (2026-06-25): for a campaign closure, audit the proof against the cached theory env (only
+            # the new decl elaborates) instead of re-elaborating the whole inlined theory cold per closure.
+            _ca = _campaign_aware_axioms(enriched_goal or "", proof_text or "", target_name, lean_root, _budget("axiom_audit"))
+            if _ca is not None:
+                _clean, axiom_confirmed_bad, _axs = _ca
+            else:
+                _clean, axiom_confirmed_bad, _axs = _aax(
+                    _src, target_name, lean_root / "_axiom_audit.lean", lean_root, timeout_s=_budget("axiom_audit"))
             receipts["axiom_allowlist_receipt"] = {
                 "passed": (True if _clean else (False if axiom_confirmed_bad else None)),
                 "axioms": _axs,
@@ -1473,6 +1511,45 @@ def _campaign_aware_proof_compiles(target_source: str, proof_text: str, lean_roo
         pass
     from ztare.gates.v33_preflight_risk_detector import _compile_probe as _cp
     return bool(_cp(probe, lean_root, "CampaignVerify", min(int(timeout_s), 180)) is True)
+
+
+def _campaign_aware_axioms(target_source: str, proof_text: str, target_name: str, lean_root: Path, timeout_s: int):
+    """Campaign-aware `#print axioms` for a fresh closure (2026-06-25 verify-starvation TAIL). When a substrate
+    is registered, audit the proof by checking a FRESH-named copy of the target decl AGAINST the cached theory
+    ENV (only the new decl elaborates) — the SAME warm path `_campaign_aware_proof_compiles` uses — instead of
+    re-elaborating the whole inlined theory against base, which TIMES OUT on a heavy theory and falls to cold
+    `lake env lean` PER CLOSURE (the ~74s/closure tax that made the run look stuck). Returns
+    (clean, confirmed_bad, axs) like `audit_axioms_subset`, or None ⇒ caller uses the cold audit (authoritative).
+    Reuses the validated `warm_verify_campaign` (axioms ⊆ allowlist + no sorryAx) — NO new soundness surface;
+    a `sorryAx`/banned-axiom REJECT maps to fail-CLOSED, a mere compile/inconclusive maps to None (cold decides)."""
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate, campaign_file_env, warm_verify_campaign
+        from ztare.leanmill.lean_source import theorem_names, extract_signature, attach_proof
+        sub = get_campaign_substrate()
+        if not sub or not (proof_text or "").strip() or "sorry" in (proof_text or ""):
+            return None
+        env = campaign_file_env(sub, lean_root)
+        if env is None:
+            return None
+        names = theorem_names(target_source or "") or ([target_name] if target_name else [])
+        if not names:
+            return None
+        name = target_name if target_name in names else names[-1]
+        sig = extract_signature(target_source or "", name)
+        if not sig.strip():
+            return None
+        probe = attach_proof(f"theorem {name}_zax {sig} :=", proof_text)
+        cw = warm_verify_campaign(probe, f"{name}_zax", lean_root, timeout_s, env=env)
+        if cw is None:
+            return None
+        ok, diag = cw
+        if ok:
+            return (True, False, ["warm:clean"])               # axioms ⊆ allowlist, no sorryAx
+        if "AXIOM AUDIT REJECT" in (diag or ""):
+            return (False, True, ["warm:" + (diag or "")[:80]])  # sorryAx / banned axiom ⇒ fail-CLOSED
+        return None                                            # compile/inconclusive ⇒ cold path is authoritative
+    except Exception:  # noqa: BLE001 — never break the audit; the cold path remains authoritative
+        return None
 
 
 def _agentic_leaf_warm_solve(row: dict, lean_root: Path, timeout_s: int) -> tuple[bool, str, str]:
@@ -3149,7 +3226,18 @@ def solve(provider: str, limit: int, dry_run: bool, timeout_s: int = 300,
                         f"reused banked proof (reverified={rev})", wallclock_s=wc))
                         if _cache is not None else None,
                 )
+                # SINGLE-DOOR FLOOR (no-false-clean, 2026-06-25): this branch runs NO downstream firewall/axiom
+                # audit — it reports the DAG verdict directly. So a "closed" root MUST carry a kernel-verified
+                # proof_text; a closed-with-empty-proof verdict is a bookkeeping bug (a status-flip that bypassed
+                # the kernel — the propagate-close class) and is rejected HERE as an honest gap, never emitted as
+                # a clean closure. Belt-and-suspenders behind the governed_dag_search invariant enforcement.
                 root_closed = dag_res["root_status"] == "closed"
+                if root_closed and not (dag_res.get("root_proof_text") or "").strip():
+                    print(f"[dag_search] *** root reported 'closed' with EMPTY proof_text "
+                          f"({r['row_id']}) — DOWNGRADING to honest gap (single-door: closed ⟺ "
+                          f"kernel-verified proof) ***", flush=True)
+                    root_closed = False
+                    dag_res["root_resolution"] = "closed_without_proof_text_gap"
                 results.append({
                     "name": r["row_id"],
                     "target_name": r.get("target_theorem_name"),
@@ -3812,19 +3900,31 @@ def _agent_strategy_verdict(goal: str, source_text: str, lean_root, timeout_s: i
 def _should_decompose_first(*, cited_from_cache: bool, iso_route_on: bool, decompose_first_on: bool,
                             below_cap: bool, strategy_assess_on: bool,
                             native_closes: "Callable[[], bool]",
-                            agent_recommends: "Callable[[], bool]") -> bool:
+                            agent_recommends: "Callable[[], bool]",
+                            mechanical_conjunctive: "Callable[[], bool]" = lambda: False) -> bool:
     """INVARIANT B (agentic-first), made structural + testable (2026-06-21). Decompose-vs-direct is the AGENT's
     call at EVERY node — `is_top`/`notes` DO NOT APPEAR in this signature, so a top-level blueprinted target can
     NOT be force-decomposed (the 9612a8c16 bug, where `(_is_top and bool(notes))` short-circuited the agent-ask
     and gapped a directly-provable nucleus). Order: cheap config gates → the FREE native pre-filter (a
-    trivially-closable goal needs no strategist) → the agent strategy-ask. `native_closes`/`agent_recommends`
-    are LAZY zero-arg callables so the agent dispatch fires ONLY when native misses. True ⇒ run the planner
-    BEFORE the direct cascade. (`is_top` still selects WHICH notes feed an elected decomposition — that is a
-    SEPARATE concern handled at the call site, NOT whether to decompose.)"""
+    trivially-closable goal needs no strategist) → the DETERMINISTIC conjunctive split → the agent strategy-ask.
+    `native_closes`/`mechanical_conjunctive`/`agent_recommends` are LAZY zero-arg callables so the agent dispatch
+    fires ONLY when native misses AND no mechanical split applies. True ⇒ run the planner BEFORE the direct
+    cascade. (`is_top` still selects WHICH notes feed an elected decomposition — handled at the call site.)
+
+    `mechanical_conjunctive` (2026-06-25): a TOP-LEVEL `∧` target whose conjuncts are the work-items by
+    construction (`derive_conjunctive_dag`) is closed by SPLIT→cite-banked→`composite_ratify` — a MECHANICAL
+    assembly (CODE, no discovery), so it routes to the decompose path WITHOUT paying the agent strategy-ask
+    (the code-vs-move law + the Goldilocks ordering: cheap deterministic structure before the expensive agent).
+    This is why `SOLVE_DIRECT` no longer bypasses the split on a conjunctive target with a banked theory — the
+    AMM RCA (2026-06-25): the agent elected SOLVE_DIRECT and ground a monolithic proof while the cheap split sat
+    behind it. The split's own audit still gates correctness (a non-composing split falls through to the agent),
+    so this only REORDERS which path is tried first; the kernel ratifies every closure regardless."""
     if cited_from_cache or not iso_route_on or not decompose_first_on or not below_cap or not strategy_assess_on:
         return False
     if native_closes():            # #112: free deterministic filter first — trivial goals skip the strategist
         return False
+    if mechanical_conjunctive():   # a top-level ∧ with a deterministic split — mechanical assembly, no strategist
+        return True
     return agent_recommends()      # the AGENT decides — every node, including top+blueprint
 
 
@@ -3835,10 +3935,23 @@ def _selftest_invariant_b_agentic_decompose() -> None:
     `(_is_top and bool(notes)) or (...agent...)` code. Run: it is called by the module selftest hook below."""
     base = dict(cited_from_cache=False, iso_route_on=True, decompose_first_on=True, below_cap=True,
                 strategy_assess_on=True)
-    # the nucleus case: agent says SOLVE_DIRECT, native misses → must NOT decompose (used to gap, force-decomposed)
+    # the nucleus case: agent says SOLVE_DIRECT, native misses, NOT conjunctive → must NOT decompose (used to gap)
     assert _should_decompose_first(**base, native_closes=lambda: False, agent_recommends=lambda: False) is False
     # hard target: agent says DECOMPOSE → decompose
     assert _should_decompose_first(**base, native_closes=lambda: False, agent_recommends=lambda: True) is True
+    # MECHANICAL CONJUNCTIVE (2026-06-25 AMM RCA): a top-level ∧ with a deterministic split → decompose-first
+    # EVEN WHEN the agent elected SOLVE_DIRECT (agent_recommends=False), and WITHOUT paying the strategy-ask.
+    _agent_asked = []
+    assert _should_decompose_first(**base, native_closes=lambda: False,
+                                   mechanical_conjunctive=lambda: True,
+                                   agent_recommends=lambda: _agent_asked.append(1) or False) is True
+    assert not _agent_asked, "mechanical conjunctive split ⇒ skip the agent strategy-ask (it's CODE, not discovery)"
+    # the free native filter still wins over the mechanical split (a trivially-closable goal skips everything)
+    _conj_probed = []
+    assert _should_decompose_first(**base, native_closes=lambda: True,
+                                   mechanical_conjunctive=lambda: _conj_probed.append(1) or True,
+                                   agent_recommends=lambda: True) is False
+    assert not _conj_probed, "native pre-filter closes ⇒ the conjunctive-split probe must NOT even fire"
     # free native filter closes → skip decompose AND never dispatch the agent strategy-ask
     _agent_fired = []
     assert _should_decompose_first(**base, native_closes=lambda: True,
@@ -4125,6 +4238,23 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         if "v" not in _strategy:
             _strategy["v"] = _agent_strategy_verdict(goal, source_text, sub, timeout_s)
         return _strategy["v"]
+    def _mechanical_conjunctive_available() -> bool:
+        """A TOP-LEVEL `∧` target with a deterministic conjunct split available (`derive_conjunctive_dag`) →
+        route to the split path (mechanical assembly: CODE, no discovery), NOT the agent's SOLVE_DIRECT grind.
+        Cheap (pure string ops, no Lean); the split's audit inside route_and_solve gates correctness, so a
+        non-conjunctive / non-composing goal falls through to the agent. ZTARE_LEANMILL_DETERMINISTIC_CONJ_DAG=0
+        reverts (then this returns False and the agent strategy-ask decides as before)."""
+        if os.environ.get("ZTARE_LEANMILL_DETERMINISTIC_CONJ_DAG", "1") == "0":
+            return False
+        try:
+            from ztare.leanmill.solver.isomorphism_decompose import derive_conjunctive_dag as _dcd
+            avail = _dcd(source_text or "", target_name) is not None
+            if avail:
+                print("[solve_adhoc] top-level ∧ target → deterministic conjunctive split available; routing to "
+                      "split→cite→composite (mechanical assembly, skipping the SOLVE_DIRECT grind)", flush=True)
+            return avail
+        except Exception:  # noqa: BLE001 — availability probe is advisory; never block the strategy path
+            return False
     _decomp_first = _should_decompose_first(
         cited_from_cache=_cited_from_cache,   # a pre-attack (cache cite OR governed pool) already spliced a proof
         iso_route_on=os.environ.get("ZTARE_LEANMILL_ISO_ROUTE", "1") != "0",
@@ -4132,6 +4262,7 @@ def solve_adhoc(target_name: str, source_text: str, goal: str, *,
         below_cap=_below_cap,
         strategy_assess_on=os.environ.get("ZTARE_LEANMILL_AGENT_STRATEGY_ASSESS", "1") != "0",
         native_closes=_native_prefilter_closes,                                                # #112: FREE filter FIRST
+        mechanical_conjunctive=_mechanical_conjunctive_available,   # 2026-06-25: code-vs-move — split before agent
         agent_recommends=lambda: _strategy_verdict() == "DECOMPOSE")    # Dim B (proof-HOW): the AGENT decides
     _iso_pre = None
     try:

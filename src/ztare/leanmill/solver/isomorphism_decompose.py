@@ -688,6 +688,27 @@ def attack(source: str, target_name: str, *, lean_root: Path, timeout_s: int = 1
                           better=lambda a, va, b, vb: (b, vb) if vb.accepted else (a, va),
                           max_refines=max_refines)
 
+    # DETERMINISTIC CONJUNCTIVE DECOMPOSITION (2026-06-25): when the target is a top-level conjunction, its
+    # work-items ARE the conjuncts — derive them MECHANICALLY (no LLM consolidation lottery) and AUDIT through
+    # the SAME `decomposition_dag_audit` kernel gate the agentic planner uses. On a pass we skip the agent
+    # entirely; the conjuncts then prove (kernel) and `composite_ratify` assembles the And-intro composite —
+    # ZERO new soundness surface (the kernel still ratifies G). Default-ON (sound: the audit + composite_ratify
+    # gate every closure); ZTARE_LEANMILL_DETERMINISTIC_CONJ_DAG=0 reverts to agent-only. N/A (not a top-level
+    # conjunction) or audit-miss ⇒ fall through to the agentic planner below — never a regression.
+    if os.environ.get("ZTARE_LEANMILL_DETERMINISTIC_CONJ_DAG", "1") != "0":
+        _det = derive_conjunctive_dag(goal_decl, target_name)
+        if _det:
+            _dv = _verify(_det)
+            if _dv.accepted:
+                print(f"[iso] DETERMINISTIC conjunctive decomposition: {len(_det['lnames'])} conjunct "
+                      f"work-items audited (no LLM split) for: {goal_concl[:60]}", flush=True)
+                return {"audited": True, "lemmas": _det["lemmas"], "chain": _det["chain"],
+                        "lnames": _det["lnames"], "verdict": _dv.detail, "rounds": 0,
+                        "iso_source": "deterministic_conjunctive", "raw_tail": "",
+                        "notes_used": bool(_notes_block), "deterministic_conjunctive": True}
+            print(f"[iso] deterministic conjunctive split did not audit "
+                  f"({str(_dv.reason)[:90]}) — falling through to the agentic planner", flush=True)
+
     # PARALLEL DIVERSE SAMPLING (ZTARE_ISO_SAMPLES>1; default 1 = byte-identical single-shot below): a breadth
     # leg over K technique-diverse decompositions, audited, survivors pursued; composes with refine on a miss.
     n_samples = int(os.environ.get("ZTARE_ISO_SAMPLES", "1"))
@@ -874,6 +895,89 @@ def assemble_composite_proof(preamble: str, lemmas, lnames, lemma_proofs: dict, 
         return ""
     parts.append(chain.strip())
     return "\n\n".join(parts) + "\n"
+
+
+def derive_conjunctive_dag(goal_decl: str, target_name: str) -> "dict | None":
+    """DETERMINISTIC decomposition of a top-level CONJUNCTIVE target `C₁ ∧ … ∧ Cₙ` into the SAME
+    `{lemmas, lnames, chain}` shape the agentic planner produces — so the conjuncts ARE the work-items
+    *by construction* (no LLM consolidation lottery), then the EXISTING pipeline takes over unchanged:
+    `decomposition_dag_audit` (kernel) gates it and `composite_ratify` assembles the And-intro composite.
+    ZERO new soundness surface — this only proposes WHICH lemmas to prove; the kernel still ratifies G.
+
+    Each conjunct becomes `theorem <target_name>_conjᵢ <binders> : Cᵢ := by sorry` (the FULL binder telescope,
+    so the decl is always well-typed). The chain re-states G and discharges it by splitting the conjunction and
+    citing the conjunct lemmas — `solve_by_elim [<names>]` names every lemma (the audit's cite-check) and closes
+    each leaf by unification (binder-robust). Reuses ONLY canonical parsers (`lean_source` + the one top-level
+    splitter); NO brittle decl regex. Returns None when the target is NOT a top-level conjunction (e.g. atomic,
+    or a top-level `↔` — left to the planner) or the signature can't be split — caller then dispatches the agent.
+    """
+    if not goal_decl or not target_name:
+        return None
+    from ztare.leanmill.lean_source import extract_signature, top_level_colon
+    # the splitter is the ONE canonical top-level connective splitter (shared with the obligation-DAG build) —
+    # NOT a re-rolled regex, so the nested-paren / iff guards are identical to derive_structural_decomposition.
+    from ztare.leanmill.solver.governed_dag_search import _split_top_level
+    sig = (extract_signature(goal_decl, target_name) or "").strip()   # `<binders> : <conclusion>`
+    if not sig:
+        return None
+    ci = top_level_colon(sig)
+    if ci < 0:
+        return None
+    binders = sig[:ci].strip()
+    concl = sig[ci + 1:].strip()
+    if not concl:
+        return None
+    # ∀-FRONTING (2026-06-25 AMM RCA): the conclusion may be `∀ x …, C₁ ∧ … ∧ Cₙ` — the top-level `∧` is UNDER a
+    # leading `∀`/`Π` quantifier (a `theorem T : ∀ γ, A ∧ B`, NOT `theorem T (γ) : A ∧ B`). Splitting the `∧`
+    # naively drops the bound variable from conjuncts 2..n → ill-typed (the audit correctly rejected it). `∀`
+    # distributes over `∧` (`(∀x, A∧B) ↔ (∀x,A)∧(∀x,B)`), so STRIP the leading quantifier prefix, split the body,
+    # and prepend the prefix to each conjunct (well-typed by construction); the chain `intro`s it before splitting.
+    qprefix, body = "", concl
+    while body[:1] in ("∀", "Π") or body.startswith("\\forall"):
+        cc = _top_level_comma(body)
+        if cc < 0:
+            break
+        qprefix = (qprefix + " " + body[:cc + 1]).strip()   # include the binder-terminating comma
+        body = body[cc + 1:].strip()
+        if not body:
+            return None
+    # a top-level `↔` (under any ∀-prefix) is a DIFFERENT composite (Iff.intro) — leave it to the planner here.
+    if len(_split_top_level(body, {"↔"})) == 2:
+        return None
+    conjuncts = _split_top_level(body, {"∧"})
+    if len(conjuncts) < 2:
+        return None   # atomic / not a top-level conjunction → no deterministic split
+    _bind = (" " + binders) if binders else ""
+    _q = (qprefix + " ") if qprefix else ""
+    lemmas, lnames = [], []
+    for i, c in enumerate(conjuncts, start=1):
+        lname = f"{target_name}_conj{i}"
+        lnames.append(lname)
+        # each conjunct carries the theorem binders AND the fronted ∀-prefix → always well-typed.
+        lemmas.append(f"theorem {lname}{_bind} : {_q}{c} := by sorry")
+    cites = ", ".join(lnames)
+    # N-agnostic + associativity-robust: `intro` the fronted quantifier (no-op when there is none), peel every
+    # top-level `∧`, then close each leaf citing the conjunct lemmas (`solve_by_elim` applies them under unification).
+    _intro_line = "  intros\n" if qprefix else ""
+    chain = (f"theorem {target_name} {sig} := by\n"
+             f"{_intro_line}"
+             f"  repeat' apply And.intro\n"
+             f"  all_goals solve_by_elim [{cites}]")
+    return {"lemmas": lemmas, "lnames": lnames, "chain": chain, "deterministic_conjunctive": True}
+
+
+def _top_level_comma(s: str) -> int:
+    """Index of the FIRST `,` at bracket-depth 0 (binder commas inside (…)/[…]/{…}/⟨…⟩ are nested → ignored);
+    used to find where a leading `∀ <binders>,` quantifier prefix ends. -1 if none."""
+    depth = 0
+    for i, c in enumerate(s):
+        if c in "([{⟨⦃":
+            depth += 1
+        elif c in ")]}⟩⦄":
+            depth = max(0, depth - 1)
+        elif depth == 0 and c == ",":
+            return i
+    return -1
 
 
 def composite_ratify(result: dict, source: str, target_name: str, lemma_proofs: dict, *,
@@ -1149,6 +1253,33 @@ def _selftest() -> int:
        _parse_dag("DECOMP:\n```lean\ntheorem l1 : <statement> := by sorry\n```\n", "iso") == ([], "", []))
     ok("parse: empty input ⇒ empty", _parse_dag("", "iso") == ([], "", []))
     ok("parse: fenced but no theorem ⇒ empty", _parse_dag("DECOMP:\n```lean\njust prose\n```\n", "iso") == ([], "", []))
+
+    # --- DETERMINISTIC CONJUNCTIVE DECOMPOSITION (2026-06-25): conjuncts ARE the work-items, no LLM split ---
+    _cg = ("theorem amm_cpmm (x y k : Real) (hx : 0 < x) : "
+           "x * y = k ∧ 0 < x * y ∧ y = k / x := by sorry")
+    _cd2 = derive_conjunctive_dag(_cg, "amm_cpmm")
+    ok("det-conj: 3-conjunct target splits into 3 named work-items",
+       bool(_cd2) and _cd2["lnames"] == ["amm_cpmm_conj1", "amm_cpmm_conj2", "amm_cpmm_conj3"])
+    ok("det-conj: each lemma is a sorried decl carrying the FULL binder telescope",
+       bool(_cd2) and all("(x y k : Real) (hx : 0 < x)" in L and L.rstrip().endswith(":= by sorry")
+                          for L in _cd2["lemmas"]))
+    ok("det-conj: every lemma name is CITED in the chain (passes the audit cite-check)",
+       bool(_cd2) and all(ln in _cd2["chain"] for ln in _cd2["lnames"]))
+    ok("det-conj: chain concludes the goal G verbatim (passes the conclusion-match)",
+       bool(_cd2) and _norm_ws(_lemma_conclusion(_cd2["chain"]))
+       == _norm_ws("x * y = k ∧ 0 < x * y ∧ y = k / x"))
+    ok("det-conj: no conjunct RESTATES G (non-circular by construction)",
+       bool(_cd2) and all(_norm_ws(_lemma_conclusion(L))
+                          != _norm_ws("x * y = k ∧ 0 < x * y ∧ y = k / x") for L in _cd2["lemmas"]))
+    ok("det-conj: atomic target ⇒ None (no split, agent handles)",
+       derive_conjunctive_dag("theorem t (x : Real) : x <= x := by sorry", "t") is None)
+    ok("det-conj: top-level ↔ ⇒ None (Iff composite left to the planner)",
+       derive_conjunctive_dag("theorem t : A ↔ B := by sorry", "t") is None)
+    ok("det-conj: nested ∧ under → ⇒ None (no TOP-level conjunction)",
+       derive_conjunctive_dag("theorem t : (A ∧ B) → C := by sorry", "t") is None)
+    _cd3 = derive_conjunctive_dag("theorem t : P ∧ Q := by sorry", "t")
+    ok("det-conj: no-binder conjunction builds clean decls",
+       bool(_cd3) and _cd3["lemmas"][0] == "theorem t_conj1 : P := by sorry")
     # CORRECTED behaviour (the decl_blocks swap, #49 2026-06-12) — the two latent bugs the differential exposed:
     _ld, _cd, _nd = _parse_dag("DECOMP:\n```lean\ntheorem l1 : (1:ℕ)=1 := by sorry\n"
                                "def helper (n:ℕ) : ℕ := n + 1\ntheorem chn : True := by trivial\n```\n", "iso")

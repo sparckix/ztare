@@ -356,6 +356,14 @@ class DagNode:
                                         # score) for premise-anchored nodes; overrides
                                         # the heuristic move prior in the policy.
     premise: Optional[str] = None       # retrieved premise name this helper closes via
+    composition_required: bool = False  # SINGLE-DOOR INVARIANT (2026-06-25): True ⇒ this child is part of a
+    #   GENUINE decomposition (a top-level ∧/↔ conjunct, or a contract-declared sub_goal/helper) that does NOT
+    #   re-prove the parent — so closing it can NEVER status-flip the parent closed; the parent must close
+    #   through the kernel (a direct proof or `composite_ratify`'s And-intro composite). False (default) ⇒ this
+    #   child RE-PROVES the parent goal (a premise-anchored restatement), so its proof IS a parent proof and may
+    #   propagate. This is the property the `_propagate_closure` soundness actually depends on — keyed on the
+    #   PROPERTY, not on the `ZTARE_CONJECTURE_DECOMPOSE` flag (the flag-keyed guard silently went false-clean on
+    #   conjunct children in the default config; arch §"governed obligation-DAG search" documents the invariant).
     # Best partial progress observed on this node across NON-closing moves (the
     # GP-187 gradient). Raised from MoveResult.progress; used to (a) boost the
     # best-first frontier score so a near-closing node is expanded first, and
@@ -447,12 +455,18 @@ def build_obligation_dag(
     root = DagNode(node_id="n0_root", kind="root_goal", goal_text=goal_text, parent_id=None)
     nodes[root.node_id] = root
 
+    # `composition_required` is set by the SOURCE, not guessed per-child: a contract/structural decomposition
+    # is a GENUINE split (children do NOT re-prove the parent → the parent needs a kernel composite, never a
+    # status-flip); premise-anchored helpers each RE-PROVE the parent goal (their proof IS a parent proof →
+    # may propagate). Keying on the producer is the property `_propagate_closure` soundness depends on.
     decomposition = _contract_decomposition(contract)
+    _composition_required = True
     if not decomposition:
         decomposition = derive_structural_decomposition(goal_text)
     if not decomposition and premise_shelf:
-        # atomic goal + retrieval available → premise-anchored candidate closing moves.
+        # atomic goal + retrieval available → premise-anchored candidate closing moves (re-prove the parent).
         decomposition = derive_premise_helpers(goal_text, premise_shelf)
+        _composition_required = False
     for i, child in enumerate(decomposition, start=1):
         kind = child.get("kind", "sub_goal")
         if kind not in NODE_KINDS:
@@ -465,6 +479,7 @@ def build_obligation_dag(
             parent_id=root.node_id,
             est_p_seed=child.get("est_p_seed"),
             premise=child.get("premise"),
+            composition_required=_composition_required,
         )
     if target_strength:  # M4: stamp the advisory strength tag onto every node (default '' = no steer)
         for _n in nodes.values():
@@ -1264,16 +1279,31 @@ def _propagate_closure(nodes: dict[str, DagNode], node: DagNode,
             break
         kids = _children(nodes, pid)
         if kids and all(k.status == "closed" for k in kids):
-            # SOUNDNESS (red-team w46e35wue): parent-closes-by-children is sound ONLY on the INERT path
-            # (ZTARE_CONJECTURE_DECOMPOSE off ⇒ each child re-proved the PARENT goal, so the parent IS
-            # kernel-proven). With decompose ON a child proves a DISTINCT lemma L, and closing the parent
-            # would need a composite `G-given-L ∧ L ⟹ G` kernel RE-RATIFICATION (not yet built) — so
-            # FAIL-SAFE: withhold the propagated close (never a false closure of G via uncomposed lemmas).
-            if os.environ.get("ZTARE_CONJECTURE_DECOMPOSE") == "1":
+            # SINGLE-DOOR SOUNDNESS (2026-06-25 RCA): a parent closes by PROPAGATION only when its children
+            # RE-PROVE the parent goal (premise-anchored restatements) — then a closed child's proof_text IS a
+            # proof of the parent, so the parent is genuinely kernel-proven and we carry that proof up. When ANY
+            # child is a GENUINE decomposition (`composition_required` — a top-level ∧/↔ conjunct or a contract
+            # sub_goal that proves a DISTINCT lemma), closing the children does NOT kernel-prove the parent: that
+            # needs the And-intro composite (`composite_ratify`) or the parent's own direct proof. WITHHOLD the
+            # status-flip — never a false closure of G via uncomposed lemmas. This is the documented invariant
+            # (arch "governed obligation-DAG search"); it now keys on the PROPERTY, not the
+            # `ZTARE_CONJECTURE_DECOMPOSE` flag (the old flag-keyed guard silently false-cleaned conjunct
+            # children in the default config — a conjunctive root flipped to "closed" with an EMPTY proof).
+            if any(k.composition_required for k in kids):
                 trace.append({"event": "parent_close_withheld_pending_composite_ratification",
+                              "node_id": parent.node_id, "via_children": [k.node_id for k in kids],
+                              "reason": "genuine decomposition — parent needs a kernel And-intro composite, "
+                                        "not a status-flip"})
+                break
+            # children re-prove the parent → propagate WITH a real proof_text (no proof ⇒ withhold, never a
+            # status-only close: the single-door invariant `closed ⟺ kernel-verified proof_text`).
+            _proof = parent.proof_text or next((k.proof_text for k in kids if (k.proof_text or "").strip()), "")
+            if not _proof.strip():
+                trace.append({"event": "parent_close_withheld_no_proof_text",
                               "node_id": parent.node_id, "via_children": [k.node_id for k in kids]})
                 break
             parent.status = "closed"
+            parent.proof_text = _proof
             parent.next_lever = ""  # set below by residual_to_lever
             residual_to_lever(parent)
             trace.append({
@@ -1635,6 +1665,18 @@ def run_governed_dag_search(
             residual_to_lever(n)
 
     root = nodes[root_id]
+    # SINGLE-DOOR INVARIANT ENFORCEMENT (the no-false-clean floor): `status == "closed"` MUST carry a
+    # kernel-verified proof_text. Any closed node without one is a bookkeeping bug (a status-flip that bypassed
+    # the kernel door) — DOWNGRADE it to an honest exact_gap, LOUDLY, rather than emit a closure with no proof.
+    # This is the chokepoint that makes "closed" inseparable from "has a proof" so the propagate-close class
+    # (and any future sibling that sets status without a proof) can never leak past here.
+    for _n in nodes.values():
+        if _n.status == "closed" and not (_n.proof_text or "").strip():
+            _n.status = "exact_gap"
+            _n.residual = _n.residual or "closed_without_proof_text_invariant_violation"
+            residual_to_lever(_n)
+            trace.append({"event": "closed_without_proof_DOWNGRADED_to_gap", "node_id": _n.node_id,
+                          "note": "single-door invariant: closed ⟺ kernel-verified proof_text"})
     root_resolution = residual_to_lever(root)
 
     return {
@@ -1774,9 +1816,11 @@ def _selftest() -> int:
     ok("effective_est_p_seed_overrides",
        _effective_est_p(DagNode("s", "helper_lemma", "g", est_p_seed=0.77), MOVE_FRONTIER) == 0.77)
 
-    # --- Test 4: parent propagation on child closure ---
-    # The root has NO direct proof (every direct attempt on it fails); only its
-    # children close. The root must close by PROPAGATION once all children close.
+    # --- Test 4: SINGLE-DOOR — a GENUINE decomposition does NOT status-flip the parent closed ---
+    # The root has NO direct proof; only its children (a contract sub_goal + helper = a genuine decomposition,
+    # composition_required=True) close. Closing distinct sub-lemmas does NOT kernel-prove the parent without an
+    # And-intro composite — so the root MUST be WITHHELD (honest exact_gap), never falsely "closed" with an
+    # empty proof. This is the no-false-clean invariant (it encoded the OPPOSITE — the bug — before 2026-06-25).
     def runner_children_only(node: DagNode, move: str, budget: float) -> MoveResult:
         if node.kind == "root_goal":
             return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
@@ -1784,10 +1828,44 @@ def _selftest() -> int:
                           proof_text=f"by exact proof_for_{node.node_id}")
     res4 = run_governed_dag_search(contract_decomp, "root goal", runner_children_only,
                                    max_moves=20)
-    ok("parent_propagation_root_closed", res4["root_status"] == "closed")
+    ok("decomposition_parent_NOT_falsely_closed", res4["root_status"] != "closed")
+    ok("decomposition_parent_no_empty_proof_closure",
+       not (res4["root_status"] == "closed" and not (res4["root_proof_text"] or "").strip()))
     res4_children = [n for nid, n in res4["nodes"].items() if nid != "n0_root"]
-    ok("parent_propagation_all_children_closed",
+    ok("decomposition_children_still_closed",
        all(n["status"] == "closed" for n in res4_children))
+    ok("decomposition_withhold_trace_emitted",
+       any(e.get("event") == "parent_close_withheld_pending_composite_ratification" for e in res4["trace"]))
+
+    # --- Test 4b: a CONJUNCTIVE structural split likewise withholds (the empirically-found false-clean) ---
+    def runner_conj_children(node: DagNode, move: str, budget: float) -> MoveResult:
+        if node.kind == "root_goal":
+            return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True,
+                          proof_text=f"by proof_of_{node.node_id}")
+    import os as _os4b   # _selftest binds a function-local `os` (line ~2180 `import tempfile, os`) ⇒ alias
+    _prev_decomp = _os4b.environ.pop("ZTARE_CONJECTURE_DECOMPOSE", None)   # exercise the DEFAULT (flag-off) config
+    try:
+        res4b = run_governed_dag_search({}, "theorem amm (x y : Real) : P x ∧ Q y ∧ R x := by",
+                                        runner_conj_children, max_moves=30, move_budget_units=60.0)
+    finally:
+        if _prev_decomp is not None:
+            _os4b.environ["ZTARE_CONJECTURE_DECOMPOSE"] = _prev_decomp
+    ok("conjunctive_root_not_false_clean_default_config",
+       not (res4b["root_status"] == "closed" and not (res4b["root_proof_text"] or "").strip()))
+
+    # --- Test 4c: LEGITIMATE propagation — children that RE-PROVE the parent close it WITH a real proof ---
+    # premise-anchored helpers (composition_required=False) each prove the parent goal; the parent closes and
+    # CARRIES a child's proof_text (never a status-only close). Root direct attack fails, so only propagation can.
+    shelf4c = [{"name": "le_trans", "score": 0.9}]
+    def runner_premise_reproves(node: DagNode, move: str, budget: float) -> MoveResult:
+        if node.kind == "root_goal":
+            return MoveResult(move=move, kernel_clean=False, mnc_passed=False)
+        return MoveResult(move=move, kernel_clean=True, mnc_passed=True, proof_text="by exact le_trans h1 h2")
+    res4c = run_governed_dag_search({}, "theorem t (x y : Real) : x <= y := by", runner_premise_reproves,
+                                    premise_shelf=shelf4c, max_moves=20)
+    ok("premise_reprove_propagation_closes_root", res4c["root_status"] == "closed")
+    ok("premise_reprove_propagation_carries_proof", bool((res4c["root_proof_text"] or "").strip()))
 
     # --- Test 5: residual → new sub-goal node ---
     spawned = {"count": 0}

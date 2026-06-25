@@ -169,6 +169,14 @@ def _domains_from_ledger(ledger) -> "dict[str, str]":
     return out
 
 
+def campaign_family(run_tag: str) -> str:
+    """Group run_tags that are RE-RUNS of the same campaign (`_v2`/`_v3`, `_dbg`) under one family, so a campaign
+    worked across several runs gets a SINGLE P0 view (e.g. `amm_cpmm`, `amm_cpmm_v2`, `amm_cpmm_v3` → `amm_cpmm`).
+    Strips a trailing `_v<N>` or `_dbg<N>` suffix; a tag with no such suffix is its own family."""
+    import re as _re
+    return _re.sub(r"_(v\d+|dbg\d*)$", "", run_tag or "") or (run_tag or "")
+
+
 def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]" = None) -> dict:
     """Per-campaign TIME-TO-CLOSURE read model (the factory 'time to insight on closures' metric).
 
@@ -229,10 +237,29 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
         ttcs = agg.pop("_ttc")
         agg["avg_time_to_closure_s"] = round(sum(ttcs) / len(ttcs), 2) if ttcs else None
 
+    # by_campaign_family: ONE P0 view per campaign across its re-runs (v1/v2/v3). Each family lists its member
+    # runs with their role-relevant numbers (so prove-cost vs clean-close-cost vs a discarded attempt stay
+    # visible — never a blob) plus combined totals. This is what makes a multi-run milestone a single cert.
+    by_family: "dict[str, dict]" = {}
+    for rt, c in campaigns.items():
+        fam = campaign_family(rt)
+        agg = by_family.setdefault(fam, {"members": {}, "combined_wall_s": 0.0, "combined_closures": 0, "runs": 0})
+        agg["members"][rt] = {
+            "domain": c["domain"],
+            "attempts": c["attempts"],
+            "closures": c["closures"],
+            "total_wall_s": c["cost_to_closure_s"]["total_wall_s"],
+            "first_time_to_closure_s": c["time_to_closure_s"]["first"],
+        }
+        agg["combined_wall_s"] = round(agg["combined_wall_s"] + c["cost_to_closure_s"]["total_wall_s"], 2)
+        agg["combined_closures"] += c["closures"]
+        agg["runs"] += 1
+
     return {
         "schema": "leanmill-campaign-cycle-time-v1",
         "campaigns": campaigns,
         "by_domain": by_domain,
+        "by_campaign_family": by_family,
         "campaign_count": len(campaigns),
     }
 
@@ -273,6 +300,16 @@ def _selftest() -> int:
             assert cct["campaigns"]["self"]["cost_to_closure_s"]["first"] == 100.0, cct   # 10 + 90 cumulative
             assert cct["campaigns"]["self"]["closures"] == 1 and cct["campaigns"]["self"]["yield"]["failed"] == 1, cct
             assert cct["by_domain"]["formalization-nonmath"]["avg_time_to_closure_s"] == 100.0, cct
+            # campaign-FAMILY rollup: re-runs of one campaign (v2/v3) join into a SINGLE P0 view, members visible
+            assert campaign_family("amm_cpmm_v3") == "amm_cpmm" and campaign_family("amm_cpmm") == "amm_cpmm", "family strip"
+            fam_rows = [
+                {"run_tag": "amm_cpmm_v2", "attempt_at": 0.0, "outcome": "closed", "wallclock_s": 240.0},
+                {"run_tag": "amm_cpmm_v3", "attempt_at": 0.0, "outcome": "closed", "wallclock_s": 60.0},
+            ]
+            fam = summarize_campaign_cycle_time(fam_rows)["by_campaign_family"]
+            assert "amm_cpmm" in fam and fam["amm_cpmm"]["runs"] == 2, fam
+            assert set(fam["amm_cpmm"]["members"]) == {"amm_cpmm_v2", "amm_cpmm_v3"}, fam
+            assert fam["amm_cpmm"]["combined_wall_s"] == 300.0 and fam["amm_cpmm"]["combined_closures"] == 2, fam
             # ISO-timestamp parsing (the attempts-DB format) lands in the same bucket
             assert _epoch("2026-06-24T20:25:59+00:00") is not None, "ISO attempt_at must parse"
             print("leanmill.phase_timing selftest: OK (adapter delegates to common.telemetry, gate honored, "

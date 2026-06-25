@@ -212,9 +212,45 @@ def kernel_denotation_verifier(theory_src: str, lean_root: "Path | str", *, time
     from ztare.gates.lean_compile_primitives import audit_axioms_subset
     lean_root = Path(lean_root)
     src = theory_src if theory_src.lstrip().startswith("import") else ("import Mathlib\n\n" + theory_src)
+
+    # ELABORATE-ONCE, QUERY-PER-ANCHOR (2026-06-25 post-run-starvation fix): the cold path below
+    # (`audit_axioms_subset`) RE-ELABORATES THE WHOLE THEORY for EVERY anchor — for a theory-first campaign
+    # with N built defs that is N × a full re-elaboration (and when the warm whole-file elaboration times out on
+    # a heavy theory it falls to cold `lake env lean`, ~74s each), so the post-close denotation audit ran ~1h.
+    # Instead: load the theory into a warm env ONCE (`campaign_file_env`, cached by path+mtime) and `#print
+    # axioms` each anchor AGAINST that cached env (`campaign_file_decl_axiom_clean`, ~0.1s/anchor). Pure speed —
+    # same `#print axioms` verdict; falls back to the per-anchor `audit_axioms_subset` when the warm env is
+    # unusable (flag off / toolchain / dead REPL), so correctness is unchanged.
+    import tempfile as _tf, hashlib as _hl
+    _warm_tmp = Path(_tf.gettempdir()) / f"_denotation_warm_{_hl.sha256(src.encode('utf-8')).hexdigest()[:12]}.lean"
+    # namespace prefixes the theory declares (anchors may be referenced by short name; #print axioms needs the
+    # full name) — token scan, not a Lean regex (canonical, matches family_lemma_library._open_namespaces).
+    _nss: "list[str]" = []
+    try:
+        from ztare.leanmill.lean_source import strip_comments as _sc
+        for _ln in _sc(src).splitlines():
+            _pt = _ln.split()
+            if len(_pt) >= 2 and _pt[0] == "namespace" and _pt[1] not in _nss:
+                _nss.append(_pt[1])
+    except Exception:  # noqa: BLE001
+        _nss = []
+    _state: dict = {}
+
+    def _warm_env():
+        if "env" not in _state:
+            try:
+                from ztare.formal.repl_compile import campaign_file_env
+                _warm_tmp.write_text(src, encoding="utf-8")
+                _state["env"] = campaign_file_env(str(_warm_tmp), str(lean_root), timeout=max(180, timeout_s))
+            except Exception:  # noqa: BLE001
+                _state["env"] = None
+        return _state["env"]
+
     _compiled: "dict[str, bool]" = {}
 
     def _file_ok() -> bool:
+        if _warm_env() is not None:           # an env id ⇒ the theory typechecked (sorries OK)
+            return True
         if "ok" not in _compiled:
             try:
                 _compiled["ok"] = _compile_probe(src, lean_root, "Denotation", max(120, timeout_s)) is True
@@ -222,10 +258,28 @@ def kernel_denotation_verifier(theory_src: str, lean_root: "Path | str", *, time
                 _compiled["ok"] = False
         return _compiled["ok"]
 
+    def _warm_anchor(anchor_name: str):
+        """(clean: bool) | None — #print axioms the anchor against the cached env, trying bare then namespace-
+        qualified; None ⇒ warm unusable / no verdict ⇒ caller falls back to the cold per-anchor audit."""
+        if _warm_env() is None:
+            return None
+        try:
+            from ztare.formal.repl_compile import campaign_file_decl_axiom_clean
+        except Exception:  # noqa: BLE001
+            return None
+        for cand in [anchor_name, *[f"{ns}.{anchor_name}" for ns in _nss]]:
+            res = campaign_file_decl_axiom_clean(str(_warm_tmp), str(lean_root), cand, timeout=max(60, timeout_s))
+            if res is not None:
+                return bool(res[0])
+        return None
+
     def verify_anchor_fn(anchor_name: str) -> bool:
         if not _file_ok():
             return False
-        try:
+        warm = _warm_anchor(anchor_name)
+        if warm is not None:
+            return warm
+        try:                                  # COLD FALLBACK (warm unusable) — unchanged sound path
             clean, bad, axs = audit_axioms_subset(
                 src, anchor_name, lean_root / "_denotation_axiom_audit.lean", lean_root,
                 timeout_s=max(120, timeout_s))

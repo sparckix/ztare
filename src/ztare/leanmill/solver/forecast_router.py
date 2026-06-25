@@ -513,6 +513,72 @@ def resolve_batch(results: list, priced_by_id: dict, *, ledger_path, weights_pat
     return n
 
 
+def forecast_campaign_p0(p_closes: "list[float]", *, domain: str = "",
+                         domain_mean_ttc_s: "float | None" = None,
+                         domain_mean_cost_s: "float | None" = None) -> dict:
+    """Campaign-START P0 forecast (2026-06-25): aggregate per-lemma P(close) — each from the SAME Brier-calibrated
+    `price()`/`aggregate()` ensemble this router already runs per candidate — with the DOMAIN's historical mean
+    time/cost (from `phase_timing.summarize_campaign_cycle_time`, segmented by `record_campaign`'s domain tag)
+    into expected YIELD + TIME-to-closure + COST. This is the prediction to PRE-REGISTER at campaign start
+    (admissibility filtering + budget-allocation focus) and SCORE against the actual — the self-learning loop
+    (`reweight` already recalibrates the per-signal weights from the realized Brier ledger). PURE + injectable
+    (the caller supplies the priced p_closes + the domain history), so it is hermetically testable with no hidden
+    DB/embedder dependency and never blocks a campaign. Time model: a lemma with P(close)=p needs ~1/p expected
+    attempts (geometric), each ≈ the domain's mean time-to-closure; E[campaign] sums over the lemmas."""
+    p = [max(0.0, min(1.0, float(x))) for x in (p_closes or [])]
+    n = len(p)
+    yld = round(sum(p), 2)
+    exp_time = round(sum((domain_mean_ttc_s or 0.0) / max(0.05, pi) for pi in p), 1) if domain_mean_ttc_s else None
+    exp_cost = round(sum((domain_mean_cost_s or 0.0) / max(0.05, pi) for pi in p), 1) if domain_mean_cost_s else None
+    return {"schema": "leanmill-campaign-p0-forecast-v1", "n_candidates": n, "domain": domain,
+            "p_close": [round(x, 3) for x in p],
+            "expected_yield": yld, "expected_yield_frac": (round(yld / n, 2) if n else None),
+            "expected_time_to_closure_s": exp_time, "expected_cost_s": exp_cost,
+            "hardest_lemma_index": (min(range(n), key=lambda i: p[i]) if n else None),
+            "min_p_close": (round(min(p), 3) if p else None),
+            "model": "geometric-expected-attempts × domain-mean-time"}
+
+
+def domain_p0_history(domain: str, attempt_rows: "list[dict] | None" = None) -> dict:
+    """The domain's historical P0 priors — {mean_ttc_s, mean_cost_s, close_rate} — for the campaign-start
+    forecast, read from `phase_timing.summarize_campaign_cycle_time` over the attempts (segmented by domain via
+    `record_campaign`). `close_rate` (mean closed/attempts over the domain's campaigns) is the per-lemma prior
+    when a full per-candidate `price()` isn't run. Empty dict-ish (None values) on cold start / read error;
+    best-effort, never blocks the campaign."""
+    try:
+        from ztare.leanmill.phase_timing import summarize_campaign_cycle_time
+        rows = attempt_rows
+        if rows is None:
+            import sqlite3
+            from pathlib import Path as _P
+            db = _P("analytics/public/queries/solver_lane_attempts.db")
+            if not db.exists():
+                return None, None
+            cx = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
+            try:
+                cols = ("run_tag", "attempt_at", "outcome", "ratified", "wallclock_s", "move", "provider")
+                rows = [dict(zip(cols, r)) for r in cx.execute(
+                    f"SELECT {','.join(cols)} FROM attempts").fetchall()]
+            finally:
+                cx.close()
+        summ = summarize_campaign_cycle_time(rows)
+        camps = [c for c in (summ.get("campaigns", {}) or {}).values() if (c.get("domain") or "") == domain]
+        with_ttc = [c for c in camps if (c.get("time_to_closure_s", {}) or {}).get("mean")]
+        out = {"mean_ttc_s": None, "mean_cost_s": None, "close_rate": None, "n_campaigns": len(camps)}
+        if with_ttc:
+            out["mean_ttc_s"] = round(sum(c["time_to_closure_s"]["mean"] for c in with_ttc) / len(with_ttc), 1)
+            costs = [c.get("cost_to_closure_s", {}).get("mean") for c in with_ttc
+                     if c.get("cost_to_closure_s", {}).get("mean")]
+            out["mean_cost_s"] = round(sum(costs) / len(costs), 1) if costs else None
+        rates = [(c["yield"]["closed"] / c["attempts"]) for c in camps
+                 if c.get("attempts") and isinstance(c.get("yield"), dict) and c["yield"].get("closed") is not None]
+        if rates:
+            out["close_rate"] = round(sum(rates) / len(rates), 3)
+        return out
+    except Exception:  # noqa: BLE001 — history read is best-effort
+        return {"mean_ttc_s": None, "mean_cost_s": None, "close_rate": None, "n_campaigns": 0}
+
+
 def _selftest() -> int:
     import tempfile
     fails: "list[str]" = []
@@ -521,6 +587,16 @@ def _selftest() -> int:
         print(f"  [{'PASS' if cond else 'FAIL'}] {name}")
         if not cond:
             fails.append(name)
+    # ── campaign-start P0 forecast (pure aggregator) ──
+    f = forecast_campaign_p0([0.9, 0.5, 0.2], domain="formalization-nonmath", domain_mean_ttc_s=600.0)
+    ok("p0 forecast: expected_yield = Σ p_close", f["expected_yield"] == 1.6)
+    ok("p0 forecast: hardest lemma = min p_close index", f["hardest_lemma_index"] == 2 and f["min_p_close"] == 0.2)
+    # time = Σ ttc/p = 600/0.9 + 600/0.5 + 600/0.2 = 666.7 + 1200 + 3000 = 4866.7
+    ok("p0 forecast: geometric-attempts × mean-ttc", abs(f["expected_time_to_closure_s"] - 4866.7) < 1.0)
+    ok("p0 forecast: no history ⇒ time omitted, yield still given",
+       forecast_campaign_p0([0.8, 0.8], domain="x")["expected_time_to_closure_s"] is None
+       and forecast_campaign_p0([0.8, 0.8], domain="x")["expected_yield"] == 1.6)
+    ok("p0 forecast: empty candidates ⇒ safe zeros", forecast_campaign_p0([])["n_candidates"] == 0)
 
     # ── pricing: cache-first, no-good dropped, EV ranks value×P ──────────────────────────────────────────────
     with tempfile.TemporaryDirectory() as d:
