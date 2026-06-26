@@ -21,7 +21,7 @@ choose work object -> choose route -> run in-loop, work out-of-loop, or prepare 
 -> write outcome -> feed reflexive intelligence
 ```
 
-For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). This is the reviewer-facing reference. It does not replace `README.md`.
+For a plain-English glossary of terms, see [../concepts/glossary.md](../concepts/glossary.md). For setup and first run, see `README.md`.
 
 ---
 

@@ -109,7 +109,7 @@ indirect-leakage / currency-mismatched. Those five false-closure sub-modes
 
 ## 3. The dynamic join already exists (do not rebuild it)
 
-Cross-catalog join is not a document to author; it is regenerated
+The cross-catalog join is regenerated
 in code and consumed at tick start:
 
 - `closure_claim_discipline_linter.py` reads L1 (`org/patterns/INDEX.md`),

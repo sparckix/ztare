@@ -42,7 +42,7 @@ cycle must preserve four boundaries:
 | Authority | Mining can recommend a primitive, repair, demotion, or audit. It cannot promote a public claim without the owning evidence surface. |
 | Action | A dashboard movement should name the next inspection or repair for an agent to carry out. |
 
-The strongest outcome of the cycle is not a higher score. It is a named
+The strongest outcome of the cycle is a named
 follow-up that a later agent can execute from files alone.
 
 ### Quick command choices

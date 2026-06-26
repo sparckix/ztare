@@ -6,10 +6,9 @@ description: "What ZTARE currently has: the architectural stack, operating disci
 
 > Up: [`docs/README.md`](../README.md)
 
-What ZTARE currently has. This page is the "what does this run" surface,
-sized to be read in five to ten minutes. Each capability points to the deeper
-doc or the actual module that implements it. Nothing here is a claim that is
-not grounded somewhere else in the repository.
+What ZTARE currently has. Each capability points to the deeper
+doc or the actual module that implements it, and is grounded elsewhere in the
+repository.
 
 The page sits between three neighbours:
 [`system_position_and_module_map.md`](system_position_and_module_map.md) is the
@@ -59,7 +58,7 @@ the historical seam names are secondary.
 | Is proof-search evidence externally governed before it counts? | LeanMill proof audit, source review, harness, and axiom policy surfaces | `ztare leanmill proof-audit --help` |
 | Which claims are public and which are not? | Evidence atlas and public claim register | [`docs/evidence_atlas/README.md`](../evidence_atlas/README.md) and [`docs/public_claim_register.md`](../public_claim_register.md) |
 
-This table is a navigation aid, not a new evidence class. The detailed sections
+The detailed sections
 below name the implementation surfaces and historical provenance for each
 capability.
 
@@ -71,7 +70,7 @@ capability.
 
 Historical provenance: [GP-157](../../research_areas/seams/apparatus/cage/GP-157_R10_R16_backport_scoping_2026_05_06.md).
 
-This is the internal router that chooses which deterministic gates apply to a
+The dispatcher is the internal router that chooses which deterministic gates apply to a
 kernel surface. It reads `substrate.meta['class']`, queries each gate's
 `can_handle()` predicate, and runs gates in a dependency-ordered DAG so a
 Lean-proof target, a PDE project, and an integer-sequence project can use

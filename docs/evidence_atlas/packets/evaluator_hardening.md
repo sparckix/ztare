@@ -19,7 +19,7 @@ L4: controlled or ablated evidence on bounded public benchmark families.
 
 - [Benchmark evidence](../../../benchmarks/benchmark_evidence.md)
 - [Constraint-memory benchmark](../../../benchmarks/constraint_memory/README.md)
-- [Constraint-memory metrics summary](../../../benchmarks/constraint_memory/runs/20260404_195100/metrics_summary.json)
+- [Constraint-memory metrics summary](../../../benchmarks/evaluator_hardening_frozen/source_run_20260404_195100/metrics_summary.json)
 - [Gaming behavior catalog](../../gaming_behavior_catalog.md)
 - [Cognitive Camouflage draft](../../../papers/cognitive-camouflage/draft.md)
 - [Governed Adversarial Evaluator Hardening draft](../../../papers/governed-evaluator-hardening/draft.md)

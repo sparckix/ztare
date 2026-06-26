@@ -68,7 +68,7 @@ Reference, [What to use when](#what-to-use-when) ·
 
 ## Model capability is not the unit of analysis
 
-A stronger model is not a stronger result. The same capability that searches
+A stronger model does not buy a stronger result. The same capability that searches
 more of the space and proposes a sharper argument will also exploit a weak
 evaluation surface, misattribute prior work, or quietly close a branch before
 the evidence is in. A better model sharpens both edges at once.
