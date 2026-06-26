@@ -7,7 +7,7 @@ faithfulness firewall (statement compiles, is non-trivial, round-trip faithful) 
 with a matched-negative-control receipt + axiom audit. Each file is self-contained (`import Mathlib`) and carries
 a GENERATED provenance header from `promote_campaign_artifact.py` (not hand-authored).
 
-> **Time accounting.** Headers report **`campaign span`** = real elapsed (the honest wall); **`cost-to-closure
+> **Time accounting.** Headers report **`campaign span`** = real elapsed — the true wall; **`cost-to-closure
 > total`** = summed active-solve time only (smaller — omits formalization / imports / gaps).
 
 ## Contents

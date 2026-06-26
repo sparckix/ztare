@@ -34,9 +34,9 @@ Each code folder has its own README with a per-theorem summary.
   (e.g. `amm_no_cyclic_arbitrage` stands on the banked `constant_product_amm` theory) — a deliberate demonstration
   that the library *is* the environment.
 
-## Time accounting (honest wall)
+## Time accounting (real elapsed wall)
 
-Provenance headers report **`campaign span`** = real elapsed (last − first attempt), which is the honest wall.
+Provenance headers report **`campaign span`** = the real elapsed wall (last − first attempt).
 **`cost-to-closure total`** is the summed *active-solve* time only — smaller, because it omits formalization,
 Mathlib imports, warm-env builds, and inter-attempt gaps. For a milestone worked across several re-runs, the
 `milestone` line reports the combined real span across the campaign family (and which run proved vs reused vs

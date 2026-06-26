@@ -7,8 +7,8 @@ is independently kernel-ratified with a matched-negative-control receipt and an 
 self-contained (`import Mathlib`) and carries a GENERATED provenance header (outcome, axioms, real elapsed,
 phases, reuse) emitted by `promote_campaign_artifact.py` — not hand-authored.
 
-> **Time accounting (honest wall).** Headers report **`campaign span`** = real elapsed (last − first attempt),
-> the honest wall; **`cost-to-closure total`** = summed active-solve time only (smaller — it omits formalization,
+> **Time accounting.** Headers report **`campaign span`** = the real elapsed wall (last − first attempt);
+> **`cost-to-closure total`** = summed active-solve time only (smaller — it omits formalization,
 > Mathlib imports, warm-env builds, and inter-attempt gaps). For a milestone worked across several re-runs, the
 > `milestone` line reports the combined real span across the family.
 
