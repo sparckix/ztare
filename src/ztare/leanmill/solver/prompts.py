@@ -186,6 +186,30 @@ ESTABLISHED_DEFS_NOTE = (
     "established `Foo` — never shadow an established name with a different body.\n```lean\n{defs}\n```"
 )
 
+# PROVEN-SHELF AT FORMALIZE (2026-06-25, the AMM `reachable_pool_wellFormed` gap RCA). The DEFINITION-body
+# companion above surfaces the canonical DEFS at the formalize chokepoint, but the proven-LEMMA shelf
+# (`_substrate_proven_shelf` — each banked rung's EXACT, kernel-checked conclusion) was surfaced ONLY in the
+# reformulation feedback, never at FIRST-PASS formalize. So a compounding target whose prose NAMES a banked rung
+# (e.g. "cite executeTrades_keep_wellFormed for endpoint well-formedness") was formalized BLIND to what that rung
+# actually CONCLUDES — the bank proves the trajectory predicate `TradesKeepWellFormed`, not the endpoint
+# `PoolWellFormed (executeTrades …)`, so the target matched no banked conclusion, no cite fired, and the
+# decomposition produced only the single-trade base case → honest gap. Surfacing the actual conclusions here lets
+# the formalizer either MATCH a banked rung's statement (instant cite) or introduce the target as a DISCLOSED
+# corollary that cites the rung plus a small bridge — instead of inventing a citable-SOUNDING statement that is
+# not. Advisory + AGENCY-preserving (the faithfulness firewall still gates; the agent still chooses match vs
+# extend); embedder-INDEPENDENT (lexical read of the substrate .lean), so it holds even when the semantic shelf
+# is dead. "" ⇒ byte-identical to before.
+PROVEN_SHELF_NOTE = (
+    "\n\n## Already-PROVEN, kernel-checked results in this campaign's library (CITE — do NOT re-derive)\n"
+    "These lemmas are banked and in scope. Read their EXACT conclusions: if your target IS one of them, "
+    "formalize it to MATCH the banked statement and cite it (`exact <name> …`). If your target is a COROLLARY of "
+    "one (e.g. an ENDPOINT extracted from a trajectory/sequence invariant, or a specialization), state it as a NEW "
+    "lemma that CITES the banked rung and discharges the small remaining bridge — do NOT restate a banked result "
+    "under a conclusion it does NOT have (that matches no banked lemma, so nothing can be cited and the whole "
+    "result is re-proved from scratch or gaps). The prose may NAME a rung loosely; trust these signatures over the "
+    "prose's paraphrase of what they conclude.\n{shelf}"
+)
+
 # LITERAL-FIRST cue (general-purpose; the INVERSE of REFORMULATE_FEEDBACK). Injected on the ONE bounded re-entry
 # after the firewall REJECTED a first formalization as a silent STRENGTHENING of the literal claim (round-trip-
 # unfaithful + extra hypotheses) with no ¬G license yet. The honest, non-gamable order is truth-FIRST: render the

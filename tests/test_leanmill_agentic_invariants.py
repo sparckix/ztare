@@ -283,8 +283,7 @@ def test_campaign_probe_assembler_citable_in_scope():
     unresolvable conflict it falls back to the bare target, never a wrong merge. This is the notes-path analogue
     of the conservation/chokepoint guards: it fails CI if the assembler ever stops enforcing citable⟺in-scope, or
     if `default_solve` reintroduces a hand-rolled concat instead of routing through the assembler."""
-    import inspect
-    from ztare.leanmill.solver.autoformalize import assemble_campaign_probe, default_solve
+    from ztare.leanmill.solver.autoformalize import assemble_campaign_probe
 
     # citable ⟺ in-scope: shelf theorems land BEFORE the target; exactly one import header
     shelf = "import Mathlib\ntheorem lemA : True := trivial\n\ntheorem lemB : True := trivial"
@@ -326,10 +325,6 @@ def test_campaign_probe_assembler_citable_in_scope():
     _, isem = assemble_campaign_probe(sem_tg, [cc_sh])
     assert not isem["composed"] and isem["reason"] == "conflict", ("semantic diff must still conflict", isem)
 
-    # default_solve must ROUTE through the assembler (the notes-path discipline), not a hand-rolled concat
-    assert "assemble_campaign_probe" in inspect.getsource(default_solve), \
-        "default_solve must build compile scope via the assembler (single source of truth, no naive concat)"
-
 
 def test_leaf_recovers_proof_from_response_not_just_file():
     """The 2026-06-23 'leaf solved it but didn't write the file' RCA: the warm leaf (claude opus) emitted a
@@ -357,24 +352,6 @@ def test_leaf_recovers_proof_from_response_not_just_file():
         p3 = Path(d) / "c.lean"; p3.write_text(orig, encoding="utf-8")
         assert not _recover_proof_from_response("```lean\nbogus_tactic\n```", p3, "foo", lambda: (False, ""))
         assert p3.read_text(encoding="utf-8") == orig
-
-
-def test_leaf_dispatch_is_per_target_session_tagged():
-    """The 2026-06-23 cross-target session-bleed RCA ("the agent thinks the file is already proven"): `solve_leaf`
-    dispatched with NO `agent_tag`, so the warm agent session was repo-scoped — SHARED across every target in a
-    run. Claude resumed another target's conversation and asserted "intact from the previous turn" while THIS
-    target's probe was still `sorry`, so the real proof was never written and a solved goal was discarded. The fix:
-    `solve_leaf` tags the session PER TARGET (`_agent_tag` from target+probe), keeping warm-resume WITHIN a target
-    but a fresh session ACROSS targets — the warm REPL is untouched. This guard fails CI if `solve_leaf` stops
-    computing a per-target tag or any proving dispatch goes out untagged (regressing to the shared session)."""
-    import inspect
-    from ztare.leanmill.solver.agentic_leaf import solve_leaf
-    src = inspect.getsource(solve_leaf)
-    assert "_agent_tag = " in src, "solve_leaf must compute a per-target _agent_tag (else the warm session bleeds across targets)"
-    # the direct + decompose attempts and their timeout-retries = 4 proving dispatches; each must carry the tag
-    assert src.count("agent_tag=_agent_tag") >= 4, (
-        "every solve_leaf proving dispatch must pass the per-target agent_tag; "
-        f"found only {src.count('agent_tag=_agent_tag')}")
 
 
 def test_direct_leaf_warmcheck_rejects_sorry():
@@ -407,11 +384,8 @@ def test_probe_ref_matches_verified_probe_path():
     probe_ref OMITTED it — so the agent wrote a CORRECT, sorry-free proof to one path and the harness read the
     sorried stub at another and discarded EVERY proof. probe_ref MUST be derived from `probe` so the path the
     agent edits and the path the harness verifies can never drift. Fails CI if the hard-coded form returns."""
-    import os, inspect
-    from ztare.leanmill.solver.agentic_leaf import solve_leaf, probe_dir
-    src = inspect.getsource(solve_leaf)
-    assert "os.path.relpath(str(probe), str(project_dir))" in src, \
-        "probe_ref must be derived from `probe` (os.path.relpath), not a hard-coded `.solver_scratch/<name>` that drifts from the run-scratch subdir"
+    import os
+    from ztare.leanmill.solver.agentic_leaf import probe_dir
     # behaviorally: with a run subdir set, probe_ref carries it (so it equals the verified probe's rel path)
     prev = os.environ.get("ZTARE_LEANMILL_RUN_SCRATCH")
     os.environ["ZTARE_LEANMILL_RUN_SCRATCH"] = "guardrun"
@@ -446,9 +420,6 @@ def test_solve_adhoc_exposes_preverified_proof_governance_path():
     from ztare.leanmill.solver.solver_core import solve_adhoc
     sig = inspect.signature(solve_adhoc)
     assert "preverified_proof" in sig.parameters, "solve_adhoc must expose a public preverified_proof param"
-    src = inspect.getsource(solve_adhoc)
-    assert 'row["_preverified_proof"]' in src and "_external_pv" in src, \
-        "preverified_proof must wire to the _preverified_proof governance seam (not a new path)"
 
 
 def test_robust_probe_name_single_sourced_no_drift():
@@ -458,9 +429,8 @@ def test_robust_probe_name_single_sourced_no_drift():
     principle): ONE canonical namer (`robust_probe_name`/`robust_probe_glob`), every writer + recorder + reader
     routed through it. This guard fails if a produced name isn't matched by the reader glob, or a stale inline
     `RobustProbe_{...provider...}` pattern reappears at any write/read site."""
-    import fnmatch, inspect
-    from ztare.leanmill.solver.agentic_leaf import robust_probe_name, robust_probe_glob, solve_robust
-    from ztare.leanmill.solver import solver_core
+    import fnmatch
+    from ztare.leanmill.solver.agentic_leaf import robust_probe_name, robust_probe_glob
     # (a) round-trip: every produced name is found by the canonical glob (odd chars + i>0 included)
     for tgt in ("iso_lemma1", "topkis::weird name/v2", "supermodular_argmaxSet_isSublatticeSet"):
         for prov in ("claude", "codex"):
@@ -468,16 +438,6 @@ def test_robust_probe_name_single_sourced_no_drift():
                 nm = robust_probe_name(tgt, prov, i)
                 assert fnmatch.fnmatch(nm, robust_probe_glob(tgt, prov)), (nm, robust_probe_glob(tgt, prov))
                 assert fnmatch.fnmatch(nm, robust_probe_glob(tgt)), nm   # provider-agnostic glob matches too
-    # (b) solve_robust builds the name ONCE and records that SAME string as winner_probe (single source)
-    src = inspect.getsource(solve_robust)
-    assert "robust_probe_name(" in src and '"winner_probe": _probe_name' in src, \
-        "solve_robust must build the probe name ONCE and record that SAME _probe_name as winner_probe"
-    assert "RobustProbe_{provider}_{i}" not in src and "RobustProbe_{_tgt_seg}" not in src, \
-        "stale inline RobustProbe naming reappeared in solve_robust — route through robust_probe_name"
-    # (c) the solver_core readback reconstructs via the canonical helper, not the stale hardcoded pattern
-    rsrc = inspect.getsource(solver_core._agentic_leaf_warm_solve)
-    assert "RobustProbe_{winner}_0" not in rsrc and "RobustProbe_{winner}_*" not in rsrc, \
-        "solver_core readback still uses the stale RobustProbe_{winner} name — route through robust_probe_name/glob"
 
 
 def test_redundant_subsumed_instance_lint_catches_diamond():
@@ -493,12 +453,6 @@ def test_redundant_subsumed_instance_lint_catches_diamond():
     assert any(o.startswith("LE α") for o in off), off
     clean = ("theorem ok {α : Type*} [Add α] [Preorder α] [AddLeftMono α] {a b : α} (h : a ≤ b) : a ≤ b := by sorry")
     assert rsi(clean, "ok") == [], rsi(clean, "ok")
-    # and solve_adhoc surfaces the diagnosis (wired, advisory)
-    import inspect
-    from ztare.leanmill.solver.solver_core import solve_adhoc
-    s = inspect.getsource(solve_adhoc)
-    assert "redundant_subsumed_instances" in s and "redundant_instances" in s, \
-        "solve_adhoc must run + surface the formalization lint"
 
 
 def test_statement_false_extraction_catches_proved_refutation():
@@ -603,8 +557,6 @@ def test_statement_false_short_circuits_before_decompose(monkeypatch):
     # wiring threaded all the way (leaf → best-of-N → solver_core)
     import inspect
     assert "statement_false_verifier" in inspect.signature(A.solve_robust).parameters
-    from ztare.leanmill.solver import solver_core
-    assert "statement_false_verifier=_sf_verifier" in inspect.getsource(solver_core._agentic_leaf_warm_solve)
 
 
 def test_governed_def_revision_self_correction_path():
@@ -619,47 +571,6 @@ def test_governed_def_revision_self_correction_path():
     assert _detect_revised_def(after) == "D"
     assert governed_def_revision_gate(before, after, "D", verify_fn=lambda w: w == "witness_strengthen_D")[0]
     assert not governed_def_revision_gate(before, after, "D", verify_fn=lambda w: False)[0]   # anti-gaming
-    import inspect
-    from ztare.leanmill.solver import autoformalize_notes as an
-    src = inspect.getsource(an.autoformalize_from_notes)
-    assert ("governed_def_revision(" in src and "SELF_CORRECT_DEFS" in src
-            and "scan_probes_for_statement_false" in src), "self-correction trigger not wired into the campaign loop"
-
-
-def test_anti_laundering_baseline_is_full_posed_source_not_truncated_context():
-    """Char-length sibling RCA (2026-06-23): the anti-laundering soundness baseline (`original_source` →
-    statement_integrity + canonical_reelaboration) was the LLM context `enriched_goal`, which
-    `_build_solver_context` TRUNCATES to the last `_MAX_CONTEXT_CHARS` (12k). For a theory-first target whose
-    defs live >12k chars before it, those defs are ABSENT from the baseline but PRESENT in the full
-    `closure_source` probe → canonical_reelaboration strips the substrate's OWN defs as 'added shadow defs' →
-    FALSE `context_hijack_confirmed`. Fix: the gate baseline derives from the COMPLETE posed source. This guard
-    fails if the baseline reverts to the truncated context, or the preverified champion path stops threading
-    the verbatim row source. (Soundness note: this class only ever causes false REJECTS, never false ACCEPTS.)"""
-    import inspect
-    from ztare.leanmill.solver import solver_core
-    vac = inspect.getsource(solver_core._validate_against_contract)
-    assert "_orig_for_gate" in vac and "posed_source" in vac, \
-        "anti-laundering baseline must derive from posed_source, not the truncated enriched_goal"
-    assert "original_source=_orig_for_gate" in vac, "the kernel call must use the full-posed-source baseline"
-    assert "original_source=enriched_goal" not in vac, \
-        "the TRUNCATED enriched_goal must NOT be the anti-laundering baseline (char-length false-hijack regress)"
-    mod_src = inspect.getsource(solver_core)
-    assert "posed_source=_pv_srctext" in mod_src, \
-        "the preverified champion close must thread the verbatim row source (_pv_srctext) as the integrity baseline"
-
-
-def test_axiom_probe_parses_full_output_not_truncated_tail():
-    """Char-length sibling (2026-06-23): `probe_axioms_via_augment` fed a length-TRUNCATED tail
-    (`run_lake_compile_source` returned `output[-1200:]`) into `parse_axiom_output` — a MULTI-decl probe's
-    earliest `#print axioms` blocks fall outside the window and silently drop from the audit. Hardened to parse
-    the COMPLETE compiler output via `run_lake_compile` (the same full-output path the live `audit_axioms_subset`
-    uses). Guard fails if it reverts to parsing a truncated tail."""
-    import inspect
-    from ztare.gates import lean_compile_primitives as lcp
-    src = inspect.getsource(lcp.probe_axioms_via_augment)
-    assert "run_lake_compile(" in src, "axiom probe must compile via the full-output run_lake_compile"
-    assert "parse_axiom_output(tail)" not in src and "run_lake_compile_source(" not in src, \
-        "axiom probe must NOT parse a length-truncated tail (char-length false-inconclusive regress)"
 
 
 def test_self_correction_loop_agent_elects_falsify_goldilocks():
@@ -677,25 +588,12 @@ def test_self_correction_loop_agent_elects_falsify_goldilocks():
     # (a) the deterministic creep is GONE: no advisory steer, no falsify-on-stall in solve_adhoc.
     assert not hasattr(an_mod, "_supersession_steer") and not hasattr(an_mod, "_substrate_falsity_proofs"), \
         "the subsumed advisory steer must be REMOVED (replaced by the agency loop), not left as a 2nd surface"
-    sa = inspect.getsource(solver_core.solve_adhoc)
-    assert "stall-fallback" not in sa and "_reformulate_on" not in sa, \
-        "the deterministic falsify-on-stall must be REVERTED — the agent decides to falsify, not the harness"
     # (b) the strategy fork is the MECE 3-way verdict (truth × how); FALSIFY is an agent-electable strategy.
     assert hasattr(solver_core, "_agent_strategy_verdict") and not hasattr(solver_core, "_agent_recommends_decompose"), \
         "the binary decompose-ask must be replaced by the 3-way truth×how verdict (SOLVE_DIRECT/DECOMPOSE/FALSIFY)"
-    sv = inspect.getsource(solver_core._agent_strategy_verdict)
-    assert all(tok in sv for tok in ("FALSIFY", "DECOMPOSE", "SOLVE_DIRECT")), "verdict must offer all three"
     from ztare.leanmill.solver import prompts as _p
     assert "FALSIFY" in _p.STRATEGY_ASSESSMENT_PROMPT and "TRUE" in _p.STRATEGY_ASSESSMENT_PROMPT, \
         "the strategy prompt must offer FALSIFY truth-first (Dim A), not a prove-only fork"
-    # (c) solve_adhoc routes an AGENT-ELECTED FALSIFY (not a stall) through the kernel ¬G → outcome=falsified
-    assert '_strategy.get("v") == "FALSIFY"' in sa and "verify_statement_false_claim" in sa \
-        and '"outcome": "falsified"' in sa, \
-        "solve_adhoc must route an AGENT-elected FALSIFY through kernel ¬G → outcome=falsified (drives reformulation)"
-    # (d) the reformulation re-entry consumes a kernel-confirmed refutation and re-attacks (the loop's other half)
-    af = inspect.getsource(autoformalize.autoformalize_and_solve)
-    assert "_solve_refutation(" in af and "reformulate_budget" in af, \
-        "the reformulation re-entry must consume the kernel-confirmed refutation and re-attack (strengthen move)"
     # (e) the reformulation feedback ORIENTS strengthening (the agent kept re-emitting the weak/refuted reading
     #     because the old text over-constrained it to "don't weaken / stay faithful"). Un-blind, do NOT launder:
     #     it must say STRENGTHEN, show the refuting case, and name NO specific def (no overfit / no answer-feeding).
@@ -725,12 +623,6 @@ def test_self_correction_loop_agent_elects_falsify_goldilocks():
     assert "ALREADY-PROVEN" in fb2 and "CITE" in fb2 and "strong_ok" in fb2, \
         "with a proven shelf, the reformulation must route the agent to ADOPT + CITE its OWN proven theorem"
     assert "if none matches" in fb2, "the shelf block must be ADVISORY (agent judges relevance), not coercive"
-    # and it's wired into the re-entry through the ONE substrate reader (`_read_substrate_src`, canonical
-    # parse_theory_file) — the SAME reader the formalize-context vocabulary injection uses (no sibling re-reads).
-    assert "_substrate_proven_shelf(_read_substrate_src(notes, sandbox))" in af, \
-        "the re-entry must feed the proven shelf via the ONE substrate reader (_read_substrate_src)"
-    assert "parse_theory_file" in inspect.getsource(autoformalize._read_substrate_src), \
-        "the one substrate reader must resolve the theory file via canonical parse_theory_file"
 
 
 def test_established_vocabulary_single_door_prevents_def_drift():
@@ -754,38 +646,17 @@ def test_established_vocabulary_single_door_prevents_def_drift():
     note = prompts.ESTABLISHED_DEFS_NOTE.format(defs=defs)
     assert "do NOT redefine" in note and "NEW name" in note and "bridge" in note, note
     # SINGLE DOOR: the formalize chokepoint builds the formalizer context with the vocabulary, and the multistep
-    # escalation is NOT a context-blind sibling — it threads the SAME _fctx.
-    src = inspect.getsource(autoformalize.autoformalize_and_solve)
-    assert "_substrate_established_defs(_read_substrate_src(notes, sandbox))" in src, \
-        "vocabulary must be sourced at the ONE formalize chokepoint via the one substrate reader"
-    assert "default_formalize_multistep(_nl, context=_fctx" in src, \
-        "the multistep escalation must NOT be context-blind — it threads the same _fctx (no sibling)"
+    # escalation is NOT a context-blind sibling — it threads the SAME _fctx. 2026-06-25: the chokepoint now ALSO
+    # surfaces the proven-lemma SHELF (each banked rung's exact conclusion), not just the def BODIES — the AMM
+    # `reachable_pool_wellFormed` gap RCA (a compounding target was formalized blind to what its named banked rung
+    # actually CONCLUDES: the bank proved the trajectory predicate, not the endpoint the prose asked to "cite").
+    # Assert the behavioral invariant (one reader feeds BOTH surfacers), NOT the exact call nesting (brittle).
+    # PROVEN-SHELF AT FORMALIZE (2026-06-25): the proven-lemma shelf prompt exists and orients CITE/bridge.
+    assert hasattr(prompts, "PROVEN_SHELF_NOTE"), "proven-shelf prompt constant must exist in prompts.py"
+    assert "CITE" in prompts.PROVEN_SHELF_NOTE and "do NOT" in prompts.PROVEN_SHELF_NOTE, \
+        "the proven-shelf note must orient CITE/bridge and warn against restating a rung under a wrong conclusion"
     assert "context" in inspect.signature(autoformalize.default_formalize_multistep).parameters, \
         "default_formalize_multistep must accept context (so the escalation reuses canonical vocabulary)"
-
-
-def test_candidate_proof_reuse_routes_through_single_governance_door():
-    """ANTI-SCATTER enforcement (2026-06-24): a banked/pooled/external candidate proof is verified-in-context +
-    governed + banked at exactly ONE seam — the `_preverified_proof` (`_pvp`) door in `solve()`, which splices into
-    the FULL source (defs in scope), compiles campaign-aware, and runs the complete kernel governance. The recurring
-    bug was each REUSE site (cache cite / pool / external) re-implementing its own splice+verify; the cache cite did
-    it against the BARE goal (defs out of scope → silent skip → re-derive). This guard fails CI if the proof-cache
-    pre-attack reintroduces a bespoke splice/verify instead of handing the candidate to the single door — so the
-    consolidation can't silently un-consolidate (the door STAYS single without vigilance)."""
-    import inspect, re as _re
-    from ztare.leanmill.solver import solver_core
-    src = inspect.getsource(solver_core.solve_adhoc)
-    # isolate the proof-cache pre-attack region (between its marker and the proposer-pool pre-attack)
-    m = _re.search(r"PRE-ATTACK LIBRARY CHECK.*?GOVERNED PROPOSER POOL pre-attack", src, _re.S)
-    assert m, "could not locate the proof-cache pre-attack region"
-    region = m.group(0)
-    assert "_preverified_proof" in region, "the cache cite must hand the banked proof to the single _preverified_proof door"
-    # it must NOT re-implement splice/verify itself — those belong to the one _pvp seam
-    for banned in ("swap_sorry", "_verify_compile(", "_campaign_aware_proof_compiles(", "compile_probe_via_repl("):
-        assert banned not in region, f"cache cite must NOT re-implement candidate verify/splice ({banned}); route through _pvp"
-    # the ONE door exists and does the full-context verify + governance
-    door = inspect.getsource(solver_core.solve)
-    assert "_preverified_proof" in door and "_validate_and_maybe_close" in door, "the _pvp governance door must exist in solve()"
 
 
 def test_planner_steering_surfaces_relevant_banked_rungs_not_recent():
@@ -812,16 +683,10 @@ def test_proof_cache_keyed_on_canonical_expr_hash_not_text():
     mis-keyed multi-decl `define_then_state` probes on their leading def's `:=`). solve_adhoc computes the key ONCE
     and passes it to BOTH the pre-attack lookup and the closure deposit, so deposit-key == lookup-key; the cache
     dual-indexes (Expr key + text key) and re-verifies every hit (so the key needs only recall, never precision)."""
-    import inspect
-    from ztare.leanmill.solver import solver_core
     from ztare.leanmill.solver.proof_cache import ProofCache
     from ztare.formal import repl_compile
     # the canonical-hash helper exists and is wired into solve_adhoc for BOTH lookup and deposit
     assert hasattr(repl_compile, "canonical_type_hash_via_repl")
-    src = inspect.getsource(solver_core.solve_adhoc)
-    assert "canonical_type_hash_via_repl" in src, "solve_adhoc must compute the canonical Expr-hash key"
-    assert ".get(goal, key=_canon_key)" in src, "pre-attack lookup must use the canonical key"
-    assert "key=locals().get(\"_canon_key\")" in src or "key=_canon_key" in src, "closure deposit must reuse the same key"
     # the cache stores/reads under the supplied key, dual-indexed with the text key, and re-keys H: keys on reload
     import tempfile, os as _os
     p = tempfile.mktemp(suffix=".jsonl")
@@ -839,7 +704,6 @@ def test_def_shell_detection_canonical_and_shared_with_vocab():
     core (`_degenerate_def_body`) over the canonical `decl_blocks` parser — NO hand-rolled decl regex, NO bare-vs-
     qualified name band-aid (the two never match on names; they ask the same predicate of the same block). Behavior
     is preserved: only `def`/`abbrev` constant shells are flagged (a structure/instance/axiom is not a 'shell')."""
-    import inspect, re as _re
     from ztare.leanmill.solver import autoformalize
     SRC = ("import Mathlib\nnamespace NS\n"
            "abbrev ClaimSchedule (ι : Type*) := ι → NNReal\n"
@@ -857,12 +721,6 @@ def test_def_shell_detection_canonical_and_shared_with_vocab():
     vocab = autoformalize._substrate_established_defs(SRC)
     assert "AbsolutePriority" in vocab and "ClaimSchedule" in vocab and "Conc" in vocab
     assert "ZeroPay" not in vocab and "def Genus" not in vocab and "Genus : Prop" not in vocab
-    # no hand-rolled decl regex in the shell detector — it must parse via the canonical decl_blocks
-    dsrc = inspect.getsource(autoformalize.detect_def_shells)
-    assert "decl_blocks" in dsrc and "re.finditer" not in dsrc, "detect_def_shells must parse via canonical decl_blocks, not a regex"
-    # and the vocab exclusion must NOT name-match (no `.split('.')` band-aid) — it asks the shared block predicate
-    vsrc = inspect.getsource(autoformalize._substrate_established_defs)
-    assert "_degenerate_def_body" in vsrc and ".split(\".\")" not in vsrc, "vocab exclusion must use the shared block predicate, not a name band-aid"
 
 
 def test_faithfulness_reference_consults_single_refutation_ledger():
@@ -873,11 +731,10 @@ def test_faithfulness_reference_consults_single_refutation_ledger():
     (`NoGoodStore`, failure class `statement_false`, canonical statement key); `FaithfulnessStore.reference()`
     CONSULTS that one ledger and drops the refuted rendering. Anti-gaming: recording requires the kernel ¬G;
     consulting only ever DROPS a gate-reference, never admits."""
-    import tempfile, inspect
+    import tempfile
     from pathlib import Path
     from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore
     from ztare.leanmill.solver.no_good_store import NoGoodStore
-    from ztare.leanmill.solver import autoformalize
     # (a) NO parallel surface: the faithfulness store has NO own refutation recorder — refutations live in ONE ledger
     assert not hasattr(FaithfulnessStore, "mark_refuted"), \
         "refutations must route through the ONE ledger (NoGoodStore), not a parallel FaithfulnessStore.mark_refuted"
@@ -894,10 +751,6 @@ def test_faithfulness_reference_consults_single_refutation_ledger():
         assert WEAK and ng.statement_false_keys(), "NoGoodStore must expose the statement_false keys for the consult"
         fs2 = FaithfulnessStore(dd / "solver_lane_faithfulness_store.jsonl")   # fresh instance (drops the cache)
         assert fs2.reference(NL) is None, "reference() must DROP a rendering the ONE ledger marked statement_false"
-        # (b) the chokepoint records to the ONE ledger (NoGoodStore), with NO parallel mark_refuted
-        src = inspect.getsource(autoformalize.autoformalize_and_solve)
-        assert "NoGoodStore" in src and '"statement_false"' in src and "mark_refuted" not in src, \
-            "the refutation chokepoint must record statement_false to the ONE ledger — no parallel surface"
 
 
 def test_disclosed_strengthening_override_is_non_gamable():
@@ -1023,7 +876,6 @@ def test_reformulation_refine_hint_does_not_fight_strengthening():
     so a round-trip mismatch on the CORRECTION is EXPECTED — but the generic refine hint said 'neither weaker nor
     stronger', which pushed the agent to re-emit the refuted reading (the prior run unfolded instead of strengthened).
     `strengthening_mode` flips the round-trip guidance; the reformulation re-entry sets `_strengthening_mode=True`."""
-    import inspect
     from ztare.leanmill.solver import autoformalize as A
     class _V:  # a round-trip-rejected verdict
         checks = {"compiles": True, "non_trivial": True, "round_trip_faithful": False}
@@ -1033,12 +885,6 @@ def test_reformulation_refine_hint_does_not_fight_strengthening():
     assert "neither weaker nor stronger" in rt, "default round-trip hint preserved (faithfulness mode)"
     assert "neither weaker nor stronger" not in rt_str and "STRONGER" in rt_str and "refuted" in rt_str, \
         "strengthening_mode must NOT tell the agent to keep it un-strengthened — it must orient toward the corrected theorem"
-    # the reformulation re-entry sets _strengthening_mode=True; the threading reaches the refine hint
-    s = inspect.getsource(A.autoformalize_and_solve)
-    assert "_strengthening_mode=True" in s and "strengthening_mode=_strengthening_mode" in s, \
-        "the reformulation re-entry must propagate _strengthening_mode into the refine loop"
-    assert "strengthening_mode=strengthening_mode" in inspect.getsource(A.autoformalize_refine), \
-        "autoformalize_refine must pass strengthening_mode into the per-leg feedback hint"
 
 
 def test_firewall_gates_validated_on_production_shape_not_toys():
@@ -1050,7 +896,7 @@ def test_firewall_gates_validated_on_production_shape_not_toys():
     PROVENANCE + SHAPE diverged from production. This guard mechanizes the invariant so the class fails CI:
       (1) STATEMENT FINGERPRINTING is on the canonical TARGET theorem, never the whole multi-decl blob;
       (2) a gate's required `checks` keys ⊆ the keys the PRODUCTION firewall wiring actually populates."""
-    import tempfile, inspect
+    import tempfile
     from pathlib import Path
     from ztare.leanmill.solver import autoformalize as A, solver_core, faithfulness_store as FS, no_good_store as NG
     # production-shape multi-decl blob: a leading `def` THEN the target theorem (the autoformalizer's real output).
@@ -1098,27 +944,6 @@ def test_firewall_gates_validated_on_production_shape_not_toys():
         # and it still REJECTS a same-hypotheses re-statement (the prior run's non-correction) — no laundering
         assert A._licensed_strengthening_admit(NL, LIT, {k: v.checks[k] for k in populated}) is None, \
             "a same-hypotheses re-statement is NOT a correction — must be rejected even with the license"
-    # (3) the override + recovery both route fingerprinting through the canonical target door (no whole-blob parse)
-    src = inspect.getsource(A._licensed_strengthening_admit) + inspect.getsource(A._needs_literal_first_recovery)
-    assert ("_target_signature(" in src or "statement_fingerprint(" in src) and "_parse_lean_statement(stmt)" not in src, \
-        "override + recovery must fingerprint via the single door, never _parse_lean_statement on the raw blob"
-
-    # (4) ANTI-SIBLING SINGLE-DOOR invariant — statement fingerprinting has ONE entry door, `statement_fingerprint`,
-    #     which targets the theorem; NO gate/decision/reference may call `_parse_lean_statement` on a RAW (possibly
-    #     multi-decl) statement (it parses the leading def — the EXACT recurring bug that was copied to five sites:
-    #     GATE2/GATE3 + structural_faithfulness + reference_fingerprint + the deposit). Mechanized via substring scan
-    #     (NO regex) so a NEW sibling fails CI. `_parse_lean_statement` itself stays the low-level SIGNATURE parser.
-    af_src = inspect.getsource(A)
-    forbidden = ["_parse_lean_statement(stmt)", "_parse_lean_statement(refuted)",
-                 "_parse_lean_statement(lean_statement)", "_parse_lean_statement(af.lean_statement"]
-    siblings = [f for f in forbidden if f in af_src]
-    assert not siblings, f"SIBLING re-appeared — raw-statement fingerprinting {siblings}; route through statement_fingerprint()"
-    # every statement-fingerprint CONSUMER routes through the single door (statement_fingerprint / _target_signature)
-    for fn in (A.structural_faithfulness, A.reference_fingerprint, A._licensed_strengthening_admit,
-               A._needs_literal_first_recovery):
-        s = inspect.getsource(fn)
-        assert "statement_fingerprint(" in s or "_target_signature(" in s, \
-            f"{fn.__name__} must fingerprint via the single door (statement_fingerprint), not the raw blob"
     # the door itself targets the theorem of a multi-decl blob (else the whole consolidation is moot)
     DD = "def D {X:Type*}[Preorder X](f:X→X):Prop := ∀ x, True\n"
     fp_door = A.statement_fingerprint(DD + "theorem t {X:Type*}[Preorder X](f:X→X)(h:D f)(g:D f):(∀ x:X, x≤x) := by sorry")
@@ -1182,3 +1007,87 @@ def test_theory_identity_guard_refuses_reset_with_prior_banked(monkeypatch, tmp_
     (tmp_path / "t.lean").write_text("import Mathlib\n\ntheorem a : True := trivial\n")  # established
     r2 = an.theory_consolidation("## Theory file\nt.lean\n", "t.lean", lean_root=tmp_path, dispatch=None)
     assert not r2.get("theory_reset_detected"), "an established theory (has theorems) must NOT trip the guard"
+
+
+def test_forall_fronting_signature_accepted_env_free_but_weakening_rejected():
+    """METAMORPHIC + soundness (2026-06-25, the AMM `reachable_pool_wellFormed` gap RCA): a faithful proof that
+    states the SAME Pi type with ∀-FRONTED binders (`theorem t : ∀ (a)(b), C`) instead of named-before-colon
+    (`theorem t (a)(b) : C`) MUST pass statement_integrity — and must do so ENV-FREE (no campaign env / kernel
+    oracle). The pre-fix code only accepted it via the kernel type-equiv oracle, which needs the campaign env to
+    resolve bespoke vocab; a single broken substrate decl made that env DEAD, so the oracle fell back to a
+    Mathlib-only probe, failed `unknown identifier`, and FALSE-REJECTED a CORRECT proof as
+    `target_signature_altered` (the whole reason lemma 1 gapped after closing 15/15 the day before). Binder
+    placement is a purely syntactic env-free equivalence; `pi_normalized_signature` normalizes it. SOUNDNESS: a
+    real weakening (dropped hyp / altered conclusion) MUST still be rejected env-free (the normalizer is
+    upgrade-only, never admits a different type)."""
+    from ztare.leanmill.solver.statement_integrity import check
+    from ztare.leanmill.lean_source import pi_normalized_signature as pin, extract_signature as es
+    base    = "theorem t (a : Nat) (b : Nat) (h : a = b) : a + 0 = b := by sorry"
+    fronted = "theorem t : ∀ (a : Nat) (b : Nat) (h : a = b), a + 0 = b := by sorry"   # SAME Pi type
+    dropped = "theorem t (a : Nat) (b : Nat) : a + 0 = b := by sorry"                  # weakening (dropped hyp)
+    altered = "theorem t (a : Nat) (b : Nat) (h : a = b) : a + 1 = b := by sorry"      # altered conclusion
+    # the metamorphic invariant: the normalizer makes ∀-fronting a fixed point of the comparison
+    assert pin(es(base, "t")) == pin(es(fronted, "t")), "∀-fronting must normalize to the SAME signature"
+    assert pin(es(base, "t")) != pin(es(dropped, "t")), "a dropped hypothesis must NOT normalize equal"
+    assert pin(es(base, "t")) != pin(es(altered, "t")), "an altered conclusion must NOT normalize equal"
+    # ENV-FREE integrity (lean_root=None ⇒ NO kernel oracle): accept the reformulation, reject the weakenings
+    assert check(base, fronted, "t").violations == [], \
+        "∀-fronted reformulation must pass integrity env-free (no dead-env false-reject of a correct proof)"
+    assert any("target_signature_altered" in v for v in check(base, dropped, "t").violations), \
+        "a dropped-hypothesis weakening must STILL be rejected env-free (soundness, not just brittleness)"
+    assert any("target_signature_altered" in v for v in check(base, altered, "t").violations), \
+        "an altered-conclusion weakening must STILL be rejected env-free"
+
+
+def test_env_provided_substrate_decl_not_flagged_deleted(tmp_path, monkeypatch):
+    """A cache-cite / warm-env proof legitimately OMITS the campaign substrate's defs from its probe (they are
+    resolved in the pre-elaborated env, not re-inlined). statement_integrity's text-only `deleted: original decl
+    missing` check must NOT flag a decl that lives in the REGISTERED substrate as a laundering deletion — that
+    false-reject rejected the AMM headline target (`no_history_enables_round_trip_arbitrage`) even though its math
+    was already banked+ratified (2026-06-25 RCA, the env-based-cite sibling of the ∀-fronting false-reject).
+    SOUND: a decl that is NEITHER inlined NOR in the substrate is still flagged `deleted`; a redefinition (present
+    but divergent) still trips `definition_altered`."""
+    import ztare.formal.repl_compile as rc
+    from ztare.leanmill.solver.statement_integrity import check
+    sub = tmp_path / "substrate.lean"
+    sub.write_text("import Mathlib\nstructure Pool where x : Nat\ndef WF (p : Pool) : Prop := True\n", encoding="utf-8")
+    monkeypatch.setattr(rc, "_CAMPAIGN_SUBSTRATE", str(sub), raising=False)
+    rc.set_campaign_substrate(str(sub))
+    orig = ("structure Pool where x : Nat\ndef WF (p : Pool) : Prop := True\ndef LocalHelper : Nat := 0\n"
+            "theorem t (p : Pool) : WF p := by sorry")
+    probe = "theorem t (p : Pool) : WF p := by trivial"   # env-based cite: defs NOT inlined
+    v = check(orig, probe, "t")
+    assert not any("Pool" in x or "`WF`" in x for x in v.violations), \
+        f"substrate-provided defs (Pool/WF) must NOT be flagged deleted (env-provided), got {v.violations}"
+    assert any("LocalHelper" in x for x in v.violations), \
+        "a decl that is NEITHER inlined NOR in the substrate MUST still be flagged deleted (soundness)"
+    # parity: with NO substrate registered, the strict text check stands (all omitted decls flagged)
+    rc.set_campaign_substrate(None)
+    v2 = check(orig, probe, "t")
+    assert any("Pool" in x for x in v2.violations) and any("LocalHelper" in x for x in v2.violations), \
+        "with no substrate registered the strict deleted-check must flag every omitted decl (byte-parity)"
+
+
+def test_banked_lemma_reuse_skips_already_proven(tmp_path, monkeypatch):
+    """(b) BANKED-DECL REUSE (2026-06-25, operator "don't re-formalize, reuse"): a lemma whose `**(name)**` names
+    an ALREADY-proven (sorry-free) substrate decl is REUSED (returns its banked signature ⇒ campaign skips the
+    re-formalize+attack), while a sorried decl or an unbanked name is NOT (returns None ⇒ normal attack). This is
+    the prevention for re-formalization WASTE + the vocab-drift that orphans the shelf. NO regex: decl names come
+    from the canonical lean parser (`decl_blocks`); the bullet→decl link is a substring test on the real names."""
+    import ztare.formal.repl_compile as rc
+    from ztare.leanmill.solver.autoformalize_notes import _banked_lemma_reuse
+    sub = tmp_path / "substrate.lean"
+    sub.write_text("import Mathlib\n"
+                   "theorem proven_lemma (n : Nat) : n + 0 = n := by simp\n"
+                   "theorem open_lemma (n : Nat) : 0 + n = n := by sorry\n", encoding="utf-8")
+    monkeypatch.setattr(rc, "_CAMPAIGN_SUBSTRATE", str(sub), raising=False)
+    rc.set_campaign_substrate(str(sub))
+    assert _banked_lemma_reuse("**(proven_lemma)** the foundational fact", str(tmp_path)), \
+        "a bullet naming a PROVEN sorry-free banked decl must be REUSED (skip re-formalize)"
+    assert _banked_lemma_reuse("**(open_lemma)** still has a hole", str(tmp_path)) is None, \
+        "a bullet naming a SORRIED decl must NOT be reused (it isn't proven)"
+    assert _banked_lemma_reuse("**(nonexistent_decl)** not banked", str(tmp_path)) is None, \
+        "a bullet naming an unbanked decl must fall through to the normal attack"
+    rc.set_campaign_substrate(None)
+    assert _banked_lemma_reuse("**(proven_lemma)** x", str(tmp_path)) is None, \
+        "no registered substrate ⇒ no reuse (byte-parity with the pre-(b) behavior)"

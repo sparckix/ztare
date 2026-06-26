@@ -118,6 +118,43 @@ def _default_attack(nl: str, *, lean_root: Path, timeout_s: int, notes: "str | N
     return AttackRecord.from_firewall_result(r, nl=nl).model_dump()
 
 
+def _banked_lemma_reuse(bullet: str, lean_root) -> "Optional[str]":
+    """BANKED-DECL REUSE (2026-06-25, operator "don't re-formalize, reuse"): if a lemma BULLET's intended decl
+    name (`**(name)**`, the campaign naming convention) is ALREADY a PROVEN (sorry-free) decl in the registered
+    campaign substrate, return its signature — the lemma is DONE, so re-formalizing+re-attacking it is pure waste
+    AND the vocabulary-drift vector that orphans the shelf (the AMM RCA: a fresh formalization in a divergent form
+    — `NoHistoryRoundTripArbitrage` predicate vs the unfolded conjunction — mismatches the banked one and the
+    target then false-rejects). Returns the banked signature (citable shelf entry) or None.
+
+    SOUND: this only SKIPS work + shelves an ALREADY-kernel-proven decl; it mints no closure. The target's own
+    closure is still kernel-gated downstream, so a stale/mismatched blueprint can at worst leave the target as an
+    honest gap — never a false closure.
+
+    NO BRITTLE REGEX (operator): the decl names come from the canonical Lean parser (`decl_blocks` +
+    `first_theorem_name`/`has_sorry` over the substrate), NOT a regex guess at the bullet. The bullet→decl link is
+    the campaign `**(name)**` convention, matched with a plain substring test `f"({name})" in bullet` against the
+    REAL banked names — deterministic, and it can only match a name that actually exists banked + sorry-free."""
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        cs = get_campaign_substrate()
+        if not cs:
+            return None
+        src = Path(cs).read_text(encoding="utf-8", errors="replace")
+        from ztare.leanmill.solver.statement_integrity import decl_blocks
+        from ztare.leanmill.lean_source import signature_before_proof, first_theorem_name, has_sorry
+        b = bullet or ""
+        for n, blk in decl_blocks(src):
+            if has_sorry(blk):
+                continue
+            short = first_theorem_name(blk) or str(n).split(".")[-1]
+            # the bullet NAMES this banked, sorry-free decl via the `**(name)**` convention (substring, not regex)
+            if short and (f"({short})" in b):
+                return " ".join((signature_before_proof(blk) or "").split())
+        return None
+    except Exception:  # noqa: BLE001 — reuse is an optimization; any failure ⇒ fall through to the normal attack
+        return None
+
+
 def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = None,
                              lemma_timeout_s: "Optional[int]" = None, target_timeout_s: "Optional[int]" = None,
                              attack_fn: Optional[Callable[..., dict]] = None,
@@ -228,6 +265,23 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                 log(f"[notes] lemma {i + 1}/{len(lemmas)} owned by another node — skipping (converges via merge)")
                 continue
         log(f"[notes] lemma {i + 1}/{len(lemmas)}: {lem!r}")
+        # (b) BANKED-DECL REUSE (2026-06-25): if this lemma's intended name is ALREADY a sorry-free decl in the
+        # registered substrate, it is DONE — skip the re-formalize+attack (the waste + vocab-drift vector the
+        # operator flagged) and shelf the banked signature so the target can cite it. Default-on; =0 reverts.
+        _reuse = None
+        if _os_w.environ.get("ZTARE_LEANMILL_REUSE_BANKED_LEMMAS", "1") != "0":
+            _reuse = _banked_lemma_reuse(lem, lean_root)
+        if _reuse:
+            log(f"  -> REUSED from bank (already proven in substrate; skipped re-formalize+attack): {_reuse[:90]}")
+            out["lemmas"].append({"solved": "reused_from_bank", "lean_statement": _reuse,
+                                  "outcome": "reused_from_bank", "faithful": True})
+            out["shelf"].append(_reuse)
+            if _dist:
+                try:
+                    _coord.complete_lemma(_campaign_id, str(lem), solved=True)
+                except Exception:  # noqa: BLE001
+                    pass
+            continue
         # the WHOLE blueprint is the planner context for each lemma (the surrounding lemmas are scaffold)
         rec = attack_fn(lem, lean_root=lean_root, timeout_s=lemma_timeout_s, notes=notes_text)
         out["lemmas"].append(rec)
@@ -1451,6 +1505,29 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                     print(f"[notes] campaign warm-env substrate registered: {_tp}", flush=True)
                 except Exception as _e:  # noqa: BLE001 — registration is best-effort; verify falls back to inline
                     print(f"[notes] warm-env register skipped: {repr(_e)[:100]}", flush=True)
+                # SUBSTRATE POSITIVE CONTROL (2026-06-25 RCA — the AMM `not_riskFreeProfit_zero` `<;>` bug): a
+                # single non-compiling decl ANYWHERE in the registered substrate makes `campaign_file_env` return
+                # None, which SILENTLY kills the whole campaign-aware layer (citing / warm-verify / the
+                # faithfulness oracle → faithful ∀-fronted proofs FALSE-REJECT as `target_signature_altered`).
+                # The substrate can be written by an ungated path (recovery / manual edit) that skips
+                # theory_consolidation's GATE-2 whole-file compile, so the ONLY robust catch is a run-start
+                # positive control on the ACTUAL file the campaign will use — the same fail-closed-LOUD discipline
+                # as the embedder-liveness banner. ZTARE_LEANMILL_SUBSTRATE_LIVENESS=0 skips (A/B).
+                if _os.environ.get("ZTARE_LEANMILL_SUBSTRATE_LIVENESS", "1") != "0" and _tp.exists():
+                    try:
+                        from ztare.formal.repl_compile import campaign_file_env as _cfe
+                        _env_id = _cfe(str(_tp.resolve()), LEAN_ROOT_DEFAULT)   # logs the compile errors LOUDLY if it fails
+                        if _env_id is not None:
+                            print(f"[notes] campaign substrate positive control: LIVE — env elaborates "
+                                  f"(env={_env_id}); citing/warm-verify/faithfulness-oracle armed", flush=True)
+                        else:
+                            print("⚠️  [notes] campaign substrate positive control: DEAD — the registered substrate "
+                                  "does NOT compile (errors above). The campaign-aware layer will degrade and "
+                                  "faithful proofs may FALSE-REJECT. FIX THE SUBSTRATE before trusting gaps as 'hard "
+                                  "math'. (A non-compiling substrate is INADMISSIBLE — never silently re-derive.)",
+                                  flush=True)
+                    except Exception as _e:  # noqa: BLE001 — the control is advisory; never break the run
+                        print(f"[notes] substrate positive control skipped: {repr(_e)[:100]}", flush=True)
             _theory_src = _tp.read_text(encoding="utf-8") if _tp.exists() else ""
             if _theory_src.strip():   # the substrate rides the notes (formal scaffolding channel, #88)
                 _notes_text += ("\n\n## Theory (campaign substrate — cite, do not re-derive)\n```lean\n"

@@ -2054,12 +2054,30 @@ def autoformalize_and_solve(nl: str, *, sandbox, substrate=None,
         # compose conflict-check stay the only deterministic boundary). "" ⇒ byte-identical to before.
         _vocab = ""
         if os.environ.get("ZTARE_LEANMILL_ESTABLISHED_VOCAB", "1") != "0":
-            _defs0 = _substrate_established_defs(_read_substrate_src(notes, sandbox))
+            _substrate_src0 = _read_substrate_src(notes, sandbox)
+            _defs0 = _substrate_established_defs(_substrate_src0)
             if _defs0.strip():
                 from ztare.leanmill.solver import prompts as _pv
                 _vocab = _pv.ESTABLISHED_DEFS_NOTE.format(defs=_defs0)
                 print(f"[formalize] established-vocabulary surfaced: {_defs0.count(chr(10) + chr(10)) + 1} canonical "
                       f"def(s) given to the formalizer (reuse-verbatim — prevents the orphaned-shelf drift)", flush=True)
+            # PROVEN-SHELF AT FORMALIZE (2026-06-25, the AMM `reachable_pool_wellFormed` gap RCA): the def-body
+            # companion above was wired here, but the proven-LEMMA shelf (each banked rung's EXACT conclusion) was
+            # surfaced ONLY in reformulation feedback — so a compounding target was formalized BLIND to what its
+            # named banked rung actually CONCLUDES (the bank proved the trajectory predicate `TradesKeepWellFormed`,
+            # not the endpoint `PoolWellFormed (executeTrades …)` the prose asked to "cite"). The formalizer then
+            # wrote an endpoint statement matching no banked conclusion → no cite → single-trade decomposition → gap.
+            # Surface the actual signatures here (the SAME chokepoint, the SAME single reader) so the formalizer can
+            # MATCH a rung or state a DISCLOSED corollary that cites it. Embedder-INDEPENDENT (lexical), so it holds
+            # even when the semantic shelf is dead. Advisory; the firewall still gates faithfulness. =0 reverts.
+            if os.environ.get("ZTARE_LEANMILL_PROVEN_SHELF_AT_FORMALIZE", "1") != "0":
+                _shelf0 = _substrate_proven_shelf(_substrate_src0)
+                if _shelf0.strip():
+                    from ztare.leanmill.solver import prompts as _pv
+                    _vocab = _vocab + _pv.PROVEN_SHELF_NOTE.format(shelf=_shelf0)
+                    print(f"[formalize] proven-shelf surfaced: {_shelf0.count(chr(10)) + 1} banked kernel-checked "
+                          f"lemma signature(s) given to the formalizer (cite/bridge — prevents re-deriving a banked "
+                          f"rung under a conclusion it does not have)", flush=True)
         _fctx = (_vocab + _notes_ctx + extra_context).strip()
         formalize_fn = lambda _nl: default_formalize(_nl, lean_root=sandbox, context=_fctx)  # noqa: E731
     compile_fn = compile_fn or (lambda s: default_compile(s, sandbox))

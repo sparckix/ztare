@@ -300,6 +300,56 @@ def top_level_colon(sig: str) -> int:
     return -1
 
 
+def top_level_comma(sig: str) -> int:
+    """Index of the FIRST comma at bracket depth 0 (commas inside (…)/[…]/{…}/⟨…⟩/⦃…⦄ are nested → ignored).
+    -1 if none. Used to find the `∀ <binders>, <body>` binder/body separator (the binder list itself carries
+    no top-level comma). Canonical sibling of `top_level_colon`."""
+    depth = 0
+    pairs = {"(": ")", "[": "]", "{": "}", "⟨": "⟩", "⦃": "⦄"}
+    closes = set(pairs.values())
+    for i, c in enumerate(sig):
+        if c in pairs:
+            depth += 1
+        elif c in closes:
+            depth = max(0, depth - 1)
+        elif depth == 0 and c == ",":
+            return i
+    return -1
+
+
+def pi_normalized_signature(sig: str) -> str:
+    """Canonicalize a theorem signature to its ∀-FRONTED form so a binders-after-colon statement
+    `(a:A) (b:B) : C` and its ∀-fronted reformulation `: ∀ a:A, ∀ b:B, C` — the SAME Pi type (NOT a weakening),
+    differing only in BINDER PLACEMENT — normalize to the SAME string, ENV-INDEPENDENTLY (no kernel, no campaign
+    env). `sig` is the signature WITHOUT the `:=` body (as `extract_signature` returns). Canonical primitives
+    only (`top_level_colon`/`top_level_comma`) — NO regex.
+
+    SOUNDNESS (this is an UPGRADE-only accept-helper for the faithfulness gate): it accepts ONLY when the binder
+    LISTS and the final CONCLUSION are textually identical after moving leading `∀` binders into the binder slot.
+    A real weakening — dropped/added/reordered hypothesis, altered conclusion — yields a DIFFERENT normalized
+    string ⇒ NOT accepted here ⇒ it still falls through to the kernel type-equiv oracle (unchanged). So this can
+    only ever turn a brittle TEXT false-reject of a ∀-fronting reformulation into an accept; it can never admit a
+    genuinely different type."""
+    s = " ".join((sig or "").split())
+    ci = top_level_colon(s)
+    if ci < 0:
+        return s
+    binders = s[:ci].strip()
+    rest = s[ci + 1:].strip()
+    # Peel leading `∀ <bs>, <body>` groups from the type into the binder list (idempotent; bounded by length).
+    guard = 0
+    while guard < 64 and (rest.startswith("∀") or rest.startswith("forall ")):
+        guard += 1
+        after = (rest[1:] if rest.startswith("∀") else rest[len("forall"):]).lstrip()
+        comma = top_level_comma(after)
+        if comma < 0:
+            break
+        bs = after[:comma].strip()
+        rest = after[comma + 1:].strip()
+        binders = (binders + " " + bs).strip() if binders else bs
+    return f"∀ {binders}, {rest}" if binders else rest
+
+
 def split_at_proof(text: str) -> "tuple[str, str]":
     """Split a decl at the PROOF `:=` — the canonical binder-safe replacement for `text.split(":=", 1)`
     / `re.split(r":=", text, 1)`, which truncate at a `:=` INSIDE a binder (a `let k := 5` in a

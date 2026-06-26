@@ -161,11 +161,64 @@ def campaign_file_env(file_path, sandbox, timeout: int = 600) -> "Optional[int]"
         _drop_repl(project)
         return None
     # a non-compiling theory must NEVER become a silent verify env; hard ERRORS disqualify it (sorries OK).
+    # LOUD-ON-FAILURE (2026-06-25 RCA — the AMM `not_riskFreeProfit_zero` `<;>` bug): a single broken decl
+    # ANYWHERE in the registered substrate makes this return None, which SILENTLY kills the WHOLE campaign-aware
+    # layer — citing, warm-verify, AND the kernel faithfulness oracle (which then falls back to a Mathlib-only
+    # probe that can't resolve campaign vocab → FALSE-REJECTS every faithful ∀-fronted proof as
+    # `target_signature_altered`). The silence is what let a non-compiling substrate masquerade as "hard math"
+    # for a whole campaign. Surface the compile errors LOUDLY so a dead substrate env is a VISIBLE dead
+    # instrument (the same discipline as the embedder-liveness banner), never a silent degrade. (Still returns
+    # None — the soundness policy is unchanged; only the observability is fixed.)
     if not isinstance(r, dict) or r.get("errors") or r.get("env") is None:
+        _errs = r.get("errors") if isinstance(r, dict) else None
+        if _errs:
+            print(f"⚠️  CAMPAIGN SUBSTRATE DOES NOT COMPILE: {key} — {len(_errs)} hard error(s). The "
+                  f"campaign-aware verify env is DEAD ⇒ citing / warm-verify / the faithfulness oracle all "
+                  f"degrade (faithful proofs may FALSE-REJECT as `target_signature_altered`). FIX THE SUBSTRATE. "
+                  f"First errors:", flush=True)
+            for _e in _errs[:5]:
+                print(f"      {str(_e)[:200]}", flush=True)
         return None
     env = int(r["env"])
     _FILE_ENV_CACHE[key] = (mtime, env)
     return env
+
+
+def campaign_file_decl_axiom_clean(file_path, sandbox, decl_name: str, timeout: int = 120) -> "Optional[tuple[bool, str]]":
+    """`#print axioms <decl_name>` against the CACHED campaign-file env (the decl is already live there), so the
+    bank chokepoint can audit a just-banked decl IN ITS PERSISTED ENV without a second full re-elaboration —
+    the reverify call just built/cached this env for the current mtime, so this is a single cheap REPL query.
+
+    Returns `(clean, diag)` — `clean=False` ONLY on a DETECTED `sorryAx` / non-allowlisted axiom (fail-CLOSED:
+    the caller reverts) — or `None` when the audit cannot run / is inconclusive (flag off / toolchain / dead
+    REPL / unknown decl / no verdict) so the caller fails OPEN (a flaky audit never blocks compounding; the
+    cold governance audit remains the backstop). This is the persistence-world half of the two-verify-worlds
+    fix (RCA 2026-06-25): banking re-verified COMPILE here but never AXIOMS, so a rung citing a still-`sorry`
+    canonical sibling compiled and banked, surfacing `sorryAx` only when the target was re-elaborated."""
+    env = campaign_file_env(file_path, sandbox, timeout=timeout)
+    if env is None:
+        return None
+    project = str(Path(sandbox).resolve())
+    pl = _get_repl(project)
+    if pl is None:
+        return None
+    try:
+        ax = pl.check(f"#print axioms {decl_name}", timeout=min(timeout, _warm_ceiling()), env=env)
+    except Exception:  # noqa: BLE001
+        _drop_repl(project)
+        return None
+    raw = str((ax or {}).get("raw", "")) if isinstance(ax, dict) else ""
+    if "axioms" not in raw:
+        return None                                       # unknown decl / no verdict ⇒ inconclusive (fail-open)
+    low = raw.lower()
+    if "sorryax" in low:
+        return (False, f"sorryAx in {decl_name} (persisted env — laundered sorried sibling)")
+    import re as _re_ax
+    cited = _re_ax.findall(r"[A-Za-z_][\w.]*", raw.split("depends on axioms", 1)[-1]) if "depends on axioms" in raw else []
+    bad = [a for a in cited if a not in _ALLOWED_AXIOMS and (a.endswith("Ax") or a in ("Lean.ofReduceBool", "Lean.trustCompiler"))]
+    if bad:
+        return (False, f"non-allowlisted axiom in {decl_name}: {bad}")
+    return (True, "axiom_clean")
 
 
 def compile_probe_via_repl(probe: str, sandbox, timeout: int = 120, *,
@@ -378,6 +431,64 @@ def axioms_raw_via_repl(lean_source: str, target_name: str, sandbox, timeout: in
     # only hand back output that actually carries the #print-axioms verdict (else the caller sees "no line for
     # target" ⇒ inconclusive ⇒ cold fallback — same fail-open as the cold path when the directive produced nothing).
     return raw if ("depends on axioms" in raw or "does not depend on any axioms" in raw) else None
+
+
+_TYPE_HASH_RE = re.compile(r"ZTARE_TYPE_HASH:(\d+)")
+
+# Erase binder NAMES (so `∀ x` ≡ `∀ y`) + strip mdata, then take Lean's structural `Expr.hash` of the target's
+# TYPE. The kernel stores bound-variable OCCURRENCES as de Bruijn indices, so this single hash is invariant under
+# α-renaming AND ∀-fronting (`(h : H) : Q` and `: ∀ h : H, Q` have the SAME forall-type) — the equivalences NO text
+# regex can collapse (the 2026-06-24 cache-never-hits RCA). `Expr.hash`/`==` are binder-NAME-sensitive by default
+# (that is `Expr.equal`; `Expr.eqv` is the α one), so we normalise the names first. The marker is our OWN line, not
+# Lean source, so parsing it with a tiny regex is fine. Verified: ∀-fronting + α variants → identical hash.
+_TYPE_HASH_SNIPPET = (
+    "\nopen Lean in\n"
+    "partial def ztareErase : Expr → Expr\n"
+    "  | .forallE _ d b bi => .forallE `x (ztareErase d) (ztareErase b) bi\n"
+    "  | .lam _ d b bi => .lam `x (ztareErase d) (ztareErase b) bi\n"
+    "  | .letE _ t v b nd => .letE `x (ztareErase t) (ztareErase v) (ztareErase b) nd\n"
+    "  | .app f a => .app (ztareErase f) (ztareErase a)\n"
+    "  | .mdata _ e => ztareErase e\n"
+    "  | .proj n i e => .proj n i (ztareErase e)\n"
+    "  | e => e\n"
+    "open Lean Elab Command in\n"
+    "#eval liftTermElabM do\n"
+    "  match (← getEnv).find? `{target} with\n"
+    "  | some ci => IO.println s!\"ZTARE_TYPE_HASH:{{(ztareErase ci.type).hash}}\"\n"
+    "  | none => IO.println \"ZTARE_TYPE_HASH:NONE\"\n"
+)
+
+
+def canonical_type_hash_via_repl(lean_source: str, target_name: str, sandbox, timeout: int = 120,
+                                 *, env: "Optional[int]" = None) -> "Optional[str]":
+    """Canonical, α-/∀-fronting-invariant KEY for a theorem statement: the kernel `Expr.hash` of the target decl's
+    binder-name-erased TYPE, computed by elaborating `lean_source` against the warm REPL (a byproduct of the verify
+    the caller already runs — the economics-safe source, never a dedicated equivalence call). This is the principled
+    replacement for text-regex statement normalisation in the proof cache (which mis-keyed multi-decl probes on
+    their leading `def`'s `:=` and could not collapse ∀-fronting). Returns the hash as a decimal string, or None ⇒
+    caller falls back to the text key (`proof_cache.normalize_statement`): when the REPL is off / toolchain-
+    mismatched / dead, the probe does not elaborate, or the target decl is absent. SOUND regardless of key quality —
+    a proof-cache hit is ALWAYS re-verified in-context before it can close anything, so the key only needs RECALL."""
+    if not _flag_on() or not (target_name or "").strip():
+        return None
+    project = str(Path(sandbox).resolve())
+    if not _toolchain_ok(project):
+        return None
+    pl = _get_repl(project)
+    if pl is None:
+        return None
+    code = _strip_prelude_for_repl((lean_source or "")) + _TYPE_HASH_SNIPPET.format(target=target_name)
+    if not code.strip():
+        return None
+    try:
+        r = pl.check(code, timeout=min(timeout, _warm_ceiling()), env=env)
+    except Exception:  # noqa: BLE001 — wedged/crashed command: drop + respawn next call, fall back this one
+        _drop_repl(project)
+        return None
+    if not isinstance(r, dict) or r.get("errors"):   # a real elaboration error ⇒ inconclusive; text-key fallback
+        return None
+    m = _TYPE_HASH_RE.search(str(r.get("raw", "") or r.get("output", "")))
+    return m.group(1) if m else None
 
 
 @atexit.register

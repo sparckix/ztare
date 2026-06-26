@@ -131,6 +131,39 @@ def _signature(block: str) -> str:
     return block
 
 
+_SUBSTRATE_DECLS_CACHE: "dict" = {}   # path -> (mtime, frozenset of decl names incl. short forms)
+
+
+def _campaign_substrate_decl_names() -> "frozenset[str]":
+    """Decl names (qualified AND short) in the REGISTERED campaign substrate. A decl PRESENT here but ABSENT from
+    a probe is ENV-PROVIDED (the probe compiles against the pre-elaborated campaign env, where the substrate's
+    decls are live) — NOT a laundering deletion. Used to suppress the false `deleted: …` violation that a
+    cache-cite / warm-env proof triggers because it legitimately does not RE-INLINE the substrate's defs (the
+    2026-06-25 AMM target RCA). Cached by (path, mtime); empty when no substrate registered (⇒ pure behavior)."""
+    try:
+        from ztare.formal.repl_compile import get_campaign_substrate
+        cs = get_campaign_substrate()
+        if not cs:
+            return frozenset()
+        from pathlib import Path as _P
+        p = _P(cs)
+        mt = p.stat().st_mtime
+        hit = _SUBSTRATE_DECLS_CACHE.get(cs)
+        if hit and hit[0] == mt:
+            return hit[1]
+        src = p.read_text(encoding="utf-8", errors="replace")
+        names: "set[str]" = set()
+        for n, _b in decl_blocks(src):
+            if n:
+                names.add(n)
+                names.add(str(n).split(".")[-1])   # short form too (probe/original may use either)
+        fs = frozenset(names)
+        _SUBSTRATE_DECLS_CACHE[cs] = (mt, fs)
+        return fs
+    except Exception:  # noqa: BLE001 — env-awareness is best-effort; absent ⇒ the strict text check stands
+        return frozenset()
+
+
 @dataclass
 class IntegrityVerdict:
     ok: bool
@@ -255,18 +288,44 @@ def check(original_source: str, probe_source: str, target_name: str,
     probe = dict(decl_blocks(probe_source))
     # the target may be namespace-qualified (e.g. `AlmostPeriodic.leaf_X`); match by exact OR suffix.
     _tgt = {n for n in orig if n == target_name or n.endswith("." + target_name)} or {target_name}
+    # ENV-PROVIDED decls are not "deleted" (2026-06-25 RCA — the AMM target cache-cite false-reject): a cache-cite
+    # / warm-env proof legitimately OMITS the substrate's defs (ConstantProductPool/PoolWellFormed) from its probe
+    # because they are resolved in the pre-elaborated campaign env, not re-inlined. The text-only diff can't see
+    # the env, so it false-flagged them as laundering-deletions and REJECTED a proof whose math was already
+    # banked+ratified. A decl present in the REGISTERED campaign substrate is env-provided (the probe compiles
+    # against it), so it is NOT a deletion. SOUND: a genuine drop-AND-redefine still trips `definition_altered`
+    # (the divergent redefinition IS in the probe), and a decl the probe truly needs but neither inlines nor gets
+    # from the substrate still flags `deleted`. "" substrate ⇒ frozenset() ⇒ strict text behavior (parity).
+    _env_decls = _campaign_substrate_decl_names()
     violations: list[str] = []
     for name, oblock in orig.items():
         if name not in probe:
+            if name in _env_decls or str(name).split(".")[-1] in _env_decls:
+                continue   # provided by the registered campaign env — not a deletion
             violations.append(f"deleted: original decl `{name}` is missing from the probe")
             continue
         if name in _tgt:
             # only the proof BODY may change — the SIGNATURE (statement) must be preserved
             if _norm(_signature(oblock)) != _norm(_signature(probe[name])):
-                # TEXT differs — but consult the KERNEL type-equality oracle before flagging: a faithful
-                # ∀-reformulation is the same type (accept); a real weakening is a type mismatch (still rejected).
+                # ENV-INDEPENDENT ∀-FRONTING PRE-CHECK FIRST (2026-06-25 RCA — the AMM `reachable_pool_wellFormed`
+                # gap): the agent stated the SAME Pi type with ∀-fronted binders (`: ∀ (a)(b), C`) instead of
+                # named-before-colon (`(a)(b) : C`). The kernel oracle SHOULD accept that, but it needs the campaign
+                # env to resolve the bespoke vocab (FeeFactor/executeTrades/…) — and a single broken substrate decl
+                # makes that env DEAD, so the oracle fell back to a Mathlib-only probe, failed `unknown identifier`,
+                # and FALSE-REJECTED a CORRECT proof as `target_signature_altered`. Binder placement is a PURELY
+                # SYNTACTIC, env-FREE equivalence: normalize both signatures to ∀-fronted form (canonical
+                # `pi_normalized_signature`, NO regex) and accept iff identical. SOUND (upgrade-only): a real
+                # weakening normalizes DIFFERENTLY ⇒ not accepted here ⇒ still falls to the kernel oracle. This makes
+                # the faithful-reformulation accept robust to a dead env, defense-in-depth with the substrate fix.
                 _kernel_ok = False
-                if target_type_equiv_fn is not None:
+                try:
+                    from ztare.leanmill.lean_source import pi_normalized_signature as _pin
+                    _kernel_ok = _pin(_signature(oblock)) == _pin(_signature(probe[name]))
+                except Exception:  # noqa: BLE001 — normalizer import/parse failure ⇒ defer to the kernel oracle
+                    _kernel_ok = False
+                # TEXT + binder-normalization both differ — consult the KERNEL type-equality oracle (handles
+                # coercions / defeq the syntactic normalizer can't): same type ⇒ accept; real weakening ⇒ reject.
+                if not _kernel_ok and target_type_equiv_fn is not None:
                     try:
                         _kernel_ok = bool(target_type_equiv_fn(oblock, probe[name]))
                     except Exception:  # noqa: BLE001 — oracle failure ⇒ keep the text verdict (fail-closed)

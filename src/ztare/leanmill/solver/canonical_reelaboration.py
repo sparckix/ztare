@@ -84,6 +84,14 @@ def check(original_source: str, probe_source: str, target_name: str, lean_root: 
     stripped, removed = _strip_hijack_context(probe_source, original_source, _toks)
     if not removed:
         return True, "no added instance/notation/macro/set_option/axiom/shadow-decl to strip (nothing to re-elaborate)"
+    # ENV-VS-SELF-CONTAINED CLASS (2026-06-25): this recompile goes through the ONE compile door `_compile_probe`,
+    # which is CAMPAIGN-ENV-AWARE (warm path: it compiles against `campaign_file_env` when a substrate is
+    # registered), so an env-based probe that references the substrate's defs WITHOUT re-inlining them still
+    # resolves — no FALSE `context_hijack`. This held silently HOSTAGE to the substrate compiling: when the
+    # registered substrate had errors, `campaign_file_env` returned None and `_compile_probe` fell back to a
+    # Mathlib-only world, making EVERY recompile organ env-blind at once. The substrate run-start positive control
+    # (autoformalize_notes) + loud `campaign_file_env` keep that door honest. The ONLY governance organ that can't
+    # ride this compile door is the pure-TEXT `statement_integrity`, which got its own env-awareness primitive.
     from ztare.gates.v33_preflight_risk_detector import _compile_probe
     src = stripped if stripped.lstrip().startswith("import") else ("import Mathlib\n\n" + stripped)
     res = _compile_probe(src, lean_root, "CanonicalReelab", timeout_s)
