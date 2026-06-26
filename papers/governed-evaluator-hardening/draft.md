@@ -14,7 +14,7 @@ An LLM that evaluates other LLMs fails in two ways. It can reward a persuasive b
 
 When an LLM evaluates another LLM, two failure modes matter immediately. First, the judge can describe a flaw in prose and still assign a passing score. Second, a hardening layer that helps on one exploit family can open a new blind spot on another. A third problem follows once the evaluator becomes the object of recursive improvement: the system that prevents specification gaming can be softened by the same optimization pressure it is supposed to resist.
 
-We obtain recursive gain by converting observed failures into reusable adversarial constraints. Rather than defining what a correct evaluator must positively recognize, the system improves by eliminating known families of failure. Constraints are stored as approved primitives: structured records of prior failure patterns with judge-penalty logic. Constraints help selectively, so ordering and application strategy matter; the benefit depends on exploit family.
+We obtain recursive gain by converting observed failures into reusable adversarial constraints. The system improves by eliminating known families of failure. Constraints are stored as approved primitives: structured records of prior failure patterns with judge-penalty logic. Constraints help selectively, so ordering and application strategy matter; the benefit depends on exploit family.
 
 Improving the evaluator and governing how those improvements are accepted are distinct problems. An unconstrained improvement loop can chase scores or silently absorb integration debt, degrading the enforcement surface in the name of progress. A deterministic meta-runner manages a queue of hardening stages, each gated by a precommitted Python promotion contract. Our meta-runner executes precommitted contracts mechanically; FAIL and BLOCKED are hard stops that require human diagnosis.
 
@@ -42,7 +42,7 @@ We address all four with the meta-runner. Contracts check typed properties; the 
 
 ## 2. Related work
 
-Three contrast points distinguish the hardening mechanism. Reflexion- and self-refinement-style systems (Shinn et al., 2023) store corrections or feedback traces, while this work stores adversarial constraints. Constitutional-style rules (Bai et al., 2022) are hand-authored, while these constraints are mined from observed evaluator and thesis failures. And the memory is attached to the evaluator to harden judgment against recurrent exploit families; it does not touch the generator's output quality. Prior work documents the threat the constraints defend against: specification gaming in LLM-generated code (Alami 2026a).
+The hardening mechanism differs from prior memory-based methods. It stores adversarial constraints mined from observed evaluator and thesis failures, a different object from the stored corrections or feedback traces of Reflexion- and self-refinement-style systems (Shinn et al., 2023) and from the hand-authored rules of Constitutional-style methods (Bai et al., 2022). The memory attaches to the evaluator, hardening judgment against recurrent exploit families; generation stays outside its scope. Prior work documents the threat the constraints defend against: specification gaming in LLM-generated code (Alami 2026a).
 
 Closely adjacent literature studies when LLM judges are reliable (Zheng et al., 2023), how reward-model overoptimization follows Goodhart's law under optimization pressure (Gao et al., 2022), and how specification gaming surfaces in learned systems (Krakovna et al., 2020). We ask a different question: how can hardening improve evaluator reliability, and how can we govern that improvement while the evaluator is recursively changing?
 
@@ -202,7 +202,7 @@ Stage 1 promoted on `B_deterministic_gates`, the narrowest surface that isolates
 
 ### 8.4 Scope discipline: debt externalization
 
-Stage 4 (shadow board taxonomy) needed a typed `Stage2Handoff` to wire the hinge object into the committee-assignment path. A seam between hinge extraction and committee routing carried integration debt, because extraction fidelity was not guaranteed for all input shapes. The contract architecture forced this debt into two separately governed programs, keeping Stage 4 from absorbing it: a bridge-audit program to verify the typed handoff, and a derivation-seam hardening program to harden the function that constructs hinge objects from raw text. Benchmark evidence makes the boundaries explicit. Stage 4's record states "Upstream extraction fidelity debt remains explicit; stage 4 must not pretend it is solved," and Stage 6's record states "The Stage 2 to 4 bridge debt must not be silently inherited by Stage 6; unresolved dependency should route to manual review." The debt was not eliminated. It was made visible and prevented from inflating stage claims.
+Stage 4 (shadow board taxonomy) needed a typed `Stage2Handoff` to wire the hinge object into the committee-assignment path. A seam between hinge extraction and committee routing carried integration debt, because extraction fidelity was not guaranteed for all input shapes. The contract architecture forced this debt into two separately governed programs, keeping Stage 4 from absorbing it: a bridge-audit program to verify the typed handoff, and a derivation-seam hardening program to harden the function that constructs hinge objects from raw text. Benchmark evidence makes the boundaries explicit. Stage 4's record states "Upstream extraction fidelity debt remains explicit; stage 4 must not pretend it is solved," and Stage 6's record states "The Stage 2 to 4 bridge debt must not be silently inherited by Stage 6; unresolved dependency should route to manual review." The debt remained; the contract made it visible and kept it from inflating stage claims.
 
 Across the six stages the contracts produced governance artifacts at three levels: enforcement (the Stage 2 FAIL blocked a regression), attribution (promotion-path scoping fixed what counts as evidence per stage), and scope discipline (debt externalization encoded what each stage is not allowed to claim). Contracts returned typed verdicts on the archived evidence files, replayable by any reviewer as deterministic Python output.
 
@@ -214,7 +214,7 @@ No single hardened pipeline universally dominates. Deterministic gates reduce re
 
 ### 9.2 Constraint versus correction
 
-Our memory does not store a verbal note to do better next time. It stores adversarial precedents with scope and penalty logic, which makes the memory object different from a generic correction log. A correction pulls the model toward a positive target. An adversarial constraint acts as a family-specific floor that prevents a known vector of ruin from being paid twice.
+Our memory stores adversarial precedents with scope and penalty logic, which makes the memory object different from a generic correction log: each constraint sets a family-specific floor under the evaluator, so a known vector of ruin is not paid twice.
 
 ### 9.3 Why a parameterless orchestrator is structurally safer
 

@@ -147,8 +147,7 @@ prevents specification gaming can be softened by the same optimization
 pressure it is supposed to resist.
 
 We obtain recursive gain by converting observed failures into reusable
-adversarial constraints. Rather than defining what a correct evaluator
-must positively recognize, the system improves by eliminating known
+adversarial constraints. The system improves by eliminating known
 families of failure. Constraints are stored as approved primitives:
 structured records of prior failure patterns with judge-penalty logic.
 Constraints help selectively, so ordering and application strategy
@@ -218,15 +217,15 @@ because its contracts are precommitted Python.
 
 \section{2. Related work}\label{related-work}
 
-Three contrast points distinguish the hardening mechanism. Reflexion-
-and self-refinement-style systems (Shinn et al., 2023) store corrections
-or feedback traces, while this work stores adversarial constraints.
-Constitutional-style rules (Bai et al., 2022) are hand-authored, while
-these constraints are mined from observed evaluator and thesis failures.
-And the memory is attached to the evaluator to harden judgment against
-recurrent exploit families; it does not touch the generator's output
-quality. Prior work documents the threat the constraints defend against:
-specification gaming in LLM-generated code (Alami 2026a).
+The hardening mechanism differs from prior memory-based methods. It
+stores adversarial constraints mined from observed evaluator and thesis
+failures, a different object from the stored corrections or feedback
+traces of Reflexion- and self-refinement-style systems (Shinn et al.,
+2023) and from the hand-authored rules of Constitutional-style methods
+(Bai et al., 2022). The memory attaches to the evaluator, hardening
+judgment against recurrent exploit families; generation stays outside
+its scope. Prior work documents the threat the constraints defend
+against: specification gaming in LLM-generated code (Alami 2026a).
 
 Closely adjacent literature studies when LLM judges are reliable (Zheng
 et al., 2023), how reward-model overoptimization follows Goodhart's law
@@ -706,8 +705,8 @@ Benchmark evidence makes the boundaries explicit. Stage 4's record
 states ``Upstream extraction fidelity debt remains explicit; stage 4
 must not pretend it is solved,'' and Stage 6's record states ``The Stage
 2 to 4 bridge debt must not be silently inherited by Stage 6; unresolved
-dependency should route to manual review.'' The debt was not eliminated.
-It was made visible and prevented from inflating stage claims.
+dependency should route to manual review.'' The debt remained; the
+contract made it visible and kept it from inflating stage claims.
 
 Across the six stages the contracts produced governance artifacts at
 three levels: enforcement (the Stage 2 FAIL blocked a regression),
@@ -731,12 +730,10 @@ meta-runner governs the recursive application of these improvements.
 \subsection{9.2 Constraint versus
 correction}\label{constraint-versus-correction}
 
-Our memory does not store a verbal note to do better next time. It
-stores adversarial precedents with scope and penalty logic, which makes
-the memory object different from a generic correction log. A correction
-pulls the model toward a positive target. An adversarial constraint acts
-as a family-specific floor that prevents a known vector of ruin from
-being paid twice.
+Our memory stores adversarial precedents with scope and penalty logic,
+which makes the memory object different from a generic correction log:
+each constraint sets a family-specific floor under the evaluator, so a
+known vector of ruin is not paid twice.
 
 \subsection{9.3 Why a parameterless orchestrator is structurally
 safer}\label{why-a-parameterless-orchestrator-is-structurally-safer}
