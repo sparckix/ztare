@@ -71,12 +71,19 @@ def _axioms(closure: Path) -> str:
 
 
 def _cited_rungs(log: "Path | None") -> "list[str]":
-    """Banked rungs cited this run. DB `cache_reuse` rows undercount the pre-attack `_pvp` cite (solver_core
-    follow-up), so enrich from the run log's `CITED banked rung ... for '<name>'` lines when a log is given."""
+    """Banked rungs reused this run — the COMPOUNDING signal. DB `cache_reuse` rows undercount, so read the run
+    log (NOT Lean ⇒ log-text parse, not lean_source): both the proof-level `CITED banked rung ... for '<name>'`
+    cites AND the campaign-level `REUSED from bank ... theorem <name>` skips (the (b) banked-lemma reuse, which
+    skips re-formalizing an already-proven decl). Counting only the former under-reported a fully-reused run as
+    'cited 0' even though it stood entirely on banked work."""
     names: "list[str]" = []
     if log and log.exists():
         import re
-        for m in re.finditer(r"CITED banked rung.*?for '([^']+)'", log.read_text(encoding="utf-8", errors="ignore")):
+        txt = log.read_text(encoding="utf-8", errors="ignore")
+        for m in re.finditer(r"CITED banked rung.*?for '([^']+)'", txt):
+            if m.group(1) not in names:
+                names.append(m.group(1))
+        for m in re.finditer(r"REUSED from bank[^\n]*?:\s*theorem\s+(\w+)", txt):
             if m.group(1) not in names:
                 names.append(m.group(1))
     return names
@@ -86,7 +93,55 @@ def _fmt(n) -> str:
     return "—" if n is None else f"{n:g}"
 
 
-def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", axioms: str = "", domain: str = "") -> str:
+def _family_rows(run_tag: str, only: "set[str] | None" = None) -> "list[dict]":
+    """Attempt rows for run_tag's campaign family (v4/v5/v6…) — the honest multi-run milestone view (a milestone
+    whose lemmas were proven in one run and whose target closed in a later reuse run must NOT report only the
+    cheap reuse run's time-to-closure: that UNDER-represents the real proving cost — a confound). Uses the
+    canonical `campaign_family` strip. `only` (optional) restricts to specific member run_tags — used to EXCLUDE
+    pre-fix / debugging runs whose wall was bug-thrash, not proving (the OTHER confound direction)."""
+    from ztare.leanmill.phase_timing import campaign_family
+    fam = campaign_family(run_tag)
+    if not ATTEMPTS.exists():
+        return []
+    cx = sqlite3.connect(f"file:{ATTEMPTS}?mode=ro", uri=True)
+    try:
+        cols = ("run_tag", "attempt_at", "outcome", "ratified", "wallclock_s", "move", "provider")
+        all_rows = [dict(zip(cols, r)) for r in cx.execute(f"SELECT {','.join(cols)} FROM attempts").fetchall()]
+    finally:
+        cx.close()
+    return [r for r in all_rows if campaign_family(r.get("run_tag") or "") == fam
+            and (only is None or (r.get("run_tag") or "") in only)]
+
+
+def _family_block(run_tag: str, only: "set[str] | None" = None) -> "list[str]":
+    """Render the campaign-FAMILY P0 rollup (combined wall + per-member role) so a multi-run milestone is honest:
+    which run PROVED the lemmas vs which CLOSED the target vs a discarded attempt — never a single-run blob.
+    `only` restricts to the genuine post-fix runs (excludes pre-fix bug-thrash)."""
+    from ztare.leanmill.phase_timing import campaign_family
+    fam = campaign_family(run_tag)
+    camps = summarize_campaign_cycle_time(_family_rows(run_tag, only=only)).get("campaigns", {})
+    members = {rt: c for rt, c in camps.items() if campaign_family(rt) == fam}
+    if not members:
+        return []
+    # REAL ELAPSED = span (last−first attempt), NOT summed `wallclock_s` (active-solve only, which omits
+    # consolidation / formalization / Mathlib imports / warm-env builds / inter-attempt gaps and UNDER-states the
+    # true time ~5× — 2026-06-25 RCA: a 79-min campaign read as 593s). Report span as the honest wall; keep the
+    # active-solve sum alongside it as the (smaller) compute figure.
+    span = round(sum((c.get("span_s") or 0) for c in members.values()), 1)
+    active = round(sum(((c.get("cost_to_closure_s") or {}).get("total_wall_s") or 0) for c in members.values()), 1)
+    closed = sum(((c.get("yield") or {}).get("closed") or 0) for c in members.values())
+    out = [f"  milestone   : campaign family '{fam}' — {len(members)} run(s) · REAL elapsed (span) "
+           f"{span:g}s (~{span/60:.0f} min active) · active-solve {active:g}s · {closed} closures "
+           f"[span=elapsed is the honest wall; the single-run 'time' line above is the filed run only]"]
+    for rt, c in sorted(members.items()):
+        sp = c.get("span_s") or 0
+        out.append(f"     - {rt}: {((c.get('yield') or {}).get('closed') or 0)}/{c.get('attempts', 0)} closed · "
+                   f"elapsed {sp:g}s (~{sp/60:.1f} min)")
+    return out
+
+
+def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", axioms: str = "", domain: str = "",
+                 family: bool = False, family_runs: "set[str] | None" = None) -> str:
     rows = _attempt_rows(run_tag)
     cct = summarize_campaign_cycle_time(rows).get("campaigns", {}).get(run_tag, {})
     ph = summarize_phase_timings(run_tag=run_tag)
@@ -116,9 +171,10 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
         f"  phases      : {ph_str}",
         f"  reuse       : cited {len(cited)} banked rung(s)" + (f" — {', '.join(cited)}" if cited else ""),
         f"  moves       : {mv_str}",
-        "-/",
-        "",
     ]
+    if family:
+        L.extend(_family_block(run_tag, only=family_runs))
+    L.extend(["-/", ""])
     return "\n".join(L)
 
 
@@ -131,6 +187,12 @@ def main() -> int:
     ap.add_argument("--axioms", default="", help="pre-verified #print axioms (skips a recompile; e.g. on a memory-tight box)")
     ap.add_argument("--domain", default="", help="override the domain label (old runs predate the ## Domain stamp)")
     ap.add_argument("--from-file", default="", help="backfill an EXISTING filed .lean (prepend the header in place) instead of reading closures/")
+    ap.add_argument("--family", action="store_true",
+                    help="also render the campaign-FAMILY rollup (combined wall + per-run roles) — the honest "
+                         "P0 for a milestone proven in one run and target-closed in a later reuse run")
+    ap.add_argument("--family-runs", default="",
+                    help="comma-separated member run_tags to RESTRICT the family rollup to (exclude pre-fix / "
+                         "debugging runs whose wall was bug-thrash, not proving — keeps the P0 un-confounded)")
     a = ap.parse_args()
     # BODY = an existing filed artifact (backfill) OR the verbatim closure (fresh promote). Either way the proof is
     # copied verbatim; only the generated header is prepended.
@@ -142,8 +204,9 @@ def main() -> int:
     if "LeanMill campaign provenance" in body[:1200]:
         print(f"SKIP {body_path}: already carries a provenance header (idempotent — not double-prepending)")
         return 0
+    _fam_runs = {s.strip() for s in a.family_runs.split(",") if s.strip()} or None
     header = build_header(a.run_tag, a.target, body_path, Path(a.log) if a.log else None,
-                          axioms=a.axioms, domain=a.domain)
+                          axioms=a.axioms, domain=a.domain, family=a.family, family_runs=_fam_runs)
     dest = Path(a.dest or a.from_file)
     dest.parent.mkdir(parents=True, exist_ok=True)
     dest.write_text(header + body, encoding="utf-8")

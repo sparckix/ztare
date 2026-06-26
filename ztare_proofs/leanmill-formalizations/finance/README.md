@@ -1,65 +1,66 @@
-# FTAP (easy direction) — state prices ⇒ no arbitrage
+# Finance — machine-checked formalizations
 
-A machine-checked formalization of the **easy direction of the finite Fundamental Theorem of Asset Pricing**,
-produced end-to-end by [LeanMill](../../../docs/concepts/leanmill_architecture.md) from natural-language notes.
-This is [§4.1 of the formalization roadmap](../../../docs/concepts/leanmill_formalization_roadmap.md) — the lead
-achievable target of the finance shortlist.
+Kernel-verified Lean 4 + Mathlib formalizations of finance results, produced end-to-end by
+[LeanMill](../../../docs/concepts/leanmill_architecture.md) from natural-language blueprints (through the
+faithfulness firewall: each statement compiles, is non-trivial, and is round-trip faithful to the NL; each proof
+is independently kernel-ratified with a matched-negative-control receipt and an axiom audit). Every file is
+self-contained (`import Mathlib`) and carries a GENERATED provenance header (outcome, axioms, real elapsed,
+phases, reuse) emitted by `promote_campaign_artifact.py` — not hand-authored.
 
-- **Proof:** [`FtapEasy.lean`](./FtapEasy.lean) — one self-contained file, `import Mathlib`, 3 theorems.
+> **Time accounting (honest wall).** Headers report **`campaign span`** = real elapsed (last − first attempt),
+> the honest wall; **`cost-to-closure total`** = summed active-solve time only (smaller — it omits formalization,
+> Mathlib imports, warm-env builds, and inter-attempt gaps). For a milestone worked across several re-runs, the
+> `milestone` line reports the combined real span across the family.
 
-## The theorem
+## Contents
 
-In a one-period market with finitely many assets (`Fin nAssets`) and states (`Fin nStates`), with asset payoffs
-`D i s : ℝ`, prices `p i : ℝ`, and a state-price vector `q s : ℝ`:
+### `FtapEasy.lean` — Fundamental Theorem of Asset Pricing (easy direction)
+In a one-period market with finitely many assets and states: if a **strictly positive** state-price vector `q`
+prices every asset (`p i = ∑ s, q s · D i s`), then there is **no arbitrage**. The cornerstone of asset pricing —
+the bridge from "no free lunch" to "price = discounted expected payoff." Lean status was a confirmed gap; this is
+the elementary half (the hard direction is the Farkas/separation slice). 3 theorems, axiom-clean. Assumption
+accounting is explicit: strict positivity of `q` is load-bearing, and the market is frictionless (no bid–ask
+spread). [roadmap §4.1]
 
-> If `q` is **strictly positive** (`∀ s, 0 < q s`) and prices every asset (`p i = ∑ s, q s · D i s`), then the
-> market admits **no arbitrage** — there is no portfolio `θ` whose cost `∑ i, θ i · p i` is `≤ 0`, whose payoff
-> `∑ i, θ i · D i s` is `≥ 0` in every state, and `> 0` in some state.
+### `constant_product_amm.lean` — constant-product AMM temporal + no-arbitrage invariants
+`constantProductAMM_temporal_invariant_and_no_roundTrip_profit`. For an `x·y = k` pool with fee `γ ∈ (0,1]`:
+the product `k` **never decreases** across any adversarial finite trade sequence, and a single round-trip returns
+**at most** the input (strictly less with a real fee `γ < 1`). The pool is safe against the curve. Proven fresh
+(no reuse) over `NNReal` reserves; real elapsed ≈ 5.1h.
 
-The argument: cost `= ∑ i, θ i · p i = ∑ s, q s · (∑ i, θ i · D i s)` (substitute prices, swap the two finite
-sums), and that weighted total is strictly positive (every term `≥ 0`, one term `> 0`), contradicting cost `≤ 0`.
+### `amm_no_cyclic_arbitrage.lean` — no round-trip arbitrage at ANY reachable state
+`no_history_enables_round_trip_arbitrage`. The DeFi-security companion to the above: **no trade history**
+(flash-loan / sandwich / cyclic path) ever maneuvers the pool into a state where a round-trip becomes profitable —
+at every state reachable by any finite prior sequence, a round-trip in either direction returns at most the input,
+strictly less under a real fee. **A deliberate compounding demonstration:** it *cites* the banked constant-product
+rungs (`executeTrades_keep_wellFormed`, the `roundTrip…_le_input` / `…_lt_input_of_real_fee` lemmas) rather than
+re-deriving them — the new content is the quantification over reachable states. Axiom-clean. (Filed run closed by
+reusing those rungs; the genuine no-cyclic proving + the engine remediation it surfaced span ~1.3h active across
+the campaign family, atop the ~5.1h constant-product foundation.)
 
-## Why it matters
+### `corporate_waterfall_absolute_priority.lean` — Absolute Priority Rule (APR) waterfall
+`waterfallDistribution_feasible_of_linearOrder`. Capital-structure / bankruptcy claim priority: under a strict
+ranking of claims, the absolute-priority waterfall distribution is feasible — senior claims paid before any junior
+claim receives anything, subject to the available estate. Domain-stamped `finance`.
 
-The cornerstone of modern asset pricing — the bridge from "no free lunch" to "price = discounted expected
-payoff," and finance's most-taught theorem. Its Lean status was a confirmed **gap** (no prior Mathlib/Lean
-formalization found). The hard direction (no arbitrage ⇒ such prices exist) is the Farkas / hyperplane-separation
-slice and comes later; this easy direction is the elementary half.
-
-## Assumption accounting (the LeanMill differentiator)
-
-The interest of the result *is* its assumption-sensitivity, and the kernel makes the dependence explicit and
-minimal: the conclusion needs `q s > 0` for **every** state (strict positivity, used via `mul_pos`), not merely
-`q s ≥ 0`. A nonnegative state-price vector does **not** force the contradiction. Finiteness is used through the
-`Finset` sum API (`Finset.sum_comm`, `Finset.mul_sum`, `Finset.sum_pos'`).
-
-**Frictionless-market scope (honest boundary).** Portfolios are `θ : Fin nAssets → ℝ` and the price is the exact
-linear functional `∑ i, θ i · p i`. This bakes in a *frictionless* market: infinite divisibility, unbounded
-short-selling, and **no bid–ask spread** (with spreads the cost is sublinear and the pricing equality becomes an
-inequality). The theorem is the standard frictionless FTAP; relaxing this is future work. (Degenerate
-`nStates = 0` / `nAssets = 0` instances are vacuously covered by the `∀` and are financially meaningless.)
+### `corporate_waterfall_pari_passu_apr.lean` — pari-passu + APR
+`pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority`. Extends the waterfall to **pari-passu**
+(equal-ranking) tranches: the distribution is feasible AND respects ranked absolute priority across tranches with
+pro-rata sharing within a tranche.
 
 ## Provenance & trust
 
-- **Autoformalized, not hand-written.** The NL blueprint was the operator input; the apparatus produced the Lean
-  statements (through the faithfulness firewall: compiles, non-trivial, round-trip faithful) and all three proofs.
-- **One hand edit (composition).** As originally produced, the target *re-derived* the two lemmas inline rather
-  than citing them — a cohesion gap (the campaign proves each target as a standalone probe, so the shelf lemmas
-  weren't in the target's compile scope to cite). The target proof here was hand-refactored to **cite** the two
-  lemmas (`have h_cost_eq := cost_eq_statePriceWeighted_payoff …`); re-verified to compile and stay axiom-clean.
-  The apparatus-level fix (prove the target with the proven shelf in scope so it composes automatically) is
-  tracked separately.
-- **Kernel-ratified.** Each of the 3 theorems is an independently ratified closure with a matched-negative-control
-  receipt (`context_stripped`) and a passing governance kernel. Closure certificate timestamps: 2026-06-23.
-- **Axiom-clean.** `#print axioms` (in the file) reports only the standard Mathlib axioms — `propext`,
-  `Classical.choice`, `Quot.sound` — and **no `sorryAx`**. Every proof is sorry-free.
+- **Autoformalized, not hand-written** — the NL blueprint was the operator input; the apparatus produced the Lean
+  statements + proofs, gated by the faithfulness firewall.
+- **Kernel-ratified + axiom-clean** — every filed theorem is an independently ratified closure; `#print axioms`
+  reports only `propext`, `Classical.choice`, `Quot.sound` and **no `sorryAx`** (verify per file below).
 
 ## Verify it yourself
 
 From a Lean project with Mathlib on the toolchain:
 
 ```
-lake env lean FtapEasy.lean
+lake env lean <file>.lean
 ```
 
-It should elaborate with no errors and print the three axiom audits (standard axioms only).
+It should elaborate with no errors and print the axiom audit (standard axioms only).
