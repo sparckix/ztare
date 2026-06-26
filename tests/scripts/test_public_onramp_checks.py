@@ -716,14 +716,14 @@ def test_gaming_catalog_audit_covers_registry_and_public_boundary() -> None:
         "definitional_tautology_self_confirming_metric",
         "fabricated_calibration_set_threshold_laundering",
         "receipt_replay_absence_static_asserts",
-        "structural_param_smuggle_body",
+        "undeclared_parameters_body",
     ]
     assert payload["executable_anchor_gates"] == [
         "global_project_sweep_assumption_as_evidence",
         "global_project_sweep_definitional_tautology",
         "global_project_sweep_fabricated_calibration",
         "global_project_sweep_receipt_replay_absence",
-        "global_project_sweep_structural_param_smuggle",
+        "global_project_sweep_undeclared_parameters",
     ]
     assert payload["executable_anchor_benign_control_passed"] is True
     assert module.PAPER_README.exists()

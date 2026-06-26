@@ -3,9 +3,9 @@ description: "One-page pilot brief: using ZTARE to audit AI-assisted decision wo
 ---
 # ZTARE Pilot Brief
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-## The Problem
+## The problem
 
 AI-generated analysis is fast and cheap, and it produces confident errors at a
 rate human review does not reliably catch under time pressure. As generation
@@ -14,7 +14,7 @@ organization that generates faster than it verifies accumulates unsupported
 claims, missing sources, weak comparisons, and stale assumptions in its decision
 record.
 
-## What ZTARE Is
+## What ZTARE is
 
 ZTARE is a zero-trust workbench for generating, stress-testing, and auditing
 claims from agents. It separates proposal, critique, deterministic gates,
@@ -33,7 +33,7 @@ make hello
 The demo feeds an overbroad claim through the claim-discipline surface and
 returns bounded wording, missing evidence, and a next falsifier.
 
-## What the Pilot Measures
+## What the pilot measures
 
 Pick one bounded decision pipeline, such as a due diligence memo, market
 research report, compliance review, source-gathering workflow, or research
@@ -47,7 +47,7 @@ action?" ZTARE should not be pointed at the whole organization at once. It is
 best used to turn one agentic diagnosis into a bounded claim with declared
 data, explicit non-claims, adversarial challenges, deterministic or
 evidence-backed checks, and a ledgered status. The surrounding workflow can
-live in a tenant or the reusable cognitive-firm runtime; ZTARE supplies the
+live in a tenant or the reusable cognitive-firm runtime. ZTARE supplies the
 verification discipline for claims that should not be accepted on narrative
 plausibility alone.
 
@@ -62,7 +62,7 @@ Success criteria should be pre-registered before the pilot starts. A pilot can
 be useful even if it returns a negative result: the point is to learn whether
 the workbench catches consequential failure modes in that pipeline.
 
-## What It Requires
+## What it requires
 
 - A bounded work object: memo, claim, reproduction task, proof obligation, or
   agent output.
@@ -74,13 +74,13 @@ the workbench catches consequential failure modes in that pipeline.
 - A baseline record of how the current workflow catches or misses these
   failures.
 
-## What It Does Not Replace
+## What it does not replace
 
 Analysts still write memos. Reviewers still review. Domain experts still own
 domain judgments. ZTARE adds claim boundaries, gate checks, evidence trails,
 and explicit non-claims before a result is promoted.
 
-## Operating Principles
+## Operating principles
 
 1. The proposer does not grade itself.
 2. Pass/fail criteria are written before the result is inspected.
@@ -90,22 +90,20 @@ and explicit non-claims before a result is promoted.
    promotion.
 6. Every promoted claim carries non-claims and a next falsifier.
 
-## Public Evidence To Inspect First
+## Public evidence to inspect first
 
-Start with the public, runnable artifacts:
-
-- `make hello` — smallest claim-demotion demo.
-- `make first-run` — offline public review path.
-- [LLM Gaming Behavior Catalog](../gaming_behavior_catalog.md) — observed
+- `make hello`: smallest claim-demotion demo.
+- `make first-run`: offline public review path.
+- [LLM Gaming Behavior Catalog](../gaming_behavior_catalog.md): observed
   self-certification and specification-gaming behaviors, with catch patterns
   and evidence tiers.
-- [Evidence atlas](../evidence_atlas/README.md) — claim-by-claim evidence
+- [Evidence atlas](../evidence_atlas/README.md): claim-by-claim evidence
   crosswalk, non-claims, commands, and caveats.
-- [Evaluator-hardening packet](../evidence_atlas/packets/evaluator_hardening.md)
-  — bounded public proof point with a frozen three-arm suite and an explicit
+- [Evaluator-hardening packet](../evidence_atlas/packets/evaluator_hardening.md):
+  bounded public proof point with a frozen three-arm suite and an explicit
   ordinary-review blocker before any four-arm upgrade.
 
-## The Ask
+## The ask
 
 One bounded decision or research pipeline. Pre-register the failure modes and
 success criteria. Run the current workflow and the ZTARE-assisted workflow on a

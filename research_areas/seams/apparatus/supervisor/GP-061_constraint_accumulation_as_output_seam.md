@@ -24,7 +24,7 @@ The scientific value claim this seam tests: **the epistemic output of a ZTARE ru
 
 Before designing the architecture, a discriminating experiment was run against sandbox_07's closed artifacts to check whether the premise holds.
 
-**What exists:** sandbox_07's workspace already contains a harvesting layer. `workspace/derived_constraints.json` holds 17 provisional constraints extracted by the meta_judge and firing_squad during the run. `workspace/structural_memory.json` records every structural family that was tried, with fingerprints, residuals, and diagnostic classifications.
+**What exists:** sandbox_07's workspace already contains a harvesting layer. `workspace/derived_constraints.json` holds 17 provisional constraints extracted by the meta_judge and committee during the run. `workspace/structural_memory.json` records every structural family that was tried, with fingerprints, residuals, and diagnostic classifications.
 
 **What the existing harvester captured:** all 17 constraints are **process / charter-compliance constraints**. Examples:
 
@@ -165,7 +165,7 @@ Example expected output for sandbox_07:
 6. mutator reads derived_constraints.json on next iteration and acts on the constraint as a have-to-believe prior
 ```
 
-**Why this is minimal:** no new file, no new pipeline, no new prompt surface. Component A is two functions that read one existing artifact and write to another existing artifact. It uses the existing constraint flow into the mutator. It does not modify the judge, the firing squad, or the loop.
+**Why this is minimal:** no new file, no new pipeline, no new prompt surface. Component A is two functions that read one existing artifact and write to another existing artifact. It uses the existing constraint flow into the mutator. It does not modify the judge, the adversarial review committee, or the loop.
 
 **Why this is decisive:** the sandbox_07 retroactive test proved that the structural lesson is latent in structural_memory but never surfaces. Adding this two-layer extraction pass changes the mutator's input on the next iteration and unblocks search paths the sequential loop would otherwise never reach.
 
@@ -183,10 +183,10 @@ This is where the architecture actually compounds across runs: the mutator's sea
 
 ### What is explicitly not in this seam
 
-- **Judge/firing squad constraint emission** (Gemini's original form). The existing process-constraint harvester already does this via meta_judge and firing_squad paths into derived_constraints.json. Adding more to that layer is duplicative. The structural lesson is missed at the structural_memory layer, not at the judge layer — that is where GP-061 intervenes.
+- **Judge/adversarial review committee constraint emission** (Gemini's original form). The existing process-constraint harvester already does this via meta_judge and committee paths into derived_constraints.json. Adding more to that layer is duplicative. The structural lesson is missed at the structural_memory layer, not at the judge layer — that is where GP-061 intervenes.
 - **Full output inversion** (Component C from the prior seam draft). Champion thesis remains the primary run output. The accumulated constraint set is an additional artifact, not a replacement.
 - **Cross-domain transfer** (constraints learned in Planck transferring to Hungary). Out of scope by structural difference between fit-primitive and bounded-discriminator projects.
-- **Changes to the evaluation layer.** Firing squad, meta-judge, and debate format unchanged.
+- **Changes to the evaluation layer.** adversarial review committee, meta-judge, and debate format unchanged.
 
 ---
 
@@ -260,7 +260,7 @@ The non-applicability clause in §Guards 3 was documentation, not code. There wa
 
 `derived_constraints.downgrade_constraints_on_stagnation(...)` — narrow, opt-in retraction:
 
-- Acts **only** on producers in `DOWNGRADABLE_PRODUCERS = {"structural_extractor", "trajectory_extractor"}`. Judge-produced constraints (meta_judge, firing_squad, adjudicator) are never touched by stagnation downgrade; their provenance is human-debate-adjacent and not subject to incompetence-overfit risk.
+- Acts **only** on producers in `DOWNGRADABLE_PRODUCERS = {"structural_extractor", "trajectory_extractor"}`. Judge-produced constraints (meta_judge, committee, adjudicator) are never touched by stagnation downgrade; their provenance is human-debate-adjacent and not subject to incompetence-overfit risk.
 - Fires only when `stagnation_count ≥ threshold` (default `6`, deliberately higher than Gemini's proposed `4` to avoid retracting too eagerly; the loop should be genuinely starved, not just slow).
 - Demotes the most-recently confirmed entry back to provisional, records a `downgrade_history` entry with timestamp/stagnation_count/threshold/reason, and re-indexes `DC-???` / `PC-???` IDs.
 - **Mechanism only — not auto-wired.** Deliberately not called from `_refresh_derived_constraints_from_eval`. The caller (loop control / emergency-pivot path) owns the trigger decision. This keeps stagnation-count semantics out of the ledger module and lets us ship the retraction mechanism without introducing a new automatic behavior in live runs.

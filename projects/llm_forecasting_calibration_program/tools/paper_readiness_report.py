@@ -25,6 +25,32 @@ DEFAULT_PAPERS = (
     PAPER_ROOT / "main.tex",
 )
 
+READER_LABELS = {
+    "law1_negative_scope": "bias-transfer scope",
+    "law2_diagnostic_not_policy": "uncertainty-channel diagnostic scope",
+    "law3_cutoff_stage_b_scored_scope": "source-currency panel scope",
+    "router_source_fragility_scope": "family-selection source fragility",
+    "reasoning_probability_decoupling_scope": "reasoning/probability separation",
+    "law1_anti_bias_collapse_scoping_surface": "anti-bias prompt scope",
+    "stage_c_market_baseline_surface": "market-baseline scope",
+    "stage_c_base_rate_repair_surface": "base-rate repair scope",
+    "n10_latent_carrier_surface": "structured-field scope",
+    "expert_advice_router_surface": "expert-advice selection scope",
+    "hidden_law_scan_incomplete": "frontier-summary coverage",
+    "no_poolability_metric_non_equivalence": "aggregation metric non-equivalence",
+    "reasoning_probability_decoupling": "reasoning/probability separation",
+    "f105_effort_sibling": "effort-estimation sibling work",
+    "confident_no_fragment": "low-probability calibration",
+    "low_probability_calibration": "low-probability calibration",
+    "horizon_source_fragment": "horizon/source difficulty",
+    "sealed_independence_exposure_herding_fragment": "sealed independence and exposure effects",
+    "contrastive_comparative_elicitation_fragment": "contrastive elicitation",
+    "selective_action_arbitration_fragment": "selective-action arbitration",
+    "alignment_modulated_bias_inheritance": "bias-transfer diagnostics",
+    "family_channel_error_surface": "uncertainty-channel diagnostics",
+    "cutoff_validity": "source-currency validity",
+}
+
 
 @dataclass(frozen=True)
 class MarkerRule:
@@ -45,6 +71,10 @@ class SurfaceRule:
     severity: str
     recommendation: str
     trigger_terms: tuple[str, ...] = ()
+
+
+def reader_label(key: Any) -> str:
+    return READER_LABELS.get(str(key), str(key).replace("_", " "))
 
 
 RULES = (
@@ -140,9 +170,14 @@ SURFACE_RULES = (
             ("0.099673", "pre-outcome market", "market bar", "narrow market"),
             ("0.097218", "leave-one-out", "market+LLM", "blend"),
             ("0.794", "-0.002455", "fails promotion", "paired delta"),
-            ("post-cutoff subset selects market-only", "post-cutoff prefers market-only", "post-cutoff-negative"),
+            (
+                "post-cutoff subset selects market-only",
+                "post-cutoff subset prefers market-only",
+                "post-cutoff prefers market-only",
+                "post-cutoff-negative",
+            ),
             ("17 yes / 34 no", "32 of 51", "effective-n", "effective-$n"),
-            ("follow-up void audit", "broad_equal_information_baseline_absent", "51 contracts have an ingested market/human baseline"),
+            ("baseline availability audit", "51 contracts", "without a joined market or human comparison"),
             ("80 contracts / 240 calls", "80 contracts"),
             ("29 Stage-B contracts", "29"),
         ),
@@ -367,8 +402,7 @@ def hidden_scan_summary(path: Path) -> dict[str, Any]:
     candidates = {
         "no_poolability_metric_non_equivalence": "no-poolability" in low or "metric non-equivalence" in low,
         "reasoning_probability_decoupling": "reasoning-to-probability" in low or "decoupling" in low,
-        "f105_effort_sibling": "f105" in low and "sibling" in low,
-        "confident_no_fragment": "confident-no" in low or "confident no" in low,
+        "low_probability_calibration": "low-probability" in low and "calibration" in low,
         "horizon_source_fragment": "horizon/source" in low or "horizon" in low,
         "sealed_independence_exposure_herding_fragment": "sealed-independence" in low or "exposure-herding" in low,
         "contrastive_comparative_elicitation_fragment": "contrastive comparative" in low or "contrastive elicitation" in low,
@@ -378,7 +412,7 @@ def hidden_scan_summary(path: Path) -> dict[str, Any]:
         "path": str(path.relative_to(REPO)) if path.exists() else str(path),
         "exists": path.exists(),
         "candidates_named": candidates,
-        "verdict_marker_present": "no hidden law currently outranks" in low,
+        "verdict_marker_present": "current claim is narrower" in low or "raw llm forecasts do not beat" in low,
     }
 
 
@@ -457,34 +491,34 @@ def write_outputs(result: dict[str, Any], out_dir: Path) -> None:
         encoding="utf-8",
     )
     lines = ["# GP-245 Paper Readiness Report", ""]
-    lines.append(f"- Ready to represent as landmark paper: `{result['ready_to_represent_as_landmark_paper']}`")
+    lines.append(f"- Submission-scope checks pass: `{result['ready_to_represent_as_landmark_paper']}`")
     lines.append(f"- Finding count: `{result['finding_count']}`")
     lines.append(f"- By severity: `{result['by_severity']}`")
     lines.append("")
-    lines.append("## Top-Law Blockers")
+    lines.append("## Top Claim Blockers")
     lines.append("")
     if not result["top_law_blockers"]:
         lines.append("- None.")
     for row in result["top_law_blockers"]:
         lines.append(
-            f"- `{row['law']}`: readiness=`{row['readiness']}`, "
+            f"- `{reader_label(row['law'])}`: readiness=`{row['readiness']}`, "
             f"status=`{row['status']}`, bottleneck=`{row['bottleneck']}`"
         )
         lines.append(f"  Next step: {row['next_step']}")
     lines.append("")
-    lines.append("## Hidden-Law Scan")
+    lines.append("## Frontier Summary Scan")
     lines.append("")
     hidden = result["hidden_law_scan"]
     lines.append(f"- Source: `{hidden['path']}`")
     lines.append(f"- Verdict marker present: `{hidden['verdict_marker_present']}`")
     for key, value in hidden["candidates_named"].items():
-        lines.append(f"- `{key}` named: `{value}`")
+        lines.append(f"- `{reader_label(key)}` named: `{value}`")
     lines.append("")
     lines.append("## Rule Results")
     lines.append("")
     for row in result["rule_results"]:
         lines.append(
-            f"- `{row['rule_id']}`: mentions_subject=`{row['mentions_subject']}`, "
+            f"- `{reader_label(row['rule_id'])}`: mentions_subject=`{row['mentions_subject']}`, "
             f"has_scope_marker=`{row['has_scope_marker']}`"
         )
     lines.append("")
@@ -492,7 +526,7 @@ def write_outputs(result: dict[str, Any], out_dir: Path) -> None:
     lines.append("")
     for row in result["surface_results"]:
         lines.append(
-            f"- `{row['rule_id']}`: triggered=`{row['triggered']}`, "
+            f"- `{reader_label(row['rule_id'])}`: triggered=`{row['triggered']}`, "
             f"required_group_hits=`{row['required_group_hits']}`, "
             f"stale_terms_present=`{row['stale_terms_present']}`"
         )
@@ -502,7 +536,7 @@ def write_outputs(result: dict[str, Any], out_dir: Path) -> None:
     if not result["findings"]:
         lines.append("- None.")
     for row in result["findings"]:
-        lines.append(f"- `{row['severity']}` `{row['rule_id']}`: {row['problem']}")
+        lines.append(f"- `{row['severity']}` `{reader_label(row['rule_id'])}`: {row['problem']}")
         lines.append(f"  Recommendation: {row['recommendation']}")
         for hit in row.get("evidence_hits", [])[:3]:
             lines.append(f"  Evidence: `{hit['file']}:{hit['line']}` {hit['text']}")

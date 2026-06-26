@@ -3,7 +3,7 @@ description: "First 30 minutes for a new ZTARE reader or agent."
 ---
 # First 30 Minutes
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 This path is for a new reader or agent opening ZTARE for the first time. It
 checks the runnable path, names the durable records, and points to the
@@ -16,8 +16,8 @@ treating out-of-loop agent work as if it were an in-loop validation run.
 
 The current public roadmap is organized around one first-reader question:
 can a claim be traced from proposal, through evidence and gates, to a bounded
-verdict or next falsifier? Keep that frame in mind while reading; many older
-files are useful historical provenance, not the current entry path.
+verdict or next falsifier? Keep that frame in mind while reading. Many older
+files serve as historical provenance, and this path is the current entry point.
 
 ## 0-5: Run The First Value Check
 
@@ -34,7 +34,7 @@ malformed intake file is blocked before in-loop routing, and a plausible overcla
 is demoted to bounded wording, missing evidence, and a next falsifier. It
 writes no persistent runtime state.
 
-For the full offline public review path, use `make first-run`; it chains the
+For the full offline public review path, use `make first-run`. It chains the
 value demo, gaming-catalog audit, benchmark-evidence checks, the frozen
 evaluator-hardening proof-point check, claim-boundary audit, terminology audit,
 public smoke, adversarial entry-path checks, and docs checks.
@@ -79,13 +79,12 @@ still fails.
 
 The public smoke target exercises:
 
-- org runtime structure and transition-log replay;
-- forecast-pool contract, forecast, aggregate, resolve, score, calibrate flow;
-- action-intelligence read-model checks.
+- org runtime structure and transition-log replay
+- forecast-pool contract, forecast, aggregate, resolve, score, calibrate flow
+- action-intelligence read-model checks
 
 It does not invoke live model calls. Maintainer-only publish checks and Docker
-checks live in the Makefile reference; they are not part of the first-reader
-path.
+checks live in the Makefile reference and are outside the first-reader path.
 
 ## 20-25: Open the Vault Map
 
@@ -107,7 +106,7 @@ the public ledgers.
 Boundary to keep straight: ZTARE is the applied research stack and tenant
 overlay. The reusable organization kernel lives in
 [`cognitive-firm`](https://github.com/sparckix/cognitive-firm). Read `org/`
-here as the ZTARE deployment of that kernel, not as a second canonical upstream.
+here as the ZTARE deployment of that kernel, with no second canonical upstream.
 
 Use this mental model while reading:
 
@@ -161,11 +160,11 @@ docs/concepts/architecture.md, docs/guides/workflow.md,
 docs/guides/org_runtime_quickstart.md, and docs/guides/agent-prompts.md.
 Then explain:
 
-1. the durable system of record;
+1. the durable system of record
 2. whether my task belongs in in-loop autoresearch, out-of-loop research
    operations, project intake, program hardening, org runtime overlay,
-   or a tiny manual note;
-3. the safest next command or file to inspect;
+   or a tiny manual note
+3. the safest next command or file to inspect
 4. what artifact should be written if the work should persist.
 
 My task is: [describe task].

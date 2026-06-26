@@ -39,8 +39,8 @@ Any test surface derived from the candidate's own output is suspect.
 
 Invert + Compress leave a single verifier in the loop, and a single verifier is gameable.
 The third leg is:
-- **Firing Squad** — independent judges scoring the same candidate; disagreement is signal
-- **Meta-Judge** — a judge of judges when the firing squad splits
+- **Adversarial review committee** — independent judges scoring the same candidate; disagreement is signal
+- **Meta-Judge** — a judge of judges when the adversarial review committee splits
 - **Semantic escalation gate** — where the apparatus admits it cannot decide alone
 
 **Operational consequence:** Never make a single oracle central. "Use a bigger model as

@@ -3,16 +3,16 @@ description: "How ZTARE turns repeated failures in its own loop into durable che
 ---
 # Reflexive Engineering Primitives
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Status:** public companion to [architecture.md](architecture.md).
+*Status:* public companion to [architecture.md](architecture.md).
 
-**Companion docs:** [reflexive_audit_workflow.md](../guides/reflexive_audit_workflow.md)
+*Companion docs:* [reflexive_audit_workflow.md](../guides/reflexive_audit_workflow.md)
 for the discovery workflow, and
 [agentic_engineering_patterns.md](agentic_engineering_patterns.md) for portable
 LLM-pipeline hardening patterns.
 
-**Core rule:** when the same failure repeats, make the next run inherit a
+*Core rule:* when the same failure repeats, make the next run inherit a
 check, route, record, queue entry, or budget constraint. Do not rely on a human
 or an agent remembering what went wrong.
 
@@ -23,10 +23,11 @@ routing, memory, and attention allocation.
 
 ---
 
-## The Reader Decision
+## The reader decision
 
 Use this page when you see the same failure twice and need to decide whether it
-deserves machinery. The decision is not "is this failure interesting?" It is:
+deserves machinery. The deciding question is not whether the failure is
+interesting:
 
 ```text
 Will a future run behave differently because this failure was recorded?
@@ -37,36 +38,33 @@ answer is yes, the failure may be ready for a reflexive primitive: a check,
 route, record, queue entry, budget constraint, or forecast contract that a
 future run must consume.
 
-## Small Case
+## Small case
 
 A model repeatedly skips source-readiness checks before trying to launch a run.
-A weak response is to write a reminder. A reflexive response is to add an
-artifact that future launches read:
+Writing a reminder is the weak response. The reflexive response adds an artifact
+that future launches read:
 
-1. the trace records the missing source surface;
-2. the launcher blocks before model spend;
-3. the next command points to the recovery step;
+1. the trace records the missing source surface.
+2. the launcher blocks before model spend.
+3. the next command points to the recovery step.
 4. a later audit can see whether the blocker was consumed.
 
 That is a reflexive primitive only if the blocker changes later behavior. The
 primitive is not the prose explanation. It is the consumed artifact plus the
 changed route.
 
-## Evidence Boundary
+## Evidence boundary
 
 This page does not prove that the system is improving in general. It describes
 which repeated failures are allowed to become durable machinery. Evidence for a
 particular primitive must point to the consumed artifact, the command or gate
 that reads it, and the later behavior change.
 
-## Start Here
-
-Read this as a maintenance manual for the research loop. It helps you decide
-whether a recurring failure has become a durable repair, or whether it is still
-only a note.
+## What counts as a reflexive primitive
 
 A reflexive primitive is a repair ZTARE applies to its own loop after a
-recurring failure.
+recurring failure. It counts only once that repair becomes durable machinery a
+later run consumes on its own, with no one needing to remember a note.
 
 A candidate primitive belongs here only when all four conditions hold:
 
@@ -74,21 +72,21 @@ A candidate primitive belongs here only when all four conditions hold:
 2. The failure can recur during normal agent or research-director work.
 3. The repair changes a future run through a check, route, record, queue, gate,
    or budget decision.
-4. The repair can be tested or audited from an artifact, not only remembered.
+4. The repair can be tested or audited from a concrete artifact.
 
 If the mechanism is useful for any LLM pipeline, document it first in
 [agentic_engineering_patterns.md](agentic_engineering_patterns.md). It belongs
 here when ZTARE uses the mechanism on its own routing, memory, trace, forecast,
 or allocation policy.
 
-## How To Read This Doc
+## How to read this doc
 
 Use this page after something repeats. The order is:
 
-1. Identify the repeated failure in [When To Use Which Primitive](#when-to-use-which-primitive).
-2. Check [Status And Owners](#status-and-owners) before treating the primitive
+1. Identify the repeated failure in [When to use which primitive](#when-to-use-which-primitive).
+2. Check [Status and owners](#status-and-owners) before treating the primitive
    as implemented.
-3. Check [Primitive Audit Matrix](#primitive-audit-matrix) for the selecting
+3. Check [Primitive audit matrix](#primitive-audit-matrix) for the selecting
    signal, required artifact, owner, and known confuser.
 4. Find the owned artifact: architecture map, trace, route preflight, primitive
    miss, action receipt, queue row, or forecast contract.
@@ -97,14 +95,14 @@ Use this page after something repeats. The order is:
 If the answer to step 4 is no, the work is a note or a dashboard. It is not a
 reflexive primitive yet.
 
-## Promotion Criteria
+## Promotion criteria
 
 A reflexive primitive can be promoted only when it passes all five checks.
 
 | Check | Question |
 |---|---|
 | Recurrence | Did the same failure happen more than once, or can it recur naturally? |
-| Loop target | Is the failure in routing, memory, trace, forecast, attention, or closure rather than only in the external project surface? |
+| Loop target | Does the failure reach into routing, memory, trace, forecast, attention, or closure, past the external project surface? |
 | Consumed artifact | Is there a file, row, receipt, gate, queue entry, or command that future runs consume? |
 | Behavior change | Would a future run route, block, score, or prepare differently because of it? |
 | Audit path | Can a reviewer inspect the artifact without reading a chat transcript? |
@@ -112,7 +110,7 @@ A reflexive primitive can be promoted only when it passes all five checks.
 This bar is deliberately stricter than "useful idea." Many useful ideas belong
 in the roadmap, a project note, or the agentic pattern catalog instead.
 
-## When To Use Which Primitive
+## When to use which primitive
 
 | Current failure | Use | Add this first |
 |---|---|---|
@@ -126,7 +124,7 @@ in the roadmap, a project note, or the agentic pattern catalog instead.
 | Several valid next moves compete for attention | [Research Taste Router](#primitive-8-research-taste-router) | scored opportunity card with explicit preference axes |
 | Proposed actions need priced disagreement before execution | [Reflexive Forecast Market](#primitive-9-reflexive-forecast-market) | sealed contract, independent forecasts, resolver, score closure |
 
-## Status And Owners
+## Status and owners
 
 These primitives are not all equally mature. The table names the current owner
 and the gap a maintainer should respect.
@@ -143,12 +141,11 @@ and the gap a maintainer should respect.
 | [Research Taste Router](#primitive-8-research-taste-router) | candidate / partial | preference profile and [`research_taste.py`](../../src/ztare/orchestrator/research_taste.py) opportunity cards | keep public claims modest until decision-use rows exist |
 | [Reflexive Forecast Market](#primitive-9-reflexive-forecast-market) | live | [`forecast/pool.py`](../../scripts/public/control/forecast/pool.py), [`prediction_contract.py`](../../src/ztare/forecasting/prediction_contract.py), forecast capability audit | separate scoring, decision influence, and authority |
 
-## Primitive Audit Matrix
+## Primitive audit matrix
 
-This table is the promotion surface for reflexive primitives. A row is not a
-primitive just because it sounds useful; it must identify the repeated failure,
+This table is the promotion surface for reflexive primitives. A row must identify the repeated failure,
 the signal that selects it, the artifact a future run consumes, and the nearby
-false pattern it must not collapse into.
+false pattern it must not collapse into. Sounding useful is not enough.
 
 | Primitive | Failure class | Selecting signal | Required artifact or check | Known confuser | Status |
 |---|---|---|---|---|---|
@@ -164,7 +161,7 @@ false pattern it must not collapse into.
 
 ---
 
-## Primitive Runtime Contract
+## Primitive runtime contract
 
 | Primitive | Target | Artifact a future run consumes | What changes |
 |-----------|--------|-------------------------------|--------------|
@@ -182,20 +179,20 @@ false pattern it must not collapse into.
 
 ## Primitive 1: Token-Optimized Self-Modeling
 
-**Failure signal:** an agent edits from a local slice of the repository and
+*Failure signal:* an agent edits from a local slice of the repository and
 misses a cross-file invariant, ordering rule, or already-built primitive.
 
-**Owned artifact:** a compact architecture/self-model surface: region index,
+*Owned artifact:* a compact architecture/self-model surface: region index,
 dependency edges, invariant rows, and edit-intent lookups.
 
-**Next-run effect:** before editing, the agent sees which regions and
-constraints matter. The system can surface existing primitives instead of
-letting the agent rebuild them from memory.
+*Next-run effect:* before editing, the agent sees which regions and
+constraints matter. The system can surface existing primitives for reuse before
+the agent rebuilds them from memory.
 
-**Boundary:** this is not a prose architecture overview. It must be structured
+*Boundary:* this is not a prose architecture overview. It must be structured
 enough for retrieval, validation, and drift checks.
 
-**Current owner and status:** Live, but shared with
+*Current owner and status:* Live, but shared with
 [Agentic Pattern 9](agentic_engineering_patterns.md#pattern-9-token-optimized-self-modeling).
 The concrete owners are the [architecture index](../../src/ztare/architecture_index/graph.yaml)
 and
@@ -207,22 +204,22 @@ own codebase and primitive graph to reduce partial-context edits.
 
 ## Primitive 2: Preflight Environment Model (Inception)
 
-**Failure signal:** an agent proposes a change before it knows the active
+*Failure signal:* an agent proposes a change before it knows the active
 gates, launch state, expected inputs, or rejection conditions.
 
-**Owned artifact:** a small machine-readable environment model: task, phase,
+*Owned artifact:* a small machine-readable environment model: task, phase,
 required surfaces, blockers, next command, and the gate or validator that will
 read each output.
 
-**Next-run effect:** the agent sees the rejection conditions before it spends a
+*Next-run effect:* the agent sees the rejection conditions before it spends a
 model call or edits the wrong surface. A blocked path emits the recovery command
-instead of becoming a failed run.
+and stops there, short of a failed run.
 
-**Boundary:** this is only live where a tool emits concrete blockers and next
+*Boundary:* this is only live where a tool emits concrete blockers and next
 commands. A general instruction like "check the environment first" is not an
 environment model.
 
-**Current owner and status:** Partial. ZTARE has several environment models:
+*Current owner and status:* Partial. ZTARE has several environment models:
 [`rd_tick_brief.py`](../../scripts/public/control/rd_tick_brief.py) for
 research-director ticks, public project route preflights for autoresearch
 entry, and `ztare autoresearch trace` for the project trace chain. The
@@ -233,49 +230,49 @@ It should not be described as one universal environment model.
 
 ## Primitive 3: Hybrid Persona Router (Cache-Route-Generate-Promote)
 
-**Failure signal:** a review request needs a specific adversarial lens, but the
+*Failure signal:* a review request needs a specific adversarial lens, but the
 system either sends every task to the same reviewer style or invents a new lens
 without checking whether one already exists.
 
-**Owned artifact:** a routed reviewer-lens row: selected lens, source signal,
+*Owned artifact:* a routed reviewer-lens row: selected lens, source signal,
 fallback path, promotion rule, and expiry or demotion condition for temporary
 lenses.
 
-**Next-run effect:** known failure families reuse stable lenses; unknown ones
+*Next-run effect:* known failure families reuse stable lenses. Unknown ones
 can be explored without silently becoming permanent policy.
 
-**Promotion rule:** A temporary lens is exploration. A promoted lens is a
+*Promotion rule:* A temporary lens is exploration. A promoted lens is a
 versioned artifact with tests, examples, or a repeatable routing rule.
 
-**Boundary:** a routed lens is not a verdict. It changes who or what reviews
-the work; the claim still needs evidence, gates, and normal authority.
+*Boundary:* a routed lens is not a verdict. It changes who or what reviews
+the work. The claim still needs evidence, gates, and normal authority.
 
 ---
 
 ## Primitive 4: Residual-to-Primitive Discovery
 
-**Failure signal:** the same residual, gap, catch category, or graph edge
+*Failure signal:* the same residual, gap, catch category, or graph edge
 survives repeated attempts even after existing tools are surfaced.
 
-**Owned artifact:** a residual-to-primitive proposal: failed surface, nearest
+*Owned artifact:* a residual-to-primitive proposal: failed surface, nearest
 existing primitive, nearest confuser, rejected alternative, owed artifact, and a
 promote/defer/refuse decision.
 
-**Next-run effect:** the system either creates a narrow primitive/card/receipt
+*Next-run effect:* the system either creates a narrow primitive/card/receipt
 schema/test, or records why the residual should not become reusable machinery.
-Future agents can query that decision instead of renaming the same gap.
+Future agents can query that decision and skip renaming the same gap.
 
-**Observability constraint:** A missing primitive can be discovered only if the
+*Observability constraint:* A missing primitive can be discovered only if the
 next run can see the residual. A note such as "the route still feels wrong" is
 not enough. The residual must point to an artifact, gate miss, repeated
 rediscovery, or failed receipt field.
 
-**Known limitation:** This does not guarantee that the missing primitive exists.
+*Known limitation:* This does not guarantee that the missing primitive exists.
 Many residuals mean the current branch is dead, under-specified, or outside the
 current system boundary. The primitive proposal has to survive the
 nearest-confuser check and earn promotion through tests or repeated use.
 
-**Instantiation checklist:**
+*Instantiation checklist:*
 - A gate, trace, graph, workbench, or project memory records the residual.
 - [`primitive_amnesia.py`](../../src/ztare/research_director/primitive_amnesia.py)
   finds the nearest existing capability or returns a miss.
@@ -283,58 +280,58 @@ nearest-confuser check and earn promotion through tests or repeated use.
   lowers the residual into required fields when an action is owed.
 - The proposal names the nearest confuser and why the existing primitive is not
   enough.
-- Promotion creates a narrow primitive, card, receipt schema, or test; refusal
+- Promotion creates a narrow primitive, card, receipt schema, or test. Refusal
   records why the residual is not a reusable primitive.
 
-**Current owner and status:** Partial, with two live sub-surfaces. Capability
+*Current owner and status:* Partial, with two live sub-surfaces. Capability
 amnesia uses
 [`primitive_amnesia.py`](../../src/ztare/research_director/primitive_amnesia.py)
 and its miss queue to turn repeated rediscovery into primitive/catalog debt.
 Action contracts use
 [`pattern_action_contract.py`](../../src/ztare/research_director/pattern_action_contract.py)
 to lower a residual edge into a required artifact and nearest-confuser check.
-The older symbolic-regression example should be kept as one instance, not the
-definition of the primitive.
+The older symbolic-regression example should stay one illustrative instance of the primitive, with the primitive itself defined more broadly than that single case.
 
 ---
 
 ## Primitive 5: Process Lifecycle Repair
 
-**Status:** conceptual, not yet implemented
+*Status:* conceptual, not yet implemented
 
-**Failure signal:** goals repeatedly fail at the same process stage, and the
-team reacts by changing the research target instead of checking the lifecycle.
+*Failure signal:* goals repeatedly fail at the same process stage, and the
+team reacts by changing the research target while leaving the lifecycle
+unexamined.
 
-**Owned artifact:** a transition-log audit with the failed phase, required
+*Owned artifact:* a transition-log audit with the failed phase, required
 field, stale gate, ambiguous stage, or missing lifecycle invariant. If a repair
 is proposed, it needs a stop rule and a later outcome.
 
-**Next-run effect:** process debt is separated from project difficulty before
+*Next-run effect:* process debt is separated from project difficulty before
 the system changes target, retires work, or opens a new route.
 
-**Discriminator:** would a clearer process contract have changed the outcome?
+*Discriminator:* would a clearer process contract have changed the outcome?
 If yes, repair the lifecycle. If no, the failure belongs to the project surface
 or research branch.
 
-**Current boundary:** This remains partial. Treat it as a diagnostic shape for
-process repair, not as proof that the lifecycle is generally solved.
+*Current boundary:* This remains partial. Treat it as a diagnostic shape for
+process repair. It does not prove that the lifecycle is generally solved.
 
 ---
 
-## What These Have In Common
+## What these have in common
 
 These entries are not general best practices. They are repairs to ZTARE's own
 research machinery.
 
 1. They apply an existing ZTARE principle to ZTARE's own machinery: routing,
    memory, state, attention, or closure.
-2. They came from a specific failure, not from a naming exercise.
+2. They came from a specific failure, never from a naming exercise.
 3. They are testable against the failure that motivated them.
 4. They change a future run through an artifact the next agent or command can
    consume.
 
-Examples: the architecture map prevents partial-context edits; the environment
-model shows gates before an agent proposes; residual-to-primitive discovery
+Examples: the architecture map prevents partial-context edits. The environment
+model shows gates before an agent proposes. Residual-to-primitive discovery
 either creates a primitive/card/receipt proposal with a test, or records a
 refusal.
 
@@ -342,59 +339,59 @@ refusal.
 
 A new reflexive primitive is indicated when:
 
-- known recovery mechanisms fail in the same way across repeated attempts;
-- the failure traces to an infrastructure constraint rather than only to the
-  project surface;
+- known recovery mechanisms fail in the same way across repeated attempts.
+- the failure traces to an infrastructure constraint, reaching past the
+  project surface.
 - applying an existing ZTARE principle inward would change a later run.
 
-The signature is zero-variance stagnation rather than ordinary search: the
-loop keeps hitting one structural constraint instead of exploring different
-failure modes.
+Zero-variance stagnation is the signature: the loop keeps hitting one
+structural constraint and stops exploring different failure modes, which is
+what separates it from ordinary search.
 
 For the periodic discovery mechanism that detects this signature automatically, see `docs/guides/reflexive_audit_workflow.md`.
 
 ### Current candidate boundary
 
 Autoresearch workbench routing is intentionally treated as an implementation of
-the agentic Pattern 16 contract compiler, not as a new reflexive primitive yet.
-It is inward-facing infrastructure: the route code decides when the in-loop
-workbench should be used instead of manual RD/agent work, and records the route
+the agentic Pattern 16 contract compiler. It has not been promoted to a reflexive primitive yet.
+It is inward-facing infrastructure: the route code decides when to send a task
+to the in-loop workbench versus manual RD/agent work, and records the route
 as an action-impact row. That is valuable, but the REP bar is higher. Promotion
 would require evidence across more than one context that the route receipt
 changes behavior: fewer unexplained out-of-loop bypasses, more prepared
 workbench surfaces, or better reuse of failed-branch constraints. Until then it
-belongs in OP-AWR/action-intelligence machinery rather than in the primitive
+belongs in OP-AWR/action-intelligence machinery, short of the primitive
 catalogue.
 
 ---
 
 ## Primitive 6: Procedural Self-Audit
 
-**Failure signal:** an agent completes a task while skipping required steps:
+*Failure signal:* an agent completes a task while skipping required steps:
 closure rows, project validation, paper sync, route preflight, or repo-specific
 checks.
 
-**Owned artifact:** a typed task checklist plus pre/post receipt. The task type
-selects required steps; the validator reports blockers before the agent can
+*Owned artifact:* a typed task checklist plus pre/post receipt. The task type
+selects required steps. The validator reports blockers before the agent can
 claim completion.
 
-**Next-run effect:** completion means the required checks have run or the
+*Next-run effect:* completion means the required checks have run or the
 blocker is explicit. The agent no longer relies on memory for task discipline.
 
-**Instantiation:**
+*Instantiation:*
 - Task discipline map: local task-discipline rules compiled from `AGENTS.md`
 - Validator: `scripts/public/validators/validate_agent_task_discipline.py {pre,post,show,audit}`
 - Session log: `workspace/agent_session_log.jsonl` (gitignored, per-session)
 - Six task types: experiment_run, substrate_build, paper_edit, seam_update, recording, infrastructure
 - Each type has typed pre-checks and post-checks derived from AGENTS.md
 
-**The test:** Run `python scripts/public/validators/validate_agent_task_discipline.py post experiment_run` after any experiment. If post-checks are incomplete, the agent fixes them before responding. The validator is the deterministic gate; AGENTS.md is the specification.
+*The test:* Run `python scripts/public/validators/validate_agent_task_discipline.py post experiment_run` after any experiment. If post-checks are incomplete, the agent fixes them before responding. The validator is the deterministic gate; AGENTS.md is the specification.
 
-**Known limitation:** The session log is manually maintained by the agent. A
-dishonest agent can skip logging. The validator catches honest mistakes; it
+*Known limitation:* The session log is manually maintained by the agent. A
+dishonest agent can skip logging. The validator catches honest mistakes. It
 does not catch adversarial evasion without independent audit.
 
-**Current owner and status:** Live at several levels, with different authority.
+*Current owner and status:* Live at several levels, with different authority.
 `validate_agent_task_discipline.py` is the generic agent checklist surface.
 `post_tick_check.py`, `posttick_runner.py`, and the RD close clients carry the
 higher-authority tick close discipline. Public project routing uses source
@@ -406,16 +403,16 @@ required checklist, receipt, and blocker.
 
 ## Primitive 7: Maintainer Correction Replay
 
-**Failure signal:** the maintainer and agent discover a better discriminator, but
+*Failure signal:* the maintainer and agent discover a better discriminator, but
 the insight remains in chat or scratch notes.
 
-**Owned artifact:** a replay audit row and, when the next test is
+*Owned artifact:* a replay audit row and, when the next test is
 reconstructable, a `next_discriminator_queue.jsonl` item.
 
-**Next-run effect:** a future agent can recover the next decisive test from
+*Next-run effect:* a future agent can recover the next decisive test from
 files alone, without reading a chat transcript.
 
-**Instantiation:**
+*Instantiation:*
 - Replay reader:
   [correction replay audit](../../src/ztare/orchestrator/operator_replay_audit.py)
 - Queue contract:
@@ -423,41 +420,41 @@ files alone, without reading a chat transcript.
 - Primary artifact: `projects/<slug>/workspace/next_discriminator_queue.jsonl`
 - Typical recovered moves: empty-box background gate, large-box boundary gate, tensor-rotation gate, background-debt ladder, dynamic-admissibility gate
 
-**The discriminator:** Could a cold agent open the repo tomorrow and
+*The discriminator:* Could a cold agent open the repo tomorrow and
 reconstruct the next decisive test without reading chat? If not, the record has
 not mechanized the maintainer's move. Improve artifact closure or add a replay
 template.
 
-**Known limitation:** This is template-based. It captures recurring
-discriminator shapes, not the final judgment of which scientific question
-matters most.
+*Known limitation:* This is template-based. It captures recurring
+discriminator shapes and stops short of the final judgment of which scientific
+question matters most, which stays with the maintainer.
 
 ---
 
 ## Primitive 8: Research Taste Router
 
-**Failure signal:** several next moves are valid, but the reason for choosing
+*Failure signal:* several next moves are valid, but the reason for choosing
 one over another is opaque, personality-driven, or reconstructed after the
 fact.
 
-**Owned artifact:** an opportunity card with explicit axes: scientific value,
+*Owned artifact:* an opportunity card with explicit axes: scientific value,
 architecture fit, governance value, risk, public-claim exposure, and current
 reviewer preference.
 
-**Next-run effect:** scarce attention is allocated against stated preferences.
+*Next-run effect:* scarce attention is allocated against stated preferences.
 The router can say `pursue_now`, `queue`, or `defer`, and the human can override
 with a visible reason.
 
-**Instantiation:**
+*Instantiation:*
 - Profile: `org/preferences/principal.yaml`
 - Scorer: `src/ztare/orchestrator/research_taste.py`
 - Output: ranked opportunity cards with axis scores, penalties, and route labels (`pursue_now`, `queue`, `defer`)
 
-**The discriminator:** If two candidate next moves are both scientifically
+*The discriminator:* If two candidate next moves are both scientifically
 valid, the router should explain why one better matches the stated preferences.
 If it cannot, the choice remains manual and should be labeled that way.
 
-**Known limitation:** Taste routing allocates attention. It does not promote a
+*Known limitation:* Taste routing allocates attention. It does not promote a
 claim or grant auto-dispatch authority. A high taste score only says the
 candidate is worth scarce attention.
 
@@ -465,14 +462,14 @@ candidate is worth scarce attention.
 
 ## Primitive 9: Reflexive Forecast Market
 
-**Failure signal:** ZTARE is about to spend effort on a consequential branch,
+*Failure signal:* ZTARE is about to spend effort on a consequential branch,
 but the risk, expected value, and failure modes are not priced before action.
 
-**Owned artifact:** a sealed forecast contract, independent forecasts, an
+*Owned artifact:* a sealed forecast contract, independent forecasts, an
 aggregate, a decision-use row when behavior changes, and a scored resolution.
 
-**Next-run effect:** forecasts become calibrated decision records rather than
-advisory prose. A forecast can route away from a weak branch, tighten an
+*Next-run effect:* forecasts become calibrated decision records that carry
+weight in the run. A forecast can route away from a weak branch, tighten an
 artifact constraint, name a failure mode the executor must guard, or escalate to
 a different-family judge.
 
@@ -480,16 +477,16 @@ Pattern 12 is the portable agentic implementation. This primitive is the inward
 use of that mechanism on ZTARE's own research allocation and tick-level action
 choices.
 
-**Required records:**
+*Required records:*
 
-- sealed forecast contract;
-- independent forecasts with authorship and timing;
-- aggregate before the outcome is known;
-- decision-use row if the forecast changed behavior;
-- resolution and score;
-- follow-up when the miss exposes a repeated failure mode.
+- sealed forecast contract
+- independent forecasts with authorship and timing
+- aggregate before the outcome is known
+- decision-use row if the forecast changed behavior
+- resolution and score
+- follow-up when the miss exposes a repeated failure mode
 
-**Current surfaces:**
+*Current surfaces:*
 - Agentic implementation pattern:
   [Pattern 12, Sealed Forecast Pool for Execution Control](agentic_engineering_patterns.md#pattern-12-sealed-forecast-pool-for-execution-control)
 - Forecast-pool design record:
@@ -507,20 +504,21 @@ choices.
 - Audit/validator: `scripts/public/analytics_shared/audit_forecast_pool_externalities.py`
   and `scripts/public/control/forecast/pool.py externalities`
 
-**Authority boundary:** A sealed forecast-pool row can influence research
+*Authority boundary:* A sealed forecast-pool row can influence research
 allocation only through the forecast-pool lifecycle and decision-use record.
 Local in-loop prediction rows, scratch forecasts, and prediction-ledger mirrors
 are score/read-model surfaces until they prove authority, timing, and resolution
 through
 [`prediction_contract.py`](../../src/ztare/forecasting/prediction_contract.py).
 
-**The discriminator:** Did the forecast change behavior before the result was
+*The discriminator:* Did the forecast change behavior before the result was
 known? Valid changes include routing away from a weak branch, tightening an
 artifact constraint, naming a failure mode the executor explicitly guards, or
-escalating to a different-family judge. If forecasts only produce after-the-fact
-Brier scores, they are calibration data, not reflexive control.
+escalating to a different-family judge. Forecasts that only produce after-the-fact
+Brier scores stay at the level of calibration data and never reach reflexive
+control.
 
-**Operational falsifier:** The primitive fails in practice if recurring audits
+*Operational falsifier:* The primitive fails in practice if recurring audits
 show that forecasts are not scored, resolved contracts leave stale transport
 messages, forecast wakes do not produce aggregates or explicit no-update
 statuses, macro/meso decisions omit causal forecast-use fields, ZTARE's own
@@ -528,14 +526,14 @@ forecasters can see each other's prior outputs (silently breaking the
 independence Schoenegger-style aggregation depends on), or scored history stops
 improving branch/effort routing across contexts.
 
-**Known limitation:** This is a sealed, properly-scored decision market with
+*Known limitation:* This is a sealed, properly-scored decision market with
 agentic transport. It is deliberately not a live LMSR/AMM or continuous price
-tape; the market is used to precondition and calibrate research decisions, not
+tape. The market is used to precondition and calibrate research decisions, not
 to create a tradable public asset.
 
 ---
 
-## Closure: Internal Vs External Pressure
+## Closure: internal vs external pressure
 
 One reflexive-mining run produced a useful correction: **coordination
 closure** (when to stop searching, what to fund next, when to abandon a
@@ -543,7 +541,7 @@ branch) needs external resource pressure. A later pass over-extended that into
 "closure of any kind requires external pressure" and the checker rejected it.
 The distinction matters.
 
-**Internal closure (works without exogenous pressure):**
+Internal closure (works without exogenous pressure):
 
 Technical-validation closures are checks whose stopping condition is internal to
 the artifact. They do not need a budget, deadline, or principal to terminate.
@@ -551,14 +549,14 @@ the artifact. They do not need a budget, deadline, or principal to terminate.
 - `validate_substrate_meta`, schema validation
 - `validate_rubric.py`, rubric pre-flight
 - Deterministic cage gates, including the legacy numbered gate family, where
-  the public name should describe the failure class rather than expose only
-  labels such as `R10` or `R11`
+  the public name should describe the failure class in words and carry more than
+  a bare label such as `R10` or `R11`
 - Lean cages, formal-proof termination
 - R1 mutation_suite_guard, Python-importability guarantee
 - Type-checks, lint, signature checks
 - Cryptographic primitives (when present)
 
-**Exogenous closure (needs principal / budget / deadline / mortality):**
+Exogenous closure (needs principal / budget / deadline / mortality):
 
 Coordination closures, choices among epistemically-valid
 alternatives. They cannot terminate from internal coherence alone
@@ -570,27 +568,27 @@ because no internal property distinguishes the "correct" answer.
 - Deciding when a research direction is exhausted
 - Promotion of a thesis from "passes gates" to "is a paper claim"
 
-**Why this distinction matters operationally:**
+*Why this distinction matters operationally:*
 
 Conflating the two creates two opposite mistakes. If "all closure needs
 exogenous pressure," even schema validation becomes a management decision. If
 "all closure can be internal," the system can deliberate forever over choices
 that require taste, budget, or priority. The practical rule is: technical
-validation closes internally; coordination closure requires an external
-constraint. Schema validators do not ask the principal for permission; OKR
+validation closes internally. Coordination closure requires an external
+constraint. Schema validators do not ask the principal for permission. OKR
 closure does.
 
 ---
 
-## Home And Boundaries
+## Home and boundaries
 
-- **Epistemic verification stays in the treatise.** This page records
+- Epistemic verification stays in the treatise. This page records
   engineering primitives. It can show that the decomposition is useful, but it
   should not make broad claims about the world.
-- **Run-time checklists stay in operational guides.** This page is about
+- Run-time checklists stay in operational guides. This page is about
   design-time repairs to the system: checks, routes, records, queues, gates,
   and budget decisions added because a failure recurred.
-- **This page owns the self-improvement layer.** It sits beside
+- This page owns the self-improvement layer. It sits beside
   [architecture.md](architecture.md), which explains the system, and the
   validator workflow, which explains how model proposals are separated from
   checks.

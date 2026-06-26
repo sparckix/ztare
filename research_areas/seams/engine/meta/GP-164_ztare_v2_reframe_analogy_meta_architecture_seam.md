@@ -164,12 +164,12 @@ ANALOGY PIPELINE:
        structural analogy from residual pattern S. It passes holdout
        with MRE X. Is the structural basis for this analogy justified,
        or is it a coincidental fit?"
-     - Firing squad attacks the analogy basis independently
+     - Adversarial review committee attacks the analogy basis independently
      - If judges disagree → adversarial escalation (standard)
    Source: LLM judges (multi-model, standard ZTARE Leg 3)
 
 6. PROMOTION (operator-gated)
-   If candidate survives gates + meta-judge + firing squad:
+   If candidate survives gates + meta-judge + adversarial review committee:
      - Report to operator: "Analogy-derived form f_k passes all gates.
        Source structural pattern: S. Do you approve promotion?"
      - Operator decides. Operator is the accountability surface (P9).
@@ -394,7 +394,7 @@ in the human residual.
 |-----|------------|-------------------|-------------------|
 | Invert (cheap failure) | Failed forms die immediately | ✅ Frame with MDL_gain < 100 bits → auto-disabled | ✅ Analogy candidate failing gates → dead, not softened |
 | Compress (asymptotic survival) | Must survive outside fit window | ✅ Evaluated in raw coords, holdout gate applies | ✅ Same holdout + farther-tail gates as grammar search |
-| Disagreement (no single oracle) | Multi-judge interrogation | ✅ Meta-judge attacks frame justification | ✅ Meta-judge + firing squad attack analogy basis; multi-domain ambiguity test |
+| Disagreement (no single oracle) | Multi-judge interrogation | ✅ Meta-judge attacks frame justification | ✅ Meta-judge + adversarial review committee attack analogy basis; multi-domain ambiguity test |
 
 ## Cognitive Gym Compliance Check
 

@@ -41,9 +41,50 @@ while read -r p; do
 done < "$FILES"
 echo "  backup: $BK"
 
-say "2. rsync VPS → local (curated list${DRY:+ — DRY-RUN})"
+say "2. rsync VPS → STAGING (curated list${DRY:+ — DRY-RUN})"
+# DDIA: the append-only fact logs (proof_cache, no_good_store, ...) are a CvRDT
+# — a grow-only set of kernel-verified facts. They must be UNION-MERGED, not
+# clobbered, or offline writes on the LOCAL node are silently lost (the old
+# rsync-onto-local was last-write-wins on the whole file). So we rsync into a
+# staging dir and reconcile: convergent fact logs are merged (idempotent,
+# order-independent — see ztare.leanmill.state_convergence), every other curated
+# file is copied exactly as before.
+STAGE="${LOCAL_REPO}/.vps_pull_staging/${TS}"
+mkdir -p "$STAGE"
 rsync -az ${DRY} --files-from="$FILES" -e "$SSH" \
-  "$SSH_TGT:$REMOTE_REPO/" "$LOCAL_REPO/" | tail -8
+  "$SSH_TGT:$REMOTE_REPO/" "$STAGE/" | tail -8
+
+if [ -z "$DRY" ]; then
+  say "2b. reconcile staging → local (MERGE convergent fact logs, copy the rest)"
+  PYTHONPATH="${LOCAL_REPO}/src" python3 - "$LOCAL_REPO" "$STAGE" "$FILES" <<'PYEOF'
+import sys, shutil
+from pathlib import Path
+sys.path.insert(0, str(Path(sys.argv[1]) / "src"))
+from ztare.leanmill.state_convergence import CONVERGENT_STORES, merge_into, detect_conflicts
+local_repo, stage, files = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
+convergent, qdirs = set(CONVERGENT_STORES), set()
+for rel in files.read_text().splitlines():
+    rel = rel.strip()
+    if not rel or rel.startswith("#"):
+        continue
+    src, dst = stage / rel, local_repo / rel
+    if not src.exists():
+        continue
+    if src.name in convergent:                 # CvRDT union-merge, idempotent
+        print("  " + merge_into(dst, src).line())
+        qdirs.add(dst.parent)
+    else:                                       # non-fact file: copy as before
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(src, dst)
+        print(f"  [copied] {rel}")
+for qd in sorted(qdirs):                        # merge as soundness bug-detector
+    for c in detect_conflicts(qd):
+        print(f"  [CONFLICT] {c.key}: {c.detail}  (kernel-soundness violation)", file=sys.stderr)
+PYEOF
+  rm -rf "$STAGE"
+else
+  echo "  (dry-run: reconcile + staging cleanup skipped)"
+fi
 
 say "3. snapshot the daemon-owned OFFICIAL STORE chain (read-only archival)"
 # Agent cannot write the official store; this is the authoritative,

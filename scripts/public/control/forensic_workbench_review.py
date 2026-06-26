@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply a file-backed forensic-workbench review file."""
+"""Apply a file-backed Project Workbench review file."""
 from __future__ import annotations
 
 import argparse
@@ -16,10 +16,27 @@ REPO = Path(__file__).resolve().parents[3]
 SCHEMA = "ztare-forensic-workbench-review-v1"
 ACTION_SCHEMA = "ztare-forensic-workbench-row-action-v1"
 ACTION_CHOICES = {"next_step", "needs_source", "ready_to_run", "export_blocker"}
+CHECK_SLUG_ALIASES = {
+    "Report support": {"report_export", "report_support"},
+    "Report/export": {"report_export", "report_support"},
+}
 
 
 def row_slug(label: str) -> str:
     return re.sub(r"(^_+|_+$)", "", re.sub(r"[^a-z0-9]+", "_", label.lower())) or "row"
+
+
+def slug_matches_label(expected_slug: str, label: str) -> bool:
+    slug = row_slug(label)
+    if slug == expected_slug:
+        return True
+    return expected_slug in CHECK_SLUG_ALIASES.get(label, set())
+
+
+def slug_matches_expected(value: str, *, expected_slug: str, label: str) -> bool:
+    if value == expected_slug:
+        return True
+    return value in CHECK_SLUG_ALIASES.get(label, set())
 
 
 def read_review_file(path: Path) -> dict[str, Any]:
@@ -41,12 +58,25 @@ def validate_payload_case(payload: dict[str, Any], *, project: str, intake: str 
     if not intake:
         return []
     errors: list[str] = []
+    expected_key = case_key(project, intake)
+    payload_project_key = str(payload.get("project_key") or "").strip()
+    if payload_project_key and payload_project_key != expected_key:
+        errors.append(f"project_key mismatch: expected {expected_key!r}, got {payload_project_key!r}")
     payload_case_key = str(payload.get("case_key") or "").strip()
-    if payload_case_key and payload_case_key != case_key(project, intake):
-        errors.append(f"case_key mismatch: expected {case_key(project, intake)!r}, got {payload_case_key!r}")
+    if payload_case_key and payload_case_key != expected_key:
+        errors.append(f"case_key mismatch: expected {expected_key!r}, got {payload_case_key!r}")
     payload_intake = str(payload.get("intake") or "").strip()
     if payload_intake and payload_intake != intake:
         errors.append(f"intake mismatch: expected {intake!r}, got {payload_intake!r}")
+    return errors
+
+
+def validate_item_aliases(payload: dict[str, Any], *, row: str, label: str) -> list[str]:
+    errors: list[str] = []
+    for key in ("project_check_slug", "item_slug", "row_slug"):
+        value = str(payload.get(key) or "").strip()
+        if value and not slug_matches_expected(value, expected_slug=row, label=label):
+            errors.append(f"{key} mismatch: expected {row!r}, got {value!r}")
     return errors
 
 
@@ -58,8 +88,9 @@ def validate_review_file(payload: dict[str, Any], *, project: str, row: str, int
         errors.append(f"project mismatch: expected {project!r}, got {payload.get('project')!r}")
     errors.extend(validate_payload_case(payload, project=project, intake=intake))
     review_row = str(payload.get("row") or "")
-    if row_slug(review_row) != row:
-        errors.append(f"row mismatch: expected slug {row!r}, got row {review_row!r}")
+    errors.extend(validate_item_aliases(payload, row=row, label=review_row))
+    if not slug_matches_label(row, review_row):
+        errors.append(f"item slug mismatch: expected {row!r}, got item {review_row!r}")
     decision = payload.get("decision")
     if decision not in {"reviewed", "deferred", "blocked"}:
         errors.append("decision must be reviewed, deferred, or blocked")
@@ -77,8 +108,9 @@ def validate_action_file(payload: dict[str, Any], *, project: str, row: str, int
         errors.append(f"project mismatch: expected {project!r}, got {payload.get('project')!r}")
     errors.extend(validate_payload_case(payload, project=project, intake=intake))
     action_row = str(payload.get("row") or "")
-    if row_slug(action_row) != row:
-        errors.append(f"row mismatch: expected slug {row!r}, got row {action_row!r}")
+    errors.extend(validate_item_aliases(payload, row=row, label=action_row))
+    if not slug_matches_label(row, action_row):
+        errors.append(f"item slug mismatch: expected {row!r}, got item {action_row!r}")
     if payload.get("action") not in ACTION_CHOICES:
         errors.append("action must be next_step, needs_source, ready_to_run, or export_blocker")
     note = str(payload.get("note") or "").strip()
@@ -116,7 +148,7 @@ def add_case_context(
     project: str | None = None,
     intake: str | None = None,
 ) -> dict[str, Any]:
-    for key in ("rubric", "intake", "case_key"):
+    for key in ("rubric", "intake", "project_key", "case_key"):
         value = str(payload.get(key) or "").strip()
         if value:
             receipt[key] = value
@@ -124,6 +156,10 @@ def add_case_context(
         receipt["intake"] = intake
     if project and receipt.get("intake") and not receipt.get("case_key"):
         receipt["case_key"] = case_key(project, str(receipt["intake"]))
+    if receipt.get("case_key") and not receipt.get("project_key"):
+        receipt["project_key"] = str(receipt["case_key"])
+    if receipt.get("project_key") and not receipt.get("case_key"):
+        receipt["case_key"] = str(receipt["project_key"])
     return receipt
 
 
@@ -138,11 +174,13 @@ def receipt_for_payload(
 ) -> dict[str, Any]:
     errors = validate_review_file(payload, project=project, row=row, intake=intake)
     if errors:
-        raise SystemExit("invalid forensic-workbench review file:\n- " + "\n- ".join(errors))
+        raise SystemExit("invalid Project Workbench review file:\n- " + "\n- ".join(errors))
     receipt = {
         "schema": "ztare-forensic-workbench-review-receipt-v1",
         "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "project": project,
+        "item_label": str(payload.get("item_label") or payload["row"]),
+        "item_slug": str(payload.get("item_slug") or row),
         "row": payload["row"],
         "row_slug": row,
         "decision": payload["decision"],
@@ -186,11 +224,13 @@ def receipt_for_action_payload(
 ) -> dict[str, Any]:
     errors = validate_action_file(payload, project=project, row=row, intake=intake)
     if errors:
-        raise SystemExit("invalid forensic-workbench row action file:\n- " + "\n- ".join(errors))
+        raise SystemExit("invalid Project Workbench next-step file:\n- " + "\n- ".join(errors))
     receipt = {
         "schema": "ztare-forensic-workbench-row-action-receipt-v1",
         "applied_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "project": project,
+        "item_label": str(payload.get("item_label") or payload["row"]),
+        "item_slug": str(payload.get("item_slug") or row),
         "row": payload["row"],
         "row_slug": row,
         "action": payload["action"],
@@ -271,6 +311,7 @@ def apply_action_payload(
 
 def apply_review(args: argparse.Namespace) -> dict[str, Any]:
     validate_project_slug(args.project)
+    item = getattr(args, "item", None) or getattr(args, "row", None) or ""
     review_file_path = Path(args.review_file_path)
     if not review_file_path.is_absolute():
         review_file_path = (Path.cwd() / review_file_path).resolve()
@@ -278,7 +319,7 @@ def apply_review(args: argparse.Namespace) -> dict[str, Any]:
     receipt = receipt_for_payload(
         payload,
         project=args.project,
-        row=args.row,
+        row=item,
         review_file_bytes=review_file_path.read_bytes(),
         review_file_path=str(review_file_path),
         intake=getattr(args, "intake", None),
@@ -288,6 +329,7 @@ def apply_review(args: argparse.Namespace) -> dict[str, Any]:
 
 def save_action(args: argparse.Namespace) -> dict[str, Any]:
     validate_project_slug(args.project)
+    item = getattr(args, "item", None) or getattr(args, "row", None) or ""
     action_file_path = Path(args.action_file_path)
     if not action_file_path.is_absolute():
         action_file_path = (Path.cwd() / action_file_path).resolve()
@@ -295,7 +337,7 @@ def save_action(args: argparse.Namespace) -> dict[str, Any]:
     receipt = receipt_for_action_payload(
         payload,
         project=args.project,
-        row=args.row,
+        row=item,
         action_file_bytes=action_file_path.read_bytes(),
         action_file_path=str(action_file_path),
         intake=getattr(args, "intake", None),
@@ -306,9 +348,17 @@ def save_action(args: argparse.Namespace) -> dict[str, Any]:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", required=True, help="Project slug under projects/.")
-    parser.add_argument("--row", required=True, help="Slug for the reviewed row, e.g. report_export.")
+    parser.add_argument(
+        "--project-check",
+        "--item",
+        "--row",
+        dest="item",
+        required=True,
+        metavar="ITEM",
+        help="Project-check slug, e.g. report_support. --item and --row are accepted as compatibility aliases.",
+    )
     parser.add_argument("--from", dest="review_file_path", required=True, help="Review file JSON saved from the workbench.")
-    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched case files and stamps legacy files.")
+    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched project files and stamps legacy fields.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
     parser.add_argument("--latest", help="Optional latest-receipt JSON override, mainly for tests.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
@@ -316,13 +366,21 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def build_action_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Apply a file-backed forensic-workbench row action file.")
+    parser = argparse.ArgumentParser(description="Apply a file-backed Project Workbench next-step file.")
     parser.add_argument("--project", required=True, help="Project slug under projects/.")
-    parser.add_argument("--row", required=True, help="Slug for the acted-on row, e.g. report_export.")
-    parser.add_argument("--from", dest="action_file_path", required=True, help="Row action JSON saved from the workbench.")
-    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched case files and stamps legacy files.")
+    parser.add_argument(
+        "--project-check",
+        "--item",
+        "--row",
+        dest="item",
+        required=True,
+        metavar="ITEM",
+        help="Project-check slug, e.g. report_support. --item and --row are accepted as compatibility aliases.",
+    )
+    parser.add_argument("--from", dest="action_file_path", required=True, help="Next-step JSON saved from the workbench.")
+    parser.add_argument("--intake", help="Optional selected intake path; rejects mismatched project files and stamps legacy fields.")
     parser.add_argument("--ledger", help="Optional JSONL ledger override, mainly for tests.")
-    parser.add_argument("--latest", help="Optional latest-action JSON override, mainly for tests.")
+    parser.add_argument("--latest", help="Optional latest next-step JSON override, mainly for tests.")
     parser.add_argument("--json", action="store_true", help="Emit JSON. Output is JSON by default.")
     return parser
 
@@ -335,7 +393,7 @@ def action_main(argv: list[str] | None = None) -> int:
     except SystemExit:
         raise
     except Exception as exc:  # pragma: no cover - defensive CLI boundary
-        print(f"forensic workbench row action failed: {exc}", file=sys.stderr)
+        print(f"Project Workbench next step failed: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
@@ -349,7 +407,7 @@ def main(argv: list[str] | None = None) -> int:
     except SystemExit:
         raise
     except Exception as exc:  # pragma: no cover - defensive CLI boundary
-        print(f"forensic workbench review failed: {exc}", file=sys.stderr)
+        print(f"Project Workbench review failed: {exc}", file=sys.stderr)
         return 1
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0

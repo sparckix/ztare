@@ -2,13 +2,13 @@
 description: "Paste-ready prompts for using Codex, Claude, or another coding agent with ZTARE."
 ---
 
-# Agent Prompts
+# Agent prompts
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 A short, opinionated set of prompts for a person using their own Codex,
 Claude, or other coding agent on ZTARE. Each prompt covers a real
-use case for a *new arrival* — understanding what's here, deciding what
+use case for a *new arrival*: understanding what's here, deciding what
 to look at, inspecting a claim, having a claim adversarially reviewed,
 or running the workbench on their own substrate. Paste one prompt at a time
 and replace bracketed text.
@@ -22,7 +22,7 @@ Ground rules for every prompt:
 - Do not depend on private or ignored paths for public documentation.
 - Preserve existing user changes.
 
-## 1. Repo map — what is this and what does it have
+## 1. Repo map: what is this and what does it have
 
 ```text
 You are helping me understand the ZTARE repository. Read README.md, docs/README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/primitive_evidence_matrix.md, docs/concepts/capabilities.md, docs/concepts/architecture.md, docs/concepts/glossary.md, docs/public_claim_register.md, and docs/guides/cli.md. Then give me a concise map of:
@@ -36,10 +36,10 @@ You are helping me understand the ZTARE repository. Read README.md, docs/README.
 Do not summarize every file. Describe how the parts fit together: the validator gates, the operating discipline, and the named primitives that run on top of them.
 ```
 
-## 2. Pick what to look at — your first session
+## 2. Pick what to look at: your first session
 
 ```text
-I have about an hour with the ZTARE repo and I want to spend it well on [my goal — e.g. evaluate a specific claim, understand the workbench, decide whether to use it on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
+I have about an hour with the ZTARE repo and I want to spend it well on [my goal, e.g. evaluate a specific claim, understand the workbench, decide whether to use it on my own data, look at the LeanMill / forecast-pool / a specific gate]. Read README.md, docs/evidence_atlas/README.md, docs/evidence_atlas/claim_cards.md, docs/concepts/capabilities.md, docs/public_claim_register.md, and the per-substrate `public/CLAIM_SUMMARY.md` files that match my interest. Then:
 
 1. point me at the 3–5 files that are highest-yield for my stated goal;
 2. name which sealed claims (in the public claim register) are most relevant, and which "held privately" items I would otherwise be tempted to chase;
@@ -55,12 +55,12 @@ Do not propose anything that requires private artifacts I cannot reach.
 Inspect projects/[project_slug]/public/CLAIM_SUMMARY.md plus its entry in docs/public_claim_register.md, any relevant card in docs/evidence_atlas/claim_cards.md, and any relevant rows in research_areas/EXPERIMENT_TRACK_RECORD.md. Summarize:
 
 1. what the project actually claims, in one sentence;
-2. the gate verdicts and the retest tag — what was sealed, what is partial, what is a documented null or demotion;
+2. the gate verdicts and the retest tag, what was sealed, what is partial, what is a documented null or demotion;
 3. the honest non-claims attached to it;
 4. the next falsifier or source-design step;
 5. whether the claim would survive cross-family or external review, and which adjacent claims in the register would be affected if it didn't.
 
-Do not invent results that are not in the public summary. If something is held privately, say so and stop — do not infer.
+Do not invent results that are not in the public summary. If something is held privately, say so and stop, do not infer.
 ```
 
 ## 4. Adversarial review of a claim
@@ -86,7 +86,7 @@ You are helping me use ZTARE on my own substrate for [my task]. Read docs/guides
 3. show the exact invocation with the command flags I need, including how to pass `--help` through to see the underlying script's full surface;
 4. explain what the run reads (charter, rubric, evidence files, route JSON) and what it writes (ledger row, bundle verdict, action-intel delta, projection);
 5. name the side effects I should check after the run;
-6. if my task requires governance-side primitives (roles, mandates, role daemons, OKR closure), route me to cognitive-firm — they deliberately do not live in `ztare`.
+6. if my task requires governance-side primitives (roles, mandates, role daemons, OKR closure), route me to cognitive-firm, they deliberately do not live in `ztare`.
 
 Do not invent subcommands. If the right capability is not in the current CLI, name the underlying script in scripts/public/control/ to run directly and say why it has not been promoted yet.
 ```

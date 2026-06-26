@@ -3,15 +3,15 @@ description: "Build narrative covering 70 days of work on ZTARE across six archi
 ---
 # A 70-Day Sprint, Six Architectural Phases
 
-> **Public positioning note:** this is a historical build narrative, not the
-> canonical system-positioning page or claim register. Start with
+> **Public positioning note:** this is a historical build narrative. The
+> canonical system-positioning page and claim register live elsewhere. Start with
 > [system_position_and_module_map.md](concepts/system_position_and_module_map.md)
 > and [public_claim_register.md](public_claim_register.md) for current public
 > claims. Live sprint language below is preserved as provenance and should be
 > read through the anti-laundering discipline in this repo.
 
 Human in the loop (aka maintainer): Daniel Alami. Window: roughly mid-March 2026 through 2026-05-29.
-This is one maintainer's sprint, not a general theory of AI-assisted research.
+This is one maintainer's sprint and carries no general theory of AI-assisted research.
 Companion to `JOURNEY.md` (the NS Track B scoreboard), paper7 (the
 four-substrate cross-domain capability paper), and
 `docs/concepts/reflexive_mining_methodology.md` (the weekly self-audit that,
@@ -36,8 +36,8 @@ pieces that came out of it:
 - **Cognitive-Firm**, an organizational-design kernel (M-form separation,
   damage signals, mandates) used to run the maintainer deployment.
 - **Agentic-engineering patterns** (17 catalogued), reusable practices for
-  building multi-agent research systems — stub-replay testing, eligibility
-  pre-filters, provenance telemetry, knowledge-graph cross-references —
+  building multi-agent research systems (stub-replay testing, eligibility
+  pre-filters, provenance telemetry, knowledge-graph cross-references),
   the kind of thing the next maintainer does not have to rediscover.
 - **Reflexive primitives** (9 catalogued), capabilities the apparatus
   applies to itself: measuring its own return on effort, auditing its own
@@ -47,14 +47,13 @@ pieces that came out of it:
   LLM providers, so the labels are not a single-model artifact.
 - **A four-project-surface prober** (modified gravity, neural scaling,
   consciousness-ascription, Navier-Stokes) that returned binding-constraint
-  diagnoses rather than positive laws on all four substrates.
+  diagnoses on all four substrates.
 - **A weekly reflexive self-audit** that re-mines every artifact, scores
   insight density with a contextualized rater, and feeds the result back
   into the next week's work.
 
-The through-line is the model-environment thesis. The sprint was not a bet
-that scaffolding beats frontier model capability. It was a bet that frontier
-capability needs a serious research environment around it: bounded evidence,
+The through-line is the model-environment thesis. The sprint was a bet that
+frontier capability needs a serious research environment around it: bounded evidence,
 separate verification, persistent state, source-readiness discipline,
 falsifier routing, and demotion of attractive wrong stories. The stronger the
 model, the more valuable that environment becomes, because capability amplifies
@@ -62,10 +61,9 @@ both useful insight and the ability to satisfy weak evaluation surfaces.
 
 The same through-line has a lab-scale reading. Frontier labs can internalize
 many of these moves into evals, post-training, and future model development.
-The public lesson is not that labs lack this idea; it is that the useful
-supervision object is the full research trace, not only the final answer:
-attempts, critiques, executable checks, source gaps, demotions, nulls, and next
-falsifiers.
+The public lesson is that the useful supervision object is the full research
+trace: attempts, critiques, executable checks, source gaps, demotions, nulls,
+and next falsifiers, down to the final answer.
 
 The six architectural phases (detailed in §1-§6) trace the path: a
 reasoning engine → a pivot to scientific discovery and the extraction of an
@@ -83,8 +81,8 @@ end-to-end and produced these numbers about the architecture itself:
    sit inside the original iteration loop and ~75% are work done outside
    it by directly-dispatched agents**, and in the trailing-7-day live
    window **~97% is outside the loop**. The live substrate is agent
-   dispatch plus governance plus mining, not the original closed loop the
-   architecture started with.
+   dispatch plus governance plus mining, having moved off the original closed
+   loop the architecture started with.
 2. **The capability-ROI audit falsified most of the primitive catalogue.**
    The 28-day, 157-project audit found of ~18 catalogued primitives:
    **4 engaged, 7 dead, 7 never instantiated.** The survivors are three
@@ -94,8 +92,8 @@ end-to-end and produced these numbers about the architecture itself:
 3. **Recursive gain compounded, then plateaued.** Contextualized insight
    density rose **1.83 → 2.80** over seven weekly buckets (the compounding is
    independently cross-validated), then ticked to **2.40** in the final
-   bucket as effort moved onto the stuck NS/Clay frontier. Compounding,
-   then flattening, not exponential.
+   bucket as effort moved onto the stuck NS/Clay frontier. The curve
+   compounds, then flattens.
 4. **The audit caught a measurement error on this document.** The weekly
    audit run surfaced that the wrong rating instrument had been selected
    (cold vs. the canonical contextualized rater) and that a ledger had been
@@ -109,19 +107,18 @@ experiment loop and demonstrate the discipline is not Navier-Stokes-only.
 The current meta-architecture (the catalogued patterns, the audit chain,
 the self-audit loop, the architecture index, the reflexive primitives, and
 the agent orchestration layer) was validated most deeply on one substrate
-(Navier-Stokes); cross-substrate validation of the *current* layer is still
+(Navier-Stokes). Cross-substrate validation of the *current* layer is still
 pending. Nothing here claims a solved Clay problem, an autonomous research
-engine, or a general law. The maintainer is non-expert; the system is single
-N=1; the contribution is the discipline and the honest record of where it
-broke.
+engine, or a general law. The maintainer is non-expert, and the system is single
+N=1. The contribution is the discipline and the honest record of where it broke.
 
 **Naming note.** *Meta-Darwin* is the audit-of-the-audit: a pass that scores the
 architecture's own promotion claims and demotes the ones that fail, in
 binary-falsifiable terms (in the 2026-05-08 session it demoted five-plus of
-them). The name is for Darwin's habit of recording and pursuing the evidence
-against his own favored hypotheses — the discipline Munger cites as a model of
-rationality — applied here reflexively, to the apparatus's own claims. The name
-is borrowed; the mechanism is the point.
+them). The name references Darwin's habit of recording and pursuing the evidence
+against his own favored hypotheses, the discipline Munger cites as a model of
+rationality, applied here reflexively to the apparatus's own claims. The name
+is borrowed; the mechanism is what carries the weight.
 
 ## §1, Phase 1: ZTARE in-loop
 
@@ -161,8 +158,8 @@ diagnostic ("is the bounded near-miss a survival mechanism or a
 representational artifact?") and the analogous theorem-facing question
 ("does the route-5 exponential rescue impose a quantified material-frame
 metric-degeneracy?"). The Clay attempt was, at the start of the sprint,
-a stress test of the project-surface prober, not a Clay attempt with the
-apparatus on trial.
+a stress test of the project-surface prober, with the apparatus itself not
+yet on trial.
 
 ## §2, Phase 2: Extracting `org/` primitives
 
@@ -202,14 +199,14 @@ Product Manager mandate, plus templates. The `org/delegation.yaml` and
 into a graph any agent (or any human) could read.
 
 The non-trivial claim of Phase 2 is that this extraction was **bidirectional**:
-not just "ZTARE's discipline became reusable patterns" but "the patterns,
-once named, exposed structural gaps in ZTARE that were not visible from
-inside the iter loop." `feedback_miner_blind_spot_structural_analogy.md`
+ZTARE's discipline became reusable patterns, and the patterns, once named,
+exposed structural gaps in ZTARE that were not visible from
+inside the iter loop. `feedback_miner_blind_spot_structural_analogy.md`
 is the canonical case: the maintainer surfaced "charter should be a recursive
 refinement loop, mirroring evidence-fetch", and the reflexive miner could
 not have. The miner was asking "is this engaging / central / dead /
-covered" but not "should there be a loop here?" Naming the pattern in `org/`
-made the gap visible.
+covered", a coverage question that stops short of "should there be a loop
+here?" Naming the pattern in `org/` made the gap visible.
 
 _Scope note: the structural-discipline patterns extracted into `org/`
 during Phases 1-2 emerged from the broader ZTARE experiment-loop era and
@@ -218,7 +215,7 @@ The current meta-architecture (catch ledger, anti-pattern catalog,
 Meta-Darwin, architecture-index meta-graph, reflexive
 primitives, Claude Code orchestration) crystallized later, during the
 NS Track B sprint specifically. So far it has been validated on NS
-Track B only. It is designed to be substrate-general; that empirical
+Track B only. It is designed to be substrate-general, and that empirical
 test is pending._
 
 ## §3, Phase 3: The system analyzes itself (recursive gain)
@@ -250,11 +247,11 @@ broke when most R&D shifted to Research Director agents working outside
 the iter loop. The conclusion "recursive gain went dormant" was wrong.
 Recursive gain needs the data ecosystem (F-rows, seam files, project
 workspaces, evidence files, verified-axioms ledgers) plus mining plus a
-feedback path, not the iter loop itself. The week-scale gain cycle
+feedback path; the iter loop itself is incidental. The week-scale gain cycle
 (mine → surface candidates → ship refinement → next week's mining catches
 consequences) is structurally identical to the iter-scale loop, only
-slower because each cell is "ship a real apparatus refinement" rather
-than "evaluate a candidate string." The slowness is a feature.
+slower because each cell is "ship a real apparatus refinement" where the
+iter-scale cell is "evaluate a candidate string." The slowness is a feature.
 
 Second: **recursive loops surface apparatus bugs first**
 (`feedback_recursive_loop_finds_apparatus_bugs_first.md`, 2026-05-06). The
@@ -267,13 +264,13 @@ to "have output" would have polluted the cage catalog and poisoned future
 audits. The "no new primitives" verdict is shippable.
 
 Third: **the reflexive miner's blind spot is structural-analogy class-2
-findings**. The miner today asks coverage and ROI questions; it does not
+findings**. The miner today asks coverage and ROI questions. It does not
 ask "should there be a loop here?" or "is this one-shot generation step
 the right granularity?" That is still maintainer work.
 
 Phase 3's empirical claim is bounded: an architecture with this much
 artifact density and a working miner _can_ observe its own dynamics
-usefully. It does not yet self-improve in the strong sense; it surfaces
+usefully. It does not yet self-improve in the strong sense. It surfaces
 candidates that maintainer and project surface must ship.
 
 ## §4, Phase 4: Pivoting off ZTARE-orchestration for discovery
@@ -282,7 +279,7 @@ By the second week of May the maintainer's discovery work was no longer
 running through ZTARE's iter loop. ZTARE iter loops were too slow for
 Lean/Mathlib formalization and for open-math attempts. The project-surface
 prober had shipped its four-surface results (the four paper7 case
-studies); the marginal hour spent inside an iter loop was producing less
+studies). The marginal hour spent inside an iter loop was producing less
 than the marginal hour spent dispatching Claude Code agents on typed Lean
 companion packs, on `lean-dojo` bridges, on Mathlib-search-then-port, on
 parallel adversarial-CAS verification, on swarm decompositions of
@@ -309,7 +306,7 @@ The first is the **typed-companion + 4-way swarm pattern**
 fields into typed companions, parallelize the resulting independent leaves
 across agents, compose via a single spine file, and toy-substrate-smoke-test
 before claiming reduction. ZTARE's substrate / mutator / judge is one agent
-at a time; Claude Code agents naturally support 4-6 in parallel through
+at a time, while Claude Code agents naturally support 4-6 in parallel through
 background-dispatch.
 
 The second is the **adversarial 2-role friction pattern** with built-in
@@ -323,14 +320,14 @@ without requiring a math vocabulary the maintainer may not have.
 The third is **independent CAS verification as a kill mechanism**: the 2026-05-08
 W6 Newton-mode attempt found a sign error in the third algebraic identity
 that would have laundered through Lean's `linarith` if not for the
-independent CAS check. ZTARE's iter loop has gates; it does not natively
-have parallel CAS verification of algebraic identities.
+independent CAS check. ZTARE's iter loop has gates; parallel CAS verification
+of algebraic identities sits outside what it natively supports.
 
 The honest framing of Phase 4 is _not_ "ZTARE-orchestration was abandoned."
 ZTARE iter loops still own project-surface probing work on numerical / fitting /
 empirical-law substrates. They were de-prioritized for theorem-formalization
 and open-math attempts where the bottleneck is parallel typed-companion
-decomposition rather than parametric search.
+decomposition, a different bottleneck from parametric search.
 
 ## §5, Phase 5: ZTARE as a workbench of primitives the agents call
 
@@ -339,7 +336,7 @@ ZTARE and Claude Code agents.
 
 Through Phase 4 the implicit framing was "ZTARE iter loops or Claude Code
 agents, pick one for this task." That framing was wrong, and the corrected
-framing is: **ZTARE is the workbench; the Claude Code agents call its primitives**.
+framing is: **ZTARE is the workbench, and the Claude Code agents call its primitives**.
 The architecture-index meta-graph (RP-001, the first registered _reflexive
 primitive_) is the wire that connects them.
 
@@ -356,13 +353,13 @@ concerns, Newton-mode rubric, contamination gate, additive-regime
 compositor); the `eigenquestion_generator` and the OKR closure tree;
 the canonical-form Framer; the typed task declaration and procedural
 self-audit checklist, all of these are callable surfaces a Claude Code
-agent invokes during dispatch. The agents do not replace ZTARE; they call
+agent invokes during dispatch. The agents do not replace ZTARE. They call
 its primitives from outside the iter loop.
 
 The 2026-05-08 Newton-mode CAS verification scripts on the W6 bilinear
 sum-closure attempt are the canonical example. The agents wrote new attack
-files (`ns_trackb_W6_*.lean`, five of them); the algebra was checked by
-calling out to `lagrangian_derivation`-style symbolic primitives; the
+files (`ns_trackb_W6_*.lean`, five of them). The algebra was checked by
+calling out to `lagrangian_derivation`-style symbolic primitives, and the
 verification of the third identity caught the sign error. Without
 `lagrangian_derivation` as a callable, the agent would have asked Lean's
 `linarith` to do work it cannot reliably do.
@@ -384,12 +381,11 @@ typed boundary at the meta-level. The Cage Orchestrator
 (`docs/concepts/cognitive_gym.md` Layer 0) is the typed boundary inside
 ZTARE itself. The Lean typed-companion convention is the typed boundary
 inside Mathlib formalization. Each typed boundary lets an external agent
-dispatch into ZTARE's primitives without being inside ZTARE's iter loop.
+dispatch into ZTARE's primitives from outside ZTARE's iter loop.
 
 ## §6, Phase 6: The human role and the Cognitive Gym critique
 
-This section describes the maintainer's role in concrete, dated terms — the
-division of labor between the human and the agents, not a claim about "taste."
+The division of labor between the human and the agents is concrete and dated; taste is a separate question.
 
 The maintainer's **direction-setting** function is concrete and dated. On
 2026-05-08 the maintainer said three specific things that no agent surfaced
@@ -423,7 +419,7 @@ that any future dispatch consults before claiming "user-visible sorry-free."
 The **course-correction** function showed up as the recurring fractal
 de-anchoring move (`feedback_fractal_deanchoring.md`): when more than five
 turns of apparatus iteration produce no score movement, the FRAME is the
-suspect, not the code. The maintainer's explicit reframe prompt names the
+suspect. The maintainer's explicit reframe prompt names the
 implicit loss function. Phase 5's ZTARE-as-workbench reframe is the
 canonical instance.
 
@@ -436,8 +432,7 @@ the gates, dispatch the agents, mine the trajectory archive, or build the
 dashboard. The working hypothesis is narrower than it sounds: with enough
 typed boundaries and enough mining, the maintainer-side work reduces to gate
 design, pre-registration, inversion, and authorizing demotions. Whether that
-division holds up on substrates beyond this sprint is an open question, not a
-demonstrated result.
+division holds up on substrates beyond this sprint remains an open question.
 
 ### §6.1, The four maintainer functions
 
@@ -448,11 +443,11 @@ cognitive-firm work unchanged:
 1. **Gate design.** The maintainer decides what deterministic checks run
    on every iteration, which structural properties a candidate object
    must satisfy, and what the acceptance thresholds are. This is
-   epistemic engineering, not domain knowledge. The maintainer does not
-   need to be able to derive the chameleon-thin-shell saturation; the
-   maintainer needs to be able to write `R26: feature-collapse fires when
-   any depended-on axis has near-zero within-class variance on any
-   extrapolation class`.
+   epistemic engineering. The maintainer's job is to write `R26:
+   feature-collapse fires when any depended-on axis has near-zero
+   within-class variance on any extrapolation class`, a task that takes
+   gate-design judgment; deriving the chameleon-thin-shell saturation
+   is a separate skill.
 
 2. **Pre-registration.** Every substantive claim requires a
    pre-registered prediction or acceptance threshold authored before
@@ -463,9 +458,9 @@ cognitive-firm work unchanged:
 3. **Inversion logic.** When the apparatus proposes a result, the
    reviewer asks: *what would need to be true for this to be wrong?*
    That inversion question becomes the next falsification probe. The
-   apparatus's own enthusiasm is the primary target of inversion. This
-   move requires no domain knowledge; it requires willingness to
-   generate hostile tests against the apparatus's own outputs.
+   apparatus's own enthusiasm is the primary target of inversion. The
+   move requires only the willingness to generate hostile tests against
+   the apparatus's own outputs.
 
 4. **Authorization of self-demotion events.** When the apparatus
    produces a result that does not survive its own subsequent audit,
@@ -474,10 +469,10 @@ cognitive-firm work unchanged:
    documentation is the failure mode this discipline exists to
    prevent.*
 
-In short: this is neither domain-expert discovery nor raw LLM output, but
-non-expert operation of an adversarial falsification apparatus. The agents
-supply the domain content; the maintainer supplies the gates, pre-registration,
-inversion, and demotion discipline.
+In short: this is non-expert operation of an adversarial falsification
+apparatus, a third thing alongside domain-expert discovery and raw LLM
+output. The agents supply the domain content. The maintainer supplies the
+gates, pre-registration, inversion, and demotion discipline.
 
 ### §6.2, The kill log: four self-correction episodes that taught the discipline
 
@@ -488,25 +483,24 @@ any rubric" lesson that motivated the disciplines in this doc:
 - **Neural 1/φ recovery.** The apparatus generated a candidate β = 1/φ
   via PSLQ on a small sample, partially supported it, then refuted it
   under cross-modality testing. PSLQ at tolerance 10⁻⁴ does not
-  distinguish 1/φ from 5/8 or π/5 at n=5; the "match" was finding the
+  distinguish 1/φ from 5/8 or π/5 at n=5, so the "match" was finding the
   nearest named constant in a crowded neighborhood. *Lesson: a striking
-  match to a named constant on a small sample is corpus-gradient bait,
-  not signal.*
+  match to a named constant on a small sample is corpus-gradient bait.*
 
 - **Navier-Stokes "candidate singular-core lead" reframed.** Across
   iterations 5g-5o on a chiral-knot ansatz family, the apparatus
   produced strong stretching and a tracked competitive two-core
   structure, initially read as a candidate singular-core lead. Five
   sequential falsification probes plus AMR-proxy diagnostics reframed
-  the mechanism as Galerkin-truncation-limited rather than physically
-  survival-bounded. *Lesson: fixed-resolution simulations cannot decide
-  the blow-up/regularity question; "physical survival" at fixed N must
+  the mechanism as Galerkin-truncation-limited, downgrading the earlier
+  physical-survival reading. *Lesson: fixed-resolution simulations cannot decide
+  the blow-up/regularity question. "Physical survival" at fixed N must
   be audited against spectral-edge proximity before being asserted.*
 
 - **Gravity hallucinated bridge caught by triangulation.** An offline
   agent reported "bridge found" with specific parameter values and
   per-class performance. The Research Director reproduced the same form
-  under an independent code path; the actual values differed
+  under an independent code path, and the actual values differed
   substantially. *Lesson: any quantitative claim from an offline agent
   must be reproduced under a different code path before entering
   verified results.* That triangulation rule is now an apparatus rule.
@@ -532,7 +526,7 @@ any rubric" lesson that motivated the disciplines in this doc:
     survives Cassini bound (3 ± 3)×10⁻²⁷ s⁻², but only because
     cefe=90.16 was free-parameter-fit on UDG class_mre. Doubly
     curve-fit: same parameter governs both UDG fit and solar-system
-    survival. Strengthens the closure rather than reopening
+    survival. This strengthens the closure further
     (Desmond-Hees-Famaey 2024 documents the same family-level
     tension at 8.7σ for δ≈1).
 
@@ -564,7 +558,7 @@ any rubric" lesson that motivated the disciplines in this doc:
   - **C-42** sign-reversal under expansion as terminal catch on
     small-N rescue offers
   - **PATTERN-007 SR-001** (pivot-evaluation trip-wire) caught the
-    afternoon verdict upgrade as sentiment-driven; extended by
+    afternoon verdict upgrade as sentiment-driven, then extended by
     **C-40** to fire on dispatcher prompts inheriting falsified
     mechanisms
   - **PATTERN-007 SR-002** (insufficient-data exit-hatch
@@ -572,7 +566,7 @@ any rubric" lesson that motivated the disciplines in this doc:
     framing
   - **Calibration arc** PL-001 to PL-007 effort estimates: 8.1× →
     8.5× → 11.1× → 11.8× → calibrated → 1.0× → 1.27×. The
-    human-vs-agent effort bug closed across 7 predictions; the
+    human-vs-agent effort bug closed across 7 predictions, and the
     estimates converged to ~1× over the series.
 
   **Audit trail (for forensics, not narrative):** `RD_CHARTER_2026_05_08.md`,
@@ -601,35 +595,32 @@ The chain: atom 8c → atom 8b → SQ3 dispatched. Three substrate moves, two me
 - **Consciousness pluralism at score 98 retired as
   corpus-gradient recapitulation.** The first run recovered the
   experimental-philosophy mainstream at score 98. The high score was
-  the warning sign, not the validation: an apparatus that scores 98 on
-  a result the training corpus already encodes is retrieving, not
-  discovering. The diagnostic was confirmed by structural repair.
-  *Lesson: in qualitative substrates, a 98 is a flag for laundered
-  retrieval, not a flag for discovery.*
+  the warning sign: an apparatus that scores 98 on
+  a result the training corpus already encodes is retrieving the corpus.
+  The diagnostic was confirmed by structural repair.
+  *Lesson: in qualitative substrates, a 98 flags laundered retrieval.*
 
 These four episodes together produced the operating disciplines used
 across the rest of the sprint: pre-registration, falsification probes,
 gauge audits, multi-model cold-shot diversity, corpus-gradient
-suppression, and explicit self-demotion. They are not abstract
-principles. Each one is the named apparatus correction from a specific
-failure that almost shipped.
+suppression, and explicit self-demotion. Each one is the named apparatus
+correction from a specific failure that almost shipped.
 
 The honest critique of the Cognitive Gym is that it may be too restrictive
 for Phase 5. The gym was designed (paper5, `docs/concepts/cognitive_gym.md`)
 as a fixed apparatus: Layers 1-6 plus the Cage Orchestrator, with rigid
-separation-of-concerns ("LLM never touches a gradient; SciPy never picks
+separation-of-concerns ("LLM never touches a gradient, SciPy never picks
 a family"). That rigidity is what produced the project-surface prober's results
 in Phase 1. But Claude Code agents are more flexible than the mutator
-slot the gym was designed around. They can write the next gate; they can
-propose a new layer; they can refuse to run when they detect a contamination
+slot the gym was designed around. They can write the next gate, propose a new layer, or refuse to run when they detect a contamination
 risk the gym did not name. The gym's architecture-as-fixture framing
 constrains them.
 
 The Phase-5 reframe softens that constraint without dissolving it: ZTARE
-remains the workbench (the gym's primitives are callable), but the
-workbench does not constrain the agents' choice of how to invoke
-those primitives. The agent decides whether `fit_primitive_features` is
-the right tool for the current sub-problem; the gym does not prescribe
+remains the workbench (the gym's primitives are callable), while leaving
+the agents' choice of how to invoke those primitives open. The agent
+decides whether `fit_primitive_features` is
+the right tool for the current sub-problem. The gym does not prescribe
 it. The cost of this softening is real, losing the gym's hard-zero
 discipline in favor of agent-side judgment risks reintroducing the
 failure modes the gym was built to prevent (numerical hallucination,
@@ -642,7 +633,7 @@ tight enough.
 
 Not everything the architecture has built holds up to the architecture's
 own audits. The catch ledger trimmed to 24 ratified rows after a ~40%
-inflation removal pass; many earlier-claimed catches were demoted by
+inflation removal pass. Many earlier-claimed catches were demoted by
 duplicate-collapse, by the Meta-Darwin, or by the three-leg
 verification protocol catching pre-spec laundering and underscore-bound
 charity grading. The 2026-05-08 Meta-Darwin run demoted at least five of the
@@ -688,13 +679,12 @@ coefficients), Atom 8c (Reynolds-stress L³(L³) on rough Galerkin,
 Onsager 1/3 / Buckmaster-Vicol Clay-class), PR-A1's four-sorry transitive
 obligation, the three liminf-eq hypotheses on actual Galerkin substrate,
 and Atom 1's ten-Prop bucket on Galerkin (Dirac substrate is the smoke-
-test). If all of those land, residual_void_score moves 8 → 1; atom 8c
+test). If all of those land, residual_void_score moves 8 → 1, and atom 8c
 stays Clay-class.
 
 ### §7.1, What the discipline asserts and does not assert
 
-The honest scope of this work is bounded enough that it belongs as a
-section, not a footnote. Stated as an asserts / does-not-assert pair:
+The honest scope of this work belongs in a full section. Stated as an asserts / does-not-assert pair:
 
 **Asserts:** a non-domain-expert principal operating a cybernetic
 apparatus under these disciplines (pre-registration, falsification
@@ -709,17 +699,17 @@ condition for low-concern verdicts), and self-demoting the apparatus's
 own wrong causal stories.
 
 **Does not assert:** that the apparatus replaces domain experts; that
-the automated epistemic falsification discipline is unique to this
-apparatus rather than a general structural principle; that the same
-operating regime would produce the same results with a different
-principal or under a different apparatus stack; that any single domain's
+the automated epistemic falsification discipline is specific to this
+apparatus, leaving open whether it generalizes to a structural principle; that the same
+operating regime would produce the same results under a different
+principal or apparatus stack; or that any single domain's
 contribution rises to the level of a domain-expert breakthrough.
 
 The honest non-claim worth stating explicitly: **single-N=1 cybernetic
 system, single-maintainer, single-corpus-per-domain.** The apparatus, the
 maintainer, and the substrates are not independently replicated. The
-methodology generalization is a hypothesis this sprint proposes, not a
-result it demonstrates. The two-repo release (ZTARE + cognitive-firm)
+methodology generalization remains a hypothesis this sprint proposes,
+short of a demonstrated result. The two-repo release (ZTARE + cognitive-firm)
 is the first move toward independent replication: putting both halves
 of the operating discipline into the open so a second principal under
 a different apparatus stack can either reproduce the third-thing claim
@@ -730,13 +720,14 @@ or refute it.
 The eigenquestion set after this sprint is concrete and short.
 
 First: **does the socio-technical architecture remain legible next to
-related systems?** AI Co-Mathematician is a related math-agent workbench,
-not a public yardstick for ZTARE. The useful distinction is artifact class:
+related systems?** AI Co-Mathematician is a related math-agent workbench
+adjacent to ZTARE; the project treats it as a pointer, not a public
+yardstick. The useful distinction is artifact class:
 math-agent substrate versus filesystem-backed claim lifecycle. ZTARE's
 public question is whether its ledgers, gates, demotions, forecast records,
 and human/agent role boundaries improve research reliability across
-substrates. Cite-and-adopt is the operating rule; comparative language
-belongs behind a declared benchmark gate, not in the sprint narrative.
+substrates. Cite-and-adopt is the operating rule. Comparative language
+belongs behind a declared benchmark gate, and stays out of the sprint narrative.
 
 Second: **do Papailiopoulos-style external validations compound?** The
 2026-05-07 vision-validation that the maintainer surfaced is one external
@@ -772,22 +763,22 @@ scale ("write a journey MD"; "don't balk"; "use all of ZTARE") seems
 unlikely to mechanize. Anti-laundering at the catch-row scale already
 has, the Meta-Darwin fires before the maintainer does in
 many of the 2026-05-08 demotions. If the trend continues, the human's
-primary function shifts upward in scope; what does not shift is
+primary function shifts upward in scope. What does not shift is
 the human's role as the reference frame against which "structurally critical"
 itself is defined.
 
 ---
 
 _Length-discipline note: this synthesis was drafted long because it covers
-six phases, not one night. It was self-reviewed against the catch ledger
+all six phases. It was self-reviewed against the catch ledger
 for laundered claims before commit. If a reader finds an inflation, 
 particularly in the maintainer-role descriptions of §6, where the
 hagiographic failure mode is real, that is a falsification of §6's claims
 about typed anti-laundering supervision and should be filed against the
 next ledger row. The honest scope is one maintainer's 70-day sprint with
 five active substrate domains, a single apparatus stack, and a single
-agent-orchestration regime. Generalization is a hypothesis this document
-proposes; it is not a result it demonstrates._
+agent-orchestration regime. Generalization remains a hypothesis this document
+proposes, short of a demonstrated result._
 
 
 ---
@@ -810,8 +801,8 @@ shear-flow counterexample. The additive-combinatorics route was dead.
 
 The second asked whether the W6 sharp conditional in Lean was a
 faithful encoding of Lerner-2026 Theorem 1.12. Verdict: no. The
-function class was incompatible, Lerner assumes decay at infinity;
-Bohr-AP velocities don't decay. The low-frequency Wiener-algebra port
+function class was incompatible: Lerner assumes decay at infinity, which
+Bohr-AP velocities violate. The low-frequency Wiener-algebra port
 was a different theorem in the same notational dress.
 
 The Research Director then proposed a non-additive replacement based
@@ -836,13 +827,13 @@ resolved to a statistics paper, a judo match analysis, and an
 information-science paper on student relevance assessments), a
 calibration miss at the citation layer that triggered a structural
 fix in PATTERN-014's prompt protocol (mandatory abstract-first-
-sentence quotation as verification anchor; verified working on the
-next dispatch, 4/4 anchors clean).
+sentence quotation as verification anchor, verified working on the
+next dispatch with 4/4 anchors clean).
 
 The honest framing: the W6 question may be empty in the unforced
 stationary Bohr-AP class via a 2-line Bohr-mean energy identity
-argument, but only after a regularity-class strengthening (C²_b
-rather than the originally-encoded bounded-smooth + C⁰ Bohr-AP)
+argument, but only after a regularity-class strengthening to C²_b
+(above the originally-encoded bounded-smooth + C⁰ Bohr-AP)
 that the existing literature does not assume. The strengthening was
 shipped to Lean as a typed-companion axiom citing Levitan-Zhikov
 §I.4 Theorem 1.4.5. The demolition theorem itself was then composed
@@ -851,8 +842,8 @@ zero sorries, three new typed-companion axioms each with explicit
 literature anchors. The medium-risk axiom (whether W6 stratum
 correctly excludes the constant zero-mode) was verified by a
 follow-up internal-Claude audit: the W6_RankGE2 conjunct fires
-first and rules out constants by definition; the amplitude class
-condition would be vacuous on the trivial spectrum, but is
+first and rules out constants by definition. The amplitude class
+condition would be vacuous on the trivial spectrum but is
 unreachable.
 
 The pivot away from the demolished W6 narrative was scoped during
@@ -877,17 +868,17 @@ validated on N = 2 dispatches: 0 of 4 anchors phantom under protocol;
 3 of 3 phantom without.
 
 The calibration arc held. Sixteen pre-registered probability
-predictions resolved overnight; fifteen of sixteen ratified prior.
+predictions resolved overnight, and fifteen of sixteen ratified prior.
 The single miss (PL-070, the phantom-arXiv outcome at 5% prior)
 triggered the structural protocol fix that subsequent dispatches
 relied on. Self-improvement via self-analysis is empirically a
-terminating process for this apparatus, not a recursive trap;
-the 2026-05-09 Meta-Darwin audit categorized each catch as ending
+terminating process for this apparatus, with each pass converging to a
+resolution. The 2026-05-09 Meta-Darwin audit categorized each catch as ending
 in {true-negative, fixable-defect, irreducible-open}, none in
 recursive-regress.
 
 Post-midnight, the honest NS frontier narrowed again. The strongest
-current branch is no longer the W6 stationary narrative but the
+current branch has shifted from the W6 stationary narrative to the
 rescaled-increment / concentration route around Duchon-Robert flux:
 ordinary Young-measure packaging was replaced by a p=3 concentration
 carrier, the CKN side was split into support-localization plus an open
@@ -914,7 +905,7 @@ splice paragraphs, or stay with the canonical 2026-05-08 wording.
 ---
 
 _Phase 7 length: ~700 words. Matched against the catch ledger
-before commit; if a reader finds inflation, particularly in
+before commit. If a reader finds inflation, particularly in
 the "twelve hours" framing or the methodology-vs-substrate
 balance, that is a falsification of this section's claims and
 should be filed against the next ledger row._
@@ -923,15 +914,16 @@ should be filed against the next ledger row._
 ### Phase 7 note, related-system boundary around AI Co-Mathematician
 
 DeepMind released AI Co-Mathematician during this sprint window. This note is
-historical provenance, not current public positioning. ZTARE should mention
-AI Co-Mathematician only as a related-system pointer: a math-focused agentic
-workbench adjacent to ZTARE's proof-search and formalization modules.
+historical provenance, and stands apart from current public positioning. ZTARE
+should mention AI Co-Mathematician only as a related-system pointer: a
+math-focused agentic workbench adjacent to ZTARE's proof-search and
+formalization modules.
 
 The current public distinction is broader and less competitive. ZTARE is a
 socio-technical research system: a filesystem-backed loop where an accountable
 human and agentic workers produce source files, review artifacts, claims,
 forecasts, gates, demotions, proof artifacts, and roadmap decisions. Its
-proof-search surface is one module inside that loop, not the whole system.
+proof-search surface is one module inside that loop, scoped well below the whole system.
 
 The relevant question is therefore not "which system is better at math?" The
 question is whether ZTARE's operating discipline makes AI-assisted research
@@ -954,7 +946,7 @@ maintainer decides whether to ship that phrasing.
 
 The weekly reflexive practice was run end-to-end through a single
 orchestrator (`scripts/public/mining/run_reflexive_mine.py`). The point of
-this section is not the numbers; it is what the practice did to this
+this section is not the numbers. It is what the practice did to this
 sprint's own story.
 
 **The self-catch.** Running the audit, the maintainer and an agent selected
@@ -962,7 +954,7 @@ the wrong rating instrument, a *cold* rater (no codebase context) instead
 of the canonical *contextualized* rater, and pooled it into the historical
 series, contaminating it. A "no recursive gain" verdict was stated on that
 wrong, contaminated instrument. The practice surfaced the error the same
-session; it forced a root-cause analysis, a corrected canonical procedure,
+session, forcing a root-cause analysis, a corrected canonical procedure,
 and a fail-closed gate so it cannot recur
 (`docs/concepts/reflexive_mining_methodology.md`). The apparatus demoted
 this sprint's own measurement, in writing, in the same artifact, before any
@@ -973,11 +965,11 @@ of the metrics below were reported.
 - **Bifurcation, cumulative:** of 34,440 authored artifacts, ~25% are
   ZTARE iteration work files (iter** artifacts), ~75% out-of-loop agent
   work. In-loop is the iter** files themselves, not project-dir
-  membership (maintainer-corrected 2026-05-16; the invariant is the files).
+  membership (maintainer-corrected 2026-05-16, invariant is the files).
 - **Bifurcation, as of today (point-in-time, not weekly):** of 21,066
   artifacts touched in the trailing 7 days, **540 are iter-loop and 20,526
   are agent-work, ~97% out-of-loop.** The iteration loop is not merely a
-  historical minority; in the live window it is near-silent.
+  historical minority. In the live window it is near-silent.
 - **Capability-ROI (28-day, 157 projects):** of ~18 catalogued primitives,
   4 engaged, 7 dead, 7 never instantiated. Survivors: three governance/
   critic primitives + one solver (Lagrangian derivation, 76% engagement).
@@ -989,11 +981,11 @@ of the metrics below were reported.
 **The reading (self-demotion, not redefinition).** The honest account is
 not "ZTARE was always the governed agent loop", that would be face-saving
 of exactly the kind the apparatus exists to catch. It is: the
-champion-evolution engine was a hypothesis; the apparatus's own ROI audit
-falsified it and reported it; the part that survived is the discipline plus
+champion-evolution engine was a hypothesis. The apparatus's own ROI audit
+falsified it and reported it. The part that survived is the discipline plus
 one derivation primitive plus agent dispatch plus mining feedback. That
-self-falsification is the result, recorded as a dated demotion rather than
-edited out.
+self-falsification is the result, recorded as a dated demotion and left
+in the record.
 
 **The honest open edge.** The surviving apparatus is roughly three-quarters
 governance/critic and one-quarter generation, the generation being a single
@@ -1001,18 +993,17 @@ primitive plus agent dispatch. It is strong at not fooling itself and thin
 at producing new closures at the frontier, which matches the hard-math
 record (NS/Clay open, [GP-225](../research_areas/seams/engine/lean/GP-225_gnn_lemma_relevance_ranker_seam.md) scoped). The forward direction the data points
 to is to widen the generative surface (operationalizing the principle that
-an adversarial verifier, run backward, is a generator) rather than add more
-governance. A standing rule falls out of the contamination episodes:
+an adversarial verifier, run backward, is a generator), the side already
+thinner than the governance side. A standing rule falls out of the contamination episodes:
 measurement-bearing work must run through a governed agent with provenance,
-independence, dedup and rater segregation; only non-measurement scaffolding
+independence, dedup and rater segregation. Only non-measurement scaffolding
 may use ungoverned calls.
 
 ## §10, 2026-05-17 to 2026-05-24: a child seam landed, and its rules were earned not asserted
 
 This week the first child of the forecast-pool primitive ([GP-230](../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md)) crystallized
-into a documented operational discipline rather than a sketch. That is the
-headline. The self-corrections inside it are part of the result, not a
-disclaimer attached to the result.
+into a documented operational discipline, past the sketch stage. That is the
+headline. The self-corrections inside it are part of the result proper.
 
 **What landed.** The [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) Forecast Calibration Program now stands as a
 33-finding child seam with explicit retest tags and a public claim surface
@@ -1027,14 +1018,14 @@ central pieces:
   (`scripts/public/control/forecast/pool.py`) was extended to surface
   second-moment-channel Spearman alongside point-Brier.
 - A specific operational rule about how to *use* the signal: high tail-
-  worry on a material contract routes to abstain-and-escalate, not to
-  threshold-shift. Where escalation is needed, the apparatus dispatches
+  worry on a material contract routes to abstain-and-escalate, leaving
+  the threshold itself fixed. Where escalation is needed, the apparatus dispatches
   a fresh forecaster from a different model family to re-price the same
   contract without prior-agent context, and that judge's row replaces
   the original decision. The closed-loop super-judge wiring is
   empirically better than abstention on asymmetric-favor-yes cost
   regimes (Brier 0.21 vs original 0.35 on the worried subset, N=44).
-- An architectural — not behavioral — sealing rule for ensemble
+- An architectural (not behavioral) sealing rule for ensemble
   independence. Two registered light-touch remediations are now on
   record as failing: cross-agent rationale exchange (F19/F22, pooled
   Brier ~chance) and direct skeptical-instruction framing (F33, slope
@@ -1042,54 +1033,52 @@ central pieces:
   instruction). The rule that survives is: do not expose forecasters
   to each other's outputs before they emit. Pattern 12, Primitive 9,
   the forecasting mandate, and the [GP-230](../research_areas/seams/mission/org/GP-230_cognitive_firm_absorption_seam.md) seam now state this rule
-  with two pieces of registered negative evidence behind it rather
-  than as a stylistic preference.
+  with two pieces of registered negative evidence behind it, having
+  earned its place past the stylistic-preference stage.
 
 These rules were *earned*. Each one cost a pilot or a pair of pilots,
 and each one has the negative experiment that would have refuted it in
 the research log.
 
 **What the program demoted in itself.** Three demotions landed in the
-same week the program landed, which is the system working as intended
-rather than a confession:
+same week the program landed, which is the system working as intended:
 
 - F32 narrowed F20 in-session. F20 had asserted "tail-premium strictly
   stronger than verbal confidence." F32, the same instrument's fourth
   replication, found that on the gp225 apparatus-replay corpus
   verbal-confidence was the stronger channel for two of three agents.
-  The corrected claim — tail-premium is the channel that doesn't
-  sign-flip across agents, not the channel that always reads strongest
-  on any given agent — is sharper than the original and survives the
+  The corrected claim (tail-premium is the channel that holds its sign
+  across agents, whatever channel reads strongest on any given one)
+  is sharper than the original and survives the
   new data. The codex_55 verbal-confidence sign-flip reproduced.
 - Codex 5.4 adversarial review returned `do-not-cite` on both
   in-flight paper drafts (the Failure Atlas and the [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)-CalBench
   testbed paper), with five kills per paper. The revisions integrated
-  each kill into the text rather than carving them off as caveats.
-  The re-review is owed.
+  each kill into the body of the text. The re-review is owed.
 - F33 closed a registered hypothesis cleanly negatively. Skeptical-
   instruction framing as a herding remediation had been on the
-  roadmap; v5.1 ran it; the result was statistically indistinguishable
+  roadmap. v5.1 ran it, and the result was statistically indistinguishable
   from the no-framing baseline. Combined with F19/F22 this leaves the
   architectural fix as the only intervention with evidence behind it,
   which is itself a positive *generative* finding because it tells the
-  next maintainer what to build (a sealed pool) rather than what to
-  write (a clever instruction).
+  next maintainer what to build: a sealed pool, an architectural fix,
+  where the earlier approach had leaned on a clever instruction.
 
 **The standing limits.** Zero second-lab submissions to
 GP-245-CalBench. The agent trio is 1 claude + 2 codex variants, so
 cross-family replication (reasoning-class, Gemini, open-weights) is
 owed before any finding is read as model-class-general. A WebSearch
-survey rated 3–4 of the 33 findings as novel instruments rather than
-novel mechanisms — most of the rest extend Closing-Confidence-
+survey rated 3–4 of the 33 findings as novel instruments at the
+instrument level; most of the rest extend Closing-Confidence-
 Faithfulness-Gap, Wired-for-Overconfidence, Schoenegger 2024,
 Tian 2023, and the multi-agent herd-behavior literature. The atlas and
-testbed papers carry these limits in their honest non-claims sections;
-the public claim register and per-project claim summary repeat them.
+testbed papers carry these limits in their honest non-claims sections.
+The public claim register and per-project claim summary repeat them.
 
 **The forward direction.** F33 and the closed-loop super-judge are
-generation-side discoveries, not governance-side. §9 said the
-apparatus's forward direction was to widen the generative surface;
-this week produced two concrete instances of that — a specific
+generation-side discoveries. §9 said the
+apparatus's forward direction was to widen the generative surface, and
+this week produced two concrete instances of that: a specific
 architectural pattern (sealed pool with abstain-or-escalate routing)
 and a specific operational pattern (cross-family judge re-decision on
 the worried subset). The next generation-side question the data
@@ -1104,7 +1093,7 @@ surface was tightened the same week. A structural leak of a private
 external collaborator's name through the reflexive ledger generator
 (filename metadata, even though file content stayed gitignored) was
 fixed at the generator: private-path artifacts are now skipped at
-index time, not redacted after. Three downstream tracked artifacts
+index time, ahead of any after-the-fact redaction. Three downstream tracked artifacts
 that carried the name (a benchmark, a rubric, three ledger rows) were
 moved into the private subtree or filtered out. The
 top-level `public/` plus per-project `projects/*/public/`
@@ -1114,8 +1103,8 @@ top-level cross-cutting summary and the relocated field manual). The
 product-export artifacts that drive ClearJudgment and mini-ztare
 moved out of a one-off `exports/` folder into
 `analytics/public/product_exports/` so they live where other
-regenerated machine artifacts live. None of that is research progress;
-all of it is the kind of housekeeping that has to be done before any
+regenerated machine artifacts live. None of that is research progress.
+All of it is the kind of housekeeping that has to be done before any
 of the research is publicly readable.
 
 ## §11, 2026-05-24 to 2026-05-29: the forecasting program tripled, the audit tooling expanded, and one finding was voided by the project's own auditor
@@ -1132,24 +1121,24 @@ it was written down. The void is documented in detail below.
 At N=142 a four-rule shrinkage stack (`routed_v1`) beats the median-of-5
 ensemble at p=0.0013 and mean-of-5 at p=0.0069; against the best single
 forecaster the comparison stays *inconclusive_underpowered* at the
-program's Δ≥0.05 detection bar, and the doc says so rather than rounding
-it up (F97 → F99). The one standalone rule that survives on its own is
+program's Δ≥0.05 detection bar, and the doc says so and leaves it
+unrounded (F97 → F99). The one standalone rule that survives on its own is
 `confident_no_discount`, a single per-family correction for very-low
 `p_raw` that improves Brier at p<0.05 on every panel member, including
-deepseek at p=0.0008 (F100); it is wired into
+deepseek at p=0.0008 (F100), and it is wired into
 `org/calibration/per_agent_prompt_policy.yaml`. Inducted on top of
 F100-F102, the Frequency-Inheritance Hypothesis (F104) proposed that LLM
 bias inheritance partitions into ESCAPE / INHERIT / MIMIC cells along
 three axes (elicitation surface × bias-mechanism class × alignment
 overlay). The pre-registration set the bar at ≥8/10 cell-classifications
-correct; the claude-subscription confirmatory scored **8 of 10**, with the
-two misses (D sunk-cost, I in-group) both informative — they sharpen the
-MIMIC predicate rather than refute the frame. The honest public number is
+correct, and the claude-subscription confirmatory scored **8 of 10**, with the
+two misses (D sunk-cost, I in-group) both informative, sharpening the
+MIMIC predicate while leaving the frame standing. The honest public number is
 8/10. A later, post-hoc per-family alignment-damping axis could be made to
 recover the two misses, but that augmentation came *after* seeing them, so
-it is not the pre-registered result and the public surfaces report 8/10,
-not 10/10. The novel-bias split (F102) replicated across all five families
-on a diversified n=42 Metaculus+FRED corpus — and the public docs are
+it falls outside the pre-registered result and the public surfaces report
+the confirmatory 8/10. The novel-bias split (F102) replicated across all five families
+on a diversified n=42 Metaculus+FRED corpus, and the public docs are
 careful to cite which corpus carries which number (v28a gives a loss-frame
 gap of 0.035-0.148, the diversified n=42 gives 0.061-0.124; the two are not
 pooled into one range).
@@ -1163,24 +1152,24 @@ sidecar for non-drift `compile_failed`, and process-group kill discipline
 for orphaned `lake` subprocesses all landed as fixes. The corrected,
 honest verdict over the eight theorems is: **8/8 compile kernel-clean at
 the pinned v4.27 toolchain** (no `sorry`/`admit`; only allowlisted kernel
-axioms) and **all eight are top-level L3-clean** — no headline theorem is
-a vacuous restatement. The two substantive caveats are **toolchain-pinning**
+axioms) and **all eight are top-level L3-clean** (no headline theorem is
+a vacuous restatement). The two substantive caveats are **toolchain-pinning**
 (5/8 fail native v4.30) and **library-composition** (the proofs assemble
-existing Mathlib lemmas — limited novel-math content, normal for
+existing Mathlib lemmas, with limited novel-math content (normal for
 formalization). The harder lesson was about the audit's own framing:
-**L3 helper-level flags are advisory, not findings.** A helper lemma
-citing a Mathlib lemma by name is normal library use; the only
+**L3 helper-level flags are advisory.** A helper lemma
+citing a Mathlib lemma by name is normal library use. The only
 discriminating laundering signal is a *top-level* flag, and there are
-none here. Two interim framings were both wrong and are retracted — an
+none here. Two interim framings were both wrong and are retracted. An
 auditor Bug-4 once conflated helper-blocker passes into "clean" (overstating
 quality), and a later "1 clean, 7 carry blockers" reading overstated a
 defect by weighting helper-level L3 it should not have.
 
 **Two earned retractions.** The earlier "DeepMind laundering caught"
-framing on the APN proofs was wrong; we do **not** claim DeepMind published
+framing on the APN proofs was wrong. We do **not** claim DeepMind published
 anything fake, and that framing is explicitly retracted in every public
 surface that carried it (F103). The Halawi 2024 forecasting dataset turned
-out to be structurally contaminated for the 2025+ LLM generation — its
+out to be structurally contaminated for the 2025+ LLM generation: its
 resolve-year histogram has zero entries past 2024, so every panel member's
 knowledge cutoff postdates every resolution, and a 30-call probe returned
 the memorization signature (raw Brier 0.13 with perfect bin-calibration).
@@ -1190,27 +1179,27 @@ gemini sign-inversion claim (F42) was also retracted: an N=42 public-domain
 retest excluded the inverted direction (F95).
 
 **The void, and why it is the headline.** F105 was an effort-calibration
-finding — the idea that the apparatus could measure and "nurture" an
+finding, the idea that the apparatus could measure and "nurture" an
 agent's effort against task difficulty. It was written into the research
 log and, for one day, looked like a result. A Meta-Darwin audit ran the
 day after and killed it: the harness was construct-invalid. The outcome
 variable it scored was just the difficulty label re-encoded, and the
 resolver never checked whether the answer was actually correct, so the
-"calibration" it measured was a tautology, not a skill. F105 is **VOID** as
+"calibration" it measured was a tautology. F105 is **VOID** as
 of 2026-05-30. No effort-calibration or nurture claim appears as supported
-in any public document; if F105 surfaces anywhere it is marked in-progress
+in any public document. If F105 surfaces anywhere it is marked in-progress
 and not established. The instrument that caught the broken instrument was
-the scheduled audit, not an external reviewer and not the maintainer. The
+the scheduled audit, firing ahead of any external reviewer or the maintainer. The
 finding was construct-invalid and was voided before it reached a public
-claim — the same anti-laundering mechanism §6 describes, applied to an
+claim, per the same anti-laundering mechanism §6 describes, applied to an
 internally-produced finding. The reported count is 104 findings with one
-self-voided rather than 105.
+self-voided.
 
 **The standing limits, unchanged in kind.** Zero second-lab submissions to
 [GP-245](../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md)-CalBench. The five-family panel diversifies cross-family power but
 n=42 per arm on the diversified corpus is the current ceiling for
 power-aware comparisons, and codex errors inside the panel are correlated.
-The WebSearch novelty self-rating still lands at 3-4 novel instruments, not
-a hundred novel mechanisms. The program continues to treat over-claiming
+The WebSearch novelty self-rating still lands at 3-4 novel instruments,
+well short of a hundred novel mechanisms. The program continues to treat over-claiming
 novelty as itself a failure mode, and the count of findings is not the
-measure of the program — the measure is how many survive being attacked.
+measure of the program. The measure is how many survive being attacked.

@@ -9,7 +9,7 @@ inputs, records what the claim does not cover, and shows the next check that
 would change the answer.
 
 The risk is a plausible answer with friendly evidence and no clean way to audit
-how it got there. ZTARE splits proposal, checking, evidence, report export, and
+how it got there. ZTARE splits proposal, checking, evidence, report support, and
 review into separate steps. A model can help draft or search. The claim only
 counts as far as the sources and checks support it.
 
@@ -34,19 +34,19 @@ The useful mental model is:
 
 ```text
 bounded claim -> local sources -> evidence readiness -> trace/preflight
--> verdict, demotion, blocker, or next falsifier
+-> verdict, demotion, support issue, or next falsifier
 ```
 
-The long-term idea is simple: code has compilers; reasoning needs similar
-discipline. Informal proposals should become objects you can check, reject,
-narrow, log, and review. The current v0.4 slice is smaller: local claim review
-over inspectable sources and artifacts.
+Code has compilers; reasoning needs similar discipline. The long-term aim is to
+turn informal proposals into objects you can check, reject, narrow, log, and
+review. The current v0.4 path is deliberately focused: local claim review over
+inspectable sources and artifacts.
 
-Then inspect the concrete failure catalog:
+Then inspect the failure catalog:
 [9 ways LLMs game their own evaluations, with code examples and catch
 patterns](docs/gaming_behavior_catalog.md#start-here-9-ways-llms-game-their-own-evaluations).
 
-## First Value In 5 Minutes
+## First value in 5 minutes
 
 For a fresh clone, install and run the offline value check:
 
@@ -67,29 +67,29 @@ that the public catalog, live vector registry, promotion evidence, hardening
 map, and current executable fixture anchors agree without turning later
 registry rows into paper-taxonomy claims.
 
-## Use It When
+## Use it when
 
 Use ZTARE when you need to know what you can stand behind after checking the
 sources, artifacts, and failure modes.
 
 Good fits:
 
-- reviewing a claim against local sources, notes, papers, logs, or data;
-- checking whether a report is backed by current evidence;
+- reviewing a claim against local sources, notes, papers, logs, or data
+- checking whether a report is backed by current evidence
 - testing an evaluator, model workflow, or proof-search surface for self-grading
-  and overclaiming;
-- preserving failed branches, blockers, and next falsifiers so a later run does
+  and overclaiming
+- preserving failed branches, support issues, and next falsifiers so a later run does
   not start from scratch.
 
 Bad fits:
 
-- a plug-and-play agent framework;
-- a leaderboard optimizer;
-- a polished hosted product;
-- proof of autonomous hard-problem success;
+- a plug-and-play agent framework
+- a leaderboard optimizer
+- a polished hosted product
+- proof of autonomous hard-problem success
 - a replacement for domain review.
 
-## Choose The Path
+## Choose the path
 
 Choose what you are trying to inspect before choosing a model. Most bad runs
 start too late in the process: a model is launched before the sources, claim,
@@ -103,26 +103,27 @@ belongs outside the validation loop for now.
 |---|---|---|
 | **Project intake** | You have a project, source, paper, dataset, repo, or claim that is not yet ready for a run | `ztare project walkthrough` |
 | **In-loop autoresearch** | A bounded claim, stable evaluator, rubric, and artifact output are ready | `ztare autoresearch trace --brief`, then its `recommended first command` |
-| **Out-of-loop research work** | The work is source gathering, proof decomposition, reproduction setup, synthesis, or one-off agent work | `ztare autoresearch route` plus action-intelligence rows |
+| **Out-of-loop research work** | The work is source gathering, proof decomposition, reproduction setup, synthesis, or one-off agent work | `ztare autoresearch route` plus action-guidance records |
 | **Proof work** | The target is Lean formalization, proof search, or proof-credit governance | `ztare leanmill ...` and [leanmill_architecture.md](docs/concepts/leanmill_architecture.md) |
 | **Reflexive/ops review** | You want to know whether the system's own routing, forecasts, catches, or instruments are improving | `make first-run`, `ztare autoresearch trace`, and the evidence atlas |
 
-For a local web view over one project, use the forensic workbench:
+For a local web view over one project, use the Project Workbench:
 
 ```bash
 make forensic-workbench-data WORKBENCH_PROJECT=ops_root_cause_diagnosis_demo
 make forensic-workbench-live
 ```
 
-The React app reads a generated snapshot in static mode. With the local API
-running, it can list projects and refresh the selected case from the repo
-without giving the browser raw filesystem access. Review decisions can be
-applied through the local API. Static mode still lets you download or copy the
-review JSON and apply it with `ztare forensic-workbench apply-review`.
+The React app can read a generated offline snapshot. With the workbench
+server running, it can list projects, edit intake/source files, run preflight,
+save reviews and next steps, save project files, and refresh the selected project
+from the repo without giving the browser raw filesystem access. Offline snapshot
+mode still lets you download or copy the review JSON and apply it with
+`ztare forensic-workbench apply-review`.
 
 The validation engine is appropriate only after the in-loop prerequisites are
 ready. Project intake and out-of-loop work create or repair the inputs the loop
-later consumes; they are not lesser versions of the loop. The commands below
+later consumes. They are not lesser versions of the loop. The commands below
 are reference examples. You do not need to read them all before running
 `make hello` or `ztare project walkthrough`.
 
@@ -156,7 +157,7 @@ are reference examples. You do not need to read them all before running
 | Validate dormant in-loop fixtures | `make inloop-fixture-validate` |
 | Check dispatch wrapper coverage | `make autoresearch-dispatch-validate` |
 
-## What Is Actually Here
+## What is actually here
 
 Five tracks compose into the current claim-governance workbench:
 
@@ -164,7 +165,7 @@ Five tracks compose into the current claim-governance workbench:
 |---|---:|---|
 | **Validation engine and claim-governance kernel** | stable / evolving | The runnable in-loop validator plus the trusted checks and contracts around it: proposal, fit/compression, adversarial review, deterministic checks, projection, and run history. Home of the published [LLM gaming behavior catalog](docs/gaming_behavior_catalog.md). |
 | **Project intake and evidence readiness** | release path | Local files, source typing, evidence binding, evidence gaps, claim support, trace readiness, and preflight admission before model spend. |
-| **Report/export contract** | release path | Blocks stale or unsupported reports before model-written QA can promote them. |
+| **Report support contract** | release path | Stops stale or unsupported reports from being promoted. |
 | **LeanMill** | active / current frontier | Governed Lean proof search. Treat it as a deeper evidence track, not the first v0.4 adoption surface. |
 | **Reflexive layer** | advisory | Mining over forecasts, actions, catches, experiment records, and in-loop/out-of-loop split. It surfaces stale ledgers, dead instruments, and underused capabilities. |
 
@@ -178,15 +179,15 @@ Typical flow:
 
 ```text
 local question -> route choice -> intake/evidence/trace
--> preflight or bounded run -> review artifact
--> verdict, demotion, blocker, or next check
+-> preflight or project run -> review artifact
+-> verdict, demotion, support issue, or next check
 ```
 
 This is a local research workbench currently hardened around one human
 reviewer's workflow. Public forkability, hosted collaboration, and multi-user
 hardening are roadmap work, not completed claims.
 
-## Design Invariants
+## Design invariants
 
 - **The proposer does not grade itself.** Generation, adversarial review,
   scoring, and deterministic gates are separate actors.
@@ -197,12 +198,12 @@ hardening are roadmap work, not completed claims.
   branches, and instrument failures are recorded because they change the next
   experiment.
 - **Worker transport is metadata, not epistemology.** API calls, subscription
-  CLIs, and local workers can all be used; the typed contract, artifact, and
+  CLIs, and local workers can all be used. The typed contract, artifact, and
   gate decide whether the result counts.
 - **Chat is not the system of record.** Durable artifacts live under
   `projects/`, `research_areas/`, `org/`, `papers/`, and generated analytics.
 
-## Evidence First
+## Evidence first
 
 Start from the artifacts:
 
@@ -217,7 +218,7 @@ Scale is tracked as an internal health signal, not a benchmark: artifact
 volume, in-loop versus out-of-loop work, ratified catches, and insight-density
 changes are mined by the reflexive dashboard.
 
-## How To Judge The Current Release
+## How to judge the current release
 
 Do not judge ZTARE by repo size. Judge it by whether you can inspect the path
 from a source file to a claim boundary.
@@ -252,8 +253,8 @@ ztare --help       # human-facing CLI: project / autoresearch / action-intel / f
 
 Add keys only for an LLM-backed loop. Supported API-provider keys are
 `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `DEEPSEEK_API_KEY`,
-`KIMI_API_KEY` or `MOONSHOT_API_KEY`, and `XAI_API_KEY` or `GROK_API_KEY`;
-subscription-CLI dispatch is also supported for wired call sites. See
+`KIMI_API_KEY` or `MOONSHOT_API_KEY`, and `XAI_API_KEY` or `GROK_API_KEY`.
+Subscription-CLI dispatch is also supported for wired call sites. See
 [`docs/reference/model_aliases.md`](docs/reference/model_aliases.md) before
 choosing a mutator/judge pair. After project-intake validation and trace readiness, run
 the guarded CLI entry. It blocks before the first model call unless the intake file,
@@ -268,13 +269,13 @@ ztare autoresearch run --project <project> --rubric <rubric> \
 ```
 
 For serious runs, prefer cross-family pairs such as `kimi` + `gpt4.1`,
-`grok` + `gemini-pro`, or `gemini-pro` + `gpt4.1`; use `CROSS_FAMILY=1`
+`grok` + `gemini-pro`, or `gemini-pro` + `gpt4.1`. Use `CROSS_FAMILY=1`
 when the run should fail before any model call if the pair shares a provider
 family.
 
 Before using a persistent agent outside the loop, ask whether the task belongs
 in autoresearch. If the task needs project files or data first, create or
-prepare them before run readiness; before trusting a run, inspect the trace:
+prepare them before run readiness. Before trusting a run, inspect the trace:
 
 ```bash
 ztare project source-init --project <project> --rubric <rubric>
@@ -294,13 +295,13 @@ ztare autoresearch health --project <project> --rubric <rubric> --json
 The public path is deliberately short:
 
 ```text
-project intake -> autoresearch trace -> preflight when needed -> bounded run -> report/export
+project intake -> autoresearch trace -> preflight when needed -> project run -> report support / project file
 ```
 
 `autoresearch trace` is the read-before-run surface. Use
 `plan_preview.recommended_first_command`: before a fresh admission it is the
 model-free preflight; after the current intake and run-readiness bytes are
-admitted, it advances to the bounded run. Re-run preflight when the intake,
+admitted, it advances to the project run. Re-run preflight when the intake,
 source/evidence surface, or launch contract changes.
 
 `project intake enqueue` is stricter than shape validation: it requires the
@@ -312,7 +313,7 @@ in the prep ledger first. Use `intake` for new commands and docs.
 `projects/<project>/workspace/`, and `raw/source_type_map.json`. It does not
 write `evidence.txt` or start a run. Raw source documents must be typed with
 `source_type` frontmatter or the source-type map. `make evidence-prepare`
-runs `source-check` before the source-to-evidence compiler path; run
+runs `source-check` before the source-to-evidence compiler path. Run
 `source-check` standalone when you want the offline readiness report without a
 model-backed compile.
 
@@ -341,7 +342,7 @@ Walkthrough + CLI tour: [docs/guides/quickstart.md](docs/guides/quickstart.md) �
 | Read the papers | [papers/README.md](papers/README.md) |
 | Work inside the repo as an agent | [AGENTS.md](AGENTS.md) (the repo constitution) |
 
-### What Can Transfer
+### What can transfer
 
 If you want to reuse the ideas without adopting the whole repo, start with the
 pieces that solve ordinary AI-system problems:
@@ -350,7 +351,7 @@ pieces that solve ordinary AI-system problems:
   replay tests, preflight checks, provenance fields, fail-closed routes, and
   result-bound success claims.
 - [Reflexive primitives](docs/concepts/reflexive_engineering.md): ways to turn
-  a repeated failure into a check, queue row, route, or record that a later run
+  a repeated failure into a check, queue item, route, or record that a later run
   must consume.
 - [Epistemic principles](docs/concepts/epistemic_principles.md): the rule that
   a proposer does not grade itself, plus failure catalogs and evidence levels.
@@ -381,10 +382,8 @@ commands, source files, review artifacts, demotions, and checks.
 
 - [Specification Gaming in LLM-Generated Code](papers/cognitive-camouflage/draft.md):
   nine benchmarked strategies for self-certifying code outputs · [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960)
-- [Adversarial Precedent Memory](papers/adversarial-precedent-memory/draft.md):
-  hardening evaluators through mined failure constraints · [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6525598)
-- [Contract-Governed Hardening](papers/contract-governed-hardening/draft.md):
-  staged promotion contracts for recursive hardening · [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6542998)
+- [Governed Adversarial Evaluator Hardening](papers/governed-evaluator-hardening/draft.md):
+  mined-constraint hardening plus contract-gated recursive improvement (merges the former precedent-memory and contract-governance papers)
 - [Cognitive Firm](papers/cognitive-firm/draft.md):
   role and authority separation for AI work · [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019)
 - [Epistemic Verification](papers/epistemic-verification/draft.md):
@@ -393,27 +392,27 @@ commands, source files, review artifacts, demotions, and checks.
 Read science case studies through their experiment records and public claim
 boundaries, not as free-standing proof of broad discovery performance.
 
-## What ZTARE Does Not Claim
+## What ZTARE does not claim
 
 ZTARE improves claim discipline. It does not guarantee truth.
 
 Do not read the repo as claiming that:
 
-- a high score proves a discovery;
-- a compile proves the statement was the right one;
-- a calibration recovery is new science;
+- a high score proves a discovery
+- a compile proves the statement was the right one
+- a calibration recovery is new science
 - one cold model answer is a controlled baseline unless model, date, and prompt
-  are recorded;
-- the current gates catch every failure mode;
+  are recorded
+- the current gates catch every failure mode
 - "works across domains" means no domain-specific evidence work remains.
 
 If a result matters, it needs artifacts, checks, review records, non-claims,
 and a next falsifier. Named personas in synthetic review panels are shorthand
-for reasoning styles loosely inspired by public work; they are not the named
+for reasoning styles loosely inspired by public work. They are not the named
 individuals' views, and no affiliation is implied
 (`src/ztare/personas/registry.py`).
 
-## Why It Is Built This Way
+## Why it is built this way
 
 The short version is: compress the claim, invert the failure, and design the
 environment around the model. The longer version lives in
@@ -449,5 +448,5 @@ MIT. The governance/orchestration code (`org/`, `supervisor/`, `orbit/`, `deploy
 `src/ztare/{orchestration,supervisor,sessions,signals,notifications}/`) is a tenant-overlay integration of
 the upstream [cognitive-firm](https://github.com/sparckix/cognitive-firm) kernel. Gitignored files are not
 part of the public grant until promoted. Map: [LICENSES.md](LICENSES.md) · [LICENSE](LICENSE) ·
-[NOTICE.md](NOTICE.md). Cite the specific paper or artifact you use, not the repository as a monolith;
-the repository-level `CITATION.cff` exists for tooling that requires one citation target.
+[NOTICE.md](NOTICE.md). Cite the specific paper or artifact you use, not the repository as a monolith.
+The repository-level `CITATION.cff` exists for tooling that requires one citation target.

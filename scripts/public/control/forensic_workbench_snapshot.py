@@ -145,6 +145,12 @@ def list_project_entries() -> list[dict[str, Any]]:
         latest_source_action = latest_source_action_path(project)
         latest_case_file_write = latest_case_file_write_path(project)
         report_contract = project_dir / "synthesis" / "report_support_contract.json"
+        latest_action_receipt = latest_receipt_path_for_case(
+            latest_action,
+            row_action_ledger_path(project),
+            project=project,
+            intake=intake,
+        )
         entry_key = case_key(project, intake)
         entry = entries_by_case.get(entry_key)
         if entry is None:
@@ -160,12 +166,9 @@ def list_project_entries() -> list[dict[str, Any]]:
                     project=project,
                     intake=intake,
                 ),
-                "latest_row_action": latest_receipt_path_for_case(
-                    latest_action,
-                    row_action_ledger_path(project),
-                    project=project,
-                    intake=intake,
-                ),
+                "latest_project_check": latest_action_receipt,
+                "latest_item_action": latest_action_receipt,
+                "latest_row_action": latest_action_receipt,
                 "latest_intake_edit": latest_receipt_path_for_case(
                     latest_intake_edit,
                     intake_edit_ledger_path(project),
@@ -222,8 +225,14 @@ def list_project_entries() -> list[dict[str, Any]]:
             )
             if latest_for_case:
                 entry[key] = latest_for_case
+                if key == "latest_row_action":
+                    entry["latest_project_check"] = latest_for_case
+                    entry["latest_item_action"] = latest_for_case
             elif entry_intake == intake:
                 entry[key] = ""
+                if key == "latest_row_action":
+                    entry["latest_project_check"] = ""
+                    entry["latest_item_action"] = ""
         if report_contract.exists():
             entry["report_contract"] = rel(report_contract)
 
@@ -249,6 +258,112 @@ def list_project_entries() -> list[dict[str, Any]]:
         for _key, entry in sorted(entries_by_case.items())
         if not (entry.get("intake_source") == "public_example_intake" and entry.get("project") in local_projects)
     ]
+
+
+def list_project_folders(project_entries: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    projects_dir = REPO / "projects"
+    if not projects_dir.exists():
+        return []
+    indexed_projects = {
+        str(entry.get("project") or "")
+        for entry in (project_entries or [])
+        if entry.get("project")
+    }
+    folders: list[dict[str, Any]] = []
+    for project_dir in sorted(path for path in projects_dir.iterdir() if path.is_dir()):
+        project = project_dir.name
+        if not re.fullmatch(r"[A-Za-z0-9_.-]+", project):
+            continue
+        intakes = discover_project_intakes(project)
+        raw_dir = project_dir / "raw"
+        workspace_dir = project_dir / "workspace"
+        raw_exists = raw_dir.exists()
+        workspace_exists = workspace_dir.exists()
+        source_type_map_exists = (raw_dir / "source_type_map.json").exists()
+        raw_file_count, raw_file_count_capped = bounded_file_count(raw_dir, exclude_names={"source_type_map.json"})
+        raw_source_file_count, raw_source_file_count_capped = bounded_file_count(
+            raw_dir,
+            suffixes={".md", ".txt"},
+            exclude_names={"source_type_map.json"},
+        )
+        workspace_file_count, workspace_file_count_capped = bounded_file_count(workspace_dir)
+        raw_preview_files = bounded_file_samples(
+            raw_dir,
+            suffixes={".md", ".txt"},
+            exclude_names={"source_type_map.json"},
+        )
+        workspace_preview_files = bounded_file_samples(workspace_dir)
+        folders.append(
+            {
+                "project": project,
+                "project_dir": rel(project_dir),
+                "intake_count": len(intakes),
+                "raw_exists": raw_exists,
+                "raw_file_count": raw_file_count,
+                "raw_file_count_capped": raw_file_count_capped,
+                "raw_source_file_count": raw_source_file_count,
+                "raw_source_file_count_capped": raw_source_file_count_capped,
+                "raw_preview_files": raw_preview_files,
+                "workspace_exists": workspace_exists,
+                "workspace_file_count": workspace_file_count,
+                "workspace_file_count_capped": workspace_file_count_capped,
+                "workspace_preview_files": workspace_preview_files,
+                "source_type_map_exists": source_type_map_exists,
+                "openable": project in indexed_projects,
+                "status": "case_ready" if project in indexed_projects else "needs_intake",
+            }
+        )
+    return folders
+
+
+def bounded_file_count(
+    root: Path,
+    *,
+    suffixes: set[str] | None = None,
+    exclude_names: set[str] | None = None,
+    limit: int = 500,
+) -> tuple[int, bool]:
+    if not root.exists() or not root.is_dir():
+        return 0, False
+    suffixes = {suffix.lower() for suffix in suffixes or set()}
+    exclude_names = exclude_names or set()
+    count = 0
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        if path.name in exclude_names:
+            continue
+        if suffixes and path.suffix.lower() not in suffixes:
+            continue
+        count += 1
+        if count >= limit:
+            return count, True
+    return count, False
+
+
+def bounded_file_samples(
+    root: Path,
+    *,
+    suffixes: set[str] | None = None,
+    exclude_names: set[str] | None = None,
+    limit: int = 3,
+) -> list[str]:
+    if not root.exists() or not root.is_dir():
+        return []
+    suffixes = {suffix.lower() for suffix in suffixes or set()}
+    exclude_names = exclude_names or set()
+    samples: list[str] = []
+    for path in sorted(root.rglob("*")):
+        if not path.is_file():
+            continue
+        if path.name in exclude_names:
+            continue
+        if suffixes and path.suffix.lower() not in suffixes:
+            continue
+        samples.append(rel(path))
+        if len(samples) >= limit:
+            break
+    return samples
 
 
 def run(cmd: list[str], *, timeout: int = 90) -> subprocess.CompletedProcess[str]:
@@ -298,6 +413,73 @@ def rel(path: str | Path | None) -> str:
         except ValueError:
             return str(value)
     return str(value)
+
+
+def read_repo_json_field(path: str | Path | None, field: str) -> str:
+    if not path:
+        return ""
+    value = Path(str(path))
+    target = value if value.is_absolute() else REPO / value
+    try:
+        resolved = target.resolve()
+        resolved.relative_to(REPO.resolve())
+        payload = json.loads(resolved.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return ""
+    if not isinstance(payload, dict):
+        return ""
+    return str(payload.get(field) or "").strip()
+
+
+def read_repo_json(path: str | Path | None) -> dict[str, Any]:
+    if not path:
+        return {}
+    value = Path(str(path))
+    target = value if value.is_absolute() else REPO / value
+    try:
+        resolved = target.resolve()
+        resolved.relative_to(REPO.resolve())
+        payload = json.loads(resolved.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def project_assumption_summary(project: str) -> dict[str, str]:
+    workspace_constraints = Path("projects") / project / "workspace" / "derived_constraints.json"
+    latest_eval = Path("projects") / project / "latest_eval_results.json"
+    constraints_payload = read_repo_json(workspace_constraints)
+    eval_payload = read_repo_json(latest_eval)
+    if constraints_payload:
+        confirmed = constraints_payload.get("confirmed_constraints") or []
+        provisional = constraints_payload.get("provisional_constraints") or []
+        confirmed_count = len(confirmed) if isinstance(confirmed, list) else 0
+        provisional_count = len(provisional) if isinstance(provisional, list) else 0
+        return {
+            "status": "recorded" if confirmed_count or provisional_count else "none recorded",
+            "detail": f"{confirmed_count} confirmed constraints; {provisional_count} provisional constraints.",
+            "file": rel(workspace_constraints),
+        }
+    derived = eval_payload.get("derived_constraints") or []
+    verified = eval_payload.get("verified_axioms") or []
+    retired = eval_payload.get("retired_axioms_approved") or []
+    derived_count = len(derived) if isinstance(derived, list) else 0
+    verified_count = len(verified) if isinstance(verified, list) else 0
+    retired_count = len(retired) if isinstance(retired, list) else 0
+    if eval_payload:
+        return {
+            "status": "recorded" if derived_count or verified_count or retired_count else "none recorded",
+            "detail": (
+                f"{verified_count} verified assumptions; {retired_count} retired; "
+                f"{derived_count} derived constraints."
+            ),
+            "file": rel(latest_eval),
+        }
+    return {
+        "status": "not loaded",
+        "detail": "No assumptions or constraints file is loaded for this project yet.",
+        "file": f"projects/{project}",
+    }
 
 
 def href_for(output_path: Path, target: str | Path | None) -> str:
@@ -400,18 +582,83 @@ def status_kind(status: str) -> str:
 
 
 DISPLAY_STATUS_OVERRIDES = {
+    "blocked": "needs support",
     "valid_packet": "valid intake",
+    "missing_packet": "missing evidence file",
     "invalid_packet": "invalid intake",
     "ready_for_in_loop_candidate": "ready for run",
     "ready_for_evidence_prepare": "ready for evidence prep",
-    "report_blockers_present": "report blockers present",
-    "synthesis_input_binding_unbound": "input binding unbound",
+    "report_blockers_present": "report needs support",
+    "synthesis_input_binding_unbound": "report input is not connected",
     "runtime_risks_present": "runtime risks present",
+    "loop_admission": "preflight receipt",
+    "no_action_saved": "no next step saved",
+    "no_intake_edit_saved": "no saved intake change",
+    "no_review_applied": "no review saved",
 }
 
 
 def display_status(status: str) -> str:
     return DISPLAY_STATUS_OVERRIDES.get(status, status.replace("_", " "))
+
+
+def display_detail(value: object) -> str:
+    text = str(value or "")
+    for raw, rendered in sorted(DISPLAY_STATUS_OVERRIDES.items(), key=lambda item: len(item[0]), reverse=True):
+        text = re.sub(rf"\b{re.escape(raw)}\b", rendered, text)
+    return (
+        text.replace("Report/export", "Report support")
+        .replace("Reject or demote the claim if ", "Revise the diagnosis if ")
+        .replace("ready_for_run=True", "ready for run: yes")
+        .replace("ready_for_run=False", "ready for run: no")
+        .replace("intake_hash_verified=True", "intake hash verified: yes")
+        .replace("intake_hash_verified=False", "intake hash verified: no")
+        .replace("receipt_count=", "receipts: ")
+        .replace("next_step", "next step")
+        .replace("ready_to_run", "ready to run")
+        .replace("needs_source", "needs source")
+        .replace("export_blocker", "fix report support")
+        .replace("eval_history_rows=", "run records: ")
+        .replace("latest_exit=", "latest exit: ")
+        .replace("source_index=", "file index: ")
+        .replace("source index:", "file index:")
+        .replace("output_binding=", "evidence connection: ")
+        .replace("output binding:", "evidence connection:")
+        .replace("replay=", "replay: ")
+        .replace("readiness=", "readiness: ")
+        .replace("evidence_refs[", "evidence file ")
+        .replace("]", "")
+        .replace("row action", "next step")
+        .replace("row-action", "next-step")
+        .replace("item action", "next step")
+        .replace("blocked", "needs attention")
+    )
+
+
+def display_check_label(label: str) -> str:
+    label_overrides = {
+        "Bounded claim": "Working diagnosis",
+        "Non-claims": "Ruled-out alternatives",
+        "Assumptions and constraints": "Assumptions and constraints",
+        "Source readiness": "Source files",
+        "Evidence readiness": "Evidence files",
+        "Run readiness": "Run check",
+        "Loop admission": "Preflight receipt",
+        "Next falsifier": "What would change it",
+        "Latest review receipt": "Latest review",
+        "Latest intake edit": "Latest intake change",
+    }
+    if label in label_overrides:
+        return label_overrides[label]
+    if label == "Report/export":
+        return "Report support"
+    return label or "unknown check"
+
+
+def display_review_decision(decision: str) -> str:
+    if decision == "blocked":
+        return "hold report"
+    return display_status(decision)
 
 
 def make_row(
@@ -444,11 +691,15 @@ def make_row(
         provenance.append(f"warning={warning}")
     if not provenance:
         raise ValueError(f"row has no provenance: {label}")
+    rendered_detail = display_detail(detail)
     return {
         "label": label,
+        "display_label": display_check_label(label),
         "status": status,
+        "display_status": display_status(status),
         "kind": status_kind(status),
         "detail": detail,
+        "display_detail": rendered_detail,
         "file": rel(file),
         "source": rel(source),
         "evidence": rel(evidence),
@@ -598,13 +849,13 @@ def load_latest_row_action(project: str, intake: str | Path | None = None) -> tu
         return {
             "schema": "invalid-json",
             "status": "unreadable",
-            "error": "latest row action receipt is not valid JSON",
+            "error": "latest saved next-step receipt is not valid JSON",
         }, rel_path
     if not isinstance(payload, dict):
         return {
             "schema": "invalid-json",
             "status": "unreadable",
-            "error": "latest row action receipt must be a JSON object",
+            "error": "latest saved next-step receipt must be a JSON object",
         }, rel_path
     if not receipt_matches_case(payload, project=project, intake=intake):
         fallback, fallback_path = latest_receipt_from_ledger(
@@ -685,8 +936,8 @@ def build_rows(
     )
     review_receipt_schema = str((latest_review or {}).get("schema") or "ztare-forensic-workbench-review-receipt-v1")
     if latest_review:
-        review_decision = str(latest_review.get("decision") or "unknown")
-        review_row = str(latest_review.get("row") or "unknown row")
+        review_decision = display_review_decision(str(latest_review.get("decision") or "unknown"))
+        review_row = display_check_label(str(latest_review.get("row") or "unknown check"))
         review_status = (
             "applied"
             if review_receipt_schema == "ztare-forensic-workbench-review-receipt-v1"
@@ -694,18 +945,18 @@ def build_rows(
         )
         review_detail = (
             f"{review_row}: {review_decision}; "
-            f"evidence_refs={latest_review.get('evidence_ref_count', 0)}; "
-            f"sha256={latest_review.get('review_file_sha256', 'missing')}"
+            f"{latest_review.get('evidence_ref_count', 0)} evidence refs; "
+            f"hash {latest_review.get('review_file_sha256', 'missing')}"
         )
         review_warning = str(latest_review.get("error") or "")
     else:
         review_status = "no_review_applied"
-        review_detail = "No saved review receipt has been applied for this project snapshot."
+        review_detail = "No saved review receipt has been applied for this project data."
         review_warning = "no applied review receipt"
     action_receipt_schema = str((latest_action or {}).get("schema") or "ztare-forensic-workbench-row-action-receipt-v1")
     if latest_action:
         action_name = str(latest_action.get("action") or "unknown")
-        action_row = str(latest_action.get("row") or "unknown row")
+        action_row = display_check_label(str(latest_action.get("row") or "unknown check"))
         action_status = (
             "applied"
             if action_receipt_schema == "ztare-forensic-workbench-row-action-receipt-v1"
@@ -713,14 +964,14 @@ def build_rows(
         )
         action_detail = (
             f"{action_row}: {action_name}; "
-            f"evidence_refs={latest_action.get('evidence_ref_count', 0)}; "
-            f"sha256={latest_action.get('action_file_sha256', 'missing')}"
+            f"{latest_action.get('evidence_ref_count', 0)} evidence refs; "
+            f"hash {latest_action.get('action_file_sha256', 'missing')}"
         )
         action_warning = str(latest_action.get("error") or "")
     else:
         action_status = "no_action_saved"
-        action_detail = "No saved row action has been applied for this project snapshot."
-        action_warning = "no saved row action"
+        action_detail = "No saved next step has been applied for this project data."
+        action_warning = "no saved next step"
     intake_edit_receipt_schema = str((latest_intake_edit or {}).get("schema") or "ztare-forensic-workbench-intake-edit-receipt-v1")
     if latest_intake_edit:
         updated_fields = latest_intake_edit.get("updated_fields") or []
@@ -732,24 +983,30 @@ def build_rows(
             else str(latest_intake_edit.get("status") or "unreadable")
         )
         intake_edit_detail = (
-            f"updated_fields={','.join(str(item) for item in updated_fields) or 'none'}; "
-            f"after_sha256={latest_intake_edit.get('after_sha256', 'missing')}"
+            f"changed fields: {', '.join(str(item) for item in updated_fields) or 'none'}; "
+            f"after hash {latest_intake_edit.get('after_sha256', 'missing')}"
         )
         intake_edit_warning = str(latest_intake_edit.get("error") or "")
     else:
         intake_edit_status = "no_intake_edit_saved"
-        intake_edit_detail = "No saved intake edit receipt has been applied for this project snapshot."
+        intake_edit_detail = "No saved intake edit receipt has been applied for this project data."
         intake_edit_warning = "no saved intake edit"
 
     bounded_claim = str(intake.get("bounded_claim") or "bounded claim unavailable")
     next_falsifier = intake.get("missing_ref_falsifier") or {}
-    next_falsifier_status = str(next_falsifier.get("status") or "not surfaced")
+    next_falsifier_text = str(intake.get("next_falsifier") or "").strip() or read_repo_json_field(intake_path, "next_falsifier")
+    next_falsifier_status = "recorded" if next_falsifier_text else str(next_falsifier.get("status") or "not loaded")
+    next_falsifier_detail = next_falsifier_text or str(
+        next_falsifier.get("expected_error_fragment") or trace.get("readiness") or "no falsifier surfaced"
+    )
+    next_falsifier_warning = "" if next_falsifier_text else str(next_falsifier.get("expected_error_fragment") or "")
+    assumption_summary = project_assumption_summary(project)
 
     rows = [
         make_row(
             "Project",
             "present",
-            f"{project} with rubric {trace.get('rubric')}",
+            f"{project}; scoring guide {trace.get('rubric')}",
             file=trace.get("project_dir"),
         ),
         make_row(
@@ -762,14 +1019,24 @@ def build_rows(
         make_row(
             "Non-claims",
             f"{intake.get('non_claim_count', 0)} recorded",
-            "Non-claim count is read from the intake boundary object.",
+            f"{intake.get('non_claim_count', 0)} alternatives are recorded as weaker, out of scope, or not supported.",
             file=intake_path,
             source=intake_path,
         ),
         make_row(
+            "Assumptions and constraints",
+            assumption_summary["status"],
+            assumption_summary["detail"],
+            file=assumption_summary["file"],
+            evidence=assumption_summary["file"],
+        ),
+        make_row(
             "Source readiness",
             str(surfaces.get("source_preflight_status") or "unknown"),
-            f"raw files={surfaces.get('raw_file_count', 0)}; untyped={surfaces.get('untyped_source_count', 0)}",
+            (
+                f"{surfaces.get('raw_file_count', 0)} source files; "
+                f"{surfaces.get('untyped_source_count', 0)} untyped"
+            ),
             command=trace_command,
             file=source_receipt_path,
             source=source_receipt_path,
@@ -779,9 +1046,9 @@ def build_rows(
             "Evidence readiness",
             str(readiness.get("status") or "unknown"),
             (
-                f"source_index={readiness.get('source_index_status')}; "
-                f"output_binding={readiness.get('output_binding_status')}; "
-                f"replay={readiness.get('replay_status')}"
+                f"file index: {display_status(str(readiness.get('source_index_status') or 'unknown'))}; "
+                f"evidence connection: {display_status(str(readiness.get('output_binding_status') or 'unknown'))}; "
+                f"replay: {display_status(str(readiness.get('replay_status') or 'unknown'))}"
             ),
             command=trace_command,
             file=compile_provenance_path,
@@ -791,21 +1058,26 @@ def build_rows(
         make_row(
             "Run readiness",
             str(kernel.get("status") or trace.get("readiness") or "unknown"),
-            f"ready_for_run={kernel.get('can_enter_kernel')}; readiness={kernel.get('readiness')}",
+            (
+                f"ready for run: {'yes' if kernel.get('can_enter_kernel') else 'no'}; "
+                f"readiness: {display_status(str(kernel.get('readiness') or 'unknown'))}"
+            ),
             command=trace_command,
             receipt=str(kernel.get("schema") or "run-readiness contract"),
         ),
         make_row(
             "Preflight",
             "available" if kernel.get("preflight_command") else "missing",
-            str(kernel.get("preflight_command") or "no preflight command surfaced"),
+            "Run the local preflight before starting a project run."
+            if kernel.get("preflight_command")
+            else "No preflight command is available yet.",
             command=str(kernel.get("preflight_command") or trace_command),
             receipt="loop admission preflight path",
         ),
         make_row(
             "Loop admission",
             "available" if loop.get("available") else "missing",
-            f"receipt_count={loop.get('receipt_count', 0)}; intake_hash_verified={loop.get('intake_hash_verified')}",
+            f"preflight receipts: {loop.get('receipt_count', 0)}; intake hash verified: {'yes' if loop.get('intake_hash_verified') else 'no'}",
             command=trace_command,
             receipt="loop_admission",
         ),
@@ -813,8 +1085,8 @@ def build_rows(
             "Run history",
             "available" if recent_loop.get("available") else "missing",
             (
-                f"eval_history_rows={recent_loop.get('eval_history_rows', 0)}; "
-                f"latest_exit={recent_loop.get('latest_run_exit_reason')}"
+                f"{recent_loop.get('eval_history_rows', 0)} run records; "
+                f"latest exit: {display_status(str(recent_loop.get('latest_run_exit_reason') or 'unknown'))}"
             ),
             file=f"projects/{project}/workspace/eval_history.jsonl",
             evidence=f"projects/{project}/workspace/eval_history.jsonl",
@@ -822,17 +1094,18 @@ def build_rows(
         make_row(
             "Next falsifier",
             next_falsifier_status,
-            str(next_falsifier.get("expected_error_fragment") or trace.get("readiness") or "no falsifier surfaced"),
+            next_falsifier_detail,
             file=intake_path,
             source=intake_path,
+            warning=next_falsifier_warning,
         ),
         make_row(
-            "Report/export",
+            "Report support",
             str(report_contract.get("status") or "unknown"),
             (
-                "support contract blocks stale reports"
+                "The report needs refreshed support before it is safe to use."
                 if report_contract.get("status") == "blocked"
-                else "support contract allows current report promotion"
+                else "Report support is current."
             ),
             command=report_command,
             file=report_path,
@@ -850,7 +1123,7 @@ def build_rows(
             warning=review_warning,
         ),
         make_row(
-            "Latest row action",
+            "Latest next step",
             action_status,
             action_detail,
             file=action_artifact_path if latest_action else None,
@@ -873,6 +1146,25 @@ def esc(value: object) -> str:
     return html.escape(str(value), quote=True)
 
 
+def display_receipt_label(value: object) -> str:
+    text = str(value or "").strip()
+    receipt_overrides = {
+        "loop_admission": "preflight receipt",
+        "loop admission preflight path": "preflight receipt path",
+        "ztare-forensic-workbench-row-action-receipt-v1": "next-step receipt",
+        "ztare-forensic-workbench-review-receipt-v1": "review receipt",
+        "ztare-forensic-workbench-intake-edit-receipt-v1": "intake-edit receipt",
+        "ztare-forensic-workbench-source-import-receipt-v1": "source-import receipt",
+        "ztare-forensic-workbench-source-edit-receipt-v1": "source-edit receipt",
+        "ztare-forensic-workbench-source-action-receipt-v1": "source/evidence receipt",
+        "ztare-forensic-workbench-case-file-write-receipt-v1": "project-file receipt",
+        "ztare-source-index-receipt-v1": "source-index receipt",
+        "ztare-kernel-entry-contract-v1": "run-check receipt",
+        "ztare-synthesis-input-binding-status-v1": "report-support receipt",
+    }
+    return receipt_overrides.get(text, display_detail(text))
+
+
 def render_row(row: dict[str, str], output_path: Path) -> str:
     path_links = []
     for key, label in (("file", "file"), ("source", "source"), ("evidence", "evidence"), ("review_artifact", "review")):
@@ -880,21 +1172,38 @@ def render_row(row: dict[str, str], output_path: Path) -> str:
             href = href_for(output_path, row[key])
             path_links.append(f'<span>{esc(label)}</span><a href="{esc(href)}">{esc(row[key])}</a>')
     command = f"<code>{esc(row['command'])}</code>" if row.get("command") else ""
-    receipt = f"<code>{esc(row['receipt'])}</code>" if row.get("receipt") else ""
+    receipt = f"<code>{esc(display_receipt_label(row['receipt']))}</code>" if row.get("receipt") else ""
     warning = f"<span>{esc(row['warning'])}</span>" if row.get("warning") else ""
     evidence = " ".join(part for part in (*path_links, command, receipt, warning) if part)
     return "\n".join(
         [
             f'      <article class="row {esc(row["kind"])}" data-provenance="{esc(row["provenance"])}">',
             '        <div class="row-main">',
-            f'          <div class="row-label">{esc(row["label"])}</div>',
-            f'          <div class="row-detail">{esc(row["detail"])}</div>',
+            f'          <div class="row-label">{esc(display_check_label(row["label"]))}</div>',
+            f'          <div class="row-detail">{esc(display_detail(row["detail"]))}</div>',
             f'          <div class="row-evidence">{evidence}</div>',
             "        </div>",
             f'        <div class="status">{esc(display_status(row["status"]))}</div>',
             "      </article>",
         ]
     )
+
+
+def display_receipt_payload(payload: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not payload:
+        return None
+    rendered = dict(payload)
+    row_label = display_check_label(str(rendered.get("row") or ""))
+    slug = str(rendered.get("item_slug") or rendered.get("row_slug") or "")
+    if slug in {"report_export", "report_support"}:
+        row_label = "Report support"
+    if row_label:
+        rendered["row"] = row_label
+        rendered["check_label"] = row_label
+        rendered["display_label"] = row_label
+        if str(rendered.get("item_label") or "") in {"", "Report", "Report/export"}:
+            rendered["item_label"] = row_label
+    return rendered
 
 
 def snapshot_payload(
@@ -912,6 +1221,9 @@ def snapshot_payload(
 ) -> dict[str, Any]:
     project = str(trace.get("project") or DEFAULT_PROJECT)
     intake = (trace.get("project_intake") or {}).get("intake_path") or (trace.get("project_intake") or {}).get("path") or ""
+    items = rows
+    display_readiness = display_status(str(trace.get("readiness_canonical") or trace.get("readiness") or "unknown"))
+    display_report_status = display_status(str(report_contract.get("status") or "unknown"))
     return {
         "schema": "ztare-forensic-workbench-snapshot-v1",
         "snapshot_scope": "single_project_read_model",
@@ -921,14 +1233,25 @@ def snapshot_payload(
         "intake_source": intake_source_for_path(project, intake),
         "rubric": trace.get("rubric") or DEFAULT_RUBRIC,
         "readiness": trace.get("readiness_canonical") or trace.get("readiness") or "unknown",
+        "display_readiness": display_readiness,
         "report_status": report_contract.get("status") or "unknown",
+        "display_report_status": display_report_status,
         "status_reasons": report_contract.get("status_reasons") or [],
-        "latest_review": latest_review or None,
+        "latest_review": display_receipt_payload(latest_review),
         "latest_review_artifact": rel(latest_review_artifact_path) if latest_review_artifact_path else "",
-        "latest_row_action": latest_action or None,
+        "latest_project_check": display_receipt_payload(latest_action),
+        "latest_project_check_artifact": rel(latest_action_artifact_path) if latest_action_artifact_path else "",
+        "latest_item_action": display_receipt_payload(latest_action),
+        "latest_item_action_artifact": rel(latest_action_artifact_path) if latest_action_artifact_path else "",
+        "latest_row_action": display_receipt_payload(latest_action),
         "latest_row_action_artifact": rel(latest_action_artifact_path) if latest_action_artifact_path else "",
+        "project_check_count": len(items),
         "latest_intake_edit": latest_intake_edit or None,
         "latest_intake_edit_artifact": rel(latest_intake_edit_artifact_path) if latest_intake_edit_artifact_path else "",
+        "item_count": len(items),
+        "row_count": len(items),
+        "project_checks": items,
+        "items": items,
         "rows": rows,
         "html_output": rel(output_path),
     }
@@ -947,13 +1270,13 @@ def render_html(
     report_status = str(report_contract.get("status") or "unknown")
     blockers = report_contract.get("status_reasons") or []
     row_html = "\n".join(render_row(row, output_path).strip("\n") for row in rows)
-    blocker_html = "".join(f"<li>{esc(item)}</li>" for item in blockers)
+    blocker_html = "".join(f"<li>{esc(display_status(str(item)))}</li>" for item in blockers)
     return f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ZTARE Forensic Workbench Prototype</title>
+  <title>ZTARE Project Workbench</title>
   <style>
     :root {{
       color-scheme: light;
@@ -1092,21 +1415,21 @@ def render_html(
 <body>
   <main>
     <aside>
-      <h1>Forensic Workbench Prototype</h1>
-      <p>Local claim/evidence state for one bounded project. Every row exposes a file, command, receipt, or explicit warning.</p>
+      <h1>Project Workbench</h1>
+      <p>Local project state. Every check exposes a file, command, receipt, or explicit warning.</p>
       <div class="summary">
         <div class="metric"><b>Project</b><span>{esc(project)}</span></div>
-        <div class="metric"><b>Rubric</b><span>{esc(rubric)}</span></div>
-        <div class="metric"><b>Run readiness</b><span>{esc(readiness)}</span></div>
-        <div class="metric"><b>Report/export</b><span>{esc(report_status)}</span></div>
+        <div class="metric"><b>Scoring</b><span>{esc(rubric)}</span></div>
+        <div class="metric"><b>Run check</b><span>{esc(display_status(readiness))}</span></div>
+        <div class="metric"><b>Report support</b><span>{esc(display_status(report_status))}</span></div>
       </div>
       <div class="blockers">
-        <h2>Export Blockers</h2>
-        <ul>{blocker_html or "<li>none surfaced</li>"}</ul>
+        <h2>Report support</h2>
+        <ul>{blocker_html or "<li>none open</li>"}</ul>
       </div>
     </aside>
     <section>
-      <h2>First Five-Minute Path</h2>
+      <h2>Project steps</h2>
       <div class="path">
 {row_html}
       </div>
@@ -1128,7 +1451,7 @@ def validate_rows(rows: list[dict[str, str]]) -> list[str]:
         "Run readiness",
         "Preflight",
         "Loop admission",
-        "Report/export",
+        "Report support",
     }
     missing = sorted(required - labels)
     if missing:
@@ -1235,6 +1558,7 @@ def main(argv: list[str] | None = None) -> int:
         "ok": True,
         "project": args.project,
         "rubric": args.rubric,
+        "item_count": len(rows),
         "row_count": len(rows),
         "output": rel(output_path),
         "json_output": rel(args.json_out) if args.json_out else "",

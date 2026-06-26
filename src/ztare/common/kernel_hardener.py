@@ -242,7 +242,7 @@ def _selftest() -> int:
 
         def mine(self, artifacts):
             return [GamingVector(name="instance_shadowing", substrate="leanmill",
-                                 category="NOVEL:context_semantic_hijack",
+                                 category="NOVEL:definition_shadowing",
                                  mechanism="added instance shadows a core op (HAdd) → verbatim stmt hijacked",
                                  evidence="adhoc_closure_certificates: fls_succ_eq", severity="high",
                                  proposed_gate="statement_integrity: flag added core-class instances"),

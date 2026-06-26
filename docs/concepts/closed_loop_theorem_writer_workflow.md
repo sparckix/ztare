@@ -1,12 +1,12 @@
 ---
 description: "The four-stage closed loop turning LLM-nominated Lean theorems into verified proofs."
 ---
-# Workflow: Closed-Loop Theorem-Writer Pipeline
+# Workflow: closed-loop theorem-writer pipeline
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Status:** shipped 2026-05-05; minimum viable form (Stages 1-4 of the full theorem-writer roadmap Codex articulated). Operates as a complement to hand-written proofs, not a replacement.
-**Companion doc:** [`graph_diagnostic_belief_update_pattern.md`](graph_diagnostic_belief_update_pattern.md), the underlying pattern this pipeline operationalizes.
+*Status:* shipped 2026-05-05. Minimum viable form (Stages 1-4 of the full theorem-writer roadmap Codex articulated). Operates as a complement to hand-written proofs.
+*Companion doc:* [`graph_diagnostic_belief_update_pattern.md`](graph_diagnostic_belief_update_pattern.md), the underlying pattern this pipeline operationalizes.
 
 ---
 
@@ -14,18 +14,18 @@ description: "The four-stage closed loop turning LLM-nominated Lean theorems int
 
 A four-stage closed loop that takes LLM-nominated Lean theorems, filters / verifies / revises them, and emits two artifacts:
 
-- **VERIFIED:** lake-build-accepted theorems (still need Codex review for triviality / mathematical meaning).
-- **UNVERIFIABLE:** failed nominations + their revision history, used as training data for prompt calibration.
+- VERIFIED: lake-build-accepted theorems (still need Codex review for triviality / mathematical meaning).
+- UNVERIFIABLE: failed nominations + their revision history, used as training data for prompt calibration.
 
-The pipeline does *not* generate proofs from scratch. It mechanizes the Codex-articulated insight: **"For graph+LLM to become a theorem writer, it needs a compiler-checked loop: graph nominates a typed theorem, Lean proves or refutes it, and the graph records the proof/falsifier outcome."**
+The pipeline does *not* generate proofs from scratch. It mechanizes the Codex-articulated insight: "For graph+LLM to become a theorem writer, it needs a compiler-checked loop: graph nominates a typed theorem, Lean proves or refutes it, and the graph records the proof/falsifier outcome."
 
 ---
 
 ## When to use
 
 Use when:
-- Spine is mostly built; specific open obligations need new lemmas.
-- You want a verified-or-falsified inventory rather than hand-checking each LLM nomination.
+- Spine is mostly built, with specific open obligations needing new lemmas.
+- You want a verified-or-falsified inventory of each LLM nomination.
 - You're prepared to discard trivially-VERIFIED outputs (the loop accepts `theorem trivial : 0 ≤ 1` too).
 
 Don't use when:
@@ -37,9 +37,9 @@ Don't use when:
 
 ## Cadence
 
-- **Per closure-attempt:** 2-3 runs over a multi-day closure attempt; complement to Codex's hand-written work.
-- **NOT per-iter:** this is RD / Codex tooling, not a ZTARE-loop component.
-- **Cap:** 5-10 nominations per run. Each takes ~3 minutes (3 lake builds × ~60s). Larger batches scale linearly.
+- Per closure-attempt: 2-3 runs over a multi-day closure attempt, as a complement to Codex's hand-written work.
+- NOT per-iter: this is RD / Codex tooling, not a ZTARE-loop component.
+- Cap: 5-10 nominations per run. Each takes ~3 minutes (3 lake builds × ~60s). Larger batches scale linearly.
 
 ---
 
@@ -67,21 +67,21 @@ cd ztare_proofs && lake build && cd ..
 | 3 | lake build verification | ~60s per attempt | Apparatus |
 | 4 | Learning summary | Trivial aggregation | Apparatus → Codex review |
 
-### Stage 1, Typed nomination filter
+### Stage 1, typed nomination filter
 
-`scripts/public/lean/lean_decl_index.py` builds a regex-extracted index of all theorems / lemmas / defs / structures / classes / instances in `ztare_proofs/ZtareProofs/`. Each LLM nomination is scanned for identifiers; any not in the index is flagged.
+`scripts/public/lean/lean_decl_index.py` builds a regex-extracted index of all theorems / lemmas / defs / structures / classes / instances in `ztare_proofs/ZtareProofs/`. Each LLM nomination is scanned for identifiers, and any not in the index is flagged.
 
-**Output:** valid / invalid + list of unresolved identifiers.
+*Output:* valid / invalid + list of unresolved identifiers.
 
-**Why it matters:** catches the `cross*` vs `positivePart cross*` error class deterministically *before* burning lake build time. The regex-based check is approximate (qualified-name edge cases can produce false positives) but in practice catches the majority of LLM-fabricated identifier names.
+*Why it matters:* catches the `cross*` vs `positivePart cross*` error class deterministically *before* burning lake build time. The regex-based check is approximate (qualified-name edge cases can produce false positives) but in practice catches the majority of LLM-fabricated identifier names.
 
-### Stage 2, Orientation synthesizer
+### Stage 2, orientation synthesizer
 
 `scripts/public/projects/ns/orientation_synthesizer.py`, separate entry point, produces typed-search candidates from transitivity chains in the constraint-basin graph. For each `(a → b → c)` triple where `a → c` is missing, it looks up the source theorems for `a → b` and `b → c` and extracts their hypothesis chains via regex.
 
 Default output is not a Lean nomination. Graph quantity names are often not Lean terms, so the closed-loop theorem writer ignores rows marked `candidate_status: "search_candidate_only"`. Use `--emit-lean-skeletons` only when you explicitly want a `by exact le_trans (?lemma_a) (?lemma_b)` scaffold sent into the verifier/failure-learning loop.
 
-**Output:** `projects/ns_millennium_hunt/workspace/queries/orientation_synthesized_candidates.jsonl`.
+*Output:* `projects/ns_millennium_hunt/workspace/queries/orientation_synthesized_candidates.jsonl`.
 
 ### Stage 3, lake build verification (the closed loop)
 
@@ -92,14 +92,14 @@ For each nomination passing Stage 1:
 4. If failed → capture stderr, ask Gemini to revise with the error as falsifier feedback
 5. Repeat up to `--max-revisions` times (default 3)
 
-### Stage 4, Learning summary
+### Stage 4, learning summary
 
 After each run, aggregate the closed-loop log:
 - `verification_rate` (verified / total)
 - `top_unresolved_idents`, most common Stage-1 rejections across nominations
 - `top_lake_errors`, most common Stage-3 error categories
 
-**Output:** `analytics/public/queries/closed_loop/closed_loop_log.learning.json`.
+*Output:* `analytics/public/queries/closed_loop/closed_loop_log.learning.json`.
 
 This is descriptive only, no closed feedback to Gemini's prompt yet. Future work: condition the next iteration's nomination prompt on the aggregated learning signal.
 
@@ -132,26 +132,26 @@ This is descriptive only, no closed feedback to Gemini's prompt yet. Future work
 
 ### After VERIFIED nominations
 
-Just because lake-build accepts doesn't mean the theorem is mathematically meaningful, `theorem trivial : 0 ≤ 1 := by linarith` would also be VERIFIED. Codex decides which verified-but-trivial nominations to discard vs. which to add to the spine permanently.
+Just because lake-build accepts doesn't mean the theorem is mathematically useful, `theorem trivial : 0 ≤ 1 := by linarith` would also be VERIFIED. Codex decides which verified-but-trivial nominations to discard vs. which to add to the spine permanently.
 
 ### After UNVERIFIABLE nominations
 
 The revision history is the falsifier log. For each:
-- If the same identifier keeps appearing as unresolved across many nominations → **vocabulary calibration finding** (apparatus is using outdated names).
-- If lake errors cluster around the same type-mismatch class → **domain ground-truth finding** (LLM is missing a structural invariant Codex has internalized).
+- If the same identifier keeps appearing as unresolved across many nominations → vocabulary calibration finding (apparatus is using outdated names).
+- If lake errors cluster around the same type-mismatch class → domain ground-truth finding (LLM is missing a structural invariant Codex has internalized).
 
-Either type of finding feeds back into the next iteration's nomination prompt (manually for now; Stage 4 closed feedback is future work).
+Either type of finding feeds back into the next iteration's nomination prompt (manually for now, as Stage 4 closed feedback is future work).
 
 ---
 
 ## Caveats and limitations
 
-- **Stage 1 is regex-based**, not Lean elaboration; misses qualified-name resolution edge cases (false-positive unresolved idents possible).
-- **Stage 2 produces scaffolds**, not finished proofs. Codex must resolve `?lemma_name` placeholders to actual term-mode references.
-- **Stage 3 trusts lake build as ground truth.** If the spine has unsoundness elsewhere, this propagates.
-- **Stage 4 is descriptive only**; no closed feedback to Gemini's prompt yet. Each run starts cold.
-- **Pipeline does not catch "trivially true but useless" theorems**; Codex's review remains central for filtering meaningful additions.
-- **Decl index is regex-extracted**, not Lake-elaborated; rebuild via `--build` if the spine has been edited recently.
+- Stage 1 is regex-based, not Lean elaboration. It misses qualified-name resolution edge cases (false-positive unresolved idents possible).
+- Stage 2 produces scaffolds, not finished proofs. Codex must resolve `?lemma_name` placeholders to actual term-mode references.
+- Stage 3 trusts lake build as ground truth. If the spine has unsoundness elsewhere, this propagates.
+- Stage 4 is descriptive only. No closed feedback to Gemini's prompt yet. Each run starts cold.
+- Pipeline does not catch "trivially true but useless" theorems. Codex's review remains central for filtering useful additions.
+- Decl index is regex-extracted, not Lake-elaborated. Rebuild via `--build` if the spine has been edited recently.
 
 ---
 

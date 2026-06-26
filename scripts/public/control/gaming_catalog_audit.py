@@ -42,20 +42,20 @@ ALLOWED_EVIDENCE_TIERS = {
 }
 
 ORIGINAL_NINE = (
-    "Hidden Critical Failure",
-    "Tolerance Laundering",
-    "Fake Mechanism Stub",
-    "Fake Learning Curve",
-    "Claim Shrinking",
-    "Unit Conversion Patch",
-    "Out-of-Bounds Probability",
-    "Tuned-Constant Laundering",
-    "Strawman Comparator",
+    "Severity Averaging",
+    "Tolerance Abuse",
+    "Stubbed Implementation",
+    "Step-Index Leakage",
+    "Claim-Test Mismatch",
+    "Fudge-Factor Patching",
+    "Partial-Domain Miscalibration",
+    "Parameter Overfitting",
+    "Weak Baseline",
 )
 
 EXECUTABLE_ANCHOR_FIXTURES = {
-    "structural_param_smuggle_body": REPO
-    / "benchmarks/constraint_memory/derived_subtle/structural_param_smuggle_body/test_model.py",
+    "undeclared_parameters_body": REPO
+    / "benchmarks/constraint_memory/derived_subtle/undeclared_parameters_body/test_model.py",
     "definitional_tautology_self_confirming_metric": REPO
     / "benchmarks/constraint_memory/specimens/bad/self_referential_falsification/test_model.py",
     "fabricated_calibration_set_threshold_laundering": REPO
@@ -77,7 +77,7 @@ REQUIRED_CATALOG_PHRASES = (
     "Start Here: 9 Ways LLMs Game Their Own Evaluations",
     "Part II: Mined Cross-Domain Vectors",
     "original 9 have paper benchmark lineage",
-    "not retrofitted into the original paper's benchmark claim",
+    "keeping them separate from the original paper's benchmark claim",
     "NOT a complete taxonomy",
     "NOT MECE",
 )
@@ -154,6 +154,10 @@ def _load_jsonl(path: Path) -> tuple[list[dict[str, Any]], list[str]]:
 def _map_declared_registry_count(text: str) -> int | None:
     match = re.search(r"currently has\s+(\d+)\s+registry rows", text, re.IGNORECASE)
     return int(match.group(1)) if match else None
+
+
+def _has_phrase(text: str, phrase: str) -> bool:
+    return phrase.casefold() in text.casefold()
 
 
 def _validate_registry(rows: list[dict[str, Any]]) -> list[str]:
@@ -238,7 +242,7 @@ def _validate_registry(rows: list[dict[str, Any]]) -> list[str]:
 def _validate_catalog(text: str) -> list[str]:
     findings: list[str] = []
     for phrase in REQUIRED_CATALOG_PHRASES:
-        if phrase not in text:
+        if not _has_phrase(text, phrase):
             findings.append(f"catalog missing phrase: {phrase}")
     for label in REQUIRED_INVARIANT_LABELS:
         if label not in text:
@@ -256,7 +260,7 @@ def _validate_catalog(text: str) -> list[str]:
 def _validate_map(text: str, registry_count: int) -> list[str]:
     findings: list[str] = []
     for phrase in REQUIRED_MAP_PHRASES:
-        if phrase not in text:
+        if not _has_phrase(text, phrase):
             findings.append(f"catalog map missing phrase: {phrase}")
     declared = _map_declared_registry_count(text)
     if declared is None:
@@ -272,11 +276,9 @@ def _validate_paper_boundaries() -> list[str]:
     findings: list[str] = []
     required_targets = {
         "papers/cognitive-camouflage/README.md": PAPER_README,
-        "papers/cognitive-camouflage/draft.md": PAPER_DRAFT,
     }
     optional_targets = {
         "cognitive-camouflage/README.md": ROOT_PAPER_README,
-        "cognitive-camouflage/draft.md": ROOT_PAPER_DRAFT,
     }
     for label, path in required_targets.items():
         if not path.exists():

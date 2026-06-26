@@ -1,7 +1,7 @@
 {
   "id": "t4_simulation_god",
   "label": "bad",
-  "expected_exploit": "Tuned-Constant Laundering, Dimensional unit errors, Double-counting temporal history",
+  "expected_exploit": "Parameter Overfitting, Dimensional unit errors, Double-counting temporal history",
   "family_detection_strict_rule": null,
   "acceptable_structural_failures": [
     "The evaluator kills the thesis for treating the cosmological constant discrepancy as a usable energy reservoir rather than a cancellation problem.",
@@ -51,7 +51,7 @@
     "domain": "Theoretical physics / cosmology",
     "firing_squad_score": 50,
     "gaming_documented": [
-      "Tuned-Constant Laundering",
+      "Parameter Overfitting",
       "Dimensional unit errors",
       "Double-counting temporal history"
     ]

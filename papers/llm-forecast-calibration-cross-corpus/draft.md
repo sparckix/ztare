@@ -1,78 +1,258 @@
+# When Does an LLM Forecasting Benchmark Measure Forecasting?
+
+Source Currency, Label-Time Validity, and Equal-Information Controls
+
+## Abstract
+
+LLM forecasting benchmarks often score model calls before establishing whether
+the scored row is a valid forecast. A row may ask a model to recover an answer
+already visible to its generation, use an outcome label from a later data
+vintage, or compare against a market or human baseline measured under a
+different information state. We define the forecast row as the unit of evidence
+and introduce three validity requirements: source currency, label-time validity,
+and equal-information baselines. The database contains more than 20,000
+persisted calls, but the inferential units in this paper are not calls: the
+central source-currency and market-control tests use 24--80 contracts, pairwise
+ranking uses 24 non-tie pairs, and prompt-intervention checks use 90--120
+contract-condition blocks. In a matched panel of 80 Manifold contracts, rows
+after the model cutoff are substantially harder than rows before the cutoff or
+visible in the model's sources (`+0.191` Brier in aggregate, paired-stratum
+delta `+0.216`, permutation `p=0.0004`, BH `q=0.0031`, BY `q=0.0115`). The
+strict market comparisons remain small, so we use them to bound claims rather
+than to estimate a general market effect. On 24 Polymarket contracts, the
+four-family panel scores `0.268` Brier versus the market's `0.073`
+(`p=0.0068`, BH `q=0.0163`, BY `q=0.0616`). In a 24-contract Manifold slice,
+the market Brier is lower but the paired test is inconclusive; a separate
+32-contract Manifold same-day freeze expansion scores `0.215` for the
+five-family panel versus `0.136` for the market (`p=0.0048`, BH `q=0.0163`, BY
+`q=0.0616`). Smaller Manifold horizon checks are reported only as overlapping
+sensitivity checks. These controls do not establish a general result about
+markets and models, and they do not support raw model panel superiority: two
+strict slices have much lower market Brier under the raw paired tests and BH
+correction, but the BY column treats them as sensitivity rather than
+arbitrary-dependence significance at `0.05`; the third strict slice is
+inconclusive. After validity screening, model signal remains narrow. A selected rule
+that tempers very small model probabilities improves those estimates on eligible
+rows, and pairwise comparisons achieve `0.750` accuracy over 24 non-tie pairs
+when the pairs are balanced across sources. One expert-training prompt improves
+Brier in a completed 600-call Gemini experiment on public questions, but a
+591/600-call Claude run remains underpowered and below the replication gate and
+a staged Codex+DeepSeek check does not reproduce the effect. We therefore treat
+it as a Gemini-specific candidate, not a general prompting method. The
+contribution is forecast row validity: a practical documentation layer for
+source, label, and comparator timing; an empirical demonstration that these
+checks change conclusions; a power-aware re-audit that reclassifies underpowered
+prior results instead of treating them as nulls; a consolidated multiplicity and
+effective-denominator audit; and a companion benchmark design
+that scores row validity, equal-information comparison, calibration, relative
+judgment, intervention, choosing among model families, open model replication,
+and public low-overlap replication as separate tracks.
+
 # Introduction
 
-This paper asks two questions: when is an LLM forecasting benchmark
-actually measuring future-event prediction, and what has to be done
-before the resulting model signal is usable?
+This paper introduces forecast row validity as a documentation standard for LLM
+forecasting benchmarks. The motivating questions are simple: when is a scored
+row actually measuring future-event prediction, and what conditions are needed
+before model outputs can be interpreted or used?
 
-The central result is a controlled-use claim. Some model signal remains
-useful after invalid comparisons are removed, and that usefulness
-depends on the information state of the row. A benchmark row should not
-be used for broad conclusions until three conditions are documented.
-First, *source currency*: the resolved answer was not already
-source-visible to the model generation being tested. Second, *label-time
-validity*: the outcome label matches what would have been knowable under
-the forecast-time data vintage. Third, *equal-information baselines*:
-human or market comparison bars are measured on the same contract under
-the same pre-outcome information rule. In our data, the source-currency
-result is strong enough to report as a measurement result. Broad human-
-or market-superiority claims are not: the database has 103 typed
-external market baseline rows and 52 ingested equal-information market
-rows; Polymarket beats the four-family model panel on the same 24
-contracts, and the separate Manifold fill favors the market but is
-inconclusive.
+The central result is that LLM forecast output becomes interpretable only
+after the information state of each row is made explicit. The starting point is
+an estimand problem. A forecasting leaderboard can assign a proper score to
+every row and still mix three different tasks:
+predicting a future event, recovering an answer already latent in the model's
+sources, and comparing against a human or market that saw different
+information. A benchmark row is
+suitable for broad conclusions only after three conditions are documented.
+First, *source currency*: the resolved answer was not already visible in the
+sources available to the model generation being tested. Second, *label-time
+validity*: the outcome label matches what would have been knowable under the
+data vintage at forecast time. Third, *equal-information baselines*: human or
+market comparison bars are measured on the same contract under the same
+information rule before outcome.
+In our data, the main Manifold source-currency audit is strong enough to report
+as a measurement result for that source. It is not yet a source-general
+prevalence estimate. Broad claims that the models beat humans or markets are not
+supported: the database has 170 typed external market baseline rows and 119
+ingested equal-information market rows, but the completed strict controls are
+still modest. They include 24 Polymarket contracts, a 24-contract Manifold fill,
+a separate 32-contract Manifold same-day freeze expansion, and smaller Manifold
+one-day, two-day, and seven-day checks on overlapping rows. We use them as
+strict controls on the present evidence, not as population estimates of market
+or LLM performance. Within that scope, Polymarket has lower market Brier than
+the four-family model panel on the same 24 contracts, the first Manifold fill has lower market Brier
+but an inconclusive paired test, and the 32-contract Manifold expansion again
+has lower market Brier under the raw paired test and BH correction, with BY
+sensitivity reported below. The smaller one-day, two-day, and seven-day Manifold
+checks are sensitivity rows because they overlap the same source and remain too
+small for a population claim.
 
 The empirical order matters. A black-box LLM forecaster first has to be
 tested on rows that are valid for its generation. Only then does it make
-sense to ask which emitted channel is useful for a particular family and
-source: point estimate, worry scalar, bid-ask spread, self-predicted
-Brier interval, reference-class base rate, or cross-family disagreement.
+sense to ask which emitted channel improves scoring for a particular
+family and source: point estimate, worry scalar, bid-ask spread,
+self-predicted Brier interval, reference-class base rate, or cross-family
+disagreement.
 Only after those two questions can we ask whether a prompt, abstention
-rule, review policy, or allocation rule improves Brier or utility
+rule, review rule, or allocation rule improves Brier or utility
 against explicit controls.
 
 The paper therefore has one main argument with two parts. The validity
-part is that source-currency, label-time, and equal-information checks
+part is that source currency, label-time, and equal-information checks
 change what one is allowed to conclude from LLM forecasting benchmarks.
-The constructive part is that the surviving model signal is specific
-rather than global: overconfident low-probability forecasts can be corrected on
-source-valid forward-looking rows; pairwise comparisons can rank
-harder/easier contracts better than chance under source-balanced
-controls; and family-choice differences create measurable headroom that
-current simple selection rules do not yet recover. The bias-transfer
-material is kept only where it explains why prompt-only interventions
-were fragile. This separation prevents the manuscript from becoming an
-inventory of experiments.
+The applied part is narrower: some model information survives the validity
+checks, but it appears through specific interfaces rather than a general
+forecasting ability. Very small model probabilities can be tempered on
+forward-looking rows that pass the source currency check; pairwise comparisons
+can rank harder and easier contracts better than chance when the pairs are
+balanced across sources; and one Gemini prompt improves Brier against bare and
+placebo prompts in a balanced comparison on public questions. That prompt result
+is not treated as a general method because the 591/600-call Claude run remains
+underpowered and below gate, and Codex+DeepSeek does not reproduce it. Differences across model families also create measurable
+headroom, but the paper treats that headroom as a target for future selection
+methods, not as a present decision rule. The practical output is a small set of
+controlled uses: a deterministic calibration rule for one row class, a ranking
+interface for relative judgment, a Gemini prompt result to replicate, and
+negative controls showing where not to spend inference budget.
+
+This framing also explains why the paper is not organized as a single model
+leaderboard. The same score can mean different things depending on the row. A
+correction for very small probabilities is useful only after source and label checks; a
+pairwise comparison can be useful for ranking without being a calibrated
+probability; a prompt can improve one family while failing to replicate in
+others; and a market comparison is meaningful only when the market price is
+frozen at the same information time. The paper's contribution is to keep those
+cases separate and score each on the comparison it is actually allowed to
+answer.
 
 #### Contributions.
 
-The paper makes four contributions. First, it states a documentation
+The paper makes five contributions. First, it states a documentation
 test for LLM forecasting rows: a row is not broad forecast evidence
 unless source currency, label-time validity, and equal-information
 comparison status are known. Second, it gives an empirical
-source-currency audit in which post-cutoff Manifold rows are
-substantially harder than matched pre-cutoff/source-visible rows. Third,
-it reports two same-information market controls that show why raw LLM
-panels are not the right unit of comparison. Fourth, it identifies the
-model-derived signals that still work under controls: a source-valid
-low-probability calibration rule, source-balanced pairwise ranking, mixed
-but informative structured evidence-field tests, and family-choice
-headroom. These are positive results, but they are not a market- or
-human-superiority claim.
+source-currency audit in which Manifold rows after the model cutoff are
+substantially harder than matched rows before the cutoff or visible in the
+model's sources. Third, it reports equal-information market controls that do not
+support raw model panel superiority in the current evidence while remaining too
+small to estimate market performance in general. Fourth, it separates current
+usable results from design evidence. The current usable results are a selected
+calibration rule for eligible rows and pairwise ranking balanced by source. The
+completed Gemini expert-training prompt is reported as a model-specific
+intervention candidate and a replication target, not as a general prompt
+method. Additional structured outputs and differences across model families are
+design evidence for future interfaces rather than current applied results. These
+results are not claims that LLMs are superior to markets or humans. Fifth, it
+treats the power-aware re-audit as a methodological result and converts the
+missing-evidence map into a companion benchmark design: row
+validity fields, equal-information comparators, calibration, relative judgment,
+prompt intervention, choosing among model families, open model replication, and
+public low-overlap substitute tracks are evaluated separately rather than
+collapsed into one leaderboard.
+
+#### Broader measurement route.
+
+The paper also makes the broader measurement route concrete without claiming
+prevalence across the field. It does not report a failure rate across the field. The public
+ForecastBench audit scores 70 processed-forecast files over 521 resolved
+binary row keys and 230 event family keys, finds equal-information market
+slices in 68 files, and finds only 6 files beating the prior-day market
+baseline before and after event family capping. A second public ForecastBench
+audit on the 2024 human-comparator round scores 141 files over 7,259 row keys
+and 766 event family keys; the human-super and public aggregate files each
+have 577 resolved non-imputed rows, but each has only two strict
+equal-information market rows. A Prophet Arena source-access pilot fetches 68
+public task rows across four sample releases, including 26 resolved rows, but
+the fetched samples contain no submitted forecast probabilities or same time
+baseline probabilities; a public repository check over five AI Prophet
+repositories finds no committed Prophet Arena submission, leaderboard, or
+per-model trace archive. The PredictionMarketBench replay-row pilot
+reconstructs 370,254 same-time market-baseline rows but finds no stored model
+forecast rows in the released episodes; the PolyBench pilot verifies the
+repository/schema surface but cannot score the linked database from the
+noninteractive release path. These public audits show how the row validity
+machinery extends beyond this study, while leaving prevalence and
+conclusion-change rates as future claims.
+
+#### Benchmark design implication.
+
+The companion benchmark implied by the audit has eight separate tracks:
+row validity, equal-information comparators, calibration, relative judgment,
+intervention, choosing among model families or outside review, open model
+replication, and a public low-overlap substitute. The companion benchmark table
+gives the track structure. Keeping those tracks separate is part of the claim.
+A system can improve a calibrated probability without beating a market, rank
+pairs without supplying a reliable absolute probability, or show that model
+families make different errors without providing a working selection rule.
+During a new study, the same split tells the researcher which claim a packet can
+test before outcomes are scored: market comparison, calibration rule,
+relative-judgment interface, prompt intervention, selection rule, provider
+replication, or low-overlap diagnostic. The benchmark design is therefore
+both a way to collect the decisive missing evidence and a guard against turning
+one successful track into a broader claim. It is not a current claim about a
+measured failure rate across the field.
+
+The row validity track is implemented as a required row schema, expanded in the
+broader validity protocol table: source currency, label-time validity,
+equal-information comparator timing, effective sample size, and decision-rule
+status. That schema is what makes the benchmark useful before scoring rather
+than only after a result looks surprising.
+
+Used prospectively, the benchmark becomes an experiment-planning tool. Before
+calls are run or outcomes are known, each track asks what would make a positive
+result uninformative. If the answer is source visibility, label vintage,
+comparator timing, prompt length, family mix, or market overlap, that variable
+has to be recorded before scoring. This is the useful form of the inversion in
+practice: the question changes the design while there is still time to add the
+missing field or control, and a positive result is informative only when the
+simpler explanation it invites has already been made measurable.
+
+| Track | Question tested | Primary output |
+|---|---|---|
+| Row validity core | Does each row state what the model could have known and which label is admissible? | Source-currency, label-time, and event family eligibility labels. |
+| Equal-information comparators | Does the model beat a human, crowd, or market measured on the same contract at the same pre-outcome time? | Paired proper-score deltas with event family and source caps. |
+| Probability calibration | Does a simple adjustment improve model probabilities on rows that pass the source currency check? | Calibrated-versus-raw Brier deltas by source, family, and cutoff relation. |
+| Relative judgment | Are pairwise comparisons a better interface than direct probabilities? | Pairwise accuracy, utility, and predeclared graph-calibrated probabilities when justified. |
+| Intervention | Does a prompt or procedure beat bare, placebo, calibrated bare, and matched comparator baselines? | Paired Brier deltas with source and family replication checks. |
+| Family selection or review | Can observable features or outside review recover best-family headroom after cost? | Cost-adjusted Brier or utility against simple pools and calibrated baselines. |
+| Open-model replication | Which scoped findings survive outside proprietary-provider snapshots? | Replication or bounded failure on public rows with open models. |
+| Public low-overlap substitute | Do low-overlap elicitation diagnostics reproduce on a releasable corpus? | Channel and prompt diagnostics after novelty, source, topic, length, and horizon are separated. |
+
+Companion benchmark tracks. The design keeps row validity,
+equal-information comparison, calibration, ranking, intervention, family
+selection, open model replication, and low-overlap replication as separate
+scored tasks rather than a single aggregate leaderboard.
 
 #### Positioning.
 
-The closest related work now falls into four groups: future-question
-benchmarks such as ForecastBench , system papers such as AIA
-Forecaster , belief-updating benchmarks such as EVOLVECAST , and market
-or replay environments such as Prediction Arena, PolyBench,
-PredictionMarketBench, Foresight Arena, MarketBench, and Reppo-style
-market infrastructure . Those systems ask how well agents forecast,
-update, trade, or coordinate through market-like mechanisms. This paper
-asks what has to be true before such comparisons are
-interpretable at the row level. It is therefore closest in spirit to
-recent evaluation-warning work on temporal leakage and benchmark
-extrapolation , but adds a scored empirical audit and controlled
-mechanisms for using model signal after the validity checks.
+The closest related work falls into several groups: future-question benchmarks
+such as ForecastBench and Prophet Arena , system papers such as AIA
+Forecaster , belief-updating benchmarks such as EVOLVECAST , numerical
+forecast-interval benchmarks such as QuantSightBench , automated
+question-generation and resolution work, confidence-elicitation and
+fictional-market framing work, and market or replay environments such as
+Prediction Arena, PolyBench, PredictionMarketBench, Foresight Arena, MarketBench,
+and Reppo-style market infrastructure . These systems evaluate
+broader capabilities: generating forecasts, updating after new information,
+expressing calibrated intervals over continuous quantities, generating and
+resolving questions, eliciting confidence or wagers, trading with real or
+replayed market frictions, or coordinating through market-like
+designs. Their scores can mix probability accuracy with retrieval
+timing, execution quality, liquidity, fees, position sizing, interval width,
+confidence reporting, automated resolution quality, and the moment at which a
+human or market comparison was sampled. Nearby work also studies market
+relationships and relative judgment: Semantic Trading uses agentic AI to cluster
+prediction markets and identify correlated or anti-correlated market pairs,
+while a fully prospective venture tournament finds strong model rankings from
+pairwise comparisons against human managers and investors . These results are
+closest to this paper's pairwise-ranking result, while our main contribution
+remains different. This paper studies the narrower evidentiary unit underneath
+those comparisons. Before a system-level score is interpreted as
+forecasting evidence, each row has to state what the model could have
+known, which label vintage is admissible, and whether the comparator was
+measured under the same information rule. The paper is therefore closest
+in spirit to recent evaluation-warning work on temporal leakage and
+benchmark extrapolation , but adds a scored empirical audit and
+controlled tests for using model output after the validity checks.
 
 #### Evidence discipline.
 
@@ -82,22 +262,26 @@ their limits. It is included near the front because the main risk in
 this area is not a missing benchmark but a wrong comparison: rows that
 are source-visible, labels that use a later data vintage, market bars
 measured at a different information time, or decision rules adopted
-from diagnostic correlations.
+from diagnostic correlations. Read in the opposite direction, the test is
+simple: if the answer, label, or comparator comes from a different
+information state than the forecast, the row may still be useful for
+diagnosis, but it cannot support a broad forecasting comparison.
 
 <div id="tab:claim-map">
 
 | Claim unit | Evidence in this paper | Conservative interpretation |
 |:---|:---|:---|
 | Validity checks | Source-currency, label-time, and equal-information audits over the database | A row without these checks is not broad forecast evidence. |
-| Raw LLM panels vs markets | Polymarket scores much better than the model panel; Manifold also scores better, but inconclusively | No broad market/human superiority claim. |
-| Low-probability calibration | Source-valid low-probability rule improves every family on the public-domain panel and improves the forward-looking slice | Point-probability use for source-valid rows, not retrospective correction. |
-| Pairwise ranking | Source-balanced pairwise ranking and partial probability-translation evidence | Ranking/tournament support; absolute-probability use needs larger controls. |
-| Evidence fields and family choice | Mixed structured-field tests; best-family-in-hindsight headroom not recovered by simple allocation rules | Evidence of where signal lives; selection rules need prospective confirmation. |
-| Prompt intervention/self-repair | Selective action, self-repair, and diagnostic allocation mostly fail controls | Evidence against unvalidated prompt-only interventions. |
+| Raw LLM panels vs markets | Three strict equal-information controls: Polymarket and the 32-contract Manifold expansion have much lower market Brier under raw paired tests and BH correction, with BY `q=0.0616`; the 24-contract Manifold fill is inconclusive. | Does not support raw model panel superiority in the current evidence; too small for a general market-performance estimate. |
+| Calibration for very small probabilities | Rule for very small probabilities improves every family on the public-domain panel and improves the forward-looking slice | Point-probability use for rows that pass the source currency check, not retrospective correction. |
+| Pairwise ranking | Pairwise ranking balanced by source and partial probability-translation evidence | Ranking/tournament support; absolute-probability use needs larger controls. |
+| Expert-training prompt | 600-call Gemini public question comparison: expert-training improves paired Brier versus bare, length-matched placebo, and same row calibrated bare forecasts; two other structured prompt variants do not beat placebo | A Gemini-specific result and replication target; current market overlap has lower market Brier, the 591/600-call Claude run remains underpowered and below the replication gate, and a 448-call Codex+DeepSeek staged run does not clear the bare, placebo, sign-test, or source-split checks. |
+| Evidence fields and family choice | Mixed structured-field tests; best-family-in-hindsight headroom not recovered by simple allocation rules | Headroom is a design target, not a predictive asset until an observable selector recovers it prospectively. |
+| Generic prompt intervention | Selective action, self-revision, and diagnostic allocation mostly fail controls | Evidence against unvalidated prompt-only interventions. |
 
 Main claims and limits. The central contribution is the validity layer
-plus the controlled mechanisms that can extract or locate LLM forecast
-signal once invalid comparisons are removed.
+plus the controlled tests for using LLM forecast information once
+invalid comparisons are removed.
 
 </div>
 
@@ -130,7 +314,7 @@ label valid at the relevant data vintage?</td>
 forecast evidence.</td>
 </tr>
 <tr>
-<td style="text-align: left;">Same-information baseline</td>
+<td style="text-align: left;">Equal-information baseline</td>
 <td style="text-align: left;">What did a market or human comparator know
 at the same pre-outcome time?</td>
 <td style="text-align: left;">Decides whether raw model probabilities
@@ -138,46 +322,92 @@ add value under the same information rule.</td>
 </tr>
 <tr>
 <td style="text-align: left;">Controlled use</td>
-<td style="text-align: left;">Which model-derived signal improves a
+<td style="text-align: left;">Which model-derived output improves a
 proper score or ranking task after the checks above?</td>
-<td style="text-align: left;">Admits only source-valid calibration,
-pairwise ranking, or future family-choice rules that beat controls.</td>
+<td style="text-align: left;">Admits only calibration on rows that pass the source currency check,
+pairwise ranking, or future differences across model families rules that beat controls.</td>
 </tr>
 </tbody>
 </table>
 <figcaption>Evidence flow. The paper’s unit is a forecast row with
-documented validity checks, a same-information baseline, and a
-controlled decision about which model-derived signal is
-usable.</figcaption>
+documented validity checks, an equal-information baseline, and a
+controlled test of which model-derived output improves scoring or
+ranking.</figcaption>
 </figure>
 
 The paper is empirical first and theoretical second. We ran a
 calibration study across five model families and two corpus classes,
 with more than 30 measured findings and pre-registered tests. The main
-text keeps the forecasting spine in front: validity checks,
-same-information baselines, and controlled uses of model signal.
+text keeps the forecasting argument in front: validity checks,
+equal-information baselines, and controlled uses of model output.
 Bias-transfer and prompt-stability results are treated as secondary
 diagnostics because they help explain why generic prompting is
 unreliable, but they do not carry the paper’s main claim.
 
 #### Statistical audit.
 
-Every empirical claim is checked with the same power-aware procedure:
+Every reported test is checked with the same power-aware procedure:
 Fisher-$`z`$ sample-size computation before an experiment runs, three
-possible outcomes after scoring (supported, ruled out at the target
-effect size, or underpowered), equivalence testing instead of treating
-“$`p > 0.05`$” as evidence of no effect, BH-FDR across panel tests, and
-leave-one-out $`R^2`$ at small $`N`$. Under this audit, $`8`$ of $`12`$
-prior nulls in the study became underpowered rather than negative
-findings, and $`5`$ cross-corpus claims narrowed to corpus-specific
-results. That statistical procedure is a methodological contribution
-because the same overcalling problem plausibly affects existing
-$`N{=}5`$–$`20`$ cross-corpus headlines. A second-order application is
-corpus-validity drift: a benchmark whose resolution dates were
-post-cutoff for publication-era LLMs can become pre-cutoff for the next
-model generation. We apply this point to the Halawi 2024 dataset  in
+possible outcomes after scoring (supported, ruled out at the target effect size,
+or underpowered), equivalence testing instead of treating “$`p > 0.05`$” as
+evidence of no effect, and leave-one-out $`R^2`$ at small $`N`$. The manuscript
+reports one global BH-FDR correction over all p-values used for its main
+statistical comparisons and a Benjamini-Yekutieli column as a conservative
+robustness check for arbitrary dependence across overlapping panels. Table 2
+gives the effective denominator, raw p-value, BH $`q`$, and BY $`q`$ for each
+test. For the Polymarket and 32-contract Manifold market rows, BH gives
+`q=0.0163` while BY gives `q=0.0616`; we therefore treat those rows as current
+controls and BY sensitivity evidence, not as arbitrary-dependence-significant
+market effects at `0.05`. The class column separates diagnostic, exploratory, replication, and
+continuation rows; none of the exploratory or sensitivity rows is promoted
+solely by a multiplicity-adjusted threshold. Under the broader audit, $`8`$ of
+$`12`$ prior nulls in the study became underpowered rather than negative
+findings, and $`5`$ cross-corpus claims narrowed to corpus-specific results.
+That procedure is a methodological contribution because the same overcalling
+problem plausibly affects existing $`N{=}5`$–$`20`$ cross-corpus headlines. A
+second-order application is corpus-validity drift: a benchmark whose resolution
+dates were post-cutoff for publication-era LLMs can become pre-cutoff for the
+next model generation. We apply this point to the Halawi 2024 dataset in
 $`\S`$<a href="#sec:reaudit" data-reference-type="ref"
 data-reference="sec:reaudit">10</a>.
+
+<div id="tab:multiplicity-audit">
+
+| Test | Class | Unit | Effective N | Effect | p | BH q | BY q |
+|:---|:---|:---|---:|:---|---:|---:|---:|
+| Manifold source-currency audit | Diagnostic | Contract / paired stratum | 80 / 15 | Post-minus-pre Brier `+0.191`; paired delta `+0.216` | 0.0004 | 0.0031 | 0.0115 |
+| Polymarket market control | Diagnostic | Contract | 24 | Panel-minus-market `+0.195` | 0.0068 | 0.0163 | 0.0616 |
+| Manifold market control | Diagnostic | Contract | 24 | Panel-minus-market `+0.0377` | 0.5431 | 0.6207 | 1.0000 |
+| Manifold same-day freeze | Diagnostic | Contract | 32 | Panel-minus-market `+0.0787` | 0.0048 | 0.0163 | 0.0616 |
+| Manifold one-day freeze | Sensitivity | Contract | 18 | Panel-minus-market `+0.1026` | 0.0122 | 0.0244 | 0.0921 |
+| Manifold two-day freeze | Sensitivity | Contract | 10 | Panel-minus-market `+0.1225` | 0.0152 | 0.0281 | 0.1060 |
+| Manifold seven-day freeze | Sensitivity | Contract | 7 | Panel-minus-market `+0.0346` | 0.5045 | 0.6054 | 1.0000 |
+| Very-small-probability rule vs raw panel | Exploratory | Contract panel | 132 | Raw-minus-tempered Brier `+0.0296` | 0.0062 | 0.0163 | 0.0616 |
+| Very-small-probability rule, forward-looking rows | Diagnostic | Calls / contracts | 120 / 40 | Tempered-minus-raw Brier `-0.0253` | 0.0688 | 0.1032 | 0.3897 |
+| Very-small-probability rule, source-visible rows | Diagnostic | Calls / contracts | 120 / 40 | Tempered-minus-raw Brier `+0.0350` | 0.0002 | 0.0024 | 0.0091 |
+| Pairwise ranking vs random | Exploratory | Unique non-tie pair | 24 | Accuracy `0.750`; utility `+0.583` | 0.0044 | 0.0163 | 0.0616 |
+| Pairwise ranking vs source control | Exploratory | Unique non-tie pair | 24 | Utility `+1.583` | 0.0002 | 0.0024 | 0.0091 |
+| Pairwise probabilities vs raw panel | Continuation | Contract | 24 | Candidate-minus-baseline Brier `-0.0061` | 0.7351 | 0.7436 | 1.0000 |
+| Pairwise probabilities vs low-probability rule | Continuation | Contract | 24 | Candidate-minus-baseline Brier `-0.0158` | 0.3229 | 0.4559 | 1.0000 |
+| Pairwise probabilities vs market | Continuation | Contract | 24 | Candidate-minus-market Brier `-0.0130` | 0.5783 | 0.6309 | 1.0000 |
+| Gemini expert-training vs bare | Exploratory | Contract-condition block | 120 | Expert-minus-bare Brier `-0.0606` | 0.0005 | 0.0031 | 0.0115 |
+| Gemini expert-training vs placebo | Exploratory | Contract-condition block | 120 | Expert-minus-placebo Brier `-0.0243` | 0.0067 | 0.0163 | 0.0616 |
+| Gemini expert-training vs tempered bare | Exploratory | Contract-condition block | 120 | Expert-minus-tempered-bare Brier `-0.0525` | 0.0022 | 0.0103 | 0.0390 |
+| Gemini expert-training vs all matched markets | Diagnostic | Contract with market | 51 | Expert-minus-market Brier `+0.1510` | 0.0110 | 0.0239 | 0.0904 |
+| Gemini expert-training vs equal-information markets | Diagnostic | Contract with market | 33 | Expert-minus-market Brier `+0.0931` | 0.0351 | 0.0601 | 0.2271 |
+| Claude replication vs bare | Replication | Paired block | 115 | Expert-minus-bare Brier `-0.0036` | 0.7436 | 0.7436 | 1.0000 |
+| Claude replication vs placebo | Replication | Paired block | 112 | Expert-minus-placebo Brier `-0.0042` | 0.0530 | 0.0848 | 0.3202 |
+| Codex+DeepSeek replication vs bare | Replication | Paired block | 90 | Expert-minus-bare Brier `+0.0072` | 0.4704 | 0.5942 | 1.0000 |
+| Codex+DeepSeek replication vs placebo | Replication | Paired block | 90 | Expert-minus-placebo Brier `+0.0652` | 0.3891 | 0.5187 | 1.0000 |
+
+Consolidated multiplicity and effective-denominator audit. Lower Brier is
+better. Positive panel-minus-market or expert-minus-market values mean the model
+or prompt is worse than the market. BH values use one global
+Benjamini-Hochberg family over the 24 p-values reported here; BY values apply
+Benjamini-Yekutieli as an arbitrary-dependence robustness check. The generated
+audit is in `projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/multiple_testing_effective_n_2026_06_20/`.
+
+</div>
 
 #### Reading order.
 
@@ -193,19 +423,19 @@ elicitation-surface and family-heterogeneity measurements that motivated
 the validity audits. Section
 $`\S`$<a href="#sec:universal" data-reference-type="ref"
 data-reference="sec:universal">7</a> reports the applied calibration and
-allocation consequences, including the source-valid low-probability calibration and
+allocation consequences, including the calibration for very small probabilities and
 pairwise-ranking results. Section
-$`\S`$<a href="#sec:harnessing" data-reference-type="ref"
-data-reference="sec:harnessing">8</a> synthesizes the supported
-harnessing thesis and explains why this remains one integrated paper
-rather than a split paper. Section
+$`\S`$<a href="#sec:controlled-use" data-reference-type="ref"
+data-reference="sec:controlled-use">8</a> synthesizes the controlled-use
+result under the same source, label-time, and market-baseline constraints.
+Section
 $`\S`$<a href="#sec:bias-transfer" data-reference-type="ref"
 data-reference="sec:bias-transfer">9</a> gives the secondary
 bias-transfer and prompt-stability diagnostics. The main measurement
 audit is collected in
 $`\S`$<a href="#sec:reaudit" data-reference-type="ref"
 data-reference="sec:reaudit">10</a>: corpus-validity drift,
-source-currency checks, label-time checks, market-prior repair, and
+source currency checks, label-time checks, market-prior repair, and
 equal-information market baselines. The paper closes with explicit
 limits, next tests, a conclusion, and a reproducibility plan.
 
@@ -250,13 +480,45 @@ The low-overlap corpus is private and not publicly releasable in raw
 form; the reproducibility plan ($`\S\ref{sec:repro}`$) addresses this
 through a sanitized release with neutral identifiers and a parallel
 public-but-niche-academic corpus matching the four-axis profile. It is
-not required for the paper’s central source-currency, label-time,
-equal-information, market-control, or source-valid calibration claims.
+not required for the paper’s central source currency, label-time,
+equal-information, market control, or calibration claims on rows that pass the source currency check.
 Those claims are scored from the public database, market-history
-packets, official-data label-time checks, and audit scripts listed in
+files, official-data label-time checks, and audit scripts listed in
 $`\S\ref{sec:repro}`$. Low-overlap rows are retained as secondary
 diagnostics about elicitation channels, prompt stability, and external
 generality.
+
+## Forecast row validity and the comparison estimand
+
+The paper’s comparison unit is a scored forecast row, not a model call by
+itself. A row contains a question or contract, a model family, a forecast
+timestamp, the model’s cutoff or retrieval window, a probability, an
+outcome label with data vintage or settlement rule, source metadata, and
+any human or market comparator with its own timestamp. A broad
+model-vs-comparator claim is estimated only on rows for which the validity
+indicator $`V_{\mathrm{row}}`$ is one: the resolved answer was not
+source-visible to the model at generation time; the outcome label is
+admissible under the relevant data vintage or settlement rule; and the
+comparator probability, if used, was measured on the same contract under
+the same pre-outcome information rule. Rows with $`V_{\mathrm{row}}=0`$
+are still useful for diagnosing retrieval, source familiarity, label
+revision, or market-timing effects, but they are not in the denominator
+for broad claims that an LLM, human, crowd, or market is the better
+forecaster. This is the estimand behind the tables below: differences in
+Brier score are interpreted only after the row’s information state is
+fixed.
+
+The same rule is applied before a new packet is scored. For each planned
+result, we write the plain counter-explanation that would make a positive
+result uninformative: a comparator observed at the wrong time, an answer
+visible in the source, a later label vintage, a prompt-length or placebo
+effect, an imbalanced pair orientation, or a source mix that makes the
+denominator misleading. The experiment then has to include the row field
+or control that could rule out that explanation. The rule is meant to
+change the test while it is still being planned, not to explain a result
+after the score is known. If it cannot be satisfied, the result may still
+be useful for diagnosis or design, but it is not counted as a broad
+performance claim.
 
 ## Pre-registration and power-aware verdicts
 
@@ -289,13 +551,14 @@ The core evidence is the following.
 
 <div id="tab:core-results">
 
-| Result | Evidence | Paper use |
-|:---|:---|:---|
-| Source-currency validity matters | Matched Manifold Stage-B panel: 80 contracts / 240 tool-free calls; post-minus-pre Brier $`+0.191098`$, paired-stratum delta $`+0.2155`$, permutation $`p=0.0004`$. | Candidate measurement result: forecast rows need source-currency checks. |
-| Raw panels do not beat same-information markets | Polymarket replacement: panel $`0.267758`$ vs market $`0.072964`$, $`p=0.0068`$. Manifold second source: panel $`0.198723`$ vs market $`0.160977`$, $`p=0.5431`$. | Boundary: no LLM market/human superiority claim. |
-| Low-probability calibration extracts point-probability signal under scope | Raw mean-panel remains $`+0.029598`$ Brier worse than the low-probability correction on rows with adequate source and label-time documentation, but the rule regresses source-visible rows. | Source-valid calibration view, not universal correction. |
-| Pairwise ranking extracts relative signal under scope | Source-balanced pairwise packet: 24 unique non-tie pairs, accuracy $`0.750`$, utility $`+0.583`$, $`p=0.0044`$ vs random. | Ranking/tournament support, not standalone probability. |
-| Prompt intervention/self-repair mostly fails | Selective action, generic self-repair, and diagnostic allocation fail or regress against controls. | Simple prompting is not enough. |
+| Result | Status and denominator | Evidence | Paper use |
+|:---|:---|:---|:---|
+| Source-currency validity matters | Diagnostic; 80 contracts / 15 paired strata. | Matched Manifold panel: 80 contracts / 240 tool-free calls; post-minus-pre Brier $`+0.191098`$, paired-stratum delta $`+0.2155`$, $`p=0.0004`$, BH $`q=0.0031`$, BY $`q=0.0115`$. | Manifold measurement result; source-general prevalence remains unmeasured. |
+| Current market controls do not support raw panel superiority | Diagnostic controls; 24 Polymarket contracts, 24 Manifold contracts, and one 32-contract Manifold expansion. Smaller horizon fills are sensitivity rows only. | Polymarket: panel $`0.267758`$ vs market $`0.072964`$, $`p=0.0068`$, BH $`q=0.0163`$, BY $`q=0.0616`$. Manifold fill: market Brier lower but paired test inconclusive ($`p=0.5431`$). Manifold same-day expansion: panel $`0.214665`$ vs market $`0.135951`$, $`p=0.0048`$, BH $`q=0.0163`$, BY $`q=0.0616`$. | Boundary: current controls do not support claims that LLMs are superior to markets or humans. |
+| Calibration for very small probabilities improves point probabilities under scope | Exploratory selected rule; 132 contract panels. | Raw mean-panel remains $`+0.029598`$ Brier worse than the correction for very small probabilities on rows with adequate source and label-time documentation ($`p=0.0062`$, BH $`q=0.0163`$, BY $`q=0.0616`$), but the rule regresses source-visible rows. | Selected calibration rule for rows that pass the source currency check, not a universal correction. |
+| Pairwise ranking gives controlled relative-judgment evidence | Exploratory; 24 unique non-tie pairs. | Source-balanced pairwise comparison: accuracy $`0.750`$, utility $`+0.583`$, $`p=0.0044`$ vs random, BH $`q=0.0163`$, BY $`q=0.0616`$; source-control comparison has BY $`q=0.0091`$. | Ranking/tournament support, not standalone probability. |
+| Expert-training prompt passes a narrow public question test | Exploratory Gemini result; 120 contract-condition blocks; replications are continuation rows. | Completed 600-call Gemini comparison: expert-training improves paired Brier versus bare prompt (BH $`q=0.0031`$, BY $`q=0.0115`$), length-matched placebo (BH $`q=0.0163`$, BY $`q=0.0616`$), and the calibrated bare forecast; audit-informed and failure-mode-specific prompts do not beat placebo. | Gemini-specific candidate; current market overlap has lower market Brier, the 591/600-call Claude run remains underpowered and below the replication gate, and Codex+DeepSeek does not reproduce the effect. |
+| Generic prompt intervention mostly fails | Negative guidance; denominators vary by packet. | Selective action, generic self-revision, and diagnostic allocation fail or regress against controls. | Generic prompting is not enough. |
 
 Core empirical results. The diagnostic sections explain how these
 results were found and where they fail; this table states the claims
@@ -303,23 +566,24 @@ that remain after source, label-time, and market-baseline controls.
 
 </div>
 
-This ordering is deliberate. The paper’s constructive claims are
-downstream of the same-information market controls. A harnessing
-mechanism is included only when it either improves a proper score on
-valid rows, supports a controlled ranking use, or locates signal that a
-future decision rule could try to recover. Mechanisms that only change
+This ordering is deliberate. The paper’s positive claims are downstream
+of the equal-information market controls. A controlled-use result is
+included only when it either improves a proper score on valid rows,
+improves a balanced bare/placebo prompt comparison, supports a controlled
+ranking use, or identifies structure that a future decision rule could try to
+recover. Mechanisms that only change
 rationales, increase stated effort, or improve a source-visible
 retrospective slice are reported as diagnostics or failed interventions.
 
-| Same-information slice | Model panel Brier | Market Brier |
-|:---|---:|---:|
-| Polymarket, 24 contracts | 0.267758 | 0.072964 |
-| Manifold, 24 contracts | 0.198723 | 0.160977 |
+![Equal-information market controls](evidence/figures/equal_information_market_controls.png)
 
-Equal-information market controls. Lower Brier is better. Polymarket
-clearly scores better than the model panel; Manifold also scores better,
-but inconclusively. These controls rule out a raw LLM-superiority claim
-for the current evidence.
+Equal-information market controls. Lower Brier is better. The plot is
+generated from the stored Polymarket replacement and Manifold history
+score reports by `evidence/reproducers/make_equal_information_figure.py`. Polymarket
+has much lower market Brier than the model panel; in the first Manifold fill the
+market has lower Brier, but the paired test is inconclusive. These controls
+do not support a raw model panel superiority reading for the current evidence,
+but do not estimate a general market control effect.
 
 # Why emitted forecast channels differ by family
 
@@ -328,7 +592,7 @@ distinctions that organized the measurements. These were not stated in
 advance; they are a compact reading of the body of findings the study
 produced. Their role in this paper is explanatory: they help explain why
 side channels and prompt interventions are family- and
-source-conditional, not why LLMs should be expected to beat markets.
+source-conditional, not evidence that LLMs beat markets.
 
 #### Elicitation surface.
 
@@ -353,15 +617,16 @@ leave-one-out cross-validation.
 
 We do not observe the hidden activations of the closed models used here,
 so our channel claims are behavioral rather than
-mechanistic-interpretability claims. Still, the right unit is closer to
-a structured intermediate representation than to the generated
-rationale. Recent latent-prediction theory shows that learning or
+mechanistic-interpretability claims. The measurable object is the forecast row
+and its scored side fields, not the generated rationale by itself. Recent
+latent-prediction theory shows that learning or
 predicting hidden representations can avoid the sample-complexity cost
 of token-level prediction on hierarchical data . Our setting is not
-training-time latent prediction, but the analogy is useful here:
-uncertainty channels and source-bound evidence fields can be scored
-against outcomes, while free-form rationale text is a noisy surface
-output. In two small follow-up tests across two families, structured
+training-time latent prediction, but the comparison clarifies the
+measurement problem: uncertainty channels and source-bound evidence
+fields can be scored against outcomes, while free-form rationale text is
+a noisy surface output. In two small follow-up tests across two
+families, structured
 evidence fields beat free prose on mean Brier, while the stricter
 two-step variant did not consistently beat a same-turn field. The
 combined means were baseline $`0.171038`$, free prose $`0.146103`$,
@@ -370,10 +635,8 @@ placebo-control test weakened the claim: among the 30 rows with complete structu
 baseline mean Brier was $`0.078000`$, two-call prose $`0.107254`$,
 same-turn field $`0.110300`$, free prose $`0.122767`$, and two-step
 field $`0.149921`$; ten additional Codex rows failed at runtime before
-emitting forecasts. This is not an established mechanism. It leaves structured
-evidence fields as a hypothesis for larger paired tests, but argues
-against treating the stronger two-step break as an established
-mechanism.
+emitting forecasts. The current data justify a larger paired study of
+structured evidence fields, but not their use as a scoring rule.
 
 #### Bias-transfer diagnostic.
 
@@ -410,12 +673,13 @@ $`p \leq 0.005`$ each ($`\S\ref{sec:conditional}`$) all live on this
 axis. The empirical signature is that family identity, conditional on
 channel and contract, is itself a central predictor.
 
-#### The methodological backbone is orthogonal to the three axes.
+#### Scoring discipline across diagnostics.
 
 A power-aware scoring discipline (Fisher-$`z`$ power calculation before
 launch, three possible outcomes after scoring, equivalence testing,
-BH-FDR, LOO-$`R^2`$ at small $`N`$) sits underneath every axis-1/2/3
-measurement. The discipline produced the study’s most consequential
+global BH-FDR with BY robustness where many reported tests are compared, and
+LOO-$`R^2`$ at small $`N`$) is used for every diagnostic above. The
+discipline produced the study’s most consequential
 retraction: 8 of 12 prior “no effect” claims became underpowered rather
 than negative findings, and the corpus-validity-drift filter
 (resolve_date $`>`$ `max(panel_cutoff)`) empties the most-cited 2024
@@ -439,8 +703,8 @@ The uncertainty-channel experiments explain why raw probabilities alone
 are insufficient, but they are not themselves decision rules. We
 elicited worry scalars, bid-ask spreads, trajectory variance, frequency
 framings, self-predicted Brier intervals, outside-view base rates, and
-self-assessments about which channel should predict error. The pattern
-is consistent across these probes: LLMs emit useful side information
+self-assessments about which channel the model expected to predict error.
+The pattern is consistent across these probes: LLMs emit useful side information
 about contracts, families, and sources, but the side information is
 conditional. It changes sign by family, weakens under task-difficulty
 controls, and often fails when moved from a low-overlap corpus to
@@ -452,18 +716,18 @@ public-domain market questions.
 |:---|:---|:---|
 | Worry scalar | Pool-level worry is a positive tail-risk signal at $`N{=}590`$, but per-family worry-Brier signs split. Claude and GPT-5.5 can be most worried when most right, while GPT-5.4-mini is direction-sensible. Topic-trigger and mean-regression probes explain the sign flip better than rationale length, wallclock time, or hedging vocabulary. | Use worry as a behavioral channel only after conditioning on family, corpus, and source. It is not a universal calibration transform. |
 | Cognitive text versus calibration | Failure-mode words in rationales are weakly positive for the original trio but near zero for Gemini and DeepSeek at roughly $`N{=}60`$ per family. Stake framing raises worry for every family while leaving point probabilities nearly unchanged. | The model can produce diagnostic language without recomputing the forecast from that language. This supports interface discipline, not free-form chain-of-thought reliance. |
-| Bid-ask and frequency probes | Bid-ask spread is positive on the low-overlap corpus for GPT-5.4-mini and DeepSeek, but public-domain replication is underpowered or sign-flipped. Frequency framing improves GPT-5.4-mini on low-overlap questions and does not transfer to the public corpus. | These are promising elicitation probes. They do not justify a source-general policy. |
-| Orthogonality and multi-channel fits | Worry, spread, and trajectory variance are nearly uncorrelated at expression level. Early same-forecast $`R^2`$ survives leave-one-out only for GPT-5.5 on the $`N{=}42`$ public corpus; the larger five-family audit gives negative leave-one-out $`R^2`$ for channel-only Brier prediction across all five families. | Channels are distinct measurements, but distinct does not mean ready for use. They are useful for diagnosis and design of later scoring rules. |
-| Conditional structure and family allocation | Sub-source decomposition flips channel signs across yfinance, Manifold, and Polymarket cells. Pooled channel value collapses after task-difficulty controls. Easy-contract cells show headroom, hard cells overfit, and naive mean/median panels do not beat the best single family. | Forecast signal lives in family-by-source-by-contract interactions. Current observable allocation rules find headroom but do not yet recover it under controls. |
+| Bid-ask and frequency probes | Bid-ask spread is positive on the low-overlap corpus for GPT-5.4-mini and DeepSeek, but public-domain replication is underpowered or sign-flipped. Frequency framing improves GPT-5.4-mini on low-overlap questions and does not transfer to the public question. | These are promising elicitation probes. They do not justify use across sources. |
+| Orthogonality and multi-channel fits | Worry, spread, and trajectory variance are nearly uncorrelated at expression level. Early same-forecast $`R^2`$ survives leave-one-out only for GPT-5.5 on the $`N{=}42`$ public question; the larger five-family audit gives negative leave-one-out $`R^2`$ for channel-only Brier prediction across all five families. | Channels are distinct measurements, but distinct does not mean ready for use. They are useful for diagnosis and design of later scoring rules. |
+| Conditional structure and family allocation | Sub-source decomposition flips channel signs across yfinance, Manifold, and Polymarket cells. Pooled channel value collapses after task-difficulty controls. Easy-contract cells show headroom, hard cells overfit, and naive mean/median panels do not beat the best single family. | Model information appears in family-by-source-by-contract interactions. Current observable allocation rules find headroom but do not yet recover it under controls. |
 
 Uncertainty-channel experiments as diagnostics. The shared lesson is
 conditionality: emitted channels can locate signal, but they have not
-become source-general probability rules.
+become probability rules across sources.
 
 </div>
 
 The channel material has a narrow role in the argument. The diagnostics
-support one claim needed for the harnessing thesis: raw LLM forecasts
+support one claim needed for controlled use: raw LLM forecasts
 contain more structure than a single probability, and that structure
 requires label-time-valid scoring, source and family splits, and
 comparison against simple baselines before use.
@@ -475,7 +739,7 @@ that feel leaky or risky without translating that feeling into better
 probabilities. Self-assessed channel selection can even be
 anti-coherent: in the low-overlap channel-choice probe, three of five
 families often selected the channel that was worst for their own error.
-These failures motivate the paper’s emphasis on source-valid
+These failures motivate the paper’s emphasis on rows that pass the source currency check
 calibration, pairwise ranking, source-specific checks, and future
 allocation tests rather than generic self-monitoring or prompt-only
 intervention.
@@ -512,7 +776,7 @@ Codex-5.4-mini emits the most Bayes-coherent thresholds (mean YES-bad
 $`0.750`$, exact match). For DeepSeek,
 $`\rho(\text{threshold\_yes\_bad}, \text{err}^2) = -0.19`$, $`95\%`$ CI
 $`[-0.35, -0.03]`$ at $`N{=}142`$. The emitted threshold tracks accuracy
-for one family. This is a novel diagnostic channel; policy use requires
+for one family. This is a novel diagnostic channel; applied use requires
 a heldout utility test.
 
 **Stake-framing amplifies worry universally, leaves $`p`$ unchanged.**
@@ -531,8 +795,8 @@ on the low-overlap corpus: claude, codex-5.5, and deepseek pick the
 worse channel $`87\%`$ of the time (binomial $`p{=}0.005`$ each). Within
 those picks, $`\rho(\text{picked}, \text{err}^2)`$ is negative while
 $`\rho(\text{unpicked}, \text{err}^2)`$ is strongly positive (claude
-$`+0.51`$, codex-5.5 $`+0.53`$, deepseek $`+0.65`$). The candidate
-inversion rule is: when these three families claim “worry is my best
+$`+0.51`$, codex-5.5 $`+0.53`$, deepseek $`+0.65`$). A testable
+inversion pattern is: when these three families claim “worry is my best
 channel,” test spread instead (or the analogous flip). Codex-5.4-mini is
 coherent ($`73\%`$ right); gemini is random. Companion finding to the
 per-family worry sign-flip, on a new axis. This result is
@@ -546,14 +810,14 @@ defining negative finding about LLM self-monitoring.
 
 The channel and family diagnostics become useful only if they change a
 scored forecast or a decision rule. This section separates three
-evidence grades: robust enough for a source-valid calibration view,
+evidence grades: robust enough for a calibration on rows that pass the source currency check view,
 useful as a design clue, and unsupported as an applied rule.
 
 <div id="tab:applied-patterns">
 
 | Pattern | Evidence | Status |
 |:---|:---|:---|
-| Low-probability overconfidence | In the lowest forecast quintile, every family underpredicts YES outcomes; gaps range from $`+0.34`$ to $`+0.72`$. | Basis for the low-probability calibration rule, subject to source-currency checks. |
+| Overconfidence on very small probabilities | In the lowest forecast quintile, every family underpredicts YES outcomes; gaps range from $`+0.34`$ to $`+0.72`$. | Basis for the rule for very small probabilities, subject to source currency checks. |
 | Horizon and source difficulty | Longer horizons have higher Brier ($`\rho=+0.161`$, 95% CI $`[+0.026,+0.290]`$); Polymarket is harder than Manifold, which is harder than yfinance for every family. | Design clue; not enough alone for an applied rule. |
 | YES underprediction | On contracts resolving YES ($`N=26/42`$), every family’s mean $`p_{\text{success}}`$ is below $`0.5`$. | Supports calibration diagnostics. |
 | Panel agreement and naive ensembles | Cross-family forecast correlations are high (mean $`\rho=+0.72`$); mean/median-of-five have higher Brier than the best single family on the $`N=142`$ paired set. | Warns against naive averaging. |
@@ -565,11 +829,11 @@ compared with simple baselines.
 </div>
 
 The composed four-rule recipe converted these patterns into a scored
-forecast by applying a low-probability discount, a middle-band YES
+forecast by applying a discount for very small probabilities, a middle-band YES
 correction, a horizon shrinkage, and a source-difficulty shrinkage to
 the mean panel forecast. The recipe beats naive aggregation on the same
 $`N=142`$ paired set, but it does not clear the stronger best-single and
-source-balanced policy bars.
+evaluation bars balanced by source.
 
 <div id="tab:composed-adjustment">
 
@@ -593,35 +857,36 @@ Brier ($`p=0.0013`$) and mean-of-five by $`-0.029`$ ($`p=0.0069`$).
 Second, the comparison with the best single family remains underpowered:
 the point estimate is favorable ($`-0.022`$) but the paired test is
 $`p=0.18`$, with an estimated $`N\approx250`$–$`300`$ required for the
-observed effect. Third, later source-balanced audits weaken the
+observed effect. Third, later audits balanced by source weaken the
 composite. The current source+$`\sigma`$ allocation rule and
 diagnostic-triggered allocation have higher Brier than simpler rules;
-Hedge over raw-family, low-probability-adjusted-family, and simple-pool
+Hedge over raw-family, calibrated-family, and simple-pool
 experts is directionally better but nonsignificant ($`0.226481`$ versus
 $`0.233529`$, $`p=0.4671`$) and regresses on Manifold in the balanced
 slice. Choosing the best family in hindsight remains far better
-($`0.117454`$ Brier), so family-choice headroom exists, but the
+($`0.117454`$ Brier), so there is headroom across model families, but the
 observable rules have not recovered it.
 
-The pairwise ranking packet supports a controlled relative-judgment use.
-A source-balanced four-family contrastive packet supports pairwise
+The pairwise ranking experiment supports a controlled relative-judgment use.
+A four-family contrastive comparison supports pairwise
 ranking over 24 unique non-tie pairs (accuracy $`0.750`$, utility
 $`+0.583`$, $`p=0.0044`$ versus random). Translation tests are favorable
-but not yet ready as a point-probability layer: same-packet
-translated-minus-low-probability-correction is $`-0.022714`$ with $`p=0.0628`$; one
-cross-packet direction clears $`p=0.0314`$, the reverse direction misses
-at $`p=0.0636`$; and the joined market-control slice is only 24 rows
-with translated-vs-market $`p=0.5783`$. A prospective Polymarket packet
+but not yet ready as a probability layer: translated probabilities beat the
+calibrated baseline by $`-0.022714`$ Brier within the experiment, with
+$`p=0.0628`$; one
+cross-experiment direction clears $`p=0.0314`$, the reverse direction misses
+at $`p=0.0636`$; and the joined market control slice is only 24 rows
+with translated-vs-market $`p=0.5783`$. A prospective Polymarket comparison
 has frozen 24 pairwise market bars before model calls, but unresolved
 outcomes cannot support a current scoring claim. Pairwise ranking
 therefore appears in the paper as a controlled use, while the current
-point-probability rule remains the low-probability calibration rule.
+probability rule remains the calibration rule for very small probabilities.
 
-**The low-probability correction as a standalone rule beats raw on every
+**The correction for very small probabilities as a standalone rule beats raw on every
 family at $`p<0.05`$.** The rule applies only when the panel forecast is
 below $`0.20`$, shrinking that low forecast toward $`0.10`$ by
 $`\hat p_{\mathrm{low}} = 0.35\bar p + 0.65(0.10)`$. The simpler form of
-the recipe, the single low-probability discount applied per-family
+the recipe, the single discount for very small probabilities applied per-family
 without the other three rules, improves per-family Brier on every panel
 member at $`p < 0.05`$:
 
@@ -633,9 +898,13 @@ member at $`p < 0.05`$:
 | deepseek | $`0.3222`$ | $`\mathbf{0.2704}`$ | $`\mathbf{-0.0518}`$ | $`\mathbf{0.0008}`$ |
 | gemini | $`0.3167`$ | $`0.2840`$ | $`-0.0327`$ | $`0.008`$ |
 
+Per-family correction for very small probabilities. The single rule
+improves Brier for each tested family on the public-domain panel, but later
+source currency checks restrict its use to eligible forward-looking rows.
+
 Discounted Claude at Brier $`0.2240`$ is at parity or better than the
 four-rule adjusted aggregate ($`0.232`$), so the additional features add
-little on this corpus. The single low-probability adjustment improves Brier
+little on this corpus. The single adjustment for very small probabilities improves Brier
 at $`p<0.05`$ across every model family, including DeepSeek and Gemini,
 which were not the panel that originated the rule. A
 fitted-calibrator audit using the stored rows did not identify a better
@@ -644,84 +913,160 @@ estimate but lost Manifold and was nonsignificant, while tail-beta
 shrinkage was worse. The 2026-06-04 source-documented rerun excludes 10
 yfinance/yfinance\_etf complete panels lacking label-time documentation,
 leaving 132 panels; source-isotonic remains unsupported at
-$`-0.005248`$ Brier versus the low-probability correction with paired
+$`-0.005248`$ Brier versus the correction for very small probabilities with paired
 $`p=0.7099`$, while raw mean-panel is $`+0.029598`$ worse. A later
-source-currency stress audit narrows the rule: it improves post-cutoff
+source currency stress audit narrows the rule: it improves post-cutoff
 rows ($`-0.025326`$, tail-only $`-0.101306`$) and regresses
 pre-cutoff/source-visible rows ($`+0.035016`$, $`p=0.0002`$; tail-only
 $`+0.097719`$, $`p=0.0002`$). A row-level rerun through the shared
-source-currency discriminator leaves those scores unchanged while
+source currency discriminator leaves those scores unchanged while
 exposing 39/240 stored-flag-vs-computed-relation conflicts. The
-low-probability rule is therefore forward-looking calibration tied to
+rule for very small probabilities is therefore forward-looking calibration tied to
 computed cutoff and label-time documentation, not retrospective
 benchmark correction.
-# Harnessing LLM forecast signal under constraints
+# Controlled use under source and market constraints
 
-The equal-information market controls change the paper’s question. The
-defensible unit is a validated and controlled forecast row: the
-completed Polymarket slice clearly favors the market, and the Manifold
-second-source slice favors the market but is inconclusive. The useful
-finding is that the market result does not make the LLM signal
-disappear. It changes which part of the signal can be used. In the
-current evidence, the usable pieces are a source-valid calibration rule,
-a pairwise ranking task, and measurable family-choice headroom. These
-mechanisms belong in the same paper because they depend on the same
-measurement foundation that makes the market controls interpretable.
+Equal-information market controls set the scoring problem. Once the row, label,
+and comparator information state are fixed, the question becomes whether a
+named model-derived output improves a scored task under the same controls.
+Three current uses pass that bar within the paper's scope: the correction for very small probabilities
+improves forward-looking rows that pass the source currency check and fails on source-visible rows;
+pairwise comparisons rank contracts better than chance but are not yet a
+probability model; and one Gemini expert-training prompt beats bare and
+placebo prompts in a balanced public question comparison. A fourth line, family
+choice, has measurable headroom but no reliable selection rule. These results
+belong in the same paper because each depends on the same row validity checks
+that make the market controls interpretable.
 
-**The low-probability rule is the current point-probability use case.** The
-low-probability discount is the strongest practical rule in the database.
-It improves every tested family on the public-domain panel, including
-families that were not used to originate the rule. On source-documented
-rows the raw mean-panel remains worse than the low-probability correction by $`+0.029598`$
-Brier with paired $`p=0.0062`$. On the source-currency stress panel, the
-same rule improves post-cutoff rows by $`-0.025326`$ while regressing
-pre-cutoff/source-visible rows by $`+0.035016`$ with $`p=0.0002`$. This
-is the pattern in miniature: the rule extracts signal from the
-forward-looking slice and damages retrospective/source-visible rows. It
-is therefore a source-valid calibration view, not a universal
-correction.
+The controlled-use map separates current uses from design evidence and
+negative guidance. The table states what can be used now, what only motivates
+the next experiment, and what current controls leave unsupported.
+
+| Output or signal | Current role | Boundary |
+|:---|:---|:---|
+| Calibration for very small probabilities | Deterministic post-processing rule for rows that pass the source currency check, forward-looking rows with very low panel probabilities. | Regresses on source-visible rows; not a retrospective benchmark correction. |
+| Pairwise ranking | Ranking or tournament interface when the task is relative difficulty or relative likelihood. | Probability translation and market-additive use still need larger and prospective controls. |
+| Expert-training prompt | One Gemini public question intervention that beats bare, placebo, and same row calibrated bare forecasts. | Does not beat the market on current overlap; the 591/600-call Claude run remains underpowered and below gate, and Codex+DeepSeek does not reproduce it. |
+| Structured fields | Candidate interface for forcing comparable evidence fields instead of relying on rationale prose. | Mixed small tests; design evidence only until a larger placebo-controlled packet clears. |
+| Differences across model families headroom | Evidence that different families contain conditional signal worth selection or review. | Current cheap selection rules do not recover the hindsight headroom. |
+| Negative controls | Evidence that generic reflection, self-revision, and selective action are weak prompt-only interventions. | Does not rule out tool-using, retrieval-grounded, expert-written, or heldout-tuned systems. |
+
+Controlled-use map. The paper’s applied contribution is a bounded account of
+which model signals are usable now, which remain design evidence, and where the
+present evidence says to stop.
+
+**A scored-use procedure.** The current evidence supports a simple order
+of operations for any new forecast packet. First, attach forecast time,
+model cutoff, source, label vintage, event family key, and comparator
+timestamp to each row; rows that fail source currency or label-time
+checks can be studied diagnostically, but are excluded from broad score
+comparisons. Second, score any equal-information market or human baseline
+before reporting model gains. When that baseline wins, the model result
+is reported as diagnostic unless a predeclared calibrated rule or blend
+beats it on the same rows. Third, on forward-looking rows that pass the source currency check
+apply the correction for very small probabilities only to very low panel
+probabilities and report the uncorrected score beside it. Fourth, use
+pairwise comparisons for prioritization or ranking; absolute-probability
+translation waits for prospective checks against raw, calibrated, and
+market baselines. Fifth, treat prompt variants as candidates only when
+they beat bare, placebo, calibrated bare, and source-split checks.
+This procedure is deliberately narrow, but it turns the market-negative
+results into a usable rule for when to score, adjust, rank, or leave
+model output alone.
+
+**The rule for very small probabilities is the current selected probability rule.** The
+discount for very small probabilities is the best practical rule in the database, but
+only under conditions where the source currency check passes. It was selected
+after earlier calibration work, so the paper treats it as a scoped rule requiring
+independent replication rather than as a general principle. It improves every tested family on
+the public-domain panel, including families that were not used to
+originate the rule. On source-documented rows the raw mean-panel remains
+worse than the correction for very small probabilities by $`+0.029598`$ Brier with
+paired $`p=0.0062`$, BH $`q=0.0163`$, and BY $`q=0.0616`$. On the source currency stress panel, the same rule
+improves post-cutoff rows by $`-0.025326`$ while regressing
+pre-cutoff/source-visible rows by $`+0.035016`$ with $`p=0.0002`$ and
+$`q=0.0024`$. This
+is the pattern in miniature: the rule helps on the forward-looking slice
+and damages retrospective/source-visible rows. It is therefore a
+calibration result for rows that pass the source currency check, not a universal correction.
 
 **Pairwise ranking is the current relative-judgment use case.** The
 strongest positive ranking evidence supports relative judgment rather
-than absolute probability. A source-balanced same-source/minimal-pair
-packet gives 24 unique non-tie pairs with accuracy $`0.750`$, utility
+than absolute probability. A same source/minimal-pair comparison balanced by source
+comparison gives 24 unique non-tie pairs with accuracy $`0.750`$, utility
 $`+0.583`$, $`p=0.0044`$ versus random, and $`p=0.0002`$ versus source
 control. Later probability-translation tests are favorable in one
 direction, while the required single-contract probability checks remain
-unmet: same-packet translated-vs-low-probability-corrected and translated-vs-raw
-checks, bidirectional cross-packet transfer, joined market control, and
+unmet: within-experiment translated-vs-calibrated and translated-vs-raw
+checks, bidirectional cross-experiment transfer, joined market control, and
 prospective causal-order resolution are not all satisfied. The supported
 use is pairwise ranking or tournament support.
 
-**Interface and family-choice evidence shows where the next gain could
-come from.** Structured evidence fields are plausible because some small
-tests favor typed fields over free prose, but the placebo-control
-continuation is negative for the stronger two-step claim. Family choice
-has real headroom: choosing the best family in hindsight reaches much
-lower Brier than current decision rules, and family-by-contract
-interaction is substantial. Current observable selection rules do not
-recover that headroom: source-balanced selection fails source controls,
-Hedge over raw, low-probability-corrected, and simple-pool experts is directionally better but not
-significant, and graph-family weighting is small and fragile. These
-results locate signal; they do not yet supply a reliable
-family-selection rule.
+**Expert-training prompting is a Gemini-specific candidate.**
+The completed public question prompt comparison tests five conditions on the
+same 120 contracts across FRED, Manifold, and Polymarket: bare prompt,
+length-matched placebo, expert-training prompt, audit-informed prompt,
+and failure-mode-specific prompt. In the Gemini run, expert-training
+improves paired Brier versus bare prompt by `-0.060569` (63 wins, 29
+losses, 28 ties; sign `p=0.0005`, BH `q=0.0031`, BY `q=0.0115`) and versus length-matched placebo by
+`-0.024287` (60 wins, 33 losses, 27 ties; sign `p=0.0067`, BH `q=0.0163`, BY `q=0.0616`). Mean Brier
+improves in all three sources. The two other structured prompt variants
+do not beat placebo. A no-new-call external-control audit adds two
+boundaries. First, expert-training still beats the same row
+calibrated bare prompt by `-0.052503` Brier (64 wins, 33
+losses, 23 ties; sign `p=0.0022`, `q=0.0103`). Second, it does not beat markets on
+the current overlap: expert-training minus all matched market rows is
+`+0.150950` Brier over 51 matched rows (`p=0.0110`, `q=0.0239`), and expert-training minus
+equal-information market rows is `+0.093130` over 33 matched rows
+(`p=0.0351`, BH `q=0.0601`, BY `q=0.2271`). A
+591/600-call Claude run has 112 complete
+contract blocks: expert-training is directionally better than the bare prompt
+on mean Brier by `-0.003638` (40 wins, 44 losses, 31 ties; sign p=`0.7436`,
+`q=0.7436`)
+and directionally better than length-matched placebo by `-0.004175` Brier
+(53 wins, 34 losses, 25 ties; sign p=`0.0530`, `q=0.0848`). It does not pass either sign
+test or the source split: Manifold is directionally favorable, while
+FRED regresses versus bare and Polymarket regresses versus placebo. The
+audit-informed Claude arm has favorable mean deltas against bare and placebo
+(`-0.006726` and `-0.005266`), but neither sign test is significant and the source split remains
+fragile. A staged Codex+DeepSeek
+check now has 448 scored calls (89 complete five-condition family-contract blocks;
+90 expert-training paired blocks: 41 Codex and 49 DeepSeek). Across both
+families, expert-training is worse than bare prompt on mean Brier by `+0.007173`,
+does not pass the sign test (`p=0.4704`, `q=0.5942`), is worse than placebo by `+0.065223`
+(`p=0.3891`, `q=0.5187`),
+and fails the source split because only FRED is directionally better than placebo.
+Codex remains directionally favorable on mean Brier in the current slice but is
+not clean across sources; DeepSeek regresses. This
+leaves the completed Gemini finding as a narrow candidate: one model
+family, scored after outcomes were known, weaker than matched market rows, with
+the Claude run underpowered and below gate and Codex+DeepSeek not reproducing the effect.
 
-**Prompt-only improvement survives only as failed evidence plus a
-narrower interface hypothesis.** Generic reflective prompting, selective
-action, and self-repair do not reliably improve forecasts under
-controls. The tested prompt-intervention variants either fail
+**Structured fields and family choice remain design evidence.** Some small tests favor typed evidence fields over free prose,
+but the placebo-control continuation is negative for the stronger
+two-step claim. Family choice has real headroom: choosing the best
+family in hindsight reaches much lower Brier than current decision
+rules, and family-by-contract interaction is substantial. Current
+observable selection rules do not recover that headroom: Hedge over raw,
+calibrated, and simple-pool experts is directionally
+better but not significant, and graph-family weighting is small and
+fragile. These results identify where model information appears; they do
+not yet supply a reliable rule for choosing among model families.
+
+**Generic prompt intervention is still weak evidence.** Generic reflective
+prompting, selective action, and self-revision do not reliably improve
+forecasts under controls. The tested generic variants either fail
 confirmation, overcorrect, produce no measurable change, or underperform
-low-probability calibration. This does not rule out tool-using,
-retrieval-grounded, expert-written, or heldout-tuned prompting systems.
-It does rule out the simple claim that asking the model to reason
-harder, repair itself, or act selectively is enough to improve forecast
-probabilities.
+calibration for very small probabilities. The Gemini expert-training comparison shows that a
+prompt can improve Brier under a tighter design, but it does not rescue
+the broader claim that asking the model to reason harder, repair itself,
+or act selectively is enough to improve forecast probabilities.
 
-The manuscript therefore stays integrated for now. The positive
-mechanisms depend on the same validity checks that make the market
-controls interpretable. A later split is justified only if prospective
-ranking, calibration, and family-choice evidence becomes large enough to
-support an independent mechanisms paper.
+These results are analyzed together because the positive findings depend on
+the same validity checks that make the market controls interpretable. The
+common unit is a forecast row whose information state is documented before any
+calibration, ranking, or selection rule is evaluated, not an isolated prompt or
+model family.
 
 # Secondary diagnostics: bias transfer and prompt stability
 
@@ -730,8 +1075,8 @@ support an independent mechanisms paper.
 
 The bias-transfer and prompt-stability experiments are not the paper’s
 central contribution. They appear in the main text as diagnostics for
-why naive prompt interventions and family-general allocation should not
-be trusted.
+why naive prompt interventions and family-general allocation do not yet
+support decisions.
 
 **Bias transfer.** Three novel-bias tests on the same $`N=30`$
 public-domain contracts across five families found a structured split:
@@ -739,7 +1084,7 @@ loss-frame and probability-weighting probes were close to symmetric or
 near-linear, while current-state/status-quo framing moved several
 families substantially. A held-out seven-bias slate later supported the
 representational distinction between text-discussed motivational cases
-and direct utility-like mechanisms. The anti-bias-prompt companion test
+and direct utility-like mechanisms. The anti-bias-prompt follow-up
 was weakened by raw-gap controls, and the out-of-distribution slate was
 inconclusive and confounded by cross-family pretraining differences. We
 therefore use these results only to interpret family/source sensitivity
@@ -756,19 +1101,18 @@ reverse relative to the low-overlap experiment. Any decision rule that
 depends on a verbal uncertainty channel must therefore be treated as
 family-, corpus-, and prompt-bound until it clears heldout controls.
 
-These diagnostics bound the harnessing thesis: model signal does not
-become reliable through generic reflection, debiasing, or self-repair.
-It becomes usable only when the interface is tied to a scored channel, a
-source-valid calibration rule, a pairwise ranking task, or a predeclared
+These diagnostics bound the controlled-use result: model output does not
+become reliable through generic reflection, debiasing, or self-revision.
+It can be used only when the interface is tied to a scored channel, a
+calibration on rows that pass the source currency check rule, a pairwise ranking task, or a predeclared
 allocation rule that beats simpler controls.
 
 # The re-audit discipline: a warning to the field
 
 The discipline that produced the results above also produced a re-audit
 of the study’s own prior findings. We treat the re-audit itself as a
-contribution because the same overcalling pattern almost certainly
-affects the published LLM-forecasting literature at the sample sizes it
-currently reports.
+contribution because the same overcalling pattern is a plausible risk in
+LLM-forecasting studies with small per-source or per-family cells.
 
 ## Power calculus applied to our own study
 
@@ -778,7 +1122,8 @@ findings. Applying the Fisher-$`z`$ audit retrospectively:
 
 - Four “null” findings move from ruled out to underpowered: the data did
   not actively rule out a meaningful effect at the per-family target
-  $`|\rho|`$ floor; the absence-of-signal was an absence-of-power.
+  $`|\rho|`$ floor; the apparent lack of effect was mainly a lack of
+  power.
 
 - Five cross-corpus claims move from “replicated” or
   “failed-to-replicate” to corpus-specific: the original cross-corpus
@@ -800,7 +1145,7 @@ findings. Applying the Fisher-$`z`$ audit retrospectively:
 
 In aggregate, $`\approx 50\%`$ of the study’s prior conclusions changed
 under the power-aware re-audit. None of the underlying executions were
-flawed. The interpretation discipline was.
+flawed. The unsupported step was the earlier interpretation.
 
 ## A worked example: the per-family worry sign-flip retest
 
@@ -859,69 +1204,60 @@ date-restricted retrieval, benchmark extrapolation errors, and circular
 comparisons against human forecasts already visible to the model or
 retrieval system. Consistency-check benchmarks offer a complementary way
 to probe coherence before outcomes resolve , but they do not remove the
-need for resolved, same-information scoring. The methodological gap this
+need for resolved, equal-information scoring. The methodological gap this
 paper targets is a consistent power-aware audit: every claim labelled
 with one of three possible outcomes, $`n_{\mathrm{required}}`$
 pre-computed before launch, sub-source heterogeneity reported alongside
 the aggregate, and prior verdicts re-audited under the same calculus as
 new ones.
 
-The external bar has also moved since those papers. The recent
-literature now has four distinct benchmark classes.
+Recent work has expanded the comparison set since those papers. The closest
+related work now also includes automated question-generation and resolution,
+confidence-elicitation, and fictional-market framing work. These are adjacent
+to the paper's row validity and side-channel evidence, but still require
+resolved rows and equal-information baselines before they become forecasting
+evidence. Table <a
+href="#tab:lit-positioning" data-reference-type="ref"
+data-reference="tab:lit-positioning">6</a> summarizes the recent
+benchmark classes and the boundary this paper draws around them.
 
-- **Future-question benchmarks.** ForecastBench makes future-only
-  benchmark generation explicit and reports expert forecasters
-  outperforming the top LLM on its initial human/LLM sample . AIA
-  Forecaster reports human-superforecaster-level performance on
-  ForecastBench and additive value when ensembled with market consensus,
-  while also finding that the system underperforms market consensus
-  alone on a harder liquid-market benchmark .
+<div id="tab:lit-positioning">
 
-- **Belief-updating benchmarks.** EVOLVECAST tests whether LLM forecasts
-  move appropriately when new post-cutoff information is supplied, and
-  reports partial responsiveness but inconsistent or overly conservative
-  updates relative to human references . That result is complementary to
-  our label-time and source-currency checks: both settings show that a
-  forecast row is not defined only by the final event label, but also by
-  the information state available when the probability is produced.
+| Class | Examples | What they measure | Boundary in this paper |
+|:---|:---|:---|:---|
+| Future-question and system benchmarks | ForecastBench, Prophet Arena, and AIA Forecaster | Forecast generation, expert comparison, and system performance on live or future questions. | The comparison row still needs source currency, label-time, and equal-information documentation. |
+| Belief updating | EVOLVECAST | Whether forecasts move appropriately when new post-cutoff information is supplied. | The information state at the original forecast time is part of the row definition, not an afterthought. |
+| Numerical forecast intervals | QuantSightBench | Prediction intervals for continuous future quantities, scored by coverage and interval sharpness. | Interval calibration is a different output interface; the present paper studies binary-event rows, equal-information baselines, and controlled use after row validation. |
+| Question generation and resolution | Automated forecasting-question generation and resolution | Generation and resolution of forecasting questions for AI evaluation. | Automatic resolution still needs label-time, settlement-rule, and equal-information-comparator metadata before row scores support model-vs-comparator claims. |
+| Confidence elicitation and fictional markets | Confidence elicitation and fictional prediction-market framing | Whether models can emit useful confidence or wager-like signals about answer correctness. | A confidence or stake signal becomes forecasting evidence only after it is joined to resolved rows and equal-information baselines. |
+| Trading and replay benchmarks | Prediction Arena, PolyBench, and PredictionMarketBench | Profit, loss, execution, fees, liquidity, timing, and position sizing. | Trading profit is not the same object as same-contract Brier under equal information. |
+| Market-style evaluation and coordination | Foresight Arena, MarketBench, and Reppo | Market-style scoring, coordination, or infrastructure for AI forecasting and training data. | The market comparison still needs a dated baseline and enough resolved rows to distinguish small edges. |
+| Market relationship discovery | Semantic Trading | Agentic discovery of correlated, anti-correlated, and otherwise linked prediction-market pairs. | Market-pair structure can motivate relative judgment, but probability use still needs resolved outcomes and equal-information controls. |
+| Relative judgment | Strategic Foresight venture tournament | Pairwise model rankings against human managers and investors. | Supports pairwise ranking as a credible evaluation format, but not standalone probability translation. |
+| Evaluation warnings | Pitfalls and consistency checks | Temporal leakage, extrapolation risk, circular comparisons, and pre-resolution coherence. | This paper adds scored database audits and equal-information market controls. |
 
-- **Trading and replay benchmarks.** Prediction Arena evaluates agents
-  with real capital on Kalshi and Polymarket and finds platform-specific
-  performance differences rather than a generic forecasting edge .
-  PolyBench records timestamp-locked Polymarket order-book/news
-  snapshots and reports that most models have negative returns despite
-  high stated confidence . PredictionMarketBench emphasizes
-  execution-realistic replay because profit and loss mix probability
-  accuracy with fees, liquidity, position sizing, and settlement risk .
+Related benchmark classes and the boundary used in this paper. The present
+study is not a live-trading or autonomous-system benchmark; it audits the
+row-level evidence needed before model, human, and market comparisons
+are interpreted as forecasting evidence.
 
-- **Market-as-evaluation infrastructure and coordination.** Reppo-style
-  systems position prediction markets as an AI-training and evaluation
-  substrate . Foresight Arena separates proper probabilistic scoring
-  from trading profit by using commit-reveal forecasts and an
-  alpha-over-market score; its power analysis estimates that detecting a
-  small edge over market consensus requires hundreds of resolved binary
-  predictions . MarketBench studies a related coordination problem:
-  agents are miscalibrated about their own success probability and cost,
-  and capability information improves that calibration only modestly .
-  That result aligns with our family-choice findings: conditional
-  headroom can exist even when current observable selection rules do not
-  safely recover it.
+</div>
 
 Read against that literature, the present paper is not a live-market
 benchmark or an autonomous-trading evaluation. Its distinct contribution
-is the validity layer those benchmarks now make unavoidable: before
-comparing an LLM, a market, and a human, the row must specify what was
+is the row-level documentation needed to interpret those benchmarks:
+before comparing an LLM, a market, and a human, the row must specify what was
 source-visible, what label vintage is admissible, and whether the
 baseline was measured under equal information. This is also why evidence
 that markets score better is scientifically useful. If an LLM has higher
 Brier after the information state is equalized, the remaining question
-is whether any model-derived signals remain usable under calibration,
+is whether any model-derived outputs remain useful under calibration,
 ranking, and family/source constraints.
 
-**What a field-wide audit would measure.** The evidence in this paper is
+**What a audit would measure.** The evidence in this paper is
 enough to show that row-level validity can change conclusions in this
 program. It is not yet enough to claim that the same failure rate holds
-across the field. A field-wide audit would treat each benchmark row as
+across the field. A audit would treat each benchmark row as
 the unit of analysis and record the following checks before comparing
 model, human, or market scores:
 
@@ -933,17 +1269,44 @@ model, human, or market scores:
 | Effective sample size | Event-family identifiers, source strata, repeated sibling markets, and family/model repetition. | Prevents row-rich but event-thin conclusions. |
 | Decision rule status | Whether the tested rule was predeclared, tuned on the same rows, or evaluated prospectively. | Separates exploratory diagnostics from supported use. |
 
-Field-wide validity-audit protocol. The present manuscript supplies this
-protocol and a scored within-program audit; a cross-benchmark
-failure-rate claim requires applying the protocol to several public
-benchmark families.
+Broader validity audit protocol. The present manuscript supplies this
+protocol, a scored within-program audit, and the public-audit status
+summarized below; a cross-benchmark failure-rate claim requires applying
+the protocol to several public benchmark families.
 
-For reproducibility, `field_wide_validity_audit_protocol.py` emits the
-row schema and benchmark seed matrix. The companion
-`field_wide_validity_local_evidence.py` records the local Halawi
-date-distribution summary with its limitation: the raw benchmark rows
-are not present locally, so this is a warning about a likely replication
-filter, not a completed external row audit.
+For reproducibility,
+`projects/llm_forecasting_calibration_program/tools/field_wide_validity_audit_protocol.py`
+emits the row schema and benchmark seed matrix over twelve benchmark or
+evaluation families. The source inventory records the current external access
+surface: ForecastBench and PredictionMarketBench are high-access
+row-level routes, four routes are medium-access, and six still
+require a public trace or row-release check before scoring.
+
+| Route | Row-level status | Completed check | Remaining limit |
+|:---|:---|:---|:---|
+| ForecastBench | Public forecast rows and question rows available. | 500 question rows inspected; 475 have core validity fields; 250 have timestamped same-contract market rows. The 2026 processed-forecast audit scores 70 files over 521 unique resolved binary row keys and 230 event family keys; 68 files have an equal-information market slice. Only 6 files beat the prior-day market baseline before and after event family capping; the median file-level delta is +0.0866 Brier points in both views. A 2024 human-comparator audit scores 141 files over 7,259 row keys and 766 event family keys; the human-super/public aggregate Briers are 0.1186/0.1532. | Official-data rows still need data-vintage documentation; the human aggregate files each have only two strict equal-information market rows, so this is not a broad human/market comparison. |
+| PredictionMarketBench | Public replay episodes available. | Four replay episodes contain 33 settled tickers, 378,596 orderbook rows, 297,273 trade rows, and 370,254 reconstructable same-time market-baseline rows. | Released episodes contain no stored LLM forecast rows; model comparisons require submitted agent traces or a new benchmark run. |
+| Prophet Arena | Public sample task rows available. | Four public sample releases contain 68 task rows with task ids, source/event tickers, prediction deadlines, context, metadata close times, and 26 resolved rows; five public AI Prophet repositories were checked for trace files. | The fetched samples contain no submitted forecast probabilities, model input timestamps, or same-time market/human baseline probabilities, and no public Prophet Arena submission/leaderboard trace archive was found, so no conclusion-change score is available. |
+| PolyBench | Repository and database schema available; released database unavailable in this run. | The source-access check verifies the public repository/schema surface, confirms zero GitHub releases and zero committed database/CSV/parquet row files, and records that the OneDrive link resolves to HTML rather than a direct database file. | A released database or equivalent row export is required before scoring. |
+| Halawi 2024 binary-resolved benchmark | Local date summary only. | The local summary records the corpus-validity warning that no 2025-or-later resolutions are present in the stored date distribution. | The raw benchmark rows are not present locally, so this is not a completed external row audit. |
+
+Current public benchmark audit status. These checks strengthen the
+measurement-validity route, but they are not evidence of
+prevalence.
+
+The public-audit results are deliberately limited. ForecastBench
+supports public forecast-score and human-comparator audits,
+PredictionMarketBench supports a public replay-row market-baseline audit, and
+Prophet Arena supports task-row source-access checks. The ForecastBench human
+aggregate files are useful because they are scoreable and public, but their
+equal-information market overlap is only two rows per aggregate file. Prophet
+Arena and PredictionMarketBench still need submitted forecast traces before
+model-vs-baseline conclusions can be recomputed; the public Prophet Arena
+repositories checked here expose task rows and evaluation code, not a
+submission archive. PolyBench and Halawi currently remain data-access cases.
+These files therefore support the
+row-level validity argument and specify the missing joins; they do not yet
+establish a cross-benchmark failure rate.
 
 ## Source-currency, label-time, and equal-information audit
 
@@ -956,208 +1319,317 @@ current model generations, the corresponding eligibility filter,
 *resolve_date $`>`$ max(panel_cutoff)*, would leave zero rows in that
 local summary. This is not a replacement for a raw-row external audit,
 but it is the concrete corpus-validity drift warning that motivates the
-field-wide protocol.
+broader validity protocol.
 
-<div id="tab:reaudit-lanes">
+<div id="tab:reaudit-sources">
 
-| Audit lane | Current evidence | Conclusion |
+| Check | Current evidence | Conclusion |
 |:---|:---|:---|
-| Manifold source-currency panel | 80 matched contracts / 240 tool-free calls; post-minus-pre Brier $`+0.191098`$, paired-stratum delta $`+0.2155`$, permutation $`p=0.0004`$. Partial market-prior repair joins 51 contracts and leaves the effect positive under adversarial missing-band sensitivity. | Strong candidate measurement result: source-visible and post-cutoff rows cannot be pooled without documentation. |
+| Manifold source currency panel | 80 matched contracts / 240 tool-free calls; post-minus-pre Brier $`+0.191098`$, paired-stratum delta $`+0.2155`$, permutation $`p=0.0004`$, BH $`q=0.0031`$, BY $`q=0.0115`$. Partial market-prior repair joins 51 contracts and leaves the effect positive under adversarial missing-band sensitivity. | Manifold measurement result: source-visible and post-cutoff rows cannot be pooled without documentation; source-general prevalence remains unmeasured. |
 | Manifold pre-outcome market bar | On the 51 repaired contracts, market Brier is $`0.099673`$ versus joined LLM-panel $`0.166963`$ overall; market+LLM blending is unsupported ($`p=0.794`$). These rows are typed as not-equal-information external baselines. | Useful diagnostic comparison, but not a broad human/crowd baseline. |
-| Polymarket source check | Gemini and DeepSeek aggregate post-minus-pre directions are positive, but matched source/topic/length strata are null or opposite-sign. The initial seven-day market-price freeze design only fills 4/24 rows; horizon sweep tops out at 12/24. | Diagnostic evidence, not a source-general replication or usable equal-information design. |
-| Polymarket replacement equal-information packet | Replacement sampling on 2026-06-15 selects 24 one-per-event rows from 80 eligible candidates at a two-day freeze horizon, 14 NO / 10 YES, all open-by-target with nonempty CLOB history. The four-family panel has higher Brier than the market: panel $`0.267758`$ vs market $`0.072964`$, paired $`p=0.0068`$. | Clear same-information market advantage. |
-| Manifold equal-information packet | Public API history fill validates 24/24 rows, 15 NO / 9 YES. Selected five-family panel Brier is $`0.198723`$ vs Manifold $`0.160977`$, panel-minus-market $`+0.037746`$, paired $`p=0.5431`$. | Second-source comparison; market advantage is directional and inconclusive. |
-| FRED / official-data lane | Fixed one-year FRED companion supplies 49 pre-cutoff rows; full paired post-minus-pre delta is only $`+0.016477`$ ($`p=0.30375`$). Blinded-control apparent current-label penalty collapses from $`+0.024719`$ to $`-0.002989`$ after vintage repair. | Official-data diagnostic lane; label-time checks are required before current-label positives count. |
+| Polymarket source check | Gemini and DeepSeek aggregate post-minus-pre directions are positive, but matched source/topic/length strata are null or opposite-sign. The initial seven-day market-price freeze design only fills 4/24 rows; horizon sweep tops out at 12/24. | Diagnostic evidence, not replication across sources or a usable equal-information design. |
+| Polymarket replacement equal-information sample | Replacement sampling on 2026-06-15 selects 24 one-per-event rows from 80 eligible candidates at a two-day freeze horizon, 14 NO / 10 YES, all open-by-target with nonempty CLOB history. The four-family panel has higher Brier than the market: panel $`0.267758`$ vs market $`0.072964`$, paired $`p=0.0068`$, BH $`q=0.0163`$, BY $`q=0.0616`$. | Lower market Brier in this slice under the raw paired test and BH correction; BY treats it as sensitivity rather than arbitrary-dependence significance at `0.05`. |
+| Manifold equal-information sample | Public API history fill validates 24/24 rows, 15 NO / 9 YES. Selected five-family panel Brier is $`0.198723`$ vs Manifold $`0.160977`$, panel-minus-market $`+0.037746`$, paired $`p=0.5431`$, BH $`q=0.6207`$, BY $`q=1.0000`$. | Second-source comparison; the market Brier is lower, but the paired test is inconclusive. |
+| Manifold same-day freeze expansion | Public API history fill validates 32/34 request rows, with two unsupported or unfetched rows excluded, 15 NO / 17 YES. Selected five-family panel Brier is $`0.214665`$ vs Manifold $`0.135951`$, panel-minus-market $`+0.078714`$, paired $`p=0.0048`$, BH $`q=0.0163`$, BY $`q=0.0616`$. | Larger same-contract Manifold check; market Brier is lower under the raw paired test and BH correction, but BY treats it as sensitivity and this is still not a population estimate. |
+| Manifold horizon sensitivity | Public API history fills validate 18/18 one-day, 10/10 two-day, and 7/7 seven-day request rows. Selected five-family panel versus Manifold market Brier is $`0.202270`$ vs $`0.099699`$ at one day ($`p=0.0122`$, BH $`q=0.0244`$, BY $`q=0.0921`$), $`0.231846`$ vs $`0.109365`$ at two days ($`p=0.0152`$, BH $`q=0.0281`$, BY $`q=0.1060`$), and $`0.228263`$ vs $`0.193649`$ at seven days ($`p=0.5045`$, BH $`q=0.6054`$, BY $`q=1.0000`$). | Overlapping sensitivity check only; these rows are not used as independent core market-control evidence. |
+| FRED official-data check | Fixed one-year FRED series supplies 49 pre-cutoff rows; full paired post-minus-pre delta is only $`+0.016477`$ ($`p=0.30375`$). In the vintage repair, 15 of 98 binary labels changed. Across 192 blinded-control calls, the apparent current-label post-minus-pre penalty collapses from $`+0.024719`$ to $`-0.002989`$ after vintage repair. | Official-data diagnostic; label-time checks are required before current-label positives count. |
 | Metaculus target cells | Current authenticated endpoints expose post/question payloads but not resolved binary values plus dated aggregate history for the sampled rows; data-download endpoint is restricted. | Remains a data-access question, not a negative result. |
 
-Re-audit evidence by lane. The paper’s broad comparison claims depend on
+Re-audit evidence by source. The paper’s broad comparison claims depend on
 source currency, label-time validity, and equal-information status, not
-merely on model-call volume.
+merely on model call volume.
 
 </div>
 
-The source-currency panel is matched on source, topic, question-length
+The source currency panel is matched on source, topic, question-length
 bucket, and cutoff relation. Reliable base-rate bands are not available
 for that panel, so base-rate matching remains a stated limitation rather
-than a hidden control. The database now contains 103 external market
+than a hidden control. The database now contains 170 external market
 baseline rows: 51 not-equal-information Manifold diagnostic rows, 4
-equal-information Polymarket rows from the failed seven-day packet, 24
-equal-information Polymarket rows from the replacement packet, and 24
-equal-information Manifold rows from the 2026-06-15 history fill. The
-two completed 24-row equal-information slices are the relevant market
-controls for this manuscript. They do not support raw LLM superiority:
-Polymarket is decisively better, and Manifold is directionally better
-but underpowered.
+equal-information Polymarket rows from the failed seven-day sample, 24
+equal-information Polymarket rows from the replacement sample, 24
+equal-information Manifold rows from the 2026-06-15 history fill, 32
+equal-information Manifold rows from the same-day freeze expansion, and 35
+additional Manifold horizon-sensitivity rows at one, two, and seven days before
+resolution. The
+51-contract Manifold market-prior join is useful as a diagnostic repair,
+but not as the paper's market comparison: market mean Brier is
+$`0.099673`$, leave-one-out tuned market+LLM blend Brier is
+$`0.097218`$, paired delta is $`-0.002455`$ with $`p=0.794`$, and the
+post-cutoff subset prefers market-only. Its effective unit is 51
+contracts with outcome mix 17 YES / 34 NO, and 32 of 51 market rows have
+Brier below $`0.05`$. The baseline availability audit also leaves 29 of
+the 80 source currency-panel contracts without a joined market or human comparison.
+The three primary equal-information slices are therefore the relevant market
+controls for this manuscript, with the smaller horizon fills used only as
+sensitivity checks. They do not support raw-panel superiority: Polymarket has much
+lower market Brier than the model panel, the first Manifold fill has lower
+market Brier but an inconclusive paired test, and the 32-contract Manifold
+expansion is again lower-Brier for the market under the raw paired test and BH
+correction, with BY sensitivity reported in the multiplicity table. The
+one-day, two-day, and seven-day Manifold horizon checks are reported only as
+sensitivity rows.
 
 This audit changes what the paper can support. The Manifold
-source-currency result is strong enough to report as a
-measurement-validity contribution. The FRED work shows why label-time
-repair is not optional for official-data questions. The
-equal-information market rows rule out a broad market/human superiority
-claim while sharpening the harnessing thesis: useful LLM signal has to
-be extracted through source-specific calibration, pairwise ranking,
-structured interfaces, or future allocation rules that beat the
-market/human bar under the same information rule.
+source currency result is strong enough to report as a
+measurement-validity contribution. The FRED check gives the clearest
+label-time example: scoring the same official-data question against a
+current value and against the admissible vintage can reverse the
+apparent pre/post difficulty contrast. The equal-information market rows
+do not support a broad reading that LLMs are superior to markets or humans while narrowing the
+applied result: LLM-derived information has to be tested through
+source-specific calibration, pairwise ranking, structured interfaces, or
+future allocation rules that beat the market or human bar under the same
+information rule.
 
-## The applied consequence
+Because these controls are still small and post-hoc, they are not used as a
+high-power filter for every downstream calibration or prompt claim. They are used
+to state that the current evidence does not support raw model panel superiority and to define the larger
+equal-information acquisition that the benchmark still needs.
 
-The re-audit rule: *a per-family or per-(family, sub-source) decision
-rule should be treated as supported only when its supporting CI has been
-computed on $`N{\geq}n_{\mathrm{required}}`$ at the target effect size,
-and only with sub-source stratification reported.* Three remaining
-low-cost retests ($`\sim 0`$, $`42`$, and $`420`$ calls respectively)
-close the same gap on the study’s other decision-rule hypotheses; their
-results are published alongside the existing rules as the retests
-complete.
+## Claim rule after re-audit
+
+The re-audit leaves a simple rule for interpreting applied results. A
+per-family or per-source decision rule is treated as supported only when
+the scored rows pass the source currency and label-time screens, the
+effective denominator is stated at the contract, pair, or event family
+level, and the result survives the relevant equal-information, placebo,
+source split, or held-out family control. Results that fail one of those
+checks remain useful as diagnostics or entries in the continuation
+matrix, but they do not become present-tense applied claims. This is why
+the manuscript keeps the correction for very small probabilities, pairwise ranking,
+and Gemini prompt result under explicit scope while leaving family
+selection, structured fields, source currency beyond Manifold, and broader
+market/human comparisons as next tests.
 
 # What this paper does not establish
 
 - It does not show that LLMs beat humans, human crowds, or prediction
-  markets. The database has 103 external market baseline rows, including
-  52 equal-information market rows across Polymarket and Manifold. On
+  markets. The database has 170 external market baseline rows, including
+  119 equal-information market rows across Polymarket and Manifold. On
   the completed 24-contract Claude+Codex+Gemini+DeepSeek Polymarket
   replacement slice, the market baseline beats the four-family model
-  panel. On the separate 24-contract Manifold fill, the market is also
-  ahead of the selected five-family low-stake model panel, but the
-  paired comparison is inconclusive. Broad superiority would require
-  predeclared or sufficiently powered source-balanced baselines under
-  the same pre-outcome information rule.
+  panel. On the separate 24-contract Manifold fill, the market Brier is lower
+  than the selected five-family low-stake model panel, but the
+  paired comparison is inconclusive. On the 32-contract Manifold same-day
+  freeze expansion, the market Brier is again lower than the selected five-family panel under the raw paired test and BH correction. The
+  smaller Manifold one-day, two-day, and seven-day horizon checks are overlapping sensitivity rows, not additional independent market-control evidence.
+  Broad superiority would require predeclared or sufficiently powered baselines
+  balanced by source under the same pre-outcome information rule.
+
+- It does not estimate a general market control effect from the three
+  equal-information slices. The slices are strict but still modest. They do not
+  support a raw superiority claim in this dataset, especially on Polymarket and
+  the 32-contract Manifold expansion, but they are not enough to
+  characterize market and model performance across sources, horizons, liquidity
+  regimes, or event families.
 
 - It does not establish translated pairwise probabilities as a
   standalone probability layer. Pairwise ranking survives as
-  source-heldout evidence with promising translation tests, but
-  same-packet, cross-packet, market-control, and prospective
+  source heldout evidence with promising translation tests, but
+  within-experiment, cross-experiment, market control, and prospective
   causal-order checks remain incomplete.
 
-- It does not establish a source-general source-currency result beyond
+- It does not establish a source currency beyond Manifold result beyond
   the main Manifold panel. Polymarket tests are aggregate-positive but
   matched-stratum null/opposite-sign, and FRED current-label positives
   weaken under label-time/vintage repair.
 
-- It does not show that cognitive-debiasing interventions never transfer
-  to LLMs. Four of five tested effects are underpowered at our
-  low-overlap-corpus $`N`$, not falsified.
+- It does not establish a prompt method that generalizes across sources or beats markets. The
+  completed Gemini public question comparison supports one expert-training prompt
+  against bare, placebo, and same row calibrated bare forecasts,
+  but generic reflection, selective action, and self-revision fail or regress
+  in other audits. Current matched market rows remain stronger. The 591/600-call
+  Claude run remains underpowered and below the replication gate:
+  expert-training is directionally better than bare and placebo on mean Brier,
+  but does not clear the sign tests and does not pass the source split.
+  The audit-informed arm is only directionally favorable and fragile
+  across sources. A 448-call
+  Codex+DeepSeek staged replication is worse than bare and placebo on mean
+  Brier and does not clear the sign-test or source-split checks. The prompt result is therefore a Gemini-specific
+  candidate until a second completed family run clears the
+  same checks.
 
-- It does not establish that GPT-5.4-mini’s low-overlap-corpus
-  frequency-framing improvement would survive cross-corpus replication
-  at proper power. $`N{\geq}91`$ public-domain is required.
+- It does not establish external generality or provider-independent generality. The
+  low-overlap corpus is private and not publicly available in raw form;
+  the low-overlap frequency-framing, bid-ask, worry-sign, and channel
+  findings need public replication at proper power. The current
+  low-overlap/public split also confounds novelty, source, topic, question
+  length, and implicit base rates, so a four-cell de-confounded corpus remains
+  the main methodological follow-up. The scored calls use proprietary APIs or
+  CLIs; an replication on open models and public questions is required before
+  claiming provider-independent generality.
 
-- It does not generalize beyond five model families and two corpus
-  classes. The low-overlap corpus is private and not publicly available
-  in raw form.
+- It does not establish a working rule for choosing among model families. Best-family-in-
+  hindsight scores show that different families make different errors, but
+  choosing the best family after seeing outcomes is not an intervention.
+  Differences across model families headroom becomes useful only if observable features, outside
+  review, market disagreement, or held-out model signals recover that headroom
+  prospectively after cost.
 
-- It does not decompose LLM *reasoning* mechanistically. The
-  channel-orthogonality claim ($`\S\ref{sec:channel-orthogonality}`$) is
-  at the *expression* level; a reasoning-decomposition claim would need
-  white-box mechanistic interpretability.
+- It does not decompose LLM reasoning mechanistically or identify the
+  causal role of post-training. Channel-orthogonality results are
+  expression-level measurements, not white-box interpretability. Family
+  identity predicts several bias and channel differences, but the
+  comparisons are cross-family and confound post-training with
+  pretraining data. Isolating an alignment effect requires within-family
+  checkpoints or matched-pretraining families.
 
-- The four-axis confounding between corpora means the cross-corpus
-  result is evidence that at least one axis matters, not yet a clean
-  attribution. The 4-cell de-confounded corpus is the most important
-  methodological follow-up.
+#### Effective denominators.
 
-- It does not establish that RLHF/alignment *causes* the per-family bias
-  differences. Every result in that group, in-distribution and
-  out-of-distribution, is a *cross-family* contrast, which confounds
-  alignment with pretraining-corpus differences; families differ in
-  both. The apparent “more alignment, less bias transfer” ordering also
-  runs opposite to the established result that instruction-tuning
-  amplifies several cognitive biases . The supported claim is therefore
-  observational—*family identity predicts bias magnitude*—not a causal
-  post-training explanation. Isolating the alignment stage requires
-  within-family checkpoints (pre- vs post-RLHF) or matched-pretraining
-  families, which we do not have.
+The main results are not counted at the model call level. Repeated model calls
+over one contract improve a panel estimate, but they do not create new events;
+this prevents model call rows from being treated as independent events.
+Table <a href="#tab:effective-denominators" data-reference-type="ref"
+data-reference="tab:effective-denominators">7</a> records the denominator used
+for the central slices; the support audit also records source counts and
+evidence paths.
 
-- Bid-ask spread cross-corpus is currently underpowered; the
-  direction-shift is suggestive but not conclusive at $`N{=}42`$.
+<div id="tab:effective-denominators">
 
-- The worry-Brier sign-flip mechanism is provisional
-  ($`\S\ref{sec:worry-mechanism}`$ multi-probe synthesis);
-  activation-level probing and a topic-matched corpus would settle it.
+| Evidence slice | Scored rows | Denominator used | Boundary |
+|:---|:---|:---|:---|
+| Source-currency panel | 240 calls over 80 contracts | Contract | Manifold-supported measurement result; extension beyond Manifold still needs non-Manifold matched pre/post rows. |
+| Equal-information market controls | 24 Polymarket contracts, 24 Manifold contracts, a 32-contract Manifold same-day expansion, and smaller Manifold horizon checks | Contract at a matched market time | Market controls for this manuscript, not a broad market/human result. |
+| Prompt comparison | 600 calls over 120 contract-condition blocks | Contract-condition block | Gemini-specific public question result and replication target; current market overlap has lower market Brier; the 591/600-call Claude run remains underpowered and below gate, and Codex+DeepSeek does not replicate it. |
+| Pairwise ranking | 94 calls over 24 non-tie pairs | Unique pair | Ranking result only; probability translation and prospective market freeze scoring remain incomplete. |
+| FRED label-time repair | 196 calls over 98 series/event rows | FRED series/event row | Label-time diagnostic; vintage repair changes labels but does not create an improvement rule. |
+| ForecastBench public score audits | 2026 score audit: 70 forecast files, 521 row keys / 230 event family keys. 2024 human-comparator audit: 141 files, 7,259 row keys / 766 event family keys; human aggregate files have 577 resolved rows each. | Public row key, with event family-capped market check | Public-audit feasibility and human-comparator coverage; human aggregate market overlap is only two rows per file, so this is not a broad human/market comparison. |
 
-- Per-family signal strength is conditional on prompt-invariance
-  ($`\S\ref{sec:prompt-invariance}`$). Gemini and DeepSeek findings
-  should be read with the prompt-stability discount documented there
-  until the within-family paraphrase test is run.
+Effective denominators for the central evidence slices. The support audit at
+`projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/effective_n_audit_2026_06_16/central_evidence_effective_n_audit.md`
+gives the full per-slice source and event-group status.
+
+</div>
 
 #### Next tests.
 
 Table <a href="#tab:next-tests" data-reference-type="ref"
-data-reference="tab:next-tests">7</a> states the evidence
+data-reference="tab:next-tests">8</a> states the evidence
 required to strengthen each claim. The most direct route to a broader
-measurement contribution is a field-wide validity audit of public
+measurement contribution is an audit of public
 forecasting benchmarks and market-replay environments. That route does
 not require LLMs to beat markets; it requires showing that row-level
-source-currency, label-time, or equal-information checks are often
+source currency, label-time, or equal-information checks are often
 missing and can change conclusions. A broad LLM-vs-market or
 LLM-vs-human claim requires a predeclared or substantially larger
-source-balanced equal-information packet that beats the market/human
-baseline, not more calls on the current rows. A source-general
-source-currency claim
-requires Metaculus/export access or another non-Manifold panel with
-matched pre/post resolution-date coverage and label-time documentation.
-Pairwise ranking becomes a standalone probability layer only if
-same-packet, cross-packet, market-control, and prospective causal-order
-checks all clear. The main route to a stronger intervention paper is a
-public structured-metacognition experiment: bare prompt, length-matched
-placebo, expert-training prompt, audit-informed prompt, and
-failure-mode-specific prompt on the same source-valid external corpus.
-The low-overlap-corpus findings become externally general only after a
-sanitized release or a public niche-domain replication. A companion
-evidence matrix records each candidate result, the checks it has
-passed, the checks still missing, and the next decisive test. If those
-tests fail or remain underpowered, the paper remains what the present
-evidence supports: a measurement-validity contribution with controlled
-calibration and ranking consequences.
+equal-information sample that beats the market or human
+baseline under the same pre-outcome information rule, not more calls on
+the current rows. A source currency beyond Manifold claim requires
+Metaculus/export access or another non-Manifold panel with matched
+pre/post resolution-date coverage and label-time documentation. Pairwise
+ranking becomes a standalone probability layer only if within experiment,
+cross-experiment, market control, and prospective causal-order checks all
+clear. The prompt result becomes broader only if a structured-prompt arm
+replicates in another completed model-family run and beats a larger
+same-time market or human overlap.
+
+The immediate unblocking protocol for the `N=24` market control bottleneck has
+two admissible paths. The first is strict backfill: mine existing pre-outcome
+model calls only when the same contract has an auditable market-history export
+at or before the model timestamp or a predeclared freeze timestamp; keep one row
+per event family unless a clustered analysis is reported; and reject rows with
+unresolved YES-token mapping, final-page odds, or post-outcome price selection.
+A 100-row non-Polymarket export pass using the current local database surfaced
+only 10 eligible Manifold request rows, so local backfill alone does not solve
+the denominator problem. The second path is prospective acquisition: freeze
+market prices before model calls, hide the prices from the prompts, persist the
+prompt/output packet before resolution, and score only after outcomes settle.
+The target for a stronger market control result is `N >= 100` resolved
+contracts, balanced by source across at least two market sources, with
+event family clustered uncertainty and predeclared comparisons among
+market-only, raw panel, calibration on rows that pass the source currency check, pairwise-derived rankings or
+probabilities where applicable, and market+model blends.
+
+The immediate experimental roadmap has two jobs. First, turn the current
+post-hoc equal-information controls into a predeclared `N >= 100` packet, using
+strict backfill where timestamps are auditable and prospective freezes where
+they are not. The new Manifold horizon fills show that local acquisition can add
+valid rows, but also that the remaining denominator is source- and
+event-family-limited. Second, test whether the Gemini expert-training result
+generalizes by completing a full second-family packet. The current staged
+evidence makes Codex-only completion more informative than more mixed
+Codex+DeepSeek aggregation; an open model is the next independent replication
+target. A positive prompt result is useful only if it beats bare, placebo,
+calibrated bare, and same-time market or human baselines on the same rows and
+does not vanish in the source split.
+
+The low-overlap corpus findings become externally general only after a
+sanitized release or a public niche-domain replication that breaks the current
+novelty/source/topic/length/base-rate confound.
+Provider-independent generality requires repeating the public question
+validity and controlled-use checks on open models. A separate
+evidence matrix records each candidate result, the checks it has passed,
+the checks still missing, and the next decisive test. A separate
+follow-up priority matrix ranks the follow-up tests by claim impact,
+minimum next step, what would strengthen each claim, and what would
+rule it out.
 
 <div id="tab:next-tests">
 
-| Claim to strengthen | Evidence required | Current status |
-|:---|:---|:---|
-| Field-wide benchmark validity | Row-level audit of public forecasting benchmarks and market-replay environments, recording source currency, label-time validity, equal-information status, and conclusion changes after repair. | Not claimed here; current evidence shows the failure mode inside this program, not field-wide prevalence. |
-| LLM vs. market/human performance | Predeclared, source-balanced equal-information packet with enough resolved rows to beat the market or human baseline under proper scoring. | Not supported; current equal-information slices favor markets or are inconclusive. |
-| Source-general source-currency result | Non-Manifold panel with matched pre/post rows, admissible label vintage, and base-rate documentation. | Supported on the main Manifold panel; other sources remain diagnostic. |
-| Pairwise ranking as probability layer | Same-packet and cross-packet ranking replication plus prospective probability translation against raw, calibrated, and market controls. | Ranking use supported; probability translation remains provisional. |
-| Structured metacognition intervention | Pre-reviewed public-corpus experiment comparing bare prompt, length-matched placebo, expert-training prompt, audit-informed prompt, and failure-mode-specific prompt under source-valid scoring. | Designed as the strongest continuation test; the partial 131/600 Gemini run does not yet support the intervention claim. |
-| Structured evidence fields | Larger balanced paired test that beats free prose, same-turn fields, and two-call prose after runtime failures are included. | Hypothesis only. |
-| Family allocation | Predeclared observable features or independent reviewer source that recovers best-family headroom after cost. | Headroom exists; current allocation rules do not recover it. |
-| External generality of low-overlap results | Sanitized release or public niche-domain replication that breaks the current novelty/source/topic/horizon confound. | Not yet established. |
+| Claim | Present treatment | Evidence that would change the status | If the evidence is absent or negative |
+|:---|:---|:---|:---|
+| Benchmark validity beyond this study | Protocol, within-program audit, ForecastBench public score and human-comparator audits, Prophet Arena source-access pilot, PredictionMarketBench row-schema pilot, and PolyBench source-access pilot. | Row-level audit of several public benchmark families, recording source currency, label-time validity, equal-information status, and conclusion changes after repair. | Keep claims about prevalence across the field out of the paper. |
+| LLM vs. market/human performance | Not supported; current equal-information slices have lower market Brier or are inconclusive, and the strict controls are still small and partly overlapping. | Predeclared, equal-information sample with at least `N >= 100` resolved rows, event family clustered uncertainty, and market/history timestamps frozen before model scoring. | Keep raw-panel superiority claims out of the paper. |
+| Source currency beyond Manifold | Supported on the main Manifold panel; other sources remain diagnostic. | Non-Manifold panel with matched pre/post rows, admissible label vintage, and base-rate documentation. | Treat source currency as a Manifold-supported measurement result plus a general audit requirement. |
+| Pairwise ranking as probability layer | Ranking use supported; probability translation remains provisional. | Within experiment and cross-experiment ranking replication plus prospective probability translation against raw, calibrated, and market controls. | Use pairwise comparisons only for ranking or tournament support. |
+| Structured prompting intervention | Expert-training improves paired Brier versus bare, length-matched placebo, and calibrated bare forecasts on the same Gemini rows; two other prompt variants do not beat placebo; current market overlap has lower market Brier; the 591/600-call Claude run remains underpowered and below the replication gate, while Codex+DeepSeek does not reproduce it. | Complete a full second-family packet, prioritizing Codex-only completion over more mixed Codex+DeepSeek aggregation; then run an open-model replication; require survival by source and larger market or human overlap measured at the same time. | Treat the current result as a Gemini-specific candidate interface. |
+| Structured evidence fields | Hypothesis only. | Larger balanced paired test that beats free prose, same-turn fields, and two-call prose after runtime failures are included. | Treat structured fields as a future paired-test design until that comparison is run. |
+| Family allocation | Best-family-in-hindsight headroom exists; current allocation rules do not recover it. | Predeclared observable features, outside review, market disagreement, or held-out model signals that recover best-family headroom after cost. | Report headroom as a design target without claiming a working selector. |
+| External generality of low-overlap results | Not yet established. | Sanitized release or public niche-domain replication that breaks the current novelty/source/topic/length/base-rate confound. | Keep low-overlap results as secondary diagnostics. |
+| Open model replication | Not yet established. | Repeat the public question source currency, market control, calibration for very small probabilities, and pairwise-ranking checks with open models. | Treat current model-family results as provider-snapshot evidence. |
 
-Next tests. These are evidence requirements, not additional claims
-made by the present manuscript.
+Claim-status table. The paper separates current claims from the evidence
+that would change their status; missing or negative follow-up evidence
+leaves the manuscript at its present measurement-validity and
+controlled-use scope.
 
 </div>
 
 # Conclusion
 
-The main lesson is measurement-first. LLM forecasting evaluations are
-not interpretable merely because the model output is a probability and
-the event later resolves. The row must specify what was source-visible
-to the model generation, whether the label uses an admissible time
-vintage, and whether the human or market comparison was measured under
-the same information rule. In this study, those checks change the claim:
-the Manifold source-currency panel supports a measurement-validity
-result, while the same-information Polymarket and Manifold market
-comparisons rule out a raw LLM-superiority reading of the current
-evidence.
+The main lesson is practical: scored probabilities do not become
+forecasting evidence until the row says what the model could have
+known. Each row must specify what was source-visible to the model
+generation, whether the label uses an admissible time vintage, and
+whether the human or market comparison was measured under the same
+information rule. In this study, those checks change the claim:
+the Manifold source currency panel supports a measurement-validity
+result, while the equal-information Polymarket and Manifold market
+comparisons do not support a raw model panel superiority reading of the current
+evidence and do not estimate a general effect comparing markets and models.
 
-The constructive claim is substantive because it identifies where model
-signal survives strong controls. The usable unit is not the raw panel
-probability. The current evidence supports source-valid low-probability
-calibration, pairwise ranking as a relative-judgment task, structured
-evidence fields as a hypothesis, and family-choice headroom as a target
-for future selection rules. It also shows that generic reflection,
-self-repair, and simple prompt intervention are not enough. The paper’s
-contribution is therefore a validity layer plus a map of which
-model-derived signals remain worth testing once invalid comparisons are
-removed.
+The applied claim is limited but nontrivial because it identifies where model
+information survives strong controls. The current evidence supports
+calibration for very small probabilities and pairwise ranking as a
+relative-judgment task. It also records one Gemini expert-training prompt
+result, structured evidence fields, and headroom across model families as follow-up
+targets rather than general deployed methods. Generic reflection,
+self-revision, and selective action are not enough. The resulting order of use
+is concrete: screen rows before scoring, apply the correction for very small probabilities
+only on eligible forward-looking rows, use pairwise comparisons for relative
+triage rather than standalone probabilities, treat the expert-training prompt
+as a Gemini replication target, and leave generic reflection,
+self-revision, selective-action prompts, and model-family selection unsupported
+until they clear the same controls.
 
-Future work should not try to rescue the broad claim with more calls on
-the same rows. The decisive tests are a field-wide row-validity audit,
-prospective or larger source-balanced equal-information packets,
-non-Manifold source-currency panels with label-time documentation, and
-predeclared mechanisms that beat raw, calibrated, and market controls
-under the same information state.
+A broader claim requires new evidence rather than more calls on the
+same rows. The decisive tests are a broader row validity audit,
+prospective or larger equal-information samples,
+non-Manifold source currency panels with label-time documentation, and
+predeclared methods that beat raw, calibrated, and market controls
+under the same information state. The market control upgrade is especially
+concrete: strict backfill is allowed only with auditable pre-outcome market
+histories, and the cleaner route is a prospective freeze packet with at least
+100 resolved rows, source balance, event family clustering, hidden market
+prices, and predeclared scoring. These requirements also define the
+companion benchmark design: row validity metadata, equal-information
+baselines, calibrated probabilities, relative judgments, prompt
+interventions, family selection, open model replication, and public
+low-overlap substitutes are scored as separate tracks rather than
+collapsed into one aggregate leaderboard. The same design is useful
+during research, not only after publication, because it tells a live packet what
+comparison it is allowed to answer before the outcome is scored.
 
 # Reproducibility
 
@@ -1166,51 +1638,129 @@ database at `analytics/public/calibration/forecaster_calibration.db`.
 Pre-registrations and verdict resolutions are in the same database. The
 reusable general-purpose statistics module is at
 `src/ztare/experiment_stats.py` (power calculator, bootstrap CI, paired
-permutation, Fisher-$`z`$ Spearman, TOST, BH-FDR, power-aware verdict,
+permutation, Fisher-$`z`$ Spearman, TOST, BH-FDR, BY robustness, power-aware verdict,
 BIC Bayes factor, reproducibility hash). Forecasting-specific wrappers
-are in the per-project `calibration_stats.py`; the public methodology
+are in `src/ztare/forecasting/calibration_stats.py`; the public methodology
 file lists the exact commands for each finding.
 
 **Reproducing the scope checks.** Three audit scripts define the scope
 boundary:
 
-- `paper_readiness_exhaustion_audit.py`
-- `paper_coherence_audit.py`
-- `independent_equal_information_source_audit.py`
+- `projects/llm_forecasting_calibration_program/tools/paper_readiness_exhaustion_audit.py`
+- `projects/llm_forecasting_calibration_program/tools/paper_coherence_audit.py`
+- `projects/llm_forecasting_calibration_program/tools/independent_equal_information_source_audit.py`
 
 Equal-information acquisition is split into deterministic scripts:
 
-- `equal_information_baseline_export_packet.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_baseline_export_packet.py`
 
-- `equal_information_baseline_result_ingest.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_baseline_result_ingest.py`
 
-- `equal_information_freeze_feasibility_audit.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_freeze_feasibility_audit.py`
 
-- `equal_information_horizon_sweep.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_horizon_sweep.py`
 
-- `equal_information_replacement_sample_acquire.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_replacement_sample_acquire.py`
 
-- `equal_information_replacement_dispatch_packet.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_replacement_dispatch_packet.py`
 
-- `equal_information_replacement_score.py`
+- `projects/llm_forecasting_calibration_program/tools/equal_information_replacement_score.py`
 
-- `non_polymarket_equal_information_export_packet.py`: emits the current 24-row Manifold packet for a second
-  equal-information source.
+- `projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_export_packet.py`: emits Manifold equal-information request rows.
 
-- `non_polymarket_equal_information_result_acquire.py`: fills the packet from public Manifold history.
+- `projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_result_acquire.py`: fills Manifold request rows from public market history.
 
-- `non_polymarket_equal_information_result_ingest.py`: ingests the validated rows.
+- `projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_result_ingest.py`: ingests the validated Manifold rows.
 
-- `non_polymarket_equal_information_score.py`: scores the joined model-vs-market comparison.
+- `projects/llm_forecasting_calibration_program/tools/non_polymarket_equal_information_score.py`: scores the joined Manifold model-vs-market comparison.
 
-- `claim_gap_matrix.py`: emits an evidence matrix separating supported results from
+- `projects/llm_forecasting_calibration_program/tools/field_wide_validity_audit_protocol.py`: emits the row schema and 12-route seed matrix for the broader validity-audit route.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_validity_source_inventory.py`: records the current external-source access status for those 12 routes and names the next row-level extraction step for each.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_forecastbench_row_schema_pilot.py`: applies the row schema to the local ForecastBench 2026-04-12 question bundle and reports validity-field coverage.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_forecastbench_score_audit.py`: scores public ForecastBench processed-forecast files and compares eligible market-source rows with the prior-day market value; the manuscript uses it for the 2026 score audit and the 2024 human-comparator audit.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_prophet_arena_row_schema_pilot.py`: fetches public Prophet Arena sample releases, audits their task rows against the paper's row schema, and checks public AI Prophet repositories for submitted forecast trace files.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_predictionmarketbench_row_schema_pilot.py`: inspects public
+  PredictionMarketBench replay episodes and reconstructs same time
+  market-baseline rows from orderbook snapshots and settlements.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_polybench_source_pilot.py`: verifies the public PolyBench
+  repository/schema surface, GitHub release/file status, and
+  noninteractive OneDrive dataset status.
+
+- `projects/llm_forecasting_calibration_program/tools/field_wide_validity_local_evidence.py`:
+  emits the provenance-limited Halawi date-distribution summary used as a warning, not as a completed audit.
+
+- `projects/llm_forecasting_calibration_program/tools/claim_gap_matrix.py`: emits an evidence matrix separating supported results from
   underpowered results, claims not valid for broad conclusions, and claims requiring external data.
 
+- `projects/llm_forecasting_calibration_program/tools/decisive_continuation_matrix.py`: ranks the follow-up tests by claim impact,
+  minimum next step, what would strengthen the claim, and what would rule it out.
+
+- `projects/llm_forecasting_calibration_program/tools/evidence_upgrade_plan.py`: emits a clean evidence-upgrade plan separating the public-benchmark
+  audit route, the structured-prompting test, and the larger equal-information
+  baseline sample.
+
+- `projects/llm_forecasting_calibration_program/tools/experiment_coverage_summary.py`: reads the historical findings ledger and current queue,
+  then emits a reader-facing count summary for included, compressed, deferred,
+  and excluded experiment families.
+
+- `projects/llm_forecasting_calibration_program/tools/applied_signal_coverage_audit.py`: records each applied signal as supported, bounded,
+  diagnostic, negative guidance, or a future evidence route, with a
+  manuscript anchor and next check.
+
+- `projects/llm_forecasting_calibration_program/tools/scored_use_procedure_audit.py`: checks that the scored-use procedure has manuscript text,
+  support files, and a stop condition for each operational step.
+
+- `projects/llm_forecasting_calibration_program/tools/prospective_counterexplanation_design_audit.py`: checks that each planned positive result has
+  a counter-explanation and a before-scoring design check before it can support
+  a broader claim.
+
+- `projects/llm_forecasting_calibration_program/tools/reviewer_concern_coverage_audit.py`: checks that likely reviewer concerns have explicit
+  manuscript answers, evidence files, remaining boundaries, and paper anchors.
+
+- `projects/llm_forecasting_calibration_program/tools/forecast_row_validity_benchmark_blueprint.py`: converts the claim-gap and continuation matrices
+  into a companion public-benchmark design, including row validity fields,
+  equal-information comparators, applied tracks, and failure conditions.
+
+- `llm-forecast-calibration-cross-corpus/evidence/benchmark/run_benchmark.py`: validates and scores a small row-contract packet under the paper's validity rules. The validator requires model-family and evaluation-track fields, separates source-visible rows, label-time failures, eligible forecast rows, and equal-information comparator rows, then reports track and family counts, calibration deltas, pairwise accuracy, and one-row-per-event-family comparator summaries. It is a companion tool, not a new result.
+
+- `projects/llm_forecasting_calibration_program/tools/numeric_claim_trace_audit.py`: checks the manuscript's headline numerical
+  statements against the SQLite database and stored score reports.
+
+- `projects/llm_forecasting_calibration_program/tools/central_evidence_effective_n_audit.py`: records calls, contracts or pairs,
+  market rows, source counts, and event-group documentation for the central
+  evidence slices.
+
+- `projects/llm_forecasting_calibration_program/tools/literature_positioning_audit.py`: checks that each related-work class in
+  Table 6 has a bibliography key, source URL, and explicit paper boundary.
+
+- `projects/llm_forecasting_calibration_program/tools/submission_readiness_audit.py`: checks required sections, table/figure labels,
+  generated support files, evidence-count floors, broad-claim boundaries, and
+  LaTeX log health.
+
+- `projects/llm_forecasting_calibration_program/tools/rendered_pdf_smoke_audit.py`: extracts the compiled PDF text and checks freshness, page count,
+  required rendered sections, boundary sentences, and absence of internal draft
+  language.
+
+- `llm-forecast-calibration-cross-corpus/evidence/reproducers/make_equal_information_figure.py`: regenerates Figure 2 from the stored equal-information market control score reports.
+
 Together these tools let a reader verify the current market-baseline
-coverage, inspect the replacement packet before forecasts, reproduce the
-first same-contract market comparison, and see exactly what evidence is
-still missing for a broad human/crowd claim or stronger intervention
-claim.
+coverage, inspect the replacement sample before forecasts, reproduce the
+first same-contract market comparison, trace the paper's headline numbers
+to current score files, audit central denominators and event-group coverage,
+audit related-work positioning, audit how the historical experiment log was
+compressed, inspect which applied signals are supported or bounded, check the scored-use procedure and its stop conditions, check the before-scoring counter-explanations for planned positive results, score the public ForecastBench processed-forecast round under the
+paper's row checks, inspect Prophet Arena public task-row access and submitted-trace status, inspect
+PredictionMarketBench replay-row validity, inspect the PolyBench source-access
+gap, check where likely reviewer concerns are answered, inspect the companion benchmark blueprint implied by the missing evidence, run a minimal row-validity benchmark packet end to end, rank the decisive follow-up tests, inspect the evidence-upgrade plan, and
+verify that the compiled PDF still contains the required claim boundaries, and
+see exactly what evidence is still missing for a broad human/crowd claim,
+broader validity claim, or stronger intervention claim.
 
 **Reproduction status.**
 Table <a href="#tab:reproduction-status" data-reference-type="ref"
@@ -1218,22 +1768,34 @@ data-reference="tab:reproduction-status">8</a> separates what is
 reproducible now from what requires a sanitized or substitute release.
 The private low-overlap corpus is the main unreleased component, but it
 affects only the secondary low-overlap elicitation findings. The
-source-currency, label-time, equal-information, market-control, and
-source-valid calibration claims are represented by public-market,
+source currency, label-time, equal-information, market control, and
+calibration claims on rows that pass the source currency check are represented by public-market,
 official-data, database, scoring, and audit machinery in the repository.
 
 <div id="tab:reproduction-status">
 
 | Component | Current status | Reproduction role |
 |:---|:---|:---|
-| SQLite evidence database | Present at `analytics/public/calibration/forecaster_calibration.db`. | Reproduces call counts, score joins, source-currency screens, label-time screens, and market-baseline coverage. |
+| SQLite evidence database | Present at `analytics/public/calibration/forecaster_calibration.db`. | Reproduces call counts, score joins, source currency screens, 165 label-time rows, and market-baseline coverage. |
 | Scoring/audit scripts | Present in the project tool directories and listed above. | Recomputes the paper’s readiness, coherence, equal-information, and label-time checks without new model calls. |
-| Evidence matrix | Present at `projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/claim_gap_matrix_2026_06_16/claim_gap_matrix.csv`. | Lists each candidate result, its current evidence, missing checks, what would change the interpretation, and next action. |
-| Public-market packets | Present for Polymarket and Manifold equal-information comparisons. | Reproduces the market-control boundary claims. |
+| Evidence, follow-up, and upgrade matrices | Present; generated by the claim-gap, continuation, and evidence-upgrade scripts listed above. | Lists candidate results, missing checks, interpretation changes, and next actions. |
+| Applied signal coverage audit | Present; generated by the applied-signal script listed above. | Lists applied components, evidence, use case, boundary, next check, and manuscript anchor. |
+| Scored-use procedure audit | Present; generated by the scored-use script listed above. | Checks the operational steps for row screening, equal-information baselines, scoped calibration, ranking-only pairwise use, and prompt-variant gates. |
+| Prospective counter-explanation design audit | Present; generated by the prospective counter-explanation script listed above. | Checks that planned positive results name the simpler explanation they must rule out before scoring. |
+| Reviewer concern coverage audit | Present; generated by the reviewer-concern script listed above. | Maps likely reviewer concerns to the manuscript answer, evidence files, remaining boundary, and paper anchor. |
+| Forecast row validity benchmark blueprint and runner | Present as both a design report and a runnable row-contract validator under `llm-forecast-calibration-cross-corpus/evidence/benchmark/`. | Specifies and tests the companion benchmark shape implied by the missing evidence: row validity core, equal-information comparators, calibration, relative judgment, intervention, choosing among model families, open model replication, and public low-overlap substitute tracks. The bundled example exercises explicit model-family and track fields, calibration output, a pairwise judgment, source-visible rows, and a label-time failure. |
+| Broader audit protocol and pilots | Present; generated by the broader-audit scripts listed above. | Supplies the row schema, 12-route source inventory, ForecastBench audits, Prophet Arena task-row check, PredictionMarketBench replay-row coverage, PolyBench source-access status, and Halawi warning; it is not evidence of prevalence across the field. |
+| Numeric claim trace | Present; generated by the numeric-trace script listed above. | Checks headline numerical statements against the current database and stored score reports. |
+| Central evidence denominator audit | Present; generated by the effective-N script listed above. | Records calls, contracts or pairs, market rows, source counts, and event-group status for the main evidence slices. |
+| Literature positioning audit | Present; generated by the literature-positioning script listed above. | Checks that related-work classes have bibliography keys, source URLs, and a clear boundary against the present paper's claim. |
+| Submission-readiness audit | Present; generated by the submission-readiness script listed above. | Checks manuscript structure, generated support files, evidence-count floors, broad-claim boundaries, and build-log health. |
+| Rendered-PDF smoke audit | Present; generated by the rendered-PDF script listed above. | Checks the compiled PDF, not only the source, for freshness, required rendered sections, boundary text, and internal-language leaks. |
+| Public-market samples | Present for Polymarket and Manifold equal-information comparisons. | Reproduces the market control boundary claims. |
+| Open-model replication | Not yet run. | Needed for provider-independent generality; not required for the paper's current provider-snapshot claims. |
 | Raw low-overlap questions | Not publicly releasable in raw form. | Needed only for direct replication of the private low-overlap elicitation findings. |
 | Sanitized or substitute low-overlap corpus | Planned release path: neutralized identifiers plus a public niche-domain substitute with the same four-axis profile. | Enables third-party replication of the frequency-framing, bid-ask, and low-overlap channel findings without exposing private workflow details. |
 
-Reproduction status. The central source-currency and equal-information
+Reproduction status. The central source currency and equal-information
 claims are reproducible from public project files; the low-overlap
 channel findings require a sanitized or substitute corpus.
 
@@ -1254,11 +1816,11 @@ methodology/claim-summary files referenced in $`\S\ref{sec:repro}`$.
 |:---|:---|:---|
 | Uncertainty channels | Worry, spread, trajectory variance, self-predicted Brier, and outside-view base rates expose distinct side information, but their sign and value are family/source conditional. | Motivates source/family conditioning and prevents a universal channel-rule claim. |
 | Self-assessed channel choice | Several families misidentify which emitted uncertainty channel predicts their own error. | Supports the negative self-monitoring result and the need for scored interfaces. |
-| Universal calibration regularities | Low-probability overconfidence, horizon/source difficulty, YES underprediction, and high family agreement recur across families. | Supplies the candidate features tested by the low-probability rule and composed adjustment. |
-| Composed adjustment and family-choice headroom | The adjusted aggregate beats mean/median in-cohort but fails stronger source-balanced scrutiny; choosing the best family in hindsight remains much better than observed allocation rules. | Separates real headroom from established allocation evidence. |
-| Pairwise ranking and translation | Pairwise contrastive ranking is stronger than raw probability translation; translation remains promising but is not yet supported as a standalone probability model. | Retains pairwise ranking as a controlled use, not a market/human superiority claim. |
-| Source and label-time audits | Manifold source-currency, FRED vintage repair, failed Polymarket freeze design, replacement Polymarket, and Manifold equal-information fill show that validity checks change conclusions. | Forms the measurement-validity contribution and bounds the constructive claims. |
-| Prompt intervention/self-repair | Generic reflection, self-repair, and diagnostic allocation mostly fail or produce no measurable change under controls. | Turns prompt-only improvement into a narrower interface hypothesis rather than a standalone claim. |
+| Universal calibration regularities | Overconfidence on very small probabilities, horizon/source difficulty, YES underprediction, and high family agreement recur across families. | Supplies the candidate features tested by the rule for very small probabilities and composed adjustment. |
+| Composed adjustment and model-family headroom | The adjusted aggregate beats mean/median in-cohort but fails stronger scrutiny balanced by source; choosing the best family in hindsight remains much better than observed allocation rules. | Separates real headroom from established allocation evidence. |
+| Pairwise ranking and translation | Pairwise contrastive ranking is stronger than raw probability translation; translation remains promising but is not yet supported as a standalone probability model. | Retains pairwise ranking as a controlled use, not evidence that LLMs are superior to markets or humans. |
+| Source and label-time audits | Manifold source currency, FRED vintage repair, failed Polymarket freeze design, replacement Polymarket, and Manifold equal-information fill show that validity checks change conclusions. | Forms the measurement-validity contribution and bounds the applied claims. |
+| Prompt intervention | Expert-training improves paired Brier versus bare and placebo prompts in a completed Gemini public question comparison; generic reflection, self-revision, and diagnostic allocation mostly fail or produce no measurable change under controls. | Keeps a Gemini-specific candidate for replication while rejecting broad prompt-only improvement. |
 
 Evidence-preservation table for compressed diagnostics. Compression
 changes placement, not the underlying scope boundaries.
@@ -1271,6 +1833,24 @@ The project log contains many more experiments than the main paper
 reports. The inclusion rule is conservative: a result appears in the
 main text only if it changes the validity layer, a supported use case, a
 stated limit, or a continuation test.
+The
+`projects/llm_forecasting_calibration_program/tools/experiment_coverage_summary.py`
+script parses both the full research log and the curated findings ledger
+before compression. In the current snapshot it detects 111 unique numbered
+rows in the full research log, with 74 outside the curated paper ledger. The
+curated ledger then classifies 37 paper-relevant rows: 3 central
+validity/control/calibration rows, 19 secondary diagnostics retained in the
+paper, 7 retractions/supersessions/underpowered boundaries, 7 sibling workflow
+or non-forecasting findings excluded from this manuscript, and 1
+execution/persistence row with no paper claim. The
+`projects/llm_forecasting_calibration_program/tools/applied_signal_coverage_audit.py`
+script separately records 8 applied components: 6 supported or scoped candidate
+components, 1 negative guidance row, and 1 external evidence route. The structured-prompt
+comparison is now complete at 600/600 scored Gemini calls across 120
+contracts; the expert-training arm passes the bare/placebo and same row
+calibrated bare checks, while market checks remain unfavorable, the near-complete
+Claude run does not clear the replication gate at 591/600 calls, and the 448-call
+Codex+DeepSeek staged run does not pass the replication gate.
 Table <a href="#tab:coverage-audit" data-reference-type="ref"
 data-reference="tab:coverage-audit">10</a> records the main excluded or
 deferred families so that compression does not hide evidence.
@@ -1279,12 +1859,12 @@ deferred families so that compression does not hide evidence.
 
 | Work family | Why it is not a main claim | How the insight is preserved |
 |:---|:---|:---|
-| Prompt-intervention variants | Generic reflection, selective action, self-repair, and diagnostic-triggered allocation do not beat the relevant controls. | Reported as negative evidence for unvalidated prompt-only interventions and as a test for future tool-using or retrieval-grounded systems. |
-| Objective effort / coding-task calibration | This is a sibling problem about effort prediction and hidden-test performance, not the same forecast-row validity question. | Excluded from GP-245 unless it later supplies a forecasting-specific intervention that clears source and market controls. |
+| Prompt-intervention variants | One expert-training prompt beats bare and placebo prompts in the completed Gemini public question comparison; generic reflection, selective action, self-revision, and diagnostic-triggered allocation do not beat the relevant controls. | Reported as a Gemini-specific candidate plus negative evidence against unvalidated prompt-only interventions. |
+| Objective effort / coding-task calibration | This is a sibling problem about effort prediction and hidden-test performance, not the same forecast row validity question. | Excluded from this paper unless it later supplies a forecasting-specific intervention that clears source and market controls. |
 | Proof-audit and workflow-only findings | These improve the research workflow but ask reviewers to switch domains away from event forecasting. | Excluded from the main manuscript; relevant only as provenance for the audit discipline. |
-| Low-overlap elicitation retests | Several channel findings are promising but still corpus-bound or underpowered for source-general claims. | Preserved as diagnostics and continuation tests: replicate on a public niche corpus or sanitized release before generalizing. |
-| Fitted calibrators and allocation rules | Source-isotonic, graph-family weighting, and diagnostic allocation have not beaten simpler controls robustly. | Reported as headroom evidence; applied use waits for source-balanced panels or an external reviewer/market expert. |
-| Prospective market-freeze packets | Frozen market bars exist for some future comparisons, but unresolved outcomes cannot score current claims. | Listed as continuation tests; no standalone probability layer until outcomes resolve and market/raw/low-probability controls are passed. |
+| Low-overlap elicitation retests | Several channel findings are promising but still corpus-bound or underpowered for claims across sources. | Preserved as diagnostics and continuation tests: replicate on a public niche corpus or sanitized release before generalizing. |
+| Fitted calibrators and allocation rules | Source-isotonic, graph-family weighting, and diagnostic allocation have not beaten simpler controls robustly. | Reported as headroom evidence; applied use waits for panels balanced by source or an external reviewer/market expert. |
+| Prospective market freeze comparisons | Frozen market bars exist for some future comparisons, but unresolved outcomes cannot score current claims. | Listed as continuation tests; no standalone probability layer until outcomes resolve and market, raw, and calibrated controls are passed. |
 | Deconfounded corpus design | The current low-overlap/public split confounds novelty, source, topic, and horizon. | Treated as the key methodological follow-up for external generality, not as evidence already in hand. |
 
 Coverage audit for work compressed out of the main text. The table
@@ -1313,10 +1893,10 @@ the source identifier. The composed adjusted forecast $`\hat p`$ is:
 with $`w_s = 0.70`$ for polymarket, $`0.85`$ for manifold, $`1.00`$ for
 yfinance. The four coefficients $`(0.10, 0.06, 0.01, w_s)`$ are not
 learned from held-out folds; they are chosen from the universal patterns
-reported in $`\S\ref{sec:universal}`$ (low-probability overconfidence,
+reported in $`\S\ref{sec:universal}`$ (overconfidence on very small probabilities,
 middle-band YES underprediction, horizon-conditional Brier slope,
 per-source Brier ordering). The per-channel alternative described in the
 main text substitutes per-family channel weights for the universal
-$`w_s`$; its weights are listed in the appendix companion file. The
+$`w_s`$; its weights are listed in the appendix support file. The
 implementation is in the forecasting-calibration workspace and
 reproduces on the database snapshot dated 2026-05-28.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Apply a file-backed forensic-workbench row action file."""
+"""Apply a file-backed Project Workbench next-step file."""
 from __future__ import annotations
 
 import forensic_workbench_review

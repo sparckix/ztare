@@ -1,33 +1,75 @@
-import Aesop
+import Mathlib
 
-set_option maxHeartbeats 0
-
-open BigOperators Real Nat Topology Rat
+open Polynomial
+open scoped BigOperators
 
 -- candidate premises (semantic shelf, cosine-similar to goal):
 -- Candidate lemma shelf (semantic retrieval context only; not a negative dictionary and not proof credit):
--- - [OWN-LEDGER cos=0.7496] PROVEN rung mathd_algebra_125 — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
---   preview: theorem mathd_algebra_125 (x y : ℕ) (h₀ : 0 < x ∧ 0 < y) (h₁ : 5 * x = y) (h₂ : ↑x - (3 : ℤ) + (y - (3 : ℤ)) = 30) : x = 6
--- - [OWN-LEDGER cos=0.7478] PROVEN rung mathd_algebra_478 — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
---   preview: theorem mathd_algebra_478 (b h v : ℝ) (h₀ : 0 < b ∧ 0 < h ∧ 0 < v) (h₁ : v = 1 / 3 * (b * h)) (h₂ : b = 30) (h₃ : h = 13 / 2) : v = 65
--- - [OWN-LEDGER cos=0.7411] PROVEN rung mathd_algebra_141 — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
---   preview: theorem mathd_algebra_141 (a b : ℝ) (h₁ : a * b = 180) (h₂ : 2 * (a + b) = 54) : a ^ 2 + b ^ 2 = 369
--- - [OWN-LEDGER cos=0.7400] PROVEN rung mathd_algebra_362 — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
---   preview: theorem mathd_algebra_362 (a b : ℝ) (h₀ : a ^ 2 * b ^ 3 = 32 / 27) (h₁ : a / b ^ 3 = 27 / 4) : a + b = 8 / 3
--- - [apn cos=0.7277] lemma ratio_identity domain=oeis @ oeis_A258667_conjecture_0.lean
---   preview: lemma ratio_identity (n : ℕ) (h : 2 < n) : (n : ℝ) / (n - 2) = 1 + 2 / (n - 2)
--- - [apn cos=0.7178] lemma K_bounds domain=oeis @ oeis_227582_conjecture_0.lean
---   preview: lemma K_bounds (n : ℕ) (hn : 1 ≤ n) : (6 * (n : ℝ)^2 + 6 * (n : ℝ) - 5) / 5 ≤ (((6 * n^2 + 6 * n - 1) / 5 : ℕ) : ℝ) ∧ (((6 * n^2 + 6 * n - 1) / 5 : ℕ) : ℝ) ≤ (6 * (n : ℝ)^2 + 6 * (
--- - [apn cos=0.7122] lemma k_ineq domain=oeis @ oeis_a211417_conjecture_specific.lean
---   preview: lemma k_ineq (k : ℕ) (hk : k ≤ 29) : k / 2 + k / 3 + k / 5 ≤ k
--- - [mathlib cos=0.7107] theorem eq_of_xn_modEq_lem2 @ NumberTheory/PellMatiyasevic.lean
---   preview: theorem eq_of_xn_modEq_lem2 {n} (h : 2 * xn a1 n = xn a1 (n + 1)) : a = 2 ∧ n = 0 := by rw [xn_succ, mul_comm] at h have : n = 0 := n.eq_zero_or_pos.resolve_right fun np => _root_.
--- - [mathlib cos=0.7025] theorem xz_succ_succ @ NumberTheory/PellMatiyasevic.lean
---   preview: theorem xz_succ_succ (n) : xz a1 (n + 2) = (2 * a : ℕ) * xz a1 (n + 1) - xz a1 n := eq_sub_of_add_eq <| by delta xz; rw [← Int.natCast_add, ← Int.natCast_mul, xn_succ_succ]
--- - [mathlib cos=0.7005] theorem xn_modEq_x2n_add_lem @ NumberTheory/PellMatiyasevic.lean
---   preview: theorem xn_modEq_x2n_add_lem (n j) : xn a1 n ∣ d a1 * yn a1 n * (yn a1 n * xn a1 j) + xn a1 j := by have h1 : d a1 * yn a1 n * (yn a1 n * xn a1 j) + xn a1 j = (d a1 * yn a1 n * yn
+-- - [OWN-LEDGER cos=0.8712] PROVEN rung iso_lemma_map_split_denominator_product — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
+--   proof to transport (kernel-verified; adapt the skeleton, do not assume it ports verbatim):
+--   ```lean
+--   import Mathlib
+--
+--   open Polynomial
+--   open scoped BigOperators
+--
+--   theorem iso_lemma_map_split_denominator_product
+--       {K : Type*} [Field K] {ι : Type*} [Fintype ι]
+--       (num : K[X]) (a : ι → K) (m : ι → ℕ)
+--       (hnum : num = ∏ j : ι, (X - C (a j)) ^ m j) :
+--       algebraMap K[X] (FractionRing K[X]) num =
+--         ∏ j : ι,
+--           algebraMap K[X] (FractionRing K[X]) ((X - C (a j)) ^ m j) := by
+--     simp_all
+--   ```
+--   preview: theorem iso_lemma_map_split_denominator_product {K : Type*} [Field K] {ι : Type*} [Fintype ι] (num : K[X]) (a : ι → K) (m : ι → ℕ) (hnum : num = ∏ j : ι, (X - C (a j)) ^ m j) : alg
+-- - [OWN-LEDGER cos=0.8640] PROVEN rung iso_lemma_map_cleared_partial_fraction_identity — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
+--   proof to transport (kernel-verified; adapt the skeleton, do not assume it ports verbatim):
+--   ```lean
+--   import Mathlib
+--
+--   open Polynomial
+--   open scoped BigOperators
+--
+--   theorem iso_lemma_map_cleared_partial_fraction_identity
+--       {K : Type*} [Field K] {ι : Type*} [Fintype ι] [DecidableEq ι]
+--       (r : K[X]) (a : ι → K) (m : ι → ℕ) (s : ι → K[X])
+--       (hclear :
+--         r =
+--           ∑ j : ι,
+--             (s j) * (∏ i ∈ Finset.univ.erase j, (X - C (a i)) ^ m i)) :
+--       algebraMap K[X] (FractionRing K[X]) r =
+--         ∑ j : ι,
+--           algebraMap K[X] (FractionRing K[X]) (s j) *
+--             (∏ i ∈ Finset.univ.erase j,
+--               algebraMap K[X] (FractionRing K[X]) ((X - C (a i)) ^ m i)) := by
+--     simp_all
+--   ```
+--   preview: theorem iso_lemma_map_cleared_partial_fraction_identity {K : Type*} [Field K] {ι : Type*} [Fintype ι] [DecidableEq ι] (r : K[X]) (a : ι → K) (m : ι → ℕ) (s : ι → K[X]) (hclear : r
+-- - [OWN-LEDGER cos=0.8063] PROVEN rung iso_lemma_map_polynomial_division_identity — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
+--   preview: theorem iso_lemma_map_polynomial_division_identity {K : Type*} [Field K] (den num P r : K[X]) (hdiv : den = P * num + r) : algebraMap K[X] (FractionRing K[X]) den = algebraMap K[X]
+-- - [OWN-LEDGER cos=0.7880] PROVEN rung iso_lemma_roots_multiset_to_distinct_count_product — a ~similar statement is ALREADY KERNEL-PROVEN in this repo's campaigns; cite/transport it, do not re-derive
+--   preview: theorem iso_lemma_roots_multiset_to_distinct_count_product {K : Type*} [Field K] [DecidableEq K] (num : K[X]) : (num.roots.map fun a => X - C a).prod = ∏ a ∈ num.roots.toFinset, (X
+-- - [mathlib cos=0.7188] lemma nnrpow_map_pi shapes=LE,POSITIVE @ Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean
+--   preview: lemma nnrpow_map_pi {c : ∀ i, C i} {x : ℝ≥0} (hc : ∀ i, 0 ≤ c i := by cfc_tac) : nnrpow c x = fun i => (c i) ^ x := by simp only [nnrpow_def] unfold nnrpow exact cfcₙ_map_pi (S :=
+-- - [mathlib cos=0.7129] lemma cfc_polynomial @ Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Unital.lean
+--   preview: lemma cfc_polynomial (q : R[X]) (a : A) (ha : p a := by cfc_tac) : cfc q.eval a = aeval a q := by rw [cfc_map_polynomial .., cfc_id' ..] end Polynomial section Comp variable [Uniqu
+-- - [mathlib cos=0.7110] lemma rpow_map_pi shapes=LE,POSITIVE @ Analysis/SpecialFunctions/ContinuousFunctionalCalculus/Rpow/Basic.lean
+--   preview: lemma rpow_map_pi {c : ∀ i, C i} {x : ℝ} (hc : ∀ i, IsUnit (c i)) (hc' : ∀ i, 0 ≤ c i := by cfc_tac) : rpow c x = fun i => (c i) ^ x := by have hc'' : ∀ i, 0 ∉ spectrum ℝ≥0 (c i) :
+-- - [mathlib cos=0.7097] lemma cfc_eval_C @ Analysis/CStarAlgebra/ContinuousFunctionalCalculus/Unital.lean
+--   preview: lemma cfc_eval_C (r : R) (a : A) (ha : p a := by cfc_tac) : cfc (C r).eval a = algebraMap R A r := by simp [cfc_const r a]
+-- - [apn cos=0.7089] lemma coeff_P_poly domain=oeis @ oeis_51293_conjecture_0.lean
+--   preview: lemma coeff_P_poly (n k : ℕ) (ω : ℂ) : (P_poly n ω).coeff k = ∑ S ∈ (Finset.Icc 1 n).powerset.filter (fun S => S.card = k), ω ^ (S.sum id)
+-- - [apn cos=0.7088] lemma sum_eval_1 domain=algebraic_geometry @ hilbert_functions_2.lean
+--   preview: lemma sum_eval_1 (f : ℤ → ℤ) (d : ℤ) (c : ℕ) : ∑ m ∈ Finset.range c, (f d * f (d - m) - f (d + 1) * f (d - m - 1)) = f d * (∑ m ∈ Finset.range c, f (d - m)) - f (d + 1) * (∑ m ∈ Fi
 
 
-theorem mathd_algebra_160  (n x : ℝ) (h₀ : n + x = 97) (h₁ : n + 5 * x = 265) : n + 2 * x = 139 := by
-  linarith
-#print axioms mathd_algebra_160
+theorem iso_lemma_fraction_expand_single_map_numerator {K : Type*} [Field K] (a : K) (m : ℕ) (c : ℕ → K) :
+    algebraMap K[X] (FractionRing K[X])
+        (∑ k ∈ Finset.Icc 1 m,
+          C (c k) * (X - C a) ^ (m - k)) =
+      ∑ k ∈ Finset.Icc 1 m,
+        algebraMap K[X] (FractionRing K[X]) (C (c k)) *
+          (algebraMap K[X] (FractionRing K[X]) (X - C a)) ^ (m - k) :=
+by norm_num
+#print axioms iso_lemma_fraction_expand_single_map_numerator

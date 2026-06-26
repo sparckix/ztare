@@ -3,7 +3,7 @@ description: "How to fork ZTARE while keeping the reusable kernel, project polic
 ---
 # Forking ZTARE
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 *Last updated: 2026-06-19.*
 
@@ -12,7 +12,7 @@ evaluation, or project-governance work. The practical goal is simple: keep the
 reusable kernel intact, add your own project surfaces deliberately, and avoid
 publishing local/private state by accident.
 
-## 1. What You Are Forking
+## 1. What you are forking
 
 ZTARE is a public research and project-governance workbench. A fork contains
 three kinds of material:
@@ -27,7 +27,7 @@ If you are only trying ZTARE, start with the public first-run path. If you are
 building a durable fork, create a new branch and keep your own project policy
 separate from kernel edits.
 
-## 2. Verify a Fresh Checkout
+## 2. Verify a fresh checkout
 
 From a new clone:
 
@@ -49,13 +49,13 @@ by this repo:
 make gates
 ```
 
-## 3. Add Your First Project Surface
+## 3. Add your first project surface
 
 For external use, the safest entry point is project intake. It describes what
 should be evaluated, which evidence exists, what is explicitly out of scope,
-and the next falsifier. It prepares a project/data surface; it does not run the
+and the next falsifier. It prepares a project/data surface but does not run the
 research loop by itself. `ztare project packet` is the legacy spelling for the
-same JSON boundary; prefer `ztare project intake` in new docs and scripts.
+same JSON boundary. Prefer `ztare project intake` in new docs and scripts.
 
 Create and validate an intake file:
 
@@ -83,10 +83,10 @@ When intake validates and you want to place it in the local intake ledger:
 ztare project intake enqueue --path my_project_intake.json
 ```
 
-The intake queue is a readiness ledger, not an agent scheduler. Autoresearch
-execution remains a separate in-loop decision.
+The intake queue is a readiness ledger. Autoresearch execution remains a
+separate in-loop decision.
 
-## 4. Keep Kernel Edits and Project Policy Separate
+## 4. Keep kernel edits and project policy separate
 
 Use this rule of thumb when deciding where a change belongs:
 
@@ -101,7 +101,7 @@ Avoid cleaning a fork by deleting broad tracked directories. Start from a fresh
 clone or branch, inspect `git status`, and promote only the files you mean to
 publish.
 
-## 5. Public and Private Boundary
+## 5. Public and private boundary
 
 The repo is designed so public artifacts are inspectable and private state can
 stay outside the public tree.
@@ -114,15 +114,15 @@ stay outside the public tree.
 | `docs/` | yes, public documentation unless under an explicitly internal path |
 | `examples/` | yes, small reviewable fixtures and packets |
 | `priority_roadmap.md` | yes, public roadmap |
-| `org/` | public policy where intentionally tracked; live/private org state should stay out |
+| `org/` | public policy where intentionally tracked (live/private org state should stay out) |
 | `projects/` | publish only sanitized, intentional project artifacts |
 | `papers/` | publish only work you mean to release |
-| `ztare_workspace/` | local runtime state; do not publish casually |
+| `ztare_workspace/` | local runtime state (do not publish casually) |
 
 Before any public push, `make gates` is the practical boundary check. It catches
 private references, stale documentation indexes, and public-entry drift.
 
-## 6. Optional Org Runtime Work
+## 6. Optional org runtime work
 
 If you want the org-runtime surface, read these after the first-run path works:
 
@@ -134,7 +134,7 @@ Treat org runtime configuration as advanced. The first public fork milestone is
 a reproducible checkout plus one small project-intake file or demo that another
 person can validate offline.
 
-## 7. Useful Next Steps
+## 7. Useful next steps
 
 - Run [`quickstart.md`](quickstart.md) end to end.
 - Read the public capability map in [`../concepts/capabilities.md`](../concepts/capabilities.md).

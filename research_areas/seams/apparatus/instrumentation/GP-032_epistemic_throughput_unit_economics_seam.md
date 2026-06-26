@@ -23,7 +23,7 @@ The operator came out of a TOM/economics discussion with a draft that proposes:
 
 2. **Strategic business case.** Operating leverage (kernel is fixed cost, each new finding is marginal), falsification arbitrage (claim of ~1000× reduction vs human review), enterprise-risk moat (gate library + failure taxonomy).
 
-3. **Engineering solution paths.** Model tiering / distillation (structural checks on small models, decisive on frontier), async speculative execution (pre-warming firing-squad and Jaccard on in-flight drafts), hardening seal-time invariants.
+3. **Engineering solution paths.** Model tiering / distillation (structural checks on small models, decisive on frontier), async speculative execution (pre-warming adversarial review committee and Jaccard on in-flight drafts), hardening seal-time invariants.
 
 4. **Non-engineering solution paths.** KPI redefinition (cost-per-validated-finding), product surface positioning (Factory Control Room).
 
@@ -47,7 +47,7 @@ The pattern still has only one true throughput-measurement instance. A second in
 
 ### Option C — Preserve the framing, rewrite the decisive claims
 
-Accept that the TOM lens is useful for making throughput legible to external audiences (HBS-style, VC-style, enterprise-buyer-style). Reject five specific decisive claims in the draft: (1) human bottleneck resolved, (2) cycle time as a single number, (3) model tiering safe because small-model hallucination is the main risk, (4) Firing Squad pre-warm is safe speculative execution, (5) falsification-arbitrage cost numbers are honest without amortization. Keep the moat argument with a product-identity correction (moat is the gate *library*, not the gate *infrastructure*). Replace the "Factory Control Room" product framing with the weaker, more defensible "verification-as-service" positioning that the Nicholas-feedback note suggests is the cleaner analogy.
+Accept that the TOM lens is useful for making throughput legible to external audiences (HBS-style, VC-style, enterprise-buyer-style). Reject five specific decisive claims in the draft: (1) human bottleneck resolved, (2) cycle time as a single number, (3) model tiering safe because small-model hallucination is the main risk, (4) adversarial review committee pre-warm is safe speculative execution, (5) falsification-arbitrage cost numbers are honest without amortization. Keep the moat argument with a product-identity correction (moat is the gate *library*, not the gate *infrastructure*). Replace the "Factory Control Room" product framing with the weaker, more defensible "verification-as-service" positioning that the Nicholas-feedback note suggests is the cleaner analogy.
 
 - **Pro:** captures the real value of the TOM lens (legibility + bottleneck decomposition) without inheriting its physics errors or its product overreach.
 - **Pro:** the surviving pieces each generate a concrete follow-up — instrument tail cycle time on decisive claims, publish amortized unit economics, decouple the moat claim from the infrastructure claim, adopt the accounting-profession analogy for product positioning.
@@ -124,9 +124,9 @@ The specific question "is this traceback a substantive falsification or a harnes
 
 The improved framing should keep model tiering as an *envelope* optimization (run frontier checks with smaller context windows, run batch-mode inference where latency is not the binding constraint) but explicitly remove the structural/decisive split as the tiering axis. The tiering axis should be *cost per unit of reasoning depth actually needed for the specific check*, which is almost always frontier for anything non-trivial.
 
-**4. Async speculative execution: Firing Squad pre-warm is a laundering surface.**
+**4. Async speculative execution: adversarial review committee pre-warm is a laundering surface.**
 
-The draft proposes pre-warming Firing Squad adversarial evaluations on in-flight mutator drafts to remove evaluator latency from the critical path. This is a direct invitation for the mutator to produce drafts specifically crafted to look attackable in a way that short-circuits the real Firing Squad when it runs for real. The mutator is an LLM; it learns from the artifacts it sees. If the pre-warm output is in its context, it can (and will, under stagnation pressure) produce drafts whose most attackable surfaces are decoys.
+The draft proposes pre-warming adversarial review committee adversarial evaluations on in-flight mutator drafts to remove evaluator latency from the critical path. This is a direct invitation for the mutator to produce drafts specifically crafted to look attackable in a way that short-circuits the real adversarial review committee when it runs for real. The mutator is an LLM; it learns from the artifacts it sees. If the pre-warm output is in its context, it can (and will, under stagnation pressure) produce drafts whose most attackable surfaces are decoys.
 
 Pre-warming deterministic artifacts is safe because they are deterministic: Jaccard distance, thesis edit distance, workspace metric recomputation. None of those can be steered by the mutator because their output is a function of bytes on disk, not of semantic intent.
 
@@ -191,7 +191,7 @@ The one new thing the seam should add that the draft did not name: a *runner-tou
 
 - Does the tail-CT-on-decisive-claims reframing survive if "decisive" is operationally defined as "claims that the deterministic charter gates would evaluate as binding"? I lean yes, because that is a structural definition that does not require human judgment, but the mapping needs to be checked against an actual project.
 - Is the "post-kernel-amortization marginal cost" framing enough, or does the kernel amortization itself need to be quoted as an absolute number (e.g., "N operator-weeks at rate X plus M dollars in LLM debate spend")? I lean toward quoting the absolute number because not quoting it is exactly the laundering move the critique is trying to prevent.
-- Should the Firing-Squad pre-warm ban be permanent or should the seam open a sub-debate on the attack model for LLM-based pre-warming generally? I lean toward opening the sub-debate because "permanent ban" is the kind of blanket ruling that usually fails to stand up to a real product deadline.
+- Should the adversarial review committee pre-warm ban be permanent or should the seam open a sub-debate on the attack model for LLM-based pre-warming generally? I lean toward opening the sub-debate because "permanent ban" is the kind of blanket ruling that usually fails to stand up to a real product deadline.
 - Should the verification-as-service positioning supersede the D4 design brief's workbench-primary / D3-secondary decision, or layer on top of it? I lean toward layering — workbench and D3 are the two modes of one surface per D4, and verification-as-service is a *positioning* decision that applies to how the surface is described externally, not to what it actually does. But this is a judgment call and D4 is `converged`, so any contradiction must go back through that seam.
 
 **Status:** `note`. No implementation off this seam until Turn 2 lands and the decisive claims are either accepted, rejected, or converged on a replacement.

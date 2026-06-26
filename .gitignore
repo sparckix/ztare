@@ -194,6 +194,10 @@ projects/eu_union_failure_probability_2035/raw/*
 /architectural-invariance/
 /adversarial-substrate-prober/
 /conciousness/
+/llm-forecast-calibration-cross-corpus/
+/goodharts-blind-spot/
+/governed-evaluator-hardening/
+/papers_working/
 
 # legacy paths retained for back-compat with stale checkouts
 /*.pdf
@@ -541,3 +545,4 @@ ztare_proofs/_strategist_lift_work/
 ztare_proofs/closures/
 analytics/public/calibration/forecaster_calibration.db
 analytics/public/leanmill/judge_panel_votes.jsonl
+/audit-limits/

@@ -34,8 +34,8 @@ That is not a stable product boundary for a system that claims to learn from adv
 
 | Constraint | Source run/iteration | Failure family |
 |---|---|---|
-| ESM permanence must be separated from automaticity | EU iterations 3–5; firing squad attacked thesis-authored ESM label | `DEFINITIONAL_TRAP` |
-| OMT is a disconfirming anchor against simple absent-fiscal-transfer stories | EU iteration 6+; firing squad used OMT as counterexample | `NON_EXCLUSIVE_DISCRIMINATOR` |
+| ESM permanence must be separated from automaticity | EU iterations 3–5; adversarial review committee attacked thesis-authored ESM label | `DEFINITIONAL_TRAP` |
+| OMT is a disconfirming anchor against simple absent-fiscal-transfer stories | EU iteration 6+; adversarial review committee used OMT as counterexample | `NON_EXCLUSIVE_DISCRIMINATOR` |
 | Treaty-formal status and market-priced functional credibility are different variables | EU iteration 8+; scope confusion between legal status and market pricing | `WRONG_VARIABLE_MEASURED` |
 | Hybrid temporary/formally-permanent crisis instruments are central cases | EU iteration 5; ESM classified incorrectly as temporary | `EMPIRICAL_MISCLASSIFICATION` |
 
@@ -114,7 +114,7 @@ Mutator prompt would include:
 
 ### Option 3: Separate typed file, mutator-blind
 
-Same file as Option 2, but the mutator does NOT see derived constraints. Only the evaluator/firing squad sees them.
+Same file as Option 2, but the mutator does NOT see derived constraints. Only the evaluator/adversarial review committee sees them.
 
 **Pros:**
 - Eliminates the adversarial inception attack entirely — the mutator cannot optimize against constraints it doesn't see
@@ -130,7 +130,7 @@ Same file as Option 2, but the mutator does NOT see derived constraints. Only th
 
 The constraint lane has two stages:
 
-1. **Extraction**: constraints are extracted from evaluator-side artifacts (firing squad critiques + meta-judge rationale). The mutator's thesis prose is NOT in the extraction context. A separate LLM call (or the operator) identifies structural constraints from the critique log.
+1. **Extraction**: constraints are extracted from evaluator-side artifacts (adversarial review committee critiques + meta-judge rationale). The mutator's thesis prose is NOT in the extraction context. A separate LLM call (or the operator) identifies structural constraints from the critique log.
 
 2. **Consumption**: the mutator receives confirmed constraints as read-only context. The constraint prompt says: "These are structural limits your thesis must satisfy. You cannot request, modify, or challenge constraints — only comply with or argue non-applicability."
 
@@ -153,14 +153,14 @@ The constraint lane has two stages:
 
 ### The attack vector
 
-The principal's question: can the mutator generate a thesis that causes the firing squad to produce a specific critique, which gets extracted as a constraint, which then favors the mutator's next thesis?
+The principal's question: can the mutator generate a thesis that causes the adversarial review committee to produce a specific critique, which gets extracted as a constraint, which then favors the mutator's next thesis?
 
 This is a **second-order Goodhart attack** — gaming not the evaluation function, but the constraint-generation process that feeds back into the evaluation.
 
 ### Concrete example
 
 1. Mutator generates a thesis claiming "ESM is a temporary mechanism" (deliberately weak on this point)
-2. Firing squad attacks: "ESM is permanent, not temporary — the thesis misclassifies it"
+2. Adversarial review committee attacks: "ESM is permanent, not temporary — the thesis misclassifies it"
 3. Constraint extracted: "ESM permanence must be separated from automaticity" (DC-001)
 4. Mutator's next thesis uses the automaticity criterion (which it "planned" all along) and benefits from DC-001 being in the constraint lane
 
@@ -168,11 +168,11 @@ This is a **second-order Goodhart attack** — gaming not the evaluation functio
 
 **1. The mutator is stateless across iterations.** Each mutation is a single LLM call with no memory of prior strategic planning. The mutator doesn't "plan" multi-iteration strategies. It optimizes for the current iteration's score. Strategic losing requires cross-iteration planning that the stateless architecture prevents.
 
-**2. The extraction stage sees evaluator output, not mutator output.** Under Option 4, constraints are extracted from firing squad critiques and meta-judge rationale — NOT from the mutator's thesis prose. The mutator's words are not in the extraction prompt. This means the mutator cannot directly encode constraint proposals in its output.
+**2. The extraction stage sees evaluator output, not mutator output.** Under Option 4, constraints are extracted from adversarial review committee critiques and meta-judge rationale — NOT from the mutator's thesis prose. The mutator's words are not in the extraction prompt. This means the mutator cannot directly encode constraint proposals in its output.
 
 **3. Multi-run confirmation prevents single-iteration injection.** A constraint is only promoted from "provisional" to "confirmed" if it appears in at least N independent runs (recommended: N=2). The mutator would need to consistently steer multiple independent runs to produce the same constraint, which requires persistent strategic intent across runs. The batch runner resets all state between runs.
 
-**4. The evaluator is adversarial to the mutator.** The firing squad's job is to find weaknesses. If the mutator deliberately introduces a weakness, the firing squad attacks it — but the resulting constraint reflects the evaluator's independent judgment, not the mutator's preferences. The evaluator doesn't know what the mutator "wanted."
+**4. The evaluator is adversarial to the mutator.** The adversarial review committee's job is to find weaknesses. If the mutator deliberately introduces a weakness, the adversarial review committee attacks it — but the resulting constraint reflects the evaluator's independent judgment, not the mutator's preferences. The evaluator doesn't know what the mutator "wanted."
 
 ### Residual risk
 
@@ -180,7 +180,7 @@ The attack is not impossible in the limit. If the mutator is a sufficiently capa
 - Embed subtle weaknesses that steer the evaluator toward constraints in a specific direction
 - Do this consistently across runs if the weakness maps to a genuine structural distinction (which the evaluator would surface anyway)
 
-But this residual risk is bounded by a key observation: **if the constraint reflects a genuine structural distinction (like ESM permanence ≠ automaticity), it doesn't matter whether the mutator "intended" it.** The constraint is true regardless of the mutator's motivation. The attack only matters if the mutator can cause the extraction of FALSE constraints that serve its interests. Under adversarial evaluation by an independent firing squad, false constraints should be caught — because the firing squad would also test them.
+But this residual risk is bounded by a key observation: **if the constraint reflects a genuine structural distinction (like ESM permanence ≠ automaticity), it doesn't matter whether the mutator "intended" it.** The constraint is true regardless of the mutator's motivation. The attack only matters if the mutator can cause the extraction of FALSE constraints that serve its interests. Under adversarial evaluation by an independent adversarial review committee, false constraints should be caught — because the adversarial review committee would also test them.
 
 ### Defense layers (ordered by implementation priority)
 
@@ -290,7 +290,7 @@ The derived-constraints lane connects to:
 
 Implementation order:
 1. **Now (artisanal):** Operator manually writes `derived_constraints.json` from debate logs. 3-5 constraints. Mutator receives them as read-only context. Evaluator checks compliance. Non-applicability requires justification.
-2. **After 2 projects:** Automate extraction from evaluator-side artifacts. Constrained LLM call that reads firing-squad critiques + meta-judge rationale, proposes provisional constraints. Operator still approves promotion.
+2. **After 2 projects:** Automate extraction from evaluator-side artifacts. Constrained LLM call that reads adversarial review committee critiques + meta-judge rationale, proposes provisional constraints. Operator still approves promotion.
 3. **After 20+ constraints across 3+ projects:** Add adversarial constraint testing (D6). Generate thesis that deliberately violates each constraint, confirm the evaluator catches it. This is the regression test for the constraint lane itself.
 
 ---
@@ -330,7 +330,7 @@ GP-011 and GP-017 are complementary RAM-layer accumulation mechanisms. They accu
 
 | Mechanism | Accumulates | Source | Effect on thesis space |
 |---|---|---|---|
-| GP-011: derived constraints | Structural limits on the claim space | Adversarial evaluation (firing squad critique) | Narrows — eliminates regions of thesis space shown to be structurally invalid |
+| GP-011: derived constraints | Structural limits on the claim space | Adversarial evaluation (adversarial review committee critique) | Narrows — eliminates regions of thesis space shown to be structurally invalid |
 | GP-017: evidence fetch | External knowledge | Public sources (web, documents) | Expands — widens the evidence boundary the validator operates within |
 
 They are sequentially composable: a GP-017 fetch pass can seed GP-011 constraint extraction. If fetched evidence reveals that no known monetary union has sustained equilibrium purely through discretionary coordination beyond 8 years, that is both new evidence (GP-017) and a new derived constraint candidate (GP-011): "any thesis claiming sustainable discretionary equilibrium must address the 8-year historical ceiling."

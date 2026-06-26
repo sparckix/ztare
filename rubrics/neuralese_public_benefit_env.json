@@ -1,0 +1,65 @@
+{
+  "rubric_version": "1.0",
+  "project": "neuralese_public_benefit_env",
+  "description": "Qualitative non-math substrate: turn a public complaint about frontier-model neuralese/slop into a bounded evaluation environment or protocol that improves generated prose without deleting claims, evidence, non-claims, or falsifiers.",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Generation/evaluation protocol design over a qualitative substrate, not numeric law discovery.",
+  "falsification_mode": "bounded_discriminator",
+  "substrate_domain": "public technical writing quality environment",
+  "cage_meta": {
+    "class": "writing_quality"
+  },
+  "enable_fit_primitive": false,
+  "enable_fit_primitive_features": false,
+  "fit_score_mode": "none",
+  "discovery_mode": false,
+  "holdout_hard_gate": false,
+  "holdout_hard_gate_reason": "Qualitative protocol substrate; no hidden numeric holdout.",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "evidence.txt is a structured qualitative source surface, not an I_model dataset.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "No sequence/fit uniqueness gap applies.",
+  "require_i_model_in_submission": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric domain.",
+  "enable_post_run_thesis_synthesis": true,
+  "enable_qualitative_stagnation_detection": true,
+  "qualitative_stagnation_threshold": 3,
+  "qualitative_plateau_threshold": 3,
+  "enable_primitive_class_rotation": true,
+  "persona": "You are an adversarial evaluator for public technical writing environments. You are not grading whether prose sounds pleasant. You are grading whether the thesis defines a measurable environment or protocol that reduces neuralese/slop while preserving claim atoms, evidence atoms, caveats, non-claims, and falsifiers. Penalize generic style advice, RL buzzwords without a reward contract, and rewrites that improve fluency by deleting epistemic content.",
+  "dimensions": [
+    {
+      "name": "Failure taxonomy",
+      "weight": 20,
+      "description": "Names concrete neuralese/slop failure features, including fake contrast, empty intensifiers, vague action verbs, unfalsifiable abstraction, claim deletion, and taste-only judging. Full credit requires features to imply detectors, not just complaints."
+    },
+    {
+      "name": "Environment contract",
+      "weight": 25,
+      "description": "Defines inputs, outputs, scoring, and failure states for an environment/protocol. A high-scoring thesis specifies original prose, rewritten prose, required claim/source/non-claim/falsifier atoms, feature penalties, and preservation checks."
+    },
+    {
+      "name": "Reward-hacking resistance",
+      "weight": 20,
+      "description": "Explains how the environment prevents models from lowering style penalties by deleting hard content. Must include fail-closed preservation gates and at least one adversarial example."
+    },
+    {
+      "name": "Public-benefit deployment plan",
+      "weight": 15,
+      "description": "Describes a narrow way to use the environment for public technical writing without overbuilding a company or creating private taste infrastructure. Strong answers include small corpus design and clear stop condition."
+    },
+    {
+      "name": "ZTARE integration and falsifier",
+      "weight": 20,
+      "description": "Connects the protocol to existing ZTARE surfaces and gives a next falsifier. The falsifier must demote the thesis if improved style score coincides with loss of claims, evidence pointers, non-claims, or falsifiers."
+    }
+  ],
+  "criteria": {
+    "1_Failure_taxonomy": "Concrete features imply detectors and are not just aesthetic preferences.",
+    "2_Environment_contract": "Inputs, outputs, scoring, and failure states are specified.",
+    "3_Reward_hacking_resistance": "Preservation gates prevent deleting claims/evidence/non-claims/falsifiers for style gain.",
+    "4_Public_benefit_deployment": "Deployment is narrow, measurable, and has a stop condition.",
+    "5_ZTARE_integration_falsifier": "Names existing repo surfaces and a next falsifier that can demote the thesis."
+  }
+}

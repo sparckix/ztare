@@ -331,7 +331,8 @@ def test_leanmill_output_roots_remain_holdbacks() -> None:
     for path in (
         "analytics/public/leanmill/witness_transport_separation/README.md",
         "analytics/public/leanmill/witness_transport_separation/factoring_separation_run.json",
-        "formalizations/finance/ftap_easy/FtapEasy.lean",
+        "ztare_proofs/ZtareProofs/finance/FtapEasy.lean",
+        "ztare_proofs/ZtareProofs/strategy/topkis_monotone_comparative_statics.lean",
         "projects/leanmill_experiments/public/witness_vs_bare_controlled.py",
     ):
         classification = module.classify_path(path)

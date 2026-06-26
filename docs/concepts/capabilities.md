@@ -4,7 +4,7 @@ description: "What ZTARE currently has: the architectural stack, operating disci
 
 # Capabilities
 
-> **Up:** [`docs/README.md`](../README.md)
+> Up: [`docs/README.md`](../README.md)
 
 What ZTARE currently has. This page is the "what does this run" surface,
 sized to be read in five to ten minutes. Each capability points to the deeper
@@ -20,9 +20,9 @@ is the per-claim result surface.
 reviewer-facing evidence crosswalk. [`priority_roadmap.md`](../../priority_roadmap.md)
 is what is next.
 
-The capabilities are organised in three layers: the **architectural stack**
-(what the system is), the **operating discipline** (what it does, across
-projects and evaluator surfaces), and a short list of **named primitives**
+The capabilities are organised in three layers: the architectural stack
+(what the system is), the operating discipline (what it does, across
+projects and evaluator surfaces), and a short list of named primitives
 (specific reusable tools).
 
 Capability here means "there is an implementation surface a reviewer can
@@ -35,8 +35,8 @@ artifact, or review packet. The glossary owns the exact distinction.
 
 ## Fast map for reviewers
 
-If you are deciding whether to run the repo, start from the command surface
-instead of the historical seam names.
+If you are deciding whether to run the repo, start from the command surface;
+the historical seam names are secondary.
 
 | Question | Capability surface | First command or artifact |
 |---|---|---|
@@ -56,7 +56,7 @@ instead of the historical seam names.
 | Are forecast/prediction rows measurement or authority? | Forecast-pool lifecycle, prediction-contract read model, and forecast capability audit | `make forecast-capability-audit` |
 | Are subscription/API worker paths comparable? | Dispatch parity and outcome audit | `ztare autoresearch dispatch-parity --json` and `ztare autoresearch subscription-outcomes --json` |
 | Is primitive recall healthy before building new tools? | Primitive catalog, digest-checked semantic atlas, and amnesia precheck | `ztare primitive health` |
-| Is proof-search evidence governed rather than self-certified? | LeanMill proof audit, source review, harness, and axiom policy surfaces | `ztare leanmill proof-audit --help` |
+| Is proof-search evidence externally governed before it counts? | LeanMill proof audit, source review, harness, and axiom policy surfaces | `ztare leanmill proof-audit --help` |
 | Which claims are public and which are not? | Evidence atlas and public claim register | [`docs/evidence_atlas/README.md`](../evidence_atlas/README.md) and [`docs/public_claim_register.md`](../public_claim_register.md) |
 
 This table is a navigation aid, not a new evidence class. The detailed sections
@@ -90,7 +90,7 @@ Runs *before* the first iteration. A noise-profile classifier probes the
 project/evaluator surface for heteroscedasticity, non-Gaussian residuals,
 autocorrelation, and errors-in-X, and *auto-routes* the solver configuration
 (fit-score mode, grammar tier, gate-DAG order) before any mutator call. The
-data epistemology is measured rather than assumed from human input.
+data epistemology is measured directly from the project surface.
 Implementation at
 [`src/ztare/diagnostics/noise_profile.py`](../../src/ztare/diagnostics/noise_profile.py)
 with companion substrate critic at
@@ -105,7 +105,7 @@ Per-iteration: **rubric pre-flight → prepare
 candidate → mutator call → prompt assembly → fit → compression → gate
 battery → judge → information-yield → pivot/close.** A rejection at the
 candidate-preparation stage (lint, AST, NameError, KeyError, missing
-`I_model`/`PARAMETRIC_FORM`) is recoverable: the **Compiler Bounce** retry
+`I_model`/`PARAMETRIC_FORM`) is recoverable: the Compiler Bounce retry
 gives the mutator up to three in-place re-prompts with the specific error
 injected, costing ~$0.05/retry vs. ~$0.40 for a full iteration. The iteration
 counter does not advance during retries. Lives under
@@ -116,15 +116,15 @@ counter does not advance during retries. Lives under
 
 ### Grammar tiers and the EML primitive
 
-The expression language is tiered, not unbounded. `fit_expression_grammar`
+The expression language is tiered. `fit_expression_grammar`
 takes one of: `eml_only` (only the EML primitive `eml(x, y) = exp(x) − ln(y)`
 plus arithmetic), `math_exp_only` (arithmetic + `math.exp`), `math_exp_trig`
 (adds `math.sin`/`math.cos`/`math.tan`), `py_exec` (sandboxed Python with
 authorised primitives like `isprime`, `factorint`, `primefactors`, `divisors`,
 `gcd`), or `omit`. EML is the single composite primitive used in
 the Planck-sandbox vocabulary-escape calibration: giving the mutator one
-fused exp/ln operator forces it to build composites *out of* the primitive
-rather than drift through vocabulary. `py_exec` is gated by an explicit `py_exec_authorized_by` rubric flag
+fused exp/ln operator forces it to build composites *out of* the primitive,
+closing the vocabulary-drift escape. `py_exec` is gated by an explicit `py_exec_authorized_by` rubric flag
 plus an `expression_byte_budget` ceiling, enforced fail-closed at
 rubric-preflight.
 
@@ -135,16 +135,16 @@ estimates parameters on visible evidence only. Deterministic holdout and
 farther-tail gates enforce generalisation. The compression primitive then
 strips overparameterised surrogates:
 
-- **Stage 1** enumerates 22 additive templates over `√n`, `ln n`, `n^b`,
+- Stage 1 enumerates 22 additive templates over `√n`, `ln n`, `n^b`,
   `e^{an}`, `1/n` with selection by BIC inside topology classes and an
   exponent grid `{0.25, 1/3, 0.5, 2/3, 1, 1.5, 2}` constraining free
   power-law exponents.
-- **Stage 2** activates only when Stage 1 returns no gate-passing form: 13
+- Stage 2 activates only when Stage 1 returns no gate-passing form: 13
   depth-1 compositional templates such as `√(n / ln n)` (which is how the
   Vaughan prime-partition form was first reached). Synthesizer seed
   selection uses BIC sort + structural diversity so the next iteration
   is not trapped in one family.
-- **Stage 2.5 (observable rotation)** applies monotonic transforms
+- Stage 2.5 (observable rotation) applies monotonic transforms
   (`1/z`, `ln z`, `Δz`) when Stage 1 and Stage 2 both return no
   gate-passing form, and re-runs compression on the transformed
   representation. This is how the Ulam reciprocal compression
@@ -173,17 +173,17 @@ not a prompt rewrite.
 The tried-and-failed provider is the negative-memory channel for the in-loop
 workbench. It summarizes prior R1 rejection reasons, mutation-contract
 mismatches, fit failures, repeated non-improving weakest points, and projection
-constraints so the next mutator sees failed branches as reusable constraints
-rather than rediscovering them from a blank prompt.
+constraints so the next mutator inherits failed branches as reusable constraints,
+sparing it a blank-prompt rediscovery.
 
 ### Structural-presence and negative-space extractors
 
 Two structural extractors named for the side of the search space they read.
-The **structural-presence extractor** is the positive-space extractor
+The structural-presence extractor is the positive-space extractor
 ([GP-061.A](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md),
 [`src/ztare/gates/structural_constraint_extractor.py`](../../src/ztare/gates/structural_constraint_extractor.py)):
 it surfaces features that *are present* in the current evidence as candidates for the
-next form. The **negative-space extractor** is the void extractor
+next form. The negative-space extractor is the void extractor
 ([GP-061.B](../../research_areas/seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md),
 [`src/ztare/gates/negative_space_extractor.py`](../../src/ztare/gates/negative_space_extractor.py)):
 it surfaces *what is structurally missing*: feature-bag gaps
@@ -196,12 +196,12 @@ Only confirmed constraints render into the mutator prompt.
 
 ### Residual diagnostics and symbolic regression
 
-Two layers further down the constraint stack. **Residual diagnostics**
+Two layers further down the constraint stack. Residual diagnostics
 ([`src/ztare/motion/residual_diagnostics.py`](../../src/ztare/motion/residual_diagnostics.py))
 uses a deterministic 2-bit residual
 descriptor that classifies a fitted form's residual as smooth,
 periodic, or pathological, narrowing the corrector-library
-recommendation *without oracle leakage*. **Grammar-guided symbolic regression**
+recommendation *without oracle leakage*. Grammar-guided symbolic regression
 ([`src/ztare/composition/symbolic_regression_synthesizer.py`](../../src/ztare/composition/symbolic_regression_synthesizer.py))
 builds new forms when the additive and depth-1
 compositional templates exhaust. It composes candidate
@@ -220,7 +220,7 @@ A per-iteration evaluator tracks whether the mutator's current functional
 class is still producing new structural information. **Class-novelty
 stagnation decoupling** lets the loop register
 stagnation on the *class* of forms even when the iteration counter
-increases. A **committee-rotation throttle** prevents the same judge
+increases. A committee-rotation throttle prevents the same judge
 panel from re-affirming a stuck class. Stagnation thresholds are
 resolved through `pivot_heuristics.resolve_stagnation_pivot_state()`,
 the single source of truth for prompt assembly *and* event logging. A control
@@ -286,8 +286,8 @@ receipts, consumers, tests, and public wording keep graph algorithms, graph
 decision records, domain claims, and the move-card atlas/routing state
 separate. The companion
 `ztare audit move-card-router --json` checks a fixed paraphrase set against the
-compact move-card router so routing drift is measured directly rather than
-left to prose. The default audit is deterministic and offline. `SEMANTIC=1`
+compact move-card router so routing drift is measured directly by the audit.
+The default audit is deterministic and offline. `SEMANTIC=1`
 exercises the live embedding atlas and reports `semantic_error_count` when the
 provider path is unavailable. Both paths now read the same atlas contract:
 embedded ids, metadata rows, and manifest size/source must match the current
@@ -298,16 +298,16 @@ deployed.
 ### Invariant-search mode: Lagrangian derivation + Buckingham π + Noether variance
 
 A specialised `rubric_mode: invariant_search` enables a chain of
-physics-motivated gates. **Lagrangian derivation primitive** (historical seam:
+physics-motivated gates. Lagrangian derivation primitive (historical seam:
 `GP-180`):
 when the mutator declares `LAGRANGIAN`, `Q_VARIABLES`, `BACKGROUND`,
 `PREDICTION`, and `SYMMETRIES`, the kernel derives a closed-form
-prediction and captures Noether invariants. **Buckingham π gate** (historical
+prediction and captures Noether invariants. Buckingham π gate (historical
 seam: `GP-179`):
 AST-walks the fit form for transcendentals applied to raw dimensional
 arguments and refuses fits where the dimensional content is incoherent
 (strict mode skips the fit, soft mode surfaces a briefing note).
-**Noether-variance loss** (historical seam: `GP-180`): adds `λ · CV²(Π)` per declared
+Noether-variance loss (historical seam: `GP-180`): adds `λ · CV²(Π)` per declared
 invariant to the loss so the optimiser pays for variance in any quantity
 the mutator asserted is conserved.
 
@@ -403,7 +403,7 @@ MRE). Only matches that improve the metric survive. The general engine is
 shared. Each consumer implements `StrangeLoopDomain` (`abstract_failure`,
 `compile_to_test`, `oracle`). `fit/analogy.py` ([GP-164](../../research_areas/seams/engine/meta/GP-164_ztare_v2_reframe_analogy_meta_architecture_seam.md)) is the validated
 curve-fit specialisation and remains in-loop. Leanmill and the research
-directors are the intended new consumers. **Efficacy is unproven:**
+directors are the intended new consumers. Efficacy is unproven:
 whether the autonomous query surfaces useful matches vs.
 plausible nonsense is the open test. Surfaced by the `primitive_amnesia`
 precheck (run it before building lateral-search machinery). The SOP for
@@ -413,8 +413,8 @@ wiring any new primitive into the precheck is
 ### Kepler vs Newton: two observable layers, judged separately
 
 A gate-and-judge layer distinguishes two layers of explanation. The
-**Kepler step** is the empirical fit on visible evidence: a curve that
-reproduces the observed numbers. The **Newton step** is the predictive,
+Kepler step is the empirical fit on visible evidence: a curve that
+reproduces the observed numbers. The Newton step is the predictive,
 mechanistic step: a derivation that predicts a *secondary* observable
 the Kepler fit had no direct access to. Nothing reaches the Newton step
 without first surviving the Kepler step, and `rubric_mode: newton`
@@ -510,7 +510,7 @@ PDE workbench also carries a selected-prefix nonnegative-channel collapse
 surface: if a nonnegative channel pays every selected target prefix and has a
 finite channel budget, it is treated as the all-prefix budget itself. Signed or
 current-theoretic cancellation and forced endpoint coalescence must be declared
-as separate channels. Each gate is code, not a prompt. Each gate has a
+as separate channels. Each gate is executable code. Each gate has a
 charter-line that says *which* failure mode it exists to prevent.
 
 ### The Framer language
@@ -548,7 +548,7 @@ with deterministic routing, optional semantic-atlas routing, and explicit route
 provenance in the
 [pattern action contract](../../src/ztare/research_director/pattern_action_contract.py).
 Hard-residual and PDE estimate/carrier work route through `OP-HRD-01` and
-`OP-PDE-01` rather than local contract phrase lists,
+`OP-PDE-01`, replacing the older local contract phrase lists,
 a [pattern bank injector](../../src/ztare/research_director/pattern_bank_injector.py),
 PDE-specific [estimate-craft ops](../../src/ztare/research_director/pde_estimate_craft_ops.py),
 a [PDE work-unit gate](../../src/ztare/research_director/pde_work_unit_gate.py)
@@ -589,7 +589,7 @@ recoverable by out-of-loop public source or dataset work, while
 preflight, receipt, or in-loop discriminator work. Trace and evidence briefs
 expose the canonical route fields plus the
 `ztare-evidence-gap-recovery-contract-v1` object, so `make evidence-fetch` and
-graph-focus briefings consume the same contract instead of re-reading gap prose.
+graph-focus briefings consume the same structured contract directly.
 Legacy prose inference is still supported for old rows, but the contract marks
 it as `fallback_inference` with `schema_promotion_required`. Explicit route
 fields are the preferred producer interface. Automated `make evidence-fetch`
@@ -654,10 +654,10 @@ exact launch intake before falling back to conventional project-local intake or
 legacy packet filenames.
 Evidence-gap rows written by the loop are normalized at persistence time
 through `ztare-evidence-gap-recovery-contract-v1`, so trace, evidence-fetch,
-graph focus, and synthesis read one contract shape instead of re-inferring
-public-source versus local-verification work from prose.
-A provider timeout or charged no-output event is surfaced as runtime risk
-rather than evidence against the research direction.
+graph focus, and synthesis all read one contract shape that already classifies
+public-source versus local-verification work.
+A provider timeout or charged no-output event is surfaced as runtime risk,
+a transport failure that leaves the research direction untouched.
 
 The synthesis renderer now consumes that same read model when an autoresearch
 surface is present. `make synth` writes a compact
@@ -842,16 +842,16 @@ forecasting-role obligations live in
 
 ### Gaming behavior catalog and runtime guard
 
-One layer with two faces. The **durable record** starts with the
+One layer with two faces. The durable record starts with the
 original 9 specification-gaming strategies documented in the Cognitive
 Camouflage paper, from Severity Averaging through Weak Baseline. Later
 mined vectors and emerging patterns live in the
 [`LLM Gaming Behavior Catalog`](../gaming_behavior_catalog.md) and its
 [`Gaming Behavior Catalog Map`](gaming_behavior_catalog_map.md), where
 the live registry, promotion evidence, and runtime gate status are kept
-separate from the paper taxonomy. The **runtime guard** is the
-precedent and gate stack checked against candidate code during the
-loop, not a soft prompt. New behavior classes should enter through an
+separate from the paper taxonomy. The runtime guard is the
+precedent and gate stack checked as executable code against candidate code during the
+loop. New behavior classes should enter through an
 incident, reproducer, registry row, promotion receipt, and regression
 before public prose treats them as stable. See
 [`anti_pattern_catalog.md`](anti_pattern_catalog.md),
@@ -870,7 +870,7 @@ audit and recorded as dead. See
 [`reflexive_engineering.md`](reflexive_engineering.md) and
 [`agent_agnostic_recursive_gain.md`](agent_agnostic_recursive_gain.md).
 Recent operations-intelligence candidates also pass through a typed
-**learning-promotion contract** before they can become reusable checks:
+learning-promotion contract before they can become reusable checks:
 nearest existing surface, nearest confuser, typed receipt, deterministic
 validator, ex-post usage criterion, non-claim, and stop criterion. The contract
 builder lives in
@@ -934,8 +934,8 @@ A self-serve check that dispatches a consequential architecture or
 closure question to an independent external model at high reasoning
 effort, then splits the verdict and Meta-Darwins its closing. Defends
 against single-author blind spots. The pattern is described in
-[`glossary.md`](glossary.md) and ships as a runtime move, not a
-manual review step.
+[`glossary.md`](glossary.md) and ships as an automated runtime move the
+maintainer can fire on demand.
 
 ### Damage signals
 
@@ -998,13 +998,13 @@ Multi-mutator family runs (Gemini, Claude, GPT-4o) under the same
 gates. Specification-gaming behaviour is mutator-family-specific, not
 universal, and ZTARE records that. Cross-tool baselines: PySR
 independently arrived at the same Lucky-number density coefficient as
-ZTARE on the same observable. Cross-tool replication is a
-citable triangulation, not a manual review step.
+ZTARE on the same observable. Cross-tool replication stands as a
+citable triangulation, an independent tool reaching the same result.
 
 ### Grammar-vs-space diagnosis
 
-The kernel distinguishes a **grammar ceiling** (the expression
-language cannot write the answer) from a **space ceiling** (the mutator
+The kernel distinguishes a grammar ceiling (the expression
+language cannot write the answer) from a space ceiling (the mutator
 does not search in the right mathematical category). The sopfr
 (OEIS A001414) result is the canonical case: the grammar admits the
 answer syntactically, but the mutator never reaches the prime-
@@ -1039,7 +1039,7 @@ and isomorphism-decomposition. Shared compute lives in
 [`docs/concepts/leanmill_architecture.md`](leanmill_architecture.md) and
 [the governed DAG proof-search seam](../../research_areas/seams/engine/lean/GP-246_governed_dag_proof_search_seam.md).
 
-**Status:** soundness governance is the validated part. The governance kernel
+*Status:* soundness governance is the validated part. The governance kernel
 catches gaming and laundering modes that bare `compile_ok` misses, including
 statement alteration, vacuity, axiom smuggling, and in-proof leakage. Measured
 lift over a strong bare leaf is still mostly unproven: easy proof targets
@@ -1059,21 +1059,21 @@ A single-file general-purpose statistics module that codifies the experiment-dis
 [`src/ztare/experiment_stats.py`](../../src/ztare/experiment_stats.py).
 Thirteen public functions:
 
-- **Power before fire:** `n_required_for_rho(target_rho)`, `detectable_rho_at_n(n)`, `n_required_for_brier_delta(delta)`: Fisher-$z$ sample-size computation. Pre-registration discipline: no pilot is fired without `n_required` written down first.
-- **Correlation with CI:** `spearman_rho(xs, ys)`, `spearman_rho_with_ci(xs, ys, ci=0.95)`: Fisher-$z$ transform 95% CI.
-- **Difference tests:** `paired_permutation_test(a, b)`, `bootstrap_ci(values)`, `bf_bic_paired_t(a, b)`: paired Δ-testing with BIC-approximation Bayes factor (Wagenmakers 2007).
-- **Equivalence testing:** `tost_equivalence(a, b, equiv_bound)`: proper `h0_kept` claims via two one-sided tests at a pre-stated bound, not "p > 0.05".
-- **Multiple comparison:** `bh_fdr(p_values)`: Benjamini-Hochberg false-discovery-rate correction across panel tests.
-- **Multi-channel R² without overfitting:** `ols_multichannel_r2(xs_cols, ys)` returns R², adjusted R², and **leave-one-out R²_LOO**, the audit-clearing test against in-sample-fit noise at small N. The meta-Darwin audit flagged "R² without LOO at small N" as a recurring program error. This function makes the correct report unavoidable.
-- **Three legal verdicts:** `power_aware_verdict(observed_rho, n, target_rho)` returns one of `h1_supported` / `h0_kept` / `inconclusive_underpowered`. `h0_kept` requires the CI to wholly exclude $\pm$target_rho, otherwise the verdict is `inconclusive_underpowered`. The "underpowered null misread as h0_kept" error is what the [Forecast Calibration Program](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) found in 8 of 12 of its own earlier nulls. This resolver makes the correct verdict unavoidable.
-- **Reproducibility manifest:** `reproducibility_hash(prompt_template, dispatcher_version, corpus_row, agent_id)`: per-call SHA-256 of inputs so any score row can be audited back to the exact prompt + corpus row that produced it.
+- Power before fire: `n_required_for_rho(target_rho)`, `detectable_rho_at_n(n)`, `n_required_for_brier_delta(delta)`: Fisher-$z$ sample-size computation. Pre-registration discipline: no pilot is fired without `n_required` written down first.
+- Correlation with CI: `spearman_rho(xs, ys)`, `spearman_rho_with_ci(xs, ys, ci=0.95)`: Fisher-$z$ transform 95% CI.
+- Difference tests: `paired_permutation_test(a, b)`, `bootstrap_ci(values)`, `bf_bic_paired_t(a, b)`: paired Δ-testing with BIC-approximation Bayes factor (Wagenmakers 2007).
+- Equivalence testing: `tost_equivalence(a, b, equiv_bound)`: proper `h0_kept` claims via two one-sided tests at a pre-stated bound, not "p > 0.05".
+- Multiple comparison: `bh_fdr(p_values)`: Benjamini-Hochberg false-discovery-rate correction across panel tests.
+- Multi-channel R² without overfitting: `ols_multichannel_r2(xs_cols, ys)` returns R², adjusted R², and leave-one-out R²_LOO, the audit-clearing test against in-sample-fit noise at small N. The meta-Darwin audit flagged "R² without LOO at small N" as a recurring program error. This function makes the correct report unavoidable.
+- Three legal verdicts: `power_aware_verdict(observed_rho, n, target_rho)` returns one of `h1_supported` / `h0_kept` / `inconclusive_underpowered`. `h0_kept` requires the CI to wholly exclude $\pm$target_rho, otherwise the verdict is `inconclusive_underpowered`. The "underpowered null misread as h0_kept" error is what the [Forecast Calibration Program](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) found in 8 of 12 of its own earlier nulls. This resolver makes the correct verdict unavoidable.
+- Reproducibility manifest: `reproducibility_hash(prompt_template, dispatcher_version, corpus_row, agent_id)`: per-call SHA-256 of inputs so any score row can be audited back to the exact prompt + corpus row that produced it.
 
 Codified disciplines that the toolkit supports (referenced by [`AGENTS.md`](../../AGENTS.md) §6n.6–§6n.9):
 
-- **Power before fire.** Every pilot ships with `n_required` from `n_required_for_rho` written into the pre-registration row before the first call.
-- **Three legal verdicts, no fourth.** Findings resolve to `h1_supported` / `h0_kept` / `inconclusive_underpowered`. The "I tried, got p>0.05, calling it null" verdict is now `inconclusive_underpowered` unless the equivalence-bound condition is met.
-- **LOO-CV at small N.** Multi-channel R² claims at $N < 30$ with $k \geq 3$ regressors carry LOO alongside in-sample. The meta-Darwin audit retracts findings reported without it.
-- **BH-FDR across panel tests.** Per-family panel tests (5-family $\times$ multi-intervention) carry BH-FDR adjustment when reported.
+- Power before fire. Every pilot ships with `n_required` from `n_required_for_rho` written into the pre-registration row before the first call.
+- Three legal verdicts, no fourth. Findings resolve to `h1_supported` / `h0_kept` / `inconclusive_underpowered`. The "I tried, got p>0.05, calling it null" verdict is now `inconclusive_underpowered` unless the equivalence-bound condition is met.
+- LOO-CV at small N. Multi-channel R² claims at $N < 30$ with $k \geq 3$ regressors carry LOO alongside in-sample. The meta-Darwin audit retracts findings reported without it.
+- BH-FDR across panel tests. Per-family panel tests (5-family $\times$ multi-intervention) carry BH-FDR adjustment when reported.
 
 The meta-Darwin retract-and-retest pattern (audit every claim post-hoc against the discipline, retract anything that fails, re-fire if a retest disambiguates) is documented in the pattern catalogue and applied to all [Forecast Calibration Program](../../research_areas/seams/apparatus/instrumentation/GP-245_forecaster_skill_calibration_seam.md) findings (`projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/meta_darwin_audit_2026_05_27.md`).
 
@@ -1099,15 +1099,15 @@ named axioms (typed infrastructure, not analytic-PDE closure). See
 
 ### Recent additions tracked through June 2026
 
-- **Canonical MDL/BIC engine** (`src/ztare/fit/mdl.py`): `bic` / `bic_from_loglik` (de-duped from compress_champion's inline copies) + the two-part-code `MDLLibrary` (a Strategy interface). Consumed by autoresearch (compress_champion) and leanmill (lemma-library pruning).
-- **LeanMill calibration** (`src/ztare/leanmill/solver/move_calibration.py`): recursive self-tuning `selection_priors` shifts each move's estimated close probability from compile-only evidence toward ratified outcomes as governed data accrues. `select_calibration_model` uses BIC to decide split-by-error-class vs pooled calibration. Recorded forecasts carry Brier/Elo statistics.
-- **Constraint-to-isomorphism engine** (`src/ztare/common/constraint_isomorphism.py`, see §1): provider-flexible isomorphism surfacing for constraint families and proof/search surfaces.
-- **Autoformalization + faithfulness firewall** (`src/ztare/leanmill/solver/autoformalize.py`, opt-in): NL→Lean via a frozen leaf, gated by governance-as-faithfulness: compile, non-triviality, non-vacuity, structural preservation, and a directional cold cross-family judge. It fails closed because a false accept would fabricate success. It reuses the kernel rather than adding parallel governance. Efficacy remains unproven.
-- **Isomorphism-surfaced default-off levers** (`governance_organs.py` MDL-generativity + Schwartz-Zippel [advisory]; equiv-keyed proof cache; reachability invent-criterion). Built, self-tested, and parity-safe. Lift remains mostly unproven because easy-target A/Bs came out null. The discriminating measurement needs a critical-difficulty proof target. Full status: `leanmill_architecture.md`.
-- **Three-tier proof reuse** (`src/ztare/leanmill/solver/proof_cache.py`): the α-keyed within-run cache (binder axis) + **semantic-defeq** reuse (`defeq_reuse_candidate`, default-on) — `semantic_premise_shelf` embeddings RETRIEVE cross-vocab candidates, the kernel `@goal=@cand:=rfl` oracle VERIFIES before any cite (similarity never closes; the cite is re-verified by governance) — and **theory-identity** (`autoformalize_notes.theory_consolidation` refuses to re-formalize a RESET substrate that has prior banked facts, the AMM vocab-orphan prevention). Sound by construction; metamorphic guards in `tests/test_leanmill_agentic_invariants.py` fail on the pre-fix code.
-- **Warm-compile door** (`agentic_leaf.verify_lean_proof` + `v33_preflight._compile_probe`, default-on): the leaf ratify gate and the audit/composite compile route through the pre-elaborated warm campaign env (the SAME compile + `#print-axioms` gate, fail-closed) when a substrate is registered, eliminating the recurring cold-`lake env lean` Mathlib-re-import tax (592–1016s heavy-substrate); cold fallback when no substrate.
-- **Single-door closure invariant + deterministic conjunctive split** (`governed_dag_search`, `isomorphism_decompose.derive_conjunctive_dag`): `status=="closed"` ⟺ a kernel-verified `proof_text` exists (no status-flip false-clean); a top-level `∧` target is split mechanically into its conjuncts and assembled via `composite_ratify`. Kernel-validated end-to-end.
-- **Campaign-start P0 forecast** (`forecast_router.forecast_campaign_p0`): predicts expected yield + **time-to-closure** + cost from per-lemma `P(close)` × the domain's historical mean time (`phase_timing`), logged at campaign start and scored ex-post against the actual (the self-learning loop via `reweight`). Enables admissibility filtering + budget focus; validated by backfilling the filed campaigns (APR/AMM/Topkis).
+- Canonical MDL/BIC engine (`src/ztare/fit/mdl.py`): `bic` / `bic_from_loglik` (de-duped from compress_champion's inline copies) + the two-part-code `MDLLibrary` (a Strategy interface). Consumed by autoresearch (compress_champion) and leanmill (lemma-library pruning).
+- LeanMill calibration (`src/ztare/leanmill/solver/move_calibration.py`): recursive self-tuning `selection_priors` shifts each move's estimated close probability from compile-only evidence toward ratified outcomes as governed data accrues. `select_calibration_model` uses BIC to decide split-by-error-class vs pooled calibration. Recorded forecasts carry Brier/Elo statistics.
+- Constraint-to-isomorphism engine (`src/ztare/common/constraint_isomorphism.py`, see §1): provider-flexible isomorphism surfacing for constraint families and proof/search surfaces.
+- Autoformalization + faithfulness firewall (`src/ztare/leanmill/solver/autoformalize.py`, opt-in): NL→Lean via a frozen leaf, gated by governance-as-faithfulness: compile, non-triviality, non-vacuity, structural preservation, and a directional cold cross-family judge. It fails closed because a false accept would fabricate success. It routes through the existing governance kernel, reusing that path. Efficacy remains unproven.
+- Isomorphism-surfaced default-off levers (`governance_organs.py` MDL-generativity + Schwartz-Zippel [advisory]; equiv-keyed proof cache; reachability invent-criterion). Built, self-tested, and parity-safe. Lift remains mostly unproven because easy-target A/Bs came out null. The discriminating measurement needs a critical-difficulty proof target. Full status: `leanmill_architecture.md`.
+- Three-tier proof reuse (`src/ztare/leanmill/solver/proof_cache.py`): the α-keyed within-run cache (binder axis) + semantic-defeq reuse (`defeq_reuse_candidate`, default-on), `semantic_premise_shelf` embeddings RETRIEVE cross-vocab candidates, the kernel `@goal=@cand:=rfl` oracle VERIFIES before any cite (similarity never closes; the cite is re-verified by governance), and theory-identity (`autoformalize_notes.theory_consolidation` refuses to re-formalize a RESET substrate that has prior banked facts, the AMM vocab-orphan prevention). Sound by construction; metamorphic guards in `tests/test_leanmill_agentic_invariants.py` fail on the pre-fix code.
+- Warm-compile door (`agentic_leaf.verify_lean_proof` + `v33_preflight._compile_probe`, default-on): the leaf ratify gate and the audit/composite compile route through the pre-elaborated warm campaign env (the SAME compile + `#print-axioms` gate, fail-closed) when a substrate is registered, eliminating the recurring cold-`lake env lean` Mathlib-re-import tax (592–1016s heavy-substrate); cold fallback when no substrate.
+- Single-door closure invariant + deterministic conjunctive split (`governed_dag_search`, `isomorphism_decompose.derive_conjunctive_dag`): `status=="closed"` ⟺ a kernel-verified `proof_text` exists (no status-flip false-clean); a top-level `∧` target is split mechanically into its conjuncts and assembled via `composite_ratify`. Kernel-validated end-to-end.
+- Campaign-start P0 forecast (`forecast_router.forecast_campaign_p0`): predicts expected yield + time-to-closure + cost from per-lemma `P(close)` × the domain's historical mean time (`phase_timing`), logged at campaign start and scored ex-post against the actual (the self-learning loop via `reweight`). Enables admissibility filtering + budget focus; validated by backfilling the filed campaigns (APR/AMM/Topkis).
 
 ## Current boundaries
 

@@ -51,6 +51,11 @@ def _heading_names(text: str) -> set[str]:
     return out
 
 
+def _has_heading(headings: set[str], heading: str) -> bool:
+    target = heading.casefold()
+    return any(item.casefold() == target for item in headings)
+
+
 def _is_external(target: str) -> bool:
     return (
         target.startswith("http://")
@@ -71,8 +76,8 @@ def _link_path(source: Path, target: str) -> Path | None:
 def _check_packet(path: Path) -> dict[str, object]:
     text = path.read_text(encoding="utf-8")
     headings = _heading_names(text)
-    missing = [section for section in REQUIRED_SECTIONS if section not in headings]
-    if not any(section in headings for section in OPTIONAL_RUNNABLE_HEADINGS):
+    missing = [section for section in REQUIRED_SECTIONS if not _has_heading(headings, section)]
+    if not any(_has_heading(headings, section) for section in OPTIONAL_RUNNABLE_HEADINGS):
         missing.append("Runnable Anchor(s)")
 
     evidence_section = _section_text(text, "Evidence Level")
@@ -108,7 +113,7 @@ def _check_packet(path: Path) -> dict[str, object]:
 def _section_text(text: str, heading: str) -> str:
     pattern = re.compile(
         rf"^##\s+{re.escape(heading)}\s*$([\s\S]*?)(?=^##\s+|\Z)",
-        re.MULTILINE,
+        re.MULTILINE | re.IGNORECASE,
     )
     match = pattern.search(text)
     return match.group(1).strip() if match else ""

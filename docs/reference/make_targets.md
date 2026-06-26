@@ -49,7 +49,7 @@ make docs-check
 
 `make benchmark-ordinary-review` is the opt-in fourth-arm path for the frozen
 evaluator-hardening suite. When using `BENCH_ORDINARY_IMPORT`, every imported
-row must include model, timestamp, prompt, and provider/runtime provenance; the
+row must include model, timestamp, prompt, and provider/runtime provenance. The
 runner rejects provenance-free imported ordinary-review rows.
 Use `make benchmark-ordinary-review-prompts` to export reviewer-safe prompt
 sets with prompt hashes before collecting imported rows. Use
@@ -103,7 +103,7 @@ promoting a completed ordinary-review run into frozen-suite metadata.
   make forensic-workbench-api
   make forensic-workbench-dev
   make forensic-workbench-live
-  ztare forensic-workbench apply-review --project <project> --row <row_slug> --from <project>_<row_slug>_review.json
+  ztare forensic-workbench apply-review --project <project> --project-check <project_check_slug> --from <project>_<project_check_slug>_review.json
   make operations-intelligence [OUT=<path>] [MD_OUT=<path>] [HTML_OUT=<path>] [FRESHNESS_DAYS=14] [MAX_PROJECTS=30] [NO_MARKDOWN=1] [JSON=1]
   make autoresearch-substrate-recommend [RECOMMENDER_MODE=cold|branch] [AGENT_RECOMMENDER=1 AGENT_RUNTIME=codex]
     # CLI front door: ztare autoresearch workbench-recommend

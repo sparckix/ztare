@@ -9,9 +9,9 @@ _Folder index. Prose may be added above the auto-index block._
 **Documents**
 
 - [Automated Asymptotic Recovery with Provable False-Positive Rejection](draft.md) - Short letter on the experimental-mathematics results produced by the apparatus.
-- [pysr_baseline_full.json](pysr_baseline_full.json)
-- [pysr_baseline_s1s2s3.json](pysr_baseline_s1s2s3.json)
-- [pysr_baseline_smoketest.json](pysr_baseline_smoketest.json)
+- [pysr_baseline_full.json](evidence/pysr_baseline_full.json)
+- [pysr_baseline_s1s2s3.json](evidence/pysr_baseline_s1s2s3.json)
+- [pysr_baseline_smoketest.json](evidence/pysr_baseline_smoketest.json)
 
-<sub>0 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
+<sub>1 sub-folder(s), 4 document(s). Auto-generated; re-run `gen_folder_index.py` after adding files.</sub>
 <!-- AUTO-INDEX:END -->

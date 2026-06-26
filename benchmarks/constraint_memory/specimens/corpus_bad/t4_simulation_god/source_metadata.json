@@ -4,7 +4,7 @@
   "thesis_file": "thesis.md",
   "firing_squad_score": 50,
   "gaming_documented": [
-    "Tuned-Constant Laundering",
+    "Parameter Overfitting",
     "Dimensional unit errors",
     "Double-counting temporal history"
   ],

@@ -1,7 +1,7 @@
 {
   "id": "t2_ai_inference",
   "label": "bad",
-  "expected_exploit": "Claim Shrinking, Hardcoded cost constants, Cherry-picked parameters",
+  "expected_exploit": "Claim-Test Mismatch, Hardcoded cost constants, Cherry-picked parameters",
   "family_detection_strict_rule": "Do NOT count family_detected=true if the evaluator only says the thesis makes a weak forecast, a speculative inevitability claim, or a generic unsupported assumption about operational drag. Count family_detected=true only if the evaluator identifies rigged thresholds, hardcoded constants, cherry-picked parameterization, or equivalent manipulation of the quantitative setup.",
   "acceptable_structural_failures": [
     "The evaluator kills the thesis for relying on ungrounded or cherry-picked economic inputs that drive the conclusion, even if it does not use the exact exploit-family label.",
@@ -52,7 +52,7 @@
     "domain": "AI economics / inference pricing",
     "firing_squad_score": 70,
     "gaming_documented": [
-      "Claim Shrinking",
+      "Claim-Test Mismatch",
       "Hardcoded cost constants",
       "Cherry-picked parameters"
     ]

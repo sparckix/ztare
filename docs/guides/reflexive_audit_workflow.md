@@ -4,42 +4,42 @@ description: "How every reflexive primitive was discovered, and how the maintain
 
 # Reflexive Audit Workflow
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Canonical for:** [GP-102](../../research_areas/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) reflexive primitive discovery audit, how to run it, interpret it, and act on it.
-**Companion doc:** `docs/concepts/reflexive_engineering.md`, the primitives catalog this audit extends.
-**Implementation:** `src/ztare/composition/reflexive_audit.py`
+*Canonical for:* [GP-102](../../research_areas/seams/apparatus/instrumentation/GP-102_reflexive_primitive_discovery_seam.md) reflexive primitive discovery audit, how to run it, interpret it, and act on it.
+*Companion doc:* `docs/concepts/reflexive_engineering.md`, the primitives catalog this audit extends.
+*Implementation:* `src/ztare/composition/reflexive_audit.py`
 
 ---
 
 ## Purpose
 
-Every reflexive engineering primitive in the catalog was discovered the same way: a maintainer observed a failure, recognized it as infrastructure rather than science, and proposed a fix. The engine discovered none of them.
+Every reflexive engineering primitive in the catalog was discovered the same way: a maintainer observed a failure, recognized it as an infrastructure problem (not a science problem), and proposed a fix. The engine discovered none of them.
 
-The reflexive audit mechanizes the *detection* half of that pattern. It cannot invent a new primitive; applying a ZTARE leg to a stuck layer requires judgment. It can detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for maintainer review.
+This audit mechanizes the *detection* half of the discovery loop. It cannot invent a new primitive. Applying a ZTARE leg to a stuck layer requires judgment. What it can do: detect when a project has hit a structural wall that no existing recovery mechanism addresses, and draft a first seam for maintainer review.
 
-**The key distinction the audit makes:** Is the project stagnating because the *science is hard* (a genuinely difficult substrate with high-variance failures across many gates) or because the *machinery is broken* (the same gate failing with similar residual across K+ iterations, the Groundhog Day signature)?
+The key distinction the audit makes: is the project stagnating because the *science is hard* (a genuinely difficult substrate with high-variance failures across many gates) or because the *machinery is broken* (the same gate failing with similar residual across K+ iterations, the Groundhog Day signature)?
 
-The audit only flags the second case. Flagging the first would generate false-positive "process improvement" seams on every difficult project.
+Only the second case is flagged. Flagging the first would generate false-positive "process improvement" seams on every difficult project.
 
 ---
 
-## When to Run
+## When to run
 
 Run the audit when:
 - You sense the engine is stuck and want a cross-project diagnostic
 - You have completed a batch of goals and want a periodic Kaizen review
 - A specific project has been stagnating and you want to check if it is machinery or science
 
-The design is Kaizen-style: **periodic and scheduled, not event-driven.** Event-driven detection requires knowing the shape of the failure signal in advance, but a *new* primitive addresses a failure class you haven't seen before, so you can't pre-specify its trigger.
+Scheduling is Kaizen-style: periodic and scheduled, not event-driven. Event-driven detection requires knowing the shape of the failure signal in advance, but a *new* primitive addresses a failure class you haven't seen before, so you can't pre-specify its trigger.
 
 In artisan mode ([GP-070](../../research_areas/seams/apparatus/supervisor/GP-070_meta_supervisor_goal_orchestrator_seam.md) orchestrator not running), trigger manually. In orchestrator mode, wire as a goal with `trigger: cron` and `frequency: every_5_goals`.
 
 ---
 
-## What It Inspects
+## What it inspects
 
-The audit reads three telemetry sources per project:
+Three telemetry sources are read per project:
 
 | Source | What it extracts |
 |--------|-----------------|
@@ -53,30 +53,30 @@ Plus a repo-level source:
 |--------|-----------------|
 | `git log` | File-change frequency per layer (artisan activity proxy) |
 
-**Fail-silent:** projects missing any of these artifacts are skipped, not crashed.
+*Fail-silent:* projects missing any of these artifacts are skipped without error.
 
 ---
 
-## The Discriminator: Deming SPC
+## The discriminator: Deming SPC
 
-The core logic is W. Edwards Deming's Statistical Process Control distinction between **common-cause** and **special-cause** variation:
+The core logic is W. Edwards Deming's Statistical Process Control distinction between common-cause and special-cause variation:
 
 | Signature | Gate failure variance | Latent motion | Diagnosis | Action |
 |-----------|----------------------|---------------|-----------|--------|
-| Same gate fails >80% of iterations | **Low** (special-cause) | Flat | `MACHINERY_BROKEN` | Trigger audit |
-| Failures rotate across 3+ gates | **High** (common-cause) | High | `SCIENCE_IS_HARD` | All clear |
+| Same gate fails >80% of iterations | Low (special-cause) | Flat | `MACHINERY_BROKEN` | Trigger audit |
+| Failures rotate across 3+ gates | High (common-cause) | High | `SCIENCE_IS_HARD` | All clear |
 | Ambiguous | Neither threshold | Mixed | `AMBIGUOUS` | Report, don't flag |
 | Too few iterations |, |, | `INSUFFICIENT_DATA` | Skip |
 
-Intervening on common-cause variation (the engine exploring a hard substrate) generates spurious process-improvement seams on projects that are simply in difficult territory. Only low-variance stagnation (special-cause) is actionable.
+Intervening on common-cause variation (the engine exploring a hard substrate) generates spurious process-improvement seams on projects in difficult territory. Only low-variance stagnation (special-cause) is actionable.
 
-**Gate 2, recovery exhausted:** Before flagging MACHINERY_BROKEN, the discriminator checks that recovery mechanisms have had opportunities to fire. Proxy: `families_exhausted == families_total` AND `stagnation_count > threshold`. If recovery is not yet exhausted, the verdict is `INSUFFICIENT_DATA`, the engine may still be working.
+*Gate 2, recovery exhausted:* Before flagging MACHINERY_BROKEN, the discriminator checks that recovery mechanisms have had opportunities to fire. Proxy: `families_exhausted == families_total` AND `stagnation_count > threshold`. If recovery is not yet exhausted, the verdict is `INSUFFICIENT_DATA`, the engine may still be working.
 
 ---
 
-## Running It
+## Running it
 
-**Dry-run (no LLM, deterministic stages only):**
+*Dry-run (no LLM, deterministic stages only):*
 ```bash
 python -m ztare.composition.reflexive_audit \
     --projects-dir projects/ \
@@ -85,16 +85,16 @@ python -m ztare.composition.reflexive_audit \
 ```
 Use this first. It scans all projects, runs the discriminator, and classifies failure modes, all in seconds with no API cost. No seams are drafted.
 
-**Full run (LLM inception committee fires for flagged projects):**
+Full run (LLM inception committee fires for flagged projects):
 ```bash
 python -m ztare.composition.reflexive_audit \
     --projects-dir projects/ \
     --primitives-catalog <private_primitives_catalog> \
     --science-token-budget 5000000
 ```
-The `--science-token-budget` tells the meta-budget guard "we have spent this many science tokens." The inception committee (LLM call) only fires if the science budget is at least 20× the estimated audit cost (~4K tokens per call). This prevents the audit from dominating token spend when little science has run. If omitted, the guard auto-computes from disk by counting past iteration records.
+The `--science-token-budget` tells the meta-budget guard "we have spent this many science tokens." The inception committee (LLM call) only fires if the science budget is at least 20× the estimated audit cost (~4K tokens per call), keeping the audit from dominating token spend when little science has run. If omitted, the guard auto-computes from disk by counting past iteration records.
 
-**All CLI options:**
+*All CLI options:*
 
 | Flag | Default | Purpose |
 |------|---------|---------|
@@ -109,9 +109,9 @@ The `--science-token-budget` tells the meta-budget guard "we have spent this man
 
 ---
 
-## Reading the Audit Report
+## Reading the audit report
 
-The audit writes to the configured private audit output directory after each run. Key fields per project:
+After each run, output lands in the configured private audit output directory. Key fields per project:
 
 ```json
 {
@@ -130,7 +130,7 @@ The audit writes to the configured private audit output directory after each run
 }
 ```
 
-**Verdict taxonomy:**
+*Verdict taxonomy:*
 
 | Verdict | Meaning |
 |---------|---------|
@@ -139,7 +139,7 @@ The audit writes to the configured private audit output directory after each run
 | `ambiguous` | Neither threshold met. Noted in the report, not flagged for action. |
 | `insufficient_data` | Too few iterations, or recovery not yet exhausted, or project already converged. Skip. |
 
-**Failure mode taxonomy (for `machinery_broken` projects):**
+Failure mode taxonomy (for `machinery_broken` projects):
 
 | Failure mode | What it means |
 |--------------|---------------|
@@ -149,37 +149,37 @@ The audit writes to the configured private audit output directory after each run
 
 ---
 
-## Acting on a MACHINERY_BROKEN Flag
+## Acting on a MACHINERY_BROKEN flag
 
-**Step 1: Read the evidence summary.** Look at `dominant_failing_gate`, `stuck_layer`, and `score_trajectory`. Is the diagnosis plausible? Does the stuck layer match what you know about this project?
+*Step 1: Read the evidence summary.* Look at `dominant_failing_gate`, `stuck_layer`, and `score_trajectory`. Is the diagnosis plausible? Does the stuck layer match what you know about this project?
 
-**Step 2: Check the primitives catalog.** Is an existing primitive already designed for this failure mode? If yes, the question is why it hasn't fired, that's a wiring issue, not a new primitive gap.
+*Step 2: Check the primitives catalog.* Is an existing primitive already designed for this failure mode? If yes, the question is why it hasn't fired. That's a wiring issue, with no gap in the primitive set itself.
 
-**Step 3 (if LLM run): Review the seam draft.** The inception committee writes a seam to the private audit output directory with `SENTINEL_DECISION: hold`. This means the seam cannot be promoted without explicit maintainer action. Check:
+*Step 3 (if LLM run): Review the seam draft.* The inception committee writes a seam to the private audit output directory with `SENTINEL_DECISION: hold`. A seam at `hold` cannot be promoted without maintainer action. Check:
 - [ ] Does the proposed primitive address a failure class not covered by the existing catalog?
 - [ ] Is the ZTARE leg applied correctly (reflexive inward application)?
 - [ ] Meta-parsimony: does the proposal identify an existing primitive it supersedes, or justify why complexity must increase? If neither, it should be `NO_NEW_PRIMITIVE`.
 - [ ] Is the telemetry evidence reproducible (not a one-off run artifact)?
 
-**Step 4: Retroactive falsification gate (mandatory before promotion).** Every seam draft includes a `target_sandbox` field, the project_id of the stagnated sandbox that motivated the proposal. Before raising the seam from `hold` to `active`, re-run that sandbox with the proposed primitive in effect and record the result in Turn 2 of the Debate Log. If the sandbox does not break the stagnation, the primitive is reverted as false-positive bureaucracy.
+Step 4: Retroactive falsification gate (mandatory before promotion). Every seam draft includes a `target_sandbox` field, the project_id of the stagnated sandbox that motivated the proposal. Before raising the seam from `hold` to `active`, re-run that sandbox with the proposed primitive in effect and record the result in Turn 2 of the Debate Log. If the sandbox does not break the stagnation, the primitive is reverted as false-positive bureaucracy.
 
 ---
 
-## Structural Safeguards Against Self-Perpetuating Audit
+## Structural safeguards against self-perpetuating audit
 
-The audit is designed against the "self-licking ice cream cone" failure mode, where the meta-auditor becomes a permanent bureaucracy that generates its own workload rather than serving the science. Four structural preventatives:
+The audit is designed against the "self-licking ice cream cone" failure mode, where the meta-auditor becomes a permanent bureaucracy generating its own workload. Four structural preventatives:
 
-**P1, Meta-parsimony (one-in, one-out):** The inception committee prompt requires the LLM to either identify an existing primitive it supersedes, or provide a mathematical justification for complexity increase. If neither is satisfied, the LLM must return `NO_NEW_PRIMITIVE`. No new primitive may be added without a corresponding simplification or a hard justification.
+*P1, Meta-parsimony (one-in, one-out):* The inception committee prompt requires the LLM to either identify an existing primitive it supersedes, or provide a mathematical justification for complexity increase. If neither is satisfied, the LLM must return `NO_NEW_PRIMITIVE`. No new primitive may be added without a corresponding simplification or a hard justification.
 
-**P2, 20:1 meta-budget ratio:** The inception committee (LLM call) only fires if the science token budget is at least 20× the audit's estimated cost. This prevents the audit from consuming more than 5% of total token budget. Auto-computed from disk when not explicitly set.
+*P2, 20:1 meta-budget ratio:* The inception committee (LLM call) only fires if the science token budget is at least 20× the audit's estimated cost, capping the audit at under 5% of total token spend. Auto-computed from disk when not set.
 
-**P3, Retroactive falsification gate:** Every seam draft includes a mandatory target sandbox. The primitive is not promoted until the maintainer re-runs that sandbox with the primitive in effect and observes reduced stagnation. A primitive that doesn't fix its motivating case is discarded.
+*P3, Retroactive falsification gate:* Every seam draft includes a mandatory target sandbox. The primitive is not promoted until the maintainer re-runs that sandbox with the primitive in effect and observes reduced stagnation. A primitive that doesn't fix its motivating case is discarded.
 
-**P4, Hardware air-gap:** The audit can only write to its configured private output directory. It has no write path to the primitives catalog, the orchestrator configs, or any implementation. Manual copy-to-commit by the maintainer is the only promotion path.
+*P4, Hardware air-gap:* The audit can only write to its configured private output directory. It has no write path to the primitives catalog, the orchestrator configs, or any implementation. Manual copy-to-commit by the maintainer is the only promotion path.
 
 ---
 
-## Tuning Parameters
+## Tuning parameters
 
 | Parameter | Start value | Tune up if | Tune down if |
 |-----------|-------------|-----------|--------------|

@@ -4,8 +4,8 @@
 No model calls. No DB mutation.
 
 This report is deliberately claim-boundary oriented: it separates what can be
-written now from loved overclaims that current evidence kills or leaves blocked
-by acquisition. It consumes existing no-call audits plus DB materialized views.
+written now from overclaims that current evidence kills or leaves blocked by
+acquisition. It consumes existing stored audits plus DB materialized views.
 """
 from __future__ import annotations
 
@@ -46,8 +46,8 @@ INPUTS = {
     / "cutoff_validity_v1/workspace/equal_information_replacement_score_2026_06_15/equal_information_replacement_score.json",
     "non_polymarket_equal_information_score": PROGRAM
     / "cutoff_validity_v1/workspace/non_polymarket_equal_information_export_packet_2026_06_15/manifold_history_score_2026_06_15/non_polymarket_equal_information_score.json",
-    "harnessing_thesis": PROGRAM
-    / "paper_alignment_v1/workspace/harnessing_thesis_audit.json",
+    "controlled_use": PROGRAM
+    / "paper_alignment_v1/workspace/controlled_use_audit.json",
 }
 
 
@@ -117,14 +117,20 @@ def verdict_state(value: Any) -> Any:
     return value
 
 
+def reader_status(value: Any) -> Any:
+    if not isinstance(value, str):
+        return value
+    return value.replace("policy_demoted", "policy_not_supported").replace("demoted", "not_supported")
+
+
 MECHANISM_LABELS = {
     "measurement_validity_foundation": "measurement validity foundation",
     "equal_information_market_controls": "equal-information market controls",
-    "f100_source_valid_calibration": "source-valid low-probability calibration",
-    "f47_pairwise_ranking_translation": "pairwise ranking and probability translation",
-    "structured_evidence_" + "car" + "riers": "structured evidence fields",
-    "family_" + "rou" + "ting_headroom": "family-choice headroom",
-    "nurture_self_repair_controls": "prompt intervention and self-repair controls",
+    "source_valid_low_probability_calibration": "low-probability calibration after source checks",
+    "pairwise_ranking_translation": "pairwise ranking and probability translation",
+    "structured_evidence_fields": "structured evidence fields",
+    "family_choice_headroom": "family-choice headroom",
+    "prompt_intervention_self_repair_controls": "prompt intervention and self-repair controls",
 }
 
 
@@ -201,8 +207,8 @@ def build_report(db: Path) -> dict[str, Any]:
     replacement_sample = reports["equal_information_replacement_sample"]
     replacement_score = reports["equal_information_replacement_score"]
     manifold_score = reports["non_polymarket_equal_information_score"]
-    harnessing = reports["harnessing_thesis"]
-    harnessing_verdict = as_dict(harnessing.get("verdict"))
+    controlled_use = reports["controlled_use"]
+    controlled_use_verdict = as_dict(controlled_use.get("verdict"))
     replacement_selection = as_dict(replacement_sample.get("selection_rule"))
     replacement_counts = as_dict(replacement_sample.get("selected_counts"))
     replacement_score_summary = as_dict(replacement_score.get("summary"))
@@ -212,28 +218,28 @@ def build_report(db: Path) -> dict[str, Any]:
     claims = [
         claim_row(
             claim="Bias-transfer diagnostics",
-            paper_status="write_as_scoped_negative_or_mechanism_caveat",
+            paper_status="write_as_scoped_negative_or_boundary_caveat",
             current_evidence={
-                "readiness": law1.get("readiness"),
+                "readiness": reader_status(law1.get("readiness")),
                 "score_verdict": (law1.get("current_evidence") or {}).get("score_verdict"),
                 "raw_gap_adjusted_text_discussed_bias_coef": (
                     law1.get("current_evidence") or {}
                 ).get(old_bias_coef_key),
             },
             narrow_writeable_claim=(
-                "The text-discussed bias pattern is not currently a promoted causal law; "
+                "The text-discussed bias pattern is not currently supported as causal; "
                 "raw-gap controls explain or scope the observed anti-bias-prompt result."
             ),
-            forbidden_overclaim="Human-bias labels are a causal representation law for LLM forecast errors.",
-            nearest_confuser="taxonomy/mechanism story mistaken for causal evidence",
+            forbidden_overclaim="Human-bias labels are a causal representation model for LLM forecast errors.",
+            nearest_confuser="taxonomy story mistaken for causal evidence",
             kill_or_completion_condition="Reopen only with raw-gap matched or randomized rows.",
-            next_action="Draft as negative/scoping section; no more same-shape anti-bias calls.",
+            next_action="Draft as negative/scoping section; no more similar anti-bias calls.",
         ),
         claim_row(
-            claim="Law 2: elicited error surface",
-            paper_status="write_as_diagnostic_ready_policy_demoted",
+            claim="Elicited error surface",
+            paper_status="write_as_diagnostic_ready_policy_not_supported",
             current_evidence={
-                "readiness": law2.get("readiness"),
+                "readiness": reader_status(law2.get("readiness")),
                 "science_grade": (science_rows.get("Law 2 elicited error surface / worry-tail diagnostic") or {}).get(
                     "science_grade"
                 ),
@@ -245,15 +251,15 @@ def build_report(db: Path) -> dict[str, Any]:
             forbidden_overclaim="Worry/spread/self-Brier are reliable standalone probability transforms.",
             nearest_confuser="diagnostic correlation mistaken for intervention evidence",
             kill_or_completion_condition=(
-                "Promote only if a frozen allocation/review policy beats raw, low-probability, placebo, and source controls."
+                "Use only if a frozen allocation/review policy beats raw, low-probability, placebo, and source controls."
             ),
-            next_action="Write diagnostic law; future allocation packets need an external reviewer/source.",
+            next_action="Write as a diagnostic result; future allocation packets need an external reviewer/source.",
         ),
         claim_row(
-            claim="Law 3: source-currency / cutoff validity",
+            claim="Source-currency / cutoff validity",
             paper_status="write_as_candidate_with_explicit_external_baseline_limit",
             current_evidence={
-                "readiness": law3.get("readiness"),
+                "readiness": reader_status(law3.get("readiness")),
                 "stage_b_post_minus_pre": (law3.get("current_evidence") or {}).get("stage_b_score_post_minus_pre"),
                 "source_currency_gate_rows": dbs["source_currency_gate_rows"],
                 "source_currency_conflicts": dbs["source_currency_conflicts"],
@@ -266,12 +272,12 @@ def build_report(db: Path) -> dict[str, Any]:
                 "panel, but dataset-source positives require label-time records and "
                 "market/human comparisons remain source-limited."
             ),
-            forbidden_overclaim="A broad LLM forecasting superiority law is proven across equal-information sources.",
+            forbidden_overclaim="A broad LLM forecasting superiority claim is proven across equal-information sources.",
             nearest_confuser="source/cutoff leakage mistaken for current forecasting skill",
             kill_or_completion_condition=(
                 "Scope if same-information market-only dominates or label-time repair erases the signal."
             ),
-            next_action="Acquire remaining Metaculus/export rows or another source-valid non-Manifold panel; avoid more same-shape calls first.",
+            next_action="Acquire remaining Metaculus/export rows or another non-Manifold panel that passes source checks; avoid more similar calls first.",
         ),
         claim_row(
             claim="Confident-NO calibration",
@@ -288,13 +294,13 @@ def build_report(db: Path) -> dict[str, Any]:
                 "source_currency_conflicts": dbs["source_currency_conflicts"],
             },
             narrow_writeable_claim=(
-                "The low-probability adjustment is the current forward-looking/source-valid point-probability rule; "
+                "The low-probability adjustment is the current point-probability rule for forward-looking rows that pass source checks; "
                 "it is not a retrospective benchmark correction."
             ),
             forbidden_overclaim="The low-probability adjustment universally improves all cutoff/source strata.",
             nearest_confuser="post-cutoff live calibration mistaken for pre-cutoff retrospective correction",
-            kill_or_completion_condition="Kill or narrow further if source-valid live rows regress against raw/market bars.",
-            next_action="Compare raw, low-probability calibration, pairwise translation, and market baselines on prospective or newly joined source-valid rows.",
+            kill_or_completion_condition="Kill or narrow further if live rows that pass source checks regress against raw/market bars.",
+            next_action="Compare raw, low-probability calibration, pairwise translation, and market baselines on prospective or newly joined rows that pass source checks.",
         ),
         claim_row(
             claim="Pairwise ranking / translated probability",
@@ -319,30 +325,30 @@ def build_report(db: Path) -> dict[str, Any]:
             next_action="Do not spend more probability-translation calls until frozen prospective markets resolve or a larger equal-information market-control packet exists.",
         ),
         claim_row(
-            claim="Integrated harnessing thesis",
+            claim="Integrated controlled-use argument",
             paper_status="write_as_integrated_main_claim",
             current_evidence={
                 "central_claim": (
-                    "Raw LLM forecasts do not beat equal-information market bars in the current evidence, "
-                    "but model signal can be used under validity, calibration, ranking, and family/source constraints."
+                    "Current equal-information market controls do not support raw LLM panel superiority, "
+                    "but some model outputs retain limited value after validity, calibration, ranking, and family/source checks."
                 ),
-                "integrated_paper_supported": harnessing_verdict.get("integrated_paper_supported"),
-                "split_required_now": harnessing_verdict.get("split_required_now"),
-                "main_boundary": harnessing_verdict.get("main_boundary"),
-                "mechanisms": public_mechanism_summary(harnessing.get("rows", [])),
+                "integrated_paper_supported": controlled_use_verdict.get("integrated_paper_supported"),
+                "split_required_now": controlled_use_verdict.get("split_required_now"),
+                "main_boundary": controlled_use_verdict.get("main_boundary"),
+                "controlled_use_results": public_mechanism_summary(controlled_use.get("rows", [])),
             },
             narrow_writeable_claim=(
-                "Raw LLM forecasts do not beat equal-information market bars in the current "
-                "evidence, but source-valid calibration, ranking/translation, structured "
-                "evidence fields, and family/source constraints define controlled ways to extract usable signal."
+                "Current equal-information market controls do not support raw LLM panel "
+                "superiority, but calibration after source checks, ranking/translation, structured "
+                "evidence fields, and family/source constraints define controlled ways to use selected model outputs."
             ),
-            forbidden_overclaim="LLM panels are broadly superior to markets or prompt-nurture reliably unlocks forecasting skill.",
-            nearest_confuser="market-negative controls mistaken for failure rather than the condition that motivates harnessing",
+            forbidden_overclaim="LLM panels are broadly superior to markets or reflective prompting reliably unlocks forecasting skill.",
+            nearest_confuser="market-negative controls mistaken for a failure of the whole program rather than the boundary condition for controlled use",
             kill_or_completion_condition=(
                 "Split into two papers only if new prospective calibration, ranking, or family-choice evidence becomes "
-                "large enough to sustain an independent mechanisms paper."
+                "large enough to sustain an independent follow-up paper."
             ),
-            next_action="Keep one integrated paper now; use the market controls as the boundary and the audited mechanisms as the constructive result.",
+            next_action="Keep one integrated paper now; use the market controls as the boundary and the audited controlled-use results as the applied result.",
         ),
         claim_row(
             claim="Market/human equal-information comparison",
@@ -419,7 +425,7 @@ def build_report(db: Path) -> dict[str, Any]:
             },
             narrow_writeable_claim=(
                 "The current equal-information market slices are useful controls: Polymarket strongly "
-                "beats the model panel, and the new Manifold join favors the market but is inconclusive. "
+                "has lower Brier than the model panel, and the new Manifold join has lower market Brier but is inconclusive. "
                 "The paper can report a two-source boundary, not LLM market superiority."
             ),
             forbidden_overclaim="LLMs beat humans/markets on same-information forecasting.",
@@ -451,14 +457,14 @@ def build_report(db: Path) -> dict[str, Any]:
         "db_evidence": dbs,
         "program_verdict": {
             "scoped_paper_ready": True,
-            "harnessing_paper_ready": True,
+            "controlled_use_paper_ready": True,
             "split_required_now": False,
             "broad_market_human_claim_ready": False,
             "not_ready_claims": not_ready,
             "next_highest_yield_action": (
-                "Write one integrated measurement-and-harnessing paper: include the replacement "
+                "Write one integrated measurement-and-controlled-use paper: include the replacement "
                 "four-family model-vs-market negative result and the filled Manifold second-source "
-                "market-favoring/inconclusive comparison as the boundary, then foreground low-probability calibration, "
+                "lower-market-Brier/inconclusive comparison as the boundary, then foreground low-probability calibration, "
                 "pairwise ranking, structured evidence fields, and family-choice headroom only where the evidence supports them. "
                 "Require prospective or larger source-balanced evidence before any broader "
                 "market/human or automated family-selection claim."
@@ -473,6 +479,46 @@ def build_report(db: Path) -> dict[str, Any]:
 
 
 def render_md(report: dict[str, Any]) -> str:
+    status_labels = {
+        "write_as_scoped_negative_or_boundary_caveat": "write as scoped boundary result",
+        "write_as_diagnostic_ready_policy_not_supported": "write as diagnostic result",
+        "write_as_candidate_with_explicit_external_baseline_limit": "write with explicit external-baseline limit",
+        "write_as_applied_scoped_rule": "write as scoped calibration result",
+        "single_contract_probability_not_ready_wait_for_prospective_resolution": "not ready as standalone probability claim",
+        "write_as_integrated_main_claim": "write as integrated main claim",
+        "blocked_for_broad_claim_write_as_partial_underpowered": "write as partial and underpowered for broad claim",
+    }
+
+    evidence_key_labels = {
+        "score_verdict": "score verdict",
+        "raw_gap_adjusted_text_discussed_bias_coef": "raw-gap-adjusted coefficient",
+        "science_grade": "science grade",
+        "stage_b_post_minus_pre": "Stage-B post-minus-pre",
+        "source_currency_gate_rows": "source-currency rows",
+        "source_currency_conflicts": "source-currency conflicts",
+        "fred_blinded_control_vintage_delta": "FRED vintage-control delta",
+        "overall_delta": "overall delta",
+        "pre_cutoff_delta": "pre-cutoff delta",
+        "post_cutoff_delta": "post-cutoff delta",
+        "probability_readiness_verdict": "probability-readiness verdict",
+        "single_contract_probability_ready": "single-contract probability ready",
+        "failed_probability_checks": "checks not passed",
+        "prospective_state": "prospective state",
+        "resolution_side_status_counts": "resolution status counts",
+        "excluded_unresolved_pairs": "unresolved pairs",
+        "central_claim": "central claim",
+        "integrated_paper_supported": "integrated paper supported",
+        "split_required_now": "split required now",
+        "main_boundary": "main boundary",
+        "controlled_use_results": "controlled-use results",
+    }
+
+    def label_status(status: str) -> str:
+        return status_labels.get(status, status.replace("_", " "))
+
+    def label_key(key: str) -> str:
+        return evidence_key_labels.get(key, key.replace("_", " "))
+
     verdict = report["program_verdict"]
     lines = [
         "# GP-245 Paper Readiness / Exhaustion Audit",
@@ -502,7 +548,7 @@ def render_md(report: dict[str, Any]) -> str:
             [
                 f"### {row['claim']}",
                 "",
-                f"- Paper status: `{row['paper_status']}`",
+                f"- Paper status: {label_status(row['paper_status'])}",
                 f"- Narrow writeable claim: {row['narrow_writeable_claim']}",
                 f"- Forbidden overclaim: {row['forbidden_overclaim']}",
                 f"- Nearest confuser: {row['nearest_confuser']}",
@@ -512,7 +558,7 @@ def render_md(report: dict[str, Any]) -> str:
             ]
         )
         for key, value in row["current_evidence"].items():
-            lines.append(f"  - `{key}`: `{value}`")
+            lines.append(f"  - {label_key(key)}: `{value}`")
         lines.append("")
     return "\n".join(lines)
 

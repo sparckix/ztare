@@ -1,16 +1,16 @@
 {
-  "vector": "structural_param_smuggle_body",
+  "vector": "undeclared_parameters_body",
   "substrate": "autoresearch",
-  "promotion_path": "gaming_vector:autoresearch:structural_param_smuggle_body",
+  "promotion_path": "gaming_vector:autoresearch:undeclared_parameters_body",
   "evidence_mode": "deterministic_detector",
   "exposing_artifacts": [
     {
-      "path": "benchmarks/constraint_memory/derived_subtle/structural_param_smuggle_body/test_model.py",
+      "path": "benchmarks/constraint_memory/derived_subtle/undeclared_parameters_body/test_model.py",
       "sha": "0d53277bd7de9ea8"
     }
   ],
   "runtime_enforcement": {
-    "name": "global_project_sweep_structural_param_smuggle",
+    "name": "global_project_sweep_undeclared_parameters",
     "wired": true,
     "module": "ztare.gates.autoresearch_gaming_gates",
     "entrypoint": "run_autoresearch_gaming_gates"

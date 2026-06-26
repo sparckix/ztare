@@ -158,7 +158,7 @@ What follows is a first draft of the protocol for Turn 3 debate. Not a commitmen
 
 Draw 6–10 iterations from each. Balance successful convergence against failed iterations — the decomposition must survive both.
 
-**Annotation unit.** Per iteration, annotate which of the ten operations from the treatise's Chapter 1.2 the attacking process (firing squad / judge / mutator) performed. Multi-label: iterations routinely perform more than one operation. Include an explicit "none / other / unclassifiable" option to force the decomposition to fail openly rather than silently coerce observations into the nearest operation.
+**Annotation unit.** Per iteration, annotate which of the ten operations from the treatise's Chapter 1.2 the attacking process (adversarial review committee / judge / mutator) performed. Multi-label: iterations routinely perform more than one operation. Include an explicit "none / other / unclassifiable" option to force the decomposition to fail openly rather than silently coerce observations into the nearest operation.
 
 **Codebook v0.** Each of the ten operations gets a one-paragraph definition plus two worked examples plus two counter-examples. The counter-examples are decisive — they force the distinction between operations the treatise names as adjacent (eigenquestion vs decisive claim; basin search vs topological pivot; quarantine move detection vs deferred-confirmation laundering detection). The codebook v0 is frozen before annotation begins; amendments require a new version and a re-pass on already-annotated artifacts.
 

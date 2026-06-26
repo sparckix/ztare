@@ -262,7 +262,7 @@ def build_report() -> dict[str, Any]:
                 "Stage-C Manifold blend is narrow and tiny gains are non-significant; "
                 f"scope={market.get('scope', 'unknown')}."
             ),
-            residual="External bar is sparse and Manifold-only; F47 joined slice also favors market-alone.",
+            residual="External bar is sparse and Manifold-only; F47 joined slice also has lower market-only Brier.",
             next_lever="Treat market/human baseline completion as a first-class acquisition problem, not a side analysis.",
         ),
         row(

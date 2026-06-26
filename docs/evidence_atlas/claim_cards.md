@@ -5,10 +5,9 @@ description: "Curated claim cards linking ZTARE public claims to evidence source
 
 > **Up:** [Evidence Atlas](README.md)
 
-Each card below is a reviewer route through existing evidence. The cards are
-curated for breadth and inspectability, not because they exhaust the repo.
+Each card below is a reviewer route through existing evidence, curated for breadth and inspectability. The cards do not exhaust the repo.
 
-## Card 1: Evaluator Hardening And Self-Certification Failures
+## Card 1: Evaluator hardening and self-certification failures
 
 **Claim.** ZTARE-style deterministic gates and mined adversarial precedent can
 reduce self-certifying evaluator failures on the benchmark families tested.
@@ -21,7 +20,7 @@ reduce self-certifying evaluator failures on the benchmark families tested.
 - [Constraint-memory benchmark](../../benchmarks/constraint_memory/README.md)
 - [Gaming behavior catalog](../gaming_behavior_catalog.md)
 - [Cognitive Camouflage paper](../../papers/cognitive-camouflage/draft.md)
-- [Adversarial Precedent Memory paper](../../papers/adversarial-precedent-memory/draft.md)
+- [Governed Adversarial Evaluator Hardening paper](../../papers/governed-evaluator-hardening/draft.md)
 
 **Runnable anchors.**
 
@@ -38,7 +37,7 @@ sufficient for discovery.
 review, rubric-only review, deterministic gates, and gates-plus-precedent as
 separate conditions.
 
-## Card 2: Gaming Catalog And Hardening Registry
+## Card 2: Gaming catalog and hardening registry
 
 **Claim.** The public gaming behavior catalog separates the original 9
 benchmarked self-certification strategies from later live registry rows, and
@@ -68,14 +67,13 @@ leaderboard. Not evidence that rows 10-17 are part of the original
 **Next falsifier.** Add public minimal reproducers for every live vector, then
 test whether ordinary review misses entries that the declared gates catch.
 
-## Card 3: Public Claim Register And Project Claim Summaries
+## Card 3: Public claim register and project claim summaries
 
 **Claim.** The repository has a public claim register that separates claims,
 non-claims, evidence pointers, retest tags, and next falsifiers across
 scientific and methodology campaigns.
 
-**Evidence level.** L3 as claim-governance infrastructure; individual claims
-vary from L1 to L4.
+**Evidence level.** L3 as claim-governance infrastructure. Individual claims vary from L1 to L4.
 
 **Primary sources.**
 
@@ -105,8 +103,7 @@ telemetry, forecast-pool control, result-bound success claims, structural
 contract gating, and related orchestration patterns.
 
 **Evidence level.** Mixed L1-L3 today. Some patterns have implementation
-anchors and tests; others are documented design patterns awaiting stronger
-ablation evidence.
+anchors and tests. Others are documented design patterns awaiting stronger ablation evidence.
 
 **Primary sources.**
 
@@ -122,8 +119,8 @@ make smoke-public
 python scripts/public/control/org_runtime_smoke.py --role research_director --member-id codex --agent-cli codex --agent-adapter auto
 ```
 
-The second command checks the role preflight and daemon dry-run path; see
-[org runtime smoke](../../scripts/public/control/org_runtime_smoke.py).
+The second command checks the role preflight and daemon dry-run path (see
+[org runtime smoke](../../scripts/public/control/org_runtime_smoke.py)).
 
 **Non-claims.** The pattern catalog is not itself evidence that each pattern
 improves outcomes. Improvement claims require per-pattern evidence rows.
@@ -138,8 +135,7 @@ failure, and demotion criterion.
 apparatus using its own infrastructure or epistemic rules to govern its own
 growth.
 
-**Evidence level.** L1-L3 for registered primitives; RP-003 and RP-004 are new
-and explicitly calibration-seed stage.
+**Evidence level.** L1-L3 for registered primitives. RP-003 and RP-004 are new and explicitly calibration-seed stage.
 
 **Primary sources.**
 
@@ -162,14 +158,13 @@ causally useful. The registry itself marks falsifiers and demotion criteria.
 test whether CEC fields predict realized capability yield better than prior
 operator belief.
 
-## Card 6: Forecast Pool And Action Intelligence
+## Card 6: Forecast pool and action intelligence
 
 **Claim.** ZTARE has a forecast-pool and action-intelligence layer for
 sealed forecasts, scored outcomes, decision-use logging, calibration surfaces,
 and action-impact rows.
 
-**Evidence level.** L1-L3; selected smoke tests pass, while full calibration
-strength depends on resolved and scored contract history.
+**Evidence level.** L1-L3. Selected smoke tests pass; full calibration strength depends on resolved and scored contract history.
 
 **Primary sources.**
 
@@ -192,15 +187,14 @@ and routing evidence unless tied to objective outcomes and decision-use rows.
 contracts to estimate per-agent calibration and decision-use lift with
 confidence intervals.
 
-## Card 7: LeanMill Governance And Formal-Audit Discipline
+## Card 7: LeanMill governance and formal-audit discipline
 
 **Claim.** LeanMill is a station workflow and audit substrate for Lean proof
 work, with leak-tight benchmarking, matched negative controls, proof-governance
 distinctions, and explicit separation between mechanism evidence and competitive
 claims.
 
-**Evidence level.** L3-L4 for governance discipline and no-lift benchmark;
-not L5 and not a theorem-prover leaderboard claim.
+**Evidence level.** L3-L4 for governance discipline and no-lift benchmark. Not L5, not a theorem-prover leaderboard claim.
 
 **Primary sources.**
 
@@ -215,8 +209,7 @@ not L5 and not a theorem-prover leaderboard claim.
 lake build
 ```
 
-Use Lean-specific review commands from the LeanMill docs for targeted proofs;
-do not treat a whole-repo build as a proof-value claim.
+Use Lean-specific review commands from the LeanMill docs for targeted proofs. Do not treat a whole-repo build as a proof-value claim.
 
 **Non-claims.** LeanMill currently has no public miniF2F number and no claim
 that planner memory beats public static tools on natural Mathlib rows. Internal
@@ -233,8 +226,7 @@ artifact, and run a public calibration benchmark against named baselines.
 localization, route demotions, and typed scaffolding that are public as an
 atlas of what has and has not survived.
 
-**Evidence level.** L2-L3; selected Lean artifacts are L1-L2 formal source,
-but the campaign is not a theorem closure.
+**Evidence level.** L2-L3. Selected Lean artifacts are L1-L2 formal source, but the campaign is not a theorem closure.
 
 **Primary sources.**
 
@@ -263,8 +255,7 @@ herding, abstention, judge-loop, and bias-inheritance findings across a
 multi-family LLM panel, with a power-aware verdict resolver and explicit
 retractions.
 
-**Evidence level.** L2-L4 internally, depending on finding; not
-second-lab-replicated.
+**Evidence level.** L2-L4 internally, depending on finding. Not second-lab-replicated.
 
 **Primary sources.**
 
@@ -320,7 +311,7 @@ clear expected output.
 each domain, but that the same discipline repeatedly demoted overclaims,
 preserved nulls, and surfaced next falsifiers.
 
-**Evidence level.** L3 methodology claim; individual domains vary.
+**Evidence level.** L3 methodology claim. Individual domains vary.
 
 **Primary sources.**
 

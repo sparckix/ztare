@@ -9,17 +9,17 @@ description: "Review packet for transport-to-decidability: routed decision proce
 
 An untrusted claim's faithfulness/validity is an *opinion* problem only if you stay in one theory. LeanMill
 routes each obligation to the decision theory where it is decidable (LIA/EUF, RCF/NIA, polynomial-ideal) and
-returns ONE **kernel trichotomy** — `CERTIFIED` (a solver/kernel certificate), `REFUTED` (a concrete,
+returns ONE **kernel trichotomy**: `CERTIFIED` (a solver/kernel certificate), `REFUTED` (a concrete,
 re-verifiable counterexample), or honestly `OUT_OF_FRAGMENT` (the Rice residue, declared, never a silent guess).
 The router **composes** existing decision procedures (`certify_policy_faithfulness`, `nlsat_decide`,
-`groebner_certificate`) — no procedure is reimplemented. A no-false-closure kernel re-verifies every certificate,
+`groebner_certificate`) without reimplementing any of them. A no-false-closure kernel re-verifies every certificate,
 so cross-domain transport is **safe by construction** (a wrong transport cannot mint a closure).
 
 ## Evidence Level
 
-L2 — runnable demonstrations with positive **and** negative controls, validated locally on real z3 (4.16) +
+L2: runnable demonstrations with positive **and** negative controls, validated locally on real z3 (4.16) +
 real Lean v4.30. **Not** a benchmark, **not** externally reviewed, **not** a production deployment. Corpora are
-small-to-moderate (N=7 router seed, N=18 policy, N=9 IAM) with wide CIs; the `OUT_OF_FRAGMENT` residue is real and
+small-to-moderate (N=7 router seed, N=18 policy, N=9 IAM) with wide CIs. The `OUT_OF_FRAGMENT` residue is real and
 reported. The IAM model is toy-scale boolean, **not** the full IAM grammar (see "Honest edge").
 
 ## Evidence Summary
@@ -48,7 +48,7 @@ The table below links each claim to its receipt and reproducible anchor.
 **Reproducibility note (honest).** Committable + from-clone runnable: the `--selftest` entrypoints (in `src/`,
 public, no network), the corpora JSON (in `scripts/public/`), and the three self-contained experiment runners now
 under `projects/leanmill_experiments/public/` (governed red-team, certified-faithfulness/policy corpus,
-transport-lift — the live ones need warm Lean / a subscription model in the env, but the scripts ship). Still
+transport-lift). The live runners need warm Lean or a subscription model in the env, but the scripts ship. Still
 **not** from-clone: the `.md`/`.json` receipts under `analytics/public/leanmill/results/` (gitignored by the
 private-accounting convention) and the env-heavy `minif2f_calibration.py` (needs the PutnamBench substrate). A
 clone reproduces every engine + corpus + governance claim by running the shipped selftests and `public/` runners.
@@ -72,21 +72,21 @@ projects/leanmill_experiments/public/transport_lift_controlled.py
 
 ## Primary Sources
 
-- [certified_faithfulness.py](../../../src/ztare/leanmill/solver/certified_faithfulness.py) — the typed trichotomy + `certify_policy_faithfulness` / `certify_policy_refinement` / `certify_polynomial_identity`.
-- [decidability_router.py](../../../src/ztare/leanmill/solver/decidability_router.py) — the router + `decidable_fraction_lift` metric.
-- [common/smt_checker.py](../../../src/ztare/common/smt_checker.py), [common/groebner_cert.py](../../../src/ztare/common/groebner_cert.py), [common/nlsat_oracle.py](../../../src/ztare/common/nlsat_oracle.py) — the composed decision procedures.
-- [audit_external.py](../../../src/ztare/leanmill/audit_external.py) — the no-false-closure gate the red-team attacks.
-- [LeanMill architecture §4.2 + §8](../../concepts/leanmill_architecture.md) — the firewall, the trichotomy, the prior-art positioning and the honest edge.
+- [certified_faithfulness.py](../../../src/ztare/leanmill/solver/certified_faithfulness.py): the typed trichotomy + `certify_policy_faithfulness` / `certify_policy_refinement` / `certify_polynomial_identity`.
+- [decidability_router.py](../../../src/ztare/leanmill/solver/decidability_router.py): the router + `decidable_fraction_lift` metric.
+- [common/smt_checker.py](../../../src/ztare/common/smt_checker.py), [common/groebner_cert.py](../../../src/ztare/common/groebner_cert.py), [common/nlsat_oracle.py](../../../src/ztare/common/nlsat_oracle.py): the composed decision procedures.
+- [audit_external.py](../../../src/ztare/leanmill/audit_external.py): the no-false-closure gate the red-team attacks.
+- [LeanMill architecture §4.2 + §8](../../concepts/leanmill_architecture.md): the firewall, the trichotomy, the prior-art positioning and the honest edge.
 
 ## Honest edge (vs the SMT-policy-verification line)
 
 Permissiveness-by-SMT is a mature, production-grade technique (access-control/policy analysis, cloud access-policy
 permissiveness reasoners, network-reachability verification, program-equivalence checking). We do **not**
-out-verify those dedicated tools on their turf (each has a complete, hardened encoding of its real domain grammar;
-this is a toy model). The edge is the LLM-era failure that line assumes away: the **intent→formal translation
+out-verify those dedicated tools on their turf, as each has a complete, hardened encoding of its real domain grammar
+and this implementation is a toy model. The edge is the LLM-era failure that line assumes away: the **intent→formal translation
 firewall** (faithfulness, not formal→formal properties), **domain-generality** (one trichotomy router across
 access-policy / compliance / mathematics, not a bespoke per-domain encoding), and **independent kernel
-re-verification + a transport-laundering red-team**. Same SMT-certificate spirit; different and broader target.
+re-verification** with a transport-laundering red-team. Same SMT-certificate spirit, different and broader target.
 See `results/iam_refinement_run.md`.
 
 ## Non-Claims
@@ -104,13 +104,14 @@ See `results/iam_refinement_run.md`.
 A stronger packet needs:
 
 - committed public receipt exports for the current `.md` and `.json` result
-  files rather than references to gitignored accounting artifacts;
-- a named external baseline for each benchmark-style claim;
-- external review of at least one policy or mathematics transport artifact;
-- a production-grade domain grammar for any policy/IAM accuracy claim;
-- confidence intervals or repeated runs for the small corpus results;
+  files, replacing the references to gitignored accounting artifacts they
+  currently carry
+- a named external baseline for each benchmark-style claim
+- external review of at least one policy or mathematics transport artifact
+- a production-grade domain grammar for any policy/IAM accuracy claim
+- confidence intervals or repeated runs for the small corpus results
 - a from-clone runnable benchmark packet for the env-heavy miniF2F and
-  PutnamBench-related paths.
+  PutnamBench-related paths
 
 Until those exist, this packet supports bounded governance and artifact
 discipline around decidability transport, not broad performance or deployment

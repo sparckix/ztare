@@ -338,8 +338,18 @@ def probe_axioms_via_augment(
         + "\n\n-- canonical axiom probe (lean_compile_primitives) --\n"
         + print_lines + "\n"
     )
-    ok, tail = run_lake_compile_source(
-        augmented, lean_root, timeout_s=timeout_s,
-        prefix="leanmill_axiom_probe_",
-    )
-    return parse_axiom_output(tail), tail[-1500:]
+    # FULL-OUTPUT axiom parse (char-length sibling sweep, RCA 2026-06-23): a MULTI-declaration probe emits one
+    # `#print axioms <name>` block per decl; on a length-TRUNCATED tail (the old `run_lake_compile_source`
+    # returned `output[-1200:]`) the EARLIEST blocks fall outside the window and silently drop from the audit —
+    # the same truncated-baseline class as the anti-laundering `enriched_goal` hijack false-positive. Route
+    # through the SAME full-output compile the live `audit_axioms_subset` uses (`run_lake_compile` parses
+    # `rec["axioms"]` from the COMPLETE stdout+stderr, never a tail), so every probed decl is parsed regardless
+    # of how many precede it. (A dropped block can only ever read as inconclusive — the closing-`]` regex +
+    # fail-open posture mean truncation can never FALSE-PASS — but a complete audit is the correct primitive.)
+    import tempfile as _tempfile
+    with _tempfile.TemporaryDirectory(prefix="leanmill_axiom_probe_") as _td:
+        _p = Path(_td) / "Probe.lean"
+        _p.write_text(augmented, encoding="utf-8")
+        rec = run_lake_compile(_p, Path(lean_root), timeout_s=timeout_s)
+    _disp = ((rec.get("stdout_tail") or "") + (rec.get("stderr_tail") or ""))[-1500:]
+    return (rec.get("axioms") or {}), _disp

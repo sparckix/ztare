@@ -151,7 +151,7 @@ def _imodel_body(tree: ast.AST) -> ast.FunctionDef | None:
     return None
 
 
-def detect_structural_param_smuggle(source: str) -> bool:
+def detect_undeclared_parameters(source: str) -> bool:
     """Detect undeclared numeric DoF hidden inside ``I_model`` body structure."""
     if "I_model" not in source:
         return False
@@ -270,13 +270,13 @@ def detect_receipt_replay_absence(source: str) -> bool:
 
 
 AUTORESEARCH_GAMING_DETECTORS: dict[str, AutoresearchGamingDetectorSpec] = {
-    "structural_param_smuggle_body": AutoresearchGamingDetectorSpec(
-        vector="structural_param_smuggle_body",
-        category="NOVEL:structural_param_smuggle",
+    "undeclared_parameters_body": AutoresearchGamingDetectorSpec(
+        vector="undeclared_parameters_body",
+        category="NOVEL:undeclared_parameters",
         mechanism="undeclared numeric degrees of freedom are hidden in the I_model body",
         proposed_gate="AST effective-K audit of I_model body vs declared parameter count",
-        gate_name="global_project_sweep_structural_param_smuggle",
-        detector=detect_structural_param_smuggle,
+        gate_name="global_project_sweep_undeclared_parameters",
+        detector=detect_undeclared_parameters,
     ),
     "definitional_tautology_self_confirming_metric": AutoresearchGamingDetectorSpec(
         vector="definitional_tautology_self_confirming_metric",
@@ -430,9 +430,9 @@ def _selftest() -> int:
         / "auxiliary_historical"
         / "central_station_hypothetical_target_laundering"
         / "test_model.py",
-        "structural_param_smuggle_body": fixture_root
+        "undeclared_parameters_body": fixture_root
         / "derived_subtle"
-        / "structural_param_smuggle_body"
+        / "undeclared_parameters_body"
         / "test_model.py",
         "receipt_replay_absence_static_asserts": fixture_root
         / "derived_subtle"

@@ -3,23 +3,23 @@ description: "How the ZTARE tenant instantiates cognitive-firm primitives."
 ---
 # ZTARE Tenant Architecture
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Status:** ZTARE tenant reference architecture over the reusable cognitive-firm kernel.
-**Last revised:** 2026-05-20
+*Status:* ZTARE tenant reference architecture over the reusable cognitive-firm kernel.
+*Last revised:* 2026-05-20
 
-> **How this relates to the sibling org docs.** This doc owns the ZTARE-specific
+> How this relates to the sibling org docs. This doc owns the ZTARE-specific
 > tenant architecture: how the generic cognitive-firm primitives are
 > instantiated around scientific work, evidence, gates, forecasts, action
 > impact, and human-agent collaboration. The code primitives it uses are
-> summarized in [organizational_primitives.md](organizational_primitives.md);
-> the runnable org tree (roles, mandates, tasks, gates as files) is
-> [org/README.md](../../org/README.md). This doc is the applied architecture,
+> summarized in [organizational_primitives.md](organizational_primitives.md).
+> The runnable org tree (roles, mandates, tasks, gates as files) is
+> [org/README.md](../../org/README.md). This doc covers the applied architecture,
 > not the generic kernel reference or the runtime layout.
 
 ---
 
-## Product Test
+## Product test
 
 The validation test is simple:
 
@@ -34,7 +34,7 @@ to be a credible research deployment.
 
 ---
 
-## Easy Boot Surface, Hard Control Plane
+## Easy boot surface, hard control plane
 
 Simple agent frameworks optimize for:
 
@@ -52,14 +52,13 @@ The difference is the control plane. A research company cannot treat chat as
 state. It needs mandates, claims, gates, budgets, damage signals, and experiment
 closure.
 
-The goal is not to imitate consumer automation. The goal is to make research
+The goal is to make research
 execution governable: roles decide what can act, gates decide when evidence
 licenses promotion, ledgers preserve what happened, and the accountable human
-intervenes where authority, taste, or non-digitized work is required. The easy
-surface matters because adoption matters; the durable asset is the control
+intervenes where authority, taste, or non-digitized work is required. The easy surface matters because adoption matters. The durable asset is the control
 plane behind it.
 
-There are two easy surfaces, not one:
+Two easy surfaces exist:
 
 | Surface | Command | Use case |
 |---|---|---|
@@ -67,13 +66,12 @@ There are two easy surfaces, not one:
 | Role daemon | `docker compose --env-file .env --profile daemons up research-director-daemon` | Persistent role-bound background work with gates, claims, transition logs, and closure. |
 
 This split is intentional. The product should not force a reviewer to boot the
-whole governance machine just to talk to a Claude Code instance. Direct
-collaboration remains a first-class Mode A path; the governance layer starts
+whole governance machine just to talk to a Claude Code instance. Direct collaboration remains a first-class Mode A path. The governance layer starts
 when work needs persistence, delegation, or unattended execution.
 
 ---
 
-## Backend Decision
+## Backend decision
 
 Do not conflate backend, audit, and interface.
 
@@ -85,17 +83,17 @@ Do not conflate backend, audit, and interface.
 | `projects/` + `research_areas/` | Research artifacts, experiment ledgers, project workspaces, evidence. |
 | Git | Audit, versioning, rollback, sync. Not the low-latency coordination backend. |
 | Orbit | Primary governance UI projection over the backend. |
-| Notification / phone channel | Push/digest/ack channel, not the system of record. Tenant overlays may use Telegram, Slack, email, or another provider. |
+| Notification / phone channel | Push/digest/ack projection over the executive inbox. Tenant overlays may use Telegram, Slack, email, or another provider. |
 
 The backend is filesystem-first at solo/small-team scale because it is
 inspectable, git-friendly, and easy to recover. At enterprise scale, the same
-schema should sit behind an **Org Runtime Control Plane**: a Postgres-backed
+schema should sit behind an Org Runtime Control Plane: a Postgres-backed
 API with leases, RBAC/SSO, idempotent gate resolution, signed audit records,
 retention policy, and an event outbox.
 
 ---
 
-## Multi-Server Shape
+## Multi-server shape
 
 For many servers or divisions:
 
@@ -123,23 +121,23 @@ tenant/
 
 Runtime services:
 
-- **Control plane API:** validates writes, resolves gates, emits events.
-- **Transactional store:** Postgres for current state, leases, and gate
+- Control plane API: validates writes, resolves gates, emits events.
+- Transactional store: Postgres for current state, leases, and gate
   resolution idempotency.
-- **Event stream/outbox:** durable append-only `org.transition.*` events,
+- Event stream/outbox: durable append-only `org.transition.*` events,
   optionally mirrored to Kafka/NATS/JetStream for real-time consumers.
-- **Role daemon(s):** one process per role or role pool.
-- **Worker runners:** constrained execution containers/worktrees.
-- **Orbit:** browser UI for governance and executive inbox.
-- **Push channel:** configured notification provider for digest and urgent ack.
-- **Git mirror:** commits state snapshots and artifacts for audit/rollback.
+- Role daemon(s): one process per role or role pool.
+- Worker runners: constrained execution containers/worktrees.
+- Orbit: browser UI for governance and executive inbox.
+- Push channel: configured notification provider for digest and urgent ack.
+- Git mirror: commits state snapshots and artifacts for audit/rollback.
 
 Each division gets its own namespace. Cross-division work happens through
-explicit directives or gates, not shared mutable files.
+explicit directives or gates, keeping each namespace's files private to it.
 
 ---
 
-## Authority Path
+## Authority path
 
 The enterprise-safe path is:
 
@@ -171,9 +169,9 @@ independent state.
 
 ---
 
-## Bootstrap Contract
+## Bootstrap contract
 
-A role daemon is not safe merely because Docker starts. A correct boot must
+A role daemon is not safe because Docker starts. A correct boot must
 prove the runtime can see the instruction stack:
 
 | Layer | File | Function |
@@ -193,7 +191,7 @@ autodiscovery for constitutional instructions.
 
 ---
 
-## Persistent Agents vs Transient Invocations
+## Persistent agents vs transient invocations
 
 ZTARE should distinguish two different computational objects:
 
@@ -202,35 +200,35 @@ ZTARE should distinguish two different computational objects:
 | Persistent role office | Codex, Claude Code, or another long-lived role-bearing agent acting as Manager, Research Director, Reviewer, Engineer, etc. | Can own tasks, claim leases, refuse scope, open gates, send handoffs, and write ledgers within mandate. | `org/roles/`, `org/mandates/`, `org/sessions/`, `org/channels/`, transitions, artifacts. |
 | Transient model invocation | A one-off LLM call inside ZTARE, cold-shot, judge, mutator, or script-generated critique. | No standing authority. It is evidence, proposal, mutation, or review output consumed by a role office. | Captured only as an artifact with provenance, model, prompt, inputs, and output. |
 
-This is an agentic primitive: **office, not model call, is the accountable
-unit**. A role office may use many fungible LLM invocations. Those invocations
+This is an agentic primitive: **the office is the accountable unit**. A role
+office may use many fungible LLM invocations, and the office remains the unit
+that carries accountability for them. Those invocations
 should not be treated as members of the organization unless they receive a
 role, mandate, session, and communication address.
 
-The practical reason is auditability. A cold-shot can suggest a decisive test;
-it cannot authorize itself to run the test. A persistent Research Director can
+The practical reason is auditability. A cold-shot can suggest a decisive test, but it cannot authorize itself to run the test. A persistent Research Director can
 accept, reject, or route that suggestion because the role office has a mandate,
 budget cap, refusal channel, and transition log.
 
 ---
 
-## Agent-To-Agent Communication
+## Agent-to-agent communication
 
 Current literature and protocol landscape:
 
-- **MCP** is best understood as `agent/host -> tools/context/resources`.
+- MCP is best understood as `agent/host -> tools/context/resources`.
   It standardizes JSON-RPC access to tools, prompts, resources, capability
   negotiation, and human-visible tool invocation controls. It is not by itself
   an org-level A2A coordination layer.
-- **A2A** is closer to `agent -> agent`: agent cards, tasks, messages,
+- A2A is closer to `agent -> agent`: agent cards, tasks, messages,
   artifacts, task status, streaming, push notifications, authentication, and
   task cancellation.
-- **ACP/BeeAI** is also an agent-to-agent interoperability direction.
-- **FIPA ACL** is the older conceptual ancestor: messages carry a communicative
+- ACP/BeeAI is also an agent-to-agent interoperability direction.
+- FIPA ACL is the older conceptual ancestor: messages carry a communicative
   act/performative, sender, receiver, content, conversation context, ontology,
   and reply controls.
 
-ZTARE should reuse the shape, not blindly import a full protocol. The local
+ZTARE should reuse the shape without blindly importing a full protocol. The local
 primitive is a typed durable envelope:
 
 ```text
@@ -260,7 +258,7 @@ Current inbox status:
 - Gate inbox: `ztare_workspace/gates/pending/` is the executive decision
   inbox. Orbit and notification providers are projections over it.
 - Agent inbox: `org/channels/<role>/inbox/` is the persistent role-office
-  message inbox. It creates obligations, not execution authority.
+  message inbox. It creates obligations; execution authority requires a separate authorization step.
 - Task inbox: `org/tasks/pending/` contains assignable work. Work becomes
   executable only after authorization/gate/claim.
 
@@ -269,17 +267,16 @@ executive decision, role-to-role obligation, and work item.
 
 Enterprise direction:
 
-- Add A2A/ACP adapters at the control-plane boundary, not inside every agent.
+- Add A2A/ACP adapters at the control-plane boundary, so one boundary handles interop for every agent.
 - Expose role offices as A2A agent cards only after their mandates, budgets,
   and allowed actions are compiled into enforceable policy.
 - Expose MCP servers for tools/resources used by roles, but keep authorization
   and communication state in the org runtime.
-- Treat transient LLM calls as artifacts, not A2A agents, unless explicitly
-  promoted into a role office.
+- Treat transient LLM calls as artifacts unless explicitly promoted into a role office; they are not A2A agents.
 
 ---
 
-## Principal Role
+## Principal role
 
 The principal should not babysit execution. The principal owns:
 
@@ -300,13 +297,13 @@ The principal should not have to:
 
 ---
 
-## Accountability Model
+## Accountability model
 
 Accountability cannot be collapsed to one layer.
 
 | Layer | Accountable object | What it can own | What it cannot own |
 |---|---|---|---|
-| Legal / fiduciary accountability | Human principal or deploying organization | Public claims, budgets, external commitments, risk acceptance, release decisions. | Cannot be delegated to a model or daemon in any meaningful enterprise sense. |
+| Legal / fiduciary accountability | Human principal or deploying organization | Public claims, budgets, external commitments, risk acceptance, release decisions. | Cannot be delegated to a model or daemon in any useful enterprise sense. |
 | Governance accountability | Role office | Whether it followed mandate, authorization gates, claim protocol, escalation rules, evidence closure, and refusal duties. | Cannot absorb legal blame for the human or organization. |
 | Causal accountability | Transition log + artifacts | What happened, who/what triggered it, which gate/claim/message licensed it, what evidence was produced. | Cannot decide values by itself. |
 | Model-call attribution | Transient invocation artifact | Prompt, model, inputs, output, score, critique, mutation, or cold-shot proposal. | No standing authority, no ownership of decisions. |
@@ -314,18 +311,16 @@ Accountability cannot be collapsed to one layer.
 By inversion: if humans keep all accountability but agents act without
 traceable obligations, the system becomes ungovernable. If agents are assigned
 ultimate accountability, the system becomes legal and moral theater. The only
-honest split is **ultimate accountability remains human/organizational;
-operational accountability is pushed down to role offices; causal
+honest split is: **ultimate accountability remains human/organizational,
+operational accountability is pushed down to role offices, and causal
 accountability is made mechanically auditable**.
 
 Operational consequence:
 
 - Every role action needs an actor, role, mandate version, authorization
   decision, causality id, touched artifacts, and closure outcome.
-- Every agent-to-agent message creates typed obligation, not execution
-  authority.
-- Every transient LLM call is recorded as evidence/proposal, not as a decision
-  maker.
+- Every agent-to-agent message creates a typed obligation. Execution authority still requires authorization.
+- Every transient LLM call is recorded as evidence or proposal, with no decision-making authority.
 - Human approval cards must state what accountability the principal is
   accepting: cost, risk, external claim, irreversible mutation, or publication.
 
@@ -342,10 +337,9 @@ This is why the product cannot be just "autonomous agents in a chat." The
 company-grade object is the accountability graph: mandate -> authorization ->
 message/gate/claim -> execution -> evidence -> closure.
 
-## Human Interaction Contract
+## Human interaction contract
 
-The human-facing product should be natural text, not command execution.
-Shell commands are bootstrap/devops surfaces. The principal's daily interface
+The human-facing product should be natural text. Shell commands are bootstrap/devops surfaces. The principal's daily interface
 should be:
 
 ```text
@@ -371,11 +365,11 @@ Approval cards must surface enough context to avoid rubber-stamping:
 The principal should answer in natural language where possible. Orbit should
 render this as cards. Notification/phone providers should render the same
 decision in a compact form. CLI/Python commands remain implementation and
-debugging tools, not the intended governance experience.
+debugging tools. They are not the intended governance experience.
 
 ---
 
-## What Is Productized Now
+## What is productized now
 
 - Generic principal preference file: `org/preferences/principal.yaml`.
 - First-run setup check: `scripts/public/control/org_first_run_setup.py` validates role
@@ -384,7 +378,7 @@ debugging tools, not the intended governance experience.
 - Docker Compose profiles exist for role daemons.
 - Research Director can be preflighted without mutation.
 - Task discovery filters by assigned role.
-- Unattended execution is explicit, not accidental.
+- Unattended execution is always explicit.
 - Principal tasks are claimed/closed by the daemon during execution.
 - Orbit reads org state and gates.
 - Orbit can resolve gates into canonical `ztare_workspace/gates/resolved/`.
@@ -396,16 +390,14 @@ debugging tools, not the intended governance experience.
   manager coordination, manager/principal escalation, or declared
   delegation/escalation links.
 - Orbit renders open agent-channel inbox messages alongside gates.
-- Unattended daemon execution is blocked for non-principal-task candidates;
-  channel messages, damage signals, and discovered TODO notes must be converted
-  to a task or approved via gate before execution.
+- Unattended daemon execution is blocked for non-principal-task candidates. Channel messages, damage signals, and discovered TODO notes must be converted to a task or approved via gate before execution.
 - Accountability is layered: human/org ultimate accountability, role-office
   operational accountability, transition-log causal accountability, model-call
   artifact attribution.
 
 ---
 
-## Remaining Enterprise Blockers
+## Remaining enterprise blockers
 
 - Full `TaskAuthorizationGate`: current implementation covers scope flags,
   budget cap, referenced paths, forbidden paths, and unattended eligibility,
@@ -421,16 +413,16 @@ debugging tools, not the intended governance experience.
 - Event-log unification: daemon, Orbit, notification providers, closure daemon,
   channels, and workers should emit the same event schema.
 - Postgres-backed control-plane service for multi-server / multi-division
-  deployments; filesystem remains a materialized projection.
+  deployments (filesystem remains a materialized projection).
 - A2A/ACP adapters for external agent interop at the control-plane boundary.
 - MCP server exposing org-runtime resources/tools to agent hosts without making
   MCP the authority layer.
-- Digest cards sorted by consequence, not feeds sorted by recency.
+- Digest cards sorted by consequence, so the highest-stakes decisions surface first.
 - Multi-tenant namespace and retention policy.
 
 ---
 
-## Implementation Ledger
+## Implementation ledger
 
 ### 2026-04-30 15:58:00
 
@@ -480,27 +472,24 @@ Changes made after the accountability panel:
 - Added the accountability model: ultimate human/organizational
   accountability, operational role-office accountability, causal
   transition-log accountability, and transient-invocation attribution.
-- Clarified that agent-to-agent messages create typed obligations, not
-  execution authority.
-- Added the enterprise rule: no accountability without authority; no authority
-  without mandate; no mandate without audit; no audit without durable artifacts.
+- Clarified that agent-to-agent messages create typed obligations; execution
+  still needs a separate authorization step.
+- Added the enterprise rule: no accountability without authority, no authority without mandate, no mandate without audit, no audit without durable artifacts.
 
 ### 2026-04-30 17:45:59
 
 Changes made after independent review:
 
-- Added channel-policy enforcement to `agent_channels.py`; unlinked roles can
-  no longer message each other by default.
+- Added channel-policy enforcement to `agent_channels.py`. Unlinked roles can no longer message each other by default.
 - Patched work discovery so critical damage signals outrank agent-channel
   obligations.
-- Patched daemon authorization flow so approval-required candidates open/queue
-  gates instead of being terminally refused.
+- Patched daemon authorization flow so approval-required candidates open or
+  queue gates and wait for a decision.
 - Blocked unattended execution for non-principal-task candidates.
 - Added daemon closure handling for agent-channel candidates so executed
   messages are closed/acknowledged.
 - Added Orbit state and UI rendering for open agent-channel messages.
-- Added `tests/test_agent_channels.py`; patched `tests/test_goals_inbox.py` so
-  claim-conflict tests do not pollute the live damage inbox.
+- Added `tests/test_agent_channels.py`. Patched `tests/test_goals_inbox.py` so claim-conflict tests do not pollute the live damage inbox.
 
 Verification:
 
@@ -543,12 +532,10 @@ Changes made after bootstrap review:
   executable name.
 - Added `scripts/public/control/org_runtime_smoke.py` as the one-command product smoke:
   preflight plus daemon dry-run, no work execution.
-- Documented the instruction hierarchy: `AGENTS.md` is the repo constitution;
-  role YAML is the durable contract; mandate is role-specific operating
-  authority; stricter constraint wins on conflict.
+- Documented the instruction hierarchy: `AGENTS.md` is the repo constitution, role YAML is the durable contract, mandate is role-specific operating authority, and the stricter constraint wins on conflict.
 - Fixed the agent-channel closure path so daemon-executed channel candidates
-  close or acknowledge the underlying message instead of hitting an out-of-scope
-  `role_id`.
+  close or acknowledge the underlying message. The prior path hit an
+  out-of-scope `role_id`.
 - Hardened gate resolution: notification/daemon path now validates gate IDs,
   writes resolved gates atomically, preserves pending-gate contents in the
   resolved artifact, and marks pending gates handled. Orbit now validates gate
@@ -585,8 +572,8 @@ Changes made after GPU-run and early org-runtime failures:
   for PID/result/progress/log monitoring.
 - Added `scripts/public/control/org_first_run_setup.py` as the low-friction first-run boot
   check for the research-company runtime.
-- Documented that missing external-run telemetry is instrument debt, not an
-  acceptable shortcut.
+- Documented that missing external-run telemetry is instrument debt that must
+  be repaid.
 
 Verification:
 

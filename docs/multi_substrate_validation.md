@@ -1,27 +1,23 @@
 ---
 description: "Evidence inventory for what ZTARE's claim discipline has and has not shown across several research domains."
 ---
-# Multi-Domain Evidence Inventory
+# Multi-domain evidence inventory
 
-Use this page to answer one question:
-
-```text
 Has ZTARE only worked on one research domain, or has its checking discipline
 started to travel?
-```
 
-The honest answer is: it has started to travel, but the current v0.4 workbench
-has not yet been validated as one repeatable product path across all domains.
+It has started to travel, but the current v0.4 workbench has not yet been
+validated as one repeatable product path across all domains.
 
-The useful evidence is not that any domain was solved. The useful evidence is
-that several tempting claims were narrowed after checks forced the repo to name
+Several tempting claims were narrowed after checks forced the repo to name
 missing evidence, unstable measurements, old obstructions, or source problems.
+No domain was solved.
 
-## Bottom Line
+## Bottom line
 
-Treat this page as an evidence memo, not as a victory lap. It tells you where
-the same discipline showed up in different domains, and where that discipline
-was not enough to support the larger claim someone might want to make.
+This is an evidence memo. It records where the same discipline showed up in
+different domains, and where that discipline was not enough to support the
+larger claim someone might want to make.
 
 | Domain | What the repo can defend | What it cannot defend | Next check |
 |---|---|---|---|
@@ -30,20 +26,20 @@ was not enough to support the larger claim someone might want to make.
 | Neural interpretability and scaling | A measurement-artifact diagnosis, cross-layer orthogonality evidence, and clean negative scaling results | A universal scaling law or a named-constant law | Keep endpoint-free validation and external replication separate |
 | Navier-Stokes Track B | Residual localization, formal smoke checks, and a record of demoted closure language | Clay closure or proof of global regularity | Attack the named residuals without renaming old obstructions |
 
-What you can take from this: one maintained repo used a consistent checking
-discipline across several unrelated campaigns and recorded where claims became
-smaller.
+One maintained repo used a consistent checking discipline across several
+unrelated campaigns and recorded where claims became smaller.
 
-What you should not take from this: solved Millennium problems, consciousness
-solved, a new gravity law, a universal neural-scaling law, or proof that the
-current v0.4 workbench has already generalized across all four domains.
+Do not read this as: solved Millennium problems, consciousness solved, a new
+gravity law, a universal neural-scaling law, or proof that the current v0.4
+workbench has already generalized across all four domains.
 
 The filename is retained for historical links. The reader-facing claim is
-"multi-domain evidence inventory," not completed validation.
+"multi-domain evidence inventory," meaning an inventory, not completed
+validation.
 
-## What To Inspect First
+## What to inspect first
 
-If you only have ten minutes, inspect the demotions:
+With ten minutes available, start with the demotions:
 
 | Demotion | Why it matters |
 |---|---|
@@ -52,14 +48,10 @@ If you only have ten minutes, inspect the demotions:
 | Neural `beta = 1 / phi` was retired | A named-constant story lost to cross-modality testing. |
 | Navier-Stokes closure language became named residuals | Proof-search progress was not allowed to become a global-regularity claim. |
 
-Those four cases are the point of the page. The project is interesting here
-because it records where claims got smaller, not because the domains became
-finished.
+Those four cases are the point. The project is worth attention here because it
+records where claims got smaller, before any domain was finished.
 
-## Domain Notes
-
-Each note names where to inspect, what mattered, what survived, and what still
-blocks a stronger claim.
+## Domain notes
 
 ### Modified Gravity / AQUAL
 
@@ -96,23 +88,22 @@ and the project directories named there:
 and
 [Omega-gaming consciousness audit](../projects/gp212_consciousness_omega_audit/).
 
-**What mattered.** The useful result is a governance rule: a low-concern
-verdict about a system of unknown consciousness is not admissible unless the
-measurement channel can actually identify the target property. The
-human-readable name is the measurement-channel veto protocol. Historical
-provenance lives at
+**What mattered.** The key result is a governance rule: a low-concern verdict
+about a system of unknown consciousness is not admissible unless the
+measurement channel can actually identify the target property. This is named
+the measurement-channel veto protocol. Historical provenance lives at
 [the cold-LLM consciousness seam](../research_areas/seams/engine/discovery/GP-169_cold_llm_synthetic_erdos_seam.md)
 and [the Omega-gaming classifier seam](../research_areas/seams/engine/meta/GP-212_meta_solver_kernel_seam.md).
 
-**What survived.** The measurement-governance rule survived better than the
-early pluralism thesis. That matters: the repo kept the part it could inspect
-and demoted the part that looked source-contaminated.
+**What survived.** The measurement-governance rule held up better than the
+early pluralism thesis. The repo kept the part it could inspect and demoted
+the part that looked source-contaminated.
 
-**What blocks promotion.** This is not a theory of consciousness. The next
-honest test is whether the governance rule ports to another setting where
-measurement access is limited, without smuggling in the same assumptions.
+**What blocks promotion.** This is a governance rule, not a theory of
+consciousness. It ports to another setting only if measurement access is
+actually limited there, without smuggling in the same assumptions.
 
-### Neural Interpretability And Scaling
+### Neural interpretability and scaling
 
 **Where to inspect.** Start with the neural entries in
 [the public claim register](public_claim_register.md#neural-scaling-and-mechanistic-audits),
@@ -127,12 +118,13 @@ story.
 
 **What survived.** The BOS-contamination diagnosis and cross-layer
 orthogonality result are stronger than the original bottleneck story. The
-scaling-law work produced useful trajectory morphology, but it also produced
-clean negative results: a toy-transformer optimizer-control law did not
-transfer, and the `beta = 1 / phi` anchor was retired.
+scaling-law work produced useful trajectory morphology and clean negative
+results: a toy-transformer optimizer-control law did not transfer, and the
+`beta = 1 / phi` anchor was retired.
 
-**What blocks promotion.** The work needs external replication and clean
-separation between measurement choices, endpoint choices, and claimed laws.
+**What blocks promotion.** External replication is still needed, along with
+clean separation between measurement choices, endpoint choices, and claimed
+laws.
 
 ### Navier-Stokes Track B
 
@@ -141,9 +133,9 @@ separation between measurement choices, endpoint choices, and claimed laws.
 [the public claim register](public_claim_register.md#navier-stokes-track-b),
 and the Lean project under `ztare_proofs/ZtareProofs/`.
 
-**What mattered.** The main value is residual localization. The work names
-specific formal and mathematical blockers instead of converting near-misses
-into closure language.
+**What mattered.** Residual localization is the main value. Specific formal
+and mathematical blockers are named, and near-misses are held at that
+description. The campaign does not let them become closure language.
 
 **What survived.** Several proof-search paths became sharper residuals:
 Wall W6, Atom 8c, PR-A1 transitive obligations, Galerkin-level liminf-equality
@@ -154,9 +146,9 @@ better problem localization, not of a solved problem.
 requires a named blocker, recurrence checks, tool-depth records, formal/source
 review records, and external mathematical review.
 
-## Cross-Domain Lesson
+## Cross-domain lesson
 
-Across the four domains, the recurring behavior is simple:
+Across the four domains, the recurring behavior is:
 
 ```text
 make the claim inspectable -> run a check that can fail

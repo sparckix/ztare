@@ -83,6 +83,40 @@ def test_chat_completion_providers_receive_call_timeout(
     assert client.kwargs["response_format"] == {"type": "json_object"}
 
 
+def test_kimi_k26_default_text_call_disables_thinking_for_visible_output() -> None:
+    runtime = LLMRuntime()
+    client = _FakeChatClient()
+    runtime._kimi_client = client  # noqa: SLF001
+
+    runtime._call_once(
+        "visible answer",
+        "kimi-k2.6",
+        config=None,
+        max_tokens=512,
+        timeout_seconds=7,
+    )
+
+    assert client.kwargs["temperature"] == 0.6
+    assert client.kwargs["extra_body"] == {"thinking": {"type": "disabled"}}
+
+
+def test_kimi_k26_explicit_thinking_config_overrides_visible_output_default() -> None:
+    runtime = LLMRuntime()
+    client = _FakeChatClient()
+    runtime._kimi_client = client  # noqa: SLF001
+
+    runtime._call_once(
+        "reason if requested",
+        "kimi-k2.6",
+        config={"temperature": 1, "thinking": {"type": "enabled"}},
+        max_tokens=512,
+        timeout_seconds=7,
+    )
+
+    assert client.kwargs["temperature"] == 1
+    assert client.kwargs["extra_body"] == {"thinking": {"type": "enabled"}}
+
+
 class _StatusError(RuntimeError):
     def __init__(self, message: str, status_code: int) -> None:
         super().__init__(message)

@@ -3773,7 +3773,7 @@ if __name__ == "__main__":
                 "preflight_only": True,
             },
         )
-        print("✅ autoresearch preflight-only: launch inputs and packet boundary accepted")
+        print("✅ autoresearch preflight-only: launch inputs and intake boundary accepted")
         raise SystemExit(0)
 
     if args.rubric_review_before_run:

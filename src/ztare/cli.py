@@ -2425,11 +2425,12 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         _cmd_autoresearch_router,
     ),
     "forensic-workbench": (
-        "Local review workbench: apply-review | save-action.",
+        "Local review workbench: apply-review | save-next-step.",
         _make_verb_router(
             "forensic-workbench",
             {
                 "apply-review": "forensic_workbench_review.py",
+                "save-next-step": "forensic_workbench_action.py",
                 "save-action": "forensic_workbench_action.py",
             },
         ),

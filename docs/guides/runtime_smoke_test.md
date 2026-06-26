@@ -3,9 +3,9 @@ description: "Sub-five-second runtime sanity check that spends no API credits."
 ---
 # Runtime Smoke Test
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Purpose.** Prove the org runtime is structurally sound on your machine in
+*Purpose.* Prove the org runtime is structurally sound on your machine in
 under five seconds, without spending API credits.
 
 ```bash
@@ -40,7 +40,7 @@ LLM dependency.
 | 4 | approval channel | Drops a synthetic approval, runs the same atomic-write resolution Orbit's API uses, renames the pending file to `.handled`, appends one `transitions.jsonl` row | The pending → resolved → audit pipeline is wired and atomic |
 | 5 | audit trail | Reads the last 50 lines of `transitions.jsonl` and confirms exactly one row matches the synthetic approval | The audit log is append-only, parseable, and replayable |
 
-The script does **not**:
+The script does not:
 
 - Invoke any agent CLI (no LLM calls, no spend).
 - Test a live tenant notification provider (would need real provider
@@ -49,7 +49,7 @@ The script does **not**:
 - Test multi-host coordination, RBAC, or signed audit (those are
   enterprise-axis features, out of scope until the relevant trigger fires).
 
-The script **does** clean up after itself unless you pass `--keep`.
+The script does clean up after itself unless you pass `--keep`.
 
 ---
 
@@ -61,7 +61,7 @@ The script **does** clean up after itself unless you pass `--keep`.
 - In CI on every commit that touches `org/`, `ztare_workspace/`,
   `schemas/`, or `scripts/public/control/org_role_preflight.py`.
 - After an upgrade, if the smoke test fails on a commit that previously
-  passed, the regression is structural, not subtle.
+  passed, the regression is structural (not an edge-case or environment quirk).
 
 ---
 
@@ -77,7 +77,7 @@ Common diagnoses:
 | `preference_profile` red, "PyYAML not installed" | Python deps missing | `pip install -r requirements.txt` |
 | `role_loop` red | A role yaml diverged from `schemas/role.v1.schema.json` | Run `python scripts/public/control/org_role_preflight.py --role <name>` to see the exact field that broke |
 | `approval_channel` red | `ztare_workspace/gates/` is not writable | Check filesystem permissions |
-| `audit_trail` red, `matches_found: 0` | `transitions.jsonl` write was lost | Investigate disk / volume / mount issues; rerun |
+| `audit_trail` red, `matches_found: 0` | `transitions.jsonl` write was lost | Investigate disk / volume / mount issues and rerun |
 | `audit_trail` red, `matches_found: >1` | A previous run left rows behind | Run with `--keep` then inspect `transitions.jsonl` for stale rows manually |
 
 ---
@@ -94,12 +94,11 @@ Common diagnoses:
 
 ## What "smoke test" means here
 
-This is not a stress test, a benchmark, a fuzzer, or a security audit. It is
-the smallest runnable check that the runtime starts and the contracts hold.
+This is the smallest runnable check that the runtime starts and the contracts hold. It is not a stress test, a benchmark, a fuzzer, or a security audit.
 If it passes, your runtime is in a sound starting state. If it fails, the
-runtime itself is broken, fix it before doing anything else with the org.
+runtime itself is broken. Fix it before doing anything else with the org.
 
-A passing smoke test is a necessary, not sufficient, condition for shipping
+A passing smoke test is necessary but not sufficient for shipping
 work through the runtime. The next layer up is the rail-specific verification
 in the Orbit dashboard and tenant notification setup guides (those exercise
 the human-facing rails the smoke test deliberately skips).
@@ -109,8 +108,8 @@ the human-facing rails the smoke test deliberately skips).
 ## Cross-references
 
 - `scripts/public/control/runtime_smoke_test.py`, the script itself
-- `scripts/public/control/org_first_run_setup.py`, the broader first-run preflight (covers
-  more configuration; takes longer; does not exercise the approval flow)
+- `scripts/public/control/org_first_run_setup.py`, the wider first-run preflight (covers
+  more configuration, takes longer, does not exercise the approval flow)
 - `scripts/public/control/org_role_preflight.py`, the per-role validator the smoke test
   delegates to
 - `schemas/role.v1.schema.json`, the role contract the smoke test enforces

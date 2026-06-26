@@ -2,21 +2,21 @@
 description: "How ZTARE decides whether a model proposal has enough source-bound support to become evidence."
 ---
 
-# Claim Review Constraint Stack
+# Claim review constraint stack
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 Use this page when a model-produced claim sounds plausible and you need to
 decide what, if anything, can count as evidence.
 
-The short answer is: a model can propose. It does not get to grade its own
-proposal. Another layer must own the source binding, arithmetic, holdout check,
-negative evidence, and remaining weakness.
+A model can propose. It does not get to grade its own proposal. Another layer
+must own the source binding, arithmetic, holdout check, negative evidence, and
+remaining weakness.
 
 The historical filename is `cognitive_gym.md`. The public concept is simpler:
 the claim-review constraint stack.
 
-## The Decision
+## The decision
 
 Ask this before accepting a model output:
 
@@ -28,7 +28,7 @@ files and reruns the checks?
 The answer is usually smaller than the model output. ZTARE keeps that smaller
 answer and makes the missing evidence visible.
 
-## Worked Exercise
+## Worked exercise
 
 Suppose a model proposes a compact formula for a dataset and writes a polished
 explanation.
@@ -46,15 +46,15 @@ different questions:
 The promoted artifact is not "the model found a law." It is one of these
 smaller states:
 
-- admitted over this evidence window, with a named weakest point;
-- demoted to a known family or calibration result;
-- blocked by missing or stale evidence;
-- refused because the grammar cannot express the target yet;
-- routed to the next falsifier.
+- admitted over this evidence window, with a named weakest point
+- demoted to a known family or calibration result
+- blocked by missing or stale evidence
+- refused because the grammar cannot express the target yet
+- routed to the next falsifier
 
-That is the point: turn fluent output into a reviewable state.
+The stack converts fluent output into a state a reviewer can check.
 
-## The Stack
+## The stack
 
 | Step | What happens | Why the model cannot own it |
 |---|---|---|
@@ -67,11 +67,9 @@ That is the point: turn fluent output into a reviewable state.
 | Known-family check | The result is compared with known families before it is called novel. | Rediscovery and discovery need different labels. |
 | Review artifact | The surviving state is written with evidence, non-claims, and next check. | A claim without a review trail is not durable. |
 
-The first public lesson is separation. The proposal worker can suggest a path.
-It cannot fit the evidence, choose the holdout, excuse source gaps, or decide
-that a known-family match is new.
+Separation does the work: a proposal worker can suggest a path, but cannot fit the evidence, choose the holdout, excuse source gaps, or declare a known-family match to be new.
 
-## What Each Constraint Prevents
+## What each constraint prevents
 
 | Failure | What goes wrong without the constraint | What the stack forces |
 |---|---|---|
@@ -80,10 +78,10 @@ that a known-family match is new.
 | Visible-window overfit | The formula works only where it was tuned. | Holdout and farther-tail checks decide the admitted scope. |
 | Answer retrieval | The prompt leaks the target constant, theorem name, or known answer. | Contamination checks block the shortcut. |
 | Rediscovery inflation | A known family is presented as a new result. | The result is labeled as rediscovery when that is all the evidence supports. |
-| Grammar ceiling | The current form library cannot express the target. | The result becomes a ceiling or next-extension finding, not a fake discovery. |
+| Grammar ceiling | The current form library cannot express the target. | The result is labeled a ceiling or next-extension finding. |
 | Self-graded progress | The same model proposes, excuses, and promotes its own answer. | Proposal, check, and review stay separate. |
 
-## Why Short Runs Can Still Matter
+## Why short runs can still matter
 
 Short runs are not impressive by themselves. They matter only when the search
 space is constrained and the artifacts show why alternatives failed.
@@ -91,16 +89,15 @@ space is constrained and the artifacts show why alternatives failed.
 When a short run succeeds, the evidence is the surviving artifact plus the
 failure trail:
 
-- which forms were tried;
-- which checks rejected them;
-- what held-out evidence admitted the survivor;
-- what weakest point remains.
+- which forms were tried
+- which checks rejected them
+- what held-out evidence admitted the survivor
+- what weakest point remains
 
 When nothing survives, that can also be useful. It may show a source gap, a
-grammar ceiling, a stale evidence path, or a project setup failure. The point is
-to preserve the reason instead of turning the failure into vague bad news.
+grammar ceiling, a stale evidence path, or a project setup failure. Preserve the specific reason behind the failure.
 
-## Calibration Versus Discovery
+## Calibration versus discovery
 
 Use a different standard depending on the project:
 
@@ -111,11 +108,11 @@ Use a different standard depending on the project:
 | Report project | The report is backed by current source/evidence receipts. | Model-written QA promotes a stale or unsupported report. |
 | Proof project | The proved statement, assumptions, and proof artifact survive separate checks. | A compile is treated as enough when the statement may be wrong or vacuous. |
 
-This distinction prevents a common mistake: treating a high score on a known
-answer as proof that the system can discover unknown answers. Calibration proves
-the instrument can behave. Discovery needs stronger evidence.
+A high score on a known answer does not prove the system can discover unknown
+answers. Calibration proves the instrument can behave. Discovery needs stronger
+evidence.
 
-## What This Page Does Not Prove
+## What this page does not prove
 
 This page does not prove that ZTARE discovers new laws, solves hard math
 problems, or replaces domain review. It describes the control surface that
@@ -124,7 +121,7 @@ prevents a proposal from grading itself.
 Evidence for a particular result must come from the project, report, proof, or
 review artifact that used this stack.
 
-## What To Do Next
+## What to do next
 
 For a runnable first check, start with:
 
@@ -140,11 +137,11 @@ ztare project intake validate --path <intake.json>
 ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --brief
 ```
 
-Then inspect the review trail, not the prose alone.
+Then inspect the review trail itself, which carries the evidence the prose only summarizes.
 
-**Related docs:** [architecture.md](architecture.md), especially "Layer 2: The
-In-Loop Validator"; [epistemic_principles.md](epistemic_principles.md) for
-transferable principles; [agentic_engineering_patterns.md](agentic_engineering_patterns.md)
-for pipeline patterns; [anti_pattern_catalog.md](anti_pattern_catalog.md) for
-the failure taxonomy; [reflexive_engineering.md](reflexive_engineering.md) for
-the repair layer.
+*Related docs:*
+[architecture.md](architecture.md) (especially "Layer 2: The In-Loop Validator"),
+[epistemic_principles.md](epistemic_principles.md) (transferable principles),
+[agentic_engineering_patterns.md](agentic_engineering_patterns.md) (pipeline patterns),
+[anti_pattern_catalog.md](anti_pattern_catalog.md) (failure taxonomy),
+[reflexive_engineering.md](reflexive_engineering.md) (repair layer).

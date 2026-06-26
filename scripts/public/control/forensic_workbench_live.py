@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the local forensic workbench API and React dev server together."""
+"""Run the local Project Workbench API and React dev server together."""
 from __future__ import annotations
 
 import argparse
@@ -65,23 +65,27 @@ def run_live(args: argparse.Namespace) -> int:
     if args.port:
         dev_cmd.extend(["--port", str(args.port)])
 
-    print("forensic workbench live mode", flush=True)
+    print("Project Workbench live mode", flush=True)
     print(f"  API: {args.api_url}", flush=True)
     print(f"  App: {args.app_url}", flush=True)
     print("  Stop with Ctrl-C.", flush=True)
 
-    api_proc = subprocess.Popen(api_cmd, cwd=REPO)
+    api_proc: subprocess.Popen[object] | None = None
     try:
-        if not wait_for_api(
-            args.api_url,
-            api_proc,
-            startup_timeout=args.api_startup_timeout,
-            poll_interval=args.api_poll_interval,
-        ):
-            if api_proc.poll() is not None:
+        if api_ready(args.api_url, timeout=0.5):
+            print("  Reusing already-running API.", flush=True)
+        else:
+            api_proc = subprocess.Popen(api_cmd, cwd=REPO)
+            if not wait_for_api(
+                args.api_url,
+                api_proc,
+                startup_timeout=args.api_startup_timeout,
+                poll_interval=args.api_poll_interval,
+            ):
+                if api_proc.poll() is not None:
+                    return api_proc.returncode or 1
+                print(f"API did not become ready within {args.api_startup_timeout:.1f}s: {args.api_url}", file=sys.stderr, flush=True)
                 return api_proc.returncode or 1
-            print(f"API did not become ready within {args.api_startup_timeout:.1f}s: {args.api_url}", file=sys.stderr, flush=True)
-            return api_proc.returncode or 1
         dev_proc = subprocess.Popen(dev_cmd, cwd=REPO)
         try:
             return dev_proc.wait()
@@ -90,7 +94,8 @@ def run_live(args: argparse.Namespace) -> int:
     except KeyboardInterrupt:
         return 0
     finally:
-        terminate(api_proc)
+        if api_proc is not None:
+            terminate(api_proc)
 
 
 def build_parser() -> argparse.ArgumentParser:

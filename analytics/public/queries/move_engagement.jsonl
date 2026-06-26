@@ -1,0 +1,2 @@
+{"goal": "theorem t : exists x:Nat, x*x=4 := by sorry", "engaged": "witness_transport", "via": "governed_move", "outcome": "closed", "atlas_rank": 1, "atlas_score": 0.6754, "surfaced": true, "source": "atlas"}
+{"goal": "theorem deriv_residue : simpleResidueCoeff (derivative f) c = 0 := by sorry", "engaged": "obstruction-descent (boundedness kills the obstruction class)", "via": "declared", "outcome": "open", "atlas_rank": 1, "atlas_score": 0.6474, "surfaced": true, "source": "atlas"}

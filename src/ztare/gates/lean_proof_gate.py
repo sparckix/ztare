@@ -498,11 +498,18 @@ def compute_secondary_observables(lean_path: Path) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 
+# NOTE (2026-06-21): the KERNEL type-equality oracle that USED to live here as `_kernel_type_equiv_fn` was a
+# byte-identical copy of `solver_core._target_type_equiv_fn` — the recurring "missed sibling" bug class. It is
+# now the ONE canonical `statement_integrity.kernel_type_equiv_fn`, built DEFAULT-ON inside
+# `statement_integrity.check` (we just pass `lean_root`). No copy to hand-sync, no sibling to forget.
+
+
 def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
                                ztare_proofs_root: Path,
                                deep_verify: bool = False,
                                original_source: str | None = None,
-                               target_name: str | None = None) -> dict[str, Any]:
+                               target_name: str | None = None,
+                               target_type_equiv_fn=None) -> dict[str, Any]:
     """THE ONE governance anti-laundering kernel (renamed 2026-06-06 from the cryptic
     `_run_v33_anti_laundering`; a back-compat alias is kept at module end). This is the single canonical
     organ stack EVERY solving mode routes through — never re-implement a reduced per-mode gate battery
@@ -652,7 +659,16 @@ def run_anti_laundering_kernel(lean_source: str, lean_path: Path,
     if original_source and target_name:
         try:
             from ztare.leanmill.solver.statement_integrity import check as _si_check
-            iv = _si_check(original_source, lean_source, target_name)
+            # KERNEL TYPE-EQUALITY oracle — now built DEFAULT-ON inside `check` itself (2026-06-21): we pass
+            # `lean_root` and the ONE canonical `statement_integrity.kernel_type_equiv_fn` is constructed at the
+            # DEEPEST chokepoint (the consumer), so EVERY governance path gets reformulation-tolerance with no
+            # sibling call site to forget. This WAS the missed sibling of the solve-time statement_integrity fix
+            # — two hand-synced oracle copies rejected the consciousness factorization iffs the solve check
+            # accepted; the structural cure is one oracle, default-on at the consumer (not copied per caller).
+            # A faithful ∀-fronted / `↑(Set.range E)` reformulation ACCEPTS; a real weakening is a different Prop
+            # ⇒ `rfl` fails ⇒ still rejected. A caller may still inject `target_type_equiv_fn` to override.
+            iv = _si_check(original_source, lean_source, target_name,
+                           target_type_equiv_fn=target_type_equiv_fn, lean_root=ztare_proofs_root)
             detail["statement_integrity"] = iv.to_dict()
             if not iv.ok:
                 flags.append("statement_altered_confirmed")

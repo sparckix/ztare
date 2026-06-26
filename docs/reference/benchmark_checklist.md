@@ -14,7 +14,7 @@ Use this checklist before trusting a new benchmark result.
 - Could paraphrase, formatting drift, or wording variance create false negatives?
 - If yes, add a semantic adjudication layer or manual gold review.
 
-## 3. Separation Of Roles
+## 3. Separation of roles
 - Builder question: does the harness run correctly and isolate outputs?
 - Architect question: what second-order artifact could silently corrupt the claim even if the harness "works"?
 

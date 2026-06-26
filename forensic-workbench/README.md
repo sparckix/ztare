@@ -1,306 +1,229 @@
-# ZTARE Forensic Workbench
+# ZTARE Project Workbench
 
-React/Vite local webserver app for the D4 forensic-workbench lane.
+Local React/Vite workbench for reviewing and editing repo-backed ZTARE
+projects. It is the D4 product surface: open a project, inspect its working
+diagnosis, check the files behind it, run local checks, record review/next-step
+receipts, and save an inspectable project file.
 
-The app reads `public/workbench_snapshot.json`, which is generated from the
-existing project intake, autoresearch trace, and report-support contract:
+The implementation still uses `forensic-workbench` in package names, CLI commands,
+and legacy schemas. Treat that as compatibility naming. The product is Project
+Workbench.
 
-```bash
-make forensic-workbench-data
-```
+## Start It
 
-Choose a different static case by materializing a new snapshot:
-
-```bash
-make forensic-workbench-data WORKBENCH_PROJECT=<project>
-```
-
-## Data model
-
-The React app can run in two local modes.
-
-Static mode renders one generated project snapshot:
-
-1. choose a project slug;
-2. run `make forensic-workbench-data WORKBENCH_PROJECT=<project>`;
-3. render `forensic-workbench/public/workbench_snapshot.json`;
-4. apply saved review files through the CLI;
-5. refresh the snapshot.
-
-Live mode uses a thin local API around the same snapshot builder and review
-receipt writer:
+Run the live workbench:
 
 ```bash
 make forensic-workbench-live
 ```
 
-Vite proxies `/api/projects`, `/api/snapshot`, `/api/health`, `/api/intake`,
-`/api/trace`, `/api/project-create`, `/api/source-import`, `/api/preflight`,
-`/api/sources`, `/api/source-file`, `/api/source-edit`, `/api/source-action`, `/api/run-history`,
-`/api/claim-support`, `/api/case-file`,
-`/api/receipts`, `/api/file`, `/api/review`, and `/api/row-action` to the local API. The browser
-still does not scan `projects/`
-directly. It asks the local API for a project index and a fresh snapshot for the
-selected case, using the project, intake, and rubric discovered by the index. The app
-shows the backing project directory, intake, report contract, latest review
-receipt, latest saved row action, latest case-file write, recent receipt
-history, and the live autoresearch trace before the main case file. The intake editor reads and writes
-the selected project intake
-through `/api/intake`; source and evidence refs are resolved against the intake
-directory and repo root, then shown as present, missing, external, or unsafe.
-The project picker keys each live case by project plus intake and uses the same lightweight intake read to show ref counts
-before a case opens. Project-local intakes are editable; public example intakes
-are readable but not writable from the browser. The editor shows pending
-changed fields before saving and refuses no-op writes, so an intake-edit receipt
-means the file actually changed.
-The New case panel calls `/api/project-create`, which runs the fixed
-`ztare project source-init` and `ztare project intake create` path for a new
-project slug, then reloads the project through the same live snapshot flow. The
-form requires a fresh slug, task, bounded claim, and next falsifier before it
-can write files, and can include notes, source refs, evidence refs, and caveats
-when those are already known.
-The source-import panel calls `/api/source-import`, writes one `.md` or `.txt`
-file under the selected project's `raw/` directory, updates
-`raw/source_type_map.json`, appends a source-import receipt, writes the latest
-source-import receipt JSON, and runs the offline source check. Import creates
-new raw source files only; existing files must be changed through the raw-source
-editor. After import, the result can stage the new source path in the intake
-draft; the intake file is not written until Save intake records the edit
-receipt.
-The raw-source panel calls `/api/sources` to load the typed source list,
-`/api/source-file` to open one existing source, and `/api/source-edit` to write
-the edited source body/type back to disk. The panel shows pending source
-changes and refuses no-op saves, so a source-edit receipt means the source text
-or type actually changed. A source edit updates `raw/source_type_map.json`, appends a
-source-edit receipt, writes the latest source-edit receipt JSON, reruns
-source-check, and refreshes the case.
-Project switches, full refreshes, intake reloads, and opening a source from
-disk warn before discarding pending intake or raw-source edits.
-When a local draft is dirty, the first viewport shows an Unsaved edits strip so
-the pending state is visible outside the editor panel.
-The inspector can preview a selected intake ref or row file/source/evidence/review
-path through `/api/file`, which is read-only, repository-contained, and capped
-to a bounded text preview. When the local API is running, the Apply button
-persists the review JSON under the project workspace, writes the same review
-receipt that the CLI writes, then refreshes the same selected project/intake
-snapshot and live context. The Save action button persists the row-action JSON
-and writes a row-action receipt through the same explicit API/ledger path. Live
-write receipts preserve the selected project, intake, and case key when those
-fields are present, so a later reader can tell which case the write belonged to.
-Intake edits write an intake-edit receipt under the project workspace. The
-receipt-history panel reads review, row-action, intake-edit, source-import,
-source-edit, source-action, and case-file ledgers through `/api/receipts`, returns
-`ztare-forensic-workbench-receipt-history-v1`, then lets the user preview the
-backing ledger file and the written artifact when the receipt names one. Each
-receipt row also summarizes the changed fields, decision/action, source type,
-or case-file counts when that data is present. The
-Refresh button reloads the current case from local project files. If the API is
-not running at startup, the app falls back to
-`public/workbench_snapshot.json`; if a live project refresh fails after the API
-is detected, the app keeps the current case and shows the error instead of
-swapping in stale static data.
+The launcher starts the local API at `http://127.0.0.1:8765` and the Vite app at
+`http://127.0.0.1:5174`. If the API is already running, the launcher reuses it.
+If the Vite port is already taken, it exits instead of silently moving the app.
 
-Live mode also fetches `/api/trace`, `/api/report-contract`, and `/api/health`
-for the selected project, fetches `/api/run-history` for verdict/run evidence,
-and can call `/api/preflight` for an explicit preflight-only launch check.
-The trace endpoint returns `ztare-forensic-workbench-trace-v1`: carrier chain,
-kernel-entry state, plan steps, loop admission, graph summaries,
-source/evidence statuses, and copyable next commands from
-`ztare autoresearch trace`. The report endpoint returns
-`ztare-forensic-workbench-report-contract-v1`: report/export status, blocker
-reasons, synthesis input-binding state, the backing contract path, and the
-copyable `make synth-contract` command. The health endpoint returns run-health attention
-components, action-intelligence source-health issues, advisory recommendations,
-blocking rules, observed and expected counts, evidence refs, and source-health
-file paths. The workbench shows these as read-only rows with copyable commands
-and previewable source files, so advisory blockers are inspectable without
-becoming hidden browser writes.
-The preflight endpoint returns `ztare-forensic-workbench-preflight-v1`: the
-exact `ztare autoresearch run ... --preflight-only` command, exit code,
-acceptance flag, loop-admission trace, output tail, and refreshed snapshot when
-available. It is not a general shell runner and it does not start a model run.
-The project-create endpoint returns `ztare-forensic-workbench-project-create-v1`:
-source-init result, intake-create result, refreshed project index, and the first
-snapshot when available.
-The source-import endpoint returns `ztare-forensic-workbench-source-import-v1`:
-written source path, source type, source-import receipt path, latest receipt
-path, source-check result, and refreshed snapshot/trace when available.
-The source-list endpoint returns `ztare-forensic-workbench-source-list-v1`.
-The source-file endpoint returns `ztare-forensic-workbench-source-file-v1`.
-The source-edit endpoint returns `ztare-forensic-workbench-source-edit-v1`:
-edited source path, relative raw path, source type, source-edit receipt path,
-latest receipt path, source-check result, and refreshed snapshot/trace when
-available.
-The source-action endpoint returns `ztare-forensic-workbench-source-action-v1`
-for four fixed actions: `source_check`, `source_index`, `evidence_bind`, and
-`evidence_replay`. The source-index action uses
-`ztare project source-index --index-only --json`, so the browser can refresh
-source metadata without hiding a model-backed extraction step.
-The evidence-bind action uses `ztare project evidence-bind --project <project> --json`,
-which writes the offline evidence-output binding receipt without compiling new evidence.
-Write actions also append a source-action ledger row, write the latest
-source-action receipt JSON, stamp the produced artifact hash when available,
-and update the visible last-write receipt panel.
-The run-history endpoint returns `ztare-forensic-workbench-run-history-v1`:
-recent run scores, latest and champion verdict summaries, evidence gaps,
-synthesis patterns, and backing file paths.
-The claim-support endpoint returns `ztare-forensic-workbench-claim-support-v1`:
-claim-support status, weak/unsourced counts, source-context status, missing
-evidence-file errors, and previewable source paths from
-`ztare project claim-support --project <project> --json`.
-The case-file endpoint writes the current `ztare-forensic-workbench-case-file-v1`
-JSON to the project workspace, appends a case-file ledger row, writes the latest
-case-file receipt JSON, and returns the saved artifact path plus receipt paths.
-After any write-backed action, the app reports which live panels refreshed
-successfully and names panels that need attention, so a saved receipt is not
-confused with a fully refreshed case state. The intake editor refreshes with
-the same write cycle unless it has unsaved local edits; in that case the app
-keeps the draft and reports the skipped refresh.
-
-That keeps every visible state tied to a file, command, receipt, or warning.
-The case-file export is explicit: clicking Download case file creates
-`ztare-forensic-workbench-case-file-v1` JSON in the browser, while Save to
-workspace writes the same case file through the local API with a receipt. The
-saved workspace artifact is scoped to the selected case, so two intakes under
-the same project do not overwrite each other.
-case file includes the current snapshot, project context, recent receipt
-history, live trace/report/health context, the latest preflight result, latest
-source/evidence action result, run-history context, the claim-support context,
-raw-source inventory, action-intelligence advisory recommendations, latest
-source import/edit receipts, hashes, and follow-up source-check diagnostics,
-command queue, and the latest visible write receipt with its write-refresh
-results. It also records pending intake
-draft edits as unsaved state when the editor has changes that have not been
-written yet. It does not claim that an unreviewed case is complete.
-The project index includes project-local intakes and public example intakes, so
-the first two cases are `demo_claims` and `ops_root_cause_diagnosis_demo`. If a
-case has no report-support context yet, it still opens with a blocked
-`report_support_unavailable` export row.
-
-Run the live local workbench:
-
-```bash
-make forensic-workbench-live
-```
-
-The live launcher prints the API URL and app URL it starts, waits for the API
-to answer, then starts the UI. The app port is strict: if `127.0.0.1:5174` is
-already in use, the command exits instead of silently moving the UI to a
-different port.
-
-Run the API and React dev server separately when debugging:
+For separate debugging:
 
 ```bash
 make forensic-workbench-api
 make forensic-workbench-dev
 ```
 
-Build:
+To build the React app and serve it from the API server:
 
 ```bash
-npm --prefix forensic-workbench run build
+make forensic-workbench-build
+make forensic-workbench-api
 ```
 
-The interface is organized as a local claim-review surface:
+Then open `http://127.0.0.1:8765/`.
 
-- sidebar navigation over intake, evidence, run, export, and health surfaces
-- case-file first viewport with one dominant next move: status, why it matters,
-  evidence, primary action, and review choices
-- case docket summarizing export decision, evidence path, and review handoff
-- case-row table and inspector near the top, before deeper edit/export tools
-- project file strip showing the selected project directory plus previewable
-  intake, report contract, latest review, row-action, intake-edit, source-import,
-  source-edit, source-action, and case-file receipt paths
-- intake editor showing bounded claim, non-claims, source refs, evidence refs,
-  ref status, pending changed fields, and intake-edit receipt writes
-- project switchboard showing local cases, intake mode, source-ref coverage,
-  report-contract presence, intake load errors, and recent receipt paths before
-  switching
-- source/evidence readiness panel showing source index, evidence binding, output
-  binding, replay state, backing files, and copyable commands
-- raw-source panel for loading an existing source, editing its text/type, saving
-  the file through the API, showing pending changes, and recording a
-  source-edit receipt only when the file or type changed
-- first-screen stage rail for sources, evidence, run readiness, and export state
-- first-five-minute path: open the case, inspect the claim, check evidence,
-  run preflight, resolve the blocker, and apply the review
-- first-screen bounded claim, export decision, non-claim count, and next falsifier
-- status metrics for run readiness, export state, evidence rows, and attention rows
-- blocker panel showing the current blocking row, blocker reasons, and a direct
-  review action
-- health and actions panel showing live run-health rows,
-  action-intelligence source-health rows, source files, and copyable next
-  commands
-- autoresearch trace console showing carrier chain, kernel-entry status, plan
-  steps, graph carriers, source/evidence paths, and next commands
-- preflight action panel that runs only the local preflight command and shows
-  exit status, loop-admission receipt count, and bounded output
-- run-history panel showing latest score, weakest point, evidence gaps, recent
-  runs, synthesis patterns, and previewable backing files
-- report/export contract panel showing blocker reasons, synthesis input-binding
-  state, contract file path, and the exact support command
-- current-action rail with the next command or provenance target
-- command cockpit collecting the selected-row, trace, report, health, and row
-  commands into one queue; only the dedicated preflight panel can ask the local
-  API to run a bounded preflight-only check
-- artifact coverage strip showing rows with artifacts, commands, receipts, and
-  review files
-- receipt history panel showing recent review, row-action, intake-edit, source-import,
-  source-edit, source-action, and case-file ledger rows with previewable backing
-  ledger and written-artifact paths
-- case-file export for saving, downloading, or copying the current case, rows,
-  project context, evidence refs, live context, preflight result, raw-source
-  inventory, run history, command queue, recent receipt paths, and the case-file
-  receipt when saved through the local API
-- claim-support panel showing support status, weak/unsourced counts, missing
-  evidence-file errors, source context, and the exact support-audit command
-- latest-review receipt row that reads the CLI-applied receipt when present and
-  otherwise shows an explicit no-receipt state
-- review queue strip showing selected row, decision, evidence count, receipt
-  readiness, latest saved review, and latest saved row action
-- review workspace for marking a row reviewed, deferred, or blocking export
-- saved-action workspace for writing the next row action to a project ledger
-- last-write receipt panel showing the stamped review/action/intake/source
-  receipt, ledger path, latest path, source path, hash, and preview/copy controls
-- review note field plus downloadable/copyable
-  `ztare-forensic-workbench-review-v1` review file
-- review JSON preview before download or CLI handoff
-- searchable audit table plus inspector panel for row-level evidence
-- read-only file preview for selected intake refs and evidence paths when the
-  local API is running
-
-The current workbench is file-backed. Static mode downloads an inspectable
-review file and makes the CLI handoff explicit:
-
-```bash
-ztare forensic-workbench apply-review --project <project> --intake <intake> --row <row> --from <project>_<intake>_<row>_review.json
-```
-
-That command appends a receipt under the project workspace. `--intake` is
-optional for old files, but it is the safer handoff for a selected case because
-it rejects mismatched case files. Row actions use the same pattern:
-
-```bash
-ztare forensic-workbench save-action --project <project> --intake <intake> --row <row> --from <project>_<intake>_<row>_action.json
-```
-
-Live mode calls the local API to append the same receipts and refresh the case.
-In both modes, the receipt ledgers are the inspectable edit path.
-
-After applying a review, refresh the snapshot:
+Offline snapshot mode is for audit or review without live edits:
 
 ```bash
 make forensic-workbench-data WORKBENCH_PROJECT=<project>
 ```
 
-The refreshed app should show the latest-review receipt row. If no receipt has
-been applied, it should say so explicitly rather than pretending the row is
-reviewed.
+That materializes `forensic-workbench/public/workbench_snapshot.json`; the app
+can render it without live edits. The generated snapshot uses the same public
+labels as the live app: working diagnosis, ruled-out alternatives, source files,
+evidence files, run check, report support, latest review, and latest next step.
 
-The refreshed app should also show the latest-row-action row. If no action has
-been saved, it should say so explicitly rather than implying a next step exists.
-After a live review, row-action, or intake-edit write, the app should show the
-stamped receipt paths and hash immediately.
+## What You Can Do
 
-This workbench is intentionally separate from Orbit. Orbit is the organizational
-overlay; this app is the individual claim-review workbench.
+The first path is:
+
+1. Open a project from `projects/`.
+2. Read the working diagnosis, ruled-out alternatives, and what would change it.
+3. Check source and evidence files.
+4. Run preflight before heavier work.
+5. Review the report/support issue or save a next step.
+6. Save the project file with receipts and backing paths.
+
+The current-project home makes that path explicit in the **Use this project**
+rail: choose project, read thesis, check support, run locally, and save the
+review trail. The next project step is shown before the workflow guide; the guide
+stays available behind **Show workflow guide** so the first scan stays focused.
+**Browse N folders** opens the searchable inventory loaded from `projects/`;
+it does not try to open every project at once.
+
+The main areas are:
+
+- **Projects:** open any folder under `projects/`, or add the missing intake for
+  a historical project folder.
+- **Thesis:** inspect the diagnosis, assumptions, caveats, and project checks.
+- **Evidence:** edit the intake, add source files, edit existing sources, and
+  run file checks.
+- **Runs:** inspect the run plan, run preflight, start a confirmed project run,
+  and review scores/warnings.
+- **Review:** record review status, save next steps, and inspect receipts.
+- **Report:** inspect report support and save the project file.
+
+The app discovers project folders through the local server. The project index
+reports total, intake-ready, file-backed, and background/generated counts, with
+intake-ready projects sorted first and generated/background folders hidden until
+you ask to show them.
+In that payload, `intake_ready_projects` and the older `projects` field are the
+entries that can open immediately. `all_project_folders` is the rich browser
+inventory for every folder under `projects/`; the older `project_folders` field
+is a compact compatibility list with the same projects and `openable` status.
+
+## Live Data
+
+The browser does not scan the repository directly. It asks the local API for
+bounded read models:
+
+- `/api/status` for server, app, and project-index readiness.
+- `/api/projects` for the full project folder inventory.
+- `/api/snapshot` for the selected project data.
+- `/api/workflow` for the six-step project steps, summary counts, UI
+  destinations, and the server-chosen next step.
+- `/api/intake`, `/api/sources`, and `/api/source-file` for editable project
+  files.
+- `/api/trace`, `/api/run-history`, `/api/report-contract`, `/api/health`, and
+  `/api/evidence-support` for run, score, report, advisory, and support-audit
+  state.
+- `/api/receipts` and `/api/file` for receipt history and bounded file preview.
+
+`/api/file` previews only workbench-safe repo surfaces: project files, docs,
+examples, public analytics, workbench artifacts, rubrics, and selected root
+docs. It rejects papers, absolute paths, parent-directory escapes, repo
+metadata, internal planning, and private research paths before reading a file.
+
+The UI shows human labels first. Raw schema names, route names, and legacy keys
+are compatibility details, not the primary product language.
+
+## Writes
+
+Every server-backed write returns a write boundary. The UI shows the files that
+may change before the write and the files that changed after it.
+
+Write endpoints:
+
+- `/api/project-create` creates the project folder, source folders, source
+  metadata, and intake path, or adds the missing intake to an existing project
+  folder.
+- `/api/intake` edits the selected intake.
+- `/api/source-import` adds one new `.md` or `.txt` source under `raw/`.
+- `/api/source-edit` edits one existing source file or source type.
+- `/api/source-action` runs one allowlisted source/evidence action.
+- `/api/preflight` runs the local preflight-only check.
+- `/api/run` first returns a no-write preview; only a confirmed request starts
+  the selected project run.
+- `/api/review` saves review status for a project check.
+- `/api/next-step` saves the next step for a project check.
+- `/api/project-file` writes the current project file plus receipt paths.
+
+Browser-only actions remain browser-only: preview, download, copy. Failed writes
+return an explicit no-write boundary with `browser_writes=false` and no changed
+project paths.
+
+The live status contract groups actions into three buckets: read-only, writes
+files or receipts now, and asks before writing. `/api/status` exposes the
+product-facing `file_change_summary`, keeps `action_summary` for compatibility,
+and includes the per-action `behavior` contract so the UI can show the plain
+split without guessing from route names or booleans. The current split is 6
+read-only actions, 10 direct file/receipt writes, and 1 ask-first run action;
+`browser_writes=false` across the set.
+
+Review and next-step save panels show the selected project check before saving:
+status, evidence-link count, first evidence path, and latest review state. That
+keeps the save action tied to the project file the user is inspecting.
+
+## Project Files
+
+Saving a project file writes an inspectable JSON bundle under the selected
+project workspace. It includes:
+
+- current project data and project context;
+- project steps and next-step destination, trace, report, health, support audit,
+  and run-history context;
+- workbench status, action summary, write contract, file-preview boundary, and
+  project inventory counts from the local server;
+- `project_file_write_plan`, which records the project-file paths, no-hidden-
+  browser-write boundary, and preview/download/copy actions shown before save;
+- source-file inventory and latest source actions;
+- recent review, next-step, intake, source, and project-file receipts;
+- `project_key` and `intake` as separate facts in live context and recent
+  receipts, while keeping older compatibility fields for existing scripts;
+- product-named support-audit paths such as `evidence_support_file_path`;
+- command details and paths needed to audit the visible state;
+- unsaved intake/source edits when a draft exists.
+
+Before saving, the Project file panel shows what is included now: project checks,
+source files, project steps, report support, receipts, run history, and support
+audit. The preview uses product names such as action details, project checks,
+and support audit even when the saved JSON keeps older compatibility aliases.
+Save stays disabled until enough live context is loaded; preview, download, and
+copy remain browser-only.
+
+The saved project file does not say the project is finished. It records what
+the workbench currently knows, what still needs support, and which files back
+that state.
+
+## Command Compatibility
+
+Live mode writes through the API. Offline snapshot mode can still hand off
+review files to the CLI:
+
+```bash
+ztare forensic-workbench apply-review --project <project> --intake <intake> --project-check <project_check> --from <project>_<intake>_<project_check>_review.json
+```
+
+Saved next steps use the same shape:
+
+```bash
+ztare forensic-workbench save-next-step --project <project> --intake <intake> --project-check <project_check> --from <project>_<intake>_<project_check>_action.json
+```
+
+Review and next-step files carry `project_check_label` and
+`project_check_slug` for the product surface, plus `item_*` and `row_*` fields
+for existing scripts.
+
+`--intake` is optional for old files, but safer for selected live projects
+because it rejects mismatched payloads. `--item`, `--row`, and `save-action`
+remain accepted for older scripts.
+
+After a CLI write, refresh offline project data:
+
+```bash
+make forensic-workbench-data WORKBENCH_PROJECT=<project>
+```
+
+## Compatibility
+
+These names are still present for existing receipts and clients:
+
+- package and directory name: `forensic-workbench`;
+- schemas such as `ztare-forensic-workbench-*-v1`;
+- legacy fields such as `rows`, `row_count`, `row_slug`, and `case_key`;
+- legacy routes `/api/case-file`, `/api/item-action`, and `/api/row-action`.
+- legacy route `/api/claim-support`.
+
+New UI copy and new API callers should use project-first language:
+
+- project check;
+- project file;
+- review status;
+- report support;
+- source and support-audit state.
+- `project_key` for selected-project identity when a specific intake is loaded.

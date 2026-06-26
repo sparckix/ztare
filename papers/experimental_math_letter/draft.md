@@ -102,7 +102,7 @@ Three observations:
 
 3. **The holdout gate is the null-returning mechanism, not the search.** On all three incompressible substrates (§2.7 S1-S3), default PySR claims a form; under ZTARE-style gating, PySR correctly declares null on all three. This reframes the §4 claim: what distinguishes this apparatus from standard symbolic regression is not a novel search algorithm but the architectural commitment to holdout gating as a hard structural constraint rather than a post-hoc model-selection criterion.
 
-The comparison was run with PySR 1.5.10, 40 iterations, complexity limit 20, operator set $\{+, -, \times, /, \mathrm{pow}, \log, \sqrt{\cdot}, \exp\}$. Results and harness at `scripts/pysr_baseline.py`; reproduction data at `papers/experimental_math_letter/pysr_baseline_full.json`.
+The comparison was run with PySR 1.5.10, 40 iterations, complexity limit 20, operator set $\{+, -, \times, /, \mathrm{pow}, \log, \sqrt{\cdot}, \exp\}$. Results and harness at `scripts/pysr_baseline.py`; reproduction data at `papers/experimental_math_letter/evidence/pysr_baseline_full.json`.
 
 ### 2.7.2 Two ceilings: grammar and space
 

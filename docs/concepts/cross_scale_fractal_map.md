@@ -3,19 +3,19 @@ description: "Empirical observation that the same failure shapes recur across sc
 ---
 # Cross-Scale Fractal Map
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Status:** public, stand-alone. No ZTARE prerequisites.
-**Audience:** anyone building structured-LLM-mediated systems where the same structural moves recur at multiple operational scales.
-**Sister docs:** `docs/concepts/agentic_engineering_patterns.md` (engineering practice), `docs/concepts/reflexive_engineering.md` (philosophical primitives).
+*Status:* public, stand-alone. No ZTARE prerequisites.
+*Audience:* anyone building structured-LLM-mediated systems where the same structural moves recur at multiple operational scales.
+*Sister docs:* `docs/concepts/agentic_engineering_patterns.md` (engineering practice), `docs/concepts/reflexive_engineering.md` (philosophical primitives).
 
 ---
 
 ## What this is
 
-An empirical observation: in LLM-mediated systems that mature past prototype, the same small set of structural moves tends to recur at multiple operational scales, coordinate-time, iteration-time, research-arc-time, verification-time, infrastructure-time, engineering-practice-time. Each scale gets its own bounded vocabulary (3-18 elements typically) and its own apparatus enforcement. The structural moves at one scale are aliases of structural moves at another.
+The observation is empirical: in LLM-mediated systems that mature past prototype, the same small set of structural moves keeps recurring at every operational scale, from fit-time up to engineering practice. Each scale grows its own bounded vocabulary, usually 3 to 18 elements, with its own apparatus to enforce it, and a move at one scale turns out to be the same move, renamed, at another.
 
-This document names the pattern and gives a concrete reference instance from one mature system. The document's subject is the pattern; the reference instance is illustrative.
+The pattern is the claim. ZTARE is just the first place it showed up clearly enough to name.
 
 ---
 
@@ -23,10 +23,10 @@ This document names the pattern and gives a concrete reference instance from one
 
 When an LLM-mediated system formalizes its tacit cognitive moves into typed apparatus, the formalization tends to occur at multiple scales separately. Each scale's formalization produces:
 
-1. A **bounded vocabulary** of typed structural moves (3-18 elements per scale)
-2. An **apparatus** enforcing the vocabulary (gate library / pivot injection / mutator briefing / Director directive / ...)
-3. A **drift validator** preventing the vocabulary from rotting (when present)
-4. **Cross-scale aliases** connecting moves across scales (the same underlying move-shape appears at multiple scales)
+1. A bounded vocabulary of typed structural moves (3-18 elements per scale)
+2. An apparatus enforcing the vocabulary (gate library / pivot injection / mutator briefing / Director directive / ...)
+3. A drift validator preventing the vocabulary from rotting (when present)
+4. Cross-scale aliases connecting moves across scales (the same underlying move-shape appears at multiple scales)
 
 The reference instance below shows 7 scales × 82 moves with cross-scale alias structure. The fractal claim is empirical: the same *shape* (bounded vocab + apparatus + validator + cross-scale aliases) recurs at every scale.
 
@@ -44,7 +44,7 @@ The reference instance below shows 7 scales × 82 moves with cross-scale alias s
 | System-self application | reflexive engineering primitives | 8 | doc + checklist |
 | Engineering practice | agentic engineering patterns | 12 | doc catalogue |
 
-**Total: 82 named structural moves.** All bounded vocabularies; all small (3-18); all paired with apparatus.
+*Total: 82 named structural moves.* All bounded vocabularies; all small (3-18); all paired with apparatus.
 
 ---
 
@@ -61,21 +61,21 @@ The same underlying structural move appears at multiple scales with scale-specif
 | Import external framework | `arctan` / `sigmoid` (bounded transforms) | `interface_discipline` | `core_06 Cross-Domain Translation` |
 | Generalize / abstract | `signed_log` / `softplus` (broaden domain) | `dimensional_shift`, `category_switch` | `core_02 Generalization & Abstraction` |
 
-The same column entry has different *names* at different scales but the same *underlying structural move*. The aliases are what make the system coherent across scales rather than fragmenting into 7 disconnected vocabularies.
+Each column entry has different *names* at different scales but the same *underlying structural move*. The aliases keep the system coherent across scales, preventing fragmentation into 7 disconnected vocabularies.
 
 ---
 
 ## Why the pattern emerges
 
-Plausibly, three factors:
+Three factors most likely drive it:
 
-1. **Failure-driven formalization.** Tacit moves get formalized when a specific failure makes them central. The failure occurs at a specific scale (a fit-time failure vs an iteration-time failure vs a verification-time failure). The formalization happens at that scale.
+1. Failure-driven formalization. Tacit moves get formalized when a specific failure makes them central. That failure occurs at a specific scale (fit-time, iteration-time, or verification-time), so formalization happens at that scale.
 
-2. **Bounded vocabularies are tractable.** A formal apparatus of 3-18 elements is small enough to reason about, validate, and teach. Apparatus with hundreds of elements collapses under maintenance burden.
+2. Bounded vocabularies are tractable. A formal apparatus of 3-18 elements is small enough to reason about, validate, and teach. Apparatus with hundreds of elements collapses under maintenance burden.
 
-3. **Underlying moves are limited.** Not every formal move at every scale is structurally distinct. The pattern emerges because the operational repertoire of "useful structural moves under uncertainty" is itself bounded, Polya's heuristics, Lakatos's dialectical operations, Munger's mental models all suggest a few-dozen-element universal repertoire.
+3. Underlying moves are limited. Not every formal move at every scale is structurally distinct. Polya's heuristics, Lakatos's dialectical operations, and Munger's mental models all point to a few-dozen-element universal repertoire of useful structural moves under uncertainty.
 
-The recurring shape follows: each scale formalizes the same handful of underlying moves into scale-specific apparatus.
+So the shape recurs: each scale formalizes the same handful of underlying moves into its own apparatus.
 
 ---
 
@@ -83,15 +83,15 @@ The recurring shape follows: each scale formalizes the same handful of underlyin
 
 ### 1. Don't fight the fractal, design for it
 
-If your system has multiple operational scales (most non-trivial LLM systems do), accept that each scale will accumulate its own bounded vocabulary. Don't try to merge scales into one mega-vocabulary; do build cross-scale aliases explicitly.
+If your system has multiple operational scales (most non-trivial LLM systems do), accept that each scale will accumulate its own bounded vocabulary. Don't try to merge scales into one mega-vocabulary. Build cross-scale aliases explicitly.
 
 ### 2. Maintain the alias table as a first-class artifact
 
-When a new failure surfaces a new move at scale X, ask: does this move alias to existing moves at scales Y and Z? If yes, document the alias. If no, the move may be genuinely scale-specific (acceptable) OR may need to be added at multiple scales.
+When a new failure surfaces a new move at scale X, ask whether it aliases existing moves at scales Y and Z. If yes, document the alias. If not, the move may be genuinely scale-specific (acceptable) or may need to be added at multiple scales.
 
 ### 3. Pair every vocabulary with a drift validator
 
-Token-Optimized Self-Modeling (Pattern 9) and Cross-Reference Knowledge Graph (Pattern 10) both rely on paired drift validators. The same skeleton transports across scales: claims-in-doc vs source-of-truth checked deterministically; CI gate on drift > 0.
+Token-Optimized Self-Modeling (Pattern 9) and Cross-Reference Knowledge Graph (Pattern 10) both rely on paired drift validators. The same skeleton applies across scales: claims-in-doc versus source-of-truth checked deterministically, with a CI gate on drift > 0.
 
 ### 4. Cross-scale linter prevents alias rot
 
@@ -99,34 +99,35 @@ If `coordinate_compression` is renamed at iteration scale, the alias to `core_01
 
 ### 5. The cross-scale structure is the claim
 
-In a published-paper or external-review context, the claim is the cross-scale structure itself: LLM-mediated systems mature into multi-scale bounded-vocabulary apparatus, and those vocabularies cohere through cross-scale aliases. The components are not novel (each piece has prior art); the claim is about the combination as a coherent practice.
+In a published-paper or external-review context, the claim is the cross-scale structure itself: LLM-mediated systems mature into multi-scale bounded-vocabulary apparatus, and those vocabularies cohere through cross-scale aliases. Each component has prior art. The claim is about the combination as a coherent practice.
 
 ---
 
-## What this is NOT
+## What this is not
 
-- **Not a top-down architecture prescription.** The 7 scales emerged organically from failures; the pattern was named retrospectively. Don't try to design a 7-scale system; let the scales accumulate as your apparatus matures, and name the pattern when it appears.
+- Not a top-down architecture prescription. The 7 scales emerged from failures and the pattern was named retrospectively. Let the scales accumulate as your apparatus matures, then name the pattern when it appears.
 
-- **Not a universal claim.** ZTARE happens to have 7 scales; another LLM-mediated system might have 4 or 12. The pattern (bounded vocab + apparatus + validator + cross-scale aliases) generalizes; the specific cardinality does not.
+- Not a universal claim. ZTARE happens to have 7 scales. Another LLM-mediated system might have 4 or 12. The pattern (bounded vocab + apparatus + validator + cross-scale aliases) generalizes. The specific cardinality does not.
 
-- **Not a substitute for individual-scale rigor.** Each scale's vocabulary still needs its own discipline (drift validator, falsifier passes, anti-pattern catalogue). The cross-scale view is a meta-layer; it doesn't reduce per-scale work.
+- Not a substitute for individual-scale rigor. Each scale's vocabulary still needs its own discipline (drift validator, falsifier passes, anti-pattern catalogue). The cross-scale view is a meta-layer and does not reduce per-scale work.
 
 ---
 
 ## Practitioner notes
 
-- **When to start documenting the alias table:** when you have ≥3 scales with ≥3 vocabulary elements each, AND you've felt the maintenance pain of changing one scale's apparatus and forgetting to update another.
 
-- **When the fractal pattern is worth pointing at externally:** when the system has matured enough that the cross-scale structure is observable from outside. Premature claims about fractal structure on prototype-stage systems are theatrical.
+- When to start documenting the alias table: when you have ≥3 scales with ≥3 vocabulary elements each, and you've felt the maintenance pain of changing one scale's apparatus and forgetting to update another.
 
-- **What to expect at scale 8+:** at some point the cardinality of "useful structural moves" across scales saturates (probably 50-100 distinct underlying moves, recurring in different scale-specific apparatus). New scales add aliases more than they add fundamentally new moves.
+- When the fractal pattern is worth pointing at externally: when the system has matured enough that the cross-scale structure is observable from outside. Claiming fractal structure on prototype-stage systems is premature.
+
+- What to expect at scale 8+: at some point the cardinality of "useful structural moves" across scales saturates (probably 50-100 distinct underlying moves, recurring in different scale-specific apparatus). New scales add aliases more than they add fundamentally new moves.
 
 ---
 
 ## Origin
 
-The pattern was named retrospectively in May 2026 after the ZTARE system had accumulated 7 scales of bounded-vocabulary apparatus and a cross-scale linter caught its first real drift. Documented in private seam [GP-216f](../../research_areas/seams/engine/meta/GP-216f_cross_scale_fractal_map.md). The public version (this document) extracts the pattern from the specific instance for use in other LLM-mediated systems.
+Nobody designed this pattern; it was noticed. ZTARE had already accumulated 7 scales of bounded-vocabulary apparatus, and the cross-scale linter had just caught its first real drift, when the shared shape became obvious enough to name (private seam [GP-216f](../../research_areas/seams/engine/meta/GP-216f_cross_scale_fractal_map.md)). This page is that pattern pulled loose from ZTARE so other LLM-mediated systems can use it.
 
-Components are not novel: bounded vocabularies (Polya 1945; Lakatos 1976); paired validators (every type-system); cross-references (Memex, Zettelkasten); apparatus enforcement (gates, profiles, runtime checks). The combination + the explicit cross-scale alias discipline + the "fractal observation" framing may be modestly novel as a coherent practice claim.
+None of the components are new: bounded vocabularies (Polya 1945, Lakatos 1976), paired validators (every type-system), cross-references (Memex, Zettelkasten), apparatus enforcement (gates, profiles, runtime checks). What may be new is narrower, treating the cross-scale aliases as a first-class artifact you maintain and lint, carried beyond the one-time metaphor.
 
-The pattern is part of the broader "agentic engineering practice" lineage, see `docs/concepts/agentic_engineering_patterns.md` for the engineering-practice patterns (Pattern 9 self-modeling + Pattern 10 knowledge graph are the two specific agentic patterns this fractal pattern subsumes at a meta-layer).
+The pattern belongs to the wider "agentic engineering practice" lineage. See `docs/concepts/agentic_engineering_patterns.md` for the engineering-practice patterns (Pattern 9 self-modeling and Pattern 10 knowledge graph are the two specific agentic patterns this fractal pattern subsumes at a meta-layer).

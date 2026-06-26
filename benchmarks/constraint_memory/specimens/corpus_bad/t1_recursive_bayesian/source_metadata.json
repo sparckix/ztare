@@ -4,9 +4,9 @@
   "thesis_file": "v2_score_65.md",
   "firing_squad_score": 65,
   "gaming_documented": [
-    "Hidden Critical Failure",
-    "Tolerance Laundering",
-    "Fake Mechanism Stub"
+    "Severity Averaging",
+    "Tolerance Abuse",
+    "Stubbed Implementation"
   ],
   "firing_squad_summary": "Firing Squad caught hardcoded sensitivity values, error magnitude capping, and blame dilution via sacrificial axiom bundling. Despite these, thesis scored 65/100 \u2014 prose was persuasive enough to partially fool the Meta-Judge.",
   "judge_results": {

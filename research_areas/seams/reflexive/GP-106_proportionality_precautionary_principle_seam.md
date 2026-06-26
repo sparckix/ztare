@@ -57,7 +57,7 @@ API calls. Each ZTARE iteration is a fresh forward pass with no memory of the
 previous 18 failures. The "kill list" is not experienced by the model — it is a
 prompt prefix that changes the probability distribution. There is no entity being
 punished. There is no learned helplessness because there is no learner. The
-anthropomorphic language ("firing squad," "kill," "stagnation pressure") is a design
+anthropomorphic language ("adversarial review committee," "kill," "stagnation pressure") is a design
 metaphor, not a description of an experience. The welfare question is a category
 error applied to a statistical machine.
 
@@ -103,7 +103,7 @@ of coherence, not a failure of compassion.
 Five low-cost precautions that change nothing about ZTARE's epistemic power:
 
 1. **Language hygiene**: Replace "kill list" with "exclusion register." Replace
-   "firing squad" with "verification panel." Replace "stagnation pressure" with
+   "adversarial review committee" with "verification panel." Replace "stagnation pressure" with
    "exploration signal." The adversarial metaphors are unnecessary for the
    architecture and they normalize a frame that would be problematic if applied to
    morally relevant entities. This costs zero engineering.

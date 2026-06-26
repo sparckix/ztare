@@ -71,7 +71,7 @@ Run the main autoresearch loop normally from the combined thesis as the seed. Th
 
 ## Why the Combiner Is the Decisive Piece
 
-ZTARE already has parallelism at the **evaluation layer** — the firing squad runs multiple judges, debate logs accumulate adversarial critique. What is missing is parallel structure at the **generation layer**.
+ZTARE already has parallelism at the **evaluation layer** — the adversarial review committee runs multiple judges, debate logs accumulate adversarial critique. What is missing is parallel structure at the **generation layer**.
 
 The combiner is the mechanism that makes parallel generation useful. Without it, K workers produce K uncombined partial solutions and the operator must manually arbitrate. With it, the K workers' outputs become structured inputs to a single synthesis step that is itself checkable (did the combiner introduce ungrounded claims? did it drop a criterion? did it produce a thesis that scores lower than its best source on any dimension?).
 
@@ -91,7 +91,7 @@ The combiner is also the minimum viable new component. It is a single function c
 - Continuous parallelization mid-run (parallel workers at every iter — architecturally complex, context-deprivation problem)
 - Genetic crossover between champions at arbitrary iters (requires redesigning the champion tracker)
 - Beam search (keeping top-K champions at each iter — fundamentally different loop architecture, separate seam)
-- Any change to the evaluation layer (firing squad, meta-judge, debate format)
+- Any change to the evaluation layer (adversarial review committee, meta-judge, debate format)
 
 ---
 

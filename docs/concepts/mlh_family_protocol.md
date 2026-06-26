@@ -4,10 +4,10 @@ description: "Pre-registered cross-substrate protocol for the formula-recovery t
 
 # MLH Family Protocol, Pre-Registered Cross-Substrate Prediction
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Status:** Active ([GP-135](../../research_areas/seams/mission/discovery/GP-135_meta_law_hypothesis_family_program_seam.md)).
-**Supersedes:** Per-substrate single-recovery claims as the unit of measurement for the discovery track.
+*Status:* Active ([GP-135](../../research_areas/seams/mission/discovery/GP-135_meta_law_hypothesis_family_program_seam.md)).
+*Supersedes:* Per-substrate single-recovery claims as the unit of measurement for the discovery track.
 
 ---
 
@@ -17,7 +17,7 @@ The measurement unit for the engine's external-domain track has been a single re
 
 The MLH protocol replaces that unit. The new unit is:
 
-> *Across a family of related substrates {S₁, …, S₅}, the engine proposes a cross-substrate invariant I (a structural predicate or functional identity holding on all five). Given I, the engine pre-registers a prediction for a sealed holdout substrate S₆ before S₆'s evidence is revealed. S₆ is then unlocked; the prediction is scored against ground truth.*
+> *Across a family of related substrates {S₁, …, S₅}, the engine proposes a cross-substrate invariant I (a structural predicate or functional identity holding on all five). Given I, the engine pre-registers a prediction for a sealed holdout substrate S₆ before S₆'s evidence is revealed. S₆ is then unlocked and the prediction is scored against ground truth.*
 
 A family-level correct prediction is harder to contaminate than a single-substrate recovery. Accidental contamination would have to span the training family and the holdout consistently, a much tighter condition on the apparatus than any one prompt example.
 
@@ -78,11 +78,11 @@ Prediction authoring discipline:
 
 Scoring is performed after F6 is unlocked (via `scripts/unlock_mlh_holdout.py`, which the principal runs manually and which writes a single timestamped unlock record). Three independent scores:
 
-1. **Composition-class accuracy.** Binary: does `composition_class_prediction` match F6's actual class? (F6's class is encoded in its GT module's factorization behavior; the scoring script computes the class from the GT function's values on coprime pairs.)
+1. Composition-class accuracy. Binary: does `composition_class_prediction` match F6's actual class? (F6's class is encoded in its GT module's factorization behavior. The scoring script computes the class from the GT function's values on coprime pairs.)
 
-2. **Point-prediction accuracy.** Fraction of `predicted_holdout_values` matching F6 exactly on the sealed holdout range. Trivial predictions (all-zero, all-ones) are flagged and scored 0 regardless of fraction.
+2. Point-prediction accuracy. Fraction of `predicted_holdout_values` matching F6 exactly on the sealed holdout range. Trivial predictions (all-zero, all-ones) are flagged and scored 0 regardless of fraction.
 
-3. **Rule-validity score.** Applies `prime_power_rule` and `composition_rule` to the F6 evidence and checks consistency. A rule that predicts every F6 value correctly but whose closed form is `lookup(n)` scores 0 on parsimony (the scoring script detects this via AST complexity bound).
+3. Rule-validity score. Applies `prime_power_rule` and `composition_rule` to the F6 evidence and checks consistency. A rule that predicts every F6 value correctly but whose closed form is `lookup(n)` scores 0 on parsimony (the scoring script detects this via AST complexity bound).
 
 The Newton-gate pass condition is: composition-class accuracy = 1, point-prediction accuracy ≥ 0.9, rule-validity score ≥ 0.8. Any lower than that is an informative null, not a gate pass.
 
@@ -92,9 +92,9 @@ The Newton-gate pass condition is: composition-class accuracy = 1, point-predict
 
 Per the reviewer recommendations at `GP-134 (internal seam)`:
 
-- **No concrete composition examples in the live mutator prompt.** Tier-2 ceiling (names + signatures + one-line semantic glosses) is the hard upper bound for primitive documentation in live prompts. Workshop-style composition teaching happens on retired substrates only, before the family program starts.
-- **No cross-reference between live prompts and any OEIS identifier** for F1-F6. The shared denylist lists the six target identifiers and common paraphrases.
-- **No Phase C (unknown-substrate) runs** until the family-level protocol produces one clean gate pass. A failed family prediction unblocks the Phase C decision only after a post-mortem names what specifically failed.
+- No concrete composition examples in the live mutator prompt. Tier-2 ceiling (names + signatures + one-line semantic glosses) is the hard upper bound for primitive documentation in live prompts. Workshop-style composition teaching happens on retired substrates only, before the family program starts.
+- No cross-reference between live prompts and any OEIS identifier for F1-F6. The shared denylist lists the six target identifiers and common paraphrases.
+- No Phase C (unknown-substrate) runs until the family-level protocol produces one clean gate pass. A failed family prediction unblocks the Phase C decision only after a post-mortem names what specifically failed.
 
 ---
 
@@ -104,9 +104,9 @@ One clean family-level Newton-gate pass supports a paper claim beyond the two-ce
 
 > *"Given evidence from N related substrates, the engine can propose a cross-substrate invariant whose prediction for an unseen related substrate is structurally and point-wise correct."*
 
-This qualifies as Newton-class (per the Kepler/Newton distinction in [rubric_specification.md](rubric_specification.md)) because the secondary observable — the prediction on F6 — is authored before F6 is observed. It is a derived prediction on a substrate the engine has not seen, scored against sealed truth, rather than a fit to visible data.
+Newton-class qualification (per the Kepler/Newton distinction in [rubric_specification.md](rubric_specification.md)) requires the secondary observable to be authored before F6 is observed. The prediction on F6 is derived from a substrate the engine has not seen, scored against sealed truth, not fit to visible data.
 
-A failed first attempt is also informative. It tells us the apparatus recognizes family structure but cannot generalize across that structure to a novel member, which is what the space-ceiling finding would predict, and which settles whether category-switch + primitives + reasoning model is sufficient to lift that ceiling.
+A failed first attempt is also informative. It indicates the apparatus recognizes family structure but cannot generalize to a novel member, consistent with the space-ceiling finding, and settles whether category-switch + primitives + reasoning model is sufficient to lift that ceiling.
 
 ---
 

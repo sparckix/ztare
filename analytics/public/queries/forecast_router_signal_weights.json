@@ -2,12 +2,12 @@
   "move_prior": {
     "default_weight": 1.0,
     "domains": {
-      "lean": 0.3827
+      "lean": 0.3756
     },
     "evidence": {
       "lean": {
-        "mean_brier": 0.3087,
-        "score_rows": 75
+        "mean_brier": 0.3122,
+        "score_rows": 117
       }
     }
   }

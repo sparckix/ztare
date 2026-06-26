@@ -212,6 +212,15 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
         max_tokens=8,
         timeout_seconds=19,
     )
+    kimi_default_kwargs = dict(recording_kimi_runtime.completions.kwargs)
+    recording_kimi_runtime._call_once(  # noqa: SLF001
+        "caller controls thinking",
+        "kimi-k2.6",
+        config={"temperature": 1, "thinking": {"type": "enabled"}},
+        max_tokens=512,
+        timeout_seconds=19,
+    )
+    kimi_explicit_kwargs = dict(recording_kimi_runtime.completions.kwargs)
 
     cases = [
         {
@@ -333,7 +342,21 @@ def run_llm_runtime_fixture_regression() -> dict[str, object]:
         },
         {
             "case_id": "kimi_transport_applies_visible_output_floor",
-            "passed": recording_kimi_runtime.completions.kwargs.get("max_tokens") == 256,
+            "passed": kimi_default_kwargs.get("max_tokens") == 256,
+        },
+        {
+            "case_id": "kimi_k26_defaults_disable_thinking_for_visible_text",
+            "passed": (
+                kimi_default_kwargs.get("temperature") == 0.6
+                and kimi_default_kwargs.get("extra_body") == {"thinking": {"type": "disabled"}}
+            ),
+        },
+        {
+            "case_id": "kimi_k26_explicit_thinking_config_overrides_defaults",
+            "passed": (
+                kimi_explicit_kwargs.get("temperature") == 1
+                and kimi_explicit_kwargs.get("extra_body") == {"thinking": {"type": "enabled"}}
+            ),
         },
     ]
 

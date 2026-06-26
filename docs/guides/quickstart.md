@@ -4,7 +4,7 @@ description: "Two-page orientation for a new reviewer."
 
 # ZTARE Quickstart
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 Two-page orientation for a new reviewer. Start with
 [first-30-minutes.md](first-30-minutes.md) if this is your first time in the
@@ -14,13 +14,13 @@ you want. Full reference: `docs/guides/workflow.md` and
 
 ---
 
-## What ZTARE Does In One Sentence
+## What ZTARE does in one sentence
 
 ZTARE is a zero-trust claim-governance workbench. It turns local sources and a
 bounded claim into an inspectable verdict, then separates proposals from
 critique, deterministic gates, ledgers, review artifacts, and non-claims.
 
-## First Value Check
+## First value check
 
 Before choosing a workflow, run the smallest offline demo:
 
@@ -50,7 +50,7 @@ fixture anchors agree.
 
 ---
 
-## Three Ways To Use It
+## Three ways to use it
 
 ### A. Test a bounded claim (in-loop autoresearch)
 
@@ -111,11 +111,10 @@ evaluation should fail before any model call.
 If the project already exists locally, intake validation also checks the
 offline raw/source typing preflight. Add `--source-preflight` when you want the
 intake file to require a source surface before validation can pass. Intake enqueue
-always requires that local source surface; use the prep ledger when source
+always requires that local source surface. Use the prep ledger when source
 files or typing still need work.
 
 ### B. Create or probe a project/data surface
-
 You have a project surface, review artifact, decision process, or input-output
 data. ZTARE searches for candidate forms, bounded claims, or justified nulls
 under gates. It does not promote a result without separate source-readiness,
@@ -135,13 +134,13 @@ Put text-like source files under `projects/<slug>/raw/`. Mark each source with
 `source_type` frontmatter or `raw/source_type_map.json`; use
 `source_evidence` for sources allowed to support immutable facts and
 constraints.
-Run `source-check` again after adding or renaming raw files; it is an offline
-preflight, not an evidence compiler. `source-index` writes the deterministic
+Run `source-check` again after adding or renaming raw files. It is an offline
+preflight (it does not compile evidence). `source-index` writes the deterministic
 workspace source index, metadata, and receipt without model calls.
 `make evidence-prepare` runs the same preflight before workspace update and
 evidence compilation.
 
-For a generated numeric/data project, use `new`; `prepare` runs the standard
+For a generated numeric/data project, use `new`. `prepare` runs the standard
 setup pipeline before any in-loop run:
 
 ```bash
@@ -154,7 +153,7 @@ If a project surface still needs setup or reproduction prep before the
 validation engine can evaluate it, create a project-intake file first.
 `ztare project intake` is the preferred command; `ztare project packet` is the
 legacy spelling for the same JSON. Use the intake ledger only when there is
-follow-up prep to track; it is not an autoresearch scheduler.
+follow-up prep to track. It is not an autoresearch scheduler.
 For concrete fixtures, see
 [examples/project_packets/](../../examples/project_packets/): one ready intake
 file and one malformed intake file that must fail validation.
@@ -162,7 +161,7 @@ file and one malformed intake file that must fail validation.
 For a less toy example, try the synthetic operational-diagnosis pilot. It uses
 local incident, metric, staffing, change, export-log, ticket-sample,
 baseline, cache, and counter-hypothesis sources to test a bounded root-cause
-claim. The fixture is not customer data; it is a public way to inspect the
+claim. The fixture is not customer data. It is a public way to inspect the
 claim/evidence/falsifier path and launch a one-iteration in-loop run.
 
 ```bash
@@ -186,7 +185,7 @@ ztare autoresearch run \
 Expected trace shape: before any paid run, `readiness` should be
 `ready_for_first_in_loop_run`, `kernel_entry.status=ready`, and the
 `source_claim_graph` should validate. If run artifacts are already present,
-the trace may instead report `complete_trace`; in that case inspect
+the trace may instead report `complete_trace`. In that case inspect
 `recent_loop` for the latest score, provider failures, and next command. After
 the preflight command, `loop_admission` should verify the intake and
 run-readiness hashes.
@@ -205,8 +204,8 @@ ztare autoresearch run \
 
 That paid run uses a cross-family mutator/judge pair and keeps the post-champion
 inverter off the historical `gpt4.1` default. It should stay bounded to the
-fixture's non-claims and next falsifier; provider failures are recorded in the
-trace rather than promoted as research results.
+fixture's non-claims and next falsifier. Provider failures are recorded in the
+trace and stay there; the loop does not promote them as research results.
 
 ```bash
 ztare project walkthrough --project <slug> --rubric <slug> \
@@ -240,7 +239,7 @@ ztare project prep-ledger list
 
 Then choose one of the run paths:
 
-**Guarded end-to-end path (legacy/demo path for OEIS and 1D sequences):**
+Guarded end-to-end path (legacy/demo path for OEIS and 1D sequences):
 
 ```bash
 make discover PROJECT=<slug> RUBRIC=<slug> ITERS=15
@@ -250,7 +249,7 @@ This runs Phase 1 (hypothesis loop), Phase 2 (template compression), and Phase
 3 (Lean gate artifacts) end to end. Treat the output as candidate evidence, not
 autonomous discovery.
 
-**Manual control (for multi-variable or custom project surfaces):**
+Manual control (for multi-variable or custom project surfaces):
 
 ```bash
 # See the manual-control sequence below for the full project-intake path
@@ -279,16 +278,16 @@ ztare autoresearch route --task "<task description>" --project <project> --rubri
 
 Then read:
 
-- [workflow.md](workflow.md), especially section 0 route choice;
+- [workflow.md](workflow.md), especially section 0 route choice
 - [cli.md](cli.md), for `ztare project`, `ztare autoresearch route`, `run`,
-  and `projection`;
+  and `projection`
 - [org_runtime_quickstart.md](org_runtime_quickstart.md), for role-daemon and
-  executive-inbox work;
-- [agent-prompts.md](agent-prompts.md), for paste-ready Codex/Claude prompts.
+  executive-inbox work
+- [agent-prompts.md](agent-prompts.md), for paste-ready Codex/Claude prompts
 
 ---
 
-## Advanced: Controlled Hidden-Target Experiment
+## Advanced: controlled hidden-target experiment
 
 Use this path only when the target must stay hidden until close, such as a
 synthetic function-recovery experiment or another sealed discriminating test.
@@ -324,13 +323,13 @@ def holdout_grid() -> list[tuple[float, float]]:
 
 Rules for sealed targets:
 
-- Use an opaque slug such as `exp01`; the slug appears in loop-visible files.
+- Use an opaque slug such as `exp01` (it appears in loop-visible files).
 - Use generic variable names such as `x1`, `x2`, or `n`.
 - Keep target form, parameters, derivation, and mechanism hints out of the
   charter, rubric, thesis, and visible evidence.
-- Treat this as a controlled experiment, not the normal public project intake
-  path. Read [for_researchers.md](for_researchers.md) before using the result
-  as evidence.
+- Treat this as a controlled experiment with its own path; the normal public
+  project intake path does not apply here. Read
+  [for_researchers.md](for_researchers.md) before using the result as evidence.
 
 ### 2. Generate and inspect the surface
 
@@ -369,12 +368,11 @@ make experiment-loop \
 
 ---
 
-## Advanced: Domain Thesis Scaffold
+## Advanced: domain thesis scaffold
 
 Use `generate-gp` when you already have an API-backed judge available and want
-a qualitative project scaffold from a brief. This is not the first-run path;
-for a source-first project, prefer `ztare project source-init`, `source-check`,
-and a project-intake file.
+a qualitative project scaffold from a brief. For a source-first project, prefer
+`ztare project source-init`, `source-check`, and a project-intake file instead.
 
 ```bash
 make generate-gp \
@@ -390,7 +388,7 @@ This creates:
 - `projects/my_project/project_charter.md`: auto-drafted from your brief
 - `rubrics/my_project.json`: LLM-drafted adversarial persona + criteria, with all qualitative gate opt-outs pre-filled
 
-**Important:** Review and edit `rubrics/my_project.json` before sealing. The
+*Important:* Review and edit `rubrics/my_project.json` before sealing. The
 LLM draft is a starting point, not a final rubric. Check that the persona is
 genuinely adversarial for your domain and that the evidence surface is typed
 before compilation.
@@ -421,11 +419,11 @@ ztare autoresearch run --project my_project --rubric rubrics/my_project.json \
     --mutator gemini-pro --judge gpt4.1
 ```
 
-**Why not `mkdir` + manual rubric?** Qualitative projects require three gate opt-out keys (`farther_tail_region: null`, `disable_evidence_fit_gate`, `disable_uniqueness_gap_gate`) that are non-obvious and whose absence causes hard fails that look like scoring failures. `generate-gp` pre-fills them.
+Why not `mkdir` + manual rubric? Qualitative projects require three gate opt-out keys (`farther_tail_region: null`, `disable_evidence_fit_gate`, `disable_uniqueness_gap_gate`) that are non-obvious and whose absence causes hard fails that look like scoring failures. `generate-gp` pre-fills them.
 
 ---
 
-## Model Options
+## Model options
 
 | Role | Recommended | Alternative |
 |---|---|---|
@@ -436,7 +434,7 @@ Gemini Pro as mutator + GPT-4.1 as judge is the default pairing. Cross-family pa
 
 ---
 
-## Reading the Output
+## Reading the output
 
 Each iteration prints:
 
@@ -448,26 +446,26 @@ Iteration N, score: XX
 ```
 
 Key signals:
-- **Score 0 with `harness_ok=false`**: gate fired; model is wrong, loop continues searching
-- **Score 0 with `harness_error`**: infrastructure bug; check imports, fix before rerunning
-- **Score stagnant for 3+ iters**: stagnation pivot fires automatically
-- **FEYNMAN WALL**: all 32 library primitives exhausted; grammar-guided symbolic regression activates
+- *Score 0 with `harness_ok=false`*: gate fired; model is wrong, loop continues searching
+- *Score 0 with `harness_error`*: infrastructure bug; check imports, fix before rerunning
+- *Score stagnant for 3+ iters*: stagnation pivot fires automatically
+- *FEYNMAN WALL*: all 32 library primitives exhausted; grammar-guided symbolic regression activates
 
 ---
 
-## Common Issues
+## Common issues
 
 | Symptom | Cause | Fix |
 |---|---|---|
 | `No module named 'src.ztare.substrates.<slug>_gt'` | Ground-truth fixture stub not created | Re-run `ztare project new`; the fixture stub is auto-created |
 | `harness_ok=True` on blank model | RMSE threshold too loose | Tighten `_RMSE_THRESHOLD` in gate_harness.py and rubric |
-| `--reviewer-domains` crash | Passed to loop instead of findings runner | Remove from `make experiment-loop`; routing is automatic via `latent_distance.jsonl` |
+| `--reviewer-domains` crash | Passed to the loop, which is the wrong consumer; the findings runner owns it | Remove from `make experiment-loop`; routing is automatic via `latent_distance.jsonl` |
 | Score 0 every iteration | Hard gate too tight OR zero model passes | Check gate calibration; check evidence float parsing |
 | Seal fails sentinel | Domain name leaked into mutator-visible file | Audit evidence.txt, charter, rubric for biological/domain terms |
 
 ---
 
-## Where Things Live
+## Where things live
 
 ```
 projects/<slug>/          ← per-run artifacts (evidence, gate harness, test_model)
@@ -480,7 +478,7 @@ config/prompts/           ← reviewer domain personas
 
 ---
 
-## Next Steps
+## Next steps
 
 - First-run orientation: `docs/guides/first-30-minutes.md`
 - Full workflow reference: `docs/guides/workflow.md`

@@ -240,7 +240,7 @@ def main():
     ap.add_argument("--procs", type=int, default=4)
     ap.add_argument("--max_complexity", type=int, default=20)
     ap.add_argument(
-        "--out", default="papers/experimental_math_letter/pysr_baseline_results.json"
+        "--out", default="papers/experimental_math_letter/evidence/pysr_baseline_results.json"
     )
     args = ap.parse_args()
 

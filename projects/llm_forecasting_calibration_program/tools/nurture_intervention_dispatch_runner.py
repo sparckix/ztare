@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from datetime import datetime, timezone
@@ -319,6 +320,8 @@ def classify_failure(receipt: dict[str, Any]) -> str | None:
     if "not logged in" in combined or "please run /login" in combined:
         return "blocked_auth"
     if "failed to initialize in-process app-server client" in combined:
+        return "blocked_runtime"
+    if "session limit" in combined and "resets" in combined:
         return "blocked_runtime"
     if "operation not permitted" in combined and str(receipt.get("runtime")) == "codex":
         return "blocked_runtime"
@@ -666,26 +669,35 @@ def run_row(
         run_stdout = raw_response
         run_stderr = stderr
     else:
-        run = run_subscription_agent_with_recovery(
-            runtime=runtime,
-            prompt=prompt,
-            agent_id=str(row.get("agent_id") or row.get("family") or runtime),
-            repo=REPO,
-            session_state=None,
-            timeout_seconds=timeout_seconds,
-            default_codex_model=codex_model,
-            codex_sandbox="read-only",
-            claude_disallowed_tools=(
-                "Bash",
-                "Read",
-                "Glob",
-                "Grep",
-                "Edit",
-                "Write",
-                "WebFetch",
-                "WebSearch",
-            ),
-        )
+        previous_full_auto = os.environ.get("ZTARE_LEANMILL_AGENT_FULL_AUTO")
+        if os.environ.get("ZTARE_FORECAST_AGENT_FULL_AUTO") != "1":
+            os.environ["ZTARE_LEANMILL_AGENT_FULL_AUTO"] = "0"
+        try:
+            run = run_subscription_agent_with_recovery(
+                runtime=runtime,
+                prompt=prompt,
+                agent_id=str(row.get("agent_id") or row.get("family") or runtime),
+                repo=REPO,
+                session_state=None,
+                timeout_seconds=timeout_seconds,
+                default_codex_model=codex_model,
+                codex_sandbox="read-only",
+                claude_disallowed_tools=(
+                    "Bash",
+                    "Read",
+                    "Glob",
+                    "Grep",
+                    "Edit",
+                    "Write",
+                    "WebFetch",
+                    "WebSearch",
+                ),
+            )
+        finally:
+            if previous_full_auto is None:
+                os.environ.pop("ZTARE_LEANMILL_AGENT_FULL_AUTO", None)
+            else:
+                os.environ["ZTARE_LEANMILL_AGENT_FULL_AUTO"] = previous_full_auto
         command_preview = redact_prompt_command(run.final_command, f"<prompt:{row.get('dispatch_id')}>")
         receipt = receipt_from_run(
             row=row,

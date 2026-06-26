@@ -113,7 +113,7 @@ These are computed and reported but do not bear on H-STEER-01's pass/fail.
 
 ## 7. Budget and sign-off required
 
-- **LLM calls.** 4 runs × 10 iterations × (mutator + firing squad + judge calls per iter) ≈ 4 × 10 × 5 = ~200 LLM calls at gemini-flash rates. Rough cost: $2–10 depending on context sizes. Low cost.
+- **LLM calls.** 4 runs × 10 iterations × (mutator + adversarial review committee + judge calls per iter) ≈ 4 × 10 × 5 = ~200 LLM calls at gemini-flash rates. Rough cost: $2–10 depending on context sizes. Low cost.
 - **Wall time.** Each run ≈ 20 min. 4 runs sequential ≈ 80 min. Can be parallelized if the workspace paths are distinct (they are, via cloning).
 - **Disk.** Two cloned project directories × ~50 MB each = ~100 MB transient. Can be deleted after measurement extraction.
 

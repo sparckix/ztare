@@ -26,7 +26,7 @@ DEFAULT_PROJECT = "gaming_vector_hardening"
 EXPECTED_PROMOTION_CONTRACT = "gaming_vector_promotion_contract_v1"
 
 FALLBACK_OPEN_AUTORESEARCH_VECTOR_QUEUE = [
-    "structural_param_smuggle_body",
+    "undeclared_parameters_body",
     "audit_partition_seed_fingerprint",
 ]
 

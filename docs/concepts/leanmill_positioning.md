@@ -31,7 +31,7 @@ refactors, linear-combination disguises, we also built and measured. The frontie
 3/3; it *reasons* through them. So against a strong judge there is no catch-rate edge, only precision and the
 certificate. Receipts: `analytics/public/leanmill/results/nonmath_mustsearch_ab.md`.)
 
-`certify_policy_faithfulness` is a typed 3-verdict artifact (CERTIFIED_EQUIVALENT / REFUTED-with-a-distinguishing-input / OUT_OF_FRAGMENT) composing z3 + Gröbner + the Lean kernel (lineage PCP/IP, Rice, Gröbner/Farkas). On an N=18 policy corpus across 8 compliance domains it *decides* all 18 and agrees with the z3 ground truth. But the engine *is* z3, so that is a consistency check, not an accuracy claim. Two results do carry. Every verdict is a checkable artifact; and against the independent judge oracle the outcome is a kept null (the N=5 witness gap, 3/3-vs-2/3, did not replicate, and at N=18 the judge matched 18/18, 9/9). The guarantee is soundness: a decision-procedure certificate, where the judge gives only an unguaranteed opinion. That, not a leaderboard number, is the claim. The same trichotomy drives a transport-to-decidability router with a decidable-fraction lift of +3 (portfolio 5/7 vs single-theory 2/7) on a mixed math+policy seed (`results/{certify_policy_corpus_run,decidability_router}.md`).
+`certify_policy_faithfulness` is a typed 3-verdict artifact (CERTIFIED_EQUIVALENT / REFUTED-with-a-distinguishing-input / OUT_OF_FRAGMENT) composing z3 + Gröbner + the Lean kernel (lineage PCP/IP, Rice, Gröbner/Farkas). On an N=18 policy corpus across 8 compliance domains it *decides* all 18 and agrees with the z3 ground truth. But the engine *is* z3, so that is a consistency check, not an accuracy claim. Two results do carry. Every verdict is a checkable artifact; and against the independent judge oracle the outcome is a kept null (the N=5 witness gap, 3/3-vs-2/3, did not replicate, and at N=18 the judge matched 18/18, 9/9). The guarantee is soundness: a decision-procedure certificate, where the judge gives only an unguaranteed opinion. That is the claim, ahead of any leaderboard number. The same trichotomy drives a transport-to-decidability router with a decidable-fraction lift of +3 (portfolio 5/7 vs single-theory 2/7) on a mixed math+policy seed (`results/{certify_policy_corpus_run,decidability_router}.md`).
 
 ## Receipts: through the wired kernel and governance
 
@@ -69,7 +69,7 @@ wired functions; no re-implemented per-experiment battery.
 
 ## Near-term scope: decidable systems assurance
 
-The use cases rank by decidability, not market size:
+The use cases rank by decidability:
 
 - Strongest now: Cloud IAM / access-policy verification. Policies are decidable (linear/boolean), which
   is exactly z3 QE's domain. "Is there any scenario where a terminated contractor can read prod?" is a

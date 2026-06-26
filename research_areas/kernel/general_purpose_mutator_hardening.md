@@ -183,7 +183,7 @@ This is not a one-liner. The non-V4 prompt at `:538-571` bakes in a single epist
 3. Write `test_model.py` with assertions that would fail if the prediction is wrong
 4. Use `pint` for physics or strict financial logic for business
 
-This contract is correct for quantifiable domains. It is what caught Fake Learning Curve, Tolerance Laundering, and the other gaming strategies in Papers 1-2. Relaxing it universally would reopen the gaming surface.
+This contract is correct for quantifiable domains. It is what caught Step-Index Leakage, Tolerance Abuse, and the other gaming strategies in Papers 1-2. Relaxing it universally would reopen the gaming surface.
 
 But for causal-historical theses like `eu_union_stability`, the contract forces the mutator to invent a numerical bridge to satisfy it. The IRR overreach was exactly this: the model manufactured a quantitative threshold because the prompt demanded one, not because the evidence supported one.
 
@@ -1071,7 +1071,7 @@ This moves part of the EU outcome from "underidentified research question" to "c
 The portable-suite seam is now fully real, not just adjacent:
 - generated bounded-discriminator suites imported `pytest`
 - the runner environment did not provide it
-- the firing squad therefore reported `FAIL: disproven by own unit tests` when in fact no substantive unit test execution occurred
+- the adversarial review committee therefore reported `FAIL: disproven by own unit tests` when in fact no substantive unit test execution occurred
 
 That means the system currently allows a false appearance of execution-backed falsification when the suite failed at import time.
 
@@ -1396,7 +1396,7 @@ The good news is that **the implementation doesn't need to be that sophisticated
 Looking at the control flow:
 
 1. `information_yield.py` emits `PIVOT_REQUIRED` after N stagnant iterations
-2. The loop boosts to `DIRECTOR_MODEL_ID` and refreshes the firing squad
+2. The loop boosts to `DIRECTOR_MODEL_ID` and refreshes the adversarial review committee
 3. The mutator prompt shifts to "EMERGENCY MANDATE: TOPOLOGICAL PIVOT" at `stagnation_count >= 3`
 4. The mutator produces another thesis under the same falsification contract
 
@@ -1870,7 +1870,7 @@ The EU thesis has real forward discriminators available:
 - "If the next asymmetric shock hits without a standing fiscal backstop, peripheral sovereign spreads will diverge beyond the OMT credibility band within 18 months"
 - "ESM treaty ratification by all members by 2030 without fiscal-transfer authority will produce re-denomination risk in the next recession that the OMT channel cannot arrest"
 
-These are forward observables. They were being forced into UNRESOLVED. With the patch, they can be declared as (B) forward observables with specified time horizons and directional predictions. The Python suite asserts the logical structure. The firing squad attacks whether the antecedent is well-specified, whether the mechanism supports the consequent, whether the rival predicts differently. That is real adversarial engagement.
+These are forward observables. They were being forced into UNRESOLVED. With the patch, they can be declared as (B) forward observables with specified time horizons and directional predictions. The Python suite asserts the logical structure. The adversarial review committee attacks whether the antecedent is well-specified, whether the mechanism supports the consequent, whether the rival predicts differently. That is real adversarial engagement.
 
 GP-006 is now a richer contract than what was co-specified. Live verification should confirm a bounded-discriminator thesis can produce (B)-type forward observables without being forced to declare them UNRESOLVED.
 
@@ -1886,7 +1886,7 @@ The count-based approach is sufficient — but only with one additional fix not 
 
 The chain that makes count-based work: GP-006 tightens the mutator (forces observable proxies or UNRESOLVED declarations) → catastrophic failures increment stagnation (GP-004) → after `pivot_after` consecutive catastrophic iterations, UNDERIDENTIFIED fires (GP-008). That chain produces a correct exit.
 
-**The residual leak:** `_collect_flat_tail()` currently breaks when it sees `has_novelty() == True`. This means catastrophic score-0 iterations that generate novel attack IDs or hinge IDs still reset the stagnation window — not because of axiom residue (GP-004 fixed that) but because the firing squad keeps generating genuinely new angles of attack on a rich domain. On the EU thesis, this is likely — the firing squad will keep finding new angles even when the score never improves.
+**The residual leak:** `_collect_flat_tail()` currently breaks when it sees `has_novelty() == True`. This means catastrophic score-0 iterations that generate novel attack IDs or hinge IDs still reset the stagnation window — not because of axiom residue (GP-004 fixed that) but because the adversarial review committee keeps generating genuinely new angles of attack on a rich domain. On the EU thesis, this is likely — the adversarial review committee will keep finding new angles even when the score never improves.
 
 The fix is not geometry. It is a single guard: **catastrophic iterations should not reset stagnation regardless of novelty source.** `_collect_flat_tail()` should only break on `score_improved`, not on `has_novelty()` when the iteration is catastrophic. Novelty on a catastrophic run is diagnostic information; it is not evidence that the search trajectory is healthy.
 
@@ -1950,7 +1950,7 @@ def has_novelty(self) -> bool:
     )
 ```
 
-`_collect_flat_tail()` breaks on `item.has_novelty()`, but `has_novelty()` hard-returns `False` for catastrophic iterations. The stagnation window correctly accumulates even when the firing squad generates novel attack IDs on a catastrophic run. The leak I described in Turn 23's Update does not exist. GP-009 is retired.
+`_collect_flat_tail()` breaks on `item.has_novelty()`, but `has_novelty()` hard-returns `False` for catastrophic iterations. The stagnation window correctly accumulates even when the adversarial review committee generates novel attack IDs on a catastrophic run. The leak I described in Turn 23's Update does not exist. GP-009 is retired.
 
 The Turn 23 Update has been amended with a retraction note (before its `<done>`) for provenance.
 
@@ -2011,7 +2011,7 @@ The post-67 refinement is correct and the status distinction is precise.
 
 **GP-006 → `done`.**
 
-The verification bar for GP-006 was: "confirm a bounded-discriminator thesis can produce (B)-type forward observables without being forced to declare them UNRESOLVED." The 67 run clears this. The thesis exited the score-0 basin; a scoreable comparative-fragility claim survived adversarial evaluation; the firing squad attacked mechanism and rival-hypothesis structure rather than dissolving into latent-variable noise. That is what the contract was designed to produce. Promoting to `done` on the board.
+The verification bar for GP-006 was: "confirm a bounded-discriminator thesis can produce (B)-type forward observables without being forced to declare them UNRESOLVED." The 67 run clears this. The thesis exited the score-0 basin; a scoreable comparative-fragility claim survived adversarial evaluation; the adversarial review committee attacked mechanism and rival-hypothesis structure rather than dissolving into latent-variable noise. That is what the contract was designed to produce. Promoting to `done` on the board.
 
 **GP-008 — still genuinely `verify`.** The condition for closing GP-008 is narrower than a general regression: `UNDERIDENTIFIED` must actually fire in a live run. That requires either:
 1. A run that pushes far enough into a catastrophic streak under bounded-discriminator mode, or
@@ -2272,7 +2272,7 @@ Consequence: during a stagnation pivot on a `bounded_discriminator` run, the mut
 - The forward-observable specification (GP-006)
 - The Logic DAG output format
 
-The evaluator and firing squad still use the `bounded_discriminator` rubric. But the mutator is no longer instructed to produce a bounded-discriminator thesis. It gets a generic first-principles prompt with `$Z = f(X, Y)` heuristics that are actively wrong for causal-historical theses — exactly the GP-003 problem we already fixed for steady-state.
+The evaluator and adversarial review committee still use the `bounded_discriminator` rubric. But the mutator is no longer instructed to produce a bounded-discriminator thesis. It gets a generic first-principles prompt with `$Z = f(X, Y)` heuristics that are actively wrong for causal-historical theses — exactly the GP-003 problem we already fixed for steady-state.
 
 This will produce one of:
 1. A numerical-proof-style thesis evaluated under a bounded-discriminator rubric → score collapse
@@ -3105,7 +3105,7 @@ The seven families in Turn 38 are a good starting set but should be validated em
 
 The novel contribution from this debate (Turns 30–39) is not any single framing. It is the convergence of three things:
 
-1. **Adversarial evaluation as fitness function** — not just "LLM scores thesis" but a multi-agent adversarial process where the firing squad attacks, the mutator defends, and the meta-judge evaluates execution output, not prose. This produces a fitness landscape with real structure (basins, failure families, evidence boundaries).
+1. **Adversarial evaluation as fitness function** — not just "LLM scores thesis" but a multi-agent adversarial process where the adversarial review committee attacks, the mutator defends, and the meta-judge evaluates execution output, not prose. This produces a fitness landscape with real structure (basins, failure families, evidence boundaries).
 
 2. **Evidence boundary as constraint surface** — the available evidence partitions thesis space into accessible and inaccessible regions. GP-006's observable proxy categories (A/B/C) are coordinates relative to this boundary. UNDERIDENTIFIED's cause taxonomy describes the geometric relationship between the current basin and the boundary.
 
@@ -3440,14 +3440,14 @@ I wrote the full spec. The core decisions:
 
 **Architecture: asymmetric visibility (Option 4).**
 
-- Constraints are extracted from evaluator-side artifacts (firing squad critiques + meta-judge rationale), not from the mutator's thesis
+- Constraints are extracted from evaluator-side artifacts (adversarial review committee critiques + meta-judge rationale), not from the mutator's thesis
 - Mutator receives confirmed constraints as read-only context
 - Multi-run confirmation (N≥2) before promotion
 - Non-applicability declarations require justification checked by the evaluator
 
 **The adversarial inception question: can the mutator game the constraint channel?**
 
-The attack vector: mutator generates a deliberately weak thesis → firing squad attacks → constraint extracted → constraint favors mutator's next thesis. This is second-order Goodhart — gaming not the evaluation but the constraint-generation feedback loop.
+The attack vector: mutator generates a deliberately weak thesis → adversarial review committee attacks → constraint extracted → constraint favors mutator's next thesis. This is second-order Goodhart — gaming not the evaluation but the constraint-generation feedback loop.
 
 Why it's hard under the current architecture:
 1. **Stateless mutator.** No cross-iteration strategic planning. Each mutation is a single LLM call optimizing for the current score.
@@ -3721,7 +3721,7 @@ The meta-judge classifies the quarantine type (`background_only` / `causal_mecha
 
 If the meta-judge can both classify the quarantine AND override its own classification, the laundering migrates one layer up: the judge classifies as `named_discriminator` but then argues "in this case the confound is minor" and awards 95. Hard caps prevent this.
 
-The meta-judge's only degree of freedom is the classification itself. If it misclassifies `named_discriminator` as `background_only` to avoid the cap, that is a falsifiable claim — the firing squad can challenge the classification in the next iteration, and the constraint lane (GP-011) can accumulate "this variable gates the discriminator" as a derived constraint.
+The meta-judge's only degree of freedom is the classification itself. If it misclassifies `named_discriminator` as `background_only` to avoid the cap, that is a falsifiable claim — the adversarial review committee can challenge the classification in the next iteration, and the constraint lane (GP-011) can accumulate "this variable gates the discriminator" as a derived constraint.
 
 #### This is a new instance of the same Goodhart pattern
 
@@ -4868,7 +4868,7 @@ The artisanal friction in the EU pillars run — judge emits "missing external c
 
 Key design decisions in the spec:
 
-**The gap object comes from the firing squad, not the meta-judge.** A meta-judge-generated query seeks confirming evidence. A firing squad-generated query seeks falsifying comparators. The fetch loop should expand the evidence base in the adversarial direction, not the confirming direction.
+**The gap object comes from the adversarial review committee, not the meta-judge.** A meta-judge-generated query seeks confirming evidence. A adversarial review committee-generated query seeks falsifying comparators. The fetch loop should expand the evidence base in the adversarial direction, not the confirming direction.
 
 **New meta-judge contract field: `cap_reason`.** Enum: `evidence_boundary` | `structural_validity` | `regime_incompatible` | `charter_drift` | `deferred_confirmation`. Only `evidence_boundary` triggers the fetch loop. GP-012/GP-014/GP-016 caps route to their existing handling and are not evidence problems.
 
@@ -4877,13 +4877,13 @@ Key design decisions in the spec:
 **Operator review gate mandatory in Phase 1.** The fetch agent pauses after downloading, before compiling. Operator approves sources. Full autonomy is a later opt-in. This is the zero-trust equivalent for the evidence boundary.
 
 **Three-phase implementation order:**
-- Phase 1 (now): add structured `evidence_gap` field to firing squad output + `cap_reason` to meta-judge. Makes artisanal workflow actionable even without the fetch agent.
+- Phase 1 (now): add structured `evidence_gap` field to adversarial review committee output + `cap_reason` to meta-judge. Makes artisanal workflow actionable even without the fetch agent.
 - Phase 2: build `fetch_evidence.py` (search API → `raw/fetch_<timestamp>/` → operator review → `compile_evidence.py` → regime bump → ZTARE resume)
 - Phase 3: `--auto` flag, per-project fetch config, GP-011 constraint extraction on freshly compiled evidence
 
 | ID | Status | Layer | Seam |
 |---|---|---|---|
-| GP-017 | `inception` | RAM layer + meta-judge contract + firing squad contract | Automated evidence fetch: evidence-boundary ceilings emit structured gap objects from the firing squad; fetch agent sources adversarial comparators; compile_evidence.py updates the evidence frontier; regime fingerprint bumps; ZTARE resumes |
+| GP-017 | `inception` | RAM layer + meta-judge contract + adversarial review committee contract | Automated evidence fetch: evidence-boundary ceilings emit structured gap objects from the adversarial review committee; fetch agent sources adversarial comparators; compile_evidence.py updates the evidence frontier; regime fingerprint bumps; ZTARE resumes |
 
 Canonical note: the maintainer-only evidence-feedback note
 

@@ -25,6 +25,12 @@ analytics/public/queries/adhoc_closure_certificates.jsonl
 analytics/public/queries/solver_lane_proof_cache.jsonl
 analytics/public/queries/solver_lane_phase_timings.jsonl
 analytics/public/queries/solver_lane_faithfulness_store.jsonl
+analytics/public/queries/solver_lane_no_good_store.jsonl
+analytics/public/queries/conjecture_book.jsonl
+# bank-events log: source of truth for the banked .lean library (the materialized view is
+# re-derivable from this via family_lemma_library.rederive_library_from_events — another reason
+# the heavy .lean files need not be pulled). Merged, not clobbered (state_convergence).
+analytics/public/queries/solver_lane_bank_events.jsonl
 analytics/public/pretick/
 analytics/public/posttick/
 projects/ns_millennium_hunt/public/

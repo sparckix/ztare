@@ -3,12 +3,12 @@ description: "Running the AI-org runtime on a VPS/clean machine via Docker."
 ---
 # Org Runtime Docker Deploy
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 This guide is for running the AI-org runtime on a VPS or clean machine. It is
 not specific to scientific work. The same `org/` skeleton can run a research
 lab, travel agency, fintech team, or internal enterprise workflow. ZTARE is the
-default backend in this repo, not a requirement of the org primitive.
+default backend in this repo. It is not a requirement of the org primitive.
 
 ---
 
@@ -27,7 +27,7 @@ what happened.
 
 ---
 
-## Build The Image
+## Build the image
 
 From the repo root:
 
@@ -52,7 +52,7 @@ CLI on the host and run the daemon outside Docker.
 
 ---
 
-## Prepare The VPS
+## Prepare the VPS
 
 On a clean Ubuntu VPS:
 
@@ -78,7 +78,7 @@ docker compose build research-director-daemon
 
 ---
 
-## Bring Private Org State
+## Bring private org state
 
 The public repo is not enough. Tasks and mandates are filesystem state. The VPS
 daemon can only see what exists in its checkout.
@@ -122,7 +122,7 @@ The current single-team backend is files.
 
 ---
 
-## Configure Environment
+## Configure environment
 
 Create `.env` on the VPS. Do not commit it.
 
@@ -183,7 +183,7 @@ Expected result: the daemon lists candidate work and stops before mutation.
 
 ---
 
-## Run The Research Director
+## Run the research director
 
 Approval-gated:
 
@@ -215,7 +215,7 @@ task is already in autonomous scope.
 
 ---
 
-## How Tasks Move
+## How tasks move
 
 1. Put a task in `org/tasks/pending/<task_id>.md`.
 2. Daemon discovers it.
@@ -230,21 +230,21 @@ For generic org routing, see `org/tasks/README.md`.
 
 ---
 
-## Common Failure Modes
+## Common failure modes
 
-- **No task appears:** the task was never synced to the VPS checkout.
-- **Daemon runs but no work executes:** gate approval is pending, or
+- No task appears: the task was never synced to the VPS checkout.
+- Daemon runs but no work executes: gate approval is pending, or
   `ZTARE_UNATTENDED` is empty.
-- **Agent CLI missing:** the image contains Claude by default; other CLIs must
+- Agent CLI missing: the image contains Claude by default; other CLIs must
   be installed separately.
-- **Auth failure:** the container has API keys but the CLI may still require
+- Auth failure: the container has API keys but the CLI may still require
   its own auth/session.
-- **Results not visible locally:** sync `org/tasks/`, `org/sessions/`, and
+- Results not visible locally: sync `org/tasks/`, `org/sessions/`, and
   `ztare_workspace/` back from the VPS.
 
 ---
 
-## Kernel Boundary
+## Kernel boundary
 
 The Docker image runs the org kernel. It should not encode company policy.
 

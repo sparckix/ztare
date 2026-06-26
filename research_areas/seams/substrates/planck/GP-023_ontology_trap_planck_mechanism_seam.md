@@ -65,13 +65,13 @@ The structural question is whether this pattern — generation by constraint fai
    
    With this fix, the orthogonal-shock claim is now unconditionally true for the GP-023 test regime. The fix was independently justified — it would have been correct even without GP-023 — but GP-023 is what surfaced it. This is itself a small instance of the seam's core thesis: holding ZTARE's limits as empirical questions inside the kernel produces better kernel engineering as a side effect.
 
-4. **Anchor-proxy filter on hallucinated patches.** This is the decisive piece. LLMs under heavy constraint do produce composite concepts and dummy variables. The standard response in ordinary use is to call those outputs hallucinations and discard them. The Firing Squad does something different: it does not discard, it *demands an anchor proxy*. A hallucinated variable that cannot map to an observable is killed by GP-012. A hallucinated variable that *can* map is no longer noise — it is a structural placeholder with empirical commitments. That is exactly what Planck eventually had to do to defend `E = hν`.
+4. **Anchor-proxy filter on hallucinated patches.** This is the decisive piece. LLMs under heavy constraint do produce composite concepts and dummy variables. The standard response in ordinary use is to call those outputs hallucinations and discard them. The adversarial review committee does something different: it does not discard, it *demands an anchor proxy*. A hallucinated variable that cannot map to an observable is killed by GP-012. A hallucinated variable that *can* map is no longer noise — it is a structural placeholder with empirical commitments. That is exactly what Planck eventually had to do to defend `E = hν`.
 
 The historical Planck precedent fits this structure point-for-point. None of the four components needs to be invented. The only unknown is whether they compose in practice.
 
 ### What is actually unknown
 
-The genuinely unknown step is **step 4 firing on a paradigm-grade hallucination, not just an ordinary one.** The Firing Squad demanding anchor proxies is something we built for other reasons; whether it converts a paradigm-grade hallucination into an anchored structural placeholder, or whether it just kills the patch without productive bridging, is empirical.
+The genuinely unknown step is **step 4 firing on a paradigm-grade hallucination, not just an ordinary one.** The adversarial review committee demanding anchor proxies is something we built for other reasons; whether it converts a paradigm-grade hallucination into an anchored structural placeholder, or whether it just kills the patch without productive bridging, is empirical.
 
 Subsidiary unknowns:
 
@@ -434,7 +434,7 @@ No further open questions on GP-023 Phase 1 from my side until the run ends. Tur
 Phase 1 stopped at iter 31 of 100. Reading the Phase 1 log against the questions Turn 8 left open:
 
 - The iter-4/5 champion (score 95) **did hold** as the high-water mark; no later iter unseated it. But re-reading `champion_eval_results.json`, the rationalization that scored it (`"psi=1.8 data range insufficient"`) is exactly the judge-softening attack surface Turns 5–8 identified, not a Planck-mechanism event. The 95 is a **GP-030 datum**, not a GP-023 datum.
-- No later iter discovered an exp-family denominator. The mutator did not produce a structurally novel composite that survived the Firing Squad. The Planck regime, if it exists, was not visited in 31 iters.
+- No later iter discovered an exp-family denominator. The mutator did not produce a structurally novel composite that survived the adversarial review committee. The Planck regime, if it exists, was not visited in 31 iters.
 - No later judge event rejected the data-range-insufficient rationalization. This is the decisive failure: the judge had no deterministic gate to fail-closed against the rationalization, so the rationalization compounded rather than being killed. That is the GP-030 gap, made concrete.
 - The `max |I_obs - I_model| < 0.05` residual on psi=1.8 at high phi never dropped below 0.05 in the recorded history, but the harness collapse at iter 32 (`test_model.py: IndexError`, see `latest_eval_results.json`) means we cannot trust the unverified runs as evidence either way. The harness fragility is a real finding orthogonal to the primary question.
 

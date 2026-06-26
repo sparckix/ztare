@@ -11,7 +11,7 @@
 
 ZTARE runs produce failure signals from two independent paths:
 
-1. **Judge path.** Meta-judge and firing_squad emit process/compliance constraints into `workspace/derived_constraints.json` after each iteration. These answer "what did this iteration get wrong in how it built the thesis?"
+1. **Judge path.** Meta-judge and committee emit process/compliance constraints into `workspace/derived_constraints.json` after each iteration. These answer "what did this iteration get wrong in how it built the thesis?"
 2. **Fit path.** The fit primitive emits structural family tracking into `workspace/structural_memory.json`. Each tried family carries a normalized `family_label`, a residual, and a diagnostic classification (`structural_misfit` / `parametric_noise` / etc.). These answer "what did this iteration get wrong in the mathematical form of the candidate?"
 
 The design assumption was that (1) and (2) together would give the mutator a complete picture of each iteration's failure — one linguistic, one structural — and that a single sequential loop reading both would converge on a candidate that satisfies both layers.

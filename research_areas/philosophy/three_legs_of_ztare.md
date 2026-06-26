@@ -114,7 +114,7 @@ What this rules out: scoring by description length alone. The test surface must 
 
 This is the leg Gemini's synthesis missed and the one the [GP-042](../seams/engine/mutator/GP-042_mutator_structural_diversity_seam.md) / debate-log work exposed. Invert + Compress together still leave a single verifier in the loop, and a single verifier is gameable — we have the labeled dataset to prove it. The third leg is:
 
-- **Firing Squad** — independent judges scoring the same candidate, disagreement is signal
+- **Adversarial review committee** — independent judges scoring the same candidate, disagreement is signal
 - **Meta-Judge** — a judge of judges when the verification panel splits
 - **Semantic escalation gate** — the human-authored escalation surface where the apparatus admits it cannot decide alone
 

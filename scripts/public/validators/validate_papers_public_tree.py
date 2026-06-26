@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +24,7 @@ ROOT_ALLOWED_FILES = {"README.md"}
 PUBLIC_COLLECTION_DIRS = {"case_studies"}
 
 MANUSCRIPT_EXTS = {".md", ".tex", ".bib", ".pdf"}
+ROOT_FIGURE_EXTS = {".jpeg", ".jpg", ".png", ".svg", ".webp"}
 COLLECTION_EXTS = {".md", ".py", ".json", ".pdf"}
 EVIDENCE_EXTS = {
     ".bib",
@@ -108,8 +110,8 @@ def classify_file(path: Path) -> str | None:
         return None
 
     if len(parts) == 2:
-        if path.suffix not in MANUSCRIPT_EXTS:
-            return "paper root files must be .md, .tex, .bib, or .pdf"
+        if path.suffix not in MANUSCRIPT_EXTS | ROOT_FIGURE_EXTS:
+            return "paper root files must be manuscript files or figure images"
         return None
 
     subdir = parts[1]
@@ -125,23 +127,27 @@ def classify_file(path: Path) -> str | None:
     return "paper subdirectories must be evidence/ or figures/"
 
 
+def tracked_public_files(root: Path) -> list[Path]:
+    proc = subprocess.run(
+        ["git", "ls-files", "--", str(root.relative_to(REPO))],
+        cwd=REPO,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if proc.returncode != 0:
+        return sorted(path for path in root.rglob("*") if path.is_file())
+    return sorted((REPO / line.strip()) for line in proc.stdout.splitlines() if line.strip())
+
+
 def validate(root: Path) -> list[Finding]:
     findings: list[Finding] = []
     if not root.exists():
         return [Finding(rel(root), "papers/ directory is missing")]
 
-    for path in sorted(root.rglob("*")):
-        if path.is_dir():
-            if path.name in DISALLOWED_DIR_NAMES:
-                findings.append(Finding(rel(path), "working/build/submission directories are not allowed under papers/"))
-                continue
-            parts = path.relative_to(root).parts
-            if len(parts) >= 2 and parts[0] not in PUBLIC_COLLECTION_DIRS:
-                subdir = parts[1]
-                if subdir not in ALLOWED_PAPER_SUBDIRS:
-                    findings.append(Finding(rel(path), "paper subdirectories must be evidence/ or figures/"))
+    for path in tracked_public_files(root):
+        if not path.exists():
             continue
-
         reason = classify_file(path)
         if reason:
             findings.append(Finding(rel(path), reason))

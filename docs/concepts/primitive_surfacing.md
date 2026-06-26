@@ -2,13 +2,14 @@
 description: "How reusable code capabilities enter the primitive catalog, semantic atlas, and Research Director briefing without duplicating implementations."
 ---
 
-## Reusable Capabilities And Primitive Surfacing
+## Reusable capabilities and primitive surfacing
 
 This page answers one practical question: when the repo already has a useful
-capability, how does a cold Research Director find it instead of rebuilding it?
+capability, how does a cold Research Director find it and reuse it?
 
-There are two parts. First, the capability should have one general engine and
-many consumers, not one implementation per subject. Second, that engine must
+There are two parts. First, the capability should have one general engine with
+many consumers configuring it, so each subject stays a caller of that single
+engine. Second, that engine must
 enter the catalog, semantic atlas, and RD briefing surface, otherwise it exists
 in code but not in memory.
 
@@ -16,22 +17,23 @@ in code but not in memory.
 
 Use this rule to decide what gets surfaced:
 
-1. **One engine per capability.** The engine is the interface and the primitive
+1. One engine per capability. The engine is the interface and the primitive
    worth surfacing. Examples: `ztare.fit.mdl.MDLLibrary`, `bic`,
    `bic_from_loglik`, and `ztare.common.constraint_isomorphism.IsomorphismLoop`.
-2. **Consumers specialize the engine by configuration or composition.** Pass a
+2. Consumers specialize the engine by configuration or composition. Pass a
    function/dataclass such as `size_fn`, `oracle_fn`, `failure_state`, or
-   `forbidden_domain`; do not fork a parallel per-subject implementation.
-3. **A consumer is not the primitive.** Surface the engine and its general entry
-   point, not a subject-specific wrapper.
-4. **The subject is input.** A substrate, research seam, or LeanMill use case
-   configures the general domain; it does not become its own domain by default.
+   `forbidden_domain`. Do not fork a parallel per-subject implementation.
+3. The primitive worth surfacing is the engine, reached through its general
+   entry point. A consumer or subject-specific wrapper sits one layer above it
+   and stays out of the catalog.
+4. The subject is input. A substrate, research seam, or LeanMill use case
+   configures the general domain and does not become its own domain by default.
 
 Worked unifications:
 - The curve-fit BIC was inlined 3× → de-duped to `mdl.bic` (proven byte-identical), and `bic_from_loglik` is the general likelihood form with `bic` as the Gaussian special case.
-- `fit/analogy.py` (ANALOGY: match any field) and `fit/cold_llm_erdos_seed.py` (DEANCHOR: forbid home + adjacent → the orthogonal jump) are two settings of `IsomorphismLoop`'s `forbidden_domain` knob (None vs set), **not two systems**.
+- `fit/analogy.py` (ANALOGY: match any field) and `fit/cold_llm_erdos_seed.py` (DEANCHOR: forbid home + adjacent → the orthogonal jump) are one system under two settings of `IsomorphismLoop`'s `forbidden_domain` knob (None vs set).
 
-Lived error (do not repeat): `LeanMillArchitectureDomain` was built as a parallel class AND surfaced as a primitive — wrong on both counts. Deleted; leanmill is now config (`failure_state` + future `oracle_fn`) to the general RD `ResearchDomain` / `surface_for_research_ceiling`. Corollary: the constraint-isomorphism "strange loop" is an **RD/architecture** tool that takes a SYSTEM ceiling as input — it does NOT run inside the solver per-proof (that was an overreach; a stuck proof needs a lemma/tactic, and the per-proof invent-mode was already reverted as non-probative).
+Lived error (do not repeat): `LeanMillArchitectureDomain` was built as a parallel class AND surfaced as a primitive, wrong on both counts. Deleted. Leanmill is now config (`failure_state` + future `oracle_fn`) to the general RD `ResearchDomain` / `surface_for_research_ceiling`. Corollary: the constraint-isomorphism "strange loop" is an RD/architecture tool that takes a SYSTEM ceiling as input. It does NOT run inside the solver per-proof (that was an overreach: a stuck proof needs a lemma/tactic, and the per-proof invent-mode was already reverted as non-probative).
 
 ### 1. System Map
 
@@ -84,7 +86,7 @@ taxonomy layer (`primitive_catalog_taxonomy.py`), one semantic index
                                ▼
         ┌─────────────────────────────────────────────┐
         │ primitive_tick_surface.build/write           │  proactive cold-RD briefing
-        │   reads architecture_index.jsonl rows        │  (CONSUMER — does NOT scan src/)
+        │   reads architecture_index.jsonl rows        │  (CONSUMER, does NOT scan src/)
         │   ranks via precheck() (sem dominates)        │
         │   adds semantic parent nodes from             │
         │   primitive_family_registry.py                │
@@ -99,22 +101,22 @@ taxonomy layer (`primitive_catalog_taxonomy.py`), one semantic index
 ```
 
 Key wiring facts (verified in source):
-- `primitive_tick_surface.py` is a READER/CONSUMER of `architecture_index.jsonl` (it imports `precheck` from `primitive_amnesia` and ranks by the semantic score; it does NOT scan `src/ztare/`). The try/except SILENTLY falls back to lexical if the embedder fails.
-- The actual catalog BUILDER is `primitive_amnesia.populate_catalog()` — AST-extracts public defs/classes from `PRIMITIVE_MODULES` (explicit list) + `PRIMITIVE_DIRS` (5 swept dirs) and appends rows.
-- `src/ztare/common/` is NOT in `PRIMITIVE_DIRS` — common-dir primitives are invisible to the sweep unless explicitly listed in `PRIMITIVE_MODULES` (this is why `constraint_isomorphism.py` is listed there by hand).
+- `primitive_tick_surface.py` is a READER/CONSUMER of `architecture_index.jsonl` (it imports `precheck` from `primitive_amnesia` and ranks by the semantic score; it does NOT scan `src/ztare/`). The try/except silently falls back to lexical if the embedder fails.
+- The actual catalog BUILDER is `primitive_amnesia.populate_catalog()`, which AST-extracts public defs/classes from `PRIMITIVE_MODULES` (explicit list) + `PRIMITIVE_DIRS` (5 swept dirs) and appends rows.
+- `src/ztare/common/` is NOT in `PRIMITIVE_DIRS`. Common-dir primitives are invisible to the sweep unless explicitly listed in `PRIMITIVE_MODULES` (this is why `constraint_isomorphism.py` is listed there by hand).
 - `primitive_catalog_taxonomy.py` is the full-catalog generated taxonomy. It derives `source_category` (implementation location) and `semantic_family` (research role), exposes catalog parent nodes, and checks duplicate/stale surfaces. It does not rewrite identity or ownership of rows.
 - `primitive_family_registry.py` is the narrower LLM-mediated PARENT-NODE overlay. It groups dispatchable LLM/agent workers into MECE families (`core_workbench_worker`, `external_perspective_generator`, `review_governance_helper`, `composition_helper`) and preserves each child module/path identity so the atlas and architecture index do not drift. Its `--check` mode validates that card module paths and entrypoints still exist.
-- Embeddings and subscription agents may propose related-capability edges, but they should not own the ontology. Promotion into taxonomy should be a deterministic rule or explicit curated mapping; dynamic semantic pairing belongs in review reports until stabilized.
+- Embeddings and subscription agents may propose related-capability edges, but they should not own the ontology. Promotion into taxonomy should be a deterministic rule or explicit curated mapping. Dynamic semantic pairing belongs in review reports until stabilized.
 
 ### 2. How To Wire A New Primitive
 
 Decide the case:
-- **Case (a):** primitive lives in an auto-scanned dir (`research_director`, `validator/core`, `motion`, `fit`, `leanmill/solver`) and is a public def/class.
-- **Case (b):** primitive lives anywhere else (notably `src/ztare/common/`, `framer/`, `product_exports/`, top-level `experiment_stats.py`). It is not swept automatically, so name it in `PRIMITIVE_MODULES`.
+- Case (a): primitive lives in an auto-scanned dir (`research_director`, `validator/core`, `motion`, `fit`, `leanmill/solver`) and is a public def/class.
+- Case (b): primitive lives anywhere else (notably `src/ztare/common/`, `framer/`, `product_exports/`, top-level `experiment_stats.py`). It is not swept automatically, so name it in `PRIMITIVE_MODULES`.
 
 The noise filter (`_is_quality_primitive`) drops utility-named functions (`_*`, `*test*`, `parse`, `load`, `save`, `read`, `write`, `get_`, `set_`, `hash`, ...), unless the name is a key in `WHEN_TO_USE`. A high-value primitive with a generic name needs a `WHEN_TO_USE` entry to survive the sweep.
 
-#### Case (a) — gate/miner/op in an auto-scanned dir
+#### Case (a): gate/miner/op in an auto-scanned dir
 ```bash
 cd .
 # 1. (recommended) add a WHEN_TO_USE effect-alias so a TASK-phrased query finds it.
@@ -126,7 +128,7 @@ python -m ztare.research_director.primitive_amnesia --build-atlas --embedder gem
 python -m ztare.research_director.primitive_catalog_taxonomy
 ```
 
-#### Case (b) — curated primitive in a NON-scanned dir (e.g. `src/ztare/common/`)
+#### Case (b): curated primitive in a NON-scanned dir (e.g. `src/ztare/common/`)
 ```bash
 # 1. add "src/ztare/common/your_module.py" to primitive_amnesia.PRIMITIVE_MODULES.
 # 2. add a WHEN_TO_USE alias (also sets impact_factor_expost=3 → ranks above swept=1).
@@ -135,7 +137,7 @@ python -m ztare.research_director.primitive_amnesia --repopulate
 python -m ztare.research_director.primitive_amnesia --build-atlas --embedder gemini-code
 ```
 
-#### Both cases — propagate to the human-facing surfaces
+#### Both cases: propagate to the human-facing surfaces
 ```bash
 # 5. refresh the rendered human/lexical index (routinely hours stale):
 python scripts/public/control/render_architecture_index.py
@@ -144,12 +146,12 @@ python -c "from ztare.research_director.primitive_tick_surface import write_prim
 ```
 
 #### If it is also a named CAPABILITY or an RD MOVE
-- **Capability:** hand-add a subsection to `docs/concepts/capabilities.md` (name, one-line, module link, role). Entirely hand-written; no generator.
-- **RD MOVE:** create `org/patterns/PATTERN-NNN_name.md` (frontmatter: `id`,`name`,`version`,`triggers`,`problem_classes`,`spawn`) → `python -m ztare.orchestration.pattern_catalog_indexer` (writes `org/runtime/pattern_catalog.yaml`; do not hand-edit the generated file) → hand-wire the trigger into `org/menu/orchestration_menu.yaml`.
+- Capability: hand-add a subsection to `docs/concepts/capabilities.md` (name, one-line, module link, role). Entirely hand-written with no generator.
+- RD MOVE: create `org/patterns/PATTERN-NNN_name.md` (frontmatter: `id`,`name`,`version`,`triggers`,`problem_classes`,`spawn`) → `python -m ztare.orchestration.pattern_catalog_indexer` (writes `org/runtime/pattern_catalog.yaml`; do not hand-edit the generated file), then hand-wire the trigger into `org/menu/orchestration_menu.yaml`.
 
 #### Verification
 
-A "no match" result is not meaningful if the embedder is dead; in that case the
+A "no match" result is not useful if the embedder is dead. In that case the
 system has fallen back to lexical search.
 ```bash
 python -m ztare.research_director.primitive_amnesia --semantic-live     # expect SEMANTIC_LIVE=true
@@ -162,7 +164,7 @@ python -m ztare.research_director.primitive_amnesia --eval --record-misses  # ap
 
 ### 3. Staleness & health
 
-Regen commands: jsonl/taxonomy fields → `--repopulate`; atlas → `--build-atlas`; taxonomy/duplicate/staleness check → `primitive_catalog_taxonomy`; INDEX.md → `render_architecture_index.py`; rd_tick surface → `write_primitive_tick_surface()`; pattern_catalog → `pattern_catalog_indexer`; `graph.yaml` is MANUAL.
+Regen commands: jsonl/taxonomy fields → `--repopulate`, atlas → `--build-atlas`, taxonomy/duplicate/staleness check → `primitive_catalog_taxonomy`, INDEX.md → `render_architecture_index.py`, rd_tick surface → `write_primitive_tick_surface()`, pattern_catalog → `pattern_catalog_indexer`. `graph.yaml` is MANUAL.
 
 | Artifact | Auto/Manual | Stale when | 
 |---|---|---|
@@ -174,7 +176,7 @@ Regen commands: jsonl/taxonomy fields → `--repopulate`; atlas → `--build-atl
 | `graph.yaml` | MANUAL append-only | `last_updated` field vs live work |
 | `capabilities.md` / `orchestration_menu.yaml` | MANUAL | module paths drift / `rd_pattern_audit` reconciliation |
 
-**Embedder requirement:** semantic ranking needs a live embedder:
+*Embedder requirement:* semantic ranking needs a live embedder:
 `gemini`/`gemini-code` (`GEMINI_API_KEY`/`GOOGLE_API_KEY`) or `openai`
 (`OPENAI_API_KEY`). The default is `gemini-embedding-001`, 768-dimensional,
 with asymmetric task types: docs as `RETRIEVAL_DOCUMENT`, queries as
@@ -185,8 +187,8 @@ On 2026-06-12 after target-resolvability hardening, the live held-out eval
 reported `n=29`, `resolvable=29`, `k=5`, lexical recall@5 `0.793` / MRR
 `0.659`, semantic recall@5 `1.0` / MRR `0.943`, with zero semantic misses. Use
 `--eval` as live calibration. The evaluator reports `resolvable=<n>` separately
-from total cases so a stale or unresolved target is benchmark debt, not a
-retrieval failure. Use `--eval --record-misses` to append deduped repair rows to
+from total cases so a stale or unresolved target counts as benchmark debt, on its
+own line, leaving the retrieval score uncharged for it. Use `--eval --record-misses` to append deduped repair rows to
 `analytics/public/queries/primitive_amnesia_miss_queue.jsonl`.
 
 ### 3a. Relationship to cards, patterns, and action contracts
@@ -201,7 +203,7 @@ code capabilities. That does not make primitive amnesia the owner of research ro
   confusers fit this problem surface?"
 - `pattern_action_contract.py` answers: "which source-bound fields, receipts, checks,
   and action-program slots must be paid before close?"
-- `rd_tick_brief.py` renders these surfaces; it should not grow its own trigger tables.
+- `rd_tick_brief.py` renders these surfaces and should not grow its own trigger tables.
 
 The experimental evidence in `epistemic-generation/research_log.md` favors small routed
 candidate sets and checked receipt/action fields over broad menus or labels. When a new
@@ -217,11 +219,11 @@ reusable kernel surfaces.
 
 ### 4. Gotchas
 
-1. **`src/ztare/common/` is NOT auto-swept** — add the module to `PRIMITIVE_MODULES` by hand (done for `constraint_isomorphism.py`). Same for `framer/`, `product_exports/`, top-level files.
-2. **Lexical fallback is silent in both consumers.** A dead embedder produces a degraded ranking with no error. Always `--semantic-live` before trusting a negative.
-3. **A row added or edited without re-embedding is lexically visible but NOT semantically current.** `--atlas-status` checks the catalog digest, not only row count. Always pair `--repopulate`/`--populate-catalog` with `--build-atlas`.
-4. **`INDEX.md` ≠ `jsonl`.** INDEX.md is an auto-rendered, hours-stale human view; the precheck reads the jsonl + atlas. Never judge "is my primitive registered?" from INDEX.md.
-5. **Noise filter silently drops generic names** unless they have a `WHEN_TO_USE` alias.
-6. **Curated outranks swept by design** (`impact_factor_expost=3` for aliased primitives vs `1`).
-7. **`--repopulate` only drops rows it added** (those carrying a `signature` field); curated/non-tool rows untouched.
-8. **`pattern_catalog.yaml` is generated — never hand-edit;** patch `org/patterns/*.md` and re-run the indexer. `org/` must never import ZTARE (one-way: the indexer lives in `src/ztare/`).
+1. `src/ztare/common/` is NOT auto-swept. Add the module to `PRIMITIVE_MODULES` by hand (done for `constraint_isomorphism.py`). Same for `framer/`, `product_exports/`, top-level files.
+2. Lexical fallback is silent in both consumers. A dead embedder produces a degraded ranking with no error. Always `--semantic-live` before trusting a negative.
+3. A row added or edited without re-embedding is lexically visible but NOT semantically current. `--atlas-status` checks the catalog digest, which catches content edits that leave the row count unchanged. Always pair `--repopulate`/`--populate-catalog` with `--build-atlas`.
+4. `INDEX.md` ≠ `jsonl`. INDEX.md is an auto-rendered, hours-stale human view. The precheck reads the jsonl + atlas. Never judge "is my primitive registered?" from INDEX.md.
+5. Noise filter silently drops generic names unless they have a `WHEN_TO_USE` alias.
+6. Curated outranks swept by design (`impact_factor_expost=3` for aliased primitives vs `1`).
+7. `--repopulate` only drops rows it added (those carrying a `signature` field). Curated/non-tool rows are untouched.
+8. `pattern_catalog.yaml` is generated, never hand-edit it. Patch `org/patterns/*.md` and re-run the indexer. `org/` must never import ZTARE (one-way: the indexer lives in `src/ztare/`).

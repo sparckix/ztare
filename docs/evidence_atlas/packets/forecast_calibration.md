@@ -1,11 +1,11 @@
 ---
 description: "Review packet for the LLM forecasting calibration program."
 ---
-# Forecast Calibration Packet
+# Forecast calibration packet
 
 > **Up:** [Review Packets](README.md)
 
-## Current Paper Surface
+## Current paper surface
 
 The current paper source and review bundle are organized under
 `llm-forecast-calibration-cross-corpus/`, with the lean public paper mirror at
@@ -16,7 +16,7 @@ checks, the current evidence supports a source currency measurement result,
 strict but small equal-information market comparisons that rule out raw model
 panel superiority in the present evidence, and limited uses of model-derived
 signal in calibration and pairwise relative judgment. The Gemini prompt result
-is treated as a result to replicate, not as a general prompt method.
+is treated as a replication target; it is not stated as a general prompt method.
 
 Current abstract:
 
@@ -53,7 +53,7 @@ Current abstract:
 > relative judgment, intervention, choosing among model families, open model
 > replication, and public low-overlap replication as separate tracks.
 
-## Scoped Claim
+## Scoped claim
 
 The paper makes a measurement claim and two bounded applied claims.
 
@@ -71,15 +71,15 @@ The Gemini expert-training prompt is now described as a Gemini intervention
 finding and replication target. It is not stated as a general prompting method
 because the partial Claude and staged Codex+DeepSeek checks do not reproduce it.
 
-## Evidence Level
+## Evidence level
 
 L4: controlled source currency checks, equal-information baselines,
 calibration, and pairwise-judgment evidence over tracked public or reviewable
-corpora. The paper is ready as a scoped validity manuscript, not as a broad
-model-superiority paper.
+corpora. The paper is a scoped validity manuscript with no broad
+model-superiority claim.
 
 - Source-currency evidence: matched Manifold panel with 80 contracts and 240
-  tool-free calls; post-cutoff rows score `+0.191098` Brier worse in aggregate,
+  tool-free calls. Post-cutoff rows score `+0.191098` Brier worse in aggregate,
   paired-stratum delta `+0.2155`, permutation `p=0.0004`.
 - Equal-information market controls: three strict same-contract slices.
   Polymarket decisively beats the four-family model panel (`0.072964` vs
@@ -87,7 +87,7 @@ model-superiority paper.
   inconclusively (`0.160977` vs `0.198723`, `p=0.5431`). A separate 32-contract
   Manifold same-day freeze expansion again favors the market (`0.135951` vs
   `0.214665`, `p=0.0048`). These controls block raw model panel superiority in
-  the current evidence; they do not estimate a general effect comparing markets
+  the current evidence. They do not estimate a general effect comparing markets
   and models.
 - Calibration evidence: the rule for very small model probabilities improves
   eligible estimates, with the important boundary that it regresses
@@ -99,9 +99,9 @@ model-superiority paper.
   calibrated bare forecasts. The partial Claude check is not supportive. The
   staged Codex+DeepSeek check has 445 scored calls and is worse than bare and
   placebo on mean Brier, with no sign-test support and no support across sources, so this
-  remains a replication target rather than a general prompt method.
+  remains a replication target, not a general prompt method.
 
-## Primary Sources
+## Primary sources
 
 - [Tracked paper draft](../../../papers/llm-forecast-calibration-cross-corpus/draft.md)
 - [Tracked TeX source](../../../papers/llm-forecast-calibration-cross-corpus/main.tex)
@@ -113,7 +113,7 @@ model-superiority paper.
 - [Project claim summary](../../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)
 - [Project methodology architecture](../../../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md)
 
-## Runnable Anchors
+## Runnable anchors
 
 ```bash
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/paper_claim_alignment_report.py --out-dir projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace
@@ -121,12 +121,9 @@ PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tool
 PYTHONPATH=. ./venv/bin/python projects/llm_forecasting_calibration_program/tools/submission_readiness_audit.py --out-dir projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/submission_readiness_2026_06_16
 ```
 
-## Evidence Summary
+## Evidence summary
 
-The manuscript now uses the same structure as strong evaluation-standard
-papers: define the unit of evidence, show that the missing unit changes
-conclusions, state the bounded tools that survive, and make the missing
-evidence explicit enough for another group to reproduce or extend.
+Like strong evaluation-standard papers, this manuscript defines the unit of evidence, shows that the missing unit changes conclusions, states the bounded tools that survive, and makes the missing evidence explicit enough for another group to reproduce or extend.
 
 The main denominator constraint is the equal-information market sample. The two
 strict market control slices each have 24 contracts. That is enough to block a
@@ -139,22 +136,11 @@ calls. The current local 100-row non-Polymarket export pass surfaced only 10
 eligible Manifold request rows, so local backfill does not solve the denominator
 problem.
 
-The prompt result is also deliberately scoped. The design tested
-bare forecasting, length-matched placebo, expert-training, audit-informed, and
-failure-mode-specific prompts on the same public question rows. The design asks
-whether a structured forecasting instruction moves scored probabilities, not
-whether the rationale sounds better. Gemini passes the primary paired gate;
-Claude and Codex+DeepSeek do not reproduce the effect. The paper therefore
-treats the prompt as a candidate interface to replicate rather than as a
-general improvement method.
+On prompting, the design tested bare forecasting, length-matched placebo, expert-training, audit-informed, and failure-mode-specific prompts on the same public question rows. It asks whether a structured forecasting instruction moves scored probabilities, not whether the rationale sounds better. Gemini passes the primary paired gate. Claude and Codex+DeepSeek do not reproduce the effect. The paper therefore treats the prompt as a candidate interface to replicate, not a general improvement method.
 
-Best-family-in-hindsight scores are reported as headroom only. They show that
-families make different errors, but choosing the best family after seeing
-outcomes is not a usable rule. A future model-selection result needs
-observable features, outside review, market disagreement, or held-out model
-signals that recover some of that headroom prospectively after cost.
+Best-family-in-hindsight scores appear as headroom only. Families make different errors, but choosing the best family after seeing outcomes is not a usable rule. A future model-selection result needs observable features, outside review, market disagreement, or held-out model signals that recover some of that headroom prospectively after cost.
 
-## Non-Claims
+## Non-claims
 
 - The paper does not show that LLMs beat humans, human crowds, or prediction
   markets.
@@ -167,7 +153,7 @@ signals that recover some of that headroom prospectively after cost.
 - The paper does not establish a working rule for choosing among model families.
 - The paper does not claim a measured failure rate across the field.
 
-## Missing Upgrade
+## Missing upgrade
 
 The strongest next upgrade is a prospective or strict-backfill
 equal-information packet with at least 100 resolved contracts, at least two
@@ -180,20 +166,20 @@ market-plus-model blends.
 The second upgrade is a complete second-family replication of the
 expert-training prompt under the same bare, placebo, calibrated bare, and
 checks split by source. The active Codex+DeepSeek packet should be completed or
-stood down under its predeclared gate; an open model packet is the next clean
+stood down under its predeclared gate. An open model packet is the next clean
 provider-independent route. A positive prompt result should count only if it
 beats those controls on the same rows and does not disappear when matched
 market or human baselines are available.
 
 The third upgrade is a public low-overlap substitute that separates novelty,
-source, topic, question length, and base rates instead of confounding them in
-one corpus contrast.
+source, topic, question length, and base rates, which the current single
+corpus contrast confounds together.
 
-## Companion Benchmark Tool
+## Companion benchmark tool
 
 The paper now includes a small runnable validator at
 `papers/llm-forecast-calibration-cross-corpus/evidence/benchmark/`. It validates
 forecast rows against the paper's row contract and scores only the rows whose
 source, label, and comparator timing are documented. This is not the larger
-market-control expansion; it is the tool that makes the row-validity
+market-control expansion. It is the tool that makes the row-validity
 standard executable for future packets.

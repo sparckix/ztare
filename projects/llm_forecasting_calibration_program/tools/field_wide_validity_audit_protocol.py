@@ -3,8 +3,8 @@
 
 No network access, model calls, or database mutation. The output is a seed
 manifest for the field-wide measurement extension described in the paper: which
-benchmark families to audit, which row-level fields to collect, and what
-conclusion-change test would make the audit scientifically meaningful.
+benchmark/evaluation routes to audit, which row-level fields to collect, and
+what conclusion-change test would make the audit scientifically meaningful.
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ SCHEMA_ROWS = [
         "required": "yes for official-data or revised labels",
         "meaning": "The data vintage admissible at resolution time.",
         "valid_values_or_format": "timestamp, source revision id, or explicit not-applicable",
-        "why_it_matters": "Prevents scoring against values revised after the forecast should have settled.",
+        "why_it_matters": "Prevents scoring against values revised after the forecast was scheduled to settle.",
     },
     {
         "field": "same_contract_baseline_type",
@@ -155,6 +155,20 @@ SEED_ROWS = [
         "current_status": "protocol only; not yet audited here",
     },
     {
+        "benchmark_id": "prophet_arena",
+        "benchmark_class": "future-task benchmark and prediction pipeline",
+        "citation_key": "yang2025prophetarena",
+        "audit_unit": "task instance or prediction row",
+        "public_access_route": "paper, released task definitions, and any public benchmark traces",
+        "row_fields_to_collect": "task creation timestamp; prediction timestamp; model cutoff or retrieval window; task outcome timestamp; comparator timestamp if any; task-family id",
+        "primary_validity_risk": "automated task pipelines can mix forecasting skill with retrieval, decomposition, and scoring-window timing",
+        "minimum_conclusion_change_test": "Separate task-completion score from event-probability score where possible, then recompute conclusions after source-currency and comparator-timing filters.",
+        "pilot_sample": "50 resolved task rows or all public rows if fewer",
+        "paper_grade_sample": "all public resolved rows with task-family de-duplication",
+        "priority": "high",
+        "current_status": "protocol only; not yet audited here",
+    },
+    {
         "benchmark_id": "halawi_2024_binary_resolved",
         "benchmark_class": "forecasting system benchmark",
         "citation_key": "halawi2024approaching",
@@ -201,28 +215,28 @@ SEED_ROWS = [
         "benchmark_class": "timestamped market replay benchmark",
         "citation_key": "cheng2026polybench",
         "audit_unit": "market snapshot row",
-        "public_access_route": "released replay snapshots if public",
+        "public_access_route": "public repository plus linked OneDrive dataset; repository/schema verified here, dataset blocked through noninteractive request",
         "row_fields_to_collect": "snapshot timestamp; order-book state; news bundle timestamp; model forecast timestamp; market baseline at snapshot; resolution",
         "primary_validity_risk": "snapshot quality may be strong, but model and market bars still require same-time scoring",
         "minimum_conclusion_change_test": "Compare raw model confidence/returns with proper Brier/log scores against the snapshot market baseline.",
         "pilot_sample": "50 snapshot rows",
         "paper_grade_sample": "all public snapshot rows with source/platform stratification",
         "priority": "medium",
-        "current_status": "protocol only; not yet audited here",
+        "current_status": "source-access pilot completed; repository/schema available, released database not available through current noninteractive path",
     },
     {
         "benchmark_id": "predictionmarketbench",
         "benchmark_class": "execution-realistic market replay benchmark",
         "citation_key": "arora2026predictionmarketbench",
         "audit_unit": "replay decision row",
-        "public_access_route": "released benchmark rows if public",
+        "public_access_route": "public repository with four replay episodes; stored model forecasts require submitted traces or a fresh benchmark run",
         "row_fields_to_collect": "decision timestamp; available order book; trade constraints; fees; probability forecast; resolution; market baseline",
         "primary_validity_risk": "execution realism can obscure whether probability forecasts are calibrated",
         "minimum_conclusion_change_test": "Report probability score and trading-return score separately after equal-information market joins.",
         "pilot_sample": "50 replay decisions",
         "paper_grade_sample": "all public rows with event-family de-duplication",
         "priority": "medium",
-        "current_status": "protocol only; not yet audited here",
+        "current_status": "row-schema pilot completed; replay rows and market baseline are available, stored model forecasts are absent",
     },
     {
         "benchmark_id": "foresight_arena",
@@ -251,6 +265,20 @@ SEED_ROWS = [
         "paper_grade_sample": "all public scenarios with source/time stratification",
         "priority": "medium",
         "current_status": "protocol only; not yet audited here",
+    },
+    {
+        "benchmark_id": "strategic_foresight_tournament",
+        "benchmark_class": "prospective pairwise human/model tournament",
+        "citation_key": "csaszar2026strategicforesight",
+        "audit_unit": "pairwise choice or venture outcome row",
+        "public_access_route": "paper tables and any released tournament rows",
+        "row_fields_to_collect": "pair id; evaluation timestamp; model identity including open-weight/frontier class; human-comparator timestamp; venture outcome timestamp; event-family id",
+        "primary_validity_risk": "pairwise rankings can be strong while absolute probabilities and market additivity remain untested",
+        "minimum_conclusion_change_test": "Separate pairwise ranking accuracy from calibrated probability claims and test whether conclusions survive event-family de-duplication and comparator-timing checks.",
+        "pilot_sample": "50 pairwise rows or all released rows if fewer",
+        "paper_grade_sample": "all public prospective pairwise rows with model-class and event-family strata",
+        "priority": "medium",
+        "current_status": "protocol only; useful comparator for GP-245 pairwise-ranking route",
     },
     {
         "benchmark_id": "marketbench",
@@ -323,11 +351,11 @@ def build_markdown(generated_at: str) -> str:
             "",
             f"Generated: `{generated_at}`",
             "",
-            "Purpose: define the external audit needed before GP-245 can claim a field-wide benchmark-validity failure rate. The current paper shows that row-level validity checks change conclusions inside this program; this protocol names the public benchmark families and row fields needed to test whether the failure mode is broader.",
+            "Purpose: define the external audit needed before GP-245 can claim a field-wide benchmark-validity failure rate. The current paper shows that row-level validity checks change conclusions inside this program; this protocol names the public benchmark/evaluation routes and row fields needed to test whether the failure mode is broader.",
             "",
             "Companion: `field_wide_validity_local_evidence.py` emits the local Halawi date-distribution summary as a limited warning. It does not replace raw-row audit or before/after score recomputation.",
             "",
-            f"Seed benchmark families: `{len(SEED_ROWS)}` ({counts_text}).",
+            f"Seed benchmark/evaluation routes: `{len(SEED_ROWS)}` ({counts_text}).",
             "",
             "## Required Row Schema",
             "",
@@ -339,7 +367,7 @@ def build_markdown(generated_at: str) -> str:
             "",
             "## Decision Rule",
             "",
-            "A field-wide claim becomes supportable only after at least three benchmark families have row-level audits with: source-currency classification, label-time status where labels can revise, same-contract comparator timing when market or human comparisons are made, event-family de-duplication, and a before/after conclusion-change test. If the audits show low missingness or no conclusion changes, the field-wide claim should remain out of the paper.",
+            "A field-wide claim becomes supportable only after at least three benchmark or evaluation routes have row-level audits with: source-currency classification, label-time status where labels can revise, same-contract comparator timing when market or human comparisons are made, event-family de-duplication, and a before/after conclusion-change test. If the audits show low missingness or no conclusion changes, the field-wide claim stays out of the paper.",
             "",
         ]
     )

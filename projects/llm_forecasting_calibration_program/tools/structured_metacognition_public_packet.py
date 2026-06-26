@@ -222,14 +222,19 @@ def dispatch_rows(
 
 
 def report(
-    *, selected: list[dict[str, Any]], rows: list[dict[str, Any]], families: tuple[str, ...], sources: tuple[str, ...]
+    *,
+    selected: list[dict[str, Any]],
+    rows: list[dict[str, Any]],
+    families: tuple[str, ...],
+    sources: tuple[str, ...],
+    pilot_id: str,
 ) -> dict[str, Any]:
     source_counts = Counter(str(row["source"]) for row in selected)
     outcome_counts = Counter(str(int(row["y_known"])) for row in selected)
     arm_counts = Counter(str(row["condition"]) for row in rows)
     return {
         "schema": "structured-metacognition-public-packet-v1",
-        "pilot_id": PILOT_ID,
+        "pilot_id": pilot_id,
         "status": "dispatch_queue_prepared",
         "sources_requested": list(sources),
         "families": list(families),
@@ -239,16 +244,16 @@ def report(
         "outcome_counts": dict(outcome_counts),
         "arm_counts": dict(arm_counts),
         "primary_endpoint": "paired Brier improvement over bare forecast and length-matched placebo on the same source-valid contracts",
-        "promotion_rule": [
+        "success_rule": [
             "beats bare forecast and placebo on paired Brier",
             "survives source-stratified reporting",
             "does not regress badly on any major source",
-            "beats or complements confident-NO on eligible rows",
+            "beats or complements the same-row low-probability adjustment where defined",
         ],
-        "stop_rule": [
+        "failure_rule": [
             "only beats bare prompt but not placebo",
             "improves one source while regressing another",
-            "loses to confident-NO on the same rows",
+            "loses to the same-row low-probability adjustment",
             "gain disappears after label-time repair",
         ],
     }
@@ -275,13 +280,13 @@ def render_md(summary: dict[str, Any]) -> str:
         json.dumps(summary["outcome_counts"], indent=2, sort_keys=True),
         "```",
         "",
-        "Promotion rule:",
+        "Success rule:",
     ]
-    for item in summary["promotion_rule"]:
+    for item in summary["success_rule"]:
         lines.append(f"- {item}")
     lines.append("")
-    lines.append("Stop rule:")
-    for item in summary["stop_rule"]:
+    lines.append("Failure rule:")
+    for item in summary["failure_rule"]:
         lines.append(f"- {item}")
     lines.append("")
     return "\n".join(lines)
@@ -302,7 +307,13 @@ def main() -> int:
     candidates = load_candidates(args.db, sources)
     selected = select_contracts(candidates, per_source=args.per_source)
     rows = dispatch_rows(selected, families=families, pilot_id=args.pilot_id)
-    summary = report(selected=selected, rows=rows, families=families, sources=sources)
+    summary = report(
+        selected=selected,
+        rows=rows,
+        families=families,
+        sources=sources,
+        pilot_id=args.pilot_id,
+    )
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
     queue_path = args.out_dir / f"{args.pilot_id}_dispatch_queue.jsonl"

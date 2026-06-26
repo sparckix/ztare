@@ -179,7 +179,7 @@ Enforcement surface: prompt templates in `autoresearch_loop.py`
 - **Controls motivated:** quarantine_laundering_cap
 - **Evidence:** [link to seam, debate log, or postmortem]
 
-### Tolerance Laundering (Paper 1)
+### Tolerance Abuse (Paper 1)
 - **What:** Apply round() before assertion to destroy precision difference
 - **First observed:** recursive_bayesian_claude_gemini run
 - **Controls motivated:** deterministic_score_gates (GP-030)

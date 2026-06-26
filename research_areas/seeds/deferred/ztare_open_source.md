@@ -10,7 +10,7 @@ Working name: **ZTARE-Check**
 
 ## Value Proposition
 
-Not a linter. Not a code reviewer. An adversarial firing squad that tries to break the logic of a PR before it merges.
+Not a linter. Not a code reviewer. An adversarial adversarial review committee that tries to break the logic of a PR before it merges.
 
 The key differentiator is not "three adversarial agents" — it is the **stage-gated contract**. Each adversarial agent operates under a precommitted Python promotion contract that returns PASS / FAIL / BLOCKED independently. The Action surfaces contract outputs, not vibes. That makes it auditable in a way no existing tool is.
 
@@ -19,10 +19,10 @@ The key differentiator is not "three adversarial agents" — it is the **stage-g
 ## Two Target Use Cases
 
 ### 1. AI-generated PR verification
-Run ZTARE-Check on any PR where the mutator is an LLM (Copilot, Cursor, Claude Code, etc.). The firing squad attacks the logic of the change, not the syntax. Surfaces: scope overclaims, self-referential falsification, missing falsification suites, unidirectional decay.
+Run ZTARE-Check on any PR where the mutator is an LLM (Copilot, Cursor, Claude Code, etc.). The adversarial review committee attacks the logic of the change, not the syntax. Surfaces: scope overclaims, self-referential falsification, missing falsification suites, unidirectional decay.
 
 ### 2. Agentic architectural decisions
-Multi-agent systems making central architectural choices (infra changes, schema migrations, API contracts) run the decision through a ZTARE firing squad before committing. Output: typed verdict with attributed failure mode or clean promotion.
+Multi-agent systems making central architectural choices (infra changes, schema migrations, API contracts) run the decision through a ZTARE adversarial review committee before committing. Output: typed verdict with attributed failure mode or clean promotion.
 
 ---
 

@@ -4,18 +4,18 @@ description: "Command-line entry points for the workbench: demo, smoke, gates, l
 
 # The `ztare` CLI
 
-> **Up:** [`docs/README.md`](../README.md)
+> Up: [`docs/README.md`](../README.md)
 
 A single command entry point for the zero-trust workbench's
 human-facing surface. Replaces `cd repo && python scripts/public/control/<name>.py …`
 with `ztare <subcommand> …`.
 
-The CLI is deliberately a thin wrapper — it dispatches to the existing
+The CLI is deliberately a thin wrapper. It dispatches to the existing
 control scripts and does not own business logic.
 
 ## Scope
 
-This CLI is the **ZTARE workbench's** human-facing surface only. The
+This CLI is the ZTARE workbench's human-facing surface only. The
 governance / org side (roles, mandates, role daemons, closure
 daemons, OKR-tree polling) belongs to the sibling
 [`cognitive-firm`](https://github.com/sparckix/cognitive-firm) project
@@ -35,7 +35,7 @@ tenant overlay.
 | `ztare routine-review …` | RD routine reviews | `rd_routine_review.py` |
 | `ztare action-intel …` | Action intelligence read surface: decisions, routes, and outcome impact | `action_intelligence.py` |
 | `ztare autoresearch …` | In-loop autoresearch run and read-only trace/projection/replay surfaces | `Makefile` targets plus report modules |
-| `ztare forensic-workbench …` | File-backed review receipts from the local forensic workbench | `forensic_workbench_review.py` |
+| `ztare forensic-workbench …` | File-backed review receipts from the local Project Workbench | `forensic_workbench_review.py` |
 | `ztare project ...` | Public project userland before run readiness: walkthrough, source checks, evidence-output binding, create, prepare, seal, intake, optional prep ledger | `generate_substrate.py` + `Makefile` targets + `substrate_queue.py` |
 | `ztare substrate …` | Compatibility namespace for the same project/data surface commands | same implementation as `ztare project …` |
 | `ztare eigenquestion …` | Advisory eigenquestion proposal + explored-class evidence lint | `eigenquestion_generator.py` |
@@ -60,7 +60,7 @@ newer governed-DAG proof search is tracked separately in the LeanMill docs.
 
 `ztare audit` verbs: `gates`, `effectiveness`, `coverage`,
 `graph-capability`, `forecast-capability`, and the move-card router
-(`move-card-router`; legacy alias: `operator-card-router`).
+(`move-card-router`).
 
 `ztare arch-validate` verbs: `ex-ante`, `ex-post`.
 
@@ -78,8 +78,8 @@ forecasting-calibration program. Help output labels those kinds without making
 project-local file paths the public vocabulary. Use `ztare doctor` when you
 need the exact target-resolution paths. Public control surfaces include
 `pool`, `resolve`, `score`, `ingest-smoke`, `elo-refresh`, `brier-elo`, and
-`resolve-open-metaculus`; package surfaces include `capability-audit`,
-`calibration-stats`, and `calibration-db`; the remaining verbs are registered
+`resolve-open-metaculus`. Package surfaces include `capability-audit`,
+`calibration-stats`, and `calibration-db`. The remaining verbs are registered
 project-program tools.
 
 ## Repository root discovery
@@ -93,7 +93,7 @@ where the repository root is. It tries, in order:
 
 For a `pip install -e .` checkout this resolves automatically. For a
 plain `pip install ztare` from PyPI, the control scripts live inside
-the installed package data — set `$ZTARE_REPO` to the repository
+the installed package data, set `$ZTARE_REPO` to the repository
 checkout where ledgers and `org/` state actually live.
 
 ## Adding a subcommand
@@ -210,9 +210,9 @@ ztare autoresearch subscription-outcomes --json
 ztare autoresearch dispatch-parity --json
 ztare autoresearch dispatch-parity --contracts text,mutator,judge,committee,inverter --runtime codex --live --json
 
-# Forensic workbench: apply an inspectable review file copied from the workbench,
-# then refresh the snapshot so the latest-review receipt row appears.
-ztare forensic-workbench apply-review --project ops_root_cause_diagnosis_demo --row report_export --from ops_root_cause_diagnosis_demo_report_export_review.json
+# Project Workbench: apply an inspectable review file copied from the workbench.
+# --project-check takes the project-check slug, then refreshes the project data.
+ztare forensic-workbench apply-review --project ops_root_cause_diagnosis_demo --project-check report_support --from ops_root_cause_diagnosis_demo_report_support_review.json
 make forensic-workbench-data WORKBENCH_PROJECT=ops_root_cause_diagnosis_demo
 
 # Advisory eigenquestion rotation
@@ -227,11 +227,11 @@ make move-card-router-audit  # fixed paraphrase audit for move-card routing
 make move-card-atlas-build   # refresh when router audit reports a stale card atlas
 ```
 
-`ztare autoresearch route` returns a JSON decision object. Check
-the route-card field `operator_card_routes[]` before acting on it: the normal in-loop workbench
-route should carry `OP-AWR-01` with matched terms, score, and route mode. That
-field is the compact provenance for why the task entered, prepared for, or
-stayed outside the autoresearch kernel. The same JSON includes
+`ztare autoresearch route` returns a JSON decision object. Check the
+move-card route fields before acting on it: the normal in-loop workbench route
+should carry `OP-AWR-01` with matched terms, score, and route mode. That field
+is the compact provenance for why the task entered, prepared for, or stayed
+outside the autoresearch kernel. The same JSON includes
 `plan_preview`: a no-model-call execution preview with the first command to
 run, dependency order, worker roles, iteration budget source, fallback policy,
 expected outputs, and the main quality risk to inspect before spending tokens.
@@ -247,14 +247,14 @@ three phases: `source_and_evidence_prep` (pre-run project prep),
 `read_only_trace` (inspection only), and `in_loop_gate` (the route/run boundary).
 Each phase carries a `ready` flag so a caller can see whether to keep preparing
 the source surface or move to the in-loop gate. It is a deterministic tutorial
-over the same intake primitives, not a separate scheduler. `--packet-out`
+over the same intake primitives, and stays clear of any scheduling role. `--packet-out`
 remains a compatibility alias.
 
 `project source-init` creates the portable source-ingest surface:
 `projects/<slug>/raw/`, `projects/<slug>/workspace/`, and an empty
 `projects/<slug>/raw/source_type_map.json`. It does not create fake evidence,
 launch autoresearch, or enqueue out-of-loop work. Type raw documents with
-frontmatter or the source-type map before running `make evidence-prepare`;
+frontmatter or the source-type map before running `make evidence-prepare`.
 `source_evidence` is the type allowed to support immutable facts and
 constraints. `project source-check` runs the same source-type preflight without
 calling a model or compiling evidence. The Make target runs that preflight
@@ -263,7 +263,7 @@ again before workspace update and evidence compilation.
 `workspace/source_index.json`, `workspace/workspace_meta.json`, and
 `workspace/source_index_receipt.json` from typed raw sources without an LLM call.
 The index lists every supported text source with a hash even when the extraction
-character budget is exhausted; `chars_used` only says how much text would be fed
+character budget is exhausted. `chars_used` only says how much text would be fed
 to extraction. Trace treats the receipt as valid only while both indexed
 artifacts still exist and match the receipt hashes. Use `--json` when a script
 needs the receipt paths. It still does not extract notes, merge evidence,
@@ -274,7 +274,7 @@ outputs. It writes `workspace/evidence_output_binding_receipt.json`, binding the
 current `evidence.txt` and optional compiled-evidence artifacts to the current
 compile-provenance file hash. It does not recompile evidence, refresh stale raw
 source provenance, prove that the current output existed at compile time, or
-launch the loop; if any bound file changes afterward, trace reports stale
+launch the loop. If any bound file changes afterward, trace reports stale
 evidence output.
 Newer evidence compiles also write
 `compiled_evidence_replay_manifest.json`. That manifest is the preferred
@@ -282,7 +282,7 @@ identity surface for compiled evidence: it binds source rows, workspace
 snapshot or raw-cache replay mode, structured input hash, support-binding
 hash, evidence output hash, and evidence-gap action hash. The rendered
 markdown can carry date metadata, so scripts should compare the manifest
-hashes rather than treating `evidence.txt` alone as the replay key.
+hashes; `evidence.txt` alone is not a reliable replay key.
 `project evidence-replay` verifies that manifest against current files and
 exits non-zero if compiled evidence, intake JSON, gap action, workspace
 snapshot, or raw-cache artifacts no longer match. It is offline and does not
@@ -290,16 +290,16 @@ refresh evidence. Health reports summarize these checks as evidence readiness:
 raw source index freshness, compile provenance, rendered output binding, and
 replay status. If no replay manifest exists and compile provenance does not
 require one, human-facing trace and health summaries report replay as
-`not_required`; the raw carrier status is still retained for audit. A stale or
+`not_required`. The raw carrier status is still retained for audit. A stale or
 invalid required replay manifest remains a blocker.
 `project claim-support` classifies compiled-evidence claim rows against the
 current source index. It reports direct source support, synthesized support
 across sources, local/seed-only support, mixed support, missing source refs,
-and unsourced rows. It is deterministic and does not claim semantic entailment;
-use it as the source-binding demotion surface before a report calls a claim
+and unsourced rows. It is deterministic and does not claim semantic entailment.
+Use it as the source-binding demotion surface before a report calls a claim
 source-backed. It also verifies the referenced raw source files against the
 source-index hashes and emits bounded previews, so stale or missing source
-context blocks the audit instead of being silently treated as support.
+context blocks the audit, with no silent pass to support.
 `project evidence-gap list` is the read-only inspection step. It reports active
 gap rows after resolution/justification filtering and returns the same next
 action contract used by evidence compilation, so users can see whether the next
@@ -311,18 +311,18 @@ evidence refs. It does not edit `latest_evidence_gaps.json`, fetch public
 sources, or launch the loop. If the judge later changes the gap row, the old
 resolution no longer retires it.
 Use `--source active` when `project evidence-gap list` or `autoresearch trace`
-is reading a champion gap file rather than `latest_evidence_gaps.json`; the
+is reading a champion gap file when it should read `latest_evidence_gaps.json`. The
 receipt remains bound to the exact row that was active.
 Evidence-gap producers should set the route contract fields directly:
 `recovery_kind`, `recovery_channel`, `required_surface`, `can_public_fetch`, and
 `in_loop_consumable`. Public rows use `public_evidence` plus
-`out_of_loop_evidence_recovery`; local verifier, fixture, code/log, preflight,
+`out_of_loop_evidence_recovery`. Local verifier, fixture, code/log, preflight,
 receipt, and in-loop discriminator rows use `local_verification` plus
 `in_loop_focus_receipt`. Older rows are still inferred, but new integrations
 should not depend on wording in `description` or `fetch_query`.
 
 Project intake is pre-run userland. Prefer `ztare project ...` in new docs
-and scripts; `ztare substrate ...` remains a compatibility namespace for the
+and scripts. `ztare substrate ...` remains a compatibility namespace for the
 same implementation. The `project intake` and prep-ledger commands record bounded
 tasks, sources, evidence references, non-claims, expected commands, and missing
 prep artifacts before a task enters the validation engine. They do not execute
@@ -331,12 +331,12 @@ Use them when the project surface needs to be made auditable before
 `ztare autoresearch route` or `ztare autoresearch run`.
 `project intake enqueue` is a source-ready handoff and requires the local
 source preflight to pass. If intake is blocked on source files, source
-typing, or evidence artifacts, record that concrete prep item in
-`project prep-ledger` instead of enqueueing the file.
+typing, or evidence artifacts, record the concrete prep item in
+`project prep-ledger`; leave the file unenqueued until the block clears.
 
 `autoresearch route` is the boundary check. It decides whether a task has the
 bounded claim, stable evaluator, rubric, and artifact surface required for an
-in-loop run; otherwise it should return a prep decision that can be recorded in
+in-loop run. If not, it returns a prep decision that can be recorded in
 the intake ledger. When the project already exposes raw source, source-index,
 evidence, or compile-provenance surfaces, the router also runs the trace-local
 source/evidence preflight and refuses loop entry on stale or blocked trace
@@ -352,19 +352,19 @@ and exact next commands. If a replay manifest exists or compile provenance
 names one, trace treats a stale replay manifest as a run-readiness blocker and
 points to `ztare project evidence-replay --project <project> --json` for
 diagnosis. If replay is optional and absent, brief output shows
-`replay=not_required` rather than making the missing manifest look like hidden
+`replay=not_required`, which keeps the missing manifest from reading as hidden
 debt. Claim-support demotions are surfaced for reporting and review, but do
 not by themselves block run readiness.
-Its literal `carrier_chain` field is the compact first read: each admission
+Its literal `carrier_chain` field is the compact first read, listing each admission
 surface, status, blocking flag, and recovery command in source-to-loop order.
-The default text output also renders this as `carrier_chain_table`, while
-`--brief` renders the human first-read view and `--json` preserves the full
+The default text output also renders this as `carrier_chain_table`. `--brief`
+renders the human first-read view and `--json` preserves the full
 structured rows for scripts.
 `make synth` reuses the same trace surface for projects with autoresearch
 artifacts: it writes `synthesis/autoresearch_review_context.json` and feeds that
 compact review context into the report renderer, alongside the ordinary project
 artifacts. This keeps reporting tied to readiness, graph-focus gaps, provider
-failures, and next actions instead of only summarizing `history/`. The
+failures, and next actions, reaching past a bare summary of `history/`. The
 synthesis path also writes `synthesis/report_support_contract.json`, passes it
 to rendering/refinement/QA, blocks high-severity unsupported additions and
 overclaims, and runs a bounded QA-guided repair loop before failing closed. A
@@ -386,10 +386,10 @@ it remains a score-only trace row unless it reports invalid forecast-pool,
 membrane, or routing authority claims.
 When graph-derived focus rows come from evidence gaps, `graph_rd_actions[]`
 also carries the exact gap ids and targets so an in-loop artifact can address
-the row identity rather than a vague topic label.
-Those graph-derived rows also carry `operator_card_routes[]` and
-`operator_card_ids[]` for `OP-GDC-01`, which makes the graph-decision action
-path auditable instead of blending into ordinary prep rows.
+the row identity directly, down to the specific gap.
+Those graph-derived rows also carry move-card route ids for `OP-GDC-01`, which
+makes the graph-decision action path auditable as a distinct path, set apart from ordinary
+prep rows.
 It also runs the same rubric/project launch preflight that `make
 experiment-loop` enforces when a rubric is resolved. When intake is supplied,
 `kernel_entry.can_enter_kernel=true` means the intake file, source/evidence surfaces,
@@ -405,7 +405,7 @@ run-readiness state changed.
 In-loop runs seal the requested model family by default: `make experiment-loop`
 passes `--no_model_fallback` unless you opt in with `MODEL_FALLBACK=1`. The CLI
 spells the same exception as `ztare autoresearch run --allow-model-fallback`.
-Use the default for comparable runs and pre-registered checks; use the opt-in
+Use the default for comparable runs and pre-registered checks. Use the opt-in
 only when continuity matters more than model-family provenance.
 `complete_trace` means the raw-source, workspace, evidence, projection, and
 health surfaces are all present for a historical run; `ready_for_in_loop_candidate`
@@ -416,12 +416,12 @@ project has no `eval_history` yet. In that case `blocking_missing` should be
 empty and `history_missing` should name the absent run history. Other
 `partial_trace` reports named missing trace surfaces and recovery commands.
 `blocked_on_out_of_loop_prep` means a trace record, usually the source-claim
-graph, found prep debt that belongs outside the autoresearch loop; public-source
+graph, found prep debt that belongs outside the autoresearch loop. Public-source
 evidence gaps route to `make evidence-fetch ...` and keep
 `route_preview.can_run_now=false` until the debt is cleared or justified.
 `make evidence-fetch` now requires an explicit public recovery contract by
 default (`recovery_kind=public_evidence`, or equivalent public-fetch booleans).
-Rows classified only by legacy prose inference are skipped until promoted; use
+Rows classified only by legacy prose inference are skipped until promoted. Use
 `ALLOW_INFERRED_PUBLIC=1` only when intentionally replaying old rows.
 After evidence compilation, `workspace/evidence_gap_brief.md` selects the next
 active gap and names whether it is public-source recovery or local verification.
@@ -443,33 +443,33 @@ readiness by themselves.
 `make experiment-loop` would fail before the first model call, commonly because
 `project_charter.md`, `thesis.md`, or rubric launch rules are missing.
 `source_index_stale` or `evidence_compile_stale` means raw sources changed after
-the workspace source index or compiled evidence manifest was generated; rerun
+the workspace source index or compiled evidence manifest was generated. Rerun
 `make evidence-prepare PROJECT=<project> MODEL=<model>` before routing.
 When a project-intake file validates, `route_preview` uses its exact
 `expected_command`; placeholders appear only for legacy or missing-intake
 traces. It does not run out-of-loop agents, schedule iterations, or call a
 model; `--model` only chooses the model label rendered in suggested
 evidence-recovery commands. Use `--full-health` only when you also want the
-aggregate health report; the default trace path stays local and bounded.
+aggregate health report. The default trace path stays local and bounded.
 Trace JSON also exposes `plan_preview`, which is the read-before-run contract:
 it shows the route decision, model-free preflight, paid loop step, expected
 workspace outputs, and whether fallback is still disabled by default.
 In JSON output, `project_intake.status=valid_packet` is a legacy status name. It means the intake shape,
 project, rubric, and applicable missing-reference falsifier validated. Inspect
 `project_intake.missing_ref_falsifier`: when local refs exist it should show
-`status=passed` and the selected `source_refs[N]` or `evidence_refs[N]`; when an
+`status=passed` and the selected `source_refs[N]` or `evidence_refs[N]`. When an
 intake uses only external refs it is skipped. Older receipts still expose
 `project_packet` for compatibility. Use `readiness_canonical` for the current
-intake-facing status name; `readiness` keeps legacy status IDs for old readers.
+intake-facing status name. `readiness` keeps legacy status IDs for old readers.
 Use that status plus `route_preview.can_run_now` for the actual in-loop go/no-go.
 
 `dispatch-parity` replays fixed typed contracts through the API and
 subscription paths. The JSON report includes contract parity, per-contract
-`quality_score`, and a latency/call-count `cost_proxy`; `--live` only promotes
+`quality_score`, and a latency/call-count `cost_proxy`. `--live` only promotes
 the subscription leg.
 
 `subscription-outcomes` reads run history only. Fresh rows can carry
-prompt-free worker-dispatch receipts, and the report separates completed
+prompt-free worker-dispatch receipts. The report separates completed
 subscription receipt counts from aggregate transport rows.
 
 `consequence-audit` is a read-only check for whether the listed kernel
@@ -481,7 +481,7 @@ mechanisms that are unobserved in the selected project or workspace.
 coherence. It uses the same mode contract as launch validation and flags
 invalid modes, Newton rubrics with missing projects, missing charters, or
 missing secondary-observable sections, and Kepler rubrics that still carry
-Generative Yield. Historical unset modes stay summarized; unset modes with
+Generative Yield. Historical unset modes stay summarized. Unset modes with
 recent run telemetry become attention rows. Use `--strict` when this should
 fail the command while attention rows remain.
 
@@ -516,7 +516,7 @@ source-preflight-valid intake file for the generated replay, so the pre-run
 handoff can be validated without launching the loop. It is not a live
 research-quality or transport lift result.
 
-`operations-intelligence` writes the fuller read-only RD operations report. Use
-it when health points at route-logging, source-health, or workbench-bypass
-questions and you need the underlying action-intelligence report rather than
-the compact first-page summary.
+`operations-intelligence` writes the fuller read-only operations report. Use it
+when health points at route logging, source warnings, or workbench bypass
+questions and you need the underlying action-guidance report behind the
+compact first-page summary.

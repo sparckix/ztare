@@ -1,7 +1,7 @@
 ---
 description: "Short-form model names used in the --mutator-model / --judge-model flags."
 ---
-# Model Aliases
+# Model aliases
 
 Quick reference for the short-form names used in `--mutator-model` /
 `--judge-model` flags and where they resolve.
@@ -11,7 +11,7 @@ internally calls `resolve_model_id()` from
 `src/ztare/common/llm_runtime.py`. If you pass an unrecognised alias the loader
 raises `ValueError: Unsupported model family`.
 
-## Canonical alias → resolved model ID
+## Canonical alias to resolved model ID
 
 | CLI flag value | Resolved model ID (mutator/judge) | Resolved Director ID | Provider |
 |---|---|---|---|
@@ -49,7 +49,7 @@ raises `ValueError: Unsupported model family`.
 
 The Director column applies when the model is invoked as Research
 Director (post-run skeptic-review pass), which uses a stronger model
-than the mutator/judge for some aliases; `gemini` now resolves to
+than the mutator/judge for some aliases. `gemini` now resolves to
 `gemini-3.1-pro-preview` in both mutator/judge and Director contexts.
 
 ## Recommended pairings
@@ -60,21 +60,21 @@ spots in one family don't pass undetected by the other:
 | Mutator | Judge | Why |
 |---|---|---|
 | `gemini-pro` | `gpt4.1` | Default for cost-aware closure runs. Cross-family + good price/perf |
-| `gemini-pro` | `claude-opus` | Higher signal on subtle gaming patterns; ~3× cost of the default |
-| `claude-opus` | `gpt5.5` | Frontier-only when budget allows; reserved for closure attempts on hard research projects |
+| `gemini-pro` | `claude-opus` | Higher signal on subtle gaming patterns (~3× cost of the default) |
+| `claude-opus` | `gpt5.5` | Frontier-only when budget allows, reserved for closure attempts on hard research projects |
 | `gemini-pro` | `o3` | Reasoning judge for proof-heavy sequence, formal, or PDE-adjacent work |
 | `kimi` | `claude` or `gpt4.1` | Low-cost agentic generation with cross-family verification |
-| `kimi-code` | `claude` or `gpt4.1` | Long-context coding or repo work; keep a non-Kimi judge for auditability |
-| `grok` | `gemini-pro` or `kimi` | xAI generation with non-xAI verification; useful as another independent family |
+| `kimi-code` | `claude` or `gpt4.1` | Long-context coding or repo work (keep a non-Kimi judge for auditability) |
+| `grok` | `gemini-pro` or `kimi` | xAI generation with non-xAI verification, useful as another independent family |
 | `grok-code` | `gemini-pro` or `gpt4.1` | Coding-agent variant with cross-family judge |
 
 **Avoid same-family pairs** (`gemini-pro` + `gemini`, `claude` +
-`claude-opus`). Same-family pairings produce correlated failure modes;
+`claude-opus`). Same-family pairings produce correlated failure modes:
 the judge tends to ratify the mutator's mistakes. See `feedback_*`
 memory entries for the empirical record.
 
 The post-champion inverter is a separate falsifier pass. Its historical default
-is `gpt4.1` through `ZTARE_INVERTER_MODEL`; `ztare autoresearch run` also
+is `gpt4.1` through `ZTARE_INVERTER_MODEL`. `ztare autoresearch run` also
 accepts `--inverter <alias>` and Make accepts `INVERTER_MODEL=<alias>`.
 Set it explicitly for budgeted or provider-diverse runs, for example
 `--mutator kimi --judge grok --inverter claude`.
@@ -88,6 +88,7 @@ default: `make experiment-loop` passes `--no_model_fallback` unless
 `MODEL_FALLBACK=1`, and `ztare autoresearch run` requires
 `--allow-model-fallback` to opt in. That default keeps runtime-family
 provenance sealed for ordinary experiments.
+
 
 Configured chains live in `FALLBACK_MODEL_CHAINS`:
 
@@ -111,12 +112,12 @@ Configured chains live in `FALLBACK_MODEL_CHAINS`:
 
 When the runtime uses a fallback, both the primary and fallback model
 costs are accounted in per-model telemetry (the 2026-04-27 stealth-bill
-fix; see `src/ztare/common/llm_runtime.py:107` `_record_failed_retry`).
+fix (see `src/ztare/common/llm_runtime.py:107` `_record_failed_retry`).
 
 ## Kimi / Moonshot API note
 
 Kimi uses the shared Chat Completions transport with
-`https://api.moonshot.ai/v1`. Set `KIMI_API_KEY` locally; the official
+`https://api.moonshot.ai/v1`. Set `KIMI_API_KEY` locally. The official
 `MOONSHOT_API_KEY` spelling is also accepted. `KIMI_BASE_URL` can
 override the endpoint for a proxy or gateway.
 
@@ -127,7 +128,7 @@ or `kimi-code` / `kimi-code-fast` for the K2.7 Code variants.
 ## Grok / xAI API note
 
 Grok uses the shared Chat Completions transport with `https://api.x.ai/v1`.
-Set `XAI_API_KEY` locally; `GROK_API_KEY` is accepted as a compatibility
+Set `XAI_API_KEY` locally. `GROK_API_KEY` is accepted as a compatibility
 alias. `XAI_BASE_URL` can override the endpoint for a proxy or gateway.
 
 Use `grok` for xAI's current general text model (`grok-4.3`) and
@@ -138,7 +139,7 @@ Use `grok` for xAI's current general text model (`grok-4.3`) and
 `make evidence-fetch` separates public-source search from downstream evidence
 compile/runtime model choice. `MODEL=` is still passed to workspace update and
 evidence compile. `EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic` selects the
-web-search provider used to fetch public sources; the environment spelling is
+web-search provider used to fetch public sources. The environment spelling is
 `ZTARE_EVIDENCE_SEARCH_BACKEND`. Use an explicit backend when a non-search
 model label such as `deepseek`, `kimi`, or `grok` should compile or run the
 project while OpenAI or Anthropic handles public source search. Fetch manifests
@@ -147,17 +148,16 @@ record the requested model, backend selector, and resolved search backend.
 ## Reasoning-model API note
 
 OpenAI reasoning models (`o1`, `o3*`, `o4-mini`) and the `gpt-5.*`
-frontier family use the `max_completion_tokens` API parameter, not
-`max_tokens`. ZTARE auto-detects this via
+frontier family take the `max_completion_tokens` API parameter; the older
+`max_tokens` parameter does not apply to them. ZTARE auto-detects this via
 `is_reasoning_openai_model()` in `src/ztare/common/llm_runtime.py:166`.
-You don't have to pass anything special — just be aware that calling
-these models for short-form completions is more expensive per token
-because the model emits hidden reasoning tokens that count against the
-output cap.
+No special parameters are required, but calling these models for
+short-form completions is more expensive per token because the model
+emits hidden reasoning tokens that count against the output cap.
 
 ## See also
 
-- `src/ztare/common/llm_runtime.py` — authoritative MODEL_MAP source
-- `docs/guides/quickstart.md` — example invocations using these aliases
-- `docs/concepts/architecture.md` — where model choice fits in the
-  overall mutator → judge → director flow
+- `src/ztare/common/llm_runtime.py`: authoritative MODEL_MAP source
+- `docs/guides/quickstart.md`: example invocations using these aliases
+- `docs/concepts/architecture.md`: where model choice fits in the
+  overall mutator to judge to director flow

@@ -25,7 +25,7 @@ Over the last K findings, what fraction of total turns were runner-touched (auto
 ### B. Per-iteration cost breakdown
 
 How much of each iteration's cost is:
-- LLM calls (mutator + judge + firing squad)
+- LLM calls (mutator + judge + adversarial review committee)
 - Deterministic checks (gates, Jaccard, workspace metrics)
 - File I/O and context assembly
 - Operator wait time (if operator-in-the-loop)

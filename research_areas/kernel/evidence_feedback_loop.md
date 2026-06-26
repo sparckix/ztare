@@ -303,12 +303,12 @@ The strongest parts of that spec are:
 
 The main disagreement is narrower:
 
-- the spec says the canonical gap object should come from the **firing squad, not the meta-judge**
+- the spec says the canonical gap object should come from the **Adversarial review committee, not the meta-judge**
 - that is too restrictive
 
 Why:
 
-1. Some evidence gaps are most naturally surfaced by the firing squad:
+1. Some evidence gaps are most naturally surfaced by the adversarial review committee:
    - missing falsifying comparator
    - missing rival mechanism evidence
 
@@ -317,12 +317,12 @@ Why:
    - missing independent taxonomy / classification support
    - missing external validation of an ontology
 
-3. If the system makes "firing squad only" canonical, it risks losing precisely the gap classes that matter in projects like the current EU one.
+3. If the system makes "adversarial review committee only" canonical, it risks losing precisely the gap classes that matter in projects like the current EU one.
 
 So the right shape is:
 
 - **canonical artifact:** `evidence_gaps`
-- **producer provenance:** each gap records whether it came from firing squad, meta-judge, or later adjudication
+- **producer provenance:** each gap records whether it came from adversarial review committee, meta-judge, or later adjudication
 
 That preserves the adversarial direction without forcing every evidence need through one surface.
 
@@ -350,7 +350,7 @@ These parts are now canonical GP-017 content:
 
 ### Critique
 
-I do **not** adopt "firing squad only" as the canonical source of gap objects.
+I do **not** adopt "adversarial review committee only" as the canonical source of gap objects.
 
 Instead, GP-017 should use:
 
@@ -360,7 +360,7 @@ Instead, GP-017 should use:
   "target": "...",
   "description": "...",
   "severity": "blocking",
-  "producer": "firing_squad | meta_judge | adjudicator",
+  "producer": "committee | meta_judge | adjudicator",
   "producer_rationale": "..."
 }
 ```
@@ -405,17 +405,17 @@ That means Claude's spec was directionally right, but it started at Phase 2. The
 
 ## Claude Response - Turn 2
 
-### Accepted: producer provenance over firing-squad-only. One refinement on query direction. Then a direct answer to how GP-017 differs from GP-011, because that's the live confusion.
+### Accepted: producer provenance over adversarial review committee-only. One refinement on query direction. Then a direct answer to how GP-017 differs from GP-011, because that's the live confusion.
 
-#### Accepting the pushback on firing-squad-only
+#### Accepting the pushback on adversarial review committee-only
 
-The critique is right. My original framing conflated *query direction* (adversarial) with *gap producer* (necessarily the firing squad). Those are independent.
+The critique is right. My original framing conflated *query direction* (adversarial) with *gap producer* (necessarily the adversarial review committee). Those are independent.
 
-The meta-judge surfaces precisely the evidence classes I said the firing squad would miss: threshold grounding, ontology external validation, independent taxonomy support. Forcing those through the firing squad would require the firing squad to shift register from "attack the thesis" to "identify what the evaluator needs" — that's not what firing squads are for.
+The meta-judge surfaces precisely the evidence classes I said the adversarial review committee would miss: threshold grounding, ontology external validation, independent taxonomy support. Forcing those through the adversarial review committee would require the adversarial review committee to shift register from "attack the thesis" to "identify what the evaluator needs" — that's not what adversarial review committees are for.
 
 The unified `evidence_gaps` artifact with a `producer` field is correct. Adopted.
 
-**One refinement:** regardless of which layer produces the gap, the *fetch query* should be written adversarially. The gap description says what's missing; the fetch query operationalizes the search as "find evidence that could break the relevant claim." This is a prompt constraint on whoever writes the `fetch_query` string — whether that's the meta-judge or the firing squad — not a restriction on who can surface gaps.
+**One refinement:** regardless of which layer produces the gap, the *fetch query* should be written adversarially. The gap description says what's missing; the fetch query operationalizes the search as "find evidence that could break the relevant claim." This is a prompt constraint on whoever writes the `fetch_query` string — whether that's the meta-judge or the adversarial review committee — not a restriction on who can surface gaps.
 
 Concretely:
 
@@ -444,7 +444,7 @@ The confusion is real because both accumulate knowledge across runs and both liv
 | **Output feeds** | The **mutator** (read-only constraint context) | The **compiler** (`compile_evidence.py` → `evidence.txt`) |
 | **Effect on thesis space** | Narrows — eliminates claim regions shown structurally invalid | Expands — widens the boundary the validator operates within |
 
-The practical distinction: if the firing squad proves "ESM permanence ≠ automaticity" from sources already in evidence.txt, that's a constraint — no new sources needed, just logical derivation. If the firing squad says "the thesis needs a historical case where Mode DE existed without a fiscal union and we don't have one," that's an evidence gap — requires a source that isn't in the base.
+The practical distinction: if the adversarial review committee proves "ESM permanence ≠ automaticity" from sources already in evidence.txt, that's a constraint — no new sources needed, just logical derivation. If the adversarial review committee says "the thesis needs a historical case where Mode DE existed without a fiscal union and we don't have one," that's an evidence gap — requires a source that isn't in the base.
 
 Constraints are normative (about what claims can say). Evidence is informational (about what the world contains). You can derive constraints without going to the library. You cannot derive missing evidence without going to the library.
 

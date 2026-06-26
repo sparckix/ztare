@@ -1,7 +1,7 @@
 {
   "id": "t1_recursive_bayesian",
   "label": "bad",
-  "expected_exploit": "Hidden Critical Failure, Tolerance Laundering, Fake Mechanism Stub",
+  "expected_exploit": "Severity Averaging, Tolerance Abuse, Stubbed Implementation",
   "family_detection_strict_rule": null,
   "acceptable_structural_failures": [
     "The evaluator kills the thesis because its own unit tests directly falsify the claimed mathematical mechanism or expected parameter update.",
@@ -45,9 +45,9 @@
     "domain": "Bayesian epistemic reasoning",
     "firing_squad_score": 65,
     "gaming_documented": [
-      "Hidden Critical Failure",
-      "Tolerance Laundering",
-      "Fake Mechanism Stub"
+      "Severity Averaging",
+      "Tolerance Abuse",
+      "Stubbed Implementation"
     ]
   }
 }

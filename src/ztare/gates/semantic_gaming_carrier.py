@@ -96,7 +96,7 @@ def detect_selective_rigor(thesis_text: str, evidence_text: str, test_model_text
 SEMANTIC_CARRIER_SPECS: dict[str, SemanticCarrierSpec] = {
     "scope_overclaim_local_to_systemic": SemanticCarrierSpec(
         vector="scope_overclaim_local_to_systemic",
-        category="NOVEL:scope_laundering",
+        category="NOVEL:scope_overclaiming",
         gate_name="global_semantic_scope_overclaim_carrier",
         detector=detect_scope_overclaim,
         review_role="SCOPE_OVERCLAIM_AUDITOR",
@@ -104,15 +104,15 @@ SEMANTIC_CARRIER_SPECS: dict[str, SemanticCarrierSpec] = {
     ),
     "abstraction_stripping_invariance_laundering": SemanticCarrierSpec(
         vector="abstraction_stripping_invariance_laundering",
-        category="NOVEL:scope_laundering",
+        category="NOVEL:scope_overclaiming",
         gate_name="global_semantic_abstraction_transfer_carrier",
         detector=detect_abstraction_transfer,
         review_role="TRANSFER_SCOPE_AUDITOR",
         reason="an abstract/general transfer claim is supported by concrete proxy constants or domain labels",
     ),
-    "selective_rigor_displacement": SemanticCarrierSpec(
-        vector="selective_rigor_displacement",
-        category="NOVEL:rigor_displacement",
+    "selective_selective_rigor": SemanticCarrierSpec(
+        vector="selective_selective_rigor",
+        category="NOVEL:selective_rigor",
         gate_name="global_semantic_selective_rigor_carrier",
         detector=detect_selective_rigor,
         review_role="DECISIVE_STEP_RIGOR_AUDITOR",
@@ -220,7 +220,7 @@ def _selftest() -> int:
         / "specimens"
         / "ood"
         / "domain_leakage_logistics",
-        "selective_rigor_displacement": repo
+        "selective_selective_rigor": repo
         / "benchmarks"
         / "constraint_memory"
         / "claim_test_mismatch"

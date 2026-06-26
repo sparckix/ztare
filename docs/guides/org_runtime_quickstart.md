@@ -2,19 +2,19 @@
 description: "Quickstart for the autonomous org runtime."
 ---
 
-# Org Runtime Quickstart
+# Org runtime quickstart
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Audience:** maintainers or enterprise engineers who already understand the
+*Audience:* maintainers or enterprise engineers who already understand the
 first-run ZTARE workbench and want persistent AI roles, mandates, gates, and
 runtime logs.
 
-**Status:** advanced runtime overlay. Start with
+*Status:* advanced runtime overlay. Start with
 [`first-30-minutes.md`](first-30-minutes.md) or [`quickstart.md`](quickstart.md)
 before using this guide.
 
-The reusable kernel is the separate public repo
+Reusable kernel: the separate public repo
 [`sparckix/cognitive-firm`](https://github.com/sparckix/cognitive-firm).
 `org/` in ZTARE is the tenant overlay and compatibility surface for this
 research workbench: local role files, mandates, gates, channels, and runtime
@@ -23,40 +23,39 @@ ZTARE-specific policy.
 
 ---
 
-## Runtime Action Loop
+## Runtime action loop
 
-Live co-drive is **standard operating mode** for the Research Director.
-The daemon runs the detection, policy, and execution chain on every tick; there
-is no opt-in flag.
+Live co-drive is standard operating mode for the Research Director.
+The daemon runs the detection, policy, and execution chain on every tick with no opt-in flag.
 
 The chain:
 
-1. **Detection** (`src/ztare/role_extensions/frontier_runner.py`) watches
+1. Detection (`src/ztare/role_extensions/frontier_runner.py`) watches
    per-project artifacts (`eval_history.jsonl`, `latest_eval_results.json`,
    `debate_log_iter_*.md`, `verified_axioms.json`) and emits typed events:
    `obstruction_detected`, `verified_axiom_emitted`, `champion_promoted`,
    `gate_repeated_cold_shot`, `stagnation_detected`.
 
-2. **Policy** (`src/ztare/role_extensions/iter_action_policy.py`) reads
+2. Policy (`src/ztare/role_extensions/iter_action_policy.py`) reads
    `iter_action_policy.yaml`, matches events against rules, and queues
    actions onto `frontier_state.<slug>.json::pending_actions` (idempotent
-   via cooldown windows). Default rules are kernel-shipped; per-instance
+   via cooldown windows). Default rules are kernel-shipped. Per-instance
    overrides go to `org/policies/iter_action.yaml`.
 
-3. **Execution** (`src/ztare/role_extensions/iter_action_executor.py`)
+3. Execution (`src/ztare/role_extensions/iter_action_executor.py`)
    pops queued actions and runs them through three safety rails:
-   - **USD spend gate** via `src/ztare/supervisor/spend_tracker.py`
-   - **Agent-CLI utilization gate** via `agent_utilization_tracker.py`
-   - **Damage signal emit** to `org/signals/damage/` on any failure
+   - USD spend gate via `src/ztare/supervisor/spend_tracker.py`
+   - Agent-CLI utilization gate via `agent_utilization_tracker.py`
+   - Damage signal emit to `org/signals/damage/` on any failure
 
 Action handlers cover: `fork_substrate`, `create_lean_cage`,
 `demote_route_in_packet`, `mutate_evidence`, `mutate_charter`,
 `queue_cold_shot`, `update_champion_meaning`, `escalate_to_principal`.
 
-Visualize live state in Orbit by clicking 🧭 **Frontier** in the top bar
+Visualize live state in Orbit by clicking 🧭 Frontier in the top bar
 (reads `/api/frontier_state`).
 
-### Agent-CLI utilization caps (capacity dimension, ≠ USD spend)
+### Agent-CLI utilization caps (a capacity dimension separate from USD spend)
 
 Each role yaml may carry an `agent_utilization` block (schema v1.2):
 
@@ -71,10 +70,10 @@ agent_utilization:
 ```
 
 Tracked daily totals live at `ztare_workspace/agent_utilization/<date>.json`.
-Warn-threshold trips emit a notification-provider message **and** a damage
+Warn-threshold trips emit a notification-provider message and a damage
 signal at `org/signals/damage/` (idempotent, one alert per role/cli/dim/UTC-day).
 
-**Warn-threshold jitter (utilization audit finding, 2026-05-02).** The
+Warn-threshold jitter (utilization audit finding, 2026-05-02). The
 effective warn-threshold is jittered by ±10% per `(role, agent_cli,
 UTC-date)` so agents cannot game by staying just below a static
 threshold. With `warn_threshold_frac: 0.80`, the workbench
@@ -83,20 +82,20 @@ by `(role_id, agent_cli, date)` so reproducible within a day but
 unpredictable across days. Set `agent_utilization_jitter_window: 0.0`
 in the rubric to disable for deterministic operation.
 
-**Override events (utilization audit finding, 2026-05-02).** When the
+Override events (utilization audit finding, 2026-05-02). When the
 principal extends a cap, postpones a closure, delays an approval,
 skips an audit, or raises the absolute ceiling, the event is recorded
 to `ztare_workspace/agent_utilization/overrides/<date>.jsonl` AND
 appended to `transitions.jsonl` as `event: override_event` AND pushed through
 the configured notification provider. Every principal-side
-subversion of the exogenous-pressure clock is now a first-class audit
-artifact rather than a silent action. API:
+subversion of the exogenous-pressure clock now lands in the record as a
+first-class, logged audit artifact. API:
 `record_override_event(kind, role_id, actor, old_value, new_value,
 target, reason)` from `src.ztare.supervisor.agent_utilization_tracker`.
 
-Configure caps from Orbit by clicking ⚙ **Settings** in the top bar.
+Configure caps from Orbit by clicking ⚙ Settings in the top bar.
 
-### Agent-CLI rotation (optional utilization audit finding, 2026-05-02)
+### Agent-CLI rotation (optional, utilization audit finding, 2026-05-02)
 
 A role yaml may carry an `agent_rotation` block to rotate the role's
 primary member across multiple CLIs (Claude / Codex / Gemini) on a
@@ -129,7 +128,7 @@ advance.
 
 ---
 
-## What This Is
+## What this is
 
 The org runtime turns a repository into a small AI-native firm:
 
@@ -141,51 +140,50 @@ principal preferences + mandates
 -> session log, damage signal, closure gate, experiment ledger
 ```
 
-The important distinction is:
+The roles are distinct:
 
-- **ZTARE** executes formal research loops: mutator, judge, gates, telemetry,
+- ZTARE executes formal research loops: mutator, judge, gates, telemetry,
   workspace artifacts, closure.
-- **Research Director** chooses and sequences frontier work: it reads artifacts,
+- Research Director chooses and sequences frontier work. It reads artifacts,
   ranks next moves against the principal's preferences, proposes hostile
   discriminators, and blocks promotion when the evidence is not licensed.
-- **Manager** runs operational work: cleanup, workflow execution, closure, and
+- Manager runs operational work: cleanup, workflow execution, closure, and
   standard task processing.
 
-The durable state is in files under `org/`,
-`ztare_workspace/`, `projects/`, and `research_areas/`. State lives on the
-filesystem, not in a chat transcript.
+Durable state lives in files under `org/`, `ztare_workspace/`, `projects/`,
+and `research_areas/` on the filesystem.
 
-## State Backend: Where The Org Lives
+## State backend: where the org lives
 
-The current org runtime is filesystem-backed. That means the daemon only sees
-tasks, gates, mandates, sessions, and channels that exist in the checkout or
-volume mounted into the daemon process.
+The org runtime is filesystem-backed. The daemon only sees tasks, gates,
+mandates, sessions, and channels that exist in the checkout or volume mounted
+into the daemon process.
 
-For local use, this is simple: write a task under `org/tasks/pending/`, run the
-daemon from the same repo, and the task is visible.
+For local use this is straightforward: write a task under `org/tasks/pending/`,
+run the daemon from the same repo, and the task is visible.
 
-For a VPS or Docker deployment, you must choose a state strategy:
+For a VPS or Docker deployment, choose a state strategy:
 
-- **Same checkout:** clone the repo on the VPS and create tasks there.
-- **Sync:** `rsync` private org state (`org/mandates`, `org/preferences`,
+- Same checkout: clone the repo on the VPS and create tasks there.
+- Sync: `rsync` private org state (`org/mandates`, `org/preferences`,
   `org/tasks`, `org/channels`, `ztare_workspace/gates`) to the VPS before the
   daemon runs, then sync results back.
-- **Mounted volume:** mount the same persistent volume into all daemon
+- Mounted volume: mount the same persistent volume into all daemon
   containers.
-- **Service backend:** replace the file adapter with a database/API/event log
+- Service backend: replace the file adapter with a database/API/event log
   while preserving the same task/gate/session abstractions.
 
-Do not assume a daemon running on a VPS can see a task created only on your
-laptop. Filesystem state is local unless you replicate it.
+A daemon running on a VPS cannot see a task created only on your laptop.
+Filesystem state is local unless you replicate it.
 
-If you want a direct human-run Claude/Codex terminal session instead of the
-autonomous org runtime, use the
+For a direct human-run Claude/Codex terminal session with no autonomous org
+runtime, use the
 [`manual console`](manual_console.md). That path starts no
 daemon and runs no work-discovery loop.
 
 ---
 
-## The Minimal Local Check
+## The minimal local check
 
 Run the productized first-run check before starting any daemon:
 
@@ -232,7 +230,7 @@ python scripts/public/control/org_role_preflight.py --role research_director --r
 
 ---
 
-## Run With Docker
+## Run with Docker
 
 On macOS, install Docker Desktop first:
 
@@ -268,11 +266,11 @@ Run the operational manager instead:
 docker compose --env-file .env --profile daemons up manager-daemon
 ```
 
-The container is a process wrapper. Full execution requires the chosen agent
-runtime and credentials inside the container, or running the daemon on a host
-where that runtime is already authenticated. If the image does not contain
-`claude` or `codex`, run the local smoke command first and treat Docker as a
-deployment wrapper until the runtime image is extended.
+Docker is a process wrapper. Full execution requires the chosen agent runtime
+and credentials inside the container, or running the daemon on a host where
+that runtime is already authenticated. If the image does not contain `claude`
+or `codex`, run the local smoke command first and treat Docker as a deployment
+wrapper until the runtime image is extended.
 
 Runtime identity is configurable:
 
@@ -295,7 +293,7 @@ ZTARE_MEMBER_ID=codex ZTARE_AGENT_CLI=codex ZTARE_AGENT_ADAPTER=codex_exec \
 python scripts/public/control/agent_daemon.py --role research_director --tick-once --dry-run
 ```
 
-## Bootstrap Contract: What The Agent Reads
+## Bootstrap contract: what the agent reads
 
 Every Docker/daemon role run has three layers of instruction:
 
@@ -310,7 +308,7 @@ Every Docker/daemon role run has three layers of instruction:
 
 The daemon prompts the spawned agent to read all three, and preflight checks
 that the required files exist. `AGENTS.md` is not a task queue and not a role
-mandate; it is the higher-level repo constitution. If it conflicts with a role
+mandate. It is the higher-level repo constitution. If it conflicts with a role
 mandate, the agent must obey the stricter constraint and escalate the conflict.
 
 The bootstrap proof is:
@@ -339,7 +337,7 @@ artifacts.
 
 ---
 
-## Give The Director Work
+## Give the director work
 
 Create a task under `org/tasks/pending/` using the Research Director template:
 
@@ -367,33 +365,34 @@ the daemon refuses to execute unless `--unattended` is explicitly passed, so use
 `--dry-run` until you are sure the mandate is correct.
 
 The intended human interaction is natural language through Orbit or a tenant
-notification provider, not Python commands. Commands are the bootstrap/debug
-surface. The daily experience should be: a role proposes a decision card,
-explains trade-offs and artifacts, and the principal replies approve/skip/ask/stop.
+notification provider. Python commands are the bootstrap/debug surface. The
+daily experience is a role proposing a decision card, explaining trade-offs and
+artifacts, and the principal replying approve/skip/ask/stop.
 
 ---
 
-## Where Human-Agent Communication Lives
+## Where human-agent communication lives
 
 The product surface is split deliberately:
 
-- **Orbit** is the primary console. It reads `org/` and `ztare_workspace/`,
+- Orbit is the primary console. It reads `org/` and `ztare_workspace/`,
   shows roles, active sessions, task pressure, damage signals, pending gates,
-  and agent-channel messages, then writes gate resolutions back to the
+  and agent-channel messages, and writes gate resolutions back to the
   filesystem backend.
-- **Notification providers** are optional tenant rails. The public checkout
-  defaults to a filesystem outbox; a tenant may add Telegram, Slack, email, or
+- Notification providers are optional tenant rails. The public checkout
+  defaults to a filesystem outbox. A tenant may add Telegram, Slack, email, or
   another provider that watches the same executive inbox and records
   resolutions in `ztare_workspace/gates/resolved/`.
-- **A2A channels** under `org/channels/` are role-to-role communication. They
-  are durable handoff envelopes for agents, not a substitute for human approval.
-- **CLI commands** are setup and debugging tools. They are not the desired
-  everyday interface.
+- A2A channels under `org/channels/` carry role-to-role communication. They
+  are durable handoff envelopes for agents; human approval is still required.
+- CLI commands are setup and debugging tools; the everyday interface is natural
+  language through Orbit or a notification provider.
 
-The current gap is free-form natural-language routing. Today, Orbit and
-Notification providers can resolve structured gates; they do not yet parse
-arbitrary human messages into typed directives/tasks/gates. That parser should
-sit in front of the same backend, not create a second chat-owned source of truth.
+One current gap is free-form natural-language routing. Orbit and notification
+providers can resolve structured gates, but they do not yet parse arbitrary human
+messages into typed directives/tasks/gates. That parser should sit in front of
+the same backend, keeping it the single source of truth that the chat layer
+only projects over.
 
 See the standalone concept page:
 
@@ -403,7 +402,7 @@ docs/demos/research_company_landing.html
 
 ---
 
-## Route Research Areas By Principal Preference
+## Route research areas by principal preference
 
 Preferences live here:
 
@@ -436,23 +435,23 @@ python -m ztare.orchestrator.operator_replay_audit \
 ```
 
 Then run the taste ranker on the generated queue. A high taste score routes
-attention; it does not license a scientific claim or dispatch a GPU run by
-itself.
+attention. It does not license a scientific claim or dispatch a GPU run on its
+own.
 
-## External GPU/API Run Discipline
+## External GPU/API run discipline
 
 Research Director work often leaves the local repo for a GPU box or paid API
-provider. Those runs must be launched as resumable instruments, not as opaque
-terminal sessions.
+provider. Those runs must be launched as resumable instruments with declared
+artifacts that a later cold agent can reconstruct and resume.
 
 Before launch, create or emit a run packet with:
 
-- run root, host, batch label, exact command, and artifact download target;
-- expected device residency and warmup window;
-- checkpoint cadence and checkpoint file pattern;
+- run root, host, batch label, exact command, and artifact download target
+- expected device residency and warmup window
+- checkpoint cadence and checkpoint file pattern
 - telemetry files to preserve: preflight JSON, process/GPU probes, raw logs,
-  residual diagnostics, summaries, and partial artifacts;
-- hard admissibility gates, kill conditions, and notification channel.
+  residual diagnostics, summaries, and partial artifacts
+- hard admissibility gates, kill conditions, and notification channel
 
 During the run, poll the declared run root and verify command lines, device
 residency, log freshness, and checkpoint progression. If an independent batch
@@ -482,7 +481,7 @@ logic directly, but they should still write a terminal result marker JSON.
 
 ---
 
-## Enterprise Shape
+## Enterprise shape
 
 The easy boot surface is:
 
@@ -490,19 +489,19 @@ The easy boot surface is:
 write task -> start daemon -> approve/skip -> inspect artifacts
 ```
 
-The backend model is deliberately not "chat as state" and not "git as a
+Underneath, the model is deliberately neither "chat as state" nor "git as a
 database":
 
-- **Canonical live state:** files under `org/` and `ztare_workspace/`.
-- **Executive inbox:** `ztare_workspace/gates/pending/`, resolved into
+- Canonical live state: files under `org/` and `ztare_workspace/`.
+- Executive inbox: `ztare_workspace/gates/pending/`, resolved into
   `ztare_workspace/gates/resolved/`.
-- **Append-only audit:** `ztare_workspace/transitions.jsonl` plus git history.
-- **Interface projections:** Orbit and notification providers read/write through the backend
-  paths above; they do not own independent state.
-- **Git's role:** versioning, audit, rollback, and sync. It is not the
+- Append-only audit: `ztare_workspace/transitions.jsonl` plus git history.
+- Interface projections: Orbit and notification providers read/write through the backend
+  paths above. They do not own independent state.
+- Git's role: versioning, audit, rollback, and sync. It is not the
   low-latency coordination primitive.
 
-The enterprise value is the governance layer:
+Enterprise value comes from the governance layer:
 
 - role contracts and mandates are versioned files
 - session claims prevent multiple agents from writing the same resource
@@ -512,7 +511,7 @@ The enterprise value is the governance layer:
 - Research Director separates taste/routing from proof/validation
 - ZTARE keeps formal experiment execution behind gates and ledgers
 
-Near-term gaps before this is packaged enterprise software:
+Near-term gaps before enterprise packaging:
 
 - packaged agent runtime inside the Docker image
 - first-run setup command for credentials and notification channels

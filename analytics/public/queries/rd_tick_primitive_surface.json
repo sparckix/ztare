@@ -3,34 +3,63 @@
     "cognitive_reframe": [
       {
         "buckets": [
+          "cognitive_reframe",
+          "negative_to_object"
+        ],
+        "description": "Reframe's minimal solver-0 measurement: 10 mixed targets (Lean/NS/falsifier/consequence) scored via gp225_audit vs pre-registered thresholds (>=3 closures, >=3 gaps, >=2 falsifiers, 0 mislabel, 0 false-ratify). Composes ",
+        "id": "SOLVER0-GATE",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "scripts/public/control/solver0_gate.py",
+        "score": 800.4,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 4"
+      },
+      {
+        "buckets": [
           "cognitive_reframe"
         ],
-        "description": "Surfaces candidate cross-domain analogies.",
-        "id": "ANALOGY-CANDIDATES-PROVIDER",
-        "impact_factor_expost": 1.0,
-        "kind": "orchestrator",
-        "last_used": "2026-04-30",
+        "description": "Read-only audit for whether stagnant autoresearch runs left evidence of breadth controls such as pivots, parallel blitzes, or primitive-class rotation.",
+        "id": "HILL-CLIMB-BEHAVIOR-AUDIT",
+        "impact_factor_expost": 3.0,
+        "kind": "primitive",
+        "last_used": "2026-06-13",
         "matched_terms": [
-          "mutator"
+          "stagnation"
         ],
-        "path": "src/ztare/orchestrator/briefing_providers/analogy_candidates.py",
-        "score": 783.1,
-        "why": "matched mutator; bucket cognitive_reframe; impact 1"
+        "path": "src/ztare/reports/hill_climb_behavior_audit.py",
+        "score": 774.3,
+        "why": "matched stagnation; bucket cognitive_reframe; impact 3"
+      },
+      {
+        "buckets": [
+          "cognitive_reframe"
+        ],
+        "description": "The shared strange-loop orchestrator. Construct with a domain (Steps 1 & 3) and a query",
+        "id": "ISOMORPHISMLOOP",
+        "impact_factor_expost": 3.0,
+        "kind": "primitive",
+        "last_used": "",
+        "matched_terms": [],
+        "path": "src/ztare/common/constraint_isomorphism.py",
+        "score": 773.3,
+        "why": "bucket cognitive_reframe; impact 3"
       },
       {
         "buckets": [
           "cognitive_reframe",
-          "orchestration_compression"
+          "negative_to_object"
         ],
-        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
-        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
-        "impact_factor_expost": 4.0,
+        "description": "Cold-shot dispatch pattern for de-anchored external or cross-family review before expensive commitment or novelty claims.",
+        "id": "PATTERN-014-COLD-SHOT-DISPATCH",
+        "impact_factor_expost": 5.0,
         "kind": "pattern",
-        "last_used": "2026-05-08",
+        "last_used": "2026-05-13",
         "matched_terms": [],
-        "path": "org/patterns/darwin_idea_killer.md",
-        "score": 764.9,
-        "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
+        "path": "org/patterns/cold_shot_dispatch.md",
+        "score": 771.5,
+        "why": "bucket cognitive_reframe, negative_to_object; impact 5"
       }
     ],
     "graph_mining": [
@@ -39,69 +68,109 @@
           "pde_ns_lean",
           "graph_mining"
         ],
-        "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
-        "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
-        "impact_factor_expost": 5.0,
-        "kind": "reflexive_primitive",
-        "last_used": "2026-05-08",
-        "matched_terms": [],
-        "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
-        "score": 778.5,
-        "why": "bucket pde_ns_lean, graph_mining; impact 5"
-      },
-      {
-        "buckets": [
-          "graph_mining"
-        ],
-        "description": "v35 forward clean-corpus gate: strict target_kind enum (proof_closure/consequence_exposure/gap_isolation/falsifier/route_reduction/apparatus_audit) + SOX-independent ratifier + path retention; blocks mushy-success-vocabu",
-        "id": "VALIDATE-FORWARD-EVIDENCE",
-        "impact_factor_expost": 3.0,
-        "kind": "validator",
-        "last_used": "2026-05-15",
-        "matched_terms": [
-          "evidence"
-        ],
-        "path": "scripts/public/validators/validate_forward_evidence.py",
-        "score": 774.8,
-        "why": "matched evidence; bucket graph_mining; impact 3"
-      }
-    ],
-    "lagrangian_path_b": [
-      {
-        "buckets": [
-          "lagrangian_path_b"
-        ],
-        "description": "Core ZTARE autoresearch loop (mutator-judge cycle, Newton mode, Path B Lagrangian).",
-        "id": "AUTORESEARCH-LOOP",
+        "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+        "id": "NS-GRAPH-TICK-PRECHECK",
         "impact_factor_expost": 4.0,
-        "kind": "validator",
-        "last_used": "2026-05-08",
+        "kind": "primitive",
+        "last_used": "2026-05-09",
         "matched_terms": [
-          "autoresearch",
-          "mutator"
+          "ns_track_b",
+          "lean_substrate",
+          "graph_mining",
+          "closure_attempt",
+          "typed_endpoint"
         ],
-        "path": "src/ztare/validator/autoresearch_loop.py",
-        "score": 785.4,
-        "why": "matched autoresearch, mutator; bucket lagrangian_path_b; impact 4"
+        "path": "projects/ns_millennium_hunt/scripts/ns_graph_tick.py",
+        "score": 906.9,
+        "why": "matched ns_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
       },
       {
         "buckets": [
           "pde_ns_lean",
-          "lagrangian_path_b",
-          "orchestration_compression"
+          "graph_mining"
         ],
-        "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
-        "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+        "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+        "id": "NS-L3A-CONCENTRATION-WORKMAP",
         "impact_factor_expost": 4.0,
         "kind": "primitive",
-        "last_used": "2026-05-16",
-        "matched_terms": [],
-        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 783.9,
-        "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "ns_track_b",
+          "lean_substrate",
+          "typed_endpoint"
+        ],
+        "path": "src/ztare/research_director/ns_l3a_workmap.py",
+        "score": 884.4,
+        "why": "matched ns_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "Verifies Lean proof compiles with no axioms/sorries (GP-211) AND runs the v33 Tier-0 anti-laundering organs (vacuity / gold-name / single-exact / indirect-leakage / currency) \u2014 flips gate_passed=False on a CONFIRMED fals",
+        "id": "LEAN-PROOF-GATE",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-15",
+        "matched_terms": [
+          "lean_substrate",
+          "proof_compile_check",
+          "pre_lean_preflight",
+          "closure_attempt"
+        ],
+        "path": "src/ztare/gates/lean_proof_gate.py",
+        "score": 833.65,
+        "why": "matched lean_substrate, proof_compile_check, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.25"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "graph_mining"
+        ],
+        "description": "A Lean proof compiles, is sorry-free, axiom-clean (clears GP-211) yet is NOT a novel closure: vacuous / gold-name-verbatim / one-exact? / indirect-leakage / scalar-currency. 5 sub-modes mechanized by the v33 Tier-0 organ",
+        "id": "ANTI-PATTERN-013-LEAN-CLOSURE-LAUNDERING",
+        "impact_factor_expost": 4.0,
+        "kind": "anti-pattern",
+        "last_used": "2026-05-15",
+        "matched_terms": [
+          "lean_substrate",
+          "closure_attempt"
+        ],
+        "path": "org/anti-patterns/lean_closure_laundering.md",
+        "score": 825.9,
+        "why": "matched lean_substrate, closure_attempt; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 1.5"
       }
     ],
     "negative_to_object": [
+      {
+        "buckets": [
+          "negative_to_object"
+        ],
+        "description": "STRUCTURAL ANCHOR (vocabulary-drift-proof): route-1 closure is ALREADY encoded as discharge >=1 of 5 Clay-equivalent residual axioms {BKM, Prodi-Serrin, ESS-L3, Beirao-da-Veiga, Constantin-Fefferman vorticity-direction-L",
+        "id": "NS-ROUTE1-FIVE-CLAY-EQUIVALENT-RESIDUAL-VOID-ANCHOR",
+        "impact_factor_expost": 1.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "ztare_proofs/ZtareProofs/ns_trackb_FINAL_THEOREM.lean",
+        "score": 832.1,
+        "why": "bucket negative_to_object; impact 1"
+      },
+      {
+        "buckets": [
+          "negative_to_object"
+        ],
+        "description": "O(1) amnesia decision surface: canonical open nodes C1-C6 (5 Clay-equiv + anti-twist) + alias table (>=6 vocab drifts all -> C5 Constantin-Fefferman == perennial atom) + formalized-negative blockers (tick578-580). Match ",
+        "id": "NS-ROUTE1-RESIDUAL-MANIFEST-O1-DECISION-SURFACE",
+        "impact_factor_expost": 1.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [],
+        "path": "projects/ns_millennium_hunt/workspace/ns_residual_manifest.md",
+        "score": 828.1,
+        "why": "bucket negative_to_object; impact 1"
+      },
       {
         "buckets": [
           "negative_to_object"
@@ -111,108 +180,234 @@
         "impact_factor_expost": 4.0,
         "kind": "primitive",
         "last_used": "2026-05-16",
-        "matched_terms": [
-          "autoresearch"
-        ],
+        "matched_terms": [],
         "path": "scripts/public/control/residual_to_lever.py",
-        "score": 793.9,
-        "why": "matched autoresearch; bucket negative_to_object; impact 4"
+        "score": 816.4,
+        "why": "bucket negative_to_object; impact 4"
       },
       {
         "buckets": [
           "negative_to_object"
         ],
-        "description": "5-round adversarial 2-role friction debate; produced 2 clean theorems tonight per memory index.",
-        "id": "PATTERN-001-FRICTION-DEBATE",
-        "impact_factor_expost": 5.0,
-        "kind": "pattern",
+        "description": "Residual-void audit on NS proof spine (default objective function for closure work per v1.49).",
+        "id": "NS-RESIDUAL-VOID-AUDIT",
+        "impact_factor_expost": 4.0,
+        "kind": "script",
         "last_used": "2026-05-08",
         "matched_terms": [],
-        "path": "org/patterns/pattern_1_friction_debate.md",
-        "score": 767.25,
-        "why": "bucket negative_to_object; impact 5; graph_bonus 1.75"
+        "path": "projects/ns_millennium_hunt/scripts/ns_residual_void_audit.py",
+        "score": 802.4,
+        "why": "bucket negative_to_object; impact 4"
       }
     ],
     "orchestration_compression": [
       {
         "buckets": [
-          "pde_ns_lean",
-          "lagrangian_path_b",
           "orchestration_compression"
         ],
-        "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
+        "description": "Reusable Path-A verifier (productizes the disposable per-corpus /tmp/run_*.py rewrites that were themselves the rewrite anti-pattern). Verbatim-compiles a proofs.json against ANY registered canonical pinned Mathlib sandb",
+        "id": "BUNDLE-VERIFY-REUSABLE-PATH-A-VERIFIER",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [
+          "bundle"
+        ],
+        "path": "scripts/public/control/bundle_verify.py",
+        "score": 827.4,
+        "why": "matched bundle; bucket orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "orchestration_compression"
+        ],
+        "description": "Composition pattern for staging an upstream artifact-producing run plus downstream deterministic/public/model gates as one discriminator bundle when the witness stack and artifact contract are stable.",
+        "id": "PATTERN-022-BUNDLE-DISCRIMINATOR-STACK",
+        "impact_factor_expost": 3.0,
+        "kind": "pattern",
+        "last_used": "2026-05-13",
+        "matched_terms": [
+          "bundle",
+          "bundling",
+          "bundle_discriminator_stack",
+          "gate_compression",
+          "discriminator_stack",
+          "artifact_to_gate",
+          "lane_compression",
+          "pull_forward"
+        ],
+        "path": "org/patterns/bundle_discriminator_stack.md",
+        "score": 826.3,
+        "why": "matched bundle, bundling, bundle_discriminator_stack, gate_compression, discriminator_stack; bucket orchestration_compression; impact 3"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas",
+          "orchestration_compression"
+        ],
+        "description": "Runnable entrypoint for bundled solver verification plus governance audit: `python bundle_run.py --substrate <s> --sandbox <pinned vX> --corpus c.json --proofs p.json`. Substrate/version-parameterized; composes bundle_ve",
+        "id": "BUNDLE-RUN-SOLVER-GOVERNANCE-HARNESS",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-16",
+        "matched_terms": [
+          "lean_substrate",
+          "bundle"
+        ],
+        "path": "scripts/public/control/bundle_run.py",
+        "score": 823.4,
+        "why": "matched lean_substrate, bundle; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "orchestration_compression"
+        ],
+        "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes",
         "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
         "impact_factor_expost": 4.0,
         "kind": "primitive",
         "last_used": "2026-05-16",
-        "matched_terms": [],
-        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 783.9,
-        "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
-      },
-      {
-        "buckets": [
-          "cognitive_reframe",
-          "orchestration_compression"
+        "matched_terms": [
+          "lean_substrate",
+          "bundle"
         ],
-        "description": "Darwin-style population-of-ideas killer; selects survivors via adversarial pressure.",
-        "id": "PATTERN-002-DARWIN-IDEA-KILLER",
-        "impact_factor_expost": 4.0,
-        "kind": "pattern",
-        "last_used": "2026-05-08",
-        "matched_terms": [],
-        "path": "org/patterns/darwin_idea_killer.md",
-        "score": 764.9,
-        "why": "bucket cognitive_reframe, orchestration_compression; impact 4; graph_bonus 0.5"
+        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
+        "score": 822.4,
+        "why": "matched lean_substrate, bundle; bucket pde_ns_lean, orchestration_compression; impact 4"
       }
     ],
     "pde_ns_lean": [
       {
         "buckets": [
-          "pde_ns_lean",
-          "lagrangian_path_b",
-          "orchestration_compression"
+          "pde_ns_lean"
         ],
-        "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
-        "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
+        "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin",
+        "id": "PDE-ESTIMATE-CRAFT-OPS",
         "impact_factor_expost": 4.0,
-        "kind": "primitive",
-        "last_used": "2026-05-16",
-        "matched_terms": [],
-        "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-        "score": 783.9,
-        "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
+        "kind": "op",
+        "last_used": "2026-05-21",
+        "matched_terms": [
+          "ns_track_b",
+          "pde_estimate",
+          "pde estimate",
+          "harmonic_analysis",
+          "source_selection",
+          "nonadaptive",
+          "no_post_hoc",
+          "stopping_time",
+          "same_carrier",
+          "fresh_capacity",
+          "no_reuse",
+          "packing",
+          "injection"
+        ],
+        "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
+        "score": 941.65,
+        "why": "matched ns_track_b, pde_estimate, pde estimate, harmonic_analysis, source_selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
       },
       {
         "buckets": [
           "pde_ns_lean",
           "graph_mining"
         ],
-        "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
-        "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
-        "impact_factor_expost": 5.0,
-        "kind": "reflexive_primitive",
-        "last_used": "2026-05-08",
-        "matched_terms": [],
-        "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
-        "score": 778.5,
-        "why": "bucket pde_ns_lean, graph_mining; impact 5"
+        "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+        "id": "NS-GRAPH-TICK-PRECHECK",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
+        "last_used": "2026-05-09",
+        "matched_terms": [
+          "ns_track_b",
+          "lean_substrate",
+          "graph_mining",
+          "closure_attempt",
+          "typed_endpoint"
+        ],
+        "path": "projects/ns_millennium_hunt/scripts/ns_graph_tick.py",
+        "score": 906.9,
+        "why": "matched ns_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean"
+        ],
+        "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
+        "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+        "impact_factor_expost": 4.0,
+        "kind": "pattern",
+        "last_used": "2026-05-14",
+        "matched_terms": [
+          "ns_track_b",
+          "pre_lean_preflight",
+          "gowers_first",
+          "formalization_sequence",
+          "theorem_surface",
+          "carrier_observable"
+        ],
+        "path": "org/patterns/gowers_first_formalize_second.md",
+        "score": 889.4,
+        "why": "matched ns_track_b, pre_lean_preflight, gowers_first, formalization_sequence, theorem_surface; bucket pde_ns_lean; impact 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean"
+        ],
+        "description": "Exact rational gate for Paley-Zygmund/Cauchy moment-ratio routes: checks whether cheap-boundary lower bound plus first_moment_sq/second_moment_cap strictly overfills threshold space, blocking finite-second-moment-as-surp",
+        "id": "MOMENT-RATIO-SURPLUS-GATE",
+        "impact_factor_expost": 4.0,
+        "kind": "gate",
+        "last_used": "2026-05-24",
+        "matched_terms": [
+          "ns_track_b",
+          "pde_estimate",
+          "same_carrier"
+        ],
+        "path": "src/ztare/gates/moment_ratio_surplus_gate.py",
+        "score": 888.15,
+        "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
       }
     ],
     "sympy_cas": [
       {
         "buckets": [
+          "pde_ns_lean",
           "sympy_cas"
         ],
-        "description": "RCA fix: protocol was split across tools (this precheck entrypoint-forced; rd_tick_brief \u00a78 pointer-not-forced; post_tick_check close-out only) \u21d2 forecast/codex-bet/ordering legs forgotten under goal-pressure. The ONE en",
-        "id": "MECE-EXHAUSTIVE-PRE-POST-TICK-SURFACING",
-        "impact_factor_expost": 4.0,
+        "description": "v1.48: deterministic dimensional/endpoint check on LLM-proposed PDE inequalities BEFORE Lean editing.",
+        "id": "PDE-INEQUALITY-DIMENSIONAL-GATE",
+        "impact_factor_expost": 3.0,
         "kind": "gate",
+        "last_used": "2026-05-07",
+        "matched_terms": [
+          "pde_estimate",
+          "pre_lean_preflight",
+          "dimensional_check",
+          "endpoint_check",
+          "endpoint check"
+        ],
+        "path": "src/ztare/gates/pde_inequality_dimensional_gate.py",
+        "score": 856.55,
+        "why": "matched pde_estimate, pre_lean_preflight, dimensional_check, endpoint_check, endpoint check; bucket pde_ns_lean, sympy_cas; impact 3; graph_bonus 1.25"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas",
+          "orchestration_compression"
+        ],
+        "description": "Runnable entrypoint for bundled solver verification plus governance audit: `python bundle_run.py --substrate <s> --sandbox <pinned vX> --corpus c.json --proofs p.json`. Substrate/version-parameterized; composes bundle_ve",
+        "id": "BUNDLE-RUN-SOLVER-GOVERNANCE-HARNESS",
+        "impact_factor_expost": 4.0,
+        "kind": "primitive",
         "last_used": "2026-05-16",
-        "matched_terms": [],
-        "path": "scripts/public/projects/ns/ns_scientific_amnesia_precheck.py",
-        "score": 767.9,
-        "why": "bucket sympy_cas; impact 4"
+        "matched_terms": [
+          "lean_substrate",
+          "bundle"
+        ],
+        "path": "scripts/public/control/bundle_run.py",
+        "score": 823.4,
+        "why": "matched lean_substrate, bundle; bucket pde_ns_lean, sympy_cas, orchestration_compression; impact 4"
       },
       {
         "buckets": [
@@ -225,116 +420,831 @@
         "impact_factor_expost": 4.0,
         "kind": "gate",
         "last_used": "2026-05-15",
-        "matched_terms": [],
+        "matched_terms": [
+          "lean_substrate",
+          "pre_lean_preflight",
+          "closure_attempt"
+        ],
         "path": "scripts/public/control/v33_preflight_risk_detector.py",
-        "score": 766.9,
-        "why": "bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
+        "score": 821.4,
+        "why": "matched lean_substrate, pre_lean_preflight, closure_attempt; bucket pde_ns_lean, sympy_cas, graph_mining; impact 4"
+      },
+      {
+        "buckets": [
+          "pde_ns_lean",
+          "sympy_cas"
+        ],
+        "description": "CAS verification of W6 wall (Newton-mode harmonic-analysis attack).",
+        "id": "CAS-W6-VERIFICATION",
+        "impact_factor_expost": 5.0,
+        "kind": "script",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "harmonic_analysis",
+          "cas_verification",
+          "cas verification"
+        ],
+        "path": "projects/ns_millennium_hunt/scripts/CAS_W6_verification.py",
+        "score": 814.5,
+        "why": "matched harmonic_analysis, cas_verification, cas verification; bucket pde_ns_lean, sympy_cas; impact 5; graph_bonus 2"
+      }
+    ],
+    "variational_lagrangian": [
+      {
+        "buckets": [
+          "variational_lagrangian"
+        ],
+        "description": "Core ZTARE autoresearch loop with mutator-judge cycle, Newton mode, and variational Lagrangian support.",
+        "id": "AUTORESEARCH-LOOP",
+        "impact_factor_expost": 4.0,
+        "kind": "validator",
+        "last_used": "2026-05-08",
+        "matched_terms": [
+          "variational_lagrangian",
+          "variational lagrangian"
+        ],
+        "path": "src/ztare/validator/autoresearch_loop.py",
+        "score": 810.4,
+        "why": "matched variational_lagrangian, variational lagrangian; bucket variational_lagrangian; impact 4"
+      },
+      {
+        "buckets": [
+          "variational_lagrangian"
+        ],
+        "description": "GP-181 fail-closed: rejects Noether-symmetry-degenerate Lagrangians.",
+        "id": "NOETHER-NONDEGENERACY-GATE",
+        "impact_factor_expost": 1.0,
+        "kind": "gate",
+        "last_used": "2026-04-28",
+        "matched_terms": [
+          "variational_lagrangian"
+        ],
+        "path": "src/ztare/gates/noether_nondegeneracy_gate.py",
+        "score": 790.1,
+        "why": "matched variational_lagrangian; bucket variational_lagrangian; impact 1"
+      },
+      {
+        "buckets": [
+          "variational_lagrangian"
+        ],
+        "description": "GP-180/181 variational Lagrangian derivation: derives equations of motion from a Lagrangian via Euler-Lagrange.",
+        "id": "LAGRANGIAN-DERIVATION",
+        "impact_factor_expost": 2.0,
+        "kind": "primitive",
+        "last_used": "2026-04-28",
+        "matched_terms": [
+          "variational lagrangian",
+          "variational_principle"
+        ],
+        "path": "src/ztare/fit/lagrangian_derivation.py",
+        "score": 789.7,
+        "why": "matched variational lagrangian, variational_principle; bucket variational_lagrangian; impact 2; graph_bonus 2.5"
+      },
+      {
+        "buckets": [
+          "variational_lagrangian"
+        ],
+        "description": "Worked-example briefing provider for variational Lagrangian candidates.",
+        "id": "LAGRANGIAN-WORKED-EXAMPLE-PROVIDER",
+        "impact_factor_expost": 1.0,
+        "kind": "orchestrator",
+        "last_used": "2026-04-28",
+        "matched_terms": [
+          "variational_lagrangian",
+          "variational lagrangian"
+        ],
+        "path": "src/ztare/orchestrator/briefing_providers/lagrangian_worked_example.py",
+        "score": 785.1,
+        "why": "matched variational_lagrangian, variational lagrangian; bucket variational_lagrangian; impact 1"
       }
     ]
   },
   "ok": true,
+  "parent_nodes": [
+    {
+      "child_count": 38,
+      "example_ids": [
+        "ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE",
+        "ANTI-PATTERN-002-CITATION-LAUNDERING",
+        "ANTI-PATTERN-003-VOCABULARY-SMUGGLING",
+        "ANTI-PATTERN-004-SORRY-OBLIGATION-LAUNDERING",
+        "ANTI-PATTERN-005-NARRATIVE-INFLATION",
+        "ANTI-PATTERN-006-CHARITY-GRADE-INFLATION",
+        "ANTI-PATTERN-007-CRITERION-SELECTION-RIGGING",
+        "ANTI-PATTERN-008-CROSS-AGENT-MONOCULTURE"
+      ],
+      "family_id": "pattern_memory",
+      "family_label": "Pattern Memory",
+      "matched_terms": [
+        "cas_verification",
+        "gowers_first",
+        "bundle",
+        "bundle_discriminator_stack",
+        "discriminator_stack",
+        "darwin_idea_killer"
+      ],
+      "purpose": "Patterns, anti-patterns, meta-patterns, and reflexive working-memory artifacts.",
+      "scope": "catalog",
+      "source_categories": [
+        "anti-pattern",
+        "control-script",
+        "other",
+        "pattern",
+        "research-operator",
+        "seam"
+      ]
+    },
+    {
+      "child_count": 113,
+      "example_ids": [
+        "ANSATZ-SURVIVOR-GATE",
+        "APPLY-EVIDENCE-GAP-SCORE-CAPS",
+        "APPLY-LATENT-MOTION-VETO",
+        "ASYMPTOTIC-CLAIM-DISCIPLINE",
+        "ASYMPTOTICCLAIMCONTRACT",
+        "AUTORESEARCH-LOOP",
+        "AUXILIARY-OBJECT-DECLARATION-GATE",
+        "BOUND-CHAIN-CONSISTENCY-GATE"
+      ],
+      "family_id": "evidence_governance_gate",
+      "family_label": "Evidence Governance Gate",
+      "matched_terms": [
+        "stagnation",
+        "source_selection",
+        "nonadaptive",
+        "same_carrier",
+        "packing"
+      ],
+      "purpose": "Deterministic gates, validators, audits, and claim/admission controls.",
+      "scope": "catalog",
+      "source_categories": [
+        "control-script",
+        "gate",
+        "substrate-project",
+        "validation/scoring",
+        "validator",
+        "validator-script"
+      ]
+    },
+    {
+      "child_count": 203,
+      "example_ids": [
+        "APN-SEMANTIC-NEIGHBOURS",
+        "APPEND-EXPLORED-PRIMITIVE-CLASS",
+        "ATLAS-FRESHNESS-STATUS",
+        "ATTACH-META-ARC-RECOMMENDATIONS",
+        "BUILD-BASIN-DIAGNOSTICS",
+        "BUILD-EXTERNAL-REFERENCE-SURFACE",
+        "BUILD-HOSTILE-PACKET-SUITE",
+        "BUILD-INVENTORY"
+      ],
+      "family_id": "research_move_operator",
+      "family_label": "Research Move Operator",
+      "matched_terms": [
+        "pde_estimate",
+        "nonadaptive",
+        "packing",
+        "injection"
+      ],
+      "purpose": "RD-facing operators that select questions, residuals, portfolios, routes, or research moves.",
+      "scope": "catalog",
+      "source_categories": [
+        "research-operator"
+      ]
+    },
+    {
+      "child_count": 283,
+      "example_ids": [
+        "ABDUCE-SEED",
+        "ABDUCTION-ADVANCES",
+        "ABDUCTIONGOAL",
+        "ACTIVE-PROOF-CHECKER-NAME",
+        "ADJACENCY-SCORES",
+        "AGENTIC-LEAF-SOLVER",
+        "AGENTVOTEFORECASTER",
+        "AGGREGATE"
+      ],
+      "family_id": "proof_formalization_worker",
+      "family_label": "Proof Formalization Worker",
+      "matched_terms": [
+        "sympy",
+        "injection"
+      ],
+      "purpose": "Lean/formal proof-state, theorem, solver, or source-binding capabilities.",
+      "scope": "catalog",
+      "source_categories": [
+        "formal",
+        "formal-artifact",
+        "leanmill",
+        "leanmill-script",
+        "proof-search"
+      ]
+    },
+    {
+      "child_count": 123,
+      "example_ids": [
+        "ADMISSIBLE-PRIMITIVES",
+        "ANALOGY-PRIMITIVE",
+        "ANALOGYRESPONSE",
+        "ANALYZE-RESIDUAL",
+        "ATTEST-VISIBLE-MRE",
+        "BERRY-KEATING-GENERATOR",
+        "BF-BIC-PAIRED-T",
+        "BH-FDR"
+      ],
+      "family_id": "model_fit_structure_probe",
+      "family_label": "Model Fit Structure Probe",
+      "matched_terms": [
+        "framer",
+        "stagnation"
+      ],
+      "purpose": "Fit, regime, statistics, metric, distance, and structural-fingerprint probes.",
+      "scope": "catalog",
+      "source_categories": [
+        "fit/regime",
+        "framing",
+        "set-distance/metric",
+        "statistical"
+      ]
+    },
+    {
+      "child_count": 33,
+      "example_ids": [
+        "APPARATUS-CERTIFICATE",
+        "BUNDLE-RUN-SOLVER-GOVERNANCE-HARNESS",
+        "BUNDLE-VERIFY-REUSABLE-PATH-A-VERIFIER",
+        "CANONICAL-GRAPH-KIND-SPECS",
+        "CATCH-GRAPH-EDGE-ADVISORY",
+        "CONFIRM-INSTANCES",
+        "CONSTRAINTFINGERPRINT",
+        "DEFAULT-LLM-QUERY"
+      ],
+      "family_id": "infrastructure_utility",
+      "family_label": "Infrastructure Utility",
+      "matched_terms": [
+        "bundle"
+      ],
+      "purpose": "Reusable common infrastructure or glue with cross-cutting operational value.",
+      "scope": "catalog",
+      "source_categories": [
+        "common-infra",
+        "control-script",
+        "export/judgment"
+      ]
+    },
+    {
+      "child_count": 23,
+      "example_ids": [
+        "ANALOGY-CANDIDATES-PROVIDER",
+        "ASYMPTOTE-DEVIATION-PROVIDER",
+        "COLD-LLM-SEED-PROVIDER",
+        "COLD-SHOT-SEED-PROVIDER",
+        "CONTAMINATION-DEFENSE-PROVIDER",
+        "CONTRACT-RULES-PROVIDER",
+        "DATA-DIAGNOSTICS-PROVIDER",
+        "EMBEDDING-HISTORY-PROVIDER"
+      ],
+      "family_id": "orchestration_briefing_provider",
+      "family_label": "Orchestration Briefing Provider",
+      "matched_terms": [
+        "framer"
+      ],
+      "purpose": "Prompt assembly, briefing providers, committee/composition, and loop-routing helpers.",
+      "scope": "catalog",
+      "source_categories": [
+        "orchestrator"
+      ]
+    },
+    {
+      "child_count": 41,
+      "example_ids": [
+        "AGGREGATE-TASTE",
+        "AUTORESEARCH-KERNEL-HEALTH",
+        "BLITZ-SURVIVAL-REPORT",
+        "BUILD-CONSEQUENTIAL-ARTIFACTS",
+        "BUILD-CONTEXT-PRIMER",
+        "CROSS-SOURCE-DIVERGENCE-AUDIT",
+        "DETECT-INFLECTIONS",
+        "HILL-CLIMB-BEHAVIOR-AUDIT"
+      ],
+      "family_id": "mining_operations_intelligence",
+      "family_label": "Mining Operations Intelligence",
+      "matched_terms": [],
+      "purpose": "Mining, dashboard, reflexive telemetry, ROI, and operations-intelligence capabilities.",
+      "scope": "catalog",
+      "source_categories": [
+        "other",
+        "report"
+      ]
+    },
+    {
+      "child_count": 5,
+      "example_ids": [
+        "CAS-ATOM8-VERIFICATION",
+        "CAS-W6-VERIFICATION",
+        "NS-GRAPH-TICK-PRECHECK",
+        "NS-RESIDUAL-VOID-AUDIT",
+        "NS-ROUTE1-RESIDUAL-MANIFEST-O1-DECISION-SURFACE"
+      ],
+      "family_id": "substrate_workbench",
+      "family_label": "Substrate Workbench",
+      "matched_terms": [],
+      "purpose": "Substrate-specific workbench artifacts or domain-local scripts.",
+      "scope": "catalog",
+      "source_categories": [
+        "substrate-project"
+      ]
+    },
+    {
+      "aliases": [
+        "adversarial inversion",
+        "alien math",
+        "alignment audit",
+        "analogy",
+        "charter intent audit",
+        "cold erdos",
+        "cold shot",
+        "cold_start",
+        "cross-domain seed",
+        "cross-domain transfer",
+        "deanchor seed",
+        "eigenquestion",
+        "evidence seed",
+        "evidence-grounded cold shot",
+        "frontier scaffold",
+        "general office"
+      ],
+      "call_sites": [
+        "cold_llm_erdos_seed",
+        "cold_shot_seed",
+        "qualitative_evidence_cold_shot",
+        "frontier_script_scaffold",
+        "fit_analogy",
+        "inverter_review",
+        "mform_alignment_audit",
+        "eigenquestion_generator"
+      ],
+      "child_count": 8,
+      "child_primitives": [
+        "cold_llm_erdos_seed",
+        "cold_shot_structural_seed",
+        "qualitative_evidence_cold_shot",
+        "frontier_script_scaffold",
+        "fit_analogy_query",
+        "inverter_review",
+        "mform_alignment_audit",
+        "eigenquestion_generator"
+      ],
+      "family_id": "external_perspective_generator",
+      "family_label": "External Perspective Generator",
+      "matched_terms": [
+        "inversion",
+        "cold_start"
+      ],
+      "purpose": "Primitives that add an orthogonal perspective, deanchor a stuck line, or create an independent critique/seed.",
+      "scope": "llm_mediated"
+    },
+    {
+      "aliases": [
+        "class extraction",
+        "evidence enrichment",
+        "feature support repair",
+        "hybrid candidate",
+        "persona fusion",
+        "proposal label",
+        "recombination",
+        "source proposal",
+        "trajectory label"
+      ],
+      "call_sites": [
+        "recombination_fusion",
+        "evidence_gap_enrichment",
+        "proposal_class_extraction"
+      ],
+      "child_count": 3,
+      "child_primitives": [
+        "recombination_fusion",
+        "evidence_gap_enrichment",
+        "proposal_class_extraction"
+      ],
+      "family_id": "composition_helper",
+      "family_label": "Composition Helper",
+      "matched_terms": [],
+      "purpose": "Primitives that compose, label, or enrich candidate/evidence surfaces around the main loop.",
+      "scope": "llm_mediated"
+    },
+    {
+      "aliases": [
+        "adversarial evaluator",
+        "candidate writer",
+        "committee",
+        "judge",
+        "mutator",
+        "panel generator",
+        "proposal worker",
+        "reviewer set",
+        "rubric critic"
+      ],
+      "call_sites": [
+        "mutator",
+        "judge",
+        "committee"
+      ],
+      "child_count": 3,
+      "child_primitives": [
+        "autoresearch_mutator_worker",
+        "autoresearch_judge_worker",
+        "dynamic_committee_worker"
+      ],
+      "family_id": "core_workbench_worker",
+      "family_label": "Core Workbench Worker",
+      "matched_terms": [],
+      "purpose": "Workers that produce or judge the main in-loop artifact under typed contracts.",
+      "scope": "llm_mediated"
+    },
+    {
+      "aliases": [
+        "branch recommendation",
+        "capability filter",
+        "catalog curation",
+        "charter critic",
+        "charter patch",
+        "charter reviewer",
+        "cross-provider judge",
+        "fingerprint classifier",
+        "meta audit",
+        "operator policy review",
+        "out-of-loop judge",
+        "patch reviewer",
+        "post-run audit",
+        "pre-run evidence gaps",
+        "primitive quality",
+        "reframe classifier"
+      ],
+      "call_sites": [
+        "substrate_recommender",
+        "rubric_review",
+        "charter_critic_fingerprint",
+        "charter_critic_patch",
+        "charter_critic_reviewer",
+        "post_run_meta_audit",
+        "primitive_quality_filter",
+        "out_of_loop_judge"
+      ],
+      "child_count": 8,
+      "child_primitives": [
+        "substrate_recommender",
+        "rubric_review",
+        "charter_critic_fingerprint",
+        "charter_critic_patch",
+        "charter_critic_reviewer",
+        "post_run_meta_audit",
+        "primitive_quality_filter",
+        "out_of_loop_judge"
+      ],
+      "family_id": "review_governance_helper",
+      "family_label": "Review And Governance Helper",
+      "matched_terms": [],
+      "purpose": "Primitives that review rubrics, charters, catalogs, or completed runs and produce governance/advisory artifacts.",
+      "scope": "llm_mediated"
+    }
+  ],
   "query_terms": [
-    "autoresearch",
-    "mutator",
-    "evidence",
-    "projection"
+    "ns_track_b",
+    "ns track b",
+    "pde_estimate",
+    "pde estimate",
+    "harmonic_analysis",
+    "harmonic analysis",
+    "lean_substrate",
+    "lean substrate",
+    "proof_compile_check",
+    "proof compile check",
+    "pre_lean_preflight",
+    "pre lean preflight",
+    "dimensional_check",
+    "dimensional check",
+    "endpoint_check",
+    "endpoint check",
+    "cas_verification",
+    "cas verification",
+    "sympy",
+    "variational_lagrangian",
+    "variational lagrangian",
+    "variational_principle",
+    "variational principle",
+    "inversion",
+    "anti_anchoring",
+    "anti anchoring",
+    "framer",
+    "stagnation",
+    "cold_start",
+    "cold start",
+    "graph_mining",
+    "graph mining",
+    "closure_attempt",
+    "closure attempt",
+    "typed_endpoint",
+    "typed endpoint",
+    "gowers_first",
+    "gowers first",
+    "formalization_sequence",
+    "formalization sequence",
+    "theorem_surface",
+    "theorem surface",
+    "carrier_observable",
+    "carrier observable",
+    "source_selection",
+    "source selection",
+    "nonadaptive",
+    "no_post_hoc",
+    "no post hoc",
+    "stopping_time",
+    "stopping time",
+    "same_carrier",
+    "same carrier",
+    "fresh_capacity",
+    "fresh capacity",
+    "no_reuse",
+    "no reuse",
+    "packing",
+    "injection",
+    "bundle",
+    "bundling",
+    "bundle_discriminator_stack",
+    "bundle discriminator stack",
+    "gate_compression",
+    "gate compression",
+    "discriminator_stack",
+    "discriminator stack",
+    "artifact_to_gate",
+    "artifact to gate",
+    "lane_compression",
+    "lane compression",
+    "pull_forward",
+    "pull forward",
+    "meta_darwin",
+    "meta darwin",
+    "darwin_idea_killer",
+    "darwin idea killer",
+    "kill_agent",
+    "kill agent",
+    "excitement_trigger",
+    "excitement trigger",
+    "promotion_gate",
+    "promotion gate",
+    "strong_signal",
+    "strong signal",
+    "null_form",
+    "null form",
+    "signed_cancellation",
+    "signed cancellation",
+    "positive_source_square",
+    "positive source square",
+    "symbol_audit",
+    "symbol audit"
   ],
   "top_hits": [
     {
       "buckets": [
-        "negative_to_object"
+        "pde_ns_lean"
       ],
-      "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract",
-      "id": "RESIDUAL-TO-LEVER",
+      "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin",
+      "id": "PDE-ESTIMATE-CRAFT-OPS",
       "impact_factor_expost": 4.0,
-      "kind": "primitive",
-      "last_used": "2026-05-16",
+      "kind": "op",
+      "last_used": "2026-05-21",
       "matched_terms": [
-        "autoresearch"
+        "ns_track_b",
+        "pde_estimate",
+        "pde estimate",
+        "harmonic_analysis",
+        "source_selection",
+        "nonadaptive",
+        "no_post_hoc",
+        "stopping_time",
+        "same_carrier",
+        "fresh_capacity",
+        "no_reuse",
+        "packing",
+        "injection"
       ],
-      "path": "scripts/public/control/residual_to_lever.py",
-      "score": 793.9,
-      "why": "matched autoresearch; bucket negative_to_object; impact 4"
-    },
-    {
-      "buckets": [
-        "lagrangian_path_b"
-      ],
-      "description": "Core ZTARE autoresearch loop (mutator-judge cycle, Newton mode, Path B Lagrangian).",
-      "id": "AUTORESEARCH-LOOP",
-      "impact_factor_expost": 4.0,
-      "kind": "validator",
-      "last_used": "2026-05-08",
-      "matched_terms": [
-        "autoresearch",
-        "mutator"
-      ],
-      "path": "src/ztare/validator/autoresearch_loop.py",
-      "score": 785.4,
-      "why": "matched autoresearch, mutator; bucket lagrangian_path_b; impact 4"
-    },
-    {
-      "buckets": [
-        "pde_ns_lean",
-        "lagrangian_path_b",
-        "orchestration_compression"
-      ],
-      "description": "Governed solver-yield decomposition on an INDEPENDENT adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the CANONICAL pinned-vX Mathlib sandbox (validate_genuinely_new.pinned_env_hea",
-      "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
-      "impact_factor_expost": 4.0,
-      "kind": "primitive",
-      "last_used": "2026-05-16",
-      "matched_terms": [],
-      "path": "scripts/public/control/gp233_adversary_yield_decomp.py",
-      "score": 783.9,
-      "why": "bucket pde_ns_lean, lagrangian_path_b, orchestration_compression; impact 4"
-    },
-    {
-      "buckets": [
-        "cognitive_reframe"
-      ],
-      "description": "Surfaces candidate cross-domain analogies.",
-      "id": "ANALOGY-CANDIDATES-PROVIDER",
-      "impact_factor_expost": 1.0,
-      "kind": "orchestrator",
-      "last_used": "2026-04-30",
-      "matched_terms": [
-        "mutator"
-      ],
-      "path": "src/ztare/orchestrator/briefing_providers/analogy_candidates.py",
-      "score": 783.1,
-      "why": "matched mutator; bucket cognitive_reframe; impact 1"
+      "path": "src/ztare/research_director/pde_estimate_craft_ops.py",
+      "score": 941.65,
+      "why": "matched ns_track_b, pde_estimate, pde estimate, harmonic_analysis, source_selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75"
     },
     {
       "buckets": [
         "pde_ns_lean",
         "graph_mining"
       ],
-      "description": "Capability index + meta-graph used as load-bearing context for every Director dispatch; impact-weighted from catch ledger; self-referentially mandate-wired (Verdict B PARTIALLY NOVEL per literature scout 2026-05-08; Spea",
-      "id": "REFLEXIVE-PRIMITIVE-001-architecture-index-meta-graph",
-      "impact_factor_expost": 5.0,
-      "kind": "reflexive_primitive",
-      "last_used": "2026-05-08",
-      "matched_terms": [],
-      "path": "src/ztare/reflexive_primitives/architecture_index_meta_graph.md",
-      "score": 778.5,
-      "why": "bucket pde_ns_lean, graph_mining; impact 5"
+      "description": "Refreshes Lean declaration index, NS artifact graph, closure miner, typed-endpoint bridge, and the L3A concentration workmap for RD ticks.",
+      "id": "NS-GRAPH-TICK-PRECHECK",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-09",
+      "matched_terms": [
+        "ns_track_b",
+        "lean_substrate",
+        "graph_mining",
+        "closure_attempt",
+        "typed_endpoint"
+      ],
+      "path": "projects/ns_millennium_hunt/scripts/ns_graph_tick.py",
+      "score": 906.9,
+      "why": "matched ns_track_b, lean_substrate, graph_mining, closure_attempt, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 5.5"
     },
     {
-      "buckets": [],
-      "description": "Qualitative evidence seed for non-numeric substrates.",
-      "id": "QUALITATIVE-EVIDENCE-SEED-PROVIDER",
-      "impact_factor_expost": 1.0,
-      "kind": "orchestrator",
-      "last_used": "2026-04-30",
-      "matched_terms": [
-        "evidence"
+      "buckets": [
+        "pde_ns_lean"
       ],
-      "path": "src/ztare/orchestrator/briefing_providers/qualitative_evidence_seed.py",
-      "score": 776.1,
-      "why": "matched evidence; impact 1"
+      "description": "Sequencing pattern for proof frontiers where carrier or observable identity is unstable: run informal theorem-surface proof/countermodel work before Lean, then formalize the surviving primitive and no-go guard.",
+      "id": "PATTERN-025-GOWERS-FIRST-FORMALIZE-SECOND",
+      "impact_factor_expost": 4.0,
+      "kind": "pattern",
+      "last_used": "2026-05-14",
+      "matched_terms": [
+        "ns_track_b",
+        "pre_lean_preflight",
+        "gowers_first",
+        "formalization_sequence",
+        "theorem_surface",
+        "carrier_observable"
+      ],
+      "path": "org/patterns/gowers_first_formalize_second.md",
+      "score": 889.4,
+      "why": "matched ns_track_b, pre_lean_preflight, gowers_first, formalization_sequence, theorem_surface; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Exact rational gate for Paley-Zygmund/Cauchy moment-ratio routes: checks whether cheap-boundary lower bound plus first_moment_sq/second_moment_cap strictly overfills threshold space, blocking finite-second-moment-as-surp",
+      "id": "MOMENT-RATIO-SURPLUS-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-24",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier"
+      ],
+      "path": "src/ztare/gates/moment_ratio_surplus_gate.py",
+      "score": 888.15,
+      "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Exact rational gate for bounded-ratio surplus routes: checks whether E[rho]>=1+delta with a pre-payoff cap rho<=R gives support mass delta/(R-1) large enough, with a companion lower bound, to overfill threshold space; bl",
+      "id": "BOUNDED-RATIO-SUPPORT-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-24",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier"
+      ],
+      "path": "src/ztare/gates/bounded_ratio_support_gate.py",
+      "score": 887.15,
+      "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4; graph_bonus 1.25"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Same-carrier packing/no-reuse gate for pec_j: checks source carrier, target payment family, assignment/injection map, total prefix coverage, same-carrier binding, overlap or multiplicity bound, finite-prefix budget, pre-",
+      "id": "SAME-CARRIER-PACKING-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-25",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier",
+        "fresh_capacity",
+        "no_reuse",
+        "packing",
+        "injection"
+      ],
+      "path": "src/ztare/gates/same_carrier_packing_gate.py",
+      "score": 886.9,
+      "why": "matched ns_track_b, pde_estimate, same_carrier, fresh_capacity, no_reuse; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean",
+        "graph_mining"
+      ],
+      "description": "Ranks declarations in the L3A concentration-flux Lean branch so new proof targets are not buried under older Track-B paths.",
+      "id": "NS-L3A-CONCENTRATION-WORKMAP",
+      "impact_factor_expost": 4.0,
+      "kind": "primitive",
+      "last_used": "2026-05-09",
+      "matched_terms": [
+        "ns_track_b",
+        "lean_substrate",
+        "typed_endpoint"
+      ],
+      "path": "src/ztare/research_director/ns_l3a_workmap.py",
+      "score": 884.4,
+      "why": "matched ns_track_b, lean_substrate, typed_endpoint; bucket pde_ns_lean, graph_mining; impact 4; graph_bonus 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Covering-selection receipt gate: checks metric/quasi-metric, source family, scale/radius, uniform doubling or Besicovitch constant, engulfing/eccentricity control, pre-payoff selection rule, coverage or paid omissions, s",
+      "id": "METRIC-COVERING-SELECTION-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-25",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier",
+        "packing"
+      ],
+      "path": "src/ztare/gates/metric_covering_selection_gate.py",
+      "score": 870.9,
+      "why": "matched ns_track_b, pde_estimate, same_carrier, packing; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Signed-to-positive-variation bridge gate: checks that a signed lower-bound currency is spent as positive variation only with same-carrier numeric domination, event scope, pre-payoff timing, and no post-payoff positive-pa",
+      "id": "POSITIVE-VARIATION-BRIDGE-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-24",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier"
+      ],
+      "path": "src/ztare/gates/positive_variation_bridge_gate.py",
+      "score": 869.9,
+      "why": "matched ns_track_b, pde_estimate, same_carrier; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Quadratic quotient-descent gate: checks that a selected quadratic functional descends through a source quotient only after a pre-payoff selector, source-kernel square-term control, polarized cross-term control, and expli",
+      "id": "QUADRATIC-QUOTIENT-DESCENT-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-25",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate"
+      ],
+      "path": "src/ztare/gates/quadratic_quotient_descent_gate.py",
+      "score": 867.9,
+      "why": "matched ns_track_b, pde_estimate; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Source/target event-family binding gate: checks that a payment or theorem proved on one event family is consumed only after explicit event identity, pre-payoff timing, same carrier/source, total prefix index map, and no-",
+      "id": "EVENT-FAMILY-BINDING-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-24",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "same_carrier",
+        "same carrier"
+      ],
+      "path": "src/ztare/gates/event_family_binding_gate.py",
+      "score": 865.9,
+      "why": "matched ns_track_b, pde_estimate, same_carrier, same carrier; bucket pde_ns_lean; impact 4"
+    },
+    {
+      "buckets": [
+        "pde_ns_lean"
+      ],
+      "description": "Pre-payoff source/extractor selection gate: checks that a reinterpreted source object, extractor or selection rule, source family, owner/carrier binding, index map, and timing receipt are fixed before payoff and independ",
+      "id": "NONADAPTIVE-SOURCE-SELECTION-GATE",
+      "impact_factor_expost": 4.0,
+      "kind": "gate",
+      "last_used": "2026-05-24",
+      "matched_terms": [
+        "ns_track_b",
+        "pde_estimate",
+        "source_selection",
+        "nonadaptive"
+      ],
+      "path": "src/ztare/gates/nonadaptive_source_selection_gate.py",
+      "score": 865.9,
+      "why": "matched ns_track_b, pde_estimate, source_selection, nonadaptive; bucket pde_ns_lean; impact 4"
     }
   ],
-  "total_index_rows": 676,
+  "total_index_rows": 862,
   "warnings": []
 }

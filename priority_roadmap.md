@@ -1,6 +1,6 @@
 # ZTARE Public Roadmap
 
-**Last refreshed:** 2026-06-22
+**Last refreshed:** 2026-06-24
 **Planning horizon:** next 4-6 weeks
 **Audience:** public readers, contributors, and future maintainers
 
@@ -10,8 +10,8 @@ reports, and bounded claims into states they can inspect: what passed, what
 failed, what was demoted, and what should be checked next.
 
 The long-term direction is a general-purpose compiler for reasoning. This
-release keeps that ambition narrow: make the first local claim/evidence path
-easy to run, easy to inspect, and hard to overread.
+release keeps that ambition narrow: make the first local project path easy to run,
+easy to inspect, and hard to overread.
 
 This public roadmap is intentionally short. The detailed implementation backlog
 stays in maintainer planning docs; this page tells outside readers what will
@@ -27,8 +27,8 @@ so the release asks:
 what most improves trust, leverage, and product legibility per unit effort?
 ```
 
-That means a small receipt, replay check, or blocked-report contract can outrank
-a larger visible feature when it prevents a user from overreading a claim.
+That means a small receipt, replay check, or report-support check can outrank a
+larger visible feature when it prevents a user from overreading a claim.
 
 Terminology rule for release work: call the user-facing product the
 **workbench**, the trusted checks and contracts the **kernel**, runnable
@@ -53,10 +53,10 @@ effort, while respecting dependency order.
 | Core validator reliability | 4 | 5 | 4 | 3 | Keep malformed work out before model calls. |
 | Claim-safe public positioning | 5 | 4 | 5 | 2 | Keep front-door language narrow and inspectable. |
 | Landmark public-doc rewrites | 5 | 4 | 4 | 3 | Rewrite README, principles, Cognitive Gym, reflexive/agentic, and validation docs as decision-first evidence memos. |
-| Report generation and export | 3 | 4 | 4 | 3 | Promote only when support contracts pass. |
+| Report support and project files | 3 | 4 | 4 | 3 | Promote only when support contracts pass. |
 | Reflexive learning and action intelligence | 3 | 4 | 3 | 4 | Keep advisory until decision-use evidence exists. |
 | Reusable research moves | 2 | 3 | 3 | 4 | Promote only when tied to typed receipts. |
-| Forensic workbench design lane | 3 | 4 | 4 | 4 | Narrow React prototype exists with static snapshots, live local project reads, and explicit review-receipt apply. Keep source/evidence/review trails inspectable. |
+| Project Workbench design lane | 4 | 4 | 4 | 4 | Local React/server workbench now opens projects, previews backing files, edits bounded inputs, records reviews/next steps, confirms project-run writes, saves project files with receipts, and organizes the first path around user work steps. |
 
 ## Product Test
 
@@ -66,19 +66,20 @@ A new reviewer should be able to:
 2. run one offline command;
 3. see an overclaim demoted or a gate fire;
 4. inspect the files behind the verdict;
-5. understand the next falsifier without learning the whole internal system.
+5. understand what evidence would change the answer without learning the whole
+   internal system.
 
 The public path is:
 
 ```text
-project intake -> source/evidence check -> trace readiness
--> preflight or bounded run -> verdict / demotion / export
+project intake -> source/evidence check -> run readiness
+-> preflight or project run -> review / demotion / report support / project file
 ```
 
 ZTARE should not compete with ChatGPT, Claude, Codex, or observability tools as
 a general interface. Those systems can generate, edit, code, trace, or review.
-ZTARE's job is narrower: bind outputs to local sources and decide what a claim
-is allowed to mean after checks, gates, and review.
+ZTARE's job is narrower: bind outputs to local sources and decide what a project
+can safely support after checks and review.
 
 ## Recent Context
 
@@ -88,24 +89,25 @@ is allowed to mean after checks, gates, and review.
 - `v0.2.0` refreshed dashboards and calibration exports, then follow-on commits
   hardened proof-search governance, witness transport, axiom audits, and public
   claim boundaries.
-- The current release slice should make the system simpler to enter and harder
-  to overread. Version labels after `v0.2.0` are planning labels until tagged.
+- The current v0.4 release path should make the system simpler to enter and
+  harder to overread. Version labels after `v0.2.0` are planning labels until
+  tagged.
 
-## Current Unreleased Slice
+## Current Unreleased Release Path
 
-The current unreleased slice already contains much of the entry-path work. The
-release task is to verify it, keep the claim boundaries sharp, and split it into
-reviewable commits without pulling in paper, forecasting, proof-audit, or
-LeanMill holdbacks.
+The current unreleased release path already contains much of the entry-path
+work. The release task is to verify it, keep the claim boundaries sharp, and
+split it into reviewable commits without pulling in paper, forecasting,
+proof-audit, or LeanMill holdbacks.
 
-This slice should answer one question:
+This release path should answer one question:
 
 ```text
 Can a serious user stand behind a bounded claim without manually re-verifying
 every source, artifact, and model-produced sentence?
 ```
 
-Built or prepared in the current slice:
+Built or prepared in the current release path:
 
 - `make hello` is the smallest value path: no model keys, no persistent
   state, overclaim in, demotion plus missing evidence out;
@@ -118,20 +120,20 @@ Built or prepared in the current slice:
   sources become bounded claims, evidence state, trace readiness, and a
   preflightable run;
 - source/evidence readiness now includes source typing, source-index receipts,
-  evidence-output binding, evidence-gap action rows, claim-support summaries,
-  replay manifests, and trace/run-readiness blockers;
+  evidence-output binding, evidence-gap action records, evidence-support
+  summaries, replay manifests, and trace/run-readiness issues;
 - report generation has a deterministic support contract that can block stale
   or unsupported reports before model QA promotes them;
-- action-intelligence and kernel-health read models keep advisory rows
+- action-intelligence and kernel-health read models keep advisory records
   diagnostic unless source freshness, consumption, and decision-use evidence
   justify stronger authority;
-- public release slicing separates on-ramp, evaluator hardening, public CI,
+- public release grouping separates on-ramp, evaluator hardening, public CI,
   agentic/reflexive contracts, evidence-atlas hygiene, compatibility shims,
   import cleanup, and release hygiene from explicit holdbacks.
 
 Still to prove before release:
 
-- run the release-slice audit cleanly enough that every dirty path is
+- run the release-path audit cleanly enough that every dirty path is
   classified as a release group, internal planning, or holdback;
 - keep `make first-run`, docs checks, public smoke, scope-boundary, terminology,
   and publish gates green after the final roadmap/docs edits;
@@ -163,7 +165,7 @@ institution before seeing value.
 **Done when.** A reader can run the public path and explain what ZTARE caught,
 what it did not prove, and where the evidence lives.
 
-## P0: Project Intake And Evidence Readiness
+## P0: Project Intake And Evidence Files
 
 **User problem.** Real users bring messy local sources, not clean benchmark
 fixtures.
@@ -171,8 +173,8 @@ fixtures.
 **Built state.**
 
 - Project intake is the boundary object before an in-loop run.
-- Source freshness, evidence binding, evidence gaps, claim support, and
-  run readiness are visible in one trace.
+- Source files, evidence binding, evidence gaps, claim support, and
+  run checks are visible in one place.
 - No-spend recovery commands are explicit: bind existing evidence when honest,
   justify gaps only against current hash-bound gap rows, and fetch public
   evidence only from explicit recovery contracts.
@@ -186,7 +188,7 @@ fixtures.
   hidden compiler side effects.
 
 **Done when.** A user can prepare a small project and see whether it is ready
-for review, blocked on source/evidence quality, or waiting for a bounded run.
+for review, held on source/evidence quality, or waiting for a project run.
 
 ## P0: Core Validator Reliability
 
@@ -195,7 +197,7 @@ stale evidence, or untyped claims.
 
 **Built state.**
 
-- Malformed intake, rubrics, source rows, and launcher contracts fail before
+- Malformed intake, rubrics, source records, and launcher contracts fail before
   model calls.
 - Provider fallback is opt-in for in-loop runs, and provider telemetry is
   surfaced.
@@ -235,22 +237,23 @@ the public boundary is sharp.
 - Keep release notes and public docs aligned with the current tagged version
   and the exact review artifacts being shipped.
 - Rewrite landmark docs so each page starts with the reader's decision,
-  concrete example, evidence boundary, non-claim, and next action. First
-  targets: `README.md`, `PRINCIPLES.md`, `docs/multi_substrate_validation.md`,
-  `docs/concepts/cognitive_gym.md`, and the reflexive/agentic pattern docs.
+  concrete example, evidence boundary, non-claim, and next step. First
+  targets: `README.md`, `docs/concepts/epistemic_principles.md`,
+  `docs/multi_substrate_validation.md`, `docs/concepts/cognitive_gym.md`, and
+  the reflexive/agentic pattern docs.
 
-**Done when.** A reader can say: ZTARE is the claim-governance workbench; other
-agents are workers, sources, or judges inside that lifecycle.
+**Done when.** A reader can say what ZTARE helps them inspect, what it does not
+prove, and how other agents fit into the project workflow.
 
-## P1: Report Generation And Export
+## P1: Report Support And Project Files
 
-**User problem.** A run is not useful if the exported report invents support or
+**User problem.** A run is not useful if the saved report invents support or
 hides unresolved evidence.
 
 **Built state.**
 
 - Report generation is bound to source/evidence receipts, trace state, run
-  history, graph/evidence-gap actions, non-claims, and next actions.
+  history, graph/evidence-gap records, non-claims, and next steps.
 - Deterministic support contracts have higher authority than model QA.
 - The operational-diagnosis report path correctly blocks stale or unsupported
   report promotion when the support contract is not current.
@@ -284,7 +287,7 @@ turning metrics into reward hacking.
 
 - Promote only warnings that have source freshness, consumption, and
   decision-use evidence.
-- Keep advisory rows from becoming reward signals by accident.
+- Keep advisory records from becoming reward signals by accident.
 
 **Done when.** The system can show which repeated failures changed behavior,
 which stayed diagnostic, and which are still waiting on evidence.
@@ -299,7 +302,7 @@ to duplicate accidentally.
 - Primitive-amnesia and move-card routing are part of the release surface.
 - A primitive is promoted only when it prevents a concrete failure or improves an
   artifact/check.
-- Graph records, forecast rows, and pattern/action contracts are tied to
+- Graph records, forecast records, and pattern/action contracts are tied to
   typed decisions, not free-floating prose.
 
 **Next.**
@@ -311,61 +314,56 @@ to duplicate accidentally.
 **Done when.** A new primitive has a duplicate check, a receipt surface, a
 validator or audit, and an ex-post usage criterion.
 
-## P1: Forensic Workbench Design Lane
+## P1: Project Workbench Design Lane
 
 **User problem.** The CLI is powerful but not the final adoption surface for
-people inspecting local claims and evidence.
+people inspecting local theses and evidence.
 
-**Built state.** The design brief names the first persona, value proposition,
-object model, first controller/screen contract, and the non-chat interaction
-constraints. A narrow React/Vite prototype now consumes the workbench snapshot,
-shows intake, evidence, run readiness, and report rows, separates source paths,
-compiled evidence paths, commands, receipts, and review artifacts, blocks
-review-file export until a decision is selected, previews the review JSON before
-handoff, shows artifact coverage across rows, can switch projects through a
-local live-read API during dev, applies row-level review decisions through an
-explicit local API, and keeps the saved review file path compatible with
-`ztare forensic-workbench apply-review`. The public
+**Built state.** A React/Vite local workbench now runs against a small local
+server. It can list projects, open a project, show the current support issue, inspect
+sources/evidence/run/report state, preview backing files, edit intake/source
+files through explicit write boundaries, run preflight, start a confirmed project
+run, save review status, save next steps, and save a project file with
+receipts plus the workbench read/write/ask-first contract. The first screen is a
+project guide with clear next steps; heavier trace, receipt, report, and source
+editing views open through focused menus. CLI-compatible receipt paths remain
+intact for existing users. The public
 [`forensic_workbench_interface.md`](docs/concepts/forensic_workbench_interface.md)
 contract defines the first user, first five-minute outcome, consumed
 CLI/read-model surfaces, boundaries, and acceptance tests before any UI code is
 treated as release-relevant.
 
-**Direction.** The interface should be a specialized forensic workbench.
+**Direction.** The interface should be a specialized project workbench.
 
 Early constraints:
 
 - primary persona: independent technical reviewers, researchers, founders, and
-  analysts who produce high-stakes bounded claims from local files;
-- primary mode: project browser, claim/intake inspector, source/evidence state,
+  analysts who produce high-stakes working theses from local files;
+- primary mode: project browser, thesis/intake inspector, source/evidence state,
   trace and run-readiness console, preflight/run launch, run history, verdict,
-  and export;
+  report support, and saved project files;
 - no persistent chat pane as the main interaction model;
 - every displayed judgment should link back to the file, receipt, command, or
   ledger that owns it;
-- ZTARE stays the individual claim/evidence workbench; the org runtime remains
+- ZTARE stays the individual thesis/evidence workbench; the org runtime remains
   the coordination and governance overlay.
 
 **Next.**
 
-- Polish the narrow first use case against the operational-diagnosis fixture:
-  inspect intake, source paths, compiled evidence, blockers, review decisions,
-  saved review files, and receipts. The current prototype covers this as a
-  React/Vite shell with live local project switching, explicit local API review
-  apply, explicit row-action save, health finding to row-action staging,
-  static review/action-file download/copy fallback, and refreshed receipt
-  visibility. Live mode opens the live snapshot JSON for the selected project;
-  static mode remains the fallback when the local API is absent. Focused
-  regressions cover the downloaded review file -> CLI apply path and the local
-  API -> receipt path.
-- Every visible row must expose a file path, source path, evidence path,
-  command, receipt, review file, or explicit no-receipt warning.
-- Keep backend writes explicit: local API calls must write the same file-backed
-  receipt shape as the CLI and refresh the snapshot when possible.
+- Polish the operational-diagnosis fixture until the first screen answers:
+  what project is open, what needs attention, what action comes next, and where the
+  backing files live.
+- Keep the app path primary: project switching, intake/source edits, preflight,
+  confirmed project runs, review status, saved next steps, receipts, and project-file
+  saves should work through the local server without requiring terminal
+  commands.
+- Keep every write explicit: the user should see what file changed, what receipt
+  was saved, and which panels refreshed.
 
-**Done when.** A reviewer can open the local webserver, understand the current
-blocker, make a row-level review decision, and apply the saved review file
-without losing the file/command provenance.
+**Done when.** A reviewer can open the local webserver, switch projects,
+understand the current support issue, record review status, save the next
+action, start the next allowed project run when confirmed, and save a project file
+without losing file or receipt provenance.
 
 ## Explicit Non-Priorities
 
@@ -381,9 +379,9 @@ without losing the file/command provenance.
 
 - Which real project should be the next public non-demo run after the
   operational-diagnosis surface?
-- Which action-intelligence warnings should become hard release blockers, and
+- Which action-intelligence warnings should become hard release holds, and
   which should stay advisory?
-- Which report/export format is most useful for outside reviewers: decision
+- Which report format is most useful for outside reviewers: decision
   brief, research note, review artifact, or all three with different gates?
 - After project index, live snapshot, and review-apply, what is the next
   smallest backend bridge that reduces first-use friction without rebuilding

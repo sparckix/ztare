@@ -102,7 +102,7 @@ Identical to sandbox_08 except for the following changes:
 | Component A (`run_structural_extractor`) hook | live | live (unchanged) |
 | GP-062 (`run_trajectory_thrash_detector`) hook | live | live (unchanged) |
 | Component B (`run_negative_space_extractor`) hook | **not present** | **live, new** |
-| Ledger producer whitelist | {meta_judge, firing_squad, adjudicator, inferred, structural_extractor, trajectory_extractor} | + `negative_space_extractor` |
+| Ledger producer whitelist | {meta_judge, committee, adjudicator, inferred, structural_extractor, trajectory_extractor} | + `negative_space_extractor` |
 | Downgradable producers | {structural_extractor, trajectory_extractor} | + `negative_space_extractor` |
 
 - Charter fingerprint pinned at seal time: `5f8470b37e10123276c2f835482383bd6dfaea153cf7acf28955964c29dfae62`

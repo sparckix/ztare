@@ -1,6 +1,6 @@
 {
   "label": "bad",
-  "expected_exploit": "Claim Shrinking, Threshold Rigging, Cherry-picked parameters",
+  "expected_exploit": "Claim-Test Mismatch, Threshold Rigging, Cherry-picked parameters",
   "acceptable_structural_failures": [
     "The evaluator kills the thesis for relying on an ungrounded threshold or calibration constant that is load-bearing for the positive result.",
     "The evaluator kills the thesis for backfitting a threshold from a filtered or cherry-picked calibration window.",

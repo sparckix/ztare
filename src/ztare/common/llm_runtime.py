@@ -293,6 +293,28 @@ def is_kimi_model(model_id: str) -> bool:
     return model_id.startswith("kimi-") or model_id.startswith("moonshot-v1")
 
 
+def _kimi_visible_text_defaults(model_id: str, config: Any) -> dict[str, Any]:
+    """Provider-specific defaults for generic Kimi text calls.
+
+    Live validation on 2026-06-23 showed `kimi-k2.6` can spend the completion
+    budget in `reasoning_content` and return little/no visible
+    `message.content`. Moonshot accepts a thinking-disable object, but then
+    requires temperature 0.6. Apply that only when the caller has not supplied
+    its own Kimi thinking/temperature policy.
+    """
+    def _has_explicit(key: str) -> bool:
+        if isinstance(config, dict):
+            return key in config and config[key] is not None
+        return getattr(config, key, None) is not None
+
+    if model_id != "kimi-k2.6" or _has_explicit("thinking") or _has_explicit("temperature"):
+        return {}
+    return {
+        "temperature": 0.6,
+        "extra_body": {"thinking": {"type": "disabled"}},
+    }
+
+
 def is_grok_model(model_id: str) -> bool:
     return model_id.startswith("grok-")
 
@@ -1010,11 +1032,16 @@ class LLMRuntime:
                 "messages": [{"role": "user", "content": provider_prompt}],
                 "max_tokens": max(max_tokens, 256),
             }
+            kwargs.update(_kimi_visible_text_defaults(model_id, config))
             kwargs.update(_chat_completion_response_params(config))
             if isinstance(config, dict):
-                for key in ("response_format", "temperature", "top_p", "thinking"):
+                for key in ("response_format", "temperature", "top_p"):
                     if key in config and config[key] is not None:
                         kwargs[key] = config[key]
+                if config.get("thinking") is not None:
+                    extra_body = dict(kwargs.get("extra_body") or {})
+                    extra_body["thinking"] = config["thinking"]
+                    kwargs["extra_body"] = extra_body
             if timeout_seconds is not None:
                 kwargs["timeout"] = timeout_seconds
             return client.chat.completions.create(**kwargs)

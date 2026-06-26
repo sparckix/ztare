@@ -1,14 +1,14 @@
 ---
 description: "Small command set for reviewing ZTARE evidence without traversing the whole repository."
 ---
-# Executable Review Pack
+# Executable review pack
 
 > **Up:** [Evidence Atlas](README.md)
 
 This is the smallest command set a skeptical reviewer should run before
 reading the full corpus. It is intentionally not a complete test suite.
 
-## Checkout Caveats
+## Checkout caveats
 
 Current maintainer check on 2026-06-19:
 
@@ -20,10 +20,10 @@ Current maintainer check on 2026-06-19:
 
 Interpretation: the public evidence pack is supported by the explicit
 model-free review commands below, by `make gates`, and by the current full test
-suite. A green suite is a repo-health and reproducibility fact; it is not
+suite. A green suite is a repo-health and reproducibility fact. It is not
 evidence that every historical or frontier research claim is true.
 
-## Tier 1: Model-Free Evidence
+## Tier 1: Model-free evidence
 
 ```bash
 make first-run
@@ -61,7 +61,7 @@ Expected purpose:
 - `evidence_packet_check.py` can be run directly to inspect packet field and
   link failures.
 
-## Tier 2: Public Runtime Smoke
+## Tier 2: Public runtime smoke
 
 ```bash
 make smoke-public
@@ -70,11 +70,11 @@ python scripts/public/control/forecast/pool.py smoke
 
 Expected purpose:
 
-- verifies public runtime wiring without relying on private infrastructure;
-- verifies forecast-pool isolation in a temporary root;
-- exercises forecast/action-intelligence smoke surfaces.
+- verifies public runtime wiring without relying on private infrastructure
+- verifies forecast-pool isolation in a temporary root
+- exercises forecast/action-intelligence smoke surfaces
 
-## Tier 3: Reflexive Self-Report Critic
+## Tier 3: Reflexive self-report critic
 
 ```bash
 python scripts/public/control/self_report_epistemology_critic.py
@@ -83,15 +83,15 @@ python scripts/public/control/self_report_epistemology_critic.py
 Expected purpose:
 
 - checks whether self-reported time series are statistically trustworthy enough
-  to support aggregate trend claims;
+  to support aggregate trend claims
 - currently flags per-iteration champion-score non-i.i.d. behavior and too few
-  reflexive metric snapshots.
+  reflexive metric snapshots
 
 Interpretation caveat: the catch-ledger window is small. If the script prints
 an "i.i.d. OK" line after skipping baseline diagnostics for small N, do not
 turn that into a strong independence claim.
 
-## Tier 3b: Autoresearch State And Source Preflight
+## Tier 3b: Autoresearch state and source preflight
 
 Reference: [Autoresearch State Carrier](../reference/autoresearch_state_carrier.md).
 
@@ -108,14 +108,13 @@ ztare autoresearch projection --project "$PROJECT" --out ztare_projection_smoke.
 Expected purpose:
 
 - checks the autoresearch trace for raw/source, evidence/provenance,
-  projection, health, missing-surface, and recovery-command state;
+  projection, health, missing-surface, and recovery-command state
 - checks the fixed `demo_claims` packet reaches first-run readiness before any
-  loop history exists;
+  loop history exists
 - checks the projection carrier for admitted/pruned nodes, transport metadata,
-  failure signatures, artifact refs, and
-  action-intelligence linkage;
+  failure signatures, artifact refs, and action-intelligence linkage
 - checks fail-closed route/rubric source-contract boundaries before a task is
-  treated as workbench-ready.
+  treated as workbench-ready
 
 Interpretation caveat: these commands prove inspectability and preflight
 coverage. They do not prove that autoresearch improved the underlying research
@@ -126,7 +125,7 @@ surfaces over files present in the checkout. They do not require private
 maintainer state, the ZTARE tenant overlay in `org/`, or live membrane
 operations.
 
-## Tier 4: Formal And Lean Surfaces
+## Tier 4: Formal and Lean surfaces
 
 ```bash
 lake build
@@ -140,7 +139,7 @@ Interpretation caveat: a successful build is not a proof-value claim. For
 LeanMill claims, read the governance/audit docs and the relevant proof-specific
 receipts.
 
-## Tier 5: Full Repo Health
+## Tier 5: Full repo health
 
 ```bash
 python -m pytest tests -q
@@ -157,7 +156,7 @@ Current `make gates` status is green in this checkout. Before a lab review,
 the stale full-test collection imports should still be resolved or the full
 test target should be intentionally scoped.
 
-## Reviewer Reading Order After Commands
+## Reviewer reading order after commands
 
 1. [Public claim register](../public_claim_register.md)
 2. [Claim cards](claim_cards.md)

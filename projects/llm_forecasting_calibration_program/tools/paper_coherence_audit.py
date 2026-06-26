@@ -2,8 +2,8 @@
 """Build the paper-level evidence map for the forecasting calibration study.
 
 No model calls and no database mutation. This report is a guard against turning
-the paper into an experiment catalogue: each evidence lane is assigned a role in
-the manuscript, a paper placement, and a reason for inclusion or exclusion.
+the paper into an experiment catalogue: each evidence family is assigned a role
+in the manuscript, a paper placement, and a reason for inclusion or exclusion.
 """
 
 from __future__ import annotations
@@ -62,14 +62,16 @@ def build_report() -> dict[str, Any]:
                 "Halawi 2024 and ForecastBench establish future-event benchmark "
                 "framing; AIA Forecaster reports superforecaster-level ForecastBench "
                 "performance and additive market information; Reppo, Prediction "
-                "Arena, PolyBench, Foresight Arena, and PredictionMarketBench move "
-                "the field toward live markets, timestamped market states, proper "
-                "scores, and execution-realistic replay."
+                "Arena, PolyBench, Foresight Arena, PredictionMarketBench, and "
+                "MarketBench move the field toward live markets, timestamped market "
+                "states, proper scores, execution-realistic replay, and market-based "
+                "coordination."
             ),
             reason=(
                 "This literature makes the paper's contribution sharper: it is not "
-                "another trading-agent benchmark, but the validity layer required "
-                "before model, market, and human comparisons are interpretable."
+                "another trading-agent benchmark, but the row-validity layer required "
+                "before model, market, and human comparisons can be interpreted as "
+                "forecasting evidence."
             ),
             boundary=(
                 "Cite as positioning, not as evidence that this study beats live "
@@ -118,11 +120,11 @@ def build_report() -> dict[str, Any]:
                 "panel Brier 0.267758 vs market 0.072964, paired p=0.0068. "
                 "The 24-contract Manifold fill validates all requested rows and gives "
                 "market Brier 0.160977 vs a five-family low-stake model-panel Brier 0.198723 "
-                "(panel-minus-market +0.037746, paired p=0.5431), a market-favoring but "
+                "(panel-minus-market +0.037746, paired p=0.5431), a lower-market-Brier but "
                 "inconclusive second-source comparison."
             ),
             reason=(
-                "A strong paper is allowed to contain a market-favoring control. This result "
+                "A strong paper is allowed to contain controls that do not support the model panel. This result "
                 "prevents the source-currency result from being misread as LLMs "
                 "beating markets."
             ),
@@ -143,11 +145,11 @@ def build_report() -> dict[str, Any]:
         ),
         row(
             lane="confident_no_calibration",
-            paper_role="source-valid point-probability use",
-            placement="main text: harnessing synthesis and calibration/action consequence",
+            paper_role="point-probability use after source-currency screening",
+            placement="main text: controlled-use synthesis and calibration consequence",
             include_status="include_controlled",
             evidence=(
-                "Forward-looking/source-valid low-probability calibration improves the "
+                "Low-probability calibration improves forward-looking rows that pass the source-currency check in the "
                 "right slice, while a source-currency stress audit shows regression "
                 "on pre-cutoff/source-visible rows."
             ),
@@ -155,7 +157,7 @@ def build_report() -> dict[str, Any]:
                 "This gives the paper one practical consequence without pretending "
                 "that a hand rule is universal."
             ),
-            boundary="Use as a source-valid live calibration rule, not a retrospective benchmark correction.",
+            boundary="Use as a live calibration rule after source-currency screening, not as a retrospective benchmark correction.",
             evidence_records=[
                 "forecaster_skill_calibration_v1/workspace/research_log.md#confident-no-source-currency-audit",
                 "public/CLAIM_SUMMARY.md",
@@ -164,7 +166,7 @@ def build_report() -> dict[str, Any]:
         row(
             lane="pairwise_contrastive_ranking",
             paper_role="controlled ranking use",
-            placement="main text: harnessing synthesis; fuller details in appendix",
+            placement="main text: controlled-use synthesis; fuller details in appendix",
             include_status="include_controlled",
             evidence=(
                 "Four-family source-balanced pairwise packet supports ranking "
@@ -173,8 +175,8 @@ def build_report() -> dict[str, Any]:
                 "and lacks broad market/human control."
             ),
             reason=(
-                "It is interesting and connects to model-use policy, but it should "
-                "not distract from the measurement-validity result."
+                "It is interesting and connects to model-use policy, but it remains "
+                "secondary to the measurement-validity result."
             ),
             boundary=(
                 "Pairwise/tournament use only until prospective market-freeze outcomes "
@@ -186,29 +188,54 @@ def build_report() -> dict[str, Any]:
             ],
         ),
         row(
-            lane="integrated_harnessing_thesis",
+            lane="integrated_controlled_use_argument",
             paper_role="main synthesis",
-            placement="main text: dedicated harnessing section",
+            placement="main text: dedicated controlled-use section",
             include_status="include",
             evidence=(
-                "Harnessing audit supports one integrated paper: the low-probability rule is "
-                "the current source-valid calibration view; pairwise ranking survives "
+                "The controlled-use audit supports one integrated paper: the low-probability rule is "
+                "the current calibration view after source-currency screening; pairwise ranking survives "
                 "as relative-judgment evidence; structured evidence fields remain mixed; "
                 "family-choice headroom is real but "
                 "not recovered by simple allocation rules; prompt-intervention/self-repair controls mostly fail."
             ),
             reason=(
-                "This turns the market-favoring control result into the premise for a stronger "
-                "claim: raw panels are not enough, but constrained interfaces can locate "
-                "or extract usable signal."
+                "This turns the market-control result into the premise for a stricter "
+                "claim: raw panels are not enough, but controlled interfaces can test "
+                "which model outputs remain useful."
             ),
             boundary=(
-                "Constrained extraction of signal, not LLM superiority, not validated "
+                "Controlled use of model output, not LLM superiority, not validated "
                 "prompt-only improvement, and not a reliable family-selection rule."
             ),
             evidence_records=[
-                "paper_alignment_v1/workspace/harnessing_thesis_audit.md",
+                "paper_alignment_v1/workspace/controlled_use_audit.md",
                 "public/CLAIM_SUMMARY.md",
+                "papers/llm-forecast-calibration-cross-corpus/main.tex",
+            ],
+        ),
+        row(
+            lane="before_scoring_counterexplanation_design",
+            paper_role="claim-test guard",
+            placement="main text: forecast-row validity estimand; reproducibility table; companion benchmark blueprint",
+            include_status="include",
+            evidence=(
+                "Each planned positive result names the simpler explanation it must rule "
+                "out before scoring: mismatched comparator timing, source visibility, "
+                "label vintage, prompt length, placebo framing, pair orientation, source mix, "
+                "or denominator choice."
+            ),
+            reason=(
+                "This turns the inversion habit into a paper-level decision rule: a result "
+                "can remain diagnostic even when it cannot support a broader performance claim."
+            ),
+            boundary=(
+                "Design rule for future and pending packets; not an extra positive result "
+                "and not an explanation added after scored rows are known."
+            ),
+            evidence_records=[
+                "paper_alignment_v1/workspace/prospective_counterexplanation_design_2026_06_17/prospective_counterexplanation_design_audit.json",
+                "paper_alignment_v1/workspace/forecast_row_validity_benchmark_blueprint_2026_06_17/forecast_row_validity_benchmark_blueprint.json",
                 "papers/llm-forecast-calibration-cross-corpus/main.tex",
             ],
         ),
@@ -222,11 +249,11 @@ def build_report() -> dict[str, Any]:
                 "Lean/proof-audit case study from the forecasting paper."
             ),
             reason=(
-                "A submission-facing forecasting paper should not ask reviewers to "
-                "switch domains unless the example is necessary for the forecasting claim."
+                "A submission-facing forecasting paper loses focus when reviewers have to "
+                "switch domains without a necessary forecasting example."
             ),
             boundary=(
-                "The proof-audit work can live in another methods note; it should not "
+                "The proof-audit work can live in another methods note; it does not "
                 "carry argument weight in GP-245."
             ),
             evidence_records=[
@@ -246,7 +273,7 @@ def build_report() -> dict[str, Any]:
                 "prompt-intervention/self-repair boundaries."
             ),
             reason=(
-                "A reviewer should see the paper's main claim before the long channel and "
+                "A reviewer sees the paper's main claim before the long channel and "
                 "bias diagnostics."
             ),
             boundary=(
@@ -265,17 +292,17 @@ def build_report() -> dict[str, Any]:
             include_status="include_controlled",
             evidence=(
                 "Universal patterns, composed adjustment, low-probability calibration, and "
-                "pairwise ranking are now organized by evidence grade: source-valid "
-                "calibration, ranking/translation, and allocation rules with unrecovered "
-                "best-family-in-hindsight headroom."
+                "pairwise ranking are now organized by evidence grade: calibration after source-currency screening, "
+                "ranking/translation, and allocation rules with unrecovered "
+                "best-family-in-hindsight gain."
             ),
             reason=(
                 "This prevents the applied section from reading as an experiment log "
                 "and keeps the paper explicit about what is usable versus diagnostic."
             ),
             boundary=(
-                "Confident-NO remains source-valid calibration; pairwise ranking remains "
-                "ranking/translation evidence; allocation rules remain prospective until they beat controls."
+                "Low-probability calibration remains a rule for rows that pass source-currency checks; pairwise ranking remains "
+                "ranking evidence; allocation rules remain prospective until they beat controls."
             ),
             evidence_records=[
                 "papers/llm-forecast-calibration-cross-corpus/main.tex",
@@ -288,7 +315,7 @@ def build_report() -> dict[str, Any]:
             placement="main text: source-currency, label-time, and equal-information audit table",
             include_status="include",
             evidence=(
-                "The long chronological audit trail is now compressed into lanes for "
+                "The long chronological audit trail is now compressed into source families for "
                 "Manifold source currency, Manifold market stress, Polymarket stress, "
                 "Polymarket equal-information replacement, Manifold equal-information "
                 "fill, FRED label-time, and Metaculus access."
@@ -371,7 +398,7 @@ def build_report() -> dict[str, Any]:
             reason=(
                 "The channel evidence explains why family-specific forecasting "
                 "outputs are not interchangeable, without letting diagnostics "
-                "dominate the paper's main validity-and-harnessing argument."
+                "dominate the paper's main validity-and-controlled-use argument."
             ),
             boundary="Diagnostic pattern, not an applied probability transform.",
             evidence_records=[
@@ -387,7 +414,7 @@ def build_report() -> dict[str, Any]:
             evidence=(
                 "The bias-transfer taxonomy is useful, the prompt-stability "
                 "audits warn against family-general allocation, and the anti-bias "
-                "collapse mechanism was weakened or scoped by raw-gap controls. This "
+                "collapse pattern was weakened or scoped by raw-gap controls. This "
                 "material is now compressed into one secondary diagnostics section."
             ),
             reason=(
@@ -395,7 +422,7 @@ def build_report() -> dict[str, Any]:
                 "what explains source/family sensitivity and the failure of easy "
                 "simple prompt-improvement stories."
             ),
-            boundary="Taxonomy and mechanism caveat only; no causal prompt-actuation law.",
+            boundary="Taxonomy and caveat only; no causal prompt-improvement result.",
             evidence_records=[
                 "anti_bias_collapse_v1/workspace",
                 "law_validation_v1/workspace/paper_readiness_exhaustion_audit.md",
@@ -414,7 +441,7 @@ def build_report() -> dict[str, Any]:
                 "This strengthens the label-time-validity argument without being a "
                 "market/human baseline."
             ),
-            boundary="Official-data source-currency lane only; not a substitute for Metaculus or market baselines.",
+            boundary="Official-data source-currency analysis only; not a substitute for Metaculus or market baselines.",
             evidence_records=[
                 "cutoff_validity_v1/workspace/fred_vintage_bulk_rescore_2026_06_04/fred_vintage_rescore.json",
                 "public/CLAIM_SUMMARY.md",
@@ -429,8 +456,8 @@ def build_report() -> dict[str, Any]:
                 "Broad action framing, unguarded self-repair, and diagnostic-triggered "
                 "allocation failed applied stress tests against raw/low-probability/placebo/source controls."
             ),
-            reason="These are useful failed controls but they do not belong in the headline argument.",
-            boundary="Reopen only with a genuinely new information source or fixed promotion/kill criterion.",
+            reason="These are useful negative controls but they do not belong in the headline argument.",
+            boundary="Reopen only with a genuinely new information source or predefined success/failure criterion.",
             evidence_records=[
                 "forecaster_skill_calibration_v1/workspace/research_log.md#prompt-intervention-negative-controls",
                 "forecaster_skill_calibration_v1/workspace/findings_completeness_ledger.md#prompt-intervention-and-self-repair",
@@ -447,17 +474,18 @@ def build_report() -> dict[str, Any]:
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "verdict": {
             "central_claim": (
-                "Raw LLM forecasts do not beat equal-information market bars in the "
-                "current evidence, but LLM forecast signal can be harnessed under "
-                "validity, calibration, ranking, and family/source constraints."
+                "Current equal-information market controls do not support raw LLM panel "
+                "superiority, but some model outputs retain limited value after "
+                "source-currency, label-time, calibration, ranking, and family/source checks."
             ),
             "paper_shape": (
-                "Integrated measurement-and-harnessing paper: validity checks are the "
-                "foundation, controlled extraction mechanisms are the constructive result."
+                "Integrated measurement-and-controlled-use paper: validity checks are the "
+                "foundation, and the applied result is a narrower set of calibrated "
+                "and ranking-based uses."
             ),
             "main_text_rule": (
-                "Main text gets source validity, equal-information failed controls, "
-                "and only the supported mechanisms with explicit evidence records and limits."
+                "Main text gets source validity, equal-information market controls, "
+                "and only the supported controlled-use results with explicit evidence records and limits."
             ),
             "broad_claim_ready": False,
             "next_test": "Use a prospective or larger source-balanced packet before any broad market/human superiority claim.",
@@ -468,6 +496,39 @@ def build_report() -> dict[str, Any]:
 
 
 def render_md(report: dict[str, Any]) -> str:
+    evidence_family_labels = {
+        "recent_forecasting_benchmark_positioning": "Recent forecasting benchmark positioning",
+        "source_currency_and_label_time_validity": "Source and label-time validity",
+        "equal_information_market_baselines": "Equal-information market baselines",
+        "confident_no_calibration": "Low-probability calibration",
+        "pairwise_contrastive_ranking": "Pairwise ranking",
+        "integrated_controlled_use_argument": "Controlled-use synthesis",
+        "before_scoring_counterexplanation_design": "Before-scoring counter-explanation design",
+        "manuscript_scope_hygiene": "Manuscript scope",
+        "front_loaded_core_results": "Front-loaded core results",
+        "applied_calibration_and_allocation": "Applied calibration and allocation",
+        "reaudit_evidence_compression": "Audit compression",
+        "compressed_insight_preservation": "Compressed insight coverage",
+        "omitted_and_deferred_work_coverage": "Omitted and deferred work",
+        "law2_uncertainty_channels": "Uncertainty-channel diagnostics",
+        "bias_transfer_taxonomy": "Bias-transfer diagnostics",
+        "fred_yfinance_official_data": "Official-data label timing",
+        "prompt_intervention_action_frames_and_same_model_self_repair": "Prompt intervention controls",
+    }
+    status_labels = {
+        "include": "Include",
+        "include_controlled": "Include with limits",
+        "compress": "Compress",
+        "appendix": "Appendix",
+        "exclude_from_main": "Exclude from main claim",
+    }
+
+    def family_label(key: str) -> str:
+        return evidence_family_labels.get(key, key.replace("_", " ").title())
+
+    def status_label(key: str) -> str:
+        return status_labels.get(key, key.replace("_", " "))
+
     verdict = report["verdict"]
     lines = [
         "# GP-245 Paper Coherence Audit",
@@ -482,16 +543,16 @@ def render_md(report: dict[str, Any]) -> str:
         "",
         "## Evidence Map",
         "",
-        "| lane | role | placement | status | boundary |",
+        "| evidence family | role | placement | status | boundary |",
         "|---|---|---|---|---|",
     ]
     for item in report["rows"]:
         lines.append(
-            "| {lane} | {role} | {placement} | `{status}` | {boundary} |".format(
-                lane=item["lane"],
+            "| {family} | {role} | {placement} | {status} | {boundary} |".format(
+                family=family_label(item["lane"]),
                 role=item["paper_role"],
                 placement=item["placement"],
-                status=item["include_status"],
+                status=status_label(item["include_status"]),
                 boundary=item["boundary"],
             )
         )
@@ -499,13 +560,13 @@ def render_md(report: dict[str, Any]) -> str:
     for item in report["rows"]:
         lines.extend(
             [
-                f"### {item['lane']}",
+                f"### {family_label(item['lane'])}",
                 "",
+                f"- Status: {status_label(item['include_status'])}",
                 f"- Evidence: {item['evidence']}",
                 f"- Reason: {item['reason']}",
                 f"- Boundary: {item['boundary']}",
-                "- Evidence records:",
-                *[f"  - `{record}`" for record in item["evidence_records"]],
+                "- Source records are retained in the JSON sidecar.",
                 "",
             ]
         )

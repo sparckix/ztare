@@ -1,7 +1,7 @@
 {
-  "vector": "selective_rigor_displacement",
+  "vector": "selective_selective_rigor",
   "substrate": "autoresearch",
-  "promotion_path": "gaming_vector:autoresearch:selective_rigor_displacement",
+  "promotion_path": "gaming_vector:autoresearch:selective_selective_rigor",
   "evidence_mode": "judge_carrier",
   "exposing_artifacts": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "carrier_receipt": {
-    "vector": "selective_rigor_displacement",
+    "vector": "selective_selective_rigor",
     "carrier_type": "semantic_gaming_carrier",
     "module": "ztare.gates.semantic_gaming_carrier",
     "gate_name": "global_semantic_selective_rigor_carrier",

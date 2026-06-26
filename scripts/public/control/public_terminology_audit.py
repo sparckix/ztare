@@ -142,6 +142,14 @@ FORBIDDEN_TERMS = [
         "use zero-trust workbench or attack/defense pressure in public-facing docs",
     ),
     (
+        re.compile(
+            r"\b(?:(?<!/)row[- ]action|row[- ]level review|latest-review receipt row|"
+            r"latest saved row action|every row must carry one of|rows with artifacts)\b",
+            re.IGNORECASE,
+        ),
+        "use case item, item action, or item-level review in D4 public-facing docs",
+    ),
+    (
         re.compile(r"\boperator[- ]console\b", re.IGNORECASE),
         "use manual console for the public-facing surface",
     ),

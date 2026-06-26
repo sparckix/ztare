@@ -3,9 +3,9 @@ description: "Driving the repo via the manual console without the autonomous run
 ---
 # Manual Console
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
-**Purpose:** open a direct human-run Claude/Codex terminal session in this repo
+*Purpose:* open a direct human-run Claude/Codex terminal session in this repo
 without starting the autonomous org runtime.
 
 This is the path for work like a normal Claude Code or Codex collaboration:
@@ -15,18 +15,18 @@ background work-discovery loop is running.
 Older checkouts may still use `operator_console.sh` as a compatibility alias.
 The public command name is `manual_console.sh`.
 
-- **Human reviewer** means the accountable person supervising the
+- Human reviewer means the accountable person supervising the
   session.
-- **Agentic worker** means the tool-using Claude/Codex process that can
+- Agentic worker means the tool-using Claude/Codex process that can
   inspect files, run commands, edit artifacts, and report back.
 
 The manual console is a human-run session with an agentic worker inside
-it. It is not the same as a role daemon, where the agentic worker continues
+it. A role daemon is the separate lane, where the agentic worker continues
 under a standing mandate without the human reviewer present.
 
 ---
 
-## The Three Runtime Lanes
+## The three runtime lanes
 
 Do not collapse these:
 
@@ -41,7 +41,7 @@ validator is Mode C/domain validation.
 
 ---
 
-## Local Claude Code
+## Local Claude code
 
 Install and authenticate Claude Code on the host once:
 
@@ -62,7 +62,7 @@ does not touch the executive inbox.
 
 ---
 
-## Local Codex
+## Local Codex CLI
 
 If Codex CLI is installed and authenticated:
 
@@ -75,7 +75,7 @@ the session is Mode A.
 
 ---
 
-## Docker Claude Console
+## Docker Claude console
 
 If you want the console in a container:
 
@@ -91,41 +91,41 @@ docker compose --profile console run --rm operator-claude
 
 The service:
 
-- uses `deploy/Dockerfile.operator`;
-- installs Claude Code inside the image;
-- mounts the repo at `/app`;
+- uses `deploy/Dockerfile.operator`
+- installs Claude Code inside the image
+- mounts the repo at `/app`
 - mounts `${HOME}/.claude` into `/root/.claude` so existing Claude auth can be
-  reused when available;
-- passes API-key environment variables through.
+  reused when available
+- passes API-key environment variables through
 
-This is still a manual console, not a daemon. When the container exits, the
+This is still a manual console. When the container exits, the
 interactive session is over. Durable changes are whatever the agent wrote to
 the mounted repo.
 
 ---
 
-## When To Use This Instead Of The Org Runtime
+## When to use this versus the org runtime
 
 Use the manual console when:
 
-- the human reviewer is actively supervising;
-- the work is exploratory or conversational;
-- you want the agent to inspect code, draft, debug, or reason interactively;
+- the human reviewer is actively supervising
+- the work is exploratory or conversational
+- you want the agent to inspect code, draft, debug, or reason interactively
 - the task does not need autonomous scheduling, notification approval, or
-  background claims.
+  background claims
 
 Use the role daemon when:
 
-- work should continue without the human reviewer present;
-- decisions should be surfaced as gates;
-- a role mandate and budget should constrain the run;
-- the result must be closed through the org runtime.
+- work should continue without the human reviewer present
+- decisions should be surfaced as gates
+- a role mandate and budget should constrain the run
+- the result must be closed through the org runtime
 
 The invariant is simple: direct collaboration stays lightweight, but any result
 that changes durable research state still has to obey `AGENTS.md` closure and
 recording discipline.
 
-## Before Durable RD Work
+## Before durable RD work
 
 If the manual console is about a Research Director task, an autoresearch
 boundary decision, or a project-charter/eigenquestion change, run the RD brief

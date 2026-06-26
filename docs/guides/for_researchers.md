@@ -2,9 +2,9 @@
 description: "How researchers and reviewers should inspect ZTARE runs, traces, and claims."
 ---
 
-# ZTARE For Researchers
+# ZTARE for researchers
 
-> **Up:** [Documentation map](../README.md)
+> Up: [Documentation map](../README.md)
 
 This document is for researchers and reviewers who need to decide what a ZTARE
 run honestly supports. It covers public project intake, in-loop autoresearch,
@@ -52,37 +52,37 @@ A ZTARE run may produce a score, a claim candidate, a route decision, a review
 artifact, and ledger rows. None of that is evidence by itself. A run is
 usable evidence only when:
 
-1. **There is a written boundary before the run.** For public project intake,
+1. There is a written boundary before the run. For public project intake,
    use a project-intake file (`ztare project intake ...`) with a bounded claim,
    source refs, evidence refs, non-claims, next falsifier, and one parsed
    in-loop command. For controlled hidden-target experiments, use a
    pre-registration with a falsifiable claim, discriminating test, and success
    criterion written before the run.
-2. **The trace can show its evidence chain.** A reader can inspect the raw
+2. The trace can show its evidence chain. A reader can inspect the raw
    sources, workspace provenance, source-claim graph records, compiled
    evidence, derived constraints, prediction receipts when present, projection
    rows, health gaps, and next commands. A score without this chain is a
-   partial trace, not a result claim.
-3. **The mutator cannot see the hidden target.** No target form, no target
+   partial trace; it does not yet count as a result claim.
+3. The mutator cannot see the hidden target. No target form, no target
    parameter values, no algebraic derivation of the target representation in any file
    `autoresearch_loop.py` reads on turn 1 (`project_charter.md`, `thesis.md`,
    `current_iteration.md`, rubric).
-4. **The gates are real gates, not narratives.** A deterministic gate battery
+4. The gates are executable, deterministic gates. A deterministic gate battery
    (fit-contract, farther-tail residual, fixture regression, source-contract
-   checks, etc.), not a persona judging prose.
-5. **The outcome has a typed status.** Public project intake uses route and
+   checks, etc.) runs the checks mechanically, with no persona judging prose.
+5. The outcome has a typed status. Public project intake uses route and
    trace statuses such as `invoke_autoresearch`, `prepare_autoresearch_surface`,
    `stay_out_of_loop`, `complete_trace`, or `partial_trace`. Controlled sealed
    experiments still close as Outcome A/B/C/D. "Interesting but inconclusive"
    is not an outcome.
 
 If any of these is missing, treat the run as a setup check, diagnostic, or
-exploratory note. It can still teach the next move; it should not be promoted
+exploratory note. It can still teach the next move, but it should not be promoted
 as a result claim.
 
 ---
 
-## 1a. Choose The Evidence Route
+## 1a. Choose the evidence route
 
 Start by naming the route. Most mistakes come from using the right tool at the
 wrong stage.
@@ -136,24 +136,24 @@ trace `--brief` for human review and `--json` for scripts.
 The intake validator fails before run readiness when:
 
 - required scalar fields are empty: `project`, `rubric`, `task`,
-  `bounded_claim`, `expected_command`, or `next_falsifier`;
+  `bounded_claim`, `expected_command`, or `next_falsifier`
 - required list fields are empty: `source_refs`, `evidence_refs`, or
-  `non_claims`;
-- local source/evidence refs do not exist;
+  `non_claims`
+- local source/evidence refs do not exist
 - the intake project exists locally and its raw/source typing preflight has a
-  blocking issue; use `--source-preflight` to require this check explicitly;
-- `expected_command` is not a single parsed in-loop command;
-- `expected_command` does not name the intake file's exact project and rubric.
+  blocking issue (use `--source-preflight` to require this check explicitly)
+- `expected_command` is not a single parsed in-loop command
+- `expected_command` does not name the intake file's exact project and rubric
 
-`project intake enqueue` is stricter than shape validation: it always requires
+`project intake enqueue` is stricter than shape validation. It always requires
 the local source preflight, because the intake ledger is for source-ready
 intake. Missing source or evidence prep goes in `project prep-ledger`.
 
 Supported intake entry commands are intentionally narrow:
 
-- `ztare autoresearch route ... --project <project> --rubric <rubric>`;
-- `ztare autoresearch run ... --project <project> --rubric <rubric>`;
-- `make experiment-loop PROJECT=<project> RUBRIC=<rubric>`.
+- `ztare autoresearch route ... --project <project> --rubric <rubric>`
+- `ztare autoresearch run ... --project <project> --rubric <rubric>`
+- `make experiment-loop PROJECT=<project> RUBRIC=<rubric>`
 
 The router can return three decisions:
 
@@ -162,10 +162,10 @@ The router can return three decisions:
 - `prepare_autoresearch_surface`: one or more required inputs are missing;
   record prep artifacts if useful, then reroute.
 - `stay_out_of_loop`: the task is still exploratory. Use out-of-loop RD work to
-  define the claim/evaluator first; do not enqueue it as project prep.
+  define the claim/evaluator first. Do not enqueue it as project prep.
 
 The prep ledger is only an ordered list of missing artifacts. It can track
-"write the minimal reproduction" or "add the gate harness"; it should not be
+"write the minimal reproduction" or "add the gate harness". It should not be
 presented as an autoresearch run and should not execute research.
 
 ## 3. Inspect the trace before trusting a run
@@ -179,8 +179,8 @@ make autoresearch-trace PROJECT=<project> RUBRIC=<rubric> INTAKE=<project>_intak
 ```
 
 The trace is read-only. The `--model` / `MODEL=` value only appears in suggested
-recovery commands; the trace command does not call a model. Default trace health
-is local and bounded; add `--full-health` only when you need the aggregate
+recovery commands. The trace command does not call a model. Default trace health
+is local and bounded. Add `--full-health` only when you need the aggregate
 autoresearch health report.
 
 When `route_preview.can_run_now=true`, inspect `plan_preview.status` and run
@@ -199,7 +199,7 @@ model-backed iteration work. Intake-backed preflight and full runs write `run_st
 telemetry with the admitted intake hash and run-readiness contract digest, so a
 later trace or health report can bind the run to the exact intake file and
 entry state that passed. If the intake file is edited after admission, trace
-marks the receipt stale instead of silently treating the current file as the
+marks the receipt stale, so the edited file is never silently treated as the
 one that passed. The top-level `loop_admission` summary reports intake hash
 status and run-readiness hash status for the latest unique admitted receipts.
 Treat a stale intake hash as a reason to inspect before reusing run evidence. Treat a
@@ -210,9 +210,9 @@ Trace statuses and readiness:
 
 `project_intake.status=valid_packet` is a legacy machine label meaning the
 intake shape and project/rubric binding validated. Older receipts still expose
-the same data under `project_packet`; use `project_intake` in new docs and
+the same data under `project_packet`. Use `project_intake` in new docs and
 tools. The top-level
-`readiness` field preserves legacy status IDs for old readers; use
+`readiness` field preserves legacy status IDs for old readers. Use
 `readiness_canonical` when you want the current intake-facing name. The
 `readiness`/`readiness_canonical` decision and `route_preview.can_run_now` are
 the actual in-loop decision.
@@ -228,7 +228,7 @@ as `make experiment-loop`; `can_run_now=true` requires that preflight to pass.
   rubric, with no source-claim graph prep blocker.
 - `ready_for_first_in_loop_run`: intake and project/evidence surfaces are
   ready, but `eval_history` is absent because no loop has run yet. This is a
-  valid first-run state; read `blocking_missing` before treating
+  valid first-run state. Read `blocking_missing` before treating
   `partial_trace` as a blocker.
 - `blocked_on_out_of_loop_prep`: intake may validate, but the trace read model
   found prep debt that should be handled before the validation engine runs. The
@@ -236,7 +236,7 @@ as `make experiment-loop`; `can_run_now=true` requires that preflight to pass.
   `make evidence-fetch ...`; `route_preview.can_run_now` is false until that
   debt is cleared or explicitly justified. Local verifier gaps, such as
   preflight or falsifier-execution gaps, are carried as in-loop focus receipts
-  instead of being treated as public evidence-fetch work.
+  and stay inside the loop as local verification work.
 - `blocked_on_launch_preflight`: the trace records are otherwise close enough,
   but `make experiment-loop` would fail before the first model call. Fix the
   reported rubric/project preflight item, often `project_charter.md`,
@@ -251,10 +251,10 @@ as `make experiment-loop`; `can_run_now=true` requires that preflight to pass.
 
 When trace reports missing source files or source typing, prefer the CLI recovery command it
 prints, such as `ztare project source-init --project <slug> --rubric <slug>`.
-That command creates the source-ingest directories and `raw/source_type_map.json`;
-source documents, compiled evidence, project intake, and loop execution remain
+That command creates the source-ingest directories and `raw/source_type_map.json`.
+Source documents, compiled evidence, project intake, and loop execution remain
 separate steps. After adding raw files, run `ztare project source-check --project
-<slug> --json` for an offline readiness report; `make evidence-prepare` repeats
+<slug> --json` for an offline readiness report. `make evidence-prepare` repeats
 that preflight before the model-backed evidence compiler.
 For older projects where compile provenance is fresh but the rendered evidence
 output was not hashed, `ztare project evidence-bind --project <slug> --json`
@@ -262,19 +262,19 @@ writes an offline receipt for the current `evidence.txt` bytes. This is only a
 compatibility receipt: it does not call a model, recompile evidence, refresh
 stale source provenance, or prove the output existed at compile time. Trace
 accepts it only while the compile-provenance file and bound output artifacts
-keep the same hashes; edits after the receipt become `evidence_output_stale`.
+keep the same hashes. Edits after the receipt become `evidence_output_stale`.
 When trace reports `out_of_loop_evidence_recovery`, prefer fetching the missing
 public evidence. If the gap is genuinely outside the bounded claim surface, use
 `ztare project evidence-gap justify --project <slug> --gap-id <id> --reason
-"..." --json` instead of editing `latest_evidence_gaps.json`. The receipt is
-bound to the exact current gap row; if the gap text, target, or id changes, the
+"..." --json`, which writes a managed receipt for the gap. The receipt is
+bound to the exact current gap row. If the gap text, target, or id changes, the
 old justification no longer retires it.
-Evidence-gap rows are routed by a small contract, not by prose alone:
+A small typed contract routes evidence-gap rows:
 `recovery_kind=public_evidence` means the next step is public source or dataset
 recovery, while `recovery_kind=local_verification` means the next step belongs
 inside local verifier, fixture, code/log, preflight, receipt, or in-loop
 discriminator work. Trace and evidence briefs also show `recovery_channel`,
-`required_surface`, `can_public_fetch`, and `in_loop_consumable`; use those
+`required_surface`, `can_public_fetch`, and `in_loop_consumable`. Use those
 fields before deciding whether to fetch, justify, or run another bounded loop.
 `make evidence-fetch` acts only on explicit public recovery contracts by
 default. If a row is only legacy prose inference, promote it to
@@ -282,14 +282,14 @@ default. If a row is only legacy prose inference, promote it to
 for an old run.
 
 Current trace fields to read before making a claim. Some field names use older
-`carrier` wording because telemetry and tests already depend on them; read
+`carrier` wording because telemetry and tests already depend on them. Read
 them as trace/read-model rows unless the text says otherwise.
 
 - `carrier_chain`: compact ordered read model over project directory, raw
   sources, source preflight, source index, compile provenance, rendered evidence
   binding, evidence gaps, intake, launch preflight, mutator briefing, prediction
   contracts, eval history, and loop admission. Start here when deciding
-  which recovery command is legitimate; after a run, the mutator-briefing row
+  which recovery command is legitimate. After a run, the mutator-briefing row
   shows whether graph-focus receipts were actually carried into the candidate
   prompt, including evidence-gap ids/targets or a rubric-enabled probability-DAG
   focus. The prediction-contract row is score-only unless it reports an invalid
@@ -299,17 +299,17 @@ them as trace/read-model rows unless the text says otherwise.
   names a recovery action, focus receipt, route demotion, or explicit
   `no_strategy_change`.
 - `graph_rd_actions[]`: advisory out-of-loop recovery or in-loop focus rows
-  derived from graph decision receipts. They are prep/read-model actions, not
-  hidden execution. When a row comes from an evidence gap, it carries exact
+  derived from graph decision receipts. They are prep/read-model actions only
+  and execute nothing on their own. When a row comes from an evidence gap, it carries exact
   `gap_ids` and `targets` for the candidate artifact to address. It also
   carries `operator_card_routes[]` and `operator_card_ids[]` for `OP-GDC-01`,
   so graph-derived decisions remain distinguishable from ordinary prep rows.
 - `prediction_summary`: normalized forecast or prediction receipts when a
   project has them. The summary reports binary Brier readiness against a
-  constant-0.5 baseline; it does not steer autoresearch iterations and does not
+  constant-0.5 baseline. It does not steer autoresearch iterations and does not
   turn scratch forecasts into certified forecast-pool evidence.
 - `project_intake`: bounded claim, source/evidence refs, non-claims, expected
-  command, and next falsifier. Intake failure blocks readiness; it does not
+  command, and next falsifier. Intake failure blocks readiness. It does not
   run the loop. `project_packet` remains as a legacy receipt alias.
 - `route_preview`: the exact in-loop route command from the validated intake
   when available, plus the loop command that may run only when `can_run_now`
@@ -328,8 +328,8 @@ ztare autoresearch carrier-replay --project <project> --json
 Read `current_carrier` first. A `complete` current carrier means the latest
 materialized projection row has the worker, transport, failure signature, and
 artifact fields needed for future replay. The top-level project can still be
-`attention` when older rows are missing fields; that is legacy trace debt, not
-proof that the current row is unusable. If `latest_eval_status` reports
+`attention` when older rows are missing fields. That is legacy trace debt; the
+current row can still be usable. If `latest_eval_status` reports
 `latest_eval_not_in_eval_history`, replay or append the latest evaluation before
 using the projection for a claim or UI surface.
 
@@ -343,28 +343,28 @@ run, control episode, action, reason, and trace command to inspect next. When a
 project-intake file is present, the row also includes the intake path and a
 no-spend `preflight_command` for checking launch/admission state before
 spending on more iterations. The queue also separates loop intake from compiled
-evidence artifacts: `compiled_evidence_packet.json` is evidence material, not a
-valid `--intake` boundary unless a project-intake file with task, claim, refs,
-non-claims, and falsifier fields has been created.
+evidence artifacts: `compiled_evidence_packet.json` is evidence material. It is
+not a valid `--intake` boundary unless a project-intake file with task, claim,
+refs, non-claims, and falsifier fields has been created.
 When a recovery row is `compiled_evidence_without_project_intake` (or the
 legacy alias `compiled_evidence_without_admission_packet`), use
 `ztare project intake draft-from-compiled --project <project> --path projects/<project>/<project>_intake.json`
 to draft the intake file, then validate it. The draft remains fail-closed: stale
 compile provenance or missing raw refs keep the intake invalid until repaired.
-If the raw files were only moved, rerun with `--repair-moved-sources`; the
+If the raw files were only moved, rerun with `--repair-moved-sources`. The
 intake records each substitution in `draft_source.source_ref_repairs` and still
 does not count as refreshed compiled evidence.
 Fixture or controlled-demo rows stay visible but should not displace ordinary
-project episodes. The queue is an audit surface, not a scheduler. To print just
+project episodes. The queue is an audit surface. It is not a scheduler. To print just
 that queue, run `ztare autoresearch hillclimb-audit --recovery-queue --json` or
 `make autoresearch-hillclimb-audit RECOVERY_QUEUE=1 RECOVERY_LIMIT=10 JSON=1`.
 To inspect only rows with existing project intake, add
 `--recovery-intake-status ready` or `RECOVERY_INTAKE_STATUS=ready`. Intake
-presence is only a handoff status; each queue row still reports run-readiness
+presence is only a handoff status. Each queue row still reports run-readiness
 status, blockers, and the trace-derived repair command before another in-loop
 run is allowed.
 If review shows that an item should not launch another iteration, record that
-decision in the workspace instead of letting the queue stay ambiguous:
+decision in the workspace so the queue resolves cleanly:
 
 ```bash
 ztare autoresearch hillclimb-audit --record-resolution \
@@ -391,7 +391,7 @@ ztare autoresearch trace --project <project> --rubric <rubric> --intake <project
 ztare autoresearch route --task "<bounded task>" --project <project> --rubric <rubric>
 ```
 
-`SEVERITY=` should match the active gap reported by trace; blocking gaps should
+`SEVERITY=` should match the active gap reported by trace. Blocking gaps should
 be cleared before degrading ones. `EVIDENCE_SEARCH_BACKEND=` controls only the
 public web-search provider used by evidence fetch. `MODEL=` is still the model
 label passed to workspace update, evidence compile, and later loop commands.
@@ -402,14 +402,14 @@ DeepSeek, Kimi/Moonshot, and Grok/xAI. For evidence-prep and loop debugging,
 prefer bounded runs with explicit timeout knobs, for example
 `EVIDENCE_LLM_TIMEOUT=120 EVIDENCE_LLM_RETRIES=1` or
 `AUTORESEARCH_LLM_TIMEOUT=120 AUTORESEARCH_LLM_RETRIES=1`. Those knobs are
-transport controls; they do not change the evidence standard.
+transport controls. They do not change the evidence standard.
 
 Do not upgrade a project from `partial_trace` to a claim because later
 iterations look persuasive. Fix or acknowledge the missing trace input first.
 
 ## 3a. Inspect the report boundary
 
-Reports are review artifacts, not a second source of truth. After a run has an
+Reports are review artifacts. They are not a second source of truth. After a run has an
 intake file, trace, and evidence surface, inspect the deterministic report
 boundary before you read generated prose:
 
@@ -439,7 +439,7 @@ under `projects/<project>/synthesis/` before the renderer produces prose:
   blockers, runtime risks, graph/evidence-gap actions, and next actions.
 
 Read `report_support_contract.json` before treating `Report.md` as a review
-artifact. A good report may summarize, prioritize, and translate; it must not
+artifact. A good report may summarize, prioritize, and translate, but must not
 promote trace readiness, graph focus, provider failures, stale synthesis
 inputs, or health gaps into substantive evidence. If the report makes a
 stronger claim than the support contract allows, keep `Report.candidate.md` as
@@ -452,7 +452,7 @@ the report.
 prompt every turn. Anything you write to motivate, justify, or explain the
 target in the charter becomes a turn-1 cheat sheet.
 
-**The rule.** The charter may describe *that* a target exists and *how* grading works. It must not contain:
+*The rule.* The charter may describe *that* a target exists and *how* grading works. It must not contain:
 
 - the target functional form (even as an example, even in LaTeX, even "hypothetically")
 - target parameter values
@@ -462,35 +462,35 @@ target in the charter becomes a turn-1 cheat sheet.
 For hidden-target experiments, the target itself lives outside the loop-visible
 project files.
 
-**The proof case.** [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) sandbox_07, 2026-04-14. Two separate mutators transcribed the charter's derivation on iter 1 and "recovered" the hidden target to six decimal places. Neither run was diagnostic. After scrub, iter 1 returned 0 with the mutator genuinely searching.
+*The proof case.* [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) sandbox_07, 2026-04-14. Two separate mutators transcribed the charter's derivation on iter 1 and "recovered" the hidden target to six decimal places. Neither run was diagnostic. After scrub, iter 1 returned 0 with the mutator genuinely searching.
 
-**The check.** Before sealing a charter:
+*The check.* Before sealing a charter:
 
 1. `sha256sum project_charter.md`, record in the pre-reg.
 2. Grep the charter for any substring of the target form and its parameter names.
 3. Ask: if a stranger read only this charter, could they reconstruct the target? If yes, scrub.
 
-**The pre-run discipline.** Before the first `autoresearch_loop.py` invocation,
+*The pre-run discipline.* Before the first `autoresearch_loop.py` invocation,
 a controlled hidden-target scaffold must pass: the charter contamination scrub
 and strip test, an identifiability check, a sealed pre-registration, a smoke
-gate, and a dry-run of the sealed command. A sandbox missing any of these is a
-warm-up, not a data point.
+gate, and a dry-run of the sealed command. A sandbox missing any of these is
+only a warm-up; it does not count as a data point.
 
 ---
 
 ## 5. The gate battery, how to read a score
 
-A ZTARE score is a compression of a gate battery, not a fitness number. When you look at a run, look at which gates passed and which failed, not at the headline.
+A ZTARE score is a compression of a gate battery. When you look at a run, look at which gates passed and which failed underneath the headline.
 
 Standard deterministic gates currently enforced:
 
-- **Fit contract** (`validator/core/information_yield.py` and the fit/gate call sites), the declared `fit_declaration` block must be algebraically consistent with the Python `I_model` body. Catches "fit a different function than you claim to fit" gaming.
-- **Farther-tail global residual** (`validator/tests/runner_r4_fixture_regression.py`), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. [GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) is the empirical anchor.
-- **Fixture regression**, closed-form fixtures whose expected output is pinned. Any drift flags immediately.
-- **Fit-primitive contract ([GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md))**, always injected. Prevents mutators from declaring a fit that cannot run.
-- **NaN-stub fail-closed**, any primitive returning NaN/inf fails the turn. No "robust to missing data" dodges.
+- Fit contract (`validator/core/information_yield.py` and the fit/gate call sites), the declared `fit_declaration` block must be algebraically consistent with the Python `I_model` body. Catches "fit a different function than you claim to fit" gaming.
+- Farther-tail global residual (`validator/tests/runner_r4_fixture_regression.py`), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. [GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) is the empirical anchor.
+- Fixture regression, closed-form fixtures whose expected output is pinned. Any drift flags immediately.
+- Fit-primitive contract ([GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md)), always injected. Prevents mutators from declaring a fit that cannot run.
+- NaN-stub fail-closed, any primitive returning NaN/inf fails the turn. No "robust to missing data" dodges.
 
-Honeypot mode (`rubrics/honeypot_minimal.json`) replaces the gate battery with a loose discovery-oriented rubric. Honeypot scores are not comparable to standard-run scores. Use honeypot to *find new gates*, not to claim a result. See §8.
+Honeypot mode (`rubrics/honeypot_minimal.json`) replaces the gate battery with a loose discovery-oriented rubric. Honeypot scores are not comparable to standard-run scores. Use honeypot to *find new gates*; a honeypot run does not establish a result. See §8.
 
 ---
 
@@ -498,7 +498,7 @@ Honeypot mode (`rubrics/honeypot_minimal.json`) replaces the gate battery with a
 
 A pre-reg is a single markdown file for controlled experiments whose target
 must stay hidden until close. Public project intake is the normal path
-for external readers; sealed pre-regs are for experiments where target leakage
+for external readers. Sealed pre-regs are for experiments where target leakage
 would destroy interpretability. Minimum structure:
 
 ```markdown
@@ -538,13 +538,13 @@ Controlled experiments close as one of four outcomes. Write the closing status
 on the pre-reg, then publish the safe summary in the appropriate historical
 seam or review artifact.
 
-- **A, Confirmed.** Discriminating test passed the pre-registered success criterion. The falsifiable claim survives.
-- **B, Falsified.** Discriminating test ran cleanly and returned the negative. The claim is dead. This is a successful experiment.
-- **C, Inconclusive (system).** The run revealed a problem with the system
+- A, Confirmed. Discriminating test passed the pre-registered success criterion. The falsifiable claim survives.
+- B, Falsified. Discriminating test ran cleanly and returned the negative. The claim is dead. This is a successful experiment.
+- C, Inconclusive (system). The run revealed a problem with the system
   under test, such as a gate bug, contamination path, or maintainer-patch drift.
   The claim is neither confirmed nor falsified. The system gets a new
-  historical record; the original claim goes back to open.
-- **D, Withdrawn.** The claim stopped being decisive before the test ran (the question changed, the blocker shipped, the direction was abandoned). Close without a result.
+  historical record. The original claim goes back to open.
+- D, Withdrawn. The claim stopped being decisive before the test ran (the question changed, the blocker shipped, the direction was abandoned). Close without a result.
 
 If you cannot pick one of these, the experiment is not closable. Keep it open or rewrite the pre-reg.
 
@@ -554,15 +554,15 @@ that was never designed as a sealed discriminating test.
 
 ---
 
-## 8. Honeypot mode, bug-bounty, not discovery-proof
+## 8. Honeypot mode as a bug-bounty surface
 
 Honeypot mode (`rubrics/honeypot_minimal.json`) uses a loose rubric that rewards surprise (40), failure-mode revelation (35), falsifiability (25), and a gaming-detection bonus (+15). Max score 115.
 
-**What honeypot is good at.** Finding gates the standard suite is missing. A champion that scores high in honeypot by exposing a structural bug in a prior model is a bug report: it names something the normal run would have missed. Those bugs become candidates for new deterministic gates in kernel hardening.
+*What honeypot is good at.* Finding gates the standard suite is missing. A champion that scores high in honeypot by exposing a structural bug in a prior model is a bug report: it names something the normal run would have missed. Those bugs become candidates for new deterministic gates in kernel hardening.
 
-**What honeypot is not.** It is not a discovery proof. A 115/115 honeypot run does not mean the validator recovered the law; it means the rubric could not disqualify the champion. Read the judge's "weakest point" and treat it as the handle to grab next.
+*What honeypot is not.* A 115/115 honeypot run means only that the rubric could not disqualify the champion; it does not show the validator recovered the law. Read the judge's "weakest point" and treat it as the handle to grab next.
 
-**Integration pattern (bug-bounty loop).** A standard run produces a champion → honeypot red-teams it → if honeypot breaks it, either the standard run has a gap or the champion has a weakness the gate suite did not catch. Either way, the next action is a new gate, not a result claim.
+*Integration pattern (bug-bounty loop).* A standard run produces a champion → honeypot red-teams it → if honeypot breaks it, either the standard run has a gap or the champion has a weakness the gate suite did not catch. Either way, the next action is a new gate; the run does not yield a result claim.
 
 ---
 
@@ -571,9 +571,9 @@ Honeypot mode (`rubrics/honeypot_minimal.json`) uses a loose rubric that rewards
 To reproduce a closed controlled experiment from this repo:
 
 1. Find the closed seam in `research_areas/seams/` and the sealed pre-reg alongside it. The charter fingerprint in the pre-reg is the canonical charter state for that run.
-2. Check the current `project_charter.md` hash against the pre-reg fingerprint. If they differ, the charter has drifted, replication must use the pinned version from git at the pre-reg seal time, not `HEAD`.
+2. Check the current `project_charter.md` hash against the pre-reg fingerprint. If they differ, the charter has drifted, so replication must use the version pinned in git at the pre-reg seal time, since `HEAD` may have moved on.
 3. Run the exact sealed command string from the pre-reg. Do not substitute a "same thing" alternative, pinned defaults matter.
-4. Compare the closing outcome (A/B/C/D) to the seam's recorded outcome. A divergence is a finding; file it as a new experiment, not as a correction to the old one.
+4. Compare the closing outcome (A/B/C/D) to the seam's recorded outcome. A divergence is a finding. File it as a new experiment, leaving the old one's record intact.
 
 Sealed artifacts (pre-regs after seal, scoring sheets) are never edited in
 place. Corrections go in post-mortems. Do not invent addenda or supplements;
@@ -591,7 +591,7 @@ To reproduce ordinary public project intake:
 5. If a report is generated, inspect `synthesis/report_support_contract.json`
    before citing `Report.md`.
 
-If the intake file is for a general project rather than a scientific experiment,
+For a general project, anything outside a scientific experiment,
 keep the same evidence rule: bounded claim, source refs, evidence refs,
 non-claims, next falsifier, and one parsed route/run command. Do not replace
 that with a narrative deliverable or a broad consulting-style conclusion.
