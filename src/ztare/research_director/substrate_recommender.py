@@ -230,7 +230,14 @@ Output the JSON now.
 def _call_gemini_api(prompt: str, model: str = DEFAULT_MODEL) -> str:
     import google.generativeai as genai  # type: ignore
 
-    api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    # Resolve via the ONE canonical resolver (env → .env bootstrap → re-read) so a
+    # daemon/nohup launch without exported keys still finds the key on disk (2026-06-25 RCA);
+    # the hard-raise contract below is preserved when the key is genuinely absent.
+    try:
+        from ztare.common.embeddings import resolve_gemini_key
+        api_key = resolve_gemini_key()
+    except Exception:
+        api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY (or GOOGLE_API_KEY) must be set to call Gemini.")
     genai.configure(api_key=api_key)

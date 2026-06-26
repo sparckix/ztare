@@ -98,8 +98,21 @@ def _embed_query_genai(query: str) -> list[float] | None:
     The API key is checked BEFORE ``make_client`` because ``make_client`` raises
     ``SystemExit`` on a missing key (not caught by ``except Exception``); the
     graceful-degradation contract here is to return ``None`` instead.
+
+    KEY-BOOTSTRAP (2026-06-25 RCA — embedder silently DEAD on the VPS despite keys
+    in ``.env`` + live credits): a daemon/nohup launch that did not ``source .env``
+    leaves the key absent from ``os.environ`` here, so this early-check returned
+    ``None`` and the WHOLE semantic compounding layer (leaf + planner premise
+    shelves) fell dead. Resolution now routes through the ONE canonical resolver
+    (``embeddings.resolve_gemini_key``), which reads env then bootstraps the
+    project-root ``.env`` and re-reads — the SAME loader ``make_client`` uses — so
+    this can never be a forgotten sibling again. No-op when the key is exported.
     """
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    try:
+        from ztare.common.embeddings import resolve_gemini_key
+        api_key = resolve_gemini_key()
+    except Exception:
+        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:

@@ -99,7 +99,14 @@ def _embed_query_genai(query: str) -> list[float] | None:
     # RETRIEVAL_DOCUMENT) — so existing apn_atlas_embeddings.json + cosine stay
     # compatible. Graceful-None contract kept: make_client raises SystemExit (not
     # caught by `except Exception`), so check the key BEFORE calling it.
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    # Key resolution goes through the ONE canonical resolver (env → .env bootstrap →
+    # re-read), so a daemon/nohup launch without exported keys can't silently kill this
+    # embedder — the 2026-06-25 sibling of the mathlib_semantic embedder-dead RCA.
+    try:
+        from ztare.common.embeddings import resolve_gemini_key
+        api_key = resolve_gemini_key()
+    except Exception:
+        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:

@@ -260,9 +260,15 @@ def _embed_query_genai(query: str) -> list[float] | None:
     rather than introducing RETRIEVAL_QUERY (which would shift the query vectors).
     The graceful-degradation contract is kept: the API key is checked BEFORE
     ``make_client`` (which raises SystemExit, not caught by ``except Exception``),
-    and any embed error returns None for the lexical-only fallback.
+    and any embed error returns None for the lexical-only fallback. Key resolution
+    routes through the ONE canonical resolver (env → .env bootstrap → re-read) so a
+    daemon/nohup launch without exported keys can't silently kill it (2026-06-25 RCA).
     """
-    api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+    try:
+        from ztare.common.embeddings import resolve_gemini_key
+        api_key = resolve_gemini_key()
+    except Exception:
+        api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not api_key:
         return None
     try:

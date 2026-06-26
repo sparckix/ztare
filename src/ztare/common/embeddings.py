@@ -43,19 +43,37 @@ def content_id(*parts: str) -> str:
     return hashlib.sha1("::".join(parts).encode("utf-8")).hexdigest()[:16]
 
 
+def resolve_gemini_key() -> "str | None":
+    """The ONE Gemini/Google API-key resolver for graceful-None embed callers (single door).
+
+    Reads ``os.environ``; if the key is ABSENT, bootstraps the project-root ``.env`` (the SAME
+    canonical loader ``make_client`` uses) and re-reads, then returns the key or ``None`` — it
+    NEVER raises. WHY this exists: every graceful-None embed entry point (``mathlib_semantic`` /
+    ``apn_semantic`` ``_embed_query_genai``, the amnesia/recommender embedders) hand-rolled
+    ``os.environ.get(...) or None`` and bailed BEFORE reaching ``make_client``'s bootstrap — so a
+    daemon/nohup launch that did not ``source .env`` left the WHOLE semantic compounding layer
+    silently dead even with keys on disk + live credits (2026-06-25 RCA). Routing every such
+    caller through this ONE resolver means the bootstrap can never be a forgotten sibling again.
+    Callers that want a hard failure instead of None use ``make_client`` (it raises SystemExit)."""
+    key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+    if key:
+        return key
+    # Daemon/manual launches often don't export the key though it lives in the project-root .env.
+    # No-op if already loaded; never clobbers an explicit env value.
+    try:
+        from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
+        _bootstrap_dotenv_if_needed()
+    except Exception:  # noqa: BLE001 — graceful-None contract: a bootstrap failure ⇒ no key, not a raise
+        return None
+    return os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+
+
 def make_client(api_key: "str | None" = None):
     """Gemini client (raises SystemExit if no key). Kept here so no consumer imports genai."""
-    api_key = api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    if not api_key:
-        # Reuse the ONE canonical .env loader — daemon/manual launches often don't export the key
-        # though it lives in the project-root .env (the gap that left the semantic shelf silently
-        # dead on the VPS). No-op if already loaded; never clobbers an explicit env value.
-        try:
-            from ztare.common.llm_runtime import _bootstrap_dotenv_if_needed
-            _bootstrap_dotenv_if_needed()
-            api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-        except Exception:
-            pass
+    # `resolve_gemini_key` does the env-read + project-root .env bootstrap (the ONE door); daemon/
+    # manual launches often don't export the key though it lives in .env (the gap that left the
+    # semantic shelf silently dead on the VPS). No-op if already loaded; never clobbers explicit env.
+    api_key = api_key or resolve_gemini_key()
     if not api_key:
         raise SystemExit("GEMINI_API_KEY or GOOGLE_API_KEY required to build/query an embedding atlas")
     from google import genai

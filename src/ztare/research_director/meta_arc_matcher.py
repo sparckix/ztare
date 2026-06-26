@@ -262,9 +262,17 @@ def match_stall(
     """
     from collections import Counter
 
-    api_key = None if force_offline else (
-        api_key or os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-    )
+    # Resolve via the ONE canonical resolver (env → .env bootstrap → re-read) so a daemon/
+    # nohup launch without exported keys still finds the key on disk (2026-06-25 RCA); an
+    # explicit api_key arg and force_offline both win, exactly as before.
+    if force_offline:
+        api_key = None
+    elif not api_key:
+        try:
+            from ztare.common.embeddings import resolve_gemini_key
+            api_key = resolve_gemini_key()
+        except Exception:
+            api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
 
     if moves is None:
         moves = load_catalog(substrate)
