@@ -10,7 +10,7 @@ Clean public source bundle for the paper.
 Scope boundary:
 - The paper is frozen to the original 9 top-level strategies and the benchmark lineage that supports them.
 - Later mined vectors live in `docs/gaming_behavior_catalog.md` and `analytics/public/queries/gaming_vector_catalog.jsonl`; they are not part of the benchmarked 9-strategy claim and should not be retrofitted into the paper claims without a new benchmark/lineage pass.
-- Raw experiment outputs may still contain historical run-output aliases such as "Blame Shield," "Float Masking," "Fake AutoDiff," and "Gravity Constant Fabrication." The canonical public names are the mechanism names in `draft.md`, `main.tex`, and `docs/gaming_behavior_catalog.md`.
+- Raw experiment outputs may contain deprecated internal names. The canonical public names are the mechanism names in `draft.md`, `main.tex`, and `docs/gaming_behavior_catalog.md`.
 
 Submission positioning:
 - Primary arXiv fit: `cs.SE` or `cs.AI`.

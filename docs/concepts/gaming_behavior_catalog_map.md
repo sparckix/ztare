@@ -6,7 +6,7 @@ description: "Source-of-truth map for gaming behavior lifecycle: incident catalo
 
 > Up: [Documentation map](../README.md)
 
-This is the routing page for gaming-vector files, status, promotion, and
+The routing page for gaming-vector files, status, promotion, and
 kernel-hardening operations. If another document needs mechanics, it should link
 here for counts, file precedence, and promotion steps.
 
@@ -28,7 +28,7 @@ incident / behavior observed
 The confusing part was documentation drift: the public catalog,
 [GP-086](../../research_areas/seams/apparatus/cage/GP-086_cage_kernel_hardening_seam.md)
 seam, V4 board, and new vector registry were all describing adjacent layers.
-This page says which layer owns which fact.
+Below, each layer's owning fact is set out explicitly.
 
 ## Current Status
 
@@ -79,9 +79,8 @@ Use this wording publicly:
 The public catalog name is the human-readable row name used in docs, papers, and
 navigation. The invariant axis is the audit handle: the property that the row
 violates and therefore the property the gate must test. Historical names from
-older artifacts are aliases only. Do not use them as the current taxonomy. The
-public catalog must keep an explicit historical-alias column so older evidence
-packets remain findable without promoting the old labels back into the naming
+older artifacts are aliases only and are not part of the current taxonomy. The
+canonical names supersede them; do not promote old labels back into the naming
 scheme.
 
 Use the nearest literature family as a grounding aid. This is not an equivalence

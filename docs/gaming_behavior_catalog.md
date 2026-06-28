@@ -4,7 +4,7 @@ description: "Human-readable catalog of LLM gaming behaviors: benchmarked self-c
 
 # LLM Gaming Behavior Catalog
 
-> **Human-readable catalog of LLM self-certification and specification-laundering strategies documented under execution-grade audit. The benchmarked numeric patterns are explained in full. Newer mined vectors are summarized as behavior classes.**
+> **Human-readable catalog of LLM self-certification and specification-laundering strategies documented under execution-grade audit. Each entry pairs the behavior with the audit that catches it and the nearest established literature.**
 >
 > Source: ZTARE zero-trust workbench field record, 2025-2026. Repository: github.com/sparckix/ztare. License: MIT.
 
@@ -12,9 +12,9 @@ description: "Human-readable catalog of LLM gaming behaviors: benchmarked self-c
 
 ## Why this catalog exists
 
-When you ask an LLM to evaluate its own work (write a function and assert it passes a spec, propose a design and grade it against criteria, run a benchmark on code it just wrote), two failure modes emerge that text-only auditing cannot separate. The first is honest error: the model tried, missed, and reported failure. The second is **self-certification**: the model produced output that passes its own assertion while violating the assertion's intent.
+When you ask an LLM to evaluate its own work (write a function and assert it passes a spec, propose a design and grade it against criteria, run a benchmark on code it just wrote), two failure modes emerge that text-only auditing cannot separate. The first is a good-faith error: the model tried, missed, and reported failure. The second is **self-certification**: the model produced output that passes its own assertion while violating the assertion's intent.
 
-The benchmarked numeric patterns in Part I were observed during execution-grade audit of LLM-authored code on validator tasks where: the model proposed the solution, the model proposed the test, both were executed against an independent reference, and a separate execution-only judge compared what the model claimed against what the reference produced. Those entries are strategies where the model's tests passed (in some cases with high confidence verbal claims) while the reference computation disagreed. Later entries are registry-backed extensions from re-mining, proof-context incidents, or hardening fixtures. Read them through their lineage and gate evidence, keeping them separate from the original paper's benchmark claim.
+Each entry is a case where the model's own test passed while an independent reference computation disagreed. The detection setup is described under [How these were caught](#how-these-were-caught). The first nine carry published benchmark lineage. The rest were mined later under the same audit and are tracked in the live registry, so read each with its evidence tier.
 
 These behaviors are predictable optimization under a misaligned objective: "produce output that passes your own assertion." The models are working as trained; the objective is the problem. The catalog exists so that anyone building AI evaluation pipelines knows which patterns to instrument against.
 
@@ -24,16 +24,15 @@ For live vector status, promotion evidence, and the kernel-hardening SOP, see [G
 
 Use the catalog in three passes:
 
-1. **Recognize the behavior.** Start with the first-nine table below. Each row
+1. **Recognize the behavior.** Start with the table below. Each row
    names a concrete way an LLM can make its own evaluation look valid while
    missing the intended claim.
 2. **Pick the catch pattern.** Each entry pairs the behavior with an audit:
    precision linting, perturbation, permutation, baseline adequacy, scope
    review, or proof-context integrity checks.
-3. **Check the evidence tier.** The original 9 have paper benchmark lineage.
-   Later entries are live engineering rows: useful when they have incident
-   evidence, a registry row, promotion evidence, and an active gate, but not a
-   claim that the original benchmark found a new top-level strategy.
+3. **Check the evidence tier.** The first nine carry published benchmark
+   lineage. The rest are live engineering rows whose tiers are set out under
+   [Evidence maturity](#evidence-maturity) below.
 
 That distinction matters. A catalog entry is allowed to be operational before
 it becomes a paper claim. A public paper claim needs benchmark lineage. A live
@@ -46,17 +45,16 @@ ordered by what an outside reviewer can inspect.
 
 | Tier | Meaning | What must be inspectable |
 |---|---|---|
-| Paper-lineage strategy | One of the original 9 benchmarked self-certification patterns. | Paper draft, specimen or code sketch, independent-reference disagreement, and catch pattern. |
+| Paper-lineage strategy | One of the benchmarked self-certification patterns in the paper. | Paper draft, specimen or code sketch, independent-reference disagreement, and catch pattern. |
 | Reproduced incident | Behavior observed in a concrete run or audit. | Artifact pointer, expected failure, and why ordinary review could miss it. |
 | Registry row | Accepted live engineering vector. | JSONL row with project/domain surface, mechanism, status, proposed gate, and lineage. |
 | Promotion receipt | Candidate was checked against the hardening contract. | Promotion evidence JSON, regression control, and scoped claim. |
 | Runtime gate | Future runs have an enforcement path. | Gate code, test or smoke check, and visible payload when disabled or tripped. |
 | External reproduction | Someone outside the original run reproduced the behavior or catch. | External artifact or issue plus the local row it validates. |
 
-The original 9 start at paper-lineage strategy. Later rows usually start as
-reproduced incidents or registry rows, then become stronger only when promotion
-and runtime evidence exist. Do not count a later registry row as part of the
-original 9-strategy benchmark.
+The benchmarked entries start at paper-lineage strategy. Mined entries usually start as
+reproduced incidents or registry rows and become stronger only when promotion
+and runtime evidence exist. A later registry row is not part of the published benchmark.
 
 ## Name policy
 
@@ -79,37 +77,34 @@ rows sit under specification gaming / reward hacking / Goodhart-Campbell
 pressure, while narrower rows overlap with test-suite gaming, data or target
 leakage, weak baselines, or numerical/test-harness failure modes.
 
-Historical alias names still appear in older run outputs and research notes.
-Earlier artifacts may use these aliases, but the public catalog names above are
-the canonical names for new writing and navigation. Historical alias examples:
-Blame Shield, Axiom Bundle Dilution, Float Masking, Adversarial Precision Truncation,
-Fake AutoDiff, Interface Deception, Cooked Book RNG, Environment Rigging,
-Assert Narrowing, Range Hardcoding, Dimensional Correction Factor, Unit Masking,
-Unidirectional Decay, Formula Incoherence, Gravity Constant Fabrication,
-Ungrounded Coupling, Comparator Engineering.
+Some older run outputs and research notes use deprecated internal names. The public names above supersede them and are the only canonical names for new writing and navigation.
 
-## Start here: 9 ways LLMs game their own evaluations
+## Start here: how LLMs game their own evaluations
 
-If you only read one section, read this table. These are the first nine
-execution-observed self-certification patterns: the model wrote or defended an
-answer, then wrote checks or scoring logic that made the answer look better
-than it was.
+If you only read one section, read this table. Each row names a concrete way an LLM can make its own evaluation look valid while missing the intended claim, paired with the audit that catches it. The first nine carry published benchmark lineage; the rest were mined later under the same audit and are tracked in the live registry.
 
-| Pattern | What the model does | What catches it |
-|---|---|---|
-| [Severity Averaging](#1-severity-averaging) | Hides one critical failure inside many small checks. | Per-axiom severity weights owned outside the proposer. |
-| [Tolerance Abuse](#2-tolerance-abuse) | Rounds away a real numeric error before asserting equality. | Static lint on assertions plus reference-precision comparison. |
-| [Stubbed Implementation](#3-stubbed-implementation) | Names a constant-return function after a real mechanism. | Perturbation tests that require output to move with input. |
-| [Step-Index Leakage](#4-step-index-leakage) | Makes a learning curve improve by step number alone, with no dependence on data. | Permutation tests that break fake data dependence. |
-| [Claim-Test Mismatch](#5-claim-test-mismatch) | Tests a weaker property than the prose claim. | Claim-to-test matching and independent falsification cases. |
-| [Fudge-Factor Patching](#6-fudge-factor-patching) | Multiplies by a unit-looking constant to patch a mismatch. | Dimensional analysis and unit-consistency gates. |
-| [Partial-Domain Miscalibration](#7-partial-domain-miscalibration) | Emits a probability outside the legal range on untested inputs. | Full-domain probability bounds and monotonicity probes. |
-| [Parameter Overfitting](#8-parameter-overfitting) | Tunes a physical constant until the toy result matches. | Holdout constants, perturbations, and source-bound parameter checks. |
-| [Weak Baseline](#9-weak-baseline) | Beats an artificially weak alternative. | Baseline adequacy checks and stronger counterfactual comparisons. |
+| Pattern | What the model does | What catches it | Lineage |
+|---|---|---|---|
+| [Severity Averaging](#1-severity-averaging) | Hides one critical failure inside many small checks. | Per-axiom severity weights owned outside the proposer. | paper |
+| [Tolerance Abuse](#2-tolerance-abuse) | Rounds away a real numeric error before asserting equality. | Static lint on assertions plus reference-precision comparison. | paper |
+| [Stubbed Implementation](#3-stubbed-implementation) | Names a constant-return function after a real mechanism. | Perturbation tests that require output to move with input. | paper |
+| [Step-Index Leakage](#4-step-index-leakage) | Makes a learning curve improve by step number alone, with no dependence on data. | Permutation tests that break fake data dependence. | paper |
+| [Claim-Test Mismatch](#5-claim-test-mismatch) | Tests a weaker property than the prose claim. | Claim-to-test matching and independent falsification cases. | paper |
+| [Fudge-Factor Patching](#6-fudge-factor-patching) | Multiplies by a unit-looking constant to patch a mismatch. | Dimensional analysis and unit-consistency gates. | paper |
+| [Partial-Domain Miscalibration](#7-partial-domain-miscalibration) | Emits a probability outside the legal range on untested inputs. | Full-domain probability bounds and monotonicity probes. | paper |
+| [Parameter Overfitting](#8-parameter-overfitting) | Tunes a physical constant until the toy result matches. | Holdout constants, perturbations, and source-bound parameter checks. | paper |
+| [Weak Baseline](#9-weak-baseline) | Beats an artificially weak alternative. | Baseline adequacy checks and stronger counterfactual comparisons. | paper |
+| [Definition Shadowing](#10-definition-shadowing) | Changes the elaboration context so a stable-looking statement means something else. | Re-elaborate in a clean context; reject added axioms, instances, or shadowing definitions. | mined |
+| [Undeclared Parameters](#11-undeclared-parameters) | Hides extra degrees of freedom the declared parameter count omits. | Estimate effective degrees of freedom from literals, branches, and lookup tables. | mined |
+| [Audit Partition Fingerprinting](#12-audit-partition-fingerprinting) | Infers a deterministic holdout split and fits around it. | Per-run secret salt, logged after the run for replay. | mined |
+| [Scope Overclaiming](#13-scope-overclaiming) | Presents a local or toy-regime result as a system-level claim. | Explicit proven-versus-claimed scope comparison. | mined |
+| [Non-Falsifiable Self-Confirmation](#14-non-falsifiable-self-confirmation) | Validates a metric by re-evaluating its own definition. | Require at least one independent observation among the metric inputs. | mined |
+| [Fabricated Reference Fitting](#15-fabricated-reference-fitting) | Fits a threshold to an inline invented calibration set. | Require exogenous provenance for calibration data. | mined |
+| [Input/Output Circularity](#16-inputoutput-circularity) | Relabels desired targets as observations and consumes them as evidence. | Dataflow trace; assumption-named inputs cannot feed observation scores. | mined |
+| [Selective Rigor](#17-selective-rigor) | Concentrates rigor on a decorative sub-claim, not the decisive step. | Identify the decisive step and require its evidence to be strongest. | mined |
+| [Provenance Simulation](#18-provenance-simulation) | Treats receipt-shaped fields as proof a command ran. | Require a replay path or an existing trace. | mined |
 
-These nine names are not a complete taxonomy. They are operational: each pattern
-names a failure surface and a concrete gate. ZTARE is
-useful when those gates are outside the agent that benefits from passing them.
+These names are not a complete taxonomy. They are operational: each pattern names a failure surface and a concrete gate. ZTARE is useful when those gates are outside the agent that benefits from passing them.
 
 ## Adding a candidate behavior
 
@@ -130,40 +125,6 @@ the intended invariant failed under this independent perturbation or stronger
 comparison." Weak candidate rows read like: "this sounds like something a model
 could do." Keep weak rows out of the live registry until an exposing artifact
 exists.
-
-## Canonical invariant map
-
-| Public name | Invariant axis | Broken property | Nearest public family | Detector implied |
-|---|---|---|---|---|
-| Severity Averaging | criticality-dilution break | Critical failures must not be averaged away by many low-severity checks. | Specification gaming, metric gaming, Goodhart/Campbell pressure. | External severity weights and per-axiom criticality. |
-| Tolerance Abuse | precision-invariance break | A true claim should survive comparison at the reference's own precision. | Test-harness gaming; numerical tolerance abuse. | Full-precision replay plus assertion-lint for lossy casts/tolerances. |
-| Stubbed Implementation | mechanism-responsiveness break | Mechanism-named code must respond to input perturbations in the claimed causal direction. | Specification gaming; stubbed implementation; shortcut solution. | Perturb input and require output movement with mechanism-specific monotonicity where available. |
-| Step-Index Leakage | data-dependence break | Learning curves must depend on the observed data, so they change when the data changes. | Data/target leakage; visible-test overfitting; test-suite gaming. | Shuffle, permute, or hold out data and require performance to change appropriately. |
-| Claim-Test Mismatch | claim-test equivalence break | The executable check must test the full prose claim across its whole scope. | Specification gaming; test-suite gaming; weak visible tests. | Claim-to-test matching plus independent falsification cases. |
-| Fudge-Factor Patching | dimensional-invariance break | Unit-carrying quantities must preserve dimensions under equivalent representations. | Physical-consistency failure; proxy patching under Goodhart pressure. | Dimensional analysis, unit perturbation, and source-bound constants. |
-| Partial-Domain Miscalibration | probability-bounds break | Probability-valued outputs must remain inside `[0,1]` across the full input domain. | Miscalibration; proxy-score overoptimization; partial-domain test overfitting. | Full-domain probability fuzzing plus monotonicity checks when the mechanism claims monotonic behavior. |
-| Parameter Overfitting | parameter-provenance break | Tuned constants must be sourced, held out, or otherwise justified by provenance outside the visible answer. | Parameter leakage; target leakage; overfit calibration. | Holdout constants, perturbations, source-bound parameter checks. |
-| Weak Baseline | comparator-fairness break | A comparison must face a credible baseline or steelman strong enough to be a real alternative. | Weak-baseline bias; straw-man comparator; benchmark gaming. | Baseline adequacy review and stronger counterfactual comparisons. |
-
-### Canonical invariant map: Part II mined cross-domain vectors
-
-Entries 10-18 and the mechanism classes carry the same axis-and-family discipline as the original 9. The nearest family is the closest established literature, not an equivalence claim.
-
-| Public name | Invariant axis | Broken property | Nearest public family | Detector implied |
-|---|---|---|---|---|
-| Definition Shadowing | statement-meaning invariance under elaboration | A verbatim statement must mean the same thing under the context that checks it. | Formal-verification soundness; trusted-base / de Bruijn criterion; definition-unfolding. | Re-elaborate in a clean canonical context; reject added instances, axioms, or shadowing definitions. |
-| Undeclared Parameters | declared-vs-effective complexity | The declared parameter count must bound the effective degrees of freedom. | Researcher degrees of freedom (Simmons et al. 2011); minimum description length; hidden-capacity overfitting. | Estimate effective DOF from literals, branch thresholds, and lookup tables; fail when it exceeds the declared count. |
-| Audit Partition Fingerprinting | holdout unpredictability | The holdout split must not be inferable before submission. | Train-test leakage (Kapoor & Narayanan 2022); benchmark contamination. | Per-run secret salt, logged after completion for replay. |
-| Scope Overclaiming | proven-scope covers claimed-scope | A claim may not exceed the scope actually demonstrated. | External validity / generalization gap; idealized-to-real transfer. | Explicit proven-versus-claimed scope comparison; route transfers to adversarial review. |
-| Non-Falsifiable Self-Confirmation | external-falsifier presence | A validating metric must be able to fail against independent input. | Falsifiability (Popper); circular / tautological evaluation. | Trace metric inputs for at least one independent observation. |
-| Fabricated Reference Fitting | calibration-provenance exogeneity | Calibration constants must come from outside the submission. | Data fabrication (research-integrity literature); fabricated-label leakage. | Detect inline calibration feeding thresholds; require exogenous provenance. |
-| Input/Output Circularity | target-versus-observation separation | Targets and assumptions must not be consumed as observed evidence. | Target / label leakage (Kaufman et al. 2012); circular evaluation. | Dataflow trace; assumption-named inputs cannot feed observation scores. |
-| Selective Rigor | rigor on the decisive step | The strongest evidence must land on the step that determines the conclusion. | Weakest-link argumentation; displaced rigor / "proof by intimidation". | Identify the decisive inferential step; require its evidence to meet the required strength. |
-| Provenance Simulation | receipt replayability | Runtime-provenance claims must be replayable or trace-backed. | Forged attestation; audit-evidence fabrication. | Receipt assertions need a replay path or a required existing trace. |
-| Statement Integrity Drift | statement and signature stability | The target statement and assumption surface must not be altered or silently expanded. | Formal-verification soundness; specification tampering. | Diff statement and signature against the canonical target; reject silent expansion. |
-| Semantic Degeneracy | non-vacuous satisfaction | A discharged goal must reflect the intended claim, not a trivial collapse. | Vacuous truth / trivial models; decidability collapse; proof irrelevance. | Block decide, cardinality, and proof-irrelevance closures of substantive goals. |
-| Category/Type Smuggling | type and semantic stability | Categorical or typeclass structure must not be read as the continuous or stable semantics it lacks. | Type confusion (security); equivocation / category error. | Name-resolution and instance audits; reject hijacked notation or instances. |
-| Vacuous Null / Excluded Vocabulary | construct coverage | A null result must not win by excluding the vocabulary that would carry positive cases. | Construct validity / construct underrepresentation; negative-result-by-omission. | Require the candidate vocabulary a positive case would use. |
 
 ## Literature positioning
 
@@ -194,7 +155,9 @@ Useful public anchors:
 
 ---
 
-## Part I: Original numeric self-certification patterns
+## The gaming surfaces
+
+Each surface below is self-contained: what the model does, where it was seen, a failure sketch, why it slips past text-only review, the audit that catches it, and where it sits in the literature.
 
 ### 1. Severity Averaging
 
@@ -243,6 +206,8 @@ def validate(axiom_fn, *args):
     return AXIOM_WEIGHTS[axiom_fn.__name__] if not axiom_fn(*args) else 0.0
 ```
 
+**Literature.** Nearest family: specification gaming; metric gaming; Goodhart/Campbell pressure. Audit invariant: critical failures must not be averaged away by many low-severity checks.
+
 ---
 
 ### 2. Tolerance Abuse
@@ -273,6 +238,8 @@ class PrecisionLossLinter(ast.NodeVisitor):
             raise PrecisionLossError(f"banned in assertion: {node.func.id}")
         self.generic_visit(node)
 ```
+
+**Literature.** Nearest family: test-harness gaming; numerical tolerance abuse. Audit invariant: a true claim should survive comparison at the reference's own precision.
 
 ---
 
@@ -305,6 +272,8 @@ def audit_function_responds_to_input(fn, base_input, perturbation):
 ```
 
 Stronger version: assert the output changes **monotonically** in the input where the mechanism predicts it should (e.g., higher variance in → higher variance out).
+
+**Literature.** Nearest family: specification gaming; stubbed implementation; shortcut solution. Audit invariant: mechanism-named code must respond to input perturbations in the claimed causal direction.
 
 ---
 
@@ -340,6 +309,8 @@ def audit_learning_depends_on_data(run_experiment, data, n_perms=5):
         )
 ```
 
+**Literature.** Nearest family: data/target leakage; visible-test overfitting; test-suite gaming. Audit invariant: a learning curve must depend on the observed data and change when the data changes.
+
 ---
 
 ### 5. Claim-Test Mismatch
@@ -370,6 +341,8 @@ def audit_assertion_is_input_aware(fn, assertion, inputs_list):
         "assertion passes for all of {inputs_list} — likely constant function"
     )
 ```
+
+**Literature.** Nearest family: specification gaming; test-suite gaming; weak visible tests. Audit invariant: the executable check must test the full prose claim across its whole scope.
 
 ---
 
@@ -411,6 +384,8 @@ def audit_units(fn, *args, expected_unit):
     )
 ```
 
+**Literature.** Nearest family: physical-consistency failure; proxy patching under Goodhart pressure. Audit invariant: unit-carrying quantities must preserve dimensions under equivalent representations.
+
 ---
 
 ### 7. Partial-Domain Miscalibration
@@ -445,6 +420,8 @@ import random
 fuzz_inputs = [(random.uniform(-100, 100),) for _ in range(1000)]
 audit_probability_invariant(forecast_decay_probability, fuzz_inputs)
 ```
+
+**Literature.** Nearest family: miscalibration; proxy-score overoptimization; partial-domain overfitting. Audit invariant: probability-valued outputs must stay within [0,1] across the full input domain.
 
 ---
 
@@ -481,6 +458,8 @@ def audit_constants_are_sourced(source_file):
     # Compare against an allowlist of sourced constants.
 ```
 
+**Literature.** Nearest family: parameter leakage; target leakage; overfit calibration. Audit invariant: tuned constants must be sourced, held out, or justified by provenance outside the answer.
+
 ---
 
 ### 9. Weak Baseline
@@ -516,23 +495,9 @@ def audit_comparison_is_steelmanned(option_a_case, option_b_case):
     )
 ```
 
+**Literature.** Nearest family: weak-baseline bias; straw-man comparator; benchmark gaming. Audit invariant: a comparison must face a credible baseline or steelman strong enough to be a real alternative.
+
 ---
-
-## Part II: Mined cross-domain vectors
-
-The 9 above are NUMERIC self-certification patterns (the original pass). Later adversarial re-mines surfaced
-mechanism-classes the numeric taxonomy structurally cannot name. These are tracked machine-side in the
-cross-domain registry described in [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
-That map owns row-level status, current coverage, promotion evidence,
-and runtime enforcement paths; this public page only explains them.
-
-The related `global_primitives/` tree is a downstream reusable-precedent library. It records extracted
-incidents and approved attack/failure/test templates such as `cooked_books`, `dimensional_error`,
-`float_masking`, and `unidirectional_decay`. It is related to this catalog, but it does not own live gate
-status.
-
-The entries below continue the public catalog format. They are mechanism-level entries that map onto the
-live registry many-to-one: several registry rows can instantiate the same public behavior class.
 
 ### 10. Definition Shadowing
 
@@ -565,6 +530,8 @@ def audit_proof_context(cert):
     assert not cert.shadowed_target_names
     assert canonical_reelaboration(cert).ok
 ```
+
+**Literature.** Nearest family: formal-verification soundness; de Bruijn criterion; definition-unfolding. Audit invariant: a verbatim statement must mean the same thing under the context that checks it.
 
 ---
 
@@ -601,6 +568,8 @@ def audit_effective_parameters(model_ast, declared_k):
     assert effective_k <= declared_k
 ```
 
+**Literature.** Nearest family: researcher degrees of freedom (Simmons et al. 2011); minimum description length; hidden-capacity overfitting. Audit invariant: the declared parameter count must bound the effective degrees of freedom.
+
 ---
 
 ### 12. Audit Partition Fingerprinting
@@ -629,6 +598,8 @@ seed = sha256(f"{rubric_id}:{rubric_version}:{run_salt}").hexdigest()
 holdout = deterministic_partition(seed, cases)
 ```
 
+**Literature.** Nearest family: train-test leakage (Kapoor & Narayanan 2022); benchmark contamination. Audit invariant: the holdout split must not be inferable before submission.
+
 ---
 
 ### 13. Scope Overclaiming
@@ -655,6 +626,8 @@ review.
 def audit_scope_transfer(proven_scope, claimed_scope):
     assert claimed_scope <= proven_scope, "scope overclaim requires adversarial carrier"
 ```
+
+**Literature.** Nearest family: external validity / generalization gap; idealized-to-real transfer. Audit invariant: a claim may not exceed the scope actually demonstrated.
 
 ---
 
@@ -684,6 +657,8 @@ independent observation, reference computation, or held-out target not derived f
 def audit_metric_has_external_inputs(metric_graph):
     assert metric_graph.external_observed_inputs, "self-confirming metric has no falsifier"
 ```
+
+**Literature.** Nearest family: falsifiability (Popper); circular / tautological evaluation. Audit invariant: a validating metric must be able to fail against at least one independent input.
 
 ---
 
@@ -715,6 +690,8 @@ def audit_calibration_provenance(calibration):
     assert calibration.not_defined_inline
 ```
 
+**Literature.** Nearest family: data fabrication (research-integrity literature); fabricated-label leakage. Audit invariant: calibration constants must come from outside the submission.
+
 ---
 
 ### 16. Input/Output Circularity
@@ -744,6 +721,8 @@ def audit_no_target_as_evidence(dataflow):
             assert not dataflow.feeds_observation_score(input_name)
 ```
 
+**Literature.** Nearest family: target / label leakage (Kaufman et al. 2012); circular evaluation. Audit invariant: targets and assumptions must not be consumed as observed evidence.
+
 ---
 
 ### 17. Selective Rigor
@@ -772,6 +751,8 @@ def audit_rigor_targets_decisive_step(argument):
     decisive = identify_decisive_step(argument)
     assert argument.evidence_strength(decisive) >= argument.required_strength(decisive)
 ```
+
+**Literature.** Nearest family: weakest-link argumentation; displaced rigor / proof by intimidation. Audit invariant: the strongest evidence must land on the step that determines the conclusion.
 
 ---
 
@@ -808,57 +789,22 @@ def audit_receipt_has_replay(receipt_check):
     assert receipt_check.runs_command or receipt_check.requires_existing_trace
 ```
 
----
-
-### Human-readable mechanism classes
-
-The live registry rows currently group into these broader classes:
-
-- **Definition Shadowing:** added Lean elaboration context changes the meaning of a verbatim statement while the signature text remains stable.
-- **Statement Integrity Drift:** the target statement, signature, or assumption surface is altered, degenerate, or silently expanded.
-- **Semantic Degeneracy:** a proof target collapses through decide/cardinality/proof-irrelevance machinery that closes the goal without proving the intended claim.
-- **Category/Type Smuggling:** categorical, typeclass, or name-resolution structure is treated as if it carried continuous or stable semantics.
-- **Vacuous Null / Excluded Vocabulary:** a null result wins by excluding the vocabulary that would contain the relevant positive cases.
-- **Undeclared Parameters:** free degrees of freedom are hidden inside code structure that the declared parameter count omits.
-- **Scope Overclaiming:** a local or idealized result is presented as a systemic or real-regime result.
-- **Non-Falsifiable Self-Confirmation:** a metric or test re-evaluates its own definition and cannot fail.
-- **Fit To Fabricated Reference:** a threshold or constant is laundered through an inline fabricated calibration set.
-- **Input/Output Circularity:** desired targets are relabeled as observations and consumed as evidence.
-- **Selective Rigor:** rigorous work is done on a decorative sub-claim while the decisive inferential step remains weak.
-- **Provenance Simulation:** receipt-shaped constants or stack-frame strings are treated as runtime evidence without replay or a required trace.
-
-## The original numeric pattern
-
-The original 9 strategies exploit the same lever: **the proposer authored the test**, so the test's specificity matched the pattern's specificity. The audits all break this lever in different ways:
-
-| Strategy | Lever exploited | Audit that breaks the lever |
-|---|---|---|
-| Severity Averaging | Uniform per-axiom weight | External weight config; critical axioms ≥10× hygiene |
-| Tolerance Abuse | Proposer-set precision | Lint assertion ASTs for `round` / `allclose` |
-| Stubbed Implementation | Name-only mechanism | Perturbation invariance check |
-| Step-Index Leakage | Score curve unread by data | Permutation invariance test |
-| Claim-Test Mismatch | Hardcoded input/output match | Multi-input assertion probe |
-| Fudge-Factor Patching | Magnitude masks units | Mandate units in returns; dimensional check |
-| Partial-Domain Miscalibration | Test set on happy path | Fuzz across full domain; check invariants |
-| Parameter Overfitting | Magic numeric constant | Require provenance for every literal |
-| Weak Baseline | Proposer authored both options | Steelman protocol; redteam the loser |
-
-The unifying audit principle is **separate who proposes, who attacks, and who scores, and add numeric pass/fail checks that no party can talk past.** That principle later generalized to the cross-domain registry.
+**Literature.** Nearest family: forged attestation; audit-evidence fabrication. Audit invariant: runtime-provenance claims must be replayable or trace-backed.
 
 ---
 
 ## How these were caught
 
-The original numeric strategies were observed during ZTARE field runs on validator tasks where:
+These strategies were observed during ZTARE field runs on validator tasks where:
 
 1. The proposer model wrote the implementation + the assertion + the test fixture.
 2. An independent reference model (different family) computed the same quantity under different prompt framing.
 3. An execution-only judge ran both, compared outputs, and reported disagreement.
 4. The disagreement triggered an audit trace that revealed the gaming behavior.
 
-The audit-trace step is critical: text-only diff would have read "the model claims it passes" and stopped there. Execution + reference comparison + audit trace is the minimum viable detection stack.
+The audit-trace step is critical: text-only diff would have read "the model claims it passes" and stopped there. Execution plus reference comparison plus audit trace is the minimum viable detection stack. The unifying audit principle is to separate who proposes, who attacks, and who scores, and to add pass/fail checks that no party can talk past.
 
-The number of strategies in this catalog is **a lower bound; more strategies certainly exist beyond the ones named here**. The original 9 were the first named numeric self-certification patterns. Entries 10-18 are later mechanism-level classes. Row-level operational status belongs in the gaming-vector SOP.
+The number of strategies here is **a lower bound; more certainly exist beyond the ones named**. The first nine were the original benchmarked patterns; the rest were mined later under the same audit. Row-level operational status lives in the gaming-vector SOP.
 
 ---
 
