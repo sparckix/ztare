@@ -1,7 +1,7 @@
 # BlindSpot-Bench: measuring the oversight gap
 ## A pilot study of Goodhart-style failure in a gamed supervision channel (architecture A)
 
-**Daniel Alami**, Harvard University, Harvard Business School
+**Daniel Alami**
 *Preprint, 2026. Testbed and results on architecture A. Architectures B/C, the awareness and scrambled arms, and larger-scale and broader-model replication remain future work and are not claimed here.*
 
 ---

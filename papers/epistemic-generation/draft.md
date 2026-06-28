@@ -1,99 +1,79 @@
+# Two cultures of mathematical writing: a corpus study of research-move vocabularies
+
 # Introduction
 
-Epistemic verification asks whether a claim is adequately supported.
-Epistemic generation asks how a research process chooses the next move
-before such a claim exists. The move might be a reformulation, special
-case, analogy, falsifier, auxiliary object, decomposition, evidence
-boundary, or decision to stop a branch.
+To verify a claim is to ask whether it is adequately supported. But
+before any claim exists, a research process has to pick its next move:
+reformulate the problem, try a special case, draw an analogy, look for a
+falsifier, introduce an auxiliary object, decompose, mark an evidence
+boundary, or stop a branch.
 
-This paper makes three contributions. First, it gives a corpus-level
-empirical operationalization of Gowers’s theory-builder/problem-solver
-distinction . Two curated mathematical styles induce different
-research-move vocabularies, and the difference survives cross-corpus
-scoring and a same-culture negative control. The result gives the
-distinction an empirical measurement surface without forcing all
-mathematics into two types.
+Two curated mathematical styles turn out to favor different research-move
+vocabularies, and the difference survives cross-corpus scoring against a
+same-culture negative control. Gowers's theory-builder/problem-solver
+distinction thus gets an empirical, operational form, without forcing all
+of mathematics into two types.
 
-Second, the paper revises the binary into a broader structural
-vocabulary of research moves. The later vocabulary explains why the
-original split was real but incomplete: theory-building and
-problem-solving emphasize different bands inside a wider space of
-reformulation, abstraction, decomposition, local-to-global assembly,
-invariance, translation, approximation, and constraint propagation.
+We then widen the binary into a structural vocabulary of research moves.
+Theory-building and problem-solving mark a real but incomplete split:
+they stress different bands inside a larger space of reformulation,
+abstraction, decomposition, local-to-global assembly, invariance,
+translation, approximation, and constraint propagation.
 
-Third, the paper identifies where such vocabularies become useful for
-research systems. The experiments compare passive labels and large menus
-with typed evidence fields, residual-to-check edges, rejected nearest
-confusers, and executable action schemas. This is the
-mechanization-placement thesis. Research-move language becomes
-operational when it changes what gets checked, blocked, converted into
-an artifact, or executed next.
+This vocabulary earns its keep at one specific point in a research
+system. Passive labels and long menus do little on their own, typed
+evidence fields, residual-to-check edges, rejected nearest confusers, and
+executable action schemas do the work. Research-move language turns
+operational only when it changes what the system checks, blocks, turns
+into an artifact, or executes next.
 
-For machine learning readers, the paper contributes an evaluation
-framework for research agents. It treats generation as a sequence of
-research moves rather than final-answer production, shows that generic
-evaluation vocabularies can misclassify domain-specific reasoning, and
-proposes typed intermediate representations for evaluating whether a
-system selected, checked, and executed the right move.
+Generation, then, is a sequence of research moves, judged by whether the
+system picked, checked, and executed the right one. A generic evaluation
+vocabulary can miss domain-specific reasoning that typed intermediate
+representations recover.
 
-# Evidence Base, Reproducibility, and Method
+# Evidence base, reproducibility, and method
 
-The unit of analysis is a research move: a bounded step that changes a
+Our unit of analysis is the research move: a bounded step that changes a
 problem representation, admissible object, proof strategy, evidence
 standard, decomposition, validation frame, or next action. A vocabulary
-covers a move when a frozen operation gives a mechanistic fit under the
+covers a move when a frozen operation fits it mechanistically under our
 scoring rubric.
 
-Coverage is diagnostic. It is not the target being optimized. High
-coverage can indicate transfer, but it can also indicate force-fitting.
-The experiments therefore use cross-corpus scoring, negative controls,
-adversarial raters, decoys, wrong-card controls, source-cluster
-blocking, and downstream consequence checks. The coverage numbers should
-therefore be read together with their controls. Raw fit to a vocabulary
-is weak evidence; fit that survives wrong-card, decoy, source-only, and
-downstream-consequence checks is the stronger signal.
+Coverage is only a diagnostic. High coverage can index transfer, but it
+can just as easily signal force-fitting, so we optimize nothing against
+it directly. Every coverage number travels with cross-corpus scoring,
+negative controls, adversarial raters, decoys, wrong-card controls,
+source-cluster blocking, and downstream consequence checks. Raw fit to a
+vocabulary is weak evidence, fit that survives the wrong-card, decoy,
+source-only, and downstream-consequence checks is what carries weight.
 
-Table <a href="#tab:evidence-tiers" data-reference-type="ref"
-data-reference="tab:evidence-tiers">1</a> summarizes the evidentiary
-roles in this paper.
+The argument draws on several tiers of evidence, each with a different role. Saved-output corpus results carry the main quantitative claims: the two-cultures split, the negative control, structural-vocabulary coverage, and out-of-distribution transfer. Cross-family and multi-rater audits supply the reliability checks, especially for the PDE correction and the catalog-confusion analysis. Replay and synthetic-workflow experiments give the mechanism evidence for evidence carriers, residual-to-check edges, boundary cards, and action schemas. Human and production-trace validation is the next layer, for expert use and prospective deployment.
 
-<div id="tab:evidence-tiers">
+Durable records back the core percentages: stored move lists, frozen
+vocabularies, scoring files, JSON verdicts, and reproducer scripts. Later
+workflow experiments serve as mechanism evidence, showing which carrier
+changes downstream behavior under controlled conditions. The
+reproducibility packet bundles the saved-output verifiers for the
+headline corpus claims, the PDE joint-vocabulary scoring artifacts, the
+meta-language score files, and the compact workflow replay scorers. Each
+main quantitative claim rests on a recomputable artifact, so the record
+stands on its own without the underlying model transcripts.
 
-| Evidence tier | Role in the argument |
-|:---|:---|
-| Saved-output corpus results | Main quantitative claims: two-cultures split, negative control, structural-vocabulary coverage, and out-of-distribution transfer. |
-| Cross-family and multi-rater audits | Reliability checks, especially for the PDE correction and catalog confusion analysis. |
-| Replay and synthetic workflow experiments | Mechanism evidence for evidence carriers, residual-to-check edges, boundary cards, and action schemas. |
-| Human and production-trace validation | Next validation layer for expert use and prospective deployment claims. |
+# A corpus-level two-cultures result
 
-Evidence tiers used in the paper.
+Theory-building arcs make up our first corpus: Wiles, Grothendieck,
+Lurie, Scholze, Riemann, Newton, Einstein, and Polya/Hadamard. The
+theory-builder vocabulary we mine from them includes foundational object
+redefinition, cross-domain unification, parameter-space internalization,
+vocabulary lifting, strategic specialization, diagonal self-application,
+and concept revision .
 
-</div>
-
-The core percentages are recomputed from durable records: stored move
-lists, frozen vocabularies, scoring files, JSON verdicts, and reproducer
-scripts. Later workflow experiments are treated as mechanism evidence:
-they show which carrier changes downstream behavior under controlled
-conditions. The reproducibility packet includes saved-output verifiers
-for the headline corpus claims, PDE joint-vocabulary scoring artifacts,
-meta-language score files, and compact workflow replay scorers. The main
-quantitative claims are tied to recomputable artifacts rather than
-unreleased model transcripts.
-
-# A Corpus-Level Two-Cultures Result
-
-The first corpus contains theory-building arcs including Wiles,
-Grothendieck, Lurie, Scholze, Riemann, Newton, Einstein, and
-Polya/Hadamard. The resulting theory-builder vocabulary includes moves
-such as foundational object redefinition, cross-domain unification,
-parameter-space internalization, vocabulary lifting, strategic
-specialization, diagonal self-application, and concept revision .
-
-A sister corpus contains problem-solving arcs including Erdos
-discrepancy, Green–Tao, Hales–Jewett Polymath, Szemeredi regularity,
-Roth, Behrend, Furstenberg, and Ramsey/Erdos–Szekeres. The resulting
-problem-solver vocabulary emphasizes partitioning, governed iterative
-refinement, theorem-use transfer, rank induction, and estimate chaining.
+We collect problem-solving arcs in a sister corpus: Erdos discrepancy,
+Green–Tao, Hales–Jewett Polymath, Szemeredi regularity, Roth, Behrend,
+Furstenberg, and Ramsey/Erdos–Szekeres. Its problem-solver vocabulary
+emphasizes partitioning, governed iterative refinement, theorem-use
+transfer, rank induction, and estimate chaining.
 
 <div id="tab:two-cultures">
 
@@ -106,204 +86,153 @@ Cross-distribution coverage for the two mined vocabularies.
 
 </div>
 
-The average own-corpus advantage is 42.1 percentage points. The result
-is symmetric: each vocabulary fits its own corpus far better than the
-other. A same-culture random split produces only a 3.0 percentage-point
-gap, far below the curated two-cultures gap. The result therefore gives
-the Gowers distinction an empirical operational form: two mathematical
-styles induce different research-move vocabularies, and the gap is not
-reproduced by a random partition of one style. This is a descriptive
-operationalization, not a causal identification of the Gowers axis
-against every possible corpus-construction factor. Subfield, era, and
-selection effects may contribute to the gap; the claim here is that the
-curated contrast yields a measurable research-move difference that a
-same-style random split does not reproduce.
+Each vocabulary fits its own corpus far better than the other, by 42.1
+percentage points on average, and the advantage runs symmetrically in
+both directions. Split one culture at random and the gap drops to 3.0
+points, far below the curated two-cultures gap. So two mathematical
+styles favor different research-move vocabularies that a random partition
+of one style cannot reproduce, and the Gowers distinction picks up an
+empirical, operational form. This operationalizes the axis descriptively,
+it does not pin it down causally against every corpus-construction factor,
+since subfield, era, and selection effects may all feed the gap. The
+narrower claim is the one we make: the curated contrast yields a
+measurable research-move difference that a same-style random split does
+not.
 
-The novelty claim is precise. We are not aware of prior work giving a
-corpus-level empirical operationalization of Gowers’s
-theory-builder/problem- solver distinction. Prior work has studied
-mathematical practice, proof reading, examples, collaboration,
-consensus, and subfield prestige . Those studies are adjacent rather
-than competing: they do not directly test whether theory-building and
-problem-solving styles differ by cross-coverage of research-move
-vocabularies.
+Studies of mathematical practice, proof reading, examples,
+collaboration, consensus, subfield prestige, stop short of a
+corpus-level operationalization of Gowers's theory-builder/problem-solver
+distinction. None of that adjacent work tests directly whether the two
+styles differ by cross-coverage of research-move vocabularies, and that
+is the test the result above supplies.
 
-# From Two Cultures to a Structural Vocabulary
+# From two cultures to a structural vocabulary
 
-The two-cultures result was a starting point, not the final taxonomy. A
-subsequent eight-subfield analysis covered 1,214 moves across 64
-mathematical arcs and compressed them into six shared-core operations,
-eight broadly shared operations, and four peripheral operations.
+The two-cultures result is only a starting point. A follow-up
+eight-subfield analysis covered 1,214 moves across 64 mathematical arcs
+and compressed them into six shared-core operations, eight broadly shared
+operations, and four peripheral operations, a taxonomy already wider than
+the binary.
 
 <div id="tab:structural-vocabulary">
 
 | Tier | Operations |
 |:---|:---|
-| Shared core | Problem Reformulation and Reduction; Generalization and Abstraction; Decomposition and Recomposition; Local-to-Global Assembly; Canonical Form and Invariance; Cross-Domain Translation. |
-| Broadly shared | Iterative Refinement; Recursive Decomposition; Duality and Adversarial Framing; Layered Approximation and Convergence; Extremal Method; Probabilistic and Stochastic Methods; Dimensional and Structural Lifting; Constraint Imposition and Propagation. |
-| Peripheral | Characterization by Obstruction; Internalization and Self-Reference; Axiomatization and Foundational Repair; Controlled Universe Extension. |
+| Shared core | Problem Reformulation and Reduction, Generalization and Abstraction, Decomposition and Recomposition, Local-to-Global Assembly, Canonical Form and Invariance, Cross-Domain Translation. |
+| Broadly shared | Iterative Refinement, Recursive Decomposition, Duality and Adversarial Framing, Layered Approximation and Convergence, Extremal Method, Probabilistic and Stochastic Methods, Dimensional and Structural Lifting, Constraint Imposition and Propagation. |
+| Peripheral | Characterization by Obstruction, Internalization and Self-Reference, Axiomatization and Foundational Repair, Controlled Universe Extension. |
 
 Layered structural vocabulary from the eight-subfield remine.
 
 </div>
 
-This revision generalizes the original result. Theory-builder and
-problem-solver mathematics emphasize different bands inside a larger
-structural language. Some moves are shared, some are subfield idioms,
-and some apparent culture-specific moves become aliases after the wider
-remine.
+This revision generalizes the original result: theory-builder and
+problem-solver mathematics stress different bands inside a larger
+structural language. Some moves are shared, others are subfield idioms,
+and several seemingly culture-specific moves turn out to be aliases once
+the remine widens.
 
-The vocabulary also transfers beyond the original mathematical corpus. A
-business held-out set reaches 57.9% shared-plus-broad coverage. Four
-sparse 2026 specialist papers reach 75.2%. These results support
-measured portability, not unrestricted universality: scope, residuals,
-and confusers are recorded rather than absorbed by definition.
+Transfer also reaches past the original mathematical corpus. A business
+held-out set reaches 57.9% shared-plus-broad coverage, and four sparse
+2026 specialist papers reach 75.2%. We record scope, residuals, and
+confusers to bound this portability as measured, keeping the coverage well
+short of any claim to universality.
 
-# Methodological Warning from the PDE Rescore
+# Methodological warning from the PDE rescore
 
-The PDE rescore is a methodological result for the evaluation of
-frontier agents and research systems. Domain-specific reasoning can look
-absent when an evaluation vocabulary omits the domain-specific
-operations that carry the reasoning. A 12.5% adversarial score on a
-post-cutoff PDE paper initially looked like a sharp capability boundary
-for the structural vocabulary. The audit showed a different mechanism:
-the score came from a single vocabulary, a single adversarial rater, and
-one difficult PDE paper. When the same paper was rescored against the
-joint structural vocabulary plus the PDE estimate-craft vocabulary, four
-raters across two model families covered 95.8–100% of moves under the
-covered-vs-none metric. Across the five-paper corpus, two-family
-coverage reached 116/118 moves, or 98.3%, with a 0% decoy match rate.
+The PDE rescore carries a methodological lesson for evaluating frontier
+agents and research systems: domain-specific reasoning can look absent
+whenever an evaluation vocabulary omits the operations that carry it. A
+12.5% adversarial score on a post-cutoff PDE paper first looked like a
+sharp capability boundary for the structural vocabulary. Auditing it
+exposed a different mechanism, the score came from a single vocabulary, a
+single adversarial rater, and one hard PDE paper. Rescore against the
+joint structural vocabulary plus the PDE estimate-craft vocabulary, and
+the same paper draws 95.8–100% coverage of its moves from four raters
+across two model families under the covered-vs-none metric. Across the
+five-paper corpus, two-family coverage reached 116/118 moves, or 98.3%,
+with a 0% decoy match rate. The old 12.5% figure was a single-vocabulary adversarial baseline, what stays open is a fresh blind PDE corpus and an expert audit.
 
-<div id="tab:pde-correction">
+Test frontier agents on domain-specific reasoning using only generic
+reasoning categories, and you can manufacture artificial capability
+boundaries. The expanded language plus PDE estimate-craft receipts covered
+this former stress case under multi-rater, decoy-controlled scoring.
+Throughout, we report covered-vs-none coverage and operation-identity
+reliability, and keep strict full-only coverage as a calibration-sensitive
+secondary metric.
 
-| Finding | Current interpretation |
-|:---|:---|
-| Old 12.5% PDE score | Historical single-vocabulary adversarial baseline. |
-| Joint vocabulary PDE audit | 95.8–100% covered-vs-none coverage across four raters. |
-| Corpus-wide joint audit | 116/118 moves covered by both model families. |
-| Strict full-only coverage | Calibration-sensitive secondary diagnostic. |
-| Remaining uncertainty | Fresh blind PDE corpus, human or expert audit, and operation-confusion analysis. |
+The rescore cuts both ways, and the sharper objection runs the other direction: if the wrong vocabulary drives a fixed artifact to 12.5% and the right one to nearly 100%, coverage is measuring the vocabulary, not the paper. On a single artifact that is true, which is why no claim here rests on one paper's coverage. The weight falls instead on three controls that vocabulary choice cannot satisfy at once. A same-culture negative control blocks easy inflation: a generous vocabulary applied to two papers from the same culture does not reproduce the cross-culture split. Held-out transfer blocks overfitting: coverage holds on papers the vocabulary was never tuned against, including business and 2026 specialist corpora. The 0% decoy-match rate blocks looseness: the vocabulary does not light up on planted moves it should miss. A vocabulary tuned to inflate one paper's score breaks at least one of these three, so the coverage numbers count only where all three hold.
 
-Methodological interpretation of the PDE stress case.
+# Carrier selection in agent-facing tests
 
-</div>
+Knowing the vocabulary is one thing, getting an agent to act on it is another. We supplied research-move vocabulary three ways, as prompt text, as feature prose, and as a broad catalogue, and none of them moved the tested outcomes much.
 
-The warning for machine-learning evaluation is direct. An evaluation
-that tests frontier agents on domain-specific reasoning while using only
-generic reasoning categories can manufacture artificial capability
-boundaries. The expanded language plus PDE estimate-craft receipts
-covered the former stress case under multi-rater, decoy-controlled
-scoring. The paper therefore reports covered-vs-none and
-operation-identity reliability, with strict full-only coverage as a
-calibration-sensitive secondary metric.
+On an exact-answer benchmark, every prompt arm (baseline, static catalogue, one-primitive, diagnose-then-solve) scored the same 11/26, and a placebo 8/26: no lift from the prompt text. On blind route-choice probes, generic reasoning won 7 of 10 comparisons while each vocabulary-supplied arm won 6 of 10, so the vocabulary changed how the agent explained its choice more than the choice itself. A specialized card for a move beat its schema and swap controls in 0 of 24 cases, routing the choices to execution did not rescue the vocabulary-supplied routes (51 votes to ordinary routes, 47 to schema routes, 28 to vocabulary routes), and a consequence-ranking test gave the card only a 4.25/5 to 4.04/5 edge, ahead of the strongest control in just 2 of 20 source clusters. Supplied this way, the vocabulary is close to inert.
 
-# Carrier Selection in Agent-Facing Tests
+It begins to matter only once the correct move has already been chosen. An action-oriented catalogue merely matched source-only reasoning (6.50/10 each, against 6.00/10 for a descriptive summary), while a correct action card scored 8.875/10 against 4.375/10 for a plausible wrong one. So the open problem is not naming more moves, it is routed selection: picking the right move, rejecting the nearest confuser, and attaching the evidence that makes the choice executable.
 
-The early agent-facing experiments tested research-move vocabulary
-supplied as prompt text, feature prose, or a broad catalogue. Those
-carriers had little effect on the tested outcomes.
+# Implications for research-agent evaluation
 
-<div id="tab:agent-tests">
-
-| Test | Result | Interpretation |
-|:---|:---|:---|
-| Exact-answer benchmark with primitive prompts | Baseline, static catalogue, one-primitive, and diagnose-then-solve arms each scored 11/26; placebo diagnose-then-solve scored 8/26. | No exact-answer lift from primitive prompt text. |
-| Blind route-choice probes | Generic reasoning won 7/10 comparisons; passive real features, forced real features, and forced placebo each won 6/10. | Primitive text changed rationale vocabulary more than route choice. |
-| Specialized-card transfer test | Schema and swap controls matched or outperformed the target card; the target card beat all controls in 0/24 cases. | The card’s added content did not separate from general schema discipline. |
-| Downstream execution test | Ordinary routes received 51 votes; schema routes 47; primitive-feature routes 28. | Execution did not rescue primitive-feature routes. |
-| Consequence-ranking test | Target card scored 4.25/5 vs generic 4.04/5 and beat the strongest control in 2/20 source clusters. | Small score gains did not imply reliable consequence improvements. |
-
-Carrier-selection evidence from agent-facing tests.
-
-</div>
-
-The catalogue experiments locate the mechanism more precisely. In one
-comparison, an action-oriented catalogue improved slightly over a
-descriptive catalogue, but not over source-only reasoning: source-only
-scored 6.50/10, the catalogue summary 6.00/10, and the action-oriented
-catalogue 6.50/10. In a single-card comparison, a correct action card
-scored 8.875/10 while a plausible wrong card scored 4.375/10. Card
-content matters when the correct move has already been identified. The
-central problem is routed selection with disambiguators,
-nearest-confuser rejection, and evidence artifacts.
-
-# Implications for Research-Agent Evaluation
-
-The experiments suggest three design requirements for evaluating
+The experiments point to three design requirements for evaluating
 research agents on open-ended scientific or mathematical work.
 
-First, final-answer accuracy is too coarse for epistemic generation. A
-research agent may fail by selecting the wrong object, paying the wrong
-evidence debt, over-updating from a narrow receipt, omitting a necessary
-falsifier, or continuing after a branch should stop. These failures are
-often invisible in a single final-answer score.
+Final-answer accuracy is too coarse for epistemic generation. A research
+agent can fail by picking the wrong object, paying the wrong evidence
+debt, over-updating from a narrow receipt, dropping a necessary
+falsifier, or pressing on after a branch should have stopped. A single
+final-answer score routinely hides such failures.
 
-Second, the evaluation vocabulary must include the domain operations
-that carry the reasoning. The PDE rescore shows how a generic structural
-vocabulary can understate capability when estimate-craft moves are
-absent from the scoring language. The same principle applies beyond PDE:
-clinical, legal, institutional, and workflow settings each have
-admissibility and authority conditions that generic reasoning labels may
-miss.
+An evaluation vocabulary has to include the domain operations that carry
+the reasoning. In the PDE rescore, a generic structural vocabulary
+understated capability the moment estimate-craft moves fell out of the
+scoring language. The same point reaches past PDE to clinical, legal,
+institutional, and workflow settings, each of which carries admissibility
+and authority conditions that generic reasoning labels can miss.
 
-Third, useful evaluation artifacts should preserve action-relevant
-state. The most informative records in these experiments are not labels
-alone. They are typed fields: selected residual edge, rejected nearest
-confuser, source evidence, satisfied and unsatisfied evidence
-obligations, action schema, step index, invariant check, and later
-outcome. These fields make it possible to evaluate whether a system
-executed the correct research move rather than producing a plausible
-description of that move.
+Useful evaluation artifacts preserve action-relevant state, so the most
+informative records here are typed fields: selected residual edge,
+rejected nearest confuser, source evidence, satisfied and unsatisfied
+evidence obligations, action schema, step index, invariant check, and
+later outcome. These fields show whether a system executed the right
+research move where a plausible description of it would have passed an
+accuracy score.
 
-# Meta-Language
+# Meta-language
 
-The meta-language track asks whether some moves operate one level above
-the base structural vocabulary: changing admissible criteria, making an
+In one track we ask whether some moves operate a level above the base
+structural vocabulary: changing the admissible criteria, making an
 equivalence class primary, promoting an auxiliary object into the main
-object of study, or changing the question frame itself.
+object of study, or reframing the question itself.
 
-<div id="tab:mm">
+Across these families one pattern holds: meta cards are separable from adjacent lower-tier forms, typed parsing identifies the family, and a target card sharpens an already-parsed artifact, lifting frozen typed-frame artifacts from 6.91/8 to 7.91/8. Easy cases reach ceiling without testing downstream use, and content matters more than packaging.
 
-| Experiment family | Result | Interpretation |
-|:---|:---|:---|
-| Family separation | Correct meta cards beat adjacent lower-tier forced fits; generic and meta-frame-only variants reached ceiling. | Meta families are separable, but easy cases do not test downstream use. |
-| Target-card control | Target cards beat wrong cards and adjacent lower-tier cards; typed-frame-only scored 11/11. | Typed parsing can identify the family; cards control confusers. |
-| Artifact revision | Target-card revision improved frozen typed-frame artifacts from 6.91/8 to 7.91/8 and beat generic revision. | Meta cards sharpen an already-parsed artifact. |
-| Naturalistic transfer | Typed-frame and target-card variants reached ceiling; adjacent and wrong cards failed. | Separability holds once typed roles are visible. |
-| Packaging ablation | Correct content beat wrong content; changing the package alone had little effect. | Content mattered more than syntax on this endpoint. |
-
-Summary of the meta-language evidence.
-
-</div>
-
-The supported conclusion is that compact meta-level semantics improve
-the quality of already-parsed evidence artifacts and distinguish
-frame-changing moves from adjacent lower-tier moves. Wrong meta cards
-can mis-shape downstream artifacts, which means the meta layer has
+Compact meta-level semantics improve already-parsed evidence artifacts
+and tell frame-changing moves apart from adjacent lower-tier ones. Wrong
+meta cards can mis-shape downstream artifacts, which gives the meta layer
 causal content. The evidence supports three candidate meta families and
-argues against premature expansion to a fourth.
+argues against expanding to a fourth before the data warrant it.
 
-# From Vocabulary to Action Schemas
+# From vocabulary to action schemas
 
-The strongest later evidence comes from experiments where the vocabulary
-is compiled into an action schema rather than displayed as a label.
+The strongest later evidence arrives when the vocabulary is compiled into
+an action schema the agent executes, with the label form held back as a
+control.
 
-Boundary-card experiments show the pattern. Agents can act correctly
-from a fully specified boundary card that states the satisfied evidence
+Boundary-card experiments show the pattern. Agents act correctly from a
+fully specified boundary card that states the satisfied evidence
 obligation, unsatisfied evidence obligation, permitted update, blocked
-update, next-action rule, and false-reading confuser. Raw model
-extraction of that card is unreliable. Model-only validation improves
-but still accepts unsafe cards. Rule-backed source-cue validation and
+update, next-action rule, and false-reading confuser. Letting the model
+extract that card raw is unreliable, model-only validation improves but
+still waves through unsafe cards, rule-backed source-cue validation plus
 action-schema fields recover correct behavior on the tested packets.
 
-The process-control experiments show the same architecture. A compiled
-action schema with selected residual edge, rejected nearest confuser,
-source evidence, step index, and required next action reached 1.0 action
-accuracy in the held-out two-step packet. Label-only controls failed.
-Free-form automatic compilation failed. Typed class selection helped but
-was unsafe until source-cue checks and deterministic lowering were
-added. Open-set refusal was needed to avoid forcing outside cases into
-known classes.
+Process-control experiments show the same architecture. A compiled action
+schema, selected residual edge, rejected nearest confuser, source
+evidence, step index, required next action, reached 1.0 action accuracy
+on the held-out two-step packet. Label-only controls failed, and so did
+free-form automatic compilation. Typed class selection helped but stayed
+unsafe until we added source-cue checks and deterministic lowering.
+Open-set refusal kept outside cases from being forced into known classes.
 
 The resulting architecture is a research-agent contract:
 ``` math
@@ -315,17 +244,16 @@ The resulting architecture is a research-agent contract:
 \rightarrow \text{outcome trace}.
 \end{aligned}
 ```
-This is adjacent to algorithm selection, metareasoning, selective
+This sits next to algorithm selection, metareasoning, selective
 prediction, mixture-of-experts routing, prompt-programming systems, and
-workflow-agent evaluation . The contribution here is narrower: a runtime
-contract for research agents that binds local source facts to the next
-inspectable action.
+workflow-agent evaluation . As a runtime contract for research agents, it
+binds local source facts to the next inspectable action.
 
-# Mechanization Placement
+# Mechanization placement
 
-The common result across the math corpus, structural vocabulary,
-agent-prompt tests, meta-language probes, and action-schema experiments
-is placement. A recurring research move can occupy different roles.
+Across the math corpus, structural vocabulary, agent-prompt tests,
+meta-language probes, and action-schema experiments, one result recurs:
+placement. A single research move can sit in several different roles.
 
 <div id="tab:placement">
 
@@ -343,102 +271,101 @@ Placement roles for research-move vocabulary.
 
 </div>
 
-The practical lesson is to place each move at the strongest level its
-evidence supports. Structural vocabulary is the recognition layer. Typed
-receipts and nearest-confuser fields are the evidence-contract layer.
-Deterministic gates are justified when the contract is crisp. Human
-judgment remains necessary where the move is semantic,
-frontier-dependent, or mathematically substantive.
+Place each move at the strongest level its evidence supports. Structural
+vocabulary is the recognition layer, typed receipts and nearest-confuser
+fields form the evidence-contract layer, deterministic gates earn their
+place once the contract is crisp. Human judgment stays necessary wherever
+a move is semantic, frontier-dependent, or mathematically substantive.
 
-# Future Validation
+# Future validation
 
-The present evidence supports five bounded claims: a two-cultures
-operationalization, a field-portable structural vocabulary, a corrected
-PDE audit, a scoped meta-language artifact result, and a
-carrier-selection account of mechanization. Additional experiments would
-strengthen external validity and prospective-use claims.
+Five bounded claims now stand on the evidence: the two-cultures
+operationalization holds under its negative control, the structural
+vocabulary ports across fields, the PDE audit corrects the earlier
+boundary, the meta-language artifact result is scoped to typed
+conditions, and carrier selection accounts for where mechanization pays
+off. Further experiments would strengthen external validity and
+prospective-use claims.
 
-The highest-value follow-on experiments are: (i) a blinded human or
-expert audit of structural-vocabulary assignments and checklist
-usefulness; (ii) production or historical-trace replay testing whether
-compiled contract fields reduce downstream cost, missed obligations,
-false stops, or wrong actions relative to strong context baselines;
-(iii) a clean meta-language downstream-consequence test with generic
-headroom; and (iv) a fresh blind PDE or broader scientific corpus audit
-using covered-vs-none coverage, operation-identity reliability, decoys,
-and human review.
+Four follow-ons carry the most value: (i) a blinded human or expert audit
+of structural-vocabulary assignments and checklist usefulness,
+(ii) production or historical-trace replay testing whether compiled
+contract fields reduce downstream cost, missed obligations, false stops,
+or wrong actions relative to strong context baselines, (iii) a clean
+meta-language downstream-consequence test with generic headroom, and
+(iv) a fresh blind PDE or broader scientific corpus audit using
+covered-vs-none coverage, operation-identity reliability, decoys, and
+human review.
 
-# Broader Impact
+# Broader impact
 
-The main positive impact is better evaluation discipline for research
-agents. The paper argues for measuring intermediate research moves,
-evidence payments, confuser rejection, and action schemas rather than
-relying only on final-answer scores or broad reasoning labels. This can
-reduce misleading claims about agent capability and make domain-specific
-limitations more inspectable.
+Measuring intermediate research moves, evidence payments, confuser
+rejection, and action schemas sharpens evaluation discipline for research
+agents. A reviewer can then see where a final-answer score or a broad
+reasoning label would have papered over a domain-specific limitation, and
+the claims one can make about agent capability tighten accordingly.
 
-The main risk is misuse of the vocabulary as an authority signal. A
-structural label can make a weak research step appear more systematic
-than it is. The mitigation is built into the placement thesis: labels
-are advisory unless they are tied to source evidence, falsifiers,
-deterministic checks, or downstream outcomes. Domain-specific evaluation
-should report residuals and confusers instead of forcing every move into
-the nearest available category.
+A structural label can also be misused as an authority signal, dressing
+up a weak research step to look more systematic than it is. Placement
+already supplies the mitigation: a label stays advisory until it ties to
+source evidence, falsifiers, deterministic checks, or downstream
+outcomes. Domain-specific evaluation should report its residuals and
+confusers, leaving every move that resists the nearest available category
+visibly uncategorized.
 
 # Limitations
 
-This paper studies one research system and curated corpora. Its
-contribution is a measured vocabulary and mechanization theory for
-research moves.
+We cover one research system and curated corpora, which gives us a
+measured vocabulary and a mechanization account for research moves.
 
-Most coverage judgments are model-mediated. Cross-family and multi-rater
-audits strengthen several claims; independent human and expert audits
-are the natural next validation layer. The paper therefore treats human
-audit as a future external-validity test, not as completed evidence.
+Most of our coverage judgments are model-mediated, so we shore up several
+claims with cross-family and multi-rater audits. Independent human and
+expert audits are the natural next validation layer, here, human audit
+remains a future external-validity test whose evidentiary value is still
+to be collected.
 
-Several agent-facing experiments are small-N mechanism tests. Their
-point estimates are reported as diagnostics, not as population
-estimates. Small differences should not be read inferentially; the main
-evidentiary weight falls on large contrasts, negative controls, decoys,
-wrong-card tests, and cases where a carrier change alters the downstream
-artifact.
+Several agent-facing experiments are small-N mechanism tests. Their point
+estimates diagnose mechanism, so reading them as population estimates
+would overreach, and small differences should not carry inferential
+weight. The main weight falls on large contrasts, negative controls,
+decoys, wrong-card tests, and cases where a carrier change alters the
+downstream artifact.
 
-Coverage measures structural recognition. Generative competence,
-frontier selection, and mathematical correctness require separate tests.
+Coverage measures structural recognition, so generative competence,
+frontier selection, and mathematical correctness need separate tests.
 
-The evidence supports a compact central vocabulary plus field-specific
-receipts and confuser guards. It also identifies overlap, low-use
+The evidence supports a compact core vocabulary plus field-specific
+receipts and confuser guards, while also surfacing overlap, low-use
 operations, and calibration-sensitive full/partial distinctions in some
 catalog versions.
 
-The meta-language evidence supports separability and artifact refinement
-under typed conditions. Incremental routing and downstream consequence
-tests are the next extension.
+For meta-language, the evidence supports separability and artifact
+refinement under typed conditions, with incremental routing and
+downstream consequence tests as the next extension.
 
-The action-schema positives are strongest in replay, synthetic, and
-rule-checked settings. Production-trace tests are the next
+Action-schema positives are strongest in replay, synthetic, and
+rule-checked settings, with production-trace tests as the next
 external-validity step.
 
 # Conclusion
 
-The paper began with a Gowers-style question: do theory-building and
-problem-solving arcs induce different research-move vocabularies? In
-this corpus, they do. The broader lesson is that the binary sits inside
-a structural vocabulary whose usefulness depends on placement.
+A Gowers-style question opened the inquiry: do theory-building and
+problem-solving arcs favor different research-move vocabularies? In this
+corpus, they do. The binary sits inside a structural vocabulary whose
+usefulness depends on placement.
 
-Passive labels have little causal force. Correct compact schemas can
-help after selection. Meta-language can sharpen typed artifacts. Checked
-action schemas can change downstream behavior. The general lesson is to
-name recurring research moves, test their boundaries, and mechanize the
-parts whose contracts can be made inspectable.
+Passive labels have little causal force, a correct compact schema can
+help once the move is selected, meta-language sharpens typed artifacts,
+checked action schemas change downstream behavior. So the discipline is
+to name recurring research moves, test their boundaries, and mechanize
+the parts whose contracts can be made inspectable.
 
-# Evidence Map
+# Evidence map
 
 <div id="tab:evidence-map">
 
 | Claim family | Saved artifact or source |
 |:---|:---|
-| Claim family | Saved artifact or source |
 | Two-cultures cross-coverage | `evidence/gp216_queries/gp216_cross_distribution_full.json` |
 | Headline verifier | `evidence/reproducers/verify_gp216_claims.py` |
 | Same-culture negative control | `evidence/gp216_queries/gp216_negative_control.json` |
@@ -455,6 +382,6 @@ parts whose contracts can be made inspectable.
 | Literature audit | `literature_audit.md` |
 | Claim guardrail | `claim_evidence_matrix.md` |
 
-Principal local artifacts behind the paper claims.
+Local artifacts that back each claim family.
 
 </div>

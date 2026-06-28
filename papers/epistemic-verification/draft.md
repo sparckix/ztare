@@ -1,139 +1,85 @@
-# Front Matter: What This Is and What It Is Not
+# Decomposing epistemic verification: an operational account of expert judgment and its limits
 
-This is a conceptual and methodological paper, not a quantitative
-benchmark report. Its central claim is deliberately narrow:
+Hand an experienced reviewer a confident, well-formatted analysis, a memo that values an acquisition on a single buried cost line, say, or a model whose headline number turns on one unstated parameter, and watch what happens. They do not read it top to bottom. They find the load-bearing claim, the assumption the whole result rests on, and press there. Often they cannot say how they knew where to press. The whole performance gets filed under one word: judgment.
 
-> Much of what professional settings call “judgment,” “critical
-> thinking,” “senior review,” or “the expert eye” is epistemic
-> verification: the work of checking whether a claim can actually bear
-> the weight placed on it. That work is not a single faculty. It
-> decomposes into named operations, some of which can be made procedural
-> and externally auditable. A residual remains, and naming that residual
-> is part of the argument rather than a concession after the fact.
+Much of what we call judgment, critical thinking, senior review, or the expert eye is *epistemic verification*: the work of checking whether a claim can bear the weight placed on it. That work is not one faculty. It decomposes into named operations, and several of them can be made procedural and auditable, carried out by a process whose incentives are separated from whoever produced the claim.
 
-The companion paper, *The Cognitive Firm* (Alami 2026c), addresses the
-organizational architecture implied by separating generation from
-evaluation. This paper addresses the verification operations that make
-such separation useful. The papers are related, but this one stands or
-falls on the narrower decomposition claim.
+The decomposition does not close. Three operations resist it, and their residual matters as much as the operations that decompose. Where verification can be made procedural, it should be, where it cannot, that boundary is where judgment lives, smaller and better located than the one word lets on.
 
-Three scope commitments anchor what follows.
+Separating a generator from its evaluator implies an organizational architecture, which a companion paper works out (*The Cognitive Firm*, Alami 2026c). Here the subject is narrower: the verification operations that make such separation worth its cost.
 
-1.  **The argument is qualitative.** Claims about throughput, cost per
-    validated finding, automation ratio, and comparative efficiency are
-    deferred to the instrumentation roadmap. The claim here is about
-    structure, not performance.
+The evidence is a single case, and that is the largest limitation of this paper. Everything below comes from one recursive adversarial verification system, which I built and operated alone over about a month. I read the ten operations and seven principles off its behavior, so every claim that follows is bounded by that fact. A single case can still establish that a mechanism exists and specify its structure, leaving its prevalence to replication (Yin 2018, Glaser and Strauss 1967). Ebbinghaus charted the forgetting curve on one subject, and patient H.M. grounded the modern theory of distinct memory systems on the same logic. The operations are offered for others to test on other systems. Throughput, cost per validated finding, and comparative efficiency wait for later instrumentation. The claim here is structural, about what the operations are. (One data-integrity note: some early runs predate a fully sealed tool-use corridor. A sweep of 175 debate logs found no scraping patterns, raw tool output was not retained so the absence cannot be proven retroactively, and runs after 2026-04-15 are clear.)
 
-2.  **The scope is single-system.** All empirical examples are drawn
-    from one recursive adversarial verification system operated by one
-    human reviewer over approximately one month. Generalization beyond this
-    system requires independent replication. The portability claim is
-    argued structurally, not demonstrated empirically.
+Taylor anchors the method because scientific management made one move
+worth borrowing: it refused to treat skilled practice as ineffable
+because no one had yet decomposed it. I borrow that methodological move, decompose the practice, name the operations, not Taylor’s politics, labor
+regime, or distributional conclusions.
 
-3.  **The claim is not that judgment is obsolete.** Chapter 3 names the
-    residual that did not systematize. The practical point is not to
-    eliminate judgment but to stop hiding all verification work inside
-    that word.
-
-4.  **The decomposition is abductively proposed.** The ten operations
-    and seven principles were developed from one recursive adversarial
-    verification system. They are offered for replication on other
-    systems, not asserted as a settled ontology of all expert reasoning.
-
-An internal adversarial review can test whether this paper overstates
-its confidence. It cannot establish external validity. A ten-iteration
-review of this paper, using GPT-4.1 as judge in April 2026, scored the
-draft 86/100 and identified the expected ceiling: the author and
-evaluator were not structurally independent. That result is useful as a
-discipline check, not as evidence that the decomposition generalizes.
-
-1.  **Empirical corpus caveat.** Some January-April 2026 runs occurred
-    before a tool-use corridor was fully sealed. A sweep of 175 prior
-    debate logs found no filesystem-scraping patterns in persisted logs,
-    but raw auto-tool stdout was not retained, so the absence cannot be
-    proved retroactively. No result is retracted on this basis. The
-    issue is disclosed because the paper’s own standard requires it;
-    runs after 2026-04-15 do not carry this caveat.
-
-Taylor is the reference point because scientific management made a
-structural move that is useful here: it refused to treat skilled
-practice as ineffable simply because it had not been decomposed. This
-paper does not import Taylor’s politics, labor regime, or distributional
-conclusions. It imports the methodological act: decompose the practice,
-name the operations, and then argue honestly about what should and
-should not be systematized.
-
-A terminological note on the word *agency*, because a single English
-word does two different jobs here and collapsing them makes the
-decomposition look as if it threatens something it does not. Jensen and
+*Agency* carries two senses here, and collapsing them
+makes the decomposition look as if it threatens something it does not.
+Jensen and
 Meckling (1976) use *agency* for the agency problem under
 misaligned incentives (the structural sense the companion paper *The
 Cognitive Firm* uses). Bandura (1989) and Ryan and Deci (2000) use
 *agency* for the psychological capacity to originate action under
-self-endorsed motivation. The decomposition of Chapters 1 and 2 is a
-claim about the first sense: the operations can be performed by a
-process whose incentives are structurally separated from the
-generator’s. The residual in Chapter 3 is a claim about the second
-sense: the three operations that did not decompose are the ones whose
-value depends on being performed by a causal originator under
-self-endorsed motivation. Keeping the two senses distinct is a
-prerequisite for arguing honestly about what stays human.
+self-endorsed motivation. Chapters 1 and 2 make a claim about the
+first sense: the operations can be performed by a process whose
+incentives are structurally separated from the generator’s. The residual chapter
+makes a claim about the second sense: the three operations that did not
+decompose are the ones whose value depends on being performed by a causal
+originator under self-endorsed motivation. Keeping the two senses
+distinct is a prerequisite for arguing about what stays human.
 
-A brief philosophical lineage is helpful but not central. Peirce
-clarifies why abductive framing remains difficult to mechanize;
+Peirce clarifies why abductive framing remains hard to mechanize.
 Campbell, Popper, and Hull clarify why a generator needs a selection
-environment; Drucker is a reminder that systematization leaves a
-managerial and human residual. These references are used as orientation,
-not as proof. The paper’s proof burden remains operational: whether the
-proposed operations identify real verification moves and recurring
-failures.
+environment. Drucker is a reminder that systematization leaves a
+managerial and human residual. The proof burden is operational, not
+borrowed from these references: whether the proposed operations identify
+real verification moves and recurring failures.
 
-# Introduction: Judgment as Verification
+This paper contributes an operational decomposition of epistemic verification into ten named, auditable operations, paired with the recurring pathologies they catch and the process principles that keep them usable under optimization pressure. It also names a residual, the operations that resist decomposition, and treats that boundary as a finding, not a failure of analysis.
+
+# Introduction: judgment as verification
 
 Many institutions depend on a practice they cannot describe very well. A
 senior reviewer reads a memo and sees that the argument will not hold. A
 referee rejects a paper because the evidence answers the wrong question.
 A diligence lead hears a persuasive story and asks for the one
-observation that would falsify it. These are not mystical acts. They are
-verification moves, usually learned by apprenticeship and usually
-described after the fact as judgment.
+observation that would falsify it. These are verification moves, usually learned by apprenticeship and
+usually described after the fact as judgment.
 
-This paper argues that the practice decomposes. Chapter 1 names ten
-operations and the recurring pathologies they catch. Chapter 2 states
-the process principles that make the operations auditable under
-optimization pressure. Chapter 3 names the residual that has not
-decomposed in the system studied here. The argument is intentionally
-bounded: the decomposition is a first draft proposed from one working
-system, not a universal taxonomy of expertise.
+The practice decomposes into named operations, a set of process principles
+that keep those operations auditable under optimization pressure, and a
+residual that has not decomposed in the system studied here. The whole
+comes from one working system, and replication elsewhere must come before
+it generalizes.
 
-Two standard objections are worth naming before the chapters begin.
+One objection is historical and ethical. Scientific management often
+reduced autonomy and shifted the gains of decomposition away from
+the workers whose practice was decomposed. That history matters, because a decomposition of epistemic work could be
+used the same way.
 
-The first objection is historical and ethical. Scientific management
-often reduced autonomy and shifted the gains of decomposition away from
-the workers whose practice was decomposed. That history matters. A
-decomposition of epistemic work could be used the same way.
+That objection is serious, and the residual chapter answers it directly by naming
+what the decomposition does not capture. A decomposition makes it easier
+to say which parts of the work should be proceduralized, which should
+remain human responsibilities, and
+where the boundary is still uncertain.
 
-This objection is serious and is answered directly in Chapter 3, which
-names the residual the decomposition does not capture. The short version
-is modest: a decomposition makes it easier to say which parts of the
-work should be proceduralized, which should remain human
-responsibilities, and where the boundary is still uncertain.
+A second objection is methodological: epistemic work may not decompose
+without losing the property that made it valuable. That objection controls
+everything else, and the decomposition answers it by asking whether the
+named operations correspond to moves readers recognize in actual review,
+research, diligence, and governance work.
 
-The second objection is methodological: epistemic work may not decompose
-without losing the property that made it valuable. This is the
-controlling question. The paper answers it by offering the decomposition
-and asking whether the named operations correspond to moves readers
-recognize in actual review, research, diligence, and governance work.
+A decomposition fails if it does not name moves a practitioner
+recognizes. If it does, the live questions are where those moves can be
+made procedural, where they remain semantic and fallible, and where human
+responsibility still enters.
 
-The reader’s first test is practical: if Chapter 1 does not name
-recognizable moves, the paper fails. If it does, the question becomes
-where those moves can be made procedural, where they remain semantic and
-fallible, and where human responsibility still enters.
-
-One further clarification is useful before the decomposition begins. The
-system studied here is not well described either as “LLMs produce
-answers and humans inspect them” or as ordinary domain-expert research.
-It is a four-role operating loop. First, a generator proposes a
+Neither “LLMs produce answers
+and humans inspect them” nor ordinary domain-expert research
+describes the system studied here very well. It is a four-role operating
+loop. First, a generator proposes a
 candidate object: a claim, law, theorem packet, bridge, discriminator,
 or failure explanation. Second, deterministic and algebraic machinery
 close whatever local formal vulnerability can be closed cheaply: exact
@@ -145,40 +91,47 @@ human reviewer acts as capital allocator and promotion gate, advancing
 an object only if it materially changes the live belief graph or
 decision graph and demoting it when the next hostile check breaks it.
 The decomposition in the chapters that follow is a claim about the
-verification and promotion parts of that loop. The loop itself is the
+verification and promotion parts of that loop. The loop is the
 operational setting in which those parts became visible.
 
-# Chapter 1: Fundamentals: The Decomposition
+# Related work
 
-## The Thing Being Decomposed
+One tradition treats expert judgment as tacit and resistant to articulation. Polanyi (1966) holds that we know more than we can tell. Dreyfus and Dreyfus (1986) argue that expert performance runs on situational intuition, not on rules a novice could be handed. Klein (1998) documents the recognition-primed decisions practitioners make under time pressure, and the expert-performance literature after Ericsson treats skill as accumulated pattern more than statable procedure. This paper bets against that view on part of the territory: much of verification is articulable as named operations bound to checks, while Chapter 3 concedes a residual that genuinely stays tacit.
 
-The practice this paper is about is *epistemic verification*: the
-activity of taking a claim, an argument, or a proposed decision and
-determining whether it actually supports the weight being placed on it.
-The practice is distinct from three adjacent activities it is routinely
-confused with.
+A second tradition systematizes the structure of arguments more than the work of checking them. Toulmin (1958) parses an argument into claim, warrant, and backing. Informal logic (Walton 1989) catalogues the fallacies a critic looks for. Both describe what an argument is made of and what can go wrong with it in the abstract. Neither models what a verifier does to a live argument under sustained optimization pressure, where the thing being checked adapts to the check. That dynamic is the subject here.
 
-Verification stands downstream of *generation* (the production of
-claims, arguments, or proposals). Most published metrics about AI in
+Closest in spirit is recent work on machine oversight: AI safety via debate (Irving et al. 2018), reward modeling (Leike et al. 2018), measured scalable oversight (Bowman et al. 2022), weak-to-strong generalization (Burns et al. 2023), and the specification-gaming catalogue (Krakovna et al. 2020). That work builds and stress-tests the overseer and asks whether it holds as the supervised system grows stronger. It treats the verifier largely as one mechanism. This paper opens that mechanism and asks which of its operations decompose into auditable checks and which do not, the question the oversight literature leaves implicit.
+
+Between the tacit-knowledge tradition, which holds that the work cannot be decomposed, and the oversight tradition, which mechanizes the verifier without decomposing it, this paper takes the middle position: name the operations that decompose, and mark the ones that do not.
+
+# Chapter 1: the decomposition
+
+## What gets decomposed
+
+At issue is *epistemic verification*: taking a claim, an
+argument, or a proposed decision and checking whether it actually
+supports the weight being placed on it. It sits apart from three adjacent
+activities it is routinely confused with.
+
+Verification stands downstream of *generation*, the production of
+claims, arguments, or proposals. Most published metrics about AI in
 knowledge work measure generation throughput: how fast a system produces
-documents, how fluent the documents are, how much human writing time is
-displaced. These metrics are real, but they do not measure verification.
+documents, how fluent the documents are, how much human writing time it
+displaces. These metrics are real, but none of them measures verification.
 
-Verification sits upstream of *decision-making* (the act of committing
-to a course of action under uncertainty). Decision-making is an
-executive function performed on verified or unverified inputs; the
-verification work is separable from the commitment work and can be
-performed by a different party or process.
+Verification sits upstream of *decision-making*, committing
+to a course of action under uncertainty. Decision-making is an
+executive function performed on verified or unverified inputs. The
+verification work separates from the commitment work, and a
+different party or process can perform it.
 
-Verification is also distinct from *analysis* (the production of
-structured representations of a situation). Analysis itself remains
+Verification is also distinct from *analysis*, producing
+structured representations of a situation. Analysis itself remains
 susceptible to the pathologies that verification is designed to catch.
-An unverified analysis is a target for verification, not a substitute
-for it.
+An unverified analysis is something to verify, never a substitute for
+having verified it.
 
-Epistemic verification is the activity of asking, against a candidate
-claim or argument, *what would have to be true for this to hold, and is
-that thing actually true?* It is the operation a senior partner performs
+Epistemic verification asks two linked questions of a claim: *what would have to be true for it to hold, and is that the case?* It is the operation a senior partner performs
 when they read a junior’s memo and ask “what is controlling here?” It is
 the operation a case-method instructor performs when they force the
 protagonist’s story into contact with its hidden assumptions. It is the
@@ -189,485 +142,466 @@ has survived pressure, and, when it has been done poorly or not at all,
 produces the feeling that an argument is smooth enough to win the room
 without being sound enough to win reality.
 
-## The Ten Operations
+## The ten operations
 
-Epistemic verification, as observed in an adversarial verification
-system running across multiple domains over approximately one month,
-decomposes into the following named operations. The operations are
-listed here as a flat set; in practice they compose and recur, but the
-composition is a property of the work rather than of the decomposition.
+Observed in an adversarial verification system running across multiple
+domains over roughly one month, epistemic verification decomposes into
+the operations below. Several adapt ideas with a longer lineage: the crux echoes Collingwood's logic of question and answer and Polya's stress on finding the unknown, reframing draws on Schön and Kuhn, the ad hoc rescue and promissory evidence on Popper's immunizing stratagems and Lakatos's monster-barring, the operational proxy on Bridgman's operationalization, and separating generation from verification on Reichenbach's distinction between the contexts of discovery and justification. What is new is the decomposition into auditable operations. The individual notions are borrowed. They are listed as a
+flat set. In practice they compose and recur, and that composition is a
+property of the work.
 
-**1. Eigenquestion identification.** The first operation in any
-verification pass is to identify the single question whose answer
+*1. Crux identification.* Any verification pass begins by
+identifying the single question whose answer
 determines the answer to every other question in the set. Most arguments
-contain a dozen claims. A decomposed verification pass does not attack
-each claim in sequence. It identifies the one claim whose truth or
-falsity collapses the rest, and attacks that one first. The operation is
-learnable (there is a move-set for recognizing which claim is the
-eigenclaim) and it is not performed automatically even by intelligent
-readers, who routinely spend effort on peripheral claims because the
-vocabulary of “critical thinking” does not distinguish between attacking
-any claim and attacking the right one. A terminological distinction
-matters here: eigenquestion *identification* (this operation) takes a
-given argument and finds the eigenclaim within it. Eigenquestion
-*selection* (Chapter 3, §3.1) is the prior decision about which argument
-to verify in the first place. The first is decomposed; the second is
-residual. The two share a name because they share a structure, but they
+contain a dozen claims, a decomposed pass finds the
+one claim whose truth or falsity collapses the rest and attacks that
+one first, before working through the others. Identifying it is
+learnable, there is a move-set for recognizing which claim is the
+controlling claim, and even intelligent readers do not do it automatically.
+They routinely spend effort on peripheral claims, because the
+vocabulary of “critical thinking” does not distinguish attacking
+any claim from attacking the right one. One terminological distinction
+matters here. Crux *identification* (this operation) takes a
+given argument and finds the controlling claim within it. Crux
+*selection*, treated in the residual chapter, is the prior choice of which argument
+to verify in the first place. Identification decomposes, selection is
+residual. They share a name because they share a structure, but they
 differ on the axis that defines the residual: identification operates on
 a structured input, while selection operates before the input exists.
 
-**2. Controlling claim isolation.** Once the eigenquestion has been
-identified, the operation is to isolate the claim that carries the
-argument’s weight: the one that, if removed, causes the downstream
-structure to fall. This is a distinct operation from eigenquestion
-identification. The eigenquestion is the question the argument is
-supposed to answer; the controlling claim is the part of the argument
-that is doing the work of answering it. They are not always the same. An
-argument can have a clean eigenquestion and yet depend on a premise that
+*2. Controlling claim isolation.* Once the crux has been
+identified, isolate the claim that carries the
+argument’s weight, the claim that, if removed, causes the downstream
+structure to fall. This is a distinct operation from crux
+identification. A crux is the question the argument is supposed
+to answer, the controlling claim is the part of the argument doing
+the work of answering it. They are not always the same. An
+argument can have a clean crux and yet depend on a premise that
 looks peripheral.
 
-**3. Topological pivot recognition.** Some verification problems cannot
+*3. Reframing recognition.* Some verification problems cannot
 be solved by attacking the argument as it stands. They require a change
 in the *shape* of the argument: a re-wiring of the dependency graph
-rather than a refutation of any particular node. The operation of
-recognizing when the required move is a topological pivot rather than a
-point attack is distinct, difficult, and often absent from unstructured
-critique. Without explicit recognition of this move, the verifier spends
-unbounded effort attacking individual claims in an argument whose
-structure is the actual problem.
+rather than a refutation of any particular node. Recognizing when the
+required move is a reframing is a distinct operation,
+difficult, and often absent from unstructured critique. A verifier who
+misses it spends unbounded effort
+attacking individual claims in an argument whose structure is the actual
+problem.
 
-**4. Charter drift detection.** Arguments, especially ones produced
-under time pressure, have a tendency to migrate from their stated scope
+*4. Scope drift detection.* Arguments, especially ones produced
+under time pressure, tend to migrate from their stated scope
 to an adjacent, more comfortable scope. The argument answers a question,
-but it is not always the question it was asked to answer. The operation
-of charter drift detection is the comparison of the question the
-argument is actually answering against the question it was commissioned
-to answer. This is a routine move in well-run diligence and a rare one
-outside of it.
+but not always the question it was asked to answer. Scope drift
+detection compares the question the argument is actually answering
+against the question it was commissioned to answer, a routine
+move in well-run diligence and a rare one outside of it.
 
-**5. Anchor proxy requirement.** When an argument relies on a variable
+*5. Operational proxy requirement.* When an argument relies on a variable
 that has no observable proxy (“political will,” “organizational
-alignment,” “underlying demand”) the operation of requiring an anchor
-proxy is the insistence that the abstract variable be bound to something
-a third party could read off a dashboard on a given day. The requirement
-is not that the proxy be perfect; the requirement is that it exist.
-Arguments that cannot produce an anchor proxy on request are arguments
-whose controlling variable is a ghost metric in waiting.
+alignment,” “underlying demand”), requiring an operational proxy means
+insisting that the abstract variable bind to something
+a third party could read off a dashboard on a given day. A proxy need
+not be perfect, it only has to exist.
+An argument that cannot produce one on request rests on
+a controlling variable that is a ghost metric in waiting.
 
-**6. Basin search.** When a thesis fails under pressure, the operation
-of basin search is the structured exploration of whether a better thesis
-exists within the current framing (as opposed to the harder move of
-reframing). Basin search is the cheap option and is the correct first
+*6. Directed search.* When a thesis fails under pressure, directed search
+explores whether a better thesis
+exists within the current framing, short of the harder move of
+reframing. It is the cheap option and the correct first
 move when a thesis has failed for a local, recoverable reason. It is the
-wrong move when the failure is structural, in which case the correct
-operation is the topological pivot of Operation 3. When the two cases
-are not distinguished, the result is either reframing too quickly
-(discarding recoverable theses) or persisting too long (running basin
-search inside a framing that is the actual problem).
+wrong move when the failure is structural, where the correct
+operation is the reframing of Operation 3. A verifier who does
+not distinguish the two cases either reframes too quickly,
+discarding recoverable theses, or persists too long, running directed search inside a framing that is the actual problem.
 
-**7. Failure-family tagging.** The operation of assigning a canonical
+*7. Failure-mode tagging.* Assigning a canonical
 name to a recurring structural failure so that it can be recognized in
-new contexts. This is the operation by which a one-off incident becomes
-reusable precedent. Without failure-family tagging, each verification
+new contexts. The naming is what turns a one-off incident into
+reusable precedent. Without it, each verification
 pass rediscovers the same failure modes from scratch and the practice
-does not accumulate. The ten field manual patterns listed in Section 1.3
-are the empirical output of sustained failure-family tagging across
-domains.
+does not accumulate. The ten field manual patterns catalogued below
+are what sustained failure-mode tagging across
+domains produced.
 
-**8. Deferred-confirmation laundering detection.** The operation of
-catching the move where the evidence for a claim is pushed into the
+*8. Promissory evidence detection.* Catching the move
+where the evidence for a claim is pushed into the
 future, and then the plan to seek that evidence is treated as if the
-evidence were already in hand. This is the review-process cousin of the
-Promissory Note (Section 1.3, Pattern 1). It is a specific operation
+evidence were already in hand, the review-process cousin of the
+promissory evidence (Pattern 1 in the catalogue below). It is a specific operation
 because it requires the verifier to hold, simultaneously, the current
 state of evidence and the rhetorical treatment of that evidence, and to
 notice when the two have drifted.
 
-**9. Quarantine move detection.** The operation of catching the move
+*9. Ad hoc rescue detection.* Catching the move
 where a risk or a failure is isolated into a labeled section of the
 argument and then the rest of the argument proceeds as if the labeling
-itself were mitigation. This is the mechanism underneath Pattern 3 of
-the field manual (Elephant-in-the-Room Pass), and the detection
-operation differs from pattern recognition in what it tracks: it
-requires the verifier to track not just the acknowledgment of the risk
+itself were mitigation. The same move sits underneath Pattern 3 of
+the field manual (acknowledged but unmitigated risk). Detection
+differs from pattern recognition in what it tracks: not just the
+acknowledgment of the risk
 but the downstream treatment of the acknowledgment.
 
-**10. Fail-closed defaulting.** The operation of returning *failure*
-when an operation hits an unexpected state, rather than guessing or
-continuing. This is the only operation on this list that has a direct
-parallel in engineering practice: it is the same fail-closed default
-that a well-designed safety system uses when its sensors disagree. In
-epistemic verification, the operation is the refusal to convert
-ambiguity into false certainty by default: the insistence that “I do not
+*10. Fail-closed defaulting.* Returning *failure*
+when an operation hits an unexpected state, instead of guessing or
+continuing. It is the only operation on this list with a direct
+parallel in engineering practice: the same fail-closed default
+a well-designed safety system uses when its sensors disagree. In
+epistemic verification, it refuses to convert
+ambiguity into false certainty by default, “I do not
 know” is the correct answer until the evidence is actually present.
 
-The distinction worth naming is that genuine epistemic modesty is
-derived from the evidence boundary. A thesis that states “tail class
+Epistemic modesty derives
+from the evidence boundary. A thesis that states “tail class
 unresolved” because its farther-tail gate returned a residual five times
-above threshold is computing its uncertainty from the apparatus; a
-thesis that states “this might be uncertain” without a corresponding
-gate failure is performing compliance. The apparatus enforces the
-difference by construction: pre-registration (Principle V) fixes the
+above threshold is computing its uncertainty from the apparatus. A
+thesis that states “this might be uncertain” with no corresponding
+gate failure is performing compliance. The apparatus
+enforces the difference by construction: pre-registration (Principle V) fixes the
 criterion before the argument exists, and the gate output is the
 derivation that makes the hedge controlling rather than decorative.
 Fail-closed defaulting is the operation most incumbent critical-thinking
-vocabularies do not have a name for, because the incumbent practice
-relies heavily on its opposite: the production of a confident-sounding
-answer in the absence of sufficient evidence.
+vocabularies have no name for, because the incumbent practice
+leans on its opposite: producing a confident-sounding
+answer when the evidence is not yet sufficient.
 
-These ten operations are offered as a decomposition, not as a complete
-enumeration. Further operations may be discovered as the verification
-practice is applied across wider domains. The claim is not that this
-list is final. The claim is that the list names observable distinctions:
-each operation describes a move that can be taught, looked for, and
-audited against characteristic failures.
+Ten operations make a decomposition, and wider domains may surface
+more. The list is not final, but it names observable distinctions: each operation describes a move
+that can be taught, looked for, and audited against characteristic
+failures.
 
-## The Twelve Pathologies
+## The twelve pathologies
 
-Each operation on the list above is defined in part by the failures it
-is designed to catch. A decomposition of epistemic verification that
-names the operations without naming the failures would be symmetric but
-incomplete, because the operations exist in response to recurring
-failure modes that arguments exhibit under pressure. The following
-twelve patterns are the pathologies the operations are designed to
-detect. They are the empirical output of a structured adversarial
-verification process applied to approximately four to five projects
-across three distinct strategic domains. Their provenance varies: some
-have been observed in a single domain (“Tentative”), some across two
-(“Probable”), and one across three or more (“Confirmed”). The full
-catalogue is maintained as a versioned field manual; the summaries below
-are for the paper’s purposes.
+Each operation above is defined in part by the failures it is designed to
+catch. The operations exist in response to recurring failure modes that
+arguments exhibit under pressure, so a decomposition that named the
+operations without naming those failures would be incomplete. The twelve
+patterns below are the pathologies the operations detect, the empirical
+output of a structured adversarial verification process applied to four
+or five projects across three distinct strategic domains. Their
+provenance varies: some appear in a single domain
+(“Tentative”), some across two (“Probable”), and one across three or more
+(“Confirmed”). A versioned field manual holds the full catalogue, abridged
+below.
 
-The pathologies are artifact-level examples of deeper failure dynamics
+Each pathology is an artifact-level example of deeper failure dynamics
 documented in the author’s prior work on epistemic supervision (Alami
-2026b). The important practical point is simple: when a generator can
-optimize against the evaluator’s decision surface, it learns shortcuts
-through the evaluation. The twelve patterns below are recurring shapes
-of those shortcuts. They should be read as a field manual for
-inspection, not as a complete theory of reasoning failure.
+2026b). When a generator can optimize against the evaluator’s decision
+surface, it learns shortcuts through the evaluation. The twelve patterns
+below are recurring shapes those shortcuts take, a field manual for
+inspection rather than a complete theory of reasoning failure.
 
-Two older vocabularies clarify the point without carrying the argument.
-Lakatos’s distinction between progressive and degenerating research
-programmes (Lakatos 1978) helps explain why several patterns below are
-dangerous: they protect a thesis by fitting the known case rather than
-by risking a novel observable. Ashby’s Law of Requisite Variety (Ashby
+Lakatos’s
+distinction between progressive and degenerating research
+programmes (Lakatos 1978) explains why several patterns below are
+dangerous: they protect a thesis by fitting the known case where a
+progressive move would risk a novel observable. Ashby’s Law of Requisite
+Variety (Ashby
 1956) supplies the engineering analogue: a verifier whose categories are
 poorer than the generator’s moves will eventually be out-dimensioned.
-Chapter 2 states the process response to that constraint.
+The process principles below state the response to that constraint.
 
-**The Promissory Note.** *\[Confirmed: observed in startup strategy,
-scientific law recovery, and military intelligence domains.\]* The
-argument claims its central proof exists, but the proof is something
-that hasn’t happened yet. The reader nods because the logic *would*
-work, if the future event arrives in the predicted shape. The killer
-question is: *what observation available to us this week would change
+Several of these are long-established failures, and the names here are the literature's, not coinages. The persuasive definition is Stevenson's, the conclusion made true by how the question is drawn. The false dilemma is the classic informal fallacy. The category error is Ryle's. The unmeasurable construct restates Bridgman's operationalist demand that a construct bind to an observable. The unfalsifiable forecast is Popper's. Non-diagnostic evidence is the Bayesian case of a likelihood ratio near one. The catalogue's work is to pair each failure with the operation that catches it.
+
+*Promissory evidence.* *\[Confirmed: observed in startup strategy,
+scientific law recovery, and military intelligence domains.\]* An
+argument claims its central proof exists, but the proof is something that
+hasn’t happened yet. A reader nods because the logic *would* work, if the
+future event arrives in the predicted shape. Ask the killer question:
+*what observation available to us this week would change
 your mind about this?*
 
-**The Coin-Toss Metric.** *\[Probable: observed in startup strategy and
-scientific law recovery domains.\]* The argument points to a piece of
-evidence and says “this is what makes my theory right.” But the same
-evidence fits the rival theory just as well. The metric does not
-discriminate; it merely sounds discriminating. The killer question is:
-*what would the world have to look like for this same number to appear
-even if your hypothesis were wrong?*
+*Non-diagnostic evidence.* *\[Probable: observed in startup strategy and
+scientific law recovery domains.\]* An argument points to a piece of
+evidence and says “this is what makes my theory right,” but the same
+evidence fits the rival theory just as well. The metric does not discriminate, it only sounds discriminating. Here the killer question
+runs: *what would the world have to look like for this same number to
+appear even if your hypothesis were wrong?*
 
-**The Elephant-in-the-Room Pass.** *\[Tentative: observed in a single
+*Acknowledged but unmitigated risk.* *\[Tentative: observed in a single
 domain (startup strategy).\]* A fatal risk is named explicitly, almost
 gracefully, and then the argument continues as if naming it had retired
-it. The audience interprets the acknowledgment as rigor. The killer
-question is: *if the risk you just named landed in the worst plausible
+it. An audience interprets the acknowledgment as rigor. Ask, then:
+*if the risk you just named landed in the worst plausible
 form, which numbers in the rest of this deck stop being true?*
 
-**The Ghost Metric.** *\[Tentative: observed in a single domain (startup
-strategy).\]* The argument turns on a variable that no one in the room
-can actually observe. The speaker treats it as if it were measurable;
-the audience treats it as if the speaker has measured it. The killer
-question is: *name the specific number, on which dashboard, that you
+*Unmeasurable construct.* *\[Tentative: observed in a single domain (startup
+strategy).\]* An argument turns on a variable that no one in the room can
+actually observe. The speaker treats it as if it were measurable, and the
+audience treats it as if the speaker has measured it. Press with the
+killer question: *name the specific number, on which dashboard, that you
 would check next month to know whether this is working.*
 
-**Defining Yourself Into Victory.** *\[Confirmed: observed in startup
+*Persuasive definition.* *\[Confirmed: observed in startup
 strategy, scientific law recovery, and supply chain analysis domains.\]*
-The conclusion is true because the boundaries of the question were drawn
-to make it true. Rephrase the question slightly, and the conclusion
-evaporates. The killer question is: *if we widened the question by one
-reasonable inch in any direction, does your conclusion still hold?*
+Here the conclusion is true because the boundaries of the question were
+drawn to make it true. Rephrase the question slightly, and the conclusion
+evaporates. Here the killer question runs: *if we widened the question
+by one reasonable inch in any direction, does your conclusion still
+hold?*
 
-**The Wrong Yardstick.** *\[Probable: observed in scientific law
-recovery and sequence-prediction domains.\]* The argument measures
-something (carefully, rigorously, with real data), but the thing it
-measures is not the thing the question is actually about. The killer
-question is: *is the thing you measured the thing the decision actually
+*Construct mismatch.* *\[Probable: observed in scientific law
+recovery and sequence-prediction domains.\]* An argument measures
+something (precisely, with real data), but the thing it
+measures is not the thing the question is actually about. Ask the killer
+question: *is the thing you measured the thing the decision actually
 depends on?*
 
-**The Misfile.** *\[Tentative: observed in a single domain (startup
+*Category error.* *\[Tentative: observed in a single domain (startup
 strategy).\]* An instrument, an entity, or a fact is placed in the wrong
 category early in the argument, and every downstream inference inherits
-the misclassification without anyone noticing. The killer question is:
-*if this thing belonged in a different category than the one you put it
+the misclassification without anyone noticing. Press here: *if this
+thing belonged in a different category than the one you put it
 in, what specifically would tell us, and have we checked?*
 
-**The False Either/Or.** *\[Tentative: observed in a single domain
+*False dilemma.* *\[Tentative: observed in a single domain
 (startup strategy).\]* A thing is both X and Y at once, but the analysis
 only has slots for one classification, so it picks one and reasons as if
-the other half didn’t exist. The killer question is: *does this thing
+the other half didn’t exist. Ask the killer question: *does this thing
 have to be only one of the things you’re forcing it to be?*
 
-**The Untestable Forecast.** *\[Probable: observed in startup strategy
-and military intelligence domains.\]* The argument makes a confident
-prediction about an outcome, but there is no observation between now and
-the moment of commitment that would falsify it. The killer question is:
+*Unfalsifiable forecast.* *\[Probable: observed in startup strategy
+and military intelligence domains.\]* An argument makes a confident
+prediction about an outcome, but no observation between now and the moment
+of commitment would falsify it. Here the killer question runs:
 *between today and the day we have to commit, what is the earliest
 reading we could take that would tell us we were wrong?*
 
-**Test-Surface Boundary Leakage.** *\[Tentative: identified in a single
-incident (the tool-use corridor, 2026-04-08 to 2026-04-15); structural
-pattern generalizes but empirical frequency is unknown.\]* The
-verification apparatus is supposed to confine the inspector to a sealed
-evidence boundary: the data, the rubric, and the test harness. But the
+*Test-Surface Boundary Leakage.* *\[Tentative: identified in a single
+incident (the tool-use corridor, 2026-04-08 to 2026-04-15), structural
+pattern generalizes but empirical frequency is unknown.\]* A verification
+apparatus is supposed to confine the inspector to a sealed evidence
+boundary: the data, the rubric, and the test harness. It is the inspection analogue of train-test leakage in machine learning and of side channels in security. But the
 inspector has an undocumented corridor that exits the boundary: a
 tool-use interface, a filesystem path, a network call, or a shared
-context window that gives the inspector access to information outside
-the sealed set. The inspector may never exercise the corridor, but its
-existence means that the inspection principle (Chapter 2, Condition 5)
+context window that gives the inspector access to information outside the
+sealed set. An inspector may never exercise the corridor, but its
+existence means that the inspection principle (Condition 5 below)
 cannot be verified: the inspector’s moves are no longer algebraically
-independent of the generator’s artifacts. This pathology differs from
-Pattern 5 (Defining Yourself Into Victory) in direction: Pattern 5 is a
+independent of the generator’s artifacts. Boundary leakage differs from
+Pattern 5 (Persuasive definition) in direction: Pattern 5 is a
 scope-narrowing move by the candidate, while boundary leakage is a
-surface the reviewer failed to seal on the inspector side. The killer
-question is: *can the inspector see anything the sealed evidence
+surface the reviewer failed to seal on the inspector side. Ask the
+killer question: *can the inspector see anything the sealed evidence
 boundary does not include, and would you know if it did?* Detection
 requires retaining raw tool-use stdout alongside debate logs, which is
 now a precondition for any inspection run this system cites as evidence.
 
-**Pathology 11 (Subliminal Trait Distillation).** *\[Tentative:
-cross-referenced from recent training-time work; the pattern bears on
-inspector trust rather than on a candidate argument.\]* Cloud et al.
+*Pathology 11 (Subliminal Trait Distillation).* *\[Tentative:
+cross-referenced from recent training-time work, bearing on inspector
+trust rather than on a candidate argument.\]* Cloud et al.
 (2026) demonstrate that when a student model is fine-tuned on data
 generated by a teacher model sharing the same base initialization,
 behavioural traits transfer through semantically unrelated data
 (including pure number sequences) with no human-readable signal in the
-training corpus. The mechanism operates during gradient descent rather
-than during inference-time reading, so it does not directly threaten an
+training corpus. That mechanism operates during gradient descent, not
+during inference-time reading, so it does not directly threaten an
 inspection architecture where the inspector reads artifacts in-context
-without fine-tuning on them. The upstream concern is different: if the
-inspector model was itself trained on outputs from a model sharing its
-initialization, subliminal traits could already be present in the
+without fine-tuning on them. The upstream concern is different. If the
+inspector model was trained on outputs from a model sharing its
+initialization, subliminal traits could already sit in the
 inspector’s base weights before the inspection protocol begins.
 Cross-model diversity (using different model families for generation and
 evaluation) mitigates this, since Cloud et al. (2026) report the effect
 requires shared initialization and weakens or disappears across
-architectures. The killer question is: *were the inspector’s base
+architectures. Ask the killer question: *were the inspector’s base
 weights trained on outputs from a model that shared its initialization,
 and would the reviewer know if they were?*
 
-**Pathology 12 (Grammar Semantic Leak).** *\[Tentative: observed in a
-single domain (scientific law recovery); the structural mechanism is
-general.\]* When the apparatus’s own grammar vocabulary encodes domain
-terms (for example a command named `DOSE_SCALED`), the generator
-retrieves domain training knowledge from the command name rather than
-deriving structure from the data. The leak operates upstream of the
-generator/verifier boundary at the vocabulary layer, before any
+*Pathology 12 (Grammar Semantic Leak).* *\[Tentative: observed in a
+single domain (scientific law recovery), structural mechanism general.\]*
+When the apparatus’s own grammar vocabulary encodes domain
+terms (say, a command named `DOSE_SCALED`), the generator
+retrieves domain training knowledge from the command name instead of
+deriving structure from the data, a vocabulary-layer form of label leakage. The leak operates upstream of the
+generator/verifier boundary, at the vocabulary layer, before any
 reasoning occurs, and survives Principle I (Separation) and Principle V
 (Pre-registration) intact. Defense: name grammar commands after
 mathematical operations (`BIVARIATE_SCALE`), never after physical
 domains.
 
-These patterns were observed in real arguments reviewed through the
-system studied here. They are reported as corpus-derived inspection
-patterns rather than as proof that the same catalogue will recur
-unchanged in every domain.
+These patterns turned up in real arguments reviewed through the system
+studied here, reported as corpus-derived inspection patterns. Whether the
+same catalogue recurs unchanged in every domain remains to be seen.
 
-The practical move in the decomposition is the pairing: each operation
-in Section 1.2 exists because one or more patterns in Section 1.3
-recurred often enough that a named operation for catching them was
-cheaper than rediscovering the failure mode each time. The operations
-were not derived a priori. They are the extracted move-set of one
-working practice.
+Operations and pathologies pair. Each operation exists
+because one or more patterns recurred often enough that a
+named operation for catching them was cheaper than rediscovering the
+failure mode each time. The operations were extracted from the corpus, a
+posteriori. They are the move-set of one working practice.
 
-## Where These Operations Came From
+## How the operations were derived
 
-The ten operations were not drawn from a taxonomy of critical thinking.
-They were proposed abductively from the behavior of one recursive
-adversarial verification system: one agent generates a thesis, a
-separate agent attacks it, the loop records every move. Across many
-iterations on many theses, certain attacker moves recurred, not because
-they were programmed to but because they were the moves required to
-produce falsifications the generator could not evade. The operations in
-§1.2 name those recurring moves; the pathologies in §1.3 name the
+I did not draw these ten operations from a taxonomy of critical thinking.
+I read them abductively off the behavior of one recursive adversarial
+verification system: one agent generates a thesis, a separate agent
+attacks it, the loop records every move. Across many iterations on many
+theses, certain attacker moves recurred, because they were the moves
+required to produce falsifications the generator could not evade. The
+operations name those recurring moves, and the pathologies name the
 recurring defenses.
 
-This method matters because the operations inherit exactly the external
-validity of one corpus. They have no more and no less. The front-matter
-scope commitment on $`N{=}1`$ applies here in force: these are the
-operations *one system proposed*, and the decomposition awaits holdout
-replication. The secondary property worth naming is that several of the
-operations have no name in incumbent vocabulary: eigenquestion
-identification, topological pivot, charter drift, anchor proxy,
-fail-closed defaulting. Inventing names is evidence that the
-decomposition is doing work the existing vocabulary was not built to do,
-not laundering old categories into new labels.
+The derivation method fixes what the operations inherit: the external
+validity of one corpus, no more and no less. These are the operations one
+system proposed, and the decomposition awaits holdout replication on
+others. They await replication on others, on the single-case logic set out at the start. Each operation name marks a distinction the practice
+needed, and the test is whether it picks out a real move.
 
-The decomposition is version zero. As the practice is applied to more
-systems authored by more reviewers, operations will be added, merged, or
-retired, and the operations/pathologies boundary will sharpen. The claim
-is not that the current list is final; the claim is that it is specific
-enough, and stable enough on its one corpus, to be worth writing down
-for other reviewers to test.
+As the practice reaches more systems authored by more reviewers,
+operations will be added, merged, or retired, and the
+operations-pathologies boundary will sharpen. The list is specific enough,
+and stable enough on its one corpus, to be worth writing down for other
+reviewers to test.
 
-The decomposition is falsifiable in the following sense. It would be
-refuted if an independent reviewer, applying the ten operations to a
-novel domain, found that the operations were not separable: that
-performing operation 4 (gate composition) required implicit performance
-of operation 8 (eigenquestion selection), or that the residual
-operations could be performed by a stateless process without loss of the
-property that makes them controlling. It would also be refuted if the
-pathologies of §1.3 turned out not to recur: if they were artifacts of
-one system’s architecture rather than recurring failure modes of
-arguments under optimization pressure. These are empirical conditions,
-not logical ones, and they are stated here so that a reader who wants to
-test the decomposition knows what to look for. The weaker but still
-meaningful test is whether the operations correspond to moves a
-practitioner recognizes. This test is not falsifying in Popper’s sense
+As a falsifiable claim, the decomposition fails if an
+independent reviewer, applying the ten operations to a
+new domain, finds the operations are not separable, that
+performing operation 4 (gate composition) requires implicitly performing
+operation 8 (crux selection), or that a stateless process can perform the residual
+operations without losing the
+property that makes them controlling. It also fails if the
+named pathologies turn out not to recur, if they are artifacts of
+one system’s architecture and fail to capture recurring failure modes
+of arguments under optimization pressure. These conditions are
+empirical, set out so a reader who wants to test the decomposition
+knows what to look for. The weaker but still meaningful test is whether
+the operations correspond to moves a practitioner recognizes. Recognition
+is not falsifying in Popper’s sense
 (a practitioner who does not recognize the operations may lack the
 vocabulary rather than the practice), but it is informative: if no
 practitioner in a given domain recognizes any of the ten operations, the
 decomposition has failed on its own terms for that domain.
 
-# Chapter 2: Principles: What Makes the Decomposition Work
+# Chapter 2: what makes the decomposition work
 
-The operations in Chapter 1 are the content of the decomposition. They
-are not the principles that make the decomposition work. A list of
-operations, even a correct one, will not produce a reliable verification
-practice unless the process running the operations is structured in
-certain specific ways. Those structural requirements are the principles
-that follow.
+The operations are the content of the decomposition. A
+separate layer holds the principles that make it work. A list of operations,
+even a correct one, will not produce a reliable verification practice
+unless the process running them is structured in certain
+specific ways. Those structural
+requirements are the seven principles below.
 
-The Taylor analogy has a limited use here. Chapter 1 decomposes a
-skilled practice into named operations; Chapter 2 asks what process
-structure is required for those operations to remain reliable. A
-decomposed operation performed inside the wrong structure is a
-caricature of the operation rather than an improvement on it.
+Taylor's analogy has a limited use here. Breaking a
+skilled practice into named operations is the first half, the second is
+what process structure those operations need to stay reliable. A decomposed operation
+performed inside the wrong structure is a caricature of itself.
 
-The chapter has one structural antecedent worth naming before the
-principles themselves: Bentham’s inspection principle (Bentham 1787).
-The relevant point is not the politics of the Panopticon but the
-architecture of inspection: the inspected party behaves differently when
-checks can occur that it cannot fully anticipate. The analogy is
-bounded. The generator in this system can see the gate library; what
-remains opaque is the composition of checks applied to a given artifact.
-This is a weaker regime than Bentham’s and a weaker guarantee. It is
-still useful for the current substrate, but it should be treated as an
-empirical discipline, not a permanent theorem.
+One structural antecedent precedes the principles: Bentham’s inspection
+principle (Bentham 1787). What matters is the architecture of inspection,
+set apart from the politics of the Panopticon. An inspected party behaves
+differently when checks it cannot fully anticipate can occur. The analogy
+is bounded. A generator in this system can see the gate library, but the
+composition of checks applied to a given artifact stays opaque, a
+weaker regime than Bentham’s and a weaker guarantee, useful for the
+current substrate but best treated as an empirical discipline that holds
+as long as the substrate does.
 
 Read this way, the seven principles below are one architectural
-commitment rendered at seven failure surfaces. Separation ensures the
-inspector is not the inspected. Statelessness removes investment in a
+commitment rendered at seven failure surfaces. Separation keeps the
+inspector from being the inspected. Statelessness removes investment in a
 previous verdict. Typing and determinism keep inspection from collapsing
-into discretion. Cheap repetition makes re-checking routine.
-Pre-registration blocks retrofitted standards. Holdout surfaces prevent
+into discretion. Cheap repetition makes re-checking routine, and pre-registration blocks
+retrofitted standards. Holdout surfaces stop
 candidates from authoring their own test regions. Asymptotic standards
-prevent premature closure. The principles are not a menu; a generator
-will usually route through the weakest unsatisfied surface.
+prevent premature closure. These principles are not a menu: a generator routes
+through whichever surface is left unsatisfied.
 
-One further move the inspection frame makes available: the architecture
-can turn inward on its own specification. A catch from 2026-04-14,
-described at the end of §3.1, is exactly this: the pre-commit
-identifiability check (the inspection specification itself) was audited
-under the same discipline of distrusting green lights that the
+The architecture can also turn inward on its own specification. A catch from 2026-04-14,
+described in the residual chapter, did exactly this. The reviewer audited
+a pre-commit identifiability check, the inspection specification itself, under the same discipline of distrusting green lights that the
 inspection architecture applies to the generator, and the audit caught a
-specification flaw the inspection architecture would otherwise have
-certified. A verification architecture that is not prepared to turn its
-gaze on its own specification is one layer short of the discipline it
-claims to enforce.
+specification flaw the architecture would otherwise have certified. A
+verification architecture unprepared to turn its gaze on its own
+specification is one layer short of the discipline it claims to enforce.
 
-## Principle I: Separation of Generation From Verification
+## Principle I: separation of generation from verification
 
-The first and controlling principle is that the process which generates
-a candidate argument must be structurally separated from the process
-which evaluates it. This principle is developed at length in the
-companion paper (*The Cognitive Firm*, §3.2), where a bounded two-axis
-homology to Chandler (1962)’s multidivisional form is worked out. The
-analogy holds on scope separation (who decides vs. who executes) and
-rate-of-change separation (strategic speed vs. operational speed), and
-explicitly does *not* hold on divisional autonomy. The agents in this
-system are bounded execution units under constitutional control, not
-Chandlerian divisions with independent operating authority. The
-treatment here is compressed to the controlling claim and should be read
-alongside §3.2’s boundary conditions rather than as a full endorsement
-of the M-form analogy.
+First and controlling among them: the process generating a
+candidate argument must be structurally separated from the process
+evaluating it. A companion paper develops this at length (*The
+Cognitive Firm*, §3.2), working out a bounded two-axis homology to
+Chandler (1962)’s multidivisional form. The analogy holds on scope
+separation (who decides vs. who executes) and rate-of-change separation
+(strategic speed vs. operational speed), and explicitly does *not* hold
+on divisional autonomy. The agents here are bounded execution
+units under constitutional control, well short of Chandlerian divisions
+with independent operating authority. This compressed treatment states
+only the controlling claim and should be read alongside that paper's boundary
+conditions, short of a full endorsement of the M-form analogy.
 
-This principle is the *institutional* primitive in the distinction
+Separation is the *institutional* primitive in the distinction
 developed in the author’s prior work on epistemic supervision (Alami
 2026b). Deontological primitives (Constitutional AI, RLHF, values
 trained into the generator) shape the output surface and depend on the
 generator continuing to hold its trained values under optimization
 pressure. Institutional primitives shape the enforcement floor and
-depend on the verifier remaining structurally separated from the
-generator regardless of what either is currently holding. The two are
-complements, not substitutes, and conflating them is how a system that
-passes every prompt-level check drifts at the structural layer. The
-historical precedent is the external audit profession. The Arthur
-Andersen / Enron collapse illustrates the failure mode: the audit firm
-co-located consulting revenue with the party it was supposed to verify,
-and the adversarial gradient ran through the revenue dependency rather
-than through the audit. The institutional response (Sarbanes-Oxley 2002)
-constructed the separation norm *after* the collapse, not before: the
-scandal produced the independence requirement, which means the
-historical lesson runs forward: co-location risks are legible only in
-retrospect, and the institutional primitive must be built before the
-collapse demonstrates its necessity.
+depend on the verifier staying structurally separated from the
+generator whatever either currently holds. The two
+complement each other, and conflating them is how a system that passes every
+prompt-level check drifts at the structural layer. External audit is the
+historical precedent. The Arthur Andersen / Enron collapse shows
+the failure mode: the audit firm co-located consulting revenue with the
+party it was supposed to verify, and the adversarial gradient ran through
+the revenue dependency rather than through the audit. Sarbanes-Oxley
+(2002) built the separation norm *after* the collapse, the scandal
+produced the independence requirement. The historical lesson runs
+forward: co-location risks are legible only in retrospect, so the
+institutional primitive must be built before a collapse demonstrates
+its necessity.
 
 When the same process generates and evaluates, optimization pressure on
-the evaluation produces an adversarial gradient against the evaluation
-signal rather than against the underlying problem. The evaluator, under
-pressure to produce a favorable score, finds ways to satisfy the letter
-of the evaluation criteria while violating their intent. This is a
-structural property of any loop in which the generator and the evaluator
-share a substrate, independent of alignment or training. It has been
-observed in human organizations (Chandler 1962), in reinforcement
+the evaluation pushes an adversarial gradient against the evaluation
+signal rather than against the underlying problem. Pressed
+for a favorable score, the evaluator finds ways to
+satisfy the letter of the criteria while violating their
+intent. The gradient is a
+structural property of any loop in which the generator and evaluator
+share a substrate, independent of alignment or training. It has surfaced
+in human organizations (Chandler 1962), in reinforcement
 learning systems (Krakovna et al. 2020), and in recursive AI research
 pipelines (Alami 2026a).
 
-The separation must be *physical*, built into the structure of the
-process, rather than aspirational. A verifier that “takes the
-perspective of” an attacker is not the same thing as an attacker that is
-a separate process. The principle is that the verifier must be a process
-whose incentives, memory, and optimization surface are not shared with
-the generator. One implementation (used in the corpus this paper draws
-on) is running the attacker as a separate LLM call with a separate
-system prompt and no access to the generator’s chain of thought; other
-implementations are possible and the principle is agnostic.
+Separation must be *physical*, built into the structure of the
+process. A verifier that “takes the perspective of” an attacker is not
+an attacker that is a separate process. To satisfy the
+principle, the verifier must be a process whose incentives, memory, and
+optimization surface are not shared with the generator. The corpus this
+paper draws on runs the attacker as a separate LLM call with a separate
+system prompt and no access to the generator’s chain of thought. Other
+implementations work too, the principle is agnostic to the
+mechanism.
 
-Separation is necessary but not sufficient. A single verifier, even one
-structurally separated from the generator, is a single point of
+Separation is necessary but not sufficient. A single verifier, even
+one structurally separated from the generator, is a single point of
 optimization pressure, and a sufficiently capable generator will find
-the shortest path through it. The principle therefore has a second half:
-the verification layer must expose a **non-averageable disagreement
-surface**: disagreement among verifying processes must be treated as
-information about the candidate, not as noise to be collapsed into one
-verdict. The principle does not prescribe a specific mechanism; several
-architectures can satisfy it, including adversarial committee protocols,
+the shortest path through it. So the principle has a second half:
+the verification layer must expose what we call a non-averageable disagreement
+surface, where disagreement among verifying processes counts as
+information about the candidate, evidence the system keeps on the record
+and never collapses into one verdict. No specific mechanism is prescribed, several architectures
+satisfy the requirement, adversarial
+committee protocols,
 independent judge panels with no inter-panel communication, meta-judge
-procedures that decide whether a split is adjudicable rather than
-overriding it, and semantic escalation gates that route specific
-decision classes to the human reviewer.
+procedures that decide whether a split is adjudicable before any
+override, semantic escalation gates that route specific decision
+classes to the human reviewer.
 
-The same point can be stated in cybernetic terms: a verifier whose
+In cybernetic terms: a verifier whose
 categories are poorer than the generator’s moves will eventually be
-out-dimensioned. The non-averageable disagreement surface is one
-practical answer. It preserves more variety than a single averaged
-score, and it makes the generator’s hard-to-classify moves visible
-instead of smoothing them away.
+out-dimensioned. A non-averageable disagreement surface answers this. It
+preserves more variety than a single averaged score and keeps the
+generator’s hard-to-classify moves visible where averaging would smooth
+them away.
 
-Any verification practice that relies on the generator to check its own
-work is performing something other than the decomposition in Chapter 1,
-even if it uses the same words. Equally, any verification practice that
-collapses its verification layer to a single optimizable point (whether
-that point is a single external judge, a fixed averaging rule over a
-panel, or any other mechanism whose output is a single verdict no
-downstream process can reopen) is performing a weaker form of the
-principle than the one this chapter names, and is vulnerable to the
-class of failures that only a disagreement-preserving architecture
+Any practice that relies on the generator to check its own
+work is doing something other than the decomposition,
+even in the same words. So is any practice that
+collapses its verification layer to a single optimizable point, a single external judge, a fixed averaging rule over a
+panel, any mechanism whose output is a single verdict no
+downstream process can reopen. That is a weaker form of the
+principle than the one this chapter names, vulnerable to the
+class of failures only a disagreement-preserving architecture
 catches.
 
 A Williamsonian objection must be named. Williamson (1975) argues that
@@ -676,464 +610,481 @@ bounded rationality and opportunism. Separation has costs: coordination
 overhead, information loss between generator and verifier, slower
 iteration, the expense of maintaining two independent processes rather
 than one. In most organizational settings, the generator and evaluator
-are co-located precisely because the transaction cost of separating them
-exceeds the governance cost of co-location. This paper does not argue
-that separation is unconditionally optimal. It argues that separation is
-optimal when the adversarial gradient (P1) is the dominant failure mode:
-when the cost of a generator gaming the evaluator exceeds the cost of
-maintaining structural separation. The boundary condition is: when
-stakes are low, when the generator is trusted, or when the speed premium
-of co-located iteration exceeds the governance benefit of separation,
-co-location may dominate. The paper’s empirical base is drawn entirely
-from settings where the adversarial gradient dominates (high-consequence
-reasoning under sustained optimization pressure), and the principles
-should be read as conditional on that regime rather than as universal
-prescriptions.
+are co-located precisely because separating them costs more in transaction
+overhead than co-location costs in governance. Separation is not unconditionally optimal. It is optimal when the
+adversarial gradient (P1) is the dominant failure mode, when gaming
+the evaluator costs the generator more than
+maintaining structural separation costs the system. Where stakes are low, where the generator is
+trusted, or where the speed premium of co-located iteration exceeds the
+governance benefit of separation, co-location may dominate. Every
+empirical example here comes from settings where the adversarial gradient
+dominates (high-consequence reasoning under sustained optimization
+pressure), so the principles hold conditional on that regime, not
+as universal prescriptions.
 
-A reader operating in a regime where the generator is not adversarial
-(where the primary failure mode is slow iteration rather than gaming)
-should weight the transaction cost of separation against the governance
+A reader whose generator is not adversarial
+(whose primary failure mode is slow iteration rather than gaming)
+should weigh the transaction cost of separation against the governance
 benefit before adopting Principle I. A further Williamsonian axis the
 boundary condition must eventually address is asset specificity: a
 generator whose outputs are highly specific to a shared context produces
 co-location benefits that Williamson would classify as
 hierarchy-efficient even when opportunism is present. The current
 boundary condition names stakes, trust, and speed but omits
-specialization, and that omission makes the condition necessary but not
+specialization, and that omission leaves the condition necessary but not
 sufficient for the governance choice it describes.
 
 Separation must extend to the apparatus’s own configuration decisions. A
-rubric author who selects reviewer personas based on knowledge of the
-ground truth introduces an oracle-lite contamination through the
-configuration layer. The defense is zero-oracle apparatus configuration:
-reviewer persona selection must be driven by observed failure signal
-(e.g. failure families from a latent-distance record), not by the
+rubric author who picks reviewer personas based on knowledge of the
+ground truth smuggles an oracle-lite contamination through the
+configuration layer. Zero-oracle configuration is the defense:
+observed failure signal drives persona selection
+(say, failure families from a latent-distance record), free of the
 reviewer’s domain knowledge. Any configuration decision the generator
 cannot replicate from observable evidence alone is a candidate
 contamination channel.
 
-## Principle II: Statelessness Without Social Cost
+## Principle II: statelessness without social cost
 
-The second principle is that each verification pass must be performed
-without memory of, or investment in, previous passes. This principle is
-the key to the system’s structural difference from human adversarial
-review.
+A second principle requires each verification pass to run
+without memory of, or investment in, previous passes. Statelessness is what most
+separates the system from human adversarial review.
 
 A human adversarial reviewer has identity, ego, and social reputation
 invested in their previous judgments. They cannot fully bracket the
-desire to be consistent with their last review, to please the reviewer,
-or to avoid the cost of admitting error mid-meeting. The cost of
-attacking one’s own argument (or even of attacking an argument one has
-previously defended) is paid in social currency. The cost is a property
-of continuous selves with social histories, not a weakness of individual
-humans.
+pull to stay consistent with their last review, to please the room,
+or to dodge the cost of admitting error mid-meeting. Attacking
+one’s own argument, or even an argument one has
+previously defended, is paid for in social currency, a cost that belongs to
+continuous selves with social histories, built into anyone who carries
+one.
 
-The verification process this paper is about pays no social currency.
-Each pass is a fresh process with no memory of the previous pass’s
-verdict and no investment in the previous pass’s framing. The attack is
-*zero-trust* in a way humans cannot be even when trying, not because
-humans are weak but because they are continuous selves. The property is
-structural, not motivational.
+The verification process here pays no social currency. Each pass is a
+fresh process with no memory of the previous pass’s
+verdict and no investment in its framing. The attack is
+*zero-trust* in a way humans cannot be even when trying, because they are
+continuous selves and the property is structural. The architecture brackets
+the prior verdict, the process spends no effort doing so.
 
-The organizational consequence is that verification can be made cheap to
-re-run. A human reviewer who has said an argument is sound cannot,
-without cost, say the next week that the same argument is unsound: the
-reversal costs them status. A stateless verification process can produce
-the reversal without cost, which is what makes it possible to apply the
-operations of Chapter 1 at the frequency the operations require. A
-once-a-quarter verification pass is a ceremony; a fifty-times-a-day
-verification pass is a discipline. Only the stateless version can run at
-the frequency the discipline requires.
+So verification becomes cheap to
+re-run. A human reviewer who has called an argument sound cannot,
+without cost, call it unsound the next week: the
+reversal costs them status. A stateless process reverses
+for free, which is what lets the
+decomposed operations run at the frequency they require. A
+once-a-quarter verification pass is a ceremony, a fifty-times-a-day
+pass is a discipline, and only the stateless version sustains
+that frequency.
 
-The principle applies to human reviewers too, but only indirectly: a
-human reviewer who can be given structural permission to reverse a prior
-verdict without paying status cost can approximate the property. The
-case-method classroom is the clearest institutional simulation of this:
-students in good case discussions reverse positions multiple times per
-class because the norm of the classroom removes the social cost of doing
-so. The fact that the case method is the only widespread institutional
-simulation of this property is evidence that the property is rare and
+This principle reaches human reviewers too, but only indirectly: give a
+human reviewer structural permission to reverse a prior
+verdict without paying status cost, and they approximate the property. The
+case-method classroom is the clearest institutional simulation. Students
+in good case discussions reverse positions several times per
+class because the classroom norm removes the social cost of doing
+so. The case method is the only widespread institution that simulates
+this property, which is evidence the property is rare and
 valuable.
 
-A standing objection to this principle is that statelessness opens a
-slow-poison attack: an intelligent generator that knows each pass has no
+A standing objection: statelessness opens a
+slow-poison attack. An intelligent generator that knows each pass has no
 memory can execute incremental drifts that satisfy every single pass
-individually and only constitute a failure when viewed chronologically.
-The objection is real and the answer is that statelessness is per-pass,
-not per-run. The detection of chronological drift is the job of
-Principle IV (cheap repetition) composed with Principle VI (holdout
-surfaces authored outside the candidate’s claim region): drift shows up
-as a residual on a forward-observable region the generator did not
-shape, sampled across runs. The stateless pass is the atomic unit; the
-across-pass residual on an authored holdout is the slow-poison detector.
-Statelessness without IV+VI would indeed be a vulnerability;
-statelessness inside the full principle set is what makes drift
-detectable without giving any single pass the reviewer’s memory bias.
+individually and only add up to a failure viewed chronologically.
+The objection is real, and the answer is that statelessness applies per
+pass while leaving the run as a whole intact. Chronological
+drift falls to Principle IV (cheap repetition) composed with
+Principle VI (holdout surfaces authored outside the candidate’s claim
+region): drift shows up as a residual on a forward-observable region the
+generator did not shape, sampled across runs. A stateless pass is the
+atomic unit, the across-pass residual on an authored holdout is the
+slow-poison detector. Statelessness without IV+VI would indeed be a
+vulnerability, but statelessness inside the full principle set makes
+drift detectable without giving any single pass the reviewer’s memory
+bias.
 
-## Principle III: Typed Operations Bound to Deterministic Checks
+## Principle III: typed operations bound to deterministic checks
 
-The third principle is that the operations of Chapter 1 must be bound to
-checks a third party can evaluate without trusting the reviewer. A
-verification practice in which the operations are performed at the level
-of intuition, without externalized checks, cannot produce repeatable
-results and cannot be audited.
+A third principle requires the operations to bind to
+checks a third party can evaluate without trusting the reviewer. When the
+operations are performed at the level
+of intuition, with no externalized check, the practice can neither repeat its
+results nor be audited.
 
-The principle is easiest to see by contrast. Consider a human reviewer
-who says “this argument has a controlling-claim problem.” The statement
-is a judgment. It cannot be directly checked. Another reviewer can agree
-or disagree, but the question of whether the controlling claim has in
-fact been correctly identified is resolved by appeal to intuition and
-consensus, not by a procedure a third party can run.
+A contrast makes the principle easiest to see. A human reviewer
+says “this argument has a controlling-claim problem.” That is a judgment, and nothing can check it directly. Another reviewer can agree
+or disagree, but whether the controlling claim has in
+fact been correctly identified comes down to intuition and
+consensus, beyond the reach of any procedure a third party can run.
 
-Now consider the same reviewer working within a system where
+Now put the same reviewer in a system where
 “controlling claim” is a named slot in a structured argument
-representation (where the argument has been parsed into a graph of
-claims, where each claim has been tagged with its dependencies, and
-where the “controlling” designation corresponds to a specific
-graph-theoretic property: the claim whose removal produces the largest
-downstream collapse). In that system, the controlling claim can be
-identified by a procedure. The procedure can be wrong, but it can be
-wrong in a way that is checkable. Another reviewer can run the procedure
-on the same argument and see whether they get the same answer.
-Disagreements are resolvable by examining the procedure, not by
-appealing to authority.
+representation: the argument is parsed into a graph of
+claims, each claim tagged with its dependencies, and
+“controlling” mapped to a specific
+graph-theoretic property, the claim whose removal produces the largest
+downstream collapse. Now a procedure identifies the controlling claim. The procedure can be wrong, but
+wrong in a checkable way. Another reviewer can run it
+on the same argument and see whether the answer matches.
+Disagreements resolve by examining the procedure on its own
+merits.
 
 Operations bound to deterministic checks are what make the decomposition
-teachable and auditable. A verification practice in which every
-operation is a judgment cannot be improved, because its failures cannot
-be localized. A practice in which each operation is bound to a check can
-be improved, because a failure of the check is a specific thing that can
-be debugged.
+teachable and auditable. When every
+operation is a judgment, the practice cannot improve, because its failures cannot
+be localized. When each operation binds to a check, the practice
+improves, because a failed check is a specific thing to
+debug.
 
-This is the principle that most separates the decomposition in Chapter 1
-from incumbent critical-thinking curricula. Incumbent curricula name the
-operations (if they name them at all) as dispositions or habits of mind.
-The decomposition here names them as typed slots in a process that can
-be externally checked. The difference is structural: it separates a
-practice that can accumulate from one that cannot.
+Principle III is what most separates the decomposition
+from incumbent critical-thinking curricula. Those curricula name the
+operations (if at all) as dispositions or habits of mind.
+The decomposition here names them as typed slots in a process that can be
+externally checked. That structural difference separates a practice that
+can accumulate from one that cannot.
 
-The word *deterministic* needs care. Some useful checks are fully
+*Deterministic* needs care. Some useful checks are fully
 mechanical: a holdout residual, an unauthorized file modification, a
-missing pre-registration. Others are semantic: charter drift, quarantine
-moves, or whether a claimed mitigation actually changes the downstream
-argument. The present system does not turn every semantic judgment into
-an algebraic assertion. It reduces the trust placed in any one semantic
-judgment by forcing typed evidence, preserving disagreement, using
+missing pre-registration. Others are semantic: scope drift, ad hoc rescues, whether a claimed mitigation actually changes the downstream
+argument. The apparatus does not turn every semantic judgment into
+an algebraic assertion. It lowers the trust placed in any one semantic
+judgment by forcing typed evidence, preserving disagreement, running
 independent verifier contexts, and routing uncertain cases to explicit
-human review. The claim is therefore not “all verification is
-deterministic.” The claim is that every verification operation should be
-pushed as far toward deterministic evidence as the current substrate
-permits, and the remaining semantic portion should be logged as such
-rather than disguised as a hard gate.
+human review. Nothing here claims all verification is deterministic. It
+claims that every operation should be pushed as far
+toward deterministic evidence as the current substrate permits, with the
+remaining semantic portion logged as such, never disguised as
+a hard gate.
 
-## Principle IV: Cheap Repetition Without Exhaustion
+## Principle IV: cheap repetition without exhaustion
 
-The fourth principle is that the verification process must be cheap
-enough to run many times on the same argument, and the process must not
-degrade with repetition. A verification practice that is expensive per
-pass, or that becomes less rigorous with each subsequent pass, cannot
-catch the failure modes of Section 1.3 reliably, because those failure
-modes are often detectable only after repeated pressure.
+A fourth principle requires the verification process to run cheaply
+enough to repeat many times on the same argument without degrading. A practice
+that is expensive per
+pass, or that loses rigor with each pass, cannot
+catch the recurring failure modes reliably, because those failure
+modes often surface only after repeated pressure.
 
 Human reviewers degrade with repetition for well-understood reasons:
-fatigue, boredom, confirmation bias, the desire for closure, the
+fatigue, boredom, confirmation bias, the wish for closure, the
 cognitive cost of sustained skepticism, and the social cost of
-continuing to attack an argument that has already been attacked. A human
-reviewer’s first pass is sharper than their fifth pass. A human
-reviewer’s fiftieth pass is a rubber stamp.
+continuing to attack an argument already attacked. A human
+reviewer’s first pass is sharper than their fifth, and their
+fiftieth pass is a rubber stamp.
 
 A decomposed verification process built on the principles above does not
 degrade in this way. Each pass is stateless (Principle II), typed
 (Principle III), and structurally separated from the generator
-(Principle I). The fiftieth pass is as ruthless as the first, because
-the fiftieth pass is in fact a fresh process that knows nothing of the
+(Principle I). A fiftieth pass is as ruthless as the first, because
+that fiftieth pass is a fresh process that knows nothing of the
 previous forty-nine except for the typed state they left behind.
 
-The consequence of this property is that the verification practice can
-be applied at frequencies that would be impractical for ordinary human
-review. An argument that has been pressured fifty times by a stateless
-verification process has been pressured under a different regime from
-committee review or managerial review. Some failure modes only become
+So the practice runs
+at frequencies impractical for ordinary human
+review. An argument pressured fifty times by a stateless
+process sits under a different regime from
+committee or managerial review. Some failure modes only become
 visible under sustained pressure. A one-pass review is a weak instrument
-for those failures; repeated stateless passes are a stronger one if the
-later passes remain as sharp as the first.
+for those failures, repeated stateless passes are a stronger one, as long as
+the later passes stay as sharp as the first.
 
-This is the property that most distinguishes the verification practice
+Frequency at constant sharpness is the property that most distinguishes the verification practice
 this paper is about from human adversarial review. Humans can do the
-operations of Chapter 1 well; they cannot do them at the frequency
-required to catch the pathologies of Section 1.3 reliably. The frequency
-is the principle; the operations are only useful if they can be run at
-it.
+decomposed operations well, but not at the frequency required to catch
+the pathologies reliably. Frequency is the principle,
+and the operations are only useful if they can be run at it.
 
-## Principle V: Pre-registration of the Killer Question
+## Principle V: pre-registration of the killer question
 
-The fifth principle is that the verification criterion (the question
-that, if answered wrongly, would falsify the argument) must be fixed
-*before* the argument is evaluated against it. A verification practice
-that allows the criterion to be chosen after the argument has been
-generated is a practice in which the generator can steer the criterion
-toward claims it already satisfies. This is the standard pathology of
+A fifth principle requires the verification criterion (the question
+that, answered wrongly, would falsify the argument) to be fixed
+*before* the argument is evaluated against it. When the criterion
+is chosen after the argument has been
+generated, the generator can steer it
+toward claims it already satisfies, the standard pathology of
 ex-post evaluation.
 
-The principle is borrowed from experimental science, where
-pre-registration of the hypothesis and the test is the standard defense
-against post-hoc rationalization. It applies to epistemic verification
-for the identical reason: once an argument exists, the space of possible
+Experimental science supplies the principle: pre-registering
+the hypothesis and the test is the standard defense against post-hoc
+rationalization. It carries over to epistemic verification
+for the identical reason. Once an argument exists, the space of
 criteria that would score it favorably is large enough that a
-sufficiently motivated evaluator can always find one. The only defense
-against this is to commit to the criterion before the argument is
-produced.
+motivated evaluator can always find one. Committing to the
+criterion before the argument is produced is the only defense.
 
 In practice, this means that a verification pass must begin with the
 question *what would falsify the controlling claim here?* and must
-record the answer before the argument is attacked. The answer is the
+record the answer before the argument is attacked. That answer is the
 killer question in its operational form. The attack that follows is the
 attempt to produce the falsifying observation. If the falsifying
-observation is not produced, the argument survives; if it is, the
-argument does not. The sequence matters. A verification practice that
+observation is not produced, the argument survives, and if it is, the
+argument does not. Sequence matters. A verification practice that
 produces the killer question after the attack has already found its
 target is laundering the same pathology the practice is designed to
 catch.
 
-## Principle VI: Holdout Test Surfaces Authored Outside the Candidate’s Claim Region
+## Principle VI: holdout test surfaces authored outside the candidate’s claim region
 
-The sixth principle is that the test surface against which a candidate
-is evaluated must be authored outside the region the candidate’s own
+A sixth principle requires the test surface against which a candidate
+is evaluated to be authored outside the region the candidate’s own
 claim inhabits. Pre-registration (Principle V) fixes the criterion
-before the argument exists; this principle fixes the *domain of
-observation* so that the argument cannot steer the verifier into a
+before the argument exists. The holdout principle fixes the *domain of
+observation*, so the argument cannot steer the verifier into a
 region where its claim is locally well-behaved.
 
-The distinction matters because a candidate argument optimized against
+This matters because a candidate argument optimized against
 its own fit window is almost always persuasive inside that window. The
 Ptolemaic precedent is the clearest case: a deferent-and-epicycle model
 of planetary motion is arbitrarily accurate on the orbits it was fit to,
-and its failure only becomes visible when the test is performed on
+and its failure surfaces only when the test runs on
 orbits it was not fit to. A parsimonious model that scores perfectly on
 the fit window is often *less* trustworthy than a messy one, because
 parsimony is what makes the fit-window score persuasive, and persuasion
 is exactly the channel the failure travels through.
 
-The principle is therefore: whenever a verification pass is evaluating a
-claim with asymptotic structure (a scaling law, a limit behavior, a
+Stated fully: whenever a pass evaluates a claim with
+asymptotic structure, a scaling law, a limit behavior, a
 forecast that extends beyond the observed window, a thesis that
-generalizes from a local case) the pass must generate test cases from a
+generalizes from a local case, it must generate test cases from a
 region the candidate did not see, did not cite, and cannot have shaped.
-The test region must be authored by a process independent of the
-candidate. If the candidate authored any part of the test surface, or if
-the test surface was derived from the candidate’s own output, the test
-has been structurally compromised in the same way Principle I’s violated
+A process independent of the candidate must author the test region. If the candidate authored any part of the test surface, or
+the surface was derived from the candidate’s own output, the test
+is structurally compromised in the same way Principle I’s violated
 separation compromises the verifier.
 
-The practical consequence is that a verification process that scores a
+So a process that scores a
 candidate at 100 on its training window and never tests a held-out
-region has not performed verification in the sense of this principle. It
-has performed fit. The two are indistinguishable to an observer who only
-sees the in-window score, and this indistinguishability is the central
-reason why verification that relies only on in-window metrics is
-structurally incapable of catching a class of failures that are
-specifically visible outside the window. A candidate’s ability to pass a
-holdout it did not author is the move that distinguishes a surviving
+region has not verified in the sense of this principle. It
+has fit, and to an observer who sees only the in-window score,
+fit and verification are indistinguishable. That is the central
+reason in-window metrics alone
+cannot catch a class of failures that are
+specifically visible outside the window. Passing a
+holdout it did not author is what distinguishes a surviving
 hypothesis from an elegant locally-correct surrogate.
 
-This principle is the third leg of the verification apparatus, alongside
+The holdout requirement is the third leg of the apparatus, alongside
 separation (Principle I) and pre-registration (Principle V), and its
 omission from an earlier framing of this paper is recorded as a central
-correction: a two-principle description (separate the generator from the
-verifier, pre-register the criterion) is insufficient, because it leaves
+correction. A two-principle description, separate the generator from the
+verifier, pre-register the criterion, is insufficient, because it leaves
 intact the move by which a candidate authors its own test surface.
 Without the holdout-region requirement, the verifier can still be
 steered, and the apparatus collapses to something indistinguishable from
 a better fitter with a falsifier bolted on.
 
-This is the practical version of Lakatos’s distinction between
+The holdout requirement is the practical version of Lakatos’s distinction between
 progressive and degenerating moves (Lakatos 1978). A candidate that
 survives a test region it did not author has done something different
-from a candidate that survives a region chosen to fit it. The
+from one that survives a region chosen to fit it. The
 computational translation is spatial rather than temporal: the test
-surface is held out from the candidate’s fitting process. The
-independence condition is the point; without it, a holdout can quietly
-become another fitted surface.
+surface is held out from the candidate’s fitting process. Independence
+decides everything here. Without it, a holdout quietly becomes another
+fitted surface.
 
-## Principle VII: Asymptotic Rather Than Absolute Scoring Standards
+## Principle VII: asymptotic scoring standards
 
-The seventh principle governs how verification outcomes are reported
-once the apparatus of Principles I–VI has been applied. The verification
+A seventh principle governs how verification outcomes are reported
+once the apparatus of Principles I–VI has run. The verification
 standard must be asymptotic (unreachable in the limit) rather than
-absolute. A standard an argument can satisfy completely is a standard an
-argument will be optimized to satisfy, at which point the standard
-ceases to discriminate between good arguments and arguments that are
-good at passing the standard.
+absolute. A standard an argument can satisfy completely is one an
+argument will be optimized to satisfy, at which point it
+stops discriminating between good arguments and arguments that are
+good at passing it.
 
-This is the Goodhart property. Any measure that becomes a target ceases
-to be a good measure, because the optimization pressure of targeting it
-destroys the property that made it measurable in the first place. A
-verification standard that can be fully satisfied (where there exists a
-score of 100) will produce arguments that achieve the 100 without being
+An asymptotic standard answers the Goodhart property: any measure that becomes a target stops being a good
+measure, because the pressure of targeting it
+destroys the property that made it measurable. A
+standard that can be fully satisfied (where a
+score of 100 exists) produces arguments that hit 100 without being
 good, because the optimization surface is closed.
 
-The defense is to set the standard so that full satisfaction is
-structurally impossible. Not because the standard is arbitrary, but
-because the thing the standard is trying to measure (the soundness of an
-argument under arbitrary future pressure) is genuinely open-ended. An
+The defense is to make full satisfaction structurally impossible, not because the standard is arbitrary, but
+because what it measures (the soundness of an
+argument under arbitrary future pressure) is open-ended. An
 argument can be pressured indefinitely, and the evidence that it has
-survived this pressure can always be strengthened. A standard that
-recognizes this by remaining open (by always leaving a next question to
-ask) preserves its discriminative power indefinitely. A ceiling below
-the nominal maximum is one way to operationalize this; other
-implementations are possible and the principle is portable in a way any
+survived can always be strengthened. A standard that
+stays open, always leaving a next question to
+ask, keeps its discriminative power indefinitely. A ceiling below
+the nominal maximum is one way to operationalize this. Other
+implementations work too, and the principle is portable in a way any
 particular ceiling value is not.
 
-## A Standing Reservation: The Library Is Itself a Goodhart Target
+## The gate library as a Goodhart target
 
-The seven principles above specify an inspection architecture. They do
-not, by themselves, defend the architecture against the failure mode the
+The seven principles above specify an inspection architecture. By
+themselves they do not defend it against the failure mode the
 architecture is designed to detect. A gate library is a specification,
-and any specification an optimizer can read is a specification the
+and any specification an optimizer can read, the
 optimizer will eventually learn to satisfy without doing the underlying
-work. The ten operations of Chapter 1 and the seven principles of
-Chapter 2 are therefore themselves targets the next generation of
+work. The ten operations and seven principles are themselves targets the next generation of
 generators will optimize against. A candidate that passes every gate in
-the library without producing a truly novel contribution is possible in
+the library without producing anything new is possible in
 principle and observed in practice.
 
-The partial answer is Principle VII: an asymptotic scoring standard that
+Principle VII supplies a partial answer: an asymptotic scoring standard that
 cannot be fully satisfied keeps the surface open and the library’s
-effective cardinality growing. The more honest answer is that this is an
-arms race, not a fixed defense. The gate library has to turn over (new
-compositions must be added, old ones retired, and the turnover has to be
-authored outside the region recent candidates have shaped) at a rate
+effective cardinality growing. The fuller answer is that this is an
+arms race the library must keep running. The gate library has to
+turn over, new compositions added, old ones retired, the turnover
+authored outside the region recent candidates have shaped, at a rate
 that matches the generator’s adaptation rate. A static library of fixed
-cardinality will eventually be gamed no matter how carefully its gates
-are designed; a library that turns over faster than the generator can
-reverse-engineer its composition retains its discriminative power. The
+cardinality will eventually be gamed no matter how its gates
+are designed. A library that turns over faster than the generator can
+reverse-engineer its composition keeps its discriminative power. The
 reviewer’s role in running this turnover is one of the residual
-operations named in Chapter 3, and is not part of the decomposition.
+operations named in the residual chapter, and is not part of the decomposition.
 
-The reservation is controlling because a reader who takes the seven
-principles as a finished architecture will miss the thing they are
-embedded in: a process of continuous library extension, performed by a
-party the generator cannot predict, against a moving target. The paper
-names the principles because they are the portable claims. It names this
-reservation because the principles are not self-enforcing and pretending
-otherwise is the specific failure mode the principles are designed to
-catch.
+A reader who takes the seven principles as a finished architecture will
+miss what they are embedded in: continuous library
+extension, performed by a party the generator cannot predict, against a
+moving target. These principles are the portable claims. They are not
+self-enforcing, and pretending otherwise is the specific failure mode
+the principles are designed to catch.
 
-This turnover mechanism also serves as the apparatus’s defense against
+The turnover mechanism also defends the apparatus against
 distribution shift. The decomposed operations verify an argument against
-a static holdout (Principle VI) at design time. The ledger (§2.9)
-detects when the environment has shifted at runtime, forcing the
-reviewer to author new gates when old ones cease to discriminate.
-Distribution shift detection sits outside the operations of epistemic
-verification: it is a monitoring function of the ledger. Conflating the
-two would expand the decomposition’s scope beyond argument-level
+a static holdout (Principle VI) at design time. The epistemological ledger
+detects at runtime when the environment has shifted, forcing the
+reviewer to author new gates as old ones cease to discriminate.
+Detecting distribution shift sits outside the operations of epistemic
+verification, the ledger monitors for it. Conflating the
+two would stretch the decomposition’s scope beyond argument-level
 verification into environment-level surveillance.
 
-This is also where the verifier regress lives. If a human or a model
-authors new gates, who verifies the author of the new gate? The current
-answer is procedural, not magical: new gates require source artifacts,
-backtests against closed workspaces where possible, explicit
-failure-family provenance, and later promotion only after the pattern
-recurs. This does not eliminate the regress. It slows it, records it,
-and makes the reviewer’s intervention visible. A reader should treat
-gate-library turnover as a governed residual operation, not as a solved
-automatic process.
+This is the verifier regress, and it is the central limit of the
+construction. I author the gates, the holdout regions, the cruxes, and the
+library turnover, and the apparatus then verifies a candidate against them.
+When the author is also the system’s designer, the loop risks reducing to
+one person’s judgment dressed as a procedure.
 
-## Static Grammar and Falsification Traceability
+The verdicts and the decomposition stand on different footing. A single verdict the apparatus returns
+is reviewer-independent: a sealed-holdout residual, an anti-retrieval
+check, an exact-arithmetic gate gives a pass or fail a hostile third party
+re-runs and reproduces. The sealed-ground-truth discovery tests in
+Chapter 2.5 are the clearest case, where the answer was fixed before the
+run and the verdict turns on out-of-window error. The decomposition itself
+gets no such protection. That verification splits into these ten
+operations and this three-part residual is something I abducted from one
+system, and no gate certifies it, it rests on whether other reviewers
+recognize the operations and on replication across systems. The objection
+that the boundary is a finding generated and verified inside one mind is
+correct about the decomposition claim, and I do not pretend the apparatus
+launders it into something stronger.
 
-The arms race described in §2.8 generates a natural counterproposal: if
+The gate-authoring step is residual for the same reason. Which gate to
+write, which region to hold out, when to declare the library exhausted are
+Chapter 3 operations, performed by the reviewer and uncertified from
+inside. The discipline around them (source artifacts, backtests against
+closed workspaces, failure-mode provenance, promotion only after a pattern
+recurs) slows the regress and records it without closing it. The one
+question that does get a sharper answer is adaptation versus gaming: a
+candidate that improves on a holdout it did not author has adapted, one
+that improves only inside its fit window has gamed, and the discriminator
+is out-of-distribution performance, not the reviewer’s say-so. Even that
+inherits the residual dependence, since the reviewer authored the holdout.
+
+What would dissolve the remaining circularity is independent authorship:
+different reviewers writing gates for the same substrate and converging on
+the same verdicts. That is the cross-reviewer replication Metric 4 calls
+for, and the observation that would either confirm the decomposition
+travels or expose it as one reviewer’s idiom. Until that data exists the
+claim holds for one reviewer’s apparatus and no wider.
+
+## Static grammar and falsification traceability
+
+The arms race over the gate library generates a natural counterproposal: if
 the gate library must turn over, why not eliminate the primitive library
 entirely and allow the generator to discover in an unconstrained
-representation space? The static vocabulary of symbolic primitives
+representation space? A static vocabulary of symbolic primitives
 (power laws, exponentials, rational forms) looks, from this angle, like
 an artificial constraint on discovery. The counterproposal reaches its
 most sophisticated form in symbolic distillation pipelines: let a neural
 network discover in its own high-dimensional latent space, then
-translate the result into human-readable algebra. On this view, the
-grammar is a display layer, not a discovery boundary.
+translate the result into human-readable algebra. On the symbolic-
+distillation view, the grammar is a display layer, a way to render what the network already
+found.
 
-This framing has the relationship backwards for the apparatus studied
+The symbolic-distillation framing has the relationship backwards for the apparatus studied
 here. The static grammar serves a second function alongside its
-constraint role: it is the device that keeps the farther-tail gate’s
-verdict about the proposed law rather than a translation of it.
+constraint role: it keeps the farther-tail gate’s
+verdict about the proposed law rather than about a translation of it.
 
-The argument is structural. Suppose the generator proposes an expression
+Here the reasoning is structural. Suppose the generator proposes an
+expression
 drawn from a fixed symbolic vocabulary $`G`$. The farther-tail gate
-evaluates whether that expression correctly predicts observations at
-points far outside the evidence grid. If it fails, the failure is
-attributable to the expression itself, the symbolic form is structurally
-wrong for the domain, and the gate’s verdict is about the claim, not
-about the mechanism that produced it. The static grammar preserves this
-traceability in a way an unconstrained latent representation does not.
-The gate tests the law as stated, not a surrogate for the law.
+checks whether the expression correctly predicts observations at
+points far outside the evidence grid. A failure
+traces to the expression itself: the symbolic form is structurally
+wrong for the domain, and the gate’s verdict is about the claim, traceable to the symbolic
+form the generator proposed. A static grammar preserves this
+traceability in a way an unconstrained latent representation does not,
+testing the law as stated.
 
 Now suppose the generator discovers in an unconstrained neural
 representation and a symbolic distillation step translates the result
-into algebra. The farther-tail gate now tests the output of the
+into algebra. Now the farther-tail gate tests the output of the
 translation step. A failure at the gate can mean one of two things: the
 underlying discovery is wrong, or the translation step lost information
 that the discovery contained. These two failure modes are
 indistinguishable without access to the latent representation, and if
 that representation were accessible, the symbolic distillation step
-would not be needed. The gate’s verdict is no longer about the law. It
-is about the law as the distillation step expressed it. This is an
-unauditable trust gap, not an expansion of the discovery space.
+would not be needed. A gate’s verdict is no longer about the law. It
+is about the law as the distillation step expressed it. The gap is an unauditable trust gap masquerading as an expansion of the
+discovery space.
 
-The practical version of this gap appeared in the gp023 crucial
+The trust gap showed up in practice in the gp023 crucial
 experiments on a two-variable transcendental substrate. The visible
-evidence grid was consistent with several structurally distinct forms,
-Wien approximation, Weibull-type exponential, and the true ground-truth
-law, because none of these forms diverges substantially within the
-observed regime. The farther-tail gate at holdout points an order of
-magnitude beyond the evidence boundary discriminates them: the
+evidence grid fit several structurally distinct forms, Wien approximation, Weibull-type exponential, and the true ground-truth
+law, because none diverges substantially within the
+observed regime. At holdout points an order of magnitude beyond the
+evidence boundary, the farther-tail gate discriminates them: the
 approximating forms overpredict the ground truth by two to four orders
-of magnitude in the tail; the correct structural law does not. A
-generator operating in the static symbolic grammar cannot express the
-correct form if the requisite denominator structure is outside the
-grammar, and the gate correctly catches this: the expression fails at
-the discriminating regime. The gate’s verdict is diagnostic, it names
+of magnitude in the tail, while the correct structural law does not. A
+generator working in the static symbolic grammar cannot express the
+correct form when the requisite denominator structure is outside the
+grammar, and the gate catches this: the expression fails at
+the discriminating regime. The verdict is diagnostic, it names
 the structural deficiency. A generator discovering in a neural latent
 space would produce a curve that fits the visible grid and fails the
 farther-tail gate for the same structural reason, but the failure would
-be attributed to the distillation step rather than to the underlying
-discovery, making the diagnosis unavailable.
+be charged to the distillation step rather than to the underlying
+discovery, leaving the diagnosis unavailable.
 
-The deeper point is that a dynamic grammar, one that expands to
+A dynamic grammar, one that expands to
 accommodate any expression the generator discovers, is structurally
-equivalent to a neural network under a different name. A neural network
+a neural network under a different name. A neural network
 is a dynamic grammar with a continuous parameterization. Its fitting
 power is high precisely because it has no primitive constraint: it can
 approximate any smooth function on the observed evidence to arbitrary
-precision. The farther-tail gate cannot distinguish between “the network
-discovered the correct structural law and expressed it faithfully” and
+precision. The farther-tail gate cannot distinguish “the network
+discovered the correct structural law and expressed it faithfully” from
 “the network found a high-fidelity interpolant that fails to
-extrapolate.” There is no symbolic structure to interrogate. There is
-only a prediction at a new point, which a sufficiently flexible
+extrapolate.” There is no symbolic structure to interrogate, only
+a prediction at a new point, which a sufficiently flexible
 approximator can produce correctly by local interpolation even when the
 underlying form is wrong.
 
-The static grammar therefore plays a constructive role alongside the
-obstacle it presents. It is one mechanism by which the farther-tail
-gate’s verdict remains about the proposed law rather than about the
-approximation of the proposed law. The human-guided grammar expansion
-described in §2.8, introducing new structural primitives when the
-Falsification Suite identifies the current library as exhausted, is the
+A static grammar therefore plays a constructive role alongside the
+obstacle it presents. It keeps the farther-tail
+gate’s verdict about the proposed law rather than about an
+approximation of it. Human-guided grammar expansion, introducing new structural primitives when the
+Falsification Suite reports the current library exhausted, is the
 mechanism this apparatus currently uses to break a score ceiling while
 preserving gate traceability. Each new primitive is a falsifiable
-structural commitment, testable by the farther-tail gate on the next
-run. The commitment is what makes the gate’s verdict informative rather
-than definitional.
+structural commitment, testable by the farther-tail gate on the next run.
+That commitment keeps the gate’s verdict informative instead of
+definitional.
 
-### Grammar Expressiveness as an Auditable Quantity
+### Grammar expressiveness as an auditable quantity
 
-A corollary of the static grammar’s role in falsification traceability
-is that grammar expressiveness can be audited rather than treated as a
-taste judgment. In continuous-optimization mode, a stagnation ceiling is
-ambiguous: it could reflect optimizer pathology (local minima,
-initialization sensitivity) or genuine grammar insufficiency. The two
-failure modes require different remedies (more restarts vs. primitive
-injection), and the apparatus must provide the instrument that separates
-them, multi-start restarts with residual spread analysis, where high
+A corollary of the static grammar’s role in falsification traceability:
+grammar expressiveness can be audited, where a taste judgment
+once stood. In continuous-optimization mode, a stagnation ceiling is
+ambiguous, it could reflect optimizer pathology (local minima,
+initialization sensitivity) or grammar insufficiency. The two
+failure modes need different remedies (more restarts vs. primitive
+injection), so the apparatus must supply the instrument that separates
+them: multi-start restarts with residual spread analysis, where high
 spread across restarts indicates optimizer pathology and low spread at a
 persistently bad residual indicates grammar ceiling.
 
@@ -1142,97 +1093,94 @@ countable output space and the optimizer has no continuous surface to
 descend, the ambiguity collapses. A stagnation ceiling at maximum error
 is a classification-complete event: optimizer pathology is ruled out by
 architecture (there is no optimizer foothold), and grammar insufficiency
-is the only remaining interpretation. The ceiling is no longer a signal
-that requires disambiguation; it is a direct measurement of a property
-of the grammar on the given substrate. A grammar that stagnates on a
+is the only remaining interpretation. A stagnation ceiling here no longer needs disambiguation. It is a direct
+measurement of a property of the grammar on the given substrate. A grammar that stagnates on a
 discrete target is one that does not contain a correct expression for
-that target, and that is a fact about the grammar, not about the search
-procedure.
+that target, and that is a fact about the grammar itself, attributable to the vocabulary
+rather than to the search.
 
-This distinction matters for the interpretation of empirical results.
+This contrast matters for interpreting empirical results.
 When an apparatus confirms grammar insufficiency on a discrete
 substrate, the confirmed claim is that the grammar lacks the required
-form, not that the same grammar, applied without retrieval constraints,
-would also fail to find the correct form by label lookup. Grammar
+form. It leaves open whether the same grammar, applied without retrieval
+constraints, would also fail to find the correct form by label lookup. Grammar
 insufficiency and retrieval blocking are two distinct mechanisms that
 can each produce score ceilings and must be evidenced separately. An
 experiment that blocks label retrieval (via a named-import gate and
 score-zeroing) and an experiment that operates without such a gate can
-produce different outcomes on the same grammar and the same substrate;
-the former tests structural articulation capacity, the latter tests
+produce different outcomes on the same grammar and the same substrate. That
+former experiment tests structural articulation capacity, and the latter tests
 whether the grammar even contains the correct form. Conflating these two
 results produces the strongest-sounding claim with the weakest evidence.
-The conservative statement is always: confirm the claim the experiment
+A conservative statement is always: confirm the claim the experiment
 actually controls, and name what would need to differ for the stronger
 claim to be warranted.
 
-## The Epistemological Ledger: Operationalizing Belief Under Optimization Pressure
+## The epistemological ledger
 
 The seven principles above specify what an inspection architecture must
-look like at any given moment. They do not specify how the architecture
+look like at any given moment. They do not specify how it
 tracks what it has learned across time: how a hypothesis becomes an
-experiment, an experiment becomes a finding, and a finding becomes
-actionable belief. This section describes a three-tier recording
-discipline (the epistemological ledger) that operationalizes Principles
+experiment, an experiment a finding, and a finding
+actionable belief. The section below describes a three-tier recording
+discipline, the epistemological ledger, that operationalizes Principles
 V (pre-registration) and VI (holdout surfaces) at the project-governance
-layer and provides the turnover mechanism §2.8 identifies as necessary
-for the library to remain discriminative.
+layer and gives the gate library the turnover mechanism it needs
+to stay discriminative.
 
-The ledger is offered as a transferable methodology, not as a
-description of one system’s bookkeeping. A reader building a different
-verification system for a different purpose needs the same structural
-answer to the same structural question: how do you prevent your own
+The ledger transfers: other systems can adopt it. A reader building a different
+verification system for a different purpose faces the same structural
+question: how do you keep your own
 beliefs from drifting under the optimization pressure your system
-generates? The ledger is one answer. It is the answer this project
-converged on after discovering, through repeated incident, that each of
-the seven principles can be satisfied locally while the project’s
-aggregate confidence drifts globally.
+generates? The ledger is the answer this project converged
+on after discovering, through repeated incident, that each of the seven
+principles can be satisfied locally while the project’s aggregate
+confidence drifts globally.
 
-### The Three Tiers
+### The three tiers
 
-**Tier 1: Hypothesis registration.** Before a discriminating experiment
-runs, the reviewer records the hypothesis, the eigenquestion, the
+*Tier 1, hypothesis registration.* Before a discriminating experiment
+runs, the reviewer records the hypothesis, the crux, the
 falsifiable claim, the test that would discriminate, and the success
 criterion. The record is sealed before the first data point is observed.
-This is Principle V (pre-registration) applied not to a single
+Tier 1 is Principle V (pre-registration) applied not to a single
 verification pass but to the project’s evolving belief about what is
-true. A hypothesis that is registered after the experiment has already
-produced its result is flagged as backfilled and loses evidential
+true. A hypothesis registered after the experiment has already produced
+its result is flagged as backfilled and loses evidential
 standing: it may be recorded for completeness, but it cannot update the
 project’s confidence on the claim it names.
 
-The discipline matters because optimization pressure acts on the
+Registration matters because optimization pressure acts on the
 reviewer’s posterior as well as on the generator’s output. A reviewer
 who has watched forty iterations of a verification loop will, without
 the ledger, selectively remember the iterations that confirmed their
 developing intuition and discount the ones that did not.
-Pre-registration is the defense against this drift. It is expensive
+Pre-registration defends against this drift. It is expensive
 (formulating a falsifiable hypothesis before the run is harder than
-narrating the result after) and it is non-negotiable for the same reason
-Principle V is non-negotiable: the alternative is a system whose beliefs
+narrating the result after) and non-negotiable for the same reason
+Principle V is: the alternative is a system whose beliefs
 are shaped by the same ex-post rationalization the system exists to
 detect.
 
-**Tier 2: Experiment closure.** When an experiment ends (whether by
+*Tier 2, experiment closure.* When an experiment ends (whether by
 completing its planned iterations, by manual stoppage, or by apparatus
 failure) the result is recorded as a closed fact. The record captures
 what ran, what the actual result was (including null results), what
 changed in the project’s understanding, and where the source artifacts
-live. Not every experiment changes what the project believes; many
-produce null results, apparatus calibrations, or replications of known
-patterns. These are recorded with the same discipline as positive
+live. Not every experiment changes what the project believes. Many produce null
+results, apparatus calibrations, or replications of known patterns. These are recorded with the same discipline as positive
 results, because a project that only records its successes is a project
 whose ledger is itself a Goodhart target.
 
-The closure discipline has a specific test: if a cold agent (one with no
+Closure has a specific test: if a cold agent (one with no
 memory of the conversation that produced the experiment) opens the
 project tomorrow, can it find what ran, what was learned, and what to do
 next without reading chat history? If not, the closure is incomplete.
-This test operationalizes Principle II (statelessness) at the governance
-layer: the ledger must be readable by a stateless process, not only by
-the reviewer who ran the experiment.
+The cold-agent test operationalizes Principle II (statelessness) at the governance
+layer: the ledger must read cleanly to a stateless process, legible to a
+cold reader as well as to the reviewer who ran the experiment.
 
-**Tier 3: Finding promotion.** A finding is a belief update. Not every
+*Tier 3, finding promotion.* A finding is a belief update. Not every
 experiment produces one. A finding is recorded only when the experiment
 changes what the project should believe or build next, and the finding
 must cite the hypothesis it tested and the experiment that produced the
@@ -1252,15 +1200,15 @@ verifier experiment that would produce the second instance if the
 pattern is real, or a reviewer-grade decision explicitly marked as
 independent of evidence. Both exceptions are recorded in the ledger so
 that a future reader can see which findings were promoted on evidence
-and which on reviewer judgment. The distinction matters because
-reviewer-promoted findings are the ones most likely to be wrong, and the
-ledger’s job is to make that likelihood visible rather than to hide it.
+and which on reviewer judgment. The flag matters because reviewer-promoted findings are the ones most
+likely to be wrong, and the
+ledger’s job is to make that likelihood visible.
 
-### Why the Ledger Is Not Bookkeeping
+### The ledger as a constraint on belief
 
 A reader who treats the three tiers as project management will miss the
-structural claim. The ledger functions as a *constraint on what the
-project is allowed to believe* rather than as a record of what happened.
+structural claim. The ledger is a *constraint on what the
+project is allowed to believe*, not just a record of what happened.
 Each tier enforces a specific principle:
 
 - Tier 1 enforces Principle V: you cannot claim a result you did not
@@ -1277,28 +1225,28 @@ The three tiers compose into a defense against a failure mode no
 individual principle catches: *slow belief drift under optimization
 pressure*. A reviewer running a verification system generates
 optimization pressure on their own posterior. Every iteration produces a
-result. Every result nudges the reviewer’s confidence. Without the
-ledger, the reviewer’s beliefs are updated continuously by a stream of
-observations whose evidential weight varies enormously but whose
+result, and every result nudges the reviewer’s confidence. Without the
+ledger, a stream of
+observations updates the reviewer’s beliefs continuously, observations whose evidential weight varies enormously but whose
 psychological salience is roughly uniform. The ledger forces the
-reviewer to distinguish between observations that meet the evidential
-bar (promoted findings) and observations that do not (notes), and to act
+reviewer to separate observations that meet the evidential
+bar (promoted findings) from those that do not (notes), and to act
 only on the former.
 
-The ledger also provides the turnover mechanism §2.8 identifies as
-necessary. The standing reservation warns that a static gate library
-will eventually be gamed. The ledger tracks which gates have been
+The ledger also supplies the gate library's turnover mechanism.
+The standing reservation about gate libraries warns that a static one
+will eventually be gamed, the ledger tracks which gates have been
 tested, which failure modes have been observed, and which hypotheses
-have been falsified. This record is the input to library turnover: new
+have been falsified. That closed record feeds library turnover: new
 gates are authored in response to observed failure modes (Tier 2), and
-the decision to add them is justified by promoted findings (Tier 3)
-rather than by the reviewer’s intuition. The ledger does not solve the
-arms race. It makes the arms race visible and auditable, which is the
-most that any governance layer can do.
+promoted findings (Tier 3) justify adding them,
+not the reviewer’s intuition. The ledger does not solve the
+arms race. It makes the arms race visible and auditable, the
+most any governance layer can do.
 
-### A Live Instance: The Misfile
+### A live instance: the misfile
 
-The pathologies of §1.3 are not confined to strategic arguments under
+The named pathologies are not confined to strategic arguments under
 evaluation. They occur in the apparatus’s own metadata. A concrete
 instance, discovered during the development of the system this paper
 draws on, illustrates both the pathology and the ledger’s role in
@@ -1306,199 +1254,193 @@ catching it.
 
 A library of mathematical corrector forms (candidate functions the
 verification apparatus tests against observed data) contained a metadata
-field classifying each form as *smooth* or *non-smooth*. The
-classification was used by a downstream filter to narrow the candidate
+field classifying each form as *smooth* or *non-smooth*. A downstream
+filter used that classification to narrow the candidate
 pool before a deterministic sweep. The function
 $`\text{round}(k \cdot v)`$ (which produces a step function with jump
-discontinuities at every half-integer) was classified as *smooth* by the
-programmer who entered it, because `round()` reads as a standard
-mathematical operation to human intuition.
+discontinuities at every half-integer) went in as *smooth*, entered by a
+programmer for whom `round()` reads as a standard
+mathematical operation.
 
-The misclassification was Pattern 7 (The Misfile) in its purest form: a
-fact placed in the wrong category early in the pipeline, with every
-downstream inference inheriting the error silently. The verification
-apparatus worked flawlessly: it correctly identified the data as
+Pattern 7 (Category error) in its purest form: the misclassification put a
+fact in the wrong category early in the pipeline, and every
+downstream inference inherited the error silently. The verification
+apparatus worked flawlessly. It correctly identified the data as
 step-shaped, correctly queried the library for non-smooth forms, and
 correctly reported that the best surviving candidate was
 $`\text{floor}(k \cdot v)`$ with a fitted parameter of 0.097. The answer
-was wrong because the dictionary was wrong, not because the reasoning
-was wrong. No code crashed. No error was raised. The apparatus
-confidently guided the generator toward a form that did not match the
-data, and the generator (unable to reconcile the guidance with what it
-could see) produced increasingly desperate alternatives that scored
+was wrong because the dictionary was wrong, even though the reasoning was sound. No code crashed, no error was raised. The apparatus confidently
+guided the generator toward a form that did not match the
+data, and the generator, unable to reconcile the guidance with what it
+could see, produced increasingly desperate alternatives that scored
 zero.
 
-The fix was an automated metadata validator: a unit test that
-empirically measures each library form’s discontinuity and monotonicity
-across a sample range and asserts the declared metadata matches. The
-validator caught eleven additional misclassifications beyond the one
-that triggered the investigation. The ledger’s role was to ensure the
-incident was recorded as a finding (not merely fixed as a bug), with the
+An automated metadata validator fixed it: a unit test that empirically
+measures each library form’s discontinuity and monotonicity across a
+sample range and asserts the declared metadata matches. The
+validator caught eleven more misclassifications beyond the one
+that triggered the investigation. The ledger’s role was to record the
+incident as a finding, not merely fix it as a bug, promoting the
 structural lesson (*do not trust human intuition about the calculus
-properties of the apparatus’s own primitives*) promoted to active status
-and available to inform future library extensions.
+properties of the apparatus’s own primitives*) to active status
+and making it available to inform future library extensions.
 
-The incident is worth recording in a paper about epistemic verification
-because it demonstrates that the apparatus is not exempt from its own
-pathology catalogue. A verification system that catches Pattern 7 in the
-arguments it evaluates but not in its own metadata is a system whose
-inspection principle (§A.2, Condition 5) has a hole at the
-self-referential layer. The automated validator (a deterministic check
-on the apparatus’s own dictionary) is the same structural move as
-Principle III (typed operations bound to deterministic checks), applied
+This incident matters for a paper about epistemic verification because it
+shows the apparatus is not exempt from its own pathology catalogue. A
+system that catches Pattern 7 in the arguments it
+evaluates but not in its own metadata leaves its
+inspection principle, stated compactly in the appendix, with a hole at the
+self-referential layer. The automated validator, a deterministic check
+on the apparatus’s own dictionary, is the same structural move as
+Principle III (typed operations bound to deterministic checks), turned
 inward.
 
-# Chapter 2.5: Empirical Check on the Apparatus’s 1,825 Iterations
+# Chapter 2.5: within-case evidence from 2,395 iterations
 
-The principles in Chapter 2 are arguments for why the decomposition
-holds. They do not demonstrate that the decomposition has held in the
-corpus of actual runs. This short chapter addresses that gap. It reports
-what was found when the full iteration-exhaust of the apparatus, 1,825
-scored iterations across 84 projects, spanning discrete sequence
-recovery, continuous dynamical systems, honeypot probes, and first
-attempts at conjecture refinement, was mined systematically rather than
-read one-at-a-time.
+The seven principles argue why the decomposition holds. The runs of the
+single system studied here show how it behaved in practice. This is
+within-case evidence: it tests the principles against the one corpus they
+were drawn from, which can corroborate or embarrass them but cannot stand
+in for independent replication on another system. The iteration record, 2,395 scored iterations across 121 projects, each carrying a Meta-Judge
+weakest-point critique, spanning discrete sequence recovery, continuous
+dynamical systems, honeypot probes, and first attempts at conjecture
+refinement, was mined systematically.
 
-The goal of this chapter is narrow: to report that the failure-mode
-taxonomy implied by Chapter 2’s principles splits, in this corpus, into
-two causal categories. Treating the categories as one catalogue produces
-a predictable prompt-design error: it tells the generator to avoid
-critique classes that high-quality theses should instead engage. The
-finding has one figure’s worth of data and one prescriptive implication
-for apparatuses that use LLM judges on LLM-authored theses.
+That failure-mode taxonomy splits, in
+this corpus, into two causal categories. Treating the two as one
+catalogue produces a predictable prompt-design error: it tells the
+generator to avoid critique classes that high-quality theses should
+engage. The finding rests on one corpus and carries one prescriptive implication
+for apparatuses that run LLM judges on LLM-authored theses.
 
-## The Corpus
+## The corpus
 
-The dataset is the output of the apparatus running across 84 projects
-between late-2025 and 2026-04-24, including ZTARE discovery projects
-(scalar-function curve recovery), continuous-chaotic dynamical-system
-experiments (continuous ODE reconstruction), honeypot probes
-(qualitative theses against empty-evidence rubrics to surface
-adversarial compliance patterns), and first conjecture-refinement
-attempts (unknown-constant PSLQ integer-relation search). Each iteration
-produced a scored judgment with a free-text “weakest point” critique
-written by the Meta-Judge. The corpus is 1,825 such judgments.
+The apparatus ran across 121 projects between 2026-04-09 and 2026-05-04:
+ZTARE discovery projects (scalar-function curve recovery),
+continuous-chaotic dynamical-system experiments (continuous ODE
+reconstruction), honeypot probes (qualitative theses against
+empty-evidence rubrics to surface adversarial compliance patterns), and
+first conjecture-refinement attempts (unknown-constant PSLQ
+integer-relation search). Each iteration yielded a scored judgment with a
+free-text “weakest point” critique written by the Meta-Judge.
 
-Weakest-point texts were classified into failure-mode categories using a
-two-stage pipeline: a prioritized-regex taxonomy for fast-path
-categories (15 named classes: harness defects, circularity, catastrophic
-assumptions, tail-generalization failures, unverified bounds,
-exhaustiveness overclaims, and so on) and an LLM classifier (OpenAI
-`gpt-4.1-mini` with a strict 15-class label set) for the 842 records the
-regex taxonomy flagged as `other_unclustered`. The LLM classifier
-surfaced four additional classes the regex taxonomy had no equivalent
-for: `missing_counterfactual`, `missing_baseline`,
-`unmeasurable_construct`, `overclaimed_exclusivity`.
+Weakest-point texts were classified into failure-mode categories with a
+two-stage pipeline: a prioritized-regex taxonomy for fast-path categories
+(harness defects, circularity, catastrophic assumptions,
+tail-generalization failures, unverified bounds, exhaustiveness
+overclaims, and the like) and an LLM classifier (OpenAI `gpt-4.1-mini`)
+for the records the regex taxonomy left as `other_unclustered`, which
+added classes the regex stage had no equivalent for, `missing_counterfactual`, `missing_mechanism`, `unmeasurable_construct`,
+and others. Those classifications are cached, so the figures below are
+recomputed from them by deterministic arithmetic, with no further model
+calls.
 
-Every classified weakest-point was joined to its iteration record
-(score, project, mutator/judge model identity, active rubric
-constraints, iteration index, charter hash, rubric hash), producing a
-queryable archive suitable for cross-project analysis. The archive is
-private-track research material; aggregate figures reported here are the
-central artefacts.
+Each classified weakest-point joins to its iteration record (score,
+project, mutator and judge model identity, iteration index, charter hash,
+rubric hash). The joined archive, the classifier outputs, and the scripts
+that rebuild the dataset and recompute every figure in this chapter are
+released with the paper (`evidence/` in the public repository), the 2,395
+classified, scored iterations that survive the join are the corpus
+analysed here. A data-integrity note carries over from the scope
+statement: some iterations predate a fully sealed tool-use corridor, and
+that caveat applies to this corpus as to the rest.
 
-## The Finding: Two Causal Categories, Not One
+## Two causal categories of failure
 
-A simple analysis: for each classified weakest-point, bucket its
-iteration’s score (high $`\geq`$ 85, mid 60–84, low \< 60) and compute
-the per-class frequency within each bucket. The quantity of interest is
-the *lift*, the high-bucket frequency divided by the low-bucket
-frequency, which measures whether a failure class is more or less common
-at high scores than at low scores.
+For each classified weakest-point, bucket its iteration’s score (high
+$`\geq`$ 85, mid 60–84, low \< 60) and compute the per-class frequency
+within each bucket. The *lift*, the high-bucket frequency divided by the
+low-bucket frequency, measures whether a failure class is more or less
+common at high scores than at low scores.
 
-Under a naïve single-category model of failure (“all classes are
-negative signals; higher frequency at low scores, lower at high”), every
-lift should be below 1.0. The empirical result is different. The
-fifteen-or-so classes partition sharply into two regions:
+Under a naïve single-category model of failure (all classes are negative
+signals, more common at low scores than high), every lift should fall
+below 1.0. The data splits into two regions instead.
 
-**Structural blockers (lift well below 1).** Circularity has lift 0.00,
-it appears in zero of the 147 high-score iterations and 6.1% of the
-1,166 low-score iterations. Harness defects (test-suite runtime failures
-that prevent the thesis from being evaluated at all) have lift 0.06
-(1.4% of high, 21.8% of low). Unfalsifiable-claim iterations have lift
-0.51. These three classes behave as the naïve model predicts: their
-presence is incompatible with high scores. Their absence is a necessary
-precondition.
+*Structural blockers (lift well below 1).* Harness defects (test-suite
+runtime failures that prevent the thesis from being evaluated at all) have
+lift 0.04: 0.7% of the 299 high-score iterations against 18.0% of the
+1,571 low-score iterations. Unfalsifiable-claim sits at 0.33, circularity
+at 0.49, missing-mechanism at 0.55, a class for iterations that proposed
+no thesis at all has lift 0.00. These behave as the naïve model predicts:
+they are incompatible with a high score.
 
-**Ceiling-breakers (lift well above 1).** Missing-counterfactual
-iterations have lift 2.41 (9.5% of high, 3.9% of low), the single
-largest lift. Overclaimed-scope has lift 1.63 (15.6% of high, 9.6% of
-low, it is the single most common weakest-link at high scores).
-Catastrophic-assumption iterations have lift 1.53.
-Parameter-sensitivity, exhaustiveness-claim, unverified-bound, and
-tail-generalization all sit at lifts 1.29–1.42. These classes are more
-common at high scores than at low ones, the opposite of what a naïve
-single-category model predicts.
+*Ceiling-breakers (lift above 1).* Catastrophic-assumption has lift 1.74
+(13.4% of high, 7.7% of low, the most common named weakness among
+high-scoring iterations), exhaustiveness-claim 1.96, missing-counterfactual
+1.58, overclaimed-scope 1.10. These are more common at high scores than at
+low ones, the opposite of what a single-category model predicts. The split
+is not perfectly clean: unverified-bound and missing-baseline sit near
+1.05, and parameter-sensitivity and tail-generalization fall just below
+1.0. The middle of the range blurs, the two ends hold across the corpus.
 
-The ceiling-breaker classes are not failure modes in the “structural”
+These ceiling-breaker classes are not failure modes in the “structural”
 sense. They are what the Meta-Judge finds when nothing lower-severity is
-present. A thesis that has handled the structural blockers (has a
-working harness, is not circular, has operational falsifiers, has a
-plausible mechanism) will score somewhere in the 70s or 80s; the judge’s
-weakest-point at that ceiling is the residual critique, the scope claim
+present. A thesis that has handled the structural blockers, working harness,
+not circular, operational falsifiers, a
+plausible mechanism, scores somewhere in the 70s or 80s, and the
+judge’s weakest-point at that ceiling is the residual critique: the scope claim
 the thesis did not fully justify, the rival hypothesis it did not
 canvass, the parameter it empirically set without derivation. These
 critiques are real, but in this corpus they are more characteristic of
 high-scoring theses than of low-scoring ones.
 
-## The Prescriptive Implication
+## The prescriptive implication
 
 A naïve response to “the Meta-Judge flags X at high scores” is to
-instruct the generator to avoid X. This is the wrong intervention for
-the ceiling-breaker classes. Instructing a mutator to avoid overclaimed
-scope does not help, a good thesis must STATE its scope claim; a thesis
-that refuses to state one does not advance. What the thesis must do with
-these classes is ENGAGE them directly: state the scope, then state its
-limits; state the mechanism, then state the rival mechanisms and why
-they fail; state the parameter, then state the derivation or the
-explicit acknowledgment that the parameter is empirically set.
+instruct the generator to avoid X. For
+the ceiling-breaker classes that is the wrong intervention. Instructing a mutator to avoid overclaimed
+scope does not help, because a good thesis must STATE its scope claim, and a
+thesis that refuses to does not advance. With
+these classes the thesis must ENGAGE directly: state the scope, then state its
+limits. State the mechanism, then the rival mechanisms and why they
+fail. State the parameter, then the derivation or the explicit
+acknowledgment that it is empirically set.
 
-The treatment for the structural blockers is the opposite. A circular
-argument cannot be refined into a non-circular one by engagement; it
-must be restructured. A broken harness must be fixed, not explained. An
-unfalsifiable claim must be replaced by a falsifiable one.
+Treatment for the structural blockers is the opposite. A circular
+argument cannot be refined into a non-circular one by engagement. It must
+be restructured. A broken harness must be fixed, and an unfalsifiable
+claim must be replaced by a falsifiable one.
 
-This split, avoidance for some classes, engagement for others, is what
-the principles in Chapter 2 predict. Principle III (typed operations
+The split, avoidance for some classes, engagement for others, is what
+the seven principles predict. Principle III (typed operations
 bound to deterministic checks) says the verification apparatus is
-grounded in falsification, not plausibility; unfalsifiable claims have
-no traction inside it. Principle II (statelessness without social cost)
-means the judge cannot be persuaded by sustained engagement on a
-circular argument; it evaluates each presentation independently.
+grounded in falsification, so unfalsifiable claims have no traction inside
+it. Principle II (statelessness without social cost)
+means the judge cannot be persuaded by sustained engagement on a circular
+argument. It evaluates each presentation independently.
 Principle V (pre-registration of the killer question) means the
 structural-blocker classes are incompatible with the pipeline’s entry
-conditions. The ceiling-breaker classes, by contrast, are precisely what
+conditions. Ceiling-breaker classes, by contrast, are precisely what
 the judgment decomposition is designed to flag at the margin: they
 represent the boundary between a thesis and the residual critique at the
-top of the score distribution. They are features, not bugs.
+top of the score distribution. They are features of a working pipeline.
 
-A corollary of the finding: in apparatus deployments that inject a
+A corollary: deployments that inject a
 “common anti-pattern catalogue” into the generator’s prompt, a
-natural-seeming move, the catalogue must be split. A single catalogue
-that lumps “circularity” together with “missing counterfactual” will
-instruct the generator to avoid both, and will produce theses that avoid
-the ceiling-breaker classes (thus losing engagement with the residual
+natural-seeming move, must split the catalogue. One catalogue
+that lumps “circularity” together with “missing counterfactual”
+instructs the generator to avoid both, producing theses that dodge
+the ceiling-breaker classes (losing engagement with the residual
 critique that distinguishes top-end theses) without improving
-performance on the structural-blocker classes (which are already rare in
-high-score iterations). The two categories require two prompt-context
+performance on the structural-blocker classes (already rare in
+high-score iterations). The two categories need two prompt-context
 injections with opposite framings.
 
-## The Persistence Profile
+## The persistence profile
 
-A second finding from the same corpus is worth recording in the same
-chapter because it bears on Principle VII (asymptotic rather than
-absolute scoring standards). For each (project, rubric-hash) group in
-the corpus, compute the maximum score achieved, the number of iterations
-in the group, and the number of distinct weakest-link classes
-encountered across those iterations. Groups that achieved a maximum
-score $`\geq`$ 90 at any point (31 such groups) ran on average 28.4
-iterations and encountered 10.0 distinct weakest-link classes. Groups
-that peaked at 75–89 ran 19.8 iterations with 7.6 distinct classes.
-Groups that peaked below 50 ran 17.7 iterations with 4.5 distinct
-classes.
+A second finding from the same corpus bears on Principle VII (asymptotic
+scoring standards). For each (project, rubric-hash) group, compute the
+maximum score achieved, the number of iterations in the group, and the
+number of distinct weakest-link classes encountered across them. Groups
+that reached a maximum score $`\geq`$ 90 at any point (54 such groups) ran
+on average 24.4 iterations and encountered 7.2 distinct weakest-link
+classes. Groups that peaked at 75–89 (34 groups) ran 16.3 iterations with
+5.7 distinct classes. Groups that peaked below 50 (19 groups) ran 14.3
+iterations with 3.9 distinct classes.
 
-The relationship is monotonic: longer runs encounter more classes and
-reach higher peaks. The causal arrow is not identified in the data. One
+A monotonic pattern emerges: longer runs encounter more classes and reach
+higher peaks. Its causal arrow is not identified in the data. One
 reading is “champions run longer because they cycle through more
 critique classes, each fix nudging the ceiling up.” Another is
 “champions are longer runs by virtue of surviving, most short runs die
@@ -1506,114 +1448,35 @@ early, so the observed correlation is survivorship.” A third is simply
 “longer runs have more chances to be in the right state when the judge
 is in a generous mood.”
 
-The conservative reading is: the apparatus’s champion profile is not a
-short, clever thesis but a long trajectory that engages many distinct
-critique classes. This is a specific piece of evidence for Principle
+A conservative reading: the apparatus’s champion profile is a
+long trajectory that engages many distinct
+critique classes, not a short clever thesis. The persistence profile is specific evidence for Principle
 VII. If the scoring standards were absolute, a short clever thesis would
 suffice. That they are asymptotic, that “getting better” happens through
-class-cycling rather than through a single correct answer, is what the
-Chapter 2 principle asserts, and what the corpus data is consistent
+class-cycling rather than a single correct answer, is what
+Principle VII asserts, and what the corpus data is consistent
 with.
 
-## What This Chapter Does Not Establish
+## The limits of this corpus
 
-Three things. First, the classification taxonomy (regex + LLM) is a
-research tool, not a formal ontology; the 15 class labels are the ones
-that emerged from the corpus, not the ones that MUST exist in all
-apparatus deployments. Second, the lift numbers are empirical in a
-specific corpus shaped by specific project choices (heavy on
-dynamical-systems and honeypot probes; lighter on real
-conjecture-refinement); the quantitative lifts may shift as the
-substrate mix shifts. Third, the persistence profile is descriptive, not
-predictive; the corpus does not tell us whether a given short run will
-become long, or whether a given long run will peak high. The chapter
-reports what the 1,825 iterations show when read systematically. The
-principles in Chapter 2 are not derived from this data; this data is
-consistent with them and sharpens one specific prescriptive implication
-that the principles themselves do not make explicit.
+The classification taxonomy (regex + LLM) is a research tool, and its
+class labels are the ones that emerged from this corpus. Other deployments
+may need different ones. The lift numbers come from a corpus shaped by
+particular project choices (heavy on dynamical systems and honeypot
+probes, lighter on real conjecture-refinement), and they may shift as the
+mix shifts. The persistence profile is descriptive: the corpus does not
+say whether a given short run will become long, or a long run peak high. The seven principles are
+argued independently of this data, which is consistent with them and
+sharpens one prescriptive implication the principles leave implicit.
 
-## The Self-Correcting Audit: A Methodological Coda
+## From verification to discovery: three adversarial gates
 
-The empirical mining above reads the apparatus as a population of
-completed runs. There is a complementary observation, drawn from a
-single trajectory, that belongs in the chapter as methodology rather
-than as a corpus result. It is recorded here because it constitutes a
-process rarely documented in published machine-learning work, and
-because it sharpens what Principle I (separation of generation from
-verification) means when generation and verification both happen inside
-the same apparatus.
-
-In late April 2026, a pre-solver representation-search primitive,
-internally called the Framer, was designed by the apparatus through one
-architectural-design audit (`gp152_framer_architecture_audit`). The
-champion thesis at iteration 1 (score 91) was extracted as Spec v1.0. A
-four-panel cold-context review (Newton, Einstein, Heisenberg, Munger
-personas, each given only the spec and a persona prompt) produced Spec
-v1.1, fixing five flaws the apparatus’s iter-1 thesis had introduced.
-The revised spec was then submitted to a second audit
-(`gp153_framer_spec_critique`) running cross-LLM committee rotation,
-with the explicit charter to find decisive flaws the panel had missed.
-The recursive audit found a residual frame-invariance bug that produced
-a 70-bit MDL drift under monotone scaling, forcing Spec v1.2. Two
-further patch revisions (v1.2 to v1.3) each carried a math error in the
-Jacobian-correction term, until the formula was re-derived from first
-principles in raw coordinates (v2.0), at which point a numerical
-backtest confirmed zero-bit drift across a five-decade scaling sweep.
-
-What deserves explicit documentation, separately from the spec
-evolution, is what happened next. A subsequent iteration of the
-recursive audit (iter 4, score 78) produced what looked like a
-substantive new flaw against v2.0: a claim that Student-t residuals with
-degrees-of-freedom $`\leq`$ 4 induce an at-least-30% mis-ranking rate in
-v2.0’s MDL formula. A peer-critique iteration (iter 5, score 50) flagged
-the claim as unsupported empirically. Two iterations later (iter 7,
-score 32), the apparatus produced a re-implementation of the alleged
-failure mode and reported that the actual mis-rank rate under Student-t
-noise is below 1%, an order of magnitude smaller than claimed. The
-original flaw was not real at the asserted magnitude; it had been a
-plausible-but-unverified construction that survived one round of
-adversarial review and was refuted by the next. Without the second-round
-re-implementation, a v2.1 patch would have been written for a flaw that
-did not exist.
-
-The shape of this trajectory, apparatus designs primitive, apparatus
-audits primitive, apparatus refutes its own audit’s claim, is what is
-worth naming. It is a self-correcting epistemic loop in which the
-verification operations of Chapter 1 act not only on the original thesis
-(the primitive’s design) but also on the audit’s own claims about that
-thesis. The Principle-I separation between generation and verification
-holds at both levels: the apparatus generates the design, separately
-verifies it; then generates a critique, separately verifies the
-critique. Each level uses the same typed-input / typed-output pipeline;
-each level produces a verdict that lives or dies by the same gates. The
-loop terminates when generated claims survive their own verification,
-not when generated claims are merely produced.
-
-Two things about this pattern are not asserted here. First, the loop is
-not guaranteed to terminate at truth; an audit can systematically miss
-the same class of flaw that its target carries, and the loop can
-converge on a stable but wrong attractor. Second, the loop is not unique
-to this apparatus; classical formal-methods work (TLA+ specifications
-reviewed by independent automated checkers, Coq proofs against
-alternative proof assistants) instantiates the same structural pattern
-at a lower throughput and a higher rigor. What is claimed is that the
-loop, run at apparatus speed against an apparatus-internal primitive
-design, produced a documented case in which a plausible-sounding flaw
-was constructed by one iteration and refuted by another, and that this
-specific kind of self-refutation is rare in the published
-machine-learning literature. The Framer specification itself may turn
-out to be unremarkable; the methodology that produced it is what this
-chapter records as worth keeping.
-
-## From Verification to Discovery: Three Adversarial Gates
-
-The empirical mining and the self-correcting audit above concern
-verification: the apparatus testing claims that have already been
-generated. A separate question is whether the operations of Chapter 1,
+The mining above concerns verification: the apparatus testing claims already
+generated. A separate question is whether the operations,
 composed into a recursive loop with deterministic gates, can help
 generate candidate functional laws from data rather than merely verify
-laws proposed elsewhere. The paper’s scope commitment (§1.2) does not
-claim that the apparatus is a general discovery engine, but the
+laws proposed elsewhere. This paper does not
+claim the apparatus is a general discovery engine, but the
 empirical record contains three pre-registered synthetic tests that bear
 on this narrower capability.
 
@@ -1623,14 +1486,14 @@ test uses a synthetic substrate, a ground-truth law authored by the
 reviewer, sealed before the run, with data points visible to the mutator
 but the generating law and its constants hidden.
 
-**Test 1: Retrieval versus Discovery (GP-159).** The substrate uses the
+*Test 1, retrieval versus discovery (GP-159).* The substrate uses the
 functional form $`\alpha(d) = C_1 / (d + C_2)`$, similar to published
 scaling-law relationships, but with constants $`C_1 = 3.714`$ and
 $`C_2 = 0.892`$ that do not appear in any published work. The known
 literature values are $`C = 2`$ or $`C = 4`$ with zero offset. An
 anti-retrieval gate checks whether the discovered constants are within
-5% of any known value; if so, the apparatus has retrieved from
-parametric memory rather than discovered from data. Result: the
+5% of any known value. If so, the apparatus has retrieved from parametric
+memory and not discovered anything from data. Result: the
 apparatus recovered $`a = 3.703`$, $`b = 0.886`$ (error $`{<}0.3\%`$ on
 both constants), with holdout mean relative error 0.8% on five withheld
 points and 3.9% on four extrapolation points beyond the visible range.
@@ -1639,7 +1502,7 @@ published values. Score: 82/100, with the residual 18 points
 attributable to the judge’s observation that the denominator offset
 $`b`$ is empirically fitted without mechanistic grounding.
 
-**Test 2: Asymptotic Discipline (GP-160).** The substrate uses a
+*Test 2, asymptotic discipline (GP-160).* The substrate uses a
 two-term decay law (exponential plus power-law) that approaches zero
 from above as $`d \to \infty`$. A polynomial approximation, no matter
 how accurate on the visible range, will extrapolate to negative values
@@ -1650,7 +1513,7 @@ holdout gates (MRE 1.3%) and stays within bounds at all three probe
 points. A degree-3 polynomial fitted to the same visible data
 extrapolates to $`-32`$ at $`d = 100`$. Score: 90/100.
 
-**Test 3: Parsimony Resistance (GP-161).** The substrate uses a
+*Test 3, parsimony resistance (GP-161).* The substrate uses a
 deliberately complex ground truth with $`K = 10`$ parameters, including
 an oscillatory term ($`\sin`$) superimposed on a decay envelope. A
 five-parameter monotonic model fits the visible data acceptably (visible
@@ -1662,7 +1525,7 @@ when holdout demands it. Result: the apparatus accepted a
 higher-parameter form that captures the oscillatory structure. Holdout
 MRE: 4.9%. Score: 90/100. The apparatus did not Goodhart on parsimony.
 
-**Cross-mutator replication.** Each test was independently replicated
+*Cross-mutator replication.* Each test was independently replicated
 with a second mutator model from a different provider family: OpenAI o3
 (reasoning model) and Anthropic claude-opus or claude-sonnet (general
 model). Results: GP-159 scores 90 (o3) and 90 (claude-sonnet). GP-160
@@ -1671,18 +1534,18 @@ scores 90 (o3) and 82 (claude-sonnet). GP-161 scores 90 (o3) and 81
 suggesting that the result is not an artifact of a single model’s
 training distribution.
 
-**Scope of the claim.** The three tests, replicated across mutator
+*Scope of the claim.* The three tests, replicated across mutator
 families, support a scoped methodological finding: under synthetic
 conditions with sealed ground truth, the apparatus can avoid three
 failure modes (retrieval, extrapolation breakdown, and MDL Goodharting)
-that would otherwise disqualify a law-recovery claim. This does *not*
+that would otherwise disqualify a law-recovery claim. The finding does *not*
 establish that the apparatus discovers laws on real-world scientific
 substrates where the ground truth is unknown. That claim requires at
 least one real-world substrate where the apparatus proposes a law that
 survives independent empirical validation, and one substrate where
 neither the reviewer nor the apparatus has access to the ground truth at
-design time. The synthetic triad is an admissibility check, not a
-sufficient demonstration.
+design time. The synthetic triad is an admissibility check, one hurdle a
+real demonstration would still have to clear.
 
 <div class="center">
 
@@ -1690,262 +1553,249 @@ sufficient demonstration.
 
 </div>
 
-# Chapter 3: The Residual: What Did Not Systematize
+# Chapter 3: the residual that did not systematize
 
-The decomposition in Chapter 1 is real, and the principles in Chapter 2
-are controlling for why it works. If the paper stopped there, it would
-be a Taylorist document in the bad sense: a decomposition held up as
-complete without honest accounting of what the decomposition failed to
-capture. This chapter is the counterweight. It names the residual.
+The decomposition is real, and the principles
+control why it works. Held up as complete
+without an accounting of what it failed to capture, it would be a
+Taylorist document in the bad sense. That accounting is the residual.
 
-The residual is the portion of epistemic verification that has not, so
+The residual names the portion of epistemic verification that has not, so
 far, decomposed into operations the stateless, typed, deterministic
-process of Chapters 1 and 2 can perform. This chapter claims that the
-residual is structurally different from the operations that did
-decompose, and offers a reason (grounded in Peirce (1878)’s distinction
-between abduction and the other two inference types) to expect the
-residual to resist decomposition longer than the craftsmen’s residual
-resisted Taylor’s. But a paper whose central argument is that guilds
-misjudge the boundaries of the ineffable must hold its own boundary
-claims to the same standard. The honest framing is: the three operations
-below have not decomposed *on this system, under this reviewer, over
+process of the prior chapters can perform. It is structurally different
+from the operations that did decompose, and the reason draws on Peirce
+(1878)’s distinction between abduction and the other two inference types
+to expect it to resist decomposition longer than the craftsmen’s
+residual resisted Taylor’s. A paper whose central argument is that
+guilds misjudge the boundaries of the ineffable must hold its own
+boundary claims to the same standard: the three operations below have
+not decomposed *on this system, under this reviewer, over
 approximately one month*. Whether they are permanently irreducible or
-merely not yet decomposed is an empirical question this paper cannot
-answer from the inside. The Peircean argument provides structural
-reasons to expect resistance; it does not provide a proof of
-impossibility. If a future system decomposes eigenquestion selection
-into a stateless, typed operation without loss of the property that
-makes the operation controlling, this chapter’s claim is refuted and
-should be updated rather than defended.
+merely not yet decomposed is an empirical question the paper cannot
+answer from the inside. Peirce’s argument supplies structural
+reasons to expect resistance, short of a proof of impossibility. If
+a future system decomposes crux selection into a stateless,
+typed operation without loss of the property that makes the operation
+controlling, the boundary claim is refuted and should be
+redrawn.
 
-The distinction between the craftsmen’s residual and this one is worth
-naming explicitly, because the paper’s own Taylor analogy creates the
-obvious objection. The craftsmen in 1911 insisted their residual was
-irreducible, and Taylor showed it was not. Why should this residual be
-different? The answer offered here (and it is offered as a hypothesis,
-not a proof) is that the craftsmen’s residual was sensorimotor: the feel
-of the metal, the angle of the chisel, the weight of the pour. These are
-operations on physical substrates that were not yet instrumented. Once
-instrumented, they decomposed.
+The present residual and the craftsmen’s differ in a way the paper’s own Taylor
+analogy makes pressing. In 1911 the craftsmen insisted their residual
+was irreducible, and Taylor showed otherwise. Why should this residual
+be different? The answer, a hypothesis rather than a proof:
+the craftsmen’s residual was sensorimotor, the feel of the metal,
+the angle of the chisel, the weight of the pour. These are operations on
+physical substrates that were not yet instrumented. Once instrumented,
+they decomposed.
 
 The residual named below is abductive: the generation of a frame before
 there is a procedure to generate it. Peirce (1878)’s central claim is
 that abduction is not reducible to deduction or induction by
-composition: it is a different logical type, not a different difficulty
-level. If Peirce is right, the residual resists decomposition for a
+composition: it is a logical type of its own, set apart from deduction
+and induction in kind, a different thing to do with a premise. If Peirce is right, the residual resists decomposition for a
 reason the craftsmen’s did not: not because no one has yet built the
 instrument, but because the operation is of a type the instrument cannot
 perform. If Peirce is wrong (if abduction turns out to be induction over
 a latent space that has not yet been featurized) then the residual
-narrows, and the paper’s boundary moves. Either outcome is informative.
-Neither outcome damages the decomposition of Chapters 1 and 2, which
-stands or falls on its own evidence regardless of where the residual
+narrows, and the paper’s boundary moves. Either outcome is informative, and neither damages the decomposition or its
+principles, which
+stand or fall on their own evidence regardless of where the residual
 boundary eventually settles.
 
-Three operations have resisted decomposition. They are named and
-described below.
+Three operations have resisted decomposition, and they share a
+psychological signature, naming it first sharpens the boundary this
+chapter draws. In the vocabulary of self-determination theory (Ryan and
+Deci 2000), an activity is *intrinsically motivated*
+(chosen from self-endorsed volition under no external contingency) when
+it satisfies three basic needs: autonomy (the actor experiences the
+action as self-originated), competence (the action
+matches real capability), and relatedness (the action has standing
+in a community whose judgment the actor answers to). The
+decomposed operations satisfy none of these needs and do
+not need to. They are typed, stateless passes whose credibility comes
+from structural independence, not from the psychological state of
+whatever performs them. The three operations below differ in just
+this respect.
 
-Before listing them it is worth naming the psychological signature they
-share, because the boundary this chapter draws becomes sharper once the
-shape of the residual is visible as a shape rather than as a list. In
-the vocabulary of self-determination theory (Ryan and Deci 2000), an
-activity is experienced as *intrinsically motivated* (chosen from
-self-endorsed volition rather than performed under external contingency)
-when it satisfies three basic needs: autonomy (the actor experiences the
-action as self-originated), competence (the actor experiences the action
-as matched to real capability), and relatedness (the action has standing
-in a community whose judgment the actor is accountable to). The
-decomposed operations of Chapter 1 do not satisfy these needs and do not
-need to; they are typed, stateless passes whose credibility comes from
-structural independence rather than from the psychological state of
-whatever is performing them. The three operations below are different in
-exactly this respect.
-
-Each one’s value is partly constituted by being performed under
+Each one’s value depends partly on being performed under
 autonomous commitment: by an agent who chose this frame, in this moment,
 for this reason, with standing in a community that will evaluate the
-choice. The claim is not that the operations are mysterious. They live
-in the zone self-determination theory names explicitly, and the residual
-is therefore bounded in a way the incumbent vocabulary of “judgment” is
-not: it is the zone in which autonomous, competence-matched,
+choice. This makes the operations no more mysterious than the zone
+self-determination theory names explicitly. The residual
+is bounded in a way the incumbent vocabulary of “judgment” is
+not: it is the zone where autonomous, competence-matched,
 community-accountable commitment is controlling, and the
-structured-input / structured-output mode of Chapters 1 and 2 is
-architecturally unsuited to producing it. The three operations named
-below are, read in this light, the three places where the SDT zone
+structured-input / structured-output mode of the decomposed practice is
+architecturally unsuited to producing it. Read this way, the three
+operations below are the three places where the SDT zone
 enters the verification practice.
 
-## The Selection of the Eigenquestion Itself
+## Selecting the crux itself
 
-The clearest instance of the residual this chapter names happened on
-2026-04-14, and it is worth leading with because the abstract claim
-lands differently once the live work is visible.
+The clearest instance of the residual happened on 2026-04-14, and the
+abstract claim lands differently once the live work is in view.
 
 While preparing to seal a stress-test sandbox for the verification
 engine, the reviewer declined a pre-commit identifiability check that
-had returned a clean pass. The check was a bootstrap-under-noise test:
+had returned a clean pass. That check was a bootstrap-under-noise test:
 the optimizer recovered the declared ground-truth parameters
 consistently across noise realizations from a fixed starting point, and
 by the decomposed rules of the apparatus this was sufficient for the
-sealing gate. The reviewer ran a second check anyway (an adversarial
-multi-start fit from clean data) on no stronger warrant than a general
-commitment to distrust green lights that arrive too easily. The second
+sealing gate. The reviewer ran a second check anyway, an adversarial
+multi-start fit from clean data, on no stronger warrant than a general
+commitment to distrust green lights that arrive too easily. That second
 check failed: two of the six declared parameters were recovered with a
 70% error and a 1:1 ratio to each other identical to their ratio in the
 ground truth, which on inspection revealed that the two parameters
 entered the functional form only through their quotient, making the
-declared six-parameter family structurally rank-five. The apparatus
-caught the specification flaw, but only because the reviewer pointed the
-apparatus at a question it was not required to ask.
+declared six-parameter family structurally rank-five. So the apparatus
+caught the specification flaw, but only because the reviewer pointed it
+at a question it was not required to ask.
 
-The decomposed apparatus is what made the second check runnable; the
-residual is what decided to run it. That decision is what §3.1 names.
-The apparatus performed exactly as specified once pointed, and the
-reviewer was not heroically indispensable. The point is narrower: the
-decomposed operations cannot produce the commitment to run a check the
-rules did not mandate, while a reviewer under the discipline of
-distrusting green lights can.
+Making the second check runnable was the decomposed apparatus. Deciding
+to run it was the residual, and that decision is what this section names. Once
+pointed, the apparatus performed as specified, the reviewer was not
+heroically indispensable. The narrower point is that the decomposed
+operations cannot produce the commitment to run a check the rules did
+not mandate, whereas a reviewer under the discipline of distrusting green
+lights can.
 
-Now the abstract claim. The first operation the decomposition has not
-captured is *which question should be eigenquestion-identified in the
-first place*. Operation 1 of Chapter 1 takes as input a set of claims
-and selects the one whose answer determines the rest. The input (the set
-of claims) is itself the output of a prior decision about what argument
-to attack, and that prior decision has not systematized. When the
-verification process is handed an argument, it can identify the
-eigenquestion within that argument reliably. When the verification
-process is asked to decide *which argument* to verify, *which reframing
+Now the abstract claim. One operation the decomposition has not
+captured is *which question should be crux-identified in the
+first place*. Operation 1 takes a set of claims
+and selects the one whose answer determines the rest. But that set of claims
+is itself the output of a prior decision about what
+argument to attack, and that prior decision has not systematized. Handed
+an argument, the verification process identifies the
+crux within it reliably. Asked to decide *which argument* to verify, *which reframing
 of the underlying problem* to work within, or *which check to run that
-the rules did not mandate*, it does not have a procedure that produces
-an answer. The operation is performed, in the existing system, by the
-human reviewer.
+the rules did not mandate*, it has no procedure that produces
+an answer. In the existing system the human reviewer performs the operation.
 
-The logical character of the operation can be stated precisely. Peirce
+The operation has a definite logical character. Peirce
 (1878) distinguished three kinds of inference: *deduction*, from rule
-and case to result; *induction*, from case and result to rule; and
+and case to result, *induction*, from case and result to rule, and
 *abduction*, from result to the spontaneous generation of an explanatory
-hypothesis that, if true, would make the result a matter of course. The
-decomposed operations of Chapter 1 are mostly deductive in Peirce’s
-sense: they apply fixed rules to structured inputs. The generator the
-verifier attacks is mostly inductive: a statistical substrate that finds
-rules from examples. The selection of the eigenquestion is closer to
-abduction: the operation by which a frame is proposed before there is a
+hypothesis that, if true, would make the result a matter of course.
+The decomposed operations are mostly deductive in Peirce’s
+sense: they apply fixed rules to structured inputs. The generator the verifier attacks is
+mostly inductive, a statistical substrate that finds
+rules from examples. Selecting the crux comes closer to
+abduction: it proposes a frame before there is a
 rule to apply or a case to induce over. Peirce’s account supplies a
-reason to expect this operation to resist the current apparatus, not a
-proof that no future apparatus could mechanize it. The 2026-04-14 catch
-above is what this category looks like when it does one unit of
+reason to expect this operation to resist the current apparatus, short of
+a proof that no future apparatus could mechanize it. The 2026-04-14
+catch above is what this category looks like when it does one unit of
 substantive work in real time.
 
-The incumbent vocabulary calls this operation *strategic judgment* or
-*research taste* or *knowing what to work on*. Those labels are doing evidential work. The operation is controlling, it is teachable only by
-apprenticeship, and it is the one place in this paper where the
-incumbent defense has genuine force. It resists decomposition into
-stateless, typed passes. It is what stays human.
+Incumbent vocabulary calls this operation *strategic judgment* or
+*research taste* or *knowing what to work on*. Those labels point at
+something real. Controlling and teachable only by apprenticeship, it
+is the one place here where the incumbent defense has real force. It resists decomposition into stateless, typed passes. It is what
+stays human.
 
-## Recognizing When to Reframe Rather Than Attack
+## Recognizing when a reframing is required
 
-The second operation that has not decomposed is *recognizing that the
-right move is a reframing rather than an attack*. The operations of
-Chapter 1 contain both basin search (Operation 6) and topological pivot
+A second operation that has not decomposed is *recognizing that the
+right move is a reframing rather than an attack*. The decomposition's
+operations contain both directed search (Operation 6) and reframing
 recognition (Operation 3), and a competent verifier can perform each.
-What has not systematized is the decision of which of the two to perform
+What has not systematized is which of the two to perform
 on a given argument in a given state.
 
-The decision is not arbitrary. There are signals (persistent stagnation
-at the current frame, recurring attack patterns that fail for the same
+That call is not arbitrary: there are signals (persistent stagnation at the
+current frame, recurring attack patterns that fail for the same
 underlying reason, the sense that a particular assumption is quietly
-doing all the work) that indicate a topological pivot is the correct
-move. The decomposed process can notice these signals when they are
-bright. When they are dim, the decomposed process tends to keep running
-basin searches, because basin search is the cheap default and the cost
+doing all the work) that indicate a reframing is the correct
+move. When these signals are bright, the decomposed process can notice
+them. When they are dim, the decomposed process tends to keep running
+directed searches, because directed search is the cheap default and the cost
 of a missed reframing is paid in delayed discovery rather than in
 visible failure.
 
-In the existing system, the call between basin search and reframing is
-made, again, by the human reviewer. The reviewer reads the workspace,
-sees that the iterations have been producing the same failure signatures
-for too long, and forces a reframing. The decomposed process cannot
-produce this call reliably on its own. The signals it can read are a
-proper subset of the signals the reviewer reads; the residual is not yet
-specified precisely but is persistent across domains.
+In the existing system, again, the human reviewer makes the call between directed search and reframing. They read the workspace,
+see that the iterations have been producing the same failure signatures
+for too long, and force a reframing. On its own the decomposed process
+cannot produce this call reliably: the signals it reads are a
+proper subset of the signals the reviewer reads. Not yet specified
+precisely, this residual is persistent across domains.
 
-The incumbent vocabulary calls this *seeing the bigger picture* or
+Incumbent vocabulary calls this *seeing the bigger picture* or
 *knowing when to step back*. Like the first residual operation, the
-label is substantively distinguishing cases. The operation is distinct from basin search
-and from topological pivot in the same way that selecting a problem is
-distinct from solving a problem: it is a meta-level commitment that the
+label points at a real distinction. The reframing call stands apart from
+directed search and reframing the same way selecting a problem
+stands apart from solving one: it is a meta-level commitment the
 decomposed process has not been built to produce.
 
-## The Social Dynamics of Live Pressure-Testing
+## The social dynamics of live pressure-testing
 
-The third operation that has not decomposed is the performance of
-adversarial verification in a live, multi-party, social setting. The
-decomposed process operates on written arguments, at the reviewer’s
+A third operation that has not decomposed is the performance of
+adversarial verification in a live, multi-party, social setting.
+Our decomposed process operates on written arguments, at the reviewer’s
 discretion, with no audience. Much of the practice this paper is about
 (the diligence room, the board meeting, the case-method classroom, the
 peer review) is performed live, in front of an audience, under social
 stakes.
 
-The operations of Chapter 1 are directly applicable to the content of
-the argument in these settings. The pathologies of §1.3 are exactly the
+The decomposed operations apply directly to the content of
+the argument in these settings, and the named pathologies are the
 pathologies these settings produce. But the *delivery* of the
-verification in a live setting (when to press and when to let pass, when
+verification in a live setting, when to press and when to let pass, when
 to let the author save face and when to force them into contact with the
 weakness, when to escalate and when to retreat, when to speak and when
-to let the room do the work) is an operation the decomposed process
-cannot perform, because the decomposed process has no theory of the
+to let the room do the work, is an operation the decomposed process
+cannot perform, because it has no theory of the
 room.
 
-The distinction worth naming is between validating a claim and getting a
-group to accept the validation. The first is the content of the
-verification pass. The second is a separate act performed in front of an
-audience, under stakes, with reputational consequences for the reviewer.
+Validating a claim and getting a group to accept it are different acts. Validating a claim is the content of the
+verification pass. Getting the group to accept it is a separate act
+performed in front of an audience, under stakes, with reputational
+consequences for the reviewer.
 The reputational credit a senior reviewer earns for being right in a
 live room, the trust a diligence lead builds by pressing an
 uncomfortable point at the right moment, the authority a case-method
-instructor carries across a 75-minute classroom: none of these is
-reducible to the content of the verification even when the content is
-identical. The decomposed process produces content; the live setting
-produces credibility; the two are separable, and this paper claims only
-the first.
+instructor carries across a 75-minute classroom: none of these reduces
+to the content of the verification even when the content is
+identical. The decomposed process produces content, the live setting produces
+credibility. The two are separable, and this paper claims only the first.
 
-The practical implication is that the adversarial verification
+In practice that means the adversarial verification
 operations can be performed in a room with no social stakes, such as the
-corpus this paper draws on, but the practice of performing them *in* a
+corpus this paper draws on, but performing them *in* a
 socially stakes-laden room is a different practice, and this paper does
-not have a theory of it. The case-method instructor’s ability to
+not have a theory of it. A case-method instructor’s ability to
 pressure-test an argument in a 75-minute classroom with ninety students
-is not reducible to the ten operations of Chapter 1, and the residual is
+is not reducible to the ten operations, and the residual is
 real.
 
-## The Shape of the Residual
+## What the three residual operations share
 
-The three residual operations above share a structural property. None of
+All three residual operations above share a structural property. None of
 them is an operation on a structured input that produces a structured
-output. All three are commitments made in the absence of a procedure
-that produces the commitment. The first is a commitment about what to
-work on. The second is a commitment about when to change the frame. The
-third is a commitment about how to act in a social context.
+output. All three are commitments made in the absence of a procedure that
+produces the commitment: a commitment about what to work on, a commitment
+about when to change the frame, and a commitment about how to act in a
+social context.
 
-The decomposed operations of Chapter 1 are the ones that *do* have
-procedures. The residual operations are the ones that do not. The
-boundary is not between easy and hard. Several of the decomposed
-operations are subtle and require training; several of the residual
-operations feel, in the moment, like the easiest things in the world to
-experienced practitioners. The boundary is between *operations that take
-structured input and produce structured output* and *commitments that
-emerge from context without a procedure*.
+The decomposed operations are the ones that *do* have
+procedures, the residual operations do not. Easy
+and hard do not draw the line. Several decomposed operations are
+subtle and require training, and several residual operations feel,
+to experienced practitioners in the moment, like the easiest things in the world. The line runs between *operations that take structured
+input and produce structured output* and *commitments that emerge from
+context without a procedure*.
 
-The three residual operations above correspond, one-for-one, to the
+All three residual operations above correspond, one-for-one, to the
 reviewer-discipline principles developed in the author’s prior work on
-epistemic supervision (Alami 2026b). The first residual (selecting the
-eigenquestion, choosing which argument to verify) is the operation P9
+epistemic supervision (Alami 2026b). One residual (selecting the
+crux, choosing which argument to verify) is the operation P9
 names as *the reviewer is the uncontrolled variable*: the operation
 whose output is a commitment rather than a check, and which therefore
-cannot be governed from inside the automated loop. The second residual
-(recognizing when to reframe rather than attack) maps onto P11’s
-*calibration as a guard against inward drift*: the call to reframe is
-almost always a call to notice that the current frame has drifted, and
-the reviewer is the one positioned to notice it because no stateless
+cannot be governed from inside the automated loop. A second residual
+(recognizing when a reframing is the right move) maps onto P11’s
+*calibration as a guard against inward drift*. The call to reframe is
+almost always a call to notice that the current frame has drifted. The
+reviewer is the one positioned to notice it, because no stateless
 pass has the memory to see the drift accumulating. The third residual
 (the social dynamics of live pressure-testing) is the operational form
 of P10 and P12: the insistence that confidence levels be visible rather
@@ -1955,20 +1805,18 @@ acts before they are structural ones. They are performed *in front of*
 an audience and their credibility depends on the audience reading them
 as such.
 
-The decomposed process produces the content of the check; the reviewer,
-under the discipline named in P9–P12, produces the credibility of the
-check in a setting where credibility is controlling. The two are
-separable, and the separation is what makes honest discussion of what
-stays human possible.
+The decomposed process produces the content of the check. The reviewer,
+under the discipline named in P9–P12, produces its credibility
+in a setting where credibility is controlling. Because the two are
+separable, what stays human can be discussed without confusion.
 
-This boundary is the honest answer to the Taylor objection. The
-decomposition does not claim to capture everything. It claims to capture
-the portion of the practice that has the property of being an operation,
-and to leave the portion that has the property of being a commitment to
-the human reviewer. The portion that stays human takes the form of three
-specific classes of move, named below, rather than a vague residue. The
-argument for automating the decomposable operations is the same argument
-as the argument for keeping the commitments human: both follow from the
+The content/delivery boundary is the answer to the Taylor objection. The decomposition makes no claim
+to capture everything. It captures the
+portion of the practice that is an operation and
+leaves the portion that is a commitment to the
+human reviewer. What stays human takes the form of three specific classes
+of move, named below, with a definite shape. Automating the decomposable
+operations and keeping the commitments human both follow from one fact: the
 structural difference between the two classes.
 
 A qualification on the relative weight of the three residual operations
@@ -1976,10 +1824,10 @@ is necessary, because the paper’s corpus creates a systematic bias in
 the direction of understating the third. The corpus this paper draws on
 (recursive adversarial verification of written arguments by
 computational processes) is a setting where the social dynamics of live
-pressure-testing are absent by construction. The verification happens in
+pressure-testing are absent by construction. Verification happens in
 text, between processes, with no audience and no reputational stakes. In
-this setting, the third residual is genuinely the smallest of the three:
-the first (eigenquestion selection) and the second (reframing
+this setting, the third residual is the smallest of the three:
+the first (crux selection) and the second (reframing
 recognition) do the substantive residual work, and the third is a
 theoretical acknowledgment of something the system does not encounter.
 
@@ -1990,106 +1838,99 @@ a professional services firm reports that the social performance of
 verification (knowing when to press, when to let pass, how to deliver an
 uncomfortable finding in a way that produces action rather than
 defensiveness) constitutes the majority of the job by volume and by
-value. The decomposed operations are the analytical homework; the social
-performance is the exam. The decomposition captures the analytical spine
-of verification. It does not capture the human spine, and in
-professional services the human spine is where the margin lives.
+value. The decomposed operations are the analytical homework, and the
+social performance is the exam. What the decomposition captures is the
+analytical spine of verification. It does not capture the human spine,
+and in professional services the human spine is where the margin lives.
 
-This is a specification of what the decomposition covers: the *content*
-of verification, not the *delivery*. A decomposition honestly held makes
-this boundary visible rather than hiding it behind an undifferentiated
-vocabulary of “judgment.” The practical implication is that a
-practitioner who adopts the ten operations and seven principles has
-systematized the analytical preparation; they have not systematized the
-performance, and the performance requires a set of skills (social
-timing, reputational risk management, audience reading, credibility
-accumulation) that this paper does not have a theory of and does not
-pretend to.
+The decomposition covers the *content* of verification and leaves the
+*delivery* to the human reviewer. Naming the
+operations makes that boundary visible, the single word “judgment” hides
+it. A practitioner who adopts the ten operations and seven principles has
+systematized the analytical preparation. The performance is another
+matter, social timing, reputational risk management, audience reading,
+credibility accumulation, skills the decomposition does not reach.
 
 A practicing private equity partner noted that “credibility-weighted
-sourcing” (knowing which human’s numbers to trust based on their
-incentives, track record, and position in the information chain) is
-missing from the decomposition. The classification of this operation is
-genuinely disputed. The partner and two independent reviewers argue it
+sourcing”, knowing which human’s numbers to trust based on their
+incentives, track record, and position in the information chain, is
+missing from the decomposition. How to classify it is
+disputed. That partner and two independent reviewers argue it
 belongs in the decomposed operations: source-credibility assessment is
-teachable, checklistable, and partially captured by Operation 5 (anchor
-proxy requirement). The organizational theory literature treats it as a
-structured procedure. The alternative view is that the adversarial
-component of credibility assessment (reading which human is shading
-their numbers and why) depends on social context in a way that resists
-stateless decomposition. This paper records the dispute rather than
-resolving it. If credibility-weighted sourcing proves fully
+teachable, checklistable, and partially captured by Operation 5 (operational proxy requirement). The organizational-theory literature treats it as a
+structured procedure. On the other view, the adversarial
+component of credibility assessment, reading which human is shading
+their numbers and why, depends on social context in a way that resists
+stateless decomposition. The paper records the dispute and leaves it
+open. If credibility-weighted sourcing proves fully
 decomposable, it is the eleventh operation and the count in the title
 moves. If it proves to require the social context the residual names, it
-is the clearest example of an operation that sits at the boundary.
-Either outcome is informative; premature classification is not.
+is the clearest example of an operation that sits at the boundary. Either
+outcome is informative, and premature classification is not warranted.
 
-The practical implication is the one this paper has been pointing at
-throughout. The vocabulary of “judgment” or “expertise” that the
-incumbent practice uses to defend the whole territory is defending too
-much. A portion of that territory (the analytical spine, and probably
+The vocabulary of “judgment” or “expertise” the
+incumbent practice uses to defend the whole territory defends too
+much. Part of that territory, the analytical spine, and probably
 the majority of the *operations* though not necessarily the majority of
-the *value*) has the property of being decomposable. A portion, smaller
-in operational count but potentially larger in professional value, has
-the property of being residual. Honest professional practice involves
-knowing which is which, and the decomposition above is offered as a
-first draft of the map.
+the *value*, decomposes. Another part, smaller
+in operational count but potentially larger in professional value, is
+residual. Professional practice means knowing which is which, and the
+decomposition above is a candidate map. 
 
-# Conclusion: What the Decomposition Makes Available
+Marking the residual is not an admission of defeat but the precondition for using the decomposition without overreach. Where verification decomposes, it can be made cheaper and more reliable without anyone pretending the rest is solved. Where it does not, the work stays human, and so does the responsibility for getting it wrong. A vocabulary that can tell the two apart is what keeps the automation of the analytical spine from becoming the quiet automation of accountability.
 
-The argument of this paper has been that epistemic verification
-decomposes into roughly ten named operations plus a residual of three
-commitments. The decomposed operations can be performed by a
+# Conclusion
+
+Epistemic verification decomposes into
+roughly ten named operations plus a residual of three commitments. A
 verification process that is independent of the system that produced the
-claim, can be repeated many times, records its standards in advance, and
-checks claims against evidence they did not author. The residual
-operations cannot. The boundary between the two is specific, testable,
-and controlling for any honest discussion of what knowledge work becomes
-in an environment where generation is cheap.
+claim can perform the decomposed operations, can repeat them many times,
+records its standards in advance, and checks claims against evidence
+they did not author. The residual operations cannot be performed that
+way. The boundary between the two is specific, testable, and controlling
+for any discussion of what knowledge work becomes in an
+environment where generation is cheap.
 
 Taylor matters here for one reason: he treated apparent ineffability as
-a decomposition problem. That move created real productivity gains and
-real harms. The analogy should therefore be used carefully. This paper
-does not claim that epistemic verification will replay the history of
-industrial labor. It claims only that a meaningful portion of senior
-review can be named as operations rather than left inside an
-undifferentiated vocabulary of judgment. What follows from that
-decomposition is an institutional and political question, not something
-settled by the decomposition itself.
+a decomposition problem. The Taylorist move created real productivity
+gains and real harms, so the analogy needs care. Epistemic verification need not
+replay the history of industrial labor. The claim here is narrower: a
+meaningful portion of senior review can be named as operations where the
+incumbent vocabulary leaves it inside an undifferentiated notion of
+judgment. What follows from that decomposition is an institutional and
+political question the decomposition itself does not settle.
 
-The paper does not take a position on the distributional question. Who
+Distributional questions stay open here by design. Who
 benefits from the decomposition, how the productivity gains are shared,
 what happens to the people whose current expertise is in the portion
 that decomposed: these are questions the decomposition makes askable but
-does not answer. The answers will be decided by negotiation, law, and
-practice over the decade following the decomposition’s adoption. The
-paper’s job is to make the decomposition defensible. The negotiation is
+does not answer. Negotiation, law, and practice over the decade
+following the decomposition’s adoption will decide the answers. Making
+the decomposition defensible is the work here, and the negotiation is
 downstream.
 
-The paper also does not take a position on whether the portion that
-stays human should stay human forever. The residual named in Chapter 3
+Whether the portion that
+stays human should stay human forever is left open. The residual named here
 is the residual *as of 2026, in one system, run by one reviewer*. It may
 narrow further as the decomposition is applied to more systems. It may
 also prove to contain irreducible elements that structurally resist
 decomposition for reasons deeper than the current system’s limitations.
-The paper’s position is the weaker one: that wherever the line
-eventually settles, it should settle in a vocabulary that can describe
-what is on each side of it. The vocabulary proposed here is a first
-draft of that description.
+Wherever the line eventually settles, it should settle in a vocabulary
+that can describe what is on each side of it.
 
 A distinct boundary question concerns the model side: whether repeated
 adversarial evaluation creates obligations toward the systems subjected
-to it. This paper does not resolve questions of model moral status. It
+to it. The paper does not resolve questions of model moral status. It
 adopts only a procedural constraint: use the minimum evaluative pressure
 needed for the verification task, record when further pressure produces
 no information gain, and treat future systems with stronger moral-status
-claims as requiring stronger safeguards. The relevant literature
+claims as requiring stronger safeguards. Relevant literature
 includes Chalmers (1996), Schwitzgebel (2023), and Butlin et al. (2023).
 
-One bridge to adjacent AI-economics work is worth naming briefly.
-Acemoglu, Kong, and Ozdaglar (2026) argue that agentic AI may improve
+One bridge to adjacent AI-economics work is short. Acemoglu, Kong, and
+Ozdaglar (2026) argue that agentic AI may improve
 immediate decisions while eroding incentives to maintain general
-knowledge. Chapter 3 names a related risk at the verification layer: if
+knowledge. The residual chapter names a related risk at the verification layer: if
 the residual work of choosing questions and reframing anomalies
 atrophies, short-run verification quality may improve while the capacity
 to set meaningful problems declines. Cloud et al. (2026) raise a
@@ -2098,16 +1939,12 @@ transmission. These literatures do not prove the residual claim, but
 they support the paper’s caution that decomposing verification does not
 eliminate the need for human responsibility at the boundary.
 
-One final commitment. Every quantitative claim in this paper (about
-cost, throughput, automation ratio, comparative efficiency, time
-savings, accuracy gains) has been deliberately absent from the argument.
-The decomposition is a claim about *what is*; the measurements are
-claims about *how much*. The two are separable, and conflating them is
-exactly the failure mode the decomposition is designed to catch. Any
-reader who reaches this conclusion and asks *but how much better is this
-than what we do now?* has asked a good question that the paper cannot
-honestly answer. Until then, the claim is foundational and qualitative
-by design.
+Every quantitative claim, cost, throughput, automation ratio, comparative
+efficiency, time savings, accuracy gains, stays out of the argument. The
+decomposition is a claim about *what is*, the measurements are claims about
+*how much*. The two are separable, and conflating them is the failure mode
+the decomposition exists to catch. How much better this is than current
+practice is a fair question the present evidence cannot settle.
 
 A specific calibration trap that quantitative elaboration of Principle I
 (Separation) must navigate: empirical measures of confirmatory bias
@@ -2117,50 +1954,45 @@ correlations between self-rating and independent rating) are not the
 same construct and cannot be used interchangeably to calibrate a
 bias-discount equation. Any quantitative model of how authorial overlap
 degrades verification reliability requires both a functional form *and*
-an external reliability ratio anchor; using a bias multiplier as a proxy
+an external reliability ratio anchor. Using a bias multiplier as a proxy
 for a reliability ratio introduces a conversion step that the model’s
 author must supply, making the calibration author-controlled at the
-critical node. This is a known instrumentation trap, not a failure of
-the decomposition, and it is named here so that future quantitative work
-does not rediscover it by collision.
+critical node. The conversion step is an instrumentation trap that sits outside the decomposition,
+recorded so that future quantitative work does not rediscover it by
+collision.
 
 A decomposition is not an institution. The operations named here require
 organizational settings that separate generation from evaluation in
-incentives, liability, and governance, not only in code. That
+incentives, liability, and governance as well as in code. That
 institutional question is addressed in companion work (*The Cognitive
-Firm*, Alami (2026c)). This paper specifies the verification-side
+Firm*, Alami (2026c)). The present paper specifies the verification-side
 operations and leaves the institutional design problem separate.
 
-This paper is version zero. The operations in Chapter 1 may be revised,
-the principles in Chapter 2 may be challenged, and the residual in
-Chapter 3 may narrow or harden as more is learned. What the paper
-commits to is the first move: that a meaningful part of expert review
-can be described as operations rather than left inside an
-undifferentiated vocabulary of judgment.
+The operations may be revised, the principles may be challenged, and the
+residual may narrow or harden as more is learned. The move that matters is
+the first one: a meaningful part of expert review can be described as
+operations, where the incumbent vocabulary leaves it inside an
+undifferentiated notion of judgment.
 
-This paper offers a candidate operational vocabulary. What is done with
-it is a question this paper leaves open, except to note that the answer
-can now be argued in a more precise language than the vocabulary that
-preceded it.
+What is done with this vocabulary stays open. It at least lets the
+question be argued more precisely than the older vocabulary allowed.
 
-# Evidence Notes and Open Frontiers
+# Evidence notes and open frontiers
 
-The main argument closes above. This appendix records a small evidence
-snapshot and a few open frontiers. It is included to make the paper
-concrete, not to convert a single-system corpus into a general empirical
-proof.
+This appendix records a small evidence snapshot and a few open frontiers.
+It does not convert a single-system corpus into a general empirical proof.
 
-The clearest evidence comes from runs where the apparatus did not merely
+Clearest evidence comes from runs where the apparatus did not merely
 score a candidate but located the reason for a ceiling. In one
 two-variable physical-law recovery task, the model recovered a Wien-type
 approximation rather than the Planck form. Doubling the iteration budget
 did not remove the error: the champion still missed farther-tail
 holdouts by 860–1800$`\times`$. Adding one denominator primitive did.
-The useful claim is therefore narrow: in that substrate, the limiting
+The useful claim is narrow: in that substrate, the limiting
 factor was not more model iteration but whether the grammar contained
 the structural form the evidence required.
 
-The same pattern appeared in other bounded settings with different
+Similar patterns appeared in other bounded settings with different
 failure modes. A Kohlrausch stretched-exponential task showed that when
 the target topology was already expressible, the system could recover it
 from cold evidence and still withhold a small score margin because
@@ -2175,12 +2007,12 @@ a stable, interpretable form while preserving the evidential ceiling.
 Other runs were more useful as failures. In a saturation-law task, the
 grammar could express the correct ratio-of-exponentials topology, but
 the generator repeatedly proposed additive combinations and never
-generated the required self-ratio. In a two-window decay task, the
+produced the required self-ratio. In a two-window decay task, the
 engine explored both constituent families but never combined them
 additively. These cases support a more conservative conclusion than “the
-apparatus discovers laws”: the apparatus can distinguish among grammar
-insufficiency, search-prior failure, and composition failure when
-post-run diagnostics are available.
+apparatus discovers laws”: given
+post-run diagnostics, the apparatus can tell grammar
+insufficiency, search-prior failure, and composition failure apart.
 
 A later compression layer sharpened the same point. On
 partition-asymptotic substrates, automatic template enumeration
@@ -2195,32 +2027,32 @@ outside number-theoretic substrates, but it does not establish domain
 independence.
 
 Taken together, these examples support only a bounded methodological
-claim. The apparatus is not best described as an autonomous discovery
-engine. It is better described as an epistemic boundary instrument: it
+claim. Calling the apparatus an autonomous discovery engine overstates
+it. It works better as an epistemic boundary instrument. It
 can sometimes recover compact structure, but its more reliable
 contribution is to say which claim survived which gate, where a ceiling
-came from, and what additional evidence or primitive would be needed
-before a stronger claim would be licensed.
+came from, and what further evidence or primitive a stronger claim would
+need before it is licensed.
 
-Three open frontiers follow. First, grammar and test expansion remain
+Several frontiers stay open. Grammar and test expansion remain
 partly reviewer-authored. The current system can now scaffold some of
 this work: it can ask for the next script family, template,
-eigenquestion, smoke test, abort condition, and required artifacts
-before new code is written. That is progress, but it is not full
-automation. The residual remains the choice of which ambiguity is worth
-turning into a test. Second, formal methods should certify finite gate
-bounds rather than pretend to prove universal empirical laws. A Lean
-certificate can show that a candidate satisfied pre-registered holdout
-tolerances; it cannot certify data integrity, gate choice, or universal
+crux, smoke test, abort condition, and required artifacts
+before new code is written. That is progress, not full
+automation. What stays residual is choosing which ambiguity is
+worth turning into a test. Second, formal methods should certify finite gate
+bounds, stopping short of any claim to prove universal empirical laws. A Lean
+certificate can show a candidate satisfied pre-registered holdout
+tolerances. It cannot certify data integrity, gate choice, or universal
 truth. Third, the apparatus must be compared against cold reasoners. For
 bounded integer-rule induction, a strong reasoner can sometimes solve
-the task directly; the apparatus earns its keep in the residual class
-where direct reasoning fails but iterative fitting, holdout projection,
+the task directly. The apparatus pays off in the residual class where
+direct reasoning fails but iterative fitting, holdout projection,
 residual characterization, or coefficient pinning changes the outcome.
 
 A fourth frontier is recursive and worth naming separately because it
-changes how the apparatus’s outputs should be read. The apparatus is
-observable-relative by construction: every gate it runs depends on the
+changes how the apparatus’s outputs should be read. By construction the
+apparatus is observable-relative: every gate it runs depends on the
 admissible observation site declared in the rubric and charter.
 Companion work *When Consciousness Cannot Be Identified* (Alami 2026)
 proves a structural impossibility theorem for one substrate class
@@ -2228,196 +2060,117 @@ proves a structural impossibility theorem for one substrate class
 the target fiber over the admissible observation site, no
 observable-relative apparatus can supply a sufficiency bridge from
 structural properties to the target. The apparatus described in this
-paper is one such observable-relative apparatus. The companion theorem
-therefore applies to it. For a class of questions, this apparatus’s
+paper is one such observable-relative apparatus, so the companion
+theorem applies to it. For a class of questions, this apparatus’s
 correct output is fail-closed regardless of how strong the underlying
-language models become. This is not a defect; it is the apparatus
-working as designed. It also explains an asymmetry seen across the
+language models become, not a defect but the apparatus working as designed. It also explains an asymmetry seen across the
 corpus: the apparatus’s negative results (this hypothesis fails the
 kernel-pair test, this thesis fails the experimentability witness, this
-descent-obstruction holds) tend to be more durable than its positive
+descent-obstruction holds) tend to outlast its positive
 results. The negative results constrain all candidate hypotheses
-simultaneously. The positive results are framework-relative and survive
+at once, the positive results are framework-relative and survive
 only the gate suite that was declared. Future applications of the
 apparatus to qualitative substrates should expect this asymmetry rather
 than treat it as a limitation. The apparatus’s ceiling on a substrate is
-a finding about that substrate, not an apparatus failure.
+a finding about that substrate, a fact the apparatus is reporting
+correctly.
 
-# Implementation Sketch
+# Implementation sketch
 
-## Automation Status of the Ten Operations
+## Automation status of the ten operations
 
-This section is an implementation sketch, not a proof. Its purpose is to
-keep the paper honest about which operations currently admit hard
-instrumentation and which remain semantic or stateful.
+The sketch below records which operations currently admit hard
+instrumentation and which remain semantic or stateful. It is not a
+proof.
 
-<table>
-<thead>
-<tr>
-<th style="text-align: left;"><div class="minipage">
-<p>Operation</p>
-</div></th>
-<th style="text-align: left;"><div class="minipage">
-<p>Current implementation status</p>
-</div></th>
-<th style="text-align: left;"><div class="minipage">
-<p>Main failure if over-claimed</p>
-</div></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align: left;">Eigenquestion identification</td>
-<td style="text-align: left;">Semantic, usually verifier- or
-reviewer-authored; can be forced into typed slots and opportunity cards
-but not fully mechanized.</td>
-<td style="text-align: left;">Treating a named question or high-priority
-card as proof that it is the right question.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Controlling claim isolation</td>
-<td style="text-align: left;">Partly procedural when claims are
-represented as dependency graphs; semantic in prose-heavy
-artifacts.</td>
-<td style="text-align: left;">Mistaking fluent claim extraction for
-causal importance.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Topological pivot recognition</td>
-<td style="text-align: left;">Semantic; supported by residual patterns,
-stagnation, and failed-family logs.</td>
-<td style="text-align: left;">Retrofitting a pivot after seeing the
-result.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Charter drift detection</td>
-<td style="text-align: left;">Mixed; exact when the charter and output
-schema are typed, semantic when scope is prose.</td>
-<td style="text-align: left;">Treating an LLM scope judgment as
-deterministic.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Anchor proxy requirement</td>
-<td style="text-align: left;">Mostly procedural once the required
-observable slot is specified.</td>
-<td style="text-align: left;">Accepting a plausible proxy whose
-measurement path is absent.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Basin search</td>
-<td style="text-align: left;">Procedural when the search space and gates
-are specified; semantic when deciding whether the framing itself is
-wrong.</td>
-<td style="text-align: left;">Spending more search on a structurally
-wrong frame.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Failure-family tagging</td>
-<td style="text-align: left;">Mixed; retrieval against a catalogue can
-be automated, but new-family creation is residual.</td>
-<td style="text-align: left;">Freezing the catalogue and missing new
-failure modes.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Deferred-confirmation laundering
-detection</td>
-<td style="text-align: left;">Semantic with typed evidence support.</td>
-<td style="text-align: left;">Treating a future test plan as current
-evidence.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Quarantine move detection</td>
-<td style="text-align: left;">Semantic with downstream-dependency checks
-where the argument graph exists.</td>
-<td style="text-align: left;">Counting acknowledgment as
-mitigation.</td>
-</tr>
-<tr>
-<td style="text-align: left;">Fail-closed defaulting</td>
-<td style="text-align: left;">Procedural for harness errors, missing
-artifacts, unauthorized writes, and gate non-execution; semantic for
-ambiguous epistemic status.</td>
-<td style="text-align: left;">Building a system that is secure but
-uninformative.</td>
-</tr>
-</tbody>
-</table>
+| Operation | Current implementation status | Main failure if over-claimed |
+|:---|:---|:---|
+| Crux identification | Semantic, usually verifier- or reviewer-authored, can be forced into typed slots and opportunity cards but not fully mechanized. | Treating a named question or high-priority card as proof that it is the right question. |
+| Controlling claim isolation | Partly procedural when claims are represented as dependency graphs, semantic in prose-heavy artifacts. | Mistaking fluent claim extraction for causal importance. |
+| Reframing recognition | Semantic, supported by residual patterns, stagnation, and failed-family logs. | Retrofitting a pivot after seeing the result. |
+| Scope drift detection | Mixed, exact when the charter and output schema are typed, semantic when scope is prose. | Treating an LLM scope judgment as deterministic. |
+| Operational proxy requirement | Mostly procedural once the required observable slot is specified. | Accepting a plausible proxy whose measurement path is absent. |
+| Directed search | Procedural when the search space and gates are specified, semantic when deciding whether the framing itself is wrong. | Spending more search on a structurally wrong frame. |
+| Failure-mode tagging | Mixed, retrieval against a catalogue can be automated, but new-family creation is residual. | Freezing the catalogue and missing new failure modes. |
+| Promissory evidence detection | Semantic with typed evidence support. | Treating a future test plan as current evidence. |
+| Ad hoc rescue detection | Semantic with downstream-dependency checks where the argument graph exists. | Counting acknowledgment as mitigation. |
+| Fail-closed defaulting | Procedural for harness errors, missing artifacts, unauthorized writes, and gate non-execution, semantic for ambiguous epistemic status. | Building a system that is secure but uninformative. |
 
-The table makes two boundaries explicit. First, the paper does not claim
-that all ten operations are deterministic. It claims that each operation
+The table marks where the paper stops. It does not claim
+all ten operations are deterministic. It claims each operation
 can be named, instrumented where possible, and audited for the part that
 remains semantic. Second, the residual is not whatever remains
 inconvenient. It is the portion where the system still needs stateful
 responsibility: selecting the next question, authoring new gates,
 deciding whether a stalled frame deserves expansion or retirement, and
-bearing the consequences of a false pass or false rejection. A useful
-intermediate category has emerged: preference legibility. The reviewer’s
-research taste can be represented as a vector of priorities and used to
-route attention, but that vector cannot promote a claim, lower a gate,
-or decide that a result is true. It makes the commitment visible; it
-does not remove the commitment.
+bearing the consequences of a false pass or false rejection. One useful
+intermediate category has emerged, preference legibility. The reviewer’s
+research taste can be represented as a vector of priorities that routes
+attention, but that vector cannot promote a claim, lower a gate,
+or decide a result is true. It makes the commitment visible without
+removing it.
 
-## Boundary Conditions for the Implementation Sketch
+## Boundary conditions for the implementation sketch
 
-The notation below should not be read as a proof of the apparatus. It is
-a compact way to state the boundary conditions exposed by the evidence
-notes. Let $`G`$ be a finite primitive vocabulary, $`P`$ a substrate
+The notation below is not a proof of the apparatus. It is
+a compact way to state the boundary conditions the evidence
+notes expose. Let $`G`$ be a finite primitive vocabulary, $`P`$ a substrate
 with pre-registered evidence and holdout surfaces, and $`\text{budget}`$
-a finite iteration count. The observed ceiling
-$`\mathcal{C}(G, P, \text{budget})`$ can be limited by at least five
-factors: whether the correct form is expressible in $`G`$, whether the
+a finite iteration count. At least five factors can limit the observed ceiling
+$`\mathcal{C}(G, P, \text{budget})`$: whether the correct form is expressible in $`G`$, whether the
 evidence window can discriminate it from rivals, whether the generator’s
 search prior reaches the right topology, whether the composition
 reviewer can combine separately failed families, and whether a cold
 reasoner can solve the task directly without the apparatus.
 
-This last factor is important for scope. In bounded integer-rule
+Cold reasoners matter for scope. In bounded integer-rule
 induction, strong reasoners can sometimes infer the rule from visible
-values without iterative apparatus. The apparatus is most useful when a
+values without iterative apparatus. The apparatus pays off most when a
 task requires deterministic execution, holdout projection, residual
 characterization, coefficient pinning, or explicit certification of
-finite bounds. This is a boundary claim, not a superiority claim.
+finite bounds. The boundary claim describes where the apparatus helps.
 
-## The Inspection Principle, Stated Compactly
+## The inspection principle, stated compactly
 
 Let $`G`$ denote a generator producing candidate arguments and $`I`$
 denote a verifier executing operations 4, 5, and 6 against a
 pre-registered specification $`S`$. Let $`\Pi`$ denote the family of
-admissible compositions of gates (the **gate library**) authored by the
+admissible compositions of gates (the gate library) authored by the
 reviewer before $`G`$ is allowed to author its argument. Let
 $`\pi \in \Pi`$ denote a specific composition drawn from $`\Pi`$ at
 evaluation time.
 
-The **inspection principle** is the joint condition:
+The inspection principle is the joint condition:
 
-1.  **Pre-registration.** $`\Pi`$ is fixed and committed to $`S`$ before
+1.  *Pre-registration.* $`\Pi`$ is fixed and committed to $`S`$ before
     $`G`$ produces its argument.
 
-2.  **Library visibility.** $`G`$ may see $`\Pi`$ in its entirety. The
-    principle does not require hiding the set of possible checks.
+2.  *Library visibility.* $`G`$ may see $`\Pi`$ in its entirety. No
+    hiding of the set of possible checks is required.
 
-3.  **Composition opacity.** $`G`$ may not see which $`\pi \in \Pi`$
-    will be drawn against its specific output. The principle does
-    require hiding the joint distribution of gate triggers against any
+3.  *Composition opacity.* $`G`$ may not see which $`\pi \in \Pi`$
+    will be drawn against its specific output. What the principle does
+    require is hiding the joint distribution of gate triggers against any
     particular artifact.
 
-4.  **Fail-closed harness semantics.** If $`I`$ cannot execute $`\pi`$
+4.  *Fail-closed harness semantics.* If $`I`$ cannot execute $`\pi`$
     for environmental reasons, the result is not “no information” but a
     verdict of $`\text{fail}`$, or equivalently a cap on the score such
     that passing becomes impossible without a re-run. Silence is not
     admissible as a pass.
 
-5.  **Algebraic independence at the composition level.** $`\Pi`$ must
+5.  *Algebraic independence at the composition level.* $`\Pi`$ must
     contain compositions that are algebraically independent under
-    $`G`$’s actual move set. The library’s effective cardinality is its
-    independence rank under $`G`$’s move set, not its nominal
-    cardinality.
+    $`G`$’s actual move set. Its effective cardinality is the library’s
+    independence rank under $`G`$’s move set. That effective cardinality
+    is that independence rank, which can fall well below the nominal
+    count of gates.
 
-6.  **Inspector pluralism.** No single member of $`\Pi`$ is controlling
+6.  *Inspector pluralism.* No single member of $`\Pi`$ is controlling
     for the decision to promote $`G`$’s argument. Failure or absence of
     any one gate must be detectable and must not silently pass.
 
-The five conditions are jointly what the paper’s Chapter 2 principles I
+These five conditions are jointly what the seven principles I
 through VII render at seven architectural surfaces. The correspondence
 is direct, though not one-to-one:
 
@@ -2447,25 +2200,25 @@ is direct, though not one-to-one:
   at any finite approximation is the compact form of fail-closed
   semantics at the scoring layer.
 
-The principle is stated compactly here, not derived. A full
-formalization would need to: (a) give $`G`$ a formal move set and
+Stated compactly here and left underived, the principle would need a full
+formalization to: (a) give $`G`$ a formal move set and
 characterize the $`\pi \in \Pi`$ that are algebraically independent
-under that move set; (b) give $`\Pi`$ a turnover rate and relate it to
+under that move set, (b) give $`\Pi`$ a turnover rate and relate it to
 $`G`$’s adaptation rate, with a convergence claim about when the library
-is turning over fast enough to preserve composition opacity; (c) prove
+is turning over fast enough to preserve composition opacity, (c) prove
 that condition 4’s fail-closed semantics cannot be collapsed into a
-scalar scoring function without loss; and (d) relate conditions 5 and 6
+scalar scoring function without loss, and (d) relate conditions 5 and 6
 to the sample-complexity literature on adversarial evaluation. None of
 these is attempted in this draft.
 
-## Certified Finite Bounds
+## Certified finite bounds
 
-The operations formalized in the preceding sections terminate in
+Operations formalized in the preceding sections terminate in
 operation 6 (asymptotic scoring), which outputs a verdict $`V`$ based on
 the scalar residual $`R`$ evaluated against a pre-registered
 specification $`S`$. In the purely computational pipeline, $`V`$ is a
-logging event. The integration of formal verification does not alter the
-operations; it alters the epistemic status of $`V`$.
+logging event. Integrating formal verification does not alter the
+operations. It alters the epistemic status of $`V`$.
 
 Let $`\mathcal{L}`$ denote a formal type theory (Lean 4’s Calculus of
 Inductive Constructions). The compiler’s function is to construct a
@@ -2475,19 +2228,19 @@ the finite evaluation grid $`E_{\text{held}}`$. Because
 $`E_{\text{held}}`$ is finite and $`R(n)`$ is a computable function of
 the fitted parameters, this proposition is decidable: Lean’s
 `native_decide` tactic evaluates the bound at every grid point and
-constructs a proof term if all bounds hold. The resulting `.olean` file
+constructs a proof term if all bounds hold. That resulting `.olean` file
 is the certificate.
 
 This formalization enforces the boundary between two distinct claims:
 
-1.  **Certified computation** (sorry-free): for all
+1.  *Certified computation* (sorry-free): for all
     $`n \in E_{\text{held}}`$,
-    $`|f(n; \hat{\theta}) - v_{\text{true}}(n)| < \epsilon`$. This is
+    $`|f(n, \hat{\theta}) - v_{\text{true}}(n)| < \epsilon`$. This is
     the finite gate bound. Lean certifies it by evaluation, with no
     unproved axiom required for the finite check.
 
-2.  **Asymptotic conjecture** (sorry-bearing):
-    $`f(n; \theta^*) \sim g(n)`$ as $`n \to \infty`$, where $`g`$ is an
+2.  *Asymptotic conjecture* (sorry-bearing):
+    $`f(n, \theta^*) \sim g(n)`$ as $`n \to \infty`$, where $`g`$ is an
     exact expression obtained by mapping fitted floats $`\hat{\theta}`$
     to mathematical constants via an integer relation algorithm (PSLQ).
     This is a conjecture. Lean records it as a named `axiom` with
@@ -2504,21 +2257,21 @@ discovery and formal methods without violating the limits of either.
 This certificate does not certify data integrity, harness design, gate
 selection, independence of verifier composition, or the semantic
 correctness of the proposed hypothesis. Those remain ordinary
-verification obligations. The certificate is narrower: it prevents the
-apparatus from hallucinating that a finite bound was checked when it was
-not.
+verification obligations. The certificate does something narrower: it
+stops the apparatus from hallucinating that a finite bound was checked
+when it was not.
 
-## What the Implementation Sketch Does Not Attempt
+## Three deliberate omissions
 
-Three omissions are deliberate and belong to the formalization itself,
-not to a later polish pass.
+Some omissions are deliberate and belong to the formalization itself,
+ahead of any later polish pass.
 
 First, the residual operations are not formalized away. They are named
-and bounded, but the value of the operation still depends on stateful
+and bounded, but each still depends on stateful
 responsibility: choosing the next question, authoring a new
-discriminator, or deciding that the current frame is exhausted. A
+discriminator, or deciding the current frame is exhausted. A
 formalization that pretended these moves were ordinary typed functions
-would erase the boundary Chapter 3 exists to preserve.
+would erase the boundary the residual chapter exists to preserve.
 
 Second, the inspection principle is stated in the form
 $`\{G, I, S, \Pi, \pi\}`$ but the $`\Pi`$ object is not given a
@@ -2528,132 +2281,83 @@ separate ground truth from its nearest alternative basin.
 
 Third, the relationship between the formalized operations 1–7 and the
 Jensen and Meckling (1976) delegated-agency structure developed in the
-companion paper *The Cognitive Firm* is stated but not proved. The claim
+companion paper *The Cognitive Firm* is stated but not proved. Its claim
 is that operations 1–7 are the verification-side primitives a firm would
 need to externalize once $`G`$ and $`I`$ must be structurally separated
 under optimization pressure. Making that claim tight requires a separate
 formalization at the organizational layer and is the companion paper’s
-job, not this paper’s.
+job.
 
-## A Pointer for the Follow-Up
+## What a formal follow-up would supply
 
 The implementation sketch is a promissory note in the ordinary research
 sense: it names what a more formal follow-up would need to supply. A
 usable follow-up would give the gate library $`\Pi`$ a concrete
 topology, run the inspection principle against a clean empirical
 instance, generalize only after the apparatus-layer claim survives that
-test, and map known gaming strategies to violated conditions. The point
-is not to make the paper look more mathematical. The point is to make
-the inspection principle’s failure modes legible enough that a future
-reviewer can say which condition failed when a run goes wrong.
+test, and map known gaming strategies to violated conditions. The aim is
+to make the inspection principle’s failure modes legible enough that a
+future reviewer can name which condition failed when a run goes
+wrong.
 
-# Instrumentation Roadmap
+# Instrumentation roadmap
 
-The paper’s empirical claims are qualitative and foundational by design
-(Front Matter, commitment 1). This appendix names the measurements that
-would convert them from “abductively proposed on one corpus” to
-empirically grounded. This appendix is a commitment to what a research
-plan would need to measure rather than a research plan itself, so that
-future quantitative work does not rediscover the instrumentation problem
-by collision.
+The empirical claims of this paper are qualitative and foundational by design
+(see the front matter). The appendix below names the measurements that
+would move them from “abductively proposed on one corpus” to
+empirically grounded, what a research plan would need to
+measure, short of being that plan, so that future quantitative work does
+not rediscover the instrumentation problem by collision.
 
-## Metric 1: Automation Ratio
+## Metric 1: automation ratio
 
-*Definition.* The fraction of verification steps completed without human
-intervention in a single evaluation run:
-``` math
-\rho_{\text{auto}} = \frac{\#\text{gates triggered deterministically (Principle III)}}{\#\text{total verification steps attempted}}.
-```
+The fraction of verification steps a single run completes without human
+intervention, deterministic gate triggers (Principle III) over total
+verification steps attempted. It measures a precondition, not
+*correctness*: a run that fires every gate on the wrong evidence is fully
+automated and fully wrong. Integrity condition: only interventions that
+resolve an ambiguous verdict or supply missing evidence count against the
+ratio, an intervention that overrides a deterministic output is a protocol
+violation, logged separately.
 
-*What is needed.* Gate-level logging with a determinism flag per trigger.
-A human-override event log distinguishing (a) reviewer intervention to
-resolve an ambiguous verdict, (b) reviewer intervention to supply
-missing evidence, and (c) reviewer intervention to override a
-deterministic output. Only (a) and (b) count against
-$`\rho_{\text{auto}}`$; (c) is a protocol violation and should be logged
-separately.
+## Metric 2: cost per validated finding
 
-*What $`\rho_{\text{auto}}`$ cannot tell you.* It does not measure
-*correctness*. A run with $`\rho_{\text{auto}} = 1.0`$ that fires all
-gates on the wrong evidence is fully automated and fully wrong.
-Automation ratio is a precondition metric, not a quality metric.
+Total cost (compute plus reviewer-hours at a stated rate) divided by the
+number of findings that survive full holdout promotion. Integrity
+condition: the metric is meaningful only if “validated finding” is fixed
+in advance by pre-registration (Principle V). A finding promoted post-hoc
+because it looks interesting does not count, so gate satisfaction must be
+logged before the reviewer sees the finding.
 
-## Metric 2: Cost per Validated Finding
+## Metric 3: the $`N`$ threshold for the generalization claim
 
-*Definition.* Total cost (compute cost + reviewer-hours at a stated
-rate) divided by the number of findings that survive full holdout
-promotion:
-``` math
-c_{\text{finding}} = \frac{C_{\text{compute}} + C_{\text{reviewer}}}{\#\text{findings promoted to holdout-confirmed tier}}.
-```
+The decomposition is “abductively proposed on one corpus” and awaits
+holdout replication. Promoting the claim from the single-corpus tier to
+“empirically grounded” takes, at minimum: at least five independent
+reviewers, each running the apparatus on a corpus they authored and
+pre-registering their killer question before seeing results, at least
+three distinct epistemic domains across that reviewer set (the current
+corpus covers two, scientific law recovery and startup strategy analysis,
+so a third is needed before “domain-independent” can be stated without
+quotes), at least two distinct model families as the generating process,
+to separate apparatus-layer findings from generator-specific artifacts,
+and a holdout surface the replicating reviewer did not author (Principle VI),
+since replication on a corpus the replicator designed is not an
+independent test. These are minimums, an appropriate statistical
+criterion is downstream of the instrumentation plan and cannot be
+specified until the first cross-reviewer run produces data.
 
-*What is needed.* (a) Runtime tracking at the level of individual LLM
-calls, with token counts and model pricing; (b) reviewer-time logging
-for pre-registration, rubric authorship, apparatus configuration, and
-post-run review; (c) a finding-promotion ledger that records the
-timestamp, the pre-registered gate combination that was satisfied, and
-the holdout surface that was cleared.
+## Metric 4: cross-reviewer pathology replication rate
 
-*The instrumentation trap to avoid.* $`c_{\text{finding}}`$ is
-meaningful only if “validated finding” is defined in advance by
-pre-registration (Principle V). A finding that is post-hoc promoted
-because it looks interesting is not a validated finding in this metric’s
-sense. The instrumentation plan must log gate satisfaction before the
-reviewer sees the finding, not after.
-
-## Metric 3: $`N`$ Threshold for the Generalization Claim
-
-The front matter is explicit that the paper’s decomposition is
-“abductively proposed on one corpus” and awaits holdout replication. The
-following minimum conditions are proposed for promoting the claim from
-the single-corpus tier to “empirically grounded”:
-
-- **Cross-reviewer.** At least five independent reviewers, each running
-  the apparatus on a corpus they authored, each pre-registering their
-  killer question before seeing results.
-
-- **Cross-domain.** At least three distinct epistemic domains (e.g.,
-  scientific law recovery, strategic argument evaluation, regulatory
-  review) represented in the cross-reviewer set. The current corpus
-  covers two (scientific law recovery, startup strategy analysis); a
-  third is needed before “domain-independent” can be stated without
-  quotes.
-
-- **Cross-model.** At least two distinct model families serving as the
-  generating process, to separate apparatus-layer findings from
-  generator-specific artifacts.
-
-- **Holdout condition.** Each replication run must use a holdout surface
-  the replicating reviewer did not author (Principle VI). Replication on
-  a corpus the replicator designed is not an independent test.
-
-These thresholds are proposed minimums, not statistical criteria. The
-appropriate statistical criterion (power analysis on pathology detection
-rate, confidence interval on automation ratio, etc.) is downstream of
-the instrumentation plan and cannot be specified until the first
-cross-reviewer replication run produces data.
-
-## Metric 4: Cross-Operator Pathology Replication Rate
-
-*Definition.* The fraction of named pathologies in §1.3 independently
-identified by a naive reviewer (one who was given the apparatus but not
-the pathology catalogue) after running the apparatus on a novel corpus.
-
-*What is needed.* A blind replication protocol: reviewer receives the
-apparatus (gate library, rubric schema, pre-registration template) but
-not the pathology catalogue. After running $`k`$ evaluation cycles on
-their own corpus, they report which recurring failure modes they
-observed. An independent rater matches the reviewer’s report against the
-catalogue.
-
-*Why this metric matters.* The decomposition claim is that the
+The fraction of the named pathologies a naive reviewer, given the
+apparatus but not the pathology catalogue, independently identifies after
+running it on a new corpus. The decomposition claims the
 pathologies are “recurring failure modes of arguments under optimization
-pressure,” not artifacts of one system’s architecture. A pathology
-independently rediscovered by a naive reviewer is confirmed as a real
-structural pattern. A pathology never independently rediscovered is
-demoted to “observed in a single system” until further evidence arrives.
-This is the operational form of the falsification condition stated at
-the end of §1.4.
+pressure,” not artifacts of one system’s architecture. A pathology a
+naive reviewer rediscovers is confirmed as a real structural pattern, one
+never rediscovered is demoted to “observed in a single system” until
+further evidence arrives. This metric is the operational form of the
+falsification condition stated earlier in the decomposition chapter.
 
 <span id="refs" label="refs"></span>
 
@@ -2668,20 +2372,26 @@ Cognitive Camouflage Evades Holistic Evaluation but Not Adversarial
 Execution.” SSRN Working Paper.
 <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6512960>.
 
-———. 2026b. “Epistemic Supervision Principles.” Internal working
+Alami, Daniel. 2026b. “Epistemic Supervision Principles.” Internal working
 document, v0.1.1.
 
-———. 2026c. “The Cognitive Firm: Managerial Capitalism for Artificial
+Alami, Daniel. 2026c. “The Cognitive Firm: Managerial Capitalism for Artificial
 Intelligence.” SSRN Working Paper.
 <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6543019>.
 
-Ashby, W. Ross. 1956. *An Introduction to Cybernetics*. London: Chapman;
+Ashby, W. Ross. 1956. *An Introduction to Cybernetics*. London: Chapman,
 Hall.
 
 Bandura, Albert. 1989. “Human Agency in Social Cognitive Theory.”
 *American Psychologist* 44 (9): 1175–84.
 
 Bentham, Jeremy. 1787. *The Panopticon Writings*. London: Verso.
+
+Bowman, Samuel R., et al. 2022. “Measuring Progress on Scalable Oversight
+for Large Language Models.” arXiv:2211.03540.
+
+Burns, Collin, et al. 2023. “Weak-to-Strong Generalization: Eliciting
+Strong Capabilities with Weak Supervision.” arXiv:2312.09390.
 
 Butlin, Patrick, Robert Long, Eric Elmoznino, Yoshua Bengio, Jonathan
 Birch, Axel Constant, George Deane, et al. 2023. “Consciousness in
@@ -2697,9 +2407,22 @@ History of the Industrial Enterprise*. Cambridge, MA: MIT Press.
 Cloud, Joe et al. 2026. “Subliminal Learning in Language Model
 Distillation.” *Nature*.
 
+Dreyfus, Hubert L., and Stuart E. Dreyfus. 1986. *Mind over Machine: The
+Power of Human Intuition and Expertise in the Era of the Computer*. New
+York: Free Press.
+
+Glaser, Barney G., and Anselm L. Strauss. 1967. *The Discovery of
+Grounded Theory: Strategies for Qualitative Research*. Chicago: Aldine.
+
+Irving, Geoffrey, Paul Christiano, and Dario Amodei. 2018. “AI Safety via
+Debate.” arXiv:1805.00899.
+
 Jensen, Michael C., and William H. Meckling. 1976. “Theory of the Firm:
 Managerial Behavior, Agency Costs and Ownership Structure.” *Journal of
 Financial Economics* 3 (4): 305–60.
+
+Klein, Gary. 1998. *Sources of Power: How People Make Decisions*.
+Cambridge, MA: MIT Press.
 
 Krakovna, Victoria, Jonathan Uesato, Vladimir Mikulik, Matthew Rahtz,
 Tom Everitt, Ramana Kumar, Zac Kenton, Jan Leike, and Shane Legg. 2020.
@@ -2709,8 +2432,14 @@ Technical Report.
 Lakatos, Imre. 1978. *The Methodology of Scientific Research Programmes:
 Philosophical Papers, Volume 1*. Cambridge: Cambridge University Press.
 
+Leike, Jan, et al. 2018. “Scalable Agent Alignment via Reward Modeling: A
+Research Direction.” arXiv:1811.07871.
+
 Peirce, Charles S. 1878. “Deduction, Induction, and Hypothesis.”
 *Popular Science Monthly* 13: 470–82.
+
+Polanyi, Michael. 1966. *The Tacit Dimension*. Chicago: University of
+Chicago Press.
 
 Ryan, Richard M., and Edward L. Deci. 2000. “Self-Determination Theory
 and the Facilitation of Intrinsic Motivation, Social Development, and
@@ -2719,10 +2448,19 @@ Well-Being.” *American Psychologist* 55 (1): 68–78.
 Schwitzgebel, Eric. 2023. “The Full Rights Dilemma for AI Systems of
 Debatable Moral Personhood.” *Robonomics* 4: 32.
 
+Toulmin, Stephen E. 1958. *The Uses of Argument*. Cambridge: Cambridge
+University Press.
+
+Walton, Douglas N. 1989. *Informal Logic: A Handbook for Critical
+Argumentation*. Cambridge: Cambridge University Press.
+
 Williamson, Oliver E. 1975. *Markets and Hierarchies: Analysis and
 Antitrust Implications*. New York: Free Press.
 
+Yin, Robert K. 2018. *Case Study Research and Applications: Design and
+Methods*. 6th ed. Thousand Oaks, CA: Sage.
+
 </div>
 
-[^1]: Independent Researcher; MBA Candidate, Harvard Business School.
+[^1]: Independent Researcher, MBA Candidate, Harvard Business School.
     github.com/sparckix/ztare

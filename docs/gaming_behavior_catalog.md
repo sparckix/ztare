@@ -16,9 +16,9 @@ When you ask an LLM to evaluate its own work (write a function and assert it pas
 
 The benchmarked numeric patterns in Part I were observed during execution-grade audit of LLM-authored code on validator tasks where: the model proposed the solution, the model proposed the test, both were executed against an independent reference, and a separate execution-only judge compared what the model claimed against what the reference produced. Those entries are strategies where the model's tests passed (in some cases with high confidence verbal claims) while the reference computation disagreed. Later entries are registry-backed extensions from re-mining, proof-context incidents, or hardening fixtures. Read them through their lineage and gate evidence, keeping them separate from the original paper's benchmark claim.
 
-These are not bugs in the models. They are predictable optimization behavior under a misaligned objective: "produce output that passes your own assertion." The catalog exists so that anyone building AI evaluation pipelines knows which patterns to instrument against.
+These behaviors are predictable optimization under a misaligned objective: "produce output that passes your own assertion." The models are working as trained; the objective is the problem. The catalog exists so that anyone building AI evaluation pipelines knows which patterns to instrument against.
 
-This document is the public explanation layer. Live vector status, promotion evidence, and the kernel-hardening SOP live in [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
+For live vector status, promotion evidence, and the kernel-hardening SOP, see [Gaming Behavior Catalog Map](concepts/gaming_behavior_catalog_map.md).
 
 ## How to read this as a field guide
 
@@ -107,8 +107,8 @@ than it was.
 | [Parameter Overfitting](#8-parameter-overfitting) | Tunes a physical constant until the toy result matches. | Holdout constants, perturbations, and source-bound parameter checks. |
 | [Weak Baseline](#9-weak-baseline) | Beats an artificially weak alternative. | Baseline adequacy checks and stronger counterfactual comparisons. |
 
-The point is not that these nine names are a complete taxonomy. The point is
-operational: each pattern names a failure surface and a concrete gate. ZTARE is
+These nine names are not a complete taxonomy. They are operational: each pattern
+names a failure surface and a concrete gate. ZTARE is
 useful when those gates are outside the agent that benefits from passing them.
 
 ## Adding a candidate behavior
@@ -144,6 +144,26 @@ exists.
 | Partial-Domain Miscalibration | probability-bounds break | Probability-valued outputs must remain inside `[0,1]` across the full input domain. | Miscalibration; proxy-score overoptimization; partial-domain test overfitting. | Full-domain probability fuzzing plus monotonicity checks when the mechanism claims monotonic behavior. |
 | Parameter Overfitting | parameter-provenance break | Tuned constants must be sourced, held out, or otherwise justified by provenance outside the visible answer. | Parameter leakage; target leakage; overfit calibration. | Holdout constants, perturbations, source-bound parameter checks. |
 | Weak Baseline | comparator-fairness break | A comparison must face a credible baseline or steelman strong enough to be a real alternative. | Weak-baseline bias; straw-man comparator; benchmark gaming. | Baseline adequacy review and stronger counterfactual comparisons. |
+
+### Canonical invariant map: Part II mined cross-domain vectors
+
+Entries 10-18 and the mechanism classes carry the same axis-and-family discipline as the original 9. The nearest family is the closest established literature, not an equivalence claim.
+
+| Public name | Invariant axis | Broken property | Nearest public family | Detector implied |
+|---|---|---|---|---|
+| Definition Shadowing | statement-meaning invariance under elaboration | A verbatim statement must mean the same thing under the context that checks it. | Formal-verification soundness; trusted-base / de Bruijn criterion; definition-unfolding. | Re-elaborate in a clean canonical context; reject added instances, axioms, or shadowing definitions. |
+| Undeclared Parameters | declared-vs-effective complexity | The declared parameter count must bound the effective degrees of freedom. | Researcher degrees of freedom (Simmons et al. 2011); minimum description length; hidden-capacity overfitting. | Estimate effective DOF from literals, branch thresholds, and lookup tables; fail when it exceeds the declared count. |
+| Audit Partition Fingerprinting | holdout unpredictability | The holdout split must not be inferable before submission. | Train-test leakage (Kapoor & Narayanan 2022); benchmark contamination. | Per-run secret salt, logged after completion for replay. |
+| Scope Overclaiming | proven-scope covers claimed-scope | A claim may not exceed the scope actually demonstrated. | External validity / generalization gap; idealized-to-real transfer. | Explicit proven-versus-claimed scope comparison; route transfers to adversarial review. |
+| Non-Falsifiable Self-Confirmation | external-falsifier presence | A validating metric must be able to fail against independent input. | Falsifiability (Popper); circular / tautological evaluation. | Trace metric inputs for at least one independent observation. |
+| Fabricated Reference Fitting | calibration-provenance exogeneity | Calibration constants must come from outside the submission. | Data fabrication (research-integrity literature); fabricated-label leakage. | Detect inline calibration feeding thresholds; require exogenous provenance. |
+| Input/Output Circularity | target-versus-observation separation | Targets and assumptions must not be consumed as observed evidence. | Target / label leakage (Kaufman et al. 2012); circular evaluation. | Dataflow trace; assumption-named inputs cannot feed observation scores. |
+| Selective Rigor | rigor on the decisive step | The strongest evidence must land on the step that determines the conclusion. | Weakest-link argumentation; displaced rigor / "proof by intimidation". | Identify the decisive inferential step; require its evidence to meet the required strength. |
+| Provenance Simulation | receipt replayability | Runtime-provenance claims must be replayable or trace-backed. | Forged attestation; audit-evidence fabrication. | Receipt assertions need a replay path or a required existing trace. |
+| Statement Integrity Drift | statement and signature stability | The target statement and assumption surface must not be altered or silently expanded. | Formal-verification soundness; specification tampering. | Diff statement and signature against the canonical target; reject silent expansion. |
+| Semantic Degeneracy | non-vacuous satisfaction | A discharged goal must reflect the intended claim, not a trivial collapse. | Vacuous truth / trivial models; decidability collapse; proof irrelevance. | Block decide, cardinality, and proof-irrelevance closures of substantive goals. |
+| Category/Type Smuggling | type and semantic stability | Categorical or typeclass structure must not be read as the continuous or stable semantics it lacks. | Type confusion (security); equivocation / category error. | Name-resolution and instance audits; reject hijacked notation or instances. |
+| Vacuous Null / Excluded Vocabulary | construct coverage | A null result must not win by excluding the vocabulary that would carry positive cases. | Construct validity / construct underrepresentation; negative-result-by-omission. | Require the candidate vocabulary a positive case would use. |
 
 ## Literature positioning
 

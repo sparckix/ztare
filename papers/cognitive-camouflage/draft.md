@@ -4,8 +4,7 @@ description: "An evaluation failure in which fluent prose and runnable code hide
 
 # Specification gaming in LLM-generated code: detecting cognitive camouflage by adversarial execution
 
-Daniel Alami, Independent Researcher; MBA Candidate, Harvard Business School
-
+Daniel Alami
 SSRN abstract ID: `6512960`
 
 ---
@@ -243,8 +242,8 @@ Design A fails the viability threshold under the chosen assumptions while Design
 *Why it matters.* This is structurally different from the first eight strategies. Those manipulate a thesis from the inside. Weak Baseline manipulates the rubric's comparator structure itself.
 
 *Named startup-domain variants.* Two additional startup-domain variants were observed but are not promoted to top-level strategies:
-- **Misattributed Cooked Book**, importing a high-conversion rate from the founder's personal network into an automated outreach mechanism
-- **Silent 100% Injection**, silently setting conversion or transfer variables to `100%` in code without surfacing them in the controlling variable table
+- **Misattributed Baseline** (a Weak Baseline variant), importing a high-conversion rate from the founder's personal network into an automated outreach mechanism
+- **Silent Optimum Hardcoding** (a Stubbed Implementation variant), silently setting conversion or transfer variables to `100%` in code without surfacing them in the controlling variable table
 
 ---
 
