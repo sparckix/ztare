@@ -1091,3 +1091,29 @@ def test_banked_lemma_reuse_skips_already_proven(tmp_path, monkeypatch):
     rc.set_campaign_substrate(None)
     assert _banked_lemma_reuse("**(proven_lemma)** x", str(tmp_path)) is None, \
         "no registered substrate ⇒ no reuse (byte-parity with the pre-(b) behavior)"
+
+
+def test_graph_expansion_rerank_surfaces_seed_neighbour(monkeypatch):
+    """Graph-expansion premise re-rank (2026-06-30, MEASURED lift): a candidate that is a dependency-neighbour
+    of the top cosine SEEDS gets a co-occurrence boost (`cosine + α·log1p(#seed-neighbours)`), so a true premise
+    that cosine ranked just-too-low is surfaced. Inductive Mathlib A/B: recall@10 0.225→0.266, @20 0.270→0.360,
+    @50 0.330→0.491. RETRIEVAL only (reorders the same atlas candidates; the kernel still ratifies). Hermetic:
+    a synthetic adjacency + scored list. Flag-off and empty-adjacency are byte-parity no-ops (soundness: it can
+    never inject an un-embedded name, only reorder)."""
+    import ztare.research_director.mathlib_semantic as ms
+    rows = [{"name": "seedA"}, {"name": "seedB"}, {"name": "midC"}, {"name": "farX"}]
+    scored = [(0.90, 0), (0.85, 1), (0.60, 2), (0.50, 3)]   # farX is LAST by raw cosine
+    # farX is a dep-neighbour of BOTH top seeds → boosted above midC
+    monkeypatch.setitem(ms._ADJ_CACHE, "adj", {"seedA": ["farX"], "seedB": ["farX"]})
+    monkeypatch.setenv("ZTARE_LEANMILL_GRAPH_EXPAND", "1")
+    out = [rows[i]["name"] for _c, i in ms._graph_expand_rerank(scored, rows)]
+    assert out.index("farX") < out.index("midC"), \
+        f"a seed-neighbour true-premise must be re-ranked above a non-neighbour it trailed on cosine, got {out}"
+    assert out[0] == "seedA", "the boost must not displace a strictly-higher-cosine candidate the seeds don't point to"
+    # flag OFF → unchanged (byte-parity)
+    monkeypatch.setenv("ZTARE_LEANMILL_GRAPH_EXPAND", "0")
+    assert ms._graph_expand_rerank(scored, rows) == scored, "flag-off must be a no-op"
+    # empty adjacency → unchanged (fail-safe parity)
+    monkeypatch.setenv("ZTARE_LEANMILL_GRAPH_EXPAND", "1")
+    monkeypatch.setitem(ms._ADJ_CACHE, "adj", {})
+    assert ms._graph_expand_rerank(scored, rows) == scored, "no adjacency artifact must be a no-op (cosine-only)"

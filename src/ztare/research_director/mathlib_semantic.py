@@ -28,8 +28,56 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[3]
 DEFAULT_MATHLIB_ATLAS = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_atlas_embeddings.json"
 DEFAULT_MATHLIB_INDEX = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_lemma_index.json"
+DEFAULT_ATLAS_ADJACENCY = REPO / "analytics" / "public" / "queries" / "lean" / "mathlib_atlas_adjacency.json"
 MATHLIB_THRESHOLD_DEFAULT = 0.55
 MATHLIB_TOP_K_DEFAULT = 8
+# Graph-expansion re-rank (2026-06-30) — MEASURED lift on inductive Mathlib premise selection (n=1500, no
+# target-edge leakage): recall@10 0.225→0.266, @20 0.270→0.360, @50 0.330→0.491, MRR flat. Best config from the
+# A/B sweep (plain co-occurrence count beat Adamic-Adar rarity-weighting, which REGRESSED). ZTARE_LEANMILL_
+# GRAPH_EXPAND=0 reverts to pure cosine.
+GRAPH_EXPAND_SEEDS = 25
+GRAPH_EXPAND_ALPHA = 0.15
+_ADJ_CACHE: "dict[str, dict]" = {}
+
+
+def _atlas_adjacency() -> "dict[str, list]":
+    """The compact atlas-induced dependency adjacency `{decl: [atlas neighbours]}` (undirected co-occurrence),
+    built by `scripts/public/lean/build_atlas_adjacency.py` from the Mathlib dep-graph. Cached; ``{}`` when the
+    artifact is absent (⇒ graph-expansion is a no-op, pure-cosine parity)."""
+    if "adj" not in _ADJ_CACHE:
+        try:
+            if DEFAULT_ATLAS_ADJACENCY.exists():
+                _ADJ_CACHE["adj"] = json.loads(DEFAULT_ATLAS_ADJACENCY.read_text(encoding="utf-8")).get("adjacency", {})
+            else:
+                _ADJ_CACHE["adj"] = {}
+        except Exception:  # noqa: BLE001 — adjacency is advisory; any load failure ⇒ cosine-only
+            _ADJ_CACHE["adj"] = {}
+    return _ADJ_CACHE["adj"]
+
+
+def _graph_expand_rerank(scored: "list[tuple[float, int]]", rows: "list[dict]") -> "list[tuple[float, int]]":
+    """Re-rank cosine-scored candidates `(cosine, idx)` with a DEPENDENCY-GRAPH co-occurrence boost: a candidate
+    that is a dep-neighbour of the top cosine SEEDS is boosted by `cosine + α·log1p(#seed-neighbours)`. This is
+    the retrieve-then-graph-expand pattern; the graph structure is a strong premise signal (the gnn_ranker eval
+    showed even a graph heuristic beats the GNN). RETRIEVAL only — never injects an un-embedded name, never
+    closes a goal; the kernel still ratifies. Default-on; `ZTARE_LEANMILL_GRAPH_EXPAND=0` reverts. Fail-safe:
+    no adjacency artifact ⇒ returns `scored` unchanged."""
+    import math
+    if os.environ.get("ZTARE_LEANMILL_GRAPH_EXPAND", "1") == "0" or not scored:
+        return scored
+    adj = _atlas_adjacency()
+    if not adj:
+        return scored
+    name_of = {idx: str(rows[idx].get("name", "")) for _, idx in scored}
+    boost: "dict[str, int]" = {}
+    for _c, idx in scored[:GRAPH_EXPAND_SEEDS]:
+        for nb in adj.get(name_of[idx], ()):       # neighbours are atlas decl names
+            boost[nb] = boost.get(nb, 0) + 1
+    if not boost:
+        return scored
+    rescored = [(c + GRAPH_EXPAND_ALPHA * math.log1p(boost.get(name_of[idx], 0)), idx) for c, idx in scored]
+    rescored.sort(reverse=True, key=lambda t: t[0])
+    return rescored
 
 
 @dataclass(frozen=True)
@@ -193,6 +241,12 @@ def mathlib_semantic_neighbours(
     for idx in filtered_indices:
         scored.append((_cosine(qvec, vecs[idx]), idx))
     scored.sort(reverse=True, key=lambda t: t[0])
+    # GRAPH-EXPANSION re-rank (measured lift; default-on, fail-safe — see _graph_expand_rerank). The cosine
+    # SEED set is the current top of `scored`; the re-rank can only reorder these same candidates by adding a
+    # dep-graph co-occurrence boost, so the threshold gate + hit construction below are unchanged. The boosted
+    # cosine value may exceed `threshold` for a candidate whose RAW cosine was below it — that is intended (a
+    # strong graph signal earns surfacing), and it stays a Mathlib decl that is re-verified downstream.
+    scored = _graph_expand_rerank(scored, rows)
 
     hits: list[MathlibSemanticHit] = []
     for cosine, idx in scored[:top_k]:
