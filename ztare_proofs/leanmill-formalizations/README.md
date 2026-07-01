@@ -18,6 +18,7 @@ influence**. Each `.lean` file is self-contained (`import Mathlib`) and carries 
 |---|---|---|
 | [`finance/`](./finance/) | Asset pricing, market microstructure, capital structure | FTAP (easy direction); constant-product AMM temporal + no-arbitrage invariants; no round-trip arbitrage at any reachable AMM state; corporate APR + pari-passu waterfalls |
 | [`strategy/`](./strategy/) | Game theory / monotone comparative statics | Topkis (supermodular) and ordinal/single-crossing comparative statics |
+| [`distributed_systems/`](./distributed_systems/) | Fault tolerance / quorum systems / consensus | Byzantine quorum intersection: safe + available threshold quorums exist iff `n ≥ 3f + 1` (the `n > 3f` bound), with the intersection→correct-node lemma and a tight witness (blueprint co-located) |
 | [`blueprints/`](./blueprints/) | The natural-language inputs | One `*_blueprint.md` per theorem family — the operator-authored NL the apparatus formalized from (the *only* human input) |
 
 Each code folder has its own README with a per-theorem summary.

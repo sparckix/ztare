@@ -1141,7 +1141,10 @@ def default_formalize_multistep(nl: str, *, runtime: str = "", timeout_s: "int |
 
 
 _ROUNDTRIP_MODEL_DEFAULT = "gemini-3.1-pro-preview"   # a DIFFERENT family from the codex/claude formalizer
-_ROUNDTRIP_FALLBACK_DEFAULT = "gemini-2.5-flash"      # cheap same-family resilience fallback
+# CROSS-FAMILY chain (2026-07-01 RCA): cheap same-family retry FIRST (a flaky primary), THEN a DIFFERENT family so
+# a gemini-WIDE outage (quota/rate-limit) can't empty the back-translation and FALSE-REJECT a faithful target — the
+# BFT campaign's run-1 firewall reject. A same-family-only fallback is not resilience; it dies with the primary.
+_ROUNDTRIP_FALLBACK_DEFAULT = "gemini-2.5-flash,deepseek-chat"
 
 
 def _roundtrip_fallback() -> "tuple[str, ...]":
