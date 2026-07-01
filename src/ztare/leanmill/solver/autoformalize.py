@@ -1163,7 +1163,8 @@ def _roundtrip_fallback() -> "tuple[str, ...]":
             return tuple(x.strip() for x in m.split(",") if x.strip())
     except Exception:  # noqa: BLE001
         pass
-    return (_ROUNDTRIP_FALLBACK_DEFAULT,)
+    # split the (comma-separated) default too — it is a cross-family CHAIN, not a single model id
+    return tuple(x.strip() for x in _ROUNDTRIP_FALLBACK_DEFAULT.split(",") if x.strip())
 
 
 def _roundtrip_model() -> str:
