@@ -138,4 +138,42 @@ else
   echo "PROVISION_ISABELLE unset — Isabelle/sledgehammer NOT provisioned (default; set =1 on a node that needs it)"
 fi
 
+say "9. Premise-retrieval DATA — regenerate the graph + atlases so a fresh node has real premise recall, not just"
+say "   the shipped move atlas. The heavy inputs are NOT in the KB rsync allowlist (the 254MB dep-graph, the"
+say "   embeddings) — they are rebuilt HERE from the node's own Mathlib. Chain: extract_mathlib_graph (keyless,"
+say "   parses the built Mathlib) -> build_mathlib_atlas_embeddings (needs GOOGLE_API_KEY/GEMINI_API_KEY) ->"
+say "   build_atlas_adjacency. Idempotent (skips present artifacts); SKIP_DATA=1 to skip; keyless -> graph only,"
+say "   recall degrades to static (rank() never crashes)."
+if [ "${SKIP_DATA:-0}" = "1" ]; then
+  echo "SKIP_DATA=1 — premise-retrieval data regeneration skipped"
+elif [ ! -d "$REPO/ztare_proofs/.lake/packages/mathlib/Mathlib" ]; then
+  echo "WARN: Mathlib not present under ztare_proofs/.lake — cannot rebuild the dep-graph yet; premise recall runs"
+  echo "      on the shipped move atlas + static fallback until Mathlib is built, then re-run this step."
+else
+  GRAPH="$REPO/analytics/public/index/mathlib_graph/mathlib_graph.json"
+  EMB="$REPO/analytics/public/queries/lean/mathlib_atlas_embeddings.json"
+  ADJ="$REPO/analytics/public/queries/lean/mathlib_atlas_adjacency.json"
+  if [ -s "$GRAPH" ]; then
+    echo "OK: mathlib dep-graph present (skip extract)"
+  else
+    echo "  building mathlib dep-graph (extract_mathlib_graph.py)…"
+    PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/lean/extract_mathlib_graph.py \
+      || echo "WARN: extract_mathlib_graph failed — premise recall degrades to static"
+  fi
+  if [ -n "${GOOGLE_API_KEY:-}${GEMINI_API_KEY:-}" ]; then
+    [ -s "$EMB" ] || { echo "  building Mathlib atlas embeddings (embedder key present)…"; \
+      PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/lean/build_mathlib_atlas_embeddings.py \
+        || echo "WARN: atlas-embeddings build failed"; }
+    if [ -s "$GRAPH" ] && [ -s "$EMB" ] && [ ! -s "$ADJ" ]; then
+      echo "  building graph-expansion adjacency (build_atlas_adjacency.py)…"
+      PYTHONPATH="$REPO:$REPO/src" "$PY" scripts/public/lean/build_atlas_adjacency.py \
+        || echo "WARN: adjacency build failed — graph-expansion off, cosine recall still works"
+    fi
+  else
+    echo "NOTE: no GOOGLE_API_KEY/GEMINI_API_KEY — Mathlib semantic + graph-expansion recall are unavailable on"
+    echo "      this node; recall degrades to static kind-ordering. Ship analytics/public/queries/lean/"
+    echo "      mathlib_atlas_adjacency.json with the repo so keyless adopters get graph-expansion without a key."
+  fi
+fi
+
 say "Lean backend preparation complete"

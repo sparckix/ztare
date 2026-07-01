@@ -31,6 +31,18 @@ analytics/public/queries/conjecture_book.jsonl
 # re-derivable from this via family_lemma_library.rederive_library_from_events — another reason
 # the heavy .lean files need not be pulled). Merged, not clobbered (state_convergence).
 analytics/public/queries/solver_lane_bank_events.jsonl
+# Self-learning + observability logs generated on the worker node — pulled so the compounding loop is not
+# VPS-siloed and the operator can measure runs (infer-via-use). Append-only; merge is safe-by-default
+# (state_convergence content-hashes unkeyed stores). move_engagement is the move-recall verdict signal.
+analytics/public/queries/move_engagement.jsonl
+analytics/public/queries/move_atlas_provenance.jsonl
+analytics/public/queries/forecast_router_brier.jsonl
+analytics/public/queries/solver_lane_fix_memory.jsonl
+analytics/public/queries/campaign_p0_forecasts.jsonl
+analytics/public/queries/faithfulness_roundtrip_observations.jsonl
+analytics/public/queries/formalize_observations.jsonl
+analytics/public/queries/solver_lane_plan_choices.jsonl
+analytics/public/queries/prompt_evolution.jsonl
 analytics/public/pretick/
 analytics/public/posttick/
 projects/ns_millennium_hunt/public/

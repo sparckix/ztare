@@ -23,36 +23,15 @@ from pathlib import Path
 
 from ztare.fit.mdl import MDLLibrary  # canonical MDL engine; we plug in a Lean-token size function
 
-# A top-level Lean decl start: column 0, optional modifiers, a decl keyword, then a name.
-_DECL_START = re.compile(
-    r"^(?:private\s+|protected\s+|noncomputable\s+|scoped\s+)*"
-    r"(lemma|theorem|def|abbrev|instance)\s+([A-Za-z_][\w.']*)")
-_TERMINATORS = re.compile(r"^(end\b|#|namespace\b|section\b|open\b|variable\b|set_option\b|import\b)")
-
-
-def decl_blocks(text: str) -> "list[tuple[str, str]]":
-    """Split `text` into top-level (name, block) pairs for each lemma/theorem/def/abbrev/instance.
-    A block runs from its decl-start line to the next decl-start / terminator / EOF."""
-    lines = text.splitlines(keepends=True)
-    starts = []
-    for i, ln in enumerate(lines):
-        m = _DECL_START.match(ln)
-        if m:
-            starts.append((i, m.group(2)))
-    out = []
-    for k, (i, name) in enumerate(starts):
-        # block end = next decl start, or first terminator line after i, whichever is first
-        end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
-        for j in range(i + 1, end):
-            if _TERMINATORS.match(lines[j]):
-                end = j
-                break
-        out.append((name, "".join(lines[i:end]).rstrip()))
-    return out
+# Decl-span parsing is the CANONICAL `lean_source` parser (single source of the decl-kind list — no sibling
+# that can drift; the missing-kind span-swallow bug was RCA 2026-07-01). `_DECL_START`/`_TERMINATORS` are
+# re-export aliases so existing call sites + the anti-drift CI guard keep referencing them by their old names.
+from ztare.leanmill.lean_source import (  # noqa: E402
+    DECL_START as _DECL_START, DECL_TERMINATORS as _TERMINATORS, decl_blocks)
 
 
 def decl_names(text: str) -> "set[str]":
-    return {n for n, _ in decl_blocks(text)}
+    return {n for n, _ in decl_blocks(text) if n}   # skip anonymous `example` (name '') — enumerate NAMED decls
 
 
 def _open_namespaces(text: str) -> "list[str]":
@@ -70,12 +49,41 @@ def _open_namespaces(text: str) -> "list[str]":
     return seen
 
 
+def strip_dead_sorried_orphans(text: str) -> "tuple[str, list[str]]":
+    """Remove top-level SORRIED decls that NOTHING else references — dead scaffolding a campaign leaves when a
+    PROVEN sibling supersedes an abstract stub (e.g. VCG's general `..._witness` superseded by its concrete
+    `..._witness_closed`, which the composite actually cites). A warm env / filed artifact must not carry dead
+    `sorry`s: they read as unfinished and (post-2026-06-30) trip the promote publish-boundary guard. CONSERVATIVE
+    — only drops a sorried decl whose name appears in NO OTHER decl's body (comment-blanked, so a mention in a
+    comment is not a live ref), so a still-cited `sorry` (a genuine OPEN rung) is KEPT. Returns (new_text,
+    removed). Span deletion via the canonical `lean_source.decl_spans`; the caller recompiles + reverts if
+    removal somehow breaks the env (defense-in-depth — the reference scan is textual)."""
+    from ztare.leanmill.lean_source import has_sorry, blank_comments, decl_spans
+    blocks = decl_blocks(text)
+    blanked = [(n, blank_comments(b)) for n, b in blocks]           # comment-free bodies for the ref scan
+    sorried = [n for n, b in blocks if n and has_sorry(b)]
+    if not sorried:
+        return (text, [])
+    dead = [name for name in sorried
+            if not any(n2 != name and re.search(r"\b" + re.escape(name) + r"\b", b2) for n2, b2 in blanked)]
+    if not dead:
+        return (text, [])
+    span_of = {n: (i, e) for n, i, e in decl_spans(text)}           # canonical spans (same parser as decl_blocks)
+    lines = text.splitlines(keepends=True)
+    for name in sorted(dead, key=lambda n: -span_of[n][0]):          # delete HIGHEST start line first (stable indices)
+        i, end = span_of[name]
+        del lines[i:end]
+    return ("".join(lines), dead)
+
+
 def bankable_helpers(proof_text: str, context_names: "set[str]",
                      exclude_prefixes=("leaf_", "lift_", "barr", "AgenticLeafProbe")) -> "list[tuple[str, str]]":
     """Invented helpers worth banking from a closure: decls NOT already in the family context
     (dedup by name) and NOT the target/probe theorem itself."""
     out = []
     for name, block in decl_blocks(proof_text):
+        if not name:                     # anonymous `example` — a span boundary, never a bankable named helper
+            continue
         if name in context_names:
             continue
         if any(name.startswith(p) for p in exclude_prefixes):
@@ -374,7 +382,9 @@ def _default_axiom_audit(file_path: "str | Path", lean_root: "str | Path", decl_
     if res is None:                                  # inconclusive / infra unusable ⇒ fail-open at this gate
         return (True, "axiom_audit_unavailable")
     clean, diag = res
-    return (clean, diag if not clean else "axiom_clean")
+    # Pass `diag` through on BOTH branches: on taint it is the offending-axiom reason; on clean it is now the
+    # actual persisted-world axiom LIST (repl_compile enrichment) so the close epilogue can stamp honest P0.
+    return (clean, diag)
 
 
 def _supersede_in_place(text: str, target_name: str, decl_text: str):

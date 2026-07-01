@@ -29,9 +29,61 @@ _DECL_PREFIX = r"(?:noncomputable\s+|private\s+|protected\s+)*(?:theorem|lemma)\
 # (not `^\s*`) so an indented `have`/`let`/nested decl inside the target's proof can't be mistaken for
 # the next top-level decl. Used to bound a named decl to its OWN text in multi-decl files, so a later
 # decl's `:=` / trailing `sorry` cannot bleed into this decl's signature or proof extraction.
-_TOPLEVEL_DECL = re.compile(
-    r"(?m)^(?:noncomputable\s+|private\s+|protected\s+|scoped\s+|@\[[^\]]*\]\s*)*"
-    r"(?:theorem|lemma|def|abbrev|instance|example|structure|inductive|class|opaque|axiom)\b")
+# ONE canonical top-level decl kind-list drives BOTH `_TOPLEVEL_DECL` (keyword-boundary, for `_decl_body`
+# fencing + `.search` over whole text) AND `DECL_START` (name-capturing, per-line, for `decl_blocks` /
+# supersession span-bounding). A kind missing from this list silently MIS-BOUNDS a span: a decl of the
+# missing kind sitting between two others gets swallowed into the neighbour's block and DELETED on splice —
+# the reverted_noncompile bank corruption (RCA 2026-07-01, VCG multi-unit witness). Keep it exhaustive.
+_DECL_KINDS = ("theorem", "lemma", "def", "abbrev", "instance", "example",
+               "structure", "inductive", "class", "opaque", "axiom")
+DECL_KINDS = _DECL_KINDS   # public: the FULL kind-list (incl anonymous `example`) — banking span-bounding uses it
+# NAMED kinds only (drops anonymous `example`). The firewall parser (statement_integrity) sources THIS: it
+# names anonymous decls `instance@<line>`, and comparing that line-derived name across original-vs-probe would
+# FALSE-flag a shifted/dropped `example` as `deleted` (iatrogenic). Banking WANTS `example` as a span boundary
+# (an `example` between decls must not be swallowed + deleted on supersession — the #51 class); the firewall
+# does not. So the lists legitimately differ by exactly `example`; the parity guard checks the NAMED kinds.
+NAMED_DECL_KINDS = tuple(k for k in _DECL_KINDS if k != "example")
+_DECL_MODS = r"(?:noncomputable\s+|private\s+|protected\s+|scoped\s+|@\[[^\]]*\]\s*)*"
+_TOPLEVEL_DECL = re.compile(r"(?m)^" + _DECL_MODS + r"(?:" + "|".join(_DECL_KINDS) + r")\b")
+# Per-line, name-capturing: group(1)=kind, group(2)=name ('' for anonymous `example`). `\b` after the kind
+# so `defeq` / `classy` / `structured` do not false-match the keyword.
+DECL_START = re.compile(r"^" + _DECL_MODS + r"(" + "|".join(_DECL_KINDS) + r")\b(?:\s+([A-Za-z_][\w.']*))?")
+# Non-decl top-level lines that END a decl block (a namespace/section/open/notation/... after the decl closes
+# its span early). The notation/macro/syntax/fixity/attribute family is included so a theory-building campaign
+# that ANCHORS bespoke `def`s with custom notation does not get that command SWALLOWED into a neighbouring
+# decl's span and deleted on bank-splice — the same span-swallow class as the missing-`structure` bug (#51),
+# closed preventively (no substrate declares notation yet, but a vocabulary-building campaign is exactly where
+# it would appear). These are COMMANDS, not named decls, so they bound a span but are never themselves banked.
+DECL_TERMINATORS = re.compile(
+    r"^(end\b|#|namespace\b|section\b|open\b|variable\b|set_option\b|import\b"
+    r"|notation\b|notation3\b|macro\b|macro_rules\b|syntax\b|declare_syntax_cat\b|elab\b|elab_rules\b"
+    r"|infix\b|infixl\b|infixr\b|prefix\b|postfix\b|attribute\b)")
+
+
+def decl_spans(text: str) -> "list[tuple[str, int, int]]":
+    """THE canonical line-span index: `(name, start_line, end_line)` per top-level decl (name '' for anonymous
+    `example`), end-exclusive. A span runs from its decl-start line to the next decl-start / terminator / EOF.
+    ONE span computation feeds `decl_blocks` (text) and the substrate-mutating hygiene passes (span deletion),
+    so the block splitter and any span editor can never disagree on where a decl ends. Line-based (keepends)."""
+    lines = (text or "").splitlines(keepends=True)
+    starts = [(i, (m.group(2) or "")) for i, ln in enumerate(lines) if (m := DECL_START.match(ln))]
+    spans: "list[tuple[str, int, int]]" = []
+    for k, (i, name) in enumerate(starts):
+        end = starts[k + 1][0] if k + 1 < len(starts) else len(lines)
+        for j in range(i + 1, end):
+            if DECL_TERMINATORS.match(lines[j]):
+                end = j
+                break
+        spans.append((name, i, end))
+    return spans
+
+
+def decl_blocks(text: str) -> "list[tuple[str, str]]":
+    """THE canonical top-level (name, block) splitter (moved here from family_lemma_library 2026-07-01 so the
+    banking span parser and the firewall parsers share ONE decl-kind list — no sibling that can drift). A block
+    runs from its decl-start line to the next decl-start / terminator / EOF. Anonymous `example` yields name ''."""
+    lines = (text or "").splitlines(keepends=True)
+    return [(name, "".join(lines[i:end]).rstrip()) for name, i, end in decl_spans(text)]
 
 
 def _decl_re(name: str) -> re.Pattern:

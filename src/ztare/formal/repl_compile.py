@@ -218,7 +218,10 @@ def campaign_file_decl_axiom_clean(file_path, sandbox, decl_name: str, timeout: 
     bad = [a for a in cited if a not in _ALLOWED_AXIOMS and (a.endswith("Ax") or a in ("Lean.ofReduceBool", "Lean.trustCompiler"))]
     if bad:
         return (False, f"non-allowlisted axiom in {decl_name}: {bad}")
-    return (True, "axiom_clean")
+    # CLEAN: return the actual allowlisted axiom LIST (not the "axiom_clean" sentinel) so the caller can STAMP
+    # the honest persisted-world axioms for P0 provenance — no consumer branches on the clean-diag string
+    # (def_denotation reads res[0] only; the bank guard only logs it). "(no axioms)" when the decl is axiom-free.
+    return (True, ", ".join(cited) if cited else "(no axioms)")
 
 
 def compile_probe_via_repl(probe: str, sandbox, timeout: int = 120, *,

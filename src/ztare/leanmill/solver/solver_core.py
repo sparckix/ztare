@@ -2772,9 +2772,14 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             # Advisory telemetry only — the _govern kernel above is the SOLE closure arbiter.
             try:
                 from ztare.leanmill.solver.sledgehammer import sledgehammer_consensus
+                # The consensus validates the Isabelle→Mathlib PREMISE MAPPING (Isabelle's facts, re-checked in
+                # Lean), so it is only meaningful when there ARE premises to reconcile → `bool(dependency_trace)`,
+                # NOT `bool(proof)`: an Isabelle proof with an EMPTY trace (closed by `simp`, no facts) injects no
+                # premises (tactic=''), so a proof-signal there manufactures a false Isabelle-yes/Lean-no conflict.
+                # Empty trace ⇒ only the Lean verdict ⇒ INSUFFICIENT (correct). `isabelle_proved` is kept as diag.
                 _sh_xsub = sledgehammer_consensus(
-                    _sh_goal, isabelle_found=("dependency_trace" in _sh_info), lean_compiles=kc,
-                    isabelle_diag=f"facts={_sh_info.get('dependency_trace')}",
+                    _sh_goal, isabelle_found=bool(_sh_info.get("dependency_trace")), lean_compiles=kc,
+                    isabelle_diag=f"proved={_sh_info.get('isabelle_proved')} facts={_sh_info.get('dependency_trace')}",
                     lean_diag=(compile_tail or "")[:120]).status
             except Exception:  # noqa: BLE001 — telemetry is best-effort, never breaks the move
                 _sh_xsub = "error"

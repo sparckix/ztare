@@ -537,6 +537,12 @@ def sledgehammer_smuggle(goal_text: str, lean_root: Path, timeout_s: int,
         info["stage"] = "no_sledgehammer_result"
         info["reason"] = "server returned no proof (or transport failed) — fail-closed"
         return "", info
+    # Did Isabelle's ATP actually PROVE the goal? The server returns a truthy dict even on NO proof
+    # (`{"proof":"","used_facts":[]}`), and a genuine proof can carry an EMPTY fact list (closed by `simp`,
+    # no premises) — so neither `bool(resp)` nor `bool(trace)` is the proof signal. `bool(proof)` IS. Surface
+    # it so the cross-substrate consensus doesn't read an empty-trace no-proof as an Isabelle YES (which would
+    # manufacture a false FAITHFULNESS_CONFLICT against a Lean-no). See sledgehammer_consensus.
+    info["isabelle_proved"] = bool((resp.get("proof") or "").strip())
     trace = resp.get("used_facts") or extract_dependency_trace(resp.get("proof") or "")
     info["dependency_trace"] = trace
     if not trace:

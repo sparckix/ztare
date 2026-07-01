@@ -1068,6 +1068,52 @@ def test_env_provided_substrate_decl_not_flagged_deleted(tmp_path, monkeypatch):
         "with no substrate registered the strict deleted-check must flag every omitted decl (byte-parity)"
 
 
+def test_supersede_preserves_structure_after_target():
+    """Banking a mid-file lemma must NOT delete a `structure`/`class`/`inductive` that sits between it and the
+    next `def`. RCA 2026-07-01 (VCG DSIC): `_DECL_START` matched lemma/theorem/def/abbrev/instance but NOT
+    structure/class/inductive, so `_supersede_in_place` bounded the superseded target's span by the next
+    RECOGNIZED start (a later `def`), swallowing an intervening `structure` into the span → it was DELETED on
+    splice → the substrate stopped compiling → reverted_noncompile (a valid, ratified proof lost + the campaign
+    env went dead). Latent until VCG banked lemma 1 with its multi-unit-witness `structure` right after it (prior
+    campaigns banked the last decl, nothing after to eat). The fix adds all named decl kinds to `_DECL_START`."""
+    from ztare.leanmill.solver.family_lemma_library import _supersede_in_place, decl_names
+    text = ("namespace VCG\n\ntheorem T (n : Nat) : True := by sorry\n\n"
+            "structure S (K : Type*) where\n  a : K\n\n"
+            "inductive I where | c\n\nclass C (K : Type*) where d : K\n\n"
+            "def useS {K} (s : S K) : K := s.a\n\nend VCG\n")
+    new_text, banked = _supersede_in_place(text, "T", "theorem T (n : Nat) : True := by trivial")
+    assert new_text is not None, "supersession should locate the target span"
+    for keep in ("structure S", "inductive I", "class C", "def useS"):
+        assert keep in new_text, f"supersession DELETED `{keep}` between the target and the next def — span over-extended"
+    assert "by trivial" in new_text and new_text.count("sorry") == 0, "target's sorry should be replaced by the proof"
+    # the boundary regex must also let decl_names SEE the non-def kinds (else banking dedup mis-treats them as new)
+    names = decl_names(text)
+    assert {"S", "I", "C", "useS"} <= names, f"decl_names must recognize structure/inductive/class, got {names}"
+
+
+def test_decl_span_parser_recognizes_every_canonical_kind():
+    """Anti-DRIFT guard for the RCA-2026-07-01 class. The banking span parser (`family_lemma_library._DECL_START`)
+    is a SIBLING of the canonical `lean_source` decl recogniser; when it recognises FEWER named decl kinds than
+    the canonical one, it over-extends a superseded decl's span and DELETES the unrecognised decl on splice (the
+    VCG `structure`-eating corruption). This guard fails the moment the two drift: every NAMED top-level decl kind
+    `lean_source` recognises must also be a boundary the banking parser recognises. (Anonymous `example` is
+    excluded — it has no name and is never a banked rung.)"""
+    from ztare.leanmill.solver import family_lemma_library as fll
+    from ztare.leanmill import lean_source as ls
+    # CONSOLIDATED (2026-07-01): the banking span parser is now the CANONICAL `lean_source` parser (re-export),
+    # not a sibling — so drift is structurally impossible. Assert the identity so no one re-forks it.
+    assert fll._DECL_START is ls.DECL_START, "banking parser must BE lean_source.DECL_START (no re-forked sibling)"
+    assert fll.decl_blocks is ls.decl_blocks, "banking decl_blocks must BE the canonical lean_source.decl_blocks"
+    canonical_named_kinds = ["theorem", "lemma", "def", "abbrev", "instance",
+                             "structure", "class", "inductive", "opaque", "axiom"]
+    missed = [k for k in canonical_named_kinds if not ls.DECL_START.match(f"{k} Foo : T := t")]
+    assert not missed, (f"lean_source.DECL_START misses {missed} — a decl of that kind between a banked target and "
+                        f"the next recognised decl is SWALLOWED + deleted on bank-splice (RCA 2026-07-01).")
+    # anonymous `example` is a span BOUNDARY (name '') but never a named/bankable decl
+    blks = ls.decl_blocks("theorem A : T := t\nexample : T := t\ntheorem B : T := t\n")
+    assert [n for n, _ in blks] == ["A", "", "B"], f"example must be a boundary with empty name, got {blks}"
+
+
 def test_banked_lemma_reuse_skips_already_proven(tmp_path, monkeypatch):
     """(b) BANKED-DECL REUSE (2026-06-25, operator "don't re-formalize, reuse"): a lemma whose `**(name)**` names
     an ALREADY-proven (sorry-free) substrate decl is REUSED (returns its banked signature ⇒ campaign skips the
@@ -1117,3 +1163,157 @@ def test_graph_expansion_rerank_surfaces_seed_neighbour(monkeypatch):
     monkeypatch.setenv("ZTARE_LEANMILL_GRAPH_EXPAND", "1")
     monkeypatch.setitem(ms._ADJ_CACHE, "adj", {})
     assert ms._graph_expand_rerank(scored, rows) == scored, "no adjacency artifact must be a no-op (cosine-only)"
+
+
+def test_promote_reads_p0_sidecar(tmp_path):
+    """P0 SINGLE-DOOR (2026-06-30): the honest persisted-world axioms + this-run banked/reused counts are STAMPED
+    at campaign CLOSE (autoformalize_notes, warm env) beside the closure; promote_campaign_artifact READS that
+    stamp instead of re-deriving P0 from the cold probe-world closure — which timed out (→ `axioms ?`), reported
+    probe-world stub axioms, and whose log-regex missed intra-run banking (→ `reuse 0`). This is the recurring
+    P0-at-promote bug closed at its root. Guards the read + the field contract so a rename on either side fails
+    CI, not silently at promote time. Hermetic (no lake / no DB — bogus run_tag ⇒ graceful `—`)."""
+    import importlib.util as _ilu
+    import json
+    from pathlib import Path
+    _p = Path(__file__).resolve().parents[1] / "scripts/public/control/leanmill/promote_campaign_artifact.py"
+    spec = _ilu.spec_from_file_location("promote_campaign_artifact", _p)
+    pca = _ilu.module_from_spec(spec); spec.loader.exec_module(pca)
+
+    closure = tmp_path / "vcg_demo.lean"
+    closure.write_text("theorem vcg_demo : True := trivial\n", encoding="utf-8")
+    (tmp_path / "vcg_demo.p0.json").write_text(json.dumps({
+        "axioms": "propext, Classical.choice, Quot.sound",
+        "composite_decl": "vcg_demo__abc123", "theory_file": "vcg.lean",
+        "banked_this_run": 9, "reused_from_bank": 0,
+    }), encoding="utf-8")
+    hdr = pca.build_header("no_such_run", "vcg_demo", closure, None)  # stamp drives axioms + reuse
+    assert "axioms propext, Classical.choice, Quot.sound" in hdr, f"stamped persisted-world axioms must win:\n{hdr}"
+    assert "axioms ?" not in hdr, "must never fall back to the cold-probe `?` when a P0 stamp exists"
+    assert "9 rung(s) banked this run" in hdr and "0 reused from prior bank" in hdr, \
+        f"reuse must report the stamped intra-run banked count, not log-regex `cited 0`:\n{hdr}"
+
+    # NO sidecar (pre-fix runs) ⇒ graceful fallback: still builds a header, never crashes. `axioms=` skips the
+    # cold `lake env lean` so the test stays hermetic/fast.
+    closure2 = tmp_path / "old_run.lean"
+    closure2.write_text("theorem t : True := trivial\n", encoding="utf-8")
+    hdr2 = pca.build_header("no_such_run", "old_run", closure2, None, axioms="n/a")
+    assert "cited 0 banked rung(s)" in hdr2, "no-sidecar path must fall back to the log-regex reuse line"
+
+
+def test_promote_refuses_probe_stub_body(tmp_path, monkeypatch):
+    """PUBLISH-BOUNDARY GUARD (2026-06-30 RCA): promote must REFUSE to file a probe-world standalone (cited rungs
+    stubbed as local `axiom`s) or a body with a `sorry` under a clean-axioms header — that is the laundering-looking
+    disconnect Gemini flagged on VCG (the first composite filed): the real substrate proof is axiom-clean but the
+    portable standalone stubs its deps, so `#print axioms` on the FILE shows stubs and contradicts the header. A
+    self-contained kernel-clean body (no local `axiom`, no `sorry`; `#print axioms` command is fine) must file."""
+    import importlib.util as _ilu
+    from pathlib import Path
+    _p = Path(__file__).resolve().parents[1] / "scripts/public/control/leanmill/promote_campaign_artifact.py"
+    spec = _ilu.spec_from_file_location("promote_campaign_artifact", _p)
+    pca = _ilu.module_from_spec(spec); spec.loader.exec_module(pca)
+
+    # probe-world stub body → REFUSED
+    stub = ("import Mathlib\naxiom exists_welfareMaximizer : True\n"
+            "theorem t : True := exists_welfareMaximizer\n")
+    assert pca._laundering_markers(stub), "an `axiom` stub decl must be flagged"
+    # a `sorry` body → REFUSED
+    assert pca._laundering_markers("import Mathlib\ntheorem t : True := by sorry\n"), "a `sorry` must be flagged"
+    # comment mentions are NOT hits (canonical comment-aware scan)
+    assert not pca._laundering_markers("import Mathlib\n-- axiom foo, sorry later\ntheorem t: True := trivial\n"), \
+        "a `sorry`/`axiom` inside a comment must NOT false-positive"
+    # a self-contained clean body WITH a `#print axioms` verification line → allowed (not a decl)
+    assert not pca._laundering_markers("import Mathlib\ntheorem t : True := trivial\n#print axioms t\n"), \
+        "`#print axioms` is a command, not an `axiom` declaration — must not be flagged"
+
+
+def test_sledgehammer_consensus_empty_trace_is_not_a_false_conflict():
+    """Math x-substrate consensus signal (2026-06-30, live-validated). The consensus validates the Isabelle→Mathlib
+    PREMISE MAPPING, so it is meaningful only with a NON-EMPTY dependency trace. An Isabelle proof by `simp` has an
+    EMPTY trace (no premises) → the smuggle injects nothing (tactic='') → feeding `isabelle_found=True` there
+    manufactured a false Isabelle-yes/Lean-no `faithfulness_conflict` (the bug: the call site used a key-presence /
+    bool(proof) signal instead of bool(trace)). Empty trace ⇒ only the Lean verdict ⇒ INSUFFICIENT; a real trace
+    that Lean reconstructs ⇒ CORROBORATED; a real trace Lean rejects ⇒ the valuable localized mapping conflict."""
+    from ztare.leanmill.solver.sledgehammer import sledgehammer_consensus
+    # empty trace (simp-proved or no-proof) → the caller passes isabelle_found=bool(trace)=False → INSUFFICIENT
+    assert sledgehammer_consensus("n+0=n", isabelle_found=False, lean_compiles=False).status == "insufficient"
+    assert sledgehammer_consensus("n+0=n", isabelle_found=False, lean_compiles=True).status == "insufficient"
+    # non-empty trace + Lean reconstruction OK → corroborated (cross-kernel trust-lift)
+    assert sledgehammer_consensus("a+b=b+a", isabelle_found=True, lean_compiles=True).status == "corroborated"
+    # non-empty trace + Lean reconstruction fails → the localized Isabelle→Mathlib mapping-bug conflict
+    assert sledgehammer_consensus("g", isabelle_found=True, lean_compiles=False).status == "faithfulness_conflict"
+
+
+def test_strip_dead_sorried_orphans():
+    """SUBSTRATE HYGIENE (2026-07-01): a sorried decl NOTHING references (dead scaffolding from a superseded stub —
+    the VCG general witness vs its concrete `_closed`) is swept; a still-CITED sorry (a genuine open rung) is KEPT;
+    surrounding decls + namespace structure survive. Uses the canonical `lean_source.decl_spans` for deletion."""
+    from ztare.leanmill.solver.family_lemma_library import strip_dead_sorried_orphans
+    src = (
+        "namespace N\n"
+        "theorem live_dep : True := trivial\n"
+        "theorem dead_orphan : True := by\n  sorry\n"          # nothing references it → dead
+        "theorem cited_open : True := by\n  sorry\n"           # referenced below → KEEP
+        "def uses_it : True := cited_open\n"
+        "structure S where\n  x : Nat\n"                       # must survive
+        "end N\n")
+    out, removed = strip_dead_sorried_orphans(src)
+    assert removed == ["dead_orphan"], f"only the uncited sorry is dead, got {removed}"
+    assert "dead_orphan" not in out, "dead orphan must be removed"
+    assert "cited_open" in out and "def uses_it" in out, "a cited sorry (open rung) must be KEPT"
+    assert "structure S where" in out and "namespace N" in out and "end N" in out, "structure/namespace must survive"
+    # idempotent + no-op when clean
+    assert strip_dead_sorried_orphans(out)[1] == [], "second pass removes nothing (idempotent)"
+    assert strip_dead_sorried_orphans("theorem t : True := trivial\n")[1] == [], "no sorries → no-op"
+
+
+def test_notation_command_is_span_boundary_not_swallowed():
+    """DEF-NOTATION ANCHORING (2026-07-01, preventive — same span-swallow class as #51). A theory-building
+    campaign may ANCHOR a bespoke `def` with custom `notation`/`macro`/`infixl`. Such a command between two decls
+    must END the preceding decl's span (a COMMAND, not a bankable named decl) so supersession never absorbs +
+    deletes it. Guards `lean_source.decl_spans`/`decl_blocks` treating the notation family as a terminator."""
+    from ztare.leanmill import lean_source as ls
+    src = ("def myOp (a b : Nat) : Nat := a + b\n"
+           "notation:65 a \" ⊕ \" b => myOp a b\n"
+           "theorem after_notation : True := trivial\n")
+    spans = ls.decl_spans(src)
+    names = [n for n, _i, _e in spans]
+    assert names == ["myOp", "after_notation"], f"notation must not be a named decl, got {names}"
+    myop_block = dict(ls.decl_blocks(src))["myOp"]
+    assert "notation" not in myop_block, "the notation command must NOT be swallowed into myOp's span (would be deleted on splice)"
+    for cmd in ("macro", "infixl", "attribute", "elab"):
+        assert ls.DECL_TERMINATORS.match(f"{cmd} foo"), f"{cmd} must be a span terminator"
+
+
+def test_all_decl_start_parsers_share_one_kind_list():
+    """FULL PARSER CONSOLIDATION drift-guard (2026-07-01). Two decl-start regexes exist for two purposes — the
+    banking span parser (`lean_source.DECL_START`, column-0, top-level) and the firewall parser
+    (`statement_integrity._DECL_START`, indentation + namespace-qualified). Their SHAPES legitimately differ, but
+    the KIND LIST must be ONE (`lean_source.DECL_KINDS`): a kind in one but not the other silently mis-bounds a
+    span — the #51 structure-eating class. Assert every canonical kind is recognised by BOTH."""
+    from ztare.leanmill import lean_source as ls
+    from ztare.leanmill.solver import statement_integrity as si
+    # NAMED kinds must be recognised by BOTH parsers (drift on these = the #51 span-swallow class).
+    assert set(ls.NAMED_DECL_KINDS) == set(ls.DECL_KINDS) - {"example"}, "NAMED_DECL_KINDS = DECL_KINDS minus example"
+    for kind in ls.NAMED_DECL_KINDS:
+        probe = f"{kind} Foo : T := t"
+        assert ls.DECL_START.match(probe), f"lean_source.DECL_START must recognise `{kind}`"
+        assert si._DECL_START.match(probe), f"statement_integrity._DECL_START must recognise `{kind}` (kind drift → #51)"
+    # `example` is BANKING-ONLY (span boundary); the firewall must NOT recognise it (its anonymous-name
+    # comparison would false-flag a shifted/dropped example as `deleted`). Guard the deliberate asymmetry.
+    assert ls.DECL_START.match("example : T := t"), "banking parser needs `example` as a span boundary"
+    assert not si._DECL_START.match("example : T := t"), "firewall parser must NOT recognise `example` (false `deleted`)"
+
+
+def test_oneshot_formalize_extract_does_not_span_theorems():
+    """AUTOFORMALIZE oneshot extractor (2026-07-01 audit). `_extract_lean_from_dispatch(..., 'oneshot')` grabs the
+    LAST `theorem|lemma … := (by) sorry`. Bug: the body `.*?` could cross a `theorem`/`lemma` keyword, so a
+    `theorem helper … := by <proof>` FOLLOWED by `theorem target … := sorry` matched as ONE mangled blob (helper's
+    name + target's sorry) → compile failure (fail-SAFE, but a wasted formalize round). The tempered bound keeps
+    each match to a single decl. Fail-safe by design (a mis-extraction never becomes a closure — it fails to
+    compile), so this guards the round-efficiency fix, not a soundness boundary."""
+    from ztare.leanmill.solver.autoformalize import _extract_lean_from_dispatch as ex
+    blob = "```lean\ntheorem helper : P := by\n  simp\ntheorem target : Q := by sorry\n```"
+    assert ex(blob, "oneshot") == "theorem target : Q := by sorry", "must extract only the sorried target, not a mangle"
+    # single theorem + indented output still handled (leniency preserved — not switched to column-0 decl_blocks)
+    assert ex("```lean\ntheorem t : Q := by sorry\n```", "oneshot") == "theorem t : Q := by sorry"
+    assert ex("```lean\n  theorem t : Q := sorry\n```", "oneshot").strip() == "theorem t : Q := sorry"

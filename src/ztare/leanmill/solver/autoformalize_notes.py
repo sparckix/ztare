@@ -450,7 +450,56 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                         out["target"]["solved"] = False
                         out["target"]["outcome"] = "axiom_taint_gap"
                         out["target"]["faithfulness_reason"] = f"persisted-theory {_areason}"
+                    elif "unavailable" not in _areason:
+                        # P0 SINGLE-DOOR (2026-06-30): the honest persisted-world axioms are computed HERE, at
+                        # close, in the warm env. STAMP them (+ this-run banked/reused counts) in a sidecar beside
+                        # the closure so promote_campaign_artifact READS them — instead of re-deriving P0 from the
+                        # cold probe-world closure, which times out (→ `axioms ?`) and reports stub axioms, and
+                        # whose log-regex misses intra-run banking (→ `reuse 0`). Fixes that recurring P0-at-promote
+                        # class at the root: compute once where the data is honest, never re-derive on a cold box.
+                        try:
+                            import json as _json_p0
+                            _banked_n = sum(1 for _l in out["lemmas"]
+                                            if _l.get("solved") and _l.get("outcome") != "reused_from_bank")
+                            _reused_n = sum(1 for _l in out["lemmas"] if _l.get("outcome") == "reused_from_bank")
+                            _cdir_p0 = LEAN_ROOT_DEFAULT / ".solver_scratch" / "closures"
+                            _cdir_p0.mkdir(parents=True, exist_ok=True)
+                            (_cdir_p0 / f"{_tname}.p0.json").write_text(_json_p0.dumps({
+                                "axioms": _areason,               # persisted-world #print axioms (warm env)
+                                "composite_decl": _banked,
+                                "theory_file": _theory_rel_final,
+                                "banked_this_run": _banked_n,
+                                "reused_from_bank": _reused_n,
+                            }, indent=2), encoding="utf-8")
+                            log(f"[notes] P0 stamped: closures/{_tname}.p0.json "
+                                f"(axioms={_areason} · {_banked_n} banked/{_reused_n} reused this run)")
+                        except Exception:  # noqa: BLE001 — telemetry; never blocks a verified closure
+                            pass
         except Exception:  # noqa: BLE001 — defense-in-depth backstop; never break the run
+            pass
+
+    # SUBSTRATE HYGIENE (2026-07-01): sweep DEAD sorried orphans — sorried decls nothing else references, the
+    # scaffolding a campaign leaves when a proven sibling supersedes an abstract stub (VCG's general witness vs
+    # its concrete `_closed`). Keeps the warm env + any filed artifact sorry-free (a dead `sorry` reads as
+    # unfinished + trips the promote publish guard). Recompile-verify + REVERT: a removal that breaks the env is
+    # rolled back (the reference scan is textual, so this is the safety net). Best-effort; ZTARE_LEANMILL_SWEEP_ORPHANS=0 off.
+    if _theory_rel_final and _os_w.environ.get("ZTARE_LEANMILL_SWEEP_ORPHANS", "1") != "0":
+        try:
+            from ztare.leanmill.solver.family_lemma_library import strip_dead_sorried_orphans
+            from ztare.formal.repl_compile import campaign_file_env
+            _tp_sw = lean_root / _theory_rel_final
+            if _tp_sw.exists():
+                _orig = _tp_sw.read_text(encoding="utf-8")
+                _swept, _removed = strip_dead_sorried_orphans(_orig)
+                if _removed:
+                    _tp_sw.write_text(_swept, encoding="utf-8")
+                    if campaign_file_env(str(_tp_sw), str(LEAN_ROOT_DEFAULT)) is None:
+                        _tp_sw.write_text(_orig, encoding="utf-8")   # revert — removal broke the env
+                        log(f"[notes] orphan-sweep REVERTED (removal broke the env); kept {_removed}")
+                    else:
+                        log(f"[notes] orphan-sweep: removed {len(_removed)} dead sorried orphan(s) {_removed} "
+                            f"(nothing cited them; env still compiles)")
+        except Exception:  # noqa: BLE001 — hygiene is best-effort; never blocks the run
             pass
 
     n_ok = sum(1 for l in out["lemmas"] if l.get("solved"))
@@ -809,7 +858,7 @@ def write_refined_notes(result: dict, notes_path: "Path", *, dispatch: "Optional
             continue   # the TARGET, if wall-deferred, is already recorded above (don't double-count)
         _add_gap(str(d)[:200], "deferred:campaign_wall")
     if gap_lines:
-        det += ["", "## Gaps this run (honest non-closures — NOT proven, NOT citable):"] + gap_lines
+        det += ["", "## Gaps this run (non-closures — NOT proven, NOT citable):"] + gap_lines
     # ── Open-lemma synthesis. PREFER the PLANNER's ACTUAL sub-DAG (route_and_solve's decomposition — the same
     #    agent's mid-proof breakdown, already in the result); deterministically RENDER it (rendering the agent's
     #    own output is not authoring). Only lemmas the planner did NOT decompose get a fresh re-proposal dispatch. ──
@@ -1123,8 +1172,8 @@ def _self_test() -> int:
                             "faithful": True},
                  "wall_deferred": ["L4 never attempted"]}
         gt = write_refined_notes(r_gap, Path(_td) / "gap.md").read_text(encoding="utf-8")
-        ok("gap: honest-non-closure ledger header present",
-           "Gaps this run (honest non-closures" in gt and "NOT proven, NOT citable" in gt)
+        ok("gap: non-closure ledger header present",
+           "Gaps this run (non-closures" in gt and "NOT proven, NOT citable" in gt)
         ok("gap: open lemma recorded with its typed failure class",
            "L2 gaps — gap[admitted_and_exact_gap]" in gt)
         ok("gap: firewall-rejected lemma recorded as such",

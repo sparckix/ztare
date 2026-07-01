@@ -17,7 +17,7 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[3]
 MATHLIB_ROOT = REPO / "ztare_proofs" / ".lake" / "packages" / "mathlib" / "Mathlib"
-OUT = REPO / "analytics" / "mathlib_graph" / "mathlib_graph.json"
+OUT = REPO / "analytics" / "public" / "index" / "mathlib_graph" / "mathlib_graph.json"
 
 DECL_RE = re.compile(
     r"^(theorem|lemma|def|abbrev|structure|class|instance|inductive)\s+"

@@ -796,7 +796,14 @@ def _extract_lean_from_dispatch(blob: str, mode: str) -> str:
     # Canonical NESTED-aware stripper (handles `/- /- -/ -/`).
     from ztare.leanmill.lean_source import strip_comments as _sc_af, has_sorry as _has_sorry_af
     clean_nc = _sc_af(clean)
-    stmts = re.findall(r"(?s)\b((?:theorem|lemma)\s+\S+.*?:=\s*(?:by\s+)?sorry)", clean_nc)
+    # TEMPERED bound (2026-07-01 audit): the body `.*?` must NOT cross a `theorem`/`lemma` keyword, else a
+    # `theorem helper … := by <proof>` FOLLOWED by `theorem target … := sorry` matched as ONE blob (helper's
+    # name + target's sorry) → a mangled two-theorem extraction → compile failure (fail-safe, but a wasted
+    # formalize round). `(?:(?!\btheorem\b|\blemma\b).)*?` keeps each match to a SINGLE decl. NOT switched to
+    # `decl_blocks` here on purpose: that parser is column-0-only and model output can be indented (regression);
+    # the `\b`-anchored regex stays lenient. Still takes the LAST sorried statement (the posed target).
+    stmts = re.findall(r"(?s)\b((?:theorem|lemma)\s+\S+(?:(?!\btheorem\b|\blemma\b).)*?:=\s*(?:by\s+)?sorry)",
+                       clean_nc)
     if stmts:
         return stmts[-1].strip()
     for ln in reversed(clean_nc.split("\n")):                           # fallback: last theorem-ish line

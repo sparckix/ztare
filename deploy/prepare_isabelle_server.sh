@@ -102,8 +102,20 @@ say "2. build the HOL heap (slow on first run, ~15-30 min) + verify an ATP backe
 PARENT_SESSION="${ISABELLE_PARENT_SESSION:-HOL-Computational_Algebra}"
 say "2b. pre-build the server parent-session heap '$PARENT_SESSION' (one-time, ~5-15 min)"
 "$ISABELLE_BIN" build -b "$PARENT_SESSION" || die "isabelle build $PARENT_SESSION failed (set ISABELLE_PARENT_SESSION)"
-# sledgehammer needs >=1 ATP; Isabelle bundles E + others. Surface what's configured (advisory).
-"$ISABELLE_BIN" env bash -c 'echo "ATP components: ${E_HOME:-<no E>} ${VAMPIRE_HOME:-<no vampire>} ${Z3_SOLVER:-<no z3>}"' || true
+# sledgehammer needs >=1 ATP backend to do real premise-mining. WITHOUT one it silently degrades to its
+# built-in simp/auto prescan: it closes only trivial goals and returns an EMPTY used_facts on everything else,
+# so the cross-substrate consensus is permanently INSUFFICIENT (dormant) — a silent-degrade foot-gun (2026-07-01:
+# the VPS ran for weeks with no ATP; every /sledgehammer returned empty facts). The ATP components are NOT
+# bundled by default — fetch them (`isabelle components -a` pulls the pinned E/Vampire/Z3/cvc5 tarballs), then
+# HARD-GATE: if still none, sledgehammer would be dead-on-arrival, so fail LOUD rather than ship a no-op.
+say "2c. ensure an ATP backend (E/Vampire/Z3) — required for real premise-mining, else sledgehammer is a silent no-op"
+if ! "$ISABELLE_BIN" env bash -c '[ -n "${E_HOME:-}${VAMPIRE_HOME:-}${Z3_SOLVER:-}" ]'; then
+  say "   no ATP detected — fetching bundled components (isabelle components -a; ~network+disk)"
+  "$ISABELLE_BIN" components -a || die "isabelle components -a failed (needed for a sledgehammer ATP backend)"
+fi
+"$ISABELLE_BIN" env bash -c 'echo "ATP components: E=${E_HOME:-<none>} vampire=${VAMPIRE_HOME:-<none>} z3=${Z3_SOLVER:-<none>}"'
+"$ISABELLE_BIN" env bash -c '[ -n "${E_HOME:-}${VAMPIRE_HOME:-}${Z3_SOLVER:-}" ]' \
+  || die "no ATP backend after components -a — sledgehammer would return empty used_facts on every request (dormant cross-substrate consensus). Install E/Vampire/Z3 and re-run."
 
 say "3. server self-test (parse/shape; subprocess validated on the first live request)"
 ISABELLE_BIN="$ISABELLE_BIN" "$PY" "$REPO/deploy/isabelle_sledgehammer_server.py" --selftest

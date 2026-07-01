@@ -47,6 +47,42 @@ def _attempt_rows(run_tag: str) -> "list[dict]":
         cx.close()
 
 
+def _laundering_markers(body: str) -> "list[str]":
+    """PUBLISH-BOUNDARY GUARD (2026-06-30 RCA). A filed `closed · faithful` artifact must be the SELF-CONTAINED
+    real proof: no `sorry`, and no local `axiom` DECLARATIONS. A local `axiom` decl is the tell of the PROBE-WORLD
+    standalone — the solver stubs cited banked rungs as `axiom`s so the single theorem recompiles in isolation.
+    Publishing THAT with a clean-axioms header is the laundering-looking disconnect Gemini flagged on VCG (the
+    first COMPOSITE campaign filed): the real substrate proof is axiom-clean — those stubs are proven theorems
+    there — but the standalone stubs them, so `#print axioms` on the filed FILE shows the stubs and contradicts
+    the header. Refuse to file when these appear so the disconnect can never ship; file the substrate instead.
+    Uses the canonical `lean_source` comment-aware scanners (a `sorry`/`axiom` inside a comment is not a hit)."""
+    from ztare.leanmill import lean_source as _ls
+    markers: "list[str]" = []
+    if _ls.has_sorry(body):
+        markers.append("body contains `sorry` (a closed·faithful artifact must be sorry-free)")
+    code = _ls.blank_comments(body)             # comment-blanked, offsets preserved → honest line scan
+    for i, ln in enumerate(code.splitlines(), 1):
+        if __import__("re").match(r"\s*axiom\s+\w", ln):
+            markers.append(f"L{i}: local `axiom` declaration (probe-world stub) — {body.splitlines()[i-1].strip()[:70]}")
+    return markers
+
+
+def _p0_sidecar(closure: Path) -> "dict | None":
+    """Honest P0 STAMPED at campaign close (autoformalize_notes) in the warm/persisted world: persisted-world
+    `#print axioms` + this-run banked/reused counts. promote READS this instead of re-deriving P0 from the cold
+    probe closure — which times out (→ `axioms ?`), reports probe-world stub axioms, and whose log-regex misses
+    intra-run banking (→ `reuse 0`). Absent for pre-2026-06-30 runs ⇒ callers fall back to the probe compile /
+    log parse. This is the single source of truth that ends the recurring P0-at-promote bug class."""
+    sc = closure.parent / (closure.stem + ".p0.json")
+    if not sc.exists():
+        return None
+    try:
+        import json
+        return json.loads(sc.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _axioms(closure: Path) -> str:
     """#print axioms from a compile (the closure carries the `#print axioms` command). Best-effort; '?' if the
     toolchain/compile is unavailable — never block filing on it."""
@@ -151,7 +187,16 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
     ttc = cct.get("time_to_closure_s", {}) or {}
     ctc = cct.get("cost_to_closure_s", {}) or {}
     yld = cct.get("yield", {}) or {}
-    cited = _cited_rungs(log)
+    # sidecar: next to the closure (fresh promote) OR keyed on TARGET in CLOSURES (so --from-file backfills read it)
+    p0 = _p0_sidecar(closure) or _p0_sidecar(CLOSURES / f"{target}.lean")
+    # axioms + reuse: prefer the close-time stamp (honest persisted world); fall back to probe compile / log.
+    ax_str = axioms.strip() or (p0 or {}).get("axioms") or _axioms(closure)
+    if p0:
+        reuse_str = (f"{p0.get('banked_this_run', 0)} rung(s) banked this run · "
+                     f"{p0.get('reused_from_bank', 0)} reused from prior bank")
+    else:
+        cited = _cited_rungs(log)
+        reuse_str = f"cited {len(cited)} banked rung(s)" + (f" — {', '.join(cited)}" if cited else "")
     ph_str = " · ".join(f"{v:g}s {k}" for k, v in sorted(phases.items(), key=lambda kv: -kv[1])) or "—"
     mv_str = " · ".join(f"{m}×{c}" for m, c in moves.most_common()) or "—"
     L = [
@@ -160,7 +205,7 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
         "The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run",
         f"telemetry (run_tag={run_tag}) by promote_campaign_artifact.py — not hand-authored.",
         "",
-        f"  outcome     : closed · faithful · axioms {axioms.strip() or _axioms(closure)}",
+        f"  outcome     : closed · faithful · axioms {ax_str}",
         f"  domain      : {domain.strip() or cct.get('domain', 'unspecified')}",
         f"  time        : time-to-closure {_fmt(ttc.get('mean'))}s (first {_fmt(ttc.get('first'))}s · "
         f"p50 {_fmt(ttc.get('p50'))}s · p95 {_fmt(ttc.get('p95'))}s) · campaign span {_fmt(cct.get('span_s'))}s "
@@ -169,7 +214,7 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
         f"  yield       : {yld.get('closed', 0)}/{cct.get('attempts', 0)} attempts closed "
         f"({yld.get('failed', 0)} failed)",
         f"  phases      : {ph_str}",
-        f"  reuse       : cited {len(cited)} banked rung(s)" + (f" — {', '.join(cited)}" if cited else ""),
+        f"  reuse       : {reuse_str}",
         f"  moves       : {mv_str}",
     ]
     if family:
@@ -193,6 +238,10 @@ def main() -> int:
     ap.add_argument("--family-runs", default="",
                     help="comma-separated member run_tags to RESTRICT the family rollup to (exclude pre-fix / "
                          "debugging runs whose wall was bug-thrash, not proving — keeps the P0 un-confounded)")
+    ap.add_argument("--allow-nonstandard-body", action="store_true",
+                    help="override the publish-boundary guard (file a body with a `sorry`/local `axiom` even so). "
+                         "For a DELIBERATELY axiomatic development whose header honestly lists the axioms — NOT for "
+                         "a composite whose probe standalone stubbed its cited rungs (file the substrate instead).")
     a = ap.parse_args()
     # BODY = an existing filed artifact (backfill) OR the verbatim closure (fresh promote). Either way the proof is
     # copied verbatim; only the generated header is prepended.
@@ -204,6 +253,21 @@ def main() -> int:
     if "LeanMill campaign provenance" in body[:1200]:
         print(f"SKIP {body_path}: already carries a provenance header (idempotent — not double-prepending)")
         return 0
+    # PUBLISH-BOUNDARY GUARD (2026-06-30 RCA): refuse to file a probe-world standalone (cited rungs stubbed as
+    # `axiom`) or a body with a `sorry` under a clean-axioms header — that is the laundering-looking disconnect.
+    # The real self-contained proof is the SUBSTRATE (the sidecar's `theory_file`); file THAT.
+    _markers = _laundering_markers(body)
+    if _markers and not a.allow_nonstandard_body:
+        _sc = _p0_sidecar(CLOSURES / f"{a.target}.lean") or {}
+        _tf = _sc.get("theory_file")
+        print("REFUSED to file — the body is not a self-contained kernel-clean proof (would look laundered):")
+        for m in _markers[:12]:
+            print(f"  · {m}")
+        print("This is the PROBE-WORLD standalone (cited banked rungs axiomatised for portability), not the real")
+        print("proof. File the persisted SUBSTRATE instead" + (f": {_tf}" if _tf else " (the campaign theory .lean)")
+              + " — verify it is `#print axioms`-clean + sorry-free, then `--from-file <substrate>`.")
+        print("(If this is a deliberately-axiomatic development whose header lists the axioms, pass --allow-nonstandard-body.)")
+        return 2
     _fam_runs = {s.strip() for s in a.family_runs.split(",") if s.strip()} or None
     header = build_header(a.run_tag, a.target, body_path, Path(a.log) if a.log else None,
                           axioms=a.axioms, domain=a.domain, family=a.family, family_runs=_fam_runs)

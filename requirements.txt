@@ -62,6 +62,14 @@ pyflakes>=3.0      # F821 undefined-name scan (`make flakes`) — tripwire for t
                    # function's scope, used here, swallowed by a best-effort except → silently DEAD feature" bug
                    # class (caught the proposer-pool `_swap` NameError, 2026-06-20). Cheap, pure-Python.
 
+# Architecture metrics (analysis-only; NOT imported by the apparatus or `make gates`) — coupling / cohesion /
+# complexity scan to find refactor targets. NO PyPI `connascence` package exists; connascence is applied as a
+# heuristic overlay on these measures. Used ad-hoc (`radon cc/mi`, `cohesion -d`, `pydeps`, `lizard`), not in CI.
+radon>=6.0         # cyclomatic complexity + maintainability index (per-function/-module health)
+cohesion>=1.2      # class cohesion (LCOM-style: methods' shared-instance-variable use) — low % ⇒ split candidate
+pydeps>=3.0        # module import-dependency graph → afferent/efferent coupling, cycles (needs graphviz for SVG)
+lizard>=1.23       # complexity + parameter/token counts (connascence-of-position proxy: long arg lists)
+
 # Optional, per-substrate only (NOT needed for the core apparatus or
 # `make gates`; imported solely by individual project / benchmark
 # test_model.py substrate files). Install on demand:

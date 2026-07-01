@@ -25,9 +25,16 @@ from typing import Callable, Optional   # used in string annotations (pyflakes F
 
 # A declaration start: optional attributes/modifiers, a decl keyword, optional name (instances may be
 # anonymous). Allows LEADING WHITESPACE so namespaced/indented decls are seen (review false-closure).
+# Kind-list sourced from the canonical `lean_source.NAMED_DECL_KINDS` (2026-07-01) so this firewall parser and
+# the banking span parser cannot DRIFT on the NAMED kinds — a named kind in one but not the other silently
+# mis-bounds a span (the #51 class). NAMED (not full DECL_KINDS): this parser names anonymous decls
+# `instance@<line>`, so recognising `example` would let a shifted/dropped example FALSE-flag as `deleted`
+# (line-derived names differ across original-vs-probe). Keeps its firewall SHAPE (indentation, the extra
+# partial/local/unsafe modifiers, optional name). group(1)=kind, group(2)=name.
+from ztare.leanmill.lean_source import NAMED_DECL_KINDS as _DECL_KINDS   # noqa: E402
 _DECL_START = re.compile(
     r"^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|noncomputable\s+|scoped\s+|partial\s+|local\s+|unsafe\s+)*"
-    r"(structure|inductive|class|def|abbrev|instance|theorem|lemma|opaque|axiom)\b\s*([A-Za-z_][\w.']*)?")
+    r"(" + "|".join(_DECL_KINDS) + r")\b\s*([A-Za-z_][\w.']*)?")
 _NS_OPEN = re.compile(r"^\s*namespace\s+([A-Za-z_][\w.']*)")
 _NS_END = re.compile(r"^\s*end\s+([A-Za-z_][\w.']*)\s*$")
 
