@@ -169,6 +169,36 @@ def _domains_from_ledger(ledger) -> "dict[str, str]":
     return out
 
 
+def _campaign_starts_from_ledger(ledger) -> "dict[str, float]":
+    """run_tag → campaign START epoch, from the EARLIEST `campaign` marker in the phase ledger. record_campaign
+    stamps this marker at RUN START — BEFORE theory-consolidation + formalize — so it is the honest launch time.
+    The first solve ATTEMPT is ~theory+formalize LATER for a theory-building run, so measuring time-to-closure
+    from the first attempt UNDER-reports the real launch→closure wall (2026-07-01 RCA: BFT read 207s vs the true
+    ~804s; VCG 362/730s vs 1335s). Mirrors `_domains_from_ledger`; `ts` parsed via `_epoch`."""
+    out: "dict[str, float]" = {}
+    import json as _json
+    try:
+        p = Path(ledger) if ledger else ledger_path()
+        if not p.exists():
+            return out
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or '"campaign"' not in line:
+                continue
+            try:
+                ev = _json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            if ev.get("kind") == "phase_timing" and ev.get("phase") == _CAMPAIGN_PHASE:
+                rt = str(ev.get("run_tag") or "")
+                t = _epoch(ev.get("ts"))
+                if rt and t is not None and (rt not in out or t < out[rt]):
+                    out[rt] = t
+    except Exception:  # noqa: BLE001
+        return out
+    return out
+
+
 def campaign_family(run_tag: str) -> str:
     """Group run_tags that are RE-RUNS of the same campaign (`_v2`/`_v3`, `_dbg`) under one family, so a campaign
     worked across several runs gets a SINGLE P0 view (e.g. `amm_cpmm`, `amm_cpmm_v2`, `amm_cpmm_v3` → `amm_cpmm`).
@@ -182,10 +212,16 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
 
     `attempt_rows`: iterable of mappings with `run_tag`, `attempt_at` (ISO str or epoch), `outcome`, `ratified`,
     `wallclock_s` — the solver attempts ledger, passed IN (storage-agnostic, hermetically testable). A CLOSURE is
-    `outcome == 'closed'` (a kernel-ratified rung). Per campaign (run_tag): time-to-closure = closure ts − campaign
-    start; cost-to-closure = cumulative wallclock_s up to the closure. Segmented by `domain` (the `campaign`
-    markers) so avg-time-to-closure of NON-MATH formalizations is reportable apart from math. Pure read."""
+    `outcome == 'closed'` (a kernel-ratified rung). Per campaign (run_tag) the WALL splits into two scoped numbers
+    that SUM (the world-class P0 timing, 2026-07-01): **time_to_formalize** = launch(`campaign` marker) → first
+    solve attempt (preflight + theory-consolidation + statement formalize + firewall) and **time_to_close** (the
+    PROVING window) = first attempt → closure. **wall** = launch → closure = formalize + prove (== phase-ledger
+    lead). The attempts ledger has NO row before the solve phase, so `closure − first_attempt` alone is only the
+    proving window — measuring it AS the time-to-closure silently drops the formalize minutes (the recurring
+    under-report). `time_to_closure_s` is kept as a backward-compat alias of the proving window. cost-to-closure =
+    cumulative wallclock_s up to the closure. Segmented by `domain` (the `campaign` markers). Pure read."""
     doms = _domains_from_ledger(ledger)
+    starts = _campaign_starts_from_ledger(ledger)   # run_tag → LAUNCH epoch (marker); enables the formalize/prove split
     by_run: "dict[str, list[dict]]" = {}
     for r in attempt_rows or []:
         g = r if isinstance(r, dict) else dict(r)
@@ -200,24 +236,35 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
         if not timed:
             continue
         timed.sort(key=lambda tg: tg[0])
-        start = timed[0][0]
+        first_attempt = timed[0][0]
+        # THE FIX (2026-07-01 RCA — recurring under-report): the attempts ledger has NO row before the SOLVE
+        # phase, so `closure − first_attempt` is only the PROVING window — it silently excludes theory-
+        # consolidation + statement-formalize (~minutes for a theory-building run). The honest launch is the
+        # `campaign` marker (stamped at run start). Split into three scoped numbers that SUM, rather than one
+        # ambiguous "time-to-closure": formalize (launch→first attempt) + prove (first attempt→closure) = wall.
+        _launch = starts.get(rt)
+        launch = _launch if (_launch is not None and _launch <= first_attempt) else first_attempt  # fall back: old runs / synthetic tests
         closures = [(t, g) for (t, g) in timed if str(g.get("outcome")) == "closed"]
-        ttc = [round(t - start, 2) for (t, _g) in closures]
+        ttc = [round(t - first_attempt, 2) for (t, _g) in closures]        # PROVING window (first attempt → closure)
+        wall = [round(t - launch, 2) for (t, _g) in closures]             # WALL (launch → closure) = formalize + prove
+        t_formalize = round(first_attempt - launch, 2)                    # FORMALIZE (launch → first attempt)
         ctc = [round(sum(float(g.get("wallclock_s") or 0.0) for (t, g) in timed if t <= ct), 2)
                for (ct, _g) in closures]
         n = len(timed)
         n_failed = sum(1 for (_t, g) in timed if str(g.get("outcome")) in ("failed", "failed_compile"))
+        def _stat(xs):
+            return {"first": xs[0] if xs else None,
+                    "mean": round(sum(xs) / len(xs), 2) if xs else None,
+                    "p50": _pct(xs, 0.5) if xs else None, "p95": _pct(xs, 0.95) if xs else None}
         campaigns[rt] = {
             "domain": doms.get(rt, "unspecified"),
-            "span_s": round(timed[-1][0] - start, 2),
+            "span_s": round(timed[-1][0] - launch, 2),                    # honest elapsed: launch → last attempt
             "attempts": n,
             "closures": len(closures),
-            "time_to_closure_s": {
-                "first": ttc[0] if ttc else None,
-                "mean": round(sum(ttc) / len(ttc), 2) if ttc else None,
-                "p50": _pct(ttc, 0.5) if ttc else None,
-                "p95": _pct(ttc, 0.95) if ttc else None,
-            },
+            "time_to_formalize_s": t_formalize,                          # launch → first attempt (theory + statement + firewall)
+            "time_to_close_s": _stat(ttc),                              # PROVING window (first attempt → closure) — clear name
+            "wall_s": _stat(wall),                                      # launch → closure (headline; == phase-ledger lead)
+            "time_to_closure_s": _stat(ttc),                           # BACKWARD-COMPAT alias of time_to_close_s (proving window)
             "cost_to_closure_s": {
                 "first": ctc[0] if ctc else None,
                 "mean": round(sum(ctc) / len(ctc), 2) if ctc else None,

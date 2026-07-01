@@ -3,14 +3,17 @@ LeanMill campaign provenance — pariPassuWaterfallDistribution_feasible_and_ran
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=apr_paripassu_v2) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : formalization-nonmath
-  time        : time-to-closure 744.12s (first 300.8s · p50 695.46s · p95 1302.84s) · campaign span 1302.84s (lead 1412.14s)
+  time        : wall 1412.14s launch→close = formalize 668.02s (theory+statement+firewall) + prove 744.12s (proof search) · prove p50 695.46s p95 1302.84s
   compute     : cost-to-closure 466.97s mean · 932.32s total
   yield       : 5/10 attempts closed (5 failed)
   phases      : 568.2s leaf.dispatch · 66.3s formalize · 16.5s pool · 9.4s native · 4.9s govern.mnc
-  reuse       : cited 3 banked rung(s) — iso_lemma_positive_payment_implies_prefix_lt_pool, iso_lemma_senior_level_lies_before_junior, iso_lemma_feasible
+  reuse       : cited 0 banked rung(s)
   moves       : native_hammer×5 · claude_warm×3 · proposer_pool×2
+  milestone   : campaign family 'apr_paripassu' — 2 run(s) · REAL elapsed (launch→last) 4969.7s (~83 min) = formalize 183.3s + prove/other · active-solve 3304.5s · 14 closures [launch→last is the honest wall]
+     - apr_paripassu: 9/55 closed · elapsed 3483.58s (~58.1 min)
+     - apr_paripassu_v2: 5/10 closed · elapsed 1486.11s (~24.8 min)
 -/
 import Mathlib
 

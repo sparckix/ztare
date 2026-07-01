@@ -3,20 +3,20 @@ LeanMill campaign provenance — no_history_enables_round_trip_arbitrage
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=amm_nocyclic_v6) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : DeFi market-microstructure — no round-trip arbitrage at ANY reachable AMM state (flash-loan / sandwich / cyclic path); compounds the banked constant-product theory
-  time        : time-to-closure 248.28s (first 248.28s · p50 248.28s · p95 248.28s) · campaign span 248.28s (lead 486.25s)
+  time        : wall 486.25s launch→close = formalize 237.97s (theory+statement+firewall) + prove 248.28s (proof search) · prove p50 248.28s p95 248.28s
   compute     : cost-to-closure 236.71s mean · 236.71s total
   yield       : 1/5 attempts closed (3 failed)
   phases      : 381.3s leaf.dispatch · 83.2s pool · 58.5s formalize · 14.5s native · 0.2s govern.mnc
-  reuse       : cited 5 banked rung(s) — reachable_pool_wellFormed, roundTripX_le_input_at_reachable, roundTripY_le_input_at_reachable, roundTripX_lt_input_at_reachable_real_fee, no_history_enables_round_trip_arbitrage
+  reuse       : cited 0 banked rung(s)
   moves       : native_hammer×3 · proposer_pool×1 · claude_warm×1
-  milestone   : campaign family 'amm_nocyclic' — 5 run(s) · REAL elapsed (span) 4724.9s (~79 min active) · active-solve 1979.6s · 19 closures [span=elapsed is the honest wall; the single-run 'time' line above is the filed run only]
-     - amm_nocyclic_v2: 1/17 closed · elapsed 847.8s (~14.1 min)
-     - amm_nocyclic_v3: 5/36 closed · elapsed 1591.91s (~26.5 min)
-     - amm_nocyclic_v4: 6/12 closed · elapsed 1260.67s (~21.0 min)
-     - amm_nocyclic_v5: 6/6 closed · elapsed 776.28s (~12.9 min)
-     - amm_nocyclic_v6: 1/5 closed · elapsed 248.28s (~4.1 min)
+  milestone   : campaign family 'amm_nocyclic' — 5 run(s) · REAL elapsed (launch→last) 6436.1s (~107 min) = formalize 1711.1s + prove/other · active-solve 1979.6s · 19 closures [launch→last is the honest wall]
+     - amm_nocyclic_v2: 1/17 closed · elapsed 1321.7s (~22.0 min)
+     - amm_nocyclic_v3: 5/36 closed · elapsed 1947.52s (~32.5 min)
+     - amm_nocyclic_v4: 6/12 closed · elapsed 1596.52s (~26.6 min)
+     - amm_nocyclic_v5: 6/6 closed · elapsed 1077.55s (~18.0 min)
+     - amm_nocyclic_v6: 1/5 closed · elapsed 492.78s (~8.2 min)
 -/
 import Mathlib
 

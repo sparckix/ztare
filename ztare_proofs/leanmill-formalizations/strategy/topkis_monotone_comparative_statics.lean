@@ -3,14 +3,16 @@ LeanMill campaign provenance — topkisObjective_parametricArgmaxSet_isSublattic
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=topkis_truer2_0623) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : math
-  time        : time-to-closure 647.84s (first 190.69s · p50 655.26s · p95 987.95s) · campaign span 987.95s (lead 1124.43s)
+  time        : wall 1124.43s launch→close = formalize 476.59s (theory+statement+firewall) + prove 647.84s (proof search) · prove p50 655.26s p95 987.95s
   compute     : cost-to-closure 266.47s mean · 464.94s total
   yield       : 6/15 attempts closed (9 failed)
   phases      : 109.6s formalize · 93.5s pool · 19.9s native · 0.2s govern.mnc
   reuse       : cited 0 banked rung(s)
   moves       : native_hammer×5 · claude_warm×5 · proposer_pool×4 · cache_reuse×1
+  milestone   : campaign family 'topkis_truer2_0623' — 1 run(s) · REAL elapsed (launch→last) 988s (~16 min) = formalize 0s + prove/other · active-solve 464.9s · 6 closures [launch→last is the honest wall]
+     - topkis_truer2_0623: 6/15 closed · elapsed 987.95s (~16.5 min)
 -/
 /-
 Topkis monotone comparative statics — FULL theorem (lattice · supermodular · set-valued · Strong Set Order).

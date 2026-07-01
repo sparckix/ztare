@@ -3,14 +3,16 @@ LeanMill campaign provenance — ordinalTopkis_compact_existence_and_strongSetMo
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=topkis_litfirst2) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : math
-  time        : time-to-closure 433.02s (first 433.02s · p50 433.02s · p95 433.02s) · campaign span 433.02s (lead 647.09s)
+  time        : wall 647.09s launch→close = formalize 214.07s (theory+statement+firewall) + prove 433.02s (proof search) · prove p50 433.02s p95 433.02s
   compute     : cost-to-closure 73.08s mean · 73.08s total
   yield       : 1/5 attempts closed (3 failed)
   phases      : 180.9s formalize · 68.6s pool · 11.4s native · 0.1s govern.mnc
   reuse       : cited 0 banked rung(s)
   moves       : native_hammer×3 · proposer_pool×1 · claude_warm×1
+  milestone   : campaign family 'topkis_litfirst2' — 1 run(s) · REAL elapsed (launch→last) 433s (~7 min) = formalize 0s + prove/other · active-solve 73.1s · 1 closures [launch→last is the honest wall]
+     - topkis_litfirst2: 1/5 closed · elapsed 433.02s (~7.2 min)
 -/
 /-
 Topkis ORDINAL monotone comparative statics — existence + Strong Set Order, NO cardinal subtraction.

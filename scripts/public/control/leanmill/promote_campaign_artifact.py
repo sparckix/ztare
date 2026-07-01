@@ -159,16 +159,17 @@ def _family_block(run_tag: str, only: "set[str] | None" = None) -> "list[str]":
     members = {rt: c for rt, c in camps.items() if campaign_family(rt) == fam}
     if not members:
         return []
-    # REAL ELAPSED = span (last−first attempt), NOT summed `wallclock_s` (active-solve only, which omits
-    # consolidation / formalization / Mathlib imports / warm-env builds / inter-attempt gaps and UNDER-states the
-    # true time ~5× — 2026-06-25 RCA: a 79-min campaign read as 593s). Report span as the honest wall; keep the
-    # active-solve sum alongside it as the (smaller) compute figure.
+    # REAL ELAPSED = span, now measured launch(campaign-marker)→last-attempt (2026-07-01: the marker fix — span
+    # previously started at the first solve ATTEMPT and so excluded theory-consolidation + statement-formalize,
+    # under-reporting a theory-building run by minutes; the earlier wallclock→span fix was partial). `span` now
+    # INCLUDES formalize; the active-solve sum is the (smaller) compute figure. Formalize/prove split is per-run.
     span = round(sum((c.get("span_s") or 0) for c in members.values()), 1)
+    formalize = round(sum((c.get("time_to_formalize_s") or 0) for c in members.values()), 1)
     active = round(sum(((c.get("cost_to_closure_s") or {}).get("total_wall_s") or 0) for c in members.values()), 1)
     closed = sum(((c.get("yield") or {}).get("closed") or 0) for c in members.values())
-    out = [f"  milestone   : campaign family '{fam}' — {len(members)} run(s) · REAL elapsed (span) "
-           f"{span:g}s (~{span/60:.0f} min active) · active-solve {active:g}s · {closed} closures "
-           f"[span=elapsed is the honest wall; the single-run 'time' line above is the filed run only]"]
+    out = [f"  milestone   : campaign family '{fam}' — {len(members)} run(s) · REAL elapsed (launch→last) "
+           f"{span:g}s (~{span/60:.0f} min) = formalize {formalize:g}s + prove/other · active-solve {active:g}s · "
+           f"{closed} closures [launch→last is the honest wall]"]
     for rt, c in sorted(members.items()):
         sp = c.get("span_s") or 0
         out.append(f"     - {rt}: {((c.get('yield') or {}).get('closed') or 0)}/{c.get('attempts', 0)} closed · "
@@ -184,7 +185,14 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
     phases = {k: round(v.get("total_s", 0.0), 1) for k, v in ph.get("phases", {}).items() if k != "campaign"}
     lead = (ph.get("runs", {}).get(run_tag, {}) or {}).get("lead_time_s")
     moves = Counter(r["move"] for r in rows if r.get("move"))
-    ttc = cct.get("time_to_closure_s", {}) or {}
+    tclose = cct.get("time_to_close_s", cct.get("time_to_closure_s", {})) or {}   # PROVING window (first attempt → closure)
+    wall = cct.get("wall_s", {}) or {}                                            # launch → closure (marker-based, when a marker exists)
+    tform = cct.get("time_to_formalize_s")                                        # launch → first attempt (marker-based)
+    # HEADLINE wall = the phase-ledger `lead` (last−first phase event) — available for EVERY run (marker or not),
+    # so formalize = wall − prove is honest even for pre-marker campaigns; fall back to the marker-based wall.
+    _prove_m = tclose.get("mean")
+    _wall_m = lead if lead is not None else wall.get("mean")
+    _form_m = (round(_wall_m - _prove_m, 2) if (_wall_m is not None and _prove_m is not None) else tform)
     ctc = cct.get("cost_to_closure_s", {}) or {}
     yld = cct.get("yield", {}) or {}
     # sidecar: next to the closure (fresh promote) OR keyed on TARGET in CLOSURES (so --from-file backfills read it)
@@ -207,9 +215,9 @@ def build_header(run_tag: str, target: str, closure: Path, log: "Path | None", a
         "",
         f"  outcome     : closed · faithful · axioms {ax_str}",
         f"  domain      : {domain.strip() or cct.get('domain', 'unspecified')}",
-        f"  time        : time-to-closure {_fmt(ttc.get('mean'))}s (first {_fmt(ttc.get('first'))}s · "
-        f"p50 {_fmt(ttc.get('p50'))}s · p95 {_fmt(ttc.get('p95'))}s) · campaign span {_fmt(cct.get('span_s'))}s "
-        f"(lead {_fmt(lead)}s)",
+        f"  time        : wall {_fmt(_wall_m)}s launch→close = formalize {_fmt(_form_m)}s "
+        f"(theory+statement+firewall) + prove {_fmt(tclose.get('mean'))}s (proof search) · "
+        f"prove p50 {_fmt(tclose.get('p50'))}s p95 {_fmt(tclose.get('p95'))}s",
         f"  compute     : cost-to-closure {_fmt(ctc.get('mean'))}s mean · {_fmt(ctc.get('total_wall_s'))}s total",
         f"  yield       : {yld.get('closed', 0)}/{cct.get('attempts', 0)} attempts closed "
         f"({yld.get('failed', 0)} failed)",

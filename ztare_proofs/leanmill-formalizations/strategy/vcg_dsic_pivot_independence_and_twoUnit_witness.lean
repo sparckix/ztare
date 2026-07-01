@@ -5,12 +5,14 @@ telemetry (run_tag=notes_vcg_dsic_blueprint_0701T0201) by promote_campaign_artif
 
   outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : formalization-nonmath
-  time        : time-to-closure 362.15s (first 201.54s · p50 350.58s · p95 730.51s) · campaign span 730.51s (lead 1335.87s)
+  time        : wall 1335.87s launch→close = formalize 973.72s (theory+statement+firewall) + prove 362.15s (proof search) · prove p50 350.58s p95 730.51s
   compute     : cost-to-closure 84.53s mean · 337.86s total
   yield       : 9/13 attempts closed (4 failed)
   phases      : 844.9s leaf.dispatch · 168.9s pool · 128.1s formalize · 70.1s native · 7.4s govern.mnc
   reuse       : 9 rung(s) banked this run · 0 reused from prior bank
   moves       : native_hammer×9 · proposer_pool×2 · claude_warm×2
+  milestone   : campaign family 'notes_vcg_dsic_blueprint_0701T0201' — 1 run(s) · REAL elapsed (launch→last) 1355.1s (~23 min) = formalize 624.6s + prove/other · active-solve 337.9s · 9 closures [launch→last is the honest wall]
+     - notes_vcg_dsic_blueprint_0701T0201: 9/13 closed · elapsed 1355.13s (~22.6 min)
 -/
 import Mathlib
 

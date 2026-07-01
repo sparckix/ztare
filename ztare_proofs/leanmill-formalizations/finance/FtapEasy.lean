@@ -3,14 +3,16 @@ LeanMill campaign provenance — cost_eq_statePriceWeighted_payoff
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=ftap_easy) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : finance
-  time        : time-to-closure 336.46s (first 103.35s · p50 317.49s · p95 588.53s) · campaign span 588.53s (lead —s)
+  time        : wall 336.46s launch→close = formalize 0s (theory+statement+firewall) + prove 336.46s (proof search) · prove p50 317.49s p95 588.53s
   compute     : cost-to-closure 170.21s mean · 241.67s total
   yield       : 3/9 attempts closed (3 failed)
   phases      : —
   reuse       : cited 0 banked rung(s)
   moves       : proposer_pool×3 · native_hammer×3 · claude_warm×3
+  milestone   : campaign family 'ftap_easy' — 1 run(s) · REAL elapsed (launch→last) 588.5s (~10 min) = formalize 0s + prove/other · active-solve 241.7s · 3 closures [launch→last is the honest wall]
+     - ftap_easy: 3/9 closed · elapsed 588.53s (~9.8 min)
 -/
 /-
 Finite Fundamental Theorem of Asset Pricing — EASY direction (state prices ⇒ no arbitrage).

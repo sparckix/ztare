@@ -3,14 +3,19 @@ LeanMill campaign provenance — constantProductAMM_temporal_invariant_and_no_ro
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=amm_cpmm_v2) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : DeFi market-microstructure — constant-product AMM temporal + no-arbitrage invariants
-  time        : time-to-closure 9533.86s (first 209.64s · p50 10150.1s · p95 17480.1s) · campaign span 18367.3s (lead 18457.1s)
+  time        : wall 18457.1s launch→close = formalize 8923.27s (theory+statement+firewall) + prove 9533.86s (proof search) · prove p50 10150.1s p95 17480.1s
   compute     : cost-to-closure 5615.67s mean · 11452.4s total
   yield       : 40/104 attempts closed (58 failed)
   phases      : 5990.5s leaf.dispatch · 1748.8s pool · 623.6s formalize · 254.1s govern.mnc · 137.3s native
   reuse       : cited 0 banked rung(s)
   moves       : native_hammer×43 · claude_warm×36 · proposer_pool×24 · conjecture_lemma×1
+  milestone   : campaign family 'amm_cpmm' — 4 run(s) · REAL elapsed (launch→last) 31362.9s (~523 min) = formalize 2290.3s + prove/other · active-solve 18444.6s · 64 closures [launch→last is the honest wall]
+     - amm_cpmm_v2: 40/104 closed · elapsed 18574.3s (~309.6 min)
+     - amm_cpmm_v3: 15/37 closed · elapsed 6207.89s (~103.5 min)
+     - amm_cpmm_v4: 9/28 closed · elapsed 5421.65s (~90.4 min)
+     - amm_cpmm_v5: 0/1 closed · elapsed 1159.06s (~19.3 min)
 -/
 import Mathlib
 

@@ -5,14 +5,14 @@ telemetry (run_tag=notes_bft_quorum_intersection_blueprint_0701T0602) by promote
 
   outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : formalization-nonmath
-  time        : time-to-closure 207.28s (first 207.28s · p50 207.28s · p95 207.28s) · campaign span 207.28s (lead 804.16s)
+  time        : wall 804.16s launch→close = formalize 596.88s (theory+statement+firewall) + prove 207.28s (proof search) · prove p50 207.28s p95 207.28s
   compute     : cost-to-closure 174.31s mean · 174.31s total
   yield       : 1/3 attempts closed (1 failed)
   phases      : 606s leaf.dispatch · 188.4s pool · 94.8s formalize · 24.9s native · 1.8s govern.mnc
   reuse       : cited 0 banked rung(s)
   moves       : proposer_pool×1 · native_hammer×1 · claude_warm×1
-  milestone   : campaign family 'notes_bft_quorum_intersection_blueprint_0701T0602' — 1 run(s) · REAL elapsed (span) 207.3s (~3 min active) · active-solve 174.3s · 1 closures [span=elapsed is the honest wall; the single-run 'time' line above is the filed run only]
-     - notes_bft_quorum_intersection_blueprint_0701T0602: 1/3 closed · elapsed 207.28s (~3.5 min)
+  milestone   : campaign family 'notes_bft_quorum_intersection_blueprint_0701T0602' — 1 run(s) · REAL elapsed (launch→last) 824.5s (~14 min) = formalize 617.2s + prove/other · active-solve 174.3s · 1 closures [launch→last is the honest wall]
+     - notes_bft_quorum_intersection_blueprint_0701T0602: 1/3 closed · elapsed 824.45s (~13.7 min)
 -/
 import Mathlib
 

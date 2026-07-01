@@ -3,14 +3,16 @@ LeanMill campaign provenance — waterfallDistribution_feasible_of_linearOrder
 The theorem(s) below are the VERBATIM machine-checked closure. This header is GENERATED from run
 telemetry (run_tag=apr_waterfall) by promote_campaign_artifact.py — not hand-authored.
 
-  outcome     : closed · faithful · axioms [propext, Classical.choice, Quot.sound]
+  outcome     : closed · faithful · axioms propext, Classical.choice, Quot.sound
   domain      : finance
-  time        : time-to-closure 2491.97s (first 162.17s · p50 2407.59s · p95 3685.8s) · campaign span 4788.82s (lead 4413.08s)
+  time        : wall 4413.08s launch→close = formalize 1921.11s (theory+statement+firewall) + prove 2491.97s (proof search) · prove p50 2407.59s p95 3685.8s
   compute     : cost-to-closure 1724.5s mean · 3308.76s total
   yield       : 16/55 attempts closed (34 failed)
   phases      : 183.4s formalize · 145.1s pool · 44.1s native · 5.8s govern.mnc
   reuse       : cited 0 banked rung(s)
   moves       : native_hammer×27 · claude_warm×16 · proposer_pool×6 · conjecture_lemma×5 · cache_reuse×1
+  milestone   : campaign family 'apr_waterfall' — 1 run(s) · REAL elapsed (launch→last) 4788.8s (~80 min) = formalize 0s + prove/other · active-solve 3308.8s · 16 closures [launch→last is the honest wall]
+     - apr_waterfall: 16/55 closed · elapsed 4788.82s (~79.8 min)
 -/
 /-
 Corporate-waterfall Absolute Priority Rule (APR) — the closed-form liquidation waterfall is

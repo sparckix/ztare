@@ -1317,3 +1317,30 @@ def test_oneshot_formalize_extract_does_not_span_theorems():
     # single theorem + indented output still handled (leniency preserved — not switched to column-0 decl_blocks)
     assert ex("```lean\ntheorem t : Q := by sorry\n```", "oneshot") == "theorem t : Q := by sorry"
     assert ex("```lean\n  theorem t : Q := sorry\n```", "oneshot").strip() == "theorem t : Q := sorry"
+
+
+def test_campaign_cycle_time_splits_formalize_and_prove(tmp_path):
+    """P0 TIMING SPLIT (2026-07-01 RCA — recurring under-report). The attempts ledger has no row before the SOLVE
+    phase, so `closure − first_attempt` is only the PROVING window; measuring it AS time-to-closure drops the
+    theory-consolidation + statement-formalize minutes (BFT read 207s vs the true ~804s). The fix uses the
+    `campaign` marker (stamped at launch) so: time_to_formalize (launch→first attempt) + time_to_close (first
+    attempt→closure) == wall (launch→closure). Guards that the split sums and that a MISSING marker falls back."""
+    from ztare.leanmill import phase_timing as pt
+    import json
+    led = tmp_path / "ledger.jsonl"
+    # campaign launched at epoch 1000; first solve attempt at 1600 (600s of formalize); closure at 1800 (200s prove)
+    led.write_text(json.dumps({"kind": "phase_timing", "phase": "campaign", "duration_s": 0.0,
+                               "run_tag": "camp", "tags": {"domain": "formalization-nonmath"}, "ts": "1000"}) + "\n",
+                   encoding="utf-8")
+    rows = [{"run_tag": "camp", "attempt_at": "1600", "outcome": "failed_compile", "wallclock_s": 10},
+            {"run_tag": "camp", "attempt_at": "1800", "outcome": "closed", "wallclock_s": 20}]
+    c = pt.summarize_campaign_cycle_time(rows, ledger=str(led))["campaigns"]["camp"]
+    assert c["time_to_formalize_s"] == 600.0, c            # launch→first attempt
+    assert c["time_to_close_s"]["first"] == 200.0, c       # first attempt→closure (proving)
+    assert c["wall_s"]["first"] == 800.0, c                # launch→closure == formalize + prove
+    assert c["time_to_closure_s"]["first"] == 200.0, c     # backward-compat alias == proving window
+    assert abs(c["time_to_formalize_s"] + c["time_to_close_s"]["first"] - c["wall_s"]["first"]) < 0.01, "must sum"
+    # NO marker (old run) → fall back to first-attempt start: formalize 0, wall == prove
+    rows2 = [{"run_tag": "nomark", "attempt_at": "1600", "outcome": "closed", "wallclock_s": 5}]
+    c2 = pt.summarize_campaign_cycle_time(rows2, ledger=str(led))["campaigns"]["nomark"]
+    assert c2["time_to_formalize_s"] == 0.0 and c2["wall_s"]["first"] == 0.0, c2
