@@ -285,6 +285,30 @@ def test_plan_preview_recommends_run_after_current_preflight_admission() -> None
     assert preflight_step["status"] == "completed"
 
 
+def test_plan_preview_recommends_repair_before_blocked_run() -> None:
+    repair_command = "make evidence-fetch PROJECT=demo SEVERITY=degrading"
+    run_command = "ztare autoresearch run --project demo --rubric demo --iters 1"
+    preflight_command = run_command + " --preflight-only"
+
+    plan = autoresearch_trace.build_autoresearch_plan_preview(
+        project="demo",
+        rubric="demo",
+        preflight_command=preflight_command,
+        run_command=run_command,
+        repair_command=repair_command,
+        can_run_now=False,
+        blocking_missing=["out_of_loop_evidence_recovery"],
+    )
+
+    assert plan["status"] == "blocked_before_kernel_entry"
+    assert plan["recommended_first_command"] == repair_command
+    repair_step = next(
+        step for step in plan["dependency_order"] if step["id"] == "repair_surfaces"
+    )
+    assert repair_step["command"] == repair_command
+    assert repair_step["model_calls"] is False
+
+
 def test_loop_admission_summary_does_not_overstate_mixed_receipts() -> None:
     result = autoresearch_trace._loop_admission_summary(
         {
@@ -1276,11 +1300,11 @@ def test_autoresearch_trace_blocks_stale_source_artifacts(
             "recovery_channel": "project_surface",
             "next_command": "ztare project source-index --project stale_trace",
         },
-        {
-            "id": "evidence_compile_stale",
-            "recovery_channel": "evidence_prepare",
-            "next_command": "make evidence-prepare PROJECT=stale_trace MODEL=gemini",
-        },
+            {
+                "id": "evidence_compile_stale",
+                "recovery_channel": "evidence_prepare",
+                "next_command": "make evidence-prepare PROJECT=stale_trace",
+            },
     ]
     assert report["route_preview"]["can_run_now"] is False
     assert report["surfaces"]["source_preflight_ok"] is True
@@ -1304,14 +1328,14 @@ def test_autoresearch_trace_blocks_stale_source_artifacts(
         {
             "id": "evidence_prepare",
             "reason": "refresh workspace source index and compiled evidence from raw sources",
-            "next_command": "make evidence-prepare PROJECT=stale_trace MODEL=gemini",
+            "next_command": "make evidence-prepare PROJECT=stale_trace",
         }
     ]
     assert report["next_commands"][0] == (
         "ztare project source-index --project stale_trace"
     )
     assert report["next_commands"][1] == (
-        "make evidence-prepare PROJECT=stale_trace MODEL=gemini"
+        "make evidence-prepare PROJECT=stale_trace"
     )
     assert not any("make experiment-loop" in command for command in report["next_commands"])
 
@@ -1378,11 +1402,11 @@ def test_autoresearch_trace_blocks_count_only_compile_provenance(
     assert report["missing"] == ["evidence_compile_unverified"]
     assert report["blocking_missing"] == ["evidence_compile_unverified"]
     assert report["kernel_entry"]["blockers"] == [
-        {
-            "id": "evidence_compile_unverified",
-            "recovery_channel": "evidence_prepare",
-            "next_command": "make evidence-prepare PROJECT=count_only_compile MODEL=gemini",
-        }
+            {
+                "id": "evidence_compile_unverified",
+                "recovery_channel": "evidence_prepare",
+                "next_command": "make evidence-prepare PROJECT=count_only_compile",
+            }
     ]
     assert report["surfaces"]["evidence_compile_freshness"]["status"] == (
         "unverified_no_artifact_sources"
@@ -1391,7 +1415,7 @@ def test_autoresearch_trace_blocks_count_only_compile_provenance(
         {
             "id": "evidence_prepare",
             "reason": "refresh workspace source index and compiled evidence from raw sources",
-            "next_command": "make evidence-prepare PROJECT=count_only_compile MODEL=gemini",
+            "next_command": "make evidence-prepare PROJECT=count_only_compile",
         }
     ]
     assert not any("ztare autoresearch run" in command for command in report["next_commands"])
@@ -1953,18 +1977,18 @@ def test_autoresearch_trace_blocks_stale_compiled_evidence_output(
     assert report["missing"] == ["evidence_output_stale"]
     assert report["blocking_missing"] == ["evidence_output_stale"]
     assert report["kernel_entry"]["blockers"] == [
-        {
-            "id": "evidence_output_stale",
-            "recovery_channel": "evidence_prepare",
-            "next_command": "make evidence-prepare PROJECT=stale_evidence_output MODEL=gemini",
-        }
+            {
+                "id": "evidence_output_stale",
+                "recovery_channel": "evidence_prepare",
+                "next_command": "make evidence-prepare PROJECT=stale_evidence_output",
+            }
     ]
     assert report["surfaces"]["source_index_freshness"]["status"] == "fresh"
     assert report["surfaces"]["evidence_compile_freshness"]["status"] == "fresh"
     assert report["surfaces"]["evidence_output_binding"]["status"] == "stale"
     assert report["surfaces"]["evidence_output_binding"]["hash_mismatch"] is True
     assert report["next_commands"][0] == (
-        "make evidence-prepare PROJECT=stale_evidence_output MODEL=gemini"
+        "make evidence-prepare PROJECT=stale_evidence_output"
     )
     assert not any("ztare autoresearch run" in command for command in report["next_commands"])
 

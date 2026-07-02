@@ -2,7 +2,7 @@
 
 **Discoverability meta-graph** for ZTARE architectural primitives — analogous to the seam graph but for code/runtime capabilities. Pattern-match by lexical triggers / problem class. Impact-weighted from the catch ledger + climb-trigger mining + session usage.
 
-**Total primitives indexed:** 927 (rendered from `analytics/public/index/architecture_index.jsonl`).
+**Total primitives indexed:** 932 (rendered from `analytics/public/index/architecture_index.jsonl`).
 
 **Schema:** `analytics/public/index/architecture_index_schema.md`
 
@@ -26,16 +26,16 @@ Re-render via `python scripts/public/control/render_architecture_index.py`. Upda
 - `op`: 5
 - `gate`: 77
 - `primitive`: 722
-- `validator`: 18
-- `orchestrator`: 23
+- `validator`: 19
+- `orchestrator`: 24
 - `mining`: 35
-- `script`: 9
+- `script`: 12
 
 **By impact factor (0=stale ... 5=recently consequential):**
 
 - `5`:  17  #################
-- `4`:  53  #####################################################
-- `3`:  83  ###################################################################################
+- `4`:  55  #######################################################
+- `3`:  86  ######################################################################################
 - `2`:  54  ######################################################
 - `1`: 711  #######################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################################
 - `0`:   9  #########
@@ -951,7 +951,7 @@ Untouched in last 30 days OR never observed firing in a catch ledger. Flag for p
 | **LEGACY-ENGAGEMENT-GUARD** | `src/ztare/fit/legacy_engagement_guard.py` | 0 | never | Guards against legacy primitive engagement masking. | `working_harvester_check`, `engagement_audit` | — |
 | **OPERATOR-BACKEND** | `src/ztare/fit/operator_backend.py` | 0 | never | Operator-style fit backend (functional decomposition). | `operator_form`, `functional_fit` | — |
 
-### Validator-Core (Autoresearch Loop) (`validator`, n=18)
+### Validator-Core (Autoresearch Loop) (`validator`, n=19)
 
 | ID | Path | Impact | Last Used | Description | Triggers | Depends |
 |---|---|---|---|---|---|---|
@@ -959,6 +959,7 @@ Untouched in last 30 days OR never observed firing in a catch ledger. Flag for p
 | **VALIDATE-ARCHITECTURE-INDEX** | `scripts/public/validators/validate_architecture_index.py` | 4 | 2026-05-16 | GAP-A: schema-gates architecture_index.jsonl so a malformed row can't crash render_architecture_index (the catalogue the precheck consumes). | `architecture_index`, `schema_gate`, `render_safety`, `discoverability` | — |
 | **VALIDATE-FORECAST-CONTRACTS** | `scripts/public/validators/validate_forecast_contracts.py` | 4 | 2026-05-16 | GAP-D: schema-gates forecast_pool/contracts/*.json (reuses forecast_pool.REQUIRED_CONTRACT_FIELDS) so one malformed contract can't abort daemon-once / block GP-230 market re-derive. | `forecast_contract`, `gp230`, `schema_gate`, `daemon_precheck`, `tick_close` | — |
 | **VALIDATE-GENUINELY-NEW** | `scripts/public/validators/validate_genuinely_new.py` | 4 | 2026-05-16 | Mechanized novelty-sourcing gate (born from the SIE false-escape bug): a row is genuinely-new only if the closer name #check-FAILS in pinned v4.29.0 (enforced) + 4 attestations. REJECTs the SIE closer; 'file added later' banned. Prevents false-escape sourcing recurrence. | `escape_route_sourcing`, `novelty_test`, `genuinely_new`, `anti_false_escape`, `pinned_check` | RESIDUAL-TO-LEVER, SOLVER0-GATE |
+| **COMPRESSION-PROGRESS** | `src/ztare/validator/core/compression_progress.py` | 3 | 2026-06-27 | Advisory compression-progress rule over BIC, MDL, proof length, or other lower-is-better project complexity signals. | `compression`, `bic`, `mdl`, `description_length`, `information_yield`, `loop_control`, +3 more | EVALUATE-INFORMATION-YIELD |
 | **VALIDATE-FORWARD-EVIDENCE** | `scripts/public/validators/validate_forward_evidence.py` | 3 | 2026-05-15 | v35 forward clean-corpus gate: strict target_kind enum (proof_closure/consequence_exposure/gap_isolation/falsifier/route_reduction/apparatus_audit) + SOX-independent ratifier + path retention; blocks mushy-success-vocabulary laundering. Mirrors validate_catch_ledger. | `forward_evidence`, `clean_corpus`, `anti_laundering`, `closure_attempt`, `apparatus_audit`, `tick_close` | POST-TICK-CHECK, VALIDATE-CATCH-LEDGER |
 | **CHARTER-PARSING** | `src/ztare/validator/core/charter_parsing.py` | 2 | 2026-05-04 | Charter-document parser. | `charter_load` | — |
 | **META-JUDGE-SCHEMA** | `src/ztare/validator/core/meta_judge_schema.py` | 2 | 2026-05-04 | Meta-judge schema (validates judge output). | `judge_audit` | — |
@@ -974,11 +975,12 @@ Untouched in last 30 days OR never observed firing in a catch ledger. Flag for p
 | **STAGE24-BRIDGE** | `src/ztare/validator/core/stage24_bridge.py` | 1 | 2026-04-30 | Stage 2->4 bridge (closes derivation handoff). | `stage_2_to_4`, `derivation_handoff` | — |
 | **SYMBOLIC-ASYMPTOTIC-GATE** | `src/ztare/validator/core/symbolic_asymptotic_gate.py` | 1 | 2026-04-30 | Symbolic asymptotic gate (validates limit forms). | `asymptotic_check`, `limit_form` | — |
 
-### Orchestrator Briefing Providers (`orchestrator`, n=23)
+### Orchestrator Briefing Providers (`orchestrator`, n=24)
 
 | ID | Path | Impact | Last Used | Description | Triggers | Depends |
 |---|---|---|---|---|---|---|
 | **ITER-TRAJECTORY-PROVIDER** | `src/ztare/orchestrator/briefing_providers/iter_trajectory.py` | 3 | 2026-05-04 | Briefing provider: last K iters by ordinal. | `mutator_briefing`, `iter_history` | — |
+| **ITERATION-TELEMETRY-COMPRESSION** | `src/ztare/orchestrator/iteration_telemetry.py` | 3 | 2026-06-27 | Autoresearch telemetry writer that records information-yield rationale, compression inputs, and compression-progress advice per iteration. | `iteration_telemetry`, `autoresearch`, `information_yield`, `compression_progress`, `bic`, `mdl`, +2 more | COMPRESSION-PROGRESS, EVALUATE-INFORMATION-YIELD |
 | **TRIED-FAILED-DIGEST-PROVIDER** | `src/ztare/orchestrator/briefing_providers/tried_failed_digest.py` | 3 | 2026-06-13 | Mutator briefing provider that externalizes R1 rejections, contract mismatches, fit failures, and frontier constraints as negative memory for the next worker. | `tried_failed`, `negative_memory`, `negative_constraints`, `r1_rejection`, `contract_mismatch`, `fit_failure`, +4 more | — |
 | **CONTAMINATION-DEFENSE-PROVIDER** | `src/ztare/orchestrator/briefing_providers/contamination_defense.py` | 2 | 2026-05-04 | Contamination-defense provider (charter audit). | `charter_audit`, `contamination_check` | — |
 | **CONTRACT-RULES-PROVIDER** | `src/ztare/orchestrator/briefing_providers/contract_rules.py` | 2 | 2026-05-04 | Contract-rules provider (mutator output schema). | `mutator_contract` | — |
@@ -1042,7 +1044,7 @@ Untouched in last 30 days OR never observed firing in a catch ledger. Flag for p
 | **TRIANGULATE-PER-TARGET** | `scripts/public/mining/research_mode/triangulate_per_target.py` | 1 | 2026-04-28 | Per-target triangulation across artifacts. | `target_triangulation` | — |
 | **INVALIDATE-LEDGER** | `scripts/public/_archive/mining_vestigial_20260523/invalidate_ledger.py` | 0 | never | Invalidates stale ledger entries. | `ledger_maintenance` | — |
 
-### One-Shot / Specialized Scripts (`script`, n=9)
+### One-Shot / Specialized Scripts (`script`, n=12)
 
 | ID | Path | Impact | Last Used | Description | Triggers | Depends |
 |---|---|---|---|---|---|---|
@@ -1050,7 +1052,10 @@ Untouched in last 30 days OR never observed firing in a catch ledger. Flag for p
 | **CAS-W6-VERIFICATION** | `projects/ns_millennium_hunt/scripts/CAS_W6_verification.py` | 5 | 2026-05-08 | CAS verification of W6 wall (Newton-mode harmonic-analysis attack). | `NS_W6_wall`, `CAS_verification`, `newton_mode`, `harmonic_analysis` | — |
 | **VALIDATE-CATCH-LEDGER** | `scripts/public/validators/validate_catch_ledger.py` | 5 | 2026-05-15 | Validates catch_ledger.jsonl integrity (independence rule, workpaper existence, category enum). | `catch_ledger_audit`, `concurring_partner_check`, `anti_inflation` | — |
 | **NS-RESIDUAL-VOID-AUDIT** | `projects/ns_millennium_hunt/scripts/ns_residual_void_audit.py` | 4 | 2026-05-08 | Residual-void audit on NS proof spine (default objective function for closure work per v1.49). | `NS_closure_audit`, `residual_void`, `before_after_diff` | — |
+| **PROJECT-WORKBENCH-SERVER** | `scripts/public/control/forensic_workbench_server.py` | 4 | 2026-06-27 | Local Project Workbench server for live project state, project recovery, source/evidence actions, run previews, reviews, and file-backed write boundaries. | `project_workbench`, `d4`, `live_project_state`, `project_recovery`, `missing_intake`, `source_health`, +6 more | PROJECT-WORKBENCH-STATE, COMPRESSION-PROGRESS, ITERATION-TELEMETRY-COMPRESSION |
+| **PROJECT-WORKBENCH-STATE** | `scripts/public/control/forensic_workbench_state.py` | 4 | 2026-06-27 | CLI read model and strict audit for the Project Workbench state: project summary, thesis, source/evidence state, run history, saved records, next action, recovery path, and project-to-thesis coherence. | `project_workbench`, `project_state`, `project_to_thesis`, `workflow`, `source_health`, `report_support`, +4 more | — |
 | **CATCH-GRAPH-EDGE-ADVISORY** | `scripts/public/control/catch_graph_edge_advisory.py` | 3 | 2026-05-16 | Conservative drift-guard: derives graph.yaml surfaced_catch only for unambiguous category->AP maps; advisory, never auto-writes (mechanization principle). | `graph_yaml`, `surfaced_catch`, `drift_guard`, `mechanization` | — |
+| **COMPRESSION-PROGRESS-REPLAY** | `scripts/public/control/compression_progress_replay.py` | 3 | 2026-06-27 | Replay compression-progress advice on historical project runs to compare advisory loop-control decisions with existing telemetry. | `compression`, `bic`, `mdl`, `replay`, `backtest`, `historical_project`, +2 more | COMPRESSION-PROGRESS |
 | **ESCAPE-ROUTE-RUN** | `scripts/public/control/escape_route_run.py` | 3 | 2026-05-16 | PL-156 paid discriminating run driver: wired route_c generator on screen-clean rows vs natural control, per-class. Reusable for stronger-prover rerun. | `escape_route`, `discriminating_run`, `route_c`, `gp225`, `pl156` | — |
 | **ESCAPE-ROUTE-SCREEN** | `scripts/public/control/escape_route_screen.py` | 3 | 2026-05-16 | Deterministic v4.29.0 rigor gate for the escape-route ablation: typecheck + automation-screen; no paid compute. Reusable for any candidate set. | `escape_route`, `screen`, `rigor_gate`, `route_c`, `gp225` | — |
 | **KNOWN-POSSIBLE-RUN** | `scripts/public/control/known_possible_run.py` | 3 | 2026-05-16 | solver-0 corpus fix (PL-367): residual-to-lever loop on v30 known-possible non-trivial rows (gold proof exists, goal-only to loop). Isolates 'can loop close when closure EXISTS' from 'can it close open math'. Reuses v30 corpus + route_c; v33 audit gates any closure. | `solver0_corpus_fix`, `known_possible_closure`, `residual_to_lever_loop`, `gp225` | RESIDUAL-TO-LEVER, SOLVER0-GATE |

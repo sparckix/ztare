@@ -68,33 +68,12 @@ EXECUTABLE_ANCHOR_FIXTURES = {
 
 BENIGN_GATE_CONTROL = "def f(x):\n    return x + 1\n\nassert f(2) == 3\n"
 
-REQUIRED_CATALOG_PHRASES = (
-    "How to read this as a field guide",
-    "Name Policy",
-    "Canonical Invariant Map",
-    "Historical alias",
-    "Earlier artifacts may use these aliases",
-    "Start Here: 9 Ways LLMs Game Their Own Evaluations",
-    "Part II: Mined Cross-Domain Vectors",
-    "original 9 have paper benchmark lineage",
-    "keeping them separate from the original paper's benchmark claim",
-    "NOT a complete taxonomy",
-    "NOT MECE",
-)
+# The catalog is validated structurally (entry numbering, inline grounding, count
+# agreement, no coinage, completeness disclaimer) rather than by pinning exact
+# prose, so the wording can be reworked without breaking the audit.
 
-REQUIRED_INVARIANT_LABELS = (
-    "criticality-dilution break",
-    "precision-invariance break",
-    "mechanism-responsiveness break",
-    "data-dependence break",
-    "claim-test equivalence break",
-    "dimensional-invariance break",
-    "probability-bounds break",
-    "parameter-provenance break",
-    "comparator-fairness break",
-)
-
-REQUIRED_HISTORICAL_ALIASES = (
+# Deprecated coined names that must NOT appear in the public catalog.
+FORBIDDEN_COINED_ALIASES = (
     "Blame Shield",
     "Axiom Bundle Dilution",
     "Float Masking",
@@ -114,22 +93,9 @@ REQUIRED_HISTORICAL_ALIASES = (
     "Comparator Engineering",
 )
 
-REQUIRED_MAP_PHRASES = (
-    "Precedence when files disagree",
-    "Current Coverage Snapshot",
-    "Layer Ownership",
-    "Name Policy",
-    "Invariant Axis",
-    "historical-alias column",
-    "File Contract",
-    "SOP",
-    "Do not present the 18 live rows as a complete taxonomy",
-)
-
 REQUIRED_PAPER_BOUNDARY_PHRASES = (
-    "historical run-output aliases",
     "canonical public names",
-    "not part of the benchmarked 9-strategy claim",
+    "9-strategy claim",
 )
 
 
@@ -239,29 +205,41 @@ def _validate_registry(rows: list[dict[str, Any]]) -> list[str]:
     return findings
 
 
-def _validate_catalog(text: str) -> list[str]:
+def _validate_catalog(text: str) -> tuple[list[str], int]:
     findings: list[str] = []
-    for phrase in REQUIRED_CATALOG_PHRASES:
-        if not _has_phrase(text, phrase):
-            findings.append(f"catalog missing phrase: {phrase}")
-    for label in REQUIRED_INVARIANT_LABELS:
-        if label not in text:
-            findings.append(f"catalog missing invariant label: {label}")
-    for alias in REQUIRED_HISTORICAL_ALIASES:
-        if alias not in text:
-            findings.append(f"catalog missing historical alias: {alias}")
+
+    # No deprecated coined names in the public catalog.
+    for alias in FORBIDDEN_COINED_ALIASES:
+        if alias in text:
+            findings.append(f"catalog contains deprecated coined alias: {alias}")
+
+    # The nine paper-frozen names are a published claim; they must stay, numbered 1-9.
     for idx, name in enumerate(ORIGINAL_NINE, start=1):
-        heading = f"### {idx}. {name}"
-        if heading not in text:
-            findings.append(f"catalog missing original-nine heading: {heading}")
-    return findings
+        if f"### {idx}. {name}" not in text:
+            findings.append(f"catalog missing paper-frozen heading: ### {idx}. {name}")
+
+    # Entries must be contiguously numbered 1..N and every entry grounded inline.
+    numbers = [int(n) for n in re.findall(r"^### (\d+)\. ", text, re.MULTILINE)]
+    count = len(numbers)
+    if numbers != list(range(1, count + 1)):
+        findings.append(f"catalog entries are not contiguously numbered: {numbers}")
+    grounded = text.count("**Literature.**")
+    if grounded != count:
+        findings.append(
+            f"catalog grounds {grounded} of {count} entries inline; each entry needs a Literature line"
+        )
+
+    # Honesty contract: the catalog must disclaim being a complete taxonomy.
+    if "complete taxonomy" not in text.casefold():
+        findings.append("catalog should disclaim being a complete taxonomy")
+
+    return findings, count
 
 
 def _validate_map(text: str, registry_count: int) -> list[str]:
+    # The map is a routing doc; the load-bearing coherence check is that the
+    # registry-row count it declares matches the actual registry (no pinned prose).
     findings: list[str] = []
-    for phrase in REQUIRED_MAP_PHRASES:
-        if not _has_phrase(text, phrase):
-            findings.append(f"catalog map missing phrase: {phrase}")
     declared = _map_declared_registry_count(text)
     if declared is None:
         findings.append("catalog map does not declare current registry row count")
@@ -406,7 +384,12 @@ def build_payload() -> dict[str, Any]:
 
     catalog_text = CATALOG.read_text(encoding="utf-8") if CATALOG.exists() else ""
     map_text = MAP.read_text(encoding="utf-8") if MAP.exists() else ""
-    findings.extend(_validate_catalog(catalog_text))
+    catalog_findings, catalog_entry_count = _validate_catalog(catalog_text)
+    findings.extend(catalog_findings)
+    if catalog_entry_count and rows and catalog_entry_count != len(rows):
+        findings.append(
+            f"catalog/registry count drift: {catalog_entry_count} catalog entries, {len(rows)} registry rows"
+        )
     findings.extend(_validate_map(map_text, len(rows)))
     findings.extend(_validate_paper_boundaries())
     executable_anchors, executable_findings = _validate_executable_anchors(rows)

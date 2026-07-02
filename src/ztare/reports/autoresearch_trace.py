@@ -5,6 +5,9 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import math
+import os
+import re
 import shlex
 from pathlib import Path
 from typing import Any
@@ -41,10 +44,97 @@ from ztare.validator.probability_dag_carrier import (
 )
 from ztare.validator.rubric_mode_resolver import apply_rubric_mode_defaults
 from ztare.validator.autoresearch_prediction_contract import summarize_prediction_contracts
+from ztare.validator.core.compression_progress import (
+    CompressionObservation,
+    evaluate_compression_progress,
+    observations_from_rows,
+)
 from ztare.validator.source_claim_graph_carrier import (
     build_source_claim_graph_carrier,
     summarize_source_claim_graph_carrier,
 )
+
+
+def _env_file_value(repo: Path, key: str) -> str:
+    path = repo / ".env"
+    if not path.is_file():
+        return ""
+    prefix = f"{key}="
+    try:
+        for line in path.read_text(encoding="utf-8").splitlines():
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#") or not stripped.startswith(prefix):
+                continue
+            return stripped[len(prefix):].strip().strip('"').strip("'")
+    except OSError:
+        return ""
+    return ""
+
+
+def _setting_value(repo: Path, key: str) -> str:
+    return os.environ.get(key, "").strip() or _env_file_value(repo, key)
+
+
+def _default_evidence_model(repo: Path) -> str:
+    for key in (
+        "ZTARE_WORKBENCH_MODEL",
+        "ZTARE_EVIDENCE_MODEL",
+        "ZTARE_COMPILE_EVIDENCE_MODEL",
+        "MODEL",
+    ):
+        value = _setting_value(repo, key)
+        if value:
+            return value
+    return ""
+
+
+def _default_evidence_search_backend(repo: Path) -> str:
+    return _setting_value(repo, "ZTARE_EVIDENCE_SEARCH_BACKEND") or "auto"
+
+
+def _default_evidence_max_fetches(repo: Path) -> int:
+    raw = _setting_value(repo, "ZTARE_WORKBENCH_MAX_FETCHES") or "3"
+    try:
+        value = int(raw)
+    except ValueError:
+        return 3
+    return max(1, value)
+
+
+def _default_model_fallback(repo: Path) -> str:
+    return _setting_value(repo, "ZTARE_WORKBENCH_MODEL_FALLBACK")
+
+
+def _evidence_fetch_command(
+    *,
+    project: str,
+    severity: str,
+    max_fetches: int,
+    model: str,
+    evidence_search_backend: str,
+    model_fallback: str,
+) -> str:
+    parts = [
+        "make",
+        "evidence-fetch",
+        f"PROJECT={project}",
+        f"SEVERITY={severity}",
+        f"MAX_FETCHES={max_fetches}",
+    ]
+    if model.strip():
+        parts.append(f"MODEL={model.strip()}")
+    if evidence_search_backend.strip():
+        parts.append(f"EVIDENCE_SEARCH_BACKEND={evidence_search_backend.strip()}")
+    if model_fallback.strip():
+        parts.append(f"MODEL_FALLBACK={model_fallback.strip()}")
+    return " ".join(parts)
+
+
+def _evidence_prepare_command(*, project: str, model: str) -> str:
+    parts = ["make", "evidence-prepare", f"PROJECT={project}"]
+    if model.strip():
+        parts.append(f"MODEL={model.strip()}")
+    return " ".join(parts)
 from ztare.validator.hypothesis_projection import build_projection
 
 
@@ -392,6 +482,173 @@ def _read_json(path: Path) -> dict[str, Any]:
     except Exception:
         return {}
     return payload if isinstance(payload, dict) else {}
+
+
+def _repo_rel(path: Path, *, repo: Path) -> str:
+    try:
+        return str(path.relative_to(repo))
+    except ValueError:
+        return str(path)
+
+
+def _finite_float(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        candidate = float(value)
+    elif isinstance(value, str):
+        try:
+            candidate = float(value.strip())
+        except ValueError:
+            return None
+    else:
+        return None
+    return candidate if math.isfinite(candidate) else None
+
+
+_FIT_RESULT_ITER_RE = re.compile(r"_iter_(\d+)\.json$")
+
+
+def _fit_result_iteration(path: Path) -> int:
+    match = _FIT_RESULT_ITER_RE.search(path.name)
+    return int(match.group(1)) if match else 0
+
+
+def _fit_bic_proxy(payload: dict[str, Any]) -> float | None:
+    direct = _finite_float(payload.get("bic"))
+    if direct is not None:
+        return direct
+    rmse = _finite_float(payload.get("rmse"))
+    if rmse is None or rmse <= 0:
+        return None
+    n_rows = _as_int(payload.get("n_fit_rows")) or 0
+    residual_map = payload.get("residual_map")
+    if not n_rows and isinstance(residual_map, list):
+        n_rows = len(residual_map)
+    k_params = _as_int(payload.get("k_params")) or 0
+    params = payload.get("parameter_names")
+    if not k_params and isinstance(params, list):
+        k_params = len(params)
+    if n_rows < 2 or k_params <= 0:
+        return None
+    return float(n_rows) * math.log(rmse * rmse) + float(k_params) * math.log(float(n_rows))
+
+
+def _trace_compression_progress_summary(
+    workspace: Path,
+    telemetry_rows: list[dict[str, Any]],
+    *,
+    repo: Path,
+) -> dict[str, Any]:
+    """Compact simpler-explanation signal for the autoresearch trace.
+
+    This is advisory state for reviewers. It does not change loop admission.
+    Fit-result BIC history is preferred because many historical projects predate
+    per-iteration compression telemetry.
+    """
+
+    fit_observations: list[CompressionObservation] = []
+    fit_refs: list[str] = []
+    profile: list[dict[str, Any]] = []
+    telemetry_by_iteration = {
+        _as_int(row.get("iteration_index")): row
+        for row in telemetry_rows
+        if isinstance(row, dict)
+    }
+    for path in sorted(workspace.glob("fit_result_iter_*.json"), key=_fit_result_iteration):
+        payload = _read_json(path)
+        complexity = _fit_bic_proxy(payload)
+        if complexity is None:
+            continue
+        iteration = _fit_result_iteration(path)
+        row = telemetry_by_iteration.get(iteration, {})
+        source = _repo_rel(path, repo=repo)
+        fit_refs.append(source)
+        fit_observations.append(
+            CompressionObservation(
+                iteration_index=iteration,
+                complexity=complexity,
+                novelty=bool(row.get("score_improved") or row.get("champion_promoted")),
+                family="fit_bic",
+                label=path.name,
+            )
+        )
+        profile.append({
+            "iteration": iteration,
+            "complexity": complexity,
+            "complexity_family": "fit_bic",
+            "score": row.get("score"),
+            "score_improved": bool(row.get("score_improved") or row.get("champion_promoted")),
+            "loop_action": str(row.get("pending_loop_action") or ""),
+            "source": source,
+        })
+
+    selected_source = "fit_results"
+    observations = fit_observations
+    source_refs = fit_refs
+    decision = evaluate_compression_progress(observations)
+    if decision.usable_observations < 2:
+        telemetry_observations = observations_from_rows(telemetry_rows)
+        telemetry_decision = evaluate_compression_progress(telemetry_observations)
+        if telemetry_decision.usable_observations > decision.usable_observations:
+            selected_source = "telemetry"
+            observations = telemetry_observations
+            source_refs = [_repo_rel(workspace / "iteration_telemetry.jsonl", repo=repo)]
+            decision = telemetry_decision
+
+    latest_row = telemetry_rows[-1] if telemetry_rows else {}
+    latest_advice = latest_row.get("compression_progress_advice")
+    if not isinstance(latest_advice, dict):
+        latest_advice = {}
+
+    status = "no_signal"
+    label = "No compression comparison"
+    summary = "No BIC or MDL-style fit history is available for this project yet."
+    if decision.recommendation == "continue":
+        status = "improving"
+        label = "Explanation is getting simpler"
+        summary = "Recent fit history improved the BIC/MDL-style compression signal."
+    elif decision.recommendation == "watch":
+        status = "watch"
+        label = "Watch compression"
+        summary = (
+            f"No compression improvement for {decision.stagnation_length} iteration"
+            f"{'' if decision.stagnation_length == 1 else 's'}, but the warning threshold has not been crossed."
+        )
+    elif decision.recommendation == "measure_before_continuing":
+        status = "needs_measurement"
+        label = "Measure before another run"
+        summary = "Recent moves changed route, but the BIC/MDL-style signal did not improve."
+    elif decision.recommendation == "narrow_or_pivot":
+        status = "needs_narrowing"
+        label = "Simplify or narrow before continuing"
+        summary = (
+            f"No compression improvement for {decision.stagnation_length} iteration"
+            f"{'' if decision.stagnation_length == 1 else 's'}; narrow the evidence boundary or use a simpler model before spending another run."
+        )
+
+    return {
+        "schema": "ztare-autoresearch-trace-compression-progress-v1",
+        "available": bool(decision.usable_observations or profile),
+        "status": status,
+        "label": label,
+        "summary": summary,
+        "source": selected_source,
+        "source_refs": source_refs[-12:],
+        "recommendation": decision.recommendation,
+        "rationale": decision.rationale,
+        "usable_observations": decision.usable_observations,
+        "best_complexity": decision.best_complexity,
+        "latest_complexity": decision.latest_complexity,
+        "last_drop_iteration": decision.last_drop_iteration,
+        "stagnation_length": decision.stagnation_length,
+        "compression_drop_count": decision.compression_drop_count,
+        "future_progress_weight": decision.future_progress_weight,
+        "latest_iteration_advice": latest_advice,
+        "prior_loop_action": str(latest_row.get("pending_loop_action") or ""),
+        "complexity_runtime_profile": profile[-20:],
+        "control_policy": "Advisory only; compare beside score, evidence gaps, and truth-yield before changing loop control.",
+    }
 
 
 _EVIDENCE_FETCH_SEVERITY_PRIORITY = ("blocking", "degrading", "enriching")
@@ -1014,6 +1271,11 @@ def _recent_loop_summary(workspace: Path, *, repo: Path) -> dict[str, Any]:
         effective_model_ids=latest_effective_models,
         fallback_events=latest_fallback_events,
     )
+    compression_progress = _trace_compression_progress_summary(
+        workspace,
+        telemetry_rows,
+        repo=repo,
+    )
     gate_zeroed_keys: set[tuple[Any, Any]] = set()
     for row in recent_telemetry + recent_eval:
         if row.get("score") != 0 or not row.get("failed_gate_ids"):
@@ -1065,6 +1327,15 @@ def _recent_loop_summary(workspace: Path, *, repo: Path) -> dict[str, Any]:
             else None
         ),
     }
+    if compression_progress.get("available"):
+        summary.update({
+            "compression_progress": compression_progress,
+            "latest_compression_progress_status": compression_progress.get("status"),
+            "latest_compression_progress_label": compression_progress.get("label"),
+            "latest_compression_progress_recommendation": compression_progress.get("recommendation"),
+            "latest_compression_progress_summary": compression_progress.get("summary"),
+            "latest_compression_progress_source": compression_progress.get("source"),
+        })
     if latest_run_project_packet:
         summary["latest_run_project_packet"] = latest_run_project_packet
         summary["latest_run_project_intake"] = _project_intake_receipt_alias(
@@ -2095,13 +2366,19 @@ def build_autoresearch_trace(
     *,
     project: str,
     rubric: str | None = None,
-    model: str = "gemini",
-    evidence_search_backend: str = "auto",
+    model: str | None = None,
+    evidence_search_backend: str | None = None,
     packet: str | None = None,
     repo: Path = REPO,
     full_health: bool = False,
 ) -> dict[str, Any]:
     repo = repo.resolve()
+    model = (model or _default_evidence_model(repo)).strip()
+    evidence_search_backend = (
+        evidence_search_backend or _default_evidence_search_backend(repo)
+    ).strip()
+    evidence_max_fetches = _default_evidence_max_fetches(repo)
+    model_fallback = _default_model_fallback(repo).strip()
     project_dir = _project_dir(repo, project)
     rubric_resolved = _rubric_path(repo, rubric)
     workspace = project_dir / "workspace"
@@ -2363,10 +2640,13 @@ def build_autoresearch_trace(
                 {
                     "id": "raw_sources",
                     "reason": "fetch public sources for recorded evidence gaps",
-                    "next_command": (
-                        f"make evidence-fetch PROJECT={project} SEVERITY={severity} "
-                        f"MAX_FETCHES=3 MODEL={model} "
-                        f"EVIDENCE_SEARCH_BACKEND={evidence_search_backend}"
+                    "next_command": _evidence_fetch_command(
+                        project=project,
+                        severity=severity,
+                        max_fetches=evidence_max_fetches,
+                        model=model,
+                        evidence_search_backend=evidence_search_backend,
+                        model_fallback=model_fallback,
                     ),
                 }
             )
@@ -2428,7 +2708,7 @@ def build_autoresearch_trace(
             {
                 "id": "evidence_prepare",
                 "reason": "refresh workspace source index and compiled evidence from raw sources",
-                "next_command": f"make evidence-prepare PROJECT={project} MODEL={model}",
+                "next_command": _evidence_prepare_command(project=project, model=model),
             }
         )
     if (
@@ -2489,10 +2769,13 @@ def build_autoresearch_trace(
                     "reason",
                     "source-claim graph selected evidence recovery before run readiness",
                 ),
-                "next_command": (
-                    f"make evidence-fetch PROJECT={project} SEVERITY={severity} "
-                    f"MAX_FETCHES=3 MODEL={model} "
-                    f"EVIDENCE_SEARCH_BACKEND={evidence_search_backend}"
+                "next_command": _evidence_fetch_command(
+                    project=project,
+                    severity=severity,
+                    max_fetches=evidence_max_fetches,
+                    model=model,
+                    evidence_search_backend=evidence_search_backend,
+                    model_fallback=model_fallback,
                 ),
             }
         )
@@ -2642,6 +2925,14 @@ def build_autoresearch_trace(
         route_command=route_preview.get("route_command"),
         preflight_command=route_preview.get("preflight_command"),
         run_command=route_preview.get("run_command"),
+        repair_command=next(
+            (
+                str(action.get("next_command") or "").strip()
+                for action in recovery_actions
+                if str(action.get("next_command") or "").strip()
+            ),
+            None,
+        ),
         can_run_now=bool(route_preview.get("can_run_now")),
         preflight_admitted=preflight_admitted,
         missing=missing,
@@ -2956,6 +3247,16 @@ def _render_brief(report: dict[str, Any]) -> list[str]:
             + f"exit={_table_cell(recent_loop.get('latest_run_exit_reason'), max_len=32)} "
             + f"provider_failure={_table_cell(recent_loop.get('provider_failure_observed'), max_len=8)}"
         )
+        compression_progress = recent_loop.get("compression_progress") or {}
+        if isinstance(compression_progress, dict):
+            lines.append(
+                "- compression progress: "
+                + _table_cell(compression_progress.get("label") or "No compression comparison", max_len=48)
+                + " "
+                + f"recommendation={_table_cell(compression_progress.get('recommendation'), max_len=32)} "
+                + f"points={_table_cell(compression_progress.get('usable_observations'), max_len=8)} "
+                + f"flat={_table_cell(compression_progress.get('stagnation_length'), max_len=8)}"
+            )
         risk_rows = recent_loop.get("recent_provider_failure_signatures") or []
         if risk_rows:
             first = risk_rows[0]
@@ -2988,16 +3289,20 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--rubric", help="Rubric slug or path.")
     parser.add_argument(
         "--model",
-        default="gemini",
-        help="Model label to render in suggested evidence recovery commands. No model call is made.",
+        default=None,
+        help=(
+            "Model label to render in suggested evidence recovery commands. "
+            "Defaults to ZTARE_WORKBENCH_MODEL or lower-level evidence model env. "
+            "No model call is made."
+        ),
     )
     parser.add_argument(
         "--evidence-search-backend",
-        default="auto",
+        default=None,
         choices=["auto", "openai", "anthropic"],
         help=(
             "Search backend to render in suggested evidence-fetch commands. "
-            "No model call is made."
+            "Defaults to ZTARE_EVIDENCE_SEARCH_BACKEND or auto. No model call is made."
         ),
     )
     parser.add_argument(

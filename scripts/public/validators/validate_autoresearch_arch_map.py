@@ -107,6 +107,16 @@ MAP_REGISTRY: list[tuple[str, Path, Path]] = [
         ARCH_MAP_DIR / "orchestrator_gate_manifest_architectural_map.md",
         REPO / "src" / "ztare" / "orchestrator" / "gate_manifest.py",
     ),
+    (
+        "information_yield",
+        ARCH_MAP_DIR / "information_yield_architectural_map.md",
+        REPO / "src" / "ztare" / "validator" / "core" / "information_yield.py",
+    ),
+    (
+        "project_workbench_server",
+        ARCH_MAP_DIR / "project_workbench_architectural_map.md",
+        REPO / "scripts" / "public" / "control" / "forensic_workbench_server.py",
+    ),
 ]
 
 # Backwards-compat aliases (kept so any external caller that imported

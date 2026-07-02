@@ -1647,8 +1647,9 @@ def summarize_source_health(source_health: dict[str, Any], repo: Path) -> dict[s
     blocking = [issue for issue in issues if issue.get("severity") == "blocking"]
     warnings = [issue for issue in issues if issue.get("severity") == "warning"]
     issue_type_counts = Counter(str(issue.get("issue_type") or "unknown") for issue in issues)
-    issue_sample = [
-        {
+    issue_sample = []
+    for issue in issues[:8]:
+        row = {
             "severity": issue.get("severity"),
             "scope": issue.get("scope"),
             "issue_type": issue.get("issue_type"),
@@ -1656,8 +1657,16 @@ def summarize_source_health(source_health: dict[str, Any], repo: Path) -> dict[s
             "recommended_action": issue.get("recommended_action"),
             "evidence_refs": list(issue.get("evidence_refs") or []),
         }
-        for issue in issues[:8]
-    ]
+        for key in (
+            "display_severity",
+            "display_scope",
+            "display_issue_type",
+            "display_blocking_rule",
+            "display_recommended_action",
+        ):
+            if issue.get(key):
+                row[key] = issue.get(key)
+        issue_sample.append(row)
     path = repo / ACTION_HEALTH
     latest = iso_from_mtime(path)
     return {
@@ -2334,7 +2343,9 @@ def write_markdown(payload: dict[str, Any], path: Path) -> None:
         lines.append(f"- `{row.get('metric')}`: {row.get('failure_mode')}")
     lines.extend(["", "## Source Health", ""])
     for issue in (payload.get("source_health") or {}).get("issues", [])[:10]:
-        lines.append(f"- `{issue.get('severity')}` `{issue.get('issue_type')}`: {issue.get('blocking_rule')}")
+        label = issue.get("display_issue_type") or issue.get("issue_type")
+        rule = issue.get("display_blocking_rule") or issue.get("blocking_rule")
+        lines.append(f"- `{issue.get('severity')}` `{label}`: {rule}")
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 

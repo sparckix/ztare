@@ -342,6 +342,29 @@ def warm_verify_campaign(probe_code: str, decl_name: str, sandbox, timeout: int 
     if pl is None:
         return None
     code = _strip_prelude_for_repl(probe_code)
+    # SINGLE-DOOR env-dedup (chronic 'already been declared' fix, 2026-07-01): a self-contained probe re-declares
+    # the campaign DEFS + proven shelf lemmas the env ALREADY holds ⇒ `X has already been declared` ⇒ a valid proof
+    # never ratifies (chronic thrash since 2026-06-08; native-only proofs escaped). Strip env-held decls (defs +
+    # proven theorems; KEEP the target + new helpers + sorried env theorems) so the probe CITES the env instead of
+    # clashing. THIS is the one door — every warm-verify caller (leaf/conjecture-refute/solver_core) inherits it, so
+    # the fix can't rot into siblings. SOUND: env decls are canonical (see `lean_source.strip_env_declared_decls`).
+    try:
+        _subp = get_campaign_substrate()
+        if _subp:
+            _envtext = Path(_subp).read_text(encoding="utf-8", errors="replace")
+            from ztare.leanmill.lean_source import strip_env_declared_decls, rename_decl
+            code = strip_env_declared_decls(code, _envtext, keep=decl_name)
+            # FRESH-NAME the target: the env holds it SORRIED, so a probe re-declaring `theorem <decl_name> := <proof>`
+            # clashes with its own env copy (the 'fresh decl name' contract; mirrors solver_core's _zwv). Rename the
+            # probe's declaration + audit the fresh name. No-op if the probe cites (doesn't re-declare) the target.
+            if decl_name and (f" {decl_name}" in code):
+                _fresh = f"{decl_name}_wv"
+                _renamed = rename_decl(code, decl_name, _fresh)
+                if _renamed != code:
+                    code = _renamed
+                    decl_name = _fresh
+    except Exception:  # noqa: BLE001 — dedup/rename is best-effort; the cold path is the sound fallback
+        pass
     # NAMESPACE-CONTEXT (2026-06-20 'no closures' RCA): a campaign theory wraps its decls in `namespace X`,
     # closed in the env, so a bare probe can't resolve namespaced sibling defs (unknown identifier ⇒ unclosable).
     # Re-enter the namespace so names resolve as in-file, AND qualify decl_name (X.decl) so the axiom audit below

@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 from typing import Any
 
@@ -148,7 +149,9 @@ def check_source_project(
         next_steps.append("Type untyped sources with source_type frontmatter or raw/source_type_map.json.")
     if ok:
         next_steps.append("Compile the source/evidence chain before routing into the loop.")
-        next_commands.append(f"make evidence-prepare PROJECT={project_dir.name} MODEL=gemini")
+        model_hint = os.environ.get("ZTARE_MODEL", "")
+        model_part = f" MODEL={model_hint}" if model_hint else ""
+        next_commands.append(f"make evidence-prepare PROJECT={project_dir.name}{model_part}")
 
     return {
         "schema": "ztare-source-check-v1",

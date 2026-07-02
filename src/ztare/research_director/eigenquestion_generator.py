@@ -329,12 +329,19 @@ def generate_eigenquestion(project_slug: str, model_id: str | None = None,
     current_eq = _extract_current_eigenquestion(project_dir / "project_charter.md")
     prompt = _build_prompt(project_slug, current_eq, evidence_summary, explored_summary)
 
-    from ztare.common.llm_runtime import LLMRuntime, pick_default_model_id_for_scripts
+    from ztare.common.llm_runtime import LLMRuntime, pick_default_model_id_for_scripts, resolve_model_id
     chosen_model = model_id or pick_default_model_id_for_scripts()
     if chosen_model is None:
         raise RuntimeError(
             "no LLM provider — set ANTHROPIC_API_KEY / OPENAI_API_KEY / GEMINI_API_KEY"
     )
+    # Accept a model FAMILY label (e.g. "gemini", "claude") from global settings, not just a full id —
+    # resolve it so the user's pick is honored (mirrors scratch_elicit). resolve_model_id is a no-op on
+    # an already-resolved id.
+    try:
+        chosen_model = resolve_model_id(chosen_model)
+    except Exception:  # noqa: BLE001 — an unknown label falls through to call_text as-is
+        pass
     runtime = LLMRuntime()
     from ztare.common.dispatch_model import dispatch_call_text
 

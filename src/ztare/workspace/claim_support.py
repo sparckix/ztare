@@ -3,9 +3,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from ztare.common.paths import PROJECTS_DIR
 from ztare.workspace.compile_evidence import (
@@ -23,6 +24,154 @@ SUPPORTED_PACKET_FIELDS = {
 }
 SOURCE_CONTEXT_PREVIEW_LINES = 8
 SOURCE_CONTEXT_PREVIEW_CHARS = 800
+
+
+def _identity(value: Any) -> str:
+    return str(value or "")
+
+
+def display_value(value: Any) -> str:
+    text = str(value or "").strip()
+    return re.sub(r"[_-]+", " ", text).strip().capitalize() if text else ""
+
+
+def claim_support_row_is_weak(row: dict[str, Any]) -> bool:
+    text = f"{row.get('support_status') or row.get('status') or ''} {row.get('issue') or row.get('reason') or ''}"
+    return bool(re.search(r"weak|missing|unsourced|blocked|unsupported", text, flags=re.IGNORECASE))
+
+
+def compact_claim_support_row(
+    row: dict[str, Any],
+    *,
+    path_display: Callable[[Any], str] = _identity,
+) -> dict[str, Any]:
+    source_paths = row.get("source_paths") if isinstance(row.get("source_paths"), list) else []
+    source_ids = row.get("source_ids") if isinstance(row.get("source_ids"), list) else []
+    return {
+        "claim_id": str(row.get("claim_id") or row.get("id") or ""),
+        "claim": str(row.get("claim") or "")[:600],
+        "field": str(row.get("field") or ""),
+        "status": str(row.get("status") or ""),
+        "support_status": str(row.get("support_status") or row.get("status") or ""),
+        "source_id": str(row.get("source_id") or ""),
+        "source_ids": [str(item) for item in source_ids if item],
+        "source_paths": [path_display(item) for item in source_paths if item],
+        "support_level": str(row.get("support_level") or ""),
+        "issue": str(row.get("issue") or row.get("reason") or ""),
+    }
+
+
+def claim_card_payload(
+    row: dict[str, Any],
+    index: int,
+    *,
+    path_display: Callable[[Any], str] = _identity,
+    value_display: Callable[[Any], str] = display_value,
+) -> dict[str, Any]:
+    weak = claim_support_row_is_weak(row)
+    status = str(row.get("support_status") or row.get("status") or "")
+    source_paths = row.get("source_paths") if isinstance(row.get("source_paths"), list) else []
+    source_ids = row.get("source_ids") if isinstance(row.get("source_ids"), list) else []
+    return {
+        "card_id": str(row.get("claim_id") or f"claim_card_{index}"),
+        "claim": str(row.get("claim") or "")[:600],
+        "kind": "weak_or_open" if weak else "supported",
+        "status": status,
+        "display_status": "Needs support" if weak else "Supported",
+        "evidence_level": value_display(row.get("support_level") or status or ("open" if weak else "supported")),
+        "source_ids": [str(item) for item in source_ids if item],
+        "source_paths": [path_display(item) for item in source_paths if item],
+        "issue": str(row.get("issue") or "")[:300],
+        "next_action": "Add or justify source support." if weak else "Preview the backing source files.",
+    }
+
+
+def claim_card_audit(thesis_support: dict[str, Any] | None) -> dict[str, Any]:
+    support = thesis_support if isinstance(thesis_support, dict) else {}
+    cards = [row for row in support.get("claim_cards") or [] if isinstance(row, dict)]
+    try:
+        target = min(int(support.get("claim_count") or 0), 8)
+    except (TypeError, ValueError):
+        target = 0
+    usable = [
+        row
+        for row in cards
+        if str(row.get("claim") or "").strip()
+        and str(row.get("kind") or "").strip()
+        and (
+            [path for path in row.get("source_paths") or [] if path]
+            or str(row.get("issue") or row.get("next_action") or "").strip()
+        )
+    ]
+    ok = target == 0 or (len(cards) >= target and len(usable) == len(cards))
+    return {
+        "ok": ok,
+        "target": target,
+        "card_count": len(cards),
+        "usable_count": len(usable),
+        "detail": "Thesis support exposes inspectable claim cards with source files or a next action."
+        if ok
+        else f"Thesis support has {target} claim(s), but only {len(cards)} usable claim card(s).",
+    }
+
+
+def compact_thesis_support_payload(
+    claim_support: dict[str, Any] | None,
+    *,
+    path_display: Callable[[Any], str] = _identity,
+    value_display: Callable[[Any], str] = display_value,
+) -> dict[str, Any]:
+    support = claim_support if isinstance(claim_support, dict) else {}
+    rows = support.get("rows") if isinstance(support.get("rows"), list) else []
+    sources = support.get("source_context") if isinstance(support.get("source_context"), list) else []
+
+    def safe_int(value: Any) -> int:
+        try:
+            return int(value or 0)
+        except (TypeError, ValueError):
+            return 0
+
+    def compact_point(row: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "claim_id": str(row.get("claim_id") or ""),
+            "claim": str(row.get("claim") or "")[:300],
+            "status": str(row.get("support_status") or row.get("status") or ""),
+            "source_paths": [path_display(path) for path in row.get("source_paths") or [] if path][:4],
+            "issue": str(row.get("issue") or "")[:300],
+        }
+
+    supported = [row for row in rows if isinstance(row, dict) and not claim_support_row_is_weak(row)]
+    weak_or_open = [row for row in rows if isinstance(row, dict) and claim_support_row_is_weak(row)]
+    claim_cards = [
+        claim_card_payload(row, index, path_display=path_display, value_display=value_display)
+        for index, row in enumerate([*supported, *weak_or_open], start=1)
+    ]
+    backing_files = [
+        str(path)
+        for path in [
+            support.get("evidence_support_file_path"),
+            support.get("source_index_path"),
+            *[source.get("path") for source in sources[:6] if isinstance(source, dict)],
+        ]
+        if path
+    ]
+    status = str(support.get("status") or "not loaded")
+    return {
+        "schema": "ztare-project-thesis-support-v1",
+        "project": str(support.get("project") or ""),
+        "status": status,
+        "display_status": str(support.get("display_status") or value_display(status)),
+        "claim_count": safe_int(support.get("claim_count")),
+        "supported_count": len(supported),
+        "weak_or_open_count": len(weak_or_open),
+        "source_count": len(sources),
+        "evidence_support_file_path": str(support.get("evidence_support_file_path") or ""),
+        "source_index_path": str(support.get("source_index_path") or ""),
+        "supported_points": [compact_point(row) for row in supported[:4]],
+        "weak_or_open_points": [compact_point(row) for row in weak_or_open[:4]],
+        "claim_cards": claim_cards[:8],
+        "backing_files": sorted({path for path in backing_files})[:10],
+    }
 
 
 def read_json(path: Path) -> dict[str, Any]:
@@ -269,6 +418,62 @@ def _evidence_readiness_status(
     return status or "not_checked"
 
 
+def reliability_verdict(
+    status_counts: dict[str, int], claim_count: int
+) -> dict[str, Any]:
+    """A substantive "can I rely on this" verdict from the per-claim support mix.
+
+    This is the master judgment (CLI owns it; the workbench only renders it) — it replaces the
+    coarse `report_status` -> "Almost there" mapping that gave the reader no affordance. The tier
+    answers the eigenquestion; the breakdown gives the WHY (how many claims are directly sourced
+    vs cross-source inference vs unsupported).
+    """
+    def c(key: str) -> int:
+        return int(status_counts.get(key, 0) or 0)
+
+    direct = c("direct_source_support")
+    synth = c("synthesized_across_sources") + c("mixed_source_support")
+    seed = c("local_or_seed_support")
+    unsupported = c("unsupported_no_sources") + c("unsupported_missing_sources")
+    total = int(claim_count or 0)
+
+    breakdown: list[dict[str, Any]] = []
+    if direct:
+        breakdown.append({"count": direct, "label": "directly sourced"})
+    if synth:
+        breakdown.append({"count": synth, "label": "synthesized across sources"})
+    if seed:
+        breakdown.append({"count": seed, "label": "on local or seed evidence"})
+    breakdown.append({"count": unsupported, "label": "unsupported"})
+
+    if total == 0:
+        tier, headline = "not_checked", "Not checked yet"
+    elif unsupported > 0:
+        tier, headline = "do_not_rely", "Don't rely on it yet"
+    elif synth + seed == 0:
+        tier, headline = "rely", "Holds up — every claim directly sourced"
+    else:
+        tier, headline = "verify_inference", "Usable — verify the inferences"
+
+    if total == 0:
+        summary = "Run a backing check to see how each claim is supported."
+    else:
+        parts = [f"{b['count']} {b['label']}" if b["count"] else "none unsupported" for b in breakdown]
+        summary = f"{' · '.join(parts)} of {total}"
+
+    return {
+        "tier": tier,
+        "headline": headline,
+        "summary": summary,
+        "total_claims": total,
+        "breakdown": breakdown,
+        "directly_sourced": direct,
+        "synthesized": synth,
+        "seed_support": seed,
+        "unsupported": unsupported,
+    }
+
+
 def build_claim_support_audit(
     project_dir: Path,
     *,
@@ -330,6 +535,7 @@ def build_claim_support_audit(
         "evidence_readiness_status": readiness_status,
         "claim_count": len(rows),
         "status_counts": status_counts,
+        "reliability": reliability_verdict(status_counts, len(rows)),
         "weak_or_unsourced_count": weak_count,
         "source_context_status_counts": source_context_status_counts,
         "source_context_blocked_count": source_context_blocked_count,
@@ -340,9 +546,11 @@ def build_claim_support_audit(
 
 
 def render_text(report: dict[str, Any]) -> str:
+    reliability = report.get("reliability") or {}
     lines = [
         f"Claim support: {report.get('project')}",
         f"Status: {report.get('status')}",
+        f"Verdict: {reliability.get('headline', 'n/a')} — {reliability.get('summary', '')}".rstrip(" —"),
         f"Claims: {report.get('claim_count', 0)}",
         f"Evidence readiness: {report.get('evidence_readiness_status')}",
     ]

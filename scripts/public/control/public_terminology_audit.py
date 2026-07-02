@@ -77,11 +77,15 @@ TARGETS = [
     REPO / "examples/substrate_packets/README.md",
     REPO / "scripts/public/control/README.md",
     REPO / "src/ztare/cli.py",
+    REPO / "docs/concepts/forensic_workbench_interface.md",
+    REPO / "forensic-workbench/README.md",
 ]
 
 COMMAND_SURFACES = {
     "make help": ["make", "help"],
     "ztare --help": [sys.executable, "-m", "src.ztare.cli", "--help"],
+    "ztare forensic-workbench --help": [sys.executable, "-m", "src.ztare.cli", "forensic-workbench", "--help"],
+    "ztare leanmill --help": [sys.executable, "-m", "src.ztare.cli", "leanmill", "--help"],
 }
 
 FORBIDDEN_TERMS = [

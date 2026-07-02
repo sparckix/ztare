@@ -29,9 +29,25 @@
 # the index recommends capabilities BEFORE the operator prompts for them.
 
 version: 1
-last_updated: 2026-05-08
+last_updated: 2026-06-27
 
 edges:
+
+  # ---- v1 project workbench live state + compression-progress surfaces ----
+  - capability: PROJECT-WORKBENCH-SERVER
+    composes_with: [PROJECT-WORKBENCH-STATE, ITERATION-TELEMETRY-COMPRESSION, COMPRESSION-PROGRESS, BUILD-SOURCE-CLAIM-GRAPH-CARRIER]
+
+  - capability: PROJECT-WORKBENCH-STATE
+    composes_with: [PROJECT-WORKBENCH-SERVER, EVIDENCE-GAP-RECOVERY, EVIDENCE-GAP-ACTIVITY]
+
+  - capability: COMPRESSION-PROGRESS
+    composes_with: [EVALUATE-INFORMATION-YIELD, ITERATION-TELEMETRY-COMPRESSION]
+
+  - capability: COMPRESSION-PROGRESS-REPLAY
+    composes_with: [COMPRESSION-PROGRESS, ITERATION-TELEMETRY-COMPRESSION]
+
+  - capability: ITERATION-TELEMETRY-COMPRESSION
+    composes_with: [COMPRESSION-PROGRESS, EVALUATE-INFORMATION-YIELD, AUTORESEARCH-LOOP]
 
   # ---- impact-5 anti-pattern catalog (catch-ledger-backed) ----
   - capability: ANTI-PATTERN-001-PATTERN-1-RABBIT-HOLE

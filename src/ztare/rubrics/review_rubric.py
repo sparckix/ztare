@@ -510,6 +510,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--project", required=True, help="Project name under projects/ or explicit path.")
     parser.add_argument("--rubric", default=None, help="Rubric name under rubrics/ or explicit path (defaults to --project).")
     parser.add_argument("--model", default="gemini", choices=sorted(MODEL_MAP.keys()))
+    parser.add_argument("--json", action="store_true", help="Emit the review payload + artifact paths as one JSON object on stdout (for the workbench).")
     return parser
 
 
@@ -526,6 +527,17 @@ def main(argv: list[str] | None = None) -> int:
     review_path = result["review_path"]
     patch_path = result["patch_path"]
     review_payload = result["review_payload"]
+    if getattr(args, "json", False):
+        # One machine-readable object for the workbench: the review payload plus where artifacts landed.
+        print(json.dumps({
+            "ok": True,
+            "review_payload": review_payload,
+            "review_path": str(review_path) if review_path is not None else "",
+            "patch_path": str(patch_path) if patch_path is not None else "",
+            "evidence_gaps_path": str(result.get("evidence_gaps_path") or ""),
+            "scenario_failed": bool(result.get("scenario_failed")),
+        }))
+        return review_exit_code(review_payload)
     print(f"Rubric review written to: {review_path}")
     if patch_path is not None:
         print(f"Rubric patch proposal written to: {patch_path}")

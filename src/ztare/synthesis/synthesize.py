@@ -1,6 +1,7 @@
 import argparse
 import hashlib
 import json
+import os
 import re
 import subprocess
 import sys
@@ -9,6 +10,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
 from ztare.common import utils
+from ztare.common.dispatch_model import dispatch_call_text
 from ztare.common.llm_runtime import LLMRuntime, LLMRuntimeError, MODEL_MAP
 from ztare.common.paths import PROJECTS_DIR, PROMPTS_DIR, RENDERERS_DIR, REPO_ROOT, RUBRICS_DIR
 
@@ -31,6 +33,11 @@ HISTORY_FAMILY_RE = re.compile(r"^\d+_iter\d+_score_[^_]+_(.+)$")
 DEFAULT_QA_THRESHOLD = 85
 DEFAULT_QA_REPAIR_ATTEMPTS = 2
 ACTIVE_LLM: Optional["LLMClient"] = None
+# User-provided, natural-language report direction (e.g. "lead with the downside case; keep it under one
+# page; emphasise the unit economics"). Injected as a high-priority directive into the render + refine
+# prompts, for BOTH templated and dynamic renderers. It steers STYLE/EMPHASIS/STRUCTURE-within-template,
+# never the facts — the support contract still bounds every claim.
+USER_INSTRUCTIONS: str = ""
 ACTIVE_QA_LLM: Optional["LLMClient"] = None
 ACTIVE_QA_THRESHOLD = DEFAULT_QA_THRESHOLD
 ACTIVE_QA_REPAIR_ATTEMPTS = DEFAULT_QA_REPAIR_ATTEMPTS
@@ -734,15 +741,24 @@ class LLMClient:
     def call(self, prompt: str, retries: int = 3) -> str:
         try:
             dbg(f"LLM call: family={self.model_family} model={self.model_id} retries={retries}")
-            response = self.runtime.call_text(
+            # Route through the ONE transport door (dispatch_call_text): API by default, subscription
+            # CLI worker when ZTARE_AGENT_DISPATCH[_SYNTHESIS]=agent — the same door autoresearch uses.
+            # No bespoke synth transport flag.
+            response = dispatch_call_text(
+                "synthesis",
                 prompt,
-                model_id=self.model_id,
-                retries=retries,
-                timeout_seconds=300,
-                request_label="synthesis request",
-                progress_printer=dbg,
-                transient_wait_seconds=5,
-                timeout_wait_seconds=2,
+                llm_response_call=lambda p: self.runtime.call_text(
+                    p,
+                    model_id=self.model_id,
+                    retries=retries,
+                    timeout_seconds=300,
+                    request_label="synthesis request",
+                    progress_printer=dbg,
+                    transient_wait_seconds=5,
+                    timeout_wait_seconds=2,
+                ),
+                repo=REPO_ROOT,
+                agent_id="synthesis_report",
             )
             return response.text
         except LLMRuntimeError as exc:
@@ -2184,8 +2200,15 @@ def render_artifact(ledger: Dict[str, Any], brief: Dict[str, Any], context: Dict
         autoresearch_review_context=autoresearch_review_context,
     )
     aggregated_corpus = context.get("aggregated_corpus")
-    prompt_parts = [
-        renderer_prompt,
+    prompt_parts = [renderer_prompt]
+    # User direction (highest-priority STYLE/EMPHASIS/STRUCTURE steer; never overrides the support
+    # contract's factual boundaries below). Placed near the top so the renderer weights it.
+    if USER_INSTRUCTIONS:
+        prompt_parts.append(
+            "USER DIRECTION (follow this for emphasis, length, structure-within-template, and voice — but "
+            "NEVER assert anything the support contract below does not license):\n" + USER_INSTRUCTIONS
+        )
+    prompt_parts += [
         f"Run date: {run_date}",
         f"Audience: {context['audience']}",
         f"Tone: {context['tone']}",
@@ -2238,6 +2261,7 @@ def refine_artifact(report: str, ledger: Dict[str, Any], brief: Dict[str, Any], 
     prompt = "\n\n".join(
         [
             load_prompt(prompt_path),
+            *(["USER DIRECTION (honour for emphasis/length/structure/voice; never beyond the support contract):\n" + USER_INSTRUCTIONS] if USER_INSTRUCTIONS else []),
             f"Audience: {context['audience']}",
             f"Tone: {context['tone']}",
             f"Project type: {context['project_type']}",
@@ -2817,7 +2841,18 @@ def main() -> int:
         help="Generate a styled PDF from the final report using pandoc + eisvogel. Requires pandoc and xelatex.",
     )
     parser.add_argument(
+        "--instructions",
+        default=None,
+        help=(
+            "Optional natural-language direction for how to write the report (style, emphasis, length, "
+            "structure-within-template). Applies to templated and dynamic renderers. Steers presentation "
+            "only — the support contract still bounds every factual claim. Env: ZTARE_REPORT_INSTRUCTIONS."
+        ),
+    )
+    parser.add_argument(
         "--support-contract-only",
+        "--contract-only",
+        dest="support_contract_only",
         action="store_true",
         help=(
             "Refresh synthesis/report_support_contract.json from existing synthesis "
@@ -2830,8 +2865,9 @@ def main() -> int:
         return run_support_contract_only(args)
 
     global ACTIVE_LLM, ACTIVE_QA_LLM, ACTIVE_QA_THRESHOLD, ACTIVE_QA_REPAIR_ATTEMPTS
-    global DEBUG
+    global DEBUG, USER_INSTRUCTIONS
     DEBUG = bool(args.debug)
+    USER_INSTRUCTIONS = str(args.instructions or os.environ.get("ZTARE_REPORT_INSTRUCTIONS") or "").strip()
     ACTIVE_LLM = LLMClient(args.model)
     ACTIVE_QA_LLM = LLMClient(args.qa_model or args.model)
     ACTIVE_QA_THRESHOLD = args.qa_threshold

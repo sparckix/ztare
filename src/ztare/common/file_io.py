@@ -33,9 +33,33 @@ import json
 from pathlib import Path
 from typing import Any
 
+# ---------------------------------------------------------------------------
+# Storage provider hook (2026-07-01). These 5 primitives are the >50-call-site
+# chokepoint for the loop's writes, so routing THEM through a StorageProvider makes
+# the whole engine storage-agnostic (local FS today, S3/object-store tomorrow) via
+# ONE switch — `configure_storage(provider)` at startup. Serialization stays here
+# (exact JSONL/JSON formatting); the provider only does raw read/write/append.
+#
+# Default is None ⇒ every primitive keeps its ORIGINAL direct-filesystem behavior
+# byte-for-byte, so the existing call sites are unchanged until a provider is set.
+_provider: Any = None
+
+
+def configure_storage(provider: Any) -> None:
+    """Route these primitives through `provider` (a ztare.common.storage.StorageProvider). Pass None to
+    restore direct-filesystem behavior. Set once at process startup; not thread-safe by design (one loop)."""
+    global _provider
+    _provider = provider
+
+
+def active_storage() -> Any:
+    return _provider
+
 
 def read_file(filepath: str | Path) -> str:
     """Read a text file in text mode, default encoding."""
+    if _provider is not None:
+        return _provider.read_text(filepath)
     with open(filepath, "r") as f:
         return f.read()
 
@@ -49,6 +73,9 @@ def write_file(filepath: str | Path, content: str) -> None:
     (rather than silently succeeding via mkdir). Don't change this
     without auditing the call sites.
     """
+    if _provider is not None:
+        _provider.write_text(filepath, content)   # provider mode: parent auto-created (moot on S3)
+        return
     with open(filepath, "w") as f:
         f.write(content)
 
@@ -62,6 +89,13 @@ def read_json(filepath: str | Path) -> dict | None:
     useful error), not the read primitive (which would crash the
     iter loop on a transient FS state).
     """
+    if _provider is not None:
+        try:
+            if not _provider.exists(filepath):
+                return None
+            return json.loads(_provider.read_text(filepath))
+        except Exception:  # noqa: BLE001 — best-effort read by design
+            return None
     path = Path(filepath)
     if not path.exists():
         return None
@@ -73,9 +107,13 @@ def read_json(filepath: str | Path) -> dict | None:
 
 def write_json(filepath: str | Path, payload: dict) -> None:
     """Write JSON to ``filepath`` with indent=2, parent-dir auto-created."""
+    text = json.dumps(payload, indent=2)
+    if _provider is not None:
+        _provider.write_text(filepath, text)
+        return
     path = Path(filepath)
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    path.write_text(text, encoding="utf-8")
 
 
 def append_jsonl(filepath: str | Path, payload: dict) -> None:
@@ -85,7 +123,41 @@ def append_jsonl(filepath: str | Path, payload: dict) -> None:
     by greppable tools, and Unicode in payloads has caused
     workspace-side decoding issues historically.
     """
+    line = json.dumps(payload, ensure_ascii=True) + "\n"   # serialization owned here (not the provider)
+    if _provider is not None:
+        _provider.append_text(filepath, line)
+        return
     path = Path(filepath)
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as handle:
-        handle.write(json.dumps(payload, ensure_ascii=True) + "\n")
+        handle.write(line)
+
+
+def _selfcheck() -> None:
+    import tempfile
+    from ztare.common.storage import FileStorage
+    payload = {"z": 1, "a": [1, 2], "unicode": "café"}
+    # Default (no provider) vs provider-routed must produce BYTE-IDENTICAL files — the whole point.
+    with tempfile.TemporaryDirectory() as d1, tempfile.TemporaryDirectory() as d2:
+        configure_storage(None)                                   # direct-FS
+        write_json(Path(d1) / "j.json", payload)
+        append_jsonl(Path(d1) / "l.jsonl", payload); append_jsonl(Path(d1) / "l.jsonl", {"k": 2})
+        write_file(Path(d1) / "t.txt", "hello")
+        try:
+            configure_storage(FileStorage(d2))                    # provider-routed
+            write_json("j.json", payload)
+            append_jsonl("l.jsonl", payload); append_jsonl("l.jsonl", {"k": 2})
+            write_file("t.txt", "hello")
+        finally:
+            configure_storage(None)
+        for name in ("j.json", "l.jsonl", "t.txt"):
+            a = (Path(d1) / name).read_bytes()
+            b = (Path(d2) / name).read_bytes()
+            assert a == b, f"provider mode diverged from direct-FS for {name}:\n{a!r}\n{b!r}"
+        assert read_json(Path(d1) / "j.json") == payload
+        assert read_json(Path(d1) / "missing.json") is None       # swallow-and-return-None contract
+    print("common.file_io selfcheck: OK (provider mode byte-identical to direct-FS)")
+
+
+if __name__ == "__main__":
+    _selfcheck()

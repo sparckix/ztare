@@ -111,6 +111,203 @@ def surface_for_research_ceiling(failure_state: dict, *, n: int = 5, query=None,
     return isos
 
 
+def _provider_and_model(model: str) -> "tuple[str, str | None]":
+    """Map a user-selected model FAMILY → the (provider, model_id) the isomorphism query needs, honoring
+    the repo transport policy so there are NO surprises: Claude → subscription CLI; GPT/o-series →
+    subscription CLI (never a metered OpenAI call); everything else (gemini/deepseek/kimi/grok/…) → API
+    with the EXACT resolved id, so the query never silently falls back to gemini. Returns (provider, mid):
+    mid=None means "let the provider's subscription runtime choose"."""
+    fam = (model or "gemini").strip().lower()
+    if fam.startswith("claude"):
+        return "claude", None
+    if fam.startswith(("gpt", "o1", "o3", "o4", "codex")):
+        return "codex", None
+    try:
+        from ztare.common.llm_runtime import resolve_model_id
+        return fam, resolve_model_id(fam)
+    except Exception:
+        return "gemini", None
+
+
+def _parse_invariant_args(items: "list[str] | None") -> dict:
+    invariants = {}
+    for raw in items or []:
+        if "=" not in raw:
+            raise ValueError(f"invariant must be KEY=VALUE, got {raw!r}")
+        key, value = raw.split("=", 1)
+        key = key.strip()
+        if not key:
+            raise ValueError(f"invariant key is empty in {raw!r}")
+        invariants[key] = value.strip()
+    return invariants
+
+
+def _failure_state_for_seam(
+    constraint_class: str,
+    *,
+    abstract_form: str = "",
+    home_field: str = "",
+    invariants: "dict | None" = None,
+) -> dict:
+    failure_state = {"constraint_class": constraint_class, "abstract_form": abstract_form}
+    if home_field:
+        failure_state["home_field"] = home_field  # deanchor away from the project's own field
+    if invariants:
+        failure_state.update(invariants)
+    return failure_state
+
+
+def prescribe_for_seam(
+    constraint_class: str,
+    *,
+    abstract_form: str = "",
+    home_field: str = "",
+    model: str = "gemini",
+    n: int = 5,
+    invariants: "dict | None" = None,
+    typed_mapping: bool = False,
+    mode: str = "solve",
+) -> dict:
+    """Workbench "what is this like?": surface cross-field analogies for a research seam and compile
+    the top one to a forecastable prescription. `model` is the user's selected model family (global
+    settings); it routes per the repo's API/subscription policy (see `_provider_and_model`) so the
+    user's pick is honored without surprise. Advisory — a candidate to forecast and test, never a
+    verified result. ledger=None: an exploratory UI click is not an RD disposition, so don't pollute
+    the candidate ledger. ponytail: flip to _LEDGER if these clicks should be tracked."""
+    failure_state = _failure_state_for_seam(
+        constraint_class,
+        abstract_form=abstract_form,
+        home_field=home_field,
+        invariants=invariants,
+    )
+    query = None
+    if model:
+        from ztare.common.constraint_isomorphism import default_llm_query
+        prov, mid = _provider_and_model(model)
+        query = lambda fp, k: default_llm_query(  # noqa: E731
+            fp,
+            k,
+            provider=prov,
+            model=mid,
+            typed_mapping=typed_mapping,
+            mode=mode,
+        )
+    isos = surface_for_research_ceiling(failure_state, n=n, query=query, ledger=None)
+    if not isos:
+        return {}
+    rx = ResearchDomain().compile_to_test(isos[0], None)
+    return {"source_theorem": rx.source_theorem, "source_field": rx.source_field,
+            "transported_structure": rx.transported_structure,
+            "predict_then_falsify": rx.predict_then_falsify,
+            "candidate_count": len(isos),
+            "alternatives": [{"theorem": i.theorem, "field": i.field} for i in isos[1:4]]}
+
+
+def debug_query_for_seam(
+    constraint_class: str,
+    *,
+    abstract_form: str = "",
+    home_field: str = "",
+    model: str = "gemini",
+    n: int = 5,
+    invariants: "dict | None" = None,
+    typed_mapping: bool = False,
+    mode: str = "solve",
+) -> dict:
+    """Run the CLI query path with observable dispatch/parse diagnostics."""
+    import json as _json
+    import re as _re
+
+    from ztare.common.constraint_isomorphism import _build_query_prompt, _dispatch_text
+
+    failure_state = _failure_state_for_seam(
+        constraint_class,
+        abstract_form=abstract_form,
+        home_field=home_field,
+        invariants=invariants,
+    )
+    fp = ResearchDomain().abstract_failure(failure_state)
+    prov, mid = _provider_and_model(model)
+    prompt = _build_query_prompt(fp, n, typed_mapping=typed_mapping, mode=mode)
+    text = _dispatch_text(prompt, provider=prov, model=mid)
+    result = {
+        "provider": prov,
+        "model": mid,
+        "mode": mode,
+        "typed_mapping": typed_mapping,
+        "n": n,
+        "prompt_len": len(prompt),
+        "text_len": len(text or ""),
+        "text_head": (text or "")[:500],
+        "parse_status": "not_attempted",
+        "model_configured": None,
+        "dispatch_error_probe": None,
+        "candidate_count": 0,
+        "candidates": [],
+    }
+    try:
+        from ztare.common.llm_runtime import LLMRuntime
+
+        runtime = LLMRuntime()
+        if mid is not None:
+            result["model_configured"] = runtime.model_is_configured(mid)
+        if not text and mid is not None:
+            try:
+                probe = runtime.call_text(
+                    prompt,
+                    model_id=mid,
+                    fallback_model_ids=(),
+                    max_tokens=2000,
+                    request_label="constraint_isomorphism_debug_probe",
+                    timeout_seconds=60,
+                )
+                result["dispatch_error_probe"] = {
+                    "direct_call_text_len": len(probe.text or ""),
+                    "effective_model_id": probe.effective_model_id,
+                }
+                if probe.text:
+                    text = probe.text
+                    result["text_len"] = len(text)
+                    result["text_head"] = text[:500]
+            except Exception as exc:  # noqa: BLE001
+                result["dispatch_error_probe"] = {
+                    "exception_type": type(exc).__name__,
+                    "message": str(exc)[:500],
+                }
+    except Exception as exc:  # noqa: BLE001
+        result["dispatch_error_probe"] = {
+            "exception_type": type(exc).__name__,
+            "message": str(exc)[:500],
+        }
+    if not text:
+        result["parse_status"] = "no_text_from_dispatch"
+        return result
+    m = _re.search(r"\[.*\]", text, _re.S)
+    if not m:
+        result["parse_status"] = "no_json_list_in_text"
+        return result
+    try:
+        items = _json.loads(m.group(0))
+    except Exception as exc:  # noqa: BLE001
+        result["parse_status"] = f"json_parse_error:{type(exc).__name__}"
+        return result
+    if not isinstance(items, list):
+        result["parse_status"] = "json_root_not_list"
+        return result
+    candidates = [
+        {
+            "theorem": str(item.get("theorem", "")).strip(),
+            "field": str(item.get("field", "")).strip(),
+        }
+        for item in items
+        if isinstance(item, dict) and str(item.get("theorem", "")).strip()
+    ]
+    result["parse_status"] = "parsed"
+    result["candidate_count"] = len(candidates)
+    result["candidates"] = candidates
+    return result
+
+
 def refuted_patterns(*, ledger: "Path | None" = None, limit: int = 8) -> "list[str]":
     """Refuted/stale transports from the disposition ledger — fed BACK into the query as no-goods so the
     engine stops resurfacing known-dead shapes (the no_good_store discipline applied to analogies; e.g.
@@ -267,6 +464,22 @@ def undispositioned(*, ledger: "Path | None" = None) -> "list[dict]":
 def main(argv: "list[str] | None" = None) -> int:
     import sys as _sys
     args = list(_sys.argv[1:] if argv is None else argv)
+    if not args or args[0] in ("-h", "--help"):
+        print(
+            "usage: research_isomorphism --selftest | --review | "
+            "--disposition KEY STATUS [NOTE...] | --seam SEAM [options]\n\n"
+            "Options for --seam:\n"
+            "  --abstract TEXT          optional abstract form of the seam\n"
+            "  --home FIELD             field to deanchor away from\n"
+            "  --model FAMILY           model family, e.g. gemini/deepseek/kimi/claude/codex\n"
+            "  --n N                    number of candidates to request\n"
+            "  --mode solve|impossibility\n"
+            "  --typed-mapping          require mapping for every supplied invariant key\n"
+            "  --invariant KEY=VALUE    structural invariant; repeatable\n"
+            "  --debug                  show provider/model, dispatch text length, parse status\n"
+            "  --json                   emit JSON"
+        )
+        return 0
     if args and args[0] == "--selftest":
         return _self_test()
     if args and args[0] == "--review":
@@ -279,7 +492,80 @@ def main(argv: "list[str] | None" = None) -> int:
         rec = record_disposition(args[1], args[2], " ".join(args[3:]))
         print(json.dumps(rec))
         return 0
-    print("usage: research_isomorphism --selftest | --review | --disposition KEY STATUS [NOTE…]")
+    if "--seam" in args:
+        import argparse as _ap
+        p = _ap.ArgumentParser(prog="ztare research isomorphism")
+        p.add_argument("--seam", required=True, help="the research seam, as an operator-neutral constraint")
+        p.add_argument("--abstract", default="", help="optional abstract form of the seam")
+        p.add_argument("--home", default="", help="the project's own field, to deanchor away from")
+        p.add_argument("--model", default="gemini", help="user-selected model family (routes api/subscription)")
+        p.add_argument("--n", type=int, default=5, help="number of candidates to request")
+        p.add_argument(
+            "--mode",
+            choices=("solve", "impossibility"),
+            default="solve",
+            help="ask for solution transports or no-go/impossibility transports",
+        )
+        p.add_argument(
+            "--typed-mapping",
+            action="store_true",
+            help="ask candidates to map every supplied --invariant key",
+        )
+        p.add_argument(
+            "--invariant",
+            action="append",
+            default=[],
+            metavar="KEY=VALUE",
+            help="structural invariant to include in the fingerprint; repeatable",
+        )
+        p.add_argument(
+            "--debug",
+            action="store_true",
+            help="print provider/model, dispatch text length, parse status, and candidates",
+        )
+        p.add_argument("--json", action="store_true")
+        ns = p.parse_args(args)
+        try:
+            invariants = _parse_invariant_args(ns.invariant)
+        except ValueError as exc:
+            print(str(exc), file=_sys.stderr)
+            return 2
+        if ns.debug:
+            dbg = debug_query_for_seam(
+                ns.seam,
+                abstract_form=ns.abstract,
+                home_field=ns.home,
+                model=ns.model,
+                n=ns.n,
+                invariants=invariants,
+                typed_mapping=ns.typed_mapping,
+                mode=ns.mode,
+            )
+            print(json.dumps(dbg) if ns.json else json.dumps(dbg, indent=2))
+            return 0 if dbg.get("candidate_count", 0) else 1
+        rx = prescribe_for_seam(
+            ns.seam,
+            abstract_form=ns.abstract,
+            home_field=ns.home,
+            model=ns.model,
+            n=ns.n,
+            invariants=invariants,
+            typed_mapping=ns.typed_mapping,
+            mode=ns.mode,
+        )
+        if ns.json:
+            print(json.dumps(rx))
+        elif rx:
+            print(
+                f"{rx['source_theorem']} ({rx['source_field']})\n"
+                f"  candidates: {rx.get('candidate_count', 1)}\n"
+                f"  {rx['transported_structure']}\n"
+                f"  test: {rx['predict_then_falsify']}"
+            )
+        else:
+            print("no cross-field analogy surfaced; rerun with --debug to distinguish dispatch, parse, and empty-result cases")
+        return 0 if rx else 1
+    print("usage: research_isomorphism --selftest | --review | --disposition KEY STATUS [NOTE...] | --seam SEAM [options]")
     return 2
 
 

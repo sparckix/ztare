@@ -161,6 +161,33 @@ def test_recommendation_id_ignores_generated_at() -> None:
     assert module.recommendation_id(payload) != module.recommendation_id(changed_payload)
 
 
+def test_source_health_issues_carry_plain_display_fields(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    _patch_sources(monkeypatch, tmp_path)
+    (tmp_path / "gp233.md").write_text(
+        "| Date | Lane | Evidence | Bottleneck | Decision changed | Verdict |\n"
+        "| --- | --- | --- | --- | --- | --- |\n"
+        "| 2026-06-13 | demo | markdown note | unclear support | no | warning |\n",
+        encoding="utf-8",
+    )
+
+    health = module.source_health_model(action_rows=[])
+
+    issue = next(
+        issue for issue in health["issues"]
+        if issue["issue_type"] == "weak_gp233_linkage"
+    )
+    assert issue["display_issue_type"] == "evidence links need repair"
+    assert issue["display_scope"] == "evidence ledger"
+    assert issue["display_denominator"] == "evidence ledger markdown rows with stable refs"
+    assert issue["display_blocking_rule"] == (
+        "doc-only evidence-ledger linkage cannot support non-diagnostic recommendations"
+    )
+    assert issue["display_recommended_action"] == "repair evidence links"
+
+
 def test_source_health_does_not_double_count_missing_surfacing_events(
     tmp_path: Path,
     monkeypatch,

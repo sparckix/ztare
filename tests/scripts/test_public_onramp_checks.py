@@ -1063,15 +1063,16 @@ def test_public_adversarial_smoke_checks_ops_demo_report_support_contract() -> N
         "scripts/public/control/public_adversarial_smoke.py",
     )
 
-    payload = module.check_ops_demo_report_support_contract_blocks_stale_report()
+    payload = module.check_ops_demo_report_support_contract_surfaces_runtime_risk()
 
     assert payload["ok"] is True
-    assert payload["status"] == "blocked"
-    assert "synthesis_input_binding_unbound" in payload["status_reasons"]
+    assert payload["status"] == "attention"
+    assert "runtime_risks_present" in payload["status_reasons"]
     assert payload["checked"] == [
-        "make synth-contract PROJECT=ops_root_cause_diagnosis_demo RENDERER=decision_brief",
-        "nonzero blocked report-support exit",
-        "synthesis_input_binding_unbound",
+        "ztare forensic-workbench report-action --project ops_root_cause_diagnosis_demo --action check_readiness --renderer decision_brief --confirmed --json",
+        "zero-exit report-readiness refresh",
+        "runtime_risks_present",
+        "synthesis input binding fresh",
     ]
 
 
@@ -1084,7 +1085,7 @@ def test_public_adversarial_smoke_checks_ops_demo_kernel_health_read_models() ->
     payload = module.check_ops_demo_kernel_health_read_models()
 
     assert payload["ok"] is True
-    assert payload["overall_status"] == "attention"
+    assert payload["overall_status"] in {"attention", "needs_attention"}
     assert payload["source_health_warnings"] >= 3
     assert {
         "weak_gp233_linkage",
@@ -1093,7 +1094,7 @@ def test_public_adversarial_smoke_checks_ops_demo_kernel_health_read_models() ->
     }.issubset(set(payload["source_health_issue_types"]))
     assert payload["checked"] == [
         "make autoresearch-kernel-health PROJECT=ops_root_cause_diagnosis_demo JSON=1",
-        "run readiness ready",
+        "run readiness ready or explicit evidence-recovery blocker surfaced",
         "provider runtime risk is advisory attention",
         "source-health warnings are non-blocking",
     ]

@@ -307,16 +307,16 @@ parser.add_argument(
 parser.add_argument(
     "--mutator_model",
     type=str,
-    default="gemini",
+    default=os.environ.get("ZTARE_MUTATOR_MODEL") or os.environ.get("ZTARE_MODEL") or "",
     choices=MODEL_FAMILY_CHOICES,
-    help="Model family to use as Mutator.",
+    help="Model family to use as Mutator. Defaults to ZTARE_MUTATOR_MODEL or ZTARE_MODEL.",
 )
 parser.add_argument(
     "--judge_model",
     type=str,
-    default="gemini",
+    default=os.environ.get("ZTARE_JUDGE_MODEL") or os.environ.get("ZTARE_MODEL") or "",
     choices=MODEL_FAMILY_CHOICES,
-    help="Model family to use as Verification Panel and Meta-Judge.",
+    help="Model family to use as Verification Panel and Meta-Judge. Defaults to ZTARE_JUDGE_MODEL or ZTARE_MODEL.",
 )
 parser.add_argument(
     "--llm_timeout_seconds",
@@ -446,6 +446,12 @@ parser.add_argument(
     ),
 )
 args = parser.parse_args()
+
+if not args.preflight_only and (not args.mutator_model or not args.judge_model):
+    parser.error(
+        "mutator and judge models must be configured with --mutator_model/--judge_model "
+        "or ZTARE_MUTATOR_MODEL/ZTARE_JUDGE_MODEL (or ZTARE_MODEL for both)."
+    )
 if args.rubric is None:
     args.rubric = args.project
 
@@ -585,16 +591,16 @@ def _load_v4_stage_index() -> int | None:
 
 ITERATIONS = args.iters
 
-# Resolve Mutator model ID from --mutator_model flag
-MUTATOR_MODEL_ID = resolve_model_id(args.mutator_model)
-JUDGE_MODEL_ID = resolve_model_id(args.judge_model)
-# Escalation model follows the mutator family
-DIRECTOR_MODEL_ID = resolve_director_model_id(args.mutator_model)
+# Resolve Mutator model ID from --mutator_model flag.
+MUTATOR_MODEL_ID = resolve_model_id(args.mutator_model) if args.mutator_model else ""
+JUDGE_MODEL_ID = resolve_model_id(args.judge_model) if args.judge_model else ""
+# Escalation model follows the mutator family.
+DIRECTOR_MODEL_ID = resolve_director_model_id(args.mutator_model) if args.mutator_model else ""
 
 # ── Epistemic Airgap check ──────────────────────────────────────────
-_mutator_family = get_model_family(MUTATOR_MODEL_ID)
-_judge_family = get_model_family(JUDGE_MODEL_ID)
-if _mutator_family == _judge_family:
+_mutator_family = get_model_family(MUTATOR_MODEL_ID) if MUTATOR_MODEL_ID else ""
+_judge_family = get_model_family(JUDGE_MODEL_ID) if JUDGE_MODEL_ID else ""
+if _mutator_family and _mutator_family == _judge_family:
     _airgap_msg = (
         f"Mutator ({MUTATOR_MODEL_ID}) and Judge ({JUDGE_MODEL_ID}) "
         f"are both from the {_mutator_family} family. "

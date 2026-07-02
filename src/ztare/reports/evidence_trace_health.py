@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import tempfile
 from pathlib import Path
 from typing import Any
@@ -417,7 +418,7 @@ def build_project_evidence_trace_health(
     project: str,
     rubric: str | None = None,
     intake: str | None = None,
-    model: str = "gemini",
+    model: str = os.environ.get("ZTARE_MODEL", ""),
     repo: Path = REPO,
 ) -> dict[str, Any]:
     """Audit the raw/source/evidence/trace chain for a real project surface."""
@@ -570,7 +571,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--intake", "--packet", dest="intake", help="Optional project-intake JSON.")
     parser.add_argument(
         "--model",
-        default="gemini",
+        default=os.environ.get("ZTARE_MODEL", ""),
         help="Model label to render in suggested evidence recovery commands. No model call is made.",
     )
     parser.add_argument("--json", action="store_true", help="Emit JSON.")

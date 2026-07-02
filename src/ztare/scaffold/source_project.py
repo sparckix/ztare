@@ -1,4 +1,4 @@
-"""Initialize a source-ingest project surface for autoresearch prep.
+"""Initialize source-ingest project files for autoresearch prep.
 
 This creates raw/, workspace/, and raw/source_type_map.json before raw source
 documents are compiled into evidence. It does not launch autoresearch, create
@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 from pathlib import Path
 from typing import Any
@@ -40,7 +41,7 @@ def init_source_project(
     *,
     project: str,
     rubric: str | None = None,
-    model: str = "gemini",
+    model: str = "",
     repo: Path = REPO,
     dry_run: bool = False,
 ) -> dict[str, Any]:
@@ -63,6 +64,7 @@ def init_source_project(
             )
 
     project_slug = project_dir.name
+    model_part = f" MODEL={model}" if model else ""
     trace_command = f"ztare autoresearch trace --project {project_slug}"
     if rubric:
         trace_command += f" --rubric {rubric}"
@@ -91,7 +93,7 @@ def init_source_project(
         ],
         "next_commands": [
             f"ztare project source-check --project {project_slug} --json",
-            f"make evidence-prepare PROJECT={project_slug} MODEL={model}",
+            f"make evidence-prepare PROJECT={project_slug}{model_part}",
             "ztare project intake create --help",
             trace_command,
         ],
@@ -138,9 +140,9 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--project", required=True, help="Project slug or repo-relative projects/<slug> path.")
     parser.add_argument("--rubric", help="Optional rubric slug to include in the trace command.")
-    parser.add_argument("--model", default="gemini", help="Model label to render in evidence-prepare command.")
+    parser.add_argument("--model", default=os.environ.get("ZTARE_MODEL", ""), help="Model label to render in evidence-prepare command.")
     parser.add_argument("--repo", type=Path, default=REPO, help="Repo root for tests or alternate checkouts.")
-    parser.add_argument("--dry-run", action="store_true", help="Print the surface that would be created.")
+    parser.add_argument("--dry-run", action="store_true", help="Print the files that would be created.")
     parser.add_argument("--json", action="store_true", help="Emit JSON.")
     return parser
 

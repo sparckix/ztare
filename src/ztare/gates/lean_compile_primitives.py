@@ -328,6 +328,15 @@ def probe_axioms_via_augment(
     `declarations` must be an iterable of objects with `.name` attributes
     (or string names; we accept both for flexibility). Returns (axiom_map,
     output_tail).
+
+    ⚠️ CONTRACT — NAMES MUST BE NAMESPACE-QUALIFIED (soundness, 2026-07-01 ownership review). This uses each
+    item's `.name` VERBATIM. For a decl inside a `namespace`, the BARE written name does NOT resolve after the
+    namespace closes: `#print axioms <bare>` prints `unknown identifier`, no `depends on axioms` line is emitted,
+    and that decl's axioms silently DROP from the map — an UNAUDITED namespaced decl then reads as covered-clean
+    (a false-clean laundering escape). Callers MUST pass FULLY-QUALIFIED names for namespaced decls (see
+    `scripts/public/control/leanmill/proof_audit.py::_qualified_decl_name`) — i.e. pass qualified STRINGS, not raw
+    parser DeclBlocks whose `.name` is the bare written name. Do NOT "consolidate" a qualified cold prober onto
+    this by handing it bare-name objects; that regresses namespaced axiom-probing.
     """
     if not declarations:
         return {}, ""

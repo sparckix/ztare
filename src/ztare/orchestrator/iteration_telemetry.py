@@ -23,7 +23,7 @@ Sibling modules:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -133,6 +133,131 @@ def combined_iteration_cost_usd(mutator_usage: dict, judge_usage: dict) -> float
             return None
         total += float(usage.get("estimated_cost_usd", 0.0) or 0.0)
     return round(total, 6)
+
+
+def collect_compression_progress_inputs(workspace_dir: Path) -> dict[str, Any]:
+    """Read lower-is-better compression proxies from current workspace files.
+
+    The values are advisory telemetry for later replay. BIC and negated MDL gain
+    are separate families because their numeric scales are not interchangeable.
+    """
+
+    candidates: list[dict[str, Any]] = []
+    fit = _read_json_dict(workspace_dir / "fit_features_result.json")
+    fit_source = "fit_features_result.json"
+    if not fit:
+        fit = _read_json_dict(workspace_dir / "fit_result.json")
+        fit_source = "fit_result.json"
+    if fit:
+        bic = _fit_bic_proxy(fit)
+        if bic is not None:
+            candidates.append({
+                "family": "fit_bic",
+                "complexity": bic,
+                "source": fit_source,
+                "field": "bic" if _finite_float(fit.get("bic")) is not None else "rmse_k_n_bic_proxy",
+                "lower_is_better": True,
+                "k_params": _safe_int_or_none(fit.get("k_params")),
+                "n_fit_rows": _safe_int_or_none(fit.get("n_fit_rows")),
+                "fit_success": bool(fit.get("success", True)),
+            })
+
+    framing = _read_json_dict(workspace_dir / "framing_report.json")
+    if framing:
+        mdl_gain = _finite_float(framing.get("MDL_gain_bits"))
+        if mdl_gain is not None:
+            candidates.append({
+                "family": "framer_mdl_gain_bits",
+                "complexity": -mdl_gain,
+                "source": "framing_report.json",
+                "field": "MDL_gain_bits",
+                "raw_mdl_gain_bits": mdl_gain,
+                "lower_is_better": True,
+                "framer_engaged": bool(framing.get("framer_engaged")),
+            })
+
+    # Universal fallback: the champion probability DAG's two-part MDL. Every project has a probability DAG, so
+    # compression progress works beyond the fit/framer domains. Lowest priority — fit/framer win when present.
+    if not candidates:
+        from ztare.validator.core.compression_progress import dag_description_length
+        project_dir = workspace_dir.parent
+        dag = _read_json_dict(project_dir / "champion_probability_dag.json") or _read_json_dict(project_dir / "latest_probability_dag.json")
+        dl = dag_description_length(dag) if dag else None
+        if dl is not None:
+            candidates.append({
+                "family": "dag_mdl",
+                "complexity": dl,
+                "source": "champion_probability_dag.json",
+                "field": "two_part_mdl_bits",
+                "lower_is_better": True,
+                "n_nodes": len(dag.get("nodes") or []),
+                "n_edges": len(dag.get("edges") or []),
+            })
+
+    selected = candidates[0] if candidates else None
+    return {
+        "schema": "ztare-compression-progress-inputs-v1",
+        "status": "available" if selected else "no_signal",
+        "family": str(selected.get("family")) if selected else "",
+        "complexity": selected.get("complexity") if selected else None,
+        "source": str(selected.get("source")) if selected else "",
+        "candidates": candidates,
+        "rationale": (
+            "Lower complexity means the current run made the project simpler to defend."
+            if selected
+            else "No BIC/MDL-style compression proxy was written for this iteration."
+        ),
+    }
+
+
+def compression_progress_advice_for_iteration(
+    workspace_dir: Path,
+    current_payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Replay compression-progress advice through the current iteration.
+
+    This is telemetry, not loop control. The loop still acts on information
+    yield; this records whether the simpler-explanation signal agreed at the
+    point the iteration closed.
+    """
+
+    try:
+        from ztare.validator.core.compression_progress import (
+            evaluate_compression_progress,
+            observations_from_rows,
+        )
+    except ImportError:
+        return {
+            "schema": "ztare-compression-progress-advice-v1",
+            "status": "unavailable",
+            "recommendation": "no_signal",
+            "rationale": "Compression-progress evaluator could not be imported.",
+        }
+
+    rows = [
+        row
+        for row in _read_jsonl_dicts(workspace_dir / "iteration_telemetry.jsonl")
+        if row.get("record_type") == "iteration"
+    ]
+    rows.append(current_payload)
+    decision = evaluate_compression_progress(observations_from_rows(rows))
+    return {
+        "schema": "ztare-compression-progress-advice-v1",
+        "status": "available" if decision.usable_observations >= 2 else "no_signal",
+        "recommendation": decision.recommendation,
+        "rationale": decision.rationale,
+        "usable_observations": decision.usable_observations,
+        "family": decision.family,
+        "best_complexity": decision.best_complexity,
+        "latest_complexity": decision.latest_complexity,
+        "last_drop_iteration": decision.last_drop_iteration,
+        "stagnation_length": decision.stagnation_length,
+        "compression_drop_count": decision.compression_drop_count,
+        "future_progress_weight": decision.future_progress_weight,
+        "best_effort": decision.best_effort,
+        "latest_effort": decision.latest_effort,
+        "effort_unit": decision.effort_unit,
+    }
 
 
 def extract_iteration_gate_metrics(evaluation: dict | None) -> tuple[bool, int, list[str]]:
@@ -281,6 +406,81 @@ def _append_json_dict(path: Path, payload: dict) -> None:
     _shared(path, payload)
 
 
+def _read_json_dict(path: Path) -> dict[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def _read_jsonl_dicts(path: Path) -> list[dict[str, Any]]:
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in lines:
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict):
+            rows.append(payload)
+    return rows
+
+
+def _finite_float(value: Any) -> float | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        candidate = float(value)
+    elif isinstance(value, str):
+        try:
+            candidate = float(value.strip())
+        except ValueError:
+            return None
+    else:
+        return None
+    if candidate != candidate or candidate in (float("inf"), float("-inf")):
+        return None
+    return candidate
+
+
+def _safe_int_or_none(value: Any) -> int | None:
+    if isinstance(value, bool):
+        return None
+    if isinstance(value, int):
+        return value
+    if isinstance(value, str) and value.strip().lstrip("-").isdigit():
+        return int(value)
+    return None
+
+
+def _fit_bic_proxy(payload: dict[str, Any]) -> float | None:
+    direct = _finite_float(payload.get("bic"))
+    if direct is not None:
+        return direct
+    rmse = _finite_float(payload.get("rmse"))
+    if rmse is None or rmse <= 0:
+        return None
+    residual_map = payload.get("residual_map")
+    n_rows = _safe_int_or_none(payload.get("n_fit_rows"))
+    if n_rows is None and isinstance(residual_map, list):
+        n_rows = len(residual_map)
+    params = payload.get("parameter_names")
+    k_params = _safe_int_or_none(payload.get("k_params"))
+    if k_params is None and isinstance(params, list):
+        k_params = len(params)
+    if n_rows is None or n_rows < 2 or k_params is None:
+        return None
+    import math
+
+    return float(n_rows) * math.log(rmse * rmse) + float(k_params) * math.log(float(n_rows))
+
+
 def append_run_boundary_telemetry(
     workspace_dir: Path,
     payload: dict,
@@ -346,6 +546,7 @@ def append_iteration_telemetry(
             except (OSError, json.JSONDecodeError):
                 gp180_telemetry = None
 
+    compression_progress = collect_compression_progress_inputs(workspace_dir)
     payload = {
         "record_type": "iteration",
         "run_id": run_id,
@@ -409,6 +610,7 @@ def append_iteration_telemetry(
         "estimated_cost_usd": combined_iteration_cost_usd(mutator_usage, judge_usage),
         "pending_loop_action": pending_loop_action,
         "information_yield_rationale": information_yield_rationale or "",
+        "compression_progress": compression_progress,
         # GP-180 declaration-adoption telemetry (2026-04-28). Tracks whether
         # the mutator engaged the Lagrangian declaration on this
         # iter and how the apparatus processed it. Used by the
@@ -422,6 +624,10 @@ def append_iteration_telemetry(
             "noether_weak": 0,
         },
     }
+    payload["compression_progress_advice"] = compression_progress_advice_for_iteration(
+        workspace_dir,
+        payload,
+    )
     _append_json_dict(workspace_dir / "iteration_telemetry.jsonl", payload)
     # GP-183 phase A5: persist per-iter cap-kind as a structured JSON
     # alongside the telemetry append so external tools (Research

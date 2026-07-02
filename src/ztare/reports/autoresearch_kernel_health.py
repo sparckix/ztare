@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shlex
 from dataclasses import asdict
 from pathlib import Path
@@ -620,7 +621,7 @@ def build_autoresearch_kernel_health(
                 next_command=(
                     f"ztare project source-check --project {shlex.quote(str(project))} --json"
                     if not source_ok
-                    else _make_command("evidence-prepare", PROJECT=project, MODEL="gemini")
+                    else _make_command("evidence-prepare", PROJECT=project, MODEL=os.environ.get("ZTARE_MODEL", ""))
                 ),
             )
         )

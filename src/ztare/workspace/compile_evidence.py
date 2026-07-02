@@ -2,6 +2,7 @@ import argparse
 import copy
 import hashlib
 import json
+import os
 import re
 import sys
 import time
@@ -1191,7 +1192,7 @@ def load_workspace_packet(workspace_dir: Path) -> Dict[str, Any]:
         raise FileNotFoundError(
             f"Workspace snapshot not found: {snapshot_path}\n"
             f"Run evidence-prepare (workspace-update + evidence-compile in one step):\n"
-            f"  make evidence-prepare PROJECT={project_name} MODEL=gemini"
+            f"  make evidence-prepare PROJECT={project_name} MODEL=<model>"
         )
     packet = read_json(snapshot_path)
     validate_packet_shape(packet)
@@ -1550,7 +1551,7 @@ def main() -> int:
         default="auto",
         help="Compilation mode. 'auto' prefers workspace/ when present, otherwise falls back to raw/.",
     )
-    parser.add_argument("--model", default="gemini", choices=sorted(MODEL_MAP.keys()))
+    parser.add_argument("--model", default=os.environ.get("ZTARE_MODEL", ""), choices=("", *sorted(MODEL_MAP.keys())))
     parser.add_argument(
         "--output",
         help="Optional explicit evidence output path. Defaults to <project>/evidence.txt (compiled_evidence.txt kept as audit copy).",
@@ -1617,6 +1618,9 @@ def main() -> int:
         use_workspace = False
     else:
         use_workspace = (workspace_dir / "workspace_snapshot.json").exists()
+
+    if not args.model and (not use_workspace or not (workspace_dir / "workspace_snapshot.json").exists()):
+        parser.error("--model or ZTARE_MODEL is required for raw compilation or automatic workspace update.")
 
     # Auto-run workspace update if workspace mode is selected but snapshot is missing.
     if use_workspace and not (workspace_dir / "workspace_snapshot.json").exists():

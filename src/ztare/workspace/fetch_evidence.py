@@ -86,10 +86,17 @@ def filter_gaps(
     *,
     project_dir: Path | None = None,
     allow_inferred_public: bool = False,
+    target: str = "",
 ) -> list[dict]:
+    # When `target` is given, fetch that single gap regardless of severity (the caller picked it
+    # explicitly, e.g. a one-click "fetch this gap" button); otherwise batch by severity.
+    target_norm = (target or "").strip().lower()
     filtered: list[dict] = []
     for gap in gaps:
-        if gap.get("severity") != severity:
+        if target_norm:
+            if target_norm not in str(gap.get("target", "")).strip().lower():
+                continue
+        elif gap.get("severity") != severity:
             continue
         contract = evidence_gap_recovery_contract(gap, project_dir=project_dir)
         if not contract.get("can_public_fetch"):
@@ -360,6 +367,7 @@ def run_fetch(
     dry_run: bool,
     search_backend: str = "auto",
     allow_inferred_public: bool = False,
+    target: str = "",
 ) -> dict[str, Any]:
     workspace_dir = project_dir / "workspace"
     evidence_txt = project_dir / "evidence.txt"
@@ -393,6 +401,7 @@ def run_fetch(
         severity,
         project_dir=project_dir,
         allow_inferred_public=allow_inferred_public,
+        target=target,
     )
     resolved_search_backend = web_search_backend_for_model(
         model,
@@ -629,6 +638,12 @@ def main() -> int:
         help=f"Maximum number of gaps to fetch. Default: {DEFAULT_MAX_FETCHES}",
     )
     parser.add_argument(
+        "--target",
+        default="",
+        help="Fetch the single gap whose target matches this text (case-insensitive substring), "
+        "regardless of severity. Enables a one-click 'fetch this gap' action. Default: batch by severity.",
+    )
+    parser.add_argument(
         "--model",
         default="gemini",
         help="Model family for workspace-update and evidence-compile after source-check (if --auto-compile). Default: gemini",
@@ -684,6 +699,7 @@ def main() -> int:
         manifest = run_fetch(
             project_dir=project_dir,
             severity=args.severity,
+            target=args.target,
             max_fetches=args.max_fetches,
             auto_compile=args.auto_compile,
             model=args.model,

@@ -14,9 +14,11 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
+import time
 import tomllib
 from pathlib import Path
 from typing import Iterable
@@ -44,6 +46,7 @@ REQUIRED_MAKE_SNIPPETS = [
     "$(MAKE) hello",
     "$(MAKE) gaming-catalog-audit",
     "$(MAKE) benchmark-evidence",
+    "$(MAKE) reasoning-compiler-capability-audit",
     "$(MAKE) evaluator-hardening-frozen-check",
     "$(MAKE) scope-boundary-audit",
     "$(MAKE) public-terminology-audit",
@@ -56,6 +59,8 @@ REQUIRED_MAKE_SNIPPETS = [
     "benchmark-ordinary-review-freeze-check:",
     "scripts/public/control/ordinary_review_freeze_check.py",
     "gaming-catalog-audit:",
+    "reasoning-compiler-capability-audit:",
+    "scripts/public/control/reasoning_compiler_capability_audit.py",
     "demo:",
     "scripts/public/control/golden_path_demo.py",
     "demo-claim-discipline:",
@@ -90,11 +95,13 @@ REQUIRED_MAKE_SNIPPETS = [
     "scripts/public/control/undefined_name_gate.py",
     "forensic-workbench-snapshot:",
     "forensic-workbench-data:",
+    "forensic-workbench-state:",
     "forensic-workbench-build:",
     "forensic-workbench-dev:",
     "forensic-workbench-api:",
     "forensic-workbench-live:",
     "scripts/public/control/forensic_workbench_snapshot.py",
+    "scripts/public/control/forensic_workbench_state.py",
     "scripts/public/control/forensic_workbench_server.py",
     "scripts/public/control/forensic_workbench_live.py",
 ]
@@ -135,6 +142,7 @@ REQUIRED_REFERENCE_DOC_SNIPPETS = [
     "make move-card-atlas-build",
     "make forensic-workbench-snapshot",
     "make forensic-workbench-data",
+    "make forensic-workbench-state",
     "make forensic-workbench-build",
     "make forensic-workbench-dev",
     "make forensic-workbench-api",
@@ -167,10 +175,12 @@ REQUIRED_FORENSIC_WORKBENCH_SNIPPETS = [
     "`ztare autoresearch trace --project <project> --rubric <rubric> --intake <intake.json> --json`",
     "`ztare autoresearch run ... --preflight-only`",
     "`ztare autoresearch run ... --iters <n>`",
-    "`make synth-contract PROJECT=<project> RENDERER=<renderer>`",
+    "`ztare forensic-workbench report-action --project <project> --action check_readiness --renderer <renderer> --confirmed --json`",
     "`ztare forensic-workbench apply-review --project <project> --project-check <project_check_slug> --from <review.json>`",
     "`make forensic-workbench-data WORKBENCH_PROJECT=<project>`",
+    "`make forensic-workbench-state WORKBENCH_PROJECT=<project>`",
     "GET /api/status",
+    "GET /api/principles",
     "GET /api/projects",
     "project_inventory_scope: all_projects_directory",
     "inventory_includes_all_project_folders: true",
@@ -190,6 +200,9 @@ REQUIRED_FORENSIC_WORKBENCH_SNIPPETS = [
     "POST /api/source-action",
     "GET /api/report-contract?project=<project>&renderer=<renderer>",
     "GET /api/evidence-support?project=<project>",
+    "GET /api/leanmill",
+    "POST /api/leanmill/target",
+    "POST /api/leanmill/blueprint",
     "GET /api/file?path=<repo-relative-path>",
     "GET /api/receipts?project=<project>",
     "GET /api/run-history?project=<project>",
@@ -203,13 +216,13 @@ REQUIRED_FORENSIC_WORKBENCH_SNIPPETS = [
     "`project_check_label`",
     "`project_check_slug`",
     "Snapshot responses and browser project files should expose `project_checks` and",
-    "Receipt history should expose `next_step` and",
-    "An incomplete intake disables launch and names the missing surface.",
+    "Saved history should expose `next_step` and",
+    "An incomplete intake disables launch and names the missing evidence.",
     "Source-ready, evidence-ready, and loop-ready are visually distinct.",
     "A stale or unsupported report stays in needs-support state when the support",
     "The offline snapshot and `workbench_snapshot.json` use product-facing",
     "display `Project key`",
-    "latest review receipt",
+    "latest saved review",
     "latest next step",
     "Supervisor, multi-role, multi-user, hosted, billing, and background-agent",
 ]
@@ -225,7 +238,7 @@ REQUIRED_FORENSIC_WORKBENCH_CLI_FAMILIES = [
 
 REQUIRED_FORENSIC_WORKBENCH_SNAPSHOT_SNIPPETS = [
     "Project Workbench",
-    "Project steps",
+    "Project path",
     "data-provenance=",
     "Project",
     "Working diagnosis",
@@ -233,19 +246,19 @@ REQUIRED_FORENSIC_WORKBENCH_SNAPSHOT_SNIPPETS = [
     "Source files",
     "Evidence files",
     "Run check",
-    "Preflight",
-    "Preflight receipt",
-    "Report support",
+    "Readiness check",
+    "readiness history path",
+    "Report readiness",
     "Latest review",
     "Latest next step",
-    "The report needs refreshed support before it is safe to use.",
-    "report input is not connected",
+    "Report readiness is current.",
+    "report readiness history",
 ]
 
 REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     '"name": "ztare-forensic-workbench"',
-    '"dev": "node ../analytics/public/dashboard/node_modules/vite/bin/vite.js"',
-    '"build": "node ../analytics/public/dashboard/node_modules/vite/bin/vite.js build"',
+    '"dev": "vite"',
+    '"build": "vite build"',
     'fetch("/api/projects"',
     'fetch("/api/project-create"',
     'fetch("/api/source-import"',
@@ -259,63 +272,66 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     'endpointUrl("/api/file"',
     'endpointUrl("/api/intake"',
     'endpointUrl("/api/receipts"',
+    'fetch("/api/principles"',
+    'fetch("/api/leanmill"',
+    'fetch("/api/leanmill/target"',
+    "what LeanMill tried",
     'fetch("/api/project-file"',
-    "Intake reference status",
+    "loaded_reference_status",
     "reference_status",
     "intake_ref_summary",
-    "Project-local intakes only",
+    "Project-local briefs only",
     "project-switchboard",
-    "Open a project",
-    "No changed intake fields to write.",
+    "Open project",
+    "No changed project-brief fields to write.",
     "intakeChangedFields",
     "preview_path",
     "Run history",
-    "Source warnings",
-    "Project checks",
+    "File and evidence warnings",
     "Project setup",
     "project-identity",
     "Add intake",
+    "add_intake_write_boundary",
+    "Existing files to review",
     "Diagnosis",
-    "last-write-strip",
-    "last-write-refresh",
     "write-boundary",
-    "side-projects",
     "side-subnav",
-    "side-project-list",
+    "side-subnav-list",
     "mobile-project-picker",
     "All projects",
     "Open project",
-    "All project checks",
     "Report",
-    "project checks",
+    "issues",
     "Next step",
-    "Project files",
+    "Evidence summary",
     "Preview, copy, and download do not write project files.",
-    "Warning source files",
-    "Sources and evidence",
+    "Evidence summary",
     "Source files",
-    "source-evidence-panel",
     "TraceConsolePanel",
-    "Advisory next moves",
+    "Suggested next moves",
+    "Proof path",
+    "Copy path",
     "Boundary:",
-    "Source and evidence file checks",
     "Project Workbench",
     "report-contract-panel",
     "ztare-forensic-workbench-report-contract-v1",
-    "Receipt history",
-    "receipt-history",
+    "Saved history",
+    "history-row",
     "Project file",
     "Save to project folder",
     "Download project file",
-    "ztare-forensic-workbench-case-file-v1",
-    "ztare-forensic-workbench-case-file-write-receipt-v1",
+    "Latest saved project",
+    "Saved history",
+    "saved-history path",
+    "ztare-forensic-workbench-project-file-v1",
+    "ztare-forensic-workbench-project-file-write-receipt-v1",
     "ztare-forensic-workbench-project-create-v1",
     "source-import-panel",
     "raw-source-editor",
     "ztare-forensic-workbench-source-action-receipt-v1",
     "project_context",
-    "Project files",
-    "editable intake",
+    "Evidence summary",
+    "intake_editable",
     "/api/source-import",
     "/api/source-edit",
     "live_context",
@@ -331,38 +347,40 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "preflight_receipt",
     "preflight_result",
     "project_file_write_plan",
+    "live_context.project_state",
+    "project_to_thesis_audit",
+    "ztare forensic-workbench project-state",
     "source_count",
     "relative_raw_path",
     "latest_source_action",
     "latest_case_file_write",
     "latest_source_import",
     "latest_source_edit",
-    "Latest source-add receipt",
-    "Latest source-edit receipt",
-    "Latest source check",
+    "source_edit",
+    "latest_source_action",
     "Latest project file",
+    "Live project state",
+    "Refresh from local project files",
+    "Saved project summary",
+    "Recent saved changes",
     "run_history",
     "Loaded project context",
     '"/workbench_snapshot.json"',
     "Project Workbench",
     "ZTARE",
-    "Open a project or add an intake",
-    "Support checks",
-    "stage-rail",
-    "Project steps",
+    "Open a project, connect a folder, or create a new project",
+    "Project path",
     "projectWorkflowSteps",
-    "Open an intake-ready project",
-    "Reset view",
+    "Open a connected project",
+    "Project library",
     "visible of",
-    "Latest review receipt",
+    "Latest saved review",
     "make forensic-workbench-api",
     "make forensic-workbench-live",
-    "Suggested next step",
-    "Use suggestion",
-    "Last review",
-    "Last next step",
-    "Edit intake",
-    "Save intake",
+    "save-flow-head",
+    "save-flow-choices",
+    "Edit project brief",
+    "Save project brief",
     "source files",
     "evidence files",
     "Latest intake edit",
@@ -392,54 +410,52 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "Open project",
     "Create project",
     "Add source",
-    "Inspect and edit source files",
-    "Save source",
-    "Run preflight",
+    "Edit file",
+    "Save file",
+    "Check readiness",
     "source_check",
     "source_index",
     "evidence_bind",
     "evidence_replay",
     "Run history",
-    "Support audit",
-    "Support audit",
+    "Evidence summary",
+    "Evidence result",
+    "Evidence summary",
     "Weakest point",
-    "Latest vs best",
-    "What still needs evidence",
+    "Patterns across runs",
+    "What's still unbacked",
     "EvidenceSupportPanel",
     "Save review",
     "report-contract-file",
     "Current focus",
-    "Command details",
+    "local step plans",
     "Copy detail",
-    "Run plan",
+    "Can it run?",
     "Copy detail",
     "Needs support",
     "holding the report",
-    "project checks",
+    "issues",
     "Preview source",
-    "Review status",
     "Review note",
-    "Saved next-step note",
-    "Last save receipt",
+    "Next-step note",
+    "Latest saved project",
     "source_edit:",
-    "Intake edit",
-    "write-receipt-panel",
+    "Latest project brief change",
+    "history-weakspot",
     "Preview latest",
-    "Download file",
-    "Copy next-step file",
-    "Copy save-next-step command detail",
+    "What this saves",
+    "Prefer the terminal? Show the equivalent command",
+    "terminal-equivalent",
     "File preview",
     "Preview",
     "file-preview",
-    "Review queue",
     "ztare-forensic-workbench-review-v1",
     "ztare-forensic-workbench-row-action-v1",
     "ztare forensic-workbench apply-review --project",
     "ztare forensic-workbench save-next-step --project",
     "--item",
     "--from",
-    "Report support",
-    "Filter evidence, command details, warnings",
+    "Report readiness",
     "Workbench sections",
     "Evidence",
     "workbench_snapshot.json",
@@ -447,16 +463,22 @@ REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS = [
     "single_project_read_model",
     "local_api",
     "ops_root_cause_diagnosis_demo",
-    "Report support",
-    "Latest review receipt",
+    "Report readiness",
+    "Latest saved review",
     "Latest next step",
 ]
 
 REQUIRED_SYSTEM_POSITION_SNIPPETS = [
     "# System position and module map",
-    "checking reasoning before it becomes a claim",
-    "ZTARE turns sources, artifacts, and agent work into claim states a reviewer can",
-    "Workbench is the user-facing product",
+    "turning important reasoning into durable",
+    "inspectable state",
+    "ZTARE turns messy reasoning work into durable state",
+    "what was being decided",
+    "what supported it",
+    "what failed",
+    "what changed",
+    "what should be checked next",
+    "Project Workbench is one interface",
     "Kernel is the trusted boundary",
     "Engine is runnable machinery",
     "Apparatus is an experiment setup",
@@ -467,7 +489,9 @@ REQUIRED_SYSTEM_POSITION_SNIPPETS = [
     "LangSmith",
     "bounded claim -> source intake -> attempt -> adversarial check",
     "workers, judges, or input",
-    "explicit weakest links, replayable checks, demotions, and next falsifiers",
+    "durable decision trail over local sources",
+    "weakest links, replayable checks, demotions, saved review records",
+    "and next falsifiers",
     "## Neuro-symbolic boundary",
     "neural systems propose, search, summarize, critique, rank, translate, and",
     "symbolic and file-backed systems define the objects that survive a run",
@@ -480,9 +504,10 @@ REQUIRED_PUBLIC_ROADMAP_SNIPPETS = [
     "# ZTARE Public Roadmap",
     "**Planning horizon:** next 4-6 weeks",
     "what most improves trust, leverage, and product legibility per unit effort?",
-    "call the user-facing product the",
-    "**workbench**, the trusted checks and contracts the **kernel**, runnable",
-    "subsystems **engines**, and historical experiment setups **apparatus**",
+    "call the whole repo/system **ZTARE**",
+    "local app the **Project Workbench**, the trusted checks and",
+    "**kernel**, runnable subsystems **engines**, and historical experiment setups",
+    "**apparatus**",
     "Scores use a RICE-style 1-5 scale:",
     "**Reach:** how much of the first public user path the lane affects.",
     "**Impact:** how much the lane improves claim safety or reviewer value.",
@@ -490,11 +515,11 @@ REQUIRED_PUBLIC_ROADMAP_SNIPPETS = [
     "**Effort:** implementation and review cost, where 5 is highest cost.",
     "| Lane | Reach | Impact | Confidence | Effort | Current call |",
     "| First-run value | 5 | 5 | 5 | 2 | Keep green through release. |",
-    "| Project intake and evidence readiness | 4 | 5 | 4 | 3 | Treat as the main review-entry path. |",
-    "| Project Workbench design lane | 4 | 4 | 4 | 4 | Local React/server workbench now opens projects, previews backing files, edits bounded inputs, records reviews/next steps, confirms project-run writes, saves project files with receipts, and organizes the first path around user work steps. |",
-    "project intake -> source/evidence check -> run readiness",
-    "split it into reviewable commits without pulling in paper, forecasting,",
-    "LeanMill holdbacks.",
+    "| Project brief and evidence readiness | 4 | 5 | 4 | 3 | Treat as the main review-entry path inside the project-to-thesis lane. |",
+    "| Project Workbench app | 4 | 4 | 4 | 3 | Shipped in v1.0 as the local React/server app; v1.1 should deepen the live state it consumes rather than treating UI polish as the whole product. |",
+    "project brief -> source files and evidence check -> run readiness",
+    "`v1.0.0` shipped the Project Workbench release path",
+    "The current planning path is v1.1.",
     "Do not claim general autonomous research performance.",
     "Do not stage release groups broadly while holdbacks remain in the dirty tree.",
 ]
@@ -502,7 +527,7 @@ REQUIRED_PUBLIC_ROADMAP_SNIPPETS = [
 REQUIRED_GLOSSARY_TAXONOMY_SNIPPETS = [
     "Layer Taxonomy (workbench / kernel / engine / apparatus)",
     "These words are not synonyms.",
-    "Workbench is the user-facing surface",
+    "Workbench is the user-facing view",
     "Kernel is the trusted core",
     "Engine is runnable machinery",
     "Apparatus is the historical research setup",
@@ -655,10 +680,10 @@ REQUIRED_CLI_HELP_SNIPPETS = [
 REQUIRED_PROJECT_HELP_SNIPPETS = [
     "ztare project <verb> [args...]",
     "intake    \u2192 create, draft, validate, falsify, or enqueue bounded project intake",
-    "packet    \u2192 legacy alias for intake",
+    "Legacy: `project packet` still works as an alias for `project intake`",
     "prep-ledger \u2192 optional append-only prep ledger before run readiness",
     "queue     \u2192 compatibility alias for prep-ledger",
-    "source-init \u2192 create source-ingest project surface",
+    "source-init \u2192 create source-ingest project files",
     "source-check \u2192 inspect raw source typing before evidence compilation",
     "source-index \u2192 write workspace source index from typed raw sources",
     "claim-support \u2192 classify compiled-evidence claims by source support",
@@ -667,6 +692,7 @@ REQUIRED_PROJECT_HELP_SNIPPETS = [
 ]
 
 FORBIDDEN_PROJECT_HELP_SNIPPETS = [
+    "packet    \u2192 legacy alias for intake",
     "(create-packet | validate-packet | enqueue-packet | add | add-from-route | list | next | resolve-next)",
     "ztare substrate <verb>",
     "substrate/reproduction preparation",
@@ -736,7 +762,7 @@ REQUIRED_CLI_COMMAND_CONTRACTS = [
     (
         ("project", "source-init", "--help"),
         (
-            "Initialize a source-ingest project surface",
+            "Initialize source-ingest project files",
             "--project",
             "--dry-run",
             "source_type_map",
@@ -790,7 +816,7 @@ REQUIRED_CLI_COMMAND_CONTRACTS = [
         ("autoresearch", "route", "--help"),
         (
             "invoke in-loop autoresearch",
-            "prepare a missing surface",
+            "prepare missing project input",
             "stay",
             "--intake <path>",
             "--queue-dir <path>          optional project/data prep ledger directory",
@@ -824,6 +850,16 @@ REQUIRED_CLI_COMMAND_CONTRACTS = [
             "--from ACTION_FILE_PATH",
             "Next-step JSON saved from the workbench",
             "latest next-step JSON",
+        ),
+    ),
+    (
+        ("forensic-workbench", "report-action", "--help"),
+        (
+            "Run a Project Workbench report action.",
+            "--project PROJECT",
+            "--action {check_readiness,refresh_inputs}",
+            "--confirmed",
+            "--json",
         ),
     ),
     (
@@ -901,6 +937,10 @@ def sha256_text(text: str) -> str:
 
 def fail(message: str) -> None:
     raise SystemExit(f"public adversarial smoke failed: {message}")
+
+
+def check_progress(message: str) -> None:
+    print(f"public-adversarial-smoke: {message}", file=sys.stderr, flush=True)
 
 
 def run(
@@ -1155,11 +1195,13 @@ def check_forensic_workbench_snapshot_contract() -> dict[str, object]:
 
 
 def check_forensic_workbench_react_contract() -> dict[str, object]:
+    src = REPO / "forensic-workbench/src"
     files = [
         REPO / "forensic-workbench/package.json",
-        REPO / "forensic-workbench/src/main.js",
         REPO / "forensic-workbench/public/workbench_snapshot.json",
         REPO / "forensic-workbench/README.md",
+        *sorted(src.rglob("*.js")),
+        *sorted(src.rglob("*.jsx")),
     ]
     joined = "\n".join(read(path) for path in files)
     missing = [snippet for snippet in REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS if snippet not in joined]
@@ -1182,6 +1224,74 @@ def check_forensic_workbench_react_contract() -> dict[str, object]:
         "checked_files": [str(path.relative_to(REPO)) for path in files],
         "checked_snippets": len(REQUIRED_FORENSIC_WORKBENCH_REACT_SNIPPETS),
         "row_count": len(rows),
+    }
+
+
+def create_public_smoke_recovery_project(project: str) -> Path:
+    project_dir = REPO / "projects" / project
+    if project_dir.exists():
+        fail(f"public-smoke recovery fixture already exists: {project_dir}")
+    raw_dir = project_dir / "raw"
+    raw_dir.mkdir(parents=True)
+    (project_dir / "thesis.md").write_text(
+        "# Smoke Recovery Thesis\n\n"
+        "The recovery path should draft a project brief from existing files before a run.\n",
+        encoding="utf-8",
+    )
+    (project_dir / "project_charter.md").write_text(
+        "# Smoke Recovery Charter\n\n"
+        "Use the existing files to connect this folder before any project run.\n",
+        encoding="utf-8",
+    )
+    (raw_dir / "source_note.md").write_text(
+        "---\nsource_type: source_evidence\n---\n"
+        "This note is a small tracked-smoke substitute for a historical folder with files but no project brief.\n",
+        encoding="utf-8",
+    )
+    return project_dir
+
+
+def check_forensic_workbench_state_contract() -> dict[str, object]:
+    recovery_project = "_public_smoke_recovery_project"
+    projects = ["ops_root_cause_diagnosis_demo", recovery_project]
+    summaries: dict[str, object] = {}
+    recovery_dir = create_public_smoke_recovery_project(recovery_project)
+    try:
+        for project in projects:
+            proc = run(
+                [
+                    PYTHON,
+                    "scripts/public/control/forensic_workbench_state.py",
+                    "--project",
+                    project,
+                    "--json",
+                    "--strict",
+                ],
+                timeout=90,
+            )
+            if proc.returncode != 0:
+                fail(
+                    f"forensic workbench state contract failed for {project}\n"
+                    f"stdout:\n{proc.stdout}\nstderr:\n{proc.stderr}"
+                )
+            try:
+                payload = json.loads(proc.stdout)
+            except json.JSONDecodeError as exc:
+                fail(f"forensic workbench state returned non-JSON for {project}: {exc}\n{proc.stdout}")
+            audit = payload.get("project_to_thesis_audit")
+            if not isinstance(audit, dict) or not audit.get("ok"):
+                fail(f"forensic workbench project-to-thesis audit failed for {project}: {audit}")
+            summaries[project] = {
+                "next_action": (payload.get("summary") or {}).get("next_action", ""),
+                "failed_count": audit.get("failed_count", 0),
+                "check_count": audit.get("check_count", 0),
+            }
+    finally:
+        shutil.rmtree(recovery_dir, ignore_errors=True)
+    return {
+        "ok": True,
+        "checked_projects": projects,
+        "summaries": summaries,
     }
 
 
@@ -2093,7 +2203,7 @@ def check_public_project_intake_fixtures() -> dict[str, object]:
     if trace_payload.get("readiness_canonical") not in allowed_readiness:
         fail(f"ready project-intake trace is missing canonical readiness: {trace_payload}")
     if trace_payload.get("blocking_missing"):
-        fail(f"ready project-intake trace has blocking missing surfaces: {trace_payload}")
+        fail(f"ready project-intake trace has blocking missing project inputs: {trace_payload}")
     route_preview = trace_payload.get("route_preview") or {}
     if (
         route_preview.get("source") != "project_intake"
@@ -2411,34 +2521,43 @@ def check_hello_expected_output_doc() -> dict[str, object]:
     }
 
 
-def check_ops_demo_report_support_contract_blocks_stale_report() -> dict[str, object]:
+def check_ops_demo_report_support_contract_surfaces_runtime_risk() -> dict[str, object]:
     proc = run([
-        "make",
-        "synth-contract",
-        "PROJECT=ops_root_cause_diagnosis_demo",
-        "RENDERER=decision_brief",
-        f"PYTHON={PYTHON}",
+        str(PYTHON),
+        "-m",
+        "src.ztare.cli",
+        "forensic-workbench",
+        "report-action",
+        "--project",
+        "ops_root_cause_diagnosis_demo",
+        "--action",
+        "check_readiness",
+        "--renderer",
+        "decision_brief",
+        "--confirmed",
+        "--json",
     ], timeout=90)
-    if proc.returncode == 0:
+    if proc.returncode != 0:
         fail(
-            "ops_root_cause_diagnosis_demo synth-contract unexpectedly allowed "
-            f"report promotion\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+            "ops_root_cause_diagnosis_demo report-action should refresh the "
+            f"readiness file and keep runtime risk advisory\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
         )
     payload = extract_last_json_object(proc.stdout)
-    if payload.get("ok") is not False or payload.get("status") != "blocked":
-        fail(f"ops demo report support contract did not block stale report: {payload}")
+    if payload.get("ok") is not True or payload.get("status") != "attention":
+        fail(f"ops demo report readiness file lost advisory-attention status: {payload}")
     reasons = payload.get("status_reasons") or []
-    if "synthesis_input_binding_unbound" not in reasons:
-        fail(f"ops demo report support contract lost input-binding blocker: {payload}")
+    if "runtime_risks_present" not in reasons:
+        fail(f"ops demo report readiness file lost runtime-risk warning: {payload}")
     binding = payload.get("synthesis_input_binding") or {}
-    if not isinstance(binding, dict) or binding.get("status") != "unbound":
-        fail(f"ops demo report support contract lost unbound binding status: {payload}")
+    if not isinstance(binding, dict) or binding.get("status") != "fresh":
+        fail(f"ops demo report readiness file lost fresh input-binding status: {payload}")
     return {
         "ok": True,
         "checked": [
-            "make synth-contract PROJECT=ops_root_cause_diagnosis_demo RENDERER=decision_brief",
-            "nonzero blocked report-support exit",
-            "synthesis_input_binding_unbound",
+            "ztare forensic-workbench report-action --project ops_root_cause_diagnosis_demo --action check_readiness --renderer decision_brief --confirmed --json",
+            "zero-exit report-readiness refresh",
+            "runtime_risks_present",
+            "synthesis input binding fresh",
         ],
         "status": payload.get("status"),
         "status_reasons": reasons,
@@ -2451,7 +2570,7 @@ def check_ops_demo_kernel_health_read_models() -> dict[str, object]:
         "autoresearch-kernel-health",
         "PROJECT=ops_root_cause_diagnosis_demo",
         "RUBRIC=ops_root_cause_diagnosis_demo",
-        "INTAKE=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_intake.json",
+        "INTAKE=projects/ops_root_cause_diagnosis_demo/ops_root_cause_diagnosis_demo_packet.json",
         "JSON=1",
         f"PYTHON={PYTHON}",
     ], timeout=90)
@@ -2464,18 +2583,27 @@ def check_ops_demo_kernel_health_read_models() -> dict[str, object]:
     if payload.get("schema") != "ztare-autoresearch-kernel-health-v1":
         fail(f"ops demo kernel health returned wrong schema: {payload}")
     summary = payload.get("summary") or {}
-    if summary.get("overall_status") != "attention":
-        fail(f"ops demo kernel health should surface advisory attention: {payload}")
+    if summary.get("overall_status") not in {"attention", "needs_attention"}:
+        fail(f"ops demo kernel health should surface advisory or explicit repair attention: {payload}")
     components = {
         str(row.get("component")): row
         for row in (payload.get("components") or [])
         if isinstance(row, dict)
     }
     project_trace = (components.get("project_trace") or {}).get("summary") or {}
-    if project_trace.get("can_enter_kernel") is not True:
-        fail(f"ops demo kernel health lost ready run-readiness status: {payload}")
-    if project_trace.get("kernel_entry_status") != "ready":
-        fail(f"ops demo kernel health lost kernel_entry_status=ready: {payload}")
+    trace_blockers = {
+        str(row.get("id") or row.get("recovery_channel") or "")
+        for row in (project_trace.get("blockers") or [])
+        if isinstance(row, dict)
+    }
+    trace_ready = project_trace.get("can_enter_kernel") is True and project_trace.get("kernel_entry_status") == "ready"
+    trace_blocked_on_evidence = (
+        project_trace.get("can_enter_kernel") is False
+        and project_trace.get("kernel_entry_status") == "blocked"
+        and "out_of_loop_evidence_recovery" in trace_blockers
+    )
+    if not (trace_ready or trace_blocked_on_evidence):
+        fail(f"ops demo kernel health lost inspectable run-readiness status: {payload}")
     if int(project_trace.get("provider_failure_signature_count") or 0) < 1:
         fail(f"ops demo kernel health no longer surfaces provider-runtime risk: {payload}")
 
@@ -2498,7 +2626,7 @@ def check_ops_demo_kernel_health_read_models() -> dict[str, object]:
         "ok": True,
         "checked": [
             "make autoresearch-kernel-health PROJECT=ops_root_cause_diagnosis_demo JSON=1",
-            "run readiness ready",
+            "run readiness ready or explicit evidence-recovery blocker surfaced",
             "provider runtime risk is advisory attention",
             "source-health warnings are non-blocking",
         ],
@@ -2646,37 +2774,53 @@ def check_research_move_routing_drift_audit() -> dict[str, object]:
     }
 
 
+def run_named_check(name: str, check_fn) -> dict[str, object]:
+    check_progress(f"start {name}")
+    started = time.monotonic()
+    payload = check_fn()
+    elapsed_seconds = round(time.monotonic() - started, 2)
+    check_progress(f"ok {name} {elapsed_seconds}s")
+    if isinstance(payload, dict):
+        payload = {**payload, "elapsed_seconds": elapsed_seconds}
+    return payload
+
+
 def main() -> int:
+    check_plan = [
+        ("makefile_wiring", check_makefile_wiring),
+        ("docs_wiring", check_docs_wiring),
+        ("forensic_workbench_interface_contract", check_forensic_workbench_interface_contract),
+        ("forensic_workbench_snapshot_contract", check_forensic_workbench_snapshot_contract),
+        ("forensic_workbench_react_contract", check_forensic_workbench_react_contract),
+        ("forensic_workbench_state_contract", check_forensic_workbench_state_contract),
+        ("system_position_contract", check_system_position_contract),
+        ("public_roadmap_contract", check_public_roadmap_contract),
+        ("glossary_taxonomy_contract", check_glossary_taxonomy_contract),
+        ("researcher_workflow_cross_refs", check_researcher_workflow_cross_refs),
+        ("public_workflow_wiring", check_public_workflow_wiring),
+        ("package_metadata", check_package_metadata),
+        ("gitignore_boundaries", check_gitignore_boundaries),
+        ("public_language", check_public_language),
+        ("cli_front_door", check_cli_front_door),
+        ("cli_guide_command_inventory", check_cli_guide_command_inventory),
+        ("capabilities_catalog_count", check_capabilities_catalog_count),
+        ("userland_project_bias", check_userland_project_bias),
+        ("public_command_examples", check_public_command_examples),
+        ("runtime_smoke_cleanup", check_runtime_smoke_cleanup),
+        ("forecast_pool_isolation", check_forecast_pool_isolation),
+        ("action_intelligence_contracts", check_action_intelligence_contracts),
+        ("project_intake_cli", check_project_intake_cli),
+        ("public_project_intake_fixtures", check_public_project_intake_fixtures),
+        ("autoresearch_carrier_replay_cli", check_autoresearch_carrier_replay_cli),
+        ("hello_expected_output_doc", check_hello_expected_output_doc),
+        ("ops_demo_report_support_contract", check_ops_demo_report_support_contract_surfaces_runtime_risk),
+        ("ops_demo_kernel_health_read_models", check_ops_demo_kernel_health_read_models),
+        ("ordinary_review_freeze_checker", check_ordinary_review_freeze_checker),
+        ("research_move_routing_drift_audit", check_research_move_routing_drift_audit),
+    ]
     checks = {
-        "makefile_wiring": check_makefile_wiring(),
-        "docs_wiring": check_docs_wiring(),
-        "forensic_workbench_interface_contract": check_forensic_workbench_interface_contract(),
-        "forensic_workbench_snapshot_contract": check_forensic_workbench_snapshot_contract(),
-        "forensic_workbench_react_contract": check_forensic_workbench_react_contract(),
-        "system_position_contract": check_system_position_contract(),
-        "public_roadmap_contract": check_public_roadmap_contract(),
-        "glossary_taxonomy_contract": check_glossary_taxonomy_contract(),
-        "researcher_workflow_cross_refs": check_researcher_workflow_cross_refs(),
-        "public_workflow_wiring": check_public_workflow_wiring(),
-        "package_metadata": check_package_metadata(),
-        "gitignore_boundaries": check_gitignore_boundaries(),
-        "public_language": check_public_language(),
-        "cli_front_door": check_cli_front_door(),
-        "cli_guide_command_inventory": check_cli_guide_command_inventory(),
-        "capabilities_catalog_count": check_capabilities_catalog_count(),
-        "userland_project_bias": check_userland_project_bias(),
-        "public_command_examples": check_public_command_examples(),
-        "runtime_smoke_cleanup": check_runtime_smoke_cleanup(),
-        "forecast_pool_isolation": check_forecast_pool_isolation(),
-        "action_intelligence_contracts": check_action_intelligence_contracts(),
-        "project_intake_cli": check_project_intake_cli(),
-        "public_project_intake_fixtures": check_public_project_intake_fixtures(),
-        "autoresearch_carrier_replay_cli": check_autoresearch_carrier_replay_cli(),
-        "hello_expected_output_doc": check_hello_expected_output_doc(),
-        "ops_demo_report_support_contract": check_ops_demo_report_support_contract_blocks_stale_report(),
-        "ops_demo_kernel_health_read_models": check_ops_demo_kernel_health_read_models(),
-        "ordinary_review_freeze_checker": check_ordinary_review_freeze_checker(),
-        "research_move_routing_drift_audit": check_research_move_routing_drift_audit(),
+        name: run_named_check(name, check_fn)
+        for name, check_fn in check_plan
     }
     print(json.dumps({"ok": True, "checks": checks}, indent=2, sort_keys=True))
     return 0

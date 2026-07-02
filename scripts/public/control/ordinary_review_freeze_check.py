@@ -10,7 +10,7 @@ from typing import Any
 
 
 REPO = Path(__file__).resolve().parents[3]
-DEFAULT_SOURCE_RUN = REPO / "benchmarks/constraint_memory/runs/20260404_195100"
+DEFAULT_SOURCE_RUN = REPO / "benchmarks/evaluator_hardening_frozen/source_run_20260404_195100"
 ORDINARY_REVIEW_CONDITION = "D_ordinary_review"
 
 

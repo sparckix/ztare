@@ -173,6 +173,73 @@ def recommendation_id(payload: dict[str, Any]) -> str:
     return stable_id("sr", stable_payload)
 
 
+def display_surface(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    overrides = {
+        "missing_decision_use": "forecast decisions are missing",
+        "weak_gp233_linkage": "evidence links need repair",
+        "missing_source": "source archive is missing",
+        "stale_trajectory_output": "run-history archive is stale",
+        "unconsumed_surface": "work log is missing",
+        "unmaterialized_surfacing_consumption": "accepted work is not in the action record",
+        "missing_workbench_router_decision": "workbench route choice is missing",
+        "invalid_agentic_workbench_rows": "workbench action rows need repair",
+        "missing_agentic_workbench_decision_rows": "workbench decisions are missing",
+        "repair_source_emitter": "repair source logs",
+        "trajectory_surfacing": "run-history surfacing",
+        "forecast_ops": "forecast records",
+        "agentic_workbench": "workbench actions",
+        "catch": "catch ledger",
+        "gp233": "evidence ledger",
+        "warning": "warning",
+        "blocking": "blocking",
+        "info": "info",
+    }
+    if raw in overrides:
+        return overrides[raw]
+    return raw.replace("_", " ").replace("-", " ").strip()
+
+
+def display_source_health_text(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    replacements = {
+        "markdown-only GP-233 linkage": "doc-only evidence-ledger linkage",
+        "GP-233": "evidence ledger",
+        "gp233": "evidence ledger",
+        "GP-230": "forecast record",
+        "gp230": "forecast record",
+        "trajectory outputs": "run-history outputs",
+        "trajectory archive": "run-history archive",
+        "trajectory/primitives surfacing": "run-history surfacing",
+        "surfacing event rows": "work-log rows",
+        "surfacing consumption action-impact rows": "accepted-work rows",
+        "materialized surfacing action-impact rows": "accepted-work rows in the action record",
+        "action-impact rows": "action-record rows",
+        "forecast_ops": "forecast records",
+        "agentic-workbench": "workbench",
+        "RD/agent": "research/agent",
+    }
+    for old, new in replacements.items():
+        text = text.replace(old, new)
+    return text
+
+
+def display_source_health_recommended_action(issue_type: Any, recommended_action: Any) -> str:
+    issue_overrides = {
+        "weak_gp233_linkage": "repair evidence links",
+        "stale_trajectory_output": "refresh run-history archive",
+        "unconsumed_surface": "record work-log use",
+    }
+    raw_issue = str(issue_type or "")
+    if raw_issue in issue_overrides:
+        return issue_overrides[raw_issue]
+    return display_surface(recommended_action)
+
+
 def as_float(value: Any) -> float | None:
     try:
         return float(value)
@@ -914,6 +981,21 @@ def source_health_model(action_rows: list[dict[str, Any]] | None = None) -> dict
         if details:
             payload["details"] = details
         payload["issue_id"] = stable_id("sh", payload)
+        payload.update({
+            "display_severity": display_surface(severity),
+            "display_scope": display_surface(scope),
+            "display_domain": display_surface(domain),
+            "display_issue_type": display_surface(issue_type),
+            "display_denominator": display_source_health_text(denominator),
+            "display_blocking_rule": display_source_health_text(blocking_rule),
+            "display_recommended_action": display_source_health_recommended_action(
+                issue_type,
+                payload["recommended_action"],
+            ),
+            "display_affected_domains": [
+                display_surface(item) for item in (affected_domains or [])
+            ],
+        })
         issues.append(payload)
 
     aggregate_count = len(list(AGGREGATES.glob("*.json"))) if AGGREGATES.exists() else 0

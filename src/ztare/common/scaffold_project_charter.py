@@ -192,6 +192,69 @@ Origin: GP-218 audit-surfaced finding 2026-05-05 (GP-218 (internal seam), R3) â€
 """
 
 
+def _bullets(values: list[str], fallback: str) -> list[str]:
+    if not values:
+        return [f"- {fallback}"]
+    return [f"- {value}" for value in values[:20]]
+
+
+def render_charter_from_fields(
+    *,
+    title: str,
+    task: str,
+    bounded_claim: str,
+    next_falsifier: str,
+    notes: str = "",
+    source_refs: list[str] | None = None,
+    evidence_refs: list[str] | None = None,
+    non_claims: list[str] | None = None,
+) -> str:
+    """Render a human-editable charter from project setup fields.
+
+    This is the shared authoring template used by app/userland surfaces that
+    start from a human project brief rather than a synthetic substrate mode.
+    """
+
+    source_refs = [str(ref).strip() for ref in (source_refs or []) if str(ref).strip()]
+    evidence_refs = [str(ref).strip() for ref in (evidence_refs or []) if str(ref).strip()]
+    non_claims = [str(item).strip() for item in (non_claims or []) if str(item).strip()]
+    sections = [
+        f"# {title} Project Charter",
+        "",
+        "## Task",
+        task or "State the question this project is trying to answer.",
+        "",
+        "## Bounded Claim",
+        bounded_claim or "State the current thesis before running.",
+        "",
+        "## Non-Claims",
+        *_bullets(non_claims, "Not recorded yet."),
+        "",
+        "## Next Falsifier",
+        next_falsifier or "Name the source, evidence, or test that would revise or reject the thesis.",
+        "",
+        "## Starting Source Files",
+        *_bullets(source_refs, "Add source files before running."),
+        "",
+        "## Starting Evidence Files",
+        *_bullets(evidence_refs, "Add evidence files before relying on the thesis."),
+    ]
+    if notes:
+        sections.extend(["", "## Notes", notes])
+    sections.extend(
+        [
+            "",
+            "## Run Contract",
+            (
+                "Use this charter as mandatory project context. Update it when the question, "
+                "thesis, scope limits, or change test changes."
+            ),
+            "",
+        ]
+    )
+    return "\n".join(sections)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(
         description="Scaffold a project_charter.md for a ZTARE project."

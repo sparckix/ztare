@@ -114,6 +114,7 @@ def build_autoresearch_plan_preview(
     route_command: str | None = None,
     preflight_command: str | None = None,
     run_command: str | None = None,
+    repair_command: str | None = None,
     can_run_now: bool = False,
     preflight_admitted: bool = False,
     missing: list[Any] | None = None,
@@ -140,7 +141,11 @@ def build_autoresearch_plan_preview(
     else:
         status = "routing_only"
 
-    if can_launch_loop and preflight_admitted and run_command:
+    repair_command = str(repair_command or "").strip() or None
+
+    if blocking_items and repair_command:
+        recommended_first_command = repair_command
+    elif can_launch_loop and preflight_admitted and run_command:
         recommended_first_command = run_command
     elif can_launch_loop and preflight_command:
         recommended_first_command = preflight_command
@@ -168,6 +173,7 @@ def build_autoresearch_plan_preview(
                 "description": "prepare the missing claim, rubric, evaluator, source, or artifact surface",
                 "model_calls": False,
                 "missing": blocking_items or missing_items,
+                **({"command": repair_command} if repair_command else {}),
             }
         )
     if preflight_command:

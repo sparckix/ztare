@@ -88,13 +88,13 @@ parser.add_argument("--dynamic", action="store_true")
 parser.add_argument(
     "--judge_model",
     type=str,
-    default="gemini",
+    default=os.environ.get("ZTARE_JUDGE_MODEL") or os.environ.get("ZTARE_MODEL") or "",
     choices=MODEL_FAMILY_CHOICES,
 )
 parser.add_argument(
     "--mutator_model",
     type=str,
-    default="gemini",
+    default=os.environ.get("ZTARE_MUTATOR_MODEL") or os.environ.get("ZTARE_MODEL") or "",
     choices=MODEL_FAMILY_CHOICES,
 )
 parser.add_argument("--use_primitives", action="store_true")
@@ -146,6 +146,11 @@ parser.add_argument(
          "modifying the live working path.",
 )
 args = parser.parse_known_args()[0]
+if not args.mutator_model or not args.judge_model:
+    parser.error(
+        "mutator and judge models must be configured with --mutator_model/--judge_model "
+        "or ZTARE_MUTATOR_MODEL/ZTARE_JUDGE_MODEL (or ZTARE_MODEL for both)."
+    )
 if args.rubric is None:
     args.rubric = args.project
 if getattr(args, "use_transfer_hypotheses", False):

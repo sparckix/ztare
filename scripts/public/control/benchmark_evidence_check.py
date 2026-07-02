@@ -11,7 +11,7 @@ from typing import Any
 REPO = Path(__file__).resolve().parents[3]
 PYSR_FULL = REPO / "papers/experimental_math_letter/evidence/pysr_baseline_full.json"
 CONSTRAINT_MEMORY_SUMMARY = (
-    REPO / "benchmarks/constraint_memory/runs/20260404_195100/metrics_summary.json"
+    REPO / "benchmarks/evaluator_hardening_frozen/source_run_20260404_195100/metrics_summary.json"
 )
 
 
