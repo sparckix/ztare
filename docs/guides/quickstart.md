@@ -1,23 +1,18 @@
 ---
-description: "Two-page orientation for a new reviewer."
+description: "Two-page orientation for a new reviewer: value check, workbench, the four routes, sealed experiments."
 ---
 
 # ZTARE Quickstart
 
 > Up: [Documentation map](../README.md)
 
-Two-page orientation for a new reviewer. Start with
-[first-30-minutes.md](first-30-minutes.md) if this is your first time in the
-repo. Use this for the fast path once you know which route you want. Full
-reference: `docs/guides/workflow.md` and `docs/concepts/glossary.md`.
+Two-page orientation for a new reviewer. Start with [first-30-minutes.md](first-30-minutes.md) if this is your first time in the repo, and use this page for the fast path once you know which route you want. Full reference: [workflow.md](workflow.md) and the [glossary](../concepts/glossary.md).
 
 ---
 
 ## What ZTARE does in one sentence
 
-ZTARE helps you decide what you can stand behind from your own project files.
-It turns a thesis, local sources, evidence state, run readiness, report readiness,
-and saved review history into an inspectable project record.
+ZTARE helps you decide what you can stand behind from your own project files. It turns a thesis, local sources, evidence state, run readiness, report readiness, and saved review history into an inspectable project record.
 
 ## First value check
 
@@ -27,12 +22,7 @@ Before choosing a workflow, run the smallest offline demo:
 make hello
 ```
 
-Expected result: a ready project-intake file validates, its missing-reference
-falsifier blocks a simulated missing evidence file, a malformed intake file is
-blocked before in-loop routing, and an overbroad claim is demoted to bounded
-wording with missing evidence and a next falsifier. In one command, plausible
-output must survive separate evidence checks before it becomes a public
-claim.
+Expected result: a ready project-intake file validates, its missing-reference falsifier blocks a simulated missing evidence file, a malformed intake file is blocked before in-loop routing, and an overbroad claim is demoted to bounded wording with missing evidence and a next falsifier. In one command, plausible output must survive separate evidence checks before it becomes a public claim.
 
 For the full offline public review path, run:
 
@@ -40,23 +30,27 @@ For the full offline public review path, run:
 make first-run
 ```
 
-That aggregate target chains the value demo, gaming-catalog audit,
-benchmark-evidence checks, the frozen evaluator-hardening proof-point check,
-claim-boundary audit, terminology audit, public smoke, adversarial entry-path
-checks, and docs checks. The catalog audit checks that the public gaming
-catalog, live registry, promotion evidence, hardening map, and executable
-fixture anchors agree.
+It chains the value demo, gaming-catalog audit, benchmark-evidence checks, the frozen evaluator-hardening proof-point check, claim-boundary audit, terminology audit, public smoke, adversarial entry-path checks, and docs checks.
+
+## Open the Project Workbench
+
+Everything below has a visual counterpart. The workbench is a local web app over your projects that walks each one from charter and thesis through sources, evidence, pressure-testing, and verdict:
+
+```bash
+docker compose --profile workbench up --build workbench   # one container, http://127.0.0.1:8765
+# or, without Docker:
+make forensic-workbench-live                              # API on :8765, app on :5174
+```
+
+From a project's pages you can critique its scoring rubric before spending a run, ask plain-language questions against the research map, stress-test a single claim, draft a bounded starting claim from a source document, and export the verified research graph to an Obsidian vault. Details in the [workbench interface guide](../concepts/forensic_workbench_interface.md). The browser never gets raw filesystem access; every action relays through the CLI.
 
 ---
 
-## Three ways to use it
+## Four ways to use it
 
 ### A. Test a bounded claim (in-loop autoresearch)
 
-You have a question ("Is this startup overvalued?", "What drives EU stability?").
-Start by writing the boundary object: bounded task, claim, sources, evidence,
-non-claims, and next falsifier. Then inspect readiness before launching the
-loop.
+You have a question ("Is this startup overvalued?", "What drives EU stability?"). Start by writing the boundary object: bounded task, claim, sources, evidence, non-claims, and next falsifier. Then inspect readiness before launching the loop.
 
 ```bash
 # 1. Guided intake setup. The JSON includes prep, trace, and in-loop phases.
@@ -94,36 +88,17 @@ ztare autoresearch run --project <project> --rubric <rubric> \
     --mutator <mutator-model> --judge <judge-model> --inverter <inverter-model>
 ```
 
-After the readiness-check command, the trace JSON should include `loop_admission`.
-That saved entry tells you whether the current intake bytes still match the intake
-admitted by the loop, and whether the current run-readiness contract still
-matches the admitted entry digest.
+After the readiness-check command, the trace JSON should include `loop_admission`. That saved entry tells you whether the current intake bytes still match the intake admitted by the loop, and whether the current run-readiness contract still matches the admitted entry digest.
 
-Model aliases are listed in
-[`docs/reference/model_aliases.md`](../reference/model_aliases.md). Prefer the
-Project Workbench Settings page or environment variables for provider choices:
-`ZTARE_WORKBENCH_MODEL`, `ZTARE_WORKBENCH_RUN_MUTATOR_MODEL`,
-`ZTARE_WORKBENCH_RUN_JUDGE_MODEL`, and
-`ZTARE_WORKBENCH_RUN_INVERTER_MODEL`. For consequential runs, use models from
-different provider families when possible and set `--inverter <model>`
-explicitly. Add `CROSS_FAMILY=1` when shared-provider evaluation should fail
-before any model call.
+Model aliases are listed in [model_aliases.md](../reference/model_aliases.md). Prefer the workbench Settings page or environment variables for provider choices: `ZTARE_WORKBENCH_MODEL`, `ZTARE_WORKBENCH_RUN_MUTATOR_MODEL`, `ZTARE_WORKBENCH_RUN_JUDGE_MODEL`, and `ZTARE_WORKBENCH_RUN_INVERTER_MODEL`. For consequential runs, use models from different provider families when possible, set `--inverter <model>` explicitly, and add `CROSS_FAMILY=1` when shared-provider evaluation should fail before any model call.
 
-If the project already exists locally, intake validation also checks the
-offline raw/source typing readiness check. Add `--source-preflight` when you want the
-intake file to require local source files before validation can pass. Intake enqueue
-always requires those local source files. Use the prep ledger when source
-files or typing still need work.
+If the project already exists locally, intake validation also checks the offline raw/source typing readiness. Add `--source-preflight` when the intake file should require local source files before validation can pass. Intake enqueue always requires those local source files. Use the prep ledger when source files or typing still need work.
 
 ### B. Create or probe project data
-You have project files, a review file, a decision process, or input-output
-data. ZTARE searches for candidate forms, bounded claims, or justified nulls
-under gates. It does not promote a result without separate source-readiness,
-non-claim, and falsifier discipline.
 
-For a source-ingest project, start with the source initializer. It creates the
-portable `raw/` and `workspace/` directories plus an empty
-`raw/source_type_map.json`, but does not create evidence or launch the loop:
+You have project files, a review file, a decision process, or input-output data. ZTARE searches for candidate forms, bounded claims, or justified nulls under gates. It does not promote a result without separate source-readiness, non-claim, and falsifier discipline.
+
+For a source-ingest project, start with the source initializer. It creates the portable `raw/` and `workspace/` directories plus an empty `raw/source_type_map.json`, without creating evidence or launching the loop:
 
 ```bash
 ztare project source-init --project <slug> --rubric <slug>
@@ -131,18 +106,9 @@ ztare project source-check --project <slug> --json
 ztare project source-index --project <slug> --json
 ```
 
-Put text-like source files under `projects/<slug>/raw/`. Mark each source with
-`source_type` frontmatter or `raw/source_type_map.json`; use
-`source_evidence` for sources allowed to support immutable facts and
-constraints.
-Run `source-check` again after adding or renaming raw files. It is an offline
-readiness check (it does not compile evidence). `source-index` writes the deterministic
-workspace source index, metadata, and saved history without model calls.
-`make evidence-prepare` runs the same readiness check before workspace update and
-evidence compilation.
+Put text-like source files under `projects/<slug>/raw/`. Mark each source with `source_type` frontmatter or `raw/source_type_map.json`, using `source_evidence` for sources allowed to support immutable facts and constraints. Rerun `source-check` after adding or renaming raw files; it is an offline readiness check and compiles nothing. `source-index` writes the deterministic workspace source index, metadata, and saved history without model calls, and `make evidence-prepare` runs the same readiness check before workspace update and evidence compilation.
 
-For a generated numeric/data project, use `new`. `prepare` runs the standard
-setup pipeline before any in-loop run:
+For a generated numeric or data project, use `new`, then `prepare` for the standard setup pipeline before any in-loop run:
 
 ```bash
 ztare project new --help
@@ -150,21 +116,9 @@ ztare project prepare --project <slug> --rubric <slug>
 ztare project seal --project <slug> --rubric <slug>
 ```
 
-If project data still needs setup or reproduction prep before the
-validation engine can evaluate it, create a project-intake file first.
-Use `ztare project intake`. Use the intake ledger only when there is follow-up
-prep to track. It is not an autoresearch scheduler. Older scripts may still use
-the legacy packet spelling for the same JSON; new user-facing docs should say
-intake.
-For concrete fixtures, see
-[examples/project_packets/](../../examples/project_packets/): one ready intake
-file and one malformed intake file that must fail validation.
+For concrete intake fixtures, see [examples/project_packets/](../../examples/project_packets/): one ready intake file and one malformed intake file that must fail validation. Older scripts may still use the legacy packet spelling for the same JSON; new user-facing docs say intake.
 
-For a less toy example, try the synthetic operational-diagnosis pilot. It uses
-local incident, metric, staffing, change, export-log, ticket-sample,
-baseline, cache, and counter-hypothesis sources to test a bounded root-cause
-claim. The fixture is not customer data. It is a public way to inspect the
-claim/evidence/falsifier path and launch a one-iteration in-loop run.
+For a less toy example, try the synthetic [operational-diagnosis pilot](../../projects/ops_root_cause_diagnosis_demo/). It uses local incident, metric, staffing, change, export-log, ticket-sample, baseline, cache, and counter-hypothesis sources to test a bounded root-cause claim. The fixture is not customer data.
 
 ```bash
 ztare project walkthrough --ops-demo
@@ -184,16 +138,9 @@ ztare autoresearch run \
   --preflight-only
 ```
 
-Expected trace shape: before any paid run, `readiness` should be
-`ready_for_first_in_loop_run`, `kernel_entry.status=ready`, and the
-`source_claim_graph` should validate. If run files are already present,
-the trace may instead report `complete_trace`. In that case inspect
-`recent_loop` for the latest score, provider failures, and next command. After
-the readiness-check command, `loop_admission` should verify the intake and
-run-readiness hashes.
+Expected trace shape before any paid run: `readiness` is `ready_for_first_in_loop_run`, `kernel_entry.status=ready`, and the `source_claim_graph` validates. If run files are already present, the trace may instead report `complete_trace`; inspect `recent_loop` for the latest score, provider failures, and next command. After the readiness check, `loop_admission` should verify the intake and run-readiness hashes.
 
-To exercise the validation engine with live model calls, run the exact command
-stored in the intake file:
+To exercise the validation engine with live model calls, run the exact command stored in the intake file:
 
 ```bash
 ztare autoresearch run \
@@ -207,97 +154,45 @@ ztare autoresearch run \
   --llm-timeout-seconds 240 --llm-retries 1
 ```
 
-That paid run should use deliberately chosen mutator, judge, and inverter
-models. Set them through the Project Workbench Settings page or environment
-variables before running. It should stay bounded to the fixture's non-claims
-and next falsifier. Provider failures are recorded in the trace and stay there;
-the loop does not promote them as research results.
+A paid run should use deliberately chosen mutator, judge, and inverter models, set through the workbench Settings page or environment variables, and should stay bounded to the fixture's non-claims and next falsifier. Provider failures are recorded in the trace and stay there; the loop does not promote them as research results.
+
+For your own project, follow the section A intake sequence with your slug, then enqueue and track any remaining prep:
 
 ```bash
-ztare project walkthrough --project <slug> --rubric <slug> \
-  --task "<bounded task>" \
-  --bounded-claim "<claim the validation engine may evaluate>" \
-  --source-ref "<paper/code/source ref>" \
-  --evidence-ref "<local evidence file>" \
-  --non-claim "<what this intake file does not prove>" \
-  --next-falsifier "<next test that could demote the claim>" \
-  --intake-out <slug>_intake.json --json
-ztare project intake create --path <slug>_intake.json \
-  --project <slug> --rubric <slug> --task "<bounded task>" \
-  --bounded-claim "<claim the validation engine may evaluate>" \
-  --source-ref "<paper/code/source ref>" \
-  --evidence-ref "<local evidence file>" \
-  --non-claim "<what this intake file does not prove>" \
-  --next-falsifier "<next test that could demote the claim>" \
-  --expected-command "ztare autoresearch route --task '<bounded task>' --project <slug> --rubric <slug>"
-ztare project intake validate --path <slug>_intake.json
 ztare project intake validate --path <slug>_intake.json --source-preflight
 ztare project intake enqueue --path <slug>_intake.json
-```
-
-If the intake file is blocked on concrete prep work, record that separately:
-
-```bash
 ztare project prep-ledger add --task "prepare minimal reproduction and cost estimate" \
   --kind minimal_reproduction --project <slug> --rubric <slug>
 ztare project prep-ledger list
 ```
 
-Then choose one of the run paths:
+A guarded end-to-end path also exists for OEIS-style 1D sequences (`make discover PROJECT=<slug> RUBRIC=<slug> ITERS=15`), running hypothesis loop, template compression, and Lean gate files in sequence. Treat its output as candidate evidence. Same-family model pairs are useful for transport smoke tests and weak evidence for a research claim; prefer different provider families when the judge is meant to catch the mutator's blind spots.
 
-Guarded end-to-end path (legacy/demo path for OEIS and 1D sequences):
+### C. Prove something (LeanMill)
 
-```bash
-make discover PROJECT=<slug> RUBRIC=<slug> ITERS=15
-```
-
-This runs Phase 1 (hypothesis loop), Phase 2 (template compression), and Phase
-3 (Lean gate files) end to end. Treat the output as candidate evidence, not
-autonomous discovery.
-
-Manual control (for multi-variable or custom project setups):
+For Lean formalization, governed proof search, or proof-credit governance, use the LeanMill track:
 
 ```bash
-# See the manual-control sequence below for the full project-intake path
-ztare autoresearch trace --project <slug> --rubric <slug> --intake <slug>_intake.json --json
-ztare autoresearch run --project <slug> --rubric <slug> \
-    --intake <slug>_intake.json --preflight-only
-ztare autoresearch run --project <slug> --rubric <slug> \
-    --intake <slug>_intake.json --iters 10 \
-    --mutator <mutator-model> --judge <judge-model> --inverter <inverter-model>
+ztare leanmill --help
 ```
 
-Same-family pairs are useful for transport smoke tests, but they are weak
-evidence for a research claim. Prefer different provider families when the
-judge is meant to catch the mutator's blind spots.
+Read the [LeanMill architecture](../concepts/leanmill_architecture.md) first: it explains stations, the governance kernel, and why a compile is treated as necessary but insufficient (anti-laundering checks, vacuity probes, and the faithfulness firewall on autoformalized statements all run separately). Come to this track after the main path; it is the deepest evidence discipline in the repo.
 
-### C. Use the workbench or org runtime
+### D. Route frontier or org work first
 
-Not every serious task should start with `make experiment-loop`. If the work is
-frontier research, proof splitting, evidence acquisition, trajectory mining,
-human-agent co-work, or a role-daemon task, route it first:
+Not every serious task should start with a loop. If the work is frontier research, proof splitting, evidence acquisition, trajectory mining, human-agent co-work, or a role-daemon task, route it first:
 
 ```bash
 ztare autoresearch route --task "<task description>" --project <project> --rubric <rubric>
 ```
 
-Then read:
-
-- [workflow.md](workflow.md), especially section 0 route choice
-- [cli.md](cli.md), for `ztare project`, `ztare autoresearch route`, `run`,
-  and `projection`
-- [org_runtime_quickstart.md](org_runtime_quickstart.md), for role-daemon and
-  executive-inbox work
-- [agent-prompts.md](agent-prompts.md), for paste-ready Codex/Claude prompts
+Then read [workflow.md](workflow.md) section 0 for route choice, [cli.md](cli.md) for the full command surface, [org_runtime_quickstart.md](org_runtime_quickstart.md) for role-daemon and executive-inbox work, and [agent-prompts.md](agent-prompts.md) for paste-ready agent prompts.
 
 ---
 
 ## Advanced: controlled hidden-target experiment
 
-Use this path only when the target must stay hidden until close, such as a
-synthetic function-recovery experiment or another sealed discriminating test.
-For ordinary project, paper, policy, market, operations, or reproduction work,
-use the project-intake path above instead.
+Use this path only when the target must stay hidden until close, such as a synthetic function-recovery experiment or another sealed discriminating test. For ordinary project, paper, policy, market, operations, or reproduction work, use the project-intake path above.
 
 ### 1. Write the hidden target
 
@@ -326,15 +221,7 @@ def holdout_grid() -> list[tuple[float, float]]:
     return [(t, d) for t in times for d in doses]
 ```
 
-Rules for sealed targets:
-
-- Use an opaque slug such as `exp01` (it appears in loop-visible files).
-- Use generic variable names such as `x1`, `x2`, or `n`.
-- Keep target form, parameters, derivation, and mechanism hints out of the
-  charter, rubric, thesis, and visible evidence.
-- Treat this as a controlled experiment with its own path; the normal public
-  project intake path does not apply here. Read
-  [for_researchers.md](for_researchers.md) before using the result as evidence.
+Rules for sealed targets: use an opaque slug such as `exp01` (it appears in loop-visible files) and generic variable names such as `x1`, `x2`, or `n`, and keep target form, parameters, derivation, and mechanism hints out of the charter, rubric, thesis, and visible evidence. Treat the whole thing as a controlled experiment with its own path; the normal public project-intake path does not apply here. Read [for_researchers.md](for_researchers.md) before using the result as evidence.
 
 ### 2. Generate and inspect the project
 
@@ -344,10 +231,7 @@ ztare project prepare --project exp01 --rubric exp01
 ztare project source-check --project exp01 --json
 ```
 
-The exact generated files depend on the project type selected by `ztare
-project new`. Inspect the generated project directory, rubric, gate harness,
-and visible evidence before sealing. Do not assume a historical file layout if
-the CLI help says otherwise.
+The generated files depend on the project type selected by `ztare project new`. Inspect the generated project directory, rubric, gate harness, and visible evidence before sealing, and trust the CLI help over any historical file layout.
 
 ### 3. Check the gate before sealing
 
@@ -355,9 +239,7 @@ the CLI help says otherwise.
 python projects/exp01/gate_harness.py --run-smoke-test
 ```
 
-For numeric recovery experiments, the blank or zero model should fail the
-project gate. If it passes, fix the threshold or harness before running the
-loop.
+For numeric recovery experiments, the blank or zero model should fail the project gate. If it passes, fix the threshold or harness before running the loop.
 
 ### 4. Seal and run
 
@@ -375,9 +257,7 @@ make experiment-loop \
 
 ## Advanced: domain thesis scaffold
 
-Use `generate-gp` when you already have an API-backed judge available and want
-a qualitative project scaffold from a brief. For a source-first project, prefer
-`ztare project source-init`, `source-check`, and a project-intake file instead.
+Use `generate-gp` when you already have an API-backed judge available and want a qualitative project scaffold from a brief. For a source-first project, prefer `ztare project source-init`, `source-check`, and a project-intake file.
 
 ```bash
 make generate-gp \
@@ -387,16 +267,14 @@ make generate-gp \
 ```
 
 This creates:
+
 - `projects/my_project/evidence.txt`: blank evidence file (edit directly, or compile from `raw/`)
 - `projects/my_project/raw/`: drop source documents here for `make evidence-compile`
 - `projects/my_project/thesis.md`: seeded thesis template
 - `projects/my_project/project_charter.md`: auto-drafted from your brief
-- `rubrics/my_project.json`: LLM-drafted adversarial persona + criteria, with all qualitative gate opt-outs pre-filled
+- `rubrics/my_project.json`: LLM-drafted adversarial persona and criteria, with all qualitative gate opt-outs pre-filled
 
-*Important:* Review and edit `rubrics/my_project.json` before sealing. The
-LLM draft is a starting point, not a final rubric. Check that the persona is
-genuinely adversarial for your domain and that the evidence files are typed
-before compilation.
+Review and edit `rubrics/my_project.json` before sealing. The LLM draft is a starting point. Check that the persona is genuinely adversarial for your domain and that the evidence files are typed before compilation.
 
 ```bash
 # Option A: Add evidence directly
@@ -406,7 +284,7 @@ before compilation.
 cp my_report.pdf projects/my_project/raw/
 make evidence-compile PROJECT=my_project MODEL="$ZTARE_WORKBENCH_MODEL"
 
-# Then seal, create the intake file, inspect run-readiness readiness, and run
+# Then seal, create the intake file, inspect run readiness, and run
 make seal PROJECT=my_project RUBRIC=rubrics/my_project.json
 ztare project intake create --path my_project_intake.json \
   --project my_project --rubric rubrics/my_project.json \
@@ -425,14 +303,13 @@ ztare autoresearch run --project my_project --rubric rubrics/my_project.json \
     --judge "$ZTARE_WORKBENCH_RUN_JUDGE_MODEL"
 ```
 
-Why not `mkdir` + manual rubric? Qualitative projects require three gate opt-out keys (`farther_tail_region: null`, `disable_evidence_fit_gate`, `disable_uniqueness_gap_gate`) that are non-obvious and whose absence causes hard fails that look like scoring failures. `generate-gp` pre-fills them.
+Why not `mkdir` and a manual rubric? Qualitative projects require three gate opt-out keys (`farther_tail_region: null`, `disable_evidence_fit_gate`, `disable_uniqueness_gap_gate`) that are non-obvious and whose absence causes hard fails that look like scoring failures. `generate-gp` pre-fills them.
 
 ---
 
 ## Model options
 
-Choose models in the Project Workbench Settings page or through environment
-variables:
+Choose models in the workbench Settings page or through environment variables:
 
 | Role | Setting |
 |---|---|
@@ -441,9 +318,7 @@ variables:
 | Judge | `ZTARE_WORKBENCH_RUN_JUDGE_MODEL` |
 | Inverter | `ZTARE_WORKBENCH_RUN_INVERTER_MODEL` |
 
-For consequential runs, choose different provider families when possible.
-Cross-family pairing reduces correlated blind spots; it does not make the
-result true without sources, saved history, and review.
+For consequential runs, choose different provider families when possible. Cross-family pairing reduces correlated blind spots; it does not make the result true without sources, saved history, and review.
 
 ---
 
@@ -459,10 +334,11 @@ Iteration N, score: XX
 ```
 
 Key signals:
-- *Score 0 with `harness_ok=false`*: gate fired; model is wrong, loop continues searching
-- *Score 0 with `harness_error`*: infrastructure bug; check imports, fix before rerunning
-- *Score stagnant for 3+ iters*: stagnation pivot fires automatically
-- *FEYNMAN WALL*: all 32 library primitives exhausted; grammar-guided symbolic regression activates
+
+- Score 0 with `harness_ok=false`: gate fired; the model is wrong and the loop continues searching
+- Score 0 with `harness_error`: infrastructure bug; check imports and fix before rerunning
+- Score stagnant for 3+ iterations: the stagnation pivot fires automatically
+- Library primitives exhausted (the grammar ceiling): grammar-guided symbolic regression activates
 
 ---
 
@@ -473,32 +349,33 @@ Key signals:
 | `No module named 'src.ztare.substrates.<slug>_gt'` | Ground-truth fixture stub not created | Re-run `ztare project new`; the fixture stub is auto-created |
 | `harness_ok=True` on blank model | RMSE threshold too loose | Tighten `_RMSE_THRESHOLD` in gate_harness.py and rubric |
 | `--reviewer-domains` crash | Passed to the loop, which is the wrong consumer; the findings runner owns it | Remove from `make experiment-loop`; routing is automatic via `latent_distance.jsonl` |
-| Score 0 every iteration | Hard gate too tight OR zero model passes | Check gate calibration; check evidence float parsing |
-| Seal fails sentinel | Domain name leaked into mutator-visible file | Audit evidence.txt, charter, rubric for biological/domain terms |
+| Score 0 every iteration | Hard gate too tight, or the zero model passes | Check gate calibration; check evidence float parsing |
+| Seal fails sentinel | Domain name leaked into a mutator-visible file | Audit evidence.txt, charter, and rubric for domain terms |
 
 ---
 
 ## Where things live
 
 ```
-projects/<slug>/          <- per-run files (evidence, gate harness, test_model)
-rubrics/<slug>.json       ← scoring rubric (ground-truth-blind)
-src/ztare/substrates/     ← controlled-fixture target helpers
-research_areas/            ← public seams, specs, boards, and experiment records
-docs/                     <- reviewer docs (this file)
-config/prompts/           ← reviewer domain personas
+projects/<slug>/           <- per-run files (evidence, gate harness, test_model)
+rubrics/<slug>.json        <- scoring rubric (ground-truth-blind)
+forensic-workbench/        <- the Project Workbench web app
+src/ztare/substrates/      <- controlled-fixture target helpers
+research_areas/            <- public seams, specs, boards, and experiment records
+docs/                      <- reviewer docs (this file)
+config/prompts/            <- reviewer domain personas
 ```
 
 ---
 
 ## Next steps
 
-- First-run orientation: `docs/guides/first-30-minutes.md`
-- Full workflow reference: `docs/guides/workflow.md`
-- Experiment procedure: `docs/guides/experiment_cookbook.md`
-- Architecture overview: `docs/concepts/architecture.md`
-- How the validator works: `docs/concepts/cognitive_gym.md`
-- Epistemic principles: `docs/concepts/epistemic_principles.md`
-- Reflexive engineering: `docs/concepts/reflexive_engineering.md`
-- Glossary: `docs/concepts/glossary.md`
-- Experiment track record: `research_areas/EXPERIMENT_TRACK_RECORD.md`
+- First-run orientation: [first-30-minutes.md](first-30-minutes.md)
+- Full workflow reference: [workflow.md](workflow.md)
+- Experiment procedure: [experiment_cookbook.md](experiment_cookbook.md)
+- Architecture overview: [architecture.md](../concepts/architecture.md)
+- How the validator works: [cognitive_gym.md](../concepts/cognitive_gym.md)
+- Epistemic principles: [epistemic_principles.md](../concepts/epistemic_principles.md)
+- Reflexive engineering: [reflexive_engineering.md](../concepts/reflexive_engineering.md)
+- Glossary: [glossary.md](../concepts/glossary.md)
+- Experiment track record: [EXPERIMENT_TRACK_RECORD.md](../../research_areas/EXPERIMENT_TRACK_RECORD.md)

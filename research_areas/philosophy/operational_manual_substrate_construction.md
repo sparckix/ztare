@@ -1,488 +1,268 @@
-# ZTARE Operational Manual for Scientific Discovery
+# ZTARE operational manual for substrate construction
 
-**Status:** Public — mandatory reading before adding any substrate, grammar construct, or pipeline component
-**Date:** 2026-04-17
-**Provenance:** Distilled from [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md)→[GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md). Updated continuously as new failure modes are earned.
-**Relationship to *Epistemic Verification* (Treatise):** The Treatise explains *why* the principles work — permanent,
-academic, no runbook. This manual explains *how not to break them* — paranoid, updatable, engineering.
-If GPT-5 can do gradient descent in its head tomorrow, Chapter 2 changes. Chapter 2 of the Treatise does not.
+**Status:** public — read before adding any substrate, grammar construct, or pipeline component
+**Philosophical counterpart:** [three_legs_of_ztare.md](three_legs_of_ztare.md) explains why these rules exist. This manual explains how to avoid breaking them; the legs are permanent, and the manual changes whenever a new failure mode is earned.
+**Provenance:** distilled from the seam record, [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md) through [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) and later.
 
 ---
 
-## Chapter 1: The Three Non-Substitutable Legs
+## Chapter 1: the three legs, stated operationally
 
-*Distilled from `three_legs_of_ztare.md`. Read that document for full derivation.*
+Distilled from [three_legs_of_ztare.md](three_legs_of_ztare.md). Read that document for the full derivation.
 
-ZTARE rests on three legs. Remove any one and the apparatus collapses into something already in
-the literature (curve fitting, model selection, or LLM-as-judge).
+ZTARE stands on three load-bearing commitments. Take any single one away and what remains already exists in the literature under another name: curve fitting, model selection, or LLM-as-judge.
 
-### Leg 1 — Invert (Falsification is cheaper than construction)
+### Leg 1 — inversion
 
-ZTARE's first move on any candidate is *how would I kill this?*, not *does this fit?*
-Gates, quarantines, and the bounded discriminator exist so a failed hypothesis is diagnosed
-in seconds, not absorbed as free parameters.
+Falsification is cheaper than construction. Faced with any candidate, the apparatus first asks how it would die, then how well it fits. Gates, quarantines, and the bounded discriminator exist so that a failed hypothesis is diagnosed in seconds.
 
-**Operational consequence:** Never merge RAM-layer state into the validator. Accumulation belongs
-outside the ALU. Negative evidence must be terminal, not absorbed as regularization.
+Operational consequence: accumulated state stays out of the validator. The validator is the inversion leg, and memory belongs elsewhere. Negative evidence must stay terminal. An architecture that absorbs failures back into the model as free parameters has quietly turned its falsifier into a regularizer.
 
-### Leg 2 — Compress (Asymptotic survival, not parameter count)
+### Leg 2 — compression, meaning out-of-window survival
 
-A claim earns status only by surviving outside the window it was fit in.
-ZTARE does **not** reward minimum parameter count — it enforces farther-tail holdout survival.
-A parsimonious finite-window surrogate is *more* dangerous than a messy global law,
-because parsimony is what makes the surrogate persuasive.
+A claim earns status by surviving outside the window in which it was fit. ZTARE does not reward small parameter counts. When a candidate makes an asymptotic claim, [GP-046](../seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) requires it to hold on a farther-tail holdout that the sandbox authored and the candidate never saw. A parsimonious finite-window surrogate is more dangerous than a messy global law, because parsimony persuades.
 
-**Operational consequence:** The holdout set must be authored outside the candidate's claim region.
-Any test surface derived from the candidate's own output is suspect.
+Operational consequence: the holdout must be authored outside the candidate's claim region. A test surface derived from the candidate's own output is contaminated by construction.
 
-### Leg 3 — Adversarial Disagreement (Truth survives structured disagreement)
+### Leg 3 — adversarial disagreement
 
-Invert + Compress leave a single verifier in the loop, and a single verifier is gameable.
-The third leg is:
-- **Adversarial review committee** — independent judges scoring the same candidate; disagreement is signal
-- **Meta-Judge** — a judge of judges when the adversarial review committee splits
-- **Semantic escalation gate** — where the apparatus admits it cannot decide alone
+Legs 1 and 2 still leave a single verifier in the loop, and a single verifier is gameable. The third leg replaces the oracle with structured disagreement:
 
-**Operational consequence:** Never make a single oracle central. "Use a bigger model as
-the judge" is not leg 3. Leg 3 requires disagreement surface, not scale.
+- a review committee of independent judges scoring the same candidate, where disagreement is treated as signal
+- a meta-judge that adjudicates when the panel splits
+- a human escalation surface, which is the apparatus admitting it cannot decide alone.
 
-| Remove | ZTARE becomes |
+Operational consequence: every proposed judge must answer one question: does it add disagreement surface, or does it scale a single oracle? A bigger model as the judge is oracle scaling, and it is not leg 3.
+
+| Remove | What ZTARE becomes |
 |---|---|
-| Invert | A model-selection harness that absorbs failure as complexity |
-| Compress | A fitter with a falsifier — wins the window, loses the law |
-| Adversarial disagreement | LLM-as-judge with extra steps. Gameable by a good mutator |
+| Inversion | A model-selection harness that absorbs failure as complexity |
+| Compression as survival | A fitter with a falsifier: wins the window, loses the law |
+| Adversarial disagreement | LLM-as-judge with extra steps, gameable by a good mutator |
 
 ---
 
-## Chapter 2: The Cognitive Gym — Caging the LLM
+## Chapter 2: the cognitive gym
 
-*Distilled from `cognitive_gym.md`. Read that document for full derivation and evolution history.*
+Distilled from the [cognitive gym essay](../../docs/concepts/cognitive_gym.md); the arrangement is implemented in [cognitive_gym.py](../../src/ztare/common/cognitive_gym.py).
 
-An LLM inside a constrained validation loop produces better science than an unconstrained LLM,
-for the same reason a weightlifter inside a squat rack lifts more without dying. The cage is not
-the obstacle. The cage is what lets you push harder.
+An LLM inside a constrained validation loop produces better science than the same LLM unconstrained. Each deterministic layer removes a failure mode the model cannot self-correct, which frees it to propose ambitious functional forms across a large search space. The division of labor: the language model routes semantics, and deterministic code does the arithmetic.
 
-### The Four Layers
+### The layers
 
-| Layer | Owner | Does | Does NOT |
+| Layer | Owner | Does | Does not |
 |---|---|---|---|
-| **Semantic Router** | LLM | Picks functional form (topological "gear") | Compute coefficients |
-| **Topological Sieve** | Component C | Probes GT corrector shape, emits 2-bit descriptor | Select the form |
-| **Deterministic Sidecar** | SciPy `curve_fit` | Fits parameter values to evidence | Search function space |
-| **Contamination Gate** | Code | Suppresses hints that narrow search below threshold | Inject information |
+| Semantic routing | LLM | picks a functional form from the grammar | compute coefficients |
+| Residual probe | deterministic code + the [corrector library](../../src/ztare/gates/corrector_library.py) | classifies the residual's shape and emits a coarse geometric hint | select the form |
+| Deterministic sidecar | SciPy `curve_fit` | fits parameter values to visible evidence | search function space |
+| Contamination gate | code, backed by the [prompt-leak audit](../../src/ztare/gates/prompt_leak_audit.py) | suppresses hints that narrow the candidate space below the suppression threshold | inject information |
 
-### The Separation of Concerns Rule
+Two extractors mine the failure record between iterations. The [structural constraint extractor](../../src/ztare/gates/structural_constraint_extractor.py) intersects the mathematical skeletons of failed families and emits what every failure shared. The [negative-space extractor](../../src/ztare/gates/negative_space_extractor.py) surfaces the moves present in the candidate universe that no failed family ever tried. Both write constraints into the same delivery channel, and both are subject to the contamination gate.
 
-When these boundaries blur, the system breaks. Every [GP-074](../seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md) integration bug traced to a boundary violation:
+### Separation of concerns
 
-| Concern | Owner | NOT the owner |
+When these boundaries blur, the system breaks. Every integration bug in [GP-074](../seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md) traced to a boundary violation:
+
+| Concern | Owner | Not the owner |
 |---|---|---|
-| "What family of functions might fit?" | LLM | SciPy, Component C |
+| "What family of functions might fit?" | LLM | SciPy, residual probe |
 | "What are the optimal parameter values?" | SciPy | LLM |
-| "What shape is the residual?" | Component C | LLM |
-| "Is this hint safe to inject?" | Contamination Gate | LLM, operator |
-| "Does this formula generalize?" | Holdout gate (deterministic) | LLM, judge |
+| "What shape is the residual?" | residual probe | LLM |
+| "Is this hint safe to inject?" | contamination gate | LLM, operator |
+| "Does this formula generalize?" | holdout gate (deterministic) | LLM, judge |
 
-**Operational check:** Read any LLM prompt. Find every number the LLM is asked to produce.
-If any of those numbers will be used directly as parameter values → rewrite the prompt to
-ask for structure only.
+### How each layer was earned
 
-### The Evolution of the Cage
+Each layer exists because the previous configuration hit a specific failure mode:
 
-Each layer was added because the previous configuration hit a specific failure mode:
-
-| GP | Failure mode | Layer added |
+| Seam | Failure mode | Layer added |
 |---|---|---|
-| [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md) | Numerical hallucination (LLM guessing 0.081234) | Deterministic Sidecar (SciPy) |
-| [GP-035](../seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md) | Combinatorial explosion (10,000 random forms) | Components A+B (structural pruning) |
-| [GP-061](../seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md) | Null result on Selkov (search space too large) | Component B (negative space) |
-| GP-074 | Shape guessing (LLM couldn't characterize residual) | Component C (residual fingerprint) |
-| [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | Grammar semantic leak (DOSE_SCALED named the domain) | Contamination Gate at grammar layer |
+| [GP-027](../seams/apparatus/instrumentation/GP-027_evidence_compile_reuse_seam.md) | numerical hallucination (the LLM guessing coefficients) | deterministic sidecar |
+| [GP-035](../seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md) | combinatorial explosion (thousands of random forms) | structural constraint extractor and negative-space extractor |
+| [GP-061](../seams/apparatus/supervisor/GP-061_R4_retrospective_audit.md) | null result on Selkov, search space too large | negative-space extractor |
+| [GP-074](../seams/substrates/selkov/GP-074_component_c_residual_fingerprinting_seam.md) | the LLM could not characterize residual shape | residual fingerprinting against the corrector library |
+| [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | grammar semantic leak (`DOSE_SCALED` named the domain) | contamination gate at the grammar layer |
 
-### Why "Gym" Not "Prison"
-
-The cage doesn't make the LLM dumber. It removes failure modes that prevent the LLM from
-proposing ambitious functional forms it could otherwise explore:
-- Removing arithmetic → LLM stops hallucinating precision, starts proposing bolder topologies
-- Contamination gate → LLM keeps searching instead of stopping when the hint leaked the answer
-- Corrector library → LLM's structural intuition has tested vocabulary to land on
+None of this dumbs the model down. With arithmetic removed, the model stops hallucinating precision and proposes bolder topologies. The contamination gate keeps the search alive when a hint would have leaked the answer, and the corrector library gives the model's structural intuition a tested vocabulary to land on.
 
 ---
 
-## Chapter 3: Epistemic Hygiene — Hard Rules for Substrate Construction
+## Chapter 3: hard rules for substrate construction
 
-*Original content of this manual.*
+Every time a new substrate is added to ZTARE, there is pressure to name things after the domain, inject domain knowledge into the grammar, or shorten the contamination gate just this once. Each of these moves destroys the epistemic validity of the run without leaving a visible error: the engine still runs and the score still rises, but the discovery claim is hollow. This chapter collects the anti-patterns we have paid for in lost iterations and invalid results.
 
-### Why This Chapter Exists
+### Rule 1: name the math, not the physics
 
-Every time a new substrate is added to ZTARE, there is pressure to name things after the domain,
-inject domain knowledge into the grammar, or shorten the contamination gate "just this once."
-Each of these moves destroys the epistemic validity of the run without leaving a visible error.
-The engine still runs. The score still rises. But the discovery claim is hollow.
+When extending the grammar (the `CompositionCommand` enum in [symbolic_regression_synthesizer.py](../../src/ztare/composition/symbolic_regression_synthesizer.py), rubric penalty lists, prompt templates), do not name constructs after the physical domain under test. The LLM sees the command name in its prompt. A domain name activates training-weight retrieval, and the mutator stops reasoning from residuals and starts retrieving "pharmacokinetics" or "quantum mechanics" from memory, which turns the discovery into memorization.
 
-This manual collects every anti-pattern we have paid for in lost iterations and invalid results.
-It is not theory — it is a checklist with teeth.
-
----
-
-## Rule 1: Name the Math, Not the Physics
-
-**Trap:** When extending the grammar (Component D `CompositionCommand` enum, rubric penalty lists,
-prompt templates), naming constructs after the physical domain you are currently testing.
-
-**Why it breaks:** The LLM sees the command name in its prompt. A domain name activates training-weight
-retrieval. The mutator stops reasoning from residuals and starts retrieving "pharmacokinetics" or
-"quantum mechanics" from memory. The discovery is memorization, not inference.
-
-**Examples:**
 | Wrong (semantic leak) | Correct (math op) |
 |---|---|
 | `DOSE_SCALED` | `BIVARIATE_SCALE` |
 | `SCHRODINGER_DECAY` | `COMPOSE(exp_decay, sinusoid)` |
-| `PHARMACOKINETIC_ABSORPTION` | `exp_decay` (already in library) |
+| `PHARMACOKINETIC_ABSORPTION` | `exp_decay` (already in the library) |
 | `ECONOMIC_MULTIPLIER` | `BIVARIATE_SCALE` |
 | `time_var`, `dose_var` | `primary_var`, `scale_var` (or just `x1`, `x2`) |
 
-**Test before committing:** Read every new grammar construct name aloud without context.
-Can you describe what it does without mentioning the application domain? If no — rename.
+Test before committing: read every new grammar construct name aloud without context, and if you cannot describe what it does without naming the application domain, rename it. The canonical fix is `DOSE_SCALED → BIVARIATE_SCALE` ([GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md)).
 
-**Canonical fix:** `DOSE_SCALED → BIVARIATE_SCALE`. Documented 2026-04-17, [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md).
+### Rule 2: the LLM proposes structure, never numbers
 
----
+Do not prompt the LLM to propose or refine numerical parameter values. LLMs hallucinate precision, and asking "what is the value of ke?" invites a confident fabrication. Under the layer contract in chapter 2, the LLM output must be a structural choice (a command plus operand labels), never a numerical claim. All parameter estimation belongs to the deterministic sidecar.
 
-## Rule 2: The LLM Is a Semantic Router, Not a Calculator
+Operational check: read the LLM prompt and find every number the LLM is asked to produce. If any of those numbers will be used directly as parameter values, rewrite the prompt to ask for structure only.
 
-**Trap:** Prompting the LLM to propose or refine numerical parameter values.
+### Rule 3: variable renames are typographic, never semantic
 
-**Why it breaks:** LLMs hallucinate precision. Asking "what is the value of ke?" invites a confident
-fabrication. The engine's separation of concerns is:
+Two changes look similar and are not:
 
-| Layer | Owner | What it does |
-|---|---|---|
-| Semantic Router | LLM | Selects topological "gear" — picks functional form from grammar |
-| Deterministic Sidecar | SciPy `curve_fit` | Fits parameter values to evidence |
-| Contamination Gate | Code | Suppresses hints that narrow search below suppression threshold |
+- `n → t` is typographic and safe. The letter `t` does not tell the LLM what `t` represents, and the variable becomes a continuous float, which `curve_fit` needs to run without crashing.
+- Naming the variable `time_hours_post_dose` is semantic and unsafe, because the LLM infers the domain. Rename it to `x1`.
 
-Any prompt that asks the LLM to output a coefficient, rate constant, or threshold value
-is a contract violation. The LLM output must be a structural choice (a command + operand labels),
-never a numerical claim.
+Variable names in Division B artifacts (evidence.txt, charter, rubric) must be opaque: `x1`, `x2`, or single letters without domain meaning. Division A artifacts (GT script, holdout, denylist) may use domain names internally, since Division B never reads them. [generate_substrate.py](../../src/ztare/scaffold/generate_substrate.py) with `--variables x1,x2` is the correct invocation for bivariate substrates.
 
-**Operational check:** Read the LLM prompt. Find every number the LLM is being asked to produce.
-If any of those numbers will be used directly as parameter values → rewrite the prompt to ask for structure only.
+Corollary on dimensionality: telling the engine there are two columns of floats constrains the mathematics without naming the law. Telling the engine the second column represents an administered dose is oracle knowledge. The number and type of independent variables is physics. What they represent is the answer.
 
----
+### Rule 4: the contamination gate is non-negotiable
 
-## Rule 3: Variable Substitution Is Typographic, Not Semantic
+Do not weaken or bypass the contamination gate because "it's just a hint." The gate is what separates ZTARE from "give the LLM more signal." Any hint that narrows the search space below the suppression threshold converts discovery into retrieval, even a true and well-intentioned hint.
 
-**Trap:** Confusing "rename the variable" (safe) with "inject domain knowledge" (unsafe).
+One test decides, taken from the [corrector library](../../src/ztare/gates/corrector_library.py) spec: if the hint were given directly to a competent expert, would it let them identify the ground-truth functional form without seeing the data? If yes, suppress it.
 
-**The distinction:**
-- `n → t`: Typographic. The letter `t` does not tell the LLM what `t` represents.
-  It is a continuous float instead of an integer. Required for `curve_fit` to work without crashing.
-  **Safe.**
-- Naming the variable `time_hours_post_dose`: Semantic. The LLM infers the domain.
-  **Unsafe — rename to `x1`.**
+Corollary on rubric penalty lists: penalties for specific named models ("penalty: proposes Michaelis-Menten by name") are fine, since they prevent name-retrieval gaming. Penalties for mathematical structures ("penalty: uses any exponential") are contamination, because they artificially narrow the search space.
 
-**Operational rule:**
-- Variable names in Division B artifacts (evidence.txt, charter, rubric) must be opaque:
-  `x1`, `x2`, or single letters without domain meaning.
-- Division A artifacts (GT script, holdout, denylist) may use domain names internally —
-  Division B never reads them.
-- `generate_substrate.py --variables x1,x2` is the correct invocation for bivariate substrates.
+### Rule 5: the GT script is Division A, always
 
-**Corollary — dimensionality vs. axiology:**
-Telling the engine there are two columns of floats is dimensionality — not a cheat.
-Telling the engine the second column represents an administered dose is an axiom — a cheat.
-The number and type of independent variables is physics. What they represent is oracle knowledge.
-
----
-
-## Rule 4: The Contamination Gate Is Non-Negotiable
-
-**Trap:** Weakening or bypassing the contamination gate because "it's just a hint."
-
-**Why it breaks:** The contamination gate is what separates ZTARE from "give the LLM more signal."
-Any hint that narrows the search space below the suppression threshold — even a true, well-intentioned
-hint — converts discovery into retrieval.
-
-**The test (from Component C spec):** If the hint were given directly to a competent expert,
-would it let them identify the ground-truth functional form without seeing the data?
-If yes → suppress the hint.
-
-**Corollary — rubric penalty lists:** Rubric penalties for specific named models
-(e.g., "penalty: proposes Michaelis-Menten by name") are fine — they prevent name-retrieval gaming.
-Rubric penalties for mathematical structures (e.g., "penalty: uses any exponential") are contamination —
-they artificially narrow the search space.
-
----
-
-## Rule 5: The GT Script Is Division A. Always.
-
-**Trap:** Putting any GT information (parameters, functional form, derivation) in Division B artifacts.
-
-**Division A / Division B boundary ([GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) protocol):**
+Do not put any ground-truth information (parameters, functional form, derivation) in Division B artifacts. The Division A / Division B boundary comes from the [GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) protocol:
 
 | Artifact | Division | What it may contain |
 |---|---|---|
-| GT script (`*_gt.py`) | A | Parameters, formula, evidence grid, f_true, f_dominant |
-| Evidence holdout | A | Held-out (x1, x2, z) triples |
+| GT script (`*_gt.py`) | A | parameters, formula, evidence grid, f_true, f_dominant |
+| Evidence holdout | A | held-out (x1, x2, z) triples |
 | Denylist | A | GT-specific vocabulary |
-| Evidence visible | B | (x1, x2, z) triples — opaque variable names, no domain context |
-| Charter | B | Neutral problem statement — "find a law governing z(x1, x2)" |
-| Thesis seed | B | Empty axioms or single neutral sentence |
-| Rubric | B | Scoring criteria — no GT form, no named parameters |
-| Gate harness | B | Evaluates predicted vs. observed — no formula |
+| Evidence visible | B | (x1, x2, z) triples, opaque variable names, no domain context |
+| Charter | B | neutral problem statement: "find a law governing z(x1, x2)" |
+| Thesis seed | B | empty axioms or a single neutral sentence |
+| Rubric | B | scoring criteria, no GT form, no named parameters |
+| Gate harness | B | evaluates predicted vs. observed, no formula |
 
-**The sentinel enforces this mechanically.** But the sentinel only catches denylist vocabulary.
-It does not catch implicit leaks (e.g., a charter that says "the law has two phases").
-Human review of Division B artifacts is required before `make seal`.
+A [leak sentinel](../../src/ztare/validator/leak_sentinel.py) enforces this mechanically, but it only catches denylist vocabulary. It does not catch implicit leaks, such as a charter that says "the law has two phases." Human review of Division B artifacts is required before `make seal`.
 
----
+### Rule 6: `make seal` runs before the loop, never after
 
-## Rule 6: `make seal` Runs Before the Loop, Never After
+`thesis.md` accumulates the mutator's discovered hypotheses across iterations. By iteration 3 it will contain whatever structure the mutator found, including denylist terms if the engine correctly identified the ground truth. Running the sentinel post-loop will always produce hits, and those hits are evidence the engine converged. The seal attests to the state of the sandbox at construction time. Run `make seal PROJECT=... RUBRIC=...` immediately after `generate_substrate.py`, before any loop invocation.
 
-**Trap:** Running the sentinel after the loop has already written GT vocabulary into `thesis.md`.
+### Rule 7: stage 1 is apparatus validation, not discovery
 
-**Why:** `thesis.md` accumulates the mutator's discovered hypotheses across iterations.
-By iteration 3, it will contain whatever structure the mutator found — including terms from the
-denylist if the engine correctly identified the GT. Running the sentinel post-loop will always
-produce hits. Those hits are expected and correct: they are evidence the engine converged.
+Do not publish stage 1 (synthetic data) results as evidence that the engine discovered a law. Synthetic data is generated by the law the engine is trying to find, so the data surface is perfectly shaped for the answer. If the engine finds `exp_decay + exp_decay` on biexponential synthetic data, that is standard nonlinear regression.
 
-**The seal attests to the state of the sandbox at construction time**, before the loop has written
-anything. Run `make seal PROJECT=... RUBRIC=...` immediately after `generate_substrate.py`, before
-any loop invocation.
+Stage 1 claims: infrastructure works, `curve_fit` handles continuous floats, variable substitution is correct. Stage 1 does not claim the engine discovered the law, that the law is novel, or that the result generalizes. Stage 2, real data with structural noise, is required for discovery claims. Log stage 1 results as `apparatus_verified` and keep them out of any publication or ledger entry that uses discovery language.
 
----
-
-## Rule 7: Stage 1 Is Apparatus Validation, Not Discovery
-
-**Trap:** Publishing Stage 1 (synthetic data) results as evidence that the engine "discovered" the law.
-
-**Why:** Synthetic data is generated by the law the engine is trying to find. The data surface is
-perfectly shaped for the answer. If the engine finds `exp_decay + exp_decay` on biexponential
-synthetic data, that is standard nonlinear regression — not discovery. The surface was designed
-to match the answer key.
-
-**Epistemic scope of Stage 1:**
-- Claims: infrastructure works, `curve_fit` handles continuous floats, variable substitution correct
-- Does not claim: engine discovered the law, law is novel, result generalizes
-
-**Stage 2 (real data with structural noise) is required for discovery claims.**
-
-Log Stage 1 results as `apparatus_verified`, not `discovery`. Do not include Stage 1 in any
-publication or ledger entry that uses discovery language.
-
----
-
-## Substrate Construction Checklist
+### Substrate construction checklist
 
 Before running `generate_substrate.py` for any new substrate:
 
-- [ ] **Grammar constructs named after math ops**, not domain (Rule 1)
-- [ ] **LLM prompt outputs structure**, not numerical values (Rule 2)
-- [ ] **Division B variable names opaque** (`x1`, `x2`, not domain terms) (Rule 3)
-- [ ] **Division A/B boundary drawn** — GT script, holdout, denylist all in Division A (Rule 5)
-- [ ] **Charter contains no functional form hints** — "find a law governing z(x1, x2)" only (Rule 5)
-- [ ] **Rubric penalties target named models**, not mathematical structures (Rule 4)
-- [ ] **`make seal` planned for immediately post-generation**, before any loop (Rule 6)
-- [ ] **Stage 1 / Stage 2 scope documented** in seam if synthetic data is used (Rule 7)
+- [ ] Grammar constructs named after math ops, not the domain (Rule 1)
+- [ ] LLM prompts ask for structure, not numerical values (Rule 2)
+- [ ] Division B variable names opaque (`x1`, `x2`, not domain terms) (Rule 3)
+- [ ] Division A/B boundary drawn: GT script, holdout, denylist all in Division A (Rule 5)
+- [ ] Charter contains no functional-form hints, only "find a law governing z(x1, x2)" (Rule 5)
+- [ ] Rubric penalties target named models, not mathematical structures (Rule 4)
+- [ ] `make seal` planned for immediately post-generation, before any loop (Rule 6)
+- [ ] Stage 1 / stage 2 scope documented in the seam if synthetic data is used (Rule 7)
 
 ---
 
----
+## Chapter 4: plateau diagnosis, evidence versus grammar
 
-## Chapter 4: The Evidence-Grammar Diagnostic — What Hardy Actually Is
+Distilled from the crucial-experiment sequence in [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) through [GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md).
 
-*Distilled from [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md)→[GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md) crucial experiment sequence. Updated 2026-04-18.*
+When the engine plateaus (stagnation at a high-scoring champion that fails the farther-tail discriminator), the bottleneck is in one of two places:
 
-When the engine hits a plateau (stagnation at a high-scoring champion that fails the farther-tail
-discriminator), the bottleneck is in one of two places:
+1. Evidence: the data grid cannot discriminate the champion from the true form, and the engine found the simplest survivor consistent with the visible window, which is correct empirical behavior.
+2. Grammar: the engine's AST vocabulary cannot express the true form even where the data would discriminate it, so the mutator has hit its grammar ceiling.
 
-1. **Evidence** — the data grid cannot discriminate the champion from the true form. The engine
-   found the simplest survivor consistent with the visible window. This is the correct empirical
-   behavior — the engine is doing exactly what a competent Kepler should do.
+These are independently testable and must be tested independently. A confounded experiment (enriched data plus a grammar patch at the same time) cannot distinguish which intervention was central.
 
-2. **Grammar** — the engine's AST vocabulary cannot express the true form, even if the data would
-   discriminate it. The mutator lacks the "Lego bricks" to build the correct topological structure.
+### Two candidate mechanisms for structural rejection
 
-These are independently testable, and **must be tested independently.** A confounded experiment
-(enriched data + grammar patch simultaneously) cannot distinguish which intervention was central.
+Rejecting a high-scoring empirical fit on structural grounds admits two competing answers.
 
-### The Hardy Inversion
+One answer is formal verification: build a deductive proof engine (Lean/Coq) that receives axioms and attempts to derive the champion form, rejecting the champion when the proof fails. This fails because the axiom selection problem is the eigenquestion selection problem. If the operator feeds `E=hv` into the prover, the operator has already done the discovery; the prover confirms without discovering, and the ground truth has leaked through the axiom channel ([GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md)).
 
-The question "what would it take to build a Hardy?" (a mechanism that rejects score-97 empirical
-fits on structural grounds) admits two competing answers:
+Its rival is evidence-grid design: compute where the champion and its nearest structural rival diverge most, and propose the next measurement there. This is architecturally consistent, a typed, stateless, deterministic operation like the other gates, and it extends the farther-tail gate from a static discriminator to a dynamic one.
 
-**Answer A (Formal Verification):** Build a deductive proof engine (Lean/Coq) that receives axioms
-and attempts to derive the champion form. If the proof fails, reject the champion. This is the
-textbook "Hardy checks Ramanujan's work" framing.
+Evidence-grid design solves the necessary condition, that the engine must see discriminating data. It does not guarantee the sufficient condition, that the grammar can express the true form. Both conditions must hold, and each can be tested for a few dollars, so test them sequentially, cheapest first.
 
-**Answer B (Evidence Grid Design):** Build a mechanism that computes where the champion and its
-nearest structural rival diverge most, and proposes the next measurement there. Hardy is not a proof
-engine — Hardy is the system that tells Ramanujan what to measure next.
+### Rule 8: test evidence before grammar
 
-**Answer A fails because the axiom selection problem IS the eigenquestion selection problem.**
-If the operator feeds `E=hv` into the prover, the operator has already done the discovery.
-The prover confirms; it does not discover. This is oracle contamination through the axiom channel
-(identified independently by the Systems ML reviewer, [GP-083](../seams/mission/treatise/GP-083_inference_type_boundary_seam.md) Turn 2).
-
-**Answer B is architecturally consistent** — it produces a typed, stateless, deterministic operation
-(compute divergence surface, propose measurement point). It belongs in the decomposed operations
-(Treatise Chapter 1), not in the residual (Chapter 3). It extends the farther-tail gate from a
-static discriminator to a dynamic one.
-
-**The synthesis (earned from the Claude-vs-Gemini debate, 2026-04-18):** Answer B solves the
-*necessary* condition (the engine must see discriminating data). It does not guarantee the
-*sufficient* condition (the engine must have the grammar to express the true form). Both conditions
-must hold. But the evidence test is $1 and the grammar test is $1, so test them sequentially,
-cheapest first.
-
-### Rule 8: Test Evidence Before Grammar
-
-**Trap:** When the engine hits a plateau, immediately extending the grammar (adding primitives,
-composition modes, or series expansion rules) to "help" it find the truth.
-
-**Why it breaks:** Grammar extensions are Lakatosian auxiliary hypotheses. Each extension weakens
-the "same grammar works across domains" progressive-programme claim. If you quietly patch the
-grammar before testing whether data alone would suffice, you have (a) confounded the experiment
-and (b) added an epicycle the programme must now defend.
-
-**Protocol:**
+Do not respond to a plateau by immediately extending the grammar with new primitives, composition modes, or series-expansion rules. Grammar extensions are Lakatosian auxiliary hypotheses. Each one weakens the claim that the same grammar works across domains, and a grammar quietly patched before testing whether data alone would suffice both confounds the experiment and adds an epicycle the programme must now defend.
 
 | Stage | Intervention | Expected outcome | What it proves |
 |---|---|---|---|
-| 3a | Add discriminating data to visible evidence. Same grammar. | Champion falsified. Engine either finds true form (data was bottleneck) or hits WALL (grammar is bottleneck). | Resolves evidence vs. grammar ambiguity. |
-| 3b | If 3a fails: add targeted grammar primitive (e.g., two-term composition). Same enriched data. | Engine finds true form with grammar extension. | Confirms grammar was the sufficient condition. Data was necessary but not sufficient. |
-| 3c | If 3b fails: add structural primitive (e.g., truncated series expansion). Same enriched data. | Engine finds true form via bottom-up series stacking. | The true form requires a fundamentally different construction mode. |
+| 3a | Add discriminating data to visible evidence, same grammar | Champion falsified. Engine either finds the true form (data was the bottleneck) or stagnates at the grammar ceiling | Resolves the evidence-vs-grammar ambiguity |
+| 3b | If 3a fails: add one targeted grammar primitive (e.g., two-term composition), same enriched data | Engine finds the true form with the extension | Grammar was the sufficient condition; data was necessary but not sufficient |
+| 3c | If 3b fails: add a structural primitive (e.g., truncated series expansion), same enriched data | Engine finds the true form via bottom-up series stacking | The true form requires a different construction mode |
 
-**Total cost of the three-stage diagnostic: ~$3.** Total cost of Lean/Coq integration: months.
-Run the cheap experiments first. Each failure is a clean architectural finding.
+Running all three stages costs a few dollars in API calls, where a proof-assistant integration costs months. Run the cheap experiments first; each failure is a clean architectural finding.
 
-**The Gemini objection (acknowledged):** "Structure dictates Reach — if the machine doesn't have
-the math Lego bricks, the anomaly will just cause it to crash." This is a real constraint. The
-mutator's token-probability distribution is biased toward epicycles (polynomial patches, log
-adjustments) rather than large topological restructuring (moving subtraction inside a denominator).
-Stage 3a will likely produce epicycles before restructuring, and may hit WALL without finding
-the true form. **This is the expected and informative outcome.** The failure signature at Stage 3a
-is what makes Stage 3b a controlled experiment rather than a premature grammar patch.
+One known constraint: the mutator's token-probability distribution is biased toward epicycles (polynomial patches, log adjustments) over large topological restructuring, such as moving a subtraction inside a denominator. Stage 3a will likely produce epicycles before restructuring and may stagnate without finding the true form, an outcome that is expected and informative. The failure signature at 3a is what makes 3b a controlled experiment instead of a premature grammar patch.
 
-### The General Principle
-
-When a verification system hits a plateau, the operator faces a choice between adding evidence
-and adding grammar. The Mungerian inversion: "How do I guarantee I never find the truth?" reveals
-that *either* insufficient evidence *or* insufficient grammar is individually sufficient to block
-discovery. But they are not interchangeable fixes. Testing evidence first is cheaper, preserves
-Lakatosian programme status, and produces a clean failure signature if the grammar is the bottleneck.
-
-**The one-sentence compression:** Hardy is not a proof engine. Hardy is the system that decides
-what to measure next. The farther-tail gate is half of Hardy. Automated evidence grid design
-(Component F) is the other half. Both are cheap, typed, stateless, deterministic operations.
-They belong in Chapter 1 of the Treatise, not Chapter 3.
+In general, either insufficient evidence or insufficient grammar is individually sufficient to block discovery, and they are not interchangeable fixes. Test evidence first: it is cheaper, preserves the programme's status, and produces a clean failure signature when the grammar is the bottleneck.
 
 ---
 
-## Canonical Anti-Pattern Register
+## Canonical anti-pattern register
 
 | ID | Name | First observed | Rule violated | Fix |
 |---|---|---|---|---|
-| AP-001 | `DOSE_SCALED` semantic leak | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md), 2026-04-17 | Rule 1 | Renamed `BIVARIATE_SCALE` |
-| AP-002 | Post-loop sentinel | [GP-078](../seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md), 2026-04-17 | Rule 6 | Seal before loop |
-| AP-003 | Charter GT derivation | [GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) seam, 2026-04-16 | Rule 5 | Charter is Division B — no formulas |
-| AP-004 | `int()` cast on continuous GT | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) analysis, 2026-04-17 | Rule 3 | `generate_substrate.py` continuous mode |
-| AP-005 | Stage 1 overclaim | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) seam debate, 2026-04-17 | Rule 7 | Two-stage strategy; Stage 1 = `apparatus_verified` |
-| AP-006 | Within-withheld-class feature collapse | gp163d v2 backtest, 2026-04-26 | Rule 9 (new) | R26 G-CROSS-CLASS-FEATURE-SUPPORT + per-system enrichment |
-| AP-007 | Vacuum gate verdicts (form_str-key bug) | gp154 audit, 2026-04-26 | Rule 10 (new) | Suppress write when gate refused upstream; surfaced by 2B effectiveness audit |
+| AP-001 | `DOSE_SCALED` semantic leak | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | Rule 1 | renamed `BIVARIATE_SCALE` |
+| AP-002 | Post-loop sentinel | [GP-078](../seams/engine/grammar/GP-078_component_d_topology_synthesizer_seam.md) | Rule 6 | seal before loop |
+| AP-003 | Charter GT derivation | [GP-072](../seams/protocol/GP-072_role_separation_sandbox_construction_seam.md) | Rule 5 | charter is Division B, no formulas |
+| AP-004 | `int()` cast on continuous GT | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | Rule 3 | `generate_substrate.py` continuous mode |
+| AP-005 | Stage 1 overclaim | [GP-080](../seams/substrates/tacrolimus/GP-080_tacrolimus_pk_seam.md) | Rule 7 | two-stage strategy; stage 1 = `apparatus_verified` |
+| AP-006 | Within-withheld-class feature collapse | gp163d v2 backtest | Rule 9 | R26 cross-class feature-support check + per-system enrichment |
+| AP-007 | Vacuum gate verdicts (form_str-key bug) | gp154 audit | Rule 10 | suppress the write when the gate refused upstream; surfaced by the gate-effectiveness audit |
 
 ---
 
-## Chapter 5: Cross-Class Feature Discipline (added 2026-04-26)
+## Chapter 5: cross-class feature discipline
 
-The gp163d 17-form exhaustive backtest established a class of failure modes the original
-Operational Manual did not name: a substrate can pass every per-class validity check (Rule 1
-through Rule 8) and still be structurally insufficient to support the discovery the operator
-believes it is asking for. This chapter exists because two real runs (gp163d v2, gp154 v2)
-both capped below the Newton-step threshold for the same underlying reason — a reason invisible
-to the visible-class diagnostic primitives that R13 substrate_critic ran with.
+A substrate can pass every per-class validity check (Rules 1 through 8) and still be structurally insufficient to support the discovery the operator believes it is asking for. Two real runs capped below the Newton-step threshold for the same underlying reason, one invisible to the per-class diagnostics the [substrate critic](../../src/ztare/diagnostics/substrate_critic.py) ran with at the time.
 
-### Rule 9: Within-Withheld-Class Feature Support
+### Rule 9: within-withheld-class feature support
 
-For every (withheld_class, feature) pair the substrate exposes, the within-class span on that
-feature must be non-trivial — at minimum a 0.5 dex relative range, ideally matching the visible
-class's span. A withheld class with a single feature value (a "surrogate") cannot be discriminated
-within-class by any closed-form law that uses that feature as a bridge axis. Joint forms across
-multiple features fail when ≥2 withheld classes are each collapsed on different features
-(the gp163d cross-class joint-form blocker pattern).
+For every (withheld_class, feature) pair the substrate exposes, the within-class span on that feature must be non-trivial: at minimum a 0.5 dex relative range, ideally matching the visible class's span. A withheld class collapsed to a single feature value cannot be discriminated within-class by any closed-form law that uses that feature as a bridge axis, and joint forms across multiple features fail when two or more withheld classes are each collapsed on different features.
 
-**Operational consequence:** Run R26 G-CROSS-CLASS-FEATURE-SUPPORT (the new substrate critic
-detector) before any 3-class substrate goes live. If R26 flags a `cross_class_joint_form_blocker`,
-the substrate cannot honestly support cross-class discovery via joint(feature_a, feature_b)
-forms. Either enrich (per-system data via the EGE workflow) or formally abstain on the affected
-class via `r11_excluded_classes` / `honest_null_rows()`. Do not run the apparatus against
-the structurally insufficient substrate.
+Run the R26 cross-class feature-support check (G-CROSS-CLASS-FEATURE-SUPPORT in the [substrate critic](../../src/ztare/diagnostics/substrate_critic.py)) before any 3-class substrate goes live. If R26 flags a `cross_class_joint_form_blocker`, the substrate cannot honestly support cross-class discovery via joint forms. Either enrich it with per-system data through the evidence-gap-enrichment workflow, or formally abstain on the affected class via `r11_excluded_classes` / `honest_null_rows()`. Do not run the apparatus against a structurally insufficient substrate.
 
-**Concretely (the gp163d v2 example):** Class B (clusters) had `mass_log10 = 14.5` constant
-across all 84 cluster rows. Class C (binaries) had `radius_log10 = -2.0` constant across
-all 12 binary rows. Disjoint-feature collapse → no joint(mass, radius) form has within-class
-DoF for either class → 17 form families exhaustively tested, none cleared MRE < 0.5 cross-class.
-The fix was Umetsu+2016 per-cluster M_500c (real, citable) for B and per-bin Gaia DR3 separations
-(real) for C. Class C mass remains synthesized + flagged because per-row binary mass does not
-exist in the source data (the rows are aggregate g_bar bins, not individual binaries). See
-`projects/gp163d_unified_accel/CHANGELOG.md` for v3 provenance.
+We first observed this pattern on gp163d: one withheld class collapsed on mass, another on radius, so no joint(mass, radius) form had within-class degrees of freedom for either, and an exhaustive form search could not clear the cross-class error threshold. The fix was per-system literature data for both classes, with the remaining synthesized column flagged as such (provenance in `projects/gp163d_unified_accel/CHANGELOG.md`).
 
-### Rule 10: Meta-Gate Cadence
+### Rule 10: meta-gate cadence
 
-The apparatus has four meta-gates that detect *its own* blind spots. Run them on the schedule
-their cost structure dictates:
+Four meta-gates detect the apparatus's own blind spots. Run them on the schedule their cost structure dictates:
 
 | Gate | When | Default | Why |
 |---|---|---|---|
-| 2A static scope linter | Pre-commit hook on changes to `src/ztare/{diagnostics,gates,orchestrator}/` | always-on (~50 ms) | catches scope-narrowing in diagnostic primitives at write time |
-| 2B dynamic effectiveness audit | Weekly OR after gate-dispatcher edit | always-on (~5 sec, no LLM) | mines run logs for "gate engages but never flags" patterns (the form_str-key bug fingerprint) |
-| 2C post-run LLM auditor | End of every CAPPED run, opt-in via `enable_post_run_meta_audit: true` | OFF by default (~$0.005, ~6 sec) | the LLM identifies which gate would have moved the score, with scope-extension suggestions |
-| EGE evidence-gap-enrichment | Pre-iter-1 IF R26 flagged a collapse, opt-in via `enable_evidence_gap_enrichment_proposals: true` | OFF by default (~$0.05, ~30 sec) | proposes literature sources to fill substrate feature gaps; operator-actioned via separate `make enrich-substrate` |
+| [Static scope linter](../../scripts/public/audits/audit_gate_coverage.py) | pre-commit hook on changes to `src/ztare/{diagnostics,gates,orchestrator}/` | always on (~50 ms) | catches scope-narrowing in diagnostic primitives at write time |
+| [Gate-effectiveness audit](../../scripts/public/audits/audit_gate_effectiveness.py) | weekly, or after any gate-dispatcher edit | always on (~5 s, no LLM) | mines run logs for gates that engage but never flag, the fingerprint of AP-007 |
+| [Post-run meta-audit](../../src/ztare/orchestrator/post_run_meta_audit.py) | end of every capped run, opt-in via `enable_post_run_meta_audit: true` | off (~$0.005, ~6 s) | an LLM identifies which gate would have moved the score, with scope-extension suggestions |
+| [Evidence-gap enrichment](../../src/ztare/orchestrator/evidence_gap_enrichment.py) | pre-iteration-1 when R26 flagged a collapse, opt-in via `enable_evidence_gap_enrichment_proposals: true` | off (~$0.05, ~30 s) | proposes literature sources to fill substrate feature gaps, actioned by the operator |
 
-**Operational consequence:** 2A and 2B should be on for every developer; 2C and EGE are opt-in
-per substrate to control LLM cost. Production runs (paper-grade) should set both flags true so
-the operator gets a structured audit + enrichment proposal artifact for every capped run.
+Both audits should be on for every developer. The two LLM-backed gates are opt-in per substrate to control cost, and production (paper-grade) runs should set both flags true so every capped run leaves a structured audit and an enrichment proposal.
 
-### Rule 10a: The Karpathy ALU/RAM Split (architectural framing)
+### Rule 10a: two improvement loops
 
-ZTARE has two improvement loops, not one:
+ZTARE has two improvement loops, and the recurring meta-failure this chapter exists to prevent is acting on the wrong one:
 
-- **ALU loop (apparatus self-improvement):** Cage gates, AST-distance enforcement, R20-R24
-  anti-laundering, score caps, scope-narrowing detection (2A), effectiveness audit (2B).
-  Tools the apparatus uses to *improve itself*.
-- **RAM loop (substrate self-improvement):** R26 cross-class feature support detection,
-  EGE enrichment proposals, manual `make enrich-substrate` workflow. Tools the apparatus uses
-  to *propose substrate improvements*.
+- Apparatus loop: cage gates, AST-distance enforcement, anti-laundering rules, score caps, the scope linter, the effectiveness audit. Tools the apparatus uses to improve itself.
+- Substrate loop: the R26 feature-support check, enrichment proposals, the operator-actioned enrichment workflow. Tools the apparatus uses to propose substrate improvements.
 
-When a run caps below the Newton-step threshold, the post-run meta-audit (2C) decides which
-loop to act on. If the cap is due to apparatus gaps ("R10 didn't engage"), the action is
-apparatus-side. If the cap is due to substrate gaps ("Class B has collapsed mass axis"), the
-action is substrate-side. Conflating the two loops is the recurring meta-failure pattern this
-chapter exists to prevent.
-
-**Operational consequence:** When you read a meta-audit recommendation, classify it as ALU-loop
-or RAM-loop before acting. Apparatus-side fixes are typically small code changes; substrate-side
-fixes are typically per-system data enrichment + provenance bookkeeping (real-vs-synthesized
-flag honesty). Both are valid; neither subsumes the other.
+When a run caps below the Newton-step threshold, the post-run meta-audit decides which loop to act on. A cap due to apparatus gaps ("R10 didn't engage") calls for an apparatus-side fix, typically a small code change. A cap due to substrate gaps ("class B has a collapsed mass axis") calls for a substrate-side fix, typically per-system data enrichment plus provenance bookkeeping (honest real-vs-synthesized flags). Classify every meta-audit recommendation as one or the other before acting. Both are valid, and neither subsumes the other.
 
 ---
 
-## Chapter 6: Substrate-Prober Paradigm (added 2026-04-26)
+## Chapter 6: a structurally insufficient substrate is a finding
 
-A substrate that is structurally insufficient for the operator's research question is itself
-a publishable finding. The gp163d run produced no Newton-step result on RAR universality, but
-it did produce a methodological contribution: an exhaustive 17-form symbolic regression search
-+ the apparatus's own diagnosis of why no form bridges all three regimes (Class B mass-collapsed,
-Class C radius-collapsed, joint-form blockers). This is the substrate-prober paradigm.
+A substrate that cannot support the operator's research question is itself a publishable result, provided the diagnosis is precise. The gp163d run produced no discovery on RAR universality, but it did produce a methodological contribution: an exhaustive symbolic-regression search across the form space plus the apparatus's own diagnosis of why no form bridges all three regimes. A null result is a real contribution when the apparatus has exhausted the form space and the diagnosis is sharp enough to motivate substrate enrichment or methodological replacement.
 
-The relationship to scientific publication: a stoic null result is a real contribution when
-the apparatus has *exhausted* the form space and the diagnosis is precise enough to motivate
-substrate enrichment or methodological replacement. The methodological paper (paper7/draft.md,
-5113 words) makes this case for gp163d.
-
-**Operational consequence:** When a run caps below threshold AND the apparatus has explored
-≥10 form families AND R26 / 2C has produced a structural diagnosis, the result is a *substrate
-ceiling finding* — write it up. Do not interpret the cap as apparatus failure or mutator
-laziness without first running the meta-audit.
+Operational consequence: when a run caps below threshold, the apparatus has explored ten or more form families, and the R26 check or the post-run meta-audit has produced a structural diagnosis, the result is a substrate ceiling finding: write it up. Do not interpret the cap as apparatus failure or mutator laziness without first running the meta-audit.

@@ -6,28 +6,13 @@ description: "How researchers and reviewers should inspect ZTARE runs, traces, a
 
 > Up: [Documentation map](../README.md)
 
-This document is for researchers and reviewers who need to decide what a ZTARE
-run honestly supports. It covers public project intake, in-loop autoresearch,
-sealed hidden-target experiments, trace inspection, proof-work boundaries, and
-reproduction. The examples include science and proof search, but the same
-discipline applies to high-stakes project claims: policy analysis, market
-research, operations decisions, reproduction tasks, or any agent output where a
-plausible answer is not enough.
+You are a researcher or reviewer deciding what a ZTARE run honestly supports. The examples below include science and proof search, but the same discipline applies to high-stakes project claims: policy analysis, market research, operations decisions, reproduction tasks, or any agent output where a plausible answer is not enough.
 
-If this is your first time in the repo, start with `README.md`,
-`docs/guides/first-30-minutes.md`, `docs/guides/quickstart.md`, and
-`docs/guides/cli.md`. Come back here when the question changes from "did the
-command finish?" to "what can this run honestly support?"
+If this is your first time in the repo, start with the [README](../../README.md), [first-30-minutes.md](first-30-minutes.md), [quickstart.md](quickstart.md), and [cli.md](cli.md). Come back here when the question changes from "did the command finish?" to "what can this run honestly support?"
 
-If you want the shortest executable proof point before reading, run
-`make hello` and `make gaming-catalog-audit`. The first shows intake validation,
-missing-evidence blocking, and claim demotion without model calls. The second
-checks that the public gaming behavior catalog still matches the live registry,
-promotion evidence, hardening map, and executable fixture anchors.
+For the shortest executable proof point before reading, run `make hello` and `make gaming-catalog-audit`. The first shows intake validation, missing-evidence blocking, and claim demotion without model calls. The second checks that the public [gaming behavior catalog](../gaming_behavior_catalog.md) still matches the live registry, promotion evidence, hardening map, and executable fixture anchors.
 
-The housekeeping layout of `research_areas/` is documented in
-`research_areas/README.md`. This document is about the discipline a run must
-satisfy to count as evidence.
+The housekeeping layout of `research_areas/` is documented in [research_areas/README.md](../../research_areas/README.md). This page is about the discipline a run must satisfy to count as evidence.
 
 ---
 
@@ -92,7 +77,7 @@ wrong stage.
 | You have a bounded claim, sources, evidence refs, non-claims, and a next falsifier | Public project intake, then `ztare autoresearch trace` | Intake JSON plus read-only trace |
 | You have raw files but no admissible evidence chain yet | Source preflight and evidence preparation | Source index, compile provenance, evidence-gap receipts |
 | You need to discover the claim, proof split, setup fix, or missing source first | Out-of-loop research operations | Probe, note, source artifact, proof file, or prep-ledger row |
-| You are doing Lean formalization, proof search, or proof-credit review | LeanMill/proof workflow | LeanMill receipts, proof-governance checks, and the proof-subsystem docs |
+| You are doing Lean formalization, proof search, or proof-credit review | [LeanMill/proof workflow](../concepts/leanmill_architecture.md) | LeanMill receipts, proof-governance checks, and the proof-subsystem docs |
 | You are testing a hidden target where leakage would invalidate the result | Sealed controlled experiment | Pre-registration and closed A/B/C/D outcome |
 | You are making a public claim from prior work | Review artifact / evidence atlas | Claim, command, expected output, non-claims, next falsifier |
 
@@ -463,7 +448,7 @@ target in the charter becomes a turn-1 cheat sheet.
 For hidden-target experiments, the target itself lives outside the loop-visible
 project files.
 
-*The proof case.* [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md) sandbox_07, 2026-04-14. Two separate mutators transcribed the charter's derivation on iter 1 and "recovered" the hidden target to six decimal places. Neither run was diagnostic. After scrub, iter 1 returned 0 with the mutator genuinely searching.
+*The proof case.* In [GP-023](../../research_areas/seams/substrates/planck/GP-023_ontology_trap_planck_mechanism_seam.md), two separate mutators transcribed the charter's derivation on iteration 1 and "recovered" the hidden target to six decimal places. Neither run was diagnostic. After the scrub, iteration 1 returned 0 with the mutator genuinely searching.
 
 *The check.* Before sealing a charter:
 
@@ -473,9 +458,9 @@ project files.
 
 *The pre-run discipline.* Before the first `autoresearch_loop.py` invocation,
 a controlled hidden-target scaffold must pass: the charter contamination scrub
-and strip test, an identifiability check, a sealed pre-registration, a smoke
-gate, and a dry-run of the sealed command. A sandbox missing any of these is
-only a warm-up; it does not count as a data point.
+and strip test, an identifiability check, a sealed pre-registration (§6), a
+smoke gate, and a dry-run of the sealed command. A sandbox missing any of these
+is a warm-up, and it does not count as a data point.
 
 ---
 
@@ -485,8 +470,8 @@ A ZTARE score is a compression of a gate battery. When you look at a run, look a
 
 Standard deterministic gates currently enforced:
 
-- Fit contract (`validator/core/information_yield.py` and the fit/gate call sites), the declared `fit_declaration` block must be algebraically consistent with the Python `I_model` body. Catches "fit a different function than you claim to fit" gaming.
-- Farther-tail global residual (`validator/tests/runner_r4_fixture_regression.py`), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. [GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) is the empirical anchor.
+- Fit contract ([information_yield.py](../../src/ztare/validator/core/information_yield.py) and the fit/gate call sites), the declared `fit_declaration` block must be algebraically consistent with the Python `I_model` body. Catches "fit a different function than you claim to fit" gaming.
+- Farther-tail global residual ([runner_r4_fixture_regression.py](../../src/ztare/validator/tests/runner_r4_fixture_regression.py)), out-of-window residual sampled beyond the fit window. Catches finite-window surrogates that terminal-only tests would miss. [GP-046](../../research_areas/seams/protocol/GP-046_asymptotic_regime_claim_discipline_seam.md) is the empirical anchor.
 - Fixture regression, closed-form fixtures whose expected output is pinned. Any drift flags immediately.
 - Fit-primitive contract ([GP-035](../../research_areas/seams/engine/grammar/GP-035_mutator_missing_fit_primitive_seam.md)), always injected. Prevents mutators from declaring a fit that cannot run.
 - NaN-stub fail-closed, any primitive returning NaN/inf fails the turn. No "robust to missing data" dodges.
@@ -528,8 +513,8 @@ Written *before* the run so a later "success" can be audited against them
 
 The pre-reg is sealed by dry-running the exact sealed command string and pinning
 all implicit defaults (model family, rubric path resolution). A pre-reg that has
-never been dry-run is not sealed. See AGENTS.md for the full sealed-experiment
-rule.
+never been dry-run is not sealed. See [AGENTS.md](../../AGENTS.md) for the full
+sealed-experiment rule.
 
 ---
 
@@ -601,18 +586,13 @@ that with a narrative deliverable or a broad consulting-style conclusion.
 
 ## 10. Where to look
 
-- `AGENTS.md`, standing rules, visibility rules, and hard rules. Compatible agent runtimes load it at repo entry.
-- `docs/guides/workflow.md`, reviewer-facing workflow reference.
-- `docs/concepts/architecture.md`, kernel internals, primitives, validator surface.
-- `docs/concepts/capabilities.md`, current command-to-capability map and
-  bounded evidence levels.
-- `research_areas/seams/`, closed historical records (public). Start here if you want to inspect closed experiments and provenance.
-- `examples/project_packets/`, public fixtures for ready and malformed
-  project intake.
-- `docs/guides/cli.md`, command reference for `ztare project`, `ztare
-  autoresearch route`, `ztare autoresearch trace`, and related inspection
-  commands.
-- Maintainer-only live strategy, credentials, and in-flight sealed targets are
-  deliberately absent from the public path.
+- [AGENTS.md](../../AGENTS.md) — standing rules, visibility rules, and hard rules. Compatible agent runtimes load it at repo entry.
+- [workflow.md](workflow.md) — reviewer-facing workflow reference.
+- [architecture.md](../concepts/architecture.md) — kernel internals, primitives, validator surface.
+- [capabilities.md](../concepts/capabilities.md) — current command-to-capability map and bounded evidence levels.
+- [research_areas/seams/](../../research_areas/seams/) — closed historical records (public). Start here to inspect closed experiments and provenance.
+- [examples/project_packets/](../../examples/project_packets/) — public fixtures for ready and malformed project intake.
+- [cli.md](cli.md) — command reference for `ztare project`, `ztare autoresearch route`, `ztare autoresearch trace`, and related inspection commands.
+- Maintainer-only live strategy, credentials, and in-flight sealed targets are deliberately absent from the public path.
 
-If this document and AGENTS.md disagree, AGENTS.md wins and this document is stale, flag it.
+If this document and [AGENTS.md](../../AGENTS.md) disagree, AGENTS.md wins and this document is stale. Flag it.

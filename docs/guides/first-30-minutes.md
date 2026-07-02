@@ -1,26 +1,15 @@
 ---
-description: "First 30 minutes for a new ZTARE reader or agent."
+description: "First 30 minutes for a new ZTARE reader or agent: green offline check, the durable records, the right route."
 ---
 # First 30 Minutes
 
 > Up: [Documentation map](../README.md)
 
-For a new reader or agent opening ZTARE for the first time. It
-checks the runnable path, names the durable records, and points to the
-right next document for each kind of work.
+Thirty minutes should leave you with three things: a green offline value check, a map of the durable records, and the right route for your task. Most mistakes come from launching a loop before the project is ready, or from treating out-of-loop agent work as if it were an in-loop validation run.
 
-The first half hour should leave you with three things: a green offline value
-check, a map of the durable records, and the right route for your task. Most
-mistakes come from launching a loop before the project is ready, or from
-treating out-of-loop agent work as if it were an in-loop validation run.
+One question frames the current public roadmap: can a project move from thesis and source files to a bounded result, support issue, saved review, or next falsifier? Keep it in mind while reading. Many older files serve as historical provenance; this path is the current entry point.
 
-The current public roadmap is organized around one first-reader question: can a
-project move from thesis and source files to a bounded result, support issue,
-saved review, or next falsifier? Keep that frame in mind while reading. Many
-older files serve as historical provenance, and this path is the current entry
-point.
-
-## 0-5: Run The First Value Check
+## 0–5: run the first value check
 
 ```bash
 python3 -m venv venv
@@ -30,17 +19,11 @@ pip install -e .
 make hello
 ```
 
-`make hello` is the first value check: a ready project-intake file validates, a
-malformed intake file is blocked before in-loop routing, and a plausible overclaim
-is demoted to bounded wording, missing evidence, and a next falsifier. It
-writes no persistent runtime state.
+`make hello` is the first value check: a ready project-intake file validates, a malformed intake file is blocked before in-loop routing, and a plausible overclaim is demoted to bounded wording, missing evidence, and a next falsifier. It writes no persistent runtime state.
 
-For the full offline public review path, use `make first-run`. It chains the
-value demo, gaming-catalog audit, benchmark-evidence checks, the frozen
-evaluator-hardening proof-point check, claim-boundary audit, terminology audit,
-public smoke, adversarial entry-path checks, and docs checks.
+For the full offline public review path, use `make first-run`. It chains the value demo, gaming-catalog audit, benchmark-evidence checks, the frozen evaluator-hardening proof-point check, claim-boundary audit, terminology audit, public smoke, adversarial entry-path checks, and docs checks.
 
-## 5-15: Inspect A Concrete Project Trace
+## 5–15: inspect a concrete project trace
 
 ```bash
 ztare project walkthrough --ops-demo
@@ -51,17 +34,11 @@ ztare autoresearch trace \
   --brief
 ```
 
-The ops demo is synthetic, but it is a real ZTARE path: typed local sources,
-a bounded root-cause claim, explicit rivals, evidence gaps, graph-derived
-in-loop focus, readiness check, and an optional one-iteration run. Use this before a
-custom project because it shows the boundary between source/evidence prep,
-read-only inspection, and the validation engine.
+The [ops demo](../../projects/ops_root_cause_diagnosis_demo/) is synthetic, but it is a real ZTARE path: typed local sources, a bounded root-cause claim, explicit rivals, evidence gaps, graph-derived in-loop focus, readiness check, and an optional one-iteration run. Use it before a custom project because it shows the boundary between source and evidence prep, read-only inspection, and the validation engine.
 
-The brief trace should show `run readiness: ready`, fresh source/evidence
-state, no blockers, and the remaining local verification targets. Use
-`--json` on the same trace command when a script needs the full carrier chain.
+A healthy brief trace shows `run readiness: ready`, fresh source and evidence state, no blockers, and the remaining local verification targets. Use `--json` on the same trace command when a script needs the full carrier chain.
 
-## 15-20: Check The Catalog And Public Smoke
+## 15–20: check the catalog and public smoke
 
 ```bash
 make gaming-catalog-audit
@@ -69,88 +46,68 @@ make demo
 make smoke-public
 ```
 
-`make gaming-catalog-audit` checks the public catalog against the live vector
-registry, promotion evidence, hardening map, and current executable fixture
-anchors. It is the quick way to verify that the catalog hook remains
-evidence-bounded.
+`make gaming-catalog-audit` checks the [public catalog](../gaming_behavior_catalog.md) against the live vector registry, promotion evidence, hardening map, and current executable fixture anchors. It is the quick way to verify that the catalog hook remains evidence-bounded.
 
-The public demo runs three small evaluation-failure reproducers. It is a quick
-way to see a related discipline: a check can pass while the structural question
-still fails.
+`make demo` runs three small evaluation-failure reproducers and shows a related discipline: a check can pass while the structural question still fails.
 
-The public smoke target exercises:
+`make smoke-public` exercises the org runtime structure and transition-log replay, the forecast-pool contract flow (forecast, aggregate, resolve, score, calibrate), and the action-intelligence read models. It makes no live model calls. Maintainer-only publish checks and Docker checks live in the [Makefile reference](../reference/make_targets.md), outside the first-reader path.
 
-- org runtime structure and transition-log replay
-- forecast-pool contract, forecast, aggregate, resolve, score, calibrate flow
-- action-intelligence read-model checks
+## 20–25: open the vault map
 
-It does not invoke live model calls. Maintainer-only publish checks and Docker
-checks live in the Makefile reference and are outside the first-reader path.
+ZTARE is Obsidian-compatible by default. Open the repository root as the vault, then start from:
 
-## 20-25: Open the Vault Map
+1. [README.md](../../README.md)
+2. [docs/README.md](../README.md)
+3. [gaming_behavior_catalog.md](../gaming_behavior_catalog.md)
+4. [evidence_atlas/README.md](../evidence_atlas/README.md)
+5. [glossary.md](../concepts/glossary.md)
+6. [public_claim_register.md](../public_claim_register.md)
+7. [system_position_and_module_map.md](../concepts/system_position_and_module_map.md)
 
-ZTARE is Obsidian-compatible by default. Open the repository root as the vault,
-then start from:
+Chat is not the system of record. Durable files live under `projects/`, `research_areas/`, `org/`, `ztare_workspace/`, `analytics/`, and the public ledgers.
 
-1. `README.md`
-2. `docs/README.md`
-3. `docs/gaming_behavior_catalog.md`
-4. `docs/evidence_atlas/README.md`
-5. `docs/concepts/glossary.md`
-6. `docs/public_claim_register.md`
-7. `docs/concepts/system_position_and_module_map.md`
+One boundary to keep straight: ZTARE is the applied research stack and tenant overlay, while the reusable organization kernel lives in [cognitive-firm](https://github.com/sparckix/cognitive-firm). Read `org/` here as the ZTARE deployment of that kernel, with no second canonical upstream.
 
-The core rule: chat is not the system of record. Durable files and records live under
-`projects/`, `research_areas/`, `org/`, `ztare_workspace/`, `analytics/`, and
-the public ledgers.
-
-Boundary to keep straight: ZTARE is the applied research stack and tenant
-overlay. The reusable organization kernel lives in
-[`cognitive-firm`](https://github.com/sparckix/cognitive-firm). Read `org/`
-here as the ZTARE deployment of that kernel, with no second canonical upstream.
-
-Use this mental model while reading:
+As a mental model while reading:
 
 ```text
 local project -> thesis -> sources and evidence -> readiness check
 -> readiness check or run -> saved review, support issue, or next test
 ```
 
-## 25-30: Pick The Right Route
+## 25–30: pick the right route
 
 | Route | Use it when | Start |
 |---|---|---|
-| Project brief | Source files, evidence refs, or a bounded task still need to be prepared | `ztare project walkthrough` and `docs/guides/workflow.md` section 0 project brief |
+| Project brief | Source files, evidence refs, or a bounded task still need to be prepared | `ztare project walkthrough` and [workflow.md](workflow.md) section 0 project brief |
 | In-loop autoresearch | Bounded claim, evaluator/gate, rubric, and saved output are ready | `ztare autoresearch trace --brief`, then its recommended first command |
-| Out-of-loop research operations | The work is source gathering, proof splitting, setup, synthesis, or one-off agent work | `ztare autoresearch route` and `docs/guides/workflow.md` section 0 out-of-loop route |
-| Proof work | The task is Lean formalization, proof search, or proof-credit governance | `docs/concepts/leanmill_architecture.md` |
-| Org/runtime work | Roles, mandates, tasks, gates, or transition logs are the object | `docs/guides/org_runtime_quickstart.md` |
+| Out-of-loop research operations | Source gathering, proof splitting, setup, synthesis, or one-off agent work | `ztare autoresearch route` and [workflow.md](workflow.md) section 0 out-of-loop route |
+| Proof work | Lean formalization, proof search, or proof-credit governance | [leanmill_architecture.md](../concepts/leanmill_architecture.md) |
+| Org/runtime work | Roles, mandates, tasks, gates, or transition logs are the object | [org_runtime_quickstart.md](org_runtime_quickstart.md) |
 
-Then use the deeper map below.
+Then use the deeper map:
 
 | Goal | Start |
 |---|---|
-| Understand the whole stack | `docs/concepts/architecture.md` |
-| Review the evidence graph before trusting the architecture | `docs/evidence_atlas/README.md` |
-| Decode recurring terms and evidence levels | `docs/concepts/glossary.md` |
-| Evaluate public claims and non-claims | `docs/public_claim_register.md` |
-| Understand proof execution / governance gate / residual compiler | `docs/concepts/closure_claim_governance.md` |
-| Understand current priorities | `priority_roadmap.md` |
-| Run a bounded claim or project/data test | `docs/guides/workflow.md` section 0 in-loop route |
-| Prepare missing project/evidence files before a loop | `docs/guides/workflow.md` section 0 project brief; [examples/project_packets/](../../examples/project_packets/) for ready and malformed fixtures |
-| Inspect an operational diagnosis starter | `docs/guides/quickstart.md` section "Create or probe project data"; `projects/ops_root_cause_diagnosis_demo/` |
-| Do frontier work before bounded intake and evidence files exist | `docs/guides/workflow.md` section 0 out-of-loop route |
-| Inspect the org runtime | `docs/guides/org_runtime_quickstart.md` |
-| Inspect forecast-market work | [Forecast-pool decision market spec](../../research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md) |
-| Inspect action intelligence | [Action-intelligence loop design](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) |
-| Review the current research-company architecture | `docs/concepts/ztare_research_company_architecture.md` |
-| Learn the repo with an agent | `docs/guides/agent-prompts.md` |
+| Understand the whole stack | [architecture.md](../concepts/architecture.md) |
+| Review the evidence graph before trusting the architecture | [evidence_atlas/README.md](../evidence_atlas/README.md) |
+| Decode recurring terms and evidence levels | [glossary.md](../concepts/glossary.md) |
+| Evaluate public claims and non-claims | [public_claim_register.md](../public_claim_register.md) |
+| Understand proof execution, the governance gate, and the residual compiler | [closure_claim_governance.md](../concepts/closure_claim_governance.md) |
+| Understand current priorities | [priority_roadmap.md](../../priority_roadmap.md) |
+| Run a bounded claim or project/data test | [workflow.md](workflow.md) section 0 in-loop route |
+| Prepare missing project or evidence files before a loop | [workflow.md](workflow.md) section 0 project brief; [examples/project_packets/](../../examples/project_packets/) for ready and malformed fixtures |
+| Inspect an operational diagnosis starter | [quickstart.md](quickstart.md) section "Create or probe project data"; [ops demo project](../../projects/ops_root_cause_diagnosis_demo/) |
+| Do frontier work before bounded intake and evidence files exist | [workflow.md](workflow.md) section 0 out-of-loop route |
+| Inspect the org runtime | [org_runtime_quickstart.md](org_runtime_quickstart.md) |
+| Inspect forecast-market work | [forecast-pool decision market spec](../../research_areas/specs/active/protocol/GP-230_forecast_pool_decision_market_spec.md) |
+| Inspect action intelligence | [action-intelligence loop design](../../research_areas/seams/protocol/GP-243_action_intelligence_loop_seam.md) |
+| Review the current research-company architecture | [ztare_research_company_architecture.md](../concepts/ztare_research_company_architecture.md) |
+| Learn the repo with an agent | [agent-prompts.md](agent-prompts.md) |
 
-If you are using an agent, do not start with a broad "summarize this repo"
-request. Use the route-choice prompt in `docs/guides/agent-prompts.md` and make
-the agent name the durable file or record it expects to produce.
+If you are using an agent, skip the broad "summarize this repo" request. Use the route-choice prompt in [agent-prompts.md](agent-prompts.md) and make the agent name the durable file or record it expects to produce.
 
-## After 30: Agent Prompt
+## After 30: agent prompt
 
 ```text
 You are helping me understand ZTARE. Read README.md, docs/README.md,

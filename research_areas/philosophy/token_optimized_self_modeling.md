@@ -1,61 +1,46 @@
 # Token-Optimized Self-Modeling
 
 **Status:** public / central — methodological primitive
-**Date:** 2026-04-19
-**Philosophical parent:** Compress, always compress (Leg 2)
-**Operational counterpart:** `docs/internal/architectural_maps/autoresearch_loop_architectural_map.md` — first instance
-**Provenance:** Principal inception during [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md) session. The agent made a partial-view mistake on a 4100-line file because it read snippets instead of understanding the pipeline ordering. The principal inverted the fix: instead of "read more code," the instruction was "compress your own understanding into a reusable artifact optimized for your consumption, not mine."
+**Philosophical parent:** the compression leg of [The Three Legs of ZTARE](three_legs_of_ztare.md), applied reflexively
+**Operational counterpart:** the autoresearch-loop architectural map (private working artifact, `docs/internal/architectural_maps/`) — first instance
+**Provenance:** principal inception during a [GP-100](../seams/engine/mutator/GP-100_epistemic_decoupling_seam.md) session, after an agent made a partial-view mistake on a 4,100-line file because it read snippets and missed the pipeline ordering. The fix was inverted: the instruction became "compress your own understanding into a reusable artifact optimized for your consumption, not mine."
 
----
+## The primitive
 
-## The Primitive
+An AI agent editing a codebase it cannot hold in context is a scientist observing a system through a narrow instrument window. Reading snippets gives it partial views, and a partial view produces edits that look correct locally while violating global invariants the agent never read.
 
-An AI agent editing a codebase it cannot hold in context is analogous to a scientist observing a system through a narrow instrument window. The agent reads snippets. Snippets create partial views. Partial views cause mistakes that look correct locally but violate global invariants the agent never read.
+Documentation is the standard fix, and it fails here because documentation is optimized for human readers: it explains why things exist, uses narrative structure, buries ordering contracts inside prose, and assumes a reader who can hold the whole document in working memory.
 
-The standard fix is documentation — but documentation is optimized for human readers. Human documentation explains *why* things exist, uses narrative structure, buries ordering contracts inside prose, and assumes the reader can hold the whole document in working memory and cross-reference.
+Token-optimized self-modeling has the agent build a compressed representation of its own operational substrate, shaped by its own consumption characteristics:
 
-**Token-optimized self-modeling** is the agent building a compressed representation of its own operational substrate, optimized for its own consumption characteristics:
+1. Structured. Dependency graphs, precondition and postcondition contracts, lookup tables. The agent has no use for a pipeline's origin story; it needs to know what breaks if it changes step 3 without updating step 5.
+2. Traversable. An agent map is an index to be queried: "I want to change X" resolves to "read lines Y–Z and preserve invariant K."
+3. Assertion-shaped. An invariant stated as a checkable assertion (`python_code != None` before the `fit_parameters()` call) beats a paragraph explaining why the pipeline has this order.
+4. Line-anchored, drift-tolerant. Line numbers are approximate pointers. A map entry reads "lines ~2900–3053" so the agent greps to confirm before trusting a possibly stale address.
 
-1. **Structured over narrative.** Dependency graphs, precondition/postcondition contracts, lookup tables — not explanatory prose. The agent doesn't need to understand *why* a pipeline exists; it needs to know what breaks if it changes step 3 without updating step 5.
+## When to apply
 
-2. **Traversable over readable.** The map should be queryable: "I want to change X" → "you must read lines Y-Z and preserve invariant K." Human docs are read linearly. Agent maps are indexed.
+Build one after a mistake caused by under-reading: a locally correct edit that violated a global invariant. A file qualifies for a self-model when it
 
-3. **Assertion-shaped over explanation-shaped.** Invariants stated as checkable assertions (`python_code != None BEFORE fit_parameters() call`) are more useful than paragraphs explaining why the pipeline has this order.
+- exceeds roughly 2,000 lines, beyond a comfortable single read;
+- has ordering contracts between sections, where step A's output feeds step B's input;
+- gets edited by agents that rotate between sessions with no persistent memory of prior reads;
+- branches on configuration flags, each one a code path the agent might never explore.
 
-4. **Line-anchored with drift tolerance.** Line numbers are approximate pointers, not stable addresses. The map acknowledges drift ("lines ~2900-3053") so the agent greps to confirm rather than blindly trusting a stale number.
+A self-model is a pre-computed structural cache that substitutes for runtime exploration. Where documentation answers "what does this do?", a self-model answers "what breaks if I touch this?"
 
----
+## Derivation from the compression leg
 
-## When to Apply
+Token-optimized self-modeling falls out of applying compression reflexively, three times over:
 
-Trigger: an agent made a mistake because it didn't read enough of a file. If the mistake class is "locally correct edit that violates a global invariant," the file needs a self-model.
+1. Compress the evidence. ZTARE compresses data into claims that must survive outside their fit window.
+2. Compress the search. The grammar's composition modes collapse a topology search into a small set of admissible moves over existing primitives.
+3. Compress the agent's cognition. The agent's relationship to its own codebase gets the same treatment as the data it works on.
 
-Criteria for a file to qualify:
-- Exceeds ~2000 lines (beyond comfortable single-read)
-- Has ordering contracts between sections (step A's output feeds step B's input)
-- Gets edited by agents who rotate between sessions (no persistent memory of prior reads)
-- Has multiple code paths gated by configuration flags (each flag creates a branch the agent might not explore)
+Step 3 is the reflexive one. An agent, too, is a system with a limited observation window (context size), costly exploration (reading burns tokens and attention), and failure modes caused by partial information, so the compression discipline applies to it as much as to any substrate.
 
-The self-model is NOT documentation. It is a *pre-computed structural cache* that substitutes for runtime exploration. The distinction matters: documentation answers "what does this do?" The self-model answers "what breaks if I touch this?"
+Leg 1's inversion test applies here as well: what would make a self-model harmful? A stale map trusted over the actual code would. So the format carries its own defense: approximate line numbers, an explicit drift warning, and a standing instruction to grep-verify before acting on any specific reference.
 
----
+## Open question: the optimal format
 
-## The Mungerian Derivation
-
-This primitive follows from compress-always-compress applied reflexively:
-
-1. **Compress the data** — ZTARE compresses evidence into asymptotic survival tests (Leg 2)
-2. **Compress the search** — Component D compresses topology search via AST composition
-3. **Compress the agent's cognition** — Token-optimized self-modeling compresses the agent's relationship to its own codebase
-
-Step 3 is the reflexive application. The agent is itself a system with limited observation windows (context size), costly exploration (reading files burns tokens and attention), and failure modes caused by partial information. Compress-always-compress says: don't just compress the data the agent works on; compress the agent's own cognitive substrate.
-
-The inversion test (Leg 1): what would make this self-model harmful? If it becomes stale and the agent trusts it over the actual code. Defense: the map states line numbers as approximate, includes a "drift over time" warning, and the agent is instructed to grep-verify before acting on any specific line reference.
-
----
-
-## What the Optimal Format Looks Like
-
-See [GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) seam for the open debate on agent-native format. The v1 map was 70% optimized — still too much prose, too human-readable. The eigenquestion: what representation minimizes agent error rate per token of self-model consumed?
-
-Candidates under debate: dependency graphs (YAML), precondition/postcondition contracts, edit-intent lookup tables, assertion-based invariant lists, hybrid formats.
+Live debate on the agent-native format sits in the [GP-101](../seams/apparatus/instrumentation/GP-101_agent_native_self_model_format_seam.md) seam. Our first map was still too human-readable, roughly 70% of the way to its own standard. One question decides the format: which representation minimizes agent error rate per token of self-model consumed? Candidates include dependency graphs in YAML, precondition/postcondition contracts, edit-intent lookup tables, assertion-based invariant lists, and hybrids.
