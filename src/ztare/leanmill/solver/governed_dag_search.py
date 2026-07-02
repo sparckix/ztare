@@ -537,26 +537,15 @@ def _split_top_level(s: str, sep_chars: set[str]) -> list[str]:
 
 def _goal_prefix_and_type(goal_text: str):
     """(prefix_ending_in_the_goal_colon, goal_type) or (None, None) if uncertain.
-    Strips the proof; the goal type is whatever follows the last top-level ':'."""
-    s = goal_text
-    for marker in (":= by", ":=by", ":="):
-        idx = s.find(marker)
-        if idx != -1:
-            s = s[:idx]; break
-    s = s.strip()
-    depth, last_colon = 0, -1
-    for i, c in enumerate(s):
-        if c in _OPENERS:
-            depth += 1
-        elif c in _CLOSERS:
-            depth = max(0, depth - 1)
-        elif c == ":" and depth == 0:
-            if (i + 1 < len(s) and s[i + 1] == ":") or (i > 0 and s[i - 1] == ":"):
-                continue  # skip '::'
-            last_colon = i
-    if last_colon == -1:
+    Strips the proof; the goal type is whatever follows the declaration's top-level ':'."""
+    from ztare.leanmill.lean_source import signature_before_proof, top_level_colon
+    s = (goal_text or "").strip()
+    sig = signature_before_proof(s)
+    ci = top_level_colon(sig)
+    if ci < 0:
         return None, None
-    prefix, gtype = s[:last_colon + 1], s[last_colon + 1:].strip()
+    head = s[:s.find(sig)] if sig and sig in s else ""
+    prefix, gtype = head + sig[:ci + 1], sig[ci + 1:].strip()
     return (prefix, gtype) if gtype else (None, None)
 
 
@@ -568,17 +557,24 @@ def derive_structural_decomposition(goal_text: str) -> list[dict]:
     prefix, gtype = _goal_prefix_and_type(goal_text)
     if not gtype:
         return []
-    iff_parts = _split_top_level(gtype, {"↔"})
-    if len(iff_parts) == 2:
-        a, b = iff_parts
+    # BOTH connective splits route through the ONE guarded door in lean_source (∀-fronting distributes and is
+    # re-prepended; a leading ∃ shares a witness and is DEFERRED), shared with isomorphism_decompose so no
+    # hand-copied quantifier guard can drift into a sibling. Fixes the ↔-under-∃/∀ permutations here too.
+    from ztare.leanmill.lean_source import safe_conjunction_split, safe_iff_split
+    _iff = safe_iff_split(gtype)
+    if _iff:
+        qprefix, (a, b) = _iff
+        _q = (qprefix + " ") if qprefix else ""
         return [
-            {"kind": "sub_goal", "goal_text": f"{prefix} ({a}) → ({b})"},
-            {"kind": "sub_goal", "goal_text": f"{prefix} ({b}) → ({a})"},
+            {"kind": "sub_goal", "goal_text": f"{prefix} {_q}({a}) → ({b})"},
+            {"kind": "sub_goal", "goal_text": f"{prefix} {_q}({b}) → ({a})"},
         ]
-    conj = _split_top_level(gtype, {"∧"})
-    if len(conj) >= 2:
-        return [{"kind": "sub_goal", "goal_text": f"{prefix} {c}"} for c in conj]
-    return []
+    _and = safe_conjunction_split(gtype)
+    if not _and:
+        return []
+    qprefix, conj = _and
+    _q = (qprefix + " ") if qprefix else ""
+    return [{"kind": "sub_goal", "goal_text": f"{prefix} {_q}{c}"} for c in conj]
 
 
 # Top-k retrieved premises to fan out as candidate closing-moves for an atomic goal.
@@ -1762,6 +1758,8 @@ def _selftest() -> int:
     # top-level connective is →, the ∧ is nested in parens → must NOT split
     ok("decomp_nested_paren_guard",
        derive_structural_decomposition("example : (A ∧ B) → C := by") == [])
+    ok("decomp_existential_shared_witness_guard",
+       derive_structural_decomposition("theorem t : ∃ x : Nat, x = x ∧ x = 0 := by sorry") == [])
     # structural decomposition is the FALLBACK when the contract declares none
     nodes_struct = build_obligation_dag({}, "theorem t : P ∧ Q := by")
     ok("dag_struct_fallback", len(_children(nodes_struct, "n0_root")) == 2)

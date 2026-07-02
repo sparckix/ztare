@@ -86,6 +86,8 @@ def verify_lean_proof(probe_path: str | Path, target: str, *, lake_bin: str,
             if _sub:
                 _env = campaign_file_env(_sub, Path(project_dir))
                 if _env is not None:
+                    # env-dedup is applied INSIDE warm_verify_campaign (the single door, 2026-07-01) so every
+                    # warm-verify caller inherits it — no per-caller strip that could rot into siblings.
                     _wv = warm_verify_campaign(txt, target, Path(project_dir), timeout, env=_env)
                     if _wv is not None:
                         print(f"[verify] WARM campaign-env verify ({p.name}, target={target}): "

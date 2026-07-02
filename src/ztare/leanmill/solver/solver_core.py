@@ -2365,7 +2365,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                                           else f"{r.get('target_theorem_name', 'tgt')}__{node.node_id}")
             return _nr
 
-        if move == MOVE_NATIVE_HAMMER:
+        def _h_native_hammer():
             ok, proof, tail = _native_hammer_probe(
                 _eff_row(), (lean_root or DEFAULT_LEAN_ROOT_FOR_VERIFY),
                 _cap("native_hammer", min(180, verify_timeout)),
@@ -2383,7 +2383,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
                               proof_text=proof_text, tail=(tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(ok, tail))
-        if move == MOVE_CLAUDE_WARM:
+        def _h_claude_warm():
             # The warm move runs through the SHARED RefineHandover contract — the SAME driver the
             # autoformalizer uses (produce→verify→feedback→refine→gate). PARITY-SAFE: max_refines=0 when
             # ZTARE_GAP_REFINE!=1 ⇒ ONE warm solve + govern, byte-identical to the pre-contract path;
@@ -2492,7 +2492,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
                               proof_text=proof_text, tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(kc, compile_tail))
-        if move == MOVE_CONJECTURE:
+        def _h_conjecture():
             # INVENT a lemma L that unlocks the goal: prove G ASSUMING L (kernel-checked, L=sorry), then
             # SPAWN L as a child to prove. Earns its place ONLY if G-given-L typechecks + the goal-proof
             # CITES L + is sorry-free. The move does NOT close G (kernel_clean=False) — it ADVANCES via
@@ -2562,7 +2562,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                               residual=("conjectured_lemma_pending" if _adv else "conjecture_no_advance"),
                               tail=(_atail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(False, ""))
-        if move == MOVE_SPECIALIZE:
+        def _h_specialize():
             # SPECIALIZE (capability B, wm3zp587b): generate a PROVABLE WEAKER special case G' + the
             # `G ⇒ G'` witness, kernel-gate it to a verified RUNG (specialization_is_genuine: G' closes
             # sorry-free AND G⇒G' typechecks AND G'≠G, non-vacuous). A rung is honest partial progress on
@@ -2647,7 +2647,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                                         ("specialize_degenerate_corner" if _genuine else "specialize_no_rung")),
                               tail=(f"substantive={_subst}: {_subst_why}" if _genuine else (_why or ""))[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(False, ""))
-        if move == MOVE_GENERALIZE:
+        def _h_generalize():
             # GENERALIZE (capability B, wm3zp587b): the CLOSURE move. The leaf returns a SELF-CONTAINED
             # tactic-block proof of the ORIGINAL goal that strengthens INTERNALLY (a `have`/`suffices`
             # proving a stronger fact, then instantiates). Because a closure of G is a proof OF G, this
@@ -2674,7 +2674,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc,
                               proof_text=_gproof, tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
-        if move == MOVE_TACTIC_STEP:
+        def _h_tactic_step():
             # TACTIC-STEPPING (M3 v2): per-step agentic search — the leaf emits ONE tactic at a time vs a
             # PERSISTENT proofState built from OUR decl (the anti-laundering invariant: no file edit; the leaf reacts to each live
             # goal). REPL-closed is NEVER the verdict — the accepted sequence is reassembled into a `by` block
@@ -2709,7 +2709,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_pb,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
-        if move == MOVE_WITNESS_TRANSPORT:
+        def _h_witness_transport():
             # WITNESS TRANSPORT (computational closure, 2026-06-07): a non-linear existential SymPy can solve
             # but the native cascade cannot CLOSE. solve_witness FINDS the witness (SymPy, direct path = no
             # LLM) and emits a Lean tactic; the kernel PROVES it through the EXACT SAME governance as warm/
@@ -2744,7 +2744,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_wt_tac,
                               tail=(compile_tail or "")[-300:], wallclock_s=round(time.time() - start, 2),
                               **_ps(compile_ok, compile_tail))
-        if move == MOVE_SLEDGEHAMMER:
+        def _h_sledgehammer():
             # SLEDGEHAMMER-SMUGGLE (premise retrieval, 2026-06-08): borrow Isabelle's `sledgehammer` premise
             # selection. Translate G→Isabelle, run sledgehammer on the EXTERNAL server, extract the dependency
             # trace, map the Isabelle fact names to Mathlib (HALLUCINATES), kernel-`#check` each (DROP any that
@@ -2799,7 +2799,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_sh_tac,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
-        if move == MOVE_REFLECTION:
+        def _h_reflection():
             # REFLECTION (computational closure, 2026-06-08): the leaf writes a decidable `def check` + a
             # `theorem check_sound : check args = true → G` + a closing body; reflection_solve GENERATES +
             # pre-filter-GATES (trivial-constant / native_decide reject, fail-closed). The invented helper
@@ -2827,7 +2827,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=_rf_cbody,
                               tail=(compile_tail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
-        if move == MOVE_ABDUCE:
+        def _h_abduce():
             # ABDUCE (SMT-grounded conjecture, 2026-06-08): cvc5 `(get-abduct)` derives the minimal missing
             # premise A; abduce_seed wraps it as a targeted prompt_override for conjecture_generate (replaces
             # weak free-generation with a grounded one). Then the SAME advance/spawn gate as MOVE_CONJECTURE:
@@ -2862,7 +2862,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                               residual=("abduce_lemma_pending" if _ab_adv else "abduce_no_advance"),
                               tail=(_ab_atail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(False, ""))
-        if move == MOVE_FUNCTOR_LIFT:
+        def _h_functor_lift():
             # FUNCTOR_LIFT (spectral/domain closure, 2026-06-08): a stuck DISCRETE goal is lifted to the
             # continuous domain; the module gets the matrix + bridge-lemma name + a Lean proof citing the
             # bridge. TWO independent legs, BOTH required:
@@ -2912,7 +2912,7 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
             return MoveResult(move=move, kernel_clean=kc, mnc_passed=mnc, proof_text=(_fl_body or _fl_proof),
                               tail=(compile_tail or _fl_reason or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(compile_ok, compile_tail))
-        if move in (MOVE_FALSIFY, MOVE_CORROBORATE):
+        def _h_falsify_corroborate():
             # FALSIFY (Invert leg, 2026-06-06) + CORROBORATE (its Popper DUAL, 2026-06-07): pursue a
             # kernel-checked proof of ¬G. On the OPEN/untrusted regime the target may be FALSE; a falsifying
             # witness is a first-class outcome that feeds the existing falsifier sink (status handler +
@@ -2970,6 +2970,24 @@ def _build_dag_move_runner(r: dict, contract: dict, enriched_goal: str,
                                         else "falsify_no_witness"),
                               tail=(_verdict.detail or "")[-300:],
                               wallclock_s=round(time.time() - start, 2), **_ps(False, ""))
+        # DISPATCH TABLE (2026-07-01 refactor of the 222-CCN per-move if/elif ladder into named handlers +
+        # a single {move: handler} table IN THIS MODULE — preserves the single-move-surface invariant, NOT a
+        # scattered/second dispatch surface). Bodies are the former branch bodies verbatim (nested closures
+        # over the same scope). The None-guard reproduces the old fall-through: a matched handler that returns
+        # nothing (or an unknown move) yields the 'unknown move' MoveResult, exactly as the if-ladder did.
+        _dispatch = {
+            MOVE_NATIVE_HAMMER: _h_native_hammer, MOVE_CLAUDE_WARM: _h_claude_warm,
+            MOVE_CONJECTURE: _h_conjecture, MOVE_SPECIALIZE: _h_specialize,
+            MOVE_GENERALIZE: _h_generalize, MOVE_TACTIC_STEP: _h_tactic_step,
+            MOVE_WITNESS_TRANSPORT: _h_witness_transport, MOVE_SLEDGEHAMMER: _h_sledgehammer,
+            MOVE_REFLECTION: _h_reflection, MOVE_ABDUCE: _h_abduce, MOVE_FUNCTOR_LIFT: _h_functor_lift,
+            MOVE_FALSIFY: _h_falsify_corroborate, MOVE_CORROBORATE: _h_falsify_corroborate,
+        }
+        _h = _dispatch.get(move)
+        if _h is not None:
+            _r = _h()
+            if _r is not None:
+                return _r
         return MoveResult(move=move, kernel_clean=False, mnc_passed=False,
                           tail=f"unknown move {move}")
 

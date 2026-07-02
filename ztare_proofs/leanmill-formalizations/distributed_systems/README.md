@@ -12,7 +12,7 @@ a GENERATED provenance header from `promote_campaign_artifact.py` (not hand-auth
 
 ## Contents
 
-### `byzantine_quorum_intersection.lean` — Byzantine quorum intersection: `n ≥ 3f + 1`
+### `ByzantineQuorumIntersection.lean` — Byzantine quorum intersection: `n ≥ 3f + 1`
 `byzantine_threshold_quorum_safe_available_iff_and_tight_witness`. The foundational counting theorem of
 Byzantine fault tolerance — why state-machine-replication protocols (PBFT, Tendermint, and modern BFT chains)
 need strictly more than three times as many nodes as the faults they tolerate. Over `Fin n` with an at-most-`f`

@@ -1344,3 +1344,99 @@ def test_campaign_cycle_time_splits_formalize_and_prove(tmp_path):
     rows2 = [{"run_tag": "nomark", "attempt_at": "1600", "outcome": "closed", "wallclock_s": 5}]
     c2 = pt.summarize_campaign_cycle_time(rows2, ledger=str(led))["campaigns"]["nomark"]
     assert c2["time_to_formalize_s"] == 0.0 and c2["wall_s"]["first"] == 0.0, c2
+
+
+def test_unified_instrument_liveness_battery(monkeypatch):
+    """UNIFIED LIVENESS (2026-07-01). One run-start battery probes the ADVISORY external instruments whose silent
+    death false-degrades/false-rejects — the semantic-shelf embedder AND the firewall round-trip judge (the latter
+    was previously unprobed → the BFT false-reject). A dead instrument ⇒ LOUD banner (never a silent absence);
+    injectable ⇒ hermetic. Guards both legs + the gate."""
+    from ztare.leanmill.run_standards import run_instrument_liveness_battery as batt
+    monkeypatch.setenv("ZTARE_LEANMILL_INSTRUMENT_LIVENESS", "1")
+    # both LIVE (good embedder returns a vector; live backtranslate returns non-empty NL) → no banners
+    ok = batt(embed_fn=lambda t: [0.1] * 768, atlas_nonempty=True, backtranslate_fn=lambda s: "for all n, n plus zero is n")
+    assert ok["embedder"]["live"] and ok["roundtrip"]["live"] and not ok["banners"], ok
+    # both DEAD (embedder None; backtranslate empty = dead judge) → two LOUD banners
+    dead = batt(embed_fn=lambda t: None, atlas_nonempty=True, backtranslate_fn=lambda s: "")
+    assert not dead["embedder"]["live"] and not dead["roundtrip"]["live"], dead
+    assert len(dead["banners"]) == 2 and all("INADMISSIBLE" in b for b in dead["banners"]), dead
+    # a raising backtranslate (crashed judge) is DEAD, not an exception that aborts the run
+    d2 = batt(embed_fn=lambda t: [0.1] * 768, atlas_nonempty=True,
+              backtranslate_fn=lambda s: (_ for _ in ()).throw(RuntimeError("quota")))
+    assert d2["embedder"]["live"] and not d2["roundtrip"]["live"], d2
+    # gate off → skipped
+    monkeypatch.setenv("ZTARE_LEANMILL_INSTRUMENT_LIVENESS", "0")
+    assert batt(embed_fn=lambda t: None)["skipped"] is True
+
+
+def test_denotation_composition_anchor_pins_target_used_defs():
+    """DENOTATION ANCHORING (2026-07-01). A built def used in a kernel-verified proof/STATEMENT is denotationally
+    PINNED by that theorem (UC / composition anchor) — no separate anchor_ theorem needed. The UC scan's proof
+    blob previously included only the sub-rung deep_closures, MISSING defs used only in the TARGET composite's
+    statement (BFT's `ThresholdSafeAndAvailableBound`, used in the composite `iff`, was falsely UNDERDETERMINED;
+    the fix adds the target composite to the blob). Guards the principle: a composed def is PINNED; an unanchored,
+    uncomposed def stays UNDERDETERMINED (honest — genuinely unexercised)."""
+    from ztare.leanmill.solver import def_denotation as dd
+    src = ("namespace N\ndef UsedBound (n:Nat):Prop := n=n\ndef Orphan (n:Nat):Prop := n=n\n"
+           "theorem t : True := trivial\nend N\n")
+    r = dd.certify_def_denotation(src, verify_anchor_fn=lambda a: True, composed_defs={"UsedBound"})
+    pd = r["per_def"]
+    assert pd["UsedBound"]["status"] == "PINNED" and pd["UsedBound"]["composition_anchor"], pd
+    assert pd["Orphan"]["status"] == "UNDERDETERMINED", pd   # not composed, no anchor → honest gap (correct)
+
+
+def test_campaign_verify_strips_env_declared_decls_single_door():
+    """Chronic 'already been declared' campaign-verify fix (2026-07-01; NOT a session regression — present since
+    2026-06-08 across putnam/consc/topkis/apr, acute on def-heavy Shamir). A self-contained probe re-declares
+    campaign DEFS + proven shelf lemmas already live in the warm campaign env ⇒ `X has already been declared` ⇒ a
+    VALID proof never ratifies (thrash; native-only proofs escaped it). The SINGLE-DOOR strip
+    (`lean_source.strip_env_declared_decls`, called inside `warm_verify_campaign` so ALL callers — leaf,
+    conjecture/refute, solver_core — inherit it) drops env-dup DEFS (always) + PROVEN env theorems (safe to cite),
+    and KEEPS the target, genuinely-new helpers, and SORRIED env theorems (dropping those ⇒ sorryAx). SOUND: env
+    decls are canonical."""
+    from ztare.leanmill.lean_source import strip_env_declared_decls
+    env = ("import Mathlib\nnamespace X\n"
+           "def Foo (n : Nat) : Nat := n + 1\n"
+           "theorem proven_shelf (n : Nat) : Foo n = n + 1 := rfl\n"
+           "theorem sorried_shelf (n : Nat) : Foo n = n + 1 := by sorry\n"
+           "theorem target_thm (n : Nat) : Foo n = n + 1 := by sorry\n"
+           "end X\n")
+    probe = ("import Mathlib\nnamespace X\n"
+             "def Foo (n : Nat) : Nat := n + 1\n"                                   # env DEF -> strip
+             "def NewHelper (n : Nat) : Nat := n\n"                                 # new def -> keep
+             "theorem proven_shelf (n : Nat) : Foo n = n + 1 := rfl\n"             # PROVEN env thm -> strip
+             "theorem sorried_shelf (n : Nat) : Foo n = n + 1 := by simp [Foo]\n"  # SORRIED in env -> KEEP
+             "theorem target_thm (n : Nat) : Foo n = n + 1 := by simp [Foo]\n")    # target -> keep
+    out = strip_env_declared_decls(probe, env, keep="target_thm")
+    assert "def Foo (n : Nat)" not in out, "env-dup def must be stripped"
+    assert "def NewHelper" in out, "new (not-in-env) def must be kept"
+    assert "theorem proven_shelf" not in out, "proven env theorem stripped (safe to cite the env copy)"
+    assert "theorem sorried_shelf" in out, "SORRIED env theorem KEPT (dropping it => sorryAx on the cite)"
+    assert "theorem target_thm" in out, "the target being proved must be kept"
+    assert "import Mathlib" in out and "namespace X" in out, "prelude (imports/namespace) untouched"
+    # COMPLETION of the cure: the target is SORRIED in the env, so a probe re-declaring it must be verified under a
+    # FRESH name (the 'fresh decl name' contract; mirrors solver_core's _zwv) or it clashes with its own env copy.
+    from ztare.leanmill.lean_source import rename_decl
+    rn = rename_decl(probe, "target_thm", "target_thm_wv")
+    assert "theorem target_thm_wv (n : Nat)" in rn, "target decl head renamed to a fresh name"
+    assert "def Foo (n : Nat)" in rn, "rename_decl touches ONLY the named decl head (Foo untouched)"
+
+
+def test_supersede_sorried_twins_folds_proven_twin_into_canonical():
+    """Sorried-sibling dedup (2026-07-01): theory_consolidation's APPEND-ONLY gate forbids the agent editing
+    `X := sorry`→proof, so it appends a proven twin `X_banked` and the canonical stays sorried (dup pairs
+    accumulate; artifact won't file clean). The harness supersession folds each proven twin into its sorried
+    canonical (`:= by exact <twin>` — a kernel-checkable cite of an identical-statement proof), leaving a
+    no-twin canonical un-sorried and a no-twin sorried lemma alone. SOUND (only replaces a sorry with a cite)."""
+    from ztare.leanmill.lean_source import supersede_sorried_twins
+    theory = ("namespace X\n"
+              "theorem foo (a : Nat) : a = a := by sorry\n"          # sorried canonical (has proven twin)
+              "theorem foo_banked (b : Nat) : b = b := rfl\n"        # proven twin (same alpha-statement)
+              "theorem bar : True := by sorry\n"                     # sorried, NO twin -> untouched
+              "end X\n")
+    out, rep = supersede_sorried_twins(theory)
+    assert rep == [("foo", "foo_banked")], f"expected foo folded into foo_banked, got {rep}"
+    assert "theorem foo (a : Nat) : a = a := by exact foo_banked" in out, "canonical folded to cite the proven twin"
+    assert "theorem foo_banked" in out, "the proven twin is kept (canonical now cites it)"
+    assert "theorem bar : True := by sorry" in out, "a sorried lemma with NO proven twin is left untouched"
+    assert out.count("sorry") == 1, "only the twinned canonical is healed; the no-twin sorry remains"

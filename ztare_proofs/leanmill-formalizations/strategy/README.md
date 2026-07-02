@@ -12,14 +12,14 @@ a GENERATED provenance header from `promote_campaign_artifact.py` (not hand-auth
 
 ## Contents
 
-### `topkis_monotone_comparative_statics.lean` — Topkis' monotonicity theorem
+### `TopkisMonotoneComparativeStatics.lean` — Topkis' monotonicity theorem
 `topkisObjective_parametricArgmaxSet_isSublatticeSet`. The foundation of monotone comparative statics: for a
 **supermodular** objective with **increasing differences** in the parameter, the parametric argmax set moves
 monotonically — formalized here as the argmax set being a **sublattice**. The engine behind "complementarity ⇒
 optimal choices rise with the parameter" (strategic complementarity in supermodular games). Non-vacuity of the
 constructed argmax set is established (not vacuously true on the empty set).
 
-### `topkis_ordinal_monotone_comparative_statics.lean` — ordinal (single-crossing) Topkis
+### `TopkisOrdinalMonotoneComparativeStatics.lean` — ordinal (single-crossing) Topkis
 `ordinalTopkis_compact_existence_and_strongSetMonotone_explicit`. The ordinal generalization (Milgrom–Shannon):
 under the **single-crossing** property (an ordinal condition, weaker than cardinal supermodularity), optimal
 choices are monotone in the **strong set order**, with explicit compactness/existence. The strict half of

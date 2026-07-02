@@ -19963,6 +19963,1216 @@ theorem no_PreScalarTracefreeFreshAnnularInnovationReceipt_of_scalarPushforwardC
   hConfuser.noPreScalarTracefreeFreshAnnularInnovationReceipt
     ⟨hReceipt, hSameCarrier⟩
 
+/--
+Explicit bridge from the pressure/five-shadow trace-free innovation receipt to
+the TICK669 A_visc pre-scalar tensor socket.
+
+The bridge is intentionally separate from
+`PreScalarTracefreeFreshAnnularInnovationReceipt`: a pressure-side trace-free
+innovation is not automatically the same as a tensor/source law on the exact
+A_visc invoice fiber.  These rows are the remaining identity and
+non-cancellation debts.
+-/
+structure PreScalarTracefreeInnovationAViscInvoiceBridge
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureTracefreeInnovationIsAViscInvoiceFiber : Prop
+  pressureTracefreeInnovationIsAViscInvoiceFiber_proof :
+    pressureTracefreeInnovationIsAViscInvoiceFiber
+  markedSourceLawOnAViscInvoiceFiber : Prop
+  markedSourceLawOnAViscInvoiceFiber_proof :
+    markedSourceLawOnAViscInvoiceFiber
+  varianceLowerBoundBeforeAViscScalarization : Prop
+  varianceLowerBoundBeforeAViscScalarization_proof :
+    varianceLowerBoundBeforeAViscScalarization
+  scalarAViscPushforwardNoninjectivityExcluded : Prop
+  scalarAViscPushforwardNoninjectivityExcluded_proof :
+    scalarAViscPushforwardNoninjectivityExcluded
+  tracefreeTensorLawOnAViscInvoiceFiber : Prop
+  tracefreeTensorLawOnAViscInvoiceFiber_proof :
+    tracefreeTensorLawOnAViscInvoiceFiber
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber : Prop
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :
+    tracefreeTensorNonCancellationOnAViscInvoiceFiber
+  isotropicAViscOrientationMixtureExcluded : Prop
+  isotropicAViscOrientationMixtureExcluded_proof :
+    isotropicAViscOrientationMixtureExcluded
+  tracefreeTensorForcesAViscTotalCarrierMorphology : Prop
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :
+    tracefreeTensorForcesAViscTotalCarrierMorphology
+
+/--
+First row of the pressure-to-A_visc bridge: the pressure/five-shadow
+trace-free innovation must be the same invoice-fiber source law consumed by
+the A_visc route.  This is stronger than pressure angular visibility.
+-/
+structure PressureTracefreeAViscInvoiceIdentityReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureTracefreeInnovationIsAViscInvoiceFiber : Prop
+  pressureTracefreeInnovationIsAViscInvoiceFiber_proof :
+    pressureTracefreeInnovationIsAViscInvoiceFiber
+  markedSourceLawOnAViscInvoiceFiber : Prop
+  markedSourceLawOnAViscInvoiceFiber_proof :
+    markedSourceLawOnAViscInvoiceFiber
+  tracefreeTensorLawOnAViscInvoiceFiber : Prop
+  tracefreeTensorLawOnAViscInvoiceFiber_proof :
+    tracefreeTensorLawOnAViscInvoiceFiber
+  identityFixedBeforeScalarAViscPushforward : Prop
+  identityFixedBeforeScalarAViscPushforward_proof :
+    identityFixedBeforeScalarAViscPushforward
+
+/--
+Second row of the bridge: the scalar A_visc pushforward must be known
+non-injective unless this receipt excludes the hidden fibers before it is used.
+-/
+structure AViscScalarPushforwardNoninjectivityExclusionReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  varianceLowerBoundBeforeAViscScalarization : Prop
+  varianceLowerBoundBeforeAViscScalarization_proof :
+    varianceLowerBoundBeforeAViscScalarization
+  scalarAViscPushforwardNoninjectivityExcluded : Prop
+  scalarAViscPushforwardNoninjectivityExcluded_proof :
+    scalarAViscPushforwardNoninjectivityExcluded
+  scalarPositivePartDoesNotDefineTheSource : Prop
+  scalarPositivePartDoesNotDefineTheSource_proof :
+    scalarPositivePartDoesNotDefineTheSource
+
+/--
+Third row of the bridge: the trace-free tensor law must survive the isotropic
+A_visc mixture packet and force total-carrier morphology.
+-/
+structure AViscTracefreeTensorNonCancellationReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber : Prop
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :
+    tracefreeTensorNonCancellationOnAViscInvoiceFiber
+  isotropicAViscOrientationMixtureExcluded : Prop
+  isotropicAViscOrientationMixtureExcluded_proof :
+    isotropicAViscOrientationMixtureExcluded
+  tracefreeTensorForcesAViscTotalCarrierMorphology : Prop
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :
+    tracefreeTensorForcesAViscTotalCarrierMorphology
+
+/--
+The exact row decomposition for the pressure-to-A_visc bridge.  It makes the
+next proof obligations independently attackable: identity/source binding,
+scalar noninjectivity exclusion, and tensor non-cancellation.
+-/
+def PreScalarTracefreeInnovationAViscInvoiceBridge.ofRows
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hIdentity : PressureTracefreeAViscInvoiceIdentityReceipt formula)
+    (hNoninj : AViscScalarPushforwardNoninjectivityExclusionReceipt formula)
+    (hTensor : AViscTracefreeTensorNonCancellationReceipt formula) :
+    PreScalarTracefreeInnovationAViscInvoiceBridge formula where
+  pressureTracefreeInnovationIsAViscInvoiceFiber :=
+    hIdentity.pressureTracefreeInnovationIsAViscInvoiceFiber
+  pressureTracefreeInnovationIsAViscInvoiceFiber_proof :=
+    hIdentity.pressureTracefreeInnovationIsAViscInvoiceFiber_proof
+  markedSourceLawOnAViscInvoiceFiber :=
+    hIdentity.markedSourceLawOnAViscInvoiceFiber
+  markedSourceLawOnAViscInvoiceFiber_proof :=
+    hIdentity.markedSourceLawOnAViscInvoiceFiber_proof
+  varianceLowerBoundBeforeAViscScalarization :=
+    hNoninj.varianceLowerBoundBeforeAViscScalarization
+  varianceLowerBoundBeforeAViscScalarization_proof :=
+    hNoninj.varianceLowerBoundBeforeAViscScalarization_proof
+  scalarAViscPushforwardNoninjectivityExcluded :=
+    hNoninj.scalarAViscPushforwardNoninjectivityExcluded
+  scalarAViscPushforwardNoninjectivityExcluded_proof :=
+    hNoninj.scalarAViscPushforwardNoninjectivityExcluded_proof
+  tracefreeTensorLawOnAViscInvoiceFiber :=
+    hIdentity.tracefreeTensorLawOnAViscInvoiceFiber
+  tracefreeTensorLawOnAViscInvoiceFiber_proof :=
+    hIdentity.tracefreeTensorLawOnAViscInvoiceFiber_proof
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber :=
+    hTensor.tracefreeTensorNonCancellationOnAViscInvoiceFiber
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :=
+    hTensor.tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof
+  isotropicAViscOrientationMixtureExcluded :=
+    hTensor.isotropicAViscOrientationMixtureExcluded
+  isotropicAViscOrientationMixtureExcluded_proof :=
+    hTensor.isotropicAViscOrientationMixtureExcluded_proof
+  tracefreeTensorForcesAViscTotalCarrierMorphology :=
+    hTensor.tracefreeTensorForcesAViscTotalCarrierMorphology
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+    hTensor.tracefreeTensorForcesAViscTotalCarrierMorphology_proof
+
+/--
+Positive conditional constructor for the identity row.
+
+The existing pressure/cutoff carrier identity pays the carrier-equality and
+pre-payoff identity timing parts.  The construction still requires the
+pressure-side pre-scalar trace-free innovation receipt; it does not assert that
+the PDE supplies such a receipt.
+-/
+def PressureTracefreeAViscInvoiceIdentityReceipt.ofPressureCutoffCarrierIdentity
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hFresh : PreScalarTracefreeFreshAnnularInnovationReceipt formula)
+    (hId : PressureCutoffCarrierIdentityForAViscInvoiceFiber) :
+    PressureTracefreeAViscInvoiceIdentityReceipt formula where
+  pressureReceipt := hFresh
+  pressureTracefreeInnovationIsAViscInvoiceFiber :=
+    hId.pressureCarrierEqualsAViscInvoiceFiber ∧
+      hFresh.sameSourceBinding
+  pressureTracefreeInnovationIsAViscInvoiceFiber_proof :=
+    ⟨hId.pressureCarrierEqualsAViscInvoiceFiber_proof,
+      hFresh.sameSourceBinding_proof⟩
+  markedSourceLawOnAViscInvoiceFiber :=
+    hFresh.innovationIsPreSummedTracefreeShadowMeasures ∧
+      hId.pressureCarrierEqualsAViscInvoiceFiber
+  markedSourceLawOnAViscInvoiceFiber_proof :=
+    ⟨hFresh.innovationIsPreSummedTracefreeShadowMeasures_proof,
+      hId.pressureCarrierEqualsAViscInvoiceFiber_proof⟩
+  tracefreeTensorLawOnAViscInvoiceFiber :=
+    hId.pressureAngularMomentAvailable ∧
+      hFresh.innovationIsPreSummedTracefreeShadowMeasures
+  tracefreeTensorLawOnAViscInvoiceFiber_proof :=
+    ⟨hId.pressureAngularMomentAvailable_proof,
+      hFresh.innovationIsPreSummedTracefreeShadowMeasures_proof⟩
+  identityFixedBeforeScalarAViscPushforward :=
+    hFresh.invoiceFiltrationFixedBeforePayoff ∧
+      hId.eigenframeSelectionActsBeforePayoff
+  identityFixedBeforeScalarAViscPushforward_proof :=
+    ⟨hFresh.invoiceFiltrationFixedBeforePayoff_proof,
+      hId.eigenframeSelectionActsBeforePayoff_proof⟩
+
+/--
+Positive conditional constructor for the noninjectivity row.
+
+This isolates the two genuinely scalar-projection inputs instead of hiding
+them inside the whole bridge.
+-/
+def AViscScalarPushforwardNoninjectivityExclusionReceipt.ofScalarRows
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hFresh : PreScalarTracefreeFreshAnnularInnovationReceipt formula)
+    (varianceLowerBoundBeforeAViscScalarization : Prop)
+    (varianceLowerBoundBeforeAViscScalarization_proof :
+      varianceLowerBoundBeforeAViscScalarization)
+    (scalarAViscPushforwardNoninjectivityExcluded : Prop)
+    (scalarAViscPushforwardNoninjectivityExcluded_proof :
+      scalarAViscPushforwardNoninjectivityExcluded) :
+    AViscScalarPushforwardNoninjectivityExclusionReceipt formula where
+  pressureReceipt := hFresh
+  varianceLowerBoundBeforeAViscScalarization :=
+    varianceLowerBoundBeforeAViscScalarization
+  varianceLowerBoundBeforeAViscScalarization_proof :=
+    varianceLowerBoundBeforeAViscScalarization_proof
+  scalarAViscPushforwardNoninjectivityExcluded :=
+    scalarAViscPushforwardNoninjectivityExcluded
+  scalarAViscPushforwardNoninjectivityExcluded_proof :=
+    scalarAViscPushforwardNoninjectivityExcluded_proof
+  scalarPositivePartDoesNotDefineTheSource :=
+    hFresh.noFinalScalarPressureValue
+  scalarPositivePartDoesNotDefineTheSource_proof :=
+    hFresh.noFinalScalarPressureValue_proof
+
+/--
+Positive conditional route for the scalar noninjectivity row.
+
+The Schur-Weyl/irreducible-projection analogy only helps after it supplies a
+fixed pre-payoff finite trace-free projection family with full reconstruction
+or coercivity on the same A_visc invoice fiber.  A scalar positive-part
+pushforward alone is still rank-deficient.
+-/
+structure AViscFixedIrreducibleProjectionSeparationReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  fixedProjectionFamilyBeforeAViscPayoff : Prop
+  fixedProjectionFamilyBeforeAViscPayoff_proof :
+    fixedProjectionFamilyBeforeAViscPayoff
+  finiteTracefreeProjectionFamilyOnSameInvoiceFiber : Prop
+  finiteTracefreeProjectionFamilyOnSameInvoiceFiber_proof :
+    finiteTracefreeProjectionFamilyOnSameInvoiceFiber
+  fullTracefreeTensorReconstructionOnInvoiceFiber : Prop
+  fullTracefreeTensorReconstructionOnInvoiceFiber_proof :
+    fullTracefreeTensorReconstructionOnInvoiceFiber
+  irreducibleProjectionFamilyCoerciveOnTracefreeTensorSources : Prop
+  irreducibleProjectionFamilyCoerciveOnTracefreeTensorSources_proof :
+    irreducibleProjectionFamilyCoerciveOnTracefreeTensorSources
+  scalarPushforwardKernelExcludedByProjectionFamily : Prop
+  scalarPushforwardKernelExcludedByProjectionFamily_proof :
+    scalarPushforwardKernelExcludedByProjectionFamily
+  noProjectionFamilyChosenFromScalarPayoff : Prop
+  noProjectionFamilyChosenFromScalarPayoff_proof :
+    noProjectionFamilyChosenFromScalarPayoff
+  varianceLowerBoundBeforeAViscScalarization : Prop
+  varianceLowerBoundBeforeAViscScalarization_proof :
+    varianceLowerBoundBeforeAViscScalarization
+
+/--
+A fixed full-rank trace-free projection family pays the scalar noninjectivity
+row only through its explicit kernel-exclusion and pre-scalar variance
+receipts.
+-/
+def AViscScalarPushforwardNoninjectivityExclusionReceipt.ofFixedIrreducibleProjectionSeparation
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hSep : AViscFixedIrreducibleProjectionSeparationReceipt formula) :
+    AViscScalarPushforwardNoninjectivityExclusionReceipt formula where
+  pressureReceipt := hSep.pressureReceipt
+  varianceLowerBoundBeforeAViscScalarization :=
+    hSep.varianceLowerBoundBeforeAViscScalarization
+  varianceLowerBoundBeforeAViscScalarization_proof :=
+    hSep.varianceLowerBoundBeforeAViscScalarization_proof
+  scalarAViscPushforwardNoninjectivityExcluded :=
+    hSep.scalarPushforwardKernelExcludedByProjectionFamily
+  scalarAViscPushforwardNoninjectivityExcluded_proof :=
+    hSep.scalarPushforwardKernelExcludedByProjectionFamily_proof
+  scalarPositivePartDoesNotDefineTheSource :=
+    hSep.pressureReceipt.noFinalScalarPressureValue
+  scalarPositivePartDoesNotDefineTheSource_proof :=
+    hSep.pressureReceipt.noFinalScalarPressureValue_proof
+
+/--
+Five-shadow specialization of the fixed trace-free projection-family route.
+
+The algebraic five-frame source already carries a fixed frame and trace-free
+invertibility.  To spend it in the A_visc scalar-noninjectivity row, the frame
+must be transferred to the exact A_visc invoice fiber and must explicitly
+exclude the scalar positive-part kernel before payoff.
+-/
+structure AViscFiveShadowProjectionFamilyTransferReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  fiveShadowSource :
+    FiveFrameTracefreeValuationSource formula
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  fiveShadowFrameFullRankTransfersToAViscInvoiceFiber : Prop
+  fiveShadowFrameFullRankTransfersToAViscInvoiceFiber_proof :
+    fiveShadowFrameFullRankTransfersToAViscInvoiceFiber
+  fiveShadowCoercivityTransfersToAViscInvoiceFiber : Prop
+  fiveShadowCoercivityTransfersToAViscInvoiceFiber_proof :
+    fiveShadowCoercivityTransfersToAViscInvoiceFiber
+  scalarPushforwardKernelExcludedByFiveShadowFamily : Prop
+  scalarPushforwardKernelExcludedByFiveShadowFamily_proof :
+    scalarPushforwardKernelExcludedByFiveShadowFamily
+  varianceLowerBoundBeforeAViscScalarization : Prop
+  varianceLowerBoundBeforeAViscScalarization_proof :
+    varianceLowerBoundBeforeAViscScalarization
+
+/--
+Augmented five-shadow separation below the scalar-kernel row.
+
+This records the useful positive fact one can hope to prove: scalar A_visc data
+carried together with the fixed five-shadow trace-free measurements separates
+the hidden tensor/source fibers.  By itself this does not say that the scalar
+positive-part pushforward is injective; it says the augmented observable is.
+-/
+structure AViscFiveShadowAugmentedObservableSeparationReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  fiveShadowSource :
+    FiveFrameTracefreeValuationSource formula
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  augmentedFiveShadowObservableSeparatesTracefreeTensorSources : Prop
+  augmentedFiveShadowObservableSeparatesTracefreeTensorSources_proof :
+    augmentedFiveShadowObservableSeparatesTracefreeTensorSources
+  augmentedObservableCarriedBeforeScalarization : Prop
+  augmentedObservableCarriedBeforeScalarization_proof :
+    augmentedObservableCarriedBeforeScalarization
+  augmentedObservableNotScalarPositivePartPushforward : Prop
+  augmentedObservableNotScalarPositivePartPushforward_proof :
+    augmentedObservableNotScalarPositivePartPushforward
+
+/--
+Hostile packet for the tempting five-shadow shortcut.
+
+Even if the augmented scalar-plus-five-shadow observable separates the hidden
+trace-free fibers, the scalar positive-part map can still have a fiber
+collision.  The scalar noninjectivity row therefore still needs an explicit
+kernel-exclusion receipt or a downstream consumer that carries the augmented
+observable.
+-/
+structure AViscFiveShadowAugmentedObservableNotScalarKernelConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  augmentedSeparation :
+    AViscFiveShadowAugmentedObservableSeparationReceipt formula
+  scalarPositivePartCollisionStillAdmissible : Prop
+  scalarPositivePartCollisionStillAdmissible_proof :
+    scalarPositivePartCollisionStillAdmissible
+  downstreamConsumerStillScalarPushforwardRow : Prop
+  downstreamConsumerStillScalarPushforwardRow_proof :
+    downstreamConsumerStillScalarPushforwardRow
+  noFiveShadowProjectionFamilyTransferReceipt :
+    ¬ Nonempty (AViscFiveShadowProjectionFamilyTransferReceipt formula)
+
+/--
+Augmented five-shadow separation alone does not pay the five-shadow projection
+transfer while the scalar row still consumes the scalar positive-part
+pushforward and the scalar collision remains admissible.
+-/
+theorem no_AViscFiveShadowProjectionFamilyTransferReceipt_of_augmentedObservableNotScalarKernel
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscFiveShadowAugmentedObservableNotScalarKernelConfuser formula)
+    (hTransfer :
+      AViscFiveShadowProjectionFamilyTransferReceipt formula) :
+    False :=
+  hConfuser.noFiveShadowProjectionFamilyTransferReceipt ⟨hTransfer⟩
+
+/--
+The five-shadow transfer is a concrete source for the fixed irreducible
+projection-family receipt, once its A_visc transfer and kernel-exclusion rows
+are paid.
+-/
+def AViscFixedIrreducibleProjectionSeparationReceipt.ofFiveShadowProjectionFamilyTransfer
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hTransfer :
+      AViscFiveShadowProjectionFamilyTransferReceipt formula) :
+    AViscFixedIrreducibleProjectionSeparationReceipt formula where
+  pressureReceipt := hTransfer.pressureReceipt
+  fixedProjectionFamilyBeforeAViscPayoff :=
+    hTransfer.fiveShadowSource.angularFrameFixedBeforePayoff ∧
+      hTransfer.pressureCutoffIdentity.eigenframeSelectionActsBeforePayoff
+  fixedProjectionFamilyBeforeAViscPayoff_proof :=
+    ⟨hTransfer.fiveShadowSource.angularFrameFixedBeforePayoff_proof,
+      hTransfer.pressureCutoffIdentity.eigenframeSelectionActsBeforePayoff_proof⟩
+  finiteTracefreeProjectionFamilyOnSameInvoiceFiber :=
+    hTransfer.fiveShadowSource.fiveShadowMeasuresOnExactSameSource ∧
+      hTransfer.pressureCutoffIdentity.pressureCarrierEqualsAViscInvoiceFiber ∧
+        hTransfer.pressureCutoffIdentity.cutoffMatchesAViscInvoiceFiber
+  finiteTracefreeProjectionFamilyOnSameInvoiceFiber_proof :=
+    ⟨hTransfer.fiveShadowSource.fiveShadowMeasuresOnExactSameSource_proof,
+      hTransfer.pressureCutoffIdentity.pressureCarrierEqualsAViscInvoiceFiber_proof,
+      hTransfer.pressureCutoffIdentity.cutoffMatchesAViscInvoiceFiber_proof⟩
+  fullTracefreeTensorReconstructionOnInvoiceFiber :=
+    hTransfer.fiveShadowSource.frameMatrixInvertibleOnTracefreeSymmetricTensors ∧
+      hTransfer.fiveShadowFrameFullRankTransfersToAViscInvoiceFiber
+  fullTracefreeTensorReconstructionOnInvoiceFiber_proof :=
+    ⟨hTransfer.fiveShadowSource.frameMatrixInvertibleOnTracefreeSymmetricTensors_proof,
+      hTransfer.fiveShadowFrameFullRankTransfersToAViscInvoiceFiber_proof⟩
+  irreducibleProjectionFamilyCoerciveOnTracefreeTensorSources :=
+    hTransfer.fiveShadowSource.reconstructionConstantFixedBeforePayoff ∧
+      hTransfer.fiveShadowCoercivityTransfersToAViscInvoiceFiber
+  irreducibleProjectionFamilyCoerciveOnTracefreeTensorSources_proof :=
+    ⟨hTransfer.fiveShadowSource.reconstructionConstantFixedBeforePayoff_proof,
+      hTransfer.fiveShadowCoercivityTransfersToAViscInvoiceFiber_proof⟩
+  scalarPushforwardKernelExcludedByProjectionFamily :=
+    hTransfer.scalarPushforwardKernelExcludedByFiveShadowFamily
+  scalarPushforwardKernelExcludedByProjectionFamily_proof :=
+    hTransfer.scalarPushforwardKernelExcludedByFiveShadowFamily_proof
+  noProjectionFamilyChosenFromScalarPayoff :=
+    hTransfer.fiveShadowSource.noTargetDefinedOutputPacket ∧
+      hTransfer.fiveShadowSource.notFinalScalarPressureValue ∧
+        hTransfer.fiveShadowSource.notSignedMomentOrPositivePartScalarization
+  noProjectionFamilyChosenFromScalarPayoff_proof :=
+    ⟨hTransfer.fiveShadowSource.noTargetDefinedOutputPacket_proof,
+      hTransfer.fiveShadowSource.notFinalScalarPressureValue_proof,
+      hTransfer.fiveShadowSource.notSignedMomentOrPositivePartScalarization_proof⟩
+  varianceLowerBoundBeforeAViscScalarization :=
+    hTransfer.varianceLowerBoundBeforeAViscScalarization
+  varianceLowerBoundBeforeAViscScalarization_proof :=
+    hTransfer.varianceLowerBoundBeforeAViscScalarization_proof
+
+/--
+Positive conditional constructor for the tensor non-cancellation row.
+
+Pressure/cutoff carrier identity contributes the eigenframe non-cancellation
+mechanism; the isotropic-mixture exclusion and morphology consequence remain
+explicit inputs.
+-/
+def AViscTracefreeTensorNonCancellationReceipt.ofPressureCutoffCarrierIdentity
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hFresh : PreScalarTracefreeFreshAnnularInnovationReceipt formula)
+    (hId : PressureCutoffCarrierIdentityForAViscInvoiceFiber)
+    (isotropicAViscOrientationMixtureExcluded : Prop)
+    (isotropicAViscOrientationMixtureExcluded_proof :
+      isotropicAViscOrientationMixtureExcluded)
+    (tracefreeTensorForcesAViscTotalCarrierMorphology : Prop)
+    (tracefreeTensorForcesAViscTotalCarrierMorphology_proof :
+      tracefreeTensorForcesAViscTotalCarrierMorphology) :
+    AViscTracefreeTensorNonCancellationReceipt formula where
+  pressureReceipt := hFresh
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber :=
+    hId.eigenframeSelectionForcesAViscTensorNonCancellation
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :=
+    hId.eigenframeSelectionForcesAViscTensorNonCancellation_proof
+  isotropicAViscOrientationMixtureExcluded :=
+    isotropicAViscOrientationMixtureExcluded
+  isotropicAViscOrientationMixtureExcluded_proof :=
+    isotropicAViscOrientationMixtureExcluded_proof
+  tracefreeTensorForcesAViscTotalCarrierMorphology :=
+    tracefreeTensorForcesAViscTotalCarrierMorphology
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+    tracefreeTensorForcesAViscTotalCarrierMorphology_proof
+
+/--
+Positive conditional bridge constructor using the existing pressure/cutoff
+carrier-identity object plus the two still-explicit scalar/tensor rows.
+-/
+def PreScalarTracefreeInnovationAViscInvoiceBridge.ofPressureCutoffCarrierIdentity
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hFresh : PreScalarTracefreeFreshAnnularInnovationReceipt formula)
+    (hId : PressureCutoffCarrierIdentityForAViscInvoiceFiber)
+    (hNoninj : AViscScalarPushforwardNoninjectivityExclusionReceipt formula)
+    (isotropicAViscOrientationMixtureExcluded : Prop)
+    (isotropicAViscOrientationMixtureExcluded_proof :
+      isotropicAViscOrientationMixtureExcluded)
+    (tracefreeTensorForcesAViscTotalCarrierMorphology : Prop)
+    (tracefreeTensorForcesAViscTotalCarrierMorphology_proof :
+      tracefreeTensorForcesAViscTotalCarrierMorphology) :
+    PreScalarTracefreeInnovationAViscInvoiceBridge formula :=
+  PreScalarTracefreeInnovationAViscInvoiceBridge.ofRows
+    (PressureTracefreeAViscInvoiceIdentityReceipt.ofPressureCutoffCarrierIdentity
+      hFresh hId)
+    hNoninj
+    (AViscTracefreeTensorNonCancellationReceipt.ofPressureCutoffCarrierIdentity
+      hFresh hId
+      isotropicAViscOrientationMixtureExcluded
+      isotropicAViscOrientationMixtureExcluded_proof
+      tracefreeTensorForcesAViscTotalCarrierMorphology
+      tracefreeTensorForcesAViscTotalCarrierMorphology_proof)
+
+/--
+Positive row target for the isotropic-mixture branch.
+
+The pressure/cutoff eigenframe supplies the tensor non-cancellation field, but
+only after a separate symmetry-breaking law rules out isotropic orientation
+averaging on the exact A_visc invoice fiber.
+-/
+structure AViscEigenframeAntiIsotropicMixtureReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  eigenframeSymmetryBreakingFixedBeforeScalarization : Prop
+  eigenframeSymmetryBreakingFixedBeforeScalarization_proof :
+    eigenframeSymmetryBreakingFixedBeforeScalarization
+  antiIsotropicMixtureLawOnAViscInvoiceFiber : Prop
+  antiIsotropicMixtureLawOnAViscInvoiceFiber_proof :
+    antiIsotropicMixtureLawOnAViscInvoiceFiber
+  tracefreeTensorForcesAViscTotalCarrierMorphology : Prop
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :
+    tracefreeTensorForcesAViscTotalCarrierMorphology
+
+/--
+An anti-isotropic eigenframe receipt pays the tensor non-cancellation row
+consumed by the A_visc invoice bridge.
+-/
+def AViscTracefreeTensorNonCancellationReceipt.ofEigenframeAntiIsotropicMixture
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hAnti : AViscEigenframeAntiIsotropicMixtureReceipt formula) :
+    AViscTracefreeTensorNonCancellationReceipt formula where
+  pressureReceipt := hAnti.pressureReceipt
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber :=
+    hAnti.pressureCutoffIdentity.eigenframeSelectionForcesAViscTensorNonCancellation
+  tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :=
+    hAnti.pressureCutoffIdentity.eigenframeSelectionForcesAViscTensorNonCancellation_proof
+  isotropicAViscOrientationMixtureExcluded :=
+    hAnti.eigenframeSymmetryBreakingFixedBeforeScalarization ∧
+      hAnti.antiIsotropicMixtureLawOnAViscInvoiceFiber
+  isotropicAViscOrientationMixtureExcluded_proof :=
+    ⟨hAnti.eigenframeSymmetryBreakingFixedBeforeScalarization_proof,
+      hAnti.antiIsotropicMixtureLawOnAViscInvoiceFiber_proof⟩
+  tracefreeTensorForcesAViscTotalCarrierMorphology :=
+    hAnti.tracefreeTensorForcesAViscTotalCarrierMorphology
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+    hAnti.tracefreeTensorForcesAViscTotalCarrierMorphology_proof
+
+/--
+Projected-penalty producer for the anti-isotropic A_visc row.
+
+This is the strongest currently visible positive handoff: the annular
+band-limited Riesz output packet is locked to the prior nonadaptive event
+stream, its PSD trace payment and cutoff tails are paid on that stream, and
+the output packet is additionally bound to the exact A_visc invoice fiber.
+-/
+structure AViscProjectedPenaltyAntiIsotropicBridgeReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  annularBridge :
+    AnnularBandlimitedRieszNonadaptiveOwnerPrefixBridge
+  projectedOutputPacketBindsExactAViscInvoiceFiber : Prop
+  projectedOutputPacketBindsExactAViscInvoiceFiber_proof :
+    projectedOutputPacketBindsExactAViscInvoiceFiber
+  projectedPenaltyExcludesIsotropicAViscMixture : Prop
+  projectedPenaltyExcludesIsotropicAViscMixture_proof :
+    projectedPenaltyExcludesIsotropicAViscMixture
+  projectedPenaltyForcesAViscTotalCarrierMorphology : Prop
+  projectedPenaltyForcesAViscTotalCarrierMorphology_proof :
+    projectedPenaltyForcesAViscTotalCarrierMorphology
+
+/--
+The projected-penalty bridge pays the anti-isotropic A_visc receipt.
+-/
+def AViscEigenframeAntiIsotropicMixtureReceipt.ofProjectedPenaltyBridge
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hBridge :
+      AViscProjectedPenaltyAntiIsotropicBridgeReceipt formula) :
+    AViscEigenframeAntiIsotropicMixtureReceipt formula where
+  pressureReceipt := hBridge.pressureReceipt
+  pressureCutoffIdentity := hBridge.pressureCutoffIdentity
+  eigenframeSymmetryBreakingFixedBeforeScalarization :=
+    hBridge.annularBridge.paymentFixedBeforeAngularSpendPayoff ∧
+      hBridge.annularBridge.annularBandlimitFixedBeforePayoff ∧
+      hBridge.annularBridge.traceFreeTensorTotalVariationNotSignedMoment ∧
+      hBridge.projectedOutputPacketBindsExactAViscInvoiceFiber
+  eigenframeSymmetryBreakingFixedBeforeScalarization_proof :=
+    ⟨hBridge.annularBridge.paymentFixedBeforeAngularSpendPayoff_proof,
+      hBridge.annularBridge.annularBandlimitFixedBeforePayoff_proof,
+      hBridge.annularBridge.traceFreeTensorTotalVariationNotSignedMoment_proof,
+      hBridge.projectedOutputPacketBindsExactAViscInvoiceFiber_proof⟩
+  antiIsotropicMixtureLawOnAViscInvoiceFiber :=
+    hBridge.annularBridge.selectedTargetUsesAnnularBandlimitedOutputPacket ∧
+      hBridge.annularBridge.annularProjectedPacketIdentifiedWithNonadaptiveEventStream ∧
+      hBridge.annularBridge.outputPacketSupportSameAnnularCarrier ∧
+      hBridge.annularBridge.PSDTracePaysAnnularProjectedPacket ∧
+      hBridge.annularBridge.cutoffCommutatorTailsPaidBySameStreamShardC ∧
+      hBridge.projectedPenaltyExcludesIsotropicAViscMixture
+  antiIsotropicMixtureLawOnAViscInvoiceFiber_proof :=
+    ⟨hBridge.annularBridge.selectedTargetUsesAnnularBandlimitedOutputPacket_proof,
+      hBridge.annularBridge.annularProjectedPacketIdentifiedWithNonadaptiveEventStream_proof,
+      hBridge.annularBridge.outputPacketSupportSameAnnularCarrier_proof,
+      hBridge.annularBridge.PSDTracePaysAnnularProjectedPacket_proof,
+      hBridge.annularBridge.cutoffCommutatorTailsPaidBySameStreamShardC_proof,
+      hBridge.projectedPenaltyExcludesIsotropicAViscMixture_proof⟩
+  tracefreeTensorForcesAViscTotalCarrierMorphology :=
+    hBridge.annularBridge.ownerPrefixBudgetInheritedFromPriorNonadaptiveSelection ∧
+      hBridge.annularBridge.notBesovBVOrCFImport ∧
+      hBridge.projectedPenaltyForcesAViscTotalCarrierMorphology
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+    ⟨hBridge.annularBridge.ownerPrefixBudgetInheritedFromPriorNonadaptiveSelection_proof,
+      hBridge.annularBridge.notBesovBVOrCFImport_proof,
+      hBridge.projectedPenaltyForcesAViscTotalCarrierMorphology_proof⟩
+
+/--
+Route-1 output identity missing blocks the projected-penalty A_visc bridge.
+-/
+theorem no_AViscProjectedPenaltyAntiIsotropicBridgeReceipt_of_route1OutputIdentityMissing
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AnnularBandlimitedRieszRoute1OutputIdentityMissingConfuser formula)
+    (hBridge :
+      AViscProjectedPenaltyAntiIsotropicBridgeReceipt formula)
+    (hSameIdentity :
+      hBridge.annularBridge.selectedTargetUsesAnnularBandlimitedOutputPacket =
+        (hConfuser.annularOutputPacketIdentityMissing = False)) :
+    False :=
+  no_AnnularBandlimitedRieszNonadaptiveOwnerPrefixBridge_of_route1OutputIdentityMissing
+    hConfuser
+    hBridge.annularBridge
+    hSameIdentity
+
+/--
+The same route-1 identity gap blocks the anti-isotropic receipt if the receipt
+is claimed to be produced by the projected-penalty bridge.
+-/
+theorem no_AViscEigenframeAntiIsotropicMixtureReceipt_of_projectedPenaltyRoute1OutputIdentityMissing
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AnnularBandlimitedRieszRoute1OutputIdentityMissingConfuser formula)
+    (hBridge :
+      AViscProjectedPenaltyAntiIsotropicBridgeReceipt formula)
+    (hSameIdentity :
+      hBridge.annularBridge.selectedTargetUsesAnnularBandlimitedOutputPacket =
+        (hConfuser.annularOutputPacketIdentityMissing = False)) :
+    ¬ Nonempty (AViscEigenframeAntiIsotropicMixtureReceipt formula) := by
+  intro _hAnti
+  exact
+    no_AViscProjectedPenaltyAntiIsotropicBridgeReceipt_of_route1OutputIdentityMissing
+      hConfuser hBridge hSameIdentity
+
+/--
+Five-frame valuation producer for the anti-isotropic A_visc row.
+
+This is the route exposed by the route-1 identity reduction: the selected
+event-radius currency is literally the five-shadow trace-free valuation stream,
+and that same stream has a cofinal owner-prefix budget.
+-/
+structure AViscFiveFrameValuationAntiIsotropicBridgeReceipt
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  valuationBudget :
+    TraceFreeL2ValuationC7CofinalOwnerBudget formula
+  pressureReceiptConsumesValuationBudget : Prop
+  pressureReceiptConsumesValuationBudget_proof :
+    pressureReceiptConsumesValuationBudget
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  valuationStreamBindsExactAViscInvoiceFiber : Prop
+  valuationStreamBindsExactAViscInvoiceFiber_proof :
+    valuationStreamBindsExactAViscInvoiceFiber
+  valuationBudgetForcesAViscTotalCarrierMorphology : Prop
+  valuationBudgetForcesAViscTotalCarrierMorphology_proof :
+    valuationBudgetForcesAViscTotalCarrierMorphology
+
+/--
+A cofinally budgeted five-frame valuation stream pays the anti-isotropic A_visc
+receipt.
+-/
+def AViscEigenframeAntiIsotropicMixtureReceipt.ofFiveFrameValuationBridge
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hBridge :
+      AViscFiveFrameValuationAntiIsotropicBridgeReceipt formula) :
+    AViscEigenframeAntiIsotropicMixtureReceipt formula where
+  pressureReceipt := hBridge.pressureReceipt
+  pressureCutoffIdentity := hBridge.pressureCutoffIdentity
+  eigenframeSymmetryBreakingFixedBeforeScalarization :=
+    hBridge.valuationBudget.source.angularFrameFixedBeforePayoff ∧
+      hBridge.valuationBudget.source.reconstructionConstantFixedBeforePayoff ∧
+      hBridge.valuationBudget.source.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers ∧
+      hBridge.valuationBudget.exactInvoiceFiberForFiveShadowValuation ∧
+      hBridge.valuationStreamBindsExactAViscInvoiceFiber
+  eigenframeSymmetryBreakingFixedBeforeScalarization_proof :=
+    ⟨hBridge.valuationBudget.source.angularFrameFixedBeforePayoff_proof,
+      hBridge.valuationBudget.source.reconstructionConstantFixedBeforePayoff_proof,
+      hBridge.valuationBudget.source.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers_proof,
+      hBridge.valuationBudget.exactInvoiceFiberForFiveShadowValuation_proof,
+      hBridge.valuationStreamBindsExactAViscInvoiceFiber_proof⟩
+  antiIsotropicMixtureLawOnAViscInvoiceFiber :=
+    hBridge.valuationBudget.source.fiveShadowMeasuresOnExactSameSource ∧
+      hBridge.valuationBudget.source.frameMatrixInvertibleOnTracefreeSymmetricTensors ∧
+      hBridge.valuationBudget.source.shadowMeasureTotalVariationChargedBeforeFinalSummation ∧
+      hBridge.valuationBudget.source.notSignedMomentOrPositivePartScalarization ∧
+      hBridge.valuationBudget.fiveShadowTVBudgetPaidBeforeScalarProjection
+  antiIsotropicMixtureLawOnAViscInvoiceFiber_proof :=
+    ⟨hBridge.valuationBudget.source.fiveShadowMeasuresOnExactSameSource_proof,
+      hBridge.valuationBudget.source.frameMatrixInvertibleOnTracefreeSymmetricTensors_proof,
+      hBridge.valuationBudget.source.shadowMeasureTotalVariationChargedBeforeFinalSummation_proof,
+      hBridge.valuationBudget.source.notSignedMomentOrPositivePartScalarization_proof,
+      hBridge.valuationBudget.fiveShadowTVBudgetPaidBeforeScalarProjection_proof⟩
+  tracefreeTensorForcesAViscTotalCarrierMorphology :=
+    hBridge.valuationBudget.selectedValuationPrefixesCofinalWithC7ScaleTruncations ∧
+      hBridge.valuationBudget.valuationBudgetNotFromEndpointCZOrSignedDiniOrProductL2 ∧
+      hBridge.valuationBudgetForcesAViscTotalCarrierMorphology
+  tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+    ⟨hBridge.valuationBudget.selectedValuationPrefixesCofinalWithC7ScaleTruncations_proof,
+      hBridge.valuationBudget.valuationBudgetNotFromEndpointCZOrSignedDiniOrProductL2_proof,
+      hBridge.valuationBudgetForcesAViscTotalCarrierMorphology_proof⟩
+
+/--
+The Dini square/linear packet blocks the five-frame valuation bridge whenever
+the bridge's valuation stream is the overflowing linear trace-free stream.
+-/
+theorem no_AViscFiveFrameValuationAntiIsotropicBridgeReceipt_of_diniSquareOnly
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hPacket : TraceFreeVariationDiniSquareCarlesonButL1DivergesPacket)
+    (hBridge :
+      AViscFiveFrameValuationAntiIsotropicBridgeReceipt formula)
+    (hSameValuationEvents :
+      hBridge.valuationBudget.source.tracefreeValuationPay =
+        hPacket.angularEventPay) :
+    False :=
+  no_TraceFreeL2ValuationC7CofinalOwnerBudget_of_diniSquareOnly
+    hPacket
+    hBridge.valuationBudget
+    hSameValuationEvents
+
+/--
+Hostile packet for the pressure/five-shadow continuation.
+
+It allows the pressure-side pre-scalar trace-free innovation receipt to exist,
+but keeps the A_visc invoice-fiber bridge unpaid.  This separates "trace-free
+pressure innovation exists" from "the same object is the A_visc invoice-fiber
+tensor/source law."
+-/
+structure PreScalarTracefreeInnovationAViscBridgeMissingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureTracefreeInnovationAvailable : Prop
+  pressureTracefreeInnovationAvailable_proof :
+    pressureTracefreeInnovationAvailable
+  pressureCarrierMayDifferFromAViscInvoiceFiber : Prop
+  pressureCarrierMayDifferFromAViscInvoiceFiber_proof :
+    pressureCarrierMayDifferFromAViscInvoiceFiber
+  scalarAViscPositivePartPushforwardPreserved : Prop
+  scalarAViscPositivePartPushforwardPreserved_proof :
+    scalarAViscPositivePartPushforwardPreserved
+  samePressureLabelsDoNotDetermineAViscTensorLaw : Prop
+  samePressureLabelsDoNotDetermineAViscTensorLaw_proof :
+    samePressureLabelsDoNotDetermineAViscTensorLaw
+  isotropicAViscTracefreeCancellationStillAdmissible : Prop
+  isotropicAViscTracefreeCancellationStillAdmissible_proof :
+    isotropicAViscTracefreeCancellationStillAdmissible
+  noAViscInvoiceBridge :
+    ¬ Nonempty (PreScalarTracefreeInnovationAViscInvoiceBridge formula)
+
+/--
+Pressure/five-shadow trace-free innovation alone does not supply the A_visc
+invoice-fiber bridge in the bridge-missing hostile packet.
+-/
+theorem no_PreScalarTracefreeInnovationAViscInvoiceBridge_of_missingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      PreScalarTracefreeInnovationAViscBridgeMissingConfuser formula)
+    (hBridge : PreScalarTracefreeInnovationAViscInvoiceBridge formula) :
+    False :=
+  hConfuser.noAViscInvoiceBridge ⟨hBridge⟩
+
+/--
+Row-level hostile packet: pressure/five-shadow trace-free innovation is
+available, but it has not been identified with the exact A_visc invoice fiber.
+-/
+structure PressureTracefreeAViscInvoiceIdentityMissingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureTracefreeInnovationAvailable : Prop
+  pressureTracefreeInnovationAvailable_proof :
+    pressureTracefreeInnovationAvailable
+  pressureCarrierMayDifferFromAViscInvoiceFiber : Prop
+  pressureCarrierMayDifferFromAViscInvoiceFiber_proof :
+    pressureCarrierMayDifferFromAViscInvoiceFiber
+  noIdentityReceipt :
+    ¬ Nonempty (PressureTracefreeAViscInvoiceIdentityReceipt formula)
+
+/--
+Pressure-side trace-free innovation does not pay the identity row in the
+identity-missing hostile packet.
+-/
+theorem no_PressureTracefreeAViscInvoiceIdentityReceipt_of_missingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      PressureTracefreeAViscInvoiceIdentityMissingConfuser formula)
+    (hIdentity : PressureTracefreeAViscInvoiceIdentityReceipt formula) :
+    False :=
+  hConfuser.noIdentityReceipt ⟨hIdentity⟩
+
+/--
+Row-level hostile packet: the scalar positive-part A_visc pushforward may be
+visible, but the hidden pre-scalar fibers have not been excluded.
+-/
+structure AViscScalarPushforwardNoninjectivityStillOpenConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  scalarAViscPositivePartPushforwardPreserved : Prop
+  scalarAViscPositivePartPushforwardPreserved_proof :
+    scalarAViscPositivePartPushforwardPreserved
+  twoPreScalarFibersShareSameScalarPushforward : Prop
+  twoPreScalarFibersShareSameScalarPushforward_proof :
+    twoPreScalarFibersShareSameScalarPushforward
+  noNoninjectivityExclusionReceipt :
+    ¬ Nonempty
+      (AViscScalarPushforwardNoninjectivityExclusionReceipt formula)
+
+/--
+Concrete fiber-collision witness for the scalar A_visc pushforward.
+
+It refines the row-level noninjectivity-open packet by naming the two hidden
+pre-scalar trace-free tensor/source fibers that share the same scalar
+positive-part pushforward.  The row can only be used after this collision is
+excluded before payoff.
+-/
+structure AViscScalarPushforwardFiberCollisionWitness
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  firstPreScalarTracefreeTensorSource : Prop
+  firstPreScalarTracefreeTensorSource_proof :
+    firstPreScalarTracefreeTensorSource
+  secondPreScalarTracefreeTensorSource : Prop
+  secondPreScalarTracefreeTensorSource_proof :
+    secondPreScalarTracefreeTensorSource
+  sameScalarAViscPositivePartPushforward : Prop
+  sameScalarAViscPositivePartPushforward_proof :
+    sameScalarAViscPositivePartPushforward
+  distinctPreScalarTracefreeTensorSources : Prop
+  distinctPreScalarTracefreeTensorSources_proof :
+    distinctPreScalarTracefreeTensorSources
+  scalarPushforwardForgetsTensorSourceLaw : Prop
+  scalarPushforwardForgetsTensorSourceLaw_proof :
+    scalarPushforwardForgetsTensorSourceLaw
+  scalarFiberCollisionFixedBeforePayoff : Prop
+  scalarFiberCollisionFixedBeforePayoff_proof :
+    scalarFiberCollisionFixedBeforePayoff
+  noNoninjectivityExclusionReceipt :
+    ¬ Nonempty
+      (AViscScalarPushforwardNoninjectivityExclusionReceipt formula)
+
+/--
+A concrete scalar-fiber collision specializes to the existing row-level
+noninjectivity-open hostile packet.
+-/
+def AViscScalarPushforwardNoninjectivityStillOpenConfuser.ofFiberCollisionWitness
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hWitness :
+      AViscScalarPushforwardFiberCollisionWitness formula) :
+    AViscScalarPushforwardNoninjectivityStillOpenConfuser formula where
+  pressureReceipt := hWitness.pressureReceipt
+  scalarAViscPositivePartPushforwardPreserved :=
+    hWitness.sameScalarAViscPositivePartPushforward
+  scalarAViscPositivePartPushforwardPreserved_proof :=
+    hWitness.sameScalarAViscPositivePartPushforward_proof
+  twoPreScalarFibersShareSameScalarPushforward :=
+    hWitness.firstPreScalarTracefreeTensorSource ∧
+      hWitness.secondPreScalarTracefreeTensorSource ∧
+      hWitness.sameScalarAViscPositivePartPushforward ∧
+      hWitness.distinctPreScalarTracefreeTensorSources
+  twoPreScalarFibersShareSameScalarPushforward_proof :=
+    ⟨hWitness.firstPreScalarTracefreeTensorSource_proof,
+      hWitness.secondPreScalarTracefreeTensorSource_proof,
+      hWitness.sameScalarAViscPositivePartPushforward_proof,
+      hWitness.distinctPreScalarTracefreeTensorSources_proof⟩
+  noNoninjectivityExclusionReceipt :=
+    hWitness.noNoninjectivityExclusionReceipt
+
+/--
+Scalar A_visc visibility does not pay the noninjectivity-exclusion row in the
+noninjectivity-open hostile packet.
+-/
+theorem
+    no_AViscScalarPushforwardNoninjectivityExclusionReceipt_of_openConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscScalarPushforwardNoninjectivityStillOpenConfuser formula)
+    (hNoninj :
+      AViscScalarPushforwardNoninjectivityExclusionReceipt formula) :
+    False :=
+  hConfuser.noNoninjectivityExclusionReceipt ⟨hNoninj⟩
+
+/--
+The concrete fiber-collision witness directly blocks the scalar noninjectivity
+exclusion row.
+-/
+theorem
+    no_AViscScalarPushforwardNoninjectivityExclusionReceipt_of_fiberCollisionWitness
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hWitness :
+      AViscScalarPushforwardFiberCollisionWitness formula)
+    (hNoninj :
+      AViscScalarPushforwardNoninjectivityExclusionReceipt formula) :
+    False :=
+  hWitness.noNoninjectivityExclusionReceipt ⟨hNoninj⟩
+
+/--
+The scalar fiber-collision witness also blocks the five-shadow projection
+transfer, because that transfer would produce the scalar noninjectivity row.
+-/
+theorem no_AViscFiveShadowProjectionFamilyTransferReceipt_of_fiberCollisionWitness
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hWitness :
+      AViscScalarPushforwardFiberCollisionWitness formula)
+    (hTransfer :
+      AViscFiveShadowProjectionFamilyTransferReceipt formula) :
+    False :=
+  no_AViscScalarPushforwardNoninjectivityExclusionReceipt_of_fiberCollisionWitness
+    hWitness
+    (AViscScalarPushforwardNoninjectivityExclusionReceipt.ofFixedIrreducibleProjectionSeparation
+      (AViscFixedIrreducibleProjectionSeparationReceipt.ofFiveShadowProjectionFamilyTransfer
+        hTransfer))
+
+/--
+Specific isotropic-mixture hostile packet for the eigenframe branch.
+
+It records the current failure mode after the scalar shortcut is killed:
+pressure/cutoff identity may expose an eigenframe non-cancellation field, but
+the anti-isotropic symmetry-breaking law still has to be paid before the
+trace-free tensor row can be consumed.
+-/
+structure AViscEigenframeLabelOnlyIsotropicMixtureConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  pressureCutoffIdentity :
+    PressureCutoffCarrierIdentityForAViscInvoiceFiber
+  eigenframeNonCancellationVisible : Prop
+  eigenframeNonCancellationVisible_proof :
+    eigenframeNonCancellationVisible
+  scalarAViscPositivePartPushforwardPreserved : Prop
+  scalarAViscPositivePartPushforwardPreserved_proof :
+    scalarAViscPositivePartPushforwardPreserved
+  isotropicAViscTracefreeCancellationStillAdmissible : Prop
+  isotropicAViscTracefreeCancellationStillAdmissible_proof :
+    isotropicAViscTracefreeCancellationStillAdmissible
+  totalCarrierMorphologyStillUnpaid : Prop
+  totalCarrierMorphologyStillUnpaid_proof :
+    totalCarrierMorphologyStillUnpaid
+  noEigenframeAntiIsotropicMixtureReceipt :
+    ¬ Nonempty (AViscEigenframeAntiIsotropicMixtureReceipt formula)
+  noTensorNonCancellationReceipt :
+    ¬ Nonempty (AViscTracefreeTensorNonCancellationReceipt formula)
+
+/--
+An eigenframe label alone does not pay the anti-isotropic row.
+-/
+theorem no_AViscEigenframeAntiIsotropicMixtureReceipt_of_labelOnlyConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscEigenframeLabelOnlyIsotropicMixtureConfuser formula)
+    (hAnti : AViscEigenframeAntiIsotropicMixtureReceipt formula) :
+    False :=
+  hConfuser.noEigenframeAntiIsotropicMixtureReceipt ⟨hAnti⟩
+
+/--
+The eigenframe-label-only packet also blocks the tensor non-cancellation row
+while isotropic cancellation remains admissible.
+-/
+theorem
+    no_AViscTracefreeTensorNonCancellationReceipt_of_eigenframeLabelOnlyConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscEigenframeLabelOnlyIsotropicMixtureConfuser formula)
+    (hTensor : AViscTracefreeTensorNonCancellationReceipt formula) :
+    False :=
+  hConfuser.noTensorNonCancellationReceipt ⟨hTensor⟩
+
+/--
+The same packet blocks the full A_visc invoice bridge, because any bridge
+contains the tensor non-cancellation row as a field.
+-/
+theorem
+    no_PreScalarTracefreeInnovationAViscInvoiceBridge_of_eigenframeLabelOnlyConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscEigenframeLabelOnlyIsotropicMixtureConfuser formula)
+    (hBridge : PreScalarTracefreeInnovationAViscInvoiceBridge formula) :
+    False :=
+  hConfuser.noTensorNonCancellationReceipt
+    ⟨{
+      pressureReceipt := hConfuser.pressureReceipt
+      tracefreeTensorNonCancellationOnAViscInvoiceFiber :=
+        hBridge.tracefreeTensorNonCancellationOnAViscInvoiceFiber
+      tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof :=
+        hBridge.tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof
+      isotropicAViscOrientationMixtureExcluded :=
+        hBridge.isotropicAViscOrientationMixtureExcluded
+      isotropicAViscOrientationMixtureExcluded_proof :=
+        hBridge.isotropicAViscOrientationMixtureExcluded_proof
+      tracefreeTensorForcesAViscTotalCarrierMorphology :=
+        hBridge.tracefreeTensorForcesAViscTotalCarrierMorphology
+      tracefreeTensorForcesAViscTotalCarrierMorphology_proof :=
+        hBridge.tracefreeTensorForcesAViscTotalCarrierMorphology_proof
+    }⟩
+
+/--
+Row-level hostile packet: the A_visc isotropic mixture remains admissible, so
+the trace-free tensor non-cancellation row is not paid.
+-/
+structure AViscTracefreeTensorNonCancellationMissingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    (formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade) where
+  pressureReceipt :
+    PreScalarTracefreeFreshAnnularInnovationReceipt formula
+  tracefreeTensorLawVisibleOnPressureSide : Prop
+  tracefreeTensorLawVisibleOnPressureSide_proof :
+    tracefreeTensorLawVisibleOnPressureSide
+  isotropicAViscTracefreeCancellationStillAdmissible : Prop
+  isotropicAViscTracefreeCancellationStillAdmissible_proof :
+    isotropicAViscTracefreeCancellationStillAdmissible
+  noTensorNonCancellationReceipt :
+    ¬ Nonempty (AViscTracefreeTensorNonCancellationReceipt formula)
+
+/--
+Pressure-side trace-free tensor visibility does not pay A_visc tensor
+non-cancellation while the isotropic A_visc mixture remains admissible.
+-/
+theorem no_AViscTracefreeTensorNonCancellationReceipt_of_missingConfuser
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hConfuser :
+      AViscTracefreeTensorNonCancellationMissingConfuser formula)
+    (hTensor : AViscTracefreeTensorNonCancellationReceipt formula) :
+    False :=
+  hConfuser.noTensorNonCancellationReceipt ⟨hTensor⟩
+
+section AViscPreScalarTracefreeAdapter
+
+variable {seq : LerayHopfSequence} {K : CompactSubCylinder}
+variable {hRho : RhoFromNormalizedCKNExcess seq K}
+variable {hCarrier : NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+variable {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+variable {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+variable {L : NS.EventRecurrencePriceLedger}
+variable {hScale : BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+variable {hInc : BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+variable {hElig :
+  ResidualFreshExcessAuditEligibilityData
+    (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+    (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+variable {hGeom : LerayHeatFreshFrequencyEventTentGeometry seq K hRho hCarrier hEvents L}
+variable {hPressure : FreshFrequencyPressureTailEventAssignment seq K hRho hCarrier hEvents L}
+variable {hDuhamel : FreshFrequencyDuhamelErrorEventAssignment seq K hRho hCarrier hEvents L}
+variable {hLock : FreshFrequencyEventSameTreeLock seq K hRho hCarrier hBeta hEvents L hScale hInc}
+variable {h : CoronaDuhamelProductionSingleSpendCarrier hElig hGeom hPressure hDuhamel hLock}
+variable {routeActiveTail : Nat → Real}
+variable {hId :
+  C7RouteActiveTailEventBetaSquareIdentification
+    (hBeta := hBeta) (hEvents := hEvents) (L := L) routeActiveTail}
+variable {hComplete : CoronaDuhamelC7SourceCompletion h hId}
+variable {hTransfer :
+  C7ScaledOwnerPreimageCarrierTransfer
+    (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+      hComplete)}
+variable {nse : NavierStokes.NavierStokesEquations 3}
+variable {sol : NavierStokes.WeakSolution nse}
+
+/--
+Conditional positive adapter for TICK669.
+
+If a pressure-side pre-scalar trace-free innovation receipt is explicitly
+identified with the exact A_visc invoice fiber and pays the non-cancellation
+bridge rows, then it supplies the strict A_visc pre-scalar tensor/source
+receipt.  This is a consumer path, not an existence theorem for the PDE bridge.
+-/
+def C7AViscPreScalarTensorSourceReceipt.ofPreScalarTracefreeInnovation
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hPush :
+      C7AViscSameSourcePushforwardBoundReceipt
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hFresh :
+      PreScalarTracefreeFreshAnnularInnovationReceipt formula)
+    (hBridge :
+      PreScalarTracefreeInnovationAViscInvoiceBridge formula) :
+    C7AViscPreScalarTensorSourceReceipt
+      (nse := nse) (sol := sol)
+      hTransfer where
+  pushforwardBound := hPush
+  sourceSelectionDeclaredBeforeTarget :=
+    hFresh.sourceNondeclarationTimingConsequence
+  sourceSelectionDeclaredBeforeTarget_proof :=
+    hFresh.sourceNondeclarationTimingConsequence_proof
+  sourceFixedBeforePayoff :=
+    hFresh.invoiceFiltrationFixedBeforePayoff
+  sourceFixedBeforePayoff_proof :=
+    hFresh.invoiceFiltrationFixedBeforePayoff_proof
+  targetNotUsedToDefineSource :=
+    hFresh.nondeclarationBinding
+  targetNotUsedToDefineSource_proof :=
+    hFresh.nondeclarationBinding_proof
+  noPostPayoffPositivePartSelection :=
+    hFresh.noFinalScalarPressureValue
+  noPostPayoffPositivePartSelection_proof :=
+    hFresh.noFinalScalarPressureValue_proof
+  analyticMarkedSourceLawOnInvoiceFiber :=
+    hBridge.markedSourceLawOnAViscInvoiceFiber
+  analyticMarkedSourceLawOnInvoiceFiber_proof :=
+    hBridge.markedSourceLawOnAViscInvoiceFiber_proof
+  markedSourceLawBoundToSameCarrier :=
+    hBridge.pressureTracefreeInnovationIsAViscInvoiceFiber
+  markedSourceLawBoundToSameCarrier_proof :=
+    hBridge.pressureTracefreeInnovationIsAViscInvoiceFiber_proof
+  varianceLowerBoundBeforeScalarization :=
+    hBridge.varianceLowerBoundBeforeAViscScalarization
+  varianceLowerBoundBeforeScalarization_proof :=
+    hBridge.varianceLowerBoundBeforeAViscScalarization_proof
+  scalarPushforwardNoninjectivityExcluded :=
+    hBridge.scalarAViscPushforwardNoninjectivityExcluded
+  scalarPushforwardNoninjectivityExcluded_proof :=
+    hBridge.scalarAViscPushforwardNoninjectivityExcluded_proof
+  tracelessTensorLawOnInvoiceFiber :=
+    hBridge.tracefreeTensorLawOnAViscInvoiceFiber
+  tracelessTensorLawOnInvoiceFiber_proof :=
+    hBridge.tracefreeTensorLawOnAViscInvoiceFiber_proof
+  tracelessTensorNonCancellation :=
+    hBridge.tracefreeTensorNonCancellationOnAViscInvoiceFiber
+  tracelessTensorNonCancellation_proof :=
+    hBridge.tracefreeTensorNonCancellationOnAViscInvoiceFiber_proof
+  isotropicOrientationMixtureExcluded :=
+    hBridge.isotropicAViscOrientationMixtureExcluded
+  isotropicOrientationMixtureExcluded_proof :=
+    hBridge.isotropicAViscOrientationMixtureExcluded_proof
+  tensorSourceNotDimensionlessExponentOnly :=
+    hFresh.innovationIsPreSummedTracefreeShadowMeasures ∧
+      hFresh.noFinalScalarPressureValue
+  tensorSourceNotDimensionlessExponentOnly_proof :=
+    ⟨hFresh.innovationIsPreSummedTracefreeShadowMeasures_proof,
+      hFresh.noFinalScalarPressureValue_proof⟩
+  tracelessTensorForcesTotalCarrierMorphology :=
+    hBridge.tracefreeTensorForcesAViscTotalCarrierMorphology
+  tracelessTensorForcesTotalCarrierMorphology_proof :=
+    hBridge.tracefreeTensorForcesAViscTotalCarrierMorphology_proof
+
+end AViscPreScalarTracefreeAdapter
+
 
 /--
 Level361 quotient-minimal transaction carrier.  It records a source quotient and

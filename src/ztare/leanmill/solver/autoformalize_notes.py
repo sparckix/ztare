@@ -450,29 +450,41 @@ def autoformalize_from_notes(notes_text: str, *, lean_root: Optional[Path] = Non
                         out["target"]["solved"] = False
                         out["target"]["outcome"] = "axiom_taint_gap"
                         out["target"]["faithfulness_reason"] = f"persisted-theory {_areason}"
-                    elif "unavailable" not in _areason:
-                        # P0 SINGLE-DOOR (2026-06-30): the honest persisted-world axioms are computed HERE, at
-                        # close, in the warm env. STAMP them (+ this-run banked/reused counts) in a sidecar beside
-                        # the closure so promote_campaign_artifact READS them — instead of re-deriving P0 from the
-                        # cold probe-world closure, which times out (→ `axioms ?`) and reports stub axioms, and
-                        # whose log-regex misses intra-run banking (→ `reuse 0`). Fixes that recurring P0-at-promote
-                        # class at the root: compute once where the data is honest, never re-derive on a cold box.
+                    else:
+                        # P0 SINGLE-DOOR (2026-06-30): stamp the honest persisted-world axioms (+ this-run
+                        # banked/reused counts) in a sidecar beside the closure so promote READS them — never
+                        # re-derives P0 from the cold probe-world closure (→ `axioms ?` / stub axioms / `reuse 0`).
+                        # HARDENED (2026-07-01): the warm CAMPAIGN-env audit is "unavailable" when the REPL dropped
+                        # after a long run (the BFT sidecar never stamped) → fall back to `axioms_raw_via_repl` on
+                        # the self-contained substrate (BASE env, no campaign-env dependency) so the stamp fires
+                        # reliably. Best-effort; never blocks a verified closure.
                         try:
-                            import json as _json_p0
-                            _banked_n = sum(1 for _l in out["lemmas"]
-                                            if _l.get("solved") and _l.get("outcome") != "reused_from_bank")
-                            _reused_n = sum(1 for _l in out["lemmas"] if _l.get("outcome") == "reused_from_bank")
-                            _cdir_p0 = LEAN_ROOT_DEFAULT / ".solver_scratch" / "closures"
-                            _cdir_p0.mkdir(parents=True, exist_ok=True)
-                            (_cdir_p0 / f"{_tname}.p0.json").write_text(_json_p0.dumps({
-                                "axioms": _areason,               # persisted-world #print axioms (warm env)
-                                "composite_decl": _banked,
-                                "theory_file": _theory_rel_final,
-                                "banked_this_run": _banked_n,
-                                "reused_from_bank": _reused_n,
-                            }, indent=2), encoding="utf-8")
-                            log(f"[notes] P0 stamped: closures/{_tname}.p0.json "
-                                f"(axioms={_areason} · {_banked_n} banked/{_reused_n} reused this run)")
+                            import json as _json_p0, re as _re_p0
+                            _ax_str = _areason if ("unavailable" not in _areason) else ""
+                            if not _ax_str:
+                                from ztare.formal.repl_compile import axioms_raw_via_repl as _araw
+                                _raw = _araw(_tp.read_text(encoding="utf-8"), _banked, str(LEAN_ROOT_DEFAULT))
+                                if _raw and "depends on axioms" in _raw:
+                                    _ax_str = ", ".join(_re_p0.findall(r"[A-Za-z_][\w.]*",
+                                                        _raw.split("depends on axioms", 1)[-1]))
+                            if _ax_str:
+                                _banked_n = sum(1 for _l in out["lemmas"]
+                                                if _l.get("solved") and _l.get("outcome") != "reused_from_bank")
+                                _reused_n = sum(1 for _l in out["lemmas"] if _l.get("outcome") == "reused_from_bank")
+                                _cdir_p0 = LEAN_ROOT_DEFAULT / ".solver_scratch" / "closures"
+                                _cdir_p0.mkdir(parents=True, exist_ok=True)
+                                (_cdir_p0 / f"{_tname}.p0.json").write_text(_json_p0.dumps({
+                                    "axioms": _ax_str,               # persisted-world #print axioms (warm campaign-env, else base-env fallback)
+                                    "composite_decl": _banked,
+                                    "theory_file": _theory_rel_final,
+                                    "banked_this_run": _banked_n,
+                                    "reused_from_bank": _reused_n,
+                                }, indent=2), encoding="utf-8")
+                                log(f"[notes] P0 stamped: closures/{_tname}.p0.json "
+                                    f"(axioms={_ax_str} · {_banked_n} banked/{_reused_n} reused this run)")
+                            else:
+                                log("[notes] P0 sidecar SKIPPED — axioms unavailable (warm campaign-env dropped + "
+                                    "base-env #print-axioms fallback inconclusive); promote will re-derive from the closure")
                         except Exception:  # noqa: BLE001 — telemetry; never blocks a verified closure
                             pass
         except Exception:  # noqa: BLE001 — defense-in-depth backstop; never break the run
@@ -638,6 +650,28 @@ def theory_consolidation(notes_text: str, theory_rel: str, *, lean_root: Path,
     if ok is not True:
         theory_path.write_text(before, encoding="utf-8")
         return {"ok": False, "reverted": True, "reason": "extended theory file does not compile"}
+    # SUPERSESSION HEAL (sorried-sibling class, 2026-07-01): the APPEND-ONLY gate above forbids the AGENT editing
+    # `X := sorry` → `X := proof`, so when it proves a shelf lemma it appends a proven TWIN (`X_banked`) and the
+    # canonical `X` stays sorried — sorried-canonical / proven-twin pairs ACCUMULATE across rounds (inflating the
+    # shelf; blocking a clean filing). The HARNESS may fold each proven twin into its sorried canonical (NOT agent
+    # laundering — it only replaces a `sorry` with `by exact <twin>`, a kernel-checkable cite of an EXISTING
+    # identical-statement proof). Guarded: REVERIFY the healed file compiles (sorry-tolerant) and REVERT on any
+    # break (never poison the substrate — same discipline as the gates above). Default-on; =0 reverts.
+    import os as _os_sup
+    if _os_sup.environ.get("ZTARE_LEANMILL_SUPERSEDE_TWINS", "1") != "0":
+        try:
+            from ztare.leanmill.lean_source import supersede_sorried_twins as _sst
+            _healed, _rep = _sst(after)
+            if _rep and _healed != after:
+                theory_path.write_text(_healed, encoding="utf-8")
+                if compile_fn(_healed, lean_root, "SupersedeHeal", _ts("cold_compile")) is True:
+                    after = _healed
+                    print(f"[consolidation] SUPERSEDED {len(_rep)} sorried-canonical(s) via proven twin: "
+                          f"{[c for c, _ in _rep][:6]}", flush=True)
+                else:
+                    theory_path.write_text(after, encoding="utf-8")   # REVERT — never poison the substrate
+        except Exception:  # noqa: BLE001 — heal is best-effort; the un-healed file already passed GATE 2
+            pass
     # extract the NEW sorried API statements → solver work items. "Is this decl OPEN?" is a KERNEL fact,
     # NOT a lexical grep (the operator's "fix once and for all"): the file just compiled, so ask the
     # elaborator which NEW decls carry `sorryAx` (`kernel_structure.sorried_names`). This CANNOT be fooled
@@ -1461,26 +1495,25 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     if not _std.get("ok"):
         print("[notes] ABORT — instrument standards FAILED (fail-closed: fix the instrument, do not burn the run)")
         return 3
-    # COMPOUNDING-RETRIEVER LIVENESS (2026-06-24): the semantic premise shelf (own-ledger + Mathlib recall) is the
-    # compounding READ path — it surfaces "this is ALREADY proven, cite it, do not re-derive". It embeds via gemini;
-    # on a dead key/quota it SILENTLY returns nothing (the shelf's `except → []`), so a "no prior work" reads as a
-    # REAL absence and the run re-derives — the exact treadmill the amnesia firewall exists to prevent, and the
-    # measured cause of low cross-run lemma reuse (a starved embedder = invisible 5% reuse). This wires the EXISTING
-    # `embedder_liveness` guard (it was built for this and had ZERO callers) as a LOUD run-start positive control: a
-    # null from the shelf is INADMISSIBLE while the embedder is dead. Advisory (never blocks — the shelf degrades to
-    # lexical/empty), but now VISIBLE. ZTARE_LEANMILL_EMBEDDER_LIVENESS=0 skips.
-    if _os.environ.get("ZTARE_LEANMILL_EMBEDDER_LIVENESS", "1") != "0":
-        try:
-            from ztare.common.embedder_liveness import embedder_live, liveness_banner
-            from ztare.research_director.mathlib_semantic import _embed_query_genai as _eq
-            from ztare.leanmill.semantic_premise_shelf import own_ledger_corpus as _olc
-            _emb_live, _emb_why = embedder_live(_eq, atlas_nonempty=bool(_olc()))
-            print(f"[notes] compounding-retriever (semantic premise shelf) embedder: "
-                  f"{'LIVE — ' + _emb_why if _emb_live else 'DEAD'}", flush=True)
-            if not _emb_live:
-                print(liveness_banner(_emb_live, _emb_why, instrument="compounding premise-shelf embedder"), flush=True)
-        except Exception as _e:  # noqa: BLE001 — liveness probe is advisory; never block the run
-            print(f"[notes] embedder-liveness probe skipped: {repr(_e)[:120]}", flush=True)
+    # UNIFIED INSTRUMENT LIVENESS (2026-07-01): ONE run-start battery for the ADVISORY external instruments whose
+    # SILENT death false-degrades / false-rejects — (1) the semantic-shelf EMBEDDER (dead ⇒ "no prior work" ⇒
+    # re-derivation treadmill) and (2) the firewall ROUND-TRIP judge (dead ⇒ empty back-translation ⇒ the firewall
+    # fail-closes every target). The round-trip judge was previously UNPROBED at run-start — the BFT campaign
+    # burned theory-consolidation, THEN round-trip-false-rejected, because a dead gemini judge (same-family
+    # fallback) was only discovered mid-run. Now both are probed up front + reported LOUD. Advisory (never blocks —
+    # a transient quota may clear and the cross-family fallback is the resilience) but VISIBLE. Supersedes the
+    # embedder-only probe. ZTARE_LEANMILL_INSTRUMENT_LIVENESS=0 skips.
+    try:
+        from ztare.leanmill.run_standards import run_instrument_liveness_battery
+        _il = run_instrument_liveness_battery()
+        _emb, _rt = (_il.get("embedder") or {}), (_il.get("roundtrip") or {})
+        print(f"[notes] instrument liveness — embedder: "
+              f"{'LIVE — ' + str(_emb.get('why', '')) if _emb.get('live') else 'DEAD'} · "
+              f"firewall round-trip judge: {'LIVE' if _rt.get('live') else 'DEAD'}", flush=True)
+        for _b in (_il.get("banners") or []):
+            print(_b, flush=True)
+    except Exception as _e:  # noqa: BLE001 — advisory battery; never block the run
+        print(f"[notes] instrument-liveness battery skipped: {repr(_e)[:120]}", flush=True)
     notes_path = Path(argv[0])
     # RUN ATTRIBUTION: tag this run's attempts-DB rows + forecast ledger so the compounder/forecast-router can
     # SLICE by run — the DB showed run_tag=NULL for notes runs (#92 said it should feed the substrate, but the
@@ -1511,17 +1544,38 @@ def main(argv: "Optional[list[str]]" = None) -> int:
     _theory_rel = parse_theory_file(_notes_text)
     if _theory_rel:
         from ztare.leanmill.solver.agentic_leaf import default_dispatch as _dd0
-        if _os.environ.get("ZTARE_LEANMILL_SKIP_CONSOLIDATION") == "1":
-            # FAST-DEBUG (2026-06-23): skip the ~225s theory_consolidation DISPATCH when the substrate file
-            # already exists — it is still registered as the warm-env substrate + ridden into the notes below,
-            # so the TARGET attack runs against the full theory without re-paying consolidation. For iterating on
-            # the target/firewall/reformulation path cheaply; NEVER for a fresh blueprint (which needs the theory
-            # BUILT). No-op fields so the downstream register/ride/lemma-queue logic is byte-identical.
-            _tc = {"ok": True, "new_decls": [], "sorried_statements": [], "reason": "skipped (fast-debug)"}
-            print("[notes] theory consolidation SKIPPED (ZTARE_LEANMILL_SKIP_CONSOLIDATION=1) — reusing the "
-                  "existing substrate file", flush=True)
+        import time as _tmc
+        # AUTO-SKIP consolidation on a RERUN (2026-07-01): rebuilding a theory that ALREADY exists (>= 3 decls) is
+        # the ~225s wall the operator flagged as waste — the theory is banked and ridden into the target attack
+        # regardless. A FRESH blueprint has no substrate, so it still builds. The old behaviour needed the opt-in
+        # ZTARE_LEANMILL_SKIP_CONSOLIDATION=1 (kept, still forces the skip); this makes the reuse-if-built the
+        # DEFAULT. Re-extend a MODIFIED blueprint with ZTARE_LEANMILL_FORCE_CONSOLIDATION=1.
+        _tp_pre = (LEAN_ROOT_DEFAULT / _theory_rel)
+        _theory_built = False
+        try:
+            if _tp_pre.exists():
+                from ztare.leanmill.lean_source import decl_blocks as _db_pre
+                _theory_built = sum(1 for _n, _ in _db_pre(_tp_pre.read_text(encoding="utf-8", errors="replace")) if _n) >= 3
+        except Exception:  # noqa: BLE001
+            _theory_built = False
+        _auto_skip = _theory_built and _os.environ.get("ZTARE_LEANMILL_FORCE_CONSOLIDATION") != "1"
+        _skip = (_os.environ.get("ZTARE_LEANMILL_SKIP_CONSOLIDATION") == "1") or _auto_skip
+        _consol_t0 = _tmc.time()
+        if _skip:
+            _why = "auto: built theory reused" if _auto_skip else "fast-debug flag"
+            _tc = {"ok": True, "new_decls": [], "sorried_statements": [], "reason": f"skipped ({_why})"}
+            print(f"[notes] theory consolidation SKIPPED ({_why}) — reusing existing substrate "
+                  f"(re-extend a modified blueprint via ZTARE_LEANMILL_FORCE_CONSOLIDATION=1)", flush=True)
         else:
             _tc = theory_consolidation(_notes_text, _theory_rel, lean_root=LEAN_ROOT_DEFAULT, dispatch=_dd0)
+        try:   # PHASE VISIBILITY (2026-07-01): record the consolidation wall so P0 can split time_to_formalize
+               # into consolidate + statement-formalize — consolidation is the dominant, now-skippable rerun cost.
+            from ztare.leanmill.phase_timing import record_phase as _rp_c
+            _rp_c("consolidate", round(_tmc.time() - _consol_t0, 2),
+                  run_tag=_os.environ.get("ZTARE_SOLVER_RUN_TAG", ""), target=_theory_rel,
+                  extra={"skipped": bool(_skip)})
+        except Exception:  # noqa: BLE001 — timing telemetry never blocks the run
+            pass
         print(f"[notes] theory consolidation: ok={_tc.get('ok')} new_decls={_tc.get('new_decls', [])} "
               f"sorried={len(_tc.get('sorried_statements', []))} {_tc.get('reason', '')}", flush=True)
         for _sr in _tc.get("supersession_requests", []):
@@ -1541,6 +1595,35 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                 ts=_since).append_to_ledger(REPO)
         except Exception as _e:  # noqa: BLE001 — receipt write never blocks the run
             print(f"[notes] work-receipt write failed: {repr(_e)[:100]}", flush=True)
+        # UNCONDITIONAL pre-SOLVE supersession heal + substrate register (v5 RCA 2026-07-01): the theory file +
+        # banked legs exist whether or not THIS round's consolidation EXTENDED it — a revert (e.g. the accumulated
+        # banked-section append-only violation) or an unchanged round still carries prior banked work. The
+        # in-consolidation heal only fired on a SUCCESSFUL extension, so a reverted consolidation left the
+        # sorried-sibling twins in place and the composite re-blocked. Fold the twins + register the warm substrate
+        # here REGARDLESS of `_tc.ok`. Guarded: reverify-compile + revert on break (never poison). Idempotent.
+        _tp_u = (LEAN_ROOT_DEFAULT / _theory_rel)
+        if _tp_u.exists():
+            if _os.environ.get("ZTARE_LEANMILL_SUPERSEDE_TWINS", "1") != "0":
+                try:
+                    from ztare.leanmill.lean_source import supersede_sorried_twins as _sst2
+                    from ztare.gates.v33_preflight_risk_detector import _compile_probe as _cp2
+                    from ztare.common.timeouts import timeout_s as _ts2
+                    _cur = _tp_u.read_text(encoding="utf-8")
+                    _healed2, _rep2 = _sst2(_cur)
+                    if _rep2 and _healed2 != _cur:
+                        _tp_u.write_text(_healed2, encoding="utf-8")
+                        if _cp2(_healed2, LEAN_ROOT_DEFAULT, "SupersedeHealUncond", _ts2("cold_compile")) is True:
+                            print(f"[notes] SUPERSEDED {len(_rep2)} sorried-canonical(s) pre-SOLVE: "
+                                  f"{[c for c, _ in _rep2][:6]}", flush=True)
+                        else:
+                            _tp_u.write_text(_cur, encoding="utf-8")   # REVERT — never poison the substrate
+                except Exception as _e:  # noqa: BLE001 — heal is best-effort
+                    print(f"[notes] pre-SOLVE supersession heal skipped: {repr(_e)[:100]}", flush=True)
+            try:
+                from ztare.formal.repl_compile import set_campaign_substrate as _scs
+                _scs(str(_tp_u.resolve()))
+            except Exception:  # noqa: BLE001 — registration best-effort; verify falls back to inline
+                pass
         if _tc.get("ok"):
             _tp = (LEAN_ROOT_DEFAULT / _theory_rel)
             # WARM-ENV REGISTER (2026-06-14): the verify seam amortizes this heavy theory's decls into a warm
@@ -1678,6 +1761,13 @@ def main(argv: "Optional[list[str]]" = None) -> int:
                 # composition anchor (UC): a built def appearing in a kernel-closed proof composed soundly.
                 _proof_blob = "\n".join((d.get("closure_lean") or "") + "\n" + (d.get("statement") or "")
                                         for d in res["deep_closures"])
+                # ALSO the TARGET composite (2026-07-01): a def used in the top kernel-verified theorem's
+                # STATEMENT or proof is denotationally pinned by that theorem (UC) even if it appears in no
+                # sub-rung — the gap that left BFT's `ThresholdSafeAndAvailableBound` (used only in the composite's
+                # `iff` statement, lines 607-609) falsely UNDERDETERMINED. The composite is the strongest pin there is.
+                _tgt = res.get("target") or {}
+                _proof_blob += "\n" + "\n".join(str(_tgt.get(_k) or "") for _k in
+                                                ("closure_lean", "proof_text", "lean_statement", "statement"))
                 _composed = {d for d in _built if mentions_token(_proof_blob, d)}
                 _verify = kernel_denotation_verifier(_theory_final, LEAN_ROOT_DEFAULT)
                 _den = certify_def_denotation(_theory_final, verify_anchor_fn=_verify, composed_defs=_composed)

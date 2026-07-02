@@ -22,13 +22,13 @@ the elementary half (the hard direction is the Farkas/separation slice). 3 theor
 accounting is explicit: strict positivity of `q` is load-bearing, and the market is frictionless (no bid–ask
 spread). [roadmap §4.1]
 
-### `constant_product_amm.lean` — constant-product AMM temporal + no-arbitrage invariants
+### `ConstantProductAmm.lean` — constant-product AMM temporal + no-arbitrage invariants
 `constantProductAMM_temporal_invariant_and_no_roundTrip_profit`. For an `x·y = k` pool with fee `γ ∈ (0,1]`:
 the product `k` **never decreases** across any adversarial finite trade sequence, and a single round-trip returns
 **at most** the input (strictly less with a real fee `γ < 1`). The pool is safe against the curve. Proven fresh
 (no reuse) over `NNReal` reserves; real elapsed ≈ 5.1h.
 
-### `amm_no_cyclic_arbitrage.lean` — no round-trip arbitrage at ANY reachable state
+### `AmmNoCyclicArbitrage.lean` — no round-trip arbitrage at ANY reachable state
 `no_history_enables_round_trip_arbitrage`. The DeFi-security companion to the above: **no trade history**
 (flash-loan / sandwich / cyclic path) ever maneuvers the pool into a state where a round-trip becomes profitable —
 at every state reachable by any finite prior sequence, a round-trip in either direction returns at most the input,
@@ -38,12 +38,12 @@ re-deriving them — the new content is the quantification over reachable states
 reusing those rungs; the genuine no-cyclic proving + the engine remediation it surfaced span ~1.3h active across
 the campaign family, atop the ~5.1h constant-product foundation.)
 
-### `corporate_waterfall_absolute_priority.lean` — Absolute Priority Rule (APR) waterfall
+### `CorporateWaterfallAbsolutePriority.lean` — Absolute Priority Rule (APR) waterfall
 `waterfallDistribution_feasible_of_linearOrder`. Capital-structure / bankruptcy claim priority: under a strict
 ranking of claims, the absolute-priority waterfall distribution is feasible — senior claims paid before any junior
 claim receives anything, subject to the available estate. Domain-stamped `finance`.
 
-### `corporate_waterfall_pari_passu_apr.lean` — pari-passu + APR
+### `CorporateWaterfallPariPassuApr.lean` — pari-passu + APR
 `pariPassuWaterfallDistribution_feasible_and_ranked_absolutePriority`. Extends the waterfall to **pari-passu**
 (equal-ranking) tranches: the distribution is feasible AND respects ranked absolute priority across tranches with
 pro-rata sharing within a tranche.

@@ -82,6 +82,57 @@ def run_instrument_standards(lean_root: "Path | str", *, positive_fn=None, negat
                         "GATE DEAD: the canned statement-alteration was NOT rejected"))}
 
 
+def run_instrument_liveness_battery(*, embed_fn=None, atlas_nonempty=None, backtranslate_fn=None) -> dict:
+    """UNIFIED run-start liveness for the ADVISORY external instruments whose SILENT death causes a
+    false-DEGRADE / false-REJECT — distinct from the fail-closed carriers (`assert_carriers_live`) and the
+    prover/gate standards (`run_instrument_standards`). Two instruments, both LLM-provider-backed and both
+    bitten this session:
+      • the semantic-shelf EMBEDDER — dead ⇒ shelf returns empty ⇒ "no prior work" ⇒ re-derivation treadmill;
+      • the firewall ROUND-TRIP judge (back-translate + cross-family fallback) — dead ⇒ empty back-translation ⇒
+        the firewall FAIL-CLOSES every target (the BFT campaign burned theory-consolidation, THEN round-trip
+        false-rejected, because the judge was never probed at start).
+    Each is probed with its own canary; a dead one gets a LOUD banner. ADVISORY (never aborts — a transient
+    quota may clear and the cross-family fallback is the resilience) but VISIBLE at run-start, so a dead
+    instrument is caught BEFORE the wall is spent. Injectable ⇒ hermetic selftest. Gate
+    ZTARE_LEANMILL_INSTRUMENT_LIVENESS (default-on; =0 skips)."""
+    if os.environ.get("ZTARE_LEANMILL_INSTRUMENT_LIVENESS", "1") == "0":
+        return {"skipped": True, "banners": []}
+    from ztare.common.embedder_liveness import embedder_live, liveness_banner
+    out: dict = {"banners": []}
+    # 1) semantic-shelf embedder (the compounding READ path)
+    if embed_fn is None:
+        try:
+            from ztare.research_director.mathlib_semantic import _embed_query_genai as _eq
+            from ztare.leanmill.semantic_premise_shelf import own_ledger_corpus as _olc
+            embed_fn = _eq
+            if atlas_nonempty is None:
+                atlas_nonempty = bool(_olc())
+        except Exception:  # noqa: BLE001 — no embedder wired here ⇒ skip that leg (never block)
+            embed_fn = None
+    if embed_fn is not None:
+        live, why = embedder_live(embed_fn, atlas_nonempty=atlas_nonempty)
+        out["embedder"] = {"live": bool(live), "why": why}
+        if not live:
+            out["banners"].append(liveness_banner(live, why, instrument="compounding premise-shelf embedder"))
+    # 2) firewall round-trip judge — back-translate a canary; empty ⇒ primary + ALL cross-family fallbacks dead
+    if backtranslate_fn is None:
+        try:
+            from ztare.leanmill.solver.autoformalize import default_backtranslate as backtranslate_fn
+        except Exception:  # noqa: BLE001
+            backtranslate_fn = None
+    if backtranslate_fn is not None:
+        try:
+            _bt = (backtranslate_fn("theorem canary (n : Nat) : n + 0 = n := by sorry") or "").strip()
+        except Exception as _e:  # noqa: BLE001
+            _bt = ""
+        live = bool(_bt)
+        why = "live" if live else "empty back-translation from primary + all cross-family fallbacks (quota / rate-limit / key)"
+        out["roundtrip"] = {"live": live, "why": why}
+        if not live:
+            out["banners"].append(liveness_banner(live, why, instrument="firewall round-trip judge"))
+    return out
+
+
 _V33_ORGANS = ("vacuity", "gold_name_verbatim", "single_lemma_exact",
                "indirect_leakage", "consequence_exposure", "currency_mismatch")
 _CLEAN_PROBE = "import Mathlib\n\ntheorem t : ∀ n : ℕ, n + 0 = n := by intro n; ring\n"

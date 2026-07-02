@@ -199,6 +199,33 @@ def _campaign_starts_from_ledger(ledger) -> "dict[str, float]":
     return out
 
 
+def _consolidate_from_ledger(ledger) -> "dict[str, float]":
+    """run_tag → total `consolidate` phase seconds (the theory-consolidation dispatch). Splits time_to_formalize
+    into consolidate + statement-formalize so the P0 shows where the formalize window went; consolidation is the
+    dominant, now-auto-skipped rerun cost (an auto-skipped rerun records ~0). Mirrors `_campaign_starts_from_ledger`."""
+    out: "dict[str, float]" = {}
+    import json as _json
+    try:
+        p = Path(ledger) if ledger else ledger_path()
+        if not p.exists():
+            return out
+        for line in p.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or '"consolidate"' not in line:
+                continue
+            try:
+                ev = _json.loads(line)
+            except Exception:  # noqa: BLE001
+                continue
+            if ev.get("kind") == "phase_timing" and ev.get("phase") == "consolidate":
+                rt = str(ev.get("run_tag") or "")
+                if rt:
+                    out[rt] = round(out.get(rt, 0.0) + float(ev.get("duration_s") or 0.0), 2)
+    except Exception:  # noqa: BLE001
+        return out
+    return out
+
+
 def campaign_family(run_tag: str) -> str:
     """Group run_tags that are RE-RUNS of the same campaign (`_v2`/`_v3`, `_dbg`) under one family, so a campaign
     worked across several runs gets a SINGLE P0 view (e.g. `amm_cpmm`, `amm_cpmm_v2`, `amm_cpmm_v3` → `amm_cpmm`).
@@ -222,6 +249,7 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
     cumulative wallclock_s up to the closure. Segmented by `domain` (the `campaign` markers). Pure read."""
     doms = _domains_from_ledger(ledger)
     starts = _campaign_starts_from_ledger(ledger)   # run_tag → LAUNCH epoch (marker); enables the formalize/prove split
+    consolidates = _consolidate_from_ledger(ledger)   # run_tag → consolidate seconds; splits the formalize window
     by_run: "dict[str, list[dict]]" = {}
     for r in attempt_rows or []:
         g = r if isinstance(r, dict) else dict(r)
@@ -262,6 +290,8 @@ def summarize_campaign_cycle_time(attempt_rows, *, ledger: "Optional[str | Path]
             "attempts": n,
             "closures": len(closures),
             "time_to_formalize_s": t_formalize,                          # launch → first attempt (theory + statement + firewall)
+            "consolidate_s": consolidates.get(rt, 0.0),                  # of which: theory-consolidation dispatch (auto-skipped on reruns)
+            "statement_formalize_s": round(max(0.0, t_formalize - consolidates.get(rt, 0.0)), 2),  # of which: statement formalize + firewall
             "time_to_close_s": _stat(ttc),                              # PROVING window (first attempt → closure) — clear name
             "wall_s": _stat(wall),                                      # launch → closure (headline; == phase-ledger lead)
             "time_to_closure_s": _stat(ttc),                           # BACKWARD-COMPAT alias of time_to_close_s (proving window)

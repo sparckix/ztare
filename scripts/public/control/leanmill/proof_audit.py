@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -21,7 +22,7 @@ from pathlib import Path
 from typing import Any
 
 from leanmill_paths import DATA_DIR, FACTORY_POLICY
-from src.ztare.leanmill.policy import read_policy
+from ztare.leanmill.policy import read_policy
 
 # Audit primitives consolidated under ztare.gates (canonical location since
 # 2026-05-29 consolidation). The scripts/public/control/v33_*.py files are
@@ -43,12 +44,15 @@ from ztare.gates.lean_compile_primitives import (  # noqa: E402
     parse_axiom_output as _canonical_parse_axiom_output,
     run_lake_compile as _canonical_run_lake_compile,
     run_lake_compile_source as _canonical_run_lake_compile_source,
-    probe_axioms_via_augment as _canonical_probe_axioms_via_augment,
     run_lake_subprocess as _run_lake_subprocess,
 )
 
 
-DEFAULT_LEAN_ROOT = "ztare_proofs"
+# The lake project that supplies the toolchain + Mathlib the target compiles against. Env-overridable so a
+# distributed worker (or a box whose Lean lives elsewhere) can point the audit at its own lean_root without a
+# code change — the compute-side half of decoupling the Lean server (the transport half is the signed
+# provider payload in formal_verification_provider.py, which a consumer verifies WITHOUT a toolchain).
+DEFAULT_LEAN_ROOT = os.environ.get("LEANMILL_LEAN_ROOT", "ztare_proofs")
 DEFAULT_TARGET = "ztare_proofs/ZtareProofs/PR_A1_BohrCoeffExpNe_Discharge.lean"
 DEFAULT_OUT = f"{DATA_DIR}/leanmill_proof_audit.json"
 DEFAULT_MD = f"{DATA_DIR}/leanmill_proof_audit.md"

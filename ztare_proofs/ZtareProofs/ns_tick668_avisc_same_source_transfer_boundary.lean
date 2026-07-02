@@ -246,6 +246,109 @@ structure C7AViscMarkedSourceVarianceReceipt
     tracelessTensorForcesTotalCarrierMorphology
 
 /--
+Strict pre-scalar repair target for TICK669.
+
+This receipt is stronger than `C7AViscMarkedSourceVarianceReceipt`: it carries
+the same marked-source and trace-free tensor fields, but also records the
+workbench timing/source-currency checks that prevent post-payoff
+positive-part selection and dimensionless-exponent relabeling.
+-/
+structure C7AViscPreScalarTensorSourceReceipt
+    (hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)) where
+  pushforwardBound :
+    C7AViscSameSourcePushforwardBoundReceipt
+      (nse := nse) (sol := sol)
+      hTransfer
+  sourceSelectionDeclaredBeforeTarget : Prop
+  sourceSelectionDeclaredBeforeTarget_proof :
+    sourceSelectionDeclaredBeforeTarget
+  sourceFixedBeforePayoff : Prop
+  sourceFixedBeforePayoff_proof :
+    sourceFixedBeforePayoff
+  targetNotUsedToDefineSource : Prop
+  targetNotUsedToDefineSource_proof :
+    targetNotUsedToDefineSource
+  noPostPayoffPositivePartSelection : Prop
+  noPostPayoffPositivePartSelection_proof :
+    noPostPayoffPositivePartSelection
+  analyticMarkedSourceLawOnInvoiceFiber : Prop
+  analyticMarkedSourceLawOnInvoiceFiber_proof :
+    analyticMarkedSourceLawOnInvoiceFiber
+  markedSourceLawBoundToSameCarrier : Prop
+  markedSourceLawBoundToSameCarrier_proof :
+    markedSourceLawBoundToSameCarrier
+  varianceLowerBoundBeforeScalarization : Prop
+  varianceLowerBoundBeforeScalarization_proof :
+    varianceLowerBoundBeforeScalarization
+  scalarPushforwardNoninjectivityExcluded : Prop
+  scalarPushforwardNoninjectivityExcluded_proof :
+    scalarPushforwardNoninjectivityExcluded
+  tracelessTensorLawOnInvoiceFiber : Prop
+  tracelessTensorLawOnInvoiceFiber_proof :
+    tracelessTensorLawOnInvoiceFiber
+  tracelessTensorNonCancellation : Prop
+  tracelessTensorNonCancellation_proof :
+    tracelessTensorNonCancellation
+  isotropicOrientationMixtureExcluded : Prop
+  isotropicOrientationMixtureExcluded_proof :
+    isotropicOrientationMixtureExcluded
+  tensorSourceNotDimensionlessExponentOnly : Prop
+  tensorSourceNotDimensionlessExponentOnly_proof :
+    tensorSourceNotDimensionlessExponentOnly
+  tracelessTensorForcesTotalCarrierMorphology : Prop
+  tracelessTensorForcesTotalCarrierMorphology_proof :
+    tracelessTensorForcesTotalCarrierMorphology
+
+/--
+If the strict pre-scalar tensor/source receipt is paid, it is a valid producer
+for the marked-source variance receipt consumed by the A_visc morphology path.
+-/
+def C7AViscMarkedSourceVarianceReceipt.ofPreScalarTensorSource
+    (hPre :
+      C7AViscPreScalarTensorSourceReceipt
+        (nse := nse) (sol := sol)
+        hTransfer) :
+    C7AViscMarkedSourceVarianceReceipt
+      (nse := nse) (sol := sol)
+      hTransfer where
+  pushforwardBound := hPre.pushforwardBound
+  markedSourceLawOnInvoiceFiber :=
+    hPre.analyticMarkedSourceLawOnInvoiceFiber
+  markedSourceLawOnInvoiceFiber_proof :=
+    hPre.analyticMarkedSourceLawOnInvoiceFiber_proof
+  varianceLowerBoundBeforeScalarization :=
+    hPre.varianceLowerBoundBeforeScalarization
+  varianceLowerBoundBeforeScalarization_proof :=
+    hPre.varianceLowerBoundBeforeScalarization_proof
+  markedLawBoundToTotalFreshAnnularCarrier :=
+    hPre.markedSourceLawBoundToSameCarrier
+  markedLawBoundToTotalFreshAnnularCarrier_proof :=
+    hPre.markedSourceLawBoundToSameCarrier_proof
+  scalarPushforwardNoninjectivityExcluded :=
+    hPre.scalarPushforwardNoninjectivityExcluded
+  scalarPushforwardNoninjectivityExcluded_proof :=
+    hPre.scalarPushforwardNoninjectivityExcluded_proof
+  tracelessTensorLawOnInvoiceFiber :=
+    hPre.tracelessTensorLawOnInvoiceFiber
+  tracelessTensorLawOnInvoiceFiber_proof :=
+    hPre.tracelessTensorLawOnInvoiceFiber_proof
+  tracelessTensorNonCancellation :=
+    hPre.tracelessTensorNonCancellation
+  tracelessTensorNonCancellation_proof :=
+    hPre.tracelessTensorNonCancellation_proof
+  isotropicOrientationMixtureExcluded :=
+    hPre.isotropicOrientationMixtureExcluded
+  isotropicOrientationMixtureExcluded_proof :=
+    hPre.isotropicOrientationMixtureExcluded_proof
+  tracelessTensorForcesTotalCarrierMorphology :=
+    hPre.tracelessTensorForcesTotalCarrierMorphology
+  tracelessTensorForcesTotalCarrierMorphology_proof :=
+    hPre.tracelessTensorForcesTotalCarrierMorphology_proof
+
+/--
 The marked-source/variance receipt is the admissible way to pay the
 tensor-moment morphology receipt only when it also pays a traceless tensor
 non-cancellation law.  Scalar marked variance alone is not enough: an
@@ -458,6 +561,119 @@ structure C7AViscTensorMomentIsotropicCancellationConfuser
           pushforwardBound.separatedSource
 
 /--
+Workbench-level blocker for TICK669: selecting the positive `A_visc` level
+set from the realized C7 deficit is an adaptive source selection, not a
+pre-payoff invoice-fiber law.  The marked-source receipt must be supplied
+before this selection, not reconstructed from it afterward.
+-/
+structure C7AViscAdaptivePositivePartSourceConfuser
+    (hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)) where
+  pushforwardBound :
+    C7AViscSameSourcePushforwardBoundReceipt
+      (nse := nse) (sol := sol)
+      hTransfer
+  positivePartLevelSetChosenFromTargetDeficit : Prop
+  positivePartLevelSetChosenFromTargetDeficit_proof :
+    positivePartLevelSetChosenFromTargetDeficit
+  sourceNotFixedBeforePayoff : Prop
+  sourceNotFixedBeforePayoff_proof :
+    sourceNotFixedBeforePayoff
+  targetUsedToDefineSource : Prop
+  targetUsedToDefineSource_proof :
+    targetUsedToDefineSource
+  noPrePayoffTimingReceipt : Prop
+  noPrePayoffTimingReceipt_proof :
+    noPrePayoffTimingReceipt
+  noMarkedSourceVariance :
+    ¬ ∃ hMarked :
+        C7AViscMarkedSourceVarianceReceipt
+          (nse := nse) (sol := sol)
+          hTransfer,
+        hMarked.pushforwardBound.separatedSource =
+          pushforwardBound.separatedSource
+
+/--
+Workbench-level blocker for TICK669: a dimensionless orientation-moment
+exponent cannot be spent as tensor non-cancellation unless an analytic source,
+same-carrier binding, and pre-payoff timing receipt are supplied.
+-/
+structure C7AViscOrientationExponentUnpaidConfuser
+    (hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)) where
+  pushforwardBound :
+    C7AViscSameSourcePushforwardBoundReceipt
+      (nse := nse) (sol := sol)
+      hTransfer
+  orientationMomentExponentDeclared : Prop
+  orientationMomentExponentDeclared_proof :
+    orientationMomentExponentDeclared
+  missingAnalyticExponentSource : Prop
+  missingAnalyticExponentSource_proof :
+    missingAnalyticExponentSource
+  exponentNotDerivedFromSourceLaw : Prop
+  exponentNotDerivedFromSourceLaw_proof :
+    exponentNotDerivedFromSourceLaw
+  exponentNotFixedBeforePayoff : Prop
+  exponentNotFixedBeforePayoff_proof :
+    exponentNotFixedBeforePayoff
+  exponentNotBoundToSameCarrier : Prop
+  exponentNotBoundToSameCarrier_proof :
+    exponentNotBoundToSameCarrier
+  noMarkedSourceVariance :
+    ¬ ∃ hMarked :
+        C7AViscMarkedSourceVarianceReceipt
+          (nse := nse) (sol := sol)
+          hTransfer,
+        hMarked.pushforwardBound.separatedSource =
+          pushforwardBound.separatedSource
+
+/--
+Scalar-only positive-part route blocker.
+
+This packet is stronger than the adaptive-source blocker: it records the full
+shape of a route whose available information is only the scalar positive-part
+pushforward, with no pre-scalar tensor/source receipt on the same separated
+source.
+-/
+structure C7AViscScalarPositivePartOnlyRouteConfuser
+    (hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)) where
+  pushforwardBound :
+    C7AViscSameSourcePushforwardBoundReceipt
+      (nse := nse) (sol := sol)
+      hTransfer
+  scalarPositivePartPushforwardPaid : Prop
+  scalarPositivePartPushforwardPaid_proof :
+    scalarPositivePartPushforwardPaid
+  onlyScalarMassDataAvailable : Prop
+  onlyScalarMassDataAvailable_proof :
+    onlyScalarMassDataAvailable
+  noTracefreeTensorCurrencyBeforeScalarization : Prop
+  noTracefreeTensorCurrencyBeforeScalarization_proof :
+    noTracefreeTensorCurrencyBeforeScalarization
+  noPreScalarTensorSourceReceipt :
+    ¬ ∃ hPre :
+        C7AViscPreScalarTensorSourceReceipt
+          (nse := nse) (sol := sol)
+          hTransfer,
+        hPre.pushforwardBound.separatedSource =
+          pushforwardBound.separatedSource
+  noMarkedSourceVariance :
+    ¬ ∃ hMarked :
+        C7AViscMarkedSourceVarianceReceipt
+          (nse := nse) (sol := sol)
+          hTransfer,
+        hMarked.pushforwardBound.separatedSource =
+          pushforwardBound.separatedSource
+
+/--
 The fake `A_visc` transfer is blocked at the source-binding receipt itself.
 -/
 theorem no_C7AViscLevelSetSameSourceBindingReceipt_of_carrierBindingMissingConfuser
@@ -515,6 +731,85 @@ The isotropic-cancellation packet also blocks the sharper marked-source repair.
 theorem no_C7AViscMarkedSourceVarianceReceipt_of_isotropicCancellation
     (hConfuser :
       C7AViscTensorMomentIsotropicCancellationConfuser
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hMarked :
+      C7AViscMarkedSourceVarianceReceipt
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hSameSource :
+      hMarked.pushforwardBound.separatedSource =
+        hConfuser.pushforwardBound.separatedSource) :
+    False :=
+  hConfuser.noMarkedSourceVariance ⟨hMarked, hSameSource⟩
+
+/--
+Adaptive positive-part source selection blocks the sharper marked-source
+repair on that source.  This records the nonadaptive-source-selection gate
+failure as a formal re-litigation blocker.
+-/
+theorem no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource
+    (hConfuser :
+      C7AViscAdaptivePositivePartSourceConfuser
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hMarked :
+      C7AViscMarkedSourceVarianceReceipt
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hSameSource :
+      hMarked.pushforwardBound.separatedSource =
+        hConfuser.pushforwardBound.separatedSource) :
+    False :=
+  hConfuser.noMarkedSourceVariance ⟨hMarked, hSameSource⟩
+
+/--
+A bare orientation-moment exponent declaration blocks the sharper
+marked-source repair unless the analytic same-carrier source receipts are
+paid.  This records the dimensionless-exponent gate failure as a formal
+re-litigation blocker.
+-/
+theorem no_C7AViscMarkedSourceVarianceReceipt_of_unpaidOrientationExponent
+    (hConfuser :
+      C7AViscOrientationExponentUnpaidConfuser
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hMarked :
+      C7AViscMarkedSourceVarianceReceipt
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hSameSource :
+      hMarked.pushforwardBound.separatedSource =
+        hConfuser.pushforwardBound.separatedSource) :
+    False :=
+  hConfuser.noMarkedSourceVariance ⟨hMarked, hSameSource⟩
+
+/--
+The scalar positive-part route cannot be upgraded to the strict pre-scalar
+tensor/source receipt on the same separated source.
+-/
+theorem no_C7AViscPreScalarTensorSourceReceipt_of_scalarPositivePartOnlyRoute
+    (hConfuser :
+      C7AViscScalarPositivePartOnlyRouteConfuser
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hPre :
+      C7AViscPreScalarTensorSourceReceipt
+        (nse := nse) (sol := sol)
+        hTransfer)
+    (hSameSource :
+      hPre.pushforwardBound.separatedSource =
+        hConfuser.pushforwardBound.separatedSource) :
+    False :=
+  hConfuser.noPreScalarTensorSourceReceipt ⟨hPre, hSameSource⟩
+
+/--
+The scalar positive-part route also cannot supply the marked-source variance
+receipt consumed downstream by the C7/A_visc morphology path.
+-/
+theorem no_C7AViscMarkedSourceVarianceReceipt_of_scalarPositivePartOnlyRoute
+    (hConfuser :
+      C7AViscScalarPositivePartOnlyRouteConfuser
         (nse := nse) (sol := sol)
         hTransfer)
     (hMarked :

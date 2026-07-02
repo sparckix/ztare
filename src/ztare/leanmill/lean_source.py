@@ -86,6 +86,204 @@ def decl_blocks(text: str) -> "list[tuple[str, str]]":
     return [(name, "".join(lines[i:end]).rstrip()) for name, i, end in decl_spans(text)]
 
 
+_DEFINITION_KINDS = frozenset(k for k in _DECL_KINDS if k not in ("theorem", "lemma", "example"))
+
+
+def strip_env_declared_decls(probe_txt: str, env_text: str, keep: str = "") -> str:
+    """SINGLE-DOOR campaign-verify dedup (chronic 'already been declared' fix, 2026-07-01). A self-contained probe
+    verified against a warm campaign ENV that already holds the theory's decls errors `X has already been declared`
+    ⇒ a VALID proof never ratifies (chronic thrash since 2026-06-08; native-only proofs escaped, masking it). Drop
+    from `probe_txt` every decl the env already declares — DEFINITIONS always (canonical, never sorried) + PROVEN
+    theorems (their env block has no `sorry`, so citing the env copy is safe) — EXCEPT `keep` (the target being
+    proved) and genuinely-NEW decls (not in the env). A SORRIED env theorem is NOT stripped: dropping the probe's
+    proven copy would bind the target's cite to the env `sorry` ⇒ `sorryAx` (the sorried-sibling trap). SOUND: env
+    decls are canonical; an inlined DIFFERENT (cheat) def is dropped and the proof then compiles against the REAL
+    env def — if it relied on the cheat it FAILS (correct rejection), never a false pass. THE one door for every
+    warm-verify caller (leaf, conjecture/refute, solver_core) so the fix cannot rot into siblings. `open`/`variable`/
+    imports are untouched (only decl BLOCKS removed). Fail-open (unchanged on any parse error); byte-parity when the
+    probe re-declares nothing the env already has."""
+    try:
+        strippable: "set[str]" = set()
+        for (n, b) in decl_blocks(env_text):
+            if not n:
+                continue
+            m = DECL_START.match((b or "").lstrip())
+            kind = m.group(1) if m else ""
+            if kind in _DEFINITION_KINDS or "sorry" not in (b or ""):
+                strippable.add(n)
+        if not strippable:
+            return probe_txt
+        out = probe_txt
+        for (n, block) in decl_blocks(probe_txt):
+            if n and n != keep and n in strippable and (block or "").strip():
+                out = out.replace(block, "", 1)   # env supplies this decl; re-declaring it clashes
+        return out
+    except Exception:  # noqa: BLE001 — dedup is best-effort; the cold path is the sound fallback
+        return probe_txt
+
+
+def supersede_sorried_twins(theory_text: str) -> "tuple[str, list[tuple[str, str]]]":
+    """SUPERSESSION dedup for the sorried-sibling class (2026-07-01). The theory_consolidation APPEND-ONLY gate
+    forbids the agent editing `X := sorry` → `X := proof`, so when it proves a shelf lemma it appends a proven
+    TWIN (`X_banked`) and the canonical `X` stays `sorry` — sorried-canonical / proven-twin pairs accumulate
+    (inflating the shelf, blocking a clean filing). This folds each proven twin back into its sorried canonical:
+    for every theorem/lemma group sharing one α-normalized SIGNATURE that has BOTH a sorried member and a proven
+    member, rewrite each sorried member's body to `:= by exact <proven twin>` (the twin proves the identical
+    statement, so this is kernel-sound; the twin is applied to the canonical's context by `exact`). The HARNESS
+    doing this is not agent laundering — it only replaces a `sorry` with a kernel-checkable cite of an existing
+    proof. Returns (new_text, [(canonical, twin), …]); MUST be kernel-reverified by the caller (compile +
+    `#print axioms`). Defs are never touched (never sorried). Idempotent (a canonical already `:= by exact` has
+    no `sorry` ⇒ not a member of the sorried set)."""
+    from collections import defaultdict
+    try:
+        from ztare.leanmill.solver.proof_cache import normalize_statement_equiv
+    except Exception:  # noqa: BLE001 — degrade to whitespace-normalized signature match
+        normalize_statement_equiv = lambda s: " ".join((s or "").split())  # noqa: E731
+
+    def _sigkey(b: str) -> str:
+        s = signature_before_proof(b) or b
+        try:
+            return normalize_statement_equiv(s)
+        except Exception:  # noqa: BLE001
+            return " ".join((s or "").split())
+
+    groups: "dict[str, list[tuple[str, str]]]" = defaultdict(list)
+    for (n, b) in decl_blocks(theory_text):
+        if not n:
+            continue
+        m = DECL_START.match((b or "").lstrip())
+        if m and m.group(1) in ("theorem", "lemma"):
+            groups[_sigkey(b)].append((n, b))
+
+    out = theory_text
+    report: "list[tuple[str, str]]" = []
+    for members in groups.values():
+        proven = [(n, b) for (n, b) in members if "sorry" not in (b or "")]
+        sorried = [(n, b) for (n, b) in members if "sorry" in (b or "")]
+        if not (proven and sorried):
+            continue
+        twin = proven[0][0]
+        for (n, b) in sorried:
+            if n == twin:
+                continue
+            sig = (signature_before_proof(b) or "").rstrip()
+            if not sig or b not in out:
+                continue
+            out = out.replace(b, f"{sig} := by exact {twin}", 1)
+            report.append((n, twin))
+    return out, report
+
+
+def rename_decl(text: str, old: str, new: str) -> str:
+    """Rename the DECLARATION named `old` to `new` (its `<kind> old` head only — a theorem/lemma never cites
+    itself, so the head is the whole rename). Canonical (decl_spans + DECL_START); renames the FIRST top-level
+    decl named `old`. Used by the campaign warm-verify to give a proof of a decl the env holds SORRIED a FRESH
+    name so it doesn't clash with its own env copy (the documented 'fresh decl name' contract; mirrors
+    solver_core's `_zwv`/`_zax`). Returns text unchanged if `old` is empty, `old == new`, or no such decl."""
+    if not old or old == new:
+        return text
+    lines = (text or "").splitlines(keepends=True)
+    for (name, i, _e) in decl_spans(text):
+        if name == old:
+            m = DECL_START.match(lines[i])
+            if m and (m.group(2) or "") == old:
+                lines[i] = lines[i].replace(f"{m.group(1)} {old}", f"{m.group(1)} {new}", 1)
+                return "".join(lines)
+    return text
+
+
+_BRACKET_OPEN = "([{⟨⦃"
+_BRACKET_CLOSE = ")]}⟩⦄"
+
+
+def top_level_split(s: str, sep_chars: "set[str]") -> "list[str]":
+    """THE canonical splitter of `s` on single-char separators at bracket-depth 0 (Unicode-safe); strips + drops
+    empties. Moved here 2026-07-01 so every decomposer shares ONE connective splitter — no drifting sibling."""
+    parts, buf, depth = [], [], 0
+    for c in s:
+        if c in _BRACKET_OPEN:
+            depth += 1; buf.append(c)
+        elif c in _BRACKET_CLOSE:
+            depth = max(0, depth - 1); buf.append(c)
+        elif depth == 0 and c in sep_chars:
+            parts.append("".join(buf)); buf = []
+        else:
+            buf.append(c)
+    parts.append("".join(buf))
+    return [p.strip() for p in parts if p.strip()]
+
+
+def leading_binder_comma(s: str) -> int:
+    """Index of the FIRST `,` at bracket-depth 0 — where a leading `∀/∃/Π <binders>,` prefix ends; -1 if none."""
+    depth = 0
+    for i, c in enumerate(s):
+        if c in _BRACKET_OPEN:
+            depth += 1
+        elif c in _BRACKET_CLOSE:
+            depth = max(0, depth - 1)
+        elif depth == 0 and c == ",":
+            return i
+    return -1
+
+
+def strip_forall_prefix_or_defer(conclusion: str) -> "tuple[str, str] | None":
+    """THE ONE quantifier guard every deterministic structural split routes through, so the soundness rule can
+    never drift into a hand-copied sibling again (2026-07-01 NS-hunt RCA: `∃ w, A w ∧ B w` and `∃ w, A w ↔ B w`
+    were split as if closed, orphaning the shared witness `w` as a free variable in the tail — the audit rejected
+    the ill-typed result, so it failed SAFE, but the guard was missing from a twin decomposer).
+
+    Strip a leading `∀`/`Π` prefix (which DISTRIBUTES over both `∧` and `↔`, so the pieces stay well-typed once the
+    prefix is re-prepended) and return (qprefix, body). Return None when the body LEADS with `∃` — an existential
+    binds a shared witness, does NOT distribute over `∧`/`↔`, and must be left to the planner / witness_transport.
+    A `∃` INSIDE one operand — `(∃ w, A w) ∧ B` — leads with `(`, not `∃`, and is correctly splittable."""
+    body = (conclusion or "").strip()
+    if not body:
+        return None
+    qprefix = ""
+    while body[:1] in ("∀", "Π") or body.startswith("\\forall"):
+        cc = leading_binder_comma(body)
+        if cc < 0:
+            break
+        qprefix = (qprefix + " " + body[:cc + 1]).strip()   # keep the binder-terminating comma
+        body = body[cc + 1:].strip()
+        if not body:
+            return None
+    if body[:1] == "∃" or body.startswith("Exists") or body.startswith("\\exists"):
+        return None
+    return qprefix, body
+
+
+def safe_conjunction_split(conclusion: str) -> "tuple[str, list[str]] | None":
+    """SINGLE DOOR for splitting `[∀-prefix] C₁ ∧ … ∧ Cₙ` into WELL-TYPED conjuncts (shared by every conjunction
+    decomposer). Returns (qprefix, [C₁…Cₙ]) to PREPEND the ∀-prefix to each conjunct, or None when unsafe/absent:
+    ∃-led (shared witness — deferred by `strip_forall_prefix_or_defer`), a top-level `↔` (a different composite),
+    or fewer than two conjuncts (atomic)."""
+    got = strip_forall_prefix_or_defer(conclusion)
+    if got is None:
+        return None
+    qprefix, body = got
+    if len(top_level_split(body, {"↔"})) == 2:
+        return None
+    conjuncts = top_level_split(body, {"∧"})
+    if len(conjuncts) < 2:
+        return None
+    return qprefix, conjuncts
+
+
+def safe_iff_split(conclusion: str) -> "tuple[str, tuple[str, str]] | None":
+    """SINGLE DOOR for a top-level `[∀-prefix] A ↔ B` (the SIBLING permutation of the conjunction bug — the `↔`
+    path had the same missing quantifier guard). Returns (qprefix, (A, B)) with the ∀-prefix to prepend to each
+    direction, or None when the body is ∃-led (shared witness — defer) or not a top-level 2-way `↔`."""
+    got = strip_forall_prefix_or_defer(conclusion)
+    if got is None:
+        return None
+    qprefix, body = got
+    parts = top_level_split(body, {"↔"})
+    if len(parts) != 2:
+        return None
+    return qprefix, (parts[0], parts[1])
+
+
 def _decl_re(name: str) -> re.Pattern:
     return re.compile(_DECL_PREFIX + re.escape(name) + r"\b")
 
@@ -566,6 +764,20 @@ def _selftest() -> None:
     assert not prop_quantifies_over_membership("s.Nonempty ∧ ∀ ⦃x⦄, x ∈ s → True")                 # guarded
     assert not prop_quantifies_over_membership("∀ x y : X, x ⊓ y = y ⊓ x")                          # no membership
     assert not prop_quantifies_over_membership("-- ∀ x ∈ s, foo\n0")                                # comment-only ∀/∈
+    # SINGLE-DOOR conjunction/iff split guard (2026-07-01 NS-hunt RCA). Metamorphic: OLD shapes must still SPLIT
+    # (no regression to filed ∀-fronted / independent conjunctions), NS existential-shared-witness shapes must
+    # DEFER (None), and the ∃-INSIDE-a-conjunct case must still split (scoped witness, sound).
+    assert safe_conjunction_split("A ∧ B") == ("", ["A", "B"])                                       # plain
+    assert safe_conjunction_split("∀ x, A x ∧ B x ∧ C x") == ("∀ x,", ["A x", "B x", "C x"])         # ∀-fronted (distributes)
+    assert safe_conjunction_split("∀ [Field F] {t : ℕ}, R t ∧ S t") == ("∀ [Field F] {t : ℕ},", ["R t", "S t"])  # instance-fronted (Shamir/BFT shape)
+    assert safe_conjunction_split("(∃ w, A w) ∧ B") == ("", ["(∃ w, A w)", "B"])                     # ∃ SCOPED in a conjunct → SPLIT (sound)
+    assert safe_conjunction_split("∃ w, A w ∧ B w") is None                                          # NS: shared witness → DEFER
+    assert safe_conjunction_split("∀ x, ∃ w, A ∧ B") is None                                         # ∀ then ∃ → DEFER
+    assert safe_conjunction_split("Exists w, A w ∧ B w") is None                                     # Exists keyword → DEFER
+    assert safe_conjunction_split("A ↔ B") is None and safe_conjunction_split("P x") is None         # ↔ / atomic → not a conj
+    assert safe_iff_split("A ↔ B") == ("", ("A", "B"))                                               # plain iff
+    assert safe_iff_split("∀ x, A x ↔ B x") == ("∀ x,", ("A x", "B x"))                              # ∀-fronted iff (distributes)
+    assert safe_iff_split("∃ w, A w ↔ B w") is None                                                  # NS sibling: ∃-shared iff → DEFER
     print("lean_source selftest OK")
 
 

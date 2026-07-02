@@ -232,7 +232,7 @@ def rank(goal_text: str, k: int = 12, kinds: "set | None" = None) -> "tuple[list
                 hits = [h for h in hits if h.get("kind") in kinds]
             if hits:
                 out = (hits[:k], "atlas")
-        except Exception:  # noqa: BLE001 — embedder down / no key / quota ⇒ fall through to static (NOT cached: a transient embedder outage shouldn't pin us to static for the whole run)
+        except (Exception, SystemExit):  # noqa: BLE001 — embedder down / no key / quota (make_client SystemExits when no key resolves) ⇒ fall through to static (NOT cached: a transient embedder outage shouldn't pin us to static for the whole run)
             out = None
     if out is None:
         from ztare.leanmill.solver.move_corpus import build_corpus
@@ -344,8 +344,9 @@ def render_for_goal(goal_text: "str | None" = None, k: int = 12, db_path=None,
     if (any(m.get("kind") in ("technique", "research_op", "structural") for m in live)
             and os.environ.get("ZTARE_LEANMILL_MOVE_RECEIPTS", "1") != "0"):
         lines.append(
-            "\nRECEIPT (state BEFORE you build on a TECHNIQUE / RESEARCH-MOVE / structural MOVE above): on its own "
-            "line write `RECEIPT: <move name> — <the concrete structural feature of THIS goal that licenses it>` "
+            "\nRECEIPT (state BEFORE you build on a TECHNIQUE / RESEARCH-MOVE / structural MOVE above): as a Lean "
+            "comment on its own line IN YOUR PROOF FILE, write `-- RECEIPT: <move name> — <the concrete structural "
+            "feature of THIS goal that licenses it>` (the leading `--` is required so the receipt is parsed) "
             "(instantiate the move's precondition for your goal: e.g. for `finite Hankel rank ⇒ rational`, exhibit "
             "the finite-rank Hankel/recurrence; for `obstruction-descent`, name the obstruction class + why the "
             "boundedness hypothesis forces it to vanish). Stating the precondition first is the a-priori check "

@@ -316,6 +316,408 @@ def FiveFrameOwnerPreimagePrefixReceipt.ofC7PackingOwnerPreimageReceipt
         hOwner.ownerPreimage N
 
 /--
+The C7 owner-preimage receipt pays the full trace-free cofinal owner-prefix
+budget for a five-frame source whose event-radius stream is the same
+route-active tail.  This upgrades the earlier prefix-only consumer: the
+all-prefix inequalities come from `OwnerPreimagePackingReceipt`, while the
+invoice/source and anti-laundering fields are projected from the typed C7 owner
+receipt and the five-frame source.
+-/
+def TraceFreeVariationC7CofinalOwnerPrefixBudget.ofC7PackingOwnerPreimageAndFiveFrameSource
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    {hPack : C7SameCarrierPackingNoReuseReceipt hIndexed hId}
+    (hOwner : C7PackingOwnerPreimageReceipt hPack)
+    (hSource : FiveFrameTracefreeValuationSource formula)
+    (hSameRoute : hSource.eventRadiusPayment = routeActiveTail) :
+    TraceFreeVariationC7CofinalOwnerPrefixBudget where
+  selectedPrefixLength := 0
+  activeAtomBound := hOwner.activeOwnerAtomBound
+  owner := hOwner.ownerOfEvent
+  angularEventPay := hSource.tracefreeValuationPay
+  angularSampleMagnitude := hSource.tracefreeValuationPay
+  atomCharge := hOwner.atomCharge
+  targetCharge := hSource.tracefreeValuationPay
+  angularTracefreeSpend := 0
+  ownerTVBudget := hOwner.atomBudget
+  C := hOwner.multiplicityBound
+  angularEventPay_nonneg := by
+    intro e
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    simpa [hStream] using hOwner.ownerPreimage.eventPay_nonnegative e
+  angularSampleMagnitude_nonneg := by
+    intro e
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    simpa [hStream] using hOwner.ownerPreimage.eventPay_nonnegative e
+  atomCharge_nonneg := hOwner.atomCharge_nonnegative
+  angularTracefreeSpend_nonneg := by norm_num
+  ownerTVBudget_nonneg := hOwner.atomBudget_nonnegative
+  C_nonneg := hOwner.multiplicityBound_nonnegative
+  angularEventPrefixSpend_nonneg_selected := by
+    simp [nsTick668FinitePrefixSum]
+  ownerChargePrefixBudget_nonneg_selected := by
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum]
+    exact
+      NS.ns_prefix_sum_nonnegative_of_pointwise
+        hOwner.atomCharge hOwner.atomCharge_nonnegative
+        (hOwner.activeOwnerAtomBound 0)
+  eventPay_eq_angularSampleMagnitude := by
+    intro e _he
+    rfl
+  targetCharge_eq_angularEventPay := by
+    intro e
+    rfl
+  angularTracefreeSpend_le_selectedEventPrefix := by
+    simp [nsTick668FinitePrefixSum]
+  pointwiseAngularEventPay_le_ownerCharge_all := by
+    intro e
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    simpa [hStream] using hOwner.ownerPreimage.pointwiseOwnedAtomPaysEvent e
+  angularEventPrefixSpend_le_ownerChargePrefix_all := by
+    intro N
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    rw [hStream]
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum routeActiveTail N]
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum
+      hOwner.atomCharge (hOwner.activeOwnerAtomBound N)]
+    exact hOwner.ownerPreimage.ownerPreimagePackingPrefix N
+  ownerChargePrefixBudget_le_ownerTVBudget_all := by
+    intro N
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum
+      hOwner.atomCharge (hOwner.activeOwnerAtomBound N)]
+    exact hOwner.ownerPreimage.activeAtomPrefixBudget N
+  angularEventPrefixSpend_le_ownerTVBudget_all := by
+    intro N
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    rw [hStream]
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum routeActiveTail N]
+    exact OwnerPreimagePackingReceipt.eventPrefix_le_ownerBudget
+      hOwner.ownerPreimage N
+  targetPrefix_le_ownerTVBudget_all := by
+    intro N
+    have hSourceStream :
+        hSource.tracefreeValuationPay = hSource.eventRadiusPayment :=
+      funext fun n => (hSource.eventRadiusPayment_eq_tracefreeValuationPay n).symm
+    have hStream : hSource.tracefreeValuationPay = routeActiveTail :=
+      hSourceStream.trans hSameRoute
+    rw [hStream]
+    rw [nsTick668FinitePrefixSum_eq_nsPrefixSum routeActiveTail N]
+    exact OwnerPreimagePackingReceipt.eventPrefix_le_ownerBudget
+      hOwner.ownerPreimage N
+  ownerIsTraceFreeVariationDisintegrationSection :=
+    hOwner.ownerChosenByStoppingRuleBeforePayoff ∧
+      hOwner.ownerLivesInSameAnnularPhaseSpaceTent
+  ownerIsTraceFreeVariationDisintegrationSection_proof :=
+    ⟨hOwner.ownerChosenByStoppingRuleBeforePayoff_proof,
+      hOwner.ownerLivesInSameAnnularPhaseSpaceTent_proof⟩
+  angularEventsAreVariationAtomsOnExactInvoiceFiber :=
+    hSource.fiveShadowMeasuresOnExactSameSource ∧
+      hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers
+  angularEventsAreVariationAtomsOnExactInvoiceFiber_proof :=
+    ⟨hSource.fiveShadowMeasuresOnExactSameSource_proof,
+      hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers_proof⟩
+  c7PrefixReadsVariationDisintegrationPrefix :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound
+  c7PrefixReadsVariationDisintegrationPrefix_proof :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound_proof
+  ownerChargeIsNoncircularTraceFreeVariationMeasure :=
+    hOwner.atomChargeNormalizesPackingCurrency ∧
+      hOwner.atomBudgetNormalizesPackingCurrency
+  ownerChargeIsNoncircularTraceFreeVariationMeasure_proof :=
+    ⟨hOwner.atomChargeNormalizesPackingCurrency_proof,
+      hOwner.atomBudgetNormalizesPackingCurrency_proof⟩
+  totalVariationBudgetIndependentOfTargetSpend :=
+    hOwner.productionSourceFixedBeforeOwnerMap ∧
+      hOwner.ownerChosenByStoppingRuleBeforePayoff
+  totalVariationBudgetIndependentOfTargetSpend_proof :=
+    ⟨hOwner.productionSourceFixedBeforeOwnerMap_proof,
+      hOwner.ownerChosenByStoppingRuleBeforePayoff_proof⟩
+  traceFreeVariationBudgetNotProductL2OrGlobalL4Disguise :=
+    hSource.notBesovBVProductL2OrCFImport ∧
+      hOwner.notUniformEnstrophyBudgetDisguise
+  traceFreeVariationBudgetNotProductL2OrGlobalL4Disguise_proof :=
+    ⟨hSource.notBesovBVProductL2OrCFImport_proof,
+      hOwner.notUniformEnstrophyBudgetDisguise_proof⟩
+  sparseHighHighGhostAccountedOrExcludedForVariationBudget :=
+    hOwner.pressureReserveSeparatedFromOwnerBudget ∧
+      hOwner.selectedEventInheritedOrRenewedByAnnularOwner
+  sparseHighHighGhostAccountedOrExcludedForVariationBudget_proof :=
+    ⟨hOwner.pressureReserveSeparatedFromOwnerBudget_proof,
+      hOwner.selectedEventInheritedOrRenewedByAnnularOwner_proof⟩
+  noSignedMomentOrPositivePartBudget :=
+    hSource.notSignedMomentOrPositivePartScalarization
+  noSignedMomentOrPositivePartBudget_proof :=
+    hSource.notSignedMomentOrPositivePartScalarization_proof
+  exactInvoiceFiber :=
+    hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers ∧
+      hOwner.ownerBudgetIsSameCoronaDuhamelCarrier
+  exactInvoiceFiber_proof :=
+    ⟨hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers_proof,
+      hOwner.ownerBudgetIsSameCoronaDuhamelCarrier_proof⟩
+  sameInputCarrier :=
+    hOwner.ownerBudgetIsSameCoronaDuhamelCarrier ∧
+      hSource.fiveShadowMeasuresOnExactSameSource
+  sameInputCarrier_proof :=
+    ⟨hOwner.ownerBudgetIsSameCoronaDuhamelCarrier_proof,
+      hSource.fiveShadowMeasuresOnExactSameSource_proof⟩
+  selectedPacketPartitionFixedBeforePayoff :=
+    hOwner.partitionFixedBeforeOwnerPreimage
+  selectedPacketPartitionFixedBeforePayoff_proof :=
+    hOwner.partitionFixedBeforeOwnerPreimage_proof
+  noDescendantRebillingForAngularEvents :=
+    hOwner.noReuseSeparatedFromOwnerBudget
+  noDescendantRebillingForAngularEvents_proof :=
+    hOwner.noReuseSeparatedFromOwnerBudget_proof
+  carrierIsPreSummedNotFinalAngularSamples :=
+    hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation
+  carrierIsPreSummedNotFinalAngularSamples_proof :=
+    hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation_proof
+  noCFOrOtherClayEquivalentInputUsed :=
+    hSource.notBesovBVProductL2OrCFImport ∧
+      hOwner.notMonotoneTailCarrier ∧ hOwner.notScalarMeasureCarrier
+  noCFOrOtherClayEquivalentInputUsed_proof :=
+    ⟨hSource.notBesovBVProductL2OrCFImport_proof,
+      hOwner.notMonotoneTailCarrier_proof,
+      hOwner.notScalarMeasureCarrier_proof⟩
+
+/--
+Valuation-specific owner budget from the C7 owner-preimage receipt.  This is
+the direct consumer needed by the TICK669 A_visc five-frame route: once the
+five-frame source is bound to the route-active tail and the typed C7
+owner-preimage receipt exists, the valuation budget row follows with the same
+cofinal trace-free owner budget.
+-/
+def TraceFreeL2ValuationC7CofinalOwnerBudget.ofC7PackingOwnerPreimageAndFiveFrameSource
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {hIndexed :
+      ResidualFreshAuditIndexedSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    {hPack : C7SameCarrierPackingNoReuseReceipt hIndexed hId}
+    (hOwner : C7PackingOwnerPreimageReceipt hPack)
+    (hSource : FiveFrameTracefreeValuationSource formula)
+    (hSameRoute : hSource.eventRadiusPayment = routeActiveTail) :
+    TraceFreeL2ValuationC7CofinalOwnerBudget formula where
+  source := hSource
+  budget :=
+    TraceFreeVariationC7CofinalOwnerPrefixBudget.ofC7PackingOwnerPreimageAndFiveFrameSource
+      hOwner hSource hSameRoute
+  valuationPay_eq_budgetAngularEventPay := rfl
+  fiveShadowTVBudgetPaidBeforeScalarProjection :=
+    hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation
+  fiveShadowTVBudgetPaidBeforeScalarProjection_proof :=
+    hSource.shadowMeasureTotalVariationChargedBeforeFinalSummation_proof
+  selectedValuationPrefixesCofinalWithC7ScaleTruncations :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound
+  selectedValuationPrefixesCofinalWithC7ScaleTruncations_proof :=
+    hOwner.ownerPreimage.globalSelectedTreePreimageBound_proof
+  valuationBudgetNotFromEndpointCZOrSignedDiniOrProductL2 :=
+    hSource.noCZEndpointMeasureLaundering ∧
+      hSource.notSignedMomentOrPositivePartScalarization ∧
+        hSource.notBesovBVProductL2OrCFImport
+  valuationBudgetNotFromEndpointCZOrSignedDiniOrProductL2_proof :=
+    ⟨hSource.noCZEndpointMeasureLaundering_proof,
+      hSource.notSignedMomentOrPositivePartScalarization_proof,
+      hSource.notBesovBVProductL2OrCFImport_proof⟩
+  exactInvoiceFiberForFiveShadowValuation :=
+    hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers ∧
+      hOwner.ownerBudgetIsSameCoronaDuhamelCarrier
+  exactInvoiceFiberForFiveShadowValuation_proof :=
+    ⟨hSource.sourceSigmaAlgebraMatchesSelectedAnnularOwnerFibers_proof,
+      hOwner.ownerBudgetIsSameCoronaDuhamelCarrier_proof⟩
+
+/--
+Separated-source owner geometry is enough to pay the TICK669 five-frame
+valuation budget.
+
+The proof is a consumer-facing composition: the separated-source bridge first
+pays the residual-after-transfer receipt, then the owner-geometry core and
+canonical separation receipt, then the C7 owner-preimage receipt consumed by
+the five-frame valuation adapter above.  Thus the remaining mathematical input
+is not scalar `A_visc` mass, but the same-source owner-lineage plus
+anti-laundering bridge on the separated fresh-annular source.
+-/
+noncomputable def TraceFreeL2ValuationC7CofinalOwnerBudget.ofC7SeparatedSourceOwnerGeometryBridgeAndFiveFrameSource
+    {seq : LerayHopfSequence} {K : CompactSubCylinder}
+    {hRho : RhoFromNormalizedCKNExcess seq K}
+    {hCarrier :
+      NonadaptiveBadCenterCarrierFromNormalizedExcess seq K hRho}
+    {hBeta : BadCenterParabolicBetaData seq K hRho hCarrier}
+    {hEvents : BadCenterEventNodeIdentification seq K hRho hCarrier}
+    {L : NS.EventRecurrencePriceLedger}
+    {hScale :
+      BadCenterScaleTruncationPresentation seq K hRho hCarrier hBeta}
+    {hInc :
+      BadCenterEventIncidenceGeometry seq K hRho hCarrier hBeta hEvents L}
+    {hElig :
+      ResidualFreshExcessAuditEligibilityData
+        (seq := seq) (K := K) (hRho := hRho) (hCarrier := hCarrier)
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)}
+    {hGeom :
+      LerayHeatFreshFrequencyEventTentGeometry
+        seq K hRho hCarrier hEvents L}
+    {hPressure :
+      FreshFrequencyPressureTailEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hDuhamel :
+      FreshFrequencyDuhamelErrorEventAssignment
+        seq K hRho hCarrier hEvents L}
+    {hLock :
+      FreshFrequencyEventSameTreeLock
+        seq K hRho hCarrier hBeta hEvents L hScale hInc}
+    {h :
+      CoronaDuhamelProductionSingleSpendCarrier
+        hElig hGeom hPressure hDuhamel hLock}
+    {routeActiveTail : Nat → Real}
+    {hId :
+      C7RouteActiveTailEventBetaSquareIdentification
+        (hBeta := hBeta) (hEvents := hEvents) (L := L)
+        routeActiveTail}
+    {hComplete :
+      CoronaDuhamelC7SourceCompletion h hId}
+    {hTransfer :
+      C7ScaledOwnerPreimageCarrierTransfer
+        (C7SameCarrierPackingNoReuseReceipt.ofCoronaDuhamelC7SourceCompletion
+          hComplete)}
+    {pressureL2 : PressureHessianL2Amplitude}
+    {radialGrade : Real}
+    {formula : Route1ProjectedRieszAngularFormulaSource pressureL2 radialGrade}
+    (hBridge :
+      C7OwnerGeometryResidualBridgeFromFreshAnnularChargeSeparatedSource
+        hTransfer)
+    (hSource : FiveFrameTracefreeValuationSource formula)
+    (hSameRoute : hSource.eventRadiusPayment = routeActiveTail) :
+    TraceFreeL2ValuationC7CofinalOwnerBudget formula :=
+  let hResidual :
+      C7OwnerGeometryResidualAfterScaledTransfer hTransfer :=
+    C7OwnerGeometryResidualAfterScaledTransfer.ofFreshAnnularChargeSeparatedBridge
+      hBridge
+  let hCore : C7OwnerPreimageGeometryCoreReceipt hComplete :=
+    C7OwnerPreimageGeometryCoreReceipt.ofScaledCarrierTransferResidual
+      hResidual
+  let hSep :
+      C7CarrierRadiusCanonicalOwnerSeparationReceipt hComplete :=
+    C7CarrierRadiusCanonicalOwnerSeparationReceipt.ofOwnerPreimageGeometryCore
+      hCore
+  TraceFreeL2ValuationC7CofinalOwnerBudget.ofC7PackingOwnerPreimageAndFiveFrameSource
+    (C7PackingOwnerPreimageReceipt.ofScaledCarrierTransferCanonicalCurrency
+      hTransfer
+      hSep.productionSourceFixedBeforeOwnerMap
+      hSep.productionSourceFixedBeforeOwnerMap_proof
+      hSep.pressureReserveSeparatedFromOwnerBudget
+      hSep.pressureReserveSeparatedFromOwnerBudget_proof
+      hSep.partitionFixedBeforeOwnerPreimage
+      hSep.partitionFixedBeforeOwnerPreimage_proof
+      hSep.sectionIdentityFixedBeforeOwnerPreimage
+      hSep.sectionIdentityFixedBeforeOwnerPreimage_proof
+      hSep.noReuseSeparatedFromOwnerBudget
+      hSep.noReuseSeparatedFromOwnerBudget_proof
+      hSep.selectedEventInheritedOrRenewedByAnnularOwner
+      hSep.selectedEventInheritedOrRenewedByAnnularOwner_proof
+      hSep.boundedOwnerMultiplicityOnLineage
+      hSep.boundedOwnerMultiplicityOnLineage_proof
+      hSep.ownerBudgetIsSameCoronaDuhamelCarrier
+      hSep.ownerBudgetIsSameCoronaDuhamelCarrier_proof
+      hSep.notMonotoneTailCarrier
+      hSep.notMonotoneTailCarrier_proof
+      hSep.notScalarMeasureCarrier
+      hSep.notScalarMeasureCarrier_proof
+      hSep.notUniformEnstrophyBudgetDisguise
+      hSep.notUniformEnstrophyBudgetDisguise_proof
+      hSep.sourceSelectionNotDeclarationOnly)
+    hSource
+    hSameRoute
+
+/--
 Weak owner-preimage labels for a five-frame trace-free source.
 
 These are deliberately the fields the workbench rejected as weak substitutes:

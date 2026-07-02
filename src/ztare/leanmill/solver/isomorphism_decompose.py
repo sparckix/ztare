@@ -913,10 +913,7 @@ def derive_conjunctive_dag(goal_decl: str, target_name: str) -> "dict | None":
     """
     if not goal_decl or not target_name:
         return None
-    from ztare.leanmill.lean_source import extract_signature, top_level_colon
-    # the splitter is the ONE canonical top-level connective splitter (shared with the obligation-DAG build) —
-    # NOT a re-rolled regex, so the nested-paren / iff guards are identical to derive_structural_decomposition.
-    from ztare.leanmill.solver.governed_dag_search import _split_top_level
+    from ztare.leanmill.lean_source import extract_signature, top_level_colon, safe_conjunction_split
     sig = (extract_signature(goal_decl, target_name) or "").strip()   # `<binders> : <conclusion>`
     if not sig:
         return None
@@ -927,26 +924,14 @@ def derive_conjunctive_dag(goal_decl: str, target_name: str) -> "dict | None":
     concl = sig[ci + 1:].strip()
     if not concl:
         return None
-    # ∀-FRONTING (2026-06-25 AMM RCA): the conclusion may be `∀ x …, C₁ ∧ … ∧ Cₙ` — the top-level `∧` is UNDER a
-    # leading `∀`/`Π` quantifier (a `theorem T : ∀ γ, A ∧ B`, NOT `theorem T (γ) : A ∧ B`). Splitting the `∧`
-    # naively drops the bound variable from conjuncts 2..n → ill-typed (the audit correctly rejected it). `∀`
-    # distributes over `∧` (`(∀x, A∧B) ↔ (∀x,A)∧(∀x,B)`), so STRIP the leading quantifier prefix, split the body,
-    # and prepend the prefix to each conjunct (well-typed by construction); the chain `intro`s it before splitting.
-    qprefix, body = "", concl
-    while body[:1] in ("∀", "Π") or body.startswith("\\forall"):
-        cc = _top_level_comma(body)
-        if cc < 0:
-            break
-        qprefix = (qprefix + " " + body[:cc + 1]).strip()   # include the binder-terminating comma
-        body = body[cc + 1:].strip()
-        if not body:
-            return None
-    # a top-level `↔` (under any ∀-prefix) is a DIFFERENT composite (Iff.intro) — leave it to the planner here.
-    if len(_split_top_level(body, {"↔"})) == 2:
-        return None
-    conjuncts = _split_top_level(body, {"∧"})
-    if len(conjuncts) < 2:
-        return None   # atomic / not a top-level conjunction → no deterministic split
+    # ∀-fronting strip + ∃-defer + ↔-guard + `∧`-split all live behind ONE door (lean_source.safe_conjunction_split),
+    # shared with governed_dag_search.derive_structural_decomposition so a quantifier guard can never drift into a
+    # sibling (2026-07-01 NS-hunt RCA: `∃ w, A∧B` was split as a plain conjunction in the un-guarded twin, orphaning
+    # the shared witness `w` as a free variable). `∀` distributes → the prefix is re-prepended to each conjunct.
+    _split = safe_conjunction_split(concl)
+    if not _split:
+        return None   # ∃-led (shared witness), top-level ↔, or atomic — the guarded door decides
+    qprefix, conjuncts = _split
     _bind = (" " + binders) if binders else ""
     _q = (qprefix + " ") if qprefix else ""
     lemmas, lnames = [], []
@@ -1277,6 +1262,8 @@ def _selftest() -> int:
        derive_conjunctive_dag("theorem t : A ↔ B := by sorry", "t") is None)
     ok("det-conj: nested ∧ under → ⇒ None (no TOP-level conjunction)",
        derive_conjunctive_dag("theorem t : (A ∧ B) → C := by sorry", "t") is None)
+    ok("det-conj: existential witness-sharing conjunction ⇒ None (agent handles)",
+       derive_conjunctive_dag("theorem t : ∃ x : Nat, x = x ∧ x = 0 := by sorry", "t") is None)
     _cd3 = derive_conjunctive_dag("theorem t : P ∧ Q := by sorry", "t")
     ok("det-conj: no-binder conjunction builds clean decls",
        bool(_cd3) and _cd3["lemmas"][0] == "theorem t_conj1 : P := by sorry")

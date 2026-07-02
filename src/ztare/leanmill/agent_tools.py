@@ -145,7 +145,7 @@ def _tool_certify(arg: str) -> int:
     syntax And/Or/Not/==/>=/>/<=/<). Returns CERTIFIED_EQUIVALENT (equal on every input — z3 exhaustive),
     REFUTED (a CONCRETE distinguishing input you can re-check), or OUT_OF_FRAGMENT (undecided ⇒ fall back to the
     battery+judge; never a silent pass). z3 is complete for linear-integer policy, so a verdict is a decision."""
-    from ztare.leanmill.solver.certified_faithfulness import certify_policy_faithfulness, Verdict
+    from ztare.leanmill.solver.certified_faithfulness import policy_faithfulness_consensus, Verdict
     s = (arg or "").strip()
     rules, _, dom_part = s.partition("@")
     turn = "⊢" if "⊢" in rules else ("|-" if "|-" in rules else None)
@@ -163,7 +163,32 @@ def _tool_certify(arg: str) -> int:
     if not domain:
         print("certify: NONE — the `@` clause declared no attributes. FORMAT: `… @ age:int, balance:int`.")
         return 1
-    cert = certify_policy_faithfulness(intent.strip(), candidate.strip(), domain)
+    # Cross-substrate consensus (default-on): corroborate the z3 verdict with an INDEPENDENT Lean omega decision
+    # on the same claim, and record any z3⨉Lean conflict. The Lean leg is naturally gated by the warm-verify
+    # toolchain (compile_probe_via_repl returns None when it is unavailable), so this degrades to the z3-only
+    # verdict where Lean is not live — no uncontrolled compile cost, no behaviour change on a Lean-less node.
+    from pathlib import Path as _P
+    _repo = _P(__file__).resolve().parents[3]
+
+    def _lc(probe: str) -> bool:
+        try:
+            from ztare.formal.repl_compile import compile_probe_via_repl
+            r = compile_probe_via_repl(probe, _repo / "ztare_proofs", timeout=120, reject_sorry=True)
+            return bool(r and r[0])
+        except Exception:  # noqa: BLE001 — toolchain absent ⇒ no Lean leg (dead-instrument guard handles it)
+            return False
+    _store = None
+    try:
+        from ztare.leanmill.solver.faithfulness_store import FaithfulnessStore
+        _store = FaithfulnessStore(_repo / "analytics/public/queries/solver_lane_faithfulness_store.jsonl")
+    except Exception:  # noqa: BLE001
+        _store = None
+    consensus, cert = policy_faithfulness_consensus(
+        intent.strip(), candidate.strip(), domain,
+        claim_nl=f"{intent.strip()} ⊢ {candidate.strip()}",
+        lean_compile=_lc, record_conflict=(_store.record_conflict if _store else None))
+    if consensus.n_substrates >= 2:
+        print(f"certify: cross-substrate consensus = {consensus.status.upper()} (z3 ⨉ Lean-omega) — {consensus.reason}")
     if cert.verdict is Verdict.CERTIFIED_EQUIVALENT:
         print(f"certify: CERTIFIED_EQUIVALENT — the candidate is faithful on EVERY input ({cert.certificate}). "
               "The formalization preserves the intent; proceed.")

@@ -193,6 +193,111 @@ def certify_polynomial_identity(
                                    certificate=lc)
 
 
+# A trivial LIA fact the kernel's omega must close — the Lean-leg POSITIVE CONTROL. If this does not compile,
+# the Lean toolchain is down and a probe failure is mechanical, NOT a refutation (dead-instrument guard).
+_LEAN_OMEGA_LIVE = "import Mathlib\n\ntheorem _xsub_live : (1 : ℤ) ≤ 2 := by omega\n"
+
+
+def lean_omega_equiv_probe(intent_src: str, candidate_src: str,
+                           domain: "dict[str, object]") -> "Optional[str]":
+    """Build the INDEPENDENT Lean leg for the consensus: a kernel `omega` probe deciding
+    `∀ vars : ℤ, intent ↔ candidate`. The z3 policy sources are compiled to z3 exprs (`SmtPolicyChecker`) and
+    each rendered to a Lean Prop (`abduction._z3_to_lean`); `omega` is the kernel's LIA decision procedure,
+    independent of z3. Returns None — so the Lean leg is simply absent — when any attribute is non-integer
+    (omega is LIA-only; enum/EUF domains have no omega probe) or a policy renders outside the fragment."""
+    if any(str(t) != "int" for t in domain.values()) or not domain:
+        return None
+    try:
+        from ztare.common.smt_checker import SmtPolicyChecker
+        from ztare.leanmill.solver.abduction import _z3_to_lean
+        chk = SmtPolicyChecker(domain)
+        li = _z3_to_lean(chk._compile(intent_src))
+        lc = _z3_to_lean(chk._compile(candidate_src))
+    except Exception:  # noqa: BLE001 — z3 absent / non-boolean / unrenderable ⇒ no Lean leg (fail-closed)
+        return None
+    if not li or not lc:
+        return None
+    binders = " ".join(sorted(domain))
+    return f"import Mathlib\n\ntheorem _xsub_equiv ({binders} : ℤ) : ({li}) ↔ ({lc}) := by omega\n"
+
+
+def policy_faithfulness_consensus(
+        intent_src: str, candidate_src: str, domain: "dict[str, object]", *,
+        claim_nl: str = "",
+        lean_equiv_probe: "Optional[str]" = None,
+        lean_compile: "Optional[Callable[[str], bool]]" = None,
+        lean_live_probe: "Optional[str]" = None,
+        record_conflict: "Optional[Callable[..., object]]" = None):
+    """Cross-substrate CONSENSUS on the faithfulness claim "candidate ≡ intent over the domain".
+
+    The non-math wedge is where two substrates can BOTH faithfully express a policy (LIA/finite), so this is
+    where cross-substrate consensus actually fires (on open higher math one substrate bails and there is no
+    peer). Two substrates each DECIDE the same claim with their OWN procedure:
+
+      • smt_z3 — z3 over the whole domain (`certify_policy_faithfulness`); complete for LIA/EUF.
+      • lean   — the Lean kernel via an `omega`/`decide` equivalence probe; an independent decision procedure.
+
+    Reconciled through `cross_substrate_consensus`. Agreement is a trust-lift a single substrate cannot give.
+    Disagreement is a LOCALIZED faithfulness conflict (the two renderings decide the same input differently →
+    exactly one translation is unfaithful), recorded as a do-not-trust memo via `record_conflict`.
+
+    Pure reconciliation: re-decides nothing, adds no soundness surface. The firewall's own gates remain the
+    closure boundary; this only adds a peer-corroboration / conflict SIGNAL.
+
+    DEAD-INSTRUMENT GUARD: a Lean probe that fails to *compile* for mechanical reasons (toolchain down, bad
+    import) is NOT a refutation. If `lean_live_probe` is given and that trivial positive control does not
+    compile, the Lean substrate is treated as ABSENT (→ `insufficient`, fail-closed), never as a refusal — so a
+    dead toolchain can never manufacture a false faithfulness_conflict.
+
+    Without a live Lean leg the result is `insufficient` (one substrate is never a consensus). Returns
+    `(ConsensusVerdict, FaithfulnessCertificate)` — the z3 certificate is always the primary artifact."""
+    import hashlib
+    from ztare.common.cross_substrate_consensus import cross_substrate_consensus, SubstrateVerdict
+    from ztare.common.governed_verification import CheckResult
+
+    claim = claim_nl or f"{intent_src}  ≡?  {candidate_src}"
+
+    # substrate 1 — z3 (the primary artifact; complete for LIA/EUF over the whole domain)
+    z3_cert = certify_policy_faithfulness(intent_src, candidate_src, domain)
+    z3_ok = z3_cert.faithful is True
+    z3_diag = z3_cert.detail + (f" | witness={z3_cert.witness}" if z3_cert.witness else "")
+    verdicts = [SubstrateVerdict(
+        "smt_z3", CheckResult(z3_ok, z3_diag, "smt_z3"),
+        translation_digest="sha256:" + hashlib.sha256(candidate_src.encode("utf-8")).hexdigest()[:16])]
+
+    # substrate 2 — Lean kernel (independent decision procedure), gated by a liveness positive control.
+    # When a compiler is supplied but no probe, auto-build the omega equivalence probe + omega liveness control.
+    if lean_compile is not None and lean_equiv_probe is None:
+        lean_equiv_probe = lean_omega_equiv_probe(intent_src, candidate_src, domain)
+        if lean_equiv_probe is not None and lean_live_probe is None:
+            lean_live_probe = _LEAN_OMEGA_LIVE
+    if lean_equiv_probe and lean_compile is not None:
+        lean_live = True
+        if lean_live_probe is not None:
+            try:
+                lean_live = lean_compile(lean_live_probe) is True
+            except Exception:  # noqa: BLE001 — control failed to run ⇒ treat the toolchain as dead
+                lean_live = False
+        if lean_live:
+            try:
+                lean_ok = lean_compile(lean_equiv_probe) is True
+            except Exception:  # noqa: BLE001
+                lean_ok = False
+            verdicts.append(SubstrateVerdict(
+                "lean", CheckResult(lean_ok, "Lean omega/decide equivalence probe", "lean"),
+                translation_digest="sha256:" + hashlib.sha256(lean_equiv_probe.encode("utf-8")).hexdigest()[:16]))
+
+    consensus = cross_substrate_consensus(claim, verdicts)
+    if consensus.faithfulness_bug and record_conflict is not None:
+        distinguishing = (str(z3_cert.witness) if z3_cert.witness else z3_diag)[:300]
+        try:
+            record_conflict(claim, consensus.agree_ok + consensus.agree_reject, distinguishing,
+                            source="policy_faithfulness_consensus")
+        except Exception:  # noqa: BLE001 — conflict telemetry is best-effort, never blocks
+            pass
+    return consensus, z3_cert
+
+
 def _selftest() -> int:
     """Hermetic over the SMT fragment (needs z3, which the smt_checker suite already requires). No Lean."""
     fails: "list[str]" = []
@@ -241,6 +346,58 @@ def _selftest() -> int:
     c_poly = certify_polynomial_identity(["a + b + c = 0"], "a^3 + b^3 + c^3 = 3*a*b*c")
     ok("polynomial ideal-membership ⇒ CERTIFIED w/ linear_combination cert",
        c_poly.verdict is Verdict.CERTIFIED_EQUIVALENT and "linear_combination" in c_poly.certificate)
+
+    # --- cross-substrate consensus (z3 ⨉ Lean) on the SAME policy claim -----------------------------------
+    LIVE = "example : True := trivial"                          # Lean liveness positive control
+    PROBE = "theorem _eq : ∀ a : Nat, True := by intro a; trivial"   # stand-in equivalence probe
+    captured: "list" = []
+
+    def _rec(nl, subs, dist, **kw):
+        captured.append((nl, tuple(subs), dist))
+        return True
+
+    # both substrates ratify a faithful reorder ⇒ corroborated + trust-lift
+    con_ok, _ = policy_faithfulness_consensus(INTENT, EQUIV, domain, claim_nl="age/balance/vip allow rule",
+                                              lean_equiv_probe=PROBE, lean_compile=lambda s: True,
+                                              lean_live_probe=LIVE, record_conflict=_rec)
+    ok("z3+lean both ratify ⇒ corroborated + trust_lift", con_ok.status == "corroborated" and con_ok.trust_lift)
+    ok("corroboration records NO conflict", not captured)
+
+    # z3 ratifies but the Lean leg refuses the SAME claim ⇒ faithfulness_conflict, recorded
+    con_x, _ = policy_faithfulness_consensus(INTENT, EQUIV, domain, claim_nl="age/balance/vip allow rule",
+                                             lean_equiv_probe=PROBE,
+                                             lean_compile=lambda s: s == LIVE,   # control passes, equiv probe fails
+                                             lean_live_probe=LIVE, record_conflict=_rec)
+    ok("z3-ok vs lean-refuse ⇒ faithfulness_conflict", con_x.status == "faithfulness_conflict" and con_x.faithfulness_bug)
+    ok("conflict is recorded to the store seam (record_conflict fired w/ both substrates)",
+       bool(captured) and captured[-1][0] == "age/balance/vip allow rule" and "lean" in captured[-1][1])
+
+    # DEAD-INSTRUMENT guard: the Lean liveness control fails ⇒ Lean substrate ABSENT ⇒ insufficient, NOT a conflict
+    captured.clear()
+    con_dead, _ = policy_faithfulness_consensus(INTENT, EQUIV, domain,
+                                                lean_equiv_probe=PROBE, lean_compile=lambda s: False,
+                                                lean_live_probe=LIVE, record_conflict=_rec)
+    ok("dead Lean toolchain ⇒ insufficient (NOT a false conflict)", con_dead.status == "insufficient")
+    ok("dead toolchain records NO conflict", not captured)
+
+    # no Lean leg at all ⇒ one substrate ⇒ insufficient (fail-closed; never a silent single-engine trust-lift)
+    con_1, _ = policy_faithfulness_consensus(INTENT, EQUIV, domain)
+    ok("z3 only (no lean leg) ⇒ insufficient", con_1.status == "insufficient")
+
+    # a genuine launder ⇒ z3 leg REFUTED, and both substrates reject ⇒ unanimous_reject
+    con_l, z3_l = policy_faithfulness_consensus(INTENT, LAUNDER, domain, lean_equiv_probe=PROBE,
+                                                lean_compile=lambda s: s == LIVE, lean_live_probe=LIVE)
+    ok("launder ⇒ z3 leg REFUTED + both substrates reject (unanimous_reject)",
+       z3_l.verdict is Verdict.REFUTED and con_l.status == "unanimous_reject")
+
+    # auto-built Lean omega probe (caller passes only lean_compile; no hand-built probe) ----------------------
+    probe = lean_omega_equiv_probe(INTENT, EQUIV, domain)
+    ok("omega probe builder renders ∀ vars:ℤ, intent ↔ candidate by omega",
+       bool(probe) and "omega" in probe and "↔" in probe and "age" in probe and "vip" in probe)
+    ok("omega probe is None for a non-integer (enum/EUF) domain",
+       lean_omega_equiv_probe(INTENT, EQUIV, {"role": "enum"}) is None)
+    con_auto, _ = policy_faithfulness_consensus(INTENT, EQUIV, domain, lean_compile=lambda s: True)
+    ok("auto-built Lean leg (only lean_compile given) ⇒ corroborated", con_auto.status == "corroborated")
 
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
     return 0 if not fails else 1

@@ -113,8 +113,13 @@ def rederivation_rate(certs: "list[dict]") -> dict:
         k = _rederivation_key(c)
         total += 1
         if k in first_ts:
-            redo += 1
-            by_target[c.get("target") or k] += 1
+            # A re-closure of a known statement is AMNESIA only if it was proved from scratch. When the
+            # proof-cache/pool SERVED it (`cited_from_cache`), it's REUSE — already credited by cite_rate/
+            # reuse_rate — so counting it here too would double-penalize and break the metric's stated duality
+            # (re-derivation↓ AND reuse↑ = compounding). Exclude cache-served repeats from amnesia. (2026-07-01)
+            if not c.get("cited_from_cache"):
+                redo += 1
+                by_target[c.get("target") or k] += 1
         else:
             first_ts[k] = c.get("ts")
     return {"closures": total, "distinct_rungs": len(first_ts), "rederived": redo,
@@ -210,7 +215,7 @@ def windowed_health(certs: "list[dict]", recent_n: int = 40) -> dict:
         proof = c.get("proof_text") or ""
         if i in counted:
             tot += 1
-            if k in seen:
+            if k in seen and not c.get("cited_from_cache"):   # cache-served repeat = REUSE, not amnesia (see rederivation_rate)
                 redo += 1
             if any(n and n != name and _re.search(r"(?<![\w.'])" + _re.escape(n) + r"(?![\w.'])", proof) for n in banked):
                 reuse_hits += 1
@@ -365,17 +370,21 @@ def _selftest() -> int:
         {"ts": "2026-06-24T00:00:00+00:00", "target": "C", "outcome": "closed", "cited_from_cache": True},   # cache fired
         {"ts": "2026-06-24T01:00:00+00:00", "target": "D", "outcome": "closed"},                              # not cited
         {"ts": "2026-06-24T02:00:00+00:00", "target": "cite_probe", "outcome": "closed", "cited_from_cache": True},  # noise → excluded
+        {"ts": "2026-06-24T03:00:00+00:00", "target": "D", "outcome": "closed", "cited_from_cache": True},    # D re-closed but CACHE-SERVED ⇒ reuse, NOT amnesia
     ]
     (repo / CERTS_REL).write_text("\n".join(json.dumps(c) for c in certs))
     rep = report(repo)
     ok("curve counts distinct rungs in ts order",
        [p["cumulative_rungs"] for p in rep["curve"]][:2] == [1, 2] and rep["curve"][0]["target"] == "A")
-    ok("re-derivation: A re-proved once; rejection excluded",
-       rep["rederivation"]["rederived"] == 1 and rep["rederivation"]["worst_offenders"][0] == ("A", 1))
+    ok("re-derivation: A re-proved once; rejection excluded; cache-served D repeat is NOT amnesia",
+       rep["rederivation"]["rederived"] == 1 and rep["rederivation"]["worst_offenders"][0] == ("A", 1)
+       and "D" not in dict(rep["rederivation"]["worst_offenders"]))
+    ok("windowed_health also excludes cache-served repeats (reuse↑, not re-derivation↑)",
+       rep["recent"]["rederived"] == 1)
     ok("missing DB is safe (empty runs)", rep["runs"] == {})
     cr = rep["cite_rate"]
-    ok("cite-rate: clean window only, noise + pre-clean excluded (1 cited / 2 clean closures)",
-       cr["clean_closures"] == 2 and cr["cited_from_cache"] == 1 and cr["cite_rate"] == 0.5)
+    ok("cite-rate: clean window only, noise + pre-clean excluded (2 cited / 3 clean closures)",
+       cr["clean_closures"] == 3 and cr["cited_from_cache"] == 2 and cr["cite_rate"] == 0.667)
     ok("markdown renders cite-rate", "Cache-cite" in render_markdown(rep) and "re-derivation rate" in render_markdown(rep))
     ok("empty repo is safe", report(Path(tempfile.mkdtemp()))["cite_rate"]["cited_from_cache"] == 0)
     print("SELFTEST", "PASSED" if not fails else f"FAILED: {fails}")
