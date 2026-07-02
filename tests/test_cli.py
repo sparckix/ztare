@@ -202,9 +202,11 @@ class VerbRouterTests(unittest.TestCase):
         rc, out, _ = _run(["forensic-workbench"])
         self.assertEqual(rc, 0)
         self.assertIn("ztare forensic-workbench <verb>", out)
+        self.assertIn("project-state", out)
         self.assertIn("apply-review", out)
         self.assertIn("save-next-step", out)
         self.assertIn("save-action", out)
+        self.assertIn("scripts/public/control/forensic_workbench_state.py", out)
         self.assertIn("scripts/public/control/forensic_workbench_review.py", out)
         self.assertIn("scripts/public/control/forensic_workbench_action.py", out)
 

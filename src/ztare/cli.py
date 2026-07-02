@@ -41,11 +41,12 @@ import importlib.util
 import json
 import os
 import re
-import shlex
 import subprocess
 import sys
 from pathlib import Path
 from typing import Callable, Iterable
+
+from ztare.autoresearch import cli_ops as _autoresearch_ops
 
 
 # ---------------------------------------------------------------------------
@@ -132,6 +133,8 @@ def _make_verb_router(name: str, verb_map: dict[str, str]) -> Callable[[list[str
                 file=sys.stderr,
             )
             return 2
+        if script.startswith("module:"):          # dispatch straight to a src module (python -m …), no control script
+            return _delegate_module(script[len("module:"):], args)
         return _delegate(script, args)
 
     return router
@@ -146,6 +149,7 @@ def _make_verb_router(name: str, verb_map: dict[str, str]) -> Callable[[list[str
 #   ("module",  "<dotted.path>")    → python -m <dotted.path>
 _FORECAST_VERBS: dict[str, tuple[str, str]] = {
     "pool":              ("control", "forecast/pool.py"),
+    "scratch-elicit":    ("control", "forecast/scratch_elicit.py"),
     "resolve":           ("control", "forecast/resolve_from_json.py"),
     "capability-audit":  ("module",  "ztare.reports.forecast_capability_audit"),
     "calibration-stats": ("module",  "ztare.forecasting.calibration_stats"),
@@ -226,6 +230,61 @@ def _forecast_help_target_label(kind: str, target: str) -> str:
     return f"{kind}: {target}"
 
 
+# The advisory research-scaffold capabilities — surfaced in the workbench as "ask the loop" affordances.
+_RESEARCH_VERBS: dict[str, tuple[str, str]] = {
+    "eigenquestion": ("module", "ztare.research_director.eigenquestion_generator"),
+    "isomorphism":   ("module", "ztare.research_director.research_isomorphism"),
+    "graph-analyze": ("module", "ztare.common.graph_algorithms"),
+    "map-query":     ("module", "ztare.reports.research_graph_query"),
+    "falsify":       ("module", "ztare.validator.falsify_claim"),
+}
+
+
+def _cmd_research_router(rest: list[str]) -> int:
+    if not rest or rest[0] in ("-h", "--help"):
+        print("ztare research <verb> [args...]\n\nVerbs (advisory — operator review gates promotion):")
+        width = max(len(v) for v in _RESEARCH_VERBS) + 2
+        for verb, (kind, target) in _RESEARCH_VERBS.items():
+            print(f"  {verb:<{width}}→ {_forecast_help_target_label(kind, target)}")
+        print(
+            "\nIsomorphism quick use:\n"
+            "  ztare research isomorphism --seam <constraint> --abstract <shape> --home <field> "
+            "--model <family> --typed-mapping --invariant key=value --debug --json"
+        )
+        print("\nFor any verb's own --help, run:\n  ztare research <verb> --help")
+        return 0
+    verb, *args = rest
+    entry = _RESEARCH_VERBS.get(verb)
+    if entry is None:
+        print(f"ztare: unknown research verb {verb!r}. Known: {', '.join(_RESEARCH_VERBS)}", file=sys.stderr)
+        return 2
+    kind, target = entry
+    if kind == "module":
+        return _delegate_module(target, args)
+    if kind == "control":
+        return _delegate(target, args)
+    if kind == "script":
+        return _delegate_script(target, args)
+    print(f"ztare: bug — unknown research verb kind {kind!r}", file=sys.stderr)
+    return 1
+
+
+def _cmd_rubric_router(rest: list[str]) -> int:
+    """Rubric tools. `review` runs a pre-run, model-based critique of the scoring rubric against the charter
+    + workspace (gaming coverage, evidence anchoring, score-without-evidence ceiling, criterion independence,
+    persona blind spots, charter-spirit coverage) — advisory; catches a gameable rubric before a paid run."""
+    if not rest or rest[0] in ("-h", "--help"):
+        print("ztare rubric <verb> [args...]\n\nVerbs:\n"
+              "  review  → pre-run rubric critique (ztare.rubrics.review_rubric); --project <p> [--rubric <r>] [--model <m>] [--json]\n"
+              "\nFor the verb's own --help, run:\n  ztare rubric review --help")
+        return 0
+    verb, *args = rest
+    if verb == "review":
+        return _delegate_module("ztare.rubrics.review_rubric", args)
+    print(f"ztare: unknown rubric verb {verb!r}. Known: review", file=sys.stderr)
+    return 2
+
+
 _LEANMILL_VERBS: dict[str, str] = {
     # control plane
     "schedule":    "leanmill/station_scheduler.py",
@@ -270,6 +329,12 @@ _LEANMILL_VERBS: dict[str, str] = {
     "harness":     "leanmill/evaluation_harness_runner.py",
     # read-models + intel
     "ui-state":    "leanmill/ui_state_dump.py",
+    "workbench-state": "leanmill/workbench_state_dump.py",
+    "target":      "leanmill/workbench_target.py",
+    "autoformalize-notes": "leanmill/autoformalize_notes.py",
+    "solve-adhoc": "leanmill/solve_adhoc.py",
+    "tools": "module:ztare.leanmill.agent_tools",   # certify / witness / abduct / hammer / verify / … the agent's exogenous tools on the CLI
+    "workbench-action": "leanmill/workbench_action.py",
     "corpus":      "leanmill/external_corpus_ingest.py",
     "intel":       "leanmill/factory_intelligence.py",
     "credit":      "leanmill/c_supply_credit.py",
@@ -556,6 +621,10 @@ _AUTORESEARCH_LEAF_HELP: dict[str, str] = {
         "  --llm-timeout-seconds <n> optional\n"
         "  --llm-retries <n> optional\n"
         "  --allow-model-fallback opt into cross-model provider fallback\n"
+        "  --dynamic          judge with a generated 3-persona committee instead of a single judge\n"
+        "  --auto-evolve      rotate/auto-evolve the rubric across iterations (anti-Goodhart)\n"
+        "  --cross-family     require committee personas span model families\n"
+        "  --committee-model <model> committee generator model (defaults to --judge)\n"
         "  --agent-mutator --agent-judge --agent-committee --agent-inverter\n"
         "  --agent-runtime <codex|claude>\n"
     ),
@@ -785,107 +854,21 @@ def _print_autoresearch_leaf_help(verb: str) -> int:
     return 0
 
 
+# Engine logic lives in ``ztare.autoresearch.cli_ops``; the dispatcher calls
+# these wrappers by their module-level names (which tests may monkeypatch),
+# and they pass the repo root in so the engine stays free of CLI globals.
 def _autoresearch_run_packet_blocker(*, project: str, rubric: str, packet: str) -> str | None:
-    """Return a launch-blocking message when packet-backed run readiness fails."""
-    trace_module = importlib.import_module("ztare.reports.autoresearch_trace")
-    trace = trace_module.build_autoresearch_trace(
-        project=project,
-        rubric=rubric,
-        packet=packet,
-        repo=_repo_root(),
-        full_health=False,
+    return _autoresearch_ops.run_packet_blocker(
+        project=project, rubric=rubric, packet=packet, repo_root=_repo_root()
     )
-    kernel_entry = trace.get("kernel_entry") if isinstance(trace, dict) else {}
-    if isinstance(kernel_entry, dict) and kernel_entry.get("can_enter_kernel") is True:
-        return None
-
-    readiness_label = (
-        kernel_entry.get("readiness_canonical")
-        or kernel_entry.get("readiness")
-        or trace.get("readiness_canonical")
-        or trace.get("readiness")
-    )
-    lines = [
-        "ztare: `autoresearch run --intake` blocked by run-readiness contract",
-        f"readiness: {readiness_label}",
-    ]
-    blockers = kernel_entry.get("blockers") if isinstance(kernel_entry, dict) else []
-    if blockers:
-        lines.append("blockers:")
-        for blocker in blockers:
-            if not isinstance(blocker, dict):
-                continue
-            label = str(blocker.get("canonical_id") or blocker.get("id") or "unknown")
-            channel = str(
-                blocker.get("canonical_recovery_channel")
-                or blocker.get("recovery_channel")
-                or "unknown"
-            )
-            command = str(blocker.get("next_command") or "").strip()
-            suffix = f"; next: {command}" if command else ""
-            lines.append(f"  - {label} ({channel}){suffix}")
-    else:
-        missing = trace.get("blocking_missing") if isinstance(trace, dict) else []
-        lines.append(f"blocking_missing: {missing}")
-    lines.append(
-        "Run `ztare autoresearch trace --project "
-        f"{project} --rubric {rubric} --intake {packet} --json` for the full contract."
-    )
-    return "\n".join(lines)
 
 
 def _project_intake_path(kv: dict[str, str]) -> str:
-    """Return the preferred project-intake path from CLI aliases."""
-    intake = str(kv.get("--intake") or "").strip()
-    packet = str(kv.get("--packet") or "").strip()
-    if intake and packet and intake != packet:
-        raise ValueError(
-            "ztare: use either --intake or --packet, not conflicting paths"
-        )
-    return intake or packet
+    return _autoresearch_ops.project_intake_path(kv)
 
 
 def _autoresearch_packet_run_defaults(packet: str) -> dict[str, str]:
-    """Extract launch defaults from a packet's explicit autoresearch run command."""
-    if not packet:
-        return {}
-    packet_path = Path(packet)
-    if not packet_path.is_absolute():
-        packet_path = _repo_root() / packet
-    try:
-        payload = json.loads(packet_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return {}
-    if not isinstance(payload, dict):
-        return {}
-    command = str(payload.get("expected_command") or "").strip()
-    if not command:
-        return {}
-    try:
-        tokens = shlex.split(command)
-    except ValueError:
-        return {}
-    if tokens[:3] != ["ztare", "autoresearch", "run"]:
-        return {}
-    run_kv = _parse_kv_flags(
-        tokens[3:],
-        allowed={
-            "--iters",
-            "--mutator",
-            "--judge",
-            "--inverter",
-            "--llm-timeout-seconds",
-            "--llm-retries",
-        },
-    )
-    return {
-        "ITERS": run_kv.get("--iters", ""),
-        "MUTATOR_MODEL": run_kv.get("--mutator", ""),
-        "JUDGE_MODEL": run_kv.get("--judge", ""),
-        "INVERTER_MODEL": run_kv.get("--inverter", ""),
-        "AUTORESEARCH_LLM_TIMEOUT": run_kv.get("--llm-timeout-seconds", ""),
-        "AUTORESEARCH_LLM_RETRIES": run_kv.get("--llm-retries", ""),
-    }
+    return _autoresearch_ops.packet_run_defaults(packet, repo_root=_repo_root())
 
 
 def _cmd_autoresearch_router(rest: list[str]) -> int:
@@ -1100,6 +1083,7 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
         kv = _parse_kv_flags(args, allowed={"--project", "--rubric", "--iters",
                                              "--mutator", "--judge", "--inverter", "--agent-runtime",
                                              "--llm-timeout-seconds", "--llm-retries",
+                                             "--committee-model",
                                              "--intake", "--packet"})
         bools = _parse_bool_flags(
             args,
@@ -1108,6 +1092,9 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
                 "--agent-judge",
                 "--agent-committee",
                 "--agent-inverter",
+                "--dynamic",
+                "--auto-evolve",
+                "--cross-family",
                 "--preflight-only",
                 "--allow-model-fallback",
             },
@@ -1154,22 +1141,28 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "AGENT_COMMITTEE": "1" if "--agent-committee" in bools else "",
             "AGENT_INVERTER": "1" if "--agent-inverter" in bools else "",
             "AGENT_RUNTIME": kv.get("--agent-runtime", ""),
+            # Judging committee (3-panel) and rotating/auto-evolving rubric. Off by default; the
+            # experiment-loop target maps DYNAMIC->--dynamic, EVOLVE->--auto-evolve, CROSS_FAMILY->--require-cross-family.
+            "DYNAMIC": "1" if "--dynamic" in bools else "",
+            "EVOLVE": "1" if "--auto-evolve" in bools else "",
+            "CROSS_FAMILY": "1" if "--cross-family" in bools else "",
+            "COMMITTEE_MODEL": kv.get("--committee-model", ""),
         })
     if verb == "route":
         if not args or args[0] in ("-h", "--help"):
             print(
                 "ztare autoresearch route --task <text> [flags]\n\n"
                 "Ask the kernel router whether a Research Director task should\n"
-                "invoke in-loop autoresearch, prepare a missing surface, or stay\n"
+                "invoke in-loop autoresearch, prepare missing project input, or stay\n"
                 "outside the in-loop kernel until the task has a bounded claim,\n"
-                "rubric, evaluator, artifact surface, and fresh source/evidence\n"
-                "trace when those project surfaces exist. The route JSON includes\n"
+                "rubric, evaluator, required files, and fresh source/evidence\n"
+                "trace when those project inputs exist. The route JSON includes\n"
                 "plan_preview: the deterministic preflight command, dependency\n"
                 "order, budget summary, and fallback policy before any paid run.\n\n"
                 "Flags:\n"
                 "  --task <text>      required\n"
-                "  --project <slug>   optional context for surface inference\n"
-                "  --rubric <name>    optional context for surface inference\n"
+                "  --project <slug>   optional context for input inference\n"
+                "  --rubric <name>    optional context for input inference\n"
                 "  --intake <path>    optional project-intake boundary for run readiness\n"
                 "  --packet <path>    legacy alias for --intake\n"
                 "  --bounded-claim / --no-bounded-claim\n"
@@ -1352,6 +1345,80 @@ def _cmd_autoresearch_router(rest: list[str]) -> int:
             "PROJECT": kv.get("--project", ""),
             "OUT": kv.get("--out", ""),
         })
+    if verb == "score-trajectory":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch score-trajectory --project <slug> [--json]\n\n"
+                "Emit the score-evolution trajectory (per-iteration scores grouped by run, plus the\n"
+                "rubric content fingerprint) for a project. Different latest-vs-champion rubric\n"
+                "fingerprints mean a lower score may be a tougher rubric, not a worse claim.\n"
+                "Read-only; assembles from iteration_telemetry.jsonl (+ eval_history fallback)."
+            )
+            return 0
+        return _delegate_module("ztare.reports.score_trajectory", args)
+    if verb == "eval-results":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch eval-results --project <slug> [--champion] [--facet <name>] [--json]\n\n"
+                "Emit the run's epistemic payload (score, weakest_point, logic_gaps, friction_points,\n"
+                "debate_summary, adversarial_alignment, probability_dag summary, verified_axioms, the\n"
+                "constraints ledger, score_contract) from latest_eval_results.json (or champion).\n"
+                "--facet scopes the output (weakest|debate|trust|constraints|contract|axioms|dag) so a\n"
+                "caller fetches only what it renders. Read-only. adversarial_alignment is the judge's\n"
+                "narrative, NOT a computed gaming metric (flagged is_narrative)."
+            )
+            return 0
+        return _delegate_module("ztare.reports.eval_results", args)
+    if verb == "research-graph":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch research-graph --project <slug> [--json]\n\n"
+                "Emit the research-landscape graph: a read-only PROJECTION over the project's existing\n"
+                "artifacts (probability_dag, compiled_evidence_packet, derived_constraints, the\n"
+                "discriminator queue, inverter_review, non_claims) assembled into one typed node/edge\n"
+                "graph. Node types: thesis|claim|candidate|evidence|tension|gap|constraint|branch|\n"
+                "falsifier|rejected. Edge relations: SUPPORTS|DERIVES|CHALLENGES|CONTRADICTS|CONSTRAINS|\n"
+                "TESTS|FALSIFIES|RULED_OUT. No new kernel computation — just the relationships already\n"
+                "implicit in the artifacts. The workbench filters it into lenses."
+            )
+            return 0
+        return _delegate_module("ztare.reports.research_graph", args)
+    if verb == "run-progress":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch run-progress --project <slug> [--json]\n\n"
+                "Live run progress from iteration_telemetry.jsonl (file-based, no process scanning):\n"
+                "whether a run is in flight, which iteration of the budget, the latest score, and the\n"
+                "models in use. Read-only."
+            )
+            return 0
+        return _delegate_module("ztare.reports.run_progress", args)
+    if verb == "compression-progress":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch compression-progress --project <slug> [--json]\n\n"
+                "Advisory \"worth another pass?\" verdict: is the program still COMPRESSING (tightening its\n"
+                "explanation) or into diminishing returns? Herrmann-Schmidhuber compression progress over a\n"
+                "two-part MDL of the champion probability DAG (structure bits + conclusion surprisal). Uses\n"
+                "live iteration_telemetry when present, else computes ex-post from history/*_dag.json so\n"
+                "existing runs get the verdict too. NOT the judge score (treated as gameable); does not steer\n"
+                "the loop. Read-only."
+            )
+            return 0
+        return _delegate_module("ztare.reports.compression_progress_report", args)
+    if verb == "export-obsidian":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                "ztare autoresearch export-obsidian --project <slug> [--out <vault_dir>] [--json]\n\n"
+                "Export the verified research graph as an Obsidian vault a researcher writes their article\n"
+                "FROM: one linked note per claim/evidence/tension/falsifier (typed relations become\n"
+                "[[wikilinks]], so Obsidian's graph view mirrors the argument), the thesis as the index MOC,\n"
+                "and a Verdict block with structural confidence, the weakest link, and what would change\n"
+                "your mind. Reuses the Map's read-only projection — no new kernel computation. Default out:\n"
+                "projects/<slug>/exports/obsidian."
+            )
+            return 0
+        return _delegate_module("ztare.reports.export_obsidian", args)
     if verb == "trace":
         if not args or args[0] in ("-h", "--help"):
             print(
@@ -1685,10 +1752,21 @@ def _normalize_queue_dir_flag(args: list[str]) -> tuple[list[str], str | None] |
 
 def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> int:
     if not rest or rest[0] in ("-h", "--help"):
+        packet_help = (
+            "  packet    → legacy alias for intake\n"
+            if command_name == "substrate"
+            else ""
+        )
+        legacy_note = (
+            "Legacy: `project packet` still works as an alias for `project intake`, "
+            "but new docs and commands should use `project intake`.\n\n"
+            if command_name == "project"
+            else ""
+        )
         print(
             f"ztare {command_name} <verb> [args...]\n\n"
             "Verbs:\n"
-            "  new       → create project/rubric/evidence surface artifacts\n"
+            "  new       → create project/rubric/evidence files\n"
             "              (shells to `python -m ztare.scaffold.generate_substrate`)\n"
             "  prepare   → run the standard project setup pipeline\n"
             "              (shells to `make setup-project`)\n"
@@ -1696,17 +1774,23 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
             "              (shells to `make seal`)\n"
             "  intake    → create, draft, validate, falsify, or enqueue bounded project intake\n"
             "              (create | draft-from-compiled | validate | falsify | enqueue)\n"
-            "  packet    → legacy alias for intake\n"
+            "  brief-edit → edit an existing project brief and save edit history\n"
+            "              (offline; wraps ztare.workspace.project_brief)\n"
+            f"{packet_help}"
             "  prep-ledger → optional append-only prep ledger before run readiness\n"
             "              (add | add-from-route | list | next | resolve-next)\n"
             "  queue     → compatibility alias for prep-ledger\n"
             "              legacy readiness aliases live here for compatibility; prefer `prep-ledger`\n"
             "  walkthrough → guided intake setup and validation tutorial\n"
             "              (no-arg demo, or --intake-out for a real intake file)\n"
-            "  source-init → create source-ingest project surface\n"
+            "  source-init → create source-ingest project files\n"
             "              (raw/ + workspace/ + source_type_map; does not launch autoresearch)\n"
             "  source-check → inspect raw source typing before evidence compilation\n"
             "              (offline preflight; no model call)\n"
+            "  source-file → add or edit raw source files with source-check receipts\n"
+            "              (add | edit; offline workspace write)\n"
+            "  charter  → scaffold the human-editable project mandate\n"
+            "              (model-free; wraps ztare.common.scaffold_project_charter)\n"
             "  source-index → write workspace source index from typed raw sources\n"
             "              (offline checkpoint; no model call, no evidence compilation)\n"
             "  evidence-bind → bind current rendered evidence outputs to compile provenance\n"
@@ -1715,12 +1799,17 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
             "              (offline replay check; no model call, no evidence compilation)\n"
             "  claim-support → classify compiled-evidence claims by source support\n"
             "              (offline audit; no model call, no semantic entailment claim)\n"
+            "  evidence-fetch → fetch public-source evidence for active evidence gaps\n"
+            "              (confirmed provider call; wraps ztare.workspace.fetch_evidence)\n"
             "  evidence-gap → resolve or justify current evidence gaps with receipts\n"
             "              (justify; offline receipt, no model call, no evidence fetch)\n"
+            "  check     → run the project-local check file and save check history\n"
+            "              (offline; wraps ztare.workspace.project_check)\n"
             "  portfolio-list → list registered project portfolio entries\n"
             "              (shells to `make portfolio-list`)\n"
-            "  portfolio-scaffold → scaffold registered project surfaces\n"
+            "  portfolio-scaffold → scaffold registered project files\n"
             "              (shells to `make portfolio-scaffold`)\n\n"
+            f"{legacy_note}"
             "Aliases: `generate` = `new`; `setup` = `prepare`.\n\n"
             "`prepare` and `seal` flags:\n"
             "  --project <slug>   required\n"
@@ -1814,12 +1903,28 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
         if queue_dir:
             delegated_args = ["--queue-dir", queue_dir, *delegated_args]
         return _delegate_module("ztare.scaffold.substrate_queue", delegated_args)
+    if verb == "brief-edit":
+        return _delegate_module("ztare.workspace.project_brief", args)
     if verb == "walkthrough":
         return _delegate_module("ztare.scaffold.substrate_walkthrough", args)
     if verb == "source-init":
         return _delegate_module("ztare.scaffold.source_project", args)
+    if verb == "draft":
+        return _delegate_module("ztare.scaffold.draft_project", args)
     if verb == "source-check":
         return _delegate_module("ztare.scaffold.source_check", args)
+    if verb == "source-file":
+        return _delegate_module("ztare.workspace.source_files", args)
+    if verb == "charter":
+        if not args or args[0] in ("-h", "--help"):
+            print(
+                f"ztare {command_name} charter [scaffold|create] --project <slug> [--mode broad|mechanism|forecast|probabilistic] [--force]\n\n"
+                "Scaffolds projects/<project>/project_charter.md using the shared charter scaffold.\n"
+                "This does not apply advisory patches and does not rewrite existing charters unless --force is passed.\n"
+            )
+            return 0
+        charter_args = args[1:] if args[0] in {"scaffold", "create"} else args
+        return _delegate_module("ztare.common.scaffold_project_charter", charter_args)
     if verb == "source-index":
         return _delegate_module("ztare.workspace.update_workspace", ["--index-only", *args])
     if verb == "evidence-bind":
@@ -1828,15 +1933,19 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
         return _delegate_module("ztare.workspace.evidence_replay", args)
     if verb == "claim-support":
         return _delegate_module("ztare.workspace.claim_support", args)
+    if verb == "evidence-fetch":
+        return _delegate_module("ztare.workspace.fetch_evidence", args)
     if verb == "evidence-gap":
         return _delegate_module("ztare.workspace.evidence_gap_resolutions", args)
+    if verb == "check":
+        return _delegate_module("ztare.workspace.project_check", args)
     if verb == "portfolio-list":
         return _delegate_make("portfolio-list", {})
     if verb == "portfolio-scaffold":
         return _delegate_make("portfolio-scaffold", {})
     print(
         f"ztare: unknown {command_name} verb "
-        f"{verb!r}. Known: new, prepare, seal, intake, packet, prep-ledger, queue, walkthrough, source-init, source-check, source-index, evidence-bind, evidence-replay, claim-support, evidence-gap, portfolio-list, portfolio-scaffold",
+        f"{verb!r}. Known: new, prepare, seal, intake, packet, brief-edit, prep-ledger, queue, walkthrough, source-init, source-check, source-file, charter, source-index, evidence-bind, evidence-replay, claim-support, evidence-fetch, evidence-gap, check, portfolio-list, portfolio-scaffold",
         file=sys.stderr,
     )
     return 2
@@ -1844,6 +1953,10 @@ def _cmd_substrate_router(rest: list[str], command_name: str = "substrate") -> i
 
 def _cmd_project_router(rest: list[str]) -> int:
     return _cmd_substrate_router(rest, command_name="project")
+
+
+def _cmd_synth(rest: list[str]) -> int:
+    return _delegate_module("ztare.synthesis.synthesize", rest)
 
 
 # `ztare primitive <verb>` — capability-catalog / primitive-amnesia preflight.
@@ -2219,6 +2332,12 @@ _AUTORESEARCH_VERBS = (
     "run",
     "route",
     "projection",
+    "score-trajectory",
+    "eval-results",
+    "research-graph",
+    "run-progress",
+    "compression-progress",
+    "export-obsidian",
     "trace",
     "carrier-replay",
     "dispatch-audit",
@@ -2253,6 +2372,7 @@ _SUBSTRATE_VERBS = (
     "source-index",
     "evidence-bind",
     "evidence-replay",
+    "evidence-fetch",
     "evidence-gap",
     "portfolio-list",
     "portfolio-scaffold",
@@ -2263,6 +2383,21 @@ _EIGENQUESTION_VERBS = ("propose", "validate", "status")
 _PRIMITIVE_VERBS = ("health", "parent-utility", "utility")
 _AUDIT_VERBS = tuple(_AUDIT_TARGETS)
 _ARCH_VALIDATE_VERBS = ("ex-ante", "ex-post")
+_FORENSIC_WORKBENCH_VERBS = (
+    "project-state",
+    "brief-edit",
+    "source-file",
+    "source-action",
+    "report-action",
+    "run-project-check",
+    "apply-review",
+    "save-next-step",
+    "save-charter",
+    "save-project-file",
+    "save-research-map",
+    "save-scoring-guide",
+    "settings",
+)
 
 
 def _completion_word_list(words: Iterable[str]) -> str:
@@ -2278,6 +2413,7 @@ def _completion_verb_sets() -> dict[str, str]:
         "autoresearch": _completion_word_list(_AUTORESEARCH_VERBS),
         "project": _completion_word_list(_SUBSTRATE_VERBS),
         "substrate": _completion_word_list(_SUBSTRATE_VERBS),
+        "forensic-workbench": _completion_word_list(_FORENSIC_WORKBENCH_VERBS),
         "primitive": _completion_word_list(_PRIMITIVE_VERBS),
         "audit": _completion_word_list(_AUDIT_VERBS),
         "arch-validate": _completion_word_list(_ARCH_VALIDATE_VERBS),
@@ -2396,6 +2532,14 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         "LeanMill governed proof search: schedule | run | proof-audit | harness | source-scout.",
         _cmd_leanmill_router,
     ),
+    "research": (
+        "Advisory research scaffold: eigenquestion (the question that matters most) | isomorphism (what is this like).",
+        _cmd_research_router,
+    ),
+    "rubric": (
+        "Rubric tools: review (pre-run model critique — is the scoring rubric gameable before you pay for a run).",
+        _cmd_rubric_router,
+    ),
     "bundle": (
         "Sealed-bundle gates: run | verify.",
         _cmd_bundle_router,
@@ -2412,6 +2556,14 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         "Action intelligence read surface: decisions, routes, and outcome impact.",
         lambda rest: _delegate("action_intelligence.py", rest),
     ),
+    "synth": (
+        "Governed report synthesis: existing synth module and contract refresh.",
+        _cmd_synth,
+    ),
+    "card": (
+        "Portable claim card: build | verify | open.",
+        lambda rest: _delegate_module("ztare.workspace.claim_card", rest),
+    ),
     "eigenquestion": (
         "Eigenquestion generator: propose | validate | status.",
         _cmd_eigenquestion_router,
@@ -2425,18 +2577,29 @@ _SUBCOMMANDS: dict[str, tuple[str, Callable[[list[str]], int]]] = {
         _cmd_autoresearch_router,
     ),
     "forensic-workbench": (
-        "Local review workbench: apply-review | save-next-step.",
+        "Local project workbench: project-state | brief-edit | source-file | source-action | report-action | run-project-check | apply-review | save-next-step | save-charter | save-project-file | save-research-map | save-scoring-guide | settings.",
         _make_verb_router(
             "forensic-workbench",
             {
+                "project-state": "forensic_workbench_state.py",
+                "brief-edit": "forensic_workbench_brief.py",
+                "source-file": "forensic_workbench_source_file.py",
+                "source-action": "forensic_workbench_source_action.py",
+                "report-action": "forensic_workbench_report_action.py",
+                "run-project-check": "forensic_workbench_project_check.py",
                 "apply-review": "forensic_workbench_review.py",
                 "save-next-step": "forensic_workbench_action.py",
                 "save-action": "forensic_workbench_action.py",
+                "save-charter": "forensic_workbench_charter.py",
+                "save-project-file": "forensic_workbench_project_file.py",
+                "save-research-map": "forensic_workbench_research_map.py",
+                "save-scoring-guide": "forensic_workbench_scoring_guide.py",
+                "settings": "forensic_workbench_settings.py",
             },
         ),
     ),
     "project": (
-        "Project userland: walkthrough | source-init | source-check | source-index | evidence-bind | evidence-replay | evidence-gap | new | prepare | seal | intake | prep-ledger.",
+        "Project userland: walkthrough | source-init | source-check | source-index | evidence-bind | evidence-replay | evidence-fetch | evidence-gap | new | prepare | seal | intake | prep-ledger.",
         _cmd_project_router,
     ),
     "substrate": (
@@ -2488,6 +2651,8 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "charter": (_SUBCOMMANDS["charter"][0], _SUBCOMMANDS["charter"][1], ("charter_commit.py",)),
     "routine-review": (_SUBCOMMANDS["routine-review"][0], _SUBCOMMANDS["routine-review"][1], ("rd_routine_review.py",)),
     "action-intel": (_SUBCOMMANDS["action-intel"][0], _SUBCOMMANDS["action-intel"][1], ("action_intelligence.py",)),
+    "synth": (_SUBCOMMANDS["synth"][0], _SUBCOMMANDS["synth"][1], ()),
+    "card": (_SUBCOMMANDS["card"][0], _SUBCOMMANDS["card"][1], ()),
     # Non-control-script shells: empty tuple per the doctor-check contract
     # (doctor only verifies scripts/public/control/*.py existence; module
     # and Make targets are checked by their own validators / by Make itself).
@@ -2497,7 +2662,21 @@ _SUBCOMMANDS_METADATA: dict[str, tuple[str, Callable[[list[str]], int], tuple[st
     "forensic-workbench": (
         _SUBCOMMANDS["forensic-workbench"][0],
         _SUBCOMMANDS["forensic-workbench"][1],
-        ("forensic_workbench_review.py", "forensic_workbench_action.py"),
+        (
+            "forensic_workbench_state.py",
+            "forensic_workbench_brief.py",
+            "forensic_workbench_source_file.py",
+            "forensic_workbench_source_action.py",
+            "forensic_workbench_report_action.py",
+            "forensic_workbench_project_check.py",
+            "forensic_workbench_review.py",
+            "forensic_workbench_action.py",
+            "forensic_workbench_charter.py",
+            "forensic_workbench_project_file.py",
+            "forensic_workbench_research_map.py",
+            "forensic_workbench_scoring_guide.py",
+            "forensic_workbench_settings.py",
+        ),
     ),
     "project": (_SUBCOMMANDS["project"][0], _SUBCOMMANDS["project"][1], ()),
     "substrate": (_SUBCOMMANDS["substrate"][0], _SUBCOMMANDS["substrate"][1], ()),
