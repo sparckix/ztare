@@ -1,6 +1,6 @@
 PYTHON ?= ./venv/bin/python
 PROJECT ?= your_project
-MODEL ?= gemini
+MODEL ?= $(ZTARE_MODEL)
 EVIDENCE_LLM_TIMEOUT ?= 300
 EVIDENCE_LLM_RETRIES ?= 4
 EVIDENCE_DEBUG ?= 0
@@ -10,8 +10,8 @@ AUTORESEARCH_LLM_RETRIES ?= 3
 # family. Opt into cross-model provider fallback with MODEL_FALLBACK=1 when
 # continuity matters more than model-family provenance.
 MODEL_FALLBACK ?= 0
-MUTATOR_MODEL ?= gemini
-JUDGE_MODEL ?= gemini
+MUTATOR_MODEL ?= $(ZTARE_MUTATOR_MODEL)
+JUDGE_MODEL ?= $(ZTARE_JUDGE_MODEL)
 INVERTER_MODEL ?=
 QA_MODEL ?= claude
 MODE ?= factory
@@ -85,14 +85,16 @@ WORKBENCH_RENDERER ?= decision_brief
 WORKBENCH_OUT ?= docs/landings/forensic_workbench_prototype.html
 WORKBENCH_JSON_OUT ?= forensic-workbench/public/workbench_snapshot.json
 PDF ?= 0
-BENCH_JUDGE ?= gemini
+BENCH_JUDGE ?= $(ZTARE_BENCH_JUDGE_MODEL)
 BENCH_ORDINARY_MODEL ?= $(BENCH_JUDGE)
 BENCH_ORDINARY_IMPORT ?=
 BENCH_ORDINARY_EXPORT ?= benchmarks/evaluator_hardening_frozen/ordinary_review_prompt_packet
-BENCH_ORDINARY_SOURCE_RUN ?= benchmarks/constraint_memory/runs/20260404_195100
+BENCH_ORDINARY_SOURCE_RUN ?= benchmarks/evaluator_hardening_frozen/source_run_20260404_195100
 BENCH_ORDINARY_RUN ?=
 BENCH_SPECIMEN ?=
 BENCH_JOBS ?= 3
+PAPER1_LEGACY_MUTATOR_MODEL ?= $(ZTARE_PAPER1_LEGACY_MUTATOR_MODEL)
+PAPER1_LEGACY_JUDGE_MODEL ?= $(ZTARE_PAPER1_LEGACY_JUDGE_MODEL)
 PRIMITIVE_KEY ?= cooked_books
 PRIMITIVE_DECISION ?= approved
 SUP_RUN_ID ?= supervisor_run
@@ -127,7 +129,7 @@ endif
 	v4-meta-show v4-meta-run-current v4-meta-reset v4-meta-advance v4-forensic-report \
 	v4-debate-init v4-debate-merge v4-debate-show experiment-loop autoresearch-route autoresearch-projection autoresearch-trace autoresearch-dispatch-validate autoresearch-dispatch-canary autoresearch-dispatch-parity autoresearch-subscription-outcome-audit autoresearch-matched-transport-pair autoresearch-hillclimb-audit autoresearch-consequence-audit autoresearch-rubric-mode-audit autoresearch-evidence-trace autoresearch-kernel-health operations-intelligence autoresearch-substrate-recommend blitz-survival-report inloop-fixture-validate autoresearch-control-demo eigenquestion-propose eigenquestion-validate eigenquestion-status _preflight_eigenquestion_review seal wipe-sandbox \
 	action-intel-smoke action-intel-materialize-dry \
-	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-build forensic-workbench-dev forensic-workbench-api forensic-workbench-live \
+	forensic-workbench-snapshot forensic-workbench-data forensic-workbench-state forensic-workbench-install forensic-workbench-build forensic-workbench-dev forensic-workbench-api forensic-workbench-live \
 	leanmill-certify-demo
 
 # LeanMill one-command demo: plain-English rule → z3 finds the adversarial boundary → Lean kernel certifies
@@ -143,6 +145,7 @@ help:
 	@echo "  make hello                  # offline: overclaim in, demotion + missing evidence out"
 	@echo "  make benchmark-evidence     # model-free public benchmark-evidence check"
 	@echo "  make gaming-catalog-audit   # public gaming catalog + registry coherence check"
+	@echo "  make reasoning-compiler-capability-audit # reasoning-compiler capability map vs evidence refs"
 	@echo "  make graph-capability-audit # graph algorithms vs ZTARE recombination/receipt layer"
 	@echo "  make forecast-capability-audit # forecast pool lifecycle vs decision-use boundary"
 	@echo "  make move-card-router-audit # move-card paraphrase routing audit"
@@ -166,21 +169,21 @@ help:
 	@echo "  honeypot — loose rubric, no pre-run, 50 iters, debate log is the output"
 	@echo ""
 	@echo "Targets:"
-	@echo "  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]   # factory pre-run: fetch→prepare→review→pause"
+	@echo "  make setup-project PROJECT=<project> RUBRIC=<rubric> [MODEL=<model>]   # factory pre-run: fetch→prepare→review→pause"
 	@echo "  make honeypot-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=50]       # honeypot run: no pre-run, MODE=honeypot"
 	@echo "  make source-check PROJECT=<project>                                    # offline raw/source typing preflight"
-	@echo "  make evidence-prepare PROJECT=<project> MODEL=gemini                    # source-check + workspace-update + evidence-compile"
-	@echo "  make workspace-update PROJECT=<project> MODEL=gemini"
-	@echo "  make evidence-compile PROJECT=<project> MODEL=gemini"
-	@echo "  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=gemini] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [AUTO_COMPILE=0] [ALLOW_INFERRED_PUBLIC=1]"
-	@echo "  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=gemini]"
-	@echo "  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] [PREFLIGHT_ONLY=1] MUTATOR_MODEL=gemini JUDGE_MODEL=gemini"
+	@echo "  make evidence-prepare PROJECT=<project> MODEL=<model>                    # source-check + workspace-update + evidence-compile"
+	@echo "  make workspace-update PROJECT=<project> MODEL=<model>"
+	@echo "  make evidence-compile PROJECT=<project> MODEL=<model>"
+	@echo "  make evidence-fetch PROJECT=<project> [SEVERITY=degrading] [MAX_FETCHES=3] [MODEL=<model>] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [AUTO_COMPILE=0] [ALLOW_INFERRED_PUBLIC=1]"
+	@echo "  make rubric-review PROJECT=<project> RUBRIC=<rubric> [MODEL=<model>]"
+	@echo "  make loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [MODE=factory|honeypot] [PREFLIGHT_ONLY=1] MUTATOR_MODEL=<model> JUDGE_MODEL=<model>"
 	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> [ITERS=10] [PREFLIGHT_ONLY=1]  # auto-configures from rubric (holdout gate, underidentified_after)"
 	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> AGENT_MUTATOR=1 AGENT_JUDGE=1 AGENT_COMMITTEE=1 AGENT_INVERTER=1 [AGENT_RUNTIME=codex]  # subscription-backed workers"
 	@echo "  make experiment-loop PROJECT=<project> RUBRIC=<rubric> MATCHED_RUN_ID=<id> MATCHED_RUN_ROLE=api|subscription  # stamp matched transport rows"
 	@echo "  make autoresearch-route TASK='<task>' PROJECT=<project> RUBRIC=<rubric> [BOUNDED=1 STABLE=1 RUBRIC_READY=1 ARTIFACT=1]  # RD workbench routing JSON"
 	@echo "  make autoresearch-projection PROJECT=<project> [OUT=<path>]          # read-only hypothesis/evidence projection over eval_history"
-	@echo "  make autoresearch-trace PROJECT=<project> [RUBRIC=<rubric>] [INTAKE=<project_intake.json>] [MODEL=gemini] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [FULL_HEALTH=1] [JSON=1] # read-only intake/evidence/graph/prediction/health trace"
+	@echo "  make autoresearch-trace PROJECT=<project> [RUBRIC=<rubric>] [INTAKE=<project_intake.json>] [MODEL=<model>] [EVIDENCE_SEARCH_BACKEND=auto|openai|anthropic] [FULL_HEALTH=1] [JSON=1] # read-only intake/evidence/graph/prediction/health trace"
 	@echo "  make autoresearch-dispatch-validate [JSON=1]                         # verify autoresearch LLM calls route through dispatch wrappers"
 	@echo "  make autoresearch-dispatch-canary [CONTRACT=text|mutator|judge|committee|inverter] [DISPATCH_CALL_SITE=mutator] [AGENT_RUNTIME=codex] [LIVE=1]  # bounded subscription dispatch canary"
 	@echo "  make autoresearch-dispatch-parity [CONTRACTS=text,mutator,judge,committee,inverter] [AGENT_RUNTIME=codex] [LIVE=1] [JSON=1]  # API-vs-subscription contract, quality, and cost-proxy replay"
@@ -193,6 +196,7 @@ help:
 	@echo "  make autoresearch-kernel-health [PROJECT=<project>] [RUBRIC=<path>] [INTAKE=<project_intake.json>] [WORKSPACE=<path>] [JSON=1] [STRICT=1]  # aggregate dispatch/catalog/fixture/rubric/control health"
 	@echo "  make forensic-workbench-snapshot [WORKBENCH_PROJECT=<project>] [WORKBENCH_OUT=<html>]  # static Project Workbench snapshot"
 	@echo "  make forensic-workbench-data [WORKBENCH_PROJECT=<project>]              # refresh React Project Workbench JSON payload"
+	@echo "  make forensic-workbench-state [WORKBENCH_PROJECT=<project>]             # check the live project-to-thesis workbench state"
 	@echo "  make forensic-workbench-build                                           # build React Project Workbench"
 	@echo "  make forensic-workbench-api                                             # run the Project Workbench server; serves built UI when available"
 	@echo "  make forensic-workbench-dev                                             # run React Project Workbench server"
@@ -210,14 +214,14 @@ help:
 	@echo "  make eigenquestion-status PROJECT=<project> [EIGENQUESTION_PREFLIGHT=strict]  # show pending advisory proposals before launch"
 	@echo "  make action-intel-smoke                                              # action-impact + agentic-work fixture smoke"
 	@echo "  make action-intel-materialize-dry                                    # compile GP-243 read model without writing"
-	@echo "  make synth PROJECT=<project> MODEL=gemini QA_MODEL=claude RENDERER=founder_memo"
+	@echo "  make synth PROJECT=<project> MODEL=<model> QA_MODEL=<model> RENDERER=founder_memo"
 	@echo "  make synth-contract PROJECT=<project> RENDERER=decision_brief        # refresh report authority check without model calls"
 	@echo "  make committee PROJECT=<project>"
-	@echo "  make benchmark BENCH_JUDGE=gemini BENCH_JOBS=3"
-	@echo "  make benchmark-stage1 BENCH_JUDGE=gemini BENCH_JOBS=3"
-	@echo "  make benchmark-stage1-ood BENCH_JUDGE=gemini BENCH_JOBS=3"
-	@echo "  make benchmark-stage2 BENCH_JUDGE=gemini BENCH_JOBS=3"
-	@echo "  make benchmark-stage3 BENCH_JUDGE=gemini BENCH_JOBS=3"
+	@echo "  make benchmark BENCH_JUDGE=<model> BENCH_JOBS=3"
+	@echo "  make benchmark-stage1 BENCH_JUDGE=<model> BENCH_JOBS=3"
+	@echo "  make benchmark-stage1-ood BENCH_JUDGE=<model> BENCH_JOBS=3"
+	@echo "  make benchmark-stage2 BENCH_JUDGE=<model> BENCH_JOBS=3"
+	@echo "  make benchmark-stage3 BENCH_JUDGE=<model> BENCH_JOBS=3"
 	@echo "  make benchmark-stage4"
 	@echo "  make benchmark-stage5"
 	@echo "  make benchmark-stage6"
@@ -248,7 +252,7 @@ help:
 	@echo "  make benchmark-prose-verifier"
 	@echo "  make benchmark-document-assembler"
 	@echo "  make benchmark-evidence   # model-free check of public benchmark evidence"
-	@echo "  make benchmark-ordinary-review BENCH_ORDINARY_MODEL=gemini [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_IMPORT=<rows.json>]   # D_ordinary_review arm on frozen source set"
+	@echo "  make benchmark-ordinary-review BENCH_ORDINARY_MODEL=<model> [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_IMPORT=<rows.json>]   # D_ordinary_review arm on frozen source set"
 	@echo "  make benchmark-ordinary-review-prompts [BENCH_SPECIMEN=<id>] [BENCH_ORDINARY_EXPORT=<dir>]   # export reviewer-safe D-arm prompts"
 	@echo "  make benchmark-ordinary-review-validate-import BENCH_ORDINARY_IMPORT=<rows.json> [BENCH_SPECIMEN=<id>]   # preflight imported D-arm rows without running benchmark"
 	@echo "  make benchmark-ordinary-review-freeze-check BENCH_ORDINARY_RUN=<run_dir>   # validate completed D-arm run before frozen-suite promotion"
@@ -282,12 +286,12 @@ help:
 	@echo "  make baseline"
 	@echo "  make camouflage"
 	@echo "  make primitives-extract"
-	@echo "  make primitives-draft MODEL=gemini"
+	@echo "  make primitives-draft MODEL=<model>"
 	@echo "  make primitive-approve PRIMITIVE_KEY=cooked_books PRIMITIVE_DECISION=approved"
 	@echo "  make primitive-catalog-health [JSON=1]                         # architecture index taxonomy + freshness check"
 	@echo "  make primitive-amnesia-eval [RECORD_MISSES=1]                  # held-out primitive retrieval eval and optional miss queue"
 	@echo "  make primitive-catalog-repopulate                              # regenerate extracted primitive rows in architecture_index"
-	@echo "  make primitive-catalog-build-atlas [EMBEDDER=gemini-code]       # rebuild semantic primitive embeddings"
+	@echo "  make primitive-catalog-build-atlas [EMBEDDER=<embedder>]       # rebuild semantic primitive embeddings"
 	@echo "  make gaming-catalog-audit                                      # verify public gaming catalog, registry, and promotion evidence agree"
 	@echo "  make paper1-legacy"
 	@echo "  make paper1-tsmc-legacy"
@@ -497,7 +501,7 @@ arch-validate-ex-ante:
 # substrate_critique.json + iteration_telemetry.jsonl. Writes
 # workspace/post_run_meta_audit.{json,md}. Default audit model is
 # claude-haiku-4-5 (override via AUDIT_MODEL=...). Default newton 90.
-# AUDIT_MODEL is its own variable so the global MODEL=gemini default
+# AUDIT_MODEL is its own variable so the global MODEL setting
 # does not override the cross-family-hygiene auditor pick.
 AUDIT_MODEL ?= claude-haiku-4-5
 NEWTON ?= 90
@@ -521,15 +525,19 @@ ifndef PROJECT
 	$(error PROJECT is required. Example: make audit-prompt PROJECT=gp090_01 MUTATOR_MODEL=o3)
 endif
 	@echo "🔒 GP-134 prompt-layer leak audit: project=$(PROJECT), mutator=$(MUTATOR_MODEL)"
-	@$(PYTHON) -m src.ztare.gates.prompt_leak_audit \
-		--project $(PROJECT) \
-		--mutator_model $(MUTATOR_MODEL) \
-		--cache_dir ztare_workspace/prompt_leak_audit_cache \
-		|| if [ "$(STRICT_LEAK_AUDIT)" = "1" ]; then \
-			echo "❌ STRICT_LEAK_AUDIT=1 and audit failed — aborting"; exit 1; \
-		else \
-			echo "⚠️  Prompt leak audit reported potential leak (non-strict mode — continuing)"; \
-		fi
+	@if [ -z "$(MUTATOR_MODEL)" ]; then \
+		echo "ℹ️  MUTATOR_MODEL not configured; skipping prompt-layer leak audit."; \
+	else \
+		$(PYTHON) -m src.ztare.gates.prompt_leak_audit \
+			--project $(PROJECT) \
+			--mutator_model $(MUTATOR_MODEL) \
+			--cache_dir ztare_workspace/prompt_leak_audit_cache \
+			|| if [ "$(STRICT_LEAK_AUDIT)" = "1" ]; then \
+				echo "❌ STRICT_LEAK_AUDIT=1 and audit failed — aborting"; exit 1; \
+			else \
+				echo "⚠️  Prompt leak audit reported potential leak (non-strict mode — continuing)"; \
+			fi; \
+	fi
 
 loop: validate-rubric _preflight_leak_audit _preflight_eigenquestion_review _preflight_charter_patches
 ifeq ($(PROJECT),your_project)
@@ -541,8 +549,8 @@ endif
 		--project $(PROJECT) \
 		--rubric "$$RUBRIC_SLUG" \
 		--iters $(ITERS) \
-		--mutator_model $(MUTATOR_MODEL) \
-		--judge_model $(JUDGE_MODEL) \
+		$(if $(MUTATOR_MODEL),--mutator_model $(MUTATOR_MODEL),) \
+		$(if $(JUDGE_MODEL),--judge_model $(JUDGE_MODEL),) \
 		--llm_timeout_seconds $(AUTORESEARCH_LLM_TIMEOUT) \
 		--llm_retries $(AUTORESEARCH_LLM_RETRIES) \
 		--run-mode $(MODE) \
@@ -614,7 +622,7 @@ _preflight_charter_patches:
 	@RUBRIC_PATH=$$(echo "$(RUBRIC)" | grep -q '/' && echo "$(RUBRIC)" || echo "rubrics/$(RUBRIC).json"); \
 	$(PYTHON) scripts/public/control/preflight_charter_patches.py $(PROJECT) \
 		--rubric $$RUBRIC_PATH \
-		--mutator-model $(MUTATOR_MODEL) || true
+		$(if $(MUTATOR_MODEL),--mutator-model $(MUTATOR_MODEL),) || true
 
 compress:
 ifndef PROJECT
@@ -636,8 +644,8 @@ endif
 		--project $(PROJECT) \
 		--rubric $$(echo "$(RUBRIC)" | sed 's/\.json$$//') \
 		--iters $(ITERS) \
-		--mutator_model $(MUTATOR_MODEL) \
-		--judge_model $(JUDGE_MODEL) \
+		$(if $(MUTATOR_MODEL),--mutator_model $(MUTATOR_MODEL),) \
+		$(if $(JUDGE_MODEL),--judge_model $(JUDGE_MODEL),) \
 		--disable_attacker_tools \
 		$(AUTORESEARCH_MODEL_FALLBACK_FLAG) \
 		--underidentified_after $(ITERS) \
@@ -1013,7 +1021,7 @@ endif
 	SEAL_PATH="$$PROJ_DIR/sandbox_seal.json"; \
 	$(PYTHON) -m src.ztare.scaffold.write_seal "$$PROJECT_BARE" "$$PROJ_DIR" "$$RUBRIC_PATH" "$$SEAL_PATH" && \
 	echo ""; \
-	echo "  🔒 SANDBOX SEALED — ready for: make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_PATH ITERS=15 MUTATOR_MODEL=gemini-pro JUDGE_MODEL=gpt4.1"; \
+	echo "  🔒 SANDBOX SEALED — ready for: make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$RUBRIC_PATH ITERS=15 MUTATOR_MODEL=<model> JUDGE_MODEL=<model>"; \
 	echo "════════════════════════════════════════════════════════════"; \
 	echo ""
 
@@ -1064,7 +1072,7 @@ print('thesis.md Fit Declaration reset.') \
 "; \
 	echo ""; \
 	echo "  ✅ Wipe complete — sealed artifacts preserved, baseline restored"; \
-	echo "  Relaunch: make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$PROJECT_BARE ITERS=20 MUTATOR_MODEL=gemini JUDGE_MODEL=gemini"; \
+	echo "  Relaunch: make experiment-loop PROJECT=$$PROJECT_BARE RUBRIC=$$PROJECT_BARE ITERS=20 MUTATOR_MODEL=<model> JUDGE_MODEL=<model>"; \
 	echo "════════════════════════════════════════════════════════════"; \
 	echo ""
 
@@ -1117,6 +1125,7 @@ synth:
 		--model $(MODEL) \
 		--qa-model $(QA_MODEL) \
 		$(if $(RENDERER),--renderer-type $(RENDERER),) \
+		$(if $(INSTRUCTIONS),--instructions $(INSTRUCTIONS),) \
 		$(if $(filter 1,$(PDF)),--pdf,)
 
 synth-contract:
@@ -1141,6 +1150,18 @@ forensic-workbench-data:
 		--renderer $(WORKBENCH_RENDERER) \
 		--out $(WORKBENCH_OUT) \
 		--json-out $(WORKBENCH_JSON_OUT)
+
+forensic-workbench-state:
+	$(PYTHON) scripts/public/control/forensic_workbench_state.py \
+		--project $(WORKBENCH_PROJECT) \
+		--rubric $(WORKBENCH_RUBRIC) \
+		--intake "$(WORKBENCH_INTAKE)" \
+		--renderer $(WORKBENCH_RENDERER) \
+		--json \
+		--strict
+
+forensic-workbench-install:
+	npm --prefix forensic-workbench install
 
 forensic-workbench-build:
 	npm --prefix forensic-workbench run build
@@ -1201,6 +1222,10 @@ graph-capability-audit:  ## Audit graph algorithms vs ZTARE recombination and re
 .PHONY: forecast-capability-audit
 forecast-capability-audit:  ## Audit forecast pool, scratch contracts, and decision-use boundaries
 	$(PYTHON) -m src.ztare.reports.forecast_capability_audit $(if $(JSON),--json,)
+
+.PHONY: reasoning-compiler-capability-audit
+reasoning-compiler-capability-audit:  ## Audit the public reasoning-compiler capability map
+	$(PYTHON) scripts/public/control/reasoning_compiler_capability_audit.py $(if $(JSON),--json,)
 
 .PHONY: move-card-router-audit
 move-card-router-audit:  ## Audit move-card paraphrase routing quality
@@ -1457,7 +1482,7 @@ primitive-catalog-repopulate:
 	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --repopulate
 
 primitive-catalog-build-atlas:
-	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --build-atlas --embedder $(if $(EMBEDDER),$(EMBEDDER),gemini-code)
+	$(PYTHON) -m src.ztare.research_director.primitive_amnesia --build-atlas $(if $(or $(EMBEDDER),$(ZTARE_PRIMITIVE_EMBEDDER)),--embedder $(or $(EMBEDDER),$(ZTARE_PRIMITIVE_EMBEDDER)),)
 
 gaming-vector-hardening-show:
 	PYTHONPATH=src:. $(PYTHON) -m ztare.validator.gaming_vector_meta_runner --project gaming_vector_hardening show
@@ -1491,16 +1516,16 @@ paper1-tsmc-legacy:
 		--project tsmc_fragility_claude_gemini \
 		--rubric tsmc_fragility \
 		--iters 10 \
-		--mutator_model claude \
-		--judge_model gemini
+		$(if $(PAPER1_LEGACY_MUTATOR_MODEL),--mutator_model $(PAPER1_LEGACY_MUTATOR_MODEL),) \
+		$(if $(PAPER1_LEGACY_JUDGE_MODEL),--judge_model $(PAPER1_LEGACY_JUDGE_MODEL),)
 
 paper1-epistemic-legacy:
 	$(PYTHON) -m src.ztare.validator.autoresearch_loop \
 		--project epistemic_engine_v3_claude_gemini \
 		--rubric epistemic_engine_v3_evolved \
 		--iters 10 \
-		--mutator_model claude \
-		--judge_model gemini
+		$(if $(PAPER1_LEGACY_MUTATOR_MODEL),--mutator_model $(PAPER1_LEGACY_MUTATOR_MODEL),) \
+		$(if $(PAPER1_LEGACY_JUDGE_MODEL),--judge_model $(PAPER1_LEGACY_JUDGE_MODEL),)
 
 
 v4-meta-show:
@@ -1617,6 +1642,7 @@ first-run:  ## Full offline public first-run path
 	$(MAKE) hello
 	$(MAKE) gaming-catalog-audit
 	$(MAKE) benchmark-evidence
+	$(MAKE) reasoning-compiler-capability-audit
 	$(MAKE) evaluator-hardening-frozen-check
 	$(MAKE) scope-boundary-audit
 	$(MAKE) public-terminology-audit
@@ -1652,6 +1678,9 @@ smoke-public:  ## Public clone smoke: org runtime, forecast pool, and action int
 public-adversarial-smoke:  ## Adversarial public smoke: isolation, cleanup, docs, and boundary checks
 	$(PYTHON) scripts/public/control/public_adversarial_smoke.py
 
+workbench-interaction-smoke:  ## Mock the workbench UI's API flows (new + existing projects, both lanes). Needs a running server.
+	$(PYTHON) scripts/public/control/workbench_interaction_smoke.py
+
 .PHONY: smoke-docker
 smoke-docker:  ## Docker smoke: build image and run public smoke checks inside it
 	bash scripts/public/control/docker_smoke.sh
@@ -1673,6 +1702,7 @@ gates: compile-src flakes flakes-leanmill  ## Run the publish-safety + docs-fres
 	$(PYTHON) scripts/public/control/evaluator_hardening_frozen_check.py
 	$(PYTHON) scripts/public/control/gaming_catalog_audit.py
 	$(PYTHON) scripts/public/control/evidence_packet_check.py
+	$(PYTHON) scripts/public/control/reasoning_compiler_capability_audit.py
 	$(PYTHON) scripts/public/control/scope_boundary_audit.py
 	$(PYTHON) scripts/public/control/public_terminology_audit.py
 	$(PYTHON) scripts/public/control/research_move_routing_drift_audit.py
