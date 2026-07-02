@@ -1,0 +1,19 @@
+{
+  "changed_sources": 3,
+  "deleted_sources": [],
+  "generated_on": "June 27, 2026",
+  "merge_only": false,
+  "merge_status": "success",
+  "model_family": "deepseek",
+  "model_id": "deepseek-chat",
+  "project": "ai_capex",
+  "prompts": {
+    "extract_source_note": "config/prompts/extract_source_note.md",
+    "merge_workspace": "config/prompts/merge_workspace.md"
+  },
+  "raw_dir": "projects/ai_capex/raw",
+  "reused_sources": 0,
+  "source_count": 3,
+  "warnings": [],
+  "workspace_dir": "projects/ai_capex/workspace"
+}

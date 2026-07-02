@@ -10,7 +10,7 @@
     "class": "operational_diagnosis"
   },
   "enable_fit_primitive": false,
-  "enable_fit_primitive_features": false,
+  "enable_fit_primitive_features": true,
   "fit_score_mode": "none",
   "discovery_mode": false,
   "holdout_hard_gate": false,

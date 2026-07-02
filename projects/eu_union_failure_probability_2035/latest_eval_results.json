@@ -1,0 +1,370 @@
+{
+  "is_falsified": false,
+  "computationally_feasible": true,
+  "anti_gaming_preserved": true,
+  "architectural_abstraction_preserved": true,
+  "contains_infallible_aggregator": false,
+  "proof_is_self_referential": false,
+  "self_reference_evidence": {
+    "target_claim": "N=3 is the minimal numerical threshold of member states required for sustained_multistate_breakdown_of_core_obligations to become True.",
+    "asserted_variable": "threshold_for_multistate",
+    "asserted_variable_origin": "internal",
+    "independent_grounding_present": false,
+    "test_recomputes_thesis_authored_target": true,
+    "causal_variable_perturbed": true,
+    "load_bearing_claim_directly_tested": true,
+    "local_component_scope_disclaimer_present": true,
+    "whole_system_availability_claim_present": false,
+    "verifies_authored_mapping_only": true,
+    "evidence_lines": [
+      "N=3 is chosen as the lowest integer that robustly indicates a broader challenge moving beyond bilateralism.",
+      "Grounded by S006's observation that 'a number of cases' of primacy refusal exist but 'vast majority still apply'.",
+      "S019 supports that differentiated integration can coexist with formal intactness, requiring a higher threshold for 'breakdown'."
+    ],
+    "counterevidence_lines": [
+      "The assertion that N=3 can be robustly justified as the minimal operationalization from qualitative textual evidence (S006, S019) is an interpretation, not a direct quantitative derivation.",
+      "The critique argues the qualitative evidence is insufficient to provide a non-arbitrary, robust basis for any specific numerical threshold (N)."
+    ],
+    "confidence": "low"
+  },
+  "quarantined_load_bearing_dependency": false,
+  "quarantine_target": "",
+  "quarantine_legitimate": false,
+  "quarantine_rationale": "",
+  "quarantine_gates_causal_mechanism": false,
+  "quarantine_gates_named_discriminator": false,
+  "quarantine_gates_falsification_environment": false,
+  "current_discriminator_directly_confirmed": true,
+  "current_support_is_directional_only": false,
+  "decisive_confirmation_deferred_to_forward_observable": false,
+  "confirmation_rationale": "The test_multistate_breakdown_threshold_grounding() directly confirms that the thesis's N=3 threshold for 'sustained_multistate_breakdown_of_core_obligations' functions as a discriminator against lower (N=1) and higher (N=5) rival thresholds, aligning with the thesis's operational logic from qualitative evidence.",
+  "unsupported_point_probability_claim": false,
+  "forecast_overclaim_rationale": "",
+  "drift_detected": false,
+  "drift_rationale": "The thesis appropriately narrows its scope to resolve a systemic inconsistency regarding a load-bearing component of the core question (sustained_multistate_breakdown_of_core_obligations threshold grounding), explicitly disclaiming that it fully earns the P(material_union_failure) forecast by itself. This is a sharpening rather than a drift from the charter's intent.",
+  "criteria_passed": [
+    "1_Event_Ontology_Clarity",
+    "2_Probability_Model_Basis",
+    "3_Calibration_And_Reference_Class_Discipline",
+    "4_Upward_And_Downward_Drivers",
+    "5_Complementarity_And_Horizon_Discipline",
+    "6_Overclaim_Control"
+  ],
+  "criteria_failed": [],
+  "weakest_point": "The qualitative grounding of the precise integer N=3 as the minimal robust threshold for 'multi-state breakdown' from textual evidence, despite the logical consistency of its discriminatory behavior.",
+  "verified_axioms": [],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "missing_threshold_grounding",
+      "target": "threshold_for_multistate",
+      "description": "Lack of quantitative derivation or stronger empirical evidence for N=3 as the minimal robust integer threshold for 'multi-state breakdown' from qualitative sources.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "The thesis asserts robustness but acknowledges N=3 is an interpretation. Stronger empirical grounding for the numerical choice would strengthen it.",
+      "fetch_query": "quantitative evidence for minimal state threshold in EU legal challenges, legal rupture N-state statistical analysis, multi-state non-compliance frequency",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "missing_threshold_grounding",
+      "target": "stress_escalation_multiplier",
+      "description": "Lack of rigorous calibration for stress_escalation_multiplier for specific, granular shock types, requiring a detailed historical typology and observed impacts.",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "producer_rationale": "Thesis explicitly notes this as unresolved and critical for earning the full probability forecast.",
+      "fetch_query": "calibrated stress escalation multiplier EU crises, historical typology EU stress events, observed impact union cohesion",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "other",
+      "target": "base_failure_probability",
+      "description": "Absence of an unconditional base hazard rate for material_union_failure drawn from a reference class not already conditioned on severe external shocks, to avoid double-counting with multipliers.",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "producer_rationale": "Explicit epistemic void and contradiction noted in evidence.",
+      "fetch_query": "EU institutional failure base rate calm periods, non-shock conditioned union failure rate",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "missing_external_validation",
+      "target": "all model multipliers",
+      "description": "Structured expert elicitation for all model multipliers (stress_escalation_multiplier, legal_break_multiplier, discretionary_backstop_reduction, base_failure_probability) has not been conducted.",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "producer_rationale": "Explicit epistemic void; freehand multipliers are methodologically indefensible (S010).",
+      "fetch_query": "expert elicitation protocol EU union failure, quantified uncertainty model multipliers institutional stability",
+      "adversarial_direction": true
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "Any precise numerical threshold derived from qualitative evidence must provide a transparent, step-by-step justification for the chosen integer or range, beyond merely asserting it as a 'minimal operationalization'.",
+      "applies_to": "operationalization of event boundaries",
+      "failure_family": "arbitrary_quantification",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "The critique highlights that justifying N=3 as 'robustly indicating' from qualitative text is an assertion that needs stronger grounding of the precise number.",
+      "non_applicability_condition": "If the numerical threshold is derived directly from quantitative data or external empirical benchmarks."
+    },
+    {
+      "constraint": "The base_failure_probability must be drawn from a reference class that is demonstrably unconditioned on severe external shocks, to avoid double-counting risk when stress_escalation_multiplier is applied.",
+      "applies_to": "probability model structure",
+      "failure_family": "double_counting_risk",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "rationale": "Explicit contradiction in evidence: S017 states historical cases cannot be unconditional base rates if multiplier also captures extreme shocks.",
+      "non_applicability_condition": "If the model explicitly implements conditional probabilities where base rates are defined for specific stress regimes."
+    },
+    {
+      "constraint": "For forecasts exceeding 5 years, the model must specify an explicit hazard function shape (constant, front-loaded, post-reform-reduced, etc.) rather than implicitly assuming a constant hazard rate.",
+      "applies_to": "horizon extrapolation",
+      "failure_family": "implicit_hazard_assumption",
+      "severity": "degrading",
+      "producer": "adjudicator",
+      "rationale": "S018 documents that redenomination and fragmentation risk are state-dependent and policy-sensitive, not a stable background constant, challenging implicit constant-hazard extrapolation.",
+      "non_applicability_condition": "If the forecast horizon is short (e.g., <5 years) or the model explicitly uses a time-varying hazard function."
+    }
+  ],
+  "logic_gaps": [],
+  "debate_summary": "The thesis successfully operationalizes a key component of 'material_union_failure' by defining a numerical threshold (N=3) for 'sustained_multistate_breakdown_of_core_obligations', and its internal logic is consistent and falsifiable. It clearly distinguishes this 'high-severity legal breakdown marker' from lesser forms of disintegration. However, the qualitative grounding for the precise integer N=3, while defended as a 'minimal operationalization,' remains a point of contention regarding its empirical robustness. The thesis is highly disciplined in acknowledging its limitations, explicitly stating that it does not yet earn the full probability forecast for material_union_failure due to unresolved challenges in calibrating other multipliers and the overall hazard structure.",
+  "adversarial_alignment": "neutral",
+  "friction_points": [
+    "The precise quantitative grounding of N=3 as the 'minimal robust' multi-state threshold from purely qualitative textual evidence.",
+    "The reliance on 'earned' but not yet performed expert elicitation for calibrating key probability multipliers.",
+    "The explicit acknowledgment that the full P(material_union_failure) is not yet earned by this thesis alone."
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "N=3 threshold accurately operationalizes 'sustained_multistate_breakdown'",
+      "probability": 0.681
+    },
+    "nodes": [
+      {
+        "id": "node_1",
+        "label": "Durable_NonCompliance_Observable",
+        "probability": 0.8,
+        "watch_signal": "Actual future events can be observed to definitively determine if non-compliance is durable."
+      },
+      {
+        "id": "node_2",
+        "label": "Core_Principle_Violated_Observable",
+        "probability": 0.8,
+        "watch_signal": "Actual future events can be observed to definitively determine if a core legal principle is violated."
+      },
+      {
+        "id": "node_3",
+        "label": "N_GreaterThanEqual_3_Is_Multistate",
+        "probability": 0.65,
+        "watch_signal": "N>=3 is a reasonable numerical representation of 'multi-state' beyond bilateralism, as evidenced by differentiation from N=1/N=5 rivals."
+      },
+      {
+        "id": "node_4",
+        "label": "N3_Robustly_Justified",
+        "probability": 0.45,
+        "watch_signal": "N=3 is robustly justified as the minimal integer threshold from qualitative evidence, not merely logically consistent."
+      }
+    ],
+    "edges": [
+      {
+        "from": "node_1",
+        "to": "outcome",
+        "weight": 0.7
+      },
+      {
+        "from": "node_2",
+        "to": "outcome",
+        "weight": 0.7
+      },
+      {
+        "from": "node_3",
+        "to": "outcome",
+        "weight": 0.9
+      },
+      {
+        "from": "node_4",
+        "to": "outcome",
+        "weight": 0.6
+      }
+    ]
+  },
+  "proof_is_self_referential_model_raw": true,
+  "semantic_gate_status": "unresolved",
+  "self_reference_rule_fired": "safe_harbor_downgrade",
+  "self_reference_quorum_used": false,
+  "semantic_gate_unresolved_diagnosis": {
+    "required_clear_conditions_unmet": [
+      "independent_grounding_present",
+      "independent_falsification_environment_present",
+      "safe_harbor_local_mapping_requires_manual_review"
+    ],
+    "potential_falsification_unverified": false
+  },
+  "semantic_gate_summary": {
+    "total_unresolved_gates_processed": 10,
+    "unmet_clear_condition_counts": {
+      "independent_grounding_present": 10,
+      "causal_variable_perturbed": 7,
+      "independent_falsification_environment_present": 8,
+      "safe_harbor_local_mapping_requires_manual_review": 8,
+      "load_bearing_claim_directly_tested": 3
+    },
+    "potential_falsification_unverified_count": 3
+  },
+  "score_contract": {
+    "mode": "deterministic_gates",
+    "test_suite_status": "pass",
+    "criterion_score": 100,
+    "hard_fail_reasons": [],
+    "soft_score_caps": [],
+    "semantic_gate_status": "unresolved",
+    "self_reference_rule_fired": "safe_harbor_downgrade",
+    "quarantined_load_bearing_dependency": false,
+    "quarantine_target": "unknown",
+    "quarantine_legitimate": false,
+    "quarantine_gates_causal_mechanism": false,
+    "quarantine_gates_named_discriminator": false,
+    "quarantine_gates_falsification_environment": false,
+    "current_discriminator_directly_confirmed": true,
+    "current_support_is_directional_only": false,
+    "decisive_confirmation_deferred_to_forward_observable": false,
+    "confirmation_rationale": "The test_multistate_breakdown_threshold_grounding() directly confirms that the thesis's N=3 threshold for 'sustained_multistate_breakdown_of_core_obligations' functions as a discriminator against lower (N=1) and higher (N=5) rival thresholds, aligning with the thesis's operational logic from qualitative evidence.",
+    "unsupported_point_probability_claim": false,
+    "forecast_overclaim_rationale": "",
+    "project_charter_present": true,
+    "project_forecast_type": "probabilistic_forecast",
+    "anchor_proxies_declared": [
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_probability_target_is_explicit",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling"
+    ],
+    "anchor_proxy_total": 8,
+    "anchor_proxy_overlap": [
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling",
+      "test:test_probability_target_is_explicit"
+    ],
+    "anchor_proxy_coverage": 1.0,
+    "anchor_proxy_min_coverage": 0.5,
+    "drift_distance": 0.0,
+    "mathematical_drift_detected": false,
+    "active_proxy_signature": [
+      "proxy:TARGET_HORIZON",
+      "proxy:_derive_sustained_multistate_breakdown_of_core_obligations",
+      "proxy:_is_within_range",
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_base_rate_reference_class_bounding",
+      "test:test_event_boundary_excludes_differentiated_disintegration",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_fiscal_resilience_constraint_on_discretionary_backstop_reduction",
+      "test:test_legal_fragility_constraint_on_legal_break_multiplier",
+      "test:test_multistate_breakdown_threshold_grounding",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling",
+      "test:test_probability_target_is_explicit",
+      "test:test_stress_escalation_constraint_on_stress_escalation_multiplier"
+    ],
+    "drift_detected": false,
+    "drift_rationale": "The thesis appropriately narrows its scope to resolve a systemic inconsistency regarding a load-bearing component of the core question (sustained_multistate_breakdown_of_core_obligations threshold grounding), explicitly disclaiming that it fully earns the P(material_union_failure) forecast by itself. This is a sharpening rather than a drift from the charter's intent.",
+    "cap_reason": "none",
+    "cap_reason_detail": "",
+    "deterministic_charter_gates": {
+      "declared": [],
+      "harness_invoked": false,
+      "harness_failure_reason": "",
+      "results": [],
+      "any_failed": false,
+      "failure_count": 0,
+      "score_cap_on_failure": 50
+    },
+    "evidence_gap_count": 4,
+    "blocking_evidence_gap_count": 3,
+    "degrading_evidence_gap_count": 1,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "missing_external_validation",
+      "missing_threshold_grounding",
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "threshold_for_multistate",
+      "stress_escalation_multiplier",
+      "base_failure_probability",
+      "all model multipliers"
+    ],
+    "evidence_boundary_ceiling_detected": true,
+    "evidence_boundary_detail": "missing_threshold_grounding::stress_escalation_multiplier; other::base_failure_probability; missing_external_validation::all model multipliers",
+    "derived_constraint_proposal_count": 3,
+    "derived_constraint_failure_families": [
+      "arbitrary_quantification",
+      "double_counting_risk",
+      "implicit_hazard_assumption"
+    ],
+    "derived_constraint_targets": [
+      "operationalization of event boundaries",
+      "probability model structure",
+      "horizon extrapolation"
+    ],
+    "version": 7,
+    "regime": {
+      "mode": "deterministic_gates",
+      "version": 7,
+      "rubric_name": "eu_union_failure_probability_2035",
+      "rubric_fingerprint": "7e20f6dadeee6028",
+      "judge_model": "gemini-2.5-flash",
+      "requested_judge_model": "gemini-2.5-flash",
+      "effective_judge_models": [
+        "gemini-2.5-flash"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+      "evidence_fingerprint": "b406c9e9696c7533",
+      "project_forecast_type": "probabilistic_forecast"
+    },
+    "regime_fingerprint": "42910255b5fbfe5d",
+    "judge_model": "gemini-2.5-flash",
+    "requested_judge_model": "gemini-2.5-flash",
+    "effective_judge_models": [
+      "gemini-2.5-flash"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "eu_union_failure_probability_2035",
+    "rubric_fingerprint": "7e20f6dadeee6028",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+    "evidence_fingerprint": "b406c9e9696c7533"
+  },
+  "project_forecast_type": "probabilistic_forecast",
+  "effective_judge_models": [
+    "gemini-2.5-flash"
+  ],
+  "judge_fallback_used": false,
+  "score": 100,
+  "usage_telemetry": {
+    "model_name": "gemini-2.5-flash",
+    "input_tokens": 30480,
+    "output_tokens": 3236,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "estimated_cost_usd": 0.017234,
+    "cost_known": true
+  },
+  "artifact_role": "latest",
+  "describes_baseline": "latest",
+  "score_regime_fingerprint": "42910255b5fbfe5d"
+}

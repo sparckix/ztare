@@ -1,0 +1,88 @@
+{
+  "candidate_claims_to_test": [],
+  "compiler_summary": "Snapshot compiled on April 13, 2026, for project glp1_adoption_economics, merging data on GLP-1 market dynamics, pricing strategies, and coverage trends.",
+  "epistemic_voids": [
+    {
+      "blocking": "Precise WAC cut calculations.",
+      "unknown": "The exact 'current list price' used as the baseline for the 50% Wegovy WAC reduction and 35% Ozempic WAC reduction.",
+      "why_it_matters": "Understanding the precise magnitude of the WAC cuts requires knowing the exact baseline prices they were calculated against."
+    },
+    {
+      "blocking": "Assessment of current short-term promotional strategies.",
+      "unknown": "The specific year 'end of March' refers to for the expiration of Novo Nordisk's $199 self-pay offer for the first two monthly doses.",
+      "why_it_matters": "Without the year, it's unclear if the offer is still relevant or if it was a short-term promotion from a past period."
+    },
+    {
+      "blocking": "Identification of future GLP-1 market offerings and pricing strategies.",
+      "unknown": "The specific identity of 'upcoming obesity pills' referenced in the $149/month deal for Medicare/Medicaid/TrumpRx.",
+      "why_it_matters": "Knowing the specific drug(s) helps identify future market impacts and competitive landscape shifts."
+    },
+    {
+      "blocking": "Detailed analysis of direct-to-consumer pricing mechanisms.",
+      "unknown": "The definition or calculation method for the 'average' starting price of $350/month for consumers buying injectable GLP-1 medications directly from companies.",
+      "why_it_matters": "Understanding the components of this average is crucial for assessing its true impact and potential for variability."
+    },
+    {
+      "blocking": "Detailed understanding of the premium impact model's sensitivity and real-world applicability.",
+      "unknown": "Specific adherence assumptions, cost-sharing designs, and eligibility criteria used in the EBRI premium impact simulation.",
+      "why_it_matters": "These factors directly influence the actual premium impact and the applicability of the given range, which is critical for model accuracy."
+    },
+    {
+      "blocking": "Accurate forecasting of patient out-of-pocket costs and the price elasticity of demand for GLP-1s.",
+      "unknown": "Whether payers pass through a reported 70% Novo price cut to patient out-of-pocket costs.",
+      "why_it_matters": "The pass-through mechanism determines actual patient cost, directly affecting patient demand and adoption rates."
+    },
+    {
+      "blocking": "Understanding the actual financial burden on patients and barriers to access across the insured population.",
+      "unknown": "Specific formulary placement details for GLP-1 drugs across various payers.",
+      "why_it_matters": "Formulary placement dictates the net cost to insured patients and affects accessibility, which influences adoption."
+    },
+    {
+      "blocking": "Detailed regional modeling of GLP-1 adoption and market penetration.",
+      "unknown": "Specific state-level affordability data for GLP-1 access.",
+      "why_it_matters": "Affordability varies significantly by state, impacting regional adoption rates and market potential."
+    },
+    {
+      "blocking": "A comprehensive understanding of federal influence on GLP-1 market dynamics from this specific agreement.",
+      "unknown": "The complete details of the Trump administration's November 2025 deal with Eli Lilly and Novo Nord.",
+      "why_it_matters": "The source truncates the information, leaving unclear the full scope of agreements for federal policy trajectory regarding GLP-1 pricing and distribution."
+    },
+    {
+      "blocking": "Assessing the true market impact and patient access facilitated by the subscription program.",
+      "unknown": "The specific eligibility criteria for patients to participate in Novo Nordisk's multi-month subscription program for Wegovy launched in March 2026.",
+      "why_it_matters": "Knowing the eligibility defines the actual reach and accessibility of these pricing options for cash-paying patients, impacting their potential savings."
+    },
+    {
+      "blocking": "A complete understanding of the individual list price adjustments across Novo Nordisk's entire GLP-1 portfolio mentioned.",
+      "unknown": "Whether the 35% list price reduction announced in February 2026 for Ozempic also applies to Rybelsus, or if Rybelsus has a different/unspecified reduction percentage.",
+      "why_it_matters": "The source states the cut for 'Ozempic' specifically, but lists 'Rybelsus' as part of the portfolio receiving a flat $675/month price. Clarification is needed for Rybelsus's specific percentage reduction."
+    }
+  ],
+  "identified_contradictions": [],
+  "immutable_ground_truth": [],
+  "numerical_ranges_and_constraints": [],
+  "project": "glp1_adoption_economics",
+  "provenance": [
+    {
+      "kind": "md",
+      "path": "evidence_fetch_20260413T230742Z.md",
+      "source_id": "S002",
+      "source_type": "untyped",
+      "summary": "This document summarizes various announced and implemented price cuts for Novo Nordisk's GLP-1 drugs (Wegovy, Ozempic, Rybelsus) in the U.S., including WAC cuts, Trump/TrumpRx deals, and self-pay reductions, alongside competitive market share data for Q4 2025."
+    },
+    {
+      "kind": "md",
+      "path": "evidence_fetch_20260414T005026Z.md",
+      "source_id": "S003",
+      "source_type": "untyped",
+      "summary": "This document details Novo Nordisk's announced GLP-1 price reductions in the US, effective January 1, 2027, along with prior self-pay discounts and the Trump administration's TrumpRx initiative. It also outlines the landscape of Medicaid GLP-1 obesity coverage as of January 2026, noting a contraction from 16 to 13 states, specific state policy changes, and the optional nature of this coverage for states."
+    },
+    {
+      "kind": "md",
+      "path": "web_research_2026_04_13.md",
+      "source_id": "S001",
+      "source_type": "untyped",
+      "summary": "This web research document compiles data on GLP-1 adoption rates, employer coverage trends, premium impact simulations, Medicare coverage status, and state-level access gaps, citing various industry and government sources."
+    }
+  ]
+}

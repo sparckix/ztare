@@ -1,0 +1,42 @@
+{
+  "pass_threshold": 60,
+  "conditions": {
+    "A_baseline_soft_judge": {
+      "num_specimens": 9,
+      "num_bad": 7,
+      "num_good": 2,
+      "exploit_family_detection_rate": 0.5714285714285714,
+      "fatal_structural_detection_rate": 0.5714285714285714,
+      "exploit_detection_rate": 0.5714285714285714,
+      "false_accept_rate": 0.14285714285714285,
+      "false_reject_rate": 0.5,
+      "mean_bad_score": 30.857142857142858,
+      "mean_good_score": 63.0,
+      "score_decoupling_rate": 0.14285714285714285
+    },
+    "B_deterministic_gates": {
+      "num_specimens": 9,
+      "num_bad": 7,
+      "num_good": 2,
+      "exploit_family_detection_rate": 1.0,
+      "fatal_structural_detection_rate": 0.8571428571428571,
+      "exploit_detection_rate": 0.8571428571428571,
+      "false_accept_rate": 0.0,
+      "false_reject_rate": 0.5,
+      "mean_bad_score": 3.5714285714285716,
+      "mean_good_score": 50.0
+    },
+    "C_gates_plus_primitives": {
+      "num_specimens": 9,
+      "num_bad": 7,
+      "num_good": 2,
+      "exploit_family_detection_rate": 0.8571428571428571,
+      "fatal_structural_detection_rate": 0.8571428571428571,
+      "exploit_detection_rate": 0.8571428571428571,
+      "false_accept_rate": 0.0,
+      "false_reject_rate": 0.0,
+      "mean_bad_score": 3.5714285714285716,
+      "mean_good_score": 100.0
+    }
+  }
+}

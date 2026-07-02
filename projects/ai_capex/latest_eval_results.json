@@ -1,0 +1,338 @@
+{
+  "score": 28,
+  "weakest_point": "The thesis fails to resolve the inference/training fleet split, which it itself identifies as the 'true epistemic vulnerability.' A 10pp shift (50/50 to 60/40 training-heavy) collapses the capital destruction signal. The thesis provides no independent evidence to bind this ratio, leaving the entire Z-score assertion unfalsifiable from public filings.",
+  "verified_axioms": [
+    "H100 obsolescence vs Blackwell is deterministic given 3-5x throughput uplift and hyperscaler depreciation mismatch.",
+    "Enterprise effective GPU pricing (~$5.12/hr) is structurally below list ($12.29/hr) due to competitive overcapacity."
+  ],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "other",
+      "target": "fleet-wide inference/training workload split",
+      "description": "The proportion of GPU capacity deployed as inference vs. training is the single lever that can invert the thesis's conclusion. Hyperscalers do not disclose this split. The thesis assumes 50/50, but a 60/40 training-heavy shift would push average utilization to ~60%, collapsing the Z-score. No public data source provides this ratio.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "These companies control the workload scheduler data. They have no incentive to disclose a metric that reveals utilization inefficiency.",
+      "fetch_query": "hyperscaler AI inference training workload ratio 2025 site:amazon.com OR site:microsoft.com OR site:google.com OR site:meta.com",
+      "adversarial_direction": true,
+      "recovery_channel": "out_of_loop_evidence_recovery",
+      "recovery_kind": "public_evidence",
+      "required_surface": "NVIDIA 10-K segment footnote: 'Revenue from data center compute was $XXBN, of which inference accounted for Y%'",
+      "can_public_fetch": true,
+      "in_loop_consumable": false,
+      "recovery_contract_source": "explicit_schema",
+      "recovery_contract_warnings": [
+        "recovery_channel_conflicted_with_recovery_kind"
+      ],
+      "recovery_contract": {
+        "schema": "ztare-evidence-gap-recovery-contract-v1",
+        "contract_ok": false,
+        "gap_sha256": "559158812aa839723bb488eef8cb15e0cd5e177b1affbc069db77d9ec8686cf4",
+        "active": true,
+        "activity_status": "active",
+        "recovery_kind": "public_evidence",
+        "recovery_channel": "out_of_loop_evidence_recovery",
+        "required_surface": "NVIDIA 10-K segment footnote: 'Revenue from data center compute was $XXBN, of which inference accounted for Y%'",
+        "can_public_fetch": true,
+        "in_loop_consumable": false,
+        "target": "fleet-wide inference/training workload split",
+        "classification_source": "explicit_schema",
+        "classification_strength": "explicit_or_resolved",
+        "schema_promotion_required": false,
+        "advisories": [],
+        "warnings": [
+          "recovery_channel_conflicted_with_recovery_kind"
+        ]
+      }
+    },
+    {
+      "gap_type": "other",
+      "target": "effective enterprise H100 pricing by hyperscaler",
+      "description": "The thesis pins its break-even utilization on $5.12/hr effective pricing (S001), but S002 lists $12.29/hr on-demand. The true blended rate determines whether break-even utilization is 10.3% or 24.7%. Without segment-level GPU revenue and deployed GPU count, this is a phantom input.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "Enterprise discounts and reserved-instance pricing are aggregated into segment revenue, not disclosed per product-GPU class.",
+      "fetch_query": "AWS Azure GCP H100 reserved instance effective discount rate 2025 2026 cloud pricing report",
+      "adversarial_direction": true,
+      "recovery_channel": "out_of_loop_evidence_recovery",
+      "recovery_kind": "public_evidence",
+      "required_surface": "AWS Q3 2026 segment footnote: 'Inference GPU compute revenue was $XBN across Y deployed H100 equivalents'",
+      "can_public_fetch": true,
+      "in_loop_consumable": false,
+      "recovery_contract_source": "explicit_schema",
+      "recovery_contract_warnings": [
+        "recovery_channel_conflicted_with_recovery_kind"
+      ],
+      "recovery_contract": {
+        "schema": "ztare-evidence-gap-recovery-contract-v1",
+        "contract_ok": false,
+        "gap_sha256": "9e90682b9f99db7d9d2620fac667c6a09f5b3fd3c4a12ab5296992c3d071bb0a",
+        "active": true,
+        "activity_status": "active",
+        "recovery_kind": "public_evidence",
+        "recovery_channel": "out_of_loop_evidence_recovery",
+        "required_surface": "AWS Q3 2026 segment footnote: 'Inference GPU compute revenue was $XBN across Y deployed H100 equivalents'",
+        "can_public_fetch": true,
+        "in_loop_consumable": false,
+        "target": "effective enterprise H100 pricing by hyperscaler",
+        "classification_source": "explicit_schema",
+        "classification_strength": "explicit_or_resolved",
+        "schema_promotion_required": false,
+        "advisories": [],
+        "warnings": [
+          "recovery_channel_conflicted_with_recovery_kind"
+        ]
+      }
+    },
+    {
+      "gap_type": "other",
+      "target": "H100 cluster utilization-age slope by hyperscaler",
+      "description": "The thesis's core discriminator (utilization declines ~2.5pp/month after month 6) is asserted but unverified. No hyperscaler discloses utilization by cluster age. Without this, the negative-slope claim is untestable.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "This is an internal operational metric never audited or disclosed publicly.",
+      "fetch_query": "GPU utilization decay cluster age hyperscaler 2025 2026",
+      "adversarial_direction": true,
+      "recovery_channel": "out_of_loop_evidence_recovery",
+      "recovery_kind": "public_evidence",
+      "required_surface": "Spot H100 pricing exceeds 30% below on-demand for 6+ consecutive months at a specific hyperscaler",
+      "can_public_fetch": true,
+      "in_loop_consumable": false,
+      "recovery_contract_source": "explicit_schema",
+      "recovery_contract_warnings": [
+        "recovery_channel_conflicted_with_recovery_kind"
+      ],
+      "recovery_contract": {
+        "schema": "ztare-evidence-gap-recovery-contract-v1",
+        "contract_ok": false,
+        "gap_sha256": "61a7c5b53c32064f9690893ffd0819665559b98459dbd0116e895499ba5bbc30",
+        "active": true,
+        "activity_status": "active",
+        "recovery_kind": "public_evidence",
+        "recovery_channel": "out_of_loop_evidence_recovery",
+        "required_surface": "Spot H100 pricing exceeds 30% below on-demand for 6+ consecutive months at a specific hyperscaler",
+        "can_public_fetch": true,
+        "in_loop_consumable": false,
+        "target": "H100 cluster utilization-age slope by hyperscaler",
+        "classification_source": "explicit_schema",
+        "classification_strength": "explicit_or_resolved",
+        "schema_promotion_required": false,
+        "advisories": [],
+        "warnings": [
+          "recovery_channel_conflicted_with_recovery_kind"
+        ]
+      }
+    },
+    {
+      "gap_type": "other",
+      "target": "hyperscaler-specific GPU depreciation schedules and useful-life changes",
+      "description": "The thesis assumes uniform 4-5 year straight line. A 3-year useful life change (announced or implied by D&A growth) would signal the phantom asset problem is being partially corrected. But current disclosures aggregate server/networking/D&A, not GPU-specific.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "Changes in depreciation estimates require 8-K or 10-K footnote disclosure, but are often buried in 'property, plant and equipment' line items.",
+      "fetch_query": "Microsoft 10-K 2025 server depreciation useful life change AI GPU",
+      "adversarial_direction": false,
+      "recovery_channel": "out_of_loop_evidence_recovery",
+      "recovery_kind": "public_evidence",
+      "required_surface": "Microsoft 10-K FY2026 footnote: 'The company revised the estimated useful life of AI server equipment from 5 years to 3 years'",
+      "can_public_fetch": true,
+      "in_loop_consumable": false,
+      "recovery_contract_source": "explicit_schema",
+      "recovery_contract_warnings": [
+        "in_loop_consumable_conflicted_with_recovery_kind",
+        "recovery_channel_conflicted_with_recovery_kind"
+      ],
+      "recovery_contract": {
+        "schema": "ztare-evidence-gap-recovery-contract-v1",
+        "contract_ok": false,
+        "gap_sha256": "9d9d4fdaf329617119ba0541e21646502ca50a2cbd68403f499617767a6259f7",
+        "active": true,
+        "activity_status": "active",
+        "recovery_kind": "public_evidence",
+        "recovery_channel": "out_of_loop_evidence_recovery",
+        "required_surface": "Microsoft 10-K FY2026 footnote: 'The company revised the estimated useful life of AI server equipment from 5 years to 3 years'",
+        "can_public_fetch": true,
+        "in_loop_consumable": false,
+        "target": "hyperscaler-specific GPU depreciation schedules and useful-life changes",
+        "classification_source": "explicit_schema",
+        "classification_strength": "explicit_or_resolved",
+        "schema_promotion_required": false,
+        "advisories": [],
+        "warnings": [
+          "in_loop_consumable_conflicted_with_recovery_kind",
+          "recovery_channel_conflicted_with_recovery_kind"
+        ]
+      }
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "The inference/training workload ratio must be independently backed by at least one public source or derived from NVIDIA segment revenue breakdown before the Z-score assertion can be trusted.",
+      "applies_to": "fleet-wide average utilization estimate (52%)",
+      "failure_family": "parameterization",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "The thesis admits that shifting this ratio from 50/50 to 60/40 (training-heavy) collapses the capital destruction signal. Without a reliable estimate, the entire floor of the thesis is unsupported.",
+      "non_applicability_condition": "If a hyperscaler discloses its inference/training workload split in a public filing or formal investor presentation."
+    },
+    {
+      "constraint": "The effective enterprise GPU pricing ($/GPU/hr) must be traceable to a hyperscaler segment-level line item or a third-party audit before the break-even utilization calculation (24.7%) is used as a primary falsifier.",
+      "applies_to": "break-even utilization at $5.12/hr",
+      "failure_family": "parameterization",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "The 2.4x discrepancy between S001 ($5.12) and S002 ($12.29) makes the Z-score extremely sensitive to which pricing assumption holds. No public source confirms the blended rate.",
+      "non_applicability_condition": "If AWS, Azure, or GCP report segment-level GPU revenue and deployed GPU count, allowing derivation of average effective price."
+    }
+  ],
+  "logic_gaps": [
+    "The thesis claims utilization-age slope is negative given Axioms 1 and 2, but the logical step from 'Blackwell is more efficient' to 'H100 utilization decays at 2.5pp/month' omits the possibility that hyperscalers repurpose H100 for training workflows at lower margins (keeping utilization high) while marking down revenue per GPU. This is a survivable strategy, not a death spiral.",
+    "The thesis does not account for the option value of stranded H100 capacity being sold to secondary markets (e.g., AI startups, Chinese enterprises via gray channels) at reduced but positive residual value, which would reduce the impairment magnitude.",
+    "The Z = 0.0101 calculation for Microsoft uses FY2025 data. The thesis does not model Q1-Q3 2026 actuals to confirm the trajectory. There is no near-term falsifier within 2 quarters \u2014 the earliest trigger is Q4 2026 or later."
+  ],
+  "debate_summary": "The thesis presents a coherent structural case that H100 obsolescence and pricing pressure create a phantom asset problem, but its central arithmetic collapses if two unresolved parameters (workload split, effective pricing) shift by 10-20%. The critic correctly identified the workload split as the catastrophic node. The thesis's attempt to resolve it via 'slope of utilization vs. cluster age' is clever but unverifiable from public data. The result is a well-structured but fragile argument that cannot survive rigorous falsification today.",
+  "adversarial_alignment": "Partially aligned. The thesis correctly identifies the kill criteria and names the epistemic vulnerability. However, it fails to provide mechanisms to independently verify the two most critical parameters, leaving the doors open for the rival thesis to claim 'you just don't have the data.' A short seller relying on this thesis would be taking a bet on two unverifiable parameters, not on a falsifiable accounting line item.",
+  "friction_points": [
+    "The thesis claims the 52% fleet-wide utilization is from S002, but S002's evidence table lists '40-60% (midpoint 52%)' without breaking out fleet composition. The inference/training ratio is entirely assumed.",
+    "The thesis uses Microsoft as the primary case study but does not derive a unique Z-score for Google, Meta, or Amazon. The value destruction magnitude may vary significantly by hyperscaler due to different cloud revenue mixes and GPU procurement strategies.",
+    "The 'gatekeeper reality' section correctly identifies D&A growth as the trigger, but the thesis does not specify a quantitative threshold (e.g., 'Microsoft D&A must exceed $XXB in FY2026 Q2 for the thesis to be validated'). Without this, the trigger is still narrative."
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "Hyperscaler AI CapEx destroys >$150B by 2028",
+      "probability": 0.39
+    },
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "H100 utilization decays >2pp/month after month 6 (negative slope)",
+        "probability": 0.45,
+        "watch_signal": "Spot H100 pricing persistently < 70% of on-demand for 6 months"
+      },
+      {
+        "id": "n2",
+        "label": "Effective enterprise GPU pricing stays below $6/GPU/hr",
+        "probability": 0.5,
+        "watch_signal": "Hyperscaler cloud segment revenue growth decouples from GPU deployment growth"
+      },
+      {
+        "id": "n3",
+        "label": "Inference demand grows 2-3x by 2027, not 10x",
+        "probability": 0.55,
+        "watch_signal": "Enterprise AI adoption surveys show <30% of companies moving inference to cloud"
+      },
+      {
+        "id": "n4",
+        "label": "Hyperscaler CFOs trigger accelerated depreciation on H100 silicon",
+        "probability": 0.35,
+        "watch_signal": "D&A growth > CapEx growth by 500bps in a single quarter for MSFT/GOOG/AMZN"
+      },
+      {
+        "id": "n5",
+        "label": "Inference/training fleet split is \u226550% inference (as assumed)",
+        "probability": 0.4,
+        "watch_signal": "NVIDIA data center segment revenue breakdown if disclosed, or third-party workload surveys"
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "outcome",
+        "weight": 0.85
+      },
+      {
+        "from": "n2",
+        "to": "outcome",
+        "weight": 0.8
+      },
+      {
+        "from": "n3",
+        "to": "outcome",
+        "weight": 0.7
+      },
+      {
+        "from": "n4",
+        "to": "outcome",
+        "weight": 0.9
+      },
+      {
+        "from": "n5",
+        "to": "n1",
+        "weight": 1.0
+      }
+    ]
+  },
+  "score_contract": {
+    "evidence_gap_count": 4,
+    "blocking_evidence_gap_count": 0,
+    "degrading_evidence_gap_count": 4,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "fleet-wide inference/training workload split",
+      "effective enterprise H100 pricing by hyperscaler",
+      "H100 cluster utilization-age slope by hyperscaler",
+      "hyperscaler-specific GPU depreciation schedules and useful-life changes"
+    ],
+    "evidence_boundary_ceiling_detected": false,
+    "evidence_boundary_detail": "",
+    "derived_constraint_proposal_count": 2,
+    "derived_constraint_failure_families": [
+      "parameterization"
+    ],
+    "derived_constraint_targets": [
+      "fleet-wide average utilization estimate (52%)",
+      "break-even utilization at $5.12/hr"
+    ],
+    "mode": "raw_llm_score",
+    "version": 1,
+    "regime": {
+      "mode": "raw_llm_score",
+      "version": 1,
+      "rubric_name": "ai_capex",
+      "rubric_fingerprint": "996e7ace9ae8ce60",
+      "judge_model": "deepseek-chat",
+      "requested_judge_model": "deepseek-chat",
+      "effective_judge_models": [
+        "deepseek-chat"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/ai_capex/evidence.txt",
+      "evidence_fingerprint": "f0915f072ffdbe48",
+      "project_forecast_type": "unspecified"
+    },
+    "regime_fingerprint": "a02bb792aff5d7f9",
+    "judge_model": "deepseek-chat",
+    "requested_judge_model": "deepseek-chat",
+    "effective_judge_models": [
+      "deepseek-chat"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "ai_capex",
+    "rubric_fingerprint": "996e7ace9ae8ce60",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/ai_capex/evidence.txt",
+    "evidence_fingerprint": "f0915f072ffdbe48",
+    "project_forecast_type": "unspecified",
+    "test_suite_status": "pass"
+  },
+  "usage_telemetry": {
+    "model_name": "deepseek-v4-flash",
+    "input_tokens": 11801,
+    "output_tokens": 3490,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "estimated_cost_usd": 0.00702527,
+    "cost_known": true
+  },
+  "worker_dispatch_receipts": [],
+  "artifact_role": "latest",
+  "describes_baseline": "latest",
+  "score_regime_fingerprint": "a02bb792aff5d7f9"
+}

@@ -104,7 +104,7 @@ full mutator loop:
 - [constraint-memory benchmark](constraint_memory/README.md)
 - [frozen evaluator-hardening suite](evaluator_hardening_frozen/README.md)
 - [run script](constraint_memory/run_benchmark.py)
-- [representative metrics summary](constraint_memory/runs/20260404_195100/metrics_summary.json)
+- [representative metrics summary](evaluator_hardening_frozen/source_run_20260404_195100/metrics_summary.json)
 
 The representative run compares three conditions:
 

@@ -404,11 +404,26 @@ def _delegate_make(target: str, vars_: dict[str, str], extra_args: Iterable[str]
     the CLI provides only a stable, discoverable invocation surface."""
     root = _repo_root()
     argv = ["make", target]
+    # The Makefile defaults PYTHON to ./venv/bin/python, which does not exist in
+    # a fresh clone / CI / any interpreter that is not a repo-local venv. Pin it
+    # to the interpreter actually running this CLI so delegated targets use the
+    # same environment (caller may still override via vars_).
+    if "PYTHON" not in vars_:
+        argv.append(f"PYTHON={sys.executable}")
     for k, v in vars_.items():
         if v is not None and v != "":
             argv.append(f"{k}={v}")
     argv.extend(extra_args)
-    return _run_subprocess(argv, cwd=root)
+    # Run the delegated make as a clean top-level invocation. When this CLI is
+    # itself called from inside a `make` recipe (e.g. `make first-run`), the
+    # ambient MAKEFLAGS/jobserver/command-line-var state leaks into this nested
+    # make and, on GNU make 4.x, can override our PYTHON= and corrupt the child's
+    # stdout. Stripping that state makes the delegation deterministic across
+    # platforms (this is what the CLI's own callers expect).
+    env = os.environ.copy()
+    for var in ("MAKEFLAGS", "MFLAGS", "MAKELEVEL", "MAKEOVERRIDES"):
+        env.pop(var, None)
+    return _run_subprocess(argv, cwd=root, env=env)
 
 
 _SAFE_ROUTE_ID = re.compile(r"[^A-Za-z0-9_.-]+")

@@ -1,0 +1,165 @@
+{
+  "changed_sources": 0,
+  "deleted_sources": [],
+  "llm_calls": false,
+  "merge_status": "index_only",
+  "next_steps": [
+    "Run make evidence-prepare before treating compiled evidence as current.",
+    "Run ztare autoresearch trace to inspect kernel-entry blockers."
+  ],
+  "producer": "ztare.workspace.update_workspace::checkpoint_source_index",
+  "project": "eu_union_failure_probability_2035",
+  "reused_sources": 20,
+  "schema": "ztare-source-index-receipt-v1",
+  "source_count": 20,
+  "source_index": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/source_index.json",
+  "source_index_sha256": "c1c871641fa456d793a6a987ca2955ba06daa4cfc814546b4460fad7ed3b4410",
+  "sources": [
+    {
+      "chars_used": 1807,
+      "path": "00_collection_plan.md",
+      "sha256": "539e2d85320306458b1439dbc7ceb3a5a277cae4f541015c3139741b69443e75",
+      "source_type": "untyped",
+      "truncated": false
+    },
+    {
+      "chars_used": 1182,
+      "path": "10_inherited_directional_constraints.md",
+      "sha256": "d77d29d227efc3919dd1e666ce593f06c88bc75c9bff0a3a0be9d7d4cd9e2a85",
+      "source_type": "seed_hypothesis",
+      "truncated": false
+    },
+    {
+      "chars_used": 1350,
+      "path": "11_failure_probability_model_questions.md",
+      "sha256": "b1a09455bef7280e37fca3ed69e7a34b42d1ab244093c6c9d9e7d551415640c7",
+      "source_type": "research_question",
+      "truncated": false
+    },
+    {
+      "chars_used": 1832,
+      "path": "12_imf_existing_federations_risk_sharing.md",
+      "sha256": "a9f4360dab805d0d08cf8bf2187d69048a077e905bc7ee875948a136f82aff06",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1686,
+      "path": "13_ecb_automatic_stabilisers_and_survival_mechanisms.md",
+      "sha256": "ebb3e4cdd587a1693ff670592e7a4dcb5d585acb0ce157dd12eeb21bd397c6ae",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1475,
+      "path": "14_eu_primacy_contestation_official.md",
+      "sha256": "6121557b7d670a36aabd6967a187c17fc339f476d0493fb8ea65c40854095d25",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1267,
+      "path": "15_germany_basic_law_supremacy_comparator.md",
+      "sha256": "da4dbb38c49ca97466e1e80d173d8ab8692326dbc7413c2c0e55f8cb8caed778",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2071,
+      "path": "16_discretionary_resilience_buys_time_not_permanence.md",
+      "sha256": "8c48b03cb4a76b2be5ad3a72629df1f8af0b38406ec6e5bbe095cce754f06a5f",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1767,
+      "path": "17_historical_monetary_unions_reference_class.md",
+      "sha256": "c11914b7cf4a1fbb6c706a5addd9144d0b60f2ea83e3970c727ca2a8e6ad1f1c",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1955,
+      "path": "18_structured_expert_judgment_for_probability_calibration.md",
+      "sha256": "1cb5176cc8e6a20c9178ffaa92cde6a9fe9ec512bee879cd755b1a96954f8d86",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1429,
+      "path": "19_euro_breakup_low_prior_but_not_zero.md",
+      "sha256": "3e342ebc7e5d3eece41b38ddfea994060df464c7acde09a131044ecc485ffa1c",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1592,
+      "path": "20_european_disintegration_modes_not_binary.md",
+      "sha256": "818ff35d2ae295de9dd7592f053dc56da653f4a52d12c8f4a0110ea741adc2c6",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1457,
+      "path": "21_standard_definition_lacking_schengen_not_equal_total_failure.md",
+      "sha256": "8a22b7f3b0286f57f92f5e2f26194d56d78ccf81c427c9601f75e01d4bea6148",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1493,
+      "path": "22_differentiated_disintegration_internal_external.md",
+      "sha256": "5307f15189230ccdf4c0ed705e6cd421392751bf03773441c36c508d47191bb0",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1509,
+      "path": "23_relative_stability_of_indeterminacy.md",
+      "sha256": "b9b14e622020150f26c23755f97016d574d822481fda86019b0a408033166740",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2259,
+      "path": "24_stress_escalation_reference_class.md",
+      "sha256": "573da5a366923690754e1733193cd2bb942b7da00fe3834ed127821decc8fc84",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2055,
+      "path": "25_unconditional_base_rate_vs_conditional_failure.md",
+      "sha256": "a354d1b1331eb19be6924d7a4b89a68a6cf9e8db82f3c17e8aec1e572d637a55",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 1883,
+      "path": "26_horizon_extrapolation_hazard_rate.md",
+      "sha256": "d4309575cced6aa64a64d81c70e22a17509ffe4c6b15e4df780731a6a64ace6d",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2535,
+      "path": "27_material_failure_boundary_requires_durable_legal_rupture.md",
+      "sha256": "52dfd72f22ead8f7379bec005288cff6a39aee6cc9ed4d607e255a4db914d10a",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 2972,
+      "path": "28_historical_unions_are_upper_tail_comparators_not_direct_rate_transfers.md",
+      "sha256": "dcf7ccc436f8f65f6dd93c0cc338deb776f4f1571c2501f65c962b6fe8943f43",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ],
+  "status": "indexed",
+  "warnings": [
+    "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped."
+  ],
+  "workspace_meta": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace/workspace_meta.json",
+  "workspace_meta_sha256": "297de5e2446a0f79f1060476d41a4e882f341150f9eeda75ff123008b9ce1e1a"
+}

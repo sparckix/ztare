@@ -106,10 +106,6 @@ model-superiority claim.
 - [Tracked paper draft](../../../papers/llm-forecast-calibration-cross-corpus/draft.md)
 - [Tracked TeX source](../../../papers/llm-forecast-calibration-cross-corpus/main.tex)
 - [Tracked bibliography](../../../papers/llm-forecast-calibration-cross-corpus/refs.bib)
-- [Paper-alignment evidence workspace](../../../projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/)
-- [Evidence upgrade plan](../../../projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/evidence_upgrade_plan_2026_06_17/evidence_upgrade_plan.md)
-- [Non-Polymarket freeze sweep](../../../projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/non_polymarket_freeze_sweep_2026_06_20.md)
-- [Forecast-row validity benchmark blueprint](../../../projects/llm_forecasting_calibration_program/paper_alignment_v1/workspace/forecast_row_validity_benchmark_blueprint_2026_06_17/forecast_row_validity_benchmark_blueprint.md)
 - [Project claim summary](../../../projects/llm_forecasting_calibration_program/public/CLAIM_SUMMARY.md)
 - [Project methodology architecture](../../../projects/llm_forecasting_calibration_program/public/METHODOLOGY.md)
 

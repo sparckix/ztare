@@ -1,0 +1,65 @@
+{
+  "outcome": {
+    "label": "Hyperscaler AI CapEx destroys >$150B by 2028",
+    "probability": 0.39
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "label": "H100 utilization decays >2pp/month after month 6 (negative slope)",
+      "probability": 0.45,
+      "watch_signal": "Spot H100 pricing persistently < 70% of on-demand for 6 months"
+    },
+    {
+      "id": "n2",
+      "label": "Effective enterprise GPU pricing stays below $6/GPU/hr",
+      "probability": 0.5,
+      "watch_signal": "Hyperscaler cloud segment revenue growth decouples from GPU deployment growth"
+    },
+    {
+      "id": "n3",
+      "label": "Inference demand grows 2-3x by 2027, not 10x",
+      "probability": 0.55,
+      "watch_signal": "Enterprise AI adoption surveys show <30% of companies moving inference to cloud"
+    },
+    {
+      "id": "n4",
+      "label": "Hyperscaler CFOs trigger accelerated depreciation on H100 silicon",
+      "probability": 0.35,
+      "watch_signal": "D&A growth > CapEx growth by 500bps in a single quarter for MSFT/GOOG/AMZN"
+    },
+    {
+      "id": "n5",
+      "label": "Inference/training fleet split is \u226550% inference (as assumed)",
+      "probability": 0.4,
+      "watch_signal": "NVIDIA data center segment revenue breakdown if disclosed, or third-party workload surveys"
+    }
+  ],
+  "edges": [
+    {
+      "from": "n1",
+      "to": "outcome",
+      "weight": 0.85
+    },
+    {
+      "from": "n2",
+      "to": "outcome",
+      "weight": 0.8
+    },
+    {
+      "from": "n3",
+      "to": "outcome",
+      "weight": 0.7
+    },
+    {
+      "from": "n4",
+      "to": "outcome",
+      "weight": 0.9
+    },
+    {
+      "from": "n5",
+      "to": "n1",
+      "weight": 1.0
+    }
+  ]
+}

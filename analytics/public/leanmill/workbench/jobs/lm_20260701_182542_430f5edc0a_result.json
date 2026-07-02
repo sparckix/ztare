@@ -1,0 +1,22 @@
+{
+  "action": "autoformalize_notes",
+  "artifact_path": "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.autoformalize_result.json",
+  "command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "src.ztare.cli",
+    "leanmill",
+    "autoformalize-notes",
+    "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.md"
+  ],
+  "finished_at": "2026-07-01T18:26:37Z",
+  "job_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.json",
+  "label": "Autoformalize from notes",
+  "ok": true,
+  "returncode": 0,
+  "schema": "ztare-leanmill-workbench-action-v1",
+  "started_at": "2026-07-01T18:25:43.047026+00:00",
+  "status": "completed",
+  "stderr_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.stderr.log",
+  "stdout_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.stdout.log"
+}

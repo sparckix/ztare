@@ -1,0 +1,36 @@
+{
+  "generated_on": "April 13, 2026",
+  "project": "glp1_adoption_economics",
+  "sources": [
+    {
+      "chars_used": 3215,
+      "kind": "md",
+      "note_path": "source_notes/S002.json",
+      "path": "evidence_fetch_20260413T230742Z.md",
+      "sha256": "8e8db99d1d47110137ee6e20bea5b12622dfb41e951a1dc455d3222c7cdd78d2",
+      "source_id": "S002",
+      "source_type": "untyped",
+      "truncated": false
+    },
+    {
+      "chars_used": 6836,
+      "kind": "md",
+      "note_path": "source_notes/S003.json",
+      "path": "evidence_fetch_20260414T005026Z.md",
+      "sha256": "82707e08198dbd1ef2d5feb7cd6643ecfee393b6dac7ac835f404c18c56f0080",
+      "source_id": "S003",
+      "source_type": "untyped",
+      "truncated": false
+    },
+    {
+      "chars_used": 2765,
+      "kind": "md",
+      "note_path": "source_notes/S001.json",
+      "path": "web_research_2026_04_13.md",
+      "sha256": "dd8910927a7ed4d1cb00d12f8089f5204ddc2fa178f1f5a63a289c8daa62af2f",
+      "source_id": "S001",
+      "source_type": "untyped",
+      "truncated": false
+    }
+  ]
+}

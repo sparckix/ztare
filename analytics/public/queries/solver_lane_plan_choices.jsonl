@@ -87,3 +87,5 @@
 {"action": "GENERALIZE", "reason": "reduce the polynomial fraction-ring identity to a field-level finite-sum cancellation lemma, then transport through `algebraMap`.", "target": "algebraMap K[X] (FractionRing K[X])\n        (∑ k ∈ Finset.Icc 1 m,\n          C (c k) * (X - C a) ^ (m - k)) /\n      alge"}
 {"action": "DECOMPOSE", "reason": "attach the split polynomial to its roots multiset, then reindex that multiset product by distinct roots with multiplicities.", "target": "letI : DecidableEq K"}
 {"action": "DECOMPOSE", "reason": "map the polynomial division equation into the fraction field, extract denominator nonzero from the degree bound, then cancel in the field.", "target": "algebraMap K[X] (FractionRing K[X]) den / algebraMap K[X] (FractionRing K[X]) num =\n      algebraMap K[X] (FractionRing "}
+{"action": "DECOMPOSE", "reason": "", "target": "False"}
+{"action": "SOLVE_DIRECT", "reason": "the confuser field already is the negated same-source marked-variance existential, and `⟨hMarked, hSameSource⟩` instantiates it.", "target": "False"}

@@ -32,13 +32,23 @@ projects/*/*
 !projects/*/public/
 !projects/*/public/**
 
-# Public demo project-intake fixture. Keep the minimal source surface tracked so
-# clean checkouts can validate `examples/project_packets/ready_demo_claims_packet.json`.
+# Public demo project-intake fixture. Keep the minimal source + readiness surface
+# tracked so clean checkouts trace as ready-for-in-loop (public-adversarial-smoke).
+# Runtime artifacts (debate logs, eval history, submissions, telemetry) stay ignored.
 !projects/demo_claims/
 projects/demo_claims/*
 !projects/demo_claims/raw/
 !projects/demo_claims/raw/source.md
 !projects/demo_claims/raw/source_type_map.json
+!projects/demo_claims/project_charter.md
+!projects/demo_claims/thesis.md
+!projects/demo_claims/evidence.txt
+!projects/demo_claims/compiled_evidence_provenance.json
+!projects/demo_claims/workspace/
+projects/demo_claims/workspace/*
+!projects/demo_claims/workspace/source_index.json
+!projects/demo_claims/workspace/workspace_meta.json
+!projects/demo_claims/workspace/source_index_receipt.json
 
 # Public operational diagnosis starter. Track only the deterministic source,
 # evidence, intake, and receipt surface; paid-run iteration artifacts stay
@@ -284,19 +294,16 @@ org/gates/resolved/*.json
 # Agent instructions
 CLAUDE.md
 
-# NS Track B public synthesis (per-project allow-list under projects/* deny)
 !projects/ns_millennium_hunt/
 projects/ns_millennium_hunt/*
 !projects/ns_millennium_hunt/public/
 !projects/ns_millennium_hunt/public/**
 
-# Confidential domain projects — never commit
 projects/figs
 projects/figs_hbs_turnaround_2026
 rubrics/figs*
 
-# Sandbox and experiment rubrics — contain GT params, grammar constraints, hidden gate configs
-# These are cheat sheets for the mutator if public. Domain rubrics stay public.
+# Experiment rubrics stay private; domain rubrics stay public.
 rubrics/gp0*.json
 rubrics/gp023_planck_sandbox_0[1-9].json
 rubrics/gp023_sandbox_*.json
@@ -473,25 +480,40 @@ analytics/public/forecast_pool/market_events.jsonl
 # Daemon-owned authoritative chain snapshot IS the record — ensure tracked.
 !analytics/public/official_store_snapshot/
 !analytics/public/official_store_snapshot/**
-# NS-millennium tree stays broadly ignored (line ~234 projects/ns_millennium_hunt/*)
-# EXCEPT operator-public artifacts. Track JUST the substrate research memory
-# (amnesia firewall). Re-include the dir chain first (git cannot re-include a
-# file whose parent dir is excluded), then the single file.
 !projects/ns_millennium_hunt/
 !projects/ns_millennium_hunt/workspace/
 projects/ns_millennium_hunt/workspace/*
 !projects/ns_millennium_hunt/workspace/ns_residual_manifest.md
-# Operator-public NS-millennium artifacts: the entire public/ folder
-# (JOURNEY.md etc.) is intentionally public — track it (the rest of the
-# ns_millennium_hunt tree stays ignored).
 !projects/ns_millennium_hunt/public/
 !projects/ns_millennium_hunt/public/**
-# Public NS atlas generator: keep the consumption artifact reproducible while
-# leaving the rest of the NS scripts tree ignored.
 !projects/ns_millennium_hunt/scripts/
 projects/ns_millennium_hunt/scripts/*
 !projects/ns_millennium_hunt/scripts/ns_formalization_atlas.py
 !projects/ns_millennium_hunt/scripts/build_ns_atlas_embeddings.py
+
+# Disposable ablation scratch — not workbench sample projects.
+projects/_dispexp_*/
+
+# papers/ is the public mirror of final deliverables (.tex/.bib/.md/.pdf +
+# evidence/). Working files — figures, build intermediates, reproducers — live
+# in the private per-paper root, not in the public mirror.
+papers/**/*.xdv
+papers/**/*.aux
+papers/**/*.log
+papers/**/*.out
+papers/**/*.fls
+papers/**/*.fdb_latexmk
+papers/**/*.synctex.gz
+papers/**/*.bbl
+papers/**/*.blg
+papers/**/*.toc
+papers/**/figures/
+papers/**/*.png
+papers/case_studies/
+
+# SQLite transient sidecars — never commit (checkpoint/shared-memory state).
+*.db-wal
+*.db-shm
 
 # ── Generated / external / build artifacts — not source. (Detailed rationale +
 #    accounting kept in internal notes, not in this public file.) ──
@@ -645,34 +667,6 @@ projects/fermi_paradox_discriminator/raw/*
 !projects/fermi_paradox_discriminator/workspace/
 projects/fermi_paradox_discriminator/workspace/*
 
-# Demo: figs_hbs_turnaround_2026
-!projects/figs_hbs_turnaround_2026/
-projects/figs_hbs_turnaround_2026/*
-!projects/figs_hbs_turnaround_2026/project_charter.md
-!projects/figs_hbs_turnaround_2026/thesis.md
-!projects/figs_hbs_turnaround_2026/evidence.txt
-!projects/figs_hbs_turnaround_2026/compiled_evidence.txt
-!projects/figs_hbs_turnaround_2026/compiled_evidence_packet.json
-!projects/figs_hbs_turnaround_2026/compiled_evidence_provenance.json
-!projects/figs_hbs_turnaround_2026/latest_eval_results.json
-!projects/figs_hbs_turnaround_2026/champion_eval_results.json
-!projects/figs_hbs_turnaround_2026/latest_probability_dag.json
-!projects/figs_hbs_turnaround_2026/champion_probability_dag.json
-!projects/figs_hbs_turnaround_2026/verified_axioms.json
-!projects/figs_hbs_turnaround_2026/compiled_evidence_packet.json
-!projects/figs_hbs_turnaround_2026/figs_hbs_turnaround_2026_packet.json
-!projects/figs_hbs_turnaround_2026/raw/
-projects/figs_hbs_turnaround_2026/raw/*
-!projects/figs_hbs_turnaround_2026/raw/*.md
-!projects/figs_hbs_turnaround_2026/raw/*.csv
-!projects/figs_hbs_turnaround_2026/raw/*.txt
-!projects/figs_hbs_turnaround_2026/raw/*.json
-!projects/figs_hbs_turnaround_2026/workspace/
-projects/figs_hbs_turnaround_2026/workspace/*
-!projects/figs_hbs_turnaround_2026/workspace/source_index.json
-!projects/figs_hbs_turnaround_2026/workspace/source_index_receipt.json
-!projects/figs_hbs_turnaround_2026/workspace/workspace_meta.json
-
 # Demo: ai_capex
 !projects/ai_capex/
 projects/ai_capex/*
@@ -705,7 +699,6 @@ projects/ai_capex/workspace/*
 
 # Demo project intakes (registered 2026-06-30 so they show in the workbench inventory)
 !projects/eu_union_failure_probability_2035/eu_union_failure_probability_2035_intake.json
-!projects/figs_hbs_turnaround_2026/figs_hbs_turnaround_2026_intake.json
 !projects/glp1_adoption_economics/glp1_adoption_economics_intake.json
 !projects/fermi_paradox_discriminator/fermi_paradox_discriminator_intake.json
 !projects/oeis_a001156/oeis_a001156_intake.json

@@ -85,3 +85,5 @@
 {"target": "iso_lemma_fraction_expand_single_map_numerator", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
 {"target": "mathd_algebra_182", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
 {"target": "mathd_algebra_182", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "cost_eq_statePriceWeighted_payoff", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}
+{"target": "cost_eq_statePriceWeighted_payoff", "hand_wired": {"kc": true, "mnc": true}, "kernel": {"passed": true, "confirmed": []}, "kernel_blocked": false}

@@ -1,0 +1,20 @@
+{
+  "bounded_claim": "A bounded discriminator separates the leading Fermi-paradox hypotheses (rare-Earth vs. great-filter vs. detectability limits) given the stated evidence.",
+  "created_at": "2026-06-30T00:00:00Z",
+  "evidence_refs": [
+    "evidence.txt"
+  ],
+  "execution_boundary": "in_loop_autoresearch_candidate",
+  "expected_command": "ztare autoresearch run --project fermi_paradox_discriminator --rubric fermi_paradox_discriminator --intake projects/fermi_paradox_discriminator/fermi_paradox_discriminator_intake.json",
+  "next_falsifier": "Reject or demote this thesis if the listed files do not support it.",
+  "non_claims": [],
+  "notes": "Recovered from existing folder for the workbench demo.",
+  "packet_id": "pp_f8067149a22e8c0f",
+  "project": "fermi_paradox_discriminator",
+  "rubric": "fermi_paradox_discriminator",
+  "schema_version": "1",
+  "source_refs": [
+    "raw/.gitkeep"
+  ],
+  "task": "Review Fermi Paradox Discriminator"
+}

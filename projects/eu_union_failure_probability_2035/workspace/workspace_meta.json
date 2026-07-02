@@ -1,0 +1,21 @@
+{
+  "changed_sources": 0,
+  "deleted_sources": [],
+  "generated_on": "June 21, 2026",
+  "merge_only": false,
+  "merge_status": "index_only",
+  "model_family": "gemini",
+  "model_id": "gemini-3.1-pro-preview",
+  "project": "eu_union_failure_probability_2035",
+  "prompts": {
+    "extract_source_note": "/Users/daalami/figs_activist_loop/config/prompts/extract_source_note.md",
+    "merge_workspace": "/Users/daalami/figs_activist_loop/config/prompts/merge_workspace.md"
+  },
+  "raw_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/raw",
+  "reused_sources": 20,
+  "source_count": 20,
+  "warnings": [
+    "Source 00_collection_plan.md has no source_type frontmatter; defaulting to untyped."
+  ],
+  "workspace_dir": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/workspace"
+}

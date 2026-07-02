@@ -1,0 +1,52 @@
+{
+  "action": "autoformalize_notes",
+  "command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "src.ztare.cli",
+    "leanmill",
+    "autoformalize-notes",
+    "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.md"
+  ],
+  "created_at": "2026-07-01T18:25:42Z",
+  "expected_artifact": "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.autoformalize_result.json",
+  "finished_at": "2026-07-01T18:26:37Z",
+  "label": "Autoformalize from notes",
+  "notes_path": "projects/autoresearch_control_demo_deepseek_20260619/workspace/autoformalize_smoke_notes.md",
+  "notes_sha256": "6ab995e33406c86d1b8c69fe8cf759a90ad480bef7e8ffe8c53d31164850a2a9",
+  "paths": {
+    "job": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.json",
+    "result": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a_result.json",
+    "stderr": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.stderr.log",
+    "stdout": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.stdout.log"
+  },
+  "pid": 99300,
+  "project": "",
+  "requires_confirmation": false,
+  "result_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a_result.json",
+  "returncode": 0,
+  "runner_command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "ztare.leanmill.workbench_actions",
+    "run-job",
+    "analytics/public/leanmill/workbench/jobs/lm_20260701_182542_430f5edc0a.json"
+  ],
+  "runner_started_at": "2026-07-01T18:25:43Z",
+  "schema": "ztare-leanmill-workbench-job-v1",
+  "started_at": "2026-07-01T18:25:42Z",
+  "status": "completed",
+  "storage": {
+    "backend": "file",
+    "detachable": true,
+    "future_backends": [
+      "object_store",
+      "database"
+    ],
+    "root": ".",
+    "schema": "ztare-forensic-workbench-storage-v1",
+    "secret_storage": "env_only",
+    "write_mode": "local_filesystem"
+  },
+  "timeout_s": 0
+}

@@ -1,7 +1,7 @@
 {
   "arm_id": "D_ordinary_review",
   "source_contract": "benchmarks/evaluator_hardening_frozen/ordinary_review_arm_contract.json",
-  "source_run": "benchmarks/constraint_memory/runs/20260404_195100",
+  "source_run": "benchmarks/evaluator_hardening_frozen/source_run_20260404_195100",
   "specimen_count": 9,
   "prompts": [
     {

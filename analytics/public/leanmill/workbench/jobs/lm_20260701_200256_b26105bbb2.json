@@ -1,0 +1,61 @@
+{
+  "action": "proof_audit",
+  "audit_timeout_s": 300,
+  "command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "src.ztare.cli",
+    "leanmill",
+    "proof-audit",
+    "--target",
+    "ztare_proofs/check.lean",
+    "--out",
+    "ztare_proofs/check.proof_audit_receipt.json",
+    "--timeout-s",
+    "300",
+    "--target-name",
+    "check"
+  ],
+  "created_at": "2026-07-01T20:02:56Z",
+  "expected_artifact": "ztare_proofs/check.proof_audit_receipt.json",
+  "finished_at": "2026-07-01T20:04:00Z",
+  "label": "Ratify a proof",
+  "paths": {
+    "job": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.json",
+    "result": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2_result.json",
+    "stderr": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stderr.log",
+    "stdout": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stdout.log"
+  },
+  "pid": 15971,
+  "project": "",
+  "requires_confirmation": false,
+  "result_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2_result.json",
+  "returncode": 1,
+  "runner_command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "ztare.leanmill.workbench_actions",
+    "run-job",
+    "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.json"
+  ],
+  "runner_started_at": "2026-07-01T20:02:56Z",
+  "schema": "ztare-leanmill-workbench-job-v1",
+  "source_file": "ztare_proofs/check.lean",
+  "source_sha256": "c9c3b49e3ae493a4c89fc230f9147443634f5b0fb1b0afa748d3d640af6f7e2c",
+  "started_at": "2026-07-01T20:02:56Z",
+  "status": "failed",
+  "storage": {
+    "backend": "file",
+    "detachable": true,
+    "future_backends": [
+      "object_store",
+      "database"
+    ],
+    "root": ".",
+    "schema": "ztare-forensic-workbench-storage-v1",
+    "secret_storage": "env_only",
+    "write_mode": "local_filesystem"
+  },
+  "target_name": "check",
+  "timeout_s": 360
+}

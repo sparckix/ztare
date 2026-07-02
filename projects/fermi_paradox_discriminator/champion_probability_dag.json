@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "MIR-integral null robustly discriminates between R3 and R5, achieving \u22652 nats of Bayesian update under plausible foreground models with next-gen instrumentation",
+    "probability": 0.72
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "label": "Beacon-class emitters plausibly rare (\u03bb_b < 1) ; beacon-null is structurally degenerate",
+      "probability": 0.9,
+      "watch_signal": "SKA/LOFAR nulls, model reviews"
+    },
+    {
+      "id": "n2",
+      "label": "Technogenic waste heat is thermodynamically inescapable for K1-class civilizations",
+      "probability": 0.85,
+      "watch_signal": "engineering/law-of-physics reviews"
+    },
+    {
+      "id": "n3",
+      "label": "Foreground MIR backgrounds can be modeled/calibrated sufficiently for HWO/LIFE-class discriminators",
+      "probability": 0.65,
+      "watch_signal": "LIFE/HWO mission reports, astro modeling convergence"
+    },
+    {
+      "id": "n4",
+      "label": "Bayes factor/likelihood-ratio achievable for \u22652 nats shift with null MIR-excess (integration of signal and error budgets)",
+      "probability": 0.7,
+      "watch_signal": "Forecasted error propagation, community Bayesian analysis, design reviews"
+    }
+  ],
+  "edges": [
+    {
+      "from": "n1",
+      "to": "n4",
+      "weight": 0.3
+    },
+    {
+      "from": "n2",
+      "to": "n4",
+      "weight": 0.5
+    },
+    {
+      "from": "n3",
+      "to": "n4",
+      "weight": 1.0
+    },
+    {
+      "from": "n4",
+      "to": "outcome",
+      "weight": 1.0
+    }
+  ]
+}

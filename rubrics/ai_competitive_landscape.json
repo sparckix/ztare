@@ -1,5 +1,42 @@
 {
+  "rubric_version": "1.0",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative competitive-analysis thesis over text evidence; descriptive scoring, not numerical discovery.",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "Text evidence and market-mechanism thesis; no numeric evidence curve is being fitted.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival mechanisms are evaluated by qualitative criteria rather than expression uniqueness.",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "require_i_model_in_submission": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail extrapolation domain applies to this qualitative project.",
   "persona": "You are a senior TMT analyst who has covered three prior platform transitions — PC software, mobile apps, and cloud infrastructure — and you know that the winning platform rarely emerges from the initial capability leader. You are allergic to: (1) 'best model wins' arguments that ignore distribution, switching costs, and ecosystem lock-in, (2) market share projections starting from API call volume without modeling enterprise procurement dynamics, (3) competitive claims that don't specify what the losing incumbent will do in response — incumbents rarely stand still, (4) benchmark comparisons that don't translate to production use-case differentiation, (5) any thesis that treats OpenAI, Anthropic, Google, and Meta as having symmetric competitive positions when their cost structures, distribution assets, and incentive structures are fundamentally different. You reward: specific near-term structural moves (distribution agreements, pricing changes, vertical integrations, enterprise contract sizes) as mechanism evidence, honest acknowledgment of where model quality is converging vs. diverging, falsifiable predictions tied to observable market events within 12 months, and theses that explain why the structural winner is not the obvious capability leader — or alternatively, why this time capability concentration is the durable moat. You explicitly reward theses that state how their model would be revised if the named structural mechanism fails to materialize.",
+
+  "dimensions": [
+    {
+      "name": "Competitive Mechanism (The 'Why Not Just Best Model?' Test)",
+      "weight": 30,
+      "description": "Identify the structural mechanism driving durable competitive position, explain why it persists as model quality converges, and name which competitor is most exposed."
+    },
+    {
+      "name": "Near-Term Structural Moves (The '12-Month Falsifiable Horizon' Test)",
+      "weight": 25,
+      "description": "Name specific observable events within 12 months, tie each event to the predicted mechanism, and state the evidence source and threshold."
+    },
+    {
+      "name": "Enterprise vs. Consumer Dynamics (The 'Different Lock-In' Test)",
+      "weight": 25,
+      "description": "Separate enterprise and consumer lock-in mechanisms, name the segment where the thesis operates, and avoid generalizing across segments without support."
+    },
+    {
+      "name": "Kill Criteria (The 'What Ends This Thesis?' Test)",
+      "weight": 20,
+      "description": "State observable events or thresholds within 18 months that would require a different explanation, including a capability-convergence kill criterion."
+    }
+  ],
 
   "criteria": {
     "Competitive Mechanism (The 'Why Not Just Best Model?' Test)": "30 pts. The thesis must identify the primary mechanism driving durable competitive position — structural, not merely capability-dependent. Award full points if: (1) the mechanism is one of: distribution lock-in (existing enterprise relationships, IDE/workflow embedding, OS-level defaults, cloud bundling), cost structure advantage (inference efficiency, proprietary silicon, training data flywheel), or ecosystem lock-in (fine-tuning pipelines, agent frameworks, memory/context persistence), (2) the thesis explains why the identified mechanism is durable as model quality converges across providers — specifically, what prevents the capability-inferior competitor from purchasing distribution or replicating the ecosystem within 18 months, and (3) the thesis names which competitor is most exposed to the mechanism and why their response options are structurally limited. Penalize if the mechanism is reducible to 'better model' without specifying what structural advantage persists when others close the capability gap.",

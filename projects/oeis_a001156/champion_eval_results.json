@@ -1,0 +1,163 @@
+{
+  "score": 85,
+  "weakest_point": "Unproven uniqueness of the composite rational functional form ('model class closure'): The thesis asserts that only this rational hybrid of shifted-root and root-plus-linear numerator over reciprocal-linear-plus-constant denominator can fit all observed trends and out-of-sample gates. There is no rigorous exclusion of sophisticated rivals such as non-polynomial, hybrid, or exotic analytic models, especially those tuned to the (subtly) visible double-inflection structure or matching by composite fitting. If a different function (even a complicated or non-closed-form one) can match the residual constraints in all verified ranges, the claimed uniqueness collapses.",
+  "verified_axioms": [],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "other",
+      "target": "ModelClass",
+      "description": "There is no explicit or constructive proof that **no other analytic or semi-analytic model** (including hybrids, integral forms, or subtle power-law/log-mix functions) could satisfy the empirical sub-linear fit with curvature and all gate constraints.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "The critical claim is not just about fit, but about uniqueness. Failure to exhaustively rule out alternatives means the thesis could be invalidated by future model proposals.",
+      "fetch_query": "Enumerate all relevant composite and non-composite functional forms using permitted operations and verify fits over holdout and farther-tail slices.",
+      "adversarial_direction": true
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "Any valid f(n) must provide sub-linear monotone growth, calibrated against at least two numeric data anchors, and pass all 4 residual gates (including farther-tail). No fit-primitive may include imported named constants or external mathematical results.",
+      "applies_to": "All thesis models",
+      "failure_family": "domain_grammar_enforced_violations",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "This is directly demanded by the project charter and gate rubric. Failure means forced decertification.",
+      "non_applicability_condition": "If the sponsor amends the charter for broader primitives or more relaxed residual bounds."
+    }
+  ],
+  "logic_gaps": [
+    "No constructive exhaustion of functional alternatives: The thesis asserts 'only this form' but does not provide an enumerative or analytic proof (or even sharp empirical challenge) that all other plausible sub-linear monotone smooth primitives (e.g., certain log-polylog, log*sqrt-log, iterated exponential roots, or nonalgebraic rational hybrids) fail the residual test.",
+    "No demonstration of robustness to microstructure or fine-scale variation: While acknowledged by the thesis as unresolved, it is possible the coarse sampling (step-10 in n) could miss periodic or discontinuous features that would break global fit or defeat extrapolation.",
+    "No causal/generative interpretation is proposed: Fit is argued entirely by empirical trend with no claim or exploration of underlying mechanism."
+  ],
+  "debate_summary": "The model fulfills all deterministic gate and rubric requirements in terms of accuracy, numeric discriminators, and primitive grammar compliance, and explicitly outperforms the classical quadratic log rival on all visible and farther-tails. However, a severe epistemic gap remains: the argument for uniqueness (that the composite rational form is 'the only one') is not analytically airtight; it instead relies on absence of discovered rivals rather than exhaustion of the possible functional space. No proof is given that another as-yet-unconsidered model\u2014especially intractable or hybrid forms\u2014cannot meet the same error bounds. Thus, while the thesis is presently the strongest survivor (and passes Level 3 quantitative tests), its claim must be regarded as provisionally dominant, *not* decisively unassailable.",
+  "adversarial_alignment": "Defensive, but not airtight: The thesis carefully acknowledges observational and sampling limits, but the uniqueness claim is brittle if a hidden exotic model emerges. All current gates are satisfied, but the epistemic confidence is not maximal.",
+  "friction_points": [
+    "Uniqueness claim without constructive negative evidence for all rival functional families.",
+    "No exploration of nonalgebraic or highly composite functional rivals.",
+    "Outcome highly dependent on continued smooth trend in unseen n: A tail regime-flip or microstructure is not testable with this approach.",
+    "Model selection is assertion-by-elimination, not formal proof."
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "Composite Rational Model is Uniquely Correct, Passes All Gates",
+      "probability": 0.74
+    },
+    "nodes": [
+      {
+        "id": "A",
+        "label": "Status: Only composite rational form matches all observed residuals and curvature.",
+        "probability": 0.8,
+        "watch_signal": "No currently known alternative fits all gates"
+      },
+      {
+        "id": "B",
+        "label": "No plausible untested functional family can exist that also fits sub-linear, monotone, concave-upward curve and all residual gates.",
+        "probability": 0.63,
+        "watch_signal": "High-fidelity fit for a rival on visible and farther-tail data surfaces"
+      },
+      {
+        "id": "C",
+        "label": "Observed y(n) is representative and free of fine-scale microstructure or periodic regime flips.",
+        "probability": 0.76,
+        "watch_signal": "New data at finer granularity reveals inhomogeneity or stepwise features"
+      },
+      {
+        "id": "D",
+        "label": "Empirical fit is meaningful and sample covers all functional regimes materially relevant for n \u2192 \u221e.",
+        "probability": 0.78,
+        "watch_signal": "Structural break or change in curvature detected in farther tail slices"
+      }
+    ],
+    "edges": [
+      {
+        "from": "A",
+        "to": "outcome",
+        "weight": 0.45
+      },
+      {
+        "from": "B",
+        "to": "outcome",
+        "weight": 0.3
+      },
+      {
+        "from": "C",
+        "to": "outcome",
+        "weight": 0.15
+      },
+      {
+        "from": "D",
+        "to": "outcome",
+        "weight": 0.1
+      }
+    ]
+  },
+  "score_contract": {
+    "evidence_gap_count": 1,
+    "blocking_evidence_gap_count": 0,
+    "degrading_evidence_gap_count": 1,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "ModelClass"
+    ],
+    "evidence_boundary_ceiling_detected": false,
+    "evidence_boundary_detail": "",
+    "derived_constraint_proposal_count": 1,
+    "derived_constraint_failure_families": [
+      "domain_grammar_enforced_violations"
+    ],
+    "derived_constraint_targets": [
+      "All thesis models"
+    ],
+    "mode": "raw_llm_score",
+    "version": 1,
+    "regime": {
+      "mode": "raw_llm_score",
+      "version": 1,
+      "rubric_name": "oeis_a001156",
+      "rubric_fingerprint": "aa99180a32ff04f6",
+      "judge_model": "gpt-4.1",
+      "requested_judge_model": "gpt-4.1",
+      "effective_judge_models": [
+        "gpt-4.1"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/oeis_a001156/evidence.txt",
+      "evidence_fingerprint": "ba594208de450c2e",
+      "project_forecast_type": "unspecified"
+    },
+    "regime_fingerprint": "76ece5da27f45ca6",
+    "judge_model": "gpt-4.1",
+    "requested_judge_model": "gpt-4.1",
+    "effective_judge_models": [
+      "gpt-4.1"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "oeis_a001156",
+    "rubric_fingerprint": "aa99180a32ff04f6",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/oeis_a001156/evidence.txt",
+    "evidence_fingerprint": "ba594208de450c2e",
+    "project_forecast_type": "unspecified",
+    "test_suite_status": "pass"
+  },
+  "usage_telemetry": {
+    "model_name": "gpt-4.1-2025-04-14",
+    "input_tokens": 7776,
+    "output_tokens": 2597,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 2048,
+    "estimated_cost_usd": 0.037352,
+    "cost_known": true
+  },
+  "artifact_role": "champion",
+  "describes_baseline": "champion",
+  "score_regime_fingerprint": "76ece5da27f45ca6"
+}

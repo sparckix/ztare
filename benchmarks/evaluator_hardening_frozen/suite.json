@@ -1,6 +1,6 @@
 {
   "suite_id": "evaluator_hardening_frozen_v0",
-  "source_run": "benchmarks/constraint_memory/runs/20260404_195100",
+  "source_run": "benchmarks/evaluator_hardening_frozen/source_run_20260404_195100",
   "pass_threshold": 60,
   "claim": "bounded public evidence that deterministic gates and evaluator primitives improve claim discipline on the frozen constraint-memory benchmark",
   "artifact_backed_arms": [

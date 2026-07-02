@@ -1,6 +1,6 @@
 {
   "schema": "leanmill-ui-state-v1",
-  "generated_at": "2026-05-29T16:47:37.118947+00:00",
+  "generated_at": "2026-06-30T23:28:16.829860+00:00",
   "lane_b": {
     "available": true,
     "generated_at": "2026-05-29T16:02:47.795989+00:00",
@@ -89,25 +89,302 @@
   },
   "solver_lane": {
     "available": true,
-    "generated_at": "2026-05-29T00:04:16.177447+00:00",
+    "generated_at": "2026-06-29T04:40:13.110190+00:00",
     "lane": "solver_lane",
     "rows": [
       {
-        "row_id": "APN_hilbert_1_sorried",
-        "target": "P1",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "target": "cost_eq_statePriceWeighted_payoff",
         "outcome": "closed",
-        "compile_ok": null,
+        "compile_ok": true,
         "provider": "claude_opus",
-        "providers_tried": []
+        "providers_tried": [
+          "proof_cache",
+          "native_hammer",
+          "claude_opus_warm",
+          "claude_opus"
+        ]
       }
     ]
   },
   "solver_attempts": {
-    "total_attempts": 0,
-    "distinct_rows": 0,
-    "closures": 0,
-    "by_provider": [],
-    "recent": []
+    "total_attempts": 3151,
+    "distinct_rows": 319,
+    "closures": 486,
+    "by_provider": [
+      {
+        "provider": "native_hammer",
+        "outcome": "failed_compile",
+        "count": 1194
+      },
+      {
+        "provider": "claude_opus_warm",
+        "outcome": "failed_compile",
+        "count": 592
+      },
+      {
+        "provider": "claude_opus_warm",
+        "outcome": "closed",
+        "count": 370
+      },
+      {
+        "provider": "conjecture_lemma",
+        "outcome": "no_advance",
+        "count": 229
+      },
+      {
+        "provider": "claude_opus",
+        "outcome": "failed_compile",
+        "count": 148
+      },
+      {
+        "provider": "conjecture_lemma",
+        "outcome": "advanced",
+        "count": 129
+      },
+      {
+        "provider": "deepseek_v2",
+        "outcome": "failed_compile",
+        "count": 89
+      },
+      {
+        "provider": "codex_gpt5",
+        "outcome": "failed",
+        "count": 78
+      },
+      {
+        "provider": "native_hammer",
+        "outcome": "closed",
+        "count": 69
+      },
+      {
+        "provider": "codex_gpt5",
+        "outcome": "failed_compile",
+        "count": 53
+      },
+      {
+        "provider": "codex",
+        "outcome": "failed",
+        "count": 42
+      },
+      {
+        "provider": "claude_opus",
+        "outcome": "failed",
+        "count": 27
+      },
+      {
+        "provider": "claude",
+        "outcome": "failed",
+        "count": 23
+      },
+      {
+        "provider": "deepseek_v2",
+        "outcome": "failed",
+        "count": 16
+      },
+      {
+        "provider": "cache_reuse",
+        "outcome": "closed",
+        "count": 15
+      },
+      {
+        "provider": "codex",
+        "outcome": "compiled_unratified",
+        "count": 12
+      },
+      {
+        "provider": "generalize",
+        "outcome": "failed_compile",
+        "count": 11
+      },
+      {
+        "provider": "claude_opus",
+        "outcome": "closed",
+        "count": 6
+      },
+      {
+        "provider": "gemini",
+        "outcome": "failed",
+        "count": 6
+      },
+      {
+        "provider": "grok",
+        "outcome": "failed",
+        "count": 6
+      },
+      {
+        "provider": "codex",
+        "outcome": "closed",
+        "count": 5
+      },
+      {
+        "provider": "deepseek",
+        "outcome": "failed",
+        "count": 5
+      },
+      {
+        "provider": "leanmill_self_correction",
+        "outcome": "closed",
+        "count": 5
+      },
+      {
+        "provider": "kimi-code",
+        "outcome": "failed",
+        "count": 2
+      },
+      {
+        "provider": "native_hammer",
+        "outcome": "harness_dead",
+        "count": 2
+      },
+      {
+        "provider": "proof_cache",
+        "outcome": "failed_compile",
+        "count": 2
+      },
+      {
+        "provider": "reflection",
+        "outcome": "failed_compile",
+        "count": 2
+      },
+      {
+        "provider": "abduce",
+        "outcome": "no_seed",
+        "count": 1
+      },
+      {
+        "provider": "claude",
+        "outcome": "closed",
+        "count": 1
+      },
+      {
+        "provider": "claude_warm_recovered",
+        "outcome": "closed",
+        "count": 1
+      },
+      {
+        "provider": "codex_gpt5",
+        "outcome": "closed",
+        "count": 1
+      },
+      {
+        "provider": "functor_lift",
+        "outcome": "failed_compile",
+        "count": 1
+      },
+      {
+        "provider": "leanmill_self_correction",
+        "outcome": "rejected_anti_laundering",
+        "count": 1
+      },
+      {
+        "provider": "proposer_pool",
+        "outcome": "failed_compile",
+        "count": 1
+      },
+      {
+        "provider": "sledgehammer",
+        "outcome": "failed_compile",
+        "count": 1
+      },
+      {
+        "provider": "specialize",
+        "outcome": "no_rung",
+        "count": 1
+      },
+      {
+        "provider": "specialize",
+        "outcome": "rung",
+        "count": 1
+      },
+      {
+        "provider": "tactic_step",
+        "outcome": "inadmissible",
+        "count": 1
+      },
+      {
+        "provider": "warm_leaf(claude_opus)",
+        "outcome": "closed",
+        "count": 1
+      },
+      {
+        "provider": "witness_transport",
+        "outcome": "no_witness",
+        "count": 1
+      }
+    ],
+    "recent": [
+      {
+        "attempt_at": "2026-06-29T04:39:52.629686+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "claude_opus",
+        "outcome": "closed",
+        "compile_ok": true
+      },
+      {
+        "attempt_at": "2026-06-29T04:39:32.198321+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "claude_opus_warm",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-29T04:38:56.199667+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "native_hammer",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-29T04:38:56.198762+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "proof_cache",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-29T04:38:16.529708+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "claude_opus",
+        "outcome": "closed",
+        "compile_ok": true
+      },
+      {
+        "attempt_at": "2026-06-29T04:37:41.222741+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "claude_opus_warm",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-29T04:36:45.558564+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "native_hammer",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-29T04:36:26.717733+00:00",
+        "row_id": "adhoc::cost_eq_statePriceWeighted_payoff",
+        "provider": "proof_cache",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-24T21:57:07.637836+00:00",
+        "row_id": "adhoc::iso_lemma_full_level_pays_tranche",
+        "provider": "native_hammer",
+        "outcome": "failed_compile",
+        "compile_ok": false
+      },
+      {
+        "attempt_at": "2026-06-24T21:56:15.984736+00:00",
+        "row_id": "adhoc::iso_lemma_senior_level_lies_before_junior",
+        "provider": "native_hammer",
+        "outcome": "closed",
+        "compile_ok": true
+      }
+    ]
   },
   "corpus_mandates": {
     "available": true,

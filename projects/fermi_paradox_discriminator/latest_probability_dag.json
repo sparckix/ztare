@@ -1,0 +1,49 @@
+{
+  "outcome": {
+    "label": "HWO/LIFE-class MIR null robustly discriminates between R3 (expansion-collapse) and R5 (observation-limited) by >2-nat Bayesian shift",
+    "probability": 0.72
+  },
+  "nodes": [
+    {
+      "id": "A1",
+      "label": "Civilizations using stellar-scale power generate unavoidable MIR excess (under R5, but not R3)",
+      "probability": 0.8,
+      "watch_signal": "No plausible technological scenario can suppress thermodynamic waste heat below detection threshold, given consumption scale."
+    },
+    {
+      "id": "A2",
+      "label": "HWO/LIFE-class instruments achieve sufficient sensitivity to detect >5\u03c3 aggregate MIR excess from tech",
+      "probability": 0.85,
+      "watch_signal": "Lab and engineering reports on LIFE/HWO sensitivities and effective systematics control."
+    },
+    {
+      "id": "A3",
+      "label": "Astrophysical MIR background and its systematic scatter \u03c3_astro can be independently measured and certified < \u03c3_astro* in relevant regimes",
+      "probability": 0.6,
+      "watch_signal": "Post-launch survey reports, calibration field variance, template subtraction trials, and cross-survey comparison to direct background modeling."
+    },
+    {
+      "id": "A4",
+      "label": "Posterior shift for MIR null result surpasses 2 nats for reasonable priors under certified noise floors",
+      "probability": 0.8,
+      "watch_signal": "Peer-reviewed publication of formal Bayes update in survey null finding, with full error accounting."
+    }
+  ],
+  "edges": [
+    {
+      "from": "A1",
+      "to": "A4",
+      "weight": 0.7
+    },
+    {
+      "from": "A2",
+      "to": "A4",
+      "weight": 0.6
+    },
+    {
+      "from": "A3",
+      "to": "A4",
+      "weight": 1.0
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "bounded_claim": "The EU's existing automatic fiscal stabilizers (semi-elasticity 0.48\u20130.56; absorbing 10\u201330% of a standard GDP shock) are insufficient to substitute for the standing central-budget mechanism that mature federations rely on for permanent shock absorption.",
+  "created_at": "2026-06-20T14:26:45Z",
+  "draft_source": {
+    "candidate_source_ids": [
+      "S004",
+      "S005"
+    ],
+    "claim_index": 1,
+    "compiled_path": "projects/eu_union_failure_probability_2035/compiled_evidence_packet.json",
+    "kind": "compiled_evidence_artifact",
+    "missing_source_ids": [],
+    "missing_source_refs": [],
+    "provenance_path": "projects/eu_union_failure_probability_2035/compiled_evidence_provenance.json"
+  },
+  "evidence_refs": [
+    "projects/eu_union_failure_probability_2035/compiled_evidence_packet.json",
+    "projects/eu_union_failure_probability_2035/compiled_evidence.txt",
+    "projects/eu_union_failure_probability_2035/compiled_evidence_provenance.json"
+  ],
+  "execution_boundary": "in_loop_autoresearch_candidate",
+  "expected_command": "ztare autoresearch route --task 'test whether compiled claim 1 remains supported under in-loop review' --project eu_union_failure_probability_2035 --rubric eu_union_failure_probability_2035 --packet projects/eu_union_failure_probability_2035/eu_union_failure_probability_2035_packet.json",
+  "next_falsifier": "remove one declared source or compiled artifact ref and validation must fail",
+  "non_claims": [
+    "not evidence that the claim is true",
+    "not a full replication",
+    "not a live autoresearch run"
+  ],
+  "notes": "Drafted from projects/eu_union_failure_probability_2035/compiled_evidence_packet.json claim_index=1; review before enqueueing for in-loop autoresearch.",
+  "packet_id": "pp_d94d5ccf382d810d",
+  "project": "eu_union_failure_probability_2035",
+  "rubric": "eu_union_failure_probability_2035",
+  "schema_version": 1,
+  "source_refs": [
+    "projects/eu_union_failure_probability_2035/raw/12_imf_existing_federations_risk_sharing.md",
+    "projects/eu_union_failure_probability_2035/raw/13_ecb_automatic_stabilisers_and_survival_mechanisms.md"
+  ],
+  "task": "test whether compiled claim 1 remains supported under in-loop review"
+}

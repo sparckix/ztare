@@ -1,0 +1,334 @@
+GLP-1 ADOPTION ECONOMICS — EVIDENCE
+Compiled: 2026-04-13 | Sources: Mercer, KFF, BCBS, CNBC, OneDayMD, Novo press releases
+
+=== MARKET SIZE AND GROWTH ===
+- Global GLP-1 market: $70.08B in 2025, projected $201.79B by 2033 (CAGR 12.78%)
+- US prescription claim share: 6.9% (2023) → 10.5% (2025)
+- GLP-1s now >15% of annual claims for >25% of employers
+- Semaglutide (Ozempic/Wegovy) 2026 revenue forecast: ~$36B (despite price cut, offset by volume)
+
+=== PRICING ===
+- Novo Nordisk list price cut: up to 70% reduction on Ozempic and Wegovy (announced 2025–2026)
+- Medicare/Medicaid negotiated price: $245/month for eligible patients (vs. prior $800–$1,000/month)
+- Net price vs. list price: significant gap due to rebates; effective net may be $300–$500 even at prior list
+- Generic competition: not yet material for semaglutide; Tirzepatide (Eli Lilly) competes at premium
+
+=== PAYER COVERAGE ===
+- Medicaid: 13 state programs cover GLP-1s for obesity treatment (FFS basis, Jan 2026)
+- Medicare Part D: obesity indication coverage begins January 2027
+- Employer coverage: highly variable; many employers exclude GLP-1s for weight loss (not T2D)
+- BALANCE model: CMS initiative to expand Medicaid GLP-1 access — implementation timeline TBD
+- Federal employees: covered under FEHB plans (some plans)
+
+=== EMPLOYER COST IMPACT — REFINED DATA (EBRI Simulation Analysis) ===
+- BCBS headline: up to 14% premium increase (upper bound, high adherence, broad eligibility)
+- EBRI simulation range: 5.3% to 13.8% depending on adherence, cost-sharing, and eligibility assumptions
+- EBRI lower-price scenario ($200/month): only 1% to 3.9% premium increase
+- Current GLP-1 net cost: up to $766/month (net of discounts and rebates — NOT list price)
+- Goldman Sachs: +0.4% GDP at 30M user baseline (productivity + healthcare savings)
+- Discontinuation rates: 40–60% within 1 year — means NET penetration is materially below GROSS claims
+- Large employer adoption: 43% of firms >5,000 workers cover GLP-1 for weight loss in 2025 (up from 28% in 2024)
+- Medium employer adoption: 19% of firms 200+ workers cover in 2025
+- Source: EBRI https://www.ebri.org/content/glp-1-coverage-and-its-impact-on-employment-based-health-plan-premiums--a-simulation-based-analysis
+
+=== CLINICAL ELIGIBILITY POOL ===
+- US adult obesity prevalence: ~42% (~100M+ adults clinically eligible on BMI criteria)
+- T2D prevalence: ~37M (many overlap with obesity; T2D indication has broader coverage)
+- Effective eligible-and-covered pool as of 2026: estimated 20–30M (much smaller than clinical pool)
+
+=== DATA GAPS — TO COMPILE ===
+[ ] Monthly prescription volume 2024–2026 (IMS Health / IQVIA data)
+[ ] State-level adoption rates — covered vs. uncovered Medicaid states comparison
+[ ] Employer survey: % of employers offering vs. excluding GLP-1 coverage (Mercer annual survey)
+[ ] Discontinuation rate data — 12-month persistence by payer type
+[ ] Medicare Part D GLP-1 enrollment projections — CMS actuarial estimates
+[ ] GLP-1 vs. bariatric surgery cost-effectiveness data for payer coverage decision modeling
+
+=== KEY SOURCES FOR COMPILE_EVIDENCE ===
+- Mercer GLP-1 2026 guide: https://www.mercer.com/en-us/insights/us-health-news/glp-1-considerations-for-2026/
+- KFF Medicaid GLP-1 coverage: https://www.kff.org/medicaid/medicaid-coverage-of-and-spending-on-glp-1s/
+- BCBS premium impact: https://www.bcbs.com/news-and-insights/article/glp-1-could-increase-employer-premiums
+- OneDayMD 2026 authority report: https://www.onedaymd.com/2026/02/the-glp-1-era-how-ozempic-economy-is.html
+- Drug Discovery Trends (Novo pricing): https://www.drugdiscoverytrends.com/novo-slashes-us-glp-1-prices-by-up-to-70-but-2026-semaglutide-revenue-could-hold-steady-or-even-grow/
+
+
+## Evidence Batch — 2026-04-13T23:07:17Z
+Gap index: 0
+Gap severity: degrading
+Gap target: Novo Nordisk US price cuts up to 70%
+Gap query: Novo Nordisk GLP-1 US price cuts 2025
+Run timestamp: April 13, 2026
+Status: accepted
+Source note: web_search via claude-sonnet-4-6
+
+## Novo Nordisk GLP-1 U.S. Price Cuts: Factual Summary
+
+### Pre-Cut Baseline Prices
+
+
+Wegovy's list price was approximately $1,350/month, while Ozempic and Rybelsus ran at approximately $1,000/month.
+
+ 
+
+Health economists at ICER estimated that current net prices of about $7,000–$9,000 per year (roughly $600–$750/month) already sat within the usual U.S. cost-effectiveness range for obesity treatment — roughly half to two-thirds of original list prices.
+
+
+
+---
+
+### February 2026: Major WAC List Price Cuts (Effective Jan. 1, 2027)
+
+
+Novo announced plans to cut the U.S. wholesale acquisition cost (WAC) of its semaglutide products to **$675/month**, effective January 1, 2027, applying to the full suite including both injectable and oral Wegovy, injectable Ozempic, and oral Rybelsus.
+
+ 
+
+For Wegovy, this represents a **50% reduction** from its current list price; for Ozempic, it is a **35% reduction**.
+
+
+
+
+
+Notably, the new list prices do not affect direct-to-patient, self-pay prescriptions. Citi analyst Geoffrey Meacham noted the move will likely benefit only a small portion of new prescriptions, since cash-pay channels now hold an "overwhelming share."
+
+
+
+---
+
+### November 2025: Trump/TrumpRx Deal & Medicare/Medicaid Pricing
+
+
+President Trump announced deals with Eli Lilly and Novo Nordisk to lower GLP-1 drug prices on Medicare and Medicaid, and to offer treatments directly to consumers at a discount on a new platform called **TrumpRx.gov**.
+
+
+
+Key price points from the deal:
+- 
+
+Novo Nordisk and Eli Lilly agreed to cut the price Medicare pays for GLP-1s to **$245/month**, extending that government price across all 50 Medicaid programs for all covered uses.
+
+
+- 
+
+Certain Medicare patients will pay a copay of **$50/month** for approved uses of injectable and oral GLP-1 drugs.
+
+
+- 
+
+Starting doses of upcoming obesity pills will be **$149/month** for everyone getting them through Medicare, Medicaid, or TrumpRx.
+
+
+- 
+
+Consumers buying injectable GLP-1 medications directly from the companies will pay an average of **$350/month** to start, with drugmakers committed to reducing that price to about **$250** over the next two years.
+
+
+
+---
+
+### November 2025: Self-Pay Channel Price Cuts
+
+
+Novo offered the first two monthly doses of Wegovy and Ozempic for **$199** (expiring end of March), and reduced the self-pay price for other patients to **$349/month**, down from $499/month.
+
+ 
+
+For comparison, compounding pharmacy Hims & Hers charges as little as $199/month for compounded semaglutide.
+
+
+
+---
+
+### Competitive Context & Market Share
+
+
+In Q4 2025, Lilly's Mounjaro grew 110% YoY to $7.41B and Zepbound grew 123% to $4.26B, while Ozempic grew only 1% to ~$5B and Wegovy grew 17% to $3.44B — both shrinking ~2% in the U.S. market.
+
+---
+
+
+## Evidence Batch — 2026-04-14T00:49:41Z
+Gap index: 0
+Gap severity: degrading
+Gap target: Novo Nordisk US price cut details (up to 70%).
+Gap query: Novo Nordisk GLP-1 price reduction US
+Run timestamp: April 13, 2026
+Status: accepted
+Source note: web_search via claude-sonnet-4-6
+
+## Novo Nordisk GLP-1 Price Reductions in the U.S.: Key Facts
+
+### 1. List Price Cuts Announced (February 2026)
+
+
+
+Novo Nordisk announced it will cut U.S. list prices for its blockbuster GLP-1 therapies — including Wegovy and Ozempic — by up to 50%, a move that signals both political and competitive pressure on the sector's most dominant player.
+
+ Specifically, 
+
+Novo said it would reduce U.S. list prices for its GLP-1 portfolio, including Wegovy, Ozempic, and the oral semaglutide Rybelsus, to a flat **$675 per month** for each drug, down from about **$1,350** for Wegovy and from about **$1,000** for Ozempic and Rybelsus.
+
+
+
+
+
+For Wegovy, the WAC reduction represents a **50% knockdown** from its current list price, versus a **35% reduction** for Ozempic.
+
+ 
+
+These cuts are effective **January 1, 2027**.
+
+
+
+
+
+Notably, the new list prices will not affect the direct-to-patient, self-pay prescriptions that now make up a key component of Novo's commercial GLP-1 strategy, and are slated to go live the same day that Ozempic and Wegovy succumb to lower Medicare prices as mandated under the Inflation Reduction Act.
+
+
+
+---
+
+### 2. Trump Administration Deal & TrumpRx (November 2025)
+
+
+
+The agreements will lower prices of GLP-1 drugs on Medicare and Medicaid and offer the treatments directly to consumers at a discount on a website the Trump administration launched called TrumpRx.gov.
+
+ 
+
+Starting doses of existing injections like Novo's Wegovy and Lilly's Zepbound will be **$350 per month** on TrumpRx, but will "trend down" to **$245 per month** over a two-year period.
+
+
+
+---
+
+### 3. Prior Self-Pay / Direct-to-Consumer Price Reductions
+
+
+
+Novo Nordisk reduced the prices of Wegovy and Ozempic for self-pay patients to **$349 a month**, down from **$499 a month**. (The 2-milligram dose of Ozempic continued to cost $499.)
+
+ 
+
+Novo Nordisk also offered the first two monthly doses of Wegovy and Ozempic for **$199**, applying to the two lowest doses of the medication.
+
+
+
+More recently (March 2026), 
+
+Novo Nordisk launched a multi-month subscription program for its Wegovy obesity drug products for cash-paying patients, with eligible patients able to choose between three-, six-, or 12-month subscriptions. Longer subscriptions offer lower monthly pricing, with people expected to save up to **$1,200 a year** on the injection and as high as **$600 a year** on the pill.
+
+
+
+---
+
+### 4. Competitive & Market Context
+
+
+
+Eli Lilly's tirzepatide brands (Mounjaro for T2D and Zepbound for obesity) grew 110% and 123% to $7.41B and $4.26B respectively in Q4 2025, while in the same period, Ozempic sales were up just 1% to ~$5B and Wegovy grew 17% to $3.44B — but both shrank by ~2% in the U.S. market.
+
+ 
+
+Lilly is currently the dominant player in the branded GLP-1 market in the U.S., with an estimated
+
+---
+
+## Evidence Batch — 2026-04-14T00:49:41Z
+Gap index: 1
+Gap severity: degrading
+Gap target: Medicaid state coverage count for GLP-1s for obesity (13 states as of Jan 2026).
+Gap query: Medicaid GLP-1 obesity coverage by state January 2026
+Run timestamp: April 13, 2026
+Status: accepted
+Source note: web_search via claude-sonnet-4-6
+
+## Medicaid GLP-1 Obesity Coverage by State — January 2026
+
+### Overall Coverage Landscape
+
+
+
+As of January 2026, only **13 state Medicaid programs** cover GLP-1s for obesity treatment under fee-for-service (FFS).
+
+ This represents a notable contraction from recent months: 
+
+KFF's 2025 Medicaid budget survey found **16 state Medicaid programs** covered GLP-1s for obesity as of October 2025; however, four states — **California, New Hampshire, Pennsylvania, and South Carolina** — have since eliminated coverage, likely reflecting state budget challenges and significant drug costs.
+
+ 
+
+North Carolina also eliminated GLP-1 coverage beginning October 2025 due to a budget stalemate, but coverage was reinstated in December 2025, contributing to the net count of 13 as of January 2026.
+
+
+
+### Legal and Structural Framework
+
+
+
+States may decide independently whether to cover obesity drugs under Medicaid. While the Medicaid Drug Rebate Program generally requires coverage of nearly all FDA-approved drugs, weight-loss drugs are included in a small group of drugs that can be statutorily excluded from coverage.
+
+ 
+
+As a result, GLP-1 coverage for obesity is optional for states, while coverage is required for drugs approved for type 2 diabetes and, since March 2024 and December 2024, for cardiovascular disease (Wegovy) and moderate-to-severe obstructive sleep apnea.
+
+
+
+### Key State-Level Actions (Effective January 1, 2026)
+
+- **California (Medi-Cal):** 
+
+Effective January 1, 2026, Medi-Cal Rx no longer covers Saxenda, Wegovy, or Zepbound when used for weight loss.
+
+
+
+- **Pennsylvania:** 
+
+Pennsylvania Medicaid stopped covering GLP-1s for weight loss for adults 21 and older starting January 1, 2026.
+
+ 
+
+Children and young adults under 21 may still receive GLP-1s for obesity, as federal law requires Medicaid to cover all medically necessary treatments for those under 21.
+
+
+
+- **Michigan:** 
+
+Effective January 1, 2026, Michigan's Medicaid program began limiting coverage of GLP-1s for obesity treatment and long-term weight management — a significant change for a state that was among the first to cover GLP-1s for Medicaid beneficiaries.
+
+ 
+
+GLP-1 medications are now covered only for beneficiaries with a BMI ≥ 40 (morbid obesity) who meet strict prior authorization criteria.
+
+ 
+
+This policy is projected to save the Michigan Medicaid program **$240 million in 2026**.
+
+ 
+
+Up to one million Michiganders who are overweight or obese could lose coverage as a result.
+
+
+
+### Utilization Controls and Trend
+
+
+
+When GLP-1s are covered, they are typically subject to utilization controls such as prior authorization, which can further limit access.
+
+ 
+
+The number of Medicaid prescriptions and gross spending on GLP-1s have both increased substantially since 2019.
+
+ 
+
+A few other states are planning or considering obesity drug restrictions in state fiscal year 2026 or 2027, and state interest in expanding coverage is waning, with cost cited as the key factor in coverage decisions.
+
+
+
+### Federal Policy Trajectory
+
+
+
+In November 2025, the Trump administration announced a deal with Eli Lilly and Novo Nord
+
+---

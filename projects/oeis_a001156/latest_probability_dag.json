@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "Composite rational model is required and uniquely fits y(n) everywhere in specified range and tail.",
+    "probability": 0.69
+  },
+  "nodes": [
+    {
+      "id": "A",
+      "label": "Empirical fit of composite rational model is correct (residuals within all gate thresholds across visible, holdout, and farther tail).",
+      "probability": 0.87,
+      "watch_signal": "future gate tests, new evidence_farther_tail.txt"
+    },
+    {
+      "id": "B",
+      "label": "Quadratic log and other common monotone rational rivals cannot match the observed curvature and fail gate thresholds.",
+      "probability": 0.83,
+      "watch_signal": "residual/curvature comparison in evidence.txt"
+    },
+    {
+      "id": "C",
+      "label": "No as-yet-unconsidered or adversarially constructed alternative model within contract grammar can achieve equal or lower residuals and pass all discriminators across all regimes.",
+      "probability": 0.42,
+      "watch_signal": "symbolic regression / AI-generated rivals"
+    },
+    {
+      "id": "D",
+      "label": "No catastrophic regime break or fine-structure emerges in farther-tail or high-n regime.",
+      "probability": 0.63,
+      "watch_signal": "new y(n) at n >> 2000"
+    }
+  ],
+  "edges": [
+    {
+      "from": "A",
+      "to": "outcome",
+      "weight": 1.0
+    },
+    {
+      "from": "B",
+      "to": "outcome",
+      "weight": 0.5
+    },
+    {
+      "from": "C",
+      "to": "outcome",
+      "weight": 0.9
+    },
+    {
+      "from": "D",
+      "to": "outcome",
+      "weight": 0.6
+    }
+  ]
+}

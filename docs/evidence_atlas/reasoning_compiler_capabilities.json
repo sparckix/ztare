@@ -114,7 +114,6 @@
         "docs/concepts/rubric_specification.md",
         "src/ztare/fit/fit_primitive.py",
         "src/ztare/validator/autoresearch_loop.py",
-        "rubrics/gp023_planck_sandbox_08.json",
         "docs/public_claim_register.md"
       ],
       "runnable_anchors": [
@@ -208,7 +207,6 @@
       "evidence_refs": [
         "src/ztare/synthesis/synthesize.py",
         "docs/concepts/forensic_workbench_interface.md",
-        "projects/ops_root_cause_diagnosis_demo/synthesis/report_support_contract.json",
         "scripts/public/control/forensic_workbench_server.py"
       ],
       "runnable_anchors": [

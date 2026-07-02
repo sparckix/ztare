@@ -1,12 +1,33 @@
 services:
   ztare:
-    build: .
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
     volumes:
       - ./projects:/app/projects
       - ./rubrics:/app/rubrics
       - ./research_areas:/app/research_areas
       - ./org:/app/org
       - ./ztare_workspace:/app/ztare_workspace
+
+  workbench:
+    # Project Workbench: the Python API serves the pre-built React app on one
+    # port — http://127.0.0.1:8765, no Node at runtime. projects/ and rubrics/
+    # are bind-mounted so the container reads/edits your real projects.
+    #   docker compose up --build workbench   (or: make forensic-workbench-docker)
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile.workbench
+    image: ztare-workbench:local
+    profiles: ["workbench"]
+    ports:
+      - "127.0.0.1:8765:8765"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./projects:/app/projects
+      - ./rubrics:/app/rubrics
 
   operator-claude:
     build:
@@ -24,6 +45,7 @@ services:
   manager-daemon:
     build:
       context: .
+      dockerfile: deploy/Dockerfile
       args:
         INSTALL_AGENT_CLI: "1"
     profiles: ["daemons"]
@@ -40,6 +62,7 @@ services:
   research-director-daemon:
     build:
       context: .
+      dockerfile: deploy/Dockerfile
       args:
         INSTALL_AGENT_CLI: "1"
     profiles: ["daemons"]
@@ -54,7 +77,9 @@ services:
     restart: unless-stopped
 
   closure-daemon:
-    build: .
+    build:
+      context: .
+      dockerfile: deploy/Dockerfile
     profiles: ["daemons"]
     command: python scripts/public/control/closure_daemon.py --poll-seconds ${CLOSURE_DAEMON_INTERVAL:-30}
     volumes:
@@ -64,6 +89,7 @@ services:
   telegram-bot:
     build:
       context: .
+      dockerfile: deploy/Dockerfile
       args:
         INSTALL_AGENT_CLI: "1"
     profiles: ["daemons"]

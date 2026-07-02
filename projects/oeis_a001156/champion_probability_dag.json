@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "Composite Rational Model is Uniquely Correct, Passes All Gates",
+    "probability": 0.74
+  },
+  "nodes": [
+    {
+      "id": "A",
+      "label": "Status: Only composite rational form matches all observed residuals and curvature.",
+      "probability": 0.8,
+      "watch_signal": "No currently known alternative fits all gates"
+    },
+    {
+      "id": "B",
+      "label": "No plausible untested functional family can exist that also fits sub-linear, monotone, concave-upward curve and all residual gates.",
+      "probability": 0.63,
+      "watch_signal": "High-fidelity fit for a rival on visible and farther-tail data surfaces"
+    },
+    {
+      "id": "C",
+      "label": "Observed y(n) is representative and free of fine-scale microstructure or periodic regime flips.",
+      "probability": 0.76,
+      "watch_signal": "New data at finer granularity reveals inhomogeneity or stepwise features"
+    },
+    {
+      "id": "D",
+      "label": "Empirical fit is meaningful and sample covers all functional regimes materially relevant for n \u2192 \u221e.",
+      "probability": 0.78,
+      "watch_signal": "Structural break or change in curvature detected in farther tail slices"
+    }
+  ],
+  "edges": [
+    {
+      "from": "A",
+      "to": "outcome",
+      "weight": 0.45
+    },
+    {
+      "from": "B",
+      "to": "outcome",
+      "weight": 0.3
+    },
+    {
+      "from": "C",
+      "to": "outcome",
+      "weight": 0.15
+    },
+    {
+      "from": "D",
+      "to": "outcome",
+      "weight": 0.1
+    }
+  ]
+}

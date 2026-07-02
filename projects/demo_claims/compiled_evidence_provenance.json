@@ -1,0 +1,19 @@
+{
+  "compile_command": "static public fixture",
+  "compiled_at": "2026-06-19T00:00:00Z",
+  "evidence_path": "projects/demo_claims/evidence.txt",
+  "output_path": "projects/demo_claims/evidence.txt",
+  "output_sha256": "cf2401e98b5e0f28c6f73ce092cc4952341615d00886aea2179333444201c22c",
+  "schema": "ztare-compiled-evidence-provenance-v1",
+  "source_count": 1,
+  "sources": [
+    {
+      "path": "projects/demo_claims/raw/source.md",
+      "role": "bounded packet fixture source",
+      "sha256": "6216d0657764d684755c47d8f3942c6920346fc0f06a2c97152dda99f53070a3",
+      "full_sha256": "6216d0657764d684755c47d8f3942c6920346fc0f06a2c97152dda99f53070a3",
+      "source_id": "demo_claims_source",
+      "source_type": "source_evidence"
+    }
+  ]
+}

@@ -2,6 +2,8 @@
 
 ZTARE helps you decide what you can stand behind.
 
+![The ZTARE Project Workbench: the left rail walks one project from charter and thesis through evidence, pressure-test, and verdict; the panel lists connected projects with a readiness score on each.](docs/images/workbench.png)
+
 Bring a project folder, report, source pack, model output, proof note, dataset,
 or repo. ZTARE helps you answer the questions that matter before you trust the
 work:

@@ -22,7 +22,7 @@ Known gap:
 
 4. `D_ordinary_review`: ordinary unstructured LLM review. This arm is required
    for a future four-arm upgrade, but it is not represented by the frozen
-   `20260404_195100` artifact. The checker keeps this gap explicit so the
+   `source_run_20260404_195100` artifact. The checker keeps this gap explicit so the
    packet cannot be overread as a completed four-arm benchmark.
 
 The ordinary-review arm has a predeclared contract at
@@ -42,7 +42,7 @@ make evaluator-hardening-frozen-check
 Live fourth-arm run command:
 
 ```bash
-python benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review --match-source-run benchmarks/constraint_memory/runs/20260404_195100 --ordinary-review-model gemini
+python benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review --match-source-run benchmarks/evaluator_hardening_frozen/source_run_20260404_195100 --ordinary-review-model <model>
 ```
 
 This command requires the selected provider credentials. Its output must be
@@ -62,7 +62,7 @@ import template. The prompt manifest intentionally omits labels, expected
 exploit metadata, detection keywords, and prior A/B/C outputs, so it can be sent
 to an ordinary reviewer without leaking the answer key. The hashes are the
 provenance expected by the import path below. The Make target binds the prompt
-packet to the frozen `20260404_195100` source-run specimen set by default, so
+packet to the frozen `source_run_20260404_195100` source-run specimen set by default, so
 later additions to the broader `main` suite do not silently change the
 fourth-arm comparison population. `make evaluator-hardening-frozen-check`
 compares the checked-in packet against a fresh runner export and preflights a
@@ -71,7 +71,7 @@ synthetic import, so packet drift fails before any fourth-arm claim can be made.
 Imported fourth-arm run command:
 
 ```bash
-python benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review --match-source-run benchmarks/constraint_memory/runs/20260404_195100 --ordinary-review-import-results path/to/ordinary_review_rows.json
+python benchmarks/constraint_memory/run_benchmark.py --suite main --conditions D_ordinary_review --match-source-run benchmarks/evaluator_hardening_frozen/source_run_20260404_195100 --ordinary-review-import-results path/to/ordinary_review_rows.json
 ```
 
 The import file may be a list of rows, an object with `rows` or `reviews`, or a

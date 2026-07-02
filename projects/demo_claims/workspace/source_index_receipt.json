@@ -1,0 +1,29 @@
+{
+  "changed_sources": 0,
+  "deleted_sources": [],
+  "llm_calls": false,
+  "merge_status": "index_only",
+  "next_steps": [
+    "Run make evidence-prepare before treating compiled evidence as current.",
+    "Run ztare autoresearch trace to inspect kernel-entry blockers."
+  ],
+  "producer": "ztare.workspace.update_workspace::checkpoint_source_index",
+  "project": "demo_claims",
+  "reused_sources": 1,
+  "schema": "ztare-source-index-receipt-v1",
+  "source_count": 1,
+  "source_index": "projects/demo_claims/workspace/source_index.json",
+  "source_index_sha256": "d889acf5e6f7d9bc39bc3f5da0e6ec6b14e3804263b2aae95cd2eef59d4ca667",
+  "sources": [
+    {
+      "chars_used": 438,
+      "path": "source.md",
+      "sha256": "6216d0657764d684755c47d8f3942c6920346fc0f06a2c97152dda99f53070a3",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ],
+  "status": "indexed",
+  "warnings": [],
+  "workspace_meta": "projects/demo_claims/workspace/workspace_meta.json"
+}

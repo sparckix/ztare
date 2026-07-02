@@ -1,0 +1,72 @@
+{
+  "audit_copy_path": "projects/ai_capex/compiled_evidence.txt",
+  "audit_copy_sha256": "f0915f072ffdbe487b115b2210cc3e4efdffe132794267fef16c688b11fa118a",
+  "evidence_gap_action_path": "projects/ai_capex/workspace/evidence_gap_action.json",
+  "evidence_gap_brief_path": "projects/ai_capex/workspace/evidence_gap_brief.md",
+  "evidence_gap_count": 0,
+  "evidence_replay_manifest_path": "projects/ai_capex/compiled_evidence_replay_manifest.json",
+  "evidence_replay_manifest_sha256": "30074c6b027ea6ebd85569ef7ed3e04cec7d8048a8ef930d937e600aa660ec47",
+  "generated_on": "June 27, 2026",
+  "input_binding_sha256": "20c1cc89f774b2bdc0a072b2a3d46640e1d080688fd3eb57e0a596807f49b51d",
+  "mode": "workspace",
+  "output_path": "projects/ai_capex/evidence.txt",
+  "output_sha256": "f0915f072ffdbe487b115b2210cc3e4efdffe132794267fef16c688b11fa118a",
+  "packet_output_path": "projects/ai_capex/compiled_evidence_packet.json",
+  "packet_output_sha256": "fd5b1193ff35491332bd9259adc598b9171bb5dc657e2ec76db7ed563a0c39dc",
+  "project_dir": "projects/ai_capex",
+  "source_count": 3,
+  "sources": [
+    {
+      "chars_used": 8718,
+      "kind": "md",
+      "note_path": "source_notes/S001.json",
+      "path": "current_iteration.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_id": "S001",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 5403,
+      "kind": "txt",
+      "note_path": "source_notes/S002.json",
+      "path": "evidence.txt",
+      "sha256": "746ddffae1438e11e8bfcebe88c2188497aa3cb3027304291f2a7c8741eb4157",
+      "source_id": "S002",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 8718,
+      "kind": "md",
+      "note_path": "source_notes/S003.json",
+      "path": "thesis.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_id": "S003",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ],
+  "support_binding_sha256": "8fe3f009f999f7583172fb79842e622210824613dd8dd4a99ee829bbebf39f38",
+  "warnings": [],
+  "workspace_dir": "projects/ai_capex/workspace",
+  "workspace_meta": {
+    "changed_sources": 3,
+    "deleted_sources": [],
+    "generated_on": "June 27, 2026",
+    "merge_only": false,
+    "merge_status": "success",
+    "model_family": "deepseek",
+    "model_id": "deepseek-chat",
+    "project": "ai_capex",
+    "prompts": {
+      "extract_source_note": "config/prompts/extract_source_note.md",
+      "merge_workspace": "config/prompts/merge_workspace.md"
+    },
+    "raw_dir": "projects/ai_capex/raw",
+    "reused_sources": 0,
+    "source_count": 3,
+    "warnings": [],
+    "workspace_dir": "projects/ai_capex/workspace"
+  }
+}

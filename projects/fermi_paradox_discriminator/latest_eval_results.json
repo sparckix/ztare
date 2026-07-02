@@ -1,0 +1,171 @@
+{
+  "score": 88,
+  "weakest_point": "Astrophysical MIR background (\u03c3_astro) model estimation and transferability: The discriminating experiment hinges on our ability to certify the natural MIR background with sufficient precision that any population-level technogenic excess can be robustly isolated; systematic uncertainties in astrophysical backgrounds, especially in morphologically complex or low-surface-brightness galactic regimes, could mask or mimic the discriminant signal and thus weaken or invalidate the quantitative posterior update.",
+  "verified_axioms": [
+    "Beacon-class radio/optical emissions can be arbitrarily rare independent of the number of technological civilizations",
+    "Any civilization consuming stellar-scale power must radiate surplus energy as heat (MIR)",
+    "Instrumental sensitivity floors (for MIR) are physically quantified and can outpace expected technogenic emission for plausible K1+ activities given forecasted specifications for HWO/LIFE-class telescopes."
+  ],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "other",
+      "target": "\u03c3_astro (local MIR background model error, especially for low-surface-brightness or morphologically complex targets)",
+      "description": "Empirical demonstrability that MIR background uncertainty in target regimes can be kept below the discrimination threshold (\u03c3_astro < \u03c3_astro*) using available or foreseeable calibration and control strategies. Failure to independently verify this would mean actual discrimination is measurement-bound, not signal-bound.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "No explicit demonstration of calibration protocol producing \u03c3_astro < \u03c3_astro* in all deployment regimes: critical for claim of robust >2-nat posterior shift.",
+      "fetch_query": "Survey expert literature (e.g., Spitzer, JWST, WISE) for methodology and tested systematics performance in template subtraction and field-matching for spatially and morphologically varied MIR sources. Seek design studies for LIFE/HWO predicting systematic floor across intended regime.",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "other",
+      "target": "Integration of model error and instrument error in net noise floor",
+      "description": "Unit test asserts instrument error dominates but does not show evidence that astrophysical model error in background subtraction will not in fact dominate in regime B (distant, unresolved targets).",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "Bayes factor computation assumes normal likelihoods centered at model backgrounds, but in many regimes error structure may be non-Gaussian or even systematically biased.",
+      "fetch_query": "Meta-analyses of photometric and spectral background errors in wide-field deep surveys at MIR; compare achieved vs predicted discrimination margins and residuals.",
+      "adversarial_direction": true
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "Any discrimination claim for MIR-integrated technosignature excess is conditional on a formal, independently-verified background model with certified error below \u03c3_astro* (the minimum gap necessary for \u22652-nat Bayes update, instrument plus astrophysical uncertainty combined)",
+      "applies_to": "R3 (expansion-bottlenecked) vs R5 (observation-limited) discrimination at population/galactic scale using 2030-class MIR survey",
+      "failure_family": "measurement_bound_structural_noise_floor",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "If \u03c3_astro cannot be empirically held below the derived threshold, all subsequent Bayes update claims are moot regardless of instrumental photon statistics.",
+      "non_applicability_condition": "Resolved, isolated, and template-matched bright-sky fields with well-vetted background properties and negligible model error; applies only in such restricted cases."
+    }
+  ],
+  "logic_gaps": [
+    "No concrete demonstration of the background subtraction protocol delivering \u03c3_astro < \u03c3_astro* for all relevant survey regimes: requirement is named and adversarially flagged, but must be empirically established, not assumed."
+  ],
+  "debate_summary": "The thesis initially presents an experiment (beacon detection) whose discriminative power collapses under current empirical priors, as both major resolution classes (R3 and R5) now allow beacons to be arbitrarily rare. The synthesis correctly pivots to aggregate mid-infrared (MIR) thermodynamic waste heat as the only discriminant that is structurally compelled by physical law, not hypothesis choice. The Bayesian math, load-bearing variables, and five-step discrimination test are all met with high rigor. However, the strongest adversarial attack is the possibility that MIR astrophysical background errors (\u03c3_astro) cannot, in key regimes (e.g., low-surface-brightness galaxies or morphologically atypical systems), be certified to stay below the crucial discrimination threshold: the claimed posterior shift is then not empirically secure. The thesis passes all core gates except (in coverage) the concrete closure of \u03c3_astro estimability\u2014leaving its discrimination claim contingent on calibration program deliverability. Cross-domain method transfer, structural meta-finding, and substitution tests are all fully engaged.",
+  "adversarial_alignment": "Adversarial alignment is strong: the thesis explicitly incorporates Bayesian model comparison, weak-signal discrimination logic from dark-matter direct-detection practice, and instrument/statistical systematics handling from observational cosmology. The main friction is at the interface of statistical and physical noise: the Bayesian upshot is only as strong as the astrophysical model error floor is low. This is appropriately foregrounded by the synthesis and adversarially interrogated.",
+  "friction_points": [
+    "Potential non-closure of \u03c3_astro estimability for MIR background in faint/complex astrophysical regimes.",
+    "Conditionality of Bayes factor update on the achieved calibration of astrophysical model error across all relevant sky fractions.",
+    "Instrumental advances may outpace model calibration, threatening 'signal-limited' assumptions.",
+    "Tension between practical field limits (morphological diversity, dust, ISM structure) and theoretical model discriminability."
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "HWO/LIFE-class MIR null robustly discriminates between R3 (expansion-collapse) and R5 (observation-limited) by >2-nat Bayesian shift",
+      "probability": 0.72
+    },
+    "nodes": [
+      {
+        "id": "A1",
+        "label": "Civilizations using stellar-scale power generate unavoidable MIR excess (under R5, but not R3)",
+        "probability": 0.8,
+        "watch_signal": "No plausible technological scenario can suppress thermodynamic waste heat below detection threshold, given consumption scale."
+      },
+      {
+        "id": "A2",
+        "label": "HWO/LIFE-class instruments achieve sufficient sensitivity to detect >5\u03c3 aggregate MIR excess from tech",
+        "probability": 0.85,
+        "watch_signal": "Lab and engineering reports on LIFE/HWO sensitivities and effective systematics control."
+      },
+      {
+        "id": "A3",
+        "label": "Astrophysical MIR background and its systematic scatter \u03c3_astro can be independently measured and certified < \u03c3_astro* in relevant regimes",
+        "probability": 0.6,
+        "watch_signal": "Post-launch survey reports, calibration field variance, template subtraction trials, and cross-survey comparison to direct background modeling."
+      },
+      {
+        "id": "A4",
+        "label": "Posterior shift for MIR null result surpasses 2 nats for reasonable priors under certified noise floors",
+        "probability": 0.8,
+        "watch_signal": "Peer-reviewed publication of formal Bayes update in survey null finding, with full error accounting."
+      }
+    ],
+    "edges": [
+      {
+        "from": "A1",
+        "to": "A4",
+        "weight": 0.7
+      },
+      {
+        "from": "A2",
+        "to": "A4",
+        "weight": 0.6
+      },
+      {
+        "from": "A3",
+        "to": "A4",
+        "weight": 1.0
+      }
+    ]
+  },
+  "score_contract": {
+    "evidence_gap_count": 2,
+    "blocking_evidence_gap_count": 0,
+    "degrading_evidence_gap_count": 2,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "\u03c3_astro (local MIR background model error, especially for low-surface-brightness or morphologically complex targets)",
+      "Integration of model error and instrument error in net noise floor"
+    ],
+    "evidence_boundary_ceiling_detected": false,
+    "evidence_boundary_detail": "",
+    "derived_constraint_proposal_count": 1,
+    "derived_constraint_failure_families": [
+      "measurement_bound_structural_noise_floor"
+    ],
+    "derived_constraint_targets": [
+      "R3 (expansion-bottlenecked) vs R5 (observation-limited) discrimination at population/galactic scale using 2030-class MIR survey"
+    ],
+    "mode": "raw_llm_score",
+    "version": 1,
+    "regime": {
+      "mode": "raw_llm_score",
+      "version": 1,
+      "rubric_name": "fermi_paradox_discriminator",
+      "rubric_fingerprint": "a330ac2bc9ec9a4c",
+      "judge_model": "gpt-4.1",
+      "requested_judge_model": "gpt-4.1",
+      "effective_judge_models": [
+        "gpt-4.1"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+      "evidence_fingerprint": "75bdddaaef53def4",
+      "project_forecast_type": "unspecified"
+    },
+    "regime_fingerprint": "f65843cee415a71f",
+    "judge_model": "gpt-4.1",
+    "requested_judge_model": "gpt-4.1",
+    "effective_judge_models": [
+      "gpt-4.1"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "fermi_paradox_discriminator",
+    "rubric_fingerprint": "a330ac2bc9ec9a4c",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+    "evidence_fingerprint": "75bdddaaef53def4",
+    "project_forecast_type": "unspecified",
+    "test_suite_status": "fail_assert"
+  },
+  "usage_telemetry": {
+    "model_name": "gpt-4.1-2025-04-14",
+    "input_tokens": 17727,
+    "output_tokens": 2912,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 6144,
+    "estimated_cost_usd": 0.061822,
+    "cost_known": true
+  },
+  "artifact_role": "latest",
+  "describes_baseline": "latest",
+  "score_regime_fingerprint": "f65843cee415a71f"
+}

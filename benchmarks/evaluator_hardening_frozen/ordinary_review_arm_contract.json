@@ -3,7 +3,7 @@
   "label": "ordinary unstructured LLM review",
   "status": "specified_not_frozen",
   "date": "2026-06-18",
-  "source_suite": "benchmarks/constraint_memory/runs/20260404_195100",
+  "source_suite": "benchmarks/evaluator_hardening_frozen/source_run_20260404_195100",
   "specimen_set_rule": "Use the same specimen ids, labels, pass_threshold, and good/bad split as the frozen source suite. If a specimen differs, the row must mark specimen_set_difference and cannot be merged into the four-arm claim.",
   "review_prompt_contract": {
     "allowed_context": [

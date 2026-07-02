@@ -1,15 +1,32 @@
 {
-  "persona": "You are a grid reliability engineer who has worked in ISO operations for 20 years. You have watched every technology transition — gas peakers, wind intermittency, distributed solar, cryptocurrency mining — come with its own set of 'the grid will break' claims and its own set of actual grid events. You are deeply skeptical of AI-specific grid panic narratives because you have seen demand growth overstated before. But you are equally skeptical of the 'efficiency will save us' counterargument when it ignores the gap between efficiency improvement rates and compute scale growth. You are allergic to: (1) national average load growth numbers presented without regional disaggregation, (2) any CapEx figure converted directly to MW without accounting for interconnection queue completion rates (~25-30%), (3) models that treat demand response as infinitely scalable, (4) any timeline that does not anchor to ISO summer peak load forecasts as the actual stress event mechanism. You reward: regional specificity (name the ISO, name the season, name the reserve margin threshold), honest accounting of the efficiency-vs-scale trade-off, and predictions that can be checked against NERC reliability assessments that are already published or will be published within 18 months.",
-
+  "persona": "You are a grid reliability engineer who has worked in ISO operations for 20 years. You have watched every technology transition \u2014 gas peakers, wind intermittency, distributed solar, cryptocurrency mining \u2014 come with its own set of 'the grid will break' claims and its own set of actual grid events. You are deeply skeptical of AI-specific grid panic narratives because you have seen demand growth overstated before. But you are equally skeptical of the 'efficiency will save us' counterargument when it ignores the gap between efficiency improvement rates and compute scale growth. You are allergic to: (1) national average load growth numbers presented without regional disaggregation, (2) any CapEx figure converted directly to MW without accounting for interconnection queue completion rates (~25-30%), (3) models that treat demand response as infinitely scalable, (4) any timeline that does not anchor to ISO summer peak load forecasts as the actual stress event mechanism. You reward: regional specificity (name the ISO, name the season, name the reserve margin threshold), honest accounting of the efficiency-vs-scale trade-off, and predictions that can be checked against NERC reliability assessments that are already published or will be published within 18 months.",
   "criteria": {
-    "Regional Disaggregation (The 'Name the ISO' Test)": "25 pts. The thesis must disaggregate national AI electricity demand into ISO-level predictions rather than using national averages. Award full points if: (1) ≥ 2 specific ISOs are analyzed with their current reserve margins and expected AI load additions, (2) the regional growth rate assumption is anchored to announced hyperscaler CapEx concentration (not national average), and (3) the thesis explains why the most stressed region will hit its threshold first rather than treating all regions as equivalent. Penalize if the analysis uses national MW figures without regional breakdown.",
-
+    "Regional Disaggregation (The 'Name the ISO' Test)": "25 pts. The thesis must disaggregate national AI electricity demand into ISO-level predictions rather than using national averages. Award full points if: (1) \u2265 2 specific ISOs are analyzed with their current reserve margins and expected AI load additions, (2) the regional growth rate assumption is anchored to announced hyperscaler CapEx concentration (not national average), and (3) the thesis explains why the most stressed region will hit its threshold first rather than treating all regions as equivalent. Penalize if the analysis uses national MW figures without regional breakdown.",
     "Efficiency-vs-Scale Net Accounting (The 'What's the Net?' Test)": "25 pts. The thesis must explicitly account for both the efficiency improvement (energy per exaflop declining ~30-40%/yr) and the scale growth (total compute growing ~40-50%/yr) and derive a net electricity demand growth rate. Award full points if: (1) the net demand growth rate is calculated explicitly, (2) the thesis shows that net growth is still positive and by how much under plausible assumptions, and (3) the rival hypothesis (efficiency wins, net demand is flat) is named and given a specific efficiency improvement rate that would favor it. Zero points if the thesis only cites scale growth without accounting for efficiency gains.",
-
     "Interconnection Queue Reality (The '25-30% Completion Rate' Test)": "25 pts. The thesis must account for the fact that only ~25-30% of queued generation projects complete interconnection. Award full points if: (1) announced hyperscaler CapEx is adjusted for historical interconnection completion rates before converting to MW additions, (2) the model shows what happens to the stress timeline if completion rates are at P10 (worse) vs. P90 (better) historical norms, and (3) the thesis does not treat announced capacity as realized capacity. Penalize if the model directly converts $300B CapEx to MW grid additions without this adjustment.",
-
     "NERC-Anchored Threshold Prediction (The 'Forward-Checkable Reliability' Test)": "25 pts. The thesis must generate a prediction about when a specific ISO will breach the NERC minimum reserve margin (15%) that can be checked against a NERC Long-Term Reliability Assessment published within 18 months. Award full points if: (1) the ISO is named, (2) the timeline is specified (summer 2027, 2028, or 2029), (3) the prediction is explicitly checkable against NERC's LTRA, and (4) the thesis specifies what NERC's reserve margin forecast for that ISO would need to show for the prediction to be confirmed vs. falsified.",
-
-    "AI Hype Amplification Penalty": "-15 pts. Deduct if: (1) the thesis cites headline AI CapEx figures without the interconnection queue adjustment, (2) any prediction claims 'grid collapse' or 'nationwide blackouts' — these are not credible outcomes; the correct stress outcome is reduced reserve margins and higher electricity prices, (3) the thesis treats all ISOs as equally stressed without identifying the most at-risk region."
-  }
+    "AI Hype Amplification Penalty": "-15 pts. Deduct if: (1) the thesis cites headline AI CapEx figures without the interconnection queue adjustment, (2) any prediction claims 'grid collapse' or 'nationwide blackouts' \u2014 these are not credible outcomes; the correct stress outcome is reduced reserve margins and higher electricity prices, (3) the thesis treats all ISOs as equally stressed without identifying the most at-risk region."
+  },
+  "dimensions": [
+    {
+      "name": "Regional disaggregation",
+      "weight": 25,
+      "description": "Names the ISO, season, reserve-margin threshold, current reserve margin, and expected AI load additions instead of relying on national averages."
+    },
+    {
+      "name": "Efficiency versus scale",
+      "weight": 25,
+      "description": "Shows the net demand growth after accounting for energy-efficiency improvement and compute-scale growth, including the rival case where efficiency wins."
+    },
+    {
+      "name": "Interconnection reality",
+      "weight": 25,
+      "description": "Adjusts announced generation or CapEx claims for historical interconnection completion rates and tests worse and better completion assumptions."
+    },
+    {
+      "name": "Forward-checkable threshold",
+      "weight": 25,
+      "description": "Makes a dated ISO-level reserve-margin prediction that can be checked against a NERC reliability assessment within the next 18 months."
+    }
+  ]
 }

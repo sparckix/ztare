@@ -1,0 +1,19 @@
+{
+  "changed_sources": 0,
+  "deleted_sources": [],
+  "generated_on": "June 23, 2026",
+  "merge_only": false,
+  "merge_status": "index_only",
+  "model_family": "gemini",
+  "model_id": "gemini-3.1-pro-preview",
+  "project": "demo_claims",
+  "prompts": {
+    "extract_source_note": "config/prompts/extract_source_note.md",
+    "merge_workspace": "config/prompts/merge_workspace.md"
+  },
+  "raw_dir": "projects/demo_claims/raw",
+  "reused_sources": 1,
+  "source_count": 1,
+  "warnings": [],
+  "workspace_dir": "projects/demo_claims/workspace"
+}

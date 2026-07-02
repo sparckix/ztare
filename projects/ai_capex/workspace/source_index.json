@@ -1,0 +1,36 @@
+{
+  "generated_on": "June 27, 2026",
+  "project": "ai_capex",
+  "sources": [
+    {
+      "chars_used": 8718,
+      "kind": "md",
+      "note_path": "source_notes/S001.json",
+      "path": "current_iteration.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_id": "S001",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 5403,
+      "kind": "txt",
+      "note_path": "source_notes/S002.json",
+      "path": "evidence.txt",
+      "sha256": "746ddffae1438e11e8bfcebe88c2188497aa3cb3027304291f2a7c8741eb4157",
+      "source_id": "S002",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 8718,
+      "kind": "md",
+      "note_path": "source_notes/S003.json",
+      "path": "thesis.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_id": "S003",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ]
+}

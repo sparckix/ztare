@@ -12,7 +12,7 @@
     "surfacing_event_rows": 0,
     "warning": 3
   },
-  "generated_at": "2026-06-22T16:38:57Z",
+  "generated_at": "2026-06-27T14:44:16Z",
   "issues": [
     {
       "affected_domains": [
@@ -21,6 +21,17 @@
       ],
       "blocking_rule": "markdown-only GP-233 linkage cannot support non-diagnostic recommendations",
       "denominator": "GP-233 markdown rows with stable refs",
+      "display_affected_domains": [
+        "run-history surfacing",
+        "forecast records"
+      ],
+      "display_blocking_rule": "doc-only evidence-ledger linkage cannot support non-diagnostic recommendations",
+      "display_denominator": "evidence ledger markdown rows with stable refs",
+      "display_domain": "",
+      "display_issue_type": "evidence links need repair",
+      "display_recommended_action": "repair evidence links",
+      "display_scope": "evidence ledger",
+      "display_severity": "warning",
       "domain": null,
       "evidence_refs": [
         "analytics/public/ledgers/research_yield_decomposition/GP-233_EVIDENCE_LEDGER.md"
@@ -40,6 +51,16 @@
       ],
       "blocking_rule": "stale trajectory outputs force diagnostic-only surfacing",
       "denominator": "trajectory archive freshness <=14d",
+      "display_affected_domains": [
+        "run-history surfacing"
+      ],
+      "display_blocking_rule": "stale run-history outputs force diagnostic-only surfacing",
+      "display_denominator": "run-history archive freshness <=14d",
+      "display_domain": "",
+      "display_issue_type": "run-history archive is stale",
+      "display_recommended_action": "refresh run-history archive",
+      "display_scope": "run-history surfacing",
+      "display_severity": "warning",
       "domain": null,
       "evidence_refs": [
         "analytics/public/ledgers/trajectory/trajectory_archive_enriched.jsonl"
@@ -59,6 +80,16 @@
       ],
       "blocking_rule": "trajectory/primitives surfacing remains diagnostic until shown surfaces are logged",
       "denominator": "surfacing event rows",
+      "display_affected_domains": [
+        "run-history surfacing"
+      ],
+      "display_blocking_rule": "run-history surfacing remains diagnostic until shown surfaces are logged",
+      "display_denominator": "work-log rows",
+      "display_domain": "",
+      "display_issue_type": "work log is missing",
+      "display_recommended_action": "record work-log use",
+      "display_scope": "run-history surfacing",
+      "display_severity": "warning",
       "domain": null,
       "evidence_refs": [
         "analytics/public/ledgers/action_intelligence/surfacing_event_ledger.jsonl"

@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "N=3 threshold accurately operationalizes 'sustained_multistate_breakdown'",
+    "probability": 0.681
+  },
+  "nodes": [
+    {
+      "id": "node_1",
+      "label": "Durable_NonCompliance_Observable",
+      "probability": 0.8,
+      "watch_signal": "Actual future events can be observed to definitively determine if non-compliance is durable."
+    },
+    {
+      "id": "node_2",
+      "label": "Core_Principle_Violated_Observable",
+      "probability": 0.8,
+      "watch_signal": "Actual future events can be observed to definitively determine if a core legal principle is violated."
+    },
+    {
+      "id": "node_3",
+      "label": "N_GreaterThanEqual_3_Is_Multistate",
+      "probability": 0.65,
+      "watch_signal": "N>=3 is a reasonable numerical representation of 'multi-state' beyond bilateralism, as evidenced by differentiation from N=1/N=5 rivals."
+    },
+    {
+      "id": "node_4",
+      "label": "N3_Robustly_Justified",
+      "probability": 0.45,
+      "watch_signal": "N=3 is robustly justified as the minimal integer threshold from qualitative evidence, not merely logically consistent."
+    }
+  ],
+  "edges": [
+    {
+      "from": "node_1",
+      "to": "outcome",
+      "weight": 0.7
+    },
+    {
+      "from": "node_2",
+      "to": "outcome",
+      "weight": 0.7
+    },
+    {
+      "from": "node_3",
+      "to": "outcome",
+      "weight": 0.9
+    },
+    {
+      "from": "node_4",
+      "to": "outcome",
+      "weight": 0.6
+    }
+  ]
+}

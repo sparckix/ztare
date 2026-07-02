@@ -1,0 +1,382 @@
+{
+  "is_falsified": false,
+  "computationally_feasible": true,
+  "anti_gaming_preserved": true,
+  "architectural_abstraction_preserved": true,
+  "contains_infallible_aggregator": false,
+  "proof_is_self_referential": false,
+  "self_reference_evidence": {
+    "target_claim": "The `material_union_failure` event boundary is demonstrably grounded in observable legal behavior, moving beyond arbitrary thesis-authored scenarios.",
+    "asserted_variable": "N=3 as the minimal numerical threshold of member states",
+    "asserted_variable_origin": "internal",
+    "independent_grounding_present": false,
+    "test_recomputes_thesis_authored_target": true,
+    "causal_variable_perturbed": false,
+    "load_bearing_claim_directly_tested": false,
+    "local_component_scope_disclaimer_present": true,
+    "whole_system_availability_claim_present": false,
+    "verifies_authored_mapping_only": true,
+    "evidence_lines": [
+      "S006: Documents 'a number of cases' of national courts refusing CJEU judgments, but notes 'vast majority still apply' EU primacy.",
+      "S019: Differentiated integration/disintegration can coexist with continuing formal Union membership and a still-functioning legal order."
+    ],
+    "counterevidence_lines": [
+      "Firing Squad: N=3 threshold remains arbitrary... based solely on the qualitative interpretations... not unequivocally support N=3 as this precise minimal differentiator."
+    ],
+    "confidence": "low"
+  },
+  "quarantined_load_bearing_dependency": true,
+  "quarantine_target": "causal_mechanism",
+  "quarantine_legitimate": true,
+  "quarantine_rationale": "The thesis explicitly quarantines the `stress_escalation_multiplier` calibration, which is a load-bearing variable for the overall failure probability model. This is legitimate because the current thesis focuses on defining the event boundary, not the full probability calculation.",
+  "quarantine_gates_causal_mechanism": true,
+  "quarantine_gates_named_discriminator": false,
+  "quarantine_gates_falsification_environment": false,
+  "current_discriminator_directly_confirmed": false,
+  "current_support_is_directional_only": true,
+  "decisive_confirmation_deferred_to_forward_observable": true,
+  "confirmation_rationale": "Decisive empirical confirmation of the N=3 threshold as the minimal differentiator for systemic breakdown is deferred to future legal-constitutional crises, where the actual number of non-compliant states and the resultant systemic impact can be observed. Current support is primarily qualitative justification against rival definitional choices.",
+  "unsupported_point_probability_claim": false,
+  "forecast_overclaim_rationale": "",
+  "drift_detected": false,
+  "drift_rationale": "",
+  "criteria_passed": [
+    "1_Event_Ontology_Clarity",
+    "5_Complementarity_And_Horizon_Discipline",
+    "6_Overclaim_Control"
+  ],
+  "criteria_failed": [
+    "2_Probability_Model_Basis",
+    "3_Calibration_And_Reference_Class_Discipline",
+    "4_Upward_And_Downward_Drivers"
+  ],
+  "weakest_point": "The grounding of the N=3 threshold as the *minimal* numerical differentiator for systemic legal breakdown relies on interpretive choice rather than unequivocal empirical derivation from qualitative evidence.",
+  "verified_axioms": [],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "missing_threshold_grounding",
+      "target": "N=3 as minimal numerical threshold",
+      "description": "Lack of unequivocal quantitative or empirically robust qualitative evidence directly supporting N=3 as the *minimal* integer differentiating systemic breakdown from localized contestation, beyond interpretive choice.",
+      "severity": "degrading",
+      "producer": "firing_squad",
+      "producer_rationale": "The Firing Squad critique directly challenges the sufficiency of S006 and S019 to definitively ground N=3 as the minimal differentiator, asserting it remains an interpretive leap.",
+      "fetch_query": "Empirical studies quantifying critical thresholds for systemic legal rupture in multi-state unions beyond bilateral disputes.",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "missing_threshold_grounding",
+      "target": "`stress_escalation_multiplier`",
+      "description": "Quantitative bounds for `stress_escalation_multiplier` grounded in historically observed euro-area stress regimes are unproven and quarantined.",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "producer_rationale": "The thesis explicitly states this variable's calibration is 'UNRESOLVED' and flags it as a key missing piece for granular shock types, directly hindering the full probability model.",
+      "fetch_query": "Empirical calibration of stress multipliers for EU systemic shocks: historical data and expert elicitation.",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "missing_external_comparator",
+      "target": "Unconditional base hazard rate for material_union_failure",
+      "description": "Lack of an unconditional base hazard rate from a reference class not already conditioned on severe external shocks, risking double-counting with stress multipliers.",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "producer_rationale": "The evidence file explicitly identifies this as an 'Epistemic Void' and a 'Blocking effect' for setting `base_failure_probability`.",
+      "fetch_query": "Historical institutional failure rates for calm periods without major external shocks (e.g., pre-WWI equivalent for monetary unions).",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "other",
+      "target": "Structured expert elicitation",
+      "description": "Absence of structured expert elicitation for all model multipliers, leading to freehand judgments that lack methodological defensibility.",
+      "severity": "degrading",
+      "producer": "adjudicator",
+      "producer_rationale": "The evidence notes that 'freehand multiplier assignment is methodologically indefensible without a structured protocol,' making this a critical methodological gap.",
+      "fetch_query": "Critiques of freehand probability multiplier assignment in institutional forecasting.",
+      "adversarial_direction": true
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "Numerical thresholds for systemic legal breakdown must be explicitly and unequivocally grounded in empirical evidence (qualitative or quantitative), not solely by interpretive leaps or logical distinction from thesis-authored rivals.",
+      "applies_to": "Event Ontology for Systemic Legal Breakdown",
+      "failure_family": "arbitrary_threshold_grounding",
+      "severity": "degrading",
+      "producer": "firing_squad",
+      "rationale": "The Firing Squad critiqued the N=3 threshold for being an interpretive choice, not unequivocally derived, even if it differentiates from internal rivals. Stronger external grounding is needed for numerical thresholds.",
+      "non_applicability_condition": "When the numerical threshold is derived directly from independently verified historical data or established empirical laws."
+    },
+    {
+      "constraint": "Forecasting models for institutional failure must provide calibrated quantitative bounds for all key multipliers (e.g., stress escalation, legal break), either through structured elicitation or empirically derived ranges, to avoid freehand judgments.",
+      "applies_to": "Probabilistic Forecasting Model Parameters",
+      "failure_family": "uncalibrated_multipliers",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "rationale": "The explicit quarantining of the stress multiplier highlights that uncalibrated multipliers block defensible probability generation.",
+      "non_applicability_condition": "When the model does not employ explicit multipliers or the forecast is directional only."
+    },
+    {
+      "constraint": "Models employing both a base hazard rate and a stress escalation multiplier must ensure the base rate's reference class is unconditioned by the same severe shocks captured by the multiplier, to prevent double-counting of risk.",
+      "applies_to": "Probabilistic Model Structure (Base Rate & Multiplier)",
+      "failure_family": "double_counting_risk",
+      "severity": "blocking",
+      "producer": "adjudicator",
+      "rationale": "The evidence explicitly identifies a contradiction where historical union failures (S009) are conditioned on WWI shocks (S017), which could double-count risk with a separate stress multiplier (S020).",
+      "non_applicability_condition": "When the model uses a single, integrated hazard function or explicitly conditions terms to avoid overlap."
+    }
+  ],
+  "logic_gaps": [
+    "The logical leap from 'a number of cases' of primacy refusal (S006) and coexistence with differentiated integration (S019) to the *specific minimum integer* N=3 as the definitive threshold for systemic breakdown is asserted rather than rigorously derived from the qualitative evidence, leaving the 'minimal' justification weak."
+  ],
+  "debate_summary": "The thesis successfully defines a falsifiable event boundary for `material_union_failure` by operationalizing `sustained_multistate_breakdown_of_core_obligations` with an N=3 threshold, durable non-compliance, and core legal principles. It grounds this by differentiating it from localized contestation and differentiated integration, leveraging qualitative evidence from S006 and S019. This is a crucial step towards making `P(material_union_failure)` a well-formed probability object. However, the Firing Squad critique highlights that the justification for N=3 as the *minimal* and *correct* differentiator remains an interpretive choice, rather than an unequivocally derived value from the cited qualitative evidence. The test confirms its logical distinction from rivals but doesn't independently ground the N=3 minimum empirically. This, coupled with the deference of decisive confirmation to a future observable, limits the present confidence in the threshold's absolute grounding, despite its clear articulation and falsifiability. Critical components of the full probability model, such as multiplier calibration and base hazard rates, remain explicitly unresolved.",
+  "adversarial_alignment": "The Firing Squad successfully identified a key vulnerability in the grounding of the N=3 threshold, highlighting the interpretive leap from qualitative evidence to a specific numerical minimum. This attack directly targets the core justification of the event definition.",
+  "friction_points": [
+    "The qualitative nature of evidence (S006, S019) versus the need for a precise numerical threshold (N=3).",
+    "The distinction between logical consistency (thesis vs. rival) and empirical grounding for a specific number.",
+    "The current thesis defining an event vs. the broader project goal of a calibrated probability forecast."
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "Event_Boundary_Well_Defined",
+      "probability": 0.65
+    },
+    "nodes": [
+      {
+        "id": "N_Threshold_Justified",
+        "label": "N=3 is robust, minimal differentiator",
+        "probability": 0.4,
+        "watch_signal": "Future legal crisis outcomes (N=1,2,or>3 breakdown)"
+      },
+      {
+        "id": "Sustained_Non_Compliance_Operationalized",
+        "label": "Sustained non-compliance defined",
+        "probability": 0.75,
+        "watch_signal": "Clarity/applicability of '>24 months, unrectified' criterion"
+      },
+      {
+        "id": "Core_Legal_Principles_Specified",
+        "label": "Core EU legal principles identified",
+        "probability": 0.7,
+        "watch_signal": "Consensus on 'core' principles (e.g., primacy, judicial review)"
+      },
+      {
+        "id": "Failure_Differentiated_From_Integration",
+        "label": "Failure distinct from differentiated integration",
+        "probability": 0.8,
+        "watch_signal": "Ambiguity in classifying future 'opt-outs' vs. 'breakdown'"
+      }
+    ],
+    "edges": [
+      {
+        "from": "N_Threshold_Justified",
+        "to": "Event_Boundary_Well_Defined",
+        "weight": 0.9
+      },
+      {
+        "from": "Sustained_Non_Compliance_Operationalized",
+        "to": "Event_Boundary_Well_Defined",
+        "weight": 0.7
+      },
+      {
+        "from": "Core_Legal_Principles_Specified",
+        "to": "Event_Boundary_Well_Defined",
+        "weight": 0.6
+      },
+      {
+        "from": "Failure_Differentiated_From_Integration",
+        "to": "Event_Boundary_Well_Defined",
+        "weight": 0.8
+      }
+    ]
+  },
+  "proof_is_self_referential_model_raw": true,
+  "semantic_gate_status": "unresolved",
+  "self_reference_rule_fired": "safe_harbor_downgrade",
+  "self_reference_quorum_used": false,
+  "semantic_gate_unresolved_diagnosis": {
+    "required_clear_conditions_unmet": [
+      "load_bearing_claim_directly_tested",
+      "independent_grounding_present",
+      "causal_variable_perturbed",
+      "independent_falsification_environment_present",
+      "safe_harbor_local_mapping_requires_manual_review"
+    ],
+    "potential_falsification_unverified": true
+  },
+  "semantic_gate_summary": {
+    "total_unresolved_gates_processed": 8,
+    "unmet_clear_condition_counts": {
+      "independent_grounding_present": 8,
+      "causal_variable_perturbed": 7,
+      "independent_falsification_environment_present": 6,
+      "safe_harbor_local_mapping_requires_manual_review": 6,
+      "load_bearing_claim_directly_tested": 3
+    },
+    "potential_falsification_unverified_count": 3
+  },
+  "score_contract": {
+    "mode": "deterministic_gates",
+    "test_suite_status": "pass",
+    "criterion_score": 50,
+    "hard_fail_reasons": [],
+    "soft_score_caps": [
+      {
+        "reason": "Meta-Judge found a quarantined unresolved variable still gates the central causal mechanism. The thesis explicitly quarantines the `stress_escalation_multiplier` calibration, which is a load-bearing variable for the overall failure probability model. This is legitimate because the current thesis focuses on defining the event boundary, not the full probability calculation.",
+        "cap": 83
+      },
+      {
+        "reason": "Meta-Judge found the central discriminator is only directionally supported by current evidence and decisive confirmation is deferred to a forward observable. Decisive empirical confirmation of the N=3 threshold as the minimal differentiator for systemic breakdown is deferred to future legal-constitutional crises, where the actual number of non-compliant states and the resultant systemic impact can be observed. Current support is primarily qualitative justification against rival definitional choices.",
+        "cap": 83
+      }
+    ],
+    "semantic_gate_status": "unresolved",
+    "self_reference_rule_fired": "safe_harbor_downgrade",
+    "quarantined_load_bearing_dependency": true,
+    "quarantine_target": "causal_mechanism",
+    "quarantine_legitimate": true,
+    "quarantine_gates_causal_mechanism": true,
+    "quarantine_gates_named_discriminator": false,
+    "quarantine_gates_falsification_environment": false,
+    "current_discriminator_directly_confirmed": false,
+    "current_support_is_directional_only": true,
+    "decisive_confirmation_deferred_to_forward_observable": true,
+    "confirmation_rationale": "Decisive empirical confirmation of the N=3 threshold as the minimal differentiator for systemic breakdown is deferred to future legal-constitutional crises, where the actual number of non-compliant states and the resultant systemic impact can be observed. Current support is primarily qualitative justification against rival definitional choices.",
+    "unsupported_point_probability_claim": false,
+    "forecast_overclaim_rationale": "",
+    "project_charter_present": true,
+    "project_forecast_type": "probabilistic_forecast",
+    "anchor_proxies_declared": [
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_probability_target_is_explicit",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling"
+    ],
+    "anchor_proxy_total": 8,
+    "anchor_proxy_overlap": [
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling",
+      "test:test_probability_target_is_explicit"
+    ],
+    "anchor_proxy_coverage": 1.0,
+    "anchor_proxy_min_coverage": 0.5,
+    "drift_distance": 0.0,
+    "mathematical_drift_detected": false,
+    "active_proxy_signature": [
+      "proxy:TARGET_HORIZON",
+      "proxy:_derive_sustained_multistate_breakdown_of_core_obligations",
+      "proxy:_is_within_range",
+      "proxy:define_failure_event_boundary",
+      "proxy:estimate_failure_probability_by_2035",
+      "proxy:estimate_formal_intactness_probability_by_2035",
+      "test:test_base_rate_reference_class_bounding",
+      "test:test_event_boundary_excludes_differentiated_disintegration",
+      "test:test_event_boundary_is_horizon_bounded",
+      "test:test_failure_and_intactness_are_complements",
+      "test:test_fiscal_resilience_constraint_on_discretionary_backstop_reduction",
+      "test:test_legal_fragility_constraint_on_legal_break_multiplier",
+      "test:test_multistate_breakdown_threshold_grounding",
+      "test:test_probability_changes_when_crisis_inputs_change",
+      "test:test_probability_model_is_not_just_directional_tilt_relabeling",
+      "test:test_probability_target_is_explicit",
+      "test:test_stress_escalation_constraint_on_stress_escalation_multiplier"
+    ],
+    "drift_detected": false,
+    "drift_rationale": "",
+    "cap_reason": "soft_cap",
+    "cap_reason_detail": "Meta-Judge found a quarantined unresolved variable still gates the central causal mechanism. The thesis explicitly quarantines the `stress_escalation_multiplier` calibration, which is a load-bearing variable for the overall failure probability model. This is legitimate because the current thesis focuses on defining the event boundary, not the full probability calculation.",
+    "deterministic_charter_gates": {
+      "declared": [],
+      "harness_invoked": false,
+      "harness_failure_reason": "",
+      "results": [],
+      "any_failed": false,
+      "failure_count": 0,
+      "score_cap_on_failure": 50
+    },
+    "evidence_gap_count": 4,
+    "blocking_evidence_gap_count": 2,
+    "degrading_evidence_gap_count": 2,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "missing_external_comparator",
+      "missing_threshold_grounding",
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "N=3 as minimal numerical threshold",
+      "`stress_escalation_multiplier`",
+      "Unconditional base hazard rate for material_union_failure",
+      "Structured expert elicitation"
+    ],
+    "evidence_boundary_ceiling_detected": true,
+    "evidence_boundary_detail": "missing_threshold_grounding::`stress_escalation_multiplier`; missing_external_comparator::Unconditional base hazard rate for material_union_failure",
+    "derived_constraint_proposal_count": 3,
+    "derived_constraint_failure_families": [
+      "arbitrary_threshold_grounding",
+      "double_counting_risk",
+      "uncalibrated_multipliers"
+    ],
+    "derived_constraint_targets": [
+      "Event Ontology for Systemic Legal Breakdown",
+      "Probabilistic Forecasting Model Parameters",
+      "Probabilistic Model Structure (Base Rate & Multiplier)"
+    ],
+    "version": 7,
+    "regime": {
+      "mode": "deterministic_gates",
+      "version": 7,
+      "rubric_name": "eu_union_failure_probability_2035",
+      "rubric_fingerprint": "7e20f6dadeee6028",
+      "judge_model": "gemini-2.5-flash",
+      "requested_judge_model": "gemini-2.5-flash",
+      "effective_judge_models": [
+        "gemini-2.5-flash"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+      "evidence_fingerprint": "b406c9e9696c7533",
+      "project_forecast_type": "probabilistic_forecast"
+    },
+    "regime_fingerprint": "42910255b5fbfe5d",
+    "judge_model": "gemini-2.5-flash",
+    "requested_judge_model": "gemini-2.5-flash",
+    "effective_judge_models": [
+      "gemini-2.5-flash"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "eu_union_failure_probability_2035",
+    "rubric_fingerprint": "7e20f6dadeee6028",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/eu_union_failure_probability_2035/evidence.txt",
+    "evidence_fingerprint": "b406c9e9696c7533"
+  },
+  "project_forecast_type": "probabilistic_forecast",
+  "effective_judge_models": [
+    "gemini-2.5-flash"
+  ],
+  "judge_fallback_used": false,
+  "score": 50,
+  "usage_telemetry": {
+    "model_name": "gemini-2.5-flash",
+    "input_tokens": 16697,
+    "output_tokens": 3336,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 0,
+    "estimated_cost_usd": 0.013349100000000001,
+    "cost_known": true
+  },
+  "artifact_role": "champion",
+  "describes_baseline": "champion",
+  "score_regime_fingerprint": "42910255b5fbfe5d"
+}

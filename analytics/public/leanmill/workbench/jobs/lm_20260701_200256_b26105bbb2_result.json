@@ -1,0 +1,29 @@
+{
+  "action": "proof_audit",
+  "artifact_path": "ztare_proofs/check.proof_audit_receipt.json",
+  "command": [
+    "/Users/daalami/figs_activist_loop/venv/bin/python",
+    "-m",
+    "src.ztare.cli",
+    "leanmill",
+    "proof-audit",
+    "--target",
+    "ztare_proofs/check.lean",
+    "--out",
+    "ztare_proofs/check.proof_audit_receipt.json",
+    "--timeout-s",
+    "300",
+    "--target-name",
+    "check"
+  ],
+  "finished_at": "2026-07-01T20:04:00Z",
+  "job_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.json",
+  "label": "Ratify a proof",
+  "ok": false,
+  "returncode": 1,
+  "schema": "ztare-leanmill-workbench-action-v1",
+  "started_at": "2026-07-01T20:02:56.734700+00:00",
+  "status": "failed",
+  "stderr_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stderr.log",
+  "stdout_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stdout.log"
+}

@@ -1,0 +1,129 @@
+AI_CAPEX — COMPILED EVIDENCE (June 27, 2026)
+
+This file is a structured evidence brief for adversarial validation.
+It preserves contradictions and unknowns instead of smoothing them away.
+
+# 1. IMMUTABLE GROUND TRUTH
+- NVIDIA H100 SXM5 list price is $30,000-$40,000 USD per GPU. [Strength: medium; Sources: S002]
+- NVIDIA H100 thermal design power is 700W. [Strength: high; Sources: S002]
+- AWS p5.48xlarge on-demand price is $98.32/hr for the full instance, approximately $12.29 per GPU per hour. [Strength: high; Sources: S002]
+- The SOFR rate estimate for March 2026 is 4.30%. [Strength: low; Sources: S002]
+- Microsoft FY2025 CapEx guidance is $80B USD. [Strength: medium; Sources: S002]
+- Alphabet (Google) 2025 CapEx guidance is $75B USD. [Strength: medium; Sources: S002]
+- Meta 2025 CapEx guidance is $60-65B USD. [Strength: medium; Sources: S002]
+- The source claims internal GPU utilization at inference clusters runs 35-55% on average. [Strength: medium; Sources: S001, S003]
+- The source claims NVIDIA's Blackwell architecture (GB200) renders Hopper (H100) economically obsolete within 18 months of deployment. [Strength: medium; Sources: S001, S003]
+- The source states Microsoft CapEx/FCF ratio expanded from 0.35x (FY2022) to 0.85x (FY2025). [Strength: medium; Sources: S001, S003]
+- The source gives SOFR at 4.3% + 250bps = 6.8% effective cost of debt-financed CapEx. [Strength: medium; Sources: S001, S003]
+- The source contains a specific prediction: aggregate hyperscaler AI CapEx guidance cut by 28-35% from peak 2025 levels by Q4 2027. [Strength: medium; Sources: S001, S003]
+- The source contains a specific prediction: Microsoft will take $18-25B in accelerated depreciation write-downs between Q2 2026 and Q4 2027. [Strength: medium; Sources: S001, S003]
+- The source contains a specific prediction: hyperscaler AI segment operating margins compress 600-900bps from FY2025 levels. [Strength: medium; Sources: S001, S003]
+- The source contains a specific prediction: NVIDIA data center revenue will miss FY2027 consensus by 22-30%. [Strength: medium; Sources: S001, S003]
+- Microsoft FY2025 CapEx/FCF ratio is 0.85x. [Strength: medium; Sources: S002, S001, S003]
+- Typical hyperscaler GPU cluster utilization is 40-60% (midpoint 52%). [Strength: medium; Sources: S002]
+
+# 2. NUMERICAL RANGES & CONSTRAINTS (KEY VARIABLES / CONSTRAINTS)
+- aggregate hyperscaler AI CapEx annual spend: $300B+ USD | Kind: qualitative | Sources: S001, S002, S003 | Notes: Described as $300B+ annual hyperscaler AI CapEx cycle; sum of MSFT+GOOG+META+AMZN estimates/guidance
+- GPU inference cluster utilization: 35-55% percent | Kind: range | Sources: S001, S003 | Notes: Average billable utilization for inference clusters
+- GPU training cluster utilization: 80%+ for weeks then idle percent | Kind: qualitative | Sources: S001, S003 | Notes: Spikes to 80%+ for weeks then idle
+- H100 cost: $30,000 USD | Kind: exact | Sources: S001, S003 | Notes: Per GPU cost
+- H100 annual depreciation: $8,000-10,000 USD/year | Kind: range | Sources: S001, S003 | Notes: 4-year straight-line at $30K cost
+- AWS H100 instance price: $5.12 USD/hr | Kind: exact | Sources: S001, S003 | Notes: p5.48xlarge allocation equivalent
+- break-even revenue per GPU per hour at 45% idle: $3.80-4.20 USD/hr | Kind: range | Sources: S001, S003 | Notes: Required to cover total cost of ownership at 45% idle
+- H100 silicon on balance sheets: $40-60B USD | Kind: range | Sources: S001, S003 | Notes: H100-class silicon currently on hyperscaler balance sheets
+- book value remaining at Q4 2026: 60-80% percent | Kind: range | Sources: S001 | Notes: H100-class silicon carried at 60-80% of book value
+- cloud AI inference revenue growth by 2027: 2-3x multiple | Kind: range | Sources: S001, S003 | Notes: Source asserts aggregate cloud AI inference revenue will grow only 2-3x by 2027, not 10x
+- new capacity without buyers: 60-70% percent | Kind: range | Sources: S001, S003 | Notes: Leaving 60-70% of new capacity without buyers
+- Microsoft CapEx/FCF ratio FY2025: 0.85x ratio | Kind: exact | Sources: S001, S002, S003 | Notes: FY2025 estimate
+- depreciation schedule: 4-5 years | Kind: range | Sources: S002, S003 | Notes: Server depreciation life; hyperscaler standard
+- Data center PUE: 1.3-1.5 (avg ~1.4) dimensionless | Kind: range | Sources: S002 | Notes: From Google/Microsoft sustainability reports
+- Hyperscaler electricity cost: 0.04-0.07 $/kWh | Kind: range | Sources: S002 | Notes: From power purchase agreements
+- effective cost of debt-financed CapEx: 6.8% percent | Kind: exact | Sources: S001, S002, S003 | Notes: SOFR (4.3%) + 250bps; alternative range 4.65-6.80% from S002
+- Microsoft accelerated depreciation write-downs: $18-25B USD | Kind: range | Sources: S001, S003 | Notes: Predicted between Q2 2026 and Q4 2027
+- aggregate hyperscaler AI CapEx guidance cut by Q4 2027: 28-35% percent | Kind: range | Sources: S001, S003 | Notes: From peak 2025 levels
+- hyperscaler AI segment operating margin compression: 600-900bps basis points | Kind: range | Sources: S001, S003 | Notes: From FY2025 levels
+- NVIDIA FY2027 data center revenue miss vs consensus: 22-30% percent | Kind: range | Sources: S001, S003 | Notes: Miss by 22-30%
+- aggregate impairment: $150-200B USD | Kind: range | Sources: S001, S003 | Notes: Full write-down cycle 2027-2028
+- Z (ROIC destruction ratio) - base case for Microsoft: 0.0101 dimensionless | Kind: exact | Sources: S001, S003 | Notes: For Microsoft FY2025 estimates with U=0.52
+- NVIDIA GB200 inference throughput uplift vs H100: 3-5x dimensionless | Kind: range | Sources: S002 | Notes: NVIDIA published benchmarks
+- falsification condition: aggregate hyperscaler CapEx grows >15% in FY2027 AND AI segment operating margins expand | Kind: qualitative | Sources: S001 | Notes: If both conditions met, thesis is wrong
+
+# 3. IDENTIFIED CONTRADICTIONS
+- market consensus on AI CapEx rationality
+  - Claim A: Market consensus holds that $300B+ annual hyperscaler AI CapEx cycle is rational and will generate 20%+ ROIC [Sources: S001]
+  - Claim B: The unit economics of AI infrastructure are structurally broken and will destroy $150-200B in shareholder value [Sources: S001, S003]
+  - Why it matters: Determines whether current CapEx cycle is sustainable or will lead to major write-downs and market corrections
+- AI inference demand growth projections
+  - Claim A: Consensus assumes AI inference demand will grow 10x by 2027 [Sources: S001]
+  - Claim B: Aggregate cloud AI inference revenue will grow only 2-3x by 2027 [Sources: S001, S003]
+  - Why it matters: Central to the thesis's bear case; demand growth differential of 3-5x determines whether capacity is justified
+- GPU utilization rates
+  - Claim A: Hyperscalers report 'high demand' and imply high utilization [Sources: S001]
+  - Claim B: GPU cluster billable utilization at hyperscalers averages below 55% at inference and only spikes above 80% temporarily for training [Sources: S001, S003]
+  - Why it matters: Core thesis mechanic; if utilization is actually higher, the capital destruction math breaks
+- effective cost of debt-financed CapEx
+  - Claim A: Effective cost of incremental CapEx debt is 4.65-6.80% (conservatively 4.65%) based on AA-rated spreads of 25-50bps over SOFR [Sources: S002]
+  - Claim B: Effective cost of debt-financed CapEx is 6.8% (SOFR 4.3% + 250bps) [Sources: S001, S003]
+  - Why it matters: The leverage multiplier in the Z model is sensitive to this assumption; a 2% difference significantly changes capital destruction calculations
+- AWS H100 instance pricing
+  - Claim A: AWS p5.48xlarge on-demand price is approximately $12.29 per GPU per hour [Sources: S002]
+  - Claim B: AWS charges $5.12/hr for H100 instances (p5.48xlarge allocation equivalent) [Sources: S001, S003]
+  - Why it matters: Direct contradiction in a key pricing input; revenue per GPU calculations differ by ~2.4x
+
+# 4. EPISTEMIC VOIDS (OPEN PROBLEMS / UNKNOWNS)
+- Actual billable GPU utilization rates across individual hyperscalers (Microsoft, Google, Meta, Amazon)
+  - Why it matters: The thesis's central argument relies on utilization being 35-55% at inference clusters and 52% for Microsoft, but this may vary significantly by company
+  - Blocking effect: Cannot verify the utilization gap claim at firm level; hyperscalers do not disclose fleet-wide billable GPU utilization
+- Actual enterprise AI adoption rates and inference demand projections for 2026-2027
+  - Why it matters: The thesis predicts 180% YoY growth vs consensus 350% and only 2-3x cumulative growth by 2027 instead of 10x; the failure cascade depends on adoption stalling
+  - Blocking effect: Cannot verify which demand projection is more accurate without external data
+- Actual depreciation schedules used by individual hyperscalers for GPU assets
+  - Why it matters: The thesis assumes 4-5 year straight-line depreciation but schedules may differ across firms, affecting the phantom asset problem magnitude
+  - Blocking effect: Cannot verify the phantom asset problem magnitude firm by firm
+- Actual cost of debt financing for each hyperscaler for AI CapEx specifically
+  - Why it matters: The thesis uses SOFR+250bps but actual spreads may differ significantly; the leverage amplifier calculation is sensitive to this input
+  - Blocking effect: Cannot verify leverage amplifier calculation per firm
+- Actual proportion of GPU capacity deployed for inference vs training across the fleet
+  - Why it matters: Utilization patterns differ dramatically between inference (35-55%) and training (80%+ spikes); fleet mix determines aggregate utilization
+  - Blocking effect: Hyperscalers do not disclose inference/training workload split
+- Actual percentage of capacity that is unutilized and generating zero revenue vs. generating some revenue at low utilization
+  - Why it matters: The thesis states 40% of capacity is stranded but the source of this figure is unclear; zero-revenue vs. low-revenue capacity has different financial implications
+  - Blocking effect: Cannot verify the zero-revenue capacity claim
+
+# 5. PROVENANCE
+- S001 | current_iteration.md | md | source_evidence
+  - Summary: Thesis document arguing that hyperscaler AI CapEx cycle is structurally broken, predicting $150-200B in write-downs across Microsoft, Google, Meta, and Amazon between 2026-2028. Core argument: utilization gap is structural (not cyclical), depreciation mismatch on H100 silicon creates phantom asset problem, demand curve is misread, and leverage amplifies capital destruction. Includes quantitative model (Z = f(X,Y)) with specific predictions and Python test harness.
+- S002 | evidence.txt | txt | source_evidence
+  - Summary: This source provides a table of quantitative variables and estimates relevant to AI capex, including hyperscaler spending, GPU pricing and specifications, operational costs, financial rates, and market forecasts. It includes derived calculations such as break-even utilization and stranded capex estimates, as well as historical precedent data.
+- S003 | thesis.md | md | source_evidence
+  - Summary: This source presents a thesis arguing that the hyperscaler AI CapEx cycle ($300B+ annually) is structurally broken, predicting $150-200B in write-downs between 2026-2028 across Microsoft, Google, Meta, and Amazon. It provides a mathematical model (Z = f(X,Y)) and specific quantitative predictions about CapEx cuts, accelerated depreciation, margin compression, and NVIDIA revenue misses.
+
+# 6. CANDIDATE CLAIMS TO TEST
+1. Hyperscaler AI CapEx guidance will be cut by 28-35% from peak 2025 levels by Q4 2027
+   Why testable: Can be measured against published hyperscaler CapEx guidance numbers through Q4 2027
+   Depends on: quarterly hyperscaler earnings reports through Q4 2027
+   Priority: high | Sources: S001, S003
+2. Microsoft will take $18-25B in accelerated depreciation write-downs on Hopper-class silicon between Q2 2026 and Q4 2027
+   Why testable: Can be measured against Microsoft's financial statements for accelerated depreciation charges
+   Depends on: Microsoft quarterly SEC filings
+   Priority: high | Sources: S001, S003
+3. GPU cluster billable utilization at hyperscalers averages below 55% at inference and only spikes above 80% temporarily for training
+   Why testable: Can be tested through hyperscaler disclosures, analyst surveys, or confidential data sources
+   Depends on: hyperscaler GPU utilization disclosures or reliable third-party surveys
+   Priority: high | Sources: S001, S003
+4. The aggregate hyperscaler AI CapEx of $300B+ for 2025 represents overinvestment that will lead to substantial stranded assets and write-downs (estimated $150-200B in a stress case)
+   Why testable: Can be tested by tracking future CapEx announcements, write-downs, and asset impairments from MSFT, GOOG, META, and AMZN over 2025-2027
+   Depends on: TOTAL_CAPEX, STRANDED_CAPEX, WRITE_DOWN
+   Priority: high | Sources: S002, S001, S003
+5. NVIDIA data center revenue will miss FY2027 consensus by 22-30%
+   Why testable: NVIDIA reports quarterly data center revenue; consensus estimates are published by sell-side analysts; can be compared against actual reported figures
+   Depends on: NVIDIA FY2027 quarterly reports, sell-side consensus estimates for FY2027
+   Priority: high | Sources: S001, S003
+6. Efficiency gains in inference (e.g., Blackwell GB200 providing 3-5x uplift over H100) will significantly reduce the number of GPUs required to meet a given demand, depressing future CapEx needs
+   Why testable: NVIDIA publishes chip performance benchmarks; can be tested by comparing chip shipments with inference throughput improvements and pricing trends
+   Depends on: GB200_BW, INFR_UPLIFT
+   Priority: medium | Sources: S002
+7. The Z = f(X,Y) model produces Z > 0.01 (capital destruction) for a representative hyperscaler using their actual financial data
+   Why testable: Can be computed using published financial metrics (CapEx, FCF, cost of debt) and disclosed or estimated utilization rates
+   Depends on: hyperscaler financial data, utilization estimates
+   Priority: medium | Sources: S001, S003

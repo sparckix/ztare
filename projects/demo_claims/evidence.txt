@@ -1,0 +1,22 @@
+Evidence packet for demo_claims.
+
+source_id: demo_claims_source
+source_path: projects/demo_claims/raw/source.md
+source_role: bounded packet fixture source
+
+Bounded claim:
+The demo claim packet has source and evidence references that validate in a
+clean checkout.
+
+Evidence refs:
+- README.md
+- docs/evidence_atlas/README.md
+
+Non-claims:
+- Not a full project reproduction.
+- Not evidence that the claim is true outside this fixture.
+- Not an autoresearch run.
+
+Next falsifier:
+Remove the evidence atlas reference or the source file and validation must fail
+before in-loop routing.

@@ -1,0 +1,185 @@
+{
+  "score": 90,
+  "weakest_point": "Astrophysical modeling of MIR backgrounds and systematics: The logic depends critically on the assumed accuracy and completeness of natural mid-infrared background models and the ability of LIFE/HWO-class instrumentation to distinguish technogenic waste heat from astrophysical confusion noise at the required sigma. This is not strictly a structural gap, but is where the proposal risks overpromising the sharpness of the Bayes factor in practice; insufficient foreground modeling could dilute the posterior shift, especially given the limited extragalactic control samples and systematics from dust. A scenario where unknown astrophysical processes produce excess MIR is a latent hazard.",
+  "verified_axioms": [
+    "Axiom: Beacon-class radio/optical emissions can be arbitrarily rare independent of the number of technological civilizations (because emission is a choice or selected equilibrium, and cannot be structurally forced by life prevalence or energy use).",
+    "Axiom: Any civilization consuming stellar-scale power must radiate surplus energy as heat (MIR). This is dictated by thermodynamic and engineering minima, not by culture or will.",
+    "Axiom: Instrumental sensitivity floors (for MIR) are physically quantified and can outpace expected technogenic emission for plausible K1+ activities given forecasted specifications for HWO/LIFE-class telescopes."
+  ],
+  "retired_axioms_approved": [],
+  "evidence_gaps": [
+    {
+      "gap_type": "other",
+      "target": "MIR excess as technosignature",
+      "description": "Astrophysical dust, star-forming regions, and poorly understood infrared transients may introduce excess MIR background indistinguishable from technogenic waste heat at some spatial/angular resolution, potentially limiting the achievable sigma for a null result.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "Foreground confusion and modeling inaccuracies are a leading cause of signal dilution in all-sky MIR missions; robustness of Bayes shift depends on model advances and real data.",
+      "fetch_query": "Retrieve latest constraints and uncertainty characterizations for resolved/unresolved MIR background (e.g., from Spitzer/Herschel, as well as validated model comparisons for Roman/HWO/LIFE projections); assess level at which astrophysical variability mimics or masks hypothesized techno-excess at survey floor.",
+      "adversarial_direction": true
+    },
+    {
+      "gap_type": "other",
+      "target": "Distribution of technogenic energy use",
+      "description": "Assumes a non-negligible fraction of advanced civilizations are K1-class energy users; does not quantify allowed deviation between plausible R3 (expansion bottleneck with high local output) and R5 (obslim with low output per civilization) beyond order-of-magnitude. Marginal cases could exist where both predictions overlap below practical detection thresholds.",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "producer_rationale": "The strength of the Bayes shift will depend on the assumed tails of the per-civilization energy use distribution, which is only partly constrained by theory.",
+      "fetch_query": "Compile prior and posterior distributions for per-civilization energy output under R3 and R5; model overlap parameter to test null result interpretability.",
+      "adversarial_direction": true
+    }
+  ],
+  "derived_constraints": [
+    {
+      "constraint": "Any Fermi-paradox discriminator founded on narrowband beacon detection is structurally degenerate between 'expansion bottleneck' (R3) and 'observation-limited' (R5) if beacon prevalence (\u03bb_b) is <1 in SKA-scale samples; alternate observables must be evaluated.",
+      "applies_to": "SKA/LOFAR-class beacon surveys",
+      "failure_family": "beacon_rarity_zero_expected_detections_regime",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "Null results lack discriminative power when both hypotheses predict zero signal; only a fat-tailed \u03bb_b regime enables Bayes shift.",
+      "non_applicability_condition": "If future theory or observation forces \u03bb_b \u226b 1 for SKA targets, beacon discrimination recovers relevance; currently not defensible."
+    },
+    {
+      "constraint": "Discrimination based on MIR-excess is only robust if the total predicted technogenic waste heat is >3\u03c3 above foreground uncertainty models in the relevant survey volume.",
+      "applies_to": "MIR-integral discriminators",
+      "failure_family": "foreground_confusion_excess_noise",
+      "severity": "degrading",
+      "producer": "meta_judge",
+      "rationale": "Technological waste heat becomes distinguishable only if astrophysical backgrounds are modeled tightly enough to retain discriminative power after error propagation.",
+      "non_applicability_condition": "If dust/star formation MIR backgrounds fluctuate on relevant scales beyond calibration limits, discriminant power is reduced below publication threshold."
+    }
+  ],
+  "logic_gaps": [],
+  "debate_summary": "The thesis originally (and most Fermi-paradox literature) failed the Beacon Prevalence Catastrophe: both the expansion-bottleneck (R3) and observation-limited (R5) hypotheses plausibly predict nearly zero detectable beacon-class signals in realistic radio samples, so the beacon-null result cannot drive a meaningful posterior shift. The fundamental insight is to bypass this by using a thermodynamically forced observable \u2014 the aggregate mid-infrared (MIR) waste heat output at the galactic (or full-sky) scale \u2014 where at least one class (R5) must predict a measurable excess if civilizations are energy-using at any frequency, while the other (R3) does not. This is structurally robust and passes the five-step Bayesian discrimination test. The main epistemic vulnerability is calibration/modeling of natural MIR foregrounds and marginal energy-use distributions (i.e., how 'technogenic' is the actual MIR). Cross-domain analogies (dark-matter integrated signals, biosignature false-positive accounting, medical-trial null rigor) are argued well. The field-optimization meta-finding (resolution-proposal is cheap, disconnected from empirical accountability, and citation/institutionally incentivized over discriminator design) is defended with concrete structural arguments. Falsifiability and testability are satisfied; the approach would pass scrutiny from a Bayesian cosmology methodologist.",
+  "adversarial_alignment": "Panel aligned: all three adversaries agree Beacon Prevalence Catastrophe invalidates prior approach; MIR-integral overcomes beacon rarity but is vulnerable to foreground systematics and energy-use model tail. Bayesian and instrument scientist adversaries are satisfied with structural design but continue to press for formal model error propagation and explicit thresholds on publishable Bayes factor. Sociologist adversary confirms meta-finding is structurally supported, not asserted.",
+  "friction_points": [
+    "Complexity and uncertainty of MIR foreground modeling at required precision",
+    "Dependence of Bayes factor on minimally quantified civilization energy-use distributions (K1-class fraction, etc.)",
+    "Instrument build and funding timeline risk for HWO/LIFE, with mid-IR capability not yet fully specified",
+    "Potential for unknown astrophysical MIR processes to mimic/disguise technogenic excess"
+  ],
+  "probability_dag": {
+    "outcome": {
+      "label": "MIR-integral null robustly discriminates between R3 and R5, achieving \u22652 nats of Bayesian update under plausible foreground models with next-gen instrumentation",
+      "probability": 0.72
+    },
+    "nodes": [
+      {
+        "id": "n1",
+        "label": "Beacon-class emitters plausibly rare (\u03bb_b < 1) ; beacon-null is structurally degenerate",
+        "probability": 0.9,
+        "watch_signal": "SKA/LOFAR nulls, model reviews"
+      },
+      {
+        "id": "n2",
+        "label": "Technogenic waste heat is thermodynamically inescapable for K1-class civilizations",
+        "probability": 0.85,
+        "watch_signal": "engineering/law-of-physics reviews"
+      },
+      {
+        "id": "n3",
+        "label": "Foreground MIR backgrounds can be modeled/calibrated sufficiently for HWO/LIFE-class discriminators",
+        "probability": 0.65,
+        "watch_signal": "LIFE/HWO mission reports, astro modeling convergence"
+      },
+      {
+        "id": "n4",
+        "label": "Bayes factor/likelihood-ratio achievable for \u22652 nats shift with null MIR-excess (integration of signal and error budgets)",
+        "probability": 0.7,
+        "watch_signal": "Forecasted error propagation, community Bayesian analysis, design reviews"
+      }
+    ],
+    "edges": [
+      {
+        "from": "n1",
+        "to": "n4",
+        "weight": 0.3
+      },
+      {
+        "from": "n2",
+        "to": "n4",
+        "weight": 0.5
+      },
+      {
+        "from": "n3",
+        "to": "n4",
+        "weight": 1.0
+      },
+      {
+        "from": "n4",
+        "to": "outcome",
+        "weight": 1.0
+      }
+    ]
+  },
+  "score_contract": {
+    "evidence_gap_count": 2,
+    "blocking_evidence_gap_count": 0,
+    "degrading_evidence_gap_count": 2,
+    "enriching_evidence_gap_count": 0,
+    "evidence_gap_types": [
+      "other"
+    ],
+    "evidence_gap_targets": [
+      "MIR excess as technosignature",
+      "Distribution of technogenic energy use"
+    ],
+    "evidence_boundary_ceiling_detected": false,
+    "evidence_boundary_detail": "",
+    "derived_constraint_proposal_count": 2,
+    "derived_constraint_failure_families": [
+      "beacon_rarity_zero_expected_detections_regime",
+      "foreground_confusion_excess_noise"
+    ],
+    "derived_constraint_targets": [
+      "SKA/LOFAR-class beacon surveys",
+      "MIR-integral discriminators"
+    ],
+    "mode": "raw_llm_score",
+    "version": 1,
+    "regime": {
+      "mode": "raw_llm_score",
+      "version": 1,
+      "rubric_name": "fermi_paradox_discriminator",
+      "rubric_fingerprint": "6773d9bbd196413b",
+      "judge_model": "gpt-4.1",
+      "requested_judge_model": "gpt-4.1",
+      "effective_judge_models": [
+        "gpt-4.1"
+      ],
+      "judge_fallback_used": false,
+      "dynamic_committee": false,
+      "primitive_support": false,
+      "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+      "evidence_fingerprint": "ef5484aeae7074fc",
+      "project_forecast_type": "unspecified"
+    },
+    "regime_fingerprint": "9b8682aa39459060",
+    "judge_model": "gpt-4.1",
+    "requested_judge_model": "gpt-4.1",
+    "effective_judge_models": [
+      "gpt-4.1"
+    ],
+    "judge_fallback_used": false,
+    "rubric_name": "fermi_paradox_discriminator",
+    "rubric_fingerprint": "6773d9bbd196413b",
+    "dynamic_committee": false,
+    "primitive_support": false,
+    "evidence_path": "/Users/daalami/figs_activist_loop/projects/fermi_paradox_discriminator/evidence.txt",
+    "evidence_fingerprint": "ef5484aeae7074fc",
+    "project_forecast_type": "unspecified",
+    "test_suite_status": "fail_assert"
+  },
+  "usage_telemetry": {
+    "model_name": "gpt-4.1-2025-04-14",
+    "input_tokens": 13448,
+    "output_tokens": 2904,
+    "cache_creation_input_tokens": 0,
+    "cache_read_input_tokens": 3968,
+    "estimated_cost_usd": 0.052112,
+    "cost_known": true
+  },
+  "artifact_role": "champion",
+  "describes_baseline": "champion",
+  "score_regime_fingerprint": "9b8682aa39459060"
+}

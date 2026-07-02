@@ -35,6 +35,7 @@ tenant overlay.
 | `ztare forecast <verb> …` | Forecast-pool, calibration DB, and experiment execution operations | `scripts/public/control/forecast/` plus selected experiment runners |
 | `ztare leanmill <verb> …` | LeanMill governed proof search: station control, source review, proof audit, harness runs | `scripts/public/control/leanmill/` |
 | `ztare research <verb> …` | Advisory research scaffold: eigenquestion (the question that matters most), isomorphism (what is this like) | `src/ztare/research_director/` |
+| `ztare rubric <verb> …` | Pre-run rubric critique: gaming-surface coverage, evidence anchors, score-ceiling reachability, criterion independence, persona blind spots | `src/ztare/rubrics/review_rubric.py` |
 | `ztare bundle <verb> …` | Sealed-bundle run / verify | `bundle_run.py`, `bundle_verify.py` |
 | `ztare charter …` | Project-charter commit | `charter_commit.py` |
 | `ztare routine-review …` | RD routine reviews | `rd_routine_review.py` |

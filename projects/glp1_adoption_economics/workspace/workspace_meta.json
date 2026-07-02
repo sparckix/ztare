@@ -1,0 +1,27 @@
+{
+  "changed_sources": 1,
+  "deleted_sources": [],
+  "generated_on": "April 13, 2026",
+  "merge_only": false,
+  "merge_status": "success",
+  "model_family": "gemini",
+  "model_id": "gemini-2.5-flash",
+  "project": "glp1_adoption_economics",
+  "prompts": {
+    "extract_source_note": "/config/prompts/extract_source_note.md",
+    "merge_workspace": "/config/prompts/merge_workspace.md"
+  },
+  "raw_dir": "/projects/glp1_adoption_economics/raw",
+  "reused_sources": 2,
+  "source_count": 3,
+  "warnings": [
+    "Source evidence_fetch_20260413T230742Z.md has no source_type frontmatter; defaulting to untyped.",
+    "Source evidence_fetch_20260414T005026Z.md has no source_type frontmatter; defaulting to untyped.",
+    "Source web_research_2026_04_13.md has no source_type frontmatter; defaulting to untyped.",
+    "Dropped immutable ground-truth entries sourced from non-evidence files.",
+    "Dropped range/constraint entries sourced from non-evidence files.",
+    "Dropped candidate claims with unsupported source types.",
+    "Untyped sources present (S001, S002, S003). Untyped files are excluded from immutable facts and constraints."
+  ],
+  "workspace_dir": "/projects/glp1_adoption_economics/workspace"
+}

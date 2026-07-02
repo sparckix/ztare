@@ -269,6 +269,6 @@ evidence until `kernel_entry_ok=true`.
   and
   [`src/ztare/research_director/pattern_action_contract.py`](../../src/ztare/research_director/pattern_action_contract.py)
 - NS graph front door:
-  [`projects/ns_millennium_hunt/scripts/ns_graph.py`](../../projects/ns_millennium_hunt/scripts/ns_graph.py)
+  `projects/ns_millennium_hunt/scripts/ns_graph.py`
 - Graph diagnostic pattern:
   [`graph_diagnostic_belief_update_pattern.md`](graph_diagnostic_belief_update_pattern.md)

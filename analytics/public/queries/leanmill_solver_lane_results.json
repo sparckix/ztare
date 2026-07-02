@@ -1,79 +1,50 @@
 {
   "schema": "leanmill-solver-lane-results-v1",
   "lane": "solver_lane",
-  "mode": "cascade",
+  "mode": "dag_search",
   "provider": "claude_opus",
-  "generated_at": "2026-06-20T05:21:34.550827+00:00",
+  "generated_at": "2026-07-01T21:39:35.900337+00:00",
   "credit_boundary": "agentic proposal only; unratified_closure_candidate exits + matched context-stripped negative control. Governance (leak-tight + matched-neg-control + L3) ratifies. NO proof credit here.",
   "prover_cmd": "claude_opus",
   "results": [
     {
-      "name": "adhoc::mathd_algebra_182",
-      "target_name": "mathd_algebra_182",
+      "name": "adhoc::no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
+      "target_name": "no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
       "kind": "c_pool_no_template",
-      "outcome": "closed",
-      "compile_ok": true,
-      "compile_tail": "[tauto] no  repl: L2:2 error: Tactic `tauto` failed\n\ny : \u2102\n\u22a2 7 * (3 * y + 2) = 21 * y + 14\n[positivity] no  repl: L2:2 error: not a positivity goal\n[ring] OK  repl: clean",
-      "exit_code": 0,
-      "proof_text": "by ring",
-      "provider": "native_hammer",
+      "mode": "dag_search",
+      "outcome": "exact_gap",
+      "compile_ok": false,
+      "exit_code": 1,
+      "proof_text": "",
+      "provider": "governed_dag_search",
       "providers_tried": [
         {
           "provider": "native_hammer",
-          "outcome": "closed",
-          "compile_ok": true,
-          "compile_tail": "[tauto] no  repl: L2:2 error: Tactic `tauto` failed\n\ny : \u2102\n\u22a2 7 * (3 * y + 2) = 21 * y + 14\n[positivity] no  repl: L2:2 error: not a positivity goal\n[ring] OK  repl: clean",
-          "provider_wallclock_s": 4.73,
-          "agent_kind": "native_hammer_cascade",
-          "contract_validation": {
-            "contract_schema": "leanmill-solver-action-contract-v1",
-            "receipts": {
-              "kernel_compile_receipt": {
-                "passed": true,
-                "tail": "[tauto] no  repl: L2:2 error: Tactic `tauto` failed\n\ny : \u2102\n\u22a2 7 * (3 * y + 2) = 21 * y + 14\n[positivity] no  repl: L2:2 error: not a positivity goal\n[ring] OK  repl: clean"
-              },
-              "matched_negative_control_receipt": {
-                "passed": true,
-                "tail": "pass: proof needs the prelude (does not compile under bare Mathlib)",
-                "interpretation": "PASS = bare-Mathlib stripped attempt did NOT compile \u2192 proof needs the prelude \u2192 genuine"
-              },
-              "axiom_allowlist_receipt": {
-                "passed": true,
-                "axioms": [
-                  "Classical.choice",
-                  "Quot.sound",
-                  "propext"
-                ],
-                "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
-              },
-              "l3_anti_pattern_receipt": {
-                "passed": null,
-                "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
-              },
-              "governance_kernel_receipt": {
-                "passed": true,
-                "confirmed": [],
-                "flags": [],
-                "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
-              }
-            },
-            "credit_ready_at_solver_layer": true,
-            "required_receipts_all_passed_at_solver_layer": true,
-            "axiom_tier": "kernel_pure",
-            "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
-          }
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "native_hammer",
+          "agent_kind": "native_hammer_cascade"
+        },
+        {
+          "provider": "claude_opus_warm",
+          "outcome": "failed_compile",
+          "compile_ok": false,
+          "mnc_passed": false,
+          "node_id": "n0_root",
+          "move": "claude_warm",
+          "agent_kind": "warm_agent"
         }
       ],
-      "provider_error": "none",
-      "provider_wallclock_s": 104.1,
       "solver_action_contract": {
         "schema": "leanmill-solver-action-contract-v1",
-        "generated_at_epoch": 1781932784,
-        "row_id": "adhoc::mathd_algebra_182",
-        "target_theorem_name": "mathd_algebra_182",
-        "source_file": "ztare_proofs/.solver_scratch/AdHoc_mathd_algebra_182.lean",
+        "generated_at_epoch": 1782941775,
+        "row_id": "adhoc::no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
+        "target_theorem_name": "no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource",
+        "source_file": "ztare_proofs/.solver_scratch/AdHoc_no_C7AViscMarkedSourceVarianceReceipt_of_adaptivePositivePartSource.lean",
         "scope": "solver_lane_no_positive_family_template",
-        "goal_excerpt": "theorem mathd_algebra_182 (y : \u2102) : 7 * (3 * y + 2) = 21 * y + 14",
+        "goal_excerpt": "Prove that an adaptive positive-part A_visc source-selection confuser blocks C7AViscMarkedSourceVarianceReceipt on the same separated source.",
         "requested_residual_class": "no_positive_family_template_closure",
         "accepted_residual_class": "no_positive_family_template_closure",
         "source_cue_check_status": "passed",
@@ -103,46 +74,46 @@
         "evidence_basis": "local_default",
         "rd_primitive_hits": [
           {
-            "id": "ANTI-PATTERN-012-VOCABULARY-CHAIN-LAUNDERING",
-            "kind": "anti-pattern",
-            "score": 766.5,
-            "why": "matched theorem; impact 5",
-            "description": "Multi-step argument chaining named theorems where \u22651 transition has a subtle direction/quantifier/dimension/inclusion flip from rapid-synthesis-by-association without per-step explicit verification (sessional catches tic"
-          },
-          {
-            "id": "GOVERNED-ADVERSARY-YIELD-DECOMPOSITION",
-            "kind": "primitive",
-            "score": 766.4,
-            "why": "bucket pde_ns_lean, orchestration_compression; impact 4",
-            "description": "Governed solver-yield decomposition on an independent adversary corpus: author!=prover!=verifier separation; verbatim proofs verified through the canonical pinned Mathlib sandbox; exact single-lemma adjudication; classes"
-          },
-          {
-            "id": "PATTERN-001-FRICTION-DEBATE",
-            "kind": "pattern",
-            "score": 764.25,
-            "why": "matched theorem; bucket negative_to_object; impact 5; graph_bonus 1.75",
-            "description": "5-round adversarial 2-role friction debate; produced clean theorem candidates per memory index."
-          },
-          {
-            "id": "PATTERN-009-INDEPENDENT-CAS-VERIFICATION",
-            "kind": "pattern",
-            "score": 762.25,
-            "why": "bucket sympy_cas; impact 5; graph_bonus 1.75",
-            "description": "Independent CAS verification of LLM-proposed inequalities."
-          },
-          {
-            "id": "V33-INDIRECT-LEAKAGE-GATE",
+            "id": "QUADRATIC-QUOTIENT-DESCENT-GATE",
             "kind": "gate",
-            "score": 760.4,
-            "why": "bucket pde_ns_lean, graph_mining; impact 4",
-            "description": "Tier-0 closure-governance organ: flags bare simp/fun_prop/aesop closures where the global @[simp]/@[fun_prop] set silently carries the gold lemma; independent confirm via floor-fails-but-global-closes. Mechanizes AP-013 "
+            "score": 800.4,
+            "why": "matched positive, source, selection, blocks, block; bucket pde_ns_lean; impact 4",
+            "description": "Quadratic quotient-descent gate: checks that a selected quadratic functional descends through a source quotient only after a pre-payoff selector, source-kernel square-term control, polarized cross-term control, and expli"
           },
           {
-            "id": "RESIDUAL-TO-LEVER",
-            "kind": "primitive",
-            "score": 756.4,
-            "why": "bucket negative_to_object; impact 4",
-            "description": "Verification->solving bridge: maps an audited outcome (route_c gap_report / v33 flags / ns_governance verdict) to a canonical residual_class + next_lever + next_target_statement. Implements the consumer_feedback_contract"
+            "id": "NONADAPTIVE-SOURCE-SELECTION-GATE",
+            "kind": "gate",
+            "score": 796.4,
+            "why": "matched adaptive, source, selection, blocks, block; bucket pde_ns_lean; impact 4",
+            "description": "Pre-payoff source/extractor selection gate: checks that a reinterpreted source object, extractor or selection rule, source family, owner/carrier binding, index map, and timing receipt are fixed before payoff and independ"
+          },
+          {
+            "id": "QUOTIENT-MINIMAL-CARRIER-PAYMENT-GATE",
+            "kind": "gate",
+            "score": 790.4,
+            "why": "matched adaptive, positive, source, selection, confuser; bucket pde_ns_lean; impact 4",
+            "description": "Quotient-minimal carrier payment gate: checks that an infimum/minimal norm over same-source representatives is not spent on representative-level selected production unless a pre-payoff selector, target-independent repres"
+          },
+          {
+            "id": "FINITE-PREFIX-SELECTION-GATE",
+            "kind": "gate",
+            "score": 783.65,
+            "why": "matched source, selection, blocks, block; bucket pde_ns_lean; impact 4; graph_bonus 1.25",
+            "description": "Exact finite-prefix selector: checks whether a same-source prefix inequality can produce a boundary>=interface event and, when an interface_floor is declared, a floor-paying witness; blocks proxy-family, zero-interface s"
+          },
+          {
+            "id": "METRIC-COVERING-SELECTION-GATE",
+            "kind": "gate",
+            "score": 776.4,
+            "why": "matched source, selection, confuser; bucket pde_ns_lean; impact 4",
+            "description": "Covering-selection receipt gate: checks metric/quasi-metric, source family, scale/radius, uniform doubling or Besicovitch constant, engulfing/eccentricity control, pre-payoff selection rule, coverage or paid omissions, s"
+          },
+          {
+            "id": "PDE-ESTIMATE-CRAFT-OPS",
+            "kind": "op",
+            "score": 776.15,
+            "why": "matched adaptive, source, selection; bucket pde_ns_lean; impact 4; graph_bonus 1.75",
+            "description": "GP-219 PDE estimate-craft vocabulary covering auxiliary objects, threshold dichotomies, limit passages, sharpness witnesses, distribution/tail upgrades, nonadaptive source-selection receipts, same-carrier no-reuse packin"
           }
         ],
         "action_program": [
@@ -189,65 +160,67 @@
         "downstream_consumer_check": "leanmill_proof_audit emits a typed receipt that the governance worker consumes; only payloads with all receipts passing become unratified_closure_candidate typed exits.",
         "credit_boundary": "advisory_only_no_factory_credit; the contract names the receipts that must pass before any credit-ready upgrade."
       },
-      "contract_validation": {
-        "contract_schema": "leanmill-solver-action-contract-v1",
-        "receipts": {
-          "kernel_compile_receipt": {
-            "passed": true,
-            "tail": "[tauto] no  repl: L2:2 error: Tactic `tauto` failed\n\ny : \u2102\n\u22a2 7 * (3 * y + 2) = 21 * y + 14\n[positivity] no  repl: L2:2 error: not a positivity goal\n[ring] OK  repl: clean"
-          },
-          "matched_negative_control_receipt": {
-            "passed": true,
-            "tail": "pass: proof needs the prelude (does not compile under bare Mathlib)",
-            "interpretation": "PASS = bare-Mathlib stripped attempt did NOT compile \u2192 proof needs the prelude \u2192 genuine"
-          },
-          "axiom_allowlist_receipt": {
-            "passed": true,
-            "axioms": [
-              "Classical.choice",
-              "Quot.sound",
-              "propext"
-            ],
-            "tail": "clean ['Classical.choice', 'Quot.sound', 'propext']"
-          },
-          "l3_anti_pattern_receipt": {
-            "passed": null,
-            "tail": "deferred to governance: v33 stack runs in leanmill_proof_audit"
-          },
-          "governance_kernel_receipt": {
-            "passed": true,
-            "confirmed": [],
-            "flags": [],
-            "interpretation": "PASS = no CONFIRMED anti-laundering organ fired"
-          }
+      "dag_search": {
+        "root_status": "exact_gap",
+        "root_resolution": "exact_gap",
+        "closed_or_exact_gap": true,
+        "moves_made": 2,
+        "wallclock_s": 180.107,
+        "levers": {
+          "n0_root": "escalate_noncommutative(diagnostic): node n0_root deferred having tried ONLY commutative/direct moves ['native_hammer', 'claude_warm'] \u2014 invent/decompose not reached. (Diagnostic only: tested invent \u226f strong-direct; flags the failure mode, not a guaranteed lever \u2014 escalate to a stronger prover/human.)"
         },
-        "credit_ready_at_solver_layer": true,
-        "required_receipts_all_passed_at_solver_layer": true,
-        "axiom_tier": "kernel_pure",
-        "downstream_required": "leanmill_proof_audit (axiom_allowlist + L3) before factory credit"
+        "move_attribution": [
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "native_hammer",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": null,
+            "progress": 0.02,
+            "goals_remaining": 0,
+            "error_class": "parse_error",
+            "wallclock_s": 0.0
+          },
+          {
+            "node_id": "n0_root",
+            "node_kind": "root_goal",
+            "move": "claude_warm",
+            "kernel_clean": false,
+            "mnc_passed": false,
+            "ratified_close": false,
+            "falsifier": false,
+            "rung": false,
+            "residual": null,
+            "progress": 0.0,
+            "goals_remaining": 0,
+            "error_class": "other_error",
+            "wallclock_s": 179.73
+          }
+        ],
+        "trace": [
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "native_hammer"
+          },
+          {
+            "event": "move_failed",
+            "node_id": "n0_root",
+            "move": "claude_warm"
+          },
+          {
+            "event": "stop",
+            "reason": "wallclock_budget_exhausted"
+          }
+        ]
       },
       "matched_negative_control": {
         "kind": "context_stripped",
-        "executed_at": "solver_layer",
-        "passed": true
-      },
-      "frontier_triage": {
-        "triage_class": "formalization_bound",
-        "confidence": "low",
-        "attempt": true,
-        "obligation": "Construct",
-        "gap_type": "UNKNOWN",
-        "rationale": "Construct obligation \u2014 known-math shape; attempt with the standard pipeline.",
-        "target_strength": "unknown"
-      },
-      "in_repo_reference_check": {
-        "kind": "reachable_solved_references",
-        "executed_at": "solver_layer",
-        "ran": true,
-        "clean": true,
-        "reachable_solved_references": [],
-        "error": null,
-        "note": "advisory: reachable in-repo solved references at closure time; opt-in (ZTARE_CLOSURE_REF_CHECK=1, on for solve_adhoc). Non-empty does NOT reject (premises are legitimate in batch) but flags a capability claim."
+        "executed_at": "skipped"
       }
     }
   ]

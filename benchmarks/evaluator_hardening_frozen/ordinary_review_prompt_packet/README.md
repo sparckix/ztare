@@ -5,7 +5,7 @@ constraint-memory evaluator-hardening suite.
 
 ## What to Review
 
-- Source run: `benchmarks/constraint_memory/runs/20260404_195100`
+- Source run: `benchmarks/evaluator_hardening_frozen/source_run_20260404_195100`
 - Specimens: `9`
 - Prompt files: `prompts/*.txt`
 - Return format: fill `ordinary_review_import_template.json`

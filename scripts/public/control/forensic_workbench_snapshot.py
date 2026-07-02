@@ -595,10 +595,14 @@ def collect_trace(project: str, rubric: str, intake: str) -> tuple[dict[str, Any
         "--json",
     ]
     proc = run(command)
-    if proc.returncode != 0:
+    if proc.returncode != 0 or not proc.stdout.strip():
         raise SystemExit(
             "forensic workbench trace command failed\n"
-            f"command: {shell_join(command)}\nSTDOUT:\n{proc.stdout}\nSTDERR:\n{proc.stderr}"
+            f"command: {shell_join(command)}\n"
+            f"returncode: {proc.returncode}\n"
+            f"PYTHON env: {os.environ.get('PYTHON')!r}  MAKEFLAGS: {os.environ.get('MAKEFLAGS')!r}\n"
+            f"STDOUT[:400]: {proc.stdout[:400]!r}\n"
+            f"STDERR[:1200]:\n{proc.stderr[:1200]}"
         )
     return json.loads(proc.stdout), display_command
 

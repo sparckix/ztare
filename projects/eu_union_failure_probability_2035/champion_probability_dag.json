@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "Event_Boundary_Well_Defined",
+    "probability": 0.65
+  },
+  "nodes": [
+    {
+      "id": "N_Threshold_Justified",
+      "label": "N=3 is robust, minimal differentiator",
+      "probability": 0.4,
+      "watch_signal": "Future legal crisis outcomes (N=1,2,or>3 breakdown)"
+    },
+    {
+      "id": "Sustained_Non_Compliance_Operationalized",
+      "label": "Sustained non-compliance defined",
+      "probability": 0.75,
+      "watch_signal": "Clarity/applicability of '>24 months, unrectified' criterion"
+    },
+    {
+      "id": "Core_Legal_Principles_Specified",
+      "label": "Core EU legal principles identified",
+      "probability": 0.7,
+      "watch_signal": "Consensus on 'core' principles (e.g., primacy, judicial review)"
+    },
+    {
+      "id": "Failure_Differentiated_From_Integration",
+      "label": "Failure distinct from differentiated integration",
+      "probability": 0.8,
+      "watch_signal": "Ambiguity in classifying future 'opt-outs' vs. 'breakdown'"
+    }
+  ],
+  "edges": [
+    {
+      "from": "N_Threshold_Justified",
+      "to": "Event_Boundary_Well_Defined",
+      "weight": 0.9
+    },
+    {
+      "from": "Sustained_Non_Compliance_Operationalized",
+      "to": "Event_Boundary_Well_Defined",
+      "weight": 0.7
+    },
+    {
+      "from": "Core_Legal_Principles_Specified",
+      "to": "Event_Boundary_Well_Defined",
+      "weight": 0.6
+    },
+    {
+      "from": "Failure_Differentiated_From_Integration",
+      "to": "Event_Boundary_Well_Defined",
+      "weight": 0.8
+    }
+  ]
+}

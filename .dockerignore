@@ -25,6 +25,7 @@ org/roles/debate_runner.yaml
 venv
 .venv
 node_modules
+**/node_modules
 orbit/node_modules
 orbit/dist
 
@@ -41,12 +42,19 @@ vendor
 **/.pytest_cache
 **/dist
 **/build
-analytics/public/leanmill/external_benchmarks/sandboxes
-analytics/public/leanmill/external_benchmarks/repos
+# analytics/public/leanmill is ~21GB of solver/training data the workbench does
+# not read (job state under workbench/ is created at runtime — see the mkdir in
+# forensic-workbench/Dockerfile). Excluded outright: a negated re-include here
+# defeats Docker's directory-skip and leaks the whole tree into the context.
+analytics/public/leanmill
 analytics/public/gnn
 analytics/public/index
 analytics/private
 ztare_proofs/.lake
+
+# Research/paper working dirs — not read by the workbench server or CLI.
+epistemic-generation
+consciousness
 
 # Large local artifacts that must never enter Docker build context
 nohup.out

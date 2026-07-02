@@ -1175,6 +1175,10 @@ forensic-workbench-api:
 forensic-workbench-live:
 	$(PYTHON) scripts/public/control/forensic_workbench_live.py
 
+.PHONY: forensic-workbench-docker
+forensic-workbench-docker:  ## Build + run the workbench in one container at http://127.0.0.1:8765
+	docker compose up --build workbench
+
 committee:
 	$(PYTHON) -m src.ztare.validator.generate_committee --project $(PROJECT)
 
@@ -1664,12 +1668,13 @@ demo-current:  ## Compatibility alias for demo-claim-discipline
 
 .PHONY: docs-check
 docs-check:  ## Fail if docs index is stale, links drift, or papers/ contains working files
-	$(PYTHON) scripts/private/validate_docs_index.py
+	@if [ -f scripts/private/validate_docs_index.py ]; then $(PYTHON) scripts/private/validate_docs_index.py; else echo "docs-check: scripts/private/validate_docs_index.py absent (private maintainer tool) — skipping index-freshness gate"; fi
 	$(PYTHON) scripts/public/validators/validate_markdown_links.py README.md CONTRIBUTING.md SECURITY.md CHANGELOG.md RELEASE_CHECKLIST.md docs examples
 	$(PYTHON) scripts/public/validators/validate_papers_public_tree.py
 
 .PHONY: smoke-public
 smoke-public:  ## Public clone smoke: org runtime, forecast pool, and action intelligence
+	$(PYTHON) scripts/public/control/org_first_run_setup.py --init-private --skip-smoke
 	$(PYTHON) scripts/public/control/runtime_smoke_test.py
 	$(PYTHON) scripts/public/control/forecast/pool.py smoke
 	$(PYTHON) scripts/public/control/action_intelligence.py smoke

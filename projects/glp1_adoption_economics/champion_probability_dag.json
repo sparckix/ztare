@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "Higher manageable net active patient penetration before system-threatening premium impact",
+    "probability": 0.72
+  },
+  "nodes": [
+    {
+      "id": "Reduced_NPC_Impacts_CEI",
+      "label": "Significant reduction in Net Payer Cost (NPC) drastically improves the Cost-Effectiveness Index (CEI) of GLP-1s.",
+      "probability": 0.8,
+      "watch_signal": "Ongoing monitoring of actual net prices and cost-effectiveness analyses for GLP-1s relative to other covered benefits."
+    },
+    {
+      "id": "Payer_Fiduciary_Compulsion",
+      "label": "Improved CEI and lower NPC compel payer entities (employers, Medicare, Medicaid) to expand coverage due to fiduciary duties.",
+      "probability": 0.65,
+      "watch_signal": "Payer policy changes (formulary additions, PA criteria relaxation, expanded BMI eligibility) at major employers, state Medicaid, and Medicare Part D post-2027."
+    },
+    {
+      "id": "Operational_Policy_Lag_Manageable",
+      "label": "Operational drag and policy change time lags are manageable and do not fundamentally override or severely delay payer coverage expansion.",
+      "probability": 0.7,
+      "watch_signal": "Analysis of actual timeframes for major payer policy changes following price reductions, and the prevalence of administrative bottlenecks hindering access."
+    },
+    {
+      "id": "Employer_Net_Price_Anchor_Holds",
+      "label": "The assumed employer net price of $350/month holds as a realistic average, and the 12-month persistence rate of 50% is accurate.",
+      "probability": 0.75,
+      "watch_signal": "Employer surveys on average negotiated GLP-1 net prices, and updated real-world data on GLP-1 patient persistence rates by payer segment."
+    }
+  ],
+  "edges": [
+    {
+      "from": "Reduced_NPC_Impacts_CEI",
+      "to": "Higher manageable net active patient penetration before system-threatening premium impact",
+      "weight": 0.9
+    },
+    {
+      "from": "Payer_Fiduciary_Compulsion",
+      "to": "Higher manageable net active patient penetration before system-threatening premium impact",
+      "weight": 1.0
+    },
+    {
+      "from": "Operational_Policy_Lag_Manageable",
+      "to": "Higher manageable net active patient penetration before system-threatening premium impact",
+      "weight": 0.6
+    },
+    {
+      "from": "Employer_Net_Price_Anchor_Holds",
+      "to": "Higher manageable net active patient penetration before system-threatening premium impact",
+      "weight": 0.8
+    }
+  ]
+}

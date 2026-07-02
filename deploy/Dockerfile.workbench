@@ -1,0 +1,62 @@
+# syntax=docker/dockerfile:1
+#
+# Project Workbench as a single self-contained image: the React app is compiled
+# once at build time, then served by the Python API on one port (8765). No Node
+# at runtime. `projects/` is NOT baked in (see .dockerignore) — mount it at run
+# time so the container reads and edits your real projects.
+#
+# Dependency set: requirements-public-smoke.txt (lean, pure-wheel) plus the
+# editable package (adds the anthropic/openai/google-genai SDKs from pyproject).
+# This serves the app, reads projects, and relays the light CLI actions (rubric
+# review, falsify, draft, map-query). Full autoresearch runs need the heavy
+# research stack in requirements.txt and are out of scope for this image.
+
+# ── Stage 1: build the frontend ───────────────────────────────────────────
+FROM node:20-slim AS web
+WORKDIR /app/forensic-workbench
+COPY forensic-workbench/package.json forensic-workbench/package-lock.json ./
+RUN npm ci
+COPY forensic-workbench/ ./
+RUN npm run build      # → /app/forensic-workbench/dist
+
+# ── Stage 2: python runtime that serves the built app + relays to the CLI ──
+FROM python:3.13-slim AS runtime
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+# The CLI delegates pipeline actions (autoresearch trace, etc.) to `make`, and
+# those targets shell git for provenance — neither ships in slim. (The root
+# deploy/Dockerfile installs the same `git make` for the same CLI paths.) PYTHON
+# overrides the Makefile's `./venv/bin/python` default (?= so the env wins).
+ENV PYTHON=python
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends git make \
+ && rm -rf /var/lib/apt/lists/*
+
+# Install deps against just the manifests + src first, so the dependency layer
+# caches across source edits.
+COPY requirements-public-smoke.txt pyproject.toml README.md ./
+COPY src ./src
+RUN pip install --no-cache-dir -r requirements-public-smoke.txt \
+ && pip install --no-cache-dir -e .
+
+# Only the repo content the server + its light CLI actions actually read.
+# src/ is already installed above (pip -e .); projects/ and rubrics/ are
+# bind-mounted at runtime (see docker-compose.yml). Copying the whole repo here
+# dragged in ~4GB of solver data / research dirs the workbench never touches.
+COPY Makefile ./Makefile
+COPY scripts ./scripts
+COPY docs ./docs
+COPY examples ./examples
+COPY analytics/public/action_intelligence ./analytics/public/action_intelligence
+
+# Built frontend from stage 1 (dist/ only exists in the web stage).
+COPY --from=web /app/forensic-workbench/dist ./forensic-workbench/dist
+
+# Job-state dir the workbench writes into at runtime (its parent tree is not
+# copied in).
+RUN mkdir -p analytics/public/leanmill/workbench
+
+EXPOSE 8765
+# Bind 0.0.0.0 so the port is reachable from the host. The server serves the
+# built app at / and the read/write models under /api.
+CMD ["python", "scripts/public/control/forensic_workbench_server.py", "--host", "0.0.0.0"]

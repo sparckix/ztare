@@ -1,0 +1,27 @@
+{
+  "harness_ok": true,
+  "gates": {
+    "holdout_global_residual": {
+      "value": 0.259411,
+      "threshold": 0.05,
+      "pass": false
+    },
+    "holdout_upper_residual": {
+      "value": 0.259411,
+      "threshold": 0.04,
+      "pass": false
+    },
+    "farther_tail_global_residual": {
+      "value": 2.373779,
+      "threshold": 0.08,
+      "pass": false
+    },
+    "farther_tail_upper_residual": {
+      "value": 2.373779,
+      "threshold": 0.06,
+      "pass": false
+    }
+  },
+  "score": 20,
+  "score_contract": "deterministic_gates_only"
+}

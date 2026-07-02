@@ -132,6 +132,14 @@ def main() -> int:
                 "org/mandates/research_director_mandate.md",
             ),
             _init_private_file(
+                "org/mandates/templates/forecasting_agent_mandate.md",
+                "org/mandates/forecasting_agent_mandate.md",
+            ),
+            _init_private_file(
+                "org/mandates/templates/debate_runner_mandate.md",
+                "org/mandates/debate_runner_mandate.md",
+            ),
+            _init_private_file(
                 "org/preferences/templates/principal.yaml",
                 "org/preferences/principal.yaml",
             ),

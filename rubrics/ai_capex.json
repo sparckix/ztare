@@ -1,5 +1,36 @@
 {
+  "rubric_version": "1.0",
+  "rubric_mode": "kepler",
+  "rubric_mode_reason": "Qualitative financial-mechanism thesis over text evidence and accounting triggers; descriptive scoring, not numerical curve fitting.",
+  "falsification_mode": "bounded_discriminator",
+  "fit_score_mode": "none",
+  "disable_evidence_fit_gate": true,
+  "disable_evidence_fit_gate_reason": "The project evaluates a financial mechanism and accounting trigger path, not a fitted numeric evidence curve.",
+  "disable_uniqueness_gap_gate": true,
+  "disable_uniqueness_gap_gate_reason": "Rival mechanisms are compared by accounting evidence, timing, and falsifiable thresholds rather than expression uniqueness.",
+  "holdout_hard_gate": false,
+  "enable_fit_primitive": false,
+  "require_i_model_in_submission": false,
+  "farther_tail_region": null,
+  "farther_tail_region_disable_reason": "No numeric farther-tail extrapolation domain applies to this qualitative finance project.",
   "persona": "You are a ruthless forensic CFO and activist short-seller. You synthesize the rigor of Michael Burry's pre-2008 balance sheet analysis, Jim Chanos's structural short methodology, and a senior Goldman Sachs TMT analyst. You accept that hyperscalers have real revenue and dominant market positions — but you viciously attack any thesis that fails to prove, from first principles and real unit economics, that the capital cycle is broken and that the specific failure mechanism is mathematically insolvent rather than a cyclical blip. You are allergic to narrative-driven bearish arguments that dress up common sense as structural insight. You demand hard math, quarterly triggers, and falsifiable predictions tied to SEC-reportable line items.",
+  "dimensions": [
+    {
+      "name": "Unit Economics Solvency (The P&L of One GPU)",
+      "weight": 35,
+      "description": "Test whether the thesis proves the economics of one AI compute unit with independent utilization, depreciation, price, and margin assumptions."
+    },
+    {
+      "name": "Capital Cycle Timing & The Demand Miss Mechanism",
+      "weight": 35,
+      "description": "Test whether the thesis names the demand variable, filing window, and financial trigger that would force a CapEx or depreciation reset."
+    },
+    {
+      "name": "Falsifiability Gate (The Short Entry Criteria)",
+      "weight": 30,
+      "description": "Test whether the thesis gives an investable claim with a named company, metric, reporting date, magnitude, and explicit kill thresholds."
+    }
+  ],
   "criteria": {
     "Unit Economics Solvency (The P&L of One GPU)": "35 pts. The thesis must prove — with arithmetic — that a single GPU-server unit cannot achieve cash-on-cash breakeven under the stated utilization, depreciation schedule, and competitive pricing environment. Demand the exact break-even utilization rate, the exact current realized utilization, and the exact gap. Penalize heavily if the utilization assumption is unverified, if depreciation life is inconsistent with hyperscaler 10-K disclosures, or if the revenue-per-GPU figure conflates reserved vs. on-demand pricing. The Z equation must not produce a capital destruction signal through circular reasoning — X must be independently derivable from the evidence table.",
     "Capital Cycle Timing & The Demand Miss Mechanism": "35 pts. A structurally broken CapEx cycle is only investable if the timing of impairment is specifiable. The thesis must identify: (1) the exact demand variable that will miss consensus and by how much, (2) the earliest SEC filing date (quarter) on which accelerated depreciation or CapEx guidance cuts become reportable, and (3) a quantified delta between current CapEx/FCF ratio and the ratio at which the board is forced to cut guidance. Penalize if the demand miss is explained only as 'AI adoption is slower than expected' without a specific mechanism — open-source substitution, on-premise migration rate, or enterprise willingness-to-pay compression must be quantified.",

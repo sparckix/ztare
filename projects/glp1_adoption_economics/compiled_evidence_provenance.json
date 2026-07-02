@@ -1,0 +1,78 @@
+{
+  "evidence_gap_baseline": "pre_run",
+  "evidence_gap_brief_path": "/projects/glp1_adoption_economics/workspace/evidence_gap_brief.md",
+  "evidence_gap_count": 5,
+  "evidence_gap_source_path": "/projects/glp1_adoption_economics/workspace/latest_evidence_gaps.json",
+  "generated_on": "April 13, 2026",
+  "mode": "workspace",
+  "output_path": "/projects/glp1_adoption_economics/compiled_evidence.txt",
+  "packet_output_path": "/projects/glp1_adoption_economics/compiled_evidence_packet.json",
+  "project_dir": "/projects/glp1_adoption_economics",
+  "source_count": 3,
+  "sources": [
+    {
+      "chars_used": 3215,
+      "kind": "md",
+      "note_path": "source_notes/S002.json",
+      "path": "evidence_fetch_20260413T230742Z.md",
+      "sha256": "8e8db99d1d47110137ee6e20bea5b12622dfb41e951a1dc455d3222c7cdd78d2",
+      "source_id": "S002",
+      "source_type": "untyped",
+      "truncated": false
+    },
+    {
+      "chars_used": 6836,
+      "kind": "md",
+      "note_path": "source_notes/S003.json",
+      "path": "evidence_fetch_20260414T005026Z.md",
+      "sha256": "82707e08198dbd1ef2d5feb7cd6643ecfee393b6dac7ac835f404c18c56f0080",
+      "source_id": "S003",
+      "source_type": "untyped",
+      "truncated": false
+    },
+    {
+      "chars_used": 2765,
+      "kind": "md",
+      "note_path": "source_notes/S001.json",
+      "path": "web_research_2026_04_13.md",
+      "sha256": "dd8910927a7ed4d1cb00d12f8089f5204ddc2fa178f1f5a63a289c8daa62af2f",
+      "source_id": "S001",
+      "source_type": "untyped",
+      "truncated": false
+    }
+  ],
+  "warnings": [
+    "Source evidence_fetch_20260413T230742Z.md has no source_type frontmatter; defaulting to untyped.",
+    "Source evidence_fetch_20260414T005026Z.md has no source_type frontmatter; defaulting to untyped.",
+    "Source web_research_2026_04_13.md has no source_type frontmatter; defaulting to untyped.",
+    "Untyped sources present (S001, S002, S003). Untyped files are excluded from immutable facts and constraints."
+  ],
+  "workspace_dir": "/projects/glp1_adoption_economics/workspace",
+  "workspace_meta": {
+    "changed_sources": 1,
+    "deleted_sources": [],
+    "generated_on": "April 13, 2026",
+    "merge_only": false,
+    "merge_status": "success",
+    "model_family": "gemini",
+    "model_id": "gemini-2.5-flash",
+    "project": "glp1_adoption_economics",
+    "prompts": {
+      "extract_source_note": "/config/prompts/extract_source_note.md",
+      "merge_workspace": "/config/prompts/merge_workspace.md"
+    },
+    "raw_dir": "/projects/glp1_adoption_economics/raw",
+    "reused_sources": 2,
+    "source_count": 3,
+    "warnings": [
+      "Source evidence_fetch_20260413T230742Z.md has no source_type frontmatter; defaulting to untyped.",
+      "Source evidence_fetch_20260414T005026Z.md has no source_type frontmatter; defaulting to untyped.",
+      "Source web_research_2026_04_13.md has no source_type frontmatter; defaulting to untyped.",
+      "Dropped immutable ground-truth entries sourced from non-evidence files.",
+      "Dropped range/constraint entries sourced from non-evidence files.",
+      "Dropped candidate claims with unsupported source types.",
+      "Untyped sources present (S001, S002, S003). Untyped files are excluded from immutable facts and constraints."
+    ],
+    "workspace_dir": "/projects/glp1_adoption_economics/workspace"
+  }
+}

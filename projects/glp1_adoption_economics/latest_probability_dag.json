@@ -1,0 +1,54 @@
+{
+  "outcome": {
+    "label": "Manageable Net Active Patient Penetration Reaches ~36%",
+    "probability": 0.6933
+  },
+  "nodes": [
+    {
+      "id": "node_cei_recal",
+      "label": "Reduced NPC Compels Payer Coverage Expansion (Axiom 4 Holds Strongly)",
+      "probability": 0.7,
+      "watch_signal": "Employer plan formulary changes, Medicaid state coverage trends, Medicare Part D enrollment exceeding 20% jump post-2027."
+    },
+    {
+      "id": "node_cost_mapping",
+      "label": "NPC/MAPBS Ratio Accurately Predicts Threshold",
+      "probability": 0.8,
+      "watch_signal": "Observed employer net prices align with $350/month, actual premium increases align with 10% threshold calculation."
+    },
+    {
+      "id": "node_discontinuation",
+      "label": "50% 12-Month Persistence Rate Holds Across Cohorts",
+      "probability": 0.65,
+      "watch_signal": "Real-world evidence on 12-month persistence rates (especially for new cohorts under expanded coverage) confirms 40-60% range."
+    },
+    {
+      "id": "node_employer_elig",
+      "label": "Employer Covered Eligibility Expands to ~20%+ of Total Workforce",
+      "probability": 0.6,
+      "watch_signal": "Employer survey data shows increasing % of firms covering GLP-1 for weight loss, and broader PA criteria."
+    }
+  ],
+  "edges": [
+    {
+      "from": "node_cei_recal",
+      "to": "outcome",
+      "weight": 0.9
+    },
+    {
+      "from": "node_cost_mapping",
+      "to": "outcome",
+      "weight": 0.8
+    },
+    {
+      "from": "node_discontinuation",
+      "to": "outcome",
+      "weight": 0.6
+    },
+    {
+      "from": "node_employer_elig",
+      "to": "outcome",
+      "weight": 0.7
+    }
+  ]
+}

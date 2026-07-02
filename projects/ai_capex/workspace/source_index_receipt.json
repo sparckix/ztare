@@ -1,0 +1,43 @@
+{
+  "changed_sources": 3,
+  "deleted_sources": [],
+  "llm_calls": false,
+  "merge_status": "index_only",
+  "next_steps": [
+    "Run make evidence-prepare before treating compiled evidence as current.",
+    "Run ztare autoresearch trace to inspect kernel-entry blockers."
+  ],
+  "producer": "ztare.workspace.update_workspace::checkpoint_source_index",
+  "project": "ai_capex",
+  "reused_sources": 0,
+  "schema": "ztare-source-index-receipt-v1",
+  "source_count": 3,
+  "source_index": "projects/ai_capex/workspace/source_index.json",
+  "source_index_sha256": "a4c5e8db4dbea6563b96bf375a3eeb809b08bb5b60be2c4159d3a302539aeeec",
+  "sources": [
+    {
+      "chars_used": 8718,
+      "path": "current_iteration.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 5403,
+      "path": "evidence.txt",
+      "sha256": "746ddffae1438e11e8bfcebe88c2188497aa3cb3027304291f2a7c8741eb4157",
+      "source_type": "source_evidence",
+      "truncated": false
+    },
+    {
+      "chars_used": 8718,
+      "path": "thesis.md",
+      "sha256": "1d30272f0f5a066cb59fcffa3989a5df25987b1ffbf87077d296c9ab794881c1",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ],
+  "status": "indexed",
+  "warnings": [],
+  "workspace_meta": "projects/ai_capex/workspace/workspace_meta.json"
+}

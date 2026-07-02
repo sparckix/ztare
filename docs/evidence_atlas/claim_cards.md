@@ -260,7 +260,6 @@ retractions.
 **Primary sources.**
 
 - [Public claim register, Forecast Calibration](../public_claim_register.md#forecast-calibration-program-llm-forecasting-channels--operationalization)
-- [Research log](../../projects/llm_forecasting_calibration_program/forecaster_skill_calibration_v1/workspace/research_log.md)
 - [Forecast pool scorer](../../scripts/public/control/forecast/pool.py)
 - [Working paper draft](../../papers/llm-forecast-calibration-cross-corpus/draft.md)
 

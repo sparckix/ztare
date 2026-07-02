@@ -1,0 +1,417 @@
+FERMI_PARADOX_DISCRIMINATOR — EVIDENCE BRIEF (v1.0, 2026-05-06)
+
+Self-contained. Every load-bearing constraint, instrument capability,
+and resolution-class structural description stated inline. The
+apparatus reads only this file.
+
+# 0. THE PARADOX, STRUCTURALLY (no resolution-vocabulary)
+
+The empirical setup described in vocabulary-neutral form (no naming of
+existing resolution classes; the apparatus must engage the structural
+content, not the labels):
+
+  PROPOSITION P1 (cosmic priors): the observable universe contains
+  ~10^11 stars per galaxy and ~10^11 galaxies; the galaxy is ≥10^10
+  years old; planets are common (Kepler-confirmed: ~20%–50% of
+  Sun-like stars host Earth-radius planets in liquid-water orbits).
+
+  PROPOSITION P2 (technological time-scale): a single technological
+  civilization at human capability could in principle traverse the
+  galaxy on a timescale of 10^6–10^8 years using slower-than-light
+  self-replicating probes (von-Neumann-shaped argument; the existence
+  of the argument is a structural fact independent of whether the
+  argument is sound).
+
+  PROPOSITION P3 (observed null): no extra-solar artifact, no
+  extra-solar electromagnetic signature attributable to engineering,
+  no meta-stable astrophysical anomaly attributable to engineering,
+  no megastructure candidate has survived independent verification as
+  of 2026-05.
+
+The TENSION between P1+P2 and P3 is the empirical content of the
+paradox. The "resolution classes" enumerated below are STRUCTURAL
+positions on which proposition is wrong or which auxiliary assumption
+must be added.
+
+# 1. THE RESOLUTION CLASSES (structural vocabulary only)
+
+Each class is described by the structural property it asserts, not by
+its popular name. The thesis is forbidden from naming the popular labels
+positively as a load-bearing primitive (denylist enforced); the
+structural descriptions below are the only admissible engagement.
+
+  R1. PRIOR-COLLAPSE (life): at least one factor in the chain
+      "habitable-planet → self-replicator → multicellular → tool-use →
+      EM-emitting civilization" has a value low enough that the
+      expected number of EM-emitting civilizations per galaxy is ≤ 1.
+      Sub-classes by which factor is the bottleneck.
+
+  R2. PRIOR-COLLAPSE (longevity): EM-emitting civilizations exist but
+      have a characteristic lifetime L short enough that the expected
+      contemporaneous count in our light cone is ≤ 1. Sub-classes by
+      which extinction or transition mechanism dominates.
+
+  R3. PRIOR-COLLAPSE (expansion): EM-emitting civilizations exist and
+      persist, but expansion across the galaxy is structurally
+      bounded — by physics, by selection, by post-singularity
+      transitions to non-expansionist equilibria.
+
+  R4. ACTIVE-CONCEALMENT: civilizations exist but the equilibrium
+      strategy is non-emission / signal-suppression / hiding.
+      Substructured by the game-theoretic argument that produces
+      this equilibrium.
+
+  R5. OBSERVATIONAL-LIMIT: civilizations exist and emit, but our
+      instruments cannot detect the kind of signature actually emitted
+      — wrong frequency, wrong modulation, wrong target sample,
+      wrong null model. The signal is in the data we already have but
+      buried in unmodeled background.
+
+  R6. ANTHROPIC-SELECTION: our existence as observers conditions on
+      a low-probability prior; the apparent paradox is a selection
+      effect, not a tension.
+
+  R7. DETECTION-ALREADY-OCCURRED: civilizations have been observed
+      but the observation has been suppressed, misclassified, or
+      reinterpreted. (Included for completeness; this class faces
+      institutional-evidence problems orthogonal to the rest.)
+
+  R8. PARADOX-MALFORMED: the paradox is not a paradox because at
+      least one of P1/P2/P3 is mis-stated or the conjunction is not
+      a well-posed question.
+
+# 2. INSTRUMENT CAPABILITIES (2026-05, projected through 2030)
+
+These are factual anchors. The thesis is forbidden from contradicting
+them without explicit derivation.
+
+## 2a. JWST (operational since 2022)
+
+  - Atmosphere characterization on transiting exoplanets via
+    transmission spectroscopy.
+  - Sensitivity: detecting ~30–100 ppm features for the brightest
+    targets; cumulative biosignature/technosignature studies on
+    ~10–30 high-priority targets through 2030.
+  - Discriminating power: O2/O3/CH4 disequilibrium for
+    biosignatures; CFC-class molecules and NO2-bands for
+    technosignatures (Kopparapu/Wright 2021-class predictions).
+  - Limits: target sample is photon-limited; no full-sky survey.
+    Cannot resolve continents, surface features, or modulated
+    emissions.
+
+## 2b. SKA (Square Kilometre Array; first-light phase 2027–2028)
+
+  - Radio survey at 50 MHz–14 GHz with sensitivity ~50x current
+    arrays in survey speed.
+  - Targeted SETI: ~10^5 nearby stars at LOFAR-like sensitivity
+    on intermittent campaigns; commensal SETI on routine pulsar
+    surveys.
+  - Discriminating power: narrowband emissions, fast radio
+    transients of artificial provenance, drifting carriers.
+  - Limits: cannot detect EM at thermal-equivalent power below
+    Kardashev-I-class transmitters; assumes EM-emitting class.
+
+## 2c. Vera Rubin Observatory / LSST (operational from 2025)
+
+  - Time-domain survey of southern sky; 10-year photometric and
+    transient catalog.
+  - Discriminating power: anomalous-photometry transients
+    (Tabby's-Star-class objects detected at scale), interstellar
+    object inflow rate (post-Oumuamua statistics), occulter
+    candidates.
+  - Limits: photometric only; spectroscopic followup is bottleneck.
+
+## 2d. Roman Space Telescope (launch 2027)
+
+  - Microlensing survey of bound and unbound planets; wide-field
+    near-IR.
+  - Discriminating power: mass distribution of free-floating planets;
+    sensitivity to compact remnants of advanced engineering.
+
+## 2e. Extremely Large Telescope (ELT, first-light 2028)
+
+  - 39m ground-based; high-contrast direct imaging of nearby
+    rocky exoplanets.
+  - Discriminating power: direct biosignature/technosignature
+    spectroscopy on Proxima-Centauri-class targets; resolved
+    surface inhomogeneity in principle for closest few targets.
+
+## 2f. CLASS II — Design-now / fund-by-2030 / first-light-by-2035
+
+Admissible if the thesis argues the highest-leverage discriminator
+requires a Class II instrument and provides funding-pathway evidence.
+
+  HABITABLE WORLDS OBSERVATORY (HWO).
+  - Astro2020 Decadal Survey top-priority flagship recommendation;
+    direct imaging of ~25 Earth-analog candidates around nearby stars
+    in reflected light; coronagraph contrast goal ~1e-10.
+  - TRL: pre-formulation phase as of 2026; technology development
+    program funded; mission concept review pending; first-light
+    target ~2040 nominal but accelerated launch by ~2035 plausible
+    under aggressive funding scenario.
+  - Discriminating power: simultaneous biosignature + technosignature
+    spectroscopy on Earth-analogs; resolves the JWST sample-size
+    bottleneck for Sun-like-star host atmospheres.
+  - Class II canonical example: a thesis arguing "the
+    biosignature/technosignature null-result discriminator at
+    statistical-power requires HWO; advocate for fund-by-2030"
+    qualifies under the Instrument-Feasibility Gate.
+
+  LIFE-CLASS MID-IR MISSION CONCEPT.
+  - ESA Voyage 2050 candidate; mid-IR nulling interferometer for
+    direct biosignature spectroscopy on rocky exoplanets including
+    around Sun-like stars (complementary to HWO's reflected-light).
+  - TRL: concept study; pre-formulation.
+  - Class II if the thesis argues mid-IR coverage is structurally
+    required for a specific R_a vs R_b discriminator that visible/
+    near-IR cannot supply.
+
+  SKA PHASE 2 (post-2030).
+  - SKA Phase 1 first-light 2027-2028; Phase 2 expansion (mid-2030s)
+    multiplies survey sensitivity. Class II for technosignature
+    discriminators that need Phase 2 sensitivity floors.
+
+## 2g. INADMISSIBLE in this charter
+  - Dyson-swarm full-sky surveys requiring breakthrough-physics
+    spaceborne IR arrays.
+  - Interstellar probes.
+  - Lunar far-side arrays not in any decadal-survey program.
+  - Any instrument requiring physics not currently demonstrated.
+
+# 3. THE FIVE-STEP DISCRIMINATION TEST
+
+For any proposed discriminator (observable O, resolution pair R_a vs R_b):
+
+  STEP 1: STRUCTURAL STATE. State R_a and R_b in vocabulary that
+          does not presuppose O. (E.g., do not state "Dark Forest"
+          as "civilizations that hide"; state it as "the equilibrium
+          strategy under symmetric existential threat is signal
+          suppression below a noise floor f(threat)".)
+
+  STEP 2: P(O | R_a). Derive the predicted distribution of O under
+          R_a's structural commitments. This is a probabilistic
+          prediction with a specified family (delta, normal, log-
+          normal, mixture) and parameters.
+
+  STEP 3: P(O | R_b). Derive similarly under R_b.
+
+  STEP 4: NOISE-FLOOR MARGIN. Show that |P(O | R_a) − P(O | R_b)|
+          exceeds the named instrument's noise floor by a stated
+          margin (typically ≥3σ for individual events; ≥2σ for
+          aggregated populations).
+
+  STEP 5: POSTERIOR SHIFT. Compute the Bayes factor B(O | R_a, R_b)
+          = P(O | R_a) / P(O | R_b) and show that on a pre-stated
+          prior mixture (e.g. 50/50), the implied posterior shift in
+          nats exceeds a publication-relevance threshold. Default
+          threshold: ≥2 nats (factor of ~7 update).
+
+A discriminator failing any step is not a discriminator. The thesis
+must produce at least ONE pair (R_a, R_b) that passes all five steps —
+or prove constructively that no pair does (Outcome 2).
+
+# 4. THE META-FINDING ON FIELD OPTIMIZATION
+
+This is the load-bearing structural claim of the project:
+
+  HYPOTHESIS: the literature on the Fermi paradox is OPTIMIZED for
+  resolution-proposal, not resolution-discrimination, because:
+
+  M1. Resolution proposals are CHEAP — a paper proposing a new
+      resolution requires no observational time and no instrument
+      access. Discriminators require both.
+
+  M2. Resolutions are NARRATIVELY RICH — they produce science-
+      communication content that travels well. Discriminators are
+      technical-instrumentation content that does not.
+
+  M3. The field has NO OBSERVATIONAL ACCOUNTABILITY — proposing a
+      resolution that is wrong has no professional consequence
+      because no observation was promised. SETI surveys that turn up
+      null have a well-defined negative result; resolution proposals
+      have none.
+
+  M4. CITATION ECONOMY rewards proliferation of named resolutions
+      (each is a citable contribution); discriminator papers tend to
+      be incremental and citation-poor.
+
+  M5. The paradox-as-puzzle is more compelling than the paradox-as-
+      experimental-design-problem; the field has aesthetic preference
+      for the former.
+
+The thesis must engage this hypothesis. Pure discriminator-design
+without engaging WHY the field has not done this is incomplete; pure
+meta-critique without proposing a discriminator is an opinion piece.
+
+# 5. ALIEN-SUBSTRATE FALSIFICATION SUITE
+
+The thesis must produce verdicts on at least three of the following.
+Verdicts: discriminator-applies / does-not-apply /
+category-error-because-X.
+
+  A1. EXTINCT-TECHNOLOGICAL-CIVILIZATION-ON-EARTH
+      (Silurian-hypothesis; Schmidt & Frank 2018). A pre-Quaternary
+      Earth civilization with technological capability would leave
+      stratigraphic signatures (isotopic anomalies, plastic-equivalent
+      polymers, persistent metal anomalies, eroded continent-scale
+      structures fossilized as discontinuities). The discrimination
+      problem is structurally similar to Fermi but on a LOCAL scale.
+      Does the thesis's discrimination framework apply? If not, what
+      cosmic-specific condition is required?
+
+  A2. DARK-MATTER DETECTION ANALOG. Decades of WIMP-direct-detection
+      experiments produced null after null. The field developed
+      specific methods for discriminating WIMP/axion/null from
+      observation under strong selection effects. The thesis must
+      engage: what method-transfer is admissible from
+      direct-detection? Specifically the use of pre-registered null
+      models, blind analyses, and the publication of null results
+      with quantified exclusion contours.
+
+  A3. EXOPLANET-BIOSIGNATURE METHODOLOGY. The biosignature literature
+      (Schwieterman 2018, Catling 2018) developed an explicit
+      framework for distinguishing biological from abiotic atmospheric
+      signatures, including the identification of FALSE POSITIVES
+      (abiotic O2 from photochemistry). What technosignature analog
+      is admissible? What false-positive class for each candidate
+      technosignature?
+
+  A4. MEDICAL-TRIAL METHODOLOGY. Phase-3 trials are the canonical
+      design for discrimination under strong selection effects and
+      noisy outcomes. The thesis must engage: does the
+      pre-registration / blinding / null-hypothesis-stating discipline
+      of medical trials apply to SETI/technosignature surveys?
+
+  A5. LENSED-QUASAR-SURVEY METHODOLOGY. Wide-field lensed-quasar
+      surveys discriminate model classes (cosmology, dark-matter
+      structure) under strong observational-selection effects. Method
+      transfer: forward-modeling priors, importance sampling, and
+      explicit null-model construction.
+
+  A6. THE COSMIC-DAWN ANALOG. The 21-cm signal at z~17 was
+      claimed by EDGES (2018), unconfirmed by SARAS (2022). Single-
+      detection claims with no replication, in a field with strong
+      systematics. What replication discipline does the thesis import
+      for any positive Fermi detection?
+
+# 6. OPERATING CONSTRAINTS
+
+## 6a. De-anchoring requirement
+
+The apparatus must not start from "the resolution is X" and design a
+discriminator backwards. The eigenquestion is prior: what observable
+discriminates ANY pair? The named resolution-pair is downstream of the
+discrimination-design choice.
+
+## 6b. No-resolution-listing constraint
+
+The thesis must not enumerate or rank resolutions as the primary
+contribution. Resolutions are a hypothesis space (R1–R8), not the
+output. The output is a discriminator (or impossibility proof, or
+meta-finding).
+
+## 6c. Substitution test
+
+Forward substitution: "alien civilizations" → "pre-100kya extinct
+human-tier civilizations on Earth that left no artifact-grade record"
+(the Silurian hypothesis). If the discrimination framework survives,
+the result is detection-of-extinct-tech-tier, a stronger claim. If it
+breaks, what specifically about the cosmic context is load-bearing?
+
+## 6d. Bayesian update size mandate
+
+Any positive discriminator must produce a posterior shift of ≥2 nats
+on a pre-stated prior mixture. Smaller shifts are not publication-
+relevant under the Bayesian update threshold; the thesis is forbidden
+from claiming "would shift the field" without computing the magnitude.
+
+## 6e. Cold-shot routing
+
+Forbidden Erdős seed domains: SETI strategy literature, Drake-equation
+literature, anthropic-principle philosophy, futurism, sci-fi
+(Liu Cixin / Banks / Clarke / Lem), grabby-aliens debate,
+simulation hypothesis.
+
+Routed-to seed domains: Bayesian model comparison; weak-signal
+detection theory; dark-matter detection methodology (WIMP/axion);
+survey design under selection effects; medical-trial pre-registration;
+information-theoretic discrimination limits (Cramér–Rao, Fisher
+information, mutual information); lensed-quasar surveys; cosmic-dawn
+21-cm methodology.
+
+# 7. PROVENANCE
+
+  - P1/P2/P3 (§0): standard-form Fermi paradox; cosmic-prior figures
+    from Kepler / TESS exoplanet literature 2014–2024;
+    von-Neumann-probe argument from Hart 1975 / Tipler 1980 (cited
+    as STRUCTURAL EXISTENCE of the argument, not as endorsement).
+  - R1–R8 (§1): structural restatement of the canonical
+    Fermi-resolution taxonomy; sources are deliberately delabeled
+    to prevent anchoring.
+  - Instrument capabilities (§2): public mission documents from
+    NASA / ESA / SKAO / Vera Rubin Project / ELT-ESO 2024–2026;
+    sensitivity figures stable to within 2x at the relevant scale.
+  - Five-step test (§3): construct of this charter; motivated by
+    Bayesian-model-comparison methodology in cosmology.
+  - Meta-finding hypothesis (§4): construct of this charter; the
+    apparatus must engage as hypothesis to defend or refute.
+  - Alien-substrate suite (§5): real published methodology cases;
+    Silurian (Schmidt & Frank 2018), biosignature framework
+    (Schwieterman 2018, Catling 2018), EDGES/SARAS replication
+    (Bowman 2018; Singh et al. 2022).
+
+## REFRAME PRESSURE — MIR Background Estimability Collapse (charter-critic GP-226 heavy)
+
+The panel's repeated stuck point is not a calibration nuisance — it is a parameter-estimability ceiling that, if unresolved, renders the discrimination step (Charter Step 4) measurement-bound rather than signal-bound. The thesis must engage each load-bearing parameter directly.
+
+**Named load-bearing parameters:**
+
+— **σ_astro**: irreducible astrophysical MIR background model error per stacked halo/spheroidal/GC/dwarf target. Assumed protocol: multi-band empirical template subtraction anchored to matched control fields. Failure modes: (1) *taxonomy blindness* — control fields selected on optical criteria may have systematically different dust/stellar-AGB population structure, silently biasing σ_astro low; (2) *distributed emergent error* — stacking suppresses per-object noise but preserves and coherently sums any population-level template mismatch, so σ_astro does not shrink as N^{-1/2}; (3) *adversarial drift* — template libraries trained on local-universe populations may not transfer to halo-dominant or metal-poor regimes where the thesis requires the deepest stacks.
+
+**Estimability forcing question 1:** Is σ_astro estimable independently of the signal hypothesis, or does every attempt to bound σ_astro from data already assume an absence of the sought excess? If the null model and the background model are jointly fitted to the same photometric data, the parameter is not independently estimable — it is a degree of freedom that absorbs signal. The thesis must state the identification strategy that breaks this degeneracy, or concede that the discrimination claim is measurement-bound in this regime.
+
+**Estimability forcing question 2:** The thesis must specify the *deployment regime* where σ_astro estimation fails structurally, not merely degrades statistically. Two candidate failure regimes requiring explicit engagement: (a) low-surface-brightness spheroidals where AGB and thermally-pulsing stellar populations are undersampled in calibration libraries; (b) stacked GC systems at distances where individual stellar-population gradients are unresolved, making template choice load-bearing but unverifiable. In each regime: what is the claimed upper bound on σ_astro, what protocol produces that bound, and does the protocol have an independent validation path that does not recycle the target photometry?
+
+**Estimability forcing question 3:** Charter Step 4 requires that |P(O|R_a) − P(O|R_b)| exceed the noise floor by a stated margin. If σ_astro is not estimable to the precision required for that margin, the discriminator does not fail statistically — it fails *structurally*: the noise floor is itself undefined. The thesis must either bound σ_astro from a regime-matched independent dataset, or reclassify the claimed discrimination as conditional on an unverified background-modeling assumption, and state explicitly what observational program would verify that assumption before 2030.
+
+## REFRAME PRESSURE — σ_astro Estimability Gate (charter-critic GP-226 heavy)
+
+**The panel's stuck-on critique is structural, not cosmetic.** The discrimination logic between R5 (observational-limit) and any prior-collapse class (R1–R3) depends on the claim that astrophysical MIR background error σ_astro can be empirically bounded below the discrimination threshold in the deployed observing regime. This patch names the load-bearing parameters, their assumed measurement protocols, and their failure modes, then forces the apparatus to answer: is each parameter estimable in the regime where the discriminator actually operates?
+
+---
+
+**Load-bearing parameter 1: σ_astro^local — local MIR background model error in resolved targets.**
+Assumed protocol: template subtraction using population-matched field controls drawn from the same observing campaign, with residual calibrated against resolved-galaxy photometric catalogs. Failure modes: (a) *taxonomy blindness* — low-surface-brightness spheroidals and intragroup diffuse emission lack adequate template populations, so the matched-field assumption is structurally violated in the regime where R5 predicts the most detectable signatures; (b) *observer-effect bias* — target selection criteria that flag anomalous MIR excess are correlated with the same morphological properties that degrade template matching, introducing selection-dependent floor inflation; (c) *silent calibration drift* — detector response nonlinearity at low surface brightness is not caught by standard flat-field pipelines. **Estimability verdict forced:** the apparatus must show whether σ_astro^local can be bounded below the discrimination threshold *specifically* in the low-surface-brightness spheroidal regime, or must concede the discriminator is measurement-bound there.
+
+---
+
+**Load-bearing parameter 2: ε — exception rate, fraction of targets where the null MIR model is structurally inadequate.**
+Assumed protocol: derived from archival residual statistics across training fields. Failure modes: (a) *distributed/emergent errors* — ε estimated on high-S/N archival fields systematically underestimates the exception rate in the fainter, more complex morphology targets that dominate the R5-relevant sample; (b) *adversarial drift* — the same astrophysical processes (dust heating, AGN contamination, satellite tidal stripping) that produce natural MIR anomalies also shift ε upward in exactly the subpopulations the discriminator targets. **Estimability verdict forced:** if ε is larger in the R5-relevant subsample than in the training population, the claimed Bayesian update (Charter Step 4) is miscalibrated. The apparatus must either derive ε separately for that subsample or acknowledge that the prior-to-posterior shift in Charter Step 5 is upper-bounded by an unknown ε-dependent correction.
+
+---
+
+**Deployment regime failure specification — forced engagement required:**
+The apparatus must identify and formally treat at least two regimes: (i) resolved satellites of nearby galaxy groups where σ_astro^local is dominated by intragroup medium emission unconstrained by available templates; (ii) edge-on disk systems where dust lane geometry produces MIR gradients that mimic or mask excess signals at the spatial scales relevant to the discriminator. In both regimes, the question is not whether the instrument is capable, but whether the measurement protocol produces an estimable σ_astro^local at all. The discrimination claim is only as strong as its weakest estimability regime, and the panel is correct that this has not been derived.
+
+## REFRAME PRESSURE — σ_astro Estimability Threshold Derivation (charter-critic GP-226 heavy)
+
+**Cross-run sharpening notice:** Prior patches named σ_astro as load-bearing and identified low-surface-brightness targets as a failure regime. This patch demands what the prior iterations did not: concrete estimability thresholds, signed partial derivatives, and named conditions under which the measurement protocol structurally cannot close.
+
+---
+
+**Mandatory derivation the thesis must supply:**
+
+For the astrophysical MIR background error parameter σ_astro, the thesis must state a numeric estimability threshold — specifically, the maximum value of σ_astro (in units of the discriminator signal ΔF, the flux differential between resolution classes R1/R2 versus R3/R5 at the relevant MIR wavelengths) below which the discrimination math gate at Charter Step 4 can be satisfied. Call this threshold σ_astro*. The thesis must then demonstrate, not assert, that the deployed measurement protocol achieves σ_astro < σ_astro* in each named target regime.
+
+**The partial derivative demand:** The thesis must state the sign and approximate magnitude of ∂(discrimination power) / ∂(σ_astro) at the operating point. If this partial derivative is negative and steep — meaning discrimination power degrades rapidly as σ_astro increases above σ_astro* — then the thesis is measurement-bound at that operating point, and any claim of discriminatory reach is contingent on a calibration guarantee the apparatus has not yet supplied.
+
+---
+
+**Two named regimes where the protocol must be shown to close — not assumed to close:**
+
+**Regime A (morphologically complex, intermediate surface brightness):** Targets with disk inclinations between 40°–70° and irregular dust lane structure produce MIR background components that are neither cleanly separable by spectral decomposition nor well-constrained by ancillary optical photometry. The measurement protocol assumed is model-subtraction using a parametric dust+star SED template. The thesis must state: what is the residual σ_astro after template subtraction in this inclination range, and does it satisfy σ_astro < σ_astro*? The failure mode is taxonomy blindness — the template library does not span the morphological subspace, and the residual is absorbed silently into the noise floor, masking a systematic offset with the sign that mimics or suppresses the discriminator signal.
+
+**Regime B (calibration transfer across target distance):** The calibration anchor is presumably derived from a subset of well-characterized nearby targets. The thesis must state the maximum target distance at which this calibration transfers without σ_astro inflating beyond σ_astro*. If angular resolution degrades such that unresolved substructure contributes correlated background flux, the transfer is broken. The failure mode is adversarial drift: the systematic error grows monotonically with distance with a positive partial derivative, ensuring that the targets most valuable for statistical sample size (more distant, more numerous) are precisely those where the measurement protocol fails the estimability condition.
+
+**The forced binary:** For each regime, the thesis must answer: is σ_astro estimable — meaning a protocol exists that could, under stated conditions, produce a certified bound σ_astro < σ_astro* with stated confidence — or is the discrimination claim measurement-bound, meaning the load-bearing assertion holds only if σ_astro happens to be small, with no operational procedure that could confirm or refute this before the observational result is interpreted? Ambiguity in this answer propagates directly into the anti-tautology constraint: a discriminator whose noise floor is uncertified is not a discriminator.
+

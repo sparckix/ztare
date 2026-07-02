@@ -53,3 +53,17 @@
 {"substrate": "tmp562m11hs.lean", "name": "clean_rung__0a5b632f", "decl_text": "theorem clean_rung__0a5b632f (n:Nat) : n + 0 = n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
 {"substrate": "tmp480q8cfk.lean", "name": "wf", "decl_text": "theorem wf (n : Nat) : n = n := rfl", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
 {"substrate": "tmp480q8cfk.lean", "name": "iso_lemma1__8e59091b", "decl_text": "theorem iso_lemma1__8e59091b (n:Nat) : n+0=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpjkf2za77.lean", "name": "iso_lemma1__b1bf2f50", "decl_text": "theorem iso_lemma1__b1bf2f50 (n:Nat): n+0=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpjkf2za77.lean", "name": "iso_lemma1__59e993af", "decl_text": "theorem iso_lemma1__59e993af (n:Nat): n*1=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpjkf2za77.lean", "name": "multi_target__0ddc5db7", "decl_text": "theorem helper_aux (n : Nat) : n + 0 = n := by simp\ntheorem multi_target__0ddc5db7 (n : Nat) : n + 0 = n := helper_aux n", "helpers": ["helper_aux"], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmptkesijp0.lean", "name": "uses_foo__a5858c2a", "decl_text": "theorem uses_foo__a5858c2a : foo = foo := rfl", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmptkesijp0.lean", "name": "clean_rung__0a5b632f", "decl_text": "theorem clean_rung__0a5b632f (n:Nat) : n + 0 = n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpic6crvly.lean", "name": "wf", "decl_text": "theorem wf (n : Nat) : n = n := rfl", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpic6crvly.lean", "name": "iso_lemma1__8e59091b", "decl_text": "theorem iso_lemma1__8e59091b (n:Nat) : n+0=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpff0mfdij.lean", "name": "iso_lemma1__b1bf2f50", "decl_text": "theorem iso_lemma1__b1bf2f50 (n:Nat): n+0=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpff0mfdij.lean", "name": "iso_lemma1__59e993af", "decl_text": "theorem iso_lemma1__59e993af (n:Nat): n*1=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpff0mfdij.lean", "name": "multi_target__0ddc5db7", "decl_text": "theorem helper_aux (n : Nat) : n + 0 = n := by simp\ntheorem multi_target__0ddc5db7 (n : Nat) : n + 0 = n := helper_aux n", "helpers": ["helper_aux"], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpsuh8i5zx.lean", "name": "uses_foo__a5858c2a", "decl_text": "theorem uses_foo__a5858c2a : foo = foo := rfl", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmpsuh8i5zx.lean", "name": "clean_rung__0a5b632f", "decl_text": "theorem clean_rung__0a5b632f (n:Nat) : n + 0 = n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmp_5uf65m1.lean", "name": "wf", "decl_text": "theorem wf (n : Nat) : n = n := rfl", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}
+{"substrate": "tmp_5uf65m1.lean", "name": "iso_lemma1__8e59091b", "decl_text": "theorem iso_lemma1__8e59091b (n:Nat) : n+0=n := by simp", "helpers": [], "_node": "Daniels-MacBook-Air-5.local"}

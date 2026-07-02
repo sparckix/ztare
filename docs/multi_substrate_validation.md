@@ -84,9 +84,9 @@ than an instrument audit.
 [the public claim register](public_claim_register.md#consciousness-ascription-governance)
 and the project directories named there:
 [consciousness-ascription audit](../projects/gp169_consciousness_ascription_audit/),
-[consciousness-theory workbench](../projects/gp210_consciousness_theory/),
+the consciousness-theory workbench,
 and
-[Omega-gaming consciousness audit](../projects/gp212_consciousness_omega_audit/).
+the Omega-gaming consciousness audit.
 
 **What mattered.** The key result is a governance rule: a low-concern verdict
 about a system of unknown consciousness is not admissible unless the

@@ -1,0 +1,15 @@
+{
+  "action": "proof_audit",
+  "job_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.json",
+  "label": "Ratify a proof",
+  "notes_path": "",
+  "project": "",
+  "recorded_at": "2026-07-01T20:04:00Z",
+  "result_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2_result.json",
+  "schema": "ztare-leanmill-workbench-job-history-v1",
+  "source_file": "ztare_proofs/check.lean",
+  "status": "failed",
+  "stderr_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stderr.log",
+  "stdout_path": "analytics/public/leanmill/workbench/jobs/lm_20260701_200256_b26105bbb2.stdout.log",
+  "target_name": "check"
+}

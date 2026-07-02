@@ -1,0 +1,16 @@
+{
+  "generated_on": "June 23, 2026",
+  "project": "demo_claims",
+  "sources": [
+    {
+      "chars_used": 438,
+      "kind": "md",
+      "note_path": "source_notes/demo_claims_source.json",
+      "path": "source.md",
+      "sha256": "6216d0657764d684755c47d8f3942c6920346fc0f06a2c97152dda99f53070a3",
+      "source_id": "demo_claims_source",
+      "source_type": "source_evidence",
+      "truncated": false
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "prover_pairs": 34,
+  "prover_void_novel": 28,
+  "autoformalization_pairs": 83,
+  "falsification_pairs": 1,
+  "raw_closed_certs": 233,
+  "clean_since": "2026-06-24T00:00:00+00:00",
+  "void_only": false,
+  "out_dir": "/Users/daalami/figs_activist_loop/analytics/public/leanmill/training_corpus"
+}
