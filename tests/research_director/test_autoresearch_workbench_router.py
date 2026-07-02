@@ -392,7 +392,7 @@ def test_router_blocks_ready_surface_when_trace_sources_are_stale(tmp_path) -> N
     )
     assert (
         "autoresearch trace recovery[evidence_prepare]: "
-        "make evidence-prepare PROJECT=stale_trace MODEL=gemini"
+        "make evidence-prepare PROJECT=stale_trace"
         in decision.source_contract_errors
     )
 
@@ -531,7 +531,7 @@ def test_router_blocks_stale_compiled_evidence_output(tmp_path) -> None:
     )
     assert (
         "autoresearch run-readiness recovery[evidence_output_stale]: "
-        "make evidence-prepare PROJECT=stale_evidence_output MODEL=gemini"
+        "make evidence-prepare PROJECT=stale_evidence_output"
         in decision.source_contract_errors
     )
 

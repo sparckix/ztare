@@ -1,9 +1,9 @@
 # ZTARE Project Workbench
 
 Local React/Vite workbench for reviewing and editing repo-backed ZTARE
-projects. It is the D4 product surface: open a project, inspect its working
-diagnosis, check the files behind it, run local checks, record review/next-step
-receipts, and save an inspectable project file.
+projects. Open a project, inspect its thesis, check the files behind
+it, run local checks, save review/next-step history, and save an inspectable
+project file.
 
 The implementation still uses `forensic-workbench` in package names, CLI commands,
 and legacy schemas. Treat that as compatibility naming. The product is Project
@@ -18,14 +18,23 @@ make forensic-workbench-live
 ```
 
 The launcher starts the local API at `http://127.0.0.1:8765` and the Vite app at
-`http://127.0.0.1:5174`. If the API is already running, the launcher reuses it.
-If the Vite port is already taken, it exits instead of silently moving the app.
+`http://127.0.0.1:5174`, and installs the app's web dependencies on the first
+run — so a fresh clone needs only this one command. If the API is already
+running, the launcher reuses it. If the Vite port is already taken, it exits
+instead of silently moving the app.
 
 For separate debugging:
 
 ```bash
 make forensic-workbench-api
 make forensic-workbench-dev
+```
+
+This app declares its own dependencies (`react`, `react-dom`, `vite`). The live
+launcher installs them automatically; to install them by hand (e.g. in CI):
+
+```bash
+make forensic-workbench-install
 ```
 
 To build the React app and serve it from the API server:
@@ -45,19 +54,23 @@ make forensic-workbench-data WORKBENCH_PROJECT=<project>
 
 That materializes `forensic-workbench/public/workbench_snapshot.json`; the app
 can render it without live edits. The generated snapshot uses the same public
-labels as the live app: working diagnosis, ruled-out alternatives, source files,
-evidence files, run check, report support, latest review, and latest next step.
+labels as the live app: thesis, ruled-out alternatives, source files,
+evidence files, run readiness, report support, latest review, and latest next step.
 
 ## What You Can Do
 
 The first path is:
 
 1. Open a project from `projects/`.
-2. Read the working diagnosis, ruled-out alternatives, and what would change it.
+2. Read the thesis, ruled-out alternatives, and what would change it.
 3. Check source and evidence files.
-4. Run preflight before heavier work.
+4. Check run readiness before heavier work, with the history path visible first.
 5. Review the report/support issue or save a next step.
-6. Save the project file with receipts and backing paths.
+6. Save the project file with saved history and backing paths.
+
+The project home's **Do next** card shows the current next action plus the
+target path, history path, latest saved work, and no-change boundary when those are
+available from the live workflow.
 
 The current-project home makes that path explicit in the **Use this project**
 rail: choose project, read thesis, check support, run locally, and save the
@@ -65,18 +78,55 @@ review trail. The next project step is shown before the workflow guide; the guid
 stays available behind **Show workflow guide** so the first scan stays focused.
 **Browse N folders** opens the searchable inventory loaded from `projects/`;
 it does not try to open every project at once.
+Any source, evidence, thesis, report, saved work, or project file preview opens in
+a focused file viewer with path, type, format, size, line counts, role-specific
+reading guidance, quick-read cards for common structures, referenced repo paths,
+copy-text, and copy-path controls. Referenced repo paths inside the viewer can
+be opened directly, so saved history can lead to the files it changed and an
+evidence file can lead back to cited project files.
+The current-project home also shows a compact **Project files** inventory:
+project brief, thesis, raw sources, evidence, active gaps, run outputs, report support,
+saved history, and run-learned backing files. The inventory is grouped by the work a
+user is doing: understand the question, inspect source material, check evidence
+and gaps, review runs and lessons, inspect report support, inspect saved history, or
+review assumptions. Open the small grouped list first; expand only when you need
+the full file set.
+Inline previews remain available where they help a small recovery card.
 
 The main areas are:
 
-- **Projects:** open any folder under `projects/`, or add the missing intake for
-  a historical project folder.
-- **Thesis:** inspect the diagnosis, assumptions, caveats, and project checks.
-- **Evidence:** edit the intake, add source files, edit existing sources, and
-  run file checks.
-- **Runs:** inspect the run plan, run preflight, start a confirmed project run,
-  and review scores/warnings.
-- **Review:** record review status, save next steps, and inspect receipts.
-- **Report:** inspect report support and save the project file.
+- **Projects:** open any folder under `projects/`, or connect an older folder
+  by saving the missing project brief. When a folder has files but no brief, the
+  Connect project flow drafts from existing thesis/source/evidence files, shows
+  the files it found, keeps draft notes concise, and previews the exact brief
+  and history paths before saving.
+- **Project:** inspect the thesis, assumptions, caveats, and evidence map. The
+  evidence map shows support points with the cited source files for each point.
+  Run-learned axioms and constraints show their backing files when prior runs
+  produced them.
+- **Files:** edit the project brief, add project files, edit existing files,
+  and prepare the evidence summary.
+- **Run:** inspect readiness, check readiness, start a confirmed project run,
+  and review scores/warnings. Active evidence gaps open here too, because this
+  is where the user can fetch evidence or save a hash-bound justification. The
+  selected gap is shown as a brief: what is missing, why it matters, whether
+  public fetch is available, the question to answer, and the file or evidence
+  state it will update.
+  If a run is blocked, the run preview names the in-app recovery step first and
+  can open the recovery panel instead of leaving the user with only a copied
+  shell command. Readiness-check and confirmed-run panels show what files can change
+  before the action runs.
+- **Review:** record review status, save next steps, and inspect saved history.
+  The saved-history view also leads with a "worth another pass?" read — whether
+  the program is still compressing its explanation or into diminishing returns
+  (advisory, computed from run history, not the judge score).
+- **Report / Verdict:** check report readiness and save the project file, see the
+  trust verdict and where to verify, and export the verified research graph to an
+  Obsidian vault (one linked note per claim, evidence, and falsifier, with the
+  weak spots marked) to write an article from.
+  Report readiness gives a direct next-action block: save any allowed report
+  action as the next step, preview the backing file, copy the note, or rerun the
+  local readiness check.
 
 The app discovers project folders through the local server. The project index
 reports total, intake-ready, file-backed, and background/generated counts, with
@@ -93,6 +143,7 @@ The browser does not scan the repository directly. It asks the local API for
 bounded read models:
 
 - `/api/status` for server, app, and project-index readiness.
+- `/api/capabilities` for the project checks and research lessons.
 - `/api/projects` for the full project folder inventory.
 - `/api/snapshot` for the selected project data.
 - `/api/workflow` for the six-step project steps, summary counts, UI
@@ -100,14 +151,16 @@ bounded read models:
 - `/api/intake`, `/api/sources`, and `/api/source-file` for editable project
   files.
 - `/api/trace`, `/api/run-history`, `/api/report-contract`, `/api/health`, and
-  `/api/evidence-support` for run, score, report, advisory, and support-audit
+  `/api/evidence-support` for run, score, report, guidance, and support-audit
   state.
-- `/api/receipts` and `/api/file` for receipt history and bounded file preview.
+- `/api/receipts` and `/api/file` for saved history and bounded file preview.
 
-`/api/file` previews only workbench-safe repo surfaces: project files, docs,
-examples, public analytics, workbench artifacts, rubrics, and selected root
-docs. It rejects papers, absolute paths, parent-directory escapes, repo
-metadata, internal planning, and private research paths before reading a file.
+`/api/file` previews only workbench-safe repo paths: project files, docs,
+examples, public analytics, workbench outputs, rubrics, and selected root
+docs. It returns file kind, format, hash, line counts, and safe referenced repo
+paths with the bounded text preview. It rejects papers, absolute paths,
+parent-directory escapes, repo metadata, internal planning, and private research
+paths before reading a file.
 
 The UI shows human labels first. Raw schema names, route names, and legacy keys
 are compatibility details, not the primary product language.
@@ -120,39 +173,42 @@ may change before the write and the files that changed after it.
 Write endpoints:
 
 - `/api/project-create` creates the project folder, source folders, source
-  metadata, and intake path, or adds the missing intake to an existing project
-  folder.
-- `/api/intake` edits the selected intake.
+  metadata, and project-brief path, or adds the missing brief to an existing
+  project folder.
+- `/api/intake` edits the selected project-brief JSON.
 - `/api/source-import` adds one new `.md` or `.txt` source under `raw/`.
 - `/api/source-edit` edits one existing source file or source type.
-- `/api/source-action` runs one allowlisted source/evidence action.
-- `/api/preflight` runs the local preflight-only check.
+- `/api/source-action` runs one allowlisted file or evidence check.
+- `/api/preflight` runs the local readiness check. The route name is kept for
+  CLI/API compatibility.
 - `/api/run` first returns a no-write preview; only a confirmed request starts
   the selected project run.
-- `/api/review` saves review status for a project check.
-- `/api/next-step` saves the next step for a project check.
-- `/api/project-file` writes the current project file plus receipt paths.
+- `/api/review` saves review status for a selected issue.
+- `/api/next-step` saves the next step for a selected issue.
+- `/api/project-file` writes the current project file plus saved-history paths.
 
 Browser-only actions remain browser-only: preview, download, copy. Failed writes
 return an explicit no-write boundary with `browser_writes=false` and no changed
 project paths.
 
 The live status contract groups actions into three buckets: read-only, writes
-files or receipts now, and asks before writing. `/api/status` exposes the
+files or saved history now, and asks before writing. `/api/status` exposes the
 product-facing `file_change_summary`, keeps `action_summary` for compatibility,
 and includes the per-action `behavior` contract so the UI can show the plain
-split without guessing from route names or booleans. The current split is 6
-read-only actions, 10 direct file/receipt writes, and 1 ask-first run action;
+split without guessing from route names or booleans. The current split is 9
+read-only actions, 12 direct file/history writes, and 5 ask-first actions;
 `browser_writes=false` across the set.
 
-Review and next-step save panels show the selected project check before saving:
+Review and next-step save panels show the selected issue before saving:
 status, evidence-link count, first evidence path, and latest review state. That
 keeps the save action tied to the project file the user is inspecting.
 
 ## Project Files
 
 Saving a project file writes an inspectable JSON bundle under the selected
-project workspace. It includes:
+project workspace. New saved files use
+`ztare-forensic-workbench-project-file-v1`; the saved-history compatibility
+schema is `ztare-forensic-workbench-project-file-write-receipt-v1`. It includes:
 
 - current project data and project context;
 - project steps and next-step destination, trace, report, health, support audit,
@@ -161,20 +217,26 @@ project workspace. It includes:
   project inventory counts from the local server;
 - `project_file_write_plan`, which records the project-file paths, no-hidden-
   browser-write boundary, and preview/download/copy actions shown before save;
-- source-file inventory and latest source actions;
-- recent review, next-step, intake, source, and project-file receipts;
+- file inventory and latest file checks;
+- recent review, next-step, project-brief, file, and project-file saved history;
 - `project_key` and `intake` as separate facts in live context and recent
-  receipts, while keeping older compatibility fields for existing scripts;
+  saved history, while keeping older compatibility fields for existing scripts;
+- server-stamped `live_context.project_state` and a compact
+  `live_context.workflow`, so the saved file matches `/api/workflow` and
+  `ztare forensic-workbench project-state` even if the browser had stale state;
 - product-named support-audit paths such as `evidence_support_file_path`;
-- command details and paths needed to audit the visible state;
-- unsaved intake/source edits when a draft exists.
+- local step plans and paths needed to audit the visible state;
+- unsaved project-brief/file edits when a draft exists.
 
-Before saving, the Project file panel shows what is included now: project checks,
-source files, project steps, report support, receipts, run history, and support
-audit. The preview uses product names such as action details, project checks,
-and support audit even when the saved JSON keeps older compatibility aliases.
+Before saving, the Project file panel shows what is included now: open issues,
+source files, project steps, report support, saved history, run history, and support
+audit. The preview uses product names such as action details, open issues,
+support audit, and previewable proof paths even when the saved JSON keeps older
+compatibility aliases.
 Save stays disabled until enough live context is loaded; preview, download, and
-copy remain browser-only.
+copy remain browser-only. After Save, the panel shows the saved path, history
+path, stamped project state, next action, issue count, recent saved-history count,
+and project-action count.
 
 The saved project file does not say the project is finished. It records what
 the workbench currently knows, what still needs support, and which files back
@@ -196,7 +258,7 @@ ztare forensic-workbench save-next-step --project <project> --intake <intake> --
 ```
 
 Review and next-step files carry `project_check_label` and
-`project_check_slug` for the product surface, plus `item_*` and `row_*` fields
+`project_check_slug` for the product UI, plus `item_*` and `row_*` fields
 for existing scripts.
 
 `--intake` is optional for old files, but safer for selected live projects
@@ -211,17 +273,17 @@ make forensic-workbench-data WORKBENCH_PROJECT=<project>
 
 ## Compatibility
 
-These names are still present for existing receipts and clients:
+These names are still present for old saved history and clients:
 
 - package and directory name: `forensic-workbench`;
-- schemas such as `ztare-forensic-workbench-*-v1`;
+- older `case-file` saved project schemas and saved-history schemas;
 - legacy fields such as `rows`, `row_count`, `row_slug`, and `case_key`;
 - legacy routes `/api/case-file`, `/api/item-action`, and `/api/row-action`.
 - legacy route `/api/claim-support`.
 
 New UI copy and new API callers should use project-first language:
 
-- project check;
+- selected issue;
 - project file;
 - review status;
 - report support;

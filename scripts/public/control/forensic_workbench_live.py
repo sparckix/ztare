@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import signal
 import subprocess
 import sys
@@ -29,7 +30,7 @@ def terminate(proc: subprocess.Popen[object]) -> None:
 
 
 def api_ready(api_url: str, *, timeout: float) -> bool:
-    request = Request(f"{api_url.rstrip('/')}/api/projects", headers={"Accept": "application/json"})
+    request = Request(f"{api_url.rstrip('/')}/api/status", headers={"Accept": "application/json"})
     try:
         with urlopen(request, timeout=timeout) as response:  # noqa: S310 - local dev server readiness check.
             return 200 <= response.status < 500
@@ -41,16 +42,32 @@ def api_ready(api_url: str, *, timeout: float) -> bool:
 
 def wait_for_api(api_url: str, proc: subprocess.Popen[object], *, startup_timeout: float, poll_interval: float) -> bool:
     deadline = time.monotonic() + startup_timeout
+    readiness_timeout = min(3.0, max(1.0, poll_interval * 5))
     while time.monotonic() < deadline:
         if proc.poll() is not None:
             return False
-        if api_ready(api_url, timeout=min(0.5, max(0.05, poll_interval))):
+        if api_ready(api_url, timeout=readiness_timeout):
             return True
         time.sleep(poll_interval)
     return False
 
 
+def ensure_web_deps() -> bool:
+    """Install the React app's node_modules on first run so `make forensic-workbench-live` just works on a
+    fresh clone (no separate install step to remember). No-op once installed."""
+    if (REPO / "forensic-workbench" / "node_modules").is_dir():
+        return True
+    print("  First run: installing web dependencies (npm install)…", flush=True)
+    result = subprocess.run(["npm", "--prefix", "forensic-workbench", "install"], cwd=REPO)
+    if result.returncode != 0:
+        print("  npm install failed — run `make forensic-workbench-install` and retry.", file=sys.stderr, flush=True)
+        return False
+    return True
+
+
 def run_live(args: argparse.Namespace) -> int:
+    if not ensure_web_deps():
+        return 1
     api_cmd = [
         sys.executable,
         "scripts/public/control/forensic_workbench_server.py",
@@ -72,7 +89,7 @@ def run_live(args: argparse.Namespace) -> int:
 
     api_proc: subprocess.Popen[object] | None = None
     try:
-        if api_ready(args.api_url, timeout=0.5):
+        if api_ready(args.api_url, timeout=min(3.0, max(0.5, args.api_startup_timeout / 3))):
             print("  Reusing already-running API.", flush=True)
         else:
             api_proc = subprocess.Popen(api_cmd, cwd=REPO)
@@ -86,7 +103,9 @@ def run_live(args: argparse.Namespace) -> int:
                     return api_proc.returncode or 1
                 print(f"API did not become ready within {args.api_startup_timeout:.1f}s: {args.api_url}", file=sys.stderr, flush=True)
                 return api_proc.returncode or 1
-        dev_proc = subprocess.Popen(dev_cmd, cwd=REPO)
+        dev_env = os.environ.copy()
+        dev_env["ZTARE_WORKBENCH_API_TARGET"] = args.api_url
+        dev_proc = subprocess.Popen(dev_cmd, cwd=REPO, env=dev_env)
         try:
             return dev_proc.wait()
         finally:
